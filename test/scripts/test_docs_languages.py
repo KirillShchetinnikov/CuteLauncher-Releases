@@ -69,6 +69,51 @@ class DocumentationLanguageTests(unittest.TestCase):
             stream.write('\n[Internal](docs/ARCHITECTURE_RU.md)\n')
         self.assertTrue(any('links to private' in error for error in docs.run(self.root, True)))
 
+    def test_new_release_requires_both_dated_changelog_entries(self):
+        tag = 'v1.0.25+74'
+        self.assertEqual(len(docs.check_release_notes(self.root, tag)), 2)
+        self.write(Path('CHANGELOG_RU.md'), f'# История\n\n## {tag} — 2026-10-21\n\n- Исправление.\n')
+        self.assertTrue(any('CHANGELOG_EN.md' in error for error in docs.check_release_notes(self.root, tag)))
+        self.write(Path('CHANGELOG_EN.md'), f'# Changelog\n\n## {tag} — 2026-10-21\n\n- Fix.\n')
+        self.assertEqual(docs.check_release_notes(self.root, tag), [])
+        self.assertTrue(docs.check_release_notes(self.root, 'v1.0.25+75'))
+
+    def test_changelog_mismatched_dates_and_empty_entries_fail(self):
+        tag = 'v1.0.25+74'
+        self.write(Path('CHANGELOG_RU.md'), f'# История\n\n## {tag} — 2026-10-21\n\n- Исправление.\n')
+        self.write(Path('CHANGELOG_EN.md'), f'# Changelog\n\n## {tag} — 2026-10-22\n\n')
+        errors = docs.check_release_notes(self.root, tag)
+        self.assertTrue(any('dates differ' in error for error in errors))
+        self.assertTrue(any('Empty release' in error for error in errors))
+
+    def test_changelog_duplicate_entries_invalid_dates_and_tags_fail(self):
+        tag = 'v1.0.25-test.1+74'
+        for name in ('CHANGELOG_RU.md', 'CHANGELOG_EN.md'):
+            self.write(Path(name), f'## {tag} — 2026-10-21\n\n- Fix.\n')
+        self.assertEqual(docs.check_release_notes(self.root, tag), [])
+        with (self.root / 'CHANGELOG_RU.md').open('a', encoding='utf-8') as stream:
+            stream.write(f'\n## {tag} — 2026-10-21\n\n- Duplicate.\n')
+        self.assertTrue(any('Expected one' in error for error in docs.check_release_notes(self.root, tag)))
+        self.write(Path('CHANGELOG_RU.md'), f'## {tag} — 2026-02-31\n\n- Fix.\n')
+        self.assertTrue(any('Invalid release date' in error for error in docs.check_release_notes(self.root, tag)))
+        self.assertEqual(docs.check_release_notes(self.root, 'main'), ['Unsupported changelog release tag'])
+
+    def test_each_language_must_link_back_to_its_counterpart(self):
+        self.write(self.en, '# English\n\n## Section\n\n```sh\necho test\n```\n')
+        self.assertTrue(any('Missing language switch' in error for error in docs.run(self.root, True)))
+
+    def test_release_gate_runs_before_manifest_update(self):
+        self.assertTrue(docs.run(self.root, update=True, release_tag='v1.0.25+74'))
+        self.assertFalse((self.root / docs.PUBLIC_MANIFEST).exists())
+
+    def test_every_public_markdown_document_has_a_language_pair(self):
+        publisher_spec = importlib.util.spec_from_file_location('public_docs', ROOT / 'scripts/publish-source.py')
+        publisher = importlib.util.module_from_spec(publisher_spec)
+        publisher_spec.loader.exec_module(publisher)
+        paired = {path.as_posix() for name in docs.USER_SOURCES
+                  for path in (Path(name), docs.english_path(Path(name)))}
+        self.assertEqual(paired, publisher.PUBLIC_DOCS)
+
 
 if __name__ == '__main__':
     unittest.main()

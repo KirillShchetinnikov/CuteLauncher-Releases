@@ -13,6 +13,7 @@ CuteLauncher объединяет запуск приложений, полез�
 **[Скачать APK](https://github.com/KirillShchetinnikov/CuteLauncher-Releases/releases/latest)**
 · **[Руководство пользователя](docs/USER_GUIDE_RU.md)**
 · **[Вся документация](docs/README.md)**
+· **[Что нового](CHANGELOG_RU.md)**
 
 ## Что делает его удобным
 

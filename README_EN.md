@@ -13,6 +13,7 @@ Created by [Kirill Shchetinnikov](https://github.com/KirillShchetinnikov).
 **[Download APK](https://github.com/KirillShchetinnikov/CuteLauncher-Releases/releases/latest)**
 · **[User guide](docs/USER_GUIDE_EN.md)**
 · **[All documentation](docs/README_EN.md)**
+· **[What's new](CHANGELOG_EN.md)**
 
 ## What makes it convenient
 

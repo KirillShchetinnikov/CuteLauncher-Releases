@@ -4,6 +4,7 @@
 it never translates content or certifies its meaning.
 """
 import argparse
+from datetime import date
 import hashlib
 import json
 from pathlib import Path
@@ -13,7 +14,7 @@ from urllib.parse import unquote
 
 ROOT = Path(__file__).resolve().parents[1]
 PUBLIC_MANIFEST = 'docs/translation_manifest.json'
-USER_SOURCES = ('README.md', 'docs/README.md', 'docs/USER_GUIDE_RU.md')
+USER_SOURCES = ('README.md', 'docs/README.md', 'docs/USER_GUIDE_RU.md', 'CHANGELOG_RU.md')
 
 
 def english_path(path):
@@ -88,7 +89,36 @@ def check_pair(root, source, english):
     return errors
 
 
-def run(root, update=False):
+def check_release_notes(root, tag):
+    errors = []
+    if not re.fullmatch(r'v\d+\.\d+\.\d+(?:-test\.\d+)?\+\d+', tag):
+        return ['Unsupported changelog release tag']
+    dates = []
+    for name in ('CHANGELOG_RU.md', 'CHANGELOG_EN.md'):
+        path = root / name
+        if not path.exists():
+            errors.append(f'Missing release changelog: {name}')
+            continue
+        entries = list(re.finditer(
+            rf'^## {re.escape(tag)} — (\d{{4}}-\d{{2}}-\d{{2}})\s*\n(.*?)(?=^## |\Z)',
+            path.read_text(encoding='utf-8'), re.M | re.S))
+        if len(entries) != 1:
+            errors.append(f'Expected one dated changelog entry for {tag} in {name}')
+            continue
+        entry = entries[0]
+        try:
+            date.fromisoformat(entry[1])
+        except ValueError:
+            errors.append(f'Invalid release date in {name}')
+        dates.append(entry[1])
+        if not re.search(r'^\s*[-*]\s+\S', entry[2], re.M):
+            errors.append(f'Empty release changelog for {tag} in {name}')
+    if len(set(dates)) > 1:
+        errors.append('Russian and English changelog release dates differ')
+    return errors
+
+
+def run(root, update=False, release_tag=''):
     pairs = discover(root)
     errors = []
     entries = []
@@ -98,6 +128,8 @@ def run(root, update=False):
             continue
         entries.append({'ru': source.as_posix(), 'en': english.as_posix(),
                         'ruSha256': digest(root / source), 'enSha256': digest(root / english)})
+    if release_tag:
+        errors.extend(check_release_notes(root, release_tag))
     if errors:
         return errors
     path = root / PUBLIC_MANIFEST
@@ -112,8 +144,9 @@ def run(root, update=False):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--update', action='store_true')
+    parser.add_argument('--release-tag', default='', help='Require dated RU/EN changelog entries before a new release')
     args = parser.parse_args()
-    problems = run(ROOT, args.update)
+    problems = run(ROOT, args.update, args.release_tag)
     if problems:
         print('\n'.join(problems), file=sys.stderr)
         sys.exit(1)

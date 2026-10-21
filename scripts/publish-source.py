@@ -13,7 +13,8 @@ import tempfile
 
 
 ROOT_FILES = {
-    '.gitignore', '.metadata', 'LICENSE', 'README.md', 'README_EN.md', 'analysis_options.yaml',
+    '.gitignore', '.metadata', 'LICENSE', 'README.md', 'README_EN.md',
+    'CHANGELOG_RU.md', 'CHANGELOG_EN.md', 'analysis_options.yaml',
     'build.yaml', 'l10n.yaml', 'pubspec.yaml', 'pubspec.lock',
 }
 PUBLIC_DIRS = {
@@ -23,6 +24,7 @@ PUBLIC_DIRS = {
 PUBLIC_DOCS = {
     'README.md', 'README_EN.md', 'docs/README.md', 'docs/README_EN.md',
     'docs/USER_GUIDE_RU.md', 'docs/USER_GUIDE_EN.md',
+    'CHANGELOG_RU.md', 'CHANGELOG_EN.md',
 }
 PUBLIC_DOC_ASSETS = {
     'docs/DADB_LICENSE.txt', 'docs/translation_manifest.json',

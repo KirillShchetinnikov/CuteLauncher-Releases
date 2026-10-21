@@ -9,6 +9,9 @@ appearance, apps, wallpapers, widgets, night mode, TV controls, backups, updates
 and diagnostics. It includes settings paths, required permissions, and the
 limitations of individual features.
 
+Changes in new releases are described in the [English changelog](../CHANGELOG_EN.md),
+translated from the separate [Russian changelog](../CHANGELOG_RU.md).
+
 ## Downloads and installation
 
 Download APKs from the [latest release](https://github.com/KirillShchetinnikov/CuteLauncher-Releases/releases/latest).
