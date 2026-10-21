@@ -1,0 +1,150 @@
+# Miscellaneous
+.tools/
+.local/
+artifacts/
+*.class
+*.log
+*.pyc
+*.swp
+*~
+*.bak
+*.tmp
+*.temp
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+
+# IDEs and Editors
+*.iml
+*.ipr
+*.iws
+.idea/
+.vscode/
+
+# Flutter / Dart / Pub
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+/build/
+pubspec-overrides.yaml
+
+# Web / Platforms (Unused Flutter Modules)
+lib/generated_plugin_registrant.dart
+.android/
+.ios/
+
+# Swift Package Manager
+.swiftpm/
+.build/
+
+# Symbols & Obfuscation
+app.*.symbols
+app.*.map.json
+
+# Android Build & Secrets
+/android/app/debug
+/android/app/profile
+/android/app/release
+/android/app/build
+/android/build
+android/app/google-services.json
+android/app/upload-keystore.jks
+android/keystore.properties
+*.jks
+*.keystore
+keystore.properties
+key.properties
+
+# Coverage, Logs, and Test Reports
+coverage/
+test/design/failures/
+build_log.txt
+release_build_log.txt
+test-reports/
+pdocs/
+Pdoc/
+scratch/
+test/app_card_long_press_test.dart
+
+# Drift Generated Schemas & Mockito Mocks
+drift_schemas/
+test/generated_migrations/
+test/mocks.mocks.dart
+
+# Local Tools, Libs & Scripts
+*.py
+!scripts/export-release-source.py
+!test/scripts/test_release_source.py
+!test/scripts/economy_tv_test_test.py
+!.github/scripts/**/*.py
+!scripts/device-ui-check.py
+!scripts/economy-tv-test.py
+!scripts/tv_inventory.py
+sqlite_lib/
+com.leanbitlab.ltvL.yml
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite-journal
+*.sqlite-shm
+*.sqlite-wal
+
+# Environment & Dev Tooling
+.env
+.gitlab-ci.yml
+commitlint.config.js
+node_modules/
+.npm/
+
+# AI Agent Configs & Documentation
+.aider*
+.antigravityignore
+.antigravitycli/
+.geminiignore
+.gemini/
+GEMINI.md
+GEMINI.original.md
+.qwenignore
+.qwen/
+QWEN.md
+.agents/
+AGENTS.md
+!/AGENTS.md
+AGENTS.original.md
+.pi/
+.claude/
+CLAUDE.md
+CLAUDE.original.md
+.cursor/
+.cursorrules
+.continue/
+.roo/
+.supermaven/
+.windsurf/
+.cody/
+.copilot/
+
+# Temporary UI captures; committed reference images live in test/design/goldens.
+/docs/images/design/captures/
+/.codex-remote-attachments/
+
+# Kotlin compiler session cache (AGP 9.2).
+/android/.kotlin/
+
+!/scripts/collect-flutter-sources.py
+!/scripts/publish-source.py
+!/test/scripts/test_publish_source.py
+!/scripts/check-docs.py
+!/test/scripts/test_docs_languages.py

@@ -1,0 +1,788 @@
+{
+  "renderer": {
+    "flutter": "3.47.6",
+    "revision": "5fc346839b5d0eef006ed8404392afb4dfae428d",
+    "os": "Windows x64",
+    "font": "DejaVu Sans",
+    "fontSha256": "3fdf69cabf06049ea70a00b5919340e2ce1e6d02b0cc3c4b44fb6801bd1e0d22",
+    "goldenPixelRatio": 1,
+    "dpr": 2,
+    "comparison": "exact",
+    "panelFonts": {
+      "sans": "d7598e12c5dbef095ff8272cfc55da0250bd07fbdecbac8a530b9b277872a134",
+      "serif": "4d8e6761424656867019081a1a01336f3cb086982682698714054fc33f782713",
+      "mono": "66a80e79d17e4c7cabd162e2916578a4cc08fd19eef6e2a643305eae9c567b2b",
+      "condensed": "dace262afcee68a5276f200d8026c57221735c0118ab5fda8c2c0d3dc409a8d0"
+    }
+  },
+  "states": [
+    {
+      "name": "home-720p-large",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1.3,
+      "physicalSize": [
+        1280,
+        720
+      ],
+      "dpr": 2,
+      "pngSize": [
+        640,
+        360
+      ],
+      "sha256": "fbc06a7d21ff2f6d1415de9a103699df8c36294d5836843e70cb9568cba20d34"
+    },
+    {
+      "name": "home-blur-economy",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "4a11d9b11ba2007f28ed2350775d07c71863c95b91caae3e6254139e55023e86"
+    },
+    {
+      "name": "home-blur",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "cb27e678ff2cdd1d0319f5069c459ae9659d20abca1e6f8841a658ce96ca255f"
+    },
+    {
+      "name": "home-capsule",
+      "theme": "capsule",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "e1f4e037a3c0b8b04b02fc5ee23b22922c4328fe5ef6f940e24de09f117c1855"
+    },
+    {
+      "name": "home-classic",
+      "theme": "classic",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "a83070f737a749c8c1f1dc83b95c57f236b8e5afa00430b76dee4ad973910bb5"
+    },
+    {
+      "name": "home-dark-accent",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "b04f52b04519fb79806bcef704c868d8e8b3102669fe4db1622317a8f9074176"
+    },
+    {
+      "name": "home-light-accent-bright",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "d5a544f667acbf19e2c116c2ee1d03d8daf5700bb64351907a218fbfc54ff828"
+    },
+    {
+      "name": "home-modern-focused",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "9c4cc6df9810e7180e803f43ce99d1b8b8a7cc4950fe1d98e3b9cf3fd430feb8"
+    },
+    {
+      "name": "home-modern-idle",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "4ff731f4b7a3134e67d3716ccadcff1cb4fc038698958c2b582151778da3480a"
+    },
+    {
+      "name": "home-premium",
+      "theme": "premium",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "b5a8e42fa18e135fbcc0c2898dc71bf7893d788d8b7b7818255efee4f221be6d"
+    },
+    {
+      "name": "home-rtl",
+      "theme": "modern",
+      "language": "ar",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "d1e7e4cb9c1d8da0ffae96ddb55bba198533dbb48bd081573e051e5fc7707926"
+    },
+    {
+      "name": "home-top-button",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "e36ba2da48f9b6f3c48805d87ad49a13de627ba9f5bd1d4d5463a505a0e1a9fc"
+    },
+    {
+      "name": "home-zero-radius-opacity",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "ef3e6c73fa81fab9a02fcdc73b1b0661b2e9e5304fd747d9fb1b836211bed974"
+    },
+    {
+      "name": "settings-appearance-large",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1.3,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "4396050f0ed7cd5a14cec22d2d077379fbefa00c82503384407aad810fec00d6"
+    },
+    {
+      "name": "settings-nested",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "384654a2e7460d029bf9dc9b1f1086a8798341bfc3fb1ede0c7b47ed6db2270b"
+    },
+    {
+      "name": "settings-preview-720p-large",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1.3,
+      "physicalSize": [
+        1280,
+        720
+      ],
+      "dpr": 2,
+      "pngSize": [
+        640,
+        360
+      ],
+      "sha256": "5fbb79d7804e59ce7a51b9362136c13524d562dbf7fabf9ae3e435127bc28407"
+    },
+    {
+      "name": "settings-preview-bottom",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "9edad3b54998684b1e94b93de1a51207422935653b3b636220efa20cc7d167a7"
+    },
+    {
+      "name": "settings-preview-capsule",
+      "theme": "capsule",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "23a42b05f59de5cae8b817ed720f736e11232efa9da2e74c352dbc0af56e5634"
+    },
+    {
+      "name": "settings-preview-classic",
+      "theme": "classic",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "cc415a36336e42f57de1d05d095650fbba8c4a51c4db650a07a172e183d7dcbc"
+    },
+    {
+      "name": "settings-preview-premium",
+      "theme": "premium",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "35aa9904d9660401c173379951487512da2424a6a6600c7726cb58001bff0b3f"
+    },
+    {
+      "name": "settings-preview-zero",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "e21b4c3a69b4cab03081f3328ef7ef277cb99480c9709482fc0ce67be8d28c3d"
+    },
+    {
+      "name": "settings-preview",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "aff764a9fb86cb11d86ac2bdb5e27c20665d37b5a7160a30592f561276f5df73"
+    },
+    {
+      "name": "settings-root-720p-large",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1.3,
+      "physicalSize": [
+        1280,
+        720
+      ],
+      "dpr": 2,
+      "pngSize": [
+        640,
+        360
+      ],
+      "sha256": "1a15b160f2557b139cf7e9f0d913e2172f6ac8a45c1e236fd282c285e7832891"
+    },
+    {
+      "name": "settings-root-bottom",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "f7c07024242fafc196270076b7a9744090a67ebfa53512ea2233ae2cf41aa5ba"
+    },
+    {
+      "name": "settings-root",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "5dda24f014375de186b9692e0e86f26ffa68d52335a5b8d29f6928df8b94e01d"
+    },
+    {
+      "name": "settings-rtl-large",
+      "theme": "modern",
+      "language": "ar",
+      "textScale": 1.3,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "d22155a8a73df14e2600c952a867ed361d56671b06837ae3f2b21178781f1415"
+    },
+    {
+      "name": "settings-top-appearance",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "82a9c315453a18259ce4b8933b7ddf1caf220be808bc0151a240b49884ed4b3b"
+    },
+    {
+      "name": "settings-top-objects",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "e633ad4a0369c3e5305e004f578de09b28a9516e381f268b788a8643fb35047f"
+    },
+    {
+      "name": "home-top-custom",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "a3732a08baedfea91b8d200f42ff4e4037d8f5f42976c3af8c5c5bafdda896a6"
+    },
+    {
+      "name": "settings-memory",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "2578be0d375aebd280b10c0a65add5a75cdca0457560fb0be8268e8b908be6ce"
+    },
+    {
+      "name": "settings-memory-bottom",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "639f2935b560d7d6c1abb93c5ac3b06c53151c59f4324e3c7a6db2e6501e33ac"
+    },
+    {
+      "name": "settings-memory-saver",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "471b5c699ab7a91a20d07d109c10b0d0d7c3d17746184a6448cb9d321bd16e55"
+    },
+    {
+      "name": "settings-nested-right",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "b87c0f9491577c024b435d3ecf726aaddcfa8913e92b03fb44419f2a950b6767"
+    },
+    {
+      "name": "dialog-editor-left",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "c85a7b6152a836b9888a569029dc54fbf8a549513a2c0b48816d62517d05d543"
+    },
+    {
+      "name": "dialog-editor-right",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "0cf2bce5e42ff40d71a5b15b020b510c2d5c40940ce78e9c2b7237f8ff4ced57"
+    },
+    {
+      "name": "dialog-adb-left",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "22132d5d0578bf153eb84091d4ab949c3c1d3045ab5464563c7c1f1117e2de7f"
+    },
+    {
+      "name": "dialog-adb-right",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "a4a4259b5c31f7faa5e7d92a55d6ae82615cce3a80c694db1b057df3f2ce4d7f"
+    },
+    {
+      "name": "settings-style",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "216bbbd425fe690f236438021fb160a7cbed3d18625d9f96c5eaaf4333f9eabe"
+    },
+    {
+      "name": "settings-notification-style",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "c4e6ca08ec9bf24f0ff5bd19e22ec28af72830b09d13942900f75fef7482778f"
+    },
+    {
+      "name": "home-shared-rows",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "78d1c74a358ec3e988c75c3eb19179d4ad4318b9dfa1a990d43435781e44ce15"
+    },
+    {
+      "name": "home-grid-window",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "9ed89e11f727eb7ff34e809d09d3a2aa3a78ad120880963348bf581df3726e7c"
+    },
+    {
+      "name": "home-free-three-rows",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "7bd78dddecd99280d07fae7e7cfbb91c3061e1248054c8bc72f0cc2bb8abcd0c"
+    },
+    {
+      "name": "home-large-lift",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "6894a3ba66b6195b11185bdf1037233d4dca8de44106f232cae36cf768662aa6"
+    },
+    {
+      "name": "settings-clock-style",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "1dbe7328012ba564a019a908050331cd3c352e9eb235c6f98fdfa1ab163104a5"
+    },
+    {
+      "name": "home-clock-digital",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "0b7869f05e13554091b405ef35f1177a23aefcc1a1752338367d3a902ebd95fd"
+    },
+    {
+      "name": "calendar-ru",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "bf6ad41bd844f2815b647ec8857ffc294e70dfb040783188c77c8b7034671a52"
+    },
+    {
+      "name": "calendar-rtl-large",
+      "theme": "modern",
+      "language": "ar",
+      "textScale": 1.3,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "30c25501f111de1c5eeaa3d933c03fd4763cda460ca996c0b22d6b8e254184d4"
+    },
+    {
+      "name": "settings-date",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "b43ad7a4071237834fdc4d8168e2b923ade02a0aa0e4b83872504716a8b95013"
+    }
+  ]
+}

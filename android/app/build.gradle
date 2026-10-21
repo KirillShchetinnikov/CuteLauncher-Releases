@@ -1,0 +1,163 @@
+/*
+ * FLauncher
+ * Copyright (C) 2021  Étienne Fesser
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+plugins {
+    id "com.android.application"
+    id "dev.flutter.flutter-gradle-plugin"
+}
+
+// Support physical ARM TVs and x64 TV emulators in the same release APK.
+if (!project.hasProperty('target-platform')) {
+    project.ext.set('target-platform', 'android-arm,android-arm64,android-x64')
+}
+
+
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }
+}
+
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
+if (flutterVersionCode == null) {
+    flutterVersionCode = '1'
+}
+
+def flutterVersionName = localProperties.getProperty('flutter.versionName')
+if (flutterVersionName == null) {
+    flutterVersionName = '1.0'
+}
+
+def secretProperties = new Properties()
+secretProperties.setProperty("signing_keystore_password", "${System.getenv('FLAUNCHER_KEYSTORE_PASSWORD')}")
+secretProperties.setProperty("signing_key_password", "${System.getenv('FLAUNCHER_SIGNING_KEY_PASSWORD')}")
+secretProperties.setProperty("signing_key_alias", "${System.getenv('FLAUNCHER_SIGNING_KEY_ALIAS')}")
+
+def keystoreFilePath = System.getenv("KEYSTORE_FILE") ?: localProperties['storeFile']
+def hasKeystore = keystoreFilePath != null && file(keystoreFilePath).exists()
+
+android {
+    compileSdk 36
+    ndkVersion "28.2.13676358"
+    buildFeatures {
+        resValues true
+    }
+    // Opt in to a same-signature hardware probe; regular builds are unaffected.
+    if (project.hasProperty('tv-instrumentation')) {
+        testBuildType project.findProperty('tv-test-build-type') ?: "release"
+        defaultConfig.testInstrumentationRunner project.findProperty('tv-probe-runner') ?: "com.leanbitlab.ltvL.tests.NightNotificationProbe"
+    }
+    dependenciesInfo {
+        // Disables dependency metadata when building APKs (for IzzyOnDroid/F-Droid)
+        includeInApk = false
+        // Disables dependency metadata when building Android App Bundles (for Google Play)
+        includeInBundle = false
+    }
+
+    defaultConfig {
+        applicationId "io.github.kirillshchetinnikov.cutelauncher"
+        resValue "string", "screensaver_settings_activity", "io.github.kirillshchetinnikov.cutelauncher/com.leanbitlab.ltvL.MainActivity"
+        minSdk 30
+        targetSdk 35
+        versionCode flutterVersionCode.toInteger()
+        versionName flutterVersionName
+    }
+
+    signingConfigs {
+        debug {}
+        release {
+            if (hasKeystore) {
+                storeFile file(keystoreFilePath)
+                storePassword System.getenv("KEYSTORE_PASSWORD") ?: localProperties['storePassword']
+                keyAlias System.getenv("KEY_ALIAS") ?: localProperties['keyAlias']
+                keyPassword System.getenv("KEY_PASSWORD") ?: localProperties['keyPassword']
+            }
+        }
+    }
+
+    buildTypes {
+        debug {
+            applicationIdSuffix '.debug'
+            resValue "string", "screensaver_settings_activity", "io.github.kirillshchetinnikov.cutelauncher.debug/com.leanbitlab.ltvL.MainActivity"
+            signingConfig signingConfigs.debug
+            ndk {
+                abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64'
+            }
+        }
+        profile {
+            // Allow a local profile APK to update the signed release for measurement.
+            signingConfig hasKeystore ? signingConfigs.release : signingConfigs.debug
+            ndk {
+                abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64'
+            }
+        }
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            if (hasKeystore) {
+                signingConfig signingConfigs.release
+            }
+            ndk {
+                abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64'
+            }
+        }
+    }
+
+    splits {
+        abi {
+            // https://stackoverflow.com/a/39950584/21037183
+            enable gradle.startParameter.taskNames.any { it.contains("assembleRelease") } && System.getenv("UNIVERSAL_ONLY") != "true"
+            reset()
+            include "armeabi-v7a", "arm64-v8a", "x86_64"
+            universalApk true
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
+    }
+
+    namespace 'com.leanbitlab.ltvL'
+}
+
+androidComponents {
+    onVariants(selector().all()) { variant ->
+        variant.outputs.each { output ->
+            def abi = output.filters.find {
+                it.filterType == com.android.build.api.variant.FilterConfiguration.FilterType.ABI
+            }?.identifier
+            output.outputFileName.set("CuteLauncher-${abi ?: 'universal'}-${variant.buildType}.apk")
+        }
+    }
+    onVariants(selector().withBuildType('release')) { variant ->
+        // Flutter no longer supports 32-bit x86, even if AARs contain those libs.
+        variant.packaging.jniLibs.excludes.add('lib/x86/**')
+    }
+}
+
+flutter {
+    source '../..'
+}
+
+dependencies {
+    implementation 'dev.mobile:dadb:2.0.0'
+}

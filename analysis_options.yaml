@@ -1,0 +1,13 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  exclude:
+    - lib/database.drift.dart
+    - test/mocks.mocks.dart
+    - test/generated_migrations
+    - build/**
+    - android/**
+
+linter:
+  rules:
+    await_only_futures # Why is this an option?

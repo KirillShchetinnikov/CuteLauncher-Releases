@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "reportType": "tvDisableList",
+  "capturedAt": "2026-10-21T07:55:36.064317+00:00",
+  "identity": {
+    "manufacturer": "TCL",
+    "model": "Smart TV Pro",
+    "device": "G10",
+    "fingerprint": "TCL/G10_4K_GB/G10:14/UTT2.250416.001/AU01:user/release-keys",
+    "firmware": "G10-user 14 UTT2.250416.001 AU01 release-keys",
+    "android": "14",
+    "sdk": "34",
+    "abis": "armeabi-v7a,armeabi"
+  },
+  "verification": "observedOnly",
+  "packages": [
+    "com.android.cts.priv.ctsshim",
+    "com.android.printspooler",
+    "com.google.android.feedback",
+    "com.google.android.partnersetup",
+    "com.google.android.play.games",
+    "com.google.android.youtube.tvmusic",
+    "com.realtek.airplay2",
+    "com.tcl.dashboard",
+    "com.tcl.exhibit",
+    "com.tcl.guard",
+    "com.tcl.messagebox",
+    "com.tcl.smartalexa",
+    "com.tcl.t_solo",
+    "com.tcl.tv",
+    "com.tcl.tv.tclhome_passive",
+    "com.tcl.usercenter",
+    "com.tcl.waterfall.overseas"
+  ]
+}

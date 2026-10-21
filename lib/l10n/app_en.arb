@@ -1,0 +1,1208 @@
+{
+  "diagnosticsHubTitle": "Diagnostics",
+  "tvCompatibilityTitle": "TV compatibility check",
+  "tvCompatibilityRun": "Run check",
+  "tvCompatibilityResults": "View results",
+  "compatibilityReportDate": "Check date",
+  "compatibilityLauncherVersion": "CuteLauncher version",
+  "diagnosticsExport": "Export report",
+  "diagnosticsCopyClipboard": "Copy to clipboard",
+  "diagnosticsSaveDisk": "Save to disk",
+  "tvCompatibilityHelp": "Reads device, firmware, permission and system capability metadata. No settings, packages or HOME are changed; ADB is not connected, and no apps or system screens are launched. Results describe availability reported by Android, not physical remote, HDMI or end-to-end operation. Export includes the model and full firmware identity for the device catalog, without serial number, IP, Wi-Fi networks, accounts or installed app lists. Nothing is sent automatically. The latest report stays in memory until you leave Diagnostics; running a new check replaces it.",
+  "compatibilityAndroidTv": "Android TV support",
+  "compatibilityAndroidVersion": "Android version",
+  "compatibilityHomeRegistered": "CuteLauncher registered as HOME",
+  "compatibilityDefaultHome": "CuteLauncher selected as home screen",
+  "compatibilityHomeSelection": "HOME selection priority",
+  "compatibilityOverlay": "Display over other apps",
+  "compatibilityNotifications": "CuteLauncher notifications",
+  "compatibilityNotificationListener": "Notification access",
+  "compatibilityAccessibility": "Accessibility service",
+  "compatibilityWriteSettings": "Write system settings",
+  "compatibilityUsageStats": "Usage statistics access",
+  "compatibilityWatchNext": "Watch Next access",
+  "compatibilityTvInputs": "System TV input list",
+  "compatibilityDocumentExport": "JSON export handler",
+  "compatibilityScreensaverSelection": "System screensaver selection",
+  "compatibilityAvailable": "Available according to Android",
+  "compatibilityNotGranted": "Permission not granted",
+  "compatibilityNotConfigured": "Not configured or list empty",
+  "compatibilityRestricted": "System restriction detected",
+  "compatibilityUnsupported": "Support not detected",
+  "compatibilityUnknown": "Could not determine",
+  "appArtworkBackground": "Selected app colours",
+  "appArtworkBackgroundHelp": "The focused app's banner or icon becomes a soft colour background. The selected gradient appears before an image is ready or if it cannot be read. Changes pause while the launcher is in the background. Your other wallpapers are kept.",
+  "adbWifiOwned": "Not changed: a saved Wi-Fi network belongs to the setup wizard. Forget that network and reconnect through Android Settings, then check again. Disabling the wizard could delete the network.",
+  "adbWifiUnknown": "Not changed: the owners of saved Wi-Fi networks could not be verified. Disabling the setup wizard is blocked to protect your connection. Check ADB and try again; some firmware does not provide this information.",
+  "backgroundSource": "Background source",
+  "noAvailableCategories": "There are no sections available to add this app to.",
+  "redditWallpaperTheme": "Wallpaper theme",
+  "redditThemeAll": "Mixed",
+  "redditThemeNature": "Nature",
+  "redditThemeSpace": "Space",
+  "redditThemeCity": "Cities",
+  "redditThemeMinimal": "Minimalism",
+  "redditWallpaperResolution": "Minimum resolution",
+  "redditWallpaperHint": "Each successful refresh downloads a different landscape image from the selected Reddit community. Resolution is the minimum original size; images are not upscaled. Refresh runs while the launcher is open and resumes when you return. Adult content, videos and galleries are skipped. If Reddit blocks access or no matching image is found, the previous wallpaper remains.",
+  "dialogCommandDetails": "Show ADB commands",
+  "dialogAssign": "Assign",
+  "dialogApply": "Apply",
+  "settingsValueNotSet": "Not set",
+  "settingsMenuPosition": "Settings menu position",
+  "settingsMenuLeft": "Left",
+  "settingsMenuRight": "Right",
+  "actionCompleted": "Action completed",
+  "showRepositoryQrCode": "Show QR code",
+  "resetSections": "Reset section settings",
+  "resetSectionsConfirmation": "Restore default sections? Custom sections, spacers and Favorites contents will be removed.",
+  "cardFocusMode": "Focus on return Home",
+  "cardFocusRemember": "Keep selected card",
+  "cardFocusFirst": "First card",
+  "cardFocusSettings": "Settings button",
+
+    "aboutFlauncher": "About CuteLauncher",
+    "addCategory": "Add category",
+    "addSection": "Add section",
+    "alphabetical": "Alphabetical",
+    "appCardHighlightAnimation": "Highlight outline pulse",
+    "appInfo": "Application info",
+    "appKeyClick": "Key sounds",
+    "applications": "Applications",
+    "autoHideAppBar": "Automatically hide status bar",
+    "backButtonAction": "Back button action",
+    "category": "Category",
+    "categories": "Categories",
+    "columnCount": "Column count",
+    "date": "Date",
+    "dateAndTimeFormat": "Date and time format",
+    "delete": "Delete",
+    "dialogOptionBackButtonActionDoNothing": "Do nothing",
+    "dialogOptionBackButtonActionShowScreensaver": "Show screensaver",
+    "dialogOptionBackButtonActionShowClock": "Show clock",
+    "dialogTextNoFileExplorer": "Please install a file explorer in order to pick a picture.",
+    "dialogTitleBackButtonAction": "Choose the back button action",
+    "disambiguateCategoryTitle": "{title} (Category)",
+    "@disambiguateCategoryTitle": {
+        "placeholders": {
+            "title": {
+                "type": "String"
+            }
+        }
+    },
+    "formattedDate": "Formatted date: {dateString}",
+    "@formattedDate": {
+        "placeholders": {
+            "dateString": {
+                "type": "String"
+            }
+        }
+    },
+    "formattedTime": "Formatted time: {timeString}",
+    "@formattedTime": {
+        "placeholders": {
+            "timeString": {
+                "type": "String"
+            }
+        }
+    },
+    "gradient": "Gradient",
+    "favoriteApps": "Favorite Apps",
+    "grid": "Grid",
+    "height": "Height",
+    "hide": "Hide",
+    "hiddenApplications": "Hidden Apps",
+    "launcherSections": "Sections",
+    "layout": "Layout",
+    "loading": "Loading",
+    "manual": "Manual",
+    "modifySection": "Modify section",
+    "mustNotBeEmpty": "Must not be empty",
+    "name": "Name",
+    "newSection": "New section",
+    "noDateFormatSpecified": "No date format specified",
+    "noTimeFormatSpecified": "No time format specified",
+    "nonTvApplications": "Non-TV Apps",
+    "open": "Open",
+    "orSelectFormatSpecifiers": "Or select format specifiers",
+    "openImage": "Open image",
+    "picture": "Picture",
+    "removeFrom": "Remove from {name}",
+    "@removeFrom": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "renameCategory": "Rename category",
+    "reorder": "Reorder",
+    "row": "Row",
+    "rowHeight": "Row height",
+    "save": "Save",
+    "spacer": "Spacer",
+    "spacerMaxHeightRequirement": "Must be greater than 0 and less than or equal to 500",
+    "statusBar": "Status bar",
+    "settings": "Settings",
+    "show": "Show",
+    "showCategoryTitles": "Show category titles",
+    "themes": "Themes",
+    "hideHighlightOutlineOnHomescreen": "Hide highlight outline on homescreen",
+    "appSelectorTransitionAnimation": "Smooth highlight transitions",
+    "sort": "Sort",
+    "systemSettings": "Android settings",
+    "textAboutDialog": "CuteLauncher is an Android TV launcher based on LTvLauncher by LeanBitLab and FLauncher by Étienne Fesser.\n\nCuteLauncher by Kirill Shchetinnikov. GNU GPLv3.\nRepository: {repoUrl}.",
+    "@textAboutDialog": {
+        "placeholders": {
+            "repoUrl": {
+                "type": "String"
+            }
+        }
+    },
+    "textEmptyCategory": "This category is empty.",
+    "time": "Time",
+    "titleStatusBarSettingsPage": "Choose what to display in the status bar",
+    "tvApplications": "TV Apps",
+    "type": "Type",
+    "typeInTheDateFormat": "Type in the date format",
+    "typeInTheHourFormat": "Type in the hour format",
+    "uninstall": "Uninstall",
+    "wallpaper": "Wallpaper",
+    "withEllipsisAddTo": "Add to...",
+    "timeBasedWallpaper": "Time based wallpaper",
+    "pickDayWallpaper": "Pick day wallpaper",
+    "pickNightWallpaper": "Pick night wallpaper",
+    "accessibility": "Accessibility",
+    "defaultLauncherIsDefault": "CuteLauncher is the default launcher",
+    "defaultLauncherNotDefault": "CuteLauncher is not the default launcher",
+    "setAsDefaultLauncher": "Set as default launcher",
+    "defaultLauncherDescription": "When set as the default launcher, the Home button will always return to CuteLauncher. The TV will also boot directly into CuteLauncher.",
+    "inputs": "Inputs",
+    "inputsUnavailableHint": "This device provides no available inputs. The switch is disabled and the icon is hidden. On a TV box, this option does not control the connected TV’s HDMI inputs.",
+    "inputSources": "Input Sources",
+    "backupAndRestore": "Backup & Restore",
+    "exportBackup": "Export Backup",
+    "importBackup": "Import Backup",
+    "exportSuccess": "Backup exported successfully to {path}",
+    "@exportSuccess": {
+        "placeholders": {
+            "path": {
+                "type": "String"
+            }
+        }
+    },
+    "importSuccess": "Backup imported successfully",
+    "importConfirm": "Import this backup? Saved valid settings and layout will be applied. Missing or invalid individual settings keep their current values.",
+    "importError": "Could not restore settings from the backup. Check the file and try again.",
+
+    "exportError": "Failed to export backup: {error}",
+    "@exportError": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "shareBackup": "Share Backup",
+    "shareBackupDescription": "Share backup with other devices on local network",
+    "stopSharing": "Stop Sharing",
+    "localNetworkSharingActive": "Local network sharing is active!",
+    "localNetworkSharingInstructions": "Connect another device to the same Wi-Fi network and open the following URL in a web browser:",
+    "localNetworkSharingDetails": "Here you can download your TV settings/layout or upload a backup file back to this TV.",
+    "failedToStartServer": "Failed to start sharing server: {error}",
+    "@failedToStartServer": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "notificationBell": "Notification icon",
+    "autoHideNotificationBell": "Hide icon when there are no notifications",
+    "continueWatching": "Continue Watching",
+    "showContinueWatchingOnHome": "Show Continue Watching on Home",
+    "permissionDeniedContinueWatching": "Permission required to show Continue Watching",
+    "interface": "Interface",
+    "system": "System",
+    "accentColor": "Accent Color",
+    "miscellaneous": "Miscellaneous",
+    "brightnessScheduler": "Brightness Scheduler",
+    "screensaverSettings": "Choose screensaver in Android TV",
+    "screensaverClockStyle": "Screensaver Clock Style",
+    "dataUsagePeriod": "Traffic counting period",
+    "notificationAccess": "Notification Access",
+    "granted": "Granted",
+    "permissionRequired": "Permission Required",
+    "systemWidePopupAlert": "System-wide Popup Alert",
+    "overlayPermissionRequired": "Overlay Permission Required",
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "showAppNamesBelowIcons": "Show app labels",
+    "dataUsage": "Data Usage",
+    "networkIndicator": "Network Indicator",
+    "homeButtonFix": "Home button",
+    "startOnBoot": "Start when the TV turns on",
+    "appLanguage": "Language",
+    "systemDefault": "System Default",
+    "english": "English",
+    "spanish": "Spanish",
+    "ukrainian": "Ukrainian",
+    "chinese": "Chinese",
+    "french": "French",
+    "german": "German",
+    "japanese": "Japanese",
+    "portuguese": "Portuguese",
+    "russian": "Russian",
+    "italian": "Italian",
+    "hindi": "Hindi",
+    "korean": "Korean",
+    "arabic": "Arabic",
+    "turkish": "Turkish",
+    "hidePersistentNotifications": "Hide Persistent Notifications",
+    "hidePersistentNotificationsDesc": "Hide ongoing background service and system notifications",
+    "blockedNotificationApps": "Block notifications from apps",
+    "blockAppNotifications": "Block Notifications",
+    "unblockAppNotifications": "Unblock Notifications",
+    "noBlockedApps": "No blocked apps",
+    "persistentNotification": "Persistent",
+    "unblockAll": "Unblock All",
+    "weather": "Weather",
+    "showWeatherWarnings": "Show Weather & Rain Warnings",
+    "temperatureUnit": "Temperature Unit",
+    "celsius": "Celsius (°C)",
+    "fahrenheit": "Fahrenheit (°F)",
+    "breezyWeatherSetupHint": "Install Breezy Weather and enable 'Local data sharing' / 'Gadgetbridge' in its settings to see weather and rain warnings.",
+    "displayAndScreensaver": "Night mode and brightness",
+    "notifications": "Notifications",
+    "continueWatchingDescription": "Show recently watched movies and TV shows from supported apps on your home screen",
+    "continueWatchingPermissionDesc": "Special permission is required to read watch history from TV apps. You can grant it using the button below or via ADB:",
+    "requestPermission": "Request Permission",
+    "dismiss": "Dismiss",
+    "openApp": "Open",
+    "notificationOptions": "Notification Options",
+    "noBlockedAppsDesc": "All applications are currently allowed to show notifications",
+    "notificationsAllowed": "Notifications Allowed",
+    "notificationsBlocked": "Notifications Blocked",
+    "dpadDismissHint": "◄ — dismiss · OK — options · ► — block app",
+    "watchNextDeleteError": "Could not remove the item from Continue Watching. Try again.",
+    "hideLauncherTile": "Hide CuteLauncher in the app grid",
+    "hideAndroidSettingsTile": "Hide Android settings in app tiles",
+    "animateTileReordering": "Animate tile reordering",
+    "imageInputRejected": "This image is damaged or too large (maximum 8 MiB and 48 megapixels). Choose another image.",
+    "memoryTitle": "Memory",
+    "memoryRefresh": "Measure memory",
+    "memoryMeasuring": "Measuring…",
+    "memoryClear": "Clear image caches",
+    "memorySaver": "Memory saving",
+    "memorySaverDescription": "Memory saving mode:\n\n• Reduces image caches and the poster preload window.\n• Disables tile, panel and wallpaper background blur, and outline pulsing.\n• Limits shadows on unfocused tiles.\n• Clears caches when the app goes into the background.\n\nThese effects are unavailable in settings while memory saving is enabled. Their saved values return when the mode is disabled. Images may reload more often.",
+    "memoryPss": "Process share (PSS)",
+    "memoryRss": "Resident process memory (RSS)",
+    "memoryEncodedCache": "Cached image files",
+    "memoryDecodedCache": "Cached decoded images",
+    "memoryUnavailable": "Unavailable",
+    "memoryUnit": "MiB",
+    "memoryMeasuredAt": "Measured at",
+    "memoryExplanation": "PSS and RSS overlap: do not add them together. Cache sizes are part of app memory and do not describe all memory held by active images. Clearing caches keeps your settings and files; images load again when needed. Android may return memory later. RSS here comes from the kernel and PSS from Android; they may account for graphics memory differently.",
+    "memoryRecommendations": "For less memory, enable saving, show fewer Continue watching cards and use smaller wallpapers or a gradient.",
+    "memoryMeasurementFailed": "Process measurement is unavailable. Cache information is still shown.",
+    "addToCategory": "Add to Category",
+    "addToFavorites": "Add to Fav",
+    "removeFromFavorites": "Remove from Fav",
+    "setCustomBanner": "Set Custom Banner",
+    "clearCustomBanner": "Clear Custom Banner",
+    "bannerSetFailed": "Could not set the banner. Check access to the image and select the file again.",
+
+    "bannerClearFailed": "Could not remove the custom banner. Try again.",
+
+    "grantUsagePermission": "Grant Usage Permission",
+    "removeFromContinueWatching": "Remove from Continue Watching",
+    "hideAllFromApp": "Hide all from {appName}",
+    "@hideAllFromApp": {
+        "placeholders": {
+            "appName": {
+                "type": "String"
+            }
+        }
+    },
+    "playResume": "Play / Resume",
+    "openNamedApp": "Open {appName}",
+    "@openNamedApp": {
+        "placeholders": {
+            "appName": {
+                "type": "String"
+            }
+        }
+    },
+    "selectedAccent": "Selected Accent",
+    "homeButtonFixHint": "If you are using Google TV, enable \"Home Button Fix\" under Accessibility settings to make the Home button open this launcher.",
+    "accessibilityPermission": "Accessibility Permission",
+    "shareFailed": "Share Failed",
+    "shareBackupError": "Failed to share backup: {error}",
+    "@shareBackupError": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "exportComplete": "Export Success",
+    "exportFailed": "Could not save the backup. Check folder access and available storage.",
+    "backupLoadError": "Error loading backups: {error}",
+    "@backupLoadError": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "noBackupFiles": "No backup files found.",
+    "importComplete": "Import Success",
+    "importFailed": "Import Failed",
+    "importAction": "Import",
+    "continueWatchingApps": "Continue Watching Apps",
+    "blockedContinueWatching": "Blocked from Continue Watching",
+    "allAppsCanContinueWatching": "All supported apps can show items in Continue Watching.",
+    "unblockApp": "Unblock",
+    "unblockAllApps": "Unblock All Apps",
+    "appsWithContinueWatching": "Apps with Continue Watching",
+    "watchNextAppsHint": "Apps currently providing Watch Next items on your home screen",
+    "noWatchNextApps": "No apps are currently providing Continue Watching items.\nWhen supported apps (such as SmartTube or streaming services) add items, they will appear here.",
+    "allInstalledApps": "All Installed Apps",
+    "blockWatchNextHint": "Toggle off to block any app from adding items to Continue Watching",
+    "cardSize": "Card Size",
+    "maximumItems": "Maximum Items",
+    "playbackProgressBar": "Playback Progress Bar",
+    "playbackPercentage": "Playback Percentage",
+    "episodeVideoDetails": "Episode & Video Details",
+    "restoreHiddenPrograms": "Restore Hidden Programs",
+    "allHiddenProgramsRestored": "All hidden programs restored",
+    "watchNextAccessAdb": "Watch Next Access (ADB Required)",
+    "supportLtvLauncher": "Support LTvLauncher",
+    "scanToDonate": "Scan with your phone camera to donate:",
+    "openInBrowser": "Open in Browser",
+    "close": "Close",
+    "launcherAuthor": "CuteLauncher by Kirill Shchetinnikov",
+    "launcherCredits": "Android TV launcher based on LTvLauncher by LeanBitLab and FLauncher by Étienne Fesser. Licensed under GNU GPLv3.",
+    "projectCredits": "Project & Credits",
+    "launcherRepository": "CuteLauncher Repository",
+    "originalProject": "Original project: LTvLauncher",
+    "noInputsDetected": "No inputs detected",
+    "reorderSectionsHint": "Select with ◄ / ► then use ▲ / ▼ to reorder. Cross the list boundary to hide or show a section.",
+    "customName": "Custom Name",
+    "mostUsed": "Launch frequency",
+    "lastUsed": "Last Used",
+    "clearAll": "Clear All",
+    "allCaughtUp": "All caught up!",
+    "notificationAccessAdb": "Notification Access (ADB Required)",
+    "openAppInfo": "Open App Info",
+    "overlayPermission": "Overlay Permission",
+    "clockMinimal": "Minimal",
+    "clockMinimalDescription": "Thin, elegant font (Default)",
+    "clockBold": "Bold",
+    "clockBoldDescription": "Thick, highly visible font",
+    "clockRetro": "Retro",
+    "clockRetroDescription": "Monospaced, retro terminal style",
+    "clockElegant": "Elegant",
+    "clockElegantDescription": "Classic serif typeface",
+    "clockNeon": "Neon",
+    "clockNeonDescription": "Ultra-thin, glowing style",
+    "clockPixel": "Pixel",
+    "clockPixelDescription": "Bold monospaced, arcade feel",
+    "clockDigital": "Digital",
+    "clockDigitalDescription": "Clean monospaced display",
+    "themeDefault": "Default",
+    "themePremium": "Premium",
+    "themeClassic": "Classic",
+    "themeCapsule": "Capsule",
+    "cancel": "Cancel",
+    "actionCancelled": "Action cancelled",
+    "ok": "OK",
+    "accessibilityGuide": "Open the TV settings manually, then Accessibility → CuteLauncher Home Button Fix, and enable the service. The location and name of this menu depend on your TV manufacturer.",
+    "notificationPermissionGuide": "The notification access settings could not be opened on this TV. Allowing outgoing notifications in App Info does not grant access to notifications from other apps.\n\nConnect your TV via ADB and run:",
+    "overlayPermissionGuide": "The overlay permission settings could not be opened automatically.\n\nTo enable popups over other apps, connect your TV via ADB and run:",
+    "watchNextPermissionGuide": "To read Continue Watching cards from other apps, Android TV requires READ_WRITE_WATCH_NEXT_PROGRAMS.\n\nConnect your TV via ADB and run:",
+    "watchNextAccess": "Continue Watching access",
+    "itemsCount": "{count} items",
+    "@itemsCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "displayUpToItems": "Display up to {count} recent items",
+    "@displayUpToItems": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "unlimitedItems": "Unlimited",
+    "allAvailableItems": "Display all available items",
+    "defaultOption": "Default",
+    "manage": "Manage",
+    "blockedCount": "{count} blocked",
+    "@blockedCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "hiddenCount": "{count} hidden",
+    "@hiddenCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "blockedWatchNextCount": "Blocked from Continue Watching ({count})",
+    "@blockedWatchNextCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "sizeExtraSmall": "Extra Small",
+    "sizeVerySmall": "Very Small",
+    "sizeSmall": "Small",
+    "sizeCompact": "Compact",
+    "sizeMediumSmall": "Medium Small",
+    "sizeMedium": "Medium",
+    "sizeStandardDefault": "Standard (Default)",
+    "sizeMediumLarge": "Medium Large",
+    "sizeLarge": "Large",
+    "sizeVeryLarge": "Very Large",
+    "sizeExtraLarge": "Extra Large",
+    "sizeHuge": "Huge",
+    "tvApps": "TV Apps",
+    "nonTvApps": "Non-TV Apps",
+    "moviesShows": "Movies & Shows",
+    "music": "Music",
+    "games": "Games",
+    "entertainment": "Entertainment",
+    "liveTv": "Live TV",
+    "sports": "Sports",
+    "news": "News",
+    "tools": "Tools",
+    "favorites": "Favorites",
+    "customSectionName": "Custom...",
+    "selectSectionName": "Select a name",
+    "weeklyUsage": "Weekly: ",
+    "monthlyUsage": "Monthly: ",
+    "dailyUsage": "Daily: ",
+    "appError": "Something went wrong",
+    "weatherRain": "Rain",
+    "weatherSnow": "Snow",
+    "weatherStorm": "Storm",
+    "weatherToday": "today",
+    "weatherTomorrow": "tomorrow",
+    "weatherOnDay": "on {day}",
+    "@weatherOnDay": {
+        "placeholders": {
+            "day": {
+                "type": "String"
+            }
+        }
+    },
+    "weatherWarning": "{probability}{condition} {day}",
+    "@weatherWarning": {
+        "placeholders": {
+            "probability": {
+                "type": "String"
+            },
+            "condition": {
+                "type": "String"
+            },
+            "day": {
+                "type": "String"
+            }
+        }
+    },
+    "backupShareTitle": "CuteLauncher Backup",
+    "noApplicationsFound": "No applications found",
+    "invalidDateFormat": "Invalid format",
+    "selectDateFormats": "Select formats below",
+    "activeItemsCount": "{count} active item(s)",
+    "@activeItemsCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "colorPurple": "Purple",
+    "colorTeal": "Teal",
+    "colorBlue": "Blue",
+    "colorOrange": "Orange",
+    "colorPink": "Pink",
+    "colorGreen": "Green",
+    "colorWhite": "White",
+    "colorYellow": "Yellow",
+    "colorRed": "Red",
+    "colorCyan": "Cyan",
+    "colorIndigo": "Indigo",
+    "colorLime": "Lime",
+    "colorAmber": "Amber",
+    "colorRose": "Rose",
+    "colorIceBlue": "Ice Blue",
+    "memoryFeatures": "Memory by feature (caches)",
+    "memoryAppIcons": "App icons",
+    "memoryAppBanners": "App banners",
+    "memoryWatchNextPosters": "Continue Watching posters",
+    "memoryOtherCaches": "Other encoded image caches",
+    "memoryFeaturesExplanation": "These are retained image bytes, already included in the encoded cache total. Zero means no retained bytes in that cache, not that the feature uses no memory. Wallpapers and displayed images share the decoded cache above; active images may be outside it. Weather, notifications, Dart objects and the engine cannot be split by feature here. Shared interface graphics are reported above by Android and already included in PSS. Their memory is part of the process total. Do not add these overlapping values.",
+    "memoryGraphics": "Interface graphics (included in PSS)"
+,"categoryVisible":"Show category","hiddenCategories":"Hidden categories","visibleCategories":"Visible categories","backupSavedToSelectedLocation":"Backup saved to the selected location","tileHorizontalGap":"Horizontal spacing","tileVerticalGap":"Vertical spacing","tileOpacity":"Background opacity","tileShadow":"Shadow","tileCornerRadius":"Corner rounding","tileIconScale":"Icon size","tileBackgroundColor":"Tile background","tileLabelSize":"Label size","resetAppearance":"Reset appearance","tileAppearance":"Tile appearance","tileLabelColor":"Label color","tilePreviewName":"Sample application","tileProportions":"Tile proportions","tileLarge":"Large","tileLabelBelow":"Below the tile","tileLabelInside":"Inside the tile","tileFocusScale":"Enlarge","tileMedium":"Medium","tileFocusBorder":"No movement","tileSize":"Tile size","tileCompact":"Compact","tileLabelPosition":"Label position","tileFocusEffect":"Focus effect","tileFocusStrength":"Highlight intensity","panelIndependent":"Custom settings","panelAppearance":"Top panel style","panelBackground":"Panel background","blurPerformanceHint":"Blur may reduce smoothness. It is disabled while memory saving is on.","panelOpacity":"Panel opacity","tileBlur":"Blur behind tiles","panelBlur":"Blur behind top panel","panelShared":"Like panels","weatherMinutes":"min","weatherOpenMeteoCredit":"Weather: Open-Meteo (open-meteo.com), CC BY 4.0. Free API for non-commercial use.","weatherRateLimit":"Request limit reached. Try later.","weatherYandexCredit":"Weather: Yandex Weather (yandex.ru/pogoda). Access depends on your API plan.","yandexWeather":"Yandex Weather (REST)","weatherAuthorizationError": "The weather provider rejected the request. Check the API key and access to the selected service.","weatherYandexHint":"Requires a key with REST forecast access. A key for another Yandex plan may not work.","weatherSource":"Weather source","weatherInterval":"Update interval","weatherLongitude":"Longitude (-180 to 180)","weatherKeyRequired":"Add a Yandex API key.","weatherLocationName":"City name (optional)","weatherLocation":"Location","weatherApiKey":"Yandex API key","weatherInvalidResponse":"The weather source returned invalid data.","weatherUnavailable":"Weather is unavailable. Previously received data is retained if available. Retries are limited to once every 5 minutes.","weatherStale":"Previous weather","weatherLatitude":"Latitude (-90 to 90)","weatherCoordinatesError":"Enter a city manually or get coordinates automatically.","weatherRefresh":"Check for updates","weatherKeyPrivate":"Stored only on this device, excluded from backups. Empty input removes the key.","weatherUpdated":"Updated","onlineWallpaperError":"Unable to load this image. Previous wallpaper is retained. Select “Check for updates” to retry the download.","onlineWallpaperHint":"The last image is kept offline (up to 8 MiB).","onlineWallpaperHours":"h","onlineWallpaperInterval":"Download interval","onlineWallpaper":"Online wallpaper","onlineWallpaperUrlError":"Enter a direct HTTPS image URL without login details.","onlineWallpaperEnabled":"Use online wallpaper","onlineWallpaperSource":"Image source","bingWallpaper":"Bing image of the day","onlineWallpaperUrlSource":"Direct HTTPS URL","updatePlayOnly":"This installation receives updates through Google Play.","updateCheck":"Check now","updateInstalled":"Installed","updateDownloadInstall":"Download and install","updateNoRelease":"No newer compatible release is available.","updateIncompatible":"The APK does not match this application, certificate or a newer version. Installation was blocked.","updateError":"Unable to check, download or open the installer. Try again later.","updateAvailable":"Update available","appUpdates":"Application updates","updatePermission":"Allow installation from this application in Android settings, return here and press Install again.","updateInstall":"Install downloaded update","updateHint":"Source: GitHub / KirillShchetinnikov/CuteLauncher-Releases. Automatic checks run while the launcher is open. Download starts when you choose it; Android asks you to confirm installation. Your data is kept.","updateAutomatic":"Check automatically once a day",
+  "allApplications": "All applications"
+,
+  "adbAccessibility": "Enable Home Button Fix",
+  "adbAuthorization": "Approve ADB authorization on the TV, then try again.",
+  "adbChangeConfirm": "Apply this system setting through ADB? The previous Home app is saved before changing it; other accessibility services are preserved.",
+  "adbCheck": "Check connection",
+  "adbDenied": "The system did not allow or confirm this change.",
+  "adbDisable": "Disable the previous launcher",
+  "adbDisableConfirm": "Disable the saved previous launcher? This requires CuteLauncher to be the current Home app. Restore it with the recovery action in this setup.",
+  "adbHint": "Prototype for this TV only (127.0.0.1). Enable TCP ADB in developer options, enter its port and approve the authorization prompt on the TV. Wireless debugging with a pairing code is not supported yet. The private key stays on this device, outside backups.",
+  "adbHome": "Make CuteLauncher the Home app",
+  "adbInvalid": "Enter a port between 1024 and 65535.",
+  "adbNoRecovery": "Restoration is unavailable: no other launcher or saved service state was found.",
+  "adbPort": "TCP ADB port",
+  "adbReady": "ADB access confirmed.",
+  "adbRestore": "Restore the previous launcher",
+  "adbSuccess": "Change applied and verified.",
+  "adbTitle": "ADB setup",
+  "adbUnavailable": "Unable to connect. Check TCP ADB, the port and the authorization prompt."
+,
+  "nightModeScheduled": "Use schedule",
+  "nightModeTitle": "Night mode",
+  "nightModeScope": "Overlay permission is needed to dim other apps. Without it, dimming works inside CuteLauncher. The TCL filter needs no overlay permission. Above 80% opacity Android may block touch input in other apps; TV remote keys still work.",
+  "nightModeEnd": "End",
+  "nightModeStart": "Start",
+  "nightModeDim": "Dimming",
+  "nightModeWarmth": "Warm filter",
+  "nightModeScheduleHint": "Uses local TV time. Overnight periods are supported. Equal start and end times disable the scheduled filter.",
+  "nightModeEnabled": "Enable night mode"
+,
+  "nightModePermission": "Allow display over other apps",
+  "nightModePermissionGranted": "Display over other apps allowed"
+,
+  "backupDownloadsFailed": "Could not save the backup to Downloads.",
+  "backupSaveDownloads": "Save backup to Downloads"
+,
+  "adbRestoreAccessibility": "Restore accessibility access"
+,
+  "nightModeAdbConfirm": "Allow CuteLauncher to display over other apps using local ADB? Enable TCP debugging first and authorize the connection. Uses the port saved in the ADB wizard, or 5555.",
+  "nightModeAdbPermission": "Grant permission through ADB",
+  "nightModeNotificationsHint":"The notification lets you turn the filter off outside CuteLauncher. Without it, use this menu.","nightModeNotificationsAllowed":"Night mode notification allowed","nightModeNotifications":"Allow night mode notification",
+  "categoryLastVisibleHint":"At least one category must remain visible.",
+"diagnosticsClear": "Clear report",
+  "diagnosticsReady": "Report ready",
+  "diagnosticsCreate": "Create report",
+  "diagnosticsOperations": "Recorded operations",
+  "diagnosticsCopied": "Report copied",
+  "diagnosticsHint": "The report contains the app version, permission state, memory usage and operation results. It excludes keys, addresses, file paths, app lists and notification content. Only the last 50 operations are kept in memory until the app restarts. Nothing is sent automatically.",
+  "diagnosticsTitle": "Error diagnostics",
+  "diagnosticsCopyFailed": "Could not copy the report.",
+  "diagnosticsCopy": "Copy report",
+  "diagnosticsCreating": "Creating report…",
+"tclBlueLightTitle": "TCL blue light filter",
+  "tclBlueLightError": "Could not read or verify the TCL filter setting. Refresh its state and try again.",
+  "tclBlueLightUnsupported": "The TCL filter interface is unavailable on this TV.",
+  "tclBlueLightRefresh": "Refresh TCL filter state",
+  "tclBlueLightHint": "Controls the built-in Eye Health Protection filter of the TV. It can also follow the night mode schedule.",
+"nightSolarSchedule": "Sunset and sunrise",
+  "nightNextStart": "Next start",
+  "nightScheduleTimeHint": "Times use the TV time zone. Negative offsets are earlier; positive offsets are later.",
+  "nightTemperature": "Filter color temperature",
+  "nightScheduleSettings": "Schedule settings",
+  "nightCityName": "City name",
+  "nightSkipUntilNext": "Disable night mode until the next sunset",
+  "nightSunriseOffset": "End relative to sunrise",
+  "nightEnableUntilMorning": "Enable night mode until the next sunrise",
+  "nightPermissions": "Permissions",
+  "nightTclSchedule": "Include TCL filter in schedule",
+  "nightSearchCity": "Search",
+  "nightRefreshSun": "Refresh sunrise and sunset",
+  "nightSolarUnavailable": "Choose a city and refresh sun times. If sunrise or sunset is unavailable, the solar schedule pauses.",
+  "nightSunsetOffset": "Start relative to sunset",
+  "nightCityHint": "Choose your city instead of granting location access. The selected coordinates are sent to Sunrise-Sunset.org, or Open-Meteo as a fallback, to retrieve sun times.",
+  "nightResumeSchedule": "Return to schedule",
+  "nightScheduleSource": "Schedule type",
+  "nightSolarCached": "Using cached sun times; internet refresh will retry automatically.",
+  "nightTclScheduleHint": "Uses the same schedule while night mode is enabled. Manual changes to the TCL filter last until the next scheduled transition. No overlay permission is needed.",
+  "nightRefreshPermission": "Refresh permission status",
+  "nightCityNotFound": "No cities found. Try another name.",
+  "nightNoOffset": "No offset",
+  "nightManualSchedule": "Custom schedule",
+  "nightChooseCity": "Choose city",
+  "nightPermissionUnknown": "Overlay permission status is unknown",
+  "nightNextEnd": "Next end",
+  "nightTemporaryOff": "Dimming temporarily off until",
+  "nightCitySearchFailed": "Could not search for cities. Check your internet connection.",
+  "nightSolarAttribution": "Daily sun times: Sunrise-Sunset.org; fallback: Open-Meteo. City search: GeoNames. Several days are cached for offline use.",
+  "nightTemporaryOn": "Dimming temporarily on until",
+  "homeScreen": "Home screen",
+  "appearanceSettings": "Appearance",
+  "generalSettings": "Advanced",
+  "advancedSettings": "Advanced",
+  "controlAndStartup": "Launcher and TV controls",
+  "sectionsAndOrder": "Sections and order",
+  "topPanel": "Top panel",
+  "tileStyle": "Tile style",
+  "tilesAndLabels": "Tiles and labels",
+  "highlightAndAnimation": "Highlight and animation",
+  "androidTvSettings": "Android TV settings",
+  "weatherSettings": "Weather settings",
+  "showHighlightOutline": "Show highlight outline",
+  "resetTilesAndPanel": "Reset tile and panel settings",
+  "resetTilesAndPanelHint": "Reset additional tile, label, highlight and top panel parameters? Wallpaper, accent color, tile style and label visibility are preserved.",
+  "panelAppearanceSettings": "Top panel appearance",
+  "panelSharedHint": "Change the appearance in tile settings.",
+  "effectsCompatibilityHint": "Additional appearance: the outline is always visible and does not pulse. Dimensional style has no legacy outline; classic does not pulse. Intensity affects scale and shadow; scaling is space-limited.",
+  "sizeAndLayout": "Size and layout",
+  "labelsGroup": "Labels",
+  "surfaceGroup": "Surface",
+  "clockAndDateGroup": "Clock and date",
+  "networkAndTrafficGroup": "Network and traffic",
+  "buttonsGroup": "Buttons",
+  "notificationAppsHint": "Turn off apps whose notifications you do not need. An enabled switch allows notifications; the app can still be launched.",
+  "notificationPanelLink": "Top panel appearance",
+  "overlayAccessAdb": "Display over other apps (ADB)",
+  "tileStyleModern": "Modern",
+  "tileStyleVolume": "Dimensional",
+  "showTime": "Show time",
+  "showDate": "Show date",
+  "showWeather": "Show weather",
+  "showNetwork": "Show network status",
+  "showTraffic": "Show traffic",
+  "scheduledBrightness": "Scheduled brightness",
+  "followTileStyle": "Follow style",
+  "androidTvSettingsHint": "Open the TV system settings",
+  "autoHideTopPanel": "Automatically hide the panel",
+  "showSectionTitles": "Show section titles",
+  "usageDaily": "Daily",
+  "usageWeekly": "Weekly",
+  "usageMonthly": "Monthly",
+  "onlineWallpaperAddress": "Image address (HTTPS)",
+  "watchNextAppLimits": "Limits per app",
+  "watchNextAppLimitsHint": "Source limits apply before the overall limit. Unlimited keeps only the overall limit; hidden content stays hidden.",
+  "rememberCategoryFocus": "Remember last focused card",
+  "automaticBackups": "Automatic backup",
+  "automaticBackupsHint": "Daily copies of settings, wallpapers and banners while the launcher is active. A missed copy runs after returning to the launcher. Stored privately on this device, up to 256 MiB total; removing the app or its data deletes them. Keep an external backup too.",
+  "automaticBackupsEnabled": "Daily automatic backup",
+  "automaticBackupsKeep": "Copies to keep",
+  "automaticBackupCreateNow": "Create a restore point now",
+  "automaticBackupFailed": "Backup operation failed. Check free space and try again.",
+  "restorePoints": "Restore points",
+  "noRestorePoints": "No restore points yet",
+  "updatePrereleases": "Update to prereleases"
+,
+  "topPanelObjects": "Objects",
+
+  "panelTransparency": "Panel transparency",
+  "panelTextBackground": "Text and button background",
+  "panelTextBackgroundColor": "Text and button background color",
+  "panelTextColor": "Text and button color",
+  "panelTextSize": "Text and button size",
+  "panelFont": "Text font",
+  "fontSans": "Sans serif",
+  "fontSerif": "Serif",
+  "fontMono": "Monospace",
+  "fontCondensed": "Condensed",
+  "trafficPermissionGranted": "Traffic statistics access granted"
+,
+"background": "Background"
+,
+"backgroundParameters": "Parameters"
+,
+"resetAppearanceHint": "Reset background, accent, tiles, labels, highlighting and animation?"
+,
+"wallpaperDimming":"Dimming","wallpaperPlacement":"Placement","wallpaperDisplay":"Wallpaper display","wallpaperContain":"Show whole image","wallpaperBlurred":"Over blurred copy","wallpaperCover":"Fill screen","wallpaperBrightness":"Wallpaper brightness","wallpaperSaturation":"Saturation"
+,
+"categoryPadding":"Category padding","categoryLight":"Light","categoryBlue":"Blue","categoryPurple":"Purple","categoryAllRows":"All","categoryTeal":"Teal","categoryMaxRows":"Visible grid rows","categoryDark":"Dark","categoryAppearance":"Category appearance","categoryBackground":"Category background","categoryTransparent":"Transparent"
+,
+"slideshowInterval":"Change interval","slideshowFolderSelected":"Folder access saved on this device.","slideshowRandom":"Random order","wallpaperSlideshow":"Folder slideshow","slideshowNext":"Next image","slideshowFolderRequired":"Choose a folder to start the slideshow.","slideshowHint":"Up to 1,000 images and 4,000 folder entries; files up to 8 MiB. Corrupt files are skipped and the last good image is retained. Changes stop in the background. Choose the folder again after restoring on another device.","slideshowSeconds":"s","slideshowError":"Unable to read images. Choose an accessible folder containing valid images.","slideshowFolder":"Choose folder","slideshowRecursive":"Include subfolders"
+,"weatherSourceKeyRequired":"Add an API key for this weather source.","weatherOpenWeatherCredit":"Weather: OpenWeather (openweathermap.org). Daily values summarize the available three-hour forecast periods.","weatherOpenWeatherHint":"Use your key for Current Weather and 5 day / 3 hour Forecast. Each update makes two requests; access and limits depend on your plan.","weatherOpenWeatherKey":"OpenWeather API key"
+,"mediaPause":"Pause","showNowPlaying":"Show Now playing on Home","nowPlayingAccessHint":"Media controls require notification access for CuteLauncher. Only actions provided by the player are shown.","nowPlaying":"Now playing","mediaNext":"Next track","mediaPlay":"Resume","mediaControlError":"The player is unavailable or did not accept this action."
+,"nightUsageAccess":"Allow usage access"
+,"nightExcludedAppsHint":"The overlay and scheduled TCL filter pause in selected apps. Usage access is required; without it, exclusions cannot be applied."
+,"nightExcludedApps":"Excluded apps"
+,"adbPairPort":"Pairing port"
+,"adbPairOverlayHint":"Open Wireless debugging and Pair with pairing code. Keep the system code dialog open. This form becomes active after 30 seconds. Enter both ports and the code shown by Android."
+,"adbOverlaySettings":"Return control to Settings for 30 seconds"
+,"adbTlsHint":"Use Wireless debugging in Developer options. Pairing and connection have different ports. If your firmware has no pairing-code screen or blocks overlay windows, use TCP / RSA instead. All connections remain local to this TV."
+,"adbPaired":"Paired. Check the connection using the Wireless debugging connection port."
+,"adbTransport":"Connection method"
+,"adbPairCode":"Six-digit code"
+,"adbOverlayRequired":"Code entry over Settings requires permission to display over other apps."
+,"adbOverlayPermission":"Allow display over other apps"
+,"adbTlsUnsupported":"This firmware cannot open the required Settings screen or pairing overlay. Use TCP / RSA."
+,"adbConnectPort":"Connection port"
+,"adbTls":"TLS / pairing code"
+,"adbTcp":"TCP / RSA"
+,"adbPairingFailed":"Pairing failed. Check the code and pairing port, keep the Android code dialog open, and try again."
+,"adbTlsDisabled":"Wireless debugging is disabled or its state is unavailable. Enable it in Developer options."
+,"adbPairOverlay":"Enter pairing code over Settings"
+,"adbPair":"Pair"
+,"adbDeveloperSettings":"Open Developer options"
+,"adbTwoWindowsHint":"If this firmware supports two windows, keep the system pairing dialog open beside CuteLauncher and enter its code here. Direct pairing is available only while both windows are open."
+,"adbTwoWindows":"Open Settings in a second window"
+,"autoLaunchBoot":"After TV boot"
+,"autoLaunchOff":"Disabled"
+,"autoLaunchTitle":"Autostart"
+,"autoLaunchDelay":"Launch delay"
+,"autoLaunchHdmi":"Switch to a selected HDMI input"
+,"autoLaunchWake":"After wake"
+,"autoLaunchHint":"Choose an app or HDMI input to open after TV startup or wake. Set the event and delay below. The action runs once when Android shows CuteLauncher. Any remote input or leaving the home screen cancels the wait. You can freely change HDMI inputs afterward. Set CuteLauncher as the default launcher or enable Start on boot if needed. Wake detection requires CuteLauncher to remain running."
+,"autoLaunchSeconds":"{seconds} seconds"
+,"autoLaunchApp":"Open a selected app"
+,"autoLaunchTarget":"Launch target"
+,"autoLaunchUnavailable":"The target is unavailable or the firmware does not allow this action."
+,"autoLaunchCancelled":"Delayed launch cancelled."
+,"@autoLaunchSeconds":{"placeholders":{"seconds":{"type":"int"}}}
+,"syncTitle":"Exchange settings"
+,"syncHint":"Save a settings file, transfer it to another device and open it there. Exchange the file back to bring both devices up to date. Interface, tile style and display preferences are shared. Apps, sections, wallpaper files, permissions, HOME, launch rules and secrets stay on this device. This is manual exchange; no account or background network connection is used."
+,"syncExport":"Save changes to a file"
+,"syncImport":"Open changes from another device"
+,"syncSaved":"Settings exchange file saved."
+,"syncFailed":"Unable to exchange settings. No partial import is kept. Check the file or open it again if settings changed during review."
+,"syncPreviewHint":"Review changes before applying. For conflicts, select each row to choose this device or the file. Keeping this device is selected initially. Cancel leaves settings unchanged."
+,"syncNoChanges":"No new settings. Apply to acknowledge the shared history."
+,"syncLocalValue":"This device: {value}"
+,"@syncLocalValue":{"placeholders":{"value":{"type":"String"}}}
+,"syncFileValue":"From file: {value}"
+,"@syncFileValue":{"placeholders":{"value":{"type":"String"}}}
+,"syncKeepLocal":"Conflict: keep this device"
+,"syncUseFile":"Conflict: use the file"
+,"syncApply":"Apply reviewed changes"
+,"syncApplied":"Settings exchanged. Save a new file to send the result back."
+,"syncStyleParameters":"Custom style: {count} parameters (differences below)"
+,"@syncStyleParameters":{"placeholders":{"count":{"type":"int"}}},
+"cloudBackups":"Cloud backups",
+"cloudHelp":"WebDAV / Nextcloud. Enter the HTTPS address of an existing folder and an app password. Transfers are manual; this folder stores the latest copy.",
+"cloudUrl":"Folder HTTPS address",
+"cloudUser":"Username",
+"cloudPassword":"App password",
+"cloudConnect":"Check and save account",
+"cloudCheck":"Check connection",
+"cloudDisconnect":"Disconnect account",
+"cloudDisconnectConfirm":"Remove this account from the TV? Copies in the cloud will remain.",
+"cloudUpload":"Save a copy to the cloud",
+"cloudDownload":"Restore from the cloud",
+"cloudUploadConfirm":"Replace cutelauncher_backup.json in this folder with the current settings and data?",
+"cloudSuccess":"Done",
+"cloudConfigurationError":"Check the HTTPS folder address, username and app password.",
+"cloudAuthorizationError":"Access denied. Check your account and folder permissions.",
+"cloudMissingError":"The folder or backup was not found.",
+"cloudUnsupportedError":"This address does not support the required WebDAV operations. Redirects are not followed; enter the final folder address.",
+"cloudNetworkError":"Connection failed or timed out. Try again when the network is available.",
+"cloudFailed": "Could not complete the backup action. Check storage access and try again.",
+"cloudStorageError":"Account storage is unavailable. Disconnect and configure the account again.",
+  "adbPermissionChecking": "Checking access…",
+  "adbPermissionConnected": "ADB connected · grant permission",
+  "adbPermissionDisconnected": "ADB disconnected · set up connection",
+  "adbSetupIntro": "Enable debugging and network ADB in the TV developer settings, then trust CuteLauncher. All ADB actions are at your own risk.",
+  "adbConnectionBlock": "ADB connection",
+  "adbNotChecked": "Connection not checked",
+  "adbApplied": "Already applied",
+  "adbNotApplied": "Not applied yet",
+  "adbDefaultBlock": "Default launcher",
+  "adbSystemDefault": "Open system default launcher setting",
+  "adbAssignDefault": "Set CuteLauncher as default launcher via ADB",
+  "adbRestoreDefault": "Restore the previous default launcher via ADB",
+  "adbDefaultHint": "Use ADB if the system menu cannot set the default launcher.",
+  "adbBuiltinHint": "Disabling the built-in launcher lets the system open CuteLauncher instead. TV menus and buttons may be affected. Enable the built-in launcher to undo this.",
+  "adbHomeBlock": "Home button and startup",
+  "adbEnableService": "Enable CuteLauncher accessibility service via ADB",
+  "adbHomeOverride": "Override the Home button",
+  "adbHomeOptional": "If the built-in launcher is disabled, overriding Home and launching at TV startup are optional.",
+  "adbEnableBuiltin": "Enable built-in launcher via ADB",
+  "adbDisableBuiltin": "Disable built-in launcher via ADB",
+  "adbNoBuiltin": "No built-in Google TV / Android TV launchers found.",
+  "adbChanged": "State changed. Check the connection and confirm the action again.",
+  "adbEffectHome": "CuteLauncher will become the system default launcher. The current launcher will be saved for restoration.",
+  "adbEffectRestore": "The previous launcher will be enabled and made default. If unavailable or not saved, the first available other launcher is selected. This does not disable Home Button Fix.",
+  "adbEffectDisable": "The built-in launcher app will be disabled for the TV user. TV menus and buttons may stop working. The app is not uninstalled.",
+  "adbRecoveryHomeDisable": "The entire Google TV setup wizard, including its recovery home screen, will also be disabled so that CuteLauncher can become the default launcher. Setup wizard features will be unavailable until restoration. The original states of both packages will be saved for restoration.",
+  "adbRecoveryHomeRestore": "The Google TV setup wizard will also return to its saved state.",
+  "adbDisableHomeUnavailable": "Another home screen has a higher priority. It cannot be disabled safely by this launcher.",
+  "adbEffectEnable": "The built-in launcher will be restored to its saved state, or enabled if no state was saved. The system may select it as the default launcher again.",
+  "adbEffectAccessibility": "CuteLauncher accessibility service will be enabled. It can receive Home events; interception is controlled by a separate switch. Other services are preserved.",
+  "adbEffectAccessibilityRestore": "CuteLauncher service will return to its state before ADB access was granted. Other accessibility services are preserved.",
+  "adbEffectOverlay": "CuteLauncher will be allowed to display windows over other apps, including the night filter.",
+  "adbEffectNotifications": "CuteLauncher will receive notification access through its own listener service.",
+  "adbEffectWatchNext": "CuteLauncher will receive access to Continue watching data.",
+  "adbEffectUsage": "CuteLauncher will receive usage statistics access for traffic and foreground app detection.",
+  "adbEffectWriteSettings": "CuteLauncher will be allowed to change system brightness settings.",
+  "adbNoAvailableLauncher": "No other installed launchers were found. Restoration is unavailable.",
+  "adbUnsupported": "Unavailable on this device: no supported ADB command.",
+  "adbHomeUnavailable": "The built-in launcher has system priority. Direct assignment through ADB is unavailable; use accessibility or disable the built-in launcher.",
+  "nightBatteryExempt": "CuteLauncher is exempt from optimization",
+  "nightBatteryHint": "May help the schedule run in the background. Does not guarantee the process survives standby.",
+  "nightBatteryOptimized": "CuteLauncher is subject to optimization",
+  "nightBatteryTitle": "Battery optimization",
+  "nightBatteryUnavailable": "System settings are unavailable on this firmware or access was denied.",
+  "nightBatteryUnknown": "Exemption status unknown",
+  "nightBatteryOpenApps": "Open Apps settings",
+  "nightBatteryGuide": "1. In Apps settings, open Special app access.\n2. Select Battery optimization (sometimes Energy saver).\n3. Find CuteLauncher; select All apps if needed.\n4. Disable optimization or select Unrestricted.\nMenu names and availability depend on the TV firmware.",
+  "updateNotifications": "Show update notifications",
+  "diagnosticsSave": "Save report to file",
+  "diagnosticsSaved": "Report saved",
+  "diagnosticsSaveFailed": "Could not save the report. Check the file manager and destination folder.",
+    "memoryCacheSize": "Image cache size",
+    "memoryProcess": "App memory",
+    "memoryImages": "Image caches",
+  "diagnosticsExportOpened": "Choose a folder in the file manager and save the report."
+,
+  "adbDisableService": "Disable CuteLauncher accessibility service via ADB",
+  "adbDefaultSettings": "Default launcher settings",
+  "adbHomeSettings": "Home button settings",
+  "adbAccessibilitySettings": "Open accessibility settings",
+  "adbAccessibilityGuide": "Select CuteLauncher in the system menu and enable its service. Return here to configure Home interception. To disable it, turn off the CuteLauncher service in the same menu."
+,
+  "adbEffectAccessibilityDisable": "The CuteLauncher service will be disabled. Home interception will stop. Other accessibility services are preserved."
+,
+  "backupAutoEnabled": "Automatic backup",
+  "backupClientId": "Client ID",
+  "backupClientSecret": "Client Secret",
+  "backupCloudImportConfirm": "All local settings, categories and images will be replaced with cloud data. Continue?",
+  "backupConfigured": "Configured",
+  "backupConnection": "Connection settings",
+  "backupCreated": "Created",
+  "backupDaily": "Daily",
+  "backupDriveHelp": "Select Connect and confirm the code on your phone. Backups are visible in the CuteLauncher folder in Google Drive, where you can download or delete them. Keep file names unchanged for in-app restore. Reconnect after upgrading from hidden backups; old backups are not migrated automatically.",
+  "backupFrequency": "Backup frequency",
+  "backupHourly": "Hourly",
+  "backupLocal": "Local copies",
+  "backupMinutes": "min",
+  "backupMode": "Mode",
+  "backupNever": "No backup yet",
+  "backupNotConfigured": "Not configured",
+  "backupOptions": "Backup options",
+  "backupSaveMode": "Backup",
+  "backupScope": "Backup across TVs",
+  "backupSyncScope": "Synchronization across TVs",
+  "backupSeparate": "Separate for each TV",
+  "backupShared": "Same settings for all TVs",
+  "backupStorage": "Storage",
+  "backupSyncHelp": "Download data and upload changes. The latest change wins conflicts. TV clocks must be correct. Synchronization runs while the launcher is open.",
+  "backupSyncLimit": "Check no more often than",
+  "backupSyncMode": "Synchronization",
+  "backupSyncOptions": "Synchronization options",
+  "backupTime": "Backup time",
+  "backupWeekday": "Day of week",
+  "backupWeekly": "Weekly"
+,
+  "backupGoogleDrive": "Google Drive",
+  "backupLocalHelp": "Local copies are deleted with the app or its data. Keep a copy outside the TV too."
+,
+  "panelObjectOrder": "Object order",
+  "panelInformationGroup": "Information",
+  "panelOrderHint": "◄ / ► selects or finishes moving; ▲ / ▼ reorders objects and moves them between sides at group boundaries; OK / Back finishes moving.",
+  "panelTextBackgroundTransparency": "Text and button background transparency",
+  "weatherCityHint": "Enter the city name in English, for example Moscow.",
+  "weatherCityNotFound": "City not found. Check the city name in English.",
+  "weatherLocationAutomatic": "Get automatically",
+  "weatherLocationAutomaticHint": "Get device coordinates. Location permission is required.",
+  "weatherLocationManual": "Enter manually",
+  "weatherLocationPermissionDenied": "Allow location access in Android settings and try again.",
+  "weatherLocationUnavailable": "Could not obtain coordinates. Check Android location settings or enter a city manually.",
+  "nightFilterSettings": "Filter settings",
+  "nightScheduleMenu": "Schedule",
+  "nightScheduleInactive": "Schedule is off",
+  "nightLocation": "Location",
+  "nightLocationAutomatic": "Get automatically",
+  "nightLocationManual": "Enter manually",
+  "nightLocationFailed": "Location unavailable. Check permission and system location settings.",
+  "nightCityEnglish": "Enter the city name in English",
+  "nightOverlayBrief": "Allows the filter to appear over other apps.",
+  "weatherGetLocation": "Get location",
+  "backupLastCreated": "Last backup was created:",
+  "backupManagement": "Manage backups",
+  "backupCopyList": "Backup list",
+  "backupRefreshCopyList": "Refresh backup list",
+  "backupCreateNow": "Create a new backup now",
+  "backupFolderPath": "Backup folder",
+  "backupPrivateFolder": "Private application folder",
+  "backupRestoreCopy": "Restore this backup",
+  "backupDeleteConfirm": "Delete the selected backup?",
+  "blockedAppsGroup": "Blocked apps",
+  "notificationSettingsButton": "Notification settings",
+  "hidePersistentNotificationsHint": "Hide persistent notifications in the list and over other apps.",
+  "nightTransitionTime": "Transition time",
+  "brightnessSolar": "Use night mode schedule",
+  "brightnessAfterSunrise": "After sunrise",
+  "brightnessAfterSunset": "After sunset",
+  "brightnessTransitionTime": "Brightness transition time",
+  "brightnessSolarUnavailable": "Night mode schedule is unavailable. Check its times and location.",
+  "persistentNotificationCannotDelete": "This persistent notification cannot be deleted. You can only block it.",
+  "diagnosticsCreateFailed": "Could not create the diagnostic report. Try again.",
+  "backupListFailed": "Could not load the backup list. Check access to the selected storage.",
+  "updateInstallerFailed": "Could not open the update installer. Try again and check that the Android installer is available.",
+  "backupFolderFailed": "Could not select or save the backup folder. Choose an accessible folder and try again.",
+  "updateDownloadFailed": "Could not download the update. Check your internet connection and available storage.",
+  "backupDeleteFailed": "Could not delete the backup. Check delete permissions and try again.",
+  "updateCheckFailed": "Could not check for updates. Check your internet connection and try again.",
+  "backupCreateFailed": "Could not create the backup. Check storage access and available space.",
+  "wallpaperChangeFailed": "Could not change the wallpaper. Check file access and try again.",
+  "backupDownloadsFolder": "Downloads / CuteLauncher",
+  "backupChooseFolder": "Choose a folder in file manager",
+  "backupFolderPickerUnavailable": "No folder picker is available on this TV. Choose Downloads / CuteLauncher or the internal app folder.",
+  "driveConfigurationError": "Google Drive credentials are missing or invalid. Enter the Client ID and Client Secret of your TV OAuth client.",
+  "driveCodeExpired": "Google Drive sign-in timed out. Select Check and save account to get a new code.",
+  "brightnessAfterNightStart": "Nighttime",
+  "brightnessAfterNightEnd": "Daytime",
+  "backupSyncSettings": "Settings to synchronize",
+  "backupSyncHomeGroup": "Home screen, sections and apps",
+  "backupSyncAppearanceGroup": "Appearance, wallpapers and banners",
+  "backupSyncDisplayGroup": "Night mode, brightness and screensaver",
+  "backupSyncControlsGroup": "Launcher and TV controls",
+  "backupSyncGeneralGroup": "Language, updates and other settings",
+  "backupSyncGroupsHelp": "Disabled blocks stay local to this TV. The block selection is synchronized between devices.",
+  "backupSyncGroupsFailed": "Could not save the settings selection for synchronization. Try again.",
+  "tileLayoutMode": "Tile layout",
+  "tileLayoutAuto": "Automatic by tile size",
+  "tileLayoutColumns": "Fixed column count",
+  "tileLayoutRows": "Fixed row count",
+  "tileRowCount": "Row count",
+  "useGlobalTileSettings": "Use global settings",
+  "centerSelection": "Selection position",
+  "selectionBottom": "Bottom",
+  "selectionLower": "Lower middle",
+  "selectionCenter": "Center",
+  "selectionUpper": "Upper middle",
+  "selectionTop": "Top",
+  "settingsStyle": "Settings style",
+  "tileFocusEnlargement": "Focus enlargement",
+  "tileFocusShadowStrength": "Shadow strength",
+  "tileFocusLift": "Lift",
+  "tileFocusLiftHeight": "Lift height",
+  "tileFocusBorderColor": "Focus border color",
+  "tileFocusAccentColor": "Accent color",
+  "tileFocusDynamicColor": "Dynamic colors",
+  "tileSizeFromColumns": "Tile size is determined by the column count and section width.",
+  "resetSectionToGlobal": "Reset settings to shared values",
+  "resetSectionToGlobalHint": "Restore shared section titles, icons and background, and reset padding?",
+  "resetStyleSection": "Reset this section",
+  "resetStyleSectionHint": "Restore defaults for this section only?",
+  "notificationStyle": "Notification style",
+  "styleBackgroundColor": "Background color",
+  "styleTransparency": "Background transparency",
+  "styleTextSize": "Text size",
+  "styleTextColor": "Text color",
+  "noticeSize": "Notification size",
+  "noticeStylePreview": "Notification preview",
+  "backupSyncHomeOptions": "Behavior and general options",
+  "backupSyncBackground": "Background and custom banners",
+  "backupSyncTiles": "Tile, menu and notification style",
+  "backupSyncWeatherSource": "Source and location",
+  "backupSyncWeatherDisplay": "Weather display and temperature units",
+  "backupSyncNotificationSettings": "Notification display and filters",
+  "backupSyncOther": "Other settings",
+  "tileFocusBorderStyle": "Border style",
+  "tileFocusOutline": "Outline",
+  "tileFocusGlow": "Glow",
+  "tileFocusNoBorder": "No border",
+  "tileShowFocusShadow": "Show shadow",
+  "homeLayoutRow": "Horizontal row",
+  "homeLayoutRows": "Multiple rows",
+  "homeLayoutGrid": "Grid",
+  "homeCardCount": "Visible cards across",
+  "homeAuto": "Auto",
+  "homeFree": "Free scrolling",
+  "homeAnchored": "Anchored section",
+  "homeScrollMode": "Section scrolling",
+  "homeSectionPosition": "Active section position",
+  "homeLabelMode": "Application labels",
+  "homeLabelNone": "No labels",
+  "homeLabelSelected": "Selected application only",
+  "homeLabelAll": "All applications",
+  "homeInherited": "Inherited value",
+  "homeOwnReset": "Custom value · use global",
+  "homeParameters": "Parameters",
+  "homeSectionStyle": "Section appearance",
+  "homeSectionGap": "Space between sections",
+  "homeSectionIcons": "Section icons",
+  "homeInactiveOpacity": "Inactive section opacity",
+  "homeResetSection": "Restore inherited section appearance",
+  "homeCalculatedSize": "Size is calculated from the card count",
+  "homeGapLimited": "Spacing is limited to {gap} to keep the selected card count.",
+  "@homeGapLimited": {
+    "placeholders": {
+      "gap": {
+        "type": "int"
+      }
+    }
+  },
+  "homeResetLayout": "Reset section layout",
+  "homeVisibleRows": "Fully visible rows: {count}",
+  "@homeVisibleRows": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeStylePartial": "Applies only to sections that inherit this value and support it in their current layout.",
+  "homeStyleUnavailable": "Unavailable in the current section settings. Check the layout and local overrides.",
+  "homeStyleNeedsRows": "Available for multiple rows or a grid.",
+  "homeStyleNeedsLabels": "Enable labels to change their size and color.",
+  "homeStyleNeedsAllLabels": "Position applies only to labels on all cards. The selected title stays below the section.",
+  "homeStyleNeedsScale": "Select the enlargement focus effect.",
+  "homeStyleNeedsLift": "Select the lift focus effect.",
+  "homeStyleNeedsBorder": "Enable an outline or glow first.",
+  "homeStyleNeedsTitle": "Enable the section title to show its icon.",
+  "homeStyleEconomy": "Disabled by memory saving. The saved value is retained.",
+  "homeStyleOpaque": "Reduce the tile background opacity to see blur.",
+  "homeStyleOverridden": "Visible sections use their own values. Choose “Use global” in a section to apply this setting.",
+  "homeStyleIconHint": "Icon size affects cards with an app icon. TV banners fill the card independently.",
+  "homeStyleShadowHint": "Memory saving limits the shadow of inactive cards to 4. Focus shadow is configured separately.",
+  "homeStyleTransparent": "The background color is invisible at zero opacity. Increase the tile background opacity.",
+  "homeStyleSingleColumn": "A single-column grid has no horizontal gaps.",
+  "homeStyleAutoOnly": "Size changes only in sections with Auto card count that inherit the global size.",
+  "sleepTimerThirtySeconds": "30 seconds (test)",
+  "sleepTimer": "Sleep timer",
+  "sleepTimerMinutes": "{minutes} min",
+  "sleepTimerHours": "{hours, plural, =1{1 hour} other{{hours} hours}}",
+  "sleepTimerHourAndHalf": "1.5 hours",
+  "sleepTimerAllowExact": "Allow precise timers",
+  "sleepTimerExactRequired": "Allow precise timers in Android settings, then select a duration again.",
+  "sleepTimerAccessRequired": "Enable CuteLauncher accessibility or connect local ADB in Settings → Other → ADB.",
+  "sleepTimerFailed": "Could not set or complete the sleep timer. Check accessibility and local ADB.",
+  "@sleepTimerMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "@sleepTimerHours": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  }
+,"nightIgnoreHdmiInputs":"Ignore HDMI inputs"
+,"nightIgnoreHdmiInputsHint":"Pause the night filter while watching HDMI. Usage access is required; input detection depends on the TV firmware."
+,"inputsSettings":"Input settings"
+,"inputsUseCecNames":"Use device names from CEC"
+,"inputsNamesHint":"Name priority: your name in CuteLauncher → CEC (if enabled) → name from Android settings → standard input name."
+,"inputNameHint":"Leave empty for an automatic name"
+,"inputsSaveFailed":"Could not save input settings"
+,"inputIcon":"Input icon"
+,"inputIconTv":"TV"
+,"inputIconGame":"Game console"
+,"inputIconComputer":"Computer"
+,"inputIconReceiver":"Receiver"
+,"inputIconDisc":"Disc player"
+,"inputIconStream":"Streaming device"
+,"nightInputExclusions":"Input exclusions"
+,"nightSelectInputs":"Select inputs to ignore"
+,"nightNoInputsSelected":"No inputs selected. The filter will apply to every input.",
+  "nightPictureExclusions": "Picture mode exclusions",
+  "nightPictureExclusionsHint": "Select modes that pause dimming, the warm overlay and the linked TCL filter. The schedule is preserved. Detection has been verified on TCL; usage access is not required.",
+  "nightPictureUnavailable": "The current picture mode is unavailable on this firmware. Your selection is saved; exclusions apply only when detection succeeds.",
+  "nightPictureCurrent": "Current mode",
+  "nightPictureRefresh": "Refresh current mode",
+  "nightPictureCode": "Mode code",
+  "nightPictureStandard": "Standard",
+  "nightPictureDynamic": "Dynamic",
+  "nightPictureMovie": "Movie",
+  "nightPictureSport": "Sport",
+  "nightPictureIntelligent": "Intelligent",
+  "nightPictureBright": "Bright (Dolby Vision)",
+  "nightPictureOrdinary": "Standard",
+  "systemApplications": "System apps",
+  "removeFromCategory": "Remove from category",
+  "noRemovableCategories": "This app has not been manually added to any sections. Automatic sections cannot be edited.",
+  "remoteButtonsTitle": "Remote button remapper",
+  "remoteButtonsStart": "Check buttons (120 s)",
+  "remoteButtonsStop": "Stop checking",
+  "remoteButtonsHint": "Start the test, then press buttons in any menu or open app. Stop it here or wait 120 seconds. After the test, the report is saved at the path below, replacing the previous report. Copy it using ADB: adb pull <path>. Some system and manufacturer buttons may be unavailable to the service.",
+  "remoteButtonsEmpty": "No events yet. If a button opens an app, return here to see the result.",
+  "remoteButtonsService": "Service connected",
+  "remoteButtonsRefresh": "Refresh",
+  "remoteBindings": "Button assignments",
+  "remoteMappingsEnabled": "Enable remapping",
+  "remoteMappingsAdd": "Add assignment",
+  "remoteMappingKey": "Button",
+  "remoteMappingAction": "Action",
+  "remoteMappingLearn": "Learn a remote button",
+  "remoteMappingLearnHint": "Press an extra remote button within 30 seconds. Navigation, Power, voice search and volume cannot be assigned.",
+  "remoteMappingsHint": "Assignments require the accessibility service. They are paused in the editor and during diagnostics. Home, Back, arrows and OK keep their normal navigation.",
+  "remoteMappingsReset": "Reset assignments",
+  "remoteMappingsResetConfirm": "Delete all assignments and turn remapping off?",
+  "remoteMappingInvalid": "Could not save. Check the button and target. Webhooks require HTTPS or HTTP on a local network.",
+  "remoteMappingBack": "Back",
+  "remoteMappingProfile": "Profile",
+  "remoteMappingChannels": "Channels",
+  "remoteMappingQuickSettings": "TCL quick settings",
+  "remoteMappingTrigger": "Press type",
+  "remoteMappingPress": "Short press",
+  "remoteMappingHold": "Hold",
+  "remoteMappingHoldHint": "Hold for 650 ms: fires once, without the short action. If only hold is assigned, a short tap does nothing.",
+  "remotePanel": "Floating panel",
+  "remotePanelSettingsBackground": "Use settings background color",
+  "remotePanelPreview": "Open panel",
+  "settingsHelp": "More information",
+  "settingsHelpScroll": "▲ / ▼ — scroll text",
+  "panelClockStyle": "Clock appearance",
+  "clockPreset": "Clock design",
+  "clockCustom": "Custom",
+  "clockWeight": "Font weight",
+  "clockGlow": "Text glow",
+  "clockAnimate": "Animate digits",
+  "clockBackground": "Clock background",
+  "clockRadius": "Background corner radius",
+  "dateCalendarEnabled": "Open calendar when pressing the date",
+  "calendarTitle": "Calendar",
+  "dateSettings": "Date settings",
+  "clockSharedBackground": "Use the same background as other objects",
+  "clockDefaultBackground": "Default background",
+  "remotePanelInheritAppearance": "Use top panel appearance",
+  "remotePanelDisabledInLauncher": "Popup panel is disabled while CuteLauncher is on screen.",
+  "remoteAccessSettings": "Access settings",
+  "remoteButtonsTest": "Button test",
+  "remoteMappingConflict": "This button and press type are already assigned. Choose another button or press type.",
+  "cleanerTitle": "TV cleanup manager",
+  "cleanerRefresh": "Refresh applications",
+  "cleanerSnapshot": "Save original state",
+  "cleanerRestore": "Restore manager changes",
+  "cleanerSnapshotSaved": "Original state saved",
+  "cleanerExportSnapshot": "Export original state",
+  "cleanerSafe": "Disable verified applications",
+  "cleanerNoSafe": "This firmware has no verified list that preserves all features.",
+  "cleanerLocal": "Disable using a local list",
+  "cleanerProject": "Project catalog lists",
+  "cleanerRemoteProject": "Refresh catalog from GitHub",
+  "cleanerExternal": "CleanYourTV examples",
+  "cleanerDisabledExport": "Export disabled applications",
+  "cleanerInventoryExport": "Export application report",
+  "cleanerApps": "All applications",
+  "cleanerEnable": "Enable application",
+  "cleanerDisable": "Disable application",
+  "cleanerProtected": "Protected from disabling",
+  "cleanerUnknown": "Purpose and dependencies are unconfirmed. Disabling risk is unknown.",
+  "cleanerConfirm": "Apply change?",
+  "cleanerConfirmText": "The listed apps and related features will be affected. Original states are saved before changes. Recovery requires this launcher and ADB to remain available.",
+  "cleanerObserved": "Observed list: disabling safety has not been verified.",
+  "cleanerMismatch": "The list belongs to a different firmware and will not be applied.",
+  "cleanerMissing": "No available packages to change.",
+  "cleanerFailure": "Action did not complete. Check ADB connectivity and the list format.",
+  "cleanerPartial": "Changes completed partially. Recovery journal is saved; refresh the list and restore if needed.",
+  "cleanerDone": "Done",
+  "cleanerSaved": "File saved or handed to the file manager",
+  "cleanerGitUnavailable": "Catalog unavailable. For private Git, use the bundled catalog or a file; no access tokens are stored in the APK.",
+  "cleanerSystem": "System application",
+  "cleanerUser": "User application",
+  "cleanerRisk": "Disabling risk",
+  "cleanerHelp": "The manager uses the local ADB connection configured in TV control settings. It never uninstalls apps or clears their data. The snapshot and recovery journal are separate from ordinary backups. Recovery restores previous states only for packages changed by this manager. Automatic recovery is blocked after a firmware change.\n\nVerified lists match exact firmware. Observed and external lists do not establish safety. Protected components, HOME and active services cannot be disabled. Packages are previewed before applying; missing and already disabled packages are skipped.\n\nThe project catalog is bundled from Git. GitHub refresh requires a public catalog. External examples load only on request and never execute scripts. Export creates JSON containing disabled packages and firmware identity; add it manually to catalog/examples after review. Nothing is uploaded automatically.\n\nApp descriptions and risk remain visible. Unconfirmed purposes are marked explicitly and never included in verified lists.",
+  "cleanerSkipped": "Skipped: protected, missing or already in the requested state",
+  "cleanerUnidentified": "Application not identified.",
+  "cleanerPending": "Changed by manager",
+  "cleanerNoSnapshot": "Original state not saved yet"
+}

@@ -1,0 +1,23 @@
+targets:
+  $default:
+    sources: ['lib/**', '$package$']
+    builders:
+      drift_dev:
+        enabled: false
+      drift_dev|not_shared:
+        enabled: true
+        generate_for: ['lib/database.dart']
+      mockito|mockBuilder:
+        enabled: false
+
+  mocks:
+    sources: ['test/**']
+    dependencies: ['flauncher']
+    builders:
+      drift_dev:
+        enabled: false
+      drift_dev|preparing_builder:
+        enabled: false
+      mockito|mockBuilder:
+        enabled: true
+        generate_for: ['test/mocks.dart']

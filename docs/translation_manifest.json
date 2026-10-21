@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "pairs": [
+    {
+      "ru": "README.md",
+      "en": "README_EN.md",
+      "ruSha256": "004254a1ebded35b4b6949bf9f0519f48d117b08d16fcd0784e14cab8fea8393",
+      "enSha256": "c0fc69b291d86775a4522b59be79d3d94aff10d4fb21f1383fe68d51ee5ee2d2"
+    },
+    {
+      "ru": "docs/README.md",
+      "en": "docs/README_EN.md",
+      "ruSha256": "807d306d0c2ee2258a57f136b336a6b98c13690c46f20fc715836804ec01cfd5",
+      "enSha256": "16c1e486ec8a3b0a6f46dba94c63aa470efb9781f5bc794ed1db3b332e6d42b4"
+    },
+    {
+      "ru": "docs/USER_GUIDE_RU.md",
+      "en": "docs/USER_GUIDE_EN.md",
+      "ruSha256": "ebc91caa89ee123b55b80bcc6577c758175ca658c4ab274008023df73468dc06",
+      "enSha256": "45d23a86385e270ce87d423142ee9abedf8d038b5e4abc5cba5aba40c2fe4d6f"
+    }
+  ]
+}

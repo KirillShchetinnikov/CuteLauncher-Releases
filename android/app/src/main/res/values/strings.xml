@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="screensaver_label">CuteLauncher Clock</string>
+    <string name="notification_service_label">CuteLauncher Notification Service</string>
+    <string name="accessibility_service_label">CuteLauncher</string>
+<string name="night_mode_title">Night mode</string><string name="night_mode_notice">Screen filter enabled; schedule applies</string><string name="night_mode_stop">Turn off</string>
+</resources>

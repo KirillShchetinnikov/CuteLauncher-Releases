@@ -1,0 +1,21 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="io.cutelauncher.fixture.documents" android:versionCode="1" android:versionName="1">
+    <uses-sdk android:minSdkVersion="30" android:targetSdkVersion="35" />
+    <application android:label="CuteLauncher test documents" android:theme="@android:style/Theme.Material.NoActionBar">
+        <activity android:name=".DocumentsFixture$OpenTree" android:exported="true">
+            <intent-filter><action android:name="android.intent.action.OPEN_DOCUMENT_TREE" /><category android:name="android.intent.category.DEFAULT" /></intent-filter>
+        </activity>
+        <activity android:name=".DocumentsFixture$OpenDocument" android:exported="true">
+            <intent-filter><action android:name="android.intent.action.OPEN_DOCUMENT" /><category android:name="android.intent.category.DEFAULT" /><category android:name="android.intent.category.OPENABLE" /><data android:mimeType="*/*" /></intent-filter>
+        </activity>
+        <activity android:name=".DocumentsFixture$GetContent" android:exported="true">
+            <intent-filter><action android:name="android.intent.action.GET_CONTENT" /><category android:name="android.intent.category.DEFAULT" /><category android:name="android.intent.category.OPENABLE" /><data android:mimeType="*/*" /></intent-filter>
+        </activity>
+        <activity android:name=".DocumentsFixture$CreateDocument" android:exported="true">
+            <intent-filter><action android:name="android.intent.action.CREATE_DOCUMENT" /><category android:name="android.intent.category.DEFAULT" /><category android:name="android.intent.category.OPENABLE" /><data android:mimeType="*/*" /></intent-filter>
+        </activity>
+        <provider android:name=".DocumentsFixture$Provider" android:authorities="io.cutelauncher.fixture.documents" android:exported="true" android:grantUriPermissions="true" />
+        <provider android:name=".DocumentsFixture$Backups" android:authorities="io.cutelauncher.fixture.documents.backups" android:exported="true" android:grantUriPermissions="true" android:permission="android.permission.MANAGE_DOCUMENTS">
+            <intent-filter><action android:name="android.content.action.DOCUMENTS_PROVIDER" /></intent-filter>
+        </provider>
+    </application>
+</manifest>

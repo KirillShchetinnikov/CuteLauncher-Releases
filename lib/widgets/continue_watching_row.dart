@@ -1,0 +1,520 @@
+import 'tile_paint_layer.dart';
+import '../providers/appearance_service.dart';
+import '../tile_appearance.dart';
+import 'tile_theme_outline.dart';
+import 'package:flauncher/widgets/launcher_dialog.dart';
+import 'category_focus.dart';
+import 'package:flauncher/models/watch_next_program.dart';
+import 'package:flauncher/watch_next_selection.dart';
+import 'package:flauncher/providers/apps_service.dart';
+import 'package:flauncher/providers/settings_service.dart';
+import 'package:flauncher/providers/memory_resources.dart';
+import 'package:flauncher/providers/watch_next_service.dart';
+import 'package:flauncher/actions.dart';
+import 'package:flauncher/widgets/app_card_keys.dart';
+import 'package:flauncher/widgets/focus_keyboard_listener.dart';
+import 'package:flauncher/widgets/watch_next_info_panel.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:flauncher/l10n/app_localizations.dart';
+
+class ContinueWatchingRow extends StatelessWidget {
+  final bool isFirstSection;
+
+  const ContinueWatchingRow({
+    super.key,
+    this.isFirstSection = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final settingsService = Provider.of<SettingsService>(context);
+    if (!settingsService.showContinueWatching) {
+      return const SizedBox.shrink();
+    }
+
+    return Consumer2<WatchNextService, AppsService>(
+      builder: (context, watchNextService, appsService, _) {
+        if (!watchNextService.hasPermission) {
+          return const SizedBox.shrink();
+        }
+
+        final programs = selectWatchNextPrograms(watchNextService.programs,
+          hiddenIds: settingsService.hiddenWatchNextProgramIds.toSet(),
+          hiddenPackages: {...settingsService.hiddenWatchNextPackages,
+            ...appsService.applications.where((app) => app.hidden).map((app) => app.packageName)},
+          appLimits: settingsService.watchNextAppLimits,
+          totalLimit: settingsService.continueWatchingMaxItems);
+
+        final focus = CategoryFocus.maybeOf(context);
+        focus?.gap = 16;
+        focus?.configure(programs.map((program) => program.id.toString()));
+
+        if (programs.isEmpty) {
+          return const SizedBox.shrink();
+        }
+
+        double cardHeight;
+        final int? customHeight = int.tryParse(settingsService.continueWatchingCardSize);
+        if (customHeight != null) {
+          cardHeight = customHeight.toDouble();
+        } else {
+          switch (settingsService.continueWatchingCardSize) {
+            case 'compact':
+              cardHeight = 112.0;
+              break;
+            case 'large':
+              cardHeight = 157.0;
+              break;
+            case 'normal':
+            default:
+              cardHeight = 135.0;
+              break;
+          }
+        }
+        final double rowHeight = cardHeight + 36.0;
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (context.watch<AppearanceService?>()?.appearance.sectionTitles ?? settingsService.showCategoryTitles)
+                Padding(
+                  padding: const EdgeInsets.only(left: 16, bottom: 8),
+                  child: Row(
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.continueWatching,
+                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          shadows: [
+                            const Shadow(
+                              color: Colors.black54,
+                              offset: Offset(1, 1),
+                              blurRadius: 8,
+                            )
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        '•  ${programs.length}',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Colors.white54,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              SizedBox(
+                height: rowHeight,
+                child: ListView.builder(
+                  clipBehavior: Clip.none,
+                  padding: const EdgeInsets.all(8),
+                  physics: const ClampingScrollPhysics(),
+                  controller: focus?.scrollController,
+                  scrollDirection: Axis.horizontal,
+                  itemCount: programs.length,
+                  itemBuilder: (context, index) {
+                    final program = programs[index];
+                    return Padding(
+                      key: ValueKey(program.id),
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: RepaintBoundary(
+                        child: WatchNextCard(
+                          program: program,
+                          appsService: appsService,
+                          watchNextService: watchNextService,
+                          handleUpNavigationToSettings: isFirstSection,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class WatchNextCard extends StatefulWidget {
+  final WatchNextProgram program;
+  final AppsService appsService;
+  final WatchNextService watchNextService;
+  final bool handleUpNavigationToSettings;
+
+  const WatchNextCard({
+    super.key,
+    required this.program,
+    required this.appsService,
+    required this.watchNextService,
+    this.handleUpNavigationToSettings = true,
+  });
+
+  @override
+  State<WatchNextCard> createState() => _WatchNextCardState();
+}
+
+class _WatchNextCardState extends State<WatchNextCard> {
+  CategoryFocusController? _categoryFocus;
+  late final FocusNode _focusNode;
+  bool _focused = false;
+  bool _clicked = false;
+  Uint8List? _appIconBytes;
+  @override
+  void initState() {
+    super.initState();
+    _focusNode = FocusNode();
+    _focusNode.addListener(_onFocusChange);
+    _loadAppIcon();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final controller = CategoryFocus.maybeOf(context);
+    if (controller != _categoryFocus) {
+      _categoryFocus?.unregister(widget.program.id.toString(), _focusNode);
+      _categoryFocus = controller;
+      _categoryFocus?.register(widget.program.id.toString(), _focusNode);
+    }
+  }
+
+  Future<void> _loadAppIcon() async {
+    try {
+      final bytes = await widget.appsService.getAppIcon(widget.program.packageName);
+      if (mounted && bytes.isNotEmpty) {
+        setState(() => _appIconBytes = bytes);
+      }
+    } catch (_) {}
+  }
+
+  @override
+  void didUpdateWidget(covariant WatchNextCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.program.id != widget.program.id) {
+      _categoryFocus?.unregister(oldWidget.program.id.toString(), _focusNode);
+      _categoryFocus?.register(widget.program.id.toString(), _focusNode);
+    }
+    if (oldWidget.program.packageName != widget.program.packageName) {
+      _loadAppIcon();
+    }
+  }
+
+  void _onFocusChange() {
+    setState(() {
+      _focused = _focusNode.hasFocus;
+    });
+    if (_focusNode.hasFocus) {
+      _categoryFocus?.record(widget.program.id.toString(), _focusNode);
+      if (_categoryFocus?.reveal != null) {
+        final inner = Scrollable.maybeOf(context);
+        final box = context.findRenderObject();
+        if (inner != null && box != null) { inner.position.ensureVisible(box,
+          alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
+          duration: const Duration(milliseconds: 100)); }
+        _categoryFocus!.reveal!();
+        return;
+      }
+      Scrollable.ensureVisible(
+        context,
+        alignment: 0.5,
+        curve: Curves.easeInOut,
+        duration: const Duration(milliseconds: 100),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _categoryFocus?.unregister(widget.program.id.toString(), _focusNode);
+    _focusNode.removeListener(_onFocusChange);
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  void _onPressed() {
+    if (!_clicked) {
+      setState(() => _clicked = true);
+      Future.delayed(const Duration(milliseconds: 150), () {
+        if (!mounted) return;
+        widget.watchNextService.launch(widget.program);
+        Future.delayed(const Duration(milliseconds: 500), () {
+          if (mounted) {
+            setState(() => _clicked = false);
+          }
+        });
+      });
+    }
+  }
+
+  void _onLongPress() {
+    showLauncherDialog(
+      context: context,
+      builder: (context) => WatchNextInfoPanel(
+        program: widget.program,
+        watchNextService: widget.watchNextService,
+        appsService: widget.appsService,
+        appIconBytes: _appIconBytes,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final String themes = context.select<SettingsService, String>((s) => s.themes);
+    final String accentColorHex = context.select<SettingsService, String>((s) => s.accentColorHex);
+    final memory = context.watch<MemoryResources?>();
+    final bool appHighlightAnimationEnabled = context.select<SettingsService, bool>((s) => s.appHighlightAnimationEnabled) &&
+        !(memory?.economyEnabled ?? false) && (memory?.isForeground ?? true) && TickerMode.valuesOf(context).enabled;
+    final bool hideHighlightOutlineOnHomescreen = context.select<SettingsService, bool>((s) => s.hideHighlightOutlineOnHomescreen);
+    final bool appSelectorTransitionAnimationEnabled = context.select<SettingsService, bool>((s) => s.appSelectorTransitionAnimationEnabled);
+    final String cardSize = context.select<SettingsService, String>((s) => s.continueWatchingCardSize);
+    final bool showProgress = context.select<SettingsService, bool>((s) => s.continueWatchingShowProgress);
+    final bool showPercentage = context.select<SettingsService, bool>((s) => s.continueWatchingShowPercentage);
+    final bool showDescription = context.select<SettingsService, bool>((s) => s.continueWatchingShowDescription);
+
+    final Color accentColor = Color(int.parse('FF$accentColorHex', radix: 16));
+    double cardWidth;
+    double cardHeight;
+    final int? customHeight = int.tryParse(cardSize);
+    if (customHeight != null) {
+      cardHeight = customHeight.toDouble();
+      cardWidth = (cardHeight * 16 / 9).roundToDouble();
+    } else {
+      switch (cardSize) {
+        case 'compact':
+          cardWidth = 200.0;
+          cardHeight = 112.0;
+          break;
+        case 'large':
+          cardWidth = 280.0;
+          cardHeight = 157.0;
+          break;
+        case 'normal':
+        default:
+          cardWidth = 240.0;
+          cardHeight = 135.0;
+          break;
+      }
+    }
+
+    BorderRadius borderRadius;
+
+    switch (themes) {
+      case 'premium':
+        borderRadius = BorderRadius.circular(16);
+        break;
+      case 'classic':
+        borderRadius = BorderRadius.zero;
+        break;
+      case 'capsule':
+        borderRadius = BorderRadius.circular(100);
+        break;
+      case 'modern':
+      default:
+        borderRadius = BorderRadius.circular(8);
+        break;
+    }
+
+    double scale = 1.0;
+    if (_focused) {
+      if (themes == 'premium') {
+        scale = 1.15;
+      } else if (themes == 'classic') {
+        scale = 1.0;
+      } else {
+        scale = 1.1;
+      }
+    }
+
+    final appearance = context.watch<AppearanceService?>()?.appearance ?? const TileAppearance();
+    final double elevation = _focused && appearance.showFocusShadow
+        ? (themes == 'classic' ? 8 : 16)
+        : 0;
+    final Color shadowColor = Colors.black;
+
+    final borderStyle = appearance.focusBorderStyle(legacyHidden: hideHighlightOutlineOnHomescreen);
+    final Widget? highlightWidget = _focused && borderStyle != 'none'
+      ? TileThemeOutline(theme: borderStyle == 'glow' ? 'modern' : themes,
+          accent: accentColor, radius: borderRadius.topLeft.x,
+          borderStyle: borderStyle, pulse: appHighlightAnimationEnabled)
+      : null;
+
+    // Progress percentage
+    double progress = 0;
+    if (widget.program.duration > 0 && widget.program.playbackPosition >= 0) {
+      progress = widget.program.playbackPosition / widget.program.duration;
+      if (progress > 1.0) progress = 1.0;
+    }
+
+    return FocusKeyboardListener(
+      onPressed: (key) {
+        if (key == LogicalKeyboardKey.arrowUp && widget.handleUpNavigationToSettings) {
+          Actions.invoke(context, const MoveFocusToSettingsIntent());
+          return KeyEventResult.handled;
+        } else if (AppCardKeys.validationKeys.contains(key)) {
+          _onPressed();
+          return KeyEventResult.handled;
+        }
+        return KeyEventResult.ignored;
+      },
+      onLongPress: (key) {
+        if (AppCardKeys.longPressableKeys.contains(key) || AppCardKeys.menuKeys.contains(key)) {
+          _onLongPress();
+          return KeyEventResult.handled;
+        }
+        return KeyEventResult.ignored;
+      },
+      builder: (context) {
+        return RaisedTile(raised: _focused, child: InkWell(
+          focusNode: _focusNode,
+          focusColor: Colors.transparent,
+          hoverColor: Colors.transparent,
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          onTap: _onPressed,
+          onLongPress: _onLongPress,
+          child: AnimatedScale(
+              scale: _clicked ? 0.9 : 1.0,
+              duration: const Duration(milliseconds: 150),
+              curve: Curves.easeOutCubic,
+              child: AnimatedOpacity(
+                opacity: _clicked ? 0.5 : 1.0,
+                duration: const Duration(milliseconds: 150),
+                child: AnimatedContainer(
+                  duration: appSelectorTransitionAnimationEnabled
+                      ? const Duration(milliseconds: 200)
+                      : Duration.zero,
+                  curve: Curves.easeOutBack,
+                  width: cardWidth,
+                  height: cardHeight,
+                  transform: Matrix4.diagonal3Values(scale, scale, 1.0),
+                  transformAlignment: Alignment.center,
+                  child: Stack(clipBehavior: Clip.none, fit: StackFit.expand, children: [Material(
+                    borderRadius: borderRadius,
+                    clipBehavior: Clip.antiAlias,
+                    elevation: elevation,
+                    shadowColor: shadowColor,
+                    color: Colors.transparent,
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        // Card surface with subtle dark gradient and border
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: borderRadius,
+                            gradient: const LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                Color(0xFF141517),
+                                Color(0xFF090A0B),
+                              ],
+                            ),
+                            border: Border.all(
+                              color: _focused ? Colors.transparent : Colors.white.withValues(alpha: 0.06),
+                              width: 1,
+                            ),
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Top row: App icon + Progress badge (no text app title)
+                              Row(
+                                children: [
+                                  if (_appIconBytes != null)
+                                    Container(
+                                      width: 24,
+                                      height: 24,
+                                      margin: const EdgeInsets.only(right: 8),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(5),
+                                        child: Image.memory(
+                    _appIconBytes!,
+                    cacheWidth: (64 * MediaQuery.devicePixelRatioOf(context)).ceil().clamp(1, 512),
+                                          fit: BoxFit.contain,
+                                          filterQuality: FilterQuality.low,
+                                        ),
+                                      ),
+                                    ),
+                                  const Spacer(),
+                                  if (showPercentage && progress > 0)
+                                    Text(
+                                      '${(progress * 100).round()}%',
+                                      style: theme.textTheme.bodySmall?.copyWith(
+                                        color: accentColor,
+                                        fontSize: 10.5,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                ],
+                              ),
+                              const Spacer(),
+                              // Program Title
+                              Text(
+                                widget.program.title.trim(),
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 13.5,
+                                  height: 1.25,
+                                ),
+                                maxLines: (showDescription &&
+                                        widget.program.description.trim().isNotEmpty &&
+                                        widget.program.description.trim().toLowerCase() !=
+                                            widget.program.title.trim().toLowerCase())
+                                    ? 2
+                                    : 3,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              if (showDescription &&
+                                  widget.program.description.trim().isNotEmpty &&
+                                  widget.program.description.trim().toLowerCase() !=
+                                      widget.program.title.trim().toLowerCase()) ...[
+                                const SizedBox(height: 3),
+                                Text(
+                                  widget.program.description.trim(),
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: Colors.white60,
+                                    fontSize: 10.5,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                              const Spacer(),
+                              // Bottom progress indicator
+                              if (showProgress && progress > 0)
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(2),
+                                  child: LinearProgressIndicator(
+                                    value: progress,
+                                    backgroundColor: Colors.white.withValues(alpha: 0.12),
+                                    valueColor: AlwaysStoppedAnimation<Color>(accentColor),
+                                    minHeight: 3.5,
+                                  ),
+                                )
+                              else
+                                const SizedBox(height: 3.5),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ), ?highlightWidget]),
+                ),
+              ),
+            ),
+          ));
+        },
+      );
+    }
+}

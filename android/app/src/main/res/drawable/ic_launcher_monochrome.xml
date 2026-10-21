@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- House and Play silhouette for Android themed icons, within the adaptive safe zone. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:fillType="evenOdd"
+        android:pathData="M24,54 L48,28 Q50,26 52,28 L68,45 L68,37 L76,37 L76,53 L84,61 Q86,64 83,66 L78,66 L78,81 Q78,84 75,84 L33,84 Q30,84 30,81 L30,59 L27,60 Q23,61 24,54 Z M42,84 L42,67 Q42,59 49,59 Q56,59 56,67 L56,84 Z M62,61 L72,61 L72,72 L62,72 Z M46,44 L54,44 L54,52 L46,52 Z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M66,23 Q66,21 68,22 L80,29 Q82,30 80,32 L68,39 Q66,40 66,38 Z" />
+</vector>

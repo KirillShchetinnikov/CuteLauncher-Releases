@@ -1,0 +1,57 @@
+{
+  "versions": {
+    "org.conscrypt:conscrypt-android": "2.5.3",
+    "com.github.MuntashirAkon.spake2-java:spake2-android": "2.2.1",
+    "androidx.datastore:datastore-core-android": "1.1.7",
+    "sqlite3": "3.7.0"
+  },
+  "sources": [
+    {
+      "name": "conscrypt",
+      "url": "https://codeload.github.com/google/conscrypt/tar.gz/fd209de6167201e4f3bca5b99c6db9f08d1843c6",
+      "revision": "fd209de6167201e4f3bca5b99c6db9f08d1843c6",
+      "sha256": "0917b64cbe5e8c6e5370b82fd572fd22708ed5ab19352c5d28ca55462dfd36d7"
+    },
+    {
+      "name": "boringssl",
+      "url": "https://codeload.github.com/google/boringssl/tar.gz/49f0329110a1d93a5febc2bceceedc655d995420",
+      "revision": "49f0329110a1d93a5febc2bceceedc655d995420",
+      "sha256": "9c61bd48504d08ad237e73a41d5e9c874f133a411d064791dc8e69a13b385471",
+      "provenance": "org/conscrypt/conscrypt.properties in the resolved Conscrypt 2.5.3 AAR"
+    },
+    {
+      "name": "spake2",
+      "url": "https://codeload.github.com/MuntashirAkon/spake2-java/tar.gz/7615ddd680b990e14513ebb66eac4cb0dbf82464",
+      "revision": "7615ddd680b990e14513ebb66eac4cb0dbf82464",
+      "sha256": "003326438978b46316a22a8d742fbf3c0c5661b92106827198e0085473cdbcf3"
+    },
+    {
+      "name": "spake2-c",
+      "url": "https://codeload.github.com/MuntashirAkon/spake2-c/tar.gz/0d15933e5ba3e662cb01245a7ac0dc9fca3eac31",
+      "revision": "0d15933e5ba3e662cb01245a7ac0dc9fca3eac31",
+      "sha256": "6be363cf9d746dc070dec14ed240adaeac8ef60285fcb633121d0a2cbd62700c",
+      "provenance": "android/src/main/cpp/spake2-c gitlink in spake2-java 2.2.1"
+    },
+    {
+      "name": "androidx-datastore",
+      "url": "https://android.googlesource.com/platform/frameworks/support/+archive/420da5f291449f11801e378c6789a328a06ec6cb/datastore.tar.gz",
+      "revision": "420da5f291449f11801e378c6789a328a06ec6cb",
+      "sha256": "3bb1e16dc8959622e2d752366dbe5f587b02d7ce37bb2d9afdfd014424fbf864",
+      "provenance": "End revision linked by the official AndroidX DataStore 1.1.7 release notes; datastore subtree includes the native shared counter"
+    },
+    {
+      "name": "sqlite3-dart",
+      "url": "https://codeload.github.com/simolus3/sqlite3.dart/tar.gz/e65e894651e794b65c3fc1076fe230bfb4e80760",
+      "revision": "e65e894651e794b65c3fc1076fe230bfb4e80760",
+      "sha256": "d3a758aa7551fa33b7bad3a9bc141d54427e3d5d2d2afd0215c66867c828ca0a",
+      "provenance": "sqlite3-3.7.0 tag; native compile workflow and tool/download_sqlite.dart"
+    },
+    {
+      "name": "sqlite-amalgamation",
+      "url": "https://sqlite.org/2026/sqlite-amalgamation-3530400.zip",
+      "version": "3.53.4",
+      "sha256": "1e71ddf93849c6a6ecf58b827c0692073d2dd7ee40196158068f7b29f422e87d",
+      "provenance": "Exact amalgamation selected by sqlite3-3.7.0 tool/download_sqlite.dart and confirmed by release sqlite_version()"
+    }
+  ]
+}

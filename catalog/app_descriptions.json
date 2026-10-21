@@ -1,0 +1,3245 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-10-21",
+  "sources": [
+    "https://developer.android.com/reference/android/content/pm/PackageManager",
+    "https://source.android.com/docs/core/runtime/rros",
+    "https://github.com/Gathin23/cleanyourtv/tree/main/examples"
+  ],
+  "packages": {
+    "android": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "android.auto_generated_rro_product__": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "android.auto_generated_rro_vendor__": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "android.autoinstalls.config.google.gtvpai": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "android.autoinstalls.config.sei": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "com.alphainventor.filemanager": {
+      "ru": "Файловый менеджер или установка приложений из файлов.",
+      "en": "File manager or app installation from files.",
+      "riskRu": "Средний: можно потерять выбор файлов, экспорт отчётов или установку APK.",
+      "riskEn": "Medium: file picking, report export or APK installation may become unavailable.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.amazon.amazonvideo.livingroom": {
+      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
+      "en": "User-facing video, music, game or TV application.",
+      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
+      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.adservices.api": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.backupconfirm": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.bluetooth": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.cameraextensions": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.captiveportallogin": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.certinstaller": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.companiondevicemanager": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.connectivity.resources": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.cts.ctsshim": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.cts.priv.ctsshim": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.devicelockcontroller": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.dreams.basic": {
+      "ru": "Заставка или фоновый режим ТВ.",
+      "en": "TV screensaver or ambient mode.",
+      "riskRu": "Средний: штатная заставка и фоновый режим могут перестать работать.",
+      "riskEn": "Medium: the stock screensaver and ambient mode may fail.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.dynsystem": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.externalstorage": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.federatedcompute.services": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.health.connect.backuprestore": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.healthconnect.controller": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.hotspot2.osulogin": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.htmlviewer": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.inputdevices": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.intentresolver": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.keychain": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.localtransport": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.location.fused": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.managedprovisioning": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.mtp": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "com.android.nearby.halfsheet": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.networkstack": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.networkstack.tethering": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.networkstack.tethering.droidlogic": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "com.android.ondevicepersonalization.services": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.pacprocessor": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.printspooler": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.providers.calendar": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.providers.contacts": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.providers.downloads": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.providers.media": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.providers.media.module": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.providers.settings": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.providers.settings.auto_generated_rro_product__": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g08"
+      ]
+    },
+    "com.android.providers.settings.auto_generated_rro_vendor__": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.providers.tv": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.providers.userdictionary": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.proxyhandler": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.rkpdapp": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.sdksandbox": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.se": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.settings.intelligence": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.sharedstoragebackup": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.shell": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.soundpicker": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "com.android.statementservice": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.systemui": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.systemui.auto_generated_rro_vendor__": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g08"
+      ]
+    },
+    "com.android.tethering.overlay": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.tethering.overlay.gsi": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.tv.feedbackconsent": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.tv.frameworkpackagestubs": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.tv.globalkeyhandler.overlay": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g10"
+      ]
+    },
+    "com.android.tv.mdnsoffloadmanager": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.tv.overlay.framework": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "com.android.tv.overlay.lowram": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g10"
+      ]
+    },
+    "com.android.tv.overlay.lps.disabled": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "com.android.tv.overlay.networkstack": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.tv.overlay.settingsprovider": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "com.android.tv.overlay.wifi.resources": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.tv.sei.overlay.framework": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "com.android.tv.settings": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.tv.settings.gms.resoverlay": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.tv.settings.google.resoverlay": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.tv.settings.mediatek.resoverlay.subatomic": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g08"
+      ]
+    },
+    "com.android.tv.settings.vendor.resoverlay": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.uwb.resources": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.vending": {
+      "ru": "Google Play: установка и обновление приложений.",
+      "en": "Google Play app installation and updates.",
+      "riskRu": "Средний: установка, обновления и лицензирование могут перестать работать.",
+      "riskEn": "Medium: installation, updates and licensing may fail.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.virtualmachine.res": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.vpndialogs": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.wallpaperbackup": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.wifi.dialog": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.android.wifi.resources": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.arrowsapp.nightscreen": {
+      "ru": "Инструмент управления устройством, лаунчер или фильтр экрана.",
+      "en": "Device control tool, launcher or screen filter.",
+      "riskRu": "Средний: соответствующий способ управления, Home или фильтр станет недоступен.",
+      "riskEn": "Medium: the associated control method, Home or filter will be unavailable.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.cxinventor.file.explorer": {
+      "ru": "Файловый менеджер или установка приложений из файлов.",
+      "en": "File manager or app installation from files.",
+      "riskRu": "Средний: можно потерять выбор файлов, экспорт отчётов или установку APK.",
+      "riskEn": "Medium: file picking, report export or APK installation may become unavailable.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "tcl-g10"
+      ]
+    },
+    "com.cybercat.acbridge": {
+      "ru": "Инструмент управления устройством, лаунчер или фильтр экрана.",
+      "en": "Device control tool, launcher or screen filter.",
+      "riskRu": "Средний: соответствующий способ управления, Home или фильтр станет недоступен.",
+      "riskEn": "Medium: the associated control method, Home or filter will be unavailable.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.cybercat.adbappcontrol.tv": {
+      "ru": "Инструмент управления устройством, лаунчер или фильтр экрана.",
+      "en": "Device control tool, launcher or screen filter.",
+      "riskRu": "Средний: соответствующий способ управления, Home или фильтр станет недоступен.",
+      "riskEn": "Medium: the associated control method, Home or filter will be unavailable.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08"
+      ]
+    },
+    "com.dolby.android.audio.calibration": {
+      "ru": "Обработка, настройка или калибровка звука.",
+      "en": "Audio processing, configuration or calibration.",
+      "riskRu": "Высокий: возможны нарушения звука и его режимов.",
+      "riskEn": "High: audio output or sound modes may be affected.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "tcl-g08"
+      ]
+    },
+    "com.dolby.android.audio.service": {
+      "ru": "Обработка, настройка или калибровка звука.",
+      "en": "Audio processing, configuration or calibration.",
+      "riskRu": "Высокий: возможны нарушения звука и его режимов.",
+      "riskEn": "High: audio output or sound modes may be affected.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.droidlogic": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "com.droidlogic.overlay": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "com.droidlogic.systemui.overlay": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "com.droidlogic.tv.extras": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "com.droidlogic.tv.settings": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "com.droidlogic.tvinput": {
+      "ru": "Телевизионные входы или просмотр эфирных каналов.",
+      "en": "TV input or broadcast channel playback.",
+      "riskRu": "Высокий: возможен отказ входов, каналов или переключения источника.",
+      "riskEn": "High: inputs, channels or source switching may fail.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "com.droidlogic.tvprovider.overlay": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "com.droidlogic.updater": {
+      "ru": "Обновление прошивки или периферии производителя.",
+      "en": "Vendor firmware or peripheral updates.",
+      "riskRu": "Высокий: обновления устройства или пульта могут перестать работать.",
+      "riskEn": "High: device or remote updates may stop working.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "com.droidlogic.wifitetheringoverlay": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "com.google.android.apps.mediashell": {
+      "ru": "Приём Google Cast на телевизоре.",
+      "en": "Google Cast receiver on the TV.",
+      "riskRu": "Средний: трансляция с телефона может перестать работать.",
+      "riskEn": "Medium: casting from another device may stop working.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.google.android.apps.tv.dreamx": {
+      "ru": "Заставка или фоновый режим ТВ.",
+      "en": "TV screensaver or ambient mode.",
+      "riskRu": "Средний: штатная заставка и фоновый режим могут перестать работать.",
+      "riskEn": "Medium: the stock screensaver and ambient mode may fail.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.google.android.apps.tv.launcherx": {
+      "ru": "Системный домашний экран Google TV / Android TV.",
+      "en": "Google TV / Android TV system home screen.",
+      "riskRu": "Высокий: можно потерять Home и путь восстановления. Используйте отдельное управление HOME.",
+      "riskEn": "High: Home and recovery may fail. Use the dedicated HOME controls.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.google.android.appsearch.apk": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g08"
+      ]
+    },
+    "com.google.android.backdrop": {
+      "ru": "Заставка или фоновый режим ТВ.",
+      "en": "TV screensaver or ambient mode.",
+      "riskRu": "Средний: штатная заставка и фоновый режим могут перестать работать.",
+      "riskEn": "Medium: the stock screensaver and ambient mode may fail.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "com.google.android.ext.services": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.google.android.ext.shared": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.google.android.feedback": {
+      "ru": "Отчёты об ошибках и диагностические журналы.",
+      "en": "Error reports and diagnostic logs.",
+      "riskRu": "Не проверен: отключение может лишить сервисной диагностики; зависимости прошивки неизвестны.",
+      "riskEn": "Unverified: service diagnostics may be lost; firmware dependencies are unknown.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.google.android.gms": {
+      "ru": "Службы Google и взаимодействие приложений с сервисами Google.",
+      "en": "Google services and integration used by applications.",
+      "riskRu": "Высокий: возможен отказ авторизации, уведомлений и приложений.",
+      "riskEn": "High: sign-in, notifications and dependent apps may fail.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.google.android.gsf": {
+      "ru": "Службы Google и взаимодействие приложений с сервисами Google.",
+      "en": "Google services and integration used by applications.",
+      "riskRu": "Высокий: возможен отказ авторизации, уведомлений и приложений.",
+      "riskEn": "High: sign-in, notifications and dependent apps may fail.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.google.android.inputmethod.latin": {
+      "ru": "Экранная клавиатура.",
+      "en": "On-screen keyboard.",
+      "riskRu": "Высокий: можно потерять ввод текста.",
+      "riskEn": "High: text input may become unavailable.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.google.android.katniss": {
+      "ru": "Поиск и голосовой помощник Android TV.",
+      "en": "Android TV search and voice assistant.",
+      "riskRu": "Средний: перестанет работать голосовой поиск и связанные кнопки.",
+      "riskEn": "Medium: voice search and related remote buttons may stop working.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.google.android.marvin.talkback": {
+      "ru": "Специальные возможности или озвучивание.",
+      "en": "Accessibility or speech output.",
+      "riskRu": "Средний: исчезнут соответствующие функции доступности.",
+      "riskEn": "Medium: the corresponding accessibility features may be lost.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.google.android.modulemetadata": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.google.android.networkstack.tethering.google": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "com.google.android.overlay.googlewebview": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.google.android.overlay.gtvsconfig": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "com.google.android.overlay.gtvsconfigx": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.google.android.overlay.gtvssettingsprovider": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.google.android.overlay.modules.ext.services": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.google.android.overlay.modules.modulemetadata.forframework": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.google.android.overlay.modules.permissioncontroller": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.google.android.overlay.modules.permissioncontroller.forframework": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.google.android.packageinstaller": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.google.android.partnersetup": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.google.android.permissioncontroller": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.google.android.play.games": {
+      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
+      "en": "User-facing video, music, game or TV application.",
+      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
+      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.google.android.safetycenter.resources": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.google.android.syncadapters.calendar": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.google.android.tts": {
+      "ru": "Специальные возможности или озвучивание.",
+      "en": "Accessibility or speech output.",
+      "riskRu": "Средний: исчезнут соответствующие функции доступности.",
+      "riskEn": "Medium: the corresponding accessibility features may be lost.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.google.android.tungsten.setupwraith": {
+      "ru": "Мастер настройки Google TV; на отдельных прошивках связан с сохранёнными Wi-Fi-сетями и HOME.",
+      "en": "Google TV setup wizard; some firmware ties saved Wi-Fi networks and HOME to it.",
+      "riskRu": "Высокий: риск потери сетей и восстановления HOME. В этом менеджере отключение запрещено.",
+      "riskEn": "High: saved networks and HOME recovery can be affected. Disabling is blocked here.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.google.android.tv.axel": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "com.google.android.tv.dfuservice": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "com.google.android.tv.googletvremotepairer": {
+      "ru": "Служба пульта или его сопряжения.",
+      "en": "Remote control or remote pairing service.",
+      "riskRu": "Высокий: возможно нарушение управления и сопряжения пульта.",
+      "riskEn": "High: remote input or pairing may fail.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "tcl-g10"
+      ]
+    },
+    "com.google.android.tv.overlay.wifi.resources": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "com.google.android.tv.remote.service": {
+      "ru": "Служба пульта или его сопряжения.",
+      "en": "Remote control or remote pairing service.",
+      "riskRu": "Высокий: возможно нарушение управления и сопряжения пульта.",
+      "riskEn": "High: remote input or pairing may fail.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.google.android.tv.settings.energymodes.resoverlay": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.google.android.tvlauncher": {
+      "ru": "Системный домашний экран Google TV / Android TV.",
+      "en": "Google TV / Android TV system home screen.",
+      "riskRu": "Высокий: можно потерять Home и путь восстановления. Используйте отдельное управление HOME.",
+      "riskEn": "High: Home and recovery may fail. Use the dedicated HOME controls.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "com.google.android.tvrecommendations": {
+      "ru": "Рекомендации системного домашнего экрана Android TV.",
+      "en": "Recommendations for the stock Android TV home screen.",
+      "riskRu": "Средний: пропадут рекомендации и связанные строки домашнего экрана.",
+      "riskEn": "Medium: recommendations and related home rows may disappear.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "com.google.android.tvsetup.partnercustomizer": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "com.google.android.videos": {
+      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
+      "en": "User-facing video, music, game or TV application.",
+      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
+      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08"
+      ]
+    },
+    "com.google.android.webview": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.google.android.youtube.tv": {
+      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
+      "en": "User-facing video, music, game or TV application.",
+      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
+      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.google.android.youtube.tvmusic": {
+      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
+      "en": "User-facing video, music, game or TV application.",
+      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
+      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.happproxy": {
+      "ru": "VPN или прокси-соединение.",
+      "en": "VPN or proxy connectivity.",
+      "riskRu": "Высокий: может пропасть используемый сетевой маршрут и доступ к сервисам.",
+      "riskEn": "High: the active network route and access to services may be lost.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "com.mediatek.AirplayAPK": {
+      "ru": "Приём трансляции или зеркалирования экрана.",
+      "en": "Casting or screen mirroring receiver.",
+      "riskRu": "Средний: соответствующая трансляция или зеркалирование перестанет работать.",
+      "riskEn": "Medium: the corresponding casting or mirroring feature may stop working.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "tcl-g08"
+      ]
+    },
+    "com.mediatek.airplaydaemon": {
+      "ru": "Приём трансляции или зеркалирования экрана.",
+      "en": "Casting or screen mirroring receiver.",
+      "riskRu": "Средний: соответствующая трансляция или зеркалирование перестанет работать.",
+      "riskEn": "Medium: the corresponding casting or mirroring feature may stop working.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "tcl-g08"
+      ]
+    },
+    "com.mediatek.android.tv.mdns.offload": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g08"
+      ]
+    },
+    "com.mediatek.android.tv.mdns.offload.overlay": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g08"
+      ]
+    },
+    "com.mediatek.backgrounddetection": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g08"
+      ]
+    },
+    "com.mediatek.network": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g08"
+      ]
+    },
+    "com.mediatek.speakerservice": {
+      "ru": "Обработка, настройка или калибровка звука.",
+      "en": "Audio processing, configuration or calibration.",
+      "riskRu": "Высокий: возможны нарушения звука и его режимов.",
+      "riskEn": "High: audio output or sound modes may be affected.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "tcl-g08"
+      ]
+    },
+    "com.mediatek.support.webview": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g08"
+      ]
+    },
+    "com.nes.blerc": {
+      "ru": "Служба пульта или его сопряжения.",
+      "en": "Remote control or remote pairing service.",
+      "riskRu": "Высокий: возможно нарушение управления и сопряжения пульта.",
+      "riskEn": "High: remote input or pairing may fail.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "com.nes.bugreportsender": {
+      "ru": "Отчёты об ошибках и диагностические журналы.",
+      "en": "Error reports and diagnostic logs.",
+      "riskRu": "Не проверен: отключение может лишить сервисной диагностики; зависимости прошивки неизвестны.",
+      "riskEn": "Unverified: service diagnostics may be lost; firmware dependencies are unknown.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "com.nes.coreservice": {
+      "ru": "Служебный компонент прошивки ТВ.",
+      "en": "TV firmware service component.",
+      "riskRu": "Высокий: точные зависимости не подтверждены, возможны нарушения основных функций.",
+      "riskEn": "High: exact dependencies are unverified; core TV functions may fail.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "com.nes.leanbacklauncher.partnercustomizer": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "com.nes.recents": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "com.nes.seilivetv": {
+      "ru": "Телевизионные входы или просмотр эфирных каналов.",
+      "en": "TV input or broadcast channel playback.",
+      "riskRu": "Высокий: возможен отказ входов, каналов или переключения источника.",
+      "riskEn": "High: inputs, channels or source switching may fail.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "com.nes.skywayclient": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "com.nes.tvglobalkeyhandler": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "com.netflix.ninja": {
+      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
+      "en": "User-facing video, music, game or TV application.",
+      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
+      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.netflix.tokenmanager": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.plexapp.android": {
+      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
+      "en": "User-facing video, music, game or TV application.",
+      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
+      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.realtek.airplay2": {
+      "ru": "Приём трансляции или зеркалирования экрана.",
+      "en": "Casting or screen mirroring receiver.",
+      "riskRu": "Средний: соответствующая трансляция или зеркалирование перестанет работать.",
+      "riskEn": "Medium: the corresponding casting or mirroring feature may stop working.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "tcl-g10"
+      ]
+    },
+    "com.realtek.android.tv.globalkeyoverlay": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g10"
+      ]
+    },
+    "com.realtek.connectivity.resources.overlay": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g10"
+      ]
+    },
+    "com.realtek.display.monitor": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g10"
+      ]
+    },
+    "com.realtek.energymode": {
+      "ru": "Служебный компонент прошивки ТВ.",
+      "en": "TV firmware service component.",
+      "riskRu": "Высокий: точные зависимости не подтверждены, возможны нарушения основных функций.",
+      "riskEn": "High: exact dependencies are unverified; core TV functions may fail.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "tcl-g10"
+      ]
+    },
+    "com.realtek.frameworkoverlay": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g10"
+      ]
+    },
+    "com.realtek.hw.configprovider": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g10"
+      ]
+    },
+    "com.realtek.mdnsoffload": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g10"
+      ]
+    },
+    "com.realtek.power": {
+      "ru": "Служебный компонент прошивки ТВ.",
+      "en": "TV firmware service component.",
+      "riskRu": "Высокий: точные зависимости не подтверждены, возможны нарушения основных функций.",
+      "riskEn": "High: exact dependencies are unverified; core TV functions may fail.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "tcl-g10"
+      ]
+    },
+    "com.realtek.secserviceoverlay": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g10"
+      ]
+    },
+    "com.realtek.tv.mdnsoffloadmanager.resoverlay": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g10"
+      ]
+    },
+    "com.realtek.tv.settings.airplay.resoverlay": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g10"
+      ]
+    },
+    "com.realtek.tvsettings.overlay": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g10"
+      ]
+    },
+    "com.realtek.wifi.resources.overlay": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g10"
+      ]
+    },
+    "com.sei.hdmi.services": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "com.spbtv.rosing": {
+      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
+      "en": "User-facing video, music, game or TV application.",
+      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
+      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.spocky.projengmenu": {
+      "ru": "Инструмент управления устройством, лаунчер или фильтр экрана.",
+      "en": "Device control tool, launcher or screen filter.",
+      "riskRu": "Средний: соответствующий способ управления, Home или фильтр станет недоступен.",
+      "riskEn": "Medium: the associated control method, Home or filter will be unavailable.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08"
+      ]
+    },
+    "com.tcl.UpdatePeripheral": {
+      "ru": "Обновление прошивки или периферии производителя.",
+      "en": "Vendor firmware or peripheral updates.",
+      "riskRu": "Высокий: обновления устройства или пульта могут перестать работать.",
+      "riskEn": "High: device or remote updates may stop working.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.tcl.airplay2": {
+      "ru": "Приём трансляции или зеркалирования экрана.",
+      "en": "Casting or screen mirroring receiver.",
+      "riskRu": "Средний: соответствующая трансляция или зеркалирование перестанет работать.",
+      "riskEn": "Medium: the corresponding casting or mirroring feature may stop working.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.tcl.android.webview": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g10"
+      ]
+    },
+    "com.tcl.autopair": {
+      "ru": "Служба пульта или его сопряжения.",
+      "en": "Remote control or remote pairing service.",
+      "riskRu": "Высокий: возможно нарушение управления и сопряжения пульта.",
+      "riskEn": "High: remote input or pairing may fail.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.tcl.channelplus": {
+      "ru": "Каналы TCL FAST и их интеграция с просмотром ТВ.",
+      "en": "TCL FAST channels and their TV playback integration.",
+      "riskRu": "Средний: исчезнут каналы TCL и связанные пункты ТВ.",
+      "riskEn": "Medium: TCL channels and associated TV entries may disappear.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/main/examples/tcl-g09-google-tv/debloat.txt",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.tcl.dashboard": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g10"
+      ]
+    },
+    "com.tcl.esticker": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.tcl.eva": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g08"
+      ]
+    },
+    "com.tcl.exhibit": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.tcl.factory.view": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.tcl.gamebar": {
+      "ru": "Панель игрового режима TCL.",
+      "en": "TCL game mode panel.",
+      "riskRu": "Средний: игровая панель и связанные настройки могут стать недоступны.",
+      "riskEn": "Medium: game panel and associated settings may become unavailable.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/main/examples/tcl-g09-google-tv/debloat.txt",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.tcl.globalkeyoverlay": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.tcl.guard": {
+      "ru": "Служебный компонент прошивки ТВ.",
+      "en": "TV firmware service component.",
+      "riskRu": "Высокий: точные зависимости не подтверждены, возможны нарушения основных функций.",
+      "riskEn": "High: exact dependencies are unverified; core TV functions may fail.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.tcl.hearaid": {
+      "ru": "Специальные возможности или озвучивание.",
+      "en": "Accessibility or speech output.",
+      "riskRu": "Средний: исчезнут соответствующие функции доступности.",
+      "riskEn": "Medium: the corresponding accessibility features may be lost.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.tcl.hotelmenu": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.tcl.initsetup": {
+      "ru": "Первоначальная настройка TCL и установка каналов.",
+      "en": "TCL initial setup and channel installation.",
+      "riskRu": "Высокий: настройка устройства и каналов может перестать работать.",
+      "riskEn": "High: device and channel setup may fail.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/main/examples/tcl-g09-google-tv/debloat.txt",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.tcl.inputmethod.international": {
+      "ru": "Экранная клавиатура.",
+      "en": "On-screen keyboard.",
+      "riskRu": "Высокий: можно потерять ввод текста.",
+      "riskEn": "High: text input may become unavailable.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.tcl.interactive": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.tcl.logkit": {
+      "ru": "Отчёты об ошибках и диагностические журналы.",
+      "en": "Error reports and diagnostic logs.",
+      "riskRu": "Не проверен: отключение может лишить сервисной диагностики; зависимости прошивки неизвестны.",
+      "riskEn": "Unverified: service diagnostics may be lost; firmware dependencies are unknown.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.tcl.magiconnectfree": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g10"
+      ]
+    },
+    "com.tcl.messagebox": {
+      "ru": "Уведомления и сообщения TCL.",
+      "en": "TCL notifications and messages.",
+      "riskRu": "Не проверен: сообщения производителя могут перестать приходить.",
+      "riskEn": "Unverified: vendor messages may stop arriving.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/main/examples/tcl-g09-google-tv/debloat.txt",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.tcl.miracast": {
+      "ru": "Приём трансляции или зеркалирования экрана.",
+      "en": "Casting or screen mirroring receiver.",
+      "riskRu": "Средний: соответствующая трансляция или зеркалирование перестанет работать.",
+      "riskEn": "Medium: the corresponding casting or mirroring feature may stop working.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "tcl-g10"
+      ]
+    },
+    "com.tcl.ocean.instructions": {
+      "ru": "Электронное руководство TCL.",
+      "en": "TCL electronic user manual.",
+      "riskRu": "Средний: встроенное руководство станет недоступно; зависимости этой прошивки не проверены.",
+      "riskEn": "Medium: the built-in manual becomes unavailable; dependencies on this firmware are unverified.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/main/examples/tcl-g09-google-tv/debloat.txt",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.tcl.overlay.frameworkres": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.tcl.partnercustomizer": {
+      "ru": "Настройка TCL строк системного домашнего экрана.",
+      "en": "TCL customization of stock home screen rows.",
+      "riskRu": "Средний: могут исчезнуть строки и плитка TV в системном Home.",
+      "riskEn": "Medium: rows and the TV tile in the stock Home may disappear.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/main/examples/tcl-g09-google-tv/debloat.txt",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.tcl.providers.config": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.tcl.repairguide": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.tcl.smartalexa": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g10"
+      ]
+    },
+    "com.tcl.smartlink.core": {
+      "ru": "Служба TCL с компонентом фоновой установки приложений.",
+      "en": "TCL service containing a background app installation component.",
+      "riskRu": "Не проверен: фоновые установки и другие интеграции TCL могут перестать работать.",
+      "riskEn": "Unverified: background installation and other TCL integrations may fail.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/main/examples/tcl-g09-google-tv/debloat.txt",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.tcl.suspension": {
+      "ru": "Панель выбора источников TCL.",
+      "en": "TCL source selection panel.",
+      "riskRu": "Высокий: выбор входов и источников может перестать работать.",
+      "riskEn": "High: input and source selection may fail.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/main/examples/tcl-g09-google-tv/debloat.txt",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.tcl.systemserver": {
+      "ru": "Служебный компонент прошивки ТВ.",
+      "en": "TV firmware service component.",
+      "riskRu": "Высокий: точные зависимости не подтверждены, возможны нарушения основных функций.",
+      "riskEn": "High: exact dependencies are unverified; core TV functions may fail.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.tcl.systemui.plugin": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.tcl.t_solo": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.tcl.ttvs": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.tcl.tv": {
+      "ru": "Телевизионные входы или просмотр эфирных каналов.",
+      "en": "TV input or broadcast channel playback.",
+      "riskRu": "Высокий: возможен отказ входов, каналов или переключения источника.",
+      "riskEn": "High: inputs, channels or source switching may fail.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.tcl.tv.overlay": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g08"
+      ]
+    },
+    "com.tcl.tv.tclhome_passive": {
+      "ru": "Доставка контента TCL на домашний экран.",
+      "en": "TCL content delivery to the home screen.",
+      "riskRu": "Не проверен: интеграция TCL Home может перестать работать.",
+      "riskEn": "Unverified: TCL Home integration may stop working.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/main/examples/tcl-g09-google-tv/debloat.txt",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.tcl.tvinput": {
+      "ru": "Телевизионные входы или просмотр эфирных каналов.",
+      "en": "TV input or broadcast channel playback.",
+      "riskRu": "Высокий: возможен отказ входов, каналов или переключения источника.",
+      "riskEn": "High: inputs, channels or source switching may fail.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.tcl.ui_mediaCenter": {
+      "ru": "Проигрыватель TCL для локальных и USB-файлов.",
+      "en": "TCL player for local and USB files.",
+      "riskRu": "Средний: штатный просмотр файлов с USB может перестать работать.",
+      "riskEn": "Medium: stock playback from USB may become unavailable.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/main/examples/tcl-g09-google-tv/debloat.txt",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.tcl.useragreement": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.tcl.usercenter": {
+      "ru": "Вход в учётную запись TCL.",
+      "en": "TCL account sign-in.",
+      "riskRu": "Средний: вход и связанные сервисы TCL могут перестать работать.",
+      "riskEn": "Medium: TCL sign-in and related services may fail.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/main/examples/tcl-g09-google-tv/debloat.txt",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.tcl.waterfall.overseas": {
+      "ru": "Рекомендации контента TCL.",
+      "en": "TCL content recommendations.",
+      "riskRu": "Не проверен: рекомендации и интеграции TCL могут исчезнуть.",
+      "riskEn": "Unverified: TCL recommendations and integrations may disappear.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/main/examples/tcl-g09-google-tv/debloat.txt",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.tcl.webview": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g08"
+      ]
+    },
+    "com.tpa.kb": {
+      "ru": "Экранная клавиатура.",
+      "en": "On-screen keyboard.",
+      "riskRu": "Высокий: можно потерять ввод текста.",
+      "riskEn": "High: text input may become unavailable.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.tvos": {
+      "ru": "Служебный компонент прошивки ТВ.",
+      "en": "TV firmware service component.",
+      "riskRu": "Высокий: точные зависимости не подтверждены, возможны нарушения основных функций.",
+      "riskEn": "High: exact dependencies are unverified; core TV functions may fail.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "com.utsmta.app": {
+      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
+      "en": "User-facing video, music, game or TV application.",
+      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
+      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "com.vk.tv": {
+      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
+      "en": "User-facing video, music, game or TV application.",
+      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
+      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "com.wireguard.android": {
+      "ru": "VPN или прокси-соединение.",
+      "en": "VPN or proxy connectivity.",
+      "riskRu": "Высокий: может пропасть используемый сетевой маршрут и доступ к сервисам.",
+      "riskEn": "High: the active network route and access to services may be lost.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "io.github.kirillshchetinnikov.cutelauncher": {
+      "ru": "CuteLauncher — текущий лаунчер и менеджер управления ТВ.",
+      "en": "CuteLauncher — the launcher and TV control manager.",
+      "riskRu": "Высокий: отключение лишит доступа к менеджеру и его восстановлению.",
+      "riskEn": "High: disabling removes access to this manager and its recovery controls.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "net.gtvbox.installer": {
+      "ru": "Файловый менеджер или установка приложений из файлов.",
+      "en": "File manager or app installation from files.",
+      "riskRu": "Средний: можно потерять выбор файлов, экспорт отчётов или установку APK.",
+      "riskEn": "Medium: file picking, report export or APK installation may become unavailable.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "net.gtvbox.videoplayer": {
+      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
+      "en": "User-facing video, music, game or TV application.",
+      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
+      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "tcl-g08"
+      ]
+    },
+    "net.gtvbox.vimuhd": {
+      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
+      "en": "User-facing video, music, game or TV application.",
+      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
+      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "org.amnezia.awg": {
+      "ru": "VPN или прокси-соединение.",
+      "en": "VPN or proxy connectivity.",
+      "riskRu": "Высокий: может пропасть используемый сетевой маршрут и доступ к сервисам.",
+      "riskEn": "High: the active network route and access to services may be lost.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "org.courville.nova": {
+      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
+      "en": "User-facing video, music, game or TV application.",
+      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
+      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08"
+      ]
+    },
+    "org.dtvkit.inputsource": {
+      "ru": "Телевизионные входы или просмотр эфирных каналов.",
+      "en": "TV input or broadcast channel playback.",
+      "riskRu": "Высокий: возможен отказ входов, каналов или переключения источника.",
+      "riskEn": "High: inputs, channels or source switching may fail.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "org.jellyfin.androidtv": {
+      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
+      "en": "User-facing video, music, game or TV application.",
+      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
+      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "tcl-g08"
+      ]
+    },
+    "org.smarttube.stable": {
+      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
+      "en": "User-facing video, music, game or TV application.",
+      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
+      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "rtb.mobile.android": {
+      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
+      "en": "User-facing video, music, game or TV application.",
+      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
+      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "tcl-g08"
+      ]
+    },
+    "ru.beeline.tve.android": {
+      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
+      "en": "User-facing video, music, game or TV application.",
+      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
+      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "ru.ivi.client": {
+      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
+      "en": "User-facing video, music, game or TV application.",
+      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
+      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08"
+      ]
+    },
+    "ru.kinopoisk.tv": {
+      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
+      "en": "User-facing video, music, game or TV application.",
+      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
+      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "ru.more.play": {
+      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
+      "en": "User-facing video, music, game or TV application.",
+      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
+      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz",
+        "tcl-g08",
+        "tcl-g10"
+      ]
+    },
+    "ru.rutube.app": {
+      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
+      "en": "User-facing video, music, game or TV application.",
+      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
+      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "kp1-yyz"
+      ]
+    },
+    "tv.mopa.ginga": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g08"
+      ]
+    },
+    "tv.samba.ssm.ui": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g10"
+      ]
+    },
+    "tv.twitch.android.app": {
+      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
+      "en": "User-facing video, music, game or TV application.",
+      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
+      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only); manual functional review",
+      "observedOn": [
+        "tcl-g08"
+      ]
+    }
+  }
+}

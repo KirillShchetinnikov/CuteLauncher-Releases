@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "reportType": "tvDisableList",
+  "capturedAt": "2026-10-21T07:55:37.882343+00:00",
+  "identity": {
+    "manufacturer": "SEI Robotics",
+    "model": "KP1",
+    "device": "YYZ",
+    "fingerprint": "Kickpi/SEI700BKP/YYZ:14/UKG3.251130.001/9314:user/release-keys",
+    "firmware": "UKG3.251130.001.9314",
+    "android": "14",
+    "sdk": "34",
+    "abis": "armeabi-v7a,armeabi"
+  },
+  "verification": "observedOnly",
+  "packages": [
+    "com.amazon.amazonvideo.livingroom",
+    "com.android.printspooler",
+    "com.android.providers.calendar",
+    "com.android.providers.contacts",
+    "com.android.tv.frameworkpackagestubs",
+    "com.droidlogic.overlay",
+    "com.google.android.feedback",
+    "com.google.android.katniss",
+    "com.google.android.partnersetup",
+    "com.google.android.play.games",
+    "com.google.android.syncadapters.calendar",
+    "com.google.android.tts",
+    "com.google.android.tvlauncher",
+    "com.google.android.videos",
+    "com.google.android.youtube.tvmusic",
+    "com.nes.seilivetv",
+    "com.nes.skywayclient",
+    "com.nes.tvglobalkeyhandler",
+    "com.spocky.projengmenu",
+    "com.utsmta.app"
+  ]
+}

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="screensaver_label">Часы CuteLauncher</string>
+    <string name="notification_service_label">CuteLauncher: доступ к уведомлениям</string>
+    <string name="accessibility_service_label">CuteLauncher</string>
+<string name="night_mode_title">Ночной режим</string><string name="night_mode_notice">Фильтр экрана включён; учитывается расписание</string><string name="night_mode_stop">Выключить</string>
+</resources>

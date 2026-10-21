@@ -1,0 +1,1565 @@
+{
+  "schemaVersion": 1,
+  "reportType": "tvApplicationInventory",
+  "scope": "adbReadOnlyInventory",
+  "capturedAt": "2026-10-21T08:06:37.161611+00:00",
+  "identity": {
+    "manufacturer": "SEI Robotics",
+    "model": "KP1",
+    "device": "YYZ",
+    "fingerprint": "Kickpi/SEI700BKP/YYZ:14/UKG3.251130.001/9314:user/release-keys",
+    "firmware": "UKG3.251130.001.9314",
+    "android": "14",
+    "sdk": "34",
+    "abis": "armeabi-v7a,armeabi"
+  },
+  "diagnostics": {
+    "currentHome": "io.github.kirillshchetinnikov.cutelauncher/com.leanbitlab.ltvL.MainActivity",
+    "packageCount": 148,
+    "disabledCount": 20,
+    "launcher": {
+      "package": "io.github.kirillshchetinnikov.cutelauncher",
+      "versionName": "1.0.24",
+      "versionCode": "73",
+      "targetSdk": "35",
+      "appId": "10033",
+      "requestedPermissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_NETWORK_STATE",
+        "android.permission.ACCESS_WIFI_STATE",
+        "android.permission.CHANGE_WIFI_STATE",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.FOREGROUND_SERVICE_SPECIAL_USE",
+        "android.permission.INTERNET",
+        "android.permission.PACKAGE_USAGE_STATS",
+        "android.permission.POST_NOTIFICATIONS",
+        "android.permission.QUERY_ALL_PACKAGES",
+        "android.permission.READ_TV_LISTINGS",
+        "android.permission.RECEIVE_BOOT_COMPLETED",
+        "android.permission.REQUEST_DELETE_PACKAGES",
+        "android.permission.REQUEST_INSTALL_PACKAGES",
+        "android.permission.SCHEDULE_EXACT_ALARM",
+        "android.permission.SYSTEM_ALERT_WINDOW",
+        "android.permission.WRITE_SETTINGS",
+        "com.android.providers.tv.permission.READ_EPG_DATA",
+        "com.android.providers.tv.permission.READ_WRITE_WATCH_NEXT_PROGRAMS",
+        "io.github.kirillshchetinnikov.cutelauncher.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION",
+        "org.breezyweather.READ_PROVIDER"
+      ],
+      "system": false,
+      "enabledSetting": 0
+    },
+    "androidTvFeature": true,
+    "launcherPssKiB": 101348,
+    "accessibilityEnabled": false,
+    "notificationListenerEnabled": true,
+    "limits": [
+      "ADB shell observations, not application-UID diagnostics",
+      "No hardware, playback, input, sleep or disable/restore tests performed"
+    ]
+  },
+  "packages": [
+    {
+      "package": "android",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "1000",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "android.autoinstalls.config.sei",
+      "versionName": "1",
+      "versionCode": "1",
+      "targetSdk": "34",
+      "appId": "10031",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.alphainventor.filemanager",
+      "versionName": "3.8.3",
+      "versionCode": "2103083",
+      "targetSdk": "36",
+      "appId": "10077",
+      "requestedPermissions": null,
+      "system": false,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.amazon.amazonvideo.livingroom",
+      "versionName": "6.23.14+v15.4.0.551-armv7a",
+      "versionCode": "606023141",
+      "targetSdk": "35",
+      "appId": "10028",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 3
+    },
+    {
+      "package": "com.android.adservices.api",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "10111",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.backupconfirm",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "10017",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.bluetooth",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "1002",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.cameraextensions",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "10097",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.captiveportallogin",
+      "versionName": "14",
+      "versionCode": "340090000",
+      "targetSdk": "33",
+      "appId": "10029",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.certinstaller",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "10035",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.companiondevicemanager",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "10027",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.connectivity.resources",
+      "versionName": "S-initial",
+      "versionCode": "1",
+      "targetSdk": "34",
+      "appId": "10069",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.cts.ctsshim",
+      "versionName": "14-10093150",
+      "versionCode": "34",
+      "targetSdk": "28",
+      "appId": "10110",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.cts.priv.ctsshim",
+      "versionName": "14-10093150",
+      "versionCode": "34",
+      "targetSdk": "28",
+      "appId": "10023",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.devicelockcontroller",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "10102",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.dreams.basic",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "10030",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.dynsystem",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "1000",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.externalstorage",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "10022",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.federatedcompute.services",
+      "versionName": "T-initial",
+      "versionCode": "1",
+      "targetSdk": "34",
+      "appId": "10115",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.health.connect.backuprestore",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "10105",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.healthconnect.controller",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "10104",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.hotspot2.osulogin",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "10068",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.htmlviewer",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "10032",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.inputdevices",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "1000",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.intentresolver",
+      "versionName": "2021-11",
+      "versionCode": "0",
+      "targetSdk": "34",
+      "appId": "10096",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.keychain",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "1000",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.localtransport",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "1000",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.location.fused",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "1000",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.managedprovisioning",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "10020",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.mtp",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "10013",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.nearby.halfsheet",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "10106",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.networkstack",
+      "versionName": "T-next",
+      "versionCode": "340090000",
+      "targetSdk": "34",
+      "appId": "1073",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.networkstack.tethering",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "1073",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.networkstack.tethering.droidlogic",
+      "versionName": "1.0",
+      "versionCode": "1",
+      "targetSdk": "34",
+      "appId": "10012",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.ondevicepersonalization.services",
+      "versionName": "T-initial",
+      "versionCode": "1",
+      "targetSdk": "34",
+      "appId": "10116",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.pacprocessor",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "10034",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.printspooler",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "10037",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 3
+    },
+    {
+      "package": "com.android.providers.calendar",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "10018",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 3
+    },
+    {
+      "package": "com.android.providers.contacts",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "10014",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 3
+    },
+    {
+      "package": "com.android.providers.downloads",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "10013",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.providers.media",
+      "versionName": "14",
+      "versionCode": "1024",
+      "targetSdk": "34",
+      "appId": "10013",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.providers.media.module",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "10071",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.providers.settings",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "1000",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.providers.tv",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "10021",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.providers.userdictionary",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "10014",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.proxyhandler",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "10019",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.rkpdapp",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "10109",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.sdksandbox",
+      "versionName": "T-initial",
+      "versionCode": "1",
+      "targetSdk": "34",
+      "appId": "10112",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.se",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "1068",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.settings.intelligence",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "31",
+      "appId": "10046",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.sharedstoragebackup",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "10026",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.shell",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "2000",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.soundpicker",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "10013",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.statementservice",
+      "versionName": "1.0",
+      "versionCode": "1",
+      "targetSdk": "29",
+      "appId": "10025",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.systemui",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "10062",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.tv.feedbackconsent",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "1000",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.tv.frameworkpackagestubs",
+      "versionName": "1.0.1",
+      "versionCode": "1",
+      "targetSdk": "34",
+      "appId": "10065",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 2
+    },
+    {
+      "package": "com.android.tv.overlay.framework",
+      "versionName": "1.0",
+      "versionCode": "1",
+      "targetSdk": "34",
+      "appId": "10085",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.tv.overlay.lps.disabled",
+      "versionName": "1.0",
+      "versionCode": "1",
+      "targetSdk": "34",
+      "appId": "10083",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.tv.overlay.networkstack",
+      "versionName": "1.0",
+      "versionCode": "1",
+      "targetSdk": "34",
+      "appId": "10087",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.tv.overlay.settingsprovider",
+      "versionName": "1.0",
+      "versionCode": "1",
+      "targetSdk": "34",
+      "appId": "10000",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.tv.sei.overlay.framework",
+      "versionName": "1.0",
+      "versionCode": "1",
+      "targetSdk": "34",
+      "appId": "10081",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.tv.settings",
+      "versionName": "1.0",
+      "versionCode": "1",
+      "targetSdk": "34",
+      "appId": "1000",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.tv.settings.gms.resoverlay",
+      "versionName": "1.0",
+      "versionCode": "1",
+      "targetSdk": "34",
+      "appId": "10002",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.uwb.resources",
+      "versionName": "T-initial",
+      "versionCode": "1",
+      "targetSdk": "34",
+      "appId": "10118",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.vending",
+      "versionName": "50.6.17-31 [8] [PR] 883281836",
+      "versionCode": "85061718",
+      "targetSdk": "36",
+      "appId": "10048",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.virtualmachine.res",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "10117",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.vpndialogs",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "10024",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.wallpaperbackup",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "1000",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.wifi.dialog",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "10113",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.android.wifi.resources",
+      "versionName": "R-initial",
+      "versionCode": "1",
+      "targetSdk": "34",
+      "appId": "10067",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.cybercat.adbappcontrol.tv",
+      "versionName": "1.12",
+      "versionCode": "170",
+      "targetSdk": "36",
+      "appId": "10101",
+      "requestedPermissions": null,
+      "system": false,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.dolby.android.audio.service",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "1000",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.droidlogic",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "1000",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.droidlogic.overlay",
+      "versionName": "1.0",
+      "versionCode": "1",
+      "targetSdk": "34",
+      "appId": "10003",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 3
+    },
+    {
+      "package": "com.droidlogic.systemui.overlay",
+      "versionName": "1.0",
+      "versionCode": "1",
+      "targetSdk": "34",
+      "appId": "10082",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.droidlogic.tv.extras",
+      "versionName": "1.0",
+      "versionCode": "1",
+      "targetSdk": "34",
+      "appId": "1000",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.droidlogic.tv.settings",
+      "versionName": "1.0",
+      "versionCode": "1",
+      "targetSdk": "34",
+      "appId": "1000",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.droidlogic.tvinput",
+      "versionName": "1.0",
+      "versionCode": "1",
+      "targetSdk": "34",
+      "appId": "10098",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.droidlogic.tvprovider.overlay",
+      "versionName": "1.0",
+      "versionCode": "1",
+      "targetSdk": "34",
+      "appId": "10084",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.droidlogic.updater",
+      "versionName": "2026052901-fit35",
+      "versionCode": "2026052901",
+      "targetSdk": "35",
+      "appId": "1000",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.droidlogic.wifitetheringoverlay",
+      "versionName": "1.0",
+      "versionCode": "1",
+      "targetSdk": "34",
+      "appId": "10008",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.google.android.apps.mediashell",
+      "versionName": "3.72.446070",
+      "versionCode": "446070212",
+      "targetSdk": "34",
+      "appId": "10047",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.google.android.backdrop",
+      "versionName": "1.8.1",
+      "versionCode": "1008002",
+      "targetSdk": "36",
+      "appId": "10042",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.google.android.ext.services",
+      "versionName": "aml_361153320",
+      "versionCode": "361153320",
+      "targetSdk": "36",
+      "appId": "10072",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.google.android.ext.shared",
+      "versionName": "1",
+      "versionCode": "1",
+      "targetSdk": "34",
+      "appId": "10036",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.google.android.feedback",
+      "versionName": "14-10342258",
+      "versionCode": "34",
+      "targetSdk": "33",
+      "appId": "10063",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 3
+    },
+    {
+      "package": "com.google.android.gms",
+      "versionName": "25.50.34 (180300-855735097)",
+      "versionCode": "255034118",
+      "targetSdk": "36",
+      "appId": "10050",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.google.android.gsf",
+      "versionName": "14-10342258",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "10050",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.google.android.inputmethod.latin",
+      "versionName": "16.1.02.808050806-tv_release-armeabi-v7a",
+      "versionCode": "175416037",
+      "targetSdk": "35",
+      "appId": "10059",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.google.android.katniss",
+      "versionName": "7.50.21+891815343.02",
+      "versionCode": "15032599",
+      "targetSdk": "36",
+      "appId": "10044",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 3
+    },
+    {
+      "package": "com.google.android.marvin.talkback",
+      "versionName": "14.2.0.740629310 leanback",
+      "versionCode": "60146745",
+      "targetSdk": "36",
+      "appId": "10040",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.google.android.modulemetadata",
+      "versionName": "2025-11-01S+",
+      "versionCode": "361143904",
+      "targetSdk": "36",
+      "appId": "10051",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.google.android.networkstack.tethering.google",
+      "versionName": "1.0",
+      "versionCode": "1",
+      "targetSdk": "34",
+      "appId": "10089",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.google.android.overlay.googlewebview",
+      "versionName": "1.0",
+      "versionCode": "1",
+      "targetSdk": "34",
+      "appId": "10005",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.google.android.overlay.gtvsconfig",
+      "versionName": "1.0",
+      "versionCode": "1",
+      "targetSdk": "34",
+      "appId": "10004",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.google.android.overlay.modules.ext.services",
+      "versionName": "1.0",
+      "versionCode": "1",
+      "targetSdk": "34",
+      "appId": "10006",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.google.android.overlay.modules.modulemetadata.forframework",
+      "versionName": "1.0",
+      "versionCode": "1",
+      "targetSdk": "34",
+      "appId": "10009",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.google.android.overlay.modules.permissioncontroller",
+      "versionName": "1.0",
+      "versionCode": "1",
+      "targetSdk": "34",
+      "appId": "10001",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.google.android.overlay.modules.permissioncontroller.forframework",
+      "versionName": "1.0",
+      "versionCode": "1",
+      "targetSdk": "34",
+      "appId": "10007",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.google.android.packageinstaller",
+      "versionName": "14-13687712",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "10016",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.google.android.partnersetup",
+      "versionName": "100.448391512",
+      "versionCode": "1450",
+      "targetSdk": "33",
+      "appId": "10064",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 3
+    },
+    {
+      "package": "com.google.android.permissioncontroller",
+      "versionName": "aml_361154140",
+      "versionCode": "361154140",
+      "targetSdk": "36",
+      "appId": "10070",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.google.android.play.games",
+      "versionName": "2025.09.62452 (827342201.827342201-040700)",
+      "versionCode": "624525470",
+      "targetSdk": "35",
+      "appId": "10060",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 3
+    },
+    {
+      "package": "com.google.android.safetycenter.resources",
+      "versionName": "33 system image",
+      "versionCode": "339999900",
+      "targetSdk": "36",
+      "appId": "10114",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.google.android.syncadapters.calendar",
+      "versionName": "2023.18.3-530889391-release",
+      "versionCode": "2017191822",
+      "targetSdk": "33",
+      "appId": "10061",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 3
+    },
+    {
+      "package": "com.google.android.tts",
+      "versionName": "googletts.google-speech-apk_20260316.02_p0.884694279",
+      "versionCode": "210630123",
+      "targetSdk": "36",
+      "appId": "10054",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 3
+    },
+    {
+      "package": "com.google.android.tungsten.setupwraith",
+      "versionName": "1.0.885786060",
+      "versionCode": "2018121672",
+      "targetSdk": "36",
+      "appId": "10049",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.google.android.tv.axel",
+      "versionName": "0.27.437263842",
+      "versionCode": "76",
+      "targetSdk": "31",
+      "appId": "10015",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.google.android.tv.dfuservice",
+      "versionName": "dfuservice_20250819_2055.848041171",
+      "versionCode": "710",
+      "targetSdk": "36",
+      "appId": "10094",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.google.android.tv.overlay.wifi.resources",
+      "versionName": "1.0",
+      "versionCode": "1",
+      "targetSdk": "34",
+      "appId": "10088",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.google.android.tv.remote.service",
+      "versionName": "6.7.838642963",
+      "versionCode": "95855530",
+      "targetSdk": "36",
+      "appId": "10045",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.google.android.tv.settings.energymodes.resoverlay",
+      "versionName": "1.0",
+      "versionCode": "1",
+      "targetSdk": "34",
+      "appId": "10011",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.google.android.tvlauncher",
+      "versionName": "7.5.9-877845869-f",
+      "versionCode": "1010940617",
+      "targetSdk": "36",
+      "appId": "10039",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 3
+    },
+    {
+      "package": "com.google.android.tvrecommendations",
+      "versionName": "7.4.0-848496343-f",
+      "versionCode": "1010926449",
+      "targetSdk": "36",
+      "appId": "10041",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.google.android.tvsetup.partnercustomizer",
+      "versionName": "v1.0.0.3",
+      "versionCode": "202510231",
+      "targetSdk": "34",
+      "appId": "1000",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.google.android.videos",
+      "versionName": "4.40.15.23-tv",
+      "versionCode": "44015257",
+      "targetSdk": "33",
+      "appId": "10057",
+      "requestedPermissions": null,
+      "system": false,
+      "enabledSetting": 3
+    },
+    {
+      "package": "com.google.android.webview",
+      "versionName": "146.0.7680.119",
+      "versionCode": "768011900",
+      "targetSdk": "36",
+      "appId": "10053",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.google.android.youtube.tv",
+      "versionName": "5.30.304",
+      "versionCode": "530304320",
+      "targetSdk": "34",
+      "appId": "10055",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.google.android.youtube.tvmusic",
+      "versionName": "1.12.07",
+      "versionCode": "112007300",
+      "targetSdk": "36",
+      "appId": "10056",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 3
+    },
+    {
+      "package": "com.happproxy",
+      "versionName": "4.7.1",
+      "versionCode": "1999",
+      "targetSdk": "37",
+      "appId": "10010",
+      "requestedPermissions": null,
+      "system": false,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.nes.blerc",
+      "versionName": "v4.2.55.0",
+      "versionCode": "20260605",
+      "targetSdk": "36",
+      "appId": "1000",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.nes.bugreportsender",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "10090",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.nes.coreservice",
+      "versionName": "1.0.6.136",
+      "versionCode": "260516519",
+      "targetSdk": "34",
+      "appId": "1000",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.nes.leanbacklauncher.partnercustomizer",
+      "versionName": "v1.0.0.2",
+      "versionCode": "20240611",
+      "targetSdk": "34",
+      "appId": "1000",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.nes.recents",
+      "versionName": "1.4.2-fit36-2026012001",
+      "versionCode": "2026012001",
+      "targetSdk": "34",
+      "appId": "1000",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.nes.seilivetv",
+      "versionName": "V.1.4.2.1",
+      "versionCode": "202605210",
+      "targetSdk": "33",
+      "appId": "1000",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 2
+    },
+    {
+      "package": "com.nes.skywayclient",
+      "versionName": "4.12.4-2026020602-fit35",
+      "versionCode": "2026020602",
+      "targetSdk": "35",
+      "appId": "1000",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 3
+    },
+    {
+      "package": "com.nes.tvglobalkeyhandler",
+      "versionName": "1.0.202408230",
+      "versionCode": "202408230",
+      "targetSdk": "34",
+      "appId": "1000",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 3
+    },
+    {
+      "package": "com.netflix.ninja",
+      "versionName": "12.0.7 build 22099",
+      "versionCode": "22099",
+      "targetSdk": "34",
+      "appId": "10058",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.netflix.tokenmanager",
+      "versionName": "14",
+      "versionCode": "34",
+      "targetSdk": "34",
+      "appId": "1000",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.plexapp.android",
+      "versionName": "2026.20.0",
+      "versionCode": "971050504",
+      "targetSdk": "36",
+      "appId": "10074",
+      "requestedPermissions": null,
+      "system": false,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.sei.hdmi.services",
+      "versionName": "v1.0.0.3",
+      "versionCode": "20250306",
+      "targetSdk": "34",
+      "appId": "1000",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.spocky.projengmenu",
+      "versionName": "4.68",
+      "versionCode": "82",
+      "targetSdk": "35",
+      "appId": "10100",
+      "requestedPermissions": null,
+      "system": false,
+      "enabledSetting": 3
+    },
+    {
+      "package": "com.utsmta.app",
+      "versionName": "v1.28",
+      "versionCode": "29",
+      "targetSdk": "34",
+      "appId": "1000",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 3
+    },
+    {
+      "package": "com.vk.tv",
+      "versionName": "2.102",
+      "versionCode": "64694",
+      "targetSdk": "35",
+      "appId": "10091",
+      "requestedPermissions": null,
+      "system": false,
+      "enabledSetting": 0
+    },
+    {
+      "package": "com.wireguard.android",
+      "versionName": "1.0.20250531",
+      "versionCode": "516",
+      "targetSdk": "36",
+      "appId": "10086",
+      "requestedPermissions": null,
+      "system": false,
+      "enabledSetting": 0
+    },
+    {
+      "package": "io.github.kirillshchetinnikov.cutelauncher",
+      "versionName": "1.0.24",
+      "versionCode": "73",
+      "targetSdk": "35",
+      "appId": "10033",
+      "requestedPermissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_NETWORK_STATE",
+        "android.permission.ACCESS_WIFI_STATE",
+        "android.permission.CHANGE_WIFI_STATE",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.FOREGROUND_SERVICE_SPECIAL_USE",
+        "android.permission.INTERNET",
+        "android.permission.PACKAGE_USAGE_STATS",
+        "android.permission.POST_NOTIFICATIONS",
+        "android.permission.QUERY_ALL_PACKAGES",
+        "android.permission.READ_TV_LISTINGS",
+        "android.permission.RECEIVE_BOOT_COMPLETED",
+        "android.permission.REQUEST_DELETE_PACKAGES",
+        "android.permission.REQUEST_INSTALL_PACKAGES",
+        "android.permission.SCHEDULE_EXACT_ALARM",
+        "android.permission.SYSTEM_ALERT_WINDOW",
+        "android.permission.WRITE_SETTINGS",
+        "com.android.providers.tv.permission.READ_EPG_DATA",
+        "com.android.providers.tv.permission.READ_WRITE_WATCH_NEXT_PROGRAMS",
+        "io.github.kirillshchetinnikov.cutelauncher.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION",
+        "org.breezyweather.READ_PROVIDER"
+      ],
+      "system": false,
+      "enabledSetting": 0
+    },
+    {
+      "package": "net.gtvbox.vimuhd",
+      "versionName": "10.77",
+      "versionCode": "1077",
+      "targetSdk": "35",
+      "appId": "10093",
+      "requestedPermissions": null,
+      "system": false,
+      "enabledSetting": 0
+    },
+    {
+      "package": "org.amnezia.awg",
+      "versionName": "3.1.4",
+      "versionCode": "13",
+      "targetSdk": "36",
+      "appId": "10103",
+      "requestedPermissions": null,
+      "system": false,
+      "enabledSetting": 0
+    },
+    {
+      "package": "org.courville.nova",
+      "versionName": "6.4.72-20260924.2228",
+      "versionCode": "2670808",
+      "targetSdk": "36",
+      "appId": "10073",
+      "requestedPermissions": null,
+      "system": false,
+      "enabledSetting": 0
+    },
+    {
+      "package": "org.dtvkit.inputsource",
+      "versionName": "V.1.0.43.0",
+      "versionCode": "202604280",
+      "targetSdk": "36",
+      "appId": "10038",
+      "requestedPermissions": null,
+      "system": true,
+      "enabledSetting": 0
+    },
+    {
+      "package": "org.smarttube.stable",
+      "versionName": "32.56",
+      "versionCode": "2446",
+      "targetSdk": "34",
+      "appId": "10107",
+      "requestedPermissions": null,
+      "system": false,
+      "enabledSetting": 0
+    },
+    {
+      "package": "ru.beeline.tve.android",
+      "versionName": "13.1.0",
+      "versionCode": "1301000",
+      "targetSdk": "33",
+      "appId": "10076",
+      "requestedPermissions": null,
+      "system": false,
+      "enabledSetting": 0
+    },
+    {
+      "package": "ru.ivi.client",
+      "versionName": "26.10.2",
+      "versionCode": "17520",
+      "targetSdk": "37",
+      "appId": "10095",
+      "requestedPermissions": null,
+      "system": false,
+      "enabledSetting": 0
+    },
+    {
+      "package": "ru.kinopoisk.tv",
+      "versionName": "2.270.8",
+      "versionCode": "200686",
+      "targetSdk": "36",
+      "appId": "10075",
+      "requestedPermissions": null,
+      "system": false,
+      "enabledSetting": 0
+    },
+    {
+      "package": "ru.more.play",
+      "versionName": "3.193.1",
+      "versionCode": "2009400",
+      "targetSdk": "35",
+      "appId": "10078",
+      "requestedPermissions": null,
+      "system": false,
+      "enabledSetting": 0
+    },
+    {
+      "package": "ru.rutube.app",
+      "versionName": "30.3.1.TV-general",
+      "versionCode": "103003001",
+      "targetSdk": "35",
+      "appId": "10092",
+      "requestedPermissions": null,
+      "system": false,
+      "enabledSetting": 0
+    }
+  ]
+}
