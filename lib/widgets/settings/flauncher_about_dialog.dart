@@ -86,7 +86,7 @@ class CuteLauncherAboutDialog extends StatelessWidget {
               ),
               const SizedBox(height: 2),
               Text(
-                "${AppLocalizations.of(context)!.updateInstalled}: v${packageInfo.version}+${packageInfo.buildNumber}",
+                "${AppLocalizations.of(context)!.updateInstalled}: v${displayAppVersion(packageInfo.version)}",
                 style: const TextStyle(color: Colors.white54, fontSize: 14),
               ),
               Text(

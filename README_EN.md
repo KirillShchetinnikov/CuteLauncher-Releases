@@ -35,7 +35,7 @@ Created by [Kirill Shchetinnikov](https://github.com/KirillShchetinnikov).
 
 ## Screenshots
 
-Example setups in build **1.0.24+73**, captured on Android TV and Google TV emulators (Android 16). Every image comes from the running app at 3840 × 2160; click an image to open the original. The third-party apps shown are installed separately.
+Example setups in version **1.0.24**, captured on Android TV and Google TV emulators (Android 16). Every image comes from the running app at 3840 × 2160; click an image to open the original. The third-party apps shown are installed separately.
 
 | Glass · autumn landscape | Standard style · graphite gradient |
 |---|---|

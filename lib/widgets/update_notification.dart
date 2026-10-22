@@ -49,7 +49,7 @@ class _UpdateNotificationState extends State<UpdateNotification>
       if (version != null) {
         showActionNotice(
           context,
-          '${AppLocalizations.of(context)!.updateAvailable}: $version',
+          '${AppLocalizations.of(context)!.updateAvailable}: ${displayAppVersion(version)}',
         );
       }
     });

@@ -98,6 +98,11 @@ class DocumentationLanguageTests(unittest.TestCase):
         self.assertTrue(any('Invalid release date' in error for error in docs.check_release_notes(self.root, tag)))
         self.assertEqual(docs.check_release_notes(self.root, 'main'), ['Unsupported changelog release tag'])
 
+    def test_changelog_accepts_release_tags_without_build(self):
+        for name in ('CHANGELOG_RU.md', 'CHANGELOG_EN.md'):
+            self.write(Path(name), '## v1.1.1 — 2026-10-22\n\n- Fix.\n')
+        self.assertEqual(docs.check_release_notes(self.root, 'v1.1.1'), [])
+
     def test_each_language_must_link_back_to_its_counterpart(self):
         self.write(self.en, '# English\n\n## Section\n\n```sh\necho test\n```\n')
         self.assertTrue(any('Missing language switch' in error for error in docs.run(self.root, True)))

@@ -26,7 +26,9 @@ class UpdatesPage extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.all(12),
-              child: Text('${l.updateInstalled}: ${service.installedVersion}'),
+              child: Text(
+                '${l.updateInstalled}: ${displayAppVersion(service.installedVersion)}',
+              ),
             ),
             if (!service.initialized) const LinearProgressIndicator(),
             if (service.fromPlay)
@@ -64,7 +66,7 @@ class UpdatesPage extends StatelessWidget {
                                 ? l.updateCheckFailed
                                 : service.release == null
                                 ? l.updateNoRelease
-                                : '${l.updateAvailable}: ${service.release!.version}',
+                                : '${l.updateAvailable}: ${displayAppVersion(service.release!.version)}',
                             error: service.failed,
                           );
                         } catch (_) {
@@ -82,7 +84,7 @@ class UpdatesPage extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(12),
                   child: Text(
-                    '${l.updateAvailable}: ${service.release!.version}',
+                    '${l.updateAvailable}: ${displayAppVersion(service.release!.version)}',
                   ),
                 ),
                 FocusableSettingsTile(

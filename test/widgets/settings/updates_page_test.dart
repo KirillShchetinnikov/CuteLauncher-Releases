@@ -30,7 +30,7 @@ void main() {
         lookup: () async {
           requests++;
           return {
-            'tag_name': 'v1.1.0',
+            'tag_name': 'v1.1.0+3',
             'assets': [
               {
                 'name': 'CuteLauncher-universal-release.apk',
@@ -72,6 +72,8 @@ void main() {
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
     expect(requests, 1);
+    expect(find.textContaining('v1.1.0'), findsWidgets);
+    expect(find.textContaining('v1.1.0+3'), findsNothing);
     await tester.ensureVisible(find.text('Показывать уведомления об обновлении'));
     await tester.tap(find.text('Показывать уведомления об обновлении'));
     await tester.pumpAndSettle();

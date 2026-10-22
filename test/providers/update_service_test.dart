@@ -24,6 +24,15 @@ Future<void> initialized(UpdateService service) async {
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  test('New version tags win over older tags with a build suffix', () {
+    final data = {
+      'releases': [release(tag: 'v1.1.0+75'), release(tag: 'v1.1.1')],
+    };
+    expect(
+      AppRelease.parse(data, '1.0.0', 70, ['armeabi-v7a'])!.version,
+      'v1.1.1',
+    );
+  });
   test('Pending notice survives restart, is consumed once and ignores repeated checks', () async {
     SharedPreferences.setMockInitialValues({
       automaticUpdatesKey: true,

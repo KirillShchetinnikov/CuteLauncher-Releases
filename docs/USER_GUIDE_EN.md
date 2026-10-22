@@ -335,6 +335,8 @@ Normal updates preserve user settings. Store-distributed versions have their
 own update-channel restrictions.
 
 About CuteLauncher shows the version, attribution, and licenses.
+The interface displays versions without a build number; Android keeps an internal
+build counter for installing updates.
 
 ## Memory and resource saving
 

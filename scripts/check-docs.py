@@ -91,7 +91,7 @@ def check_pair(root, source, english):
 
 def check_release_notes(root, tag):
     errors = []
-    if not re.fullmatch(r'v\d+\.\d+\.\d+(?:-test\.\d+)?\+\d+', tag):
+    if not re.fullmatch(r'v\d+\.\d+\.\d+(?:-test\.\d+)?(?:\+\d+)?', tag):
         return ['Unsupported changelog release tag']
     dates = []
     for name in ('CHANGELOG_RU.md', 'CHANGELOG_EN.md'):

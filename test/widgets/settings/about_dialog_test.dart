@@ -52,6 +52,8 @@ void main() {
       final l = AppLocalizations.of(
         tester.element(find.byType(CuteLauncherAboutDialog)),
       )!;
+      expect(find.text('${l.updateInstalled}: v1.0.0'), findsOneWidget);
+      expect(find.textContaining('v1.0.0+1'), findsNothing);
       expect(find.text(l.showRepositoryQrCode), findsOneWidget);
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
       await tester.pumpAndSettle();

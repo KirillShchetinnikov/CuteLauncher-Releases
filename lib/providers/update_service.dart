@@ -20,6 +20,9 @@ const _shownNotificationKey = 'update_shown_notification';
 const updateRepository = 'KirillShchetinnikov/CuteLauncher-Releases';
 const maximumUpdateBytes = 128 * 1024 * 1024;
 
+/// Build metadata stays available for update checks, outside user-facing labels.
+String displayAppVersion(String version) => version.split('+').first;
+
 class AppRelease {
   final String version;
   final Uri uri;
@@ -52,8 +55,10 @@ class AppRelease {
                   _version(a['tag_name'] as String? ?? '') ?? [0, 0, 0, 0];
               final bv =
                   _version(b['tag_name'] as String? ?? '') ?? [0, 0, 0, 0];
-              // Android accepts updates only with a larger global versionCode.
-              for (final index in [3, 0, 1, 2]) {
+              // Historical tags carry a global build; new tags carry SemVer only.
+              final withBuilds = (a['tag_name'] as String? ?? '').contains('+') &&
+                  (b['tag_name'] as String? ?? '').contains('+');
+              for (final index in withBuilds ? [3, 0, 1, 2] : [0, 1, 2, 3]) {
                 final order = bv[index].compareTo(av[index]);
                 if (order != 0) return order;
               }

@@ -1,4 +1,5 @@
 import importlib.util
+import json
 import hashlib
 from pathlib import Path
 import subprocess
@@ -199,6 +200,14 @@ class PublicSourceTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.publish(tag)
         self.assertEqual(public_tag, publisher.git(self.public, 'rev-parse', f'refs/tags/{tag}').stdout)
+
+    def test_release_tag_without_build_preserves_internal_source_version(self):
+        publisher.git(self.source, 'tag', 'v1.0.24')
+        self.publish('v1.0.24')
+        manifest = json.loads((self.public / publisher.MANIFEST).read_text())
+        self.assertEqual(manifest['version'], '1.0.24+73')
+        self.assertEqual(self.head(self.public), publisher.git(
+            self.public, 'rev-parse', 'refs/tags/v1.0.24').stdout.strip())
 
     def test_dirty_or_private_destination_is_rejected(self):
         (self.public / 'untracked').write_text('keep me')

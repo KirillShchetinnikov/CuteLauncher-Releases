@@ -173,8 +173,8 @@ def snapshot(root, ref, destination, release_tag=''):
         raise ValueError('Unsupported source version')
     version = version[1]
     if release_tag:
-        if release_tag != 'v' + version:
-            raise ValueError('Release tag must equal v + pubspec version')
+        if release_tag not in {'v' + version.split('+')[0], 'v' + version}:
+            raise ValueError('Release tag must match the pubspec version')
         tagged = git(root, 'rev-parse', '--verify', f'refs/tags/{release_tag}^{{commit}}').stdout.decode().strip()
         if tagged != commit:
             raise ValueError('Release tag and source commit differ')

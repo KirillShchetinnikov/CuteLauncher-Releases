@@ -349,7 +349,7 @@ class CompatibilityResultsPage extends StatelessWidget {
                     Text(l.settingsHelpScroll),
                     Text(
                       '${l.compatibilityReportDate}: ${report['capturedAt'] ?? '—'}\n'
-                      '${l.compatibilityLauncherVersion}: ${app['versionName'] ?? '—'}+${app['versionCode'] ?? '—'}',
+                      '${l.compatibilityLauncherVersion}: ${app['versionName'] ?? '—'}',
                     ),
                     Text(
                       '${identity['manufacturer'] ?? '—'} ${identity['model'] ?? '—'}\nAndroid ${identity['android'] ?? '—'} / API ${identity['sdk'] ?? '—'}\n${identity['abis'] ?? '—'}\n${identity['fingerprint'] ?? '—'}',
