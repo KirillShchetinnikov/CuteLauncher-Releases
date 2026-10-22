@@ -3,7 +3,7 @@ package com.leanbitlab.ltvL;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
 
-/** Runs package queries off the platform thread and reports failures without partial results. */
+/** Runs slow system queries off the platform thread and reports failures without partial results. */
 final class ApplicationLoader {
     interface Completion<T> { void accept(T value); }
     static <T> void load(Executor worker, Executor callbacks, Callable<T> query,

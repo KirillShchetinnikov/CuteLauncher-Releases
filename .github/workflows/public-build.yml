@@ -1,0 +1,95 @@
+name: Public checks and unsigned APKs
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      release_tag:
+        type: string
+        default: ''
+    outputs:
+      version:
+        value: ${{ jobs.build.outputs.version }}
+      build:
+        value: ${{ jobs.build.outputs.build }}
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    if: github.repository == 'KirillShchetinnikov/CuteLauncher-Releases'
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    outputs:
+      version: ${{ steps.metadata.outputs.version }}
+      build: ${{ steps.metadata.outputs.build }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Check documentation and release tools
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: |
+          python3 scripts/check-docs.py --release-tag "$RELEASE_TAG"
+          python3 .github/scripts/test_validate_release.py
+          python3 .github/scripts/test_verify_apks.py
+      - name: Validate release tag and increasing build
+        if: inputs.release_tag != ''
+        env:
+          TAG_NAME: ${{ inputs.release_tag }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          test "$GITHUB_REF" = "refs/tags/$TAG_NAME"
+          test "$(git rev-parse HEAD)" = "$(git rev-parse "refs/tags/$TAG_NAME^{commit}")"
+          gh api "repos/$GITHUB_REPOSITORY/releases" --paginate --jq '.[].tag_name' > "$RUNNER_TEMP/release-tags.txt"
+          python3 .github/scripts/validate_release.py "$TAG_NAME" "$RUNNER_TEMP/release-tags.txt"
+      - name: Read APK metadata
+        id: metadata
+        run: |
+          python3 - <<'PY'
+          import importlib.util, os, pathlib, re
+          spec = importlib.util.spec_from_file_location('release', '.github/scripts/validate_release.py')
+          module = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(module)
+          text = pathlib.Path('pubspec.yaml').read_text()
+          version = re.search(r'^version:\s*(\S+)\s*$', text, re.M)[1]
+          name, build = module.validate('v' + version.split('+')[0], text)
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write(f'version={name}\nbuild={build}\n')
+          PY
+      - uses: actions/setup-java@v5
+        with:
+          distribution: zulu
+          java-version: '21'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.6'
+      - name: Generate and test
+        run: |
+          flutter pub get
+          dart run build_runner build
+          dart run drift_dev schema generate drift_schemas/ test/generated_migrations/
+          flutter test test/providers/update_service_test.dart test/widgets/settings/app_language_page_test.dart
+      - name: Build four APKs without signing secrets
+        env:
+          RELEASE_VERSION: ${{ steps.metadata.outputs.version }}
+          RELEASE_BUILD: ${{ steps.metadata.outputs.build }}
+        run: |
+          flutter build apk --release --target-platform=android-arm,android-arm64,android-x64 --dart-define=BUILD_COMMIT="$(git rev-parse --short=12 HEAD)"
+          mkdir unsigned-apks
+          for abi in universal armeabi-v7a arm64-v8a x86_64; do
+            cp "build/app/outputs/apk/release/CuteLauncher-$RELEASE_VERSION-$abi-release.apk" unsigned-apks/
+          done
+          python3 .github/scripts/verify_apks.py unsigned-apks "$RELEASE_VERSION" "$RELEASE_BUILD"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: unsigned-apks
+          path: unsigned-apks/*.apk
+          if-no-files-found: error
+          retention-days: 7

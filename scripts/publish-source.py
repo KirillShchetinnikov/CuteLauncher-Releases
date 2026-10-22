@@ -21,6 +21,10 @@ PUBLIC_DIRS = {
     'android', 'assets', 'catalog', 'diagnostics', 'drift_schemas',
     'lib', 'scripts', 'test', 'tools',
 }
+PUBLIC_WORKFLOWS = {
+    '.github/workflows/public-build.yml',
+    '.github/workflows/public-release.yml',
+}
 PUBLIC_DOCS = {
     'README.md', 'README_EN.md', 'docs/README.md', 'docs/README_EN.md',
     'docs/USER_GUIDE_RU.md', 'docs/USER_GUIDE_EN.md',
@@ -87,13 +91,13 @@ def public_path(name):
     lowered = [part.lower() for part in path.parts]
     if (any(part in PRIVATE_DIRS for part in lowered)
             or path.name.lower() in AGENT_FILES
-            or name.startswith('.github/workflows/')):
+            or (name.startswith('.github/workflows/') and name not in PUBLIC_WORKFLOWS)):
         return False
     if path.suffix.lower() == '.md':
         return name in PUBLIC_DOCS
     if path.parts[0] == 'docs':
         return name in PUBLIC_DOC_ASSETS
-    allowed = (name in ROOT_FILES or path.parts[0] in PUBLIC_DIRS
+    allowed = (name in ROOT_FILES or name in PUBLIC_WORKFLOWS or path.parts[0] in PUBLIC_DIRS
                or name.startswith('.github/scripts/'))
     if not allowed:
         return False  # New top-level directories require an explicit decision.

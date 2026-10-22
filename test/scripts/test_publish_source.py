@@ -32,6 +32,8 @@ class PublicSourceTests(unittest.TestCase):
         self.write('AGENTS.md', 'PRIVATE AGENT RULES\n')
         self.write('docs/agents/WORKFLOW_RU.md', 'PRIVATE WORKFLOW\n')
         self.write('.github/workflows/private.yml', 'PRIVATE WORKFLOW SECRET NAME\n')
+        for name in publisher.PUBLIC_WORKFLOWS:
+            self.write(name, 'name: Public workflow\n')
         self.write('internal/private.md', 'PRIVATE UNKNOWN TOP LEVEL\n')
         self.write('.local/signing/private.p12', 'PRIVATE KEY MATERIAL\n')
         self.write('scripts/check.sh', '#!/bin/sh\nexit 0\n')
@@ -66,6 +68,7 @@ class PublicSourceTests(unittest.TestCase):
         paths = publisher.git(self.public, 'ls-files').stdout.decode().splitlines()
         self.assertTrue(publisher.REQUIRED <= set(paths))
         self.assertIn('drift_schemas/schema.json', paths)
+        self.assertTrue(publisher.PUBLIC_WORKFLOWS <= set(paths))
         for name in ('AGENTS.md', 'docs/agents/WORKFLOW_RU.md', '.local/signing/private.p12',
                      '.github/workflows/private.yml', 'internal/private.md'):
             self.assertNotIn(name, paths)
@@ -132,6 +135,13 @@ class PublicSourceTests(unittest.TestCase):
         for name in ('../outside', '/outside', 'docs/../../outside', 'docs\\outside'):
             with self.assertRaises(ValueError):
                 publisher.public_path(name)
+
+    def test_only_explicit_public_workflows_are_exported(self):
+        for name in publisher.PUBLIC_WORKFLOWS:
+            self.assertTrue(publisher.public_path(name), name)
+        for name in ('.github/workflows/release.yml', '.github/workflows/publish-source.yml',
+                     '.github/workflows/design.yml', '.github/workflows/new.yml'):
+            self.assertFalse(publisher.public_path(name), name)
 
     def test_public_english_readme_is_included_but_agent_translations_are_private(self):
         self.assertTrue(publisher.public_path('README_EN.md'))

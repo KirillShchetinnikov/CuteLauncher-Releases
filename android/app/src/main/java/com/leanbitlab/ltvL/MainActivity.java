@@ -234,31 +234,24 @@ public class MainActivity extends FlutterActivity {
                 case "checkForGetContentAvailability" -> result.success(checkForGetContentAvailability());
                 case "startAmbientMode" -> result.success(startAmbientMode());
                 case "getActiveNetworkInformation" -> result.success(networkStatistics.getActiveNetworkInformation());
-                case "getDailyDataUsage" -> {
-                    long usage = networkStatistics.getDailyDataUsage();
-                    if (usage == -1) {
-                        result.error("PERMISSION_DENIED", "Usage stats permission not granted", null);
-                    } else {
-                        result.success(usage);
-                    }
+                case "getDailyDataUsage", "getWeeklyDataUsage", "getMonthlyDataUsage" -> {
+                    java.util.concurrent.Callable<Long> query = switch (call.method) {
+                        case "getWeeklyDataUsage" -> networkStatistics::getWeeklyDataUsage;
+                        case "getMonthlyDataUsage" -> networkStatistics::getMonthlyDataUsage;
+                        default -> networkStatistics::getDailyDataUsage;
+                    };
+                    ApplicationLoader.load(sIoExecutor,
+                            task -> new Handler(Looper.getMainLooper()).post(task), query,
+                            usage -> {
+                                if (usage == -1) result.error("PERMISSION_DENIED", "Usage stats permission not granted", null);
+                                else result.success(usage);
+                            },
+                            error -> result.error("usage_unavailable", "Unable to query data usage", null));
                 }
-                case "getWeeklyDataUsage" -> {
-                    long usage = networkStatistics.getWeeklyDataUsage();
-                    if (usage == -1) {
-                        result.error("PERMISSION_DENIED", "Usage stats permission not granted", null);
-                    } else {
-                        result.success(usage);
-                    }
-                }
-                case "getMonthlyDataUsage" -> {
-                    long usage = networkStatistics.getMonthlyDataUsage();
-                    if (usage == -1) {
-                        result.error("PERMISSION_DENIED", "Usage stats permission not granted", null);
-                    } else {
-                        result.success(usage);
-                    }
-                }
-                case "checkUsageStatsPermission" -> result.success(networkStatistics.checkUsageStatsPermission());
+                case "checkUsageStatsPermission" -> ApplicationLoader.load(sIoExecutor,
+                        task -> new Handler(Looper.getMainLooper()).post(task),
+                        networkStatistics::checkUsageStatsPermission, result::success,
+                        error -> result.error("usage_unavailable", "Unable to check usage permission", null));
                 case "requestUsageStatsPermission" -> {
                     networkStatistics.requestUsageStatsPermission();
                     result.success(null);
@@ -279,12 +272,18 @@ public class MainActivity extends FlutterActivity {
                 case "openDefaultLauncherSettings" -> result.success(openDefaultLauncherSettings());
                 case "openWifiSettings" -> result.success(openWifiSettings());
                 case "openVpnSettings" -> result.success(openVpnSettings());
-                case "getTvInputs" -> result.success(tvInputBridge.getTvInputs());
+                case "getTvInputs" -> ApplicationLoader.load(sIoExecutor,
+                        task -> new Handler(Looper.getMainLooper()).post(task),
+                        tvInputBridge::getTvInputs, result::success,
+                        error -> result.error("inputs_unavailable", "Unable to query TV inputs", null));
                 case "launchTvInput" -> { if(autoLaunch!=null) autoLaunch.cancel(); result.success(tvInputBridge.launchTvInput(call.arguments())); }
                 case "checkNotificationListenerPermission" -> result.success(notificationBridge.checkNotificationListenerPermission());
                 case "requestNotificationListenerPermission" -> result.success(notificationBridge.requestNotificationListenerPermission());
                 case "openAppNotificationSettings" -> result.success(notificationBridge.openAppNotificationSettings());
-                case "getActiveNotifications" -> result.success(notificationBridge.getActiveNotifications());
+                case "getActiveNotifications" -> ApplicationLoader.load(sIoExecutor,
+                        task -> new Handler(Looper.getMainLooper()).post(task),
+                        notificationBridge::getActiveNotifications, result::success,
+                        error -> result.error("notifications_unavailable", "Unable to query notifications", null));
                 case "setNotificationPopupPresentation" -> {
                     LauncherNotificationListenerService.setPresentation(this, call.arguments());
                     result.success(null);
@@ -311,7 +310,10 @@ public class MainActivity extends FlutterActivity {
                         }
                     }
                 }
-                case "getWatchNextPrograms" -> result.success(watchNextBridge.getWatchNextPrograms());
+                case "getWatchNextPrograms" -> ApplicationLoader.load(sIoExecutor,
+                        task -> new Handler(Looper.getMainLooper()).post(task),
+                        watchNextBridge::getWatchNextPrograms, result::success,
+                        error -> result.error("watch_next_unavailable", "Unable to query Watch Next", null));
                 case "deleteWatchNextProgram" -> {
                     Number id = call.argument("id");
                     if (id != null) {

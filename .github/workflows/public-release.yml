@@ -1,0 +1,116 @@
+name: Public APK release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: public-release
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.repository == 'KirillShchetinnikov/CuteLauncher-Releases' && github.ref_type == 'tag'
+    uses: ./.github/workflows/public-build.yml
+    with:
+      release_tag: ${{ github.ref_name }}
+
+  sign:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: release-signing
+    env:
+      RELEASE_VERSION: ${{ needs.build.outputs.version }}
+      RELEASE_BUILD: ${{ needs.build.outputs.build }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v5
+        with:
+          distribution: zulu
+          java-version: '21'
+      - uses: actions/download-artifact@v4
+        with:
+          name: unsigned-apks
+          path: unsigned-apks
+      - name: Verify unsigned inputs
+        run: python3 .github/scripts/verify_apks.py unsigned-apks "$RELEASE_VERSION" "$RELEASE_BUILD"
+      - name: Sign with the permanent certificate
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          python3 - <<'PY'
+          import base64, os, pathlib
+          for key in ('KEYSTORE_BASE64', 'KEYSTORE_PASSWORD', 'KEY_ALIAS', 'KEY_PASSWORD'):
+              if not os.environ.get(key):
+                  raise SystemExit(f'Missing required secret: {key}')
+          path = pathlib.Path(os.environ['RUNNER_TEMP']) / 'release.p12'
+          path.write_bytes(base64.b64decode(''.join(os.environ['KEYSTORE_BASE64'].split()), validate=True))
+          path.chmod(0o600)
+          PY
+          tools=$(find "$ANDROID_HOME/build-tools" -name apksigner | sort -V | tail -1)
+          tools=$(dirname "$tools")
+          mkdir signed-apks
+          for abi in universal armeabi-v7a arm64-v8a x86_64; do
+            name="CuteLauncher-$RELEASE_VERSION-$abi-release.apk"
+            "$tools/zipalign" -P 16 -f 4 "unsigned-apks/$name" "$RUNNER_TEMP/aligned.apk"
+            "$tools/apksigner" sign --ks "$RUNNER_TEMP/release.p12" --ks-key-alias "$KEY_ALIAS" --ks-pass env:KEYSTORE_PASSWORD --key-pass env:KEY_PASSWORD --out "signed-apks/$name" "$RUNNER_TEMP/aligned.apk"
+          done
+      - name: Verify signatures and APK metadata
+        run: python3 .github/scripts/verify_apks.py signed-apks "$RELEASE_VERSION" "$RELEASE_BUILD" --signed
+      - uses: actions/upload-artifact@v4
+        with:
+          name: signed-apks
+          path: signed-apks/*.apk
+          if-no-files-found: error
+          retention-days: 7
+      - name: Remove signing material
+        if: always()
+        run: rm -f "$RUNNER_TEMP/release.p12" "$RUNNER_TEMP/aligned.apk"
+
+  publish:
+    needs: [build, sign]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    env:
+      TAG_NAME: ${{ github.ref_name }}
+      RELEASE_VERSION: ${{ needs.build.outputs.version }}
+      RELEASE_BUILD: ${{ needs.build.outputs.build }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: signed-apks
+          path: signed-apks
+      - name: Verify downloaded signed APKs
+        run: python3 .github/scripts/verify_apks.py signed-apks "$RELEASE_VERSION" "$RELEASE_BUILD" --signed
+      - name: Publish four APKs with bilingual changelog links
+        run: |
+          gh api "repos/$GITHUB_REPOSITORY/releases" --paginate --jq '.[].tag_name' > "$RUNNER_TEMP/release-tags.txt"
+          if grep -Fxq "$TAG_NAME" "$RUNNER_TEMP/release-tags.txt"; then
+            echo 'Release already exists; do not replace published APKs.' >&2
+            exit 1
+          fi
+          options=()
+          if [[ "$RELEASE_VERSION" == *-* ]]; then options+=(--prerelease); fi
+          printf '%s\n' \
+            "[Изменения на русском](https://github.com/$GITHUB_REPOSITORY/blob/$TAG_NAME/CHANGELOG_RU.md)" \
+            '' \
+            "[Changelog in English](https://github.com/$GITHUB_REPOSITORY/blob/$TAG_NAME/CHANGELOG_EN.md)" \
+            > "$RUNNER_TEMP/release-notes.md"
+          gh release create "$TAG_NAME" signed-apks/*.apk --verify-tag --title "CuteLauncher $RELEASE_VERSION" --notes-file "$RUNNER_TEMP/release-notes.md" --draft "${options[@]}"
+          gh release edit "$TAG_NAME" --draft=false
