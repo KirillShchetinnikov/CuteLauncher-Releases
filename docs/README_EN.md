@@ -20,8 +20,7 @@ its architecture. Android may ask you to allow installation from your chosen
 source. Use an APK with the same signing identity when updating, and do not
 uninstall the app if you want to preserve your settings.
 
-The declared platform is Android 11 and later; running on Android 11 has not
-yet been confirmed. System features depend on firmware and permissions.
+Requires Android 11 or later. System features depend on firmware and permissions.
 See the [guide](USER_GUIDE_EN.md#разрешения-и-ограничения) for details.
 
 ## Permissions, reports, and help
@@ -32,6 +31,9 @@ The [diagnostics section](USER_GUIDE_EN.md#диагностика) explains repo
 and export. Reports are never sent automatically. When reporting an issue,
 include your CuteLauncher version, TV model, Android version, firmware, and
 steps to reproduce it. Do not publish personal keys or private webhook URLs.
+Attach the JSON file from **Advanced → Diagnostics → Error diagnostics →
+Create report → Export report → Save to disk**.
+See the [reporting instructions](USER_GUIDE_EN.md#reporting-an-issue) for the full procedure.
 
 <a id="происхождение-и-лицензии"></a>
 ## Origins and licenses
@@ -45,8 +47,7 @@ and [osrosal's fork](https://github.com/osrosal/flauncher).
 [GNU GPLv3](../LICENSE), original GPLv3-or-later headers, and author notices are
 preserved. Distributed modified builds require complete corresponding source,
 including modifications and necessary build scripts; signing keys and personal
-secrets are excluded. Public project snapshots have their own history. The full
-SDK and dependency source collection is not yet declared complete.
+secrets are excluded. Public project snapshots have their own history.
 
 The bundled dadb library uses [Apache 2.0](DADB_LICENSE.txt).
 [Android runtime notices](../assets/licenses/android_runtime.txt) and

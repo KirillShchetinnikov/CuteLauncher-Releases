@@ -90,8 +90,8 @@ Smooth night-filter transitions, system-brightness scheduling, a clock and
 screensaver, a standby timer, available TV inputs, and HDMI/CEC labels.
 Configure the home app, restore the previous HOME handler, and use the built-in
 ADB connection for supported system operations. The remote remapper supports
-short presses and holds, app launches, Home/Back, webhooks, and a floating panel;
-these system integrations still require validation on the relevant firmware.
+short presses and holds, app launches, Home/Back, webhooks, and a floating panel.
+Availability of system actions depends on firmware.
 
 ### Settings, backups, and diagnostics
 
@@ -111,16 +111,23 @@ and install it on your TV or TV box. ARMv7, ARM64, x86_64, and universal builds
 are available; choose universal if you do not know your device's architecture.
 Android may ask you to allow installation from your chosen source.
 
-The declared platform is **Android 11 and later**. Running on Android 11 has not
-yet been confirmed, and development continues. Home-app selection, Home behavior,
+Requires **Android 11 or later**. Home-app selection, Home behavior,
 ADB, overlays, backlight controls, notifications, and TV inputs depend on firmware
 and permissions. You can launch and organize apps without enabling every
 additional system integration.
 
 See the [user guide](docs/USER_GUIDE_EN.md#разрешения-и-ограничения) for availability
-and limitations. Cloud providers and some system features still have outstanding
-integration checks. A feature in the current code is not necessarily included
-in your installed APK or verified on every firmware version.
+and limitations.
+
+## Report an issue
+
+Reproduce the problem and open **Settings → Advanced → Diagnostics →
+Error diagnostics**. Select **Create report → Export report → Save to disk**,
+choose a folder, and save the JSON file. Attach `cutelauncher_errors_….json`
+to your forum post or [GitHub issue](https://github.com/KirillShchetinnikov/CuteLauncher-Releases/issues).
+Include the device model, Android and CuteLauncher versions, steps to reproduce,
+and expected and actual results. See the
+[reporting instructions](docs/USER_GUIDE_EN.md#reporting-an-issue) for details.
 
 ## Documentation and source code
 

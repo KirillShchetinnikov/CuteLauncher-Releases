@@ -3,13 +3,12 @@
 [Русский](USER_GUIDE_RU.md) · [English](USER_GUIDE_EN.md) · [All documentation](README_EN.md)
 
 CuteLauncher is a remote-controlled home screen for Android TV / Google TV.
-The declared platform is Android 11 and later, with ARMv7, ARM64, and x86_64
-builds. Running on Android 11 has not yet been confirmed. System features
+Requires Android 11 or later, with ARMv7, ARM64, and x86_64
+builds. System features
 depend on permissions, available menus, and manufacturer firmware.
 
-This guide describes the current source code. New features appear on a TV
-after the corresponding APK is installed. Implemented, device-verified, and
-planned features are distinct; limitations appear beside each feature.
+This guide describes CuteLauncher features. Install the corresponding APK
+update to get new features. Requirements and limitations appear beside each feature.
 
 ## Contents
 
@@ -169,8 +168,7 @@ or coordinates, detect location with the required permission, refresh data, and
 configure temperature, forecasts, and weather warnings.
 
 Breezy Weather requires a compatible installed app with a configured provider.
-MET Norway needs no key: data by MET Norway under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/), adapted from https://api.met.no/. Forecast days use the TV time zone; min/max cover available periods and precipitation probability is unavailable. OpenWeather and Yandex require their respective personal keys; a full run using
-valid personal keys is not yet confirmed. Cached data helps during temporary
+MET Norway needs no key: data by MET Norway under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/), adapted from https://api.met.no/. Forecast days use the TV time zone; min/max cover available periods and precipitation probability is unavailable. OpenWeather and Yandex require their respective personal keys. Cached data helps during temporary
 outages, but does not make an old forecast current.
 
 ## Notifications and playback
@@ -274,8 +272,7 @@ The floating panel has its own object selection and order. It appears over the
 current app and closes with Back. Accessibility and the relevant special access
 are required to operate over apps. Not every physical button reaches the service:
 Power is excluded; voice and some branded buttons may be handled by Android.
-Double press is not implemented. TV execution and the panel's full set of actions
-are not yet verified across all target scenarios.
+Double press is not supported.
 
 ## TV cleanup manager
 
@@ -296,10 +293,8 @@ Copy or save the original snapshot, app report, and disabled-package list. Repor
 are not sent automatically. The built-in catalog works without GitHub access;
 you can also import a suitable local list.
 
-Current profiles contain observed disable states, while the verified list with
-no loss of features is empty. A package appearing in an external list does not
-establish safety on your firmware. The manager has local test coverage; APK
-integration testing on physical TV/emulators remains outstanding.
+A package appearing in an external list does not guarantee that disabling it
+is safe on your firmware. Choose lists for your model and save the original states.
 
 ## Backups and synchronization
 
@@ -321,8 +316,7 @@ folders are not shared storage.
 
 ADB keys, Android permissions, and private service data are not transferred as
 ordinary settings. A settings backup does not grant permissions or transfer ADB
-authorization to another TV. Full workflows with real Google Drive accounts,
-external folders, and cloud synchronization are not verified in every scenario.
+authorization to another TV.
 
 ## Updates and app information
 
@@ -365,6 +359,25 @@ Collection is explicit. The two sections' results are independent and remain in
 memory until leaving diagnostics. Clearing errors does not remove compatibility
 results or previously exported files. Saving needs a working system file picker
 or compatible file manager.
+
+### Reporting an issue
+
+1. Reproduce the actions that cause the problem.
+2. Open **Settings → Advanced → Diagnostics → Error diagnostics**.
+3. Select **Create report** and wait until it is ready.
+4. Select **Export report → Save to disk**, choose a folder in the file manager,
+   and finish saving.
+5. Attach `cutelauncher_errors_….json` to your forum post or
+   [GitHub issue](https://github.com/KirillShchetinnikov/CuteLauncher-Releases/issues).
+   Include the device model, Android and firmware versions, CuteLauncher version,
+   input method, steps to reproduce, and expected and actual results.
+
+For a device compatibility issue, also open **Diagnostics → TV compatibility check**,
+create a report, and save it the same way. Attach `cutelauncher_compatibility_….json`.
+
+The app collects diagnostics; the saved JSON file lets you share the results
+with the developer. Reports are never sent automatically. Review the file before
+posting: it may contain device and app information.
 
 ## Device data and reports
 
