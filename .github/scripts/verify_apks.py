@@ -50,9 +50,13 @@ def verify(folder, version, build, android_home, signed=False):
                 raise ValueError(f'Unexpected {field}: {apk.name}')
         if signed:
             output = run(signer, 'verify', '--print-certs', apk)
-            certificates = re.findall(r'^Signer #\d+ certificate SHA-256 digest: (\S+)\s*$',
-                                      output, re.M)
-            if certificates != [CERTIFICATE]:
+            # Build Tools 37 uses "V2 Signer:" instead of "Signer #1".
+            # A certificate may be reported once per signature scheme.
+            certificates = re.findall(
+                r'^(?:Signer #\d+|V[234](?:\.\d+)? Signer(?: #\d+)?):? '
+                r'certificate SHA-256 digest: ([a-fA-F0-9]{64})[ \t]*$',
+                output, re.M)
+            if not certificates or {value.lower() for value in certificates} != {CERTIFICATE}:
                 raise ValueError(f'Unexpected signing certificate: {apk.name}')
         else:
             result = subprocess.run([str(signer), 'verify', str(apk)], capture_output=True)

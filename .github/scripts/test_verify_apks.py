@@ -68,6 +68,29 @@ class ApkVerificationTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, 'must not contain signed'):
                     module.verify(self.apks, '1.2.3', '80', self.root / 'sdk')
 
+    def test_build_tools_37_certificate_format_and_multiple_schemes(self):
+        for output in (
+            f'V2 Signer: certificate SHA-256 digest: {module.CERTIFICATE}',
+            f'V3.1 Signer #1: certificate SHA-256 digest: {module.CERTIFICATE.upper()}',
+            f'V2 Signer: certificate SHA-256 digest: {module.CERTIFICATE}\n'
+            f'V3 Signer: certificate SHA-256 digest: {module.CERTIFICATE}',
+        ):
+            def run(*args):
+                return self.output(*args) if args[1] == 'manifest' else output
+            with self.subTest(output=output), patch.object(module, 'run', side_effect=run):
+                module.verify(self.apks, '1.2.3', '80', self.root / 'sdk', signed=True)
+
+    def test_modern_format_rejects_wrong_extra_and_missing_certificates(self):
+        correct = f'V2 Signer: certificate SHA-256 digest: {module.CERTIFICATE}'
+        wrong = 'V3 Signer #2: certificate SHA-256 digest: ' + '0' * 64
+        for output in (wrong, correct + '\n' + wrong, '',
+                       'Source Stamp Signer certificate SHA-256 digest: ' + module.CERTIFICATE):
+            def run(*args):
+                return self.output(*args) if args[1] == 'manifest' else output
+            with self.subTest(output=output), patch.object(module, 'run', side_effect=run):
+                with self.assertRaisesRegex(ValueError, 'signing certificate'):
+                    module.verify(self.apks, '1.2.3', '80', self.root / 'sdk', signed=True)
+
 
 if __name__ == '__main__':
     unittest.main()
