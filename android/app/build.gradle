@@ -145,7 +145,9 @@ androidComponents {
             def abi = output.filters.find {
                 it.filterType == com.android.build.api.variant.FilterConfiguration.FilterType.ABI
             }?.identifier
-            output.outputFileName.set("CuteLauncher-${abi ?: 'universal'}-${variant.buildType}.apk")
+            output.outputFileName.set(output.versionName.map { version ->
+                "CuteLauncher-${version}-${abi ?: 'universal'}-${variant.buildType}.apk"
+            })
         }
     }
     onVariants(selector().withBuildType('release')) { variant ->

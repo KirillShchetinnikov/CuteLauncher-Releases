@@ -24,6 +24,22 @@ Future<void> initialized(UpdateService service) async {
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  test('Versioned APK names select device ABI with universal fallback', () {
+    final data = release(tag: 'v1.1.1');
+    final asset = (data['assets'] as List).first as Map;
+    data['assets'] = [
+      for (final abi in ['universal', 'arm64-v8a', 'armeabi-v7a'])
+        {
+          ...asset,
+          'name': 'CuteLauncher-1.1.1-$abi-release.apk',
+          'browser_download_url': '${asset['browser_download_url']}?$abi',
+        },
+    ];
+    for (final abi in ['arm64-v8a', 'armeabi-v7a']) {
+      expect(AppRelease.parse(data, '1.1.0', 75, [abi])!.uri.query, abi);
+    }
+    expect(AppRelease.parse(data, '1.1.0', 75, ['x86_64'])!.uri.query, 'universal');
+  });
   test('New version tags win over older tags with a build suffix', () {
     final data = {
       'releases': [release(tag: 'v1.1.0+75'), release(tag: 'v1.1.1')],
