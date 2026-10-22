@@ -1,4 +1,5 @@
 import 'tv_inputs_configuration.dart';
+import 'adaptive_landscape.dart';
 import 'tile_appearance.dart';
 import 'category_appearance.dart';
 import 'providers/night_mode_service.dart';
@@ -118,7 +119,12 @@ bool _validValue(String key, dynamic value) {
   if (['wallpaper_brightness', 'wallpaper_saturation', 'wallpaper_dimming'].contains(key)) {
     return value is num && value.isFinite && value >= 0 && value <= 2;
   }
-  if (key == 'background_source') return ['gradient', 'picture', 'scheduled', 'online', 'slideshow', 'app'].contains(value);
+  if (key == 'background_source') return ['gradient', 'picture', 'scheduled', 'online', 'slideshow', 'app', 'landscape'].contains(value);
+  if (key == landscapeSettingsKey) {
+    if (value is! String) return false;
+    try { LandscapeConfiguration.parse(jsonDecode(value) as Map); return true; }
+    catch (_) { return false; }
+  }
   if (key == 'slideshow_interval') return value is int && [30, 60, 300, 600, 1800, 3600].contains(value);
   if (key == 'slideshow_recursive' || key == 'slideshow_random') return value is bool;
   if (key == 'automatic_backup_keep_count') return value is int && [1, 3, 5, 10].contains(value);

@@ -29,6 +29,7 @@ import 'package:provider/provider.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 
 import '../../providers/settings_service.dart';
+import '../../providers/appearance_service.dart';
 import '../../providers/tv_inputs_service.dart';
 import '../rounded_switch_list_tile.dart';
 import 'focusable_settings_tile.dart';
@@ -66,6 +67,11 @@ class StatusBarObjectsPage extends StatelessWidget {
             value: s.showTimeInStatusBar,
             onChanged: s.setShowTimeInStatusBar,
             title: Text(l.showTime),
+          ),
+          RoundedSwitchListTile(
+            value: context.watch<AppearanceService>().appearance.combinedInformation,
+            title: Text(l.combinedInformation),
+            onChanged: (v) => context.read<AppearanceService>().set('panelCombinedInformation', v),
           ),
           RoundedSwitchListTile(
             autofocus: false,

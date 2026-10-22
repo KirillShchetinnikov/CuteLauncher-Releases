@@ -3696,4 +3696,86 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get cleanerNoSnapshot => 'Исходное состояние ещё не сохранено';
+
+  @override
+  String get interfaceStyle => 'Стиль интерфейса';
+
+  @override
+  String get interfaceStandard => 'Стандартный';
+
+  @override
+  String get interfaceGlass => 'Стекло';
+
+  @override
+  String get interfaceSoft => 'Мягкий';
+
+  @override
+  String get interfaceOutline => 'Контурный';
+
+  @override
+  String get interfaceFont => 'Шрифт интерфейса';
+
+  @override
+  String get interfaceSystemFont => 'Системный';
+
+  @override
+  String get combinedInformation => 'Объединить часы, дату и погоду';
+
+  @override
+  String get adaptiveLandscape => 'Адаптивный пейзаж';
+
+  @override
+  String get landscapeVariant => 'Стиль пейзажа';
+
+  @override
+  String get landscapeIllustrated => 'Рисованный';
+
+  @override
+  String get landscapeRealistic => 'Реалистичный';
+
+  @override
+  String get landscapeTimeOfDay => 'Время суток';
+
+  @override
+  String get landscapeSeasons => 'Времена года';
+
+  @override
+  String get landscapeHemisphere => 'Полушарие';
+
+  @override
+  String get landscapeAuto => 'Автоматически';
+
+  @override
+  String get landscapeNorth => 'Северное';
+
+  @override
+  String get landscapeSouth => 'Южное';
+
+  @override
+  String get landscapeClouds => 'Облака';
+
+  @override
+  String get landscapePrecipitation => 'Дождь и снег';
+
+  @override
+  String get landscapeFog => 'Туман';
+
+  @override
+  String get landscapeMotion => 'Анимация погоды';
+
+  @override
+  String get landscapeHelp =>
+      'Время суток следует сохранённым рассвету и закату из ночного режима; без них рассвет — в 06:00, закат — в 18:00, переходные периоды — по 40 минут до и после. Сезон определяется местным месяцем и полушарием; автоматический выбор использует координаты погоды, затем ночного режима, затем Северное полушарие. При отключении времени суток остаётся день, при отключении сезонов — лето. Погода берётся из текущих данных выбранного источника без дополнительных запросов. Если данных нет или они устарели, небо ясное. Облака, осадки и туман отключаются независимо. Движение по умолчанию выключено, останавливается вне главного экрана и отключается при экономии памяти или системном ограничении анимаций.';
+
+  @override
+  String get inputConnected => 'Подключён';
+
+  @override
+  String get inputStandby => 'Подключён · ожидание';
+
+  @override
+  String get inputDisconnected => 'Отключён';
+
+  @override
+  String get inputStateUnknown => 'Состояние подключения недоступно';
 }

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/settings_service.dart';
+import '../theme/interface_style.dart';
 
 class SidePanelDialog extends StatelessWidget {
   final Widget child;
@@ -26,6 +27,7 @@ class SidePanelDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final style = LauncherStyle.of(context);
+    final skin = InterfaceSkin.of(context);
     final borderRadius = BorderRadius.circular(style.panelRadius);
     final onRight =
         isRightSide ??
@@ -44,19 +46,21 @@ class SidePanelDialog extends StatelessWidget {
         ),
         child: Material(
           color: Theme.of(context).colorScheme.surface,
-          elevation: 16,
+          elevation: skin.style == InterfaceStyle.outline ? 0 : 16,
           surfaceTintColor: Colors.transparent,
           shadowColor: Colors.black54,
           borderRadius: borderRadius,
           child: Container(
             width: width,
-            decoration: BoxDecoration(
+            decoration: skin.standard ? BoxDecoration(
               borderRadius: borderRadius,
               border: Border.all(
                 color: Colors.white.withValues(alpha: 0.10),
                 width: 1,
               ),
-            ),
+            ) : skin.surface(Theme.of(context).colorScheme.surface,
+              Theme.of(context).colorScheme.onSurface,
+              cornerRadius: style.panelRadius, borderWidth: 1),
             padding: EdgeInsets.all(style.panelPadding),
             child: Actions(
               actions: {BackIntent: BackAction(context)},

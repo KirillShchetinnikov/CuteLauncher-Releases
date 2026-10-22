@@ -1,5 +1,7 @@
 enum TvInputType { tuner, hdmi, av, other }
 
+enum TvInputConnection { unknown, connected, standby, disconnected }
+
 class TvInput {
   static final _hdmiNumber = RegExp(
     r'HDMI\s*[-_]?\s*(\d+)',
@@ -39,6 +41,9 @@ class TvInput {
             ? name
             : input.label,
         type: input.type,
+        connection: input.connection == TvInputConnection.unknown
+            ? device.connection
+            : input.connection,
         standardLabel: input.standardLabel ?? input.label,
         cecLabel: name.isNotEmpty && !_portLabel.hasMatch(name) ? name : null,
         portNumber: input.portNumber ?? _port(input.label) ?? device.portNumber,
@@ -85,6 +90,7 @@ class TvInput {
   final List<String> aliases;
   final String? standardLabel, cecLabel;
   final String icon;
+  final TvInputConnection connection;
 
   TvInput({
     required this.id,
@@ -96,6 +102,7 @@ class TvInput {
     this.standardLabel,
     this.cecLabel,
     this.icon = 'default',
+    this.connection = TvInputConnection.unknown,
   });
 
   TvInput withPresentation({required String label, required String icon}) =>
@@ -109,6 +116,7 @@ class TvInput {
         standardLabel: standardLabel ?? this.label,
         cecLabel: cecLabel,
         icon: icon,
+        connection: connection,
       );
 
   bool matchesId(String value) => id == value || aliases.contains(value);
@@ -140,6 +148,12 @@ class TvInput {
       standardLabel: customLabel.isNotEmpty ? customLabel : systemLabel,
       cecLabel: text('parentId').isEmpty ? null : systemLabel,
       type: type,
+      connection: switch (map['state']) {
+        0 => TvInputConnection.connected,
+        1 => TvInputConnection.standby,
+        2 => TvInputConnection.disconnected,
+        _ => TvInputConnection.unknown,
+      },
       parentId: text('parentId').isEmpty ? null : text('parentId'),
       portNumber: _port(systemLabel),
     );

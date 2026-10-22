@@ -3674,4 +3674,86 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get cleanerNoSnapshot => 'Original state not saved yet';
+
+  @override
+  String get interfaceStyle => 'Interface style';
+
+  @override
+  String get interfaceStandard => 'Standard';
+
+  @override
+  String get interfaceGlass => 'Glass';
+
+  @override
+  String get interfaceSoft => 'Soft';
+
+  @override
+  String get interfaceOutline => 'Outline';
+
+  @override
+  String get interfaceFont => 'Interface font';
+
+  @override
+  String get interfaceSystemFont => 'System';
+
+  @override
+  String get combinedInformation => 'Combine time, date and weather';
+
+  @override
+  String get adaptiveLandscape => 'Adaptive landscape';
+
+  @override
+  String get landscapeVariant => 'Landscape style';
+
+  @override
+  String get landscapeIllustrated => 'Illustrated';
+
+  @override
+  String get landscapeRealistic => 'Realistic';
+
+  @override
+  String get landscapeTimeOfDay => 'Time of day';
+
+  @override
+  String get landscapeSeasons => 'Seasons';
+
+  @override
+  String get landscapeHemisphere => 'Hemisphere';
+
+  @override
+  String get landscapeAuto => 'Automatic';
+
+  @override
+  String get landscapeNorth => 'Northern';
+
+  @override
+  String get landscapeSouth => 'Southern';
+
+  @override
+  String get landscapeClouds => 'Clouds';
+
+  @override
+  String get landscapePrecipitation => 'Rain and snow';
+
+  @override
+  String get landscapeFog => 'Fog';
+
+  @override
+  String get landscapeMotion => 'Animate weather';
+
+  @override
+  String get landscapeHelp =>
+      'Time follows cached sunrise and sunset from Night mode; without them, dawn is at 06:00 and dusk at 18:00, with 40-minute transitions around each. Seasons follow the local month and hemisphere; automatic hemisphere uses weather coordinates, then Night mode coordinates, then the Northern Hemisphere. With time of day off, the scene stays in daylight; with seasons off, it stays in summer. Weather uses current data from the selected weather source, without extra requests. Missing or stale weather shows clear skies. Clouds, precipitation and fog can be disabled independently. Motion is off by default, stops when Home is hidden, and is disabled in memory saving mode or when reduced motion is requested.';
+
+  @override
+  String get inputConnected => 'Connected';
+
+  @override
+  String get inputStandby => 'Connected · standby';
+
+  @override
+  String get inputDisconnected => 'Disconnected';
+
+  @override
+  String get inputStateUnknown => 'Connection status unavailable';
 }

@@ -88,6 +88,18 @@ outlines, zoom and animations, accent color, categories, and the top panel.
 Menus and notifications have background, transparency, color, and text-scale
 settings. Menus can open on either side. Reset individual groups or all appearance.
 
+**Appearance → Settings style → Interface style** offers Standard, Glass, Soft,
+and Outline. They change panel materials, buttons, focus, switches and sliders
+while preserving placement, dimensions and remote control. Custom colours and
+transparency remain. Standard stays the initial style. Choose fonts separately
+for the interface, top panel and clock: Google Sans, Onest, Manrope, Outfit or
+the system font; the panel and clock also retain their earlier families.
+Only fonts supporting the current interface language are listed. For example,
+Outfit is unavailable for Russian. New styles default to Outfit for compatible
+languages and Manrope for Cyrillic. Switching languages temporarily substitutes
+Manrope or the system font if the saved font is incompatible; switching back
+restores the previous choice. All fonts are bundled and work offline.
+
 Background sources:
 
 - A gradient with your chosen colors.
@@ -95,6 +107,22 @@ Background sources:
 - A folder slideshow with subfolders, order, interval, and next-image controls.
 - Bing online wallpapers or an image URL with available update options.
 - Selected app colors: a soft background derived from the focused tile's banner or icon.
+- Adaptive landscape: an illustrated valley or realistic nature with four seasons.
+
+After selecting this source, open **Home screen → Background → Source parameters**.
+Time of day, seasons, clouds, rain/snow, fog and weather animation have independent
+switches. Disabling time of day keeps daylight; disabling seasons keeps summer.
+Sun times come from the Night mode cache; without them, sunrise is at 06:00 and
+sunset at 18:00, with twilight extending 40 minutes before and after each.
+Landscape states crossfade. Seasons follow the month and hemisphere: automatic
+selection uses weather coordinates, then Night mode coordinates, then Northern.
+You can explicitly choose Northern or Southern Hemisphere.
+
+Weather effects use current data from your selected weather source without extra
+requests; missing or stale data shows clear skies. Motion is off by default,
+stops outside Home, and is disabled in memory-saving mode or with system reduced
+motion. Realistic scenes are bundled; time changes their lighting and weather
+is drawn over them.
 
 Wallpaper placement, brightness, saturation, and dimming depend on the source
 and memory-saving mode. Reddit is currently disabled and cannot be selected.
@@ -121,6 +149,13 @@ TV inputs, notifications, sleep timer, night mode, and launcher/Android settings
 buttons. Time and date have display and style settings; selecting the date opens
 a calendar. Network status shows the available connection type. Traffic shows
 usage for a day, week, or month.
+
+**Top panel → Objects → Combine time, date and weather** groups enabled items
+into one block: a large clock beside two lines for date and weather. Hidden items
+stay hidden. The block occupies the first enabled information item's existing
+position; other buttons retain their order. Date/time formats and calendar
+access remain. Disabling grouping restores individual items in their previous
+order. Panel height stays unchanged.
 
 Widgets open their own menus and settings. Availability depends on Android data:
 traffic needs usage access, and inputs need support for the relevant TV API.
@@ -155,6 +190,10 @@ card appears only when a media session is available; the player determines its a
 Path: **Top panel → Objects → Inputs**.
 
 The launcher lists available system inputs and switches to the selected input.
+Each input button has a connection indicator: a green dot means connected,
+a yellow pause icon means connected in standby, an empty circle means disconnected,
+and a question mark means the TV does not report its state. Indicators update when
+connections change. They show source connectivity, not the input selected for viewing.
 HDMI ports follow their physical numbering, with custom Android labels and
 CEC-device information taken into account. Enable CEC names or assign your own
 name and icon. Port numbers determine order.

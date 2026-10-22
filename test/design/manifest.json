@@ -13,6 +13,15 @@
       "serif": "4d8e6761424656867019081a1a01336f3cb086982682698714054fc33f782713",
       "mono": "66a80e79d17e4c7cabd162e2916578a4cc08fd19eef6e2a643305eae9c567b2b",
       "condensed": "dace262afcee68a5276f200d8026c57221735c0118ab5fda8c2c0d3dc409a8d0"
+    },
+    "interfaceFonts": {
+      "outfit": "fc7287273e66929776e2ba54f144fe699080bec29f61bf649d70d871468aeade",
+      "manrope": "3ae11c49db0455a3cc33e37d380f20fdb8c7f8b41dc07625c177e3d87a9d6ae6",
+      "onest": "966c5c29b4755da84b6854d5c21dd4eaa2420225d0e9874de602de176d4a9f31",
+      "googlesans-400": "03db9870a5505f83d81c828768642b816bef24ac615501856de5b2ff1038c0f0",
+      "googlesans-500": "81af36b42b8c5f66fb29fe04995d43ba3c6589b62ad34e9fe428fb2c162715a5",
+      "googlesans-600": "7bd30b277c290edf3fe84317872b1554edeb2d927593bab3e50f0cda11603097",
+      "googlesans-700": "380ac194dd12a1290f9091b5178381e42b2f834e5d7d1b4f729df7c459cc9baf"
     }
   },
   "states": [
@@ -190,7 +199,7 @@
         960,
         540
       ],
-      "sha256": "d1e7e4cb9c1d8da0ffae96ddb55bba198533dbb48bd081573e051e5fc7707926"
+      "sha256": "765a94a21a751408aeb6ba7eba496d03c7304aec85778c0d7b86be66fdf0918a"
     },
     {
       "name": "home-top-button",
@@ -430,7 +439,7 @@
         960,
         540
       ],
-      "sha256": "d22155a8a73df14e2600c952a867ed361d56671b06837ae3f2b21178781f1415"
+      "sha256": "64d381a3b6d3c62b2df2aa8266f4a03dd352869cd7d65d0a9f3d4da37aedd5b5"
     },
     {
       "name": "settings-top-appearance",
@@ -462,7 +471,7 @@
         960,
         540
       ],
-      "sha256": "e633ad4a0369c3e5305e004f578de09b28a9516e381f268b788a8643fb35047f"
+      "sha256": "3c8a5abdb66fa2aaecf68d9b2f49d7dbd8616dcc950deea249f68c55753abe42"
     },
     {
       "name": "home-top-custom",
@@ -622,7 +631,7 @@
         960,
         540
       ],
-      "sha256": "216bbbd425fe690f236438021fb160a7cbed3d18625d9f96c5eaaf4333f9eabe"
+      "sha256": "606ce44f45dec132da95f7699ae9d408e35d7a4ec0981cbc86da1479ce38005e"
     },
     {
       "name": "settings-notification-style",
@@ -718,7 +727,7 @@
         960,
         540
       ],
-      "sha256": "1dbe7328012ba564a019a908050331cd3c352e9eb235c6f98fdfa1ab163104a5"
+      "sha256": "6fbb966850ed5b36a902becec3be070aba19dadedadb8052429715ae82297175"
     },
     {
       "name": "home-clock-digital",
@@ -766,7 +775,7 @@
         960,
         540
       ],
-      "sha256": "30c25501f111de1c5eeaa3d933c03fd4763cda460ca996c0b22d6b8e254184d4"
+      "sha256": "a3faaf33730496117992169bf8cc491da554e8dfe39453f1570910f58a832072"
     },
     {
       "name": "settings-date",
@@ -783,6 +792,118 @@
         540
       ],
       "sha256": "b43ad7a4071237834fdc4d8168e2b923ade02a0aa0e4b83872504716a8b95013"
+    },
+    {
+      "name": "settings-style-glass",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "28e99f702471f976b179cdd8ffa2dba5439f1d3f6c7a4c07866312341fd9d096"
+    },
+    {
+      "name": "settings-style-soft",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "408a458648435d7ab19d9f0e0fdc33a305d52615c1bb351113c012dd66556909"
+    },
+    {
+      "name": "settings-style-outline",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "922966c926adc3fb9cadff0a98b153680b91b60378fbef8552c11e544800f7ce"
+    },
+    {
+      "name": "home-combined-information",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "7f48e05c11e00ba1f0115791f9fa239352d15c3db5b10ce92c3eda9e114b20b1"
+    },
+    {
+      "name": "settings-font-google-sans",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "64e63ab4e2b7140f9d52cd42e897330650c94d4b6424e3cece46993a62cde506"
+    },
+    {
+      "name": "settings-font-onest",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "a646f411f1e7e62c1cd57a230c46d7d1a3d0b3641eb7b3f263172a305c36e042"
+    },
+    {
+      "name": "settings-font-manrope",
+      "theme": "modern",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1920,
+        1080
+      ],
+      "dpr": 2,
+      "pngSize": [
+        960,
+        540
+      ],
+      "sha256": "28e99f702471f976b179cdd8ffa2dba5439f1d3f6c7a4c07866312341fd9d096"
     }
   ]
 }

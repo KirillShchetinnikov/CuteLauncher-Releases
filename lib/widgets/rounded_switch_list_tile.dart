@@ -1,5 +1,6 @@
 import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
 import 'package:flutter/material.dart';
+import '../theme/interface_style.dart';
 
 class RoundedSwitchListTile extends StatelessWidget {
   final bool value;
@@ -23,6 +24,7 @@ class RoundedSwitchListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final skin = InterfaceSkin.of(context);
     return Semantics(
       toggled: value,
       enabled: enabled,
@@ -34,13 +36,13 @@ class RoundedSwitchListTile extends StatelessWidget {
         leading: secondary,
         title: title,
         trailing: Container(
-          constraints: const BoxConstraints(maxHeight: 16),
+          constraints: BoxConstraints(maxHeight: skin.standard ? 16 : 26),
           child: ExcludeFocus(
             child: ExcludeSemantics(
-              child: Switch(
+              child: skin.standard ? Switch(
                 value: value,
                 onChanged: enabled ? onChanged : null,
-              ),
+              ) : SkinSwitch(value: value, enabled: enabled),
             ),
           ),
         ),

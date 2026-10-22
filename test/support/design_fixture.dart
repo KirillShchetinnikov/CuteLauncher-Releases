@@ -15,6 +15,7 @@ import 'package:flauncher/providers/watch_next_service.dart';
 import 'package:flauncher/providers/weather_service.dart';
 import 'package:flauncher/gradients.dart';
 import 'package:flauncher/models/category.dart';
+import 'package:flauncher/models/weather_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -45,6 +46,9 @@ Future<void> loadDesignFonts(WidgetTester tester) async {
       'PanelSerif': 'serif',
       'PanelMono': 'mono',
       'PanelCondensed': 'condensed',
+      'Outfit': 'outfit',
+      'Manrope': 'manrope',
+      'Onest': 'onest',
     }.entries) {
       await (FontLoader(entry.key)..addFont(
             File('assets/fonts/${entry.value}.ttf')
@@ -53,6 +57,11 @@ Future<void> loadDesignFonts(WidgetTester tester) async {
           ))
           .load();
     }
+    final googleSans = FontLoader('Google Sans');
+    for (final weight in [400, 500, 600, 700]) {
+      googleSans.addFont(File('assets/fonts/googlesans-$weight.ttf').readAsBytes().then(ByteData.sublistView));
+    }
+    await googleSans.load();
     final font = FontLoader('Roboto')
       ..addFont(
         File('test/design/fonts/DejaVuSans.ttf')
@@ -225,6 +234,15 @@ Future<DesignFixture> pumpDesignFixture(
   when(apps.categories).thenReturn([favorites, all]);
   when(apps.launcherSections).thenReturn([favorites, all]);
   final boundary = GlobalKey();
+  final weather = fixtures.mkWeatherService();
+  if (appearanceValues['panelCombinedInformation'] == true) {
+    when(settings.showWeatherInStatusBar).thenReturn(true);
+    when(settings.showWeatherWarnings).thenReturn(false);
+    when(weather.hasWeather).thenReturn(true);
+    when(weather.weatherData).thenReturn(const WeatherData(
+      currentTemp: 8, currentConditionCode: 803));
+    when(weather.stale).thenReturn(false);
+  }
   await tester.pumpWidget(
     MultiProvider(
       providers: [
@@ -243,7 +261,7 @@ Future<DesignFixture> pumpDesignFixture(
           value: fixtures.mkWatchNextService(),
         ),
         ChangeNotifierProvider<WeatherService>.value(
-          value: fixtures.mkWeatherService(),
+          value: weather,
         ),
         ChangeNotifierProvider(create: (_) => LauncherState()),
       ],

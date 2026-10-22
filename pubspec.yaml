@@ -1,7 +1,7 @@
 name: flauncher
 description: CuteLauncher, a personal Android TV launcher based on LTvLauncher.
 
-version: 1.0.24+73
+version: 1.0.25+74
 
 environment:
   sdk: ">=3.13.5 <4.0.0"
@@ -70,7 +70,32 @@ flutter:
     - assets/fonts/LICENSE_notoserif.txt
     - assets/fonts/LICENSE_robotomono.txt
     - assets/fonts/LICENSE_robotocondensed.txt
+    - assets/fonts/LICENSE_outfit.txt
+    - assets/fonts/LICENSE_manrope.txt
+    - assets/fonts/LICENSE_onest.txt
+    - assets/fonts/LICENSE_googlesans.txt
+    - assets/fonts/TRADEMARKS_googlesans.txt
+    - assets/landscapes/
   fonts:
+    - family: Outfit
+      fonts:
+        - asset: assets/fonts/outfit.ttf
+    - family: Google Sans
+      fonts:
+        - asset: assets/fonts/googlesans-400.ttf
+          weight: 400
+        - asset: assets/fonts/googlesans-500.ttf
+          weight: 500
+        - asset: assets/fonts/googlesans-600.ttf
+          weight: 600
+        - asset: assets/fonts/googlesans-700.ttf
+          weight: 700
+    - family: Onest
+      fonts:
+        - asset: assets/fonts/onest.ttf
+    - family: Manrope
+      fonts:
+        - asset: assets/fonts/manrope.ttf
     - family: PanelSans
       fonts:
         - asset: assets/fonts/sans.ttf

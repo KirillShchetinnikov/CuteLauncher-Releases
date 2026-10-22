@@ -1,9 +1,11 @@
+import 'app_fonts.dart';
 import 'widgets/notification_popup_presentation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'providers/appearance_service.dart';
 import 'providers/remote_panel_service.dart';
 import 'providers/weather_service.dart';
 import 'package:flauncher/theme/launcher_style.dart';
+import 'theme/interface_style.dart';
 import 'package:flauncher/widgets/action_notice.dart';
 /*
  * FLauncher
@@ -106,15 +108,25 @@ class _FLauncherAppState extends State<FLauncherApp> {
       context.read<LauncherState>().refresh(appsService);
     }
 
-    return Selector<SettingsService, (Color, Locale?)>(
-      selector: (_, settings) => (settings.accentColor, settings.appLocale),
+    return Selector2<SettingsService, AppearanceService?, (Color, Locale?, String, String)>(
+      selector: (_, settings, appearance) => (settings.accentColor, settings.appLocale,
+        appearance?.appearance.interfaceStyle ?? 'standard',
+        appearance?.appearance.interfaceFont ?? 'system'),
       builder: (context, tuple, _) {
         final accentColor = tuple.$1;
         final appLocale = tuple.$2;
+        final skin = InterfaceSkin(interfaceStyleFrom(tuple.$3));
+        final geometry = const LauncherStyle().copyWith(
+          rowRadius: skin.radius,
+          topButtonRadius: skin.standard ? 16 : skin.radius,
+          panelRadius: skin.standard ? 28 : skin.radius + 8,
+          dialogRadius: skin.standard ? 24 : skin.radius + 4,
+          tileRadius: skin.radius,
+        );
 
         return MaterialApp(
       debugShowCheckedModeBanner: false,
-      builder: (context, child) => Consumer<NightModeService?>(
+      builder: (context, child) => LanguageFontTheme(font: tuple.$4, child: Consumer<NightModeService?>(
         builder: (context, night, _) => NightModeFilter(
           service: night,
           child: ActionNoticeHost(
@@ -123,7 +135,7 @@ class _FLauncherAppState extends State<FLauncherApp> {
                 : UpdateNotification(child: child ?? const SizedBox.shrink()),
           ),
         ),
-      ),
+      )),
       navigatorKey: _navigatorKey,
       locale: appLocale,
       scrollBehavior: const MaterialScrollBehavior().copyWith(
@@ -147,8 +159,9 @@ class _FLauncherAppState extends State<FLauncherApp> {
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       title: 'CuteLauncher',
-        theme: ThemeData(
-          extensions: const [LauncherStyle()],
+        theme: skin.apply(ThemeData(
+          extensions: [geometry, skin],
+          fontFamily: null,
           useMaterial3: true,
           brightness: Brightness.dark,
           // Use ColorScheme based on accent color
@@ -180,12 +193,12 @@ class _FLauncherAppState extends State<FLauncherApp> {
               style: TextButton.styleFrom(
                 foregroundColor: Colors.white, // Revert to white for settings list
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(LauncherStyle.of(context).rowRadius)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(geometry.rowRadius)),
                 splashFactory: NoSplash.splashFactory,
               )
           ),
           dialogTheme: DialogThemeData(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(LauncherStyle.of(context).dialogRadius)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(geometry.dialogRadius)),
             backgroundColor: const Color(0xFF1C2029),
             surfaceTintColor: Colors.transparent,
             titleTextStyle: Typography.material2018().white.titleLarge,
@@ -222,7 +235,7 @@ class _FLauncherAppState extends State<FLauncherApp> {
               return null;
             }),
           ), tabBarTheme: TabBarThemeData(indicatorColor: accentColor),
-        ),
+        )),
       home: widget.remotePanel ? const RemotePanel() : Builder(
         builder: (context) => PopScope(
           canPop: false,

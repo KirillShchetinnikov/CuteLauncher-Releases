@@ -86,6 +86,7 @@ public class MainActivity extends FlutterActivity {
     private RemoteMappingsBridge remoteMappings;
 
     @Override public void cleanUpFlutterEngine(@NonNull FlutterEngine flutterEngine) {
+        if (tvInputBridge != null) { tvInputBridge.close(); tvInputBridge = null; }
         if (remoteMappings != null) { remoteMappings.close(); remoteMappings = null; }
         if (remoteButtons != null) { remoteButtons.close(); remoteButtons = null; }
         if (tvImeEditorBridge != null) { tvImeEditorBridge.dispose(); tvImeEditorBridge = null; }
@@ -158,7 +159,7 @@ public class MainActivity extends FlutterActivity {
         TclBlueLight.register(this, messenger, sIoExecutor);
         applicationCatalog = new ApplicationCatalog(this);
         networkStatistics = new NetworkStatistics(this);
-        tvInputBridge = new TvInputBridge(this);
+        tvInputBridge = new TvInputBridge(this, messenger);
         notificationBridge = new NotificationBridge(this);
         mediaBridge = new MediaBridge(this, sIoExecutor);
         mediaBridge.register(messenger, notificationBridge);

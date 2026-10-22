@@ -1,4 +1,5 @@
 import 'widgets/wallpaper_background.dart';
+import 'widgets/adaptive_landscape_background.dart';
 import 'widgets/app_artwork_background.dart';
 import 'providers/remote_panel_service.dart';
 import 'providers/slideshow_service.dart';
@@ -373,7 +374,7 @@ class FLauncherState extends State<FLauncher> {
     final online = context.watch<OnlineWallpaperService?>();
     final source = context.watch<SettingsService>().backgroundSource;
     final slideshow = context.watch<SlideshowService?>();
-    final image = source == 'slideshow' ? slideshow?.image : source == 'online' ? online?.wallpaper : source == 'gradient' ? null : wallpaperService.wallpaper;
+    final image = source == 'slideshow' ? slideshow?.image : source == 'online' ? online?.wallpaper : source == 'gradient' || source == 'landscape' ? null : wallpaperService.wallpaper;
     final settings = context.watch<SettingsService>();
     final artwork = context.read<AppearanceService?>()?.focusedAppImage;
     if (source == 'app' && artwork != null) {
@@ -391,6 +392,7 @@ class FLauncherState extends State<FLauncher> {
       saturation: settings.wallpaperSaturation,
       dimming: settings.wallpaperDimming,
       memorySaver: settings.memorySaverEnabled,
+      artwork: source == 'landscape' ? const AdaptiveLandscapeBackground() : null,
     );
   }
   Widget _emptyState(BuildContext context) {

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../l10n/app_localizations.dart';
 import '../theme/launcher_style.dart';
+import '../theme/interface_style.dart';
 import 'action_notice.dart';
 import 'settings/settings_menu_layout.dart';
 import 'app_card_keys.dart';
@@ -238,7 +239,7 @@ ThemeData launcherDialogTheme(BuildContext context) {
   final theme = Theme.of(context);
   final colors = theme.colorScheme;
   final style = LauncherStyle.of(context);
-  return theme.copyWith(
+  return InterfaceSkin.of(context).apply(theme.copyWith(
     dialogTheme: theme.dialogTheme.copyWith(
       alignment: Alignment.center,
       insetPadding: const EdgeInsets.all(16),
@@ -302,7 +303,7 @@ ThemeData launcherDialogTheme(BuildContext context) {
         ),
       ),
     ),
-  );
+  ));
 }
 
 /// A bounded, scrollable body with a footer that stays visible. The explicit

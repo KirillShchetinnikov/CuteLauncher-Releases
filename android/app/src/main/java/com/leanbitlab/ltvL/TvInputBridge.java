@@ -24,15 +24,61 @@ import android.media.tv.TvInputManager;
 import android.media.tv.TvInputInfo;
 import android.media.tv.TvContract;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
+import io.flutter.plugin.common.BinaryMessenger;
+import io.flutter.plugin.common.EventChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-/** Native TvInputBridge operations; channel names and payloads remain owned by MainActivity. */
-final class TvInputBridge {
+/** Native input snapshots, switching and lifecycle-owned connection events. */
+final class TvInputBridge implements EventChannel.StreamHandler, AutoCloseable {
     private final Context context;
 
-    TvInputBridge(Context context) { this.context = context; }
+    private final EventChannel events;
+    private TvInputManager listeningManager;
+    private EventChannel.EventSink sink;
+    private final TvInputManager.TvInputCallback callback = new TvInputManager.TvInputCallback() {
+        @Override public void onInputAdded(String id) { changed(); }
+        @Override public void onInputRemoved(String id) { changed(); }
+        @Override public void onInputUpdated(String id) { changed(); }
+        @Override public void onInputStateChanged(String id, int state) { changed(); }
+        @Override public void onTvInputInfoUpdated(TvInputInfo info) { changed(); }
+    };
+
+    TvInputBridge(Context context) { this.context = context; events = null; }
+
+    TvInputBridge(Context context, BinaryMessenger messenger) {
+        this.context = context;
+        events = new EventChannel(messenger, "me.efesser.flauncher/event_tv_inputs");
+        events.setStreamHandler(this);
+    }
+
+    private void changed() { if (sink != null) sink.success(true); }
+
+    @Override public void onListen(Object arguments, EventChannel.EventSink events) {
+        onCancel(null);
+        sink = events;
+        try {
+            TvInputManager manager = (TvInputManager) context.getSystemService(Context.TV_INPUT_SERVICE);
+            if (manager != null) {
+                manager.registerCallback(callback, new Handler(Looper.getMainLooper()));
+                listeningManager = manager;
+            }
+        } catch (RuntimeException ignored) { /* Snapshot remains available on restricted firmware. */ }
+    }
+
+    @Override public void onCancel(Object arguments) {
+        sink = null;
+        if (listeningManager != null) {
+            try { listeningManager.unregisterCallback(callback); }
+            catch (RuntimeException ignored) { /* OEM service may have stopped. */ }
+            listeningManager = null;
+        }
+    }
+
+    @Override public void close() { onCancel(null); if (events != null) events.setStreamHandler(null); }
 
     List<Map<String, Object>> getTvInputs() {
         List<Map<String, Object>> result = new ArrayList<>();
@@ -47,6 +93,8 @@ final class TvInputBridge {
                         CharSequence label = input.loadLabel(context);
                         map.put("label", label != null ? label.toString() : input.getId());
                         map.put("type", input.getType());
+                        try { map.put("state", manager.getInputState(input.getId())); }
+                        catch (RuntimeException ignored) { /* Unknown is not disconnected. */ }
                         if (input.getType() == TvInputInfo.TYPE_HDMI) {
                             if (input.getParentId() != null) map.put("parentId", input.getParentId());
                             try {

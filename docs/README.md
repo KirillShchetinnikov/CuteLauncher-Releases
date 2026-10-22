@@ -53,5 +53,8 @@ CuteLauncher создан как форк [LTvLauncher](https://github.com/leanb
 и [уведомления TLS-библиотек прежних сборок](../assets/licenses/adb_tls.txt).
 Flutter NOTICES содержит лицензии проекта, Flutter/engine и Dart-пакетов.
 Лицензии встроенных шрифтов находятся в [assets/fonts](../assets/fonts).
+Outfit, Manrope, Onest и Google Sans включены с лицензиями SIL OFL 1.1; загрузка шрифтов из сети
+не требуется. Сезонные реалистичные пейзажи созданы для CuteLauncher генератором
+изображений OpenAI; изображения и код оформления других лаунчеров не копировались.
 Тестовый DejaVu Sans распространяется с [лицензией](../test/design/fonts/LICENSE_DEJAVU)
 и в APK не включается. Юридические тексты сохраняются на языке оригинала.

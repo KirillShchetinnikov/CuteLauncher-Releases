@@ -31,6 +31,39 @@ Created by [Kirill Shchetinnikov](https://github.com/KirillShchetinnikov).
 - **Keep your setup.** Backups, automatic schedules, and selective synchronization
   help you move your layout and preferences between TVs.
 
+## Screenshots
+
+Example setups in build **1.0.24+73**, captured on Android TV and Google TV emulators (Android 16). Every image comes from the running app at 3840 × 2160; click an image to open the original. The third-party apps shown are installed separately.
+
+| Glass · autumn landscape | Standard style · graphite gradient |
+|---|---|
+| [![Glass · autumn landscape](docs/images/screenshots/01-glass-autumn.webp)](docs/images/screenshots/01-glass-autumn.webp) | [![Standard style · graphite gradient](docs/images/screenshots/05-standard-gradient.webp)](docs/images/screenshots/05-standard-gradient.webp) |
+
+| Soft style · spring landscape | Outline style · illustrated night landscape |
+|---|---|
+| [![Soft style · spring landscape](docs/images/screenshots/07-soft-spring.webp)](docs/images/screenshots/07-soft-spring.webp) | [![Outline style · illustrated night landscape](docs/images/screenshots/09-outline-night.webp)](docs/images/screenshots/09-outline-night.webp) |
+
+<details>
+<summary>8 more screenshots: features and settings</summary>
+
+| Glass settings | Outline settings |
+|---|---|
+| [![Glass settings](docs/images/screenshots/02-glass-settings.webp)](docs/images/screenshots/02-glass-settings.webp) | [![Outline settings](docs/images/screenshots/10-outline-settings.webp)](docs/images/screenshots/10-outline-settings.webp) |
+
+| Calendar from the top panel | Sleep timer |
+|---|---|
+| [![Calendar from the top panel](docs/images/screenshots/03-calendar.webp)](docs/images/screenshots/03-calendar.webp) | [![Sleep timer](docs/images/screenshots/04-sleep-timer.webp)](docs/images/screenshots/04-sleep-timer.webp) |
+
+| Your own app categories | Customizable top panel |
+|---|---|
+| [![Your own app categories](docs/images/screenshots/06-sections.webp)](docs/images/screenshots/06-sections.webp) | [![Customizable top panel](docs/images/screenshots/08-top-panel.webp)](docs/images/screenshots/08-top-panel.webp) |
+
+| Adaptive wallpapers | Tile sizes and labels |
+|---|---|
+| [![Adaptive wallpapers](docs/images/screenshots/11-adaptive-wallpaper.webp)](docs/images/screenshots/11-adaptive-wallpaper.webp) | [![Tile sizes and labels](docs/images/screenshots/12-tile-appearance.webp)](docs/images/screenshots/12-tile-appearance.webp) |
+
+</details>
+
 ## Main features
 
 ### Apps and the home screen

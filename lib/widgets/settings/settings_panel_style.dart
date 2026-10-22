@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/appearance_service.dart';
+import '../../app_fonts.dart';
 
 /// Shared appearance for settings and all side panels with settings/actions.
 class SettingsPanelStyle extends StatelessWidget {
@@ -12,7 +13,16 @@ class SettingsPanelStyle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appearance = context.watch<AppearanceService?>()?.appearance;
-    final theme = Theme.of(context);
+    // A dialog captures Theme at opening. Use the current MaterialApp theme,
+    // rather than that snapshot or a still-interpolating AnimatedTheme.
+    final base =
+        context.findAncestorWidgetOfExactType<MaterialApp>()?.theme ??
+        Theme.of(context);
+    final theme = LanguageFontTheme.resolve(
+      base,
+      appearance?.interfaceFont ?? 'system',
+      Localizations.localeOf(context),
+    );
     final textSize = appearance?.number('settingsTextSize') ?? 16;
     final foreground =
         appearance?.color('settingsTextColor') ?? theme.colorScheme.onSurface;

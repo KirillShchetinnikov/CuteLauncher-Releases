@@ -1,15 +1,19 @@
 import 'dart:convert';
+import 'dart:async';
+
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 
 import 'service_lifecycle.dart';
 
-import 'package:flutter/foundation.dart';
 import 'package:flauncher/flauncher_channel.dart';
 import 'package:flauncher/models/tv_input.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../tv_inputs_configuration.dart';
 
-class TvInputsService extends ChangeNotifier with ServiceLifecycle {
+class TvInputsService extends ChangeNotifier
+    with ServiceLifecycle, WidgetsBindingObserver {
   final FLauncherChannel _channel;
   final SharedPreferences? preferences;
   final Listenable? settings;
@@ -19,11 +23,61 @@ class TvInputsService extends ChangeNotifier with ServiceLifecycle {
   List<TvInput> _rawInputs = [];
   List<TvInput> _inputs = [];
   bool _initialized = false;
+  static const _events = EventChannel('me.efesser.flauncher/event_tv_inputs');
+  final Stream<dynamic>? changes;
+  StreamSubscription<dynamic>? _subscription;
+  Timer? _refreshTimer;
+  int _generation = 0;
 
-  TvInputsService(this._channel, {this.preferences, this.settings}) {
+  TvInputsService(
+    this._channel, {
+    this.preferences,
+    this.settings,
+    this.changes,
+  }) {
     _reloadConfiguration();
     settings?.addListener(_reloadConfiguration);
+    WidgetsBinding.instance.addObserver(this);
+    _listen();
     _init();
+  }
+
+  void _listen() {
+    _subscription ??= (changes ?? _events.receiveBroadcastStream()).listen(
+      (_) {
+        if (isDisposed) return;
+        _refreshTimer?.cancel();
+        _refreshTimer = Timer(
+          const Duration(milliseconds: 100),
+          _refreshSafely,
+        );
+      },
+      onError: (Object error) {
+        debugPrint('TV input events unavailable: $error');
+      },
+    );
+  }
+
+  Future<void> _refreshSafely() async {
+    try {
+      await refreshInputs();
+    } catch (error) {
+      debugPrint('Unable to refresh TV inputs: $error');
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _listen();
+      _refreshSafely();
+    } else if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.detached) {
+      _subscription?.cancel();
+      _subscription = null;
+      _refreshTimer?.cancel();
+      _generation++;
+    }
   }
 
   void _reloadConfiguration() {
@@ -58,6 +112,9 @@ class TvInputsService extends ChangeNotifier with ServiceLifecycle {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _subscription?.cancel();
+    _refreshTimer?.cancel();
     settings?.removeListener(_reloadConfiguration);
     super.dispose();
   }
@@ -79,8 +136,9 @@ class TvInputsService extends ChangeNotifier with ServiceLifecycle {
 
   Future<void> refreshInputs() async {
     if (isDisposed) return;
+    final generation = ++_generation;
     final List<Map<dynamic, dynamic>> rawInputs = await _channel.getTvInputs();
-    if (isDisposed) return;
+    if (isDisposed || generation != _generation) return;
     _reloadConfiguration();
     _rawInputs = rawInputs.map(TvInput.fromMap).toList();
     _inputs = configuration.present(_rawInputs);

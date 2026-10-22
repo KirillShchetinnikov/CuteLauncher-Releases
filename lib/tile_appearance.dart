@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'app_fonts.dart';
 import 'panel_layout.dart';
 import 'panel_clock_style.dart';
 
@@ -60,6 +61,10 @@ class TileAppearance {
   bool get blurTiles => values['blurTiles'] == true;
   bool get blurPanel => values['blurPanel'] == true;
   bool get dateCalendar => values['panelDateCalendar'] == true;
+  bool get combinedInformation => values['panelCombinedInformation'] == true;
+  String get interfaceStyle => values['settingsInterfaceStyle'] as String? ?? 'standard';
+  String get interfaceFont => values['settingsInterfaceFont'] as String? ??
+      (interfaceStyle == 'standard' ? 'system' : 'outfit');
   PanelClockStyle get clockStyle => PanelClockStyle(PanelClockStyle.validValues(values['panelClockStyle']));
   double get panelTextSize => number('panelTextSize') ?? 18;
   String get panelFont => values['panelFont'] as String? ?? 'sans-serif';
@@ -79,15 +84,11 @@ class TileAppearance {
 
   TextStyle get panelTextStyle => TextStyle(
     fontSize: panelTextSize,
-    fontFamily: switch (panelFont) {
-      'serif' => 'PanelSerif',
-      'monospace' => 'PanelMono',
-      'sans-serif-condensed' => 'PanelCondensed',
-      _ => 'PanelSans',
-    },
+    fontFamily: panelFont == 'system' ? 'Roboto' : AppFonts.families[panelFont] ?? 'PanelSans',
     fontWeight: FontWeight.w400,
     color: panelTextColor,
   );
+  TextStyle panelTextStyleFor(Locale locale) => AppFonts.localize(panelTextStyle, locale);
   double get tileSize => number('size') ?? 128;
   double get focusAlignment => number('focusAlignment') ?? 0.5;
   int columns(int base, {double? width}) =>
@@ -132,7 +133,9 @@ class TileAppearance {
       'focusEffect': ['scale', 'border', 'lift'],
       'focusBorderColor': ['accent', 'dynamic'],
       'focusBorderStyle': ['outline', 'glow', 'none'],
-      'panelFont': ['sans-serif', 'serif', 'monospace', 'sans-serif-condensed'],
+      'panelFont': AppFonts.panelIds,
+      'settingsInterfaceStyle': ['standard', 'glass', 'soft', 'outline'],
+      'settingsInterfaceFont': AppFonts.interfaceIds,
     };
     for (final entry in input.entries) {
       final key = entry.key;
@@ -203,6 +206,7 @@ class TileAppearance {
             'blurPanel',
             'panelTextBackground',
             'panelDateCalendar',
+            'panelCombinedInformation',
           ].contains(key) &&
           value is bool) {
         result[key] = value;

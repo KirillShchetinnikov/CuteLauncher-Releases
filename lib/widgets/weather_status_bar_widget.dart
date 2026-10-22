@@ -63,7 +63,7 @@ class _WeatherStatusBarWidgetState extends State<WeatherStatusBarWidget> {
                     color: appearance.panelTextColor,
                   ),
                   const SizedBox(width: 8),
-                  Text(displayText, style: appearance.panelTextStyle),
+                  Text(displayText, style: appearance.panelTextStyleFor(Localizations.localeOf(context))),
                 ],
               ),
             );

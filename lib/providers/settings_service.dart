@@ -1,5 +1,6 @@
 import '../tv_inputs_configuration.dart';
 import 'online_wallpaper_service.dart';
+import '../adaptive_landscape.dart';
 // Historical constants and enum names are preserved for upstream and serialized data compatibility.
 // ignore_for_file: constant_identifier_names
 
@@ -160,6 +161,11 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
   bool get showAppNamesBelowIcons => _showAppNamesBelowIcons;
 
   String get themes => 'modern';
+  LandscapeConfiguration get landscape => LandscapeConfiguration.decode(_sharedPreferences.getString(landscapeSettingsKey));
+  Future<void> setLandscape(LandscapeConfiguration value) async {
+    await _sharedPreferences.setString(landscapeSettingsKey, value.encode());
+    notifyListeners();
+  }
   String get wallpaperFit => _sharedPreferences.getString('wallpaper_fit') ?? 'cover';
   double get wallpaperBrightness => _sharedPreferences.getDouble('wallpaper_brightness') ?? 1;
   double get wallpaperSaturation => _sharedPreferences.getDouble('wallpaper_saturation') ?? 1;
@@ -183,7 +189,7 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
       (OnlineWallpaperConfiguration.decode(_sharedPreferences.getString(onlineWallpaperKey)).enabled
           ? 'online' : timeBasedWallpaperEnabled ? 'scheduled' : 'picture');
   Future<void> setBackgroundSource(String source) async {
-    if (!['gradient', 'picture', 'scheduled', 'online', 'slideshow', 'app'].contains(source)) return;
+    if (!['gradient', 'picture', 'scheduled', 'online', 'slideshow', 'app', 'landscape'].contains(source)) return;
     await _sharedPreferences.setString('background_source', source);
     await setTimeBasedWallpaperEnabled(source == 'scheduled');
     notifyListeners();
@@ -193,7 +199,7 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
       _showAppNamesBelowIconsKey, _hideHighlightOutlineOnHomescreenKey,
       _appHighlightAnimationEnabledKey, _appSelectorTransitionAnimationEnabledKey,
       _timeBasedWallpaperEnabledKey, _screensaverClockStyleKey, 'settings_menu_on_right', 'background_source', 'wallpaper_fit',
-      'wallpaper_brightness', 'wallpaper_saturation', 'wallpaper_dimming']) {
+      'wallpaper_brightness', 'wallpaper_saturation', 'wallpaper_dimming', landscapeSettingsKey]) {
       await _sharedPreferences.remove(key);
     }
     await _sharedPreferences.setString('background_source', 'gradient');
@@ -210,7 +216,7 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
       'accent' => [_accentColorKey],
       'clock' => [_screensaverClockStyleKey],
       'wallpaperDisplay' => ['wallpaper_fit', 'wallpaper_brightness', 'wallpaper_saturation', 'wallpaper_dimming'],
-      'background' => [_gradientUuidKey, _timeBasedWallpaperEnabledKey, 'background_source'],
+      'background' => [_gradientUuidKey, _timeBasedWallpaperEnabledKey, 'background_source', landscapeSettingsKey],
       'panel' => ['auto_hide_app_bar'],
       _ => <String>[],
     };
@@ -389,6 +395,7 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
       _showCategoryTitlesKey: _showCategoryTitles,
       _showAppNamesBelowIconsKey: _showAppNamesBelowIcons,
       'background_source': backgroundSource,
+      landscapeSettingsKey: landscape.encode(),
       'wallpaper_fit': wallpaperFit,
       'wallpaper_brightness': wallpaperBrightness,
       'wallpaper_saturation': wallpaperSaturation,

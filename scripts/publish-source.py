@@ -28,6 +28,18 @@ PUBLIC_DOCS = {
 }
 PUBLIC_DOC_ASSETS = {
     'docs/DADB_LICENSE.txt', 'docs/translation_manifest.json',
+    'docs/images/screenshots/01-glass-autumn.webp',
+    'docs/images/screenshots/02-glass-settings.webp',
+    'docs/images/screenshots/03-calendar.webp',
+    'docs/images/screenshots/04-sleep-timer.webp',
+    'docs/images/screenshots/05-standard-gradient.webp',
+    'docs/images/screenshots/06-sections.webp',
+    'docs/images/screenshots/07-soft-spring.webp',
+    'docs/images/screenshots/08-top-panel.webp',
+    'docs/images/screenshots/09-outline-night.webp',
+    'docs/images/screenshots/10-outline-settings.webp',
+    'docs/images/screenshots/11-adaptive-wallpaper.webp',
+    'docs/images/screenshots/12-tile-appearance.webp',
 }
 PRIVATE_DIRS = {
     '.git', '.local', '.tools', '.dart_tool', '.codex', '.agents', '.aws',

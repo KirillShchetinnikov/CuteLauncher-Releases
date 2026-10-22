@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import '../providers/appearance_service.dart';
 import '../tile_appearance.dart';
 import '../theme/launcher_style.dart';
+import '../theme/interface_style.dart';
 
 TileAppearance topPanelAppearance(BuildContext context) =>
     PanelAppearanceScope.maybeOf(context) ??
@@ -64,8 +65,9 @@ class _TopPanelItemState extends State<TopPanelItem> {
   Widget build(BuildContext context) {
     final appearance = widget.appearance ?? topPanelAppearance(context);
     final style = LauncherStyle.of(context);
+    final skin = InterfaceSkin.of(context);
     final highlighted = widget.selected || _focused || _hovered;
-    final textStyle = widget.textStyle ?? appearance.panelTextStyle;
+    final textStyle = widget.textStyle ?? appearance.panelTextStyleFor(Localizations.localeOf(context));
     final background = widget.backgroundColor ?? appearance.panelItemBackground;
     final radius = widget.borderRadius ?? style.topButtonRadius;
     final foreground = textStyle.color;
@@ -80,7 +82,7 @@ class _TopPanelItemState extends State<TopPanelItem> {
           ? height
           : math.min(kToolbarHeight - 4, height),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
+      decoration: skin.standard ? BoxDecoration(
         color: highlighted
             ? Color.alphaBlend(outline.withValues(alpha: .18), background)
             : background,
@@ -98,7 +100,9 @@ class _TopPanelItemState extends State<TopPanelItem> {
                 ),
               ]
             : null,
-      ),
+      ) : skin.surface(background, foreground ?? Colors.white,
+        focused: highlighted, accent: outline, cornerRadius: radius,
+        borderWidth: style.topButtonFocusWidth),
       child: DefaultTextStyle(
         style: textStyle,
         child: IconTheme(

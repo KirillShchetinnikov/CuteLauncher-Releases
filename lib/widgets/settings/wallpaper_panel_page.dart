@@ -38,6 +38,7 @@ import '../../providers/online_wallpaper_service.dart';
 import 'online_wallpaper_page.dart';
 import 'wallpaper_display_page.dart';
 import 'slideshow_page.dart';
+import 'landscape_page.dart';
 
 class WallpaperPanelPage extends StatelessWidget {
   static const String routeName = 'wallpaper_panel';
@@ -56,6 +57,7 @@ class WallpaperPanelPage extends StatelessWidget {
       'online': l.onlineWallpaper,
       'slideshow': l.wallpaperSlideshow,
       'app': l.appArtworkBackground,
+      'landscape': l.adaptiveLandscape,
     };
     return SettingsPageLayout(
       title: Text(
@@ -96,7 +98,9 @@ class WallpaperPanelPage extends StatelessWidget {
               leading: const Icon(Icons.tune),
               onPressed: () => Navigator.of(context).push(
                 SettingsRoute<void>(
-                  builder: (_) => source == 'app'
+                  builder: (_) => source == 'landscape'
+                      ? const LandscapePage()
+                      : source == 'app'
                       ? const GradientPanelPage()
                       : source == 'online'
                       ? const OnlineWallpaperPage()

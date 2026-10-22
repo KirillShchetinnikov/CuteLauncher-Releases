@@ -1,5 +1,6 @@
 import 'panel_calendar_dialog.dart';
 import 'panel_clock.dart';
+import 'combined_information.dart';
 import '../providers/remote_panel_service.dart';
 import 'package:flauncher/widgets/launcher_dialog.dart';
 import 'package:flutter/material.dart';
@@ -324,7 +325,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
           child: DateTimeWidget(
             settings.dateFormat,
             key: const Key('statusbar_date'),
-            textStyle: appearance.panelTextStyle,
+            textStyle: appearance.panelTextStyleFor(Localizations.localeOf(context)),
           ),
         ),
       if ((widget.remotePanel?.visible('time') ?? settings.showTimeInStatusBar))
@@ -333,6 +334,25 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
           format: settings.timeFormat,
         ),
     };
+    if (appearance.combinedInformation) {
+      final layout = widget.remotePanel?.layout ?? appearance.panelLayout;
+      final ids = [...layout.left, ...layout.right]
+          .where((id) => const ['time', 'date', 'weather'].contains(id) && objects.containsKey(id)).toList();
+      if (ids.isNotEmpty) {
+        final combined = CombinedInformation(
+          appearance: TileAppearance({...appearance.values, 'panelClockStyle': homeAppearance.clockStyle.values}),
+          showTime: objects.containsKey('time'), showDate: objects.containsKey('date'),
+          showWeather: objects.containsKey('weather'), weather: weather.weatherData,
+          showWarnings: settings.showWeatherWarnings && !weather.stale,
+          useFahrenheit: settings.useFahrenheit,
+          timeFormat: settings.timeFormat, dateFormat: settings.dateFormat,
+          focusNode: _dateFocusNode, selected: _activeWidget == 'date',
+          onCalendar: (widget.remotePanel?.dateCalendar ?? appearance.dateCalendar) ? _openCalendar : null,
+        );
+        for (final id in ids) { objects.remove(id); }
+        objects[ids.first] = combined;
+      }
+    }
     Widget group(String key) {
       final layout = widget.remotePanel?.layout ?? appearance.panelLayout;
       final order = (key == 'panelButtonsOrder' ? layout.left : layout.right)

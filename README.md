@@ -31,6 +31,39 @@ CuteLauncher объединяет запуск приложений, полез�
 - **Настройки можно сохранить.** Резервные копии, автоматическое расписание
   и выборочная синхронизация помогают переносить оформление и настройки между ТВ.
 
+## Скриншоты
+
+Примеры оформления в сборке **1.0.24+73**, снятые на эмуляторах Android TV и Google TV (Android 16). Все снимки — из работающего приложения, в разрешении 3840 × 2160; нажмите на изображение, чтобы открыть оригинал. Показанные сторонние приложения устанавливаются отдельно.
+
+| Стекло · осенний пейзаж | Стандартный стиль · графитовый градиент |
+|---|---|
+| [![Стекло · осенний пейзаж](docs/images/screenshots/01-glass-autumn.webp)](docs/images/screenshots/01-glass-autumn.webp) | [![Стандартный стиль · графитовый градиент](docs/images/screenshots/05-standard-gradient.webp)](docs/images/screenshots/05-standard-gradient.webp) |
+
+| Мягкий стиль · весенний пейзаж | Контурный стиль · рисованный ночной пейзаж |
+|---|---|
+| [![Мягкий стиль · весенний пейзаж](docs/images/screenshots/07-soft-spring.webp)](docs/images/screenshots/07-soft-spring.webp) | [![Контурный стиль · рисованный ночной пейзаж](docs/images/screenshots/09-outline-night.webp)](docs/images/screenshots/09-outline-night.webp) |
+
+<details>
+<summary>Ещё 8 снимков: возможности и настройки</summary>
+
+| Стеклянные настройки | Контурные настройки |
+|---|---|
+| [![Стеклянные настройки](docs/images/screenshots/02-glass-settings.webp)](docs/images/screenshots/02-glass-settings.webp) | [![Контурные настройки](docs/images/screenshots/10-outline-settings.webp)](docs/images/screenshots/10-outline-settings.webp) |
+
+| Календарь с верхней панели | Таймер отключения |
+|---|---|
+| [![Календарь с верхней панели](docs/images/screenshots/03-calendar.webp)](docs/images/screenshots/03-calendar.webp) | [![Таймер отключения](docs/images/screenshots/04-sleep-timer.webp)](docs/images/screenshots/04-sleep-timer.webp) |
+
+| Свои разделы приложений | Настраиваемая верхняя панель |
+|---|---|
+| [![Свои разделы приложений](docs/images/screenshots/06-sections.webp)](docs/images/screenshots/06-sections.webp) | [![Настраиваемая верхняя панель](docs/images/screenshots/08-top-panel.webp)](docs/images/screenshots/08-top-panel.webp) |
+
+| Адаптивные обои | Размеры и подписи плиток |
+|---|---|
+| [![Адаптивные обои](docs/images/screenshots/11-adaptive-wallpaper.webp)](docs/images/screenshots/11-adaptive-wallpaper.webp) | [![Размеры и подписи плиток](docs/images/screenshots/12-tile-appearance.webp)](docs/images/screenshots/12-tile-appearance.webp) |
+
+</details>
+
 ## Основные возможности
 
 ### Приложения и домашний экран

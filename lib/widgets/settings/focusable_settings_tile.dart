@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/flauncher_channel.dart';
 import 'settings_value_text.dart';
+import '../../theme/interface_style.dart';
 
 class FocusableSettingsTile extends StatefulWidget {
   final Widget title;
@@ -60,6 +61,7 @@ class _FocusableSettingsTileState extends State<FocusableSettingsTile>
   Widget build(BuildContext context) {
     super.build(context);
     final style = LauncherStyle.of(context);
+    final skin = InterfaceSkin.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 2),
       child: Actions(
@@ -97,7 +99,7 @@ class _FocusableSettingsTileState extends State<FocusableSettingsTile>
             child: Container(
               constraints: BoxConstraints(minHeight: style.rowMinHeight),
               padding: style.rowPadding,
-              decoration: BoxDecoration(
+              decoration: skin.standard ? BoxDecoration(
                 color: (_focused || widget.selected)
                     ? Color.alphaBlend(
                         Theme.of(context).colorScheme.primary
@@ -115,6 +117,13 @@ class _FocusableSettingsTileState extends State<FocusableSettingsTile>
                         color: Colors.transparent,
                         width: style.rowFocusWidth,
                       ),
+              ) : skin.surface(
+                Theme.of(context).colorScheme.surface,
+                Theme.of(context).colorScheme.onSurface,
+                focused: _focused || widget.selected,
+                accent: Theme.of(context).colorScheme.primary,
+                cornerRadius: style.rowRadius,
+                borderWidth: style.rowFocusWidth,
               ),
               child: LayoutBuilder(
                 builder: (context, constraints) => Row(

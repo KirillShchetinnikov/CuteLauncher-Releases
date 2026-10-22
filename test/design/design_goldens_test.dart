@@ -64,6 +64,19 @@ class DesignState {
 }
 
 const designStates = [
+  DesignState('settings-font-google-sans', route: SettingsStylePage.routeName,
+    appearance: {'settingsInterfaceStyle': 'glass', 'settingsInterfaceFont': 'google-sans'}),
+  DesignState('settings-font-onest', route: SettingsStylePage.routeName,
+    appearance: {'settingsInterfaceStyle': 'glass', 'settingsInterfaceFont': 'onest'}),
+  DesignState('settings-font-manrope', route: SettingsStylePage.routeName,
+    appearance: {'settingsInterfaceStyle': 'glass', 'settingsInterfaceFont': 'manrope'}),
+  DesignState('settings-style-glass', route: SettingsStylePage.routeName,
+    appearance: {'settingsInterfaceStyle': 'glass'}),
+  DesignState('settings-style-soft', route: SettingsStylePage.routeName,
+    appearance: {'settingsInterfaceStyle': 'soft'}),
+  DesignState('settings-style-outline', route: SettingsStylePage.routeName,
+    appearance: {'settingsInterfaceStyle': 'outline'}),
+  DesignState('home-combined-information', appearance: {'panelCombinedInformation': true}),
   DesignState('home-modern-focused'),
   DesignState('settings-clock-style', route: PanelClockStylePage.routeName,
     appearance: {'panelClockStyle': {'preset': 'elegant', 'inheritBackground': false, 'font': 'serif', 'size': 24, 'color': 0xffffd54f, 'background': false}}),

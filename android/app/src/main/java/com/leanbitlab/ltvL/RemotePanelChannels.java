@@ -26,6 +26,7 @@ final class RemotePanelChannels implements AutoCloseable {
     private final SharedPreferences weather;
     private final RemoteMappingsBridge mappings;
     private final RemoteButtonsBridge buttons;
+    private final TvInputBridge inputs;
     private SharedPreferences.OnSharedPreferenceChangeListener weatherListener;
     private boolean closed;
     RemotePanelChannels(Context service, BinaryMessenger messenger, Runnable dismiss) {
@@ -41,7 +42,7 @@ final class RemotePanelChannels implements AutoCloseable {
         notifications = new NotificationBridge(context);
         weather = context.getSharedPreferences(WeatherReceiver.PREFS_NAME, Context.MODE_PRIVATE);
         var network = new NetworkStatistics(context);
-        var inputs = new TvInputBridge(context);
+        inputs = new TvInputBridge(context, messenger);
         var applications = new ApplicationCatalog(context);
         mappings = new RemoteMappingsBridge(context, messenger, worker, LauncherAccessibilityService::connected);
         buttons = new RemoteButtonsBridge(context, messenger, LauncherAccessibilityService::connected);
@@ -139,7 +140,7 @@ final class RemotePanelChannels implements AutoCloseable {
     }
     @Override public void close() {
         closed = true;
-        mappings.close(); buttons.close();
+        mappings.close(); buttons.close(); inputs.close();
         if (weatherListener != null) weather.unregisterOnSharedPreferenceChangeListener(weatherListener);
         networkEvents.onCancel(null); appEvents.onCancel(null); notifications.onCancel(null);
         NightOverlayService.detachVisibility(messenger);

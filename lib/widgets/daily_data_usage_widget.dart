@@ -40,7 +40,7 @@ class DailyDataUsageWidget extends StatelessWidget {
 
             return RichText(
               text: TextSpan(
-                style: topPanelAppearance(context).panelTextStyle,
+                style: topPanelAppearance(context).panelTextStyleFor(Localizations.localeOf(context)),
                 children: [
                   TextSpan(text: label),
                   TextSpan(text: usageString),

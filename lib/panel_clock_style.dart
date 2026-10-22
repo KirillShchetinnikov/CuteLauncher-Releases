@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 
+import 'app_fonts.dart';
+
 /// Validated overrides for the shared panel clock; omitted fields inherit the panel.
 class PanelClockStyle {
   final Map<String, dynamic> values;
   const PanelClockStyle([this.values = const {}]);
-  static const fonts = {
-    'sans-serif': 'PanelSans',
-    'serif': 'PanelSerif',
-    'monospace': 'PanelMono',
-    'sans-serif-condensed': 'PanelCondensed',
-  };
+  static const fonts = {'system': 'Roboto', ...AppFonts.families};
   static const presets = <String, Map<String, dynamic>>{
     'default': {},
     'minimal': {
@@ -67,11 +64,11 @@ class PanelClockStyle {
                 ? Color(values['backgroundColor'])
                 : inherited.withAlpha(255))
             .withValues(alpha: (values['opacity'] as num?)?.toDouble() ?? 1);
-  TextStyle textStyle(TextStyle inherited) {
+  TextStyle textStyle(TextStyle inherited, {Locale? locale}) {
     final color = values['color'] is int
         ? Color(values['color'])
         : inherited.color;
-    return inherited.copyWith(
+    final style = inherited.copyWith(
       fontSize: size(inherited.fontSize ?? 18),
       fontFamily: fonts[values['font']] ?? inherited.fontFamily,
       fontWeight: switch (values['weight']) {
@@ -84,6 +81,7 @@ class PanelClockStyle {
           ? [Shadow(color: color ?? Colors.white, blurRadius: 8)]
           : const [],
     );
+    return locale == null ? style : AppFonts.localize(style, locale);
   }
 
   static Map<String, dynamic> validValues(dynamic input) {

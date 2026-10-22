@@ -6859,6 +6859,168 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Original state not saved yet'**
   String get cleanerNoSnapshot;
+
+  /// No description provided for @interfaceStyle.
+  ///
+  /// In en, this message translates to:
+  /// **'Interface style'**
+  String get interfaceStyle;
+
+  /// No description provided for @interfaceStandard.
+  ///
+  /// In en, this message translates to:
+  /// **'Standard'**
+  String get interfaceStandard;
+
+  /// No description provided for @interfaceGlass.
+  ///
+  /// In en, this message translates to:
+  /// **'Glass'**
+  String get interfaceGlass;
+
+  /// No description provided for @interfaceSoft.
+  ///
+  /// In en, this message translates to:
+  /// **'Soft'**
+  String get interfaceSoft;
+
+  /// No description provided for @interfaceOutline.
+  ///
+  /// In en, this message translates to:
+  /// **'Outline'**
+  String get interfaceOutline;
+
+  /// No description provided for @interfaceFont.
+  ///
+  /// In en, this message translates to:
+  /// **'Interface font'**
+  String get interfaceFont;
+
+  /// No description provided for @interfaceSystemFont.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get interfaceSystemFont;
+
+  /// No description provided for @combinedInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Combine time, date and weather'**
+  String get combinedInformation;
+
+  /// No description provided for @adaptiveLandscape.
+  ///
+  /// In en, this message translates to:
+  /// **'Adaptive landscape'**
+  String get adaptiveLandscape;
+
+  /// No description provided for @landscapeVariant.
+  ///
+  /// In en, this message translates to:
+  /// **'Landscape style'**
+  String get landscapeVariant;
+
+  /// No description provided for @landscapeIllustrated.
+  ///
+  /// In en, this message translates to:
+  /// **'Illustrated'**
+  String get landscapeIllustrated;
+
+  /// No description provided for @landscapeRealistic.
+  ///
+  /// In en, this message translates to:
+  /// **'Realistic'**
+  String get landscapeRealistic;
+
+  /// No description provided for @landscapeTimeOfDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Time of day'**
+  String get landscapeTimeOfDay;
+
+  /// No description provided for @landscapeSeasons.
+  ///
+  /// In en, this message translates to:
+  /// **'Seasons'**
+  String get landscapeSeasons;
+
+  /// No description provided for @landscapeHemisphere.
+  ///
+  /// In en, this message translates to:
+  /// **'Hemisphere'**
+  String get landscapeHemisphere;
+
+  /// No description provided for @landscapeAuto.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic'**
+  String get landscapeAuto;
+
+  /// No description provided for @landscapeNorth.
+  ///
+  /// In en, this message translates to:
+  /// **'Northern'**
+  String get landscapeNorth;
+
+  /// No description provided for @landscapeSouth.
+  ///
+  /// In en, this message translates to:
+  /// **'Southern'**
+  String get landscapeSouth;
+
+  /// No description provided for @landscapeClouds.
+  ///
+  /// In en, this message translates to:
+  /// **'Clouds'**
+  String get landscapeClouds;
+
+  /// No description provided for @landscapePrecipitation.
+  ///
+  /// In en, this message translates to:
+  /// **'Rain and snow'**
+  String get landscapePrecipitation;
+
+  /// No description provided for @landscapeFog.
+  ///
+  /// In en, this message translates to:
+  /// **'Fog'**
+  String get landscapeFog;
+
+  /// No description provided for @landscapeMotion.
+  ///
+  /// In en, this message translates to:
+  /// **'Animate weather'**
+  String get landscapeMotion;
+
+  /// No description provided for @landscapeHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Time follows cached sunrise and sunset from Night mode; without them, dawn is at 06:00 and dusk at 18:00, with 40-minute transitions around each. Seasons follow the local month and hemisphere; automatic hemisphere uses weather coordinates, then Night mode coordinates, then the Northern Hemisphere. With time of day off, the scene stays in daylight; with seasons off, it stays in summer. Weather uses current data from the selected weather source, without extra requests. Missing or stale weather shows clear skies. Clouds, precipitation and fog can be disabled independently. Motion is off by default, stops when Home is hidden, and is disabled in memory saving mode or when reduced motion is requested.'**
+  String get landscapeHelp;
+
+  /// No description provided for @inputConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected'**
+  String get inputConnected;
+
+  /// No description provided for @inputStandby.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected · standby'**
+  String get inputStandby;
+
+  /// No description provided for @inputDisconnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnected'**
+  String get inputDisconnected;
+
+  /// No description provided for @inputStateUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection status unavailable'**
+  String get inputStateUnknown;
 }
 
 class _AppLocalizationsDelegate

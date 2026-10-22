@@ -1,3 +1,4 @@
+import 'language_font_choice.dart';
 import '../../providers/remote_panel_service.dart';
 import '../../tile_appearance.dart';
 import 'settings_help.dart';
@@ -343,18 +344,11 @@ class _AppearancePageState extends State<AppearancePage> {
                 22,
                 24,
               ]),
-              _choice(
-                context,
-                service,
-                l.panelFont,
-                'panelFont',
-                ['sans-serif', 'serif', 'monospace', 'sans-serif-condensed'],
-                labels: {
-                  'sans-serif': l.fontSans,
-                  'serif': l.fontSerif,
-                  'monospace': l.fontMono,
-                  'sans-serif-condensed': l.fontCondensed,
-                },
+              LanguageFontChoice(
+                title: l.panelFont,
+                value: appearance.panelFont,
+                panel: true,
+                onChanged: (v) => _set(service, 'panelFont', v),
               ),
               if (!widget.remotePanel)
                 RoundedSwitchListTile(

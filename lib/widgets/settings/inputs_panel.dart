@@ -3,6 +3,7 @@ import '../launcher_dialog.dart';
 import 'inputs_settings_page.dart';
 import 'settings_panel.dart';
 import '../tv_input_icon.dart';
+import '../tv_input_connection_indicator.dart';
 import 'settings_panel_style.dart';
 
 import 'package:flutter/material.dart';
@@ -18,7 +19,12 @@ class InputsPanel extends StatefulWidget {
   final bool? isRightSide;
   final double topInset;
   final Rect? anchor;
-  const InputsPanel({super.key, this.isRightSide, this.topInset = 0, this.anchor});
+  const InputsPanel({
+    super.key,
+    this.isRightSide,
+    this.topInset = 0,
+    this.anchor,
+  });
 
   @override
   State<InputsPanel> createState() => _InputsPanelState();
@@ -66,9 +72,7 @@ class _InputsPanelState extends State<InputsPanel> {
           backgroundColor: Colors.transparent,
           body: Stack(
             children: [
-              Positioned.fill(
-                child: const LauncherPanelBackdrop(),
-              ),
+              Positioned.fill(child: const LauncherPanelBackdrop()),
               // Tap outside to close
               GestureDetector(
                 onTap: () => Navigator.of(context).pop(),
@@ -84,7 +88,9 @@ class _InputsPanelState extends State<InputsPanel> {
                     final List<TvInput> inputs = tvInputsService.inputs;
 
                     return Column(
-                      mainAxisSize: widget.anchor == null ? MainAxisSize.max : MainAxisSize.min,
+                      mainAxisSize: widget.anchor == null
+                          ? MainAxisSize.max
+                          : MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
@@ -112,10 +118,14 @@ class _InputsPanelState extends State<InputsPanel> {
                         ),
                         const Divider(),
                         Flexible(
-                          fit: widget.anchor == null ? FlexFit.tight : FlexFit.loose,
+                          fit: widget.anchor == null
+                              ? FlexFit.tight
+                              : FlexFit.loose,
                           child: inputs.isEmpty
                               ? Center(
-                                  heightFactor: widget.anchor == null ? null : 1,
+                                  heightFactor: widget.anchor == null
+                                      ? null
+                                      : 1,
                                   child: Text(
                                     AppLocalizations.of(context)!
                                         .noInputsDetected,
@@ -139,6 +149,18 @@ class _InputsPanelState extends State<InputsPanel> {
                                       title: Text(
                                         input.label,
                                         style: theme.textTheme.bodyMedium,
+                                      ),
+                                      trailing: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          TvInputConnectionIndicator(
+                                            connection: input.connection,
+                                          ),
+                                          const SizedBox(width: 8),
+                                          const Icon(
+                                            Icons.chevron_right_rounded,
+                                          ),
+                                        ],
                                       ),
                                       autofocus: index == 0,
                                       onPressed: () async {

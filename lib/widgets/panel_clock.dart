@@ -20,8 +20,8 @@ class PanelClock extends StatelessWidget {
         const TileAppearance();
     final custom = style.values.isNotEmpty;
     final textStyle = custom
-        ? style.textStyle(appearance.panelTextStyle)
-        : appearance.panelTextStyle;
+        ? style.textStyle(appearance.panelTextStyleFor(Localizations.localeOf(context)), locale: Localizations.localeOf(context))
+        : appearance.panelTextStyleFor(Localizations.localeOf(context));
     return TopPanelItem(
       appearance: appearance,
       textStyle: custom ? textStyle : null,

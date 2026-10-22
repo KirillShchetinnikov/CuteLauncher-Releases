@@ -73,10 +73,12 @@ Future<void> _runLauncher({bool remotePanel = false}) async {
     yield LicenseEntryWithLineBreaks(['dadb', 'Okio', 'Kotlin', 'Kotlinx Coroutines',
         'JetBrains annotations', 'AndroidX', 'ReLinker', 'Guava ListenableFuture', 'JSpecify'],
         await rootBundle.loadString('assets/licenses/android_runtime.txt'));
-    for (final family in ['roboto', 'notoserif', 'robotomono', 'robotocondensed']) {
+    for (final family in ['roboto', 'notoserif', 'robotomono', 'robotocondensed', 'outfit', 'manrope', 'onest', 'googlesans']) {
       yield LicenseEntryWithLineBreaks([family],
           await rootBundle.loadString('assets/fonts/LICENSE_$family.txt'));
     }
+    yield LicenseEntryWithLineBreaks(['Google Sans trademarks'],
+        await rootBundle.loadString('assets/fonts/TRADEMARKS_googlesans.txt'));
   });
   initializeDateFormatting();
 

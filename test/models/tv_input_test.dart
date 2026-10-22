@@ -16,6 +16,45 @@ void main() {
     'customLabel': custom,
   });
 
+  test('connection survives presentation; physical state takes precedence over CEC', () {
+    for (final (raw, state) in [
+      (0, TvInputConnection.connected),
+      (1, TvInputConnection.standby),
+      (2, TvInputConnection.disconnected),
+      (null, TvInputConnection.unknown),
+      (99, TvInputConnection.unknown),
+    ]) {
+      final input = TvInput.fromMap({
+        'id': 'port',
+        'label': 'HDMI 1',
+        'type': 1007,
+        'state': raw,
+      });
+      expect(input.connection, state);
+      expect(
+        input.withPresentation(label: 'Console', icon: 'gamepad').connection,
+        state,
+      );
+    }
+    final merged = TvInput.ordered([
+      TvInput.fromMap({
+        'id': 'port',
+        'label': 'HDMI 1',
+        'type': 1007,
+        'state': 2,
+      }),
+      TvInput.fromMap({
+        'id': 'cec',
+        'parentId': 'port',
+        'label': 'Console',
+        'type': 1007,
+        'state': 0,
+      }),
+    ]).single;
+    expect(merged.label, 'Console');
+    expect(merged.connection, TvInputConnection.disconnected);
+  });
+
   test(
     'CEC replaces its physical port label, retaining stable ids and ordering',
     () {
@@ -98,11 +137,14 @@ void main() {
         TvInput.ordered(devices).map((i) => i.id),
         containsAll(['xbox', 'player']),
       );
-      expect(TvInput.ordered([
-        parent,
-        source('receiver', 'Receiver', parent: 'port'),
-        source('console', 'Console', parent: 'receiver'),
-      ]).map((i) => i.id), ['port', 'receiver', 'console']);
+      expect(
+        TvInput.ordered([
+          parent,
+          source('receiver', 'Receiver', parent: 'port'),
+          source('console', 'Console', parent: 'receiver'),
+        ]).map((i) => i.id),
+        ['port', 'receiver', 'console'],
+      );
       expect(
         source('p', 'HDMI 2', custom: ' My name ', name: 'CEC name').label,
         'My name',

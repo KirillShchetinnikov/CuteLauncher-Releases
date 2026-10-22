@@ -53,5 +53,8 @@ The bundled dadb library uses [Apache 2.0](DADB_LICENSE.txt).
 [TLS notices for earlier builds](../assets/licenses/adb_tls.txt) are preserved
 in the APK and license screen. Flutter NOTICES includes project, Flutter/engine,
 and Dart-package licenses. Bundled font licenses are in [assets/fonts](../assets/fonts).
+Outfit, Manrope, Onest and Google Sans are bundled under SIL OFL 1.1; no network font loading is needed.
+Seasonal realistic landscapes were created for CuteLauncher with OpenAI image
+generation; artwork and interface code from other launchers were not copied.
 The test-only DejaVu Sans is distributed with its [license](../test/design/fonts/LICENSE_DEJAVU)
 and is not included in the APK. Legal texts remain in their original language.

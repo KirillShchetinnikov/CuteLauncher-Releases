@@ -1,4 +1,8 @@
 import 'package:flauncher/providers/weather_service.dart';
+import 'package:flauncher/providers/appearance_service.dart';
+import 'package:flauncher/l10n/app_localizations.dart';
+import 'package:flauncher/widgets/combined_information.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -53,12 +57,44 @@ void main() {
 
   Widget createWidgetUnderTest() {
     return MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       home: Scaffold(
         appBar: FocusAwareAppBar(),
         body: Container(),
       ),
     );
   }
+
+  testWidgets('combined information replaces existing slots and switching back restores them', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final appearance = AppearanceService(await SharedPreferences.getInstance());
+    addTearDown(appearance.dispose);
+    await appearance.setPanelOrder(['settings', 'date'], ['time', 'weather']);
+    await appearance.set('panelCombinedInformation', true);
+    await tester.pumpWidget(MultiProvider(providers: [
+      ChangeNotifierProvider.value(value: appearance),
+      ChangeNotifierProvider<SettingsService>.value(value: mockSettingsService),
+      ChangeNotifierProvider<TvInputsService>.value(value: mockTvInputsService),
+      ChangeNotifierProvider<NotificationsService>.value(value: mockNotificationsService),
+      ChangeNotifierProvider<WeatherService>.value(value: mockWeatherService),
+    ], child: createWidgetUnderTest()));
+    await tester.pumpAndSettle();
+    expect(find.byType(CombinedInformation), findsOneWidget);
+    expect(find.byKey(const Key('statusbar_date')), findsOneWidget);
+    expect(find.byKey(const Key('statusbar_clock')), findsOneWidget);
+    expect(appearance.appearance.panelLayout.left, contains('date'));
+    final bar = tester.getSize(find.byType(FocusAwareAppBar));
+    await appearance.set('panelCombinedInformation', false);
+    await tester.pumpAndSettle();
+    expect(find.byType(CombinedInformation), findsNothing);
+    expect(find.byKey(const Key('statusbar_date')), findsOneWidget);
+    expect(find.byKey(const Key('statusbar_clock')), findsOneWidget);
+    expect(tester.getSize(find.byType(FocusAwareAppBar)), bar);
+    expect(appearance.appearance.panelLayout.left, contains('date'));
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
 
   testWidgets('FocusAwareAppBar renders settings button and date/time widgets', (WidgetTester tester) async {
     await tester.pumpWidget(

@@ -1,3 +1,4 @@
+import 'language_font_choice.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -96,10 +97,28 @@ class _SettingsStylePageState extends State<SettingsStylePage> {
               title: l.settingsMenuPosition,
               value: settings.settingsMenuOnRight,
               options: const [false, true],
-              label: (right) =>
-                  right ? l.settingsMenuRight : l.settingsMenuLeft,
+              label: (right) => right ? l.settingsMenuRight : l.settingsMenuLeft,
               onChanged: settings.setSettingsMenuOnRight,
             ),
+          if (!notifications) ...[
+            SettingsChoiceTile<String>(
+              title: l.interfaceStyle,
+              value: appearance.interfaceStyle,
+              options: const ['standard', 'glass', 'soft', 'outline'],
+              label: (id) => switch (id) {
+                'glass' => l.interfaceGlass,
+                'soft' => l.interfaceSoft,
+                'outline' => l.interfaceOutline,
+                _ => l.interfaceStandard,
+              },
+              onChanged: (v) => service.set('settingsInterfaceStyle', v),
+            ),
+            LanguageFontChoice(
+              title: l.interfaceFont,
+              value: appearance.interfaceFont,
+              onChanged: (v) => service.set('settingsInterfaceFont', v),
+            ),
+          ],
           color(
             l.styleBackgroundColor,
             '${prefix}Color',

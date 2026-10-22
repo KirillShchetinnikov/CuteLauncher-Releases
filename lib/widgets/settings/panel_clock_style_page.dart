@@ -1,3 +1,4 @@
+import 'language_font_choice.dart';
 import 'date_time_format_page.dart';
 
 import 'package:flutter/material.dart';
@@ -31,7 +32,7 @@ class PanelClockStylePage extends StatelessWidget {
       save({...clock.values, 'preset': 'custom', key: value});
     }
 
-    final textStyle = clock.textStyle(appearance.panelTextStyle);
+    final textStyle = clock.textStyle(appearance.panelTextStyleFor(Localizations.localeOf(context)), locale: Localizations.localeOf(context));
     final background = clock.background(appearance.panelItemBackground);
     Widget color(String title, String key, Color current) =>
         FocusableSettingsTile(
@@ -103,16 +104,10 @@ class PanelClockStylePage extends StatelessWidget {
             label: (v) => '${(v as num).round()}',
             onChanged: (v) => set('size', v),
           ),
-          SettingsChoiceTile<String>(
+          LanguageFontChoice(
             title: l.panelFont,
             value: clock.values['font'] as String? ?? appearance.panelFont,
-            options: PanelClockStyle.fonts.keys.toList(),
-            label: (id) => switch (id) {
-              'serif' => 'Noto Serif',
-              'monospace' => 'Roboto Mono',
-              'sans-serif-condensed' => 'Roboto Condensed',
-              _ => 'Roboto',
-            },
+            panel: true,
             onChanged: (v) => set('font', v),
           ),
           SettingsChoiceTile<int>(
