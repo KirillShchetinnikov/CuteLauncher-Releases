@@ -99,6 +99,51 @@ void main() {
     await db.close();
   });
 
+  for (final key in ['all_apps', 'tv_apps', 'other_apps']) {
+    test('$key persists manual order with missing and existing rows', () async {
+      catalog.addAll([app('tv2'), app('mobile2', mobile: true)]);
+      await service.refreshState();
+      await service.hideApplication(service.getApp('system')!);
+      await service.setCategorySort(section(key), CategorySort.manual);
+      final before = section(key).applications.map((a) => a.packageName).toList();
+      expect(before.length, greaterThanOrEqualTo(2));
+      final favorites = contents('favorites');
+
+      Future<void> moveAndReload() async {
+        final current = section(key).applications.map((a) => a.packageName).toList();
+        final expected = [...current.skip(1), current.first];
+        service.reorderApplication(section(key), 0, current.length - 1);
+        await service.saveApplicationOrderInCategory(section(key));
+        final rows = (await db.getAppsCategories())
+            .where((row) => row.categoryId == section(key).id)
+            .toList();
+        for (var i = 0; i < expected.length; i++) {
+          expect(rows.singleWhere((row) => row.appPackageName == expected[i]).order, i);
+        }
+        await service.refreshState();
+        expect(section(key).applications.map((a) => a.packageName).toList(), expected);
+        expect(contents('favorites'), favorites);
+        expect(contents('all_apps'), isNot(contains('system')));
+      }
+
+      await moveAndReload();
+      // A second save must update rows created by the first save.
+      await moveAndReload();
+      final savedOrder = section(key).applications.map((a) => a.packageName).toList();
+      service.dispose();
+      final channel = MockFLauncherChannel();
+      when(channel.getApplications()).thenAnswer((_) async => catalog);
+      when(channel.addAppsChangedListener(any))
+          .thenAnswer((call) => events.stream.listen(call.positionalArguments[0]));
+      service = AppsService(channel, db);
+      for (var i = 0; i < 200 && !service.initialized; i++) {
+        await Future<void>.delayed(const Duration(milliseconds: 5));
+      }
+      expect(service.initialized, isTrue);
+      expect(section(key).applications.map((a) => a.packageName).toList(), savedOrder);
+    });
+  }
+
   test(
     'automatic catalogs ignore stale links and manual edits never affect them',
     () async {

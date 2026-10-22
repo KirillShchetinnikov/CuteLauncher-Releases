@@ -250,7 +250,7 @@ class FLauncherDatabase extends _$FLauncherDatabase
       batch((batch) => batch.insertAll(appsCategories, value, mode: InsertMode.insertOrIgnore));
 
   Future<void> replaceAppsCategories(List<AppsCategoriesCompanion> value) =>
-      batch((batch) => batch.replaceAll(appsCategories, value));
+      batch((batch) => batch.insertAllOnConflictUpdate(appsCategories, value));
 
   Future<int> insertSpacer(Insertable<LauncherSpacer> spacer) => into(launcherSpacers).insert(spacer);
 

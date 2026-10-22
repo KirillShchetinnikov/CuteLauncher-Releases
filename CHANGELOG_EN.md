@@ -2,6 +2,11 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
+## v1.1.1 — 2026-10-22
+
+- Fixed saving the manual app order in All Apps, TV Apps, and Non-TV Apps: the order survives restarts and settings reloads, including when apps are hidden.
+- The build number is hidden from the displayed version. APK filenames now include the app version.
+
 ## v1.1.0+75 — 2026-10-22
 
 - CuteLauncher 1.1 leaves beta as a public stable release. APKs and source code are available in the public repository; this release is not marked as a prerelease.
