@@ -2,6 +2,12 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
+## v1.1.2 — 2026-10-22
+
+- Fixed repeated app sorting changes: returning to the original mode now applies and saves correctly. Manual order, alphabetical order, last used, and launch frequency have been checked.
+- Fixed text being clipped at the top and bottom in settings buttons using Manrope, including multiline values in the Glass style.
+- Public release descriptions now include links to the Russian and English changelogs.
+
 ## v1.1.1 — 2026-10-22
 
 - Fixed saving the manual app order in All Apps, TV Apps, and Non-TV Apps: the order survives restarts and settings reloads, including when apps are hidden.

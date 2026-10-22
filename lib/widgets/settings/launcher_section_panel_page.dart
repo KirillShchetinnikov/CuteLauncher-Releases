@@ -352,6 +352,10 @@ class _CategorySettingsState extends State<_CategorySettings>
   int _rowHeight;
   String _name;
 
+  (String, CategorySort, CategoryType, int, int)? _submitted;
+  (String, CategorySort, CategoryType, int, int) get _draft =>
+      (_name, _categorySort, _categoryType, _columnsCount, _rowHeight);
+
   late Category? _category;
 
   late bool _creating;
@@ -385,6 +389,7 @@ class _CategorySettingsState extends State<_CategorySettings>
       _categoryType = _category!.type;
       _columnsCount = _category!.columnsCount;
       _rowHeight = _category!.rowHeight;
+      _submitted = _draft;
     }
 
     _nameController = TextEditingController(text: _name);
@@ -524,26 +529,14 @@ class _CategorySettingsState extends State<_CategorySettings>
   void _notifyChange()
   {
 
-    String initialName = "";
-    CategorySort initialSort = Category.Sort;
-    CategoryType initialType = Category.Type;
-    int initialColumnsCount = Category.ColumnsCount;
-    int initialRowHeight = Category.RowHeight;
-    if (_category != null) {
-      initialName = _category!.name;
-      initialSort = _category!.sort;
-      initialType = _category!.type;
-      initialColumnsCount = _category!.columnsCount;
-      initialRowHeight = _category!.rowHeight;
-    }
-
-    bool dirty = initialSort != _categorySort || initialType != _categoryType
-        || initialColumnsCount != _columnsCount
-        || initialRowHeight != _rowHeight || initialName != _name ;
+    final dirty = _submitted != _draft;
 
     _SettingsState state = context.read();
     state.setFlags(_name.trim().isNotEmpty, dirty);
     if (!_creating && _name.trim().isNotEmpty && dirty) {
+      // Compare the next edit with the latest submitted values, including while
+      // its database write is pending, rather than the opening snapshot.
+      _submitted = _draft;
       unawaited(_save());
     }
   }

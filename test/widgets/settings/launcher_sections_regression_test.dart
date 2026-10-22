@@ -1,4 +1,5 @@
 import 'package:flauncher/widgets/settings/settings_slider_tile.dart';
+import 'package:drift/drift.dart' show Value;
 import 'package:flauncher/database.dart';
 import 'package:flauncher/models/category.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
@@ -18,17 +19,40 @@ void main() {
   late FLauncherDatabase db;
   late AppsService apps;
 
-  Future<void> mount(WidgetTester tester, {int count = 3}) async {
+  Future<void> mount(WidgetTester tester, {
+    int count = 3,
+    CategorySort initialSort = CategorySort.manual,
+    bool withApps = false,
+  }) async {
     await tester.runAsync(() async {
       SharedPreferences.setMockInitialValues({});
       db = FLauncherDatabase.inMemory();
       for (var i = 0; i < count; i++) {
         await db.insertCategory(
-          CategoriesCompanion.insert(name: 'Section $i', order: i),
+          CategoriesCompanion.insert(name: 'Section $i', order: i, sort: Value(initialSort)),
         );
       }
+      final catalog = [
+        if (withApps)
+          for (final package in ['a', 'b', 'c', 'd'])
+            {'packageName': package, 'name': package.toUpperCase(), 'version': '1', 'sideloaded': false},
+      ];
+      if (withApps) {
+        await db.persistApps([
+          for (final package in ['a', 'b', 'c', 'd'])
+            AppsCompanion.insert(
+              packageName: package, name: package.toUpperCase(), version: '1',
+              launchCount: Value({'a': 3, 'b': 1, 'c': 4, 'd': 2}[package]!),
+              lastLaunchedAt: Value(DateTime(2026, 1, {'a': 2, 'b': 4, 'c': 1, 'd': 3}[package]!)),
+            ),
+        ]);
+        await db.insertAppsCategories([
+          for (final entry in ['d', 'c', 'b', 'a'].asMap().entries)
+            AppsCategoriesCompanion.insert(categoryId: 1, appPackageName: entry.value, order: entry.key),
+        ]);
+      }
       final channel = MockFLauncherChannel();
-      when(channel.getApplications()).thenAnswer((_) async => []);
+      when(channel.getApplications()).thenAnswer((_) async => catalog);
       when(channel.addAppsChangedListener(any)).thenReturn(null);
       apps = AppsService(channel, db);
       while (!apps.initialized) {
@@ -256,6 +280,43 @@ void main() {
     );
     await finish(tester);
   });
+
+  for (final initial in CategorySort.values) {
+    testWidgets('repeated sorts return to initial $initial and persist every mode', (tester) async {
+      await mount(tester, count: 1, initialSort: initial, withApps: true);
+      await tester.tap(find.text('Section 0'));
+      await tester.pumpAndSettle();
+      const labels = {
+        CategorySort.manual: 'Manual',
+        CategorySort.alphabetical: 'Alphabetical',
+        CategorySort.lastUsed: 'Last Used',
+        CategorySort.mostUsed: 'Launch frequency',
+      };
+      const orders = {
+        CategorySort.manual: ['d', 'c', 'b', 'a'],
+        CategorySort.alphabetical: ['a', 'b', 'c', 'd'],
+        CategorySort.lastUsed: ['b', 'd', 'a', 'c'],
+        CategorySort.mostUsed: ['c', 'a', 'd', 'b'],
+      };
+      for (final next in CategorySort.values.where((sort) => sort != initial)) {
+        for (final sort in [next, initial]) {
+          await tester.tap(find.text('Sort'));
+          await tester.pumpAndSettle();
+          await tester.runAsync(() async {
+            await tester.tap(find.text(labels[sort]!));
+            await Future<void>.delayed(const Duration(milliseconds: 30));
+          });
+          await tester.pumpAndSettle();
+          expect((await tester.runAsync(db.getCategories))!.first.sort, sort);
+          expect(apps.categories.first.applications.map((app) => app.packageName).toList(), orders[sort]);
+        }
+      }
+      await tester.runAsync(apps.refreshState);
+      expect(apps.categories.first.sort, initial);
+      expect(apps.categories.first.applications.map((app) => app.packageName).toList(), orders[initial]);
+      await finish(tester);
+    });
+  }
 
   testWidgets('existing spacer saves immediately and offers 250 height', (
     tester,

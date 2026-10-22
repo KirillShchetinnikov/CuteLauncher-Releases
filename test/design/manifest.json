@@ -807,7 +807,7 @@
         960,
         540
       ],
-      "sha256": "28e99f702471f976b179cdd8ffa2dba5439f1d3f6c7a4c07866312341fd9d096"
+      "sha256": "59062fff51a151df8c7efb5b33209ceb9f8b1820ece107d676154e1396d454f5"
     },
     {
       "name": "settings-style-soft",
@@ -823,7 +823,7 @@
         960,
         540
       ],
-      "sha256": "408a458648435d7ab19d9f0e0fdc33a305d52615c1bb351113c012dd66556909"
+      "sha256": "566bb37b20b3b2b73f38dbc4b9593a9f5cc70ce00f1d6a54c170ffb1c2eb1391"
     },
     {
       "name": "settings-style-outline",
@@ -839,7 +839,7 @@
         960,
         540
       ],
-      "sha256": "922966c926adc3fb9cadff0a98b153680b91b60378fbef8552c11e544800f7ce"
+      "sha256": "6c69ee45dfa1eed4160a80a7173ef7b9d40a1322502d510ebe2d13f8dd659fce"
     },
     {
       "name": "home-combined-information",
@@ -903,7 +903,7 @@
         960,
         540
       ],
-      "sha256": "28e99f702471f976b179cdd8ffa2dba5439f1d3f6c7a4c07866312341fd9d096"
+      "sha256": "59062fff51a151df8c7efb5b33209ceb9f8b1820ece107d676154e1396d454f5"
     }
   ]
 }

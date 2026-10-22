@@ -57,6 +57,17 @@ class _FocusableSettingsTileState extends State<FocusableSettingsTile>
   @override
   bool get wantKeepAlive => _focused;
 
+  Widget _fullTextMetrics(Widget child) {
+    if (DefaultTextStyle.of(context).style.fontFamily != 'Manrope') return child;
+    // Compact theme line heights can be smaller than Manrope's native metrics.
+    return DefaultTextStyle.merge(
+      textHeightBehavior: const TextHeightBehavior(
+        applyHeightToFirstAscent: false,
+        applyHeightToLastDescent: false,
+      ),
+      child: child,
+    );
+  }
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -125,7 +136,7 @@ class _FocusableSettingsTileState extends State<FocusableSettingsTile>
                 cornerRadius: style.rowRadius,
                 borderWidth: style.rowFocusWidth,
               ),
-              child: LayoutBuilder(
+              child: _fullTextMetrics(LayoutBuilder(
                 builder: (context, constraints) => Row(
                   children: [
                     if (widget.leading != null) ...[
@@ -205,7 +216,7 @@ class _FocusableSettingsTileState extends State<FocusableSettingsTile>
                     ],
                   ],
                 ),
-              ),
+              )),
             ),
           ),
         ),
