@@ -164,12 +164,12 @@ traffic needs usage access, and inputs need support for the relevant TV API.
 
 Path: **Top panel → Objects → Weather settings**.
 
-Sources include Breezy Weather, Open-Meteo, OpenWeather, and Yandex. Choose a city
+Sources include Breezy Weather, Open-Meteo, MET Norway, OpenWeather, and Yandex. Choose a city
 or coordinates, detect location with the required permission, refresh data, and
 configure temperature, forecasts, and weather warnings.
 
 Breezy Weather requires a compatible installed app with a configured provider.
-OpenWeather and Yandex require their respective personal keys; a full run using
+MET Norway needs no key: data by MET Norway under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/), adapted from https://api.met.no/. Forecast days use the TV time zone; min/max cover available periods and precipitation probability is unavailable. OpenWeather and Yandex require their respective personal keys; a full run using
 valid personal keys is not yet confirmed. Cached data helps during temporary
 outages, but does not make an old forecast current.
 

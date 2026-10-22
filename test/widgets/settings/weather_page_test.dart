@@ -99,7 +99,7 @@ void main() {
   Finder tile(String label) =>
       find.widgetWithText(FocusableSettingsTile, label);
 
-  for (final source in ['Open-Meteo', 'OpenWeather', 'Яндекс Погода (REST)']) {
+  for (final source in ['Open-Meteo', 'MET Norway', 'OpenWeather', 'Яндекс Погода (REST)']) {
     testWidgets(
       '$source selection only chooses the source; parameters stay separate',
       (tester) async {
@@ -118,6 +118,7 @@ void main() {
               .toList(),
           [
             'Open-Meteo',
+            'MET Norway',
             'OpenWeather',
             'Яндекс Погода (REST)',
             'Breezy Weather',

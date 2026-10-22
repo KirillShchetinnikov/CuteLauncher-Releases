@@ -3778,4 +3778,8 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get inputStateUnknown => 'Состояние подключения недоступно';
+
+  @override
+  String get weatherMetNorwayCredit =>
+      'Данные: MET Norway, CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Прогноз адаптирован: https://api.met.no/. Без API-ключа; дни по часовому поясу ТВ, минимум и максимум по доступным периодам. Вероятность осадков не предоставляется.';
 }

@@ -80,7 +80,7 @@ the necessary data.
 Use local images and wallpaper folders, online Bing wallpapers, separate day
 and night backgrounds, or a background based on the selected app's artwork.
 Customize the clock and date, and open the calendar by selecting the date.
-Weather supports Breezy Weather, Open-Meteo, OpenWeather, and Yandex, subject to
+Weather supports Breezy Weather, Open-Meteo, MET Norway, OpenWeather, and Yandex, subject to
 each provider's requirements. Grant notification access to see notifications and
 a Now Playing card with the active player's supported controls.
 

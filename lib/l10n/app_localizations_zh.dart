@@ -3597,4 +3597,8 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get inputStateUnknown => 'Connection status unavailable';
+
+  @override
+  String get weatherMetNorwayCredit =>
+      'Data: MET Norway, CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Forecast adapted from https://api.met.no/. No API key; days use the TV time zone, min/max cover available periods. Precipitation probability is unavailable.';
 }

@@ -4,7 +4,7 @@ import 'dart:io';
 import 'models/weather_data.dart';
 
 const weatherConfigurationKey = 'weather_configuration';
-enum WeatherSource { breezy, openMeteo, yandex, openWeather }
+enum WeatherSource { breezy, openMeteo, yandex, openWeather, metNorway }
 enum WeatherLocationMode { automatic, manual }
 
 bool validWeatherConfiguration(String value) {
@@ -69,15 +69,37 @@ abstract class WeatherTransport {
 }
 
 class HttpWeatherTransport implements WeatherTransport {
+  Uri? _metUri;
+  Map<String, dynamic>? _metData;
+  DateTime? _metExpires;
+  String? _metModified;
   @override
   Future<Map<String, dynamic>> request(Uri uri, {String? key}) async {
+    final met = uri.host == 'api.met.no';
+    if (met && uri == _metUri && _metData != null &&
+        _metExpires != null && DateTime.now().isBefore(_metExpires!)) { return _metData!; }
     final client = HttpClient()..connectionTimeout = const Duration(seconds: 12);
     try {
       return await (() async {
         final request = await client.getUrl(uri);
         request.followRedirects = false;
+        if (met) {
+          request.headers.set(HttpHeaders.userAgentHeader,
+            'CuteLauncher (https://github.com/KirillShchetinnikov/CuteLauncher-Releases)');
+          if (uri == _metUri && _metModified != null) {
+            request.headers.set(HttpHeaders.ifModifiedSinceHeader, _metModified!);
+          }
+        }
         if (key != null) request.headers.set('X-Yandex-Weather-Key', key);
         final response = await request.close();
+        DateTime? expiry() {
+          try { return HttpDate.parse(response.headers.value(HttpHeaders.expiresHeader) ?? ''); }
+          catch (_) { return null; }
+        }
+        if (met && response.statusCode == 304 && uri == _metUri && _metData != null) {
+          _metExpires = expiry();
+          return _metData!;
+        }
         if (response.statusCode == 401 || response.statusCode == 403) throw const WeatherException(WeatherFailure.authorization);
         if (response.statusCode == 429) throw const WeatherException(WeatherFailure.rateLimit);
         if (response.statusCode != 200) throw const WeatherException(WeatherFailure.unavailable);
@@ -86,7 +108,14 @@ class HttpWeatherTransport implements WeatherTransport {
           if (bytes.length + chunk.length > 512 * 1024) throw const WeatherException(WeatherFailure.invalidResponse);
           bytes.addAll(chunk);
         }
-        return jsonDecode(utf8.decode(bytes)) as Map<String, dynamic>;
+        final data = jsonDecode(utf8.decode(bytes)) as Map<String, dynamic>;
+        if (met) {
+          _metUri = uri;
+          _metData = data;
+          _metExpires = expiry();
+          _metModified = response.headers.value(HttpHeaders.lastModifiedHeader);
+        }
+        return data;
       })().timeout(const Duration(seconds: 15));
     } on WeatherException { rethrow; }
     on FormatException { throw const WeatherException(WeatherFailure.invalidResponse); }
@@ -123,6 +152,17 @@ class DirectWeatherProvider {
           if (!config.validCoordinates) throw const FormatException();
         } catch (_) { throw const WeatherException(WeatherFailure.invalidResponse); }
       }
+    }
+    if (config.source == WeatherSource.metNorway) {
+      final data = await transport.request(Uri.https('api.met.no', '/weatherapi/locationforecast/2.0/compact', {
+        'lat': config.latitude!.toStringAsFixed(4), 'lon': config.longitude!.toStringAsFixed(4),
+      }));
+      try {
+        final normalized = normalizeMetNorway(data);
+        normalized['location'] = locationLabel;
+        WeatherData.fromJson(normalized);
+        return normalized;
+      } catch (_) { throw const WeatherException(WeatherFailure.invalidResponse); }
     }
     if (config.source == WeatherSource.openWeather) {
       final query = {'lat': '${config.latitude}', 'lon': '${config.longitude}',
@@ -257,4 +297,60 @@ Map<String, dynamic> normalizeYandex(Map<String, dynamic> data) {
   return {'timestamp': data['now'], 'currentTemp': fact['temp'], 'currentConditionCode': yandexCondition(fact['condition']),
     'currentHumidity': fact['humidity'], 'windSpeed': fact['wind_speed'],
     'todayMinTemp': forecasts.isEmpty ? null : forecasts.first['minTemp'], 'todayMaxTemp': forecasts.isEmpty ? null : forecasts.first['maxTemp'], 'forecasts': forecasts};
+}
+
+/// MET timestamps are UTC; forecast calendar days use the TV time zone.
+Map<String, dynamic> normalizeMetNorway(Map<String, dynamic> data, {DateTime? now}) {
+  num number(dynamic value) {
+    if (value is! num || !value.isFinite) throw const FormatException();
+    return value;
+  }
+  final series = (data['properties'] as Map)['timeseries'] as List;
+  if (series.isEmpty || series.length > 300) throw const FormatException();
+  final instant = (now ?? DateTime.now()).toUtc();
+  final entries = series.map((e) => e as Map).toList();
+  DateTime time(Map e) => DateTime.parse(e['time'] as String);
+  final current = entries.reduce((a, b) => time(a).difference(instant).abs() <=
+    time(b).difference(instant).abs() ? a : b);
+  if (time(current).difference(instant).abs() > const Duration(hours: 6)) throw const FormatException();
+  Map details(Map e) => ((e['data'] as Map)['instant'] as Map)['details'] as Map;
+  Map? period(Map e) {
+    final values = e['data'] as Map;
+    return (values['next_1_hours'] ?? values['next_6_hours'] ?? values['next_12_hours']) as Map?;
+  }
+  int? code(Map e) => metNorwayCondition((period(e)?['summary'] as Map?)?['symbol_code']);
+  DateTime day(DateTime t) { final local = t.toLocal(); return DateTime(local.year, local.month, local.day); }
+  final today = day(instant);
+  final days = <DateTime, Map<String, dynamic>>{};
+  int severity(int? c) => WeatherData.stormCodes.contains(c) ? 3 : WeatherData.snowCodes.contains(c) ? 2 : WeatherData.rainCodes.contains(c) ? 1 : 0;
+  for (final e in entries) {
+    final date = day(time(e));
+    if (date.isBefore(today) || date.isAfter(DateTime(today.year, today.month, today.day + 6))) continue;
+    final temp = number(details(e)['air_temperature']);
+    final c = code(e);
+    final daily = days.putIfAbsent(date, () => {'minTemp': temp, 'maxTemp': temp, 'conditionCode': c});
+    if (temp < daily['minTemp']) daily['minTemp'] = temp;
+    if (temp > daily['maxTemp']) daily['maxTemp'] = temp;
+    if (severity(c) > severity(daily['conditionCode'] as int?)) daily['conditionCode'] = c;
+  }
+  final values = details(current);
+  return {'timestamp': time(current).millisecondsSinceEpoch ~/ 1000,
+    'currentTemp': number(values['air_temperature']), 'currentConditionCode': code(current),
+    'currentHumidity': values['relative_humidity'] == null ? null : number(values['relative_humidity']).round(),
+    'windSpeed': values['wind_speed'] == null ? null : number(values['wind_speed']).toDouble(),
+    'todayMinTemp': days[today]?['minTemp'], 'todayMaxTemp': days[today]?['maxTemp'],
+    'forecasts': [for (var i = 0; i < 7; i++) days[DateTime(today.year, today.month, today.day + i)] ?? <String, dynamic>{}]};
+}
+
+int? metNorwayCondition(dynamic value) {
+  if (value is! String) return null;
+  final symbol = value.split('_').first;
+  if (symbol.contains('thunder')) return 211;
+  if (symbol.contains('sleet')) return 611;
+  if (symbol.contains('snow')) return 601;
+  if (symbol.contains('rain')) return symbol.contains('showers') ? 521 : 501;
+  return switch (symbol) {
+    'clearsky' => 800, 'fair' => 801, 'partlycloudy' => 802,
+    'cloudy' => 804, 'fog' => 741, _ => null,
+  };
 }

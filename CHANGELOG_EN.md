@@ -2,6 +2,11 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
+## v1.1.3 — 2026-10-22
+
+- Moved system queries off the Android input thread when returning to the home screen. A user confirmed the fix for delayed controls after Home on TCL 43; traffic, TV inputs, notifications, and Continue Watching still refresh.
+- Added MET Norway as a weather source without an API key. Forecasts are adapted from MET Norway data under CC BY 4.0; precipitation probability is not shown for this source.
+
 ## v1.1.2 — 2026-10-22
 
 - Fixed repeated app sorting changes: returning to the original mode now applies and saves correctly. Manual order, alphabetical order, last used, and launch frequency have been checked.

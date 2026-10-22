@@ -34,6 +34,7 @@ class WeatherPage extends StatelessWidget {
     final names = {
       WeatherSource.breezy: 'Breezy Weather',
       WeatherSource.openMeteo: 'Open-Meteo',
+      WeatherSource.metNorway: 'MET Norway',
       WeatherSource.yandex: l.yandexWeather,
       WeatherSource.openWeather: 'OpenWeather',
     };
@@ -52,6 +53,7 @@ class WeatherPage extends StatelessWidget {
             enabled: !service.loading && !service.locating,
             options: const [
               WeatherSource.openMeteo,
+              WeatherSource.metNorway,
               WeatherSource.openWeather,
               WeatherSource.yandex,
               WeatherSource.breezy,
@@ -174,7 +176,7 @@ class WeatherPage extends StatelessWidget {
                   '${service.stale ? l.weatherStale : l.weatherUpdated}: ${MaterialLocalizations.of(context).formatTimeOfDay(TimeOfDay.fromDateTime(service.updatedAt!))}',
                 ),
               ),
-            SettingsHelp(text: switch (config.source) {WeatherSource.openMeteo => l.weatherOpenMeteoCredit, WeatherSource.openWeather => l.weatherOpenWeatherCredit, _ => l.weatherYandexCredit}),
+            SettingsHelp(text: switch (config.source) {WeatherSource.metNorway => l.weatherMetNorwayCredit, WeatherSource.openMeteo => l.weatherOpenMeteoCredit, WeatherSource.openWeather => l.weatherOpenWeatherCredit, _ => l.weatherYandexCredit}),
           ] else
             SettingsHelp(text: l.breezyWeatherSetupHint),
           RoundedSwitchListTile(
