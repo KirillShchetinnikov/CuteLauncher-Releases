@@ -15,6 +15,8 @@ Created by [Kirill Shchetinnikov](https://github.com/KirillShchetinnikov).
 · **[All documentation](docs/README_EN.md)**
 · **[What's new](CHANGELOG_EN.md)**
 
+**CuteLauncher 1.1 is a public stable release, out of beta.**
+
 ## What makes it convenient
 
 - **Built for the couch.** Navigate with the directional pad and OK, follow a
