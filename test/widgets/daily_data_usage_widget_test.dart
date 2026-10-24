@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/providers/network_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
@@ -142,5 +143,70 @@ void main() {
     final richText = tester.widget<RichText>(find.byType(RichText));
     final span = richText.text as TextSpan;
     expect((span.children![1] as TextSpan).text, '0 B');
+  });
+
+  for (final period in ['weekly', 'monthly']) {
+    testWidgets('$period never falls back to daily usage on loading or error', (tester) async {
+      final result = Completer<int>();
+      when(mockNetworkService.hasUsageStatsPermission).thenReturn(true);
+      when(mockSettingsService.dataUsagePeriod).thenReturn(period);
+      when(mockNetworkService.dailyDataUsage).thenReturn(5 * 1024 * 1024);
+      when(mockNetworkService.getDataUsageForPeriod(period)).thenAnswer((_) => result.future);
+      await tester.pumpWidget(createWidgetUnderTest());
+      String value() => (tester.widget<RichText>(find.byType(RichText)).text as TextSpan)
+          .children!.last.toPlainText();
+      expect(value(), '—');
+      result.completeError(StateError('Statistics unavailable'));
+      await tester.pumpAndSettle();
+      expect(value(), '—');
+    });
+  }
+
+  testWidgets('daily loading shows unknown rather than an initial zero', (
+    tester,
+  ) async {
+    when(mockNetworkService.hasUsageStatsPermission).thenReturn(true);
+    when(mockNetworkService.dailyDataUsage).thenReturn(-1);
+    when(mockSettingsService.dataUsagePeriod).thenReturn('daily');
+    final pending = Completer<int>();
+    when(mockNetworkService.getDataUsageForPeriod('daily'))
+        .thenAnswer((_) => pending.future);
+    await tester.pumpWidget(createWidgetUnderTest());
+    expect(
+      tester.widget<RichText>(find.byType(RichText)).text.toPlainText(),
+      'Daily: —',
+    );
+    pending.complete(-2);
+    await tester.pumpAndSettle();
+    expect(
+      tester.widget<RichText>(find.byType(RichText)).text.toPlainText(),
+      'Daily: —',
+    );
+  });
+
+  testWidgets('unavailable native result is not displayed as zero usage', (tester) async {
+    when(mockNetworkService.hasUsageStatsPermission).thenReturn(true);
+    when(mockSettingsService.dataUsagePeriod).thenReturn('monthly');
+    when(mockNetworkService.getDataUsageForPeriod('monthly')).thenAnswer((_) async => -1);
+    await tester.pumpWidget(createWidgetUnderTest());
+    await tester.pumpAndSettle();
+    expect(tester.widget<RichText>(find.byType(RichText)).text.toPlainText(), 'Monthly: —');
+  });
+
+  testWidgets('changing period does not retain previous period data', (tester) async {
+    when(mockNetworkService.hasUsageStatsPermission).thenReturn(true);
+    when(mockSettingsService.dataUsagePeriod).thenReturn('daily');
+    when(mockNetworkService.getDataUsageForPeriod('daily')).thenAnswer((_) async => 1024);
+    final monthly = Completer<int>();
+    when(mockNetworkService.getDataUsageForPeriod('monthly')).thenAnswer((_) => monthly.future);
+    await tester.pumpWidget(createWidgetUnderTest());
+    await tester.pumpAndSettle();
+    expect(tester.widget<RichText>(find.byType(RichText)).text.toPlainText(), 'Daily: 1.00 KB');
+    when(mockSettingsService.dataUsagePeriod).thenReturn('monthly');
+    await tester.pumpWidget(createWidgetUnderTest());
+    expect(tester.widget<RichText>(find.byType(RichText)).text.toPlainText(), 'Monthly: —');
+    monthly.complete(2048);
+    await tester.pumpAndSettle();
+    expect(tester.widget<RichText>(find.byType(RichText)).text.toPlainText(), 'Monthly: 2.00 KB');
   });
 }

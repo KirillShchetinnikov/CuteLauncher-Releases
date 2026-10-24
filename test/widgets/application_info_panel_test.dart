@@ -50,6 +50,7 @@ void main() {
     tester,
   ) async {
     final appsService = MockAppsService();
+    when(appsService.isTileHidden(any)).thenReturn(false);
     when(appsService.categories).thenReturn([]);
     final app = fakeApp(packageName: 'test.app', name: 'My App', version: '1');
     when(appsService.applications).thenReturn([app]);
@@ -69,6 +70,7 @@ void main() {
 
   testWidgets('system package without launch activity opens details without Open action', (tester) async {
     final apps = MockAppsService();
+    when(apps.isTileHidden(any)).thenReturn(false);
     when(apps.categories).thenReturn([]);
     final app = fakeApp(packageName: 'com.google.android.partnersetup', name: 'Google Partner Setup')
       ..isSystem = true ..isLaunchable = false;
@@ -86,6 +88,7 @@ void main() {
     tester,
   ) async {
     final apps = MockAppsService();
+    when(apps.isTileHidden(any)).thenReturn(false);
     when(apps.categories).thenReturn([]);
     final app = fakeApp(packageName: 'sample', name: 'Sample');
     await _pumpWidgetWithProviders(
@@ -105,6 +108,7 @@ void main() {
       'category picker stays beside info and Back restores focus; right=$onRight',
       (tester) async {
         final apps = MockAppsService();
+    when(apps.isTileHidden(any)).thenReturn(false);
         when(apps.categories).thenReturn([]);
         final app = fakeApp(packageName: 'sample', name: 'Sample');
         final all = fakeCategory(name: 'Renamed catalog')
@@ -183,6 +187,7 @@ void main() {
       'no eligible sections shows a notice without opening picker; empty=$noSections',
       (tester) async {
         final apps = MockAppsService();
+    when(apps.isTileHidden(any)).thenReturn(false);
         when(apps.categories).thenReturn([]);
         final app = fakeApp(packageName: 'sample', name: 'Sample');
         when(apps.categories).thenReturn(
@@ -222,6 +227,7 @@ void main() {
     tester,
   ) async {
     final appsService = MockAppsService();
+    when(appsService.isTileHidden(any)).thenReturn(false);
     when(appsService.categories).thenReturn([]);
     final app = fakeApp(packageName: 'sample.app', name: 'Sample');
     const accent = Color(0xffe91e63);
@@ -266,6 +272,7 @@ void main() {
   for (final key in ['all_apps', 'tv_apps', 'other_apps']) {
     testWidgets('info from $key removes manual membership and restores focus', (tester) async {
       final apps = MockAppsService();
+    when(apps.isTileHidden(any)).thenReturn(false);
       final app = fakeApp(packageName: 'sample', name: 'Sample');
       final automatic = fakeCategory(name: 'Automatic')..systemKey = key;
       automatic.applications.add(app);
@@ -305,6 +312,7 @@ void main() {
     tester,
   ) async {
     final appsService = MockAppsService();
+    when(appsService.isTileHidden(any)).thenReturn(false);
     when(appsService.categories).thenReturn([]);
     final app = fakeApp(packageName: 'sample.app', name: 'Sample');
     final category = fakeCategory(name: 'Renamed catalog')
@@ -324,6 +332,7 @@ void main() {
 
   testWidgets("'Open' calls launchApp on AppsService", (tester) async {
     final appsService = MockAppsService();
+    when(appsService.isTileHidden(any)).thenReturn(false);
     when(appsService.categories).thenReturn([]);
     when(appsService.launchApp(any)).thenAnswer((_) async => true);
     final app = fakeApp(
@@ -343,6 +352,7 @@ void main() {
 
   testWidgets("'Hide' calls AppsService", (tester) async {
     final appsService = MockAppsService();
+    when(appsService.isTileHidden(any)).thenReturn(false);
     when(appsService.categories).thenReturn([]);
     when(appsService.launchApp(any)).thenAnswer((_) async => true);
     final category = fakeCategory(name: "Category 1", order: 0);
@@ -365,6 +375,7 @@ void main() {
 
   testWidgets("'Remove from...' calls AppsService", (tester) async {
     final appsService = MockAppsService();
+    when(appsService.isTileHidden(any)).thenReturn(false);
     when(appsService.categories).thenReturn([]);
     when(appsService.launchApp(any)).thenAnswer((_) async => true);
     final category = fakeCategory(name: "Category 1", order: 0);
@@ -387,6 +398,7 @@ void main() {
 
   testWidgets("'App info' calls AppsService", (tester) async {
     final appsService = MockAppsService();
+    when(appsService.isTileHidden(any)).thenReturn(false);
     when(appsService.categories).thenReturn([]);
     when(appsService.launchApp(any)).thenAnswer((_) async => true);
     final category = fakeCategory(name: "Category 1", order: 0);
@@ -409,6 +421,7 @@ void main() {
 
   testWidgets("'Uninstall' calls AppsService", (tester) async {
     final appsService = MockAppsService();
+    when(appsService.isTileHidden(any)).thenReturn(false);
     when(appsService.categories).thenReturn([]);
     when(appsService.launchApp(any)).thenAnswer((_) async => true);
     final category = fakeCategory(name: "Category 1", order: 0);

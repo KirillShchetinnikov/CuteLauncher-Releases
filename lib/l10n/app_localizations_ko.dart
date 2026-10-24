@@ -3078,7 +3078,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get homeInherited => '상속된 가치';
 
   @override
-  String get homeOwnReset => '맞춤 값 · 전역 사용';
+  String get homeOwnReset => '공통 설정 복원';
 
   @override
   String get homeParameters => '매개변수';
@@ -3399,6 +3399,10 @@ class AppLocalizationsKo extends AppLocalizations {
       '650ms 동안 누르면 짧게 누르기 동작 없이 한 번 실행합니다. 길게 누르기만 할당하면 짧게 눌러도 동작하지 않습니다.';
 
   @override
+  String get remotePanelDescription =>
+      '플로팅 패널은 다른 앱 위에 필요한 위젯을 표시합니다. 리모컨으로 열려면 원하는 버튼에 플로팅 패널 동작을 지정하세요.';
+
+  @override
   String get remotePanel => '플로팅 패널';
 
   @override
@@ -3417,13 +3421,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String get panelClockStyle => '시계 모양';
 
   @override
-  String get clockPreset => '시계 디자인';
+  String get clockPreset => '글꼴 스타일';
 
   @override
   String get clockCustom => '사용자 지정';
 
   @override
-  String get clockWeight => '글꼴 굵기';
+  String get clockWeight => '글꼴 두께';
 
   @override
   String get clockGlow => '텍스트 빛 효과';
@@ -3618,6 +3622,33 @@ class AppLocalizationsKo extends AppLocalizations {
   String get adaptiveLandscape => 'Adaptive landscape';
 
   @override
+  String get landscapeDemoSpring => 'Spring';
+
+  @override
+  String get landscapeDemoSummer => 'Summer';
+
+  @override
+  String get landscapeDemoAutumn => 'Autumn';
+
+  @override
+  String get landscapeDemoWinter => 'Winter';
+
+  @override
+  String get landscapeDemoClear => 'Clear';
+
+  @override
+  String get landscapeDemoCloudy => 'Cloudy';
+
+  @override
+  String get landscapeDemoFog => 'Fog';
+
+  @override
+  String get landscapeDemoStart => 'Demonstrate changes';
+
+  @override
+  String get landscapeDemoStop => '중지';
+
+  @override
   String get landscapeVariant => 'Landscape style';
 
   @override
@@ -3675,4 +3706,105 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get weatherMetNorwayCredit =>
       'Data: MET Norway, CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Forecast adapted from https://api.met.no/. No API key; days use the TV time zone, min/max cover available periods. Precipitation probability is unavailable.';
+
+  @override
+  String get informationGroup => '시계, 날짜 및 날씨';
+
+  @override
+  String get informationSettings => '블록 설정';
+
+  @override
+  String get informationAppearance => '블록 모양';
+
+  @override
+  String get informationSize => '블록 크기';
+
+  @override
+  String get informationPosition => '시계와 텍스트 위치';
+
+  @override
+  String get informationClockLeft => '시계 왼쪽, 텍스트 오른쪽';
+
+  @override
+  String get informationClockRight => '텍스트 왼쪽, 시계 오른쪽';
+
+  @override
+  String get informationSpacing => '시계와 텍스트 간격';
+
+  @override
+  String get informationBackground => '블록 배경';
+
+  @override
+  String get homeResetTilesHint => '이 화면의 모든 타일과 레이블을 공통 값으로 복원할까요?';
+
+  @override
+  String get homeResetLayoutHint =>
+      '이 섹션의 레이아웃을 초기화하고 공통 모양을 복원하며 안쪽 여백을 없앨까요? 앱과 순서는 유지됩니다.';
+
+  @override
+  String get networkSummary => '네트워크';
+
+  @override
+  String get networkConnected => '인터넷 사용 가능';
+
+  @override
+  String get networkOffline => '인터넷에 연결할 수 없음';
+
+  @override
+  String get networkDisconnected => '연결되지 않음';
+
+  @override
+  String get networkConnection => '연결';
+
+  @override
+  String get networkSignal => '신호';
+
+  @override
+  String get networkLinkSpeed => 'Wi-Fi 링크 속도';
+
+  @override
+  String get networkTrafficRate => '기기 트래픽 · 수신 / 송신';
+
+  @override
+  String get networkSystemSettings => '시스템 네트워크 설정';
+
+  @override
+  String get networkUnavailable => '사용 불가';
+
+  @override
+  String get networkMobile => '모바일 네트워크';
+
+  @override
+  String get networkFrequency => '주파수';
+
+  @override
+  String get networkMbps => 'Mbps';
+
+  @override
+  String get networkKbps => 'KB/초';
+
+  @override
+  String get networkReadFailed => '네트워크 상태를 읽을 수 없습니다';
+
+  @override
+  String get clockItalic => '기울임꼴';
+
+  @override
+  String get panelWrapNavigation => '패널 순환 탐색';
+
+  @override
+  String get panelWrapNavigationHelp =>
+      '가장자리에서 화살표를 누르면 반대쪽으로 이동합니다. 화살표를 길게 누르면 양쪽을 계속 탐색합니다.';
+
+  @override
+  String get networkReceive => '수신';
+
+  @override
+  String get networkSend => '송신';
+
+  @override
+  String get landscapeCelestialBodies => '해와 달';
+
+  @override
+  String get landscapeStarRotation => '별 회전';
 }

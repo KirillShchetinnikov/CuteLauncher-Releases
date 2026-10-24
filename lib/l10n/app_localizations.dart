@@ -5927,7 +5927,7 @@ abstract class AppLocalizations {
   /// No description provided for @homeOwnReset.
   ///
   /// In en, this message translates to:
-  /// **'Custom value · use global'**
+  /// **'Restore common settings'**
   String get homeOwnReset;
 
   /// No description provided for @homeParameters.
@@ -6500,6 +6500,12 @@ abstract class AppLocalizations {
   /// **'Hold for 650 ms: fires once, without the short action. If only hold is assigned, a short tap does nothing.'**
   String get remoteMappingHoldHint;
 
+  /// No description provided for @remotePanelDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'The floating panel keeps your widgets within reach over other apps. To open it with your remote, assign the Floating panel action to a button of your choice.'**
+  String get remotePanelDescription;
+
   /// No description provided for @remotePanel.
   ///
   /// In en, this message translates to:
@@ -6539,7 +6545,7 @@ abstract class AppLocalizations {
   /// No description provided for @clockPreset.
   ///
   /// In en, this message translates to:
-  /// **'Clock design'**
+  /// **'Font style'**
   String get clockPreset;
 
   /// No description provided for @clockCustom.
@@ -6914,6 +6920,60 @@ abstract class AppLocalizations {
   /// **'Adaptive landscape'**
   String get adaptiveLandscape;
 
+  /// No description provided for @landscapeDemoSpring.
+  ///
+  /// In en, this message translates to:
+  /// **'Spring'**
+  String get landscapeDemoSpring;
+
+  /// No description provided for @landscapeDemoSummer.
+  ///
+  /// In en, this message translates to:
+  /// **'Summer'**
+  String get landscapeDemoSummer;
+
+  /// No description provided for @landscapeDemoAutumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Autumn'**
+  String get landscapeDemoAutumn;
+
+  /// No description provided for @landscapeDemoWinter.
+  ///
+  /// In en, this message translates to:
+  /// **'Winter'**
+  String get landscapeDemoWinter;
+
+  /// No description provided for @landscapeDemoClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get landscapeDemoClear;
+
+  /// No description provided for @landscapeDemoCloudy.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloudy'**
+  String get landscapeDemoCloudy;
+
+  /// No description provided for @landscapeDemoFog.
+  ///
+  /// In en, this message translates to:
+  /// **'Fog'**
+  String get landscapeDemoFog;
+
+  /// No description provided for @landscapeDemoStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Demonstrate changes'**
+  String get landscapeDemoStart;
+
+  /// No description provided for @landscapeDemoStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get landscapeDemoStop;
+
   /// No description provided for @landscapeVariant.
   ///
   /// In en, this message translates to:
@@ -7027,6 +7087,204 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Data: MET Norway, CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Forecast adapted from https://api.met.no/. No API key; days use the TV time zone, min/max cover available periods. Precipitation probability is unavailable.'**
   String get weatherMetNorwayCredit;
+
+  /// No description provided for @informationGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Clock, date and weather'**
+  String get informationGroup;
+
+  /// No description provided for @informationSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Block settings'**
+  String get informationSettings;
+
+  /// No description provided for @informationAppearance.
+  ///
+  /// In en, this message translates to:
+  /// **'Block appearance'**
+  String get informationAppearance;
+
+  /// No description provided for @informationSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Block size'**
+  String get informationSize;
+
+  /// No description provided for @informationPosition.
+  ///
+  /// In en, this message translates to:
+  /// **'Clock and text position'**
+  String get informationPosition;
+
+  /// No description provided for @informationClockLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Clock left, text right'**
+  String get informationClockLeft;
+
+  /// No description provided for @informationClockRight.
+  ///
+  /// In en, this message translates to:
+  /// **'Text left, clock right'**
+  String get informationClockRight;
+
+  /// No description provided for @informationSpacing.
+  ///
+  /// In en, this message translates to:
+  /// **'Space between clock and text'**
+  String get informationSpacing;
+
+  /// No description provided for @informationBackground.
+  ///
+  /// In en, this message translates to:
+  /// **'Block background'**
+  String get informationBackground;
+
+  /// No description provided for @homeResetTilesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore common values for all tiles and labels on this screen?'**
+  String get homeResetTilesHint;
+
+  /// No description provided for @homeResetLayoutHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset this section’s layout, restore its common appearance and reset padding? Apps and their order will be kept.'**
+  String get homeResetLayoutHint;
+
+  /// No description provided for @networkSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Network'**
+  String get networkSummary;
+
+  /// No description provided for @networkConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Internet available'**
+  String get networkConnected;
+
+  /// No description provided for @networkOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'No internet access'**
+  String get networkOffline;
+
+  /// No description provided for @networkDisconnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnected'**
+  String get networkDisconnected;
+
+  /// No description provided for @networkConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection'**
+  String get networkConnection;
+
+  /// No description provided for @networkSignal.
+  ///
+  /// In en, this message translates to:
+  /// **'Signal'**
+  String get networkSignal;
+
+  /// No description provided for @networkLinkSpeed.
+  ///
+  /// In en, this message translates to:
+  /// **'Wi-Fi link speed'**
+  String get networkLinkSpeed;
+
+  /// No description provided for @networkTrafficRate.
+  ///
+  /// In en, this message translates to:
+  /// **'Device traffic · receive / send'**
+  String get networkTrafficRate;
+
+  /// No description provided for @networkSystemSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'System network settings'**
+  String get networkSystemSettings;
+
+  /// No description provided for @networkUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Unavailable'**
+  String get networkUnavailable;
+
+  /// No description provided for @networkMobile.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile network'**
+  String get networkMobile;
+
+  /// No description provided for @networkFrequency.
+  ///
+  /// In en, this message translates to:
+  /// **'Frequency'**
+  String get networkFrequency;
+
+  /// No description provided for @networkMbps.
+  ///
+  /// In en, this message translates to:
+  /// **'Mbps'**
+  String get networkMbps;
+
+  /// No description provided for @networkKbps.
+  ///
+  /// In en, this message translates to:
+  /// **'KB/s'**
+  String get networkKbps;
+
+  /// No description provided for @networkReadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not read network status'**
+  String get networkReadFailed;
+
+  /// No description provided for @clockItalic.
+  ///
+  /// In en, this message translates to:
+  /// **'Italic'**
+  String get clockItalic;
+
+  /// No description provided for @panelWrapNavigation.
+  ///
+  /// In en, this message translates to:
+  /// **'Wrap panel navigation'**
+  String get panelWrapNavigation;
+
+  /// No description provided for @panelWrapNavigationHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Left and right wrap between the outermost panel buttons. Hold an arrow to keep moving across both sides.'**
+  String get panelWrapNavigationHelp;
+
+  /// No description provided for @networkReceive.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive'**
+  String get networkReceive;
+
+  /// No description provided for @networkSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get networkSend;
+
+  /// No description provided for @landscapeCelestialBodies.
+  ///
+  /// In en, this message translates to:
+  /// **'Sun and moon'**
+  String get landscapeCelestialBodies;
+
+  /// No description provided for @landscapeStarRotation.
+  ///
+  /// In en, this message translates to:
+  /// **'Star rotation'**
+  String get landscapeStarRotation;
 }
 
 class _AppLocalizationsDelegate

@@ -126,6 +126,9 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
               app.packageName != 'com.android.settings' &&
               app.action != 'android.settings.SETTINGS'));
 
+  /// Tile preferences hide apps independently of their stored manual flag.
+  bool isTileHidden(App app) => !_showTile(app);
+
   Category _displayCategory(Category category) {
     if (category.isAutomatic) {
       final apps = _applications.values.where((app) => !app.hidden && app.isLaunchable && _showTile(app) &&
@@ -1187,6 +1190,14 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
   }
 
   Future<void> showApplication(App application) async {
+    if (application.packageName == _ownPackageName) {
+      await _settingsService?.setHideLauncherTile(false);
+    }
+    if (application.packageName == 'com.android.tv.settings' ||
+        application.packageName == 'com.android.settings' ||
+        application.action == 'android.settings.SETTINGS') {
+      await _settingsService?.setHideAndroidSettingsTile(false);
+    }
     await _database.updateApp(
         application.packageName, const AppsCompanion(hidden: Value(false)));
 

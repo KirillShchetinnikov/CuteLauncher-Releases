@@ -9,6 +9,65 @@ import 'package:flauncher/settings_import.dart';
 import 'package:flauncher/category_appearance.dart';
 
 void main() {
+  test('returning each local field to the common value resumes live inheritance', () async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    final service = AppearanceService(prefs);
+    addTearDown(service.dispose);
+    final fields = <String, (dynamic, dynamic)>{
+      'size': (128, 160), 'aspectRatio': (16 / 9, 1),
+      'radius': (null, 32), 'horizontalGap': (16, 20), 'verticalGap': (16, 20),
+      'iconScale': (1, .5), 'labels': ('none', 'all'),
+      'labelPosition': ('below', 'inside'), 'labelSize': (12, 16),
+      'labelColor': (null, 0xff000000), 'backgroundColor': (null, 0xff000000),
+      'opacity': (1, .5), 'shadow': (0, 8), 'blurTiles': (false, true),
+      'sectionTitles': (true, false), 'sectionIcons': (false, true),
+      'sectionBackground': (0, 0xff123456),
+    };
+    var id = 1;
+    for (final entry in fields.entries) {
+      final key = entry.key;
+      final (common, custom) = entry.value;
+      await service.setCategory(id, 'layout', 'row');
+      await service.setCategoryTile(id, key, custom);
+      expect(service.category(id).tiles.containsKey(key), isTrue, reason: key);
+      await service.setCategoryTile(id, key, common);
+      expect(service.category(id).tiles.containsKey(key), isFalse, reason: key);
+      await service.set(key, custom);
+      expect(service.tilesFor(id).homeFieldValue(key), service.appearance.homeFieldValue(key), reason: key);
+      final restored = AppearanceService(prefs);
+      expect(restored.tilesFor(id).homeFieldValue(key), service.appearance.homeFieldValue(key), reason: key);
+      restored.dispose();
+      await service.set(key, common);
+      id++;
+    }
+    await service.setCategoryTile(1, 'labelColor', 0xffffffff);
+    expect(service.category(1).tiles.containsKey('labelColor'), isFalse);
+  });
+
+  test('matching explicit common values clears legacy fields and preserves other overrides', () async {
+    SharedPreferences.setMockInitialValues({categoryAppearanceKey: jsonEncode({
+      '1': {'background': 0xff123456, 'padding': 16, 'layout': 'rows', 'rows': 3,
+        'useGlobalTiles': false, 'tiles': {'size': 160, 'opacity': .5}},
+    })});
+    final service = AppearanceService(await SharedPreferences.getInstance());
+    addTearDown(service.dispose);
+    await service.set('size', 192);
+    await service.set('sectionBackground', 0xffabcdef);
+    await service.setCategoryTile(1, 'size', 192);
+    await service.setCategoryTile(1, 'sectionBackground', 0xffabcdef);
+    await service.setCategoryTile(1, 'sectionPadding', 0);
+    expect(service.category(1).tiles, {'opacity': .5});
+    expect(service.category(1).values.containsKey('background'), isFalse);
+    expect(service.category(1).values.containsKey('padding'), isFalse);
+    expect(service.category(1).rows, 3);
+    await service.set('size', 208);
+    await service.set('sectionBackground', 0xff112233);
+    expect(service.tilesFor(1).tileSize, 208);
+    expect(service.tilesFor(1).values['sectionBackground'], 0xff112233);
+    expect(service.tilesFor(1).opacity, .5);
+  });
+
   test('tape row count saves layout and rows together and survives reload', () async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
@@ -96,11 +155,11 @@ void main() {
     final prefs = await SharedPreferences.getInstance();
     final service = AppearanceService(prefs);
     addTearDown(service.dispose);
+    await service.setCategoryTile(1, 'horizontalGap', 0);
     await service.set('horizontalGap', 0);
     await service.set('verticalGap', 0);
     await service.set('noticeOpacity', .4);
     await service.set('settingsTextSize', 24);
-    await service.setCategoryTile(1, 'horizontalGap', 0);
     final imported = compatibleSettings(
       {tileAppearanceKey: prefs.getString(tileAppearanceKey)}, {});
     expect(TileAppearance.decode(imported[tileAppearanceKey]).horizontalGap, 0);

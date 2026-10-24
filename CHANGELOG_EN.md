@@ -2,6 +2,17 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
+## v1.2.0 — 2026-10-24
+
+- Updated adaptive landscapes with smooth lighting transitions, richer sunrises and sunsets, a distinct evening twilight palette, and more pronounced seasonal differences.
+- The sun and moon follow separate arcs. The night sky now features meteors with fading trails and an optional star rotation setting. Weather effects have been reworked.
+- Added a landscape demonstration showing changes in time of day, seasons, and weather, with an option to stop playback.
+- Added connection details and current download and upload rates to the network menu. Fixed traffic totals for the selected period; unavailable history now appears as a dash. Ethernet traffic history can also be read through a configured local ADB connection.
+- Combined clock, date, and weather settings. Unified the appearance of top panel menus, added wraparound navigation between its buttons, and introduced a wallpaper refraction effect in text and icons.
+- Fixed clipped text in settings, font weight selection, category appearance inheritance, and the initial app highlight when opening the home screen.
+- Fixed weather updates, hidden app filters, and slideshow intervals being reset by unrelated settings changes.
+- Added a recovery screen after repeated launcher startup crashes.
+
 ## v1.1.4 — 2026-10-22
 
 - Fixed delayed controls when returning to the home screen with the Home button.

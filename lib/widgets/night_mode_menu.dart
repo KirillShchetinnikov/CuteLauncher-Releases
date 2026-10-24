@@ -1,12 +1,10 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../l10n/app_localizations.dart';
-import '../theme/launcher_style.dart';
 import '../providers/night_mode_service.dart';
-import 'notice_style.dart';
+import 'side_panel_dialog.dart';
+import 'settings/settings_panel_style.dart';
 import 'menu_header_action.dart';
 import 'launcher_dialog.dart';
 import 'settings/night_mode_page.dart';
@@ -85,7 +83,9 @@ class _NightModeMenuState extends State<NightModeMenu> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) => SettingsPanelStyle(builder: _buildMenu);
+
+  Widget _buildMenu(BuildContext context) {
     final l = AppLocalizations.of(context)!;
     final service = context.watch<NightModeService>();
     final c = service.configuration;
@@ -109,135 +109,108 @@ class _NightModeMenuState extends State<NightModeMenu> {
       excluding: _settingsOpen,
       child: Offstage(
         offstage: _settingsOpen,
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final margin = math.max(
-              12.0,
-              LauncherStyle.of(context).panelMargin,
-            );
-            final width = math.min(380.0, constraints.maxWidth - margin * 2);
-            final top = math.min(
-              widget.anchor.bottom + 8,
-              constraints.maxHeight - 100,
-            );
-            return Stack(
-              children: [
-                const Positioned.fill(child: LauncherPanelBackdrop()),
-                Positioned(
-                  left: (widget.anchor.center.dx - width / 2).clamp(
-                    margin,
-                    math.max(margin, constraints.maxWidth - width - margin),
-                  ),
-                  top: top,
-                  width: width,
-                  child: NoticeSurface(
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        maxHeight: constraints.maxHeight - top - margin,
+        child: Stack(
+          children: [
+            const Positioned.fill(child: LauncherPanelBackdrop()),
+            Positioned.fill(
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () => Navigator.of(context).pop(),
+              ),
+            ),
+            SidePanelDialog(
+              anchor: widget.anchor,
+              width: 380,
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(child: Text(l.nightModeTitle)),
+                          MenuHeaderAction(
+                            focusNode: _settingsNode,
+                            tooltip: l.settings,
+                            icon: const Icon(Icons.settings_outlined),
+                            onPressed: _openSettings,
+                          ),
+                        ],
                       ),
-                      child: SingleChildScrollView(
-                        child: Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Row(
-                                children: [
-                                  Expanded(child: Text(l.nightModeTitle)),
-                                  MenuHeaderAction(
-                                    focusNode: _settingsNode,
-                                    tooltip: l.settings,
-                                    icon: const Icon(Icons.settings_outlined),
-                                    onPressed: _openSettings,
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 12),
-                              Text(
-                                c.scheduled
-                                    ? '${c.solar ? l.nightSolarSchedule : l.nightManualSchedule}\n'
-                                          '${l.nightModeStart}: ${date(intervals.isEmpty ? null : intervals.first.$1)}\n'
-                                          '${l.nightModeEnd}: ${date(intervals.isEmpty ? null : intervals.first.$2)}'
-                                    : l.nightScheduleInactive,
-                                key: const ValueKey('night_mode_schedule'),
-                              ),
-                              if (override) ...[
-                                const SizedBox(height: 8),
-                                Text(
-                                  '${c.overrideMode == 'on' ? l.nightTemporaryOn : l.nightTemporaryOff}: '
-                                  '${date(DateTime.fromMillisecondsSinceEpoch(c.overrideUntil))}',
-                                ),
-                              ],
-                              const SizedBox(height: 12),
-                              if (_busy) const LinearProgressIndicator(),
-                              if (_failed) Text(l.appError),
-                              if (c.scheduled &&
-                                  !override &&
-                                  c.solar &&
-                                  until == null)
-                                Text(l.nightSolarUnavailable),
-                              if (c.scheduled)
-                                FocusableSettingsTile(
-                                  key: const ValueKey('night_mode_temporary'),
-                                  focusNode: _actionNode,
-                                  autofocus: true,
-                                  // Traversal reveals the action when needed; opening
-                                  // must not center it by scrolling away the header.
-                                  scrollOnFocus: false,
-                                  enabled:
-                                      !_busy && (override || until != null),
-                                  leading: Icon(
-                                    override
-                                        ? Icons.schedule
-                                        : active
-                                        ? Icons.pause_circle_outline
-                                        : Icons.wb_twilight,
-                                  ),
-                                  title: Text(
-                                    override
-                                        ? l.nightResumeSchedule
-                                        : active
-                                        ? l.nightSkipUntilNext
-                                        : l.nightEnableUntilMorning,
-                                  ),
-                                  trailing: override ? null : Text(date(until)),
-                                  onPressed: () => _change(
-                                    override
-                                        ? service.clearTemporaryMode
-                                        : () => service.temporaryMode(!active),
-                                    closeMenu: false,
-                                  ),
-                                ),
-                              RoundedSwitchListTile(
-                                key: const ValueKey('night_mode_enabled'),
-                                focusNode: _enabledNode,
-                                autofocus:
-                                    !c.scheduled ||
-                                    (!override && until == null),
-                                enabled: !_busy,
-                                title: Text(l.nightModeEnabled),
-                                value: c.enabled,
-                                onChanged: (value) => _change(
-                                  () => service.configure(
-                                    c.copyWith(
-                                      enabled: value,
-                                      clearOverrides: true,
-                                    ),
-                                  ),
-                                  closeMenu: false,
-                                  restoreFocus: _enabledNode,
-                                ),
-                              ),
-                            ],
+                      const SizedBox(height: 12),
+                      Text(
+                        c.scheduled
+                            ? '${c.solar ? l.nightSolarSchedule : l.nightManualSchedule}\n'
+                                  '${l.nightModeStart}: ${date(intervals.isEmpty ? null : intervals.first.$1)}\n'
+                                  '${l.nightModeEnd}: ${date(intervals.isEmpty ? null : intervals.first.$2)}'
+                            : l.nightScheduleInactive,
+                        key: const ValueKey('night_mode_schedule'),
+                      ),
+                      if (override) ...[
+                        const SizedBox(height: 8),
+                        Text(
+                          '${c.overrideMode == 'on' ? l.nightTemporaryOn : l.nightTemporaryOff}: '
+                          '${date(DateTime.fromMillisecondsSinceEpoch(c.overrideUntil))}',
+                        ),
+                      ],
+                      const SizedBox(height: 12),
+                      if (_busy) const LinearProgressIndicator(),
+                      if (_failed) Text(l.appError),
+                      if (c.scheduled && !override && c.solar && until == null)
+                        Text(l.nightSolarUnavailable),
+                      if (c.scheduled)
+                        FocusableSettingsTile(
+                          key: const ValueKey('night_mode_temporary'),
+                          focusNode: _actionNode,
+                          autofocus: true,
+                          // Traversal reveals the action when needed; opening
+                          // must not center it by scrolling away the header.
+                          scrollOnFocus: false,
+                          enabled: !_busy && (override || until != null),
+                          leading: Icon(
+                            override
+                                ? Icons.schedule
+                                : active
+                                ? Icons.pause_circle_outline
+                                : Icons.wb_twilight,
+                          ),
+                          title: Text(
+                            override
+                                ? l.nightResumeSchedule
+                                : active
+                                ? l.nightSkipUntilNext
+                                : l.nightEnableUntilMorning,
+                          ),
+                          trailing: override ? null : Text(date(until)),
+                          onPressed: () => _change(
+                            override
+                                ? service.clearTemporaryMode
+                                : () => service.temporaryMode(!active),
+                            closeMenu: false,
                           ),
                         ),
+                      RoundedSwitchListTile(
+                        key: const ValueKey('night_mode_enabled'),
+                        focusNode: _enabledNode,
+                        autofocus: !c.scheduled || (!override && until == null),
+                        enabled: !_busy,
+                        title: Text(l.nightModeEnabled),
+                        value: c.enabled,
+                        onChanged: (value) => _change(
+                          () => service.configure(
+                            c.copyWith(enabled: value, clearOverrides: true),
+                          ),
+                          closeMenu: false,
+                          restoreFocus: _enabledNode,
+                        ),
                       ),
-                    ),
+                    ],
                   ),
                 ),
-              ],
-            );
-          },
+              ),
+            ),
+          ],
         ),
       ),
     );

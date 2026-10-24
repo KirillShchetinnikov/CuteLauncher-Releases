@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -140,7 +141,14 @@ void main() {
       addTearDown(restored.dispose);
       while (!restored.initialized) { await Future<void>.delayed(Duration.zero); }
       expect(restored.weatherData!.currentTemp, 8); expect(restored.failure, WeatherFailure.rateLimit);
-      await restored.refresh(); expect(failed.requests.length, 1);
+      expect(failed.requests.length, 1);
+      // Resume is throttled; explicit user refresh may retry immediately.
+      restored.didChangeAppLifecycleState(AppLifecycleState.paused);
+      restored.didChangeAppLifecycleState(AppLifecycleState.resumed);
+      await Future<void>.value();
+      expect(failed.requests.length, 1);
+      await restored.refresh();
+      expect(failed.requests.length, 2);
     });
     test('removing a key rejects the in-flight response and reports missing key', () async {
       final prefs = await SharedPreferences.getInstance();

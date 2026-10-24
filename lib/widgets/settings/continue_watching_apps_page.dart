@@ -30,6 +30,7 @@ import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/watch_next_service.dart';
 import 'package:flauncher/widgets/rounded_switch_list_tile.dart';
+
 import 'focusable_settings_tile.dart';
 
 class ContinueWatchingAppsPage extends StatelessWidget {
@@ -47,16 +48,23 @@ class ContinueWatchingAppsPage extends StatelessWidget {
     final blockedPackages = settingsService.hiddenWatchNextPackages.toSet();
 
     // Packages that currently have active Watch Next items
-    final activePackages = watchNextService.programs.map((p) => p.packageName).toSet().toList();
+    final activePackages = watchNextService.programs
+        .map((p) => p.packageName)
+        .toSet()
+        .toList();
 
     // All installed apps sorted alphabetically
     final allApps = List<App>.from(appsService.applications)
       ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
 
     // Blocked apps that are known installed apps
-    final knownBlockedApps = allApps.where((a) => blockedPackages.contains(a.packageName)).toList();
+    final knownBlockedApps = allApps
+        .where((a) => blockedPackages.contains(a.packageName))
+        .toList();
     final knownBlockedPkg = knownBlockedApps.map((a) => a.packageName).toSet();
-    final unknownBlockedPkg = blockedPackages.where((p) => !knownBlockedPkg.contains(p)).toList();
+    final unknownBlockedPkg = blockedPackages
+        .where((p) => !knownBlockedPkg.contains(p))
+        .toList();
 
     return SettingsPageLayout(
       title: Text(
@@ -84,15 +92,17 @@ class ContinueWatchingAppsPage extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.04),
+                  color: theme.colorScheme.onSurface.withValues(alpha: .04),
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.white12),
+                  border: Border.all(
+                    color: theme.colorScheme.onSurface.withValues(alpha: .12),
+                  ),
                 ),
                 child: Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.check_circle_outline,
-                      color: Colors.green,
+                      color: theme.colorScheme.primary,
                       size: 28,
                     ),
                     const SizedBox(width: 12),
@@ -107,7 +117,10 @@ class ContinueWatchingAppsPage extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 2),
-                          SettingsHelp(text: AppLocalizations.of(context)!.allAppsCanContinueWatching),
+                          SettingsHelp(
+                            text: AppLocalizations.of(context)!
+                                .allAppsCanContinueWatching,
+                          ),
                         ],
                       ),
                     ),
@@ -136,7 +149,7 @@ class ContinueWatchingAppsPage extends StatelessWidget {
                         ),
                       );
                     }
-                    return const Icon(Icons.tv, size: 32);
+                    return Icon(Icons.tv, size: 32);
                   },
                 ),
                 title: Column(
@@ -147,35 +160,14 @@ class ContinueWatchingAppsPage extends StatelessWidget {
                     const SizedBox(height: 2),
                     Text(
                       AppLocalizations.of(context)!.blockedContinueWatching,
-                      style: TextStyle(color: Colors.redAccent, fontSize: 11),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.error,
+                      ),
                     ),
                   ],
                 ),
-                trailing: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.red.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: Colors.redAccent.withValues(alpha: 0.5),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.lock_open, size: 14, color: Colors.redAccent),
-                      SizedBox(width: 4),
-                      Text(
-                        AppLocalizations.of(context)!.unblockApp,
-                        style: TextStyle(
-                          color: Colors.redAccent,
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                trailing: Text(AppLocalizations.of(context)!.unblockApp),
+                valueIcon: Icons.lock_open,
                 onPressed: () {
                   settingsService.unhideWatchNextPackage(app.packageName);
                   watchNextService.refresh();
@@ -184,7 +176,7 @@ class ContinueWatchingAppsPage extends StatelessWidget {
             ),
             ...unknownBlockedPkg.map(
               (pkg) => FocusableSettingsTile(
-                leading: const Icon(Icons.tv, size: 32),
+                leading: Icon(Icons.tv, size: 32),
                 title: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
@@ -193,35 +185,14 @@ class ContinueWatchingAppsPage extends StatelessWidget {
                     const SizedBox(height: 2),
                     Text(
                       AppLocalizations.of(context)!.blockedContinueWatching,
-                      style: TextStyle(color: Colors.redAccent, fontSize: 11),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.error,
+                      ),
                     ),
                   ],
                 ),
-                trailing: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.red.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: Colors.redAccent.withValues(alpha: 0.5),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.lock_open, size: 14, color: Colors.redAccent),
-                      SizedBox(width: 4),
-                      Text(
-                        AppLocalizations.of(context)!.unblockApp,
-                        style: TextStyle(
-                          color: Colors.redAccent,
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                trailing: Text(AppLocalizations.of(context)!.unblockApp),
+                valueIcon: Icons.lock_open,
                 onPressed: () {
                   settingsService.unhideWatchNextPackage(pkg);
                   watchNextService.refresh();
@@ -229,10 +200,12 @@ class ContinueWatchingAppsPage extends StatelessWidget {
               ),
             ),
             FocusableSettingsTile(
-              leading: const Icon(Icons.clear_all, color: Colors.orange),
+              leading: Icon(Icons.clear_all, color: theme.colorScheme.tertiary),
               title: Text(
                 AppLocalizations.of(context)!.unblockAllApps,
-                style: theme.textTheme.bodyMedium?.copyWith(color: Colors.orange),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.tertiary,
+                ),
               ),
               onPressed: () {
                 settingsService.unhideAllWatchNextPackages();
@@ -260,7 +233,9 @@ class ContinueWatchingAppsPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 2),
-                SettingsHelp(text: AppLocalizations.of(context)!.watchNextAppsHint),
+                SettingsHelp(
+                  text: AppLocalizations.of(context)!.watchNextAppsHint,
+                ),
               ],
             ),
           ),
@@ -271,15 +246,17 @@ class ContinueWatchingAppsPage extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.04),
+                  color: theme.colorScheme.onSurface.withValues(alpha: .04),
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.white12),
+                  border: Border.all(
+                    color: theme.colorScheme.onSurface.withValues(alpha: .12),
+                  ),
                 ),
                 child: Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.info_outline,
-                      color: Colors.white60,
+                      color: theme.colorScheme.onSurfaceVariant,
                       size: 24,
                     ),
                     const SizedBox(width: 12),
@@ -287,7 +264,7 @@ class ContinueWatchingAppsPage extends StatelessWidget {
                       child: Text(
                         AppLocalizations.of(context)!.noWatchNextApps,
                         style: theme.textTheme.bodySmall?.copyWith(
-                          color: Colors.white60,
+                          color: theme.colorScheme.onSurfaceVariant,
                           height: 1.3,
                         ),
                       ),
@@ -327,11 +304,14 @@ class ContinueWatchingAppsPage extends StatelessWidget {
                     const SizedBox(height: 2),
                     Text(
                       isBlocked
-                          ? AppLocalizations.of(context)!.blockedContinueWatching
-                          : AppLocalizations.of(context)!.activeItemsCount(count),
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: isBlocked ? Colors.redAccent : Colors.white54,
+                          ? AppLocalizations.of(context)!
+                                .blockedContinueWatching
+                          : AppLocalizations.of(context)!
+                                .activeItemsCount(count),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: isBlocked
+                            ? theme.colorScheme.error
+                            : theme.colorScheme.onSurfaceVariant,
                       ),
                     ),
                   ],
@@ -354,7 +334,7 @@ class ContinueWatchingAppsPage extends StatelessWidget {
                         ),
                       );
                     }
-                    return const Icon(Icons.tv, size: 32);
+                    return Icon(Icons.tv, size: 32);
                   },
                 ),
               );
@@ -379,7 +359,9 @@ class ContinueWatchingAppsPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 2),
-                SettingsHelp(text: AppLocalizations.of(context)!.blockWatchNextHint),
+                SettingsHelp(
+                  text: AppLocalizations.of(context)!.blockWatchNextHint,
+                ),
               ],
             ),
           ),
@@ -404,10 +386,13 @@ class ContinueWatchingAppsPage extends StatelessWidget {
                   Text(app.name, style: theme.textTheme.bodyMedium),
                   const SizedBox(height: 2),
                   Text(
-                    isBlocked ? 'Blocked' : 'Allowed',
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: isBlocked ? Colors.redAccent : Colors.white54,
+                    isBlocked
+                        ? AppLocalizations.of(context)!.disabled
+                        : AppLocalizations.of(context)!.enabled,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: isBlocked
+                          ? theme.colorScheme.error
+                          : theme.colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ],
@@ -420,16 +405,17 @@ class ContinueWatchingAppsPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(6),
                       child: Image.memory(
                         snapshot.data!,
-                        cacheWidth: (64 * MediaQuery.devicePixelRatioOf(context))
-                            .ceil()
-                            .clamp(1, 512),
+                        cacheWidth:
+                            (64 * MediaQuery.devicePixelRatioOf(context))
+                                .ceil()
+                                .clamp(1, 512),
                         width: 32,
                         height: 32,
                         fit: BoxFit.cover,
                       ),
                     );
                   }
-                  return const Icon(Icons.tv, size: 32);
+                  return Icon(Icons.tv, size: 32);
                 },
               ),
             );

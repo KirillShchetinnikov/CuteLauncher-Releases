@@ -125,6 +125,34 @@ final class AdbBridge {
         if (!component.matches("[a-zA-Z0-9_.]+/[a-zA-Z0-9_.]+")) throw new IllegalStateException("No home");
         return AdbLauncherPolicy.normalizeComponent(component);
     }
+    /** Recovery screen uses only the already-authorized local connection and existing HOME journal. */
+    static boolean restoreFromRecovery(Activity activity) {
+        synchronized (LOCK) {
+            try {
+                var saved = activity.getSharedPreferences("adb_connection", Activity.MODE_PRIVATE);
+                int port = saved.getInt("port", 5555);
+                if (saved.getBoolean("tls", false) || port < 1 || port > 65535) return false;
+                File privateKey = new File(activity.getNoBackupFilesDir(), "adb/private-key");
+                File publicKey = new File(activity.getNoBackupFilesDir(), "adb/public-key");
+                if (!privateKey.isFile() || !publicKey.isFile()) return false;
+                try (Dadb adb = Dadb.create("127.0.0.1", port, AdbKeyPair.read(privateKey, publicKey), 5000, 10000)) {
+                    Shell shell = new Shell() {
+                        public String execute(String command) throws Exception {
+                            var response = adb.shell(command);
+                            if (response.getExitCode() != 0) throw new IllegalStateException("Command rejected");
+                            return response.getOutput().trim();
+                        }
+                        public void close() { }
+                    };
+                    var plan = AdbLauncherControl.plan(activity, shell, "restore", null);
+                    if (!"ready".equals(plan.get("status"))) return false;
+                    return "success".equals(AdbLauncherControl.apply(activity, shell, "restore", null,
+                        (java.util.List<?>)plan.get("commands")));
+                }
+            } catch (Exception | LinkageError unavailable) { return false; }
+        }
+    }
+
     static String perform(Activity activity, Shell adb, String action) throws Exception {
         if (!shell(adb, "am get-current-user").equals("0")) return "denied";
         String own = activity.getPackageName() + "/com.leanbitlab.ltvL.MainActivity";

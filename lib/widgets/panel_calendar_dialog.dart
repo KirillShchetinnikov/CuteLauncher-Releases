@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import 'launcher_dialog.dart';
 import 'side_panel_dialog.dart';
+import 'menu_header_action.dart';
+import 'settings/settings_panel_style.dart';
+import 'settings/information_settings_page.dart';
+import 'settings/settings_panel.dart';
 
 /// A local month view. It does not read device calendars or request permission.
 class PanelCalendarDialog extends StatefulWidget {
@@ -18,8 +22,35 @@ class _PanelCalendarDialogState extends State<PanelCalendarDialog> {
   late DateTime _month = DateTime(_today.year, _today.month);
   void _move(int delta) =>
       setState(() => _month = DateTime(_month.year, _month.month + delta));
+  bool _settingsOpen = false;
+  final _settingsNode = FocusNode();
   @override
-  Widget build(BuildContext context) {
+  void dispose() {
+    _settingsNode.dispose();
+    super.dispose();
+  }
+
+  Future<void> _openSettings() async {
+    setState(() => _settingsOpen = true);
+    await showLauncherDialog<void>(
+      context: context,
+      styleDialog: false,
+      barrierColor: Colors.transparent,
+      builder: (_) =>
+          const SettingsPanel(initialRoute: InformationSettingsPage.routeName),
+    );
+    if (!mounted) return;
+    setState(() => _settingsOpen = false);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _settingsNode.requestFocus();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) =>
+      SettingsPanelStyle(builder: _buildCalendar);
+
+  Widget _buildCalendar(BuildContext context) {
     final l = AppLocalizations.of(context)!;
     final material = MaterialLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
@@ -113,37 +144,65 @@ class _PanelCalendarDialogState extends State<PanelCalendarDialog> {
           ),
           onPressed: () => _move(1),
         ),
-        LauncherDialogButton(
-          child: Text(l.close),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
+        if (widget.anchor == null)
+          LauncherDialogButton(
+            child: Text(l.close),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
       ],
     );
     if (widget.anchor == null) return dialog;
-    return Stack(
-      children: [
-        const Positioned.fill(child: LauncherPanelBackdrop()),
-        SidePanelDialog(
-          anchor: widget.anchor,
-          topInset: kToolbarHeight,
-          width: 440,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                DefaultTextStyle.merge(
-                  style: Theme.of(context).textTheme.titleLarge,
-                  child: dialog.title!,
-                ),
-                const SizedBox(height: 12),
-                dialog.content!,
-                const SizedBox(height: 8),
-                Wrap(alignment: WrapAlignment.end, children: dialog.actions!),
-              ],
+    return ExcludeFocus(
+      excluding: _settingsOpen,
+      child: Offstage(
+        offstage: _settingsOpen,
+        child: Stack(
+          children: [
+            const Positioned.fill(child: LauncherPanelBackdrop()),
+            Positioned.fill(
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () => Navigator.of(context).pop(),
+              ),
             ),
-          ),
+            SidePanelDialog(
+              anchor: widget.anchor,
+              topInset: kToolbarHeight,
+              width: 440,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: DefaultTextStyle.merge(
+                            style: Theme.of(context).textTheme.titleLarge,
+                            child: dialog.title!,
+                          ),
+                        ),
+                        MenuHeaderAction(
+                          focusNode: _settingsNode,
+                          tooltip: l.settings,
+                          icon: const Icon(Icons.settings_outlined),
+                          onPressed: _openSettings,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    dialog.content!,
+                    const SizedBox(height: 8),
+                    Wrap(
+                      alignment: WrapAlignment.end,
+                      children: dialog.actions!,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

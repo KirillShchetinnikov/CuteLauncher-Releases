@@ -35,7 +35,7 @@ CuteLauncher объединяет запуск приложений, полез�
 
 ## Скриншоты
 
-Примеры оформления в версии **1.0.24**, снятые на эмуляторах Android TV и Google TV (Android 16). Все снимки — из работающего приложения, в разрешении 3840 × 2160; нажмите на изображение, чтобы открыть оригинал. Показанные сторонние приложения устанавливаются отдельно.
+Примеры оформления, снятые на эмуляторах Android TV и Google TV (Android 16). Все снимки — из работающего приложения, в разрешении 3840 × 2160; нажмите на изображение, чтобы открыть оригинал. Показанные сторонние приложения устанавливаются отдельно.
 
 | Стекло · осенний пейзаж | Стандартный стиль · графитовый градиент |
 |---|---|
@@ -44,6 +44,12 @@ CuteLauncher объединяет запуск приложений, полез�
 | Мягкий стиль · весенний пейзаж | Контурный стиль · рисованный ночной пейзаж |
 |---|---|
 | [![Мягкий стиль · весенний пейзаж](docs/images/screenshots/07-soft-spring.webp)](docs/images/screenshots/07-soft-spring.webp) | [![Контурный стиль · рисованный ночной пейзаж](docs/images/screenshots/09-outline-night.webp)](docs/images/screenshots/09-outline-night.webp) |
+
+| Динамические цвета · сетка в шесть колонок | Всплывающая панель · таймер отключения |
+|---|---|
+| [![Динамические цвета · сетка в шесть колонок](docs/images/screenshots/13-dynamic-grid.webp)](docs/images/screenshots/13-dynamic-grid.webp) | [![Всплывающая панель · таймер отключения](docs/images/screenshots/14-floating-panel-timer.webp)](docs/images/screenshots/14-floating-panel-timer.webp) |
+
+Фон приложения на снимке всплывающей панели размыт для наглядности.
 
 <details>
 <summary>Ещё 8 снимков: возможности и настройки</summary>
@@ -63,6 +69,19 @@ CuteLauncher объединяет запуск приложений, полез�
 | Адаптивные обои | Размеры и подписи плиток |
 |---|---|
 | [![Адаптивные обои](docs/images/screenshots/11-adaptive-wallpaper.webp)](docs/images/screenshots/11-adaptive-wallpaper.webp) | [![Размеры и подписи плиток](docs/images/screenshots/12-tile-appearance.webp)](docs/images/screenshots/12-tile-appearance.webp) |
+
+</details>
+
+<details>
+<summary>Адаптивный пейзаж</summary>
+
+**Рисованный пейзаж**
+
+![Рисованный пейзаж](docs/images/landscapes/illustrated-ru.gif)
+
+**Реалистичный пейзаж**
+
+![Реалистичный пейзаж](docs/images/landscapes/realistic-ru.gif)
 
 </details>
 

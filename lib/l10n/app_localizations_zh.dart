@@ -3021,7 +3021,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get homeInherited => '传承价值';
 
   @override
-  String get homeOwnReset => '自定义值·使用全局';
+  String get homeOwnReset => '恢复通用设置';
 
   @override
   String get homeParameters => '参数';
@@ -3327,6 +3327,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get remoteMappingHoldHint => '长按650毫秒执行一次，不触发短按操作。如果只分配长按，短按不会执行任何操作。';
 
   @override
+  String get remotePanelDescription =>
+      '悬浮面板可在其他应用上方显示所需的小部件。要使用遥控器打开它，请将“悬浮面板”操作分配给您喜欢的按钮。';
+
+  @override
   String get remotePanel => '悬浮面板';
 
   @override
@@ -3345,7 +3349,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get panelClockStyle => '时钟外观';
 
   @override
-  String get clockPreset => '时钟样式';
+  String get clockPreset => '字体样式';
 
   @override
   String get clockCustom => '自定义';
@@ -3544,6 +3548,33 @@ class AppLocalizationsZh extends AppLocalizations {
   String get adaptiveLandscape => 'Adaptive landscape';
 
   @override
+  String get landscapeDemoSpring => 'Spring';
+
+  @override
+  String get landscapeDemoSummer => 'Summer';
+
+  @override
+  String get landscapeDemoAutumn => 'Autumn';
+
+  @override
+  String get landscapeDemoWinter => 'Winter';
+
+  @override
+  String get landscapeDemoClear => 'Clear';
+
+  @override
+  String get landscapeDemoCloudy => 'Cloudy';
+
+  @override
+  String get landscapeDemoFog => 'Fog';
+
+  @override
+  String get landscapeDemoStart => 'Demonstrate changes';
+
+  @override
+  String get landscapeDemoStop => '停止';
+
+  @override
   String get landscapeVariant => 'Landscape style';
 
   @override
@@ -3601,4 +3632,103 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get weatherMetNorwayCredit =>
       'Data: MET Norway, CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Forecast adapted from https://api.met.no/. No API key; days use the TV time zone, min/max cover available periods. Precipitation probability is unavailable.';
+
+  @override
+  String get informationGroup => '时钟、日期和天气';
+
+  @override
+  String get informationSettings => '区块设置';
+
+  @override
+  String get informationAppearance => '区块外观';
+
+  @override
+  String get informationSize => '区块大小';
+
+  @override
+  String get informationPosition => '时钟和文字的位置';
+
+  @override
+  String get informationClockLeft => '时钟在左，文字在右';
+
+  @override
+  String get informationClockRight => '文字在左，时钟在右';
+
+  @override
+  String get informationSpacing => '时钟与文字间距';
+
+  @override
+  String get informationBackground => '区块背景';
+
+  @override
+  String get homeResetTilesHint => '恢复此屏幕上所有磁贴和标签的通用值？';
+
+  @override
+  String get homeResetLayoutHint => '重置此分区的布局、恢复通用外观并清除内边距？应用及其顺序将保留。';
+
+  @override
+  String get networkSummary => '网络';
+
+  @override
+  String get networkConnected => '互联网可用';
+
+  @override
+  String get networkOffline => '无法访问互联网';
+
+  @override
+  String get networkDisconnected => '未连接';
+
+  @override
+  String get networkConnection => '连接';
+
+  @override
+  String get networkSignal => '信号';
+
+  @override
+  String get networkLinkSpeed => 'Wi-Fi 链路速度';
+
+  @override
+  String get networkTrafficRate => '设备流量 · 接收 / 发送';
+
+  @override
+  String get networkSystemSettings => '系统网络设置';
+
+  @override
+  String get networkUnavailable => '不可用';
+
+  @override
+  String get networkMobile => '移动网络';
+
+  @override
+  String get networkFrequency => '频率';
+
+  @override
+  String get networkMbps => 'Mbps';
+
+  @override
+  String get networkKbps => 'KB/秒';
+
+  @override
+  String get networkReadFailed => '无法读取网络状态';
+
+  @override
+  String get clockItalic => '斜体';
+
+  @override
+  String get panelWrapNavigation => '面板循环导航';
+
+  @override
+  String get panelWrapNavigationHelp => '在边缘按左右键可跳到另一端。长按方向键可在两侧连续移动。';
+
+  @override
+  String get networkReceive => '接收';
+
+  @override
+  String get networkSend => '发送';
+
+  @override
+  String get landscapeCelestialBodies => '太阳和月亮';
+
+  @override
+  String get landscapeStarRotation => '星空旋转';
 }

@@ -14,6 +14,7 @@ import 'focusable_settings_tile.dart';
 import 'settings_route.dart';
 import 'appearance_page.dart';
 import 'section_style_page.dart';
+import 'reset_style_tile.dart';
 
 class CategoryAppearancePage extends StatelessWidget {
   final int categoryId;
@@ -126,17 +127,11 @@ class CategoryAppearancePage extends StatelessWidget {
               ),
             ),
           page(l.tilesAndLabels, AppearancePage(categoryId: categoryId)),
-          page(l.homeSectionStyle, SectionStylePage(categoryId: categoryId)),
-          FocusableSettingsTile(
-            title: Text(l.homeResetLayout),
-            leading: const Icon(Icons.restore),
-            onPressed: () =>
-                service.resetCategoryLayout(categoryId, grid: mode == 'grid'),
-          ),
-          FocusableSettingsTile(
-            title: Text(l.homeResetSection),
-            leading: const Icon(Icons.restore),
-            onPressed: () => service.resetCategoryStyle(categoryId),
+          ...SectionStylePage.controls(context, categoryId: categoryId, includeReset: false),
+          ResetStyleTile(
+            title: l.homeResetLayout,
+            hint: l.homeResetLayoutHint,
+            onReset: () => service.resetCategoryLayout(categoryId, grid: mode == 'grid'),
           ),
         ],
       ),

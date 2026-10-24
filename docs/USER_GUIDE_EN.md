@@ -61,14 +61,21 @@ Watching in the same editor.
 Choose rows or grids, sorting, column and visible-row counts, scrolling, active
 category pinning, sizes, spacing, headings, backgrounds, and margins. Some
 appearance settings are shared, while others can be overridden per category.
-Restore an overridden setting to its shared value. CuteLauncher and system
-settings tiles can be hidden.
+A link icon marks shared values; changes to shared settings apply immediately,
+including to existing categories. Choosing a value that matches the shared one
+restores inheritance. In Tiles and labels, one Restore common settings button
+restores all settings on that screen. Titles, icons, padding and background are
+available directly in the category appearance editor. Reset category layout also
+restores its shared appearance and clears padding, keeping apps and their order.
+CuteLauncher and system settings tiles can be hidden.
 
 ## Apps
 
 Path: **Apps**, or the selected tile's actions.
 
-Lists include All apps, System apps, and Hidden apps. App details show its name,
+Lists include All apps, System apps, and Hidden apps. Hidden apps also includes
+CuteLauncher and Android settings when their tiles are hidden by the dedicated
+switches. Show restores the tile and turns off its hide switch. App details show its name,
 package, and version. Launch an available app, open Android app information,
 request uninstall where Android allows it, hide or restore it, add it to a
 category, and change its tile. Set a custom tile banner or restore the default.
@@ -106,14 +113,22 @@ Background sources:
 - A folder slideshow with subfolders, order, interval, and next-image controls.
 - Bing online wallpapers or an image URL with available update options.
 - Selected app colors: a soft background derived from the focused tile's banner or icon.
-- Adaptive landscape: an illustrated valley or realistic nature with four seasons.
+- Adaptive landscape: an illustrated valley or realistic nature with four seasons. Spring has fresh light greenery and a flowering meadow, plus blossoming trees in the illustrated valley; summer has deep greenery and warm golden grasses.
 
 After selecting this source, open **Home screen → Background → Source parameters**.
 Time of day, seasons, clouds, rain/snow, fog and weather animation have independent
 switches. Disabling time of day keeps daylight; disabling seasons keeps summer.
+The **Sun and moon** switch shows or hides both bodies together in the illustrated
+and realistic landscapes, including the preview. The sun moves across the sky
+and disappears completely behind the horizon; the moon appears at night.
+Stars are scattered irregularly across the sky, with occasional tailed meteors that move and fade away.
+The separate **Star rotation** switch enables slow rotation of the night sky,
+and is off by default. The preview always shows rotation according to its simulated time.
 Sun times come from the Night mode cache; without them, sunrise is at 06:00 and
-sunset at 18:00, with twilight extending 40 minutes before and after each.
-Landscape states crossfade. Seasons follow the month and hemisphere: automatic
+sunset at 18:00. The first visible solar pixels emerge above the mountains at local sunrise, and the last disappear at local sunset. Ambient lighting transitions from 40 minutes before sunrise to 40 minutes after it; evenings pass through sunset and a separate violet twilight before night, 80 minutes after sunset. Transitions shorten on days with little daylight.
+The **Demonstrate changes** button in landscape settings starts at the current time and previews a full day at variable speed: a steady hour passes in about a third of a second, while an hour within the glow takes four seconds. Fast time resumes as soon as the glow ends. Dawn and sunset slow down so the color changes remain visible. The glow spreads across the sky in soft waves from the sunrise or sunset point, strongest near the sun and much weaker on mountains and forest. It starts 10 minutes before sunrise or an hour before sunset and fades out an hour after sunrise or 10 minutes after sunset; the sun already emerges from behind the mountains red-orange and becomes lighter after sunrise. In the evening, it starts turning red 40 minutes before the local sunset and stays red as it disappears behind the mountains. Moderately dense rain falls down and slightly left, parallel to its streaks, and remains visible in both the regular weather effect and the preview. Four pairs follow: summer with clouds, autumn with rain, winter with snow, and spring with fog. Each season appears clear for 2 seconds, followed by its weather effect for 3 seconds. Seasonal images crossfade smoothly in 0.5 seconds. The preview ends automatically after one full run. You can also stop it by pressing **Stop**, leaving the screen, or moving the app to the background. The preview enables weather movement and star rotation even when the normal switches are off, without changing saved settings; sun and moon visibility follows their switch. During the preview, settings are completely hidden. At the top center of the screen, a progress bar without numbers shows the full run, followed by the current effect and simulated time, and a **Stop** button to the right of the caption. Stop or Back cancels the preview and restores the same settings page; Home cancels it and returns to the home screen.
+
+Sky colors and landscape lighting change gradually throughout sunrise and sunset. Seasons follow the month and hemisphere: automatic
 selection uses weather coordinates, then Night mode coordinates, then Northern.
 You can explicitly choose Northern or Southern Hemisphere.
 
@@ -141,27 +156,80 @@ source app and Android's Watch Next data.
 
 ## Top panel and widgets
 
+
 Path: **Top panel → Objects / Object order**.
 
 Enable, hide, and rearrange the clock, date, weather, network status, traffic,
 TV inputs, notifications, sleep timer, night mode, and launcher/Android settings
 buttons. Time and date have display and style settings; selecting the date opens
 a calendar. Network status shows the available connection type. Traffic shows
-usage for a day, week, or month.
+usage for a day, week, or month. The counter reads Android history from the start
+of the selected day, week or month,
+including usage before the widget was enabled. Android may update history with a delay.
+If data for the selected period is unavailable, the counter shows “—”. When firmware
+does not expose Ethernet usage through the normal Android API, the launcher reads
+system history using an already configured local ADB connection. Set up and verify
+that connection under Launcher and TV control → ADB connection. History refreshes
+at most once every five minutes; Android's hourly history buckets may appear later.
+If history cannot be read through either method, the counter shows “—”.
+Calendar, night mode, sleep timer, inputs, notifications and network menus inherit
+settings appearance and open below their buttons. Back or clicking outside closes
+the menu. The calendar gear opens the shared Clock, date and weather settings.
 
-**Top panel → Objects → Combine time, date and weather** groups enabled items
-into one block: a large clock beside two lines for date and weather. Hidden items
-stay hidden. The block occupies the first enabled information item's existing
-position; other buttons retain their order. Date/time formats and calendar
-access remain. Disabling grouping restores individual items in their previous
-order. Panel height stays unchanged.
+Selecting the network icon opens a compact menu below the button, using settings
+appearance. The gear at the top right opens Android network settings; Back or
+clicking outside closes the menu. It shows internet availability, connection
+ type, Wi-Fi name, signal, link speed, frequency, IP addresses and current device
+receive/send traffic. Wi-Fi link speed is the connection rate to the access point,
+not an internet speed test. Data unavailable from Android is marked explicitly;
+no additional location permission is requested. The summary refreshes every three
+seconds only while open and the app is active. It includes a system network
+settings button; the separate VPN icon opens VPN settings.
+
+In **Top panel → Objects**, the clock, date and weather share one section with
+three independent switches and a **Block settings** button. Block settings contain
+the grouping and calendar switches. The calendar is available in either mode:
+select the date or the combined block while the date is visible to open it.
+
+Without grouping, there are separate clock, date and weather settings. Grouping
+replaces these with **Block appearance** and **Weather settings**, plus a separate
+clock animation switch. Time and date formats are edited in block appearance.
+Block size (10–24), font, font style, weight, color and glow affect the entire
+block; color and glow also affect the weather icon. Place the clock to the left
+or right of the text and set their spacing (0–32). These two controls appear when
+the clock and at least one text item are enabled. The background can inherit the
+panel's background or have its own color, transparency and corner radius.
+
+**Font style** sits below the font selector in clock and block appearance. It
+offers only **Standard** and **Italic**. It changes only the slant, preserving
+family, size, weight, color, glow and background. **Font weight** is an inline
+arrow control offering only distinct weights for the selected font: Manrope
+200–800, monospace 100–700, Google Sans 400/500/700, other bundled families
+100–900, and system 400/700. Ranges use steps of 100. Out-of-range values
+display as the nearest supported weight. Separate clock and combined block
+appearance remain independent. Toggling digit animation preserves clock geometry.
+
+**Top panel → Appearance → Wrap panel navigation** is off by default. When enabled,
+pressing an arrow at an outermost available button moves focus to the opposite
+edge. Holding an arrow keeps moving across both sides without stopping at the
+boundary. Navigation follows physical button positions, skipping hidden or
+unavailable objects. This setting is shared by home and floating panels.
+
+In **Object order** for either panel, the combined block occupies one row and
+moves as a unit, including hidden items. Its initial position is the first
+information slot in the stored order. Disabling grouping restores individual
+positions until you edit the order. After moving the group, its members occupy
+adjacent slots at the new position. Hidden items stay hidden, missing weather
+data leaves no empty gap, and panel height stays unchanged. Grouping and block
+appearance are shared by both panels; visibility and calendar switches remain
+independent for each panel.
 
 Widgets open their own menus and settings. Availability depends on Android data:
 traffic needs usage access, and inputs need support for the relevant TV API.
 
 ## Weather
 
-Path: **Top panel → Objects → Weather settings**.
+Path: **Top panel → Objects → Block settings → Weather settings**.
 
 Sources include Breezy Weather, Open-Meteo, MET Norway, OpenWeather, and Yandex. Choose a city
 or coordinates, detect location with the required permission, refresh data, and
@@ -242,6 +310,8 @@ and standby requires a supported system action or configured ADB. Behavior
 depends on the TV. The app does not disconnect electrical power.
 
 ## Launcher and TV controls
+
+After three crashes within five minutes, CuteLauncher opens a recovery screen without loading the main interface. Settings are preserved. Use the remote to retry, open another TV app or Android settings, and choose a home screen. If local ADB was configured, the restore button returns the previous HOME after confirmation. Without ADB, enable a disabled stock launcher in Android app settings first.
 
 Path: **Launcher and TV controls**.
 

@@ -108,6 +108,7 @@ class _AppearancePageState extends State<AppearancePage> {
               labels: {1: '1:1', 4 / 3: '4:3', 16 / 9: '16:9'},
             ),
             _choice(context, service, l.tileCornerRadius, 'radius', [
+              null,
               0,
               8,
               16,
@@ -350,6 +351,12 @@ class _AppearancePageState extends State<AppearancePage> {
                 panel: true,
                 onChanged: (v) => _set(service, 'panelFont', v),
               ),
+              RoundedSwitchListTile(
+                value: service.appearance.panelWrapNavigation,
+                onChanged: (v) => service.set('panelWrapNavigation', v),
+                title: Text(l.panelWrapNavigation),
+              ),
+              SettingsHelp(text: l.panelWrapNavigationHelp),
               if (!widget.remotePanel)
                 RoundedSwitchListTile(
                   value: appearance.blurPanel,
@@ -361,7 +368,10 @@ class _AppearancePageState extends State<AppearancePage> {
                 SettingsHelp(text: l.blurPerformanceHint),
             ],
           ],
-          ResetStyleTile(onReset: () async {
+          ResetStyleTile(
+            title: categoryId == null ? null : l.homeOwnReset,
+            hint: categoryId == null ? null : l.homeResetTilesHint,
+            onReset: () async {
             if (widget.remotePanel) {
               await context.read<RemotePanelService>().resetAppearance();
               return;
@@ -369,7 +379,7 @@ class _AppearancePageState extends State<AppearancePage> {
             final keys = section == 'focus' ? ['focusEffect', 'focusStrength', 'focusScale', 'focusLift', 'focusShadow', 'focusBorderColor', 'focusBorderStyle', 'focusPulse', 'focusTransition', 'animateReordering']
                 : section == 'panel' ? ['panelColor', 'panelOpacity', 'panelTextBackground',
                     'panelTextBackgroundColor', 'panelTextBackgroundOpacity', 'panelTextColor',
-                    'panelTextSize', 'panelFont', 'blurPanel']
+                    'panelTextSize', 'panelFont', 'blurPanel', 'panelWrapNavigation']
                 : ['size', 'aspectRatio', 'radius', 'horizontalGap', 'verticalGap',
                     'iconScale', 'labels', 'labelPosition', 'labelSize', 'labelColor',
                     'backgroundColor', 'opacity', 'shadow', 'blurTiles'];
@@ -401,7 +411,6 @@ class _AppearancePageState extends State<AppearancePage> {
     final current =
         _appearance(service).values[key] ??
         {
-          'radius': 14,
           'shadow': 0,
           'opacity': 1,
           'horizontalGap': 16,
@@ -437,12 +446,12 @@ class _AppearancePageState extends State<AppearancePage> {
             height: 24,
             decoration: BoxDecoration(
               color: Color(value),
-              border: Border.all(color: Colors.grey),
+              border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
               borderRadius: BorderRadius.circular(4),
             ),
           )
         : Text(label(value));
-    if (!color && options.every((value) => value is num)) {
+    if (!color && options.every((value) => value == null || value is num)) {
       return _scoped(key, (applicable) => SettingsValueStepper(
         title: title,
         options: options,

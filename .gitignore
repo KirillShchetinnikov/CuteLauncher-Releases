@@ -147,4 +147,8 @@ CLAUDE.original.md
 !/scripts/publish-source.py
 !/test/scripts/test_publish_source.py
 !/scripts/check-docs.py
+!/scripts/record-landscapes.py
+!/scripts/export-video-cfr.py
+!/scripts/export-landscape-gif.py
 !/test/scripts/test_docs_languages.py
+!/scripts/trace-landscape-horizons.py

@@ -1,3 +1,6 @@
+import 'package:flauncher/adaptive_landscape.dart';
+import 'package:flauncher/providers/settings_service.dart';
+import 'package:provider/provider.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/widgets/focus_aware_app_bar.dart';
 import 'package:flauncher/widgets/notice_style.dart';
@@ -17,6 +20,29 @@ void main() {
     );
     await tester.pumpAndSettle();
   }
+
+  testWidgets('Home cancels the landscape preview before closing settings', (
+    tester,
+  ) async {
+    await pumpDesignFixture(tester, language: 'ru');
+    debugDisableShadows = true;
+    final settings = tester
+        .element(find.byType(FocusAwareAppBar))
+        .read<SettingsService>();
+    settings.landscapeDemo.value = LandscapeDemoFrame(
+      Duration.zero,
+      DateTime(2026, 10, 24),
+    );
+    await tester.pump();
+    await tester.binding.defaultBinaryMessenger.handlePlatformMessage(
+      'me.efesser.flauncher/event_home',
+      const StandardMethodCodec().encodeSuccessEnvelope(true),
+      (_) {},
+    );
+    expect(settings.landscapeDemo.value, isNull);
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+  });
 
   for (final language in ['ru', 'en']) {
     for (final onRight in [false, true]) {

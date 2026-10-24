@@ -7,45 +7,48 @@ class PanelClockStyle {
   final Map<String, dynamic> values;
   const PanelClockStyle([this.values = const {}]);
   static const fonts = {'system': 'Roboto', ...AppFonts.families};
-  static const presets = <String, Map<String, dynamic>>{
-    'default': {},
-    'minimal': {
-      'inheritBackground': false,
-      'font': 'sans-serif',
-      'weight': 300,
-      'background': false,
-      'size': 22,
-    },
-    'elegant': {
-      'inheritBackground': false,
-      'font': 'serif',
-      'weight': 400,
-      'color': 0xffffd54f,
-      'background': false,
-      'size': 24,
-    },
-    'digital': {
-      'inheritBackground': false,
-      'font': 'monospace',
-      'weight': 700,
-      'color': 0xff80efb0,
-      'background': true,
-      'backgroundColor': 0xff101820,
-      'opacity': 1.0,
-      'radius': 4.0,
-      'size': 26,
-    },
-    'neon': {
-      'inheritBackground': false,
-      'font': 'sans-serif-condensed',
-      'weight': 400,
-      'color': 0xffd7a9ff,
-      'background': false,
-      'glow': true,
-      'size': 26,
-    },
+  // Match the wght axes of the bundled variable fonts and the actual static faces.
+  static const _variableWeightRanges = <String, (int, int)>{
+    'Outfit': (100, 900),
+    'Onest': (100, 900),
+    'Manrope': (200, 800),
+    'PanelSans': (100, 900),
+    'PanelSerif': (100, 900),
+    'PanelMono': (100, 700),
+    'PanelCondensed': (100, 900),
   };
-  String get preset => values['preset'] as String? ?? 'default';
+  TextStyle _localizedBase(TextStyle inherited, Locale? locale) {
+    final style = inherited.copyWith(
+      fontFamily: fonts[values['font']] ?? inherited.fontFamily,
+    );
+    return locale == null ? style : AppFonts.localize(style, locale);
+  }
+
+  static List<int> _weights(String? family) {
+    final range = _variableWeightRanges[family];
+    if (range != null) {
+      return [for (var w = range.$1; w <= range.$2; w += 100) w];
+    }
+    // 600 and 700 select identical upright glyphs in the bundled family.
+    if (family == 'Google Sans') return const [400, 500, 700];
+    // System/fallback fonts guarantee normal and bold, without duplicate faces.
+    return const [400, 700];
+  }
+
+  List<int> availableWeights(TextStyle inherited, {Locale? locale}) =>
+      _weights(_localizedBase(inherited, locale).fontFamily);
+  String get preset => values['italic'] == true ? 'italic' : 'default';
+  static const fontStyles = <String, Map<String, dynamic>>{
+    'default': {'italic': false},
+    'italic': {'italic': true},
+  };
+  Map<String, dynamic> withFontStyle(String id) => {
+    ...values,
+    ...?fontStyles[id],
+    'preset': id,
+  };
+  bool get clockOnRight => values['clockOnRight'] == true;
+  double get spacing => (values['spacing'] as num?)?.toDouble() ?? 12;
   bool get inheritBackground => values['inheritBackground'] != false;
   bool get animate => values['animate'] != false;
   double size(double inherited) =>
@@ -65,39 +68,48 @@ class PanelClockStyle {
                 : inherited.withAlpha(255))
             .withValues(alpha: (values['opacity'] as num?)?.toDouble() ?? 1);
   TextStyle textStyle(TextStyle inherited, {Locale? locale}) {
+    final base = _localizedBase(inherited, locale);
+    final requested = values['weight'] as int? ?? 400;
+    final weight = _weights(
+      base.fontFamily,
+    ).reduce((a, b) => (b - requested).abs() <= (a - requested).abs() ? b : a);
     final color = values['color'] is int
         ? Color(values['color'])
         : inherited.color;
-    final style = inherited.copyWith(
+    return base.copyWith(
       fontSize: size(inherited.fontSize ?? 18),
-      fontFamily: fonts[values['font']] ?? inherited.fontFamily,
-      fontWeight: switch (values['weight']) {
-        300 => FontWeight.w300,
-        700 => FontWeight.w700,
-        _ => FontWeight.w400,
-      },
+      fontWeight: FontWeight.values[weight ~/ 100 - 1],
+      fontVariations: _variableWeightRanges.containsKey(base.fontFamily)
+          ? [FontVariation('wght', weight.toDouble())]
+          : const [],
+      fontStyle: values['italic'] == true ? FontStyle.italic : FontStyle.normal,
       color: color,
       shadows: values['glow'] == true
           ? [Shadow(color: color ?? Colors.white, blurRadius: 8)]
           : const [],
     );
-    return locale == null ? style : AppFonts.localize(style, locale);
   }
 
-  static Map<String, dynamic> validValues(dynamic input) {
+  static Map<String, dynamic> validValues(
+    dynamic input, {
+    bool combined = false,
+  }) {
     if (input is! Map) return {};
     final result = <String, dynamic>{};
     for (final entry in input.entries) {
       final key = entry.key, value = entry.value;
       if (key is! String) continue;
-      if (key == 'preset' && [...presets.keys, 'custom'].contains(value) ||
+      if (key == 'preset' && fontStyles.containsKey(value) ||
           key == 'font' && fonts.containsKey(value) ||
-          key == 'weight' && [300, 400, 700].contains(value) ||
+          key == 'weight' &&
+              [for (var w = 100; w <= 900; w += 100) w].contains(value) ||
           [
                 'background',
                 'inheritBackground',
                 'glow',
                 'animate',
+                'italic',
+                'clockOnRight',
               ].contains(key) &&
               value is bool) {
         result[key] = value;
@@ -109,7 +121,8 @@ class PanelClockStyle {
         result[key] = value;
       }
       final range = switch (key) {
-        'size' => (10, 40),
+        'size' => (10, combined ? 24 : 40),
+        'spacing' => (0, 32),
         'radius' => (0, 26),
         'opacity' => (0, 1),
         _ => null,

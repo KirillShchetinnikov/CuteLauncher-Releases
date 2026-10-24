@@ -1,5 +1,11 @@
+import 'package:flauncher/widgets/night_mode_menu.dart';
+import 'package:flauncher/widgets/sleep_timer_menu.dart';
+import 'package:flauncher/widgets/panel_calendar_dialog.dart';
+import 'package:flauncher/providers/night_mode_service.dart';
+import 'package:flauncher/providers/sleep_timer_service.dart';
+import 'package:flutter/services.dart';
+
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/providers/appearance_service.dart';
@@ -33,6 +39,9 @@ void main() {
     'application',
     'category',
     'watchNext',
+    'night',
+    'sleep',
+    'calendar',
   ]) {
     testWidgets('$panel inherits live settings style without fading content', (
       tester,
@@ -41,9 +50,28 @@ void main() {
       final prefs = await SharedPreferences.getInstance();
       final appearance = AppearanceService(prefs);
       final settings = SettingsService(prefs);
+      for (final channel in [
+        SleepTimerService.channel,
+        const MethodChannel('cutelauncher/night'),
+        const MethodChannel('cutelauncher/tcl_blue_light'),
+      ]) {
+        tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+          channel,
+          (_) async => {'permission': false, 'exactAllowed': true},
+        );
+        addTearDown(
+          () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+            channel,
+            null,
+          ),
+        );
+      }
+      final night = NightModeService(prefs);
+      final sleep = SleepTimerService();
       final inputs = MockTvInputsService();
       final notifications = MockNotificationsService();
       final apps = MockAppsService();
+  when(apps.isTileHidden(any)).thenReturn(false);
       final watchNext = MockWatchNextService();
       final application = fakeApp(
         packageName: 'sample.app',
@@ -77,6 +105,8 @@ void main() {
           providers: [
             ChangeNotifierProvider.value(value: appearance),
             ChangeNotifierProvider.value(value: settings),
+            ChangeNotifierProvider.value(value: night),
+            ChangeNotifierProvider.value(value: sleep),
             ChangeNotifierProvider<TvInputsService>.value(value: inputs),
             ChangeNotifierProvider<NotificationsService>.value(
               value: notifications,
@@ -89,6 +119,16 @@ void main() {
             supportedLocales: AppLocalizations.supportedLocales,
             home: switch (panel) {
               'settings' => const SettingsPanel(),
+              'night' => const NightModeMenu(
+                anchor: Rect.fromLTWH(100, 10, 40, 40),
+              ),
+              'sleep' => const SleepTimerMenu(
+                anchor: Rect.fromLTWH(100, 10, 40, 40),
+              ),
+              'calendar' => PanelCalendarDialog(
+                anchor: const Rect.fromLTWH(100, 10, 40, 40),
+                today: DateTime(2026, 10, 23),
+              ),
               'inputs' => const InputsPanel(),
               'application' => ApplicationInfoPanel(
                 category: null,
@@ -167,6 +207,9 @@ void main() {
         }
         expect(tester.takeException(), isNull);
       }
+      await tester.pumpWidget(const SizedBox.shrink());
+      night.dispose();
+      sleep.dispose();
     });
   }
 }

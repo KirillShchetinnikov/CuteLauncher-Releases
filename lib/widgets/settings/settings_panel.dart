@@ -1,3 +1,5 @@
+import '../landscape_demo_presentation.dart';
+import 'information_settings_page.dart';
 import 'panel_clock_style_page.dart';
 import 'remote_panel_page.dart';
 import '../../providers/remote_panel_service.dart';
@@ -113,6 +115,7 @@ class _SettingsPanelState extends State<SettingsPanel> {
       StatusBarPanelPage.routeName,
       RemotePanelPage.routeName,
       StatusBarObjectsPage.routeName,
+      InformationSettingsPage.routeName,
       InputsSettingsPage.routeName,
       PanelOrderPage.routeName,
       'panel_appearance',
@@ -144,14 +147,18 @@ class _SettingsPanelState extends State<SettingsPanel> {
     return SettingsPanelStyle(
       builder: (context) => SettingsMenuLayout(
         onRight: onRight,
-        child: _buildPanel(context, onRight),
+        child: LandscapeDemoPresentation(child: Builder(builder: (context) => _buildPanel(context, onRight))),
       ),
     );
   }
 
   Widget _buildPanel(BuildContext context, bool onRight) {
+    final demoActive = LandscapeDemoScope.activeOf(context);
     return NavigatorPopHandler(
-      onPopWithResult: (result) => _navigatorKey.currentState!.maybePop(),
+      enabled: !demoActive,
+      onPopWithResult: (result) {
+        if (!demoActive) _navigatorKey.currentState!.maybePop();
+      },
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: Stack(
@@ -319,6 +326,8 @@ class _SettingsPanelState extends State<SettingsPanel> {
                       );
                     case PanelClockStylePage.routeName:
                       return SettingsRoute(settings: settings, builder: (_) => const PanelClockStylePage());
+                    case InformationSettingsPage.routeName:
+                      return SettingsRoute(settings: settings, builder: (_) => const InformationSettingsPage());
                     case DateTimeFormatPage.routeName:
                       return SettingsRoute(
                         settings: settings,

@@ -60,7 +60,20 @@ import 'providers/remote_panel_service.dart';
 import 'widgets/remote_panel.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 
-Future<void> main() => _runLauncher();
+const _crashGuard = MethodChannel('cutelauncher/crash_guard');
+Future<void> _reportFatal() async {
+  try { await _crashGuard.invokeMethod<bool>('fatal'); } catch (_) { /* Native journal is best effort. */ }
+}
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  PlatformDispatcher.instance.onError = (error, stack) {
+    debugPrint('Unhandled launcher error: $error');
+    unawaited(_reportFatal());
+    return false;
+  };
+  try { await _runLauncher(); }
+  catch (error, stack) { await _reportFatal(); Error.throwWithStackTrace(error, stack); }
+}
 
 @pragma('vm:entry-point')
 Future<void> remotePanelMain() => _runLauncher(remotePanel: true);

@@ -117,6 +117,11 @@ public class NightOverlayService extends Service {
         });
         new MethodChannel(messenger, "cutelauncher/night").setMethodCallHandler((call, result) -> {
             try {
+                if (call.method.equals("solarCache")) {
+                    // Read only: capture must never configure filters or refresh the network cache.
+                    result.success(NightSolarTimes.list(NightSolarTimes.days(activity, load(activity))));
+                    return;
+                }
                 if (call.method.equals("pictureMode")) {
                     executor.execute(() -> {
                         Integer mode = TclPictureMode.read();

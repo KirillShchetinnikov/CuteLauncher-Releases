@@ -57,7 +57,10 @@ class RemotePanelService extends ChangeNotifier {
     return TileAppearance(values);
   }
   TileAppearance appearanceFor(TileAppearance home) => TileAppearance({
-    ...(inheritAppearance ? home : ownAppearance).values, 'blurPanel': false,
+    ...(inheritAppearance ? home : ownAppearance).values,
+    'panelCombinedInformation': home.combinedInformation,
+    'panelInformationStyle': home.informationStyle.values,
+    'blurPanel': false, 'panelWrapNavigation': home.panelWrapNavigation,
   });
   Future<void> setAppearance(String key, dynamic value) async {
     if (!appearanceKeys.contains(key)) return;

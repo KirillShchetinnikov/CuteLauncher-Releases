@@ -4,4 +4,13 @@
     <string name="notification_service_label">CuteLauncher Notification Service</string>
     <string name="accessibility_service_label">CuteLauncher</string>
 <string name="night_mode_title">Night mode</string><string name="night_mode_notice">Screen filter enabled; schedule applies</string><string name="night_mode_stop">Turn off</string>
+    <string name="recovery_checking">Checking launcher…</string>
+    <string name="recovery_title">Launcher recovery</string>
+    <string name="recovery_description">CuteLauncher stopped repeatedly. Settings are preserved. You can retry, open another app or choose a different home screen. If the stock launcher is disabled, enable it in Android app settings first.</string>
+    <string name="recovery_retry">Retry CuteLauncher</string>
+    <string name="recovery_settings">Android settings</string>
+    <string name="recovery_home">Choose home screen</string>
+    <string name="recovery_unavailable">This action is unavailable on this TV.</string>
+    <string name="recovery_restore">Restore previous home screen</string>
+    <string name="recovery_restore_confirm">Restore the previous home screen using the existing local ADB connection?</string>
 </resources>

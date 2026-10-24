@@ -3,6 +3,7 @@ import 'package:flauncher/providers/network_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:fake_async/fake_async.dart';
+import 'package:flutter/widgets.dart';
 
 import '../mocks.mocks.dart';
 
@@ -25,6 +26,27 @@ void main() {
   tearDown(() {
     networkService.dispose();
   });
+
+  test(
+    'daily cache is unknown initially and clears stale bytes after errors',
+    () async {
+      expect(networkService.dailyDataUsage, -1);
+      when(mockChannel.checkUsageStatsPermission())
+          .thenAnswer((_) async => true);
+      when(mockChannel.getDailyDataUsage()).thenAnswer((_) async => 900);
+      await networkService.refreshPermissionAndUsage();
+      expect(networkService.dailyDataUsage, 900);
+      when(mockChannel.getDailyDataUsage()).thenAnswer((_) async => -2);
+      await networkService.refreshPermissionAndUsage();
+      expect(networkService.dailyDataUsage, -2);
+      when(mockChannel.getDailyDataUsage()).thenAnswer((_) async => 900);
+      await networkService.refreshPermissionAndUsage();
+      when(mockChannel.getDailyDataUsage())
+          .thenAnswer((_) async => throw StateError('unavailable'));
+      await networkService.refreshPermissionAndUsage();
+      expect(networkService.dailyDataUsage, -1);
+    },
+  );
 
   test('initial load waits for network and initial permitted traffic value', () async {
     final channel = MockFLauncherChannel();
@@ -105,6 +127,61 @@ void main() {
   });
 
   group('refreshPermissionAndUsage', () {
+    test('pause stops polling and resume refreshes and restarts it', () {
+      fakeAsync((time) {
+        when(mockChannel.checkUsageStatsPermission()).thenAnswer((_) async => true);
+        when(mockChannel.getDailyDataUsage()).thenAnswer((_) async => 100);
+        networkService.refreshPermissionAndUsage();
+        time.flushMicrotasks();
+        clearInteractions(mockChannel);
+        networkService.didChangeAppLifecycleState(AppLifecycleState.paused);
+        time.elapse(const Duration(minutes: 10));
+        verifyNever(mockChannel.getDailyDataUsage());
+        networkService.didChangeAppLifecycleState(AppLifecycleState.resumed);
+        time.flushMicrotasks();
+        verify(mockChannel.getDailyDataUsage()).called(1);
+        time.elapse(const Duration(minutes: 5));
+        verify(mockChannel.getDailyDataUsage()).called(1);
+      });
+    });
+
+    test('late permission and usage replies cannot restart background polling', () {
+      fakeAsync((time) {
+        final permission = Completer<bool>();
+        when(mockChannel.checkUsageStatsPermission()).thenAnswer((_) => permission.future);
+        networkService.refreshPermissionAndUsage();
+        networkService.didChangeAppLifecycleState(AppLifecycleState.paused);
+        permission.complete(true);
+        time.flushMicrotasks();
+        verifyNever(mockChannel.getDailyDataUsage());
+        final usage = Completer<int>();
+        when(mockChannel.checkUsageStatsPermission()).thenAnswer((_) async => true);
+        when(mockChannel.getDailyDataUsage()).thenAnswer((_) => usage.future);
+        networkService.didChangeAppLifecycleState(AppLifecycleState.resumed);
+        time.flushMicrotasks();
+        verify(mockChannel.getDailyDataUsage()).called(1);
+        networkService.didChangeAppLifecycleState(AppLifecycleState.hidden);
+        usage.complete(999);
+        time.flushMicrotasks();
+        time.elapse(const Duration(minutes: 10));
+        verifyNever(mockChannel.getDailyDataUsage());
+        expect(networkService.dailyDataUsage, isNot(999));
+      });
+    });
+
+    test('refresh future waits for usage update', () async {
+      final usage = Completer<int>();
+      when(mockChannel.checkUsageStatsPermission()).thenAnswer((_) async => true);
+      when(mockChannel.getDailyDataUsage()).thenAnswer((_) => usage.future);
+      var completed = false;
+      final refresh = networkService.refreshPermissionAndUsage().then((_) => completed = true);
+      await Future<void>.delayed(Duration.zero);
+      expect(completed, isFalse);
+      usage.complete(777);
+      await refresh;
+      expect(networkService.dailyDataUsage, 777);
+    });
+
     test('when permission granted, fetches usage and notifies listeners periodically', () {
       fakeAsync((async) {
         when(mockChannel.checkUsageStatsPermission()).thenAnswer((_) async => true);

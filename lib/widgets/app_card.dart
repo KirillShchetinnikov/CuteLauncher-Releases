@@ -110,7 +110,6 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
     _appsService = Provider.of<AppsService>(context, listen: false);
     _appsService!.addListener(_onAppsServiceChanged);
 
-    FocusManager.instance.addHighlightModeListener(_focusHighlightModeChanged);
     _appImageLoadFuture = _loadAppBannerOrIcon(_appsService!);
 
     // Check if we need to restore focus/reorder mode after a move
@@ -190,7 +189,6 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
     if (_appsService != null) {
       _appsService!.removeListener(_onAppsServiceChanged);
     }
-    FocusManager.instance.removeHighlightModeListener(_focusHighlightModeChanged);
     _bumpController.dispose();
     _focusNode.dispose();
 
@@ -518,15 +516,11 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
     ));
   }
 
-  void _focusHighlightModeChanged(FocusHighlightMode mode)
-  {
-    setState(() { });
-  }
-
   bool _shouldHighlight(BuildContext context)
   {
+    // TV startup assigns focus before the remote sends its first key event.
     return context.read<AppearanceService?>()?.focusPreviewTile == this ||
-      (FocusManager.instance.highlightMode == FocusHighlightMode.traditional && Focus.of(context).hasFocus);
+      Focus.of(context).hasFocus;
   }
 
   Matrix4 _scaleTransform(BuildContext context, String theme, double maxWidth) {

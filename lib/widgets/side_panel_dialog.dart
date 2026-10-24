@@ -1,3 +1,4 @@
+
 import 'dart:math' as math;
 
 import 'package:flauncher/theme/launcher_style.dart';
@@ -34,6 +35,21 @@ class SidePanelDialog extends StatelessWidget {
         context.watch<SettingsService?>()?.settingsMenuOnRight ??
         false;
 
+    final surface = Theme.of(context).colorScheme.surface;
+    final decoration = skin.standard
+        ? BoxDecoration(
+            borderRadius: borderRadius,
+            border: Border.all(
+              color: Colors.white.withValues(alpha: .10),
+              width: 1,
+            ),
+          )
+        : skin.surface(
+            surface,
+            Theme.of(context).colorScheme.onSurface,
+            cornerRadius: style.panelRadius,
+            borderWidth: 1,
+          );
     final panel = Align(
       heightFactor: anchor == null ? null : 1,
       alignment: onRight ? Alignment.centerRight : Alignment.centerLeft,
@@ -45,22 +61,14 @@ class SidePanelDialog extends StatelessWidget {
           anchor == null ? style.panelMargin : 0,
         ),
         child: Material(
-          color: Theme.of(context).colorScheme.surface,
+          color: surface,
           elevation: skin.style == InterfaceStyle.outline ? 0 : 16,
           surfaceTintColor: Colors.transparent,
           shadowColor: Colors.black54,
           borderRadius: borderRadius,
           child: Container(
             width: width,
-            decoration: skin.standard ? BoxDecoration(
-              borderRadius: borderRadius,
-              border: Border.all(
-                color: Colors.white.withValues(alpha: 0.10),
-                width: 1,
-              ),
-            ) : skin.surface(Theme.of(context).colorScheme.surface,
-              Theme.of(context).colorScheme.onSurface,
-              cornerRadius: style.panelRadius, borderWidth: 1),
+            decoration: decoration,
             padding: EdgeInsets.all(style.panelPadding),
             child: Actions(
               actions: {BackIntent: BackAction(context)},

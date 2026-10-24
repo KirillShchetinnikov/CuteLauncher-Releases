@@ -3160,7 +3160,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get homeInherited => 'विरासत में मिला मूल्य';
 
   @override
-  String get homeOwnReset => 'कस्टम मान · वैश्विक उपयोग करें';
+  String get homeOwnReset => 'साझा सेटिंग बहाल करें';
 
   @override
   String get homeParameters => 'पैरामीटर्स';
@@ -3493,6 +3493,10 @@ class AppLocalizationsHi extends AppLocalizations {
       '650 मिलीसेकंड दबाएँ: केवल एक बार कार्य होगा, छोटा दबाव नहीं। केवल होल्ड तय होने पर छोटा दबाव कुछ नहीं करता।';
 
   @override
+  String get remotePanelDescription =>
+      'फ़्लोटिंग पैनल दूसरे ऐप्स के ऊपर आपके विजेट दिखाता है। इसे रिमोट से खोलने के लिए अपनी पसंद के किसी बटन पर फ़्लोटिंग पैनल कार्रवाई असाइन करें।';
+
+  @override
   String get remotePanel => 'फ़्लोटिंग पैनल';
 
   @override
@@ -3512,7 +3516,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get panelClockStyle => 'घड़ी का रूप';
 
   @override
-  String get clockPreset => 'घड़ी की शैली';
+  String get clockPreset => 'फ़ॉन्ट शैली';
 
   @override
   String get clockCustom => 'कस्टम';
@@ -3713,6 +3717,33 @@ class AppLocalizationsHi extends AppLocalizations {
   String get adaptiveLandscape => 'Adaptive landscape';
 
   @override
+  String get landscapeDemoSpring => 'Spring';
+
+  @override
+  String get landscapeDemoSummer => 'Summer';
+
+  @override
+  String get landscapeDemoAutumn => 'Autumn';
+
+  @override
+  String get landscapeDemoWinter => 'Winter';
+
+  @override
+  String get landscapeDemoClear => 'Clear';
+
+  @override
+  String get landscapeDemoCloudy => 'Cloudy';
+
+  @override
+  String get landscapeDemoFog => 'Fog';
+
+  @override
+  String get landscapeDemoStart => 'Demonstrate changes';
+
+  @override
+  String get landscapeDemoStop => 'रोकें';
+
+  @override
   String get landscapeVariant => 'Landscape style';
 
   @override
@@ -3770,4 +3801,106 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get weatherMetNorwayCredit =>
       'Data: MET Norway, CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Forecast adapted from https://api.met.no/. No API key; days use the TV time zone, min/max cover available periods. Precipitation probability is unavailable.';
+
+  @override
+  String get informationGroup => 'घड़ी, तारीख और मौसम';
+
+  @override
+  String get informationSettings => 'ब्लॉक सेटिंग';
+
+  @override
+  String get informationAppearance => 'ब्लॉक का स्वरूप';
+
+  @override
+  String get informationSize => 'ब्लॉक का आकार';
+
+  @override
+  String get informationPosition => 'घड़ी और पाठ की स्थिति';
+
+  @override
+  String get informationClockLeft => 'घड़ी बाईं ओर, पाठ दाईं ओर';
+
+  @override
+  String get informationClockRight => 'पाठ बाईं ओर, घड़ी दाईं ओर';
+
+  @override
+  String get informationSpacing => 'घड़ी और पाठ के बीच दूरी';
+
+  @override
+  String get informationBackground => 'ब्लॉक की पृष्ठभूमि';
+
+  @override
+  String get homeResetTilesHint =>
+      'इस स्क्रीन की सभी टाइल और लेबल के साझा मान बहाल करें?';
+
+  @override
+  String get homeResetLayoutHint =>
+      'इस अनुभाग का लेआउट रीसेट करें, साझा रूप बहाल करें और अंदर की जगह शून्य करें? ऐप और उनका क्रम बना रहेगा।';
+
+  @override
+  String get networkSummary => 'नेटवर्क';
+
+  @override
+  String get networkConnected => 'इंटरनेट उपलब्ध है';
+
+  @override
+  String get networkOffline => 'इंटरनेट उपलब्ध नहीं है';
+
+  @override
+  String get networkDisconnected => 'कनेक्ट नहीं है';
+
+  @override
+  String get networkConnection => 'कनेक्शन';
+
+  @override
+  String get networkSignal => 'सिग्नल';
+
+  @override
+  String get networkLinkSpeed => 'Wi-Fi लिंक की गति';
+
+  @override
+  String get networkTrafficRate => 'डिवाइस ट्रैफ़िक · प्राप्त / भेजा गया';
+
+  @override
+  String get networkSystemSettings => 'सिस्टम नेटवर्क सेटिंग';
+
+  @override
+  String get networkUnavailable => 'उपलब्ध नहीं';
+
+  @override
+  String get networkMobile => 'मोबाइल नेटवर्क';
+
+  @override
+  String get networkFrequency => 'फ़्रीक्वेंसी';
+
+  @override
+  String get networkMbps => 'Mbps';
+
+  @override
+  String get networkKbps => 'KB/सेकंड';
+
+  @override
+  String get networkReadFailed => 'नेटवर्क की स्थिति नहीं पढ़ी जा सकी';
+
+  @override
+  String get clockItalic => 'तिरछा';
+
+  @override
+  String get panelWrapNavigation => 'पैनल में चक्रीय नेविगेशन';
+
+  @override
+  String get panelWrapNavigationHelp =>
+      'किनारे पर तीर दबाने से दूसरी ओर जाएँ। दोनों ओर लगातार जाने के लिए तीर दबाए रखें।';
+
+  @override
+  String get networkReceive => 'प्राप्त';
+
+  @override
+  String get networkSend => 'भेजा गया';
+
+  @override
+  String get landscapeCelestialBodies => 'सूर्य और चंद्रमा';
+
+  @override
+  String get landscapeStarRotation => 'तारों का घूर्णन';
 }

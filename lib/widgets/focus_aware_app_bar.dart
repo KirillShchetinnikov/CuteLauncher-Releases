@@ -1,9 +1,11 @@
+import '../panel_layout.dart';
 import 'panel_calendar_dialog.dart';
 import 'panel_clock.dart';
 import 'combined_information.dart';
 import '../providers/remote_panel_service.dart';
 import 'package:flauncher/widgets/launcher_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/appearance_service.dart';
@@ -63,10 +65,12 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
   void focusFirst() {
     final nodes = {'settings': _settingsFocusNode, 'systemSettings': _systemSettingsFocusNode,
       'inputs': _inputsFocusNode, 'notifications': _notificationsFocusNode,
-      'sleepTimer': _sleepTimerFocusNode, 'nightMode': _nightModeFocusNode, 'date': _dateFocusNode};
+      'sleepTimer': _sleepTimerFocusNode, 'nightMode': _nightModeFocusNode, 'date': _dateFocusNode, PanelLayout.informationGroup: _dateFocusNode};
     final layout = widget.remotePanel?.layout ??
         (context.read<AppearanceService?>()?.appearance ?? const TileAppearance()).panelLayout;
-    for (final id in [...layout.left, ...layout.right]) {
+    final combined = (context.read<AppearanceService?>()?.appearance ?? const TileAppearance()).combinedInformation;
+    final (left, right) = layout.displayOrders(combined);
+    for (final id in [...left, ...right]) {
       final node = nodes[id];
       if (node?.context != null) { node!.requestFocus(); return; }
     }
@@ -117,6 +121,31 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
   }
 
   final _objectKeys = <String, GlobalKey>{};
+  KeyEventResult _cyclePanelFocus(FocusNode panel, KeyEvent event, bool enabled) {
+    if (!enabled || _settingsOpen ||
+        (event is! KeyDownEvent && event is! KeyRepeatEvent)) {
+      return KeyEventResult.ignored;
+    }
+    final delta = event.logicalKey == LogicalKeyboardKey.arrowLeft ? -1
+        : event.logicalKey == LogicalKeyboardKey.arrowRight ? 1 : 0;
+    if (delta == 0) return KeyEventResult.ignored;
+    final nodes = panel.traversalDescendants.where((node) {
+      final context = node.context;
+      final box = context?.findRenderObject();
+      return context != null && node.canRequestFocus && !node.skipTraversal &&
+          context.findAncestorWidgetOfExactType<TopPanelItem>() != null &&
+          box is RenderBox && box.attached && box.hasSize;
+    }).toList();
+    double x(FocusNode node) {
+      final box = node.context!.findRenderObject()! as RenderBox;
+      return box.localToGlobal(box.size.center(Offset.zero)).dx;
+    }
+    nodes.sort((a, b) => x(a).compareTo(x(b)));
+    final index = nodes.indexWhere((node) => node.hasFocus);
+    if (index < 0 || nodes.isEmpty) return KeyEventResult.ignored;
+    nodes[(index + delta) % nodes.length].requestFocus();
+    return KeyEventResult.handled;
+  }
   @override
   void dispose() {
     for (final node in [
@@ -155,6 +184,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
         highlightRect: anchor,
         barrierColor: Colors.transparent,
         useSafeArea: false,
+        styleDialog: false,
         builder: (_) => PanelCalendarDialog(anchor: anchor),
       );
     } finally {
@@ -309,7 +339,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
           ),
         ),
       if ((widget.remotePanel?.visible('network') ?? settings.showNetworkIndicatorInStatusBar))
-        'network': const NetworkWidget(),
+        'network': NetworkWidget(onMenuChanged: (open) => _setOpenWidget(open ? 'network' : null)),
       if ((widget.remotePanel?.visible('traffic') ?? settings.showDataWidgetInStatusBar) &&
           context.watch<NetworkService>().hasUsageStatsPermission)
         'traffic': const TopPanelItem(child: DailyDataUsageWidget()),
@@ -340,7 +370,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
           .where((id) => const ['time', 'date', 'weather'].contains(id) && objects.containsKey(id)).toList();
       if (ids.isNotEmpty) {
         final combined = CombinedInformation(
-          appearance: TileAppearance({...appearance.values, 'panelClockStyle': homeAppearance.clockStyle.values}),
+          appearance: appearance,
           showTime: objects.containsKey('time'), showDate: objects.containsKey('date'),
           showWeather: objects.containsKey('weather'), weather: weather.weatherData,
           showWarnings: settings.showWeatherWarnings && !weather.stale,
@@ -350,12 +380,13 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
           onCalendar: (widget.remotePanel?.dateCalendar ?? appearance.dateCalendar) ? _openCalendar : null,
         );
         for (final id in ids) { objects.remove(id); }
-        objects[ids.first] = combined;
+        objects[PanelLayout.informationGroup] = combined;
       }
     }
     Widget group(String key) {
       final layout = widget.remotePanel?.layout ?? appearance.panelLayout;
-      final order = (key == 'panelButtonsOrder' ? layout.left : layout.right)
+      final (left, right) = layout.displayOrders(appearance.combinedInformation);
+      final order = (key == 'panelButtonsOrder' ? left : right)
           .where(objects.containsKey)
           .toList();
       return Row(
@@ -403,6 +434,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
     ));
     return Focus(
       canRequestFocus: false,
+      onKeyEvent: (node, event) => _cyclePanelFocus(node, event, appearance.panelWrapNavigation),
       onFocusChange: (value) => setState(() => focused = value),
       child: AnimatedContainer(
         key: const Key('top_panel_visibility'),

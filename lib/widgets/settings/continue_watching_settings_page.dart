@@ -111,8 +111,8 @@ class _ContinueWatchingSettingsPageState
                   : localizations.permissionRequired,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: watchNextService.hasPermission
-                    ? Colors.green
-                    : Colors.orange,
+                    ? Theme.of(context).colorScheme.primary
+                    : Theme.of(context).colorScheme.tertiary,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -149,7 +149,9 @@ class _ContinueWatchingSettingsPageState
                     ? localizations.blockedCount(blockedCount)
                     : localizations.manage,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: blockedCount > 0 ? Colors.orange : Colors.grey,
+                  color: blockedCount > 0
+                      ? Theme.of(context).colorScheme.tertiary
+                      : Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
               onPressed: () =>
@@ -216,16 +218,19 @@ class _ContinueWatchingSettingsPageState
             // Hidden individual programs
             if (hiddenProgramsCount > 0)
               FocusableSettingsTile(
-                leading: const Icon(Icons.restore, color: Colors.orangeAccent),
+                leading: Icon(
+                  Icons.restore,
+                  color: Theme.of(context).colorScheme.tertiary,
+                ),
                 title: Text(
                   AppLocalizations.of(context)!.restoreHiddenPrograms,
                   style: Theme.of(context).textTheme.bodyMedium
-                      ?.copyWith(color: Colors.orangeAccent),
+                      ?.copyWith(color: Theme.of(context).colorScheme.tertiary),
                 ),
                 trailing: Text(
                   localizations.hiddenCount(hiddenProgramsCount),
                   style: Theme.of(context).textTheme.bodySmall
-                      ?.copyWith(color: Colors.orangeAccent),
+                      ?.copyWith(color: Theme.of(context).colorScheme.tertiary),
                 ),
                 onPressed: () async {
                   await settingsService.clearHiddenWatchNextPrograms();
@@ -263,23 +268,23 @@ class _ContinueWatchingSettingsPageState
           children: [
             Text(
               AppLocalizations.of(context)!.watchNextPermissionGuide,
-              style: const TextStyle(fontSize: 13, height: 1.4),
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 12),
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.black45,
+                color: Theme.of(context).colorScheme.onSurface
+                    .withValues(alpha: .08),
                 borderRadius: BorderRadius.circular(6),
-                border: Border.all(color: Colors.white24),
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.outlineVariant,
+                ),
               ),
               child: SelectableText(
                 'adb shell pm grant $packageName com.android.providers.tv.permission.READ_WRITE_WATCH_NEXT_PROGRAMS',
-                style: const TextStyle(
-                  fontFamily: 'monospace',
-                  fontSize: 11,
-                  color: Colors.amberAccent,
-                ),
+                style: Theme.of(context).textTheme.bodySmall
+                    ?.copyWith(fontFamily: 'monospace'),
               ),
             ),
           ],

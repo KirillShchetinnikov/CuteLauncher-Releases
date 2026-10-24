@@ -36,20 +36,40 @@ class GradientPanelPage extends StatelessWidget {
       AppLocalizations.of(context)!.gradient,
       style: Theme.of(context).textTheme.titleLarge,
     ),
-    footer: ResetStyleTile(onReset: () => context.read<WallpaperService>().setGradient(FLauncherGradients.pitchBlack)),
-    child: GridView.count(
-      crossAxisCount: 2,
-      childAspectRatio: 4 / 3,
-      mainAxisSpacing: 8,
-      crossAxisSpacing: 8,
-      children: FLauncherGradients.all
-          .map(
-            (gradient) => EnsureVisible(
-              alignment: 0.5,
-              child: _gradientCard(context, gradient),
-            ),
-          )
-          .toList(),
+    footer: ResetStyleTile(
+      onReset: () => context.read<WallpaperService>().setGradient(
+        FLauncherGradients.pitchBlack,
+      ),
+    ),
+    child: LayoutBuilder(
+      builder: (context, constraints) {
+        final textStyle = Theme.of(context).textTheme.bodySmall!;
+        final cardWidth = (constraints.maxWidth - 8) / 2;
+        var labelHeight = 0.0;
+        for (final gradient in FLauncherGradients.all) {
+          final painter = TextPainter(
+            text: TextSpan(text: gradient.name, style: textStyle),
+            textDirection: Directionality.of(context),
+            textScaler: MediaQuery.textScalerOf(context),
+          )..layout(maxWidth: cardWidth - 8);
+          if (painter.height > labelHeight) labelHeight = painter.height;
+          painter.dispose();
+        }
+        return GridView.count(
+          crossAxisCount: 2,
+          childAspectRatio: cardWidth / (cardWidth * .75 + labelHeight),
+          mainAxisSpacing: 8,
+          crossAxisSpacing: 8,
+          children: FLauncherGradients.all
+              .map(
+                (gradient) => EnsureVisible(
+                  alignment: 0.5,
+                  child: _gradientCard(context, gradient),
+                ),
+              )
+              .toList(),
+        );
+      },
     ),
   );
 
@@ -85,9 +105,9 @@ class GradientPanelPage extends StatelessWidget {
                   child: DefaultTextStyle(
                     style: Theme.of(context).textTheme.bodySmall!.copyWith(
                           decoration: TextDecoration.underline,
-                          color: Focus.of(context).hasFocus ? Colors.white : null,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
-                    child: Text(fLauncherGradient.name, overflow: TextOverflow.ellipsis),
+                    child: Text(fLauncherGradient.name),
                   ),
                 ),
               ],

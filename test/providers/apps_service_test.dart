@@ -90,6 +90,19 @@ void main() {
       expect(packages(), contains('self'));
       await settings.setHideLauncherTile(true);
       expect(packages(), isNot(contains('self')));
+      final self = service.applications.firstWhere((app) => app.packageName == 'self');
+      expect(self.hidden, false);
+      expect(service.isTileHidden(self), true);
+      await service.showApplication(self);
+      expect(settings.hideLauncherTile, false);
+      expect(service.isTileHidden(self), false);
+      expect(packages(), contains('self'));
+      await service.hideApplication(self);
+      await settings.setHideLauncherTile(true);
+      await service.showApplication(self);
+      expect(self.hidden, false);
+      expect(settings.hideLauncherTile, false);
+
       await settings.setHideLauncherTile(false);
       expect(packages(), contains('self'));
     } finally { service.dispose(); settings.dispose(); await db.close(); }

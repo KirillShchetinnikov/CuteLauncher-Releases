@@ -76,6 +76,7 @@ class NetworkService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
   StreamSubscription<dynamic>? _networkSubscription;
   int                 _callCount = 0;
   int                 _usageCallCount = 0;
+  bool                _foreground = true;
   /// Initial network, usage permission and (when allowed) traffic snapshot.
   late final Future<void> initialLoad;
 
@@ -85,10 +86,12 @@ class NetworkService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
         _cellularNetworkType = CellularNetworkType.Unknown,
         _networkType = NetworkType.Unknown,
         _wirelessNetworkSignalLevel = 0,
-        _dailyDataUsage = 0,
+        _dailyDataUsage = -1,
         _hasUsageStatsPermission = false,
         _vpnActive = false
   {
+    final lifecycle = WidgetsBinding.instance.lifecycleState;
+    _foreground = lifecycle == null || lifecycle == AppLifecycleState.resumed;
     _networkSubscription = _channel.addNetworkChangedListener(_onNetworkChanged);
 
     final networkLoad = _channel
@@ -108,13 +111,19 @@ class NetworkService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
+    _foreground = state == AppLifecycleState.resumed;
+    if (_foreground) {
       refreshPermissionAndUsage();
+    } else {
+      ++_callCount;
+      ++_usageCallCount;
+      _usageTimer?.cancel();
+      _usageTimer = null;
     }
   }
 
   Future<void> _checkPermissionAndStartPolling() async {
-    if (isDisposed) return;
+    if (isDisposed || !_foreground) return;
     final localCallCount = ++_callCount;
     bool allowed;
     try {
@@ -123,12 +132,12 @@ class NetworkService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
       log("Error checking usage permission: $e");
       return;
     }
-    if (isDisposed || localCallCount != _callCount) return;
+    if (isDisposed || !_foreground || localCallCount != _callCount) return;
 
     _hasUsageStatsPermission = allowed;
     if (_hasUsageStatsPermission) {
       await _fetchUsage();
-      if (isDisposed || localCallCount != _callCount) return;
+      if (isDisposed || !_foreground || localCallCount != _callCount) return;
       if (_usageTimer == null || !_usageTimer!.isActive) {
         _usageTimer = Timer.periodic(const Duration(minutes: 5), (_) => _fetchUsage());
       }
@@ -144,9 +153,9 @@ class NetworkService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
   }
 
   // Call this when app resumes
-  Future<void> refreshPermissionAndUsage() async {
-    _checkPermissionAndStartPolling();
-  }
+  Future<void> refreshPermissionAndUsage() => _checkPermissionAndStartPolling();
+
+  Future<Map<String, dynamic>> getSummary() => _channel.getActiveNetworkInformation();
 
   Future<void> openWifiSettings() async {
     await _channel.openWifiSettings();
@@ -157,19 +166,18 @@ class NetworkService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
   }
 
   Future<void> _fetchUsage() async {
-     if (isDisposed) return;
-     final localCallCount = ++_usageCallCount;
-     int usage;
-     try { usage = await _channel.getDailyDataUsage(); } catch (e) {
-       log("Error fetching usage: $e");
-       return;
-     }
-     if (isDisposed || localCallCount != _usageCallCount) return;
+    if (isDisposed || !_foreground) return;
+    final localCallCount = ++_usageCallCount;
+    int usage = -1;
+    try {
+      usage = await _channel.getDailyDataUsage();
+    } catch (e) {
+      log("Error fetching usage: $e");
+    }
+    if (isDisposed || !_foreground || localCallCount != _usageCallCount) return;
 
-     if (usage != -1) {
-       _dailyDataUsage = usage;
-       notifyListeners();
-     }
+    _dailyDataUsage = usage;
+    notifyListeners();
   }
 
   Future<int> getDataUsageForPeriod(String period) async {
@@ -215,7 +223,6 @@ class NetworkService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
 
   void _getNetworkInformation(Map<String, dynamic> map)
   {
-    log("NetworkService: _getNetworkInformation: $map");
     try {
       int networkTypeInt = map["networkType"] as int;
       _hasInternetAccess = map["internetAccess"] as bool;

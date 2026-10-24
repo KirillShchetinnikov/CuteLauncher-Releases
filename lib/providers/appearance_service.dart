@@ -68,9 +68,18 @@ class AppearanceService extends ChangeNotifier {
       if (!style.useGlobalTiles) ...style.tiles});
   }
   Future<void> setCategoryTile(int id, String key, dynamic value) async {
+    if (id <= 0) return;
+    final valid = CategoryAppearance.validValues({'tiles': {key: value}})['tiles'] as Map<String, dynamic>;
+    if (!valid.containsKey(key)) return;
+    // Equality with today's common value means following future common edits too.
+    final global = key == 'sectionPadding' ? const TileAppearance() : appearance;
+    if (TileAppearance({...global.values, ...valid}).homeFieldValue(key) == global.homeFieldValue(key)) {
+      await inheritField(id, key);
+      return;
+    }
     final values = {...category(id).values, 'useGlobalTiles': false,
       'tiles': {...(category(id).useGlobalTiles ? <String, dynamic>{} : category(id).tiles),
-        ...TileAppearance.validValues({key: value})}};
+        ...valid}};
     final all = CategoryAppearance.decode(preferences.getString(categoryAppearanceKey));
     all['$id'] = CategoryAppearance.validValues(values);
     if (!await preferences.setString(categoryAppearanceKey, jsonEncode(all))) throw StateError('Unable to save category');
@@ -81,7 +90,7 @@ class AppearanceService extends ChangeNotifier {
   }
   Future<void> resetCategoryLayout(int id, {required bool grid}) async {
     final all = CategoryAppearance.decode(preferences.getString(categoryAppearanceKey));
-    all['$id'] = {...category(id).values, 'layout': grid ? 'grid' : 'row',
+    all['$id'] = {'layout': grid ? 'grid' : 'row',
       'columns': grid ? 6 : 0, 'rows': 2, 'maxRows': grid ? 3 : 0};
     if (!await preferences.setString(categoryAppearanceKey, jsonEncode(all))) throw StateError('Unable to reset layout');
     notifyListeners();

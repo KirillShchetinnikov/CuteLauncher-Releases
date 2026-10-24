@@ -76,6 +76,8 @@ class _TopPanelItemState extends State<TopPanelItem> {
         8 +
         style.topButtonFocusWidth * 2;
     final outline = Theme.of(context).colorScheme.primary;
+    final glyphs = widget.textStyle == null ? widget.child
+        : FittedBox(fit: BoxFit.scaleDown, child: widget.child);
     final content = AnimatedContainer(
       duration: const Duration(milliseconds: 150),
       height: widget.textStyle == null
@@ -109,9 +111,7 @@ class _TopPanelItemState extends State<TopPanelItem> {
           data: IconThemeData(color: foreground, size: textStyle.fontSize),
           child: Center(
             widthFactor: 1,
-            child: widget.textStyle == null
-                ? widget.child
-                : FittedBox(fit: BoxFit.scaleDown, child: widget.child),
+            child: glyphs,
           ),
         ),
       ),

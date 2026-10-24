@@ -40,6 +40,7 @@ void main() {
 
   setUp(() {
     mockAppsService = MockAppsService();
+    when(mockAppsService.isTileHidden(any)).thenReturn(false);
     when(mockAppsService.launchApp(any)).thenAnswer((_) async => true);
     mockSettingsService = MockSettingsService();
 

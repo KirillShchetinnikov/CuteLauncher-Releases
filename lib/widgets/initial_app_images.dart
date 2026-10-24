@@ -4,7 +4,8 @@ import 'package:flutter/widgets.dart';
 /// This barrier is used once; subsequent updates keep the home screen visible.
 class InitialAppImages extends StatefulWidget {
   final Widget child;
-  const InitialAppImages({super.key, required this.child});
+  final Future<void> Function()? onReady;
+  const InitialAppImages({super.key, required this.child, this.onReady});
 
   @override
   State<InitialAppImages> createState() => _InitialAppImagesState();
@@ -13,6 +14,7 @@ class InitialAppImages extends StatefulWidget {
 class _InitialAppImagesState extends State<InitialAppImages> {
   int _pending = 0;
   bool _ready = false;
+  bool _revealing = false;
 
   VoidCallback _register() {
     if (_ready) return () {};
@@ -27,9 +29,11 @@ class _InitialAppImagesState extends State<InitialAppImages> {
   }
 
   void _checkReady() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted && !_ready && _pending == 0) {
-        setState(() => _ready = true);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (mounted && !_ready && !_revealing && _pending == 0) {
+        _revealing = true;
+        await widget.onReady?.call();
+        if (mounted) setState(() => _ready = true);
       }
     });
     WidgetsBinding.instance.ensureVisualUpdate();

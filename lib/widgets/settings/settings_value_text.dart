@@ -20,6 +20,22 @@ class SettingsValueText extends StatelessWidget {
     final scaler = text.textScaler ?? MediaQuery.textScalerOf(context);
     final direction = text.textDirection ?? Directionality.of(context);
     final locale = text.locale ?? Localizations.maybeLocaleOf(context);
+    // Android's cached paragraph can trim Manrope's first line after a focus
+    // repaint, even when its reported height fits. Keep font-sized headroom
+    // inside the paragraph itself, including the first ascent/last descent.
+    final manrope = style.fontFamily == 'Manrope';
+    final heightBehavior =
+        text.textHeightBehavior ??
+        (manrope ? const TextHeightBehavior() : defaults.textHeightBehavior);
+    StrutStyle? strut(TextStyle current) =>
+        text.strutStyle ??
+        (manrope
+            ? StrutStyle.fromTextStyle(
+                current,
+                height: 1.5,
+                forceStrutHeight: false,
+              )
+            : null);
     return LayoutBuilder(
       builder: (context, constraints) {
         if (!constraints.hasBoundedWidth || constraints.maxWidth <= 0) {
@@ -32,9 +48,12 @@ class SettingsValueText extends StatelessWidget {
           textDirection: direction,
           textScaler: scaler,
           locale: locale,
+          textHeightBehavior: heightBehavior,
+          strutStyle: strut(style),
         );
         var fittedStyle = style;
         double width(String label) {
+          painter.strutStyle = strut(fittedStyle);
           painter.text = TextSpan(text: label, style: fittedStyle);
           painter.layout();
           return painter.width;
@@ -83,9 +102,9 @@ class SettingsValueText extends StatelessWidget {
           overflow: text.overflow,
           maxLines: text.maxLines,
           semanticsLabel: text.semanticsLabel,
-          strutStyle: text.strutStyle,
+          strutStyle: strut(fittedStyle),
           textWidthBasis: text.textWidthBasis,
-          textHeightBehavior: text.textHeightBehavior,
+          textHeightBehavior: heightBehavior,
         );
       },
     );

@@ -166,6 +166,40 @@ void main() {
     offline.dispose();
     await events.close();
   });
+  test('manual refresh bypasses fresh cache and failure backoff but automatic refresh does not', () async {
+    final old = DateTime.now().subtract(const Duration(minutes: 10));
+    SharedPreferences.setMockInitialValues({
+      weatherConfigurationKey: jsonEncode(config.toJson()),
+      'weather_cache': jsonEncode({'configuration': jsonEncode(config.toJson()),
+        'fetchedAt': old.toIso8601String(), 'data': payload()}),
+    });
+    final channel = MockFLauncherChannel();
+    final events = StreamController<dynamic>.broadcast();
+    when(channel.addWeatherChangedListener(any)).thenAnswer((call) => events.stream.listen(call.positionalArguments[0]));
+    final transport = FakeTransport(() async => payload());
+    final service = WeatherService(channel, preferences: await SharedPreferences.getInstance(), transport: transport);
+    while (!service.initialized) { await Future<void>.delayed(Duration.zero); }
+    expect(transport.calls, 0);
+    expect(service.updatedAt, old);
+    await service.refresh();
+    expect(transport.calls, 1);
+    expect(service.updatedAt!.isAfter(old), isTrue);
+    final successTime = service.updatedAt;
+    service.didChangeAppLifecycleState(AppLifecycleState.resumed);
+    await Future<void>.delayed(Duration.zero);
+    expect(transport.calls, 1);
+    transport.response = () async => throw const WeatherException(WeatherFailure.unavailable);
+    await service.refresh();
+    expect(transport.calls, 2);
+    expect(service.updatedAt, successTime);
+    expect(service.failure, WeatherFailure.unavailable);
+    transport.response = () async => payload();
+    await service.refresh();
+    expect(transport.calls, 3);
+    expect(service.failure, isNull);
+    service.dispose();
+    await events.close();
+  });
   test('late response from previous location cannot replace the new location', () async {
     SharedPreferences.setMockInitialValues({weatherConfigurationKey: jsonEncode(config.toJson())});
     final channel = MockFLauncherChannel();

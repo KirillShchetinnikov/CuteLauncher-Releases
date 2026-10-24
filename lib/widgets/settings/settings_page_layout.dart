@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+
 import 'settings_menu_layout.dart';
 import 'settings_help.dart';
+
 import 'package:flutter/services.dart';
 
 /// Shared header and scroll indicator. The page owns its content and scrolling.
@@ -98,7 +100,9 @@ class _SettingsPageLayoutState extends State<SettingsPageLayout> {
   @override
   Widget build(BuildContext context) {
     final mirrored = SettingsMenuLayout.isOnRight(context);
-    final contentPadding = mirrored ? const EdgeInsets.only(right: 14) : const EdgeInsets.only(left: 14);
+    final contentPadding = mirrored
+        ? const EdgeInsets.only(right: 14)
+        : const EdgeInsets.only(left: 14);
     if (!_entryFocused) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted ||
@@ -111,12 +115,21 @@ class _SettingsPageLayoutState extends State<SettingsPageLayout> {
           _pageFocus,
           ignoreCurrentFocus: true,
         );
-        // Help stays reachable with D-pad, but entry targets an actual setting.
-        for (final node in _pageFocus.traversalDescendants) {
-          if (node.context?.findAncestorWidgetOfExactType<SettingsHelp>() == null) {
-            first = node;
-            break;
-          }
+        // Lazy slivers can register a footer before the earlier list/grid items.
+        // Entry follows visual reading order, not focus-node attachment order.
+        final controls = _pageFocus.traversalDescendants
+            .where(
+              (node) =>
+                  node.context?.findAncestorWidgetOfExactType<SettingsHelp>() ==
+                      null &&
+                  node.rect.isFinite &&
+                  !node.rect.isEmpty,
+            )
+            .toList();
+        if (controls.isNotEmpty) {
+          first = ReadingOrderTraversalPolicy()
+              .sortDescendants(controls, _pageFocus)
+              .first;
         }
         if (first == null) return;
         _entryFocused = true;
@@ -152,7 +165,9 @@ class _SettingsPageLayoutState extends State<SettingsPageLayout> {
                 child: Scrollbar(
                   // No extra focus stops or pointer actions for the TV remote.
                   interactive: false,
-                  scrollbarOrientation: mirrored ? ScrollbarOrientation.right : ScrollbarOrientation.left,
+                  scrollbarOrientation: mirrored
+                      ? ScrollbarOrientation.right
+                      : ScrollbarOrientation.left,
                   thickness: 4,
                   child: Padding(
                     key: _viewportKey,
@@ -165,10 +180,7 @@ class _SettingsPageLayoutState extends State<SettingsPageLayout> {
             ),
           ),
           if (widget.footer != null)
-            Padding(
-              padding: widget.footerPadding,
-              child: widget.footer!,
-            ),
+            Padding(padding: widget.footerPadding, child: widget.footer!),
         ],
       ),
     );

@@ -1,4 +1,5 @@
-import '../app_fonts.dart';
+import '../theme/launcher_style.dart';
+
 import 'package:flutter/material.dart';
 
 import '../l10n/app_localizations.dart';
@@ -36,17 +37,24 @@ class CombinedInformation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final base = appearance.panelTextStyleFor(Localizations.localeOf(context));
-    final size = base.fontSize ?? 18;
-    final clock = appearance.clockStyle.textStyle(base);
+    final style = appearance.informationStyle;
+    final clock = style.textStyle(
+      base,
+      locale: Localizations.localeOf(context),
+    );
+    final size = clock.fontSize ?? 18;
     final current = weather;
     final l = AppLocalizations.of(context)!;
     final warning = current != null && showWarnings && current.hasWarning
         ? localizedWeatherWarning(current, l, DateTime.now())
         : null;
-    final detail = base.copyWith(fontSize: size * .65, height: 1.25);
+    final detail = clock.copyWith(fontSize: size * .65, height: 1.25);
     return TopPanelItem(
       key: const ValueKey('combined_information'),
       appearance: appearance,
+      textStyle: clock,
+      backgroundColor: style.background(appearance.panelItemBackground),
+      borderRadius: style.radius(LauncherStyle.of(context).topButtonRadius),
       focusNode: focusNode,
       onPressed: showDate ? onCalendar : null,
       selected: selected,
@@ -54,28 +62,25 @@ class CombinedInformation extends StatelessWidget {
         fit: BoxFit.scaleDown,
         child: Row(
           mainAxisSize: MainAxisSize.min,
+          textDirection: style.clockOnRight
+              ? TextDirection.rtl
+              : TextDirection.ltr,
           children: [
             if (showTime)
               DateTimeWidget(
                 timeFormat,
                 key: const Key('statusbar_clock'),
-                textStyle: clock.copyWith(
-                  fontSize: size * 1.55,
-                  height: 1,
-                  fontFamily:
-                      appearance.clockStyle.values['font'] == null &&
-                          !appearance.values.containsKey('panelFont')
-                      ? AppFonts.family('outfit', Localizations.localeOf(context))
-                      : clock.fontFamily,
-                ),
-                animate: appearance.clockStyle.animate,
+                textStyle: clock.copyWith(fontSize: size * 1.55, height: 1),
+                animate: style.animate,
               ),
             if (showTime && (showDate || showWeather && current != null))
-              const SizedBox(width: 12),
+              SizedBox(width: style.spacing),
             if (showDate || showWeather && current != null)
               Column(
                 mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: style.clockOnRight
+                    ? CrossAxisAlignment.end
+                    : CrossAxisAlignment.start,
                 children: [
                   if (showDate)
                     DateTimeWidget(
@@ -86,8 +91,14 @@ class CombinedInformation extends StatelessWidget {
                   if (showWeather && current != null)
                     Row(
                       mainAxisSize: MainAxisSize.min,
+                      textDirection: TextDirection.ltr,
                       children: [
-                        Icon(current.getConditionIcon(), size: size * .75),
+                        Icon(
+                          current.getConditionIcon(),
+                          size: size * .75,
+                          color: clock.color,
+                          shadows: clock.shadows,
+                        ),
                         const SizedBox(width: 4),
                         Text(
                           '${current.formatTemperature(useFahrenheit: useFahrenheit)}${warning == null ? '' : ' · $warning'}',

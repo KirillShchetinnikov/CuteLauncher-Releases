@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'focusable_settings_tile.dart';
 import 'settings_choice_tile.dart';
 import 'settings_slider_tile.dart';
+import 'settings_value_text.dart';
 
 /// One remote focus target; horizontal keys change the value in place.
 class SettingsValueStepper extends StatelessWidget {
@@ -34,7 +35,7 @@ class SettingsValueStepper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (options.isEmpty) return const SizedBox.shrink();
-    if (!options.every((option) => option is num)) {
+    if (!options.every((option) => option == null || option is num)) {
       return SettingsChoiceTile<dynamic>(
         leading: leading,
         title: title,
@@ -46,7 +47,7 @@ class SettingsValueStepper extends StatelessWidget {
         autofocus: autofocus,
       );
     }
-    if (useSlider && options.length > 10) {
+    if (useSlider && options.length > 10 && options.every((option) => option is num)) {
       return SettingsSliderTile(
         title: title,
         value: value as num,
@@ -59,8 +60,9 @@ class SettingsValueStepper extends StatelessWidget {
     }
     var index = options.indexOf(value);
     if (index < 0 && value is num) {
-      index = 0;
+      index = options.indexWhere((option) => option is num);
       for (var i = 1; i < options.length; i++) {
+        if (options[i] is! num) continue;
         if (((options[i] as num) - (value as num)).abs() <
             ((options[index] as num) - (value as num)).abs()) {
           index = i;
@@ -123,7 +125,8 @@ class SettingsValueStepper extends StatelessWidget {
                     Row(
                       children: [
                         arrow(canDecrease, Icons.chevron_left, -1),
-                        Expanded(child: Text(label(value))),
+                        Expanded(child: SettingsValueText(
+                          text: Text(label(value)), alignment: TextAlign.start)),
                         arrow(canIncrease, Icons.chevron_right, 1),
                       ],
                     ),
@@ -136,7 +139,8 @@ class SettingsValueStepper extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     arrow(canDecrease, Icons.chevron_left, -1),
-                    Flexible(child: Text(label(value))),
+                    Flexible(child: SettingsValueText(
+                      text: Text(label(value)), alignment: TextAlign.end)),
                     arrow(canIncrease, Icons.chevron_right, 1),
                   ],
                 ),

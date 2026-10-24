@@ -6,8 +6,43 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flauncher/theme/interface_style.dart';
 
 void main() {
+  testWidgets('glass rows allow native Manrope metrics for wrapped values', (tester) async {
+    final loader = FontLoader('Manrope')..addFont(rootBundle.load('assets/fonts/manrope.ttf'));
+    await loader.load();
+    for (final scale in [1.0, 1.5]) {
+      await tester.pumpWidget(MaterialApp(
+        theme: ThemeData.dark().copyWith(extensions: [const InterfaceSkin(InterfaceStyle.glass)]),
+        home: MediaQuery(
+          data: MediaQueryData(textScaler: TextScaler.linear(scale)),
+          child: Scaffold(body: Center(child: SizedBox(width: 300,
+            child: DefaultTextStyle(
+              style: const TextStyle(fontFamily: 'Manrope', fontSize: 16, height: 1.3),
+              child: FocusableSettingsTile(
+                title: const Text('Сортировать'),
+                trailing: const Text('По частоте запусков'),
+                onPressed: () {},
+              ),
+            ),
+          ))),
+        ),
+      ));
+      await tester.pumpAndSettle();
+      final paragraph = tester.renderObject<RenderParagraph>(find.text('По частоте запусков'));
+      final text = paragraph.text as TextSpan;
+      final natural = TextPainter(
+        text: TextSpan(text: text.text, style: text.style!.copyWith(height: kTextHeightNone)),
+        textDirection: TextDirection.ltr,
+        textScaler: TextScaler.linear(scale),
+      )..layout(maxWidth: paragraph.size.width);
+      expect(paragraph.size.height, greaterThanOrEqualTo(natural.height - .01));
+      expect(paragraph.didExceedMaxLines, isFalse);
+      natural.dispose();
+      expect(tester.takeException(), isNull);
+    }
+  });
   testWidgets('custom value rows align text and arrow to the right edge', (tester) async {
     Future<double> rightEdge(String value) async {
       await tester.pumpWidget(MaterialApp(home: Scaffold(body: Center(

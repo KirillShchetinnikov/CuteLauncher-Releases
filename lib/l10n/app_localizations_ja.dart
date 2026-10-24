@@ -3077,7 +3077,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get homeInherited => '継承値';
 
   @override
-  String get homeOwnReset => 'カスタム値 · グローバルを使用';
+  String get homeOwnReset => '共通設定に戻す';
 
   @override
   String get homeParameters => 'パラメータ';
@@ -3396,6 +3396,10 @@ class AppLocalizationsJa extends AppLocalizations {
       '650ミリ秒の長押しで一度だけ実行し、短押し動作は実行しません。長押しのみ割り当てた場合、短押しは何もしません。';
 
   @override
+  String get remotePanelDescription =>
+      'フローティングパネルは他のアプリの上にウィジェットを表示します。リモコンで開くには、好きなボタンに「フローティングパネル」アクションを割り当ててください。';
+
+  @override
   String get remotePanel => 'フローティングパネル';
 
   @override
@@ -3414,7 +3418,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get panelClockStyle => '時計の外観';
 
   @override
-  String get clockPreset => '時計のデザイン';
+  String get clockPreset => 'フォントスタイル';
 
   @override
   String get clockCustom => 'カスタム';
@@ -3615,6 +3619,33 @@ class AppLocalizationsJa extends AppLocalizations {
   String get adaptiveLandscape => 'Adaptive landscape';
 
   @override
+  String get landscapeDemoSpring => 'Spring';
+
+  @override
+  String get landscapeDemoSummer => 'Summer';
+
+  @override
+  String get landscapeDemoAutumn => 'Autumn';
+
+  @override
+  String get landscapeDemoWinter => 'Winter';
+
+  @override
+  String get landscapeDemoClear => 'Clear';
+
+  @override
+  String get landscapeDemoCloudy => 'Cloudy';
+
+  @override
+  String get landscapeDemoFog => 'Fog';
+
+  @override
+  String get landscapeDemoStart => 'Demonstrate changes';
+
+  @override
+  String get landscapeDemoStop => '停止';
+
+  @override
   String get landscapeVariant => 'Landscape style';
 
   @override
@@ -3672,4 +3703,105 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get weatherMetNorwayCredit =>
       'Data: MET Norway, CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Forecast adapted from https://api.met.no/. No API key; days use the TV time zone, min/max cover available periods. Precipitation probability is unavailable.';
+
+  @override
+  String get informationGroup => '時計・日付・天気';
+
+  @override
+  String get informationSettings => 'ブロックの設定';
+
+  @override
+  String get informationAppearance => 'ブロックの外観';
+
+  @override
+  String get informationSize => 'ブロックのサイズ';
+
+  @override
+  String get informationPosition => '時計とテキストの配置';
+
+  @override
+  String get informationClockLeft => '時計が左、テキストが右';
+
+  @override
+  String get informationClockRight => 'テキストが左、時計が右';
+
+  @override
+  String get informationSpacing => '時計とテキストの間隔';
+
+  @override
+  String get informationBackground => 'ブロックの背景';
+
+  @override
+  String get homeResetTilesHint => 'この画面のすべてのタイルとラベルを共通の値に戻しますか？';
+
+  @override
+  String get homeResetLayoutHint =>
+      'このセクションのレイアウト、共通の外観、内側の余白をリセットしますか？アプリとその順序は保持されます。';
+
+  @override
+  String get networkSummary => 'ネットワーク';
+
+  @override
+  String get networkConnected => 'インターネット利用可能';
+
+  @override
+  String get networkOffline => 'インターネットにアクセスできません';
+
+  @override
+  String get networkDisconnected => '未接続';
+
+  @override
+  String get networkConnection => '接続';
+
+  @override
+  String get networkSignal => '信号';
+
+  @override
+  String get networkLinkSpeed => 'Wi-Fi リンク速度';
+
+  @override
+  String get networkTrafficRate => '端末の通信量 · 受信 / 送信';
+
+  @override
+  String get networkSystemSettings => 'システムのネットワーク設定';
+
+  @override
+  String get networkUnavailable => '利用不可';
+
+  @override
+  String get networkMobile => 'モバイルネットワーク';
+
+  @override
+  String get networkFrequency => '周波数';
+
+  @override
+  String get networkMbps => 'Mbps';
+
+  @override
+  String get networkKbps => 'KB/秒';
+
+  @override
+  String get networkReadFailed => 'ネットワーク状態を取得できません';
+
+  @override
+  String get clockItalic => '斜体';
+
+  @override
+  String get panelWrapNavigation => 'パネルの循環ナビゲーション';
+
+  @override
+  String get panelWrapNavigationHelp =>
+      '端のボタンから左右キーで反対側へ移動します。キーを押し続けると両側を連続して移動できます。';
+
+  @override
+  String get networkReceive => '受信';
+
+  @override
+  String get networkSend => '送信';
+
+  @override
+  String get landscapeCelestialBodies => '太陽と月';
+
+  @override
+  String get landscapeStarRotation => '星の回転';
 }

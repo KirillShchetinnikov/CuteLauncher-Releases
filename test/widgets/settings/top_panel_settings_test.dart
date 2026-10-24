@@ -1,3 +1,4 @@
+import 'package:flauncher/widgets/settings/information_settings_page.dart';
 import 'package:flauncher/widgets/panel_clock.dart';
 import 'package:flauncher/widgets/settings/panel_clock_style_page.dart';
 import 'package:flauncher/models/tv_input.dart';
@@ -100,6 +101,8 @@ void main() {
     when(network.wirelessNetworkSignalLevel).thenReturn(4);
     when(network.vpnActive).thenReturn(false);
     when(weather.hasWeather).thenReturn(false);
+    when(weather.weatherData).thenReturn(null);
+    when(weather.stale).thenReturn(false);
     when(notifications.hasPermission).thenReturn(false);
     when(notifications.notifications).thenReturn([]);
     when(inputs.hasInputs).thenReturn(false);
@@ -666,19 +669,26 @@ void main() {
    }
   }
 
-  testWidgets('clock and date visibility precede their separate submenus', (tester) async {
+  testWidgets('visibility group opens common settings with separate editors', (tester) async {
     await pump(tester, const SettingsPanel(initialRoute: StatusBarObjectsPage.routeName));
     final time = tester.getCenter(find.text('Показывать время')).dy;
     final date = tester.getCenter(find.text('Показывать дату')).dy;
-    final clockStyle = tester.getCenter(find.text('Оформление часов')).dy;
-    final dateSettings = tester.getCenter(find.text('Настройки даты')).dy;
+    final weatherSwitch = tester.getCenter(find.text('Показывать погоду')).dy;
+    final blockSettings = tester.getCenter(find.text('Настройки блока')).dy;
     expect(time, lessThan(date));
-    expect(date, lessThan(clockStyle));
-    expect(clockStyle, lessThan(dateSettings));
-    expect(find.text('Открывать календарь по нажатию на дату'), findsNothing);
+    expect(date, lessThan(weatherSwitch));
+    expect(weatherSwitch, lessThan(blockSettings));
+    expect(find.text('Оформление часов'), findsNothing);
+    await tester.tap(find.text('Настройки блока'));
+    await tester.pumpAndSettle();
+    expect(find.byType(InformationSettingsPage), findsOneWidget);
+    expect(find.text('Оформление часов'), findsOneWidget);
+    expect(find.text('Настройки даты'), findsOneWidget);
+    expect(find.text('Настройки погоды'), findsOneWidget);
+    expect(find.text('Открывать календарь по нажатию на дату'), findsOneWidget);
     await tester.tap(find.text('Настройки даты'));
     await tester.pumpAndSettle();
-    expect(find.text('Открывать календарь по нажатию на дату'), findsOneWidget);
+    expect(find.text('Открывать календарь по нажатию на дату'), findsNothing);
     expect(tester.takeException(), isNull);
   });
 
@@ -707,20 +717,24 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('clock style route stays below toolbar and Back restores objects', (tester) async {
+  testWidgets('clock style route stays below toolbar and Back restores block settings', (tester) async {
     await pump(tester, const SettingsPanel(initialRoute: StatusBarObjectsPage.routeName));
+    await tester.tap(find.text('Настройки блока'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Оформление часов'));
     await tester.pumpAndSettle();
     expect(find.byType(PanelClockStylePage), findsOneWidget);
     expect(tester.getTopLeft(find.byType(PanelClockStylePage)).dy, greaterThan(kToolbarHeight));
     await Navigator.of(tester.element(find.byType(PanelClockStylePage))).maybePop();
     await tester.pumpAndSettle();
-    expect(find.byType(StatusBarObjectsPage), findsOneWidget);
+    expect(find.byType(InformationSettingsPage), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
+  for (final combined in [false, true]) {
   for (final remote in [false, true]) {
-    testWidgets('date calendar is opt-in, keeps panel visible and restores focus: remote=$remote', (tester) async {
+    testWidgets('date calendar is opt-in, keeps panel visible and restores focus: remote=$remote combined=$combined', (tester) async {
+      await appearance.set('panelCombinedInformation', combined);
       final panel = RemotePanelService(prefs);
       addTearDown(panel.dispose);
       await pump(tester, Scaffold(appBar: FocusAwareAppBar(remotePanel: remote ? panel : null)));
@@ -753,6 +767,49 @@ void main() {
       expect(state.dateFocusNode.hasFocus, isTrue);
       expect(tester.takeException(), isNull);
     });
+  }
+  }
+
+  for (final popup in [false, true]) {
+    for (final locale in [const Locale('ru'), const Locale('ar')]) {
+      testWidgets('panel wraps physical sides and held arrows: popup=$popup locale=$locale', (tester) async {
+        final panel = RemotePanelService(prefs);
+        addTearDown(panel.dispose);
+        await appearance.set('panelWrapNavigation', true);
+        await appearance.set('panelDateCalendar', true);
+        await panel.set('dateCalendar', true);
+        await panel.set('inheritAppearance', false);
+        await appearance.setPanelOrder(['date'], ['settings', 'systemSettings']);
+        await panel.setPanelOrder(['date'], ['settings', 'systemSettings']);
+        await pump(tester, Scaffold(appBar: FocusAwareAppBar(remotePanel: popup ? panel : null)), locale: locale);
+        final items = find.byWidgetPredicate((w) => w is TopPanelItem && w.onPressed != null)
+          .evaluate().map((e) => e.widget as TopPanelItem).toList();
+        items.sort((a, b) => tester.getCenter(find.byWidget(a)).dx.compareTo(tester.getCenter(find.byWidget(b)).dx));
+        final nodes = items.map((item) => Focus.of(tester.element(find.descendant(
+          of: find.byWidget(item), matching: find.byType(InkWell)).first))).toList();
+        expect(nodes.length, greaterThanOrEqualTo(3));
+        nodes.first.requestFocus();
+        await tester.pumpAndSettle();
+        await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+        await tester.pumpAndSettle();
+        expect(nodes.last.hasFocus, isTrue);
+        await tester.sendKeyDownEvent(LogicalKeyboardKey.arrowRight);
+        await tester.pumpAndSettle();
+        expect(nodes.first.hasFocus, isTrue);
+        for (var i = 1; i <= nodes.length * 3; i++) {
+          await tester.sendKeyRepeatEvent(LogicalKeyboardKey.arrowRight);
+          await tester.pumpAndSettle();
+          expect(nodes[i % nodes.length].hasFocus, isTrue);
+        }
+        await tester.sendKeyUpEvent(LogicalKeyboardKey.arrowRight);
+        await appearance.set('panelWrapNavigation', false);
+        await tester.pumpAndSettle();
+        await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+        await tester.pumpAndSettle();
+        expect(nodes.first.hasFocus, isTrue);
+        expect(tester.takeException(), isNull);
+      });
+    }
   }
 
   testWidgets('remote panel renders mixed sides independently of home order', (tester) async {

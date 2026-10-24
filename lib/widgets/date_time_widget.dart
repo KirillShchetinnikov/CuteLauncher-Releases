@@ -24,27 +24,28 @@ import 'package:flauncher/date_time_format.dart';
 import 'animated_character.dart';
 
 class DateTimeWidget extends StatefulWidget {
-  final Duration?   updateInterval;
-  final String      _dateTimeFormatString;
-  final TextStyle?  textStyle;
-  final bool        animate;
+  final Duration? updateInterval;
+  final String _dateTimeFormatString;
+  final TextStyle? textStyle;
+  final bool animate;
 
-  const DateTimeWidget(String dateTimeFormatString, {
+  const DateTimeWidget(
+    String dateTimeFormatString, {
     super.key,
     this.updateInterval,
     this.textStyle,
     this.animate = true,
-  }) :
-      _dateTimeFormatString = dateTimeFormatString;
+  }) : _dateTimeFormatString = dateTimeFormatString;
 
   @override
   State<DateTimeWidget> createState() => _DateTimeWidgetState();
 }
 
-class _DateTimeWidgetState extends State<DateTimeWidget> with WidgetsBindingObserver {
-  late DateTime   _now;
-  String          _formattedText = '';
-  Timer?          _timer;
+class _DateTimeWidgetState extends State<DateTimeWidget>
+    with WidgetsBindingObserver {
+  late DateTime _now;
+  String _formattedText = '';
+  Timer? _timer;
 
   @override
   void initState() {
@@ -65,7 +66,10 @@ class _DateTimeWidgetState extends State<DateTimeWidget> with WidgetsBindingObse
   }
 
   String _format(DateTime date) => formatLauncherDate(
-    widget._dateTimeFormatString, date, Localizations.localeOf(context).toString());
+    widget._dateTimeFormatString,
+    date,
+    Localizations.localeOf(context).toString(),
+  );
 
   void _startTimer() {
     _timer?.cancel();
@@ -81,7 +85,7 @@ class _DateTimeWidgetState extends State<DateTimeWidget> with WidgetsBindingObse
   @override
   void didUpdateWidget(DateTimeWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    
+
     // Update format if it changed or updateInterval changed
     if (oldWidget._dateTimeFormatString != widget._dateTimeFormatString ||
         oldWidget.updateInterval != widget.updateInterval) {
@@ -96,7 +100,8 @@ class _DateTimeWidgetState extends State<DateTimeWidget> with WidgetsBindingObse
     if (state == AppLifecycleState.resumed) {
       _refreshTime(force: true);
       _startTimer();
-    } else if (state == AppLifecycleState.paused || state == AppLifecycleState.detached) {
+    } else if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.detached) {
       _timer?.cancel();
     }
   }
@@ -110,22 +115,21 @@ class _DateTimeWidgetState extends State<DateTimeWidget> with WidgetsBindingObse
 
   @override
   Widget build(BuildContext context) {
-    final formattedText = _formattedText.isNotEmpty ? _formattedText : _format(_now);
-    
-    if (widget.animate) {
-      return AnimatedTimeDisplay(
-        displayText: formattedText,
-        textStyle: widget.textStyle,
-      );
-    }
-    
-    return Text(formattedText, style: widget.textStyle);
+    final formattedText = _formattedText.isNotEmpty
+        ? _formattedText
+        : _format(_now);
+
+    return AnimatedTimeDisplay(
+      displayText: formattedText,
+      textStyle: widget.textStyle,
+      animate: widget.animate,
+    );
   }
 
   void _refreshTime({bool force = false}) {
     final now = DateTime.now();
     final newFormattedText = _format(now);
-    
+
     if (force || newFormattedText != _formattedText) {
       setState(() {
         _now = now;

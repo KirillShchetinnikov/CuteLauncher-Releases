@@ -5,18 +5,37 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('entry focuses first control despite later autofocus', (tester) async {
+  testWidgets('entry focuses first control despite later autofocus', (
+    tester,
+  ) async {
     final first = FocusNode();
     final last = FocusNode();
     addTearDown(first.dispose);
     addTearDown(last.dispose);
-    await tester.pumpWidget(MaterialApp(home: Scaffold(body: SettingsPageLayout(
-      title: const Text('Menu'),
-      child: ListView(children: [
-        FocusableSettingsTile(focusNode: first, title: const Text('First'), onPressed: () {}),
-        FocusableSettingsTile(focusNode: last, autofocus: true, title: const Text('Last'), onPressed: () {}),
-      ]),
-    ))));
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: SettingsPageLayout(
+            title: const Text('Menu'),
+            child: ListView(
+              children: [
+                FocusableSettingsTile(
+                  focusNode: first,
+                  title: const Text('First'),
+                  onPressed: () {},
+                ),
+                FocusableSettingsTile(
+                  focusNode: last,
+                  autofocus: true,
+                  title: const Text('Last'),
+                  onPressed: () {},
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
     await tester.pumpAndSettle();
     expect(first.hasFocus, isTrue);
   });
@@ -227,5 +246,48 @@ void main() {
       greaterThan(30),
     );
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('lazy list entry precedes eagerly attached reset footer', (
+    tester,
+  ) async {
+    final first = FocusNode(debugLabel: 'first');
+    final reset = FocusNode(debugLabel: 'reset');
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: SettingsPageLayout(
+            title: const Text('Menu'),
+            child: CustomScrollView(
+              slivers: [
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) => FocusableSettingsTile(
+                      focusNode: first,
+                      title: const Text('First'),
+                      onPressed: () {},
+                    ),
+                    childCount: 1,
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: FocusableSettingsTile(
+                    focusNode: reset,
+                    title: const Text('Reset'),
+                    onPressed: () {},
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(first.hasFocus, isTrue);
+    expect(reset.hasFocus, isFalse);
+    await tester.pumpWidget(const SizedBox());
+    first.dispose();
+    reset.dispose();
   });
 }

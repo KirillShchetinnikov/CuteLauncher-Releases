@@ -52,38 +52,30 @@ const List<(String format, String example)> timeFormatPresets = [
 class DateTimeFormatPage extends StatelessWidget {
   static const String routeName = 'date_time_format_panel';
   final bool remotePanel;
-  const DateTimeFormatPage({super.key, this.remotePanel = false});
+  final bool showCalendar;
+  const DateTimeFormatPage({
+    super.key,
+    this.remotePanel = false,
+    this.showCalendar = true,
+  });
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
-    final service = context.watch<SettingsService>();
     final appearance = context.watch<AppearanceService>();
     final panel = remotePanel ? context.watch<RemotePanelService>() : null;
     return SettingsPageLayout(
       title: Text(l.dateSettings),
       child: ListView(
         children: [
-          SettingsChoiceTile<String>(
-            title: l.date,
-            autofocus: true,
-            value: service.dateFormat,
-            options: dateFormatPresets.map((v) => v.$1).toList(),
-            label: (v) => formatLauncherDate(
-              v,
-              v == compactDateFormat
-                  ? DateTime(2026, 10, 2)
-                  : DateTime(2026, 1, 17),
-              Localizations.localeOf(context).toString(),
+          const DateFormatSettingsTile(),
+          if (showCalendar)
+            RoundedSwitchListTile(
+              title: Text(l.dateCalendarEnabled),
+              value: panel?.dateCalendar ?? appearance.appearance.dateCalendar,
+              onChanged: (value) => panel != null
+                  ? panel.set('dateCalendar', value)
+                  : appearance.set('panelDateCalendar', value),
             ),
-            onChanged: (v) => service.setDateTimeFormat(v, service.timeFormat),
-          ),
-          RoundedSwitchListTile(
-            title: Text(l.dateCalendarEnabled),
-            value: panel?.dateCalendar ?? appearance.appearance.dateCalendar,
-            onChanged: (value) => panel != null
-                ? panel.set('dateCalendar', value)
-                : appearance.set('panelDateCalendar', value),
-          ),
         ],
       ),
     );
@@ -104,6 +96,27 @@ class TimeFormatSettingsTile extends StatelessWidget {
         Localizations.localeOf(context).toString(),
       ).format(DateTime(2026, 1, 17, 15, 45)),
       onChanged: (v) => service.setDateTimeFormat(service.dateFormat, v),
+    );
+  }
+}
+
+class DateFormatSettingsTile extends StatelessWidget {
+  const DateFormatSettingsTile({super.key});
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+    final service = context.watch<SettingsService>();
+    return SettingsChoiceTile<String>(
+      title: l.date,
+      autofocus: true,
+      value: service.dateFormat,
+      options: dateFormatPresets.map((v) => v.$1).toList(),
+      label: (v) => formatLauncherDate(
+        v,
+        v == compactDateFormat ? DateTime(2026, 10, 2) : DateTime(2026, 1, 17),
+        Localizations.localeOf(context).toString(),
+      ),
+      onChanged: (v) => service.setDateTimeFormat(v, service.timeFormat),
     );
   }
 }

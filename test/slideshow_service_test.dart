@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:fake_async/fake_async.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -10,6 +11,37 @@ import 'package:flauncher/providers/slideshow_service.dart';
 import 'package:flauncher/settings_import.dart';
 
 void main() {
+  test('unrelated settings preserve slideshow deadline', () async {
+    SharedPreferences.setMockInitialValues({
+      'background_source': 'slideshow',
+      'slideshow_folder': 'content://fixture/tree/root',
+      'slideshow_interval': 30,
+    });
+    final prefs = await SharedPreferences.getInstance();
+    fakeAsync((time) {
+      final settings = SettingsService(prefs);
+      var scans = 0;
+      final service = SlideshowService(prefs, settings,
+        list: (_, _) async { scans++; return []; });
+      time.flushMicrotasks();
+      service.image = MemoryImage(kTransparentImage);
+      scans = 0;
+      time.elapse(const Duration(seconds: 29));
+      settings.setAppKeyClickEnabled(false);
+      time.flushMicrotasks();
+      time.elapse(const Duration(seconds: 1));
+      expect(scans, 1);
+      service.didChangeAppLifecycleState(AppLifecycleState.paused);
+      time.elapse(const Duration(minutes: 1));
+      expect(scans, 1);
+      service.didChangeAppLifecycleState(AppLifecycleState.resumed);
+      time.elapse(const Duration(seconds: 30));
+      expect(scans, 2);
+      service.dispose();
+      settings.dispose();
+    });
+  });
+
   testWidgets('sequential and shuffle cycles avoid repeats, skip corruption and retain last image', (tester) async {
     await tester.runAsync(() async {
       SharedPreferences.setMockInitialValues({'background_source': 'gradient', 'slideshow_folder': 'content://fixture/tree/root'});

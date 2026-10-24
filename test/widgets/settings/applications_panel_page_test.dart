@@ -45,6 +45,7 @@ void main() {
 
   testWidgets("All Applications shows TV and non-TV apps", (tester) async {
     final appsService = MockAppsService();
+    when(appsService.isTileHidden(any)).thenReturn(false);
     when(appsService.applications).thenReturn([
       fakeApp(
         packageName: "me.efesser.flauncher",
@@ -66,6 +67,7 @@ void main() {
 
   testWidgets('All Applications uses the all_apps category contents and order even when renamed or hidden on home', (tester) async {
     final apps = MockAppsService();
+    when(apps.isTileHidden(any)).thenReturn(false);
     final youtube = fakeApp(packageName: 'youtube', name: 'YouTube')..isSystem = true;
     final play = fakeApp(packageName: 'play', name: 'Google Play')..isSystem = true;
     final service = fakeApp(packageName: 'partner', name: 'Google Partner Setup')
@@ -86,6 +88,7 @@ void main() {
 
   testWidgets("System Applications shows system apps", (tester) async {
     final appsService = MockAppsService();
+    when(appsService.isTileHidden(any)).thenReturn(false);
     when(appsService.applications).thenReturn([
       fakeApp(
         packageName: "me.efesser.flauncher",
@@ -113,6 +116,7 @@ void main() {
 
   testWidgets("Hidden Applications shows hidden apps", (tester) async {
     final appsService = MockAppsService();
+    when(appsService.isTileHidden(any)).thenReturn(false);
     when(appsService.applications).thenReturn([
       fakeApp(
         packageName: "me.efesser.flauncher",
@@ -131,8 +135,21 @@ void main() {
     expect(find.text("FLauncher"), findsOneWidget);
   });
 
+  testWidgets('Hidden Applications includes the launcher hidden by tile preference', (tester) async {
+    final appsService = MockAppsService();
+    when(appsService.isTileHidden(any)).thenReturn(false);
+    final launcher = fakeApp(packageName: 'self', name: 'CuteLauncher');
+    when(appsService.applications).thenReturn([launcher]);
+    when(appsService.isTileHidden(launcher)).thenReturn(true);
+    await _pumpWidgetWithProviders(tester, appsService);
+    await tester.tap(find.byIcon(Icons.visibility_off_outlined).last);
+    await tester.pumpAndSettle();
+    expect(find.text('CuteLauncher'), findsOneWidget);
+  });
+
   testWidgets("'Add' opens AddToCategoryDialog", (tester) async {
     final appsService = MockAppsService();
+    when(appsService.isTileHidden(any)).thenReturn(false);
     final application = fakeApp(
       packageName: "me.efesser.flauncher",
       name: "FLauncher",
@@ -154,6 +171,7 @@ void main() {
 
   testWidgets('shared details remove membership without offering All Apps', (tester) async {
     final apps = MockAppsService();
+    when(apps.isTileHidden(any)).thenReturn(false);
     final app = fakeApp(packageName: 'sample.app', name: 'Sample');
     when(apps.applications).thenReturn([app]);
     await _pumpWidgetWithProviders(tester, apps);
@@ -178,6 +196,7 @@ void main() {
 
   testWidgets('details keep removal action when the app has no manual memberships', (tester) async {
     final apps = MockAppsService();
+    when(apps.isTileHidden(any)).thenReturn(false);
     final app = fakeApp(packageName: 'sample', name: 'Sample');
     when(apps.applications).thenReturn([app]);
     await _pumpWidgetWithProviders(tester, apps);
@@ -195,6 +214,7 @@ void main() {
 
   testWidgets("'Info' calls openAppInfo on AppsService", (tester) async {
     final appsService = MockAppsService();
+    when(appsService.isTileHidden(any)).thenReturn(false);
     final application = fakeApp(
       packageName: "me.efesser.flauncher",
       name: "FLauncher",

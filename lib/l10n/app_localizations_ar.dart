@@ -3150,7 +3150,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get homeInherited => 'القيمة الموروثة';
 
   @override
-  String get homeOwnReset => 'قيمة مخصصة · استخدم العالمية';
+  String get homeOwnReset => 'استعادة الإعدادات المشتركة';
 
   @override
   String get homeParameters => 'المعلمات';
@@ -3484,6 +3484,10 @@ class AppLocalizationsAr extends AppLocalizations {
       'اضغط 650 مللي ثانية: إجراء واحد دون الضغط القصير. إذا عُيّن الضغط المطوّل فقط، فلن يفعل الضغط القصير شيئًا.';
 
   @override
+  String get remotePanelDescription =>
+      'تعرض اللوحة العائمة أدواتك فوق التطبيقات الأخرى. لفتحها بجهاز التحكم، عيّن إجراء «لوحة عائمة» لزر من اختيارك.';
+
+  @override
   String get remotePanel => 'لوحة عائمة';
 
   @override
@@ -3502,13 +3506,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get panelClockStyle => 'مظهر الساعة';
 
   @override
-  String get clockPreset => 'تصميم الساعة';
+  String get clockPreset => 'نمط الخط';
 
   @override
   String get clockCustom => 'مخصص';
 
   @override
-  String get clockWeight => 'سماكة الخط';
+  String get clockWeight => 'سُمك الخط';
 
   @override
   String get clockGlow => 'توهج النص';
@@ -3703,6 +3707,33 @@ class AppLocalizationsAr extends AppLocalizations {
   String get adaptiveLandscape => 'Adaptive landscape';
 
   @override
+  String get landscapeDemoSpring => 'Spring';
+
+  @override
+  String get landscapeDemoSummer => 'Summer';
+
+  @override
+  String get landscapeDemoAutumn => 'Autumn';
+
+  @override
+  String get landscapeDemoWinter => 'Winter';
+
+  @override
+  String get landscapeDemoClear => 'Clear';
+
+  @override
+  String get landscapeDemoCloudy => 'Cloudy';
+
+  @override
+  String get landscapeDemoFog => 'Fog';
+
+  @override
+  String get landscapeDemoStart => 'Demonstrate changes';
+
+  @override
+  String get landscapeDemoStop => 'إيقاف';
+
+  @override
   String get landscapeVariant => 'Landscape style';
 
   @override
@@ -3760,4 +3791,106 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get weatherMetNorwayCredit =>
       'Data: MET Norway, CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Forecast adapted from https://api.met.no/. No API key; days use the TV time zone, min/max cover available periods. Precipitation probability is unavailable.';
+
+  @override
+  String get informationGroup => 'الساعة والتاريخ والطقس';
+
+  @override
+  String get informationSettings => 'إعدادات المجموعة';
+
+  @override
+  String get informationAppearance => 'مظهر المجموعة';
+
+  @override
+  String get informationSize => 'حجم المجموعة';
+
+  @override
+  String get informationPosition => 'موضع الساعة والنص';
+
+  @override
+  String get informationClockLeft => 'الساعة يسارًا والنص يمينًا';
+
+  @override
+  String get informationClockRight => 'النص يسارًا والساعة يمينًا';
+
+  @override
+  String get informationSpacing => 'المسافة بين الساعة والنص';
+
+  @override
+  String get informationBackground => 'خلفية المجموعة';
+
+  @override
+  String get homeResetTilesHint =>
+      'هل تريد استعادة القيم المشتركة لجميع المربعات والتسميات في هذه الشاشة؟';
+
+  @override
+  String get homeResetLayoutHint =>
+      'هل تريد إعادة تعيين تخطيط هذا القسم واستعادة مظهره المشترك وإزالة الهوامش الداخلية؟ سيتم الاحتفاظ بالتطبيقات وترتيبها.';
+
+  @override
+  String get networkSummary => 'الشبكة';
+
+  @override
+  String get networkConnected => 'الإنترنت متاح';
+
+  @override
+  String get networkOffline => 'لا يوجد اتصال بالإنترنت';
+
+  @override
+  String get networkDisconnected => 'غير متصل';
+
+  @override
+  String get networkConnection => 'الاتصال';
+
+  @override
+  String get networkSignal => 'الإشارة';
+
+  @override
+  String get networkLinkSpeed => 'سرعة ارتباط Wi-Fi';
+
+  @override
+  String get networkTrafficRate => 'حركة بيانات الجهاز · استقبال / إرسال';
+
+  @override
+  String get networkSystemSettings => 'إعدادات شبكة النظام';
+
+  @override
+  String get networkUnavailable => 'غير متاح';
+
+  @override
+  String get networkMobile => 'شبكة الهاتف المحمول';
+
+  @override
+  String get networkFrequency => 'التردد';
+
+  @override
+  String get networkMbps => 'ميغابت/ث';
+
+  @override
+  String get networkKbps => 'كيلوبايت/ث';
+
+  @override
+  String get networkReadFailed => 'تعذرت قراءة حالة الشبكة';
+
+  @override
+  String get clockItalic => 'مائل';
+
+  @override
+  String get panelWrapNavigation => 'التنقل الدائري في اللوحة';
+
+  @override
+  String get panelWrapNavigationHelp =>
+      'تنقل الأسهم من الحافة إلى الجانب المقابل. اضغط مطولاً على السهم لمواصلة التنقل بين الجانبين.';
+
+  @override
+  String get networkReceive => 'استقبال';
+
+  @override
+  String get networkSend => 'إرسال';
+
+  @override
+  String get landscapeCelestialBodies => 'الشمس والقمر';
+
+  @override
+  String get landscapeStarRotation => 'دوران النجوم';
 }

@@ -189,7 +189,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(CuteLauncherAboutDialog), findsOneWidget);
     expect(find.text('Original project'), findsNothing);
-    expect(find.text('Installed: v1.0.0+1'), findsOneWidget);
+    expect(find.text('Installed: v1.0.0'), findsOneWidget);
     expect(find.textContaining('io.github.kirillshchetinnikov.cutelauncher'), findsOneWidget);
     expect(Focus.of(tester.element(find.text('Close'))).hasFocus, isTrue);
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);

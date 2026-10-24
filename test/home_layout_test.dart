@@ -121,7 +121,7 @@ void main() {
     }
   });
   test(
-    'style, layout and navigation reset independently including legacy fields',
+    'layout reset also restores common appearance and leaves navigation intact',
     () async {
       SharedPreferences.setMockInitialValues({});
       final prefs = await SharedPreferences.getInstance();
@@ -133,7 +133,7 @@ void main() {
       await service.inheritField(1, 'sectionPadding');
       expect(service.tilesFor(1).number('sectionPadding'), isNull);
       await service.setCategoryTile(1, 'sectionBackground', 0);
-      expect(service.tilesFor(1).color('sectionBackground')!.a, 0);
+      expect(service.tilesFor(1).homeFieldValue('sectionBackground'), 0);
       await service.setCategory(1, 'layout', 'rows');
       await service.setCategory(1, 'columns', 4);
       await service.reset();
@@ -144,7 +144,7 @@ void main() {
       await service.resetCategoryLayout(1, grid: true);
       expect(service.category(1).layout, 'grid');
       expect(service.category(1).columns, 6);
-      expect(service.tilesFor(1).number('radius'), 32);
+      expect(service.tilesFor(1).number('radius'), isNull);
     },
   );
   test('global style reset supersedes explicit legacy labels and titles', () async {

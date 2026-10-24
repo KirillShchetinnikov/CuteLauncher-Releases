@@ -128,7 +128,11 @@ void main() {
     await tester.pumpAndSettle();
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
     await tester.pumpAndSettle();
-    expect(appearance.appearance.number('radius'), 32);
+    expect(appearance.appearance.number('radius'), 0);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+    await tester.pumpAndSettle();
+    expect(appearance.appearance.number('radius'), isNull);
+    expect(find.byType(SimpleDialog), findsNothing);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.pumpAndSettle();
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);

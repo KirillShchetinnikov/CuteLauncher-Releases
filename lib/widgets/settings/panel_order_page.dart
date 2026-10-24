@@ -1,3 +1,4 @@
+import '../../panel_layout.dart';
 import '../../providers/remote_panel_service.dart';
 
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import '../../l10n/app_localizations.dart';
 import '../../providers/appearance_service.dart';
 import 'focusable_settings_tile.dart';
 import 'settings_page_layout.dart';
+import 'settings_value_text.dart';
 
 class PanelOrderPage extends StatefulWidget {
   static const routeName = 'panel_order';
@@ -37,8 +39,11 @@ class _PanelOrderPageState extends State<PanelOrderPage> {
         : null;
     final layout = panel?.layout ?? service.appearance.panelLayout;
     final left = key == 'panelButtonsOrder';
-    final order = left ? layout.left : layout.right;
-    final other = left ? layout.right : layout.left;
+    final (first, second) = layout.displayOrders(
+      service.appearance.combinedInformation,
+    );
+    final order = left ? first : second;
+    final other = left ? second : first;
     final index = order.indexOf(id);
     final next = index + delta;
     if (next < 0 && !left) {
@@ -53,12 +58,13 @@ class _PanelOrderPageState extends State<PanelOrderPage> {
     } else {
       return;
     }
+    final (savedLeft, savedRight) = layout.expandOrders(first, second);
     _busy = true;
     try {
       if (panel != null) {
-        await panel.setPanelOrder(layout.left, layout.right);
+        await panel.setPanelOrder(savedLeft, savedRight);
       } else {
-        await service.setPanelOrder(layout.left, layout.right);
+        await service.setPanelOrder(savedLeft, savedRight);
       }
       if (mounted) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -86,7 +92,10 @@ class _PanelOrderPageState extends State<PanelOrderPage> {
     final panel = widget.remotePanel
         ? context.watch<RemotePanelService>()
         : null;
+    final (leftOrder, rightOrder) = (panel?.layout ?? appearance.panelLayout)
+        .displayOrders(appearance.combinedInformation);
     final labels = {
+      PanelLayout.informationGroup: l.informationGroup,
       'settings': l.settings,
       'systemSettings': l.androidTvSettings,
       'inputs': l.inputs,
@@ -100,6 +109,7 @@ class _PanelOrderPageState extends State<PanelOrderPage> {
       'time': l.showTime,
     };
     const icons = {
+      PanelLayout.informationGroup: Icons.dashboard_outlined,
       'settings': Icons.settings_outlined,
       'systemSettings': Icons.settings,
       'inputs': Icons.tv,
@@ -126,18 +136,17 @@ class _PanelOrderPageState extends State<PanelOrderPage> {
               for (final key in ['panelButtonsOrder', 'panelInfoOrder']) ...[
                 Padding(
                   padding: const EdgeInsets.all(12),
-                  child: Text(
-                    key == 'panelButtonsOrder'
-                        ? l.settingsMenuLeft
-                        : l.settingsMenuRight,
+                  child: SettingsValueText(
+                    alignment: TextAlign.start,
+                    text: Text(
+                      key == 'panelButtonsOrder'
+                          ? l.settingsMenuLeft
+                          : l.settingsMenuRight,
+                    ),
                   ),
                 ),
                 for (final id
-                    in panel == null
-                        ? appearance.panelOrder(key)
-                        : key == 'panelButtonsOrder'
-                        ? panel.layout.left
-                        : panel.layout.right)
+                    in key == 'panelButtonsOrder' ? leftOrder : rightOrder)
                   FocusableSettingsTile(
                     key: ValueKey(id),
                     focusNode: _nodes.putIfAbsent(id, () => FocusNode()),
@@ -156,15 +165,7 @@ class _PanelOrderPageState extends State<PanelOrderPage> {
                           (event.logicalKey == LogicalKeyboardKey.arrowUp ||
                               event.logicalKey ==
                                   LogicalKeyboardKey.arrowDown)) {
-                        final ids = [
-                          if (panel != null) ...[
-                            ...panel.layout.left,
-                            ...panel.layout.right,
-                          ] else ...[
-                            ...appearance.panelOrder('panelButtonsOrder'),
-                            ...appearance.panelOrder('panelInfoOrder'),
-                          ],
-                        ];
+                        final ids = [...leftOrder, ...rightOrder];
                         final next =
                             ids.indexOf(id) +
                             (event.logicalKey == LogicalKeyboardKey.arrowDown

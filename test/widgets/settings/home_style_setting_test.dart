@@ -153,22 +153,24 @@ void main() {
     tester,
   ) async {
     await appearance.setCategoryTile(1, 'size', 200);
-    await pump(tester, control('size', id: 1));
+    await pump(tester, const AppearancePage(categoryId: 1));
+    final size = find.byWidgetPredicate((w) => w is HomeStyleSetting && w.field == 'size');
     expect(
       tester
-          .widget<SettingsValueStepper>(find.byType(SettingsValueStepper))
+          .widget<SettingsValueStepper>(find.descendant(of: size, matching: find.byType(SettingsValueStepper)))
           .enabled,
       isFalse,
     );
-    await tester.tap(find.text('Своё значение · вернуть общее'));
+    final l = AppLocalizations.of(tester.element(find.byType(AppearancePage)))!;
+    await tester.scrollUntilVisible(find.text(l.homeOwnReset), 200);
+    await tester.tap(find.text(l.homeOwnReset));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(l.homeOwnReset).last);
     await tester.pumpAndSettle();
     expect(appearance.category(1).tiles.containsKey('size'), isFalse);
-    expect(
-      tester
-          .widget<SettingsValueStepper>(find.byType(SettingsValueStepper))
-          .enabled,
-      isFalse,
-    );
+    await tester.scrollUntilVisible(find.text(l.tileSize), -200);
+    expect(tester.widget<SettingsValueStepper>(find.descendant(of: size,
+      matching: find.byType(SettingsValueStepper))).enabled, isFalse);
     await tester.pumpWidget(const SizedBox());
   });
 }

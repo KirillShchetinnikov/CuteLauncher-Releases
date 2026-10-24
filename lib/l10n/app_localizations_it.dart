@@ -3207,7 +3207,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get homeInherited => 'Valore ereditato';
 
   @override
-  String get homeOwnReset => 'Valore personalizzato · usa globale';
+  String get homeOwnReset => 'Ripristina impostazioni comuni';
 
   @override
   String get homeParameters => 'Parametri';
@@ -3541,6 +3541,10 @@ class AppLocalizationsIt extends AppLocalizations {
       'Tieni premuto per 650 ms: una sola azione, senza quella breve. Se è assegnata solo la pressione prolungata, quella breve non fa nulla.';
 
   @override
+  String get remotePanelDescription =>
+      'Il pannello mobile mostra i tuoi widget sopra le altre app. Per aprirlo con il telecomando, assegna l’azione «Pannello mobile» a un tasto a tua scelta.';
+
+  @override
   String get remotePanel => 'Pannello mobile';
 
   @override
@@ -3560,7 +3564,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get panelClockStyle => 'Aspetto dell’orologio';
 
   @override
-  String get clockPreset => 'Stile dell’orologio';
+  String get clockPreset => 'Stile del carattere';
 
   @override
   String get clockCustom => 'Personalizzato';
@@ -3762,6 +3766,33 @@ class AppLocalizationsIt extends AppLocalizations {
   String get adaptiveLandscape => 'Adaptive landscape';
 
   @override
+  String get landscapeDemoSpring => 'Spring';
+
+  @override
+  String get landscapeDemoSummer => 'Summer';
+
+  @override
+  String get landscapeDemoAutumn => 'Autumn';
+
+  @override
+  String get landscapeDemoWinter => 'Winter';
+
+  @override
+  String get landscapeDemoClear => 'Clear';
+
+  @override
+  String get landscapeDemoCloudy => 'Cloudy';
+
+  @override
+  String get landscapeDemoFog => 'Fog';
+
+  @override
+  String get landscapeDemoStart => 'Demonstrate changes';
+
+  @override
+  String get landscapeDemoStop => 'Stop';
+
+  @override
   String get landscapeVariant => 'Landscape style';
 
   @override
@@ -3819,4 +3850,107 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get weatherMetNorwayCredit =>
       'Data: MET Norway, CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Forecast adapted from https://api.met.no/. No API key; days use the TV time zone, min/max cover available periods. Precipitation probability is unavailable.';
+
+  @override
+  String get informationGroup => 'Orologio, data e meteo';
+
+  @override
+  String get informationSettings => 'Impostazioni del blocco';
+
+  @override
+  String get informationAppearance => 'Aspetto del blocco';
+
+  @override
+  String get informationSize => 'Dimensione del blocco';
+
+  @override
+  String get informationPosition => 'Posizione di orologio e testo';
+
+  @override
+  String get informationClockLeft => 'Orologio a sinistra, testo a destra';
+
+  @override
+  String get informationClockRight => 'Testo a sinistra, orologio a destra';
+
+  @override
+  String get informationSpacing => 'Spazio tra orologio e testo';
+
+  @override
+  String get informationBackground => 'Sfondo del blocco';
+
+  @override
+  String get homeResetTilesHint =>
+      'Ripristinare i valori comuni di tutte le tessere ed etichette di questa schermata?';
+
+  @override
+  String get homeResetLayoutHint =>
+      'Reimpostare il layout della sezione, ripristinare l’aspetto comune e azzerare i margini interni? Le app e il loro ordine saranno mantenuti.';
+
+  @override
+  String get networkSummary => 'Rete';
+
+  @override
+  String get networkConnected => 'Internet disponibile';
+
+  @override
+  String get networkOffline => 'Nessun accesso a Internet';
+
+  @override
+  String get networkDisconnected => 'Disconnesso';
+
+  @override
+  String get networkConnection => 'Connessione';
+
+  @override
+  String get networkSignal => 'Segnale';
+
+  @override
+  String get networkLinkSpeed => 'Velocità del collegamento Wi-Fi';
+
+  @override
+  String get networkTrafficRate =>
+      'Traffico del dispositivo · ricezione / invio';
+
+  @override
+  String get networkSystemSettings => 'Impostazioni di rete del sistema';
+
+  @override
+  String get networkUnavailable => 'Non disponibile';
+
+  @override
+  String get networkMobile => 'Rete mobile';
+
+  @override
+  String get networkFrequency => 'Frequenza';
+
+  @override
+  String get networkMbps => 'Mbps';
+
+  @override
+  String get networkKbps => 'KB/s';
+
+  @override
+  String get networkReadFailed => 'Impossibile leggere lo stato della rete';
+
+  @override
+  String get clockItalic => 'Corsivo';
+
+  @override
+  String get panelWrapNavigation => 'Navigazione circolare del pannello';
+
+  @override
+  String get panelWrapNavigationHelp =>
+      'Le frecce passano dal bordo al lato opposto. Tieni premuta una freccia per continuare su entrambi i lati.';
+
+  @override
+  String get networkReceive => 'Ricezione';
+
+  @override
+  String get networkSend => 'Invio';
+
+  @override
+  String get landscapeCelestialBodies => 'Sole e luna';
+
+  @override
+  String get landscapeStarRotation => 'Rotazione delle stelle';
 }

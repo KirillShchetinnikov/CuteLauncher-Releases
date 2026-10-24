@@ -1,4 +1,4 @@
-import 'panel_clock_style_page.dart';
+import 'information_settings_page.dart';
 import 'settings_route.dart';
 import 'settings_help.dart';
 import 'remote_panel_page.dart';
@@ -29,13 +29,10 @@ import 'package:provider/provider.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 
 import '../../providers/settings_service.dart';
-import '../../providers/appearance_service.dart';
 import '../../providers/tv_inputs_service.dart';
 import '../rounded_switch_list_tile.dart';
 import 'focusable_settings_tile.dart';
-import 'date_time_format_page.dart';
 import 'data_usage_period_page.dart';
-import 'weather_page.dart';
 import 'panel_order_page.dart';
 import 'notifications_settings_page.dart';
 
@@ -55,60 +52,7 @@ class StatusBarObjectsPage extends StatelessWidget {
       ),
       child: ListView(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Text(
-              l.clockAndDateGroup,
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-          ),
-          RoundedSwitchListTile(
-            autofocus: false,
-            value: s.showTimeInStatusBar,
-            onChanged: s.setShowTimeInStatusBar,
-            title: Text(l.showTime),
-          ),
-          RoundedSwitchListTile(
-            value: context.watch<AppearanceService>().appearance.combinedInformation,
-            title: Text(l.combinedInformation),
-            onChanged: (v) => context.read<AppearanceService>().set('panelCombinedInformation', v),
-          ),
-          RoundedSwitchListTile(
-            autofocus: false,
-            value: s.showDateInStatusBar,
-            onChanged: s.setShowDateInStatusBar,
-            title: Text(l.showDate),
-          ),
-          FocusableSettingsTile(title: Text(l.panelClockStyle),
-            leading: const Icon(Icons.palette_outlined),
-            onPressed: () => Navigator.of(context).pushNamed(PanelClockStylePage.routeName)),
-          FocusableSettingsTile(
-            autofocus: false,
-            leading: const Icon(Icons.date_range),
-            title: Text(l.dateSettings),
-            onPressed: () =>
-                Navigator.of(context).pushNamed(DateTimeFormatPage.routeName),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Text(
-              l.weather,
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-          ),
-          RoundedSwitchListTile(
-            autofocus: false,
-            value: s.showWeatherInStatusBar,
-            onChanged: s.setShowWeatherInStatusBar,
-            title: Text(l.showWeather),
-          ),
-          FocusableSettingsTile(
-            autofocus: false,
-            leading: const Icon(Icons.cloud_outlined),
-            title: Text(l.weatherSettings),
-            onPressed: () =>
-                Navigator.of(context).pushNamed(WeatherPage.routeName),
-          ),
+          const InformationObjectsSection(),
           Padding(
             padding: const EdgeInsets.all(12),
             child: Text(

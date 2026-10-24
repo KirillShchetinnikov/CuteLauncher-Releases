@@ -188,10 +188,10 @@ class WeatherService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
     await _fetchLatest();
   }
 
-  Future<void> _fetchLatest() async {
+  Future<void> _fetchLatest({bool force = false}) async {
     if (isDisposed) return;
     if (_configuration.source != WeatherSource.breezy) {
-      await _fetchDirect();
+      await _fetchDirect(force: force);
       return;
     }
     final generation = ++_fetchGeneration;
@@ -209,7 +209,7 @@ class WeatherService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
     }
   }
 
-  Future<void> _fetchDirect() async {
+  Future<void> _fetchDirect({bool force = false}) async {
     if (_directBusy || !_foreground || !canRefresh) return;
     final config = _configuration;
     final identity = jsonEncode(config.toJson());
@@ -227,8 +227,8 @@ class WeatherService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
       _weatherData = null;
       _updatedAt = null;
     }
-    if (_lastAttempt != null && DateTime.now().difference(_lastAttempt!) < const Duration(minutes: 5)) return;
-    if (_updatedAt != null && DateTime.now().difference(_updatedAt!) < Duration(minutes: config.intervalMinutes)) return;
+    if (!force && _lastAttempt != null && DateTime.now().difference(_lastAttempt!) < const Duration(minutes: 5)) return;
+    if (!force && _updatedAt != null && DateTime.now().difference(_updatedAt!) < Duration(minutes: config.intervalMinutes)) return;
     final generation = ++_fetchGeneration;
     _directBusy = true;
     _lastAttempt = DateTime.now();
@@ -282,7 +282,7 @@ class WeatherService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
   }
 
   Future<void> refresh() async {
-    await _fetchLatest();
+    await _fetchLatest(force: true);
     notifyListeners();
   }
 

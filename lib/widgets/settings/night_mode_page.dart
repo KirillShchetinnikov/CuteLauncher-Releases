@@ -41,14 +41,19 @@ class _NightModePageState extends State<NightModePage> {
       if (mounted) {
         context.read<NightModeService>().refreshSystem();
         if (widget.section == 'inputs') _refreshInputs();
-        if (widget.section == 'picture') { context.read<NightModeService>().refreshPictureMode(); }
+        if (widget.section == 'picture') {
+          context.read<NightModeService>().refreshPictureMode();
+        }
       }
     });
   }
 
   Future<void> _refreshInputs() async {
-    try { await context.read<TvInputsService?>()?.refreshInputs(); }
-    catch (e) { debugPrint('Unable to refresh TV inputs: $e'); }
+    try {
+      await context.read<TvInputsService?>()?.refreshInputs();
+    } catch (e) {
+      debugPrint('Unable to refresh TV inputs: $e');
+    }
   }
 
   void open(String section) => Navigator.of(context).push(
@@ -141,25 +146,37 @@ class _NightModePageState extends State<NightModePage> {
   Widget build(BuildContext context) {
     final service = context.watch<NightModeService>();
     final c = service.configuration;
-    final inputs = context.watch<TvInputsService?>()?.inputs.where((i) => i.type == TvInputType.hdmi && i.parentId == null).toList() ?? <TvInput>[];
+    final inputs =
+        context
+            .watch<TvInputsService?>()
+            ?.inputs
+            .where((i) => i.type == TvInputType.hdmi && i.parentId == null)
+            .toList() ??
+        <TvInput>[];
     final l = AppLocalizations.of(context)!;
     final pictureModes = <int, String>{
-      0: l.nightPictureStandard, 1: l.nightPictureDynamic,
-      3: l.nightPictureMovie, 4: l.nightPictureSport,
+      0: l.nightPictureStandard,
+      1: l.nightPictureDynamic,
+      3: l.nightPictureMovie,
+      4: l.nightPictureSport,
       10: l.nightPictureIntelligent,
       16: '${l.nightPictureStandard} (HDR)',
       17: '${l.nightPictureDynamic} (HDR)',
       19: '${l.nightPictureMovie} (HDR)',
       20: '${l.nightPictureSport} (HDR)',
       26: '${l.nightPictureIntelligent} (HDR)',
-      27: 'IMAX (HDR)', 29: 'FILMMAKER MODE (HDR)',
-      46: l.nightPictureBright, 51: 'Dolby Vision IQ',
-      53: 'FILMMAKER MODE (Dolby Vision)', 60: 'FILMMAKER MODE',
+      27: 'IMAX (HDR)',
+      29: 'FILMMAKER MODE (HDR)',
+      46: l.nightPictureBright,
+      51: 'Dolby Vision IQ',
+      53: 'FILMMAKER MODE (Dolby Vision)',
+      60: 'FILMMAKER MODE',
     };
     for (final mode in c.ignoredPictureModes) {
       pictureModes.putIfAbsent(mode, () => '${l.nightPictureCode} $mode');
     }
-    String modeLabel(int mode) => pictureModes[mode] ?? '${l.nightPictureCode} $mode';
+    String modeLabel(int mode) =>
+        pictureModes[mode] ?? '${l.nightPictureCode} $mode';
     final pictureGroups = <String, List<int>>{
       l.nightPictureOrdinary: [0, 1, 3, 4, 10, 60],
       'HDR': [16, 17, 19, 20, 26, 27, 29],
@@ -169,8 +186,11 @@ class _NightModePageState extends State<NightModePage> {
       checked: c.ignoredPictureModes.contains(mode),
       child: FocusableSettingsTile(
         title: Text(modeLabel(mode)),
-        trailing: Icon(c.ignoredPictureModes.contains(mode)
-            ? Icons.check_box : Icons.check_box_outline_blank),
+        trailing: Icon(
+          c.ignoredPictureModes.contains(mode)
+              ? Icons.check_box
+              : Icons.check_box_outline_blank,
+        ),
         onPressed: () {
           final selected = c.ignoredPictureModes.toSet();
           if (!selected.add(mode)) selected.remove(mode);
@@ -247,11 +267,16 @@ class _NightModePageState extends State<NightModePage> {
               ),
               onPressed: () => open('excluded'),
             ),
-            FocusableSettingsTile(leading: const Icon(Icons.settings_input_hdmi),
-              title: Text(l.nightInputExclusions), onPressed: () => open('inputs')),
+            FocusableSettingsTile(
+              leading: const Icon(Icons.settings_input_hdmi),
+              title: Text(l.nightInputExclusions),
+              onPressed: () => open('inputs'),
+            ),
             FocusableSettingsTile(
               leading: const Icon(Icons.image_outlined),
-              title: Text('${l.nightPictureExclusions} (${c.ignoredPictureModes.length})'),
+              title: Text(
+                '${l.nightPictureExclusions} (${c.ignoredPictureModes.length})',
+              ),
               onPressed: () => open('picture'),
             ),
           ],
@@ -260,7 +285,9 @@ class _NightModePageState extends State<NightModePage> {
             if (service.pictureModeKnown && service.pictureMode == null)
               SettingsHelp(text: l.nightPictureUnavailable),
             if (service.pictureMode != null)
-              Text('${l.nightPictureCurrent}: ${modeLabel(service.pictureMode!)}'),
+              Text(
+                '${l.nightPictureCurrent}: ${modeLabel(service.pictureMode!)}',
+              ),
             FocusableSettingsTile(
               autofocus: true,
               leading: const Icon(Icons.refresh),
@@ -273,39 +300,63 @@ class _NightModePageState extends State<NightModePage> {
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Semantics(
                   header: true,
-                  child: Text(group.key, style: Theme.of(context).textTheme.titleMedium),
+                  child: Text(
+                    group.key,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
                 ),
               ),
               for (final mode in group.value) pictureTile(mode),
             ],
-            for (final mode in pictureModes.keys.where((mode) =>
-                !pictureGroups.values.any((codes) => codes.contains(mode))))
+            for (final mode in pictureModes.keys.where(
+              (mode) =>
+                  !pictureGroups.values.any((codes) => codes.contains(mode)),
+            ))
               pictureTile(mode),
           ],
           if (widget.section == 'inputs') ...[
-            RoundedSwitchListTile(autofocus: true, value: c.ignoreHdmiInputs,
+            RoundedSwitchListTile(
+              autofocus: true,
+              value: c.ignoreHdmiInputs,
               title: Text(l.nightIgnoreHdmiInputs),
-              onChanged: (v) => update(c.copyWith(ignoreHdmiInputs: v))),
+              onChanged: (v) => update(c.copyWith(ignoreHdmiInputs: v)),
+            ),
             SettingsHelp(text: l.nightIgnoreHdmiInputsHint),
-            if (!service.usagePermission) FocusableSettingsTile(
-              title: Text(l.nightUsageAccess), onPressed: service.requestUsagePermission),
+            if (!service.usagePermission)
+              FocusableSettingsTile(
+                title: Text(l.nightUsageAccess),
+                onPressed: service.requestUsagePermission,
+              ),
             if (c.ignoreHdmiInputs) ...[
-              RoundedSwitchListTile(value: c.selectHdmiInputs,
+              RoundedSwitchListTile(
+                value: c.selectHdmiInputs,
                 title: Text(l.nightSelectInputs),
-                onChanged: (v) => update(c.copyWith(selectHdmiInputs: v))),
+                onChanged: (v) => update(c.copyWith(selectHdmiInputs: v)),
+              ),
               if (c.selectHdmiInputs) ...[
                 if (inputs.isEmpty) SettingsHelp(text: l.inputsUnavailableHint),
-                if (c.ignoredHdmiInputIds.isEmpty) SettingsHelp(text: l.nightNoInputsSelected),
-                for (final input in inputs) Semantics(
-                  checked: c.ignoredHdmiInputIds.contains(input.id),
-                  child: FocusableSettingsTile(leading: Icon(tvInputIcon(input)), title: Text(input.label),
-                    trailing: Icon(c.ignoredHdmiInputIds.contains(input.id) ? Icons.check_box : Icons.check_box_outline_blank),
-                    onPressed: () {
-                      final selected = c.ignoredHdmiInputIds.toSet();
-                      if (!selected.add(input.id)) selected.remove(input.id);
-                      update(c.copyWith(ignoredHdmiInputIds: selected.toList()));
-                    }),
-                ),
+                if (c.ignoredHdmiInputIds.isEmpty)
+                  SettingsHelp(text: l.nightNoInputsSelected),
+                for (final input in inputs)
+                  Semantics(
+                    checked: c.ignoredHdmiInputIds.contains(input.id),
+                    child: FocusableSettingsTile(
+                      leading: Icon(tvInputIcon(input)),
+                      title: Text(input.label),
+                      trailing: Icon(
+                        c.ignoredHdmiInputIds.contains(input.id)
+                            ? Icons.check_box
+                            : Icons.check_box_outline_blank,
+                      ),
+                      onPressed: () {
+                        final selected = c.ignoredHdmiInputIds.toSet();
+                        if (!selected.add(input.id)) selected.remove(input.id);
+                        update(
+                          c.copyWith(ignoredHdmiInputIds: selected.toList()),
+                        );
+                      },
+                    ),
+                  ),
               ],
             ],
           ],
@@ -602,7 +653,7 @@ class _NightModePageState extends State<NightModePage> {
             SettingsHelp(text: l.nightBatteryHint),
             if (service.batterySettingsUnavailable)
               Text(l.nightBatteryUnavailable),
-            ListTile(
+            FocusableSettingsTile(
               leading: Icon(
                 !service.overlayPermissionKnown
                     ? Icons.help_outline
@@ -617,7 +668,7 @@ class _NightModePageState extends State<NightModePage> {
                     ? l.nightModePermissionGranted
                     : l.nightModePermission,
               ),
-              onTap: service.requestOverlayPermission,
+              onPressed: service.requestOverlayPermission,
             ),
             AdbPermissionTile(
               title: l.nightModeAdbPermission,

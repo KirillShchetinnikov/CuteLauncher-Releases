@@ -86,6 +86,7 @@ class _FLauncherAppState extends State<FLauncherApp> {
         return;
       }
       if (event != true || !mounted) return;
+      context.read<SettingsService>().landscapeDemo.value = null;
       _navigatorKey.currentState?.popUntil((route) => route.isFirst);
       _launcherKey.currentState?.returnHome();
     }, onError: (Object error) => debugPrint('Home event unavailable: $error'));

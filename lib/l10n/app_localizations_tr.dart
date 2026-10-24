@@ -3177,7 +3177,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get homeInherited => 'Devralınan değer';
 
   @override
-  String get homeOwnReset => 'Özel değer · global kullan';
+  String get homeOwnReset => 'Ortak ayarları geri yükle';
 
   @override
   String get homeParameters => 'Parametreler';
@@ -3510,6 +3510,10 @@ class AppLocalizationsTr extends AppLocalizations {
       '650 ms basılı tutun: kısa eylem olmadan bir kez çalışır. Yalnızca basılı tutma atanmışsa kısa basma hiçbir şey yapmaz.';
 
   @override
+  String get remotePanelDescription =>
+      'Yüzen panel, widget’larınızı diğer uygulamaların üzerinde gösterir. Kumandayla açmak için Yüzen panel eylemini istediğiniz bir düğmeye atayın.';
+
+  @override
   String get remotePanel => 'Yüzen panel';
 
   @override
@@ -3529,13 +3533,13 @@ class AppLocalizationsTr extends AppLocalizations {
   String get panelClockStyle => 'Saat görünümü';
 
   @override
-  String get clockPreset => 'Saat tasarımı';
+  String get clockPreset => 'Yazı tipi stili';
 
   @override
   String get clockCustom => 'Özel';
 
   @override
-  String get clockWeight => 'Yazı tipi kalınlığı';
+  String get clockWeight => 'Yazı kalınlığı';
 
   @override
   String get clockGlow => 'Metin parlaması';
@@ -3730,6 +3734,33 @@ class AppLocalizationsTr extends AppLocalizations {
   String get adaptiveLandscape => 'Adaptive landscape';
 
   @override
+  String get landscapeDemoSpring => 'Spring';
+
+  @override
+  String get landscapeDemoSummer => 'Summer';
+
+  @override
+  String get landscapeDemoAutumn => 'Autumn';
+
+  @override
+  String get landscapeDemoWinter => 'Winter';
+
+  @override
+  String get landscapeDemoClear => 'Clear';
+
+  @override
+  String get landscapeDemoCloudy => 'Cloudy';
+
+  @override
+  String get landscapeDemoFog => 'Fog';
+
+  @override
+  String get landscapeDemoStart => 'Demonstrate changes';
+
+  @override
+  String get landscapeDemoStop => 'Durdur';
+
+  @override
   String get landscapeVariant => 'Landscape style';
 
   @override
@@ -3787,4 +3818,106 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get weatherMetNorwayCredit =>
       'Data: MET Norway, CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Forecast adapted from https://api.met.no/. No API key; days use the TV time zone, min/max cover available periods. Precipitation probability is unavailable.';
+
+  @override
+  String get informationGroup => 'Saat, tarih ve hava durumu';
+
+  @override
+  String get informationSettings => 'Blok ayarları';
+
+  @override
+  String get informationAppearance => 'Blok görünümü';
+
+  @override
+  String get informationSize => 'Blok boyutu';
+
+  @override
+  String get informationPosition => 'Saat ve metin konumu';
+
+  @override
+  String get informationClockLeft => 'Saat solda, metin sağda';
+
+  @override
+  String get informationClockRight => 'Metin solda, saat sağda';
+
+  @override
+  String get informationSpacing => 'Saat ve metin aralığı';
+
+  @override
+  String get informationBackground => 'Blok arka planı';
+
+  @override
+  String get homeResetTilesHint =>
+      'Bu ekrandaki tüm kutucuk ve etiketler için ortak değerler geri yüklensin mi?';
+
+  @override
+  String get homeResetLayoutHint =>
+      'Bu bölümün düzeni sıfırlansın, ortak görünümü geri yüklensin ve iç boşlukları kaldırılsın mı? Uygulamalar ve sıraları korunur.';
+
+  @override
+  String get networkSummary => 'Ağ';
+
+  @override
+  String get networkConnected => 'İnternet kullanılabilir';
+
+  @override
+  String get networkOffline => 'İnternet erişimi yok';
+
+  @override
+  String get networkDisconnected => 'Bağlı değil';
+
+  @override
+  String get networkConnection => 'Bağlantı';
+
+  @override
+  String get networkSignal => 'Sinyal';
+
+  @override
+  String get networkLinkSpeed => 'Wi-Fi bağlantı hızı';
+
+  @override
+  String get networkTrafficRate => 'Cihaz trafiği · alma / gönderme';
+
+  @override
+  String get networkSystemSettings => 'Sistem ağ ayarları';
+
+  @override
+  String get networkUnavailable => 'Kullanılamıyor';
+
+  @override
+  String get networkMobile => 'Mobil ağ';
+
+  @override
+  String get networkFrequency => 'Frekans';
+
+  @override
+  String get networkMbps => 'Mbps';
+
+  @override
+  String get networkKbps => 'KB/sn';
+
+  @override
+  String get networkReadFailed => 'Ağ durumu okunamadı';
+
+  @override
+  String get clockItalic => 'İtalik';
+
+  @override
+  String get panelWrapNavigation => 'Panelde döngüsel gezinme';
+
+  @override
+  String get panelWrapNavigationHelp =>
+      'Kenarda ok tuşu karşı tarafa geçer. Her iki tarafta ilerlemek için ok tuşunu basılı tutun.';
+
+  @override
+  String get networkReceive => 'Alma';
+
+  @override
+  String get networkSend => 'Gönderme';
+
+  @override
+  String get landscapeCelestialBodies => 'Güneş ve ay';
+
+  @override
+  String get landscapeStarRotation => 'Yıldızların dönüşü';
 }

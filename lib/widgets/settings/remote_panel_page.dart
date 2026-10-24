@@ -1,3 +1,5 @@
+import 'settings_help.dart';
+import 'information_settings_page.dart';
 import '../../providers/remote_panel_service.dart';
 import '../rounded_switch_list_tile.dart';
 import 'appearance_page.dart';
@@ -14,9 +16,9 @@ import 'settings_page_layout.dart';
 import 'focusable_settings_tile.dart';
 import 'settings_route.dart';
 import 'panel_order_page.dart';
+import 'remote_buttons_page.dart';
 import 'notifications_settings_page.dart';
 import 'inputs_settings_page.dart';
-import 'weather_page.dart';
 
 class RemotePanelPage extends StatelessWidget {
   static const routeName = 'remote_panel_settings';
@@ -63,6 +65,13 @@ class RemotePanelPage extends StatelessWidget {
               ),
             ),
           ),
+          SettingsHelp(text: l.remotePanelDescription),
+          FocusableSettingsTile(
+            title: Text(l.remoteButtonsTitle),
+            leading: const Icon(Icons.settings_remote_outlined),
+            onPressed: () =>
+                Navigator.of(context).pushNamed(RemoteButtonsPage.routeName),
+          ),
         ],
       ),
     );
@@ -105,14 +114,12 @@ class RemotePanelObjectsPage extends StatelessWidget {
       title: Text(l.topPanelObjects),
       child: ListView(
         children: [
-          for (final id in [
-            'time',
-            'date',
-            ...panel.order.where((id) => id != 'time' && id != 'date'),
-          ])
+          const InformationObjectsSection(remotePanel: true),
+          for (final id in panel.order.where(
+            (id) => !const ['time', 'date', 'weather'].contains(id),
+          ))
             RoundedSwitchListTile(
               key: ValueKey(id),
-              autofocus: id == 'time',
               title: Text(labels[id]!),
               enabled: available(id),
               value: available(id) && panel.visible(id),
@@ -141,14 +148,6 @@ class RemotePanelObjectsPage extends StatelessWidget {
               onPressed: () => Navigator.of(
                 context,
               ).push(SettingsRoute(builder: (_) => const InputsSettingsPage())),
-            ),
-          if (!weather.hasWeather)
-            FocusableSettingsTile(
-              title: Text(l.weatherSettings),
-              leading: const Icon(Icons.cloud_outlined),
-              onPressed: () =>
-                  Navigator.of(context)
-                      .push(SettingsRoute(builder: (_) => const WeatherPage())),
             ),
         ],
       ),

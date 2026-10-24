@@ -35,34 +35,53 @@ Created by [Kirill Shchetinnikov](https://github.com/KirillShchetinnikov).
 
 ## Screenshots
 
-Example setups in version **1.0.24**, captured on Android TV and Google TV emulators (Android 16). Every image comes from the running app at 3840 × 2160; click an image to open the original. The third-party apps shown are installed separately.
+Example setups captured on Android TV and Google TV emulators (Android 16). Every image comes from the running app at 3840 × 2160; click an image to open the original. The third-party apps shown are installed separately.
 
 | Glass · autumn landscape | Standard style · graphite gradient |
 |---|---|
-| [![Glass · autumn landscape](docs/images/screenshots/01-glass-autumn.webp)](docs/images/screenshots/01-glass-autumn.webp) | [![Standard style · graphite gradient](docs/images/screenshots/05-standard-gradient.webp)](docs/images/screenshots/05-standard-gradient.webp) |
+| [![Glass · autumn landscape](docs/images/screenshots/en/01-glass-autumn.webp)](docs/images/screenshots/en/01-glass-autumn.webp) | [![Standard style · graphite gradient](docs/images/screenshots/en/05-standard-gradient.webp)](docs/images/screenshots/en/05-standard-gradient.webp) |
 
 | Soft style · spring landscape | Outline style · illustrated night landscape |
 |---|---|
-| [![Soft style · spring landscape](docs/images/screenshots/07-soft-spring.webp)](docs/images/screenshots/07-soft-spring.webp) | [![Outline style · illustrated night landscape](docs/images/screenshots/09-outline-night.webp)](docs/images/screenshots/09-outline-night.webp) |
+| [![Soft style · spring landscape](docs/images/screenshots/en/07-soft-spring.webp)](docs/images/screenshots/en/07-soft-spring.webp) | [![Outline style · illustrated night landscape](docs/images/screenshots/en/09-outline-night.webp)](docs/images/screenshots/en/09-outline-night.webp) |
+
+| Dynamic colors · six-column grid | Floating panel · sleep timer |
+|---|---|
+| [![Dynamic colors · six-column grid](docs/images/screenshots/en/13-dynamic-grid.webp)](docs/images/screenshots/en/13-dynamic-grid.webp) | [![Floating panel · sleep timer](docs/images/screenshots/en/14-floating-panel-timer.webp)](docs/images/screenshots/en/14-floating-panel-timer.webp) |
+
+The app background in the floating-panel screenshot is blurred for clarity.
 
 <details>
 <summary>8 more screenshots: features and settings</summary>
 
 | Glass settings | Outline settings |
 |---|---|
-| [![Glass settings](docs/images/screenshots/02-glass-settings.webp)](docs/images/screenshots/02-glass-settings.webp) | [![Outline settings](docs/images/screenshots/10-outline-settings.webp)](docs/images/screenshots/10-outline-settings.webp) |
+| [![Glass settings](docs/images/screenshots/en/02-glass-settings.webp)](docs/images/screenshots/en/02-glass-settings.webp) | [![Outline settings](docs/images/screenshots/en/10-outline-settings.webp)](docs/images/screenshots/en/10-outline-settings.webp) |
 
 | Calendar from the top panel | Sleep timer |
 |---|---|
-| [![Calendar from the top panel](docs/images/screenshots/03-calendar.webp)](docs/images/screenshots/03-calendar.webp) | [![Sleep timer](docs/images/screenshots/04-sleep-timer.webp)](docs/images/screenshots/04-sleep-timer.webp) |
+| [![Calendar from the top panel](docs/images/screenshots/en/03-calendar.webp)](docs/images/screenshots/en/03-calendar.webp) | [![Sleep timer](docs/images/screenshots/en/04-sleep-timer.webp)](docs/images/screenshots/en/04-sleep-timer.webp) |
 
 | Your own app categories | Customizable top panel |
 |---|---|
-| [![Your own app categories](docs/images/screenshots/06-sections.webp)](docs/images/screenshots/06-sections.webp) | [![Customizable top panel](docs/images/screenshots/08-top-panel.webp)](docs/images/screenshots/08-top-panel.webp) |
+| [![Your own app categories](docs/images/screenshots/en/06-sections.webp)](docs/images/screenshots/en/06-sections.webp) | [![Customizable top panel](docs/images/screenshots/en/08-top-panel.webp)](docs/images/screenshots/en/08-top-panel.webp) |
 
 | Adaptive wallpapers | Tile sizes and labels |
 |---|---|
-| [![Adaptive wallpapers](docs/images/screenshots/11-adaptive-wallpaper.webp)](docs/images/screenshots/11-adaptive-wallpaper.webp) | [![Tile sizes and labels](docs/images/screenshots/12-tile-appearance.webp)](docs/images/screenshots/12-tile-appearance.webp) |
+| [![Adaptive wallpapers](docs/images/screenshots/en/11-adaptive-wallpaper.webp)](docs/images/screenshots/en/11-adaptive-wallpaper.webp) | [![Tile sizes and labels](docs/images/screenshots/en/12-tile-appearance.webp)](docs/images/screenshots/en/12-tile-appearance.webp) |
+
+</details>
+
+<details>
+<summary>Adaptive landscape</summary>
+
+**Illustrated landscape**
+
+![Illustrated landscape](docs/images/landscapes/illustrated-en.gif)
+
+**Realistic landscape**
+
+![Realistic landscape](docs/images/landscapes/realistic-en.gif)
 
 </details>
 

@@ -96,6 +96,8 @@ void main() {
     await tester.pumpWidget(app(const StatusBarObjectsPage()));
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(find.text('Настройки входов'), 150);
+    await tester.ensureVisible(find.text('Настройки входов'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Настройки входов'));
     await tester.pumpAndSettle();
     expect(find.text('Брать имя устройства из CEC'), findsOneWidget);

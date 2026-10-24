@@ -11,6 +11,52 @@ import 'package:flauncher/tile_appearance.dart';
 
 void main() {
   test(
+    'weight ranges resolve after locale fallback and normalize old selections',
+    () {
+      const base = TextStyle(fontFamily: 'PanelSans');
+      const google = PanelClockStyle({'font': 'google-sans', 'weight': 900});
+    expect(google.availableWeights(base), [400, 500, 700]);
+      expect(google.textStyle(base).fontWeight, FontWeight.w700);
+      expect(google.textStyle(base).fontVariations, isEmpty);
+      const manrope = PanelClockStyle({'font': 'manrope', 'weight': 100});
+      expect(manrope.availableWeights(base), [
+        200,
+        300,
+        400,
+        500,
+        600,
+        700,
+        800,
+      ]);
+      expect(manrope.textStyle(base).fontWeight, FontWeight.w200);
+      expect(manrope.textStyle(base).fontVariations!.single.value, 200);
+      const outfit = PanelClockStyle({'font': 'outfit', 'weight': 900});
+      expect(
+        outfit.textStyle(base, locale: const Locale('ru')).fontFamily,
+        'Manrope',
+      );
+      expect(
+        outfit
+            .textStyle(base, locale: const Locale('ru'))
+            .fontVariations!
+            .single
+            .value,
+        800,
+      );
+      expect(outfit.availableWeights(base, locale: const Locale('ja')), [
+        400,
+        700,
+      ]);
+    },
+  );
+  test('abandoned glass settings are discarded on import', () {
+    expect(TileAppearance.validValues({'panelGlassForeground': true}), isEmpty);
+    expect(
+      PanelClockStyle.validValues({'preset': 'glass', 'glass': true}),
+      isEmpty,
+    );
+  });
+  test(
     'clock overrides validate bounds, fields and different font families',
     () {
       expect(
@@ -20,7 +66,7 @@ void main() {
           'font': 'unknown',
           'color': -1,
           'opacity': double.nan,
-          'weight': 500,
+          'weight': 550,
           'glow': 'true',
         }),
         isEmpty,
@@ -52,8 +98,6 @@ void main() {
         }).background(Colors.transparent).a,
         closeTo(.5, .01),
       );
-      final clock = PanelClockStyle(PanelClockStyle.presets['digital']!);
-      expect(clock.textStyle(const TextStyle()).fontFamily, 'PanelMono');
       expect(
         const PanelClockStyle({'inheritBackground': false, 'background': false})
             .background(Colors.white),

@@ -61,7 +61,6 @@ class FLauncherState extends State<FLauncher> {
   final _watchFocus = CategoryFocusController();
   final _watchSectionKey = GlobalKey();
   final _orderedFocus = <CategoryFocusController>[];
-  bool _startupApplied = false;
   int _focusRequest = 0;
   final _activeCategory = ValueNotifier<int?>(null);
   int? _lastCategoryId;
@@ -207,17 +206,7 @@ class FLauncherState extends State<FLauncher> {
                 child: Consumer<AppsService>(
                   builder: (context, appsService, _) {
                     if (appsService.initialized) {
-                      if (!_startupApplied) {
-                        _startupApplied = true;
-                        if (context.read<SettingsService>().cardFocusMode != CardFocusMode.settings) {
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            if (mounted && ModalRoute.of(context)?.isCurrent != false) {
-                              _focusHomeEntry();
-                            }
-                          });
-                        }
-                      }
-                      return InitialAppImages(child: Selector<WatchNextService, bool>(
+                      return InitialAppImages(onReady: () => _focusHomeEntry(), child: Selector<WatchNextService, bool>(
                         selector: (_, watchNext) => watchNext.programs.isNotEmpty,
                         builder: (context, hasContinuingPrograms, _) =>
                             Selector<SettingsService, ({bool show, int order})>(

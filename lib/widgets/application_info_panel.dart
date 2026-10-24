@@ -211,18 +211,18 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel> {
             ),
           FocusableSettingsTile(
             leading: Icon(
-              widget.application.hidden
+              (widget.application.hidden || context.watch<AppsService>().isTileHidden(widget.application))
                   ? Icons.visibility
                   : Icons.visibility_off_outlined,
             ),
             title: Text(
-              widget.application.hidden
+              (widget.application.hidden || context.watch<AppsService>().isTileHidden(widget.application))
                   ? localizations.show
                   : localizations.hide,
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             onPressed: () async {
-              if (widget.application.hidden) {
+              if (widget.application.hidden || context.read<AppsService>().isTileHidden(widget.application)) {
                 await context.read<AppsService>().showApplication(
                   widget.application,
                 );

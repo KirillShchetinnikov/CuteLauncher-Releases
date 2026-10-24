@@ -66,70 +66,85 @@ class AccentColorPage extends StatelessWidget {
             localizations.accentColor,
             style: Theme.of(context).textTheme.titleLarge,
           ),
-          footer: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Minimalist Accent Preview Indicator
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: Colors.black26,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: currentColor.withValues(alpha: 0.5),
-                      width: 1.5,
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        width: 10,
-                        height: 10,
+          child: CustomScrollView(
+            slivers: [
+              SliverGrid(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount:
+                      MediaQuery.textScalerOf(context).scale(16) > 22 ? 1 : 2,
+                  mainAxisExtent:
+                      MediaQuery.textScalerOf(context).scale(16) * 3 + 32,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                  childAspectRatio: 1.7,
+                ),
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final (hex, name) = colorPresets(localizations)[index];
+                  final isSelected = currentColorHex == hex;
+
+                  return _ColorTile(
+                    color: _hexToColor(hex),
+                    name: name,
+                    isSelected: isSelected,
+                    autofocus: index == 0,
+                    onTap: () => settingsService.setAccentColor(hex),
+                  );
+                }, childCount: colorPresets(localizations).length),
+              ),
+              SliverToBoxAdapter(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // Minimalist Accent Preview Indicator
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 6,
+                        ),
                         decoration: BoxDecoration(
-                          color: currentColor,
-                          shape: BoxShape.circle,
+                          color: Theme.of(context).colorScheme.onSurface
+                              .withValues(alpha: .08),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: currentColor.withValues(alpha: 0.5),
+                            width: 1.5,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 10,
+                              height: 10,
+                              decoration: BoxDecoration(
+                                color: currentColor,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                AppLocalizations.of(context)!.selectedAccent,
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      const SizedBox(width: 8),
-                      Text(
-                        AppLocalizations.of(context)!.selectedAccent,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                    ResetStyleTile(
+                      onReset: () =>
+                          settingsService.resetAppearanceSection('accent'),
+                    ),
+                  ],
                 ),
               ),
-              ResetStyleTile(onReset: () => settingsService.resetAppearanceSection('accent')),
             ],
-          ),
-          child: GridView.builder(
-            padding: EdgeInsets.zero,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
-              childAspectRatio: 1.7,
-            ),
-            itemCount: colorPresets(localizations).length,
-            itemBuilder: (context, index) {
-              final (hex, name) = colorPresets(localizations)[index];
-              final isSelected = currentColorHex == hex;
-
-              return _ColorTile(
-                color: _hexToColor(hex),
-                name: name,
-                isSelected: isSelected,
-                autofocus: index == 0,
-                onTap: () => settingsService.setAccentColor(hex),
-              );
-            },
           ),
         );
       },
@@ -156,28 +171,39 @@ class _ColorTile extends StatefulWidget {
   State<_ColorTile> createState() => _ColorTileState();
 }
 
-class _ColorTileState extends State<_ColorTile> {
+class _ColorTileState extends State<_ColorTile>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => _focused;
   bool _focused = false;
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final isLightColor = widget.color.computeLuminance() > 0.5;
     final iconColor = isLightColor ? Colors.black : Colors.white;
 
     return Actions(
       actions: <Type, Action<Intent>>{
-        ActivateIntent:
-            CallbackAction<ActivateIntent>(onInvoke: (_) => widget.onTap()),
+        ActivateIntent: CallbackAction<ActivateIntent>(
+          onInvoke: (_) => widget.onTap(),
+        ),
         ButtonActivateIntent: CallbackAction<ButtonActivateIntent>(
-            onInvoke: (_) => widget.onTap()),
+          onInvoke: (_) => widget.onTap(),
+        ),
       },
       child: Focus(
+        debugLabel: widget.name,
         autofocus: widget.autofocus,
         onFocusChange: (hasFocus) {
           setState(() => _focused = hasFocus);
+          updateKeepAlive();
           if (hasFocus) {
-            Scrollable.ensureVisible(context,
-                alignment: 0.5, duration: const Duration(milliseconds: 100));
+            Scrollable.ensureVisible(
+              context,
+              alignment: 0.5,
+              duration: const Duration(milliseconds: 100),
+            );
           }
         },
         child: GestureDetector(
@@ -188,14 +214,16 @@ class _ColorTileState extends State<_ColorTile> {
               borderRadius: BorderRadius.circular(10),
               border: Border.all(
                 color: _focused
-                    ? Colors.white
+                    ? Theme.of(context).colorScheme.primary
                     : (widget.isSelected ? widget.color : Colors.transparent),
                 width: _focused ? 2.5 : (widget.isSelected ? 2 : 0),
               ),
               boxShadow: _focused
                   ? [
                       BoxShadow(
-                          color: widget.color.withValues(alpha: 0.5), blurRadius: 8)
+                        color: widget.color.withValues(alpha: 0.5),
+                        blurRadius: 8,
+                      ),
                     ]
                   : null,
             ),
@@ -216,18 +244,15 @@ class _ColorTileState extends State<_ColorTile> {
                 ),
                 const SizedBox(width: 8),
                 Expanded(
-                    child: Text(
-                  widget.name,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: _focused || widget.isSelected
-                        ? FontWeight.bold
-                        : FontWeight.w500,
-                    fontSize: 13,
+                  child: Text(
+                    widget.name,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontWeight: _focused || widget.isSelected
+                          ? FontWeight.bold
+                          : FontWeight.w500,
+                    ),
                   ),
-                )),
+                ),
               ],
             ),
           ),

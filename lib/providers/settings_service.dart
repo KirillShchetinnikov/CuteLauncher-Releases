@@ -104,6 +104,14 @@ const String ACCENT_COLOR_ICE_BLUE = "80D8FF";
 enum CardFocusMode { remember, first, settings }
 
 class SettingsService extends ChangeNotifier with ServiceLifecycle {
+  final landscapeDemo = ValueNotifier<LandscapeDemoFrame?>(null);
+
+  @override
+  void dispose() {
+    landscapeDemo.dispose();
+    super.dispose();
+  }
+
   static final defaultDateFormat = "EEEE d";
   static final defaultTimeFormat = "H:mm";
   final SharedPreferences _sharedPreferences;

@@ -1,11 +1,53 @@
 import 'top_panel_item.dart';
+import 'launcher_dialog.dart';
+import 'network_summary_dialog.dart';
 
 import 'package:flauncher/providers/network_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class NetworkWidget extends StatelessWidget {
-  const NetworkWidget({super.key});
+class NetworkWidget extends StatefulWidget {
+  final ValueChanged<bool>? onMenuChanged;
+  const NetworkWidget({super.key, this.onMenuChanged});
+
+  @override
+  State<NetworkWidget> createState() => _NetworkWidgetState();
+}
+
+class _NetworkWidgetState extends State<NetworkWidget> {
+  final _focusNode = FocusNode();
+  bool _open = false;
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  Future<void> _openSummary(NetworkService service) async {
+    if (_open) return;
+    final box = _focusNode.context?.findRenderObject();
+    if (box is! RenderBox || !box.hasSize) return;
+    final anchor = box.localToGlobal(Offset.zero) & box.size;
+    setState(() => _open = true);
+    widget.onMenuChanged?.call(true);
+    try {
+      await showLauncherDialog<void>(
+        context: context,
+        highlightRect: anchor,
+        useSafeArea: false,
+        styleDialog: false,
+        barrierColor: Colors.transparent,
+        builder: (_) => NetworkSummaryDialog(service: service, anchor: anchor),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _open = false);
+        widget.onMenuChanged?.call(false);
+        _focusNode.requestFocus();
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,13 +140,9 @@ class NetworkWidget extends StatelessWidget {
 
         if (!vpnActive || physicalIcon == Icons.vpn_key) {
           return TopPanelItem(
-            onPressed: () {
-              if (vpnActive || networkType == NetworkType.Vpn) {
-                networkService.openVpnSettings();
-              } else {
-                networkService.openWifiSettings();
-              }
-            },
+            focusNode: _focusNode,
+            selected: _open,
+            onPressed: () => _openSummary(networkService),
             child: physicalWidget,
           );
         }
@@ -114,7 +152,9 @@ class NetworkWidget extends StatelessWidget {
           textDirection: TextDirection.ltr,
           children: [
             TopPanelItem(
-              onPressed: () => networkService.openWifiSettings(),
+              focusNode: _focusNode,
+              selected: _open,
+              onPressed: () => _openSummary(networkService),
               child: physicalWidget,
             ),
             const SizedBox(width: 4),

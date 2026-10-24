@@ -127,6 +127,7 @@ class SlideshowService extends ChangeNotifier
       _timer?.cancel();
       return;
     }
+    if (_timer?.isActive == true) return;
     _startTimer();
     if (image == null) unawaited(advance());
   }

@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/flauncher_channel.dart';
+
 import 'settings_value_text.dart';
+import 'inherited_setting.dart';
 import '../../theme/interface_style.dart';
 
 class FocusableSettingsTile extends StatefulWidget {
@@ -58,9 +60,12 @@ class _FocusableSettingsTileState extends State<FocusableSettingsTile>
   bool get wantKeepAlive => _focused;
 
   Widget _fullTextMetrics(Widget child) {
-    if (DefaultTextStyle.of(context).style.fontFamily != 'Manrope') return child;
-    // Compact theme line heights can be smaller than Manrope's native metrics.
+    if (DefaultTextStyle.of(context).style.fontFamily != 'Manrope') {
+      return child;
+    }
+    // Keep native metrics on every wrapped line, not just its outer edges.
     return DefaultTextStyle.merge(
+      style: const TextStyle(height: kTextHeightNone),
       textHeightBehavior: const TextHeightBehavior(
         applyHeightToFirstAscent: false,
         applyHeightToLastDescent: false,
@@ -68,11 +73,13 @@ class _FocusableSettingsTileState extends State<FocusableSettingsTile>
       child: child,
     );
   }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
     final style = LauncherStyle.of(context);
     final skin = InterfaceSkin.of(context);
+    final inheritedLabel = InheritedSettingSource.labelOf(context);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 2),
       child: Actions(
@@ -110,113 +117,138 @@ class _FocusableSettingsTileState extends State<FocusableSettingsTile>
             child: Container(
               constraints: BoxConstraints(minHeight: style.rowMinHeight),
               padding: style.rowPadding,
-              decoration: skin.standard ? BoxDecoration(
-                color: (_focused || widget.selected)
-                    ? Color.alphaBlend(
-                        Theme.of(context).colorScheme.primary
-                            .withValues(alpha: style.rowFocusTint),
-                        style.rowFocusSurface,
-                      )
-                    : Colors.white.withValues(alpha: style.rowIdleOpacity),
-                borderRadius: BorderRadius.circular(style.rowRadius),
-                border: (_focused || widget.selected)
-                    ? Border.all(
-                        color: Theme.of(context).colorScheme.primary,
-                        width: style.rowFocusWidth,
-                      )
-                    : Border.all(
-                        color: Colors.transparent,
-                        width: style.rowFocusWidth,
-                      ),
-              ) : skin.surface(
-                Theme.of(context).colorScheme.surface,
-                Theme.of(context).colorScheme.onSurface,
-                focused: _focused || widget.selected,
-                accent: Theme.of(context).colorScheme.primary,
-                cornerRadius: style.rowRadius,
-                borderWidth: style.rowFocusWidth,
-              ),
-              child: _fullTextMetrics(LayoutBuilder(
-                builder: (context, constraints) => Row(
-                  children: [
-                    if (widget.leading != null) ...[
-                      Container(
-                        width: style.iconExtent,
-                        height: style.iconExtent,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.primary
-                              .withValues(alpha: _focused ? 0.22 : 0.12),
-                          borderRadius: BorderRadius.circular(style.iconRadius),
-                        ),
-                        child: IconTheme(
-                          data: IconThemeData(
-                            size: 22,
-                            color: (_focused || widget.selected)
-                                ? Theme.of(context).colorScheme.onSurface
-                                : Theme.of(context)
-                                      .colorScheme
-                                      .onSurfaceVariant,
-                          ),
-                          child: Center(child: widget.leading!),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                    ],
-                    Expanded(
-                      child: Opacity(
-                        opacity: widget.enabled ? 1 : 0.45,
-                        child: widget.title,
-                      ),
+              decoration: skin.standard
+                  ? BoxDecoration(
+                      color: (_focused || widget.selected)
+                          ? Color.alphaBlend(
+                              Theme.of(context).colorScheme.primary
+                                  .withValues(alpha: style.rowFocusTint),
+                              Theme.of(context).colorScheme.surface,
+                            )
+                          : Theme.of(context).colorScheme.onSurface
+                                .withValues(alpha: style.rowIdleOpacity),
+                      borderRadius: BorderRadius.circular(style.rowRadius),
+                      border: (_focused || widget.selected)
+                          ? Border.all(
+                              color: Theme.of(context).colorScheme.primary,
+                              width: style.rowFocusWidth,
+                            )
+                          : Border.all(
+                              color: Colors.transparent,
+                              width: style.rowFocusWidth,
+                            ),
+                    )
+                  : skin.surface(
+                      Theme.of(context).colorScheme.surface,
+                      Theme.of(context).colorScheme.onSurface,
+                      focused: _focused || widget.selected,
+                      accent: Theme.of(context).colorScheme.primary,
+                      cornerRadius: style.rowRadius,
+                      borderWidth: style.rowFocusWidth,
                     ),
-                    if (widget.trailing != null ||
-                        widget.onPressed != null) ...[
-                      const SizedBox(width: 8),
-                      if (widget.trailing is Text)
-                        Flexible(
-                          fit: widget.alignValueToEnd ? FlexFit.tight : FlexFit.loose,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: widget.alignValueToEnd
-                                ? MainAxisAlignment.end
-                                : MainAxisAlignment.start,
-                            children: [
-                              Flexible(
-                                child: ConstrainedBox(
-                                  constraints: BoxConstraints(
-                                    maxWidth: constraints.maxWidth * 0.4,
-                                  ),
-                                  child: SettingsValueText(
-                                    alignment: widget.alignValueToEnd
-                                        ? TextAlign.end
-                                        : TextAlign.start,
-                                    text: widget.trailing! as Text,
+              child: _fullTextMetrics(
+                LayoutBuilder(
+                  builder: (context, constraints) => Row(
+                    children: [
+                      if (widget.leading != null) ...[
+                        Container(
+                          width: style.iconExtent,
+                          height: style.iconExtent,
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.primary
+                                .withValues(alpha: _focused ? 0.22 : 0.12),
+                            borderRadius: BorderRadius.circular(
+                              style.iconRadius,
+                            ),
+                          ),
+                          child: IconTheme(
+                            data: IconThemeData(
+                              size: 22,
+                              color: (_focused || widget.selected)
+                                  ? Theme.of(context).colorScheme.onSurface
+                                  : Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
+                            ),
+                            child: Center(child: widget.leading!),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                      ],
+                      Expanded(
+                        child: Opacity(
+                          opacity: widget.enabled ? 1 : 0.45,
+                          child: inheritedLabel == null
+                              ? widget.title
+                              : Row(
+                                  children: [
+                                    Expanded(child: widget.title),
+                                    const SizedBox(width: 6),
+                                    Tooltip(
+                                      message: inheritedLabel,
+                                      excludeFromSemantics: true,
+                                      child: Icon(
+                                        Icons.link,
+                                        size: 16,
+                                        semanticLabel: inheritedLabel,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                        ),
+                      ),
+                      if (widget.trailing != null ||
+                          widget.onPressed != null) ...[
+                        const SizedBox(width: 8),
+                        if (widget.trailing is Text)
+                          Flexible(
+                            fit: widget.alignValueToEnd
+                                ? FlexFit.tight
+                                : FlexFit.loose,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: widget.alignValueToEnd
+                                  ? MainAxisAlignment.end
+                                  : MainAxisAlignment.start,
+                              children: [
+                                Flexible(
+                                  child: ConstrainedBox(
+                                    constraints: BoxConstraints(
+                                      maxWidth: constraints.maxWidth * 0.4,
+                                    ),
+                                    child: SettingsValueText(
+                                      alignment: widget.alignValueToEnd
+                                          ? TextAlign.end
+                                          : TextAlign.start,
+                                      text: widget.trailing! as Text,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              if (widget.onPressed != null) ...[
-                                const SizedBox(width: 4),
-                                Icon(widget.valueIcon, size: 20),
+                                if (widget.onPressed != null) ...[
+                                  const SizedBox(width: 4),
+                                  Icon(widget.valueIcon, size: 20),
+                                ],
                               ],
-                            ],
+                            ),
+                          )
+                        else if (widget.trailing != null)
+                          ConstrainedBox(
+                            constraints: BoxConstraints(
+                              maxWidth: constraints.maxWidth * 0.5,
+                            ),
+                            child: widget.trailing!,
+                          )
+                        else
+                          Icon(
+                            Icons.chevron_right_rounded,
+                            size: 20,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
-                        )
-                      else if (widget.trailing != null)
-                        ConstrainedBox(
-                          constraints: BoxConstraints(
-                            maxWidth: constraints.maxWidth * 0.5,
-                          ),
-                          child: widget.trailing!,
-                        )
-                      else
-                        const Icon(
-                          Icons.chevron_right_rounded,
-                          size: 20,
-                          color: Colors.white60,
-                        ),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
-              )),
+              ),
             ),
           ),
         ),

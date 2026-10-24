@@ -9,8 +9,9 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
-  testWidgets('Long Russian color names fit and remote reaches the last row',
-      (tester) async {
+  testWidgets('Long Russian color names fit and remote reaches the last row', (
+    tester,
+  ) async {
     tester.view.physicalSize = const Size(350, 540);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
@@ -19,7 +20,8 @@ void main() {
     final preferences = await SharedPreferences.getInstance();
     final settings = SettingsService(preferences);
     addTearDown(settings.dispose);
-    await tester.pumpWidget(ChangeNotifierProvider.value(
+    await tester.pumpWidget(
+      ChangeNotifierProvider.value(
         value: settings,
         child: MaterialApp(
           locale: const Locale('ru'),
@@ -28,16 +30,26 @@ void main() {
             AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate
+            GlobalCupertinoLocalizations.delegate,
           ],
           theme: ThemeData.dark(),
           home: const Scaffold(body: AccentColorPage()),
-        )));
+        ),
+      ),
+    );
     await tester.pumpAndSettle();
-    for (var index = 0; index < 7; index++) {
+    final lastName = AppLocalizations.of(
+      tester.element(find.byType(AccentColorPage)),
+    )!.colorIceBlue;
+    for (
+      var index = 0;
+      index < 60 && FocusManager.instance.primaryFocus?.debugLabel != lastName;
+      index++
+    ) {
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
       await tester.pumpAndSettle();
     }
+    expect(FocusManager.instance.primaryFocus?.debugLabel, lastName);
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
     expect(settings.accentColorHex, ACCENT_COLOR_ICE_BLUE);

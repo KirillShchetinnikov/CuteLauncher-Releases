@@ -1,3 +1,4 @@
+import 'package:flauncher/adaptive_landscape.dart';
 import 'package:flauncher/widgets/settings/appearance_page.dart';
 import 'package:flauncher/widgets/wallpaper_background.dart';
 import 'package:flauncher/widgets/app_artwork_background.dart';
@@ -42,6 +43,7 @@ import 'package:flauncher/widgets/application_info_panel.dart';
 import 'package:flauncher/widgets/home_section.dart';
 
 import 'package:flauncher/widgets/app_card.dart';
+import 'package:flauncher/widgets/appearance_surface.dart';
 import 'package:flauncher/widgets/focus_aware_app_bar.dart';
 import 'package:flauncher/widgets/settings/settings_panel_page.dart';
 import 'package:flutter/material.dart';
@@ -726,6 +728,9 @@ void main() {
 
   for (final type in CategoryType.values) {
     testWidgets('startup focuses first usable category: $type', (tester) async {
+      final strategy = FocusManager.instance.highlightStrategy;
+      FocusManager.instance.highlightStrategy = FocusHighlightStrategy.alwaysTouch;
+      addTearDown(() => FocusManager.instance.highlightStrategy = strategy);
       final apps = mkAppService();
       final hidden = fakeCategory(type: type)..visible = false;
       final first = fakeCategory(type: type)..applications.add(fakeApp(packageName: 'startup.first'));
@@ -734,6 +739,12 @@ void main() {
       when(settings.cardFocusMode).thenReturn(CardFocusMode.first);
       await _pumpWidgetWithProviders(tester, mkWallpaperService(), apps, settings);
       expect(isAppCardFocused(tester, 'startup.first'), isTrue);
+      final surface = find.descendant(
+        of: find.byWidgetPredicate((widget) => widget is AppCard &&
+            widget.application.packageName == 'startup.first'),
+        matching: find.byType(AppearanceSurface),
+      );
+      expect(tester.widget<AppearanceSurface>(surface).focused, isTrue);
       expect(tester.takeException(), isNull);
     });
   }
@@ -1443,6 +1454,9 @@ void main() {
 
 SettingsService mkSettingsService() {
   final settingsService = MockSettingsService();
+  final demo = ValueNotifier<LandscapeDemoFrame?>(null);
+  addTearDown(demo.dispose);
+  when(settingsService.landscapeDemo).thenReturn(demo);
   when(settingsService.appKeyClickEnabled).thenReturn(false);
   when(settingsService.showSleepTimerInStatusBar).thenReturn(false);
   when(settingsService.showNightModeInStatusBar).thenReturn(false);
@@ -1522,6 +1536,7 @@ WeatherService mkWeatherService() {
 
 AppsService mkAppService() {
   final appsService = MockAppsService();
+  when(appsService.isTileHidden(any)).thenReturn(false);
     when(appsService.launchApp(any)).thenAnswer((_) async => true);
   when(appsService.initialized).thenReturn(true);
   when(appsService.getAppBanner(any)).thenAnswer((_) async => kTransparentImage);

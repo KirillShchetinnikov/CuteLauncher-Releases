@@ -10,6 +10,27 @@ const tileAppearanceKey = 'tile_appearance';
 class TileAppearance {
   final Map<String, dynamic> values;
   const TileAppearance([this.values = const {}]);
+  /// Resolved values for fields that may inherit from the common home style.
+  dynamic homeFieldValue(String key) => switch (key) {
+    'size' => tileSize,
+    'aspectRatio' => aspectRatio,
+    'horizontalGap' => horizontalGap,
+    'verticalGap' => verticalGap,
+    'iconScale' => iconScale,
+    'labels' => labels,
+    'labelPosition' => labelPosition,
+    'labelSize' => labelSize,
+    'labelColor' => color('labelColor')?.toARGB32() ?? 0xffffffff,
+    'backgroundColor' => color('backgroundColor')?.toARGB32(),
+    'opacity' => opacity,
+    'shadow' => number('shadow') ?? 0,
+    'blurTiles' => blurTiles,
+    'sectionTitles' => sectionTitles,
+    'sectionIcons' => sectionIcons,
+    'sectionPadding' => number(key) ?? 0,
+    'sectionBackground' => values[key] ?? 0,
+    _ => values[key],
+  };
   String get labels => values['labels'] as String? ?? 'none';
   bool get anchored => values['sectionScroll'] != 'free';
   double get sectionPosition => (number('sectionPosition') ?? 0.5).clamp(0, 0.70).toDouble();
@@ -61,11 +82,14 @@ class TileAppearance {
   bool get blurTiles => values['blurTiles'] == true;
   bool get blurPanel => values['blurPanel'] == true;
   bool get dateCalendar => values['panelDateCalendar'] == true;
+  bool get panelWrapNavigation => values['panelWrapNavigation'] == true;
   bool get combinedInformation => values['panelCombinedInformation'] == true;
   String get interfaceStyle => values['settingsInterfaceStyle'] as String? ?? 'standard';
   String get interfaceFont => values['settingsInterfaceFont'] as String? ??
       (interfaceStyle == 'standard' ? 'system' : 'outfit');
   PanelClockStyle get clockStyle => PanelClockStyle(PanelClockStyle.validValues(values['panelClockStyle']));
+  PanelClockStyle get informationStyle => PanelClockStyle(
+    PanelClockStyle.validValues(values['panelInformationStyle'], combined: true));
   double get panelTextSize => number('panelTextSize') ?? 18;
   String get panelFont => values['panelFont'] as String? ?? 'sans-serif';
   Color get panelTextColor => color('panelTextColor') ?? Colors.white;
@@ -141,8 +165,8 @@ class TileAppearance {
       final key = entry.key;
       final value = entry.value;
       if (key is! String) continue;
-      if (key == 'panelClockStyle' && value is Map) {
-        result[key] = PanelClockStyle.validValues(value);
+      if (['panelClockStyle', 'panelInformationStyle'].contains(key) && value is Map) {
+        result[key] = PanelClockStyle.validValues(value, combined: key == 'panelInformationStyle');
         continue;
       }
       if (key == 'focusEffect' && value == 'shadow') {
@@ -207,6 +231,7 @@ class TileAppearance {
             'panelTextBackground',
             'panelDateCalendar',
             'panelCombinedInformation',
+            'panelWrapNavigation',
           ].contains(key) &&
           value is bool) {
         result[key] = value;

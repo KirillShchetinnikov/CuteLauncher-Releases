@@ -1,4 +1,5 @@
 import 'package:flauncher/widgets/settings/interface_settings_page.dart';
+import 'package:flauncher/widgets/settings/information_settings_page.dart';
 import 'dart:io';
 import 'package:flauncher/providers/online_wallpaper_service.dart';
 import 'package:flutter/material.dart';
@@ -61,7 +62,7 @@ void main() {
             builder: (c, child) => MediaQuery(
                 data: MediaQuery.of(c)
                     .copyWith(textScaler: TextScaler.linear(scale)),
-                child: child!),
+                child: Material(child: child!)),
             home: Scaffold(
                 body: Align(
                     alignment: AlignmentDirectional.centerStart,
@@ -161,16 +162,22 @@ void main() {
     await settings.setShowDateInStatusBar(false);
     await settings.setShowDataWidgetInStatusBar(false);
     await pump(tester, const StatusBarObjectsPage());
+    await tester.tap(find.text('Block settings'));
+    await tester.pumpAndSettle();
+    expect(find.byType(InformationSettingsPage), findsOneWidget);
     for (final title in [
       'Clock appearance',
       'Date settings',
       'Weather settings',
-      'Traffic counting period'
     ]) {
       await tester.scrollUntilVisible(find.text(title), 200);
       await tester.pumpAndSettle();
       expect(find.widgetWithText(FocusableSettingsTile, title), findsOneWidget);
     }
+    await Navigator.of(tester.element(find.byType(InformationSettingsPage))).maybePop();
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(find.text('Traffic counting period'), 200);
+    expect(find.widgetWithText(FocusableSettingsTile, 'Traffic counting period'), findsOneWidget);
     expect(settings.showWeatherInStatusBar, isFalse);
   });
   testWidgets(

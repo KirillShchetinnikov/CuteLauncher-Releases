@@ -33,10 +33,16 @@ class DailyDataUsageWidget extends StatelessWidget {
         }
 
         return FutureBuilder<int>(
+          key: ValueKey(period),
           future: networkService.getDataUsageForPeriod(period),
           builder: (context, snapshot) {
-            final usage = snapshot.data ?? networkService.dailyDataUsage;
-            final usageString = _formatBytes(usage);
+            final usage = snapshot.hasError
+                ? null
+                : snapshot.data ??
+                    (period == 'daily' && snapshot.connectionState == ConnectionState.waiting
+                        ? networkService.dailyDataUsage
+                        : null);
+            final usageString = usage == null || usage < 0 ? '—' : _formatBytes(usage);
 
             return RichText(
               text: TextSpan(

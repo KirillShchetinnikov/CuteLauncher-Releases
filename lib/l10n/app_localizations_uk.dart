@@ -3182,7 +3182,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get homeInherited => 'Успадкована цінність';
 
   @override
-  String get homeOwnReset => 'Спеціальне значення · використовувати глобально';
+  String get homeOwnReset => 'Повернути спільні налаштування';
 
   @override
   String get homeParameters => 'Параметри';
@@ -3515,6 +3515,10 @@ class AppLocalizationsUk extends AppLocalizations {
       'Утримуйте 650 мс: дія виконається один раз, без короткого натискання. Якщо призначено лише утримання, коротке натискання нічого не робить.';
 
   @override
+  String get remotePanelDescription =>
+      'Спливна панель показує потрібні віджети поверх інших застосунків. Щоб відкривати її з пульта, призначте дію «Спливна панель» на зручну кнопку.';
+
+  @override
   String get remotePanel => 'Спливна панель';
 
   @override
@@ -3533,13 +3537,13 @@ class AppLocalizationsUk extends AppLocalizations {
   String get panelClockStyle => 'Оформлення годинника';
 
   @override
-  String get clockPreset => 'Варіант оформлення';
+  String get clockPreset => 'Стиль шрифту';
 
   @override
   String get clockCustom => 'Власний варіант';
 
   @override
-  String get clockWeight => 'Насиченість шрифту';
+  String get clockWeight => 'Товщина шрифту';
 
   @override
   String get clockGlow => 'Світіння тексту';
@@ -3735,6 +3739,33 @@ class AppLocalizationsUk extends AppLocalizations {
   String get adaptiveLandscape => 'Adaptive landscape';
 
   @override
+  String get landscapeDemoSpring => 'Spring';
+
+  @override
+  String get landscapeDemoSummer => 'Summer';
+
+  @override
+  String get landscapeDemoAutumn => 'Autumn';
+
+  @override
+  String get landscapeDemoWinter => 'Winter';
+
+  @override
+  String get landscapeDemoClear => 'Clear';
+
+  @override
+  String get landscapeDemoCloudy => 'Cloudy';
+
+  @override
+  String get landscapeDemoFog => 'Fog';
+
+  @override
+  String get landscapeDemoStart => 'Demonstrate changes';
+
+  @override
+  String get landscapeDemoStop => 'Стоп';
+
+  @override
   String get landscapeVariant => 'Landscape style';
 
   @override
@@ -3792,4 +3823,106 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String get weatherMetNorwayCredit =>
       'Data: MET Norway, CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Forecast adapted from https://api.met.no/. No API key; days use the TV time zone, min/max cover available periods. Precipitation probability is unavailable.';
+
+  @override
+  String get informationGroup => 'Годинник, дата й погода';
+
+  @override
+  String get informationSettings => 'Налаштування блоку';
+
+  @override
+  String get informationAppearance => 'Оформлення блоку';
+
+  @override
+  String get informationSize => 'Загальний розмір блоку';
+
+  @override
+  String get informationPosition => 'Розташування годинника й тексту';
+
+  @override
+  String get informationClockLeft => 'Годинник ліворуч, текст праворуч';
+
+  @override
+  String get informationClockRight => 'Текст ліворуч, годинник праворуч';
+
+  @override
+  String get informationSpacing => 'Відстань між годинником і текстом';
+
+  @override
+  String get informationBackground => 'Тло блоку';
+
+  @override
+  String get homeResetTilesHint =>
+      'Повернути спільні значення всіх параметрів плиток і підписів на цьому екрані?';
+
+  @override
+  String get homeResetLayoutHint =>
+      'Скинути розкладку розділу, повернути спільне оформлення та обнулити поля? Застосунки та їхній порядок збережуться.';
+
+  @override
+  String get networkSummary => 'Мережа';
+
+  @override
+  String get networkConnected => 'Інтернет доступний';
+
+  @override
+  String get networkOffline => 'Немає доступу до інтернету';
+
+  @override
+  String get networkDisconnected => 'Немає підключення';
+
+  @override
+  String get networkConnection => 'Підключення';
+
+  @override
+  String get networkSignal => 'Сигнал';
+
+  @override
+  String get networkLinkSpeed => 'Швидкість з’єднання Wi-Fi';
+
+  @override
+  String get networkTrafficRate => 'Трафік пристрою · приймання / передавання';
+
+  @override
+  String get networkSystemSettings => 'Системні налаштування мережі';
+
+  @override
+  String get networkUnavailable => 'Недоступно';
+
+  @override
+  String get networkMobile => 'Мобільна мережа';
+
+  @override
+  String get networkFrequency => 'Частота';
+
+  @override
+  String get networkMbps => 'Мбіт/с';
+
+  @override
+  String get networkKbps => 'КБ/с';
+
+  @override
+  String get networkReadFailed => 'Не вдалося отримати стан мережі';
+
+  @override
+  String get clockItalic => 'Курсив';
+
+  @override
+  String get panelWrapNavigation => 'Кругова навігація панеллю';
+
+  @override
+  String get panelWrapNavigationHelp =>
+      'Стрілки переводять фокус із крайньої кнопки на протилежний край. Утримуйте стрілку для безперервного переміщення обома сторонами.';
+
+  @override
+  String get networkReceive => 'Приймання';
+
+  @override
+  String get networkSend => 'Передавання';
+
+  @override
+  String get landscapeCelestialBodies => 'Сонце і місяць';
+
+  @override
+  String get landscapeStarRotation => 'Обертання зірок';
 }

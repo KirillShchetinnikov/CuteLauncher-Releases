@@ -20,6 +20,7 @@ void main() {
 
   testWidgets("Left/Right arrow keys switch categories in ApplicationsPanelPage", (tester) async {
     final appsService = MockAppsService();
+  when(appsService.isTileHidden(any)).thenReturn(false);
     // Setup some fake apps to populate tabs
     when(appsService.applications).thenReturn([
       fakeApp(packageName: "pkg.tv", name: "TV App", sideloaded: false, hidden: false),

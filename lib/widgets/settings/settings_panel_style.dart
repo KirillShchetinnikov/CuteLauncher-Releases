@@ -52,7 +52,10 @@ class SettingsPanelStyle extends StatelessWidget {
             MediaQuery.textScalerOf(context).scale(16) / 16 * textSize / 16,
           ),
         ),
-        child: Builder(builder: builder),
+        child: DefaultTextStyle.merge(
+          style: theme.textTheme.bodyMedium?.copyWith(color: foreground),
+          child: Builder(builder: builder),
+        ),
       ),
     );
   }

@@ -3156,7 +3156,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeInherited => 'Inherited value';
 
   @override
-  String get homeOwnReset => 'Custom value · use global';
+  String get homeOwnReset => 'Restore common settings';
 
   @override
   String get homeParameters => 'Parameters';
@@ -3487,6 +3487,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Hold for 650 ms: fires once, without the short action. If only hold is assigned, a short tap does nothing.';
 
   @override
+  String get remotePanelDescription =>
+      'The floating panel keeps your widgets within reach over other apps. To open it with your remote, assign the Floating panel action to a button of your choice.';
+
+  @override
   String get remotePanel => 'Floating panel';
 
   @override
@@ -3505,7 +3509,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get panelClockStyle => 'Clock appearance';
 
   @override
-  String get clockPreset => 'Clock design';
+  String get clockPreset => 'Font style';
 
   @override
   String get clockCustom => 'Custom';
@@ -3707,6 +3711,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String get adaptiveLandscape => 'Adaptive landscape';
 
   @override
+  String get landscapeDemoSpring => 'Spring';
+
+  @override
+  String get landscapeDemoSummer => 'Summer';
+
+  @override
+  String get landscapeDemoAutumn => 'Autumn';
+
+  @override
+  String get landscapeDemoWinter => 'Winter';
+
+  @override
+  String get landscapeDemoClear => 'Clear';
+
+  @override
+  String get landscapeDemoCloudy => 'Cloudy';
+
+  @override
+  String get landscapeDemoFog => 'Fog';
+
+  @override
+  String get landscapeDemoStart => 'Demonstrate changes';
+
+  @override
+  String get landscapeDemoStop => 'Stop';
+
+  @override
   String get landscapeVariant => 'Landscape style';
 
   @override
@@ -3764,4 +3795,106 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get weatherMetNorwayCredit =>
       'Data: MET Norway, CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Forecast adapted from https://api.met.no/. No API key; days use the TV time zone, min/max cover available periods. Precipitation probability is unavailable.';
+
+  @override
+  String get informationGroup => 'Clock, date and weather';
+
+  @override
+  String get informationSettings => 'Block settings';
+
+  @override
+  String get informationAppearance => 'Block appearance';
+
+  @override
+  String get informationSize => 'Block size';
+
+  @override
+  String get informationPosition => 'Clock and text position';
+
+  @override
+  String get informationClockLeft => 'Clock left, text right';
+
+  @override
+  String get informationClockRight => 'Text left, clock right';
+
+  @override
+  String get informationSpacing => 'Space between clock and text';
+
+  @override
+  String get informationBackground => 'Block background';
+
+  @override
+  String get homeResetTilesHint =>
+      'Restore common values for all tiles and labels on this screen?';
+
+  @override
+  String get homeResetLayoutHint =>
+      'Reset this section’s layout, restore its common appearance and reset padding? Apps and their order will be kept.';
+
+  @override
+  String get networkSummary => 'Network';
+
+  @override
+  String get networkConnected => 'Internet available';
+
+  @override
+  String get networkOffline => 'No internet access';
+
+  @override
+  String get networkDisconnected => 'Disconnected';
+
+  @override
+  String get networkConnection => 'Connection';
+
+  @override
+  String get networkSignal => 'Signal';
+
+  @override
+  String get networkLinkSpeed => 'Wi-Fi link speed';
+
+  @override
+  String get networkTrafficRate => 'Device traffic · receive / send';
+
+  @override
+  String get networkSystemSettings => 'System network settings';
+
+  @override
+  String get networkUnavailable => 'Unavailable';
+
+  @override
+  String get networkMobile => 'Mobile network';
+
+  @override
+  String get networkFrequency => 'Frequency';
+
+  @override
+  String get networkMbps => 'Mbps';
+
+  @override
+  String get networkKbps => 'KB/s';
+
+  @override
+  String get networkReadFailed => 'Could not read network status';
+
+  @override
+  String get clockItalic => 'Italic';
+
+  @override
+  String get panelWrapNavigation => 'Wrap panel navigation';
+
+  @override
+  String get panelWrapNavigationHelp =>
+      'Left and right wrap between the outermost panel buttons. Hold an arrow to keep moving across both sides.';
+
+  @override
+  String get networkReceive => 'Receive';
+
+  @override
+  String get networkSend => 'Send';
+
+  @override
+  String get landscapeCelestialBodies => 'Sun and moon';
+
+  @override
+  String get landscapeStarRotation => 'Star rotation';
 }

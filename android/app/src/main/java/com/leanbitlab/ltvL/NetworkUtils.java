@@ -139,11 +139,12 @@ public class NetworkUtils
 
         if (physicalCaps != null) {
             map = getNetworkCapabilitiesInformation(context, physicalCaps);
+            wirelessNetworkSignalLevel = (Integer) map.get(KEY_WIRELESS_SIGNAL_LEVEL);
 
             if (Objects.equals(map.get(KEY_NETWORK_TYPE), NETWORK_TYPE_WIFI)) {
                 try {
                     WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-                    if (wifiManager != null) {
+                    if (!(physicalCaps.getTransportInfo() instanceof WifiInfo) && wifiManager != null) {
                         WifiInfo wifiInfo = legacyWifiInfo(wifiManager);
                         if (wifiInfo != null) {
                             wirelessNetworkSignalLevel = getWifiSignalLevel(wifiInfo);

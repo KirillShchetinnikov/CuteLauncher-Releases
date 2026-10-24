@@ -4,4 +4,13 @@
     <string name="notification_service_label">CuteLauncher: доступ к уведомлениям</string>
     <string name="accessibility_service_label">CuteLauncher</string>
 <string name="night_mode_title">Ночной режим</string><string name="night_mode_notice">Фильтр экрана включён; учитывается расписание</string><string name="night_mode_stop">Выключить</string>
+    <string name="recovery_checking">Проверка лаунчера…</string>
+    <string name="recovery_title">Восстановление лаунчера</string>
+    <string name="recovery_description">CuteLauncher несколько раз завершился с ошибкой. Настройки сохранены. Можно повторить запуск, открыть приложение или выбрать другой домашний экран. Если штатный лаунчер отключён, сначала включите его в настройках приложений Android.</string>
+    <string name="recovery_retry">Повторить запуск CuteLauncher</string>
+    <string name="recovery_settings">Настройки Android</string>
+    <string name="recovery_home">Выбрать домашний экран</string>
+    <string name="recovery_unavailable">Действие недоступно на этом телевизоре.</string>
+    <string name="recovery_restore">Восстановить прежний домашний экран</string>
+    <string name="recovery_restore_confirm">Восстановить прежний домашний экран через ранее настроенное локальное ADB-подключение?</string>
 </resources>

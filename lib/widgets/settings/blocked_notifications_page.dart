@@ -85,15 +85,19 @@ class BlockedNotificationsPage extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.04),
+                      color: theme.colorScheme.onSurface.withValues(alpha: .04),
                       borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.white12),
+                      border: Border.all(
+                        color: theme.colorScheme.onSurface.withValues(
+                          alpha: .12,
+                        ),
+                      ),
                     ),
                     child: Row(
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.notifications_active_outlined,
-                          color: Colors.green,
+                          color: theme.colorScheme.primary,
                           size: 28,
                         ),
                         const SizedBox(width: 12),
@@ -108,7 +112,9 @@ class BlockedNotificationsPage extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(height: 2),
-                              SettingsHelp(text: localizations.noBlockedAppsDesc),
+                              SettingsHelp(
+                                text: localizations.noBlockedAppsDesc,
+                              ),
                             ],
                           ),
                         ),
@@ -128,7 +134,7 @@ class BlockedNotificationsPage extends StatelessWidget {
                               height: 32,
                               cacheWidth: 64,
                             )
-                          : const Icon(Icons.android),
+                          : Icon(Icons.android),
                     ),
                     title: Text(app.name),
                     trailing: Text(localizations.unblockApp),
@@ -147,11 +153,14 @@ class BlockedNotificationsPage extends StatelessWidget {
                   ),
                 ),
                 FocusableSettingsTile(
-                  leading: const Icon(Icons.clear_all, color: Colors.orange),
+                  leading: Icon(
+                    Icons.clear_all,
+                    color: theme.colorScheme.tertiary,
+                  ),
                   title: Text(
                     localizations.unblockAll,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: Colors.orange,
+                      color: theme.colorScheme.tertiary,
                     ),
                   ),
                   onPressed: () => notificationsService.unblockAllPackages(),
@@ -207,8 +216,8 @@ class BlockedNotificationsPage extends StatelessWidget {
                               : localizations.notificationsAllowed,
                           style: theme.textTheme.bodySmall?.copyWith(
                             color: isBlocked
-                                ? Colors.redAccent
-                                : Colors.white54,
+                                ? theme.colorScheme.error
+                                : theme.colorScheme.onSurfaceVariant,
                           ),
                         ),
                     ],
@@ -230,7 +239,7 @@ class BlockedNotificationsPage extends StatelessWidget {
                           ),
                         );
                       }
-                      return const Icon(Icons.android, size: 32);
+                      return Icon(Icons.android, size: 32);
                     },
                   ),
                 );

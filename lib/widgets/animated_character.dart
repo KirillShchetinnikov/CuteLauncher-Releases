@@ -24,52 +24,45 @@ class AnimatedCharacter extends StatelessWidget {
   final String character;
   final TextStyle? textStyle;
   final Duration duration;
+  final bool animate;
 
   const AnimatedCharacter({
     super.key,
     required this.character,
     this.textStyle,
     this.duration = const Duration(milliseconds: 300),
+    this.animate = true,
   });
 
   @override
   Widget build(BuildContext context) {
     return AnimatedSwitcher(
-      duration: duration,
+      key: ValueKey(animate),
+      duration: animate ? duration : Duration.zero,
       transitionBuilder: (Widget child, Animation<double> animation) {
+        if (!animate) return child;
         // Determine if this is the incoming or outgoing widget
         final isNewChild = child.key == ValueKey(character);
-        
+
         // Slide animation: old slides up, new slides in from below
         final slideOffset = isNewChild
             ? Tween<Offset>(begin: const Offset(0, 0.5), end: Offset.zero)
             : Tween<Offset>(begin: Offset.zero, end: const Offset(0, -0.5));
-        
+
         return SlideTransition(
-          position: slideOffset.animate(CurvedAnimation(
-            parent: animation,
-            curve: Curves.easeOutCubic,
-          )),
-          child: FadeTransition(
-            opacity: animation,
-            child: child,
+          position: slideOffset.animate(
+            CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
           ),
+          child: FadeTransition(opacity: animation, child: child),
         );
       },
       layoutBuilder: (currentChild, previousChildren) {
         return Stack(
           alignment: Alignment.center,
-          children: [
-            ...previousChildren,
-            ?currentChild,
-          ],
+          children: [...previousChildren, ?currentChild],
         );
       },
-      child: Text(
-        character,
-        key: ValueKey(character),
-        style: textStyle,
-      ),
+      child: Text(character, key: ValueKey(character), style: textStyle),
     );
   }
 }
@@ -77,11 +70,13 @@ class AnimatedCharacter extends StatelessWidget {
 /// A row of animated characters for displaying time/date with smooth transitions
 class AnimatedTimeDisplay extends StatelessWidget {
   final String displayText;
+  final bool animate;
   final TextStyle? textStyle;
 
   const AnimatedTimeDisplay({
     super.key,
     required this.displayText,
+    this.animate = true,
     this.textStyle,
   });
 
@@ -92,6 +87,7 @@ class AnimatedTimeDisplay extends StatelessWidget {
       children: displayText.split('').map((char) {
         return AnimatedCharacter(
           character: char,
+          animate: animate,
           textStyle: textStyle,
         );
       }).toList(),

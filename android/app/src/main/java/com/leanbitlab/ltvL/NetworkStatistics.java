@@ -25,7 +25,6 @@ import android.app.usage.NetworkStatsManager;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
-import android.os.Build;
 import android.provider.Settings;
 import java.util.Map;
 /** Native NetworkStatistics operations; channel names and payloads remain owned by MainActivity. */
@@ -37,7 +36,39 @@ final class NetworkStatistics {
     Map<String, Object> getActiveNetworkInformation() {
         try {
             ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            return NetworkUtils.getNetworkInformation(context, connectivityManager.getActiveNetwork());
+            android.net.Network active = connectivityManager.getActiveNetwork();
+            Map<String, Object> map = NetworkUtils.getNetworkInformation(context, active);
+            NetworkCapabilities caps = active == null ? null : connectivityManager.getNetworkCapabilities(active);
+            map.put("internetAccess", caps != null && caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED));
+            android.net.LinkProperties links = active == null ? null : connectivityManager.getLinkProperties(active);
+            if (links != null) {
+                java.util.List<String> addresses = new java.util.ArrayList<>();
+                for (android.net.LinkAddress address : links.getLinkAddresses()) {
+                    addresses.add(address.getAddress().getHostAddress());
+                }
+                map.put("addresses", String.join("\n", addresses));
+            }
+            if (java.util.Objects.equals(map.get("networkType"), NetworkUtils.NETWORK_TYPE_WIFI)) {
+                try {
+                    android.net.wifi.WifiManager wifi = (android.net.wifi.WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                    @SuppressWarnings("deprecation")
+                    android.net.wifi.WifiInfo info = caps != null && caps.getTransportInfo() instanceof android.net.wifi.WifiInfo
+                            ? (android.net.wifi.WifiInfo) caps.getTransportInfo() : (wifi == null ? null : wifi.getConnectionInfo());
+                    if (info != null) {
+                        String ssid = info.getSSID();
+                        if (ssid != null && !"<unknown ssid>".equals(ssid)) map.put("ssid", ssid.replaceAll("^\"|\"$", ""));
+                        if (info.getRssi() > -127 && info.getRssi() < 0) map.put("rssi", info.getRssi());
+                        if (info.getLinkSpeed() > 0) map.put("linkSpeed", info.getLinkSpeed());
+                        if (info.getFrequency() > 0) map.put("frequency", info.getFrequency());
+                    }
+                } catch (SecurityException ignored) {
+                    // Wi-Fi identity can be redacted by Android without location access.
+                }
+            }
+            map.put("rxBytes", android.net.TrafficStats.getTotalRxBytes());
+            map.put("txBytes", android.net.TrafficStats.getTotalTxBytes());
+            map.put("elapsedMs", android.os.SystemClock.elapsedRealtime());
+            return map;
         } catch (Exception e) {
             e.printStackTrace();
             Map<String, Object> map = new java.util.HashMap<>();
@@ -76,191 +107,59 @@ final class NetworkStatistics {
     }
 
     long getDailyDataUsage() {
-        if (!checkUsageStatsPermission()) {
-            return -1;
-        }
-
-        NetworkStatsManager networkStatsManager = (NetworkStatsManager) context.getSystemService(Context.NETWORK_STATS_SERVICE);
-        if (networkStatsManager == null)
-            return 0;
-
-
-
-        java.util.Calendar calendar = java.util.Calendar.getInstance();
-        calendar.set(java.util.Calendar.HOUR_OF_DAY, 0);
-        calendar.set(java.util.Calendar.MINUTE, 0);
-        calendar.set(java.util.Calendar.SECOND, 0);
-        calendar.set(java.util.Calendar.MILLISECOND, 0);
-        long startTime = calendar.getTimeInMillis();
-        long endTime = System.currentTimeMillis();
-
-        long totalBytes = 0;
-        try {
-            NetworkStats.Bucket wifiBucket = networkStatsManager.querySummaryForDevice(
-                    LegacyNetworkTypes.WIFI,
-                    null,
-                    startTime,
-                    endTime);
-            if (wifiBucket != null) {
-                totalBytes += wifiBucket.getRxBytes() + wifiBucket.getTxBytes();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        try {
-            NetworkStats.Bucket mobileBucket = networkStatsManager.querySummaryForDevice(
-                    LegacyNetworkTypes.MOBILE,
-                    null,
-                    startTime,
-                    endTime);
-            if (mobileBucket != null) {
-                totalBytes += mobileBucket.getRxBytes() + mobileBucket.getTxBytes();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        try {
-            NetworkStats.Bucket ethernetBucket = networkStatsManager.querySummaryForDevice(
-                    LegacyNetworkTypes.ETHERNET,
-                    null,
-                    startTime,
-                    endTime);
-            if (ethernetBucket != null) {
-                totalBytes += ethernetBucket.getRxBytes() + ethernetBucket.getTxBytes();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return totalBytes;
+        return getDataUsage(java.util.Calendar.DAY_OF_YEAR);
     }
 
     long getWeeklyDataUsage() {
-        if (!checkUsageStatsPermission()) {
-            return -1;
-        }
-
-        NetworkStatsManager networkStatsManager = (NetworkStatsManager) context.getSystemService(Context.NETWORK_STATS_SERVICE);
-        if (networkStatsManager == null)
-            return 0;
-
-
-
-        java.util.Calendar calendar = java.util.Calendar.getInstance();
-        calendar.set(java.util.Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
-        calendar.set(java.util.Calendar.HOUR_OF_DAY, 0);
-        calendar.set(java.util.Calendar.MINUTE, 0);
-        calendar.set(java.util.Calendar.SECOND, 0);
-        calendar.set(java.util.Calendar.MILLISECOND, 0);
-        long startTime = calendar.getTimeInMillis();
-        long endTime = System.currentTimeMillis();
-
-        long totalBytes = 0;
-        try {
-            NetworkStats.Bucket wifiBucket = networkStatsManager.querySummaryForDevice(
-                    LegacyNetworkTypes.WIFI,
-                    null,
-                    startTime,
-                    endTime);
-            if (wifiBucket != null) {
-                totalBytes += wifiBucket.getRxBytes() + wifiBucket.getTxBytes();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        try {
-            NetworkStats.Bucket mobileBucket = networkStatsManager.querySummaryForDevice(
-                    LegacyNetworkTypes.MOBILE,
-                    null,
-                    startTime,
-                    endTime);
-            if (mobileBucket != null) {
-                totalBytes += mobileBucket.getRxBytes() + mobileBucket.getTxBytes();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        try {
-            NetworkStats.Bucket ethernetBucket = networkStatsManager.querySummaryForDevice(
-                    LegacyNetworkTypes.ETHERNET,
-                    null,
-                    startTime,
-                    endTime);
-            if (ethernetBucket != null) {
-                totalBytes += ethernetBucket.getRxBytes() + ethernetBucket.getTxBytes();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return totalBytes;
+        return getDataUsage(java.util.Calendar.WEEK_OF_YEAR);
     }
 
     long getMonthlyDataUsage() {
-        if (!checkUsageStatsPermission()) {
-            return -1;
+        return getDataUsage(java.util.Calendar.MONTH);
+    }
+
+    private long getDataUsage(int period) {
+        if (!checkUsageStatsPermission()) return -1;
+        var manager = (NetworkStatsManager) context.getSystemService(Context.NETWORK_STATS_SERVICE);
+        if (manager == null) return NetworkUsageTotals.UNAVAILABLE;
+        var calendar = java.util.Calendar.getInstance();
+        if (period == java.util.Calendar.WEEK_OF_YEAR) {
+            calendar.set(java.util.Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
+        } else if (period == java.util.Calendar.MONTH) {
+            calendar.set(java.util.Calendar.DAY_OF_MONTH, 1);
         }
-
-        NetworkStatsManager networkStatsManager = (NetworkStatsManager) context.getSystemService(Context.NETWORK_STATS_SERVICE);
-        if (networkStatsManager == null)
-            return 0;
-
-
-
-        java.util.Calendar calendar = java.util.Calendar.getInstance();
-        calendar.set(java.util.Calendar.DAY_OF_MONTH, 1);
         calendar.set(java.util.Calendar.HOUR_OF_DAY, 0);
         calendar.set(java.util.Calendar.MINUTE, 0);
         calendar.set(java.util.Calendar.SECOND, 0);
         calendar.set(java.util.Calendar.MILLISECOND, 0);
-        long startTime = calendar.getTimeInMillis();
-        long endTime = System.currentTimeMillis();
-
-        long totalBytes = 0;
-        try {
-            NetworkStats.Bucket wifiBucket = networkStatsManager.querySummaryForDevice(
-                    LegacyNetworkTypes.WIFI,
-                    null,
-                    startTime,
-                    endTime);
-            if (wifiBucket != null) {
-                totalBytes += wifiBucket.getRxBytes() + wifiBucket.getTxBytes();
+        long start = calendar.getTimeInMillis(), end = System.currentTimeMillis();
+        int[] types = {LegacyNetworkTypes.WIFI, LegacyNetworkTypes.MOBILE, LegacyNetworkTypes.ETHERNET};
+        int[] transports = {NetworkCapabilities.TRANSPORT_WIFI, NetworkCapabilities.TRANSPORT_CELLULAR,
+                NetworkCapabilities.TRANSPORT_ETHERNET};
+        boolean[] required = new boolean[types.length];
+        var connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivity != null) {
+            // Include the physical connection under a VPN, rather than treating VPN as a fourth history.
+            for (var network : connectivity.getAllNetworks()) {
+                var caps = connectivity.getNetworkCapabilities(network);
+                if (caps == null || !caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)) continue;
+                for (int i = 0; i < transports.length; i++) {
+                    required[i] |= caps.hasTransport(transports[i]);
+                }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-
-        try {
-            NetworkStats.Bucket mobileBucket = networkStatsManager.querySummaryForDevice(
-                    LegacyNetworkTypes.MOBILE,
-                    null,
-                    startTime,
-                    endTime);
-            if (mobileBucket != null) {
-                totalBytes += mobileBucket.getRxBytes() + mobileBucket.getTxBytes();
+        long[] bytes = new long[types.length];
+        for (int i = 0; i < types.length; i++) {
+            bytes[i] = NetworkUsageTotals.UNAVAILABLE;
+            try {
+                var bucket = manager.querySummaryForDevice(types[i], null, start, end);
+                if (bucket != null) bytes[i] = bucket.getRxBytes() + bucket.getTxBytes();
+            } catch (Exception ignored) {
+                // A missing/unsupported transport is not a successful zero-byte query.
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-
-        try {
-            NetworkStats.Bucket ethernetBucket = networkStatsManager.querySummaryForDevice(
-                    LegacyNetworkTypes.ETHERNET,
-                    null,
-                    startTime,
-                    endTime);
-            if (ethernetBucket != null) {
-                totalBytes += ethernetBucket.getRxBytes() + ethernetBucket.getTxBytes();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return totalBytes;
+        if (bytes[2] < 0) bytes[2] = AdbEthernetUsage.read(context, start, end);
+        return NetworkUsageTotals.sum(bytes, required);
     }
 
     boolean checkUsageStatsPermission() {

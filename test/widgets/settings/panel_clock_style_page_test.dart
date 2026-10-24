@@ -56,23 +56,24 @@ void main() {
       await pump(tester, const PanelClockStylePage());
       expect(find.byType(PanelClock), findsNothing);
       expect(find.byType(TimeFormatSettingsTile), findsOneWidget);
-      await tester.tap(find.text('Вариант оформления'));
+      await tester.ensureVisible(find.text('Стиль шрифта'));
+      await tester.tap(find.text('Стиль шрифта'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Цифровой'));
+      await tester.tap(find.text('Курсив'));
       await tester.pumpAndSettle();
-      expect(appearance.appearance.clockStyle.values['font'], 'monospace');
+      expect(appearance.appearance.clockStyle.values['font'], isNull);
       expect(appearance.appearance.clockStyle.inheritBackground, isTrue);
       await tester.scrollUntilVisible(find.text('Шрифт текста'), 100);
       await tester.tap(find.text('Шрифт текста'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Noto Serif'));
+      await tester.tap(find.text('С засечками'));
       await tester.pumpAndSettle();
       expect(appearance.appearance.clockStyle.values['font'], 'serif');
       Focus.of(tester.element(find.text('Размер текста'))).requestFocus();
       await tester.pumpAndSettle();
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
       await tester.pumpAndSettle();
-      expect(appearance.appearance.clockStyle.values['size'], 27);
+      expect(appearance.appearance.clockStyle.values['size'], 19);
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox());
     },
@@ -92,10 +93,19 @@ void main() {
       );
       expect(tester.widget<RoundedSwitchListTile>(tile).value, isTrue);
       expect(find.text(l.styleBackgroundColor), findsNothing);
+      await Scrollable.ensureVisible(
+        tester.element(find.text(l.clockSharedBackground)),
+        alignment: .5,
+      );
+      await tester.pumpAndSettle();
       await tester.tap(find.text(l.clockSharedBackground));
       await tester.pumpAndSettle();
-      await appearance.set('panelClockStyle', {...appearance.appearance.clockStyle.values,
-        'opacity': .37, 'radius': 3, 'background': true});
+      await appearance.set('panelClockStyle', {
+        ...appearance.appearance.clockStyle.values,
+        'opacity': .37,
+        'radius': 3,
+        'background': true,
+      });
       await tester.pumpAndSettle();
       await tester.scrollUntilVisible(find.text(l.styleBackgroundColor), 100);
       await Scrollable.ensureVisible(

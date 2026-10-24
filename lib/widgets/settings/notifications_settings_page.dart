@@ -99,8 +99,8 @@ class _NotificationsSettingsPageState extends State<NotificationsSettingsPage>
                         : localizations.permissionRequired,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: service.hasPermission
-                          ? Colors.green
-                          : Colors.orange,
+                          ? Theme.of(context).colorScheme.primary
+                          : Theme.of(context).colorScheme.tertiary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -133,8 +133,8 @@ class _NotificationsSettingsPageState extends State<NotificationsSettingsPage>
                           : '${service.blockedPackages.length}',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: service.blockedPackages.isNotEmpty
-                            ? Colors.orange
-                            : Colors.grey,
+                            ? Theme.of(context).colorScheme.tertiary
+                            : Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ),
                     onPressed: () =>
@@ -218,12 +218,14 @@ class _NotificationsSettingsPageState extends State<NotificationsSettingsPage>
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.black26,
+                color: Theme.of(context).colorScheme.onSurface
+                    .withValues(alpha: .08),
                 borderRadius: BorderRadius.circular(4),
               ),
               child: SelectableText(
                 'adb shell cmd notification allow_listener $packageName/com.leanbitlab.ltvL.LauncherNotificationListenerService',
-                style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
+                style: Theme.of(context).textTheme.bodySmall
+                    ?.copyWith(fontFamily: 'monospace'),
               ),
             ),
           ],
@@ -265,12 +267,14 @@ class _NotificationsSettingsPageState extends State<NotificationsSettingsPage>
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.black26,
+                color: Theme.of(context).colorScheme.onSurface
+                    .withValues(alpha: .08),
                 borderRadius: BorderRadius.circular(4),
               ),
               child: SelectableText(
                 'adb shell appops set $packageName SYSTEM_ALERT_WINDOW allow',
-                style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
+                style: Theme.of(context).textTheme.bodySmall
+                    ?.copyWith(fontFamily: 'monospace'),
               ),
             ),
           ],
