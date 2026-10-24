@@ -1396,5 +1396,13 @@
   "networkReceive": "प्राप्त",
   "networkSend": "भेजा गया",
   "landscapeCelestialBodies": "सूर्य और चंद्रमा",
-  "landscapeStarRotation": "तारों का घूर्णन"
+  "landscapeStarRotation": "तारों का घूर्णन",
+  "tvPowerTitle": "पावर प्रबंधन",
+  "tvPowerOff": "टीवी बंद करें",
+  "tvPowerReboot": "टीवी रीस्टार्ट करें",
+  "tvPowerOffConfirm": "टीवी को स्टैंडबाय में रखें?",
+  "tvPowerRebootConfirm": "रीस्टार्ट करें? खुले ऐप बंद हो जाएंगे।",
+  "tvPowerSent": "कमांड भेजी गई",
+  "tvPowerFailed": "भेज नहीं सके। ADB या सुलभता जाँचें।",
+  "tvPowerHelp": "बंद करने पर CuteLauncher सुलभता सेवा या स्थानीय ADB से स्टैंडबाय होता है। रीस्टार्ट के लिए ADB चाहिए। टीवी बॉक्स पर बॉक्स नियंत्रित होता है; टीवी का व्यवहार HDMI-CEC और फ़र्मवेयर पर निर्भर है।"
 }

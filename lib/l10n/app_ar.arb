@@ -1396,5 +1396,13 @@
   "networkReceive": "استقبال",
   "networkSend": "إرسال",
   "landscapeCelestialBodies": "الشمس والقمر",
-  "landscapeStarRotation": "دوران النجوم"
+  "landscapeStarRotation": "دوران النجوم",
+  "tvPowerTitle": "إدارة الطاقة",
+  "tvPowerOff": "إيقاف التلفاز",
+  "tvPowerReboot": "إعادة تشغيل التلفاز",
+  "tvPowerOffConfirm": "وضع التلفاز في الاستعداد؟",
+  "tvPowerRebootConfirm": "إعادة التشغيل؟ سيتم إغلاق التطبيقات المفتوحة.",
+  "tvPowerSent": "تم إرسال الأمر",
+  "tvPowerFailed": "تعذر الإرسال. تحقق من ADB أو تسهيل الاستخدام.",
+  "tvPowerHelp": "الإيقاف يفعّل الاستعداد عبر خدمة تسهيل الاستخدام في CuteLauncher أو ADB المحلي. تتطلب إعادة التشغيل ADB. على جهاز التلفاز الخارجي يتحكم الأمر بالجهاز نفسه؛ يعتمد التلفاز على HDMI-CEC والبرنامج الثابت."
 }

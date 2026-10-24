@@ -3903,4 +3903,29 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get landscapeStarRotation => 'तारों का घूर्णन';
+
+  @override
+  String get tvPowerTitle => 'पावर प्रबंधन';
+
+  @override
+  String get tvPowerOff => 'टीवी बंद करें';
+
+  @override
+  String get tvPowerReboot => 'टीवी रीस्टार्ट करें';
+
+  @override
+  String get tvPowerOffConfirm => 'टीवी को स्टैंडबाय में रखें?';
+
+  @override
+  String get tvPowerRebootConfirm => 'रीस्टार्ट करें? खुले ऐप बंद हो जाएंगे।';
+
+  @override
+  String get tvPowerSent => 'कमांड भेजी गई';
+
+  @override
+  String get tvPowerFailed => 'भेज नहीं सके। ADB या सुलभता जाँचें।';
+
+  @override
+  String get tvPowerHelp =>
+      'बंद करने पर CuteLauncher सुलभता सेवा या स्थानीय ADB से स्टैंडबाय होता है। रीस्टार्ट के लिए ADB चाहिए। टीवी बॉक्स पर बॉक्स नियंत्रित होता है; टीवी का व्यवहार HDMI-CEC और फ़र्मवेयर पर निर्भर है।';
 }

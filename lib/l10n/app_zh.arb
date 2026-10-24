@@ -1396,5 +1396,13 @@
   "networkReceive": "接收",
   "networkSend": "发送",
   "landscapeCelestialBodies": "太阳和月亮",
-  "landscapeStarRotation": "星空旋转"
+  "landscapeStarRotation": "星空旋转",
+  "tvPowerTitle": "电源管理",
+  "tvPowerOff": "关闭电视",
+  "tvPowerReboot": "重启电视",
+  "tvPowerOffConfirm": "将电视置于待机模式？",
+  "tvPowerRebootConfirm": "重启电视？打开的应用将关闭。",
+  "tvPowerSent": "命令已发送",
+  "tvPowerFailed": "无法发送。请检查 ADB 或无障碍权限。",
+  "tvPowerHelp": "关闭通过 CuteLauncher 无障碍服务或本地 ADB 进入待机模式。重启需要 ADB。电视盒子上的命令控制盒子本身；电视行为取决于 HDMI-CEC 和固件。"
 }

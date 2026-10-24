@@ -1396,5 +1396,13 @@
   "networkReceive": "Alma",
   "networkSend": "Gönderme",
   "landscapeCelestialBodies": "Güneş ve ay",
-  "landscapeStarRotation": "Yıldızların dönüşü"
+  "landscapeStarRotation": "Yıldızların dönüşü",
+  "tvPowerTitle": "Güç yönetimi",
+  "tvPowerOff": "TV’yi kapat",
+  "tvPowerReboot": "TV’yi yeniden başlat",
+  "tvPowerOffConfirm": "TV beklemeye alınsın mı?",
+  "tvPowerRebootConfirm": "TV yeniden başlatılsın mı? Açık uygulamalar kapanacak.",
+  "tvPowerSent": "Komut gönderildi",
+  "tvPowerFailed": "Komut gönderilemedi. ADB veya erişilebilirliği kontrol edin.",
+  "tvPowerHelp": "Kapatma, CuteLauncher erişilebilirlik hizmeti veya yerel ADB ile beklemeyi açar. Yeniden başlatma ADB gerektirir. TV kutusunda kutu kontrol edilir; TV davranışı HDMI-CEC ve yazılıma bağlıdır."
 }

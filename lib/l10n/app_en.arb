@@ -1275,5 +1275,13 @@
   "networkReceive": "Receive",
   "networkSend": "Send",
   "landscapeCelestialBodies": "Sun and moon",
-  "landscapeStarRotation": "Star rotation"
+  "landscapeStarRotation": "Star rotation",
+  "tvPowerTitle": "Power management",
+  "tvPowerOff": "Turn off TV",
+  "tvPowerReboot": "Restart TV",
+  "tvPowerOffConfirm": "Put the TV in standby?",
+  "tvPowerRebootConfirm": "Restart the TV? Open apps will close.",
+  "tvPowerSent": "Command sent",
+  "tvPowerFailed": "Could not send the command. Check ADB or accessibility access.",
+  "tvPowerHelp": "Turning off puts the TV in standby through the CuteLauncher accessibility service or local ADB. Restart requires ADB. On a TV box, the command controls the box; TV behavior depends on HDMI-CEC and firmware."
 }

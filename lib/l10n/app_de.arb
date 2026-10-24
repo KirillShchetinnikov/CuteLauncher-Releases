@@ -1396,5 +1396,13 @@
   "networkReceive": "Empfang",
   "networkSend": "Senden",
   "landscapeCelestialBodies": "Sonne und Mond",
-  "landscapeStarRotation": "Sternrotation"
+  "landscapeStarRotation": "Sternrotation",
+  "tvPowerTitle": "Energieverwaltung",
+  "tvPowerOff": "TV ausschalten",
+  "tvPowerReboot": "TV neu starten",
+  "tvPowerOffConfirm": "TV in den Standby versetzen?",
+  "tvPowerRebootConfirm": "TV neu starten? Offene Apps werden geschlossen.",
+  "tvPowerSent": "Befehl gesendet",
+  "tvPowerFailed": "Befehl fehlgeschlagen. ADB oder Bedienungshilfen prüfen.",
+  "tvPowerHelp": "Ausschalten aktiviert Standby über den CuteLauncher-Bedienungshilfedienst oder lokales ADB. Neustart benötigt ADB. Bei TV-Boxen wird die Box gesteuert; das TV-Verhalten hängt von HDMI-CEC und Firmware ab."
 }

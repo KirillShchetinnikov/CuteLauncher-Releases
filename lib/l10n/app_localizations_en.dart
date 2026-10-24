@@ -3897,4 +3897,30 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get landscapeStarRotation => 'Star rotation';
+
+  @override
+  String get tvPowerTitle => 'Power management';
+
+  @override
+  String get tvPowerOff => 'Turn off TV';
+
+  @override
+  String get tvPowerReboot => 'Restart TV';
+
+  @override
+  String get tvPowerOffConfirm => 'Put the TV in standby?';
+
+  @override
+  String get tvPowerRebootConfirm => 'Restart the TV? Open apps will close.';
+
+  @override
+  String get tvPowerSent => 'Command sent';
+
+  @override
+  String get tvPowerFailed =>
+      'Could not send the command. Check ADB or accessibility access.';
+
+  @override
+  String get tvPowerHelp =>
+      'Turning off puts the TV in standby through the CuteLauncher accessibility service or local ADB. Restart requires ADB. On a TV box, the command controls the box; TV behavior depends on HDMI-CEC and firmware.';
 }

@@ -3731,4 +3731,29 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get landscapeStarRotation => '星空旋转';
+
+  @override
+  String get tvPowerTitle => '电源管理';
+
+  @override
+  String get tvPowerOff => '关闭电视';
+
+  @override
+  String get tvPowerReboot => '重启电视';
+
+  @override
+  String get tvPowerOffConfirm => '将电视置于待机模式？';
+
+  @override
+  String get tvPowerRebootConfirm => '重启电视？打开的应用将关闭。';
+
+  @override
+  String get tvPowerSent => '命令已发送';
+
+  @override
+  String get tvPowerFailed => '无法发送。请检查 ADB 或无障碍权限。';
+
+  @override
+  String get tvPowerHelp =>
+      '关闭通过 CuteLauncher 无障碍服务或本地 ADB 进入待机模式。重启需要 ADB。电视盒子上的命令控制盒子本身；电视行为取决于 HDMI-CEC 和固件。';
 }

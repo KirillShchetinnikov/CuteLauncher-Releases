@@ -3957,4 +3957,31 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get landscapeStarRotation => 'Sternrotation';
+
+  @override
+  String get tvPowerTitle => 'Energieverwaltung';
+
+  @override
+  String get tvPowerOff => 'TV ausschalten';
+
+  @override
+  String get tvPowerReboot => 'TV neu starten';
+
+  @override
+  String get tvPowerOffConfirm => 'TV in den Standby versetzen?';
+
+  @override
+  String get tvPowerRebootConfirm =>
+      'TV neu starten? Offene Apps werden geschlossen.';
+
+  @override
+  String get tvPowerSent => 'Befehl gesendet';
+
+  @override
+  String get tvPowerFailed =>
+      'Befehl fehlgeschlagen. ADB oder Bedienungshilfen prüfen.';
+
+  @override
+  String get tvPowerHelp =>
+      'Ausschalten aktiviert Standby über den CuteLauncher-Bedienungshilfedienst oder lokales ADB. Neustart benötigt ADB. Bei TV-Boxen wird die Box gesteuert; das TV-Verhalten hängt von HDMI-CEC und Firmware ab.';
 }

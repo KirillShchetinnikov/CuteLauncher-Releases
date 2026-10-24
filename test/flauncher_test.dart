@@ -48,6 +48,7 @@ import 'package:flauncher/widgets/focus_aware_app_bar.dart';
 import 'package:flauncher/widgets/settings/settings_panel_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -63,6 +64,118 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 
 void main() {
+  for (final layout in ['row', 'rows', 'grid']) {
+    testWidgets('mouse wheel scrolls non-TV $layout over its selected icon', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({'card_focus_mode': 'first'});
+      final prefs = await SharedPreferences.getInstance();
+      final appearance = AppearanceService(prefs);
+      await appearance.set('focusPulse', false);
+      final apps = mkAppService();
+      final category = fakeCategory(name: 'other_apps')
+        ..applications.addAll(
+          List.generate(
+            30,
+            (i) => fakeApp(packageName: 'other.$i', sideloaded: true),
+          ),
+        );
+      for (final app in category.applications) {
+        when(apps.getAppBanner(app.packageName))
+            .thenAnswer((_) async => Uint8List(0));
+      }
+      await appearance.setCategory(category.id, 'layout', layout);
+      await appearance.setCategory(category.id, 'maxRows', 2);
+      when(apps.launcherSections).thenReturn([category]);
+      when(apps.categories).thenReturn([category]);
+      await _pumpWidgetWithProviders(
+        tester,
+        mkWallpaperService(),
+        apps,
+        mkSettingsService(),
+        appearance: appearance,
+      );
+      final tile = find.byWidgetPredicate(
+        (w) => w is AppCard && w.application.packageName == 'other.0',
+      );
+      final scrollable = find
+          .descendant(
+            of: find.byType(HomeSection),
+            matching: find.byType(Scrollable),
+          )
+          .first;
+      final position = tester.state<ScrollableState>(scrollable).position;
+      expect(position.maxScrollExtent, greaterThan(0));
+      await tester.tap(tile, kind: PointerDeviceKind.mouse);
+      await tester.pumpAndSettle();
+      verify(apps.launchApp(category.applications.first)).called(1);
+      await tester.sendEventToBinding(
+        PointerScrollEvent(
+          position: tester.getCenter(tile),
+          scrollDelta: const Offset(0, 100),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(position.pixels, greaterThan(0));
+      final nextIndex = layout == 'grid' ? 8 : 2;
+      final next = find.byWidgetPredicate(
+        (w) => w is AppCard && w.application.packageName == 'other.$nextIndex',
+      );
+      await tester.tap(next, kind: PointerDeviceKind.mouse);
+      await tester.pumpAndSettle();
+      verify(apps.launchApp(category.applications[nextIndex])).called(1);
+      await tester.pumpWidget(const SizedBox());
+      appearance.dispose();
+    });
+  }
+  testWidgets('mouse scrolls to non-TV apps and launches their icons', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({'card_focus_mode': 'first'});
+    final prefs = await SharedPreferences.getInstance();
+    final appearance = AppearanceService(prefs);
+    await appearance.set('focusPulse', false);
+    final apps = mkAppService();
+    final tv = fakeCategory(name: 'tv_apps')
+      ..applications.addAll(
+        List.generate(36, (i) => fakeApp(packageName: 'tv.$i')),
+      );
+    final other = fakeCategory(name: 'other_apps', order: 1)
+      ..applications.addAll(
+        List.generate(
+          30,
+          (i) => fakeApp(packageName: 'other.$i', sideloaded: true),
+        ),
+      );
+    when(apps.launcherSections).thenReturn([tv, other]);
+    when(apps.categories).thenReturn([tv, other]);
+    await _pumpWidgetWithProviders(
+      tester,
+      mkWallpaperService(),
+      apps,
+      mkSettingsService(),
+      appearance: appearance,
+    );
+    final pointer = Offset(600, 400);
+    for (var i = 0; i < 15; i++) {
+      await tester.sendEventToBinding(
+        PointerScrollEvent(
+          position: pointer,
+          scrollDelta: const Offset(0, 160),
+        ),
+      );
+      await tester.pumpAndSettle();
+    }
+    final tile = find.byWidgetPredicate(
+      (w) => w is AppCard && w.application.packageName == 'other.29',
+    );
+    expect(tile.hitTestable(), findsOneWidget);
+    await tester.tap(tile, kind: PointerDeviceKind.mouse);
+    await tester.pumpAndSettle();
+    verify(apps.launchApp(other.applications.last)).called(1);
+    await tester.pumpWidget(const SizedBox());
+    appearance.dispose();
+  });
   testWidgets('app artwork follows focused cards in the real launcher and preserves wallpaper', (tester) async {
     SharedPreferences.setMockInitialValues({'background_source': 'app', 'card_focus_mode': 'first'});
     final prefs = await SharedPreferences.getInstance();

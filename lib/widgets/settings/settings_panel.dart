@@ -1,3 +1,4 @@
+import 'tv_power_page.dart';
 import '../landscape_demo_presentation.dart';
 import 'information_settings_page.dart';
 import 'panel_clock_style_page.dart';
@@ -248,6 +249,8 @@ class _SettingsPanelState extends State<SettingsPanel> {
                         settings: settings,
                         builder: (_) => const AdbPage(),
                       );
+                    case TvPowerPage.routeName:
+                      return SettingsRoute(settings: settings, builder: (_) => const TvPowerPage());
                     case AutoLaunchPage.routeName:
                       return SettingsRoute(settings: settings, builder: (_) => const AutoLaunchPage());
                     case RemoteButtonsPage.routeName:

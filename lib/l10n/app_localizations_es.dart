@@ -3948,4 +3948,31 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get landscapeStarRotation => 'Rotación de las estrellas';
+
+  @override
+  String get tvPowerTitle => 'Gestión de energía';
+
+  @override
+  String get tvPowerOff => 'Apagar TV';
+
+  @override
+  String get tvPowerReboot => 'Reiniciar TV';
+
+  @override
+  String get tvPowerOffConfirm => '¿Poner el TV en espera?';
+
+  @override
+  String get tvPowerRebootConfirm =>
+      '¿Reiniciar el TV? Se cerrarán las apps abiertas.';
+
+  @override
+  String get tvPowerSent => 'Comando enviado';
+
+  @override
+  String get tvPowerFailed =>
+      'No se pudo enviar. Comprueba ADB o accesibilidad.';
+
+  @override
+  String get tvPowerHelp =>
+      'Apagar activa la espera mediante accesibilidad de CuteLauncher o ADB local. Reiniciar requiere ADB. En un TV box se controla el box; el TV depende de HDMI-CEC y del firmware.';
 }

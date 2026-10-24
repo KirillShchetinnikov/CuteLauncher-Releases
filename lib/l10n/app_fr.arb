@@ -1396,5 +1396,13 @@
   "networkReceive": "Réception",
   "networkSend": "Envoi",
   "landscapeCelestialBodies": "Soleil et lune",
-  "landscapeStarRotation": "Rotation des étoiles"
+  "landscapeStarRotation": "Rotation des étoiles",
+  "tvPowerTitle": "Gestion de l’alimentation",
+  "tvPowerOff": "Éteindre le téléviseur",
+  "tvPowerReboot": "Redémarrer le téléviseur",
+  "tvPowerOffConfirm": "Mettre le téléviseur en veille ?",
+  "tvPowerRebootConfirm": "Redémarrer le téléviseur ? Les applications ouvertes seront fermées.",
+  "tvPowerSent": "Commande envoyée",
+  "tvPowerFailed": "Échec de l’envoi. Vérifiez ADB ou l’accessibilité.",
+  "tvPowerHelp": "L’arrêt active la veille via l’accessibilité CuteLauncher ou ADB local. Le redémarrage nécessite ADB. Sur un boîtier TV, la commande contrôle le boîtier ; le téléviseur dépend de HDMI-CEC et du micrologiciel."
 }

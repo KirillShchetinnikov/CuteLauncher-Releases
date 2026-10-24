@@ -53,6 +53,24 @@ class _TilePaintLayer extends RenderProxyBox {
             hitTest: (result, position) =>
                 tile.hitTest(result, position: position),
           )) {
+        // The raised tile is hit directly to respect its paint order. Restore
+        // the ancestors skipped by that shortcut, including the Scrollable's
+        // pointer listener and drag recognizer, in their own coordinates.
+        RenderObject? ancestor = tile.parent;
+        while (ancestor != null && ancestor != this) {
+          if (ancestor is RenderBox) {
+            final box = ancestor;
+            result.addWithPaintTransform(
+              transform: box.getTransformTo(this),
+              position: position,
+              hitTest: (result, position) {
+                result.add(BoxHitTestEntry(box, position));
+                return true;
+              },
+            );
+          }
+          ancestor = ancestor.parent;
+        }
         return true;
       }
     }
@@ -76,6 +94,7 @@ class _RaisedTile extends RenderProxyBox {
     }
     return ancestor == paintLayer;
   }
+
   @override
   void markNeedsPaint() {
     super.markNeedsPaint();

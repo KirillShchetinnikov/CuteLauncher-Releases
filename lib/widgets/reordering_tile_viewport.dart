@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 
 import '../home_layout.dart';
@@ -33,6 +34,30 @@ class ReorderingTileViewport extends StatefulWidget {
 
 class _ReorderingTileViewportState extends State<ReorderingTileViewport>
     with SingleTickerProviderStateMixin {
+  void _onPointerSignal(PointerSignalEvent event) {
+    if (widget.layout.mode == 'grid' ||
+        event is! PointerScrollEvent ||
+        event.scrollDelta.dx != 0 ||
+        event.scrollDelta.dy == 0 ||
+        !widget.controller.hasClients) {
+      return;
+    }
+    final position = widget.controller.position;
+    if (!position.physics.shouldAcceptUserOffset(position)) return;
+    final delta = event.scrollDelta.dy;
+    final target = (position.pixels + delta).clamp(
+      position.minScrollExtent,
+      position.maxScrollExtent,
+    );
+    // Leave the wheel to the outer page at either end of a tape.
+    if (target == position.pixels) return;
+    GestureBinding.instance.pointerSignalResolver.register(event, (_) {
+      if (mounted && widget.controller.hasClients) {
+        widget.controller.position.pointerScroll(delta);
+      }
+    });
+  }
+
   late final AnimationController _motion = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 280),
@@ -109,33 +134,38 @@ class _ReorderingTileViewportState extends State<ReorderingTileViewport>
             bounds.maxHeight,
           ).inflate(math.max(l.stepX, l.stepY));
           final size = Size(l.width, l.height + l.labelHeight);
-          return SingleChildScrollView(
-            controller: widget.controller,
-            primary: false,
-            scrollDirection: vertical ? Axis.vertical : Axis.horizontal,
-            physics: widget.physics,
-            child: SizedBox(
-              width: vertical
-                  ? bounds.maxWidth
-                  : math.max(bounds.maxWidth, l.contentWidth - l.inset * 2),
-              height: vertical
-                  ? math.max(bounds.maxHeight, l.contentHeight - l.inset * 2)
-                  : bounds.maxHeight,
-              child: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  for (var i = 0; i < widget.packages.length; i++)
-                    if (widget.packages[i] == widget.selected ||
-                        viewport.overlaps(_position(widget.packages[i]) & size))
-                      PositionedDirectional(
-                        key: ValueKey(('tile-position', widget.packages[i])),
-                        start: _position(widget.packages[i]).dx,
-                        top: _position(widget.packages[i]).dy,
-                        width: size.width,
-                        height: size.height,
-                        child: widget.itemBuilder(context, i),
-                      ),
-                ],
+          return Listener(
+            onPointerSignal: _onPointerSignal,
+            child: SingleChildScrollView(
+              controller: widget.controller,
+              primary: false,
+              scrollDirection: vertical ? Axis.vertical : Axis.horizontal,
+              physics: widget.physics,
+              child: SizedBox(
+                width: vertical
+                    ? bounds.maxWidth
+                    : math.max(bounds.maxWidth, l.contentWidth - l.inset * 2),
+                height: vertical
+                    ? math.max(bounds.maxHeight, l.contentHeight - l.inset * 2)
+                    : bounds.maxHeight,
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    for (var i = 0; i < widget.packages.length; i++)
+                      if (widget.packages[i] == widget.selected ||
+                          viewport.overlaps(
+                            _position(widget.packages[i]) & size,
+                          ))
+                        PositionedDirectional(
+                          key: ValueKey(('tile-position', widget.packages[i])),
+                          start: _position(widget.packages[i]).dx,
+                          top: _position(widget.packages[i]).dy,
+                          width: size.width,
+                          height: size.height,
+                          child: widget.itemBuilder(context, i),
+                        ),
+                  ],
+                ),
               ),
             ),
           );

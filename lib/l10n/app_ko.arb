@@ -1396,5 +1396,13 @@
   "networkReceive": "수신",
   "networkSend": "송신",
   "landscapeCelestialBodies": "해와 달",
-  "landscapeStarRotation": "별 회전"
+  "landscapeStarRotation": "별 회전",
+  "tvPowerTitle": "전원 관리",
+  "tvPowerOff": "TV 끄기",
+  "tvPowerReboot": "TV 다시 시작",
+  "tvPowerOffConfirm": "TV를 대기 모드로 전환할까요?",
+  "tvPowerRebootConfirm": "다시 시작할까요? 열려 있는 앱이 종료됩니다.",
+  "tvPowerSent": "명령 전송됨",
+  "tvPowerFailed": "전송하지 못했습니다. ADB 또는 접근성을 확인하세요.",
+  "tvPowerHelp": "끄기는 CuteLauncher 접근성 서비스 또는 로컬 ADB로 대기 모드를 켭니다. 다시 시작하려면 ADB가 필요합니다. TV 박스에서는 박스를 제어하며 TV 동작은 HDMI-CEC와 펌웨어에 따라 다릅니다."
 }

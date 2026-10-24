@@ -1396,5 +1396,13 @@
   "networkReceive": "Recepción",
   "networkSend": "Envío",
   "landscapeCelestialBodies": "Sol y luna",
-  "landscapeStarRotation": "Rotación de las estrellas"
+  "landscapeStarRotation": "Rotación de las estrellas",
+  "tvPowerTitle": "Gestión de energía",
+  "tvPowerOff": "Apagar TV",
+  "tvPowerReboot": "Reiniciar TV",
+  "tvPowerOffConfirm": "¿Poner el TV en espera?",
+  "tvPowerRebootConfirm": "¿Reiniciar el TV? Se cerrarán las apps abiertas.",
+  "tvPowerSent": "Comando enviado",
+  "tvPowerFailed": "No se pudo enviar. Comprueba ADB o accesibilidad.",
+  "tvPowerHelp": "Apagar activa la espera mediante accesibilidad de CuteLauncher o ADB local. Reiniciar requiere ADB. En un TV box se controla el box; el TV depende de HDMI-CEC y del firmware."
 }

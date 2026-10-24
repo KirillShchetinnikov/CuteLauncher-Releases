@@ -42,6 +42,10 @@ its home-screen behavior is configurable. Home returns to the launcher when
 the default home app or Home interception is configured correctly. You can
 choose the focus target after Home and enable navigation sounds.
 
+Click an app tile to launch it with a mouse. The wheel scrolls app rows
+horizontally and grids with a limited number of visible rows vertically.
+At either end of an app row, the wheel scrolls the home page.
+
 Settings are grouped into Home screen, Top panel, Appearance, Apps, Night mode
 and brightness, Launcher and TV controls, and Advanced. Android TV system
 settings open separately. Help is collapsed under More details. Choose an
@@ -315,6 +319,11 @@ After three crashes within five minutes, CuteLauncher opens a recovery screen wi
 
 Path: **Launcher and TV controls**.
 
+- **Power management**: put the TV in standby or restart it, with confirmation
+  before sending the command. Standby requires the CuteLauncher accessibility
+  service or local ADB; restart requires ADB. On a TV box, the command controls
+  the box itself; TV behavior depends on HDMI-CEC and firmware. This does not
+  disconnect electrical power.
 - Configure local TCP/RSA ADB: port, connection check, and authorization on the TV.
 - Inspect the current home app, open system launcher selection, assign CuteLauncher
   through supported ADB actions, or restore the previous HOME handler.

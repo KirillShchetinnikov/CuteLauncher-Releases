@@ -3807,4 +3807,29 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get landscapeStarRotation => '별 회전';
+
+  @override
+  String get tvPowerTitle => '전원 관리';
+
+  @override
+  String get tvPowerOff => 'TV 끄기';
+
+  @override
+  String get tvPowerReboot => 'TV 다시 시작';
+
+  @override
+  String get tvPowerOffConfirm => 'TV를 대기 모드로 전환할까요?';
+
+  @override
+  String get tvPowerRebootConfirm => '다시 시작할까요? 열려 있는 앱이 종료됩니다.';
+
+  @override
+  String get tvPowerSent => '명령 전송됨';
+
+  @override
+  String get tvPowerFailed => '전송하지 못했습니다. ADB 또는 접근성을 확인하세요.';
+
+  @override
+  String get tvPowerHelp =>
+      '끄기는 CuteLauncher 접근성 서비스 또는 로컬 ADB로 대기 모드를 켭니다. 다시 시작하려면 ADB가 필요합니다. TV 박스에서는 박스를 제어하며 TV 동작은 HDMI-CEC와 펌웨어에 따라 다릅니다.';
 }

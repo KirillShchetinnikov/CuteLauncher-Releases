@@ -1396,5 +1396,13 @@
   "networkReceive": "受信",
   "networkSend": "送信",
   "landscapeCelestialBodies": "太陽と月",
-  "landscapeStarRotation": "星の回転"
+  "landscapeStarRotation": "星の回転",
+  "tvPowerTitle": "電源管理",
+  "tvPowerOff": "テレビをオフ",
+  "tvPowerReboot": "テレビを再起動",
+  "tvPowerOffConfirm": "テレビをスタンバイにしますか？",
+  "tvPowerRebootConfirm": "再起動しますか？開いているアプリは終了します。",
+  "tvPowerSent": "コマンドを送信しました",
+  "tvPowerFailed": "送信できません。ADB またはユーザー補助を確認してください。",
+  "tvPowerHelp": "オフは CuteLauncher のユーザー補助サービスまたはローカル ADB でスタンバイにします。再起動には ADB が必要です。TV ボックスではボックスを操作します。テレビの動作は HDMI-CEC とファームウェアに依存します。"
 }

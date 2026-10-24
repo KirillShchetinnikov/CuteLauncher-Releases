@@ -3954,4 +3954,31 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get landscapeStarRotation => 'Rotation des étoiles';
+
+  @override
+  String get tvPowerTitle => 'Gestion de l’alimentation';
+
+  @override
+  String get tvPowerOff => 'Éteindre le téléviseur';
+
+  @override
+  String get tvPowerReboot => 'Redémarrer le téléviseur';
+
+  @override
+  String get tvPowerOffConfirm => 'Mettre le téléviseur en veille ?';
+
+  @override
+  String get tvPowerRebootConfirm =>
+      'Redémarrer le téléviseur ? Les applications ouvertes seront fermées.';
+
+  @override
+  String get tvPowerSent => 'Commande envoyée';
+
+  @override
+  String get tvPowerFailed =>
+      'Échec de l’envoi. Vérifiez ADB ou l’accessibilité.';
+
+  @override
+  String get tvPowerHelp =>
+      'L’arrêt active la veille via l’accessibilité CuteLauncher ou ADB local. Le redémarrage nécessite ADB. Sur un boîtier TV, la commande contrôle le boîtier ; le téléviseur dépend de HDMI-CEC et du micrologiciel.';
 }

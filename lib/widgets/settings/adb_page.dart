@@ -1,3 +1,4 @@
+import 'tv_power_page.dart';
 import '../remote_text_input.dart';
 
 import 'package:flauncher/widgets/launcher_dialog.dart';
@@ -695,6 +696,13 @@ class _AdbPageState extends State<AdbPage> with WidgetsBindingObserver {
                     null,
                     () => _openPage(AutoLaunchPage.routeName),
                     autofocus: true,
+                    showStatus: false,
+                  ),
+                  _menuTile(
+                    l.tvPowerTitle,
+                    Icons.power_settings_new,
+                    null,
+                    () => _openPage(TvPowerPage.routeName),
                     showStatus: false,
                   ),
                   _menuTile(

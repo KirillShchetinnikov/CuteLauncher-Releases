@@ -1,10 +1,87 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flauncher/home_layout.dart';
 import 'package:flauncher/tile_appearance.dart';
 import 'package:flauncher/widgets/reordering_tile_viewport.dart';
+import 'package:flauncher/widgets/tile_paint_layer.dart';
 
 void main() {
+  for (final direction in TextDirection.values) {
+    testWidgets('wheel advances tape and hands off at its end: $direction', (
+      tester,
+    ) async {
+      final inner = ScrollController();
+      final outer = ScrollController();
+      final layout = HomeLayout(
+        mode: 'row',
+        count: 20,
+        availableWidth: 400,
+        style: const TileAppearance({'size': 70}),
+      );
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Directionality(
+            textDirection: direction,
+            child: Center(
+              child: SizedBox(
+                width: 400,
+                height: 300,
+                child: SingleChildScrollView(
+                  controller: outer,
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 160,
+                        child: TilePaintLayer(
+                          child: ReorderingTileViewport(
+                            layout: layout,
+                            packages: List.generate(20, (i) => '$i'),
+                            controller: inner,
+                            selected: '0',
+                            itemBuilder: (_, i) => RaisedTile(
+                              raised: i == 0,
+                              child: ColoredBox(
+                                key: ValueKey('wheel-$i'),
+                                color: Colors.blue,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 800),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.sendEventToBinding(
+        PointerScrollEvent(
+          position: tester.getCenter(find.byKey(const ValueKey('wheel-0'))),
+          scrollDelta: const Offset(0, 80),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(inner.offset, 80);
+      expect(outer.offset, 0);
+      inner.jumpTo(inner.position.maxScrollExtent);
+      await tester.pumpAndSettle();
+      await tester.sendEventToBinding(
+        PointerScrollEvent(
+          position: tester.getCenter(find.byType(ReorderingTileViewport)),
+          scrollDelta: const Offset(0, 80),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(outer.offset, 80);
+      await tester.pumpWidget(const SizedBox());
+      inner.dispose();
+      outer.dispose();
+    });
+  }
   test('motion preference does not change legacy card decoration', () {
     expect(const TileAppearance({'animateReordering': false}).active,
         const TileAppearance().active);

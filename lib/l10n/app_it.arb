@@ -1396,5 +1396,13 @@
   "networkReceive": "Ricezione",
   "networkSend": "Invio",
   "landscapeCelestialBodies": "Sole e luna",
-  "landscapeStarRotation": "Rotazione delle stelle"
+  "landscapeStarRotation": "Rotazione delle stelle",
+  "tvPowerTitle": "Gestione alimentazione",
+  "tvPowerOff": "Spegni TV",
+  "tvPowerReboot": "Riavvia TV",
+  "tvPowerOffConfirm": "Mettere il TV in standby?",
+  "tvPowerRebootConfirm": "Riavviare il TV? Le app aperte verranno chiuse.",
+  "tvPowerSent": "Comando inviato",
+  "tvPowerFailed": "Invio non riuscito. Controlla ADB o accessibilità.",
+  "tvPowerHelp": "Lo spegnimento attiva lo standby tramite accessibilità CuteLauncher o ADB locale. Il riavvio richiede ADB. Su un TV box si controlla il box; il TV dipende da HDMI-CEC e firmware."
 }

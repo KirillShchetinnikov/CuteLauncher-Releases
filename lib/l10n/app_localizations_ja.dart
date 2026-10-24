@@ -3804,4 +3804,29 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get landscapeStarRotation => '星の回転';
+
+  @override
+  String get tvPowerTitle => '電源管理';
+
+  @override
+  String get tvPowerOff => 'テレビをオフ';
+
+  @override
+  String get tvPowerReboot => 'テレビを再起動';
+
+  @override
+  String get tvPowerOffConfirm => 'テレビをスタンバイにしますか？';
+
+  @override
+  String get tvPowerRebootConfirm => '再起動しますか？開いているアプリは終了します。';
+
+  @override
+  String get tvPowerSent => 'コマンドを送信しました';
+
+  @override
+  String get tvPowerFailed => '送信できません。ADB またはユーザー補助を確認してください。';
+
+  @override
+  String get tvPowerHelp =>
+      'オフは CuteLauncher のユーザー補助サービスまたはローカル ADB でスタンバイにします。再起動には ADB が必要です。TV ボックスではボックスを操作します。テレビの動作は HDMI-CEC とファームウェアに依存します。';
 }

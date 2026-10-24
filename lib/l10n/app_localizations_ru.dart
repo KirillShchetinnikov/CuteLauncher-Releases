@@ -3915,4 +3915,31 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get landscapeStarRotation => 'Вращение звёзд';
+
+  @override
+  String get tvPowerTitle => 'Управление питанием';
+
+  @override
+  String get tvPowerOff => 'Выключить ТВ';
+
+  @override
+  String get tvPowerReboot => 'Перезагрузить ТВ';
+
+  @override
+  String get tvPowerOffConfirm => 'Перевести ТВ в режим ожидания?';
+
+  @override
+  String get tvPowerRebootConfirm =>
+      'Перезагрузить ТВ? Открытые приложения будут закрыты.';
+
+  @override
+  String get tvPowerSent => 'Команда отправлена';
+
+  @override
+  String get tvPowerFailed =>
+      'Не удалось отправить команду. Проверьте ADB или специальные возможности.';
+
+  @override
+  String get tvPowerHelp =>
+      'Выключение переводит ТВ в ожидание через службу специальных возможностей CuteLauncher или локальный ADB. Для перезагрузки нужен ADB. На приставке команда управляет приставкой; поведение телевизора зависит от HDMI-CEC и прошивки.';
 }

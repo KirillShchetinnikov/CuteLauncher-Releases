@@ -3953,4 +3953,31 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get landscapeStarRotation => 'Rotazione delle stelle';
+
+  @override
+  String get tvPowerTitle => 'Gestione alimentazione';
+
+  @override
+  String get tvPowerOff => 'Spegni TV';
+
+  @override
+  String get tvPowerReboot => 'Riavvia TV';
+
+  @override
+  String get tvPowerOffConfirm => 'Mettere il TV in standby?';
+
+  @override
+  String get tvPowerRebootConfirm =>
+      'Riavviare il TV? Le app aperte verranno chiuse.';
+
+  @override
+  String get tvPowerSent => 'Comando inviato';
+
+  @override
+  String get tvPowerFailed =>
+      'Invio non riuscito. Controlla ADB o accessibilità.';
+
+  @override
+  String get tvPowerHelp =>
+      'Lo spegnimento attiva lo standby tramite accessibilità CuteLauncher o ADB locale. Il riavvio richiede ADB. Su un TV box si controlla il box; il TV dipende da HDMI-CEC e firmware.';
 }

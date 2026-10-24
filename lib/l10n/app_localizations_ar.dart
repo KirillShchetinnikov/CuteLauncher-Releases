@@ -3893,4 +3893,30 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get landscapeStarRotation => 'دوران النجوم';
+
+  @override
+  String get tvPowerTitle => 'إدارة الطاقة';
+
+  @override
+  String get tvPowerOff => 'إيقاف التلفاز';
+
+  @override
+  String get tvPowerReboot => 'إعادة تشغيل التلفاز';
+
+  @override
+  String get tvPowerOffConfirm => 'وضع التلفاز في الاستعداد؟';
+
+  @override
+  String get tvPowerRebootConfirm =>
+      'إعادة التشغيل؟ سيتم إغلاق التطبيقات المفتوحة.';
+
+  @override
+  String get tvPowerSent => 'تم إرسال الأمر';
+
+  @override
+  String get tvPowerFailed => 'تعذر الإرسال. تحقق من ADB أو تسهيل الاستخدام.';
+
+  @override
+  String get tvPowerHelp =>
+      'الإيقاف يفعّل الاستعداد عبر خدمة تسهيل الاستخدام في CuteLauncher أو ADB المحلي. تتطلب إعادة التشغيل ADB. على جهاز التلفاز الخارجي يتحكم الأمر بالجهاز نفسه؛ يعتمد التلفاز على HDMI-CEC والبرنامج الثابت.';
 }

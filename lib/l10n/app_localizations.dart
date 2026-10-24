@@ -7285,6 +7285,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Star rotation'**
   String get landscapeStarRotation;
+
+  /// No description provided for @tvPowerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Power management'**
+  String get tvPowerTitle;
+
+  /// No description provided for @tvPowerOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off TV'**
+  String get tvPowerOff;
+
+  /// No description provided for @tvPowerReboot.
+  ///
+  /// In en, this message translates to:
+  /// **'Restart TV'**
+  String get tvPowerReboot;
+
+  /// No description provided for @tvPowerOffConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Put the TV in standby?'**
+  String get tvPowerOffConfirm;
+
+  /// No description provided for @tvPowerRebootConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Restart the TV? Open apps will close.'**
+  String get tvPowerRebootConfirm;
+
+  /// No description provided for @tvPowerSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Command sent'**
+  String get tvPowerSent;
+
+  /// No description provided for @tvPowerFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not send the command. Check ADB or accessibility access.'**
+  String get tvPowerFailed;
+
+  /// No description provided for @tvPowerHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Turning off puts the TV in standby through the CuteLauncher accessibility service or local ADB. Restart requires ADB. On a TV box, the command controls the box; TV behavior depends on HDMI-CEC and firmware.'**
+  String get tvPowerHelp;
 }
 
 class _AppLocalizationsDelegate

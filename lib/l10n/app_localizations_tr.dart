@@ -3920,4 +3920,31 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get landscapeStarRotation => 'Yıldızların dönüşü';
+
+  @override
+  String get tvPowerTitle => 'Güç yönetimi';
+
+  @override
+  String get tvPowerOff => 'TV’yi kapat';
+
+  @override
+  String get tvPowerReboot => 'TV’yi yeniden başlat';
+
+  @override
+  String get tvPowerOffConfirm => 'TV beklemeye alınsın mı?';
+
+  @override
+  String get tvPowerRebootConfirm =>
+      'TV yeniden başlatılsın mı? Açık uygulamalar kapanacak.';
+
+  @override
+  String get tvPowerSent => 'Komut gönderildi';
+
+  @override
+  String get tvPowerFailed =>
+      'Komut gönderilemedi. ADB veya erişilebilirliği kontrol edin.';
+
+  @override
+  String get tvPowerHelp =>
+      'Kapatma, CuteLauncher erişilebilirlik hizmeti veya yerel ADB ile beklemeyi açar. Yeniden başlatma ADB gerektirir. TV kutusunda kutu kontrol edilir; TV davranışı HDMI-CEC ve yazılıma bağlıdır.';
 }
