@@ -2,6 +2,11 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
+## v1.3.1 — 2026-10-26
+
+- Fixed text being clipped at the top and bottom in settings, including labels, values, and buttons using Manrope.
+- Added a separate one-time confirmation when disabling the stock launcher carries an identified risk of losing saved Wi-Fi networks. Disabling remains blocked if Wi-Fi safety cannot be determined.
+
 ## v1.3.0 — 2026-10-26
 
 - Added local video wallpapers with silent looping playback. Codec support depends on the TV; video files are not included in backups.

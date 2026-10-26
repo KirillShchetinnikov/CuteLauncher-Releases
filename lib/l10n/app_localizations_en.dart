@@ -4178,4 +4178,29 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get notificationOpenFailed =>
       'Could not open the notification action. It may no longer be available.';
+
+  @override
+  String get adbWifiOverride => 'Disable anyway…';
+
+  @override
+  String get adbWifiRiskTitle => 'Disable despite the risk?';
+
+  @override
+  String get adbWifiRiskEffect =>
+      'The built-in launcher and Google setup wizard will be disabled.';
+
+  @override
+  String get adbWifiRiskLoss =>
+      'Android may delete saved Wi-Fi networks. Wi-Fi connectivity and wireless ADB may become unavailable.';
+
+  @override
+  String get adbWifiRiskRecovery =>
+      'Re-enabling the setup wizard will not automatically restore deleted networks. You will need to reconnect to Wi-Fi and enter the password.';
+
+  @override
+  String get adbWifiRiskConsent =>
+      'Continue only if you know the Wi-Fi password.';
+
+  @override
+  String get adbWifiDisable => 'Disable';
 }

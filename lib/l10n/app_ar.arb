@@ -1480,5 +1480,12 @@
   "noticeBottomLeft": "أسفل اليسار",
   "noticeTopRight": "أعلى اليمين",
   "noticeTopLeft": "أعلى اليسار",
-  "notificationOpenFailed": "تعذّر فتح إجراء الإشعار. قد لا يكون متاحًا الآن."
+  "notificationOpenFailed": "تعذّر فتح إجراء الإشعار. قد لا يكون متاحًا الآن.",
+  "adbWifiOverride": "تعطيل على أي حال…",
+  "adbWifiRiskTitle": "هل تريد التعطيل رغم المخاطر؟",
+  "adbWifiRiskEffect": "سيتم تعطيل المشغّل المدمج ومعالج إعداد Google.",
+  "adbWifiRiskLoss": "قد يحذف Android شبكات Wi-Fi المحفوظة. قد يصبح اتصال Wi-Fi وADB اللاسلكي غير متاحين.",
+  "adbWifiRiskRecovery": "إعادة تفعيل المعالج لن تستعيد الشبكات المحذوفة تلقائيًا. ستحتاج إلى إعادة الاتصال بشبكة Wi-Fi وإدخال كلمة المرور.",
+  "adbWifiRiskConsent": "تابع فقط إذا كنت تعرف كلمة مرور Wi-Fi.",
+  "adbWifiDisable": "تعطيل"
 }

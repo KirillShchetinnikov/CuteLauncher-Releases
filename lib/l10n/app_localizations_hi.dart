@@ -4184,4 +4184,29 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get notificationOpenFailed =>
       'सूचना की कार्रवाई नहीं खोली जा सकी। शायद अब यह उपलब्ध नहीं है।';
+
+  @override
+  String get adbWifiOverride => 'फिर भी बंद करें…';
+
+  @override
+  String get adbWifiRiskTitle => 'जोखिम के बावजूद बंद करें?';
+
+  @override
+  String get adbWifiRiskEffect =>
+      'बिल्ट-इन लॉन्चर और Google सेटअप विज़ार्ड बंद हो जाएंगे।';
+
+  @override
+  String get adbWifiRiskLoss =>
+      'Android सेव किए गए Wi-Fi नेटवर्क मिटा सकता है। Wi-Fi कनेक्शन और वायरलेस ADB अनुपलब्ध हो सकते हैं।';
+
+  @override
+  String get adbWifiRiskRecovery =>
+      'विज़ार्ड फिर चालू करने से मिटाए गए नेटवर्क अपने आप वापस नहीं आएंगे। Wi-Fi से दोबारा जुड़कर पासवर्ड दर्ज करना होगा।';
+
+  @override
+  String get adbWifiRiskConsent =>
+      'केवल तभी जारी रखें जब आपको Wi-Fi पासवर्ड पता हो।';
+
+  @override
+  String get adbWifiDisable => 'बंद करें';
 }

@@ -4203,4 +4203,29 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get notificationOpenFailed =>
       'Bildirim eylemi açılamadı. Artık kullanılamıyor olabilir.';
+
+  @override
+  String get adbWifiOverride => 'Yine de devre dışı bırak…';
+
+  @override
+  String get adbWifiRiskTitle => 'Riske rağmen devre dışı bırakılsın mı?';
+
+  @override
+  String get adbWifiRiskEffect =>
+      'Yerleşik başlatıcı ve Google kurulum sihirbazı devre dışı bırakılacak.';
+
+  @override
+  String get adbWifiRiskLoss =>
+      'Android kayıtlı Wi-Fi ağlarını silebilir. Wi-Fi bağlantısı ve kablosuz ADB kullanılamayabilir.';
+
+  @override
+  String get adbWifiRiskRecovery =>
+      'Sihirbazı yeniden etkinleştirmek silinen ağları otomatik olarak geri getirmez. Wi-Fi ağına yeniden bağlanıp şifreyi girmeniz gerekir.';
+
+  @override
+  String get adbWifiRiskConsent =>
+      'Yalnızca Wi-Fi şifresini biliyorsanız devam edin.';
+
+  @override
+  String get adbWifiDisable => 'Devre dışı bırak';
 }

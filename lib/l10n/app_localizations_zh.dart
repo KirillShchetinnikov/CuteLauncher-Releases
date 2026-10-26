@@ -3997,4 +3997,26 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get notificationOpenFailed => '无法打开通知操作。该操作可能已不可用。';
+
+  @override
+  String get adbWifiOverride => '仍然停用…';
+
+  @override
+  String get adbWifiRiskTitle => '仍要冒险停用吗？';
+
+  @override
+  String get adbWifiRiskEffect => '内置启动器和 Google 设置向导将被停用。';
+
+  @override
+  String get adbWifiRiskLoss =>
+      'Android 可能删除已保存的 Wi-Fi 网络。Wi-Fi 连接和无线 ADB 可能无法使用。';
+
+  @override
+  String get adbWifiRiskRecovery => '重新启用设置向导不会自动恢复已删除的网络。您需要重新连接 Wi-Fi 并输入密码。';
+
+  @override
+  String get adbWifiRiskConsent => '仅在知道 Wi-Fi 密码的情况下继续。';
+
+  @override
+  String get adbWifiDisable => '停用';
 }

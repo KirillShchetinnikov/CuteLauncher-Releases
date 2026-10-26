@@ -247,11 +247,22 @@ class _AdbPageState extends State<AdbPage> with WidgetsBindingObserver {
     var report = false;
     setState(() => _busy = true);
     try {
-      final plan = await _call('preview', {
+      var plan = await _call('preview', {
         'operation': action,
         'target': ?target,
       });
       if (!mounted) return;
+      var allowOwnedWifi = false;
+      if (action == 'disableSystem' && plan['status'] == 'wifiOwned') {
+        if (!await confirmAdbWifiRisk(context) || !mounted) return;
+        allowOwnedWifi = true;
+        plan = await _call('preview', {
+          'operation': action,
+          'target': ?target,
+          'allowOwnedWifi': true,
+        });
+        if (!mounted) return;
+      }
       if (plan['status'] != 'ready' || plan['commands'] is! List) {
         report = true;
         setState(() {
@@ -262,7 +273,7 @@ class _AdbPageState extends State<AdbPage> with WidgetsBindingObserver {
         return;
       }
       final commands = (plan['commands'] as List).cast<String>();
-      if (!await confirmAdbAction(
+      if (!allowOwnedWifi && (!await confirmAdbAction(
             context,
             plan['targetName'] is String &&
                     (plan['targetName'] as String).isNotEmpty
@@ -271,11 +282,13 @@ class _AdbPageState extends State<AdbPage> with WidgetsBindingObserver {
             action,
             commands,
           ) ||
-          !mounted) {
+          !mounted)) {
         return;
       }
+      if (!mounted) return;
       report = true;
       final result = await _call(action, {
+        if (allowOwnedWifi) 'allowOwnedWifi': true,
         'commands': commands,
         'target': ?target,
       });

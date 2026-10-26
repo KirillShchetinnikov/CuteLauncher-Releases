@@ -385,11 +385,16 @@ Autostart acts when Android hands control to the launcher; choosing a target doe
 not launch it immediately. Firmware determines whether HOME can be changed.
 Consequences and confirmation appear before changes. Disabling setupwraith also
 checks ownership of saved Wi-Fi networks: network-loss risk or an inconclusive
-check blocks the action. If ownership by the setup wizard is confirmed, CuteLauncher
+check blocks the action by default. If ownership by the setup wizard is confirmed, CuteLauncher
 opens a separate dialog: check that you know the password, forget the network and
 reconnect through regular Android network settings, then check ADB and retry.
-If the message returns, keep the built-in launcher enabled. An inconclusive
-ownership check does not require forgetting the network.
+If the message returns, keeping the built-in launcher enabled is safer.
+“Disable anyway…” lets you proceed after a separate warning and the red
+“Disable” button; “Cancel” is selected by default. Android may delete saved
+networks, making Wi-Fi and wireless ADB unavailable. Re-enabling the wizard
+will not automatically restore networks: reconnect and enter the password.
+Confirmation applies to one operation only. An inconclusive ownership check
+cannot be overridden and does not require forgetting the network.
 Restoring the original state requires working ADB and saved recovery data.
 
 ## Remote remapper and floating panel

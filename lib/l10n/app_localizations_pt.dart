@@ -4225,4 +4225,29 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get notificationOpenFailed =>
       'Não foi possível abrir a ação da notificação. Ela pode não estar mais disponível.';
+
+  @override
+  String get adbWifiOverride => 'Desativar mesmo assim…';
+
+  @override
+  String get adbWifiRiskTitle => 'Desativar apesar do risco?';
+
+  @override
+  String get adbWifiRiskEffect =>
+      'O launcher integrado e o assistente de configuração do Google serão desativados.';
+
+  @override
+  String get adbWifiRiskLoss =>
+      'O Android pode excluir redes Wi-Fi salvas. O Wi-Fi e o ADB sem fio podem ficar indisponíveis.';
+
+  @override
+  String get adbWifiRiskRecovery =>
+      'Reativar o assistente não restaurará automaticamente as redes excluídas. Será necessário reconectar ao Wi-Fi e inserir a senha.';
+
+  @override
+  String get adbWifiRiskConsent =>
+      'Continue apenas se souber a senha do Wi-Fi.';
+
+  @override
+  String get adbWifiDisable => 'Desativar';
 }

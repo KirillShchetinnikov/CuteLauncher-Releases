@@ -24,9 +24,20 @@ final class AdbWifiSafety {
     }
 
     static Inspection checkDetailed(Map<String, Integer> desired, Shell shell) {
+        return checkDetailed(desired, shell, false);
+    }
+
+    static Inspection checkDetailed(Map<String, Integer> desired, Shell shell, boolean allowOwnedWifi) {
         if (!Integer.valueOf(3).equals(desired.get(AdbSystemHomeOps.RECOVERY_PACKAGE)))
             return new Inspection("ready", "wifi_not_required", 0, 0, 0);
-        try { return inspectDetailed(shell.execute(COMMAND)); }
+        try {
+            Inspection result = inspectDetailed(shell.execute(COMMAND));
+            if (allowOwnedWifi && result.status().equals("wifiOwned")) {
+                return new Inspection("ready", "wifi_owner_override", result.networkCount(),
+                    result.knownOwnerCount(), result.setupOwnerCount());
+            }
+            return result;
+        }
         catch (Exception failure) { return new Inspection("wifiUnknown", "wifi_query_failed", 0, 0, 0); }
     }
 

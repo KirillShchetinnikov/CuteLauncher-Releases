@@ -257,7 +257,7 @@ void main() {
     await tester.pumpAndSettle();
   });
 
-  testWidgets('dialog actions show only the focused outline', (tester) async {
+  testWidgets('dialog actions preserve focus outlines and danger colors', (tester) async {
     final cancel = FocusNode();
     final confirm = FocusNode();
     addTearDown(cancel.dispose);
@@ -293,7 +293,8 @@ void main() {
           matching: find.byType(Material),
         ),
       );
-      expect(material.color, Colors.transparent);
+      final colors = Theme.of(tester.element(find.text(label))).colorScheme;
+      expect(material.color, label == 'Confirm' ? colors.error : Colors.transparent);
       final border = (material.shape! as OutlinedBorder).side;
       expect(border.color.a, focused ? 1 : 0);
     }

@@ -104,9 +104,9 @@ final class AdbBridge {
                                 String status = perform(activity, shell, "check");
                                 response = status.equals("ready") ? AdbLauncherControl.snapshot(activity, shell) : Map.of("status",status);
                             } else if (action.equals("preview")) {
-                                response = operation == null ? Map.of("status","invalid") : AdbLauncherControl.plan(activity,shell,operation,call.argument("target"));
+                                response = operation == null ? Map.of("status","invalid") : AdbLauncherControl.plan(activity,shell,operation,call.argument("target"), operation.equals("disableSystem") && Boolean.TRUE.equals(call.argument("allowOwnedWifi")));
                             } else {
-                                response = Map.of("status", AdbLauncherControl.apply(activity,shell,action,call.argument("target"),call.argument("commands")));
+                                response = Map.of("status", AdbLauncherControl.apply(activity,shell,action,call.argument("target"),call.argument("commands"), action.equals("disableSystem") && Boolean.TRUE.equals(call.argument("allowOwnedWifi"))));
                             }
                         }
                         if (response.get("status").equals("ready") || response.get("status").equals("success"))

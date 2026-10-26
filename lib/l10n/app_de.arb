@@ -1480,5 +1480,12 @@
   "noticeBottomLeft": "Unten links",
   "noticeTopRight": "Oben rechts",
   "noticeTopLeft": "Oben links",
-  "notificationOpenFailed": "Die Benachrichtigungsaktion konnte nicht geöffnet werden. Sie ist möglicherweise nicht mehr verfügbar."
+  "notificationOpenFailed": "Die Benachrichtigungsaktion konnte nicht geöffnet werden. Sie ist möglicherweise nicht mehr verfügbar.",
+  "adbWifiOverride": "Trotzdem deaktivieren…",
+  "adbWifiRiskTitle": "Trotz des Risikos deaktivieren?",
+  "adbWifiRiskEffect": "Der integrierte Launcher und der Google-Einrichtungsassistent werden deaktiviert.",
+  "adbWifiRiskLoss": "Android kann gespeicherte WLAN-Netze löschen. WLAN und drahtloses ADB können ausfallen.",
+  "adbWifiRiskRecovery": "Erneutes Aktivieren stellt gelöschte Netze nicht automatisch wieder her. Verbinden Sie sich erneut mit dem WLAN und geben Sie das Passwort ein.",
+  "adbWifiRiskConsent": "Fahren Sie nur fort, wenn Sie das WLAN-Passwort kennen.",
+  "adbWifiDisable": "Deaktivieren"
 }

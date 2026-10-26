@@ -7789,6 +7789,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not open the notification action. It may no longer be available.'**
   String get notificationOpenFailed;
+
+  /// No description provided for @adbWifiOverride.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable anyway…'**
+  String get adbWifiOverride;
+
+  /// No description provided for @adbWifiRiskTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable despite the risk?'**
+  String get adbWifiRiskTitle;
+
+  /// No description provided for @adbWifiRiskEffect.
+  ///
+  /// In en, this message translates to:
+  /// **'The built-in launcher and Google setup wizard will be disabled.'**
+  String get adbWifiRiskEffect;
+
+  /// No description provided for @adbWifiRiskLoss.
+  ///
+  /// In en, this message translates to:
+  /// **'Android may delete saved Wi-Fi networks. Wi-Fi connectivity and wireless ADB may become unavailable.'**
+  String get adbWifiRiskLoss;
+
+  /// No description provided for @adbWifiRiskRecovery.
+  ///
+  /// In en, this message translates to:
+  /// **'Re-enabling the setup wizard will not automatically restore deleted networks. You will need to reconnect to Wi-Fi and enter the password.'**
+  String get adbWifiRiskRecovery;
+
+  /// No description provided for @adbWifiRiskConsent.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue only if you know the Wi-Fi password.'**
+  String get adbWifiRiskConsent;
+
+  /// No description provided for @adbWifiDisable.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable'**
+  String get adbWifiDisable;
 }
 
 class _AppLocalizationsDelegate

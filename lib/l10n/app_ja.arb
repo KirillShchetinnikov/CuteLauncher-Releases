@@ -1480,5 +1480,12 @@
   "noticeBottomLeft": "左下",
   "noticeTopRight": "右上",
   "noticeTopLeft": "左上",
-  "notificationOpenFailed": "通知の操作を開けませんでした。すでに利用できなくなっている可能性があります。"
+  "notificationOpenFailed": "通知の操作を開けませんでした。すでに利用できなくなっている可能性があります。",
+  "adbWifiOverride": "それでも無効にする…",
+  "adbWifiRiskTitle": "リスクを承知で無効にしますか？",
+  "adbWifiRiskEffect": "標準ランチャーとGoogleのセットアップウィザードが無効になります。",
+  "adbWifiRiskLoss": "保存済みのWi-FiネットワークがAndroidによって削除される可能性があります。Wi-Fi接続とワイヤレスADBが利用できなくなる場合があります。",
+  "adbWifiRiskRecovery": "再び有効にしても削除されたネットワークは自動で復元されません。Wi-Fiに再接続してパスワードを入力する必要があります。",
+  "adbWifiRiskConsent": "Wi-Fiのパスワードが分かる場合のみ続行してください。",
+  "adbWifiDisable": "無効にする"
 }

@@ -9,22 +9,7 @@ import '../launcher_dialog.dart';
 void showAdbNotice(BuildContext context, String? status, {String? title}) {
   final l = AppLocalizations.of(context)!;
   if (status == 'wifiOwned') {
-    unawaited(
-      showLauncherDialog<void>(
-        context: context,
-        builder: (ctx) => LauncherAlertDialog(
-          title: Text(title ?? l.adbWifiOwnedTitle),
-          content: SingleChildScrollView(child: Text(l.adbWifiOwned)),
-          actions: [
-            LauncherDialogButton(
-              autofocus: true,
-              onPressed: () => Navigator.pop(ctx),
-              child: Text(l.ok),
-            ),
-          ],
-        ),
-      ),
-    );
+    unawaited(confirmAdbWifiRisk(context, title: title, allowOverride: false));
     return;
   }
   final success = status == 'success' || status == 'ready';
@@ -46,4 +31,71 @@ void showAdbNotice(BuildContext context, String? status, {String? title}) {
     title == null ? text : '$title: $text',
     error: !success,
   );
+}
+
+/// A one-operation acknowledgement; dismissing either window never grants it.
+Future<bool> confirmAdbWifiRisk(
+  BuildContext context, {
+  String? title,
+  bool allowOverride = true,
+}) async {
+  final l = AppLocalizations.of(context)!;
+  final proceed = await showLauncherDialog<bool>(
+    context: context,
+    builder: (ctx) => LauncherAlertDialog(
+      title: Text(title ?? l.adbWifiOwnedTitle),
+      content: Text(l.adbWifiOwned),
+      actions: [
+        LauncherDialogButton(
+          autofocus: true,
+          onPressed: () => Navigator.pop(ctx, false),
+          child: Text(l.ok),
+        ),
+        if (allowOverride)
+          LauncherDialogButton(
+            danger: true,
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l.adbWifiOverride),
+          ),
+      ],
+    ),
+  );
+  if (proceed != true || !allowOverride || !context.mounted) return false;
+  return await showLauncherDialog<bool>(
+        context: context,
+        builder: (ctx) => LauncherAlertDialog(
+          title: Text(l.adbWifiRiskTitle),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(l.adbWifiRiskEffect),
+              const SizedBox(height: 12),
+              Text(l.adbWifiRiskLoss),
+              const SizedBox(height: 12),
+              Text(
+                l.adbWifiRiskRecovery,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 12),
+              Text(l.adbWifiRiskConsent),
+            ],
+          ),
+          actions: [
+            LauncherDialogButton(
+              autofocus: true,
+              isCancel: true,
+              onPressed: () => Navigator.pop(ctx, false),
+              child: Text(l.cancel),
+            ),
+            LauncherDialogButton(
+              primary: true,
+              danger: true,
+              onPressed: () => Navigator.pop(ctx, true),
+              child: Text(l.adbWifiDisable),
+            ),
+          ],
+        ),
+      ) ==
+      true;
 }

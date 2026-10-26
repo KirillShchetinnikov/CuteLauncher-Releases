@@ -403,7 +403,7 @@ class LauncherAlertDialog extends StatelessWidget {
   );
 }
 
-/// Dialog actions use a neutral appearance with a border only while focused.
+/// Ordinary actions are neutral; dangerous actions use the error palette.
 class LauncherDialogButton extends StatelessWidget {
   final Widget child;
   final VoidCallback? onPressed;
@@ -424,6 +424,19 @@ class LauncherDialogButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    final defaults = launcherDialogTheme(context).textButtonTheme.style;
+    final base = style?.merge(defaults) ?? defaults;
+    final dangerStyle = ButtonStyle(
+      foregroundColor: WidgetStateProperty.resolveWith((states) =>
+          states.contains(WidgetState.disabled) ? null : primary ? colors.onError : colors.error),
+      backgroundColor: WidgetStateProperty.resolveWith((states) =>
+          states.contains(WidgetState.disabled) ? null : primary ? colors.error : colors.errorContainer),
+      side: WidgetStateProperty.resolveWith((states) => states.contains(WidgetState.focused)
+          ? BorderSide(color: primary ? colors.onError : colors.error, width: LauncherStyle.of(context).rowFocusWidth)
+          : const BorderSide(color: Colors.transparent)),
+    );
+    final effectiveStyle = danger ? dangerStyle.merge(base) : base;
     return TextButton(
       autofocus: autofocus,
       focusNode: focusNode,
@@ -438,9 +451,7 @@ class LauncherDialogButton extends StatelessWidget {
               }
               onPressed!();
             },
-      style:
-          style?.merge(launcherDialogTheme(context).textButtonTheme.style) ??
-          launcherDialogTheme(context).textButtonTheme.style,
+      style: effectiveStyle,
       child: child,
     );
   }

@@ -4246,4 +4246,29 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get notificationOpenFailed =>
       'Die Benachrichtigungsaktion konnte nicht geöffnet werden. Sie ist möglicherweise nicht mehr verfügbar.';
+
+  @override
+  String get adbWifiOverride => 'Trotzdem deaktivieren…';
+
+  @override
+  String get adbWifiRiskTitle => 'Trotz des Risikos deaktivieren?';
+
+  @override
+  String get adbWifiRiskEffect =>
+      'Der integrierte Launcher und der Google-Einrichtungsassistent werden deaktiviert.';
+
+  @override
+  String get adbWifiRiskLoss =>
+      'Android kann gespeicherte WLAN-Netze löschen. WLAN und drahtloses ADB können ausfallen.';
+
+  @override
+  String get adbWifiRiskRecovery =>
+      'Erneutes Aktivieren stellt gelöschte Netze nicht automatisch wieder her. Verbinden Sie sich erneut mit dem WLAN und geben Sie das Passwort ein.';
+
+  @override
+  String get adbWifiRiskConsent =>
+      'Fahren Sie nur fort, wenn Sie das WLAN-Passwort kennen.';
+
+  @override
+  String get adbWifiDisable => 'Deaktivieren';
 }

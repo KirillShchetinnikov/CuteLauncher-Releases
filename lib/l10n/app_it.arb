@@ -1480,5 +1480,12 @@
   "noticeBottomLeft": "In basso a sinistra",
   "noticeTopRight": "In alto a destra",
   "noticeTopLeft": "In alto a sinistra",
-  "notificationOpenFailed": "Impossibile aprire l’azione della notifica. Potrebbe non essere più disponibile."
+  "notificationOpenFailed": "Impossibile aprire l’azione della notifica. Potrebbe non essere più disponibile.",
+  "adbWifiOverride": "Disattiva comunque…",
+  "adbWifiRiskTitle": "Disattivare nonostante il rischio?",
+  "adbWifiRiskEffect": "Il launcher integrato e la procedura di configurazione Google verranno disattivati.",
+  "adbWifiRiskLoss": "Android potrebbe eliminare le reti Wi-Fi salvate. Il Wi-Fi e ADB wireless potrebbero non essere più disponibili.",
+  "adbWifiRiskRecovery": "Riattivare la procedura non ripristinerà automaticamente le reti eliminate. Sarà necessario riconnettersi e inserire la password.",
+  "adbWifiRiskConsent": "Continua solo se conosci la password Wi-Fi.",
+  "adbWifiDisable": "Disattiva"
 }

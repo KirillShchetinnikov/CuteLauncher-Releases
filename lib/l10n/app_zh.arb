@@ -1480,5 +1480,12 @@
   "noticeBottomLeft": "左下角",
   "noticeTopRight": "右上角",
   "noticeTopLeft": "左上角",
-  "notificationOpenFailed": "无法打开通知操作。该操作可能已不可用。"
+  "notificationOpenFailed": "无法打开通知操作。该操作可能已不可用。",
+  "adbWifiOverride": "仍然停用…",
+  "adbWifiRiskTitle": "仍要冒险停用吗？",
+  "adbWifiRiskEffect": "内置启动器和 Google 设置向导将被停用。",
+  "adbWifiRiskLoss": "Android 可能删除已保存的 Wi-Fi 网络。Wi-Fi 连接和无线 ADB 可能无法使用。",
+  "adbWifiRiskRecovery": "重新启用设置向导不会自动恢复已删除的网络。您需要重新连接 Wi-Fi 并输入密码。",
+  "adbWifiRiskConsent": "仅在知道 Wi-Fi 密码的情况下继续。",
+  "adbWifiDisable": "停用"
 }

@@ -4073,4 +4073,27 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get notificationOpenFailed => '通知の操作を開けませんでした。すでに利用できなくなっている可能性があります。';
+
+  @override
+  String get adbWifiOverride => 'それでも無効にする…';
+
+  @override
+  String get adbWifiRiskTitle => 'リスクを承知で無効にしますか？';
+
+  @override
+  String get adbWifiRiskEffect => '標準ランチャーとGoogleのセットアップウィザードが無効になります。';
+
+  @override
+  String get adbWifiRiskLoss =>
+      '保存済みのWi-FiネットワークがAndroidによって削除される可能性があります。Wi-Fi接続とワイヤレスADBが利用できなくなる場合があります。';
+
+  @override
+  String get adbWifiRiskRecovery =>
+      '再び有効にしても削除されたネットワークは自動で復元されません。Wi-Fiに再接続してパスワードを入力する必要があります。';
+
+  @override
+  String get adbWifiRiskConsent => 'Wi-Fiのパスワードが分かる場合のみ続行してください。';
+
+  @override
+  String get adbWifiDisable => '無効にする';
 }

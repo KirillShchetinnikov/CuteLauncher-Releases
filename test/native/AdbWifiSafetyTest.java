@@ -37,6 +37,14 @@ public final class AdbWifiSafetyTest {
         check(AdbWifiSafety.check(changes, command -> { check(command.equals(AdbWifiSafety.COMMAND)); return owned; }).equals("wifiOwned"));
         check(AdbWifiSafety.check(changes, command -> safe).equals("ready"));
         check(AdbWifiSafety.check(changes, command -> { throw new java.io.IOException(); }).equals("wifiUnknown"));
+        check(AdbWifiSafety.checkDetailed(changes, command -> owned, true).status().equals("ready"));
+        check(AdbWifiSafety.checkDetailed(changes, command -> owned, true).reason().equals("wifi_owner_override"));
+        check(AdbWifiSafety.checkDetailed(changes, command -> owned, false).status().equals("wifiOwned"));
+        check(AdbWifiSafety.checkDetailed(changes, command -> "Permission Denial", true).status().equals("wifiUnknown"));
+        check(AdbWifiSafety.checkDetailed(changes, command -> { throw new java.io.IOException(); }, true).status().equals("wifiUnknown"));
+        check(AdbWifiSafety.checkDetailed(changes, command -> safe, true).status().equals("ready"));
+        // Acknowledgement applies to this call only; another action is blocked again.
+        check(AdbWifiSafety.checkDetailed(changes, command -> owned).status().equals("wifiOwned"));
         // Already disabled setup / ordinary HOME / restore never query or block Wi-Fi.
         for (var desired : java.util.List.of(Map.of("com.google.android.tvlauncher", 3),
                 Map.of(AdbSystemHomeOps.RECOVERY_PACKAGE, 0))) {

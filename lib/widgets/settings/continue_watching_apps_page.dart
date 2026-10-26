@@ -265,7 +265,6 @@ class ContinueWatchingAppsPage extends StatelessWidget {
                         AppLocalizations.of(context)!.noWatchNextApps,
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: theme.colorScheme.onSurfaceVariant,
-                          height: 1.3,
                         ),
                       ),
                     ),

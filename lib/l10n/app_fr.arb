@@ -1480,5 +1480,12 @@
   "noticeBottomLeft": "En bas à gauche",
   "noticeTopRight": "En haut à droite",
   "noticeTopLeft": "En haut à gauche",
-  "notificationOpenFailed": "Impossible d’ouvrir l’action de la notification. Elle n’est peut-être plus disponible."
+  "notificationOpenFailed": "Impossible d’ouvrir l’action de la notification. Elle n’est peut-être plus disponible.",
+  "adbWifiOverride": "Désactiver quand même…",
+  "adbWifiRiskTitle": "Désactiver malgré le risque ?",
+  "adbWifiRiskEffect": "Le lanceur intégré et l’assistant de configuration Google seront désactivés.",
+  "adbWifiRiskLoss": "Android peut supprimer les réseaux Wi-Fi enregistrés. Le Wi-Fi et ADB sans fil peuvent devenir indisponibles.",
+  "adbWifiRiskRecovery": "Réactiver l’assistant ne restaurera pas automatiquement les réseaux supprimés. Il faudra se reconnecter au Wi-Fi et saisir le mot de passe.",
+  "adbWifiRiskConsent": "Continuez uniquement si vous connaissez le mot de passe Wi-Fi.",
+  "adbWifiDisable": "Désactiver"
 }

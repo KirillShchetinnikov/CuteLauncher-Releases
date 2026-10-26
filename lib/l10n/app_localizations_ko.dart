@@ -4077,4 +4077,27 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get notificationOpenFailed => '알림 동작을 열 수 없습니다. 더 이상 사용할 수 없을 수 있습니다.';
+
+  @override
+  String get adbWifiOverride => '그래도 사용 중지…';
+
+  @override
+  String get adbWifiRiskTitle => '위험을 감수하고 사용 중지할까요?';
+
+  @override
+  String get adbWifiRiskEffect => '기본 런처와 Google 설정 마법사가 사용 중지됩니다.';
+
+  @override
+  String get adbWifiRiskLoss =>
+      'Android가 저장된 Wi-Fi 네트워크를 삭제할 수 있습니다. Wi-Fi 연결과 무선 ADB를 사용할 수 없게 될 수 있습니다.';
+
+  @override
+  String get adbWifiRiskRecovery =>
+      '설정 마법사를 다시 켜도 삭제된 네트워크가 자동으로 복원되지 않습니다. Wi-Fi에 다시 연결하고 비밀번호를 입력해야 합니다.';
+
+  @override
+  String get adbWifiRiskConsent => 'Wi-Fi 비밀번호를 알고 있는 경우에만 계속하세요.';
+
+  @override
+  String get adbWifiDisable => '사용 중지';
 }

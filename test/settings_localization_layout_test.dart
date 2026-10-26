@@ -24,6 +24,8 @@ import 'package:flauncher/providers/notifications_service.dart';
 import 'flauncher_test.dart' as fixtures;
 import 'support/design_fixture.dart' show loadDesignFonts;
 
+import 'package:flauncher/widgets/settings/settings_panel_style.dart';
+
 import 'package:flauncher/widgets/settings/appearance_settings_page.dart';
 import 'package:flauncher/widgets/settings/memory_page.dart';
 import 'package:flauncher/widgets/settings/diagnostics_page.dart';
@@ -76,6 +78,7 @@ void main() {
       final prefs = await SharedPreferences.getInstance();
       final settings = SettingsService(prefs);
       final appearance = AppearanceService(prefs);
+      await appearance.set('settingsInterfaceFont', 'manrope');
       final memory = MemoryResources(settings: settings);
       final brightness = BrightnessService(prefs);
       final night = NightModeService(prefs);
@@ -99,7 +102,8 @@ void main() {
       when(apps.launcherSections).thenReturn([]);
       final weather = fixtures.mkWeatherService();
       when(weather.configuration).thenReturn(const WeatherConfiguration());
-      when(weather.loading).thenReturn(false); when(weather.locating).thenReturn(false);
+      when(weather.loading).thenReturn(false);
+      when(weather.locating).thenReturn(false);
       when(weather.failure).thenReturn(null);
       when(weather.updatedAt).thenReturn(null);
       final services = [
@@ -188,7 +192,10 @@ void main() {
                 home: Scaffold(
                   body: Align(
                     alignment: Alignment.topLeft,
-                    child: SizedBox(width: 340, child: page),
+                    child: SizedBox(
+                      width: 340,
+                      child: SettingsPanelStyle(builder: (_) => page),
+                    ),
                   ),
                 ),
               ),
@@ -202,6 +209,21 @@ void main() {
           );
           for (final element in find.byType(RichText).evaluate()) {
             final paragraph = element.renderObject as RenderParagraph;
+            final value = paragraph.text.toPlainText();
+            for (final box in paragraph.getBoxesForSelection(
+              TextSelection(baseOffset: 0, extentOffset: value.length),
+            )) {
+              expect(
+                box.top,
+                greaterThanOrEqualTo(-0.5),
+                reason: '$language ${page.runtimeType}: $value',
+              );
+              expect(
+                box.bottom,
+                lessThanOrEqualTo(paragraph.size.height + 0.5),
+                reason: '$language ${page.runtimeType}: $value',
+              );
+            }
             expect(
               paragraph.didExceedMaxLines,
               isFalse,

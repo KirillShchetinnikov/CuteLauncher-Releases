@@ -85,6 +85,9 @@ final class AdbLauncherControl {
         return success;
     }
     static Map<String, Object> plan(Activity activity, AdbBridge.Shell adb, String action, String target) throws Exception {
+        return plan(activity, adb, action, target, false);
+    }
+    static Map<String, Object> plan(Activity activity, AdbBridge.Shell adb, String action, String target, boolean allowOwnedWifi) throws Exception {
         AdbOperationDiagnostics.stage("plan");
         String own = activity.getPackageName();
         if (!AdbCapabilities.supported(activity, action)) return Map.of("status", "unsupported");
@@ -121,7 +124,7 @@ final class AdbLauncherControl {
                 if (states.isEmpty()) states.put(target, 1);
                 if (action.equals("disableSystem")) {
                     AdbOperationDiagnostics.stage("wifiSafety");
-                    var safety = AdbWifiSafety.checkDetailed(states, adb::execute);
+                    var safety = AdbWifiSafety.checkDetailed(states, adb::execute, allowOwnedWifi);
                     AdbOperationDiagnostics.wifi(safety);
                     if (!safety.status().equals("ready")) return Map.of("status", safety.status());
                     AdbOperationDiagnostics.stage("plan");
@@ -153,9 +156,12 @@ final class AdbLauncherControl {
         return Map.of("status", "ready", "commands", commands, "target", resolved, "targetName", targetName);
     }
     static String apply(Activity activity, AdbBridge.Shell adb, String action, String target, List<?> expected) throws Exception {
+        return apply(activity, adb, action, target, expected, false);
+    }
+    static String apply(Activity activity, AdbBridge.Shell adb, String action, String target, List<?> expected, boolean allowOwnedWifi) throws Exception {
         AdbOperationDiagnostics.stage("apply");
         if (!adb.execute("am get-current-user").equals("0") || !adb.execute("id -u").equals("2000")) return "denied";
-        Map<String,Object> plan = plan(activity, adb, action, target);
+        Map<String,Object> plan = plan(activity, adb, action, target, action.equals("disableSystem") && allowOwnedWifi);
         if (!plan.get("status").equals("ready")) return (String)plan.get("status");
         AdbOperationDiagnostics.stage("apply");
         if (!AdbLauncherPolicy.confirmed(expected, plan.get("commands"))) return "changed";

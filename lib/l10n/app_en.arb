@@ -1367,5 +1367,12 @@
   "noticeBottomLeft": "Bottom left",
   "noticeTopRight": "Top right",
   "noticeTopLeft": "Top left",
-  "notificationOpenFailed": "Could not open the notification action. It may no longer be available."
+  "notificationOpenFailed": "Could not open the notification action. It may no longer be available.",
+  "adbWifiOverride": "Disable anyway…",
+  "adbWifiRiskTitle": "Disable despite the risk?",
+  "adbWifiRiskEffect": "The built-in launcher and Google setup wizard will be disabled.",
+  "adbWifiRiskLoss": "Android may delete saved Wi-Fi networks. Wi-Fi connectivity and wireless ADB may become unavailable.",
+  "adbWifiRiskRecovery": "Re-enabling the setup wizard will not automatically restore deleted networks. You will need to reconnect to Wi-Fi and enter the password.",
+  "adbWifiRiskConsent": "Continue only if you know the Wi-Fi password.",
+  "adbWifiDisable": "Disable"
 }

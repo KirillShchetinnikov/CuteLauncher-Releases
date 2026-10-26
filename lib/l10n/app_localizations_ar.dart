@@ -4171,4 +4171,28 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get notificationOpenFailed =>
       'تعذّر فتح إجراء الإشعار. قد لا يكون متاحًا الآن.';
+
+  @override
+  String get adbWifiOverride => 'تعطيل على أي حال…';
+
+  @override
+  String get adbWifiRiskTitle => 'هل تريد التعطيل رغم المخاطر؟';
+
+  @override
+  String get adbWifiRiskEffect =>
+      'سيتم تعطيل المشغّل المدمج ومعالج إعداد Google.';
+
+  @override
+  String get adbWifiRiskLoss =>
+      'قد يحذف Android شبكات Wi-Fi المحفوظة. قد يصبح اتصال Wi-Fi وADB اللاسلكي غير متاحين.';
+
+  @override
+  String get adbWifiRiskRecovery =>
+      'إعادة تفعيل المعالج لن تستعيد الشبكات المحذوفة تلقائيًا. ستحتاج إلى إعادة الاتصال بشبكة Wi-Fi وإدخال كلمة المرور.';
+
+  @override
+  String get adbWifiRiskConsent => 'تابع فقط إذا كنت تعرف كلمة مرور Wi-Fi.';
+
+  @override
+  String get adbWifiDisable => 'تعطيل';
 }

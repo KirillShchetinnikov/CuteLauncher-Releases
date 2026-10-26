@@ -1480,5 +1480,12 @@
   "noticeBottomLeft": "Abajo a la izquierda",
   "noticeTopRight": "Arriba a la derecha",
   "noticeTopLeft": "Arriba a la izquierda",
-  "notificationOpenFailed": "No se pudo abrir la acción de la notificación. Puede que ya no esté disponible."
+  "notificationOpenFailed": "No se pudo abrir la acción de la notificación. Puede que ya no esté disponible.",
+  "adbWifiOverride": "Desactivar de todos modos…",
+  "adbWifiRiskTitle": "¿Desactivar a pesar del riesgo?",
+  "adbWifiRiskEffect": "Se desactivarán el lanzador integrado y el asistente de configuración de Google.",
+  "adbWifiRiskLoss": "Android puede eliminar las redes Wi-Fi guardadas. La conexión Wi-Fi y ADB inalámbrico podrían dejar de estar disponibles.",
+  "adbWifiRiskRecovery": "Volver a activar el asistente no restaurará automáticamente las redes eliminadas. Tendrá que conectarse de nuevo e introducir la contraseña.",
+  "adbWifiRiskConsent": "Continúe solo si conoce la contraseña del Wi-Fi.",
+  "adbWifiDisable": "Desactivar"
 }

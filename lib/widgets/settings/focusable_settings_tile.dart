@@ -5,6 +5,7 @@ import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/flauncher_channel.dart';
 
 import 'settings_value_text.dart';
+import 'settings_panel_style.dart';
 import 'inherited_setting.dart';
 import '../../theme/interface_style.dart';
 
@@ -72,13 +73,12 @@ class _FocusableSettingsTileState extends State<FocusableSettingsTile>
     if (DefaultTextStyle.of(context).style.fontFamily != 'Manrope') {
       return child;
     }
-    // Keep native metrics on every wrapped line, not just its outer edges.
+    // Titles need the same paragraph headroom as values, also after refocusing.
     return DefaultTextStyle.merge(
-      style: const TextStyle(height: kTextHeightNone),
-      textHeightBehavior: const TextHeightBehavior(
-        applyHeightToFirstAscent: false,
-        applyHeightToLastDescent: false,
+      style: SettingsPanelStyle.fullTextMetrics(
+        DefaultTextStyle.of(context).style,
       ),
+      textHeightBehavior: const TextHeightBehavior(),
       child: child,
     );
   }

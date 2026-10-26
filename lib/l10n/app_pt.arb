@@ -1480,5 +1480,12 @@
   "noticeBottomLeft": "Em baixo à esquerda",
   "noticeTopRight": "Em cima à direita",
   "noticeTopLeft": "Em cima à esquerda",
-  "notificationOpenFailed": "Não foi possível abrir a ação da notificação. Ela pode não estar mais disponível."
+  "notificationOpenFailed": "Não foi possível abrir a ação da notificação. Ela pode não estar mais disponível.",
+  "adbWifiOverride": "Desativar mesmo assim…",
+  "adbWifiRiskTitle": "Desativar apesar do risco?",
+  "adbWifiRiskEffect": "O launcher integrado e o assistente de configuração do Google serão desativados.",
+  "adbWifiRiskLoss": "O Android pode excluir redes Wi-Fi salvas. O Wi-Fi e o ADB sem fio podem ficar indisponíveis.",
+  "adbWifiRiskRecovery": "Reativar o assistente não restaurará automaticamente as redes excluídas. Será necessário reconectar ao Wi-Fi e inserir a senha.",
+  "adbWifiRiskConsent": "Continue apenas se souber a senha do Wi-Fi.",
+  "adbWifiDisable": "Desativar"
 }

@@ -4211,4 +4211,29 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String get notificationOpenFailed =>
       'Не вдалося відкрити дію сповіщення. Можливо, вона більше недоступна.';
+
+  @override
+  String get adbWifiOverride => 'Усе одно вимкнути…';
+
+  @override
+  String get adbWifiRiskTitle => 'Вимкнути попри ризик?';
+
+  @override
+  String get adbWifiRiskEffect =>
+      'Буде вимкнено вбудований лаунчер і майстер налаштування Google.';
+
+  @override
+  String get adbWifiRiskLoss =>
+      'Android може видалити збережені мережі Wi-Fi. З’єднання Wi-Fi та бездротовий ADB можуть стати недоступними.';
+
+  @override
+  String get adbWifiRiskRecovery =>
+      'Повторне ввімкнення майстра не відновить видалені мережі автоматично. Потрібно буде знову підключитися до Wi-Fi та ввести пароль.';
+
+  @override
+  String get adbWifiRiskConsent =>
+      'Продовжуйте, лише якщо знаєте пароль Wi-Fi.';
+
+  @override
+  String get adbWifiDisable => 'Вимкнути';
 }
