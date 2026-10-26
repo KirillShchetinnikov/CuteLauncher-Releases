@@ -6,6 +6,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'document_files.dart';
 import 'bridge_result.dart';
 import 'diagnostics_store.dart';
+import 'background_video_diagnostics.dart';
 import 'tv_compatibility_report.dart';
 
 Future<String?> saveDiagnosticsReport(Map<String, Object> report) async {
@@ -67,6 +68,7 @@ Future<Map<String, Object>> collectDiagnostics() async {
       stack,
     );
   }
+  await BackgroundVideoDiagnostics.flush();
   final diagnostics = DiagnosticsStore.instance.snapshot(
     version: version,
     build: build,

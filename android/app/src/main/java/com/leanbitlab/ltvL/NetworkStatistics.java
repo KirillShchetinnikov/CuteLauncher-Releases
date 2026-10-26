@@ -52,7 +52,7 @@ final class NetworkStatistics {
                 try {
                     android.net.wifi.WifiManager wifi = (android.net.wifi.WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                     @SuppressWarnings("deprecation")
-                    android.net.wifi.WifiInfo info = caps != null && caps.getTransportInfo() instanceof android.net.wifi.WifiInfo
+                    android.net.wifi.WifiInfo info = android.os.Build.VERSION.SDK_INT >= 29 && caps != null && caps.getTransportInfo() instanceof android.net.wifi.WifiInfo
                             ? (android.net.wifi.WifiInfo) caps.getTransportInfo() : (wifi == null ? null : wifi.getConnectionInfo());
                     if (info != null) {
                         String ssid = info.getSSID();

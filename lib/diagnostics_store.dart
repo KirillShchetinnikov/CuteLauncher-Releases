@@ -107,6 +107,12 @@ class DiagnosticsStore {
     'startup',
     'weatherFetch',
     'weatherInitialize',
+    'backgroundVideoValidate',
+    'backgroundVideoPlayback',
+    'backgroundVideoNative',
+    'backgroundVideoRecovery',
+    'enableBackgroundVideoCompatibility',
+    'getVideoPlaybackLog',
     'weatherParse',
     'updateInitialize',
     'updateCheck',
@@ -226,6 +232,8 @@ class DiagnosticsStore {
     'restore',
   };
   static const _detailEnums = {
+    'recovery': {'enabled', 'unavailable', 'succeeded', 'failed'},
+    'availability': {'unsupported'},
     'stage': {
       'connect',
       'dispatch',
@@ -234,6 +242,12 @@ class DiagnosticsStore {
       'wifiSafety',
       'verify',
       'rollback',
+      'videoInitialize',
+      'videoMetadata',
+      'videoConfigure',
+      'videoPlay',
+      'videoPause',
+      'videoDispose',
     },
     'command': {
       'wifi_configurations',
@@ -270,6 +284,10 @@ class DiagnosticsStore {
       'weather_rateLimit',
       'weather_unavailable',
       'weather_invalidResponse',
+      'video_timeout',
+      'video_player',
+      'video_metadata',
+      'video_resolution',
     },
     'exception': {
       'timeout',
@@ -299,6 +317,8 @@ class DiagnosticsStore {
     'cancelled',
   };
   final Stopwatch _clock = Stopwatch()..start();
+  int _generation = 0;
+  int get generation => _generation;
   final List<Map<String, Object>> _events = [];
   final List<Map<String, Object>> _failures = [];
   final Map<String, int> _counts = {};
@@ -367,6 +387,31 @@ class DiagnosticsStore {
         if (value is int && value >= -1 && value <= 65535) safe[key] = value;
       }
       if (safe.isNotEmpty) event['details'] = safe;
+      if (method.startsWith('backgroundVideo')) {
+        for (final key in [
+          'fileBytes',
+          'width',
+          'height',
+          'durationMs',
+          'positionMs',
+          'attempt',
+        ]) {
+          final value = details[key];
+          if (value is int && value >= 0 && value <= 9007199254740991) {
+            safe[key] = value;
+          }
+        }
+        for (final key in [
+          'playing',
+          'buffering',
+          'initialized',
+          'visible',
+          'resumed',
+        ]) {
+          if (details[key] is bool) safe[key] = details[key];
+        }
+        if (safe.isNotEmpty) event['details'] = safe;
+      }
       if (details['shell'] is List) {
         event['shell'] = (details['shell'] as List)
             .take(8)
@@ -484,6 +529,7 @@ class DiagnosticsStore {
             .toList();
 
   void clear() {
+    _generation++;
     _events.clear();
     _failures.clear();
     _counts.clear();

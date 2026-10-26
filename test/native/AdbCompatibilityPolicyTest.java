@@ -4,8 +4,8 @@ public final class AdbCompatibilityPolicyTest {
     private static int checks;
     private static void check(boolean value) { checks++; if (!value) throw new AssertionError("Check " + checks); }
     public static void main(String[] args) {
-        for (int sdk = 30; sdk <= 37; sdk++) check(AdbCompatibilityPolicy.supportedSdk(sdk));
-        check(!AdbCompatibilityPolicy.supportedSdk(29));
+        for (int sdk = 28; sdk <= 37; sdk++) check(AdbCompatibilityPolicy.supportedSdk(sdk));
+        check(!AdbCompatibilityPolicy.supportedSdk(27));
         check(AdbCompatibilityPolicy.grantable(1)); // runtime
         check(AdbCompatibilityPolicy.grantable(2 | 0x20)); // signature/development
         check(!AdbCompatibilityPolicy.grantable(2)); // signature

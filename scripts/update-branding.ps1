@@ -47,7 +47,7 @@ Push-Location $projectRoot
 try {
     & "$projectRoot/.tools/flutter-upgrade/bin/dart.bat" run flutter_launcher_icons
     if ($LASTEXITCODE -ne 0) { throw 'Launcher icon generation failed.' }
-    # Adaptive icons are available throughout minSdk 30; normalize the generator's v26 folder.
+    # Adaptive icons are available throughout minSdk 28; normalize the generator's v26 folder.
     $generatedIcon = [IO.Path]::GetFullPath((Join-Path $resourceRoot 'mipmap-anydpi-v26/ic_launcher.xml'))
     $currentIcon = [IO.Path]::GetFullPath((Join-Path $resourceRoot 'mipmap-anydpi/ic_launcher.xml'))
     foreach ($iconPath in @($generatedIcon, $currentIcon)) {

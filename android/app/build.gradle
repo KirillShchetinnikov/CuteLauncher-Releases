@@ -74,7 +74,7 @@ android {
     defaultConfig {
         applicationId "io.github.kirillshchetinnikov.cutelauncher"
         resValue "string", "screensaver_settings_activity", "io.github.kirillshchetinnikov.cutelauncher/com.leanbitlab.ltvL.MainActivity"
-        minSdk 30
+        minSdk 28
         targetSdk 35
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -136,11 +136,20 @@ android {
         targetCompatibility JavaVersion.VERSION_21
     }
 
+    testOptions {
+        unitTests.includeAndroidResources = true
+    }
+
     namespace 'com.leanbitlab.ltvL'
 }
 
 androidComponents {
     onVariants(selector().all()) { variant ->
+        // Flutter's asset copy task is not wired to AGP 9 host-test packaging.
+        def variantTaskSuffix = variant.name.capitalize()
+        tasks.matching { it.name == "package${variantTaskSuffix}UnitTestForUnitTest" }.configureEach {
+            dependsOn "copyFlutterAssets${variantTaskSuffix}"
+        }
         variant.outputs.each { output ->
             def abi = output.filters.find {
                 it.filterType == com.android.build.api.variant.FilterConfiguration.FilterType.ABI
@@ -162,4 +171,6 @@ flutter {
 
 dependencies {
     implementation 'dev.mobile:dadb:2.0.0'
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.robolectric:robolectric:4.16'
 }

@@ -141,6 +141,31 @@
         "com.tcl.waterfall.overseas"
       ],
       "approval": "userRequestedObservedSystemList"
+    },
+    {
+      "id": "droidlogic-x98q-android11-20261026",
+      "identity": {
+        "manufacturer": "Droidlogic",
+        "model": "X98Q",
+        "firmware": "X98Q_20220507-1750",
+        "android": "11",
+        "sdk": "30",
+        "abis": "armeabi-v7a,armeabi",
+        "device": "oppen",
+        "fingerprint": "Droidlogic/oppen/oppen:11/RD2A.211001.002/eng.yxt-rd.20220507.174802:userdebug/test-keys"
+      },
+      "verification": "observedOnly",
+      "recommended": [],
+      "packages": [
+        "com.android.bluetoothmidiservice",
+        "com.google.android.tv.remote.service",
+        "com.google.android.tvlauncher"
+      ],
+      "observedAt": "2026-10-26T00:00:00Z",
+      "approval": "userRequestedObservedSystemList",
+      "userApprovedSystemPackages": [
+        "com.google.android.tvlauncher"
+      ]
     }
   ]
 }

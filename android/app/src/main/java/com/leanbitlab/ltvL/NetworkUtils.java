@@ -49,7 +49,7 @@ public class NetworkUtils
             WifiManager wifiManager = (WifiManager) context
                     .getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
-            if (capabilities.getTransportInfo() instanceof WifiInfo) {
+            if (Build.VERSION.SDK_INT >= 29 && capabilities.getTransportInfo() instanceof WifiInfo) {
                 WifiInfo wifiInfo = (WifiInfo) capabilities.getTransportInfo();
                 wirelessNetworkSignalLevel = getWifiSignalLevel(wifiInfo);
             }
@@ -144,7 +144,7 @@ public class NetworkUtils
             if (Objects.equals(map.get(KEY_NETWORK_TYPE), NETWORK_TYPE_WIFI)) {
                 try {
                     WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-                    if (!(physicalCaps.getTransportInfo() instanceof WifiInfo) && wifiManager != null) {
+                    if ((Build.VERSION.SDK_INT < 29 || !(physicalCaps.getTransportInfo() instanceof WifiInfo)) && wifiManager != null) {
                         WifiInfo wifiInfo = legacyWifiInfo(wifiManager);
                         if (wifiInfo != null) {
                             wirelessNetworkSignalLevel = getWifiSignalLevel(wifiInfo);

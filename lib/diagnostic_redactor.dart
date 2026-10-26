@@ -66,6 +66,11 @@ class DiagnosticRedactor {
                   return _publicPackages.contains(value) ||
                           value.startsWith('com.leanbitlab.ltvL') ||
                           value.startsWith('java.') ||
+                          value.startsWith('android.media.') ||
+                          value.startsWith('androidx.media3.') ||
+                          value.startsWith('io.flutter.plugins.videoplayer.') ||
+                          value.startsWith('OMX.') ||
+                          value.startsWith('c2.') ||
                           value.startsWith('android.permission.')
                       ? value
                       : '[identifier]';

@@ -2,6 +2,9 @@ import 'dart:io';
 
 import 'package:video_player/video_player.dart';
 
+import 'background_video_diagnostics.dart';
+import 'background_video_recovery.dart';
+
 const maximumBackgroundVideoBytes = 256 * 1024 * 1024;
 
 enum BackgroundMediaKind { image, video }
@@ -38,29 +41,68 @@ Future<void> validateBackgroundVideo(File file) async {
   if (await file.length() > maximumBackgroundVideoBytes) {
     throw const BackgroundMediaException(BackgroundMediaFailure.videoSize);
   }
-  final controller = VideoPlayerController.file(
-    file,
-    videoPlayerOptions: VideoPlayerOptions(
-      mixWithOthers: true,
-      preventsDisplaySleepDuringVideoPlayback: false,
-    ),
-  );
-  try {
-    await controller.initialize().timeout(const Duration(seconds: 20));
-    final size = controller.value.size;
-    if (size.isEmpty || controller.value.duration <= Duration.zero) {
-      throw const BackgroundMediaException(BackgroundMediaFailure.videoCodec);
-    }
-    if (size.longestSide > 3840 || size.shortestSide > 2160) {
-      throw const BackgroundMediaException(
-        BackgroundMediaFailure.videoResolution,
+  for (var attempt = 0; attempt < 2; attempt++) {
+    final controller = VideoPlayerController.file(
+      file,
+      videoPlayerOptions: VideoPlayerOptions(
+        mixWithOthers: true,
+        preventsDisplaySleepDuringVideoPlayback: false,
+      ),
+    );
+    final diagnostics = BackgroundVideoDiagnostics('backgroundVideoValidate');
+    await diagnostics.inspect(file);
+    var stage = 'videoInitialize';
+    var retry = false;
+    var released = false;
+    try {
+      await controller.initialize().timeout(const Duration(seconds: 20));
+      stage = 'videoMetadata';
+      final size = controller.value.size;
+      if (size.isEmpty || controller.value.duration <= Duration.zero) {
+        throw const BackgroundMediaException(BackgroundMediaFailure.videoCodec);
+      }
+      if (size.longestSide > 3840 || size.shortestSide > 2160) {
+        throw const BackgroundMediaException(
+          BackgroundMediaFailure.videoResolution,
+        );
+      }
+      if (attempt == 1) {
+        recordBackgroundVideoRecovery(diagnostics.attempt, 'succeeded');
+      }
+      return;
+    } on BackgroundMediaException catch (error, stack) {
+      diagnostics.failure(
+        stage,
+        error,
+        stack,
+        controller.value,
+        reason: error.reason == BackgroundMediaFailure.videoResolution
+            ? 'video_resolution'
+            : 'video_metadata',
       );
+      if (attempt == 1) {
+        recordBackgroundVideoRecovery(diagnostics.attempt, 'failed');
+      }
+      rethrow;
+    } catch (error, stack) {
+      diagnostics.failure(stage, error, stack, controller.value);
+      retry = attempt == 0 && canRecoverBackgroundVideo(stage);
+      if (attempt == 1) {
+        recordBackgroundVideoRecovery(diagnostics.attempt, 'failed');
+      }
+    } finally {
+      try {
+        await controller.dispose().timeout(const Duration(seconds: 3));
+        released = true;
+      } catch (error, stack) {
+        diagnostics.failure('videoDispose', error, stack, controller.value);
+      }
     }
-  } on BackgroundMediaException {
-    rethrow;
-  } catch (_) {
+    if (retry &&
+        released &&
+        await enableBackgroundVideoRecovery(diagnostics.attempt)) {
+      continue;
+    }
     throw const BackgroundMediaException(BackgroundMediaFailure.videoCodec);
-  } finally {
-    await controller.dispose();
   }
 }

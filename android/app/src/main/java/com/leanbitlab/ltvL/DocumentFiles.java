@@ -13,6 +13,7 @@ import java.util.List;
 import android.content.ContentValues;
 import android.provider.MediaStore;
 import android.os.Environment;
+import android.os.Build;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
@@ -29,14 +30,20 @@ final class DocumentFiles {
     static final int REQUEST = 4107;
     private final Activity activity;
     private final ExecutorService executor;
+    private final LegacyStorageAccess storageAccess;
     private MethodChannel.Result pending;
     private String savePath;
     private long limit;
     private boolean includeDisplayName;
 
     DocumentFiles(Activity activity, ExecutorService executor) {
+        this(activity, executor, new LegacyStorageAccess(activity));
+    }
+
+    DocumentFiles(Activity activity, ExecutorService executor, LegacyStorageAccess storageAccess) {
         this.activity = activity;
         this.executor = executor;
+        this.storageAccess = storageAccess;
     }
 
     private Intent readIntent(String mime) {
@@ -77,6 +84,11 @@ final class DocumentFiles {
     }
 
     void saveDownloads(String source, MethodChannel.Result result) {
+        storageAccess.run(true, result, () -> saveDownloadsGranted(source, result));
+    }
+
+    @SuppressWarnings("deprecation") // Public Downloads on Android 9, gated by storage permission.
+    private void saveDownloadsGranted(String source, MethodChannel.Result result) {
         executor.execute(() -> {
             Uri uri = null;
             try {
@@ -84,7 +96,12 @@ final class DocumentFiles {
                 String root = new File(activity.getApplicationInfo().dataDir).getCanonicalPath() + File.separator;
                 if (!file.getPath().startsWith(root) || !file.isFile() || file.length() > 64L * 1024 * 1024)
                     throw new IllegalArgumentException("Invalid export file");
-                String name = "cutelauncher_backup_" + System.currentTimeMillis() + ".json";
+                String name = "cutelauncher_backup_" + System.currentTimeMillis() + "_" + java.util.UUID.randomUUID() + ".json";
+                if (Build.VERSION.SDK_INT < 29) {
+                    new LegacyBackupFiles(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)).export(name, file);
+                    new Handler(Looper.getMainLooper()).post(() -> result.success("Download/" + name));
+                    return;
+                }
                 ContentValues values = new ContentValues();
                 values.put(MediaStore.MediaColumns.DISPLAY_NAME, name);
                 values.put(MediaStore.MediaColumns.MIME_TYPE, "application/json");

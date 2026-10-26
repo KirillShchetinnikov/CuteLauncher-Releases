@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 import '../l10n/app_localizations.dart';
+import '../background_video_diagnostics.dart';
+import '../background_video_recovery.dart';
 import 'action_notice.dart';
 
 /// One silent decoder, released with the background and paused outside Home.
@@ -29,11 +31,16 @@ class VideoWallpaperBackground extends StatefulWidget {
 
 class _VideoWallpaperBackgroundState extends State<VideoWallpaperBackground>
     with WidgetsBindingObserver {
-  late final VideoPlayerController _controller;
+  late VideoPlayerController _controller;
   bool _ready = false;
   bool _failed = false;
   bool _resumed = true;
   Timer? _initializationTimer;
+  late BackgroundVideoDiagnostics _diagnostics;
+  bool _recovering = false;
+  bool _retried = false;
+  final _disposals = <VideoPlayerController, Future<bool>>{};
+  String _stage = 'videoInitialize';
 
   @override
   void initState() {
@@ -42,6 +49,12 @@ class _VideoWallpaperBackgroundState extends State<VideoWallpaperBackground>
     _resumed =
         WidgetsBinding.instance.lifecycleState == null ||
         WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed;
+    _startPlayer();
+  }
+
+  void _startPlayer() {
+    _diagnostics = BackgroundVideoDiagnostics('backgroundVideoPlayback');
+    _stage = 'videoInitialize';
     _controller = VideoPlayerController.file(
       widget.file,
       videoPlayerOptions: VideoPlayerOptions(
@@ -51,36 +64,96 @@ class _VideoWallpaperBackgroundState extends State<VideoWallpaperBackground>
         preventsDisplaySleepDuringVideoPlayback: false,
       ),
     );
-    _controller.addListener(_onValue);
-    _initializationTimer = Timer(const Duration(seconds: 20), _fail);
-    unawaited(_initialize());
+    final controller = _controller;
+    controller.addListener(_onValue);
+    unawaited(_diagnostics.inspect(widget.file));
+    _initializationTimer = Timer(
+      const Duration(seconds: 20),
+      () => _fail(
+        TimeoutException('Video initialization exceeded 20 seconds'),
+        StackTrace.current,
+        controller,
+      ),
+    );
+    unawaited(_initialize(controller));
   }
 
-  Future<void> _initialize() async {
+  bool _active(VideoPlayerController controller) =>
+      mounted && !_failed && !_recovering && identical(controller, _controller);
+
+  Future<void> _initialize(VideoPlayerController controller) async {
     try {
-      await _controller.initialize();
+      await controller.initialize();
+      if (!_active(controller)) return;
       _initializationTimer?.cancel();
-      if (!mounted || _failed) return;
-      await _controller.setVolume(0);
-      await _controller.setLooping(true);
-      if (!mounted || _failed) return;
+      _stage = 'videoConfigure';
+      await controller.setVolume(0);
+      if (!_active(controller)) return;
+      await controller.setLooping(true);
+      if (!_active(controller)) return;
       setState(() => _ready = true);
       await _syncPlayback();
-    } catch (_) {
-      _initializationTimer?.cancel();
-      _fail();
+      if (_retried && _active(controller)) {
+        recordBackgroundVideoRecovery(_diagnostics.attempt, 'succeeded');
+      }
+    } catch (error, stack) {
+      if (_active(controller)) {
+        _initializationTimer?.cancel();
+        _fail(error, stack, controller);
+      }
     }
   }
 
   void _onValue() {
-    if (_controller.value.hasError) _fail();
+    if ((_ready || _stage != 'videoInitialize') && _controller.value.hasError) {
+      _fail(
+        StateError(
+          _controller.value.errorDescription ?? 'Video playback failed',
+        ),
+        StackTrace.current,
+        _controller,
+      );
+    }
   }
 
-  void _fail() {
-    if (!mounted || _failed) return;
-    setState(() => _failed = true);
+  void _fail(Object error, StackTrace stack, VideoPlayerController controller) {
+    if (!_active(controller)) return;
+    _diagnostics.failure(
+      _stage,
+      error,
+      stack,
+      controller.value,
+      visible: widget.enabled,
+      resumed: _resumed,
+    );
+    final mayRetry = !_retried && canRecoverBackgroundVideo(_stage);
     _initializationTimer?.cancel();
-    unawaited(_controller.dispose().catchError((Object _) {}));
+    controller.removeListener(_onValue);
+    setState(() {
+      _ready = false;
+      _recovering = true;
+    });
+    unawaited(_recover(controller, mayRetry));
+  }
+
+  Future<void> _recover(VideoPlayerController controller, bool mayRetry) async {
+    final released = await _disposePlayer(controller);
+    if (!mounted) return;
+    if (mayRetry &&
+        released &&
+        await enableBackgroundVideoRecovery(_diagnostics.attempt)) {
+      if (!mounted) return;
+      _retried = true;
+      _recovering = false;
+      _startPlayer();
+      return;
+    }
+    if (!mounted) return;
+    if (_retried) recordBackgroundVideoRecovery(_diagnostics.attempt, 'failed');
+    setState(() {
+      _failed = true;
+      _recovering = false;
+    });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         showActionNotice(
@@ -93,15 +166,18 @@ class _VideoWallpaperBackgroundState extends State<VideoWallpaperBackground>
   }
 
   Future<void> _syncPlayback() async {
-    if (!_ready || _failed || !mounted) return;
+    final controller = _controller;
+    if (!_ready || !_active(controller)) return;
     try {
       if (widget.enabled && _resumed) {
-        await _controller.play();
+        _stage = 'videoPlay';
+        await controller.play();
       } else {
-        await _controller.pause();
+        _stage = 'videoPause';
+        await controller.pause();
       }
-    } catch (_) {
-      _fail();
+    } catch (error, stack) {
+      _fail(error, stack, controller);
     }
   }
 
@@ -122,9 +198,20 @@ class _VideoWallpaperBackgroundState extends State<VideoWallpaperBackground>
     WidgetsBinding.instance.removeObserver(this);
     _initializationTimer?.cancel();
     _controller.removeListener(_onValue);
-    unawaited(_controller.dispose());
+    unawaited(_disposePlayer(_controller));
     super.dispose();
   }
+
+  Future<bool> _disposePlayer(VideoPlayerController controller) =>
+      _disposals.putIfAbsent(controller, () async {
+        try {
+          await controller.dispose().timeout(const Duration(seconds: 3));
+          return true;
+        } catch (error, stack) {
+          _diagnostics.failure('videoDispose', error, stack, controller.value);
+          return false;
+        }
+      });
 
   @override
   Widget build(BuildContext context) {

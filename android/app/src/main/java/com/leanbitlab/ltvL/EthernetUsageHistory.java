@@ -93,8 +93,7 @@ final class EthernetUsageHistory {
                         .divide(BigInteger.valueOf(bucket.duration)));
             }
         }
-        try { return total.longValueExact(); }
-        catch (ArithmeticException overflow) { return NetworkUsageTotals.UNAVAILABLE; }
+        return total.bitLength() > 63 ? NetworkUsageTotals.UNAVAILABLE : total.longValue();
     }
 
     private static long nonnegative(String value) {

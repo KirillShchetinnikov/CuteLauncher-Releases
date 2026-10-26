@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
+import androidx.core.location.LocationManagerCompat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -78,7 +79,7 @@ final class WeatherLocationBridge {
             for (String provider : providers) {
                 CancellationSignal signal=new CancellationSignal(); cancellations.add(signal);
                 try {
-                    manager.getCurrentLocation(provider,signal,activity.getMainExecutor(), location -> {
+                    LocationManagerCompat.getCurrentLocation(manager,provider,signal,activity.getMainExecutor(), location -> {
                         if (request != generation || pending == null) return;
                         if (usable(location)) finish(location,null,request);
                         else if (--remaining == 0) finish(null,"LOCATION_UNAVAILABLE",request);

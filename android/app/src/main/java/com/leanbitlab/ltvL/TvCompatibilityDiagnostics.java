@@ -16,7 +16,7 @@ import java.util.function.BooleanSupplier;
 /** Build metadata and API reads only: no ADB, prompts, intent launches or settings writes. */
 final class TvCompatibilityDiagnostics {
     private static String permitted(boolean value) { return value ? "available" : "notGranted"; }
-    @SuppressWarnings("deprecation") // AppOps read supports Android 11+; no noteOp or permission changes.
+    @SuppressWarnings("deprecation") // Read only: no noteOp or permission changes.
     static Map<String, Object> collect(Activity activity, BooleanSupplier accessibility) {
         var pm = activity.getPackageManager();
         var identity = new LinkedHashMap<String, String>();
@@ -31,7 +31,7 @@ final class TvCompatibilityDiagnostics {
         boolean emulator = Build.HARDWARE.equals("ranchu") || Build.HARDWARE.equals("goldfish") || Build.PRODUCT.startsWith("sdk_");
         var checks = new ReadOnlyDiagnosticChecks();
         checks.add("androidTv", () -> pm.hasSystemFeature(PackageManager.FEATURE_LEANBACK) ? "available" : "unsupported");
-        checks.add("androidVersion", () -> Build.VERSION.SDK_INT >= 30 ? "available" : "unsupported");
+        checks.add("androidVersion", () -> AdbCompatibilityPolicy.supportedSdk(Build.VERSION.SDK_INT) ? "available" : "unsupported");
         checks.add("homeRegistered", () -> AdbCapabilities.ownPriority(activity) != Integer.MIN_VALUE ? "available" : "unsupported");
         checks.add("defaultHome", () -> {
             var home = pm.resolveActivity(new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME), PackageManager.MATCH_DEFAULT_ONLY);
@@ -45,7 +45,7 @@ final class TvCompatibilityDiagnostics {
             .isNotificationListenerAccessGranted(new ComponentName(activity, LauncherNotificationListenerService.class))));
         checks.add("accessibility", () -> permitted(accessibility.getAsBoolean()));
         checks.add("writeSettings", () -> permitted(Settings.System.canWrite(activity)));
-        checks.add("usageStats", () -> permitted(activity.getSystemService(AppOpsManager.class).unsafeCheckOpNoThrow(
+        checks.add("usageStats", () -> permitted(activity.getSystemService(AppOpsManager.class).checkOpNoThrow(
             AppOpsManager.OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), activity.getPackageName()) == AppOpsManager.MODE_ALLOWED));
         checks.add("watchNext", () -> permitted(new WatchNextBridge(activity).checkWatchNextPermission()));
         checks.add("tvInputs", () -> {

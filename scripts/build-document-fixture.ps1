@@ -20,7 +20,7 @@ try {
     & "$JavaHome/bin/javac.exe" -encoding UTF-8 -source 8 -target 8 -classpath $androidJar -d $classes "$root/test/android_fixture/DocumentsFixture.java"
     if ($LASTEXITCODE) { throw 'Fixture Java compilation failed.' }
     $classFiles = @(Get-ChildItem -LiteralPath $classes -Recurse -Filter '*.class' | ForEach-Object FullName)
-    & "$tools/d8.bat" --min-api 31 --lib $androidJar --output $dex @classFiles
+    & "$tools/d8.bat" --min-api 28 --lib $androidJar --output $dex @classFiles
     if ($LASTEXITCODE) { throw 'Fixture dex compilation failed.' }
     & "$tools/aapt2.exe" link --manifest "$root/test/android_fixture/AndroidManifest.xml" -I $androidJar -o $unsigned
     if ($LASTEXITCODE) { throw 'Fixture packaging failed.' }

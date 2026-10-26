@@ -3,7 +3,8 @@ package com.leanbitlab.ltvL;
 import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowInsets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.EventChannel;
 
@@ -23,8 +24,8 @@ final class ImeVisibilityBridge implements EventChannel.StreamHandler {
     @Override public void onListen(Object arguments, EventChannel.EventSink sink) {
         onCancel(null);
         observer = new View(activity);
-        observer.setOnApplyWindowInsetsListener((view, insets) -> {
-            boolean visible = insets.isVisible(WindowInsets.Type.ime());
+        ViewCompat.setOnApplyWindowInsetsListener(observer, (view, insets) -> {
+            boolean visible = insets.isVisible(WindowInsetsCompat.Type.ime());
             if (lastVisible == null || lastVisible != visible) {
                 lastVisible = visible;
                 sink.success(visible);
@@ -38,8 +39,8 @@ final class ImeVisibilityBridge implements EventChannel.StreamHandler {
 
     @Override public void onCancel(Object arguments) {
         if (observer != null) {
-            observer.setOnApplyWindowInsetsListener(null);
-            ((ViewGroup) observer.getParent()).removeView(observer);
+            ViewCompat.setOnApplyWindowInsetsListener(observer, null);
+            if (observer.getParent() instanceof ViewGroup parent) parent.removeView(observer);
             observer = null;
         }
         lastVisible = null;

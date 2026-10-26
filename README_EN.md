@@ -130,7 +130,7 @@ and install it on your TV or TV box. ARMv7, ARM64, x86_64, and universal builds
 are available; choose universal if you do not know your device's architecture.
 Android may ask you to allow installation from your chosen source.
 
-Requires **Android 11 or later**. Home-app selection, Home behavior,
+Requires **Android 9 or later**. Home-app selection, Home behavior,
 ADB, overlays, backlight controls, notifications, and TV inputs depend on firmware
 and permissions. You can launch and organize apps without enabling every
 additional system integration.

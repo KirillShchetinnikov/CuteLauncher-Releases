@@ -90,13 +90,15 @@ final class NotificationBridge implements EventChannel.StreamHandler {
 
     boolean requestNotificationListenerPermission() {
         try {
-            Intent detailIntent = new Intent(Settings.ACTION_NOTIFICATION_LISTENER_DETAIL_SETTINGS);
-            ComponentName cn = new ComponentName(context, LauncherNotificationListenerService.class);
-            detailIntent.putExtra(Settings.EXTRA_NOTIFICATION_LISTENER_COMPONENT_NAME, cn.flattenToString());
-            detailIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            if (detailIntent.resolveActivity(context.getPackageManager()) != null) {
-                context.startActivity(detailIntent);
-                return true;
+            if (Build.VERSION.SDK_INT >= 30) {
+                Intent detailIntent = new Intent(Settings.ACTION_NOTIFICATION_LISTENER_DETAIL_SETTINGS);
+                ComponentName cn = new ComponentName(context, LauncherNotificationListenerService.class);
+                detailIntent.putExtra(Settings.EXTRA_NOTIFICATION_LISTENER_COMPONENT_NAME, cn.flattenToString());
+                detailIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                if (detailIntent.resolveActivity(context.getPackageManager()) != null) {
+                    context.startActivity(detailIntent);
+                    return true;
+                }
             }
 
             Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");

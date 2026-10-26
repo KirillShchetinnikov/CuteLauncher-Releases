@@ -435,7 +435,9 @@ public class NightOverlayService extends Service {
             PixelFormat.TRANSLUCENT);
         // TV remote key events remain unaffected; Android may block touch through opacity > .8.
         params.alpha=alpha; params.gravity=Gravity.TOP|Gravity.START;
-        params.layoutInDisplayCutoutMode=WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
+        params.layoutInDisplayCutoutMode=Build.VERSION.SDK_INT >= 30
+            ? WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
+            : WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
         params.setTitle("CuteLauncher Night Mode");
         try {
             if (overlay==null) {

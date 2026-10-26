@@ -20,7 +20,7 @@ its architecture. Android may ask you to allow installation from your chosen
 source. Use an APK with the same signing identity when updating, and do not
 uninstall the app if you want to preserve your settings.
 
-Requires Android 11 or later. System features depend on firmware and permissions.
+Requires Android 9 or later. System features depend on firmware and permissions.
 See the [guide](USER_GUIDE_EN.md#разрешения-и-ограничения) for details.
 
 ## Permissions, reports, and help

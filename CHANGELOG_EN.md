@@ -2,6 +2,13 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
+## v1.4.0 — 2026-10-26
+
+- Added Android 9 and 10 support, including file access, backups, update installation, and system permissions.
+- Improved video wallpaper compatibility: after a playback failure on Android 10 or later, the launcher automatically tries another video output mode. Codec support depends on the device.
+- Fixed a false diagnostic error on TCL devices where the system picture filter is unavailable.
+- Expanded the catalog of preinstalled app descriptions for the TV cleaner.
+
 ## v1.3.1 — 2026-10-26
 
 - Fixed text being clipped at the top and bottom in settings, including labels, values, and buttons using Manrope.

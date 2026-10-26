@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "reviewedAt": "2026-10-25",
+  "reviewedAt": "2026-10-26",
   "sources": [
     "https://developer.android.com/reference/android/content/pm/PackageManager",
     "https://source.android.com/docs/core/runtime/rros",
@@ -16,9 +16,22 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
+      ]
+    },
+    "android.auto_generated_rro__": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
       ]
     },
     "android.auto_generated_rro_product__": {
@@ -72,6 +85,30 @@
         "kp1-yyz"
       ]
     },
+    "android.ext.services": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
+    },
+    "app.smarttube.fdroid": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
+    },
     "com.alphainventor.filemanager": {
       "confidence": "identified",
       "safeToDisable": false,
@@ -108,6 +145,18 @@
         "tcl-g10"
       ]
     },
+    "com.android.app.cus.aging": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
+    },
     "com.android.backupconfirm": {
       "ru": "Приложение не опознано.",
       "en": "Application not identified.",
@@ -117,6 +166,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -131,9 +181,34 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
+      ]
+    },
+    "com.android.bluetoothmidiservice": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
+    },
+    "com.android.camera2": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
       ]
     },
     "com.android.cameraextensions": {
@@ -159,6 +234,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -173,6 +249,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -187,6 +264,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -215,6 +293,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -229,6 +308,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -248,6 +328,18 @@
         "tcl-g10"
       ]
     },
+    "com.android.documentsui": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
+    },
     "com.android.dreams.basic": {
       "ru": "Заставка или фоновый режим ТВ.",
       "en": "TV screensaver or ambient mode.",
@@ -257,6 +349,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -271,6 +364,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -285,6 +379,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -302,6 +397,18 @@
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
+      ]
+    },
+    "com.android.gallery3d": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
       ]
     },
     "com.android.health.connect.backuprestore": {
@@ -341,6 +448,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -355,6 +463,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -369,9 +478,22 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
+      ]
+    },
+    "com.android.inputmethod.latin": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
       ]
     },
     "com.android.intentresolver": {
@@ -397,9 +519,22 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
+      ]
+    },
+    "com.android.launcher3": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
       ]
     },
     "com.android.localtransport": {
@@ -411,6 +546,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -425,6 +561,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -444,6 +581,18 @@
         "tcl-g10"
       ]
     },
+    "com.android.modulemetadata": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
+    },
     "com.android.mtp": {
       "ru": "Приложение не опознано.",
       "en": "Application not identified.",
@@ -453,7 +602,20 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz"
+      ]
+    },
+    "com.android.musicfx": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
       ]
     },
     "com.android.nearby.halfsheet": {
@@ -479,9 +641,22 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
+      ]
+    },
+    "com.android.networkstack.permissionconfig": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
       ]
     },
     "com.android.networkstack.tethering": {
@@ -493,6 +668,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -507,7 +683,20 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz"
+      ]
+    },
+    "com.android.networkstack.tethering.inprocess.droidlogic": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
       ]
     },
     "com.android.ondevicepersonalization.services": {
@@ -524,6 +713,18 @@
         "tcl-g10"
       ]
     },
+    "com.android.packageinstaller": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
+    },
     "com.android.pacprocessor": {
       "ru": "Приложение не опознано.",
       "en": "Application not identified.",
@@ -533,9 +734,22 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
+      ]
+    },
+    "com.android.permissioncontroller": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
       ]
     },
     "com.android.printspooler": {
@@ -547,6 +761,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -561,6 +776,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -575,9 +791,22 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
+      ]
+    },
+    "com.android.providers.contacts.auto_generated_rro_product__": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
       ]
     },
     "com.android.providers.downloads": {
@@ -589,9 +818,22 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
+      ]
+    },
+    "com.android.providers.downloads.ui": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
       ]
     },
     "com.android.providers.media": {
@@ -603,6 +845,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -617,6 +860,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -631,6 +875,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -670,6 +915,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -684,6 +930,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -698,6 +945,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -740,9 +988,22 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
+      ]
+    },
+    "com.android.settings": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
       ]
     },
     "com.android.settings.intelligence": {
@@ -754,6 +1015,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -768,6 +1030,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -782,6 +1045,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -796,6 +1060,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz"
       ]
     },
@@ -808,6 +1073,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -822,6 +1088,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -1014,6 +1281,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -1122,9 +1390,22 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
+      ]
+    },
+    "com.android.wallpaper.livepicker": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
       ]
     },
     "com.android.wallpaperbackup": {
@@ -1136,9 +1417,34 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
+      ]
+    },
+    "com.android.wallpapercropper": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
+    },
+    "com.android.webview": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
       ]
     },
     "com.android.wifi.dialog": {
@@ -1164,9 +1470,22 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
+      ]
+    },
+    "com.android.zdtd.service": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
       ]
     },
     "com.arrowsapp.nightscreen": {
@@ -1243,7 +1562,32 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz"
+      ]
+    },
+    "com.droidlogic.mediacenter": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
+    },
+    "com.droidlogic.miracast": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
       ]
     },
     "com.droidlogic.overlay": {
@@ -1330,6 +1674,18 @@
         "kp1-yyz"
       ]
     },
+    "com.droidlogic.wifion": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
+    },
     "com.droidlogic.wifitetheringoverlay": {
       "ru": "Приложение не опознано.",
       "en": "Application not identified.",
@@ -1340,6 +1696,18 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "kp1-yyz"
+      ]
+    },
+    "com.fgl27.twitch": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
       ]
     },
     "com.google.android.apps.mediashell": {
@@ -1394,6 +1762,18 @@
         "tcl-g08"
       ]
     },
+    "com.google.android.atv.widget": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
+    },
     "com.google.android.backdrop": {
       "ru": "Заставка или фоновый режим ТВ.",
       "en": "TV screensaver or ambient mode.",
@@ -1403,7 +1783,20 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz"
+      ]
+    },
+    "com.google.android.deskclock": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
       ]
     },
     "com.google.android.ext.services": {
@@ -1415,6 +1808,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -1429,6 +1823,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -1502,6 +1897,30 @@
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
+      ]
+    },
+    "com.google.android.landscape": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
+    },
+    "com.google.android.leanbacklauncher.recommendations": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
       ]
     },
     "com.google.android.marvin.talkback": {
@@ -1733,6 +2152,18 @@
         "tcl-g10"
       ]
     },
+    "com.google.android.theme.color": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
+    },
     "com.google.android.tts": {
       "ru": "Специальные возможности или озвучивание.",
       "en": "Accessibility or speech output.",
@@ -1756,6 +2187,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -1818,6 +2250,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -1846,6 +2279,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz"
       ]
     },
@@ -1858,6 +2292,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz"
       ]
     },
@@ -1927,6 +2362,42 @@
         "kp1-yyz"
       ],
       "category": "user"
+    },
+    "com.jimdo.xakerd.season2hit": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
+    },
+    "com.justplus.player": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
+    },
+    "com.looker.droidify": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
     },
     "com.mediatek.AirplayAPK": {
       "ru": "Приём трансляции или зеркалирования экрана.",
@@ -2022,6 +2493,18 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "tcl-g08"
+      ]
+    },
+    "com.neilturner.aerialviews": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
       ]
     },
     "com.nes.blerc": {
@@ -2145,6 +2628,42 @@
         "tcl-g10"
       ]
     },
+    "com.opengapps.atvoverlay": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
+    },
+    "com.pittvandewitt.viperfx": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
+    },
+    "com.pittvandewitt.viperfx.overlay": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
+    },
     "com.plexapp.android": {
       "confidence": "identified",
       "safeToDisable": false,
@@ -2155,6 +2674,30 @@
         "tcl-g10"
       ],
       "category": "preinstalled"
+    },
+    "com.primeminister.kicktv": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
+    },
+    "com.ran4erep.r4ezka": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
     },
     "com.realtek.airplay2": {
       "ru": "Приём трансляции или зеркалирования экрана.",
@@ -2336,6 +2879,30 @@
         "kp1-yyz"
       ]
     },
+    "com.slimbox.tv.settings": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
+    },
+    "com.slimbox.tvlauncher.overlay": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
+    },
     "com.spbtv.rosing": {
       "confidence": "identified",
       "safeToDisable": false,
@@ -2355,6 +2922,18 @@
         "tcl-g08"
       ],
       "category": "user"
+    },
+    "com.spocky.projengmenu.overlay": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
     },
     "com.tcl.UpdatePeripheral": {
       "ru": "Обновление прошивки или периферии производителя.",
@@ -2907,6 +3486,18 @@
         "tcl-g08"
       ]
     },
+    "com.topjohnwu.magisk": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
+    },
     "com.tpa.kb": {
       "ru": "Экранная клавиатура.",
       "en": "On-screen keyboard.",
@@ -2951,6 +3542,18 @@
       ],
       "category": "preinstalled"
     },
+    "com.waterdaaan.cpufloat": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
+    },
     "com.wireguard.android": {
       "confidence": "identified",
       "safeToDisable": false,
@@ -2960,16 +3563,113 @@
       ],
       "category": "user"
     },
+    "com.yxt.memoryclean": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
+    },
+    "cz.ackee.ventusky": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
+    },
+    "de.benzac.msx": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
+    },
+    "dev.imranr.obtainium.fdroid": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
+    },
     "io.github.kirillshchetinnikov.cutelauncher": {
       "confidence": "identified",
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
       ],
       "category": "user"
+    },
+    "jackpal.androidterm": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
+    },
+    "me.zhanghai.android.files": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
+    },
+    "moe.nb4a": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
+    },
+    "name.boyle.chris.keytest": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
     },
     "net.gtvbox.installer": {
       "confidence": "identified",
@@ -3004,9 +3704,22 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz"
       ],
       "category": "user"
+    },
+    "org.amnezia.vpn": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
     },
     "org.courville.nova": {
       "confidence": "identified",
@@ -3039,16 +3752,65 @@
       ],
       "category": "preinstalled"
     },
+    "org.liskovsoft.androidtv.rukeyboard": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
+    },
+    "org.slimboxtv.appdrawer": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
+    },
     "org.smarttube.stable": {
       "confidence": "identified",
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
+        "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
       ],
       "category": "preinstalled"
+    },
+    "org.videolan.vlc": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
+    },
+    "reshala.tv.app": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
     },
     "rtb.mobile.android": {
       "confidence": "identified",
@@ -3067,6 +3829,18 @@
         "kp1-yyz"
       ],
       "category": "preinstalled"
+    },
+    "ru.full.khd.app.overlay": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
     },
     "ru.ivi.client": {
       "confidence": "identified",
@@ -3089,6 +3863,18 @@
       ],
       "category": "preinstalled"
     },
+    "ru.littlevictor.powermenu": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
+    },
     "ru.more.play": {
       "confidence": "identified",
       "safeToDisable": false,
@@ -3100,6 +3886,18 @@
       ],
       "category": "preinstalled"
     },
+    "ru.neo4em.rutorwidget": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
+    },
     "ru.rutube.app": {
       "confidence": "identified",
       "safeToDisable": false,
@@ -3108,6 +3906,30 @@
         "kp1-yyz"
       ],
       "category": "preinstalled"
+    },
+    "slim.box.tv.customizer": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
+    },
+    "slim.box.tv.project": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "droidlogic-x98q-android11-20261026"
+      ]
     },
     "tv.mopa.ginga": {
       "ru": "Приложение не опознано.",

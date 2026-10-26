@@ -2,7 +2,7 @@ package com.leanbitlab.ltvL;
 
 /** Pure Android protection-level rules, independently testable without an emulator. */
 final class AdbCompatibilityPolicy {
-    static boolean supportedSdk(int sdk) { return sdk >= 30; }
+    static boolean supportedSdk(int sdk) { return sdk >= 28; }
     static boolean canSelectHome(int targetPriority, int highestEnabledPriority) {
         return targetPriority != Integer.MIN_VALUE && targetPriority >= highestEnabledPriority;
     }

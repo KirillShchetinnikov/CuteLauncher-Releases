@@ -5,6 +5,45 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  for (final scenario in [
+    'unavailableCapability',
+    'setUnsupported',
+    'platformError',
+    'missingPlugin',
+  ]) {
+    test('TCL capability diagnostics: $scenario', () async {
+      const tcl = BridgeChannel('cutelauncher/tcl_blue_light');
+      final store = DiagnosticsStore.instance;
+      store.clear();
+      final messenger =
+          TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+      messenger.setMockMethodCallHandler(tcl, (_) async {
+        if (scenario == 'platformError') {
+          throw PlatformException(code: 'denied');
+        }
+        if (scenario == 'missingPlugin') throw MissingPluginException();
+        return {'status': 'unsupported'};
+      });
+      addTearDown(() => messenger.setMockMethodCallHandler(tcl, null));
+      final result = await tcl.invokeResult<Map>(
+        scenario == 'setUnsupported' ? 'set' : 'status',
+      );
+      final report = store.snapshot();
+      if (scenario == 'unavailableCapability') {
+        expect(result.status, BridgeStatus.success);
+        expect(result.value?['status'], 'unsupported');
+        expect(report['failures'], isEmpty);
+        expect(report['operationCounts'], {'success': 1});
+        final event = (report['recentOperations'] as List).single;
+        expect(event['details']['availability'], 'unsupported');
+        expect(event['nativeCode'], 'unsupported');
+      } else {
+        expect(result.isSuccess, false);
+        expect(report['failures'], hasLength(1));
+      }
+    });
+  }
+
   const native = MethodChannel('me.efesser.flauncher/method');
   const bridge = BridgeChannel('me.efesser.flauncher/method');
   void reply(Future<dynamic> Function(MethodCall) handler) =>

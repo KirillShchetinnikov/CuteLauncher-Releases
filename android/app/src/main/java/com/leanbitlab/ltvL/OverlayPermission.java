@@ -25,7 +25,10 @@ final class OverlayPermission {
             return ops.checkOpRawNoThrow(AppOpsManager.OPSTR_SYSTEM_ALERT_WINDOW,
                     Process.myUid(), context.getPackageName(), null);
         }
-        return ops.unsafeCheckOpRawNoThrow(AppOpsManager.OPSTR_SYSTEM_ALERT_WINDOW,
+        if (android.os.Build.VERSION.SDK_INT >= 29)
+            return ops.unsafeCheckOpRawNoThrow(AppOpsManager.OPSTR_SYSTEM_ALERT_WINDOW,
+                    Process.myUid(), context.getPackageName());
+        return ops.checkOpNoThrow(AppOpsManager.OPSTR_SYSTEM_ALERT_WINDOW,
                 Process.myUid(), context.getPackageName());
     }
 }

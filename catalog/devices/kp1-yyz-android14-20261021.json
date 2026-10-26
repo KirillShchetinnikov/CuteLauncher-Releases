@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "reportType": "tvCompatibility",
+  "scope": "readOnlyMetadata",
+  "capturedAt": "2026-10-21T00:00:00.000Z",
+  "kind": "physical",
+  "kindDetection": "buildMetadata",
+  "identity": {
+    "manufacturer": "SEI Robotics",
+    "model": "KP1",
+    "firmware": "UKG3.251130.001.9314",
+    "android": "14",
+    "sdk": "34",
+    "abis": "armeabi-v7a,armeabi"
+  },
+  "installedLauncher": {
+    "versionName": "1.0.24",
+    "versionCode": "73"
+  },
+  "checks": {
+    "androidTv": "unknown",
+    "androidVersion": "unknown",
+    "homeRegistered": "unknown",
+    "defaultHome": "unknown",
+    "homeSelection": "unknown",
+    "overlay": "unknown",
+    "notifications": "unknown",
+    "notificationListener": "unknown",
+    "accessibility": "unknown",
+    "writeSettings": "unknown",
+    "usageStats": "unknown",
+    "watchNext": "unknown",
+    "tvInputs": "unknown",
+    "documentExport": "unknown",
+    "screensaverSelection": "unknown"
+  }
+}

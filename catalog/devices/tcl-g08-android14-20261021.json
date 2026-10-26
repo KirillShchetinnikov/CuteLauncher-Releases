@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "reportType": "tvCompatibility",
+  "scope": "readOnlyMetadata",
+  "capturedAt": "2026-10-21T00:00:00.000Z",
+  "kind": "physical",
+  "kindDetection": "buildMetadata",
+  "identity": {
+    "manufacturer": "TCL",
+    "model": "Smart TV Pro",
+    "firmware": "tcl9618-user 14 UTT2.250416.001 AU04 release-keys",
+    "android": "14",
+    "sdk": "34",
+    "abis": "armeabi-v7a,armeabi"
+  },
+  "installedLauncher": {
+    "versionName": "1.0.24",
+    "versionCode": "73"
+  },
+  "checks": {
+    "androidTv": "unknown",
+    "androidVersion": "unknown",
+    "homeRegistered": "unknown",
+    "defaultHome": "unknown",
+    "homeSelection": "unknown",
+    "overlay": "unknown",
+    "notifications": "unknown",
+    "notificationListener": "unknown",
+    "accessibility": "unknown",
+    "writeSettings": "unknown",
+    "usageStats": "unknown",
+    "watchNext": "unknown",
+    "tvInputs": "unknown",
+    "documentExport": "unknown",
+    "screensaverSelection": "unknown"
+  }
+}

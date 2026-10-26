@@ -35,8 +35,8 @@ public class LauncherAccessibilityService extends AccessibilityService {
     static boolean canSleep() {
         LauncherAccessibilityService service = active.get();
         try {
-            return service != null && service.getSystemActions().stream()
-                .anyMatch(action -> action.getId() == GLOBAL_ACTION_LOCK_SCREEN);
+            return service != null && (android.os.Build.VERSION.SDK_INT < 30 || service.getSystemActions().stream()
+                .anyMatch(action -> action.getId() == GLOBAL_ACTION_LOCK_SCREEN));
         } catch (RuntimeException e) { return false; }
     }
     static boolean sleep() {

@@ -22,8 +22,11 @@ import io.flutter.plugin.common.MethodChannel;
 /** Only shares the updater's private APK. Android performs final APK verification. */
 final class UpdateBridge {
     private static final String PLAY = "com.android.vending";
-    private static String installer(Activity activity) {
+    @SuppressWarnings("deprecation")
+    static String installer(Activity activity) {
         try {
+            if (Build.VERSION.SDK_INT < 30)
+                return activity.getPackageManager().getInstallerPackageName(activity.getPackageName());
             return activity.getPackageManager().getInstallSourceInfo(activity.getPackageName()).getInstallingPackageName();
         } catch (Exception error) { return null; }
     }

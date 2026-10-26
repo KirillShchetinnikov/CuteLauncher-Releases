@@ -81,12 +81,14 @@ public class LauncherActivity extends FlutterActivity {
     private DocumentFiles documentFiles;
     private WallpaperFolder wallpaperFolder;
     private BackupFolder backupFolder;
+    private LegacyStorageAccess legacyStorageAccess;
     private AutoLaunchBridge autoLaunch;
     private TvImeEditorBridge tvImeEditorBridge;
     private RemoteButtonsBridge remoteButtons;
     private RemoteMappingsBridge remoteMappings;
 
     @Override public void cleanUpFlutterEngine(@NonNull FlutterEngine flutterEngine) {
+        if (legacyStorageAccess != null) { legacyStorageAccess.close(); legacyStorageAccess = null; }
         if (tvInputBridge != null) { tvInputBridge.close(); tvInputBridge = null; }
         if (remoteMappings != null) { remoteMappings.close(); remoteMappings = null; }
         if (remoteButtons != null) { remoteButtons.close(); remoteButtons = null; }
@@ -148,6 +150,7 @@ public class LauncherActivity extends FlutterActivity {
 
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
+        VideoSurfaceCompatibility.configure(this);
         super.configureFlutterEngine(flutterEngine);
         new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), "cutelauncher/crash_guard")
             .setMethodCallHandler((call, result) -> {
@@ -193,9 +196,10 @@ public class LauncherActivity extends FlutterActivity {
         mediaBridge = new MediaBridge(this, sIoExecutor);
         mediaBridge.register(messenger, notificationBridge);
         watchNextBridge = new WatchNextBridge(this);
-        documentFiles = new DocumentFiles(this, sIoExecutor);
+        legacyStorageAccess = new LegacyStorageAccess(this);
+        documentFiles = new DocumentFiles(this, sIoExecutor, legacyStorageAccess);
         wallpaperFolder = new WallpaperFolder(this, sIoExecutor);
-        backupFolder = new BackupFolder(this, sIoExecutor);
+        backupFolder = new BackupFolder(this, sIoExecutor, legacyStorageAccess);
         new EventChannel(messenger, "me.efesser.flauncher/event_home").setStreamHandler(new EventChannel.StreamHandler() {
             public void onListen(Object arguments, EventChannel.EventSink events) {
                 homeSink = events;
@@ -208,6 +212,11 @@ public class LauncherActivity extends FlutterActivity {
             try {
             switch (call.method) {
                 case "getNativeShellDiagnostics" -> result.success(NativeShellDiagnostics.snapshot());
+                case "enableBackgroundVideoCompatibility" -> result.success(VideoSurfaceCompatibility.enableAfterFailure(this));
+                case "getVideoPlaybackLog" -> ApplicationLoader.load(sIoExecutor,
+                        task -> new Handler(Looper.getMainLooper()).post(task),
+                        () -> VideoPlaybackDiagnostics.collect(this), result::success,
+                        error -> result.success("Media log unavailable on this firmware"));
                 case "clearNativeShellDiagnostics" -> { NativeShellDiagnostics.clear(); result.success(true); }
                 case "getTvCompatibilityDiagnostics" -> ApplicationLoader.load(sIoExecutor,
                         task -> new Handler(Looper.getMainLooper()).post(task),
@@ -596,8 +605,7 @@ public class LauncherActivity extends FlutterActivity {
 
     private boolean openWifiSettings() {
         // 1. Try Android Q+ WiFi panel
-        Intent panelIntent = new Intent(Settings.Panel.ACTION_WIFI);
-        if (tryStartActivity(panelIntent)) {
+        if (Build.VERSION.SDK_INT >= 29 && tryStartActivity(new Intent(Settings.Panel.ACTION_WIFI))) {
             return true;
         }
 
@@ -738,6 +746,7 @@ public class LauncherActivity extends FlutterActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == LegacyStorageAccess.REQUEST && legacyStorageAccess != null) legacyStorageAccess.complete();
         if (requestCode == WeatherLocationBridge.PERMISSION_REQUEST && weatherLocationBridge != null) {
             weatherLocationBridge.onPermissionResult();
         }

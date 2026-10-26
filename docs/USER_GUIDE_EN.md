@@ -3,7 +3,7 @@
 [Русский](USER_GUIDE_RU.md) · [English](USER_GUIDE_EN.md) · [All documentation](README_EN.md)
 
 CuteLauncher is a remote-controlled home screen for Android TV / Google TV.
-Requires Android 11 or later, with ARMv7, ARM64, and x86_64
+Requires Android 9 or later, with ARMv7, ARM64, and x86_64
 builds. System features
 depend on permissions, available menus, and manufacturer firmware.
 
@@ -128,6 +128,8 @@ The video file is excluded from backups; choose it again after moving devices.
 Cancellation or an error preserves the previous background. Messages distinguish
 unsupported formats, size/resolution limits, codec errors and inaccessible files;
 a successful selection is confirmed separately.
+
+If video initialization or playback fails, the launcher automatically tries a compatible output mode when available on the TV. It retries once; if that also fails, an error message appears. This does not add support for a missing codec.
 
 The **Day/Night image** source accepts images only: the day image is used from
 06:00 to 18:00, and the night image at other times.
@@ -364,7 +366,7 @@ depends on the TV. The app does not disconnect electrical power.
 
 ## Launcher and TV controls
 
-After three crashes within five minutes, CuteLauncher opens a recovery screen without loading the main interface. Settings are preserved. Use the remote to retry, open another TV app or Android settings, and choose a home screen. If local ADB was configured, the restore button returns the previous HOME after confirmation. Without ADB, enable a disabled stock launcher in Android app settings first.
+After three crashes within five minutes, CuteLauncher opens a recovery screen without loading the main interface. On Android 9–10, this counts failures reported by Flutter itself; system crash history is available from Android 11. Settings are preserved. Use the remote to retry, open another TV app or Android settings, and choose a home screen. If local ADB was configured, the restore button returns the previous HOME after confirmation. Without ADB, enable a disabled stock launcher in Android app settings first.
 
 Path: **Launcher and TV controls**.
 
@@ -498,7 +500,9 @@ do not back up installed apps or the entire TV system.
 Automatic backups support schedules, frequency, and retention. Storage includes
 the internal folder, Downloads / CuteLauncher, a selected folder, WebDAV, and
 Google Drive with configured access. Internal storage is removed when app data
-is deleted. External-folder selection depends on the file manager.
+is deleted. External-folder selection depends on the file manager. On Android 9,
+saving to Downloads requires storage permission; internal storage and the system
+document picker do not require it.
 
 Synchronize selected settings groups between TVs while leaving other groups local.
 Multiple TVs need a shared accessible folder or cloud storage; their internal
@@ -553,6 +557,17 @@ to a snapshot of the settings applied at that moment; later changes before expor
 do not replace earlier values. Settings at export are listed separately.
 Snapshots exclude passwords, keys, accounts, coordinates, addresses, paths,
 app lists and personal content.
+
+The absence of the proprietary TCL filter on an unsupported device is recorded
+as an unavailable capability and is not treated as a diagnostic failure.
+
+For video background errors, file validation and playback are recorded separately:
+the original player message, stage, timeout, file size, known video dimensions
+and duration, position and playback state. Available ExoPlayer/MediaCodec error
+logs are also collected from the launcher process only, without ADB or additional
+permissions. If the firmware blocks log access, the report says so. Paths and
+personal data are redacted; technical decoder names are retained. Reproduce the
+error in the current session, then create a new report before restarting the app.
 
 The last 50 operations, up to 100 failures separately, and a bounded ADB log stay
 in memory for the current session until cleared or restarted. Collection is

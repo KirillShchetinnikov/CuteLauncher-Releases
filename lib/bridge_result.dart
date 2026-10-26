@@ -169,6 +169,13 @@ class BridgeChannel extends MethodChannel {
         final failure = _failure(raw is String ? raw : 'invalid');
         status = failure.$1;
         code = failure.$2;
+      } else if (name == 'cutelauncher/tcl_blue_light' &&
+          method == 'status' &&
+          raw is Map &&
+          raw['status'] == 'unsupported') {
+        // A completed capability query on a non-TCL device is not a failure.
+        // Keep the native payload so callers still hide the unavailable control.
+        context['details'] = {'availability': 'unsupported'};
       } else if (raw is Map &&
           const {
             'denied',

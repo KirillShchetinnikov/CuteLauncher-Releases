@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="io.cutelauncher.fixture.documents" android:versionCode="1" android:versionName="1">
-    <uses-sdk android:minSdkVersion="30" android:targetSdkVersion="35" />
+    <uses-sdk android:minSdkVersion="28" android:targetSdkVersion="35" />
     <application android:label="CuteLauncher test documents" android:theme="@android:style/Theme.Material.NoActionBar">
         <activity android:name=".DocumentsFixture$OpenTree" android:exported="true">
             <intent-filter><action android:name="android.intent.action.OPEN_DOCUMENT_TREE" /><category android:name="android.intent.category.DEFAULT" /></intent-filter>

@@ -23,7 +23,7 @@ final class CrashLoopGuard {
         if (!p.contains("since")) p.edit().putLong("since", now).commit();
         long since = p.getLong("since", now), seen = p.getLong("seen", since);
         var events = events(c);
-        try {
+        if (android.os.Build.VERSION.SDK_INT >= 30) try {
             var manager = (ActivityManager)c.getSystemService(Context.ACTIVITY_SERVICE);
             for (var exit : manager.getHistoricalProcessExitReasons(c.getPackageName(), 0, 32)) {
                 if (!c.getPackageName().equals(exit.getProcessName()) || exit.getTimestamp() <= since

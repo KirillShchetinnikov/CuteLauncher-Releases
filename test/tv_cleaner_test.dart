@@ -222,6 +222,24 @@ void main() {
       final source = file.readAsStringSync();
       expect(source, isNot(contains('192.168.1.')));
       final report = jsonDecode(source) as Map;
+      if (report['reportType'] == 'tvPackageStateObservation') {
+        expect(report['scope'], 'userProvidedPackageStates');
+        expect(report['verification'], 'observedOnly');
+        for (final app in report['packages'] as List) {
+          final name = app['package'] as String;
+          expect(cleanerPackageId(name), isTrue);
+          expect(app['state'], isIn(['enabled', 'disabled', 'removed']));
+          expect(app.containsKey('system'), isFalse);
+          expect(app.containsKey('enabledSetting'), isFalse);
+          seen.add(name);
+          expect(entries[name]['safeToDisable'], isFalse);
+          expect(
+            entries[name]['observedOn'],
+            contains(file.uri.pathSegments.last.replaceFirst('.json', '')),
+          );
+        }
+        continue;
+      }
       expect(report['scope'], 'adbReadOnlyInventory');
       for (final app in report['packages'] as List) {
         final name = app['package'] as String;
@@ -262,5 +280,48 @@ void main() {
       expect(profile['recommended'], isEmpty);
       expect((profile['identity'] as Map)['fingerprint'], isNotEmpty);
     }
+  });
+
+  test('X98Q user observations keep removed packages and protected services out of bulk approval', () {
+    const id = 'droidlogic-x98q-android11-20261026';
+    final inventory = jsonDecode(
+      File('catalog/inventories/$id.json').readAsStringSync(),
+    ) as Map;
+    final rows = inventory['packages'] as List;
+    expect(rows, hasLength(118));
+    expect(rows.map((row) => row['package']).toSet(), hasLength(rows.length));
+    expect(rows.where((row) => row['state'] == 'enabled'), hasLength(113));
+    expect(inventory['reportedCounts']['enabled'], 114);
+    final disabled = rows
+        .where((row) => row['state'] == 'disabled')
+        .map((row) => row['package'])
+        .toSet();
+    final removed = rows
+        .where((row) => row['state'] == 'removed')
+        .map((row) => row['package'])
+        .toSet();
+    final example = File('catalog/examples/$id.json').readAsStringSync();
+    expect(parseDisableList(example).toSet(), disabled);
+    expect(disabled.intersection(removed), isEmpty);
+    final profiles =
+        jsonDecode(
+              File('catalog/cleaner_profiles.json').readAsStringSync(),
+            )['profiles']
+            as List;
+    final profile =
+        profiles.singleWhere((profile) => profile['id'] == id) as Map;
+    expect(profile['packages'].toSet(), disabled);
+    expect(profile['recommended'], isEmpty);
+    expect(profile['userApprovedSystemPackages'], [
+      'com.google.android.tvlauncher',
+    ]);
+    expect(
+      profile['userApprovedSystemPackages'],
+      isNot(contains('com.google.android.tv.remote.service')),
+    );
+    expect(
+      profile['userApprovedSystemPackages'],
+      isNot(contains('com.android.bluetoothmidiservice')),
+    );
   });
 }

@@ -1,0 +1,501 @@
+{
+  "schemaVersion": 1,
+  "reportType": "tvPackageStateObservation",
+  "scope": "userProvidedPackageStates",
+  "capturedAt": "2026-10-26T00:00:00Z",
+  "source": "userProvidedAdbAppControlPreset",
+  "identity": {
+    "manufacturer": "Droidlogic",
+    "model": "X98Q",
+    "firmware": "X98Q_20220507-1750",
+    "android": "11",
+    "sdk": "30",
+    "abis": "armeabi-v7a,armeabi",
+    "device": "oppen",
+    "fingerprint": "Droidlogic/oppen/oppen:11/RD2A.211001.002/eng.yxt-rd.20220507.174802:userdebug/test-keys"
+  },
+  "verification": "observedOnly",
+  "reportedCounts": {
+    "enabled": 114,
+    "disabled": 3,
+    "removed": 2
+  },
+  "limits": [
+    "Reported package states only; system flags, numeric enabled settings and versions unknown",
+    "Removed packages are not disabled packages; function preservation not verified"
+  ],
+  "packages": [
+    {
+      "package": "android",
+      "state": "enabled"
+    },
+    {
+      "package": "android.auto_generated_rro__",
+      "state": "enabled"
+    },
+    {
+      "package": "android.ext.services",
+      "state": "enabled"
+    },
+    {
+      "package": "app.smarttube.fdroid",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.app.cus.aging",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.backupconfirm",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.bluetooth",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.bluetoothmidiservice",
+      "state": "disabled"
+    },
+    {
+      "package": "com.android.camera2",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.captiveportallogin",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.certinstaller",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.companiondevicemanager",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.cts.ctsshim",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.cts.priv.ctsshim",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.documentsui",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.dreams.basic",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.dynsystem",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.externalstorage",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.gallery3d",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.hotspot2.osulogin",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.htmlviewer",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.inputdevices",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.inputmethod.latin",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.keychain",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.launcher3",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.localtransport",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.location.fused",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.modulemetadata",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.mtp",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.musicfx",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.networkstack",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.networkstack.permissionconfig",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.networkstack.tethering",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.networkstack.tethering.droidlogic",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.networkstack.tethering.inprocess.droidlogic",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.packageinstaller",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.pacprocessor",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.permissioncontroller",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.printspooler",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.providers.calendar",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.providers.contacts",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.providers.contacts.auto_generated_rro_product__",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.providers.downloads",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.providers.downloads.ui",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.providers.media",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.providers.media.module",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.providers.settings",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.providers.tv",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.providers.userdictionary",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.proxyhandler",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.se",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.settings",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.settings.intelligence",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.sharedstoragebackup",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.shell",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.soundpicker",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.statementservice",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.systemui",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.tv.settings",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.vpndialogs",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.wallpaper.livepicker",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.wallpaperbackup",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.wallpapercropper",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.webview",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.wifi.resources",
+      "state": "enabled"
+    },
+    {
+      "package": "com.android.zdtd.service",
+      "state": "enabled"
+    },
+    {
+      "package": "com.droidlogic",
+      "state": "enabled"
+    },
+    {
+      "package": "com.droidlogic.mediacenter",
+      "state": "enabled"
+    },
+    {
+      "package": "com.droidlogic.miracast",
+      "state": "removed"
+    },
+    {
+      "package": "com.droidlogic.wifion",
+      "state": "enabled"
+    },
+    {
+      "package": "com.fgl27.twitch",
+      "state": "enabled"
+    },
+    {
+      "package": "com.google.android.atv.widget",
+      "state": "enabled"
+    },
+    {
+      "package": "com.google.android.backdrop",
+      "state": "enabled"
+    },
+    {
+      "package": "com.google.android.deskclock",
+      "state": "enabled"
+    },
+    {
+      "package": "com.google.android.ext.services",
+      "state": "enabled"
+    },
+    {
+      "package": "com.google.android.ext.shared",
+      "state": "enabled"
+    },
+    {
+      "package": "com.google.android.landscape",
+      "state": "enabled"
+    },
+    {
+      "package": "com.google.android.leanbacklauncher.recommendations",
+      "state": "enabled"
+    },
+    {
+      "package": "com.google.android.theme.color",
+      "state": "enabled"
+    },
+    {
+      "package": "com.google.android.tungsten.setupwraith",
+      "state": "enabled"
+    },
+    {
+      "package": "com.google.android.tv.remote.service",
+      "state": "disabled"
+    },
+    {
+      "package": "com.google.android.tvlauncher",
+      "state": "disabled"
+    },
+    {
+      "package": "com.google.android.tvrecommendations",
+      "state": "enabled"
+    },
+    {
+      "package": "com.jimdo.xakerd.season2hit",
+      "state": "enabled"
+    },
+    {
+      "package": "com.justplus.player",
+      "state": "enabled"
+    },
+    {
+      "package": "com.looker.droidify",
+      "state": "enabled"
+    },
+    {
+      "package": "com.neilturner.aerialviews",
+      "state": "enabled"
+    },
+    {
+      "package": "com.opengapps.atvoverlay",
+      "state": "enabled"
+    },
+    {
+      "package": "com.pittvandewitt.viperfx",
+      "state": "removed"
+    },
+    {
+      "package": "com.pittvandewitt.viperfx.overlay",
+      "state": "enabled"
+    },
+    {
+      "package": "com.primeminister.kicktv",
+      "state": "enabled"
+    },
+    {
+      "package": "com.ran4erep.r4ezka",
+      "state": "enabled"
+    },
+    {
+      "package": "com.slimbox.tv.settings",
+      "state": "enabled"
+    },
+    {
+      "package": "com.slimbox.tvlauncher.overlay",
+      "state": "enabled"
+    },
+    {
+      "package": "com.spocky.projengmenu.overlay",
+      "state": "enabled"
+    },
+    {
+      "package": "com.topjohnwu.magisk",
+      "state": "enabled"
+    },
+    {
+      "package": "com.waterdaaan.cpufloat",
+      "state": "enabled"
+    },
+    {
+      "package": "com.yxt.memoryclean",
+      "state": "enabled"
+    },
+    {
+      "package": "cz.ackee.ventusky",
+      "state": "enabled"
+    },
+    {
+      "package": "de.benzac.msx",
+      "state": "enabled"
+    },
+    {
+      "package": "dev.imranr.obtainium.fdroid",
+      "state": "enabled"
+    },
+    {
+      "package": "io.github.kirillshchetinnikov.cutelauncher",
+      "state": "enabled"
+    },
+    {
+      "package": "jackpal.androidterm",
+      "state": "enabled"
+    },
+    {
+      "package": "me.zhanghai.android.files",
+      "state": "enabled"
+    },
+    {
+      "package": "moe.nb4a",
+      "state": "enabled"
+    },
+    {
+      "package": "name.boyle.chris.keytest",
+      "state": "enabled"
+    },
+    {
+      "package": "org.amnezia.awg",
+      "state": "enabled"
+    },
+    {
+      "package": "org.amnezia.vpn",
+      "state": "enabled"
+    },
+    {
+      "package": "org.liskovsoft.androidtv.rukeyboard",
+      "state": "enabled"
+    },
+    {
+      "package": "org.slimboxtv.appdrawer",
+      "state": "enabled"
+    },
+    {
+      "package": "org.smarttube.stable",
+      "state": "enabled"
+    },
+    {
+      "package": "org.videolan.vlc",
+      "state": "enabled"
+    },
+    {
+      "package": "reshala.tv.app",
+      "state": "enabled"
+    },
+    {
+      "package": "ru.full.khd.app.overlay",
+      "state": "enabled"
+    },
+    {
+      "package": "ru.littlevictor.powermenu",
+      "state": "enabled"
+    },
+    {
+      "package": "ru.neo4em.rutorwidget",
+      "state": "enabled"
+    },
+    {
+      "package": "slim.box.tv.customizer",
+      "state": "enabled"
+    },
+    {
+      "package": "slim.box.tv.project",
+      "state": "enabled"
+    }
+  ]
+}

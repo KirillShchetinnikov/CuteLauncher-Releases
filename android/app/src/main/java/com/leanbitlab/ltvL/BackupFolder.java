@@ -25,8 +25,12 @@ final class BackupFolder {
     private static final String NAME = "^cute-(backup|sync)-(shared|[a-f0-9]{32})-[a-f0-9]{32}-[0-9]+-[a-f0-9]{16}\\.json$";
     private final Activity activity;
     private final ExecutorService executor;
+    private final LegacyStorageAccess storageAccess;
     private MethodChannel.Result pending;
-    BackupFolder(Activity activity, ExecutorService executor) { this.activity = activity; this.executor = executor; }
+    BackupFolder(Activity activity, ExecutorService executor) { this(activity, executor, new LegacyStorageAccess(activity)); }
+    BackupFolder(Activity activity, ExecutorService executor, LegacyStorageAccess storageAccess) {
+        this.activity = activity; this.executor = executor; this.storageAccess = storageAccess;
+    }
     void pick(MethodChannel.Result result) {
         if (pending != null) { result.error("document_busy", "Picker busy", null); return; }
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).addFlags(
@@ -81,6 +85,12 @@ final class BackupFolder {
         }
     }
     void operate(String operation, String value, String name, String path, MethodChannel.Result result) {
+        if (DOWNLOADS.equals(value)) {
+            storageAccess.run("verify".equals(operation), result, () -> operateGranted(operation, value, name, path, result));
+        } else operateGranted(operation, value, name, path, result);
+    }
+
+    private void operateGranted(String operation, String value, String name, String path, MethodChannel.Result result) {
         executor.execute(() -> {
             if (DOWNLOADS.equals(value)) {
                 try {
@@ -145,9 +155,14 @@ final class BackupFolder {
         });
     }
 
-    /** App-owned Downloads entries need no broad storage permission. IS_PENDING publishes atomically. */
+    /** API 29+ uses app-owned MediaStore entries; API 28 uses the permission-gated legacy backend. */
+    @SuppressWarnings("deprecation")
     private Object downloads(String operation, String name, String path) throws Exception {
-        if (Build.VERSION.SDK_INT < 29) throw new IOException("Downloads unavailable");
+        if (Build.VERSION.SDK_INT < 29) {
+            File directory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "CuteLauncher");
+            Object reply = new LegacyBackupFiles(directory).operate(operation, name, path == null ? null : privateFile(path));
+            return "verify".equals(operation) ? DOWNLOADS : reply;
+        }
         final String folder = Environment.DIRECTORY_DOWNLOADS + "/CuteLauncher/";
         final Uri collection = MediaStore.Downloads.EXTERNAL_CONTENT_URI;
         final android.content.ContentResolver resolver = activity.getContentResolver();

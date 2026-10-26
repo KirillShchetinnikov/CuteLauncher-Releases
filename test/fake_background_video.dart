@@ -9,6 +9,7 @@ class FakeBackgroundVideo extends VideoPlayerPlatform {
   final calls = <String>[];
   Size size = const Size(1920, 1080);
   bool reject = false;
+  int failuresRemaining = 0;
   bool delay = false;
   bool? preventsSleep;
   @override
@@ -24,7 +25,8 @@ class FakeBackgroundVideo extends VideoPlayerPlatform {
   }
 
   void complete(int id) {
-    if (reject) {
+    if (reject || failuresRemaining > 0) {
+      if (failuresRemaining > 0) failuresRemaining--;
       streams[id]!.addError(
         PlatformException(code: 'VideoError', message: 'Unsupported codec'),
       );
