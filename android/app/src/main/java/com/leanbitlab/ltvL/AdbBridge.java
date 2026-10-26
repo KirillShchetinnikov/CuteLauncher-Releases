@@ -62,16 +62,17 @@ final class AdbBridge {
             }
             if (!call.method.equals("action")) { result.success(Map.of("status", "invalid")); return; }
             String action = call.argument("action");
-            if (action == null || !Arrays.asList("cleanerInventory", "cleanerSnapshot", "cleanerApply", "cleanerRestore", "check", "preview", "disableSystem", "enableSystem", "home", "accessibility", "disableAccessibility", "restoreAccessibility", "overlay", "notifications", "watchNext", "usage", "writeSettings", "restore").contains(action)) {
+            if (action == null || !Arrays.asList("appProcessStatus", "stopApp", "cleanerInventory", "cleanerSnapshot", "cleanerApply", "cleanerRestore", "cleanerManualSave", "cleanerManualDelete", "cleanerManualRestore", "cleanerManualExport", "check", "preview", "disableSystem", "enableSystem", "home", "accessibility", "disableAccessibility", "restoreAccessibility", "overlay", "notifications", "watchNext", "usage", "writeSettings", "restore").contains(action)) {
                 result.success(Map.of("status", "invalid")); return;
             }
             String operation = action.equals("preview") ? call.argument("operation") : action;
-            if (!action.startsWith("cleaner") && !action.equals("check") && (operation == null || !AdbCapabilities.supported(activity, operation))) {
+            if (!action.equals("appProcessStatus") && !action.equals("stopApp") && !action.startsWith("cleaner") && !action.equals("check") && (operation == null || !AdbCapabilities.supported(activity, operation))) {
                 result.success(Map.of("status", "unsupported")); return;
             }
             executor.execute(() -> {
                 Map<String, Object> response;
                 synchronized (LOCK) {
+                    AdbOperationDiagnostics.begin();
                     try {
                         tcpSettings(activity);
                         File privateKey = new File(activity.getNoBackupFilesDir(), "adb/private-key");
@@ -80,14 +81,25 @@ final class AdbBridge {
                         try (Dadb adb = Dadb.create("127.0.0.1", port, AdbKeyPair.read(privateKey, publicKey), 5000, 60000)) {
                             Shell shell = new Shell() {
                                 public String execute(String command) throws Exception {
-                                    var response = adb.shell(command);
-                                    if (response.getExitCode() != 0) throw new IllegalStateException("Command rejected");
-                                    return response.getOutput().trim();
+                                    AdbOperationDiagnostics.command(command);
+                                    try {
+                                        var response = NativeShellDiagnostics.execute(adb, command, "adb");
+                                        AdbOperationDiagnostics.exit(response.getExitCode());
+                                        AdbOperationDiagnostics.output(response.getOutput(), response.getErrorOutput());
+                                        if (response.getExitCode() != 0) throw new IllegalStateException("Command rejected");
+                                        return response.getOutput().trim();
+                                    } catch (Exception failure) {
+                                        AdbOperationDiagnostics.failure(failure);
+                                        throw failure;
+                                    }
                                 }
                                 public void close() {}
                             };
-                            if (action.startsWith("cleaner")) {
-                                response = new TvCleaner(activity, shell).run(action, call.argument("packages"), call.argument("enable"));
+                            AdbOperationDiagnostics.stage("dispatch");
+                            if (action.equals("appProcessStatus") || action.equals("stopApp")) {
+                                response = AppProcessControl.run(activity, shell, action, call.argument("packages"));
+                            } else if (action.startsWith("cleaner")) {
+                                response = new TvCleaner(activity, shell).run(action, call.argument("packages"), call.argument("enable"), call.argument("stateId"), call.argument("stateName"), call.argument("listName"), call.argument("listScope"));
                             } else if (action.equals("check")) {
                                 String status = perform(activity, shell, "check");
                                 response = status.equals("ready") ? AdbLauncherControl.snapshot(activity, shell) : Map.of("status",status);
@@ -101,13 +113,19 @@ final class AdbBridge {
                             activity.getSharedPreferences("adb_connection", Activity.MODE_PRIVATE).edit().putBoolean("tls", false).putInt("port", port).apply();
                     } catch (dadb.AdbAuthException e) { response = Map.of("status", "authorization"); }
                     catch (Exception | LinkageError e) {
+                        AdbOperationDiagnostics.failure(e);
                         android.util.Log.w("CuteLauncherADB", "ADB operation failed: " + e.getClass().getSimpleName());
                         response = Map.of("status", "unavailable");
                     }
+                    var diagnostic = AdbOperationDiagnostics.finish();
+                    response = new java.util.LinkedHashMap<>(response);
+                    response.put("diagnostic", diagnostic);
                 }
                 String connectionStatus = (String) response.get("status");
                 if (action.equals("check") || connectionStatus.equals("authorization") || connectionStatus.equals("unavailable")) {
-                    tcpSettings(activity).edit().putString("connection_snapshot", new org.json.JSONObject(response).toString()).apply();
+                    var savedResponse = new java.util.LinkedHashMap<>(response);
+                    savedResponse.remove("diagnostic"); // Technical excerpts remain session-only.
+                    tcpSettings(activity).edit().putString("connection_snapshot", new org.json.JSONObject(savedResponse).toString()).apply();
                 }
                 final Map<String, Object> output = response;
                 new Handler(Looper.getMainLooper()).post(() -> result.success(output));
@@ -138,7 +156,7 @@ final class AdbBridge {
                 try (Dadb adb = Dadb.create("127.0.0.1", port, AdbKeyPair.read(privateKey, publicKey), 5000, 10000)) {
                     Shell shell = new Shell() {
                         public String execute(String command) throws Exception {
-                            var response = adb.shell(command);
+                            var response = NativeShellDiagnostics.execute(adb, command, "adb");
                             if (response.getExitCode() != 0) throw new IllegalStateException("Command rejected");
                             return response.getOutput().trim();
                         }
@@ -150,6 +168,35 @@ final class AdbBridge {
                         (java.util.List<?>)plan.get("commands")));
                 }
             } catch (Exception | LinkageError unavailable) { return false; }
+        }
+    }
+
+    /** Crash recovery never creates keys, changes HOME or constructs a Flutter engine. */
+    static String restoreCleanerFromRecovery(Activity activity) {
+        synchronized (LOCK) {
+            try {
+                if (!new TvCleaner(activity, null).hasBaseline()) return "noSnapshot";
+                var saved = activity.getSharedPreferences("adb_connection", Activity.MODE_PRIVATE);
+                int port = saved.getInt("port", 5555);
+                if (saved.getBoolean("tls", false) || port < 1024 || port > 65535) return "unavailable";
+                File privateKey = new File(activity.getNoBackupFilesDir(), "adb/private-key");
+                File publicKey = new File(activity.getNoBackupFilesDir(), "adb/public-key");
+                if (!privateKey.isFile() || !publicKey.isFile()) return "unavailable";
+                try (Dadb adb = Dadb.create("127.0.0.1", port, AdbKeyPair.read(privateKey, publicKey), 5000, 10000)) {
+                    Shell shell = new Shell() {
+                        public String execute(String command) throws Exception {
+                            var response = NativeShellDiagnostics.execute(adb, command, "adb");
+                            if (response.getExitCode() != 0) throw new IllegalStateException("Command rejected");
+                            return response.getOutput().trim();
+                        }
+                        public void close() { }
+                    };
+                    // Invalidate the display cache even if restoration is interrupted.
+                    File cache = new File(activity.getFilesDir(), "tv-cleaner-inventory.json");
+                    if (cache.exists() && !cache.delete()) return "unavailable";
+                    return (String)new TvCleaner(activity, shell).run("cleanerEmergencyRestore", null, null).get("status");
+                }
+            } catch (Exception | LinkageError error) { return "unavailable"; }
         }
     }
 

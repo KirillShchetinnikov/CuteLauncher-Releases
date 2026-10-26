@@ -1,26 +1,39 @@
 import 'package:flauncher/widgets/action_notice.dart';
 import 'package:flauncher/widgets/launcher_dialog.dart';
 import 'package:flauncher/widgets/settings/settings_menu_layout.dart';
+import 'package:flauncher/widgets/side_panel_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('notice uses settings surface without elevation tint', (tester) async {
+  testWidgets('notice uses settings surface without elevation tint', (
+    tester,
+  ) async {
     late BuildContext context;
     final theme = ThemeData.dark();
-    await tester.pumpWidget(MaterialApp(theme: theme,
-      builder: (_, child) => ActionNoticeHost(child: child!),
-      home: Builder(builder: (value) {
-        context = value;
-        return const Scaffold();
-      })));
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: theme,
+        builder: (_, child) => ActionNoticeHost(child: child!),
+        home: Builder(
+          builder: (value) {
+            context = value;
+            return const Scaffold();
+          },
+        ),
+      ),
+    );
     showActionNotice(context, 'Result');
     await tester.pump();
-    final material = tester.widget<Material>(find.ancestor(
-      of: find.text('Result'), matching: find.byType(Material)).first);
+    final material = tester.widget<Material>(
+      find
+          .ancestor(of: find.text('Result'), matching: find.byType(Material))
+          .first,
+    );
     expect(material.color, theme.colorScheme.surface);
     expect(material.surfaceTintColor, Colors.transparent);
     await tester.pump(const Duration(seconds: 5));
+    await tester.pumpAndSettle();
   });
 
   testWidgets('download notice stays until explicitly completed', (
@@ -64,7 +77,7 @@ void main() {
     await tester.pump();
     expect(find.byType(LinearProgressIndicator), findsOneWidget);
     close();
-    await tester.pump();
+    await tester.pumpAndSettle();
     expect(find.byType(LinearProgressIndicator), findsNothing);
     close();
   });
@@ -81,14 +94,19 @@ void main() {
               child: Builder(
                 builder: (value) {
                   context = value;
-                  return const Scaffold();
+                  return Scaffold(
+                    body: SidePanelDialog(
+                      isRightSide: onRight,
+                      child: const Text('Settings'),
+                    ),
+                  );
                 },
               ),
             ),
           ),
         );
         showActionNotice(context, 'Result');
-        await tester.pump();
+        await tester.pumpAndSettle();
         final card = find
             .ancestor(of: find.text('Result'), matching: find.byType(Material))
             .first;
@@ -107,7 +125,7 @@ void main() {
         );
         await tester.pumpAndSettle();
         showActionNotice(dialogContext, 'Dialog result');
-        await tester.pump();
+        await tester.pumpAndSettle();
         final dialogCard = find
             .ancestor(
               of: find.text('Dialog result'),
@@ -201,9 +219,11 @@ void main() {
     expect(tester.getBottomRight(find.text('Second')).dx, greaterThan(700));
     expect(focus.hasFocus, isTrue);
     await tester.pump(const Duration(seconds: 2));
+    await tester.pumpAndSettle();
     expect(find.text('First'), findsNothing);
     expect(find.text('Second'), findsOneWidget);
     await tester.pump(const Duration(seconds: 2));
+    await tester.pumpAndSettle();
     expect(find.text('Second'), findsNothing);
     await tester.pumpWidget(const SizedBox());
     focus.dispose();

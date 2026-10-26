@@ -1,8 +1,11 @@
+import 'dart:ui' as ui;
+
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/widgets/launcher_dialog.dart';
 import 'package:flauncher/widgets/settings/adb_action_confirmation.dart';
 import 'package:flauncher/widgets/settings/settings_menu_layout.dart';
 import 'package:flauncher/widgets/side_panel_dialog.dart';
+import 'package:flauncher/widgets/notice_placement.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/models/app.dart';
@@ -11,6 +14,7 @@ import 'package:flauncher/widgets/add_to_category_dialog.dart';
 import 'package:flauncher/widgets/settings/donate_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'panel_backdrop_assertions.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -100,6 +104,125 @@ Future<void> _open(
 }
 
 void main() {
+  for (final inset in [Offset.zero, const Offset(30, 40)]) {
+    testWidgets('backdrop has its cutout on the first frame at $inset',
+        (tester) async {
+      tester.view.physicalSize = const Size(200, 200);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      final boundaryKey = GlobalKey();
+      final anchor = Rect.fromLTWH(inset.dx + 20, inset.dy + 20, 40, 40);
+      await tester.pumpWidget(MaterialApp(
+        home: RepaintBoundary(key: boundaryKey, child: Stack(children: [
+          const Positioned.fill(child: ColoredBox(color: Colors.white)),
+          Positioned.fill(
+            left: inset.dx,
+            top: inset.dy,
+            child: LauncherWidgetHighlight(
+              rect: anchor,
+              resolver: () => anchor,
+              child: const LauncherPanelBackdrop(),
+            ),
+          ),
+        ])),
+      ));
+      // Inspect pixels already painted by the opening frame, without pumping
+      // the rebuild requested by a post-frame geometry update.
+      final pixels = await tester.runAsync(() async {
+        final boundary = boundaryKey.currentContext!.findRenderObject()
+            as RenderRepaintBoundary;
+        final image = await boundary.toImage();
+        try {
+          return await image.toByteData(format: ui.ImageByteFormat.rawRgba);
+        } finally {
+          image.dispose();
+        }
+      });
+      int redAt(int x, int y) => pixels!.getUint8((y * 200 + x) * 4);
+      expect(redAt(anchor.center.dx.toInt(), anchor.center.dy.toInt()), 255);
+      expect(redAt(160, 160), closeTo(127, 1));
+      final clip = find.descendant(
+        of: find.byType(LauncherPanelBackdrop),
+        matching: find.byType(ClipPath),
+      );
+      Path path() => tester.widget<ClipPath>(clip).clipper!
+          .getClip(tester.getSize(clip));
+      expectSinglePanelBackdrop(tester, top: inset.dy);
+      expect(path().contains(const Offset(40, 40)), isFalse,
+          reason: 'The opening button must be clear on the first frame');
+      expect(path().contains(const Offset(100, 100)), isTrue);
+      await tester.pump();
+      expect(path().contains(const Offset(40, 40)), isFalse);
+      expect(tester.binding.hasScheduledFrame, isFalse);
+      expect(tester.takeException(), isNull);
+    });
+  }
+
+  for (final x in [80.0, 460.0, 820.0]) {
+    testWidgets('nested panel avoids anchored menu at x=$x', (tester) async {
+      tester.view.physicalSize = const Size(960, 540);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      await tester.pumpWidget(MaterialApp(home: Builder(builder: (context) => Scaffold(
+        body: SidePanelDialog(
+          width: 420,
+          anchor: Rect.fromLTWH(x, 0, 40, 40),
+          child: TextButton(
+            onPressed: () => showLauncherDialog<void>(
+              context: context,
+              styleDialog: false,
+              builder: (_) => const SidePanelDialog(width: 420, child: Text('Details')),
+            ),
+            child: const Text('Open'),
+          ),
+        ),
+      ))));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+      final panels = find.byType(NoticePanelRegion);
+      expect(panels, findsNWidgets(2));
+      expect(tester.getRect(panels.first).overlaps(tester.getRect(panels.last)), isFalse);
+      expect(tester.takeException(), isNull);
+    });
+  }
+
+  testWidgets('backdrop tracks growing and shrinking control bounds', (
+    tester,
+  ) async {
+    Rect current = const Rect.fromLTWH(20, 20, 40, 40);
+    await tester.pumpWidget(
+      MaterialApp(
+        home: LauncherWidgetHighlight(
+          rect: current,
+          resolver: () => current,
+          child: const LauncherPanelBackdrop(),
+        ),
+      ),
+    );
+    await tester.pump();
+    final clip = find.descendant(
+      of: find.byType(LauncherPanelBackdrop),
+      matching: find.byType(ClipPath),
+    );
+    Path path() =>
+        tester.widget<ClipPath>(clip).clipper!.getClip(const Size(800, 600));
+    expect(path().contains(const Offset(90, 40)), isTrue);
+    current = const Rect.fromLTWH(20, 20, 100, 40);
+    tester.binding.scheduleFrame();
+    await tester.pump();
+    await tester.pump();
+    expect(path().contains(const Offset(90, 40)), isFalse);
+    current = const Rect.fromLTWH(20, 20, 40, 40);
+    tester.binding.scheduleFrame();
+    await tester.pump();
+    await tester.pump();
+    expect(path().contains(const Offset(90, 40)), isTrue);
+    expect(tester.binding.hasScheduledFrame, isFalse);
+  });
+
   testWidgets('replacement dialog gets its own immediate 50 percent barrier', (tester) async {
     await _open(tester, content: Builder(builder: (context) => TextButton(
       onPressed: () {
@@ -481,6 +604,7 @@ void main() {
       expect(find.text('Действие отменено'), findsOneWidget);
       expect(find.byType(LauncherAlertDialog), findsNothing);
       await tester.pump(const Duration(seconds: 5));
+      await tester.pumpAndSettle();
       expect(find.text('Действие отменено'), findsNothing);
       expect(tester.takeException(), isNull);
     },

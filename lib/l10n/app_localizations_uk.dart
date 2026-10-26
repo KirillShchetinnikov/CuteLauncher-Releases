@@ -112,8 +112,11 @@ class AppLocalizationsUk extends AppLocalizations {
       'The focused app\'s banner or icon becomes a soft colour background. The selected gradient appears before an image is ready or if it cannot be read. Changes pause while the launcher is in the background. Your other wallpapers are kept.';
 
   @override
+  String get adbWifiOwnedTitle => 'Wi-Fi належить майстру налаштування';
+
+  @override
   String get adbWifiOwned =>
-      'Not changed: a saved Wi-Fi network belongs to the setup wizard. Forget that network and reconnect through Android Settings, then check again. Disabling the wizard could delete the network.';
+      'Зміни не внесено: збережену мережу Wi-Fi створив майстер налаштування Google. Його вимкнення може видалити мережу та від’єднати телевізор від інтернету.\n\n1. Переконайтеся, що знаєте пароль Wi-Fi.\n2. Відкрийте налаштування мережі Android, виберіть мережу й натисніть «Забути мережу».\n3. Підключіться знову через звичайні налаштування мережі Android.\n4. Поверніться до CuteLauncher, перевірте ADB і повторіть вимкнення вбудованого лаунчера.\n\nЯкщо повідомлення з’явиться знову, залиште вбудований лаунчер увімкненим: прошивка може знову призначати мережу майстру.';
 
   @override
   String get adbWifiUnknown =>
@@ -335,10 +338,10 @@ class AppLocalizationsUk extends AppLocalizations {
   String get orSelectFormatSpecifiers => 'Або виберіть специфікатори формату';
 
   @override
-  String get openImage => 'Відкрите зображення';
+  String get openImage => 'Вибрати файл';
 
   @override
-  String get picture => 'Зображення';
+  String get picture => 'Локальне зображення або відео';
 
   @override
   String removeFrom(String name) {
@@ -432,13 +435,13 @@ class AppLocalizationsUk extends AppLocalizations {
   String get withEllipsisAddTo => 'Додати до...';
 
   @override
-  String get timeBasedWallpaper => 'Шпалери залежно від часу';
+  String get timeBasedWallpaper => 'Денне/Нічне зображення';
 
   @override
-  String get pickDayWallpaper => 'Вибрати денні шпалери';
+  String get pickDayWallpaper => 'Вибрати денне зображення';
 
   @override
-  String get pickNightWallpaper => 'Вибрати нічні шпалери';
+  String get pickNightWallpaper => 'Вибрати нічне зображення';
 
   @override
   String get accessibility => 'Спеціальні можливості';
@@ -1732,8 +1735,12 @@ class AppLocalizationsUk extends AppLocalizations {
   String get diagnosticsCopied => 'Звіт скопійовано';
 
   @override
+  String get diagnosticsSharingNotice =>
+      'Передавайте файл автору в особисті повідомлення, не публікуйте відкрито: автоматичне очищення може пропустити особисті дані. Надсилаючи звіт автору, ви погоджуєтеся на розміщення знеособленого звіту про сумісність ТВ у Git-репозиторії CuteLauncher. Публікуються лише відомості про пристрій і доступність функцій без особистих даних; журнал помилок, команди та ваші налаштування не публікуються.';
+
+  @override
   String get diagnosticsHint =>
-      'Звіт містить версію програми, стан дозволу, використання пам’яті та результати роботи. Він не включає ключі, адреси, шляхи до файлів, списки програм і вміст сповіщень. До перезапуску програми в пам’яті зберігаються лише останні 50 операцій. Автоматично нічого не надсилається.';
+      'Єдиний звіт містить сумісність функцій ТВ і діагностику помилок. Звіт містить модель і прошивку ТВ, версію застосунку, дозволи, пам’ять, етапи й причини помилок, команди та відповіді після автоматичного очищення особистих даних. Зберігаються останні 50 операцій, окремо до 100 збоїв і обмежений журнал ADB поточного сеансу. Перезапуск очищує журнал. Особисті дані можуть залишитися: надсилайте файл у приватні повідомлення, не публікуйте відкрито. Автоматичного надсилання немає. Для кожної помилки зберігається знімок застосованих налаштувань: подальші зміни його не замінюють.';
 
   @override
   String get diagnosticsTitle => 'Діагностика помилок';
@@ -2081,7 +2088,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get background => 'Фон';
 
   @override
-  String get backgroundParameters => 'Параметри';
+  String get backgroundParameters => 'Налаштування джерела';
 
   @override
   String get resetAppearanceHint =>
@@ -3600,7 +3607,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get cleanerSnapshot => 'Save original state';
 
   @override
-  String get cleanerRestore => 'Restore manager changes';
+  String get cleanerRestore => 'Відновитися з базової копії';
 
   @override
   String get cleanerSnapshotSaved => 'Original state saved';
@@ -3613,7 +3620,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get cleanerNoSafe =>
-      'This firmware has no verified list that preserves all features.';
+      'Для цієї моделі та прошивки немає відповідного списку системних застосунків.';
 
   @override
   String get cleanerLocal => 'Disable using a local list';
@@ -3628,7 +3635,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get cleanerExternal => 'CleanYourTV examples';
 
   @override
-  String get cleanerDisabledExport => 'Export disabled applications';
+  String get cleanerDisabledExport => 'Експортувати звіт про вимкнення у файл';
 
   @override
   String get cleanerInventoryExport => 'Export application report';
@@ -3696,7 +3703,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get cleanerHelp =>
-      'The manager uses the local ADB connection configured in TV control settings. It never uninstalls apps or clears their data. The snapshot and recovery journal are separate from ordinary backups. Recovery restores previous states only for packages changed by this manager. Automatic recovery is blocked after a firmware change.\n\nVerified lists match exact firmware. Observed and external lists do not establish safety. Protected components, HOME and active services cannot be disabled. Packages are previewed before applying; missing and already disabled packages are skipped.\n\nThe project catalog is bundled from Git. GitHub refresh requires a public catalog. External examples load only on request and never execute scripts. Export creates JSON containing disabled packages and firmware identity; add it manually to catalog/examples after review. Nothing is uploaded automatically.\n\nApp descriptions and risk remain visible. Unconfirmed purposes are marked explicitly and never included in verified lists.';
+      'Базовий стан створюється один раз під час першого успішного оновлення списку. Засобами лаунчера його не можна видалити чи перезаписати. Він прив’язаний до прошивки. Ручні стани зберігають режими застосунків з іменем і датою; їх можна відновлювати, видаляти й експортувати. Копії не містять APK і даних. Відновлення потребує локального ADB. Захист від падінь намагається автоматично повернути базовий стан. Очищення даних або видалення лаунчера видаляє копії; захист від root неможливий.';
 
   @override
   String get cleanerSkipped =>
@@ -3952,4 +3959,256 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String get tvPowerHelp =>
       'Вимкнення переводить ТВ в очікування через службу спеціальних можливостей CuteLauncher або локальний ADB. Перезавантаження потребує ADB. На приставці команда керує приставкою; поведінка ТВ залежить від HDMI-CEC і прошивки.';
+
+  @override
+  String get cleanerLists => 'Списки вимкнення';
+
+  @override
+  String get cleanerRecovery => 'Резервування та відновлення';
+
+  @override
+  String get cleanerExports => 'Звіти';
+
+  @override
+  String get cleanerUpdating => 'Оновлюється список застосунків…';
+
+  @override
+  String get cleanerRefreshRequired => 'Спочатку оновіть список застосунків.';
+
+  @override
+  String get cleanerPreinstalled => 'Попередньо встановлений застосунок';
+
+  @override
+  String get cleanerNotSystem => 'Це не системний застосунок.';
+
+  @override
+  String get cleanerMinimalRisk => 'Мінімальний';
+
+  @override
+  String get cleanerCacheFailure =>
+      'Не вдалося зберегти список для наступного входу.';
+
+  @override
+  String get cleanerUserApps => 'Користувацькі застосунки';
+
+  @override
+  String get cleanerPreinstalledApps => 'Попередньо встановлені застосунки';
+
+  @override
+  String get cleanerSystemApps => 'Системні застосунки';
+
+  @override
+  String get cleanerBaseline => 'Базовий початковий стан';
+
+  @override
+  String get cleanerManualStates => 'Керування ручними станами';
+
+  @override
+  String get cleanerManualSave => 'Зберегти поточний стан';
+
+  @override
+  String get cleanerDateName => 'Використати дату й час';
+
+  @override
+  String get cleanerCustomName => 'Задати ім’я';
+
+  @override
+  String get cleanerStateExport => 'Експортувати збереження у файл';
+
+  @override
+  String get cleanerStateRestoreHelp =>
+      'Буде відновлено збережені стани ввімкнення та вимкнення застосунків для цієї прошивки. Застосунки, встановлені після створення копії, не зміняться. Відсутні застосунки та вимкнення захищених компонентів буде пропущено. Дані застосунків не відновлюються.';
+
+  @override
+  String get cleanerCopiesHelp =>
+      'Базовий стан створюється один раз під час першого успішного оновлення списку. Засобами лаунчера його не можна видалити чи перезаписати. Він прив’язаний до прошивки. Ручні стани зберігають режими застосунків з іменем і датою; їх можна відновлювати, видаляти й експортувати. Копії не містять APK і даних. Відновлення потребує локального ADB. Захист від падінь намагається автоматично повернути базовий стан. Очищення даних або видалення лаунчера видаляє копії; захист від root неможливий.';
+
+  @override
+  String get cleanerSearch => 'Пошук за назвою';
+
+  @override
+  String get cleanerCatalogUpdateRequired =>
+      'Спочатку оновіть каталог із GitHub.';
+
+  @override
+  String get cleanerNoSearchResults => 'Відповідних записів немає.';
+
+  @override
+  String get cleanerAlreadyDisabled =>
+      'Усі застосунки зі списку, наявні на цьому ТВ, уже вимкнено.';
+
+  @override
+  String get cleanerAlreadyEnabled =>
+      'Усі застосунки зі списку, наявні на цьому ТВ, уже ввімкнено.';
+
+  @override
+  String get cleanerNoInstalled =>
+      'На цьому ТВ немає відповідних установлених застосунків зі списку.';
+
+  @override
+  String get cleanerListProtected =>
+      'Решта застосунків захищені від вимкнення.';
+
+  @override
+  String get cleanerSnapshotFailed =>
+      'Не вдалося зберегти знімок. Застосунки не вимкнено.';
+
+  @override
+  String get cleanerDisableAllPreinstalled =>
+      'Вимкнути всі попередньо встановлені';
+
+  @override
+  String get cleanerEnableAllPreinstalled =>
+      'Увімкнути всі попередньо встановлені';
+
+  @override
+  String get cleanerPreinstalledList =>
+      'Список попередньо встановлених застосунків';
+
+  @override
+  String cleanerBeforeList(String listName) {
+    return 'Перед застосуванням списку: $listName';
+  }
+
+  @override
+  String get sleepTimerSettings => 'Налаштування таймера вимкнення';
+
+  @override
+  String get sleepTimerPresets => 'Таймери';
+
+  @override
+  String get sleepTimerDisplay => 'Показувати під час роботи таймера';
+
+  @override
+  String get sleepTimerRemaining => 'Час, що залишився';
+
+  @override
+  String get sleepTimerEndTime => 'Час вимкнення';
+
+  @override
+  String get sleepTimerBoth => 'Залишок часу та час вимкнення';
+
+  @override
+  String get sleepTimerShowSeconds => 'Показувати секунди';
+
+  @override
+  String get sleepTimerCloseAfterSelection =>
+      'Закривати віджет після вибору таймера';
+
+  @override
+  String get sleepTimerAdd => 'Додати таймер';
+
+  @override
+  String get sleepTimerEdit => 'Змінити таймер';
+
+  @override
+  String get sleepTimerHoursLabel => 'Години';
+
+  @override
+  String get sleepTimerMinutesLabel => 'Хвилини';
+
+  @override
+  String get sleepTimerSecondsLabel => 'Секунди';
+
+  @override
+  String get sleepTimerInvalidDuration =>
+      'Укажіть час більше нуля: години 0–999999, хвилини та секунди 0–59.';
+
+  @override
+  String get sleepTimerDeleteConfirmation =>
+      'Видалити цей таймер? Запущений відлік триватиме.';
+
+  @override
+  String get sleepTimerResetConfirmation =>
+      'Відновити стандартні таймери та їхній порядок? Власні таймери буде видалено. Запущений відлік триватиме.';
+
+  @override
+  String get sleepTimerReorderHint =>
+      '◄ / ► або утримання OK — переміщення. ▲ / ▼ змінюють порядок і переносять таймери між видимими та прихованими. OK завершує переміщення.';
+
+  @override
+  String get sleepTimerSaveFailed =>
+      'Не вдалося зберегти налаштування таймера.';
+
+  @override
+  String get sleepTimerVisible => 'Відображувані';
+
+  @override
+  String get sleepTimerHidden => 'Приховані';
+
+  @override
+  String get sleepTimerReset => 'Скинути таймери';
+
+  @override
+  String get cleanerListSnapshotHelp =>
+      'Перед вимкненням за списком автоматично зберігається знімок лише вибраних застосунків. Його відновлення не змінює інші застосунки. Ліміт — 100 ручних та автоматичних знімків. Без збереження вимкнення не починається.';
+
+  @override
+  String get trafficSettings => 'Налаштування трафіку';
+
+  @override
+  String get trafficTitle => 'Трафік';
+
+  @override
+  String get trafficReceived => 'Отримано';
+
+  @override
+  String get trafficSent => 'Надіслано';
+
+  @override
+  String get trafficTotal => 'Усього';
+
+  @override
+  String get stopApp => 'Стоп';
+
+  @override
+  String get backgroundImageFormats =>
+      'Зображення: JPEG, PNG, WebP, GIF, BMP — до 8 МіБ, 48 мегапікселів і 16 384 пікселів на кожному боці.';
+
+  @override
+  String get backgroundMediaFormats =>
+      'Зображення: JPEG, PNG, WebP, GIF, BMP — до 8 МіБ, 48 мегапікселів і 16 384 пікселів на кожному боці.\nВідео: MP4/M4V, WebM, MKV — до 256 МіБ і 3840×2160. Підтримка кодека залежить від ТВ; бажано MP4 з H.264. Повторюється без звуку й призупиняється поза головним екраном. Відео не входить до резервних копій.';
+
+  @override
+  String get backgroundFormatError =>
+      'Формат не підтримується або файл пошкоджено. Виберіть справний файл одного із зазначених форматів.';
+
+  @override
+  String backgroundFileTooLarge(String maxMiB) {
+    return 'Файл завеликий. Допустимий розмір — до $maxMiB МіБ. Виберіть менший файл.';
+  }
+
+  @override
+  String get backgroundImageResolutionError =>
+      'Зображення завелике: не більше 48 мегапікселів і 16 384 пікселів на кожному боці.';
+
+  @override
+  String get backgroundVideoResolutionError =>
+      'Роздільність відео завелика. Виберіть до 3840×2160 (або 2160×3840).';
+
+  @override
+  String get backgroundVideoCodecError =>
+      'ТВ не зміг відтворити відео: кодек не підтримується або файл пошкоджено. Спробуйте MP4 з H.264.';
+
+  @override
+  String get backgroundFileApplied => 'Файл вибрано. Фон оновлено.';
+
+  @override
+  String get noticePosition => 'Розташування сповіщень';
+
+  @override
+  String get noticeBottomRight => 'Унизу праворуч';
+
+  @override
+  String get noticeBottomLeft => 'Унизу ліворуч';
+
+  @override
+  String get noticeTopRight => 'Угорі праворуч';
+
+  @override
+  String get noticeTopLeft => 'Угорі ліворуч';
+
+  @override
+  String get notificationOpenFailed =>
+      'Не вдалося відкрити дію сповіщення. Можливо, вона більше недоступна.';
 }

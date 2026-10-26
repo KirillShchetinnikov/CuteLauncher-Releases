@@ -1,3 +1,5 @@
+import 'package:flauncher/widgets/settings/sleep_timer_settings_page.dart';
+import 'package:flauncher/widgets/traffic_usage_menu.dart';
 import 'package:flauncher/widgets/settings/information_settings_page.dart';
 import 'package:flauncher/widgets/panel_clock.dart';
 import 'package:flauncher/widgets/settings/panel_clock_style_page.dart';
@@ -403,6 +405,29 @@ void main() {
     expect(sleepTimer.active, false);
   });
 
+  testWidgets('traffic button opens totals and restores remote focus on Back', (tester) async {
+    await settings.setShowDataWidgetInStatusBar(true);
+    when(network.hasUsageStatsPermission).thenReturn(true);
+    when(network.getDataUsageForPeriod(any)).thenAnswer((_) async => 3072);
+    when(network.dailyDataUsage).thenReturn(3072);
+    when(network.getTrafficUsage(any)).thenAnswer((_) async => {'rxBytes': 2048, 'txBytes': 1024, 'totalBytes': 3072});
+    await pump(tester, const Scaffold(appBar: FocusAwareAppBar()));
+    final button = find.byKey(const ValueKey('traffic_button'));
+    final node = tester.widget<TopPanelItem>(button).focusNode!;
+    await tester.tap(button);
+    await tester.pumpAndSettle();
+    expect(find.byType(TrafficUsageMenu), findsOneWidget);
+    expectSinglePanelBackdrop(tester);
+    expectWidgetHighlight(tester, button);
+    expect(find.descendant(of: find.byKey(const ValueKey('traffic_daily')),
+      matching: find.text('2.00 KB')), findsOneWidget);
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(find.byType(TrafficUsageMenu), findsNothing);
+    expect(node.hasFocus, true);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('hiding sleep button preserves active alarm and persists visibility', (tester) async {
     await sleepTimer.select(10);
     await settings.setShowSleepTimerInStatusBar(false);
@@ -741,11 +766,7 @@ void main() {
       final date = find.byKey(const Key('statusbar_date'));
       final item = find.ancestor(of: date, matching: find.byType(TopPanelItem));
       expect(tester.widget<TopPanelItem>(item).onPressed, isNull);
-      if (remote) {
-        await panel.set('dateCalendar', true);
-      } else {
-        await appearance.set('panelDateCalendar', true);
-      }
+      await appearance.set('panelDateCalendar', true);
       await pump(tester, Scaffold(appBar: FocusAwareAppBar(remotePanel: remote ? panel : null)));
       final state = tester.state<FocusAwareAppBarState>(find.byType(FocusAwareAppBar));
       state.dateFocusNode.requestFocus();
@@ -830,6 +851,43 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('sleep timer submenus keep toolbar space on push and Back', (tester) async {
+    await pump(tester, const SettingsPanel(initialRoute: SleepTimerSettingsPage.routeName));
+    final panel = find.byType(SidePanelDialog);
+    final initialRect = tester.getRect(find.byType(SleepTimerSettingsPage));
+    void expectToolbarSpace() {
+      expect(tester.widget<SidePanelDialog>(panel).topInset, kToolbarHeight);
+      expectSinglePanelBackdrop(tester, top: kToolbarHeight);
+      final navigator = find.descendant(of: panel, matching: find.byType(Navigator)).first;
+      expect(tester.getRect(navigator), initialRect);
+      expect(tester.takeException(), isNull);
+    }
+    Future<void> open(String label) async {
+      await tester.ensureVisible(find.text(label).last);
+      await tester.tap(find.text(label).last);
+      await tester.pumpAndSettle();
+      expectToolbarSpace();
+    }
+    Future<void> back() async {
+      final navigator = tester.state<NavigatorState>(
+        find.descendant(of: panel, matching: find.byType(Navigator)).first,
+      );
+      await navigator.maybePop();
+      await tester.pumpAndSettle();
+      expectToolbarSpace();
+    }
+    expectToolbarSpace();
+    await open('Настройки');
+    await open('Показывать при активном таймере');
+    await back();
+    await back();
+    await open('Таймеры');
+    await open('Добавить таймер');
+    await back();
+    await back();
+    await tester.pumpWidget(const SizedBox());
+  });
+
   testWidgets(
     'top panel menu includes remote panel, reserves toolbar and restores Back',
     (tester) async {
@@ -893,7 +951,7 @@ void main() {
   );
 
   testWidgets(
-    'usage permission appears only after traffic switch and never on the panel',
+    'usage permission lives in traffic settings and never on the panel',
     (tester) async {
       await settings.setShowDataWidgetInStatusBar(false);
       await pump(
@@ -911,8 +969,14 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(toggle);
       await tester.pumpAndSettle();
+      final trafficSettings = find.text(
+        AppLocalizations.of(tester.element(toggle))!.trafficSettings,
+      );
+      await tester.ensureVisible(trafficSettings);
+      await tester.tap(trafficSettings);
+      await tester.pumpAndSettle();
       final permission = find.text(
-        AppLocalizations.of(tester.element(toggle))!.grantUsagePermission,
+        AppLocalizations.of(tester.element(trafficSettings))!.grantUsagePermission,
       );
       await tester.ensureVisible(permission);
       await tester.tap(permission);

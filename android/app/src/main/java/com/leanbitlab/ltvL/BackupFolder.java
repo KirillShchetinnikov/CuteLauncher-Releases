@@ -35,7 +35,7 @@ final class BackupFolder {
         if (selected == null) { result.error("document_unavailable", "No folder provider", null); return; }
         pending = result;
         try { activity.startActivityForResult(selected, REQUEST); }
-        catch (Exception error) { pending = null; result.error("document_unavailable", "Cannot open folder provider", null); }
+        catch (Exception error) { pending = null; result.error("document_unavailable", "Cannot open folder provider", DiagnosticErrorDetails.from(error)); }
     }
     void complete(int code, Intent data) {
         MethodChannel.Result result = pending; pending = null;
@@ -46,7 +46,7 @@ final class BackupFolder {
             if ((data.getFlags() & flags) != flags) throw new SecurityException("Read/write access required");
             activity.getContentResolver().takePersistableUriPermission(data.getData(), flags);
             operate("verify", data.getData().toString(), null, null, result);
-        } catch (Exception error) { result.error("document_failed", "Cannot retain folder access", null); }
+        } catch (Exception error) { result.error("document_failed", "Cannot retain folder access", DiagnosticErrorDetails.from(error)); }
     }
     private List<Map<String, String>> children(Uri tree) throws Exception {
         List<Map<String, String>> files = new ArrayList<>(); int count = 0;
@@ -87,7 +87,7 @@ final class BackupFolder {
                     Object reply = downloads(operation, name, path);
                     new Handler(Looper.getMainLooper()).post(() -> result.success(reply));
                 } catch (Exception error) {
-                    new Handler(Looper.getMainLooper()).post(() -> result.error("document_failed", "Downloads operation failed", null));
+                    new Handler(Looper.getMainLooper()).post(() -> result.error("document_failed", "Downloads operation failed", DiagnosticErrorDetails.from(error)));
                 }
                 return;
             }
@@ -138,7 +138,7 @@ final class BackupFolder {
                 Object reply = response;
                 new Handler(Looper.getMainLooper()).post(() -> result.success(reply));
             } catch (Exception error) {
-                new Handler(Looper.getMainLooper()).post(() -> result.error("document_failed", "Backup folder operation failed", null));
+                new Handler(Looper.getMainLooper()).post(() -> result.error("document_failed", "Backup folder operation failed", DiagnosticErrorDetails.from(error)));
             } finally {
                 if (temporary != null) try { DocumentsContract.deleteDocument(activity.getContentResolver(), temporary); } catch (Exception ignored) {}
             }

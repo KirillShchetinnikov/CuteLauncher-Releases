@@ -180,6 +180,8 @@ class NetworkService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
     notifyListeners();
   }
 
+  Future<Map<String, dynamic>> getTrafficUsage(String period) async => _channel.getTrafficUsage(period);
+
   Future<int> getDataUsageForPeriod(String period) async {
     switch (period) {
       case 'daily':

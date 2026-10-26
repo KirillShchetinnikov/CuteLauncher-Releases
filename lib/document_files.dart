@@ -25,6 +25,12 @@ class DocumentFiles {
     return path == null ? null : XFile(path);
   }
 
+  static Future<XFile?> pickWallpaper() async {
+    if (!Platform.isAndroid) return ImagePicker().pickMedia();
+    final path = await _channel.invokeMethod<String>('pickWallpaperDocument');
+    return path == null ? null : XFile(path);
+  }
+
   static Future<File?> pickBackup() async {
     final path = await _channel.invokeMethod<String>('pickBackupDocument');
     return path == null ? null : File(path);

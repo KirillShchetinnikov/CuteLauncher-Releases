@@ -1,5 +1,4 @@
 import 'app_fonts.dart';
-import 'widgets/notification_popup_presentation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'providers/appearance_service.dart';
 import 'providers/remote_panel_service.dart';
@@ -69,8 +68,6 @@ class _FLauncherAppState extends State<FLauncherApp> {
           noticeContext,
           AppLocalizations.of(noticeContext)!.remotePanelDisabledInLauncher,
           error: true,
-          settingsOpen: NotificationPopupPresentation.settingsDepth.value > 0,
-          onRight: context.read<SettingsService>().settingsMenuOnRight,
         );
         return;
       }
@@ -131,6 +128,7 @@ class _FLauncherAppState extends State<FLauncherApp> {
         builder: (context, night, _) => NightModeFilter(
           service: night,
           child: ActionNoticeHost(
+            avoidPanels: !widget.remotePanel,
             child: widget.remotePanel
                 ? child ?? const SizedBox.shrink()
                 : UpdateNotification(child: child ?? const SizedBox.shrink()),

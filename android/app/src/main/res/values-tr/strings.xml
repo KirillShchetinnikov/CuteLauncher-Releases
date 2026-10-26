@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="recovery_cleaner_retry">Uygulama geri yüklemeyi yeniden dene</string>
+    <string name="recovery_cleaner_running">Temel uygulama durumları geri yükleniyor…</string>
+    <string name="recovery_cleaner_done">Temel durumlar geri yüklendi.</string>
+    <string name="recovery_cleaner_no_baseline">Henüz temel durum oluşturulmadı.</string>
+    <string name="recovery_cleaner_failed">Geri yükleme tamamlanmadı. Yerel ADB bağlantısını kontrol edip yeniden deneyin.</string>
+    <string name="recovery_cleaner_partial">Bazı durumlar geri yüklenemedi. Uygulamalar eksik veya korumalı olabilir. Cihazı kontrol edip yeniden deneyin.</string>
+</resources>

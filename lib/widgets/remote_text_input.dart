@@ -1,3 +1,4 @@
+import 'package:flauncher/bridge_result.dart';
 import 'dart:async';
 import 'dart:io';
 
@@ -23,7 +24,7 @@ class RemoteTextInput extends StatefulWidget {
 }
 
 class _RemoteTextInputState extends State<RemoteTextInput> {
-  static const _editorChannel = MethodChannel('cutelauncher/tv_ime_editor');
+  static const _editorChannel = BridgeChannel('cutelauncher/tv_ime_editor', preserveErrorCodes: true);
   static int _nextEditor = 0;
   final int _editor = ++_nextEditor;
   bool _focused = false;

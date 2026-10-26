@@ -63,6 +63,20 @@ void main() {
     expect(calls.map((c) => c.method), ['start', 'start', 'cancel']);
   });
 
+  test('custom seconds and more than six hours are sent without truncation', () async {
+    messenger.setMockMethodCallHandler(SleepTimerService.channel, (call) async {
+      calls.add(call);
+      return {'remainingMs': 90061000, 'exactAllowed': true, 'error': ''};
+    });
+    expect(await timer.selectSeconds(90061), true);
+    expect(calls.single.method, 'startDuration');
+    expect(calls.single.arguments, {'seconds': 90061});
+    expect(timer.countdown, '25:01:01');
+    expect(await timer.selectSeconds(0), false);
+    expect(await timer.selectSeconds(3600000000), false);
+    expect(calls.length, 1);
+  });
+
   test(
     'resume reads native time; no foreground polling in background',
     () async {

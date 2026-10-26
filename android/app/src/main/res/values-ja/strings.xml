@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="recovery_cleaner_retry">アプリの復元を再試行</string>
+    <string name="recovery_cleaner_running">基準のアプリ状態を復元中…</string>
+    <string name="recovery_cleaner_done">基準のアプリ状態を復元しました。</string>
+    <string name="recovery_cleaner_no_baseline">基準状態はまだ作成されていません。</string>
+    <string name="recovery_cleaner_failed">復元が完了しませんでした。ローカルADB接続を確認して再試行してください。</string>
+    <string name="recovery_cleaner_partial">一部の状態を復元できませんでした。アプリが存在しないか保護されている可能性があります。端末を確認して再試行してください。</string>
+</resources>

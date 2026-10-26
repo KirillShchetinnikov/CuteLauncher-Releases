@@ -320,10 +320,16 @@ abstract class AppLocalizations {
   /// **'The focused app\'s banner or icon becomes a soft colour background. The selected gradient appears before an image is ready or if it cannot be read. Changes pause while the launcher is in the background. Your other wallpapers are kept.'**
   String get appArtworkBackgroundHelp;
 
+  /// No description provided for @adbWifiOwnedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Wi-Fi belongs to the setup wizard'**
+  String get adbWifiOwnedTitle;
+
   /// No description provided for @adbWifiOwned.
   ///
   /// In en, this message translates to:
-  /// **'Not changed: a saved Wi-Fi network belongs to the setup wizard. Forget that network and reconnect through Android Settings, then check again. Disabling the wizard could delete the network.'**
+  /// **'No changes made: a saved Wi-Fi network was created by the Google setup wizard. Disabling it may delete the network and disconnect the TV.\n\n1. Make sure you know the Wi-Fi password.\n2. Open Android network settings, select that network and choose Forget network.\n3. Reconnect through the regular Android network settings.\n4. Return to CuteLauncher, check ADB and try disabling the built-in launcher again.\n\nIf this message returns, keep the built-in launcher enabled: the firmware may assign the network to the setup wizard again.'**
   String get adbWifiOwned;
 
   /// No description provided for @adbWifiUnknown.
@@ -743,13 +749,13 @@ abstract class AppLocalizations {
   /// No description provided for @openImage.
   ///
   /// In en, this message translates to:
-  /// **'Open image'**
+  /// **'Choose file'**
   String get openImage;
 
   /// No description provided for @picture.
   ///
   /// In en, this message translates to:
-  /// **'Picture'**
+  /// **'Local image or video'**
   String get picture;
 
   /// No description provided for @removeFrom.
@@ -923,19 +929,19 @@ abstract class AppLocalizations {
   /// No description provided for @timeBasedWallpaper.
   ///
   /// In en, this message translates to:
-  /// **'Time based wallpaper'**
+  /// **'Day/Night image'**
   String get timeBasedWallpaper;
 
   /// No description provided for @pickDayWallpaper.
   ///
   /// In en, this message translates to:
-  /// **'Pick day wallpaper'**
+  /// **'Choose day image'**
   String get pickDayWallpaper;
 
   /// No description provided for @pickNightWallpaper.
   ///
   /// In en, this message translates to:
-  /// **'Pick night wallpaper'**
+  /// **'Choose night image'**
   String get pickNightWallpaper;
 
   /// No description provided for @accessibility.
@@ -3302,10 +3308,16 @@ abstract class AppLocalizations {
   /// **'Report copied'**
   String get diagnosticsCopied;
 
+  /// No description provided for @diagnosticsSharingNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'Send the file to the author privately, not publicly: automatic redaction may miss personal data. By sending the report to the author, you agree to publication of an anonymized TV compatibility report in the CuteLauncher Git repository. Only device metadata and feature availability are published, without personal data; error logs, commands and your settings are not published.'**
+  String get diagnosticsSharingNotice;
+
   /// No description provided for @diagnosticsHint.
   ///
   /// In en, this message translates to:
-  /// **'The report contains the app version, permission state, memory usage and operation results. It excludes keys, addresses, file paths, app lists and notification content. Only the last 50 operations are kept in memory until the app restarts. Nothing is sent automatically.'**
+  /// **'One report combines TV feature compatibility and error diagnostics. The report includes the TV model and firmware, app version, permissions, memory, error stages and causes, and system commands and responses with automatic personal-data redaction. Memory retains the last 50 operations, up to 100 failures separately, and a bounded ADB log for the current session. Restarting clears the log. Redaction may miss personal data: send the file in a private message instead of posting it publicly. Nothing is sent automatically. Each error retains a snapshot of the applied settings; later changes do not replace it.'**
   String get diagnosticsHint;
 
   /// No description provided for @diagnosticsTitle.
@@ -3959,7 +3971,7 @@ abstract class AppLocalizations {
   /// No description provided for @backgroundParameters.
   ///
   /// In en, this message translates to:
-  /// **'Parameters'**
+  /// **'Source settings'**
   String get backgroundParameters;
 
   /// No description provided for @resetAppearanceHint.
@@ -6665,7 +6677,7 @@ abstract class AppLocalizations {
   /// No description provided for @cleanerRestore.
   ///
   /// In en, this message translates to:
-  /// **'Restore manager changes'**
+  /// **'Restore baseline state'**
   String get cleanerRestore;
 
   /// No description provided for @cleanerSnapshotSaved.
@@ -6689,7 +6701,7 @@ abstract class AppLocalizations {
   /// No description provided for @cleanerNoSafe.
   ///
   /// In en, this message translates to:
-  /// **'This firmware has no verified list that preserves all features.'**
+  /// **'No matching system application list exists for this model and firmware.'**
   String get cleanerNoSafe;
 
   /// No description provided for @cleanerLocal.
@@ -6719,7 +6731,7 @@ abstract class AppLocalizations {
   /// No description provided for @cleanerDisabledExport.
   ///
   /// In en, this message translates to:
-  /// **'Export disabled applications'**
+  /// **'Export disabled-app report to file'**
   String get cleanerDisabledExport;
 
   /// No description provided for @cleanerInventoryExport.
@@ -6839,7 +6851,7 @@ abstract class AppLocalizations {
   /// No description provided for @cleanerHelp.
   ///
   /// In en, this message translates to:
-  /// **'The manager uses the local ADB connection configured in TV control settings. It never uninstalls apps or clears their data. The snapshot and recovery journal are separate from ordinary backups. Recovery restores previous states only for packages changed by this manager. Automatic recovery is blocked after a firmware change.\n\nVerified lists match exact firmware. Observed and external lists do not establish safety. Protected components, HOME and active services cannot be disabled. Packages are previewed before applying; missing and already disabled packages are skipped.\n\nThe project catalog is bundled from Git. GitHub refresh requires a public catalog. External examples load only on request and never execute scripts. Export creates JSON containing disabled packages and firmware identity; add it manually to catalog/examples after review. Nothing is uploaded automatically.\n\nApp descriptions and risk remain visible. Unconfirmed purposes are marked explicitly and never included in verified lists.'**
+  /// **'The manager uses local ADB to change app availability without removing APKs or app data. The baseline and manual states are in Backup and recovery. Observed lists and external examples do not prove that disabling is safe. Reports are saved to files and submitted to the project Git manually; nothing is uploaded automatically.'**
   String get cleanerHelp;
 
   /// No description provided for @cleanerSkipped.
@@ -7333,6 +7345,450 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Turning off puts the TV in standby through the CuteLauncher accessibility service or local ADB. Restart requires ADB. On a TV box, the command controls the box; TV behavior depends on HDMI-CEC and firmware.'**
   String get tvPowerHelp;
+
+  /// No description provided for @cleanerLists.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable lists'**
+  String get cleanerLists;
+
+  /// No description provided for @cleanerRecovery.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup and recovery'**
+  String get cleanerRecovery;
+
+  /// No description provided for @cleanerExports.
+  ///
+  /// In en, this message translates to:
+  /// **'Reports'**
+  String get cleanerExports;
+
+  /// No description provided for @cleanerUpdating.
+  ///
+  /// In en, this message translates to:
+  /// **'Updating application list…'**
+  String get cleanerUpdating;
+
+  /// No description provided for @cleanerRefreshRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh the application list first.'**
+  String get cleanerRefreshRequired;
+
+  /// No description provided for @cleanerPreinstalled.
+  ///
+  /// In en, this message translates to:
+  /// **'Preinstalled application'**
+  String get cleanerPreinstalled;
+
+  /// No description provided for @cleanerNotSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'This is not a system application.'**
+  String get cleanerNotSystem;
+
+  /// No description provided for @cleanerMinimalRisk.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimal'**
+  String get cleanerMinimalRisk;
+
+  /// No description provided for @cleanerCacheFailure.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save the list for the next visit.'**
+  String get cleanerCacheFailure;
+
+  /// No description provided for @cleanerUserApps.
+  ///
+  /// In en, this message translates to:
+  /// **'User applications'**
+  String get cleanerUserApps;
+
+  /// No description provided for @cleanerPreinstalledApps.
+  ///
+  /// In en, this message translates to:
+  /// **'Preinstalled applications'**
+  String get cleanerPreinstalledApps;
+
+  /// No description provided for @cleanerSystemApps.
+  ///
+  /// In en, this message translates to:
+  /// **'System applications'**
+  String get cleanerSystemApps;
+
+  /// No description provided for @cleanerBaseline.
+  ///
+  /// In en, this message translates to:
+  /// **'Baseline original state'**
+  String get cleanerBaseline;
+
+  /// No description provided for @cleanerManualStates.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage manual states'**
+  String get cleanerManualStates;
+
+  /// No description provided for @cleanerManualSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save current state'**
+  String get cleanerManualSave;
+
+  /// No description provided for @cleanerDateName.
+  ///
+  /// In en, this message translates to:
+  /// **'Use date and time'**
+  String get cleanerDateName;
+
+  /// No description provided for @cleanerCustomName.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a name'**
+  String get cleanerCustomName;
+
+  /// No description provided for @cleanerStateExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Export saved state to file'**
+  String get cleanerStateExport;
+
+  /// No description provided for @cleanerStateRestoreHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved enabled and disabled application states for this firmware will be restored. Apps installed after the copy was created remain unchanged. Missing apps and attempts to disable protected components are skipped. App data is not restored.'**
+  String get cleanerStateRestoreHelp;
+
+  /// No description provided for @cleanerCopiesHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The baseline is created once on the first successful list refresh. The launcher cannot delete or overwrite it. It is tied to the firmware. Manual states capture current app modes with a name and date and can be restored, deleted or exported. Copies contain neither APKs nor app data. Recovery requires local ADB. When crash-loop protection activates, the launcher attempts to restore the baseline automatically. Clearing launcher data or uninstalling it also removes these copies; root access cannot be prevented.'**
+  String get cleanerCopiesHelp;
+
+  /// No description provided for @cleanerSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name'**
+  String get cleanerSearch;
+
+  /// No description provided for @cleanerCatalogUpdateRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh the catalog from GitHub first.'**
+  String get cleanerCatalogUpdateRequired;
+
+  /// No description provided for @cleanerNoSearchResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching entries.'**
+  String get cleanerNoSearchResults;
+
+  /// No description provided for @cleanerAlreadyDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'All applications from this list present on this TV are already disabled.'**
+  String get cleanerAlreadyDisabled;
+
+  /// No description provided for @cleanerAlreadyEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'All applications from this list present on this TV are already enabled.'**
+  String get cleanerAlreadyEnabled;
+
+  /// No description provided for @cleanerNoInstalled.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching applications from this list are installed on this TV.'**
+  String get cleanerNoInstalled;
+
+  /// No description provided for @cleanerListProtected.
+  ///
+  /// In en, this message translates to:
+  /// **'The remaining applications are protected from disabling.'**
+  String get cleanerListProtected;
+
+  /// No description provided for @cleanerSnapshotFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save the snapshot. No applications were disabled.'**
+  String get cleanerSnapshotFailed;
+
+  /// No description provided for @cleanerDisableAllPreinstalled.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable all preinstalled apps'**
+  String get cleanerDisableAllPreinstalled;
+
+  /// No description provided for @cleanerEnableAllPreinstalled.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable all preinstalled apps'**
+  String get cleanerEnableAllPreinstalled;
+
+  /// No description provided for @cleanerPreinstalledList.
+  ///
+  /// In en, this message translates to:
+  /// **'Preinstalled application list'**
+  String get cleanerPreinstalledList;
+
+  /// No description provided for @cleanerBeforeList.
+  ///
+  /// In en, this message translates to:
+  /// **'Before applying list: {listName}'**
+  String cleanerBeforeList(String listName);
+
+  /// No description provided for @sleepTimerSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Sleep timer settings'**
+  String get sleepTimerSettings;
+
+  /// No description provided for @sleepTimerPresets.
+  ///
+  /// In en, this message translates to:
+  /// **'Timers'**
+  String get sleepTimerPresets;
+
+  /// No description provided for @sleepTimerDisplay.
+  ///
+  /// In en, this message translates to:
+  /// **'Display while active'**
+  String get sleepTimerDisplay;
+
+  /// No description provided for @sleepTimerRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'Time remaining'**
+  String get sleepTimerRemaining;
+
+  /// No description provided for @sleepTimerEndTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Shutdown time'**
+  String get sleepTimerEndTime;
+
+  /// No description provided for @sleepTimerBoth.
+  ///
+  /// In en, this message translates to:
+  /// **'Remaining and shutdown time'**
+  String get sleepTimerBoth;
+
+  /// No description provided for @sleepTimerShowSeconds.
+  ///
+  /// In en, this message translates to:
+  /// **'Show seconds'**
+  String get sleepTimerShowSeconds;
+
+  /// No description provided for @sleepTimerCloseAfterSelection.
+  ///
+  /// In en, this message translates to:
+  /// **'Close widget after selecting a timer'**
+  String get sleepTimerCloseAfterSelection;
+
+  /// No description provided for @sleepTimerAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add timer'**
+  String get sleepTimerAdd;
+
+  /// No description provided for @sleepTimerEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit timer'**
+  String get sleepTimerEdit;
+
+  /// No description provided for @sleepTimerHoursLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Hours'**
+  String get sleepTimerHoursLabel;
+
+  /// No description provided for @sleepTimerMinutesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Minutes'**
+  String get sleepTimerMinutesLabel;
+
+  /// No description provided for @sleepTimerSecondsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Seconds'**
+  String get sleepTimerSecondsLabel;
+
+  /// No description provided for @sleepTimerInvalidDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a positive duration: hours 0–999999, minutes and seconds 0–59.'**
+  String get sleepTimerInvalidDuration;
+
+  /// No description provided for @sleepTimerDeleteConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this timer? The running countdown will continue.'**
+  String get sleepTimerDeleteConfirmation;
+
+  /// No description provided for @sleepTimerResetConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore the default timers and their order? Custom timers will be removed. The running countdown will continue.'**
+  String get sleepTimerResetConfirmation;
+
+  /// No description provided for @sleepTimerReorderHint.
+  ///
+  /// In en, this message translates to:
+  /// **'◄ / ► or hold OK to move. ▲ / ▼ changes order and moves timers between visible and hidden lists. OK finishes moving.'**
+  String get sleepTimerReorderHint;
+
+  /// No description provided for @sleepTimerSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save timer settings.'**
+  String get sleepTimerSaveFailed;
+
+  /// No description provided for @sleepTimerVisible.
+  ///
+  /// In en, this message translates to:
+  /// **'Visible'**
+  String get sleepTimerVisible;
+
+  /// No description provided for @sleepTimerHidden.
+  ///
+  /// In en, this message translates to:
+  /// **'Hidden'**
+  String get sleepTimerHidden;
+
+  /// No description provided for @sleepTimerReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset timers'**
+  String get sleepTimerReset;
+
+  /// No description provided for @cleanerListSnapshotHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Disabling a list automatically saves a snapshot of only the selected apps. Restoring it leaves other apps unchanged. The limit is 100 manual and automatic snapshots. If saving fails, disabling does not start.'**
+  String get cleanerListSnapshotHelp;
+
+  /// No description provided for @trafficSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Traffic settings'**
+  String get trafficSettings;
+
+  /// No description provided for @trafficTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Traffic'**
+  String get trafficTitle;
+
+  /// No description provided for @trafficReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Received'**
+  String get trafficReceived;
+
+  /// No description provided for @trafficSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent'**
+  String get trafficSent;
+
+  /// No description provided for @trafficTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get trafficTotal;
+
+  /// No description provided for @stopApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get stopApp;
+
+  /// No description provided for @backgroundImageFormats.
+  ///
+  /// In en, this message translates to:
+  /// **'Images: JPEG, PNG, WebP, GIF, BMP — up to 8 MiB, 48 megapixels and 16,384 pixels per side.'**
+  String get backgroundImageFormats;
+
+  /// No description provided for @backgroundMediaFormats.
+  ///
+  /// In en, this message translates to:
+  /// **'Images: JPEG, PNG, WebP, GIF, BMP — up to 8 MiB, 48 megapixels and 16,384 pixels per side.\nVideo: MP4/M4V, WebM, MKV — up to 256 MiB and 3840×2160. Codec support depends on the TV; MP4 with H.264 is preferred. Video loops silently and pauses outside Home. Videos are excluded from backups.'**
+  String get backgroundMediaFormats;
+
+  /// No description provided for @backgroundFormatError.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsupported format or damaged file. Choose a valid file in one of the listed formats.'**
+  String get backgroundFormatError;
+
+  /// No description provided for @backgroundFileTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'The file is too large. Maximum size: {maxMiB} MiB. Choose a smaller file.'**
+  String backgroundFileTooLarge(String maxMiB);
+
+  /// No description provided for @backgroundImageResolutionError.
+  ///
+  /// In en, this message translates to:
+  /// **'The image is too large: up to 48 megapixels and 16,384 pixels per side.'**
+  String get backgroundImageResolutionError;
+
+  /// No description provided for @backgroundVideoResolutionError.
+  ///
+  /// In en, this message translates to:
+  /// **'Video resolution is too high. Choose up to 3840×2160 (or 2160×3840).'**
+  String get backgroundVideoResolutionError;
+
+  /// No description provided for @backgroundVideoCodecError.
+  ///
+  /// In en, this message translates to:
+  /// **'The TV could not play this video: the codec is unsupported or the file is damaged. Try MP4 with H.264.'**
+  String get backgroundVideoCodecError;
+
+  /// No description provided for @backgroundFileApplied.
+  ///
+  /// In en, this message translates to:
+  /// **'File selected. Background updated.'**
+  String get backgroundFileApplied;
+
+  /// No description provided for @noticePosition.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification position'**
+  String get noticePosition;
+
+  /// No description provided for @noticeBottomRight.
+  ///
+  /// In en, this message translates to:
+  /// **'Bottom right'**
+  String get noticeBottomRight;
+
+  /// No description provided for @noticeBottomLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Bottom left'**
+  String get noticeBottomLeft;
+
+  /// No description provided for @noticeTopRight.
+  ///
+  /// In en, this message translates to:
+  /// **'Top right'**
+  String get noticeTopRight;
+
+  /// No description provided for @noticeTopLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Top left'**
+  String get noticeTopLeft;
+
+  /// No description provided for @notificationOpenFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open the notification action. It may no longer be available.'**
+  String get notificationOpenFailed;
 }
 
 class _AppLocalizationsDelegate

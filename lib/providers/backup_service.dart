@@ -1,3 +1,4 @@
+import '../diagnostics_store.dart';
 import 'dart:async';
 import 'package:flutter/foundation.dart' show compute;
 import 'dart:convert';
@@ -169,7 +170,11 @@ class BackupService {
     final done = Completer<void>();
     _operation = done.future;
     await previous;
-    try { return await action(); } finally { done.complete(); }
+    try { return await action(); }
+    catch (error, stack) {
+      DiagnosticsStore.instance.recordException('backupTransfer', error, stack);
+      rethrow;
+    } finally { done.complete(); }
   }
 
   /// Write a portable archive to an explicitly chosen staging file.

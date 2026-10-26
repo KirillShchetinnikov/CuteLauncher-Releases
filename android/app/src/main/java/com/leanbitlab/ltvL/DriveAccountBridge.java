@@ -54,7 +54,7 @@ final class DriveAccountBridge {
                     Object response = value;
                     main.post(() -> result.success(response));
                 } catch (Exception error) {
-                    main.post(() -> result.error("storage", "Drive account storage unavailable", null));
+                    main.post(() -> result.error("storage", "Drive account storage unavailable", DiagnosticErrorDetails.from(error)));
                 }
             });
         });

@@ -135,7 +135,7 @@ public class NightOverlayService extends Service {
                         try {
                             var cities = NightSolarTimes.cities(query, language);
                             new Handler(Looper.getMainLooper()).post(() -> result.success(cities));
-                        } catch (Exception e) { new Handler(Looper.getMainLooper()).post(() -> result.error("unavailable", "City search unavailable", null)); }
+                        } catch (Exception e) { new Handler(Looper.getMainLooper()).post(() -> result.error("unavailable", "City search unavailable", DiagnosticErrorDetails.from(e))); }
                     }, "NightCitySearch").start();
                     return;
                 }
@@ -200,7 +200,7 @@ public class NightOverlayService extends Service {
                     });
                 });
                 result.success(status(activity, c));
-            } catch (Exception e) { result.error("unavailable", "Night mode service unavailable", null); }
+            } catch (Exception e) { result.error("unavailable", "Night mode service unavailable", DiagnosticErrorDetails.from(e)); }
         });
     }
     static Map<String, Object> status(Context context, JSONObject c) {

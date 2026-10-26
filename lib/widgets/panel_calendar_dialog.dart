@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import 'launcher_dialog.dart';
 import 'side_panel_dialog.dart';
+import 'menu_header.dart';
 import 'menu_header_action.dart';
 import 'settings/settings_panel_style.dart';
 import 'settings/information_settings_page.dart';
@@ -34,6 +35,7 @@ class _PanelCalendarDialogState extends State<PanelCalendarDialog> {
     setState(() => _settingsOpen = true);
     await showLauncherDialog<void>(
       context: context,
+      parentPanelHidden: true,
       styleDialog: false,
       barrierColor: Colors.transparent,
       builder: (_) =>
@@ -90,6 +92,9 @@ class _PanelCalendarDialogState extends State<PanelCalendarDialog> {
                       if (day < 1 || day > days) return const SizedBox.shrink();
                       final date = DateTime(_month.year, _month.month, day);
                       final today = DateUtils.isSameDay(date, _today);
+                      final weekend =
+                          date.weekday == DateTime.saturday ||
+                          date.weekday == DateTime.sunday;
                       return Semantics(
                         label: material.formatFullDate(date),
                         selected: today,
@@ -101,7 +106,11 @@ class _PanelCalendarDialogState extends State<PanelCalendarDialog> {
                             horizontal: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: today ? scheme.primary : Colors.transparent,
+                            color: today
+                                ? weekend
+                                      ? scheme.errorContainer
+                                      : scheme.primary
+                                : Colors.transparent,
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Center(
@@ -110,7 +119,11 @@ class _PanelCalendarDialogState extends State<PanelCalendarDialog> {
                               child: Text(
                                 material.formatDecimal(day),
                                 style: TextStyle(
-                                  color: today ? scheme.onPrimary : null,
+                                  color: weekend
+                                      ? scheme.error
+                                      : today
+                                      ? scheme.onPrimary
+                                      : null,
                                 ),
                               ),
                             ),
@@ -173,14 +186,9 @@ class _PanelCalendarDialogState extends State<PanelCalendarDialog> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: DefaultTextStyle.merge(
-                            style: Theme.of(context).textTheme.titleLarge,
-                            child: dialog.title!,
-                          ),
-                        ),
+                    MenuHeader(
+                      title: dialog.title!,
+                      actions: [
                         MenuHeaderAction(
                           focusNode: _settingsNode,
                           tooltip: l.settings,
@@ -189,7 +197,7 @@ class _PanelCalendarDialogState extends State<PanelCalendarDialog> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 4),
                     dialog.content!,
                     const SizedBox(height: 8),
                     Wrap(

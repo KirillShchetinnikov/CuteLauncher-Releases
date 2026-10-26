@@ -140,13 +140,16 @@ and limitations.
 
 ## Report an issue
 
-Reproduce the problem and open **Settings → Advanced → Diagnostics →
-Error diagnostics**. Select **Create report → Export report → Save to disk**,
-choose a folder, and save the JSON file. Attach `cutelauncher_errors_….json`
-to your forum post or [GitHub issue](https://github.com/KirillShchetinnikov/CuteLauncher-Releases/issues).
-Include the device model, Android and CuteLauncher versions, steps to reproduce,
-and expected and actual results. See the
-[reporting instructions](docs/USER_GUIDE_EN.md#reporting-an-issue) for details.
+Reproduce the issue and open **Settings → Advanced → Diagnostics**.
+Select **Create report → Export report → Save to disk**.
+The single `cutelauncher_diagnostics_….json` file contains errors, snapshots of
+settings at each failure, and TV compatibility observations. Send it to the author
+**in a private message**, not publicly: automatic redaction may miss personal data.
+By sending the report to the author, you agree to publication of an anonymized TV
+compatibility report in the CuteLauncher Git repository. Only device metadata and
+feature availability are published, without personal data; error logs, commands
+and your settings are not published. Describe the steps and expected/actual results.
+See the [reporting instructions](docs/USER_GUIDE_EN.md#reporting-an-issue) for details.
 
 ## Documentation and source code
 

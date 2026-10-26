@@ -14,6 +14,16 @@ public final class AdbWifiSafetyTest {
         String owned = dump("ID: 0 SSID: \"private\"\n cname=" + AdbSystemHomeOps.RECOVERY_PACKAGE);
         check(AdbWifiSafety.inspect(safe).equals("ready"));
         check(AdbWifiSafety.inspect(owned).equals("wifiOwned"));
+        check(AdbWifiSafety.inspectDetailed(owned).reason().equals("wifi_owner_setup"));
+        check(AdbWifiSafety.inspectDetailed(owned).setupOwnerCount() == 1);
+        check(AdbWifiSafety.inspectDetailed(safe).networkCount() == 2);
+        check(AdbWifiSafety.inspectDetailed(dump("ID: 0\n cuid=1000")).reason().equals("wifi_owner_missing"));
+        check(AdbWifiSafety.inspectDetailed(dump("ID: 0\n cname=null")).reason().equals("wifi_owner_invalid"));
+        check(AdbWifiSafety.inspectDetailed(dump("ID: 0\n cname=com.android.settings cname=android.uid.system")).reason().equals("wifi_owner_ambiguous"));
+        check(AdbWifiSafety.inspectDetailed("").reason().equals("wifi_dump_missing"));
+        check(AdbWifiSafety.inspectDetailed("Permission Denial").reason().equals("wifi_section_missing"));
+        check(AdbWifiSafety.inspectDetailed(dump("")).reason().equals("wifi_no_records"));
+        check(!AdbWifiSafety.inspectDetailed(owned).diagnostic().toString().contains("private"));
         // A history entry outside configured networks must not influence the decision.
         check(AdbWifiSafety.inspect("cname=" + AdbSystemHomeOps.RECOVERY_PACKAGE + "\n" + safe).equals("ready"));
         for (String invalid : new String[] {"", "Permission Denial", dump(""), dump("cname=com.android.settings"),

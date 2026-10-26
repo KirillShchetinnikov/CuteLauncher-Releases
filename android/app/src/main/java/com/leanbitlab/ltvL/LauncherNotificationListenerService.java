@@ -26,7 +26,7 @@ public class LauncherNotificationListenerService extends NotificationListenerSer
 
     private static final List<NotificationListener> listeners = new ArrayList<>();
     private static LauncherNotificationListenerService instance = null;
-    private static boolean leftCorner;
+    private static boolean leftCorner, preferredLeft, topCorner;
     private static int surfaceColor = 0xFF1C2029, foregroundColor = 0xFFF4F5F8,
             borderColor = 0x1FF4F5F8;
     private static float radius = 24, textSize = 16, popupWidth = 360;
@@ -35,6 +35,7 @@ public class LauncherNotificationListenerService extends NotificationListenerSer
     private WindowManager popupWindow;
     private WindowManager.LayoutParams popupParams;
     private final NotificationPopupEntries<View> popupEntries = new NotificationPopupEntries<>();
+    private final Map<String, Map<String, Object>> popupPayloads = new java.util.LinkedHashMap<>();
     private final java.util.Set<String> ownNightNotices = new java.util.HashSet<>();
 
     static void refreshNightFilter() {
@@ -74,7 +75,10 @@ public class LauncherNotificationListenerService extends NotificationListenerSer
     }
 
     public static void setPresentation(android.content.Context context, Map<String, Object> values) {
-        leftCorner = Boolean.TRUE.equals(values.get("left"));
+        NotificationPopupBridge.presentation(values);
+        preferredLeft = Boolean.TRUE.equals(values.get("preferredLeft"));
+        leftCorner = preferredLeft;
+        topCorner = Boolean.TRUE.equals(values.get("top"));
         surfaceColor = ((Number) values.get("background")).intValue();
         foregroundColor = ((Number) values.get("foreground")).intValue();
         borderColor = ((Number) values.get("border")).intValue();
@@ -84,12 +88,29 @@ public class LauncherNotificationListenerService extends NotificationListenerSer
         context.getSharedPreferences("notification_popup_style", MODE_PRIVATE).edit()
                 .putInt("surface", surfaceColor).putInt("foreground", foregroundColor)
                 .putInt("border", borderColor).putFloat("radius", radius)
-                .putFloat("textSize", textSize).putFloat("width", popupWidth).apply();
+                .putFloat("textSize", textSize).putFloat("width", popupWidth)
+                .putBoolean("left", preferredLeft).putBoolean("top", topCorner).apply();
+        if (Boolean.TRUE.equals(values.get("active"))) transferPopups();
         updatePlacement();
     }
 
+    static void transferPopups() {
+        LauncherNotificationListenerService service = instance;
+        if (service != null) {
+            boolean delivered = false;
+            for (Map<String, Object> payload : service.popupPayloads.values()) {
+                long remaining = ((Number) payload.get("expiresAt")).longValue() - android.os.SystemClock.uptimeMillis();
+                if (remaining <= 0) continue;
+                payload.put("durationMs", remaining);
+                delivered |= NotificationPopupBridge.deliver(payload);
+            }
+            if (delivered) service.clearPopups();
+        }
+    }
+
     public static void launcherPaused() {
-        leftCorner = false;
+        NotificationPopupBridge.paused();
+        leftCorner = preferredLeft;
         updatePlacement();
     }
 
@@ -98,17 +119,32 @@ public class LauncherNotificationListenerService extends NotificationListenerSer
         if (service != null && service.popupStack != null) {
             service.popupParams.width = service.dpToPx(Math.round(popupWidth));
             for (int i = 0; i < service.popupStack.getChildCount(); i++) {
-                service.stylePopup(service.popupStack.getChildAt(i));
+                View card = service.popupStack.getChildAt(i);
+                service.stylePopup(card);
+                LinearLayout.LayoutParams layout = (LinearLayout.LayoutParams) card.getLayoutParams();
+                layout.topMargin = topCorner ? 0 : service.dpToPx(8);
+                layout.bottomMargin = topCorner ? service.dpToPx(8) : 0;
+                card.setLayoutParams(layout);
             }
-            service.popupParams.gravity = Gravity.BOTTOM | (leftCorner ? Gravity.LEFT : Gravity.RIGHT);
+            service.popupStack.setGravity(topCorner ? Gravity.TOP : Gravity.BOTTOM);
+            service.popupParams.gravity = (topCorner ? Gravity.TOP : Gravity.BOTTOM) | (leftCorner ? Gravity.LEFT : Gravity.RIGHT);
             try { service.popupWindow.updateViewLayout(service.popupStack, service.popupParams); }
             catch (RuntimeException ignored) { service.clearPopups(); }
         }
     }
 
     private void clearPopups() {
-        popupHandler.removeCallbacksAndMessages(null);
+        // Cancel card expiry, not queued notification deliveries during a handoff.
+        if (popupStack != null) {
+            for (int i = 0; i < popupStack.getChildCount(); i++) {
+                View card = popupStack.getChildAt(i);
+                card.animate().withEndAction(null).cancel();
+                Object expiry = card.getTag();
+                if (expiry instanceof Runnable) popupHandler.removeCallbacks((Runnable) expiry);
+            }
+        }
         popupEntries.clear();
+        popupPayloads.clear();
         if (popupStack != null && popupWindow != null) {
             try { popupWindow.removeView(popupStack); } catch (RuntimeException ignored) {}
         }
@@ -116,7 +152,7 @@ public class LauncherNotificationListenerService extends NotificationListenerSer
         popupParams = null;
     }
 
-    private void addPopup(String key, View card) {
+    private void addPopup(String key, View card, Map<String, Object> payload) {
         try {
             applyNightFilter(card);
             if (popupStack == null) {
@@ -124,32 +160,54 @@ public class LauncherNotificationListenerService extends NotificationListenerSer
                 if (popupWindow == null) return;
                 popupStack = new LinearLayout(this);
                 popupStack.setOrientation(LinearLayout.VERTICAL);
-                popupStack.setGravity(Gravity.BOTTOM);
+                popupStack.setGravity(topCorner ? Gravity.TOP : Gravity.BOTTOM);
+                popupStack.setClipChildren(false);
+                popupStack.setClipToPadding(false);
                 popupParams = new WindowManager.LayoutParams(dpToPx(Math.round(popupWidth)),
                         WindowManager.LayoutParams.WRAP_CONTENT,
                         WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
                         WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
                         WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                         PixelFormat.TRANSLUCENT);
-                popupParams.gravity = Gravity.BOTTOM | (leftCorner ? Gravity.LEFT : Gravity.RIGHT);
+                popupParams.gravity = (topCorner ? Gravity.TOP : Gravity.BOTTOM) | (leftCorner ? Gravity.LEFT : Gravity.RIGHT);
                 popupParams.x = dpToPx(24);
                 popupParams.y = dpToPx(24);
                 popupWindow.addView(popupStack, popupParams);
             }
             LinearLayout.LayoutParams layout = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            layout.topMargin = dpToPx(8);
+            if (topCorner) layout.bottomMargin = dpToPx(8);
+            else layout.topMargin = dpToPx(8);
+            payload.put("expiresAt", android.os.SystemClock.uptimeMillis() + 5000);
+            popupPayloads.put(key, payload);
             View previous = popupEntries.replace(key, card);
             int index = previous == null ? -1 : popupStack.indexOfChild(previous);
             if (previous != null) {
                 popupHandler.removeCallbacks((Runnable) previous.getTag());
+                previous.animate().withEndAction(null).cancel();
                 popupStack.removeView(previous);
             }
             popupStack.addView(card, index, layout);
+            if (android.animation.ValueAnimator.areAnimatorsEnabled()) {
+                card.setTranslationX((leftCorner ? -1 : 1) * dpToPx(Math.round(popupWidth) + 48));
+                card.animate().translationX(0).setDuration(200)
+                        .setInterpolator(new android.view.animation.DecelerateInterpolator(1.5f)).start();
+            }
             Runnable expiry = () -> {
-                if (!popupEntries.expire(key, card) || popupStack == null) return;
-                popupStack.removeView(card);
-                if (popupStack.getChildCount() == 0) clearPopups();
+                if (!popupEntries.isCurrent(key, card) || popupStack == null) return;
+                popupPayloads.remove(key);
+                Runnable remove = () -> {
+                    if (!popupEntries.expire(key, card) || popupStack == null) return;
+                    popupStack.removeView(card);
+                    if (popupStack.getChildCount() == 0) clearPopups();
+                };
+                if (android.animation.ValueAnimator.areAnimatorsEnabled()) {
+                    card.animate().translationX((leftCorner ? -1 : 1) * dpToPx(Math.round(popupWidth) + 48))
+                            .setDuration(200).setInterpolator(new android.view.animation.AccelerateInterpolator(1.5f))
+                            .withEndAction(remove).start();
+                } else {
+                    remove.run();
+                }
             };
             card.setTag(expiry);
             popupHandler.postDelayed(expiry, 5000);
@@ -218,12 +276,15 @@ public class LauncherNotificationListenerService extends NotificationListenerSer
         radius = style.getFloat("radius", radius);
         textSize = style.getFloat("textSize", textSize);
         popupWidth = style.getFloat("width", 360);
+        preferredLeft = leftCorner = style.getBoolean("left", false);
+        topCorner = style.getBoolean("top", false);
         instance = this;
         notifyListeners();
     }
 
     @Override
     public void onDestroy() {
+        popupHandler.removeCallbacksAndMessages(null);
         clearPopups();
         super.onDestroy();
         if (instance == this) {
@@ -284,10 +345,6 @@ public class LauncherNotificationListenerService extends NotificationListenerSer
             return;
         }
 
-        if (!canShowPopup()) {
-            return;
-        }
-
         android.app.Notification notification = sbn.getNotification();
         if (notification == null) return;
         if (NotificationPopupPolicy.isTvNowPlaying(sbn.getPackageName(),
@@ -337,6 +394,24 @@ public class LauncherNotificationListenerService extends NotificationListenerSer
             @Override
             public void run() {
                 try {
+                    Map<String, Object> payload = new java.util.HashMap<>();
+                    payload.put("key", sbn.getKey());
+                    payload.put("title", title);
+                    payload.put("text", text);
+                    payload.put("appLabel", finalAppLabel);
+                    payload.put("durationMs", 5000);
+                    if (finalAppIcon != null) {
+                        int size = dpToPx(24);
+                        android.graphics.Bitmap bitmap = android.graphics.Bitmap.createBitmap(size, size, android.graphics.Bitmap.Config.ARGB_8888);
+                        finalAppIcon.setBounds(0, 0, size, size);
+                        finalAppIcon.draw(new android.graphics.Canvas(bitmap));
+                        java.io.ByteArrayOutputStream bytes = new java.io.ByteArrayOutputStream();
+                        bitmap.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, bytes);
+                        bitmap.recycle();
+                        payload.put("icon", bytes.toByteArray());
+                    }
+                    if (NotificationPopupBridge.deliver(payload)) return;
+                    if (!canShowPopup()) return;
                     android.widget.LinearLayout container = new android.widget.LinearLayout(LauncherNotificationListenerService.this);
                     container.setOrientation(android.widget.LinearLayout.HORIZONTAL);
                     container.setGravity(Gravity.TOP);
@@ -391,7 +466,7 @@ public class LauncherNotificationListenerService extends NotificationListenerSer
                     container.addView(textContainer);
 
                     stylePopup(container);
-                    addPopup(sbn.getKey(), container);
+                    addPopup(sbn.getKey(), container, payload);
 
                 } catch (Exception e) {
                     e.printStackTrace();

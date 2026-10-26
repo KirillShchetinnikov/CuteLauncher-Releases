@@ -57,18 +57,33 @@ final class SleepTimerBridge {
                         result.success(true);
                     } catch (RuntimeException e) { result.success(false); }
                 }
-                case "start", "startTest" -> {
+                case "start", "startTest", "startDuration" -> {
                     boolean test = call.method.equals("startTest");
-                    Integer minutes = call.argument("minutes");
-                    if (!test && (minutes == null || !SleepTimerPolicy.validMinutes(minutes))) { result.error("INVALID", "Invalid duration", null); return; }
-                    long delayMillis = test ? 30000L : minutes * 60000L;
+                    Object raw = call.argument(call.method.equals("startDuration") ? "seconds" : "minutes");
+                    if (!test && !(raw instanceof Integer || raw instanceof Long)) {
+                        result.error("INVALID", "Invalid duration", null); return;
+                    }
+                    long seconds = test ? 30L : ((Number) raw).longValue();
+                    if (!test && call.method.equals("start")) {
+                        if (seconds <= 0 || seconds > 3599999999L / 60) {
+                            result.error("INVALID", "Invalid duration", null); return;
+                        }
+                        seconds *= 60;
+                    }
+                    if (!SleepTimerPolicy.validSeconds(seconds)) {
+                        result.error("INVALID", "Invalid duration", null); return;
+                    }
+                    long delayMillis = seconds * 1000L;
                     executor.execute(() -> {
                         String error = "";
                         try {
                             if (!exact(c)) error = "exact";
                             else if (!LauncherAccessibilityService.canSleep() && !adb(c, 0)) error = "access";
                             if (error.isEmpty()) start(c, delayMillis);
-                        } catch (Exception | LinkageError e) { error = "unavailable"; }
+                        } catch (Exception | LinkageError e) {
+                            NativeShellDiagnostics.failure("sleepTimer", e);
+                            error = "unavailable";
+                        }
                         final String failure = error;
                         new Handler(Looper.getMainLooper()).post(() -> {
                             if (failure.isEmpty()) result.success(state(c));
@@ -109,7 +124,10 @@ final class SleepTimerBridge {
             Thread worker = new Thread(() -> {
                 try {
                     finish(c, deadline, adb(c, deadline) ? "" : "access");
-                } catch (Exception | LinkageError e) { finish(c, deadline, "unavailable"); }
+                } catch (Exception | LinkageError e) {
+                    NativeShellDiagnostics.failure("sleepTimer", e);
+                    finish(c, deadline, "unavailable");
+                }
                 finally { done.run(); }
             }, "SleepTimerPower");
             worker.start();
@@ -122,14 +140,14 @@ final class SleepTimerBridge {
     private static boolean adb(Context c, long deadline) throws Exception {
         File privateKey = new File(c.getNoBackupFilesDir(), "adb/private-key");
         File publicKey = new File(c.getNoBackupFilesDir(), "adb/public-key");
-        if (!privateKey.exists() || !publicKey.exists()) return false;
+        if (!privateKey.exists() || !publicKey.exists()) throw new IllegalStateException("ADB keys unavailable");
         int port = c.getSharedPreferences("adb_connection", 0).getInt("port", 5555);
         try (Dadb adb = Dadb.create("127.0.0.1", port, AdbKeyPair.read(privateKey, publicKey), 2000, 3000)) {
-            var user = adb.shell("id -u");
+            var user = NativeShellDiagnostics.execute(adb, "id -u", "sleepTimer");
             if (user.getExitCode() != 0 || !user.getOutput().trim().equals("2000")) return false;
             if (deadline == 0) return true;
             if (prefs(c).getLong("firing", 0) != deadline) return true;
-            return adb.shell("input keyevent KEYCODE_SLEEP").getExitCode() == 0;
+            return NativeShellDiagnostics.execute(adb, "input keyevent KEYCODE_SLEEP", "sleepTimer").getExitCode() == 0;
         }
     }
 }

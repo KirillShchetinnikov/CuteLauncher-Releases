@@ -14,7 +14,7 @@ import 'settings_page_layout.dart';
 import 'settings_route.dart';
 import 'weather_page.dart';
 
-/// The same group in both panels; visibility and calendar remain panel-specific.
+/// Object visibility is panel-specific; block settings are shared.
 class InformationObjectsSection extends StatelessWidget {
   final bool remotePanel;
   const InformationObjectsSection({super.key, this.remotePanel = false});
@@ -67,7 +67,7 @@ class InformationObjectsSection extends StatelessWidget {
               }
             },
           ),
-        FocusableSettingsTile(
+        if (!remotePanel) FocusableSettingsTile(
           title: Text(l.informationSettings),
           leading: const Icon(Icons.tune),
           onPressed: () => Navigator.of(context).push(
@@ -94,7 +94,6 @@ class InformationSettingsPage extends StatelessWidget {
     final l = AppLocalizations.of(context)!;
     final service = context.watch<AppearanceService>();
     final appearance = service.appearance;
-    final panel = remotePanel ? context.watch<RemotePanelService>() : null;
     final combined = appearance.combinedInformation;
     Widget page(String title, Widget child, String name) =>
         FocusableSettingsTile(
@@ -147,10 +146,8 @@ class InformationSettingsPage extends StatelessWidget {
             ),
           RoundedSwitchListTile(
             title: Text(l.dateCalendarEnabled),
-            value: panel?.dateCalendar ?? appearance.dateCalendar,
-            onChanged: (v) => panel != null
-                ? panel.set('dateCalendar', v)
-                : service.set('panelDateCalendar', v),
+            value: appearance.dateCalendar,
+            onChanged: (v) => service.set('panelDateCalendar', v),
           ),
         ],
       ),

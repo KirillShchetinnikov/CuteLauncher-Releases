@@ -7,6 +7,11 @@ final class EthernetUsageCache {
     private long loadedAt;
     private long retryAt;
 
+    synchronized long[] breakdown(long start, long end) {
+        if (history == null) return new long[]{NetworkUsageTotals.UNAVAILABLE, NetworkUsageTotals.UNAVAILABLE};
+        return new long[]{history.received(start, end), history.sent(start, end)};
+    }
+
     synchronized long read(long start, long end, long now, Loader loader) {
         if (history != null && now >= loadedAt && now - loadedAt < 300000) {
             long usage = history.usage(start, end);

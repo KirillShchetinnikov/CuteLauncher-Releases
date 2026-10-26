@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:flauncher/image_limits.dart';
+import 'package:flauncher/local_background_media.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flauncher/providers/online_wallpaper_service.dart';
 /*
@@ -130,7 +132,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('Онлайн-обои'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Параметры'));
+    await tester.tap(find.text('Настройки источника'));
     await tester.pumpAndSettle();
     expect(ModalRoute.of(tester.element(find.text('Источник изображения')))!.transitionDuration, Duration.zero);
     expect(ModalRoute.of(tester.element(find.text('Источник изображения')))!.reverseTransitionDuration, Duration.zero);
@@ -142,12 +144,41 @@ void main() {
   });
 
   group("'Custom'", () {
+    for (final result in ['success', 'cancel', 'format', 'imageSize', 'videoSize', 'codec']) {
+      testWidgets('file selection reports $result clearly', (tester) async {
+        final settings = MockSettingsService();
+        final wallpaper = MockWallpaperService();
+        when(wallpaper.pickWallpaper()).thenAnswer((_) async {
+          if (result == 'format') throw const BackgroundMediaException(BackgroundMediaFailure.format);
+          if (result == 'imageSize') throw const ImageInputException(ImageInputFailure.bytes);
+          if (result == 'videoSize') throw PlatformException(code: 'document_too_large');
+          if (result == 'codec') throw const BackgroundMediaException(BackgroundMediaFailure.videoCodec);
+          return result == 'success';
+        });
+        await _pumpWidgetWithProviders(tester, settings, wallpaper);
+        await tester.tap(find.text('Choose file'));
+        await tester.pumpAndSettle();
+        final l = AppLocalizations.of(tester.element(find.byType(WallpaperPanelPage)))!;
+        final message = switch (result) {
+          'success' => l.backgroundFileApplied,
+          'format' => l.backgroundFormatError,
+          'imageSize' => l.backgroundFileTooLarge('8'),
+          'videoSize' => l.backgroundFileTooLarge('256'),
+          'codec' => l.backgroundVideoCodecError,
+          _ => null,
+        };
+        if (message != null) expect(find.text(message), findsOneWidget);
+        if (result == 'cancel') expect(find.text(l.backgroundFileApplied), findsNothing);
+        expect(tester.takeException(), isNull);
+      });
+    }
+
     testWidgets('shows a message when the document provider cannot read the image', (tester) async {
       final settings = MockSettingsService();
       final wallpaper = MockWallpaperService();
       when(wallpaper.pickWallpaper()).thenAnswer((_) async => throw PlatformException(code: 'document_failed'));
       await _pumpWidgetWithProviders(tester, settings, wallpaper);
-      await tester.tap(find.text('Open image'));
+      await tester.tap(find.text('Choose file'));
       await tester.pumpAndSettle();
       expect(find.text('Could not change the wallpaper. Check file access and try again.'), findsOneWidget);
       expect(tester.takeException(), isNull);
@@ -156,10 +187,11 @@ void main() {
     testWidgets("opens file explorer if available", (tester) async {
       final settingsService = MockSettingsService();
       final wallpaperService = MockWallpaperService();
+      when(wallpaperService.pickWallpaper()).thenAnswer((_) async => false);
 
       await _pumpWidgetWithProviders(tester, settingsService, wallpaperService);
 
-      await tester.tap(find.text("Open image"));
+      await tester.tap(find.text("Choose file"));
       await tester.pumpAndSettle();
       verify(wallpaperService.pickWallpaper());
     });
@@ -171,7 +203,7 @@ void main() {
 
       await _pumpWidgetWithProviders(tester, settingsService, wallpaperService);
 
-      await tester.tap(find.text("Open image"));
+      await tester.tap(find.text("Choose file"));
       await tester.pumpAndSettle();
       expect(find.byIcon(Icons.error_outline), findsOneWidget);
       expect(find.text("Please install a file explorer in order to pick a picture."), findsOneWidget);

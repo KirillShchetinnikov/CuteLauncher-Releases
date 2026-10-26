@@ -1,3 +1,6 @@
+import 'package:flauncher/bridge_result.dart';
+import '../sleep_timer_configuration.dart';
+
 import 'dart:async';
 
 import 'package:flutter/services.dart';
@@ -5,21 +8,8 @@ import 'package:flutter/widgets.dart';
 
 /// Android owns the alarm; this clock only paints the foreground countdown.
 class SleepTimerService extends ChangeNotifier with WidgetsBindingObserver {
-  static const channel = MethodChannel('cutelauncher/sleep_timer');
-  static const durations = [
-    10,
-    20,
-    30,
-    40,
-    50,
-    60,
-    90,
-    120,
-    180,
-    240,
-    300,
-    360,
-  ];
+  static const channel = BridgeChannel('cutelauncher/sleep_timer', preserveErrorCodes: true);
+  static const durations = defaultSleepTimerMinutes;
   final Stopwatch _clock = Stopwatch();
   final int Function()? elapsedMilliseconds;
   int _sampledAt = 0;
@@ -40,9 +30,18 @@ class SleepTimerService extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   int get _elapsed => elapsedMilliseconds?.call() ?? _clock.elapsedMilliseconds;
-  int get remainingSeconds =>
-      ((_remainingMs - (_elapsed - _sampledAt)) / 1000).ceil().clamp(0, 21600);
+  int get remainingSeconds => ((_remainingMs - (_elapsed - _sampledAt)) / 1000)
+      .ceil()
+      .clamp(0, maxSleepTimerSeconds);
   bool get active => remainingSeconds > 0;
+  DateTime get endTime => DateTime.now().add(
+    Duration(
+      milliseconds: (_remainingMs - (_elapsed - _sampledAt)).clamp(
+        0,
+        maxSleepTimerSeconds * 1000,
+      ),
+    ),
+  );
   String get countdown {
     final s = remainingSeconds;
     final minutes = (s ~/ 60 % 60).toString().padLeft(2, '0');
@@ -89,13 +88,22 @@ class SleepTimerService extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   Future<bool> select(int minutes) async {
-    if (_disposed || busy || (minutes != 0 && !durations.contains(minutes))) {
+    if (_disposed ||
+        busy ||
+        (minutes != 0 && !validSleepTimerSeconds(minutes * 60))) {
       return false;
     }
     return _select(
       minutes == 0 ? 'cancel' : 'start',
       minutes == 0 ? null : {'minutes': minutes},
     );
+  }
+
+  Future<bool> selectSeconds(int seconds) {
+    if (!validSleepTimerSeconds(seconds)) return Future.value(false);
+    if (seconds == 30) return selectTestTimer();
+    if (seconds % 60 == 0) return select(seconds ~/ 60);
+    return _select('startDuration', {'seconds': seconds});
   }
 
   Future<bool> selectTestTimer() => _select('startTest', null);

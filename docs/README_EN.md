@@ -27,13 +27,16 @@ See the [guide](USER_GUIDE_EN.md#разрешения-и-ограничения)
 
 Additional access is needed only for the corresponding features. Grant it as
 you configure those features. Start with the [permission table](USER_GUIDE_EN.md#разрешения-и-ограничения).
-The [diagnostics section](USER_GUIDE_EN.md#диагностика) explains report collection
-and export. Reports are never sent automatically. When reporting an issue,
-include your CuteLauncher version, TV model, Android version, firmware, and
-steps to reproduce it. Do not publish personal keys or private webhook URLs.
-Attach the JSON file from **Advanced → Diagnostics → Error diagnostics →
-Create report → Export report → Save to disk**.
-See the [reporting instructions](USER_GUIDE_EN.md#reporting-an-issue) for the full procedure.
+The [diagnostics section](USER_GUIDE_EN.md#diagnostics) describes one report with
+errors, settings at each failure and TV compatibility. Create it through
+**Advanced → Diagnostics → Create report → Export report → Save to disk**
+and send it to the author **in a private message**, not publicly: redaction may
+miss personal data. By sending the report to the author, you agree to publication
+of an anonymized TV compatibility report in the CuteLauncher Git repository.
+Only device metadata and feature availability are published, without personal data;
+errors, commands and your settings are not published. Nothing is sent automatically.
+Describe the steps and expected/actual results. See the
+[reporting instructions](USER_GUIDE_EN.md#reporting-an-issue) for details.
 
 <a id="происхождение-и-лицензии"></a>
 ## Origins and licenses

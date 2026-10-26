@@ -112,8 +112,12 @@ class AppLocalizationsEs extends AppLocalizations {
       'The focused app\'s banner or icon becomes a soft colour background. The selected gradient appears before an image is ready or if it cannot be read. Changes pause while the launcher is in the background. Your other wallpapers are kept.';
 
   @override
+  String get adbWifiOwnedTitle =>
+      'La red Wi-Fi pertenece al asistente de configuración';
+
+  @override
   String get adbWifiOwned =>
-      'Not changed: a saved Wi-Fi network belongs to the setup wizard. Forget that network and reconnect through Android Settings, then check again. Disabling the wizard could delete the network.';
+      'No se hicieron cambios: una red Wi-Fi guardada fue creada por el asistente de Google. Desactivarlo podría borrar la red y desconectar el televisor.\n\n1. Asegúrese de conocer la contraseña Wi-Fi.\n2. Abra los ajustes de red de Android, seleccione la red y pulse Olvidar red.\n3. Vuelva a conectarse desde esos ajustes.\n4. Regrese a CuteLauncher, compruebe ADB e intente desactivar el lanzador integrado.\n\nSi vuelve a aparecer el mensaje, mantenga el lanzador integrado activado: el firmware puede asignar otra vez la red al asistente.';
 
   @override
   String get adbWifiUnknown =>
@@ -337,10 +341,10 @@ class AppLocalizationsEs extends AppLocalizations {
       'O seleccione especificadores de formato';
 
   @override
-  String get openImage => 'Abrir imagen';
+  String get openImage => 'Elegir archivo';
 
   @override
-  String get picture => 'Imagen';
+  String get picture => 'Imagen o vídeo local';
 
   @override
   String removeFrom(String name) {
@@ -435,13 +439,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get withEllipsisAddTo => 'Añadir a...';
 
   @override
-  String get timeBasedWallpaper => 'Fondo de pantalla según hora';
+  String get timeBasedWallpaper => 'Imagen diurna/nocturna';
 
   @override
-  String get pickDayWallpaper => 'Elegir fondo de pantalla diurno';
+  String get pickDayWallpaper => 'Elegir imagen diurna';
 
   @override
-  String get pickNightWallpaper => 'Elegir fondo de pantalla nocturno';
+  String get pickNightWallpaper => 'Elegir imagen nocturna';
 
   @override
   String get accessibility => 'Accesibilidad';
@@ -1735,8 +1739,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get diagnosticsCopied => 'Informe copiado';
 
   @override
+  String get diagnosticsSharingNotice =>
+      'Envíe el archivo al autor por mensaje privado, no lo publique: la limpieza automática puede omitir datos personales. Al enviarlo, acepta que se publique un informe anónimo de compatibilidad del televisor en el repositorio Git de CuteLauncher. Solo se publican metadatos del dispositivo y disponibilidad de funciones, sin datos personales; no se publican registros de errores, comandos ni sus ajustes.';
+
+  @override
   String get diagnosticsHint =>
-      'El informe contiene la versión de la aplicación, el estado de los permisos, el uso de la memoria y los resultados de la operación. Excluye claves, direcciones, rutas de archivos, listas de aplicaciones y contenido de notificaciones. Sólo las últimas 50 operaciones se mantienen en la memoria hasta que se reinicia la aplicación. No se envía nada automáticamente.';
+      'Un único informe combina compatibilidad de funciones del televisor y diagnóstico de errores. El informe incluye modelo y firmware del televisor, versión de la aplicación, permisos, memoria, etapas y causas de errores, comandos y respuestas con eliminación automática de datos personales. Guarda las últimas 50 operaciones, hasta 100 fallos por separado y un registro ADB limitado de la sesión. Se borra al reiniciar. La limpieza puede omitir datos personales: envíe el archivo por mensaje privado, no lo publique. No se envía nada automáticamente. Cada error conserva una instantánea de los ajustes aplicados; los cambios posteriores no la sustituyen.';
 
   @override
   String get diagnosticsTitle => 'Diagnóstico de errores';
@@ -2087,7 +2095,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get background => 'Antecedentes';
 
   @override
-  String get backgroundParameters => 'Parámetros';
+  String get backgroundParameters => 'Ajustes de la fuente';
 
   @override
   String get resetAppearanceHint =>
@@ -3621,7 +3629,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get cleanerSnapshot => 'Save original state';
 
   @override
-  String get cleanerRestore => 'Restore manager changes';
+  String get cleanerRestore => 'Restaurar el estado base';
 
   @override
   String get cleanerSnapshotSaved => 'Original state saved';
@@ -3634,7 +3642,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get cleanerNoSafe =>
-      'This firmware has no verified list that preserves all features.';
+      'No hay lista de apps del sistema para este modelo y firmware.';
 
   @override
   String get cleanerLocal => 'Disable using a local list';
@@ -3649,7 +3657,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get cleanerExternal => 'CleanYourTV examples';
 
   @override
-  String get cleanerDisabledExport => 'Export disabled applications';
+  String get cleanerDisabledExport =>
+      'Exportar informe de aplicaciones desactivadas a un archivo';
 
   @override
   String get cleanerInventoryExport => 'Export application report';
@@ -3717,7 +3726,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get cleanerHelp =>
-      'The manager uses the local ADB connection configured in TV control settings. It never uninstalls apps or clears their data. The snapshot and recovery journal are separate from ordinary backups. Recovery restores previous states only for packages changed by this manager. Automatic recovery is blocked after a firmware change.\n\nVerified lists match exact firmware. Observed and external lists do not establish safety. Protected components, HOME and active services cannot be disabled. Packages are previewed before applying; missing and already disabled packages are skipped.\n\nThe project catalog is bundled from Git. GitHub refresh requires a public catalog. External examples load only on request and never execute scripts. Export creates JSON containing disabled packages and firmware identity; add it manually to catalog/examples after review. Nothing is uploaded automatically.\n\nApp descriptions and risk remain visible. Unconfirmed purposes are marked explicitly and never included in verified lists.';
+      'El estado base se crea una sola vez al actualizar la lista correctamente por primera vez. El lanzador no permite borrarlo ni sobrescribirlo y está ligado al firmware. Los estados manuales guardan los modos de las apps con nombre y fecha; pueden restaurarse, eliminarse y exportarse. No incluyen APK ni datos. La restauración requiere ADB local. La protección ante fallos intenta restaurar automáticamente el estado base. Borrar los datos o desinstalar el lanzador elimina las copias; no se puede impedir el acceso root.';
 
   @override
   String get cleanerSkipped =>
@@ -3975,4 +3984,257 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get tvPowerHelp =>
       'Apagar activa la espera mediante accesibilidad de CuteLauncher o ADB local. Reiniciar requiere ADB. En un TV box se controla el box; el TV depende de HDMI-CEC y del firmware.';
+
+  @override
+  String get cleanerLists => 'Listas de desactivación';
+
+  @override
+  String get cleanerRecovery => 'Copia y restauración';
+
+  @override
+  String get cleanerExports => 'Informes';
+
+  @override
+  String get cleanerUpdating => 'Actualizando la lista de aplicaciones…';
+
+  @override
+  String get cleanerRefreshRequired =>
+      'Actualiza primero la lista de aplicaciones.';
+
+  @override
+  String get cleanerPreinstalled => 'Aplicación preinstalada';
+
+  @override
+  String get cleanerNotSystem => 'No es una aplicación del sistema.';
+
+  @override
+  String get cleanerMinimalRisk => 'Mínimo';
+
+  @override
+  String get cleanerCacheFailure =>
+      'No se pudo guardar la lista para la próxima visita.';
+
+  @override
+  String get cleanerUserApps => 'Aplicaciones del usuario';
+
+  @override
+  String get cleanerPreinstalledApps => 'Aplicaciones preinstaladas';
+
+  @override
+  String get cleanerSystemApps => 'Aplicaciones del sistema';
+
+  @override
+  String get cleanerBaseline => 'Estado original base';
+
+  @override
+  String get cleanerManualStates => 'Gestionar estados manuales';
+
+  @override
+  String get cleanerManualSave => 'Guardar estado actual';
+
+  @override
+  String get cleanerDateName => 'Usar fecha y hora';
+
+  @override
+  String get cleanerCustomName => 'Introducir un nombre';
+
+  @override
+  String get cleanerStateExport => 'Exportar estado guardado a un archivo';
+
+  @override
+  String get cleanerStateRestoreHelp =>
+      'Se restaurarán los estados de activación guardados para este firmware. Las apps instaladas después no cambiarán. Se omitirán las apps ausentes y la desactivación de componentes protegidos. No se restauran datos de las apps.';
+
+  @override
+  String get cleanerCopiesHelp =>
+      'El estado base se crea una sola vez al actualizar la lista correctamente por primera vez. El lanzador no permite borrarlo ni sobrescribirlo y está ligado al firmware. Los estados manuales guardan los modos de las apps con nombre y fecha; pueden restaurarse, eliminarse y exportarse. No incluyen APK ni datos. La restauración requiere ADB local. La protección ante fallos intenta restaurar automáticamente el estado base. Borrar los datos o desinstalar el lanzador elimina las copias; no se puede impedir el acceso root.';
+
+  @override
+  String get cleanerSearch => 'Buscar por nombre';
+
+  @override
+  String get cleanerCatalogUpdateRequired =>
+      'Actualiza primero el catálogo desde GitHub.';
+
+  @override
+  String get cleanerNoSearchResults => 'No hay entradas coincidentes.';
+
+  @override
+  String get cleanerAlreadyDisabled =>
+      'Todas las apps de esta lista presentes en el TV ya están desactivadas.';
+
+  @override
+  String get cleanerAlreadyEnabled =>
+      'Todas las apps de esta lista presentes en el TV ya están activadas.';
+
+  @override
+  String get cleanerNoInstalled =>
+      'No hay apps coincidentes de esta lista instaladas en este TV.';
+
+  @override
+  String get cleanerListProtected =>
+      'Las apps restantes están protegidas contra la desactivación.';
+
+  @override
+  String get cleanerSnapshotFailed =>
+      'No se pudo guardar la copia. No se desactivó ninguna app.';
+
+  @override
+  String get cleanerDisableAllPreinstalled =>
+      'Desactivar todas las apps preinstaladas';
+
+  @override
+  String get cleanerEnableAllPreinstalled =>
+      'Activar todas las apps preinstaladas';
+
+  @override
+  String get cleanerPreinstalledList => 'Lista de apps preinstaladas';
+
+  @override
+  String cleanerBeforeList(String listName) {
+    return 'Antes de aplicar la lista: $listName';
+  }
+
+  @override
+  String get sleepTimerSettings => 'Ajustes del temporizador de apagado';
+
+  @override
+  String get sleepTimerPresets => 'Temporizadores';
+
+  @override
+  String get sleepTimerDisplay => 'Mostrar con el temporizador activo';
+
+  @override
+  String get sleepTimerRemaining => 'Tiempo restante';
+
+  @override
+  String get sleepTimerEndTime => 'Hora de apagado';
+
+  @override
+  String get sleepTimerBoth => 'Tiempo restante y hora de apagado';
+
+  @override
+  String get sleepTimerShowSeconds => 'Mostrar segundos';
+
+  @override
+  String get sleepTimerCloseAfterSelection =>
+      'Cerrar el widget al elegir un temporizador';
+
+  @override
+  String get sleepTimerAdd => 'Añadir temporizador';
+
+  @override
+  String get sleepTimerEdit => 'Editar temporizador';
+
+  @override
+  String get sleepTimerHoursLabel => 'Horas';
+
+  @override
+  String get sleepTimerMinutesLabel => 'Minutos';
+
+  @override
+  String get sleepTimerSecondsLabel => 'Segundos';
+
+  @override
+  String get sleepTimerInvalidDuration =>
+      'Introduce una duración positiva: horas 0–999999, minutos y segundos 0–59.';
+
+  @override
+  String get sleepTimerDeleteConfirmation =>
+      '¿Eliminar este temporizador? La cuenta atrás activa continuará.';
+
+  @override
+  String get sleepTimerResetConfirmation =>
+      '¿Restaurar los temporizadores y su orden predeterminado? Se eliminarán los personalizados. La cuenta atrás activa continuará.';
+
+  @override
+  String get sleepTimerReorderHint =>
+      '◄ / ► o mantener OK para mover. ▲ / ▼ cambian el orden y mueven temporizadores entre visibles y ocultos. OK termina el movimiento.';
+
+  @override
+  String get sleepTimerSaveFailed =>
+      'No se pudieron guardar los ajustes del temporizador.';
+
+  @override
+  String get sleepTimerVisible => 'Visibles';
+
+  @override
+  String get sleepTimerHidden => 'Ocultos';
+
+  @override
+  String get sleepTimerReset => 'Restablecer temporizadores';
+
+  @override
+  String get cleanerListSnapshotHelp =>
+      'Antes de desactivar una lista se guardan solo las apps seleccionadas. Restaurarlas no cambia otras apps. El límite es de 100 estados manuales y automáticos. Si falla el guardado, no se inicia la desactivación.';
+
+  @override
+  String get trafficSettings => 'Ajustes de tráfico';
+
+  @override
+  String get trafficTitle => 'Tráfico';
+
+  @override
+  String get trafficReceived => 'Recibido';
+
+  @override
+  String get trafficSent => 'Enviado';
+
+  @override
+  String get trafficTotal => 'Total';
+
+  @override
+  String get stopApp => 'Parar';
+
+  @override
+  String get backgroundImageFormats =>
+      'Imágenes: JPEG, PNG, WebP, GIF, BMP — hasta 8 MiB, 48 megapíxeles y 16.384 píxeles por lado.';
+
+  @override
+  String get backgroundMediaFormats =>
+      'Imágenes: JPEG, PNG, WebP, GIF, BMP — hasta 8 MiB, 48 megapíxeles y 16.384 píxeles por lado.\nVídeo: MP4/M4V, WebM, MKV — hasta 256 MiB y 3840×2160. Los códecs dependen del TV; se recomienda MP4 con H.264. Se repite sin sonido y se pausa fuera de Inicio. No se incluye en las copias de seguridad.';
+
+  @override
+  String get backgroundFormatError =>
+      'Formato no compatible o archivo dañado. Elija un archivo válido de los formatos indicados.';
+
+  @override
+  String backgroundFileTooLarge(String maxMiB) {
+    return 'El archivo es demasiado grande. Máximo: $maxMiB MiB. Elija uno más pequeño.';
+  }
+
+  @override
+  String get backgroundImageResolutionError =>
+      'Imagen demasiado grande: hasta 48 megapíxeles y 16.384 píxeles por lado.';
+
+  @override
+  String get backgroundVideoResolutionError =>
+      'Resolución de vídeo demasiado alta. Elija hasta 3840×2160 (o 2160×3840).';
+
+  @override
+  String get backgroundVideoCodecError =>
+      'El TV no pudo reproducir el vídeo: códec no compatible o archivo dañado. Pruebe MP4 con H.264.';
+
+  @override
+  String get backgroundFileApplied =>
+      'Archivo seleccionado. Fondo actualizado.';
+
+  @override
+  String get noticePosition => 'Posición de las notificaciones';
+
+  @override
+  String get noticeBottomRight => 'Abajo a la derecha';
+
+  @override
+  String get noticeBottomLeft => 'Abajo a la izquierda';
+
+  @override
+  String get noticeTopRight => 'Arriba a la derecha';
+
+  @override
+  String get noticeTopLeft => 'Arriba a la izquierda';
+
+  @override
+  String get notificationOpenFailed =>
+      'No se pudo abrir la acción de la notificación. Puede que ya no esté disponible.';
 }

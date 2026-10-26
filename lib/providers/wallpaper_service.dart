@@ -18,7 +18,9 @@
 
 import 'service_lifecycle.dart';
 import '../image_limits.dart';
+import '../local_background_media.dart';
 import '../versioned_file_image.dart';
+
 import 'dart:io';
 import 'dart:async';
 
@@ -26,7 +28,9 @@ import 'package:flauncher/flauncher_channel.dart';
 import 'package:flauncher/gradients.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flutter/cupertino.dart';
+
 import '../document_files.dart';
+
 import 'package:path_provider/path_provider.dart';
 
 class WallpaperService extends ChangeNotifier with ServiceLifecycle {
@@ -34,6 +38,11 @@ class WallpaperService extends ChangeNotifier with ServiceLifecycle {
   final SettingsService _settingsService;
 
   late File _wallpaperFile;
+  late File _videoFile;
+  File? _video;
+  File? get video => _video;
+  final Future<void> Function(File) _validateVideo;
+  bool _picking = false;
   late File _wallpaperDayFile;
   late File _wallpaperNightFile;
   Timer? _timer;
@@ -43,17 +52,20 @@ class WallpaperService extends ChangeNotifier with ServiceLifecycle {
   int _version = 0;
   int _updateWallpaperCallCount = 0;
 
-  ImageProvider?  get wallpaper     => _wallpaper;
-  int             get version       => _version;
+  ImageProvider? get wallpaper => _wallpaper;
+  int get version => _version;
 
   FLauncherGradient get gradient => FLauncherGradients.all.firstWhere(
-        (gradient) => gradient.uuid == _settingsService.gradientUuid,
-        orElse: () => FLauncherGradients.pitchBlack,
-      );
+    (gradient) => gradient.uuid == _settingsService.gradientUuid,
+    orElse: () => FLauncherGradients.pitchBlack,
+  );
 
-  WallpaperService(this._fLauncherChannel, this._settingsService) :
-    _wallpaper = null
-  {
+  WallpaperService(
+    this._fLauncherChannel,
+    this._settingsService, {
+    Future<void> Function(File)? validateVideo,
+  }) : _validateVideo = validateVideo ?? validateBackgroundVideo,
+       _wallpaper = null {
     _settingsService.addListener(_onSettingsChanged);
     _initialization = _init();
   }
@@ -82,6 +94,7 @@ class WallpaperService extends ChangeNotifier with ServiceLifecycle {
     final directory = await getApplicationDocumentsDirectory();
     if (isDisposed) return;
     _wallpaperFile = File("${directory.path}/wallpaper");
+    _videoFile = File("${directory.path}/wallpaper_video");
     _wallpaperDayFile = File("${directory.path}/wallpaper_day");
     _wallpaperNightFile = File("${directory.path}/wallpaper_night");
 
@@ -91,6 +104,8 @@ class WallpaperService extends ChangeNotifier with ServiceLifecycle {
   }
 
   Future<void> refresh() async {
+    await _initialization;
+    if (isDisposed) return;
     await FileImage(_wallpaperFile).evict();
     await FileImage(_wallpaperDayFile).evict();
     await FileImage(_wallpaperNightFile).evict();
@@ -103,7 +118,10 @@ class WallpaperService extends ChangeNotifier with ServiceLifecycle {
     if (isDisposed) return;
     final enabled = _settingsService.timeBasedWallpaperEnabled;
     if (enabled && (_timer == null || !_timer!.isActive)) {
-      _timer = Timer.periodic(const Duration(minutes: 1), (_) => _updateWallpaper());
+      _timer = Timer.periodic(
+        const Duration(minutes: 1),
+        (_) => _updateWallpaper(),
+      );
     } else if (!enabled && _timer != null) {
       _timer?.cancel();
       _timer = null;
@@ -111,8 +129,23 @@ class WallpaperService extends ChangeNotifier with ServiceLifecycle {
   }
 
   Future<bool> _safeWallpaper(File file) async {
-    try { return await file.exists() && await file.length() <= maximumImageInputBytes; }
-    on FileSystemException { return false; }
+    try {
+      return await file.exists() &&
+          await file.length() <= maximumImageInputBytes;
+    } on FileSystemException {
+      return false;
+    }
+  }
+
+  Future<File?> _safeVideo() async {
+    try {
+      return await _videoFile.exists() &&
+              await _videoFile.length() <= maximumBackgroundVideoBytes
+          ? _videoFile
+          : null;
+    } on FileSystemException {
+      return null;
+    }
   }
 
   Future<void> _updateWallpaper({bool force = false}) async {
@@ -138,53 +171,109 @@ class WallpaperService extends ChangeNotifier with ServiceLifecycle {
       }
     }
 
+    final newVideo = enabled ? null : await _safeVideo();
     if (!isDisposed && callId == _updateWallpaperCallCount) {
-      if (_wallpaper != newWallpaper || force) {
+      if (_wallpaper != newWallpaper ||
+          _video?.path != newVideo?.path ||
+          force) {
+        _video = newVideo;
         _wallpaper = newWallpaper;
         notifyListeners();
       }
     }
   }
 
-  Future<void> pickWallpaper() async {
-    await _pickAndSave(_wallpaperFile);
-  }
+  Future<bool> pickWallpaper() => _pickAndSave(null);
 
-  Future<void> pickWallpaperDay() async {
-    await _pickAndSave(_wallpaperDayFile);
-  }
+  Future<bool> pickWallpaperDay() => _pickAndSave('day');
 
-  Future<void> pickWallpaperNight() async {
-    await _pickAndSave(_wallpaperNightFile);
-  }
+  Future<bool> pickWallpaperNight() => _pickAndSave('night');
 
-  Future<void> _pickAndSave(File targetFile) async {
-    if (!await _fLauncherChannel.checkForGetContentAvailability()) {
-      throw NoFileExplorerException();
-    }
-
-    final pickedFile = await DocumentFiles.pickImage();
-    if (isDisposed && pickedFile != null) {
-      await DocumentFiles.releaseImage(pickedFile);
-      return;
-    }
-    if (!isDisposed && pickedFile != null) {
-      final bytes = await DocumentFiles.readImage(pickedFile);
-      if (isDisposed) return;
-      await targetFile.writeAsBytes(bytes, flush: true);
-
-      // Evict from cache to ensure UI updates
-      await FileImage(targetFile).evict();
-
-      _version++;
-      await _updateWallpaper(force: true);
+  Future<bool> _pickAndSave(String? period) async {
+    if (_picking || isDisposed) return false;
+    _picking = true;
+    File? staging;
+    try {
+      await _initialization;
+      if (isDisposed) return false;
+      if (!await _fLauncherChannel.checkForGetContentAvailability()) {
+        throw NoFileExplorerException();
+      }
+      final picked = period == null
+          ? await DocumentFiles.pickWallpaper()
+          : await DocumentFiles.pickImage();
+      if (picked == null) return false;
+      try {
+        if (isDisposed) return false;
+        final header = await picked
+            .openRead(0, 32)
+            .fold<List<int>>([], (all, chunk) => all..addAll(chunk));
+        final kind = backgroundMediaKind(header);
+        final image = kind == BackgroundMediaKind.image;
+        if (!image && period != null) {
+          throw const BackgroundMediaException(BackgroundMediaFailure.format);
+        }
+        final target = period == 'day'
+            ? _wallpaperDayFile
+            : period == 'night'
+            ? _wallpaperNightFile
+            : image
+            ? _wallpaperFile
+            : _videoFile;
+        staging = File('${target.path}.pending');
+        if (image) {
+          final bytes = await readBoundedImage(picked.openRead());
+          await validateImageBytes(bytes);
+          if (isDisposed) return false;
+          await staging.writeAsBytes(bytes, flush: true);
+        } else {
+          final sink = staging.openWrite();
+          try {
+            var count = 0;
+            final bounded = picked.openRead().map((chunk) {
+              count += chunk.length;
+              if (count > maximumBackgroundVideoBytes) {
+                throw const BackgroundMediaException(
+                  BackgroundMediaFailure.videoSize,
+                );
+              }
+              return chunk;
+            });
+            await sink.addStream(bounded);
+            await sink.flush();
+          } finally {
+            await sink.close();
+          }
+          await _validateVideo(staging);
+        }
+        if (isDisposed) return false;
+        await staging.rename(target.path);
+        if (period == null) {
+          final other = image ? _videoFile : _wallpaperFile;
+          if (await other.exists()) await other.delete();
+        }
+        await FileImage(target).evict();
+        _version++;
+        await _updateWallpaper(force: true);
+        return true;
+      } finally {
+        await DocumentFiles.releaseImage(picked);
+      }
+    } finally {
+      if (staging != null && await staging.exists()) await staging.delete();
+      _picking = false;
     }
   }
 
   Future<void> reset() async {
     await _initialization;
     if (isDisposed) return;
-    for (final file in [_wallpaperFile, _wallpaperDayFile, _wallpaperNightFile]) {
+    for (final file in [
+      _wallpaperFile,
+      _wallpaperDayFile,
+      _wallpaperNightFile,
+      _videoFile,
+    ]) {
       await FileImage(file).evict();
       if (await file.exists()) await file.delete();
     }

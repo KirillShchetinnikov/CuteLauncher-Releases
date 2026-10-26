@@ -11,7 +11,8 @@ final class NetworkUsageTotals {
                 if (required[i]) return UNAVAILABLE;
             } else {
                 available = true;
-                total += bytes[i];
+                try { total = Math.addExact(total, bytes[i]); }
+                catch (ArithmeticException overflow) { return UNAVAILABLE; }
             }
         }
         return available ? total : UNAVAILABLE;

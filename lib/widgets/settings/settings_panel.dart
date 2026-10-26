@@ -1,3 +1,5 @@
+import 'traffic_settings_page.dart';
+import 'sleep_timer_settings_page.dart';
 import 'tv_power_page.dart';
 import '../landscape_demo_presentation.dart';
 import 'information_settings_page.dart';
@@ -9,7 +11,6 @@ import 'settings_style_page.dart';
 import 'settings_panel_style.dart';
 import 'automatic_backup_page.dart';
 import 'settings_menu_layout.dart';
-import '../notification_popup_presentation.dart';
 import '../launcher_dialog.dart';
 import 'package:provider/provider.dart';
 import '../../providers/settings_service.dart';
@@ -99,7 +100,6 @@ class _SettingsPanelState extends State<SettingsPanel> {
   void initState() {
     super.initState();
     _topPanel = _isTopPanelRoute(widget.initialRoute);
-    NotificationPopupPresentation.settingsDepth.value++;
   }
 
   @override
@@ -108,7 +108,6 @@ class _SettingsPanelState extends State<SettingsPanel> {
     if (preview != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) => preview.setSettingsPreview(this, false));
     }
-    NotificationPopupPresentation.settingsDepth.value--;
     super.dispose();
   }
 
@@ -118,6 +117,12 @@ class _SettingsPanelState extends State<SettingsPanel> {
       StatusBarObjectsPage.routeName,
       InformationSettingsPage.routeName,
       InputsSettingsPage.routeName,
+      SleepTimerSettingsPage.routeName,
+      SleepTimerOptionsPage.routeName,
+      SleepTimerOptionsPage.displayRouteName,
+      SleepTimerPresetsPage.routeName,
+      SleepTimerEditorPage.routeName,
+      TrafficSettingsPage.routeName,
       PanelOrderPage.routeName,
       'panel_appearance',
       PanelClockStylePage.routeName,
@@ -258,6 +263,10 @@ class _SettingsPanelState extends State<SettingsPanel> {
                     case CloudBackupPage.routeName:
                       return SettingsRoute(settings: settings, builder: (_) => const CloudBackupPage());
 
+                    case TrafficSettingsPage.routeName:
+                      return SettingsRoute(settings: settings, builder: (_) => const TrafficSettingsPage());
+                    case SleepTimerSettingsPage.routeName:
+                      return SettingsRoute(settings: settings, builder: (_) => const SleepTimerSettingsPage());
                     case InputsSettingsPage.routeName:
                       return SettingsRoute(settings: settings, builder: (_) => const InputsSettingsPage());
                     case NightModePage.routeName:

@@ -1,5 +1,5 @@
+import 'package:flauncher/bridge_result.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../action_notice.dart';
@@ -10,7 +10,7 @@ import 'settings_page_layout.dart';
 
 class TvPowerPage extends StatefulWidget {
   static const routeName = 'tv_power';
-  static const channel = MethodChannel('cutelauncher/tv_power');
+  static const channel = BridgeChannel('cutelauncher/tv_power', preserveErrorCodes: true);
   const TvPowerPage({super.key});
 
   @override

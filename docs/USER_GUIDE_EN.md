@@ -82,7 +82,7 @@ CuteLauncher and Android settings when their tiles are hidden by the dedicated
 switches. Show restores the tile and turns off its hide switch. App details show its name,
 package, and version. Launch an available app, open Android app information,
 request uninstall where Android allows it, hide or restore it, add it to a
-category, and change its tile. Set a custom tile banner or restore the default.
+category, and change its tile. Set a custom tile banner or restore the default. With ADB connected, Stop appears when an app process is detected and force-stops the app. CuteLauncher itself cannot be stopped from this menu.
 
 Hiding an app removes it from automatic launcher lists; it does not disable
 the app in Android. The normal system-app list belongs to the launcher catalog.
@@ -113,13 +113,26 @@ restores the previous choice. All fonts are bundled and work offline.
 Background sources:
 
 - A gradient with your chosen colors.
-- A local image, including separate day and night wallpapers.
+- A local image or video, plus a separate Day/Night image source.
 - A folder slideshow with subfolders, order, interval, and next-image controls.
 - Bing online wallpapers or an image URL with available update options.
 - Selected app colors: a soft background derived from the focused tile's banner or icon.
 - Adaptive landscape: an illustrated valley or realistic nature with four seasons. Spring has fresh light greenery and a flowering meadow, plus blossoming trees in the illustrated valley; summer has deep greenery and warm golden grasses.
 
-After selecting this source, open **Home screen → Background → Source parameters**.
+For a local file, choose **Local image or video → Source settings → Choose file**.
+The collapsed help lists formats and limits: JPEG, PNG, WebP, GIF, BMP — up to
+8 MiB, 48 megapixels and 16,384 pixels per side; MP4/M4V, WebM, MKV — up to
+256 MiB and 3840×2160. The TV must support the codec; MP4 with H.264 is preferred.
+Video loops silently, pauses outside Home and does not prevent system sleep.
+The video file is excluded from backups; choose it again after moving devices.
+Cancellation or an error preserves the previous background. Messages distinguish
+unsupported formats, size/resolution limits, codec errors and inaccessible files;
+a successful selection is confirmed separately.
+
+The **Day/Night image** source accepts images only: the day image is used from
+06:00 to 18:00, and the night image at other times.
+
+After selecting this source, open **Home screen → Background → Source settings**.
 Time of day, seasons, clouds, rain/snow, fog and weather animation have independent
 switches. Disabling time of day keeps daylight; disabling seasons keeps summer.
 The **Sun and moon** switch shows or hides both bodies together in the illustrated
@@ -167,7 +180,13 @@ Enable, hide, and rearrange the clock, date, weather, network status, traffic,
 TV inputs, notifications, sleep timer, night mode, and launcher/Android settings
 buttons. Time and date have display and style settings; selecting the date opens
 a calendar. Network status shows the available connection type. Traffic shows
-usage for a day, week, or month. The counter reads Android history from the start
+usage for a day, week, or month.
+Select the traffic counter to see usage for **the day, week and month** together.
+Each period has a compact card showing **Received**, **Sent** and **Total**.
+Received and sent usage appear side by side, or vertically with large text.
+Use the remote to scroll when needed.
+The gear and **Top panel → Objects → Traffic settings** open usage access and
+the period for the counter on the panel. The open menu always shows all three periods. The counter reads Android history from the start
 of the selected day, week or month,
 including usage before the widget was enabled. Android may update history with a delay.
 If data for the selected period is unavailable, the counter shows “—”. When firmware
@@ -194,6 +213,7 @@ In **Top panel → Objects**, the clock, date and weather share one section with
 three independent switches and a **Block settings** button. Block settings contain
 the grouping and calendar switches. The calendar is available in either mode:
 select the date or the combined block while the date is visible to open it.
+Saturday and Sunday dates are shown in red, including today.
 
 Without grouping, there are separate clock, date and weather settings. Grouping
 replaces these with **Block appearance** and **Weather settings**, plus a separate
@@ -224,9 +244,10 @@ moves as a unit, including hidden items. Its initial position is the first
 information slot in the stored order. Disabling grouping restores individual
 positions until you edit the order. After moving the group, its members occupy
 adjacent slots at the new position. Hidden items stay hidden, missing weather
-data leaves no empty gap, and panel height stays unchanged. Grouping and block
-appearance are shared by both panels; visibility and calendar switches remain
-independent for each panel.
+data leaves no empty gap, and panel height stays unchanged. Widget settings,
+grouping, block appearance and the calendar switch are shared by both panels
+and edited in the main top panel settings. The popup panel’s **Objects** page
+contains only visibility switches, so its set of visible objects is independent.
 
 Widgets open their own menus and settings. Availability depends on Android data:
 traffic needs usage access, and inputs need support for the relevant TV API.
@@ -250,6 +271,21 @@ Path: **Top panel → Objects → Notifications**.
 After granting notification access, view the notification list, inspect and
 dismiss supported notifications, and enable a counter and popups. Customize
 appearance, block selected apps, and control which notification types appear.
+
+Details open beside the list without overlapping panels. The open button runs
+the notification's own action; if no action exists, it launches the app when
+launching is supported. System messages without an action or a launchable app
+have no open button. An unavailable action displays a message.
+The dimming cutout follows the widget button's current size, including its counter.
+
+In **Appearance → Notification style → Notification position**, choose any of
+the four screen corners. Launcher messages and app notifications share one stack
+and slide in from the nearest side of the screen, sliding back off-screen when
+they close. The stack grows downwards in
+the top corners and upwards in the bottom corners. When a settings panel or
+widget menu occupies the selected side, the stack temporarily moves to the other
+side and returns after the panel closes. Over other apps, notifications always
+use the selected corner.
 
 The separate Now Playing switch shows the active player's title, artist, and
 supported play/pause/next controls. It uses the same notification access. The
@@ -307,6 +343,19 @@ Top-panel clock settings are separate.
 ## Sleep timer
 
 Path: the top panel's **Sleep timer** widget.
+Settings are available through the widget gear and
+**Top panel → Objects → Sleep timer settings**.
+
+In **Settings**, choose time remaining, shutdown time or both, whether to show
+seconds, and whether to close the widget after selecting a timer. By default,
+it shows time remaining with seconds and closes after a successful selection.
+
+**Timers** contains **Visible** and **Hidden** intervals. Press Left/Right or
+hold OK to start moving; Up/Down changes the order and moves a timer across the
+boundary between the lists. OK finishes moving. Select an interval to edit its
+hours, minutes and seconds. Add custom intervals or delete any, including defaults.
+**Reset timers** restores the default set and order. Editing the list and resetting
+it do not change a countdown already running.
 
 Set, replace, or cancel a standby deadline. The menu shows remaining time and
 the result. Android stores the deadline; exact firing needs exact-alarm access,
@@ -336,8 +385,12 @@ Autostart acts when Android hands control to the launcher; choosing a target doe
 not launch it immediately. Firmware determines whether HOME can be changed.
 Consequences and confirmation appear before changes. Disabling setupwraith also
 checks ownership of saved Wi-Fi networks: network-loss risk or an inconclusive
-check blocks the action. Restoring the original state requires working ADB and
-saved recovery data.
+check blocks the action. If ownership by the setup wizard is confirmed, CuteLauncher
+opens a separate dialog: check that you know the password, forget the network and
+reconnect through regular Android network settings, then check ADB and retry.
+If the message returns, keep the built-in launcher enabled. An inconclusive
+ownership check does not require forgetting the network.
+Restoring the original state requires working ADB and saved recovery data.
 
 ## Remote remapper and floating panel
 
@@ -357,22 +410,75 @@ Double press is not supported.
 
 Path: **Launcher and TV controls → TV cleanup manager**.
 
-The manager reads all installed packages, including system packages, and shows
-their states, versions, known descriptions, and disable risks. Unknown packages
-are labeled App not recognized. Descriptions and risks are visible immediately,
-with an enable/disable action in the package card.
+The main page contains the refresh action and four groups: All applications,
+Disable lists, Backup and recovery, and Reports. Before first use, select Refresh applications:
+the groups remain unavailable until the list is read successfully. The last list
+and its states persist between visits and launcher restarts. Opening all
+applications automatically refreshes the list with a notification; the page opens
+only after a successful refresh. Current data is also read before applying changes,
+recovery, and export. A failed refresh stops the action and preserves the last
+successful list.
 
-Save original states, undo manager changes, import a local TXT/JSON package list,
-or choose an exact model/firmware profile or an external CleanYourTV example.
-Selected and skipped packages are shown before changes. Important system
-components are protected. Original states are saved before mutating commands;
-the journal supports retrying partial recovery. Apps and app data are not deleted.
+Applications are grouped into user, preinstalled, and system applications.
+User-installed apps and known ordinary preinstalled apps (such as Prime Video)
+show minimal risk and a note that they are not system applications, without
+individual descriptions or disabling consequences. Android and manufacturer
+system components show their descriptions and risks; unknown system packages
+are labeled Application not identified. Each application card shows its version,
+state, and an enable or disable action. Protection of important components and
+active services applies in every group.
 
-Copy or save the original snapshot, app report, and disabled-package list. Reports
-are not sent automatically. The built-in catalog works without GitHub access;
+The first successful refresh automatically creates the **baseline original state**
+for the current firmware. Backup and recovery shows its creation date and a restore
+button. The launcher cannot delete or overwrite the baseline. Updating from an older
+version preserves the previous original state. More details at the bottom explains
+the copies.
+
+Opening Backup and recovery or the manual states list does not refresh applications.
+The current state is read when saving a copy.
+
+Manage manual states saves the current state with a custom name or the date and
+time as its name. Previous saves appear below the button. Selecting one opens
+restore, delete, and file export through the file manager. Deletion and restoration
+require confirmation. Copies contain enabled/disabled application modes, not APKs
+or app data; recovery needs local ADB. Apps installed after the copy remain unchanged.
+Missing apps and attempts to disable protected components are skipped.
+
+When repeated-crash protection activates, the launcher automatically attempts to
+restore baseline app states without starting Flutter. The recovery screen shows
+the result and provides a retry button if ADB is unavailable. System settings and
+other apps remain accessible. Clearing launcher data or uninstalling it removes
+its internal copies; root access cannot be prevented. A separate baseline applies
+after a firmware change.
+
+In Disable lists, the verified-applications button uses saved lists of system
+applications observed as disabled. It does not change user-installed or ordinary
+preinstalled apps; missing and protected packages are skipped. The Preinstalled
+applications group can disable or enable all such apps, or open their list with
+current states and individual actions.
+Entering the group does not refresh the list; it refreshes when you open the
+application list or prepare to change application states.
+
+Before confirmed list-based disabling, a separate snapshot of only the selected
+applications is saved automatically. It appears in manual states with a
+Before applying list label and the source name. Restoring it leaves other apps
+unchanged. If saving fails, disabling does not start. The limit is 100 manual
+and automatic snapshots; remove unnecessary saves in manual state management.
+
+TXT/JSON import remains available. In the project catalog and CleanYourTV, refresh
+from GitHub using the top button first: list entries stay unavailable until a
+successful update. Project catalog lists matching the current device and firmware
+show a green check mark on their button. Catalogs and application lists support name search. A different
+model or firmware is rejected. If everything is already disabled, the manager
+says so explicitly; missing applications have a separate message.
+The manager does not delete applications or app data.
+
+In Reports, the export button saves device information and disabled applications
+to a file. You can submit this report to the project Git manually for inclusion.
+Nothing is uploaded automatically. The bundled catalog works without GitHub;
 you can also import a suitable local list.
 
-A package appearing in an external list does not guarantee that disabling it
+A package appearing in a disable list does not guarantee that disabling it
 is safe on your firmware. Choose lists for your model and save the original states.
 
 ## Backups and synchronization
@@ -407,6 +513,14 @@ package and certificate compatibility and need Android installation permission.
 Normal updates preserve user settings. Store-distributed versions have their
 own update-channel restrictions.
 
+On the first launch after an update, the launcher checks previously saved access:
+accessibility for button remapping, notification access, display over other apps,
+usage statistics, system settings changes, and Continue Watching.
+When the previously configured ADB connection is available, missing access is
+restored automatically; access disabled before the update is not granted.
+This requires a state snapshot saved by the previous version. If ADB is
+unavailable, enable the required access again in Android settings.
+
 About CuteLauncher shows the version, attribution, and licenses.
 The interface displays versions without a build number; Android keeps an internal
 build counter for installing updates.
@@ -422,41 +536,51 @@ apps. Cache sizes are not independent RAM measurements for each feature.
 <a id="диагностика"></a>
 ## Diagnostics
 
-Path: **Advanced → Diagnostics**.
+Path: **Settings → Advanced → Diagnostics**. One report combines shared TV and
+CuteLauncher metadata, feature compatibility and errors. There is no separate
+compatibility submenu or file. Create a report, view check results, clear it,
+and export it by copying or saving to disk.
 
-**TV compatibility check:** run, inspect results, copy or save an export, and
-open More details. It collects the device profile and available APIs/permissions
-without changing settings or asking for manual participation in individual tests.
-It does not automatically verify the physical remote, HDMI, sleep, or complete
-service behavior.
+The report includes model/firmware, app version, permissions, memory, error stages
+and causes, and redacted arguments, responses and exception text. ADB entries
+also contain the command, stdout/stderr and exit code. Each recorded error links
+to a snapshot of the settings applied at that moment; later changes before export
+do not replace earlier values. Settings at export are listed separately.
+Snapshots exclude passwords, keys, accounts, coordinates, addresses, paths,
+app lists and personal content.
 
-**Error diagnostics:** create, clear, copy, or save a report, and open More details.
-This is bounded diagnostics of launcher operations, available system information,
-and memory, rather than the complete Android log.
+The last 50 operations, up to 100 failures separately, and a bounded ADB log stay
+in memory for the current session until cleared or restarted. Collection is
+explicit; viewing and export reuse the same snapshot, while collecting again
+replaces it. A failed repeat preserves the previous report. Clearing removes the
+current report and logs, but not previously saved files. Nothing is sent automatically.
 
-Collection is explicit. The two sections' results are independent and remain in
-memory until leaving diagnostics. Clearing errors does not remove compatibility
-results or previously exported files. Saving needs a working system file picker
-or compatible file manager.
+Compatibility checks inspect metadata and API availability without changing settings.
+They do not verify the physical remote, HDMI, sleep or full feature operation.
+If collection fails, the unified file retains errors and marks compatibility
+results as unknown.
 
 ### Reporting an issue
 
 1. Reproduce the actions that cause the problem.
-2. Open **Settings → Advanced → Diagnostics → Error diagnostics**.
+2. Open **Settings → Advanced → Diagnostics**.
 3. Select **Create report** and wait until it is ready.
 4. Select **Export report → Save to disk**, choose a folder in the file manager,
    and finish saving.
-5. Attach `cutelauncher_errors_….json` to your forum post or
-   [GitHub issue](https://github.com/KirillShchetinnikov/CuteLauncher-Releases/issues).
-   Include the device model, Android and firmware versions, CuteLauncher version,
-   input method, steps to reproduce, and expected and actual results.
+5. Send `cutelauncher_diagnostics_….json` to the author **in a private message**.
+   Do not attach it to a public forum topic or GitHub issue: automatic redaction
+   may miss personal data. Describe the controls, steps and expected/actual results.
+   TV and app version metadata are already included when Android provides them.
 
-For a device compatibility issue, also open **Diagnostics → TV compatibility check**,
-create a report, and save it the same way. Attach `cutelauncher_compatibility_….json`.
+**By sending the report to the author, you agree to publication of an anonymized
+TV compatibility report in the CuteLauncher Git repository.** Only device metadata
+and feature availability are published, without personal data. Error logs,
+commands, exceptions and your settings are not published. Publication is not automatic.
 
-The app collects diagnostics; the saved JSON file lets you share the results
-with the developer. Reports are never sent automatically. Review the file before
-posting: it may contain device and app information.
+Before publication, only the allowed compatibility portion is extracted: model,
+manufacturer, firmware, Android/ABI and observed feature states. Serial numbers,
+the full fingerprint, exact sending time and user-granted permission state are
+excluded. API observations are not presented as full functional verification.
 
 ## Device data and reports
 

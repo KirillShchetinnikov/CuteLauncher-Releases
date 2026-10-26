@@ -647,7 +647,7 @@
         960,
         540
       ],
-      "sha256": "dc76405bed9a6909b9ca745036c057e0714645c75a133b35f1ba44c7f9fcacf0"
+      "sha256": "e7cced6c03aa3fd5c85b710e1df99f10b62970bdaf21305c459367d51d48eff6"
     },
     {
       "name": "home-shared-rows",
@@ -759,7 +759,7 @@
         960,
         540
       ],
-      "sha256": "ba7d349552aad655c784f11eadd97a09302cfb126b303a9ad5fe78b56d7a988d"
+      "sha256": "575b2e0f9c02c22e6f631de421ffd161909f71fd2abfbf89f75e3da25a905133"
     },
     {
       "name": "calendar-rtl-large",
@@ -775,7 +775,7 @@
         960,
         540
       ],
-      "sha256": "53a5f00701d07257b98dd53e1c1b4ebabb622ced19f726c774e80759d7aa933a"
+      "sha256": "aaf54e84406f9ce4908ccfcc0a4a248f2211197fd69c24fbd60bfeefd400deb3"
     },
     {
       "name": "settings-date",

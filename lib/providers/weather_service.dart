@@ -1,3 +1,4 @@
+import 'package:flauncher/bridge_result.dart';
 import 'service_lifecycle.dart';
 import 'dart:async';
 import 'dart:developer' as developer;
@@ -7,10 +8,10 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
 import '../weather_sources.dart';
+import '../diagnostics_store.dart';
 import 'package:flauncher/flauncher_channel.dart';
 import 'package:flauncher/models/weather_data.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter/services.dart';
 
 class WeatherService extends ChangeNotifier with ServiceLifecycle, WidgetsBindingObserver {
   final FLauncherChannel _channel;
@@ -27,7 +28,7 @@ class WeatherService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
   bool _locating = false;
   bool get locating => _locating;
   Future<List<Map<String, dynamic>>> searchCities(String query) async {
-    final result = await const MethodChannel('cutelauncher/night').invokeListMethod<dynamic>(
+    final result = await const BridgeChannel('cutelauncher/night', preserveErrorCodes: true).invokeListMethod<dynamic>(
       'cities', {'query': query, 'language': 'en'});
     return (result ?? []).whereType<Map>().map((e) => Map<String, dynamic>.from(e)).toList();
   }
@@ -39,7 +40,7 @@ class WeatherService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
     _locating = true;
     notifyListeners();
     try {
-      final result = await const MethodChannel('cutelauncher/weather_location').invokeMapMethod<String, dynamic>('locate');
+      final result = await const BridgeChannel('cutelauncher/weather_location', preserveErrorCodes: true).invokeMapMethod<String, dynamic>('locate');
       if (isDisposed) return;
       final value = WeatherConfiguration(source: _configuration.source,
         location: _configuration.location, cityLatitude: _configuration.cityLatitude, cityLongitude: _configuration.cityLongitude,
@@ -149,6 +150,7 @@ class WeatherService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
       });
       _startPeriodicTimer();
     } catch (e, stack) {
+      DiagnosticsStore.instance.recordException('weatherInitialize', e, stack);
       developer.log("Error initializing WeatherService", error: e, stackTrace: stack);
     } finally {
       if (!isDisposed) _initialized = true;
@@ -205,6 +207,7 @@ class WeatherService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
         _processWeatherJson(latestJson);
       }
     } catch (e, stack) {
+      DiagnosticsStore.instance.recordException('weatherFetch', e, stack);
       developer.log("Failed to fetch latest weather data", error: e, stackTrace: stack);
     }
   }
@@ -245,9 +248,11 @@ class WeatherService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
       _updatedAt = DateTime.now();
       _failure = null;
       await _preferences?.setString('weather_cache', jsonEncode({'configuration': identity, 'fetchedAt': _updatedAt!.toIso8601String(), 'data': data}));
-    } on WeatherException catch (error) {
+    } on WeatherException catch (error, stack) {
+      DiagnosticsStore.instance.recordException('weatherFetch', error, stack, reason: 'weather_${error.failure.name}');
       if (!isDisposed && generation == _fetchGeneration) _failure = error.failure;
-    } catch (_) {
+    } catch (error, stack) {
+      DiagnosticsStore.instance.recordException('weatherFetch', error, stack);
       if (!isDisposed && generation == _fetchGeneration) _failure = WeatherFailure.unavailable;
     } finally {
       _directBusy = false;
@@ -268,6 +273,7 @@ class WeatherService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
       _lastJson = jsonString;
       notifyListeners();
     } catch (e, stack) {
+      DiagnosticsStore.instance.recordException('weatherParse', e, stack);
       developer.log("Failed to parse weather JSON", error: e, stackTrace: stack);
     }
   }

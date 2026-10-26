@@ -1,3 +1,4 @@
+import 'package:flauncher/bridge_result.dart';
 import 'dart:async';
 
 import '../providers/network_service.dart';
@@ -8,13 +9,12 @@ import '../providers/sleep_timer_service.dart';
 import '../providers/night_mode_service.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/remote_panel_service.dart';
 import 'focus_aware_app_bar.dart';
 
-const remotePanelChannel = MethodChannel('cutelauncher/remote_panel');
+const remotePanelChannel = BridgeChannel('cutelauncher/remote_panel', preserveErrorCodes: true);
 
 class RemotePanel extends StatefulWidget {
   const RemotePanel({super.key});

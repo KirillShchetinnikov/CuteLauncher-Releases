@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="recovery_cleaner_retry">Повторити відновлення застосунків</string>
+    <string name="recovery_cleaner_running">Відновлення базових станів…</string>
+    <string name="recovery_cleaner_done">Базові стани застосунків відновлено.</string>
+    <string name="recovery_cleaner_no_baseline">Базовий стан ще не створено.</string>
+    <string name="recovery_cleaner_failed">Відновлення не завершено. Перевірте локальне ADB-з’єднання й повторіть спробу.</string>
+    <string name="recovery_cleaner_partial">Частину станів не відновлено. Застосунки можуть бути відсутні або захищені; перевірте пристрій і повторіть спробу.</string>
+</resources>

@@ -118,10 +118,24 @@ final class NetworkStatistics {
         return getDataUsage(java.util.Calendar.MONTH);
     }
 
+    java.util.Map<String, Long> getTrafficUsage(String period) {
+        int interval = "weekly".equals(period) ? java.util.Calendar.WEEK_OF_YEAR
+                : "monthly".equals(period) ? java.util.Calendar.MONTH : java.util.Calendar.DAY_OF_YEAR;
+        return getDataUsageDetails(interval);
+    }
+
     private long getDataUsage(int period) {
-        if (!checkUsageStatsPermission()) return -1;
+        return getDataUsageDetails(period).get("totalBytes");
+    }
+
+    private java.util.Map<String, Long> unavailableUsage(long code) {
+        return java.util.Map.of("rxBytes", code, "txBytes", code, "totalBytes", code);
+    }
+
+    private java.util.Map<String, Long> getDataUsageDetails(int period) {
+        if (!checkUsageStatsPermission()) return unavailableUsage(-1);
         var manager = (NetworkStatsManager) context.getSystemService(Context.NETWORK_STATS_SERVICE);
-        if (manager == null) return NetworkUsageTotals.UNAVAILABLE;
+        if (manager == null) return unavailableUsage(NetworkUsageTotals.UNAVAILABLE);
         var calendar = java.util.Calendar.getInstance();
         if (period == java.util.Calendar.WEEK_OF_YEAR) {
             calendar.set(java.util.Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
@@ -148,18 +162,31 @@ final class NetworkStatistics {
                 }
             }
         }
-        long[] bytes = new long[types.length];
+        long[] received = new long[types.length], sent = new long[types.length];
         for (int i = 0; i < types.length; i++) {
-            bytes[i] = NetworkUsageTotals.UNAVAILABLE;
+            received[i] = sent[i] = NetworkUsageTotals.UNAVAILABLE;
             try {
                 var bucket = manager.querySummaryForDevice(types[i], null, start, end);
-                if (bucket != null) bytes[i] = bucket.getRxBytes() + bucket.getTxBytes();
+                if (bucket != null) {
+                    received[i] = bucket.getRxBytes();
+                    sent[i] = bucket.getTxBytes();
+                }
             } catch (Exception ignored) {
                 // A missing/unsupported transport is not a successful zero-byte query.
             }
         }
-        if (bytes[2] < 0) bytes[2] = AdbEthernetUsage.read(context, start, end);
-        return NetworkUsageTotals.sum(bytes, required);
+        if (received[2] < 0 || sent[2] < 0) {
+            long[] ethernet = AdbEthernetUsage.readBreakdown(context, start, end);
+            received[2] = ethernet[0]; sent[2] = ethernet[1];
+        }
+        long rx = NetworkUsageTotals.sum(received, required);
+        long tx = NetworkUsageTotals.sum(sent, required);
+        long total = NetworkUsageTotals.UNAVAILABLE;
+        if (rx >= 0 && tx >= 0) {
+            try { total = Math.addExact(rx, tx); } catch (ArithmeticException ignored) { }
+        }
+        return java.util.Map.of("rxBytes", rx, "txBytes", tx, "totalBytes", total,
+                "startMs", start, "endMs", end);
     }
 
     boolean checkUsageStatsPermission() {

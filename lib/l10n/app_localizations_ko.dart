@@ -112,8 +112,11 @@ class AppLocalizationsKo extends AppLocalizations {
       'The focused app\'s banner or icon becomes a soft colour background. The selected gradient appears before an image is ready or if it cannot be read. Changes pause while the launcher is in the background. Your other wallpapers are kept.';
 
   @override
+  String get adbWifiOwnedTitle => 'Wi-Fi가 설정 마법사에 속함';
+
+  @override
   String get adbWifiOwned =>
-      'Not changed: a saved Wi-Fi network belongs to the setup wizard. Forget that network and reconnect through Android Settings, then check again. Disabling the wizard could delete the network.';
+      '변경하지 않았습니다. 저장된 Wi-Fi 네트워크를 Google 설정 마법사가 만들었습니다. 마법사를 사용 중지하면 네트워크가 삭제되어 TV 연결이 끊길 수 있습니다.\n\n1. Wi-Fi 비밀번호를 알고 있는지 확인하세요.\n2. Android 네트워크 설정에서 해당 네트워크를 선택하고 네트워크 삭제를 누르세요.\n3. 일반 Android 네트워크 설정에서 다시 연결하세요.\n4. CuteLauncher로 돌아와 ADB를 확인하고 기본 런처 사용 중지를 다시 시도하세요.\n\n메시지가 다시 나타나면 기본 런처를 켜 두세요. 펌웨어가 네트워크 소유자를 다시 마법사로 지정할 수 있습니다.';
 
   @override
   String get adbWifiUnknown =>
@@ -332,10 +335,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get orSelectFormatSpecifiers => '또는 형식 지정자 선택';
 
   @override
-  String get openImage => '이미지 열기';
+  String get openImage => '파일 선택';
 
   @override
-  String get picture => '사진';
+  String get picture => '로컬 이미지 또는 동영상';
 
   @override
   String removeFrom(String name) {
@@ -426,13 +429,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String get withEllipsisAddTo => '추가...';
 
   @override
-  String get timeBasedWallpaper => '시간 기반 배경화면';
+  String get timeBasedWallpaper => '낮/밤 이미지';
 
   @override
-  String get pickDayWallpaper => '주간 배경화면 선택';
+  String get pickDayWallpaper => '낮 이미지 선택';
 
   @override
-  String get pickNightWallpaper => '야간 배경화면 선택';
+  String get pickNightWallpaper => '밤 이미지 선택';
 
   @override
   String get accessibility => '접근성';
@@ -1686,8 +1689,12 @@ class AppLocalizationsKo extends AppLocalizations {
   String get diagnosticsCopied => '보고서가 복사되었습니다.';
 
   @override
+  String get diagnosticsSharingNotice =>
+      '파일을 공개하지 말고 작성자에게 개인 메시지로 보내세요. 자동 정리 후에도 개인정보가 남을 수 있습니다. 보고서를 보내면 익명화된 TV 호환성 보고서를 CuteLauncher Git 저장소에 게시하는 데 동의하는 것으로 간주합니다. 개인정보 없이 기기 정보와 기능 사용 가능 여부만 공개하며 오류 로그, 명령 및 개인 설정은 공개하지 않습니다.';
+
+  @override
   String get diagnosticsHint =>
-      '보고서에는 앱 버전, 권한 상태, 메모리 사용량 및 작업 결과가 포함됩니다. 키, 주소, 파일 경로, 앱 목록 및 알림 콘텐츠는 제외됩니다. 앱이 다시 시작될 때까지 마지막 50개 작업만 메모리에 유지됩니다. 아무것도 자동으로 전송되지 않습니다.';
+      '하나의 보고서에 TV 기능 호환성과 오류 진단을 함께 담습니다. 보고서에는 TV 모델과 펌웨어, 앱 버전, 권한, 메모리, 오류 단계와 원인, 개인정보를 자동 정리한 명령과 응답이 포함됩니다. 현재 세션의 최근 작업 50개, 별도로 오류 최대 100개와 제한된 ADB 로그를 보관합니다. 다시 시작하면 로그가 삭제됩니다. 개인정보가 남을 수 있으므로 공개하지 말고 개인 메시지로 보내세요. 자동 전송하지 않습니다.각 오류에는 당시 적용된 설정의 스냅샷이 저장되며 이후 변경으로 대체되지 않습니다.';
 
   @override
   String get diagnosticsTitle => '오류 진단';
@@ -2026,7 +2033,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get background => '배경';
 
   @override
-  String get backgroundParameters => '매개변수';
+  String get backgroundParameters => '소스 설정';
 
   @override
   String get resetAppearanceHint => '배경, 강조, 타일, 라벨, 강조표시 및 애니메이션을 재설정하시겠습니까?';
@@ -3483,7 +3490,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get cleanerSnapshot => 'Save original state';
 
   @override
-  String get cleanerRestore => 'Restore manager changes';
+  String get cleanerRestore => '기준 상태로 복원';
 
   @override
   String get cleanerSnapshotSaved => 'Original state saved';
@@ -3495,8 +3502,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get cleanerSafe => 'Disable verified applications';
 
   @override
-  String get cleanerNoSafe =>
-      'This firmware has no verified list that preserves all features.';
+  String get cleanerNoSafe => '이 모델과 펌웨어에 일치하는 시스템 앱 목록이 없습니다.';
 
   @override
   String get cleanerLocal => 'Disable using a local list';
@@ -3511,7 +3517,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get cleanerExternal => 'CleanYourTV examples';
 
   @override
-  String get cleanerDisabledExport => 'Export disabled applications';
+  String get cleanerDisabledExport => '사용 중지 앱 보고서를 파일로 내보내기';
 
   @override
   String get cleanerInventoryExport => 'Export application report';
@@ -3579,7 +3585,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get cleanerHelp =>
-      'The manager uses the local ADB connection configured in TV control settings. It never uninstalls apps or clears their data. The snapshot and recovery journal are separate from ordinary backups. Recovery restores previous states only for packages changed by this manager. Automatic recovery is blocked after a firmware change.\n\nVerified lists match exact firmware. Observed and external lists do not establish safety. Protected components, HOME and active services cannot be disabled. Packages are previewed before applying; missing and already disabled packages are skipped.\n\nThe project catalog is bundled from Git. GitHub refresh requires a public catalog. External examples load only on request and never execute scripts. Export creates JSON containing disabled packages and firmware identity; add it manually to catalog/examples after review. Nothing is uploaded automatically.\n\nApp descriptions and risk remain visible. Unconfirmed purposes are marked explicitly and never included in verified lists.';
+      '첫 목록 새로고침 성공 시 기준 상태가 한 번 생성되며 런처에서 삭제하거나 덮어쓸 수 없습니다. 해당 펌웨어에 연결됩니다. 수동 상태는 앱 모드를 이름 및 날짜와 함께 저장하며 복원, 삭제, 내보내기가 가능합니다. APK나 앱 데이터는 포함하지 않습니다. 복원에는 로컬 ADB가 필요합니다. 반복 충돌 보호가 작동하면 기준 상태로 자동 복원을 시도합니다. 런처 데이터 삭제나 제거 시 복사본도 삭제됩니다. 루트 접근은 막을 수 없습니다.';
 
   @override
   String get cleanerSkipped =>
@@ -3832,4 +3838,243 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get tvPowerHelp =>
       '끄기는 CuteLauncher 접근성 서비스 또는 로컬 ADB로 대기 모드를 켭니다. 다시 시작하려면 ADB가 필요합니다. TV 박스에서는 박스를 제어하며 TV 동작은 HDMI-CEC와 펌웨어에 따라 다릅니다.';
+
+  @override
+  String get cleanerLists => '사용 중지 목록';
+
+  @override
+  String get cleanerRecovery => '백업 및 복원';
+
+  @override
+  String get cleanerExports => '보고서';
+
+  @override
+  String get cleanerUpdating => '앱 목록 업데이트 중…';
+
+  @override
+  String get cleanerRefreshRequired => '먼저 앱 목록을 새로고침하세요.';
+
+  @override
+  String get cleanerPreinstalled => '사전 설치된 앱';
+
+  @override
+  String get cleanerNotSystem => '시스템 앱이 아닙니다.';
+
+  @override
+  String get cleanerMinimalRisk => '최소';
+
+  @override
+  String get cleanerCacheFailure => '다음 방문을 위해 목록을 저장하지 못했습니다.';
+
+  @override
+  String get cleanerUserApps => '사용자 앱';
+
+  @override
+  String get cleanerPreinstalledApps => '사전 설치된 앱';
+
+  @override
+  String get cleanerSystemApps => '시스템 앱';
+
+  @override
+  String get cleanerBaseline => '기준 초기 상태';
+
+  @override
+  String get cleanerManualStates => '수동 저장 상태 관리';
+
+  @override
+  String get cleanerManualSave => '현재 상태 저장';
+
+  @override
+  String get cleanerDateName => '날짜와 시간 사용';
+
+  @override
+  String get cleanerCustomName => '이름 입력';
+
+  @override
+  String get cleanerStateExport => '저장된 상태를 파일로 내보내기';
+
+  @override
+  String get cleanerStateRestoreHelp =>
+      '이 펌웨어에 저장된 앱의 사용 및 사용 중지 상태를 복원합니다. 복사본 생성 후 설치한 앱은 변경하지 않습니다. 없는 앱과 보호된 구성 요소의 사용 중지는 건너뜁니다. 앱 데이터는 복원하지 않습니다.';
+
+  @override
+  String get cleanerCopiesHelp =>
+      '첫 목록 새로고침 성공 시 기준 상태가 한 번 생성되며 런처에서 삭제하거나 덮어쓸 수 없습니다. 해당 펌웨어에 연결됩니다. 수동 상태는 앱 모드를 이름 및 날짜와 함께 저장하며 복원, 삭제, 내보내기가 가능합니다. APK나 앱 데이터는 포함하지 않습니다. 복원에는 로컬 ADB가 필요합니다. 반복 충돌 보호가 작동하면 기준 상태로 자동 복원을 시도합니다. 런처 데이터 삭제나 제거 시 복사본도 삭제됩니다. 루트 접근은 막을 수 없습니다.';
+
+  @override
+  String get cleanerSearch => '이름으로 검색';
+
+  @override
+  String get cleanerCatalogUpdateRequired => '먼저 GitHub에서 카탈로그를 새로고침하세요.';
+
+  @override
+  String get cleanerNoSearchResults => '일치하는 항목이 없습니다.';
+
+  @override
+  String get cleanerAlreadyDisabled => '이 목록 중 이 TV에 있는 모든 앱은 이미 사용 중지 상태입니다.';
+
+  @override
+  String get cleanerAlreadyEnabled => '이 목록 중 이 TV에 있는 모든 앱은 이미 사용 상태입니다.';
+
+  @override
+  String get cleanerNoInstalled => '이 목록에 일치하는 앱이 이 TV에 설치되어 있지 않습니다.';
+
+  @override
+  String get cleanerListProtected => '나머지 앱은 사용 중지로부터 보호됩니다.';
+
+  @override
+  String get cleanerSnapshotFailed => '상태를 저장하지 못했습니다. 앱을 사용 중지하지 않았습니다.';
+
+  @override
+  String get cleanerDisableAllPreinstalled => '모든 사전 설치 앱 사용 중지';
+
+  @override
+  String get cleanerEnableAllPreinstalled => '모든 사전 설치 앱 사용';
+
+  @override
+  String get cleanerPreinstalledList => '사전 설치 앱 목록';
+
+  @override
+  String cleanerBeforeList(String listName) {
+    return '목록 적용 전: $listName';
+  }
+
+  @override
+  String get sleepTimerSettings => '취침 타이머 설정';
+
+  @override
+  String get sleepTimerPresets => '타이머';
+
+  @override
+  String get sleepTimerDisplay => '타이머 실행 중 표시';
+
+  @override
+  String get sleepTimerRemaining => '남은 시간';
+
+  @override
+  String get sleepTimerEndTime => '종료 시각';
+
+  @override
+  String get sleepTimerBoth => '남은 시간과 종료 시각';
+
+  @override
+  String get sleepTimerShowSeconds => '초 표시';
+
+  @override
+  String get sleepTimerCloseAfterSelection => '타이머 선택 후 위젯 닫기';
+
+  @override
+  String get sleepTimerAdd => '타이머 추가';
+
+  @override
+  String get sleepTimerEdit => '타이머 편집';
+
+  @override
+  String get sleepTimerHoursLabel => '시간';
+
+  @override
+  String get sleepTimerMinutesLabel => '분';
+
+  @override
+  String get sleepTimerSecondsLabel => '초';
+
+  @override
+  String get sleepTimerInvalidDuration =>
+      '0보다 긴 시간을 입력하세요. 시간 0–999999, 분과 초 0–59.';
+
+  @override
+  String get sleepTimerDeleteConfirmation =>
+      '이 타이머를 삭제할까요? 실행 중인 카운트다운은 계속됩니다.';
+
+  @override
+  String get sleepTimerResetConfirmation =>
+      '기본 타이머와 순서를 복원할까요? 사용자 타이머는 삭제됩니다. 실행 중인 카운트다운은 계속됩니다.';
+
+  @override
+  String get sleepTimerReorderHint =>
+      '◄ / ► 또는 OK 길게 눌러 이동. ▲ / ▼로 순서를 바꾸고 표시/숨김 목록 사이에서 이동합니다. OK로 이동을 마칩니다.';
+
+  @override
+  String get sleepTimerSaveFailed => '타이머 설정을 저장할 수 없습니다.';
+
+  @override
+  String get sleepTimerVisible => '표시';
+
+  @override
+  String get sleepTimerHidden => '숨김';
+
+  @override
+  String get sleepTimerReset => '타이머 초기화';
+
+  @override
+  String get cleanerListSnapshotHelp =>
+      '목록 사용 중지 전에 선택한 앱만 자동 저장합니다. 복원 시 다른 앱은 변경하지 않습니다. 수동 및 자동 상태를 합쳐 최대 100개 저장합니다. 저장에 실패하면 사용 중지를 시작하지 않습니다.';
+
+  @override
+  String get trafficSettings => '트래픽 설정';
+
+  @override
+  String get trafficTitle => '트래픽';
+
+  @override
+  String get trafficReceived => '수신';
+
+  @override
+  String get trafficSent => '송신';
+
+  @override
+  String get trafficTotal => '전체';
+
+  @override
+  String get stopApp => '중지';
+
+  @override
+  String get backgroundImageFormats =>
+      '이미지: JPEG, PNG, WebP, GIF, BMP — 최대 8 MiB, 4,800만 화소, 각 변 16,384픽셀.';
+
+  @override
+  String get backgroundMediaFormats =>
+      '이미지: JPEG, PNG, WebP, GIF, BMP — 최대 8 MiB, 4,800만 화소, 각 변 16,384픽셀.\n동영상: MP4/M4V, WebM, MKV — 최대 256 MiB, 3840×2160. 코덱 지원은 TV에 따라 다릅니다. H.264 MP4를 권장합니다. 소리 없이 반복하며 홈 밖에서는 일시 정지합니다. 동영상은 백업에 포함되지 않습니다.';
+
+  @override
+  String get backgroundFormatError =>
+      '지원하지 않는 형식이거나 손상된 파일입니다. 표시된 형식의 정상 파일을 선택하세요.';
+
+  @override
+  String backgroundFileTooLarge(String maxMiB) {
+    return '파일이 너무 큽니다. 최대 $maxMiB MiB입니다. 더 작은 파일을 선택하세요.';
+  }
+
+  @override
+  String get backgroundImageResolutionError =>
+      '이미지가 너무 큽니다. 최대 4,800만 화소, 각 변 16,384픽셀입니다.';
+
+  @override
+  String get backgroundVideoResolutionError =>
+      '동영상 해상도가 너무 높습니다. 최대 3840×2160 또는 2160×3840을 선택하세요.';
+
+  @override
+  String get backgroundVideoCodecError =>
+      'TV에서 동영상을 재생할 수 없습니다. 코덱이 지원되지 않거나 파일이 손상되었습니다. H.264 MP4를 시도하세요.';
+
+  @override
+  String get backgroundFileApplied => '파일을 선택했습니다. 배경이 변경되었습니다.';
+
+  @override
+  String get noticePosition => '알림 위치';
+
+  @override
+  String get noticeBottomRight => '오른쪽 아래';
+
+  @override
+  String get noticeBottomLeft => '왼쪽 아래';
+
+  @override
+  String get noticeTopRight => '오른쪽 위';
+
+  @override
+  String get noticeTopLeft => '왼쪽 위';
+
+  @override
+  String get notificationOpenFailed => '알림 동작을 열 수 없습니다. 더 이상 사용할 수 없을 수 있습니다.';
 }

@@ -34,7 +34,7 @@ final class WallpaperFolder {
         }
         pending = result;
         try { activity.startActivityForResult(intent, REQUEST); }
-        catch (Exception error) { pending = null; result.error("document_unavailable", "Unable to open folder", null); }
+        catch (Exception error) { pending = null; result.error("document_unavailable", "Unable to open folder", DiagnosticErrorDetails.from(error)); }
     }
     void complete(int code, Intent data) {
         MethodChannel.Result result = pending;
@@ -45,7 +45,7 @@ final class WallpaperFolder {
             Uri uri = data.getData();
             activity.getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
             result.success(uri.toString());
-        } catch (Exception error) { result.error("document_failed", "Unable to retain folder access", null); }
+        } catch (Exception error) { result.error("document_failed", "Unable to retain folder access", DiagnosticErrorDetails.from(error)); }
     }
     void release(String value, MethodChannel.Result result) {
         try { activity.getContentResolver().releasePersistableUriPermission(Uri.parse(value), Intent.FLAG_GRANT_READ_URI_PERMISSION); }
@@ -83,7 +83,7 @@ final class WallpaperFolder {
                 java.util.Collections.sort(files);
                 new Handler(Looper.getMainLooper()).post(() -> result.success(files));
             } catch (Exception error) {
-                new Handler(Looper.getMainLooper()).post(() -> result.error("document_failed", "Unable to enumerate folder", null));
+                new Handler(Looper.getMainLooper()).post(() -> result.error("document_failed", "Unable to enumerate folder", DiagnosticErrorDetails.from(error)));
             }
         });
     }
@@ -101,7 +101,7 @@ final class WallpaperFolder {
                 byte[] bytes = output.toByteArray();
                 new Handler(Looper.getMainLooper()).post(() -> result.success(bytes));
             } catch (Exception error) {
-                new Handler(Looper.getMainLooper()).post(() -> result.error("document_failed", "Unable to read folder image", null));
+                new Handler(Looper.getMainLooper()).post(() -> result.error("document_failed", "Unable to read folder image", DiagnosticErrorDetails.from(error)));
             }
         });
     }

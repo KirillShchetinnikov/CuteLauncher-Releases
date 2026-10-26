@@ -56,6 +56,8 @@ import 'providers/appearance_service.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 import 'flauncher_app.dart';
+import 'diagnostics_store.dart';
+import 'diagnostic_settings.dart';
 import 'providers/remote_panel_service.dart';
 import 'widgets/remote_panel.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
@@ -67,12 +69,16 @@ Future<void> _reportFatal() async {
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   PlatformDispatcher.instance.onError = (error, stack) {
+    DiagnosticsStore.instance.recordException('unhandled', error, stack);
     debugPrint('Unhandled launcher error: $error');
     unawaited(_reportFatal());
     return false;
   };
   try { await _runLauncher(); }
-  catch (error, stack) { await _reportFatal(); Error.throwWithStackTrace(error, stack); }
+  catch (error, stack) {
+    DiagnosticsStore.instance.recordException('startup', error, stack);
+    await _reportFatal(); Error.throwWithStackTrace(error, stack);
+  }
 }
 
 @pragma('vm:entry-point')
@@ -101,6 +107,7 @@ Future<void> _runLauncher({bool remotePanel = false}) async {
 
   // Global Error Boundary & Crash Protection
   FlutterError.onError = (FlutterErrorDetails details) {
+    DiagnosticsStore.instance.recordException('framework', details.exception, details.stack);
     FlutterError.presentError(details);
     debugPrint('FLauncher Error Boundary: ${details.exception}');
   };
@@ -139,6 +146,18 @@ Future<void> _runLauncher({bool remotePanel = false}) async {
   final settingsSync = SettingsSyncService(sharedPreferences);
   try { if (!remotePanel) await settingsSync.recover(); }
   catch (_) { debugPrint('Settings exchange recovery will be retried.'); }
+  final settingsService = SettingsService(sharedPreferences);
+  DiagnosticsStore.instance.settingsProvider = () => {
+    ...settingsService.exportSettingsMap(),
+    for (final key in DiagnosticSettings.preferenceKeys)
+      if (sharedPreferences.containsKey(key)) key: sharedPreferences.get(key),
+    'effective': {
+      'memorySaver': settingsService.memorySaverEnabled,
+      'focusAnimation': settingsService.appHighlightAnimationEnabled && !settingsService.memorySaverEnabled,
+      'wallpaperFit': settingsService.memorySaverEnabled && settingsService.wallpaperFit == 'blurred'
+          ? 'contain' : settingsService.wallpaperFit,
+    },
+  };
   final packageInfo = await PackageInfo.fromPlatform();
   final fLauncherChannel = FLauncherChannel();
   final fLauncherDatabase = FLauncherDatabase(connect());
@@ -166,7 +185,7 @@ Future<void> _runLauncher({bool remotePanel = false}) async {
           create: (_) => BackupService(fLauncherDatabase, sharedPreferences),
         ),
         ChangeNotifierProvider(
-            create: (_) => SettingsService(sharedPreferences),
+            create: (_) => settingsService,
             lazy: false),
         ChangeNotifierProvider(create: (context) => AutomaticBackupService(
             context.read<BackupService>(), context.read<SettingsService>(), sharedPreferences), lazy: remotePanel),

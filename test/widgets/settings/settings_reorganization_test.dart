@@ -176,8 +176,8 @@ void main() {
     }
     await Navigator.of(tester.element(find.byType(InformationSettingsPage))).maybePop();
     await tester.pumpAndSettle();
-    await tester.scrollUntilVisible(find.text('Traffic counting period'), 200);
-    expect(find.widgetWithText(FocusableSettingsTile, 'Traffic counting period'), findsOneWidget);
+    await tester.scrollUntilVisible(find.text('Traffic settings'), 200);
+    expect(find.widgetWithText(FocusableSettingsTile, 'Traffic settings'), findsOneWidget);
     expect(settings.showWeatherInStatusBar, isFalse);
   });
   testWidgets(

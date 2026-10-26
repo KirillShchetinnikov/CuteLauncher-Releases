@@ -1,5 +1,4 @@
 import 'settings_help.dart';
-import 'information_settings_page.dart';
 import '../../providers/remote_panel_service.dart';
 import '../rounded_switch_list_tile.dart';
 import 'appearance_page.dart';
@@ -17,8 +16,6 @@ import 'focusable_settings_tile.dart';
 import 'settings_route.dart';
 import 'panel_order_page.dart';
 import 'remote_buttons_page.dart';
-import 'notifications_settings_page.dart';
-import 'inputs_settings_page.dart';
 
 class RemotePanelPage extends StatelessWidget {
   static const routeName = 'remote_panel_settings';
@@ -114,40 +111,13 @@ class RemotePanelObjectsPage extends StatelessWidget {
       title: Text(l.topPanelObjects),
       child: ListView(
         children: [
-          const InformationObjectsSection(remotePanel: true),
-          for (final id in panel.order.where(
-            (id) => !const ['time', 'date', 'weather'].contains(id),
-          ))
+          for (final id in panel.order)
             RoundedSwitchListTile(
               key: ValueKey(id),
               title: Text(labels[id]!),
               enabled: available(id),
               value: available(id) && panel.visible(id),
               onChanged: (value) => panel.show(id, value),
-            ),
-          if (!network.hasUsageStatsPermission)
-            FocusableSettingsTile(
-              title: Text(l.grantUsagePermission),
-              leading: const Icon(Icons.lock_open),
-              onPressed: network.requestPermission,
-            ),
-          if (!notifications.hasPermission)
-            FocusableSettingsTile(
-              title: Text(l.notificationAccess),
-              leading: const Icon(Icons.notifications_outlined),
-              onPressed: () => Navigator.of(context).push(
-                SettingsRoute(
-                  builder: (_) => const NotificationsSettingsPage(),
-                ),
-              ),
-            ),
-          if (!inputs.hasInputs)
-            FocusableSettingsTile(
-              title: Text(l.inputs),
-              leading: const Icon(Icons.tv_outlined),
-              onPressed: () => Navigator.of(
-                context,
-              ).push(SettingsRoute(builder: (_) => const InputsSettingsPage())),
             ),
         ],
       ),

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="recovery_cleaner_retry">Tentar restaurar apps novamente</string>
+    <string name="recovery_cleaner_running">Restaurando estados base…</string>
+    <string name="recovery_cleaner_done">Estados base restaurados.</string>
+    <string name="recovery_cleaner_no_baseline">Nenhum estado base foi criado.</string>
+    <string name="recovery_cleaner_failed">Restauração incompleta. Verifique o ADB local e tente novamente.</string>
+    <string name="recovery_cleaner_partial">Alguns estados não foram restaurados. Os apps podem estar ausentes ou protegidos. Verifique o dispositivo e tente novamente.</string>
+</resources>

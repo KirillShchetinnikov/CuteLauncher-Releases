@@ -1,3 +1,4 @@
+import 'package:flauncher/bridge_result.dart';
 import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -31,7 +32,7 @@ abstract class MediaTransport {
 class PlatformMediaTransport implements MediaTransport {
   final MethodChannel methods;
   final EventChannel updates;
-  const PlatformMediaTransport({this.methods = const MethodChannel('cutelauncher/media'),
+  const PlatformMediaTransport({this.methods = const BridgeChannel('cutelauncher/media', preserveErrorCodes: true),
     this.updates = const EventChannel('cutelauncher/media_events')});
   @override Stream<dynamic> get events => updates.receiveBroadcastStream();
   @override Future<dynamic> snapshot() => methods.invokeMethod('snapshot');

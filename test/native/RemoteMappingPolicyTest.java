@@ -29,7 +29,10 @@ public class RemoteMappingPolicyTest {
         require(RemoteMappingConfiguration.fromMap(config.toMap()).binding(190).target().equals("tv.example.player"), "App target survives round trip");
         invalid(Map.of("enabled",true,"bindings",List.of(row(3,"home",""))));
         invalid(Map.of("enabled",true,"bindings",List.of(row(190,"home",""),row(190,"back",""))));
-        invalid(Map.of("enabled",true,"bindings",List.of(row(190,"panel",""))));
+        var panel = RemoteMappingConfiguration.fromMap(Map.of("enabled",true,"bindings",List.of(row(190,"panel",""))));
+        require(RemoteMappingConfiguration.fromMap(panel.toMap()).binding(190).action().equals("panel"), "Panel action survives round trip");
+        invalid(Map.of("enabled",true,"bindings",List.of(row(190,"panel","unexpected"))));
+        invalid(Map.of("enabled",true,"bindings",List.of(row(190,"unknown",""))));
         invalid(Map.of("enabled",true,"bindings",List.of(row(190,"app",""))));
         invalid(Map.of("enabled",true,"bindings",List.of(row(190,"webhook","http://example.org/secret"))));
         invalid(Map.of("enabled",true,"bindings",Collections.nCopies(33,row(190,"home",""))));

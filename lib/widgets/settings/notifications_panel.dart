@@ -1,3 +1,4 @@
+import '../menu_header.dart';
 import '../notice_style.dart';
 import '../menu_header_action.dart';
 
@@ -21,7 +22,12 @@ class NotificationsPanel extends StatefulWidget {
   final bool? isRightSide;
   final double topInset;
   final Rect? anchor;
-  const NotificationsPanel({super.key, this.isRightSide, this.topInset = 0, this.anchor});
+  const NotificationsPanel({
+    super.key,
+    this.isRightSide,
+    this.topInset = 0,
+    this.anchor,
+  });
   @override
   State<NotificationsPanel> createState() => _NotificationsPanelState();
 }
@@ -114,6 +120,8 @@ class _NotificationsPanelState extends State<NotificationsPanel> {
     final app = apps.applications.firstWhereOrNull(
       (a) => a.packageName == item.packageName,
     );
+    final service = context.read<NotificationsService>();
+    final canOpen = item.hasContentIntent || (app?.isLaunchable ?? false);
     final l = AppLocalizations.of(context)!;
     await showLauncherDialog<void>(
       context: context,
@@ -130,7 +138,7 @@ class _NotificationsPanelState extends State<NotificationsPanel> {
                 child: const SizedBox.expand(),
               ),
               SidePanelDialog(
-                anchor: widget.anchor,
+                // Nested dialogs use the free area beside the source panel.
                 topInset: widget.topInset,
                 width: 420,
                 isRightSide: widget.isRightSide,
@@ -151,19 +159,39 @@ class _NotificationsPanelState extends State<NotificationsPanel> {
                         ),
                       if (item.text.isNotEmpty) Text(item.text),
                       const Divider(),
-                      if (app != null)
+                      if (canOpen)
                         FocusableSettingsTile(
                           autofocus: true,
                           leading: const Icon(Icons.launch),
                           title: Text('${l.openApp} $name'),
                           onPressed: () async {
+                            if (item.hasContentIntent) {
+                              final opened = await service.openNotification(
+                                item.key,
+                              );
+                              if (!dialogContext.mounted) return;
+                              if (!opened) {
+                                showActionNotice(
+                                  dialogContext,
+                                  l.notificationOpenFailed,
+                                );
+                                return;
+                              }
+                            } else if (app != null) {
+                              final opened = await apps.launchApp(app);
+                              if (!dialogContext.mounted) return;
+                              if (!opened) {
+                                showActionNotice(dialogContext, l.notificationOpenFailed);
+                                return;
+                              }
+                            }
+                            if (!dialogContext.mounted || !mounted) return;
                             Navigator.of(dialogContext).pop();
                             Navigator.of(context).pop();
-                            await apps.launchApp(app);
                           },
                         ),
                       FocusableSettingsTile(
-                        autofocus: app == null,
+                        autofocus: !canOpen,
                         leading: const Icon(Icons.delete_outline),
                         title: Text(l.delete),
                         onPressed: () async {
@@ -240,17 +268,14 @@ class _NotificationsPanelState extends State<NotificationsPanel> {
                 width: 420,
                 isRightSide: widget.isRightSide,
                 child: Column(
-                  mainAxisSize: widget.anchor == null ? MainAxisSize.max : MainAxisSize.min,
+                  mainAxisSize: widget.anchor == null
+                      ? MainAxisSize.max
+                      : MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            l.notifications,
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                        ),
+                    MenuHeader(
+                      title: Text(l.notifications),
+                      actions: [
                         MenuHeaderAction(
                           focusNode: _hideNode,
                           autofocus: items.isEmpty,
@@ -279,6 +304,7 @@ class _NotificationsPanelState extends State<NotificationsPanel> {
                             setState(() => _settingsOpen = true);
                             await showLauncherDialog<void>(
                               context: context,
+                              parentPanelHidden: true,
                               styleDialog: false,
                               barrierColor: Colors.transparent,
                               builder: (_) => const SettingsPanel(
@@ -306,13 +332,18 @@ class _NotificationsPanelState extends State<NotificationsPanel> {
                             },
                           ),
                       ],
+                      hint: Text(l.dpadDismissHint),
                     ),
-                    Text(l.dpadDismissHint),
                     const Divider(),
                     Flexible(
-                      fit: widget.anchor == null ? FlexFit.tight : FlexFit.loose,
+                      fit: widget.anchor == null
+                          ? FlexFit.tight
+                          : FlexFit.loose,
                       child: items.isEmpty
-                          ? Center(heightFactor: widget.anchor == null ? null : 1, child: Text(l.allCaughtUp))
+                          ? Center(
+                              heightFactor: widget.anchor == null ? null : 1,
+                              child: Text(l.allCaughtUp),
+                            )
                           : SingleChildScrollView(
                               child: Column(
                                 children: List.generate(items.length, (index) {

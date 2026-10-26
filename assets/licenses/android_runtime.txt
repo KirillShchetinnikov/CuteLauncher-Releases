@@ -13,6 +13,11 @@ Source: https://github.com/Kotlin/kotlinx.coroutines
 Kotlin Android extensions/parcelize runtime 1.9.22 and JDK wrappers 1.9.20
 Source: https://github.com/JetBrains/kotlin
 
+AndroidX Media3 / ExoPlayer 1.9.2 (local video backgrounds, added 25 October 2026)
+Source: https://github.com/androidx/media/tree/1.9.2
+Apache-2.0; the full Apache license below applies. Flutter video_player and its
+platform implementations retain their own bundled BSD-3-Clause notices.
+
 Exact AndroidX and other resolved coordinates, source jars and POM license
 metadata are collected by scripts/export-release-dependencies.gradle and
 scripts/export-release-source.py. Native source revisions are pinned in

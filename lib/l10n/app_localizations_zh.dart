@@ -112,8 +112,11 @@ class AppLocalizationsZh extends AppLocalizations {
       'The focused app\'s banner or icon becomes a soft colour background. The selected gradient appears before an image is ready or if it cannot be read. Changes pause while the launcher is in the background. Your other wallpapers are kept.';
 
   @override
+  String get adbWifiOwnedTitle => 'Wi-Fi 属于设置向导';
+
+  @override
   String get adbWifiOwned =>
-      'Not changed: a saved Wi-Fi network belongs to the setup wizard. Forget that network and reconnect through Android Settings, then check again. Disabling the wizard could delete the network.';
+      '未做任何更改：保存的 Wi-Fi 网络由 Google 设置向导创建。停用向导可能删除网络并使电视断网。\n\n1. 确认您知道 Wi-Fi 密码。\n2. 打开 Android 网络设置，选择该网络，然后选择“忘记网络”。\n3. 通过普通 Android 网络设置重新连接。\n4. 返回 CuteLauncher，检查 ADB，然后重试停用内置启动器。\n\n如果再次出现此消息，请保持内置启动器启用：固件可能会再次将网络归属于设置向导。';
 
   @override
   String get adbWifiUnknown =>
@@ -331,10 +334,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get orSelectFormatSpecifiers => '或选择格式说明符';
 
   @override
-  String get openImage => '打开图片';
+  String get openImage => '选择文件';
 
   @override
-  String get picture => '图片';
+  String get picture => '本地图片或视频';
 
   @override
   String removeFrom(String name) {
@@ -425,13 +428,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get withEllipsisAddTo => '添加到…';
 
   @override
-  String get timeBasedWallpaper => '按时间切换壁纸';
+  String get timeBasedWallpaper => '日间/夜间图片';
 
   @override
-  String get pickDayWallpaper => '选择日间壁纸';
+  String get pickDayWallpaper => '选择日间图片';
 
   @override
-  String get pickNightWallpaper => '选择夜间壁纸';
+  String get pickNightWallpaper => '选择夜间图片';
 
   @override
   String get accessibility => '无障碍';
@@ -1670,8 +1673,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get diagnosticsCopied => '报告已复制';
 
   @override
+  String get diagnosticsSharingNotice =>
+      '请通过私信将文件发送给作者，不要公开发布：自动清理可能遗漏个人信息。向作者发送报告即表示您同意在 CuteLauncher 的 Git 仓库中发布匿名的电视兼容性报告。公开内容仅包含无个人信息的设备元数据和功能可用性；错误日志、命令及您的设置不会公开。';
+
+  @override
   String get diagnosticsHint =>
-      '报告包含应用程序版本、权限状态、内存使用情况和操作结果。它不包括密钥、地址、文件路径、应用程序列表和通知内容。在应用程序重新启动之前，内存中仅保留最后 50 次操作。不会自动发送任何内容。';
+      '一份报告同时包含电视功能兼容性和错误诊断。报告包含电视型号和固件、应用版本、权限、内存、错误阶段及原因，以及自动清除个人信息后的命令和响应。当前会话保留最近 50 次操作、单独最多 100 次失败和有限的 ADB 日志。重启后日志清空。清理可能遗漏个人信息：请通过私信发送文件，不要公开发布。不会自动发送任何内容。每次错误都会保存当时生效设置的快照，后续更改不会覆盖它。';
 
   @override
   String get diagnosticsTitle => '错误诊断';
@@ -2004,7 +2011,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get background => '背景';
 
   @override
-  String get backgroundParameters => '参数';
+  String get backgroundParameters => '来源设置';
 
   @override
   String get resetAppearanceHint => '重置背景、重音、图块、标签、突出显示和动画？';
@@ -3409,7 +3416,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get cleanerSnapshot => 'Save original state';
 
   @override
-  String get cleanerRestore => 'Restore manager changes';
+  String get cleanerRestore => '恢复基准状态';
 
   @override
   String get cleanerSnapshotSaved => 'Original state saved';
@@ -3421,8 +3428,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get cleanerSafe => 'Disable verified applications';
 
   @override
-  String get cleanerNoSafe =>
-      'This firmware has no verified list that preserves all features.';
+  String get cleanerNoSafe => '此型号和固件没有匹配的系统应用列表。';
 
   @override
   String get cleanerLocal => 'Disable using a local list';
@@ -3437,7 +3443,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get cleanerExternal => 'CleanYourTV examples';
 
   @override
-  String get cleanerDisabledExport => 'Export disabled applications';
+  String get cleanerDisabledExport => '将停用应用报告导出到文件';
 
   @override
   String get cleanerInventoryExport => 'Export application report';
@@ -3505,7 +3511,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get cleanerHelp =>
-      'The manager uses the local ADB connection configured in TV control settings. It never uninstalls apps or clears their data. The snapshot and recovery journal are separate from ordinary backups. Recovery restores previous states only for packages changed by this manager. Automatic recovery is blocked after a firmware change.\n\nVerified lists match exact firmware. Observed and external lists do not establish safety. Protected components, HOME and active services cannot be disabled. Packages are previewed before applying; missing and already disabled packages are skipped.\n\nThe project catalog is bundled from Git. GitHub refresh requires a public catalog. External examples load only on request and never execute scripts. Export creates JSON containing disabled packages and firmware identity; add it manually to catalog/examples after review. Nothing is uploaded automatically.\n\nApp descriptions and risk remain visible. Unconfirmed purposes are marked explicitly and never included in verified lists.';
+      '首次成功刷新列表时仅创建一次基准状态，启动器无法删除或覆盖它，且仅适用于该固件。手动状态记录当前应用模式、名称及日期，可恢复、删除和导出。备份不包含 APK 或应用数据。恢复需要本地 ADB。崩溃循环保护触发时，启动器会尝试自动恢复基准状态。清除启动器数据或卸载启动器也会删除这些备份；无法防止 root 访问。';
 
   @override
   String get cleanerSkipped =>
@@ -3756,4 +3762,239 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get tvPowerHelp =>
       '关闭通过 CuteLauncher 无障碍服务或本地 ADB 进入待机模式。重启需要 ADB。电视盒子上的命令控制盒子本身；电视行为取决于 HDMI-CEC 和固件。';
+
+  @override
+  String get cleanerLists => '停用列表';
+
+  @override
+  String get cleanerRecovery => '备份与恢复';
+
+  @override
+  String get cleanerExports => '报告';
+
+  @override
+  String get cleanerUpdating => '正在更新应用列表…';
+
+  @override
+  String get cleanerRefreshRequired => '请先刷新应用列表。';
+
+  @override
+  String get cleanerPreinstalled => '预装应用';
+
+  @override
+  String get cleanerNotSystem => '这不是系统应用。';
+
+  @override
+  String get cleanerMinimalRisk => '最低';
+
+  @override
+  String get cleanerCacheFailure => '无法保存列表以供下次使用。';
+
+  @override
+  String get cleanerUserApps => '用户应用';
+
+  @override
+  String get cleanerPreinstalledApps => '预装应用';
+
+  @override
+  String get cleanerSystemApps => '系统应用';
+
+  @override
+  String get cleanerBaseline => '基准初始状态';
+
+  @override
+  String get cleanerManualStates => '管理手动状态';
+
+  @override
+  String get cleanerManualSave => '保存当前状态';
+
+  @override
+  String get cleanerDateName => '使用日期和时间';
+
+  @override
+  String get cleanerCustomName => '输入名称';
+
+  @override
+  String get cleanerStateExport => '将保存的状态导出到文件';
+
+  @override
+  String get cleanerStateRestoreHelp =>
+      '将恢复此固件保存的应用启用与停用状态。创建备份后安装的应用保持不变。缺失的应用及停用受保护组件的操作将被跳过。不恢复应用数据。';
+
+  @override
+  String get cleanerCopiesHelp =>
+      '首次成功刷新列表时仅创建一次基准状态，启动器无法删除或覆盖它，且仅适用于该固件。手动状态记录当前应用模式、名称及日期，可恢复、删除和导出。备份不包含 APK 或应用数据。恢复需要本地 ADB。崩溃循环保护触发时，启动器会尝试自动恢复基准状态。清除启动器数据或卸载启动器也会删除这些备份；无法防止 root 访问。';
+
+  @override
+  String get cleanerSearch => '按名称搜索';
+
+  @override
+  String get cleanerCatalogUpdateRequired => '请先从 GitHub 更新目录。';
+
+  @override
+  String get cleanerNoSearchResults => '没有匹配的条目。';
+
+  @override
+  String get cleanerAlreadyDisabled => '此列表中本电视上存在的应用均已停用。';
+
+  @override
+  String get cleanerAlreadyEnabled => '此列表中本电视上存在的应用均已启用。';
+
+  @override
+  String get cleanerNoInstalled => '此电视未安装列表中的匹配应用。';
+
+  @override
+  String get cleanerListProtected => '其余应用受到保护，无法停用。';
+
+  @override
+  String get cleanerSnapshotFailed => '无法保存快照。未停用任何应用。';
+
+  @override
+  String get cleanerDisableAllPreinstalled => '停用所有预装应用';
+
+  @override
+  String get cleanerEnableAllPreinstalled => '启用所有预装应用';
+
+  @override
+  String get cleanerPreinstalledList => '预装应用列表';
+
+  @override
+  String cleanerBeforeList(String listName) {
+    return '应用列表前：$listName';
+  }
+
+  @override
+  String get sleepTimerSettings => '关机定时器设置';
+
+  @override
+  String get sleepTimerPresets => '定时器';
+
+  @override
+  String get sleepTimerDisplay => '定时器运行时显示';
+
+  @override
+  String get sleepTimerRemaining => '剩余时间';
+
+  @override
+  String get sleepTimerEndTime => '关机时间';
+
+  @override
+  String get sleepTimerBoth => '剩余时间和关机时间';
+
+  @override
+  String get sleepTimerShowSeconds => '显示秒数';
+
+  @override
+  String get sleepTimerCloseAfterSelection => '选择定时器后关闭小组件';
+
+  @override
+  String get sleepTimerAdd => '添加定时器';
+
+  @override
+  String get sleepTimerEdit => '编辑定时器';
+
+  @override
+  String get sleepTimerHoursLabel => '小时';
+
+  @override
+  String get sleepTimerMinutesLabel => '分钟';
+
+  @override
+  String get sleepTimerSecondsLabel => '秒';
+
+  @override
+  String get sleepTimerInvalidDuration => '请输入大于零的时长：小时0–999999，分钟和秒0–59。';
+
+  @override
+  String get sleepTimerDeleteConfirmation => '删除此定时器？正在运行的倒计时将继续。';
+
+  @override
+  String get sleepTimerResetConfirmation =>
+      '恢复默认定时器及顺序？自定义定时器将被删除。正在运行的倒计时将继续。';
+
+  @override
+  String get sleepTimerReorderHint =>
+      '◄ / ► 或长按OK开始移动。▲ / ▼调整顺序，并在显示和隐藏列表之间移动。OK结束移动。';
+
+  @override
+  String get sleepTimerSaveFailed => '无法保存定时器设置。';
+
+  @override
+  String get sleepTimerVisible => '显示';
+
+  @override
+  String get sleepTimerHidden => '隐藏';
+
+  @override
+  String get sleepTimerReset => '重置定时器';
+
+  @override
+  String get cleanerListSnapshotHelp =>
+      '停用列表时仅自动保存选定应用的快照。恢复不会更改其他应用。手动和自动快照总上限为100份。保存失败时不会开始停用。';
+
+  @override
+  String get trafficSettings => '流量设置';
+
+  @override
+  String get trafficTitle => '流量';
+
+  @override
+  String get trafficReceived => '已接收';
+
+  @override
+  String get trafficSent => '已发送';
+
+  @override
+  String get trafficTotal => '总计';
+
+  @override
+  String get stopApp => '停止';
+
+  @override
+  String get backgroundImageFormats =>
+      '图片：JPEG、PNG、WebP、GIF、BMP。最大8 MiB、4800万像素，每边不超过16,384像素。';
+
+  @override
+  String get backgroundMediaFormats =>
+      '图片：JPEG、PNG、WebP、GIF、BMP。最大8 MiB、4800万像素，每边不超过16,384像素。\n视频：MP4/M4V、WebM、MKV。最大256 MiB、3840×2160。编解码器支持取决于电视；建议使用H.264 MP4。静音循环播放，离开主屏幕后暂停。视频不包含在备份中。';
+
+  @override
+  String get backgroundFormatError => '格式不受支持或文件已损坏。请选择所列格式的有效文件。';
+
+  @override
+  String backgroundFileTooLarge(String maxMiB) {
+    return '文件过大。最大$maxMiB MiB。请选择较小的文件。';
+  }
+
+  @override
+  String get backgroundImageResolutionError => '图片过大：最多4800万像素，每边不超过16,384像素。';
+
+  @override
+  String get backgroundVideoResolutionError =>
+      '视频分辨率过高。请选择不超过3840×2160（或2160×3840）的视频。';
+
+  @override
+  String get backgroundVideoCodecError =>
+      '电视无法播放该视频：编解码器不受支持或文件已损坏。请尝试H.264 MP4。';
+
+  @override
+  String get backgroundFileApplied => '已选择文件并更新背景。';
+
+  @override
+  String get noticePosition => '通知位置';
+
+  @override
+  String get noticeBottomRight => '右下角';
+
+  @override
+  String get noticeBottomLeft => '左下角';
+
+  @override
+  String get noticeTopRight => '右上角';
+
+  @override
+  String get noticeTopLeft => '左上角';
+
+  @override
+  String get notificationOpenFailed => '无法打开通知操作。该操作可能已不可用。';
 }

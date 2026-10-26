@@ -12,9 +12,13 @@ public final class NotificationPopupEntries<T> {
     }
 
     public boolean expire(String key, T entry) {
-        if (entries.get(key) != entry) return false;
+        if (!isCurrent(key, entry)) return false;
         entries.remove(key);
         return true;
+    }
+
+    public boolean isCurrent(String key, T entry) {
+        return entries.get(key) == entry;
     }
 
     public void clear() {

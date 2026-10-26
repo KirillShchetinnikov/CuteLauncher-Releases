@@ -1,10 +1,10 @@
+import 'traffic_settings_page.dart';
+import 'sleep_timer_settings_page.dart';
 import 'information_settings_page.dart';
 import 'settings_route.dart';
 import 'settings_help.dart';
 import 'remote_panel_page.dart';
 import 'inputs_settings_page.dart';
-import 'adb_permission_tile.dart';
-import '../../providers/network_service.dart';
 import 'settings_page_layout.dart';
 /*
  * FLauncher
@@ -32,7 +32,6 @@ import '../../providers/settings_service.dart';
 import '../../providers/tv_inputs_service.dart';
 import '../rounded_switch_list_tile.dart';
 import 'focusable_settings_tile.dart';
-import 'data_usage_period_page.dart';
 import 'panel_order_page.dart';
 import 'notifications_settings_page.dart';
 
@@ -72,36 +71,8 @@ class StatusBarObjectsPage extends StatelessWidget {
             onChanged: s.setShowDataWidgetInStatusBar,
             title: Text(l.showTraffic),
           ),
-          if (s.showDataWidgetInStatusBar)
-            Consumer<NetworkService>(
-              builder: (context, network, _) => network.hasUsageStatsPermission
-                  ? Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Text(l.trafficPermissionGranted),
-                    )
-                  : FocusableSettingsTile(
-                      title: Text(l.grantUsagePermission),
-                      leading: const Icon(Icons.lock_open),
-                      onPressed: network.requestPermission,
-                    ),
-            ),
-          if (s.showDataWidgetInStatusBar)
-            Consumer<NetworkService>(builder: (context, network, _) =>
-              AdbPermissionTile(title: '${l.grantUsagePermission} · ADB', action: 'usage',
-                permissionMethod: 'checkUsageStatsPermission', onRefresh: network.refreshPermissionAndUsage)),
-          FocusableSettingsTile(
-            autofocus: false,
-            title: Text(l.dataUsagePeriod),
-            trailing: Text(
-                  s.dataUsagePeriod == DATA_USAGE_WEEKLY
-                      ? l.usageWeekly
-                      : s.dataUsagePeriod == DATA_USAGE_MONTHLY
-                      ? l.usageMonthly
-                      : l.usageDaily,
-            ),
-            onPressed: () =>
-                Navigator.of(context).pushNamed(DataUsagePeriodPage.routeName),
-          ),
+          FocusableSettingsTile(title: Text(l.trafficSettings), leading: const Icon(Icons.data_usage),
+            onPressed: () => Navigator.of(context).pushNamed(TrafficSettingsPage.routeName)),
           Padding(
             padding: const EdgeInsets.all(12),
             child: Text(
@@ -120,6 +91,8 @@ class StatusBarObjectsPage extends StatelessWidget {
             onChanged: s.setShowSleepTimerInStatusBar,
             title: Text(l.sleepTimer),
           ),
+          FocusableSettingsTile(title: Text(l.sleepTimerSettings), leading: const Icon(Icons.timer_outlined),
+            onPressed: () => Navigator.of(context).pushNamed(SleepTimerSettingsPage.routeName)),
           RoundedSwitchListTile(
             value: s.showNightModeInStatusBar,
             onChanged: s.setShowNightModeInStatusBar,

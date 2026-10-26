@@ -1,3 +1,5 @@
+import 'package:flauncher/diagnostics_store.dart';
+
 import 'dart:async';
 import 'dart:convert';
 
@@ -10,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-Map<String, Object> report() => createTvCompatibilityReport(
+Map<String, Object> observations() => createTvCompatibilityReport(
   {
     'identity': {
       'manufacturer': 'TCL',
@@ -29,17 +31,23 @@ Map<String, Object> report() => createTvCompatibilityReport(
   build: '73',
 );
 
+Map<String, Object> report() => combineDiagnosticsReport(
+  DiagnosticsStore().snapshot(version: '1.0.24', build: '73'),
+  observations(),
+  capturedAt: DateTime.utc(2026, 10, 21),
+);
+
 void main() {
   for (final locale in ['ru', 'en']) {
     for (final onRight in [false, true]) {
       testWidgets(
-        '$locale side=$onRight reports are explicit, independent and export without rerunning',
+        '$locale side=$onRight one report contains errors and compatibility and exports without rerunning',
         (tester) async {
           tester.view.physicalSize = const Size(1280, 720);
           tester.view.devicePixelRatio = 1;
           addTearDown(tester.view.resetPhysicalSize);
           addTearDown(tester.view.resetDevicePixelRatio);
-          var runs = 0, errors = 0;
+          var runs = 0;
           String? clipboard;
           final pending = Completer<Map<String, Object>>();
           tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
@@ -64,13 +72,7 @@ void main() {
                 onRight: onRight,
                 child: Scaffold(
                   body: DiagnosticsPage(
-                    collect: () async {
-                      errors++;
-                      return {
-                        'operationCounts': {'success': 1},
-                      };
-                    },
-                    collectCompatibility: () {
+                    collect: () {
                       runs++;
                       return pending.future;
                     },
@@ -92,8 +94,8 @@ void main() {
                 .first,
           );
           expect(find.text(l.diagnosticsHubTitle), findsOneWidget);
-          await tester.tap(find.text(l.tvCompatibilityTitle));
-          await tester.pumpAndSettle();
+          expect(find.text(l.tvCompatibilityTitle), findsNothing);
+          expect(find.text(l.diagnosticsTitle), findsNothing);
           expect(runs, 0);
           expect(tile(l.tvCompatibilityResults).onPressed, isNull);
           expect(tile(l.diagnosticsExport).onPressed, isNull);
@@ -122,6 +124,7 @@ void main() {
           await tester.tap(find.text(l.diagnosticsExport));
           await tester.pumpAndSettle();
           expect(clipboard, isNull);
+          expect(find.text(l.diagnosticsSharingNotice), findsOneWidget);
           await tester.sendKeyEvent(LogicalKeyboardKey.escape);
           await tester.pumpAndSettle();
           expect(clipboard, isNull);
@@ -129,29 +132,18 @@ void main() {
           await tester.pumpAndSettle();
           await tester.tap(find.text(l.diagnosticsCopyClipboard));
           await tester.pumpAndSettle();
-          expect(jsonDecode(clipboard!)['reportType'], 'tvCompatibility');
+          expect(jsonDecode(clipboard!)['reportType'], 'diagnostics');
+          expect(find.text(l.diagnosticsSharingNotice), findsNothing);
           expect(runs, 1);
-          await tester.binding.handlePopRoute();
-          await tester.pumpAndSettle();
-          await tester.tap(find.text(l.diagnosticsTitle));
-          await tester.pumpAndSettle();
-          expect(errors, 0);
-          await tester.tap(find.text(l.diagnosticsCreate));
-          await tester.pumpAndSettle();
-          expect(errors, 1);
           await tester.tap(find.text(l.diagnosticsClear));
           await tester.pumpAndSettle();
           expect(tile(l.diagnosticsExport).onPressed, isNull);
-          await tester.binding.handlePopRoute();
-          await tester.pumpAndSettle();
-          await tester.tap(find.text(l.tvCompatibilityTitle));
-          await tester.pumpAndSettle();
-          expect(tile(l.tvCompatibilityResults).onPressed, isNotNull);
+          expect(tile(l.tvCompatibilityResults).onPressed, isNull);
           expect(runs, 1);
           await tester.ensureVisible(find.text(l.settingsHelp));
           await tester.tap(find.text(l.settingsHelp));
           await tester.pumpAndSettle();
-          expect(find.text(l.tvCompatibilityHelp), findsOneWidget);
+          expect(find.textContaining(l.diagnosticsHint), findsOneWidget);
           expect(tester.takeException(), isNull);
           await tester.pumpWidget(const SizedBox.shrink());
         },
@@ -170,8 +162,7 @@ void main() {
           supportedLocales: AppLocalizations.supportedLocales,
           home: Scaffold(
             body: DiagnosticsPage(
-              section: 'compatibility',
-              collectCompatibility: () {
+              collect: () {
                 calls++;
                 if (calls == 1) return Future.value(report());
                 if (calls == 2) return Future.error(StateError('not exported'));
@@ -182,12 +173,12 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Run check'));
+      await tester.tap(find.text('Create report'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Run check'));
+      await tester.tap(find.text('Create report'));
       await tester.pumpAndSettle();
       expect(find.text('Report ready'), findsOneWidget);
-      await tester.tap(find.text('Run check'));
+      await tester.tap(find.text('Create report'));
       await tester.pump();
       await tester.pumpWidget(const SizedBox.shrink());
       pending.complete(report());

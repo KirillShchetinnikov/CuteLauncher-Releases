@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="recovery_cleaner_retry">ऐप बहाली फिर आज़माएँ</string>
+    <string name="recovery_cleaner_running">मूल ऐप स्थितियाँ बहाल हो रही हैं…</string>
+    <string name="recovery_cleaner_done">मूल ऐप स्थितियाँ बहाल हुईं।</string>
+    <string name="recovery_cleaner_no_baseline">अभी कोई आधार स्थिति नहीं बनी है।</string>
+    <string name="recovery_cleaner_failed">ऐप बहाली पूरी नहीं हुई। स्थानीय ADB कनेक्शन जाँचें और फिर प्रयास करें।</string>
+    <string name="recovery_cleaner_partial">कुछ स्थितियाँ बहाल नहीं हुईं। ऐप अनुपस्थित या सुरक्षित हो सकते हैं। डिवाइस जाँचें और फिर प्रयास करें।</string>
+</resources>

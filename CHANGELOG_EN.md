@@ -2,6 +2,18 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
+## v1.3.0 — 2026-10-26
+
+- Added local video wallpapers with silent looping playback. Codec support depends on the TV; video files are not included in backups.
+- Reworked the TV cleanup manager with app groups, a protected baseline state, named snapshots, restoration, and export. The state of selected apps is saved automatically before disabling them through a list. Restoration requires local ADB.
+- Added sleep timer settings: custom intervals, ordering and visibility controls, display options, and optional seconds.
+- Updated notifications: launcher messages and app notifications now share one stack that can appear in any screen corner. Fixed notification actions and entrance and exit animations.
+- The traffic menu now shows downloaded, uploaded, and total data for the day, week, and month together.
+- Added an option to stop a running app from its information menu when ADB is active.
+- Combined diagnostics into a single report covering TV details, compatibility, and errors. Reports should be sent to the author privately.
+- Added recovery of previously granted access after updates when a saved access state and configured ADB are available.
+- Unified widget menus and settings across the main and popup panels. Fixed navigation, focus retention, panel sizing, and minor visual issues; weekends are now highlighted in red in the calendar.
+
 ## v1.2.1 — 2026-10-24
 
 - Added Power management under Launcher and TV controls, with buttons for standby and restart. Actions require confirmation; standby requires the CuteLauncher accessibility service or local ADB, while restart requires ADB.

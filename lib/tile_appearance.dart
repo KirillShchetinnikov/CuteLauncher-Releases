@@ -152,6 +152,7 @@ class TileAppearance {
       'panelTextSize': (10, 24),
     };
     const choices = {
+      'noticeCorner': ['bottomRight', 'bottomLeft', 'topRight', 'topLeft'],
       'labelPosition': ['below', 'inside'],
       'labels': ['none', 'selected', 'all'], 'sectionScroll': ['free', 'anchored'],
       'focusEffect': ['scale', 'border', 'lift'],

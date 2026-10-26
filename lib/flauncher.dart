@@ -1,4 +1,5 @@
 import 'widgets/wallpaper_background.dart';
+import 'widgets/video_wallpaper_background.dart';
 import 'widgets/adaptive_landscape_background.dart';
 import 'widgets/app_artwork_background.dart';
 import 'providers/remote_panel_service.dart';
@@ -374,14 +375,18 @@ class FLauncherState extends State<FLauncher> {
     }
     return WallpaperBackground(
       key: Key('background_${source}_${source == 'online' ? online?.version : wallpaperService.version}'),
-      image: image,
+      image: source == 'picture' && wallpaperService.video != null ? null : image,
       gradient: wallpaperService.gradient.gradient,
       mode: settings.wallpaperFit,
       brightness: settings.wallpaperBrightness,
       saturation: settings.wallpaperSaturation,
       dimming: settings.wallpaperDimming,
       memorySaver: settings.memorySaverEnabled,
-      artwork: source == 'landscape' ? const AdaptiveLandscapeBackground() : null,
+      artwork: source == 'landscape' ? const AdaptiveLandscapeBackground() : source == 'picture' && wallpaperService.video != null
+          ? VideoWallpaperBackground(file: wallpaperService.video!,
+              enabled: context.watch<LauncherState>().launcherVisible,
+              mode: settings.wallpaperFit, memorySaver: settings.memorySaverEnabled)
+          : null,
     );
   }
   Widget _emptyState(BuildContext context) {

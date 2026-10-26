@@ -134,7 +134,7 @@ void main() {
     },
   );
 
-  test('shared clock and separate calendar choices survive backup', () async {
+  test('shared clock and calendar settings survive backup', () async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
     final appearance = AppearanceService(prefs);
@@ -142,7 +142,6 @@ void main() {
     addTearDown(appearance.dispose);
     addTearDown(remote.dispose);
     expect(appearance.appearance.dateCalendar, isFalse);
-    expect(remote.dateCalendar, isFalse);
     await appearance.set('panelClockStyle', {
       'font': 'serif',
       'size': 30,
@@ -153,7 +152,6 @@ void main() {
     await remote.set('dateCalendar', false);
     remote.reload();
     expect(appearance.appearance.clockStyle.values['size'], 30);
-    expect(remote.dateCalendar, isFalse);
     final imported = compatibleSettings({
       tileAppearanceKey: prefs.getString(tileAppearanceKey)!,
     }, {});

@@ -1,3 +1,4 @@
+import '../menu_header.dart';
 import '../menu_header_action.dart';
 import '../launcher_dialog.dart';
 import 'inputs_settings_page.dart';
@@ -44,6 +45,7 @@ class _InputsPanelState extends State<InputsPanel> {
     setState(() => _settingsOpen = true);
     await showLauncherDialog<void>(
       context: context,
+      parentPanelHidden: true,
       styleDialog: false,
       barrierColor: Colors.transparent,
       builder: (_) =>
@@ -94,18 +96,10 @@ class _InputsPanelState extends State<InputsPanel> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 8.0,
-                            horizontal: 12.0,
-                          ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  localizations.inputSources,
-                                  style: theme.textTheme.titleLarge,
-                                ),
-                              ),
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          child: MenuHeader(
+                            title: Text(localizations.inputSources),
+                            actions: [
                               MenuHeaderAction(
                                 focusNode: _settingsNode,
                                 autofocus: inputs.isEmpty,

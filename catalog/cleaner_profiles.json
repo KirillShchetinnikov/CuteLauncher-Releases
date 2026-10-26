@@ -36,7 +36,25 @@
         "com.nes.tvglobalkeyhandler",
         "com.spocky.projengmenu",
         "com.utsmta.app"
-      ]
+      ],
+      "observedAt": "2026-10-25T10:52:40.761529+00:00",
+      "userApprovedSystemPackages": [
+        "com.android.printspooler",
+        "com.android.providers.calendar",
+        "com.android.providers.contacts",
+        "com.android.tv.frameworkpackagestubs",
+        "com.droidlogic.overlay",
+        "com.google.android.feedback",
+        "com.google.android.katniss",
+        "com.google.android.partnersetup",
+        "com.google.android.syncadapters.calendar",
+        "com.google.android.tts",
+        "com.google.android.tvlauncher",
+        "com.nes.seilivetv",
+        "com.nes.skywayclient",
+        "com.nes.tvglobalkeyhandler"
+      ],
+      "approval": "userRequestedObservedSystemList"
     },
     {
       "id": "tcl-g08",
@@ -60,7 +78,16 @@
         "com.tcl.guard",
         "com.tcl.ocean.instructions",
         "com.tcl.partnercustomizer"
-      ]
+      ],
+      "observedAt": "2026-10-25T10:52:39.476061+00:00",
+      "userApprovedSystemPackages": [
+        "com.google.android.feedback",
+        "com.tcl.exhibit",
+        "com.tcl.guard",
+        "com.tcl.ocean.instructions",
+        "com.tcl.partnercustomizer"
+      ],
+      "approval": "userRequestedObservedSystemList"
     },
     {
       "id": "tcl-g10",
@@ -94,7 +121,26 @@
         "com.tcl.tv.tclhome_passive",
         "com.tcl.usercenter",
         "com.tcl.waterfall.overseas"
-      ]
+      ],
+      "observedAt": "2026-10-25T10:52:40.259813+00:00",
+      "userApprovedSystemPackages": [
+        "com.android.cts.priv.ctsshim",
+        "com.android.printspooler",
+        "com.google.android.feedback",
+        "com.google.android.partnersetup",
+        "com.realtek.airplay2",
+        "com.tcl.dashboard",
+        "com.tcl.exhibit",
+        "com.tcl.guard",
+        "com.tcl.messagebox",
+        "com.tcl.smartalexa",
+        "com.tcl.t_solo",
+        "com.tcl.tv",
+        "com.tcl.tv.tclhome_passive",
+        "com.tcl.usercenter",
+        "com.tcl.waterfall.overseas"
+      ],
+      "approval": "userRequestedObservedSystemList"
     }
   ]
 }

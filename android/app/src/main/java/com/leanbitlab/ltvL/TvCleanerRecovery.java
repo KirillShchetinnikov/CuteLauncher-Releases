@@ -3,6 +3,7 @@ package com.leanbitlab.ltvL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.Map;
 
 /** Write-ahead recovery, independent of Android so interruption windows can be tested. */
 final class TvCleanerRecovery {
@@ -40,5 +41,31 @@ final class TvCleanerRecovery {
             journal.forget(name);
             journal.persist(); // If interrupted, restoring the same original value again is safe.
         }
+    }
+    /** Full saved-state restoration, including changes made outside this manager. */
+    static int restoreStates(Map<String, Integer> states, Set<String> installed, Set<String> protectedNames,
+            Journal journal, Device device) throws Exception {
+        for (var entry : states.entrySet()) {
+            if (!TvCleanerPolicy.packageId(entry.getKey()) || entry.getValue() == null
+                    || entry.getValue() < 0 || entry.getValue() > 4) throw new IllegalStateException("Invalid saved state");
+        }
+        int skipped = 0;
+        for (var entry : states.entrySet()) {
+            String name = entry.getKey(); int desired = entry.getValue();
+            if (!installed.contains(name)) { skipped++; continue; }
+            int before = device.state(name);
+            if (before != desired) {
+                // Resetting an explicit enable to manifest-default may also disable a component.
+                if (protectedNames.contains(name) && (desired >= 2 || (desired == 0 && before == 1))) { skipped++; continue; }
+                if (journal.original(name) == null) journal.remember(name, before);
+                journal.persist();
+                device.set(name, desired);
+                if (device.state(name) != desired) throw new IllegalStateException("State restoration failed");
+            }
+            if (java.util.Objects.equals(journal.original(name), desired)) {
+                journal.forget(name); journal.persist();
+            }
+        }
+        return skipped;
     }
 }

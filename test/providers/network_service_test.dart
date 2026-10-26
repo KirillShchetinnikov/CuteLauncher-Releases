@@ -80,6 +80,13 @@ void main() {
     expect(service.hasUsageStatsPermission, isFalse);
   });
 
+  test('detailed traffic passes the selected period and keeps unavailable distinct from zero', () async {
+    when(mockChannel.getTrafficUsage('weekly')).thenAnswer((_) async => {'rxBytes': 0, 'txBytes': -2, 'totalBytes': -2});
+    final snapshot = await networkService.getTrafficUsage('weekly');
+    expect(snapshot, {'rxBytes': 0, 'txBytes': -2, 'totalBytes': -2});
+    verify(mockChannel.getTrafficUsage('weekly')).called(1);
+  });
+
   group('getDataUsageForPeriod', () {
     test('returns daily usage when period is "daily"', () async {
       when(mockChannel.getDailyDataUsage()).thenAnswer((_) async => 100);

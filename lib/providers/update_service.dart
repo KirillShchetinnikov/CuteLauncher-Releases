@@ -9,6 +9,7 @@ import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../image_limits.dart';
+import '../diagnostics_store.dart';
 import 'service_lifecycle.dart';
 
 const automaticUpdatesKey = 'automatic_update_checks';
@@ -337,7 +338,8 @@ class UpdateService extends ChangeNotifier
   Future<void> _initialize() async {
     try {
       _environment = await environment();
-    } catch (_) {
+    } catch (error, stack) {
+      DiagnosticsStore.instance.recordException('updateInitialize', error, stack);
       failed = true;
     }
     if (isDisposed) return;
@@ -445,7 +447,8 @@ class UpdateService extends ChangeNotifier
           preferences.getString(_shownNotificationKey) != next.version) {
         await preferences.setString(_pendingNotificationKey, next.version);
       }
-    } catch (_) {
+    } catch (error, stack) {
+      DiagnosticsStore.instance.recordException('updateCheck', error, stack);
       failed = true;
     } finally {
       busy = false;
@@ -491,7 +494,8 @@ class UpdateService extends ChangeNotifier
       failed =
           installStatus == null ||
           ['invalid', 'unavailable'].contains(installStatus);
-    } catch (_) {
+    } catch (error, stack) {
+      DiagnosticsStore.instance.recordException('updateDownloadInstall', error, stack);
       failed = true;
     } finally {
       busy = false;

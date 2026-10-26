@@ -12,6 +12,7 @@ import 'package:flauncher/widgets/daily_data_usage_widget.dart';
 import 'package:flauncher/widgets/weather_status_bar_widget.dart';
 import 'package:flauncher/widgets/rounded_switch_list_tile.dart';
 import 'package:flauncher/widgets/settings/remote_panel_page.dart';
+import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -117,6 +118,8 @@ void main() {
         await tester.pumpAndSettle();
         page = find.byType(RemotePanelObjectsPage);
         expect(page, findsOneWidget);
+        expect(find.descendant(of: page, matching: find.byType(FocusableSettingsTile)), findsNWidgets(RemotePanelService.ids.length));
+        expect(find.text(l.informationSettings), findsNothing);
         expect(
           find.descendant(
             of: page,

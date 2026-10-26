@@ -7,7 +7,102 @@ import 'package:flutter/services.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  for (final kind in ['apps', 'disabled', 'restore']) {
+  test('classification uses installation flag and explicit consumer catalog; helpers stay system', () {
+    final entries =
+        jsonDecode(
+              File('catalog/app_descriptions.json').readAsStringSync(),
+            )['packages']
+            as Map;
+    expect(cleanerAppKind({'system': false}, null), CleanerAppKind.user);
+    expect(
+      cleanerAppKind({
+        'system': true,
+      }, entries['com.amazon.amazonvideo.livingroom'] as Map),
+      CleanerAppKind.preinstalled,
+    );
+    expect(
+      cleanerAppKind({
+        'system': false,
+      }, entries['com.amazon.amazonvideo.livingroom'] as Map),
+      CleanerAppKind.user,
+    );
+    expect(
+      cleanerAppKind({
+        'system': true,
+      }, entries['com.netflix.tokenmanager'] as Map),
+      CleanerAppKind.system,
+    );
+    expect(cleanerAppKind({'system': true}, null), CleanerAppKind.system);
+  });
+
+  test('inventory survives a new client, supports replacement and invalidation; corrupt cache rejected', () async {
+    final dir = await Directory.systemTemp.createTemp('cleaner-cache-test-');
+    addTearDown(() => dir.delete(recursive: true));
+    TvCleanerClient client() =>
+        TvCleanerClient(inventoryDirectory: () async => dir);
+    final report = <String, dynamic>{
+      'schemaVersion': 1,
+      'reportType': 'tvCleanerInventory',
+      'status': 'success',
+      'identity': {'fingerprint': 'fixture'},
+      'snapshotSaved': false,
+      'pendingRestore': 0,
+      'snapshot': '',
+      'packages': [
+        {
+          'package': 'org.example.app',
+          'name': 'Fixture',
+          'system': false,
+          'enabled': true,
+          'protected': false,
+        },
+      ],
+    };
+    expect(await client().loadInventory(), isNull);
+    await client().saveInventory(report);
+    expect(await client().loadInventory(), report);
+    report['pendingRestore'] = 1;
+    await client().saveInventory(report);
+    expect((await client().loadInventory())!['pendingRestore'], 1);
+    await client().clearInventory();
+    expect(await client().loadInventory(), isNull);
+    final file = File('${dir.path}/tv-cleaner-inventory.json');
+    for (final source in [
+      'broken',
+      '{}',
+      jsonEncode({
+        ...report,
+        'packages': [42],
+      }),
+      jsonEncode({...report, 'identity': null}),
+    ]) {
+      await file.writeAsString(source);
+      expect(await client().loadInventory(), isNull);
+    }
+  });
+
+  test(
+    'named imported list keeps provider name and deletes its temporary copy',
+    () async {
+      final dir = await Directory.systemTemp.createTemp('cleaner-import-test-');
+      addTearDown(() => dir.delete(recursive: true));
+      final file = File('${dir.path}/selected-document.bin');
+      await file.writeAsString('org.example.video');
+      final messenger =
+          TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+      const channel = MethodChannel('me.efesser.flauncher/method');
+      messenger.setMockMethodCallHandler(channel, (call) async {
+        expect(call.method, 'pickCleanerListDocument');
+        return {'path': file.path, 'name': 'My TV list.txt'};
+      });
+      addTearDown(() => messenger.setMockMethodCallHandler(channel, null));
+      final client = TvCleanerClient();
+      expect(await client.importFile(), 'org.example.video');
+      expect(client.importedFileName, 'My TV list.txt');
+      expect(await file.exists(), isFalse);
+    },
+  );
+  for (final kind in ['apps', 'disabled', 'restore', 'state']) {
     for (final outcome in ['saved', 'opened', 'cancelled', 'failed']) {
       test(
         'export $kind: $outcome, correct name/content and temporary cleanup',
@@ -135,10 +230,12 @@ void main() {
         expect(app['enabledSetting'], inInclusiveRange(0, 4));
         final description = entries[name] as Map;
         for (final key in [
-          'ru',
-          'en',
-          'riskRu',
-          'riskEn',
+          if (!['preinstalled', 'user'].contains(description['category'])) ...[
+            'ru',
+            'en',
+            'riskRu',
+            'riskEn',
+          ],
           'confidence',
           'source',
         ]) {

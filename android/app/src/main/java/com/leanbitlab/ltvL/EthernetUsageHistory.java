@@ -7,7 +7,7 @@ import java.util.List;
 /** Parses only the device-wide, untagged Ethernet section of netstats checkin v1. */
 final class EthernetUsageHistory {
     static final int MAX_OUTPUT = 1024 * 1024;
-    record Bucket(long start, long duration, long bytes) { }
+    record Bucket(long start, long duration, long bytes, long received, long sent) { }
     private final long windowStart;
     private final long windowEnd;
     private final List<Bucket> buckets;
@@ -64,8 +64,9 @@ final class EthernetUsageHistory {
                         if (timestamp < previousEnd || buckets.size() >= 4096)
                             throw new IllegalArgumentException("Duplicate or excessive buckets");
                         long bucketEnd = Math.addExact(timestamp, duration);
-                        long bytes = Math.addExact(nonnegative(fields[2]), nonnegative(fields[4]));
-                        buckets.add(new Bucket(timestamp, duration, bytes));
+                        long received = nonnegative(fields[2]), sent = nonnegative(fields[4]);
+                        long bytes = Math.addExact(received, sent);
+                        buckets.add(new Bucket(timestamp, duration, bytes, received, sent));
                         previousEnd = bucketEnd;
                     }
                 }
@@ -76,7 +77,10 @@ final class EthernetUsageHistory {
         return new EthernetUsageHistory(start, end, buckets);
     }
 
-    long usage(long start, long end) {
+    long usage(long start, long end) { return usage(start, end, 0); }
+    long received(long start, long end) { return usage(start, end, 1); }
+    long sent(long start, long end) { return usage(start, end, 2); }
+    private long usage(long start, long end, int direction) {
         if (start < windowStart || start > windowEnd || end < start)
             return NetworkUsageTotals.UNAVAILABLE;
         BigInteger total = BigInteger.ZERO;
@@ -85,7 +89,7 @@ final class EthernetUsageHistory {
                     - Math.max(start, bucket.start);
             if (overlap > 0) {
                 // Calendar boundaries can cut an hourly system bucket (time zones / DST).
-                total = total.add(BigInteger.valueOf(bucket.bytes).multiply(BigInteger.valueOf(overlap))
+                total = total.add(BigInteger.valueOf(direction == 1 ? bucket.received : direction == 2 ? bucket.sent : bucket.bytes).multiply(BigInteger.valueOf(overlap))
                         .divide(BigInteger.valueOf(bucket.duration)));
             }
         }

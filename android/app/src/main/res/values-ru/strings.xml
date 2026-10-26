@@ -13,4 +13,10 @@
     <string name="recovery_unavailable">Действие недоступно на этом телевизоре.</string>
     <string name="recovery_restore">Восстановить прежний домашний экран</string>
     <string name="recovery_restore_confirm">Восстановить прежний домашний экран через ранее настроенное локальное ADB-подключение?</string>
+    <string name="recovery_cleaner_retry">Повторить восстановление приложений</string>
+    <string name="recovery_cleaner_running">Восстановление приложений из базового состояния…</string>
+    <string name="recovery_cleaner_done">Приложения восстановлены из базового состояния.</string>
+    <string name="recovery_cleaner_no_baseline">Базовое состояние приложений ещё не создано.</string>
+    <string name="recovery_cleaner_failed">Восстановление приложений не завершено. Проверьте локальное ADB-подключение и повторите попытку.</string>
+    <string name="recovery_cleaner_partial">Часть состояний не восстановлена. Приложения могут отсутствовать или быть защищены; проверьте устройство и повторите попытку.</string>
 </resources>

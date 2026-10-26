@@ -1,3 +1,4 @@
+import 'sleep_timer_configuration.dart';
 import 'tv_inputs_configuration.dart';
 import 'adaptive_landscape.dart';
 import 'tile_appearance.dart';
@@ -66,6 +67,12 @@ Map<String, dynamic> compatibleSettings(dynamic source, Map<String, dynamic> exp
       if (configuration.source != WeatherSource.breezy && !configuration.validCoordinates) continue;
       try { if (jsonDecode(value) is! Map) continue; } catch (_) { continue; }
       result[key] = jsonEncode(configuration.toJson());
+      continue;
+    }
+    if (key == sleepTimerConfigurationKey) {
+      if (value is String) {
+        try { result[key] = SleepTimerConfiguration.parse(value).encode(); } catch (_) {}
+      }
       continue;
     }
     if (key == tvInputsConfigurationKey) {

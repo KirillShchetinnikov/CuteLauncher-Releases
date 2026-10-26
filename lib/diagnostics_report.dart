@@ -6,8 +6,9 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'document_files.dart';
 import 'bridge_result.dart';
 import 'diagnostics_store.dart';
+import 'tv_compatibility_report.dart';
 
-Future<String?> saveDiagnosticsReport(Map<String, Object> report, {bool compatibility = false}) async {
+Future<String?> saveDiagnosticsReport(Map<String, Object> report) async {
   final directory = await (await getTemporaryDirectory()).createTemp(
     'diagnostics-',
   );
@@ -16,7 +17,8 @@ Future<String?> saveDiagnosticsReport(Map<String, Object> report, {bool compatib
     await file.writeAsString(DiagnosticsStore.instance.encode(report));
     return await DocumentFiles.saveDiagnostics(
       file,
-      name: 'cutelauncher_${compatibility ? 'compatibility' : 'errors'}_${DateTime.now().millisecondsSinceEpoch}.json',
+      name:
+          'cutelauncher_diagnostics_${DateTime.now().millisecondsSinceEpoch}.json',
     );
   } finally {
     await directory.delete(recursive: true);
@@ -26,7 +28,8 @@ Future<String?> saveDiagnosticsReport(Map<String, Object> report, {bool compatib
 Future<Map<String, Object>> collectDiagnostics() async {
   const channel = BridgeChannel('me.efesser.flauncher/method');
   String? version, build;
-  Map<dynamic, dynamic>? environment, memory;
+  Map<dynamic, dynamic>? environment, memory, shell;
+  Map<String, Object>? compatibility;
   try {
     final info = await PackageInfo.fromPlatform();
     version = info.version;
@@ -40,10 +43,48 @@ Future<Map<String, Object>> collectDiagnostics() async {
   try {
     memory = await channel.invokeMapMethod('getProcessMemoryUsage');
   } catch (_) {}
-  return DiagnosticsStore.instance.snapshot(
+  try {
+    shell = await channel.invokeMapMethod('getNativeShellDiagnostics');
+  } catch (_) {}
+  final capturedAt = DateTime.now();
+  try {
+    final raw = await channel
+        .invokeMapMethod('getTvCompatibilityDiagnostics')
+        .timeout(const Duration(seconds: 15));
+    if (raw == null || raw['identity'] is! Map || raw['checks'] is! Map) {
+      throw StateError('Compatibility snapshot unavailable');
+    }
+    compatibility = createTvCompatibilityReport(
+      raw,
+      capturedAt: capturedAt,
+      version: version,
+      build: build,
+    );
+  } catch (error, stack) {
+    DiagnosticsStore.instance.recordException(
+      'getTvCompatibilityDiagnostics',
+      error,
+      stack,
+    );
+  }
+  final diagnostics = DiagnosticsStore.instance.snapshot(
     version: version,
     build: build,
     environment: environment,
     memory: memory,
+    nativeShell: shell,
   );
+  return combineDiagnosticsReport(
+    diagnostics,
+    compatibility,
+    capturedAt: capturedAt,
+  );
+}
+
+Future<void> clearDiagnostics() async {
+  try {
+    await const BridgeChannel('me.efesser.flauncher/method')
+        .invokeMethod<bool>('clearNativeShellDiagnostics');
+  } catch (_) {}
+  DiagnosticsStore.instance.clear();
 }

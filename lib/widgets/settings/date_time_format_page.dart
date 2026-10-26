@@ -1,5 +1,4 @@
 import '../../providers/appearance_service.dart';
-import '../../providers/remote_panel_service.dart';
 import '../rounded_switch_list_tile.dart';
 import 'settings_choice_tile.dart';
 import 'settings_page_layout.dart';
@@ -62,7 +61,6 @@ class DateTimeFormatPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
     final appearance = context.watch<AppearanceService>();
-    final panel = remotePanel ? context.watch<RemotePanelService>() : null;
     return SettingsPageLayout(
       title: Text(l.dateSettings),
       child: ListView(
@@ -71,10 +69,8 @@ class DateTimeFormatPage extends StatelessWidget {
           if (showCalendar)
             RoundedSwitchListTile(
               title: Text(l.dateCalendarEnabled),
-              value: panel?.dateCalendar ?? appearance.appearance.dateCalendar,
-              onChanged: (value) => panel != null
-                  ? panel.set('dateCalendar', value)
-                  : appearance.set('panelDateCalendar', value),
+              value: appearance.appearance.dateCalendar,
+              onChanged: (value) => appearance.set('panelDateCalendar', value),
             ),
         ],
       ),

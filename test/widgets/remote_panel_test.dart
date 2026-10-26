@@ -12,6 +12,8 @@ import 'package:flauncher/providers/remote_panel_service.dart';
 import 'package:flauncher/widgets/remote_panel.dart';
 import 'package:flauncher/widgets/focus_aware_app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flauncher/widgets/panel_calendar_dialog.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
@@ -20,6 +22,62 @@ import '../mocks.mocks.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  for (final combined in [false, true]) {
+    testWidgets('remote calendar opens with OK and restores date focus: combined=$combined', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      final panel = RemotePanelService(prefs);
+      final appearance = AppearanceService(prefs);
+      final settings = SettingsService(prefs);
+      addTearDown(panel.dispose);
+      addTearDown(appearance.dispose);
+      addTearDown(settings.dispose);
+      for (final id in RemotePanelService.ids) {
+        if (!['settings', 'time', 'date'].contains(id)) await panel.show(id, false);
+      }
+      // Ignore the legacy panel-specific flag, even with custom panel appearance.
+      await panel.set('dateCalendar', true);
+      await panel.set('inheritAppearance', false);
+      await appearance.set('panelCombinedInformation', combined);
+      final inputs = MockTvInputsService();
+      final notifications = MockNotificationsService();
+      final weather = MockWeatherService();
+      when(weather.weatherData).thenReturn(null);
+      when(weather.stale).thenReturn(false);
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(remotePanelChannel, (_) async => null);
+      addTearDown(() => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(remotePanelChannel, null));
+      await tester.pumpWidget(MultiProvider(providers: [
+        ChangeNotifierProvider.value(value: settings),
+        ChangeNotifierProvider.value(value: appearance),
+        ChangeNotifierProvider.value(value: panel),
+        ChangeNotifierProvider<TvInputsService>.value(value: inputs),
+        ChangeNotifierProvider<NotificationsService>.value(value: notifications),
+        ChangeNotifierProvider<WeatherService>.value(value: weather),
+      ], child: MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: const RemotePanel(),
+      )));
+      await tester.pumpAndSettle();
+      final state = tester.state<FocusAwareAppBarState>(find.byType(FocusAwareAppBar));
+      expect(state.dateFocusNode.context, isNull);
+      await panel.set('dateCalendar', false);
+      await appearance.set('panelDateCalendar', true);
+      await tester.pumpAndSettle();
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+      await tester.pumpAndSettle();
+      expect(state.dateFocusNode.hasFocus, isTrue);
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pumpAndSettle();
+      expect(find.byType(PanelCalendarDialog), findsOneWidget);
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(find.byType(PanelCalendarDialog), findsNothing);
+      expect(state.dateFocusNode.hasFocus, isTrue);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+    });
+  }
   for (final closeDuringLoad in [false, true]) {
     testWidgets(
       'panel waits for initial sources before painting: close=$closeDuringLoad',

@@ -161,7 +161,7 @@ const designStates = [
       'settingsTextColor': 0xffffd54f, 'settingsTextSize': 20}),
   DesignState('settings-notification-style', route: SettingsStylePage.notificationsRouteName,
     appearance: {'noticeColor': 0xff1e3a8a, 'noticeOpacity': .75,
-      'noticeTextColor': 0xffffffff, 'noticeTextSize': 18, 'noticeWidth': 400}, bottom: true),
+      'noticeTextColor': 0xffffffff, 'noticeTextSize': 18, 'noticeWidth': 400}),
   DesignState('settings-preview', route: AppearancePage.routeName),
   DesignState(
     'settings-preview-720p-large',

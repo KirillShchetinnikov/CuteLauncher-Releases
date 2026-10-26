@@ -1,3 +1,4 @@
+import 'package:flauncher/sleep_timer_configuration.dart';
 import 'package:flauncher/adaptive_landscape.dart';
 import 'package:flauncher/widgets/settings/appearance_page.dart';
 import 'package:flauncher/widgets/wallpaper_background.dart';
@@ -280,6 +281,14 @@ void main() {
       expect(find.byType(RemotePanelObjectsPage), findsOneWidget);
       expect(panel.previewActive, isTrue);
       expectClearToolbar();
+      await tester.scrollUntilVisible(
+        find.byKey(const ValueKey('time')),
+        150,
+        scrollable: find.descendant(
+          of: find.byType(RemotePanelObjectsPage),
+          matching: find.byType(Scrollable),
+        ),
+      );
       await tester.tap(find.descendant(of: find.byKey(const ValueKey('time')), matching: find.byType(Switch)));
       await tester.pumpAndSettle();
       expect(find.byKey(const Key('statusbar_clock')), findsNothing);
@@ -1567,6 +1576,7 @@ void main() {
 
 SettingsService mkSettingsService() {
   final settingsService = MockSettingsService();
+  when(settingsService.sleepTimerConfiguration).thenReturn(SleepTimerConfiguration());
   final demo = ValueNotifier<LandscapeDemoFrame?>(null);
   addTearDown(demo.dispose);
   when(settingsService.landscapeDemo).thenReturn(demo);
@@ -1612,6 +1622,7 @@ SettingsService mkSettingsService() {
 
 WallpaperService mkWallpaperService([bool wallpaper = true]) {
   final wallpaperService = MockWallpaperService();
+  when(wallpaperService.video).thenReturn(null);
   when(wallpaperService.gradient).thenReturn(FLauncherGradients.greatWhale);
   when(wallpaperService.wallpaper).thenReturn(wallpaper ? Image.asset('assets/icon.png').image : null);
   when(wallpaperService.version).thenReturn(0);

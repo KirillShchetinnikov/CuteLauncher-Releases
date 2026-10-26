@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:flauncher/tv_compatibility_report.dart';
 import 'package:flauncher/tv_compatibility_diagnostics.dart';
+import 'package:flauncher/diagnostics_store.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -81,7 +82,10 @@ void main() {
         directory,
         'tcl43-au01',
       );
-      expect(jsonDecode(saved.readAsStringSync()), report);
+      expect(
+        jsonDecode(saved.readAsStringSync()),
+        publicTvCompatibilityReport(report),
+      );
       expect(catalog.validateArchivedProfiles(directory), isEmpty);
       expect(
         () => catalog.archiveDeviceReport(report, directory, 'tcl43-au01'),
@@ -96,6 +100,76 @@ void main() {
     } finally {
       await directory.delete(recursive: true);
     }
+  });
+  test('unified report shares one header and publication excludes errors and settings', () {
+    final diagnostics = DiagnosticsStore().snapshot(
+      version: '1.2.1',
+      build: '99',
+      environment: {
+        'androidApi': 34,
+        'device': {'manufacturer': 'DEXP', 'model': '55MCG'},
+      },
+    );
+    final combined = combineDiagnosticsReport(
+      {
+        ...diagnostics,
+        'failures': [
+          {'errorText': 'private-log', 'settingsRef': 1},
+        ],
+        'settingsSnapshots': [
+          {
+            'id': 1,
+            'values': {'memory_saver_enabled': true},
+          },
+        ],
+        'settingsAtExport': {'show_weather_in_status_bar': true},
+        'nativeShell': {'stdout': 'private-network'},
+      },
+      createTvCompatibilityReport(raw, capturedAt: now),
+      capturedAt: DateTime.utc(2026, 10, 25, 14, 32),
+    );
+    expect(combined['schemaVersion'], 3);
+    expect(combined.containsKey('identity'), isFalse);
+    expect(combined.containsKey('installedLauncher'), isFalse);
+    expect((combined['compatibility'] as Map)['status'], 'complete');
+    expect(
+      (combined['compatibility'] as Map)['checks']['overlay'],
+      'notGranted',
+    );
+    expect((combined['app'] as Map)['version'], '1.2.1');
+    final publication = publicTvCompatibilityReport(combined);
+    final json = jsonEncode(publication);
+    for (final private in [
+      'private',
+      'failures',
+      'settings',
+      'nativeShell',
+      'fingerprint',
+      'G10',
+      '14:32',
+    ]) {
+      expect(json, isNot(contains(private)), reason: private);
+    }
+    expect((publication['checks'] as Map)['overlay'], 'unknown');
+    expect((publication['checks'] as Map)['androidTv'], 'available');
+    expect((publication['identity'] as Map)['model'], 'Smart TV Pro');
+    expect(parseTvCompatibilityReport(publication), publication);
+    final granted = publicTvCompatibilityReport({
+      ...combined,
+      'compatibility': {'scope': 'readOnlyMetadata', 'status': 'complete',
+        'checks': {'overlay': 'available', 'defaultHome': 'available'}},
+    });
+    expect((granted['checks'] as Map)['overlay'], 'unknown');
+    expect((granted['checks'] as Map)['defaultHome'], 'unknown');
+    final incomplete = combineDiagnosticsReport(
+      diagnostics,
+      null,
+      capturedAt: now,
+    );
+    expect((incomplete['compatibility'] as Map)['status'], 'unavailable');
+    expect((incomplete['compatibility'] as Map)['checks'].values.toSet(), {
+      'unknown',
+    });
   });
   test('collector calls only the read-only snapshot and never ADB or mutating actions', () async {
     PackageInfo.setMockInitialValues(

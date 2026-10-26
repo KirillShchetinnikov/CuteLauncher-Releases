@@ -44,7 +44,7 @@ class WallpaperBackground extends StatelessWidget {
       height: size.height,
       errorBuilder: (_, _, _) => fallback(),
     );
-    Widget background = artwork ?? fallback();
+    Widget background = artwork == null ? fallback() : Stack(fit: StackFit.expand, children: [fallback(), artwork!]);
     if (provider != null) {
       background = Stack(
         fit: StackFit.expand,

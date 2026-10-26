@@ -1,5 +1,6 @@
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/notification_popup_presentation.dart';
+import 'package:flauncher/widgets/side_panel_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -30,39 +31,47 @@ void main() {
         ),
       );
       final theme = ThemeData.dark();
+      var visible = false;
+      late StateSetter update;
       await tester.pumpWidget(
         ChangeNotifierProvider.value(
           value: settings,
           child: MaterialApp(
             theme: theme,
-            home: const NotificationPopupPresentation(child: SizedBox()),
+            home: NotificationPopupPresentation(
+              child: StatefulBuilder(
+                builder: (context, setState) {
+                  update = setState;
+                  return Offstage(
+                    offstage: !visible,
+                    child: const SidePanelDialog(
+                      isRightSide: true,
+                      child: Text('Panel'),
+                    ),
+                  );
+                },
+              ),
+            ),
           ),
         ),
       );
       await tester.pumpAndSettle();
       expect(payloads.last['left'], false);
-      expect(
-        payloads.last['background'],
-        theme.colorScheme.surface.toARGB32(),
-      );
+      expect(payloads.last['background'], theme.colorScheme.surface.toARGB32());
       expect(
         payloads.last['foreground'],
         theme.colorScheme.onSurface.toARGB32(),
       );
-      NotificationPopupPresentation.settingsDepth.value++;
+      update(() => visible = true);
       await tester.pumpAndSettle();
       expect(payloads.last['left'], true);
-      tester.binding.handleAppLifecycleStateChanged(
-        AppLifecycleState.paused,
-      );
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
       await tester.pumpAndSettle();
       expect(payloads.last['left'], false);
-      tester.binding.handleAppLifecycleStateChanged(
-        AppLifecycleState.resumed,
-      );
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
       await tester.pumpAndSettle();
       expect(payloads.last['left'], true);
-      NotificationPopupPresentation.settingsDepth.value--;
+      update(() => visible = false);
       await tester.pumpAndSettle();
       expect(payloads.last['left'], false);
     },

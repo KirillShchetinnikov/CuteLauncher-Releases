@@ -156,6 +156,7 @@ final class NotificationBridge implements EventChannel.StreamHandler {
                     map.put("title", title);
                     map.put("text", text);
                     map.put("isClearable", sbn.isClearable());
+                    map.put("hasContentIntent", notification != null && notification.contentIntent != null);
                     list.add(map);
                 }
             }
@@ -163,6 +164,25 @@ final class NotificationBridge implements EventChannel.StreamHandler {
             e.printStackTrace();
         }
         return list;
+    }
+
+    boolean openNotification(String key) {
+        LauncherNotificationListenerService service = LauncherNotificationListenerService.getInstance();
+        if (service == null || key == null) return false;
+        try {
+            StatusBarNotification[] notifications = service.getActiveNotifications(new String[]{key});
+            if (notifications == null) return false;
+            for (StatusBarNotification item : notifications) {
+                if (!key.equals(item.getKey())) continue;
+                android.app.Notification notification = item.getNotification();
+                if (notification == null || notification.contentIntent == null) return false;
+                notification.contentIntent.send();
+                return true;
+            }
+        } catch (Exception error) {
+            error.printStackTrace();
+        }
+        return false;
     }
 
     boolean dismissNotification(String key) {

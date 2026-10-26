@@ -3,6 +3,7 @@ import 'package:flauncher/providers/appearance_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/action_notice.dart';
 import 'package:flauncher/widgets/notice_style.dart';
+import 'package:flauncher/widgets/notice_placement.dart';
 import 'package:flauncher/widgets/settings/settings_panel.dart';
 import 'package:flauncher/widgets/settings/settings_style_page.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,71 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
+  testWidgets(
+    'notification corner choice persists, updates preview and resets only notice style',
+    (tester) async {
+      tester.view.physicalSize = const Size(1920, 1080);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      final appearance = AppearanceService(prefs);
+      final settings = SettingsService(prefs);
+      addTearDown(appearance.dispose);
+      addTearDown(settings.dispose);
+      await appearance.set('settingsOpacity', .8);
+      await tester.pumpWidget(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider.value(value: appearance),
+            ChangeNotifierProvider.value(value: settings),
+          ],
+          child: MaterialApp(
+            locale: const Locale('ru'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            builder: (_, child) => ActionNoticeHost(child: child!),
+            home: const SettingsPanel(
+              initialRoute: SettingsStylePage.notificationsRouteName,
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Расположение уведомлений'));
+      await tester.pumpAndSettle();
+      for (final label in [
+        'Внизу справа',
+        'Внизу слева',
+        'Вверху справа',
+        'Вверху слева',
+      ]) {
+        expect(find.text(label), findsWidgets);
+      }
+      await tester.tap(find.text('Вверху справа'));
+      await tester.pumpAndSettle();
+      expect(
+        NoticeCorner.parse(appearance.appearance.values['noticeCorner']),
+        NoticeCorner.topRight,
+      );
+      final reloaded = AppearanceService(prefs);
+      expect(reloaded.appearance.values['noticeCorner'], 'topRight');
+      reloaded.dispose();
+      expect(tester.getRect(find.byType(NoticeSurface)).top, 24);
+      expect(tester.getRect(find.byType(NoticeSurface)).right, 1896);
+      await tester.ensureVisible(find.text('Сбросить настройки этого раздела'));
+      await tester.tap(find.text('Сбросить настройки этого раздела'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Сбросить настройки этого раздела').last);
+      await tester.pumpAndSettle();
+      expect(appearance.appearance.values['noticeCorner'], isNull);
+      expect(appearance.appearance.number('settingsOpacity'), .8);
+      expect(tester.getRect(find.byType(NoticeSurface)).bottom, 1056);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
   for (final onRight in [false, true]) {
     testWidgets(
       'style preview uses popup corner and closes on exit ($onRight)',
@@ -152,6 +218,7 @@ void main() {
       expect(payloads.last['width'], 500);
       expect(tester.widget<Text>(find.text('Sample')).style!.fontSize, 22);
       await tester.pump(const Duration(seconds: 5));
+      await tester.pumpAndSettle();
       expect(find.text('Sample'), findsNothing);
       expect(tester.takeException(), isNull);
     },

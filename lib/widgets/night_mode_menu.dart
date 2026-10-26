@@ -5,6 +5,7 @@ import '../l10n/app_localizations.dart';
 import '../providers/night_mode_service.dart';
 import 'side_panel_dialog.dart';
 import 'settings/settings_panel_style.dart';
+import 'menu_header.dart';
 import 'menu_header_action.dart';
 import 'launcher_dialog.dart';
 import 'settings/night_mode_page.dart';
@@ -40,6 +41,7 @@ class _NightModeMenuState extends State<NightModeMenu> {
     setState(() => _settingsOpen = true);
     await showLauncherDialog<void>(
       context: context,
+      parentPanelHidden: true,
       styleDialog: false,
       barrierColor: Colors.transparent,
       builder: (_) =>
@@ -123,13 +125,13 @@ class _NightModeMenuState extends State<NightModeMenu> {
               width: 380,
               child: SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Row(
-                        children: [
-                          Expanded(child: Text(l.nightModeTitle)),
+                      MenuHeader(
+                        title: Text(l.nightModeTitle),
+                        actions: [
                           MenuHeaderAction(
                             focusNode: _settingsNode,
                             tooltip: l.settings,
@@ -138,7 +140,7 @@ class _NightModeMenuState extends State<NightModeMenu> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 12),
+                      const Divider(),
                       Text(
                         c.scheduled
                             ? '${c.solar ? l.nightSolarSchedule : l.nightManualSchedule}\n'

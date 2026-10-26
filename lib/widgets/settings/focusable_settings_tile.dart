@@ -47,9 +47,18 @@ class FocusableSettingsTile extends StatefulWidget {
 class _FocusableSettingsTileState extends State<FocusableSettingsTile>
     with AutomaticKeepAliveClientMixin {
   bool _focused = false;
+  final _focusNode = FocusNode();
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
 
   void _activate() {
     if (!widget.enabled || widget.onPressed == null) return;
+    // Pointer activation must remember the same opener as remote activation.
+    (widget.focusNode ?? _focusNode).requestFocus();
     if (context.read<SettingsService?>()?.appKeyClickEnabled == true) {
       FLauncherChannel().playClickSound();
     }
@@ -96,7 +105,7 @@ class _FocusableSettingsTileState extends State<FocusableSettingsTile>
           descendantsAreFocusable: widget.enabled,
           onKeyEvent: widget.enabled ? widget.onKeyEvent : null,
           autofocus: widget.autofocus,
-          focusNode: widget.focusNode,
+          focusNode: widget.focusNode ?? _focusNode,
           onFocusChange: (hasFocus) {
             setState(() => _focused = hasFocus);
             updateKeepAlive();

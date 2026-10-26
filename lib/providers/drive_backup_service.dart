@@ -1,3 +1,4 @@
+import '../diagnostics_store.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -154,7 +155,8 @@ class DriveBackupService extends ChangeNotifier with WidgetsBindingObserver {
         Duration(seconds: ((result['interval'] as int?) ?? 5).clamp(5, 60)),
         generation,
       );
-    } catch (error) {
+    } catch (error, stack) {
+      DiagnosticsStore.instance.recordException('driveConnect', error, stack);
       if (!_disposed && generation == _generation) {
         busy = false;
         failed = true;
@@ -226,7 +228,8 @@ class DriveBackupService extends ChangeNotifier with WidgetsBindingObserver {
         code = '';
         verificationUrl = '';
         _notify();
-      } catch (error) {
+      } catch (error, stack) {
+        DiagnosticsStore.instance.recordException('driveConnect', error, stack);
         if (!_disposed && generation == _generation) {
           busy = false;
           failed = true;

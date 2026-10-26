@@ -7,6 +7,7 @@ import '../theme/interface_style.dart';
 import 'action_notice.dart';
 import 'settings/settings_menu_layout.dart';
 import 'app_card_keys.dart';
+import 'notice_placement.dart';
 
 /// Keeps modal content clear of the settings panel, including nested dialogs.
 Future<T?> showLauncherDialog<T>({
@@ -18,9 +19,14 @@ Future<T?> showLauncherDialog<T>({
   bool useSafeArea = true,
   bool styleDialog = true,
   double? parentPanelWidth,
+  bool parentPanelHidden = false,
   bool? onRight,
   Rect? highlightRect,
+  Rect? Function()? highlightRectResolver,
 }) {
+  final occupied = parentPanelHidden
+      ? null
+      : NoticePanels.instance.boundsForRoute(context);
   final menu = SettingsMenuLayout.maybeOf(context);
   final parent = context
       .dependOnInheritedWidgetOfExactType<LauncherDialogArea>();
@@ -36,6 +42,11 @@ Future<T?> showLauncherDialog<T>({
       context
           .dependOnInheritedWidgetOfExactType<LauncherWidgetHighlight>()
           ?.rect;
+  final resolver =
+      highlightRectResolver ??
+      context
+          .dependOnInheritedWidgetOfExactType<LauncherWidgetHighlight>()
+          ?.resolver;
   return showDialog<T>(
     context: context,
     barrierDismissible: barrierDismissible,
@@ -53,7 +64,9 @@ Future<T?> showLauncherDialog<T>({
     builder: (dialogContext) => _OpeningKeyReleaseGuard(
       child: LauncherWidgetHighlight(
         rect: highlight,
+        resolver: resolver,
         child: LauncherDialogArea(
+          occupied: occupied,
           settingsOpen: settingsOpen,
           onRight: panelOnRight,
           panelWidth: parentPanelWidth ?? parent?.panelWidth,
@@ -122,17 +135,46 @@ class _OpeningKeyReleaseGuardState extends State<_OpeningKeyReleaseGuard> {
 
 /// Panels which hide themselves for another route keep dimming in their body.
 /// Their outer dialog barrier must be transparent.
-class LauncherPanelBackdrop extends StatelessWidget {
+class LauncherPanelBackdrop extends StatefulWidget {
   const LauncherPanelBackdrop({super.key});
+
+  @override
+  State<LauncherPanelBackdrop> createState() => _LauncherPanelBackdropState();
+}
+
+class _LauncherPanelBackdropState extends State<LauncherPanelBackdrop> {
+  Rect? _rect;
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback(_track);
+  }
+
+  Rect? _resolveRect() {
+    final highlight = context
+        .getInheritedWidgetOfExactType<LauncherWidgetHighlight>();
+    final global = highlight?.resolver?.call() ?? highlight?.rect;
+    final box = context.findRenderObject();
+    return global == null || box is! RenderBox || !box.hasSize
+        ? null
+        : box.globalToLocal(global.topLeft) & global.size;
+  }
+
+  void _track(Duration _) {
+    if (!mounted) return;
+    final rect = _resolveRect();
+    if (_rect != rect) setState(() => _rect = rect);
+    // Observe existing frames without scheduling continuous idle rendering.
+    WidgetsBinding.instance.addPostFrameCallback(_track);
+  }
 
   @override
   Widget build(BuildContext context) => IgnorePointer(
     child: ClipPath(
       clipper: _WidgetBackdropClipper(
-        context
-            .dependOnInheritedWidgetOfExactType<LauncherWidgetHighlight>()
-            ?.rect,
+        _rect,
         LauncherStyle.of(context).topButtonRadius,
+        _resolveRect,
       ),
       child: ColoredBox(
         color: Colors.black.withValues(
@@ -146,27 +188,33 @@ class LauncherPanelBackdrop extends StatelessWidget {
 
 class LauncherWidgetHighlight extends InheritedWidget {
   final Rect? rect;
+  final Rect? Function()? resolver;
   const LauncherWidgetHighlight({
     super.key,
     required this.rect,
+    this.resolver,
     required super.child,
   });
   @override
   bool updateShouldNotify(LauncherWidgetHighlight oldWidget) =>
-      rect != oldWidget.rect;
+      rect != oldWidget.rect || resolver != oldWidget.resolver;
 }
 
 class _WidgetBackdropClipper extends CustomClipper<Path> {
   final Rect? rect;
   final double radius;
-  const _WidgetBackdropClipper(this.rect, this.radius);
+  final Rect? Function() resolveRect;
+  const _WidgetBackdropClipper(this.rect, this.radius, this.resolveRect);
   @override
   Path getClip(Size size) {
     final path = Path()
       ..fillType = PathFillType.evenOdd
       ..addRect(Offset.zero & size);
-    if (rect != null) {
-      path.addRRect(RRect.fromRectAndRadius(rect!, Radius.circular(radius)));
+    // Clipping runs after layout, including the very first paint. Waiting for
+    // the post-frame tracker would briefly dim the opening control as well.
+    final current = resolveRect();
+    if (current != null) {
+      path.addRRect(RRect.fromRectAndRadius(current, Radius.circular(radius)));
     }
     return path;
   }
@@ -179,16 +227,19 @@ class _WidgetBackdropClipper extends CustomClipper<Path> {
 /// Captured by new modal routes because inherited widgets below the root
 /// Navigator are not automatically carried into its overlay.
 class LauncherDialogArea extends InheritedWidget {
+  final Rect? occupied;
   final bool settingsOpen, onRight;
   final double? panelWidth;
   LauncherDialogArea({
     super.key,
+    this.occupied,
     required this.settingsOpen,
     required this.onRight,
     this.panelWidth,
     required Widget child,
   }) : super(
          child: _FreeScreenArea(
+           occupied: occupied,
            settingsOpen: settingsOpen,
            onRight: onRight,
            panelWidth: panelWidth,
@@ -198,16 +249,19 @@ class LauncherDialogArea extends InheritedWidget {
 
   @override
   bool updateShouldNotify(LauncherDialogArea oldWidget) =>
+      occupied != oldWidget.occupied ||
       settingsOpen != oldWidget.settingsOpen ||
       onRight != oldWidget.onRight ||
       panelWidth != oldWidget.panelWidth;
 }
 
 class _FreeScreenArea extends StatelessWidget {
+  final Rect? occupied;
   final bool settingsOpen, onRight;
   final double? panelWidth;
   final Widget child;
   const _FreeScreenArea({
+    this.occupied,
     required this.settingsOpen,
     required this.onRight,
     this.panelWidth,
@@ -218,6 +272,21 @@ class _FreeScreenArea extends StatelessWidget {
   Widget build(BuildContext context) => LayoutBuilder(
     builder: (context, constraints) {
       final style = LauncherStyle.of(context);
+      if (occupied != null) {
+        final box = context.findRenderObject() as RenderBox;
+        final left = box.globalToLocal(occupied!.topLeft).dx;
+        final right = box.globalToLocal(occupied!.topRight).dx;
+        final useLeft = left > constraints.maxWidth - right;
+        return Padding(
+          padding: EdgeInsets.only(
+            left: useLeft ? 0 : right.clamp(0, constraints.maxWidth),
+            right: useLeft
+                ? (constraints.maxWidth - left).clamp(0, constraints.maxWidth)
+                : 0,
+          ),
+          child: child,
+        );
+      }
       final reserved = settingsOpen
           ? ((panelWidth ?? style.settingsWidth) + style.panelMargin * 2).clamp(
               0.0,
@@ -375,4 +444,11 @@ class LauncherDialogButton extends StatelessWidget {
       child: child,
     );
   }
+}
+
+Rect? launcherControlBounds(FocusNode node) {
+  final box = node.context?.findRenderObject();
+  return box is RenderBox && box.attached && box.hasSize
+      ? box.localToGlobal(Offset.zero) & box.size
+      : null;
 }

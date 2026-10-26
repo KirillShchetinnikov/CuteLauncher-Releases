@@ -1,4 +1,5 @@
 import 'language_font_choice.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -7,6 +8,7 @@ import '../../providers/appearance_service.dart';
 import '../../providers/settings_service.dart';
 import '../launcher_dialog.dart';
 import '../action_notice.dart';
+import '../notice_placement.dart';
 import 'settings_page_layout.dart';
 import 'settings_choice_tile.dart';
 import 'settings_percentage_slider.dart';
@@ -90,6 +92,21 @@ class _SettingsStylePageState extends State<SettingsStylePage> {
       title: Text(notifications ? l.notificationStyle : l.settingsStyle),
       child: ListView(
         children: [
+          if (notifications)
+            SettingsChoiceTile<NoticeCorner>(
+              autofocus: true,
+              valueBelow: true,
+              title: l.noticePosition,
+              value: NoticeCorner.parse(appearance.values['noticeCorner']),
+              options: NoticeCorner.values,
+              label: (corner) => switch (corner) {
+                NoticeCorner.bottomRight => l.noticeBottomRight,
+                NoticeCorner.bottomLeft => l.noticeBottomLeft,
+                NoticeCorner.topRight => l.noticeTopRight,
+                NoticeCorner.topLeft => l.noticeTopLeft,
+              },
+              onChanged: (corner) => service.set('noticeCorner', corner.name),
+            ),
           if (!notifications)
             SettingsChoiceTile<bool>(
               autofocus: true,
@@ -97,7 +114,8 @@ class _SettingsStylePageState extends State<SettingsStylePage> {
               title: l.settingsMenuPosition,
               value: settings.settingsMenuOnRight,
               options: const [false, true],
-              label: (right) => right ? l.settingsMenuRight : l.settingsMenuLeft,
+              label: (right) =>
+                  right ? l.settingsMenuRight : l.settingsMenuLeft,
               onChanged: settings.setSettingsMenuOnRight,
             ),
           if (!notifications) ...[

@@ -4,26 +4,26 @@
     {
       "ru": "README.md",
       "en": "README_EN.md",
-      "ruSha256": "69fdf8e31928c7ecf803b9802efdf5d699b64c727515527ad28e0aaf98053491",
-      "enSha256": "16b1fdade1df620bfcbbc0a2d07250bf3827db06c2e225c7e2424663545f6110"
+      "ruSha256": "5bd66d458a2bc225ab0b2d13f31485530561f5a2f9f337ae148b6c1c01ecef51",
+      "enSha256": "742641796bf9828ee67e8077144947e74f7d8d90cba986fde18cc35af84575e6"
     },
     {
       "ru": "docs/README.md",
       "en": "docs/README_EN.md",
-      "ruSha256": "4b8910292762e5b92baf3aae8e365b68a13d19ab4d844c0eb5c4a88b3180c0f4",
-      "enSha256": "4aa8ddd757d916db9622669ddea0f260bbd60b930a8f8e7950ad9708f72685f8"
+      "ruSha256": "57c087575a8a17c305f6595619b575db2388333df9b5b1e23c6ee8122b911515",
+      "enSha256": "c9e516afd8c685b45652dd61e91ba3f1f8fc424113675d586305befa38c5fa71"
     },
     {
       "ru": "docs/USER_GUIDE_RU.md",
       "en": "docs/USER_GUIDE_EN.md",
-      "ruSha256": "bca7d489dc358f3be315c258ddf5fd0f8cd11ecaa385e1211797b183365cc5d0",
-      "enSha256": "7f55b62b12c8a39abf45e37b9d948c31a7d2fb81e5ce967999d671e9a2423463"
+      "ruSha256": "8eb7b9c83b8eeb4ce72250db8d2ef35c41e1315985a910c38bc98fd3b15614fb",
+      "enSha256": "3347917916418f4a25fa09e472eee39db4f82cffa0f6ebe6d3e2abcbb4e6eb92"
     },
     {
       "ru": "CHANGELOG_RU.md",
       "en": "CHANGELOG_EN.md",
-      "ruSha256": "515f6c7b029f54ccf4b50564a7a0a2de74bb627bc3a9e5c49d70966670c7f88b",
-      "enSha256": "a1e755d9bf9da572d112b797a72645b7ccbd64f5170e099b58006e0f97d0cc06"
+      "ruSha256": "eb9f3a3c92258e9ace9a6eec3d981047987d4d212498ea1d49150716b44f03d6",
+      "enSha256": "07b4a899ea51df87e2ed054a82776c4499d5bdfcbb4766c2505026f984a16eb5"
     }
   ]
 }

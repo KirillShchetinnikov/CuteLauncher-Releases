@@ -25,6 +25,21 @@ void main() {
     TestWidgetsFlutterBinding.ensureInitialized();
   });
 
+  test('openNotification sends exact key and preserves unavailable result', () async {
+    const channel = MethodChannel('me.efesser.flauncher/method');
+    final calls = <MethodCall>[];
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(channel, (call) async {
+      calls.add(call);
+      return call.arguments['key'] == 'specific-key';
+    });
+    final bridge = FLauncherChannel();
+    expect(await bridge.openNotification('specific-key'), isTrue);
+    expect(await bridge.openNotification('expired-key'), isFalse);
+    expect(calls.map((c) => c.method), everyElement('openNotification'));
+    expect(calls.first.arguments, {'key': 'specific-key'});
+  });
+
   test("getApplications", () async {
     final channel = MethodChannel('me.efesser.flauncher/method');
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(channel, (call) async {

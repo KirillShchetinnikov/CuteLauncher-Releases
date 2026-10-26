@@ -1,4 +1,3 @@
-import 'notification_popup_presentation.dart';
 import 'settings/settings_page_layout.dart';
 import 'settings/settings_menu_layout.dart';
 import 'settings/focusable_settings_tile.dart';
@@ -27,6 +26,8 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import '../document_files.dart';
+import '../tv_cleaner.dart';
+import 'settings/adb_notice.dart';
 
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
@@ -65,16 +66,72 @@ class ApplicationInfoPanel extends StatefulWidget {
   State<ApplicationInfoPanel> createState() => _ApplicationInfoPanelState();
 }
 
-class _ApplicationInfoPanelState extends State<ApplicationInfoPanel> {
+class _ApplicationInfoPanelState extends State<ApplicationInfoPanel>
+    with WidgetsBindingObserver {
+  bool _running = false;
+  bool _stopping = false;
+  int _processRequest = 0;
+
+  Future<void> _refreshProcess() async {
+    final request = ++_processRequest;
+    try {
+      final result = await TvCleanerClient().call(
+        'appProcessStatus',
+        packages: [widget.application.packageName],
+      );
+      if (mounted && request == _processRequest) {
+        setState(
+          () => _running =
+              result['status'] == 'success' && result['running'] == true,
+        );
+      }
+    } catch (_) {
+      if (mounted && request == _processRequest) {
+        setState(() => _running = false);
+      }
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && !_stopping) {
+      _refreshProcess();
+    }
+  }
+
+  Future<void> _stopApp() async {
+    if (_stopping) return;
+    ++_processRequest;
+    setState(() => _stopping = true);
+    try {
+      final result = await TvCleanerClient().call(
+        'stopApp',
+        packages: [widget.application.packageName],
+      );
+      if (!mounted) return;
+      showAdbNotice(context, result['status'] as String?);
+    } catch (_) {
+      if (mounted) showAdbNotice(context, 'unavailable');
+    } finally {
+      if (mounted) {
+        setState(() => _stopping = false);
+        await _refreshProcess();
+        if (mounted && !_running) _appInfoNode.requestFocus();
+      }
+    }
+  }
+
   late Future<bool> _hasCustomBannerFuture;
   late Future<Uint8List> _applicationIconFuture;
   final _addToCategoryNode = FocusNode();
   final _removeFromCategoryNode = FocusNode();
+  final _appInfoNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
-    if (!widget.embedded) NotificationPopupPresentation.settingsDepth.value++;
+    WidgetsBinding.instance.addObserver(this);
+    _refreshProcess();
     _hasCustomBannerFuture = context.read<AppsService>().hasCustomBanner(
       widget.application.packageName,
     );
@@ -85,9 +142,10 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel> {
 
   @override
   void dispose() {
-    if (!widget.embedded) NotificationPopupPresentation.settingsDepth.value--;
+    WidgetsBinding.instance.removeObserver(this);
     _addToCategoryNode.dispose();
     _removeFromCategoryNode.dispose();
+    _appInfoNode.dispose();
     super.dispose();
   }
 
@@ -382,7 +440,23 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel> {
             },
           ),
           const Divider(),
+          if (_running)
+            FocusableSettingsTile(
+              leading: _stopping
+                  ? const SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.stop_circle_outlined),
+              title: Text(
+                localizations.stopApp,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              onPressed: _stopApp,
+            ),
           FocusableSettingsTile(
+            focusNode: _appInfoNode,
             leading: const Icon(Icons.info_outlined),
             title: Text(
               localizations.appInfo,

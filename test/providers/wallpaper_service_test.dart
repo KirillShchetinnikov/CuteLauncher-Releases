@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'dart:convert';
+import 'package:flauncher/local_background_media.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/painting.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 /*
  * FLauncher
@@ -42,6 +42,53 @@ void main() {
   });
 
   group("pickWallpaper", () {
+    for (final scenario in ['video', 'cancel', 'format', 'codec']) {
+      test('local media $scenario preserves the previous background on failure', () async {
+        final directory = await Directory.systemTemp.createTemp('cute-background-');
+        when(pathProviderPlatform.getApplicationDocumentsPath()).thenAnswer((_) async => directory.path);
+        final selected = await File('${directory.path}/selected.bin').writeAsBytes(
+          scenario == 'format' ? [1,2,3] : [0,0,0,24,102,116,121,112,109,112,52,50]);
+        final previous = await File('${directory.path}/wallpaper').writeAsBytes([5,6,7]);
+        const channel = MethodChannel('plugins.flutter.io/image_picker');
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(channel,
+          (_) async => scenario == 'cancel' ? null : [selected.path]);
+        final launcher = MockFLauncherChannel();
+        when(launcher.checkForGetContentAvailability()).thenAnswer((_) async => true);
+        SharedPreferences.setMockInitialValues({});
+        final settings = SettingsService(await SharedPreferences.getInstance());
+        var validations = 0;
+        final service = WallpaperService(launcher, settings, validateVideo: (_) async {
+          validations++;
+          if (scenario == 'codec') throw const BackgroundMediaException(BackgroundMediaFailure.videoCodec);
+        });
+        try {
+          await service.refresh();
+          if (scenario == 'format' || scenario == 'codec') {
+            await expectLater(service.pickWallpaper(), throwsA(isA<BackgroundMediaException>()));
+          } else {
+            expect(await service.pickWallpaper(), scenario == 'video');
+          }
+          if (scenario == 'video') {
+            expect(service.video?.path, '${directory.path}/wallpaper_video');
+            expect(await service.video!.readAsBytes(), await selected.readAsBytes());
+            expect(validations, 1);
+            await settings.setBackgroundSource('scheduled');
+            await service.refresh();
+            expect(service.video, isNull);
+          } else {
+            expect(await previous.readAsBytes(), [5,6,7]);
+            expect(service.video, isNull);
+          }
+          expect(await File('${directory.path}/wallpaper_video.pending').exists(), false);
+        } finally {
+          service.dispose(); settings.dispose();
+          TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(channel, null);
+          when(pathProviderPlatform.getApplicationDocumentsPath()).thenAnswer((_) async => '.');
+          await directory.delete(recursive: true);
+        }
+      });
+    }
+
     test("picks and persists a valid image through the picker channel", () async {
       final directory = await Directory.systemTemp.createTemp('cute-picked-wallpaper-');
       final bytes = base64Decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aF8UAAAAASUVORK5CYII=');
@@ -52,7 +99,7 @@ void main() {
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
           .setMockMethodCallHandler(channel, (call) async {
         calls.add(call);
-        return selected.path;
+        return [selected.path];
       });
       final launcher = MockFLauncherChannel();
       when(launcher.checkForGetContentAvailability()).thenAnswer((_) async => true);
@@ -63,8 +110,7 @@ void main() {
         await service.reset(); // Wait for initialization before picking.
         final version = service.version;
         await service.pickWallpaper();
-        expect(calls.single.method, 'pickImage');
-        expect(calls.single.arguments['source'], ImageSource.gallery.index);
+        expect(calls.single.method, 'pickMedia');
         expect(await File('${directory.path}/wallpaper').readAsBytes(), bytes);
         expect(service.wallpaper, isA<FileImage>());
         expect((service.wallpaper as FileImage).file.path, '${directory.path}/wallpaper');

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="recovery_cleaner_retry">إعادة محاولة استعادة التطبيقات</string>
+    <string name="recovery_cleaner_running">جارٍ استعادة حالات التطبيقات الأساسية…</string>
+    <string name="recovery_cleaner_done">تمت استعادة الحالات الأساسية.</string>
+    <string name="recovery_cleaner_no_baseline">لم تُنشأ حالة أساسية بعد.</string>
+    <string name="recovery_cleaner_failed">لم تكتمل الاستعادة. تحقق من اتصال ADB المحلي وأعد المحاولة.</string>
+    <string name="recovery_cleaner_partial">تعذر استعادة بعض الحالات. قد تكون التطبيقات مفقودة أو محمية؛ تحقق من الجهاز وأعد المحاولة.</string>
+</resources>

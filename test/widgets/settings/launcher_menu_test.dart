@@ -8,6 +8,7 @@ import 'package:flauncher/widgets/settings/remote_buttons_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+
 import '../../support/settings_help.dart';
 
 void main() {
@@ -100,14 +101,14 @@ void main() {
   }
 
   testWidgets(
-    'six compact destinations including TV cleaner fit and keep D-pad focus',
+    'seven destinations including TV power and cleaner keep D-pad focus',
     (tester) async {
       info['connectionSnapshot'] = jsonEncode({
         'status': 'ready',
         'launchers': [],
       });
       await pumpMenu(tester, large: true);
-      expect(find.byType(FocusableSettingsTile), findsNWidgets(6));
+      expect(find.byType(FocusableSettingsTile), findsNWidgets(7));
       expect(find.text('Менеджер очистки ТВ'), findsOneWidget);
       expect(find.text('Проверить подключение'), findsNothing);
       expect(find.textContaining('Включите отладку'), findsNothing);
@@ -128,6 +129,12 @@ void main() {
       );
       expect(
         Focus.of(tester.element(find.text('Автозапуск'))).hasFocus,
+        isTrue,
+      );
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      await tester.pumpAndSettle();
+      expect(
+        Focus.of(tester.element(find.text('Управление питанием'))).hasFocus,
         isTrue,
       );
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
@@ -178,7 +185,7 @@ void main() {
       (tester) async {
         await pumpMenu(tester);
         if (title == 'Ремаппер кнопок пульта') {
-          for (var step = 0; step < 4; step++) {
+          for (var step = 0; step < 5; step++) {
             await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
             await tester.pumpAndSettle();
           }

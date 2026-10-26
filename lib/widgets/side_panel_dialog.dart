@@ -1,4 +1,3 @@
-
 import 'dart:math' as math;
 
 import 'package:flauncher/theme/launcher_style.dart';
@@ -8,6 +7,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/settings_service.dart';
 import '../theme/interface_style.dart';
+import 'notice_placement.dart';
 
 class SidePanelDialog extends StatelessWidget {
   final Widget child;
@@ -60,19 +60,21 @@ class SidePanelDialog extends StatelessWidget {
           anchor == null ? style.panelMargin : 0,
           anchor == null ? style.panelMargin : 0,
         ),
-        child: Material(
-          color: surface,
-          elevation: skin.style == InterfaceStyle.outline ? 0 : 16,
-          surfaceTintColor: Colors.transparent,
-          shadowColor: Colors.black54,
-          borderRadius: borderRadius,
-          child: Container(
-            width: width,
-            decoration: decoration,
-            padding: EdgeInsets.all(style.panelPadding),
-            child: Actions(
-              actions: {BackIntent: BackAction(context)},
-              child: child,
+        child: NoticePanelRegion(
+          child: Material(
+            color: surface,
+            elevation: skin.style == InterfaceStyle.outline ? 0 : 16,
+            surfaceTintColor: Colors.transparent,
+            shadowColor: Colors.black54,
+            borderRadius: borderRadius,
+            child: Container(
+              width: width,
+              decoration: decoration,
+              padding: EdgeInsets.all(style.panelPadding),
+              child: Actions(
+                actions: {BackIntent: BackAction(context)},
+                child: child,
+              ),
             ),
           ),
         ),

@@ -142,12 +142,8 @@ void main() {
         await tester.tap(find.text('Открывать календарь по нажатию на дату'));
         await tester.pumpAndSettle();
         expect(
-          remote ? panel.dateCalendar : appearance.appearance.dateCalendar,
+          appearance.appearance.dateCalendar,
           isTrue,
-        );
-        expect(
-          remote ? appearance.appearance.dateCalendar : panel.dateCalendar,
-          isFalse,
         );
         expect(tester.takeException(), isNull);
       },

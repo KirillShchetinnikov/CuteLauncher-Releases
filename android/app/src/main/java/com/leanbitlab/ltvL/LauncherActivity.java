@@ -75,6 +75,7 @@ public class LauncherActivity extends FlutterActivity {
     private NetworkStatistics networkStatistics;
     private TvInputBridge tvInputBridge;
     private NotificationBridge notificationBridge;
+    private final NotificationPopupBridge notificationPopups = new NotificationPopupBridge(LauncherNotificationListenerService::transferPopups);
     private WatchNextBridge watchNextBridge;
     private MediaBridge mediaBridge;
     private DocumentFiles documentFiles;
@@ -95,6 +96,7 @@ public class LauncherActivity extends FlutterActivity {
         BatterySettingsGuide.close(this);
         if (autoLaunch != null) { autoLaunch.close(); autoLaunch=null; }
         if (notificationBridge != null) notificationBridge.onCancel(null);
+        notificationPopups.onCancel(null);
         if (watchNextBridge != null) watchNextBridge.onCancel(null);
         if (mediaBridge != null) mediaBridge.onCancel(null);
         if (panelHost.get() == this) panelHost.clear();
@@ -126,8 +128,21 @@ public class LauncherActivity extends FlutterActivity {
             && (intent.hasCategory(Intent.CATEGORY_HOME) || intent.hasCategory(Intent.CATEGORY_LAUNCHER)
                 || intent.hasCategory(Intent.CATEGORY_LEANBACK_LAUNCHER));
     }
-    @Override protected void onResume() { super.onResume(); BatterySettingsGuide.close(this); if(autoLaunch!=null) autoLaunch.resume(); }
-    @Override protected void onPause() { RemoteButtonRemapper.editing = false; RemoteButtonLearning.cancel(); LauncherNotificationListenerService.launcherPaused(); if(autoLaunch!=null) autoLaunch.pause(); super.onPause(); }
+    @Override protected void onResume() {
+        super.onResume();
+        BatterySettingsGuide.close(this);
+        if(autoLaunch!=null) autoLaunch.resume();
+        // Give Android time to rebind services after an APK replacement.
+        permissionRecoveryHandler.removeCallbacks(permissionRecovery);
+        permissionRecoveryHandler.postDelayed(permissionRecovery, 3000);
+    }
+    private final android.os.Handler permissionRecoveryHandler = new android.os.Handler(android.os.Looper.getMainLooper());
+    private final Runnable permissionRecovery = () -> sIoExecutor.execute(() -> UpdatePermissionRecovery.afterUpdate(this));
+    @Override protected void onPause() {
+        permissionRecoveryHandler.removeCallbacks(permissionRecovery);
+        sIoExecutor.execute(() -> UpdatePermissionRecovery.snapshot(this));
+        RemoteButtonRemapper.editing = false; RemoteButtonLearning.cancel(); LauncherNotificationListenerService.launcherPaused(); if(autoLaunch!=null) autoLaunch.pause(); super.onPause();
+    }
     @Override public void onUserInteraction() { if(autoLaunch!=null) autoLaunch.cancel(); super.onUserInteraction(); }
     @Override public void onWindowFocusChanged(boolean focused) { super.onWindowFocusChanged(focused); if(autoLaunch!=null) autoLaunch.focus(focused); }
 
@@ -192,12 +207,16 @@ public class LauncherActivity extends FlutterActivity {
         new MethodChannel(messenger, METHOD_CHANNEL).setMethodCallHandler((call, result) -> {
             try {
             switch (call.method) {
+                case "getNativeShellDiagnostics" -> result.success(NativeShellDiagnostics.snapshot());
+                case "clearNativeShellDiagnostics" -> { NativeShellDiagnostics.clear(); result.success(true); }
                 case "getTvCompatibilityDiagnostics" -> ApplicationLoader.load(sIoExecutor,
                         task -> new Handler(Looper.getMainLooper()).post(task),
                         () -> TvCompatibilityDiagnostics.collect(this, this::isAccessibilityServiceEnabled), result::success,
-                        error -> result.error("diagnostics_unavailable", "Unable to read compatibility metadata", null));
+                        error -> result.error("diagnostics_unavailable", "Unable to read compatibility metadata", DiagnosticErrorDetails.from(error)));
                 case "getDiagnosticEnvironment" -> result.success(Map.of(
                     "androidApi", Build.VERSION.SDK_INT,
+                    "device", Map.of("manufacturer", Build.MANUFACTURER, "model", Build.MODEL,
+                        "androidRelease", Build.VERSION.RELEASE, "buildId", Build.ID),
                     "defaultHome", isDefaultLauncher(),
                     "overlayAllowed", checkOverlayPermission(),
                     "notificationsAllowed", getSystemService(android.app.NotificationManager.class).areNotificationsEnabled(),
@@ -206,6 +225,7 @@ public class LauncherActivity extends FlutterActivity {
                     "writeSettingsAllowed", checkWriteSettingsPermission(),
                     "watchNextAllowed", watchNextBridge.checkWatchNextPermission()));
                 case "pickImageDocument" -> documentFiles.open("image/*", 8L * 1024 * 1024, result);
+                case "pickWallpaperDocument" -> documentFiles.openWallpaper(result);
                 case "pickWallpaperFolder" -> wallpaperFolder.pick(result);
                 case "listWallpaperFolder" -> wallpaperFolder.list(call.argument("uri"), Boolean.TRUE.equals(call.argument("recursive")), result);
                 case "readWallpaperFolderImage" -> wallpaperFolder.read(call.argument("uri"), result);
@@ -213,6 +233,7 @@ public class LauncherActivity extends FlutterActivity {
                 case "pickBackupFolder" -> backupFolder.pick(result);
                 case "backupFolderOperation" -> backupFolder.operate(call.argument("operation"), call.argument("uri"), call.argument("name"), call.argument("path"), result);
                 case "pickBackupDocument" -> documentFiles.open("*/*", 64L * 1024 * 1024, result);
+                case "pickCleanerListDocument" -> documentFiles.openNamed("*/*", 256L * 1024, result);
                 case "pickCleanerDocument" -> documentFiles.open("*/*", 256L * 1024, result);
                 case "saveBackupDocument" -> documentFiles.save(call.argument("path"), call.argument("name"), result);
                 case "saveDiagnosticsDocument" -> documentFiles.saveReport(call.argument("path"), call.argument("name"), result);
@@ -220,11 +241,11 @@ public class LauncherActivity extends FlutterActivity {
                 case "getProcessMemoryUsage" -> ApplicationLoader.load(sIoExecutor,
                         task -> new Handler(Looper.getMainLooper()).post(task),
                         () -> MemoryDiagnostics.snapshot(getApplicationContext()), result::success,
-                        error -> result.error("memory_unavailable", "Unable to measure process memory", null));
+                        error -> result.error("memory_unavailable", "Unable to measure process memory", DiagnosticErrorDetails.from(error)));
                 case "getApplications" -> ApplicationLoader.load(sIoExecutor,
                         task -> new Handler(Looper.getMainLooper()).post(task), applicationCatalog::getApplications,
                         result::success,
-                        error -> result.error("applications_unavailable", "Unable to query installed applications", null));
+                        error -> result.error("applications_unavailable", "Unable to query installed applications", DiagnosticErrorDetails.from(error)));
                 case "getApplicationBanner" -> ApplicationLoader.load(sIoExecutor,
                         task -> new Handler(Looper.getMainLooper()).post(task),
                         () -> applicationCatalog.getApplicationBanner(call.arguments()), result::success,
@@ -241,13 +262,17 @@ public class LauncherActivity extends FlutterActivity {
                 case "getScreensaverCapabilities" -> ApplicationLoader.load(sIoExecutor,
                         task -> new Handler(Looper.getMainLooper()).post(task),
                         () -> new ScreensaverBridge(this).capabilities(), result::success,
-                        error -> result.error("unavailable", "Screensaver capabilities unavailable", null));
+                        error -> result.error("unavailable", "Screensaver capabilities unavailable", DiagnosticErrorDetails.from(error)));
                 case "openAppInfo" -> result.success(openAppInfo(call.arguments()));
                 case "uninstallApp" -> result.success(uninstallApp(call.arguments()));
                 case "isDefaultLauncher" -> result.success(isDefaultLauncher());
                 case "checkForGetContentAvailability" -> result.success(checkForGetContentAvailability());
                 case "startAmbientMode" -> result.success(startAmbientMode());
                 case "getActiveNetworkInformation" -> result.success(networkStatistics.getActiveNetworkInformation());
+                case "getTrafficUsage" -> ApplicationLoader.load(sIoExecutor,
+                        task -> new Handler(Looper.getMainLooper()).post(task),
+                        () -> networkStatistics.getTrafficUsage(call.argument("period")), result::success,
+                        error -> result.error("usage_unavailable", "Unable to query data usage", DiagnosticErrorDetails.from(error)));
                 case "getDailyDataUsage", "getWeeklyDataUsage", "getMonthlyDataUsage" -> {
                     java.util.concurrent.Callable<Long> query = switch (call.method) {
                         case "getWeeklyDataUsage" -> networkStatistics::getWeeklyDataUsage;
@@ -260,12 +285,12 @@ public class LauncherActivity extends FlutterActivity {
                                 if (usage == -1) result.error("PERMISSION_DENIED", "Usage stats permission not granted", null);
                                 else result.success(usage);
                             },
-                            error -> result.error("usage_unavailable", "Unable to query data usage", null));
+                            error -> result.error("usage_unavailable", "Unable to query data usage", DiagnosticErrorDetails.from(error)));
                 }
                 case "checkUsageStatsPermission" -> ApplicationLoader.load(sIoExecutor,
                         task -> new Handler(Looper.getMainLooper()).post(task),
                         networkStatistics::checkUsageStatsPermission, result::success,
-                        error -> result.error("usage_unavailable", "Unable to check usage permission", null));
+                        error -> result.error("usage_unavailable", "Unable to check usage permission", DiagnosticErrorDetails.from(error)));
                 case "requestUsageStatsPermission" -> {
                     networkStatistics.requestUsageStatsPermission();
                     result.success(null);
@@ -289,7 +314,7 @@ public class LauncherActivity extends FlutterActivity {
                 case "getTvInputs" -> ApplicationLoader.load(sIoExecutor,
                         task -> new Handler(Looper.getMainLooper()).post(task),
                         tvInputBridge::getTvInputs, result::success,
-                        error -> result.error("inputs_unavailable", "Unable to query TV inputs", null));
+                        error -> result.error("inputs_unavailable", "Unable to query TV inputs", DiagnosticErrorDetails.from(error)));
                 case "launchTvInput" -> { if(autoLaunch!=null) autoLaunch.cancel(); result.success(tvInputBridge.launchTvInput(call.arguments())); }
                 case "checkNotificationListenerPermission" -> result.success(notificationBridge.checkNotificationListenerPermission());
                 case "requestNotificationListenerPermission" -> result.success(notificationBridge.requestNotificationListenerPermission());
@@ -297,11 +322,12 @@ public class LauncherActivity extends FlutterActivity {
                 case "getActiveNotifications" -> ApplicationLoader.load(sIoExecutor,
                         task -> new Handler(Looper.getMainLooper()).post(task),
                         notificationBridge::getActiveNotifications, result::success,
-                        error -> result.error("notifications_unavailable", "Unable to query notifications", null));
+                        error -> result.error("notifications_unavailable", "Unable to query notifications", DiagnosticErrorDetails.from(error)));
                 case "setNotificationPopupPresentation" -> {
                     LauncherNotificationListenerService.setPresentation(this, call.arguments());
                     result.success(null);
                 }
+                case "openNotification" -> result.success(notificationBridge.openNotification(call.argument("key")));
                 case "dismissNotification" -> {
                     String key = call.argument("key");
                     result.success(notificationBridge.dismissNotification(key));
@@ -327,7 +353,7 @@ public class LauncherActivity extends FlutterActivity {
                 case "getWatchNextPrograms" -> ApplicationLoader.load(sIoExecutor,
                         task -> new Handler(Looper.getMainLooper()).post(task),
                         watchNextBridge::getWatchNextPrograms, result::success,
-                        error -> result.error("watch_next_unavailable", "Unable to query Watch Next", null));
+                        error -> result.error("watch_next_unavailable", "Unable to query Watch Next", DiagnosticErrorDetails.from(error)));
                 case "deleteWatchNextProgram" -> {
                     Number id = call.argument("id");
                     if (id != null) {
@@ -359,13 +385,13 @@ public class LauncherActivity extends FlutterActivity {
                 default -> result.notImplemented();
             }
             } catch (SecurityException error) {
-                result.error("PERMISSION_DENIED", "Permission denied", null);
+                result.error("PERMISSION_DENIED", "Permission denied", DiagnosticErrorDetails.from(error));
             } catch (android.content.ActivityNotFoundException error) {
-                result.error("unsupported", "No compatible handler", null);
+                result.error("unsupported", "No compatible handler", DiagnosticErrorDetails.from(error));
             } catch (IllegalArgumentException error) {
-                result.error("INVALID_ARGUMENT", "Invalid argument", null);
+                result.error("INVALID_ARGUMENT", "Invalid argument", DiagnosticErrorDetails.from(error));
             } catch (Exception error) {
-                result.error("operation_failed", "Operation failed", null);
+                result.error("operation_failed", "Operation failed", DiagnosticErrorDetails.from(error));
             }
         });
 
@@ -376,6 +402,7 @@ public class LauncherActivity extends FlutterActivity {
                 new NetworkEventStreamHandler(this));
 
         new EventChannel(messenger, NOTIFICATIONS_EVENT_CHANNEL).setStreamHandler(notificationBridge);
+        new EventChannel(messenger, "me.efesser.flauncher/event_notification_popup").setStreamHandler(notificationPopups);
 
         new EventChannel(messenger, WEATHER_EVENT_CHANNEL).setStreamHandler(
                 new EventChannel.StreamHandler() {

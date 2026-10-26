@@ -85,6 +85,7 @@ final class AdbLauncherControl {
         return success;
     }
     static Map<String, Object> plan(Activity activity, AdbBridge.Shell adb, String action, String target) throws Exception {
+        AdbOperationDiagnostics.stage("plan");
         String own = activity.getPackageName();
         if (!AdbCapabilities.supported(activity, action)) return Map.of("status", "unsupported");
         List<String> commands = new ArrayList<>();
@@ -119,8 +120,11 @@ final class AdbLauncherControl {
                     : savedStates(activity, target);
                 if (states.isEmpty()) states.put(target, 1);
                 if (action.equals("disableSystem")) {
-                    String safety = AdbWifiSafety.check(states, adb::execute);
-                    if (!safety.equals("ready")) return Map.of("status", safety);
+                    AdbOperationDiagnostics.stage("wifiSafety");
+                    var safety = AdbWifiSafety.checkDetailed(states, adb::execute);
+                    AdbOperationDiagnostics.wifi(safety);
+                    if (!safety.status().equals("ready")) return Map.of("status", safety.status());
+                    AdbOperationDiagnostics.stage("plan");
                 }
                 commands.addAll(AdbSystemHomeOps.commands(states, action.equals("disableSystem")
                     ? own + "/com.leanbitlab.ltvL.MainActivity" : "")); break;
@@ -149,9 +153,11 @@ final class AdbLauncherControl {
         return Map.of("status", "ready", "commands", commands, "target", resolved, "targetName", targetName);
     }
     static String apply(Activity activity, AdbBridge.Shell adb, String action, String target, List<?> expected) throws Exception {
+        AdbOperationDiagnostics.stage("apply");
         if (!adb.execute("am get-current-user").equals("0") || !adb.execute("id -u").equals("2000")) return "denied";
         Map<String,Object> plan = plan(activity, adb, action, target);
         if (!plan.get("status").equals("ready")) return (String)plan.get("status");
+        AdbOperationDiagnostics.stage("apply");
         if (!AdbLauncherPolicy.confirmed(expected, plan.get("commands"))) return "changed";
         if ((action.equals("accessibility") || action.equals("restoreAccessibility"))
             && !AdbAccessibilityOps.apply(activity.getPackageName(), adb::execute, (List<?>)plan.get("commands"))) return "denied";

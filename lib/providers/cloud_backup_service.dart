@@ -9,6 +9,7 @@ import 'package:xml/xml.dart';
 import '../cloud_account.dart';
 import '../backup_assets.dart';
 import '../image_limits.dart';
+import '../diagnostics_store.dart';
 
 class _Transfer {
   final HttpClient client;
@@ -87,15 +88,19 @@ class CloudBackupService extends ChangeNotifier with WidgetsBindingObserver {
       });
       _check(operation);
       return await action(operation).timeout(budget);
-    } on CloudBackupException {
+    } on CloudBackupException catch (error, stack) {
+      if (error.code != 'cancelled') DiagnosticsStore.instance.recordException('cloudTransfer', error, stack);
       rethrow;
-    } on TimeoutException {
+    } on TimeoutException catch (error, stack) {
+      DiagnosticsStore.instance.recordException('cloudTransfer', error, stack);
       operation.expired = true;
       throw const CloudBackupException('timeout');
-    } on FileSystemException {
+    } on FileSystemException catch (error, stack) {
+      DiagnosticsStore.instance.recordException('cloudTransfer', error, stack);
       _check(operation);
       throw const CloudBackupException('file');
-    } catch (_) {
+    } catch (error, stack) {
+      DiagnosticsStore.instance.recordException('cloudTransfer', error, stack);
       _check(operation);
       throw const CloudBackupException('network');
     } finally {

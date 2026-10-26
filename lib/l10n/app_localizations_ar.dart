@@ -112,8 +112,11 @@ class AppLocalizationsAr extends AppLocalizations {
       'The focused app\'s banner or icon becomes a soft colour background. The selected gradient appears before an image is ready or if it cannot be read. Changes pause while the launcher is in the background. Your other wallpapers are kept.';
 
   @override
+  String get adbWifiOwnedTitle => 'شبكة Wi-Fi تابعة لمعالج الإعداد';
+
+  @override
   String get adbWifiOwned =>
-      'Not changed: a saved Wi-Fi network belongs to the setup wizard. Forget that network and reconnect through Android Settings, then check again. Disabling the wizard could delete the network.';
+      'لم تُجرَ تغييرات: أنشأ معالج إعداد Google شبكة Wi-Fi محفوظة. قد يؤدي تعطيله إلى حذف الشبكة وفصل التلفاز عن الإنترنت.\n\n1. تأكد من معرفة كلمة مرور Wi-Fi.\n2. افتح إعدادات شبكة Android وحدد الشبكة واختر نسيان الشبكة.\n3. أعد الاتصال من إعدادات الشبكة العادية في Android.\n4. ارجع إلى CuteLauncher وتحقق من ADB ثم أعد محاولة تعطيل المشغّل المدمج.\n\nإذا ظهرت الرسالة مجددًا، اترك المشغّل المدمج مفعّلًا: قد يعيد البرنامج الثابت إسناد الشبكة إلى معالج الإعداد.';
 
   @override
   String get adbWifiUnknown =>
@@ -334,10 +337,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get orSelectFormatSpecifiers => 'أو حدد محددات التنسيق';
 
   @override
-  String get openImage => 'افتح الصورة';
+  String get openImage => 'اختيار ملف';
 
   @override
-  String get picture => 'صورة';
+  String get picture => 'صورة أو فيديو محلي';
 
   @override
   String removeFrom(String name) {
@@ -431,13 +434,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get withEllipsisAddTo => 'إضافة إلى...';
 
   @override
-  String get timeBasedWallpaper => 'خلفية تعتمد على الوقت';
+  String get timeBasedWallpaper => 'صورة النهار/الليل';
 
   @override
-  String get pickDayWallpaper => 'اختيار خلفية النهار';
+  String get pickDayWallpaper => 'اختيار صورة النهار';
 
   @override
-  String get pickNightWallpaper => 'اختيار خلفية الليل';
+  String get pickNightWallpaper => 'اختيار صورة الليل';
 
   @override
   String get accessibility => 'إمكانية الوصول';
@@ -1717,8 +1720,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get diagnosticsCopied => 'تم نسخ التقرير';
 
   @override
+  String get diagnosticsSharingNotice =>
+      'أرسل الملف إلى المؤلف برسالة خاصة ولا تنشره علنًا: قد يفوت التنقيح التلقائي بعض البيانات الشخصية. بإرسال التقرير توافق على نشر تقرير توافق تلفاز مجهّل الهوية في مستودع Git لتطبيق CuteLauncher. تُنشر فقط بيانات الجهاز الوصفية وتوفّر الوظائف دون بيانات شخصية؛ ولا تُنشر سجلات الأخطاء أو الأوامر أو إعداداتك.';
+
+  @override
   String get diagnosticsHint =>
-      'يحتوي التقرير على إصدار التطبيق وحالة الإذن واستخدام الذاكرة ونتائج التشغيل. وهو يستثني المفاتيح والعناوين ومسارات الملفات وقوائم التطبيقات ومحتوى الإشعارات. يتم الاحتفاظ بآخر 50 عملية فقط في الذاكرة حتى تتم إعادة تشغيل التطبيق. لا يتم إرسال أي شيء تلقائيًا.';
+      'يجمع تقرير واحد توافق وظائف التلفاز وتشخيص الأخطاء. يتضمن التقرير طراز التلفاز وبرنامجه الثابت وإصدار التطبيق والأذونات والذاكرة ومراحل الأخطاء وأسبابها والأوامر والردود بعد التنقيح التلقائي للبيانات الشخصية. يحتفظ بآخر 50 عملية وبما يصل إلى 100 فشل بشكل منفصل وسجل ADB محدود للجلسة الحالية. تمسح إعادة التشغيل السجل. قد تبقى بيانات شخصية: أرسل الملف برسالة خاصة ولا تنشره علنًا. لا يُرسل شيء تلقائيًا. تُحفظ مع كل خطأ لقطة للإعدادات المطبّقة، ولا تستبدلها التغييرات اللاحقة.';
 
   @override
   String get diagnosticsTitle => 'تشخيص الأخطاء';
@@ -2063,7 +2070,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get background => 'الخلفية';
 
   @override
-  String get backgroundParameters => 'المعلمات';
+  String get backgroundParameters => 'إعدادات المصدر';
 
   @override
   String get resetAppearanceHint =>
@@ -3568,7 +3575,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get cleanerSnapshot => 'Save original state';
 
   @override
-  String get cleanerRestore => 'Restore manager changes';
+  String get cleanerRestore => 'استعادة الحالة الأساسية';
 
   @override
   String get cleanerSnapshotSaved => 'Original state saved';
@@ -3581,7 +3588,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get cleanerNoSafe =>
-      'This firmware has no verified list that preserves all features.';
+      'لا توجد قائمة تطبيقات نظام مطابقة لهذا الطراز والبرنامج الثابت.';
 
   @override
   String get cleanerLocal => 'Disable using a local list';
@@ -3596,7 +3603,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get cleanerExternal => 'CleanYourTV examples';
 
   @override
-  String get cleanerDisabledExport => 'Export disabled applications';
+  String get cleanerDisabledExport => 'تصدير تقرير التطبيقات المعطلة إلى ملف';
 
   @override
   String get cleanerInventoryExport => 'Export application report';
@@ -3664,7 +3671,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get cleanerHelp =>
-      'The manager uses the local ADB connection configured in TV control settings. It never uninstalls apps or clears their data. The snapshot and recovery journal are separate from ordinary backups. Recovery restores previous states only for packages changed by this manager. Automatic recovery is blocked after a firmware change.\n\nVerified lists match exact firmware. Observed and external lists do not establish safety. Protected components, HOME and active services cannot be disabled. Packages are previewed before applying; missing and already disabled packages are skipped.\n\nThe project catalog is bundled from Git. GitHub refresh requires a public catalog. External examples load only on request and never execute scripts. Export creates JSON containing disabled packages and firmware identity; add it manually to catalog/examples after review. Nothing is uploaded automatically.\n\nApp descriptions and risk remain visible. Unconfirmed purposes are marked explicitly and never included in verified lists.';
+      'تُنشأ الحالة الأساسية مرة واحدة عند أول تحديث ناجح للقائمة ولا يمكن حذفها أو استبدالها من المشغّل. وهي مرتبطة بالبرنامج الثابت. تحفظ الحالات اليدوية أوضاع التطبيقات باسم وتاريخ ويمكن استعادتها وحذفها وتصديرها. لا تحتوي النسخ على APK أو بيانات التطبيقات. تتطلب الاستعادة ADB محلياً. عند تفعيل حماية تكرار الأعطال يحاول المشغّل استعادة الحالة الأساسية تلقائياً. مسح بيانات المشغّل أو إلغاء تثبيته يحذف النسخ أيضاً؛ لا يمكن منع وصول root.';
 
   @override
   String get cleanerSkipped =>
@@ -3919,4 +3926,249 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get tvPowerHelp =>
       'الإيقاف يفعّل الاستعداد عبر خدمة تسهيل الاستخدام في CuteLauncher أو ADB المحلي. تتطلب إعادة التشغيل ADB. على جهاز التلفاز الخارجي يتحكم الأمر بالجهاز نفسه؛ يعتمد التلفاز على HDMI-CEC والبرنامج الثابت.';
+
+  @override
+  String get cleanerLists => 'قوائم التعطيل';
+
+  @override
+  String get cleanerRecovery => 'النسخ الاحتياطي والاستعادة';
+
+  @override
+  String get cleanerExports => 'التقارير';
+
+  @override
+  String get cleanerUpdating => 'جارٍ تحديث قائمة التطبيقات…';
+
+  @override
+  String get cleanerRefreshRequired => 'حدّث قائمة التطبيقات أولاً.';
+
+  @override
+  String get cleanerPreinstalled => 'تطبيق مثبت مسبقاً';
+
+  @override
+  String get cleanerNotSystem => 'هذا ليس تطبيق نظام.';
+
+  @override
+  String get cleanerMinimalRisk => 'الحد الأدنى';
+
+  @override
+  String get cleanerCacheFailure => 'تعذر حفظ القائمة للزيارة التالية.';
+
+  @override
+  String get cleanerUserApps => 'تطبيقات المستخدم';
+
+  @override
+  String get cleanerPreinstalledApps => 'التطبيقات المثبتة مسبقاً';
+
+  @override
+  String get cleanerSystemApps => 'تطبيقات النظام';
+
+  @override
+  String get cleanerBaseline => 'الحالة الأصلية الأساسية';
+
+  @override
+  String get cleanerManualStates => 'إدارة الحالات اليدوية';
+
+  @override
+  String get cleanerManualSave => 'حفظ الحالة الحالية';
+
+  @override
+  String get cleanerDateName => 'استخدام التاريخ والوقت';
+
+  @override
+  String get cleanerCustomName => 'إدخال اسم';
+
+  @override
+  String get cleanerStateExport => 'تصدير الحالة المحفوظة إلى ملف';
+
+  @override
+  String get cleanerStateRestoreHelp =>
+      'ستُستعاد حالات تمكين التطبيقات وتعطيلها المحفوظة لهذا البرنامج الثابت. لن تتغير التطبيقات المثبتة لاحقاً. تُتخطى التطبيقات المفقودة ومحاولات تعطيل المكونات المحمية. لا تُستعاد بيانات التطبيقات.';
+
+  @override
+  String get cleanerCopiesHelp =>
+      'تُنشأ الحالة الأساسية مرة واحدة عند أول تحديث ناجح للقائمة ولا يمكن حذفها أو استبدالها من المشغّل. وهي مرتبطة بالبرنامج الثابت. تحفظ الحالات اليدوية أوضاع التطبيقات باسم وتاريخ ويمكن استعادتها وحذفها وتصديرها. لا تحتوي النسخ على APK أو بيانات التطبيقات. تتطلب الاستعادة ADB محلياً. عند تفعيل حماية تكرار الأعطال يحاول المشغّل استعادة الحالة الأساسية تلقائياً. مسح بيانات المشغّل أو إلغاء تثبيته يحذف النسخ أيضاً؛ لا يمكن منع وصول root.';
+
+  @override
+  String get cleanerSearch => 'البحث بالاسم';
+
+  @override
+  String get cleanerCatalogUpdateRequired => 'حدّث الكتالوج من GitHub أولاً.';
+
+  @override
+  String get cleanerNoSearchResults => 'لا توجد سجلات مطابقة.';
+
+  @override
+  String get cleanerAlreadyDisabled =>
+      'جميع تطبيقات هذه القائمة الموجودة على هذا التلفاز معطلة بالفعل.';
+
+  @override
+  String get cleanerAlreadyEnabled =>
+      'جميع تطبيقات هذه القائمة الموجودة على هذا التلفاز مفعلة بالفعل.';
+
+  @override
+  String get cleanerNoInstalled =>
+      'لا توجد تطبيقات مطابقة من هذه القائمة مثبتة على هذا التلفاز.';
+
+  @override
+  String get cleanerListProtected => 'التطبيقات المتبقية محمية من التعطيل.';
+
+  @override
+  String get cleanerSnapshotFailed => 'تعذر حفظ الحالة. لم يتم تعطيل أي تطبيق.';
+
+  @override
+  String get cleanerDisableAllPreinstalled =>
+      'تعطيل جميع التطبيقات المثبتة مسبقاً';
+
+  @override
+  String get cleanerEnableAllPreinstalled =>
+      'تمكين جميع التطبيقات المثبتة مسبقاً';
+
+  @override
+  String get cleanerPreinstalledList => 'قائمة التطبيقات المثبتة مسبقاً';
+
+  @override
+  String cleanerBeforeList(String listName) {
+    return 'قبل تطبيق القائمة: $listName';
+  }
+
+  @override
+  String get sleepTimerSettings => 'إعدادات مؤقت الإيقاف';
+
+  @override
+  String get sleepTimerPresets => 'المؤقتات';
+
+  @override
+  String get sleepTimerDisplay => 'العرض أثناء تشغيل المؤقت';
+
+  @override
+  String get sleepTimerRemaining => 'الوقت المتبقي';
+
+  @override
+  String get sleepTimerEndTime => 'وقت الإيقاف';
+
+  @override
+  String get sleepTimerBoth => 'الوقت المتبقي ووقت الإيقاف';
+
+  @override
+  String get sleepTimerShowSeconds => 'إظهار الثواني';
+
+  @override
+  String get sleepTimerCloseAfterSelection => 'إغلاق الأداة بعد اختيار المؤقت';
+
+  @override
+  String get sleepTimerAdd => 'إضافة مؤقت';
+
+  @override
+  String get sleepTimerEdit => 'تعديل المؤقت';
+
+  @override
+  String get sleepTimerHoursLabel => 'ساعات';
+
+  @override
+  String get sleepTimerMinutesLabel => 'دقائق';
+
+  @override
+  String get sleepTimerSecondsLabel => 'ثوانٍ';
+
+  @override
+  String get sleepTimerInvalidDuration =>
+      'أدخل مدة أكبر من صفر: الساعات 0–999999 والدقائق والثواني 0–59.';
+
+  @override
+  String get sleepTimerDeleteConfirmation =>
+      'حذف هذا المؤقت؟ سيستمر العد التنازلي الجاري.';
+
+  @override
+  String get sleepTimerResetConfirmation =>
+      'استعادة المؤقتات الافتراضية وترتيبها؟ ستحذف المؤقتات المخصصة وسيستمر العد التنازلي الجاري.';
+
+  @override
+  String get sleepTimerReorderHint =>
+      '◄ / ► أو اضغط مطولاً على OK للنقل. ▲ / ▼ لتغيير الترتيب والنقل بين القوائم الظاهرة والمخفية. OK لإنهاء النقل.';
+
+  @override
+  String get sleepTimerSaveFailed => 'تعذر حفظ إعدادات المؤقت.';
+
+  @override
+  String get sleepTimerVisible => 'ظاهرة';
+
+  @override
+  String get sleepTimerHidden => 'مخفية';
+
+  @override
+  String get sleepTimerReset => 'إعادة ضبط المؤقتات';
+
+  @override
+  String get cleanerListSnapshotHelp =>
+      'قبل التعطيل بالقائمة تُحفظ حالات التطبيقات المحددة فقط. استعادتها لا تغيّر التطبيقات الأخرى. الحد هو 100 حالة يدوية وتلقائية. إذا فشل الحفظ فلن يبدأ التعطيل.';
+
+  @override
+  String get trafficSettings => 'إعدادات حركة البيانات';
+
+  @override
+  String get trafficTitle => 'حركة البيانات';
+
+  @override
+  String get trafficReceived => 'المستلم';
+
+  @override
+  String get trafficSent => 'المرسل';
+
+  @override
+  String get trafficTotal => 'الإجمالي';
+
+  @override
+  String get stopApp => 'إيقاف';
+
+  @override
+  String get backgroundImageFormats =>
+      'الصور: JPEG وPNG وWebP وGIF وBMP — حتى 8 MiB و48 ميغابكسل و16,384 بكسل لكل جانب.';
+
+  @override
+  String get backgroundMediaFormats =>
+      'الصور: JPEG وPNG وWebP وGIF وBMP — حتى 8 MiB و48 ميغابكسل و16,384 بكسل لكل جانب.\nالفيديو: MP4/M4V وWebM وMKV — حتى 256 MiB و3840×2160. دعم الترميز حسب التلفاز؛ يفضّل MP4 مع H.264. يتكرر دون صوت ويتوقف خارج الشاشة الرئيسية. لا يُضمّن في النسخ الاحتياطية.';
+
+  @override
+  String get backgroundFormatError =>
+      'تنسيق غير مدعوم أو ملف تالف. اختر ملفًا صالحًا بأحد التنسيقات المذكورة.';
+
+  @override
+  String backgroundFileTooLarge(String maxMiB) {
+    return 'الملف كبير جدًا. الحد الأقصى: $maxMiB MiB. اختر ملفًا أصغر.';
+  }
+
+  @override
+  String get backgroundImageResolutionError =>
+      'الصورة كبيرة جدًا: الحد الأقصى 48 ميغابكسل و16,384 بكسل لكل جانب.';
+
+  @override
+  String get backgroundVideoResolutionError =>
+      'دقة الفيديو عالية جدًا. اختر حتى 3840×2160 أو 2160×3840.';
+
+  @override
+  String get backgroundVideoCodecError =>
+      'تعذّر تشغيل الفيديو: الترميز غير مدعوم أو الملف تالف. جرّب MP4 مع H.264.';
+
+  @override
+  String get backgroundFileApplied => 'تم اختيار الملف وتحديث الخلفية.';
+
+  @override
+  String get noticePosition => 'موضع الإشعارات';
+
+  @override
+  String get noticeBottomRight => 'أسفل اليمين';
+
+  @override
+  String get noticeBottomLeft => 'أسفل اليسار';
+
+  @override
+  String get noticeTopRight => 'أعلى اليمين';
+
+  @override
+  String get noticeTopLeft => 'أعلى اليسار';
+
+  @override
+  String get notificationOpenFailed =>
+      'تعذّر فتح إجراء الإشعار. قد لا يكون متاحًا الآن.';
 }

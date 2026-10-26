@@ -25,6 +25,11 @@ public final class EthernetUsageHistoryTest {
             return;
         }
         var history = EthernetUsageHistory.parse(DATA);
+        expect(10800, history.received(0, 7200000));
+        expect(7200, history.sent(0, 7200000));
+        expect(5400, history.received(1800000, 5400000));
+        expect(3600, history.sent(1800000, 5400000));
+        expect(-2, history.received(-1, 3600000));
         expect(18000, history.usage(0, 7200000));
         expect(9000, history.usage(1800000, 5400000));
         expect(7200, history.usage(0, 3600000));
@@ -58,6 +63,8 @@ public final class EthernetUsageHistoryTest {
         EthernetUsageCache.Loader loader = () -> { loads[0]++; return DATA; };
         expect(7200, cache.read(0, 3600000, 1000, loader));
         expect(18000, cache.read(0, 7200000, 2000, loader));
+        expect(10800, cache.breakdown(0, 7200000)[0]);
+        expect(7200, cache.breakdown(0, 7200000)[1]);
         expect(1, loads[0]);
         expect(18000, cache.read(0, 7200000, 301000, loader));
         expect(2, loads[0]);

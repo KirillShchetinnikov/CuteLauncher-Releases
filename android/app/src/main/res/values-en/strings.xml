@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="recovery_cleaner_retry">Retry app recovery</string>
+    <string name="recovery_cleaner_running">Restoring baseline app states…</string>
+    <string name="recovery_cleaner_done">Baseline app states restored.</string>
+    <string name="recovery_cleaner_no_baseline">No baseline app state has been created yet.</string>
+    <string name="recovery_cleaner_failed">App recovery did not complete. Check local ADB connectivity and retry.</string>
+    <string name="recovery_cleaner_partial">Some application states could not be restored. Apps may be missing or protected; retry after checking the device.</string>
+</resources>

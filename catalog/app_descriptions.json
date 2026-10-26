@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "reviewedAt": "2026-10-21",
+  "reviewedAt": "2026-10-25",
   "sources": [
     "https://developer.android.com/reference/android/content/pm/PackageManager",
     "https://source.android.com/docs/core/runtime/rros",
@@ -73,10 +73,6 @@
       ]
     },
     "com.alphainventor.filemanager": {
-      "ru": "Файловый менеджер или установка приложений из файлов.",
-      "en": "File manager or app installation from files.",
-      "riskRu": "Средний: можно потерять выбор файлов, экспорт отчётов или установку APK.",
-      "riskEn": "Medium: file picking, report export or APK installation may become unavailable.",
       "confidence": "identified",
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
@@ -84,13 +80,10 @@
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
-      ]
+      ],
+      "category": "user"
     },
     "com.amazon.amazonvideo.livingroom": {
-      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
-      "en": "User-facing video, music, game or TV application.",
-      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
-      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
       "confidence": "identified",
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
@@ -98,7 +91,8 @@
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
-      ]
+      ],
+      "category": "preinstalled"
     },
     "com.android.adservices.api": {
       "ru": "Приложение не опознано.",
@@ -1176,55 +1170,43 @@
       ]
     },
     "com.arrowsapp.nightscreen": {
-      "ru": "Инструмент управления устройством, лаунчер или фильтр экрана.",
-      "en": "Device control tool, launcher or screen filter.",
-      "riskRu": "Средний: соответствующий способ управления, Home или фильтр станет недоступен.",
-      "riskEn": "Medium: the associated control method, Home or filter will be unavailable.",
       "confidence": "identified",
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "tcl-g08",
         "tcl-g10"
-      ]
+      ],
+      "category": "user"
     },
     "com.cxinventor.file.explorer": {
-      "ru": "Файловый менеджер или установка приложений из файлов.",
-      "en": "File manager or app installation from files.",
-      "riskRu": "Средний: можно потерять выбор файлов, экспорт отчётов или установку APK.",
-      "riskEn": "Medium: file picking, report export or APK installation may become unavailable.",
       "confidence": "identified",
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "tcl-g10"
-      ]
+      ],
+      "category": "user"
     },
     "com.cybercat.acbridge": {
-      "ru": "Инструмент управления устройством, лаунчер или фильтр экрана.",
-      "en": "Device control tool, launcher or screen filter.",
-      "riskRu": "Средний: соответствующий способ управления, Home или фильтр станет недоступен.",
-      "riskEn": "Medium: the associated control method, Home or filter will be unavailable.",
       "confidence": "identified",
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "tcl-g08",
         "tcl-g10"
-      ]
+      ],
+      "category": "user"
     },
     "com.cybercat.adbappcontrol.tv": {
-      "ru": "Инструмент управления устройством, лаунчер или фильтр экрана.",
-      "en": "Device control tool, launcher or screen filter.",
-      "riskRu": "Средний: соответствующий способ управления, Home или фильтр станет недоступен.",
-      "riskEn": "Medium: the associated control method, Home or filter will be unavailable.",
       "confidence": "identified",
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "kp1-yyz",
         "tcl-g08"
-      ]
+      ],
+      "category": "user"
     },
     "com.dolby.android.audio.calibration": {
       "ru": "Обработка, настройка или калибровка звука.",
@@ -1713,10 +1695,6 @@
       ]
     },
     "com.google.android.play.games": {
-      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
-      "en": "User-facing video, music, game or TV application.",
-      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
-      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
       "confidence": "identified",
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
@@ -1724,7 +1702,8 @@
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
-      ]
+      ],
+      "category": "preinstalled"
     },
     "com.google.android.safetycenter.resources": {
       "ru": "Приложение не опознано.",
@@ -1895,17 +1874,14 @@
       ]
     },
     "com.google.android.videos": {
-      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
-      "en": "User-facing video, music, game or TV application.",
-      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
-      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
       "confidence": "identified",
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "kp1-yyz",
         "tcl-g08"
-      ]
+      ],
+      "category": "preinstalled"
     },
     "com.google.android.webview": {
       "ru": "Приложение не опознано.",
@@ -1922,10 +1898,6 @@
       ]
     },
     "com.google.android.youtube.tv": {
-      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
-      "en": "User-facing video, music, game or TV application.",
-      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
-      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
       "confidence": "identified",
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
@@ -1933,13 +1905,10 @@
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
-      ]
+      ],
+      "category": "preinstalled"
     },
     "com.google.android.youtube.tvmusic": {
-      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
-      "en": "User-facing video, music, game or TV application.",
-      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
-      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
       "confidence": "identified",
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
@@ -1947,19 +1916,17 @@
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
-      ]
+      ],
+      "category": "preinstalled"
     },
     "com.happproxy": {
-      "ru": "VPN или прокси-соединение.",
-      "en": "VPN or proxy connectivity.",
-      "riskRu": "Высокий: может пропасть используемый сетевой маршрут и доступ к сервисам.",
-      "riskEn": "High: the active network route and access to services may be lost.",
       "confidence": "identified",
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "kp1-yyz"
-      ]
+      ],
+      "category": "user"
     },
     "com.mediatek.AirplayAPK": {
       "ru": "Приём трансляции или зеркалирования экрана.",
@@ -2154,10 +2121,6 @@
       ]
     },
     "com.netflix.ninja": {
-      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
-      "en": "User-facing video, music, game or TV application.",
-      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
-      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
       "confidence": "identified",
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
@@ -2165,7 +2128,8 @@
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
-      ]
+      ],
+      "category": "preinstalled"
     },
     "com.netflix.tokenmanager": {
       "ru": "Приложение не опознано.",
@@ -2182,10 +2146,6 @@
       ]
     },
     "com.plexapp.android": {
-      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
-      "en": "User-facing video, music, game or TV application.",
-      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
-      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
       "confidence": "identified",
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
@@ -2193,7 +2153,8 @@
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
-      ]
+      ],
+      "category": "preinstalled"
     },
     "com.realtek.airplay2": {
       "ru": "Приём трансляции или зеркалирования экрана.",
@@ -2376,30 +2337,24 @@
       ]
     },
     "com.spbtv.rosing": {
-      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
-      "en": "User-facing video, music, game or TV application.",
-      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
-      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
       "confidence": "identified",
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "tcl-g08",
         "tcl-g10"
-      ]
+      ],
+      "category": "user"
     },
     "com.spocky.projengmenu": {
-      "ru": "Инструмент управления устройством, лаунчер или фильтр экрана.",
-      "en": "Device control tool, launcher or screen filter.",
-      "riskRu": "Средний: соответствующий способ управления, Home или фильтр станет недоступен.",
-      "riskEn": "Medium: the associated control method, Home or filter will be unavailable.",
       "confidence": "identified",
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "kp1-yyz",
         "tcl-g08"
-      ]
+      ],
+      "category": "user"
     },
     "com.tcl.UpdatePeripheral": {
       "ru": "Обновление прошивки или периферии производителя.",
@@ -2979,46 +2934,33 @@
       ]
     },
     "com.utsmta.app": {
-      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
-      "en": "User-facing video, music, game or TV application.",
-      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
-      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
       "confidence": "identified",
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "kp1-yyz"
-      ]
+      ],
+      "category": "preinstalled"
     },
     "com.vk.tv": {
-      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
-      "en": "User-facing video, music, game or TV application.",
-      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
-      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
       "confidence": "identified",
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "kp1-yyz"
-      ]
+      ],
+      "category": "preinstalled"
     },
     "com.wireguard.android": {
-      "ru": "VPN или прокси-соединение.",
-      "en": "VPN or proxy connectivity.",
-      "riskRu": "Высокий: может пропасть используемый сетевой маршрут и доступ к сервисам.",
-      "riskEn": "High: the active network route and access to services may be lost.",
       "confidence": "identified",
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "kp1-yyz"
-      ]
+      ],
+      "category": "user"
     },
     "io.github.kirillshchetinnikov.cutelauncher": {
-      "ru": "CuteLauncher — текущий лаунчер и менеджер управления ТВ.",
-      "en": "CuteLauncher — the launcher and TV control manager.",
-      "riskRu": "Высокий: отключение лишит доступа к менеджеру и его восстановлению.",
-      "riskEn": "High: disabling removes access to this manager and its recovery controls.",
       "confidence": "identified",
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
@@ -3026,69 +2968,55 @@
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
-      ]
+      ],
+      "category": "user"
     },
     "net.gtvbox.installer": {
-      "ru": "Файловый менеджер или установка приложений из файлов.",
-      "en": "File manager or app installation from files.",
-      "riskRu": "Средний: можно потерять выбор файлов, экспорт отчётов или установку APK.",
-      "riskEn": "Medium: file picking, report export or APK installation may become unavailable.",
       "confidence": "identified",
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "tcl-g08",
         "tcl-g10"
-      ]
+      ],
+      "category": "user"
     },
     "net.gtvbox.videoplayer": {
-      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
-      "en": "User-facing video, music, game or TV application.",
-      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
-      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
       "confidence": "identified",
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "tcl-g08"
-      ]
+      ],
+      "category": "preinstalled"
     },
     "net.gtvbox.vimuhd": {
-      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
-      "en": "User-facing video, music, game or TV application.",
-      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
-      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
       "confidence": "identified",
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "kp1-yyz"
-      ]
+      ],
+      "category": "preinstalled"
     },
     "org.amnezia.awg": {
-      "ru": "VPN или прокси-соединение.",
-      "en": "VPN or proxy connectivity.",
-      "riskRu": "Высокий: может пропасть используемый сетевой маршрут и доступ к сервисам.",
-      "riskEn": "High: the active network route and access to services may be lost.",
       "confidence": "identified",
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "kp1-yyz"
-      ]
+      ],
+      "category": "user"
     },
     "org.courville.nova": {
-      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
-      "en": "User-facing video, music, game or TV application.",
-      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
-      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
       "confidence": "identified",
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "kp1-yyz",
         "tcl-g08"
-      ]
+      ],
+      "category": "preinstalled"
     },
     "org.dtvkit.inputsource": {
       "ru": "Телевизионные входы или просмотр эфирных каналов.",
@@ -3103,22 +3031,15 @@
       ]
     },
     "org.jellyfin.androidtv": {
-      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
-      "en": "User-facing video, music, game or TV application.",
-      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
-      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
       "confidence": "identified",
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "tcl-g08"
-      ]
+      ],
+      "category": "preinstalled"
     },
     "org.smarttube.stable": {
-      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
-      "en": "User-facing video, music, game or TV application.",
-      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
-      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
       "confidence": "identified",
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
@@ -3126,50 +3047,38 @@
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
-      ]
+      ],
+      "category": "preinstalled"
     },
     "rtb.mobile.android": {
-      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
-      "en": "User-facing video, music, game or TV application.",
-      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
-      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
       "confidence": "identified",
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "tcl-g08"
-      ]
+      ],
+      "category": "user"
     },
     "ru.beeline.tve.android": {
-      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
-      "en": "User-facing video, music, game or TV application.",
-      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
-      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
       "confidence": "identified",
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "kp1-yyz"
-      ]
+      ],
+      "category": "preinstalled"
     },
     "ru.ivi.client": {
-      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
-      "en": "User-facing video, music, game or TV application.",
-      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
-      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
       "confidence": "identified",
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "kp1-yyz",
         "tcl-g08"
-      ]
+      ],
+      "category": "preinstalled"
     },
     "ru.kinopoisk.tv": {
-      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
-      "en": "User-facing video, music, game or TV application.",
-      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
-      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
       "confidence": "identified",
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
@@ -3177,13 +3086,10 @@
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
-      ]
+      ],
+      "category": "preinstalled"
     },
     "ru.more.play": {
-      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
-      "en": "User-facing video, music, game or TV application.",
-      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
-      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
       "confidence": "identified",
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
@@ -3191,19 +3097,17 @@
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
-      ]
+      ],
+      "category": "preinstalled"
     },
     "ru.rutube.app": {
-      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
-      "en": "User-facing video, music, game or TV application.",
-      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
-      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
       "confidence": "identified",
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "kp1-yyz"
-      ]
+      ],
+      "category": "preinstalled"
     },
     "tv.mopa.ginga": {
       "ru": "Приложение не опознано.",
@@ -3230,16 +3134,13 @@
       ]
     },
     "tv.twitch.android.app": {
-      "ru": "Пользовательское приложение для видео, музыки, игр или телевидения.",
-      "en": "User-facing video, music, game or TV application.",
-      "riskRu": "Средний: приложение, его рекомендации и назначенная ему кнопка будут недоступны.",
-      "riskEn": "Medium: the app, its recommendations and its assigned remote shortcut will be unavailable.",
       "confidence": "identified",
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "tcl-g08"
-      ]
+      ],
+      "category": "user"
     }
   }
 }

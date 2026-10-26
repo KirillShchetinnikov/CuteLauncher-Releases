@@ -52,7 +52,7 @@ final class UpdateBridge {
                     data.put("abis", Arrays.asList(Build.SUPPORTED_ABIS));
                     data.put("directory", new File(activity.getCacheDir(), "updates").getAbsolutePath());
                     result.success(data);
-                } catch (Exception error) { result.error("unavailable", "Update environment unavailable", null); }
+                } catch (Exception error) { result.error("unavailable", "Update environment unavailable", DiagnosticErrorDetails.from(error)); }
             } else if (call.method.equals("install")) {
                 executor.execute(() -> {
                     String status = "invalid";
@@ -68,6 +68,7 @@ final class UpdateBridge {
                                     candidate.packageName, version(candidate), signerNames(candidate))) status = "ready";
                         }
                     } catch (Exception error) { status = "invalid"; }
+                    if (status.equals("ready")) UpdatePermissionRecovery.snapshot(activity);
                     final String checked = status;
                     new Handler(Looper.getMainLooper()).post(() -> {
                         if (!checked.equals("ready")) { result.success(checked); return; }

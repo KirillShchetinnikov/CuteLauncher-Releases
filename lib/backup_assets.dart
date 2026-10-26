@@ -79,7 +79,7 @@ class BackupAssets {
   }
 
   Future<void> installWallpapers({bool replace = false}) async {
-    for (final name in replace ? _wallpapers : files.keys.where(_wallpapers.contains)) {
+    for (final name in replace ? {..._wallpapers, 'wallpaper_video'} : files.keys.where(_wallpapers.contains)) {
       final target = File(path.join(root.path, name));
       File? previous;
       if (await target.exists()) previous = await target.copy(path.join(stage.path, 'previous-$name'));

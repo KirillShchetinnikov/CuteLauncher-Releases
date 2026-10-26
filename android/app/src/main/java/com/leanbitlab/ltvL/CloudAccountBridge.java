@@ -43,8 +43,8 @@ final class CloudAccountBridge {
                         }
                     }
                     main.post(() -> result.success(value));
-                } catch(IllegalArgumentException error) { main.post(() -> result.error("invalid_argument","Invalid account configuration",null)); }
-                catch(Exception error) { main.post(() -> result.error("unavailable","Account storage unavailable",null)); }
+                } catch(IllegalArgumentException error) { main.post(() -> result.error("invalid_argument","Invalid account configuration",DiagnosticErrorDetails.from(error))); }
+                catch(Exception error) { main.post(() -> result.error("unavailable","Account storage unavailable",DiagnosticErrorDetails.from(error))); }
             });
         });
     }

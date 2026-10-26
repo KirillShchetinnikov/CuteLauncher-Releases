@@ -80,6 +80,12 @@ class FLauncherChannel {
     return map.cast<String, dynamic>();
   }
 
+  Future<Map<String, dynamic>> getTrafficUsage(String period) async {
+    final map = await _methodChannel.invokeMapMethod<String, dynamic>('getTrafficUsage', {'period': period});
+    if (map == null) throw const FormatException('Traffic snapshot unavailable');
+    return map;
+  }
+
   Future<int> getDailyDataUsage() async {
     try {
       final int usage = await _methodChannel.invokeMethod("getDailyDataUsage");
@@ -210,6 +216,14 @@ class FLauncherChannel {
         final List<dynamic> eventList = event;
         listener(eventList.cast<Map<dynamic, dynamic>>());
       });
+
+  Future<bool> openNotification(String key) async {
+    try {
+      return await _methodChannel.invokeMethod<bool>('openNotification', {'key': key}) ?? false;
+    } on PlatformException {
+      return false;
+    }
+  }
 
   Future<bool> dismissNotification(String key) async {
     try {

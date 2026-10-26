@@ -112,8 +112,11 @@ class AppLocalizationsHi extends AppLocalizations {
       'The focused app\'s banner or icon becomes a soft colour background. The selected gradient appears before an image is ready or if it cannot be read. Changes pause while the launcher is in the background. Your other wallpapers are kept.';
 
   @override
+  String get adbWifiOwnedTitle => 'Wi-Fi सेटअप विज़ार्ड का है';
+
+  @override
   String get adbWifiOwned =>
-      'Not changed: a saved Wi-Fi network belongs to the setup wizard. Forget that network and reconnect through Android Settings, then check again. Disabling the wizard could delete the network.';
+      'कोई बदलाव नहीं हुआ: सहेजा गया Wi-Fi नेटवर्क Google सेटअप विज़ार्ड ने बनाया है। उसे बंद करने से नेटवर्क मिट सकता है और टीवी का इंटरनेट कट सकता है।\n\n1. सुनिश्चित करें कि आपको Wi-Fi पासवर्ड पता है।\n2. Android नेटवर्क सेटिंग खोलें, नेटवर्क चुनें और नेटवर्क भूलें दबाएँ।\n3. सामान्य Android नेटवर्क सेटिंग से फिर जुड़ें।\n4. CuteLauncher पर लौटें, ADB जाँचें और बिल्ट-इन लॉन्चर बंद करने का फिर प्रयास करें।\n\nसंदेश दोबारा आए तो बिल्ट-इन लॉन्चर चालू रखें: फ़र्मवेयर फिर नेटवर्क का मालिक सेटअप विज़ार्ड को बना सकता है।';
 
   @override
   String get adbWifiUnknown =>
@@ -335,10 +338,10 @@ class AppLocalizationsHi extends AppLocalizations {
   String get orSelectFormatSpecifiers => 'या प्रारूप निर्दिष्टकर्ता चुनें';
 
   @override
-  String get openImage => 'छवि खोलें';
+  String get openImage => 'फ़ाइल चुनें';
 
   @override
-  String get picture => 'चित्र';
+  String get picture => 'स्थानीय चित्र या वीडियो';
 
   @override
   String removeFrom(String name) {
@@ -432,13 +435,13 @@ class AppLocalizationsHi extends AppLocalizations {
   String get withEllipsisAddTo => 'इसमें जोड़ें...';
 
   @override
-  String get timeBasedWallpaper => 'समय आधारित वॉलपेपर';
+  String get timeBasedWallpaper => 'दिन/रात का चित्र';
 
   @override
-  String get pickDayWallpaper => 'दिन का वॉलपेपर चुनें';
+  String get pickDayWallpaper => 'दिन का चित्र चुनें';
 
   @override
-  String get pickNightWallpaper => 'रात का वॉलपेपर चुनें';
+  String get pickNightWallpaper => 'रात का चित्र चुनें';
 
   @override
   String get accessibility => 'पहुंच (एक्सेसिबिलिटी)';
@@ -1716,8 +1719,12 @@ class AppLocalizationsHi extends AppLocalizations {
   String get diagnosticsCopied => 'रिपोर्ट कॉपी की गई';
 
   @override
+  String get diagnosticsSharingNotice =>
+      'फ़ाइल सार्वजनिक रूप से न डालें, लेखक को निजी संदेश में भेजें: स्वचालित सफ़ाई कुछ निजी जानकारी छोड़ सकती है। रिपोर्ट भेजकर आप CuteLauncher के Git रिपॉज़िटरी में अनाम टीवी संगतता रिपोर्ट प्रकाशित करने की सहमति देते हैं। केवल डिवाइस की जानकारी और सुविधाओं की उपलब्धता बिना निजी डेटा के प्रकाशित होगी; त्रुटि लॉग, कमांड और आपकी सेटिंग प्रकाशित नहीं होंगी।';
+
+  @override
   String get diagnosticsHint =>
-      'रिपोर्ट में ऐप संस्करण, अनुमति स्थिति, मेमोरी उपयोग और संचालन परिणाम शामिल हैं। इसमें कुंजियाँ, पते, फ़ाइल पथ, ऐप सूचियाँ और अधिसूचना सामग्री शामिल नहीं है। ऐप के पुनरारंभ होने तक केवल अंतिम 50 ऑपरेशन ही मेमोरी में रखे जाते हैं। कुछ भी स्वचालित रूप से नहीं भेजा जाता है.';
+      'एक ही रिपोर्ट में टीवी सुविधाओं की संगतता और त्रुटि निदान शामिल हैं। रिपोर्ट में टीवी मॉडल और फ़र्मवेयर, ऐप संस्करण, अनुमतियाँ, मेमोरी, त्रुटियों के चरण और कारण तथा निजी जानकारी को अपने आप हटाने के बाद कमांड और जवाब होते हैं। वर्तमान सत्र की अंतिम 50 क्रियाएँ, अलग से अधिकतम 100 विफलताएँ और सीमित ADB लॉग रखे जाते हैं। पुनः चालू करने पर लॉग मिटता है। कुछ निजी जानकारी बच सकती है: फ़ाइल सार्वजनिक रूप से डालने के बजाय निजी संदेश में भेजें। कुछ भी अपने आप नहीं भेजा जाता। हर त्रुटि के साथ उस समय लागू सेटिंग का स्नैपशॉट रहता है; बाद के बदलाव उसे नहीं बदलते।';
 
   @override
   String get diagnosticsTitle => 'त्रुटि निदान';
@@ -2062,7 +2069,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get background => 'पृष्ठभूमि';
 
   @override
-  String get backgroundParameters => 'पैरामीटर्स';
+  String get backgroundParameters => 'स्रोत सेटिंग';
 
   @override
   String get resetAppearanceHint =>
@@ -3578,7 +3585,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get cleanerSnapshot => 'Save original state';
 
   @override
-  String get cleanerRestore => 'Restore manager changes';
+  String get cleanerRestore => 'मूल आधार स्थिति पुनर्स्थापित करें';
 
   @override
   String get cleanerSnapshotSaved => 'Original state saved';
@@ -3591,7 +3598,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get cleanerNoSafe =>
-      'This firmware has no verified list that preserves all features.';
+      'इस मॉडल और फ़र्मवेयर के लिए कोई मिलती सिस्टम ऐप सूची नहीं है।';
 
   @override
   String get cleanerLocal => 'Disable using a local list';
@@ -3606,7 +3613,8 @@ class AppLocalizationsHi extends AppLocalizations {
   String get cleanerExternal => 'CleanYourTV examples';
 
   @override
-  String get cleanerDisabledExport => 'Export disabled applications';
+  String get cleanerDisabledExport =>
+      'अक्षम ऐप की रिपोर्ट फ़ाइल में निर्यात करें';
 
   @override
   String get cleanerInventoryExport => 'Export application report';
@@ -3674,7 +3682,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get cleanerHelp =>
-      'The manager uses the local ADB connection configured in TV control settings. It never uninstalls apps or clears their data. The snapshot and recovery journal are separate from ordinary backups. Recovery restores previous states only for packages changed by this manager. Automatic recovery is blocked after a firmware change.\n\nVerified lists match exact firmware. Observed and external lists do not establish safety. Protected components, HOME and active services cannot be disabled. Packages are previewed before applying; missing and already disabled packages are skipped.\n\nThe project catalog is bundled from Git. GitHub refresh requires a public catalog. External examples load only on request and never execute scripts. Export creates JSON containing disabled packages and firmware identity; add it manually to catalog/examples after review. Nothing is uploaded automatically.\n\nApp descriptions and risk remain visible. Unconfirmed purposes are marked explicitly and never included in verified lists.';
+      'पहली सफल सूची रीफ़्रेश पर आधार स्थिति केवल एक बार बनती है और लॉन्चर इसे मिटा या बदल नहीं सकता। यह फ़र्मवेयर से जुड़ी है। मैन्युअल स्थितियाँ ऐप के मोड नाम और तारीख के साथ सहेजती हैं; उन्हें बहाल, हटाया या निर्यात किया जा सकता है। इनमें APK या ऐप डेटा नहीं होते। बहाली के लिए स्थानीय ADB चाहिए। क्रैश सुरक्षा सक्रिय होने पर आधार स्थिति की स्वचालित बहाली का प्रयास होता है। लॉन्चर डेटा मिटाने या उसे हटाने पर प्रतियाँ भी मिटती हैं; root पहुँच रोकी नहीं जा सकती।';
 
   @override
   String get cleanerSkipped =>
@@ -3928,4 +3936,252 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get tvPowerHelp =>
       'बंद करने पर CuteLauncher सुलभता सेवा या स्थानीय ADB से स्टैंडबाय होता है। रीस्टार्ट के लिए ADB चाहिए। टीवी बॉक्स पर बॉक्स नियंत्रित होता है; टीवी का व्यवहार HDMI-CEC और फ़र्मवेयर पर निर्भर है।';
+
+  @override
+  String get cleanerLists => 'अक्षम करने की सूचियाँ';
+
+  @override
+  String get cleanerRecovery => 'बैकअप और पुनर्स्थापना';
+
+  @override
+  String get cleanerExports => 'रिपोर्ट';
+
+  @override
+  String get cleanerUpdating => 'ऐप सूची अपडेट हो रही है…';
+
+  @override
+  String get cleanerRefreshRequired => 'पहले ऐप सूची रीफ़्रेश करें।';
+
+  @override
+  String get cleanerPreinstalled => 'पहले से इंस्टॉल किया गया ऐप';
+
+  @override
+  String get cleanerNotSystem => 'यह सिस्टम ऐप नहीं है।';
+
+  @override
+  String get cleanerMinimalRisk => 'न्यूनतम';
+
+  @override
+  String get cleanerCacheFailure => 'अगली बार के लिए सूची सहेजी नहीं जा सकी।';
+
+  @override
+  String get cleanerUserApps => 'उपयोगकर्ता ऐप';
+
+  @override
+  String get cleanerPreinstalledApps => 'पहले से इंस्टॉल किए गए ऐप';
+
+  @override
+  String get cleanerSystemApps => 'सिस्टम ऐप';
+
+  @override
+  String get cleanerBaseline => 'मूल आधार स्थिति';
+
+  @override
+  String get cleanerManualStates => 'मैन्युअल स्थितियाँ प्रबंधित करें';
+
+  @override
+  String get cleanerManualSave => 'वर्तमान स्थिति सहेजें';
+
+  @override
+  String get cleanerDateName => 'तारीख और समय इस्तेमाल करें';
+
+  @override
+  String get cleanerCustomName => 'नाम दर्ज करें';
+
+  @override
+  String get cleanerStateExport => 'सहेजी गई स्थिति फ़ाइल में निर्यात करें';
+
+  @override
+  String get cleanerStateRestoreHelp =>
+      'इस फ़र्मवेयर के लिए सहेजी गई ऐप की सक्षम और अक्षम स्थितियाँ बहाल होंगी। बाद में इंस्टॉल किए ऐप नहीं बदलेंगे। अनुपस्थित ऐप और सुरक्षित घटकों को अक्षम करना छोड़ दिया जाएगा। ऐप डेटा बहाल नहीं होगा।';
+
+  @override
+  String get cleanerCopiesHelp =>
+      'पहली सफल सूची रीफ़्रेश पर आधार स्थिति केवल एक बार बनती है और लॉन्चर इसे मिटा या बदल नहीं सकता। यह फ़र्मवेयर से जुड़ी है। मैन्युअल स्थितियाँ ऐप के मोड नाम और तारीख के साथ सहेजती हैं; उन्हें बहाल, हटाया या निर्यात किया जा सकता है। इनमें APK या ऐप डेटा नहीं होते। बहाली के लिए स्थानीय ADB चाहिए। क्रैश सुरक्षा सक्रिय होने पर आधार स्थिति की स्वचालित बहाली का प्रयास होता है। लॉन्चर डेटा मिटाने या उसे हटाने पर प्रतियाँ भी मिटती हैं; root पहुँच रोकी नहीं जा सकती।';
+
+  @override
+  String get cleanerSearch => 'नाम से खोजें';
+
+  @override
+  String get cleanerCatalogUpdateRequired =>
+      'पहले GitHub से कैटलॉग अपडेट करें।';
+
+  @override
+  String get cleanerNoSearchResults => 'कोई मिलती प्रविष्टि नहीं।';
+
+  @override
+  String get cleanerAlreadyDisabled =>
+      'इस सूची के इस TV पर मौजूद सभी ऐप पहले से अक्षम हैं।';
+
+  @override
+  String get cleanerAlreadyEnabled =>
+      'इस सूची के इस TV पर मौजूद सभी ऐप पहले से सक्षम हैं।';
+
+  @override
+  String get cleanerNoInstalled =>
+      'इस सूची से कोई मेल खाता ऐप इस TV पर इंस्टॉल नहीं है।';
+
+  @override
+  String get cleanerListProtected => 'बाकी ऐप अक्षम किए जाने से सुरक्षित हैं।';
+
+  @override
+  String get cleanerSnapshotFailed =>
+      'स्थिति सहेजी नहीं जा सकी। कोई ऐप अक्षम नहीं किया गया।';
+
+  @override
+  String get cleanerDisableAllPreinstalled =>
+      'सभी पहले से इंस्टॉल ऐप अक्षम करें';
+
+  @override
+  String get cleanerEnableAllPreinstalled =>
+      'सभी पहले से इंस्टॉल ऐप सक्षम करें';
+
+  @override
+  String get cleanerPreinstalledList => 'पहले से इंस्टॉल ऐप की सूची';
+
+  @override
+  String cleanerBeforeList(String listName) {
+    return 'सूची लागू करने से पहले: $listName';
+  }
+
+  @override
+  String get sleepTimerSettings => 'स्लीप टाइमर सेटिंग';
+
+  @override
+  String get sleepTimerPresets => 'टाइमर';
+
+  @override
+  String get sleepTimerDisplay => 'टाइमर चलते समय दिखाएँ';
+
+  @override
+  String get sleepTimerRemaining => 'शेष समय';
+
+  @override
+  String get sleepTimerEndTime => 'बंद होने का समय';
+
+  @override
+  String get sleepTimerBoth => 'शेष समय और बंद होने का समय';
+
+  @override
+  String get sleepTimerShowSeconds => 'सेकंड दिखाएँ';
+
+  @override
+  String get sleepTimerCloseAfterSelection =>
+      'टाइमर चुनने के बाद विजेट बंद करें';
+
+  @override
+  String get sleepTimerAdd => 'टाइमर जोड़ें';
+
+  @override
+  String get sleepTimerEdit => 'टाइमर बदलें';
+
+  @override
+  String get sleepTimerHoursLabel => 'घंटे';
+
+  @override
+  String get sleepTimerMinutesLabel => 'मिनट';
+
+  @override
+  String get sleepTimerSecondsLabel => 'सेकंड';
+
+  @override
+  String get sleepTimerInvalidDuration =>
+      'शून्य से अधिक अवधि डालें: घंटे 0–999999, मिनट और सेकंड 0–59।';
+
+  @override
+  String get sleepTimerDeleteConfirmation =>
+      'यह टाइमर मिटाएँ? चालू उलटी गिनती जारी रहेगी।';
+
+  @override
+  String get sleepTimerResetConfirmation =>
+      'डिफ़ॉल्ट टाइमर और उनका क्रम वापस लाएँ? अपने टाइमर मिट जाएँगे। चालू उलटी गिनती जारी रहेगी।';
+
+  @override
+  String get sleepTimerReorderHint =>
+      '◄ / ► या OK दबाकर रखें। ▲ / ▼ से क्रम बदलें और दिखने वाली व छिपी सूचियों के बीच ले जाएँ। OK से पूरा करें।';
+
+  @override
+  String get sleepTimerSaveFailed => 'टाइमर सेटिंग सहेजी नहीं जा सकीं।';
+
+  @override
+  String get sleepTimerVisible => 'दिखाए गए';
+
+  @override
+  String get sleepTimerHidden => 'छिपे हुए';
+
+  @override
+  String get sleepTimerReset => 'टाइमर रीसेट करें';
+
+  @override
+  String get cleanerListSnapshotHelp =>
+      'सूची अक्षम करने से पहले केवल चुने ऐप की स्थिति सहेजी जाती है। बहाली दूसरे ऐप नहीं बदलती। मैन्युअल और स्वचालित स्थितियों की सीमा कुल 100 है। सहेजना विफल हो तो अक्षम करना शुरू नहीं होता।';
+
+  @override
+  String get trafficSettings => 'डेटा उपयोग सेटिंग';
+
+  @override
+  String get trafficTitle => 'डेटा उपयोग';
+
+  @override
+  String get trafficReceived => 'प्राप्त';
+
+  @override
+  String get trafficSent => 'भेजा गया';
+
+  @override
+  String get trafficTotal => 'कुल';
+
+  @override
+  String get stopApp => 'रोकें';
+
+  @override
+  String get backgroundImageFormats =>
+      'चित्र: JPEG, PNG, WebP, GIF, BMP — अधिकतम 8 MiB, 48 मेगापिक्सल और हर तरफ 16,384 पिक्सल।';
+
+  @override
+  String get backgroundMediaFormats =>
+      'चित्र: JPEG, PNG, WebP, GIF, BMP — अधिकतम 8 MiB, 48 मेगापिक्सल और हर तरफ 16,384 पिक्सल।\nवीडियो: MP4/M4V, WebM, MKV — अधिकतम 256 MiB और 3840×2160। कोडेक समर्थन TV पर निर्भर है; H.264 वाला MP4 बेहतर है। बिना ध्वनि दोहराता है और होम से बाहर रुक जाता है। वीडियो बैकअप में शामिल नहीं हैं।';
+
+  @override
+  String get backgroundFormatError =>
+      'फ़ॉर्मैट समर्थित नहीं है या फ़ाइल खराब है। सूची में दिए फ़ॉर्मैट की सही फ़ाइल चुनें।';
+
+  @override
+  String backgroundFileTooLarge(String maxMiB) {
+    return 'फ़ाइल बहुत बड़ी है। अधिकतम: $maxMiB MiB। छोटी फ़ाइल चुनें।';
+  }
+
+  @override
+  String get backgroundImageResolutionError =>
+      'चित्र बहुत बड़ा है: अधिकतम 48 मेगापिक्सल और हर तरफ 16,384 पिक्सल।';
+
+  @override
+  String get backgroundVideoResolutionError =>
+      'वीडियो रिज़ॉल्यूशन बहुत अधिक है। अधिकतम 3840×2160 या 2160×3840 चुनें।';
+
+  @override
+  String get backgroundVideoCodecError =>
+      'TV वीडियो नहीं चला सका: कोडेक समर्थित नहीं है या फ़ाइल खराब है। H.264 वाला MP4 आज़माएँ।';
+
+  @override
+  String get backgroundFileApplied => 'फ़ाइल चुनी गई। पृष्ठभूमि अपडेट हो गई।';
+
+  @override
+  String get noticePosition => 'सूचनाओं का स्थान';
+
+  @override
+  String get noticeBottomRight => 'नीचे दाईं ओर';
+
+  @override
+  String get noticeBottomLeft => 'नीचे बाईं ओर';
+
+  @override
+  String get noticeTopRight => 'ऊपर दाईं ओर';
+
+  @override
+  String get noticeTopLeft => 'ऊपर बाईं ओर';
+
+  @override
+  String get notificationOpenFailed =>
+      'सूचना की कार्रवाई नहीं खोली जा सकी। शायद अब यह उपलब्ध नहीं है।';
 }

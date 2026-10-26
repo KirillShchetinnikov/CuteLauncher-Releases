@@ -85,6 +85,7 @@ void main() {
       expect(find.textContaining('v1.0.0+3'), findsNothing);
       expect(focus.hasFocus, isTrue);
       await tester.pump(const Duration(seconds: 5));
+      await tester.pumpAndSettle();
       expect(find.textContaining('v1.0.0'), findsNothing);
       tester.binding.handleAppLifecycleStateChanged(state);
       tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
@@ -177,6 +178,7 @@ void main() {
       expect(find.textContaining('v1.0.0'), findsOneWidget);
       expect(find.textContaining('v1.0.0+3'), findsNothing);
       await tester.pump(const Duration(seconds: 5));
+      await tester.pumpAndSettle();
       expect(find.textContaining('v1.0.0'), findsNothing);
       await service.check(force: true);
       await tester.pumpAndSettle();

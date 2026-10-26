@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'reset_style_tile.dart';
 import '../../providers/slideshow_service.dart';
+
 import 'package:flauncher/widgets/action_notice.dart';
+
 import 'settings_route.dart';
 import 'settings_page_layout.dart';
 import 'settings_choice_tile.dart';
@@ -24,6 +28,7 @@ import 'settings_help.dart';
  */
 
 import '../../image_limits.dart';
+import '../../local_background_media.dart';
 
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
@@ -40,10 +45,18 @@ import 'wallpaper_display_page.dart';
 import 'slideshow_page.dart';
 import 'landscape_page.dart';
 
-class WallpaperPanelPage extends StatelessWidget {
+class WallpaperPanelPage extends StatefulWidget {
   static const String routeName = 'wallpaper_panel';
   final bool parameters;
   const WallpaperPanelPage({super.key, this.parameters = false});
+
+  @override
+  State<WallpaperPanelPage> createState() => _WallpaperPanelPageState();
+}
+
+class _WallpaperPanelPageState extends State<WallpaperPanelPage> {
+  bool _picking = false;
+  bool get parameters => widget.parameters;
 
   @override
   Widget build(BuildContext context) {
@@ -68,30 +81,22 @@ class WallpaperPanelPage extends StatelessWidget {
         children: [
           if (!parameters) ...[
             SettingsChoiceTile<String>(
-                autofocus: true,
-                title: l.backgroundSource,
-                value: source,
-                options: sources.keys.toList(),
-                label: (value) => sources[value]!,
-                onChanged: (value) async {
-                  final online = context.read<OnlineWallpaperService>();
-                  final c = online.configuration;
-                  await settings.setBackgroundSource(value);
-                  await online.configure(
-                    c.copyWith(
-                      enabled: value == 'online',
-                      source: c.validUrl ? c.source : 'bing',
-                    ),
-                  );
-                },
-              ),
-            const Divider(),
-            if (source == 'app') SettingsHelp(text: l.appArtworkBackgroundHelp),
-            FocusableSettingsTile(
-              title: Text(l.wallpaperDisplay),
-              leading: const Icon(Icons.aspect_ratio),
-              onPressed: () => Navigator.of(context).push(SettingsRoute<void>(
-                builder: (_) => const WallpaperDisplayPage())),
+              autofocus: true,
+              title: l.backgroundSource,
+              value: source,
+              options: sources.keys.toList(),
+              label: (value) => sources[value]!,
+              onChanged: (value) async {
+                final online = context.read<OnlineWallpaperService>();
+                final c = online.configuration;
+                await settings.setBackgroundSource(value);
+                await online.configure(
+                  c.copyWith(
+                    enabled: value == 'online',
+                    source: c.validUrl ? c.source : 'bing',
+                  ),
+                );
+              },
             ),
             FocusableSettingsTile(
               title: Text(l.backgroundParameters),
@@ -112,18 +117,43 @@ class WallpaperPanelPage extends StatelessWidget {
                 ),
               ),
             ),
+            const Divider(),
+            if (source == 'app') SettingsHelp(text: l.appArtworkBackgroundHelp),
+            FocusableSettingsTile(
+              title: Text(l.wallpaperDisplay),
+              leading: const Icon(Icons.aspect_ratio),
+              onPressed: () => Navigator.of(context).push(
+                SettingsRoute<void>(
+                  builder: (_) => const WallpaperDisplayPage(),
+                ),
+              ),
+            ),
           ] else ...[
             if (source == 'scheduled') ...[
               FocusableSettingsTile(
                 autofocus: true,
                 title: Text(l.pickDayWallpaper),
                 leading: const Icon(Icons.wb_sunny),
+                trailing: _picking
+                    ? const SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : null,
                 onPressed: () =>
                     _pickWallpaper(context, (s) => s.pickWallpaperDay(), l),
               ),
               FocusableSettingsTile(
                 title: Text(l.pickNightWallpaper),
                 leading: const Icon(Icons.nights_stay),
+                trailing: _picking
+                    ? const SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : null,
                 onPressed: () =>
                     _pickWallpaper(context, (s) => s.pickWallpaperNight(), l),
               ),
@@ -132,24 +162,39 @@ class WallpaperPanelPage extends StatelessWidget {
                 autofocus: true,
                 title: Text(l.openImage),
                 leading: const Icon(Icons.insert_drive_file_outlined),
+                trailing: _picking
+                    ? const SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : null,
                 onPressed: () =>
                     _pickWallpaper(context, (s) => s.pickWallpaper(), l),
               ),
+            SettingsHelp(
+              text: source == 'scheduled'
+                  ? l.backgroundImageFormats
+                  : l.backgroundMediaFormats,
+            ),
           ],
-          ResetStyleTile(onReset: () async {
-            final wallpaper = context.read<WallpaperService?>();
-            if (parameters) {
+          ResetStyleTile(
+            onReset: () async {
+              if (_picking) return;
+              final wallpaper = context.read<WallpaperService?>();
+              if (parameters) {
+                await wallpaper?.reset();
+                return;
+              }
+              final online = context.read<OnlineWallpaperService>();
+              final slideshow = context.read<SlideshowService?>();
+              await settings.resetAppearanceSection('background');
+              await settings.setBackgroundSource('gradient');
+              await online.configure(const OnlineWallpaperConfiguration());
+              await slideshow?.reset();
               await wallpaper?.reset();
-              return;
-            }
-            final online = context.read<OnlineWallpaperService>();
-            final slideshow = context.read<SlideshowService?>();
-            await settings.resetAppearanceSection('background');
-            await settings.setBackgroundSource('gradient');
-            await online.configure(const OnlineWallpaperConfiguration());
-            await slideshow?.reset();
-            await wallpaper?.reset();
-          }),
+            },
+          ),
         ],
       ),
     );
@@ -157,21 +202,67 @@ class WallpaperPanelPage extends StatelessWidget {
 
   Future<void> _pickWallpaper(
     BuildContext context,
-    Future<void> Function(WallpaperService) action,
+    Future<bool> Function(WallpaperService) action,
     AppLocalizations localizations,
   ) async {
+    if (_picking) return;
+    setState(() => _picking = true);
     try {
-      await action(context.read<WallpaperService>());
-    } on ImageInputException {
+      final applied = await action(context.read<WallpaperService>());
+      if (context.mounted && applied) {
+        showActionNotice(context, localizations.backgroundFileApplied);
+      }
+    } on BackgroundMediaException catch (error) {
       if (!context.mounted) return;
-      showActionNotice(context, localizations.imageInputRejected, error: true);
-    } on PlatformException {
+      final message = switch (error.reason) {
+        BackgroundMediaFailure.format => localizations.backgroundFormatError,
+        BackgroundMediaFailure.videoSize =>
+          localizations.backgroundFileTooLarge('256'),
+        BackgroundMediaFailure.videoResolution =>
+          localizations.backgroundVideoResolutionError,
+        BackgroundMediaFailure.videoCodec =>
+          localizations.backgroundVideoCodecError,
+      };
+      showActionNotice(context, message, error: true);
+    } on ImageInputException catch (error) {
       if (!context.mounted) return;
-      showActionNotice(context, localizations.wallpaperChangeFailed, error: true);
+      showActionNotice(context, switch (error.reason) {
+        ImageInputFailure.bytes => localizations.backgroundFileTooLarge('8'),
+        ImageInputFailure.dimensions =>
+          localizations.backgroundImageResolutionError,
+        ImageInputFailure.invalid => localizations.backgroundFormatError,
+      }, error: true);
+    } on PlatformException catch (error) {
+      if (!context.mounted) return;
+      showActionNotice(
+        context,
+        error.code == 'document_too_large'
+            ? localizations.backgroundFileTooLarge(
+                context.read<SettingsService>().backgroundSource == 'scheduled'
+                    ? '8'
+                    : '256',
+              )
+            : localizations.wallpaperChangeFailed,
+        error: true,
+      );
     } on NoFileExplorerException {
       if (!context.mounted) return;
-      showActionNotice(context, localizations.dialogTextNoFileExplorer,
-          error: true, duration: const Duration(seconds: 8));
+      showActionNotice(
+        context,
+        localizations.dialogTextNoFileExplorer,
+        error: true,
+        duration: const Duration(seconds: 8),
+      );
+    } on FileSystemException {
+      if (context.mounted) {
+        showActionNotice(
+          context,
+          localizations.wallpaperChangeFailed,
+          error: true,
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _picking = false);
     }
   }
 }

@@ -134,6 +134,7 @@ BackupSyncGroup? backupSyncPartGroup(String part) {
       key == 'temperature_unit') {
     return BackupSyncGroup.weatherDisplay;
   }
+  if (key == 'sleep_timer_configuration') return BackupSyncGroup.topPanel;
   if (key.startsWith('night_')) return BackupSyncGroup.nightMode;
   if (key.startsWith('brightness_')) return BackupSyncGroup.brightness;
   if (key.startsWith('screensaver_')) return BackupSyncGroup.clockStyle;

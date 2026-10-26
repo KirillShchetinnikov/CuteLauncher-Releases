@@ -45,7 +45,6 @@ class RemotePanelService extends ChangeNotifier {
     _data = next;
     notifyListeners();
   }
-  bool get dateCalendar => _data['dateCalendar'] == true;
   bool visible(String id) => !((_data['hidden'] as List?) ?? []).contains(id);
   static const appearanceKeys = ['panelColor', 'panelOpacity', 'panelTextBackground',
     'panelTextBackgroundColor', 'panelTextBackgroundOpacity', 'panelTextColor',

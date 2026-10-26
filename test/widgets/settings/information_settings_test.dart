@@ -76,21 +76,25 @@ void main() {
       'group settings and calendar persist in both modes: remote=$popup',
       (tester) async {
         await pump(tester, InformationObjectsSection(remotePanel: popup));
-        expect(find.text('Настройки блока'), findsOneWidget);
+        expect(find.text('Настройки блока'), popup ? findsNothing : findsOneWidget);
         await tester.tap(find.text('Показывать дату'));
         await tester.pumpAndSettle();
         expect(
           popup ? remote.visible('date') : settings.showDateInStatusBar,
           isFalse,
         );
-        await tester.tap(find.text('Настройки блока'));
+        if (popup) {
+          await pump(tester, const InformationSettingsPage());
+        } else {
+          await tester.tap(find.text('Настройки блока'));
+        }
         await tester.pumpAndSettle();
         expect(find.text('Оформление часов'), findsOneWidget);
         expect(find.text('Настройки даты'), findsOneWidget);
         await tester.tap(find.text('Открывать календарь по нажатию на дату'));
         await tester.pumpAndSettle();
         expect(
-          popup ? remote.dateCalendar : appearance.appearance.dateCalendar,
+          appearance.appearance.dateCalendar,
           isTrue,
         );
         await tester.tap(find.text('Объединить часы, дату и погоду'));
@@ -100,7 +104,7 @@ void main() {
         expect(find.text('Оформление блока'), findsOneWidget);
         expect(find.text('Настройки погоды'), findsOneWidget);
         expect(
-          popup ? remote.dateCalendar : appearance.appearance.dateCalendar,
+          appearance.appearance.dateCalendar,
           isTrue,
         );
         await tester.tap(find.text('Оформление блока'));

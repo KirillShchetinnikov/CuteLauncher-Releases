@@ -792,7 +792,18 @@ void main() {
       false,
     );
     expect(tester.takeException(), isNull);
-    await tester.ensureVisible(find.text('Демонстрация изменений'));
+    // The lazy list can dispose the first row. Settle restored focus before
+    // returning to the top again, so the next tap reaches the demo button.
+    for (var pass = 0; pass < 2; pass++) {
+      final scrollable = tester.state<ScrollableState>(
+        find.descendant(
+          of: find.byType(LandscapePage),
+          matching: find.byType(Scrollable),
+        ),
+      );
+      scrollable.position.jumpTo(scrollable.position.minScrollExtent);
+      await tester.pumpAndSettle();
+    }
     await tester.tap(find.text('Демонстрация изменений'));
     await tester.pump();
     await tester.pump(
@@ -804,8 +815,16 @@ void main() {
     expect(find.text('Демонстрация изменений'), findsOneWidget);
     await tester.pump(const Duration(seconds: 5));
     expect(settings.landscapeDemo.value, isNull);
-    await tester.ensureVisible(find.text('Демонстрация изменений'));
-    await tester.pumpAndSettle();
+    for (var pass = 0; pass < 2; pass++) {
+      final scrollable = tester.state<ScrollableState>(
+        find.descendant(
+          of: find.byType(LandscapePage),
+          matching: find.byType(Scrollable),
+        ),
+      );
+      scrollable.position.jumpTo(scrollable.position.minScrollExtent);
+      await tester.pumpAndSettle();
+    }
     await tester.tap(find.text('Демонстрация изменений'));
     await tester.pump();
     await tester.pumpWidget(const SizedBox.shrink());

@@ -15,6 +15,8 @@ public class MainActivity extends Activity {
     static void panelBlocked() { LauncherActivity.panelBlocked(); }
     private final java.util.concurrent.ExecutorService worker = java.util.concurrent.Executors.newSingleThreadExecutor();
     private boolean checking;
+    private TextView cleanerStatus;
+    private Button retryLauncher, retryCleaner;
     @Override public void onCreate(Bundle state) { super.onCreate(state); check(); }
     @Override public void onNewIntent(Intent intent) { super.onNewIntent(intent); setIntent(intent); check(); }
     @Override protected void onStart() { super.onStart(); remotePanelPolicy.started(this); }
@@ -50,9 +52,12 @@ public class MainActivity extends Activity {
         body.setBackgroundColor(0xff10151e); scroll.addView(body);
         TextView title = new TextView(this); title.setText(R.string.recovery_title); title.setTextSize(26); title.setTextColor(-1); body.addView(title);
         TextView text = new TextView(this); text.setText(R.string.recovery_description); text.setTextColor(-1); text.setTextSize(18); body.addView(text);
+        cleanerStatus = new TextView(this); cleanerStatus.setTextColor(-1); cleanerStatus.setTextSize(18); body.addView(cleanerStatus);
         Button retry = button(body, getString(R.string.recovery_retry), () -> worker.execute(() -> {
             CrashLoopGuard.retry(this); runOnUiThread(() -> { if (!isDestroyed()) launch(); });
         }));
+        retryLauncher = retry;
+        retryCleaner = button(body, getString(R.string.recovery_cleaner_retry), () -> restoreCleaner(false));
         button(body, getString(R.string.recovery_restore), () -> new android.app.AlertDialog.Builder(this)
             .setMessage(R.string.recovery_restore_confirm)
             .setNegativeButton(android.R.string.cancel, null)
@@ -74,6 +79,28 @@ public class MainActivity extends Activity {
                 .setComponent(new android.content.ComponentName(app.activityInfo.packageName, app.activityInfo.name))));
         }
         setContentView(scroll); retry.requestFocus();
+        restoreCleaner(true);
+    }
+    private void restoreCleaner(boolean automatic) {
+        retryLauncher.setEnabled(false); retryCleaner.setEnabled(false);
+        cleanerStatus.setText(R.string.recovery_cleaner_running);
+        worker.execute(() -> {
+            String status;
+            if (!automatic || CrashLoopGuard.claimCleanerRestore(this)) {
+                if (!automatic) CrashLoopGuard.cleanerRestoreFinished(this, "running");
+                status = AdbBridge.restoreCleanerFromRecovery(this);
+                CrashLoopGuard.cleanerRestoreFinished(this, status);
+            } else status = CrashLoopGuard.cleanerRestoreStatus(this);
+            final String result = status;
+            runOnUiThread(() -> {
+                if (isFinishing() || isDestroyed()) return;
+                cleanerStatus.setText("success".equals(result) ? R.string.recovery_cleaner_done
+                    : "noSnapshot".equals(result) ? R.string.recovery_cleaner_no_baseline
+                    : "partial".equals(result) ? R.string.recovery_cleaner_partial : R.string.recovery_cleaner_failed);
+                retryLauncher.setEnabled(true); retryCleaner.setEnabled(true);
+                if (getCurrentFocus() == null) retryLauncher.requestFocus();
+            });
+        });
     }
     private Button button(LinearLayout body, String text, Runnable action) {
         Button b = new Button(this); b.setText(text); b.setOnClickListener(v -> action.run()); body.addView(b); return b;

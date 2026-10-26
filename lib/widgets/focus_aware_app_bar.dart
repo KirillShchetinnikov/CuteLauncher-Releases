@@ -1,3 +1,5 @@
+import 'traffic_usage_menu.dart';
+import 'sleep_timer_label.dart';
 import '../panel_layout.dart';
 import 'panel_calendar_dialog.dart';
 import 'panel_clock.dart';
@@ -54,6 +56,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
   final _inputsFocusNode = FocusNode();
   final _notificationsFocusNode = FocusNode();
   final _sleepTimerFocusNode = FocusNode();
+  final _trafficFocusNode = FocusNode();
   final _nightModeFocusNode = FocusNode();
   final _dateFocusNode = FocusNode();
   FocusNode get dateFocusNode => _dateFocusNode;
@@ -65,7 +68,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
   void focusFirst() {
     final nodes = {'settings': _settingsFocusNode, 'systemSettings': _systemSettingsFocusNode,
       'inputs': _inputsFocusNode, 'notifications': _notificationsFocusNode,
-      'sleepTimer': _sleepTimerFocusNode, 'nightMode': _nightModeFocusNode, 'date': _dateFocusNode, PanelLayout.informationGroup: _dateFocusNode};
+      'traffic': _trafficFocusNode, 'sleepTimer': _sleepTimerFocusNode, 'nightMode': _nightModeFocusNode, 'date': _dateFocusNode, PanelLayout.informationGroup: _dateFocusNode};
     final layout = widget.remotePanel?.layout ??
         (context.read<AppearanceService?>()?.appearance ?? const TileAppearance()).panelLayout;
     final combined = (context.read<AppearanceService?>()?.appearance ?? const TileAppearance()).combinedInformation;
@@ -103,6 +106,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
     await showLauncherDialog<void>(
       context: context,
       highlightRect: anchor,
+      highlightRectResolver: () => launcherControlBounds(node),
       useSafeArea: false,
       styleDialog: false,
       barrierColor: Colors.transparent,
@@ -154,6 +158,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
       _inputsFocusNode,
       _notificationsFocusNode,
       _sleepTimerFocusNode,
+      _trafficFocusNode,
       _nightModeFocusNode,
       _dateFocusNode,
     ]) {
@@ -182,6 +187,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
       await showLauncherDialog<void>(
         context: context,
         highlightRect: anchor,
+        highlightRectResolver: () => launcherControlBounds(_dateFocusNode),
         barrierColor: Colors.transparent,
         useSafeArea: false,
         styleDialog: false,
@@ -207,6 +213,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
     await showLauncherDialog<void>(
       context: context,
       highlightRect: anchor,
+      highlightRectResolver: () => launcherControlBounds(_nightModeFocusNode),
       useSafeArea: false,
       styleDialog: false,
       barrierColor: Colors.transparent,
@@ -222,6 +229,25 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
     }
   }
 
+  Future<void> _openTraffic() async {
+    final box = _trafficFocusNode.context?.findRenderObject();
+    if (box is! RenderBox || !box.hasSize) return;
+    final anchor = box.localToGlobal(Offset.zero) & box.size;
+    _setOpenWidget('traffic');
+    try {
+      await showLauncherDialog<void>(context: context, highlightRect: anchor,
+        highlightRectResolver: () => launcherControlBounds(_trafficFocusNode),
+        useSafeArea: false, styleDialog: false, barrierColor: Colors.transparent,
+        builder: (_) => TrafficUsageMenu(anchor: anchor));
+    } finally {
+      if (mounted) {
+        _setOpenWidget(null);
+        if (_trafficFocusNode.context != null) { _trafficFocusNode.requestFocus(); }
+        else { _settingsFocusNode.requestFocus(); }
+      }
+    }
+  }
+
   Future<void> _openSleepTimer() async {
     final box = _sleepTimerFocusNode.context?.findRenderObject();
     if (box is! RenderBox || !box.hasSize) return;
@@ -233,6 +259,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
     await showLauncherDialog<void>(
       context: context,
       highlightRect: anchor,
+      highlightRectResolver: () => launcherControlBounds(_sleepTimerFocusNode),
       useSafeArea: false,
       styleDialog: false,
       barrierColor: Colors.transparent,
@@ -317,7 +344,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
               textDirection: direction,
               children: [
                 if (timer?.active ?? false) ...[
-                  Text(timer!.countdown),
+                  Text(sleepTimerActiveLabel(context, timer!, settings.sleepTimerConfiguration)),
                   const SizedBox(width: 4),
                 ],
                 Icon((timer?.active ?? false) ? Icons.power_settings_new : Icons.timer_outlined),
@@ -342,7 +369,8 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
         'network': NetworkWidget(onMenuChanged: (open) => _setOpenWidget(open ? 'network' : null)),
       if ((widget.remotePanel?.visible('traffic') ?? settings.showDataWidgetInStatusBar) &&
           context.watch<NetworkService>().hasUsageStatsPermission)
-        'traffic': const TopPanelItem(child: DailyDataUsageWidget()),
+        'traffic': TopPanelItem(key: const ValueKey('traffic_button'), focusNode: _trafficFocusNode, selected: _activeWidget == 'traffic',
+          onPressed: _openTraffic, child: const DailyDataUsageWidget()),
       if ((widget.remotePanel?.visible('weather') ?? settings.showWeatherInStatusBar) && weather.hasWeather)
         'weather': WeatherStatusBarWidget(
           showWeather: widget.remotePanel == null ? null : true,
@@ -351,7 +379,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
         'date': TopPanelItem(
           focusNode: _dateFocusNode,
           selected: _activeWidget == 'date',
-          onPressed: (widget.remotePanel?.dateCalendar ?? appearance.dateCalendar) ? _openCalendar : null,
+          onPressed: homeAppearance.dateCalendar ? _openCalendar : null,
           child: DateTimeWidget(
             settings.dateFormat,
             key: const Key('statusbar_date'),
@@ -377,7 +405,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
           useFahrenheit: settings.useFahrenheit,
           timeFormat: settings.timeFormat, dateFormat: settings.dateFormat,
           focusNode: _dateFocusNode, selected: _activeWidget == 'date',
-          onCalendar: (widget.remotePanel?.dateCalendar ?? appearance.dateCalendar) ? _openCalendar : null,
+          onCalendar: homeAppearance.dateCalendar ? _openCalendar : null,
         );
         for (final id in ids) { objects.remove(id); }
         objects[PanelLayout.informationGroup] = combined;

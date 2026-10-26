@@ -12,6 +12,7 @@ class NotificationItem {
   final String title;
   final String text;
   final bool isClearable;
+  final bool hasContentIntent;
 
   NotificationItem({
     required this.key,
@@ -19,6 +20,7 @@ class NotificationItem {
     required this.title,
     required this.text,
     required this.isClearable,
+    this.hasContentIntent = false,
   });
 
   factory NotificationItem.fromMap(Map<dynamic, dynamic> map) {
@@ -28,6 +30,7 @@ class NotificationItem {
       title: map['title'] as String? ?? '',
       text: map['text'] as String? ?? '',
       isClearable: map['isClearable'] as bool? ?? false,
+      hasContentIntent: map['hasContentIntent'] as bool? ?? false,
     );
   }
 }
@@ -132,6 +135,8 @@ class NotificationsService extends ChangeNotifier with ServiceLifecycle, Widgets
     notifyListeners();
   }
 
+  Future<bool> openNotification(String key) => _channel.openNotification(key);
+
   Future<void> refreshNotifications() async {
     if (!_hasPermission) return;
 
@@ -207,6 +212,7 @@ class NotificationsService extends ChangeNotifier with ServiceLifecycle, Widgets
           if (_notifications[i].key != newNotifications[i].key ||
               _notifications[i].title != newNotifications[i].title ||
               _notifications[i].text != newNotifications[i].text ||
+              _notifications[i].hasContentIntent != newNotifications[i].hasContentIntent ||
               _notifications[i].isClearable != newNotifications[i].isClearable) {
             changed = true;
             break;

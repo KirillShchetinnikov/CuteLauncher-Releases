@@ -35,6 +35,7 @@ class _NetworkWidgetState extends State<NetworkWidget> {
       await showLauncherDialog<void>(
         context: context,
         highlightRect: anchor,
+        highlightRectResolver: () => launcherControlBounds(_focusNode),
         useSafeArea: false,
         styleDialog: false,
         barrierColor: Colors.transparent,

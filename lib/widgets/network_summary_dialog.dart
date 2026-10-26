@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import '../providers/network_service.dart';
 import '../l10n/app_localizations.dart';
 import 'launcher_dialog.dart';
+import 'menu_header.dart';
 import 'menu_header_action.dart';
 import 'side_panel_dialog.dart';
 import 'settings/settings_panel_style.dart';
@@ -197,19 +198,14 @@ class _NetworkSummaryDialogState extends State<NetworkSummaryDialog>
           child: SingleChildScrollView(
             controller: _scrollController,
             child: Padding(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          l.networkSummary,
-                          style: theme.textTheme.titleLarge,
-                        ),
-                      ),
+                  MenuHeader(
+                    title: Text(l.networkSummary),
+                    actions: [
                       MenuHeaderAction(
                         autofocus: true,
                         tooltip: l.networkSystemSettings,

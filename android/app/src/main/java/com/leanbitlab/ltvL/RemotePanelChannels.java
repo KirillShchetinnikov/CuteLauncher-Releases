@@ -23,6 +23,7 @@ final class RemotePanelChannels implements AutoCloseable {
     private final NetworkEventStreamHandler networkEvents;
     private final LauncherAppsEventStreamHandler appEvents;
     private final NotificationBridge notifications;
+    private final NotificationPopupBridge notificationPopups = new NotificationPopupBridge(LauncherNotificationListenerService::transferPopups);
     private final SharedPreferences weather;
     private final RemoteMappingsBridge mappings;
     private final RemoteButtonsBridge buttons;
@@ -56,6 +57,7 @@ final class RemotePanelChannels implements AutoCloseable {
                     case "getApplicationIcon" -> load(() -> applications.getApplicationIcon(call.arguments()), result);
                     case "getApplicationBanner" -> load(() -> applications.getApplicationBanner(call.arguments()), result);
                     case "getActiveNetworkInformation" -> result.success(network.getActiveNetworkInformation());
+                    case "getTrafficUsage" -> load(() -> network.getTrafficUsage(call.argument("period")), result);
                     case "getDailyDataUsage" -> load(network::getDailyDataUsage, result);
                     case "getWeeklyDataUsage" -> load(network::getWeeklyDataUsage, result);
                     case "getMonthlyDataUsage" -> load(network::getMonthlyDataUsage, result);
@@ -102,11 +104,12 @@ final class RemotePanelChannels implements AutoCloseable {
                     }
                     default -> result.error("unsupported", "Open this setting from the launcher", null);
                 }
-            } catch (RuntimeException error) { result.error("unavailable", "Operation unavailable", null); }
+            } catch (RuntimeException error) { result.error("unavailable", "Operation unavailable", DiagnosticErrorDetails.from(error)); }
         });
         new EventChannel(messenger, "me.efesser.flauncher/event_network").setStreamHandler(networkEvents);
         new EventChannel(messenger, "me.efesser.flauncher/event_apps").setStreamHandler(appEvents);
         new EventChannel(messenger, "me.efesser.flauncher/event_notifications").setStreamHandler(notifications);
+        new EventChannel(messenger, "me.efesser.flauncher/event_notification_popup").setStreamHandler(notificationPopups);
         new EventChannel(messenger, "me.efesser.flauncher/event_weather").setStreamHandler(new EventChannel.StreamHandler() {
             public void onListen(Object args, EventChannel.EventSink sink) {
                 onCancel(null);
@@ -135,7 +138,7 @@ final class RemotePanelChannels implements AutoCloseable {
     private <T> void load(java.util.concurrent.Callable<T> read, MethodChannel.Result result) {
         worker.execute(() -> {
             try { T value = read.call(); main.post(() -> { if (!closed) result.success(value); }); }
-            catch (Exception error) { main.post(() -> { if (!closed) result.error("unavailable", "Operation unavailable", null); }); }
+            catch (Exception error) { main.post(() -> { if (!closed) result.error("unavailable", "Operation unavailable", DiagnosticErrorDetails.from(error)); }); }
         });
     }
     @Override public void close() {
@@ -143,6 +146,7 @@ final class RemotePanelChannels implements AutoCloseable {
         mappings.close(); buttons.close(); inputs.close();
         if (weatherListener != null) weather.unregisterOnSharedPreferenceChangeListener(weatherListener);
         networkEvents.onCancel(null); appEvents.onCancel(null); notifications.onCancel(null);
+        notificationPopups.onCancel(null);
         NightOverlayService.detachVisibility(messenger);
         main.removeCallbacksAndMessages(null); worker.shutdownNow();
     }

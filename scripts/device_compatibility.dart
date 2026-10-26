@@ -61,6 +61,9 @@ List<String> validateCatalog(Map<String, dynamic> catalog, String evidence) {
 }
 
 List<Map<String, dynamic>> matchingDevices(Map<String, dynamic> catalog, Map<String, dynamic> profile) {
+  if (profile['schemaVersion'] == 3 && profile['reportType'] == 'diagnostics') {
+    profile = parseTvCompatibilityReport(profile);
+  }
   final identity = profile['identity'];
   if (profile['schemaVersion'] != 1) return [];
   if (identity is! Map || !identityKeys.every((key) => identity[key] is String && (identity[key] as String).isNotEmpty)) return [];
@@ -107,7 +110,7 @@ Future<String> runAdb(String executable, String serial, List<String> args) async
 /// Sanitize an explicitly supplied app report before putting it under version control.
 File archiveDeviceReport(Map<String, dynamic> report, Directory directory, String id) {
   if (!RegExp(r'^[a-z0-9][a-z0-9-]{0,79}$').hasMatch(id)) throw const FormatException('Invalid device report id');
-  final safe = parseTvCompatibilityReport(report);
+  final safe = publicTvCompatibilityReport(report);
   directory.createSync(recursive: true);
   final target = File('${directory.path}/$id.json');
   target.createSync(exclusive: true);
@@ -122,7 +125,7 @@ List<String> validateArchivedProfiles(Directory directory) {
     try {
       if (file.lengthSync() > 64 * 1024) throw const FormatException('Report too large');
       final report = readJson(file.path);
-      final safe = parseTvCompatibilityReport(report);
+      final safe = publicTvCompatibilityReport(report);
       if (jsonEncode(_ordered(report)) != jsonEncode(_ordered(safe))) throw const FormatException('Report contains unknown or invalid data');
     } catch (_) { problems.add('Invalid archived profile: ${file.uri.pathSegments.last}'); }
   }
@@ -152,7 +155,7 @@ Future<void> main(List<String> arguments) async {
     if (action == 'archive') {
       if (args.length != 1 || id == null || serial != null || output != null) throw const FormatException('archive REPORT --id ID');
       final reportFile = File(args.single);
-      if (reportFile.lengthSync() > 64 * 1024) throw const FormatException('Report too large');
+      if (reportFile.lengthSync() > 8 * 1024 * 1024) throw const FormatException('Report too large');
       final saved = archiveDeviceReport(readJson(args.single), profiles, id);
       stdout.writeln('Archived sanitized device observations: ${saved.path}. No functional verification is implied.');
       return;

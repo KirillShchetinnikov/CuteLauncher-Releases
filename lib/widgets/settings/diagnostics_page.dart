@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import '../../diagnostics_report.dart';
 import '../../diagnostics_store.dart';
 import '../../l10n/app_localizations.dart';
-import '../../tv_compatibility_diagnostics.dart';
 import '../../tv_compatibility_report.dart';
 import '../action_notice.dart';
 import '../launcher_dialog.dart';
@@ -13,74 +12,35 @@ import 'settings_help.dart';
 import 'settings_page_layout.dart';
 import 'settings_route.dart';
 
-/// Independent snapshots retained while the diagnostics menu is open.
+/// A single report retained while diagnostics and its results are open.
 class DiagnosticsPage extends StatefulWidget {
   static const routeName = 'diagnostics_panel';
-  final String? section;
-  final Future<Map<String, Object>> Function()? collect, collectCompatibility;
-  const DiagnosticsPage({
-    super.key,
-    this.section,
-    this.collect,
-    this.collectCompatibility,
-  });
+  final Future<Map<String, Object>> Function()? collect;
+  const DiagnosticsPage({super.key, this.collect});
   @override
   State<DiagnosticsPage> createState() => _DiagnosticsPageState();
 }
 
 class _DiagnosticsPageState extends State<DiagnosticsPage> {
-  final _errors = ValueNotifier<Map<String, Object>?>(null);
-  final _compatibility = ValueNotifier<Map<String, Object>?>(null);
-  Widget _page(bool compatibility) => DiagnosticsReportPanel(
-    compatibility: compatibility,
-    report: compatibility ? _compatibility : _errors,
-    collect: compatibility
-        ? widget.collectCompatibility ?? collectTvCompatibility
-        : widget.collect ?? collectDiagnostics,
-  );
+  final _report = ValueNotifier<Map<String, Object>?>(null);
   @override
   void dispose() {
-    _errors.dispose();
-    _compatibility.dispose();
+    _report.dispose();
     super.dispose();
   }
 
   @override
-  Widget build(BuildContext context) {
-    if (widget.section != null) return _page(widget.section == 'compatibility');
-    final l = AppLocalizations.of(context)!;
-    return SettingsPageLayout(
-      title: Text(l.diagnosticsHubTitle),
-      child: ListView(
-        children: [
-          FocusableSettingsTile(
-            autofocus: true,
-            leading: const Icon(Icons.tv_outlined),
-            title: Text(l.tvCompatibilityTitle),
-            onPressed: () =>
-                Navigator.of(context)
-                    .push(SettingsRoute<void>(builder: (_) => _page(true))),
-          ),
-          FocusableSettingsTile(
-            leading: const Icon(Icons.bug_report_outlined),
-            title: Text(l.diagnosticsTitle),
-            onPressed: () =>
-                Navigator.of(context)
-                    .push(SettingsRoute<void>(builder: (_) => _page(false))),
-          ),
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) => DiagnosticsReportPanel(
+    report: _report,
+    collect: widget.collect ?? collectDiagnostics,
+  );
 }
 
 class DiagnosticsReportPanel extends StatefulWidget {
-  final bool compatibility;
   final ValueNotifier<Map<String, Object>?> report;
   final Future<Map<String, Object>> Function() collect;
   const DiagnosticsReportPanel({
     super.key,
-    required this.compatibility,
     required this.report,
     required this.collect,
   });
@@ -129,27 +89,31 @@ class _DiagnosticsReportPanelState extends State<DiagnosticsReportPanel> {
         context: context,
         builder: (dialog) => LauncherAlertDialog(
           title: Text(l.diagnosticsExport),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              FocusableSettingsTile(
-                autofocus: true,
-                leading: const Icon(Icons.copy),
-                title: Text(l.diagnosticsCopyClipboard),
-                onPressed: () async {
-                  Navigator.pop(dialog);
-                  await _performExport(report, copy: true);
-                },
-              ),
-              FocusableSettingsTile(
-                leading: const Icon(Icons.save_alt),
-                title: Text(l.diagnosticsSaveDisk),
-                onPressed: () async {
-                  Navigator.pop(dialog);
-                  await _performExport(report, copy: false);
-                },
-              ),
-            ],
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(l.diagnosticsSharingNotice),
+                const SizedBox(height: 12),
+                FocusableSettingsTile(
+                  autofocus: true,
+                  leading: const Icon(Icons.copy),
+                  title: Text(l.diagnosticsCopyClipboard),
+                  onPressed: () async {
+                    Navigator.pop(dialog);
+                    await _performExport(report, copy: true);
+                  },
+                ),
+                FocusableSettingsTile(
+                  leading: const Icon(Icons.save_alt),
+                  title: Text(l.diagnosticsSaveDisk),
+                  onPressed: () async {
+                    Navigator.pop(dialog);
+                    await _performExport(report, copy: false);
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       );
@@ -180,10 +144,7 @@ class _DiagnosticsReportPanelState extends State<DiagnosticsReportPanel> {
       } else {
         String? saved;
         try {
-          saved = await saveDiagnosticsReport(
-            report,
-            compatibility: widget.compatibility,
-          );
+          saved = await saveDiagnosticsReport(report);
         } catch (_) {
           saved = 'failed';
         }
@@ -208,20 +169,14 @@ class _DiagnosticsReportPanelState extends State<DiagnosticsReportPanel> {
     final l = AppLocalizations.of(context)!;
     final report = widget.report.value;
     return SettingsPageLayout(
-      title: Text(
-        widget.compatibility ? l.tvCompatibilityTitle : l.diagnosticsTitle,
-      ),
+      title: Text(l.diagnosticsHubTitle),
       child: ListView(
         children: [
           FocusableSettingsTile(
             autofocus: true,
             leading: const Icon(Icons.refresh),
             title: Text(
-              _creating
-                  ? l.diagnosticsCreating
-                  : widget.compatibility
-                  ? l.tvCompatibilityRun
-                  : l.diagnosticsCreate,
+              _creating ? l.diagnosticsCreating : l.diagnosticsCreate,
             ),
             onPressed: _busy ? null : _create,
           ),
@@ -230,43 +185,43 @@ class _DiagnosticsReportPanelState extends State<DiagnosticsReportPanel> {
               padding: const EdgeInsets.all(12),
               child: Text(l.diagnosticsReady),
             ),
-          if (widget.compatibility)
-            FocusableSettingsTile(
-              leading: const Icon(Icons.fact_check_outlined),
-              title: Text(l.tvCompatibilityResults),
-              onPressed: _busy || report == null
-                  ? null
-                  : () => Navigator.of(context).push(
-                      SettingsRoute<void>(
-                        builder: (_) =>
-                            CompatibilityResultsPage(report: report),
-                      ),
+          FocusableSettingsTile(
+            leading: const Icon(Icons.fact_check_outlined),
+            title: Text(l.tvCompatibilityResults),
+            onPressed: _busy || report == null
+                ? null
+                : () => Navigator.of(context).push(
+                    SettingsRoute<void>(
+                      builder: (_) => CompatibilityResultsPage(report: report),
                     ),
-            )
-          else
-            FocusableSettingsTile(
-              leading: const Icon(Icons.delete_outline),
-              title: Text(l.diagnosticsClear),
-              onPressed: _busy
-                  ? null
-                  : () {
-                      DiagnosticsStore.instance.clear();
-                      setState(() => widget.report.value = null);
-                      showActionNotice(
-                        context,
-                        '${l.diagnosticsClear}: ${l.actionCompleted}',
-                      );
-                    },
-            ),
+                  ),
+          ),
+          FocusableSettingsTile(
+            leading: const Icon(Icons.delete_outline),
+            title: Text(l.diagnosticsClear),
+            onPressed: _busy
+                ? null
+                : () async {
+                    setState(() => _busy = true);
+                    await clearDiagnostics();
+                    if (!mounted || !context.mounted) return;
+                    setState(() {
+                      _busy = false;
+                      widget.report.value = null;
+                    });
+                    showActionNotice(
+                      context,
+                      '${l.diagnosticsClear}: ${l.actionCompleted}',
+                    );
+                  },
+          ),
           FocusableSettingsTile(
             leading: const Icon(Icons.ios_share),
             title: Text(l.diagnosticsExport),
             onPressed: _busy || report == null ? null : _export,
           ),
           SettingsHelp(
-            text: widget.compatibility
-                ? l.tvCompatibilityHelp
-                : l.diagnosticsHint,
+            text: '${l.diagnosticsHint}\n\n${l.diagnosticsSharingNotice}',
           ),
         ],
       ),
@@ -308,9 +263,9 @@ class CompatibilityResultsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
-    final identity = report['identity'] as Map? ?? {};
-    final checks = report['checks'] as Map? ?? {};
-    final app = report['installedLauncher'] as Map? ?? {};
+    final identity = report['device'] as Map? ?? {};
+    final checks = (report['compatibility'] as Map?)?['checks'] as Map? ?? {};
+    final app = report['app'] as Map? ?? {};
     return SettingsPageLayout(
       title: Text(l.tvCompatibilityResults),
       child: Builder(
@@ -349,11 +304,16 @@ class CompatibilityResultsPage extends StatelessWidget {
                     Text(l.settingsHelpScroll),
                     Text(
                       '${l.compatibilityReportDate}: ${report['capturedAt'] ?? '—'}\n'
-                      '${l.compatibilityLauncherVersion}: ${app['versionName'] ?? '—'}',
+                      '${l.compatibilityLauncherVersion}: ${app['version'] ?? '—'}',
                     ),
                     Text(
-                      '${identity['manufacturer'] ?? '—'} ${identity['model'] ?? '—'}\nAndroid ${identity['android'] ?? '—'} / API ${identity['sdk'] ?? '—'}\n${identity['abis'] ?? '—'}\n${identity['fingerprint'] ?? '—'}',
+                      '${identity['manufacturer'] ?? '—'} ${identity['model'] ?? '—'}\nAndroid ${identity['androidRelease'] ?? '—'} / API ${(report['system'] as Map?)?['androidApi'] ?? '—'}\n${identity['abis'] ?? '—'}\n${identity['fingerprint'] ?? '—'}',
                     ),
+                    if ((report['compatibility'] as Map?)?['status'] !=
+                        'complete')
+                      Text(
+                        '${l.tvCompatibilityResults}: ${l.compatibilityUnknown}',
+                      ),
                     const Divider(),
                     for (final id in tvCompatibilityChecks)
                       Padding(

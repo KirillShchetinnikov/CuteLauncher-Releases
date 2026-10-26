@@ -1,3 +1,4 @@
+import '../sleep_timer_configuration.dart';
 import '../tv_inputs_configuration.dart';
 import 'online_wallpaper_service.dart';
 import '../adaptive_landscape.dart';
@@ -393,8 +394,19 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
     notifyListeners();
   }
 
+  SleepTimerConfiguration get sleepTimerConfiguration =>
+      SleepTimerConfiguration.decode(_sharedPreferences.getString(sleepTimerConfigurationKey));
+
+  Future<void> setSleepTimerConfiguration(SleepTimerConfiguration value) async {
+    if (!await _sharedPreferences.setString(sleepTimerConfigurationKey, value.encode())) {
+      throw StateError('Unable to save timer configuration');
+    }
+    notifyListeners();
+  }
+
   Map<String, dynamic> exportSettingsMap() {
     return {
+      sleepTimerConfigurationKey: sleepTimerConfiguration.encode(),
       tvInputsConfigurationKey: _sharedPreferences.getString(tvInputsConfigurationKey) ?? const TvInputsConfiguration().encode(),
       _memorySaverEnabledKey: _memorySaverEnabled,
       _appHighlightAnimationEnabledKey: _appHighlightAnimationEnabled,

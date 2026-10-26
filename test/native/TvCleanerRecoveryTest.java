@@ -70,6 +70,23 @@ public final class TvCleanerRecoveryTest {
         check(TvCleanerPolicy.command(APP,0).equals("pm default-state --user 0 'org.example.video'"));
         fails(() -> TvCleanerPolicy.command(APP,5));
         for (int i=0;i<=4;i++) check(TvCleanerPolicy.parseState("  User 10: installed=true enabled=1\n    User 0: ceDataInode=999 installed=true hidden=false stopped=false enabled=" + i + " instant=false\n") == i);
+        // Full-state restoration covers externally changed packages as well as our journal.
+        Fake full = new Fake(); full.actual.put(APP,3); full.actual.put(OTHER,1);
+        check(TvCleanerRecovery.restoreStates(Map.of(APP,0,OTHER,4), Set.of(APP,OTHER), Set.of(), full,full)==0);
+        check(full.actual.get(APP)==0 && full.actual.get(OTHER)==4);
+        check(full.persisted.get(APP)==3 && full.persisted.get(OTHER)==1);
+        Fake protectedApp = new Fake(); protectedApp.actual.put(APP,1);
+        check(TvCleanerRecovery.restoreStates(Map.of(APP,3,OTHER,0), Set.of(APP), Set.of(APP), protectedApp,protectedApp)==2);
+        check(protectedApp.operations.isEmpty());
+        Fake partialState = new Fake(); partialState.actual.put(APP,3); partialState.failCommand=true;
+        fails(() -> TvCleanerRecovery.restoreStates(Map.of(APP,0),Set.of(APP),Set.of(),partialState,partialState));
+        partialState.restart(); partialState.failCommand=false;
+        TvCleanerRecovery.restoreStates(Map.of(APP,0),Set.of(APP),Set.of(),partialState,partialState);
+        check(partialState.actual.get(APP)==0);
+        Fake badState = new Fake(); badState.actual.put(APP,0);
+        var invalidStates = new LinkedHashMap<String,Integer>(); invalidStates.put(APP,3); invalidStates.put("bad;reboot",0);
+        fails(() -> TvCleanerRecovery.restoreStates(invalidStates,Set.of(APP),Set.of(),badState,badState));
+        check(badState.operations.isEmpty());
         fails(() -> TvCleanerPolicy.parseState("User 0: installed=false enabled=0"));
         fails(() -> TvCleanerPolicy.parseState("User 10: installed=true enabled=0"));
         fails(() -> TvCleanerPolicy.parseState("User 0: installed=true enabled=9"));

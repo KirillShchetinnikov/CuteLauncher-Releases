@@ -38,6 +38,63 @@ import '../mocks.mocks.dart';
 import 'panel_backdrop_assertions.dart';
 
 void main() {
+  for (final (active, status) in [
+    (false, "success"),
+    (true, "success"),
+    (true, "denied"),
+  ]) {
+    testWidgets('Stop is visible only for a running app ($active, $status)', (
+      tester,
+    ) async {
+      const channel = MethodChannel('cutelauncher/adb');
+      var running = active;
+      var stops = 0;
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(channel, (call) async {
+            if (call.method == 'info') return {'port': 5555};
+            final args = call.arguments as Map;
+            expect(args['packages'], ['test.app']);
+            if (args['action'] == 'stopApp') {
+              stops++;
+              running = status != "success";
+            }
+            return {
+              'status': args['action'] == 'stopApp' ? status : 'success',
+              'running': running,
+            };
+          });
+      addTearDown(
+        () => TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+            .setMockMethodCallHandler(channel, null),
+      );
+      final apps = MockAppsService();
+      when(apps.isTileHidden(any)).thenReturn(false);
+      when(apps.categories).thenReturn([]);
+      final app = fakeApp(packageName: 'test.app', name: 'Test', version: '1');
+      when(apps.applications).thenReturn([app]);
+      await _pumpWidgetWithProviders(
+        tester,
+        apps,
+        null,
+        app,
+        locale: const Locale('ru'),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Остановить'), active ? findsOneWidget : findsNothing);
+      if (active) {
+        await tester.ensureVisible(find.text('Остановить'));
+        await tester.tap(find.text('Остановить'));
+        await tester.pumpAndSettle();
+        expect(stops, 1);
+        expect(
+          find.text('Остановить'),
+          status == 'success' ? findsNothing : findsOneWidget,
+        );
+      }
+      expect(tester.takeException(), isNull);
+    });
+  }
+
   setUpAll(() async {
     final binding = TestWidgetsFlutterBinding.ensureInitialized();
     binding.platformDispatcher.views.single.physicalSize = Size(1280, 720);

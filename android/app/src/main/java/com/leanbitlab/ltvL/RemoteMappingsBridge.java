@@ -42,7 +42,7 @@ final class RemoteMappingsBridge implements AutoCloseable {
                         value = call.method.equals("save")
                             ? RemoteMappingConfiguration.fromMap((Map<?, ?>)call.arguments) : null;
                     } catch (RuntimeException invalid) {
-                        result.error("invalid_argument", "Invalid mapping", null); break;
+                        result.error("invalid_argument", "Invalid mapping", DiagnosticErrorDetails.from(invalid)); break;
                     }
                     io.execute(() -> {
                         try {
@@ -55,7 +55,7 @@ final class RemoteMappingsBridge implements AutoCloseable {
                                 result.success(info(loaded));
                             });
                         } catch (Exception ignored) {
-                            main.post(() -> { if (!closed) result.error("unavailable", "Mappings unavailable", null); });
+                            main.post(() -> { if (!closed) result.error("unavailable", "Mappings unavailable", DiagnosticErrorDetails.from(ignored)); });
                         }
                     }); break;
                 default: result.notImplemented();

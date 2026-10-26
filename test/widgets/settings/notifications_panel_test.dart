@@ -17,14 +17,26 @@ import 'package:flauncher/widgets/settings/notifications_settings_page.dart';
 import 'package:flauncher/widgets/side_panel_dialog.dart';
 
 import '../../mocks.mocks.dart';
+import 'package:flauncher/widgets/notice_placement.dart';
+
 import '../panel_backdrop_assertions.dart';
+
+class _ActionChannel extends MockFLauncherChannel {
+  String? openedKey;
+  @override
+  Future<bool> openNotification(String key) async {
+    openedKey = key;
+    return false;
+  }
+}
+
 
 void main() {
   testWidgets(
     'remote actions, side options, focus recovery and persistent filter',
     (tester) async {
       SharedPreferences.setMockInitialValues({});
-      final channel = MockFLauncherChannel();
+      final channel = _ActionChannel();
       final apps = MockAppsService();
       final stream = StreamController<List<Map<dynamic, dynamic>>>.broadcast();
       var items = <Map<dynamic, dynamic>>[
@@ -35,6 +47,7 @@ void main() {
             'title': 'Title $key',
             'text': 'Body $key',
             'isClearable': key != 'p',
+            'hasContentIntent': key == 'a',
           },
       ];
       when(channel.checkNotificationListenerPermission())
@@ -110,7 +123,7 @@ void main() {
         tester.element(find.byType(NotificationsPanel)),
       )!;
       final header = tester.getCenter(find.text(labels.notifications));
-      expect(header.dy, 65);
+      expect(header.dy, 55);
       for (final tooltip in [
         labels.hidePersistentNotificationsHint,
         labels.notificationSettingsButton,
@@ -220,6 +233,14 @@ void main() {
       await tester.pumpAndSettle();
       verifyNever(channel.dismissNotification(any));
       expect(find.text('Параметры уведомления'), findsOneWidget);
+      final panels = find.byType(NoticePanelRegion);
+      expect(tester.getRect(panels.first).overlaps(tester.getRect(panels.last)), isFalse);
+      await tester.tap(find.text('${labels.openApp} app.a'));
+      await tester.pumpAndSettle();
+      expect(channel.openedKey, 'a');
+      expect(find.text(labels.notificationOpenFailed), findsOneWidget);
+      verifyNever(apps.launchApp(any));
+
       expect(find.text(labels.delete), findsOneWidget);
       expect(find.text(labels.blockAppNotifications), findsOneWidget);
       expect(

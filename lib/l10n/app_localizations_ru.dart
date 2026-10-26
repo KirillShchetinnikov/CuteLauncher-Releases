@@ -111,8 +111,11 @@ class AppLocalizationsRu extends AppLocalizations {
       'Баннер или значок выбранного приложения создаёт мягкий цветной фон. До загрузки изображения или при ошибке показывается выбранный градиент. В фоне лаунчера обработка приостанавливается. Остальные обои сохраняются.';
 
   @override
+  String get adbWifiOwnedTitle => 'Wi-Fi принадлежит мастеру настройки';
+
+  @override
   String get adbWifiOwned =>
-      'Изменения не внесены: сохранённая Wi-Fi-сеть принадлежит мастеру настройки. Забудьте эту сеть и подключитесь заново через настройки Android, затем повторите проверку. Отключение мастера может удалить сеть.';
+      'Изменения не внесены: сохранённая Wi-Fi-сеть создана мастером настройки Google. Его отключение может удалить сеть и отключить ТВ от интернета.\n\n1. Убедитесь, что знаете пароль Wi-Fi.\n2. Откройте настройки сети Android, выберите эту сеть и нажмите «Забыть сеть».\n3. Подключитесь заново через обычные настройки сети Android.\n4. Вернитесь в CuteLauncher, проверьте ADB и повторите отключение встроенного лаунчера.\n\nЕсли сообщение появляется снова, оставьте встроенный лаунчер включённым: прошивка может снова назначать сеть мастеру настройки.';
 
   @override
   String get adbWifiUnknown =>
@@ -333,10 +336,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get orSelectFormatSpecifiers => 'Или выберите спецификаторы формата';
 
   @override
-  String get openImage => 'Открыть изображение';
+  String get openImage => 'Выбрать файл';
 
   @override
-  String get picture => 'Изображение';
+  String get picture => 'Локальное изображение или видео';
 
   @override
   String removeFrom(String name) {
@@ -430,13 +433,13 @@ class AppLocalizationsRu extends AppLocalizations {
   String get withEllipsisAddTo => 'Добавить в...';
 
   @override
-  String get timeBasedWallpaper => 'Обои в зависимости от времени';
+  String get timeBasedWallpaper => 'Дневное/Ночное изображение';
 
   @override
-  String get pickDayWallpaper => 'Выбрать дневные обои';
+  String get pickDayWallpaper => 'Выбрать дневное изображение';
 
   @override
-  String get pickNightWallpaper => 'Выбрать ночные обои';
+  String get pickNightWallpaper => 'Выбрать ночное изображение';
 
   @override
   String get accessibility => 'Специальные возможности';
@@ -1728,8 +1731,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get diagnosticsCopied => 'Отчёт скопирован';
 
   @override
+  String get diagnosticsSharingNotice =>
+      'Передавайте файл автору в личные сообщения, не публикуйте его открыто: автоматическая очистка может пропустить личные данные. Отправляя отчёт автору, вы соглашаетесь на размещение обезличенного отчёта о совместимости ТВ в Git-репозитории CuteLauncher. Публикуются только сведения об устройстве и доступности функций без личных данных; журнал ошибок, команды и ваши настройки не публикуются.';
+
+  @override
   String get diagnosticsHint =>
-      'Отчёт содержит версию приложения, состояние разрешений, расход памяти и результаты операций. Ключи, адреса, пути, список приложений и содержимое уведомлений исключены. Последние 50 операций хранятся только в памяти до перезапуска. Автоматической отправки нет.';
+      'Единый отчёт включает совместимость функций ТВ и диагностику ошибок. Отчёт содержит модель и прошивку ТВ, версию приложения, разрешения, память, этапы и причины ошибок, команды и ответы системы после автоматической очистки личных данных. В памяти хранятся последние 50 операций и отдельно до 100 сбоев текущего сеанса, а также ограниченный журнал ADB. После перезапуска журнал удаляется. Очистка может пропустить личные данные: передавайте файл в личные сообщения, не публикуйте его открыто. Ничего не отправляется автоматически. Для каждой ошибки сохраняется снимок применённых настроек: последующие изменения его не заменяют.';
 
   @override
   String get diagnosticsTitle => 'Диагностика ошибок';
@@ -2077,7 +2084,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get background => 'Фон';
 
   @override
-  String get backgroundParameters => 'Параметры';
+  String get backgroundParameters => 'Настройки источника';
 
   @override
   String get resetAppearanceHint =>
@@ -3590,7 +3597,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get cleanerSnapshot => 'Сохранить исходное состояние';
 
   @override
-  String get cleanerRestore => 'Восстановить изменения менеджера';
+  String get cleanerRestore => 'Восстановиться из базовой копии';
 
   @override
   String get cleanerSnapshotSaved => 'Исходное состояние сохранено';
@@ -3603,7 +3610,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get cleanerNoSafe =>
-      'Для этой прошивки нет проверенного списка без потери функций.';
+      'Для этой модели и прошивки нет подходящего списка системных приложений.';
 
   @override
   String get cleanerLocal => 'Отключить по списку из файла';
@@ -3618,7 +3625,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get cleanerExternal => 'Примеры CleanYourTV';
 
   @override
-  String get cleanerDisabledExport => 'Экспортировать отключённые приложения';
+  String get cleanerDisabledExport =>
+      'Экспортировать отчёт об отключениях в файл';
 
   @override
   String get cleanerInventoryExport => 'Экспортировать отчёт о приложениях';
@@ -3686,7 +3694,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get cleanerHelp =>
-      'Менеджер использует локальное ADB-подключение из настроек управления ТВ. Удаление приложений и их данных не выполняется. Снимок и журнал отката хранятся отдельно от обычной резервной копии. Откат возвращает прежние режимы только у изменённых менеджером пакетов. После смены прошивки автоматический откат блокируется.\n\nПроверенный список привязан к точной прошивке. Наблюдаемый или внешний список не подтверждает безопасность. Защищённые компоненты, HOME и активные службы отключать нельзя. Перед применением показываются пакеты, уже отключённые и отсутствующие пропускаются.\n\nКаталог проекта включён в APK из Git; загрузка с GitHub доступна для публичного каталога. Внешние примеры загружаются по явному выбору, без выполнения скриптов. Экспорт — JSON со списком отключённых пакетов и профилем прошивки; его можно вручную добавить в catalog/examples проекта после проверки. Автоматической отправки в Git нет.\n\nСведения о приложении и оценка риска остаются видимыми. Если назначение не подтверждено, это явно указано; такой пакет не входит в проверенный список.';
+      'Менеджер работает через локальное ADB-подключение и меняет доступность приложений без удаления APK и их данных. Базовая копия и ручные состояния находятся в «Бэкап и восстановление». Списки наблюдений и сторонние примеры не подтверждают безопасность отключения. Отчёты сохраняются в файл и передаются в Git проекта вручную, автоматически ничего не отправляется.';
 
   @override
   String get cleanerSkipped =>
@@ -3942,4 +3950,252 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get tvPowerHelp =>
       'Выключение переводит ТВ в ожидание через службу специальных возможностей CuteLauncher или локальный ADB. Для перезагрузки нужен ADB. На приставке команда управляет приставкой; поведение телевизора зависит от HDMI-CEC и прошивки.';
+
+  @override
+  String get cleanerLists => 'Списки отключения';
+
+  @override
+  String get cleanerRecovery => 'Бэкап и восстановление';
+
+  @override
+  String get cleanerExports => 'Отчёты';
+
+  @override
+  String get cleanerUpdating => 'Обновляется список приложений…';
+
+  @override
+  String get cleanerRefreshRequired => 'Сначала обновите список приложений.';
+
+  @override
+  String get cleanerPreinstalled => 'Предустановленное приложение';
+
+  @override
+  String get cleanerNotSystem => 'Это не системное приложение.';
+
+  @override
+  String get cleanerMinimalRisk => 'Минимальный';
+
+  @override
+  String get cleanerCacheFailure =>
+      'Не удалось запомнить список для следующего входа.';
+
+  @override
+  String get cleanerUserApps => 'Пользовательские приложения';
+
+  @override
+  String get cleanerPreinstalledApps => 'Предустановленные приложения';
+
+  @override
+  String get cleanerSystemApps => 'Системные приложения';
+
+  @override
+  String get cleanerBaseline => 'Базовое исходное состояние';
+
+  @override
+  String get cleanerManualStates => 'Управление ручными состояниями';
+
+  @override
+  String get cleanerManualSave => 'Сохранить текущее состояние';
+
+  @override
+  String get cleanerDateName => 'Использовать дату и время';
+
+  @override
+  String get cleanerCustomName => 'Задать имя';
+
+  @override
+  String get cleanerStateExport => 'Экспортировать сохранение в файл';
+
+  @override
+  String get cleanerStateRestoreHelp =>
+      'Будут восстановлены сохранённые состояния включения и отключения приложений для этой прошивки. Приложения, установленные после создания копии, останутся без изменений. Отсутствующие приложения и отключение защищённых компонентов будут пропущены. Данные приложений не восстанавливаются.';
+
+  @override
+  String get cleanerCopiesHelp =>
+      'Базовое исходное состояние создаётся один раз при первом успешном обновлении списка и не удаляется и не перезаписывается средствами лаунчера. Оно привязано к прошивке. Ручные состояния сохраняют текущие режимы приложений, имеют имя и дату; их можно восстанавливать, удалять и экспортировать. Копии не содержат APK и данных приложений. Восстановление требует локального ADB. При срабатывании защиты от падений лаунчер пытается автоматически вернуть базовое состояние. Очистка данных или удаление лаунчера удаляет и эти копии; защита от root-доступа невозможна.';
+
+  @override
+  String get cleanerSearch => 'Поиск по имени';
+
+  @override
+  String get cleanerCatalogUpdateRequired =>
+      'Сначала обновите каталог из GitHub.';
+
+  @override
+  String get cleanerNoSearchResults => 'Подходящих записей нет.';
+
+  @override
+  String get cleanerAlreadyDisabled =>
+      'Все приложения из списка, которые есть на этом ТВ, уже отключены.';
+
+  @override
+  String get cleanerAlreadyEnabled =>
+      'Все приложения из списка, которые есть на этом ТВ, уже включены.';
+
+  @override
+  String get cleanerNoInstalled =>
+      'На этом ТВ нет подходящих установленных приложений из списка.';
+
+  @override
+  String get cleanerListProtected =>
+      'Оставшиеся приложения защищены от отключения.';
+
+  @override
+  String get cleanerSnapshotFailed =>
+      'Не удалось сохранить снимок. Приложения не отключены.';
+
+  @override
+  String get cleanerDisableAllPreinstalled => 'Отключить все предустановленные';
+
+  @override
+  String get cleanerEnableAllPreinstalled => 'Включить все предустановленные';
+
+  @override
+  String get cleanerPreinstalledList => 'Список предустановленных приложений';
+
+  @override
+  String cleanerBeforeList(String listName) {
+    return 'Перед применением списка: $listName';
+  }
+
+  @override
+  String get sleepTimerSettings => 'Настройки таймера отключения';
+
+  @override
+  String get sleepTimerPresets => 'Таймеры';
+
+  @override
+  String get sleepTimerDisplay => 'Показывать при активном таймере';
+
+  @override
+  String get sleepTimerRemaining => 'Оставшееся время';
+
+  @override
+  String get sleepTimerEndTime => 'Время отключения';
+
+  @override
+  String get sleepTimerBoth => 'Оставшееся время и время отключения';
+
+  @override
+  String get sleepTimerShowSeconds => 'Показывать секунды';
+
+  @override
+  String get sleepTimerCloseAfterSelection =>
+      'Закрывать виджет после выбора таймера';
+
+  @override
+  String get sleepTimerAdd => 'Добавить таймер';
+
+  @override
+  String get sleepTimerEdit => 'Изменить таймер';
+
+  @override
+  String get sleepTimerHoursLabel => 'Часы';
+
+  @override
+  String get sleepTimerMinutesLabel => 'Минуты';
+
+  @override
+  String get sleepTimerSecondsLabel => 'Секунды';
+
+  @override
+  String get sleepTimerInvalidDuration =>
+      'Укажите время больше нуля: часы 0–999999, минуты и секунды 0–59.';
+
+  @override
+  String get sleepTimerDeleteConfirmation =>
+      'Удалить этот таймер? Запущенный отсчёт продолжится.';
+
+  @override
+  String get sleepTimerResetConfirmation =>
+      'Восстановить стандартные таймеры и их порядок? Свои таймеры будут удалены. Запущенный отсчёт продолжится.';
+
+  @override
+  String get sleepTimerReorderHint =>
+      '◄ / ► или удержание OK — перемещение. ▲ / ▼ меняют порядок и переносят таймер между отображаемыми и скрытыми. OK завершает перемещение.';
+
+  @override
+  String get sleepTimerSaveFailed => 'Не удалось сохранить настройки таймера.';
+
+  @override
+  String get sleepTimerVisible => 'Отображаемые';
+
+  @override
+  String get sleepTimerHidden => 'Скрытые';
+
+  @override
+  String get sleepTimerReset => 'Сбросить таймеры';
+
+  @override
+  String get cleanerListSnapshotHelp =>
+      'Перед отключением по списку автоматически сохраняется снимок только выбранных приложений. Его восстановление не меняет остальные приложения. Лимит — 100 ручных и автоматических снимков. Если сохранить снимок нельзя, отключение не начинается.';
+
+  @override
+  String get trafficSettings => 'Настройки трафика';
+
+  @override
+  String get trafficTitle => 'Трафик';
+
+  @override
+  String get trafficReceived => 'Получено';
+
+  @override
+  String get trafficSent => 'Отправлено';
+
+  @override
+  String get trafficTotal => 'Всего';
+
+  @override
+  String get stopApp => 'Остановить';
+
+  @override
+  String get backgroundImageFormats =>
+      'Изображения: JPEG, PNG, WebP, GIF, BMP — до 8 МиБ, 48 мегапикселей и 16 384 пикселей по каждой стороне.';
+
+  @override
+  String get backgroundMediaFormats =>
+      'Изображения: JPEG, PNG, WebP, GIF, BMP — до 8 МиБ, 48 мегапикселей и 16 384 пикселей по каждой стороне.\nВидео: MP4/M4V, WebM, MKV — до 256 МиБ и 3840×2160. Поддержка кодека зависит от ТВ; предпочтительно MP4 с H.264. Видео повторяется без звука и приостанавливается вне главного экрана. Видео не включается в резервные копии.';
+
+  @override
+  String get backgroundFormatError =>
+      'Формат не поддерживается или файл повреждён. Выберите исправный файл одного из указанных форматов.';
+
+  @override
+  String backgroundFileTooLarge(String maxMiB) {
+    return 'Файл слишком большой. Допустимый размер — до $maxMiB МиБ. Выберите файл меньшего размера.';
+  }
+
+  @override
+  String get backgroundImageResolutionError =>
+      'Изображение слишком большое: не более 48 мегапикселей и 16 384 пикселей по каждой стороне.';
+
+  @override
+  String get backgroundVideoResolutionError =>
+      'Разрешение видео слишком большое. Выберите видео не выше 3840×2160 (или 2160×3840).';
+
+  @override
+  String get backgroundVideoCodecError =>
+      'ТВ не смог воспроизвести это видео: кодек не поддерживается или файл повреждён. Попробуйте MP4 с H.264.';
+
+  @override
+  String get backgroundFileApplied => 'Файл выбран. Фон обновлён.';
+
+  @override
+  String get noticePosition => 'Расположение уведомлений';
+
+  @override
+  String get noticeBottomRight => 'Внизу справа';
+
+  @override
+  String get noticeBottomLeft => 'Внизу слева';
+
+  @override
+  String get noticeTopRight => 'Вверху справа';
+
+  @override
+  String get noticeTopLeft => 'Вверху слева';
+
+  @override
+  String get notificationOpenFailed =>
+      'Не удалось открыть действие уведомления. Возможно, оно больше недоступно.';
 }

@@ -53,16 +53,100 @@ Map<String, Object?> disabledList(Map<String, dynamic> report) => {
   'capturedAt': DateTime.now().toUtc().toIso8601String(),
   'identity': report['identity'],
   'verification': 'observedOnly',
+  'reportPurpose': 'disabledApplicationsReport',
+  'baselineCreatedAt': report['baselineCreatedAt'],
+  'managerChangedCount': report['pendingRestore'],
+  'applications': (report['packages'] as List)
+      .whereType<Map>()
+      .where(
+        (row) =>
+            row['enabled'] == false ||
+            [2, 3, 4].contains(row['enabledSetting']),
+      )
+      .map((row) => Map<String, dynamic>.from(row))
+      .toList(),
   'packages':
       (report['packages'] as List)
           .whereType<Map>()
-          .where((row) => [2, 3, 4].contains(row['enabledSetting']))
+          .where(
+            (row) =>
+                row['enabled'] == false ||
+                [2, 3, 4].contains(row['enabledSetting']),
+          )
           .map((row) => row['package'] as String)
           .toList()
         ..sort(),
 };
 
+enum CleanerAppKind { user, preinstalled, system }
+
+CleanerAppKind cleanerAppKind(Map app, Map? description) {
+  if (app['system'] == false) return CleanerAppKind.user;
+  return description?['category'] == 'preinstalled'
+      ? CleanerAppKind.preinstalled
+      : CleanerAppKind.system;
+}
+
 class TvCleanerClient {
+  final Future<Directory> Function() _inventoryDirectory;
+  TvCleanerClient({Future<Directory> Function()? inventoryDirectory})
+    : _inventoryDirectory =
+          inventoryDirectory ?? getApplicationSupportDirectory;
+
+  Future<File> _inventoryFile() async =>
+      File('${(await _inventoryDirectory()).path}/tv-cleaner-inventory.json');
+
+  /// Display cache only; never used as a recovery journal or mutation authority.
+  Future<Map<String, dynamic>?> loadInventory() async {
+    try {
+      final file = await _inventoryFile();
+      if (!await file.exists() || await file.length() > 4 * 1024 * 1024) {
+        return null;
+      }
+      final value = jsonDecode(await file.readAsString());
+      if (value is! Map<String, dynamic> ||
+          value['schemaVersion'] != 1 ||
+          value['reportType'] != 'tvCleanerInventory' ||
+          value['status'] != 'success' ||
+          value['identity'] is! Map ||
+          value['identity']['fingerprint'] is! String ||
+          value['packages'] is! List ||
+          (value['packages'] as List).isEmpty ||
+          (value['packages'] as List).length > 2000 ||
+          value['snapshotSaved'] is! bool ||
+          value['pendingRestore'] is! int ||
+          value['snapshot'] is! String ||
+          !(value['packages'] as List).every(
+            (app) =>
+                app is Map &&
+                app['package'] is String &&
+                cleanerPackageId(app['package']) &&
+                app['name'] is String &&
+                app['enabled'] is bool &&
+                app['system'] is bool &&
+                app['protected'] is bool,
+          )) {
+        return null;
+      }
+      return value;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<void> saveInventory(Map<String, dynamic> report) async {
+    final file = await _inventoryFile();
+    await file.parent.create(recursive: true);
+    final temporary = File('${file.path}.tmp');
+    await temporary.writeAsString(jsonEncode(report), flush: true);
+    await temporary.rename(file.path);
+  }
+
+  Future<void> clearInventory() async {
+    final file = await _inventoryFile();
+    if (await file.exists()) await file.delete();
+  }
+
   Future<Map<String, dynamic>> catalog(String path) async =>
       jsonDecode(await rootBundle.loadString(path)) as Map<String, dynamic>;
   static const channel = BridgeChannel('cutelauncher/adb');
@@ -70,6 +154,10 @@ class TvCleanerClient {
     String action, {
     List<String>? packages,
     bool? enable,
+    String? stateId,
+    String? stateName,
+    String? listName,
+    String? listScope,
   }) async {
     final info = await channel.invokeMapMethod<String, dynamic>('info');
     final result = await channel.invokeMapMethod<String, dynamic>('action', {
@@ -78,15 +166,23 @@ class TvCleanerClient {
       'tls': false,
       'packages': ?packages,
       'enable': ?enable,
+      'stateId': ?stateId,
+      'stateName': ?stateName,
+      'listName': ?listName,
+      'listScope': ?listScope,
     });
     if (result == null) throw const FormatException('Missing result');
     return result;
   }
 
+  String importedFileName = '';
   Future<String?> importFile() async {
-    final path = await const BridgeChannel('me.efesser.flauncher/method')
-        .invokeMethod<String>('pickCleanerDocument');
-    if (path == null) return null;
+    importedFileName = '';
+    final selected = await const BridgeChannel('me.efesser.flauncher/method')
+        .invokeMethod<Map>('pickCleanerListDocument');
+    if (selected == null) return null;
+    importedFileName = selected['name'] as String? ?? '';
+    final path = selected['path'] as String;
     final file = File(path);
     try {
       if (await file.length() > 256 * 1024) {
@@ -99,7 +195,7 @@ class TvCleanerClient {
   }
 
   Future<String?> export(Map<String, dynamic> value, String kind) async {
-    if (!['apps', 'disabled', 'restore'].contains(kind)) {
+    if (!['apps', 'disabled', 'restore', 'state'].contains(kind)) {
       throw ArgumentError.value(kind);
     }
     final dir = await (await getTemporaryDirectory()).createTemp('tv-cleaner-');

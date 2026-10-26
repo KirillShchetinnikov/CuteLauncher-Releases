@@ -28,8 +28,10 @@ public class NotificationPopupPolicyTest {
         NotificationPopupEntries<Object> entries = new NotificationPopupEntries<>();
         Object first = new Object(), updated = new Object(), other = new Object();
         check(entries.replace("same-key", first) == null);
+        check(entries.isCurrent("same-key", first)); // Keep identity until the exit animation completes.
         check(entries.replace("other-key", other) == null);
         check(entries.replace("same-key", updated) == first);
+        check(!entries.isCurrent("same-key", first)); // A closing card cannot dismiss a replacement.
         check(!entries.expire("same-key", first)); // An old timer cannot remove its replacement.
         check(entries.expire("same-key", updated));
         check(entries.expire("other-key", other));
@@ -37,6 +39,6 @@ public class NotificationPopupPolicyTest {
         entries.clear();
         check(!entries.expire("same-key", first));
         check(entries.replace("same-key", updated) == null);
-        System.out.println("22 popup policy and replacement checks passed");
+        System.out.println("Popup policy, identity and replacement checks passed");
     }
 }

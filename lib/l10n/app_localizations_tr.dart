@@ -112,8 +112,11 @@ class AppLocalizationsTr extends AppLocalizations {
       'The focused app\'s banner or icon becomes a soft colour background. The selected gradient appears before an image is ready or if it cannot be read. Changes pause while the launcher is in the background. Your other wallpapers are kept.';
 
   @override
+  String get adbWifiOwnedTitle => 'Wi-Fi kurulum sihirbazına ait';
+
+  @override
   String get adbWifiOwned =>
-      'Not changed: a saved Wi-Fi network belongs to the setup wizard. Forget that network and reconnect through Android Settings, then check again. Disabling the wizard could delete the network.';
+      'Değişiklik yapılmadı: kayıtlı bir Wi-Fi ağı Google kurulum sihirbazı tarafından oluşturulmuş. Sihirbazı kapatmak ağı silebilir ve TV’nin bağlantısını kesebilir.\n\n1. Wi-Fi parolasını bildiğinizden emin olun.\n2. Android ağ ayarlarını açın, ağı seçin ve Ağı unut seçeneğini kullanın.\n3. Normal Android ağ ayarlarından yeniden bağlanın.\n4. CuteLauncher’a dönün, ADB’yi kontrol edin ve yerleşik başlatıcıyı kapatmayı yeniden deneyin.\n\nMesaj tekrarlanırsa yerleşik başlatıcıyı açık bırakın: yazılım ağı tekrar sihirbaza atayabilir.';
 
   @override
   String get adbWifiUnknown =>
@@ -335,10 +338,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get orSelectFormatSpecifiers => 'Veya biçim belirteçlerini seçin';
 
   @override
-  String get openImage => 'Resmi aç';
+  String get openImage => 'Dosya seç';
 
   @override
-  String get picture => 'Resim';
+  String get picture => 'Yerel resim veya video';
 
   @override
   String removeFrom(String name) {
@@ -433,13 +436,13 @@ class AppLocalizationsTr extends AppLocalizations {
   String get withEllipsisAddTo => 'Şuraya ekle...';
 
   @override
-  String get timeBasedWallpaper => 'Zamana dayalı duvar kağıdı';
+  String get timeBasedWallpaper => 'Gündüz/Gece resmi';
 
   @override
-  String get pickDayWallpaper => 'Gündüz duvar kağıdını seç';
+  String get pickDayWallpaper => 'Gündüz resmini seç';
 
   @override
-  String get pickNightWallpaper => 'Gece duvar kağıdını seç';
+  String get pickNightWallpaper => 'Gece resmini seç';
 
   @override
   String get accessibility => 'Erişilebilirlik';
@@ -1729,8 +1732,12 @@ class AppLocalizationsTr extends AppLocalizations {
   String get diagnosticsCopied => 'Rapor kopyalandı';
 
   @override
+  String get diagnosticsSharingNotice =>
+      'Dosyayı yazara özel mesajla gönderin, herkese açık paylaşmayın: otomatik temizleme kişisel verileri kaçırabilir. Göndererek anonim TV uyumluluk raporunun CuteLauncher Git deposunda yayımlanmasını kabul edersiniz. Yalnızca cihaz bilgileri ve özellik kullanılabilirliği kişisel veriler olmadan yayımlanır; hata günlükleri, komutlar ve ayarlarınız yayımlanmaz.';
+
+  @override
   String get diagnosticsHint =>
-      'Rapor, uygulama sürümünü, izin durumunu, bellek kullanımını ve işlem sonuçlarını içerir. Anahtarlar, adresler, dosya yolları, uygulama listeleri ve bildirim içeriği hariçtir. Uygulama yeniden başlatılana kadar yalnızca son 50 işlem hafızada tutulur. Hiçbir şey otomatik olarak gönderilmez.';
+      'Tek rapor TV özellik uyumluluğunu ve hata tanılamasını birleştirir. Rapor TV modeli ve yazılımını, uygulama sürümünü, izinleri, belleği, hata aşamaları ve nedenlerini, kişisel verileri otomatik temizlenen komutları ve yanıtları içerir. Oturumda son 50 işlem, ayrıca en fazla 100 hata ve sınırlı ADB kaydı tutulur. Yeniden başlatma kaydı siler. Temizleme bazı kişisel verileri kaçırabilir: dosyayı herkese açık paylaşmak yerine özel mesajla gönderin. Otomatik gönderim yoktur. Her hata, uygulanan ayarların anlık görüntüsünü saklar; sonraki değişiklikler bunu değiştirmez.';
 
   @override
   String get diagnosticsTitle => 'Hata teşhisi';
@@ -2078,7 +2085,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get background => 'Arkaplan';
 
   @override
-  String get backgroundParameters => 'Parametreler';
+  String get backgroundParameters => 'Kaynak ayarları';
 
   @override
   String get resetAppearanceHint =>
@@ -3595,7 +3602,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get cleanerSnapshot => 'Save original state';
 
   @override
-  String get cleanerRestore => 'Restore manager changes';
+  String get cleanerRestore => 'Temel durumu geri yükle';
 
   @override
   String get cleanerSnapshotSaved => 'Original state saved';
@@ -3608,7 +3615,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get cleanerNoSafe =>
-      'This firmware has no verified list that preserves all features.';
+      'Bu model ve yazılım için eşleşen sistem uygulama listesi yok.';
 
   @override
   String get cleanerLocal => 'Disable using a local list';
@@ -3623,7 +3630,8 @@ class AppLocalizationsTr extends AppLocalizations {
   String get cleanerExternal => 'CleanYourTV examples';
 
   @override
-  String get cleanerDisabledExport => 'Export disabled applications';
+  String get cleanerDisabledExport =>
+      'Devre dışı uygulama raporunu dosyaya aktar';
 
   @override
   String get cleanerInventoryExport => 'Export application report';
@@ -3691,7 +3699,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get cleanerHelp =>
-      'The manager uses the local ADB connection configured in TV control settings. It never uninstalls apps or clears their data. The snapshot and recovery journal are separate from ordinary backups. Recovery restores previous states only for packages changed by this manager. Automatic recovery is blocked after a firmware change.\n\nVerified lists match exact firmware. Observed and external lists do not establish safety. Protected components, HOME and active services cannot be disabled. Packages are previewed before applying; missing and already disabled packages are skipped.\n\nThe project catalog is bundled from Git. GitHub refresh requires a public catalog. External examples load only on request and never execute scripts. Export creates JSON containing disabled packages and firmware identity; add it manually to catalog/examples after review. Nothing is uploaded automatically.\n\nApp descriptions and risk remain visible. Unconfirmed purposes are marked explicitly and never included in verified lists.';
+      'Temel durum ilk başarılı liste yenilemesinde bir kez oluşturulur; başlatıcıdan silinemez veya üzerine yazılamaz. Yazılıma bağlıdır. Elle kaydedilen durumlar uygulama kiplerini ad ve tarihle saklar; geri yüklenebilir, silinebilir ve dışa aktarılabilir. APK veya uygulama verisi içermezler. Geri yükleme yerel ADB gerektirir. Çökme koruması temeli otomatik geri yüklemeyi dener. Başlatıcı verilerini temizlemek veya başlatıcıyı kaldırmak kopyaları da siler; root erişimi engellenemez.';
 
   @override
   String get cleanerSkipped =>
@@ -3947,4 +3955,252 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get tvPowerHelp =>
       'Kapatma, CuteLauncher erişilebilirlik hizmeti veya yerel ADB ile beklemeyi açar. Yeniden başlatma ADB gerektirir. TV kutusunda kutu kontrol edilir; TV davranışı HDMI-CEC ve yazılıma bağlıdır.';
+
+  @override
+  String get cleanerLists => 'Devre dışı bırakma listeleri';
+
+  @override
+  String get cleanerRecovery => 'Yedekleme ve geri yükleme';
+
+  @override
+  String get cleanerExports => 'Raporlar';
+
+  @override
+  String get cleanerUpdating => 'Uygulama listesi güncelleniyor…';
+
+  @override
+  String get cleanerRefreshRequired => 'Önce uygulama listesini yenileyin.';
+
+  @override
+  String get cleanerPreinstalled => 'Önceden yüklenmiş uygulama';
+
+  @override
+  String get cleanerNotSystem => 'Bu bir sistem uygulaması değildir.';
+
+  @override
+  String get cleanerMinimalRisk => 'En düşük';
+
+  @override
+  String get cleanerCacheFailure => 'Liste sonraki ziyaret için kaydedilemedi.';
+
+  @override
+  String get cleanerUserApps => 'Kullanıcı uygulamaları';
+
+  @override
+  String get cleanerPreinstalledApps => 'Önceden yüklenmiş uygulamalar';
+
+  @override
+  String get cleanerSystemApps => 'Sistem uygulamaları';
+
+  @override
+  String get cleanerBaseline => 'Temel başlangıç durumu';
+
+  @override
+  String get cleanerManualStates => 'Elle kaydedilen durumları yönet';
+
+  @override
+  String get cleanerManualSave => 'Geçerli durumu kaydet';
+
+  @override
+  String get cleanerDateName => 'Tarih ve saati kullan';
+
+  @override
+  String get cleanerCustomName => 'Ad gir';
+
+  @override
+  String get cleanerStateExport => 'Kaydedilen durumu dosyaya aktar';
+
+  @override
+  String get cleanerStateRestoreHelp =>
+      'Bu yazılım için kaydedilen etkinlik durumları geri yüklenir. Daha sonra kurulan uygulamalar değişmez. Eksik uygulamalar ve korunan bileşenleri devre dışı bırakma atlanır. Uygulama verileri geri yüklenmez.';
+
+  @override
+  String get cleanerCopiesHelp =>
+      'Temel durum ilk başarılı liste yenilemesinde bir kez oluşturulur; başlatıcıdan silinemez veya üzerine yazılamaz. Yazılıma bağlıdır. Elle kaydedilen durumlar uygulama kiplerini ad ve tarihle saklar; geri yüklenebilir, silinebilir ve dışa aktarılabilir. APK veya uygulama verisi içermezler. Geri yükleme yerel ADB gerektirir. Çökme koruması temeli otomatik geri yüklemeyi dener. Başlatıcı verilerini temizlemek veya başlatıcıyı kaldırmak kopyaları da siler; root erişimi engellenemez.';
+
+  @override
+  String get cleanerSearch => 'Ada göre ara';
+
+  @override
+  String get cleanerCatalogUpdateRequired =>
+      'Önce GitHub kataloğunu yenileyin.';
+
+  @override
+  String get cleanerNoSearchResults => 'Eşleşen kayıt yok.';
+
+  @override
+  String get cleanerAlreadyDisabled =>
+      'Bu listedeki TV’de bulunan tüm uygulamalar zaten devre dışı.';
+
+  @override
+  String get cleanerAlreadyEnabled =>
+      'Bu listedeki TV’de bulunan tüm uygulamalar zaten etkin.';
+
+  @override
+  String get cleanerNoInstalled =>
+      'Bu listeden eşleşen bir uygulama bu TV’de yüklü değil.';
+
+  @override
+  String get cleanerListProtected =>
+      'Kalan uygulamalar devre dışı bırakmaya karşı korunuyor.';
+
+  @override
+  String get cleanerSnapshotFailed =>
+      'Durum kaydedilemedi. Hiçbir uygulama devre dışı bırakılmadı.';
+
+  @override
+  String get cleanerDisableAllPreinstalled =>
+      'Önceden yüklenmiş tüm uygulamaları devre dışı bırak';
+
+  @override
+  String get cleanerEnableAllPreinstalled =>
+      'Önceden yüklenmiş tüm uygulamaları etkinleştir';
+
+  @override
+  String get cleanerPreinstalledList => 'Önceden yüklenmiş uygulama listesi';
+
+  @override
+  String cleanerBeforeList(String listName) {
+    return 'Liste uygulanmadan önce: $listName';
+  }
+
+  @override
+  String get sleepTimerSettings => 'Uyku zamanlayıcısı ayarları';
+
+  @override
+  String get sleepTimerPresets => 'Zamanlayıcılar';
+
+  @override
+  String get sleepTimerDisplay => 'Zamanlayıcı etkinken göster';
+
+  @override
+  String get sleepTimerRemaining => 'Kalan süre';
+
+  @override
+  String get sleepTimerEndTime => 'Kapanma saati';
+
+  @override
+  String get sleepTimerBoth => 'Kalan süre ve kapanma saati';
+
+  @override
+  String get sleepTimerShowSeconds => 'Saniyeleri göster';
+
+  @override
+  String get sleepTimerCloseAfterSelection => 'Seçimden sonra bileşeni kapat';
+
+  @override
+  String get sleepTimerAdd => 'Zamanlayıcı ekle';
+
+  @override
+  String get sleepTimerEdit => 'Zamanlayıcıyı düzenle';
+
+  @override
+  String get sleepTimerHoursLabel => 'Saat';
+
+  @override
+  String get sleepTimerMinutesLabel => 'Dakika';
+
+  @override
+  String get sleepTimerSecondsLabel => 'Saniye';
+
+  @override
+  String get sleepTimerInvalidDuration =>
+      'Sıfırdan büyük süre girin: saat 0–999999, dakika ve saniye 0–59.';
+
+  @override
+  String get sleepTimerDeleteConfirmation =>
+      'Bu zamanlayıcı silinsin mi? Çalışan geri sayım devam eder.';
+
+  @override
+  String get sleepTimerResetConfirmation =>
+      'Varsayılan zamanlayıcılar ve sıraları geri yüklensin mi? Özel zamanlayıcılar silinir. Çalışan geri sayım devam eder.';
+
+  @override
+  String get sleepTimerReorderHint =>
+      'Taşımak için ◄ / ► veya OK tuşunu basılı tutun. ▲ / ▼ sırayı değiştirir ve görünür/gizli listeler arasında taşır. OK taşımayı bitirir.';
+
+  @override
+  String get sleepTimerSaveFailed => 'Zamanlayıcı ayarları kaydedilemedi.';
+
+  @override
+  String get sleepTimerVisible => 'Görünen';
+
+  @override
+  String get sleepTimerHidden => 'Gizli';
+
+  @override
+  String get sleepTimerReset => 'Zamanlayıcıları sıfırla';
+
+  @override
+  String get cleanerListSnapshotHelp =>
+      'Listeyi devre dışı bırakmadan önce yalnızca seçilen uygulamalar kaydedilir. Geri yüklemek diğer uygulamaları değiştirmez. Sınır 100 elle ve otomatik kayıttır. Kayıt başarısızsa devre dışı bırakma başlamaz.';
+
+  @override
+  String get trafficSettings => 'Trafik ayarları';
+
+  @override
+  String get trafficTitle => 'Trafik';
+
+  @override
+  String get trafficReceived => 'Alınan';
+
+  @override
+  String get trafficSent => 'Gönderilen';
+
+  @override
+  String get trafficTotal => 'Toplam';
+
+  @override
+  String get stopApp => 'Durdur';
+
+  @override
+  String get backgroundImageFormats =>
+      'Resimler: JPEG, PNG, WebP, GIF, BMP — en fazla 8 MiB, 48 megapiksel ve her kenarda 16.384 piksel.';
+
+  @override
+  String get backgroundMediaFormats =>
+      'Resimler: JPEG, PNG, WebP, GIF, BMP — en fazla 8 MiB, 48 megapiksel ve her kenarda 16.384 piksel.\nVideo: MP4/M4V, WebM, MKV — en fazla 256 MiB ve 3840×2160. Kodek desteği TV’ye bağlıdır; H.264 içeren MP4 önerilir. Sessiz tekrarlanır, Ana Ekran dışında duraklatılır. Videolar yedeklere dahil edilmez.';
+
+  @override
+  String get backgroundFormatError =>
+      'Desteklenmeyen biçim veya bozuk dosya. Belirtilen biçimlerden geçerli bir dosya seçin.';
+
+  @override
+  String backgroundFileTooLarge(String maxMiB) {
+    return 'Dosya çok büyük. En fazla $maxMiB MiB. Daha küçük bir dosya seçin.';
+  }
+
+  @override
+  String get backgroundImageResolutionError =>
+      'Resim çok büyük: en fazla 48 megapiksel ve her kenarda 16.384 piksel.';
+
+  @override
+  String get backgroundVideoResolutionError =>
+      'Video çözünürlüğü çok yüksek. En fazla 3840×2160 (veya 2160×3840) seçin.';
+
+  @override
+  String get backgroundVideoCodecError =>
+      'TV videoyu oynatamadı: kodek desteklenmiyor veya dosya bozuk. H.264 içeren MP4 deneyin.';
+
+  @override
+  String get backgroundFileApplied => 'Dosya seçildi. Arka plan güncellendi.';
+
+  @override
+  String get noticePosition => 'Bildirim konumu';
+
+  @override
+  String get noticeBottomRight => 'Sağ alt';
+
+  @override
+  String get noticeBottomLeft => 'Sol alt';
+
+  @override
+  String get noticeTopRight => 'Sağ üst';
+
+  @override
+  String get noticeTopLeft => 'Sol üst';
+
+  @override
+  String get notificationOpenFailed =>
+      'Bildirim eylemi açılamadı. Artık kullanılamıyor olabilir.';
 }

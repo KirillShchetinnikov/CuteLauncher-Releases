@@ -48,8 +48,11 @@ public class DocumentsFixture extends Activity {
             setContentView(layout); return;
         }
         String mime = getIntent().getType();
-        String path = mime != null && !mime.startsWith("image/") ? "backup.json" : "valid.png";
+        String[] types = getIntent().getStringArrayExtra(Intent.EXTRA_MIME_TYPES);
+        boolean media = types != null && java.util.Arrays.asList(types).contains("video/*");
+        String path = !media && mime != null && !mime.startsWith("image/") ? "backup.json" : "valid.png";
         add(layout, "Valid document", () -> choose(path));
+        if (media) add(layout, "Video MP4 (image + video filter received)", () -> choose("video.mp4"));
         add(layout, "Corrupt document", () -> choose("corrupt.png"));
         add(layout, "Provider error", () -> choose("failure"));
         add(layout, "Cancel", () -> { setResult(RESULT_CANCELED); finish(); });
@@ -122,6 +125,7 @@ public class DocumentsFixture extends Activity {
         }
         private File file(Uri uri) throws FileNotFoundException {
             String name = uri.getLastPathSegment();
+            if ("video.mp4".equals(name)) return new File(getContext().getExternalFilesDir(null), name);
             if ("nested.png".equals(name)) name = "valid.png";
             if (!"valid.png".equals(name) && !"corrupt.png".equals(name) && !"backup.json".equals(name))
                 throw new FileNotFoundException("Injected provider failure");
@@ -150,7 +154,7 @@ public class DocumentsFixture extends Activity {
             catch (FileNotFoundException ignored) { }
             return cursor;
         }
-        @Override public String getType(Uri uri) { return uri.getPath().endsWith(".json") ? "application/json" : "image/png"; }
+        @Override public String getType(Uri uri) { return uri.getPath().endsWith(".mp4") ? "video/mp4" : uri.getPath().endsWith(".json") ? "application/json" : "image/png"; }
         @Override public Uri insert(Uri uri, ContentValues values) { throw new UnsupportedOperationException(); }
         @Override public int update(Uri uri, ContentValues values, String selection, String[] args) { throw new UnsupportedOperationException(); }
         @Override public int delete(Uri uri, String selection, String[] args) { throw new UnsupportedOperationException(); }

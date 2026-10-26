@@ -1,3 +1,4 @@
+import 'package:flauncher/widgets/traffic_usage_menu.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/providers/appearance_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
@@ -10,6 +11,7 @@ import 'package:flauncher/providers/sleep_timer_service.dart';
 import 'package:flauncher/theme/interface_style.dart';
 import 'package:flauncher/widgets/launcher_dialog.dart';
 import 'package:flauncher/widgets/side_panel_dialog.dart';
+import 'package:flauncher/widgets/menu_header.dart';
 import 'package:flauncher/widgets/night_mode_menu.dart';
 import 'package:flauncher/widgets/sleep_timer_menu.dart';
 import 'package:flauncher/widgets/network_summary_dialog.dart';
@@ -31,6 +33,7 @@ void main() {
     'sleep',
     'calendar',
     'network',
+    'traffic',
     'inputs',
     'notifications',
   ]) {
@@ -82,6 +85,7 @@ void main() {
             'addresses': '192.168.1.25',
           },
         );
+        when(network.getTrafficUsage(any)).thenAnswer((_) async => {'rxBytes': 1024, 'txBytes': 2048, 'totalBytes': 3072});
         when(inputs.inputs).thenReturn([]);
         when(notifications.notifications).thenReturn([]);
         when(notifications.hidePersistentNotifications).thenReturn(false);
@@ -153,6 +157,7 @@ void main() {
                                     service: network,
                                     anchor: anchor,
                                   ),
+                                  'traffic' => TrafficUsageMenu(anchor: anchor),
                                   'inputs' => InputsPanel(anchor: anchor),
                                   _ => NotificationsPanel(anchor: anchor),
                                 },
@@ -168,8 +173,37 @@ void main() {
               );
               await tester.pumpAndSettle();
               await tester.tap(find.text('open'));
+              await tester.pump();
+              final openingBackdrop = find.descendant(
+                of: find.byType(LauncherPanelBackdrop),
+                matching: find.byType(ClipPath),
+              );
+              final openingClip = tester.widget<ClipPath>(openingBackdrop);
+              final openingRect = tester.getRect(find.byType(LauncherPanelBackdrop));
+              final openingAnchor = tester.widget<SidePanelDialog>(
+                find.byType(SidePanelDialog)).anchor!;
+              final openingPath = openingClip.clipper!
+                  .getClip(tester.getSize(openingBackdrop));
+              expect(openingPath.contains(openingAnchor.center - openingRect.topLeft),
+                  isFalse, reason: 'Opening frame must preserve the button cutout');
               await tester.pumpAndSettle();
               final panel = find.byType(SidePanelDialog);
+              final header = tester.widget<MenuHeader>(
+                find.descendant(of: panel, matching: find.byType(MenuHeader)),
+              );
+              expect(header.hint != null, name == 'notifications');
+              if (name == 'sleep' || name == 'night') {
+                final divider = find.descendant(
+                    of: panel, matching: find.byType(Divider)).first;
+                expect(tester.getTopLeft(divider).dy,
+                    greaterThanOrEqualTo(tester.getBottomLeft(find.byType(MenuHeader)).dy));
+              }
+              final titleContext = tester.element(find.descendant(
+                of: find.byType(MenuHeader), matching: find.byType(Text)).first);
+              expect(DefaultTextStyle.of(titleContext).style.fontSize,
+                  Theme.of(titleContext).textTheme.titleLarge!.fontSize);
+              expect(DefaultTextStyle.of(titleContext).style.color,
+                  const Color(0xffddeeff));
               expect(
                 panel,
                 findsOneWidget,
@@ -209,7 +243,7 @@ void main() {
               );
               expect(tester.takeException(), isNull);
               if (right) {
-                await tester.tapAt(const Offset(480, 500));
+                await tester.tapAt(const Offset(0, 500));
               } else {
                 await tester.binding.handlePopRoute();
               }

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="recovery_cleaner_retry">重试应用恢复</string>
+    <string name="recovery_cleaner_running">正在恢复基准应用状态…</string>
+    <string name="recovery_cleaner_done">已恢复基准应用状态。</string>
+    <string name="recovery_cleaner_no_baseline">尚未创建基准状态。</string>
+    <string name="recovery_cleaner_failed">应用恢复未完成。请检查本地 ADB 连接并重试。</string>
+    <string name="recovery_cleaner_partial">部分应用状态未恢复。应用可能缺失或受到保护；请检查设备后重试。</string>
+</resources>

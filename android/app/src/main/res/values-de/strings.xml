@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="recovery_cleaner_retry">App-Wiederherstellung wiederholen</string>
+    <string name="recovery_cleaner_running">Basiszustände werden wiederhergestellt…</string>
+    <string name="recovery_cleaner_done">Basiszustände wiederhergestellt.</string>
+    <string name="recovery_cleaner_no_baseline">Noch kein Basiszustand vorhanden.</string>
+    <string name="recovery_cleaner_failed">Wiederherstellung nicht abgeschlossen. Lokale ADB-Verbindung prüfen und erneut versuchen.</string>
+    <string name="recovery_cleaner_partial">Einige Zustände wurden nicht wiederhergestellt. Apps fehlen möglicherweise oder sind geschützt. Gerät prüfen und erneut versuchen.</string>
+</resources>

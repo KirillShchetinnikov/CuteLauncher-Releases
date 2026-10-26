@@ -112,8 +112,11 @@ class AppLocalizationsJa extends AppLocalizations {
       'The focused app\'s banner or icon becomes a soft colour background. The selected gradient appears before an image is ready or if it cannot be read. Changes pause while the launcher is in the background. Your other wallpapers are kept.';
 
   @override
+  String get adbWifiOwnedTitle => 'Wi-Fi はセットアップウィザードに属しています';
+
+  @override
   String get adbWifiOwned =>
-      'Not changed: a saved Wi-Fi network belongs to the setup wizard. Forget that network and reconnect through Android Settings, then check again. Disabling the wizard could delete the network.';
+      '変更は行われていません。保存済みの Wi-Fi ネットワークは Google セットアップウィザードが作成しました。無効にするとネットワークが削除され、テレビが切断される場合があります。\n\n1. Wi-Fi パスワードを確認してください。\n2. Android のネットワーク設定で対象のネットワークを選び、「削除」を選択してください。\n3. 通常の Android ネットワーク設定から再接続してください。\n4. CuteLauncher に戻り、ADB を確認して内蔵ランチャーの無効化を再試行してください。\n\n再び表示される場合は内蔵ランチャーを有効のままにしてください。ファームウェアが再びウィザードをネットワーク所有者にする場合があります。';
 
   @override
   String get adbWifiUnknown =>
@@ -332,10 +335,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get orSelectFormatSpecifiers => 'または形式指定子を選択';
 
   @override
-  String get openImage => '画像を開く';
+  String get openImage => 'ファイルを選択';
 
   @override
-  String get picture => '画像';
+  String get picture => 'ローカルの画像または動画';
 
   @override
   String removeFrom(String name) {
@@ -426,13 +429,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get withEllipsisAddTo => '追加...';
 
   @override
-  String get timeBasedWallpaper => '時間ベースの壁紙';
+  String get timeBasedWallpaper => '昼間・夜間の画像';
 
   @override
-  String get pickDayWallpaper => '昼の壁紙を選択';
+  String get pickDayWallpaper => '昼間の画像を選択';
 
   @override
-  String get pickNightWallpaper => '夜の壁紙を選択';
+  String get pickNightWallpaper => '夜間の画像を選択';
 
   @override
   String get accessibility => 'アクセシビリティ';
@@ -1685,8 +1688,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get diagnosticsCopied => 'レポートをコピーしました';
 
   @override
+  String get diagnosticsSharingNotice =>
+      'ファイルは公開せず、作者に個別メッセージで送ってください。自動処理後も個人情報が残る場合があります。送信すると、匿名化されたテレビ互換性レポートを CuteLauncher の Git リポジトリで公開することに同意したものとします。公開するのは個人情報を含まない機器情報と機能の利用可否だけです。エラーログ、コマンド、個人の設定は公開しません。';
+
+  @override
   String get diagnosticsHint =>
-      'レポートには、アプリのバージョン、権限の状態、メモリ使用量、操作結果が含まれます。キー、アドレス、ファイル パス、アプリ リスト、通知コンテンツは除外されます。アプリが再起動されるまで、最後の 50 件の操作のみがメモリに保持されます。何も自動的には送信されません。';
+      '1つのレポートにテレビ機能の互換性とエラー診断をまとめます。レポートにはテレビの機種とファームウェア、アプリのバージョン、権限、メモリ、エラーの段階と原因、個人情報を自動処理したコマンドと応答が含まれます。現在のセッションの直近 50 操作、別枠で最大 100 件の失敗、制限付き ADB ログを保持します。再起動で消去されます。個人情報が残る可能性があるため、公開せず個別メッセージで送信してください。自動送信はありません。各エラーにはその時点の適用設定を保存し、後の変更では置き換えません。';
 
   @override
   String get diagnosticsTitle => 'エラー診断';
@@ -2025,7 +2032,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get background => '背景';
 
   @override
-  String get backgroundParameters => 'パラメータ';
+  String get backgroundParameters => 'ソースの設定';
 
   @override
   String get resetAppearanceHint => '背景、アクセント、タイル、ラベル、ハイライト、アニメーションをリセットしますか?';
@@ -3480,7 +3487,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get cleanerSnapshot => 'Save original state';
 
   @override
-  String get cleanerRestore => 'Restore manager changes';
+  String get cleanerRestore => '基準状態に復元';
 
   @override
   String get cleanerSnapshotSaved => 'Original state saved';
@@ -3492,8 +3499,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get cleanerSafe => 'Disable verified applications';
 
   @override
-  String get cleanerNoSafe =>
-      'This firmware has no verified list that preserves all features.';
+  String get cleanerNoSafe => 'このモデルとファームウェアに一致するシステムアプリ一覧はありません。';
 
   @override
   String get cleanerLocal => 'Disable using a local list';
@@ -3508,7 +3514,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get cleanerExternal => 'CleanYourTV examples';
 
   @override
-  String get cleanerDisabledExport => 'Export disabled applications';
+  String get cleanerDisabledExport => '無効なアプリのレポートをファイルに出力';
 
   @override
   String get cleanerInventoryExport => 'Export application report';
@@ -3576,7 +3582,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get cleanerHelp =>
-      'The manager uses the local ADB connection configured in TV control settings. It never uninstalls apps or clears their data. The snapshot and recovery journal are separate from ordinary backups. Recovery restores previous states only for packages changed by this manager. Automatic recovery is blocked after a firmware change.\n\nVerified lists match exact firmware. Observed and external lists do not establish safety. Protected components, HOME and active services cannot be disabled. Packages are previewed before applying; missing and already disabled packages are skipped.\n\nThe project catalog is bundled from Git. GitHub refresh requires a public catalog. External examples load only on request and never execute scripts. Export creates JSON containing disabled packages and firmware identity; add it manually to catalog/examples after review. Nothing is uploaded automatically.\n\nApp descriptions and risk remain visible. Unconfirmed purposes are marked explicitly and never included in verified lists.';
+      '基準状態は最初の一覧更新成功時に一度だけ作成され、ランチャーから削除・上書きできません。ファームウェアに紐付きます。手動状態は現在のアプリ状態を名前と日時付きで保存し、復元・削除・出力できます。APKやアプリのデータは含みません。復元にはローカルADBが必要です。クラッシュループ保護が作動すると基準状態の自動復元を試みます。ランチャーのデータ消去やアンインストールで保存状態も削除されます。rootアクセスは防止できません。';
 
   @override
   String get cleanerSkipped =>
@@ -3829,4 +3835,242 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get tvPowerHelp =>
       'オフは CuteLauncher のユーザー補助サービスまたはローカル ADB でスタンバイにします。再起動には ADB が必要です。TV ボックスではボックスを操作します。テレビの動作は HDMI-CEC とファームウェアに依存します。';
+
+  @override
+  String get cleanerLists => '無効化リスト';
+
+  @override
+  String get cleanerRecovery => 'バックアップと復元';
+
+  @override
+  String get cleanerExports => 'レポート';
+
+  @override
+  String get cleanerUpdating => 'アプリ一覧を更新しています…';
+
+  @override
+  String get cleanerRefreshRequired => '最初にアプリ一覧を更新してください。';
+
+  @override
+  String get cleanerPreinstalled => 'プリインストールアプリ';
+
+  @override
+  String get cleanerNotSystem => 'システムアプリではありません。';
+
+  @override
+  String get cleanerMinimalRisk => '最小';
+
+  @override
+  String get cleanerCacheFailure => '次回表示する一覧を保存できませんでした。';
+
+  @override
+  String get cleanerUserApps => 'ユーザーアプリ';
+
+  @override
+  String get cleanerPreinstalledApps => 'プリインストールアプリ';
+
+  @override
+  String get cleanerSystemApps => 'システムアプリ';
+
+  @override
+  String get cleanerBaseline => '基準の初期状態';
+
+  @override
+  String get cleanerManualStates => '手動保存した状態の管理';
+
+  @override
+  String get cleanerManualSave => '現在の状態を保存';
+
+  @override
+  String get cleanerDateName => '日時を使用';
+
+  @override
+  String get cleanerCustomName => '名前を入力';
+
+  @override
+  String get cleanerStateExport => '保存した状態をファイルに出力';
+
+  @override
+  String get cleanerStateRestoreHelp =>
+      'このファームウェアで保存したアプリの有効・無効状態を復元します。保存後にインストールしたアプリは変更しません。存在しないアプリと保護されたコンポーネントの無効化はスキップします。アプリのデータは復元しません。';
+
+  @override
+  String get cleanerCopiesHelp =>
+      '基準状態は最初の一覧更新成功時に一度だけ作成され、ランチャーから削除・上書きできません。ファームウェアに紐付きます。手動状態は現在のアプリ状態を名前と日時付きで保存し、復元・削除・出力できます。APKやアプリのデータは含みません。復元にはローカルADBが必要です。クラッシュループ保護が作動すると基準状態の自動復元を試みます。ランチャーのデータ消去やアンインストールで保存状態も削除されます。rootアクセスは防止できません。';
+
+  @override
+  String get cleanerSearch => '名前で検索';
+
+  @override
+  String get cleanerCatalogUpdateRequired => '最初にGitHubからカタログを更新してください。';
+
+  @override
+  String get cleanerNoSearchResults => '一致する項目はありません。';
+
+  @override
+  String get cleanerAlreadyDisabled => 'このテレビにある一覧内のアプリはすべて無効になっています。';
+
+  @override
+  String get cleanerAlreadyEnabled => 'このテレビにある一覧内のアプリはすべて有効になっています。';
+
+  @override
+  String get cleanerNoInstalled => 'このテレビには一覧と一致するアプリがありません。';
+
+  @override
+  String get cleanerListProtected => '残りのアプリは無効化から保護されています。';
+
+  @override
+  String get cleanerSnapshotFailed => '状態を保存できませんでした。アプリは無効化していません。';
+
+  @override
+  String get cleanerDisableAllPreinstalled => 'すべてのプリインストールアプリを無効化';
+
+  @override
+  String get cleanerEnableAllPreinstalled => 'すべてのプリインストールアプリを有効化';
+
+  @override
+  String get cleanerPreinstalledList => 'プリインストールアプリの一覧';
+
+  @override
+  String cleanerBeforeList(String listName) {
+    return '一覧適用前：$listName';
+  }
+
+  @override
+  String get sleepTimerSettings => 'スリープタイマー設定';
+
+  @override
+  String get sleepTimerPresets => 'タイマー';
+
+  @override
+  String get sleepTimerDisplay => 'タイマー動作中の表示';
+
+  @override
+  String get sleepTimerRemaining => '残り時間';
+
+  @override
+  String get sleepTimerEndTime => 'スリープ時刻';
+
+  @override
+  String get sleepTimerBoth => '残り時間とスリープ時刻';
+
+  @override
+  String get sleepTimerShowSeconds => '秒を表示';
+
+  @override
+  String get sleepTimerCloseAfterSelection => 'タイマー選択後にウィジェットを閉じる';
+
+  @override
+  String get sleepTimerAdd => 'タイマーを追加';
+
+  @override
+  String get sleepTimerEdit => 'タイマーを編集';
+
+  @override
+  String get sleepTimerHoursLabel => '時間';
+
+  @override
+  String get sleepTimerMinutesLabel => '分';
+
+  @override
+  String get sleepTimerSecondsLabel => '秒';
+
+  @override
+  String get sleepTimerInvalidDuration =>
+      '0より長い時間を入力してください。時間は0～999999、分と秒は0～59です。';
+
+  @override
+  String get sleepTimerDeleteConfirmation => 'このタイマーを削除しますか？実行中のカウントダウンは続きます。';
+
+  @override
+  String get sleepTimerResetConfirmation =>
+      '標準のタイマーと順序に戻しますか？追加したタイマーは削除されます。実行中のカウントダウンは続きます。';
+
+  @override
+  String get sleepTimerReorderHint =>
+      '◄ / ► またはOK長押しで移動。▲ / ▼ で順序を変更し、表示・非表示リスト間で移動します。OKで移動を終了します。';
+
+  @override
+  String get sleepTimerSaveFailed => 'タイマー設定を保存できませんでした。';
+
+  @override
+  String get sleepTimerVisible => '表示';
+
+  @override
+  String get sleepTimerHidden => '非表示';
+
+  @override
+  String get sleepTimerReset => 'タイマーをリセット';
+
+  @override
+  String get cleanerListSnapshotHelp =>
+      '一覧の無効化前に選択したアプリのみを自動保存します。復元しても他のアプリは変更しません。手動と自動の保存は合計100件までです。保存に失敗すると無効化を開始しません。';
+
+  @override
+  String get trafficSettings => '通信量の設定';
+
+  @override
+  String get trafficTitle => '通信量';
+
+  @override
+  String get trafficReceived => '受信';
+
+  @override
+  String get trafficSent => '送信';
+
+  @override
+  String get trafficTotal => '合計';
+
+  @override
+  String get stopApp => '停止';
+
+  @override
+  String get backgroundImageFormats =>
+      '画像：JPEG、PNG、WebP、GIF、BMP。上限8 MiB、48メガピクセル、各辺16,384ピクセル。';
+
+  @override
+  String get backgroundMediaFormats =>
+      '画像：JPEG、PNG、WebP、GIF、BMP。上限8 MiB、48メガピクセル、各辺16,384ピクセル。\n動画：MP4/M4V、WebM、MKV。上限256 MiB、3840×2160。コーデックの対応はテレビによって異なります。H.264のMP4を推奨します。無音で繰り返し、ホーム以外では一時停止します。動画はバックアップに含まれません。';
+
+  @override
+  String get backgroundFormatError =>
+      '未対応の形式、または破損したファイルです。記載された形式の正常なファイルを選んでください。';
+
+  @override
+  String backgroundFileTooLarge(String maxMiB) {
+    return 'ファイルが大きすぎます。上限は$maxMiB MiBです。小さいファイルを選んでください。';
+  }
+
+  @override
+  String get backgroundImageResolutionError =>
+      '画像が大きすぎます。上限48メガピクセル、各辺16,384ピクセルです。';
+
+  @override
+  String get backgroundVideoResolutionError =>
+      '動画の解像度が高すぎます。3840×2160（または2160×3840）以下を選んでください。';
+
+  @override
+  String get backgroundVideoCodecError =>
+      'テレビで動画を再生できません。未対応のコーデック、またはファイル破損です。H.264のMP4をお試しください。';
+
+  @override
+  String get backgroundFileApplied => 'ファイルを選択し、背景を更新しました。';
+
+  @override
+  String get noticePosition => '通知の表示位置';
+
+  @override
+  String get noticeBottomRight => '右下';
+
+  @override
+  String get noticeBottomLeft => '左下';
+
+  @override
+  String get noticeTopRight => '右上';
+
+  @override
+  String get noticeTopLeft => '左上';
+
+  @override
+  String get notificationOpenFailed => '通知の操作を開けませんでした。すでに利用できなくなっている可能性があります。';
 }

@@ -18,11 +18,13 @@ final class TvCleaner {
     private final AdbBridge.Shell shell;
     private final AtomicFile storage;
     private final PackageManager pm;
+    private final TvCleanerStateStore states;
     TvCleaner(Activity activity, AdbBridge.Shell shell) throws Exception {
         this.activity = activity; this.shell = shell; pm = activity.getPackageManager();
         String firmwareKey = android.util.Base64.encodeToString(
             java.security.MessageDigest.getInstance("SHA-256").digest(Build.FINGERPRINT.getBytes(StandardCharsets.UTF_8)),
             android.util.Base64.URL_SAFE | android.util.Base64.NO_WRAP | android.util.Base64.NO_PADDING);
+        states = new TvCleanerStateStore(activity.getNoBackupFilesDir(), Build.FINGERPRINT, firmwareKey);
         // An OTA gets a new baseline; recovery data for the previous firmware is retained.
         storage = new AtomicFile(new File(activity.getNoBackupFilesDir(), "tv-cleaner-" + firmwareKey + ".json"));
     }
@@ -87,43 +89,123 @@ final class TvCleaner {
         if (rows.isEmpty() || rows.size() > 2000) throw new IllegalStateException("Invalid inventory");
         return rows;
     }
+    private Map<String, Object> identity() {
+        return Map.of("manufacturer", Build.MANUFACTURER, "model", Build.MODEL,
+            "device", Build.DEVICE, "fingerprint", Build.FINGERPRINT,
+            "androidVersion", Build.VERSION.RELEASE, "sdkInt", Build.VERSION.SDK_INT);
+    }
+    private JSONObject currentState() throws Exception {
+        JSONObject values = new JSONObject();
+        for (var row : inventory()) values.put(row.get("package").toString(), row.get("enabledSetting"));
+        return new JSONObject().put("schemaVersion", 1).put("fingerprint", Build.FINGERPRINT)
+            .put("identity", new JSONObject(identity())).put("capturedAt", System.currentTimeMillis())
+            .put("states", values).put("changed", new JSONObject());
+    }
     private JSONObject ensureSnapshot() throws Exception {
         JSONObject saved = read();
-        if (saved != null) return saved;
-        JSONObject states = new JSONObject();
-        for (var row : inventory()) states.put(row.get("package").toString(), row.get("enabledSetting"));
-        saved = new JSONObject().put("schemaVersion", 1).put("fingerprint", Build.FINGERPRINT)
-            .put("capturedAt", System.currentTimeMillis()).put("states", states).put("changed", new JSONObject());
+        if (saved != null) {
+            states.ensureBaseline(saved); // Preserve the original date and states of older installations.
+            return saved;
+        }
+        JSONObject baseline = states.baseline();
+        if (baseline == null) baseline = states.ensureBaseline(currentState());
+        saved = new JSONObject(baseline.toString()).put("changed", new JSONObject());
         write(saved); return saved;
     }
+    boolean hasBaseline() throws Exception { return states.baseline() != null || read() != null; }
     Map<String, Object> run(String action, List<String> targets, Boolean enable) throws Exception {
+        return run(action, targets, enable, null, null);
+    }
+    Map<String, Object> run(String action, List<String> targets, Boolean enable, String stateId, String stateName) throws Exception {
+        return run(action, targets, enable, stateId, stateName, null, null);
+    }
+    Map<String, Object> run(String action, List<String> targets, Boolean enable, String stateId, String stateName,
+            String listName, String listScope) throws Exception {
         if (!shell.execute("am get-current-user").equals("0") || !shell.execute("id -u").equals("2000"))
             return Map.of("status", "denied");
-        if (action.equals("cleanerInventory")) return report();
+        if (action.equals("cleanerInventory")) { ensureSnapshot(); return report(); }
         if (action.equals("cleanerSnapshot")) { ensureSnapshot(); return report(); }
-        if (action.equals("cleanerRestore")) return restore();
-        if (!action.equals("cleanerApply") || targets == null || targets.isEmpty() || targets.size() > 500 || enable == null)
-            return Map.of("status", "invalid");
-        Set<String> unique = new LinkedHashSet<>(targets);
-        Set<String> protectedNames = protectedPackages();
-        // Validate the entire list before the first write; no commands supplied by Dart or files.
-        for (String name : unique) {
-            if (!TvCleanerPolicy.packageId(name)) return Map.of("status", "invalid");
-            ApplicationInfo info = pm.getApplicationInfo(name, PackageManager.MATCH_DISABLED_COMPONENTS);
-            if (!enable && blocked(info, protectedNames)) return Map.of("status", "protected", "package", name);
-            state(name);
+        if (action.equals("cleanerRestore") || action.equals("cleanerEmergencyRestore")) {
+            JSONObject baseline = states.baseline();
+            if (baseline == null) {
+                // Older versions stored the original state in the journal. Never capture a new baseline here.
+                JSONObject legacy = read();
+                if (legacy == null) return Map.of("status", "noSnapshot");
+                baseline = states.ensureBaseline(legacy);
+            }
+            return restoreState(baseline);
         }
+        if (action.equals("cleanerManualSave")) {
+            ensureSnapshot(); states.saveManual(currentState(), stateName); return report();
+        }
+        if (action.equals("cleanerManualDelete")) { states.deleteManual(stateId); return report(); }
+        if (action.equals("cleanerManualExport"))
+            return Map.of("status", "success", "manualSnapshot", states.manual(stateId).toString());
+        if (action.equals("cleanerManualRestore")) return restoreState(states.manual(stateId));
+        if (!action.equals("cleanerApply") || enable == null) return Map.of("status", "invalid");
+        JSONObject descriptions = null;
+        if (listScope != null) {
+            try (var input = activity.getAssets().open("flutter_assets/catalog/app_descriptions.json")) {
+                var bytes = new java.io.ByteArrayOutputStream(); byte[] buffer = new byte[8192]; int count;
+                while ((count = input.read(buffer)) != -1) {
+                    if (bytes.size() + count > 1024 * 1024) throw new IllegalStateException("Catalog too large");
+                    bytes.write(buffer, 0, count);
+                }
+                descriptions = new JSONObject(new String(bytes.toByteArray(), StandardCharsets.UTF_8)).getJSONObject("packages");
+            }
+        }
+        var installed = new LinkedHashMap<String, TvCleanerListPolicy.App>();
+        for (var row : inventory()) {
+            String name = row.get("package").toString();
+            JSONObject metadata = descriptions == null ? null : descriptions.optJSONObject(name);
+            boolean system = Boolean.TRUE.equals(row.get("system"));
+            boolean preinstalled = system && metadata != null && "preinstalled".equals(metadata.optString("category"));
+            installed.put(name, new TvCleanerListPolicy.App(system, preinstalled,
+                Boolean.TRUE.equals(row.get("enabled")), Boolean.TRUE.equals(row.get("protected"))));
+        }
+        List<String> selected = TvCleanerListPolicy.select(targets, installed, listScope, enable);
+        JSONObject before = new JSONObject();
+        for (String name : selected) {
+            int mode = state(name);
+            if (!enable && mode >= 2) continue;
+            before.put(name, mode);
+        }
+        selected.removeIf(name -> !before.has(name));
+        if (selected.isEmpty()) return report();
         JSONObject saved = ensureSnapshot();
-        try { TvCleanerRecovery.apply(new ArrayList<>(unique), enable ? 1 : 3, journal(saved), device()); }
+        if (!enable && listName != null) {
+            JSONObject subset = new JSONObject().put("schemaVersion",1).put("fingerprint",Build.FINGERPRINT)
+                .put("identity",new JSONObject(identity())).put("capturedAt",System.currentTimeMillis()).put("states",before);
+            try { states.saveBeforeList(subset, listName); }
+            catch (Exception failedCopy) { return Map.of("status", "snapshotFailed"); }
+        }
+        try { TvCleanerRecovery.apply(selected, enable ? 1 : 3, journal(saved), device()); }
         catch (Exception error) { return Map.of("status", "partial"); }
         return report();
     }
-    private Map<String, Object> restore() throws Exception {
-        JSONObject saved = read();
-        if (saved == null) return Map.of("status", "noSnapshot");
-        try { TvCleanerRecovery.restore(journal(saved), device()); }
+    private Map<String, Object> restoreState(JSONObject source) throws Exception {
+        Map<String, Integer> desired = TvCleanerStateStore.states(source);
+        JSONObject saved = ensureSnapshot();
+        Set<String> installed = new HashSet<>(), protectedNames = new HashSet<>();
+        var needed = new LinkedHashMap<String, Integer>();
+        var actual = new HashMap<String, Integer>();
+        for (var row : inventory()) {
+            String name = row.get("package").toString(); installed.add(name);
+            actual.put(name, ((Number)row.get("enabledSetting")).intValue());
+            if (Boolean.TRUE.equals(row.get("protected"))) protectedNames.add(name);
+        }
+        TvCleanerRecovery.Journal journal = journal(saved);
+        for (var entry : desired.entrySet()) {
+            if (!Objects.equals(actual.get(entry.getKey()), entry.getValue())) needed.put(entry.getKey(), entry.getValue());
+            else if (Objects.equals(journal.original(entry.getKey()), entry.getValue())) journal.forget(entry.getKey());
+        }
+        journal.persist();
+        int skipped;
+        try { skipped = TvCleanerRecovery.restoreStates(needed, installed, protectedNames, journal, device()); }
         catch (Exception error) { return Map.of("status", "partial"); }
-        return report();
+        var result = report();
+        if (skipped > 0) { result.put("status", "partial"); result.put("skippedRestore", skipped); }
+        return result;
     }
     private TvCleanerRecovery.Device device() {
         return new TvCleanerRecovery.Device() {
@@ -146,10 +228,12 @@ final class TvCleaner {
         var result = new LinkedHashMap<String, Object>();
         result.put("status", "success"); result.put("schemaVersion", 1);
         result.put("reportType", "tvCleanerInventory"); result.put("capturedAt", System.currentTimeMillis());
-        result.put("identity", Map.of("manufacturer", Build.MANUFACTURER, "model", Build.MODEL,
-            "device", Build.DEVICE, "fingerprint", Build.FINGERPRINT));
+        result.put("identity", identity());
         result.put("packages", inventory()); result.put("snapshotSaved", saved != null);
         result.put("pendingRestore", saved == null ? 0 : saved.getJSONObject("changed").length());
+        JSONObject baseline = states.baseline();
+        result.put("baselineCreatedAt", baseline == null ? 0 : baseline.getLong("capturedAt"));
+        result.put("manualStates", states.manualStates());
         result.put("snapshot", saved == null ? "" : saved.toString());
         return result;
     }

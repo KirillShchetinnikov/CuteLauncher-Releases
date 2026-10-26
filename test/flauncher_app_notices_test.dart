@@ -97,6 +97,7 @@ void main() {
           expect(noticeText.style!.fontSize, 20);
           expect(bar.settingsFocusNode.hasFocus, isTrue);
           await tester.pump(const Duration(seconds: 6));
+          await tester.pumpAndSettle();
           expect(find.text(l.remotePanelDisabledInLauncher), findsNothing);
           await tester.tap(find.byIcon(Icons.settings_outlined));
           await tester.pumpAndSettle();
