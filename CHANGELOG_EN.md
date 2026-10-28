@@ -2,6 +2,10 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
+## v1.5.1 — 2026-10-28
+
+- Fixed recovery of button remapping access after an update when Android blocks accessibility. Previously granted access and a configured ADB connection are required.
+
 ## v1.5.0 — 2026-10-28
 
 - **Noticeably faster in everyday use.** Home screen preparation time is down by almost **40%**, total cold startup time by about **15%**, and return-to-home time by almost **20%**. Figures are rounded from controlled measurements; results depend on the device and settings.

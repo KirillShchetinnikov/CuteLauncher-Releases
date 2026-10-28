@@ -18,9 +18,16 @@ public class PermissionRecoveryAccessTest {
         String services, enabled = "1";
         final List<String> commands = new ArrayList<>();
         boolean addOther;
+        String restricted = "default";
+        boolean rejectRestricted;
         Shell(String services) { this.services = services; }
         public String execute(String command) {
             commands.add(command);
+            if (command.startsWith("appops get ")) return "ACCESS_RESTRICTED_SETTINGS: " + restricted;
+            if (command.startsWith("appops set ")) {
+                if (!rejectRestricted) restricted = "allow";
+                return "";
+            }
             if (command.equals("settings get secure enabled_accessibility_services")) return services;
             if (command.equals("settings get secure accessibility_enabled")) return enabled;
             String prefix = "settings put secure enabled_accessibility_services '";
@@ -33,6 +40,44 @@ public class PermissionRecoveryAccessTest {
             throw new AssertionError(command);
         }
         public void close() { }
+    }
+    @Test @Config(sdk = 34) public void updateRestoresRestrictedSettingsBeforeEnablingService() throws Exception {
+        try (var controller = Robolectric.buildActivity(Activity.class).setup()) {
+            var c = controller.get();
+            var shell = new Shell("other/.Service"); shell.enabled = "0"; shell.restricted = "deny";
+            assertEquals("success", PermissionRecoveryAccess.reconnect(c, shell, false));
+            assertEquals("allow", shell.restricted);
+            assertTrue(shell.services.contains(new ComponentName(c, LauncherAccessibilityService.class).flattenToString()));
+            int grant = shell.commands.indexOf("appops set --user 0 '" + c.getPackageName() + "' ACCESS_RESTRICTED_SETTINGS allow");
+            int enable = shell.commands.indexOf("settings put secure enabled_accessibility_services '" + shell.services + "'");
+            assertTrue(grant >= 0 && grant < enable);
+        }
+    }
+    @Test @Config(sdk = 34) public void rejectedRestrictedSettingsDoesNotReportSuccess() throws Exception {
+        try (var controller = Robolectric.buildActivity(Activity.class).setup()) {
+            var shell = new Shell("other/.Service"); shell.restricted = "deny"; shell.rejectRestricted = true;
+            try { PermissionRecoveryAccess.reconnect(controller.get(), shell, false); fail(); }
+            catch (PermissionRecoveryAccess.Unavailable expected) { assertEquals("permission_rejected", expected.reason); }
+            assertEquals("other/.Service", shell.services);
+        }
+    }
+    @Test @Config(sdk = {28, 34}) public void updateLeavesDefaultRestrictedSettingsUnchanged() throws Exception {
+        try (var controller = Robolectric.buildActivity(Activity.class).setup()) {
+            var shell = new Shell("other/.Service"); shell.enabled = "0";
+            PermissionRecoveryAccess.reconnect(controller.get(), shell, false);
+            assertEquals("default", shell.restricted);
+            assertTrue(shell.commands.stream().noneMatch(command -> command.startsWith("appops set")));
+        }
+    }
+    @Test @Config(sdk = 34) public void healthDoesNotChangeRestrictedSettings() throws Exception {
+        try (var controller = Robolectric.buildActivity(Activity.class).setup()) {
+            var c = controller.get();
+            var shell = new Shell(new ComponentName(c, LauncherAccessibilityService.class).flattenToString());
+            shell.restricted = "deny";
+            PermissionRecoveryAccess.reconnect(c, shell, true);
+            assertEquals("deny", shell.restricted);
+            assertTrue(shell.commands.stream().noneMatch(command -> command.startsWith("appops")));
+        }
     }
     @Test public void rebindPreservesOtherServicesChangedDuringReconnect() throws Exception {
         try (var controller = Robolectric.buildActivity(Activity.class).setup()) {
