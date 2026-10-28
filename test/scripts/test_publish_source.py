@@ -195,6 +195,15 @@ class PublicSourceTests(unittest.TestCase):
                 self.publish()
             self.assertEqual(self.head(self.public), previous)
 
+    def test_security_test_header_exception_is_pinned_to_committed_content(self):
+        name = 'test/scripts/test_release_source.py'
+        content = publisher.git(ROOT, 'show', f'HEAD:{name}').stdout
+        self.assertEqual(hashlib.sha256(content).hexdigest(),
+                         publisher.PUBLIC_TEST_FIXTURES[name])
+        self.assertIn(b"write_text('-----BEGIN " + b"PRIVATE KEY-----", content)
+        self.assertNotIn(b'-----END PRIVATE KEY-----', content)
+        self.assertIsNone(publisher.SECRET_CONTENT.search(Path(__file__).read_bytes()))
+
     def test_release_tag_matches_source_and_existing_tags_are_never_replaced(self):
         tag = 'v1.0.24+73'
         publisher.git(self.source, 'tag', tag)

@@ -93,11 +93,13 @@ SECRET_CONTENT = re.compile(
     rb'|(?:gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{30,})'
     rb'|AIza[0-9A-Za-z_-]{35}'
 )
-# Public dummy key for localhost HTTPS tests, documented beside the fixture.
-# Only this exact committed content is allowed, never arbitrary test keys.
+# Public dummy key and security test containing a bare PEM header, without a key.
+# Only these exact committed contents are allowed, never arbitrary test keys.
 PUBLIC_TEST_FIXTURES = {
     'test/fixtures/cloud/test_key.txt':
         '90b2445d2be5939fb236d013897fa8b6ba3e4b4e1e6ec80cb79af8262255909a',
+    'test/scripts/test_release_source.py':
+        '20fbcd9242a2e6252d68c20051e85a49b143073a604dccdce44e0aad82226bb1',
 }
 
 
