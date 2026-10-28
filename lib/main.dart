@@ -17,8 +17,12 @@
  */
 
 import 'providers/memory_resources.dart';
+import 'providers/foreground_work.dart';
+import 'providers/app_catalog_cache.dart';
+import 'widgets/deferred_launcher_services.dart';
 import 'providers/screensaver_service.dart';
 import 'diagnostics/economy_diagnostics.dart';
+import 'diagnostics/startup_trace.dart';
 import 'providers/settings_sync_service.dart';
 import 'providers/sleep_timer_service.dart';
 import 'providers/automatic_backup_service.dart';
@@ -28,7 +32,6 @@ import 'providers/backup_automation_service.dart';
 import 'widgets/settings/backup_restore_actions.dart';
 import 'providers/update_service.dart';
 import 'dart:async';
-import 'package:package_info_plus/package_info_plus.dart';
 
 import 'package:flauncher/database.dart';
 import 'package:flauncher/flauncher_channel.dart';
@@ -83,8 +86,11 @@ Future<void> main() async {
 
 @pragma('vm:entry-point')
 Future<void> remotePanelMain() => _runLauncher(remotePanel: true);
+@pragma('vm:entry-point')
+Future<void> recentAppsMain() => _runLauncher(remotePanel: true, recentApps: true);
 
-Future<void> _runLauncher({bool remotePanel = false}) async {
+Future<void> _runLauncher({bool remotePanel = false, bool recentApps = false}) async {
+  StartupTrace.mark('main');
   WidgetsFlutterBinding.ensureInitialized();
   LicenseRegistry.addLicense(() async* {
     yield LicenseEntryWithLineBreaks(['dadb'],
@@ -92,10 +98,12 @@ Future<void> _runLauncher({bool remotePanel = false}) async {
     yield LicenseEntryWithLineBreaks(['dadb', 'Okio', 'Kotlin', 'Kotlinx Coroutines',
         'JetBrains annotations', 'AndroidX', 'ReLinker', 'Guava ListenableFuture', 'JSpecify'],
         await rootBundle.loadString('assets/licenses/android_runtime.txt'));
-    for (final family in ['roboto', 'notoserif', 'robotomono', 'robotocondensed', 'outfit', 'manrope', 'onest', 'googlesans']) {
+    for (final family in ['medeo', 'roboto', 'notoserif', 'robotomono', 'robotocondensed', 'outfit', 'manrope', 'onest', 'googlesans']) {
       yield LicenseEntryWithLineBreaks([family],
           await rootBundle.loadString('assets/fonts/LICENSE_$family.txt'));
     }
+    yield LicenseEntryWithLineBreaks(['Medeo authors'],
+        await rootBundle.loadString('assets/fonts/AUTHORS_medeo.txt'));
     yield LicenseEntryWithLineBreaks(['Google Sans trademarks'],
         await rootBundle.loadString('assets/fonts/TRADEMARKS_googlesans.txt'));
   });
@@ -143,6 +151,7 @@ Future<void> _runLauncher({bool remotePanel = false}) async {
   };
 
   final sharedPreferences = await SharedPreferences.getInstance();
+  StartupTrace.mark('preferences');
   final settingsSync = SettingsSyncService(sharedPreferences);
   try { if (!remotePanel) await settingsSync.recover(); }
   catch (_) { debugPrint('Settings exchange recovery will be retried.'); }
@@ -158,9 +167,11 @@ Future<void> _runLauncher({bool remotePanel = false}) async {
           ? 'contain' : settingsService.wallpaperFit,
     },
   };
-  final packageInfo = await PackageInfo.fromPlatform();
   final fLauncherChannel = FLauncherChannel();
-  final fLauncherDatabase = FLauncherDatabase(connect());
+  final ownPackageName = await fLauncherChannel.getPackageName();
+  FLauncherDatabase? database;
+  FLauncherDatabase launcherDatabase() => database ??= FLauncherDatabase(connect());
+  final work = remotePanel ? null : ForegroundWork();
 
   if (remotePanel) {
     bool closing = false;
@@ -169,33 +180,41 @@ Future<void> _runLauncher({bool remotePanel = false}) async {
       closing = true;
       runApp(const SizedBox.shrink());
       await WidgetsBinding.instance.endOfFrame;
-      await fLauncherDatabase.close();
+      await database?.close();
       await remotePanelChannel.invokeMethod<void>('closed');
     });
   }
+  StartupTrace.mark('runApp');
+  final app = FLauncherApp(remotePanel: remotePanel, recentApps: recentApps);
   runApp(MultiProvider(
       providers: [
+        Provider<ForegroundWork?>(create: (_) => work, dispose: (_, value) => value?.dispose()),
         ChangeNotifierProvider(create: (_) => RemotePanelService(sharedPreferences)),
         ChangeNotifierProvider(create: (_) => CloudBackupService()),
         ChangeNotifierProvider(create: (_) => DriveBackupService()),
         ChangeNotifierProvider(create: (_) => NightModeService(sharedPreferences, remotePanel: remotePanel), lazy: false),
-        ChangeNotifierProvider(create: (_) => UpdateService(sharedPreferences), lazy: remotePanel),
+        ChangeNotifierProvider(create: (_) => UpdateService(sharedPreferences)),
         ChangeNotifierProvider(create: (_) => AppearanceService(sharedPreferences)),
         Provider<BackupService>(
-          create: (_) => BackupService(fLauncherDatabase, sharedPreferences),
+          create: (_) => BackupService(launcherDatabase(), sharedPreferences),
         ),
         ChangeNotifierProvider(
             create: (_) => settingsService,
             lazy: false),
         ChangeNotifierProvider(create: (context) => AutomaticBackupService(
-            context.read<BackupService>(), context.read<SettingsService>(), sharedPreferences), lazy: remotePanel),
-        ChangeNotifierProvider(create: (context) => MemoryResources(settings: context.read<SettingsService>()), lazy: false),
-        ChangeNotifierProvider(create: (context) => AppsService(fLauncherChannel, fLauncherDatabase,
-          settingsService: context.read<SettingsService>(), ownPackageName: packageInfo.packageName, memoryResources: context.read<MemoryResources>())),
+            context.read<BackupService>(), context.read<SettingsService>(), sharedPreferences)),
+        ChangeNotifierProvider(create: (context) => MemoryResources(settings: context.read<SettingsService>()), lazy: remotePanel),
+        ChangeNotifierProvider(create: (context) => AppsService(fLauncherChannel, launcherDatabase(),
+          settingsService: context.read<SettingsService>(), ownPackageName: ownPackageName, memoryResources: context.read<MemoryResources>(),
+          catalogCache: remotePanel ? null : AppCatalogCache(), work: work, fastInitialCatalog: !remotePanel)),
         ChangeNotifierProvider(create: (_) => LauncherState()),
-        ChangeNotifierProvider(create: (_) => ScreensaverService()..refresh(), lazy: remotePanel),
-        ChangeNotifierProvider(create: (_) => SleepTimerService()..refresh(), lazy: false),
-        ChangeNotifierProvider(create: (_) => NetworkService(fLauncherChannel)),
+        ChangeNotifierProvider(create: (_) => ScreensaverService(work: work)..refresh()),
+        ChangeNotifierProvider(create: (_) {
+          final timer = SleepTimerService();
+          if (!remotePanel) timer.refresh();
+          return timer;
+        }, lazy: remotePanel),
+        ChangeNotifierProvider(create: (_) => NetworkService(fLauncherChannel, work: work)),
         ChangeNotifierProvider(
             create: (context) {
               SettingsService settingsService = Provider.of(context, listen: false);
@@ -204,13 +223,13 @@ Future<void> _runLauncher({bool remotePanel = false}) async {
         ),
         ChangeNotifierProvider(
             create: (context) => BrightnessService(sharedPreferences, nightMode: context.read<NightModeService>()),
-            lazy: false),
-        ChangeNotifierProvider(create: (context) => TvInputsService(fLauncherChannel, preferences: sharedPreferences, settings: context.read<SettingsService>())),
+            lazy: remotePanel),
+        ChangeNotifierProvider(create: (context) => TvInputsService(fLauncherChannel, preferences: sharedPreferences, settings: context.read<SettingsService>(), work: work)),
         ChangeNotifierProvider(create: (_) => NotificationsService(fLauncherChannel)),
         ChangeNotifierProvider(create: (context) => NowPlayingService(context.read<SettingsService>())),
-        ChangeNotifierProvider(create: (context) => WatchNextService(fLauncherChannel, onAppLaunched: context.read<AppsService>().recordAppLaunch, memoryResources: context.read<MemoryResources>())),
-        ChangeNotifierProvider(create: (_) => WeatherService(fLauncherChannel, preferences: sharedPreferences)),
-        ChangeNotifierProvider(create: (_) => OnlineWallpaperService(sharedPreferences)),
+        ChangeNotifierProvider(create: (context) => WatchNextService(fLauncherChannel, onAppLaunched: context.read<AppsService>().recordAppLaunch, memoryResources: context.read<MemoryResources>(), work: work)),
+        ChangeNotifierProvider(create: (_) => WeatherService(fLauncherChannel, preferences: sharedPreferences, work: work)),
+        ChangeNotifierProvider(create: (_) => OnlineWallpaperService(sharedPreferences, work: work)),
         ChangeNotifierProvider(create: (context) => SlideshowService(sharedPreferences, context.read<SettingsService>())),
         ChangeNotifierProvider(create: (context) => BackupAutomationService(
           sharedPreferences, context.read<BackupService>(), context.read<SettingsService>(),
@@ -223,10 +242,12 @@ Future<void> _runLauncher({bool remotePanel = false}) async {
           resourceSources: [context.read<WallpaperService>(), context.read<AppsService>()],
           apply: (file) => restoreBackupAndRefresh(context, file,
             restoreAction: () => context.read<BackupService>().replaceBackup(file, context.read<SettingsService>())),
-        ), lazy: remotePanel),
+          work: work,
+        )),
       ],
       child: const bool.fromEnvironment('CUTE_PERFORMANCE_PROBE')
-          ? EconomyDiagnostics(child: FLauncherApp(remotePanel: remotePanel)) : FLauncherApp(remotePanel: remotePanel)
+          ? EconomyDiagnostics(child: DeferredLauncherServices(child: app))
+          : StartupTrace.enabled ? StartupDiagnostics(child: DeferredLauncherServices(child: app)) : DeferredLauncherServices(child: app)
     )
   );
 }

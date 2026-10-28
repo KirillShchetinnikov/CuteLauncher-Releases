@@ -1721,11 +1721,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get diagnosticsSharingNotice =>
-      'Send the file to the author privately, not publicly: automatic redaction may miss personal data. By sending the report to the author, you agree to publication of an anonymized TV compatibility report in the CuteLauncher Git repository. Only device metadata and feature availability are published, without personal data; error logs, commands and your settings are not published.';
+      'Send the file to the author privately, not publicly: automatic redaction may miss personal data. By sending the report to the author, you agree to publication of an anonymized TV compatibility report in the CuteLauncher Git repository. Only device metadata and feature availability are published, without personal data; error logs, commands and your settings are not published.\n\nThe report also includes installed packages, their names, versions and enabled state, plus section names, contents, order and visibility. Package identifiers and names are retained for diagnosis; app and section lists are not published.';
 
   @override
   String get diagnosticsHint =>
-      'One report combines TV feature compatibility and error diagnostics. The report includes the TV model and firmware, app version, permissions, memory, error stages and causes, and system commands and responses with automatic personal-data redaction. Memory retains the last 50 operations, up to 100 failures separately, and a bounded ADB log for the current session. Restarting clears the log. Redaction may miss personal data: send the file in a private message instead of posting it publicly. Nothing is sent automatically. Each error retains a snapshot of the applied settings; later changes do not replace it.';
+      'One report combines TV feature compatibility and error diagnostics. The report includes the TV model and firmware, app version, permissions, memory, error stages and causes, and system commands and responses with automatic personal-data redaction. Memory retains the last 50 operations, up to 100 failures separately, and a bounded ADB log for the current session. Restarting clears the log. Redaction may miss personal data: send the file in a private message instead of posting it publicly. Nothing is sent automatically. Each error retains a snapshot of the applied settings; later changes do not replace it.\n\nThe report also includes installed packages, their names, versions and enabled state, plus section names, contents, order and visibility. Package identifiers and names are retained for diagnosis; app and section lists are not published.';
 
   @override
   String get diagnosticsTitle => 'Error diagnostics';
@@ -3406,7 +3406,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noRemovableCategories =>
-      'This app has not been manually added to any sections. Automatic sections cannot be edited.';
+      'This app has not been manually added to any sections. Apps cannot be removed from the standard automatic sections (All Apps, TV Apps, Non-TV Apps); use Hide. Favorites can be edited manually.';
 
   @override
   String get remoteButtonsTitle => 'Remote button remapper';
@@ -3495,10 +3495,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get remotePanelDescription =>
-      'The floating panel keeps your widgets within reach over other apps. To open it with your remote, assign the Floating panel action to a button of your choice.';
+      'The quick settings panel keeps your widgets within reach over other apps. To open it with your remote, assign the Quick settings panel action to a button of your choice.';
 
   @override
-  String get remotePanel => 'Floating panel';
+  String get remotePanel => 'Quick settings panel';
 
   @override
   String get remotePanelSettingsBackground => 'Use settings background color';
@@ -3557,13 +3557,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get remotePanelDisabledInLauncher =>
-      'Popup panel is disabled while CuteLauncher is on screen.';
+      'The quick settings panel is disabled while CuteLauncher is on screen.';
 
   @override
   String get remoteAccessSettings => 'Access settings';
 
   @override
   String get remoteButtonsTest => 'Button test';
+
+  @override
+  String remoteMappingDeleteConfirm(String name) {
+    return 'Delete the assignment “$name”?';
+  }
 
   @override
   String get remoteMappingConflict =>
@@ -4203,4 +4208,122 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get adbWifiDisable => 'Disable';
+
+  @override
+  String get recentAppsTitle => 'Open apps';
+
+  @override
+  String get recentAppsPanelType => 'Panel';
+
+  @override
+  String get recentAppsAutomatic => 'Automatic';
+
+  @override
+  String get recentAppsCustom => 'CuteLauncher panel';
+
+  @override
+  String get recentAppsSystem => 'Built-in panel';
+
+  @override
+  String get recentAppsOpen => 'Open panel';
+
+  @override
+  String get recentAppsRefresh => 'Refresh';
+
+  @override
+  String get recentAppsCloseAll => 'Close all';
+
+  @override
+  String get recentAppsEmpty => 'No TV apps with open tasks';
+
+  @override
+  String get recentAppsUnavailable =>
+      'Open apps unavailable. Check ADB and accessibility access.';
+
+  @override
+  String get recentAppsHelp =>
+      'Only TV apps with open tasks are shown. Close all stops user apps in this list. Assign a button in the remapper. The CuteLauncher panel needs ADB and accessibility access.';
+
+  @override
+  String get recentAppsHomeHint =>
+      'Home supports hold only. A short press returns to CuteLauncher. The assignment also works outside the launcher.';
+
+  @override
+  String get sectionRulesHelp =>
+      'Standard sections can be renamed, moved or hidden, but not deleted; at least one must stay visible. All Apps, TV Apps and Non-TV Apps are filled automatically by launch type, not app name; Hide removes an app from all three. Favorites and custom sections are filled manually. Sort apps manually, by name, frequency or last launch; adjust appearance per section. Continue Watching shows app recommendations and can be hidden or moved.';
+
+  @override
+  String get remoteMappingNamePlaceholder => 'Button name';
+
+  @override
+  String get remoteMappingAssign => 'Assign button';
+
+  @override
+  String get remoteMappingCapture => 'Capture';
+
+  @override
+  String remoteMappingCaptured(String key) {
+    return 'Captured button: $key';
+  }
+
+  @override
+  String get remoteMappingCaptureHint =>
+      'Select Capture, then press the remote button. You can capture again. Select OK to accept.';
+
+  @override
+  String get remoteMappingCaptureTimeout =>
+      'No button captured. Select Capture and try again.';
+
+  @override
+  String get remoteMappingCaptureFailed =>
+      'Could not capture the button. Check accessibility service access and try again.';
+
+  @override
+  String get remoteMappingServiceRequired =>
+      'Connect the accessibility service in the remapper access settings to capture a button.';
+
+  @override
+  String get remoteMappingKeyRequired =>
+      'No button assigned. Select Assign button and capture a remote button.';
+
+  @override
+  String get remoteMappingHomeHoldRequired =>
+      'Select Hold for the Home button.';
+
+  @override
+  String get remoteMappingAppRequired => 'Select an app to launch.';
+
+  @override
+  String get remoteMappingUrlRequired =>
+      'Enter a Webhook URL or import it from a file.';
+
+  @override
+  String get remoteMappingUrlInvalid =>
+      'Invalid Webhook URL. Use HTTPS or local HTTP with a request path, without spaces, credentials or a # fragment.';
+
+  @override
+  String get remoteMappingSaveFailed =>
+      'Could not save the assignment on this device. Try saving again; your editor values are retained.';
+
+  @override
+  String get remoteMappingDeleteFailed =>
+      'Could not delete the assignment on this device. Try again.';
+
+  @override
+  String get remoteMappingRecents => 'Open apps panel';
+
+  @override
+  String get remoteMappingImport => 'Import URL from file';
+
+  @override
+  String get remoteMappingImportHint =>
+      'Choose a UTF-8 text file containing only the Webhook URL, without commands or explanations. Line breaks are removed.';
+
+  @override
+  String get remoteMappingImportInvalid =>
+      'The file must contain only a valid Webhook URL: HTTPS or local HTTP, without commands or explanations.';
+
+  @override
+  String get remoteMappingImportFailed =>
+      'Could not read the file. Choose an accessible UTF-8 text file up to 64 KB.';
 }

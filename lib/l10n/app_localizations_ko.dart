@@ -1690,11 +1690,11 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get diagnosticsSharingNotice =>
-      '파일을 공개하지 말고 작성자에게 개인 메시지로 보내세요. 자동 정리 후에도 개인정보가 남을 수 있습니다. 보고서를 보내면 익명화된 TV 호환성 보고서를 CuteLauncher Git 저장소에 게시하는 데 동의하는 것으로 간주합니다. 개인정보 없이 기기 정보와 기능 사용 가능 여부만 공개하며 오류 로그, 명령 및 개인 설정은 공개하지 않습니다.';
+      '파일을 공개하지 말고 작성자에게 개인 메시지로 보내세요. 자동 정리 후에도 개인정보가 남을 수 있습니다. 보고서를 보내면 익명화된 TV 호환성 보고서를 CuteLauncher Git 저장소에 게시하는 데 동의하는 것으로 간주합니다. 개인정보 없이 기기 정보와 기능 사용 가능 여부만 공개하며 오류 로그, 명령 및 개인 설정은 공개하지 않습니다.\n\n보고서에는 설치된 패키지의 이름, 버전, 활성화 상태와 섹션 이름, 구성, 순서, 표시 여부도 포함됩니다. 진단을 위해 식별자와 이름은 유지되지만 앱 및 섹션 목록은 공개되지 않습니다.';
 
   @override
   String get diagnosticsHint =>
-      '하나의 보고서에 TV 기능 호환성과 오류 진단을 함께 담습니다. 보고서에는 TV 모델과 펌웨어, 앱 버전, 권한, 메모리, 오류 단계와 원인, 개인정보를 자동 정리한 명령과 응답이 포함됩니다. 현재 세션의 최근 작업 50개, 별도로 오류 최대 100개와 제한된 ADB 로그를 보관합니다. 다시 시작하면 로그가 삭제됩니다. 개인정보가 남을 수 있으므로 공개하지 말고 개인 메시지로 보내세요. 자동 전송하지 않습니다.각 오류에는 당시 적용된 설정의 스냅샷이 저장되며 이후 변경으로 대체되지 않습니다.';
+      '하나의 보고서에 TV 기능 호환성과 오류 진단을 함께 담습니다. 보고서에는 TV 모델과 펌웨어, 앱 버전, 권한, 메모리, 오류 단계와 원인, 개인정보를 자동 정리한 명령과 응답이 포함됩니다. 현재 세션의 최근 작업 50개, 별도로 오류 최대 100개와 제한된 ADB 로그를 보관합니다. 다시 시작하면 로그가 삭제됩니다. 개인정보가 남을 수 있으므로 공개하지 말고 개인 메시지로 보내세요. 자동 전송하지 않습니다.각 오류에는 당시 적용된 설정의 스냅샷이 저장되며 이후 변경으로 대체되지 않습니다.\n\n보고서에는 설치된 패키지의 이름, 버전, 활성화 상태와 섹션 이름, 구성, 순서, 표시 여부도 포함됩니다. 진단을 위해 식별자와 이름은 유지되지만 앱 및 섹션 목록은 공개되지 않습니다.';
 
   @override
   String get diagnosticsTitle => '오류 진단';
@@ -3319,7 +3319,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get noRemovableCategories =>
-      '이 앱은 어떤 섹션에도 수동으로 추가되지 않았습니다. 자동 섹션은 편집할 수 없습니다.';
+      '이 앱은 어떤 섹션에도 수동으로 추가되지 않았습니다. 기본 자동 섹션(모든 앱, TV 앱, TV용이 아닌 앱)에서는 제거할 수 없습니다. 숨기기를 사용하세요. 즐겨찾기는 수동 편집할 수 있습니다.';
 
   @override
   String get remoteButtonsTitle => '리모컨 버튼 재설정';
@@ -3407,10 +3407,10 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get remotePanelDescription =>
-      '플로팅 패널은 다른 앱 위에 필요한 위젯을 표시합니다. 리모컨으로 열려면 원하는 버튼에 플로팅 패널 동작을 지정하세요.';
+      '빠른 설정 패널은 다른 앱 위에 필요한 위젯을 표시합니다. 리모컨으로 열려면 원하는 버튼에 빠른 설정 패널 동작을 지정하세요.';
 
   @override
-  String get remotePanel => '플로팅 패널';
+  String get remotePanel => '빠른 설정 패널';
 
   @override
   String get remotePanelSettingsBackground => '설정 배경색 사용';
@@ -3468,13 +3468,18 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get remotePanelDisabledInLauncher =>
-      'CuteLauncher가 화면에 표시되는 동안 팝업 패널이 비활성화됩니다.';
+      'CuteLauncher가 화면에 표시되는 동안 빠른 설정 패널이 비활성화됩니다.';
 
   @override
   String get remoteAccessSettings => '접근 권한 설정';
 
   @override
   String get remoteButtonsTest => '버튼 테스트';
+
+  @override
+  String remoteMappingDeleteConfirm(String name) {
+    return '“$name” 할당을 삭제하시겠습니까?';
+  }
 
   @override
   String get remoteMappingConflict =>
@@ -4100,4 +4105,114 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get adbWifiDisable => '사용 중지';
+
+  @override
+  String get recentAppsTitle => '열려 있는 앱';
+
+  @override
+  String get recentAppsPanelType => '패널';
+
+  @override
+  String get recentAppsAutomatic => '자동';
+
+  @override
+  String get recentAppsCustom => 'CuteLauncher 패널';
+
+  @override
+  String get recentAppsSystem => '내장 패널';
+
+  @override
+  String get recentAppsOpen => '패널 열기';
+
+  @override
+  String get recentAppsRefresh => '새로고침';
+
+  @override
+  String get recentAppsCloseAll => '모두 닫기';
+
+  @override
+  String get recentAppsEmpty => '열린 작업이 있는 TV 앱이 없습니다';
+
+  @override
+  String get recentAppsUnavailable =>
+      '열려 있는 앱을 표시할 수 없습니다. ADB 및 접근성 권한을 확인하세요.';
+
+  @override
+  String get recentAppsHelp =>
+      '열린 작업이 있는 TV 앱만 표시합니다. 모두 닫기는 목록의 사용자 앱을 중지합니다. 리매퍼에서 버튼을 지정하세요. CuteLauncher 패널에는 ADB 및 접근성 권한이 필요합니다.';
+
+  @override
+  String get recentAppsHomeHint =>
+      'Home은 길게 누르기만 지정할 수 있습니다. 짧게 누르면 CuteLauncher로 돌아갑니다. 지정은 런처 밖에서도 작동합니다.';
+
+  @override
+  String get sectionRulesHelp =>
+      '기본 섹션은 이름 변경, 이동, 숨기기가 가능하지만 삭제할 수 없으며 하나 이상은 표시되어야 합니다. 모든 앱, TV 앱, TV용이 아닌 앱은 이름이 아닌 실행 유형에 따라 자동 분류됩니다. 숨기면 세 목록에서 모두 사라집니다. 즐겨찾기와 사용자 섹션은 수동으로 채웁니다. 수동, 이름, 실행 빈도, 최근 실행순으로 정렬하고 섹션별 모양을 설정할 수 있습니다. 이어 보기는 앱 추천을 표시하며 숨기거나 이동할 수 있습니다.';
+
+  @override
+  String get remoteMappingNamePlaceholder => '버튼 이름';
+
+  @override
+  String get remoteMappingAssign => '버튼 지정';
+
+  @override
+  String get remoteMappingCapture => '캡처';
+
+  @override
+  String remoteMappingCaptured(String key) {
+    return '캡처한 버튼: $key';
+  }
+
+  @override
+  String get remoteMappingCaptureHint =>
+      '캡처를 선택한 후 리모컨 버튼을 누르세요. 다시 캡처할 수 있습니다. 확인을 눌러 적용하세요.';
+
+  @override
+  String get remoteMappingCaptureTimeout => '캡처한 버튼이 없습니다. 다시 시도하세요.';
+
+  @override
+  String get remoteMappingCaptureFailed => '캡처할 수 없습니다. 접근성 서비스 권한을 확인하세요.';
+
+  @override
+  String get remoteMappingServiceRequired => '접근 설정에서 접근성 서비스를 연결하세요.';
+
+  @override
+  String get remoteMappingKeyRequired => '지정한 버튼이 없습니다. 버튼 지정을 선택하고 캡처하세요.';
+
+  @override
+  String get remoteMappingHomeHoldRequired => 'Home 버튼에는 길게 누르기를 선택하세요.';
+
+  @override
+  String get remoteMappingAppRequired => '실행할 앱을 선택하세요.';
+
+  @override
+  String get remoteMappingUrlRequired => 'Webhook URL을 입력하거나 가져오세요.';
+
+  @override
+  String get remoteMappingUrlInvalid =>
+      '잘못된 URL입니다. 경로가 있는 HTTPS 또는 로컬 HTTP를 사용하고 공백, 인증 정보, # 조각은 제외하세요.';
+
+  @override
+  String get remoteMappingSaveFailed => '저장할 수 없습니다. 다시 시도하세요. 편집 값은 유지됩니다.';
+
+  @override
+  String get remoteMappingDeleteFailed => '삭제할 수 없습니다. 다시 시도하세요.';
+
+  @override
+  String get remoteMappingRecents => '열린 앱 패널';
+
+  @override
+  String get remoteMappingImport => '파일에서 URL 가져오기';
+
+  @override
+  String get remoteMappingImportHint =>
+      '명령이나 설명 없이 Webhook URL만 포함한 UTF-8 텍스트 파일을 선택하세요. 줄바꿈은 제거됩니다.';
+
+  @override
+  String get remoteMappingImportInvalid =>
+      '파일에는 유효한 Webhook URL만 있어야 합니다. HTTPS 또는 로컬 HTTP를 사용하고 명령이나 설명은 제외하세요.';
+
+  @override
+  String get remoteMappingImportFailed =>
+      '읽을 수 없습니다. 접근 가능한 64 KB 이하의 UTF-8 텍스트 파일을 선택하세요.';
 }

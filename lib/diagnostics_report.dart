@@ -8,6 +8,10 @@ import 'bridge_result.dart';
 import 'diagnostics_store.dart';
 import 'background_video_diagnostics.dart';
 import 'tv_compatibility_report.dart';
+import 'permission_recovery_diagnostics.dart';
+import 'diagnostic_catalog.dart';
+import 'providers/apps_service.dart';
+import 'providers/settings_service.dart';
 
 Future<String?> saveDiagnosticsReport(Map<String, Object> report) async {
   final directory = await (await getTemporaryDirectory()).createTemp(
@@ -26,11 +30,19 @@ Future<String?> saveDiagnosticsReport(Map<String, Object> report) async {
   }
 }
 
-Future<Map<String, Object>> collectDiagnostics() async {
+Future<Map<String, Object>> collectDiagnostics({AppsService? apps, SettingsService? settings}) async {
   const channel = BridgeChannel('me.efesser.flauncher/method');
   String? version, build;
   Map<dynamic, dynamic>? environment, memory, shell;
   Map<String, Object>? compatibility;
+  Map<String, Object>? permissionRecovery;
+  // Capture the current launcher layout before asynchronous platform queries.
+  final sections = diagnosticSections(apps, settings);
+  List<dynamic>? installed;
+  try {
+    installed = await channel.invokeListMethod<dynamic>('getDiagnosticApplications')
+        .timeout(const Duration(seconds: 15));
+  } catch (_) {}
   try {
     final info = await PackageInfo.fromPlatform();
     version = info.version;
@@ -55,6 +67,9 @@ Future<Map<String, Object>> collectDiagnostics() async {
     if (raw == null || raw['identity'] is! Map || raw['checks'] is! Map) {
       throw StateError('Compatibility snapshot unavailable');
     }
+    if (raw['permissionRecovery'] is Map) {
+      permissionRecovery = permissionRecoveryDiagnostics(raw['permissionRecovery'] as Map);
+    }
     compatibility = createTvCompatibilityReport(
       raw,
       capturedAt: capturedAt,
@@ -76,6 +91,13 @@ Future<Map<String, Object>> collectDiagnostics() async {
     memory: memory,
     nativeShell: shell,
   );
+  if (permissionRecovery != null) diagnostics['permissionRecovery'] = permissionRecovery;
+  diagnostics['installedApplications'] = diagnosticApplications(installed, apps);
+  diagnostics['launcherSections'] = sections;
+  diagnostics['privacy'] = <String, Object>{
+    ...diagnostics['privacy'] as Map<String, Object>,
+    'catalogIdentifiers': 'packageIdsAppLabelsAndSectionNamesIncluded',
+  };
   return combineDiagnosticsReport(
     diagnostics,
     compatibility,

@@ -42,6 +42,7 @@ class _Drive extends DriveBackupService {
 class _Storage extends BackupStorage {
   final Map<String, List<int>> files;
   bool failUpload = false;
+  Future<void> Function()? beforeDownload;
   _Storage(this.files, super.webdav, super.drive) : super(google: false);
   @override
   Future<List<RemoteBackupFile>> list() async => [
@@ -54,8 +55,10 @@ class _Storage extends BackupStorage {
   }
 
   @override
-  Future<File> download(RemoteBackupFile file, Directory target) async =>
-      File('${target.path}/${file.name}').writeAsBytes(files[file.id]!);
+  Future<File> download(RemoteBackupFile file, Directory target) async {
+    await beforeDownload?.call();
+    return File('${target.path}/${file.name}').writeAsBytes(files[file.id]!);
+  }
   @override
   Future<void> delete(RemoteBackupFile file) async {
     files.remove(file.id);
@@ -377,6 +380,38 @@ void main() {
     a.automation.didChangeAppLifecycleState(AppLifecycleState.paused);
     expect(await a.automation.run(manual: true), false);
     expect(files, isEmpty);
+  });
+  test('settings bursts are batched and unrelated notifications do not mark changes', () async {
+    var updates = 0;
+    a.automation.addListener(() => updates++);
+    final before = a.prefs.getString('backup_transport_change_times');
+    a.settings.notifyListeners();
+    await Future<void>.delayed(const Duration(milliseconds: 180));
+    expect(updates, 0);
+    expect(a.prefs.getString('backup_transport_change_times'), before);
+    await a.settings.setAppLanguage('en');
+    await a.settings.setAppLanguage('de');
+    await a.settings.setAppLanguage('ru');
+    expect(updates, 0);
+    await Future<void>.delayed(const Duration(milliseconds: 180));
+    expect(updates, 1);
+    expect(jsonDecode(a.prefs.getString('backup_transport_change_times')!), contains('setting:app_language'));
+  });
+  test('an edit during a fast download aborts sync before the batched fingerprint runs', () async {
+    await a.settings.setAppLanguage('ru');
+    expect(await a.automation.run(manual: true), true);
+    final entered = Completer<void>(), release = Completer<void>();
+    b.storage.beforeDownload = () async {
+      if (!entered.isCompleted) entered.complete();
+      await release.future;
+    };
+    final operation = b.automation.run(manual: true);
+    await entered.future.timeout(const Duration(seconds: 3));
+    await b.settings.setAppLanguage('de');
+    release.complete();
+    expect(await operation, false);
+    expect(b.settings.appLanguage, 'de');
+    expect(b.applies, 0);
   });
   test('full import removes absent wallpaper and keeps the previous image in a restore point', () async {
     expect(await a.automation.run(manual: true, exportOnly: true), true);

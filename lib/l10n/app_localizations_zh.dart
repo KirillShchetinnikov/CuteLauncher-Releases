@@ -1674,11 +1674,11 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get diagnosticsSharingNotice =>
-      '请通过私信将文件发送给作者，不要公开发布：自动清理可能遗漏个人信息。向作者发送报告即表示您同意在 CuteLauncher 的 Git 仓库中发布匿名的电视兼容性报告。公开内容仅包含无个人信息的设备元数据和功能可用性；错误日志、命令及您的设置不会公开。';
+      '请通过私信将文件发送给作者，不要公开发布：自动清理可能遗漏个人信息。向作者发送报告即表示您同意在 CuteLauncher 的 Git 仓库中发布匿名的电视兼容性报告。公开内容仅包含无个人信息的设备元数据和功能可用性；错误日志、命令及您的设置不会公开。\n\n报告还包含已安装软件包的名称、版本和启用状态，以及分区名称、内容、顺序和可见性。软件包标识符和名称会保留以便诊断；应用和分区列表不会公开发布。';
 
   @override
   String get diagnosticsHint =>
-      '一份报告同时包含电视功能兼容性和错误诊断。报告包含电视型号和固件、应用版本、权限、内存、错误阶段及原因，以及自动清除个人信息后的命令和响应。当前会话保留最近 50 次操作、单独最多 100 次失败和有限的 ADB 日志。重启后日志清空。清理可能遗漏个人信息：请通过私信发送文件，不要公开发布。不会自动发送任何内容。每次错误都会保存当时生效设置的快照，后续更改不会覆盖它。';
+      '一份报告同时包含电视功能兼容性和错误诊断。报告包含电视型号和固件、应用版本、权限、内存、错误阶段及原因，以及自动清除个人信息后的命令和响应。当前会话保留最近 50 次操作、单独最多 100 次失败和有限的 ADB 日志。重启后日志清空。清理可能遗漏个人信息：请通过私信发送文件，不要公开发布。不会自动发送任何内容。每次错误都会保存当时生效设置的快照，后续更改不会覆盖它。\n\n报告还包含已安装软件包的名称、版本和启用状态，以及分区名称、内容、顺序和可见性。软件包标识符和名称会保留以便诊断；应用和分区列表不会公开发布。';
 
   @override
   String get diagnosticsTitle => '错误诊断';
@@ -3251,7 +3251,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get removeFromCategory => '从类别中删除';
 
   @override
-  String get noRemovableCategories => '此应用程序尚未手动添加到任何部分。自动部分无法编辑。';
+  String get noRemovableCategories =>
+      '此应用尚未手动添加到任何分区。无法从标准自动分区（所有应用、电视应用、非电视应用）中单独移除，请使用“隐藏”。收藏可手动编辑。';
 
   @override
   String get remoteButtonsTitle => '遥控器按键重映射';
@@ -3335,10 +3336,10 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get remotePanelDescription =>
-      '悬浮面板可在其他应用上方显示所需的小部件。要使用遥控器打开它，请将“悬浮面板”操作分配给您喜欢的按钮。';
+      '快捷设置面板可在其他应用上方显示所需的小部件。要使用遥控器打开它，请将“快捷设置面板”操作分配给您喜欢的按钮。';
 
   @override
-  String get remotePanel => '悬浮面板';
+  String get remotePanel => '快捷设置面板';
 
   @override
   String get remotePanelSettingsBackground => '使用设置背景颜色';
@@ -3395,13 +3396,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get remotePanelInheritAppearance => '使用顶部面板外观';
 
   @override
-  String get remotePanelDisabledInLauncher => 'CuteLauncher 显示在屏幕上时，弹出面板已停用。';
+  String get remotePanelDisabledInLauncher => 'CuteLauncher 显示在屏幕上时，快捷设置面板已停用。';
 
   @override
   String get remoteAccessSettings => '访问权限设置';
 
   @override
   String get remoteButtonsTest => '按键测试';
+
+  @override
+  String remoteMappingDeleteConfirm(String name) {
+    return '删除“$name”分配？';
+  }
 
   @override
   String get remoteMappingConflict => '此按键和按压类型已分配。请选择其他按键或按压类型。';
@@ -4019,4 +4025,110 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get adbWifiDisable => '停用';
+
+  @override
+  String get recentAppsTitle => '已打开的应用';
+
+  @override
+  String get recentAppsPanelType => '面板';
+
+  @override
+  String get recentAppsAutomatic => '自动';
+
+  @override
+  String get recentAppsCustom => 'CuteLauncher 面板';
+
+  @override
+  String get recentAppsSystem => '内置面板';
+
+  @override
+  String get recentAppsOpen => '打开面板';
+
+  @override
+  String get recentAppsRefresh => '刷新';
+
+  @override
+  String get recentAppsCloseAll => '全部关闭';
+
+  @override
+  String get recentAppsEmpty => '没有具有打开任务的电视应用';
+
+  @override
+  String get recentAppsUnavailable => '无法显示已打开的应用。请检查 ADB 和无障碍权限。';
+
+  @override
+  String get recentAppsHelp =>
+      '仅显示具有打开任务的电视应用。“全部关闭”会停止此列表中的用户应用。请在按键映射器中分配按钮。CuteLauncher 面板需要 ADB 和无障碍权限。';
+
+  @override
+  String get recentAppsHomeHint => 'Home 仅支持长按分配。短按返回 CuteLauncher。分配在启动器外也有效。';
+
+  @override
+  String get sectionRulesHelp =>
+      '标准分区可重命名、移动或隐藏，但不能删除；至少保留一个可见分区。所有应用、电视应用和非电视应用按启动类型自动分类，与应用名称无关；隐藏会从这三个列表中移除应用。收藏和自定义分区需手动添加。应用可按手动顺序、名称、使用频率或最近启动排序，各分区可单独设置外观。继续观看显示应用推荐，可隐藏或移动。';
+
+  @override
+  String get remoteMappingNamePlaceholder => '按钮名称';
+
+  @override
+  String get remoteMappingAssign => '分配按钮';
+
+  @override
+  String get remoteMappingCapture => '捕获';
+
+  @override
+  String remoteMappingCaptured(String key) {
+    return '已捕获按钮：$key';
+  }
+
+  @override
+  String get remoteMappingCaptureHint => '选择“捕获”，然后按遥控器按钮。可以重新捕获。选择“确定”接受。';
+
+  @override
+  String get remoteMappingCaptureTimeout => '未捕获按钮。请重试。';
+
+  @override
+  String get remoteMappingCaptureFailed => '无法捕获。请检查无障碍服务权限。';
+
+  @override
+  String get remoteMappingServiceRequired => '请在访问设置中连接无障碍服务。';
+
+  @override
+  String get remoteMappingKeyRequired => '未分配按钮。请选择“分配按钮”并捕获按钮。';
+
+  @override
+  String get remoteMappingHomeHoldRequired => 'Home 按钮请选择长按。';
+
+  @override
+  String get remoteMappingAppRequired => '请选择要启动的应用。';
+
+  @override
+  String get remoteMappingUrlRequired => '请输入或导入 Webhook URL。';
+
+  @override
+  String get remoteMappingUrlInvalid =>
+      'URL 无效。请使用带路径的 HTTPS 或本地 HTTP，不含空格、凭据或 # 片段。';
+
+  @override
+  String get remoteMappingSaveFailed => '无法保存。请重试；编辑器中的值已保留。';
+
+  @override
+  String get remoteMappingDeleteFailed => '无法删除。请重试。';
+
+  @override
+  String get remoteMappingRecents => '已打开应用面板';
+
+  @override
+  String get remoteMappingImport => '从文件导入 URL';
+
+  @override
+  String get remoteMappingImportHint =>
+      '请选择仅包含 Webhook URL 的 UTF-8 文本文件，不含命令或说明。换行符会被删除。';
+
+  @override
+  String get remoteMappingImportInvalid =>
+      '文件必须仅包含有效的 Webhook URL：HTTPS 或本地 HTTP，不含命令或说明。';
+
+  @override
+  String get remoteMappingImportFailed => '无法读取。请选择可访问且不超过 64 KB 的 UTF-8 文本文件。';
 }

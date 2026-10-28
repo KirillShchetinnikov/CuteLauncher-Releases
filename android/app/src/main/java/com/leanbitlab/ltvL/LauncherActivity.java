@@ -33,7 +33,10 @@ import androidx.annotation.NonNull;
 import java.util.Map;
 
 import io.flutter.embedding.android.FlutterActivity;
+import io.flutter.FlutterInjector;
 import io.flutter.embedding.engine.FlutterEngine;
+import io.flutter.embedding.engine.FlutterEngineGroup;
+import io.flutter.embedding.engine.dart.DartExecutor;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodChannel;
@@ -43,6 +46,28 @@ import java.util.concurrent.Executors;
 
 
 public class LauncherActivity extends FlutterActivity {
+    @Override public FlutterEngine provideFlutterEngine(@NonNull Context context) {
+        var group = LauncherEngineGroup.get(context, getFlutterShellArgs().toArray());
+        String bundle = getAppBundlePath();
+        if (bundle == null || bundle.isEmpty()) {
+            bundle = FlutterInjector.instance().flutterLoader().findAppBundlePath();
+        }
+        String library = getDartEntrypointLibraryUri();
+        var entrypoint = library == null
+                ? new DartExecutor.DartEntrypoint(bundle, getDartEntrypointFunctionName())
+                : new DartExecutor.DartEntrypoint(bundle, library, getDartEntrypointFunctionName());
+        String route = getInitialRoute();
+        if (route == null && shouldHandleDeeplinking() && getIntent().getData() != null) {
+            route = getIntent().getData().toString();
+        }
+        // A provided engine registers plugins once in the group, before custom channels.
+        return group.createAndRunEngine(new FlutterEngineGroup.Options(context)
+                .setDartEntrypoint(entrypoint).setDartEntrypointArgs(getDartEntrypointArgs())
+                .setInitialRoute(route == null ? "/" : route)
+                .setWaitForRestorationData(shouldRestoreAndSaveState()));
+    }
+    // This Activity owns its engine; sharing resources must not retain a hidden Home.
+    @Override public boolean shouldDestroyEngineWithHost() { return true; }
     private final String METHOD_CHANNEL = "me.efesser.flauncher/method";
     private final String APPS_EVENT_CHANNEL = "me.efesser.flauncher/event_apps";
     private final String NETWORK_EVENT_CHANNEL = "me.efesser.flauncher/event_network";
@@ -86,11 +111,13 @@ public class LauncherActivity extends FlutterActivity {
     private TvImeEditorBridge tvImeEditorBridge;
     private RemoteButtonsBridge remoteButtons;
     private RemoteMappingsBridge remoteMappings;
+    private RecentAppsBridge recentApps;
 
     @Override public void cleanUpFlutterEngine(@NonNull FlutterEngine flutterEngine) {
         if (legacyStorageAccess != null) { legacyStorageAccess.close(); legacyStorageAccess = null; }
         if (tvInputBridge != null) { tvInputBridge.close(); tvInputBridge = null; }
         if (remoteMappings != null) { remoteMappings.close(); remoteMappings = null; }
+        if (recentApps != null) { recentApps.close(); recentApps = null; }
         if (remoteButtons != null) { remoteButtons.close(); remoteButtons = null; }
         if (tvImeEditorBridge != null) { tvImeEditorBridge.dispose(); tvImeEditorBridge = null; }
         NightOverlayService.detachVisibility(flutterEngine.getDartExecutor().getBinaryMessenger());
@@ -125,6 +152,8 @@ public class LauncherActivity extends FlutterActivity {
         }
     }
     private static final ExecutorService sIoExecutor = Executors.newFixedThreadPool(4);
+    // Image decode/PNG must not queue behind slow ADB or system statistics.
+    private static final ExecutorService sImageExecutor = Executors.newFixedThreadPool(2);
     private boolean manualLaunch(Intent intent) {
         return intent.getBooleanExtra("return_home",false) || Intent.ACTION_MAIN.equals(intent.getAction())
             && (intent.hasCategory(Intent.CATEGORY_HOME) || intent.hasCategory(Intent.CATEGORY_LAUNCHER)
@@ -139,10 +168,14 @@ public class LauncherActivity extends FlutterActivity {
         permissionRecoveryHandler.postDelayed(permissionRecovery, 3000);
     }
     private final android.os.Handler permissionRecoveryHandler = new android.os.Handler(android.os.Looper.getMainLooper());
-    private final Runnable permissionRecovery = () -> sIoExecutor.execute(() -> UpdatePermissionRecovery.afterUpdate(this));
+    private final Runnable permissionRecovery = () -> {
+        Context app = getApplicationContext();
+        sIoExecutor.execute(() -> PermissionRecoveryScheduler.foreground(app));
+    };
     @Override protected void onPause() {
         permissionRecoveryHandler.removeCallbacks(permissionRecovery);
-        sIoExecutor.execute(() -> UpdatePermissionRecovery.snapshot(this));
+        Context app = getApplicationContext();
+        sIoExecutor.execute(() -> UpdatePermissionRecovery.snapshot(app));
         RemoteButtonRemapper.editing = false; RemoteButtonLearning.cancel(); LauncherNotificationListenerService.launcherPaused(); if(autoLaunch!=null) autoLaunch.pause(); super.onPause();
     }
     @Override public void onUserInteraction() { if(autoLaunch!=null) autoLaunch.cancel(); super.onUserInteraction(); }
@@ -175,6 +208,7 @@ public class LauncherActivity extends FlutterActivity {
         });
         remoteButtons = new RemoteButtonsBridge(this, messenger, this::isAccessibilityServiceEnabled);
         remoteMappings = new RemoteMappingsBridge(this, messenger, sIoExecutor, this::isAccessibilityServiceEnabled);
+        recentApps = new RecentAppsBridge(this, messenger, sIoExecutor, () -> {});
         autoLaunch = new AutoLaunchBridge(this, messenger);
         Intent initial=getIntent();
         if (initial!=null && Intent.ACTION_MAIN.equals(initial.getAction())
@@ -242,6 +276,7 @@ public class LauncherActivity extends FlutterActivity {
                 case "pickBackupFolder" -> backupFolder.pick(result);
                 case "backupFolderOperation" -> backupFolder.operate(call.argument("operation"), call.argument("uri"), call.argument("name"), call.argument("path"), result);
                 case "pickBackupDocument" -> documentFiles.open("*/*", 64L * 1024 * 1024, result);
+                case "pickWebhookDocument" -> documentFiles.open("text/plain", 64L * 1024, result);
                 case "pickCleanerListDocument" -> documentFiles.openNamed("*/*", 256L * 1024, result);
                 case "pickCleanerDocument" -> documentFiles.open("*/*", 256L * 1024, result);
                 case "saveBackupDocument" -> documentFiles.save(call.argument("path"), call.argument("name"), result);
@@ -255,11 +290,18 @@ public class LauncherActivity extends FlutterActivity {
                         task -> new Handler(Looper.getMainLooper()).post(task), applicationCatalog::getApplications,
                         result::success,
                         error -> result.error("applications_unavailable", "Unable to query installed applications", DiagnosticErrorDetails.from(error)));
-                case "getApplicationBanner" -> ApplicationLoader.load(sIoExecutor,
+                case "getDiagnosticApplications" -> ApplicationLoader.load(sIoExecutor,
+                        task -> new Handler(Looper.getMainLooper()).post(task), applicationCatalog::getDiagnosticApplications,
+                        result::success,
+                        error -> result.error("applications_unavailable", "Unable to query diagnostic applications", DiagnosticErrorDetails.from(error)));
+                case "getLauncherApplications" -> ApplicationLoader.load(sIoExecutor,
+                        this::runOnUiThread, applicationCatalog::getLauncherApplications, result::success,
+                        error -> result.error("applications_unavailable", "Unable to query launcher applications", DiagnosticErrorDetails.from(error)));
+                case "getApplicationBanner" -> ApplicationLoader.load(sImageExecutor,
                         task -> new Handler(Looper.getMainLooper()).post(task),
                         () -> applicationCatalog.getApplicationBanner(call.arguments()), result::success,
                         error -> result.success(new byte[0]));
-                case "getApplicationIcon" -> ApplicationLoader.load(sIoExecutor,
+                case "getApplicationIcon" -> ApplicationLoader.load(sImageExecutor,
                         task -> new Handler(Looper.getMainLooper()).post(task),
                         () -> applicationCatalog.getApplicationIcon(call.arguments()), result::success,
                         error -> result.success(new byte[0]));
@@ -277,7 +319,9 @@ public class LauncherActivity extends FlutterActivity {
                 case "isDefaultLauncher" -> result.success(isDefaultLauncher());
                 case "checkForGetContentAvailability" -> result.success(checkForGetContentAvailability());
                 case "startAmbientMode" -> result.success(startAmbientMode());
-                case "getActiveNetworkInformation" -> result.success(networkStatistics.getActiveNetworkInformation());
+                case "getActiveNetworkInformation" -> ApplicationLoader.load(sIoExecutor,
+                        this::runOnUiThread, networkStatistics::getActiveNetworkInformation,
+                        result::success, error -> result.error("network_unavailable", "Unable to query network", DiagnosticErrorDetails.from(error)));
                 case "getTrafficUsage" -> ApplicationLoader.load(sIoExecutor,
                         task -> new Handler(Looper.getMainLooper()).post(task),
                         () -> networkStatistics.getTrafficUsage(call.argument("period")), result::success,
@@ -373,7 +417,7 @@ public class LauncherActivity extends FlutterActivity {
                 }
                 case "getWatchNextPoster" -> {
                     String posterArtUri = call.argument("posterArtUri");
-                    sIoExecutor.execute(() -> {
+                    sImageExecutor.execute(() -> {
                         byte[] posterBytes = watchNextBridge.getWatchNextPoster(posterArtUri);
                         runOnUiThread(() -> result.success(posterBytes));
                     });
@@ -383,7 +427,9 @@ public class LauncherActivity extends FlutterActivity {
                     result.success(watchNextBridge.launchWatchNextProgram(intentUri));
                 }
                 case "getLatestWeatherData" -> result.success(getLatestWeatherData());
-                case "isBreezyWeatherInstalled" -> result.success(isBreezyWeatherInstalled());
+                case "isBreezyWeatherInstalled" -> ApplicationLoader.load(sIoExecutor,
+                        this::runOnUiThread, this::isBreezyWeatherInstalled,
+                        result::success, error -> result.success(false));
                 case "openBreezyWeather" -> result.success(openBreezyWeather());
                 case "getPackageName" -> result.success(getPackageName());
                 case "playClickSound" -> {

@@ -101,14 +101,15 @@ void main() {
   }
 
   testWidgets(
-    'seven destinations including TV power and cleaner keep D-pad focus',
+    'eight destinations including recent apps keep D-pad focus',
     (tester) async {
       info['connectionSnapshot'] = jsonEncode({
         'status': 'ready',
         'launchers': [],
       });
       await pumpMenu(tester, large: true);
-      expect(find.byType(FocusableSettingsTile), findsNWidgets(7));
+      expect(find.byType(FocusableSettingsTile), findsNWidgets(8));
+      expect(find.text('Открытые приложения'), findsOneWidget);
       expect(find.text('Менеджер очистки ТВ'), findsOneWidget);
       expect(find.text('Проверить подключение'), findsNothing);
       expect(find.textContaining('Включите отладку'), findsNothing);

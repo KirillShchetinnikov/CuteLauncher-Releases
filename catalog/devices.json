@@ -162,6 +162,40 @@
           "evidenceSection": "Менеджер очистки ТВ и инвентаризация — 21 октября 2026"
         }
       ]
+    },
+    {
+      "id": "xiaomi-mitv-axfu0-android14-20261028",
+      "label": "Xiaomi MiTV-AXFU0 — пользовательская диагностика",
+      "kind": "physical",
+      "exactMatch": true,
+      "identity": {
+        "manufacturer": "Xiaomi",
+        "model": "MiTV-AXFU0",
+        "device": "arctictale",
+        "fingerprint": "Xiaomi/arctictale/arctictale:14/UKG3.241124.001/V816.0.25.12.5.UXFAATV:user/release-keys",
+        "firmware": "UKG3.241124.001.V816.0.25.12.5.UXFAATV",
+        "android": "14",
+        "sdk": "34",
+        "abis": "armeabi-v7a,armeabi"
+      },
+      "results": [
+        {
+          "feature": "identity-and-installed-version",
+          "status": "verified",
+          "date": "2026-10-28",
+          "appBuild": "1.4.0+102",
+          "summary": "В присланной диагностике прочитаны модель, прошивка, Android API 34, 32-битные ABI и версия лаунчера. Это сведения отчёта пользователя, без независимой аппаратной проверки.",
+          "evidenceSection": "Xiaomi MiTV-AXFU0: пользовательская диагностика — 28 октября 2026"
+        },
+        {
+          "feature": "adb-home-state-observation",
+          "status": "verified",
+          "date": "2026-10-28",
+          "appBuild": "1.4.0+102",
+          "summary": "В журнале ADB команды отключения launcherx и setupwraith завершились успешно; оба пакета затем присутствовали в списке отключённых. set-home-activity завершился успешно, resolve HOME вернул MainActivity CuteLauncher. Сохранность Wi-Fi, восстановление и безопасность отключения не подтверждены.",
+          "evidenceSection": "Xiaomi MiTV-AXFU0: пользовательская диагностика — 28 октября 2026"
+        }
+      ]
     }
   ]
 }

@@ -9,6 +9,8 @@ class PanelClockStyle {
   static const fonts = {'system': 'Roboto', ...AppFonts.families};
   // Match the wght axes of the bundled variable fonts and the actual static faces.
   static const _variableWeightRanges = <String, (int, int)>{
+    'Medeo Sans': (100, 900),
+    'Medeo Mono': (100, 900),
     'Outfit': (100, 900),
     'Onest': (100, 900),
     'Manrope': (200, 800),

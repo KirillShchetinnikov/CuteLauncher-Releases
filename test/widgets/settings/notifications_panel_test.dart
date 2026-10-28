@@ -24,7 +24,7 @@ import '../panel_backdrop_assertions.dart';
 class _ActionChannel extends MockFLauncherChannel {
   String? openedKey;
   @override
-  Future<bool> openNotification(String key) async {
+  Future<bool> openNotification(String? key) async {
     openedKey = key;
     return false;
   }

@@ -1,4 +1,9 @@
+import 'dart:async';
 import 'package:flauncher/providers/weather_service.dart';
+import 'package:flauncher/providers/sleep_timer_service.dart';
+import 'package:flauncher/sleep_timer_configuration.dart';
+import 'package:flauncher/widgets/sleep_timer_menu.dart';
+import 'package:flauncher/widgets/settings/inputs_panel.dart';
 import 'package:flauncher/providers/appearance_service.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/widgets/combined_information.dart';
@@ -64,6 +69,44 @@ void main() {
         body: Container(),
       ),
     );
+  }
+
+  for (final inputs in [false, true]) {
+    testWidgets('menu opens before refresh and Back survives a late response: inputs=$inputs', (tester) async {
+      final pending = Completer<void>();
+      final timerReply = Completer<Object?>();
+      final timer = SleepTimerService();
+      when(mockTvInputsService.hasInputs).thenReturn(inputs);
+      when(mockTvInputsService.inputs).thenReturn([]);
+      when(mockTvInputsService.refreshInputs()).thenAnswer((_) => pending.future);
+      when(mockSettingsService.showSleepTimerInStatusBar).thenReturn(!inputs);
+      when(mockSettingsService.sleepTimerConfiguration).thenReturn(SleepTimerConfiguration());
+      when(mockSettingsService.settingsMenuOnRight).thenReturn(false);
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(SleepTimerService.channel, (_) => timerReply.future);
+      addTearDown(() => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(SleepTimerService.channel, null));
+      await tester.pumpWidget(MultiProvider(providers: [
+        ChangeNotifierProvider<SettingsService>.value(value: mockSettingsService),
+        ChangeNotifierProvider<TvInputsService>.value(value: mockTvInputsService),
+        ChangeNotifierProvider<NotificationsService>.value(value: mockNotificationsService),
+        ChangeNotifierProvider<WeatherService>.value(value: mockWeatherService),
+        ChangeNotifierProvider<SleepTimerService>.value(value: timer),
+      ], child: createWidgetUnderTest()));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byIcon(inputs ? Icons.tv_outlined : Icons.timer_outlined));
+      await tester.pumpAndSettle();
+      final menu = find.byType(inputs ? InputsPanel : SleepTimerMenu);
+      expect(menu, findsOneWidget);
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(menu, findsNothing);
+      pending.complete();
+      timerReply.complete({'remainingMs': 0, 'exactAllowed': true});
+      await tester.pumpAndSettle();
+      expect(menu, findsNothing);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+      timer.dispose();
+    });
   }
 
   testWidgets('combined information replaces existing slots and switching back restores them', (tester) async {

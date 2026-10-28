@@ -11,3 +11,5 @@
 -keep class io.flutter.plugins.**  { *; }
 -dontwarn io.flutter.embedding.**
 -dontwarn com.google.android.play.core.splitcompat.SplitCompatApplication
+# WorkManager persists this class name across APK updates.
+-keep class com.leanbitlab.ltvL.PermissionRecoveryWorker { *; }

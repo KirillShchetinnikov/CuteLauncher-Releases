@@ -26,6 +26,7 @@ void main() {
       await settings.setShowContinueWatching(true);
       await settings.setAppHighlightAnimationEnabled(false);
       final apps = MockAppsService(), watch = MockWatchNextService();
+      when(apps.imageRevisionFor(any)).thenReturn((0, 0));
       when(apps.applications).thenReturn([]);
       when(apps.getAppIcon(any)).thenAnswer((_) async => kTransparentImage);
       when(watch.hasPermission).thenReturn(true);

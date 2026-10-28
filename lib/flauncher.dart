@@ -1,8 +1,10 @@
 import 'widgets/wallpaper_background.dart';
+import 'widgets/background_raster_cache.dart';
 import 'widgets/video_wallpaper_background.dart';
 import 'widgets/adaptive_landscape_background.dart';
 import 'widgets/app_artwork_background.dart';
 import 'providers/remote_panel_service.dart';
+import 'providers/foreground_work.dart';
 import 'providers/slideshow_service.dart';
 /*
  * FLauncher
@@ -207,7 +209,10 @@ class FLauncherState extends State<FLauncher> {
                 child: Consumer<AppsService>(
                   builder: (context, appsService, _) {
                     if (appsService.initialized) {
-                      return InitialAppImages(onReady: () => _focusHomeEntry(), child: Selector<WatchNextService, bool>(
+                      return InitialAppImages(onReady: () async {
+                        await _focusHomeEntry();
+                        if (context.mounted) context.read<ForegroundWork?>()?.homeReady();
+                      }, child: Selector<WatchNextService, bool>(
                         selector: (_, watchNext) => watchNext.programs.isNotEmpty,
                         builder: (context, hasContinuingPrograms, _) =>
                             Selector<SettingsService, ({bool show, int order})>(
@@ -267,6 +272,7 @@ class FLauncherState extends State<FLauncher> {
     final appearance = context.watch<AppearanceService?>()?.appearance ?? const TileAppearance();
     _watchFocus.rememberLast = false;
     _watchFocus.reveal = _revealWatch;
+    _watchFocus.leave = (direction, x) => _leaveSection(_watchFocus, direction, x);
     _watchFocus.onSelected = () {
       _lastWasWatchNext = true;
       _activeCategory.value = -1;
@@ -311,19 +317,7 @@ class FLauncherState extends State<FLauncher> {
       if (isFirstSection) firstCategoryFound = true;
 
       focus.gap = context.read<AppearanceService?>()?.tilesFor(category.id).horizontalGap ?? 16;
-      focus.leave = (direction, x) {
-        final index = _orderedFocus.indexOf(focus);
-        final step = direction == AxisDirection.down ? 1 : -1;
-        var next = index + step;
-        while (next >= 0 && next < _orderedFocus.length && !_orderedFocus[next].hasItems) { next += step; }
-        if (next >= 0 && next < _orderedFocus.length) {
-          final target = _orderedFocus[next];
-          if (target.enter != null) { target.enter!(direction, x); }
-          else { target.focusEntry(); }
-        } else if (direction == AxisDirection.up) {
-          _appBarKey.currentState?.focusSettings();
-        }
-      };
+      focus.leave = (direction, x) => _leaveSection(focus, direction, x);
       if (category.applications.isNotEmpty) _orderedFocus.add(focus);
       categoryWidget = HomeSection(key: sectionKey, category: category, first: isFirstSection, activeCategory: _activeCategory);
 
@@ -360,6 +354,23 @@ class FLauncherState extends State<FLauncher> {
     ]));
   }
 
+  void _leaveSection(CategoryFocusController focus, AxisDirection direction, double x) {
+    final index = _orderedFocus.indexOf(focus);
+    if (index < 0) return;
+    final step = direction == AxisDirection.down ? 1 : -1;
+    var next = index + step;
+    while (next >= 0 && next < _orderedFocus.length && !_orderedFocus[next].hasItems) {
+      next += step;
+    }
+    if (next >= 0 && next < _orderedFocus.length) {
+      final target = _orderedFocus[next];
+      if (target.enter != null) { target.enter!(direction, x); }
+      else { target.focusEntry(); }
+    } else if (direction == AxisDirection.up) {
+      _appBarKey.currentState?.focusSettings();
+    }
+  }
+
   Widget _wallpaper(BuildContext context, WallpaperService wallpaperService) {
     final online = context.watch<OnlineWallpaperService?>();
     final source = context.watch<SettingsService>().backgroundSource;
@@ -373,7 +384,7 @@ class FLauncherState extends State<FLauncher> {
         brightness: settings.wallpaperBrightness, saturation: settings.wallpaperSaturation,
         dimming: settings.wallpaperDimming);
     }
-    return WallpaperBackground(
+    final background = WallpaperBackground(
       key: Key('background_${source}_${source == 'online' ? online?.version : wallpaperService.version}'),
       image: source == 'picture' && wallpaperService.video != null ? null : image,
       gradient: wallpaperService.gradient.gradient,
@@ -388,6 +399,9 @@ class FLauncherState extends State<FLauncher> {
               mode: settings.wallpaperFit, memorySaver: settings.memorySaverEnabled)
           : null,
     );
+    return source == 'landscape'
+        ? BackgroundRasterCache(enabled: !settings.memorySaverEnabled, child: background)
+        : background;
   }
   Widget _emptyState(BuildContext context) {
     AppLocalizations localizations = AppLocalizations.of(context)!;

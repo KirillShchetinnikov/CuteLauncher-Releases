@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 /// Coverage is checked against the bundled font files and translated resources.
 class AppFonts {
   static const families = <String, String>{
+    'medeo-sans': 'Medeo Sans',
+    'medeo-mono': 'Medeo Mono',
     'google-sans': 'Google Sans',
     'onest': 'Onest',
     'manrope': 'Manrope',
@@ -14,6 +16,8 @@ class AppFonts {
   };
   static const interfaceIds = [
     'system',
+    'medeo-sans',
+    'medeo-mono',
     'google-sans',
     'onest',
     'manrope',
@@ -21,6 +25,8 @@ class AppFonts {
   ];
   static const panelIds = [
     'system',
+    'medeo-sans',
+    'medeo-mono',
     'sans-serif',
     'serif',
     'monospace',

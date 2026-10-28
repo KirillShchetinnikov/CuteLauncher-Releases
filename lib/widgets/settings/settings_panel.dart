@@ -37,6 +37,7 @@ import 'package:flauncher/theme/launcher_style.dart';
 
 import 'appearance_settings_page.dart';
 import 'settings_route.dart';
+import 'recent_apps_page.dart';
 import 'memory_page.dart';
 import 'diagnostics_page.dart';
 import 'updates_page.dart';
@@ -190,6 +191,8 @@ class _SettingsPanelState extends State<SettingsPanel> {
                     widget.initialRoute ?? SettingsPanelPage.routeName,
                 onGenerateRoute: (settings) {
                   switch (settings.name) {
+                    case RecentAppsPage.routeName:
+                      return SettingsRoute(settings: settings, builder: (_) => const RecentAppsPage());
                     case RemotePanelPage.routeName:
                       return SettingsRoute(settings: settings,
                         builder: (_) => const RemotePanelPage());

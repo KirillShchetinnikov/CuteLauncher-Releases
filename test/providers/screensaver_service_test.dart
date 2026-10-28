@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flauncher/providers/screensaver_service.dart';
+import 'package:flauncher/providers/foreground_work.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -105,5 +106,18 @@ void main() {
     await service.refresh();
     expect(await service.startAmbientMode(), isFalse);
     expect(service.capabilities.canStart, isFalse);
+  });
+  test('explicit Back action does not wait for the startup work gate', () async {
+    final work = ForegroundWork();
+    final deferred = ScreensaverService(work: work);
+    final calls = <String>[];
+    messenger.setMockMethodCallHandler(channel, (call) async {
+      calls.add(call.method);
+      return call.method == 'getScreensaverCapabilities' ? {'canStart': true} : true;
+    });
+    final pending = deferred.refresh();
+    expect(await deferred.startAmbientMode(), true);
+    expect(calls, ['getScreensaverCapabilities', 'startAmbientMode']);
+    deferred.dispose(); work.dispose(); await pending;
   });
 }

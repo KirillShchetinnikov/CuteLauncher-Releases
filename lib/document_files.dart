@@ -31,6 +31,20 @@ class DocumentFiles {
     return path == null ? null : XFile(path);
   }
 
+  static Future<String?> pickWebhookText() async {
+    final path = await _channel.invokeMethod<String>('pickWebhookDocument');
+    if (path == null) return null;
+    final file = File(path);
+    try {
+      if (await file.length() > 64 * 1024) {
+        throw const FormatException('Webhook document too large');
+      }
+      return await file.readAsString();
+    } finally {
+      await file.delete();
+    }
+  }
+
   static Future<File?> pickBackup() async {
     final path = await _channel.invokeMethod<String>('pickBackupDocument');
     return path == null ? null : File(path);

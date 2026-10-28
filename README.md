@@ -12,6 +12,7 @@ CuteLauncher объединяет запуск приложений, полез�
 
 **[Скачать APK](https://github.com/KirillShchetinnikov/CuteLauncher-Releases/releases/latest)**
 · **[Руководство пользователя](docs/USER_GUIDE_RU.md)**
+· **[FAQ](docs/FAQ_RU.md)**
 · **[Вся документация](docs/README.md)**
 · **[Что нового](CHANGELOG_RU.md)**
 
@@ -45,11 +46,11 @@ CuteLauncher объединяет запуск приложений, полез�
 |---|---|
 | [![Мягкий стиль · весенний пейзаж](docs/images/screenshots/07-soft-spring.webp)](docs/images/screenshots/07-soft-spring.webp) | [![Контурный стиль · рисованный ночной пейзаж](docs/images/screenshots/09-outline-night.webp)](docs/images/screenshots/09-outline-night.webp) |
 
-| Динамические цвета · сетка в шесть колонок | Всплывающая панель · таймер отключения |
+| Динамические цвета · сетка в шесть колонок | Панель быстрых настроек · таймер отключения |
 |---|---|
-| [![Динамические цвета · сетка в шесть колонок](docs/images/screenshots/13-dynamic-grid.webp)](docs/images/screenshots/13-dynamic-grid.webp) | [![Всплывающая панель · таймер отключения](docs/images/screenshots/14-floating-panel-timer.webp)](docs/images/screenshots/14-floating-panel-timer.webp) |
+| [![Динамические цвета · сетка в шесть колонок](docs/images/screenshots/13-dynamic-grid.webp)](docs/images/screenshots/13-dynamic-grid.webp) | [![Панель быстрых настроек · таймер отключения](docs/images/screenshots/14-floating-panel-timer.webp)](docs/images/screenshots/14-floating-panel-timer.webp) |
 
-Фон приложения на снимке всплывающей панели размыт для наглядности.
+Фон приложения на снимке панели быстрых настроек размыт для наглядности.
 
 <details>
 <summary>Ещё 8 снимков: возможности и настройки</summary>
@@ -110,7 +111,7 @@ Open-Meteo, MET Norway, OpenWeather и Яндекс с требованиями 
 Есть настройка домашнего приложения, восстановление прежнего HOME и встроенное
 подключение ADB для поддерживаемых системных действий. Ремаппер позволяет задавать
 короткое нажатие и удержание кнопок, запуск приложения, Home/Back, webhook
-и открытие всплывающей панели. Доступность системных действий зависит от прошивки.
+и открытие панели быстрых настроек. Доступность системных действий зависит от прошивки.
 
 ### Сохранность настроек и диагностика
 

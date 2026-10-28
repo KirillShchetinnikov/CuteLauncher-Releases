@@ -48,6 +48,7 @@ class NotificationsService extends ChangeNotifier with ServiceLifecycle, Widgets
   bool _initialized = false;
   StreamSubscription? _subscription;
   int _callCount = 0;
+  int _overlayCallCount = 0;
   SharedPreferences? _prefs;
 
   NotificationsService(this._channel) {
@@ -283,9 +284,9 @@ class NotificationsService extends ChangeNotifier with ServiceLifecycle, Widgets
 
   Future<void> checkOverlayPermission() async {
     if (isDisposed) return;
-    final localCallCount = ++_callCount;
+    final localCallCount = ++_overlayCallCount;
     final bool allowed = await _channel.checkOverlayPermission();
-    if (isDisposed || localCallCount != _callCount) return;
+    if (isDisposed || localCallCount != _overlayCallCount) return;
 
     if (_hasOverlayPermission != allowed) {
       _hasOverlayPermission = allowed;
@@ -336,6 +337,7 @@ class NotificationsService extends ChangeNotifier with ServiceLifecycle, Widgets
   @override
   void dispose() {
     ++_callCount;
+    ++_overlayCallCount;
     WidgetsBinding.instance.removeObserver(this);
     _subscription?.cancel();
     super.dispose();

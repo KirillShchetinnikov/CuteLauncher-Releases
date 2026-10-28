@@ -62,11 +62,9 @@ class Category extends LauncherSection
     'other_apps': 'Non-TV Apps', 'favorites': 'Favorites',
   };
 
-  // A reserved preset name must not disguise a different standard section.
+  // Section identity follows systemKey; display names remain user-editable.
   static String normalizeName(String name, String? systemKey) =>
-      standardNames.containsKey(systemKey) && standardNames.values.contains(name)
-          ? standardNames[systemKey]!
-          : name;
+      name;
 
   static const systemKeys = {'all_apps', 'tv_apps', 'other_apps', 'favorites'};
   String? systemKey;

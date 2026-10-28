@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import '../bridge_result.dart';
 import 'service_lifecycle.dart';
+import 'foreground_work.dart';
 
 class ScreensaverCapabilities {
   final bool canChoose;
@@ -25,13 +26,19 @@ class ScreensaverService extends ChangeNotifier
   static const _channel = BridgeChannel('me.efesser.flauncher/method');
   ScreensaverCapabilities _capabilities = const ScreensaverCapabilities();
   int _generation = 0;
+  final ForegroundWork? work;
   ScreensaverCapabilities get capabilities => _capabilities;
 
-  ScreensaverService() {
+  ScreensaverService({this.work}) {
     WidgetsBinding.instance.addObserver(this);
   }
 
   Future<void> refresh() async {
+    if (work != null) return work!.schedule(this, _refresh, maxAge: const Duration(seconds: 10));
+    return _refresh();
+  }
+
+  Future<void> _refresh() async {
     if (isDisposed) return;
     final generation = ++_generation;
     final result = await _channel.invokeResult<Object?>(
@@ -49,16 +56,18 @@ class ScreensaverService extends ChangeNotifier
   }
 
   Future<bool> openSettings() async {
+    if (work != null) await _refresh();
     if (isDisposed || !_capabilities.canChoose) return false;
     final result = await _channel.invokeResult<bool>('openScreensaverSettings');
-    if (!result.isSuccess) await refresh();
+    if (!result.isSuccess) await _refresh();
     return result.isSuccess;
   }
 
   Future<bool> startAmbientMode() async {
+    if (work != null) await _refresh();
     if (isDisposed || !_capabilities.canStart) return false;
     final result = await _channel.invokeResult<bool>('startAmbientMode');
-    if (!result.isSuccess) await refresh();
+    if (!result.isSuccess) await _refresh();
     return result.isSuccess;
   }
 
@@ -69,6 +78,7 @@ class ScreensaverService extends ChangeNotifier
 
   @override
   void dispose() {
+    work?.cancel(this);
     WidgetsBinding.instance.removeObserver(this);
     ++_generation;
     super.dispose();

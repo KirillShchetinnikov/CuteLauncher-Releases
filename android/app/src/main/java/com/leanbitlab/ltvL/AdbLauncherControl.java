@@ -165,6 +165,7 @@ final class AdbLauncherControl {
         if (!plan.get("status").equals("ready")) return (String)plan.get("status");
         AdbOperationDiagnostics.stage("apply");
         if (!AdbLauncherPolicy.confirmed(expected, plan.get("commands"))) return "changed";
+        if (action.equals("disableAccessibility") || action.equals("restoreAccessibility")) UpdatePermissionRecovery.cancelAccessibility(activity);
         if ((action.equals("accessibility") || action.equals("restoreAccessibility"))
             && !AdbAccessibilityOps.apply(activity.getPackageName(), adb::execute, (List<?>)plan.get("commands"))) return "denied";
         if (action.equals("restore") || action.equals("disableSystem") || action.equals("enableSystem")) {

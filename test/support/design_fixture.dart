@@ -269,6 +269,9 @@ Future<DesignFixture> pumpDesignFixture(
     ),
   );
   await tester.pump();
+  // Section shells discover the screen bounds after layout; materialize their
+  // visible cards before allowing the real image decoder to run below.
+  await tester.pump();
   final imageContext = tester.element(find.byType(FLauncherApp));
   await tester.runAsync(() async {
     for (final bytes in banners.values) {

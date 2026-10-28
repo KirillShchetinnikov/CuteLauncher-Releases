@@ -38,6 +38,31 @@ final class ApplicationCatalog {
     ApplicationCatalog(Context context) { this.context = context; }
 
     List<Map<String, Serializable>> getApplications() {
+        return getApplications(false);
+    }
+
+    List<Map<String, Serializable>> getLauncherApplications() {
+        return getApplications(true);
+    }
+
+    List<Map<String, Serializable>> getDiagnosticApplications() {
+        List<Map<String, Serializable>> apps = getApplications();
+        PackageManager manager = context.getPackageManager();
+        for (Map<String, Serializable> app : apps) {
+            String name = (String) app.get("packageName");
+            try {
+                PackageInfo info = manager.getPackageInfo(name, 0);
+                app.put("enabled", info.applicationInfo.enabled);
+                app.put("enabledSetting", manager.getApplicationEnabledSetting(name));
+                app.put("versionCode", info.getLongVersionCode());
+            } catch (PackageManager.NameNotFoundException | IllegalArgumentException ignored) {
+                // Package changed during collection: unknown state stays absent.
+            }
+        }
+        return apps;
+    }
+
+    private List<Map<String, Serializable>> getApplications(boolean launchableOnly) {
         // The complete query runs on the shared worker pool, never the platform thread.
         List<ResolveInfo> tvActivitiesInfo = queryIntentActivities(false);
         List<ResolveInfo> nonTvActivitiesInfo = queryIntentActivities(true);
@@ -72,6 +97,7 @@ final class ApplicationCatalog {
             }
         }
 
+        if (launchableOnly) return applications;
         // Launcher queries omit service packages such as Google Partner Setup.
         for (PackageInfo info : context.getPackageManager().getInstalledPackages(0)) {
             if (info.applicationInfo != null && packages.add(info.packageName)) {
@@ -126,6 +152,10 @@ final class ApplicationCatalog {
     }
 
     byte[] getApplicationIcon(String packageName) {
+        return getApplicationIcon(packageName, 960);
+    }
+
+    byte[] getApplicationIcon(String packageName, int maxDimension) {
         byte[] imageBytes = new byte[0];
 
         PackageManager packageManager = context.getPackageManager();
@@ -134,7 +164,7 @@ final class ApplicationCatalog {
             Drawable drawable = info.loadIcon(packageManager);
 
             if (drawable != null) {
-                imageBytes = drawableToByteArray(drawable);
+                imageBytes = drawableToByteArray(drawable, maxDimension);
             }
         } catch (PackageManager.NameNotFoundException ignored) {
         }
@@ -201,8 +231,12 @@ final class ApplicationCatalog {
     }
 
     private byte[] drawableToByteArray(Drawable drawable) {
+        return drawableToByteArray(drawable, 960);
+    }
+
+    private byte[] drawableToByteArray(Drawable drawable, int maxDimension) {
         if (drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) return new byte[0];
-        Bitmap bitmap = drawableToBitmap(drawable);
+        Bitmap bitmap = drawableToBitmap(drawable, maxDimension);
         try {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             if (!bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)) return new byte[0];
@@ -211,7 +245,11 @@ final class ApplicationCatalog {
     }
 
     Bitmap drawableToBitmap(Drawable drawable) {
-        double scale = Math.min(1.0, 960.0 / Math.max(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight()));
+        return drawableToBitmap(drawable, 960);
+    }
+
+    Bitmap drawableToBitmap(Drawable drawable, int maxDimension) {
+        double scale = Math.min(1.0, maxDimension / (double) Math.max(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight()));
         int width = Math.max(1, (int) Math.ceil(drawable.getIntrinsicWidth() * scale));
         int height = Math.max(1, (int) Math.ceil(drawable.getIntrinsicHeight() * scale));
         Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);

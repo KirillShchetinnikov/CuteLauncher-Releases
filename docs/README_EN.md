@@ -4,6 +4,8 @@
 
 ## User guide
 
+[Frequently asked questions (FAQ)](FAQ_EN.md) — quick answers about installation, setup and key features.
+
 The [feature guide](USER_GUIDE_EN.md) covers remote navigation, the home screen,
 appearance, apps, wallpapers, widgets, night mode, TV controls, backups, updates,
 and diagnostics. It includes settings paths, required permissions, and the
@@ -62,3 +64,5 @@ Seasonal realistic landscapes were created for CuteLauncher with OpenAI image
 generation; artwork and interface code from other launchers were not copied.
 The test-only DejaVu Sans is distributed with its [license](../test/design/fonts/LICENSE_DEJAVU)
 and is not included in the APK. Legal texts remain in their original language.
+
+[Third-party components and authors](THIRD_PARTY_EN.md) — fonts, libraries and original licenses.

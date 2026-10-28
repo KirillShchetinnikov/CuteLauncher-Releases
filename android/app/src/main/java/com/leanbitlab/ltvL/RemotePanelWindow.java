@@ -7,16 +7,15 @@ import android.os.Looper;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.WindowManager;
-import io.flutter.FlutterInjector;
 import io.flutter.embedding.android.FlutterTextureView;
 import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.engine.FlutterEngine;
-import io.flutter.embedding.engine.dart.DartExecutor;
 import io.flutter.plugin.common.MethodChannel;
 
 /** Focusable service window: never starts an Activity or changes the video task. */
 final class RemotePanelWindow implements AutoCloseable {
     private final LauncherAccessibilityService service;
+    private final boolean recents;
     private final Handler main = new Handler(Looper.getMainLooper());
     private FlutterEngine engine;
     private FlutterView view;
@@ -27,13 +26,14 @@ final class RemotePanelWindow implements AutoCloseable {
     private final android.content.BroadcastReceiver screenReceiver = new android.content.BroadcastReceiver() {
         @Override public void onReceive(Context context, android.content.Intent intent) { requestClose(); }
     };
-    RemotePanelWindow(LauncherAccessibilityService service) { this.service = service; }
+    RemotePanelWindow(LauncherAccessibilityService service) { this(service, false); }
+    RemotePanelWindow(LauncherAccessibilityService service, boolean recents) { this.service = service; this.recents = recents; }
     boolean isOpen() { return engine != null; }
     boolean toggle() {
         if (engine != null) { requestClose(); return true; }
         try {
             closing = false;
-            engine = new FlutterEngine(service);
+            engine = LauncherEngineGroup.panel(service, recents ? "recentAppsMain" : "remotePanelMain");
             var messenger = engine.getDartExecutor().getBinaryMessenger();
             channels = new RemotePanelChannels(service, messenger, this::requestClose);
             control = new MethodChannel(messenger, "cutelauncher/remote_panel");
@@ -46,7 +46,14 @@ final class RemotePanelWindow implements AutoCloseable {
                     default -> result.notImplemented();
                 }
             });
-            view = new FlutterView(service, new FlutterTextureView(service));
+            view = new FlutterView(service, new FlutterTextureView(service)) {
+                @Override public boolean dispatchKeyEvent(KeyEvent event) {
+                    // Injected/OEM Back events may reach the focused overlay
+                    // without passing through AccessibilityService.onKeyEvent.
+                    if (RemotePanelWindow.this.event(event)) return true;
+                    return super.dispatchKeyEvent(event);
+                }
+            };
             view.setBackgroundColor(android.graphics.Color.TRANSPARENT);
             view.attachToFlutterEngine(engine);
             WindowManager.LayoutParams params = new WindowManager.LayoutParams(
@@ -54,13 +61,11 @@ final class RemotePanelWindow implements AutoCloseable {
                 WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN, PixelFormat.TRANSLUCENT);
             params.gravity = Gravity.TOP | Gravity.START;
-            params.setTitle("CuteLauncher remote panel");
+            params.setTitle(recents ? "CuteLauncher open apps" : "CuteLauncher remote panel");
             service.getSystemService(WindowManager.class).addView(view, params);
             service.registerReceiver(screenReceiver, new android.content.IntentFilter(android.content.Intent.ACTION_SCREEN_OFF));
             screenReceiverRegistered = true;
             engine.getLifecycleChannel().appIsResumed();
-            var loader = FlutterInjector.instance().flutterLoader();
-            engine.getDartExecutor().executeDartEntrypoint(new DartExecutor.DartEntrypoint(loader.findAppBundlePath(), "remotePanelMain"));
             view.requestFocus();
             main.postDelayed(startTimeout, 15000);
             return true;
@@ -72,7 +77,10 @@ final class RemotePanelWindow implements AutoCloseable {
     private final Runnable startTimeout = this::requestClose;
     boolean event(KeyEvent event) {
         if (engine == null && !backDown) return false;
-        if (event.getKeyCode() == KeyEvent.KEYCODE_HOME) { requestClose(); return false; }
+        if (event.getKeyCode() == KeyEvent.KEYCODE_HOME) {
+            if (event.getAction() == KeyEvent.ACTION_DOWN && event.getRepeatCount() == 0) requestClose();
+            return false;
+        }
         if (event.getKeyCode() != KeyEvent.KEYCODE_BACK) return false;
         if (event.getAction() == KeyEvent.ACTION_DOWN) backDown = true;
         if (event.getAction() == KeyEvent.ACTION_UP) {
@@ -99,6 +107,6 @@ final class RemotePanelWindow implements AutoCloseable {
         if (engine != null) {
             engine.getLifecycleChannel().appIsDetached(); engine.destroy(); engine = null;
         }
-        control = null; closing = false; MainActivity.panelClosed();
+        control = null; closing = false; if (!recents) MainActivity.panelClosed();
     }
 }

@@ -14,7 +14,7 @@ from urllib.parse import unquote
 
 ROOT = Path(__file__).resolve().parents[1]
 PUBLIC_MANIFEST = 'docs/translation_manifest.json'
-USER_SOURCES = ('README.md', 'docs/README.md', 'docs/USER_GUIDE_RU.md', 'CHANGELOG_RU.md')
+USER_SOURCES = ('docs/THIRD_PARTY_RU.md', 'README.md', 'docs/README.md', 'docs/USER_GUIDE_RU.md', 'docs/FAQ_RU.md', 'CHANGELOG_RU.md')
 
 
 def english_path(path):

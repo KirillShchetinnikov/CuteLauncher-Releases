@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import '../../providers/apps_service.dart';
+import '../../providers/settings_service.dart';
 
 import '../../diagnostics_report.dart';
 import '../../diagnostics_store.dart';
@@ -32,7 +35,8 @@ class _DiagnosticsPageState extends State<DiagnosticsPage> {
   @override
   Widget build(BuildContext context) => DiagnosticsReportPanel(
     report: _report,
-    collect: widget.collect ?? collectDiagnostics,
+    collect: widget.collect ?? () => collectDiagnostics(
+      apps: context.read<AppsService?>(), settings: context.read<SettingsService?>()),
   );
 }
 

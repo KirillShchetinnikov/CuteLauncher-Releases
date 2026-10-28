@@ -1740,11 +1740,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get diagnosticsSharingNotice =>
-      'Envíe el archivo al autor por mensaje privado, no lo publique: la limpieza automática puede omitir datos personales. Al enviarlo, acepta que se publique un informe anónimo de compatibilidad del televisor en el repositorio Git de CuteLauncher. Solo se publican metadatos del dispositivo y disponibilidad de funciones, sin datos personales; no se publican registros de errores, comandos ni sus ajustes.';
+      'Envíe el archivo al autor por mensaje privado, no lo publique: la limpieza automática puede omitir datos personales. Al enviarlo, acepta que se publique un informe anónimo de compatibilidad del televisor en el repositorio Git de CuteLauncher. Solo se publican metadatos del dispositivo y disponibilidad de funciones, sin datos personales; no se publican registros de errores, comandos ni sus ajustes.\n\nEl informe también incluye paquetes instalados, nombres, versiones y estado de activación, y los nombres, contenido, orden y visibilidad de las secciones. Se conservan los identificadores y nombres para el diagnóstico; estas listas no se publican.';
 
   @override
   String get diagnosticsHint =>
-      'Un único informe combina compatibilidad de funciones del televisor y diagnóstico de errores. El informe incluye modelo y firmware del televisor, versión de la aplicación, permisos, memoria, etapas y causas de errores, comandos y respuestas con eliminación automática de datos personales. Guarda las últimas 50 operaciones, hasta 100 fallos por separado y un registro ADB limitado de la sesión. Se borra al reiniciar. La limpieza puede omitir datos personales: envíe el archivo por mensaje privado, no lo publique. No se envía nada automáticamente. Cada error conserva una instantánea de los ajustes aplicados; los cambios posteriores no la sustituyen.';
+      'Un único informe combina compatibilidad de funciones del televisor y diagnóstico de errores. El informe incluye modelo y firmware del televisor, versión de la aplicación, permisos, memoria, etapas y causas de errores, comandos y respuestas con eliminación automática de datos personales. Guarda las últimas 50 operaciones, hasta 100 fallos por separado y un registro ADB limitado de la sesión. Se borra al reiniciar. La limpieza puede omitir datos personales: envíe el archivo por mensaje privado, no lo publique. No se envía nada automáticamente. Cada error conserva una instantánea de los ajustes aplicados; los cambios posteriores no la sustituyen.\n\nEl informe también incluye paquetes instalados, nombres, versiones y estado de activación, y los nombres, contenido, orden y visibilidad de las secciones. Se conservan los identificadores y nombres para el diagnóstico; estas listas no se publican.';
 
   @override
   String get diagnosticsTitle => 'Diagnóstico de errores';
@@ -3455,7 +3455,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get noRemovableCategories =>
-      'Esta aplicación no se ha agregado manualmente a ninguna sección. Las secciones automáticas no se pueden editar.';
+      'Esta aplicación no se ha añadido manualmente a ninguna sección. No se puede quitar de las secciones automáticas estándar (Todas, Para TV, No para TV); use Ocultar. Favoritos se edita manualmente.';
 
   @override
   String get remoteButtonsTitle => 'Reasignación de botones del mando';
@@ -3544,10 +3544,10 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get remotePanelDescription =>
-      'El panel flotante muestra tus widgets sobre otras aplicaciones. Para abrirlo con el mando, asigna la acción «Panel flotante» al botón que prefieras.';
+      'El panel de ajustes rápidos muestra tus widgets sobre otras aplicaciones. Para abrirlo con el mando, asigna la acción «Panel de ajustes rápidos» al botón que prefieras.';
 
   @override
-  String get remotePanel => 'Panel flotante';
+  String get remotePanel => 'Panel de ajustes rápidos';
 
   @override
   String get remotePanelSettingsBackground =>
@@ -3607,13 +3607,18 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get remotePanelDisabledInLauncher =>
-      'El panel emergente está desactivado mientras CuteLauncher está en pantalla.';
+      'El panel de ajustes rápidos está desactivado mientras CuteLauncher está en pantalla.';
 
   @override
   String get remoteAccessSettings => 'Configurar acceso';
 
   @override
   String get remoteButtonsTest => 'Prueba de botones';
+
+  @override
+  String remoteMappingDeleteConfirm(String name) {
+    return '¿Eliminar la asignación «$name»?';
+  }
 
   @override
   String get remoteMappingConflict =>
@@ -4262,4 +4267,122 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get adbWifiDisable => 'Desactivar';
+
+  @override
+  String get recentAppsTitle => 'Aplicaciones abiertas';
+
+  @override
+  String get recentAppsPanelType => 'Panel';
+
+  @override
+  String get recentAppsAutomatic => 'Automático';
+
+  @override
+  String get recentAppsCustom => 'Panel de CuteLauncher';
+
+  @override
+  String get recentAppsSystem => 'Panel integrado';
+
+  @override
+  String get recentAppsOpen => 'Abrir panel';
+
+  @override
+  String get recentAppsRefresh => 'Actualizar';
+
+  @override
+  String get recentAppsCloseAll => 'Cerrar todas';
+
+  @override
+  String get recentAppsEmpty => 'No hay aplicaciones de TV con tareas abiertas';
+
+  @override
+  String get recentAppsUnavailable =>
+      'Las aplicaciones abiertas no están disponibles. Comprueba ADB y el acceso de accesibilidad.';
+
+  @override
+  String get recentAppsHelp =>
+      'Solo se muestran aplicaciones de TV con tareas abiertas. «Cerrar todas» detiene las aplicaciones de usuario de esta lista. Asigna un botón en el reasignador. El panel de CuteLauncher requiere ADB y accesibilidad.';
+
+  @override
+  String get recentAppsHomeHint =>
+      'Home solo admite pulsación larga. Una pulsación corta vuelve a CuteLauncher. La asignación también funciona fuera del lanzador.';
+
+  @override
+  String get sectionRulesHelp =>
+      'Las secciones estándar se pueden renombrar, mover u ocultar, pero no eliminar; al menos una debe seguir visible. Las listas Todas, Para TV y No para TV se llenan según el tipo de inicio, no el nombre; Ocultar quita la aplicación de las tres. Favoritos y las secciones propias se llenan manualmente. Orden: manual, nombre, frecuencia o último inicio; apariencia por sección. Seguir viendo muestra recomendaciones y se puede ocultar o mover.';
+
+  @override
+  String get remoteMappingNamePlaceholder => 'Nombre del botón';
+
+  @override
+  String get remoteMappingAssign => 'Asignar botón';
+
+  @override
+  String get remoteMappingCapture => 'Capturar';
+
+  @override
+  String remoteMappingCaptured(String key) {
+    return 'Botón capturado: $key';
+  }
+
+  @override
+  String get remoteMappingCaptureHint =>
+      'Pulsa Capturar y después el botón del mando. Puedes repetir. Pulsa OK para aceptar.';
+
+  @override
+  String get remoteMappingCaptureTimeout =>
+      'No se capturó un botón. Reinténtalo.';
+
+  @override
+  String get remoteMappingCaptureFailed =>
+      'No se pudo capturar. Comprueba el servicio de accesibilidad.';
+
+  @override
+  String get remoteMappingServiceRequired =>
+      'Conecta el servicio de accesibilidad en los ajustes de acceso.';
+
+  @override
+  String get remoteMappingKeyRequired =>
+      'No hay botón asignado. Pulsa Asignar botón y captura uno.';
+
+  @override
+  String get remoteMappingHomeHoldRequired =>
+      'Selecciona Pulsación larga para Home.';
+
+  @override
+  String get remoteMappingAppRequired =>
+      'Selecciona una aplicación para abrir.';
+
+  @override
+  String get remoteMappingUrlRequired =>
+      'Introduce o importa una URL de webhook.';
+
+  @override
+  String get remoteMappingUrlInvalid =>
+      'URL no válida. Usa HTTPS o HTTP local con ruta, sin espacios, credenciales ni fragmento #.';
+
+  @override
+  String get remoteMappingSaveFailed =>
+      'No se pudo guardar. Reinténtalo; se conservan los valores.';
+
+  @override
+  String get remoteMappingDeleteFailed => 'No se pudo eliminar. Reinténtalo.';
+
+  @override
+  String get remoteMappingRecents => 'Panel de aplicaciones abiertas';
+
+  @override
+  String get remoteMappingImport => 'Importar URL desde archivo';
+
+  @override
+  String get remoteMappingImportHint =>
+      'Elige un archivo UTF-8 con solo la URL de webhook, sin comandos ni explicaciones. Se eliminan los saltos de línea.';
+
+  @override
+  String get remoteMappingImportInvalid =>
+      'El archivo debe contener solo una URL de webhook válida: HTTPS o HTTP local, sin comandos ni explicaciones.';
+
+  @override
+  String get remoteMappingImportFailed =>
+      'No se pudo leer. Elige un archivo UTF-8 accesible de hasta 64 KB.';
 }

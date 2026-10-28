@@ -48,28 +48,29 @@ public class LauncherAppsEventStreamHandler implements EventChannel.StreamHandle
 
         // Disabled packages have no launch activity. Reconcile the catalog
         // while retaining saved layout and statistics in the database.
-        private void catalogChanged() {
-            _eventSink.success(java.util.Collections.singletonMap("action", "CATALOG_CHANGED"));
+        private void catalogChanged(String... packages) {
+            _eventSink.success(java.util.Map.of("action", "CATALOG_CHANGED",
+                    "packages", java.util.Arrays.asList(packages)));
         }
 
         @Override
         public void onPackageAdded(String packageName, UserHandle user) {
-            catalogChanged();
+            catalogChanged(packageName);
         }
 
         @Override
         public void onPackageChanged(String packageName, UserHandle user) {
-            catalogChanged();
+            catalogChanged(packageName);
         }
 
         @Override
         public void onPackagesAvailable(String[] packageNames, UserHandle user, boolean replacing) {
-            catalogChanged();
+            catalogChanged(packageNames);
         }
 
         @Override
         public void onPackagesUnavailable(String[] packageNames, UserHandle user, boolean replacing) {
-            if (!replacing) catalogChanged();
+            if (!replacing) catalogChanged(packageNames);
         }
     }
 }

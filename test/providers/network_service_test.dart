@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flauncher/providers/network_service.dart';
+import 'package:flauncher/providers/foreground_work.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:fake_async/fake_async.dart';
@@ -25,6 +26,26 @@ void main() {
 
   tearDown(() {
     networkService.dispose();
+  });
+  test('short resumes recheck permissions but preserve fresh usage; manual refresh forces usage', () {
+    fakeAsync((time) {
+      final work = ForegroundWork(now: () => DateTime(2026).add(time.elapsed))..homeReady();
+      when(mockChannel.checkUsageStatsPermission()).thenAnswer((_) async => true);
+      when(mockChannel.getDailyDataUsage()).thenAnswer((_) async => 123);
+      final service = NetworkService(mockChannel, work: work);
+      time.elapse(const Duration(milliseconds: 350));
+      verify(mockChannel.getDailyDataUsage()).called(1);
+      clearInteractions(mockChannel);
+      service.didChangeAppLifecycleState(AppLifecycleState.paused);
+      service.didChangeAppLifecycleState(AppLifecycleState.resumed);
+      time.elapse(const Duration(milliseconds: 350));
+      verify(mockChannel.checkUsageStatsPermission()).called(1);
+      verifyNever(mockChannel.getDailyDataUsage());
+      service.refreshPermissionAndUsage();
+      time.elapse(const Duration(milliseconds: 350));
+      verify(mockChannel.getDailyDataUsage()).called(1);
+      service.dispose(); work.dispose();
+    });
   });
 
   test(
@@ -61,6 +82,7 @@ void main() {
     var loaded = false;
     service.initialLoad.then((_) => loaded = true);
     information.complete({});
+    await service.initialNetworkLoad;
     await Future<void>.delayed(Duration.zero);
     expect(loaded, isFalse);
     usage.complete(123);

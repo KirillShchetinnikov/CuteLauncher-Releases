@@ -9,7 +9,7 @@ import argparse
 import importlib.util
 import subprocess
 
-parser = argparse.ArgumentParser(description='Collect all pinned root Flutter DEPS Git archives locally.')
+parser = argparse.ArgumentParser(description='Collect pinned Flutter DEPS Git archives, including recursedeps, locally.')
 parser.add_argument('--flutter', type=Path, default=Path('.tools/flutter-upgrade'))
 parser.add_argument('--output', type=Path, default=Path('.local/engine-source-archives'))
 args = parser.parse_args()
@@ -43,6 +43,21 @@ def collect(item):
         return {**item,'error':str(error)}
 with ThreadPoolExecutor(max_workers=6) as executor:
     results=list(executor.map(collect,sources))
+by_path = {item['path']: item for item in results}
+def read_deps(item):
+    record = by_path.get(item['path'])
+    if record is None:
+        record = collect(item)
+        by_path[item['path']] = record
+    if 'archive' not in record:
+        raise ValueError(f'Cannot read recursive DEPS: {item["path"]}')
+    return source_module.archive_deps(out / record['archive'])
+closure = source_module.engine_source_closure((root / 'DEPS').read_text(), read_deps)
+missing = [item for item in closure if item['path'] not in by_path]
+with ThreadPoolExecutor(max_workers=6) as executor:
+    for item in executor.map(collect, missing):
+        by_path[item['path']] = item
+results = [by_path[item['path']] for item in closure]
 (out/'manifest.json').write_text(json.dumps({'sdkFrameworkRevision':subprocess.check_output(['git', '-C', str(root), 'rev-parse', 'HEAD']).decode().strip(),'sources':results},indent=2)+'\n')
 print('Collected:',sum('archive' in r for r in results),'Missing:',sum('error' in r for r in results),flush=True)
 

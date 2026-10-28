@@ -31,7 +31,7 @@ final class RemoteButtonLearning {
             return true;
         }
         if (active() && event.getAction() == KeyEvent.ACTION_DOWN && event.getRepeatCount() == 0
-                && RemoteMappingConfiguration.assignable(event.getKeyCode()) && code == 0) {
+                && (RemoteMappingConfiguration.assignable(event.getKeyCode()) || event.getKeyCode() == KeyEvent.KEYCODE_HOME) && code == 0) {
             code = event.getKeyCode(); device = event.getDeviceId(); downTime = event.getDownTime(); return true;
         }
         return false;

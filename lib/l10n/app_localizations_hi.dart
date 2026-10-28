@@ -1720,11 +1720,11 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get diagnosticsSharingNotice =>
-      'फ़ाइल सार्वजनिक रूप से न डालें, लेखक को निजी संदेश में भेजें: स्वचालित सफ़ाई कुछ निजी जानकारी छोड़ सकती है। रिपोर्ट भेजकर आप CuteLauncher के Git रिपॉज़िटरी में अनाम टीवी संगतता रिपोर्ट प्रकाशित करने की सहमति देते हैं। केवल डिवाइस की जानकारी और सुविधाओं की उपलब्धता बिना निजी डेटा के प्रकाशित होगी; त्रुटि लॉग, कमांड और आपकी सेटिंग प्रकाशित नहीं होंगी।';
+      'फ़ाइल सार्वजनिक रूप से न डालें, लेखक को निजी संदेश में भेजें: स्वचालित सफ़ाई कुछ निजी जानकारी छोड़ सकती है। रिपोर्ट भेजकर आप CuteLauncher के Git रिपॉज़िटरी में अनाम टीवी संगतता रिपोर्ट प्रकाशित करने की सहमति देते हैं। केवल डिवाइस की जानकारी और सुविधाओं की उपलब्धता बिना निजी डेटा के प्रकाशित होगी; त्रुटि लॉग, कमांड और आपकी सेटिंग प्रकाशित नहीं होंगी।\n\nरिपोर्ट में इंस्टॉल किए गए पैकेज, उनके नाम, संस्करण और सक्षम स्थिति, तथा अनुभागों के नाम, सामग्री, क्रम और दृश्यता भी शामिल हैं। निदान के लिए पहचानकर्ता और नाम रखे जाते हैं; ऐप और अनुभागों की सूचियाँ प्रकाशित नहीं होतीं।';
 
   @override
   String get diagnosticsHint =>
-      'एक ही रिपोर्ट में टीवी सुविधाओं की संगतता और त्रुटि निदान शामिल हैं। रिपोर्ट में टीवी मॉडल और फ़र्मवेयर, ऐप संस्करण, अनुमतियाँ, मेमोरी, त्रुटियों के चरण और कारण तथा निजी जानकारी को अपने आप हटाने के बाद कमांड और जवाब होते हैं। वर्तमान सत्र की अंतिम 50 क्रियाएँ, अलग से अधिकतम 100 विफलताएँ और सीमित ADB लॉग रखे जाते हैं। पुनः चालू करने पर लॉग मिटता है। कुछ निजी जानकारी बच सकती है: फ़ाइल सार्वजनिक रूप से डालने के बजाय निजी संदेश में भेजें। कुछ भी अपने आप नहीं भेजा जाता। हर त्रुटि के साथ उस समय लागू सेटिंग का स्नैपशॉट रहता है; बाद के बदलाव उसे नहीं बदलते।';
+      'एक ही रिपोर्ट में टीवी सुविधाओं की संगतता और त्रुटि निदान शामिल हैं। रिपोर्ट में टीवी मॉडल और फ़र्मवेयर, ऐप संस्करण, अनुमतियाँ, मेमोरी, त्रुटियों के चरण और कारण तथा निजी जानकारी को अपने आप हटाने के बाद कमांड और जवाब होते हैं। वर्तमान सत्र की अंतिम 50 क्रियाएँ, अलग से अधिकतम 100 विफलताएँ और सीमित ADB लॉग रखे जाते हैं। पुनः चालू करने पर लॉग मिटता है। कुछ निजी जानकारी बच सकती है: फ़ाइल सार्वजनिक रूप से डालने के बजाय निजी संदेश में भेजें। कुछ भी अपने आप नहीं भेजा जाता। हर त्रुटि के साथ उस समय लागू सेटिंग का स्नैपशॉट रहता है; बाद के बदलाव उसे नहीं बदलते।\n\nरिपोर्ट में इंस्टॉल किए गए पैकेज, उनके नाम, संस्करण और सक्षम स्थिति, तथा अनुभागों के नाम, सामग्री, क्रम और दृश्यता भी शामिल हैं। निदान के लिए पहचानकर्ता और नाम रखे जाते हैं; ऐप और अनुभागों की सूचियाँ प्रकाशित नहीं होतीं।';
 
   @override
   String get diagnosticsTitle => 'त्रुटि निदान';
@@ -3412,7 +3412,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get noRemovableCategories =>
-      'इस ऐप को किसी भी अनुभाग में मैन्युअल रूप से नहीं जोड़ा गया है। स्वचालित अनुभाग संपादित नहीं किए जा सकते.';
+      'यह ऐप किसी अनुभाग में मैन्युअल रूप से नहीं जोड़ा गया है। मानक स्वचालित अनुभागों (सभी ऐप, टीवी ऐप, गैर-टीवी ऐप) से इसे हटाया नहीं जा सकता; छिपाएँ का उपयोग करें। पसंदीदा को मैन्युअल रूप से बदल सकते हैं।';
 
   @override
   String get remoteButtonsTitle => 'रिमोट बटन रीमैपर';
@@ -3501,10 +3501,10 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get remotePanelDescription =>
-      'फ़्लोटिंग पैनल दूसरे ऐप्स के ऊपर आपके विजेट दिखाता है। इसे रिमोट से खोलने के लिए अपनी पसंद के किसी बटन पर फ़्लोटिंग पैनल कार्रवाई असाइन करें।';
+      'त्वरित सेटिंग पैनल दूसरे ऐप्स के ऊपर आपके विजेट दिखाता है। इसे रिमोट से खोलने के लिए अपनी पसंद के किसी बटन पर त्वरित सेटिंग पैनल कार्रवाई असाइन करें।';
 
   @override
-  String get remotePanel => 'फ़्लोटिंग पैनल';
+  String get remotePanel => 'त्वरित सेटिंग पैनल';
 
   @override
   String get remotePanelSettingsBackground =>
@@ -3563,13 +3563,18 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get remotePanelDisabledInLauncher =>
-      'CuteLauncher स्क्रीन पर खुला होने पर पॉप-अप पैनल बंद है।';
+      'CuteLauncher स्क्रीन पर खुला होने पर त्वरित सेटिंग पैनल बंद है।';
 
   @override
   String get remoteAccessSettings => 'ऐक्सेस सेटिंग';
 
   @override
   String get remoteButtonsTest => 'बटन की जाँच';
+
+  @override
+  String remoteMappingDeleteConfirm(String name) {
+    return 'क्या “$name” असाइनमेंट हटाएं?';
+  }
 
   @override
   String get remoteMappingConflict =>
@@ -4209,4 +4214,119 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get adbWifiDisable => 'बंद करें';
+
+  @override
+  String get recentAppsTitle => 'खुले ऐप';
+
+  @override
+  String get recentAppsPanelType => 'पैनल';
+
+  @override
+  String get recentAppsAutomatic => 'स्वचालित';
+
+  @override
+  String get recentAppsCustom => 'CuteLauncher पैनल';
+
+  @override
+  String get recentAppsSystem => 'अंतर्निहित पैनल';
+
+  @override
+  String get recentAppsOpen => 'पैनल खोलें';
+
+  @override
+  String get recentAppsRefresh => 'रीफ़्रेश करें';
+
+  @override
+  String get recentAppsCloseAll => 'सभी बंद करें';
+
+  @override
+  String get recentAppsEmpty => 'खुले टास्क वाले कोई टीवी ऐप नहीं';
+
+  @override
+  String get recentAppsUnavailable =>
+      'खुले ऐप उपलब्ध नहीं हैं। ADB और सुलभता अनुमति जाँचें।';
+
+  @override
+  String get recentAppsHelp =>
+      'केवल खुले टास्क वाले टीवी ऐप दिखते हैं। सभी बंद करें इस सूची के उपयोगकर्ता ऐप रोकता है। रीमैपर में बटन असाइन करें। CuteLauncher पैनल को ADB और सुलभता अनुमति चाहिए।';
+
+  @override
+  String get recentAppsHomeHint =>
+      'Home पर केवल लंबा दबाना असाइन कर सकते हैं। छोटा दबाव CuteLauncher पर लौटता है। असाइनमेंट लॉन्चर के बाहर भी काम करता है।';
+
+  @override
+  String get sectionRulesHelp =>
+      'मानक अनुभागों का नाम बदल सकते हैं, खिसका या छिपा सकते हैं, पर हटा नहीं सकते; कम से कम एक दिखना चाहिए। सभी ऐप, टीवी ऐप और गैर-टीवी ऐप नाम के बजाय लॉन्च प्रकार से स्वतः भरते हैं; छिपाने पर ऐप तीनों से हटता है। पसंदीदा और निजी अनुभाग मैन्युअल रूप से भरते हैं। क्रम: मैन्युअल, नाम, उपयोग आवृत्ति या पिछला लॉन्च; रूप हर अनुभाग के लिए अलग है। देखना जारी रखें में ऐप सुझाव आते हैं; इसे छिपा या खिसका सकते हैं।';
+
+  @override
+  String get remoteMappingNamePlaceholder => 'बटन का नाम';
+
+  @override
+  String get remoteMappingAssign => 'बटन असाइन करें';
+
+  @override
+  String get remoteMappingCapture => 'कैप्चर करें';
+
+  @override
+  String remoteMappingCaptured(String key) {
+    return 'कैप्चर किया गया बटन: $key';
+  }
+
+  @override
+  String get remoteMappingCaptureHint =>
+      'कैप्चर चुनें, फिर रिमोट का बटन दबाएँ। दोबारा कैप्चर कर सकते हैं। स्वीकार करने के लिए ठीक चुनें।';
+
+  @override
+  String get remoteMappingCaptureTimeout =>
+      'कोई बटन कैप्चर नहीं हुआ। फिर कोशिश करें।';
+
+  @override
+  String get remoteMappingCaptureFailed =>
+      'कैप्चर नहीं हो सका। सुलभता सेवा की अनुमति जाँचें।';
+
+  @override
+  String get remoteMappingServiceRequired =>
+      'एक्सेस सेटिंग में सुलभता सेवा कनेक्ट करें।';
+
+  @override
+  String get remoteMappingKeyRequired =>
+      'बटन असाइन नहीं है। बटन असाइन करें चुनकर कैप्चर करें।';
+
+  @override
+  String get remoteMappingHomeHoldRequired => 'Home के लिए देर तक दबाना चुनें।';
+
+  @override
+  String get remoteMappingAppRequired => 'खोलने के लिए ऐप चुनें।';
+
+  @override
+  String get remoteMappingUrlRequired => 'Webhook URL दर्ज करें या आयात करें।';
+
+  @override
+  String get remoteMappingUrlInvalid =>
+      'अमान्य URL। पाथ के साथ HTTPS या स्थानीय HTTP उपयोग करें; स्पेस, लॉगिन जानकारी और # खंड न रखें।';
+
+  @override
+  String get remoteMappingSaveFailed =>
+      'सहेजा नहीं जा सका। फिर कोशिश करें; संपादक के मान सुरक्षित हैं।';
+
+  @override
+  String get remoteMappingDeleteFailed => 'हटाया नहीं जा सका। फिर कोशिश करें।';
+
+  @override
+  String get remoteMappingRecents => 'खुले ऐप्स का पैनल';
+
+  @override
+  String get remoteMappingImport => 'फ़ाइल से URL आयात करें';
+
+  @override
+  String get remoteMappingImportHint =>
+      'केवल Webhook URL वाली UTF-8 टेक्स्ट फ़ाइल चुनें, बिना कमांड या विवरण के। नई पंक्तियाँ हटा दी जाएँगी।';
+
+  @override
+  String get remoteMappingImportInvalid =>
+      'फ़ाइल में केवल मान्य Webhook URL होना चाहिए: HTTPS या स्थानीय HTTP, बिना कमांड या विवरण के।';
+
+  @override
+  String get remoteMappingImportFailed =>
+      'पढ़ी नहीं जा सकी। 64 KB तक की उपलब्ध UTF-8 टेक्स्ट फ़ाइल चुनें।';
 }

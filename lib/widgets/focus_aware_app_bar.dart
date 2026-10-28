@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'traffic_usage_menu.dart';
 import 'sleep_timer_label.dart';
 import '../panel_layout.dart';
@@ -96,12 +97,9 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
     final onRight = _buttonOnRight(node);
     _setOpenWidget(inputs ? 'inputs' : 'notifications');
     if (inputs) {
-      try {
-        await context.read<TvInputsService>().refreshInputs();
-      } catch (e) {
+      unawaited(context.read<TvInputsService>().refreshInputs().catchError((Object e) {
         debugPrint('Unable to refresh TV inputs: $e');
-      }
-      if (!mounted) return;
+      }));
     }
     await showLauncherDialog<void>(
       context: context,
@@ -254,8 +252,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
     final anchor = box.localToGlobal(Offset.zero) & box.size;
     _setOpenWidget('sleepTimer');
     final timer = context.read<SleepTimerService>();
-    await timer.refresh();
-    if (!mounted) return;
+    unawaited(timer.refresh());
     await showLauncherDialog<void>(
       context: context,
       highlightRect: anchor,
@@ -280,11 +277,12 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
     final homeAppearance = context.watch<AppearanceService?>()?.appearance ?? const TileAppearance();
     final appearance = widget.remotePanel?.appearanceFor(homeAppearance) ?? homeAppearance;
     final settings = context.watch<SettingsService>();
-    final inputs = context.watch<TvInputsService>();
+    final hasInputs = (widget.remotePanel?.visible('inputs') ?? settings.showInputsWidgetInStatusBar) &&
+        context.select<TvInputsService, bool>((service) => service.hasInputs);
     final notifications = context.watch<NotificationsService>();
     final weather = context.watch<WeatherService>();
-    final timer = context.watch<SleepTimerService?>();
-    final night = context.watch<NightModeService?>();
+    final night = context.read<NightModeService?>();
+    final nightEnabled = context.select<NightModeService?, bool>((service) => (service?.intensity ?? 0) > 0);
     final direction = TextDirection.ltr;
     final objects = <String, Widget>{
       if (widget.remotePanel?.visible('settings') ?? true) 'settings': TopPanelItem(
@@ -301,7 +299,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
             color: appearance.panelTextColor,
           ),
         ),
-      if ((widget.remotePanel?.visible('inputs') ?? settings.showInputsWidgetInStatusBar) && inputs.hasInputs)
+      if ((widget.remotePanel?.visible('inputs') ?? settings.showInputsWidgetInStatusBar) && hasInputs)
         'inputs': TopPanelItem(
           focusNode: _inputsFocusNode,
           selected: _activeWidget == 'inputs',
@@ -339,36 +337,42 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
             focusNode: _sleepTimerFocusNode,
             selected: _activeWidget == 'sleepTimer',
             onPressed: _openSleepTimer,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              textDirection: direction,
-              children: [
-                if (timer?.active ?? false) ...[
-                  Text(sleepTimerActiveLabel(context, timer!, settings.sleepTimerConfiguration)),
-                  const SizedBox(width: 4),
-                ],
-                Icon((timer?.active ?? false) ? Icons.power_settings_new : Icons.timer_outlined),
-              ],
+            child: Selector<SleepTimerService?, (bool, int)>(
+              selector: (_, timer) => (timer?.active ?? false, timer?.remainingSeconds ?? 0),
+              builder: (context, state, _) {
+                final timer = context.read<SleepTimerService?>();
+                return Row(
+                  mainAxisSize: MainAxisSize.min,
+                  textDirection: direction,
+                  children: [
+                    if (state.$1) ...[
+                      Text(sleepTimerActiveLabel(context, timer!, settings.sleepTimerConfiguration)),
+                      const SizedBox(width: 4),
+                    ],
+                    Icon(state.$1 ? Icons.power_settings_new : Icons.timer_outlined),
+                  ],
+                );
+              },
             ),
           ),
         ),
       if ((widget.remotePanel?.visible('nightMode') ?? settings.showNightModeInStatusBar) && night != null)
         'nightMode': Semantics(
           label: AppLocalizations.of(context)?.nightModeTitle,
-          toggled: night.intensity > 0,
+          toggled: nightEnabled,
           child: TopPanelItem(
             key: const ValueKey('night_mode_button'),
             focusNode: _nightModeFocusNode,
             selected: _activeWidget == 'nightMode',
             onPressed: _openNightMode,
-            child: Icon(night.intensity > 0
+            child: Icon(nightEnabled
                 ? Icons.nightlight_round : Icons.nightlight_outlined),
           ),
         ),
       if ((widget.remotePanel?.visible('network') ?? settings.showNetworkIndicatorInStatusBar))
         'network': NetworkWidget(onMenuChanged: (open) => _setOpenWidget(open ? 'network' : null)),
       if ((widget.remotePanel?.visible('traffic') ?? settings.showDataWidgetInStatusBar) &&
-          context.watch<NetworkService>().hasUsageStatsPermission)
+          context.select<NetworkService, bool>((service) => service.hasUsageStatsPermission))
         'traffic': TopPanelItem(key: const ValueKey('traffic_button'), focusNode: _trafficFocusNode, selected: _activeWidget == 'traffic',
           onPressed: _openTraffic, child: const DailyDataUsageWidget()),
       if ((widget.remotePanel?.visible('weather') ?? settings.showWeatherInStatusBar) && weather.hasWeather)

@@ -25,7 +25,8 @@ update to get new features. Requirements and limitations appear beside each feat
 - [Clock and screensaver](#clock-and-screensaver)
 - [Sleep timer](#sleep-timer)
 - [Launcher and TV controls](#launcher-and-tv-controls)
-- [Remote remapper and floating panel](#remote-remapper-and-floating-panel)
+- [Remote remapper and quick settings panel](#remote-remapper-and-quick-settings-panel)
+- [Open apps](#open-apps)
 - [TV cleanup manager](#tv-cleanup-manager)
 - [Backups and synchronization](#backups-and-synchronization)
 - [Updates and app information](#updates-and-app-information)
@@ -55,10 +56,23 @@ the selected item's normal action.
 
 ## Home screen and categories
 
+At startup, the home screen uses the saved app list and refreshes it in the
+background. Installing, removing, or disabling an app updates the list
+automatically. When returning from an app or waking the TV, remote control
+remains available while weather, posters, and statistics refresh.
+
+Use ↑/↓ to move between nonempty sections, including Continue Watching,
+skipping empty sections and spacers. Moving above the first nonempty section
+reaches the top panel.
+
 Path: **Home screen → Categories and order**.
 
 Create, rename, and delete categories; add apps; reorder apps and categories;
-hide categories and restore them. Favorites is edited like any other category.
+hide categories and restore them. Standard categories (All Apps, TV Apps,
+Non-TV Apps, Favorites, and Continue Watching) cannot be deleted;
+they can be hidden and moved. The four standard app categories can be renamed:
+their names do not change their purpose or membership. Continue Watching keeps
+its name. Favorites app membership is edited manually.
 Automatic app lists are built from installed apps. Enable and move Continue
 Watching in the same editor.
 
@@ -102,7 +116,7 @@ settings. Menus can open on either side. Reset individual groups or all appearan
 and Outline. They change panel materials, buttons, focus, switches and sliders
 while preserving placement, dimensions and remote control. Custom colours and
 transparency remain. Standard stays the initial style. Choose fonts separately
-for the interface, top panel and clock: Google Sans, Onest, Manrope, Outfit or
+for the interface, top panel and clock: Medeo Sans, Medeo Mono, Google Sans, Onest, Manrope, Outfit or
 the system font; the panel and clock also retain their earlier families.
 Only fonts supporting the current interface language are listed. For example,
 Outfit is unavailable for Russian. New styles default to Outfit for compatible
@@ -230,7 +244,7 @@ panel's background or have its own color, transparency and corner radius.
 offers only **Standard** and **Italic**. It changes only the slant, preserving
 family, size, weight, color, glow and background. **Font weight** is an inline
 arrow control offering only distinct weights for the selected font: Manrope
-200–800, monospace 100–700, Google Sans 400/500/700, other bundled families
+200–800, Roboto Mono 100–700, Google Sans 400/500/700, other bundled families
 100–900, and system 400/700. Ranges use steps of 100. Out-of-range values
 display as the nearest supported weight. Separate clock and combined block
 appearance remain independent. Toggling digit animation preserves clock geometry.
@@ -239,7 +253,7 @@ appearance remain independent. Toggling digit animation preserves clock geometry
 pressing an arrow at an outermost available button moves focus to the opposite
 edge. Holding an arrow keeps moving across both sides without stopping at the
 boundary. Navigation follows physical button positions, skipping hidden or
-unavailable objects. This setting is shared by home and floating panels.
+unavailable objects. This setting is shared by home and quick settings panels.
 
 In **Object order** for either panel, the combined block occupies one row and
 moves as a unit, including hidden items. Its initial position is the first
@@ -248,7 +262,7 @@ positions until you edit the order. After moving the group, its members occupy
 adjacent slots at the new position. Hidden items stay hidden, missing weather
 data leaves no empty gap, and panel height stays unchanged. Widget settings,
 grouping, block appearance and the calendar switch are shared by both panels
-and edited in the main top panel settings. The popup panel’s **Objects** page
+and edited in the main top panel settings. The quick settings panel’s **Objects** page
 contains only visibility switches, so its set of visible objects is independent.
 
 Widgets open their own menus and settings. Availability depends on Android data:
@@ -298,6 +312,7 @@ card appears only when a media session is available; the player determines its a
 Path: **Top panel → Objects → Inputs**.
 
 The launcher lists available system inputs and switches to the selected input.
+The menu opens immediately with the last known list and refreshes it in the background.
 Each input button has a connection indicator: a green dot means connected,
 a yellow pause icon means connected in standby, an empty circle means disconnected,
 and a question mark means the TV does not report its state. Indicators update when
@@ -316,7 +331,11 @@ Path: **Night mode and brightness**; the night-mode widget provides quick contro
 The night filter controls dimming, warmth, and color strength. Enable it manually,
 at scheduled times, or from sunset to sunrise for a chosen location, with offsets
 and smooth transitions. Skip the current night, enable until morning, or resume
-the schedule.
+the schedule. The temporary mode ends automatically at the next applicable
+schedule boundary: manual activation ends when the night starts, and skipping
+the current night ends when it finishes. The “Resume schedule” button then
+disappears. Turning the night filter off with the main switch prevents the
+schedule from enabling it.
 
 With overlay access, the filter can cover other apps; otherwise only the local
 launcher filter is available. Exceptions cover apps, HDMI inputs, and supported
@@ -347,6 +366,8 @@ Top-panel clock settings are separate.
 Path: the top panel's **Sleep timer** widget.
 Settings are available through the widget gear and
 **Top panel → Objects → Sleep timer settings**.
+The menu opens immediately with the timer's last known state and refreshes it
+in the background.
 
 In **Settings**, choose time remaining, shutdown time or both, whether to show
 seconds, and whether to close the widget after selecting a timer. By default,
@@ -399,19 +420,57 @@ Confirmation applies to one operation only. An inconclusive ownership check
 cannot be overridden and does not require forgetting the network.
 Restoring the original state requires working ADB and saved recovery data.
 
-## Remote remapper and floating panel
+## Remote remapper and quick settings panel
 
 Path: **Launcher and TV controls → Remote button remapper**.
 
 Button diagnostics records events Android sends to the service and saves the
 latest text report. Assign a short press or hold to an app, Home, Back, a webhook,
-or the floating top panel. There are global and per-mapping switches and reset.
+the quick settings panel, or open apps. There are global and per-mapping switches and reset.
+An empty name field shows “Button name”. Below it, select “Assign button”,
+then “Capture” in the separate dialog and press the remote button. The dialog
+shows the captured button; capture another or select OK to accept. Cancel and
+Back keep the previous selection. Then save the assignment in the editor.
+There is no list of preset buttons.
+For a webhook, enter the URL or import a UTF-8 text file up to 64 KB containing
+only the request URL, without commands or explanations. Line breaks are removed.
+HTTPS or local HTTP is required. Import errors and cancellation preserve the
+previous URL; the editor masks the address.
+Save errors explain what to fix: assign a button, select an app, enter a valid
+URL, or retry saving.
+Deleting an assignment requires confirmation. Cancel and Back keep the assignment.
+Home supports a hold assignment only; a short press returns to CuteLauncher.
+The list of apps to open shows their icons beside their names; an Android icon
+is used when an app icon is unavailable.
+Assignments also work over other apps when the firmware delivers the button to the service.
 
-The floating panel has its own object selection and order. It appears over the
+The quick settings panel has its own object selection and order. It appears over the
 current app and closes with Back. Accessibility and the relevant special access
 are required to operate over apps. Not every physical button reaches the service:
 Power is excluded; voice and some branded buttons may be handled by Android.
 Double press is not supported.
+
+## Open apps
+
+Path: **Launcher and TV controls → Open apps**. Assign the “Open apps panel” action
+in the remapper, just like the quick settings panel. This settings page also opens
+the panel directly and selects its type: Automatic, CuteLauncher panel, or
+Built-in panel. Automatic mode uses the available manufacturer's `com.nes.recents`
+panel (for example, on KP1), otherwise CuteLauncher's own panel. The built-in
+option depends on the firmware.
+
+The CuteLauncher panel requires authorized local ADB and a connected accessibility
+service. It shows icons and names of TV apps with existing tasks, including
+windows in the background. Apps without a TV launch entry, background services
+without tasks, and launchers are excluded. OK or clicking an app brings its task
+to the foreground; the close button beside it removes all its tasks but does not
+guarantee that its background services stop. Close all force-stops user apps
+in the list, including playback and background work. System apps and launchers
+are preserved. Back or the header close button dismisses the panel. Refresh
+reloads the list. Actual window images are not used. After an operation, focus
+returns to the previous available button; if it disappears or becomes disabled,
+focus moves to Refresh. The panel type is stored
+only on this device.
 
 ## TV cleanup manager
 
@@ -527,8 +586,18 @@ accessibility for button remapping, notification access, display over other apps
 usage statistics, system settings changes, and Continue Watching.
 When the previously configured ADB connection is available, missing access is
 restored automatically; access disabled before the update is not granted.
-This requires a state snapshot saved by the previous version. If ADB is
-unavailable, enable the required access again in Android settings.
+This requires a state snapshot saved by the previous version. If ADB is temporarily
+unavailable, the recovery queue is retained for up to five attempts within 15 minutes.
+If recovery fails, enable the required access again in Android settings.
+
+The launcher also checks its accessibility service connection in the background,
+roughly every 15 minutes. Android may postpone checks, particularly during sleep.
+If access remains enabled but the service disconnects, the launcher tries to reconnect
+it through the previously configured ADB connection. System access disabled outside
+an update is not granted automatically. Force-stopping the app in Android suspends
+background checks until its next launch. On the tested TCL TV, force-stop also
+disables accessibility access; enable it again in Android settings after stopping
+the app this way. Waiting and failure reasons are included in the diagnostics report.
 
 About CuteLauncher shows the version, attribution, and licenses.
 The interface displays versions without a build number; Android keeps an internal
@@ -557,6 +626,13 @@ to a snapshot of the settings applied at that moment; later changes before expor
 do not replace earlier values. Settings at export are listed separately.
 Snapshots exclude passwords, keys, accounts, coordinates, addresses, paths,
 app lists and personal content.
+
+Creating a report also adds installed apps with package identifiers, names,
+versions, system flags and enabled states, plus section names, contents, order,
+visibility and sorting. Empty and hidden sections, spacers and the Continue
+Watching position are included. Package identifiers remain readable for diagnosis.
+These lists are excluded from published anonymized compatibility data; send the
+full report only in a private message. Unavailable or truncated data is marked.
 
 The absence of the proprietary TCL filter on an unsupported device is recorded
 as an unavailable capability and is not treated as a diagnostic failure.

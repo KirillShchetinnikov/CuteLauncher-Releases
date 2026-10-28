@@ -89,6 +89,7 @@ test/mocks.mocks.dart
 !.github/scripts/**/*.py
 !scripts/device-ui-check.py
 !scripts/economy-tv-test.py
+!scripts/measure-startup.py
 !scripts/tv_inventory.py
 sqlite_lib/
 com.leanbitlab.ltvL.yml

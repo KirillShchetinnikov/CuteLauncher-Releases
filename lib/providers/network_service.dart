@@ -20,6 +20,7 @@
  */
 
 import 'service_lifecycle.dart';
+import 'foreground_work.dart';
 import 'dart:async';
 import 'dart:developer';
 
@@ -64,6 +65,7 @@ enum CellularNetworkType
 class NetworkService extends ChangeNotifier with ServiceLifecycle, WidgetsBindingObserver
 {
   final FLauncherChannel  _channel;
+  final ForegroundWork? work;
 
   bool                _hasInternetAccess;
   CellularNetworkType _cellularNetworkType;
@@ -77,11 +79,14 @@ class NetworkService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
   int                 _callCount = 0;
   int                 _usageCallCount = 0;
   bool                _foreground = true;
+  DateTime? _lastUsage;
+  /// Network connectivity only; independent of usage permission and statistics.
+  late final Future<void> initialNetworkLoad;
   /// Initial network, usage permission and (when allowed) traffic snapshot.
   late final Future<void> initialLoad;
 
 
-  NetworkService(this._channel) :
+  NetworkService(this._channel, {this.work}) :
         _hasInternetAccess = false,
         _cellularNetworkType = CellularNetworkType.Unknown,
         _networkType = NetworkType.Unknown,
@@ -94,7 +99,7 @@ class NetworkService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
     _foreground = lifecycle == null || lifecycle == AppLifecycleState.resumed;
     _networkSubscription = _channel.addNetworkChangedListener(_onNetworkChanged);
 
-    final networkLoad = _channel
+    initialNetworkLoad = _channel
         .getActiveNetworkInformation()
         .then((map) {
           if (!isDisposed && map.isNotEmpty) {
@@ -105,7 +110,7 @@ class NetworkService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
           log("Error getting active network info: $e");
         });
 
-    initialLoad = Future.wait([networkLoad, _checkPermissionAndStartPolling()]);
+    initialLoad = Future.wait([initialNetworkLoad, refreshPermissionAndUsage()]);
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -113,7 +118,7 @@ class NetworkService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
   void didChangeAppLifecycleState(AppLifecycleState state) {
     _foreground = state == AppLifecycleState.resumed;
     if (_foreground) {
-      refreshPermissionAndUsage();
+      refreshPermissionAndUsage(force: false);
     } else {
       ++_callCount;
       ++_usageCallCount;
@@ -122,7 +127,7 @@ class NetworkService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
     }
   }
 
-  Future<void> _checkPermissionAndStartPolling() async {
+  Future<void> _checkPermissionAndStartPolling({bool force = false}) async {
     if (isDisposed || !_foreground) return;
     final localCallCount = ++_callCount;
     bool allowed;
@@ -136,7 +141,7 @@ class NetworkService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
 
     _hasUsageStatsPermission = allowed;
     if (_hasUsageStatsPermission) {
-      await _fetchUsage();
+      await _fetchUsage(force: force);
       if (isDisposed || !_foreground || localCallCount != _callCount) return;
       if (_usageTimer == null || !_usageTimer!.isActive) {
         _usageTimer = Timer.periodic(const Duration(minutes: 5), (_) => _fetchUsage());
@@ -153,7 +158,8 @@ class NetworkService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
   }
 
   // Call this when app resumes
-  Future<void> refreshPermissionAndUsage() => _checkPermissionAndStartPolling();
+  Future<void> refreshPermissionAndUsage({bool force = true}) => work?.schedule(this,
+      () => _checkPermissionAndStartPolling(force: force)) ?? _checkPermissionAndStartPolling(force: force);
 
   Future<Map<String, dynamic>> getSummary() => _channel.getActiveNetworkInformation();
 
@@ -165,8 +171,10 @@ class NetworkService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
     await _channel.openVpnSettings();
   }
 
-  Future<void> _fetchUsage() async {
+  Future<void> _fetchUsage({bool force = false}) async {
     if (isDisposed || !_foreground) return;
+    if (work != null && !force && _lastUsage != null &&
+        DateTime.now().difference(_lastUsage!) < const Duration(seconds: 30)) { return; }
     final localCallCount = ++_usageCallCount;
     int usage = -1;
     try {
@@ -177,6 +185,7 @@ class NetworkService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
     if (isDisposed || !_foreground || localCallCount != _usageCallCount) return;
 
     _dailyDataUsage = usage;
+    _lastUsage = DateTime.now();
     notifyListeners();
   }
 
@@ -197,6 +206,7 @@ class NetworkService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
 
   @override
   void dispose() {
+    work?.cancel(this);
     ++_callCount;
     ++_usageCallCount;
     _networkSubscription?.cancel();

@@ -1689,11 +1689,11 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get diagnosticsSharingNotice =>
-      'ファイルは公開せず、作者に個別メッセージで送ってください。自動処理後も個人情報が残る場合があります。送信すると、匿名化されたテレビ互換性レポートを CuteLauncher の Git リポジトリで公開することに同意したものとします。公開するのは個人情報を含まない機器情報と機能の利用可否だけです。エラーログ、コマンド、個人の設定は公開しません。';
+      'ファイルは公開せず、作者に個別メッセージで送ってください。自動処理後も個人情報が残る場合があります。送信すると、匿名化されたテレビ互換性レポートを CuteLauncher の Git リポジトリで公開することに同意したものとします。公開するのは個人情報を含まない機器情報と機能の利用可否だけです。エラーログ、コマンド、個人の設定は公開しません。\n\nレポートにはインストール済みパッケージの名前、バージョン、有効状態と、セクションの名前、内容、順序、表示状態も含まれます。診断のため識別子と名前は保持されますが、これらの一覧は公開されません。';
 
   @override
   String get diagnosticsHint =>
-      '1つのレポートにテレビ機能の互換性とエラー診断をまとめます。レポートにはテレビの機種とファームウェア、アプリのバージョン、権限、メモリ、エラーの段階と原因、個人情報を自動処理したコマンドと応答が含まれます。現在のセッションの直近 50 操作、別枠で最大 100 件の失敗、制限付き ADB ログを保持します。再起動で消去されます。個人情報が残る可能性があるため、公開せず個別メッセージで送信してください。自動送信はありません。各エラーにはその時点の適用設定を保存し、後の変更では置き換えません。';
+      '1つのレポートにテレビ機能の互換性とエラー診断をまとめます。レポートにはテレビの機種とファームウェア、アプリのバージョン、権限、メモリ、エラーの段階と原因、個人情報を自動処理したコマンドと応答が含まれます。現在のセッションの直近 50 操作、別枠で最大 100 件の失敗、制限付き ADB ログを保持します。再起動で消去されます。個人情報が残る可能性があるため、公開せず個別メッセージで送信してください。自動送信はありません。各エラーにはその時点の適用設定を保存し、後の変更では置き換えません。\n\nレポートにはインストール済みパッケージの名前、バージョン、有効状態と、セクションの名前、内容、順序、表示状態も含まれます。診断のため識別子と名前は保持されますが、これらの一覧は公開されません。';
 
   @override
   String get diagnosticsTitle => 'エラー診断';
@@ -3316,7 +3316,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get noRemovableCategories =>
-      'このアプリはどのセクションにも手動で追加されていません。自動セクションは編集できません。';
+      'このアプリはどのセクションにも手動追加されていません。標準の自動セクション（すべて、TV用、TV以外）からは削除できません。「非表示」を使用してください。お気に入りは手動編集できます。';
 
   @override
   String get remoteButtonsTitle => 'リモコンボタンの割り当て';
@@ -3404,10 +3404,10 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get remotePanelDescription =>
-      'フローティングパネルは他のアプリの上にウィジェットを表示します。リモコンで開くには、好きなボタンに「フローティングパネル」アクションを割り当ててください。';
+      'クイック設定パネルは他のアプリの上にウィジェットを表示します。リモコンで開くには、好きなボタンに「クイック設定パネル」アクションを割り当ててください。';
 
   @override
-  String get remotePanel => 'フローティングパネル';
+  String get remotePanel => 'クイック設定パネル';
 
   @override
   String get remotePanelSettingsBackground => '設定の背景色を使用';
@@ -3465,13 +3465,18 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get remotePanelDisabledInLauncher =>
-      'CuteLauncher の表示中はポップアップパネルを開けません。';
+      'CuteLauncher の表示中はクイック設定パネルを開けません。';
 
   @override
   String get remoteAccessSettings => 'アクセス設定';
 
   @override
   String get remoteButtonsTest => 'ボタンテスト';
+
+  @override
+  String remoteMappingDeleteConfirm(String name) {
+    return '割り当て「$name」を削除しますか？';
+  }
 
   @override
   String get remoteMappingConflict =>
@@ -4096,4 +4101,114 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get adbWifiDisable => '無効にする';
+
+  @override
+  String get recentAppsTitle => '開いているアプリ';
+
+  @override
+  String get recentAppsPanelType => 'パネル';
+
+  @override
+  String get recentAppsAutomatic => '自動';
+
+  @override
+  String get recentAppsCustom => 'CuteLauncherパネル';
+
+  @override
+  String get recentAppsSystem => '内蔵パネル';
+
+  @override
+  String get recentAppsOpen => 'パネルを開く';
+
+  @override
+  String get recentAppsRefresh => '更新';
+
+  @override
+  String get recentAppsCloseAll => 'すべて閉じる';
+
+  @override
+  String get recentAppsEmpty => 'タスクが開いているTVアプリはありません';
+
+  @override
+  String get recentAppsUnavailable =>
+      '開いているアプリを表示できません。ADBとユーザー補助の権限を確認してください。';
+
+  @override
+  String get recentAppsHelp =>
+      'タスクが開いているTVアプリのみ表示します。「すべて閉じる」は一覧のユーザーアプリを停止します。リマッパーでボタンを割り当ててください。CuteLauncherパネルにはADBとユーザー補助の権限が必要です。';
+
+  @override
+  String get recentAppsHomeHint =>
+      'Homeは長押しのみ割り当て可能です。短押しでCuteLauncherに戻ります。割り当てはランチャー外でも動作します。';
+
+  @override
+  String get sectionRulesHelp =>
+      '標準セクションは名前の変更・移動・非表示にできますが、削除はできません。最低1つは表示が必要です。すべて、TV用、TV以外はアプリ名ではなく起動形式で自動分類され、非表示にすると3つの一覧から消えます。お気に入りと独自セクションは手動追加です。並び順は手動、名前、使用頻度、最終起動から選択し、外観は個別設定できます。視聴を続けるはアプリのおすすめを表示し、移動・非表示にできます。';
+
+  @override
+  String get remoteMappingNamePlaceholder => 'ボタン名';
+
+  @override
+  String get remoteMappingAssign => 'ボタンを割り当て';
+
+  @override
+  String get remoteMappingCapture => '取得';
+
+  @override
+  String remoteMappingCaptured(String key) {
+    return '取得したボタン：$key';
+  }
+
+  @override
+  String get remoteMappingCaptureHint =>
+      '「取得」を選んでリモコンのボタンを押してください。再取得できます。OK で確定します。';
+
+  @override
+  String get remoteMappingCaptureTimeout => 'ボタンを取得できませんでした。再試行してください。';
+
+  @override
+  String get remoteMappingCaptureFailed => '取得できません。ユーザー補助サービスの権限を確認してください。';
+
+  @override
+  String get remoteMappingServiceRequired => 'アクセス設定でユーザー補助サービスを接続してください。';
+
+  @override
+  String get remoteMappingKeyRequired => 'ボタンが未割り当てです。「ボタンを割り当て」で取得してください。';
+
+  @override
+  String get remoteMappingHomeHoldRequired => 'Home には長押しを選んでください。';
+
+  @override
+  String get remoteMappingAppRequired => '起動するアプリを選んでください。';
+
+  @override
+  String get remoteMappingUrlRequired => 'Webhook URL を入力または読み込んでください。';
+
+  @override
+  String get remoteMappingUrlInvalid =>
+      'URL が無効です。パス付きの HTTPS またはローカル HTTP を使い、空白・認証情報・# フラグメントを含めないでください。';
+
+  @override
+  String get remoteMappingSaveFailed => '保存できませんでした。再試行してください。編集内容は保持されます。';
+
+  @override
+  String get remoteMappingDeleteFailed => '削除できませんでした。再試行してください。';
+
+  @override
+  String get remoteMappingRecents => '起動中アプリパネル';
+
+  @override
+  String get remoteMappingImport => 'ファイルから URL を読み込む';
+
+  @override
+  String get remoteMappingImportHint =>
+      'Webhook URL のみを含む UTF-8 テキストファイルを選んでください。コマンドや説明は含めないでください。改行は削除されます。';
+
+  @override
+  String get remoteMappingImportInvalid =>
+      'ファイルには有効な Webhook URL のみを含めてください。HTTPS またはローカル HTTP を使い、コマンドや説明は含めないでください。';
+
+  @override
+  String get remoteMappingImportFailed =>
+      '読めませんでした。アクセス可能な 64 KB 以下の UTF-8 テキストファイルを選んでください。';
 }

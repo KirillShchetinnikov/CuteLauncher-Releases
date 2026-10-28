@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:flauncher/database.dart';
+import 'package:flauncher/models/category.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -12,6 +13,42 @@ import '../mocks.mocks.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   setUp(() => SharedPreferences.setMockInitialValues({}));
+
+  test('reopening preserves renamed standard sections and their data', () async {
+    final dir = await Directory.systemTemp.createTemp('standard-names');
+    final file = File('${dir.path}/db');
+    FLauncherDatabase open() => FLauncherDatabase(DatabaseConnection(NativeDatabase(file)));
+    var db = open();
+    try {
+      await db.persistApps([AppsCompanion.insert(packageName: 'sample', name: 'Sample', version: '1')]);
+      final ids = <String, int>{};
+      for (final key in Category.systemKeys) {
+        ids[key] = await db.insertCategory(CategoriesCompanion.insert(
+          name: 'Телеканалы $key', systemKey: Value(key), order: ids.length,
+          visible: const Value(false), columnsCount: const Value(8)));
+      }
+      final customId = await db.insertCategory(CategoriesCompanion.insert(name: 'Телеканалы', order: 4));
+      await db.insertAppsCategories([AppsCategoriesCompanion.insert(
+        categoryId: ids['favorites']!, appPackageName: 'sample', order: 7)]);
+      await db.close();
+      db = open();
+      final categories = await db.getCategories();
+      for (final key in Category.systemKeys) {
+        final category = categories.firstWhere((c) => c.id == ids[key]);
+        expect(category.name, 'Телеканалы $key');
+        expect(category.order, Category.systemKeys.toList().indexOf(key));
+        expect(category.visible, isFalse);
+        expect(category.columnsCount, 8);
+      }
+      expect(categories.firstWhere((c) => c.id == customId).name, 'Телеканалы');
+      final link = (await db.getAppsCategories()).single;
+      expect(link.categoryId, ids['favorites']);
+      expect(link.order, 7);
+    } finally {
+      await db.close();
+      await dir.delete(recursive: true);
+    }
+  });
 
   test(
       'existing database adds all apps once and preserves section order and membership',

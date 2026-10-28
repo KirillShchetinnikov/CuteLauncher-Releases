@@ -49,17 +49,20 @@ final class RemoteMappingStore {
                 return RemoteMappingConfiguration.empty();
             }
             try {
-                JSONObject root = new JSONObject(new String(data, StandardCharsets.UTF_8));
-                JSONArray rows = root.getJSONArray("bindings");
-                List<Map<String, Object>> bindings = new ArrayList<>();
-                for (int i = 0; i < rows.length(); i++) {
-                    JSONObject row = rows.getJSONObject(i);
-                    bindings.add(Map.of("keyCode", row.getInt("keyCode"), "enabled", row.getBoolean("enabled"),
-                        "action", row.getString("action"), "target", row.getString("target"), "trigger", row.optString("trigger", "press")));
-                }
-                return RemoteMappingConfiguration.fromMap(Map.of("enabled", root.getBoolean("enabled"), "bindings", bindings));
+                return decode(new JSONObject(new String(data, StandardCharsets.UTF_8)));
             } finally { Arrays.fill(data, (byte)0); }
         }
+    }
+    static RemoteMappingConfiguration decode(JSONObject root) throws JSONException {
+        JSONArray rows = root.getJSONArray("bindings");
+        List<Map<String, Object>> bindings = new ArrayList<>();
+        for (int i = 0; i < rows.length(); i++) {
+            JSONObject row = rows.getJSONObject(i);
+            bindings.add(Map.of("keyCode", row.getInt("keyCode"), "enabled", row.getBoolean("enabled"),
+                "action", row.getString("action"), "target", row.getString("target"), "trigger", row.optString("trigger", "press"),
+                "name", row.optString("name", "")));
+        }
+        return RemoteMappingConfiguration.fromMap(Map.of("enabled", root.getBoolean("enabled"), "bindings", bindings));
     }
     void save(RemoteMappingConfiguration configuration) throws Exception {
         synchronized (LOCK) {

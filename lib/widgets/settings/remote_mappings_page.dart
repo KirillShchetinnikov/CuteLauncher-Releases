@@ -7,9 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../bridge_result.dart';
+import '../../document_files.dart';
 import '../../l10n/app_localizations.dart';
 import '../../providers/apps_service.dart';
 import '../../remote_mapping_configuration.dart';
+import '../application_list_icon.dart';
 import '../launcher_dialog.dart';
 import '../rounded_switch_list_tile.dart';
 import 'focusable_settings_tile.dart';
@@ -21,6 +23,7 @@ import 'settings_text_tile.dart';
 const _bridge = BridgeChannel('cutelauncher/remote_mappings');
 
 String remoteKeyLabel(AppLocalizations l, int code) => switch (code) {
+  3 => 'Home',
   164 => 'Mute',
   288 => l.remoteMappingProfile,
   83 => l.settings,
@@ -47,6 +50,7 @@ String _actionLabel(AppLocalizations l, String value) => switch (value) {
   'back' => l.remoteMappingBack,
   'webhook' => 'Webhook (POST)',
   'panel' => l.remotePanel,
+  'recents' => l.remoteMappingRecents,
   _ => value,
 };
 
@@ -210,11 +214,9 @@ class _RemoteMappingsPageState extends State<RemoteMappingsPage>
               enabled: !_busy,
               onPressed: () => _edit(item),
             ),
-          if (_status != 'idle')
+          if (_status != 'idle' && _status != 'success')
             Text(
-              _status == 'success'
-                  ? l.actionCompleted
-                  : _status == 'busy'
+              _status == 'busy'
                   ? l.loading
                   : l.autoLaunchUnavailable,
             ),
@@ -262,33 +264,98 @@ class _MappingEditorState extends State<_MappingEditor> {
   late String _name = widget.mapping?.name ?? '';
   late bool _enabled = widget.mapping?.enabled ?? true;
   bool _saving = false;
-  bool _learning = false, _invalid = false;
+  bool _importing = false;
+
+  Future<void> _delete() async {
+    final l = AppLocalizations.of(context)!;
+    final confirmed = await showLauncherDialog<bool>(
+      context: context,
+      builder: (dialog) => LauncherAlertDialog(
+        title: Text(l.delete),
+        content: Text(
+          l.remoteMappingDeleteConfirm(_bindingLabel(l, widget.mapping!)),
+        ),
+        actions: [
+          LauncherDialogButton(
+            autofocus: true,
+            isCancel: true,
+            onPressed: () => Navigator.pop(dialog, false),
+            child: Text(l.cancel),
+          ),
+          LauncherDialogButton(
+            onPressed: () => Navigator.pop(dialog, true),
+            child: Text(l.delete),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    setState(() => _saving = true);
+    final deleted = await widget.onDelete!();
+    if (!mounted) return;
+    setState(() => _saving = false);
+    if (deleted) {
+      Navigator.pop(context);
+    } else {
+      showActionNotice(context, l.remoteMappingDeleteFailed, error: true);
+    }
+  }
+
   @override
   void dispose() {
     _bridge.invokeMethod<void>('cancelLearn').catchError((Object _) {});
     super.dispose();
   }
 
-  Future<void> _learn() async {
-    setState(() {
-      _learning = true;
-      _invalid = false;
-    });
+  Future<void> _assign() async {
+    final l = AppLocalizations.of(context)!;
+    if (!widget.connected) {
+      showActionNotice(context, l.remoteMappingServiceRequired, error: true);
+      return;
+    }
+    final code = await showLauncherDialog<int>(
+      context: context,
+      builder: (_) => _ButtonCaptureDialog(initialKey: _key),
+    );
+    if (mounted && code != null) {
+      setState(() {
+        _key = code;
+        if (code == 3) _trigger = 'hold';
+      });
+    }
+  }
+
+  Future<void> _importWebhook() async {
+    final l = AppLocalizations.of(context)!;
+    setState(() => _importing = true);
     try {
-      final code = await _bridge
-          .invokeMethod<int>('learn')
-          .timeout(const Duration(seconds: 32));
-      if (mounted && code != null) {
-        setState(() {
-          _key = code;
-          _invalid = false;
-        });
+      final source = await DocumentFiles.pickWebhookText();
+      if (!mounted || source == null) return;
+      final value = remoteWebhookFromText(source);
+      if (value == null) {
+        showActionNotice(context, l.remoteMappingImportInvalid, error: true);
+      } else {
+        setState(() => _target = value);
       }
     } catch (_) {
-      if (mounted) setState(() => _invalid = true);
+      if (mounted) {
+        showActionNotice(context, l.remoteMappingImportFailed, error: true);
+      }
     } finally {
-      if (mounted) setState(() => _learning = false);
+      if (mounted) setState(() => _importing = false);
     }
+  }
+
+  String? _validationError(AppLocalizations l) {
+    if (_key == 0) return l.remoteMappingKeyRequired;
+    if (_key == 3 && _trigger != 'hold') return l.remoteMappingHomeHoldRequired;
+    if (widget.used.contains('$_key:$_trigger')) return l.remoteMappingConflict;
+    if (_action == 'app' && _target.isEmpty) return l.remoteMappingAppRequired;
+    if (_action == 'webhook') {
+      if (_target.isEmpty) return l.remoteMappingUrlRequired;
+      if (!remoteWebhookValid(_target)) return l.remoteMappingUrlInvalid;
+    }
+    return null;
   }
 
   Future<void> _app() async {
@@ -313,6 +380,7 @@ class _MappingEditorState extends State<_MappingEditor> {
               for (final app in apps)
                 FocusableSettingsTile(
                   title: Text(app.name),
+                  leading: ApplicationListIcon(packageName: app.packageName),
                   autofocus:
                       app.packageName == _target ||
                       _target.isEmpty && app == apps.first,
@@ -336,30 +404,6 @@ class _MappingEditorState extends State<_MappingEditor> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
-    final options = {
-      0,
-      if (_key != 0) _key,
-      for (final key in [
-        164,
-        288,
-        83,
-        4001,
-        178,
-        167,
-        166,
-        4514,
-        4056,
-        165,
-        4062,
-        4099,
-        4140,
-        4159,
-        190,
-        4020,
-        4137,
-      ])
-        key,
-    }.toList();
     return Material(
       type: MaterialType.transparency,
       child: SettingsPageLayout(
@@ -369,71 +413,61 @@ class _MappingEditorState extends State<_MappingEditor> {
             SettingsTextTile(
               title: l.name,
               value: _name,
-              enabled: !_saving && !_learning,
+              emptyLabel: l.remoteMappingNamePlaceholder,
+              enabled: !_saving && !_importing,
               maxLength: 80,
               onChanged: (value) => setState(() => _name = value.trim()),
+            ),
+            FocusableSettingsTile(
+              title: Text(l.remoteMappingAssign),
+              trailing: Text(
+                _key == 0
+                    ? l.settingsValueNotSet
+                    : '${remoteKeyLabel(l, _key)} ($_key)',
+              ),
+              enabled: !_saving && !_importing,
+              onPressed: _assign,
             ),
             if (widget.mapping != null)
               RoundedSwitchListTile(
                 title: Text(l.remoteMappingsEnabled),
                 value: _enabled,
-                enabled: !_saving,
+                enabled: !_saving && !_importing,
                 onChanged: (value) => setState(() => _enabled = value),
               ),
             SettingsChoiceTile<String>(
               title: l.remoteMappingTrigger,
               value: _trigger,
               options: const ['press', 'hold'],
-              enabled: !_learning && !_saving,
+              enabled: !_importing && !_saving,
               label: (value) =>
                   value == 'hold' ? l.remoteMappingHold : l.remoteMappingPress,
               onChanged: (value) => setState(() {
                 _trigger = value;
-                _invalid = false;
               }),
             ),
-            if (_trigger == 'hold') SettingsHelp(text: l.remoteMappingHoldHint),
-            SettingsChoiceTile<int>(
-              title: l.remoteMappingKey,
-              value: _key,
-              options: [0, -1, ...options.where((key) => key != 0)],
-              autofocus: true,
-              enabled: !_learning && !_saving,
-              label: (key) => key == -1
-                  ? l.remoteMappingLearn
-                  : key == 0
-                  ? l.settingsValueNotSet
-                  : '${remoteKeyLabel(l, key)} ($key)',
-              onChanged: (key) {
-                if (key == -1) {
-                  if (widget.connected) {
-                    _learn();
-                  } else {
-                    showActionNotice(
-                      context,
-                      l.remoteMappingInvalid,
-                      error: true,
-                    );
-                  }
-                  return;
-                }
-                setState(() {
-                  _key = key;
-                  _invalid = false;
-                });
-              },
-            ),
-            if (_learning) Text(l.remoteMappingLearnHint),
+            if (_trigger == 'hold')
+              SettingsHelp(
+                text: _key == 3
+                    ? l.recentAppsHomeHint
+                    : l.remoteMappingHoldHint,
+              ),
             SettingsChoiceTile<String>(
               title: l.remoteMappingAction,
               value: _action,
-              options: const ['app', 'home', 'back', 'webhook', 'panel'],
+              options: const [
+                'app',
+                'home',
+                'back',
+                'webhook',
+                'panel',
+                'recents',
+              ],
               label: (value) => _actionLabel(l, value),
-              enabled: !_learning && !_saving,
+              enabled: !_importing && !_saving,
               onChanged: (value) => setState(() {
                 _action = value;
                 _target = '';
-                _invalid = false;
               }),
             ),
             if (_action == 'app')
@@ -448,10 +482,12 @@ class _MappingEditorState extends State<_MappingEditor> {
                           ?.name ??
                       (_target.isEmpty ? l.settingsValueNotSet : _target),
                 ),
+                enabled: !_saving && !_importing,
                 onPressed: _app,
               ),
-            if (_action == 'webhook')
+            if (_action == 'webhook') ...[
               SettingsTextTile(
+                enabled: !_saving && !_importing,
                 title: 'Webhook URL',
                 value: _target,
                 obscureText: true,
@@ -459,45 +495,29 @@ class _MappingEditorState extends State<_MappingEditor> {
                 keyboardType: TextInputType.url,
                 onChanged: (value) => setState(() => _target = value.trim()),
               ),
-            if (_invalid) Text(l.remoteMappingInvalid),
+              FocusableSettingsTile(
+                title: Text(l.remoteMappingImport),
+                leading: const Icon(Icons.file_open_outlined),
+                enabled: !_saving && !_importing,
+                onPressed: _importWebhook,
+              ),
+              SettingsHelp(text: l.remoteMappingImportHint),
+            ],
             if (widget.onDelete != null)
               FocusableSettingsTile(
                 title: Text(l.delete),
                 leading: const Icon(Icons.delete_outline),
-                enabled: !_saving && !_learning,
-                onPressed: () async {
-                  setState(() => _saving = true);
-                  final deleted = await widget.onDelete!();
-                  if (!context.mounted) return;
-                  setState(() => _saving = false);
-                  if (deleted) {
-                    Navigator.pop(context);
-                  } else {
-                    showActionNotice(
-                      context,
-                      l.remoteMappingInvalid,
-                      error: true,
-                    );
-                  }
-                },
+                enabled: !_saving && !_importing,
+                onPressed: _delete,
               ),
             FocusableSettingsTile(
               title: Text(l.save),
               leading: const Icon(Icons.check),
-              enabled: !_learning && !_saving,
+              enabled: !_importing && !_saving,
               onPressed: () async {
-                if (_key == 0 ||
-                    widget.used.contains('$_key:$_trigger') ||
-                    (_action == 'app' || _action == 'webhook') &&
-                        _target.isEmpty ||
-                    _action == 'webhook' && !remoteWebhookValid(_target)) {
-                  showActionNotice(
-                    context,
-                    widget.used.contains('$_key:$_trigger')
-                        ? l.remoteMappingConflict
-                        : l.remoteMappingInvalid,
-                    error: true,
-                  );
+                final error = _validationError(l);
+                if (error != null) {
+                  showActionNotice(context, error, error: true);
                   return;
                 }
                 setState(() => _saving = true);
@@ -518,7 +538,7 @@ class _MappingEditorState extends State<_MappingEditor> {
                 } else {
                   showActionNotice(
                     context,
-                    l.remoteMappingInvalid,
+                    l.remoteMappingSaveFailed,
                     error: true,
                   );
                 }
@@ -527,6 +547,124 @@ class _MappingEditorState extends State<_MappingEditor> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _ButtonCaptureDialog extends StatefulWidget {
+  final int initialKey;
+  const _ButtonCaptureDialog({required this.initialKey});
+  @override
+  State<_ButtonCaptureDialog> createState() => _ButtonCaptureDialogState();
+}
+
+class _ButtonCaptureDialogState extends State<_ButtonCaptureDialog>
+    with WidgetsBindingObserver {
+  late int _captured = widget.initialKey;
+  bool _learning = false;
+  String? _error;
+  int _request = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  void _cancel() {
+    _request++;
+    _bridge.invokeMethod<void>('cancelLearn').catchError((Object _) {});
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state != AppLifecycleState.resumed) {
+      _cancel();
+      if (mounted) setState(() => _learning = false);
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _cancel();
+    super.dispose();
+  }
+
+  Future<void> _capture() async {
+    final l = AppLocalizations.of(context)!;
+    final request = ++_request;
+    setState(() {
+      _learning = true;
+      _error = null;
+    });
+    try {
+      final code = await _bridge
+          .invokeMethod<int>('learn')
+          .timeout(const Duration(seconds: 32));
+      if (!mounted || request != _request) return;
+      setState(() {
+        if (code != null) {
+          _captured = code;
+        } else {
+          _error = l.remoteMappingCaptureTimeout;
+        }
+      });
+    } catch (_) {
+      if (mounted && request == _request) {
+        setState(() => _error = l.remoteMappingCaptureFailed);
+      }
+    } finally {
+      if (mounted && request == _request) {
+        await _bridge
+            .invokeMethod<void>('cancelLearn')
+            .catchError((Object _) {});
+        if (mounted && request == _request) setState(() => _learning = false);
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+    return LauncherAlertDialog(
+      title: Text(l.remoteMappingAssign),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            l.remoteMappingCaptured(
+              _captured == 0
+                  ? l.settingsValueNotSet
+                  : '${remoteKeyLabel(l, _captured)} ($_captured)',
+            ),
+          ),
+          Text(
+            _learning ? l.remoteMappingLearnHint : l.remoteMappingCaptureHint,
+          ),
+          if (_error != null) Text(_error!),
+        ],
+      ),
+      actions: [
+        LauncherDialogButton(
+          autofocus: true,
+          onPressed: _learning ? null : _capture,
+          child: Text(l.remoteMappingCapture),
+        ),
+        LauncherDialogButton(
+          isCancel: true,
+          onPressed: () => Navigator.pop(context),
+          child: Text(l.cancel),
+        ),
+        LauncherDialogButton(
+          primary: true,
+          onPressed: _captured == 0 || _learning
+              ? null
+              : () => Navigator.pop(context, _captured),
+          child: Text(l.ok),
+        ),
+      ],
     );
   }
 }

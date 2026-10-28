@@ -84,7 +84,7 @@ void main() {
         expect(text.fontSize, 40);
         expect(text.color, const Color(0xff123456));
       }
-      expect(PanelClockStyle.fonts.values.toSet().length, 9);
+      expect(PanelClockStyle.fonts.values.toSet().length, 11);
       expect(PanelClockStyle.fonts['outfit'], 'Outfit');
       expect(
         const PanelClockStyle({'opacity': .5}).background(Colors.transparent),

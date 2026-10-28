@@ -39,9 +39,13 @@ final class RemoteButtonRemapper implements AutoCloseable {
         if (current != null) { current.generation++; current.configuration = configuration; }
         status = "idle";
     }
+    private RemoteMappingConfiguration.Binding shortBinding(int code, boolean suspended) {
+        if (suspended) return null;
+        return configuration.pressBinding(code);
+    }
     boolean event(KeyEvent event) {
         boolean suspended = editing || RemoteButtonsBridge.capturing() || RemoteButtonLearning.active();
-        RemoteMappingConfiguration.Binding binding = suspended ? null : configuration.binding(event.getKeyCode());
+        RemoteMappingConfiguration.Binding binding = shortBinding(event.getKeyCode(), suspended);
         RemoteMappingConfiguration.Binding hold = suspended ? null : configuration.binding(event.getKeyCode(), "hold");
         RemoteMappingPolicy.Decision decision = policy.event(event.getDeviceId(), event.getKeyCode(),
             event.getAction(), event.getRepeatCount(), event.getDownTime(), event.getEventTime(), event.isCanceled(), binding, hold);
@@ -55,7 +59,7 @@ final class RemoteButtonRemapper implements AutoCloseable {
                 holdTimers.remove(key);
                 boolean paused = closed || editing || RemoteButtonsBridge.capturing() || RemoteButtonLearning.active();
                 var action = policy.hold(key.device, key.code, downTime, android.os.SystemClock.uptimeMillis(),
-                    paused ? null : configuration.binding(key.code), paused ? null : configuration.binding(key.code, "hold"));
+                    shortBinding(key.code, paused), paused ? null : configuration.binding(key.code, "hold"));
                 if (action != null) execute(action);
             };
             holdTimers.put(key, timer);
@@ -67,6 +71,9 @@ final class RemoteButtonRemapper implements AutoCloseable {
     private void execute(RemoteMappingConfiguration.Binding binding) {
         try {
             switch (binding.action()) {
+                case "recents":
+                    service.dismissPanel();
+                    status = RecentAppsBridge.open(service) ? "success" : "unavailable"; break;
                 case "panel":
                     status = service.togglePanel() ? "success" : "unavailable"; break;
                 case "home":

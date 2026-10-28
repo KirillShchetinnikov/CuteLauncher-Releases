@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:drift/drift.dart' hide isNull;
 import 'package:flauncher/database.dart';
+import 'package:flauncher/models/category.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/backup_service.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -28,6 +29,31 @@ void main() {
     expect(service.initialized, isTrue);
   });
   tearDown(() async { service.dispose(); await db.close(); });
+
+  for (final key in Category.systemKeys) {
+    test('$key allows renaming while preserving its key', () async {
+      final existing = service.categories.where((c) => c.systemKey == key);
+      final id = existing.isNotEmpty ? existing.first.id
+          : await service.addCategory('Original', systemKey: key);
+      final category = service.categories.firstWhere((c) => c.id == id);
+      const original = 'Changed';
+      await service.renameCategory(category, 'Changed');
+      expect(service.categories.firstWhere((c) => c.id == id).name, original);
+      expect((await db.getCategories()).firstWhere((c) => c.id == id).name, original);
+      await service.updateCategory(id, 'Changed', CategorySort.alphabetical,
+          category.type, category.columnsCount, category.rowHeight);
+      expect(service.categories.firstWhere((c) => c.id == id).name, original);
+      expect(service.categories.firstWhere((c) => c.id == id).sort, CategorySort.alphabetical);
+      expect((await db.getCategories()).firstWhere((c) => c.id == id).name, original);
+    });
+  }
+
+  test('custom category can still be renamed', () async {
+    final category = service.categories.last;
+    await service.renameCategory(category, 'Changed');
+    expect(service.categories.firstWhere((c) => c.id == category.id).name, 'Changed');
+    expect((await db.getCategories()).firstWhere((c) => c.id == category.id).name, 'Changed');
+  });
 
   test('renamed system category cannot be deleted; hidden category keeps data', () async {
     final system = service.categories.first;

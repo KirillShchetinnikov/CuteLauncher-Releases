@@ -8,6 +8,185 @@ import 'package:flauncher/providers/night_mode_service.dart';
 import 'package:flauncher/settings_import.dart';
 
 void main() {
+  for (final running in [true, false]) {
+    testWidgets('unchanged configuration reads status and recovers only a stopped service: running=$running', (tester) async {
+      SharedPreferences.setMockInitialValues({nightModeKey: jsonEncode(const NightModeConfiguration(enabled: true).toJson())});
+      const channel = MethodChannel('cutelauncher/night');
+      final calls = <String>[];
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, (call) async {
+        calls.add(call.method);
+        return {'permission': true, 'visible': running, 'running': running};
+      });
+      addTearDown(() => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, null));
+      final service = NightModeService(await SharedPreferences.getInstance());
+      await tester.pump();
+      calls.clear();
+      await service.refreshSystem();
+      expect(calls, running ? ['status'] : ['status', 'configure']);
+      expect(service.configuration.enabled, isTrue);
+      service.dispose();
+    });
+  }
+  testWidgets('unchanged picture mode does not rebuild filter consumers', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    const channel = MethodChannel('cutelauncher/night');
+    var picture = 3;
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, (call) async {
+      if (call.method == 'pictureMode') return picture;
+      return {'permission': false};
+    });
+    addTearDown(() => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, null));
+    final service = NightModeService(await SharedPreferences.getInstance());
+    await tester.pump();
+    var changes = 0;
+    service.addListener(() => changes++);
+    await service.refreshPictureMode();
+    expect(changes, 1);
+    await service.refreshPictureMode();
+    expect(changes, 1);
+    picture = 4;
+    await service.refreshPictureMode();
+    expect(changes, 2);
+    expect(service.pictureMode, 4);
+    service.dispose();
+  });
+  for (final disposeDuringApply in [false, true]) {
+    testWidgets('night changes retain only the latest pending snapshot: dispose=$disposeDuringApply', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      const channel = MethodChannel('cutelauncher/night');
+      final blocked = Completer<Map<String, dynamic>>();
+      final applied = <int>[];
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, (call) async {
+        if (call.method == 'configure') {
+          final dim = (call.arguments as Map)['dim'] as int;
+          applied.add(dim);
+          if (dim == 40) return blocked.future;
+        }
+        return {'permission': false};
+      });
+      addTearDown(() => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, null));
+      final service = NightModeService(prefs);
+      await tester.pump();
+      applied.clear();
+      final first = service.configure(const NightModeConfiguration(enabled: true, dim: 40));
+      await tester.pump();
+      final middle = service.configure(service.configuration.copyWith(dim: 50));
+      final last = service.configure(service.configuration.copyWith(dim: 60));
+      await expectLater(service.configure(service.configuration.copyWith(dim: 100)), throwsArgumentError);
+      var finished = false;
+      last.then((_) => finished = true);
+      await tester.pump();
+      expect(applied, [40]);
+      expect(finished, isFalse);
+      if (disposeDuringApply) service.dispose();
+      blocked.complete({'permission': false});
+      await Future.wait([first, middle, last]);
+      expect(finished, isTrue);
+      expect(applied, disposeDuringApply ? [40] : [40, 60]);
+      expect(NightModeConfiguration.decode(prefs.getString(nightModeKey)).dim, disposeDuringApply ? 40 : 60);
+      if (!disposeDuringApply) service.dispose();
+    });
+  }
+  for (final solar in [true, false]) {
+    for (final enabled in [true, false]) {
+      for (final atNight in [true, false]) {
+        testWidgets(
+          'temporary $enabled atNight=$atNight solar=$solar ends at the nearest schedule boundary',
+          (tester) async {
+            SharedPreferences.setMockInitialValues({});
+            const channel = MethodChannel('cutelauncher/night');
+            Map<dynamic, dynamic>? nativeConfiguration;
+            tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+              channel,
+              (call) async {
+                if (call.method == 'configure') {
+                  nativeConfiguration = call.arguments as Map;
+                }
+                return {'permission': false};
+              },
+            );
+            addTearDown(
+              () => tester.binding.defaultBinaryMessenger
+                  .setMockMethodCallHandler(channel, null),
+            );
+            final prefs = await SharedPreferences.getInstance();
+            final service = NightModeService(prefs);
+            final now = DateTime.now();
+            final sunset = DateTime(
+              now.year,
+              now.month,
+              now.day,
+              now.hour + (atNight ? -3 : 3),
+              now.minute,
+            );
+            final boundary = atNight
+                ? sunset.add(const Duration(hours: 12))
+                : sunset;
+            service.solarDays = [
+              for (var day = -1; day <= 2; day++)
+                {
+                  'sunset': sunset
+                      .add(Duration(days: day))
+                      .millisecondsSinceEpoch,
+                  'sunrise': sunset
+                      .add(Duration(days: day, hours: -12))
+                      .millisecondsSinceEpoch,
+                },
+            ];
+            await service.configure(
+              NightModeConfiguration(
+                enabled: true,
+                scheduled: true,
+                solar: solar,
+                startHour: sunset.hour,
+                startMinute: sunset.minute,
+                endHour: (sunset.hour + 12) % 24,
+                endMinute: sunset.minute,
+              ),
+            );
+            await service.temporaryMode(enabled);
+            expect(service.active, enabled);
+            final saved = NightModeConfiguration.decode(
+              prefs.getString(nightModeKey),
+            );
+            expect(saved.overrideUntil, boundary.millisecondsSinceEpoch);
+            expect(nativeConfiguration?['overrideUntil'], saved.overrideUntil);
+            expect(
+              nativeConfiguration?['overrideMode'],
+              enabled ? 'on' : 'off',
+            );
+            expect(
+              saved.intensityAt(boundary, solarDays: service.solarDays),
+              atNight ? 0 : 1,
+            );
+            // The next evening must fade in normally after the skipped night.
+            if (atNight) {
+              expect(
+                saved.intensityAt(
+                  sunset.add(const Duration(hours: 23, minutes: 30)),
+                  solarDays: service.solarDays,
+                ),
+                closeTo(.5, .01),
+              );
+            }
+            await service.configure(
+              saved.copyWith(enabled: false, clearOverrides: true),
+            );
+            expect(service.active, isFalse);
+            expect(
+              service.configuration.intensityAt(
+                boundary,
+                solarDays: service.solarDays,
+              ),
+              0,
+            );
+            service.dispose();
+          },
+        );
+      }
+    }
+  }
   testWidgets('changing dim keeps an established fallback during native sync',
       (tester) async {
     SharedPreferences.setMockInitialValues({});
@@ -80,7 +259,7 @@ void main() {
   });
 
   testWidgets(
-    'temporary off during solar transition persists next sunset to native',
+    'temporary off during solar transition returns to schedule at sunrise',
     (tester) async {
       SharedPreferences.setMockInitialValues({});
       const channel = MethodChannel('cutelauncher/night');
@@ -104,7 +283,7 @@ void main() {
 
       final now = DateTime.now();
       final sunset = now.add(const Duration(minutes: 30));
-      final nextSunset = sunset.add(const Duration(days: 1));
+      final sunrise = sunset.add(const Duration(hours: 12));
       service.solarDays = [
         for (var day = 0; day < 3; day++)
           {
@@ -127,11 +306,13 @@ void main() {
       final saved = NightModeConfiguration.decode(
         prefs.getString(nightModeKey),
       );
-      expect(saved.overrideUntil, nextSunset.millisecondsSinceEpoch);
+      expect(saved.overrideUntil, sunrise.millisecondsSinceEpoch);
       expect(nativeConfiguration?['overrideUntil'], saved.overrideUntil);
       expect(nativeConfiguration?['overrideMode'], 'off');
       expect(saved.intensityAt(sunset, solarDays: service.solarDays), 0);
-      expect(saved.intensityAt(nextSunset, solarDays: service.solarDays), 1);
+      expect(saved.intensityAt(sunrise, solarDays: service.solarDays), 0);
+      expect(saved.intensityAt(sunset.add(const Duration(hours: 23, minutes: 30)),
+          solarDays: service.solarDays), closeTo(.5, .01));
       service.dispose();
     },
   );

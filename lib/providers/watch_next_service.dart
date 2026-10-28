@@ -1,4 +1,5 @@
 import 'service_lifecycle.dart';
+import 'foreground_work.dart';
 import 'memory_resources.dart';
 import '../image_byte_cache.dart';
 import 'package:pool/pool.dart';
@@ -11,10 +12,12 @@ import '../models/watch_next_program.dart';
 
 class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBindingObserver {
   final FLauncherChannel _channel;
+  final ForegroundWork? work;
   final Future<void> Function(String)? onAppLaunched;
   final MemoryResources? _memoryResources;
   List<WatchNextProgram> _programs = [];
   bool _initialized = false;
+  DateTime? _lastPosterReload;
   bool _hasPermission = true;
   Timer? _refreshTimer;
   StreamSubscription<dynamic>? _watchNextSubscription;
@@ -47,7 +50,7 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
 
   bool get _isTest => Platform.environment.containsKey('FLUTTER_TEST');
 
-  WatchNextService(this._channel, {this._memoryResources, this.onAppLaunched}) {
+  WatchNextService(this._channel, {this._memoryResources, this.onAppLaunched, this.work}) {
     _memoryResources?.register(this, clear: clearImageCaches,
       activity: () => _posterCache.activity,
       stats: () => MemoryCacheStats(posterCacheBytes, posterCacheEntries),
@@ -57,7 +60,9 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
     if (!_isTest) {
       WidgetsBinding.instance.addObserver(this);
     }
-    _init();
+    (work?.schedule(this, _init) ?? _init()).catchError((Object error) {
+      log('Watch Next initialization failed', error: error);
+    });
   }
 
   List<WatchNextProgram> get programs => List.unmodifiable(_programs);
@@ -65,6 +70,7 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
   bool get hasPermission => _hasPermission;
 
   Future<void> _init() async {
+    if (isDisposed) return;
     await refresh();
     if (isDisposed) return;
     _initialized = true;
@@ -92,10 +98,15 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (isDisposed) return;
     if (state == AppLifecycleState.paused || state == AppLifecycleState.hidden) {
+      ++_callCount;
       _refreshTimer?.cancel();
       _refreshTimer = null;
     } else if (state == AppLifecycleState.resumed) {
-      refresh(reloadPosters: true);
+      if (_initialized) {
+        final reload = _lastPosterReload == null || DateTime.now().difference(_lastPosterReload!) >= const Duration(minutes: 5);
+        (work?.schedule(this, () => refresh(reloadPosters: reload), maxAge: const Duration(seconds: 30)) ?? refresh(reloadPosters: reload))
+            .catchError((Object error) { log('Watch Next resume failed', error: error); });
+      }
       _startPeriodicTimer();
     }
   }
@@ -133,6 +144,7 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
       if (isDisposed || callSnapshot != _callCount) return;
 
       if (reloadPosters) _posterCache.clear();
+      if (reloadPosters || _lastPosterReload == null) _lastPosterReload = DateTime.now();
       // Phase 1: Emit programs immediately with cached posters where available
       final List<WatchNextProgram> newPrograms = [];
       for (final map in list) {
@@ -167,7 +179,7 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
       if (needsPoster.isNotEmpty) {
         await Future.wait(
           needsPoster.map((p) => _posterPool.withResource(() async {
-            if (isDisposed || callSnapshot != _callCount) return;
+            if (isDisposed || callSnapshot != _callCount || _memoryResources?.isForeground == false) return;
             try {
               final bytes = await _channel.getWatchNextPoster(p.posterArtUri);
               if (!isDisposed && callSnapshot == _callCount && bytes != null && bytes.isNotEmpty) {
@@ -245,6 +257,7 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
 
   @override
   void dispose() {
+    work?.cancel(this);
     _memoryResources?.unregister(this);
     ++_callCount;
     _posterCache.clear();

@@ -123,9 +123,9 @@ void main() {
   ) async {
     await mount(tester, count: 12);
     expect(focusedTitle(tester), 'Section 0');
-    expect(find.textContaining('Cross the list boundary'), findsOneWidget);
-    final help = find.textContaining('Cross the list boundary');
-    final hintY = tester.getTopLeft(help).dy;
+    expect(find.textContaining('Cross the list boundary'), findsNothing);
+    final first = find.text('Section 0');
+    final firstY = tester.getTopLeft(first).dy;
     final add = find.text('Add section');
     expect(tester.getTopLeft(add).dy, greaterThan(300));
     await tester.scrollUntilVisible(
@@ -133,8 +133,8 @@ void main() {
       250,
       scrollable: find.byType(Scrollable).first,
     );
-    expect(tester.getTopLeft(add).dy, lessThan(hintY));
-    expect(tester.getTopLeft(help).dy, lessThan(hintY));
+    expect(tester.getTopLeft(add).dy, lessThan(300));
+    expect(tester.getTopLeft(first).dy, lessThan(firstY));
     await finish(tester);
   });
 

@@ -103,6 +103,7 @@
     </queries>
 
     <application
+        android:name="com.leanbitlab.ltvL.LauncherApplication"
         android:usesCleartextTraffic="true"
         android:allowBackup="false"
         android:fullBackupContent="false"
@@ -110,6 +111,16 @@
         android:banner="@drawable/banner"
         android:icon="@mipmap/ic_launcher"
         android:label="CuteLauncher">
+        <provider android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup" android:exported="false" tools:node="merge">
+            <meta-data android:name="androidx.work.WorkManagerInitializer" android:value="androidx.startup" tools:node="remove" />
+        </provider>
+        <receiver android:name="com.leanbitlab.ltvL.PermissionRecoveryReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
         <uses-library android:name="com.tcl.tv.display" android:required="false" />
         <receiver android:name="com.leanbitlab.ltvL.SleepTimerReceiver" android:exported="false" />
         <service android:name="com.leanbitlab.ltvL.NightOverlayService" android:exported="false" android:foregroundServiceType="specialUse">

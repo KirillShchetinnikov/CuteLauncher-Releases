@@ -898,7 +898,7 @@ void main() {
       expect(find.text('Оформление'), findsOneWidget);
       expect(find.text('Объекты'), findsOneWidget);
       expect(find.text('Порядок объектов'), findsOneWidget);
-      expect(find.text('Всплывающая панель'), findsOneWidget);
+      expect(find.text('Панель быстрых настроек'), findsOneWidget);
       expect(find.text('Показывать время'), findsNothing);
       expect(
         tester.getTopLeft(find.byType(StatusBarPanelPage)).dy,

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flauncher/bridge_result.dart';
 import 'package:flauncher/diagnostics_report.dart';
 import 'package:flauncher/diagnostics_store.dart';
+import 'package:flauncher/tv_compatibility_report.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -28,6 +29,9 @@ void main() {
         'getDiagnosticEnvironment' => {'androidApi': 34, 'defaultHome': false},
         'getProcessMemoryUsage' => {'pssBytes': 1024},
         'getNativeShellDiagnostics' => {'recent': [], 'failures': []},
+        'getDiagnosticApplications' => [
+          {'packageName': 'example.tv', 'name': 'TV', 'version': '1', 'enabled': false, 'enabledSetting': 3},
+        ],
         'getTvCompatibilityDiagnostics' => {
           'identity': {
             'manufacturer': 'DEXP',
@@ -52,6 +56,9 @@ void main() {
     final report = await collectDiagnostics();
     expect(report['schemaVersion'], 3);
     expect(report['reportType'], 'diagnostics');
+    expect(((report['installedApplications'] as Map)['applications'] as List).single['packageName'], 'example.tv');
+    expect((report['launcherSections'] as Map)['status'], 'unavailable');
+    expect(jsonEncode(publicTvCompatibilityReport(report)), isNot(contains('example.tv')));
     expect(report['app'], {'version': '1.2.1', 'build': '99'});
     expect((report['device'] as Map)['model'], '55MCG');
     expect((report['compatibility'] as Map)['status'], 'complete');

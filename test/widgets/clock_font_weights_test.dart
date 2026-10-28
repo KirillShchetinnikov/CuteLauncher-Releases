@@ -34,6 +34,8 @@ void main() {
       await tester.runAsync(() async {
         final duplicates = <String>[];
         const files = {
+          'Medeo Sans': ['medeo-sans'],
+          'Medeo Mono': ['medeo-mono'],
           'Outfit': ['outfit'],
           'Onest': ['onest'],
           'Manrope': ['manrope'],

@@ -152,6 +152,7 @@ class _HomeSectionState extends State<HomeSection> {
     final l = _layout;
     if (index < 0 || l == null) return false;
     _pendingPackage = package;
+    if (_focus?.hasMountedPackage(package) != true) setState(() {});
     final (r, c) = l.cell(index);
     if (_scroll.hasClients) {
       final start = l.mode == 'grid' ? r * l.stepY : c * l.stepX;
@@ -416,6 +417,7 @@ class _HomeSectionState extends State<HomeSection> {
                       packages: _apps.map((app) => app.packageName).toList(),
                       controller: _scroll,
                       selected: _focus?.lastPackage,
+                      requested: _pendingPackage,
                       animate: style.animateReordering && !MediaQuery.disableAnimationsOf(context),
                       physics: mode == 'grid' && maxRows == 0
                           ? const NeverScrollableScrollPhysics() : const ClampingScrollPhysics(),

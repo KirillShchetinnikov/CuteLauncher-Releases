@@ -14,6 +14,7 @@ class ReorderingTileViewport extends StatefulWidget {
   final ScrollController controller;
   final IndexedWidgetBuilder itemBuilder;
   final String? selected;
+  final String? requested;
   final bool animate;
   final ScrollPhysics? physics;
 
@@ -24,6 +25,7 @@ class ReorderingTileViewport extends StatefulWidget {
     required this.controller,
     required this.itemBuilder,
     this.selected,
+    this.requested,
     this.animate = true,
     this.physics,
   });
@@ -34,6 +36,36 @@ class ReorderingTileViewport extends StatefulWidget {
 
 class _ReorderingTileViewportState extends State<ReorderingTileViewport>
     with SingleTickerProviderStateMixin {
+  ScrollPosition? _outer;
+  bool _nearScreen = false, _visibilityScheduled = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final position = Scrollable.maybeOf(context)?.position;
+    if (_outer != position) {
+      _outer?.removeListener(_scheduleVisibility);
+      _outer = position;
+      _outer?.addListener(_scheduleVisibility);
+    }
+    _scheduleVisibility();
+  }
+
+  void _scheduleVisibility() {
+    if (_visibilityScheduled) return;
+    _visibilityScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _visibilityScheduled = false;
+      if (!mounted) return;
+      final box = context.findRenderObject();
+      if (box is! RenderBox || !box.hasSize || !box.attached) return;
+      final screen = Offset.zero & MediaQuery.sizeOf(context);
+      final visible = (box.localToGlobal(Offset.zero) & box.size)
+          .overlaps(screen.inflate(120));
+      if (visible != _nearScreen) setState(() => _nearScreen = visible);
+    });
+    WidgetsBinding.instance.ensureVisualUpdate();
+  }
   void _onPointerSignal(PointerSignalEvent event) {
     if (widget.layout.mode == 'grid' ||
         event is! PointerScrollEvent ||
@@ -90,6 +122,7 @@ class _ReorderingTileViewportState extends State<ReorderingTileViewport>
   @override
   void didUpdateWidget(ReorderingTileViewport oldWidget) {
     super.didUpdateWidget(oldWidget);
+    _scheduleVisibility();
     final next = _positions();
     final sameGeometry =
         widget.layout.mode == oldWidget.layout.mode &&
@@ -112,6 +145,7 @@ class _ReorderingTileViewportState extends State<ReorderingTileViewport>
 
   @override
   void dispose() {
+    _outer?.removeListener(_scheduleVisibility);
     _motion.dispose();
     super.dispose();
   }
@@ -152,8 +186,8 @@ class _ReorderingTileViewportState extends State<ReorderingTileViewport>
                   clipBehavior: Clip.none,
                   children: [
                     for (var i = 0; i < widget.packages.length; i++)
-                      if (widget.packages[i] == widget.selected ||
-                          viewport.overlaps(
+                      if (widget.packages[i] == widget.selected || widget.packages[i] == widget.requested ||
+                          _nearScreen && viewport.overlaps(
                             _position(widget.packages[i]) & size,
                           ))
                         PositionedDirectional(

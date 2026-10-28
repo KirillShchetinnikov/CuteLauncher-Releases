@@ -35,6 +35,7 @@ class DiagnosticsStore {
     'getTvCompatibilityDiagnostics',
     'getProcessMemoryUsage',
     'getApplications',
+    'getDiagnosticApplications',
     'getApplicationIcon',
     'getApplicationBanner',
     'launchApp',

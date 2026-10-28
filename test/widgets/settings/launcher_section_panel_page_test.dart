@@ -85,6 +85,8 @@ void main() {
       ]);
       await _pumpWidgetWithProviders(tester, service, 0);
       expect(find.text('Delete'), findsNothing);
+      expect(find.text('Name'), findsOneWidget);
+      expect(find.text('Custom name'), findsNothing);
       expect(find.text('Show category'), findsOneWidget);
       expect(tester.widget<Switch>(find.byType(Switch)).onChanged, isNotNull);
     });

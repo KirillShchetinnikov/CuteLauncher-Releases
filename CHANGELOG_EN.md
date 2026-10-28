@@ -2,6 +2,27 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
+## v1.5.0 — 2026-10-28
+
+- **Noticeably faster in everyday use.** Home screen preparation time is down by almost **40%**, total cold startup time by about **15%**, and return-to-home time by almost **20%**. Figures are rounded from controlled measurements; results depend on the device and settings.
+- Optimized interface rendering and sped up opening quick settings, the inputs menu, the sleep timer, and the open apps panel for more responsive controls.
+- Added the Open apps panel with app switching, individual app closing, and Close all for user apps. Settings let you choose the built-in panel or an available system panel.
+- Open apps can be assigned to a remote button. Home supports a separate long-press action while a short press still returns to the launcher.
+- Improved the remote mapping editor with a separate button capture dialog, app icons in the picker, webhook URL import from a text file, and deletion confirmation. Removed the Action completed line from the mappings list.
+- Added the Medeo Sans and Medeo Mono fonts for the interface, panel, and clock.
+- Fixed navigation from Continue Watching across empty sections and improved focus retention.
+- Fixed night mode schedule resumption and improved permission recovery and accessibility service connection monitoring.
+
+## v1.4.2 — 2026-10-27
+
+- Fixed thin anti-aliasing seams inside Medeo Pixel characters that appeared at certain text sizes and positions.
+
+## v1.4.1 — 2026-10-27
+
+- Added a recent apps panel with app switching, individual app closing, and Close all for user apps. Settings let you choose the built-in panel or an available system panel.
+- Recent apps can be assigned to a remote button. Home supports a separate long-press action while a short press still returns to the launcher.
+- Added the Medeo Sans, Medeo Mono, and Medeo Pixel font families for the interface, panel, and clock.
+
 ## v1.4.0 — 2026-10-26
 
 - Added Android 9 and 10 support, including file access, backups, update installation, and system permissions.

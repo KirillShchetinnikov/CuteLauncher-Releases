@@ -2,28 +2,40 @@
   "schema": 1,
   "pairs": [
     {
+      "ru": "docs/THIRD_PARTY_RU.md",
+      "en": "docs/THIRD_PARTY_EN.md",
+      "ruSha256": "9311338bb676b4581de9ab7443383744ba8665fbed8c59723bf248391dfab775",
+      "enSha256": "c9f92e0c3038ec0b6a5bdb32e16b2dac103a0c8e5a00ecb7235be65a151cef44"
+    },
+    {
       "ru": "README.md",
       "en": "README_EN.md",
-      "ruSha256": "fd0e374790d08585be311f00ab0fbab3f55535baa9def753641bb4d5abf820eb",
-      "enSha256": "765f16e812f800a26fd481ce93ac4d7c0674f52c6b0e80c49522dfc9911e4371"
+      "ruSha256": "7576a7652cc1d228325739be476b916df350b46d312d9c001ceb4bbe9f5896ae",
+      "enSha256": "a71f7c3aa8f1a724d263645aad3492d345f167fcba8197e292e721ba426c591f"
     },
     {
       "ru": "docs/README.md",
       "en": "docs/README_EN.md",
-      "ruSha256": "d851dc1619f69ae53722810dea36e7917d5a246b74fe9cfddcad4403cd443f11",
-      "enSha256": "e4b5b3c32db510f0c5b4c012a35f8d1325f62e2dcd93b9081a09985742700b9d"
+      "ruSha256": "8fa6874c83ae962b50d03b1cb6bfcd86d4045928c9dde7934fd2178af6519927",
+      "enSha256": "a476532ef67ed0a114fa3666f1a5c875af10f4b9b31fd3ad565ce19e4c1878a8"
     },
     {
       "ru": "docs/USER_GUIDE_RU.md",
       "en": "docs/USER_GUIDE_EN.md",
-      "ruSha256": "b56d016ba806c7d06f5053af24afbf0dcc7455c9e468d311aacfff195918da0e",
-      "enSha256": "d232f838b7a6c7a9a375f889824ea2124dc43de0bffa2e7705418c1b8aa34882"
+      "ruSha256": "b4cc229968214f60ba2fad7e4fd567d4a7e1b6e9866f91b4ba2e41f815ff6210",
+      "enSha256": "b5b63f95cae44f04b1f3e93efba981899a0a6da6c751b1437d2530c209492bbf"
+    },
+    {
+      "ru": "docs/FAQ_RU.md",
+      "en": "docs/FAQ_EN.md",
+      "ruSha256": "f59276f6a4a9498c26d837547d7af5b682ec40112ae9da4df887cd87ca0b3530",
+      "enSha256": "d2d185999f20d6789068fd745dd3ff2ffb0744e6cac3562a5288d560cd8d1a08"
     },
     {
       "ru": "CHANGELOG_RU.md",
       "en": "CHANGELOG_EN.md",
-      "ruSha256": "72838b7242636954ca504d75dbcd0c8b12300cca7e7dea1f895b7c8930d80214",
-      "enSha256": "5996c641c2e7ec03faab221f6d36da41e9b7596096e00981a00c9f3d5443d415"
+      "ruSha256": "e55260b5cdbcf5d68c4855a67090f63a2def90dd1aaa8556887b07ac764ab6ca",
+      "enSha256": "4408f709b225894e6e071fb14e9f2ca5bcc037731cb367cc151045e4bff736d1"
     }
   ]
 }

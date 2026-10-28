@@ -1,5 +1,6 @@
 import 'package:flauncher/bridge_result.dart';
 import 'service_lifecycle.dart';
+import 'foreground_work.dart';
 import 'dart:async';
 import 'dart:developer' as developer;
 import 'dart:io' show Platform;
@@ -15,6 +16,7 @@ import 'package:flutter/widgets.dart';
 
 class WeatherService extends ChangeNotifier with ServiceLifecycle, WidgetsBindingObserver {
   final FLauncherChannel _channel;
+  final ForegroundWork? work;
   StreamSubscription<dynamic>? _subscription;
   Timer? _refreshTimer;
   DateTime? _lastResumeCheck;
@@ -122,14 +124,14 @@ class WeatherService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
 
   bool get _isTest => Platform.environment.containsKey('FLUTTER_TEST');
 
-  WeatherService(this._channel, {SharedPreferences? preferences, WeatherTransport? transport})
+  WeatherService(this._channel, {SharedPreferences? preferences, WeatherTransport? transport, this.work})
       : _preferences = preferences,
         _configuration = WeatherConfiguration.decode(preferences?.getString(weatherConfigurationKey)),
         _direct = DirectWeatherProvider(transport ?? HttpWeatherTransport()) {
     if (!_isTest) {
       WidgetsBinding.instance.addObserver(this);
     }
-    _init();
+    (work?.schedule(this, _init, delay: const Duration(seconds: 1)) ?? _init());
   }
 
   WeatherData? get weatherData => _weatherData;
@@ -138,6 +140,7 @@ class WeatherService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
   bool get hasWeather => _weatherData != null;
 
   Future<void> _init() async {
+    if (isDisposed) return;
     try {
       await _readKeyPresence();
       await _fetchLatest();
@@ -176,7 +179,9 @@ class WeatherService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
       _refreshTimer = null;
     } else if (state == AppLifecycleState.resumed) {
       _foreground = true;
-      _checkWeatherOnResume();
+      if (_initialized) {
+        (work?.schedule(this, _checkWeatherOnResume, delay: const Duration(seconds: 1), maxAge: const Duration(minutes: 1)) ?? _checkWeatherOnResume());
+      }
       _startPeriodicTimer();
     }
   }
@@ -294,6 +299,7 @@ class WeatherService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
 
   @override
   void dispose() {
+    work?.cancel(this);
     if (!_isTest) {
       WidgetsBinding.instance.removeObserver(this);
     }

@@ -17,6 +17,29 @@ import io.flutter.plugin.common.MethodChannel;
 
 /** Local TCP ADB prototype. No arbitrary shell or remote-host input. */
 final class AdbBridge {
+    interface Session<T> { T run(Shell shell) throws Exception; }
+    /** Reuse existing authorization only; opening recents never generates keys or enables ADB. */
+    static <T> T recentSession(android.content.Context context, Session<T> operation) throws Exception {
+        synchronized (LOCK) {
+            var saved = context.getSharedPreferences("adb_connection", 0);
+            int port = saved.getInt("port", 5555);
+            File privateKey = new File(context.getNoBackupFilesDir(), "adb/private-key");
+            File publicKey = new File(context.getNoBackupFilesDir(), "adb/public-key");
+            if (saved.getBoolean("tls", false) || port < 1024 || port > 65535 || !privateKey.isFile() || !publicKey.isFile())
+                throw new IllegalStateException("ADB unavailable");
+            try (Dadb adb = Dadb.create("127.0.0.1", port, AdbKeyPair.read(privateKey, publicKey), 5000, 10000)) {
+                return operation.run(new Shell() {
+                    public String execute(String command) throws Exception {
+                        // Task dumps contain other apps' intents; do not copy them into diagnostics.
+                        var response = adb.shell(command);
+                        if (response.getExitCode() != 0) throw new IllegalStateException("Command rejected");
+                        return response.getOutput();
+                    }
+                    public void close() { }
+                });
+            }
+        }
+    }
     static final Object LOCK = new Object();
     interface Shell extends java.io.Closeable { String execute(String command) throws Exception; }
     private static SharedPreferences tcpSettings(Activity activity) {
@@ -200,7 +223,7 @@ final class AdbBridge {
         }
     }
 
-    static String perform(Activity activity, Shell adb, String action) throws Exception {
+    static String perform(android.content.Context activity, Shell adb, String action) throws Exception {
         if (!shell(adb, "am get-current-user").equals("0")) return "denied";
         String own = activity.getPackageName() + "/com.leanbitlab.ltvL.MainActivity";
         SharedPreferences recovery = activity.getSharedPreferences("adb_recovery", Activity.MODE_PRIVATE);

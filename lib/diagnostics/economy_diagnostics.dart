@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer' show Service;
+import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -58,6 +60,7 @@ class _EconomyDiagnosticsState extends State<EconomyDiagnostics> {
 
     final sample = <String, Object?>{
       'time': DateTime.now().toUtc().toIso8601String(),
+      'isolateId': Service.getIsolateId(Isolate.current),
       'economy': resources.economyEnabled,
       'foreground': resources.isForeground,
       'refresh_hz': refresh,

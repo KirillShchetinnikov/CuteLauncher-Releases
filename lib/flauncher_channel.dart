@@ -29,6 +29,8 @@ class FLauncherChannel {
   static const _weatherEventChannel = EventChannel('me.efesser.flauncher/event_weather');
   static const _watchNextEventChannel = EventChannel('me.efesser.flauncher/event_watch_next');
 
+  Future<String?> getPackageName() => _methodChannel.invokeMethod<String>('getPackageName');
+
   Future<Map<String, dynamic>> getProcessMemoryUsage() async {
     final data = await _methodChannel.invokeMapMethod<String, dynamic>('getProcessMemoryUsage');
     return data ?? {};
@@ -38,6 +40,9 @@ class FLauncherChannel {
     List<Map<dynamic, dynamic>>? applications = await _methodChannel.invokeListMethod("getApplications");
     return applications!;
   }
+
+  Future<List<Map<dynamic, dynamic>>> getLauncherApplications() async =>
+      (await _methodChannel.invokeListMethod<Map<dynamic, dynamic>>('getLauncherApplications'))!;
 
   Future<Uint8List> getApplicationBanner(String packageName) async {
     Uint8List bytes = await _methodChannel.invokeMethod("getApplicationBanner", packageName);

@@ -1736,11 +1736,11 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get diagnosticsSharingNotice =>
-      'Передавайте файл автору в особисті повідомлення, не публікуйте відкрито: автоматичне очищення може пропустити особисті дані. Надсилаючи звіт автору, ви погоджуєтеся на розміщення знеособленого звіту про сумісність ТВ у Git-репозиторії CuteLauncher. Публікуються лише відомості про пристрій і доступність функцій без особистих даних; журнал помилок, команди та ваші налаштування не публікуються.';
+      'Передавайте файл автору в особисті повідомлення, не публікуйте відкрито: автоматичне очищення може пропустити особисті дані. Надсилаючи звіт автору, ви погоджуєтеся на розміщення знеособленого звіту про сумісність ТВ у Git-репозиторії CuteLauncher. Публікуються лише відомості про пристрій і доступність функцій без особистих даних; журнал помилок, команди та ваші налаштування не публікуються.\n\nЗвіт також містить установлені пакети, їхні назви, версії та стан увімкнення, а також назви, склад, порядок і видимість розділів. Ідентифікатори й назви зберігаються для діагностики; списки застосунків і розділів не публікуються.';
 
   @override
   String get diagnosticsHint =>
-      'Єдиний звіт містить сумісність функцій ТВ і діагностику помилок. Звіт містить модель і прошивку ТВ, версію застосунку, дозволи, пам’ять, етапи й причини помилок, команди та відповіді після автоматичного очищення особистих даних. Зберігаються останні 50 операцій, окремо до 100 збоїв і обмежений журнал ADB поточного сеансу. Перезапуск очищує журнал. Особисті дані можуть залишитися: надсилайте файл у приватні повідомлення, не публікуйте відкрито. Автоматичного надсилання немає. Для кожної помилки зберігається знімок застосованих налаштувань: подальші зміни його не замінюють.';
+      'Єдиний звіт містить сумісність функцій ТВ і діагностику помилок. Звіт містить модель і прошивку ТВ, версію застосунку, дозволи, пам’ять, етапи й причини помилок, команди та відповіді після автоматичного очищення особистих даних. Зберігаються останні 50 операцій, окремо до 100 збоїв і обмежений журнал ADB поточного сеансу. Перезапуск очищує журнал. Особисті дані можуть залишитися: надсилайте файл у приватні повідомлення, не публікуйте відкрито. Автоматичного надсилання немає. Для кожної помилки зберігається знімок застосованих налаштувань: подальші зміни його не замінюють.\n\nЗвіт також містить установлені пакети, їхні назви, версії та стан увімкнення, а також назви, склад, порядок і видимість розділів. Ідентифікатори й назви зберігаються для діагностики; списки застосунків і розділів не публікуються.';
 
   @override
   String get diagnosticsTitle => 'Діагностика помилок';
@@ -3434,7 +3434,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get noRemovableCategories =>
-      'Цей додаток не було додано вручну до жодного розділу. Автоматичні розділи не можна редагувати.';
+      'Застосунок не додано вручну до жодного розділу. Зі стандартних автоматичних розділів («Усі», «Для ТБ», «Не для ТБ») видалити його не можна — скористайтеся «Приховати». «Обране» редагується вручну.';
 
   @override
   String get remoteButtonsTitle => 'Ремапер кнопок пульта';
@@ -3523,10 +3523,10 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get remotePanelDescription =>
-      'Спливна панель показує потрібні віджети поверх інших застосунків. Щоб відкривати її з пульта, призначте дію «Спливна панель» на зручну кнопку.';
+      'Панель швидких налаштувань показує потрібні віджети поверх інших застосунків. Щоб відкривати її з пульта, призначте дію «Панель швидких налаштувань» на зручну кнопку.';
 
   @override
-  String get remotePanel => 'Спливна панель';
+  String get remotePanel => 'Панель швидких налаштувань';
 
   @override
   String get remotePanelSettingsBackground => 'Колір тла як у налаштуваннях';
@@ -3585,13 +3585,18 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get remotePanelDisabledInLauncher =>
-      'Виклик спливної панелі вимкнено, поки відкрито CuteLauncher.';
+      'Виклик панелі швидких налаштувань вимкнено, поки відкрито CuteLauncher.';
 
   @override
   String get remoteAccessSettings => 'Налаштування доступу';
 
   @override
   String get remoteButtonsTest => 'Перевірка кнопок';
+
+  @override
+  String remoteMappingDeleteConfirm(String name) {
+    return 'Видалити призначення «$name»?';
+  }
 
   @override
   String get remoteMappingConflict =>
@@ -4236,4 +4241,120 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get adbWifiDisable => 'Вимкнути';
+
+  @override
+  String get recentAppsTitle => 'Відкриті програми';
+
+  @override
+  String get recentAppsPanelType => 'Панель';
+
+  @override
+  String get recentAppsAutomatic => 'Автоматично';
+
+  @override
+  String get recentAppsCustom => 'Панель CuteLauncher';
+
+  @override
+  String get recentAppsSystem => 'Вбудована панель';
+
+  @override
+  String get recentAppsOpen => 'Відкрити панель';
+
+  @override
+  String get recentAppsRefresh => 'Оновити';
+
+  @override
+  String get recentAppsCloseAll => 'Закрити все';
+
+  @override
+  String get recentAppsEmpty => 'Немає ТВ-програм із відкритими завданнями';
+
+  @override
+  String get recentAppsUnavailable =>
+      'Панель відкритих програм недоступна. Перевірте ADB і спеціальні можливості.';
+
+  @override
+  String get recentAppsHelp =>
+      'Показано лише ТВ-програми з відкритими завданнями. «Закрити все» зупиняє користувацькі програми з цього списку. Кнопка призначається в ремапері. Панелі CuteLauncher потрібні ADB і спеціальні можливості.';
+
+  @override
+  String get recentAppsHomeHint =>
+      'Для Home доступне лише утримання. Коротке натискання повертає до CuteLauncher. Призначення діє і поза лаунчером.';
+
+  @override
+  String get sectionRulesHelp =>
+      'Стандартні розділи можна перейменовувати, переміщувати й приховувати, але не видаляти; хоча б один має бути видимим. «Усі», «Для ТБ» та «Не для ТБ» заповнюються за типом запуску, а не назвою; приховування прибирає застосунок з усіх трьох. «Обране» та власні розділи заповнюються вручну. Порядок: вручну, за назвою, частотою чи останнім запуском; оформлення окреме. «Продовжити перегляд» показує рекомендації, його можна приховувати й переміщувати.';
+
+  @override
+  String get remoteMappingNamePlaceholder => 'Назва кнопки';
+
+  @override
+  String get remoteMappingAssign => 'Призначити кнопку';
+
+  @override
+  String get remoteMappingCapture => 'Захопити';
+
+  @override
+  String remoteMappingCaptured(String key) {
+    return 'Захоплена кнопка: $key';
+  }
+
+  @override
+  String get remoteMappingCaptureHint =>
+      'Натисніть «Захопити», потім кнопку пульта. Захоплення можна повторити. Натисніть ОК для підтвердження.';
+
+  @override
+  String get remoteMappingCaptureTimeout =>
+      'Кнопку не захоплено. Спробуйте знову.';
+
+  @override
+  String get remoteMappingCaptureFailed =>
+      'Не вдалося захопити кнопку. Перевірте службу спеціальних можливостей.';
+
+  @override
+  String get remoteMappingServiceRequired =>
+      'Підключіть службу спеціальних можливостей у налаштуваннях доступу.';
+
+  @override
+  String get remoteMappingKeyRequired =>
+      'Кнопку не призначено. Натисніть «Призначити кнопку» та захопіть її.';
+
+  @override
+  String get remoteMappingHomeHoldRequired => 'Для Home виберіть «Утримання».';
+
+  @override
+  String get remoteMappingAppRequired => 'Виберіть програму для запуску.';
+
+  @override
+  String get remoteMappingUrlRequired => 'Введіть або імпортуйте Webhook URL.';
+
+  @override
+  String get remoteMappingUrlInvalid =>
+      'Неправильний URL. Потрібен HTTPS або локальний HTTP зі шляхом, без пробілів, облікових даних і фрагмента #.';
+
+  @override
+  String get remoteMappingSaveFailed =>
+      'Не вдалося зберегти. Повторіть; значення залишилися в редакторі.';
+
+  @override
+  String get remoteMappingDeleteFailed =>
+      'Не вдалося видалити. Спробуйте знову.';
+
+  @override
+  String get remoteMappingRecents => 'Панель відкритих програм';
+
+  @override
+  String get remoteMappingImport => 'Імпортувати URL з файлу';
+
+  @override
+  String get remoteMappingImportHint =>
+      'Виберіть файл UTF-8 лише з Webhook URL, без команд і пояснень. Переноси рядків видаляються.';
+
+  @override
+  String get remoteMappingImportInvalid =>
+      'Файл має містити лише правильний Webhook URL: HTTPS або локальний HTTP, без команд і пояснень.';
+
+  @override
+  String get remoteMappingImportFailed =>
+      'Не вдалося прочитати. Виберіть доступний файл UTF-8 розміром до 64 КБ.';
 }

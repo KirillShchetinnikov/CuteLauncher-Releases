@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "reviewedAt": "2026-10-26",
+  "reviewedAt": "2026-10-28",
   "sources": [
     "https://developer.android.com/reference/android/content/pm/PackageManager",
     "https://source.android.com/docs/core/runtime/rros",
@@ -1747,7 +1747,8 @@
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "tcl-g08",
-        "tcl-g10"
+        "tcl-g10",
+        "xiaomi-mitv-axfu0-android14-20261028"
       ]
     },
     "com.google.android.appsearch.apk": {
@@ -2190,7 +2191,8 @@
         "droidlogic-x98q-android11-20261026",
         "kp1-yyz",
         "tcl-g08",
-        "tcl-g10"
+        "tcl-g10",
+        "xiaomi-mitv-axfu0-android14-20261028"
       ]
     },
     "com.google.android.tv.axel": {

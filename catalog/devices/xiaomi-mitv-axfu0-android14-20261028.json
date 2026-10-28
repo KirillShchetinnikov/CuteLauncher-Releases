@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "reportType": "tvCompatibility",
+  "scope": "readOnlyMetadata",
+  "capturedAt": "2026-10-28T00:00:00.000Z",
+  "kind": "physical",
+  "kindDetection": "buildMetadata",
+  "identity": {
+    "manufacturer": "Xiaomi",
+    "model": "MiTV-AXFU0",
+    "android": "14",
+    "sdk": "34",
+    "abis": "armeabi-v7a,armeabi"
+  },
+  "installedLauncher": {
+    "versionName": "1.4.0",
+    "versionCode": "102"
+  },
+  "checks": {
+    "androidTv": "available",
+    "androidVersion": "available",
+    "homeRegistered": "available",
+    "defaultHome": "unknown",
+    "homeSelection": "available",
+    "overlay": "unknown",
+    "notifications": "unknown",
+    "notificationListener": "unknown",
+    "accessibility": "unknown",
+    "writeSettings": "unknown",
+    "usageStats": "unknown",
+    "watchNext": "unknown",
+    "tvInputs": "available",
+    "documentExport": "available",
+    "screensaverSelection": "unsupported"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "reportType": "tvPackageStateObservation",
+  "scope": "userProvidedPackageStates",
+  "capturedAt": "2026-10-28T00:00:00Z",
+  "source": "userProvidedDiagnostics",
+  "identity": {
+    "manufacturer": "Xiaomi",
+    "model": "MiTV-AXFU0",
+    "device": "arctictale",
+    "fingerprint": "Xiaomi/arctictale/arctictale:14/UKG3.241124.001/V816.0.25.12.5.UXFAATV:user/release-keys",
+    "firmware": "UKG3.241124.001.V816.0.25.12.5.UXFAATV",
+    "android": "14",
+    "sdk": "34",
+    "abis": "armeabi-v7a,armeabi"
+  },
+  "verification": "observedOnly",
+  "limits": [
+    "Partial package-state observation from a legacy diagnostics report; no installed-app inventory or launcher-section list is present",
+    "Only two unredacted package identifiers are known; eleven disabled package identifiers are redacted",
+    "Date only; midnight is a placeholder, not the package observation time; sourceCapturedAt is the report export time",
+    "Versions, system flags and numeric enabled settings are unknown",
+    "Disabled state and successful HOME commands do not verify safety, Wi-Fi preservation or recovery"
+  ],
+  "packages": [
+    {
+      "package": "com.google.android.apps.tv.launcherx",
+      "state": "disabled"
+    },
+    {
+      "package": "com.google.android.tungsten.setupwraith",
+      "state": "disabled"
+    }
+  ],
+  "sourceReport": "cutelauncher_diagnostics_1793173186526.json",
+  "sourceCapturedAt": "2026-10-28T07:39:27.874831Z",
+  "reportedCounts": {
+    "disabled": 13,
+    "identifiedDisabled": 2,
+    "redactedDisabled": 11
+  },
+  "observationElapsedMs": 516462
+}

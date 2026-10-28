@@ -1,7 +1,9 @@
 import 'package:flutter/widgets.dart';
+import 'dart:async';
+import '../diagnostics/startup_trace.dart';
 
-/// Mounts the home screen immediately, but reveals it after its images decode.
-/// This barrier is used once; subsequent updates keep the home screen visible.
+/// A short first-screen barrier: offscreen images never delay the reveal, and
+/// a hung decoder cannot hide the home indefinitely. Updates keep it visible.
 class InitialAppImages extends StatefulWidget {
   final Widget child;
   final Future<void> Function()? onReady;
@@ -12,38 +14,79 @@ class InitialAppImages extends StatefulWidget {
 }
 
 class _InitialAppImagesState extends State<InitialAppImages> {
-  int _pending = 0;
+  final _pending = <Object, BuildContext?>{};
   bool _ready = false;
   bool _revealing = false;
+  bool _layoutSettled = false, _checkScheduled = false, _timedOut = false, _focused = false;
+  Timer? _timeout;
 
-  VoidCallback _register() {
+  VoidCallback _register([BuildContext? context]) {
     if (_ready) return () {};
-    _pending++;
+    final ticket = Object();
+    _pending[ticket] = context;
     bool completed = false;
     return () {
       if (completed) return;
       completed = true;
-      _pending--;
+      _pending.remove(ticket);
       _checkReady();
     };
   }
 
   void _checkReady() {
+    if (_ready || _checkScheduled || !mounted) return;
+    _checkScheduled = true;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (mounted && !_ready && !_revealing && _pending == 0) {
+      _checkScheduled = false;
+      if (!_layoutSettled) {
+        _layoutSettled = true;
+        _checkReady();
+        return;
+      }
+      if (mounted && !_ready && !_revealing && (_timedOut || !_hasVisiblePending)) {
         _revealing = true;
-        await widget.onReady?.call();
-        if (mounted) setState(() => _ready = true);
+        if (!_focused) {
+          _focused = true;
+          final focus = widget.onReady?.call();
+          if (focus != null) await focus.timeout(const Duration(milliseconds: 500), onTimeout: () {});
+        }
+        if (!_timedOut && _hasVisiblePending) {
+          _revealing = false;
+          _checkReady();
+          return;
+        }
+        if (mounted) {
+          _timeout?.cancel();
+          _pending.clear();
+          setState(() => _ready = true);
+          StartupTrace.mark('homeReady', {'imageTimeout': _timedOut});
+        }
       }
     });
     WidgetsBinding.instance.ensureVisualUpdate();
   }
 
+  bool get _hasVisiblePending => _pending.values.any((context) {
+    if (context == null) return true;
+    if (!context.mounted) return false;
+    final box = context.findRenderObject();
+    if (box is! RenderBox || !box.hasSize || !box.attached) return false;
+    final bounds = box.localToGlobal(Offset.zero) & box.size;
+    return bounds.overlaps(Offset.zero & MediaQuery.sizeOf(context));
+  });
+
   @override
   void initState() {
     super.initState();
+    _timeout = Timer(const Duration(milliseconds: 1200), () {
+      _timedOut = true;
+      _checkReady();
+    });
     _checkReady();
   }
+
+  @override
+  void dispose() { _timeout?.cancel(); super.dispose(); }
 
   @override
   Widget build(BuildContext context) => AppImagesReadiness(
@@ -56,7 +99,7 @@ class _InitialAppImagesState extends State<InitialAppImages> {
 }
 
 class AppImagesReadiness extends InheritedWidget {
-  final VoidCallback Function() register;
+  final VoidCallback Function([BuildContext? context]) register;
   const AppImagesReadiness({super.key, required this.register, required super.child});
 
   @override

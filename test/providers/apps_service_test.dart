@@ -7,6 +7,8 @@ import 'package:flauncher/image_limits.dart';
 import 'package:flauncher/models/app.dart';
 import 'package:flauncher/models/category.dart';
 import 'package:flauncher/providers/apps_service.dart';
+import 'package:flauncher/providers/app_catalog_cache.dart';
+import 'package:flauncher/providers/foreground_work.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -15,8 +17,46 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../mocks.mocks.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   setUp(() async {
     SharedPreferences.setMockInitialValues({});
+  });
+
+  test('cached catalog makes home usable before a slow system query and preserves launch statistics', () async {
+    final root = await Directory.systemTemp.createTemp('cute-catalog-start-');
+    final cache = AppCatalogCache(directory: () async => root);
+    final db = FLauncherDatabase.inMemory();
+    await db.insertCategory(CategoriesCompanion.insert(name: 'All Apps', order: 0, systemKey: const Value('all_apps')));
+    await db.persistApps([AppsCompanion.insert(packageName: 'cached.app', name: 'Saved', version: '1')]);
+    await db.updateApp('cached.app', const AppsCompanion(launchCount: Value(17)));
+    await cache.save([{'packageName': 'cached.app', 'name': 'Saved', 'version': '1',
+      'sideloaded': true, 'system': false, 'launchable': true}]);
+    final channel = MockFLauncherChannel();
+    when(channel.addAppsChangedListener(any)).thenReturn(null);
+    final system = Completer<List<Map<dynamic, dynamic>>>();
+    when(channel.getApplications()).thenAnswer((_) => system.future);
+    final work = ForegroundWork();
+    final service = AppsService(channel, db, catalogCache: cache, work: work);
+    try {
+      await Future<void>(() async {
+        while (!service.initialized) { await Future<void>.delayed(const Duration(milliseconds: 5)); }
+      }).timeout(const Duration(seconds: 3));
+      verifyNever(channel.getApplications());
+      expect(service.applications.single.sideloaded, true);
+      expect(service.applications.single.launchCount, 17);
+      work.homeReady();
+      await Future<void>.delayed(const Duration(milliseconds: 400));
+      verify(channel.getApplications()).called(1);
+      final refreshed = Completer<void>();
+      service.addListener(() { if (!refreshed.isCompleted) refreshed.complete(); });
+      system.complete([]);
+      await refreshed.future.timeout(const Duration(seconds: 2));
+      expect(service.applications, isEmpty);
+      expect((await db.getApplications()).single.launchCount, 17);
+      await cache.save([]);
+    } finally {
+      service.dispose(); work.dispose(); await db.close(); await root.delete(recursive: true);
+    }
   });
 
   test('catalog changes hide disabled tiles and restore saved layout on enable', () async {
@@ -71,6 +111,29 @@ void main() {
       service.dispose();
       await db.close();
     }
+  });
+
+  test('first launch shows launchable apps before full inventory is queried', () async {
+    final channel = MockFLauncherChannel();
+    final db = FLauncherDatabase.inMemory();
+    final work = ForegroundWork();
+    final tv = <String, dynamic>{'packageName': 'tv', 'name': 'TV', 'version': '1', 'sideloaded': false};
+    when(channel.addAppsChangedListener(any)).thenReturn(null);
+    when(channel.getLauncherApplications()).thenAnswer((_) async => [tv]);
+    when(channel.getApplications()).thenAnswer((_) async => [tv,
+      {'packageName': 'service', 'name': 'Service', 'version': '1', 'sideloaded': true, 'launchable': false}]);
+    final service = AppsService(channel, db, work: work, fastInitialCatalog: true);
+    try {
+      while (!service.initialized) { await Future<void>.delayed(const Duration(milliseconds: 1)); }
+      expect(service.applications.single.packageName, 'tv');
+      verifyNever(channel.getApplications());
+      final complete = Completer<void>();
+      service.addListener(() { if (!complete.isCompleted) complete.complete(); });
+      work.homeReady();
+      await complete.future.timeout(const Duration(seconds: 3));
+      expect(service.applications, hasLength(2));
+      expect(service.categories.expand((category) => category.applications).any((app) => app.packageName == 'service'), false);
+    } finally { service.dispose(); work.dispose(); await db.close(); }
   });
 
   test('own launcher follows visibility preference in all apps', () async {

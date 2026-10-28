@@ -197,7 +197,7 @@ void main() {
     expect((await db.getAppsCategories()).any((row) => row.appPackageName == partner.packageName), isFalse);
   });
 
-  test('swapped preset labels are repaired without swapping IDs or memberships', () async {
+  test('renaming standard sections preserves identity and automatic membership', () async {
     final saved = await db.getAppsCategories();
     await db.updateCategory(1, const CategoriesCompanion(name: Value('All Apps')));
     await db.updateCategory(2, const CategoriesCompanion(name: Value('Favorites')));
@@ -205,13 +205,13 @@ void main() {
     expect(await db.getAppsCategories(), saved);
     await service.refreshState();
     expect(section('favorites').id, 1);
-    expect(section('favorites').name, 'Favorites');
+    expect(section('favorites').name, 'All Apps');
     expect(contents('favorites'), {'tv'});
     expect(section('all_apps').id, 2);
-    expect(section('all_apps').name, 'All Apps');
+    expect(section('all_apps').name, 'Favorites');
     expect(contents('all_apps'), {'tv', 'mobile', 'system'});
     await service.renameCategory(section('favorites'), 'All Apps');
-    expect(section('favorites').name, 'Favorites');
+    expect(section('favorites').name, 'All Apps');
     await service.renameCategory(section('favorites'), 'Personal');
     expect(section('favorites').name, 'Personal');
   });

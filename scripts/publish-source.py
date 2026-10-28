@@ -26,8 +26,10 @@ PUBLIC_WORKFLOWS = {
     '.github/workflows/public-release.yml',
 }
 PUBLIC_DOCS = {
+    'docs/THIRD_PARTY_RU.md', 'docs/THIRD_PARTY_EN.md',
     'README.md', 'README_EN.md', 'docs/README.md', 'docs/README_EN.md',
     'docs/USER_GUIDE_RU.md', 'docs/USER_GUIDE_EN.md',
+    'docs/FAQ_RU.md', 'docs/FAQ_EN.md',
     'CHANGELOG_RU.md', 'CHANGELOG_EN.md',
 }
 PUBLIC_DOC_ASSETS = {

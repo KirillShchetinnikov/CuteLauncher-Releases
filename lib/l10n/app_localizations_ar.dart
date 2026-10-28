@@ -1721,11 +1721,11 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get diagnosticsSharingNotice =>
-      'أرسل الملف إلى المؤلف برسالة خاصة ولا تنشره علنًا: قد يفوت التنقيح التلقائي بعض البيانات الشخصية. بإرسال التقرير توافق على نشر تقرير توافق تلفاز مجهّل الهوية في مستودع Git لتطبيق CuteLauncher. تُنشر فقط بيانات الجهاز الوصفية وتوفّر الوظائف دون بيانات شخصية؛ ولا تُنشر سجلات الأخطاء أو الأوامر أو إعداداتك.';
+      'أرسل الملف إلى المؤلف برسالة خاصة ولا تنشره علنًا: قد يفوت التنقيح التلقائي بعض البيانات الشخصية. بإرسال التقرير توافق على نشر تقرير توافق تلفاز مجهّل الهوية في مستودع Git لتطبيق CuteLauncher. تُنشر فقط بيانات الجهاز الوصفية وتوفّر الوظائف دون بيانات شخصية؛ ولا تُنشر سجلات الأخطاء أو الأوامر أو إعداداتك.\n\nيتضمن التقرير أيضًا الحزم المثبتة وأسماءها وإصداراتها وحالة تفعيلها، وأسماء الأقسام ومحتوياتها وترتيبها وظهورها. تُحفظ المعرّفات والأسماء للتشخيص؛ ولا تُنشر قوائم التطبيقات والأقسام.';
 
   @override
   String get diagnosticsHint =>
-      'يجمع تقرير واحد توافق وظائف التلفاز وتشخيص الأخطاء. يتضمن التقرير طراز التلفاز وبرنامجه الثابت وإصدار التطبيق والأذونات والذاكرة ومراحل الأخطاء وأسبابها والأوامر والردود بعد التنقيح التلقائي للبيانات الشخصية. يحتفظ بآخر 50 عملية وبما يصل إلى 100 فشل بشكل منفصل وسجل ADB محدود للجلسة الحالية. تمسح إعادة التشغيل السجل. قد تبقى بيانات شخصية: أرسل الملف برسالة خاصة ولا تنشره علنًا. لا يُرسل شيء تلقائيًا. تُحفظ مع كل خطأ لقطة للإعدادات المطبّقة، ولا تستبدلها التغييرات اللاحقة.';
+      'يجمع تقرير واحد توافق وظائف التلفاز وتشخيص الأخطاء. يتضمن التقرير طراز التلفاز وبرنامجه الثابت وإصدار التطبيق والأذونات والذاكرة ومراحل الأخطاء وأسبابها والأوامر والردود بعد التنقيح التلقائي للبيانات الشخصية. يحتفظ بآخر 50 عملية وبما يصل إلى 100 فشل بشكل منفصل وسجل ADB محدود للجلسة الحالية. تمسح إعادة التشغيل السجل. قد تبقى بيانات شخصية: أرسل الملف برسالة خاصة ولا تنشره علنًا. لا يُرسل شيء تلقائيًا. تُحفظ مع كل خطأ لقطة للإعدادات المطبّقة، ولا تستبدلها التغييرات اللاحقة.\n\nيتضمن التقرير أيضًا الحزم المثبتة وأسماءها وإصداراتها وحالة تفعيلها، وأسماء الأقسام ومحتوياتها وترتيبها وظهورها. تُحفظ المعرّفات والأسماء للتشخيص؛ ولا تُنشر قوائم التطبيقات والأقسام.';
 
   @override
   String get diagnosticsTitle => 'تشخيص الأخطاء';
@@ -3403,7 +3403,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get noRemovableCategories =>
-      'لم تتم إضافة هذا التطبيق يدويًا إلى أي أقسام. لا يمكن تحرير الأقسام التلقائية.';
+      'لم يُضف هذا التطبيق يدويًا إلى أي قسم. لا يمكن إزالته من الأقسام التلقائية القياسية (كل التطبيقات، تطبيقات التلفاز، التطبيقات الأخرى)؛ استخدم إخفاء. يمكن تعديل المفضلة يدويًا.';
 
   @override
   String get remoteButtonsTitle => 'إعادة تعيين أزرار جهاز التحكم';
@@ -3492,10 +3492,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get remotePanelDescription =>
-      'تعرض اللوحة العائمة أدواتك فوق التطبيقات الأخرى. لفتحها بجهاز التحكم، عيّن إجراء «لوحة عائمة» لزر من اختيارك.';
+      'تعرض لوحة الإعدادات السريعة أدواتك فوق التطبيقات الأخرى. لفتحها بجهاز التحكم، عيّن إجراء «لوحة الإعدادات السريعة» لزر من اختيارك.';
 
   @override
-  String get remotePanel => 'لوحة عائمة';
+  String get remotePanel => 'لوحة الإعدادات السريعة';
 
   @override
   String get remotePanelSettingsBackground => 'استخدام لون خلفية الإعدادات';
@@ -3553,13 +3553,18 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get remotePanelDisabledInLauncher =>
-      'اللوحة العائمة معطلة أثناء ظهور CuteLauncher على الشاشة.';
+      'لوحة الإعدادات السريعة معطلة أثناء ظهور CuteLauncher على الشاشة.';
 
   @override
   String get remoteAccessSettings => 'إعدادات الوصول';
 
   @override
   String get remoteButtonsTest => 'اختبار الأزرار';
+
+  @override
+  String remoteMappingDeleteConfirm(String name) {
+    return 'هل تريد حذف التعيين «$name»؟';
+  }
 
   @override
   String get remoteMappingConflict =>
@@ -4195,4 +4200,118 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get adbWifiDisable => 'تعطيل';
+
+  @override
+  String get recentAppsTitle => 'التطبيقات المفتوحة';
+
+  @override
+  String get recentAppsPanelType => 'اللوحة';
+
+  @override
+  String get recentAppsAutomatic => 'تلقائي';
+
+  @override
+  String get recentAppsCustom => 'لوحة CuteLauncher';
+
+  @override
+  String get recentAppsSystem => 'اللوحة المدمجة';
+
+  @override
+  String get recentAppsOpen => 'فتح اللوحة';
+
+  @override
+  String get recentAppsRefresh => 'تحديث';
+
+  @override
+  String get recentAppsCloseAll => 'إغلاق الكل';
+
+  @override
+  String get recentAppsEmpty => 'لا توجد تطبيقات تلفاز بمهام مفتوحة';
+
+  @override
+  String get recentAppsUnavailable =>
+      'التطبيقات المفتوحة غير متاحة. تحقق من ADB وإذن تسهيل الاستخدام.';
+
+  @override
+  String get recentAppsHelp =>
+      'تظهر تطبيقات التلفاز ذات المهام المفتوحة فقط. إغلاق الكل يوقف تطبيقات المستخدم في هذه القائمة. عيّن زرًا في أداة إعادة التعيين. تتطلب لوحة CuteLauncher خدمة ADB وإذن تسهيل الاستخدام.';
+
+  @override
+  String get recentAppsHomeHint =>
+      'يدعم Home الضغط المطوّل فقط. يعيد الضغط القصير إلى CuteLauncher. يعمل التعيين خارج المشغّل أيضًا.';
+
+  @override
+  String get sectionRulesHelp =>
+      'يمكن إعادة تسمية الأقسام القياسية أو نقلها أو إخفاؤها، لكن لا يمكن حذفها؛ يجب إبقاء قسم واحد ظاهرًا. تُملأ قوائم كل التطبيقات وتطبيقات التلفاز والتطبيقات الأخرى حسب نوع التشغيل لا الاسم؛ الإخفاء يزيل التطبيق من الثلاث. تُملأ المفضلة والأقسام الخاصة يدويًا. الترتيب يدوي أو حسب الاسم أو تكرار التشغيل أو آخر تشغيل، والمظهر لكل قسم. تعرض متابعة المشاهدة توصيات التطبيقات ويمكن إخفاؤها أو نقلها.';
+
+  @override
+  String get remoteMappingNamePlaceholder => 'اسم الزر';
+
+  @override
+  String get remoteMappingAssign => 'تعيين زر';
+
+  @override
+  String get remoteMappingCapture => 'التقاط';
+
+  @override
+  String remoteMappingCaptured(String key) {
+    return 'الزر الملتقط: $key';
+  }
+
+  @override
+  String get remoteMappingCaptureHint =>
+      'اختر التقاط ثم اضغط زر جهاز التحكم. يمكنك تكرار الالتقاط. اختر موافق لاعتماد الاختيار.';
+
+  @override
+  String get remoteMappingCaptureTimeout => 'لم يتم التقاط زر. حاول مجددًا.';
+
+  @override
+  String get remoteMappingCaptureFailed =>
+      'تعذر الالتقاط. تحقق من صلاحية خدمة تسهيل الاستخدام.';
+
+  @override
+  String get remoteMappingServiceRequired =>
+      'اربط خدمة تسهيل الاستخدام في إعدادات الوصول.';
+
+  @override
+  String get remoteMappingKeyRequired =>
+      'لم يتم تعيين زر. اختر تعيين زر والتقطه.';
+
+  @override
+  String get remoteMappingHomeHoldRequired => 'اختر الضغط المطول لزر Home.';
+
+  @override
+  String get remoteMappingAppRequired => 'اختر تطبيقًا لتشغيله.';
+
+  @override
+  String get remoteMappingUrlRequired => 'أدخل رابط Webhook أو استورده.';
+
+  @override
+  String get remoteMappingUrlInvalid =>
+      'رابط غير صالح. استخدم HTTPS أو HTTP محليًا مع مسار، دون مسافات أو بيانات دخول أو جزء #.';
+
+  @override
+  String get remoteMappingSaveFailed =>
+      'تعذر الحفظ. حاول مجددًا؛ تم الاحتفاظ بقيم المحرر.';
+
+  @override
+  String get remoteMappingDeleteFailed => 'تعذر الحذف. حاول مجددًا.';
+
+  @override
+  String get remoteMappingRecents => 'لوحة التطبيقات المفتوحة';
+
+  @override
+  String get remoteMappingImport => 'استيراد رابط من ملف';
+
+  @override
+  String get remoteMappingImportHint =>
+      'اختر ملف نص UTF-8 يحتوي رابط Webhook فقط، دون أوامر أو شروح. ستتم إزالة فواصل الأسطر.';
+
+  @override
+  String get remoteMappingImportInvalid =>
+      'يجب أن يحتوي الملف رابط Webhook صالحًا فقط: HTTPS أو HTTP محليًا، دون أوامر أو شروح.';
+
+  @override
+  String get remoteMappingImportFailed =>
+      'تعذرت القراءة. اختر ملف نص UTF-8 متاحًا بحجم لا يتجاوز 64 كيلوبايت.';
 }

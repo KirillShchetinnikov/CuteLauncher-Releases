@@ -11,6 +11,7 @@ import 'package:flauncher/providers/weather_service.dart';
 import 'package:flauncher/providers/remote_panel_service.dart';
 import 'package:flauncher/widgets/remote_panel.dart';
 import 'package:flauncher/widgets/focus_aware_app_bar.dart';
+import 'package:flauncher/widgets/top_panel_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flauncher/widgets/panel_calendar_dialog.dart';
@@ -22,6 +23,56 @@ import '../mocks.mocks.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  for (final showTraffic in [false, true]) {
+    testWidgets('network-only panel does not wait for traffic: traffic=$showTraffic', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      final panel = RemotePanelService(prefs);
+      final settings = SettingsService(prefs);
+      for (final id in RemotePanelService.ids) {
+        await panel.show(id, id == 'settings' || id == 'network' || (showTraffic && id == 'traffic'));
+      }
+      final channel = MockFLauncherChannel();
+      final usage = Completer<int>();
+      when(channel.addNetworkChangedListener(any)).thenReturn(null);
+      when(channel.getActiveNetworkInformation()).thenAnswer((_) async => {});
+      when(channel.checkUsageStatsPermission()).thenAnswer((_) async => true);
+      when(channel.getDailyDataUsage()).thenAnswer((_) => usage.future);
+      final network = NetworkService(channel);
+      final weather = MockWeatherService();
+      when(weather.hasWeather).thenReturn(false);
+      final calls = <String>[];
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(remotePanelChannel, (call) async {
+        calls.add(call.method);
+        return null;
+      });
+      addTearDown(() {
+        tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(remotePanelChannel, null);
+        settings.dispose(); panel.dispose();
+      });
+      await tester.pumpWidget(MultiProvider(providers: [
+        ChangeNotifierProvider.value(value: settings),
+        ChangeNotifierProvider.value(value: panel),
+        ChangeNotifierProvider.value(value: network),
+        ChangeNotifierProvider<TvInputsService>.value(value: MockTvInputsService()),
+        ChangeNotifierProvider<NotificationsService>.value(value: MockNotificationsService()),
+        ChangeNotifierProvider<WeatherService>.value(value: weather),
+      ], child: MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: const RemotePanel(),
+      )));
+      await tester.pump();
+      await tester.pump();
+      expect(calls.contains('ready'), !showTraffic);
+      usage.complete(123);
+      await tester.pumpAndSettle();
+      expect(calls.where((method) => method == 'ready'), hasLength(1));
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+      network.dispose();
+    });
+  }
   for (final combined in [false, true]) {
     testWidgets('remote calendar opens with OK and restores date focus: combined=$combined', (tester) async {
       SharedPreferences.setMockInitialValues({});
@@ -93,7 +144,8 @@ void main() {
         final notifications = MockNotificationsService();
         final weather = MockWeatherService();
         final network = MockNetworkService();
-        final timer = SleepTimerService();
+        var elapsed = 0;
+        final timer = SleepTimerService(elapsedMilliseconds: () => elapsed);
         final timerLoad = Completer<Object?>();
         tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
           SleepTimerService.channel,
@@ -203,6 +255,15 @@ void main() {
             find.byType(FocusAwareAppBar),
           );
           expect(state.settingsFocusNode.hasFocus, isTrue);
+          final settingsButton = find.ancestor(
+            of: find.byIcon(Icons.settings_outlined),
+            matching: find.byType(TopPanelItem),
+          );
+          final beforeTick = tester.widget(settingsButton);
+          elapsed = 1000;
+          await tester.pump(const Duration(seconds: 1));
+          expect(timer.countdown, '00:59');
+          expect(identical(tester.widget(settingsButton), beforeTick), isTrue);
           await tester.pumpWidget(const SizedBox());
         }
         timer.dispose();

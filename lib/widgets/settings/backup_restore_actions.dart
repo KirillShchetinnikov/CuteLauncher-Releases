@@ -35,6 +35,8 @@ Future<void> restoreBackupAndRefresh(
   final brightness = context.read<BrightnessService>();
   final automatic = context.read<AutomaticBackupService?>();
   await (restoreAction?.call() ?? backup.replaceBackup(file, settings));
+  // Restored custom artwork can change bytes at the same saved file path.
+  apps.clearImageCaches();
   await apps.refreshState();
   appearance?.reload();
   await weather?.reloadConfiguration();

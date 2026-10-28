@@ -17,6 +17,9 @@
  */
 
 import 'service_lifecycle.dart';
+import 'app_catalog_cache.dart';
+import 'foreground_work.dart';
+import '../diagnostics/startup_trace.dart';
 import 'memory_resources.dart';
 import '../image_byte_cache.dart';
 import '../image_limits.dart';
@@ -39,6 +42,26 @@ import '../models/category.dart';
 
 class AppsService extends ChangeNotifier with ServiceLifecycle {
   final FLauncherChannel _fLauncherChannel;
+  final AppCatalogCache? catalogCache;
+  final ForegroundWork? work;
+  final bool fastInitialCatalog;
+  Future<void>? _refreshOperation;
+  bool _refreshAgain = false;
+  final _imageVersions = <String, int>{};
+  final _catalogEvents = Object();
+  int contentRevision = 0;
+  (int, int) imageRevisionFor(String package) => (_imageGeneration, _imageVersions[package] ?? 0);
+
+  void _imageChanged(String package) {
+    _iconCache.remove(package);
+    _bannerCache.remove(package);
+    _imageVersions.update(package, (version) => version + 1, ifAbsent: () => 1);
+  }
+
+  void _notifyImages() => super.notifyListeners();
+
+  @override
+  void notifyListeners() { contentRevision++; super.notifyListeners(); }
   final FLauncherDatabase _database;
   final SettingsService? _settingsService;
   final String? _ownPackageName;
@@ -72,7 +95,8 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
   Future<Uint8List> _loadImage(String key, Future<Uint8List> Function() loader) {
     if (isDisposed || _memoryResources?.isForeground == false) return Future.value(Uint8List(0));
     final generation = _imageGeneration;
-    final scopedKey = '$_imageGeneration:$key';
+    final package = key.substring(key.indexOf(':') + 1);
+    final scopedKey = '${imageRevisionFor(package)}:$key';
     return _imageLoads.putIfAbsent(scopedKey, () async {
       try {
         return await _imagePool.withResource(() => isDisposed || generation != _imageGeneration || _memoryResources?.isForeground == false
@@ -159,21 +183,21 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
     );
   }
 
-  AppsService(this._fLauncherChannel, this._database, {this._settingsService, this._ownPackageName, this._memoryResources}) {
+  AppsService(this._fLauncherChannel, this._database, {this._settingsService, this._ownPackageName, this._memoryResources, this.catalogCache, this.work, this.fastInitialCatalog = false}) {
     _memoryResources?.register(this, clear: clearImageCaches,
       activity: () => {
         for (final key in ['hits', 'misses', 'writes'])
           key: _iconCache.activity[key]! + _bannerCache.activity[key]!,
         'pending_loads': _imageLoads.length,
       },
-      stats: () => MemoryCacheStats(imageCacheBytes, imageCacheEntries), resume: notifyListeners,
+      stats: () => MemoryCacheStats(imageCacheBytes, imageCacheEntries), resume: _notifyImages,
       breakdown: () => {
         MemoryCacheKind.appIcons: MemoryCacheStats(_iconCache.byteCount, _iconCache.length),
         MemoryCacheKind.appBanners: MemoryCacheStats(_bannerCache.byteCount, _bannerCache.length),
       },
       configure: (economy) => configureImageCache(iconBytes: (economy ? 1 : 2) * 1024 * 1024,
         bannerBytes: (economy ? 2 : 6) * 1024 * 1024));
-    _settingsService?.addListener(notifyListeners);
+    _settingsService?.addListener(_notifyImages);
     _init().catchError((Object error) {
       debugPrint('Unable to initialize apps: $error');
     });
@@ -181,17 +205,29 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
 
   @override
   void dispose() {
+    work?.cancel(this);
+    work?.cancel(_catalogEvents);
     _memoryResources?.unregister(this);
     _appsSubscription?.cancel();
     unawaited(_imagePool.close());
     _iconCache.clear();
     _bannerCache.clear();
-    _settingsService?.removeListener(notifyListeners);
+    _settingsService?.removeListener(_notifyImages);
     super.dispose();
   }
 
   Future<void> _init() async {
-    await _refreshState(shouldNotifyListeners: false);
+    StartupTrace.mark('appsStart');
+    var cached = await catalogCache?.read();
+    if (isDisposed) return;
+    if (cached != null && (await _database.getApplications()).isEmpty) cached = null;
+    var initialCatalog = cached;
+    if (initialCatalog == null && fastInitialCatalog) {
+      try { initialCatalog = await _fLauncherChannel.getLauncherApplications(); }
+      catch (_) { /* A failed fast query falls back to the complete catalog. */ }
+    }
+    await _refreshState(shouldNotifyListeners: false, catalog: initialCatalog,
+        persistCatalog: cached == null && initialCatalog != null);
     if (isDisposed) return;
     if (_database.wasCreated && _categoriesById.isEmpty) {
       await _initDefaultCategories();
@@ -210,13 +246,17 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
       }
 
       if (changedPackageName != null) {
-        _iconCache.remove(changedPackageName);
-        _bannerCache.remove(changedPackageName);
+        _imageChanged(changedPackageName);
       }
 
       switch (event["action"]) {
         case "CATALOG_CHANGED":
-          await refreshState();
+          final packages = event['packages'];
+          if (packages is List) {
+            for (final package in packages.whereType<String>()) { _imageChanged(package); }
+          }
+          await (work?.schedule(_catalogEvents, refreshState,
+              delay: const Duration(milliseconds: 100), priority: 3) ?? refreshState());
           return;
         case "PACKAGE_ADDED":
         case "PACKAGE_CHANGED":
@@ -310,7 +350,14 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
     });
 
     _initialized = true;
+    StartupTrace.mark('appsReady', {'count': _applications.length});
     notifyListeners();
+
+    if (initialCatalog != null) {
+      StartupTrace.mark(cached == null ? 'launcherCatalogReady' : 'catalogCacheReady');
+      (work?.schedule(this, refreshState, priority: 2) ?? refreshState())
+          .catchError((Object error) { debugPrint('Catalog reconciliation failed: $error'); });
+    }
 
   }
 
@@ -417,11 +464,21 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
   }
 
   Future<void> refreshState() {
-    clearImageCaches();
-    return _refreshState(shouldNotifyListeners: true);
+    if (_refreshOperation != null) {
+      _refreshAgain = true;
+      return _refreshOperation!;
+    }
+    return _refreshOperation = _refreshCatalog().whenComplete(() => _refreshOperation = null);
   }
 
-  Future<void> _refreshState({bool shouldNotifyListeners = true}) async {
+  Future<void> _refreshCatalog() async {
+    do {
+      _refreshAgain = false;
+      await _refreshState();
+    } while (_refreshAgain && !isDisposed);
+  }
+
+  Future<void> _refreshState({bool shouldNotifyListeners = true, List<Map<dynamic, dynamic>>? catalog, bool persistCatalog = false}) async {
     if (isDisposed) return;
     Future<List<App>> appsFromDatabaseFuture = _database.getApplications();
     Future<List<AppCategory>> appsCategoriesFuture =
@@ -429,7 +486,7 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
     Future<List<Category>> categoriesFuture = _database.getCategories();
     Future<List<LauncherSpacer>> spacersFuture = _database.getLauncherSpacers();
     List<Map<dynamic, dynamic>> appsFromSystem =
-        await _fLauncherChannel.getApplications();
+        catalog ?? await _fLauncherChannel.getApplications();
     if (isDisposed) return;
     Iterable<MapEntry<String, (Map, AppsCompanion)>> appEntries =
         appsFromSystem.map((appFromSystem) => MapEntry(
@@ -438,12 +495,31 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
     Map<String, (Map, AppsCompanion)> appsFromSystemByPackageName =
         Map.fromEntries(appEntries);
 
-    await _database.transaction(() async {
-      await _database.persistApps(
-          appsFromSystemByPackageName.values.map((record) => record.$2));
-    });
+    final persisted = await appsFromDatabaseFuture;
+    var wrote = false;
+    if (catalog == null || persistCatalog) {
+      final byPackage = {for (final app in persisted) app.packageName: app};
+      final changes = appsFromSystemByPackageName.entries.where((entry) {
+        final old = byPackage[entry.key];
+        return old == null || old.name != entry.value.$1['name'] || old.version != (entry.value.$1['version'] ?? '');
+      }).map((entry) => entry.value.$2).toList();
+      if (changes.isNotEmpty) {
+        await _database.transaction(() => _database.persistApps(changes));
+        wrote = true;
+      }
+    }
 
-    appsFromDatabaseFuture = _database.getApplications();
+    if (catalog == null) {
+      for (final entry in appsFromSystemByPackageName.entries) {
+        final old = _applications[entry.key];
+        if (old != null && (old.version != entry.value.$1['version'] || old.name != entry.value.$1['name'])) {
+          _imageChanged(entry.key);
+        }
+      }
+      unawaited(catalogCache?.save(appsFromSystem) ?? Future.value());
+    }
+
+    appsFromDatabaseFuture = wrote ? _database.getApplications() : Future.value(persisted);
 
     await Future.wait([
       appsFromDatabaseFuture,
@@ -611,7 +687,7 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
       _loadImage('banner:$packageName', () => _readAppBanner(packageName));
 
   Future<Uint8List> _readAppBanner(String packageName) async {
-    final generation = _imageGeneration;
+    final revision = imageRevisionFor(packageName);
     if (isDisposed) return Uint8List(0);
     if (_bannerCache.containsKey(packageName)) {
       return _bannerCache[packageName]!;
@@ -626,12 +702,12 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
         if (await file.exists()) {
           final bytes = await readBoundedImage(file.openRead());
           await validateImageBytes(bytes);
-          if (!isDisposed && generation == _imageGeneration) _bannerCache[packageName] = bytes;
+          if (!isDisposed && revision == imageRevisionFor(packageName)) _bannerCache[packageName] = bytes;
           return _bannerCache[packageName] ?? bytes;
         }
       }
     } on ImageInputException {
-      if (!isDisposed && generation == _imageGeneration) _bannerCache[packageName] = Uint8List(0);
+      if (!isDisposed && revision == imageRevisionFor(packageName)) _bannerCache[packageName] = Uint8List(0);
       return Uint8List(0); // Keep the original file and preference; show the app icon instead.
     } on FileSystemException {
       // File was deleted between check and read - clear stale reference
@@ -643,7 +719,7 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
 
     if (isDisposed) return Uint8List(0);
     final bytes = await _fLauncherChannel.getApplicationBanner(packageName);
-    if (!isDisposed && generation == _imageGeneration) {
+    if (!isDisposed && revision == imageRevisionFor(packageName)) {
       _bannerCache[packageName] = bytes;
     }
     return _bannerCache[packageName] ?? bytes;
@@ -656,6 +732,7 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
     final prefs = await _prefsAsync;
     await prefs.setString('custom_banner_$packageName', imagePath);
     _bannerCache.remove(packageName);
+    _imageChanged(packageName);
     notifyListeners();
   }
 
@@ -671,6 +748,7 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
     }
     await prefs.remove('custom_banner_$packageName');
     _bannerCache.remove(packageName);
+    _imageChanged(packageName);
     notifyListeners();
   }
 
@@ -685,13 +763,13 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
       _loadImage('icon:$packageName', () => _readAppIcon(packageName));
 
   Future<Uint8List> _readAppIcon(String packageName) async {
-    final generation = _imageGeneration;
+    final revision = imageRevisionFor(packageName);
     if (isDisposed) return Uint8List(0);
     if (_iconCache.containsKey(packageName)) {
       return _iconCache[packageName]!;
     }
     final bytes = await _fLauncherChannel.getApplicationIcon(packageName);
-    if (!isDisposed && generation == _imageGeneration) {
+    if (!isDisposed && revision == imageRevisionFor(packageName)) {
       _iconCache[packageName] = bytes;
     }
     return _iconCache[packageName] ?? bytes;

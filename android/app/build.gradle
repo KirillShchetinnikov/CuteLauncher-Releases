@@ -170,7 +170,9 @@ flutter {
 }
 
 dependencies {
+    implementation 'androidx.work:work-runtime:2.11.2'
     implementation 'dev.mobile:dadb:2.0.0'
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.robolectric:robolectric:4.16'
+    testImplementation 'androidx.work:work-testing:2.11.2'
 }

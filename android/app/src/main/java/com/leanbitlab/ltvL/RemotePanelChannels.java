@@ -27,6 +27,7 @@ final class RemotePanelChannels implements AutoCloseable {
     private final SharedPreferences weather;
     private final RemoteMappingsBridge mappings;
     private final RemoteButtonsBridge buttons;
+    private final RecentAppsBridge recents;
     private final TvInputBridge inputs;
     private SharedPreferences.OnSharedPreferenceChangeListener weatherListener;
     private boolean closed;
@@ -47,6 +48,7 @@ final class RemotePanelChannels implements AutoCloseable {
         var applications = new ApplicationCatalog(context);
         mappings = new RemoteMappingsBridge(context, messenger, worker, LauncherAccessibilityService::connected);
         buttons = new RemoteButtonsBridge(context, messenger, LauncherAccessibilityService::connected);
+        recents = new RecentAppsBridge(service, messenger, worker, dismiss);
         SleepTimerBridge.register(context, messenger, worker);
         NightOverlayService.register(context, messenger, worker);
         TclBlueLight.register(context, messenger, worker);
@@ -56,16 +58,16 @@ final class RemotePanelChannels implements AutoCloseable {
                     case "getApplications" -> load(applications::getApplications, result);
                     case "getApplicationIcon" -> load(() -> applications.getApplicationIcon(call.arguments()), result);
                     case "getApplicationBanner" -> load(() -> applications.getApplicationBanner(call.arguments()), result);
-                    case "getActiveNetworkInformation" -> result.success(network.getActiveNetworkInformation());
+                    case "getActiveNetworkInformation" -> load(network::getActiveNetworkInformation, result);
                     case "getTrafficUsage" -> load(() -> network.getTrafficUsage(call.argument("period")), result);
                     case "getDailyDataUsage" -> load(network::getDailyDataUsage, result);
                     case "getWeeklyDataUsage" -> load(network::getWeeklyDataUsage, result);
                     case "getMonthlyDataUsage" -> load(network::getMonthlyDataUsage, result);
                     case "checkUsageStatsPermission" -> result.success(network.checkUsageStatsPermission());
                     case "requestUsageStatsPermission" -> { network.requestUsageStatsPermission(); result.success(null); }
-                    case "getTvInputs" -> result.success(inputs.getTvInputs());
+                    case "getTvInputs" -> load(inputs::getTvInputs, result);
                     case "launchTvInput" -> result.success(inputs.launchTvInput(call.arguments()));
-                    case "getActiveNotifications" -> result.success(notifications.getActiveNotifications());
+                    case "getActiveNotifications" -> load(notifications::getActiveNotifications, result);
                     case "checkNotificationListenerPermission" -> result.success(notifications.checkNotificationListenerPermission());
                     case "requestNotificationListenerPermission" -> result.success(notifications.requestNotificationListenerPermission());
                     case "openAppNotificationSettings" -> result.success(notifications.openAppNotificationSettings());
@@ -144,6 +146,7 @@ final class RemotePanelChannels implements AutoCloseable {
     @Override public void close() {
         closed = true;
         mappings.close(); buttons.close(); inputs.close();
+        recents.close();
         if (weatherListener != null) weather.unregisterOnSharedPreferenceChangeListener(weatherListener);
         networkEvents.onCancel(null); appEvents.onCancel(null); notifications.onCancel(null);
         notificationPopups.onCancel(null);

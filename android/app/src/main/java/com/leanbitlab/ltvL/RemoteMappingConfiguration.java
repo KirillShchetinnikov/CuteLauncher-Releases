@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/** Device-local mappings. Essential navigation always keeps its original meaning. */
+/** Device-local mappings. Essential navigation is protected; Home allows hold only. */
 final class RemoteMappingConfiguration {
     record Binding(int keyCode, boolean enabled, String action, String target, String trigger, String name) {
         Binding(int keyCode, boolean enabled, String action, String target, String trigger) { this(keyCode, enabled, action, target, trigger, ""); }
@@ -17,7 +17,8 @@ final class RemoteMappingConfiguration {
             return Map.of("keyCode", keyCode, "enabled", enabled, "action", action, "target", target, "trigger", trigger, "name", name);
         }
     }
-    static final Set<String> ACTIONS = Set.of("app", "home", "back", "webhook", "panel");
+    static final Set<String> ACTIONS = Set.of("app", "home", "back", "webhook", "panel", "recents");
+    static boolean assignable(int code, String trigger) { return assignable(code) || code == 3 && "hold".equals(trigger); }
     final boolean enabled;
     final Map<String, Binding> bindings;
     RemoteMappingConfiguration(boolean enabled, Map<String, Binding> bindings) {
@@ -61,11 +62,11 @@ final class RemoteMappingConfiguration {
             if (row.containsKey("trigger") && !(row.get("trigger") instanceof String)) throw new IllegalArgumentException();
             String trigger = row.containsKey("trigger") ? (String)row.get("trigger") : "press";
             String slot = code + ":" + trigger;
-            if (number.doubleValue() != code || !assignable(code) || !ACTIONS.contains(action)
+            if (number.doubleValue() != code || !assignable(code, trigger) || !ACTIONS.contains(action)
                     || !Set.of("press", "hold").contains(trigger) || bindings.containsKey(slot)) throw new IllegalArgumentException();
             if (action.equals("app") && !target.matches("[A-Za-z][A-Za-z0-9_]*(\\.[A-Za-z0-9_]+)+")
                     || action.equals("webhook") && !webhook(target)
-                    || (action.equals("home") || action.equals("back") || action.equals("panel")) && !target.isEmpty())
+                    || (action.equals("home") || action.equals("back") || action.equals("panel") || action.equals("recents")) && !target.isEmpty())
                 throw new IllegalArgumentException();
             String name = row.containsKey("name") && row.get("name") instanceof String text ? text : "";
             if (name.length() > 80) throw new IllegalArgumentException();
@@ -75,6 +76,9 @@ final class RemoteMappingConfiguration {
     }
     Binding binding(int code) {
         return binding(code, "press");
+    }
+    Binding pressBinding(int code) {
+        return code == 3 && binding(code, "hold") != null ? new Binding(code, true, "home", "") : binding(code);
     }
     Binding binding(int code, String trigger) {
         Binding binding = bindings.get(code + ":" + trigger);

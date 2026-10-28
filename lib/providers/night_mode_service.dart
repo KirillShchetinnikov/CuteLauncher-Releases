@@ -36,6 +36,7 @@ class NightModeService extends ChangeNotifier with WidgetsBindingObserver {
       pictureMode != null && configuration.ignoredPictureModes.contains(pictureMode);
 
   Future<void> refreshPictureMode() async {
+    final previous = (pictureMode, pictureModeKnown);
     try {
       final mode = await _channel.invokeMethod<int>('pictureMode');
       if (_disposed) return;
@@ -45,13 +46,16 @@ class NightModeService extends ChangeNotifier with WidgetsBindingObserver {
       pictureMode = null;
     }
     pictureModeKnown = true;
-    notifyListeners();
+    if ((pictureMode, pictureModeKnown) != previous) notifyListeners();
   }
 
   bool systemFilter = false;
+  bool _nativeRunning = false;
   bool _disposed = false;
   bool _configuring = true;
   Future<void> _operation = Future.value();
+  Future<void>? _pendingOperation;
+  NightModeConfiguration? _pendingConfiguration;
   bool get localFilter =>
       !remotePanel && active && !systemFilter &&
       !(_configuring && overlayPermission);
@@ -93,7 +97,15 @@ class NightModeService extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   Future<void> temporaryMode(bool enabled) async {
-    final until = enabled ? nextEnd : nextStart;
+    final start = nextStart;
+    final end = nextEnd;
+    // Hand control back as soon as the schedule takes over the manual state.
+    // A transition already in progress still belongs to the skipped night.
+    final until = start == null
+        ? end
+        : end == null || start.isBefore(end)
+            ? start
+            : end;
     if (until == null) return;
     await configure(configuration.copyWith(
         enabled: true,
@@ -161,6 +173,7 @@ class NightModeService extends ChangeNotifier with WidgetsBindingObserver {
         .receiveBroadcastStream()
         .listen((visible) {
           if (_disposed) return;
+          final previous = (systemFilter, _presentationReady, _foregroundExcluded, _configuring);
           if (remotePanel && visible is Map) {
             _presentationReady = visible['presentationReady'] == true;
             _foregroundExcluded = visible['excluded'] == true;
@@ -169,7 +182,9 @@ class NightModeService extends ChangeNotifier with WidgetsBindingObserver {
             systemFilter = visible == true;
           }
           if (systemFilter) _configuring = false;
-          notifyListeners();
+          if ((systemFilter, _presentationReady, _foregroundExcluded, _configuring) != previous) {
+            notifyListeners();
+          }
         }, onError: (Object _) {});
     _start();
     if (remotePanel) { refreshSystem(); } else { syncSystem(); }
@@ -227,6 +242,7 @@ class NightModeService extends ChangeNotifier with WidgetsBindingObserver {
         _foregroundExcluded = result?['excluded'] == true;
       }
       systemFilter = overlayPermission && result?['visible'] == true;
+      _nativeRunning = result?['running'] == true;
       solarLoading = result?['solarLoading'] == true;
       solarUpdated =
           result?['solarUpdated'] is int ? result!['solarUpdated'] as int : 0;
@@ -241,6 +257,7 @@ class NightModeService extends ChangeNotifier with WidgetsBindingObserver {
     } catch (_) {
       if (!_disposed) {
         systemFilter = false;
+        _nativeRunning = false;
         overlayPermission = false;
         overlayPermissionKnown = false;
         batteryExempt = null;
@@ -287,6 +304,7 @@ class NightModeService extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   Future<void> refreshSystem() async {
+    final previous = jsonEncode(configuration.toJson());
     await preferences.reload();
     if (_disposed) return;
     configuration =
@@ -298,8 +316,18 @@ class NightModeService extends ChangeNotifier with WidgetsBindingObserver {
       _panelInitialReadComplete = true;
       notifyListeners();
       _schedulePictureCheck();
-    } else {
+    } else if (jsonEncode(configuration.toJson()) != previous) {
       await syncSystem();
+    } else {
+      await _readNativeStatus('status');
+      if (_disposed) return;
+      // Recover a service stopped by Android, without reapplying a healthy one
+      // on every short return to Home.
+      if (configuration.enabled && !_nativeRunning &&
+          (overlayPermission || configuration.tclScheduled || !overlayPermissionKnown)) {
+        await syncSystem();
+      }
+      _schedulePictureCheck();
     }
     await refreshTclFilter();
   }
@@ -328,8 +356,23 @@ class NightModeService extends ChangeNotifier with WidgetsBindingObserver {
     });
   }
 
-  Future<void> configure(NightModeConfiguration value) {
-    final next = _operation.then((_) => _configure(value));
+  Future<void> configure(NightModeConfiguration value) async {
+    if (_disposed) return;
+    final encoded = jsonEncode(value.toJson());
+    if (jsonEncode(NightModeConfiguration.decode(encoded).toJson()) != encoded) {
+      throw ArgumentError('Invalid night mode');
+    }
+    _pendingConfiguration = value;
+    if (_pendingOperation != null) return _pendingOperation!;
+    // One running apply and one replaceable pending snapshot. All callers of
+    // the pending operation await the final snapshot, including its failures.
+    final next = _operation.then((_) {
+      final latest = _pendingConfiguration!;
+      _pendingConfiguration = null;
+      _pendingOperation = null;
+      return _configure(latest);
+    });
+    _pendingOperation = next;
     _operation = next.catchError((Object _) {});
     return next;
   }
@@ -337,10 +380,6 @@ class NightModeService extends ChangeNotifier with WidgetsBindingObserver {
   Future<void> _configure(NightModeConfiguration value) async {
     if (_disposed) return;
     final encoded = jsonEncode(value.toJson());
-    final validated = NightModeConfiguration.decode(encoded);
-    if (jsonEncode(validated.toJson()) != encoded) {
-      throw ArgumentError('Invalid night mode');
-    }
     await preferences.setString(nightModeKey, encoded);
     if (_disposed) return;
     configuration = value;

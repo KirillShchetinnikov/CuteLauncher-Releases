@@ -10,6 +10,7 @@ class SettingsTextTile extends StatelessWidget {
   final String title, value;
   final ValueChanged<String> onChanged;
   final bool enabled, obscureText;
+  final String? emptyLabel;
   final int? maxLength;
   final TextInputType? keyboardType;
   const SettingsTextTile({
@@ -20,6 +21,7 @@ class SettingsTextTile extends StatelessWidget {
     this.enabled = true,
     this.obscureText = false,
     this.maxLength,
+    this.emptyLabel,
     this.keyboardType,
   });
 
@@ -30,7 +32,7 @@ class SettingsTextTile extends StatelessWidget {
     valueIcon: Icons.edit_outlined,
     trailing: Text(
       value.isEmpty
-          ? AppLocalizations.of(context)!.settingsValueNotSet
+          ? emptyLabel ?? AppLocalizations.of(context)!.settingsValueNotSet
           : obscureText
           ? '••••••'
           : value,

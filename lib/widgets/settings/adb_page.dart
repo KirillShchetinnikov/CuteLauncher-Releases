@@ -7,6 +7,7 @@ import 'dart:convert';
 
 import 'auto_launch_page.dart';
 import 'remote_buttons_page.dart';
+import 'recent_apps_page.dart';
 import 'tv_cleaner_page.dart';
 import 'adb_notice.dart';
 
@@ -748,6 +749,8 @@ class _AdbPageState extends State<AdbPage> with WidgetsBindingObserver {
                     () => _openPage(RemoteButtonsPage.routeName),
                     statusLabel: l.accessibilityPermission,
                   ),
+                  _menuTile(l.recentAppsTitle, Icons.recent_actors_outlined, null,
+                    () => _openPage(RecentAppsPage.routeName), showStatus: false),
                   _menuTile(
                     l.cleanerTitle,
                     Icons.cleaning_services_outlined,

@@ -1,3 +1,4 @@
+import 'settings_help.dart';
 import 'package:flauncher/widgets/launcher_dialog.dart';
 
 import 'settings_page_layout.dart';
@@ -182,7 +183,7 @@ class _LauncherSectionsPanelPageState extends State<LauncherSectionsPanelPage> {
                       ? null
                       : () => _resetSections(settingsService),
                 ),
-                Text(localizations.reorderSectionsHint),
+                SettingsHelp(text: '${localizations.reorderSectionsHint}\n\n${localizations.sectionRulesHelp}'),
               ],
             ),
           );

@@ -3311,13 +3311,13 @@ abstract class AppLocalizations {
   /// No description provided for @diagnosticsSharingNotice.
   ///
   /// In en, this message translates to:
-  /// **'Send the file to the author privately, not publicly: automatic redaction may miss personal data. By sending the report to the author, you agree to publication of an anonymized TV compatibility report in the CuteLauncher Git repository. Only device metadata and feature availability are published, without personal data; error logs, commands and your settings are not published.'**
+  /// **'Send the file to the author privately, not publicly: automatic redaction may miss personal data. By sending the report to the author, you agree to publication of an anonymized TV compatibility report in the CuteLauncher Git repository. Only device metadata and feature availability are published, without personal data; error logs, commands and your settings are not published.\n\nThe report also includes installed packages, their names, versions and enabled state, plus section names, contents, order and visibility. Package identifiers and names are retained for diagnosis; app and section lists are not published.'**
   String get diagnosticsSharingNotice;
 
   /// No description provided for @diagnosticsHint.
   ///
   /// In en, this message translates to:
-  /// **'One report combines TV feature compatibility and error diagnostics. The report includes the TV model and firmware, app version, permissions, memory, error stages and causes, and system commands and responses with automatic personal-data redaction. Memory retains the last 50 operations, up to 100 failures separately, and a bounded ADB log for the current session. Restarting clears the log. Redaction may miss personal data: send the file in a private message instead of posting it publicly. Nothing is sent automatically. Each error retains a snapshot of the applied settings; later changes do not replace it.'**
+  /// **'One report combines TV feature compatibility and error diagnostics. The report includes the TV model and firmware, app version, permissions, memory, error stages and causes, and system commands and responses with automatic personal-data redaction. Memory retains the last 50 operations, up to 100 failures separately, and a bounded ADB log for the current session. Restarting clears the log. Redaction may miss personal data: send the file in a private message instead of posting it publicly. Nothing is sent automatically. Each error retains a snapshot of the applied settings; later changes do not replace it.\n\nThe report also includes installed packages, their names, versions and enabled state, plus section names, contents, order and visibility. Package identifiers and names are retained for diagnosis; app and section lists are not published.'**
   String get diagnosticsHint;
 
   /// No description provided for @diagnosticsTitle.
@@ -6353,7 +6353,7 @@ abstract class AppLocalizations {
   /// No description provided for @noRemovableCategories.
   ///
   /// In en, this message translates to:
-  /// **'This app has not been manually added to any sections. Automatic sections cannot be edited.'**
+  /// **'This app has not been manually added to any sections. Apps cannot be removed from the standard automatic sections (All Apps, TV Apps, Non-TV Apps); use Hide. Favorites can be edited manually.'**
   String get noRemovableCategories;
 
   /// No description provided for @remoteButtonsTitle.
@@ -6515,13 +6515,13 @@ abstract class AppLocalizations {
   /// No description provided for @remotePanelDescription.
   ///
   /// In en, this message translates to:
-  /// **'The floating panel keeps your widgets within reach over other apps. To open it with your remote, assign the Floating panel action to a button of your choice.'**
+  /// **'The quick settings panel keeps your widgets within reach over other apps. To open it with your remote, assign the Quick settings panel action to a button of your choice.'**
   String get remotePanelDescription;
 
   /// No description provided for @remotePanel.
   ///
   /// In en, this message translates to:
-  /// **'Floating panel'**
+  /// **'Quick settings panel'**
   String get remotePanel;
 
   /// No description provided for @remotePanelSettingsBackground.
@@ -6635,7 +6635,7 @@ abstract class AppLocalizations {
   /// No description provided for @remotePanelDisabledInLauncher.
   ///
   /// In en, this message translates to:
-  /// **'Popup panel is disabled while CuteLauncher is on screen.'**
+  /// **'The quick settings panel is disabled while CuteLauncher is on screen.'**
   String get remotePanelDisabledInLauncher;
 
   /// No description provided for @remoteAccessSettings.
@@ -6649,6 +6649,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Button test'**
   String get remoteButtonsTest;
+
+  /// No description provided for @remoteMappingDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete the assignment “{name}”?'**
+  String remoteMappingDeleteConfirm(String name);
 
   /// No description provided for @remoteMappingConflict.
   ///
@@ -7831,6 +7837,204 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Disable'**
   String get adbWifiDisable;
+
+  /// No description provided for @recentAppsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Open apps'**
+  String get recentAppsTitle;
+
+  /// No description provided for @recentAppsPanelType.
+  ///
+  /// In en, this message translates to:
+  /// **'Panel'**
+  String get recentAppsPanelType;
+
+  /// No description provided for @recentAppsAutomatic.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic'**
+  String get recentAppsAutomatic;
+
+  /// No description provided for @recentAppsCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'CuteLauncher panel'**
+  String get recentAppsCustom;
+
+  /// No description provided for @recentAppsSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'Built-in panel'**
+  String get recentAppsSystem;
+
+  /// No description provided for @recentAppsOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open panel'**
+  String get recentAppsOpen;
+
+  /// No description provided for @recentAppsRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get recentAppsRefresh;
+
+  /// No description provided for @recentAppsCloseAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Close all'**
+  String get recentAppsCloseAll;
+
+  /// No description provided for @recentAppsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No TV apps with open tasks'**
+  String get recentAppsEmpty;
+
+  /// No description provided for @recentAppsUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Open apps unavailable. Check ADB and accessibility access.'**
+  String get recentAppsUnavailable;
+
+  /// No description provided for @recentAppsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Only TV apps with open tasks are shown. Close all stops user apps in this list. Assign a button in the remapper. The CuteLauncher panel needs ADB and accessibility access.'**
+  String get recentAppsHelp;
+
+  /// No description provided for @recentAppsHomeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Home supports hold only. A short press returns to CuteLauncher. The assignment also works outside the launcher.'**
+  String get recentAppsHomeHint;
+
+  /// No description provided for @sectionRulesHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Standard sections can be renamed, moved or hidden, but not deleted; at least one must stay visible. All Apps, TV Apps and Non-TV Apps are filled automatically by launch type, not app name; Hide removes an app from all three. Favorites and custom sections are filled manually. Sort apps manually, by name, frequency or last launch; adjust appearance per section. Continue Watching shows app recommendations and can be hidden or moved.'**
+  String get sectionRulesHelp;
+
+  /// No description provided for @remoteMappingNamePlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Button name'**
+  String get remoteMappingNamePlaceholder;
+
+  /// No description provided for @remoteMappingAssign.
+  ///
+  /// In en, this message translates to:
+  /// **'Assign button'**
+  String get remoteMappingAssign;
+
+  /// No description provided for @remoteMappingCapture.
+  ///
+  /// In en, this message translates to:
+  /// **'Capture'**
+  String get remoteMappingCapture;
+
+  /// No description provided for @remoteMappingCaptured.
+  ///
+  /// In en, this message translates to:
+  /// **'Captured button: {key}'**
+  String remoteMappingCaptured(String key);
+
+  /// No description provided for @remoteMappingCaptureHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Capture, then press the remote button. You can capture again. Select OK to accept.'**
+  String get remoteMappingCaptureHint;
+
+  /// No description provided for @remoteMappingCaptureTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'No button captured. Select Capture and try again.'**
+  String get remoteMappingCaptureTimeout;
+
+  /// No description provided for @remoteMappingCaptureFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not capture the button. Check accessibility service access and try again.'**
+  String get remoteMappingCaptureFailed;
+
+  /// No description provided for @remoteMappingServiceRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect the accessibility service in the remapper access settings to capture a button.'**
+  String get remoteMappingServiceRequired;
+
+  /// No description provided for @remoteMappingKeyRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'No button assigned. Select Assign button and capture a remote button.'**
+  String get remoteMappingKeyRequired;
+
+  /// No description provided for @remoteMappingHomeHoldRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Hold for the Home button.'**
+  String get remoteMappingHomeHoldRequired;
+
+  /// No description provided for @remoteMappingAppRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Select an app to launch.'**
+  String get remoteMappingAppRequired;
+
+  /// No description provided for @remoteMappingUrlRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a Webhook URL or import it from a file.'**
+  String get remoteMappingUrlRequired;
+
+  /// No description provided for @remoteMappingUrlInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid Webhook URL. Use HTTPS or local HTTP with a request path, without spaces, credentials or a # fragment.'**
+  String get remoteMappingUrlInvalid;
+
+  /// No description provided for @remoteMappingSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save the assignment on this device. Try saving again; your editor values are retained.'**
+  String get remoteMappingSaveFailed;
+
+  /// No description provided for @remoteMappingDeleteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not delete the assignment on this device. Try again.'**
+  String get remoteMappingDeleteFailed;
+
+  /// No description provided for @remoteMappingRecents.
+  ///
+  /// In en, this message translates to:
+  /// **'Open apps panel'**
+  String get remoteMappingRecents;
+
+  /// No description provided for @remoteMappingImport.
+  ///
+  /// In en, this message translates to:
+  /// **'Import URL from file'**
+  String get remoteMappingImport;
+
+  /// No description provided for @remoteMappingImportHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a UTF-8 text file containing only the Webhook URL, without commands or explanations. Line breaks are removed.'**
+  String get remoteMappingImportHint;
+
+  /// No description provided for @remoteMappingImportInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'The file must contain only a valid Webhook URL: HTTPS or local HTTP, without commands or explanations.'**
+  String get remoteMappingImportInvalid;
+
+  /// No description provided for @remoteMappingImportFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not read the file. Choose an accessible UTF-8 text file up to 64 KB.'**
+  String get remoteMappingImportFailed;
 }
 
 class _AppLocalizationsDelegate

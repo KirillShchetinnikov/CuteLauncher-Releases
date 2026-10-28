@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 import 'service_lifecycle.dart';
+import 'foreground_work.dart';
 
 import 'package:flauncher/flauncher_channel.dart';
 import 'package:flauncher/models/tv_input.dart';
@@ -15,6 +16,7 @@ import '../tv_inputs_configuration.dart';
 class TvInputsService extends ChangeNotifier
     with ServiceLifecycle, WidgetsBindingObserver {
   final FLauncherChannel _channel;
+  final ForegroundWork? work;
   final SharedPreferences? preferences;
   final Listenable? settings;
   TvInputsConfiguration _configuration = const TvInputsConfiguration();
@@ -34,12 +36,13 @@ class TvInputsService extends ChangeNotifier
     this.preferences,
     this.settings,
     this.changes,
+    this.work,
   }) {
     _reloadConfiguration();
     settings?.addListener(_reloadConfiguration);
     WidgetsBinding.instance.addObserver(this);
     _listen();
-    _init();
+    (work?.schedule(this, _init) ?? _init());
   }
 
   void _listen() {
@@ -70,7 +73,9 @@ class TvInputsService extends ChangeNotifier
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       _listen();
-      _refreshSafely();
+      if (_initialized) {
+        (work?.schedule(this, _refreshSafely, maxAge: const Duration(seconds: 5)) ?? _refreshSafely());
+      }
     } else if (state == AppLifecycleState.paused ||
         state == AppLifecycleState.detached) {
       _subscription?.cancel();
@@ -112,6 +117,7 @@ class TvInputsService extends ChangeNotifier
 
   @override
   void dispose() {
+    work?.cancel(this);
     WidgetsBinding.instance.removeObserver(this);
     _subscription?.cancel();
     _refreshTimer?.cancel();
@@ -124,6 +130,7 @@ class TvInputsService extends ChangeNotifier
   bool get initialized => _initialized;
 
   Future<void> _init() async {
+    if (isDisposed) return;
     try {
       await refreshInputs();
     } catch (e) {

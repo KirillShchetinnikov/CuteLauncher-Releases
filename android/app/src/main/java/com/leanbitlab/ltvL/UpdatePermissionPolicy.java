@@ -5,6 +5,11 @@ import java.util.Set;
 
 /** Only permissions observed in the previous installation may be restored. */
 final class UpdatePermissionPolicy {
+    static final int MAX_ATTEMPTS = 5;
+    static final long RECOVERY_WINDOW_MS = 15 * 60_000L;
+    static long retryDelay(int attempts) {
+        return switch (attempts) { case 1 -> 15_000L; case 2 -> 60_000L; case 3 -> 180_000L; default -> 300_000L; };
+    }
     static final Set<String> ACTIONS = Set.of("accessibility", "notifications", "overlay",
         "usage", "writeSettings", "watchNext");
 

@@ -1,133 +1,191 @@
 package com.leanbitlab.ltvL;
 
-import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.provider.Settings;
-import dadb.AdbKeyPair;
-import dadb.Dadb;
-import java.io.File;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
-/** One bounded recovery on the first foreground launch after replacing the APK. */
+/** Durable, bounded recovery; a failed transport never consumes earlier consent. */
 final class UpdatePermissionRecovery {
-    private static SharedPreferences saved(Activity activity) {
-        return activity.getSharedPreferences("update_permissions", 0);
+    private static long checkedInstallation = -1;
+    interface Session extends AutoCloseable {
+        String restore(String action, boolean requireEnabled) throws Exception;
+        @Override void close() throws Exception;
     }
-
-    private static long installation(Activity activity) throws Exception {
-        return activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0).lastUpdateTime;
+    interface Access {
+        Set<String> granted();
+        boolean accessibilityEnabled();
+        boolean connected();
+        boolean supported(String action);
+        Session open() throws Exception;
     }
-
-    private static boolean accessibility(Activity activity) {
-        if (Settings.Secure.getInt(activity.getContentResolver(), Settings.Secure.ACCESSIBILITY_ENABLED, 0) != 1)
-            return false;
-        String value = Settings.Secure.getString(activity.getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
-        ComponentName own = new ComponentName(activity, LauncherAccessibilityService.class);
+    static SharedPreferences saved(Context c) { return c.getSharedPreferences("update_permissions", 0); }
+    private static long installation(Context c) throws Exception {
+        return c.getPackageManager().getPackageInfo(c.getPackageName(), 0).lastUpdateTime;
+    }
+    static boolean accessibility(Context c) {
+        if (Settings.Secure.getInt(c.getContentResolver(), Settings.Secure.ACCESSIBILITY_ENABLED, 0) != 1) return false;
+        String value = Settings.Secure.getString(c.getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
+        ComponentName own = new ComponentName(c, LauncherAccessibilityService.class);
         if (value != null) for (String item : value.split(":"))
             if (own.equals(ComponentName.unflattenFromString(item))) return true;
         return false;
     }
-
-    private static Set<String> granted(Activity activity) {
+    static Set<String> granted(Context c) {
         Set<String> result = new HashSet<>();
-        if (accessibility(activity)) result.add("accessibility");
-        if (activity.getSystemService(NotificationManager.class).isNotificationListenerAccessGranted(
-            new ComponentName(activity, LauncherNotificationListenerService.class))) result.add("notifications");
-        if (OverlayPermission.granted(activity)) result.add("overlay");
-        if (new NetworkStatistics(activity).checkUsageStatsPermission()) result.add("usage");
-        if (Settings.System.canWrite(activity)) result.add("writeSettings");
-        if (new WatchNextBridge(activity).checkWatchNextPermission()) result.add("watchNext");
+        if (accessibility(c)) result.add("accessibility");
+        if (c.getSystemService(NotificationManager.class).isNotificationListenerAccessGranted(new ComponentName(c, LauncherNotificationListenerService.class))) result.add("notifications");
+        if (OverlayPermission.granted(c)) result.add("overlay");
+        if (new NetworkStatistics(c).checkUsageStatsPermission()) result.add("usage");
+        if (Settings.System.canWrite(c)) result.add("writeSettings");
+        if (new WatchNextBridge(c).checkWatchNextPermission()) result.add("watchNext");
         return result;
     }
-
-    // Called on the IO worker, including immediately before opening the package installer.
-    static void snapshot(Activity activity) {
+    private static Set<String> read(SharedPreferences p, String key) { return new HashSet<>(p.getStringSet(key, Set.of())); }
+    private static void status(SharedPreferences p, String key, String value, long now) {
+        boolean changed = !value.equals(p.getString(key, ""));
+        p.edit().putString(key, value).putLong("last_checked", now).commit();
+        if (changed) android.util.Log.i("CuteLauncherUpdate", key + ": " + value);
+    }
+    private static String failure(Throwable error) {
+        if (error instanceof PermissionRecoveryAccess.Unavailable unavailable) return unavailable.reason;
+        if (error instanceof dadb.AdbAuthException) return "adb_authorization";
+        return "adb_unavailable";
+    }
+    private static boolean complete(String action, Set<String> actual, Access access) {
+        return actual.contains(action) && (!action.equals("accessibility") || access.connected());
+    }
+    private static void reconcile(SharedPreferences p, Set<String> pending, Set<String> actual, Access access) {
+        Set<String> observed = read(p, "observed_grants");
+        pending.removeIf(action -> observed.contains(action) && !actual.contains(action) || complete(action, actual, access));
+        observed.addAll(actual); observed.retainAll(pending);
+        p.edit().putStringSet("pending", pending).putStringSet("observed_grants", observed).putStringSet("granted", actual).commit();
+    }
+    // Never overwrite the old version's baseline or discard an outstanding retry.
+    static void snapshot(Context c) {
         synchronized (AdbBridge.LOCK) {
             try {
-                long current = installation(activity);
-                if (UpdatePermissionPolicy.replaced(saved(activity).getLong("installation", 0), current)) return;
-                saved(activity).edit().putLong("installation", current).putStringSet("granted", granted(activity)).commit();
-            } catch (Exception error) { android.util.Log.w("CuteLauncherUpdate", "Permission snapshot unavailable", error); }
+                var p = saved(c); long current = installation(c);
+                if (UpdatePermissionPolicy.replaced(p.getLong("installation", 0), current)) return;
+                Access access = new PermissionRecoveryAccess(c);
+                reconcile(p, read(p, "pending"), access.granted(), access);
+                p.edit().putLong("installation", current).commit();
+            } catch (Exception error) { android.util.Log.w("CuteLauncherUpdate", "Snapshot failed: " + error.getClass().getSimpleName()); }
         }
     }
-
-    static void afterUpdate(Activity activity) {
+    static void afterUpdate(Context c) {
         synchronized (AdbBridge.LOCK) {
             try {
-                var state = saved(activity);
-                long current = installation(activity);
-                if (!UpdatePermissionPolicy.replaced(state.getLong("installation", 0), current)) {
-                    snapshot(activity);
-                    return;
+                long current = installation(c); var p = saved(c);
+                if (checkedInstallation == current && read(p, "pending").isEmpty()) return;
+                if (UpdatePermissionPolicy.replaced(p.getLong("installation", 0), current)
+                        && read(p, "granted").contains("notifications") && granted(c).contains("notifications")) {
+                    android.service.notification.NotificationListenerService.requestRebind(new ComponentName(c, LauncherNotificationListenerService.class));
                 }
-                Set<String> previous = new HashSet<>(state.getStringSet("granted", Set.of()));
-                Set<String> actual = granted(activity);
-                // Consume before opening ADB. Never resurrect old grants on later resumes or after a crash.
-                if (!state.edit().putLong("installation", current).putStringSet("granted", actual).commit()) return;
-                if (previous.contains("notifications") && actual.contains("notifications"))
-                    android.service.notification.NotificationListenerService.requestRebind(
-                        new ComponentName(activity, LauncherNotificationListenerService.class));
-                var missing = UpdatePermissionPolicy.missing(previous, actual, LauncherAccessibilityService.connected());
-                if (missing.isEmpty()) return;
-                var connection = activity.getSharedPreferences("adb_connection", 0);
-                int port = connection.getInt("port", 5555);
-                File privateKey = new File(activity.getNoBackupFilesDir(), "adb/private-key");
-                File publicKey = new File(activity.getNoBackupFilesDir(), "adb/public-key");
-                if (connection.getBoolean("tls", false) || port < 1024 || port > 65535
-                    || !privateKey.isFile() || !publicKey.isFile()) return;
-                try (Dadb adb = Dadb.create("127.0.0.1", port, AdbKeyPair.read(privateKey, publicKey), 1500, 5000)) {
-                    AdbBridge.Shell shell = new AdbBridge.Shell() {
-                        public String execute(String command) throws Exception {
-                            var response = NativeShellDiagnostics.execute(adb, command, "updatePermissions");
-                            if (response.getExitCode() != 0) throw new IllegalStateException("Permission recovery rejected");
-                            return response.getOutput().trim();
-                        }
-                        public void close() {}
-                    };
-                    if (!shell.execute("id -u").equals("2000") || !shell.execute("am get-current-user").equals("0")) return;
-                    for (String action : missing) {
-                        try {
-                            if (!AdbCapabilities.supported(activity, action)) continue;
-                            // Recheck immediately: Android may have connected the service during ADB setup.
-                            if (action.equals("accessibility") && accessibility(activity)
-                                && LauncherAccessibilityService.connected()) continue;
-                            if (action.equals("accessibility")) {
-                                restoreAccessibility(activity, shell);
-                                continue;
-                            }
-                            String status = AdbBridge.perform(activity, shell, action);
-                            android.util.Log.i("CuteLauncherUpdate", action + " recovery: " + status);
-                        } catch (Exception error) {
-                            android.util.Log.w("CuteLauncherUpdate", action + " recovery failed", error);
-                        }
-                    }
-                } finally { snapshot(activity); }
+                recover(c, current, System.currentTimeMillis(), new PermissionRecoveryAccess(c));
+                checkedInstallation = current;
+            } catch (Exception | LinkageError error) { status(saved(c), "status", "check_unavailable", System.currentTimeMillis()); }
+        }
+    }
+    static void recover(Context c, long current, long now, Access access) {
+        synchronized (AdbBridge.LOCK) {
+            var p = saved(c); long previous = p.getLong("installation", 0);
+            Set<String> actual = access.granted(), pending = read(p, "pending");
+            if (previous != current) {
+                Set<String> baseline = read(p, "granted");
+                if (p.getLong("deadline", 0) > now) {
+                    Set<String> inherited = new HashSet<>(pending);
+                    Set<String> observed = read(p, "observed_grants");
+                    for (String action : observed) if (!actual.contains(action)) inherited.remove(action);
+                    baseline.addAll(inherited);
+                }
+                pending = previous > 0 ? UpdatePermissionPolicy.missing(baseline, actual, access.connected()) : new HashSet<>();
+                if (!p.edit().putLong("installation", current).putStringSet("pending", pending).putStringSet("observed_grants", Set.of())
+                        .putStringSet("granted", actual).putInt("attempts", 0).putLong("deadline", now + UpdatePermissionPolicy.RECOVERY_WINDOW_MS).putLong("retry_at", now).commit()) return;
+            }
+            if (pending.isEmpty()) { p.edit().putStringSet("granted", actual).commit(); status(p, "status", "healthy", now); return; }
+            reconcile(p, pending, actual, access);
+            if (pending.isEmpty()) { status(p, "status", "resolved_or_revoked", now); return; }
+            int attempts = p.getInt("attempts", 0);
+            if (now >= p.getLong("deadline", 0) || attempts >= UpdatePermissionPolicy.MAX_ATTEMPTS) {
+                p.edit().putStringSet("last_missing", pending).putStringSet("pending", Set.of()).commit(); status(p, "status", "expired", now); return;
+            }
+            if (now < p.getLong("retry_at", 0)) return;
+            attempts++;
+            if (!p.edit().putInt("attempts", attempts).putLong("retry_at", now + UpdatePermissionPolicy.retryDelay(attempts)).commit()) return;
+            String outcome = "retry_pending";
+            try (Session session = access.open()) {
+                for (String action : Set.copyOf(pending)) {
+                    if (!access.supported(action)) { pending.remove(action); continue; }
+                    actual = access.granted();
+                    if (read(p, "observed_grants").contains(action) && !actual.contains(action)) { pending.remove(action); continue; }
+                    if (!complete(action, actual, access)) session.restore(action, false);
+                }
             } catch (Exception | LinkageError error) {
-                android.util.Log.w("CuteLauncherUpdate", "Automatic permission recovery unavailable", error);
+                outcome = failure(error);
+            }
+            reconcile(p, pending, access.granted(), access);
+            if (pending.isEmpty()) outcome = "restored_or_revoked";
+            else if (attempts >= UpdatePermissionPolicy.MAX_ATTEMPTS) {
+                p.edit().putStringSet("last_missing", pending).putStringSet("pending", Set.of()).commit(); outcome = "exhausted";
+            }
+            status(p, "status", outcome, now);
+        }
+    }
+    static void cancelAccessibility(Context c) {
+        synchronized (AdbBridge.LOCK) {
+            var p = saved(c); var pending = read(p, "pending"); pending.remove("accessibility");
+            var observed = read(p, "observed_grants"); observed.remove("accessibility");
+            var grants = read(p, "granted"); grants.remove("accessibility");
+            p.edit().putStringSet("pending", pending).putStringSet("observed_grants", observed)
+                    .putStringSet("granted", grants)
+                    .remove("disconnected_since").remove("health_retry_at").putInt("health_attempts", 0).commit();
+            status(p, "health_status", "manual_disable", System.currentTimeMillis());
+        }
+    }
+    // Background checks may rebind an enabled service, never grant a disabled permission.
+    static void health(Context c, long now, Access access) {
+        synchronized (AdbBridge.LOCK) {
+            var p = saved(c); if (read(p, "pending").contains("accessibility")) return;
+            boolean enabled = access.accessibilityEnabled(); var grants = read(p, "granted");
+            if (enabled) grants.add("accessibility"); else grants.remove("accessibility");
+            p.edit().putStringSet("granted", grants).commit();
+            if (!enabled || access.connected()) {
+                p.edit().remove("disconnected_since").remove("health_retry_at").putInt("health_attempts", 0).commit();
+                status(p, "health_status", enabled ? "connected" : "disabled", now); return;
+            }
+            if (!p.contains("disconnected_since")) {
+                p.edit().putLong("disconnected_since", now).putLong("health_retry_at", now + 30_000L).commit();
+                status(p, "health_status", "binding_grace", now); return;
+            }
+            if (now < p.getLong("health_retry_at", 0)) return;
+            int attempt = p.getInt("health_attempts", 0) + 1;
+            p.edit().putInt("health_attempts", attempt >= 3 ? 0 : attempt)
+                    .putLong("health_retry_at", now + (attempt >= 3 ? 3_600_000L : attempt * 60_000L)).commit();
+            if (!access.accessibilityEnabled() || access.connected()) return;
+            try (Session session = access.open()) {
+                if (access.accessibilityEnabled() && !access.connected()) session.restore("accessibility", true);
+                status(p, "health_status", access.connected() ? "reconnected" : "awaiting_connection", now);
+            } catch (Exception | LinkageError error) {
+                status(p, "health_status", failure(error), now);
             }
         }
     }
-
-    private static void restoreAccessibility(Activity activity, AdbBridge.Shell shell) throws Exception {
-        String own = new ComponentName(activity, LauncherAccessibilityService.class).flattenToString();
-        String current = shell.execute("settings get secure enabled_accessibility_services");
-        try {
-            if (accessibility(activity)) {
-                shell.execute("settings put secure enabled_accessibility_services '"
-                    + UpdatePermissionPolicy.serviceList(current, own, false) + "'");
-                Thread.sleep(250);
-            }
-        } finally {
-            // Read again to preserve other services changed during reconnect; keep the user's ADB recovery journal.
-            String latest = shell.execute("settings get secure enabled_accessibility_services");
-            String restored = UpdatePermissionPolicy.serviceList(latest, own, true);
-            shell.execute("settings put secure enabled_accessibility_services '" + restored + "'");
-            shell.execute("settings put secure accessibility_enabled 1");
-            if (!shell.execute("settings get secure enabled_accessibility_services").equals(restored))
-                throw new IllegalStateException("Accessibility recovery rejected");
-        }
+    static long nextCheck(Context c) {
+        var p = saved(c); long update = read(p, "pending").isEmpty() ? 0 : p.getLong("retry_at", 0), health = p.getLong("health_retry_at", 0);
+        return update == 0 ? health : health == 0 ? update : Math.min(update, health);
+    }
+    static Map<String, Object> report(Context c) {
+        var p = saved(c);
+        var pending = read(p, "pending");
+        return Map.of("status", p.getString("status", "not_checked"), "pending", new java.util.ArrayList<>(pending),
+                "attempts", p.getInt("attempts", 0), "retryAt", pending.isEmpty() ? 0L : p.getLong("retry_at", 0),
+                "deadline", pending.isEmpty() ? 0L : p.getLong("deadline", 0), "lastChecked", p.getLong("last_checked", 0),
+                "health", pending.contains("accessibility") ? "update_recovery_pending" : p.getString("health_status", "not_checked"),
+                "healthRetryAt", p.getLong("health_retry_at", 0));
     }
 }

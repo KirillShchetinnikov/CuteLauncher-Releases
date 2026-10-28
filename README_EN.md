@@ -12,6 +12,7 @@ Created by [Kirill Shchetinnikov](https://github.com/KirillShchetinnikov).
 
 **[Download APK](https://github.com/KirillShchetinnikov/CuteLauncher-Releases/releases/latest)**
 · **[User guide](docs/USER_GUIDE_EN.md)**
+· **[FAQ](docs/FAQ_EN.md)**
 · **[All documentation](docs/README_EN.md)**
 · **[What's new](CHANGELOG_EN.md)**
 
@@ -45,11 +46,11 @@ Example setups captured on Android TV and Google TV emulators (Android 16). Ever
 |---|---|
 | [![Soft style · spring landscape](docs/images/screenshots/en/07-soft-spring.webp)](docs/images/screenshots/en/07-soft-spring.webp) | [![Outline style · illustrated night landscape](docs/images/screenshots/en/09-outline-night.webp)](docs/images/screenshots/en/09-outline-night.webp) |
 
-| Dynamic colors · six-column grid | Floating panel · sleep timer |
+| Dynamic colors · six-column grid | Quick settings panel · sleep timer |
 |---|---|
-| [![Dynamic colors · six-column grid](docs/images/screenshots/en/13-dynamic-grid.webp)](docs/images/screenshots/en/13-dynamic-grid.webp) | [![Floating panel · sleep timer](docs/images/screenshots/en/14-floating-panel-timer.webp)](docs/images/screenshots/en/14-floating-panel-timer.webp) |
+| [![Dynamic colors · six-column grid](docs/images/screenshots/en/13-dynamic-grid.webp)](docs/images/screenshots/en/13-dynamic-grid.webp) | [![Quick settings panel · sleep timer](docs/images/screenshots/en/14-floating-panel-timer.webp)](docs/images/screenshots/en/14-floating-panel-timer.webp) |
 
-The app background in the floating-panel screenshot is blurred for clarity.
+The app background in the quick settings panel screenshot is blurred for clarity.
 
 <details>
 <summary>8 more screenshots: features and settings</summary>
@@ -109,7 +110,7 @@ Smooth night-filter transitions, system-brightness scheduling, a clock and
 screensaver, a standby timer, available TV inputs, and HDMI/CEC labels.
 Configure the home app, restore the previous HOME handler, and use the built-in
 ADB connection for supported system operations. The remote remapper supports
-short presses and holds, app launches, Home/Back, webhooks, and a floating panel.
+short presses and holds, app launches, Home/Back, webhooks, and a quick settings panel.
 Availability of system actions depends on firmware.
 
 ### Settings, backups, and diagnostics

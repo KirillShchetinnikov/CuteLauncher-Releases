@@ -1,3 +1,5 @@
+import 'package:flauncher/models/watch_next_program.dart';
+import 'package:flauncher/widgets/continue_watching_row.dart';
 import 'package:flauncher/sleep_timer_configuration.dart';
 import 'package:flauncher/adaptive_landscape.dart';
 import 'package:flauncher/widgets/settings/appearance_page.dart';
@@ -1081,6 +1083,63 @@ void main() {
     appearance.dispose();
   });
 
+  for (final gap in ['empty', 'spacer', 'only empty above']) {
+    testWidgets('Watch Next vertical navigation skips $gap', (tester) async {
+      final apps = mkAppService();
+      final top = fakeCategory(name: 'All Apps', order: 0);
+      top.applications.add(fakeApp(packageName: 'top.app'));
+      final bottom = fakeCategory(name: 'Bottom', order: 2);
+      bottom.applications.add(fakeApp(packageName: 'bottom.app'));
+      when(apps.applications).thenReturn([...top.applications, ...bottom.applications]);
+      when(apps.launcherSections).thenReturn([
+        if (gap != 'only empty above') top,
+        if (gap == 'spacer') LauncherSpacer(id: 777, height: 120)
+        else fakeCategory(name: 'Empty', order: 1),
+        bottom,
+      ]);
+      final settings = mkSettingsService();
+      when(settings.showContinueWatching).thenReturn(true);
+      when(settings.continueWatchingOrder).thenReturn(gap == 'only empty above' ? 1 : 2);
+      when(settings.continueWatchingMaxItems).thenReturn(15);
+      when(settings.continueWatchingCardSize).thenReturn('normal');
+      when(settings.hiddenWatchNextProgramIds).thenReturn([]);
+      when(settings.hiddenWatchNextPackages).thenReturn([]);
+      when(settings.continueWatchingShowProgress).thenReturn(false);
+      when(settings.continueWatchingShowPercentage).thenReturn(false);
+      when(settings.continueWatchingShowDescription).thenReturn(false);
+      final watch = MockWatchNextService();
+      when(watch.hasPermission).thenReturn(true);
+      when(watch.programs).thenReturn([
+        WatchNextProgram.fromMap({'id': 1, 'packageName': 'video.app', 'title': 'Video 1'}),
+        WatchNextProgram.fromMap({'id': 2, 'packageName': 'video.app', 'title': 'Video 2'}),
+      ]);
+      await _pumpWidgetWithProviders(tester, mkWallpaperService(), apps, settings, watchNext: watch);
+      FocusNode cardNode(int index) => tester.widget<InkWell>(find.descendant(
+        of: find.byType(WatchNextCard).at(index), matching: find.byType(InkWell)).first).focusNode!;
+      cardNode(0).requestFocus();
+      await tester.pumpAndSettle();
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+      await tester.pumpAndSettle();
+      expect(cardNode(1).hasFocus, isTrue);
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+      await tester.pumpAndSettle();
+      if (gap == 'only empty above') {
+        expect(isSettingsIconFocused(tester), isTrue);
+      } else {
+        expect(isAppCardFocused(tester, 'top.app'), isTrue);
+      }
+      cardNode(0).requestFocus();
+      await tester.pumpAndSettle();
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      await tester.pumpAndSettle();
+      expect(isAppCardFocused(tester, 'bottom.app'), isTrue);
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+      await tester.pumpAndSettle();
+      expect(cardNode(0).hasFocus, isTrue);
+      expect(tester.takeException(), isNull);
+    });
+  }
+
   testWidgets("Home page shows category empty-state", (tester) async {
     final appsService = mkAppService();
     final applicationsCategory = fakeCategory(name: "Applications", order: 0, type: CategoryType.grid);
@@ -1660,6 +1719,7 @@ WeatherService mkWeatherService() {
 
 AppsService mkAppService() {
   final appsService = MockAppsService();
+  when(appsService.imageRevisionFor(any)).thenReturn((0, 0));
   when(appsService.isTileHidden(any)).thenReturn(false);
     when(appsService.launchApp(any)).thenAnswer((_) async => true);
   when(appsService.initialized).thenReturn(true);
@@ -1684,7 +1744,7 @@ Future<void> _pumpWidgetWithProviders(
   WallpaperService wallpaperService,
   AppsService appsService,
   SettingsService settingsService,
-  {AppearanceService? appearance, UpdateService? updates, RemotePanelService? remotePanel, double pixelRatio = 1, Locale? locale}) async {
+  {AppearanceService? appearance, UpdateService? updates, RemotePanelService? remotePanel, WatchNextService? watchNext, double pixelRatio = 1, Locale? locale}) async {
   tester.view.physicalSize = const Size(1920, 1080);
   tester.view.devicePixelRatio = pixelRatio;
   final network = MockNetworkService();
@@ -1706,7 +1766,7 @@ Future<void> _pumpWidgetWithProviders(
         ChangeNotifierProvider<SettingsService>.value(value: settingsService),
         ChangeNotifierProvider<TvInputsService>.value(value: mkTvInputsService()),
         ChangeNotifierProvider<NotificationsService>.value(value: mkNotificationsService()),
-        ChangeNotifierProvider<WatchNextService>.value(value: mkWatchNextService()),
+        ChangeNotifierProvider<WatchNextService>.value(value: watchNext ?? mkWatchNextService()),
         ChangeNotifierProvider<WeatherService>.value(value: mkWeatherService()),
         ChangeNotifierProvider(create: (_) => LauncherState()),
         ChangeNotifierProvider<NetworkService>(create: (_) => network),

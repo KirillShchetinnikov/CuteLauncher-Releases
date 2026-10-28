@@ -193,7 +193,7 @@ public class NightOverlayService extends Service {
                     LauncherNotificationListenerService.refreshNightFilter();
                 } else if (!call.method.equals("status") && !call.method.equals("solarRefresh")) { result.notImplemented(); return; }
                 JSONObject c = load(activity);
-                NightSolarTimes.refresh(activity.getApplicationContext(), c, call.method.equals("solarRefresh"), () -> {
+                if (!call.method.equals("status")) NightSolarTimes.refresh(activity.getApplicationContext(), c, call.method.equals("solarRefresh"), () -> {
                     NightOverlayService service = activeService.get();
                     if (service != null) service.handler.post(() -> {
                         if (!service.destroyed && activeService.get() == service) service.refresh();

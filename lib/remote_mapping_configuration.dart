@@ -42,8 +42,17 @@ class RemoteMapping {
   );
 }
 
+String? remoteWebhookFromText(String source) {
+  final value = source
+      .replaceFirst(RegExp(r'^\uFEFF'), '')
+      .replaceAll(RegExp(r'[\r\n\u0085\u2028\u2029]'), '')
+      .trim();
+  return remoteWebhookValid(value) ? value : null;
+}
+
 bool remoteWebhookValid(String value) {
   if (value.length > 4096 ||
+      RegExp(r"\s").hasMatch(value) ||
       value.codeUnits.any((code) => code < 32 || code == 127)) {
     return false;
   }

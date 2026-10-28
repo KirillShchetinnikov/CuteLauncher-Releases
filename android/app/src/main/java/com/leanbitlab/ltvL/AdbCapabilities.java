@@ -57,7 +57,7 @@ final class AdbCapabilities {
         return AdbCompatibilityPolicy.canSelectHome(priority, items.stream().filter(item -> enabled(activity, item))
             .mapToInt(item -> item.priority).max().orElse(Integer.MIN_VALUE));
     }
-    static boolean grantable(Activity activity, String permission) {
+    static boolean grantable(android.content.Context activity, String permission) {
         try {
             var info = activity.getPackageManager().getPermissionInfo(permission, 0);
             var requested = activity.getPackageManager().getPackageInfo(activity.getPackageName(), PackageManager.GET_PERMISSIONS).requestedPermissions;
@@ -65,7 +65,7 @@ final class AdbCapabilities {
                 && AdbCompatibilityPolicy.grantable(info.protectionLevel);
         } catch (PackageManager.NameNotFoundException e) { return false; }
     }
-    static String watchNextPermission(Activity activity) {
+    static String watchNextPermission(android.content.Context activity) {
         // Public provider permission is portable; use an OEM permission only when it can be granted.
         if (grantable(activity, TV_LISTINGS)) return TV_LISTINGS;
         return grantable(activity, WATCH_NEXT) ? WATCH_NEXT : "";

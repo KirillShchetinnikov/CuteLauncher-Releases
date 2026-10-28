@@ -56,8 +56,10 @@ class _RemotePanelState extends State<RemotePanel> {
       final notifications = context.read<NotificationsService>();
       pending.add(_waitFor(notifications, () => notifications.initialized));
     }
-    if (panel.visible('network') || panel.visible('traffic')) {
+    if (panel.visible('traffic')) {
       pending.add(context.read<NetworkService>().initialLoad);
+    } else if (panel.visible('network')) {
+      pending.add(context.read<NetworkService>().initialNetworkLoad);
     }
     if (panel.visible('weather')) {
       final weather = context.read<WeatherService>();

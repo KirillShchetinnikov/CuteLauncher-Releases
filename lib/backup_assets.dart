@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:isolate';
+import 'dart:typed_data';
 import 'package:path/path.dart' as path;
 import 'image_limits.dart';
 
@@ -9,6 +11,9 @@ const _wallpapers = {'wallpaper', 'wallpaper_day', 'wallpaper_night'};
 
 bool _validAssetKey(String key) => _wallpapers.contains(key) ||
     RegExp(r'^custom_banner_[A-Za-z0-9._-]+$').hasMatch(key);
+
+Future<String> _encodeAsset(Uint8List bytes) => Isolate.run(() => base64Encode(bytes));
+Future<Uint8List> _decodeAsset(String value) => Isolate.run(() => base64Decode(value));
 
 Future<Map<String, String>> exportBackupAssets(Directory root, Map<String, dynamic> settings) async {
   final files = <String, File>{for (final name in _wallpapers) name: File(path.join(root.path, name))};
@@ -26,7 +31,7 @@ Future<Map<String, String>> exportBackupAssets(Directory root, Map<String, dynam
     await validateImageBytes(bytes);
     total += bytes.length;
     if (total > maximumBackupAssetBytes) throw const FormatException('Backup images exceed 32 MiB');
-    resources[entry.key] = base64Encode(bytes);
+    resources[entry.key] = await _encodeAsset(bytes);
   }
   return resources;
 }
@@ -60,7 +65,7 @@ class BackupAssets {
             (entry.value as String).length > ((maximumImageInputBytes + 2) ~/ 3) * 4) {
           throw const FormatException('Invalid backup image');
         }
-        final bytes = base64Decode(entry.value as String);
+        final bytes = await _decodeAsset(entry.value as String);
         total += bytes.length;
         if (total > maximumBackupAssetBytes) throw const FormatException('Backup images exceed 32 MiB');
         await validateImageBytes(bytes);

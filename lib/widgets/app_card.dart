@@ -99,8 +99,11 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
   ]).animate(_bumpController);
 
   Color? _imageFocusColor;
+  Uint8List? _focusColorBytes;
+  int _colorRevision = -1;
   AppearanceService? _appearanceService;
   AppsService? _appsService;
+  (int, int)? _imageRevision;
 
   @override
   void initState() {
@@ -147,7 +150,7 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
       _categoryFocus = controller;
       _categoryFocus?.register(widget.application.packageName, _focusNode);
     }
-    _imageReady ??= context.getInheritedWidgetOfExactType<AppImagesReadiness>()?.register();
+    _imageReady ??= context.getInheritedWidgetOfExactType<AppImagesReadiness>()?.register(context);
   }
 
   @override
@@ -196,6 +199,8 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
   }
 
   void _onAppsServiceChanged() {
+    final revision = _appsService!.imageRevisionFor(widget.application.packageName);
+    if (revision == _imageRevision) return;
     // Reload the app image when the AppsService notifies of changes
     // (e.g., after setting a custom banner)
     setState(() {
@@ -206,6 +211,7 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final appearance = context.watch<AppearanceService?>()?.tilesFor(widget.category.id) ?? const TileAppearance();
+    if (appearance.dynamicFocusColor) _ensureFocusColor();
     final bool showAppNames = appearance.labels == 'all';
     final String themes = context.select<SettingsService, String>((s) => s.themes);
     final accentColorHex = context.select<SettingsService, String>((s) => s.accentColorHex);
@@ -376,6 +382,7 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
   }
 
   Future<(AppImageType, ImageProvider)> _loadAppBannerOrIcon(AppsService service) async {
+    _imageRevision = service.imageRevisionFor(widget.application.packageName);
     final request = ++_imageRequest;
     final packageName = widget.application.packageName;
     Uint8List bytes = Uint8List(0);
@@ -392,14 +399,25 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
     final image = (type, await contentImage(bytes));
     if (mounted && request == _imageRequest) {
       _lastAppImage = image;
+      _focusColorBytes = bytes;
+      _imageFocusColor = null;
+      _colorRevision = -1;
       if (_focusNode.hasFocus) _appearanceService?.focusedAppImage.value = image.$2;
     }
-    unawaited(appFocusColor(bytes).then((color) {
-      if (mounted && request == _imageRequest) {
-        setState(() => _imageFocusColor = color);
-      }
-    }));
+    if (_appearanceService?.tilesFor(widget.category.id).dynamicFocusColor == true) {
+      _ensureFocusColor();
+    }
     return image;
+  }
+
+  void _ensureFocusColor() {
+    final bytes = _focusColorBytes;
+    final request = _imageRequest;
+    if (bytes == null || _colorRevision == request) return;
+    _colorRevision = request;
+    unawaited(appFocusColor(bytes).then((color) {
+      if (mounted && request == _imageRequest) setState(() => _imageFocusColor = color);
+    }));
   }
 
   Widget _imageFrame(BuildContext context, Widget child, int? frame, bool synchronous) {

@@ -48,6 +48,43 @@ Set<int> fontCharacters(String path) {
 }
 
 void main() {
+  test('removed Pixel choices fall back safely without affecting other Medeo fonts', () {
+    const locale = Locale('ru');
+    expect(
+      AppFonts.available(locale, panel: true),
+      isNot(contains('medeo-pixel')),
+    );
+    expect(AppFonts.family('medeo-pixel', locale), 'Manrope');
+    final values = TileAppearance.validValues({
+      'settingsInterfaceFont': 'medeo-pixel',
+      'panelFont': 'medeo-pixel',
+    });
+    expect(values, isEmpty);
+    expect(PanelClockStyle.validValues({'font': 'medeo-pixel'}), isEmpty);
+    expect(
+      TileAppearance(values).panelTextStyleFor(locale).fontFamily,
+      'PanelSans',
+    );
+    for (final id in ['medeo-sans', 'medeo-mono']) {
+      expect(AppFonts.available(locale), contains(id));
+      expect(
+        TileAppearance.validValues({
+          'settingsInterfaceFont': id,
+        })['settingsInterfaceFont'],
+        id,
+      );
+    }
+  });
+
+  test('Medeo clock weights match the bundled font axes', () {
+    for (final id in ['medeo-sans', 'medeo-mono']) {
+      expect(
+        PanelClockStyle({'font': id}).availableWeights(const TextStyle()),
+        [for (var weight = 100; weight <= 900; weight += 100) weight],
+      );
+    }
+  });
+
   test('offered fonts cover actual translated letters and combining marks', () {
     const files = {
       'google-sans': [
@@ -56,6 +93,8 @@ void main() {
         'googlesans-600',
         'googlesans-700',
       ],
+      'medeo-sans': ['medeo-sans', 'medeo-sans-italic'],
+      'medeo-mono': ['medeo-mono', 'medeo-mono-italic'],
       'onest': ['onest'],
       'manrope': ['manrope'],
       'outfit': ['outfit'],
@@ -94,6 +133,8 @@ void main() {
     }
     expect(AppFonts.available(const Locale('ru')), [
       'system',
+      'medeo-sans',
+      'medeo-mono',
       'google-sans',
       'onest',
       'manrope',
@@ -166,6 +207,9 @@ void main() {
     expect(find.text('Outfit'), findsNothing);
     expect(find.text('Google Sans'), findsOneWidget);
     expect(find.text('Onest'), findsOneWidget);
+    expect(find.text('Medeo Sans'), findsOneWidget);
+    expect(find.text('Medeo Mono'), findsOneWidget);
+    expect(find.text('Medeo Pixel'), findsNothing);
     await tester.tap(find.text('Onest'));
     await tester.pumpAndSettle();
     expect(selected, 'onest');

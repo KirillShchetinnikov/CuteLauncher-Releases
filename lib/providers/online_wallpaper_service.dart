@@ -10,6 +10,7 @@ import '../versioned_file_image.dart';
 import '../bing_wallpaper.dart';
 import '../reddit_wallpaper.dart';
 import 'service_lifecycle.dart';
+import 'foreground_work.dart';
 
 const onlineWallpaperKey = 'online_wallpaper';
 const onlineWallpaperCacheKey = 'online_wallpaper_cache';
@@ -95,6 +96,7 @@ class OnlineWallpaperService extends ChangeNotifier with ServiceLifecycle, Widge
   final Future<BingWallpaper> Function() bingLookup;
   final RedditWallpaperLookup redditLookup;
   final DateTime Function() clock;
+  final ForegroundWork? work;
   late OnlineWallpaperConfiguration configuration;
   File? _file;
   bool _ready = false, _loading = false, _foreground = true;
@@ -108,7 +110,7 @@ class OnlineWallpaperService extends ChangeNotifier with ServiceLifecycle, Widge
   Timer? _timer;
   bool get loading => _loading;
   ImageProvider? get wallpaper => configuration.enabled && _ready && _file != null ? VersionedFileImage(_file!, version) : null;
-  OnlineWallpaperService(this.preferences, {WallpaperDownload? download, Future<Directory> Function()? directory, Future<BingWallpaper> Function()? bingLookup, RedditWallpaperLookup? redditLookup, DateTime Function()? clock})
+  OnlineWallpaperService(this.preferences, {WallpaperDownload? download, Future<Directory> Function()? directory, Future<BingWallpaper> Function()? bingLookup, RedditWallpaperLookup? redditLookup, DateTime Function()? clock, this.work})
       : download = download ?? downloadWallpaper, directory = directory ?? getApplicationSupportDirectory, bingLookup = bingLookup ?? fetchBingWallpaper,
         redditLookup = redditLookup ?? fetchRedditWallpaper, clock = clock ?? DateTime.now {
     configuration = OnlineWallpaperConfiguration.decode(preferences.getString(onlineWallpaperKey));
@@ -121,7 +123,11 @@ class OnlineWallpaperService extends ChangeNotifier with ServiceLifecycle, Widge
       if (isDisposed) return;
       _file = File('${root.path}/online-wallpaper');
       await _restore();
-      await refresh();
+      if (work == null) { await refresh(); }
+      else if (!isDisposed) {
+        notifyListeners();
+        work!.schedule(this, () => refresh(), delay: const Duration(seconds: 1));
+      }
     } catch (_) { if (!isDisposed) failed = true; }
     finally { if (!isDisposed) { initialized = true; _startTimer(); notifyListeners(); } }
   }
@@ -223,8 +229,10 @@ class OnlineWallpaperService extends ChangeNotifier with ServiceLifecycle, Widge
   void didChangeAppLifecycleState(AppLifecycleState state) {
     _foreground = state == AppLifecycleState.resumed;
     _startTimer();
-    if (_foreground) refresh();
+    if (_foreground) {
+      (work?.schedule(this, () => refresh(), delay: const Duration(seconds: 1)) ?? refresh());
+    }
   }
   @override
-  void dispose() { _generation++; _timer?.cancel(); WidgetsBinding.instance.removeObserver(this); super.dispose(); }
+  void dispose() { work?.cancel(this); _generation++; _timer?.cancel(); WidgetsBinding.instance.removeObserver(this); super.dispose(); }
 }

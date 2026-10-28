@@ -356,6 +356,12 @@ class _WatchNextCardState extends State<WatchNextCard> {
 
     return FocusKeyboardListener(
       onPressed: (key) {
+        if ((key == LogicalKeyboardKey.arrowUp || key == LogicalKeyboardKey.arrowDown) &&
+            _categoryFocus?.leave != null) {
+          _categoryFocus!.leave!(key == LogicalKeyboardKey.arrowUp ? AxisDirection.up : AxisDirection.down,
+            _focusNode.rect.center.dx);
+          return KeyEventResult.handled;
+        }
         if (key == LogicalKeyboardKey.arrowUp && widget.handleUpNavigationToSettings) {
           Actions.invoke(context, const MoveFocusToSettingsIntent());
           return KeyEventResult.handled;

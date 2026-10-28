@@ -60,6 +60,7 @@ final class TvCompatibilityDiagnostics {
                 || DocumentFiles.compatibleIntent(share, pm.queryIntentActivities(share, 0)) != null ? "available" : "unsupported";
         });
         checks.add("screensaverSelection", () -> Boolean.TRUE.equals(new ScreensaverBridge(activity).capabilities().get("canChoose")) ? "available" : "unsupported");
-        return Map.of("identity", identity, "kind", emulator ? "emulator" : "physical", "checks", checks.snapshot());
+        return Map.of("identity", identity, "kind", emulator ? "emulator" : "physical", "checks", checks.snapshot(),
+                "permissionRecovery", UpdatePermissionRecovery.report(activity));
     }
 }

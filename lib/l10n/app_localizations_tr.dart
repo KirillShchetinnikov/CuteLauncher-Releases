@@ -1733,11 +1733,11 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get diagnosticsSharingNotice =>
-      'Dosyayı yazara özel mesajla gönderin, herkese açık paylaşmayın: otomatik temizleme kişisel verileri kaçırabilir. Göndererek anonim TV uyumluluk raporunun CuteLauncher Git deposunda yayımlanmasını kabul edersiniz. Yalnızca cihaz bilgileri ve özellik kullanılabilirliği kişisel veriler olmadan yayımlanır; hata günlükleri, komutlar ve ayarlarınız yayımlanmaz.';
+      'Dosyayı yazara özel mesajla gönderin, herkese açık paylaşmayın: otomatik temizleme kişisel verileri kaçırabilir. Göndererek anonim TV uyumluluk raporunun CuteLauncher Git deposunda yayımlanmasını kabul edersiniz. Yalnızca cihaz bilgileri ve özellik kullanılabilirliği kişisel veriler olmadan yayımlanır; hata günlükleri, komutlar ve ayarlarınız yayımlanmaz.\n\nRapor ayrıca yüklü paketleri, adlarını, sürümlerini ve etkinlik durumlarını, bölümlerin adlarını, içeriklerini, sıralarını ve görünürlüklerini içerir. Tanılama için kimlikler ve adlar korunur; uygulama ve bölüm listeleri yayımlanmaz.';
 
   @override
   String get diagnosticsHint =>
-      'Tek rapor TV özellik uyumluluğunu ve hata tanılamasını birleştirir. Rapor TV modeli ve yazılımını, uygulama sürümünü, izinleri, belleği, hata aşamaları ve nedenlerini, kişisel verileri otomatik temizlenen komutları ve yanıtları içerir. Oturumda son 50 işlem, ayrıca en fazla 100 hata ve sınırlı ADB kaydı tutulur. Yeniden başlatma kaydı siler. Temizleme bazı kişisel verileri kaçırabilir: dosyayı herkese açık paylaşmak yerine özel mesajla gönderin. Otomatik gönderim yoktur. Her hata, uygulanan ayarların anlık görüntüsünü saklar; sonraki değişiklikler bunu değiştirmez.';
+      'Tek rapor TV özellik uyumluluğunu ve hata tanılamasını birleştirir. Rapor TV modeli ve yazılımını, uygulama sürümünü, izinleri, belleği, hata aşamaları ve nedenlerini, kişisel verileri otomatik temizlenen komutları ve yanıtları içerir. Oturumda son 50 işlem, ayrıca en fazla 100 hata ve sınırlı ADB kaydı tutulur. Yeniden başlatma kaydı siler. Temizleme bazı kişisel verileri kaçırabilir: dosyayı herkese açık paylaşmak yerine özel mesajla gönderin. Otomatik gönderim yoktur. Her hata, uygulanan ayarların anlık görüntüsünü saklar; sonraki değişiklikler bunu değiştirmez.\n\nRapor ayrıca yüklü paketleri, adlarını, sürümlerini ve etkinlik durumlarını, bölümlerin adlarını, içeriklerini, sıralarını ve görünürlüklerini içerir. Tanılama için kimlikler ve adlar korunur; uygulama ve bölüm listeleri yayımlanmaz.';
 
   @override
   String get diagnosticsTitle => 'Hata teşhisi';
@@ -3429,7 +3429,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get noRemovableCategories =>
-      'Bu uygulama herhangi bir bölüme manuel olarak eklenmemiştir. Otomatik bölümler düzenlenemez.';
+      'Bu uygulama hiçbir bölüme elle eklenmemiş. Standart otomatik bölümlerden (Tümü, TV, TV dışı) kaldırılamaz; Gizle seçeneğini kullanın. Favoriler elle düzenlenebilir.';
 
   @override
   String get remoteButtonsTitle => 'Kumanda tuşlarını yeniden eşleme';
@@ -3518,10 +3518,10 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get remotePanelDescription =>
-      'Yüzen panel, widget’larınızı diğer uygulamaların üzerinde gösterir. Kumandayla açmak için Yüzen panel eylemini istediğiniz bir düğmeye atayın.';
+      'Hızlı ayarlar paneli, widget’larınızı diğer uygulamaların üzerinde gösterir. Kumandayla açmak için Hızlı ayarlar paneli eylemini istediğiniz bir düğmeye atayın.';
 
   @override
-  String get remotePanel => 'Yüzen panel';
+  String get remotePanel => 'Hızlı ayarlar paneli';
 
   @override
   String get remotePanelSettingsBackground =>
@@ -3580,13 +3580,18 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get remotePanelDisabledInLauncher =>
-      'CuteLauncher ekrandayken açılır panel devre dışıdır.';
+      'CuteLauncher ekrandayken hızlı ayarlar paneli devre dışıdır.';
 
   @override
   String get remoteAccessSettings => 'Erişim ayarları';
 
   @override
   String get remoteButtonsTest => 'Düğme testi';
+
+  @override
+  String remoteMappingDeleteConfirm(String name) {
+    return '“$name” ataması silinsin mi?';
+  }
 
   @override
   String get remoteMappingConflict =>
@@ -4228,4 +4233,120 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get adbWifiDisable => 'Devre dışı bırak';
+
+  @override
+  String get recentAppsTitle => 'Açık uygulamalar';
+
+  @override
+  String get recentAppsPanelType => 'Panel';
+
+  @override
+  String get recentAppsAutomatic => 'Otomatik';
+
+  @override
+  String get recentAppsCustom => 'CuteLauncher paneli';
+
+  @override
+  String get recentAppsSystem => 'Yerleşik panel';
+
+  @override
+  String get recentAppsOpen => 'Paneli aç';
+
+  @override
+  String get recentAppsRefresh => 'Yenile';
+
+  @override
+  String get recentAppsCloseAll => 'Tümünü kapat';
+
+  @override
+  String get recentAppsEmpty => 'Açık görevi olan TV uygulaması yok';
+
+  @override
+  String get recentAppsUnavailable =>
+      'Açık uygulamalar kullanılamıyor. ADB ve erişilebilirlik iznini kontrol edin.';
+
+  @override
+  String get recentAppsHelp =>
+      'Yalnızca açık görevi olan TV uygulamaları gösterilir. Tümünü kapat, listedeki kullanıcı uygulamalarını durdurur. Yeniden eşleyicide bir tuş atayın. CuteLauncher paneli ADB ve erişilebilirlik izni gerektirir.';
+
+  @override
+  String get recentAppsHomeHint =>
+      'Home yalnızca uzun basmayı destekler. Kısa basma CuteLauncher’a döner. Atama başlatıcının dışında da çalışır.';
+
+  @override
+  String get sectionRulesHelp =>
+      'Standart bölümler yeniden adlandırılabilir, taşınabilir veya gizlenebilir, ancak silinemez; en az biri görünür kalmalıdır. Tümü, TV ve TV dışı listeleri ada değil başlatma türüne göre doldurulur; Gizle uygulamayı üçünden de kaldırır. Favoriler ve özel bölümler elle doldurulur. Sıralama: elle, ad, kullanım sıklığı veya son açılış; görünüm bölüm bazındadır. İzlemeye devam et önerileri gösterir, gizlenebilir veya taşınabilir.';
+
+  @override
+  String get remoteMappingNamePlaceholder => 'Düğme adı';
+
+  @override
+  String get remoteMappingAssign => 'Düğme ata';
+
+  @override
+  String get remoteMappingCapture => 'Yakala';
+
+  @override
+  String remoteMappingCaptured(String key) {
+    return 'Yakalanan düğme: $key';
+  }
+
+  @override
+  String get remoteMappingCaptureHint =>
+      'Yakala’yı seçip kumanda düğmesine basın. Yeniden yakalayabilirsiniz. Kabul etmek için Tamam’ı seçin.';
+
+  @override
+  String get remoteMappingCaptureTimeout =>
+      'Düğme yakalanmadı. Yeniden deneyin.';
+
+  @override
+  String get remoteMappingCaptureFailed =>
+      'Yakalanamadı. Erişilebilirlik hizmeti iznini kontrol edin.';
+
+  @override
+  String get remoteMappingServiceRequired =>
+      'Erişim ayarlarında erişilebilirlik hizmetini bağlayın.';
+
+  @override
+  String get remoteMappingKeyRequired =>
+      'Düğme atanmadı. Düğme ata’yı seçip yakalayın.';
+
+  @override
+  String get remoteMappingHomeHoldRequired => 'Home için Basılı tutmayı seçin.';
+
+  @override
+  String get remoteMappingAppRequired => 'Açılacak uygulamayı seçin.';
+
+  @override
+  String get remoteMappingUrlRequired =>
+      'Webhook URL’si girin veya içe aktarın.';
+
+  @override
+  String get remoteMappingUrlInvalid =>
+      'Geçersiz URL. Yol içeren HTTPS veya yerel HTTP kullanın; boşluk, kimlik bilgisi veya # parçası eklemeyin.';
+
+  @override
+  String get remoteMappingSaveFailed =>
+      'Kaydedilemedi. Yeniden deneyin; düzenleyicideki değerler korundu.';
+
+  @override
+  String get remoteMappingDeleteFailed => 'Silinemedi. Yeniden deneyin.';
+
+  @override
+  String get remoteMappingRecents => 'Açık uygulamalar paneli';
+
+  @override
+  String get remoteMappingImport => 'Dosyadan URL içe aktar';
+
+  @override
+  String get remoteMappingImportHint =>
+      'Yalnızca Webhook URL’si içeren, komut veya açıklama içermeyen UTF-8 metin dosyası seçin. Satır sonları kaldırılır.';
+
+  @override
+  String get remoteMappingImportInvalid =>
+      'Dosya yalnızca geçerli bir Webhook URL’si içermelidir: HTTPS veya yerel HTTP, komut veya açıklama olmadan.';
+
+  @override
+  String get remoteMappingImportFailed =>
+      'Okunamadı. En fazla 64 KB olan erişilebilir bir UTF-8 metin dosyası seçin.';
 }

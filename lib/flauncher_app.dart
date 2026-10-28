@@ -29,6 +29,7 @@ import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/launcher_state.dart';
 import 'package:flutter/material.dart';
+import 'widgets/recent_apps_panel.dart';
 import 'providers/night_mode_service.dart';
 import 'package:flutter/services.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
@@ -42,7 +43,8 @@ import 'dart:async';
 class FLauncherApp extends StatefulWidget
 {
   final bool remotePanel;
-  const FLauncherApp({super.key, this.remotePanel = false});
+  final bool recentApps;
+  const FLauncherApp({super.key, this.remotePanel = false, this.recentApps = false});
   @override
   State<FLauncherApp> createState() => _FLauncherAppState();
 }
@@ -152,7 +154,12 @@ class _FLauncherAppState extends State<FLauncherApp> {
       },
       actions: {
         ...WidgetsApp.defaultActions,
-        BackIntent: BackAction(context),
+        BackIntent: widget.remotePanel
+            ? CallbackAction<BackIntent>(onInvoke: (_) {
+                _navigatorKey.currentState?.maybePop();
+                return null;
+              })
+            : BackAction(context),
         DirectionalFocusIntent: SoundFeedbackDirectionalFocusAction(context)
       },
       localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -235,7 +242,7 @@ class _FLauncherAppState extends State<FLauncherApp> {
             }),
           ), tabBarTheme: TabBarThemeData(indicatorColor: accentColor),
         )),
-      home: widget.remotePanel ? const RemotePanel() : Builder(
+      home: widget.recentApps ? const RecentAppsPanel() : widget.remotePanel ? const RemotePanel() : Builder(
         builder: (context) => PopScope(
           canPop: false,
           child: FLauncher(key: _launcherKey),

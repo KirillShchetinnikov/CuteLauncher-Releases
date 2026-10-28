@@ -2,7 +2,10 @@ param(
     [string]$Flutter = "$PSScriptRoot/../.tools/flutter-upgrade/bin/flutter.bat",
     [string]$JavaHome = $env:JAVA_HOME,
     [ValidateSet('release', 'profile')]
-    [string]$Mode = 'release'
+    [string]$Mode = 'release',
+    [string[]]$DartDefine = @(),
+    [string]$TargetPlatform = 'android-arm,android-arm64,android-x64',
+    [int]$BuildNumber = 0
 )
 
 $ErrorActionPreference = 'Stop'
@@ -46,7 +49,9 @@ $env:KEY_PASSWORD = $settings.password
 $env:JAVA_HOME = $JavaHome
 $env:UNIVERSAL_ONLY = 'true'
 try {
-    & $Flutter build apk "--$Mode" --target-platform=android-arm,android-arm64,android-x64
+    $extraArguments = @($DartDefine | ForEach-Object { "--dart-define=$_" })
+    if ($BuildNumber -gt 0) { $extraArguments += "--build-number=$BuildNumber" }
+    & $Flutter build apk "--$Mode" "--target-platform=$TargetPlatform" @extraArguments
     if ($LASTEXITCODE -ne 0) { throw 'APK build failed.' }
     New-Item -ItemType Directory -Force artifacts | Out-Null
     Copy-Item -LiteralPath "build/app/outputs/flutter-apk/app-$Mode.apk" `

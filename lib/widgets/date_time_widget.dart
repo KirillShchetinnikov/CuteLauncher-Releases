@@ -44,6 +44,7 @@ class DateTimeWidget extends StatefulWidget {
 class _DateTimeWidgetState extends State<DateTimeWidget>
     with WidgetsBindingObserver {
   late DateTime _now;
+  late LauncherDateFormatter _formatter;
   String _formattedText = '';
   Timer? _timer;
 
@@ -61,15 +62,12 @@ class _DateTimeWidgetState extends State<DateTimeWidget>
   }
 
   void _initDateFormatAndRefresh() {
+    _formatter = LauncherDateFormatter(widget._dateTimeFormatString, Localizations.localeOf(context).toString());
     _now = DateTime.now();
     _formattedText = _format(_now);
   }
 
-  String _format(DateTime date) => formatLauncherDate(
-    widget._dateTimeFormatString,
-    date,
-    Localizations.localeOf(context).toString(),
-  );
+  String _format(DateTime date) => _formatter.format(date);
 
   void _startTimer() {
     _timer?.cancel();

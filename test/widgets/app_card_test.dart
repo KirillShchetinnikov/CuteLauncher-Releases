@@ -40,6 +40,7 @@ void main() {
 
   setUp(() {
     mockAppsService = MockAppsService();
+    when(mockAppsService.imageRevisionFor(any)).thenReturn((0, 0));
     when(mockAppsService.isTileHidden(any)).thenReturn(false);
     when(mockAppsService.launchApp(any)).thenAnswer((_) async => true);
     mockSettingsService = MockSettingsService();
@@ -341,6 +342,7 @@ void main() {
     final banner = Completer<Uint8List>();
     when(mockAppsService.getAppBanner(any)).thenAnswer((_) => banner.future);
     when(mockAppsService.getAppIcon(any)).thenAnswer((_) async => Uint8List(0));
+    when(mockAppsService.imageRevisionFor(any)).thenReturn((0, 1));
     for (final listener in listeners) { listener(); }
     await tester.pump();
     expect((tester.widget<Image>(find.byType(Image).first).image as ResizeImage).imageProvider, provider);
@@ -358,6 +360,17 @@ void main() {
     // Testing focus state
     final appCard = tester.widget<AppCard>(find.byType(AppCard));
     expect(appCard.autofocus, isTrue);
+  });
+
+  testWidgets('unrelated app notifications keep loaded images', (tester) async {
+    await tester.pumpWidget(createWidgetUnderTest());
+    await tester.pumpAndSettle();
+    final listeners = verify(mockAppsService.addListener(captureAny)).captured.cast<VoidCallback>();
+    clearInteractions(mockAppsService);
+    for (final listener in listeners) { listener(); listener(); }
+    await tester.pumpAndSettle();
+    verifyNever(mockAppsService.getAppBanner(any));
+    verifyNever(mockAppsService.getAppIcon(any));
   });
 
   testWidgets('AppCard handles keyboard navigation to move app within category', (WidgetTester tester) async {
