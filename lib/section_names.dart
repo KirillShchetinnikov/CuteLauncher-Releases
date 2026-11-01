@@ -14,6 +14,7 @@ String localizedSectionName(String name, AppLocalizations l10n) => switch (name)
   'News' => l10n.news,
   'Tools' => l10n.tools,
   'Favorites' => l10n.favorites,
+  'App Feeds' => l10n.appChannelsTitle,
   'Custom...' => l10n.customSectionName,
   _ => name,
 };

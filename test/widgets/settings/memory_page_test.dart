@@ -4,7 +4,6 @@ import 'package:flauncher/providers/memory_resources.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/settings/memory_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -69,9 +68,6 @@ void main() {
       await tester.ensureVisible(find.text('Memory saving'));
       await tester.tap(find.text('Memory saving'));
       await tester.pumpAndSettle();
-      expect(settings.memorySaverEnabled, isFalse);
-      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
-      await tester.pumpAndSettle();
       expect(settings.memorySaverEnabled, isTrue);
       expect(
         SettingsService(await SharedPreferences.getInstance())
@@ -79,8 +75,6 @@ void main() {
         isTrue,
       );
       expect(settings.exportSettingsMap()['memory_saver_enabled'], isTrue);
-      Navigator.of(tester.element(find.byType(MemorySaverPage))).pop();
-      await tester.pumpAndSettle();
       expect(channel.calls, 2);
       await tester.ensureVisible(find.text('Measure memory'));
       await tester.tap(find.text('Measure memory'));

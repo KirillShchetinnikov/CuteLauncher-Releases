@@ -29,6 +29,8 @@ final class RemotePanelChannels implements AutoCloseable {
     private final RemoteButtonsBridge buttons;
     private final RecentAppsBridge recents;
     private final TvInputBridge inputs;
+    private final VpnBridge vpn;
+    private final AudioStatusBridge audioStatus;
     private SharedPreferences.OnSharedPreferenceChangeListener weatherListener;
     private boolean closed;
     RemotePanelChannels(Context service, BinaryMessenger messenger, Runnable dismiss) {
@@ -45,6 +47,8 @@ final class RemotePanelChannels implements AutoCloseable {
         weather = context.getSharedPreferences(WeatherReceiver.PREFS_NAME, Context.MODE_PRIVATE);
         var network = new NetworkStatistics(context);
         inputs = new TvInputBridge(context, messenger);
+        vpn = new VpnBridge(context, messenger, worker);
+        audioStatus = new AudioStatusBridge(context, messenger, worker);
         var applications = new ApplicationCatalog(context);
         mappings = new RemoteMappingsBridge(context, messenger, worker, LauncherAccessibilityService::connected);
         buttons = new RemoteButtonsBridge(context, messenger, LauncherAccessibilityService::connected);
@@ -147,6 +151,8 @@ final class RemotePanelChannels implements AutoCloseable {
         closed = true;
         mappings.close(); buttons.close(); inputs.close();
         recents.close();
+        vpn.close();
+        audioStatus.close();
         if (weatherListener != null) weather.unregisterOnSharedPreferenceChangeListener(weatherListener);
         networkEvents.onCancel(null); appEvents.onCancel(null); notifications.onCancel(null);
         notificationPopups.onCancel(null);

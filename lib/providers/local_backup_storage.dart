@@ -29,8 +29,11 @@ class LocalBackupStorage extends BackupStorage {
 
   Future<Directory> _root() async {
     _check();
-    return Directory('${(await directory()).path}/backup_storage')
-        .create(recursive: true);
+    final parent = await directory();
+    _check();
+    final root = await Directory('${parent.path}/backup_storage').create(recursive: true);
+    _check();
+    return root;
   }
 
   Future<T?> _call<T>(String operation, {String? name, String? path}) async {
@@ -124,6 +127,9 @@ class LocalBackupStorage extends BackupStorage {
       return;
     }
     final target = File('${(await _root()).path}/${file.name}');
-    if (await target.exists()) await target.delete();
+    if (await target.exists()) {
+      _check();
+      await target.delete();
+    }
   }
 }

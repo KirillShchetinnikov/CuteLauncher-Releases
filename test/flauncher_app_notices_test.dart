@@ -5,6 +5,7 @@ import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/widgets/focus_aware_app_bar.dart';
 import 'package:flauncher/widgets/notice_style.dart';
 import 'package:flauncher/widgets/settings/settings_panel.dart';
+import 'package:flauncher/widgets/settings/adb_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -12,6 +13,21 @@ import 'package:flutter_test/flutter_test.dart';
 import 'support/design_fixture.dart';
 
 void main() {
+  testWidgets('open apps setup event opens the ADB page', (tester) async {
+    await pumpDesignFixture(tester, language: 'ru');
+    debugDisableShadows = true;
+    await tester.binding.defaultBinaryMessenger.handlePlatformMessage(
+      'me.efesser.flauncher/event_home',
+      const StandardMethodCodec().encodeSuccessEnvelope('open_adb_settings'),
+      (_) {},
+    );
+    await tester.pumpAndSettle();
+    expect(find.byType(SettingsPanel), findsOneWidget);
+    expect(find.byType(AdbPage), findsOneWidget);
+    expect(tester.widget<AdbPage>(find.byType(AdbPage)).section, 'connection');
+    expect(tester.takeException(), isNull);
+  });
+
   Future<void> blocked(WidgetTester tester) async {
     await tester.binding.defaultBinaryMessenger.handlePlatformMessage(
       'me.efesser.flauncher/event_home',
@@ -20,6 +36,21 @@ void main() {
     );
     await tester.pumpAndSettle();
   }
+
+  testWidgets('Home cancels pending ADB setup navigation', (tester) async {
+    await pumpDesignFixture(tester, language: 'ru');
+    debugDisableShadows = true;
+    for (final event in ['open_adb_settings', true]) {
+      await tester.binding.defaultBinaryMessenger.handlePlatformMessage(
+        'me.efesser.flauncher/event_home',
+        const StandardMethodCodec().encodeSuccessEnvelope(event),
+        (_) {},
+      );
+    }
+    await tester.pumpAndSettle();
+    expect(find.byType(AdbPage), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
 
   testWidgets('Home cancels the landscape preview before closing settings', (
     tester,

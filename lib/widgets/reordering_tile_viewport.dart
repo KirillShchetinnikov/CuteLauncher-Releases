@@ -14,9 +14,13 @@ class ReorderingTileViewport extends StatefulWidget {
   final ScrollController controller;
   final IndexedWidgetBuilder itemBuilder;
   final String? selected;
+  final ValueListenable<String?>? selection;
   final String? requested;
   final bool animate;
   final ScrollPhysics? physics;
+  // Diagnostic A/B switch: materialize the entire configured Home, including
+  // off-screen rows and horizontal cards. Ordinary builds keep the lazy policy.
+  final bool materializeAll;
 
   const ReorderingTileViewport({
     super.key,
@@ -25,9 +29,11 @@ class ReorderingTileViewport extends StatefulWidget {
     required this.controller,
     required this.itemBuilder,
     this.selected,
+    this.selection,
     this.requested,
     this.animate = true,
     this.physics,
+    this.materializeAll = const bool.fromEnvironment('CUTE_HOME_MATERIALIZE_ALL'),
   });
 
   @override
@@ -60,8 +66,12 @@ class _ReorderingTileViewportState extends State<ReorderingTileViewport>
       final box = context.findRenderObject();
       if (box is! RenderBox || !box.hasSize || !box.attached) return;
       final screen = Offset.zero & MediaQuery.sizeOf(context);
+      // Load only near the screen, but keep a visited row for one extra screen.
+      // Equal enter/exit margins used to dispose and recreate whole neighboring
+      // feeds during a short down/up reversal, including their artwork state.
+      final margin = _nearScreen ? math.max(120.0, screen.height) : 120.0;
       final visible = (box.localToGlobal(Offset.zero) & box.size)
-          .overlaps(screen.inflate(120));
+          .overlaps(screen.inflate(margin));
       if (visible != _nearScreen) setState(() => _nearScreen = visible);
     });
     WidgetsBinding.instance.ensureVisualUpdate();
@@ -155,9 +165,13 @@ class _ReorderingTileViewportState extends State<ReorderingTileViewport>
     builder: (context, bounds) {
       final l = widget.layout;
       final vertical = l.mode == 'grid';
+      // Reuse mounted card widgets while only scroll/selection/positions change.
+      // A new layout or parent configuration rebuilds this bounded cache.
+      var cards = <String, Widget>{};
       return AnimatedBuilder(
-        animation: Listenable.merge([_motion, widget.controller]),
+        animation: Listenable.merge([_motion, widget.controller, widget.selection]),
         builder: (context, _) {
+          final selected = widget.selection?.value ?? widget.selected;
           final scroll = widget.controller.hasClients
               ? widget.controller.offset
               : 0.0;
@@ -168,6 +182,16 @@ class _ReorderingTileViewportState extends State<ReorderingTileViewport>
             bounds.maxHeight,
           ).inflate(math.max(l.stepX, l.stepY));
           final size = Size(l.width, l.height + l.labelHeight);
+          final visible = <int>[
+            for (var i = 0; i < widget.packages.length; i++)
+              if (widget.materializeAll || widget.packages[i] == selected ||
+                  widget.packages[i] == widget.requested ||
+                  _nearScreen && viewport.overlaps(_position(widget.packages[i]) & size)) i,
+          ];
+          cards = {
+            for (final i in visible)
+              widget.packages[i]: cards[widget.packages[i]] ?? widget.itemBuilder(context, i),
+          };
           return Listener(
             onPointerSignal: _onPointerSignal,
             child: SingleChildScrollView(
@@ -185,18 +209,14 @@ class _ReorderingTileViewportState extends State<ReorderingTileViewport>
                 child: Stack(
                   clipBehavior: Clip.none,
                   children: [
-                    for (var i = 0; i < widget.packages.length; i++)
-                      if (widget.packages[i] == widget.selected || widget.packages[i] == widget.requested ||
-                          _nearScreen && viewport.overlaps(
-                            _position(widget.packages[i]) & size,
-                          ))
+                    for (final i in visible)
                         PositionedDirectional(
                           key: ValueKey(('tile-position', widget.packages[i])),
                           start: _position(widget.packages[i]).dx,
                           top: _position(widget.packages[i]).dy,
                           width: size.width,
                           height: size.height,
-                          child: widget.itemBuilder(context, i),
+                          child: cards[widget.packages[i]]!,
                         ),
                   ],
                 ),

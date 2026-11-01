@@ -215,11 +215,7 @@ class _RemoteMappingsPageState extends State<RemoteMappingsPage>
               onPressed: () => _edit(item),
             ),
           if (_status != 'idle' && _status != 'success')
-            Text(
-              _status == 'busy'
-                  ? l.loading
-                  : l.autoLaunchUnavailable,
-            ),
+            Text(_status == 'busy' ? l.loading : l.autoLaunchUnavailable),
           if (_failed) Text(l.remoteMappingInvalid),
           FocusableSettingsTile(
             title: Text(l.remoteMappingsReset),
@@ -265,6 +261,46 @@ class _MappingEditorState extends State<_MappingEditor> {
   late bool _enabled = widget.mapping?.enabled ?? true;
   bool _saving = false;
   bool _importing = false;
+  bool _allowExit = false;
+  bool _confirmingExit = false;
+  bool get _dirty =>
+      _key != (widget.mapping?.keyCode ?? 0) ||
+      _action != (widget.mapping?.action ?? 'home') ||
+      _target != (widget.mapping?.target ?? '') ||
+      _trigger != (widget.mapping?.trigger ?? 'press') ||
+      _name != (widget.mapping?.name ?? '') ||
+      _enabled != (widget.mapping?.enabled ?? true);
+
+  Future<void> _requestExit() async {
+    if (_saving || _importing || _confirmingExit) return;
+    _confirmingExit = true;
+    final l = AppLocalizations.of(context)!;
+    final discard = await showLauncherDialog<bool>(
+      context: context,
+      builder: (dialog) => LauncherAlertDialog(
+        title: Text(l.discardChangesTitle),
+        content: Text(l.discardChangesMessage),
+        actions: [
+          LauncherDialogButton(
+            autofocus: true,
+            isCancel: true,
+            onPressed: () => Navigator.pop(dialog, false),
+            child: Text(l.cancel),
+          ),
+          LauncherDialogButton(
+            onPressed: () => Navigator.pop(dialog, true),
+            child: Text(l.close),
+          ),
+        ],
+      ),
+    );
+    _confirmingExit = false;
+    if (discard != true || !mounted) return;
+    setState(() => _allowExit = true);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) Navigator.maybePop(context);
+    });
+  }
 
   Future<void> _delete() async {
     final l = AppLocalizations.of(context)!;
@@ -329,7 +365,7 @@ class _MappingEditorState extends State<_MappingEditor> {
     final l = AppLocalizations.of(context)!;
     setState(() => _importing = true);
     try {
-      final source = await DocumentFiles.pickWebhookText();
+      final source = await DocumentFiles.pickWebhookText(context: context);
       if (!mounted || source == null) return;
       final value = remoteWebhookFromText(source);
       if (value == null) {
@@ -404,147 +440,158 @@ class _MappingEditorState extends State<_MappingEditor> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
-    return Material(
-      type: MaterialType.transparency,
-      child: SettingsPageLayout(
-        title: Text(l.remoteBindings),
-        child: ListView(
-          children: [
-            SettingsTextTile(
-              title: l.name,
-              value: _name,
-              emptyLabel: l.remoteMappingNamePlaceholder,
-              enabled: !_saving && !_importing,
-              maxLength: 80,
-              onChanged: (value) => setState(() => _name = value.trim()),
-            ),
-            FocusableSettingsTile(
-              title: Text(l.remoteMappingAssign),
-              trailing: Text(
-                _key == 0
-                    ? l.settingsValueNotSet
-                    : '${remoteKeyLabel(l, _key)} ($_key)',
-              ),
-              enabled: !_saving && !_importing,
-              onPressed: _assign,
-            ),
-            if (widget.mapping != null)
-              RoundedSwitchListTile(
-                title: Text(l.remoteMappingsEnabled),
-                value: _enabled,
+    return PopScope(
+      canPop: _allowExit || !_dirty && !_saving && !_importing,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) _requestExit();
+      },
+      child: Material(
+        type: MaterialType.transparency,
+        child: SettingsPageLayout(
+          title: Text(l.remoteBindings),
+          child: ListView(
+            children: [
+              SettingsTextTile(
+                title: l.name,
+                value: _name,
+                emptyLabel: l.remoteMappingNamePlaceholder,
                 enabled: !_saving && !_importing,
-                onChanged: (value) => setState(() => _enabled = value),
+                maxLength: 80,
+                onChanged: (value) => setState(() => _name = value.trim()),
               ),
-            SettingsChoiceTile<String>(
-              title: l.remoteMappingTrigger,
-              value: _trigger,
-              options: const ['press', 'hold'],
-              enabled: !_importing && !_saving,
-              label: (value) =>
-                  value == 'hold' ? l.remoteMappingHold : l.remoteMappingPress,
-              onChanged: (value) => setState(() {
-                _trigger = value;
-              }),
-            ),
-            if (_trigger == 'hold')
-              SettingsHelp(
-                text: _key == 3
-                    ? l.recentAppsHomeHint
-                    : l.remoteMappingHoldHint,
-              ),
-            SettingsChoiceTile<String>(
-              title: l.remoteMappingAction,
-              value: _action,
-              options: const [
-                'app',
-                'home',
-                'back',
-                'webhook',
-                'panel',
-                'recents',
-              ],
-              label: (value) => _actionLabel(l, value),
-              enabled: !_importing && !_saving,
-              onChanged: (value) => setState(() {
-                _action = value;
-                _target = '';
-              }),
-            ),
-            if (_action == 'app')
               FocusableSettingsTile(
-                title: Text(l.applications),
+                title: Text(l.remoteMappingAssign),
                 trailing: Text(
-                  context
-                          .read<AppsService?>()
-                          ?.applications
-                          .where((app) => app.packageName == _target)
-                          .firstOrNull
-                          ?.name ??
-                      (_target.isEmpty ? l.settingsValueNotSet : _target),
+                  _key == 0
+                      ? l.settingsValueNotSet
+                      : '${remoteKeyLabel(l, _key)} ($_key)',
                 ),
                 enabled: !_saving && !_importing,
-                onPressed: _app,
+                onPressed: _assign,
               ),
-            if (_action == 'webhook') ...[
-              SettingsTextTile(
-                enabled: !_saving && !_importing,
-                title: 'Webhook URL',
-                value: _target,
-                obscureText: true,
-                maxLength: 4096,
-                keyboardType: TextInputType.url,
-                onChanged: (value) => setState(() => _target = value.trim()),
+              if (widget.mapping != null)
+                RoundedSwitchListTile(
+                  title: Text(l.remoteMappingsEnabled),
+                  value: _enabled,
+                  enabled: !_saving && !_importing,
+                  onChanged: (value) => setState(() => _enabled = value),
+                ),
+              SettingsChoiceTile<String>(
+                title: l.remoteMappingTrigger,
+                value: _trigger,
+                options: const ['press', 'hold'],
+                enabled: !_importing && !_saving,
+                label: (value) => value == 'hold'
+                    ? l.remoteMappingHold
+                    : l.remoteMappingPress,
+                onChanged: (value) => setState(() {
+                  _trigger = value;
+                }),
               ),
-              FocusableSettingsTile(
-                title: Text(l.remoteMappingImport),
-                leading: const Icon(Icons.file_open_outlined),
-                enabled: !_saving && !_importing,
-                onPressed: _importWebhook,
+              if (_trigger == 'hold')
+                SettingsHelp(
+                  title: '${l.remoteMappingTrigger}: ${l.remoteMappingHold}',
+                  text: _key == 3
+                      ? l.recentAppsHomeHint
+                      : l.remoteMappingHoldHint,
+                ),
+              SettingsChoiceTile<String>(
+                title: l.remoteMappingAction,
+                value: _action,
+                options: const [
+                  'app',
+                  'home',
+                  'back',
+                  'webhook',
+                  'panel',
+                  'recents',
+                ],
+                label: (value) => _actionLabel(l, value),
+                enabled: !_importing && !_saving,
+                onChanged: (value) => setState(() {
+                  _action = value;
+                  _target = '';
+                }),
               ),
-              SettingsHelp(text: l.remoteMappingImportHint),
-            ],
-            if (widget.onDelete != null)
-              FocusableSettingsTile(
-                title: Text(l.delete),
-                leading: const Icon(Icons.delete_outline),
-                enabled: !_saving && !_importing,
-                onPressed: _delete,
-              ),
-            FocusableSettingsTile(
-              title: Text(l.save),
-              leading: const Icon(Icons.check),
-              enabled: !_importing && !_saving,
-              onPressed: () async {
-                final error = _validationError(l);
-                if (error != null) {
-                  showActionNotice(context, error, error: true);
-                  return;
-                }
-                setState(() => _saving = true);
-                final saved = await widget.onSave(
-                  RemoteMapping(
-                    name: _name,
-                    keyCode: _key,
-                    action: _action,
-                    target: _target,
-                    trigger: _trigger,
-                    enabled: _enabled,
+              if (_action == 'app')
+                FocusableSettingsTile(
+                  title: Text(l.applications),
+                  trailing: Text(
+                    context
+                            .read<AppsService?>()
+                            ?.applications
+                            .where((app) => app.packageName == _target)
+                            .firstOrNull
+                            ?.name ??
+                        (_target.isEmpty ? l.settingsValueNotSet : _target),
                   ),
-                );
-                if (!context.mounted) return;
-                setState(() => _saving = false);
-                if (saved) {
-                  Navigator.pop(context);
-                } else {
-                  showActionNotice(
-                    context,
-                    l.remoteMappingSaveFailed,
-                    error: true,
+                  enabled: !_saving && !_importing,
+                  onPressed: _app,
+                ),
+              if (_action == 'webhook') ...[
+                SettingsTextTile(
+                  enabled: !_saving && !_importing,
+                  title: 'Webhook URL',
+                  value: _target,
+                  obscureText: true,
+                  maxLength: 4096,
+                  keyboardType: TextInputType.url,
+                  onChanged: (value) => setState(() => _target = value.trim()),
+                ),
+                FocusableSettingsTile(
+                  title: Text(l.remoteMappingImport),
+                  leading: const Icon(Icons.file_open_outlined),
+                  enabled: !_saving && !_importing,
+                  onPressed: _importWebhook,
+                ),
+                SettingsHelp(
+                  title: l.importAction,
+                  text: l.remoteMappingImportHint,
+                ),
+              ],
+              if (widget.onDelete != null)
+                FocusableSettingsTile(
+                  title: Text(l.delete),
+                  leading: const Icon(Icons.delete_outline),
+                  enabled: !_saving && !_importing,
+                  onPressed: _delete,
+                ),
+              FocusableSettingsTile(
+                title: Text(l.save),
+                leading: const Icon(Icons.check),
+                enabled: !_importing && !_saving,
+                onPressed: () async {
+                  final error = _validationError(l);
+                  if (error != null) {
+                    showActionNotice(context, error, error: true);
+                    return;
+                  }
+                  setState(() => _saving = true);
+                  final saved = await widget.onSave(
+                    RemoteMapping(
+                      name: _name,
+                      keyCode: _key,
+                      action: _action,
+                      target: _target,
+                      trigger: _trigger,
+                      enabled: _enabled,
+                    ),
                   );
-                }
-              },
-            ),
-          ],
+                  if (!context.mounted) return;
+                  setState(() => _saving = false);
+                  if (saved) {
+                    Navigator.pop(context);
+                  } else {
+                    showActionNotice(
+                      context,
+                      l.remoteMappingSaveFailed,
+                      error: true,
+                    );
+                  }
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

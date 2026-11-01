@@ -112,6 +112,8 @@ void main() {
     await appearance.set('focusBorderStyle', 'glow');
     await appearance.set('opacity', .4);
     await tester.scrollUntilVisible(find.text('Reset this section'), 160);
+    await tester.ensureVisible(find.text('Reset this section'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Reset this section'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Reset this section').last);
@@ -146,11 +148,12 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(TextButton, 'Reset appearance'));
     await tester.pumpAndSettle();
-    expect(appearance.appearance.active, isFalse);
+    expect(appearance.appearance.interfaceStyle, 'glass');
+    expect(appearance.appearance.labels, 'all');
     expect(settings.themes, 'modern');
     expect(settings.showAppNamesBelowIcons, isFalse);
     expect(settings.showCategoryTitles, isFalse);
-    expect(settings.backgroundSource, 'gradient');
+    expect(settings.backgroundSource, 'landscape');
     expect(settings.accentColorHex, ACCENT_COLOR_PURPLE);
     expect(settings.appHighlightAnimationEnabled, isTrue);
     expect(online.configuration.enabled, isFalse);
@@ -162,18 +165,16 @@ void main() {
     await settings.setShowDateInStatusBar(false);
     await settings.setShowDataWidgetInStatusBar(false);
     await pump(tester, const StatusBarObjectsPage());
-    await tester.tap(find.text('Block settings'));
+    await tester.tap(find.text('Clock, date and weather'));
     await tester.pumpAndSettle();
     expect(find.byType(InformationSettingsPage), findsOneWidget);
-    for (final title in [
-      'Clock appearance',
-      'Date settings',
-      'Weather settings',
-    ]) {
-      await tester.scrollUntilVisible(find.text(title), 200);
-      await tester.pumpAndSettle();
-      expect(find.widgetWithText(FocusableSettingsTile, title), findsOneWidget);
-    }
+    expect(find.text('Panel appearance'), findsOneWidget);
+    await tester.scrollUntilVisible(find.text('Formats and data'), 100);
+    await tester.tap(find.text('Formats and data'));
+    await tester.pumpAndSettle();
+    expect(find.text('Weather settings'), findsOneWidget);
+    await Navigator.of(tester.element(find.byType(InformationDataSettingsPage))).maybePop();
+    await tester.pumpAndSettle();
     await Navigator.of(tester.element(find.byType(InformationSettingsPage))).maybePop();
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(find.text('Traffic settings'), 200);
@@ -185,7 +186,7 @@ void main() {
       (tester) async {
     await pump(tester,
         const SettingsPanel(initialRoute: InterfaceSettingsPage.routeName));
-    await tester.tap(find.text('Appearance'));
+    await tester.tap(find.text('Home screen · Appearance'));
     await tester.pumpAndSettle();
     final panel = find.text('Highlight and animation');
     Focus.of(tester.element(panel)).requestFocus();
@@ -211,7 +212,7 @@ void main() {
     )));
     await tester.tap(find.text('Open settings'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Appearance'));
+    await tester.tap(find.text('Home screen · Appearance'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Highlight and animation'));
     await tester.pumpAndSettle();

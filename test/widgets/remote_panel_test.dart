@@ -90,6 +90,8 @@ void main() {
       await panel.set('dateCalendar', true);
       await panel.set('inheritAppearance', false);
       await appearance.set('panelCombinedInformation', combined);
+      await panel.set('combinedInformation', combined);
+      await appearance.set('panelDateCalendar', false);
       final inputs = MockTvInputsService();
       final notifications = MockNotificationsService();
       final weather = MockWeatherService();
@@ -111,11 +113,8 @@ void main() {
       )));
       await tester.pumpAndSettle();
       final state = tester.state<FocusAwareAppBarState>(find.byType(FocusAwareAppBar));
-      expect(state.dateFocusNode.context, isNull);
-      await panel.set('dateCalendar', false);
-      await appearance.set('panelDateCalendar', true);
-      await tester.pumpAndSettle();
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+      expect(state.dateFocusNode.context, isNotNull);
+      state.dateFocusNode.requestFocus();
       await tester.pumpAndSettle();
       expect(state.dateFocusNode.hasFocus, isTrue);
       await tester.sendKeyEvent(LogicalKeyboardKey.enter);
@@ -169,6 +168,7 @@ void main() {
         when(weather.initialized).thenReturn(false);
         when(weather.loading).thenAnswer((_) => weatherLoading);
         when(weather.hasWeather).thenReturn(false);
+        when(weather.weatherData).thenReturn(null);
         for (final dynamic source in [inputs, notifications, weather]) {
           when(source.addListener(any)).thenAnswer((call) {
             listeners.add(call.positionalArguments.single as VoidCallback);

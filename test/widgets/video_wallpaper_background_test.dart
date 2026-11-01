@@ -42,6 +42,7 @@ void main() {
     bool enabled, {
     String mode = 'cover',
     bool economy = false,
+    Widget backdrop = const SizedBox.shrink(),
   }) => MaterialApp(
     localizationsDelegates: AppLocalizations.localizationsDelegates,
     supportedLocales: AppLocalizations.supportedLocales,
@@ -50,6 +51,7 @@ void main() {
       enabled: enabled,
       mode: mode,
       memorySaver: economy,
+      background: backdrop,
     ),
   );
 
@@ -83,6 +85,59 @@ void main() {
       expect(fake.calls, contains('dispose'));
     },
   );
+
+  testWidgets('blurred copy only exists when contain leaves visible bars', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(1920, 1080);
+    tester.view.devicePixelRatio = 2;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pumpWidget(background(true, mode: 'blurred'));
+    await settleVideo(tester);
+    expect(find.byType(ImageFiltered), findsNothing);
+    expect(fake.streams.length, 1);
+    tester.view.physicalSize = const Size(1600, 1200);
+    await tester.pumpAndSettle();
+    expect(find.byType(ImageFiltered), findsOneWidget);
+    expect(fake.streams.length, 1);
+    await tester.pumpWidget(const SizedBox());
+    await settleVideo(tester);
+  });
+
+  testWidgets('fallback is visible during loading and only in uncovered bars', (
+    tester,
+  ) async {
+    const backdrop = ColoredBox(
+      key: ValueKey('video-fallback'),
+      color: Colors.red,
+    );
+    fake.delay = true;
+    await tester.pumpWidget(background(true, backdrop: backdrop));
+    await tester.pump();
+    expect(find.byKey(const ValueKey('video-fallback')), findsOneWidget);
+    fake.complete(0);
+    await settleVideo(tester);
+    expect(find.byKey(const ValueKey('video-fallback')), findsNothing);
+    await tester.pumpWidget(
+      background(true, mode: 'contain', backdrop: backdrop),
+    );
+    await settleVideo(tester);
+    expect(find.byKey(const ValueKey('video-fallback')), findsOneWidget);
+    await tester.pumpWidget(
+      background(true, mode: 'blurred', backdrop: backdrop),
+    );
+    await settleVideo(tester);
+    expect(find.byKey(const ValueKey('video-fallback')), findsNothing);
+    await tester.pumpWidget(
+      background(true, mode: 'blurred', economy: true, backdrop: backdrop),
+    );
+    await settleVideo(tester);
+    expect(find.byKey(const ValueKey('video-fallback')), findsOneWidget);
+    expect(fake.streams.length, 1);
+    await tester.pumpWidget(const SizedBox());
+    await settleVideo(tester);
+  });
 
   testWidgets(
     'decoder failure reports the codec problem and releases the player',

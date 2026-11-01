@@ -28,6 +28,9 @@ void main() {
         .setMockMethodCallHandler(recentAppsChannel, (call) async {
           calls.add(call);
           if (fail) throw PlatformException(code: 'unavailable');
+          if (call.method == 'access') {
+            return {'adb': true, 'accessibility': true};
+          }
           if (call.method == 'info') {
             return {
               'mode': mode,
@@ -165,6 +168,17 @@ void main() {
     expect(tester.takeException(), isNull);
   });
   for (final locale in ['en', 'ru']) {
+    testWidgets('missing access links fit and scroll at large text: $locale', (
+      tester,
+    ) async {
+      fail = true;
+      await open(tester, scale: 1.8, locale: Locale(locale));
+      final link = find.byKey(const ValueKey('recent-access-accessibility'));
+      await tester.scrollUntilVisible(link, 100);
+      expect(link, findsOneWidget);
+      expect(find.byKey(const ValueKey('recent-access-adb')), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
     testWidgets('panel fits TV at large text: $locale', (tester) async {
       await open(tester, scale: 1.8, locale: Locale(locale));
       expect(tester.takeException(), isNull);

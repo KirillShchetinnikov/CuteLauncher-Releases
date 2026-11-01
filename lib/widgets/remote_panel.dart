@@ -2,6 +2,7 @@ import 'package:flauncher/bridge_result.dart';
 import 'dart:async';
 
 import '../providers/network_service.dart';
+import '../providers/vpn_service.dart';
 import '../providers/tv_inputs_service.dart';
 import '../providers/notifications_service.dart';
 import '../providers/weather_service.dart';
@@ -60,6 +61,10 @@ class _RemotePanelState extends State<RemotePanel> {
       pending.add(context.read<NetworkService>().initialLoad);
     } else if (panel.visible('network')) {
       pending.add(context.read<NetworkService>().initialNetworkLoad);
+    }
+    if (panel.visible('vpn')) {
+      final vpn = context.read<VpnService?>();
+      if (vpn != null) pending.add(vpn.initialLoad);
     }
     if (panel.visible('weather')) {
       final weather = context.read<WeatherService>();

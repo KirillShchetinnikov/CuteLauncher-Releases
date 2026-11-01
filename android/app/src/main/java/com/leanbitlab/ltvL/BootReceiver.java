@@ -17,6 +17,8 @@ public class BootReceiver extends BroadcastReceiver {
         SleepTimerBridge.cancel(context);
         NightOverlayService.restoreAfterBoot(context);
         AutoLaunchBridge.boot(context);
+        VpnAlwaysOn.boot(context);
+        VpnStartupJob.schedule(context, false);
         // shared_preferences stores Flutter keys in this file with a "flutter." prefix.
         boolean enabled = context.getSharedPreferences("FlutterSharedPreferences", Context.MODE_PRIVATE)
                 .getBoolean("flutter.start_on_boot", false);

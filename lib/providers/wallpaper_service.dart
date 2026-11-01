@@ -17,11 +17,18 @@
  */
 
 import 'service_lifecycle.dart';
+
+import 'package:image_picker/image_picker.dart';
+
 import '../image_limits.dart';
 import '../local_background_media.dart';
 import '../versioned_file_image.dart';
 
 import 'dart:io';
+import 'dart:convert';
+
+import 'package:path/path.dart' as path;
+
 import 'dart:async';
 
 import 'package:flauncher/flauncher_channel.dart';
@@ -183,23 +190,66 @@ class WallpaperService extends ChangeNotifier with ServiceLifecycle {
     }
   }
 
-  Future<bool> pickWallpaper() => _pickAndSave(null);
+  /// Read once when opening settings or after an explicit change, never per frame.
+  Future<({String? name, bool available})> selection(String period) async {
+    await _initialization;
+    final file = period == 'day' ? _wallpaperDayFile : _wallpaperNightFile;
+    final metadata = File('${file.path}.name');
+    try {
+      final stat = await file.stat();
+      String? name;
+      if (await metadata.exists() && await metadata.length() <= 4096) {
+        try {
+          final data = jsonDecode(await metadata.readAsString()) as Map;
+          if (stat.type == FileSystemEntityType.notFound ||
+              data['modified'] == stat.modified.microsecondsSinceEpoch) {
+            final candidate = data['name'];
+            if (candidate is String && candidate.isNotEmpty) name = candidate;
+          }
+        } on FormatException {
+          /* A label must never prevent reading the image. */
+        } on TypeError {
+          /* Ignore incompatible metadata. */
+        }
+      }
+      if (stat.type == FileSystemEntityType.notFound) {
+        return (name: name, available: false);
+      }
+      return (
+        name: name ?? path.basename(file.path),
+        available: await _safeWallpaper(file),
+      );
+    } on FileSystemException {
+      return (name: path.basename(file.path), available: false);
+    }
+  }
 
-  Future<bool> pickWallpaperDay() => _pickAndSave('day');
+  Future<bool> pickWallpaper({Future<XFile?> Function()? picker}) =>
+      _pickAndSave(null, picker: picker);
 
-  Future<bool> pickWallpaperNight() => _pickAndSave('night');
+  Future<bool> pickWallpaperDay({Future<XFile?> Function()? picker}) =>
+      _pickAndSave('day', picker: picker);
 
-  Future<bool> _pickAndSave(String? period) async {
+  Future<bool> pickWallpaperNight({Future<XFile?> Function()? picker}) =>
+      _pickAndSave('night', picker: picker);
+
+  Future<bool> _pickAndSave(
+    String? period, {
+    Future<XFile?> Function()? picker,
+  }) async {
     if (_picking || isDisposed) return false;
     _picking = true;
     File? staging;
     try {
       await _initialization;
       if (isDisposed) return false;
-      if (!await _fLauncherChannel.checkForGetContentAvailability()) {
+      if (picker == null &&
+          !await _fLauncherChannel.checkForGetContentAvailability()) {
         throw NoFileExplorerException();
       }
-      final picked = period == null
+      final picked = picker != null
+          ? await picker()
+          : period == null
           ? await DocumentFiles.pickWallpaper()
           : await DocumentFiles.pickImage();
       if (picked == null) return false;
@@ -248,6 +298,22 @@ class WallpaperService extends ChangeNotifier with ServiceLifecycle {
         }
         if (isDisposed) return false;
         await staging.rename(target.path);
+        if (period != null) {
+          try {
+            final stat = await target.stat();
+            await File('${target.path}.name').writeAsString(
+              jsonEncode({
+                'name': path
+                    .basename(picked.name)
+                    .replaceAll(RegExp(r'[\r\n]'), ' '),
+                'modified': stat.modified.microsecondsSinceEpoch,
+              }),
+              flush: true,
+            );
+          } on FileSystemException {
+            /* The successfully applied image remains usable. */
+          }
+        }
         if (period == null) {
           final other = image ? _videoFile : _wallpaperFile;
           if (await other.exists()) await other.delete();
@@ -276,6 +342,8 @@ class WallpaperService extends ChangeNotifier with ServiceLifecycle {
     ]) {
       await FileImage(file).evict();
       if (await file.exists()) await file.delete();
+      final metadata = File('${file.path}.name');
+      if (await metadata.exists()) await metadata.delete();
     }
     _version++;
     await _updateWallpaper(force: true);

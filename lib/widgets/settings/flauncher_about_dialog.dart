@@ -28,7 +28,6 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flauncher/flauncher_channel.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:flauncher/providers/settings_service.dart';
 
 class CuteLauncherAboutDialog extends StatelessWidget {
   static const repositoryUrl =
@@ -37,14 +36,10 @@ class CuteLauncherAboutDialog extends StatelessWidget {
 
   const CuteLauncherAboutDialog({super.key, required this.packageInfo});
 
-  Color _hexToColor(String hex) {
-    return Color(int.parse('FF$hex', radix: 16));
-  }
-
   @override
   Widget build(BuildContext context) {
-    final settingsService = context.watch<SettingsService>();
-    final accentColor = _hexToColor(settingsService.accentColorHex);
+    final l = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
     final abis =
         context.watch<UpdateService?>()?.supportedAbis.join(', ') ?? '';
     const revision = String.fromEnvironment('BUILD_COMMIT');
@@ -53,122 +48,92 @@ class CuteLauncherAboutDialog extends StatelessWidget {
         : (kProfileMode ? 'profile' : 'debug');
 
     return Dialog(
-      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-      child: Container(
-        width: 380,
-
-        padding: const EdgeInsets.all(20),
-
-        child: SingleChildScrollView(
+      insetPadding: const EdgeInsets.all(12),
+      child: SizedBox(
+        width: 520,
+        child: Padding(
+          padding: const EdgeInsets.all(12),
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Clean App Icon
-              ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: Image.asset(
-                  "assets/icon.png",
-                  height: 56,
-                  width: 56,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              const SizedBox(height: 10),
-
-              // Title & Version
-              const Text(
-                "CuteLauncher",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                "${AppLocalizations.of(context)!.updateInstalled}: v${displayAppVersion(packageInfo.version)}",
-                style: const TextStyle(color: Colors.white54, fontSize: 14),
-              ),
-              Text(
-                [
-                  packageInfo.packageName,
-                  if (abis.isNotEmpty) abis,
-                  mode,
-                  if (revision.isNotEmpty) revision,
-                ].join('\n'),
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.white54, fontSize: 12),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                AppLocalizations.of(context)!.launcherAuthor,
-                style: TextStyle(
-                  color: Colors.white70,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: 10),
-
-              // About info description
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.04),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: SettingsHelp(text: AppLocalizations.of(context)!.launcherCredits),
-              ),
-              const SizedBox(height: 14),
-
-              // Social Links Section
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  AppLocalizations.of(context)!.projectCredits,
-                  style: TextStyle(
-                    color: Colors.white54,
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 0.5,
+              Flexible(
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Row(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(16),
+                            child: Image.asset(
+                              'assets/icon.png',
+                              height: 56,
+                              width: 56,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'CuteLauncher',
+                                  style: theme.textTheme.titleLarge,
+                                ),
+                                Text(
+                                  'v${displayAppVersion(packageInfo.version)}',
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Text(l.launcherAuthor, style: theme.textTheme.bodySmall),
+                      const SizedBox(height: 4),
+                      Text(
+                        [
+                          packageInfo.packageName,
+                          [
+                            if (abis.isNotEmpty) abis,
+                            mode,
+                            if (revision.isNotEmpty) revision,
+                          ].join(' · '),
+                        ].join('\n'),
+                        style: theme.textTheme.bodySmall,
+                      ),
+                      const SizedBox(height: 4),
+                      SettingsHelp(
+                        title: l.projectCredits,
+                        text: l.launcherCredits,
+                      ),
+                      FocusableSettingsTile(
+                        leading: const Icon(Icons.code),
+                        title: Text(l.launcherRepository),
+                        onPressed: () =>
+                            FLauncherChannel().openUrl(repositoryUrl),
+                      ),
+                      FocusableSettingsTile(
+                        leading: const Icon(Icons.qr_code),
+                        title: Text(l.showRepositoryQrCode),
+                        onPressed: () => showLauncherDialog<void>(
+                          context: context,
+                          builder: (_) => const _RepositoryQrDialog(),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-              const SizedBox(height: 8),
-
-              _AboutButton(
-                icon: Icons.code,
-                iconColor: Colors.white70,
-                label: AppLocalizations.of(context)!.launcherRepository,
-                accentColor: accentColor,
-                onPressed: () {
-                  FLauncherChannel().openUrl(repositoryUrl);
-                },
-              ),
-
-              const SizedBox(height: 8),
-              _AboutButton(
-                icon: Icons.qr_code,
-                iconColor: Colors.white70,
-                label: AppLocalizations.of(context)!.showRepositoryQrCode,
-                accentColor: accentColor,
-                onPressed: () => showLauncherDialog<void>(
-                  context: context,
-                  builder: (context) => const _RepositoryQrDialog(),
-                ),
-              ),
-
-              const SizedBox(height: 10),
-              // Close Action
-              LauncherDialogButton(
-                autofocus: true,
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text(
-                  AppLocalizations.of(context)!.close,
-                  style: TextStyle(color: Colors.white54, fontSize: 13),
+              Align(
+                alignment: AlignmentDirectional.centerEnd,
+                child: LauncherDialogButton(
+                  autofocus: true,
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text(l.close),
                 ),
               ),
             ],
@@ -220,24 +185,4 @@ class _RepositoryQrDialog extends StatelessWidget {
       ],
     );
   }
-}
-
-class _AboutButton extends StatelessWidget {
-  final IconData icon;
-  final Color iconColor, accentColor;
-  final String label;
-  final VoidCallback onPressed;
-  const _AboutButton({
-    required this.icon,
-    required this.iconColor,
-    required this.label,
-    required this.accentColor,
-    required this.onPressed,
-  });
-  @override
-  Widget build(BuildContext context) => FocusableSettingsTile(
-    leading: Icon(icon),
-    title: Text(label),
-    onPressed: onPressed,
-  );
 }

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:async';
 
 import 'package:flauncher/cloud_account.dart';
 import 'package:flauncher/providers/backup_storage.dart';
@@ -53,5 +54,17 @@ void main() {
     );
     storage.cancel();
     await expectLater(storage.list(), throwsStateError);
+  });
+  test('cancellation during directory lookup prevents deleting the snapshot', () async {
+    final source = await File('${root.path}/source.json').writeAsString('{}');
+    await storage.upload(source, name);
+    final directory = Completer<Directory>();
+    final delayed = LocalBackupStorage(NativeCloudAccountRepository(), drive,
+      directory: () => directory.future);
+    final operation = delayed.delete(RemoteBackupFile(name, name));
+    delayed.cancel();
+    directory.complete(root);
+    await expectLater(operation, throwsStateError);
+    expect(await File('${root.path}/backup_storage/$name').exists(), isTrue);
   });
 }

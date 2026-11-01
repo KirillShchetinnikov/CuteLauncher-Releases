@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/memory_resources.dart';
+import '../widgets/reordering_tile_viewport.dart';
 
 /// Opt-in release measurements; absent from ordinary builds. No per-frame I/O.
 class EconomyDiagnostics extends StatefulWidget {
@@ -41,6 +42,17 @@ class _EconomyDiagnosticsState extends State<EconomyDiagnostics> {
   }
 
   void _report() {
+    var homeTotal = 0, homeMounted = 0;
+    void count(Element element) {
+      final widget = element.widget;
+      if (widget is ReorderingTileViewport) homeTotal += widget.packages.length;
+      final key = widget.key;
+      if (key is ValueKey<(String, String)> && key.value.$1 == 'tile-position') {
+        homeMounted++;
+      }
+      element.visitChildren(count);
+    }
+    context.visitChildElements(count);
     final resources = context.read<MemoryResources>();
     final cache = PaintingBinding.instance.imageCache;
     final encoded = resources.encodedImages;
@@ -68,6 +80,8 @@ class _EconomyDiagnosticsState extends State<EconomyDiagnostics> {
       'physical_width': View.of(context).physicalSize.width,
       'physical_height': View.of(context).physicalSize.height,
       'frames': _frames.length,
+      'home_total': homeTotal,
+      'home_mounted': homeMounted,
       'overflow': _overflow,
       'build': distribution((frame) => frame.buildDuration.inMicroseconds),
       'raster': distribution((frame) => frame.rasterDuration.inMicroseconds),

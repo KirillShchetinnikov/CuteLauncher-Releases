@@ -254,7 +254,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(tester.widget<TextField>(find.byType(TextField)).decoration!.hintText, isNull);
     expect(find.text('Введите название города по-английски'), findsNothing);
-    expect(find.descendant(of: find.byType(CitySearchDialog), matching: find.text('Подробнее')), findsOneWidget);
+    expect(find.descendant(of: find.byType(CitySearchDialog), matching: find.text('Местоположение')), findsOneWidget);
     await tester.enterText(find.byType(TextField), 'Moscow');
     tester.testTextInput.hide();
     await tester.sendKeyEvent(LogicalKeyboardKey.select);

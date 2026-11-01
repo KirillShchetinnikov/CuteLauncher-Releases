@@ -88,6 +88,7 @@ test/mocks.mocks.dart
 !test/scripts/economy_tv_test_test.py
 !.github/scripts/**/*.py
 !scripts/device-ui-check.py
+!scripts/offline-ui-check.py
 !scripts/economy-tv-test.py
 !scripts/measure-startup.py
 !scripts/tv_inventory.py
@@ -139,6 +140,7 @@ CLAUDE.original.md
 
 # Temporary UI captures; committed reference images live in test/design/goldens.
 /docs/images/design/captures/
+/.codex-attachments/
 /.codex-remote-attachments/
 
 # Kotlin compiler session cache (AGP 9.2).

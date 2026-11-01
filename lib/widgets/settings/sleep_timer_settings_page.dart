@@ -1,3 +1,5 @@
+import 'settings_choice_tile.dart';
+import '../../launcher_defaults.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -71,19 +73,7 @@ class SleepTimerSettingsPage extends StatelessWidget {
       title: Text(l.sleepTimer),
       child: ListView(
         children: [
-          FocusableSettingsTile(
-            title: Text(l.settings),
-            leading: const Icon(Icons.tune),
-            onPressed: () => Navigator.push(
-              context,
-              SettingsRoute(
-                settings: const RouteSettings(
-                  name: SleepTimerOptionsPage.routeName,
-                ),
-                builder: (_) => const SleepTimerOptionsPage(),
-              ),
-            ),
-          ),
+          ...SleepTimerOptionsPage.controls(context),
           FocusableSettingsTile(
             title: Text(l.sleepTimerPresets),
             leading: const Icon(Icons.timer_outlined),
@@ -107,75 +97,24 @@ class SleepTimerOptionsPage extends StatelessWidget {
   static const routeName = 'sleep_timer_options';
   static const displayRouteName = 'sleep_timer_display';
   const SleepTimerOptionsPage({super.key});
-  @override
-  Widget build(BuildContext context) {
+  static List<Widget> controls(BuildContext context) {
     final l = AppLocalizations.of(context)!;
     final config = context.watch<SettingsService>().sleepTimerConfiguration;
-    final labels = {
-      'remaining': l.sleepTimerRemaining,
-      'end': l.sleepTimerEndTime,
-      'both': l.sleepTimerBoth,
-    };
-    return SettingsPageLayout(
-      title: Text(l.settings),
-      child: ListView(
-        children: [
-          FocusableSettingsTile(
-            title: Text(l.sleepTimerDisplay),
-            trailing: Text(labels[config.display]!),
-            onPressed: () => Navigator.push(
-              context,
-              SettingsRoute(
-                settings: const RouteSettings(
-                  name: SleepTimerOptionsPage.displayRouteName,
-                ),
-                builder: (context) => _SleepTimerDisplayPage(labels: labels),
-              ),
-            ),
-          ),
-          RoundedSwitchListTile(
-            title: Text(l.sleepTimerShowSeconds),
-            value: config.showSeconds,
-            onChanged: (value) =>
-                _save(context, config.copyWith(showSeconds: value)),
-          ),
-          RoundedSwitchListTile(
-            title: Text(l.sleepTimerCloseAfterSelection),
-            value: config.closeAfterSelection,
-            onChanged: (value) =>
-                _save(context, config.copyWith(closeAfterSelection: value)),
-          ),
-        ],
-      ),
-    );
+    final labels = {'remaining': l.sleepTimerRemaining, 'end': l.sleepTimerEndTime, 'both': l.sleepTimerBoth};
+    return [
+      SettingsChoiceTile<String>(title: l.sleepTimerDisplay, value: config.display,
+        options: labels.keys.toList(), label: (value) => labels[value]!,
+        onChanged: (value) => _save(context, config.copyWith(display: value))),
+      RoundedSwitchListTile(title: Text(l.sleepTimerShowSeconds), value: config.showSeconds,
+        onChanged: (value) => _save(context, config.copyWith(showSeconds: value))),
+      RoundedSwitchListTile(title: Text(l.sleepTimerCloseAfterSelection), value: config.closeAfterSelection,
+        onChanged: (value) => _save(context, config.copyWith(closeAfterSelection: value))),
+    ];
   }
-}
-
-class _SleepTimerDisplayPage extends StatelessWidget {
-  final Map<String, String> labels;
-  const _SleepTimerDisplayPage({required this.labels});
   @override
-  Widget build(BuildContext context) {
-    final config = context.watch<SettingsService>().sleepTimerConfiguration;
-    return SettingsPageLayout(
-      title: Text(AppLocalizations.of(context)!.sleepTimerDisplay),
-      child: ListView(
-        children: [
-          for (final entry in labels.entries)
-            FocusableSettingsTile(
-              title: Text(entry.value),
-              leading: Icon(
-                config.display == entry.key
-                    ? Icons.radio_button_checked
-                    : Icons.radio_button_unchecked,
-              ),
-              onPressed: () =>
-                  _save(context, config.copyWith(display: entry.key)),
-            ),
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) => SettingsPageLayout(
+    title: Text(AppLocalizations.of(context)!.sleepTimer),
+    child: ListView(children: controls(context)));
 }
 
 class SleepTimerPresetsPage extends StatefulWidget {
@@ -346,13 +285,13 @@ class _SleepTimerPresetsPageState extends State<SleepTimerPresetsPage> {
                         final saved = await _save(
                           context,
                           latest.copyWith(
-                            presets: SleepTimerConfiguration.defaults,
+                            presets: LauncherDefaults.timerPresets,
                           ),
                         );
                         if (mounted) {
                           setState(() => _busy = false);
                           if (saved) {
-                            _focus(SleepTimerConfiguration.defaults.first.id);
+                            _focus(LauncherDefaults.timerPresets.firstWhere((preset) => preset.visible).id);
                           }
                         }
                       },

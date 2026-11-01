@@ -88,14 +88,14 @@ class AddToCategoryDialog extends StatelessWidget {
     List<Category> categories,
     App app,
   ) => categories
-      .where((category) => !category.isAutomatic && !_contains(category, app))
+      .where((category) => !category.isAutomatic && !category.isAppChannels && !_contains(category, app))
       .toList();
 
   static List<Category> removableCategories(
     List<Category> categories,
     App app,
   ) => categories
-      .where((category) => !category.isAutomatic && _contains(category, app))
+      .where((category) => !category.isAutomatic && !category.isAppChannels && _contains(category, app))
       .toList();
 
   @override

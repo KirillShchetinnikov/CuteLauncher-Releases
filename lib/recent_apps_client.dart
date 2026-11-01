@@ -19,6 +19,13 @@ class RecentApp {
 }
 
 class RecentAppsClient {
+  Future<Map<String, dynamic>> access() async =>
+      await recentAppsChannel.invokeMapMethod<String, dynamic>('access') ?? {};
+  Future<bool> setup(String destination) async =>
+      await recentAppsChannel.invokeMethod<bool>('setup', {
+        'destination': destination,
+      }) ==
+      true;
   Future<Map<String, dynamic>> info() async =>
       await recentAppsChannel.invokeMapMethod<String, dynamic>('info') ?? {};
   Future<bool> setMode(String mode) async =>

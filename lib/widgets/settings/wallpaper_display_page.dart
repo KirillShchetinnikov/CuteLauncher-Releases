@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../l10n/app_localizations.dart';
 import '../../providers/settings_service.dart';
 import 'settings_page_layout.dart';
+import 'settings_help.dart';
 import 'settings_value_stepper.dart';
 
 class WallpaperDisplayPage extends StatelessWidget {
@@ -58,6 +59,7 @@ class WallpaperDisplayPage extends StatelessWidget {
               onChanged: (v) =>
                   s.setWallpaperAdjustment(item.$1, (v as num).toDouble()),
             ),
+          SettingsHelp(title: l.wallpaperDimming, text: l.wallpaperDimmingHelp),
           ResetStyleTile(onReset: () => s.resetAppearanceSection('wallpaperDisplay')),
         ],
       ),

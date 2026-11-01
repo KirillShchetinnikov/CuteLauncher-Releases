@@ -30,8 +30,16 @@ void main() {
         final service = _Local();
         const channel = MethodChannel('me.efesser.flauncher/method');
         String? reply = 'content://provider/tree/primary%3ABackups';
+        var picks = 0;
         TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-            .setMockMethodCallHandler(channel, (_) async => reply);
+            .setMockMethodCallHandler(channel, (call) async {
+              if (call.method == 'filePickerAvailable') return true;
+              if (call.method == 'pickBackupFolder') {
+                picks++;
+                return reply;
+              }
+              throw StateError('Unexpected operation: ${call.method}');
+            });
         addTearDown(() {
           TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
               .setMockMethodCallHandler(channel, null);
@@ -62,7 +70,14 @@ void main() {
           find.widgetWithText(FocusableSettingsTile, l.backupChooseFolder),
         );
         await tester.pumpAndSettle();
+        expect(service.localFolder, isNull);
+        expect(picks, 0);
+        await tester.tap(
+          find.widgetWithText(FocusableSettingsTile, l.filePickerSystem),
+        );
+        await tester.pumpAndSettle();
         expect(service.localFolder, reply);
+        expect(picks, 1);
         final previous = service.localFolder;
         reply = null;
         await tester.tap(
@@ -73,7 +88,12 @@ void main() {
           find.widgetWithText(FocusableSettingsTile, l.backupChooseFolder),
         );
         await tester.pumpAndSettle();
+        await tester.tap(
+          find.widgetWithText(FocusableSettingsTile, l.filePickerSystem),
+        );
+        await tester.pumpAndSettle();
         expect(service.localFolder, previous);
+        expect(picks, 2);
         await tester.tap(
           find.widgetWithText(FocusableSettingsTile, l.backupFolderPath),
         );

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import '../../support/settings_help.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,6 +12,8 @@ import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/settings/appearance_page.dart';
 import 'package:flauncher/widgets/settings/home_style_setting.dart';
 import 'package:flauncher/widgets/settings/settings_value_stepper.dart';
+import 'package:flauncher/widgets/settings/section_style_page.dart';
+import 'package:flauncher/widgets/rounded_switch_list_tile.dart';
 
 import '../../mocks.mocks.dart';
 
@@ -82,7 +83,7 @@ void main() {
     ),
   );
   testWidgets(
-    'mixed global scope respects per-field inheritance and re-enables after reset',
+    'mixed global scope stays editable when applicable sections override the field',
     (tester) async {
       when(apps.categories).thenReturn([
         Category(id: 1, name: 'Fixed', type: CategoryType.grid),
@@ -94,11 +95,16 @@ void main() {
           .enabled;
       expect(enabled(), isTrue);
       expect(find.textContaining('Размер меняется только'), findsNothing);
-      await toggleSettingsHelp(tester, 'Размер меняется только');
-      expect(find.textContaining('Размер меняется только'), findsOneWidget);
+      // Common scope explanations belong to the page, not every field.
       await appearance.setCategoryTile(2, 'size', 200);
       await tester.pumpAndSettle();
+      expect(enabled(), isTrue);
+      await appearance.setCategory(2, 'columns', 4);
+      await tester.pumpAndSettle();
       expect(enabled(), isFalse);
+      await appearance.setCategory(2, 'columns', 0);
+      await tester.pumpAndSettle();
+      expect(enabled(), isTrue);
       await appearance.inheritField(2, 'size');
       await tester.pumpAndSettle();
       expect(enabled(), isTrue);
@@ -149,6 +155,56 @@ void main() {
       await tester.pumpWidget(const SizedBox());
     },
   );
+  testWidgets('local blur overrides do not bypass opacity and economy blocks', (
+    tester,
+  ) async {
+    await appearance.setCategoryTile(1, 'blurTiles', true);
+    await pump(tester, control('blurTiles'));
+    bool enabled() => tester
+        .widget<SettingsValueStepper>(find.byType(SettingsValueStepper))
+        .enabled;
+    expect(enabled(), isFalse);
+    await appearance.setCategoryTile(1, 'opacity', .5);
+    await tester.pumpAndSettle();
+    expect(enabled(), isTrue);
+    await settings.setMemorySaverEnabled(true);
+    await tester.pumpAndSettle();
+    expect(enabled(), isFalse);
+    expect(appearance.category(1).tiles['blurTiles'], isTrue);
+    await tester.pumpWidget(const SizedBox());
+  });
+  testWidgets('global title edits preserve local overrides through reload', (
+    tester,
+  ) async {
+    when(apps.categories).thenReturn([
+      Category(id: 1, name: 'One'),
+      Category(id: 2, name: 'Two'),
+    ]);
+    for (final id in [1, 2]) {
+      await appearance.setCategoryTile(id, 'sectionTitles', false);
+    }
+    await pump(tester, const SectionStylePage());
+    final l = AppLocalizations.of(tester.element(find.byType(SectionStylePage)))!;
+    final title = find.widgetWithText(RoundedSwitchListTile, l.showSectionTitles);
+    expect(tester.widget<RoundedSwitchListTile>(title).enabled, isTrue);
+    for (final value in [false, true]) {
+      await tester.tap(title);
+      await tester.pumpAndSettle();
+      expect(appearance.appearance.sectionTitles, value);
+      expect(appearance.tilesFor(3).sectionTitles, value);
+      for (final id in [1, 2]) {
+        expect(appearance.tilesFor(id).sectionTitles, isFalse);
+        expect(appearance.category(id).tiles['sectionTitles'], isFalse);
+      }
+    }
+    final restored = AppearanceService(appearance.preferences);
+    addTearDown(restored.dispose);
+    expect(restored.appearance.sectionTitles, isTrue);
+    expect(restored.tilesFor(1).sectionTitles, isFalse);
+    expect(restored.tilesFor(2).sectionTitles, isFalse);
+    expect(restored.tilesFor(3).sectionTitles, isTrue);
+    await tester.pumpWidget(const SizedBox());
+  });
   testWidgets('local blocked value can still be reset to inherited', (
     tester,
   ) async {
@@ -163,6 +219,9 @@ void main() {
     );
     final l = AppLocalizations.of(tester.element(find.byType(AppearancePage)))!;
     await tester.scrollUntilVisible(find.text(l.homeOwnReset), 200);
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text(l.homeOwnReset));
+    await tester.pumpAndSettle();
     await tester.tap(find.text(l.homeOwnReset));
     await tester.pumpAndSettle();
     await tester.tap(find.text(l.homeOwnReset).last);

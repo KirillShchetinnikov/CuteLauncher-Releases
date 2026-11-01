@@ -20,7 +20,6 @@ import '../application_list_icon.dart';
  */
 
 import 'package:flauncher/l10n/app_localizations.dart';
-import 'package:flauncher/models/app.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/notifications_service.dart';
 import 'package:flauncher/widgets/rounded_switch_list_tile.dart';
@@ -35,219 +34,75 @@ class BlockedNotificationsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final localizations = AppLocalizations.of(context)!;
 
-    return Consumer2<NotificationsService, AppsService>(
-      builder: (context, notificationsService, appsService, _) {
-        final blockedPackages = notificationsService.blockedPackages;
-        final allApps = List<App>.from(
-          appsService.applications,
-        )..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
-
-        final blockedApps = allApps
-            .where((a) => blockedPackages.contains(a.packageName))
-            .toList();
-        final knownBlockedPkg = blockedApps.map((a) => a.packageName).toSet();
-        final unknownBlockedPkg = blockedPackages
-            .where((p) => !knownBlockedPkg.contains(p))
-            .toList();
-
-        return SettingsPageLayout(
-          title: Text(
-            localizations.blockedNotificationApps,
-            style: theme.textTheme.titleLarge,
-          ),
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              SettingsHelp(
-                key: const ValueKey('notification-apps-hint'),
-                text: localizations.notificationAppsHint,
-              ),
-              // --- SECTION 1: BLOCKED APPS ---
-              Padding(
-                padding: const EdgeInsets.fromLTRB(8, 8, 8, 4),
-                child: Text(
-                  "${localizations.blockedAppsGroup} (${blockedPackages.length})",
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    color: theme.colorScheme.primary,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              if (blockedPackages.isEmpty)
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 6,
-                  ),
-                  child: Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.onSurface.withValues(alpha: .04),
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        color: theme.colorScheme.onSurface.withValues(
-                          alpha: .12,
-                        ),
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.notifications_active_outlined,
-                          color: theme.colorScheme.primary,
-                          size: 28,
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                localizations.noBlockedApps,
-                                style: theme.textTheme.bodyMedium?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 2),
-                              SettingsHelp(
-                                text: localizations.noBlockedAppsDesc,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-              else ...[
-                ...blockedApps.map(
-                  (app) => FocusableSettingsTile(
-                    leading: FutureBuilder<dynamic>(
-                      future: appsService.getAppIcon(app.packageName),
-                      builder: (_, snapshot) => snapshot.hasData
-                          ? Image.memory(
-                              snapshot.data,
-                              width: 32,
-                              height: 32,
-                              cacheWidth: 64,
-                            )
-                          : Icon(Icons.android),
-                    ),
-                    title: Text(app.name),
-                    trailing: Text(localizations.unblockApp),
-                    valueIcon: Icons.lock_open,
-                    onPressed: () =>
-                        notificationsService.unblockPackage(app.packageName),
-                  ),
-                ),
-                ...unknownBlockedPkg.map(
-                  (pkg) => FocusableSettingsTile(
-                    leading: ApplicationListIcon(packageName: pkg),
-                    title: Text(pkg),
-                    trailing: Text(localizations.unblockApp),
-                    valueIcon: Icons.lock_open,
-                    onPressed: () => notificationsService.unblockPackage(pkg),
-                  ),
-                ),
-                FocusableSettingsTile(
-                  leading: Icon(
-                    Icons.clear_all,
-                    color: theme.colorScheme.tertiary,
-                  ),
-                  title: Text(
-                    localizations.unblockAll,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.tertiary,
-                    ),
-                  ),
-                  onPressed: () => notificationsService.unblockAllPackages(),
-                ),
+    final notificationsService = context.read<NotificationsService>();
+    final blockedPackages = context.select<NotificationsService, Set<String>>(
+      (service) => service.blockedPackages,
+    );
+    final allApps =
+        context
+            .select<AppsService, List<(String, String)>>(
+              (service) => [
+                for (final app in service.applications)
+                  (app.packageName, app.name),
               ],
+            )
+            .toList()
+          ..sort((a, b) => a.$2.toLowerCase().compareTo(b.$2.toLowerCase()));
 
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 8),
-                child: Divider(),
-              ),
-
-              // --- SECTION 2: ALL APPLICATIONS ---
-              Padding(
-                padding: const EdgeInsets.fromLTRB(8, 4, 8, 8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      localizations.applications,
-                      style: theme.textTheme.titleSmall?.copyWith(
-                        color: theme.colorScheme.primary,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    SettingsHelp(text: localizations.noBlockedAppsDesc),
-                  ],
+    final known = allApps.map((app) => app.$1).toSet();
+    final missing =
+        blockedPackages.where((package) => !known.contains(package)).toList()
+          ..sort();
+    final packages = [...allApps.map((app) => app.$1), ...missing];
+    final names = {for (final app in allApps) app.$1: app.$2};
+    final indices = {
+      for (var i = 0; i < packages.length; i++) packages[i]: i + 1,
+    };
+    return SettingsPageLayout(
+      title: Text(localizations.blockedNotificationApps),
+      child: ListView.builder(
+        itemCount: packages.length + 1,
+        findChildIndexCallback: (key) =>
+            indices[(key as ValueKey<String>).value],
+        itemBuilder: (context, index) {
+          if (index == 0) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SettingsHelp(
+                  key: const ValueKey('notification-apps-hint'),
+                  title: localizations.blockedAppsGroup,
+                  text: localizations.notificationAppsHint,
                 ),
-              ),
-              ...allApps.map((app) {
-                final isBlocked = blockedPackages.contains(app.packageName);
-
-                return RoundedSwitchListTile(
-                  key: ValueKey(app.packageName),
-                  value: !isBlocked,
-                  onChanged: (allowed) {
-                    if (allowed) {
-                      notificationsService.unblockPackage(app.packageName);
-                    } else {
-                      notificationsService.blockPackage(app.packageName);
-                    }
-                  },
-                  title: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(app.name, style: theme.textTheme.bodyMedium),
-                      const SizedBox(height: 2),
-                      if (!isBlocked)
-                        Text(
-                          isBlocked
-                              ? localizations.notificationsBlocked
-                              : localizations.notificationsAllowed,
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: isBlocked
-                                ? theme.colorScheme.error
-                                : theme.colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                    ],
+                Text(
+                  '${localizations.blockedAppsGroup}: ${blockedPackages.length}',
+                ),
+                if (blockedPackages.isEmpty) Text(localizations.noBlockedApps),
+                if (blockedPackages.isNotEmpty)
+                  FocusableSettingsTile(
+                    leading: const Icon(Icons.clear_all),
+                    title: Text(localizations.unblockAll),
+                    onPressed: notificationsService.unblockAllPackages,
                   ),
-                  secondary: FutureBuilder<dynamic>(
-                    future: appsService.getAppIcon(app.packageName),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return ClipRRect(
-                          borderRadius: BorderRadius.circular(6),
-                          child: Image.memory(
-                            snapshot.data,
-                            cacheWidth:
-                                (64 * MediaQuery.devicePixelRatioOf(context))
-                                    .ceil()
-                                    .clamp(1, 512),
-                            width: 32,
-                            height: 32,
-                          ),
-                        );
-                      }
-                      return Icon(Icons.android, size: 32);
-                    },
-                  ),
-                );
-              }),
-            ],
-          ),
-        );
-      },
+              ],
+            );
+          }
+          final package = packages[index - 1];
+          return RoundedSwitchListTile(
+            key: ValueKey(package),
+            value: blockedPackages.contains(package),
+            onChanged: (blocked) => blocked
+                ? notificationsService.blockPackage(package)
+                : notificationsService.unblockPackage(package),
+            title: Text(names[package] ?? package),
+            secondary: names.containsKey(package)
+                ? ApplicationListIcon(packageName: package)
+                : const Icon(Icons.android),
+          );
+        },
+      ),
     );
   }
 }

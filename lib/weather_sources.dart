@@ -249,10 +249,12 @@ Map<String, dynamic> normalizeOpenWeather(Map<String, dynamic> current, Map<Stri
   // Preserve the existing model's index 0=today even if the first period is tomorrow.
   final forecasts = <Map<String, dynamic>>[
     for (var index = 0; index < 6; index++)
-      if (days[today.add(Duration(days: index))] != null) days[today.add(Duration(days: index))]!
-      else if (!today.add(Duration(days: index)).isAfter(ordered.last)) <String, dynamic>{},
+      if (!today.add(Duration(days: index)).isAfter(ordered.last)) {
+        ...?days[today.add(Duration(days: index))],
+        'date': weatherDateString(today.add(Duration(days: index))),
+      },
   ];
-  return {'timestamp': timestamp, 'currentTemp': number(main['temp']),
+  return {'timestamp': timestamp, 'utcOffsetSeconds': offset, 'currentTemp': number(main['temp']),
     'currentConditionCode': condition(current), 'currentHumidity': number(main['humidity']).round(),
     'windSpeed': number((current['wind'] as Map)['speed']).toDouble(),
     'todayMinTemp': days[today]?['minTemp'], 'todayMaxTemp': days[today]?['maxTemp'], 'forecasts': forecasts};
@@ -280,10 +282,16 @@ Map<String, dynamic> normalizeOpenMeteo(Map<String, dynamic> data) {
     final list = daily[field] as List?;
     return list != null && i < list.length ? list[i] : null;
   }
-  return {'timestamp': integer(current['time']), 'currentTemp': current['temperature_2m'],
+  final offset = integer(data['utc_offset_seconds']);
+  String? date(int i) {
+    final time = item('time', i);
+    return time is num ? weatherDateString(weatherCalendarDay(
+      DateTime.fromMillisecondsSinceEpoch(time.toInt() * 1000, isUtc: true), offset)) : null;
+  }
+  return {'timestamp': integer(current['time']), 'utcOffsetSeconds': offset, 'currentTemp': current['temperature_2m'],
     'currentConditionCode': wmoCondition(current['weather_code']), 'currentHumidity': integer(current['relative_humidity_2m']),
     'windSpeed': current['wind_speed_10m'], 'todayMaxTemp': item('temperature_2m_max', 0), 'todayMinTemp': item('temperature_2m_min', 0),
-    'forecasts': [for (var i = 0; i < codes.length && i < 7; i++) {'conditionCode': wmoCondition(codes[i]),
+    'forecasts': [for (var i = 0; i < codes.length && i < 7; i++) {'date': date(i), 'conditionCode': wmoCondition(codes[i]),
       'minTemp': item('temperature_2m_min', i), 'maxTemp': item('temperature_2m_max', i), 'precipProbability': integer(item('precipitation_probability_max', i))}]};
 }
 Map<String, dynamic> normalizeYandex(Map<String, dynamic> data) {
@@ -292,9 +300,11 @@ Map<String, dynamic> normalizeYandex(Map<String, dynamic> data) {
   for (final day in (data['forecasts'] as List? ?? []).take(7)) {
     final parts = (day as Map)['parts'] as Map? ?? {};
     final part = parts['day_short'] as Map? ?? parts['day'] as Map? ?? {};
-    forecasts.add({'conditionCode': yandexCondition(part['condition']), 'minTemp': part['temp_min'], 'maxTemp': part['temp_max'], 'precipProbability': part['prec_prob']});
+    forecasts.add({'date': day['date'], 'conditionCode': yandexCondition(part['condition']), 'minTemp': part['temp_min'], 'maxTemp': part['temp_max'], 'precipProbability': part['prec_prob']});
   }
-  return {'timestamp': data['now'], 'currentTemp': fact['temp'], 'currentConditionCode': yandexCondition(fact['condition']),
+  final info = data['info'] as Map?;
+  final tz = info?['tzinfo'] as Map?;
+  return {'timestamp': data['now'], 'utcOffsetSeconds': tz?['offset'], 'currentTemp': fact['temp'], 'currentConditionCode': yandexCondition(fact['condition']),
     'currentHumidity': fact['humidity'], 'windSpeed': fact['wind_speed'],
     'todayMinTemp': forecasts.isEmpty ? null : forecasts.first['minTemp'], 'todayMaxTemp': forecasts.isEmpty ? null : forecasts.first['maxTemp'], 'forecasts': forecasts};
 }
@@ -339,7 +349,10 @@ Map<String, dynamic> normalizeMetNorway(Map<String, dynamic> data, {DateTime? no
     'currentHumidity': values['relative_humidity'] == null ? null : number(values['relative_humidity']).round(),
     'windSpeed': values['wind_speed'] == null ? null : number(values['wind_speed']).toDouble(),
     'todayMinTemp': days[today]?['minTemp'], 'todayMaxTemp': days[today]?['maxTemp'],
-    'forecasts': [for (var i = 0; i < 7; i++) days[DateTime(today.year, today.month, today.day + i)] ?? <String, dynamic>{}]};
+    'forecasts': [for (var i = 0; i < 7; i++) {
+      ...?days[DateTime(today.year, today.month, today.day + i)],
+      'date': weatherDateString(DateTime(today.year, today.month, today.day + i)),
+    }]};
 }
 
 int? metNorwayCondition(dynamic value) {

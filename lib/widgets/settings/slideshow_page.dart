@@ -1,5 +1,6 @@
 import 'settings_help.dart';
 import 'reset_style_tile.dart';
+
 import 'package:flauncher/widgets/action_notice.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -10,6 +11,9 @@ import '../rounded_switch_list_tile.dart';
 import 'focusable_settings_tile.dart';
 import 'settings_page_layout.dart';
 import 'settings_value_stepper.dart';
+import '../../bridge_result.dart';
+import 'local_file_browser.dart';
+import '../file_selection.dart';
 
 class SlideshowPage extends StatelessWidget {
   const SlideshowPage({super.key});
@@ -26,20 +30,20 @@ class SlideshowPage extends StatelessWidget {
         children: [
           FocusableSettingsTile(
             autofocus: true,
-            title: Text(l.slideshowFolder),
-            trailing: Text(s.folder.isEmpty ? l.settingsValueNotSet : s.folder, overflow: TextOverflow.ellipsis),
+            title: Text(l.slideshowBrowseFolders),
+            trailing: Text(
+              s.folder.isEmpty ? l.settingsValueNotSet : s.folder,
+              overflow: TextOverflow.ellipsis,
+            ),
             leading: const Icon(Icons.folder_open),
-            onPressed: () async {
-              try {
-                await s.pickFolder();
-              } catch (_) {
-                if (context.mounted) {
-                  showActionNotice(context, l.slideshowError, error: true);
-                }
-              }
-            },
+            onPressed: () => _localFolder(context, s),
           ),
-          SettingsHelp(text: s.folder.isEmpty ? l.slideshowFolderRequired : l.slideshowFolderSelected),
+          FocusableSettingsTile(
+            title: Text(l.slideshowEnterFolderPath),
+            leading: const Icon(Icons.edit),
+            onPressed: () => _localFolder(context, s, manual: true),
+          ),
+          if (s.folder.isEmpty) Text(l.slideshowFolderRequired),
           RoundedSwitchListTile(
             value: s.recursive,
             title: Text(l.slideshowRecursive),
@@ -68,10 +72,70 @@ class SlideshowPage extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               child: Text(l.slideshowError),
             ),
-          SettingsHelp(text: l.slideshowHint),
+          SettingsHelp(title: l.wallpaperSlideshow,
+            text: '${l.slideshowStorageHelp}\n\n${l.slideshowHint}'),
           ResetStyleTile(onReset: s.reset),
         ],
       ),
     );
+  }
+
+  Future<void> _localFolder(
+    BuildContext context,
+    SlideshowService service, {
+    bool manual = false,
+  }) async {
+    final l = AppLocalizations.of(context)!;
+    try {
+      String? path;
+      if (service.folder.startsWith('file:')) {
+        path = Uri.parse(service.folder).toFilePath(windows: false);
+      }
+      if (manual) {
+        path = await enterWallpaperFolderPath(
+          context,
+          path ?? '/storage/emulated/0/Pictures',
+        );
+        if (path == null || !context.mounted) return;
+      }
+      if (manual) {
+        final granted = await wallpaperFolderChannel.invokeMethod<bool>(
+          'requestFileStorage',
+          {'write': false},
+        );
+        if (!context.mounted) return;
+        if (granted != true) {
+          showActionNotice(context, l.slideshowStoragePermission, error: true);
+          return;
+        }
+      }
+      if (manual) {
+        final folder = await wallpaperFolderChannel
+            .invokeMapMethod<String, dynamic>('browseLocalFiles', {
+              'path': path,
+              'kind': 'folder',
+            });
+        if (folder != null && context.mounted) {
+          await service.setFolder(folder['uri'] as String);
+        }
+      } else {
+        final folder = await FileSelection.select<String>(
+          context,
+          'pickWallpaperFolder',
+          initialPath: path,
+        );
+        if (folder != null && context.mounted) await service.setFolder(folder);
+      }
+    } catch (error) {
+      if (context.mounted) {
+        showActionNotice(
+          context,
+          error is BridgeException && error.status == BridgeStatus.denied
+              ? l.slideshowStoragePermission
+              : l.slideshowFolderUnavailable,
+          error: true,
+        );
+      }
+    }
   }
 }

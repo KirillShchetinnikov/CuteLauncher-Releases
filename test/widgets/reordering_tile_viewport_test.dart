@@ -7,6 +7,100 @@ import 'package:flauncher/widgets/reordering_tile_viewport.dart';
 import 'package:flauncher/widgets/tile_paint_layer.dart';
 
 void main() {
+  testWidgets('full materialization keeps all rows and horizontal cards mounted', (tester) async {
+    final outer = ScrollController();
+    final rows = List.generate(8, (_) => ScrollController());
+    final layout = HomeLayout(mode: 'row', count: 20, availableWidth: 400,
+        style: const TileAppearance({'size': 70}));
+    await tester.pumpWidget(MaterialApp(home: SizedBox(width: 400, height: 300,
+      child: SingleChildScrollView(controller: outer, child: Column(children: [
+        for (var row = 0; row < rows.length; row++)
+          SizedBox(height: 200, child: ReorderingTileViewport(
+            materializeAll: true, layout: layout,
+            packages: List.generate(20, (i) => '$i'), controller: rows[row],
+            itemBuilder: (_, i) => ColoredBox(key: ValueKey('full-$row-$i'), color: Colors.blue),
+          )),
+      ])),
+    )));
+    await tester.pumpAndSettle();
+    final first = tester.element(find.byKey(const ValueKey('full-0-0')));
+    final last = tester.element(find.byKey(const ValueKey('full-7-19')));
+    outer.jumpTo(outer.position.maxScrollExtent);
+    rows.last.jumpTo(rows.last.position.maxScrollExtent);
+    await tester.pumpAndSettle();
+    expect(tester.element(find.byKey(const ValueKey('full-0-0'))), same(first));
+    expect(tester.element(find.byKey(const ValueKey('full-7-19'))), same(last));
+    await tester.pumpWidget(const SizedBox());
+    outer.dispose();
+    for (final row in rows) { row.dispose(); }
+  });
+  testWidgets('visited rows survive a nearby reversal but distant rows are released', (tester) async {
+    final outer = ScrollController();
+    final rows = List.generate(12, (_) => ScrollController());
+    final layout = HomeLayout(mode: 'row', count: 20, availableWidth: 400,
+        style: const TileAppearance({'size': 70}));
+    await tester.pumpWidget(MaterialApp(home: Align(alignment: Alignment.topLeft,
+      child: SizedBox(width: 400, height: 300,
+        child: SingleChildScrollView(controller: outer,
+          child: Column(children: [for (var row = 0; row < rows.length; row++)
+            SizedBox(height: 200, child: ReorderingTileViewport(layout: layout,
+              packages: List.generate(20, (i) => '$i'), controller: rows[row],
+              itemBuilder: (_, i) => ColoredBox(key: ValueKey('retained-$row-$i'), color: Colors.blue),
+            )),
+          ]),
+        ),
+      ),
+    )));
+    await tester.pumpAndSettle();
+    final original = tester.element(find.byKey(const ValueKey('retained-0-0')));
+    expect(find.byKey(const ValueKey('retained-10-0')), findsNothing);
+    outer.jumpTo(450);
+    await tester.pumpAndSettle();
+    expect(tester.element(find.byKey(const ValueKey('retained-0-0'))), same(original));
+    outer.jumpTo(1800);
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('retained-0-0')), findsNothing);
+    await tester.pumpWidget(const SizedBox());
+    outer.dispose();
+    for (final row in rows) { row.dispose(); }
+  });
+  testWidgets('selection and scrolling reuse mounted cards without retaining old cells', (tester) async {
+    final scroll = ScrollController();
+    final selection = ValueNotifier<String?>('0');
+    final builds = <int, int>{};
+    final layout = HomeLayout(mode: 'row', count: 30, availableWidth: 400,
+        style: const TileAppearance({'size': 70}));
+    await tester.pumpWidget(MaterialApp(home: Center(child: SizedBox(
+      width: 400, height: 160,
+      child: ReorderingTileViewport(layout: layout,
+        packages: List.generate(30, (i) => '$i'), controller: scroll,
+        selection: selection,
+        itemBuilder: (_, i) {
+          builds.update(i, (n) => n + 1, ifAbsent: () => 1);
+          return ColoredBox(key: ValueKey('cached-$i'), color: Colors.blue);
+        },
+      ),
+    ))));
+    await tester.pumpAndSettle();
+    final before = Map<int, int>.of(builds);
+    selection.value = '1';
+    await tester.pump();
+    expect(builds, before, reason: 'Selection must not rebuild unchanged cards');
+    scroll.jumpTo(100);
+    await tester.pumpAndSettle();
+    for (final entry in before.entries) {
+      expect(builds[entry.key], entry.value);
+    }
+    selection.value = '29';
+    scroll.jumpTo(scroll.position.maxScrollExtent);
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('cached-29')), findsOneWidget);
+    expect(find.byKey(const ValueKey('cached-0')), findsNothing);
+    expect(find.byType(ColoredBox).evaluate().length, lessThan(15));
+    await tester.pumpWidget(const SizedBox());
+    scroll.dispose();
+    selection.dispose();
+  });
   for (final direction in TextDirection.values) {
     testWidgets('wheel advances tape and hands off at its end: $direction', (
       tester,

@@ -79,22 +79,22 @@ void main() {
           await tester.pumpAndSettle();
         }
 
-        expectEnabled(l.cloudConnect, false);
+        expectEnabled(google ? l.backupDriveConnect : l.cloudConnect, false);
         expectEnabled(l.cloudDisconnect, false);
         await edit(
           google ? l.backupClientId : l.cloudUrl,
           google ? 'test-client' : 'https://example.test/backup',
         );
-        expectEnabled(l.cloudConnect, false);
+        expectEnabled(google ? l.backupDriveConnect : l.cloudConnect, false);
         if (!google) {
           await edit(l.cloudUser, 'test-user');
-          expectEnabled(l.cloudConnect, false);
+          expectEnabled(google ? l.backupDriveConnect : l.cloudConnect, false);
         }
         final secret = google ? l.backupClientSecret : l.cloudPassword;
         await edit(secret, '   ');
-        expectEnabled(l.cloudConnect, false);
+        expectEnabled(google ? l.backupDriveConnect : l.cloudConnect, false);
         await edit(secret, 'test-secret');
-        expectEnabled(l.cloudConnect, true);
+        expectEnabled(google ? l.backupDriveConnect : l.cloudConnect, true);
         expectEnabled(l.cloudDisconnect, false);
         if (google) {
           drive.configured = true;
@@ -117,7 +117,7 @@ void main() {
           cloud.notifyListeners();
         }
         await tester.pump();
-        expectEnabled(l.cloudConnect, false);
+        expectEnabled(google ? l.backupDriveConnect : l.cloudConnect, false);
         expectEnabled(l.cloudDisconnect, false);
         await tester.pumpWidget(const SizedBox());
         drive.dispose();

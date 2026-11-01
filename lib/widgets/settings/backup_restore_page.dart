@@ -15,14 +15,30 @@ import 'package:path_provider/path_provider.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 
 import '../../document_files.dart';
-import '../../bridge_result.dart';
 
 import 'dart:io';
 
-class BackupRestorePage extends StatelessWidget {
+class BackupRestorePage extends StatefulWidget {
   static const String routeName = "backup_restore_panel";
 
   const BackupRestorePage({super.key});
+
+  @override
+  State<BackupRestorePage> createState() => _BackupRestorePageState();
+}
+
+class _BackupRestorePageState extends State<BackupRestorePage> {
+  bool _busy = false;
+
+  Future<void> _run(Future<void> Function() action) async {
+    if (_busy) return;
+    setState(() => _busy = true);
+    try {
+      await action();
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +67,8 @@ class BackupRestorePage extends StatelessWidget {
                 localizations.exportBackup,
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
-              onPressed: () => _export(context, localizations),
+              enabled: !_busy,
+              onPressed: () => _run(() => _export(context, localizations)),
             ),
             FocusableSettingsTile(
               leading: const Icon(Icons.download_done),
@@ -59,8 +76,10 @@ class BackupRestorePage extends StatelessWidget {
                 localizations.importBackup,
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
-              onPressed: () => _pickImport(context, localizations),
+              enabled: !_busy,
+              onPressed: () => _run(() => _pickImport(context, localizations)),
             ),
+            if (_busy) Text(localizations.loading),
           ],
         ),
       ),
@@ -84,60 +103,20 @@ class BackupRestorePage extends StatelessWidget {
         settingsService: settingsService,
         validateStructure: true,
       );
-      bool? saved;
-      try {
-        saved = await DocumentFiles.saveBackup(file);
-      } on BridgeException catch (error) {
-        if (error.status != BridgeStatus.unsupported) rethrow;
-        if (!context.mounted) return;
-        final confirmed = await showLauncherDialog<bool>(
-          context: context,
-          builder: (dialogContext) => LauncherAlertDialog(
-            title: Text(localizations.exportBackup),
-            content: Text(localizations.backupSaveDownloads),
-            actions: [
-              LauncherDialogButton(
-                onPressed: () => Navigator.pop(dialogContext, false),
-                isCancel: true,
-                child: Text(localizations.cancel),
-              ),
-              LauncherDialogButton(
-                autofocus: true,
-                primary: true,
-                onPressed: () => Navigator.pop(dialogContext, true),
-                child: Text(localizations.backupSaveDownloads),
-              ),
-            ],
-          ),
-        );
-        if (confirmed != true || !context.mounted) return;
-        try {
-          final path = await DocumentFiles.saveBackupDownloads(file);
-          if (context.mounted) {
-            showActionNotice(
-              context,
-              path == null
-                  ? localizations.backupDownloadsFailed
-                  : '${localizations.backupSavedToSelectedLocation}: $path',
-              error: path == null,
-            );
-          }
-        } catch (_) {
-          if (context.mounted) {
-            showActionNotice(
-              context,
-              localizations.backupDownloadsFailed,
-              error: true,
-            );
-          }
-        }
-        return;
-      }
+      if (!context.mounted) return;
+      String? destination;
+      final saved = await DocumentFiles.saveBackup(
+        file,
+        context: context,
+        onSaved: (path) => destination = path,
+      );
       if (!context.mounted || saved == null) return;
       showActionNotice(
         context,
         saved
-            ? localizations.backupSavedToSelectedLocation
+            ? destination == null
+                  ? localizations.backupSavedToSelectedLocation
+                  : localizations.fileBrowserSavedTo(destination!)
             : localizations.exportFailed,
         error: !saved,
       );
@@ -157,7 +136,7 @@ class BackupRestorePage extends StatelessWidget {
   Future<void> _pickImport(BuildContext context, AppLocalizations l) async {
     File? file;
     try {
-      file = await DocumentFiles.pickBackup();
+      file = await DocumentFiles.pickBackup(context: context);
       if (file == null) return;
       if (!context.mounted) return;
       final confirmed = await showLauncherDialog<bool>(

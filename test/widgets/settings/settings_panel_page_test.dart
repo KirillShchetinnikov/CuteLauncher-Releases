@@ -158,7 +158,7 @@ void main() {
     when(settings.appKeyClickEnabled).thenReturn(false);
     final apps = MockAppsService();
     await _pumpWidgetWithProviders(tester, settings, apps);
-    final titles = ['Home screen', 'Appearance', 'Applications', 'Night mode and brightness', 'Launcher and TV controls', 'Advanced', 'Android TV settings'];
+    final titles = ['Home screen', 'Interface style', 'Applications', 'Night mode and brightness', 'Launcher and TV controls', 'Advanced', 'Android TV settings'];
     var previous = -1.0;
     for (final title in titles) {
       final y = tester.getTopLeft(find.text(title)).dy;
@@ -167,7 +167,7 @@ void main() {
     }
     expect(find.text('About CuteLauncher'), findsNothing);
     expect(find.text('Miscellaneous'), findsNothing);
-    await tester.tap(find.text('Appearance'));
+    await tester.tap(find.text('Interface style'));
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('AppearanceSettingsPage')), findsOneWidget);
   });
@@ -189,7 +189,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(CuteLauncherAboutDialog), findsOneWidget);
     expect(find.text('Original project'), findsNothing);
-    expect(find.text('Installed: v1.0.0'), findsOneWidget);
+    expect(find.text('v1.0.0'), findsOneWidget);
     expect(find.textContaining('io.github.kirillshchetinnikov.cutelauncher'), findsOneWidget);
     expect(Focus.of(tester.element(find.text('Close'))).hasFocus, isTrue);
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);

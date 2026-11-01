@@ -46,6 +46,17 @@ void main() async {
     expect(settings.showSystemSettingsInStatusBar, isFalse);
   });
 
+  test('audio visibility defaults on, persists and survives backup import', () async {
+    final settings = SettingsService(sharedPreferences);
+    expect(settings.showVolumeInStatusBar, isTrue);
+    await settings.setShowVolumeInStatusBar(false);
+    expect(SettingsService(sharedPreferences).showVolumeInStatusBar, isFalse);
+    final backup = settings.exportSettingsMap();
+    await settings.setShowVolumeInStatusBar(true);
+    await settings.importSettingsMap(backup);
+    expect(settings.showVolumeInStatusBar, isFalse);
+  });
+
   test('direct settings import keeps missing and invalid values, accepts explicit false and zero', () async {
     final settings = SettingsService(sharedPreferences);
     await settings.setHideLauncherTile(true);

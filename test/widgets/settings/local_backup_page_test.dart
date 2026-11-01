@@ -44,6 +44,9 @@ void main() {
         call,
       ) async {
         calls.add(call);
+        if (call.method == 'filePickerAvailable' && scenario == 'cancel') {
+          return true;
+        }
         if (scenario == 'failed') {
           throw PlatformException(code: 'document_failed');
         }
@@ -93,6 +96,10 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
+      if (scenario == 'cancel') {
+        await tester.tap(find.text(l.filePickerSystem));
+        await tester.pumpAndSettle();
+      }
       if (scenario == 'downloads') {
         expect(calls.single.method, 'backupFolderOperation');
         expect(calls.single.arguments['operation'], 'verify');

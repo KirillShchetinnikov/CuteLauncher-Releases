@@ -18,6 +18,7 @@ class ResetStyleTile extends StatelessWidget {
     final l = AppLocalizations.of(context)!;
     return FocusableSettingsTile(
       leading: const Icon(Icons.restore),
+      trailing: const SizedBox.shrink(),
       title: Text(title ?? l.resetStyleSection),
       onPressed: () async {
         final confirmed = await showLauncherDialog<bool>(
@@ -28,6 +29,7 @@ class ResetStyleTile extends StatelessWidget {
             actions: [
               LauncherDialogButton(
                 autofocus: true,
+                isCancel: true,
                 onPressed: () => Navigator.pop(c, false),
                 child: Text(MaterialLocalizations.of(c).cancelButtonLabel),
               ),

@@ -146,9 +146,14 @@ void main() {
               find.byType(drive ? DriveBackupPage : CloudBackupPage),
             ),
           )!;
-          await tester.ensureVisible(find.text(l.cloudConnect));
+          await tester.ensureVisible(
+            find.text(drive ? l.backupDriveConnect : l.cloudConnect),
+          );
           final button = tester.widget<FocusableSettingsTile>(
-            find.widgetWithText(FocusableSettingsTile, l.cloudConnect),
+            find.widgetWithText(
+              FocusableSettingsTile,
+              drive ? l.backupDriveConnect : l.cloudConnect,
+            ),
           );
           expect(button.enabled, isFalse);
           await tester.pumpAndSettle();

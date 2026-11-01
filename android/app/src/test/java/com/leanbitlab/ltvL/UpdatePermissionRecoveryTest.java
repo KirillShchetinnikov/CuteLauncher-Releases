@@ -84,12 +84,11 @@ public class UpdatePermissionRecoveryTest {
             assertTrue(UpdatePermissionRecovery.saved(c).getStringSet("pending", Set.of()).isEmpty());
         }
     }
-    @Test public void backgroundCheckHasGraceAndNeverRestoresDisabledPermission() {
+    @Test public void backgroundRestoresRememberedPermissionAfterFirmwareReset() {
         try (var controller = Robolectric.buildActivity(Activity.class).setup()) {
             var c = controller.get(); baseline(c); var access = new Access();
             UpdatePermissionRecovery.health(c, NOW, access);
             assertEquals(0, access.opened);
-            access.grants.add("accessibility");
             UpdatePermissionRecovery.health(c, NOW + 1000, access);
             UpdatePermissionRecovery.health(c, NOW + 10_000, access);
             assertEquals(0, access.opened);
@@ -97,7 +96,65 @@ public class UpdatePermissionRecoveryTest {
             assertEquals(1, access.restored);
             access.grants.clear(); access.connected = false;
             UpdatePermissionRecovery.health(c, NOW + 100_000, access);
-            assertEquals(1, access.opened);
+            UpdatePermissionRecovery.health(c, NOW + 131_000, access);
+            assertEquals(2, access.opened);
+            assertEquals(Set.of("accessibility"), UpdatePermissionRecovery.saved(c).getStringSet("remembered_grants", Set.of()));
+        }
+    }
+    @Test public void backgroundRemembersAllGrantsAcrossSnapshotsAndTransportFailures() {
+        try (var controller = Robolectric.buildActivity(Activity.class).setup()) {
+            var c = controller.get(); UpdatePermissionRecovery.saved(c).edit().clear().commit();
+            var access = new Access(); access.grants.addAll(UpdatePermissionPolicy.ACTIONS); access.connected = true;
+            UpdatePermissionRecovery.health(c, NOW, access);
+            access.grants.clear(); access.connected = false; access.unavailable = true;
+            UpdatePermissionRecovery.health(c, NOW + 1000, access);
+            UpdatePermissionRecovery.health(c, NOW + 32_000, access);
+            UpdatePermissionRecovery.snapshot(c);
+            assertEquals(UpdatePermissionPolicy.ACTIONS, UpdatePermissionRecovery.saved(c).getStringSet("remembered_grants", Set.of()));
+            var restarted = new Access();
+            UpdatePermissionRecovery.health(c, NOW + 100_000, restarted);
+            assertEquals(UpdatePermissionPolicy.ACTIONS, restarted.grants);
+            assertEquals(6, restarted.restored);
+        }
+    }
+    @Test public void backgroundNeverGrantsUnobservedAccessAndHonorsExplicitDisable() {
+        try (var controller = Robolectric.buildActivity(Activity.class).setup()) {
+            var c = controller.get(); UpdatePermissionRecovery.saved(c).edit().clear().commit();
+            var access = new Access();
+            UpdatePermissionRecovery.health(c, NOW, access);
+            UpdatePermissionRecovery.health(c, NOW + 60_000, access);
+            assertEquals(0, access.opened);
+            access.grants.add("accessibility"); access.connected = true;
+            UpdatePermissionRecovery.health(c, NOW + 100_000, access);
+            UpdatePermissionRecovery.cancelAccessibility(c);
+            UpdatePermissionRecovery.health(c, NOW + 110_000, access);
+            access.grants.clear(); access.connected = false;
+            UpdatePermissionRecovery.health(c, NOW + 120_000, access);
+            UpdatePermissionRecovery.health(c, NOW + 200_000, access);
+            assertEquals(0, access.opened);
+            assertTrue(UpdatePermissionRecovery.saved(c).getStringSet("remembered_grants", Set.of()).isEmpty());
+            UpdatePermissionRecovery.enabledAccessibility(c);
+            UpdatePermissionRecovery.health(c, NOW + 210_000, access);
+            UpdatePermissionRecovery.health(c, NOW + 241_000, access);
+            assertEquals(1, access.restored);
+        }
+    }
+    @Test public void prolongedAdbOutageKeepsConsentAndRetriesAfterHourlyCooldown() {
+        try (var controller = Robolectric.buildActivity(Activity.class).setup()) {
+            var c = controller.get(); baseline(c); var access = new Access(); access.unavailable = true;
+            UpdatePermissionRecovery.health(c, NOW, access);
+            long now = NOW + 31_000;
+            for (int attempt = 1; attempt <= 3; attempt++) {
+                UpdatePermissionRecovery.health(c, now, access);
+                now += attempt * 60_000L;
+            }
+            assertEquals(3, access.opened);
+            UpdatePermissionRecovery.health(c, now, access);
+            assertEquals(3, access.opened);
+            access.unavailable = false;
+            UpdatePermissionRecovery.health(c, now + 3_600_000, access);
+            assertEquals(1, access.restored);
+            assertEquals(0L, UpdatePermissionRecovery.nextCheck(c));
         }
     }
     @Test public void explicitDisableCancelsAnUpdateRetry() {

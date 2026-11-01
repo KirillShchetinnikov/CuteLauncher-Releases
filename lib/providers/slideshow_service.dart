@@ -73,8 +73,13 @@ class SlideshowService extends ChangeNotifier
   Future<void> pickFolder() async {
     final selected = await _channel.invokeMethod<String>('pickWallpaperFolder');
     if (selected == null || isDisposed) return;
+    await setFolder(selected);
+  }
+
+  Future<void> setFolder(String selected) async {
+    if (isDisposed) return;
     final old = folder;
-    await preferences.setString('slideshow_folder', selected);
+    await _save({'slideshow_folder': selected});
     if (old.isNotEmpty && old != selected) {
       await _channel.invokeMethod<void>('releaseWallpaperFolder', {'uri': old});
     }
@@ -82,13 +87,14 @@ class SlideshowService extends ChangeNotifier
   }
 
   Future<void> reset() async {
+    if (isDisposed) return;
     final old = folder;
+    await _save({
+      for (final key in ['slideshow_folder', 'slideshow_recursive', 'slideshow_random', 'slideshow_interval']) key: null,
+    });
     ++_generation;
     _timer?.cancel();
     _remaining = []; _files = []; _last = null; image = null;
-    for (final key in ['slideshow_folder', 'slideshow_recursive', 'slideshow_random', 'slideshow_interval']) {
-      await preferences.remove(key);
-    }
     if (old.isNotEmpty) await _channel.invokeMethod<void>('releaseWallpaperFolder', {'uri': old});
     failed = false;
     notifyListeners();
@@ -99,16 +105,39 @@ class SlideshowService extends ChangeNotifier
     bool? randomOrder,
     int? interval,
   }) async {
-    if (recursive != null) {
-      await preferences.setBool('slideshow_recursive', recursive);
-    }
-    if (randomOrder != null) {
-      await preferences.setBool('slideshow_random', randomOrder);
-    }
+    if (isDisposed) return;
+    final changes = <String, Object?>{};
+    if (recursive != null) changes['slideshow_recursive'] = recursive;
+    if (randomOrder != null) changes['slideshow_random'] = randomOrder;
     if (interval != null && [30, 60, 300, 600, 1800, 3600].contains(interval)) {
-      await preferences.setInt('slideshow_interval', interval);
+      changes['slideshow_interval'] = interval;
     }
+    await _save(changes);
     await reload();
+  }
+
+  Future<void> _save(Map<String, Object?> values) async {
+    final previous = {for (final key in values.keys) key: preferences.get(key)};
+    Future<bool> write(String key, Object? value) => switch (value) {
+      null => preferences.remove(key),
+      String value => preferences.setString(key, value),
+      bool value => preferences.setBool(key, value),
+      int value => preferences.setInt(key, value),
+      _ => throw ArgumentError.value(value),
+    };
+    try {
+      for (final entry in values.entries) {
+        if (!await write(entry.key, entry.value)) {
+          throw StateError('Unable to save slideshow settings');
+        }
+      }
+    } catch (_) {
+      // SharedPreferences changes its memory cache even when the platform rejects a write.
+      for (final entry in previous.entries) {
+        try { await write(entry.key, entry.value); } catch (_) { /* Preserve the original error. */ }
+      }
+      rethrow;
+    }
   }
 
   Future<void> reload() async {

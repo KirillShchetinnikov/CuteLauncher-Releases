@@ -22,6 +22,7 @@ final class AutoLaunchBridge {
     private final SharedPreferences preferences;
     private final Handler main=new Handler(Looper.getMainLooper());
     final AutoLaunchPolicy policy;
+    private final BackgroundStartup background;
     private boolean listening,screenOff,resumed,focused;
     private long wakeAt;
     private final BroadcastReceiver screen=new BroadcastReceiver() {
@@ -34,12 +35,14 @@ final class AutoLaunchBridge {
     };
     AutoLaunchBridge(Activity activity,BinaryMessenger messenger) {
         this.activity=activity; preferences=activity.getSharedPreferences("auto_launch",Context.MODE_PRIVATE);
+        background = new BackgroundStartup(activity);
         policy=new AutoLaunchPolicy(new AutoLaunchPolicy.Scheduler() {
             public void post(Runnable work,long delay) { main.postDelayed(work,delay); }
             public void cancel() { main.removeCallbacksAndMessages(null); }
         },this::launch);
         active=new java.lang.ref.WeakReference<>(this); reload();
         new MethodChannel(messenger,"cutelauncher/auto_launch").setMethodCallHandler((call,result) -> {
+            if(background.handle(call.method, call.arguments, result)) return;
             if(call.method.equals("info")) result.success(info());
             else if(call.method.equals("save")) {
                 Map<String,Object> config=call.arguments();
@@ -81,7 +84,8 @@ final class AutoLaunchBridge {
     }
     static void boot(Context context) {
         SharedPreferences prefs=context.getSharedPreferences("auto_launch",Context.MODE_PRIVATE);
-        if(prefs.getString("mode","off").equals("off") || !prefs.getBoolean("boot",false)) return;
+        if((prefs.getString("mode","off").equals("off") || !prefs.getBoolean("boot",false))
+                && !BackgroundStartup.enabled(context)) return;
         prefs.edit().putLong("boot_at",SystemClock.elapsedRealtime()).apply();
         AutoLaunchBridge bridge=active.get();
         if(bridge!=null && bridge.resumed && bridge.focused) bridge.dispatchBoot();
@@ -93,10 +97,12 @@ final class AutoLaunchBridge {
         if(resumed && focused) { dispatchBoot(); dispatchWake(); }
     }
     void pause() { resumed=false; cancel(); policy.foreground(false); }
-    void cancel() { wakeAt=0; if(preferences.contains("boot_at")) preferences.edit().remove("boot_at").apply(); policy.cancel(); }
+    void cancel() { wakeAt=0; if(preferences.contains("boot_at")) preferences.edit().remove("boot_at").apply(); policy.cancel(); background.cancel(); }
     private void dispatchBoot() {
         long time=preferences.getLong("boot_at",-1); if(time>=0) preferences.edit().remove("boot_at").apply();
-        if(time>=0 && fresh(time)) policy.event("boot");
+        if(time>=0 && fresh(time)) background.launch(
+            () -> resumed && focused && activity.hasWindowFocus() && !activity.isFinishing() && !activity.isDestroyed(),
+            () -> policy.event("boot"));
     }
     private void dispatchWake() {
         long time=wakeAt; wakeAt=0; long age=SystemClock.elapsedRealtime()-time;
@@ -118,6 +124,7 @@ final class AutoLaunchBridge {
         activity.startActivity(intent); return true;
     }
     void close() {
+        background.close();
         cancel(); if(listening) { activity.unregisterReceiver(screen); listening=false; }
         if(active.get()==this) active.clear();
     }

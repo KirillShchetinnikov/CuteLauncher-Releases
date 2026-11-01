@@ -3,6 +3,9 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:flauncher/database.dart';
+import 'package:flauncher/initial_settings_profile.dart';
+import 'package:flauncher/providers/appearance_service.dart';
+import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/backup_service.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -48,6 +51,42 @@ void main() {
     );
   });
 
+  test('old backup on a new profile restores legacy omissions without losing user edits', () async {
+    await initializeSettingsProfile(sharedPreferences, tempDir, () => database);
+    final appearance = AppearanceService(sharedPreferences);
+    addTearDown(appearance.dispose);
+    await appearance.set('radius', 32);
+    final archive = File(await backupService.exportBackup());
+    final data = jsonDecode(await archive.readAsString()) as Map<String, dynamic>;
+    expect((data['settings'] as Map).containsKey(initialProfileSeedKey), isFalse);
+    data['settings'] = {'tile_appearance': '{"opacity":0.5}'};
+    await archive.writeAsString(jsonEncode(data));
+    await backupService.importBackup(archive);
+    final restored = AppearanceService(sharedPreferences);
+    addTearDown(restored.dispose);
+    expect(restored.appearance.interfaceStyle, 'standard');
+    expect(restored.appearance.labels, 'none');
+    expect(restored.appearance.opacity, 0.5);
+    expect(restored.appearance.number('radius'), 32);
+    expect(sharedPreferences.containsKey('background_source'), isFalse);
+    expect(sharedPreferences.containsKey(initialProfileSeedKey), isFalse);
+    expect(sharedPreferences.getString(initialProfileStateKey), 'complete');
+  });
+
+  test('full restore does not reintroduce initial appearance keys', () async {
+    await initializeSettingsProfile(sharedPreferences, tempDir, () => database);
+    final archive = File(await backupService.exportBackup());
+    final data = jsonDecode(await archive.readAsString()) as Map<String, dynamic>;
+    data['settings'] = {'date_format': 'yyyy'};
+    await archive.writeAsString(jsonEncode(data));
+    final settings = SettingsService(sharedPreferences);
+    addTearDown(settings.dispose);
+    await backupService.replaceBackup(archive, settings);
+    expect(sharedPreferences.containsKey('tile_appearance'), isFalse);
+    expect(sharedPreferences.containsKey('category_appearance'), isFalse);
+    expect(sharedPreferences.getString('date_format'), 'yyyy');
+  });
+
   test('update notice delivery state stays local during export and import', () async {
     await database.insertCategory(CategoriesCompanion.insert(name: 'Apps', order: 0));
     await sharedPreferences.setString('update_pending_notification', 'v1.0.0+3');
@@ -84,7 +123,7 @@ void main() {
     expect(restoredPath, isNot(originalBanner.path));
     expect(await File(restoredPath).readAsBytes(), kTransparentImage);
     expect(await wallpaper.readAsBytes(), kTransparentImage);
-    expect((await database.getCategories()).map((c) => c.systemKey), ['all_apps', 'tv_apps', 'other_apps', 'favorites']);
+    expect((await database.getCategories()).map((c) => c.systemKey), ['all_apps', 'tv_apps', 'other_apps', 'favorites', 'app_channels']);
   });
 
   test('invalid resource is rejected before preferences, files and DB change', () async {
@@ -303,7 +342,7 @@ void main() {
     expect(app2.hidden, true);
 
     final categories = await database.getCategories();
-    expect(categories.length, 5);
+    expect(categories.length, 6);
     expect(categories[0].systemKey, 'all_apps');
     expect(categories[1].name, "Custom Category");
 

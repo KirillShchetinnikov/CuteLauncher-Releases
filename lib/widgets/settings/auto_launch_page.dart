@@ -1,4 +1,5 @@
 import 'settings_help.dart';
+import 'vpn_settings_page.dart';
 import '../../providers/tv_inputs_service.dart';
 import 'package:flauncher/widgets/launcher_dialog.dart';
 
@@ -19,6 +20,7 @@ import '../../l10n/app_localizations.dart';
 import '../../models/tv_input.dart';
 import 'focusable_settings_tile.dart';
 import 'settings_page_layout.dart';
+import 'background_startup_page.dart';
 
 class AutoLaunchPage extends StatefulWidget {
   static const routeName = 'auto_launch_panel';
@@ -318,7 +320,12 @@ class _AutoLaunchPageState extends State<AutoLaunchPage>
             ),
           ],
           const SizedBox(height: 16),
-          SettingsHelp(text: l.autoLaunchHint),
+          SettingsHelp(title: l.autoLaunchTarget, text: l.autoLaunchHint),
+          FocusableSettingsTile(
+            title: Text(l.backgroundStartupTitle),
+            onPressed: () => Navigator.of(context).pushNamed(BackgroundStartupPage.routeName),
+          ),
+          const VpnStartupSection(),
         ],
       ),
     );

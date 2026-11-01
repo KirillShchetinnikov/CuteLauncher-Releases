@@ -31,6 +31,7 @@ import 'settings_route.dart';
 /// Both former entry routes display the same launcher and TV settings.
 class AdbPage extends StatefulWidget {
   static const routeName = 'adb_panel';
+  static const connectionRouteName = 'adb_connection';
   final String? section;
   const AdbPage({super.key, this.section});
   @override
@@ -520,7 +521,7 @@ class _AdbPageState extends State<AdbPage> with WidgetsBindingObserver {
       ),
     ),
     if (!supported)
-      SettingsHelp(text: action == 'home'
+      Text(action == 'home'
           ? l.adbHomeUnavailable
           : homeBlocked ? l.adbDisableHomeUnavailable : l.adbUnsupported),
     ],
@@ -673,11 +674,11 @@ class _AdbPageState extends State<AdbPage> with WidgetsBindingObserver {
                       onChanged: settings.setStartOnBoot,
                       title: Text(l.startOnBoot),
                     ),
-                  SettingsHelp(text: l.adbHomeOptional),
+                  SettingsHelp(title: l.homeScreen, text: l.adbHomeOptional),
                 ]
               : widget.section == 'connection'
               ? [
-                  SettingsHelp(text: l.adbSetupIntro),
+                  SettingsHelp(title: l.adbTransport, text: l.adbSetupIntro),
                   if (_compatibility['system'] is String)
                     Text(_compatibility['system'] as String),
                   Text('${l.adbTransport}: ${l.adbTcp}'),

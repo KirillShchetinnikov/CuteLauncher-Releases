@@ -202,7 +202,7 @@ class FLauncherDatabase extends _$FLauncherDatabase
       ...(await getLauncherSpacers()).map((spacer) => spacer.order),
     ];
     var order = orders.fold<int>(-1, (maximum, value) => value > maximum ? value : maximum) + 1;
-    for (final entry in const {'tv_apps': 'TV Apps', 'other_apps': 'Non-TV Apps', 'favorites': 'Favorites'}.entries) {
+    for (final entry in const {'tv_apps': 'TV Apps', 'other_apps': 'Non-TV Apps', 'favorites': 'Favorites', 'app_channels': 'App Feeds'}.entries) {
       if (keys.contains(entry.key)) continue;
       await insertCategory(CategoriesCompanion.insert(
         name: entry.value, order: order++, systemKey: Value(entry.key),

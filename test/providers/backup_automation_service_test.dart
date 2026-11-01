@@ -395,6 +395,13 @@ void main() {
     expect(updates, 0);
     await Future<void>.delayed(const Duration(milliseconds: 180));
     expect(updates, 1);
+    // The change notification precedes the queued asynchronous preference write.
+    final deadline = DateTime.now().add(const Duration(seconds: 3));
+    while (a.prefs.getString('backup_transport_change_times') == null &&
+        DateTime.now().isBefore(deadline)) {
+      await Future<void>.delayed(const Duration(milliseconds: 10));
+    }
+    expect(a.prefs.getString('backup_transport_change_times'), isNotNull);
     expect(jsonDecode(a.prefs.getString('backup_transport_change_times')!), contains('setting:app_language'));
   });
   test('an edit during a fast download aborts sync before the batched fingerprint runs', () async {

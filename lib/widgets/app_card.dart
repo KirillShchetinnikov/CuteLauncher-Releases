@@ -82,6 +82,7 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
   CategoryFocusController? _categoryFocus;
   bool _moving = false;
   bool _clicked = false;
+  bool _paintFocusTransition = false;
   late FocusNode _focusNode;
 
   late Future<(AppImageType, ImageProvider)> _appImageLoadFuture;
@@ -225,8 +226,15 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
       onLongPress: (key) => _onLongPress(context, key),
       builder: (context) {
         final bool shouldHighlight = _shouldHighlight(context);
+        if (shouldHighlight) {
+          _paintFocusTransition = appearance.focusScale > 0 ||
+              (appearance.focusEffect == 'lift' && appearance.focusLift > 0);
+        }
 
-        return RaisedTile(raised: shouldHighlight, child: AnimatedBuilder(
+        // Keep the shrinking artwork above the viewport clip until its focus
+        // animation ends; its layout cell does not include the enlarged edges.
+        return RaisedTile(foreground: shouldHighlight, raised: shouldHighlight ||
+            (appSelectorTransitionAnimationEnabled && _paintFocusTransition), child: AnimatedBuilder(
           animation: _bumpAnimation,
           builder: (context, child) {
             return Transform.translate(
@@ -252,8 +260,14 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
                         builder: (context, constraints) {
                           return AnimatedContainer(
                             duration: appSelectorTransitionAnimationEnabled ? style.tileDuration : Duration.zero,
+                            onEnd: () {
+                              if (!shouldHighlight && _paintFocusTransition) {
+                                setState(() => _paintFocusTransition = false);
+                              }
+                            },
                             curve: Curves.easeOutCubic,
-                            transformAlignment: Alignment.center,
+                            transformAlignment: showAppNames && appearance.labelPosition == 'below'
+                                ? Alignment.bottomCenter : Alignment.center,
                             transform: _scaleTransform(context, themes, constraints.maxWidth),
                             child: AppearanceSurface(
                           appearance: appearance,

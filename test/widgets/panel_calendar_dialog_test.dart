@@ -44,7 +44,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(InformationSettingsPage), findsOneWidget);
     expect(find.text('Часы, дата и погода'), findsOneWidget);
-    expect(find.text('Настройки погоды'), findsOneWidget);
+    expect(find.text('Форматы и данные'), findsOneWidget);
     await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
     expect(find.byType(InformationSettingsPage), findsNothing);

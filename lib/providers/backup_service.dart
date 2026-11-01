@@ -2,6 +2,8 @@ import '../diagnostics_store.dart';
 import 'dart:async';
 import 'package:flutter/foundation.dart' show compute;
 import 'dart:convert';
+import '../initial_profile_restore.dart';
+import '../initial_settings_profile.dart';
 import '../backup_validation.dart';
 import '../settings_import.dart';
 import '../backup_assets.dart';
@@ -273,12 +275,21 @@ class BackupService {
       throw FormatException("Invalid backup file version");
     }
 
+    final previous = {for (final key in _sharedPreferences.getKeys()) key: _sharedPreferences.get(key)};
+    final baseline = initialProfileRestoreBaseline(previous, backupData['settings'] is Map ? backupData['settings'] as Map : {});
     final settingsSchema = SettingsService(_sharedPreferences);
     final expected = {
       for (final key in _sharedPreferences.getKeys()) key: _sharedPreferences.get(key),
       ...settingsSchema.exportSettingsMap(),
     };
     settingsSchema.dispose();
+    for (final key in previous.keys) {
+      if (!baseline.containsKey(key)) {
+        expected.remove(key);
+      } else if (baseline[key] != previous[key]) {
+        expected[key] = baseline[key];
+      }
+    }
     if (replaceSettings) {
       expected['tile_appearance'] = '{}';
       expected['category_appearance'] = '{}';
@@ -286,7 +297,6 @@ class BackupService {
     validateBackup(backupData);
     final settingsMap = compatibleSettings(backupData['settings'], expected);
     final assets = await BackupAssets.prepare(await getApplicationDocumentsDirectory(), backupData['version'] == 3 ? backupData['resources'] : null, settingsMap);
-    final previous = {for (final key in _sharedPreferences.getKeys()) key: _sharedPreferences.get(key)};
     try {
     // 2. Restore database tables in a single transaction
     await _database.transaction(() async {
@@ -370,7 +380,20 @@ class BackupService {
           }
         }
       }
+      for (final key in previous.keys) {
+        if (!baseline.containsKey(key) && !settingsMap.containsKey(key)) {
+          if (!await _sharedPreferences.remove(key)) throw StateError('Could not reset initial setting');
+        }
+      }
+      if (!replaceSettings) {
+        await _writeSettings({for (final key in baseline.keys)
+          if (baseline[key] != previous[key] && !settingsMap.containsKey(key)) key: baseline[key]});
+      }
       await _writeSettings(settingsMap);
+      if (_sharedPreferences.containsKey(initialProfileSeedKey) &&
+          !await _sharedPreferences.remove(initialProfileSeedKey)) {
+        throw StateError('Could not finish settings restore');
+      }
       await assets.installWallpapers(replace: replaceSettings);
     });
     } catch (_) {

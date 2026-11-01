@@ -9,6 +9,147 @@ import 'dart:ui' as ui;
 import 'package:flutter/rendering.dart';
 
 void main() {
+  for (final glow in [false, true]) {
+    testWidgets('isolated ${glow ? 'glow' : 'outline'} pulse preserves pixels and overflow', (tester) async {
+      const capture = ValueKey('outline-capture');
+      const accent = Color(0xff7b46bd);
+      final color = brighterTileFocusColor(accent);
+      Future<ui.Image> render(Widget child, double scale) async {
+        await tester.pumpWidget(MaterialApp(home: Center(child: RepaintBoundary(
+          key: capture, child: SizedBox(width: 360, height: 260,
+            child: ColoredBox(color: const Color(0xff273847), child: Center(
+              child: Transform.scale(scale: scale, child: SizedBox(width: 120, height: 70, child: child)),
+            )),
+          ),
+        ))));
+        await tester.pump();
+        return (await tester.runAsync(() => tester.renderObject<RenderRepaintBoundary>(
+            find.byKey(capture)).toImage()))!;
+      }
+      for (final scale in [1.0, 1.17, 2.0]) {
+        final actual = await render(TileThemeOutline(theme: 'modern', accent: accent,
+            pulse: true, radius: 13.4, borderStyle: glow ? 'glow' : 'outline'), scale);
+        final painter = tester.widget<CustomPaint>(find.byWidgetPredicate((w) => w is CustomPaint &&
+            (w.painter is TileOutlinePainter || w.painter is TileGlowPainter))).painter;
+        final opacity = painter is TileGlowPainter ? painter.color.a : (painter as TileOutlinePainter).color.a;
+        final expected = await render(CustomPaint(painter: glow
+            ? TileGlowPainter(color: color.withValues(alpha: opacity), radius: 13.4)
+            : TileOutlinePainter(color: color.withValues(alpha: opacity), radius: 13.4,
+                width: 2, separator: 2)), scale);
+        await tester.runAsync(() async {
+          final a = (await actual.toByteData(format: ui.ImageByteFormat.rawRgba))!.buffer.asUint8List();
+          final b = (await expected.toByteData(format: ui.ImageByteFormat.rawRgba))!.buffer.asUint8List();
+          var maxDifference = 0;
+          for (var i = 0; i < a.length; i++) {
+            final delta = (a[i] - b[i]).abs();
+            if (delta > maxDifference) maxDifference = delta;
+          }
+          expect(maxDifference, lessThanOrEqualTo(3), reason: 'scale $scale, opacity $opacity');
+        });
+        actual.dispose(); expected.dispose();
+      }
+    });
+  }
+  for (final border in ['outline', 'glow']) {
+    testWidgets('$border freezes pulse during either nested scroll and resumes after both stop', (tester) async {
+      final vertical = ScrollController(), horizontal = ScrollController();
+      await tester.pumpWidget(MaterialApp(home: SizedBox(width: 300, height: 200,
+        child: SingleChildScrollView(controller: vertical, child: SizedBox(height: 1200,
+          child: SingleChildScrollView(controller: horizontal, scrollDirection: Axis.horizontal,
+            child: SizedBox(width: 1600, child: Align(alignment: Alignment.topLeft,
+              child: SizedBox(width: 100, height: 60, child: TileThemeOutline(
+                theme: 'modern', accent: Colors.cyan, pulse: true, borderStyle: border,
+              )),
+            )),
+          ),
+        )),
+      )));
+      Color color() {
+        final painter = tester.widget<CustomPaint>(find.byWidgetPredicate((w) =>
+            w is CustomPaint && (w.painter is TileGlowPainter || w.painter is TileOutlinePainter))).painter;
+        return painter is TileGlowPainter ? painter.color : (painter as TileOutlinePainter).color;
+      }
+      await tester.pump(const Duration(milliseconds: 200));
+      final initial = color();
+      await tester.pump(const Duration(milliseconds: 200));
+      expect(color(), isNot(initial));
+      final frozen = color();
+      vertical.animateTo(200, duration: const Duration(milliseconds: 300), curve: Curves.linear);
+      horizontal.animateTo(200, duration: const Duration(milliseconds: 600), curve: Curves.linear);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 150));
+      expect(color(), frozen);
+      expect(tester.binding.transientCallbackCount, 2,
+          reason: 'Only the two scroll animations should tick');
+      await tester.pump(const Duration(milliseconds: 200));
+      expect(vertical.position.isScrollingNotifier.value, isFalse);
+      expect(horizontal.position.isScrollingNotifier.value, isTrue);
+      expect(color(), frozen);
+      expect(tester.binding.transientCallbackCount, 1);
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump(const Duration(milliseconds: 200));
+      expect(color(), isNot(frozen));
+      vertical.animateTo(0, duration: const Duration(seconds: 1), curve: Curves.linear);
+      await tester.pump();
+      await tester.pumpWidget(const SizedBox());
+      vertical.dispose(); horizontal.dispose();
+      expect(tester.takeException(), isNull);
+    });
+  }
+  for (final glow in [true, false]) {
+    for (final scale in [1.0, 1.17, 2.0]) {
+      testWidgets('${glow ? 'glow' : 'outline'} has no dark seams at fractional corner joins x$scale', (tester) async {
+        await tester.runAsync(() async {
+          for (final radius in [13.4, 35.7]) {
+            for (final opacity in [1.0, .55]) {
+              final recorder = ui.PictureRecorder();
+              final canvas = Canvas(recorder);
+              const origin = Offset(32.25, 32.5);
+              const size = Size(140, 80);
+              canvas.translate(origin.dx, origin.dy);
+              canvas.scale(scale);
+              final color = Colors.white.withValues(alpha: opacity);
+              final CustomPainter painter = glow
+                  ? TileGlowPainter(color: color, radius: radius)
+                  : TileOutlinePainter(color: color, radius: radius, width: 4, separator: 0);
+              painter.paint(canvas, size);
+              final picture = recorder.endRecording();
+              final image = await picture.toImage(400, 250);
+              final bytes = (await image.toByteData(format: ui.ImageByteFormat.rawRgba))!;
+              int alpha(int x, int y) => bytes.getUint8((y * image.width + x) * 4 + 3);
+              final distance = glow ? 4.0 : 2.0;
+              // Compare each join with the middle of the same straight edge.
+              // A rounded corner is tangent here, so alpha must be continuous.
+              for (final y in [-distance, size.height + distance]) {
+                final py = (origin.dy + y * scale).floor();
+                final reference = alpha((origin.dx + size.width / 2 * scale).floor(), py);
+                for (final x in [radius, size.width - radius]) {
+                  final join = (origin.dx + x * scale).floor();
+                  for (var dx = -1; dx <= 1; dx++) {
+                    expect(alpha(join + dx, py), greaterThanOrEqualTo(reference - 8),
+                        reason: 'horizontal join r=$radius alpha=$opacity at $x,$y');
+                  }
+                }
+              }
+              for (final x in [-distance, size.width + distance]) {
+                final px = (origin.dx + x * scale).floor();
+                final reference = alpha(px, (origin.dy + size.height / 2 * scale).floor());
+                for (final y in [radius, size.height - radius]) {
+                  final join = (origin.dy + y * scale).floor();
+                  for (var dy = -1; dy <= 1; dy++) {
+                    expect(alpha(px, join + dy), greaterThanOrEqualTo(reference - 8),
+                        reason: 'vertical join r=$radius alpha=$opacity at $x,$y');
+                  }
+                }
+              }
+              image.dispose();
+              picture.dispose();
+            }
+          }
+        });
+      });
+    }
+  }
   testWidgets('glow starts at the edge and fades outward without changing image pixels', (tester) async {
     final capture = GlobalKey();
     await tester.pumpWidget(MaterialApp(home: Center(child: RepaintBoundary(
@@ -122,6 +263,25 @@ void main() {
     await tester.pumpAndSettle();
     expect(tester.binding.transientCallbackCount, 0);
     await show(true);
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(tester.binding.transientCallbackCount, greaterThan(0));
+    await tester.pumpWidget(const SizedBox());
+  });
+  testWidgets('system reduced motion stops and resumes the pulse', (tester) async {
+    Future<void> show(bool disabled) => tester.pumpWidget(MaterialApp(home: MediaQuery(
+      data: MediaQueryData(disableAnimations: disabled),
+      child: const SizedBox(width: 200, height: 100,
+        child: TileThemeOutline(theme: 'modern', accent: Colors.purple, pulse: true)),
+    )));
+    await show(false);
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(tester.binding.transientCallbackCount, greaterThan(0));
+    await show(true);
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(tester.binding.transientCallbackCount, 0);
+    expect(find.byWidgetPredicate((widget) => widget is CustomPaint &&
+        widget.painter is TileOutlinePainter), findsOneWidget);
+    await show(false);
     await tester.pump(const Duration(milliseconds: 300));
     expect(tester.binding.transientCallbackCount, greaterThan(0));
     await tester.pumpWidget(const SizedBox());

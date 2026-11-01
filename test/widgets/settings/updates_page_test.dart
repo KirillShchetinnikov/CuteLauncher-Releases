@@ -85,6 +85,14 @@ void main() {
     await tester.pumpAndSettle();
     expect(installs, 1);
     expect(find.text('Установить загруженное обновление'), findsOneWidget);
+    final l = AppLocalizations.of(tester.element(find.byType(UpdatesPage)))!;
+    await tester.pump(const Duration(seconds: 10));
+    await tester.pumpAndSettle();
+    expect(find.text(l.updatePermission), findsOneWidget);
+    await tester.ensureVisible(find.text(l.updateInstall));
+    await tester.tap(find.text(l.updateInstall));
+    await tester.pumpAndSettle();
+    expect(installs, 2);
     expect(tester.takeException(), isNull);
   });
 }

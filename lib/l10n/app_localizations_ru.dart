@@ -10,6 +10,28 @@ class AppLocalizationsRu extends AppLocalizations {
   AppLocalizationsRu([String locale = 'ru']) : super(locale);
 
   @override
+  String get wallhavenWallpaperHint =>
+      'Случайные обои Wallhaven по выбранной теме: SFW, 16:9, от Full HD. Без регистрации и API-ключа. Обновление работает при открытом лаунчере; при ошибке сохраняются прежние обои.';
+
+  @override
+  String get renderCompatibilityTitle => 'Совместимый вывод графики';
+
+  @override
+  String get renderCompatibilityAutomatic =>
+      'Включён автоматически для этого устройства';
+
+  @override
+  String get renderCompatibilityApply => 'Применить и перезапустить лаунчер';
+
+  @override
+  String get renderCompatibilityFailed =>
+      'Не удалось прочитать или применить настройку';
+
+  @override
+  String get renderCompatibilityHelp =>
+      'Попробуйте этот режим, если интерфейс мерцает при ночном затемнении. На проверенных моделях он включается автоматически. На других ТВ выбор сохраняется только на этом устройстве и применяется после перезапуска лаунчера. Может увеличить нагрузку на графику.';
+
+  @override
   String get diagnosticsHubTitle => 'Диагностика';
 
   @override
@@ -1501,7 +1523,7 @@ class AppLocalizationsRu extends AppLocalizations {
       'Укажите город вручную или получите координаты автоматически.';
 
   @override
-  String get weatherRefresh => 'Проверить обновления';
+  String get weatherRefresh => 'Обновить погоду';
 
   @override
   String get weatherKeyPrivate =>
@@ -1512,7 +1534,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get onlineWallpaperError =>
-      'Не удалось загрузить изображение. Сохранены предыдущие обои. Нажмите «Проверить обновления», чтобы повторить загрузку.';
+      'Не удалось загрузить изображение. Сохранены предыдущие обои. Нажмите «Обновить обои», чтобы повторить загрузку.';
 
   @override
   String get onlineWallpaperHint =>
@@ -1949,7 +1971,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get notificationAppsHint =>
-      'Отключите приложения от которых не нужны уведомления. Включённый переключатель разрешает уведомления; запуск приложения остаётся доступен.';
+      'Выберите приложения, уведомления которых нужно блокировать. Включённый переключатель означает блокировку. Список сохраняет алфавитный порядок.';
 
   @override
   String get notificationPanelLink => 'Оформление верхней панели';
@@ -2016,7 +2038,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get rememberCategoryFocus => 'Запоминать выбранную карточку';
 
   @override
-  String get automaticBackups => 'Автоматическое резервное копирование';
+  String get automaticBackups => 'Копии и синхронизация';
 
   @override
   String get automaticBackupsHint =>
@@ -2091,7 +2113,7 @@ class AppLocalizationsRu extends AppLocalizations {
       'Сбросить фон, акцентный цвет, плитки, подписи, выделение и анимацию?';
 
   @override
-  String get wallpaperDimming => 'Затемнение';
+  String get wallpaperDimming => 'Сила затемнения';
 
   @override
   String get wallpaperPlacement => 'Размещение';
@@ -2710,7 +2732,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get backupDriveHelp =>
-      'Нажмите «Подключить» и подтвердите код на телефоне. Копии видны в папке CuteLauncher на Google Диске: их можно скачивать и удалять. Сохраняйте имена файлов для восстановления в приложении. После обновления со скрытых копий подключитесь повторно; старые копии автоматически не переносятся.';
+      'Нажмите «Подключить Google Диск» и подтвердите код на телефоне. Копии видны в папке CuteLauncher на Google Диске: их можно скачивать и удалять. Сохраняйте имена файлов для восстановления в приложении. После обновления со скрытых копий подключитесь повторно; старые копии автоматически не переносятся.';
 
   @override
   String get backupFrequency => 'Частота копирования';
@@ -3182,7 +3204,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get homeOwnReset => 'Вернуть общие настройки';
 
   @override
-  String get homeParameters => 'Параметры';
+  String get homeParameters => 'Поведение главного экрана';
 
   @override
   String get homeSectionStyle => 'Оформление разделов';
@@ -4346,4 +4368,483 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get remoteMappingImportFailed =>
       'Не удалось прочитать файл. Выберите доступный текстовый файл UTF-8 размером до 64 КБ.';
+
+  @override
+  String get vpnTitle => 'VPN';
+
+  @override
+  String get vpnSettings => 'Настройки VPN';
+
+  @override
+  String get vpnApp => 'VPN-приложение';
+
+  @override
+  String get vpnAutomatic => 'Автоматически';
+
+  @override
+  String get vpnNone => 'Не выбрано';
+
+  @override
+  String get vpnProfile => 'Профиль VPN';
+
+  @override
+  String get vpnOnlyActive => 'Показывать только при подключении';
+
+  @override
+  String get vpnShowName => 'Показывать название приложения';
+
+  @override
+  String get vpnColor => 'Выделять подключение цветом';
+
+  @override
+  String get vpnNotify => 'Уведомлять о результате команд';
+
+  @override
+  String get vpnConnected => 'VPN подключён';
+
+  @override
+  String get vpnDisconnected => 'VPN отключён';
+
+  @override
+  String get vpnUnknown => 'Состояние VPN недоступно';
+
+  @override
+  String get vpnConnect => 'Подключить';
+
+  @override
+  String get vpnDisconnect => 'Отключить';
+
+  @override
+  String get vpnOpenApp => 'Открыть VPN-приложение';
+
+  @override
+  String get vpnAndroidSettings => 'Настройки VPN Android';
+
+  @override
+  String get vpnAllowControl => 'Разрешить управление VPN';
+
+  @override
+  String get vpnFailed => 'Не удалось выполнить действие VPN';
+
+  @override
+  String get vpnUnsupported =>
+      'Клиент не поддерживает прямое управление. Можно открыть приложение.';
+
+  @override
+  String get vpnOther =>
+      'Подключён другой или неопределённый VPN. Управление недоступно.';
+
+  @override
+  String get vpnStartup => 'VPN при старте ТВ';
+
+  @override
+  String get vpnPending => 'Ожидание подключения VPN';
+
+  @override
+  String get vpnHelp =>
+      'Автоматический выбор подхватывает активный VPN и запоминает его для повторного подключения. Определение приложения и профиля требует подключённого локального АДБ. Прямое управление доступно AmneziaWG и WireGuard с разрешением управления и включённым внешним управлением в клиенте. Happ и MantaRay используют профиль, выбранный в самом клиенте.';
+
+  @override
+  String get vpnProfileHelp =>
+      'Укажите точное имя профиля из VPN-приложения: до 15 латинских букв, цифр и символов _ = + . -. При ручном подключении имя подхватывается автоматически, если оно доступно.';
+
+  @override
+  String get vpnStartupHelp =>
+      'VPN запускается дополнительно к обычному автозапуску. Заранее настройте профиль и разрешения клиента. Ожидание сети ограничено; уже активный VPN не заменяется. Пробуждение отслеживается только пока процесс лаунчера работает.';
+
+  @override
+  String get vpnStartupMethod => 'Способ запуска VPN';
+
+  @override
+  String get vpnStartupClient => 'Через VPN-приложение';
+
+  @override
+  String get vpnStartupAlwaysOn => 'Постоянный VPN Android';
+
+  @override
+  String get vpnAlwaysOnManaged =>
+      'VPN управляется постоянным режимом Android. Отключите этот режим в настройках автозапуска или Android.';
+
+  @override
+  String get vpnRestartRequired =>
+      'Для применения системного режима перезапустите ТВ.';
+
+  @override
+  String get vpnAlwaysOnHelp =>
+      'Назначает подготовленный клиент постоянным VPN через локальное TCP АДБ. Android применяет выбор после перезапуска ТВ. Блокировка соединений без VPN не включается и не меняется. При выходе из этого режима восстанавливается прежний системный выбор.';
+
+  @override
+  String get vpnClientConfirmation => 'Подтвердите команду в окне MantaRay.';
+
+  @override
+  String get informationTapAction => 'При нажатии на блок';
+
+  @override
+  String get informationShowBoth => 'Погода и календарь';
+
+  @override
+  String get weatherForecastTitle => 'Прогноз погоды';
+
+  @override
+  String get weatherForecastPeriod => 'Период прогноза';
+
+  @override
+  String weatherForecastDays(int days) {
+    return '$days суток';
+  }
+
+  @override
+  String get weatherForecastView => 'Вид прогноза';
+
+  @override
+  String get weatherForecastCards => 'Компактные карточки';
+
+  @override
+  String get weatherForecastList => 'Подробный список';
+
+  @override
+  String weatherForecastAvailable(int available, int requested) {
+    return 'Доступно дней: $available из $requested';
+  }
+
+  @override
+  String get weatherForecastTvTime => 'Даты прогноза по времени ТВ';
+
+  @override
+  String get weatherClear => 'Ясно';
+
+  @override
+  String get weatherCloudy => 'Облачно';
+
+  @override
+  String get weatherFog => 'Туман';
+
+  @override
+  String get weatherWind => 'Ветер';
+
+  @override
+  String get weatherPrecipitation => 'Осадки';
+
+  @override
+  String get showVolume => 'Показывать громкость';
+
+  @override
+  String get audioStatusTitle => 'Громкость и аудиовыход';
+
+  @override
+  String get audioOutputTv => 'ТВ';
+
+  @override
+  String get audioOutputHeadphones => 'Наушники';
+
+  @override
+  String get audioOutputMultiple => 'Несколько';
+
+  @override
+  String get audioMuted => 'Звук выключен';
+
+  @override
+  String get backgroundStartupTitle => 'Приложения в фоне';
+
+  @override
+  String get backgroundStartupFailed =>
+      'Не удалось загрузить или сохранить настройки';
+
+  @override
+  String get backgroundStartupRetry => 'Повторить';
+
+  @override
+  String get backgroundStartupEmpty => 'Нет пользовательских приложений';
+
+  @override
+  String get backgroundStartupUnavailable => 'Запуск в фоне недоступен';
+
+  @override
+  String get backgroundStartupRequested => 'Запуск запрошен';
+
+  @override
+  String get backgroundStartupHelp =>
+      'Отметьте приложения для однократного запуска в фоне после загрузки ТВ. CuteLauncher должен открыться в течение минуты после загрузки: назначьте его домашним экраном или включите запуск лаунчера при загрузке. Приложения запускаются по очереди за домашним экраном; выбор галочки не запускает их сразу. Нажатие пульта или уход из лаунчера отменяет оставшиеся запуски. Пробуждение из сна не запускает их повторно. Некоторые приложения не поддерживают такой режим и недоступны для выбора. Запуск не включает функции внутри приложения и не гарантирует постоянную работу: выдайте нужные разрешения и настройте фоновую работу в самом приложении. Android и прошивка ТВ могут остановить его. Выбор хранится только на этом ТВ.';
+
+  @override
+  String get backgroundStartupToggle => 'Автозагрузка в фоне';
+
+  @override
+  String get systemWidgetSettings => 'Настройки виджета «Система»';
+
+  @override
+  String get systemShowCpu => 'Показывать CPU в панели';
+
+  @override
+  String get systemShowRam => 'Показывать RAM в панели';
+
+  @override
+  String get systemStorage => 'Накопитель: свободно / всего';
+
+  @override
+  String get systemUptime => 'Время работы (часы:минуты)';
+
+  @override
+  String get systemTemperature => 'Температура CPU';
+
+  @override
+  String get systemAvailable => 'Доступно RAM';
+
+  @override
+  String get systemHistory => 'Последний час · среднее и пики';
+
+  @override
+  String get systemNow => 'Сейчас';
+
+  @override
+  String get systemHourAgo => '−60 мин';
+
+  @override
+  String get systemWidgetHelp =>
+      'Показания обновляются раз в 5 секунд, пока лаунчер виден. Графики показывают средние значения и пики за минуту. Другие приложения, сон и ошибки чтения оставляют разрывы. История хранится в памяти и сбрасывается при перезапуске процесса лаунчера. CPU и температура зависят от прошивки. Выключите оба показателя панели, чтобы оставить только значок.';
+
+  @override
+  String get slideshowBrowseFolders => 'Просмотр папок';
+
+  @override
+  String get slideshowEnterFolderPath => 'Ввести путь к папке';
+
+  @override
+  String get slideshowSystemPicker => 'Выбрать в системном проводнике';
+
+  @override
+  String get slideshowFolderPath => 'Путь к папке';
+
+  @override
+  String get slideshowUseFolder => 'Выбрать эту папку';
+
+  @override
+  String get slideshowParentFolder => 'На уровень выше';
+
+  @override
+  String get slideshowStoragePermission =>
+      'Разрешите доступ к файлам в настройках Android для встроенного проводника.';
+
+  @override
+  String get slideshowPickerUnavailable =>
+      'На этом ТВ нет проводника с выбором папок. Используйте встроенный просмотр или введите путь вручную.';
+
+  @override
+  String get slideshowFolderUnavailable =>
+      'Папка недоступна. Проверьте путь, подключение накопителя и разрешение доступа к файлам.';
+
+  @override
+  String get slideshowStorageHelp =>
+      'Встроенный выбор читает папки памяти ТВ и подключённых накопителей. На Android 11 и новее разрешите доступ ко всем файлам; на Android 9–10 — доступ к памяти. Путь можно ввести вручную, например /storage/emulated/0/Pictures. Файлы не изменяются.';
+
+  @override
+  String get fileBrowserTitle => 'Выбор файла';
+
+  @override
+  String get filePickerChoose => 'Выбор проводника';
+
+  @override
+  String get filePickerSystem => 'Системный проводник';
+
+  @override
+  String get filePickerBuiltIn => 'Встроенный проводник';
+
+  @override
+  String get fileBrowserEmpty => 'Нет доступных элементов';
+
+  @override
+  String get fileBrowserUnavailable =>
+      'Не удалось открыть это расположение. Проверьте доступ и повторите попытку.';
+
+  @override
+  String get networkAndVpnGroup => 'Сеть и VPN';
+
+  @override
+  String get soundAndInputsGroup => 'Звук и входы';
+
+  @override
+  String get timerAndNightModeGroup => 'Таймер и ночной режим';
+
+  @override
+  String get systemSettingsGroup => 'Системные настройки';
+
+  @override
+  String get appChannelsTitle => 'Ленты приложений';
+
+  @override
+  String get appChannelsHelp =>
+      'Выберите до 16 лент. Доступность зависит от каналов, опубликованных приложениями, и прошивки ТВ. Пустые ленты скрыты. Выбор хранится на этом ТВ.';
+
+  @override
+  String get appChannelsUnavailable =>
+      'Не удалось прочитать ленты. Проверьте доступ к ТВ-программам.';
+
+  @override
+  String get appChannelsEmpty => 'Нет доступных лент приложений.';
+
+  @override
+  String get appChannelsRefresh => 'Обновить ленты';
+
+  @override
+  String get appChannelsLaunchFailed => 'Не удалось открыть этот контент.';
+
+  @override
+  String get appChannelsSaveFailed =>
+      'Не удалось сохранить выбор. Можно выбрать до 16 лент.';
+
+  @override
+  String get sectionDeleteConfirm =>
+      'Удалить этот раздел? Установленные приложения останутся.';
+
+  @override
+  String get sectionDeleteFailed =>
+      'Не удалось удалить раздел. Попробуйте ещё раз.';
+
+  @override
+  String get appChannelsAccess => 'Доступ к лентам приложений';
+
+  @override
+  String get appChannelsMissing => 'Недоступная лента';
+
+  @override
+  String get wallpaperRefresh => 'Обновить обои';
+
+  @override
+  String get wallpaperDimmingHelp =>
+      '100% сохраняет исходное затемнение фона, 200% усиливает его вдвое. Это не непрозрачность чёрного слоя.';
+
+  @override
+  String get resetLauncherSettings => 'Сбросить все настройки';
+
+  @override
+  String get resetLauncherSettingsConfirmation =>
+      'Все настройки и локальные данные CuteLauncher будут удалены: разделы, избранное, назначения пульта, подключения и файлы в хранилище приложения. CuteLauncher закроется; следующий запуск будет как после установки. Доступы потребуется выдать заново. Файлы вне хранилища CuteLauncher и другие приложения сохранятся.';
+
+  @override
+  String get resetLauncherSettingsError =>
+      'Не удалось завершить сброс настроек. Попробуйте ещё раз.';
+
+  @override
+  String get fileBrowserCurrentFolder => 'Текущая папка';
+
+  @override
+  String get fileBrowserFileName => 'Имя файла';
+
+  @override
+  String get fileBrowserNoFolders => 'Вложенных папок нет';
+
+  @override
+  String get fileBrowserNoFiles => 'Нет подходящих файлов';
+
+  @override
+  String get fileBrowserPartial => 'Показана только часть содержимого папки';
+
+  @override
+  String get fileBrowserRemoteHint => '← Имя целиком · → Подтверждение';
+
+  @override
+  String get fileBrowserReadNameHint => '← Показать имя целиком';
+
+  @override
+  String fileBrowserSavedTo(String path) {
+    return 'Сохранено: $path';
+  }
+
+  @override
+  String get backupDriveConnect => 'Подключить Google Диск';
+
+  @override
+  String get discardChangesTitle => 'Отменить изменения?';
+
+  @override
+  String get discardChangesMessage => 'Несохранённые изменения будут потеряны.';
+
+  @override
+  String get backgroundFileUnavailable => 'Файл недоступен';
+
+  @override
+  String get backupLastSuccess => 'Последнее успешное действие:';
+
+  @override
+  String get informationPlacement => 'Размещение блока';
+
+  @override
+  String get informationOnBackground => 'На фоне';
+
+  @override
+  String get informationBackgroundAlignment => 'Расположение на фоне';
+
+  @override
+  String get informationBackgroundHelp =>
+      'Для часов, даты и погоды отдельно выберите верхнюю панель, фон или скрытие. На фоне элементы не реагируют на нажатия и не меняют положение плиток. В динамическом пейзаже горы перекрывают часы. Быстрые настройки независимы.';
+
+  @override
+  String get informationTime => 'Часы';
+
+  @override
+  String get informationDate => 'Дата';
+
+  @override
+  String get backgroundInformationAppearance => 'Оформление на фоне';
+
+  @override
+  String onlineWallpaperFailureStage(String stage) {
+    String _temp0 = intl.Intl.selectLogic(stage, {
+      'initialize': 'Подготовка хранилища',
+      'metadata': 'Запрос к источнику',
+      'download': 'Скачивание изображения',
+      'validation': 'Проверка изображения',
+      'save': 'Сохранение обоев',
+      'other': 'Сохранение обоев',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String onlineWallpaperFailureReason(String reason) {
+    String _temp0 = intl.Intl.selectLogic(reason, {
+      'dns': 'Не удалось определить адрес сервера (DNS).',
+      'connection':
+          'Не удалось установить или сохранить соединение с сервером.',
+      'tls': 'Ошибка защищённого соединения или сертификата (TLS).',
+      'timeout': 'Истекло время ожидания ответа.',
+      'http': 'Сервер вернул ошибку.',
+      'redirect':
+          'Некорректное перенаправление или слишком много перенаправлений.',
+      'insecureUrl':
+          'Получена небезопасная ссылка: требуется HTTPS без данных входа.',
+      'tooLarge': 'Ответ превышает допустимый размер.',
+      'dimensions': 'Размеры изображения превышают допустимые.',
+      'invalidResponse': 'Источник вернул некорректные данные.',
+      'noImage': 'Источник не вернул новых подходящих изображений.',
+      'invalidImage':
+          'Файл повреждён или формат изображения не поддерживается.',
+      'storage': 'Не удалось прочитать или записать файлы обоев.',
+      'unknown': 'Неизвестная ошибка.',
+      'other': 'Неизвестная ошибка.',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get informationPanelAppearance => 'Оформление в панели';
+
+  @override
+  String get informationData => 'Форматы и данные';
+
+  @override
+  String get informationGroupingMinimum => 'Нужны минимум два элемента';
+
+  @override
+  String get screenshotSceneMode => 'Режим съёмки';
+
+  @override
+  String get screenshotSceneHour => 'Часы';
+
+  @override
+  String get screenshotSceneMinute => 'Минуты';
+
+  @override
+  String get screenshotSceneHelp =>
+      'Задаёт время пейзажа и фоновых часов, а также погоду пейзажа. Режим работает после закрытия настроек. Системное время, данные погоды и сохранённые настройки не меняются. После перезапуска этой сборки: 16:00, облачно.';
 }

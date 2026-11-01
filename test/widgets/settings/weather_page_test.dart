@@ -10,6 +10,7 @@ import 'package:path_provider_platform_interface/path_provider_platform_interfac
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/providers/settings_service.dart';
+import 'package:flauncher/providers/appearance_service.dart';
 import 'package:flauncher/providers/weather_service.dart';
 import 'package:flauncher/widgets/settings/weather_page.dart';
 import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
@@ -36,6 +37,7 @@ class _Transport implements WeatherTransport {
 void main() {
   late WeatherService service;
   late SettingsService settings;
+  late AppearanceService appearance;
   late StreamController<dynamic> events;
   late Directory directory;
   late PathProviderPlatform originalPaths;
@@ -56,6 +58,7 @@ void main() {
     transport = _Transport();
     service = WeatherService(channel, preferences: prefs, transport: transport);
     settings = SettingsService(prefs);
+    appearance = AppearanceService(prefs);
     while (!service.initialized) {
       await Future<void>.delayed(Duration.zero);
     }
@@ -63,6 +66,7 @@ void main() {
   tearDown(() async {
     service.dispose();
     settings.dispose();
+    appearance.dispose();
     await events.close();
     PathProviderPlatform.instance = originalPaths;
     await directory.delete(recursive: true);
@@ -73,6 +77,7 @@ void main() {
         providers: [
           ChangeNotifierProvider.value(value: service),
           ChangeNotifierProvider.value(value: settings),
+          ChangeNotifierProvider.value(value: appearance),
         ],
         child: const MaterialApp(
           locale: Locale('ru'),
@@ -98,6 +103,27 @@ void main() {
 
   Finder tile(String label) =>
       find.widgetWithText(FocusableSettingsTile, label);
+
+  testWidgets('forecast period and view can be changed with the remote and persist', (tester) async {
+    await mount(tester);
+    await tester.ensureVisible(find.text('Период прогноза'));
+    Focus.of(tester.element(find.text('Период прогноза'))).requestFocus();
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.pumpAndSettle();
+    expect(appearance.appearance.forecastDays, 7);
+    await tester.ensureVisible(find.text('Вид прогноза'));
+    await tester.tap(find.text('Вид прогноза'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Подробный список'));
+    await tester.pumpAndSettle();
+    expect(appearance.appearance.detailedForecast, isTrue);
+    final restored = AppearanceService(appearance.preferences);
+    expect(restored.appearance.forecastDays, 7);
+    expect(restored.appearance.detailedForecast, isTrue);
+    restored.dispose();
+    await tester.pumpWidget(const SizedBox());
+  });
 
   for (final source in ['Open-Meteo', 'MET Norway', 'OpenWeather', 'Яндекс Погода (REST)']) {
     testWidgets(
@@ -134,10 +160,10 @@ void main() {
         expect(tile('Получить местоположение'), findsOneWidget);
         expect(tile('Название города'), findsNothing);
         expect(service.canRefresh, isFalse);
-        await tester.ensureVisible(tile('Проверить обновления'));
+        await tester.ensureVisible(tile('Обновить погоду'));
         expect(
           tester
-              .widget<FocusableSettingsTile>(tile('Проверить обновления'))
+              .widget<FocusableSettingsTile>(tile('Обновить погоду'))
               .enabled,
           isFalse,
         );

@@ -13,14 +13,17 @@ import 'diagnostic_catalog.dart';
 import 'providers/apps_service.dart';
 import 'providers/settings_service.dart';
 
-Future<String?> saveDiagnosticsReport(Map<String, Object> report) async {
+Future<String?> saveDiagnosticsReport(
+  Map<String, Object> report, {
+  DocumentExporter? exporter,
+}) async {
   final directory = await (await getTemporaryDirectory()).createTemp(
     'diagnostics-',
   );
   try {
     final file = File('${directory.path}/report.json');
     await file.writeAsString(DiagnosticsStore.instance.encode(report));
-    return await DocumentFiles.saveDiagnostics(
+    return await (exporter ?? DocumentFiles.saveDiagnostics)(
       file,
       name:
           'cutelauncher_diagnostics_${DateTime.now().millisecondsSinceEpoch}.json',

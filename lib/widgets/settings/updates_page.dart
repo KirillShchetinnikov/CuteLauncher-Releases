@@ -1,4 +1,4 @@
-import 'settings_help.dart';
+
 import 'package:flauncher/widgets/action_notice.dart';
 
 import 'settings_page_layout.dart';
@@ -32,7 +32,7 @@ class UpdatesPage extends StatelessWidget {
             ),
             if (!service.initialized) const LinearProgressIndicator(),
             if (service.fromPlay)
-              SettingsHelp(text: l.updatePlayOnly)
+              Text(l.updatePlayOnly)
             else ...[
               RoundedSwitchListTile(
                 title: Text(l.updatePrereleases),
@@ -158,12 +158,18 @@ class UpdatesPage extends StatelessWidget {
               if (service.failed)
                 Padding(
                   padding: const EdgeInsets.all(12),
-                  child: Text(
-                    updateFailureMessage(l, service),
-                  ),
+                  child: Text(updateFailureMessage(l, service)),
                 ),
               if (service.installStatus == 'permission')
-                SettingsHelp(text: l.updatePermission),
+                Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Text(
+                    l.updatePermission,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                  ),
+                ),
             ],
           ],
         ),

@@ -271,6 +271,8 @@ class UpdateService extends ChangeNotifier
   double? progress;
   AppRelease? release;
   Timer? _timer;
+  int _generation = 0;
+  bool _checkAfterReload = false;
   bool get fromPlay => _environment?['play'] == true;
   bool get automatic => preferences.getBool(automaticUpdatesKey) ?? false;
   bool get prereleases => preferences.getBool(prereleaseUpdatesKey) ?? false;
@@ -332,6 +334,8 @@ class UpdateService extends ChangeNotifier
            environment ?? (() => channel.invokeMapMethod('environment')),
        installer = installer ?? (() => channel.invokeMethod<String>('install')),
        download = download ?? downloadAppRelease {
+    final lifecycle = WidgetsBinding.instance.lifecycleState;
+    _foreground = lifecycle == null || lifecycle == AppLifecycleState.resumed;
     WidgetsBinding.instance.addObserver(this);
     _initialize();
   }
@@ -358,6 +362,8 @@ class UpdateService extends ChangeNotifier
 
   void reloadPreferences() {
     if (isDisposed) return;
+    ++_generation;
+    _checkAfterReload = automatic;
     release = null;
     ready = false;
     checked = false;
@@ -409,11 +415,15 @@ class UpdateService extends ChangeNotifier
         ? null
         : DateTime.now().difference(DateTime.fromMillisecondsSinceEpoch(last));
     if (!force &&
+        !_checkAfterReload &&
         elapsed != null &&
         !elapsed.isNegative &&
         elapsed < const Duration(hours: 24)) {
       return;
     }
+    final generation = _generation;
+    bool current() => !isDisposed && generation == _generation;
+    _checkAfterReload = false;
     busy = true;
     failed = false;
     installStatus = null;
@@ -424,8 +434,9 @@ class UpdateService extends ChangeNotifier
         updateCheckTimeKey,
         DateTime.now().millisecondsSinceEpoch,
       );
+      if (!current()) return;
       final data = await lookup();
-      if (isDisposed) return;
+      if (!current()) return;
       checked = true;
       final next = data == null
           ? null
@@ -449,11 +460,18 @@ class UpdateService extends ChangeNotifier
       }
     } catch (error, stack) {
       DiagnosticsStore.instance.recordException('updateCheck', error, stack);
-      failed = true;
+      if (current()) failed = true;
     } finally {
-      busy = false;
-      if (!isDisposed) notifyListeners();
+      _finishOperation();
     }
+  }
+
+  void _finishOperation() {
+    busy = false;
+    if (isDisposed) return;
+    notifyListeners();
+    // A restore may invalidate work while busy, or while the launcher is hidden.
+    if (_checkAfterReload && automatic) unawaited(check(force: true));
   }
 
   Future<void> downloadAndInstall() async {
@@ -464,19 +482,23 @@ class UpdateService extends ChangeNotifier
         _environment == null) {
       return;
     }
+    final generation = _generation;
+    final selected = release!;
+    bool current() => !isDisposed && generation == _generation;
     busy = true;
     failed = false;
     installStatus = null;
     notifyListeners();
     try {
+      if (!current()) return;
       if (!ready) {
         progress = 0;
         notifyListeners();
         await download(
-          release!,
+          selected,
           Directory(_environment!['directory'] as String),
           (value) {
-            if (!isDisposed) {
+            if (current()) {
               if (progress == null || value - progress! >= 0.01 || value == 1) {
                 progress = value;
                 notifyListeners();
@@ -484,23 +506,25 @@ class UpdateService extends ChangeNotifier
             }
           },
         );
-        if (isDisposed) return;
+        if (!current()) return;
         ready = true;
         progress = null;
         notifyListeners();
       }
-      installStatus = await installer();
+      if (!current()) return;
+      final status = await installer();
+      if (!current()) return;
+      installStatus = status;
       if (installStatus == 'invalid') ready = false;
       failed =
           installStatus == null ||
           ['invalid', 'unavailable'].contains(installStatus);
     } catch (error, stack) {
       DiagnosticsStore.instance.recordException('updateDownloadInstall', error, stack);
-      failed = true;
+      if (current()) failed = true;
     } finally {
-      busy = false;
       progress = null;
-      if (!isDisposed) notifyListeners();
+      _finishOperation();
     }
   }
 

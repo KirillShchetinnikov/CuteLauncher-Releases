@@ -226,7 +226,7 @@ class WeatherService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
         final cache = jsonDecode(_preferences?.getString('weather_cache') ?? '{}') as Map;
         final date = DateTime.tryParse(cache['fetchedAt'] as String? ?? '');
         if (cache['configuration'] == identity && date != null && !date.isAfter(DateTime.now()) && DateTime.now().difference(date).inHours < 24) {
-          _weatherData = WeatherData.fromJson(Map<String, dynamic>.from(cache['data'] as Map));
+          _weatherData = WeatherData.fromJson(Map<String, dynamic>.from(cache['data'] as Map), referenceTime: date);
           _updatedAt = date;
         }
       } catch (_) {}
@@ -275,6 +275,9 @@ class WeatherService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
     }
     try {
       _weatherData = WeatherData.fromJsonString(jsonString);
+      final timestamp = _weatherData?.timestamp;
+      _updatedAt = timestamp == null ? DateTime.now()
+          : DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
       _lastJson = jsonString;
       notifyListeners();
     } catch (e, stack) {

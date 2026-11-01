@@ -32,13 +32,14 @@ class _TileThemeOutlineState extends State<TileThemeOutline>
     with SingleTickerProviderStateMixin {
   late final _animation = AnimationController(vsync: this);
   bool _effectsAllowed = true;
+  final _scrollPositions = <ScrollPosition>[];
 
   bool get _pulsing =>
       _effectsAllowed && widget.pulse && widget.borderStyle != 'none' &&
       widget.theme != 'classic' && widget.theme != 'premium';
 
   void _syncAnimation() {
-    if (_pulsing) {
+    if (_pulsing && !_scrollPositions.any((p) => p.isScrollingNotifier.value)) {
       if (!_animation.isAnimating) _animation.repeat(reverse: true);
     } else {
       _animation.stop();
@@ -48,9 +49,22 @@ class _TileThemeOutlineState extends State<TileThemeOutline>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    for (final position in _scrollPositions) {
+      position.isScrollingNotifier.removeListener(_syncAnimation);
+    }
+    _scrollPositions.clear();
+    var ancestor = context;
+    while (true) {
+      final scrollable = Scrollable.maybeOf(ancestor);
+      if (scrollable == null) break;
+      _scrollPositions.add(scrollable.position);
+      scrollable.position.isScrollingNotifier.addListener(_syncAnimation);
+      ancestor = scrollable.context;
+    }
     _animation.duration = LauncherStyle.of(context).pulseDuration;
     final resources = context.watch<MemoryResources?>();
     _effectsAllowed = TickerMode.valuesOf(context).enabled &&
+        !MediaQuery.disableAnimationsOf(context) &&
         !(resources?.economyEnabled ?? false) && (resources?.isForeground ?? true);
     _syncAnimation();
   }
@@ -63,6 +77,9 @@ class _TileThemeOutlineState extends State<TileThemeOutline>
 
   @override
   void dispose() {
+    for (final position in _scrollPositions) {
+      position.isScrollingNotifier.removeListener(_syncAnimation);
+    }
     _animation.dispose();
     super.dispose();
   }
@@ -71,40 +88,30 @@ class _TileThemeOutlineState extends State<TileThemeOutline>
   Widget build(BuildContext context) {
     if (widget.theme == 'premium' || widget.borderStyle == 'none') return const SizedBox.shrink();
     final style = LauncherStyle.of(context);
-    return AnimatedBuilder(
-      animation: _animation,
-      builder: (context, _) {
-        final opacity = _pulsing ? .7 + _animation.value * .3 : widget.opacity;
-        final color = brighterTileFocusColor(widget.accent).withValues(alpha: opacity);
-        if (widget.borderStyle == 'glow') {
-          return IgnorePointer(child: CustomPaint(
-            painter: TileGlowPainter(
-              color: color,
-              radius: style.tileCorners(widget.theme, radius: widget.radius).topLeft.x,
-            ),
-            child: const SizedBox.expand(),
-          ));
-        }
-        return IgnorePointer(child: CustomPaint(
-          painter: TileOutlinePainter(
-            color: color,
-            radius: style.tileCorners(widget.theme, radius: widget.radius).topLeft.x,
-            width: widget.theme == 'classic' ? 4 : 2,
-            separator: widget.theme == 'classic' ? 0 : 2,
-          ),
-          child: const SizedBox.expand(),
-        ));
-      },
-    );
+    final color = brighterTileFocusColor(widget.accent).withValues(alpha: widget.opacity);
+    final radius = style.tileCorners(widget.theme, radius: widget.radius).topLeft.x;
+    // A pulse changes only paint, never layout or the shared raised-tile layer.
+    // The stopped animation retains its brightness while a parent scrolls.
+    return IgnorePointer(child: RepaintBoundary(child: CustomPaint(
+      painter: widget.borderStyle == 'glow'
+          ? TileGlowPainter(color: color, radius: radius, pulse: _pulsing ? _animation : null)
+          : TileOutlinePainter(color: color, radius: radius,
+              width: widget.theme == 'classic' ? 4 : 2,
+              separator: widget.theme == 'classic' ? 0 : 2,
+              pulse: _pulsing ? _animation : null),
+      child: const SizedBox.expand(),
+    )));
   }
 }
 
 /// Both the colored line and its separator are outside the image rectangle.
 class TileOutlinePainter extends CustomPainter {
-  final Color color;
+  final Color _color;
+  final Animation<double>? pulse;
+  Color get color => pulse == null ? _color : _color.withValues(alpha: .7 + pulse!.value * .3);
   final double radius, width, separator;
-  const TileOutlinePainter({required this.color, required this.radius,
-    required this.width, required this.separator});
+  const TileOutlinePainter({required this._color, required this.radius,
+    required this.width, required this.separator, this.pulse}) : super(repaint: pulse);
   @override
   void paint(Canvas canvas, Size size) {
     final bounds = Offset.zero & size;
@@ -118,18 +125,21 @@ class TileOutlinePainter extends CustomPainter {
     }
   }
   @override
-  bool shouldRepaint(TileOutlinePainter old) => color != old.color || radius != old.radius ||
+  bool shouldRepaint(TileOutlinePainter old) => _color != old._color || pulse != old.pulse || radius != old.radius ||
     width != old.width || separator != old.separator;
 }
 
 class TileGlowPainter extends CustomPainter {
-  final Color color;
+  /// Paint overflow before the tile's focus transform is applied.
+  static const extent = 16.0;
+  final Color _color;
+  final Animation<double>? pulse;
+  Color get color => pulse == null ? _color : _color.withValues(alpha: .7 + pulse!.value * .3);
   final double radius;
-  const TileGlowPainter({required this.color, required this.radius});
+  const TileGlowPainter({required this._color, required this.radius, this.pulse}) : super(repaint: pulse);
   @override
   void paint(Canvas canvas, Size size) {
     final bounds = Offset.zero & size;
-    const extent = 16.0;
     final r = radius.clamp(0.0, size.shortestSide / 2);
     final colors = [color, color.withValues(alpha: color.a * .5625),
       color.withValues(alpha: color.a * .25), color.withValues(alpha: color.a * .0625),
@@ -140,7 +150,10 @@ class TileGlowPainter extends CustomPainter {
       ..addRRect(RRect.fromRectAndRadius(bounds, Radius.circular(r)));
     canvas.save();
     canvas.clipPath(outside);
-    final paint = Paint();
+    // These rectangles partition one continuous glow, not separate shapes.
+    // Antialiasing their shared fractional edges twice leaves dark seams.
+    // Keep AA on the outer rounded clip, but not on internal shader patches.
+    final paint = Paint()..isAntiAlias = false;
     void edge(Rect area, Offset from, Offset to) {
       paint.shader = ui.Gradient.linear(from, to, colors, stops);
       canvas.drawRect(area, paint);
@@ -164,7 +177,7 @@ class TileGlowPainter extends CustomPainter {
     canvas.restore();
   }
   @override
-  bool shouldRepaint(TileGlowPainter oldDelegate) => color != oldDelegate.color || radius != oldDelegate.radius;
+  bool shouldRepaint(TileGlowPainter oldDelegate) => _color != oldDelegate._color || pulse != oldDelegate.pulse || radius != oldDelegate.radius;
 }
 
 /// A modest lightness boost keeps the selected accent hue for both effects.

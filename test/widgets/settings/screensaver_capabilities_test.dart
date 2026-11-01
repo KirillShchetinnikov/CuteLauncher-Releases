@@ -1,6 +1,7 @@
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/providers/screensaver_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
+import 'package:flauncher/providers/appearance_service.dart';
 import 'package:flauncher/widgets/settings/back_button_actions.dart';
 import 'package:flauncher/widgets/settings/appearance_settings_page.dart';
 import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
@@ -14,6 +15,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() {
   const channel = MethodChannel('me.efesser.flauncher/method');
   late SettingsService settings;
+  late AppearanceService appearance;
   late ScreensaverService screensaver;
   var canChoose = false;
   var canStart = false;
@@ -22,6 +24,7 @@ void main() {
   setUp(() async {
     SharedPreferences.setMockInitialValues({});
     settings = SettingsService(await SharedPreferences.getInstance());
+    appearance = AppearanceService(await SharedPreferences.getInstance());
     screensaver = ScreensaverService();
     canChoose = false;
     canStart = false;
@@ -40,6 +43,7 @@ void main() {
   });
   tearDown(() {
     settings.dispose();
+    appearance.dispose();
     screensaver.dispose();
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(channel, null);
@@ -51,6 +55,7 @@ void main() {
       MultiProvider(
         providers: [
           ChangeNotifierProvider.value(value: settings),
+          ChangeNotifierProvider.value(value: appearance),
           ChangeNotifierProvider.value(value: screensaver),
         ],
         child: MaterialApp(
@@ -70,6 +75,8 @@ void main() {
       await pump(tester, const AppearanceSettingsPage());
       expect(find.text('Screensaver Clock Style'), findsOneWidget);
       expect(find.text('Choose screensaver in Android TV'), findsOneWidget);
+      await tester.ensureVisible(find.text('Choose screensaver in Android TV'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Choose screensaver in Android TV'));
       await tester.pumpAndSettle();
       expect(opens, 1);
@@ -78,7 +85,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Screensaver Clock Style'), findsNothing);
       expect(find.text('Choose screensaver in Android TV'), findsNothing);
-      expect(find.byType(FocusableSettingsTile), findsNWidgets(4));
+      expect(find.byType(FocusableSettingsTile), findsNWidgets(6));
     },
   );
 

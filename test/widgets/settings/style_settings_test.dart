@@ -277,8 +277,8 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('Сбросить настройки этого раздела').last);
       await tester.pumpAndSettle();
-      expect(appearance.appearance.number('settingsOpacity'), isNull);
-      expect(appearance.appearance.number('settingsTextSize'), isNull);
+      expect(appearance.appearance.number('settingsOpacity'), 1);
+      expect(appearance.appearance.number('settingsTextSize'), 18);
       expect(appearance.appearance.number('noticeOpacity'), .7);
       expect(appearance.appearance.horizontalGap, 0);
       expect(tester.takeException(), isNull);

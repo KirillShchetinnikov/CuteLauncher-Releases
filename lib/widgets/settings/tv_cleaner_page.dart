@@ -1,3 +1,6 @@
+import '../../document_files.dart';
+import '../file_selection.dart';
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -322,7 +325,12 @@ class _TvCleanerPageState extends State<TvCleanerPage> {
   }
 
   Future<void> _import() async {
-    final source = await _work(() => _client.importFile());
+    final source = await _work(
+      () => _client.importFile(
+        picker: () =>
+            FileSelection.select<Map>(context, 'pickCleanerListDocument'),
+      ),
+    );
     if (source == null || !mounted) return;
     await _fromSource(
       source,
@@ -972,12 +980,28 @@ class _TvCleanerPageState extends State<TvCleanerPage> {
         final value = Map<String, dynamic>.from(
           jsonDecode(response['manualSnapshot'] as String) as Map,
         );
-        final result = await _client.export(value, 'state');
-        if (mounted && result != null) {
-          showActionNotice(context, l.cleanerSaved);
-        }
+        final result = await _client.export(
+          value,
+          'state',
+          exporter: (file, {required name}) =>
+              DocumentFiles.saveDiagnostics(file, name: name, context: context),
+        );
+        _showExportResult(result);
       });
     }
+  }
+
+  void _showExportResult(String? result) {
+    if (!mounted || result == null || result == 'cancelled') return;
+    showActionNotice(
+      context,
+      result == 'saved'
+          ? l.cleanerSaved
+          : result == 'opened'
+          ? l.diagnosticsExportOpened
+          : l.diagnosticsSaveFailed,
+      error: result != 'saved' && result != 'opened',
+    );
   }
 
   Future<void> _exportDisabledReport() async {
@@ -986,8 +1010,10 @@ class _TvCleanerPageState extends State<TvCleanerPage> {
       final result = await _client.export(
         Map<String, dynamic>.from(disabledList(_report.value!)),
         'disabled',
+        exporter: (file, {required name}) =>
+            DocumentFiles.saveDiagnostics(file, name: name, context: context),
       );
-      if (mounted && result != null) showActionNotice(context, l.cleanerSaved);
+      _showExportResult(result);
     });
   }
 
@@ -1034,7 +1060,7 @@ class _TvCleanerPageState extends State<TvCleanerPage> {
             ready: report != null,
             submenu: true,
           ),
-          SettingsHelp(text: l.cleanerHelp),
+          SettingsHelp(title: l.adbTransport, text: l.cleanerHelp),
         ],
       ),
     );

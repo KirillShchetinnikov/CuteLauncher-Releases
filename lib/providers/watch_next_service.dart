@@ -47,6 +47,7 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
   bool _isFetching = false;
   bool _hasPendingRefresh = false;
   bool _hasPendingPosterReload = false;
+  bool _scheduledPosterReload = false;
 
   bool get _isTest => Platform.environment.containsKey('FLUTTER_TEST');
 
@@ -78,7 +79,7 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
 
     try {
       _watchNextSubscription = _channel.addWatchNextChangedListener((_) {
-        refresh(reloadPosters: true);
+        _scheduleRefresh(reloadPosters: true);
       });
     } catch (e) {
       log('Failed to listen to watch next events', name: 'WatchNextService', error: e);
@@ -91,7 +92,20 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
     if (isDisposed || _memoryResources?.isForeground == false) return;
     _refreshTimer?.cancel();
     // Refresh fallback every 5 minutes (reactive ContentObserver handles real-time updates)
-    _refreshTimer = Timer.periodic(const Duration(minutes: 5), (_) => refresh(reloadPosters: true));
+    _refreshTimer = Timer.periodic(const Duration(minutes: 5), (_) => _scheduleRefresh(reloadPosters: true));
+  }
+
+  void _scheduleRefresh({bool reloadPosters = false, Duration maxAge = Duration.zero}) {
+    if (isDisposed) return;
+    // A resume request must not overwrite a pending content-change invalidation.
+    _scheduledPosterReload |= reloadPosters;
+    Future<void> run() {
+      final reload = _scheduledPosterReload;
+      _scheduledPosterReload = false;
+      return refresh(reloadPosters: reload);
+    }
+    (work?.schedule(this, run, maxAge: maxAge) ?? run())
+        .catchError((Object error) { log('Watch Next automatic refresh failed', error: error); });
   }
 
   @override
@@ -104,8 +118,7 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
     } else if (state == AppLifecycleState.resumed) {
       if (_initialized) {
         final reload = _lastPosterReload == null || DateTime.now().difference(_lastPosterReload!) >= const Duration(minutes: 5);
-        (work?.schedule(this, () => refresh(reloadPosters: reload), maxAge: const Duration(seconds: 30)) ?? refresh(reloadPosters: reload))
-            .catchError((Object error) { log('Watch Next resume failed', error: error); });
+        _scheduleRefresh(reloadPosters: reload, maxAge: const Duration(seconds: 30));
       }
       _startPeriodicTimer();
     }
@@ -204,7 +217,7 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
         _hasPendingRefresh = false;
         final reload = _hasPendingPosterReload;
         _hasPendingPosterReload = false;
-        refresh(reloadPosters: reload);
+        _scheduleRefresh(reloadPosters: reload);
       }
     }
   }

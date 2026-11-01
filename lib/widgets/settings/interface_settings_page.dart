@@ -129,7 +129,7 @@ class InterfaceSettingsPage extends StatelessWidget {
           FocusableSettingsTile(
             autofocus: false,
             leading: const Icon(Icons.palette_outlined),
-            title: Text(l.appearanceSettings),
+            title: Text('${l.homeScreen} · ${l.appearanceSettings}'),
             onPressed: () => Navigator.of(context).push(
               SettingsRoute<void>(builder: (_) => const HomeAppearancePage()),
             ),
@@ -154,7 +154,7 @@ class HomeAppearancePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
     return SettingsPageLayout(
-      title: Text(l.appearanceSettings),
+      title: Text('${l.homeScreen} · ${l.appearanceSettings}'),
       child: ListView(
         children: [
           FocusableSettingsTile(

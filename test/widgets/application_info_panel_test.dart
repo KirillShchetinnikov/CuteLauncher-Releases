@@ -493,7 +493,7 @@ void main() {
     await _pumpWidgetWithProviders(tester, appsService, category, app);
 
     final finder = find.text("Uninstall");
-    await tester.ensureVisible(finder);
+    await tester.scrollUntilVisible(finder, 200);
     await tester.tap(finder);
     await tester.pumpAndSettle();
     verify(appsService.uninstallApp(app));

@@ -104,16 +104,22 @@ class ScreensaverClockStylePage extends StatelessWidget {
                       settingsService.setScreensaverClockStyle(value!),
                   autofocus: currentStyle == 'digital',
                 ),
-                SettingsHelp(text: [
-                  '${localizations.clockMinimal}: ${localizations.clockMinimalDescription}',
-                  '${localizations.clockBold}: ${localizations.clockBoldDescription}',
-                  '${localizations.clockRetro}: ${localizations.clockRetroDescription}',
-                  '${localizations.clockElegant}: ${localizations.clockElegantDescription}',
-                  '${localizations.clockNeon}: ${localizations.clockNeonDescription}',
-                  '${localizations.clockPixel}: ${localizations.clockPixelDescription}',
-                  '${localizations.clockDigital}: ${localizations.clockDigitalDescription}',
-                ].join('\n\n')),
-                ResetStyleTile(onReset: () => settingsService.resetAppearanceSection('clock')),
+                SettingsHelp(
+                  title: localizations.screensaverClockStyle,
+                  text: [
+                    '${localizations.clockMinimal}: ${localizations.clockMinimalDescription}',
+                    '${localizations.clockBold}: ${localizations.clockBoldDescription}',
+                    '${localizations.clockRetro}: ${localizations.clockRetroDescription}',
+                    '${localizations.clockElegant}: ${localizations.clockElegantDescription}',
+                    '${localizations.clockNeon}: ${localizations.clockNeonDescription}',
+                    '${localizations.clockPixel}: ${localizations.clockPixelDescription}',
+                    '${localizations.clockDigital}: ${localizations.clockDigitalDescription}',
+                  ].join('\n\n'),
+                ),
+                ResetStyleTile(
+                  onReset: () =>
+                      settingsService.resetAppearanceSection('clock'),
+                ),
               ],
             ),
           ),

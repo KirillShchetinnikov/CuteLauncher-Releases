@@ -360,7 +360,7 @@ def main():
     native_config = json.loads((root / 'scripts/release-native-sources.json').read_text())
     resolved_versions = {item['coordinate'].rsplit(':', 1)[0]: item['coordinate'].rsplit(':', 1)[1]
                          for item in inventory['components']}
-    resolved_versions['sqlite3'] = packages['sqlite3']['version']
+    resolved_versions.update({name: item['version'] for name, item in packages.items()})
     selected_native = selected_native_sources(native_config, resolved_versions)
     native_coverage = native_library_sources(native_files, native_config, selected_native)
     native_dir = kit / 'native'

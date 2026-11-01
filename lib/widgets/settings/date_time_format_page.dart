@@ -1,5 +1,3 @@
-import '../../providers/appearance_service.dart';
-import '../rounded_switch_list_tile.dart';
 import 'settings_choice_tile.dart';
 import 'settings_page_layout.dart';
 /*
@@ -60,18 +58,11 @@ class DateTimeFormatPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
-    final appearance = context.watch<AppearanceService>();
     return SettingsPageLayout(
       title: Text(l.dateSettings),
       child: ListView(
         children: [
           const DateFormatSettingsTile(),
-          if (showCalendar)
-            RoundedSwitchListTile(
-              title: Text(l.dateCalendarEnabled),
-              value: appearance.appearance.dateCalendar,
-              onChanged: (value) => appearance.set('panelDateCalendar', value),
-            ),
         ],
       ),
     );
@@ -109,7 +100,7 @@ class DateFormatSettingsTile extends StatelessWidget {
       options: dateFormatPresets.map((v) => v.$1).toList(),
       label: (v) => formatLauncherDate(
         v,
-        v == compactDateFormat ? DateTime(2026, 10, 2) : DateTime(2026, 1, 17),
+        DateTime(2026, 10, 2),
         Localizations.localeOf(context).toString(),
       ),
       onChanged: (v) => service.setDateTimeFormat(v, service.timeFormat),

@@ -62,7 +62,7 @@ class _CitySearchDialogState extends State<CitySearchDialog> {
                 onSubmitted: (_) => search(),
               ),
             ),
-            SettingsHelp(text: l.nightCityEnglish),
+            SettingsHelp(title: l.weatherLocation, text: l.nightCityEnglish),
             if (busy) const LinearProgressIndicator(),
             if (failed) Text(l.nightCitySearchFailed),
             if (searched && !busy && !failed && cities.isEmpty)

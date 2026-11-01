@@ -83,8 +83,8 @@ Future<void> loadDesignFonts(WidgetTester tester) async {
           .readAsString(),
     ) as Map<String, dynamic>;
     if (version['frameworkRevision'] !=
-        '5fc346839b5d0eef006ed8404392afb4dfae428d') {
-      throw StateError('Design renderer must use pinned Flutter 3.47.6.');
+        'c197ca5199e9ee5661e865596c9c07294dfab51c') {
+      throw StateError('Design renderer must use pinned Flutter 3.47.9.');
     }
     final icons = FontLoader('MaterialIcons')
       ..addFont(
@@ -158,6 +158,7 @@ Future<DesignFixture> pumpDesignFixture(
   final memory = MemoryResources(settings: settings);
   when(settings.appHighlightAnimationEnabled).thenReturn(false);
   when(settings.showNetworkIndicatorInStatusBar).thenReturn(false);
+  when(settings.showVpnInStatusBar).thenReturn(false);
   when(settings.showDataWidgetInStatusBar).thenReturn(false);
   when(settings.timeFormat).thenReturn("'20:30'");
   when(settings.dateFormat).thenReturn("'4 октября'");

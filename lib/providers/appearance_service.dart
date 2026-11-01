@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../tile_appearance.dart';
+import 'remote_panel_service.dart';
 import '../category_appearance.dart';
+import '../launcher_defaults.dart';
 
 class AppearanceService extends ChangeNotifier {
   final focusedAppImage = ValueNotifier<ImageProvider?>(null);
@@ -125,7 +127,14 @@ class AppearanceService extends ChangeNotifier {
     notifyListeners();
   }
   Future<void> set(String key, dynamic value) async {
-    final next = {...appearance.values, ...TileAppearance.validValues({key: value})};
+    final previous = appearance;
+    if (key == 'panelCombinedInformation' && value is bool) {
+      await RemotePanelService.preserveLegacyGrouping(preferences, previous.combinedInformation);
+    }
+    final next = {...previous.values,
+      if (key == 'panelInformationStyle' && !previous.values.containsKey('panelBackgroundInformationStyle'))
+        'panelBackgroundInformationStyle': previous.backgroundInformationStyle.values,
+      ...TileAppearance.validValues({key: value})};
     if (!await preferences.setString(tileAppearanceKey, jsonEncode(next))) throw StateError('Unable to save appearance');
     notifyListeners();
   }
@@ -139,7 +148,7 @@ class AppearanceService extends ChangeNotifier {
   }
   Future<void> reset() async {
     final navigation = {...appearance.values}..removeWhere((key, _) => !['sectionScroll', 'sectionPosition'].contains(key));
-    navigation.addAll({'labels': 'none', 'sectionTitles': true});
+    navigation.addAll({...LauncherDefaults.appearance, 'sectionTitles': true});
     if (!await preferences.setString(tileAppearanceKey, jsonEncode(navigation))) throw StateError('Unable to reset appearance');
     final all = CategoryAppearance.decode(preferences.getString(categoryAppearanceKey));
     for (final id in all.keys.toList()) {
@@ -162,7 +171,9 @@ class AppearanceService extends ChangeNotifier {
       return;
     }
     final next = {...appearance.values}..removeWhere((key, _) => keys.contains(key));
-    if (keys.contains('labels')) next['labels'] = 'none';
+    for (final key in keys) {
+      if (LauncherDefaults.appearance.containsKey(key)) next[key] = LauncherDefaults.appearance[key];
+    }
     if (keys.contains('sectionTitles')) next['sectionTitles'] = true;
     if (!await preferences.setString(tileAppearanceKey, jsonEncode(next))) {
       throw StateError('Unable to reset appearance section');

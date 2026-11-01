@@ -397,13 +397,15 @@ public class NightOverlayService extends Service {
             tracking=needed; trackingGeneration++;
             trackingReady=false; trackedConfiguration=null;
             handler.removeCallbacks(checkForegroundAgain);
-            excluded=false;
+            // Sleep pauses polling, but does not invalidate the last resolved state.
+            // Resetting it here briefly enables the filter over an excluded source.
+            if (!needed && power.isInteractive()) excluded=false;
             worker.execute(() -> { foreground.reset(); hdmi.reset(); });
             if (needed) checkForeground.run();
         }
         // Wait before first adding a filter, but keep an existing window/TCL state while
         // refreshing exclusions. Home resync and unrelated selections must not cause a bright gap.
-        if (needed && pictureNeeded && (!trackingReady || trackedConfiguration != config)) {
+        if (needed && (!trackingReady || trackedConfiguration != config)) {
             return;
         }
         if (config.optBoolean("tclScheduled", true)) {
@@ -423,7 +425,11 @@ public class NightOverlayService extends Service {
         if (!OverlayPermission.granted(this)) { remove(); if (!(config.optBoolean("tclScheduled", true))) stopSelf(); return; }
         float intensity=(float)NightSchedule.intensity(config, days, now);
         float dim=config.optInt("dim")/100f*intensity, warm=config.optInt("warmth")/100f*intensity, alpha=dim+warm*(1-dim);
-        if (!active || excluded || !power.isInteractive() || alpha==0) { remove(); return; }
+        if (!active || excluded || alpha==0) { remove(); return; }
+        // Keep an attached window through sleep: removing it hands dimming to Flutter,
+        // then adding it on wake hands it back across two independently drawn surfaces.
+        // Do not create a new window while the display is off.
+        if (!power.isInteractive()) return;
         float factor=warm*(1-dim)/alpha;
         double t=config.optInt("temperature",2700)/100.0;
         int red=255, green=clamp(99.4708025861*Math.log(t)-161.1195681661);

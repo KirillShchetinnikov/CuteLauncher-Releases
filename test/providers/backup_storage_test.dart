@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:flauncher/cloud_account.dart';
 import 'package:flauncher/providers/backup_storage.dart';
+import 'package:flauncher/providers/backup_automation_service.dart';
 import 'package:flauncher/providers/drive_backup_service.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -166,6 +167,14 @@ void main() {
         );
   });
   final name = 'cute-backup-shared-${'a' * 32}-100-${'b' * 16}.json';
+  test('provider listing ignores filenames whose timestamp overflows an integer', () async {
+    final invalid = name.replaceFirst('-100-', '-${'9' * 40}-');
+    files[name] = utf8.encode('{}');
+    files[invalid] = utf8.encode('{}');
+    final listing = await storage.list();
+    expect(() => listing.map(BackupAutomationService.createdAt).toList(), returnsNormally);
+    expect(listing.map((entry) => entry.name), [name]);
+  });
   test('Google device flow requests only drive.file, displays code and saves tokens after consent', () async {
     final connected = Completer<void>();
     drive.addListener(() {
@@ -272,6 +281,58 @@ void main() {
       expect(stored, isNotNull);
     },
   );
+  for (final replacement in [false, true]) {
+    test('account reread rejects a cached token from removed/replaced credentials ($replacement)', () async {
+      Map<String, dynamic> account(String suffix) => {
+        'clientId': 'client-$suffix',
+        'payload': jsonEncode({'clientSecret': 'secret-$suffix',
+          'refreshToken': 'refresh-$suffix', 'scope': DriveBackupService.scope}),
+      };
+      stored = account('first');
+      var tokens = 0;
+      handler = (request) async {
+        final body = await utf8.decoder.bind(request).join();
+        tokens++;
+        request.response.write(jsonEncode({'access_token': body.contains('refresh-first') ? 'first' : 'second'}));
+        await request.response.close();
+      };
+      await drive.refreshAccount();
+      expect(await drive.authorization(), 'Bearer first');
+      await drive.refreshAccount();
+      expect(await drive.authorization(), 'Bearer first');
+      expect(tokens, 1);
+      stored = replacement ? account('second') : null;
+      await drive.refreshAccount();
+      if (replacement) {
+        expect(await drive.authorization(), 'Bearer second');
+        expect(tokens, 2);
+      } else {
+        expect(drive.configured, isFalse);
+        await expectLater(drive.authorization(), throwsA(isA<CloudBackupException>()));
+        expect(tokens, 1);
+      }
+    });
+  }
+  test('a token response for replaced credentials is rejected', () async {
+    stored = {'clientId': 'old', 'payload': jsonEncode({
+      'clientSecret': 'secret', 'refreshToken': 'refresh', 'scope': DriveBackupService.scope,
+    })};
+    final received = Completer<void>(), finish = Completer<void>();
+    handler = (request) async {
+      await request.drain<void>();
+      received.complete();
+      await finish.future;
+      request.response.write('{"access_token":"old"}');
+      await request.response.close();
+    };
+    await drive.refreshAccount();
+    final token = drive.authorization();
+    await received.future;
+    stored = null;
+    await drive.refreshAccount();
+    finish.complete();
+    await expectLater(token, throwsA(isA<CloudBackupException>().having((e) => e.code, 'code', 'cancelled')));
+  });
   test(
     'Drive creates missing folder, reuses renamed folder and lists moved files',
     () async {

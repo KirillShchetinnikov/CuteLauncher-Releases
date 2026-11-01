@@ -103,7 +103,7 @@ void main() {
     expect(border.top.width, 2.0);
   });
   testWidgets(
-    'weather is informational for both remote navigation and pointer',
+    'weather without a supplied action skips focus and never opens an external app',
     (tester) async {
       when(mockSettingsService.showWeatherWarnings).thenReturn(false);
       when(mockWeatherService.openBreezyWeather()).thenAnswer((_) async => true);

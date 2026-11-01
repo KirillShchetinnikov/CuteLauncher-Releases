@@ -1,4 +1,7 @@
 import 'traffic_settings_page.dart';
+import 'app_channels_settings_page.dart';
+import 'system_widget_settings_page.dart';
+import 'vpn_settings_page.dart';
 import 'sleep_timer_settings_page.dart';
 import 'tv_power_page.dart';
 import '../landscape_demo_presentation.dart';
@@ -43,6 +46,7 @@ import 'diagnostics_page.dart';
 import 'updates_page.dart';
 import 'adb_page.dart';
 import 'auto_launch_page.dart';
+import 'background_startup_page.dart';
 import 'remote_buttons_page.dart';
 
 import 'cloud_backup_page.dart';
@@ -117,6 +121,9 @@ class _SettingsPanelState extends State<SettingsPanel> {
       RemotePanelPage.routeName,
       StatusBarObjectsPage.routeName,
       InformationSettingsPage.routeName,
+      BackgroundInformationSettingsPage.routeName,
+      PanelInformationSettingsPage.routeName,
+      InformationDataSettingsPage.routeName,
       InputsSettingsPage.routeName,
       SleepTimerSettingsPage.routeName,
       SleepTimerOptionsPage.routeName,
@@ -124,6 +131,8 @@ class _SettingsPanelState extends State<SettingsPanel> {
       SleepTimerPresetsPage.routeName,
       SleepTimerEditorPage.routeName,
       TrafficSettingsPage.routeName,
+      SystemWidgetSettingsPage.routeName,
+      VpnSettingsPage.routeName,
       PanelOrderPage.routeName,
       'panel_appearance',
       PanelClockStylePage.routeName,
@@ -150,7 +159,9 @@ class _SettingsPanelState extends State<SettingsPanel> {
 
   @override
   Widget build(BuildContext context) {
-    final onRight = context.watch<SettingsService>().settingsMenuOnRight;
+    final onRight = context.select<SettingsService, bool>(
+      (settings) => settings.settingsMenuOnRight,
+    );
     return SettingsPanelStyle(
       builder: (context) => SettingsMenuLayout(
         onRight: onRight,
@@ -257,17 +268,28 @@ class _SettingsPanelState extends State<SettingsPanel> {
                         settings: settings,
                         builder: (_) => const AdbPage(),
                       );
+                    case AdbPage.connectionRouteName:
+                      return SettingsRoute(
+                        settings: settings,
+                        builder: (_) => const AdbPage(section: 'connection'),
+                      );
                     case TvPowerPage.routeName:
                       return SettingsRoute(settings: settings, builder: (_) => const TvPowerPage());
                     case AutoLaunchPage.routeName:
                       return SettingsRoute(settings: settings, builder: (_) => const AutoLaunchPage());
+                    case BackgroundStartupPage.routeName:
+                      return SettingsRoute(settings: settings, builder: (_) => const BackgroundStartupPage());
                     case RemoteButtonsPage.routeName:
                       return SettingsRoute(settings: settings, builder: (_) => const RemoteButtonsPage());
                     case CloudBackupPage.routeName:
                       return SettingsRoute(settings: settings, builder: (_) => const CloudBackupPage());
 
+                    case SystemWidgetSettingsPage.routeName:
+                      return SettingsRoute(settings: settings, builder: (_) => const SystemWidgetSettingsPage());
                     case TrafficSettingsPage.routeName:
                       return SettingsRoute(settings: settings, builder: (_) => const TrafficSettingsPage());
+                    case VpnSettingsPage.routeName:
+                      return SettingsRoute(settings: settings, builder: (_) => const VpnSettingsPage());
                     case SleepTimerSettingsPage.routeName:
                       return SettingsRoute(settings: settings, builder: (_) => const SleepTimerSettingsPage());
                     case InputsSettingsPage.routeName:
@@ -339,14 +361,16 @@ class _SettingsPanelState extends State<SettingsPanel> {
                         settings: settings,
                         builder: (_) => DataUsagePeriodPage(),
                       );
+                    case PanelInformationSettingsPage.routeName:
                     case PanelClockStylePage.routeName:
-                      return SettingsRoute(settings: settings, builder: (_) => const PanelClockStylePage());
+                      return SettingsRoute(settings: settings, builder: (_) => const PanelInformationSettingsPage());
                     case InformationSettingsPage.routeName:
                       return SettingsRoute(settings: settings, builder: (_) => const InformationSettingsPage());
+                    case InformationDataSettingsPage.routeName:
                     case DateTimeFormatPage.routeName:
                       return SettingsRoute(
                         settings: settings,
-                        builder: (_) => DateTimeFormatPage(),
+                        builder: (_) => const InformationDataSettingsPage(),
                       );
                     case MiscPanelPage.routeName:
                       return SettingsRoute(
@@ -397,6 +421,11 @@ class _SettingsPanelState extends State<SettingsPanel> {
                       return SettingsRoute(
                         settings: settings,
                         builder: (_) => const ContinueWatchingSettingsPage(),
+                      );
+                    case AppChannelsSettingsPage.routeName:
+                      return SettingsRoute(
+                        settings: settings,
+                        builder: (_) => const AppChannelsSettingsPage(),
                       );
                     case ContinueWatchingCardSizePage.routeName:
                       return SettingsRoute(

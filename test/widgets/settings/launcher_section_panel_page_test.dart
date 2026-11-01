@@ -25,7 +25,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
-import '../../support/settings_help.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 
@@ -63,8 +62,6 @@ void main() {
       Category(name: 'TV Apps', systemKey: 'tv_apps', visible: false),
     ]);
     await _pumpWidgetWithProviders(tester, service, 0);
-    expect(find.text('At least one category must remain visible.'), findsNothing);
-    await toggleSettingsHelp(tester, 'At least one category must remain visible.');
     expect(find.text('At least one category must remain visible.'), findsOneWidget);
     final toggle = tester.widget<Switch>(find.byType(Switch));
     expect(toggle.value, isTrue);
@@ -129,7 +126,7 @@ void main() {
     expect(find.text("Favorites"), findsWidgets);
   });
 
-  testWidgets("'Delete' calls AppsService", (tester) async {
+  testWidgets("deletion requires confirmation and cancellation preserves section", (tester) async {
     final appsService = MockAppsService();
     final favoritesCategory =
         fakeCategory(name: "Favorites", sort: CategorySort.alphabetical, type: CategoryType.row, rowHeight: 110);
@@ -144,7 +141,14 @@ void main() {
     expect(deleteButton, findsOneWidget);
     await tester.tap(deleteButton);
     await tester.pumpAndSettle();
-
+    verifyNever(appsService.deleteSection(any));
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
+    verifyNever(appsService.deleteSection(any));
+    await tester.tap(deleteButton);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Delete').last);
+    await tester.pumpAndSettle();
     verify(appsService.deleteSection(0));
   });
 }

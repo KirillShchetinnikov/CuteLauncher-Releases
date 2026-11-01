@@ -3,8 +3,10 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show listEquals;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flauncher/adaptive_landscape.dart';
+import 'package:flauncher/landscape_cloud_cache.dart';
 import 'package:flauncher/widgets/adaptive_landscape_background.dart';
 
 Future<ui.Image> render(CustomPainter painter, {Color? background}) async {
@@ -23,6 +25,90 @@ Future<Uint8List> pixels(ui.Image image) async =>
         .asUint8List();
 
 void main() {
+  testWidgets(
+    'cloud sprites are bounded, preserve appearance and can be evicted',
+    (tester) async {
+      await tester.runAsync(() async {
+        final cache = LandscapeCloudCache();
+        final frame = ValueNotifier<double>(30);
+        const colors = LandscapeEffectsColors(
+          brightness: .7,
+          saturation: .4,
+          dimming: 1,
+        );
+        LandscapeEffectsPainter painter({
+          bool cached = false,
+          double ratio = 2,
+        }) => LandscapeEffectsPainter(
+          const LandscapeConfiguration(motion: true),
+          LandscapeWeather.cloudy,
+          LandscapePhase.day,
+          frame,
+          colors: colors,
+          cloudsMoveLeft: true,
+          cloudCache: cached ? cache : null,
+          pixelRatio: ratio,
+        );
+        final vector = await render(painter());
+        final sprite = await render(painter(cached: true));
+        expect(cache.bytes, inExclusiveRange(0, LandscapeCloudCache.maxBytes));
+        final a = await pixels(vector), b = await pixels(sprite);
+        var error = 0;
+        for (var i = 0; i < a.length; i++) {
+          error += (a[i] - b[i]).abs();
+        }
+        expect(error / a.length, lessThan(.5));
+        vector.dispose();
+        sprite.dispose();
+        final huge = await render(painter(cached: true, ratio: 100));
+        expect(cache.bytes, 0);
+        huge.dispose();
+        final restored = await render(painter(cached: true));
+        expect(cache.bytes, greaterThan(0));
+        restored.dispose();
+        cache.clear();
+        expect(cache.bytes, 0);
+        frame.dispose();
+      });
+    },
+  );
+  testWidgets(
+    'cloud animation moves only when enabled and respects visibility',
+    (tester) async {
+      await tester.runAsync(() async {
+        for (final motion in [false, true]) {
+          final frame = ValueNotifier<double>(0);
+          final painter = LandscapeEffectsPainter(
+            LandscapeConfiguration(motion: motion),
+            LandscapeWeather.cloudy,
+            LandscapePhase.day,
+            frame,
+            cloudsMoveLeft: true,
+          );
+          final first = await render(painter);
+          final before = await pixels(first);
+          frame.value = 30;
+          final second = await render(painter);
+          expect(listEquals(before, await pixels(second)), !motion);
+          first.dispose();
+          second.dispose();
+          frame.dispose();
+        }
+        final frame = ValueNotifier<double>(20);
+        final hidden = await render(
+          LandscapeEffectsPainter(
+            const LandscapeConfiguration(clouds: false),
+            LandscapeWeather.cloudy,
+            LandscapePhase.day,
+            frame,
+          ),
+        );
+        expect((await pixels(hidden)).every((value) => value == 0), true);
+        hidden.dispose();
+        frame.dispose();
+      });
+    },
+  );
   testWidgets(
     'glow spreads from sunrise/sunset across sky with weaker terrain and smooth fading',
     (tester) async {

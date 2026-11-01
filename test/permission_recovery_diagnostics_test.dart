@@ -7,15 +7,22 @@ void main() {
       'status': 'adb_unavailable', 'health': 'connected', 'attempts': 2,
       'retryAt': 123, 'deadline': 456, 'lastChecked': 100,
       'pending': ['accessibility', 'accessibility', 'shell command', 42],
+      'remembered': ['accessibility', 'overlay', 'accessibility', 'private component', 42],
       'privateKey': 'secret', 'port': 5555, 'otherServices': ['private component'],
     });
     expect(safe['status'], 'adb_unavailable');
     expect(safe['pending'], ['accessibility']);
+    expect(safe['remembered'], ['accessibility', 'overlay']);
     expect(safe['attempts'], 2);
     expect(safe.containsKey('privateKey'), isFalse);
     expect(safe.containsKey('port'), isFalse);
     expect(safe.containsKey('otherServices'), isFalse);
     expect(permissionRecoveryDiagnostics({'status': 'untrusted text', 'attempts': 500})['status'], 'unknown');
     expect(permissionRecoveryDiagnostics({'attempts': 500}).containsKey('attempts'), isFalse);
+  });
+  test('distinguishes missing history from an empty history and preserves restored outcome', () {
+    expect(permissionRecoveryDiagnostics({}).containsKey('remembered'), isFalse);
+    expect(permissionRecoveryDiagnostics({'remembered': []})['remembered'], isEmpty);
+    expect(permissionRecoveryDiagnostics({'health': 'restored'})['health'], 'restored');
   });
 }

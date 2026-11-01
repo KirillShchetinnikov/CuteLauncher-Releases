@@ -99,7 +99,7 @@ PUBLIC_TEST_FIXTURES = {
     'test/fixtures/cloud/test_key.txt':
         '90b2445d2be5939fb236d013897fa8b6ba3e4b4e1e6ec80cb79af8262255909a',
     'test/scripts/test_release_source.py':
-        '20fbcd9242a2e6252d68c20051e85a49b143073a604dccdce44e0aad82226bb1',
+        '28c6b4347188acffc59020e95928a7dfa3688d129cf88389f04ca7b28cd66b54',
 }
 
 

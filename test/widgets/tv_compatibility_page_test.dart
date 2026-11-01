@@ -130,6 +130,8 @@ void main() {
           expect(clipboard, isNull);
           await tester.tap(find.text(l.diagnosticsExport));
           await tester.pumpAndSettle();
+          await tester.ensureVisible(find.text(l.diagnosticsCopyClipboard));
+          await tester.pumpAndSettle();
           await tester.tap(find.text(l.diagnosticsCopyClipboard));
           await tester.pumpAndSettle();
           expect(jsonDecode(clipboard!)['reportType'], 'diagnostics');

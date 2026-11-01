@@ -13,8 +13,8 @@ if ($Update -and [string]::IsNullOrWhiteSpace($Reason)) {
     throw 'Specify -Reason and inspect the image diff before committing updated goldens.'
 }
 $version = & $Flutter --version --machine | ConvertFrom-Json
-if ($version.frameworkRevision -ne '5fc346839b5d0eef006ed8404392afb4dfae428d') {
-    throw 'Use the pinned Flutter 3.47.6 revision for design goldens.'
+if ($version.frameworkRevision -ne 'c197ca5199e9ee5661e865596c9c07294dfab51c') {
+    throw 'Use the pinned Flutter 3.47.9 revision for design goldens.'
 }
 $testArgs = @('test', 'test/design/design_goldens_test.dart', '--no-pub')
 if ($Update) { $testArgs += '--update-goldens' }

@@ -8,6 +8,7 @@ import '../l10n/app_localizations.dart';
 import '../recent_apps_client.dart';
 import '../theme/launcher_style.dart';
 import 'remote_panel.dart';
+import 'recent_apps_access.dart';
 import 'settings/settings_panel_style.dart';
 import 'settings/focusable_settings_tile.dart';
 
@@ -24,6 +25,7 @@ class _RecentAppsPanelState extends State<RecentAppsPanel> {
   List<RecentApp> _apps = [];
   bool _busy = true, _failed = false;
   bool _readySent = false;
+  int _accessRevision = 0;
   final _refresh = FocusNode();
   @override
   void initState() {
@@ -38,9 +40,11 @@ class _RecentAppsPanelState extends State<RecentAppsPanel> {
   }
 
   Future<void> _run(String action, [String? pkg]) async {
+    if (_busy && _accessRevision > 0) return;
     final previousFocus = FocusManager.instance.primaryFocus;
     setState(() {
       _busy = true;
+      _accessRevision++;
       _failed = false;
     });
     try {
@@ -64,7 +68,8 @@ class _RecentAppsPanelState extends State<RecentAppsPanel> {
         setState(() => _busy = false);
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (!mounted) return;
-          if (previousFocus?.context != null && previousFocus!.canRequestFocus) {
+          if (previousFocus?.context != null &&
+              previousFocus!.canRequestFocus) {
             previousFocus.requestFocus();
           } else {
             _refresh.requestFocus();
@@ -77,7 +82,9 @@ class _RecentAppsPanelState extends State<RecentAppsPanel> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
-    final ready = context.select<NightModeService?, bool>((night) => night == null || night.panelPresentationReady);
+    final ready = context.select<NightModeService?, bool>(
+      (night) => night == null || night.panelPresentationReady,
+    );
     if (ready && !_readySent) {
       _readySent = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -146,22 +153,33 @@ class _RecentAppsPanelState extends State<RecentAppsPanel> {
                                 ),
                               ],
                             ),
-                            if (_failed)
-                              Text(
-                                l.recentAppsUnavailable,
-                                style: TextStyle(
-                                  color: Theme.of(context).colorScheme.error,
-                                ),
-                              ),
-                            if (!_busy && !_failed && _apps.isEmpty)
-                              Text(l.recentAppsEmpty),
                             Flexible(
                               key: const ValueKey('recent_list'),
                               child: ListView.builder(
                                 shrinkWrap: true,
-                                itemCount: _apps.length,
+                                itemCount: _apps.length + 1,
                                 itemBuilder: (context, index) {
-                                  final app = _apps[index];
+                                  if (index == 0) {
+                                    return Column(
+                                      children: [
+                                        RecentAppsAccess(
+                                          revision: _accessRevision,
+                                        ),
+                                        if (_failed)
+                                          Text(
+                                            l.recentAppsUnavailable,
+                                            style: TextStyle(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .error,
+                                            ),
+                                          ),
+                                        if (!_busy && !_failed && _apps.isEmpty)
+                                          Text(l.recentAppsEmpty),
+                                      ],
+                                    );
+                                  }
+                                  final app = _apps[index - 1];
                                   return Row(
                                     key: ValueKey(app.packageName),
                                     children: [

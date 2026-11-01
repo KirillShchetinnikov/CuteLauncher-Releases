@@ -115,13 +115,9 @@ class _NightModePageState extends State<NightModePage> {
     final selected = service.configuration.excludedPackages.toSet();
     final packages = names.keys.toList()
       ..sort((a, b) {
-        final order =
-            (selected.contains(b) ? 1 : 0) - (selected.contains(a) ? 1 : 0);
-        return order != 0
-            ? order
-            : (names[a] ?? a).toLowerCase().compareTo(
-                (names[b] ?? b).toLowerCase(),
-              );
+        return (names[a] ?? a).toLowerCase().compareTo(
+          (names[b] ?? b).toLowerCase(),
+        );
       });
     return [
       for (final package in packages)
@@ -281,9 +277,12 @@ class _NightModePageState extends State<NightModePage> {
             ),
           ],
           if (widget.section == 'picture') ...[
-            SettingsHelp(text: l.nightPictureExclusionsHint),
+            SettingsHelp(
+              title: l.nightPictureExclusions,
+              text: l.nightPictureExclusionsHint,
+            ),
             if (service.pictureModeKnown && service.pictureMode == null)
-              SettingsHelp(text: l.nightPictureUnavailable),
+              Text(l.nightPictureUnavailable),
             if (service.pictureMode != null)
               Text(
                 '${l.nightPictureCurrent}: ${modeLabel(service.pictureMode!)}',
@@ -321,7 +320,10 @@ class _NightModePageState extends State<NightModePage> {
               title: Text(l.nightIgnoreHdmiInputs),
               onChanged: (v) => update(c.copyWith(ignoreHdmiInputs: v)),
             ),
-            SettingsHelp(text: l.nightIgnoreHdmiInputsHint),
+            SettingsHelp(
+              title: '${l.nightModeTitle}: HDMI',
+              text: l.nightIgnoreHdmiInputsHint,
+            ),
             if (!service.usagePermission)
               FocusableSettingsTile(
                 title: Text(l.nightUsageAccess),
@@ -334,9 +336,9 @@ class _NightModePageState extends State<NightModePage> {
                 onChanged: (v) => update(c.copyWith(selectHdmiInputs: v)),
               ),
               if (c.selectHdmiInputs) ...[
-                if (inputs.isEmpty) SettingsHelp(text: l.inputsUnavailableHint),
+                if (inputs.isEmpty) Text(l.inputsUnavailableHint),
                 if (c.ignoredHdmiInputIds.isEmpty)
-                  SettingsHelp(text: l.nightNoInputsSelected),
+                  Text(l.nightNoInputsSelected),
                 for (final input in inputs)
                   Semantics(
                     checked: c.ignoredHdmiInputIds.contains(input.id),
@@ -555,12 +557,12 @@ class _NightModePageState extends State<NightModePage> {
                 if (service.solarLoading) const LinearProgressIndicator(),
                 if (!service.solarLoading &&
                     (service.nextStart == null || service.nextEnd == null))
-                  SettingsHelp(text: l.nightSolarUnavailable),
+                  Text(l.nightSolarUnavailable),
                 if (service.solarUpdated > 0 &&
                     DateTime.now().millisecondsSinceEpoch -
                             service.solarUpdated >
                         86400000)
-                  SettingsHelp(text: l.nightSolarCached),
+                  Text(l.nightSolarCached),
               ],
             ],
             SettingsSliderTile(
@@ -650,7 +652,7 @@ class _NightModePageState extends State<NightModePage> {
               ),
               onPressed: () => _openBatterySettings(context, service),
             ),
-            SettingsHelp(text: l.nightBatteryHint),
+            SettingsHelp(title: l.nightModeTitle, text: l.nightBatteryHint),
             if (service.batterySettingsUnavailable)
               Text(l.nightBatteryUnavailable),
             FocusableSettingsTile(
@@ -676,7 +678,7 @@ class _NightModePageState extends State<NightModePage> {
               permissionMethod: 'checkOverlayPermission',
               onRefresh: service.refreshSystem,
             ),
-            SettingsHelp(text: l.nightOverlayBrief),
+            SettingsHelp(title: l.nightModeTitle, text: l.nightOverlayBrief),
           ],
         ],
       ),

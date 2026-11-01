@@ -39,8 +39,13 @@ final class WatchNextBridge implements EventChannel.StreamHandler {
     private boolean registered;
     private Runnable debounce;
     private int generation;
+    private final Uri[] observedUris;
 
-    WatchNextBridge(Context context) { this.context = context; }
+    WatchNextBridge(Context context, Uri... observedUris) {
+        this.context = context;
+        this.observedUris = observedUris.length == 0
+                ? new Uri[]{TvContract.WatchNextPrograms.CONTENT_URI} : observedUris;
+    }
 
     @Override public void onListen(Object arguments, EventChannel.EventSink events) {
         onCancel(null);
@@ -57,10 +62,12 @@ final class WatchNextBridge implements EventChannel.StreamHandler {
                 mainHandler.postDelayed(debounce, 500);
             }
         };
-        try {
-            context.getContentResolver().registerContentObserver(TvContract.WatchNextPrograms.CONTENT_URI, true, observer);
-            registered = true;
-        } catch (Exception error) { error.printStackTrace(); }
+        for (Uri uri : observedUris) {
+            try {
+                context.getContentResolver().registerContentObserver(uri, true, observer);
+                registered = true;
+            } catch (Exception error) { error.printStackTrace(); }
+        }
     }
 
     @Override public void onCancel(Object arguments) {

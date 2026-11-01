@@ -15,6 +15,7 @@ import 'package:flauncher/widgets/settings/accent_color_page.dart';
 import 'package:flauncher/widgets/settings/applications_panel_page.dart';
 import 'package:flauncher/widgets/settings/blocked_notifications_page.dart';
 import 'package:flauncher/widgets/settings/continue_watching_apps_page.dart';
+import 'package:flauncher/widgets/rounded_switch_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -56,6 +57,7 @@ void main() {
               .thenAnswer((_) => Completer<Uint8List>().future);
           when(notifications.blockedPackages).thenReturn({});
           when(watchNext.programs).thenReturn([]);
+          when(watchNext.refresh()).thenAnswer((_) async {});
           await tester.pumpWidget(
             MultiProvider(
               providers: [
@@ -122,6 +124,16 @@ void main() {
               scrollable: find.byType(Scrollable).first,
             );
             await tester.pumpAndSettle();
+            final row = find.byKey(const ValueKey('sample.app'));
+            final originalElement = tester.element(row);
+            tester.widget<RoundedSwitchListTile>(row).onChanged(false);
+            await tester.pumpAndSettle();
+            expect(settings.hiddenWatchNextPackages, contains('sample.app'));
+            expect(find.text(name), findsOneWidget);
+            expect(tester.element(row), same(originalElement));
+            tester.widget<RoundedSwitchListTile>(row).onChanged(true);
+            await tester.pumpAndSettle();
+            expect(settings.hiddenWatchNextPackages, isNot(contains('sample.app')));
           }
           expect(tester.takeException(), isNull);
           for (final element in find.byType(RichText).evaluate()) {

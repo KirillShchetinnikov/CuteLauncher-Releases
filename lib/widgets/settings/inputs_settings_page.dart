@@ -40,6 +40,7 @@ class _InputsSettingsPageState extends State<InputsSettingsPage> {
   }
 
   Future<void> _save(TvInputsConfiguration value) async {
+    if (!context.read<TvInputsService>().hasInputs) return;
     try {
       await context.read<TvInputsService>().configure(value);
     } catch (_) {
@@ -148,14 +149,15 @@ class _InputsSettingsPageState extends State<InputsSettingsPage> {
             RoundedSwitchListTile(
               autofocus: true,
               value: config.useCecNames,
+              enabled: service.hasInputs,
               title: Text(l.inputsUseCecNames),
               onChanged: (v) => _save(config.copyWith(useCecNames: v)),
             ),
-            SettingsHelp(text: l.inputsNamesHint),
+            SettingsHelp(title: l.inputs, text: l.inputsNamesHint),
             if (!service.initialized)
               const LinearProgressIndicator()
             else if (!service.hasInputs)
-              SettingsHelp(text: l.inputsUnavailableHint),
+              Text(l.inputsUnavailableHint),
             for (final source in service.inputs)
               FocusableSettingsTile(
                 leading: Icon(tvInputIcon(source)),
@@ -173,6 +175,7 @@ class _InputsSettingsPageState extends State<InputsSettingsPage> {
             FocusableSettingsTile(
               autofocus: true,
               title: Text(l.customName),
+              enabled: service.hasInputs,
               trailing: Text(
                 current.name.isEmpty ? l.settingsValueNotSet : current.name,
               ),
@@ -181,6 +184,7 @@ class _InputsSettingsPageState extends State<InputsSettingsPage> {
             FocusableSettingsTile(
               leading: Icon(tvInputIcon(input)),
               title: Text(l.inputIcon),
+              enabled: service.hasInputs,
               trailing: Text(_iconLabel(l, current.icon)),
               onPressed: () => _icon(input),
             ),
@@ -220,7 +224,7 @@ class _InputNameDialogState extends State<_InputNameDialog> {
           maxLength: 80,
           decoration: const InputDecoration(),
         ),
-      ), SettingsHelp(text: l.inputNameHint)],
+      ), SettingsHelp(title: l.inputsSettings, text: l.inputNameHint)],
       ),
       actions: [
         LauncherDialogButton(

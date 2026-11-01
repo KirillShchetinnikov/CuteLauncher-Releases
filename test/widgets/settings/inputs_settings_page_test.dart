@@ -6,6 +6,9 @@ import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/tv_inputs_service.dart';
 import 'package:flauncher/tv_inputs_configuration.dart';
 import 'package:flauncher/widgets/settings/inputs_settings_page.dart';
+import 'package:flauncher/widgets/settings/inputs_panel.dart';
+import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
+import 'package:flauncher/widgets/rounded_switch_list_tile.dart';
 import 'package:flauncher/widgets/settings/status_bar_panel_page.dart';
 import 'package:flauncher/widgets/settings/night_mode_page.dart';
 import 'package:flauncher/widgets/settings/auto_launch_page.dart';
@@ -90,6 +93,92 @@ void main() {
       home: Scaffold(body: page),
     ),
   );
+
+  Future<void> setInputsAvailable(bool available) async {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(native, (_) async => available
+            ? [{'id': 'port2', 'label': 'HDMI 2', 'type': 1007}]
+            : []);
+    await inputs.refreshInputs();
+  }
+
+  testWidgets('input settings entry follows system input availability', (tester) async {
+    await setInputsAvailable(false);
+    await tester.pumpWidget(app(const StatusBarObjectsPage()));
+    await tester.pumpAndSettle();
+    final entry = find.widgetWithText(FocusableSettingsTile, 'Настройки входов');
+    await tester.scrollUntilVisible(entry, 150);
+    await tester.ensureVisible(entry);
+    await tester.pumpAndSettle();
+    expect(tester.widget<FocusableSettingsTile>(entry).enabled, isFalse);
+    await tester.tap(entry);
+    await tester.pumpAndSettle();
+    expect(find.byType(InputsSettingsPage), findsNothing);
+
+    await setInputsAvailable(true);
+    await tester.pumpAndSettle();
+    tester.state<ScrollableState>(find.byType(Scrollable).first)
+        .position.jumpTo(0);
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(entry, 150);
+    await tester.ensureVisible(entry);
+    await tester.pumpAndSettle();
+    expect(tester.widget<FocusableSettingsTile>(entry).enabled, isTrue);
+    await tester.tap(entry);
+    await tester.pumpAndSettle();
+    expect(find.byType(InputsSettingsPage), findsOneWidget);
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('empty inputs menu disables its settings action', (tester) async {
+    await setInputsAvailable(false);
+    await tester.pumpWidget(app(const InputsPanel()));
+    await tester.pumpAndSettle();
+    final action = find.byType(IconButton);
+    expect(tester.widget<IconButton>(action).onPressed, isNull);
+    await setInputsAvailable(true);
+    await tester.pumpAndSettle();
+    expect(tester.widget<IconButton>(action).onPressed, isNotNull);
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('open input settings disable edits without losing configuration', (tester) async {
+    await inputs.configure(const TvInputsConfiguration(useCecNames: false));
+    final saved = preferences.getString(tvInputsConfigurationKey);
+    await tester.pumpWidget(app(const InputsSettingsPage()));
+    await tester.pumpAndSettle();
+    await setInputsAvailable(false);
+    await tester.pumpAndSettle();
+    final toggle = find.byType(RoundedSwitchListTile);
+    expect(tester.widget<RoundedSwitchListTile>(toggle).enabled, isFalse);
+    await tester.tap(toggle);
+    await tester.pumpAndSettle();
+    expect(preferences.getString(tvInputsConfigurationKey), saved);
+
+    await setInputsAvailable(true);
+    await tester.pumpAndSettle();
+    expect(tester.widget<RoundedSwitchListTile>(toggle).enabled, isTrue);
+    expect(inputs.configuration.useCecNames, isFalse);
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('input disappearance blocks an open name dialog and detail edits', (tester) async {
+    await tester.pumpWidget(app(InputsSettingsPage(input: inputs.inputs.last)));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Своё название'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField), 'Console');
+    await setInputsAvailable(false);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('ОК'));
+    await tester.pumpAndSettle();
+    expect(inputs.configuration.overrides, isEmpty);
+    for (final label in ['Своё название', 'Иконка входа']) {
+      expect(tester.widget<FocusableSettingsTile>(
+        find.widgetWithText(FocusableSettingsTile, label)).enabled, isFalse);
+    }
+    await tester.pumpWidget(const SizedBox());
+  });
 
   testWidgets('input settings remain available when the top panel button is off', (tester) async {
     await settings.setShowInputsWidgetInStatusBar(false);

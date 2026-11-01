@@ -69,7 +69,7 @@ class SettingsPanelPage extends StatelessWidget {
             FocusableSettingsTile(
               autofocus: false,
               leading: const Icon(Icons.palette_outlined),
-              title: Text(l.appearanceSettings),
+              title: Text(l.interfaceStyle),
               onPressed: () =>
                   Navigator.of(context)
                       .pushNamed(AppearanceSettingsPage.routeName),

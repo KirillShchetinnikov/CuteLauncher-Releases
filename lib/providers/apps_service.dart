@@ -17,6 +17,8 @@
  */
 
 import 'service_lifecycle.dart';
+import 'dart:convert';
+import '../category_appearance.dart';
 import 'app_catalog_cache.dart';
 import 'foreground_work.dart';
 import '../diagnostics/startup_trace.dart';
@@ -25,7 +27,6 @@ import '../image_byte_cache.dart';
 import '../image_limits.dart';
 import 'dart:async';
 import 'dart:io';
-import 'dart:collection';
 import 'package:collection/collection.dart' as collection;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'settings_service.dart';
@@ -61,7 +62,11 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
   void _notifyImages() => super.notifyListeners();
 
   @override
-  void notifyListeners() { contentRevision++; super.notifyListeners(); }
+  void notifyListeners() {
+    _sortedApplications = null;
+    contentRevision++;
+    super.notifyListeners();
+  }
   final FLauncherDatabase _database;
   final SettingsService? _settingsService;
   final String? _ownPackageName;
@@ -73,6 +78,7 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
 
   final List<LauncherSection> _launcherSections = List.empty(growable: true);
   Map<String, App> _applications = {};
+  List<App>? _sortedApplications;
   final _iconCache = ImageByteCache(maximumBytes: 2 * 1024 * 1024);
   final _bannerCache = ImageByteCache(maximumBytes: 6 * 1024 * 1024);
   final _imageLoads = <String, Future<Uint8List>>{};
@@ -92,10 +98,13 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
     _bannerCache.maximumBytes = bannerBytes;
   }
 
-  Future<Uint8List> _loadImage(String key, Future<Uint8List> Function() loader) {
+  Future<Uint8List> _loadImage(String key, ImageByteCache cache, Future<Uint8List> Function() loader) {
     if (isDisposed || _memoryResources?.isForeground == false) return Future.value(Uint8List(0));
     final generation = _imageGeneration;
     final package = key.substring(key.indexOf(':') + 1);
+    // Cache hits must not queue behind slow disk or platform-channel reads.
+    final cached = cache[package];
+    if (cached != null) return Future.value(cached);
     final scopedKey = '${imageRevisionFor(package)}:$key';
     return _imageLoads.putIfAbsent(scopedKey, () async {
       try {
@@ -133,7 +142,7 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
     _pendingReorderFocusIndex = index;
   }
 
-  List<App> get applications => UnmodifiableListView(
+  List<App> get applications => _sortedApplications ??= List.unmodifiable(
       _applications.values.sortedBy((application) => application.name));
 
   List<LauncherSection> get launcherSections =>
@@ -212,6 +221,7 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
     unawaited(_imagePool.close());
     _iconCache.clear();
     _bannerCache.clear();
+    _sortedApplications = null;
     _settingsService?.removeListener(_notifyImages);
     super.dispose();
   }
@@ -374,7 +384,11 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
 
   /// Restore section defaults atomically without changing app data or statistics.
   Future<void> resetSections() async {
+    final prefs = await _prefsAsync;
+    final previousLayouts = prefs.getString(categoryAppearanceKey);
+    try {
     await _database.transaction(() async {
+      final layouts = <String, dynamic>{};
       await _database.delete(_database.appsCategories).go();
       await _database.delete(_database.launcherSpacers).go();
       await _database.delete(_database.categories).go();
@@ -383,6 +397,7 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
         ('TV Apps', 'tv_apps', CategoryType.grid),
         ('Non-TV Apps', 'other_apps', Category.Type),
         ('Favorites', 'favorites', Category.Type),
+        ('App Feeds', 'app_channels', CategoryType.row),
       ];
       for (var i = 0; i < defaults.length; i++) {
         final (name, key, type) = defaults[i];
@@ -392,9 +407,11 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
             systemKey: Value(key),
             order: i,
             type: Value(type),
+            visible: Value(key == 'all_apps' || key == 'app_channels'),
             sort: Value(key == 'all_apps' ? CategorySort.alphabetical : Category.Sort),
           ),
         );
+        if (key == 'all_apps') layouts['$id'] = {'layout': 'grid', 'columns': 6, 'maxRows': 3};
         if (key == 'tv_apps' || key == 'other_apps') {
           final apps =
               _applications.values
@@ -411,7 +428,15 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
           ]);
         }
       }
+      if (!await prefs.setString(categoryAppearanceKey, jsonEncode(layouts))) {
+        throw StateError('Could not reset section layout');
+      }
     });
+    } catch (_) {
+      if (previousLayouts == null) { await prefs.remove(categoryAppearanceKey); }
+      else { await prefs.setString(categoryAppearanceKey, previousLayouts); }
+      rethrow;
+    }
     await refreshState();
   }
 
@@ -424,6 +449,8 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
     await addCategory('Non-TV Apps', systemKey: 'other_apps',
         shouldNotifyListeners: false);
     await addCategory('Favorites', systemKey: 'favorites',
+        shouldNotifyListeners: false);
+    await addCategory('App Feeds', systemKey: 'app_channels', type: CategoryType.row,
         shouldNotifyListeners: false);
   });
 
@@ -540,6 +567,7 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
         .where((application) =>
             appsFromSystemByPackageName.containsKey(application.packageName))
         .map((application) => MapEntry(application.packageName, application)));
+    _sortedApplications = null;
 
     _launcherSections.clear();
     _launcherSections.addAll(categories);
@@ -684,7 +712,7 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
           category.systemKey == (isSideloaded ? 'other_apps' : 'tv_apps'));
 
   Future<Uint8List> getAppBanner(String packageName) =>
-      _loadImage('banner:$packageName', () => _readAppBanner(packageName));
+      _loadImage('banner:$packageName', _bannerCache, () => _readAppBanner(packageName));
 
   Future<Uint8List> _readAppBanner(String packageName) async {
     final revision = imageRevisionFor(packageName);
@@ -760,7 +788,7 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
   App? getApp(String packageName) => _applications[packageName];
 
   Future<Uint8List> getAppIcon(String packageName) =>
-      _loadImage('icon:$packageName', () => _readAppIcon(packageName));
+      _loadImage('icon:$packageName', _iconCache, () => _readAppIcon(packageName));
 
   Future<Uint8List> _readAppIcon(String packageName) async {
     final revision = imageRevisionFor(packageName);
@@ -844,7 +872,7 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
     if (apps.isEmpty) return;
 
     final categoryFound = _categoriesById[category.id];
-    if (categoryFound == null || categoryFound.isAutomatic) return;
+    if (categoryFound == null || categoryFound.isAutomatic || categoryFound.isAppChannels) return;
 
     int nextOrder = await _database.nextAppCategoryOrder(categoryFound.id) ?? 0;
     List<AppsCategoriesCompanion> batch = [];

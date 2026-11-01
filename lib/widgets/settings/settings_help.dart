@@ -7,8 +7,9 @@ import 'focusable_settings_tile.dart';
 /// Optional help, with a separate D-pad reading stop and bounded text viewport.
 class SettingsHelp extends StatefulWidget {
   final String text;
+  final String? title;
 
-  const SettingsHelp({super.key, required this.text});
+  const SettingsHelp({super.key, required this.text, this.title});
 
   @override
   State<SettingsHelp> createState() => _SettingsHelpState();
@@ -21,6 +22,19 @@ class _SettingsHelpState extends State<SettingsHelp>
   final _scroll = ScrollController();
   bool _expanded = false;
   bool _reading = false;
+  bool _overflowing = false;
+
+  bool _metrics(ScrollMetricsNotification notification) {
+    final overflowing = notification.metrics.maxScrollExtent > 0;
+    if (overflowing != _overflowing) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && overflowing != _overflowing) {
+          setState(() => _overflowing = overflowing);
+        }
+      });
+    }
+    return false;
+  }
 
   @override
   bool get wantKeepAlive => _expanded;
@@ -73,9 +87,10 @@ class _SettingsHelpState extends State<SettingsHelp>
         Semantics(
           expanded: _expanded,
           child: FocusableSettingsTile(
+            subtle: true,
             focusNode: _headerFocus,
             leading: const Icon(Icons.info_outline_rounded),
-            title: Text(l.settingsHelp),
+            title: Text(widget.title ?? l.settingsHelp),
             trailing: Icon(_expanded ? Icons.expand_less : Icons.expand_more),
             onPressed: _toggle,
             onKeyEvent: (_, event) {
@@ -120,25 +135,32 @@ class _SettingsHelpState extends State<SettingsHelp>
                         maxHeight: (MediaQuery.sizeOf(context).height * 0.45)
                             .clamp(96.0, 320.0),
                       ),
-                      child: Scrollbar(
-                        controller: _scroll,
-                        thumbVisibility: true,
-                        interactive: false,
-                        child: RepaintBoundary(
-                          child: SingleChildScrollView(
-                            controller: _scroll,
-                            primary: false,
-                            padding: const EdgeInsetsDirectional.only(end: 12),
-                            child: Text(widget.text),
+                      child: NotificationListener<ScrollMetricsNotification>(
+                        onNotification: _metrics,
+                        child: Scrollbar(
+                          controller: _scroll,
+                          thumbVisibility: true,
+                          interactive: false,
+                          child: RepaintBoundary(
+                            child: SingleChildScrollView(
+                              controller: _scroll,
+                              primary: false,
+                              padding: const EdgeInsetsDirectional.only(
+                                end: 12,
+                              ),
+                              child: Text(widget.text),
+                            ),
                           ),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 10),
-                    Text(
-                      l.settingsHelpScroll,
-                      style: theme.textTheme.bodySmall,
-                    ),
+                    if (_overflowing) ...[
+                      const SizedBox(height: 10),
+                      Text(
+                        l.settingsHelpScroll,
+                        style: theme.textTheme.bodySmall,
+                      ),
+                    ],
                   ],
                 ),
               ),

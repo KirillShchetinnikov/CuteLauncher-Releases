@@ -1440,7 +1440,12 @@ class $$AppsTableTableManager
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (appsCategoriesRefs)
-                    await $_getPrefetchedData<App, $AppsTable, AppCategory>(
+                    await $_getPrefetchedDataByColumns<
+                      App,
+                      $AppsTable,
+                      AppCategory,
+                      $AppsCategoriesTable
+                    >(
                       currentTable: table,
                       referencedTable: $$AppsTableReferences
                           ._appsCategoriesRefsTable(db),
@@ -1449,10 +1454,8 @@ class $$AppsTableTableManager
                         table,
                         p0,
                       ).appsCategoriesRefs,
-                      referencedItemsForCurrentItem: (item, referencedItems) =>
-                          referencedItems.where(
-                            (e) => e.appPackageName == item.packageName,
-                          ),
+                      currentColumn: 'package_name',
+                      referencedColumn: 'app_package_name',
                       typedResults: items,
                     ),
                 ];
@@ -1813,10 +1816,11 @@ class $$CategoriesTableTableManager
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (appsCategoriesRefs)
-                    await $_getPrefetchedData<
+                    await $_getPrefetchedDataByColumns<
                       Category,
                       $CategoriesTable,
-                      AppCategory
+                      AppCategory,
+                      $AppsCategoriesTable
                     >(
                       currentTable: table,
                       referencedTable: $$CategoriesTableReferences
@@ -1827,8 +1831,8 @@ class $$CategoriesTableTableManager
                             table,
                             p0,
                           ).appsCategoriesRefs,
-                      referencedItemsForCurrentItem: (item, referencedItems) =>
-                          referencedItems.where((e) => e.categoryId == item.id),
+                      currentColumn: 'id',
+                      referencedColumn: 'category_id',
                       typedResults: items,
                     ),
                 ];

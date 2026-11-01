@@ -512,6 +512,6 @@ void main() {
     expect(invalid.containsKey(landscapeSettingsKey), false);
     await settings.resetAppearanceSection('background');
     expect(settings.landscape.motion, false);
-    expect(settings.landscape.variant, 'illustrated');
+    expect(settings.landscape.variant, 'realistic');
   });
 }

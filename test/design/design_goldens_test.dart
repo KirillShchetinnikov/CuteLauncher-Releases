@@ -2,6 +2,7 @@ import 'package:flauncher/widgets/panel_calendar_dialog.dart';
 import 'package:flauncher/widgets/settings/panel_clock_style_page.dart';
 import 'package:flauncher/widgets/settings/date_time_format_page.dart';
 import 'package:flauncher/widgets/settings/settings_style_page.dart';
+
 import 'dart:io';
 
 import 'package:flauncher/gradients.dart';
@@ -59,41 +60,130 @@ class DesignState {
     this.dialog,
     this.appearance = const {},
     this.category = const {},
-    this.rightSteps = 0, this.downSteps = 0,
+    this.rightSteps = 0,
+    this.downSteps = 0,
   });
 }
 
 const designStates = [
-  DesignState('settings-font-google-sans', route: SettingsStylePage.routeName,
-    appearance: {'settingsInterfaceStyle': 'glass', 'settingsInterfaceFont': 'google-sans'}),
-  DesignState('settings-font-onest', route: SettingsStylePage.routeName,
-    appearance: {'settingsInterfaceStyle': 'glass', 'settingsInterfaceFont': 'onest'}),
-  DesignState('settings-font-manrope', route: SettingsStylePage.routeName,
-    appearance: {'settingsInterfaceStyle': 'glass', 'settingsInterfaceFont': 'manrope'}),
-  DesignState('settings-style-glass', route: SettingsStylePage.routeName,
-    appearance: {'settingsInterfaceStyle': 'glass'}),
-  DesignState('settings-style-soft', route: SettingsStylePage.routeName,
-    appearance: {'settingsInterfaceStyle': 'soft'}),
-  DesignState('settings-style-outline', route: SettingsStylePage.routeName,
-    appearance: {'settingsInterfaceStyle': 'outline'}),
-  DesignState('home-combined-information', appearance: {'panelCombinedInformation': true}),
+  DesignState(
+    'settings-font-google-sans',
+    route: SettingsStylePage.routeName,
+    appearance: {
+      'settingsInterfaceStyle': 'glass',
+      'settingsInterfaceFont': 'google-sans',
+    },
+  ),
+  DesignState(
+    'settings-font-onest',
+    route: SettingsStylePage.routeName,
+    appearance: {
+      'settingsInterfaceStyle': 'glass',
+      'settingsInterfaceFont': 'onest',
+    },
+  ),
+  DesignState(
+    'settings-font-manrope',
+    route: SettingsStylePage.routeName,
+    appearance: {
+      'settingsInterfaceStyle': 'glass',
+      'settingsInterfaceFont': 'manrope',
+    },
+  ),
+  DesignState(
+    'settings-style-glass',
+    route: SettingsStylePage.routeName,
+    appearance: {'settingsInterfaceStyle': 'glass'},
+  ),
+  DesignState(
+    'settings-style-soft',
+    route: SettingsStylePage.routeName,
+    appearance: {'settingsInterfaceStyle': 'soft'},
+  ),
+  DesignState(
+    'settings-style-outline',
+    route: SettingsStylePage.routeName,
+    appearance: {'settingsInterfaceStyle': 'outline'},
+  ),
+  DesignState(
+    'home-combined-information',
+    appearance: {'panelCombinedInformation': true},
+  ),
   DesignState('home-modern-focused'),
-  DesignState('settings-clock-style', route: PanelClockStylePage.routeName,
-    appearance: {'panelClockStyle': {'preset': 'elegant', 'inheritBackground': false, 'font': 'serif', 'size': 24, 'color': 0xffffd54f, 'background': false}}),
+  DesignState(
+    'settings-clock-style',
+    route: PanelClockStylePage.routeName,
+    appearance: {
+      'panelClockStyle': {
+        'preset': 'elegant',
+        'inheritBackground': false,
+        'font': 'serif',
+        'size': 24,
+        'color': 0xffffd54f,
+        'background': false,
+      },
+    },
+  ),
   DesignState('settings-date', route: DateTimeFormatPage.routeName),
-  DesignState('home-clock-digital', appearance: {'panelClockStyle': {
-    'preset': 'digital', 'inheritBackground': false, 'font': 'monospace', 'size': 32, 'weight': 700,
-    'color': 0xff80efb0, 'backgroundColor': 0xff101820, 'radius': 4}}),
+  DesignState(
+    'home-clock-digital',
+    appearance: {
+      'panelClockStyle': {
+        'preset': 'digital',
+        'inheritBackground': false,
+        'font': 'monospace',
+        'size': 32,
+        'weight': 700,
+        'color': 0xff80efb0,
+        'backgroundColor': 0xff101820,
+        'radius': 4,
+      },
+    },
+  ),
   DesignState('calendar-ru', dialog: 'calendar'),
-  DesignState('calendar-rtl-large', dialog: 'calendar', language: 'ar', scale: 1.3),
-  DesignState('home-shared-rows', category: {'layout': 'rows', 'rows': 2, 'columns': 4},
-    appearance: {'labels': 'selected', 'focusScale': .15, 'inactiveOpacity': .4}, rightSteps: 4, downSteps: 1),
-  DesignState('home-grid-window', category: {'layout': 'grid', 'columns': 4, 'maxRows': 1},
-    appearance: {'labels': 'all'}, downSteps: 2),
-  DesignState('home-free-three-rows', category: {'layout': 'rows', 'rows': 3, 'columns': 0},
-    appearance: {'sectionScroll': 'free', 'size': 80, 'labels': 'all', 'sectionIcons': true}),
-  DesignState('home-large-lift', category: {'layout': 'row', 'columns': 2},
-    appearance: {'focusEffect': 'lift', 'focusLift': 50, 'labels': 'selected', 'sectionTitles': false}),
+  DesignState(
+    'calendar-rtl-large',
+    dialog: 'calendar',
+    language: 'ar',
+    scale: 1.3,
+  ),
+  DesignState(
+    'home-shared-rows',
+    category: {'layout': 'rows', 'rows': 2, 'columns': 4},
+    appearance: {
+      'labels': 'selected',
+      'focusScale': .15,
+      'inactiveOpacity': .4,
+    },
+    rightSteps: 4,
+    downSteps: 1,
+  ),
+  DesignState(
+    'home-grid-window',
+    category: {'layout': 'grid', 'columns': 4, 'maxRows': 1},
+    appearance: {'labels': 'all'},
+    downSteps: 2,
+  ),
+  DesignState(
+    'home-free-three-rows',
+    category: {'layout': 'rows', 'rows': 3, 'columns': 0},
+    appearance: {
+      'sectionScroll': 'free',
+      'size': 80,
+      'labels': 'all',
+      'sectionIcons': true,
+    },
+  ),
+  DesignState(
+    'home-large-lift',
+    category: {'layout': 'row', 'columns': 2},
+    appearance: {
+      'focusEffect': 'lift',
+      'focusLift': 50,
+      'labels': 'selected',
+      'sectionTitles': false,
+    },
+  ),
   DesignState('home-modern-idle', focused: false),
   DesignState('home-top-button', topFocus: true),
   DesignState('home-classic', theme: 'classic'),
@@ -119,23 +209,19 @@ const designStates = [
   DesignState('home-rtl', language: 'ar'),
   DesignState(
     'home-blur',
-    appearance: {
-      'blurTiles': true,
-      'blurPanel': true,
-      'opacity': .6,
-    },
+    appearance: {'blurTiles': true, 'blurPanel': true, 'opacity': .6},
   ),
   DesignState(
     'home-blur-economy',
     economy: true,
-    appearance: {
-      'blurTiles': true,
-      'blurPanel': true,
-      'opacity': .6,
-    },
+    appearance: {'blurTiles': true, 'blurPanel': true, 'opacity': .6},
   ),
   DesignState('settings-memory', route: MemoryPage.routeName),
-  DesignState('settings-memory-bottom', route: MemoryPage.routeName, bottom: true),
+  DesignState(
+    'settings-memory-bottom',
+    route: MemoryPage.routeName,
+    bottom: true,
+  ),
   DesignState('settings-memory-saver', route: MemorySaverPage.routeName),
   DesignState('settings-root', route: 'settings_panel'),
   DesignState(
@@ -146,22 +232,60 @@ const designStates = [
   ),
   DesignState('settings-root-bottom', route: 'settings_panel', bottom: true),
   DesignState('settings-nested', route: InterfaceSettingsPage.routeName),
-  DesignState('settings-nested-right', route: InterfaceSettingsPage.routeName, settingsMenuOnRight: true),
-  DesignState('dialog-editor-left', route: InterfaceSettingsPage.routeName, dialog: 'city'),
-  DesignState('dialog-editor-right', route: InterfaceSettingsPage.routeName, dialog: 'city', settingsMenuOnRight: true),
-  DesignState('dialog-adb-left', route: InterfaceSettingsPage.routeName, dialog: 'adb'),
-  DesignState('dialog-adb-right', route: InterfaceSettingsPage.routeName, dialog: 'adb', settingsMenuOnRight: true, accent: Color(0xFFFFFF99)),
+  DesignState(
+    'settings-nested-right',
+    route: InterfaceSettingsPage.routeName,
+    settingsMenuOnRight: true,
+  ),
+  DesignState(
+    'dialog-editor-left',
+    route: InterfaceSettingsPage.routeName,
+    dialog: 'city',
+  ),
+  DesignState(
+    'dialog-editor-right',
+    route: InterfaceSettingsPage.routeName,
+    dialog: 'city',
+    settingsMenuOnRight: true,
+  ),
+  DesignState(
+    'dialog-adb-left',
+    route: InterfaceSettingsPage.routeName,
+    dialog: 'adb',
+  ),
+  DesignState(
+    'dialog-adb-right',
+    route: InterfaceSettingsPage.routeName,
+    dialog: 'adb',
+    settingsMenuOnRight: true,
+    accent: Color(0xFFFFFF99),
+  ),
   DesignState(
     'settings-appearance-large',
     route: AppearanceSettingsPage.routeName,
     scale: 1.3,
   ),
-  DesignState('settings-style', route: SettingsStylePage.routeName,
-    appearance: {'settingsColor': 0xff14532d, 'settingsOpacity': .8,
-      'settingsTextColor': 0xffffd54f, 'settingsTextSize': 20}),
-  DesignState('settings-notification-style', route: SettingsStylePage.notificationsRouteName,
-    appearance: {'noticeColor': 0xff1e3a8a, 'noticeOpacity': .75,
-      'noticeTextColor': 0xffffffff, 'noticeTextSize': 18, 'noticeWidth': 400}),
+  DesignState(
+    'settings-style',
+    route: SettingsStylePage.routeName,
+    appearance: {
+      'settingsColor': 0xff14532d,
+      'settingsOpacity': .8,
+      'settingsTextColor': 0xffffd54f,
+      'settingsTextSize': 20,
+    },
+  ),
+  DesignState(
+    'settings-notification-style',
+    route: SettingsStylePage.notificationsRouteName,
+    appearance: {
+      'noticeColor': 0xff1e3a8a,
+      'noticeOpacity': .75,
+      'noticeTextColor': 0xffffffff,
+      'noticeTextSize': 18,
+      'noticeWidth': 400,
+    },
+  ),
   DesignState('settings-preview', route: AppearancePage.routeName),
   DesignState(
     'settings-preview-720p-large',
@@ -211,7 +335,16 @@ const designStates = [
     'home-top-custom',
     appearance: {
       'panelButtonsOrder': ['time', 'date', 'weather'],
-      'panelInfoOrder': ['traffic', 'network', 'nightMode', 'sleepTimer', 'notifications', 'inputs', 'systemSettings', 'settings'],
+      'panelInfoOrder': [
+        'traffic',
+        'network',
+        'nightMode',
+        'sleepTimer',
+        'notifications',
+        'inputs',
+        'systemSettings',
+        'settings',
+      ],
       'panelColor': 0xff1e3a8a,
       'panelOpacity': .5,
       'panelTextSize': 22,
@@ -224,111 +357,144 @@ const designStates = [
 
 void main() {
   for (final state in designStates) {
-    testWidgets(state.name, (tester) async {
-      final fixture = await pumpDesignFixture(
-        tester,
-        size: state.size,
-        theme: state.theme,
-        language: state.language,
-        scale: state.scale,
-        accent: state.accent,
-        economy: state.economy,
-        longLabels: state.longLabels,
-        settingsMenuOnRight: state.settingsMenuOnRight,
-        appearanceValues: state.appearance,
-        categoryValues: state.category,
-        gradient: state.brightWallpaper
-            ? FLauncherGradients.saintPetersburg
-            : null,
-      );
-      if (state.route == MemoryPage.routeName) {
-        const channel = MethodChannel('me.efesser.flauncher/method');
-        tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, (call) async {
-          if (call.method == 'getProcessMemoryUsage') {
-            return {
-              'pssBytes': 48 * 1024 * 1024,
-              'rssBytes': 72 * 1024 * 1024,
-              'graphicsBytes': 12 * 1024 * 1024,
-            };
-          }
-          return null;
-        });
-        addTearDown(() => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, null));
-      }
-      if (state.route != null) {
-        final context = tester.element(find.byIcon(Icons.settings_outlined));
-        showLauncherDialog<void>(
-          context: context,
-          styleDialog: false,
-          barrierColor: Colors.transparent,
-          builder: (_) => SettingsPanel(initialRoute: state.route),
+    testWidgets(
+      state.name,
+      (tester) async {
+        final fixture = await pumpDesignFixture(
+          tester,
+          size: state.size,
+          theme: state.theme,
+          language: state.language,
+          scale: state.scale,
+          accent: state.accent,
+          economy: state.economy,
+          longLabels: state.longLabels,
+          settingsMenuOnRight: state.settingsMenuOnRight,
+          appearanceValues: state.appearance,
+          categoryValues: state.category,
+          gradient: state.brightWallpaper
+              ? FLauncherGradients.saintPetersburg
+              : null,
         );
-      } else if (state.topFocus) {
-        // The first top button owns its real production FocusNode.
-        final focus = tester
-            .widgetList<Focus>(
-              find.ancestor(
-                of: find.byIcon(Icons.settings_outlined),
-                matching: find.byType(Focus),
-              ),
-            )
-            .firstWhere(
-              (focus) => focus.focusNode != null && focus.canRequestFocus,
-            );
-        focus.focusNode!.requestFocus();
-      } else if (state.focused) {
-        tester
-            .widget<InkWell>(
-              find
-                  .descendant(
-                    of: find.byKey(const Key('demo.0')).first,
-                    matching: find.byType(InkWell),
-                  )
-                  .first,
-            )
-            .focusNode!
-            .requestFocus();
-      } else {
-        FocusManager.instance.primaryFocus?.unfocus();
-      }
-      await tester.pumpAndSettle();
-      for (var i = 0; i < state.rightSteps; i++) {
-        await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight); await tester.pumpAndSettle();
-      }
-      for (var i = 0; i < state.downSteps; i++) {
-        await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown); await tester.pumpAndSettle();
-      }
-      if (state.dialog != null) {
-        final context = state.dialog == 'calendar'
-            ? tester.element(find.byIcon(Icons.settings_outlined))
-            : tester.element(find.byType(InterfaceSettingsPage));
-        final l = AppLocalizations.of(context)!;
-        if (state.dialog == 'calendar') {
-          showLauncherDialog<void>(context: context,
-            builder: (_) => PanelCalendarDialog(today: DateTime(2026, 10, 4)));
-        } else if (state.dialog == 'adb') {
-          confirmAdbAction(context, l.adbHome, 'home', [
-            "cmd package set-home-activity 'example.launcher/MainActivity'",
-          ]);
+        if (state.route == MemoryPage.routeName) {
+          const channel = MethodChannel('me.efesser.flauncher/method');
+          tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+            channel,
+            (call) async {
+              if (call.method == 'getProcessMemoryUsage') {
+                return {
+                  'pssBytes': 48 * 1024 * 1024,
+                  'rssBytes': 72 * 1024 * 1024,
+                  'graphicsBytes': 12 * 1024 * 1024,
+                };
+              }
+              return null;
+            },
+          );
+          addTearDown(
+            () => tester.binding.defaultBinaryMessenger
+                .setMockMethodCallHandler(channel, null),
+          );
+        }
+        if (state.route != null) {
+          final context = tester.element(find.byIcon(Icons.settings_outlined));
+          showLauncherDialog<void>(
+            context: context,
+            styleDialog: false,
+            barrierColor: Colors.transparent,
+            builder: (_) => SettingsPanel(initialRoute: state.route),
+          );
+        } else if (state.topFocus) {
+          // The first top button owns its real production FocusNode.
+          final focus = tester
+              .widgetList<Focus>(
+                find.ancestor(
+                  of: find.byIcon(Icons.settings_outlined),
+                  matching: find.byType(Focus),
+                ),
+              )
+              .firstWhere(
+                (focus) => focus.focusNode != null && focus.canRequestFocus,
+              );
+          focus.focusNode!.requestFocus();
+        } else if (state.focused) {
+          tester
+              .widget<InkWell>(
+                find
+                    .descendant(
+                      of: find.byKey(const Key('demo.0')).first,
+                      matching: find.byType(InkWell),
+                    )
+                    .first,
+              )
+              .focusNode!
+              .requestFocus();
         } else {
-          final tile = SettingsTextTile(title: l.weatherLocationManual, value: 'Moscow', onChanged: (_) {});
-          (tile.build(context) as FocusableSettingsTile).onPressed!();
+          FocusManager.instance.primaryFocus?.unfocus();
         }
         await tester.pumpAndSettle();
-      }
-      if (state.bottom) {
-        await tester.drag(find.byType(Scrollable).last, const Offset(0, -2000));
-        await tester.pumpAndSettle();
-      }
-      expect(tester.takeException(), isNull);
-      // Finders capture the logical viewport (960×540 / 640×360), DPR is 2.
-      await expectLater(
-        find.byKey(fixture.boundary),
-        matchesGoldenFile('goldens/${state.name}.png'),
-      );
-      debugDisableShadows = true;
-    }, skip: !Platform.isWindows || !AppLocalizations.supportedLocales.any(
-      (locale) => locale.languageCode == state.language,
-    )); // Render only locales supported by the current build.
+        if (!state.focused && !state.topFocus) {
+          // The idle reference has no focused card to anchor the outer viewport.
+          // Capture its documented initial scroll position explicitly, regardless
+          // of deferred reveal callbacks from the fixture's initial autofocus.
+          final position = tester
+              .state<ScrollableState>(find.byType(Scrollable).first)
+              .position;
+          position.jumpTo(position.minScrollExtent);
+          await tester.pumpAndSettle();
+        }
+        for (var i = 0; i < state.rightSteps; i++) {
+          await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+          await tester.pumpAndSettle();
+        }
+        for (var i = 0; i < state.downSteps; i++) {
+          await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+          await tester.pumpAndSettle();
+        }
+        if (state.dialog != null) {
+          final context = state.dialog == 'calendar'
+              ? tester.element(find.byIcon(Icons.settings_outlined))
+              : tester.element(find.byType(InterfaceSettingsPage));
+          final l = AppLocalizations.of(context)!;
+          if (state.dialog == 'calendar') {
+            showLauncherDialog<void>(
+              context: context,
+              builder: (_) => PanelCalendarDialog(today: DateTime(2026, 10, 4)),
+            );
+          } else if (state.dialog == 'adb') {
+            confirmAdbAction(context, l.adbHome, 'home', [
+              "cmd package set-home-activity 'example.launcher/MainActivity'",
+            ]);
+          } else {
+            final tile = SettingsTextTile(
+              title: l.weatherLocationManual,
+              value: 'Moscow',
+              onChanged: (_) {},
+            );
+            (tile.build(context) as FocusableSettingsTile).onPressed!();
+          }
+          await tester.pumpAndSettle();
+        }
+        if (state.bottom) {
+          await tester.drag(
+            find.byType(Scrollable).last,
+            const Offset(0, -2000),
+          );
+          await tester.pumpAndSettle();
+        }
+        expect(tester.takeException(), isNull);
+        // Finders capture the logical viewport (960×540 / 640×360), DPR is 2.
+        await expectLater(
+          find.byKey(fixture.boundary),
+          matchesGoldenFile('goldens/${state.name}.png'),
+        );
+        debugDisableShadows = true;
+      },
+      skip:
+          !Platform.isWindows ||
+          !AppLocalizations.supportedLocales.any(
+            (locale) => locale.languageCode == state.language,
+          ),
+    ); // Render only locales supported by the current build.
   }
 }

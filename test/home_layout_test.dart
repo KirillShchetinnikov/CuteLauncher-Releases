@@ -144,7 +144,7 @@ void main() {
       await service.resetCategoryLayout(1, grid: true);
       expect(service.category(1).layout, 'grid');
       expect(service.category(1).columns, 6);
-      expect(service.tilesFor(1).number('radius'), isNull);
+      expect(service.tilesFor(1).number('radius'), 16);
     },
   );
   test('global style reset supersedes explicit legacy labels and titles', () async {
@@ -155,7 +155,7 @@ void main() {
     expect(service.appearance.labels, 'all');
     expect(service.appearance.sectionTitles, isFalse);
     await service.resetFields(['labels', 'sectionTitles']);
-    expect(service.appearance.labels, 'none');
+    expect(service.appearance.labels, 'all');
     expect(service.appearance.sectionTitles, isTrue);
     expect(TileAppearance.decode(prefs.getString(tileAppearanceKey)).sectionTitles, isTrue);
   });

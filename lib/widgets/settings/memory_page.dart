@@ -10,7 +10,6 @@ import 'package:provider/provider.dart';
 
 import 'focusable_settings_tile.dart';
 import 'settings_page_layout.dart';
-import 'settings_route.dart';
 
 class MemoryPage extends StatefulWidget {
   static const routeName = 'memory_panel';
@@ -130,28 +129,16 @@ class _MemoryPageState extends State<MemoryPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            FocusableSettingsTile(
+            RoundedSwitchListTile(
               autofocus: true,
-              leading: const Icon(Icons.memory),
+              value: settings.memorySaverEnabled,
               title: Text(l.memorySaver),
-              trailing: Text(
-                settings.memorySaverEnabled ? l.enabled : l.disabled,
-              ),
-              onPressed: () async {
-                await Navigator.of(context).push(
-                  SettingsRoute<void>(
-                    settings: const RouteSettings(
-                      name: MemorySaverPage.routeName,
-                    ),
-                    builder: (_) => const Material(
-                      type: MaterialType.transparency,
-                      child: MemorySaverPage(),
-                    ),
-                  ),
-                );
+              onChanged: (value) async {
+                await settings.setMemorySaverEnabled(value);
                 if (mounted) _measure();
               },
             ),
+            SettingsHelp(title: l.memoryTitle, text: l.memorySaverDescription),
             FocusableSettingsTile(
               leading: const Icon(Icons.cleaning_services_outlined),
               title: Text(l.memoryClear),
@@ -222,7 +209,7 @@ class MemorySaverPage extends StatelessWidget {
             onChanged: settings.setMemorySaverEnabled,
             title: Text(l.memorySaver),
           ),
-          SettingsHelp(text: l.memorySaverDescription),
+          SettingsHelp(title: l.memoryTitle, text: l.memorySaverDescription),
         ],
       ),
     );

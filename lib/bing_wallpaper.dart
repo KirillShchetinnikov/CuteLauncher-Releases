@@ -1,4 +1,4 @@
-import 'weather_sources.dart';
+import 'wallpaper_http.dart';
 
 /// Port of StartGrid src/js/api/bingImageDay.js, using its bounded 1080p path.
 class BingWallpaper {
@@ -19,5 +19,5 @@ class BingWallpaper {
     return BingWallpaper(uri, credit.substring(0, credit.length.clamp(0, 500)), start.add(const Duration(days: 1, minutes: 10)));
   }
 }
-Future<BingWallpaper> fetchBingWallpaper() async => BingWallpaper.parse(await HttpWeatherTransport().request(
-  Uri.https('www.bing.com', '/HPImageArchive.aspx', {'format': 'js', 'idx': '0', 'n': '1', 'mkt': 'en-US'})));
+Future<BingWallpaper> fetchBingWallpaper() async => BingWallpaper.parse(await requestWallpaperJson(
+  Uri.https('www.bing.com', '/HPImageArchive.aspx', {'format': 'js', 'idx': '0', 'n': '1', 'mkt': 'en-US'}), limit: 512 * 1024, timeout: const Duration(seconds: 15)));

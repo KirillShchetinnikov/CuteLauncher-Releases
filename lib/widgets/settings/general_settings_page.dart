@@ -1,7 +1,10 @@
 import 'package:flauncher/widgets/launcher_dialog.dart';
+
 import 'memory_page.dart';
 import 'diagnostics_page.dart';
 import 'settings_page_layout.dart';
+import 'reset_settings_tile.dart';
+import 'render_compatibility_tile.dart';
 
 import 'package:provider/provider.dart';
 
@@ -77,13 +80,17 @@ class GeneralSettingsPage extends StatelessWidget {
           FocusableSettingsTile(
             leading: const Icon(Icons.memory),
             title: Text(l.memoryTitle),
-            onPressed: () => Navigator.of(context).pushNamed(MemoryPage.routeName),
+            onPressed: () =>
+                Navigator.of(context).pushNamed(MemoryPage.routeName),
           ),
           FocusableSettingsTile(
             leading: const Icon(Icons.bug_report_outlined),
             title: Text(l.diagnosticsHubTitle),
-            onPressed: () => Navigator.of(context).pushNamed(DiagnosticsPage.routeName),
+            onPressed: () =>
+                Navigator.of(context).pushNamed(DiagnosticsPage.routeName),
           ),
+          const RenderCompatibilityTile(),
+          const ResetSettingsTile(),
           FocusableSettingsTile(
             leading: const Icon(Icons.info_outline),
             title: Text(l.aboutFlauncher),

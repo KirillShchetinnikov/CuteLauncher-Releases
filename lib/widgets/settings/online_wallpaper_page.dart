@@ -16,6 +16,7 @@ import 'package:provider/provider.dart';
 import '../../l10n/app_localizations.dart';
 import '../../providers/online_wallpaper_service.dart';
 import '../../reddit_wallpaper.dart';
+import '../../wallhaven_wallpaper.dart';
 import 'focusable_settings_tile.dart';
 
 class OnlineWallpaperPage extends StatelessWidget {
@@ -26,6 +27,23 @@ class OnlineWallpaperPage extends StatelessWidget {
     final l = AppLocalizations.of(context)!;
     final service = context.watch<OnlineWallpaperService>();
     final config = service.configuration;
+    final sourceName = switch (config.source) {
+      'bing' => l.bingWallpaper,
+      'wallhaven' => 'Wallhaven',
+      'reddit' => 'Reddit',
+      _ => l.onlineWallpaperUrlSource,
+    };
+    String errorTextForFailure() {
+      final failure = service.failure;
+      if (failure == null) return l.onlineWallpaperError;
+      return [
+        l.onlineWallpaperError,
+        '$sourceName: ${l.onlineWallpaperFailureStage(failure.stage.name)}.',
+        l.onlineWallpaperFailureReason(failure.reason.name),
+        if (failure.httpStatus != null) 'HTTP ${failure.httpStatus}',
+      ].join('\n');
+    }
+    final errorText = errorTextForFailure();
     return SettingsPageLayout(
       title: Text(
         l.onlineWallpaper,
@@ -38,10 +56,10 @@ class OnlineWallpaperPage extends StatelessWidget {
             autofocus: true,
             title: l.onlineWallpaperSource,
             value: config.source,
-            options: const ['bing', 'url', if (redditWallpapersAvailable) 'reddit'],
+            options: const ['bing', 'wallhaven', 'url', if (redditWallpapersAvailable) 'reddit'],
             enabled: !service.loading,
             label: (v) =>
-                v == 'reddit' ? 'Reddit' : v == 'bing' ? l.bingWallpaper : l.onlineWallpaperUrlSource,
+                v == 'wallhaven' ? 'Wallhaven' : v == 'reddit' ? 'Reddit' : v == 'bing' ? l.bingWallpaper : l.onlineWallpaperUrlSource,
             onChanged: (v) => service.configure(config.copyWith(source: v)),
           ),
           if (config.source == 'url')
@@ -55,6 +73,30 @@ class OnlineWallpaperPage extends StatelessWidget {
               enabled: !service.loading,
               onPressed: () => _source(context, service),
             ),
+          if (config.source == 'wallhaven') ...[
+            SettingsChoiceTile<String>(
+              title: l.redditWallpaperTheme,
+              value: config.wallhavenTheme,
+              options: wallhavenWallpaperThemes.keys.toList(),
+              enabled: !service.loading,
+              label: (v) => switch (v) {
+                'nature' => l.redditThemeNature,
+                'space' => l.redditThemeSpace,
+                'city' => l.redditThemeCity,
+                'minimal' => l.redditThemeMinimal,
+                _ => l.redditThemeAll,
+              },
+              onChanged: (v) => service.configure(config.copyWith(wallhavenTheme: v)),
+            ),
+            SettingsChoiceTile<int>(
+              title: l.onlineWallpaperInterval,
+              value: config.intervalHours,
+              options: const [1, 6, 12, 24],
+              enabled: !service.loading,
+              label: (v) => '$v ${l.onlineWallpaperHours}',
+              onChanged: (v) => service.configure(config.copyWith(intervalHours: v)),
+            ),
+          ],
           if (redditWallpapersAvailable && config.source == 'reddit') ...[
             SettingsChoiceTile<String>(
               title: l.redditWallpaperTheme,
@@ -95,7 +137,7 @@ class OnlineWallpaperPage extends StatelessWidget {
           ],
           FocusableSettingsTile(
             leading: const Icon(Icons.refresh),
-            title: Text(l.weatherRefresh),
+            title: Text(l.wallpaperRefresh),
             onPressed: service.loading || !config.enabled
                 ? null
                 : () async {
@@ -113,7 +155,7 @@ class OnlineWallpaperPage extends StatelessWidget {
                       showActionNotice(
                         context,
                         service.failed
-                            ? l.onlineWallpaperError
+                            ? errorTextForFailure()
                             : l.actionCompleted,
                         error: service.failed,
                       );
@@ -121,7 +163,7 @@ class OnlineWallpaperPage extends StatelessWidget {
                       if (context.mounted) {
                         showActionNotice(
                           context,
-                          l.onlineWallpaperError,
+                          errorTextForFailure(),
                           error: true,
                         );
                       }
@@ -132,11 +174,12 @@ class OnlineWallpaperPage extends StatelessWidget {
           if (service.failed)
             Padding(
               padding: const EdgeInsets.all(12),
-              child: Text(l.onlineWallpaperError),
+              child: Text(errorText),
             ),
-          SettingsHelp(text: [
-            if (config.source == 'bing' && service.copyright.isNotEmpty)
+          SettingsHelp(title: l.wallpaper, text: [
+            if (['bing', 'wallhaven'].contains(config.source) && service.copyright.isNotEmpty)
               service.copyright,
+            if (config.source == 'wallhaven') l.wallhavenWallpaperHint,
             config.source == 'reddit' ? l.redditWallpaperHint : l.onlineWallpaperHint,
           ].join('\n\n')),
           ResetStyleTile(onReset: () => service.configure(OnlineWallpaperConfiguration(
@@ -203,6 +246,7 @@ class OnlineWallpaperPage extends StatelessWidget {
             intervalHours: service.configuration.intervalHours,
             redditTheme: service.configuration.redditTheme,
             redditResolution: service.configuration.redditResolution,
+            wallhavenTheme: service.configuration.wallhavenTheme,
           ),
         );
       }

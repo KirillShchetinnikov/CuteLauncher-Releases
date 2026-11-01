@@ -13,7 +13,7 @@ class SettingsPageLayout extends StatefulWidget {
   final Widget? header;
   final Widget? subtitle;
   final Widget? footer;
-  final EdgeInsetsGeometry footerPadding;
+  final EdgeInsetsGeometry? footerPadding;
   final bool showDivider;
 
   const SettingsPageLayout({
@@ -23,7 +23,7 @@ class SettingsPageLayout extends StatefulWidget {
     this.header,
     this.subtitle,
     this.footer,
-    this.footerPadding = const EdgeInsets.only(left: 14),
+    this.footerPadding,
     this.showDivider = true,
   });
 
@@ -85,7 +85,9 @@ class _SettingsPageLayoutState extends State<SettingsPageLayout> {
     final target = (position.pixels + (down ? 1 : -1) * viewport.height * 0.35)
         .clamp(position.minScrollExtent, position.maxScrollExtent)
         .toDouble();
-    if (target == position.pixels) return KeyEventResult.handled;
+    // At either edge let traversal leave the scrolling body for the fixed
+    // header/footer. Consuming the key here traps remote focus in the list.
+    if (target == position.pixels) return KeyEventResult.ignored;
     _controller.jumpTo(target);
     return KeyEventResult.handled;
   }
@@ -180,7 +182,10 @@ class _SettingsPageLayoutState extends State<SettingsPageLayout> {
             ),
           ),
           if (widget.footer != null)
-            Padding(padding: widget.footerPadding, child: widget.footer!),
+            Padding(
+              padding: widget.footerPadding ?? contentPadding,
+              child: widget.footer!,
+            ),
         ],
       ),
     );

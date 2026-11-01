@@ -30,6 +30,7 @@ class TvInputsService extends ChangeNotifier
   StreamSubscription<dynamic>? _subscription;
   Timer? _refreshTimer;
   int _generation = 0;
+  bool _foreground = true;
 
   TvInputsService(
     this._channel, {
@@ -40,15 +41,20 @@ class TvInputsService extends ChangeNotifier
   }) {
     _reloadConfiguration();
     settings?.addListener(_reloadConfiguration);
-    WidgetsBinding.instance.addObserver(this);
-    _listen();
-    (work?.schedule(this, _init) ?? _init());
+    final binding = WidgetsBinding.instance;
+    _foreground = binding.lifecycleState == null || binding.lifecycleState == AppLifecycleState.resumed;
+    binding.addObserver(this);
+    if (_foreground) {
+      _listen();
+      (work?.schedule(this, _refreshSafely) ?? _refreshSafely());
+    }
   }
 
   void _listen() {
+    if (isDisposed || !_foreground) return;
     _subscription ??= (changes ?? _events.receiveBroadcastStream()).listen(
       (_) {
-        if (isDisposed) return;
+        if (isDisposed || !_foreground) return;
         _refreshTimer?.cancel();
         _refreshTimer = Timer(
           const Duration(milliseconds: 100),
@@ -71,16 +77,18 @@ class TvInputsService extends ChangeNotifier
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
+    if (isDisposed) return;
+    final foreground = state == AppLifecycleState.resumed;
+    if (foreground == _foreground) return;
+    _foreground = foreground;
+    if (_foreground) {
       _listen();
-      if (_initialized) {
-        (work?.schedule(this, _refreshSafely, maxAge: const Duration(seconds: 5)) ?? _refreshSafely());
-      }
-    } else if (state == AppLifecycleState.paused ||
-        state == AppLifecycleState.detached) {
+      (work?.schedule(this, _refreshSafely, maxAge: const Duration(seconds: 5)) ?? _refreshSafely());
+    } else {
       _subscription?.cancel();
       _subscription = null;
       _refreshTimer?.cancel();
+      work?.cancel(this);
       _generation++;
     }
   }
@@ -129,27 +137,25 @@ class TvInputsService extends ChangeNotifier
   bool get hasInputs => _inputs.isNotEmpty;
   bool get initialized => _initialized;
 
-  Future<void> _init() async {
-    if (isDisposed) return;
-    try {
-      await refreshInputs();
-    } catch (e) {
-      debugPrint('Unable to load TV inputs: $e');
-    }
-    if (isDisposed) return;
-    _initialized = true;
-    notifyListeners();
-  }
-
   Future<void> refreshInputs() async {
-    if (isDisposed) return;
+    if (isDisposed || !_foreground) return;
     final generation = ++_generation;
-    final List<Map<dynamic, dynamic>> rawInputs = await _channel.getTvInputs();
-    if (isDisposed || generation != _generation) return;
-    _reloadConfiguration();
-    _rawInputs = rawInputs.map(TvInput.fromMap).toList();
-    _inputs = configuration.present(_rawInputs);
-    notifyListeners();
+    bool current() => !isDisposed && _foreground && generation == _generation;
+    try {
+      final List<Map<dynamic, dynamic>> rawInputs = await _channel.getTvInputs();
+      if (!current()) return;
+      _reloadConfiguration();
+      _rawInputs = rawInputs.map(TvInput.fromMap).toList();
+      _inputs = configuration.present(_rawInputs);
+      _initialized = true;
+      notifyListeners();
+    } catch (_) {
+      if (current() && !_initialized) {
+        _initialized = true;
+        notifyListeners();
+      }
+      rethrow;
+    }
   }
 
   Future<bool> switchInput(String id) async {

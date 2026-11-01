@@ -37,6 +37,52 @@ import 'package:provider/provider.dart';
 import '../../mocks.mocks.dart';
 
 void main() {
+  testWidgets(
+    'scheduled wallpaper distinguishes empty and unavailable slots without polling',
+    (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final settings = SettingsService(await SharedPreferences.getInstance());
+      await settings.setBackgroundSource('scheduled');
+      final wallpaper = MockWallpaperService();
+      when(wallpaper.selection('day'))
+          .thenAnswer((_) async => (name: null, available: false));
+      when(wallpaper.selection('night'))
+          .thenAnswer((_) async => (name: 'night.png', available: false));
+      await tester.pumpWidget(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider.value(value: settings),
+            ChangeNotifierProvider<WallpaperService>.value(value: wallpaper),
+          ],
+          child: const MaterialApp(
+            locale: Locale('en'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(body: WallpaperPanelPage(parameters: true)),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Not set'), findsOneWidget);
+      expect(find.text('night.png · File unavailable'), findsOneWidget);
+      await tester.pump(const Duration(seconds: 2));
+      verify(wallpaper.selection('day')).called(1);
+      verify(wallpaper.selection('night')).called(1);
+      await tester.pumpWidget(const SizedBox());
+      settings.dispose();
+      wallpaper.dispose();
+    },
+  );
+
+  setUpAll(() async {
+    final binding = TestWidgetsFlutterBinding.ensureInitialized();
+    binding.platformDispatcher.views.single.physicalSize = Size(1280, 720);
+    binding.platformDispatcher.views.single.devicePixelRatio = 1.0;
+    // Scale-down the font size because the font 'Ahem' used when running tests is much wider than Roboto
+    binding.platformDispatcher.textScaleFactorTestValue = 0.8;
+  });
+
+
   setUpAll(() async {
     final binding = TestWidgetsFlutterBinding.ensureInitialized();
     binding.platformDispatcher.views.single.physicalSize = Size(1280, 720);
@@ -148,7 +194,7 @@ void main() {
       testWidgets('file selection reports $result clearly', (tester) async {
         final settings = MockSettingsService();
         final wallpaper = MockWallpaperService();
-        when(wallpaper.pickWallpaper()).thenAnswer((_) async {
+        when(wallpaper.pickWallpaper(picker: anyNamed('picker'))).thenAnswer((_) async {
           if (result == 'format') throw const BackgroundMediaException(BackgroundMediaFailure.format);
           if (result == 'imageSize') throw const ImageInputException(ImageInputFailure.bytes);
           if (result == 'videoSize') throw PlatformException(code: 'document_too_large');
@@ -176,7 +222,7 @@ void main() {
     testWidgets('shows a message when the document provider cannot read the image', (tester) async {
       final settings = MockSettingsService();
       final wallpaper = MockWallpaperService();
-      when(wallpaper.pickWallpaper()).thenAnswer((_) async => throw PlatformException(code: 'document_failed'));
+      when(wallpaper.pickWallpaper(picker: anyNamed('picker'))).thenAnswer((_) async => throw PlatformException(code: 'document_failed'));
       await _pumpWidgetWithProviders(tester, settings, wallpaper);
       await tester.tap(find.text('Choose file'));
       await tester.pumpAndSettle();
@@ -187,19 +233,19 @@ void main() {
     testWidgets("opens file explorer if available", (tester) async {
       final settingsService = MockSettingsService();
       final wallpaperService = MockWallpaperService();
-      when(wallpaperService.pickWallpaper()).thenAnswer((_) async => false);
+      when(wallpaperService.pickWallpaper(picker: anyNamed('picker'))).thenAnswer((_) async => false);
 
       await _pumpWidgetWithProviders(tester, settingsService, wallpaperService);
 
       await tester.tap(find.text("Choose file"));
       await tester.pumpAndSettle();
-      verify(wallpaperService.pickWallpaper());
+      verify(wallpaperService.pickWallpaper(picker: anyNamed('picker')));
     });
 
     testWidgets("shows action notice if not file explorer available", (tester) async {
       final settingsService = MockSettingsService();
       final wallpaperService = MockWallpaperService();
-      when(wallpaperService.pickWallpaper()).thenThrow(NoFileExplorerException());
+      when(wallpaperService.pickWallpaper(picker: anyNamed('picker'))).thenThrow(NoFileExplorerException());
 
       await _pumpWidgetWithProviders(tester, settingsService, wallpaperService);
 

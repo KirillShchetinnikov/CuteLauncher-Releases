@@ -1,3 +1,7 @@
+import 'package:flauncher/providers/system_status_service.dart';
+import 'package:flauncher/widgets/system_status_widget.dart';
+import 'package:flauncher/widgets/system_status_menu.dart';
+import 'package:flauncher/widgets/settings/system_widget_settings_page.dart';
 import 'package:flauncher/widgets/settings/sleep_timer_settings_page.dart';
 import 'package:flauncher/widgets/traffic_usage_menu.dart';
 import 'package:flauncher/widgets/settings/information_settings_page.dart';
@@ -15,7 +19,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_test/flutter_test.dart';
-import '../../support/settings_help.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -133,6 +136,7 @@ void main() {
         providers: [
           ChangeNotifierProvider.value(value: settings),
           ChangeNotifierProvider.value(value: sleepTimer),
+          ChangeNotifierProvider(create: (_) => SystemStatusService()),
           if (night != null) ChangeNotifierProvider.value(value: night),
           ChangeNotifierProvider.value(value: appearance),
           ChangeNotifierProvider<NetworkService>.value(value: network),
@@ -157,6 +161,61 @@ void main() {
     );
     await tester.pumpAndSettle();
   }
+
+  testWidgets('system opt-in, details, shared settings and focus survive return', (tester) async {
+    const channel = MethodChannel('cutelauncher/system_status');
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, (call) async =>
+      call.method == 'snapshot' ? {'cpuPercent': 24, 'ramTotalBytes': 1000,
+        'ramAvailableBytes': 400, 'uptimeMinutes': 90, 'temperatureCelsius': 56} : null);
+    addTearDown(() => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, null));
+    expect(settings.showSystemInStatusBar, isFalse);
+    await settings.setShowSystemInStatusBar(true);
+    await pump(tester, const Scaffold(appBar: FocusAwareAppBar()));
+    final widget = find.byType(SystemStatusWidget);
+    expect(widget, findsOneWidget);
+    expect(find.text('CPU 24%'), findsOneWidget);
+    expect(find.text('RAM 60%'), findsOneWidget);
+    final button = find.descendant(of: widget, matching: find.byType(TopPanelItem));
+    final node = tester.widget<TopPanelItem>(button).focusNode!;
+    node.requestFocus(); await tester.pump();
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter); await tester.pumpAndSettle();
+    expect(find.byType(SystemStatusMenu), findsOneWidget);
+    expect(find.text('56 °C'), findsOneWidget);
+    expect(find.text('1:30'), findsOneWidget);
+    final gear = find.descendant(of: find.byType(SystemStatusMenu), matching: find.byType(IconButton));
+    final gearNode = tester.widget<IconButton>(gear).focusNode!;
+    await tester.tap(gear); await tester.pumpAndSettle();
+    expect(find.byType(SystemWidgetSettingsPage), findsOneWidget);
+    await tester.tap(find.text('Показывать CPU в панели')); await tester.pumpAndSettle();
+    await tester.tap(find.text('Показывать RAM в панели')); await tester.pumpAndSettle();
+    expect(find.text('CPU 24%'), findsNothing);
+    expect(find.text('RAM 60%'), findsNothing);
+    final restored = SettingsService(prefs);
+    expect(restored.showSystemInStatusBar, isTrue);
+    expect(restored.systemShowCpu, isFalse); expect(restored.systemShowRam, isFalse);
+    expect(syncSettingsKeys, containsAll(['show_system_in_status_bar', 'system_show_cpu', 'system_show_ram']));
+    restored.dispose();
+    await tester.binding.handlePopRoute(); await tester.pumpAndSettle();
+    expect(gearNode.hasFocus, isTrue);
+    await tester.binding.handlePopRoute(); await tester.pumpAndSettle();
+    expect(node.hasFocus, isTrue);
+    await tester.pumpWidget(const SizedBox()); await tester.pump();
+  });
+
+  testWidgets('audio object is enabled by default and its switch updates the panel', (tester) async {
+    await pump(tester, const Scaffold(appBar: FocusAwareAppBar(), body: StatusBarObjectsPage()));
+    await tester.scrollUntilVisible(find.text('Показывать громкость'), 200,
+        scrollable: find.descendant(
+            of: find.byType(StatusBarObjectsPage),
+            matching: find.byType(Scrollable)).first);
+    expect(find.text('Показывать громкость'), findsOneWidget);
+    expect(find.byIcon(Icons.volume_up_outlined), findsOneWidget);
+    await tester.tap(find.text('Показывать громкость'));
+    await tester.pumpAndSettle();
+    expect(settings.showVolumeInStatusBar, isFalse);
+    expect(find.byIcon(Icons.volume_up_outlined), findsNothing);
+    expect(SettingsService(prefs).showVolumeInStatusBar, isFalse);
+  });
 
   testWidgets('empty section opens settings with a single immediate backdrop', (tester) async {
     when(apps.categories).thenReturn([]);
@@ -183,7 +242,9 @@ void main() {
         } else {
           // Exercise the actual toolbar route and its backdrop.
           when(inputs.hasInputs).thenReturn(true);
-          when(inputs.inputs).thenReturn([]);
+          when(inputs.inputs).thenReturn([
+            TvInput(id: 'hdmi', label: 'HDMI 1', type: TvInputType.hdmi),
+          ]);
           await pump(tester, const Scaffold(appBar: FocusAwareAppBar()), night: night);
           await tester.tap(find.ancestor(of: find.byIcon(Icons.tv_outlined), matching: find.byType(TopPanelItem)));
         }
@@ -521,7 +582,8 @@ void main() {
     await pump(tester, const SettingsPanel(initialRoute: StatusBarObjectsPage.routeName));
     final l = AppLocalizations.of(tester.element(find.byType(StatusBarObjectsPage)))!;
     expect(find.text(l.inputsUnavailableHint), findsNothing);
-    await toggleSettingsHelp(tester, l.inputsUnavailableHint);
+    await tester.scrollUntilVisible(find.text(l.inputsUnavailableHint), 180,
+        scrollable: find.byType(Scrollable).last);
     expect(find.text(l.inputsUnavailableHint), findsOneWidget);
     expect(settings.showInputsWidgetInStatusBar, isTrue);
     final toggle = find.widgetWithText(RoundedSwitchListTile, l.inputs);
@@ -696,23 +758,16 @@ void main() {
 
   testWidgets('visibility group opens common settings with separate editors', (tester) async {
     await pump(tester, const SettingsPanel(initialRoute: StatusBarObjectsPage.routeName));
-    final time = tester.getCenter(find.text('Показывать время')).dy;
-    final date = tester.getCenter(find.text('Показывать дату')).dy;
-    final weatherSwitch = tester.getCenter(find.text('Показывать погоду')).dy;
-    final blockSettings = tester.getCenter(find.text('Настройки блока')).dy;
-    expect(time, lessThan(date));
-    expect(date, lessThan(weatherSwitch));
-    expect(weatherSwitch, lessThan(blockSettings));
-    expect(find.text('Оформление часов'), findsNothing);
-    await tester.tap(find.text('Настройки блока'));
+    expect(find.byType(InformationVisibility), findsNothing);
+    await tester.tap(find.text('Часы, дата и погода'));
     await tester.pumpAndSettle();
     expect(find.byType(InformationSettingsPage), findsOneWidget);
-    expect(find.text('Оформление часов'), findsOneWidget);
-    expect(find.text('Настройки даты'), findsOneWidget);
-    expect(find.text('Настройки погоды'), findsOneWidget);
-    expect(find.text('Открывать календарь по нажатию на дату'), findsOneWidget);
-    await tester.tap(find.text('Настройки даты'));
+    expect(find.byType(InformationVisibility), findsOneWidget);
+    await tester.scrollUntilVisible(find.text('Форматы и данные'), 100);
+    await tester.tap(find.text('Форматы и данные'));
     await tester.pumpAndSettle();
+    expect(find.byType(InformationDataSettingsPage), findsOneWidget);
+    expect(find.text('Настройки погоды'), findsOneWidget);
     expect(find.text('Открывать календарь по нажатию на дату'), findsNothing);
     expect(tester.takeException(), isNull);
   });
@@ -728,15 +783,15 @@ void main() {
       const SizedBox(height: kToolbarHeight, child: FocusAwareAppBar()),
       SizedBox(height: kToolbarHeight, child: FocusAwareAppBar(remotePanel: panel)),
     ])));
-    await appearance.set('panelClockStyle', {'font': 'serif', 'size': 30, 'inheritBackground': true});
+    await appearance.set('panelInformationStyle', {'font': 'serif', 'size': 20});
     await tester.pumpAndSettle();
     final clocks = tester.widgetList<PanelClock>(find.byType(PanelClock));
     expect(clocks.length, 2);
     for (final clock in clocks) {
       final item = tester.widget<TopPanelItem>(find.descendant(of: find.byWidget(clock), matching: find.byType(TopPanelItem)));
-      expect(item.appearance!.panelTextStyle, appearance.appearance.panelTextStyle);
-      expect(item.appearance!.panelItemBackground, appearance.appearance.panelItemBackground);
-      expect(clock.style.values, appearance.appearance.clockStyle.values);
+      expect(item.backgroundColor, isNull);
+      expect(item.borderRadius, isNull);
+      expect(clock.style.values, appearance.appearance.informationStyle.values);
       expect(clock.style.textStyle(appearance.appearance.panelTextStyle).fontFamily, 'PanelSerif');
     }
     expect(tester.takeException(), isNull);
@@ -744,9 +799,9 @@ void main() {
 
   testWidgets('clock style route stays below toolbar and Back restores block settings', (tester) async {
     await pump(tester, const SettingsPanel(initialRoute: StatusBarObjectsPage.routeName));
-    await tester.tap(find.text('Настройки блока'));
+    await tester.tap(find.text('Часы, дата и погода'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Оформление часов'));
+    await tester.tap(find.text('Оформление в панели'));
     await tester.pumpAndSettle();
     expect(find.byType(PanelClockStylePage), findsOneWidget);
     expect(tester.getTopLeft(find.byType(PanelClockStylePage)).dy, greaterThan(kToolbarHeight));
@@ -758,15 +813,17 @@ void main() {
 
   for (final combined in [false, true]) {
   for (final remote in [false, true]) {
-    testWidgets('date calendar is opt-in, keeps panel visible and restores focus: remote=$remote combined=$combined', (tester) async {
+    testWidgets('date calendar is always enabled, keeps panel visible and restores focus: remote=$remote combined=$combined', (tester) async {
       await appearance.set('panelCombinedInformation', combined);
+      await appearance.set('panelDateCalendar', false);
       final panel = RemotePanelService(prefs);
+      await panel.set('combinedInformation', combined);
+      await panel.show('weather', false);
       addTearDown(panel.dispose);
       await pump(tester, Scaffold(appBar: FocusAwareAppBar(remotePanel: remote ? panel : null)));
       final date = find.byKey(const Key('statusbar_date'));
       final item = find.ancestor(of: date, matching: find.byType(TopPanelItem));
-      expect(tester.widget<TopPanelItem>(item).onPressed, isNull);
-      await appearance.set('panelDateCalendar', true);
+      expect(tester.widget<TopPanelItem>(item).onPressed, isNotNull);
       await pump(tester, Scaffold(appBar: FocusAwareAppBar(remotePanel: remote ? panel : null)));
       final state = tester.state<FocusAwareAppBarState>(find.byType(FocusAwareAppBar));
       state.dateFocusNode.requestFocus();
@@ -877,10 +934,14 @@ void main() {
       expectToolbarSpace();
     }
     expectToolbarSpace();
-    await open('Настройки');
-    await open('Показывать при активном таймере');
-    await back();
-    await back();
+    await tester.ensureVisible(find.text('Показывать при активном таймере'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Показывать при активном таймере'));
+    await tester.pumpAndSettle();
+    expect(find.byType(LauncherAlertDialog), findsOneWidget);
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expectToolbarSpace();
     await open('Таймеры');
     await open('Добавить таймер');
     await back();

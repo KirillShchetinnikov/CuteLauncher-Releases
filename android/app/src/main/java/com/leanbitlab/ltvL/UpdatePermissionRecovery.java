@@ -46,6 +46,21 @@ final class UpdatePermissionRecovery {
         return result;
     }
     private static Set<String> read(SharedPreferences p, String key) { return new HashSet<>(p.getStringSet(key, Set.of())); }
+    // Actual state is a snapshot; remembered grants survive firmware resets and failed ADB.
+    private static Set<String> remember(SharedPreferences p, Set<String> actual) {
+        Set<String> remembered = read(p, "remembered_grants");
+        if (!p.contains("remembered_grants")) {
+            remembered.addAll(read(p, "granted"));
+            remembered.addAll(read(p, "pending"));
+        }
+        Set<String> suppressed = read(p, "suppressed_grants");
+        suppressed.retainAll(actual); // Observe a completed explicit disable before accepting a new grant.
+        remembered.addAll(actual);
+        remembered.removeAll(suppressed);
+        remembered.retainAll(UpdatePermissionPolicy.ACTIONS);
+        p.edit().putStringSet("remembered_grants", remembered).putStringSet("suppressed_grants", suppressed).commit();
+        return remembered;
+    }
     private static void status(SharedPreferences p, String key, String value, long now) {
         boolean changed = !value.equals(p.getString(key, ""));
         p.edit().putString(key, value).putLong("last_checked", now).commit();
@@ -61,6 +76,7 @@ final class UpdatePermissionRecovery {
     }
     private static void reconcile(SharedPreferences p, Set<String> pending, Set<String> actual, Access access) {
         Set<String> observed = read(p, "observed_grants");
+        remember(p, actual);
         pending.removeIf(action -> observed.contains(action) && !actual.contains(action) || complete(action, actual, access));
         observed.addAll(actual); observed.retainAll(pending);
         p.edit().putStringSet("pending", pending).putStringSet("observed_grants", observed).putStringSet("granted", actual).commit();
@@ -95,6 +111,7 @@ final class UpdatePermissionRecovery {
         synchronized (AdbBridge.LOCK) {
             var p = saved(c); long previous = p.getLong("installation", 0);
             Set<String> actual = access.granted(), pending = read(p, "pending");
+            remember(p, actual);
             if (previous != current) {
                 Set<String> baseline = read(p, "granted");
                 if (p.getLong("deadline", 0) > now) {
@@ -141,22 +158,35 @@ final class UpdatePermissionRecovery {
             var p = saved(c); var pending = read(p, "pending"); pending.remove("accessibility");
             var observed = read(p, "observed_grants"); observed.remove("accessibility");
             var grants = read(p, "granted"); grants.remove("accessibility");
+            var remembered = remember(p, Set.of()); remembered.remove("accessibility");
+            var suppressed = read(p, "suppressed_grants"); suppressed.add("accessibility");
             p.edit().putStringSet("pending", pending).putStringSet("observed_grants", observed)
+                    .putStringSet("remembered_grants", remembered).putStringSet("suppressed_grants", suppressed)
                     .putStringSet("granted", grants)
                     .remove("disconnected_since").remove("health_retry_at").putInt("health_attempts", 0).commit();
             status(p, "health_status", "manual_disable", System.currentTimeMillis());
         }
     }
-    // Background checks may rebind an enabled service, never grant a disabled permission.
+    static void enabledAccessibility(Context c) {
+        synchronized (AdbBridge.LOCK) {
+            var p = saved(c);
+            var suppressed = read(p, "suppressed_grants"); suppressed.remove("accessibility");
+            var remembered = remember(p, Set.of()); remembered.add("accessibility");
+            p.edit().putStringSet("suppressed_grants", suppressed).putStringSet("remembered_grants", remembered).commit();
+        }
+    }
+    // Retry previously observed grants indefinitely, with a bounded burst and cooldown.
     static void health(Context c, long now, Access access) {
         synchronized (AdbBridge.LOCK) {
-            var p = saved(c); if (read(p, "pending").contains("accessibility")) return;
-            boolean enabled = access.accessibilityEnabled(); var grants = read(p, "granted");
-            if (enabled) grants.add("accessibility"); else grants.remove("accessibility");
-            p.edit().putStringSet("granted", grants).commit();
-            if (!enabled || access.connected()) {
+            var p = saved(c);
+            Set<String> actual = access.granted();
+            Set<String> desired = remember(p, actual);
+            Set<String> missing = UpdatePermissionPolicy.missing(desired, actual, access.connected());
+            missing.removeAll(read(p, "pending")); // The update queue owns these attempts.
+            missing.removeIf(action -> !access.supported(action));
+            if (missing.isEmpty()) {
                 p.edit().remove("disconnected_since").remove("health_retry_at").putInt("health_attempts", 0).commit();
-                status(p, "health_status", enabled ? "connected" : "disabled", now); return;
+                status(p, "health_status", "healthy", now); return;
             }
             if (!p.contains("disconnected_since")) {
                 p.edit().putLong("disconnected_since", now).putLong("health_retry_at", now + 30_000L).commit();
@@ -166,10 +196,14 @@ final class UpdatePermissionRecovery {
             int attempt = p.getInt("health_attempts", 0) + 1;
             p.edit().putInt("health_attempts", attempt >= 3 ? 0 : attempt)
                     .putLong("health_retry_at", now + (attempt >= 3 ? 3_600_000L : attempt * 60_000L)).commit();
-            if (!access.accessibilityEnabled() || access.connected()) return;
             try (Session session = access.open()) {
-                if (access.accessibilityEnabled() && !access.connected()) session.restore("accessibility", true);
-                status(p, "health_status", access.connected() ? "reconnected" : "awaiting_connection", now);
+                for (String action : missing) {
+                    if (!complete(action, access.granted(), access)) session.restore(action, false);
+                }
+                Set<String> remaining = UpdatePermissionPolicy.missing(desired, access.granted(), access.connected());
+                remaining.retainAll(missing);
+                if (remaining.isEmpty()) p.edit().remove("disconnected_since").remove("health_retry_at").putInt("health_attempts", 0).commit();
+                status(p, "health_status", remaining.isEmpty() ? "restored" : "awaiting_connection", now);
             } catch (Exception | LinkageError error) {
                 status(p, "health_status", failure(error), now);
             }
@@ -183,6 +217,7 @@ final class UpdatePermissionRecovery {
         var p = saved(c);
         var pending = read(p, "pending");
         return Map.of("status", p.getString("status", "not_checked"), "pending", new java.util.ArrayList<>(pending),
+                "remembered", new java.util.ArrayList<>(read(p, "remembered_grants")),
                 "attempts", p.getInt("attempts", 0), "retryAt", pending.isEmpty() ? 0L : p.getLong("retry_at", 0),
                 "deadline", pending.isEmpty() ? 0L : p.getLong("deadline", 0), "lastChecked", p.getLong("last_checked", 0),
                 "health", pending.contains("accessibility") ? "update_recovery_pending" : p.getString("health_status", "not_checked"),

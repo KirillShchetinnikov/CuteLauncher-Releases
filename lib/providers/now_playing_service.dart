@@ -50,6 +50,8 @@ class NowPlayingService extends ChangeNotifier with ServiceLifecycle, WidgetsBin
   bool allowed = false, failed = false, busy = false, initialized = false;
   PlayingMedia? media;
   NowPlayingService(this.settings, {this.transport = const PlatformMediaTransport()}) {
+    final lifecycle = WidgetsBinding.instance.lifecycleState;
+    _foreground = lifecycle == null || lifecycle == AppLifecycleState.resumed;
     WidgetsBinding.instance.addObserver(this);
     settings.addListener(_sync);
     _sync();
@@ -108,7 +110,11 @@ class NowPlayingService extends ChangeNotifier with ServiceLifecycle, WidgetsBin
     busy = true; notifyListeners();
     try {
       final success = await transport.action(current.id, action);
-      if (!isDisposed && generation == _generation) { await refresh(); failed = !success; }
+      if (!isDisposed && generation == _generation) {
+        await refresh();
+        // Refresh crosses another lifecycle boundary and may fail independently.
+        if (!isDisposed && generation == _generation) failed = failed || !success;
+      }
       return success;
     } catch (_) { if (!isDisposed && generation == _generation) failed = true; return false; }
     finally { if (!isDisposed && generation == _generation) { busy = false; notifyListeners(); } }

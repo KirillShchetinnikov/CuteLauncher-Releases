@@ -10,6 +10,27 @@ class AppLocalizationsTr extends AppLocalizations {
   AppLocalizationsTr([String locale = 'tr']) : super(locale);
 
   @override
+  String get wallhavenWallpaperHint =>
+      'Seçilen temaya göre rastgele Wallhaven duvar kâğıtları: SFW, 16:9, en az Full HD. Hesap veya API anahtarı gerekmez. Başlatıcı açıkken güncellenir; hata durumunda önceki duvar kâğıdı korunur.';
+
+  @override
+  String get renderCompatibilityTitle => 'Uyumlu grafik çıkışı';
+
+  @override
+  String get renderCompatibilityAutomatic =>
+      'Bu cihaz için otomatik olarak etkin';
+
+  @override
+  String get renderCompatibilityApply => 'Uygula ve başlatıcıyı yeniden başlat';
+
+  @override
+  String get renderCompatibilityFailed => 'Ayar okunamadı veya uygulanamadı';
+
+  @override
+  String get renderCompatibilityHelp =>
+      'Gece karartması sırasında arayüz titriyorsa bu modu deneyin. Doğrulanmış modellerde otomatik olarak etkinleştirilir. Diğer TV’lerde seçim yalnızca bu cihaza kaydedilir ve başlatıcı yeniden başlatıldıktan sonra uygulanır. Grafik yükünü artırabilir.';
+
+  @override
   String get diagnosticsHubTitle => 'Diagnostics';
 
   @override
@@ -1499,7 +1520,7 @@ class AppLocalizationsTr extends AppLocalizations {
       'Bir şehri manuel olarak girin veya koordinatları otomatik olarak alın.';
 
   @override
-  String get weatherRefresh => 'Güncellemeleri kontrol edin';
+  String get weatherRefresh => 'Hava durumunu yenile';
 
   @override
   String get weatherKeyPrivate =>
@@ -1510,7 +1531,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get onlineWallpaperError =>
-      'Bu resim yüklenemiyor. Önceki duvar kağıdı korunur. İndirmeyi yeniden denemek için “Güncellemeleri kontrol et”i seçin.';
+      'Bu resim yüklenemiyor. Önceki duvar kağıdı korunur. İndirmeyi yeniden denemek için “Duvar kâğıdını yenile”i seçin.';
 
   @override
   String get onlineWallpaperHint =>
@@ -1948,7 +1969,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get notificationAppsHint =>
-      'Bildirimlerine ihtiyaç duymadığınız uygulamaları kapatın. Etkinleştirilmiş bir anahtar bildirimlere izin verir; uygulama hâlâ başlatılabilir.';
+      'Bildirimleri engellenecek uygulamaları seçin. Açık anahtar bildirimlerin engellendiğini gösterir. Liste alfabetik sırada kalır.';
 
   @override
   String get notificationPanelLink => 'Üst panel görünümü';
@@ -2015,7 +2036,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get rememberCategoryFocus => 'Son odaklanılan kartı hatırla';
 
   @override
-  String get automaticBackups => 'Otomatik yedekleme';
+  String get automaticBackups => 'Yedekler ve eşitleme';
 
   @override
   String get automaticBackupsHint =>
@@ -2092,7 +2113,7 @@ class AppLocalizationsTr extends AppLocalizations {
       'Arka plan, vurgu, döşemeler, etiketler, vurgulama ve animasyon sıfırlansın mı?';
 
   @override
-  String get wallpaperDimming => 'Karartma';
+  String get wallpaperDimming => 'Karartma gücü';
 
   @override
   String get wallpaperPlacement => 'Yerleştirme';
@@ -2714,7 +2735,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get backupDriveHelp =>
-      'Bağlan\'ı seçin ve telefonunuzdaki kodu onaylayın. Yedeklemeler, Google Drive\'deki CuteLauncher klasöründe görünür; bunları indirebilir veya silebilirsiniz. Uygulama içi geri yükleme için dosya adlarını değiştirmeden tutun. Gizli yedeklemelerden yükseltme yaptıktan sonra yeniden bağlanın; eski yedeklemeler otomatik olarak taşınmaz.';
+      '“Google Drive bağla” seçeneğini seçin ve telefonunuzdaki kodu onaylayın. Yedeklemeler, Google Drive\'deki CuteLauncher klasöründe görünür; bunları indirebilir veya silebilirsiniz. Uygulama içi geri yükleme için dosya adlarını değiştirmeden tutun. Gizli yedeklemelerden yükseltme yaptıktan sonra yeniden bağlanın; eski yedeklemeler otomatik olarak taşınmaz.';
 
   @override
   String get backupFrequency => 'Yedekleme sıklığı';
@@ -3187,7 +3208,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get homeOwnReset => 'Ortak ayarları geri yükle';
 
   @override
-  String get homeParameters => 'Parametreler';
+  String get homeParameters => 'Ana ekran davranışı';
 
   @override
   String get homeSectionStyle => 'Bölüm görünümü';
@@ -4349,4 +4370,479 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get remoteMappingImportFailed =>
       'Okunamadı. En fazla 64 KB olan erişilebilir bir UTF-8 metin dosyası seçin.';
+
+  @override
+  String get vpnTitle => 'VPN';
+
+  @override
+  String get vpnSettings => 'VPN ayarları';
+
+  @override
+  String get vpnApp => 'VPN uygulaması';
+
+  @override
+  String get vpnAutomatic => 'Otomatik';
+
+  @override
+  String get vpnNone => 'Seçilmedi';
+
+  @override
+  String get vpnProfile => 'VPN profili';
+
+  @override
+  String get vpnOnlyActive => 'Yalnızca bağlıyken göster';
+
+  @override
+  String get vpnShowName => 'Uygulama adını göster';
+
+  @override
+  String get vpnColor => 'Bağlantıyı renkle vurgula';
+
+  @override
+  String get vpnNotify => 'Komut sonuçlarını bildir';
+
+  @override
+  String get vpnConnected => 'VPN bağlı';
+
+  @override
+  String get vpnDisconnected => 'VPN bağlantısı kesildi';
+
+  @override
+  String get vpnUnknown => 'VPN durumu kullanılamıyor';
+
+  @override
+  String get vpnConnect => 'Bağlan';
+
+  @override
+  String get vpnDisconnect => 'Bağlantıyı kes';
+
+  @override
+  String get vpnOpenApp => 'VPN uygulamasını aç';
+
+  @override
+  String get vpnAndroidSettings => 'Android VPN ayarları';
+
+  @override
+  String get vpnAllowControl => 'VPN kontrolüne izin ver';
+
+  @override
+  String get vpnFailed => 'VPN işlemi başarısız';
+
+  @override
+  String get vpnUnsupported =>
+      'Bu istemci doğrudan kontrolü desteklemiyor. Uygulamayı açabilirsiniz.';
+
+  @override
+  String get vpnOther =>
+      'Başka veya tanımlanamayan bir VPN bağlı. Kontrol kullanılamıyor.';
+
+  @override
+  String get vpnStartup => 'TV başlangıcında VPN';
+
+  @override
+  String get vpnPending => 'VPN bağlantısı bekleniyor';
+
+  @override
+  String get vpnHelp =>
+      'Otomatik seçim etkin VPN’i algılar ve yeniden bağlanmak için hatırlar. Uygulama ve profil algılama, bağlı yerel ADB gerektirir. AmneziaWG ve WireGuard için kontrol izni ve istemcide uzaktan kontrolün etkin olması gerekir. Happ ve MantaRay istemcide seçili profili kullanır.';
+
+  @override
+  String get vpnProfileHelp =>
+      'VPN uygulamasındaki tam profil adını girin: en fazla 15 Latin harfi, rakam ve _ = + . - karakteri. El ile bağlantıda ad mevcutsa otomatik algılanır.';
+
+  @override
+  String get vpnStartupHelp =>
+      'VPN, normal başlangıç işlemlerine ek olarak başlar. Önce profil ve izinleri ayarlayın. Ağ bekleme süresi sınırlıdır; etkin VPN değiştirilmez. Uyanma yalnızca başlatıcı işlemi çalışırken algılanır.';
+
+  @override
+  String get vpnStartupMethod => 'VPN başlatma yöntemi';
+
+  @override
+  String get vpnStartupClient => 'VPN uygulaması üzerinden';
+
+  @override
+  String get vpnStartupAlwaysOn => 'Android her zaman açık VPN';
+
+  @override
+  String get vpnAlwaysOnManaged =>
+      'Bu VPN, Android her zaman açık moduyla yönetiliyor. Modu başlangıç veya Android ayarlarından kapatın.';
+
+  @override
+  String get vpnRestartRequired =>
+      'Sistem modunu uygulamak için TV’yi yeniden başlatın.';
+
+  @override
+  String get vpnAlwaysOnHelp =>
+      'Yapılandırılmış istemciyi yerel TCP ADB üzerinden her zaman açık VPN olarak ayarlar. Android seçimi TV yeniden başlatılınca uygular. VPN dışındaki bağlantıların engellenmesi açılmaz veya değiştirilmez. Moddan çıkıldığında önceki sistem seçimi geri yüklenir.';
+
+  @override
+  String get vpnClientConfirmation => 'MantaRay penceresinde komutu onaylayın.';
+
+  @override
+  String get informationTapAction => 'Bloğa basıldığında';
+
+  @override
+  String get informationShowBoth => 'Hava durumu ve takvim';
+
+  @override
+  String get weatherForecastTitle => 'Hava tahmini';
+
+  @override
+  String get weatherForecastPeriod => 'Tahmin süresi';
+
+  @override
+  String weatherForecastDays(int days) {
+    return '$days gün';
+  }
+
+  @override
+  String get weatherForecastView => 'Tahmin görünümü';
+
+  @override
+  String get weatherForecastCards => 'Kompakt kartlar';
+
+  @override
+  String get weatherForecastList => 'Ayrıntılı liste';
+
+  @override
+  String weatherForecastAvailable(int available, int requested) {
+    return 'Mevcut günler: $available / $requested';
+  }
+
+  @override
+  String get weatherForecastTvTime => 'Tahmin tarihleri TV saatine göre';
+
+  @override
+  String get weatherClear => 'Açık';
+
+  @override
+  String get weatherCloudy => 'Bulutlu';
+
+  @override
+  String get weatherFog => 'Sis';
+
+  @override
+  String get weatherWind => 'Rüzgâr';
+
+  @override
+  String get weatherPrecipitation => 'Yağış';
+
+  @override
+  String get showVolume => 'Ses düzeyini göster';
+
+  @override
+  String get audioStatusTitle => 'Ses düzeyi ve ses çıkışı';
+
+  @override
+  String get audioOutputTv => 'TV';
+
+  @override
+  String get audioOutputHeadphones => 'Kulaklık';
+
+  @override
+  String get audioOutputMultiple => 'Birden fazla';
+
+  @override
+  String get audioMuted => 'Sessiz';
+
+  @override
+  String get backgroundStartupTitle => 'Arka plan uygulamaları';
+
+  @override
+  String get backgroundStartupFailed =>
+      'Ayarlar yüklenemedi veya kaydedilemedi';
+
+  @override
+  String get backgroundStartupRetry => 'Yeniden dene';
+
+  @override
+  String get backgroundStartupEmpty => 'Kullanıcı uygulaması yok';
+
+  @override
+  String get backgroundStartupUnavailable =>
+      'Arka planda başlatma kullanılamıyor';
+
+  @override
+  String get backgroundStartupRequested => 'Başlatma istendi';
+
+  @override
+  String get backgroundStartupHelp =>
+      'TV açıldıktan sonra arka planda bir kez başlatılacak uygulamaları seçin. CuteLauncher bir dakika içinde açılmalıdır: ana ekran yapın veya açılışta başlatmayı etkinleştirin. Uygulamalar ana ekranın arkasında sırayla başlar; seçim anında başlatmaz. Kumanda girişi veya başlatıcıdan çıkmak kalan başlatmaları iptal eder. Uykudan uyanma yeniden başlatmaz. Uyumsuz uygulamalar seçilemez. Başlatma uygulama içi özellikleri etkinleştirmez ve sürekli çalışmayı garanti etmez. İzinleri verin ve arka plan çalışmasını uygulamada ayarlayın. Android veya TV yazılımı uygulamayı durdurabilir. Seçimler yalnızca bu TV’de saklanır.';
+
+  @override
+  String get backgroundStartupToggle => 'Arka planda otomatik başlatma';
+
+  @override
+  String get systemWidgetSettings => 'Sistem araç takımı ayarları';
+
+  @override
+  String get systemShowCpu => 'Panelde CPU göster';
+
+  @override
+  String get systemShowRam => 'Panelde RAM göster';
+
+  @override
+  String get systemStorage => 'Depolama: boş / toplam';
+
+  @override
+  String get systemUptime => 'Çalışma süresi (saat:dakika)';
+
+  @override
+  String get systemTemperature => 'CPU sıcaklığı';
+
+  @override
+  String get systemAvailable => 'Kullanılabilir RAM';
+
+  @override
+  String get systemHistory => 'Son saat · ortalamalar ve zirveler';
+
+  @override
+  String get systemNow => 'Şimdi';
+
+  @override
+  String get systemHourAgo => '−60 dk';
+
+  @override
+  String get systemWidgetHelp =>
+      'Başlatıcı görünürken değerler 5 saniyede bir güncellenir. Grafikler dakika ortalamalarını ve zirvelerini gösterir. Diğer uygulamalar, uyku ve okuma hataları boşluk bırakır. Geçmiş bellekte tutulur ve başlatıcı işlemi yeniden başladığında sıfırlanır. CPU ve sıcaklık aygıt yazılımına bağlıdır. Yalnızca simgeyi göstermek için iki panel değerini de kapatın.';
+
+  @override
+  String get slideshowBrowseFolders => 'Klasörlere göz at';
+
+  @override
+  String get slideshowEnterFolderPath => 'Klasör yolunu gir';
+
+  @override
+  String get slideshowSystemPicker => 'Sistem dosya yöneticisinde seç';
+
+  @override
+  String get slideshowFolderPath => 'Klasör yolu';
+
+  @override
+  String get slideshowUseFolder => 'Bu klasörü kullan';
+
+  @override
+  String get slideshowParentFolder => 'Üst klasör';
+
+  @override
+  String get slideshowStoragePermission =>
+      'Yerleşik dosya tarayıcısını kullanmak için Android ayarlarında dosya erişimine izin verin.';
+
+  @override
+  String get slideshowPickerUnavailable =>
+      'Bu TV’de klasör seçici yok. Yerleşik tarayıcıyı kullanın veya bir yol girin.';
+
+  @override
+  String get slideshowFolderUnavailable =>
+      'Klasöre erişilemiyor. Yolu, depolama bağlantısını ve dosya erişim iznini kontrol edin.';
+
+  @override
+  String get slideshowStorageHelp =>
+      'Yerleşik tarayıcı TV ve bağlı depolamadaki klasörleri okur. Android 11 ve sonrasında tüm dosyalara, Android 9–10’da depolamaya erişim izni verin. /storage/emulated/0/Pictures gibi bir yolu elle girebilirsiniz. Dosyalar değiştirilmez.';
+
+  @override
+  String get fileBrowserTitle => 'Dosya seç';
+
+  @override
+  String get filePickerChoose => 'Dosya tarayıcısı seç';
+
+  @override
+  String get filePickerSystem => 'Sistem dosya seçicisi';
+
+  @override
+  String get filePickerBuiltIn => 'Yerleşik dosya tarayıcısı';
+
+  @override
+  String get fileBrowserEmpty => 'Gösterilecek öğe yok';
+
+  @override
+  String get fileBrowserUnavailable =>
+      'Bu konum açılamadı. Erişimi kontrol edip tekrar deneyin.';
+
+  @override
+  String get networkAndVpnGroup => 'Ağ ve VPN';
+
+  @override
+  String get soundAndInputsGroup => 'Ses ve girişler';
+
+  @override
+  String get timerAndNightModeGroup => 'Zamanlayıcı ve gece modu';
+
+  @override
+  String get systemSettingsGroup => 'Sistem ayarları';
+
+  @override
+  String get appChannelsTitle => 'Uygulama akışları';
+
+  @override
+  String get appChannelsHelp =>
+      'En fazla 16 akış seçin. Kullanılabilirlik, uygulamaların yayımladığı kanallara ve TV aygıt yazılımına bağlıdır. Boş akışlar gizlenir. Seçim bu TV’de saklanır.';
+
+  @override
+  String get appChannelsUnavailable =>
+      'Akışlar okunamadı. TV programı erişimini kontrol edin.';
+
+  @override
+  String get appChannelsEmpty => 'Kullanılabilir uygulama akışı yok.';
+
+  @override
+  String get appChannelsRefresh => 'Akışları yenile';
+
+  @override
+  String get appChannelsLaunchFailed => 'Bu içerik açılamadı.';
+
+  @override
+  String get appChannelsSaveFailed =>
+      'Seçim kaydedilemedi. En fazla 16 akış seçin.';
+
+  @override
+  String get sectionDeleteConfirm =>
+      'Bu bölüm silinsin mi? Yüklü uygulamalar korunacak.';
+
+  @override
+  String get sectionDeleteFailed => 'Bölüm silinemedi. Tekrar deneyin.';
+
+  @override
+  String get appChannelsAccess => 'Uygulama akışlarına erişim';
+
+  @override
+  String get appChannelsMissing => 'Akış kullanılamıyor';
+
+  @override
+  String get wallpaperRefresh => 'Duvar kâğıdını yenile';
+
+  @override
+  String get wallpaperDimmingHelp =>
+      '%100 özgün karartmayı korur, %200 iki katına çıkarır. Bu, siyah katmanın opaklığı değildir.';
+
+  @override
+  String get resetLauncherSettings => 'Tüm ayarları sıfırla';
+
+  @override
+  String get resetLauncherSettingsConfirmation =>
+      'Bölümler, favoriler, kumanda atamaları, bağlantılar ve uygulama depolamasındaki dosyalar dahil CuteLauncher’ın tüm ayarları ve yerel verileri silinecek. CuteLauncher kapanacak ve sonraki açılış yeni kurulum gibi olacak. Erişim izinlerinin yeniden verilmesi gerekecek. CuteLauncher depolaması dışındaki dosyalar ve diğer uygulamalar korunacak.';
+
+  @override
+  String get resetLauncherSettingsError =>
+      'Ayarlar sıfırlanamadı. Tekrar deneyin.';
+
+  @override
+  String get fileBrowserCurrentFolder => 'Geçerli klasör';
+
+  @override
+  String get fileBrowserFileName => 'Dosya adı';
+
+  @override
+  String get fileBrowserNoFolders => 'Alt klasör yok';
+
+  @override
+  String get fileBrowserNoFiles => 'Uygun dosya yok';
+
+  @override
+  String get fileBrowserPartial => 'Klasörün yalnızca bir kısmı gösteriliyor';
+
+  @override
+  String get fileBrowserRemoteHint => '← Tam ad · → Onayla';
+
+  @override
+  String get fileBrowserReadNameHint => '← Tam adı göster';
+
+  @override
+  String fileBrowserSavedTo(String path) {
+    return 'Kaydedildi: $path';
+  }
+
+  @override
+  String get backupDriveConnect => 'Google Drive bağla';
+
+  @override
+  String get discardChangesTitle => 'Değişiklikler iptal edilsin mi?';
+
+  @override
+  String get discardChangesMessage => 'Kaydedilmemiş değişiklikler kaybolacak.';
+
+  @override
+  String get backgroundFileUnavailable => 'Dosya kullanılamıyor';
+
+  @override
+  String get backupLastSuccess => 'Son başarılı işlem:';
+
+  @override
+  String get informationPlacement => 'Blok yerleşimi';
+
+  @override
+  String get informationOnBackground => 'Duvar kâğıdında';
+
+  @override
+  String get informationBackgroundAlignment => 'Duvar kâğıdı hizalaması';
+
+  @override
+  String get informationBackgroundHelp =>
+      'Saat, tarih ve hava durumu için üst panel, duvar kâğıdı veya gizli seçeneğini ayrı ayrı belirleyin. Duvar kâğıdı öğeleri girişe yanıt vermez ve kutucukları taşımaz. Dinamik manzarada dağlar saatin bir kısmını örter. Hızlı ayarlar bağımsız kalır.';
+
+  @override
+  String get informationTime => 'Saat';
+
+  @override
+  String get informationDate => 'Tarih';
+
+  @override
+  String get backgroundInformationAppearance => 'Duvar kâğıdı görünümü';
+
+  @override
+  String onlineWallpaperFailureStage(String stage) {
+    String _temp0 = intl.Intl.selectLogic(stage, {
+      'initialize': 'Depolama hazırlığı',
+      'metadata': 'Kaynak isteği',
+      'download': 'Görsel indirme',
+      'validation': 'Görsel doğrulama',
+      'save': 'Duvar kâğıdı kaydetme',
+      'other': 'Duvar kâğıdı kaydetme',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String onlineWallpaperFailureReason(String reason) {
+    String _temp0 = intl.Intl.selectLogic(reason, {
+      'dns': 'Sunucu adresi çözümlenemedi (DNS).',
+      'connection': 'Sunucuyla bağlantı kurulamadı veya sürdürülemedi.',
+      'tls': 'Güvenli bağlantı veya sertifika hatası (TLS).',
+      'timeout': 'İstek zaman aşımına uğradı.',
+      'http': 'Sunucu bir hata döndürdü.',
+      'redirect': 'Geçersiz yönlendirme veya çok fazla yönlendirme.',
+      'insecureUrl': 'Güvensiz URL: giriş bilgisi içermeyen HTTPS gereklidir.',
+      'tooLarge': 'Yanıt boyut sınırını aşıyor.',
+      'dimensions': 'Görsel boyutları sınırı aşıyor.',
+      'invalidResponse': 'Kaynak geçersiz veri döndürdü.',
+      'noImage': 'Kaynak uygun yeni görsel döndürmedi.',
+      'invalidImage': 'Dosya bozuk veya görsel biçimi desteklenmiyor.',
+      'storage': 'Duvar kâğıdı dosyaları okunamadı veya yazılamadı.',
+      'unknown': 'Bilinmeyen hata.',
+      'other': 'Bilinmeyen hata.',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get informationPanelAppearance => 'Panel görünümü';
+
+  @override
+  String get informationData => 'Biçimler ve veriler';
+
+  @override
+  String get informationGroupingMinimum => 'En az iki öğe gerekli';
+
+  @override
+  String get screenshotSceneMode => 'Ekran görüntüsü modu';
+
+  @override
+  String get screenshotSceneHour => 'Saat';
+
+  @override
+  String get screenshotSceneMinute => 'Dakika';
+
+  @override
+  String get screenshotSceneHelp =>
+      'Manzaranın ve arka plan saatinin zamanını, ayrıca manzaranın hava durumunu ayarlar. Ayarlar kapatıldıktan sonra etkin kalır. Sistem saati, hava durumu verileri ve kayıtlı ayarlar değişmez. Bu sürüm yeniden başladığında: 16:00, bulutlu.';
 }

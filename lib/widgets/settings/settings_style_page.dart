@@ -1,4 +1,3 @@
-import 'language_font_choice.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -6,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../l10n/app_localizations.dart';
 import '../../providers/appearance_service.dart';
 import '../../providers/settings_service.dart';
+import '../../launcher_defaults.dart';
 import '../launcher_dialog.dart';
 import '../action_notice.dart';
 import '../notice_placement.dart';
@@ -118,25 +118,6 @@ class _SettingsStylePageState extends State<SettingsStylePage> {
                   right ? l.settingsMenuRight : l.settingsMenuLeft,
               onChanged: settings.setSettingsMenuOnRight,
             ),
-          if (!notifications) ...[
-            SettingsChoiceTile<String>(
-              title: l.interfaceStyle,
-              value: appearance.interfaceStyle,
-              options: const ['standard', 'glass', 'soft', 'outline'],
-              label: (id) => switch (id) {
-                'glass' => l.interfaceGlass,
-                'soft' => l.interfaceSoft,
-                'outline' => l.interfaceOutline,
-                _ => l.interfaceStandard,
-              },
-              onChanged: (v) => service.set('settingsInterfaceStyle', v),
-            ),
-            LanguageFontChoice(
-              title: l.interfaceFont,
-              value: appearance.interfaceFont,
-              onChanged: (v) => service.set('settingsInterfaceFont', v),
-            ),
-          ],
           color(
             l.styleBackgroundColor,
             '${prefix}Color',
@@ -170,8 +151,8 @@ class _SettingsStylePageState extends State<SettingsStylePage> {
           ResetStyleTile(
             onReset: () async {
               await service.resetFields(
-                appearance.values.keys
-                    .where((key) => key.startsWith(prefix))
+                {...appearance.values.keys, ...LauncherDefaults.appearance.keys}
+                    .where((key) => key.startsWith(prefix) && !key.startsWith('settingsInterface'))
                     .toList(),
               );
               if (!notifications) await settings.setSettingsMenuOnRight(false);

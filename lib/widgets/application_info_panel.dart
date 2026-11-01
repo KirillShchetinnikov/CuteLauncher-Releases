@@ -2,6 +2,7 @@ import 'settings/settings_page_layout.dart';
 import 'settings/settings_menu_layout.dart';
 import 'settings/focusable_settings_tile.dart';
 import '../providers/settings_service.dart';
+import 'background_startup_app_tile.dart';
 
 import 'package:flauncher/widgets/action_notice.dart';
 /*
@@ -267,6 +268,7 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel>
                 Navigator.of(context).pop(ApplicationInfoPanelResult.none);
               },
             ),
+          BackgroundStartupAppTile(packageName: widget.application.packageName),
           FocusableSettingsTile(
             leading: Icon(
               (widget.application.hidden || context.watch<AppsService>().isTileHidden(widget.application))
@@ -351,7 +353,7 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel>
                     ),
                     onPressed: () async {
                       try {
-                        final pickedFile = await DocumentFiles.pickImage();
+                        final pickedFile = await DocumentFiles.pickImage(context: context);
                         if (pickedFile != null) {
                           final imageBytes = await DocumentFiles.readImage(
                             pickedFile,

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flauncher/database.dart';
+import 'package:flauncher/backup_schedule.dart';
 import 'package:flauncher/providers/automatic_backup_service.dart';
 import 'package:flauncher/providers/backup_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
@@ -9,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences_platform_interface/shared_preferences_platform_interface.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class _ControlledBackup extends BackupService {
@@ -29,6 +31,16 @@ class _ControlledBackup extends BackupService {
       await super.writeBackupTo(file, settingsService: settingsService,
           validateStructure: validateStructure);
     }
+  }
+}
+
+class _RejectWriteStore extends InMemorySharedPreferencesStore {
+  int writes;
+  _RejectWriteStore(this.writes) : super.empty();
+  @override
+  Future<bool> setValue(String valueType, String key, Object value) async {
+    if (--writes == 0) return false;
+    return super.setValue(valueType, key, value);
   }
 }
 
@@ -138,6 +150,42 @@ void main() {
     service.dispose(); await start();
     expect(service.keepCount, 1);
     expect(service.entries, hasLength(1));
+  });
+
+  test('rejected retention change cannot delete previous restore points later', () async {
+    await service.setKeepCount(3);
+    for (var i = 0; i < 3; i++) {
+      clock = clock.add(const Duration(seconds: 1));
+      expect(await service.createNow(), isTrue);
+    }
+    SharedPreferencesStorePlatform.instance = _RejectWriteStore(1);
+    await service.setKeepCount(1);
+    expect(service.failed, isTrue);
+    clock = clock.add(const Duration(seconds: 1));
+    expect(await service.createNow(), isTrue);
+    expect(service.entries, hasLength(3));
+    expect(service.keepCount, 3);
+  });
+
+  test('rejected enabling leaves automatic captures disabled', () async {
+    SharedPreferencesStorePlatform.instance = _RejectWriteStore(1);
+    await service.setEnabled(true);
+    expect(service.failed, isTrue);
+    expect(service.enabled, isFalse);
+    await service.checkDue();
+    expect(service.entries, isEmpty);
+  });
+
+  test('partially rejected schedule preserves the previous calendar slots', () async {
+    final before = service.schedule;
+    SharedPreferencesStorePlatform.instance = _RejectWriteStore(2);
+    await expectLater(service.setSchedule(const BackupSchedule(
+      frequency: BackupFrequency.weekly, hour: 21, minute: 45, weekday: 5,
+    )), throwsStateError);
+    expect(service.schedule.frequency, before.frequency);
+    expect(service.schedule.hour, before.hour);
+    expect(service.schedule.minute, before.minute);
+    expect(service.schedule.weekday, before.weekday);
   });
 
   test('size quota is bounded and oversized or failed copies keep previous points', () async {

@@ -10,6 +10,26 @@ class AppLocalizationsJa extends AppLocalizations {
   AppLocalizationsJa([String locale = 'ja']) : super(locale);
 
   @override
+  String get wallhavenWallpaperHint =>
+      '選択したテーマのWallhaven壁紙をランダムに取得：SFW、16:9、Full HD以上。アカウントやAPIキーは不要です。ランチャー表示中に更新し、エラー時は前の壁紙を保持します。';
+
+  @override
+  String get renderCompatibilityTitle => '互換性のあるグラフィック出力';
+
+  @override
+  String get renderCompatibilityAutomatic => 'このデバイスでは自動的に有効';
+
+  @override
+  String get renderCompatibilityApply => '適用してランチャーを再起動';
+
+  @override
+  String get renderCompatibilityFailed => '設定の読み取りまたは適用に失敗しました';
+
+  @override
+  String get renderCompatibilityHelp =>
+      '夜間の減光時に画面がちらつく場合は、このモードをお試しください。確認済みの機種では自動的に有効になります。他のテレビでは選択はこのデバイスにのみ保存され、ランチャーの再起動後に適用されます。グラフィックの負荷が増える場合があります。';
+
+  @override
   String get diagnosticsHubTitle => 'Diagnostics';
 
   @override
@@ -1468,7 +1488,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get weatherCoordinatesError => '都市を手動で入力するか、座標を自動的に取得します。';
 
   @override
-  String get weatherRefresh => 'アップデートを確認する';
+  String get weatherRefresh => '天気を更新';
 
   @override
   String get weatherKeyPrivate =>
@@ -1479,7 +1499,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get onlineWallpaperError =>
-      'この画像をロードできません。以前の壁紙は保持されます。 「アップデートを確認」を選択してダウンロードを再試行します。';
+      'この画像をロードできません。以前の壁紙は保持されます。 「壁紙を更新」を選択してダウンロードを再試行します。';
 
   @override
   String get onlineWallpaperHint => '最後に取得した画像はオフラインでも使えるよう保存されます（最大8 MiB）。';
@@ -1898,7 +1918,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get notificationAppsHint =>
-      '通知が必要ないアプリはオフにしてください。スイッチを有効にすると通知が可能になります。アプリは引き続き起動できます。';
+      '通知をブロックするアプリを選択します。スイッチがオンの場合は通知がブロックされます。一覧は名前順のままです。';
 
   @override
   String get notificationPanelLink => 'トップパネル外観';
@@ -1965,7 +1985,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get rememberCategoryFocus => '最後にフォーカスされたカードを記憶する';
 
   @override
-  String get automaticBackups => '自動バックアップ';
+  String get automaticBackups => 'バックアップと同期';
 
   @override
   String get automaticBackupsHint =>
@@ -2038,7 +2058,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get resetAppearanceHint => '背景、アクセント、タイル、ラベル、ハイライト、アニメーションをリセットしますか?';
 
   @override
-  String get wallpaperDimming => '調光';
+  String get wallpaperDimming => '暗さの強度';
 
   @override
   String get wallpaperPlacement => '配置';
@@ -2630,7 +2650,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get backupDriveHelp =>
-      '[接続] を選択し、携帯電話でコードを確認します。バックアップは、Google Drive の CuteLauncher フォルダーに表示され、ダウンロードまたは削除できます。アプリ内復元ではファイル名を変更しないでください。非表示のバックアップからアップグレードした後に再接続します。古いバックアップは自動的に移行されません。';
+      '[Google ドライブに接続] を選択し、携帯電話でコードを確認します。バックアップは、Google Drive の CuteLauncher フォルダーに表示され、ダウンロードまたは削除できます。アプリ内復元ではファイル名を変更しないでください。非表示のバックアップからアップグレードした後に再接続します。古いバックアップは自動的に移行されません。';
 
   @override
   String get backupFrequency => 'バックアップ頻度';
@@ -3087,7 +3107,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get homeOwnReset => '共通設定に戻す';
 
   @override
-  String get homeParameters => 'パラメータ';
+  String get homeParameters => 'ホーム画面の動作';
 
   @override
   String get homeSectionStyle => '断面の外観';
@@ -4211,4 +4231,469 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get remoteMappingImportFailed =>
       '読めませんでした。アクセス可能な 64 KB 以下の UTF-8 テキストファイルを選んでください。';
+
+  @override
+  String get vpnTitle => 'VPN';
+
+  @override
+  String get vpnSettings => 'VPN 設定';
+
+  @override
+  String get vpnApp => 'VPN アプリ';
+
+  @override
+  String get vpnAutomatic => '自動';
+
+  @override
+  String get vpnNone => '未選択';
+
+  @override
+  String get vpnProfile => 'VPN プロファイル';
+
+  @override
+  String get vpnOnlyActive => '接続時のみ表示';
+
+  @override
+  String get vpnShowName => 'アプリ名を表示';
+
+  @override
+  String get vpnColor => '接続を色で強調';
+
+  @override
+  String get vpnNotify => 'コマンドの結果を通知';
+
+  @override
+  String get vpnConnected => 'VPN 接続済み';
+
+  @override
+  String get vpnDisconnected => 'VPN 切断済み';
+
+  @override
+  String get vpnUnknown => 'VPN の状態を取得できません';
+
+  @override
+  String get vpnConnect => '接続';
+
+  @override
+  String get vpnDisconnect => '切断';
+
+  @override
+  String get vpnOpenApp => 'VPN アプリを開く';
+
+  @override
+  String get vpnAndroidSettings => 'Android VPN 設定';
+
+  @override
+  String get vpnAllowControl => 'VPN の操作を許可';
+
+  @override
+  String get vpnFailed => 'VPN の操作に失敗しました';
+
+  @override
+  String get vpnUnsupported => 'このクライアントは直接操作に対応していません。アプリを開けます。';
+
+  @override
+  String get vpnOther => '別の VPN または不明な VPN に接続中です。操作できません。';
+
+  @override
+  String get vpnStartup => 'テレビ起動時の VPN';
+
+  @override
+  String get vpnPending => 'VPN 接続を待機中';
+
+  @override
+  String get vpnHelp =>
+      '自動選択は接続中の VPN を検出し、再接続用に記憶します。アプリとプロファイルの検出にはローカル ADB 接続が必要です。AmneziaWG と WireGuard の直接操作には、操作の権限とクライアント側のリモート操作設定が必要です。 Happ と MantaRay はクライアントで選択したプロファイルを使用します。';
+
+  @override
+  String get vpnProfileHelp =>
+      'VPN アプリの正確なプロファイル名を入力してください。半角英字、数字、_ = + . - を使用して 15 文字以内です。手動接続時に取得できる場合は自動入力されます。';
+
+  @override
+  String get vpnStartupHelp =>
+      'VPN は通常の起動動作に加えて開始されます。事前にプロファイルと権限を設定してください。ネットワークの待機時間には制限があり、接続中の VPN は置き換えません。復帰の検出にはランチャーのプロセスが動作している必要があります。';
+
+  @override
+  String get vpnStartupMethod => 'VPN の起動方法';
+
+  @override
+  String get vpnStartupClient => 'VPN アプリ経由';
+
+  @override
+  String get vpnStartupAlwaysOn => 'Android 常時接続 VPN';
+
+  @override
+  String get vpnAlwaysOnManaged =>
+      'この VPN は Android の常時接続モードで管理されています。起動設定または Android 設定で解除してください。';
+
+  @override
+  String get vpnRestartRequired => 'システムモードを適用するにはテレビを再起動してください。';
+
+  @override
+  String get vpnAlwaysOnHelp =>
+      'ローカル TCP ADB 経由で設定済みクライアントを常時接続 VPN に指定します。テレビの再起動後に Android が選択を適用します。VPN 以外の接続をブロックする設定は有効化も変更もしません。モードを解除すると以前のシステム設定に戻ります。';
+
+  @override
+  String get vpnClientConfirmation => 'MantaRay のウィンドウでコマンドを確認してください。';
+
+  @override
+  String get informationTapAction => 'ブロックを押したとき';
+
+  @override
+  String get informationShowBoth => '天気とカレンダー';
+
+  @override
+  String get weatherForecastTitle => '天気予報';
+
+  @override
+  String get weatherForecastPeriod => '予報期間';
+
+  @override
+  String weatherForecastDays(int days) {
+    return '$days日間';
+  }
+
+  @override
+  String get weatherForecastView => '予報の表示形式';
+
+  @override
+  String get weatherForecastCards => 'コンパクトカード';
+
+  @override
+  String get weatherForecastList => '詳細リスト';
+
+  @override
+  String weatherForecastAvailable(int available, int requested) {
+    return '取得できた日数：$requested日中$available日';
+  }
+
+  @override
+  String get weatherForecastTvTime => '予報の日付はテレビの時刻に基づきます';
+
+  @override
+  String get weatherClear => '晴れ';
+
+  @override
+  String get weatherCloudy => '曇り';
+
+  @override
+  String get weatherFog => '霧';
+
+  @override
+  String get weatherWind => '風';
+
+  @override
+  String get weatherPrecipitation => '降水確率';
+
+  @override
+  String get showVolume => '音量を表示';
+
+  @override
+  String get audioStatusTitle => '音量と音声出力';
+
+  @override
+  String get audioOutputTv => 'テレビ';
+
+  @override
+  String get audioOutputHeadphones => 'ヘッドホン';
+
+  @override
+  String get audioOutputMultiple => '複数';
+
+  @override
+  String get audioMuted => 'ミュート';
+
+  @override
+  String get backgroundStartupTitle => 'バックグラウンドアプリ';
+
+  @override
+  String get backgroundStartupFailed => '設定を読み込みまたは保存できませんでした';
+
+  @override
+  String get backgroundStartupRetry => '再試行';
+
+  @override
+  String get backgroundStartupEmpty => 'ユーザーアプリがありません';
+
+  @override
+  String get backgroundStartupUnavailable => 'バックグラウンド起動は利用できません';
+
+  @override
+  String get backgroundStartupRequested => '起動を要求しました';
+
+  @override
+  String get backgroundStartupHelp =>
+      'テレビ起動後に一度だけバックグラウンドで起動するアプリを選択します。CuteLauncher をホームに設定するか、電源投入時の起動を有効にし、1分以内に開く必要があります。アプリはホームの背後で順番に起動します。選択してもすぐには起動しません。リモコン操作やランチャーからの移動で残りの起動が中止されます。スリープ復帰では再起動しません。非対応アプリは選択できません。起動はアプリ内機能の有効化や常時動作を保証しません。各アプリで権限とバックグラウンド動作を設定してください。Android やテレビのシステムが停止する場合があります。選択はこのテレビにのみ保存されます。';
+
+  @override
+  String get backgroundStartupToggle => 'バックグラウンドで自動起動';
+
+  @override
+  String get systemWidgetSettings => 'システムウィジェットの設定';
+
+  @override
+  String get systemShowCpu => 'パネルにCPUを表示';
+
+  @override
+  String get systemShowRam => 'パネルにRAMを表示';
+
+  @override
+  String get systemStorage => 'ストレージ：空き / 合計';
+
+  @override
+  String get systemUptime => '稼働時間（時間:分）';
+
+  @override
+  String get systemTemperature => 'CPU温度';
+
+  @override
+  String get systemAvailable => '利用可能なRAM';
+
+  @override
+  String get systemHistory => '過去1時間 · 平均とピーク';
+
+  @override
+  String get systemNow => '現在';
+
+  @override
+  String get systemHourAgo => '−60分';
+
+  @override
+  String get systemWidgetHelp =>
+      'ランチャーの表示中は5秒ごとに更新されます。グラフには1分ごとの平均とピークが表示されます。他のアプリの使用中、スリープ中、読み取り失敗時は空白になります。履歴はメモリに保存され、ランチャーのプロセスを再起動すると消去されます。CPUと温度の取得可否はファームウェアに依存します。パネルの両方の値をオフにすると、アイコンのみ表示されます。';
+
+  @override
+  String get slideshowBrowseFolders => 'フォルダを参照';
+
+  @override
+  String get slideshowEnterFolderPath => 'フォルダのパスを入力';
+
+  @override
+  String get slideshowSystemPicker => 'システムのファイル管理で選択';
+
+  @override
+  String get slideshowFolderPath => 'フォルダのパス';
+
+  @override
+  String get slideshowUseFolder => 'このフォルダを使用';
+
+  @override
+  String get slideshowParentFolder => '上のフォルダ';
+
+  @override
+  String get slideshowStoragePermission =>
+      '内蔵ファイルブラウザーを使うには、Androidの設定でファイルへのアクセスを許可してください。';
+
+  @override
+  String get slideshowPickerUnavailable =>
+      'このテレビにはフォルダ選択アプリがありません。内蔵ブラウザーを使うか、パスを入力してください。';
+
+  @override
+  String get slideshowFolderUnavailable =>
+      'フォルダにアクセスできません。パス、ストレージの接続、アクセス権限を確認してください。';
+
+  @override
+  String get slideshowStorageHelp =>
+      '内蔵ブラウザーはテレビと接続されたストレージのフォルダを読み取ります。Android 11 以降ではすべてのファイルへのアクセス、Android 9–10 ではストレージへのアクセスを許可してください。/storage/emulated/0/Pictures などのパスも入力できます。ファイルは変更されません。';
+
+  @override
+  String get fileBrowserTitle => 'ファイルを選択';
+
+  @override
+  String get filePickerChoose => 'ファイルブラウザーを選択';
+
+  @override
+  String get filePickerSystem => 'システムのファイル選択';
+
+  @override
+  String get filePickerBuiltIn => '内蔵ファイルブラウザー';
+
+  @override
+  String get fileBrowserEmpty => '表示する項目がありません';
+
+  @override
+  String get fileBrowserUnavailable => 'この場所を開けません。アクセス権を確認して再試行してください。';
+
+  @override
+  String get networkAndVpnGroup => 'ネットワークとVPN';
+
+  @override
+  String get soundAndInputsGroup => 'サウンドと入力';
+
+  @override
+  String get timerAndNightModeGroup => 'タイマーとナイトモード';
+
+  @override
+  String get systemSettingsGroup => 'システム設定';
+
+  @override
+  String get appChannelsTitle => 'アプリのフィード';
+
+  @override
+  String get appChannelsHelp =>
+      '最大16件のフィードを選べます。利用可否はアプリが公開するチャンネルとテレビのファームウェアに依存します。空のフィードは非表示になります。選択はこのテレビに保存されます。';
+
+  @override
+  String get appChannelsUnavailable => 'フィードを読み取れません。テレビ番組へのアクセス権を確認してください。';
+
+  @override
+  String get appChannelsEmpty => '利用できるアプリのフィードがありません。';
+
+  @override
+  String get appChannelsRefresh => 'フィードを更新';
+
+  @override
+  String get appChannelsLaunchFailed => 'このコンテンツを開けませんでした。';
+
+  @override
+  String get appChannelsSaveFailed => '選択を保存できませんでした。フィードは最大16件まで選べます。';
+
+  @override
+  String get sectionDeleteConfirm => 'このセクションを削除しますか？インストール済みのアプリは残ります。';
+
+  @override
+  String get sectionDeleteFailed => 'セクションを削除できませんでした。もう一度お試しください。';
+
+  @override
+  String get appChannelsAccess => 'アプリフィードへのアクセス';
+
+  @override
+  String get appChannelsMissing => '利用できないフィード';
+
+  @override
+  String get wallpaperRefresh => '壁紙を更新';
+
+  @override
+  String get wallpaperDimmingHelp =>
+      '100%は元の暗さを維持し、200%はその強度を2倍にします。黒いレイヤーの不透明度ではありません。';
+
+  @override
+  String get resetLauncherSettings => 'すべての設定をリセット';
+
+  @override
+  String get resetLauncherSettingsConfirmation =>
+      'CuteLauncher の設定とローカルデータ（セクション、お気に入り、リモコンの割り当て、接続、アプリ領域のファイル）をすべて削除します。CuteLauncher は終了し、次回は新規インストール時と同じ状態で起動します。アクセス権の再設定が必要です。アプリ領域外のファイルと他のアプリは保持されます。';
+
+  @override
+  String get resetLauncherSettingsError => '設定のリセットを完了できませんでした。もう一度お試しください。';
+
+  @override
+  String get fileBrowserCurrentFolder => '現在のフォルダー';
+
+  @override
+  String get fileBrowserFileName => 'ファイル名';
+
+  @override
+  String get fileBrowserNoFolders => 'サブフォルダーはありません';
+
+  @override
+  String get fileBrowserNoFiles => '該当するファイルはありません';
+
+  @override
+  String get fileBrowserPartial => 'フォルダーの一部のみ表示されています';
+
+  @override
+  String get fileBrowserRemoteHint => '← 名前全体 · → 確定';
+
+  @override
+  String get fileBrowserReadNameHint => '← 名前全体を表示';
+
+  @override
+  String fileBrowserSavedTo(String path) {
+    return '保存先: $path';
+  }
+
+  @override
+  String get backupDriveConnect => 'Google ドライブに接続';
+
+  @override
+  String get discardChangesTitle => '変更を破棄しますか？';
+
+  @override
+  String get discardChangesMessage => '保存していない変更は失われます。';
+
+  @override
+  String get backgroundFileUnavailable => 'ファイルを利用できません';
+
+  @override
+  String get backupLastSuccess => '最後に成功した操作:';
+
+  @override
+  String get informationPlacement => 'ブロックの配置';
+
+  @override
+  String get informationOnBackground => '壁紙上';
+
+  @override
+  String get informationBackgroundAlignment => '壁紙上の配置';
+
+  @override
+  String get informationBackgroundHelp =>
+      '時計、日付、天気ごとに上部パネル、壁紙上、非表示を選びます。壁紙上の要素は操作に反応せず、タイルの位置を変えません。動的な風景では山が時計の一部に重なります。クイック設定は独立しています。';
+
+  @override
+  String get informationTime => '時計';
+
+  @override
+  String get informationDate => '日付';
+
+  @override
+  String get backgroundInformationAppearance => '壁紙上の外観';
+
+  @override
+  String onlineWallpaperFailureStage(String stage) {
+    String _temp0 = intl.Intl.selectLogic(stage, {
+      'initialize': '保存先の準備',
+      'metadata': '配信元へのリクエスト',
+      'download': '画像のダウンロード',
+      'validation': '画像の検証',
+      'save': '壁紙の保存',
+      'other': '壁紙の保存',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String onlineWallpaperFailureReason(String reason) {
+    String _temp0 = intl.Intl.selectLogic(reason, {
+      'dns': 'サーバーのアドレスを解決できませんでした（DNS）。',
+      'connection': 'サーバーとの接続を確立または維持できませんでした。',
+      'tls': '安全な接続または証明書のエラー（TLS）。',
+      'timeout': 'リクエストがタイムアウトしました。',
+      'http': 'サーバーがエラーを返しました。',
+      'redirect': 'リダイレクトが無効か、回数が多すぎます。',
+      'insecureUrl': '安全でないURLです。ログイン情報を含まないHTTPSが必要です。',
+      'tooLarge': '応答がサイズ制限を超えています。',
+      'dimensions': '画像の寸法が制限を超えています。',
+      'invalidResponse': '配信元が無効なデータを返しました。',
+      'noImage': '配信元に条件を満たす新しい画像がありません。',
+      'invalidImage': 'ファイルが破損しているか、画像形式が未対応です。',
+      'storage': '壁紙ファイルを読み書きできませんでした。',
+      'unknown': '不明なエラー。',
+      'other': '不明なエラー。',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get informationPanelAppearance => 'パネルの表示';
+
+  @override
+  String get informationData => '形式とデータ';
+
+  @override
+  String get informationGroupingMinimum => '2つ以上の要素が必要です';
+
+  @override
+  String get screenshotSceneMode => 'スクリーンショットモード';
+
+  @override
+  String get screenshotSceneHour => '時';
+
+  @override
+  String get screenshotSceneMinute => '分';
+
+  @override
+  String get screenshotSceneHelp =>
+      '風景と背景時計の時刻、および風景の天気を設定します。設定を閉じても有効です。システム時刻、天気データ、保存済み設定は変更されません。このビルドの再起動時は16:00、曇りになります。';
 }

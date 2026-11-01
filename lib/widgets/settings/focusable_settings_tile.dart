@@ -1,5 +1,6 @@
 import 'package:flauncher/theme/launcher_style.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/flauncher_channel.dart';
@@ -17,12 +18,16 @@ class FocusableSettingsTile extends StatefulWidget {
   final bool autofocus;
   final FocusNode? focusNode;
   final FocusOnKeyEventCallback? onKeyEvent;
+  final ValueChanged<bool>? onFocusChange;
   final VoidCallback? onLongPress;
   final bool selected;
   final bool enabled;
   final IconData valueIcon;
   final bool alignValueToEnd;
   final bool scrollOnFocus;
+  final bool subtle;
+  final bool showActionChevron;
+  final bool dense;
 
   const FocusableSettingsTile({
     super.key,
@@ -33,12 +38,16 @@ class FocusableSettingsTile extends StatefulWidget {
     this.autofocus = false,
     this.focusNode,
     this.onKeyEvent,
+    this.onFocusChange,
     this.onLongPress,
     this.selected = false,
     this.enabled = true,
     this.valueIcon = Icons.chevron_right_rounded,
     this.alignValueToEnd = true,
     this.scrollOnFocus = true,
+    this.subtle = false,
+    this.showActionChevron = true,
+    this.dense = false,
   });
 
   @override
@@ -68,6 +77,21 @@ class _FocusableSettingsTileState extends State<FocusableSettingsTile>
 
   @override
   bool get wantKeepAlive => _focused;
+
+  void _revealIfNeeded(Duration duration) {
+    final scrollable = Scrollable.maybeOf(context);
+    final target = context.findRenderObject();
+    if (scrollable == null || target == null || !target.attached) return;
+    final viewport = RenderAbstractViewport.maybeOf(target);
+    if (viewport == null) return;
+    final start = viewport.getOffsetToReveal(target, 0).offset;
+    final end = viewport.getOffsetToReveal(target, 1).offset;
+    final offset = scrollable.position.pixels;
+    // A visible row needs only its focus highlight. Recentring it on every
+    // D-pad step starts needless animations and interrupts an ongoing scroll.
+    if (offset >= end - 0.5 && offset <= start + 0.5) return;
+    Scrollable.ensureVisible(context, alignment: 0.5, duration: duration);
+  }
 
   Widget _fullTextMetrics(Widget child) {
     if (DefaultTextStyle.of(context).style.fontFamily != 'Manrope') {
@@ -108,13 +132,10 @@ class _FocusableSettingsTileState extends State<FocusableSettingsTile>
           focusNode: widget.focusNode ?? _focusNode,
           onFocusChange: (hasFocus) {
             setState(() => _focused = hasFocus);
+            widget.onFocusChange?.call(hasFocus);
             updateKeepAlive();
             if (hasFocus && widget.scrollOnFocus) {
-              Scrollable.ensureVisible(
-                context,
-                alignment: 0.5,
-                duration: style.scrollDuration,
-              );
+              _revealIfNeeded(style.scrollDuration);
             }
           },
           child: GestureDetector(
@@ -124,9 +145,21 @@ class _FocusableSettingsTileState extends State<FocusableSettingsTile>
             onLongPress: widget.enabled ? widget.onLongPress : null,
             behavior: HitTestBehavior.opaque,
             child: Container(
-              constraints: BoxConstraints(minHeight: style.rowMinHeight),
-              padding: style.rowPadding,
-              decoration: skin.standard
+              constraints: BoxConstraints(
+                minHeight: widget.dense ? 36 : style.rowMinHeight,
+              ),
+              padding: widget.dense
+                  ? const EdgeInsets.symmetric(horizontal: 12, vertical: 4)
+                  : style.rowPadding,
+              decoration: widget.subtle && !_focused && !widget.selected
+                  ? BoxDecoration(
+                      borderRadius: BorderRadius.circular(style.rowRadius),
+                      border: Border.all(
+                        color: Colors.transparent,
+                        width: style.rowFocusWidth,
+                      ),
+                    )
+                  : skin.standard
                   ? BoxDecoration(
                       color: (_focused || widget.selected)
                           ? Color.alphaBlend(
@@ -207,7 +240,8 @@ class _FocusableSettingsTileState extends State<FocusableSettingsTile>
                         ),
                       ),
                       if (widget.trailing != null ||
-                          widget.onPressed != null) ...[
+                          widget.onPressed != null &&
+                              widget.showActionChevron) ...[
                         const SizedBox(width: 8),
                         if (widget.trailing is Text)
                           Flexible(
@@ -233,7 +267,8 @@ class _FocusableSettingsTileState extends State<FocusableSettingsTile>
                                     ),
                                   ),
                                 ),
-                                if (widget.onPressed != null) ...[
+                                if (widget.onPressed != null &&
+                                    widget.showActionChevron) ...[
                                   const SizedBox(width: 4),
                                   Icon(widget.valueIcon, size: 20),
                                 ],

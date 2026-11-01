@@ -1,5 +1,8 @@
 import 'dart:async';
 import 'dart:typed_data';
+import 'package:fake_async/fake_async.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flauncher/providers/foreground_work.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:flauncher/providers/watch_next_service.dart';
@@ -7,6 +10,7 @@ import 'package:flauncher/models/watch_next_program.dart';
 import '../mocks.mocks.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   late MockFLauncherChannel mockChannel;
   late StreamController<dynamic> watchNextStreamController;
   late WatchNextService watchNextService;
@@ -25,6 +29,135 @@ void main() {
 
   tearDown(() {
     watchNextStreamController.close();
+  });
+
+  test('event bursts wait for remote idle and coalesce poster reloads', () {
+    fakeAsync((time) {
+      final work = ForegroundWork(now: () => DateTime(2026).add(time.elapsed))..homeReady();
+      when(mockChannel.getWatchNextPrograms()).thenAnswer((_) async => [
+        {'id': 1, 'posterArtUri': 'content://poster'},
+      ]);
+      var image = 1;
+      when(mockChannel.getWatchNextPoster(any)).thenAnswer((_) async => Uint8List.fromList([image]));
+      final service = WatchNextService(mockChannel, work: work);
+      time.elapse(const Duration(milliseconds: 350));
+      expect(service.initialized, isTrue);
+      clearInteractions(mockChannel);
+      image = 2;
+      for (var i = 0; i < 20; i++) {
+        watchNextStreamController.add(true);
+      }
+      time.flushMicrotasks();
+      work.deferForInput();
+      time.elapse(const Duration(milliseconds: 200));
+      work.deferForInput();
+      time.elapse(const Duration(milliseconds: 349));
+      verifyNever(mockChannel.getWatchNextPrograms());
+      time.elapse(const Duration(milliseconds: 1));
+      verify(mockChannel.getWatchNextPrograms()).called(1);
+      verify(mockChannel.getWatchNextPoster('content://poster')).called(1);
+      expect(service.programs.single.posterBytes, [2]);
+      service.dispose();
+      work.dispose();
+    });
+  });
+
+  test('periodic fallback waits for remote idle and dispose cancels queued events', () {
+    fakeAsync((time) {
+      final work = ForegroundWork(now: () => DateTime(2026).add(time.elapsed))..homeReady();
+      final service = WatchNextService(mockChannel, work: work);
+      time.elapse(const Duration(milliseconds: 350));
+      clearInteractions(mockChannel);
+      time.elapse(const Duration(minutes: 5) - const Duration(milliseconds: 100));
+      work.deferForInput();
+      time.elapse(const Duration(milliseconds: 349));
+      verifyNever(mockChannel.getWatchNextPrograms());
+      time.elapse(const Duration(milliseconds: 101));
+      verify(mockChannel.getWatchNextPrograms()).called(1);
+      watchNextStreamController.add(true);
+      time.flushMicrotasks();
+      service.dispose();
+      time.elapse(const Duration(seconds: 1));
+      verifyNever(mockChannel.getWatchNextPrograms());
+      work.dispose();
+    });
+  });
+
+  test('events during a manual refresh schedule one follow-up after remote idle', () {
+    fakeAsync((time) {
+      final work = ForegroundWork(now: () => DateTime(2026).add(time.elapsed))..homeReady();
+      final service = WatchNextService(mockChannel, work: work);
+      time.elapse(const Duration(milliseconds: 350));
+      clearInteractions(mockChannel);
+      final pending = Completer<List<Map<dynamic, dynamic>>>();
+      when(mockChannel.getWatchNextPrograms()).thenAnswer((_) => pending.future);
+      service.refresh();
+      time.flushMicrotasks();
+      verify(mockChannel.getWatchNextPrograms()).called(1);
+      for (var i = 0; i < 20; i++) {
+        watchNextStreamController.add(true);
+      }
+      time.elapse(const Duration(milliseconds: 350));
+      work.deferForInput();
+      when(mockChannel.getWatchNextPrograms()).thenAnswer((_) async => []);
+      pending.complete([]);
+      time.flushMicrotasks();
+      verifyNever(mockChannel.getWatchNextPrograms());
+      time.elapse(const Duration(milliseconds: 350));
+      verify(mockChannel.getWatchNextPrograms()).called(1);
+      service.dispose();
+      work.dispose();
+    });
+  });
+
+  test('events share the concurrency limit with other background services', () {
+    fakeAsync((time) {
+      final work = ForegroundWork(concurrency: 1, now: () => DateTime(2026).add(time.elapsed))..homeReady();
+      final service = WatchNextService(mockChannel, work: work);
+      time.elapse(const Duration(milliseconds: 350));
+      clearInteractions(mockChannel);
+      final blocker = Completer<void>();
+      work.schedule(Object(), () => blocker.future, delay: Duration.zero);
+      time.flushMicrotasks();
+      watchNextStreamController.add(true);
+      time.elapse(const Duration(seconds: 1));
+      verifyNever(mockChannel.getWatchNextPrograms());
+      blocker.complete();
+      time.flushMicrotasks();
+      verify(mockChannel.getWatchNextPrograms()).called(1);
+      service.dispose();
+      work.dispose();
+    });
+  });
+
+  test('events queued in background run once after resume and keep poster invalidation', () {
+    fakeAsync((time) {
+      final work = ForegroundWork(now: () => DateTime(2026).add(time.elapsed))..homeReady();
+      when(mockChannel.getWatchNextPrograms()).thenAnswer((_) async => [
+        {'id': 1, 'posterArtUri': 'content://poster'},
+      ]);
+      var image = 1;
+      when(mockChannel.getWatchNextPoster(any)).thenAnswer((_) async => Uint8List.fromList([image]));
+      final service = WatchNextService(mockChannel, work: work);
+      time.elapse(const Duration(milliseconds: 350));
+      clearInteractions(mockChannel);
+      work.didChangeAppLifecycleState(AppLifecycleState.paused);
+      service.didChangeAppLifecycleState(AppLifecycleState.paused);
+      image = 2;
+      for (var i = 0; i < 20; i++) {
+        watchNextStreamController.add(true);
+      }
+      time.flushMicrotasks();
+      time.elapse(const Duration(seconds: 1));
+      verifyNever(mockChannel.getWatchNextPrograms());
+      work.didChangeAppLifecycleState(AppLifecycleState.resumed);
+      service.didChangeAppLifecycleState(AppLifecycleState.resumed);
+      time.elapse(const Duration(milliseconds: 350));
+      verify(mockChannel.getWatchNextPrograms()).called(1);
+      expect(service.programs.single.posterBytes, [2]);
+      service.dispose();
+      work.dispose();
+    });
   });
 
   group('WatchNextService Initialization', () {

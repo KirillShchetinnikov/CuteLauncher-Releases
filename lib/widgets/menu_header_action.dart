@@ -8,7 +8,7 @@ class MenuHeaderAction extends StatefulWidget {
   final bool autofocus;
   final String tooltip;
   final Widget icon;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   const MenuHeaderAction({
     super.key,

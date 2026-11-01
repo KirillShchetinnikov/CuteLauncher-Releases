@@ -1,4 +1,5 @@
 import 'settings_help.dart';
+import 'settings_read_only_value.dart';
 import '../remote_text_input.dart';
 
 import 'package:flauncher/widgets/launcher_dialog.dart';
@@ -97,15 +98,38 @@ class _DriveBackupPageState extends State<DriveBackupPage>
       title: Text(l.backupGoogleDrive),
       child: ListView(
         children: [
-          SettingsHelp(text: l.backupDriveHelp),
+          SettingsHelp(title: l.backupManagement, text: l.backupDriveHelp),
           Padding(
             padding: const EdgeInsets.all(12),
             child: Text(
               service.configured ? l.backupConfigured : l.backupNotConfigured,
             ),
           ),
+          if (service.code.isNotEmpty) ...[
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: SelectableText(
+                service.code,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+            ),
+            SettingsReadOnlyValue(
+              label: 'URL',
+              value: service.verificationUrl,
+              textDirection: TextDirection.ltr,
+            ),
+            Center(
+              child: QrImageView(
+                data: service.verificationUrl,
+                size: 160,
+                backgroundColor: Colors.white,
+              ),
+            ),
+          ],
           FocusableSettingsTile(
             title: Text(l.backupClientId),
+            enabled: !service.busy,
             valueIcon: Icons.edit_outlined,
             trailing: Text(
               _id.isEmpty ? l.settingsValueNotSet : _id,
@@ -115,13 +139,14 @@ class _DriveBackupPageState extends State<DriveBackupPage>
           ),
           FocusableSettingsTile(
             title: Text(l.backupClientSecret),
+            enabled: !service.busy,
             valueIcon: Icons.edit_outlined,
             trailing: Text(_secret.isEmpty ? l.settingsValueNotSet : '••••••'),
             onPressed: service.busy ? null : () => _edit(true),
           ),
           FocusableSettingsTile(
             leading: const Icon(Icons.link),
-            title: Text(l.cloudConnect),
+            title: Text(l.backupDriveConnect),
             enabled: canConnect,
             onPressed: !canConnect
                 ? null
@@ -141,13 +166,6 @@ class _DriveBackupPageState extends State<DriveBackupPage>
                     }
                   },
           ),
-          if (service.code.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: SelectableText(
-                '${service.verificationUrl}\n${service.code}',
-              ),
-            ),
           if (service.busy) const LinearProgressIndicator(),
           if (service.failed)
             Padding(
@@ -173,6 +191,27 @@ class _DriveBackupPageState extends State<DriveBackupPage>
             onPressed: !canDisconnect
                 ? null
                 : () async {
+                    final confirmed = await showLauncherDialog<bool>(
+                      context: context,
+                      builder: (dialog) => LauncherAlertDialog(
+                        title: Text(l.cloudDisconnect),
+                        content: Text(l.cloudDisconnectConfirm),
+                        actions: [
+                          LauncherDialogButton(
+                            autofocus: true,
+                            isCancel: true,
+                            onPressed: () => Navigator.pop(dialog, false),
+                            child: Text(l.cancel),
+                          ),
+                          LauncherDialogButton(
+                            primary: true,
+                            onPressed: () => Navigator.pop(dialog, true),
+                            child: Text(l.cloudDisconnect),
+                          ),
+                        ],
+                      ),
+                    );
+                    if (confirmed != true || !mounted || service.busy) return;
                     try {
                       await service.disconnect();
                       if (mounted) {
@@ -192,14 +231,6 @@ class _DriveBackupPageState extends State<DriveBackupPage>
                     }
                   },
           ),
-          if (service.code.isNotEmpty)
-            Center(
-              child: QrImageView(
-                data: service.verificationUrl,
-                size: 160,
-                backgroundColor: Colors.white,
-              ),
-            ),
         ],
       ),
     );

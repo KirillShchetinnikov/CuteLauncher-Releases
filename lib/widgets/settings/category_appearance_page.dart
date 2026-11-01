@@ -1,4 +1,3 @@
-import 'settings_help.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,6 +14,7 @@ import 'settings_route.dart';
 import 'appearance_page.dart';
 import 'section_style_page.dart';
 import 'reset_style_tile.dart';
+import 'app_channels_appearance_page.dart';
 
 class CategoryAppearancePage extends StatelessWidget {
   final int categoryId;
@@ -29,6 +29,9 @@ class CategoryAppearancePage extends StatelessWidget {
         ?.categories
         .where((c) => c.id == categoryId)
         .firstOrNull;
+    if (category?.isAppChannels == true) {
+      return AppChannelsAppearancePage(categoryId: categoryId);
+    }
     final mode = style.resolvedLayout(
       category == null || category.type == CategoryType.row,
     );
@@ -97,7 +100,7 @@ class CategoryAppearancePage extends StatelessWidget {
             ),
           ),
           if (geometry.gapX < tiles.horizontalGap)
-            SettingsHelp(text: l.homeGapLimited(geometry.gapX.round())),
+            Text(l.homeGapLimited(geometry.gapX.round())),
           if (mode != 'grid')
             SettingsValueStepper(
               title: l.tileRowCount,

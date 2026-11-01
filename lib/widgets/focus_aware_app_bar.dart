@@ -1,8 +1,12 @@
+import '../information_placement.dart';
 import 'dart:async';
+import 'audio_status_widget.dart';
+import 'system_status_widget.dart';
+import 'system_status_menu.dart';
 import 'traffic_usage_menu.dart';
 import 'sleep_timer_label.dart';
 import '../panel_layout.dart';
-import 'panel_calendar_dialog.dart';
+import 'information_menu.dart';
 import 'panel_clock.dart';
 import 'combined_information.dart';
 import '../providers/remote_panel_service.dart';
@@ -18,12 +22,14 @@ import '../providers/tv_inputs_service.dart';
 import '../providers/notifications_service.dart';
 import '../providers/weather_service.dart';
 import '../providers/network_service.dart';
+import '../providers/vpn_service.dart';
 import '../tile_appearance.dart';
 import 'appearance_surface.dart';
 import 'android_settings_icon.dart';
 import 'daily_data_usage_widget.dart';
 import 'date_time_widget.dart';
 import 'network_widget.dart';
+import 'vpn_widget.dart';
 import 'weather_status_bar_widget.dart';
 import 'top_panel_item.dart';
 import 'settings/settings_panel.dart';
@@ -58,8 +64,12 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
   final _notificationsFocusNode = FocusNode();
   final _sleepTimerFocusNode = FocusNode();
   final _trafficFocusNode = FocusNode();
+  final _systemFocusNode = FocusNode();
+  final _vpnFocusNode = FocusNode();
   final _nightModeFocusNode = FocusNode();
   final _dateFocusNode = FocusNode();
+  final _clockFocusNode = FocusNode();
+  final _weatherFocusNode = FocusNode();
   FocusNode get dateFocusNode => _dateFocusNode;
   FocusNode get settingsFocusNode => _settingsFocusNode;
   FocusNode get systemSettingsFocusNode => _systemSettingsFocusNode;
@@ -69,11 +79,11 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
   void focusFirst() {
     final nodes = {'settings': _settingsFocusNode, 'systemSettings': _systemSettingsFocusNode,
       'inputs': _inputsFocusNode, 'notifications': _notificationsFocusNode,
-      'traffic': _trafficFocusNode, 'sleepTimer': _sleepTimerFocusNode, 'nightMode': _nightModeFocusNode, 'date': _dateFocusNode, PanelLayout.informationGroup: _dateFocusNode};
+      'system': _systemFocusNode, 'traffic': _trafficFocusNode, 'vpn': _vpnFocusNode, 'sleepTimer': _sleepTimerFocusNode, 'nightMode': _nightModeFocusNode, 'weather': _weatherFocusNode, 'date': _dateFocusNode, 'time': _clockFocusNode, PanelLayout.informationGroup: _dateFocusNode};
     final layout = widget.remotePanel?.layout ??
         (context.read<AppearanceService?>()?.appearance ?? const TileAppearance()).panelLayout;
-    final combined = (context.read<AppearanceService?>()?.appearance ?? const TileAppearance()).combinedInformation;
-    final (left, right) = layout.displayOrders(combined);
+    final composition = InformationPanelComposition(context.read<AppearanceService?>()?.appearance ?? const TileAppearance(), context.read<SettingsService>(), remote: widget.remotePanel);
+    final (left, right) = layout.displayOrders(composition.combined, excluded: composition.excluded);
     for (final id in [...left, ...right]) {
       final node = nodes[id];
       if (node?.context != null) { node!.requestFocus(); return; }
@@ -157,8 +167,12 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
       _notificationsFocusNode,
       _sleepTimerFocusNode,
       _trafficFocusNode,
+      _systemFocusNode,
+      _vpnFocusNode,
       _nightModeFocusNode,
       _dateFocusNode,
+      _clockFocusNode,
+      _weatherFocusNode,
     ]) {
       node.dispose();
     }
@@ -176,26 +190,39 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
     if (mounted) setState(() => _settingsOpen = false);
   }
 
-  Future<void> _openCalendar() async {
-    final box = _dateFocusNode.context?.findRenderObject();
+  Future<void> _openCalendar() => _openInformation('calendar', _dateFocusNode);
+
+  Future<void> _openInformation(String action, FocusNode node) async {
+    final box = node.context?.findRenderObject();
     if (box is! RenderBox || !box.hasSize) return;
     final anchor = box.localToGlobal(Offset.zero) & box.size;
-    _setOpenWidget('date');
+    _setOpenWidget(node == _weatherFocusNode ? 'weather' : node == _clockFocusNode ? 'time' : 'date');
     try {
       await showLauncherDialog<void>(
         context: context,
         highlightRect: anchor,
-        highlightRectResolver: () => launcherControlBounds(_dateFocusNode),
+        highlightRectResolver: () => launcherControlBounds(node),
         barrierColor: Colors.transparent,
         useSafeArea: false,
         styleDialog: false,
-        builder: (_) => PanelCalendarDialog(anchor: anchor),
+        builder: (_) => InformationMenu(
+          anchor: anchor,
+          initialAction: action,
+          resolveAction: () {
+            final composition = InformationPanelComposition(context.read<AppearanceService?>()?.appearance ?? const TileAppearance(), context.read<SettingsService>(), remote: widget.remotePanel);
+            final id = node == _weatherFocusNode ? 'weather' : node == _clockFocusNode ? 'time' : 'date';
+            if (composition.combined) return composition.action;
+            if (!composition.members.contains(id)) return null;
+            return id == 'weather' ? 'weather' : 'calendar';
+          },
+          weatherOrigin: node == _weatherFocusNode,
+        ),
       );
     } finally {
       if (mounted) {
         _setOpenWidget(null);
-        if (_dateFocusNode.context != null) {
-          _dateFocusNode.requestFocus();
+        if (node.context != null) {
+          node.requestFocus();
         } else {
           focusFirst();
         }
@@ -223,6 +250,28 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
         _nightModeFocusNode.requestFocus();
       } else {
         _settingsFocusNode.requestFocus();
+      }
+    }
+  }
+
+  Future<void> _openSystem() async {
+    final box = _systemFocusNode.context?.findRenderObject();
+    if (box is! RenderBox || !box.hasSize) return;
+    final anchor = box.localToGlobal(Offset.zero) & box.size;
+    _setOpenWidget('system');
+    try {
+      await showLauncherDialog<void>(context: context, highlightRect: anchor,
+        highlightRectResolver: () => launcherControlBounds(_systemFocusNode),
+        useSafeArea: false, styleDialog: false, barrierColor: Colors.transparent,
+        builder: (_) => SystemStatusMenu(anchor: anchor));
+    } finally {
+      if (mounted) {
+        _setOpenWidget(null);
+        if (_systemFocusNode.context != null) {
+          _systemFocusNode.requestFocus();
+        } else {
+          _settingsFocusNode.requestFocus();
+        }
       }
     }
   }
@@ -277,14 +326,26 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
     final homeAppearance = context.watch<AppearanceService?>()?.appearance ?? const TileAppearance();
     final appearance = widget.remotePanel?.appearanceFor(homeAppearance) ?? homeAppearance;
     final settings = context.watch<SettingsService>();
+    final placement = widget.remotePanel == null ? InformationPlacement(homeAppearance, settings) : null;
+    final composition = InformationPanelComposition(homeAppearance, settings, remote: widget.remotePanel);
+    final informationText = homeAppearance.informationStyle.textStyle(appearance.panelTextStyleFor(Localizations.localeOf(context)), locale: Localizations.localeOf(context));
     final hasInputs = (widget.remotePanel?.visible('inputs') ?? settings.showInputsWidgetInStatusBar) &&
         context.select<TvInputsService, bool>((service) => service.hasInputs);
     final notifications = context.watch<NotificationsService>();
     final weather = context.watch<WeatherService>();
     final night = context.read<NightModeService?>();
     final nightEnabled = context.select<NightModeService?, bool>((service) => (service?.intensity ?? 0) > 0);
+    final vpnVisible = context.select<VpnService?, bool>((vpn) =>
+      vpn != null && (vpn.active || !vpn.onlyActive || vpn.failed));
     final direction = TextDirection.ltr;
     final objects = <String, Widget>{
+      if (widget.remotePanel?.visible('system') ?? settings.showSystemInStatusBar)
+        'system': SystemStatusWidget(focusNode: _systemFocusNode, selected: _activeWidget == 'system',
+          onPressed: _openSystem, visible: widget.remotePanel != null ||
+            !settings.autoHideAppBarEnabled || focused || _settingsOpen),
+      if (widget.remotePanel?.visible('audio') ?? settings.showVolumeInStatusBar)
+        'audio': AudioStatusWidget(visible: widget.remotePanel != null ||
+          !settings.autoHideAppBarEnabled || focused || _settingsOpen),
       if (widget.remotePanel?.visible('settings') ?? true) 'settings': TopPanelItem(
         focusNode: _settingsFocusNode,
         onPressed: _openSettings,
@@ -371,32 +432,47 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
         ),
       if ((widget.remotePanel?.visible('network') ?? settings.showNetworkIndicatorInStatusBar))
         'network': NetworkWidget(onMenuChanged: (open) => _setOpenWidget(open ? 'network' : null)),
+      if ((vpnVisible || _activeWidget == 'vpn') && (widget.remotePanel?.visible('vpn') ?? settings.showVpnInStatusBar))
+        'vpn': VpnWidget(focusNode: _vpnFocusNode, onMenuChanged: (open) {
+          _setOpenWidget(open ? 'vpn' : null);
+          if (!open && !vpnVisible) {
+            WidgetsBinding.instance.addPostFrameCallback((_) { if (mounted) focusFirst(); });
+          }
+        }),
       if ((widget.remotePanel?.visible('traffic') ?? settings.showDataWidgetInStatusBar) &&
           context.select<NetworkService, bool>((service) => service.hasUsageStatsPermission))
         'traffic': TopPanelItem(key: const ValueKey('traffic_button'), focusNode: _trafficFocusNode, selected: _activeWidget == 'traffic',
           onPressed: _openTraffic, child: const DailyDataUsageWidget()),
-      if ((widget.remotePanel?.visible('weather') ?? settings.showWeatherInStatusBar) && weather.hasWeather)
-        'weather': WeatherStatusBarWidget(
-          showWeather: widget.remotePanel == null ? null : true,
-        ),
-      if ((widget.remotePanel?.visible('date') ?? settings.showDateInStatusBar))
+      if ((widget.remotePanel?.visible('weather') ?? placement!.onPanel('weather')))
+        'weather': Semantics(label: AppLocalizations.of(context)?.weather, child: WeatherStatusBarWidget(
+          showWeather: true,
+          textStyle: informationText,
+          focusNode: _weatherFocusNode,
+          selected: _activeWidget == 'weather',
+          onPressed: () => _openInformation('weather', _weatherFocusNode),
+        )),
+      if ((widget.remotePanel?.visible('date') ?? placement!.onPanel('date')))
         'date': TopPanelItem(
           focusNode: _dateFocusNode,
           selected: _activeWidget == 'date',
-          onPressed: homeAppearance.dateCalendar ? _openCalendar : null,
+          onPressed: _openCalendar,
+          textStyle: informationText,
           child: DateTimeWidget(
             settings.dateFormat,
             key: const Key('statusbar_date'),
-            textStyle: appearance.panelTextStyleFor(Localizations.localeOf(context)),
+            textStyle: informationText,
           ),
         ),
-      if ((widget.remotePanel?.visible('time') ?? settings.showTimeInStatusBar))
+      if ((widget.remotePanel?.visible('time') ?? placement!.onPanel('time')))
         'time': PanelClock(
-          style: homeAppearance.clockStyle,
+          style: homeAppearance.informationStyle,
+          focusNode: _clockFocusNode,
+          selected: _activeWidget == 'time',
+          onPressed: () => _openInformation('calendar', _clockFocusNode),
           format: settings.timeFormat,
         ),
     };
-    if (appearance.combinedInformation) {
+    if (composition.combined) {
       final layout = widget.remotePanel?.layout ?? appearance.panelLayout;
       final ids = [...layout.left, ...layout.right]
           .where((id) => const ['time', 'date', 'weather'].contains(id) && objects.containsKey(id)).toList();
@@ -409,7 +485,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
           useFahrenheit: settings.useFahrenheit,
           timeFormat: settings.timeFormat, dateFormat: settings.dateFormat,
           focusNode: _dateFocusNode, selected: _activeWidget == 'date',
-          onCalendar: homeAppearance.dateCalendar ? _openCalendar : null,
+          onPressed: () => _openInformation(composition.action, _dateFocusNode),
         );
         for (final id in ids) { objects.remove(id); }
         objects[PanelLayout.informationGroup] = combined;
@@ -417,7 +493,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
     }
     Widget group(String key) {
       final layout = widget.remotePanel?.layout ?? appearance.panelLayout;
-      final (left, right) = layout.displayOrders(appearance.combinedInformation);
+      final (left, right) = layout.displayOrders(composition.combined, excluded: composition.excluded);
       final order = (key == 'panelButtonsOrder' ? left : right)
           .where(objects.containsKey)
           .toList();

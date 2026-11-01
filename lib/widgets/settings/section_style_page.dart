@@ -8,6 +8,7 @@ import 'settings_page_layout.dart';
 import 'settings_value_stepper.dart';
 import 'settings_choice_tile.dart';
 import 'home_style_setting.dart';
+import 'settings_help.dart';
 import 'reset_style_tile.dart';
 import 'color_palette_dialog.dart';
 import 'focusable_settings_tile.dart';
@@ -51,11 +52,12 @@ class SectionStylePage extends StatelessWidget {
             title: title,
             value: value,
             options: options,
-            label: (v) => '$v',
+            label: (v) => k == 'inactiveOpacity' ? '${((v as num) * 100).round()}%' : '$v',
             onChanged: (v) => set(k, v),
           ),
         );
     return [
+      SettingsHelp(title: l.homeInherited, text: l.homeStylePartial),
       if (categoryId == null) ...[
         SettingsChoiceTile<String>(
           title: l.homeScrollMode,

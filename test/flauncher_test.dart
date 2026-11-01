@@ -1,4 +1,13 @@
+import 'package:flauncher/weather_sources.dart';
+import 'dart:async';
+import 'dart:ui' as ui;
 import 'package:flauncher/models/watch_next_program.dart';
+import 'package:flauncher/providers/app_channels_service.dart';
+import 'package:flauncher/widgets/app_content_row.dart';
+import 'package:flauncher/widgets/reordering_tile_viewport.dart';
+import 'package:flauncher/widgets/tile_paint_layer.dart';
+import 'package:flauncher/widgets/tile_theme_outline.dart';
+import 'support/app_channels.dart';
 import 'package:flauncher/widgets/continue_watching_row.dart';
 import 'package:flauncher/sleep_timer_configuration.dart';
 import 'package:flauncher/adaptive_landscape.dart';
@@ -44,12 +53,15 @@ import 'package:flauncher/providers/watch_next_service.dart';
 import 'package:flauncher/providers/weather_service.dart';
 import 'package:flauncher/widgets/application_info_panel.dart';
 import 'package:flauncher/widgets/home_section.dart';
+import 'package:flauncher/widgets/category_focus.dart';
 
 import 'package:flauncher/widgets/app_card.dart';
 import 'package:flauncher/widgets/appearance_surface.dart';
 import 'package:flauncher/widgets/focus_aware_app_bar.dart';
+import 'package:flauncher/widgets/background_information.dart';
 import 'package:flauncher/widgets/settings/settings_panel_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -67,6 +79,860 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 
 void main() {
+  testWidgets('wallpaper information never changes tile viewport or remote navigation', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    final appearance = AppearanceService(prefs);
+    final remote = RemotePanelService(prefs);
+    final apps = mkAppService();
+    final category = fakeCategory(name: 'Apps');
+    category.applications.add(fakeApp(packageName: 'background.app'));
+    when(apps.applications).thenReturn(category.applications);
+    when(apps.launcherSections).thenReturn([category]);
+    final settings = mkSettingsService();
+    when(settings.showTimeInStatusBar).thenReturn(true);
+    when(settings.showDateInStatusBar).thenReturn(true);
+    when(settings.showWeatherInStatusBar).thenReturn(false);
+    await _pumpWidgetWithProviders(tester, mkWallpaperService(), apps, settings, appearance: appearance, remotePanel: remote);
+    getFocusNodeForApp(tester, 'background.app')!.requestFocus();
+    await tester.pumpAndSettle();
+    final card = find.byWidgetPredicate((w) => w is AppCard && w.application.packageName == 'background.app');
+    final before = tester.getRect(card);
+    for (final size in [96, 144, 48]) {
+      await appearance.set('panelInformationPlacements', {'time': 'background', 'date': 'panel', 'weather': 'hidden'});
+      await appearance.set('panelBackgroundInformationSize', size);
+      await tester.pumpAndSettle();
+      expect(tester.getRect(card), before);
+      expect(find.byKey(const Key('background_clock')), findsOneWidget);
+      expect(find.byKey(const Key('statusbar_clock')), findsNothing);
+      expect(find.byKey(const Key('statusbar_date')), findsOneWidget);
+      expect(find.descendant(of: find.byType(BackgroundInformation), matching: find.byType(TextButton)), findsNothing);
+    }
+    // Switching wallpaper sources relocates the one decorative instance,
+    // without inserting a header or changing the tile viewport.
+    for (final source in ['landscape', 'picture', 'landscape']) {
+      when(settings.backgroundSource).thenReturn(source);
+      when(settings.landscape).thenReturn(const LandscapeConfiguration(timeOfDay: false, motion: false));
+      await _pumpWidgetWithProviders(tester, mkWallpaperService(), apps, settings, appearance: appearance, remotePanel: remote);
+      await tester.pumpAndSettle();
+      expect(find.byType(BackgroundInformation), findsOneWidget);
+      expect(tester.getRect(card), before);
+    }
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+    await tester.pumpAndSettle();
+    expect(isSettingsIconFocused(tester), isTrue);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.pumpAndSettle();
+    expect(isAppCardFocused(tester, 'background.app'), isTrue);
+    final previewOwner = Object();
+    remote.setSettingsPreview(previewOwner, true);
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('background_clock')), findsOneWidget);
+    expect(find.byKey(const Key('statusbar_clock')), findsOneWidget);
+    expect(tester.getRect(card), before);
+    remote.setSettingsPreview(previewOwner, false);
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('statusbar_clock')), findsNothing);
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox());
+    remote.dispose(); appearance.dispose();
+  });
+  for (final border in ['outline', 'glow']) {
+  testWidgets('feed focus pulse does not repaint the shared tile layer or labels: $border', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    final appearance = AppearanceService(prefs);
+    await appearance.set('focusPulse', false);
+    await appearance.set('focusBorderStyle', border);
+    final feedSettings = SettingsService(prefs);
+    final channel = FeedChannel()..data = [feed(1, count: 5)];
+    final feeds = AppChannelsService(channel, feedSettings);
+    await feedSettings.setSelectedAppChannels(['video.app:1']);
+    await tester.runAsync(feeds.refresh);
+    final apps = mkAppService();
+    when(apps.applications).thenReturn([]);
+    when(apps.launcherSections).thenReturn([appChannelsGroup()]);
+    final settings = mkSettingsService();
+    when(settings.appHighlightAnimationEnabled).thenReturn(true);
+    when(settings.themes).thenReturn('modern');
+    when(settings.selectedAppChannels).thenReturn(feedSettings.selectedAppChannels);
+    await _pumpWidgetWithProviders(tester, mkWallpaperService(), apps, settings,
+        feeds: feeds, appearance: appearance);
+    await appearance.set('focusPulse', true);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+    final layer = tester.renderObject(find.byType(TilePaintLayer));
+    final labels = find.descendant(of: find.byType(AppContentRow), matching: find.byType(RichText))
+        .evaluate().map((element) => element.findRenderObject()).toSet();
+    var layerPaints = 0, labelPaints = 0, outlinePaints = 0;
+    final previous = debugOnProfilePaint;
+    debugOnProfilePaint = (object) {
+      previous?.call(object);
+      if (identical(object, layer)) layerPaints++;
+      if (labels.contains(object)) labelPaints++;
+      if (object is RenderCustomPaint &&
+          (object.painter is TileOutlinePainter || object.painter is TileGlowPainter)) {
+        outlinePaints++;
+      }
+    };
+    addTearDown(() => debugOnProfilePaint = previous);
+    double opacity() {
+      final painter = tester.widget<CustomPaint>(find.byWidgetPredicate((w) => w is CustomPaint &&
+          (w.painter is TileOutlinePainter || w.painter is TileGlowPainter))).painter;
+      return painter is TileGlowPainter ? painter.color.a : (painter as TileOutlinePainter).color.a;
+    }
+    final before = opacity();
+    for (var i = 0; i < 20; i++) { await tester.pump(const Duration(milliseconds: 16)); }
+    expect(opacity(), isNot(before), reason: 'The selected outline must still animate');
+    expect(outlinePaints, greaterThan(10), reason: 'The outline repaints without rebuilding');
+    expect(layerPaints, 0, reason: 'A pulse must repaint only the selected artwork');
+    expect(labelPaints, 0);
+    debugOnProfilePaint = previous;
+    await tester.pumpWidget(const SizedBox());
+    feeds.dispose(); feedSettings.dispose(); appearance.dispose(); await channel.events.close();
+  });
+  }
+  for (final locale in [const Locale('en'), const Locale('ar')]) {
+    testWidgets('feed refresh keeps decoded artwork, cards and focus ${locale.languageCode}', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      final appearance = AppearanceService(prefs);
+      await appearance.set('focusPulse', false);
+      final feedSettings = SettingsService(prefs);
+      final channel = FeedChannel()
+        ..data = [feed(1, poster: 'content://poster/shared')]
+        ..posterResponse = () async => kTransparentImage;
+      final feeds = AppChannelsService(channel, feedSettings);
+      await feedSettings.setSelectedAppChannels(['video.app:1']);
+      await tester.runAsync(feeds.refresh);
+      final apps = mkAppService();
+      when(apps.applications).thenReturn([]);
+      when(apps.launcherSections).thenReturn([appChannelsGroup()]);
+      final settings = mkSettingsService();
+      when(settings.selectedAppChannels).thenReturn(feedSettings.selectedAppChannels);
+      await _pumpWidgetWithProviders(tester, mkWallpaperService(), apps, settings,
+          feeds: feeds, appearance: appearance, locale: locale);
+      final images = find.descendant(of: find.byType(AppContentRow), matching: find.byType(Image));
+      Future<void> decoded() async {
+        await tester.runAsync(() => precacheImage(tester.widget<Image>(images.first).image, tester.element(images.first)));
+        await tester.pump();
+      }
+      await decoded();
+      final image = tester.renderObject<RenderImage>(find.descendant(of: images.first, matching: find.byType(RawImage)));
+      final originalImage = image.image;
+      expect(originalImage, isNotNull);
+      final focus = FocusManager.instance.primaryFocus;
+      final scroll = tester.widget<SingleChildScrollView>(find.byType(SingleChildScrollView).first).controller!;
+      final offset = scroll.offset;
+      final original = feeds.channels.first;
+      var notifications = 0;
+      feeds.addListener(() => notifications++);
+      void stable() {
+        expect(find.byType(AppContentRow), findsOneWidget);
+        expect(find.byIcon(Icons.movie_outlined), findsNothing);
+        expect(FocusManager.instance.primaryFocus, same(focus));
+        expect(scroll.offset, closeTo(offset, .01));
+      }
+      final catalogue = Completer<List<Map<dynamic, dynamic>>>();
+      final poster = Completer<Uint8List?>();
+      channel.response = () => catalogue.future;
+      channel.posterResponse = () => poster.future;
+      channel.events.add(true);
+      await tester.pump(const Duration(milliseconds: 16));
+      stable();
+      expect(image.image, same(originalImage));
+      catalogue.complete([feed(1, poster: 'content://poster/shared')]);
+      for (var i = 0; i < 6; i++) {
+        await tester.pump(const Duration(milliseconds: 16));
+        stable();
+        expect(image.image, same(originalImage));
+      }
+      expect(feeds.channels.first, same(original));
+      expect(notifications, 0);
+      poster.complete(Uint8List.fromList(kTransparentImage));
+      await tester.pumpAndSettle();
+      stable();
+      expect(image.image, same(originalImage));
+      // The provider can replace bytes at the same URI without changing metadata.
+      final replacement = await tester.runAsync(() async {
+        final recorder = ui.PictureRecorder();
+        Canvas(recorder).drawColor(Colors.red, BlendMode.src);
+        final picture = recorder.endRecording();
+        final bitmap = await picture.toImage(2, 2);
+        final data = await bitmap.toByteData(format: ui.ImageByteFormat.png);
+        bitmap.dispose(); picture.dispose();
+        return data!.buffer.asUint8List();
+      });
+      channel.response = null;
+      final nextPoster = Completer<Uint8List?>();
+      channel.posterResponse = () => nextPoster.future;
+      channel.events.add(true);
+      await tester.pump(const Duration(milliseconds: 16));
+      stable();
+      expect(image.image, same(originalImage));
+      nextPoster.complete(replacement);
+      await tester.pump();
+      await tester.pump();
+      await decoded();
+      await tester.pumpAndSettle();
+      stable();
+      expect(image.image, isNot(same(originalImage)));
+      expect(notifications, 0);
+      final updatedImage = image.image;
+      channel.fail = true;
+      channel.events.add(true);
+      await tester.pumpAndSettle();
+      stable();
+      expect(feeds.unavailable, isTrue);
+      expect(image.image, same(updatedImage));
+      channel.fail = false;
+      channel.posterResponse = () async => null;
+      channel.events.add(true);
+      await tester.pumpAndSettle();
+      stable();
+      expect(feeds.unavailable, isFalse);
+      expect(image.image, same(updatedImage));
+      final differentUri = Completer<Uint8List?>();
+      channel.posterResponse = () => differentUri.future;
+      channel.data = [feed(1, poster: 'content://poster/shared')];
+      final programs = channel.data.first['programs'] as List;
+      (programs.first as Map)['title'] = 'Updated title';
+      (programs.first as Map)['posterArtUri'] = 'content://poster/replacement';
+      await tester.runAsync(feeds.refresh);
+      for (var i = 0; i < 4; i++) {
+        await tester.pump(const Duration(milliseconds: 16));
+        stable();
+        expect(image.image, same(updatedImage));
+      }
+      expect(find.text('Updated title'), findsOneWidget);
+      expect(feeds.channels.first.programs.last, same(original.programs.last));
+      differentUri.complete(kTransparentImage);
+      await tester.pump(); await tester.pump(); await decoded();
+      stable();
+      expect(image.image, isNot(same(updatedImage)));
+      channel.data = [feed(1, count: 0)];
+      await tester.runAsync(feeds.refresh);
+      await tester.pumpAndSettle();
+      expect(find.byType(AppContentRow), findsNothing);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+      feeds.dispose(); feedSettings.dispose(); appearance.dispose(); await channel.events.close();
+    });
+  }
+  testWidgets('feeds use their section title and supported local appearance', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    final appearance = AppearanceService(prefs);
+    await appearance.set('focusPulse', false);
+    await appearance.set('sectionTitles', false);
+    await appearance.set('aspectRatio', 1);
+    final group = appChannelsGroup()..name = 'My recommendations';
+    await appearance.setCategory(group.id, 'layout', 'grid');
+    await appearance.setCategory(group.id, 'columns', 6);
+    for (final entry in <String, dynamic>{'sectionTitles': true, 'sectionIcons': true,
+      'size': 96, 'horizontalGap': 34, 'labelSize': 16, 'labelColor': 0xffffd54f,
+      'radius': 20, 'sectionPadding': 24, 'sectionBackground': 0xff123456}.entries) {
+      await appearance.setCategoryTile(group.id, entry.key, entry.value);
+    }
+    final feedSettings = SettingsService(prefs);
+    final channel = FeedChannel()..data = [feed(1, count: 20)];
+    final feeds = AppChannelsService(channel, feedSettings);
+    await feedSettings.setSelectedAppChannels(['video.app:1']);
+    await tester.runAsync(feeds.refresh);
+    final apps = mkAppService();
+    when(apps.applications).thenReturn([]);
+    when(apps.launcherSections).thenReturn([group]);
+    final settings = mkSettingsService();
+    when(settings.selectedAppChannels).thenReturn(feedSettings.selectedAppChannels);
+    await _pumpWidgetWithProviders(tester, mkWallpaperService(), apps, settings,
+        feeds: feeds, appearance: appearance);
+    expect(find.text('My recommendations'), findsOneWidget);
+    expect(find.text('Feed 1 · video.app'), findsOneWidget);
+    expect(find.byIcon(Icons.video_library_outlined), findsOneWidget);
+    final container = tester.widget<Container>(find.byKey(const ValueKey('app-channels-group')));
+    expect(container.color, const Color(0xff123456));
+    expect(container.padding, const EdgeInsets.all(24));
+    final viewport = tester.widget<ReorderingTileViewport>(find.descendant(
+        of: find.byType(AppContentRow), matching: find.byType(ReorderingTileViewport)));
+    expect(viewport.layout.mode, 'row');
+    expect(viewport.layout.rows, 1);
+    expect(viewport.layout.height, 96);
+    expect(viewport.layout.width / viewport.layout.height, closeTo(16 / 9, .001));
+    expect(viewport.layout.gapX, 34);
+    final caption = tester.widget<Text>(find.text('Content 1/0'));
+    expect(caption.style!.fontSize, 16);
+    expect(caption.style!.color, const Color(0xffffd54f));
+    final restored = AppearanceService(prefs);
+    expect(restored.tilesFor(group.id).values, appearance.tilesFor(group.id).values);
+    restored.dispose();
+    await appearance.setCategoryTile(group.id, 'sectionTitles', false);
+    await tester.pumpAndSettle();
+    expect(find.text('My recommendations'), findsNothing);
+    expect(find.text('Feed 1 · video.app'), findsNothing);
+    expect(find.text('Content 1/0'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox());
+    feeds.dispose(); feedSettings.dispose(); appearance.dispose(); await channel.events.close();
+  });
+  testWidgets('feed artwork stays above the viewport while focus scale shrinks', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    final appearance = AppearanceService(prefs);
+    await appearance.set('focusPulse', false);
+    await appearance.set('focusScale', .5);
+    final feedSettings = SettingsService(prefs);
+    final channel = FeedChannel()..data = [feed(1, count: 5)];
+    final feeds = AppChannelsService(channel, feedSettings);
+    await feedSettings.setSelectedAppChannels(['video.app:1']);
+    await tester.runAsync(feeds.refresh);
+    final apps = mkAppService();
+    when(apps.applications).thenReturn([]);
+    when(apps.launcherSections).thenReturn([appChannelsGroup()]);
+    final settings = mkSettingsService();
+    when(settings.appSelectorTransitionAnimationEnabled).thenReturn(true);
+    when(settings.appHighlightAnimationEnabled).thenReturn(true);
+    when(settings.selectedAppChannels).thenReturn(feedSettings.selectedAppChannels);
+    await _pumpWidgetWithProviders(tester, mkWallpaperService(), apps, settings,
+        feeds: feeds, appearance: appearance);
+    final cards = find.descendant(of: find.byType(AppContentRow), matching: find.byType(InkWell));
+    expect(tester.widget<TileThemeOutline>(find.descendant(
+        of: cards.first, matching: find.byType(TileThemeOutline))).pulse, isFalse);
+    final oldLayer = find.descendant(of: cards.first, matching: find.byType(RaisedTile));
+    tester.widget<InkWell>(cards.at(1)).focusNode!.requestFocus();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 16));
+    expect(tester.widget<RaisedTile>(oldLayer).raised, isTrue,
+        reason: 'The shrinking image must not jump under the viewport clip');
+    expect(tester.widget<RaisedTile>(oldLayer).foreground, isFalse);
+    await tester.pumpAndSettle();
+    expect(tester.widget<RaisedTile>(oldLayer).raised, isFalse);
+    await appearance.set('focusTransition', false);
+    await tester.pumpAndSettle();
+    final animation = find.descendant(of: cards.at(1), matching: find.byType(AnimatedContainer));
+    expect(tester.widget<AnimatedContainer>(animation).duration, Duration.zero);
+    await tester.pumpWidget(const SizedBox());
+    feeds.dispose(); feedSettings.dispose(); appearance.dispose(); await channel.events.close();
+  });
+  testWidgets('three visited feeds retain nearby cards when reversing from bottom', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    final appearance = AppearanceService(prefs);
+    await appearance.set('focusPulse', false);
+    await appearance.set('size', 180);
+    final feedSettings = SettingsService(prefs);
+    final channel = FeedChannel()
+      ..data = List.generate(3, (i) => feed(i + 1, count: 20))
+      ..posterResponse = () async => kTransparentImage;
+    final feeds = AppChannelsService(channel, feedSettings);
+    await feedSettings.setSelectedAppChannels(List.generate(3, (i) => 'video.app:${i + 1}'));
+    await tester.runAsync(feeds.refresh);
+    final apps = mkAppService();
+    when(apps.applications).thenReturn([]);
+    when(apps.launcherSections).thenReturn([appChannelsGroup()]);
+    final settings = mkSettingsService();
+    when(settings.selectedAppChannels).thenReturn(feedSettings.selectedAppChannels);
+    await _pumpWidgetWithProviders(tester, mkWallpaperService(), apps, settings,
+        feeds: feeds, appearance: appearance, pixelRatio: 2);
+    for (var i = 0; i < 2; i++) {
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      await tester.pumpAndSettle();
+    }
+    final lastRow = find.byWidgetPredicate((w) => w is AppContentRow && w.channel.id == 3);
+    Set<Element> lastCards() => find.descendant(of: lastRow, matching: find.byType(InkWell)).evaluate().toSet();
+    final initial = lastCards();
+    expect(initial.length, greaterThan(1));
+    for (final key in [LogicalKeyboardKey.arrowUp, LogicalKeyboardKey.arrowUp,
+        LogicalKeyboardKey.arrowDown, LogicalKeyboardKey.arrowDown]) {
+      await tester.sendKeyEvent(key);
+      await tester.pumpAndSettle();
+      expect(lastCards(), containsAll(initial),
+          reason: 'Returning through three nearby feeds must not remount the warmed row');
+    }
+    await tester.pumpWidget(const SizedBox());
+    feeds.dispose(); feedSettings.dispose(); appearance.dispose(); await channel.events.close();
+  });
+  for (final anchored in [true, false]) {
+    for (final locale in [const Locale('en'), const Locale('ar')]) {
+      testWidgets('feed navigation has one vertical scroll owner: $anchored ${locale.languageCode}', (tester) async {
+        SharedPreferences.setMockInitialValues({});
+        final prefs = await SharedPreferences.getInstance();
+        final appearance = AppearanceService(prefs);
+        await appearance.set('focusPulse', false);
+        await appearance.set('sectionScroll', anchored ? 'anchored' : 'free');
+        final feedSettings = SettingsService(prefs);
+        final channel = FeedChannel()
+          ..data = List.generate(6, (i) => feed(i + 1, count: 20, poster: 'content://poster/${i + 1}'))
+          ..posterResponse = () async => kTransparentImage;
+        final feeds = AppChannelsService(channel, feedSettings);
+        await feedSettings.setSelectedAppChannels(List.generate(6, (i) => 'video.app:${i + 1}'));
+        await tester.runAsync(feeds.refresh);
+        final apps = mkAppService();
+        when(apps.applications).thenReturn([]);
+        when(apps.launcherSections).thenReturn([appChannelsGroup()]);
+        final settings = mkSettingsService();
+        when(settings.selectedAppChannels).thenReturn(feedSettings.selectedAppChannels);
+        await _pumpWidgetWithProviders(tester, mkWallpaperService(), apps, settings,
+            feeds: feeds, appearance: appearance, locale: locale, pixelRatio: 2);
+        final outer = tester.widget<SingleChildScrollView>(find.byType(SingleChildScrollView).first).controller!;
+        var starts = 0;
+        void onActivity() { if (outer.position.isScrollingNotifier.value) starts++; }
+        outer.position.isScrollingNotifier.addListener(onActivity);
+        final requests = channel.requests.length;
+        final staticArtwork = find.descendant(of: find.byType(AppContentRow), matching: find.byType(ClipRRect))
+            .evaluate().map((element) => element.renderObject).toSet();
+        var artworkPaints = 0;
+        final previousPaintCallback = debugOnProfilePaint;
+        debugOnProfilePaint = (renderObject) {
+          previousPaintCallback?.call(renderObject);
+          if (staticArtwork.contains(renderObject)) artworkPaints++;
+        };
+        addTearDown(() => debugOnProfilePaint = previousPaintCallback);
+        for (final (key, id) in [
+          (LogicalKeyboardKey.arrowDown, 2),
+          (LogicalKeyboardKey.arrowDown, 3),
+          (LogicalKeyboardKey.arrowUp, 2),
+          (LogicalKeyboardKey.arrowUp, 1),
+        ]) {
+          starts = 0;
+          final before = outer.offset;
+          await tester.sendKeyEvent(key);
+          final samples = [before];
+          for (var frame = 0; frame < 16; frame++) {
+            await tester.pump(const Duration(milliseconds: 16));
+            samples.add(outer.offset);
+          }
+          expect(FocusManager.instance.primaryFocus?.context?.findAncestorWidgetOfExactType<AppContentRow>()?.channel.id, id);
+          expect(starts, lessThanOrEqualTo(1), reason: 'A single focus change must not restart vertical scrolling');
+          final direction = (samples.last - before).sign;
+          final distance = (samples.last - before).abs();
+          if (distance > 1) {
+            final firstMovement = samples.firstWhere((p) => (p - before).abs() > .01);
+            expect((firstMovement - before).abs(), lessThan(distance * .1),
+                reason: 'Vertical reveal must accelerate gently, without a first-frame lurch');
+          }
+          for (var i = 1; i < samples.length; i++) {
+            expect((samples[i] - samples[i - 1]) * direction, greaterThanOrEqualTo(-0.01),
+                reason: 'The row must move monotonically toward the new focus');
+          }
+          expect(outer.position.isScrollingNotifier.value, isFalse);
+          final viewport = tester.getRect(find.byType(SingleChildScrollView).first);
+          final row = tester.getRect(find.byWidgetPredicate((widget) =>
+              widget is AppContentRow && widget.channel.id == id));
+          expect(row.top, greaterThanOrEqualTo(viewport.top - .01));
+          expect(row.bottom, lessThanOrEqualTo(viewport.bottom + .01));
+        }
+        debugOnProfilePaint = previousPaintCallback;
+        expect(artworkPaints, 0, reason: 'Scrolling and focus effects must reuse unchanged poster layers');
+        // Moving across content must not move the anchored row up/down.
+        final before = outer.offset;
+        starts = 0;
+        final forward = locale.languageCode == 'ar' ? LogicalKeyboardKey.arrowLeft : LogicalKeyboardKey.arrowRight;
+        for (var i = 0; i < 12; i++) {
+          await tester.sendKeyEvent(forward);
+          await tester.pumpAndSettle();
+          expect(outer.offset, closeTo(before, 0.01));
+        }
+        expect(starts, 0);
+        // A new direction may arrive before the preceding scroll has finished.
+        for (final key in [LogicalKeyboardKey.arrowDown, LogicalKeyboardKey.arrowDown, LogicalKeyboardKey.arrowUp]) {
+          await tester.sendKeyEvent(key);
+          for (var frame = 0; frame < 3; frame++) {
+            await tester.pump(const Duration(milliseconds: 16));
+          }
+        }
+        await tester.pumpAndSettle();
+        expect(FocusManager.instance.primaryFocus?.context?.findAncestorWidgetOfExactType<AppContentRow>()?.channel.id, 2);
+        expect(channel.requests.length, requests);
+        expect(tester.takeException(), isNull);
+        outer.position.isScrollingNotifier.removeListener(onActivity);
+        await tester.pumpWidget(const SizedBox());
+        feeds.dispose(); feedSettings.dispose(); appearance.dispose(); await channel.events.close();
+      });
+    }
+  }
+  testWidgets('feed rows keep compact spacing without moving on focus', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    final appearance = AppearanceService(prefs);
+    await appearance.set('focusPulse', false);
+    await appearance.set('sectionTitles', false);
+    await appearance.set('sectionScroll', 'free');
+    final feedSettings = SettingsService(prefs);
+    final channel = FeedChannel()..data = [feed(1), feed(2)];
+    final feeds = AppChannelsService(channel, feedSettings);
+    await feedSettings.setSelectedAppChannels(['video.app:1', 'video.app:2']);
+    await tester.runAsync(feeds.refresh);
+    final apps = mkAppService();
+    when(apps.applications).thenReturn([]);
+    when(apps.launcherSections).thenReturn([appChannelsGroup()]);
+    final settings = mkSettingsService();
+    when(settings.selectedAppChannels).thenReturn(feedSettings.selectedAppChannels);
+    await _pumpWidgetWithProviders(tester, mkWallpaperService(), apps, settings,
+        feeds: feeds, appearance: appearance);
+    final rows = find.byType(AppContentRow);
+    final first = tester.getRect(rows.first);
+    final second = tester.getRect(rows.last);
+    // Includes two caption lines, section spacing and focus reserve.
+    expect(second.top - first.top - 128, lessThanOrEqualTo(100));
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.pumpAndSettle();
+    expect(tester.getRect(rows.first), first);
+    expect(tester.getRect(rows.last), second);
+    // The largest preview and scale must still fit a narrow TV window.
+    await appearance.set('size', 256);
+    await appearance.set('focusScale', .5);
+    await appearance.set('focusBorderStyle', 'glow');
+    await _pumpWidgetWithProviders(tester, mkWallpaperService(), apps, settings,
+        feeds: feeds, appearance: appearance, pixelRatio: 4);
+    final firstCard = find.descendant(of: rows.first,
+        matching: find.byType(InkWell)).first;
+    tester.widget<InkWell>(firstCard).focusNode!.requestFocus();
+    await tester.pumpAndSettle();
+    final image = tester.renderObject<RenderBox>(find.descendant(of: firstCard,
+        matching: find.byType(ClipRRect)).first);
+    final painted = Rect.fromPoints(image.localToGlobal(Offset.zero),
+        image.localToGlobal(image.size.bottomRight(Offset.zero)));
+    final viewport = tester.getRect(find.ancestor(of: firstCard,
+        matching: find.byType(SingleChildScrollView)).last);
+    expect(painted.left, greaterThanOrEqualTo(viewport.left));
+    expect(painted.right, lessThanOrEqualTo(viewport.right));
+    expect(painted.left - 24, greaterThanOrEqualTo(viewport.left));
+    expect(painted.right + 24, lessThanOrEqualTo(viewport.right));
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox());
+    feeds.dispose(); feedSettings.dispose(); appearance.dispose();
+    await channel.events.close();
+  });
+
+  for (final locale in [const Locale('en'), const Locale('ar')]) {
+    testWidgets('feed glow fits after horizontal scrolling ${locale.languageCode}', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      final appearance = AppearanceService(prefs);
+      for (final entry in <String, dynamic>{
+        'size': 160, 'focusScale': .5, 'focusBorderStyle': 'glow',
+        'focusPulse': false, 'sectionScroll': 'free',
+      }.entries) { await appearance.set(entry.key, entry.value); }
+      final settings = SettingsService(prefs);
+      final channel = FeedChannel()..data = [feed(1, count: 6)];
+      final feeds = AppChannelsService(channel, settings);
+      await settings.setSelectedAppChannels(['video.app:1']);
+      await tester.runAsync(feeds.refresh);
+      final apps = mkAppService();
+      when(apps.applications).thenReturn([]);
+      when(apps.launcherSections).thenReturn([appChannelsGroup()]);
+      final homeSettings = mkSettingsService();
+      when(homeSettings.selectedAppChannels).thenReturn(settings.selectedAppChannels);
+      await _pumpWidgetWithProviders(tester, mkWallpaperService(), apps,
+          homeSettings, feeds: feeds, appearance: appearance, locale: locale,
+          pixelRatio: 2);
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      await tester.pumpAndSettle();
+      for (var i = 0; i < 6; i++) {
+        final card = find.descendant(of: find.byType(AppContentRow),
+            matching: find.byWidgetPredicate((w) =>
+                w is InkWell && w.focusNode?.hasFocus == true));
+        final box = tester.renderObject<RenderBox>(find.descendant(
+            of: card, matching: find.byType(ClipRRect)).first);
+        final painted = Rect.fromPoints(box.localToGlobal(Offset.zero),
+            box.localToGlobal(box.size.bottomRight(Offset.zero))).inflate(24);
+        final viewport = tester.getRect(find.ancestor(of: card,
+            matching: find.byType(SingleChildScrollView)).last);
+        expect(painted.left, greaterThanOrEqualTo(viewport.left - .01));
+        expect(painted.right, lessThanOrEqualTo(viewport.right + .01));
+        if (i < 5) {
+          await tester.sendKeyEvent(locale.languageCode == 'ar'
+              ? LogicalKeyboardKey.arrowLeft : LogicalKeyboardKey.arrowRight);
+          await tester.pumpAndSettle();
+        }
+      }
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+      feeds.dispose(); settings.dispose(); appearance.dispose();
+      await channel.events.close();
+    });
+  }
+
+  testWidgets('feed group moves as one block and Home enters its first feed', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    final appearance = AppearanceService(prefs);
+    await appearance.set('focusPulse', false);
+    final feedSettings = SettingsService(prefs);
+    final channel = FeedChannel()..data = [feed(1), feed(2)];
+    final feeds = AppChannelsService(channel, feedSettings);
+    await feedSettings.setSelectedAppChannels(['video.app:1', 'video.app:2']);
+    await tester.runAsync(feeds.refresh);
+    final apps = mkAppService();
+    final top = fakeCategory(name: 'Top')..applications.add(fakeApp(packageName: 'top.app'));
+    final bottom = fakeCategory(name: 'Bottom')..applications.add(fakeApp(packageName: 'bottom.app'));
+    final group = appChannelsGroup();
+    when(apps.applications).thenReturn([...top.applications, ...bottom.applications]);
+    when(apps.launcherSections).thenReturn([top, group, bottom]);
+    final settings = mkSettingsService();
+    when(settings.selectedAppChannels).thenReturn(feedSettings.selectedAppChannels);
+    await _pumpWidgetWithProviders(tester, mkWallpaperService(), apps, settings, feeds: feeds, appearance: appearance);
+    final block = find.byKey(const ValueKey('app-channels-group'));
+    expect(find.descendant(of: block, matching: find.byType(AppContentRow)), findsNWidgets(2));
+    for (final id in [1, 2]) {
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      await tester.pumpAndSettle();
+      expect(FocusManager.instance.primaryFocus?.context?.findAncestorWidgetOfExactType<AppContentRow>()?.channel.id, id);
+    }
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.pumpAndSettle();
+    expect(isAppCardFocused(tester, 'bottom.app'), isTrue);
+    when(apps.launcherSections).thenReturn([group, top, bottom]);
+    await appearance.set('sectionGap', 26);
+    await tester.pumpAndSettle();
+    tester.state<FLauncherState>(find.byType(FLauncher)).returnHome();
+    await tester.pumpAndSettle();
+    expect(FocusManager.instance.primaryFocus?.context?.findAncestorWidgetOfExactType<AppContentRow>()?.channel.id, 1);
+    group.visible = false;
+    await appearance.set('sectionGap', 28);
+    await tester.pumpAndSettle();
+    expect(find.byType(AppContentRow), findsNothing);
+    expect(settings.selectedAppChannels, ['video.app:1', 'video.app:2']);
+    group.visible = true;
+    await appearance.set('sectionGap', 30);
+    await tester.pumpAndSettle();
+    expect(find.byType(AppContentRow), findsNWidgets(2));
+    channel.data = [];
+    await tester.runAsync(feeds.refresh);
+    await tester.pumpAndSettle();
+    expect(block, findsNothing);
+    expect(settings.selectedAppChannels, ['video.app:1', 'video.app:2']);
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox());
+    feeds.dispose(); feedSettings.dispose(); appearance.dispose(); await channel.events.close();
+  });
+  for (final mode in ['row', 'rows', 'grid']) {
+    for (final locale in [const Locale('en'), const Locale('ar')]) {
+      testWidgets('scaled app edges and glow fit $mode ${locale.languageCode}', (tester) async {
+        SharedPreferences.setMockInitialValues({});
+        final prefs = await SharedPreferences.getInstance();
+        final appearance = AppearanceService(prefs);
+        for (final entry in <String, dynamic>{
+          'focusEffect': 'scale', 'focusScale': .5, 'focusPulse': false,
+          'sectionScroll': 'free', 'labels': 'all', 'labelPosition': 'below',
+          'backgroundColor': 0xffff0000, 'opacity': 1.0, 'radius': 0,
+          'inactiveOpacity': 1.0,
+          'focusBorderStyle': 'glow',
+        }.entries) { await appearance.set(entry.key, entry.value); }
+        final category = fakeCategory(name: 'Apps', type: CategoryType.row)
+          ..applications.addAll(List.generate(10, (i) =>
+              fakeApp(packageName: 'edge.$i', name: 'App $i')));
+        await appearance.setCategory(category.id, 'layout', mode);
+        await appearance.setCategory(category.id, 'columns', 3);
+        await appearance.setCategory(category.id, 'rows', 2);
+        final apps = mkAppService();
+        when(apps.applications).thenReturn(category.applications);
+        when(apps.launcherSections).thenReturn([category]);
+        await _pumpWidgetWithProviders(tester, mkWallpaperService(), apps,
+            mkSettingsService(), appearance: appearance, locale: locale);
+        final viewport = tester.getRect(find.descendant(
+            of: find.byType(HomeSection), matching: find.byType(ClipRect)).first);
+        final controller = CategoryFocus.maybeOf(
+            tester.element(find.byType(HomeSection)))!;
+        for (var index = 0; index < 10; index++) {
+          final selection = controller.focusPackage('edge.$index');
+          await tester.pumpAndSettle();
+          expect(await selection, isTrue);
+          await tester.pumpAndSettle();
+          final card = find.byWidgetPredicate((w) =>
+              w is AppCard && w.application.packageName == 'edge.$index');
+          final box = tester.renderObject<RenderBox>(find.descendant(of: card,
+              matching: find.byType(AppearanceSurface)).first);
+          final painted = Rect.fromPoints(box.localToGlobal(Offset.zero),
+              box.localToGlobal(box.size.bottomRight(Offset.zero)));
+          expect(painted.left, greaterThanOrEqualTo(viewport.left - .01));
+          expect(painted.right, lessThanOrEqualTo(viewport.right + .01));
+          // The glow scales together with the artwork, beyond its rectangle.
+          const glowExtent = 16 * 1.5;
+          expect(painted.left - glowExtent, greaterThanOrEqualTo(viewport.left - .01));
+          expect(painted.right + glowExtent, lessThanOrEqualTo(viewport.right + .01));
+          expect(find.descendant(of: card, matching: find.byWidgetPredicate(
+              (w) => w is CustomPaint && w.painter is TileGlowPainter)), findsOneWidget);
+          await expectGlowEdges(tester, box);
+          Future<void> checkPaintedEdges() async {
+            final current = Rect.fromPoints(box.localToGlobal(Offset.zero),
+                box.localToGlobal(box.size.bottomRight(Offset.zero)));
+            await tester.runAsync(() async {
+              final boundary = tester.renderObject<RenderRepaintBoundary>(
+                find.ancestor(of: find.byType(FLauncher),
+                  matching: find.byType(RepaintBoundary)).first);
+              final image = await boundary.toImage();
+              final pixels = (await image.toByteData(format: ui.ImageByteFormat.rawRgba))!;
+              for (final x in [current.left + 4, current.right - 4]) {
+                final point = boundary.globalToLocal(Offset(x, current.center.dy));
+                final offset = (point.dy.floor() * image.width + point.dx.floor()) * 4;
+                // Neighbour shadows may darken the shrinking card slightly.
+                expect(pixels.getUint8(offset), greaterThan(200), reason: 'red edge $index at $point');
+                expect(pixels.getUint8(offset + 1), lessThan(30), reason: 'green edge $index at $point');
+              }
+              image.dispose();
+            });
+          }
+          await checkPaintedEdges();
+          getSettingsFocusNode(tester)!.requestFocus();
+          await tester.pump();
+          await tester.pump(const Duration(milliseconds: 75));
+          await checkPaintedEdges();
+          await tester.pumpAndSettle();
+          expect(tester.widget<RaisedTile>(find.descendant(
+              of: card, matching: find.byType(RaisedTile))).raised, isFalse);
+        }
+        expect(tester.takeException(), isNull);
+        await tester.pumpWidget(const SizedBox());
+        appearance.dispose();
+      });
+    }
+  }
+  for (final target in ['app', 'feed']) {
+    for (final locale in [const Locale('en'), const Locale('ar')]) {
+      testWidgets('scaled $target artwork stays above its caption ${locale.languageCode}', (tester) async {
+        SharedPreferences.setMockInitialValues({});
+        final previousTextScale = tester.platformDispatcher.textScaleFactor;
+        tester.platformDispatcher.textScaleFactorTestValue = 1.6;
+        addTearDown(() => tester.platformDispatcher.textScaleFactorTestValue = previousTextScale);
+        final prefs = await SharedPreferences.getInstance();
+        final appearance = AppearanceService(prefs);
+        for (final entry in <String, dynamic>{
+          'labels': 'all', 'labelPosition': 'below', 'focusEffect': 'scale',
+          'focusScale': .5, 'focusPulse': false, 'focusTransition': true,
+          'sectionScroll': 'free',
+        }.entries) { await appearance.set(entry.key, entry.value); }
+        final feedSettings = SettingsService(prefs);
+        final channel = FeedChannel()..data = [feed(1)];
+        final feeds = AppChannelsService(channel, feedSettings);
+        await feedSettings.setSelectedAppChannels(['video.app:1']);
+        await tester.runAsync(feeds.refresh);
+        final apps = mkAppService();
+        final category = fakeCategory(name: 'Apps', type: CategoryType.row)
+          ..applications.addAll([
+            fakeApp(packageName: 'caption.first', name: 'First application'),
+            fakeApp(packageName: 'caption.second', name: 'Second application'),
+          ]);
+        when(apps.applications).thenReturn(category.applications);
+        when(apps.launcherSections).thenReturn([category, appChannelsGroup()]);
+        final settings = mkSettingsService();
+        when(settings.selectedAppChannels).thenReturn(feedSettings.selectedAppChannels);
+        await _pumpWidgetWithProviders(tester, mkWallpaperService(), apps, settings,
+          appearance: appearance, feeds: feeds, locale: locale);
+        final app = find.byWidgetPredicate((w) => w is AppCard && w.application.packageName == 'caption.second');
+        final card = target == 'app' ? app : find.descendant(of: find.byType(AppContentRow), matching: find.byType(InkWell)).first;
+        final artwork = target == 'app'
+            ? find.descendant(of: card, matching: find.byType(AppearanceSurface)).first
+            : find.descendant(of: card, matching: find.byType(ClipRRect)).first;
+        final caption = find.descendant(of: card,
+          matching: find.text(target == 'app' ? 'Second application' : 'Content 1/0')).last;
+        final cellSize = tester.getSize(card);
+        Rect paintedRect(Finder finder) {
+          final box = tester.renderObject<RenderBox>(finder);
+          return Rect.fromPoints(box.localToGlobal(Offset.zero),
+            box.localToGlobal(box.size.bottomRight(Offset.zero)));
+        }
+        void checkCaption() {
+          expect(paintedRect(artwork).bottom, lessThanOrEqualTo(paintedRect(caption).top - 6));
+          expect(tester.getSize(card), cellSize);
+          if (target == 'feed') {
+            final viewport = tester.getRect(find.ancestor(of: card,
+                matching: find.byType(SingleChildScrollView)).last);
+            expect(paintedRect(artwork).left, greaterThanOrEqualTo(viewport.left));
+            expect(paintedRect(artwork).right, lessThanOrEqualTo(viewport.right));
+          }
+        }
+        await tester.sendKeyEvent(target == 'feed' ? LogicalKeyboardKey.arrowDown
+            : locale.languageCode == 'ar' ? LogicalKeyboardKey.arrowLeft : LogicalKeyboardKey.arrowRight);
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 75));
+        checkCaption();
+        await tester.pumpAndSettle();
+        checkCaption();
+        expect(paintedRect(artwork).height, greaterThan(128));
+        expect(tester.takeException(), isNull);
+        await tester.pumpWidget(const SizedBox());
+        feeds.dispose(); feedSettings.dispose(); appearance.dispose(); await channel.events.close();
+      });
+    }
+  }
+  testWidgets('offscreen app feeds defer artwork until remote navigation reaches them', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    final feedSettings = SettingsService(prefs);
+    final channel = FeedChannel()..data = List.generate(16,
+      (i) => feed(i + 1, count: 20, poster: 'content://poster/${i + 1}'));
+    final feeds = AppChannelsService(channel, feedSettings);
+    await feedSettings.setSelectedAppChannels(List.generate(16, (i) => 'video.app:${i + 1}'));
+    await tester.runAsync(feeds.refresh);
+    final apps = mkAppService();
+    final category = fakeCategory(name: 'Top')..applications.add(fakeApp(packageName: 'top.app'));
+    when(apps.applications).thenReturn(category.applications);
+    when(apps.launcherSections).thenReturn([category, appChannelsGroup()]);
+    final settings = mkSettingsService();
+    when(settings.selectedAppChannels).thenReturn(feedSettings.selectedAppChannels);
+    await _pumpWidgetWithProviders(tester, mkWallpaperService(), apps, settings, feeds: feeds);
+    expect(channel.posters, isNot(contains('content://poster/16')));
+    for (var i = 0; i < 16; i++) {
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      await tester.pumpAndSettle();
+    }
+    expect(FocusManager.instance.primaryFocus?.context?.findAncestorWidgetOfExactType<AppContentRow>()?.channel.id, 16);
+    expect(channel.posters, contains('content://poster/16'));
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox());
+    feeds.dispose(); feedSettings.dispose(); await channel.events.close();
+  });
+  for (final locale in [const Locale('en'), const Locale('ar')]) {
+    testWidgets('app feeds integrate remote focus, launch, Home and empty updates ${locale.languageCode}', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      final feedSettings = SettingsService(prefs);
+      final channel = FeedChannel()..data = [feed(1, count: 20, poster: 'content://missing/poster'), feed(2), feed(3, count: 0)];
+      final feeds = AppChannelsService(channel, feedSettings);
+      await feedSettings.setSelectedAppChannels(['video.app:1', 'video.app:2', 'video.app:3']);
+      await tester.runAsync(() => feeds.refresh());
+      final apps = mkAppService();
+      final category = fakeCategory(name: 'Top')..applications.add(fakeApp(packageName: 'top.app'));
+      when(apps.applications).thenReturn(category.applications);
+      when(apps.launcherSections).thenReturn([category, appChannelsGroup()]);
+      final settings = mkSettingsService();
+      when(settings.selectedAppChannels).thenReturn(feedSettings.selectedAppChannels);
+      when(settings.cardFocusMode).thenReturn(CardFocusMode.remember);
+      await _pumpWidgetWithProviders(tester, mkWallpaperService(), apps, settings,
+        feeds: feeds, locale: locale);
+      expect(find.byType(AppContentRow), findsNWidgets(2));
+      expect(find.byIcon(Icons.movie_outlined), findsWidgets);
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      await tester.pumpAndSettle();
+      expect(FocusManager.instance.primaryFocus?.context?.findAncestorWidgetOfExactType<AppContentRow>()?.channel.id, 1);
+      final forward = locale.languageCode == 'ar' ? LogicalKeyboardKey.arrowLeft : LogicalKeyboardKey.arrowRight;
+      for (var i = 0; i < 12; i++) {
+        await tester.sendKeyEvent(forward);
+        await tester.pumpAndSettle();
+      }
+      expect(FocusManager.instance.primaryFocus?.context?.findAncestorWidgetOfExactType<AppContentRow>()?.channel.id, 1);
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pumpAndSettle();
+      expect(channel.launches.single, ('video://watch/1/12', 'video.app'));
+      tester.state<FLauncherState>(find.byType(FLauncher)).returnHome();
+      await tester.pumpAndSettle();
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pumpAndSettle();
+      expect(channel.launches.last, ('video://watch/1/12', 'video.app'));
+      channel.data = [feed(1, count: 0), feed(2), feed(3, count: 0)];
+      await tester.runAsync(feeds.refresh);
+      await tester.pumpAndSettle();
+      expect(find.byType(AppContentRow), findsOneWidget);
+      expect(FocusManager.instance.primaryFocus?.context?.findAncestorWidgetOfExactType<AppContentRow>()?.channel.id, 2);
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+      await tester.pumpAndSettle();
+      expect(isAppCardFocused(tester, 'top.app'), isTrue);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+      feeds.dispose(); feedSettings.dispose(); await channel.events.close();
+    });
+  }
   for (final layout in ['row', 'rows', 'grid']) {
     testWidgets('mouse wheel scrolls non-TV $layout over its selected icon', (
       tester,
@@ -682,6 +1548,18 @@ void main() {
       expect(spacer.height, spacerHeight);
       expect(title.top, greaterThanOrEqualTo(spacer.bottom));
       expect(title.top, greaterThan(0));
+      final panelBottom = tester.getBottomLeft(find.byType(FocusAwareAppBar)).dy;
+      final viewport = find.byType(SingleChildScrollView).first;
+      expect(spacer.top - panelBottom, 24,
+          reason: 'The initial gap below the panel must be preserved');
+      expect(tester.getTopLeft(viewport).dy, panelBottom,
+          reason: 'Content must clip at the panel edge, without a fixed gap');
+      scroll.jumpTo(24);
+      await tester.pumpAndSettle();
+      expect(tester.getRect(find.text('All apps')).top, closeTo(title.top - 24, .01));
+      expect(tester.getRect(find.byKey(const Key('9999'))).top, panelBottom);
+      expect(tester.getTopLeft(viewport).dy, panelBottom);
+      expect(isAppCardFocused(tester, 'spacer.0'), isTrue);
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox());
     });
@@ -1226,6 +2104,10 @@ void main() {
   });
 
   testWidgets("Long pressing on app opens ApplicationInfoPanel", (tester) async {
+    const startupChannel = MethodChannel('cutelauncher/auto_launch');
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(startupChannel,
+      (_) async => {'apps': [], 'outcomes': {}});
+    addTearDown(() => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(startupChannel, null));
     final appsService = mkAppService();
     final applicationsCategory = fakeCategory(name: "Applications", order: 1);
     applicationsCategory.applications.add(fakeApp(
@@ -1635,6 +2517,7 @@ void main() {
 
 SettingsService mkSettingsService() {
   final settingsService = MockSettingsService();
+  when(settingsService.screenshotScene).thenReturn(null);
   when(settingsService.sleepTimerConfiguration).thenReturn(SleepTimerConfiguration());
   final demo = ValueNotifier<LandscapeDemoFrame?>(null);
   addTearDown(demo.dispose);
@@ -1660,6 +2543,8 @@ SettingsService mkSettingsService() {
   when(settingsService.showInputsWidgetInStatusBar).thenReturn(true);
   when(settingsService.showSystemSettingsInStatusBar).thenReturn(true);
   when(settingsService.showNetworkIndicatorInStatusBar).thenReturn(true);
+  when(settingsService.showVolumeInStatusBar).thenReturn(false);
+  when(settingsService.showSystemInStatusBar).thenReturn(false);
   when(settingsService.showDataWidgetInStatusBar).thenReturn(true);
   when(settingsService.showDateInStatusBar).thenReturn(true);
   when(settingsService.showTimeInStatusBar).thenReturn(true);
@@ -1711,6 +2596,8 @@ WatchNextService mkWatchNextService() {
 
 WeatherService mkWeatherService() {
   final weatherService = MockWeatherService();
+  when(weatherService.stale).thenReturn(false);
+  when(weatherService.configuration).thenReturn(const WeatherConfiguration());
   when(weatherService.hasWeather).thenReturn(false);
   when(weatherService.weatherData).thenReturn(null);
   when(weatherService.isBreezyInstalled).thenReturn(false);
@@ -1744,7 +2631,7 @@ Future<void> _pumpWidgetWithProviders(
   WallpaperService wallpaperService,
   AppsService appsService,
   SettingsService settingsService,
-  {AppearanceService? appearance, UpdateService? updates, RemotePanelService? remotePanel, WatchNextService? watchNext, double pixelRatio = 1, Locale? locale}) async {
+  {AppearanceService? appearance, UpdateService? updates, RemotePanelService? remotePanel, WatchNextService? watchNext, AppChannelsService? feeds, double pixelRatio = 1, Locale? locale}) async {
   tester.view.physicalSize = const Size(1920, 1080);
   tester.view.devicePixelRatio = pixelRatio;
   final network = MockNetworkService();
@@ -1758,6 +2645,7 @@ Future<void> _pumpWidgetWithProviders(
   await tester.pumpWidget(
     MultiProvider(
       providers: [
+        if (feeds != null) ChangeNotifierProvider<AppChannelsService>.value(value: feeds),
         if (remotePanel != null) ChangeNotifierProvider.value(value: remotePanel),
         if (updates != null) ChangeNotifierProvider<UpdateService>.value(value: updates),
         if (appearance != null) ChangeNotifierProvider<AppearanceService>.value(value: appearance),
@@ -1822,4 +2710,27 @@ bool isAppCardFocused(WidgetTester tester, String packageName) {
 bool isSettingsIconFocused(WidgetTester tester) {
   final focusNode = getSettingsFocusNode(tester);
   return focusNode?.hasFocus ?? false;
+}
+
+Future<void> expectGlowEdges(WidgetTester tester, RenderBox artwork) async {
+  final rect = Rect.fromPoints(artwork.localToGlobal(Offset.zero),
+      artwork.localToGlobal(artwork.size.bottomRight(Offset.zero)));
+  await tester.runAsync(() async {
+    final boundary = tester.renderObject<RenderRepaintBoundary>(find.ancestor(
+        of: find.byType(FLauncher), matching: find.byType(RepaintBoundary)).first);
+    final image = await boundary.toImage();
+    final pixels = (await image.toByteData(format: ui.ImageByteFormat.rawRgba))!;
+    int brightness(double x) {
+      final point = boundary.globalToLocal(Offset(x, rect.center.dy));
+      final at = (point.dy.floor() * image.width + point.dx.floor()) * 4;
+      return pixels.getUint8(at + 1) + pixels.getUint8(at + 2);
+    }
+    // At 50% enlargement the 16 dp glow extends 24 dp outside the artwork.
+    // Halfway through it must still be brighter than the background outside.
+    for (final (edge, direction) in [(rect.left, -1), (rect.right, 1)]) {
+      expect(brightness(edge + direction * 12),
+          greaterThan(brightness(edge + direction * 26) + 20));
+    }
+    image.dispose();
+  });
 }

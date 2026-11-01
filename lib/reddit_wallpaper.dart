@@ -1,6 +1,7 @@
-import 'dart:convert';
-import 'dart:io';
 import 'dart:math';
+
+import 'online_wallpaper_failure.dart';
+import 'wallpaper_http.dart';
 
 // Keep disabled in every build until API access is resolved and verified.
 const redditWallpapersAvailable = false;
@@ -100,45 +101,12 @@ Future<RedditWallpaper> fetchRedditWallpaper(
   if (subreddit == null || !redditWallpaperResolutions.contains(resolution)) {
     throw const FormatException('Invalid Reddit wallpaper settings');
   }
-  final client = HttpClient()..connectionTimeout = const Duration(seconds: 12);
-  client.userAgent =
-      'CuteLauncher/1.0 (+https://github.com/KirillShchetinnikov/CuteLauncher)';
-  try {
-    return await (() async {
-      final request = await client.getUrl(
-        Uri.https('www.reddit.com', '/r/$subreddit/top.json', {
-          't': 'month',
-          'limit': '100',
-          'raw_json': '1',
-        }),
-      );
-      request.followRedirects = false;
-      final response = await request.close();
-      if (response.statusCode != 200) {
-        throw HttpException('Reddit HTTP ${response.statusCode}');
-      }
-      const maximumBytes = 2 * 1024 * 1024;
-      if (response.contentLength > maximumBytes) {
-        throw const FormatException('Reddit listing too large');
-      }
-      final bytes = <int>[];
-      await for (final chunk in response) {
-        if (bytes.length + chunk.length > maximumBytes) {
-          throw const FormatException('Reddit listing too large');
-        }
-        bytes.addAll(chunk);
-      }
-      final candidates = parseRedditWallpapers(
-        jsonDecode(utf8.decode(bytes)) as Map<String, dynamic>,
-        resolution,
-        previousUrl,
-      );
-      if (candidates.isEmpty) {
-        throw const FormatException('No new matching Reddit wallpaper');
-      }
-      return candidates[Random().nextInt(candidates.length)];
-    })().timeout(const Duration(seconds: 20));
-  } finally {
-    client.close(force: true);
+  final candidates = parseRedditWallpapers(
+    await requestWallpaperJson(Uri.https('www.reddit.com', '/r/$subreddit/top.json', {
+      't': 'month', 'limit': '100', 'raw_json': '1',
+    })), resolution, previousUrl);
+  if (candidates.isEmpty) {
+    throw const WallpaperException(WallpaperFailureReason.noImage);
   }
+  return candidates[Random().nextInt(candidates.length)];
 }

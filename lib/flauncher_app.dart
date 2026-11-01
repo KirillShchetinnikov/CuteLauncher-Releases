@@ -38,6 +38,9 @@ import 'package:provider/provider.dart';
 import 'flauncher.dart';
 import 'widgets/remote_panel.dart';
 import 'widgets/update_notification.dart';
+import 'widgets/launcher_dialog.dart';
+import 'widgets/settings/settings_panel.dart';
+import 'widgets/settings/adb_page.dart';
 import 'dart:async';
 
 class FLauncherApp extends StatefulWidget
@@ -54,6 +57,7 @@ class _FLauncherAppState extends State<FLauncherApp> {
   final _launcherKey = GlobalKey<FLauncherState>();
   StreamSubscription<dynamic>? _homeSubscription;
   VoidCallback? _closePanelNotice;
+  int _settingsRequest = 0;
 
   @override
   void initState() {
@@ -62,6 +66,21 @@ class _FLauncherAppState extends State<FLauncherApp> {
     _homeSubscription = const EventChannel('me.efesser.flauncher/event_home')
         .receiveBroadcastStream().listen((event) async {
       if (!mounted) return;
+      if (event == 'open_adb_settings') {
+        final request = ++_settingsRequest;
+        WidgetsBinding.instance.ensureVisualUpdate();
+        await WidgetsBinding.instance.endOfFrame;
+        if (!mounted || request != _settingsRequest) return;
+        final settingsContext = _navigatorKey.currentState?.overlay?.context;
+        if (settingsContext == null || !settingsContext.mounted) return;
+        await showLauncherDialog<void>(
+          context: settingsContext,
+          styleDialog: false,
+          barrierColor: Colors.transparent,
+          builder: (_) => const SettingsPanel(initialRoute: AdbPage.connectionRouteName),
+        );
+        return;
+      }
       if (event == 'remote_panel_blocked') {
         final noticeContext = _navigatorKey.currentState?.overlay?.context;
         if (noticeContext == null || !noticeContext.mounted) return;
@@ -85,6 +104,7 @@ class _FLauncherAppState extends State<FLauncherApp> {
         return;
       }
       if (event != true || !mounted) return;
+      _settingsRequest++;
       context.read<SettingsService>().landscapeDemo.value = null;
       _navigatorKey.currentState?.popUntil((route) => route.isFirst);
       _launcherKey.currentState?.returnHome();

@@ -2,6 +2,29 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
+## v1.6.1 — 2026-11-01
+
+- Added independent placement for the clock, date and weather: each can stay in the top panel, move onto the wallpaper or be hidden. The wallpaper block has size, alignment, font, color and glow settings; mountains in the adaptive landscape overlap the lower part of the clock to create depth.
+- Updated adaptive landscape clouds with varied shapes and sizes, slow movement at slightly different speeds and smooth wrapping at screen edges. Clouds and other weather effects appear above the wallpaper clock.
+- Reworked Clock, date and weather settings with separate placement, panel appearance, wallpaper appearance, formats and data options. Quick settings have independent visibility and grouping; calendar and forecast views open according to the selected block's contents.
+- Added Wallhaven online wallpapers with Mixed, Nature, Space, Cities and Minimalism themes, manual switching and scheduled updates. No account or API key is required; availability depends on the network and provider.
+- Added a VPN widget with client selection, supported connection controls and TV startup settings. Available actions depend on the VPN client and firmware.
+- Added volume and current audio output to the top panel, plus a System widget with memory, storage and CPU/RAM charts. Individual readings depend on the device and granted access.
+- Added content feeds from installed apps, with channel selection, section appearance settings and opening content from the home screen. App and system support is required.
+- Reworked settings with grouped help, clearer shared and individual appearance options, and improved remote navigation, focus and scrolling in long lists.
+- Updated the built-in file browser with a more compact header and controls, accessible full paths, improved wallpaper folder selection and file saving without overwriting files with the same name.
+- Improved the weather forecast and calendar, and added app selection for background startup with the TV.
+- Added launcher settings reset and full app data reset with confirmation. New installations receive prepared initial settings.
+- Fixed night filter flicker after sleep, feed artwork refresh, backup saving and cloud storage error handling. Improved recovery of previously granted permissions.
+- Improved VPN configuration and TV startup behavior, including handling of autostart restrictions, cancelled actions, removed clients and connection confirmation.
+- Open apps settings now show the status of required access and provide shortcuts to configure it. Unavailable TV input settings are no longer offered for editing.
+- Added suitable-file filtering, file size and modification date to the file browser. Long names expand when truncated, with improved access to controls and remote navigation.
+- Fixed clipping of enlarged tiles and glow at section edges, neighboring tiles covering the focused tile, focus rendering in feeds and thin seams in glow effects. Improved card spacing and section behavior when hiding or restoring sections.
+- Fixed the top boundary of home screen scrolling so tiles and their focus effects stay outside the top panel area.
+- Fixed lost focus when selecting feeds or opening the apps panel, unnecessary settings scrolling, deletion cancellation and preservation of remote button assignment drafts. Clarified messages for saving, export, backups and cloud storage disconnection.
+- Made network, notification, media, TV input and online wallpaper updates more robust when leaving and returning to the launcher. Online wallpaper failures now show the source, stage and cause in settings and diagnostic reports.
+- Improved performance by reducing unnecessary updates and repaints and optimizing section and feed scrolling, tile focus animation, backgrounds, weather effects and app list loading in settings.
+
 ## v1.5.1 — 2026-10-28
 
 - Fixed recovery of button remapping access after an update when Android blocks accessibility. Previously granted access and a configured ADB connection are required.

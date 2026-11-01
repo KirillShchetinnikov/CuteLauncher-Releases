@@ -52,23 +52,14 @@ class _NetworkWidgetState extends State<NetworkWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<
-      NetworkService,
-      (NetworkType, CellularNetworkType, int, bool)
-    >(
+    return Selector<NetworkService, (NetworkType, CellularNetworkType, int)>(
       selector: (_, ns) => (
         ns.networkType,
         ns.cellularNetworkType,
         ns.wirelessNetworkSignalLevel,
-        ns.vpnActive,
       ),
       builder: (context, state, _) {
-        final (
-          networkType,
-          cellularNetworkType,
-          wirelessSignalLevel,
-          vpnActive,
-        ) = state;
+        final (networkType, cellularNetworkType, wirelessSignalLevel) = state;
         final networkService = context.read<NetworkService>();
         IconData physicalIcon = Icons.link_off;
 
@@ -120,7 +111,7 @@ class _NetworkWidgetState extends State<NetworkWidget> {
             }
             break;
           case NetworkType.Vpn:
-            physicalIcon = Icons.vpn_key;
+            physicalIcon = Icons.public;
             break;
           case NetworkType.Wired:
             physicalIcon = Icons.lan;
@@ -131,48 +122,13 @@ class _NetworkWidgetState extends State<NetworkWidget> {
             break;
         }
 
-        Widget physicalWidget = Icon(
-          physicalIcon,
+        final physicalWidget = Icon(physicalIcon);
 
-          shadows: const [
-            Shadow(color: Colors.black54, offset: Offset(0, 2), blurRadius: 8),
-          ],
-        );
-
-        if (!vpnActive || physicalIcon == Icons.vpn_key) {
-          return TopPanelItem(
-            focusNode: _focusNode,
-            selected: _open,
-            onPressed: () => _openSummary(networkService),
-            child: physicalWidget,
-          );
-        }
-
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          textDirection: TextDirection.ltr,
-          children: [
-            TopPanelItem(
-              focusNode: _focusNode,
-              selected: _open,
-              onPressed: () => _openSummary(networkService),
-              child: physicalWidget,
-            ),
-            const SizedBox(width: 4),
-            TopPanelItem(
-              onPressed: () => networkService.openVpnSettings(),
-              child: const Icon(
-                Icons.vpn_key,
-                shadows: [
-                  Shadow(
-                    color: Colors.black54,
-                    offset: Offset(0, 2),
-                    blurRadius: 8,
-                  ),
-                ],
-              ),
-            ),
-          ],
+        return TopPanelItem(
+          focusNode: _focusNode,
+          selected: _open,
+          onPressed: () => _openSummary(networkService),
+          child: physicalWidget,
         );
       },
     );

@@ -10,6 +10,26 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
+  String get wallhavenWallpaperHint =>
+      'خلفيات عشوائية من Wallhaven حسب الموضوع: آمنة للعمل، بنسبة 16:9 ودقة Full HD أو أعلى. لا يلزم حساب أو مفتاح API. يتم التحديث أثناء فتح المشغّل وتبقى الخلفية السابقة عند حدوث خطأ.';
+
+  @override
+  String get renderCompatibilityTitle => 'إخراج رسومي متوافق';
+
+  @override
+  String get renderCompatibilityAutomatic => 'مفعّل تلقائيًا لهذا الجهاز';
+
+  @override
+  String get renderCompatibilityApply => 'تطبيق وإعادة تشغيل المشغّل';
+
+  @override
+  String get renderCompatibilityFailed => 'تعذّرت قراءة الإعداد أو تطبيقه';
+
+  @override
+  String get renderCompatibilityHelp =>
+      'جرّب هذا الوضع إذا كانت الواجهة تومض مع التعتيم الليلي. يُفعّل تلقائيًا على الطرازات التي تم التحقق منها. على أجهزة التلفاز الأخرى، يُحفظ الخيار على هذا الجهاز فقط ويُطبّق بعد إعادة تشغيل المشغّل. قد يزيد الحمل الرسومي.';
+
+  @override
   String get diagnosticsHubTitle => 'Diagnostics';
 
   @override
@@ -1492,7 +1512,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'أدخل المدينة يدويًا أو احصل على الإحداثيات تلقائيًا.';
 
   @override
-  String get weatherRefresh => 'التحقق من وجود تحديثات';
+  String get weatherRefresh => 'تحديث الطقس';
 
   @override
   String get weatherKeyPrivate =>
@@ -1503,7 +1523,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get onlineWallpaperError =>
-      'غير قادر على تحميل هذه الصورة. يتم الاحتفاظ بالخلفية السابقة. حدد \"التحقق من وجود تحديثات\" لإعادة محاولة التنزيل.';
+      'غير قادر على تحميل هذه الصورة. يتم الاحتفاظ بالخلفية السابقة. حدد \"تحديث الخلفية\" لإعادة محاولة التنزيل.';
 
   @override
   String get onlineWallpaperHint =>
@@ -1934,7 +1954,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get notificationAppsHint =>
-      'قم بإيقاف تشغيل التطبيقات التي لا تحتاج إلى إشعاراتها. يسمح المفتاح الممكّن بالإشعارات؛ لا يزال من الممكن إطلاق التطبيق.';
+      'اختر التطبيقات التي تريد حظر إشعاراتها. يعني المفتاح المفعّل أن الإشعارات محظورة. تبقى القائمة مرتبة أبجديًا.';
 
   @override
   String get notificationPanelLink => 'مظهر اللوحة العلوية';
@@ -2001,7 +2021,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get rememberCategoryFocus => 'تذكر آخر بطاقة مركزة';
 
   @override
-  String get automaticBackups => 'النسخ الاحتياطي التلقائي';
+  String get automaticBackups => 'النسخ الاحتياطي والمزامنة';
 
   @override
   String get automaticBackupsHint =>
@@ -2077,7 +2097,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'إعادة ضبط الخلفية واللكنة والبلاط والعلامات والتمييز والرسوم المتحركة؟';
 
   @override
-  String get wallpaperDimming => 'يعتم';
+  String get wallpaperDimming => 'شدة التعتيم';
 
   @override
   String get wallpaperPlacement => 'التنسيب';
@@ -2690,7 +2710,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get backupDriveHelp =>
-      'حدد اتصال وقم بتأكيد الرمز الموجود على هاتفك. تكون النسخ الاحتياطية مرئية في المجلد CuteLauncher الموجود في Google Drive، حيث يمكنك تنزيلها أو حذفها. احتفظ بأسماء الملفات دون تغيير للاستعادة داخل التطبيق. أعد الاتصال بعد الترقية من النسخ الاحتياطية المخفية؛ لا يتم ترحيل النسخ الاحتياطية القديمة تلقائيًا.';
+      'حدد ربط Google Drive وقم بتأكيد الرمز الموجود على هاتفك. تكون النسخ الاحتياطية مرئية في المجلد CuteLauncher الموجود في Google Drive، حيث يمكنك تنزيلها أو حذفها. احتفظ بأسماء الملفات دون تغيير للاستعادة داخل التطبيق. أعد الاتصال بعد الترقية من النسخ الاحتياطية المخفية؛ لا يتم ترحيل النسخ الاحتياطية القديمة تلقائيًا.';
 
   @override
   String get backupFrequency => 'تردد النسخ الاحتياطي';
@@ -3160,7 +3180,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get homeOwnReset => 'استعادة الإعدادات المشتركة';
 
   @override
-  String get homeParameters => 'المعلمات';
+  String get homeParameters => 'سلوك الشاشة الرئيسية';
 
   @override
   String get homeSectionStyle => 'مظهر القسم';
@@ -4314,4 +4334,474 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get remoteMappingImportFailed =>
       'تعذرت القراءة. اختر ملف نص UTF-8 متاحًا بحجم لا يتجاوز 64 كيلوبايت.';
+
+  @override
+  String get vpnTitle => 'VPN';
+
+  @override
+  String get vpnSettings => 'إعدادات VPN';
+
+  @override
+  String get vpnApp => 'تطبيق VPN';
+
+  @override
+  String get vpnAutomatic => 'تلقائي';
+
+  @override
+  String get vpnNone => 'غير محدد';
+
+  @override
+  String get vpnProfile => 'ملف VPN';
+
+  @override
+  String get vpnOnlyActive => 'إظهار عند الاتصال فقط';
+
+  @override
+  String get vpnShowName => 'إظهار اسم التطبيق';
+
+  @override
+  String get vpnColor => 'تمييز الاتصال بلون';
+
+  @override
+  String get vpnNotify => 'إشعار بنتائج الأوامر';
+
+  @override
+  String get vpnConnected => 'VPN متصل';
+
+  @override
+  String get vpnDisconnected => 'VPN غير متصل';
+
+  @override
+  String get vpnUnknown => 'حالة VPN غير متاحة';
+
+  @override
+  String get vpnConnect => 'اتصال';
+
+  @override
+  String get vpnDisconnect => 'قطع الاتصال';
+
+  @override
+  String get vpnOpenApp => 'فتح تطبيق VPN';
+
+  @override
+  String get vpnAndroidSettings => 'إعدادات VPN في Android';
+
+  @override
+  String get vpnAllowControl => 'السماح بالتحكم في VPN';
+
+  @override
+  String get vpnFailed => 'فشل إجراء VPN';
+
+  @override
+  String get vpnUnsupported =>
+      'لا يدعم هذا العميل التحكم المباشر. يمكنك فتح التطبيق.';
+
+  @override
+  String get vpnOther => 'يوجد اتصال VPN آخر أو غير معروف. التحكم غير متاح.';
+
+  @override
+  String get vpnStartup => 'VPN عند بدء تشغيل التلفاز';
+
+  @override
+  String get vpnPending => 'بانتظار اتصال VPN';
+
+  @override
+  String get vpnHelp =>
+      'يكتشف التحديد التلقائي اتصال VPN النشط ويتذكره لإعادة الاتصال. يتطلب اكتشاف التطبيق والملف اتصال ADB محليًا. يدعم التحكم المباشر AmneziaWG وWireGuard مع إذن التحكم وتفعيل التحكم عن بُعد في العميل. يستخدم Happ وMantaRay الملف المحدد في العميل.';
+
+  @override
+  String get vpnProfileHelp =>
+      'أدخل اسم الملف الدقيق من تطبيق VPN: حتى 15 حرفًا لاتينيًا أو رقمًا أو رمزًا من _ = + . -. يُكتشف الاسم تلقائيًا عند الاتصال اليدوي إذا كان متاحًا.';
+
+  @override
+  String get vpnStartupHelp =>
+      'يبدأ VPN بالإضافة إلى إجراءات بدء التشغيل المعتادة. اضبط الملف والأذونات أولًا. انتظار الشبكة محدود ولا يُستبدل VPN نشط. تُكتشف الاستيقاظات فقط أثناء تشغيل عملية المشغّل.';
+
+  @override
+  String get vpnStartupMethod => 'طريقة بدء VPN';
+
+  @override
+  String get vpnStartupClient => 'عبر تطبيق VPN';
+
+  @override
+  String get vpnStartupAlwaysOn => 'VPN دائم التشغيل في Android';
+
+  @override
+  String get vpnAlwaysOnManaged =>
+      'يدير Android هذا الاتصال في وضع VPN دائم التشغيل. عطّل الوضع في إعدادات بدء التشغيل أو Android.';
+
+  @override
+  String get vpnRestartRequired => 'أعد تشغيل التلفاز لتطبيق وضع النظام.';
+
+  @override
+  String get vpnAlwaysOnHelp =>
+      'يعيّن عميلًا معدًّا كاتصال VPN دائم التشغيل عبر ADB TCP المحلي. يطبّق Android الاختيار بعد إعادة تشغيل التلفاز. لا يتم تفعيل أو تغيير حظر الاتصالات دون VPN. تعيد مغادرة الوضع اختيار النظام السابق.';
+
+  @override
+  String get vpnClientConfirmation => 'أكّد الأمر في نافذة MantaRay.';
+
+  @override
+  String get informationTapAction => 'عند الضغط على الكتلة';
+
+  @override
+  String get informationShowBoth => 'الطقس والتقويم';
+
+  @override
+  String get weatherForecastTitle => 'توقعات الطقس';
+
+  @override
+  String get weatherForecastPeriod => 'فترة التوقعات';
+
+  @override
+  String weatherForecastDays(int days) {
+    return '$days أيام';
+  }
+
+  @override
+  String get weatherForecastView => 'عرض التوقعات';
+
+  @override
+  String get weatherForecastCards => 'بطاقات مدمجة';
+
+  @override
+  String get weatherForecastList => 'قائمة مفصلة';
+
+  @override
+  String weatherForecastAvailable(int available, int requested) {
+    return 'الأيام المتاحة: $available من $requested';
+  }
+
+  @override
+  String get weatherForecastTvTime => 'تواريخ التوقعات حسب توقيت التلفاز';
+
+  @override
+  String get weatherClear => 'صافٍ';
+
+  @override
+  String get weatherCloudy => 'غائم';
+
+  @override
+  String get weatherFog => 'ضباب';
+
+  @override
+  String get weatherWind => 'رياح';
+
+  @override
+  String get weatherPrecipitation => 'هطول الأمطار';
+
+  @override
+  String get showVolume => 'إظهار مستوى الصوت';
+
+  @override
+  String get audioStatusTitle => 'مستوى الصوت ومخرج الصوت';
+
+  @override
+  String get audioOutputTv => 'التلفاز';
+
+  @override
+  String get audioOutputHeadphones => 'سماعات الرأس';
+
+  @override
+  String get audioOutputMultiple => 'متعدد';
+
+  @override
+  String get audioMuted => 'الصوت مكتوم';
+
+  @override
+  String get backgroundStartupTitle => 'تطبيقات الخلفية';
+
+  @override
+  String get backgroundStartupFailed => 'تعذر تحميل الإعدادات أو حفظها';
+
+  @override
+  String get backgroundStartupRetry => 'إعادة المحاولة';
+
+  @override
+  String get backgroundStartupEmpty => 'لا توجد تطبيقات مستخدم';
+
+  @override
+  String get backgroundStartupUnavailable => 'التشغيل في الخلفية غير متاح';
+
+  @override
+  String get backgroundStartupRequested => 'تم طلب التشغيل';
+
+  @override
+  String get backgroundStartupHelp =>
+      'حدد التطبيقات لتشغيلها مرة واحدة في الخلفية بعد إقلاع التلفاز. يجب فتح CuteLauncher خلال دقيقة: عيّنه شاشة رئيسية أو فعّل تشغيله عند الإقلاع. تبدأ التطبيقات بالتتابع خلف الشاشة الرئيسية؛ تحديدها لا يشغلها فورًا. استخدام جهاز التحكم أو مغادرة المشغّل يلغي عمليات التشغيل المتبقية. الاستيقاظ من السكون لا يعيد تشغيلها. لا يمكن تحديد التطبيقات غير المتوافقة. التشغيل لا يفعّل ميزات داخل التطبيق ولا يضمن العمل المستمر. امنح الأذونات واضبط العمل في الخلفية داخل التطبيق نفسه. قد يوقفه Android أو نظام التلفاز. تُحفظ الاختيارات على هذا التلفاز فقط.';
+
+  @override
+  String get backgroundStartupToggle => 'التشغيل التلقائي في الخلفية';
+
+  @override
+  String get systemWidgetSettings => 'إعدادات أداة النظام';
+
+  @override
+  String get systemShowCpu => 'إظهار CPU في اللوحة';
+
+  @override
+  String get systemShowRam => 'إظهار RAM في اللوحة';
+
+  @override
+  String get systemStorage => 'التخزين: المتاح / الإجمالي';
+
+  @override
+  String get systemUptime => 'مدة التشغيل (ساعات:دقائق)';
+
+  @override
+  String get systemTemperature => 'درجة حرارة CPU';
+
+  @override
+  String get systemAvailable => 'RAM المتاحة';
+
+  @override
+  String get systemHistory => 'الساعة الأخيرة · المتوسطات والقمم';
+
+  @override
+  String get systemNow => 'الآن';
+
+  @override
+  String get systemHourAgo => '−60 دقيقة';
+
+  @override
+  String get systemWidgetHelp =>
+      'تتحدث القراءات كل 5 ثوانٍ عندما يكون المشغّل مرئيًا. تعرض الرسوم متوسطات كل دقيقة وقممها. تترك التطبيقات الأخرى والسكون وأخطاء القراءة فجوات. يُحفظ السجل في الذاكرة ويُمسح عند إعادة تشغيل عملية المشغّل. يعتمد توفر CPU ودرجة الحرارة على البرنامج الثابت. أوقف قيمتي اللوحة لعرض الأيقونة فقط.';
+
+  @override
+  String get slideshowBrowseFolders => 'تصفح المجلدات';
+
+  @override
+  String get slideshowEnterFolderPath => 'إدخال مسار المجلد';
+
+  @override
+  String get slideshowSystemPicker => 'الاختيار في مدير ملفات النظام';
+
+  @override
+  String get slideshowFolderPath => 'مسار المجلد';
+
+  @override
+  String get slideshowUseFolder => 'استخدام هذا المجلد';
+
+  @override
+  String get slideshowParentFolder => 'المجلد الأعلى';
+
+  @override
+  String get slideshowStoragePermission =>
+      'اسمح بالوصول إلى الملفات في إعدادات Android لاستخدام متصفح الملفات المدمج.';
+
+  @override
+  String get slideshowPickerUnavailable =>
+      'لا يحتوي هذا التلفاز على منتقي مجلدات. استخدم المتصفح المدمج أو أدخل المسار يدويًا.';
+
+  @override
+  String get slideshowFolderUnavailable =>
+      'المجلد غير متاح. تحقق من المسار وتوصيل وحدة التخزين وإذن الوصول.';
+
+  @override
+  String get slideshowStorageHelp =>
+      'يقرأ المتصفح المدمج مجلدات التلفاز ووحدات التخزين المتصلة. في Android 11 أو أحدث، اسمح بالوصول إلى جميع الملفات؛ وفي Android 9–10، اسمح بالوصول إلى التخزين. يمكنك إدخال مسار مثل /storage/emulated/0/Pictures. لا يتم تعديل الملفات.';
+
+  @override
+  String get fileBrowserTitle => 'اختيار ملف';
+
+  @override
+  String get filePickerChoose => 'اختيار متصفح الملفات';
+
+  @override
+  String get filePickerSystem => 'منتقي ملفات النظام';
+
+  @override
+  String get filePickerBuiltIn => 'متصفح الملفات المدمج';
+
+  @override
+  String get fileBrowserEmpty => 'لا توجد عناصر لعرضها';
+
+  @override
+  String get fileBrowserUnavailable =>
+      'تعذر فتح هذا الموقع. تحقق من إمكانية الوصول وحاول مرة أخرى.';
+
+  @override
+  String get networkAndVpnGroup => 'الشبكة وVPN';
+
+  @override
+  String get soundAndInputsGroup => 'الصوت والمدخلات';
+
+  @override
+  String get timerAndNightModeGroup => 'المؤقت والوضع الليلي';
+
+  @override
+  String get systemSettingsGroup => 'إعدادات النظام';
+
+  @override
+  String get appChannelsTitle => 'خلاصات التطبيقات';
+
+  @override
+  String get appChannelsHelp =>
+      'اختر حتى 16 خلاصة. يعتمد توفرها على القنوات التي تنشرها التطبيقات والبرنامج الثابت للتلفاز. تُخفى الخلاصات الفارغة. يُحفظ الاختيار على هذا التلفاز.';
+
+  @override
+  String get appChannelsUnavailable =>
+      'تعذّرت قراءة الخلاصات. تحقق من إذن الوصول إلى برامج التلفاز.';
+
+  @override
+  String get appChannelsEmpty => 'لا توجد خلاصات تطبيقات متاحة.';
+
+  @override
+  String get appChannelsRefresh => 'تحديث الخلاصات';
+
+  @override
+  String get appChannelsLaunchFailed => 'تعذّر فتح هذا المحتوى.';
+
+  @override
+  String get appChannelsSaveFailed => 'تعذّر حفظ الاختيار. اختر حتى 16 خلاصة.';
+
+  @override
+  String get sectionDeleteConfirm =>
+      'هل تريد حذف هذا القسم؟ ستبقى التطبيقات المثبتة.';
+
+  @override
+  String get sectionDeleteFailed => 'تعذر حذف القسم. حاول مرة أخرى.';
+
+  @override
+  String get appChannelsAccess => 'الوصول إلى خلاصات التطبيقات';
+
+  @override
+  String get appChannelsMissing => 'خلاصة غير متاحة';
+
+  @override
+  String get wallpaperRefresh => 'تحديث الخلفية';
+
+  @override
+  String get wallpaperDimmingHelp =>
+      'تحافظ 100% على التعتيم الأصلي وتضاعفه 200%. هذه ليست عتامة طبقة سوداء.';
+
+  @override
+  String get resetLauncherSettings => 'إعادة ضبط جميع الإعدادات';
+
+  @override
+  String get resetLauncherSettingsConfirmation =>
+      'ستُحذف جميع إعدادات CuteLauncher وبياناته المحلية، بما فيها الأقسام والمفضلة وتعيينات جهاز التحكم والاتصالات والملفات في مساحة تخزين التطبيق. سيُغلق CuteLauncher وسيكون تشغيله التالي كتثبيت جديد. يجب منح صلاحيات الوصول مجدداً. ستبقى الملفات خارج مساحة تخزين CuteLauncher والتطبيقات الأخرى.';
+
+  @override
+  String get resetLauncherSettingsError =>
+      'تعذّر إكمال إعادة ضبط الإعدادات. حاول مرة أخرى.';
+
+  @override
+  String get fileBrowserCurrentFolder => 'المجلد الحالي';
+
+  @override
+  String get fileBrowserFileName => 'اسم الملف';
+
+  @override
+  String get fileBrowserNoFolders => 'لا توجد مجلدات فرعية';
+
+  @override
+  String get fileBrowserNoFiles => 'لا توجد ملفات مطابقة';
+
+  @override
+  String get fileBrowserPartial => 'يُعرض جزء من محتويات المجلد فقط';
+
+  @override
+  String get fileBrowserRemoteHint => '← الاسم الكامل · → تأكيد';
+
+  @override
+  String get fileBrowserReadNameHint => '← عرض الاسم الكامل';
+
+  @override
+  String fileBrowserSavedTo(String path) {
+    return 'تم الحفظ: $path';
+  }
+
+  @override
+  String get backupDriveConnect => 'ربط Google Drive';
+
+  @override
+  String get discardChangesTitle => 'تجاهل التغييرات؟';
+
+  @override
+  String get discardChangesMessage => 'ستُفقد التغييرات غير المحفوظة.';
+
+  @override
+  String get backgroundFileUnavailable => 'الملف غير متاح';
+
+  @override
+  String get backupLastSuccess => 'آخر إجراء ناجح:';
+
+  @override
+  String get informationPlacement => 'موضع المجموعة';
+
+  @override
+  String get informationOnBackground => 'على الخلفية';
+
+  @override
+  String get informationBackgroundAlignment => 'المحاذاة على الخلفية';
+
+  @override
+  String get informationBackgroundHelp =>
+      'اختر اللوحة العلوية أو الخلفية أو الإخفاء لكل من الساعة والتاريخ والطقس بشكل مستقل. عناصر الخلفية لا تستجيب للإدخال ولا تحرك المربعات. في المنظر الطبيعي المتكيف تغطي الجبال جزءاً من الساعة. تظل الإعدادات السريعة مستقلة.';
+
+  @override
+  String get informationTime => 'الساعة';
+
+  @override
+  String get informationDate => 'التاريخ';
+
+  @override
+  String get backgroundInformationAppearance => 'المظهر على الخلفية';
+
+  @override
+  String onlineWallpaperFailureStage(String stage) {
+    String _temp0 = intl.Intl.selectLogic(stage, {
+      'initialize': 'تهيئة التخزين',
+      'metadata': 'طلب المصدر',
+      'download': 'تنزيل الصورة',
+      'validation': 'التحقق من الصورة',
+      'save': 'حفظ الخلفية',
+      'other': 'حفظ الخلفية',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String onlineWallpaperFailureReason(String reason) {
+    String _temp0 = intl.Intl.selectLogic(reason, {
+      'dns': 'تعذر حل عنوان الخادم (DNS).',
+      'connection': 'تعذر إنشاء اتصال بالخادم أو الحفاظ عليه.',
+      'tls': 'خطأ في الاتصال الآمن أو الشهادة (TLS).',
+      'timeout': 'انتهت مهلة الطلب.',
+      'http': 'أعاد الخادم خطأ.',
+      'redirect': 'إعادة توجيه غير صالحة أو عدد كبير من عمليات إعادة التوجيه.',
+      'insecureUrl': 'رابط غير آمن: يلزم HTTPS دون بيانات تسجيل دخول.',
+      'tooLarge': 'تتجاوز الاستجابة الحد المسموح للحجم.',
+      'dimensions': 'تتجاوز أبعاد الصورة الحد المسموح.',
+      'invalidResponse': 'أعاد المصدر بيانات غير صالحة.',
+      'noImage': 'لم يُرجع المصدر صورًا جديدة مناسبة.',
+      'invalidImage': 'الملف تالف أو تنسيق الصورة غير مدعوم.',
+      'storage': 'تعذرت قراءة ملفات الخلفية أو كتابتها.',
+      'unknown': 'خطأ غير معروف.',
+      'other': 'خطأ غير معروف.',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get informationPanelAppearance => 'مظهر اللوحة';
+
+  @override
+  String get informationData => 'التنسيقات والبيانات';
+
+  @override
+  String get informationGroupingMinimum => 'يلزم عنصران على الأقل';
+
+  @override
+  String get screenshotSceneMode => 'وضع لقطة الشاشة';
+
+  @override
+  String get screenshotSceneHour => 'الساعات';
+
+  @override
+  String get screenshotSceneMinute => 'الدقائق';
+
+  @override
+  String get screenshotSceneHelp =>
+      'يضبط وقت المنظر وساعة الخلفية وطقس المنظر. يظل نشطًا بعد إغلاق الإعدادات. لا يغير وقت النظام أو بيانات الطقس أو الإعدادات المحفوظة. تبدأ هذه النسخة بعد إعادة التشغيل عند 16:00 بطقس غائم.';
 }

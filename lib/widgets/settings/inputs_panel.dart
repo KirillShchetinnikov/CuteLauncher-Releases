@@ -105,7 +105,7 @@ class _InputsPanelState extends State<InputsPanel> {
                                 autofocus: inputs.isEmpty,
                                 tooltip: localizations.inputsSettings,
                                 icon: const Icon(Icons.settings_outlined),
-                                onPressed: _openSettings,
+                                onPressed: inputs.isEmpty ? null : _openSettings,
                               ),
                             ],
                           ),

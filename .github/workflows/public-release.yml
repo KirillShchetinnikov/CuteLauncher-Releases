@@ -28,14 +28,14 @@ jobs:
       RELEASE_VERSION: ${{ needs.build.outputs.version }}
       RELEASE_BUILD: ${{ needs.build.outputs.build }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6.1.0
         with:
           distribution: zulu
           java-version: '21'
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8.0.2
         with:
           name: unsigned-apks
           path: unsigned-apks
@@ -67,7 +67,7 @@ jobs:
           done
       - name: Verify signatures and APK metadata
         run: python3 .github/scripts/verify_apks.py signed-apks "$RELEASE_VERSION" "$RELEASE_BUILD" --signed
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7.0.2
         with:
           name: signed-apks
           path: signed-apks/*.apk
@@ -89,10 +89,10 @@ jobs:
       RELEASE_BUILD: ${{ needs.build.outputs.build }}
       GH_TOKEN: ${{ github.token }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8.0.2
         with:
           name: signed-apks
           path: signed-apks
@@ -113,4 +113,6 @@ jobs:
             "[Changelog in English](https://github.com/$GITHUB_REPOSITORY/blob/$TAG_NAME/CHANGELOG_EN.md)" \
             > "$RUNNER_TEMP/release-notes.md"
           gh release create "$TAG_NAME" signed-apks/*.apk --verify-tag --title "CuteLauncher $RELEASE_VERSION" --notes-file "$RUNNER_TEMP/release-notes.md" --draft "${options[@]}"
-          gh release edit "$TAG_NAME" --draft=false
+          latest=false
+          if [[ "$RELEASE_VERSION" != *-* ]]; then latest=true; fi
+          gh release edit "$TAG_NAME" --draft=false --latest="$latest"

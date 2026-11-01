@@ -3,6 +3,7 @@ package com.leanbitlab.ltvL;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ComponentName;
+import android.provider.Settings;
 import android.os.Handler;
 import android.os.Looper;
 import io.flutter.plugin.common.BinaryMessenger;
@@ -25,6 +26,25 @@ final class RecentAppsBridge implements AutoCloseable {
             && info.activityInfo.applicationInfo.enabled;
     }
     static String mode(Context context) { return context.getSharedPreferences(PREFS, 0).getString("mode", "auto"); }
+    static Map<String, Object> access(Context context) {
+        boolean adb;
+        try { adb = AdbBridge.recentSession(context, shell -> "2000".equals(shell.execute("id -u").trim())); }
+        catch (Exception unavailable) { adb = false; }
+        return Map.of("adb", adb, "accessibility", LauncherAccessibilityService.connected());
+    }
+    static boolean setup(Context context, String destination) {
+        Intent intent;
+        if ("adb".equals(destination)) {
+            intent = new Intent(context, MainActivity.class)
+                .setAction(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER)
+                .putExtra(LauncherActivity.OPEN_ADB_SETTINGS, true)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        } else if ("accessibility".equals(destination)) {
+            intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+        } else return false;
+        try { context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)); return true; }
+        catch (RuntimeException unavailable) { return false; }
+    }
     static boolean open(Context context) {
         String mode = mode(context);
         if (!mode.equals("custom") && systemAvailable(context)) {
@@ -40,6 +60,15 @@ final class RecentAppsBridge implements AutoCloseable {
             switch (call.method) {
                 case "info" -> result.success(Map.of("mode", mode(context), "systemAvailable", systemAvailable(context),
                     "accessibility", LauncherAccessibilityService.connected()));
+                case "access" -> worker.execute(() -> {
+                    var response = access(context);
+                    main.post(() -> { if (!closed) result.success(response); });
+                });
+                case "setup" -> {
+                    boolean opened = setup(context, call.argument("destination"));
+                    result.success(opened);
+                    if (opened) dismiss.run();
+                }
                 case "mode" -> {
                     if (!(call.arguments() instanceof String mode) || !Set.of("auto", "custom", "system").contains(mode)) {
                         result.error("invalid", "Invalid mode", null); return;

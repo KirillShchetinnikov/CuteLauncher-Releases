@@ -21,6 +21,17 @@ import '../../l10n/app_localizations.dart';
 import '../../providers/weather_service.dart';
 import '../../weather_sources.dart';
 import 'focusable_settings_tile.dart';
+import '../../providers/appearance_service.dart';
+
+String _updatedLabel(BuildContext context, DateTime value) {
+  final local = value.toLocal();
+  final now = DateTime.now();
+  final l = MaterialLocalizations.of(context);
+  final time = l.formatTimeOfDay(TimeOfDay.fromDateTime(local));
+  return DateUtils.isSameDay(now, local)
+      ? time
+      : '${l.formatCompactDate(local)} $time';
+}
 
 class WeatherPage extends StatelessWidget {
   static const routeName = 'weather_panel';
@@ -31,6 +42,8 @@ class WeatherPage extends StatelessWidget {
     final service = context.watch<WeatherService>();
     final config = service.configuration;
     final settings = context.watch<SettingsService>();
+    final appearanceService = context.watch<AppearanceService>();
+    final appearance = appearanceService.appearance;
     final names = {
       WeatherSource.breezy: 'Breezy Weather',
       WeatherSource.openMeteo: 'Open-Meteo',
@@ -46,6 +59,13 @@ class WeatherPage extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 8, 12, 4),
+            child: Text(
+              '${l.weatherSource} · ${l.weatherLocation}',
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+          ),
           SettingsChoiceTile<WeatherSource>(
             autofocus: true,
             title: l.weatherSource,
@@ -125,7 +145,6 @@ class WeatherPage extends StatelessWidget {
                     ? null
                     : () => _key(context, service, config.source),
               ),
-              SettingsHelp(text: config.source == WeatherSource.openWeather ? l.weatherOpenWeatherHint : l.weatherYandexHint),
             ],
             FocusableSettingsTile(
               leading: const Icon(Icons.refresh),
@@ -173,25 +192,65 @@ class WeatherPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(12),
                 child: Text(
-                  '${service.stale ? l.weatherStale : l.weatherUpdated}: ${MaterialLocalizations.of(context).formatTimeOfDay(TimeOfDay.fromDateTime(service.updatedAt!))}',
+                  '${service.stale ? l.weatherStale : l.weatherUpdated}: ${_updatedLabel(context, service.updatedAt!)}',
                 ),
               ),
-            SettingsHelp(text: switch (config.source) {WeatherSource.metNorway => l.weatherMetNorwayCredit, WeatherSource.openMeteo => l.weatherOpenMeteoCredit, WeatherSource.openWeather => l.weatherOpenWeatherCredit, _ => l.weatherYandexCredit}),
+            SettingsHelp(
+              title: '${l.weatherSource}: ${names[config.source]}',
+              text: [
+                if (config.source == WeatherSource.openWeather)
+                  l.weatherOpenWeatherHint,
+                if (config.source == WeatherSource.yandex) l.weatherYandexHint,
+                switch (config.source) {
+                  WeatherSource.metNorway => l.weatherMetNorwayCredit,
+                  WeatherSource.openMeteo => l.weatherOpenMeteoCredit,
+                  WeatherSource.openWeather => l.weatherOpenWeatherCredit,
+                  _ => l.weatherYandexCredit,
+                },
+              ].join('\n\n'),
+            ),
           ] else
-            SettingsHelp(text: l.breezyWeatherSetupHint),
+            SettingsHelp(
+              title: 'Breezy Weather',
+              text: l.breezyWeatherSetupHint,
+            ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 16, 12, 4),
+            child: Text(
+              l.appearanceSettings,
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+          ),
           RoundedSwitchListTile(
             value: settings.showWeatherWarnings,
             onChanged: settings.setShowWeatherWarnings,
             title: Text(l.showWeatherWarnings),
           ),
-          FocusableSettingsTile(
-            title: Text(
-              '${l.temperatureUnit}: ${settings.useFahrenheit ? l.fahrenheit : l.celsius}',
-            ),
-            onPressed: () => settings.setTemperatureUnit(
-              settings.useFahrenheit
-                  ? TEMPERATURE_UNIT_CELSIUS
-                  : TEMPERATURE_UNIT_FAHRENHEIT,
+          SettingsValueStepper(
+            title: l.weatherForecastPeriod,
+            options: const [3, 5, 7],
+            value: appearance.forecastDays,
+            label: (value) => l.weatherForecastDays(value as int),
+            onChanged: (value) =>
+                appearanceService.set('panelForecastDays', value),
+          ),
+          SettingsChoiceTile<String>(
+            title: l.weatherForecastView,
+            value: appearance.detailedForecast ? 'list' : 'cards',
+            options: const ['cards', 'list'],
+            label: (value) => value == 'cards'
+                ? l.weatherForecastCards
+                : l.weatherForecastList,
+            onChanged: (value) =>
+                appearanceService.set('panelForecastView', value),
+          ),
+          SettingsChoiceTile<bool>(
+            title: l.temperatureUnit,
+            value: settings.useFahrenheit,
+            options: const [false, true],
+            label: (value) => value ? l.fahrenheit : l.celsius,
+            onChanged: (value) => settings.setTemperatureUnit(
+              value ? TEMPERATURE_UNIT_FAHRENHEIT : TEMPERATURE_UNIT_CELSIUS,
             ),
           ),
         ],
@@ -307,22 +366,25 @@ class _WeatherKeyDialogState extends State<_WeatherKeyDialog> {
     content: Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [widget.input(TextField(
-        autofocus: true,
-        obscureText: true,
-        maxLength: 1024,
-        enableSuggestions: false,
-        autocorrect: false,
-        controller: controller,
-        textInputAction: TextInputAction.done,
-        onEditingComplete: () {
-          SystemChannels.textInput.invokeMethod<void>('TextInput.hide');
-          okFocus.requestFocus();
-        },
-        decoration: const InputDecoration(),
-      ),
-    ),
-    SettingsHelp(text: widget.helper)],
+      children: [
+        widget.input(
+          TextField(
+            autofocus: true,
+            obscureText: true,
+            maxLength: 1024,
+            enableSuggestions: false,
+            autocorrect: false,
+            controller: controller,
+            textInputAction: TextInputAction.done,
+            onEditingComplete: () {
+              SystemChannels.textInput.invokeMethod<void>('TextInput.hide');
+              okFocus.requestFocus();
+            },
+            decoration: const InputDecoration(),
+          ),
+        ),
+        SettingsHelp(title: widget.title, text: widget.helper),
+      ],
     ),
     actions: [
       LauncherDialogButton(

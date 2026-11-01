@@ -90,8 +90,61 @@ final class BackupFolder {
         } else operateGranted(operation, value, name, path, result);
     }
 
+    private Object local(String operation, String value, String name, String path) throws Exception {
+        File folder = LocalWallpaperFiles.directory(value);
+        if ("verify".equals(operation)) {
+            File probe = File.createTempFile(".cute-probe-", ".partial", folder);
+            File renamed = new File(folder, probe.getName() + ".check");
+            try {
+                java.nio.file.Files.write(probe.toPath(), new byte[]{123, 125});
+                java.nio.file.Files.move(probe.toPath(), renamed.toPath());
+                java.nio.file.Files.delete(renamed.toPath());
+                return value;
+            } finally { probe.delete(); renamed.delete(); }
+        }
+        if ("list".equals(operation)) {
+            File[] children = folder.listFiles();
+            if (children == null || children.length > 4096) throw new IOException("Folder unavailable or too large");
+            List<Map<String, String>> entries = new ArrayList<>();
+            for (File child : children) {
+                if (!child.getName().matches(NAME)) continue;
+                File safe = LocalWallpaperFiles.sharedFile(child.getPath());
+                if (folder.equals(safe.getParentFile()) && safe.isFile())
+                    entries.add(Map.of("name", child.getName(), "id", safe.toURI().toASCIIString()));
+            }
+            return entries;
+        }
+        if (name == null || !name.matches(NAME)) throw new SecurityException("Invalid backup name");
+        File target = LocalWallpaperFiles.sharedFile(new File(folder, name).getPath());
+        if (!folder.equals(target.getParentFile())) throw new SecurityException("Direct child required");
+        if ("upload".equals(operation)) {
+            if (target.exists()) throw new IOException("Backup already exists");
+            File temporary = File.createTempFile(".cute-backup-", ".partial", folder);
+            try {
+                LocalDocumentFiles.copy(privateFile(path), temporary, LIMIT);
+                java.nio.file.Files.move(temporary.toPath(), target.toPath());
+            } finally { temporary.delete(); }
+        } else if ("download".equals(operation)) {
+            LocalDocumentFiles.copy(target, privateFile(path), LIMIT);
+        } else if ("delete".equals(operation)) {
+            java.nio.file.Files.deleteIfExists(target.toPath());
+        } else throw new IllegalArgumentException("Unknown operation");
+        return true;
+    }
+
     private void operateGranted(String operation, String value, String name, String path, MethodChannel.Result result) {
         executor.execute(() -> {
+            if (value != null && value.startsWith("file:")) {
+                try {
+                    if (!new LocalWallpaperFiles(activity, executor).granted(!"list".equals(operation) && !"download".equals(operation)))
+                        throw new SecurityException("Storage access required");
+                    Object reply = local(operation, value, name, path);
+                    new Handler(Looper.getMainLooper()).post(() -> result.success(reply));
+                } catch (Exception error) {
+                    new Handler(Looper.getMainLooper()).post(() -> result.error("document_failed", "Local backup operation failed", DiagnosticErrorDetails.from(error)));
+                }
+                return;
+            }
             if (DOWNLOADS.equals(value)) {
                 try {
                     Object reply = downloads(operation, name, path);

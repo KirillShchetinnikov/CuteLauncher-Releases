@@ -27,6 +27,146 @@ void main() {
   tearDown(() {
     networkService.dispose();
   });
+
+  test('a late startup snapshot cannot overwrite a newer network event', () async {
+    final snapshot = Completer<Map<String, dynamic>>();
+    late void Function(Map<String, dynamic>) changed;
+    when(mockChannel.addNetworkChangedListener(any)).thenAnswer((call) {
+      changed = call.positionalArguments.single;
+      return null;
+    });
+    when(mockChannel.getActiveNetworkInformation()).thenAnswer((_) => snapshot.future);
+    final service = NetworkService(mockChannel);
+    addTearDown(service.dispose);
+    changed({'name': 'NETWORK_UNAVAILABLE'});
+    snapshot.complete({
+      'networkType': NetworkType.Wifi.index,
+      'internetAccess': true,
+      'wirelessSignalLevel': 4,
+      'vpnActive': true,
+    });
+    await service.initialNetworkLoad;
+    expect(service.hasInternetAccess, isFalse);
+    expect(service.networkType, NetworkType.Unknown);
+    expect(service.vpnActive, isFalse);
+  });
+
+  test('unknown cellular types stay unknown without throwing', () async {
+    late void Function(Map<String, dynamic>) changed;
+    when(mockChannel.addNetworkChangedListener(any)).thenAnswer((call) {
+      changed = call.positionalArguments.single;
+      return null;
+    });
+    final service = NetworkService(mockChannel);
+    addTearDown(service.dispose);
+    await service.initialLoad;
+    for (final value in [-1, 99, null, 'LTE']) {
+      expect(() => changed({'name': 'CELLULAR_STATE_CHANGED', 'arguments': value}), returnsNormally);
+      expect(service.cellularNetworkType, CellularNetworkType.Unknown);
+    }
+  });
+
+  test('repeated network events notify only when displayed state changes', () async {
+    late void Function(Map<String, dynamic>) changed;
+    when(mockChannel.addNetworkChangedListener(any)).thenAnswer((call) {
+      changed = call.positionalArguments.single;
+      return null;
+    });
+    final service = NetworkService(mockChannel);
+    addTearDown(service.dispose);
+    await service.initialLoad;
+    var notifications = 0;
+    service.addListener(() => notifications++);
+    final wifi = {
+      'networkType': NetworkType.Wifi.index,
+      'internetAccess': true,
+      'wirelessSignalLevel': 3,
+      'vpnActive': false,
+    };
+    changed({'name': 'NETWORK_AVAILABLE', 'arguments': wifi});
+    for (var i = 0; i < 20; i++) {
+      changed({'name': 'CAPABILITIES_CHANGED', 'arguments': Map.of(wifi)});
+    }
+    expect(notifications, 1);
+    changed({'name': 'CELLULAR_STATE_CHANGED', 'arguments': CellularNetworkType.Lte.index});
+    expect(notifications, 2);
+    changed({'name': 'CELLULAR_STATE_CHANGED', 'arguments': CellularNetworkType.Lte.index});
+    changed({'name': 'UNRECOGNIZED'});
+    expect(notifications, 2);
+    changed({'name': 'CAPABILITIES_CHANGED', 'arguments': {...wifi, 'vpnActive': true}});
+    expect(notifications, 3);
+    changed({'name': 'NETWORK_UNAVAILABLE'});
+    changed({'name': 'NETWORK_UNAVAILABLE'});
+    expect(notifications, 4);
+  });
+
+  test('unchanged permission and traffic samples do not notify listeners', () async {
+    await networkService.initialLoad;
+    var notifications = 0;
+    networkService.addListener(() => notifications++);
+    await networkService.refreshPermissionAndUsage();
+    expect(notifications, 0);
+    when(mockChannel.checkUsageStatsPermission()).thenAnswer((_) async => true);
+    when(mockChannel.getDailyDataUsage()).thenAnswer((_) async => 100);
+    await networkService.refreshPermissionAndUsage();
+    expect(notifications, 1);
+    await networkService.refreshPermissionAndUsage();
+    expect(notifications, 1);
+    when(mockChannel.getDailyDataUsage()).thenAnswer((_) async => 101);
+    await networkService.refreshPermissionAndUsage();
+    expect(notifications, 2);
+    when(mockChannel.checkUsageStatsPermission()).thenAnswer((_) async => false);
+    await networkService.refreshPermissionAndUsage();
+    expect(notifications, 3);
+  });
+
+  test('a new route still notifies VPN consumers when its displayed state matches', () async {
+    late void Function(Map<String, dynamic>) changed;
+    when(mockChannel.addNetworkChangedListener(any)).thenAnswer((call) {
+      changed = call.positionalArguments.single;
+      return null;
+    });
+    final service = NetworkService(mockChannel);
+    addTearDown(service.dispose);
+    await service.initialLoad;
+    var notifications = 0;
+    service.addListener(() => notifications++);
+    final event = {
+      'name': 'NETWORK_AVAILABLE',
+      'arguments': {
+        'networkType': NetworkType.Wifi.index,
+        'internetAccess': true,
+        'wirelessSignalLevel': 3,
+        'vpnActive': true,
+      },
+    };
+    changed(event);
+    changed(event);
+    expect(notifications, 2);
+  });
+
+  test('revoking usage permission clears bytes and rejects a pending sample', () {
+    fakeAsync((time) {
+      when(mockChannel.checkUsageStatsPermission()).thenAnswer((_) async => true);
+      when(mockChannel.getDailyDataUsage()).thenAnswer((_) async => 123);
+      networkService.refreshPermissionAndUsage();
+      time.flushMicrotasks();
+      expect(networkService.dailyDataUsage, 123);
+
+      final pending = Completer<int>();
+      when(mockChannel.getDailyDataUsage()).thenAnswer((_) => pending.future);
+      time.elapse(const Duration(minutes: 5));
+      when(mockChannel.checkUsageStatsPermission()).thenAnswer((_) async => false);
+      networkService.refreshPermissionAndUsage();
+      time.flushMicrotasks();
+      expect(networkService.hasUsageStatsPermission, isFalse);
+      expect(networkService.dailyDataUsage, -1);
+      pending.complete(999);
+      time.flushMicrotasks();
+      expect(networkService.dailyDataUsage, -1);
+      expect(time.periodicTimerCount, 0);
+    });
+  });
   test('short resumes recheck permissions but preserve fresh usage; manual refresh forces usage', () {
     fakeAsync((time) {
       final work = ForegroundWork(now: () => DateTime(2026).add(time.elapsed))..homeReady();
@@ -211,7 +351,7 @@ void main() {
       expect(networkService.dailyDataUsage, 777);
     });
 
-    test('when permission granted, fetches usage and notifies listeners periodically', () {
+    test('when permission granted, polls usage and notifies only for changed samples', () {
       fakeAsync((async) {
         when(mockChannel.checkUsageStatsPermission()).thenAnswer((_) async => true);
         when(mockChannel.getDailyDataUsage()).thenAnswer((_) async => 100);
@@ -228,7 +368,7 @@ void main() {
 
         expect(networkService.hasUsageStatsPermission, isTrue);
         expect(networkService.dailyDataUsage, 100);
-        expect(listenerCallCount, greaterThanOrEqualTo(2));
+        expect(listenerCallCount, 1);
         verify(mockChannel.getDailyDataUsage()).called(1);
 
         // advance 5 minutes
@@ -236,6 +376,10 @@ void main() {
 
         // Timer should have fired, calling _fetchUsage again
         verify(mockChannel.getDailyDataUsage()).called(1);
+        expect(listenerCallCount, 1);
+        when(mockChannel.getDailyDataUsage()).thenAnswer((_) async => 101);
+        async.elapse(const Duration(minutes: 5));
+        expect(listenerCallCount, 2);
       });
     });
 

@@ -42,6 +42,7 @@ class AutomaticBackupService extends ChangeNotifier
   int _sequence = 0;
   List<AutomaticBackupEntry> _entries = [];
   int _refresh = 0;
+  Future<void>? _preferenceWrites;
   bool get busy => _busy;
   Future<void> get initialized => _ready;
   bool get failed => _failed;
@@ -53,11 +54,11 @@ class AutomaticBackupService extends ChangeNotifier
     weekday: (preferences.getInt('automatic_backup_weekday') ?? 1).clamp(1, 7),
   );
   Future<void> setSchedule(BackupSchedule value) async {
-    for (final entry in {'automatic_backup_frequency': value.frequency.index,
+    await _ready;
+    if (isDisposed) return;
+    await _savePreferences({'automatic_backup_frequency': value.frequency.index,
       'automatic_backup_hour': value.hour, 'automatic_backup_minute': value.minute,
-      'automatic_backup_weekday': value.weekday}.entries) {
-      if (!await preferences.setInt(entry.key, entry.value)) throw StateError('Preference write failed');
-    }
+      'automatic_backup_weekday': value.weekday});
     notifyListeners();
     _schedule();
   }
@@ -165,13 +166,44 @@ class AutomaticBackupService extends ChangeNotifier
     }
   }
 
+  Future<bool> _writePreference(String key, Object? value) => switch (value) {
+    null => preferences.remove(key),
+    bool value => preferences.setBool(key, value),
+    int value => preferences.setInt(key, value),
+    _ => throw ArgumentError.value(value),
+  };
+
+  Future<void> _savePreferences(Map<String, Object> values) {
+    Future<void> save() async {
+      final previous = {for (final key in values.keys) key: preferences.get(key)};
+      try {
+        for (final entry in values.entries) {
+          if (!await _writePreference(entry.key, entry.value)) {
+            throw StateError('Preference write failed');
+          }
+        }
+      } catch (_) {
+        // Legacy SharedPreferences mutates its cache even when commit returns false.
+        for (final entry in previous.entries) {
+          try { await _writePreference(entry.key, entry.value); } catch (_) {}
+        }
+        rethrow;
+      }
+    }
+    final task = _preferenceWrites == null ? save() : _preferenceWrites!.then((_) => save());
+    late final Future<void> pending;
+    pending = task.catchError((Object _) {}).whenComplete(() {
+      if (identical(_preferenceWrites, pending)) _preferenceWrites = null;
+    });
+    _preferenceWrites = pending;
+    return task;
+  }
+
   Future<void> setEnabled(bool value) async {
     await _ready;
     if (isDisposed) return;
     try {
-      if (!await preferences.setBool(automaticBackupEnabledKey, value)) {
-        throw StateError('Preference write failed');
-      }
+      await _savePreferences({automaticBackupEnabledKey: value});
     } catch (_) {
       _failed = true;
       notifyListeners();
@@ -188,9 +220,7 @@ class AutomaticBackupService extends ChangeNotifier
     await _ready;
     if (isDisposed) return;
     try {
-      if (!await preferences.setInt(automaticBackupCountKey, value)) {
-        throw StateError('Preference write failed');
-      }
+      await _savePreferences({automaticBackupCountKey: value});
     } catch (_) {
       _failed = true;
       notifyListeners();
@@ -292,11 +322,7 @@ class AutomaticBackupService extends ChangeNotifier
       }
       await pending.rename(target.path);
       pending = null;
-      final saved = await preferences.setInt(
-        automaticBackupTimeKey,
-        now().millisecondsSinceEpoch,
-      );
-      if (!saved) throw StateError('Preference write failed');
+      await _savePreferences({automaticBackupTimeKey: now().millisecondsSinceEpoch});
       await _prune();
       return true;
     } catch (_) {

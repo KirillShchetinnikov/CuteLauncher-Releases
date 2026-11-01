@@ -84,6 +84,10 @@ class DiagnosticsStore {
     'openBreezyWeather',
     'getPackageName',
     'playClickSound',
+    'filePickerAvailable',
+    'requestFileStorage',
+    'browseLocalFiles',
+    'localDocumentOperation',
     'pickImageDocument',
     'pickWallpaperDocument',
     'pickBackupDocument',
@@ -107,6 +111,7 @@ class DiagnosticsStore {
     'unhandled',
     'startup',
     'weatherFetch',
+    'onlineWallpaperRefresh',
     'weatherInitialize',
     'backgroundVideoValidate',
     'backgroundVideoPlayback',
@@ -235,7 +240,9 @@ class DiagnosticsStore {
   static const _detailEnums = {
     'recovery': {'enabled', 'unavailable', 'succeeded', 'failed'},
     'availability': {'unsupported'},
+    'wallpaperSource': {'bing', 'wallhaven', 'reddit', 'url'},
     'stage': {
+      'wallpaper_initialize', 'wallpaper_metadata', 'wallpaper_download', 'wallpaper_validation', 'wallpaper_save',
       'connect',
       'dispatch',
       'plan',
@@ -266,6 +273,21 @@ class DiagnosticsStore {
       'other',
     },
     'reason': {
+      'wallpaper_dns',
+      'wallpaper_connection',
+      'wallpaper_tls',
+      'wallpaper_timeout',
+      'wallpaper_http',
+      'wallpaper_redirect',
+      'wallpaper_insecureUrl',
+      'wallpaper_tooLarge',
+      'wallpaper_dimensions',
+      'wallpaper_invalidResponse',
+      'wallpaper_noImage',
+      'wallpaper_invalidImage',
+      'wallpaper_storage',
+      'wallpaper_unknown',
+
       'wifi_owner_setup',
       'wifi_safe',
       'wifi_not_required',
@@ -386,6 +408,12 @@ class DiagnosticsStore {
       ]) {
         final value = details[key];
         if (value is int && value >= -1 && value <= 65535) safe[key] = value;
+      }
+      if (method == 'onlineWallpaperRefresh') {
+        final status = details['httpStatus'];
+        if (status is int && status >= 100 && status <= 599) safe['httpStatus'] = status;
+        final osCode = details['osErrorCode'];
+        if (osCode is int && osCode >= -65535 && osCode <= 65535) safe['osErrorCode'] = osCode;
       }
       if (safe.isNotEmpty) event['details'] = safe;
       if (method.startsWith('backgroundVideo')) {

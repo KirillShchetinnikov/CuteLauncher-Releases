@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../l10n/app_localizations.dart';
+import '../theme/interface_style.dart';
 import 'launcher_dialog.dart';
 import 'side_panel_dialog.dart';
 import 'menu_header.dart';
@@ -13,7 +14,17 @@ import 'settings/settings_panel.dart';
 class PanelCalendarDialog extends StatefulWidget {
   final DateTime? today;
   final Rect? anchor;
-  const PanelCalendarDialog({super.key, this.today, this.anchor});
+  final bool embedded;
+  final bool autofocusSettings;
+  final VoidCallback? onSettingsClosed;
+  const PanelCalendarDialog({
+    super.key,
+    this.today,
+    this.anchor,
+    this.embedded = false,
+    this.autofocusSettings = false,
+    this.onSettingsClosed,
+  });
   @override
   State<PanelCalendarDialog> createState() => _PanelCalendarDialogState();
 }
@@ -43,14 +54,16 @@ class _PanelCalendarDialogState extends State<PanelCalendarDialog> {
     );
     if (!mounted) return;
     setState(() => _settingsOpen = false);
+    widget.onSettingsClosed?.call();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) _settingsNode.requestFocus();
     });
   }
 
   @override
-  Widget build(BuildContext context) =>
-      SettingsPanelStyle(builder: _buildCalendar);
+  Widget build(BuildContext context) => widget.embedded
+      ? _buildCalendar(context)
+      : SettingsPanelStyle(builder: _buildCalendar);
 
   Widget _buildCalendar(BuildContext context) {
     final l = AppLocalizations.of(context)!;
@@ -157,13 +170,48 @@ class _PanelCalendarDialogState extends State<PanelCalendarDialog> {
           ),
           onPressed: () => _move(1),
         ),
-        if (widget.anchor == null)
+        if (widget.anchor == null && !widget.embedded)
           LauncherDialogButton(
             child: Text(l.close),
             onPressed: () => Navigator.of(context).pop(),
           ),
       ],
     );
+    if (widget.embedded) {
+      return Container(
+        key: const Key('embedded_calendar'),
+        padding: const EdgeInsets.all(12),
+        decoration: InterfaceSkin.of(context).surface(
+          scheme.onSurface.withValues(alpha: .035),
+          scheme.onSurface,
+          borderWidth: 1,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(Icons.calendar_month_outlined, color: scheme.primary),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    material.formatMonthYear(_month),
+                    key: const Key('calendar_month'),
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            dialog.content!,
+            const Divider(height: 16),
+            Wrap(alignment: WrapAlignment.center, children: dialog.actions!),
+          ],
+        ),
+      );
+    }
     if (widget.anchor == null) return dialog;
     return ExcludeFocus(
       excluding: _settingsOpen,
@@ -191,6 +239,7 @@ class _PanelCalendarDialogState extends State<PanelCalendarDialog> {
                       actions: [
                         MenuHeaderAction(
                           focusNode: _settingsNode,
+                          autofocus: widget.autofocusSettings,
                           tooltip: l.settings,
                           icon: const Icon(Icons.settings_outlined),
                           onPressed: _openSettings,

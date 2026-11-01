@@ -25,8 +25,10 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
-    <!-- Public Downloads before MediaStore.Downloads; never requested on Android 10+. -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
+    <!-- Public Downloads on Android 9 and direct writes from the built-in picker on Android 9–10. -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="29" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="29" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" tools:ignore="ScopedStorage" />
 
     <uses-feature
         android:name="android.hardware.touchscreen"
@@ -48,6 +50,8 @@
     <uses-permission android:name="com.android.providers.tv.permission.READ_WRITE_WATCH_NEXT_PROGRAMS" />
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="org.amnezia.awg.permission.CONTROL_TUNNELS" />
+    <uses-permission android:name="com.wireguard.android.permission.CONTROL_TUNNELS" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
 
@@ -103,6 +107,7 @@
     </queries>
 
     <application
+        android:requestLegacyExternalStorage="true"
         android:name="com.leanbitlab.ltvL.LauncherApplication"
         android:usesCleartextTraffic="true"
         android:allowBackup="false"
@@ -123,6 +128,8 @@
         </receiver>
         <uses-library android:name="com.tcl.tv.display" android:required="false" />
         <receiver android:name="com.leanbitlab.ltvL.SleepTimerReceiver" android:exported="false" />
+        <service android:name="com.leanbitlab.ltvL.VpnStartupJob"
+            android:permission="android.permission.BIND_JOB_SERVICE" android:exported="false" />
         <service android:name="com.leanbitlab.ltvL.NightOverlayService" android:exported="false" android:foregroundServiceType="specialUse">
             <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE" android:value="User enabled screen dimming and warm color filter over TV apps" />
         </service>

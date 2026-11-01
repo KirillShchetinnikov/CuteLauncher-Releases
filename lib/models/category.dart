@@ -60,16 +60,18 @@ class Category extends LauncherSection
   static const standardNames = {
     'all_apps': 'All Apps', 'tv_apps': 'TV Apps',
     'other_apps': 'Non-TV Apps', 'favorites': 'Favorites',
+    'app_channels': 'App Feeds',
   };
 
-  // Section identity follows systemKey; display names remain user-editable.
+  // Section identity follows systemKey independently of the display name.
   static String normalizeName(String name, String? systemKey) =>
       name;
 
-  static const systemKeys = {'all_apps', 'tv_apps', 'other_apps', 'favorites'};
+  static const systemKeys = {'all_apps', 'tv_apps', 'other_apps', 'favorites', 'app_channels'};
   String? systemKey;
   bool visible;
   bool get isSystem => systemKey != null;
+  bool get isAppChannels => systemKey == 'app_channels';
   bool get isAutomatic => const {'all_apps', 'tv_apps', 'other_apps'}.contains(systemKey);
   static const int          ColumnsCount  = 6;
   static const int          RowHeight     = 110;

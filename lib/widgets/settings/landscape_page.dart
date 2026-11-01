@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../adaptive_landscape.dart';
+import '../../diagnostics/screenshot_scene.dart';
 import '../../l10n/app_localizations.dart';
 import '../../providers/settings_service.dart';
 import '../../providers/night_mode_service.dart';
@@ -13,6 +14,7 @@ import 'settings_help.dart';
 import 'focusable_settings_tile.dart';
 import 'settings_page_layout.dart';
 import 'reset_style_tile.dart';
+import 'screenshot_scene_controls.dart';
 
 class LandscapePage extends StatefulWidget {
   const LandscapePage({super.key});
@@ -130,6 +132,7 @@ class _LandscapePageState extends State<LandscapePage>
         title: Text(l.adaptiveLandscape),
         child: ListView(
           children: [
+            if (screenshotBuild) const ScreenshotSceneControls(),
             FocusableSettingsTile(
               title: Text(l.landscapeDemoStart),
               leading: const Icon(Icons.play_arrow),
@@ -168,7 +171,7 @@ class _LandscapePageState extends State<LandscapePage>
             effect(l.landscapePrecipitation, 'precipitation'),
             effect(l.landscapeFog, 'fog'),
             effect(l.landscapeMotion, 'motion'),
-            SettingsHelp(text: l.landscapeHelp),
+            SettingsHelp(title: l.adaptiveLandscape, text: l.landscapeHelp),
             ResetStyleTile(
               onReset: () =>
                   settings.setLandscape(const LandscapeConfiguration()),

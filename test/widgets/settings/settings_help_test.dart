@@ -9,7 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   final longText = List.generate(60, (i) => 'Строка пояснения $i').join('\n');
 
-  Future<void> mount(WidgetTester tester, {String? text}) async {
+  Future<void> mount(WidgetTester tester, {String? text, String? title}) async {
     tester.view.physicalSize = const Size(350, 400);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
@@ -28,7 +28,7 @@ void main() {
                   title: const Text('До'),
                   onPressed: () {},
                 ),
-                SettingsHelp(text: text ?? longText),
+                SettingsHelp(text: text ?? longText, title: title),
                 FocusableSettingsTile(
                   title: const Text('После'),
                   onPressed: () {},
@@ -46,6 +46,16 @@ void main() {
     await tester.sendKeyEvent(key);
     await tester.pumpAndSettle();
   }
+
+  testWidgets('named short help has no scrolling instruction', (tester) async {
+    await mount(tester, title: 'О папке и доступе', text: 'Короткая справка');
+    expect(find.text('Подробнее'), findsNothing);
+    await tester.tap(find.text('О папке и доступе'));
+    await tester.pumpAndSettle();
+    final l = AppLocalizations.of(tester.element(find.byType(SettingsHelp)))!;
+    expect(find.text('Короткая справка'), findsOneWidget);
+    expect(find.text(l.settingsHelpScroll), findsNothing);
+  });
 
   testWidgets('help starts collapsed, shows info, and toggles with remote OK', (
     tester,

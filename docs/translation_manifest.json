@@ -4,8 +4,8 @@
     {
       "ru": "docs/THIRD_PARTY_RU.md",
       "en": "docs/THIRD_PARTY_EN.md",
-      "ruSha256": "9311338bb676b4581de9ab7443383744ba8665fbed8c59723bf248391dfab775",
-      "enSha256": "c9f92e0c3038ec0b6a5bdb32e16b2dac103a0c8e5a00ecb7235be65a151cef44"
+      "ruSha256": "4784ace8e03fb4d66d88a3dbf035ac576cae2ed0a7ec05c21143d16e002e8144",
+      "enSha256": "3229ffd0132bb38aba763d14042adc2e93e7e1e1b95429907577a2cfe127fd7f"
     },
     {
       "ru": "README.md",
@@ -22,8 +22,8 @@
     {
       "ru": "docs/USER_GUIDE_RU.md",
       "en": "docs/USER_GUIDE_EN.md",
-      "ruSha256": "b4cc229968214f60ba2fad7e4fd567d4a7e1b6e9866f91b4ba2e41f815ff6210",
-      "enSha256": "b5b63f95cae44f04b1f3e93efba981899a0a6da6c751b1437d2530c209492bbf"
+      "ruSha256": "dcdc1ededbba1a635d89f81c9c2a85493563cd5ffb6b8cb9dc5714b687092286",
+      "enSha256": "4204cccb6b0113a46494449a2d5d5fea0e91ea455bfddf0aec99f8025d83cc89"
     },
     {
       "ru": "docs/FAQ_RU.md",
@@ -34,8 +34,8 @@
     {
       "ru": "CHANGELOG_RU.md",
       "en": "CHANGELOG_EN.md",
-      "ruSha256": "301a0f67f50bb2d3681b3c7f3b856ed8cb06a0db4799b3e42222a44743877ab9",
-      "enSha256": "3ca74e249e4c1b74811cf43aa81f2d698f12c190b54b514ffb1430368eac2a69"
+      "ruSha256": "25f4c070230bf32bd2a50a2cfb0c70ccc098d7598bb0556f202b95f09dcb1463",
+      "enSha256": "25df27397119180a2db43b7c9b4a61877ea82c56b7e031205272e7c6e515d62a"
     }
   ]
 }

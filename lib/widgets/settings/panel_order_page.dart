@@ -1,4 +1,6 @@
 import '../../panel_layout.dart';
+import '../../information_placement.dart';
+import '../../providers/settings_service.dart';
 import '../../providers/remote_panel_service.dart';
 
 import 'package:flutter/material.dart';
@@ -39,12 +41,13 @@ class _PanelOrderPageState extends State<PanelOrderPage> {
         : null;
     final layout = panel?.layout ?? service.appearance.panelLayout;
     final left = key == 'panelButtonsOrder';
-    final (first, second) = layout.displayOrders(
-      service.appearance.combinedInformation,
-    );
+    final composition = InformationPanelComposition(service.appearance, context.read<SettingsService>(), remote: panel);
+    final excluded = composition.excluded;
+    final (first, second) = layout.displayOrders(composition.combined, excluded: excluded);
     final order = left ? first : second;
     final other = left ? second : first;
     final index = order.indexOf(id);
+    if (index < 0) return;
     final next = index + delta;
     if (next < 0 && !left) {
       order.removeAt(index);
@@ -58,7 +61,7 @@ class _PanelOrderPageState extends State<PanelOrderPage> {
     } else {
       return;
     }
-    final (savedLeft, savedRight) = layout.expandOrders(first, second);
+    final (savedLeft, savedRight) = layout.expandOrders(first, second, excluded: excluded);
     _busy = true;
     try {
       if (panel != null) {
@@ -92,10 +95,16 @@ class _PanelOrderPageState extends State<PanelOrderPage> {
     final panel = widget.remotePanel
         ? context.watch<RemotePanelService>()
         : null;
+    final composition = InformationPanelComposition(appearance, context.watch<SettingsService>(), remote: panel);
+    final excluded = composition.excluded;
     final (leftOrder, rightOrder) = (panel?.layout ?? appearance.panelLayout)
-        .displayOrders(appearance.combinedInformation);
+        .displayOrders(composition.combined, excluded: excluded);
     final labels = {
-      PanelLayout.informationGroup: l.informationGroup,
+      PanelLayout.informationGroup: [
+        if (!excluded.contains('time')) l.informationTime,
+        if (!excluded.contains('date')) l.informationDate,
+        if (!excluded.contains('weather')) l.weather,
+      ].join(' · '),
       'settings': l.settings,
       'systemSettings': l.androidTvSettings,
       'inputs': l.inputs,
@@ -103,8 +112,11 @@ class _PanelOrderPageState extends State<PanelOrderPage> {
       'sleepTimer': l.sleepTimer,
       'nightMode': l.nightModeTitle,
       'network': l.showNetwork,
+      'vpn': l.vpnTitle,
       'traffic': l.showTraffic,
       'weather': l.weather,
+      'system': l.system,
+      'audio': l.audioStatusTitle,
       'date': l.showDate,
       'time': l.showTime,
     };
@@ -117,8 +129,11 @@ class _PanelOrderPageState extends State<PanelOrderPage> {
       'sleepTimer': Icons.timer_outlined,
       'nightMode': Icons.nightlight_round,
       'network': Icons.wifi,
+      'vpn': Icons.vpn_key,
       'traffic': Icons.data_usage,
       'weather': Icons.wb_sunny_outlined,
+      'system': Icons.monitor_heart_outlined,
+      'audio': Icons.volume_up_outlined,
       'date': Icons.calendar_today,
       'time': Icons.watch_later_outlined,
     };
@@ -153,9 +168,15 @@ class _PanelOrderPageState extends State<PanelOrderPage> {
                     title: Text(labels[id]!),
                     leading: Icon(icons[id]),
                     selected: _moving == id,
-                    trailing: Icon(
-                      _moving == id ? Icons.unfold_more : Icons.swap_vert,
-                    ),
+                    trailing: _moving == id
+                        ? Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(l.reorder),
+                              const Icon(Icons.unfold_more),
+                            ],
+                          )
+                        : const Icon(Icons.swap_vert),
                     onPressed: () =>
                         setState(() => _moving = _moving == id ? null : id),
                     onLongPress: () => setState(() => _moving = id),

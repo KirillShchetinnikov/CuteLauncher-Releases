@@ -142,10 +142,11 @@ void main() {
         );
         void expectAvailability(bool expected) {
           for (final id in ids) {
+            final accessible = id == 'weather' || expected;
             final tile = tester.widget<RoundedSwitchListTile>(toggle(id));
-            expect(tile.enabled, expected, reason: id);
-            expect(tile.value, expected, reason: id);
-            expect(object(id), expected ? findsOneWidget : findsNothing);
+            expect(tile.enabled, accessible, reason: id);
+            expect(tile.value, accessible, reason: id);
+            expect(object(id), accessible ? findsOneWidget : findsNothing);
           }
         }
 

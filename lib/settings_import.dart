@@ -164,7 +164,8 @@ bool _validValue(String key, dynamic value) {
 }
 
 /// Runtime state and credentials must never travel with a portable settings copy.
-bool isDeviceLocalBackupKey(String key) => key.startsWith('adb_') ||
+bool isDeviceLocalBackupKey(String key) => key.startsWith('initial_profile_') || key.startsWith('adb_') ||
+    key == 'selected_app_channels' ||
     key.startsWith('settings_sync_') ||
     key.startsWith('cloud_') ||
     key.startsWith('backup_transport_') ||

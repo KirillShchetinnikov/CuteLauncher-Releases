@@ -78,6 +78,7 @@ class NetworkService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
   StreamSubscription<dynamic>? _networkSubscription;
   int                 _callCount = 0;
   int                 _usageCallCount = 0;
+  int                 _networkRevision = 0;
   bool                _foreground = true;
   DateTime? _lastUsage;
   /// Network connectivity only; independent of usage permission and statistics.
@@ -97,14 +98,16 @@ class NetworkService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
   {
     final lifecycle = WidgetsBinding.instance.lifecycleState;
     _foreground = lifecycle == null || lifecycle == AppLifecycleState.resumed;
+    final initialRevision = _networkRevision;
     _networkSubscription = _channel.addNetworkChangedListener(_onNetworkChanged);
 
     initialNetworkLoad = _channel
         .getActiveNetworkInformation()
         .then((map) {
-          if (!isDisposed && map.isNotEmpty) {
+          if (!isDisposed && initialRevision == _networkRevision && map.isNotEmpty) {
+            final before = _networkState;
             _getNetworkInformation(map.cast<String, dynamic>());
-            notifyListeners();
+            if (before != _networkState) notifyListeners();
           }
         }).catchError((e) {
           log("Error getting active network info: $e");
@@ -139,18 +142,23 @@ class NetworkService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
     }
     if (isDisposed || !_foreground || localCallCount != _callCount) return;
 
+    final before = (_hasUsageStatsPermission, _dailyDataUsage);
     _hasUsageStatsPermission = allowed;
     if (_hasUsageStatsPermission) {
-      await _fetchUsage(force: force);
+      await _fetchUsage(force: force, notify: false);
       if (isDisposed || !_foreground || localCallCount != _callCount) return;
       if (_usageTimer == null || !_usageTimer!.isActive) {
         _usageTimer = Timer.periodic(const Duration(minutes: 5), (_) => _fetchUsage());
       }
     } else {
+      // Invalidate any traffic request started before permission was revoked.
+      ++_usageCallCount;
+      _dailyDataUsage = -1;
+      _lastUsage = null;
       _usageTimer?.cancel();
       _usageTimer = null;
     }
-    notifyListeners();
+    if (before != (_hasUsageStatsPermission, _dailyDataUsage)) notifyListeners();
   }
 
   Future<void> requestPermission() async {
@@ -171,7 +179,7 @@ class NetworkService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
     await _channel.openVpnSettings();
   }
 
-  Future<void> _fetchUsage({bool force = false}) async {
+  Future<void> _fetchUsage({bool force = false, bool notify = true}) async {
     if (isDisposed || !_foreground) return;
     if (work != null && !force && _lastUsage != null &&
         DateTime.now().difference(_lastUsage!) < const Duration(seconds: 30)) { return; }
@@ -184,9 +192,10 @@ class NetworkService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
     }
     if (isDisposed || !_foreground || localCallCount != _usageCallCount) return;
 
+    final changed = _dailyDataUsage != usage;
     _dailyDataUsage = usage;
     _lastUsage = DateTime.now();
-    notifyListeners();
+    if (notify && changed) notifyListeners();
   }
 
   Future<Map<String, dynamic>> getTrafficUsage(String period) async => _channel.getTrafficUsage(period);
@@ -223,8 +232,17 @@ class NetworkService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
   bool                get   hasUsageStatsPermission       => _hasUsageStatsPermission;
   bool                get   vpnActive                     => _vpnActive;
 
-  CellularNetworkType _getCellularNetworkType(int index)
+  // Value equality prevents duplicate Android callbacks from rebuilding consumers.
+  (bool, CellularNetworkType, NetworkType, int, bool) get _networkState => (
+    _hasInternetAccess, _cellularNetworkType, _networkType,
+    _wirelessNetworkSignalLevel, _vpnActive,
+  );
+
+  CellularNetworkType _getCellularNetworkType(Object? index)
   {
+    if (index is! int || index < 0 || index >= CellularNetworkType.values.length) {
+      return CellularNetworkType.Unknown;
+    }
     CellularNetworkType type = CellularNetworkType.values[index];
     if (type == CellularNetworkType.Unused_1 || type == CellularNetworkType.Unused_2) {
       type = CellularNetworkType.Unknown;
@@ -253,26 +271,30 @@ class NetworkService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
   void _onNetworkChanged(Map<String, dynamic> event)
   {
     if (isDisposed) return;
+    final before = _networkState;
     switch (event["name"]) {
       case "NETWORK_AVAILABLE":
+        ++_networkRevision;
         Map<dynamic, dynamic> map = event["arguments"];
         _getNetworkInformation(map.cast<String, dynamic>());
         break;
       case "NETWORK_UNAVAILABLE":
+        ++_networkRevision;
         _hasInternetAccess = false;
         _networkType = NetworkType.Unknown;
         _vpnActive = false;
         break;
       case "CAPABILITIES_CHANGED":
+        ++_networkRevision;
         Map<dynamic, dynamic> map = event["arguments"];
         _getNetworkInformation(map.cast<String, dynamic>());
         break;
       case "CELLULAR_STATE_CHANGED":
         _cellularNetworkType = _getCellularNetworkType(event["arguments"]);
-        notifyListeners();
         break;
     }
 
-    notifyListeners();
+    // A new route can have the same icon/signal, but VPN ownership may differ.
+    if (before != _networkState || event["name"] == "NETWORK_AVAILABLE") notifyListeners();
   }
 }

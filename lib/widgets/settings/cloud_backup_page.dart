@@ -1,7 +1,6 @@
 import '../remote_text_input.dart';
 
 import 'package:flauncher/widgets/launcher_dialog.dart';
-import 'package:flauncher/widgets/action_notice.dart';
 
 import 'package:flutter/material.dart';
 
@@ -68,21 +67,16 @@ class _CloudBackupPageState extends State<CloudBackupPage>
       _busy = true;
       _message = null;
     });
-    var failed = false;
     try {
       await action();
     } catch (error) {
-      failed = true;
-      if (mounted) {
+      if (mounted && _current(generation)) {
         final l = AppLocalizations.of(context)!;
         _message = cloudErrorMessage(l, error);
       }
     } finally {
       if (mounted) {
         setState(() => _busy = false);
-        if (_current(generation) && _message != null) {
-          showActionNotice(context, _message!, error: failed);
-        }
       }
     }
   }
@@ -104,7 +98,7 @@ class _CloudBackupPageState extends State<CloudBackupPage>
               LauncherDialogButton(
                 primary: true,
                 onPressed: () => Navigator.pop(dialog, true),
-                child: Text(l.ok),
+                child: Text(l.cloudDisconnect),
               ),
             ],
           );
@@ -140,6 +134,7 @@ class _CloudBackupPageState extends State<CloudBackupPage>
   Widget _labelledInput(String label, TextField field) => FocusableSettingsTile(
     key: ValueKey('${(field.key as ValueKey).value}-button'),
     title: Text(label),
+    enabled: field.enabled == true,
     valueIcon: Icons.edit_outlined,
     trailing: Text(
       field.obscureText
@@ -226,6 +221,14 @@ class _CloudBackupPageState extends State<CloudBackupPage>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: Text(
+                service.account.configured
+                    ? l.backupConfigured
+                    : l.backupNotConfigured,
+              ),
+            ),
             if (service.account.configured) ...[
               const SizedBox(height: 12),
               Text(service.account.url),
@@ -290,6 +293,11 @@ class _CloudBackupPageState extends State<CloudBackupPage>
               available: service.account.configured,
             ),
             if (_busy) const LinearProgressIndicator(),
+            if (_message != null)
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: Text(_message!),
+              ),
           ],
         ),
       ),

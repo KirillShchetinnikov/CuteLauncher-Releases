@@ -67,7 +67,7 @@ void main() {
     try {
       await verifier.migrateAndValidate(db, 10);
       final categories = await db.getCategories();
-      expect(categories.map((c) => c.systemKey), ['all_apps', 'favorites', null, 'tv_apps', 'other_apps']);
+      expect(categories.map((c) => c.systemKey), ['all_apps', 'favorites', null, 'tv_apps', 'other_apps', 'app_channels']);
       expect(categories.every((c) => c.visible), isTrue);
       expect((await db.getAppsCategories()).single.categoryId, 1);
     } finally { await db.close(); }

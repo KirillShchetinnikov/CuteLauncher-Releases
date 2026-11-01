@@ -10,7 +10,10 @@ import 'settings_page_layout.dart';
 
 class TvPowerPage extends StatefulWidget {
   static const routeName = 'tv_power';
-  static const channel = BridgeChannel('cutelauncher/tv_power', preserveErrorCodes: true);
+  static const channel = BridgeChannel(
+    'cutelauncher/tv_power',
+    preserveErrorCodes: true,
+  );
   const TvPowerPage({super.key});
 
   @override
@@ -76,15 +79,17 @@ class _TvPowerPageState extends State<TvPowerPage> {
             autofocus: true,
             leading: const Icon(Icons.power_settings_new),
             title: Text(l.tvPowerOff),
+            enabled: !_busy,
             onPressed: () => _run(false),
           ),
           FocusableSettingsTile(
             leading: const Icon(Icons.restart_alt),
             title: Text(l.tvPowerReboot),
+            enabled: !_busy,
             onPressed: () => _run(true),
           ),
           if (_busy) const LinearProgressIndicator(),
-          SettingsHelp(text: l.tvPowerHelp),
+          SettingsHelp(title: l.tvPowerTitle, text: l.tvPowerHelp),
         ],
       ),
     );

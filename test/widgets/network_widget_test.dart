@@ -85,9 +85,30 @@ void main() {
 
       final iconWidget = tester.widget<Icon>(iconFinder);
       expect(iconWidget.icon, Icons.link_off);
+      expect(iconWidget.shadows, isNull);
       expect(IconTheme.of(tester.element(iconFinder)).color, Colors.white);
     },
   );
+
+  testWidgets('physical network icon has no permanent glyph shadows', (
+    WidgetTester tester,
+  ) async {
+    when(mockNetworkService.networkType).thenReturn(NetworkType.Wifi);
+    when(mockNetworkService.cellularNetworkType)
+        .thenReturn(CellularNetworkType.Unknown);
+    when(mockNetworkService.wirelessNetworkSignalLevel).thenReturn(4);
+    when(mockNetworkService.vpnActive).thenReturn(true);
+
+    await tester.pumpWidget(createWidgetUnderTest());
+
+    expect(find.byIcon(Icons.signal_wifi_4_bar), findsOneWidget);
+    expect(find.byIcon(Icons.vpn_key), findsNothing);
+    for (final icon in tester.widgetList<Icon>(find.byType(Icon))) {
+      expect(icon.shadows, isNull);
+      expect(IconTheme.of(tester.element(find.byIcon(icon.icon!))).shadows,
+          isNull);
+    }
+  });
 
   group('Wifi Network', () {
     testWidgets('renders signal_wifi_0_bar when signal is 0', (
@@ -258,7 +279,7 @@ void main() {
     });
   });
 
-  testWidgets('renders vpn_key when network type is VPN', (
+  testWidgets('uses a generic network icon when physical transport is hidden by VPN', (
     WidgetTester tester,
   ) async {
     when(mockNetworkService.networkType).thenReturn(NetworkType.Vpn);
@@ -268,7 +289,7 @@ void main() {
 
     await tester.pumpWidget(createWidgetUnderTest());
 
-    expect(find.byIcon(Icons.vpn_key), findsOneWidget);
+    expect(find.byIcon(Icons.public), findsOneWidget);
   });
 
   testWidgets('renders lan when network type is Wired', (
@@ -327,7 +348,7 @@ void main() {
   });
 
   testWidgets(
-    'renders both wifi and vpn_key when wifi is active and vpnActive is true',
+    'physical network does not embed the independent VPN object',
     (WidgetTester tester) async {
       when(mockNetworkService.networkType).thenReturn(NetworkType.Wifi);
       when(mockNetworkService.cellularNetworkType)
@@ -338,7 +359,7 @@ void main() {
       await tester.pumpWidget(createWidgetUnderTest());
 
       expect(find.byIcon(Icons.signal_wifi_4_bar), findsOneWidget);
-      expect(find.byIcon(Icons.vpn_key), findsOneWidget);
+      expect(find.byIcon(Icons.vpn_key), findsNothing);
     },
   );
 
@@ -363,7 +384,7 @@ void main() {
     await tester.pumpWidget(const SizedBox());
   });
 
-  testWidgets('tapping vpn key icon when vpn is active opens vpn settings', (
+  testWidgets('VPN does not add a second button inside the network object', (
     WidgetTester tester,
   ) async {
     when(mockNetworkService.networkType).thenReturn(NetworkType.Wifi);
@@ -376,10 +397,8 @@ void main() {
 
     await tester.pumpWidget(createWidgetUnderTest());
 
-    await tester.tap(find.byIcon(Icons.vpn_key));
-    await tester.pumpAndSettle();
-
-    verify(mockNetworkService.openVpnSettings()).called(1);
+    expect(find.byIcon(Icons.vpn_key), findsNothing);
+    verifyNever(mockNetworkService.openVpnSettings());
   });
 
   testWidgets('summary stops polling in background and after closing', (

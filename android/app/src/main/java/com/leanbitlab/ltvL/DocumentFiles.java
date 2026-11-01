@@ -2,13 +2,9 @@ package com.leanbitlab.ltvL;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.ClipData;
 import android.content.ComponentName;
 import android.content.pm.ResolveInfo;
-import androidx.core.content.FileProvider;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import android.content.ContentValues;
 import android.provider.MediaStore;
@@ -53,7 +49,29 @@ final class DocumentFiles {
         return intent;
     }
 
-    boolean imageAvailable() { return readIntent("image/*").resolveActivity(activity.getPackageManager()) != null; }
+    boolean pickerAvailable(String operation) {
+        Intent intent = switch (operation) {
+            case "pickWallpaperFolder", "pickBackupFolder" -> new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+            case "saveBackupDocument", "saveDiagnosticsDocument" -> new Intent(Intent.ACTION_CREATE_DOCUMENT)
+                .setType("application/json").addCategory(Intent.CATEGORY_OPENABLE);
+            case "pickImageDocument" -> readIntent("image/*");
+            case "pickWallpaperDocument" -> wallpaperIntent();
+            case "pickWebhookDocument" -> readIntent("text/plain");
+            case "pickBackupDocument", "pickCleanerDocument", "pickCleanerListDocument" -> readIntent("*/*");
+            default -> throw new IllegalArgumentException("Unknown picker operation");
+        };
+        return compatibleIntent(intent) != null;
+    }
+
+    private Intent wallpaperIntent() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT).setType("*/*")
+            .putExtra(Intent.EXTRA_MIME_TYPES, new String[]{"image/*", "video/*"})
+            .addCategory(Intent.CATEGORY_OPENABLE);
+        if (compatibleIntent(intent) == null) intent.setAction(Intent.ACTION_GET_CONTENT);
+        return intent;
+    }
+
+    boolean imageAvailable() { return pickerAvailable("pickImageDocument"); }
 
     void openNamed(String mime, long maximumBytes, MethodChannel.Result result) {
         if (pending != null) { result.error("document_busy", "Document operation in progress", null); return; }
@@ -65,11 +83,7 @@ final class DocumentFiles {
     }
 
     void openWallpaper(MethodChannel.Result result) {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT).setType("*/*")
-            .putExtra(Intent.EXTRA_MIME_TYPES, new String[]{"image/*", "video/*"})
-            .addCategory(Intent.CATEGORY_OPENABLE);
-        if (compatibleIntent(intent) == null) intent.setAction(Intent.ACTION_GET_CONTENT);
-        begin(intent, null, 256L * 1024 * 1024, result);
+        begin(wallpaperIntent(), null, 256L * 1024 * 1024, result);
     }
 
     void save(String source, String name, MethodChannel.Result result) {
@@ -123,7 +137,7 @@ final class DocumentFiles {
         });
     }
 
-    /** TV document stubs are not pickers. Some file managers instead offer SEND -> Save. */
+    /** TV document stubs are not document pickers. */
     private Intent compatibleIntent(Intent intent) {
         return compatibleIntent(intent, activity.getPackageManager().queryIntentActivities(intent, 0));
     }
@@ -157,57 +171,12 @@ final class DocumentFiles {
             if (!file.getPath().startsWith(root) || !file.isFile() || file.length() > 64L * 1024 * 1024
                 || !ReportExportPolicy.validName(name))
                 throw new IllegalArgumentException("Invalid report file");
-            Intent picker = compatibleIntent(new Intent(Intent.ACTION_CREATE_DOCUMENT).setType("application/json")
-                .addCategory(Intent.CATEGORY_OPENABLE).putExtra(Intent.EXTRA_TITLE, name));
-            if (picker != null) {
-                begin(picker, file.getPath(), 64L * 1024 * 1024, new MethodChannel.Result() {
-                    public void success(Object value) { result.success(Boolean.TRUE.equals(value) ? "saved" : null); }
-                    public void error(String code, String message, Object details) { result.error(code, message, details); }
-                    public void notImplemented() { result.notImplemented(); }
-                });
-                return;
-            }
-            if (compatibleIntent(new Intent(Intent.ACTION_SEND).setType("application/json")) == null) {
-                result.error("document_unavailable", "No compatible report export application", null);
-                return;
-            }
-            executor.execute(() -> {
-                File exported = null;
-                try {
-                    File directory = new File(activity.getCacheDir(), "report_exports");
-                    if (!directory.isDirectory() && !directory.mkdirs()) throw new IllegalStateException("Cache unavailable");
-                    // Retain at most four exports: the receiver may read after returning to the launcher.
-                    File[] previous = directory.listFiles();
-                    if (previous != null) {
-                        Arrays.sort(previous, Comparator.comparingLong(File::lastModified).reversed());
-                        for (int i = 3; i < previous.length; i++) previous[i].delete();
-                    }
-                    exported = new File(directory, name);
-                    try (InputStream input = new FileInputStream(file); OutputStream output = new FileOutputStream(exported)) {
-                        copy(input, output, 64L * 1024 * 1024);
-                    }
-                    Uri uri = FileProvider.getUriForFile(activity, activity.getPackageName() + ".reports", exported);
-                    Intent send = new Intent(Intent.ACTION_SEND).setType("application/json")
-                        .putExtra(Intent.EXTRA_STREAM, uri).putExtra(Intent.EXTRA_TITLE, name)
-                        .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    send.setClipData(ClipData.newRawUri(name, uri));
-                    final Intent target = compatibleIntent(send);
-                    final File retained = exported;
-                    new Handler(Looper.getMainLooper()).post(() -> {
-                        try {
-                            if (target == null) throw new IllegalStateException("Export application unavailable");
-                            activity.startActivity(target);
-                            // SEND has no save confirmation contract; don't claim the file was saved.
-                            result.success("opened");
-                        } catch (Exception error) {
-                            retained.delete();
-                            result.error("document_unavailable", "Unable to open report export application", DiagnosticErrorDetails.from(error));
-                        }
-                    });
-                } catch (Exception error) {
-                    if (exported != null) exported.delete();
-                    new Handler(Looper.getMainLooper()).post(() -> result.error("document_failed", "Unable to export report", DiagnosticErrorDetails.from(error)));
-                }
+            Intent picker = new Intent(Intent.ACTION_CREATE_DOCUMENT).setType("application/json")
+                .addCategory(Intent.CATEGORY_OPENABLE).putExtra(Intent.EXTRA_TITLE, name);
+            begin(picker, file.getPath(), 64L * 1024 * 1024, new MethodChannel.Result() {
+                public void success(Object value) { result.success(Boolean.TRUE.equals(value) ? "saved" : null); }
+                public void error(String code, String message, Object details) { result.error(code, message, details); }
+                public void notImplemented() { result.notImplemented(); }
             });
         } catch (Exception error) { result.error("document_failed", "Unable to export report", DiagnosticErrorDetails.from(error)); }
     }

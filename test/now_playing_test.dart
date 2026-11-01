@@ -18,6 +18,7 @@ Map<String, dynamic> packet(int revision, {bool allowed = true, bool pause = tru
 };
 class TestMediaTransport implements MediaTransport {
   int subscriptions = 0, cancellations = 0, snapshots = 0, actions = 0;
+  bool actionResult = true;
   final updates = StreamController<dynamic>.broadcast();
   Future<dynamic> Function()? query;
   final commands = <String>[];
@@ -27,7 +28,7 @@ class TestMediaTransport implements MediaTransport {
   }
   @override Stream<dynamic> get events => updates.stream;
   @override Future<dynamic> snapshot() async { snapshots++; return query != null ? query!() : packet(snapshots); }
-  @override Future<bool> action(String id, String action) async { actions++; commands.add('$id:$action'); return true; }
+  @override Future<bool> action(String id, String action) async { actions++; commands.add('$id:$action'); return actionResult; }
   @override Future<bool> permission() async => true;
 }
 void main() {
@@ -60,6 +61,52 @@ void main() {
     transport.query = () async => packet(2, allowed: false);
     service.didChangeAppLifecycleState(AppLifecycleState.resumed); await Future<void>.delayed(Duration.zero);
     expect(service.allowed, false); expect(service.media, isNull); expect(transport.subscriptions, 2);
+  });
+  test('creation in background waits for resume before subscribing', () async {
+    service.dispose();
+    await settings.setShowNowPlaying(true);
+    final binding = TestWidgetsFlutterBinding.instance;
+    binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+    try {
+      service = NowPlayingService(settings, transport: transport);
+      await Future<void>.delayed(Duration.zero);
+      expect(transport.subscriptions, 0);
+      expect(transport.snapshots, 0);
+      binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      await Future<void>.delayed(Duration.zero);
+      expect(transport.subscriptions, 1);
+      expect(service.media, isNotNull);
+    } finally {
+      binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    }
+  });
+  test('successful command does not hide a failed follow-up snapshot', () async {
+    await settings.setShowNowPlaying(true);
+    await Future<void>.delayed(Duration.zero);
+    transport.query = () async => throw StateError('snapshot unavailable');
+    expect(await service.control('pause'), isTrue);
+    expect(service.failed, isTrue);
+    expect(service.media, isNull);
+    expect(service.busy, isFalse);
+  });
+  test('old command completion cannot change failure state after resume', () async {
+    await settings.setShowNowPlaying(true);
+    await Future<void>.delayed(Duration.zero);
+    final pending = Completer<dynamic>();
+    transport.actionResult = false;
+    transport.query = () => pending.future;
+    final command = service.control('pause');
+    await Future<void>.delayed(Duration.zero);
+    service.didChangeAppLifecycleState(AppLifecycleState.paused);
+    transport.query = () async => packet(30);
+    service.didChangeAppLifecycleState(AppLifecycleState.resumed);
+    await Future<void>.delayed(Duration.zero);
+    expect(service.failed, isFalse);
+    pending.complete(packet(20));
+    await command;
+    expect(service.failed, isFalse);
+    expect(service.media, isNotNull);
+    expect(service.busy, isFalse);
   });
   test('out of order snapshots cannot restore obsolete actions or track', () async {
     await settings.setShowNowPlaying(true); await Future<void>.delayed(Duration.zero);

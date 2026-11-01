@@ -1,11 +1,11 @@
 name: flauncher
 description: CuteLauncher, a personal Android TV launcher based on LTvLauncher.
 
-version: 1.5.1+131
+version: 1.6.1+182
 
 environment:
-  sdk: ">=3.13.5 <4.0.0"
-  flutter: 3.47.6
+  sdk: ">=3.13.7 <4.0.0"
+  flutter: 3.47.9
 
 dependencies:
   flutter:
@@ -13,16 +13,16 @@ dependencies:
 
   image_picker: ^1.2.4
   intl: any
-  crypto: 3.0.7
+  crypto: 3.0.8
   xml: 7.1.0 # Bounded WebDAV multistatus parsing; already resolved by tooling.
-  drift: 2.35.1
+  drift: 2.35.3
   path: ^1.9.0
   path_provider: ^2.1.6
   package_info_plus: ^10.2.2
   provider: ^6.0.5
   shared_preferences: ^2.5.6
   # First Android implementation migrated to built-in Kotlin (AGP 9).
-  shared_preferences_android: 2.4.28
+  shared_preferences_android: 2.5.4
   screen_brightness: 2.1.11
   flutter_localizations:
     sdk: flutter
@@ -35,10 +35,10 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  build_runner: 2.16.1
+  build_runner: 2.16.2
   flutter_lints: ^6.0.0
   mockito: 5.8.1
-  drift_dev: 2.35.1
+  drift_dev: 2.35.2
   network_image_mock: ^2.1.1
   transparent_image: ^2.0.1
 
@@ -48,7 +48,7 @@ dev_dependencies:
   package_info_plus_platform_interface: any
   flutter_launcher_icons: ^0.14.4
 
-  sqlite3: 3.7.0
+  sqlite3: 3.8.0
   fake_async: any
   video_player_platform_interface: any
 flutter_launcher_icons:

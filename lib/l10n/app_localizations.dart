@@ -122,6 +122,42 @@ abstract class AppLocalizations {
     Locale('zh'),
   ];
 
+  /// No description provided for @wallhavenWallpaperHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Random Wallhaven wallpapers matching your theme: SFW, 16:9, Full HD or higher. No account or API key needed. Updates run while the launcher is open; previous wallpapers are kept on failure.'**
+  String get wallhavenWallpaperHint;
+
+  /// No description provided for @renderCompatibilityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Compatible graphics output'**
+  String get renderCompatibilityTitle;
+
+  /// No description provided for @renderCompatibilityAutomatic.
+  ///
+  /// In en, this message translates to:
+  /// **'Enabled automatically for this device'**
+  String get renderCompatibilityAutomatic;
+
+  /// No description provided for @renderCompatibilityApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply and restart launcher'**
+  String get renderCompatibilityApply;
+
+  /// No description provided for @renderCompatibilityFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not read or apply the setting'**
+  String get renderCompatibilityFailed;
+
+  /// No description provided for @renderCompatibilityHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Try this mode if the interface flickers with night dimming. It is enabled automatically on verified models. On other TVs, the choice is saved only on this device and applies after restarting the launcher. It may increase graphics load.'**
+  String get renderCompatibilityHelp;
+
   /// No description provided for @diagnosticsHubTitle.
   ///
   /// In en, this message translates to:
@@ -2897,7 +2933,7 @@ abstract class AppLocalizations {
   /// No description provided for @weatherRefresh.
   ///
   /// In en, this message translates to:
-  /// **'Check for updates'**
+  /// **'Refresh weather'**
   String get weatherRefresh;
 
   /// No description provided for @weatherKeyPrivate.
@@ -2915,7 +2951,7 @@ abstract class AppLocalizations {
   /// No description provided for @onlineWallpaperError.
   ///
   /// In en, this message translates to:
-  /// **'Unable to load this image. Previous wallpaper is retained. Select “Check for updates” to retry the download.'**
+  /// **'Unable to load this image. Previous wallpaper is retained. Select “Refresh wallpaper” to retry the download.'**
   String get onlineWallpaperError;
 
   /// No description provided for @onlineWallpaperHint.
@@ -3707,7 +3743,7 @@ abstract class AppLocalizations {
   /// No description provided for @notificationAppsHint.
   ///
   /// In en, this message translates to:
-  /// **'Turn off apps whose notifications you do not need. An enabled switch allows notifications; the app can still be launched.'**
+  /// **'Select apps whose notifications should be blocked. An enabled switch means notifications are blocked. The list stays in alphabetical order.'**
   String get notificationAppsHint;
 
   /// No description provided for @notificationPanelLink.
@@ -3839,7 +3875,7 @@ abstract class AppLocalizations {
   /// No description provided for @automaticBackups.
   ///
   /// In en, this message translates to:
-  /// **'Automatic backup'**
+  /// **'Backups and synchronization'**
   String get automaticBackups;
 
   /// No description provided for @automaticBackupsHint.
@@ -3983,7 +4019,7 @@ abstract class AppLocalizations {
   /// No description provided for @wallpaperDimming.
   ///
   /// In en, this message translates to:
-  /// **'Dimming'**
+  /// **'Dimming strength'**
   String get wallpaperDimming;
 
   /// No description provided for @wallpaperPlacement.
@@ -5063,7 +5099,7 @@ abstract class AppLocalizations {
   /// No description provided for @backupDriveHelp.
   ///
   /// In en, this message translates to:
-  /// **'Select Connect and confirm the code on your phone. Backups are visible in the CuteLauncher folder in Google Drive, where you can download or delete them. Keep file names unchanged for in-app restore. Reconnect after upgrading from hidden backups; old backups are not migrated automatically.'**
+  /// **'Select Connect Google Drive and confirm the code on your phone. Backups are visible in the CuteLauncher folder in Google Drive, where you can download or delete them. Keep file names unchanged for in-app restore. Reconnect after upgrading from hidden backups; old backups are not migrated automatically.'**
   String get backupDriveHelp;
 
   /// No description provided for @backupFrequency.
@@ -5945,7 +5981,7 @@ abstract class AppLocalizations {
   /// No description provided for @homeParameters.
   ///
   /// In en, this message translates to:
-  /// **'Parameters'**
+  /// **'Home screen behavior'**
   String get homeParameters;
 
   /// No description provided for @homeSectionStyle.
@@ -8035,6 +8071,834 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not read the file. Choose an accessible UTF-8 text file up to 64 KB.'**
   String get remoteMappingImportFailed;
+
+  /// No description provided for @vpnTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'VPN'**
+  String get vpnTitle;
+
+  /// No description provided for @vpnSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'VPN settings'**
+  String get vpnSettings;
+
+  /// No description provided for @vpnApp.
+  ///
+  /// In en, this message translates to:
+  /// **'VPN app'**
+  String get vpnApp;
+
+  /// No description provided for @vpnAutomatic.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic'**
+  String get vpnAutomatic;
+
+  /// No description provided for @vpnNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Not selected'**
+  String get vpnNone;
+
+  /// No description provided for @vpnProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'VPN profile'**
+  String get vpnProfile;
+
+  /// No description provided for @vpnOnlyActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Show only when connected'**
+  String get vpnOnlyActive;
+
+  /// No description provided for @vpnShowName.
+  ///
+  /// In en, this message translates to:
+  /// **'Show app name'**
+  String get vpnShowName;
+
+  /// No description provided for @vpnColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Highlight connection with color'**
+  String get vpnColor;
+
+  /// No description provided for @vpnNotify.
+  ///
+  /// In en, this message translates to:
+  /// **'Notify about command results'**
+  String get vpnNotify;
+
+  /// No description provided for @vpnConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'VPN connected'**
+  String get vpnConnected;
+
+  /// No description provided for @vpnDisconnected.
+  ///
+  /// In en, this message translates to:
+  /// **'VPN disconnected'**
+  String get vpnDisconnected;
+
+  /// No description provided for @vpnUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'VPN status unavailable'**
+  String get vpnUnknown;
+
+  /// No description provided for @vpnConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect'**
+  String get vpnConnect;
+
+  /// No description provided for @vpnDisconnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnect'**
+  String get vpnDisconnect;
+
+  /// No description provided for @vpnOpenApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Open VPN app'**
+  String get vpnOpenApp;
+
+  /// No description provided for @vpnAndroidSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Android VPN settings'**
+  String get vpnAndroidSettings;
+
+  /// No description provided for @vpnAllowControl.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow VPN control'**
+  String get vpnAllowControl;
+
+  /// No description provided for @vpnFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'VPN action failed'**
+  String get vpnFailed;
+
+  /// No description provided for @vpnUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'This client does not support direct control. You can open the app.'**
+  String get vpnUnsupported;
+
+  /// No description provided for @vpnOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Another or unidentified VPN is connected. Control is unavailable.'**
+  String get vpnOther;
+
+  /// No description provided for @vpnStartup.
+  ///
+  /// In en, this message translates to:
+  /// **'VPN on TV startup'**
+  String get vpnStartup;
+
+  /// No description provided for @vpnPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for VPN connection'**
+  String get vpnPending;
+
+  /// No description provided for @vpnHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic selection detects the active VPN and remembers it for reconnection. App and profile detection requires connected local ADB. Direct control supports AmneziaWG and WireGuard with control permission and remote control enabled in the client. Happ and MantaRay use the profile selected in the client.'**
+  String get vpnHelp;
+
+  /// No description provided for @vpnProfileHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the exact profile name from the VPN app: up to 15 Latin letters, digits and _ = + . - characters. Manual connections supply the name automatically when available.'**
+  String get vpnProfileHelp;
+
+  /// No description provided for @vpnStartupHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'VPN starts in addition to normal startup actions. Configure the client profile and permissions first. Network waiting is bounded; an active VPN is not replaced. Wake is observed only while the launcher process is running.'**
+  String get vpnStartupHelp;
+
+  /// No description provided for @vpnStartupMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'VPN startup method'**
+  String get vpnStartupMethod;
+
+  /// No description provided for @vpnStartupClient.
+  ///
+  /// In en, this message translates to:
+  /// **'Through the VPN app'**
+  String get vpnStartupClient;
+
+  /// No description provided for @vpnStartupAlwaysOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Android always-on VPN'**
+  String get vpnStartupAlwaysOn;
+
+  /// No description provided for @vpnAlwaysOnManaged.
+  ///
+  /// In en, this message translates to:
+  /// **'Android always-on mode manages this VPN. Disable that mode in startup or Android settings.'**
+  String get vpnAlwaysOnManaged;
+
+  /// No description provided for @vpnRestartRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Restart the TV to apply the system mode.'**
+  String get vpnRestartRequired;
+
+  /// No description provided for @vpnAlwaysOnHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Assigns a configured client as always-on VPN through local TCP ADB. Android applies the selection after restarting the TV. Blocking connections without VPN is neither enabled nor changed. Leaving this mode restores the previous system selection.'**
+  String get vpnAlwaysOnHelp;
+
+  /// No description provided for @vpnClientConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm the command in the MantaRay window.'**
+  String get vpnClientConfirmation;
+
+  /// No description provided for @informationTapAction.
+  ///
+  /// In en, this message translates to:
+  /// **'On block press'**
+  String get informationTapAction;
+
+  /// No description provided for @informationShowBoth.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather and calendar'**
+  String get informationShowBoth;
+
+  /// No description provided for @weatherForecastTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather forecast'**
+  String get weatherForecastTitle;
+
+  /// No description provided for @weatherForecastPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'Forecast period'**
+  String get weatherForecastPeriod;
+
+  /// No description provided for @weatherForecastDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{days} days'**
+  String weatherForecastDays(int days);
+
+  /// No description provided for @weatherForecastView.
+  ///
+  /// In en, this message translates to:
+  /// **'Forecast view'**
+  String get weatherForecastView;
+
+  /// No description provided for @weatherForecastCards.
+  ///
+  /// In en, this message translates to:
+  /// **'Compact cards'**
+  String get weatherForecastCards;
+
+  /// No description provided for @weatherForecastList.
+  ///
+  /// In en, this message translates to:
+  /// **'Detailed list'**
+  String get weatherForecastList;
+
+  /// No description provided for @weatherForecastAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Available days: {available} of {requested}'**
+  String weatherForecastAvailable(int available, int requested);
+
+  /// No description provided for @weatherForecastTvTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Forecast dates use TV time'**
+  String get weatherForecastTvTime;
+
+  /// No description provided for @weatherClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get weatherClear;
+
+  /// No description provided for @weatherCloudy.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloudy'**
+  String get weatherCloudy;
+
+  /// No description provided for @weatherFog.
+  ///
+  /// In en, this message translates to:
+  /// **'Fog'**
+  String get weatherFog;
+
+  /// No description provided for @weatherWind.
+  ///
+  /// In en, this message translates to:
+  /// **'Wind'**
+  String get weatherWind;
+
+  /// No description provided for @weatherPrecipitation.
+  ///
+  /// In en, this message translates to:
+  /// **'Precipitation'**
+  String get weatherPrecipitation;
+
+  /// No description provided for @showVolume.
+  ///
+  /// In en, this message translates to:
+  /// **'Show volume'**
+  String get showVolume;
+
+  /// No description provided for @audioStatusTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Volume and audio output'**
+  String get audioStatusTitle;
+
+  /// No description provided for @audioOutputTv.
+  ///
+  /// In en, this message translates to:
+  /// **'TV'**
+  String get audioOutputTv;
+
+  /// No description provided for @audioOutputHeadphones.
+  ///
+  /// In en, this message translates to:
+  /// **'Headphones'**
+  String get audioOutputHeadphones;
+
+  /// No description provided for @audioOutputMultiple.
+  ///
+  /// In en, this message translates to:
+  /// **'Multiple'**
+  String get audioOutputMultiple;
+
+  /// No description provided for @audioMuted.
+  ///
+  /// In en, this message translates to:
+  /// **'Muted'**
+  String get audioMuted;
+
+  /// No description provided for @backgroundStartupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Background apps'**
+  String get backgroundStartupTitle;
+
+  /// No description provided for @backgroundStartupFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load or save settings'**
+  String get backgroundStartupFailed;
+
+  /// No description provided for @backgroundStartupRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get backgroundStartupRetry;
+
+  /// No description provided for @backgroundStartupEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No user apps'**
+  String get backgroundStartupEmpty;
+
+  /// No description provided for @backgroundStartupUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Background launch unavailable'**
+  String get backgroundStartupUnavailable;
+
+  /// No description provided for @backgroundStartupRequested.
+  ///
+  /// In en, this message translates to:
+  /// **'Launch requested'**
+  String get backgroundStartupRequested;
+
+  /// No description provided for @backgroundStartupHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Select apps to launch once in the background after TV boot. CuteLauncher must open within one minute of boot: set it as Home or enable launcher startup on boot. Apps start one by one behind Home; selecting a checkbox does not start them immediately. Remote input or leaving the launcher cancels remaining launches. Waking from sleep does not launch them again. Some apps do not support this mode and cannot be selected. Launching does not enable features inside an app or guarantee continuous operation: grant permissions and configure background operation in the app itself. Android and the TV firmware may stop it. Selections stay on this TV only.'**
+  String get backgroundStartupHelp;
+
+  /// No description provided for @backgroundStartupToggle.
+  ///
+  /// In en, this message translates to:
+  /// **'Background autostart'**
+  String get backgroundStartupToggle;
+
+  /// No description provided for @systemWidgetSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'System widget settings'**
+  String get systemWidgetSettings;
+
+  /// No description provided for @systemShowCpu.
+  ///
+  /// In en, this message translates to:
+  /// **'Show CPU in panel'**
+  String get systemShowCpu;
+
+  /// No description provided for @systemShowRam.
+  ///
+  /// In en, this message translates to:
+  /// **'Show RAM in panel'**
+  String get systemShowRam;
+
+  /// No description provided for @systemStorage.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage: free / total'**
+  String get systemStorage;
+
+  /// No description provided for @systemUptime.
+  ///
+  /// In en, this message translates to:
+  /// **'Uptime (hours:minutes)'**
+  String get systemUptime;
+
+  /// No description provided for @systemTemperature.
+  ///
+  /// In en, this message translates to:
+  /// **'CPU temperature'**
+  String get systemTemperature;
+
+  /// No description provided for @systemAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Available RAM'**
+  String get systemAvailable;
+
+  /// No description provided for @systemHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Last hour · average and peaks'**
+  String get systemHistory;
+
+  /// No description provided for @systemNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Now'**
+  String get systemNow;
+
+  /// No description provided for @systemHourAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'−60 min'**
+  String get systemHourAgo;
+
+  /// No description provided for @systemWidgetHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Readings update every 5 seconds while the launcher is visible. Graphs show minute averages and peaks. Other apps, sleep and read failures leave gaps. History stays in memory and resets when the launcher process restarts. CPU and temperature depend on the firmware. Turn off both panel values to show only the icon.'**
+  String get systemWidgetHelp;
+
+  /// No description provided for @slideshowBrowseFolders.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse folders'**
+  String get slideshowBrowseFolders;
+
+  /// No description provided for @slideshowEnterFolderPath.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter folder path'**
+  String get slideshowEnterFolderPath;
+
+  /// No description provided for @slideshowSystemPicker.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose in system file manager'**
+  String get slideshowSystemPicker;
+
+  /// No description provided for @slideshowFolderPath.
+  ///
+  /// In en, this message translates to:
+  /// **'Folder path'**
+  String get slideshowFolderPath;
+
+  /// No description provided for @slideshowUseFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Use this folder'**
+  String get slideshowUseFolder;
+
+  /// No description provided for @slideshowParentFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Parent folder'**
+  String get slideshowParentFolder;
+
+  /// No description provided for @slideshowStoragePermission.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow file access in Android settings to use the built-in file browser.'**
+  String get slideshowStoragePermission;
+
+  /// No description provided for @slideshowPickerUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'This TV has no folder picker. Use the built-in browser or enter a path manually.'**
+  String get slideshowPickerUnavailable;
+
+  /// No description provided for @slideshowFolderUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Folder unavailable. Check the path, storage connection and file access permission.'**
+  String get slideshowFolderUnavailable;
+
+  /// No description provided for @slideshowStorageHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The built-in browser reads folders on the TV and connected storage. On Android 11 or newer, allow all files access; on Android 9–10, allow storage access. You can enter a path manually, such as /storage/emulated/0/Pictures. Files are not modified.'**
+  String get slideshowStorageHelp;
+
+  /// No description provided for @fileBrowserTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a file'**
+  String get fileBrowserTitle;
+
+  /// No description provided for @filePickerChoose.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a file browser'**
+  String get filePickerChoose;
+
+  /// No description provided for @filePickerSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'System file picker'**
+  String get filePickerSystem;
+
+  /// No description provided for @filePickerBuiltIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Built-in file browser'**
+  String get filePickerBuiltIn;
+
+  /// No description provided for @fileBrowserEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No items to display'**
+  String get fileBrowserEmpty;
+
+  /// No description provided for @fileBrowserUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to open this location. Check access and try again.'**
+  String get fileBrowserUnavailable;
+
+  /// No description provided for @networkAndVpnGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Network and VPN'**
+  String get networkAndVpnGroup;
+
+  /// No description provided for @soundAndInputsGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Sound and inputs'**
+  String get soundAndInputsGroup;
+
+  /// No description provided for @timerAndNightModeGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Timer and night mode'**
+  String get timerAndNightModeGroup;
+
+  /// No description provided for @systemSettingsGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'System settings'**
+  String get systemSettingsGroup;
+
+  /// No description provided for @appChannelsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'App feeds'**
+  String get appChannelsTitle;
+
+  /// No description provided for @appChannelsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose up to 16 feeds. Availability depends on channels published by apps and the TV firmware. Empty feeds are hidden. Selection stays on this TV.'**
+  String get appChannelsHelp;
+
+  /// No description provided for @appChannelsUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to read feeds. Check TV listings access.'**
+  String get appChannelsUnavailable;
+
+  /// No description provided for @appChannelsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No app feeds available.'**
+  String get appChannelsEmpty;
+
+  /// No description provided for @appChannelsRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh feeds'**
+  String get appChannelsRefresh;
+
+  /// No description provided for @appChannelsLaunchFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to open this content.'**
+  String get appChannelsLaunchFailed;
+
+  /// No description provided for @appChannelsSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to save selection. Select up to 16 feeds.'**
+  String get appChannelsSaveFailed;
+
+  /// No description provided for @sectionDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this section? Installed applications will remain.'**
+  String get sectionDeleteConfirm;
+
+  /// No description provided for @sectionDeleteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not delete the section. Try again.'**
+  String get sectionDeleteFailed;
+
+  /// No description provided for @appChannelsAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'App feeds access'**
+  String get appChannelsAccess;
+
+  /// No description provided for @appChannelsMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Unavailable feed'**
+  String get appChannelsMissing;
+
+  /// No description provided for @wallpaperRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh wallpaper'**
+  String get wallpaperRefresh;
+
+  /// No description provided for @wallpaperDimmingHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'100% preserves the background’s original dimming; 200% doubles it. This is not the opacity of a black overlay.'**
+  String get wallpaperDimmingHelp;
+
+  /// No description provided for @resetLauncherSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset all settings'**
+  String get resetLauncherSettings;
+
+  /// No description provided for @resetLauncherSettingsConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'All CuteLauncher settings and local data will be deleted, including sections, Favorites, remote mappings, connections and files in app storage. CuteLauncher will close; the next launch will be like a fresh installation. Access must be granted again. Files outside CuteLauncher storage and other apps will be kept.'**
+  String get resetLauncherSettingsConfirmation;
+
+  /// No description provided for @resetLauncherSettingsError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not complete the settings reset. Try again.'**
+  String get resetLauncherSettingsError;
+
+  /// No description provided for @fileBrowserCurrentFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Current folder'**
+  String get fileBrowserCurrentFolder;
+
+  /// No description provided for @fileBrowserFileName.
+  ///
+  /// In en, this message translates to:
+  /// **'File name'**
+  String get fileBrowserFileName;
+
+  /// No description provided for @fileBrowserNoFolders.
+  ///
+  /// In en, this message translates to:
+  /// **'No subfolders'**
+  String get fileBrowserNoFolders;
+
+  /// No description provided for @fileBrowserNoFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching files'**
+  String get fileBrowserNoFiles;
+
+  /// No description provided for @fileBrowserPartial.
+  ///
+  /// In en, this message translates to:
+  /// **'Only part of this folder is shown'**
+  String get fileBrowserPartial;
+
+  /// No description provided for @fileBrowserRemoteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'← Full name · → Confirm'**
+  String get fileBrowserRemoteHint;
+
+  /// No description provided for @fileBrowserReadNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'← Show full name'**
+  String get fileBrowserReadNameHint;
+
+  /// No description provided for @fileBrowserSavedTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved: {path}'**
+  String fileBrowserSavedTo(String path);
+
+  /// No description provided for @backupDriveConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect Google Drive'**
+  String get backupDriveConnect;
+
+  /// No description provided for @discardChangesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard changes?'**
+  String get discardChangesTitle;
+
+  /// No description provided for @discardChangesMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsaved changes will be lost.'**
+  String get discardChangesMessage;
+
+  /// No description provided for @backgroundFileUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'File unavailable'**
+  String get backgroundFileUnavailable;
+
+  /// No description provided for @backupLastSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Last successful action:'**
+  String get backupLastSuccess;
+
+  /// No description provided for @informationPlacement.
+  ///
+  /// In en, this message translates to:
+  /// **'Block placement'**
+  String get informationPlacement;
+
+  /// No description provided for @informationOnBackground.
+  ///
+  /// In en, this message translates to:
+  /// **'On wallpaper'**
+  String get informationOnBackground;
+
+  /// No description provided for @informationBackgroundAlignment.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallpaper alignment'**
+  String get informationBackgroundAlignment;
+
+  /// No description provided for @informationBackgroundHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose top panel, wallpaper or hidden separately for the clock, date and weather. Wallpaper elements do not respond to input or move tiles. In the adaptive landscape, mountains overlap the clock. Quick settings remain independent.'**
+  String get informationBackgroundHelp;
+
+  /// No description provided for @informationTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Clock'**
+  String get informationTime;
+
+  /// No description provided for @informationDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get informationDate;
+
+  /// No description provided for @backgroundInformationAppearance.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallpaper appearance'**
+  String get backgroundInformationAppearance;
+
+  /// No description provided for @onlineWallpaperFailureStage.
+  ///
+  /// In en, this message translates to:
+  /// **'{stage, select, initialize{Storage initialization} metadata{Source request} download{Image download} validation{Image validation} save{Wallpaper saving} other{Wallpaper saving}}'**
+  String onlineWallpaperFailureStage(String stage);
+
+  /// No description provided for @onlineWallpaperFailureReason.
+  ///
+  /// In en, this message translates to:
+  /// **'{reason, select, dns{Could not resolve the server address (DNS).} connection{Could not establish or maintain a connection to the server.} tls{Secure connection or certificate error (TLS).} timeout{The request timed out.} http{The server returned an error.} redirect{Invalid redirect or too many redirects.} insecureUrl{Unsafe URL: HTTPS without login details is required.} tooLarge{The response exceeds the size limit.} dimensions{Image dimensions exceed the limit.} invalidResponse{The source returned invalid data.} noImage{The source returned no new matching images.} invalidImage{The file is corrupt or the image format is unsupported.} storage{Could not read or write wallpaper files.} unknown{Unknown error.} other{Unknown error.}}'**
+  String onlineWallpaperFailureReason(String reason);
+
+  /// No description provided for @informationPanelAppearance.
+  ///
+  /// In en, this message translates to:
+  /// **'Panel appearance'**
+  String get informationPanelAppearance;
+
+  /// No description provided for @informationData.
+  ///
+  /// In en, this message translates to:
+  /// **'Formats and data'**
+  String get informationData;
+
+  /// No description provided for @informationGroupingMinimum.
+  ///
+  /// In en, this message translates to:
+  /// **'At least two elements are required'**
+  String get informationGroupingMinimum;
+
+  /// No description provided for @screenshotSceneMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Screenshot mode'**
+  String get screenshotSceneMode;
+
+  /// No description provided for @screenshotSceneHour.
+  ///
+  /// In en, this message translates to:
+  /// **'Hours'**
+  String get screenshotSceneHour;
+
+  /// No description provided for @screenshotSceneMinute.
+  ///
+  /// In en, this message translates to:
+  /// **'Minutes'**
+  String get screenshotSceneMinute;
+
+  /// No description provided for @screenshotSceneHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Sets the landscape and wallpaper clock time, and the landscape weather. Remains active after closing settings. System time, weather data and saved settings are unchanged. This build restarts at 16:00 with cloudy weather.'**
+  String get screenshotSceneHelp;
 }
 
 class _AppLocalizationsDelegate

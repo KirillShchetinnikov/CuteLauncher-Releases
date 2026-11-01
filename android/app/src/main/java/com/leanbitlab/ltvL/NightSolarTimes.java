@@ -8,6 +8,10 @@ import java.net.URL;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,10 +35,46 @@ final class NightSolarTimes {
     }
     static JSONArray days(Context context, JSONObject c) {
         JSONArray days = cache(context, c).optJSONArray("days");
-        return days == null ? new JSONArray() : days;
+        return resolvedDays(days, LocalDate.now(), ZoneId.systemDefault());
+    }
+    /** Resolve locally before any network work; synthetic events never replace history. */
+    static JSONArray resolvedDays(JSONArray history, LocalDate today, ZoneId zone) {
+        Map<LocalDate, JSONObject> known = new HashMap<>();
+        if (history != null) for (int i = 0; i < history.length(); i++) {
+            JSONObject day = history.optJSONObject(i);
+            if (day == null) continue;
+            long rise = day.optLong("sunrise"), set = day.optLong("sunset");
+            if (rise < 0 || set < 0 || (rise > 0 && set > 0 && set <= rise)) continue;
+            try {
+                LocalDate date = rise == 0 && set == 0 ? LocalDate.parse(day.getString("date"))
+                    : Instant.ofEpochMilli(rise > 0 ? rise : set).atZone(zone).toLocalDate();
+                known.put(date, day);
+            } catch (Exception ignored) { /* Ignore malformed history. */ }
+        }
+        JSONObject yesterday = known.get(today.minusDays(1));
+        if (yesterday != null && (yesterday.optLong("sunrise") <= 0 || yesterday.optLong("sunset") <= 0)) yesterday = null;
+        LocalTime rise = yesterday == null ? LocalTime.of(8, 0)
+            : Instant.ofEpochMilli(yesterday.optLong("sunrise")).atZone(zone).toLocalTime();
+        LocalTime set = yesterday == null ? LocalTime.of(20, 0)
+            : Instant.ofEpochMilli(yesterday.optLong("sunset")).atZone(zone).toLocalTime();
+        JSONArray result = new JSONArray();
+        for (int offset = -2; offset <= 7; offset++) {
+            LocalDate date = today.plusDays(offset);
+            JSONObject day = known.get(date);
+            if (day == null) try {
+                day = new JSONObject().put("sunrise", date.atTime(rise).atZone(zone).toInstant().toEpochMilli())
+                    .put("sunset", date.atTime(set).atZone(zone).toInstant().toEpochMilli());
+            } catch (org.json.JSONException impossible) { throw new IllegalStateException(impossible); }
+            result.put(day);
+        }
+        return result;
     }
     static synchronized boolean loading() { return busy; }
-    static synchronized void refresh(Context context, JSONObject c, boolean force, Runnable done) {
+    interface SunRequest { JSONObject fetch(String url) throws Exception; }
+    static void refresh(Context context, JSONObject c, boolean force, Runnable done) {
+        refresh(context, c, force, done, NightSolarTimes::request);
+    }
+    static synchronized void refresh(Context context, JSONObject c, boolean force, Runnable done, SunRequest request) {
         boolean brightnessSolar = context.getSharedPreferences("FlutterSharedPreferences", Context.MODE_PRIVATE)
             .getBoolean("flutter.brightness_solar", false);
         if ((!c.optBoolean("solar") && !brightnessSolar) || c.isNull("latitude") || c.isNull("longitude")) return;
@@ -51,24 +91,26 @@ final class NightSolarTimes {
                     java.time.LocalDate date=java.time.LocalDate.now();
                     String url="https://api.sunrise-sunset.org/v2?lat="+c.optDouble("latitude")+"&lng="+c.optDouble("longitude")
                         +"&date_start="+date.minusDays(2)+"&date_end="+date.plusDays(7)+"&time_format=unix";
-                    JSONArray events=request(url).getJSONArray("days");
+                    JSONArray events=request.fetch(url).getJSONArray("days");
                     if(events.length()<2 || events.length()>16) throw new IllegalStateException();
                     days=new JSONArray();
                     for(int i=0;i<events.length();i++) {
                         JSONObject event=events.getJSONObject(i);
-                        days.put(new JSONObject().put("sunrise",event.isNull("sunrise")?0:event.getLong("sunrise")*1000L)
+                        days.put(new JSONObject().put("date", date.minusDays(2).plusDays(i).toString())
+                            .put("sunrise",event.isNull("sunrise")?0:event.getLong("sunrise")*1000L)
                             .put("sunset",event.isNull("sunset")?0:event.getLong("sunset")*1000L));
                     }
                 } catch(Exception primaryFailure) {
                     String url = "https://api.open-meteo.com/v1/forecast?latitude=" + c.optDouble("latitude")
                         + "&longitude=" + c.optDouble("longitude")
                         + "&daily=sunrise,sunset&timezone=auto&timeformat=unixtime&past_days=1&forecast_days=7";
-                    JSONObject daily = request(url).getJSONObject("daily");
+                    JSONObject daily = request.fetch(url).getJSONObject("daily");
                     JSONArray rises = daily.getJSONArray("sunrise"), sets = daily.getJSONArray("sunset");
                     days=new JSONArray();
                     if (rises.length() < 2 || rises.length() > 16 || rises.length() != sets.length()) throw new IllegalStateException();
                     for (int i = 0; i < rises.length(); i++) {
-                        days.put(new JSONObject().put("sunrise", rises.isNull(i) ? 0 : rises.getLong(i) * 1000L)
+                        days.put(new JSONObject().put("date", java.time.LocalDate.now().minusDays(1).plusDays(i).toString())
+                            .put("sunrise", rises.isNull(i) ? 0 : rises.getLong(i) * 1000L)
                             .put("sunset", sets.isNull(i) ? 0 : sets.getLong(i) * 1000L));
                     }
                 }
@@ -76,7 +118,7 @@ final class NightSolarTimes {
                 prefs(context).edit().putString("cache", value.toString()).apply();
             } catch (Exception failure) {
                 android.util.Log.w("CuteLauncherNight", "Sun refresh failed: " + failure.getClass().getSimpleName());
-                /* Keep still-valid cached days and retry after an hour. */
+                /* Keep history; days() supplies yesterday's times or local 08:00/20:00. */
             }
             finally { synchronized (NightSolarTimes.class) { busy = false; } done.run(); }
         });

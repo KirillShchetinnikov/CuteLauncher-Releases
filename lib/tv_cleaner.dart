@@ -176,10 +176,12 @@ class TvCleanerClient {
   }
 
   String importedFileName = '';
-  Future<String?> importFile() async {
+  Future<String?> importFile({Future<Map?> Function()? picker}) async {
     importedFileName = '';
-    final selected = await const BridgeChannel('me.efesser.flauncher/method')
-        .invokeMethod<Map>('pickCleanerListDocument');
+    final selected = picker != null
+        ? await picker()
+        : await const BridgeChannel('me.efesser.flauncher/method')
+              .invokeMethod<Map>('pickCleanerListDocument');
     if (selected == null) return null;
     importedFileName = selected['name'] as String? ?? '';
     final path = selected['path'] as String;
@@ -194,7 +196,11 @@ class TvCleanerClient {
     }
   }
 
-  Future<String?> export(Map<String, dynamic> value, String kind) async {
+  Future<String?> export(
+    Map<String, dynamic> value,
+    String kind, {
+    DocumentExporter? exporter,
+  }) async {
     if (!['apps', 'disabled', 'restore', 'state'].contains(kind)) {
       throw ArgumentError.value(kind);
     }
@@ -204,7 +210,7 @@ class TvCleanerClient {
       await file.writeAsString(
         const JsonEncoder.withIndent('  ').convert(value),
       );
-      return await DocumentFiles.saveDiagnostics(
+      return await (exporter ?? DocumentFiles.saveDiagnostics)(
         file,
         name:
             'cutelauncher_${kind}_${DateTime.now().millisecondsSinceEpoch}.json',

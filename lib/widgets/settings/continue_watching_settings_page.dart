@@ -132,7 +132,9 @@ class _ContinueWatchingSettingsPageState
             permissionMethod: 'checkWatchNextPermission',
             onRefresh: watchNextService.refresh,
           ),
-          if (settingsService.showContinueWatching) ...[
+          if (!settingsService.showContinueWatching)
+            Text('${localizations.continueWatching} · ${localizations.hiddenCategories}'),
+          ...[
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 4),
               child: Divider(),

@@ -11,22 +11,33 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   for (final locale in ['ru', 'en']) {
-    testWidgets('sharing disclosure fits a small TV with large text $locale', (tester) async {
+    testWidgets('sharing disclosure fits a small TV with large text $locale', (
+      tester,
+    ) async {
       tester.view.physicalSize = const Size(960, 540);
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
-      await tester.pumpWidget(MaterialApp(
-        locale: Locale(locale),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        builder: (context, child) => MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.8)),
-          child: child!,
+      await tester.pumpWidget(
+        MaterialApp(
+          locale: Locale(locale),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          builder: (context, child) => MediaQuery(
+            data: MediaQuery.of(context)
+                .copyWith(textScaler: const TextScaler.linear(1.8)),
+            child: child!,
+          ),
+          home: Scaffold(
+            body: DiagnosticsPage(
+              collect: () async => {'reportType': 'diagnostics'},
+            ),
+          ),
         ),
-        home: Scaffold(body: DiagnosticsPage(collect: () async => {'reportType': 'diagnostics'})),
-      ));
-      final l = AppLocalizations.of(tester.element(find.byType(DiagnosticsPage)))!;
+      );
+      final l = AppLocalizations.of(
+        tester.element(find.byType(DiagnosticsPage)),
+      )!;
       await tester.tap(find.text(l.diagnosticsCreate));
       await tester.pumpAndSettle();
       await tester.ensureVisible(find.text(l.diagnosticsExport));
@@ -39,7 +50,7 @@ void main() {
       expect(find.text(l.diagnosticsSharingNotice), findsNothing);
     });
   }
-  for (final outcome in ['saved', 'opened', 'cancelled', 'failed']) {
+  for (final outcome in ['saved', 'cancelled', 'failed']) {
     testWidgets(
       'unified report export uses file picker and cleans temporary file: $outcome',
       (tester) async {
@@ -59,6 +70,7 @@ void main() {
         });
         messenger.setMockMethodCallHandler(paths, (_) async => directory!.path);
         messenger.setMockMethodCallHandler(documents, (call) async {
+          if (call.method == 'filePickerAvailable') return true;
           expect(call.method, 'saveDiagnosticsDocument');
           source = call.arguments['path'] as String;
           expect(
@@ -71,7 +83,7 @@ void main() {
           pickerOpened.complete();
           await pickerResult.future;
           if (outcome == 'failed') {
-            throw PlatformException(code: 'document_unavailable');
+            throw PlatformException(code: 'document_failed');
           }
           return outcome == 'cancelled' ? null : outcome;
         });
@@ -97,9 +109,11 @@ void main() {
             matching: find.byType(FocusableSettingsTile),
           ),
         );
-        late Future<void> export;
+        var exportFinished = false;
         await tester.runAsync(() async {
-          export = (exportTile.onPressed! as Future<void> Function())();
+          (exportTile.onPressed! as Future<void> Function())().then(
+            (_) => exportFinished = true,
+          );
         });
         await tester.pumpAndSettle();
         final saveTile = tester.widget<FocusableSettingsTile>(
@@ -108,22 +122,44 @@ void main() {
             matching: find.byType(FocusableSettingsTile),
           ),
         );
+        pickerOpened = Completer<void>();
+        pickerResult = Completer<void>();
+        late Future<void> saving;
         await tester.runAsync(() async {
-          // Await the actual page action, including cleanup and its notice.
-          // A deleted file alone does not mean that its Future has completed.
-          pickerOpened = Completer<void>();
-          pickerResult = Completer<void>();
-          final saving = (saveTile.onPressed! as Future<void> Function())();
-          await pickerOpened.future.timeout(const Duration(seconds: 5));
-          try {
-            expect(await File(source!).exists(), isTrue);
-          } finally {
-            pickerResult.complete();
-            await saving;
-            await export;
-          }
-          expect(await File(source!).parent.exists(), isFalse);
+          saving = (saveTile.onPressed! as Future<void> Function())();
+          await Future<void>.delayed(const Duration(milliseconds: 100));
         });
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Системный проводник'));
+        await tester.pumpAndSettle();
+        for (
+          var attempt = 0;
+          attempt < 20 && !pickerOpened.isCompleted;
+          attempt++
+        ) {
+          await tester.pump();
+          await tester.runAsync(
+            () async => Future<void>.delayed(const Duration(milliseconds: 10)),
+          );
+        }
+        expect(pickerOpened.isCompleted, isTrue);
+        expect(await tester.runAsync(() => File(source!).exists()), isTrue);
+        var finished = false;
+        saving.then((_) => finished = true);
+        pickerResult.complete();
+        for (var attempt = 0; attempt < 20 && !finished; attempt++) {
+          await tester.pump();
+          await tester.runAsync(
+            () async => Future<void>.delayed(const Duration(milliseconds: 10)),
+          );
+        }
+        await tester.pumpAndSettle();
+        expect(finished, isTrue);
+        expect(exportFinished, isTrue);
+        expect(
+          await tester.runAsync(() => File(source!).parent.exists()),
+          isFalse,
+        );
         await tester.pumpAndSettle();
         expect(find.text('Диагностика'), findsOneWidget);
         expect(
@@ -184,6 +220,8 @@ void main() {
       expect(find.textContaining('Отчёт готов'), findsOneWidget);
       expect(copied, false);
       await tester.tap(find.text('Экспортировать отчёт'));
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('Копировать в буфер обмена'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Копировать в буфер обмена'));
       await tester.pumpAndSettle();

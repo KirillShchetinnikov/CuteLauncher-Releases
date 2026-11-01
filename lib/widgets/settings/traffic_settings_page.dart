@@ -5,7 +5,7 @@ import '../../l10n/app_localizations.dart';
 import '../../providers/network_service.dart';
 import '../../providers/settings_service.dart';
 import 'adb_permission_tile.dart';
-import 'data_usage_period_page.dart';
+import 'settings_choice_tile.dart';
 import 'focusable_settings_tile.dart';
 import 'settings_page_layout.dart';
 
@@ -28,11 +28,12 @@ class TrafficSettingsPage extends StatelessWidget {
       title: Text(l.trafficSettings),
       child: ListView(
         children: [
-          FocusableSettingsTile(
-            title: Text(l.dataUsagePeriod),
-            trailing: Text(trafficPeriodLabel(l, settings.dataUsagePeriod)),
-            onPressed: () =>
-                Navigator.pushNamed(context, DataUsagePeriodPage.routeName),
+          SettingsChoiceTile<String>(
+            title: l.dataUsagePeriod,
+            value: settings.dataUsagePeriod,
+            options: const [DATA_USAGE_DAILY, DATA_USAGE_WEEKLY, DATA_USAGE_MONTHLY],
+            label: (value) => trafficPeriodLabel(l, value),
+            onChanged: settings.setDataUsagePeriod,
           ),
           if (network.hasUsageStatsPermission)
             Padding(

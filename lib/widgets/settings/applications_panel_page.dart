@@ -21,7 +21,7 @@ import 'settings_page_layout.dart';
 
 import 'package:flauncher/providers/apps_service.dart';
 
-import 'package:flauncher/widgets/ensure_visible.dart';
+import 'package:flauncher/widgets/application_list_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
@@ -278,22 +278,17 @@ class _AllTab extends StatelessWidget {
           autofocus: true,
         );
       }
-      return ListView(
-        children: applications
-            .asMap()
-            .entries
-            .map(
-              (entry) => EnsureVisible(
-                key: ValueKey(entry.value.packageName),
-                alignment: 0.5,
-                child: _AppListItem(
-                  entry.value,
-                  autofocus: entry.key == 0,
-                  isFirst: entry.key == 0,
-                ),
-              ),
-            )
-            .toList(),
+      final indices = {for (var i = 0; i < applications.length; i++)
+        applications[i].packageName: i};
+      return ListView.builder(
+        itemCount: applications.length,
+        findChildIndexCallback: (key) => indices[(key as ValueKey<String>).value],
+        itemBuilder: (_, index) => _AppListItem(
+          applications[index],
+          key: ValueKey(applications[index].packageName),
+          autofocus: index == 0,
+          isFirst: index == 0,
+        ),
       );
     },
   );
@@ -312,22 +307,17 @@ class _SystemTab extends StatelessWidget {
           autofocus: true,
         );
       }
-      return ListView(
-        children: applications
-            .asMap()
-            .entries
-            .map(
-              (entry) => EnsureVisible(
-                key: ValueKey(entry.value.packageName),
-                alignment: 0.5,
-                child: _AppListItem(
-                  entry.value,
-                  autofocus: entry.key == 0,
-                  isFirst: entry.key == 0,
-                ),
-              ),
-            )
-            .toList(),
+      final indices = {for (var i = 0; i < applications.length; i++)
+        applications[i].packageName: i};
+      return ListView.builder(
+        itemCount: applications.length,
+        findChildIndexCallback: (key) => indices[(key as ValueKey<String>).value],
+        itemBuilder: (_, index) => _AppListItem(
+          applications[index],
+          key: ValueKey(applications[index].packageName),
+          autofocus: index == 0,
+          isFirst: index == 0,
+        ),
       );
     },
   );
@@ -345,22 +335,17 @@ class _HiddenTab extends StatelessWidget {
           autofocus: true,
         );
       }
-      return ListView(
-        children: applications
-            .asMap()
-            .entries
-            .map(
-              (entry) => EnsureVisible(
-                key: ValueKey(entry.value.packageName),
-                alignment: 0.5,
-                child: _AppListItem(
-                  entry.value,
-                  autofocus: entry.key == 0,
-                  isFirst: entry.key == 0,
-                ),
-              ),
-            )
-            .toList(),
+      final indices = {for (var i = 0; i < applications.length; i++)
+        applications[i].packageName: i};
+      return ListView.builder(
+        itemCount: applications.length,
+        findChildIndexCallback: (key) => indices[(key as ValueKey<String>).value],
+        itemBuilder: (_, index) => _AppListItem(
+          applications[index],
+          key: ValueKey(applications[index].packageName),
+          autofocus: index == 0,
+          isFirst: index == 0,
+        ),
       );
     },
   );
@@ -422,6 +407,7 @@ class _AppListItem extends StatefulWidget {
 
   const _AppListItem(
     this.application, {
+    super.key,
     this.autofocus = false,
     this.isFirst = false,
   });
@@ -431,31 +417,17 @@ class _AppListItem extends StatefulWidget {
 }
 
 class _AppListItemState extends State<_AppListItem> {
-  late Future<ImageProvider> _iconLoadFuture;
   late FocusNode _focusNode;
 
   @override
   void initState() {
     super.initState();
     _focusNode = FocusNode();
-    _iconLoadFuture = _loadAppIcon(
-      Provider.of<AppsService>(context, listen: false),
-    );
 
     if (widget.autofocus) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) _focusNode.requestFocus();
       });
-    }
-  }
-
-  @override
-  void didUpdateWidget(covariant _AppListItem oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.application.packageName != widget.application.packageName) {
-      _iconLoadFuture = _loadAppIcon(
-        Provider.of<AppsService>(context, listen: false),
-      );
     }
   }
 
@@ -483,16 +455,8 @@ class _AppListItemState extends State<_AppListItem> {
       return KeyEventResult.ignored;
     },
     title: Text(widget.application.name),
-    leading: FutureBuilder<ImageProvider>(
-      future: _iconLoadFuture,
-      builder: (context, snapshot) => snapshot.hasData
-          ? Image(image: snapshot.data!, height: 40)
-          : Icon(snapshot.hasError ? Icons.warning : Icons.android),
-    ),
+    leading: ApplicationListIcon(packageName: widget.application.packageName),
     onPressed: _openAppDetails,
   );
-  Future<ImageProvider> _loadAppIcon(AppsService service) async {
-    Uint8List bytes = await service.getAppIcon(widget.application.packageName);
-    return MemoryImage(bytes);
-  }
+
 }

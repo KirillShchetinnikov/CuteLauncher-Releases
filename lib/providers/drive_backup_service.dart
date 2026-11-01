@@ -35,20 +35,24 @@ class DriveBackupService extends ChangeNotifier with WidgetsBindingObserver {
         .invokeMethod<Map>('read')
         .timeout(const Duration(seconds: 10));
     if (_disposed || generation != _generation) return;
-    configured = false;
+    var nextId = '', nextSecret = '';
+    String? nextRefreshToken;
     if (data != null) {
-      clientId = data['clientId'] as String;
+      nextId = data['clientId'] as String;
       final payload = jsonDecode(data['payload'] as String) as Map;
-      clientSecret = payload['clientSecret'] as String;
-      if (payload['scope'] != scope) {
-        _refreshToken = null;
-        _accessToken = null;
-        _notify();
-        return;
+      nextSecret = payload['clientSecret'] as String;
+      if (payload['scope'] == scope) {
+        nextRefreshToken = payload['refreshToken'] as String;
       }
-      _refreshToken = payload['refreshToken'] as String;
-      configured = true;
     }
+    if (clientId != nextId || clientSecret != nextSecret || _refreshToken != nextRefreshToken) {
+      _accessToken = null;
+      _expires = DateTime(1970);
+    }
+    clientId = nextId;
+    clientSecret = nextSecret;
+    _refreshToken = nextRefreshToken;
+    configured = nextRefreshToken != null;
     _notify();
   }
 
@@ -243,6 +247,7 @@ class DriveBackupService extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   Future<String> authorization() async {
+    if (_disposed) throw const CloudBackupException('cancelled');
     if (busy) throw const CloudBackupException('busy');
     if (_accessToken != null &&
         DateTime.now().isBefore(
@@ -253,13 +258,15 @@ class DriveBackupService extends ChangeNotifier with WidgetsBindingObserver {
     if (_refreshToken == null) await refreshAccount();
     if (!configured) throw const CloudBackupException('configuration');
     final generation = _generation;
+    final id = clientId, secret = clientSecret, refreshToken = _refreshToken;
     final result = await _oauth('/token', {
-      'client_id': clientId,
-      'client_secret': clientSecret,
-      'refresh_token': _refreshToken!,
+      'client_id': id,
+      'client_secret': secret,
+      'refresh_token': refreshToken!,
       'grant_type': 'refresh_token',
     });
-    if (_disposed || generation != _generation) {
+    if (_disposed || generation != _generation || id != clientId ||
+        secret != clientSecret || refreshToken != _refreshToken) {
       throw const CloudBackupException('cancelled');
     }
     if (result['access_token'] is! String) {

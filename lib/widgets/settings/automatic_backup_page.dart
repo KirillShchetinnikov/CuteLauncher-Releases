@@ -98,7 +98,11 @@ class AutomaticBackupPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(l.backupLastCreated),
+                  Text('${l.backupMode}: ${modes[service.mode]}'),
+                  Text(
+                    '${l.backupAutoEnabled}: ${service.enabled ? l.enabled : l.disabled}',
+                  ),
+                  Text(l.backupLastSuccess),
                   Text(
                     last == null
                         ? l.backupNever

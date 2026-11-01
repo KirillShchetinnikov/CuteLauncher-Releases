@@ -62,7 +62,7 @@ final class PermissionRecoveryAccess implements UpdatePermissionRecovery.Access 
         for (String item : current.split(":")) if (component.equals(ComponentName.unflattenFromString(item))) listed = true;
         boolean enabled = listed && shell.execute("settings get secure accessibility_enabled").equals("1");
         if (requireEnabled && !enabled) return "revoked";
-        // Only update recovery carries consent to restore disabled access. On Android
+        // Recovery carries remembered consent to restore disabled access. On Android
         // 13+, restricted settings can block restoring a service after a sideloaded update.
         if (!requireEnabled && android.os.Build.VERSION.SDK_INT >= 33) {
             String query = "appops get --user 0 '" + context.getPackageName()

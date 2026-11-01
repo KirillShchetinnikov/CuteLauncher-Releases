@@ -1,5 +1,3 @@
-import '../theme/launcher_style.dart';
-
 import 'package:flutter/material.dart';
 
 import '../l10n/app_localizations.dart';
@@ -9,13 +7,13 @@ import '../weather_warning_text.dart';
 import 'date_time_widget.dart';
 import 'top_panel_item.dart';
 
-/// One panel surface; existing visibility, formats and calendar action survive.
+/// One panel surface with a shared action independent of its visible parts.
 class CombinedInformation extends StatelessWidget {
   final TileAppearance appearance;
   final bool showTime, showDate, showWeather, useFahrenheit, showWarnings;
   final String timeFormat, dateFormat;
   final WeatherData? weather;
-  final VoidCallback? onCalendar;
+  final VoidCallback? onPressed;
   final FocusNode? focusNode;
   final bool selected;
   const CombinedInformation({
@@ -29,7 +27,7 @@ class CombinedInformation extends StatelessWidget {
     this.weather,
     this.useFahrenheit = false,
     this.showWarnings = false,
-    this.onCalendar,
+    this.onPressed,
     this.focusNode,
     this.selected = false,
   });
@@ -53,10 +51,8 @@ class CombinedInformation extends StatelessWidget {
       key: const ValueKey('combined_information'),
       appearance: appearance,
       textStyle: clock,
-      backgroundColor: style.background(appearance.panelItemBackground),
-      borderRadius: style.radius(LauncherStyle.of(context).topButtonRadius),
       focusNode: focusNode,
-      onPressed: showDate ? onCalendar : null,
+      onPressed: onPressed,
       selected: selected,
       child: FittedBox(
         fit: BoxFit.scaleDown,
@@ -73,9 +69,9 @@ class CombinedInformation extends StatelessWidget {
                 textStyle: clock.copyWith(fontSize: size * 1.55, height: 1),
                 animate: style.animate,
               ),
-            if (showTime && (showDate || showWeather && current != null))
+            if (showTime && (showDate || showWeather))
               SizedBox(width: style.spacing),
-            if (showDate || showWeather && current != null)
+            if (showDate || showWeather)
               Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: style.clockOnRight
@@ -88,20 +84,20 @@ class CombinedInformation extends StatelessWidget {
                       key: const Key('statusbar_date'),
                       textStyle: detail,
                     ),
-                  if (showWeather && current != null)
+                  if (showWeather)
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       textDirection: TextDirection.ltr,
                       children: [
                         Icon(
-                          current.getConditionIcon(),
+                          current?.getConditionIcon() ?? Icons.cloud_outlined,
                           size: size * .75,
                           color: clock.color,
                           shadows: clock.shadows,
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          '${current.formatTemperature(useFahrenheit: useFahrenheit)}${warning == null ? '' : ' · $warning'}',
+                          '${current?.formatTemperature(useFahrenheit: useFahrenheit) ?? '—'}${warning == null ? '' : ' · $warning'}',
                           style: detail,
                         ),
                       ],

@@ -1,3 +1,5 @@
+import '../../document_files.dart';
+
 import 'dart:io';
 
 import 'reset_style_tile.dart';
@@ -9,6 +11,7 @@ import 'settings_route.dart';
 import 'settings_page_layout.dart';
 import 'settings_choice_tile.dart';
 import 'settings_help.dart';
+import 'settings_read_only_value.dart';
 /*
  * FLauncher
  * Copyright (C) 2021  Étienne Fesser
@@ -57,6 +60,41 @@ class WallpaperPanelPage extends StatefulWidget {
 class _WallpaperPanelPageState extends State<WallpaperPanelPage> {
   bool _picking = false;
   bool get parameters => widget.parameters;
+  Future<List<({String? name, bool available})>>? _selections;
+  @override
+  void initState() {
+    super.initState();
+    _readSelections();
+  }
+
+  void _readSelections() {
+    final wallpaper = context.read<WallpaperService?>();
+    if (wallpaper != null &&
+        parameters &&
+        context.read<SettingsService>().backgroundSource == 'scheduled') {
+      _selections = Future.wait([
+        wallpaper.selection('day'),
+        wallpaper.selection('night'),
+      ]);
+    }
+  }
+
+  Widget _selection(int index, AppLocalizations l) => FutureBuilder(
+    future: _selections,
+    builder: (context, snapshot) {
+      if (!snapshot.hasData) return const SizedBox.shrink();
+      final item = snapshot.data![index];
+      return SettingsReadOnlyValue(
+        compact: true,
+        label: l.fileBrowserFileName,
+        value: item.name == null
+            ? l.settingsValueNotSet
+            : item.available
+            ? item.name!
+            : '${item.name} · ${l.backgroundFileUnavailable}',
+      );
+    },
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +156,11 @@ class _WallpaperPanelPageState extends State<WallpaperPanelPage> {
               ),
             ),
             const Divider(),
-            if (source == 'app') SettingsHelp(text: l.appArtworkBackgroundHelp),
+            if (source == 'app')
+              SettingsHelp(
+                title: l.wallpaper,
+                text: l.appArtworkBackgroundHelp,
+              ),
             FocusableSettingsTile(
               title: Text(l.wallpaperDisplay),
               leading: const Icon(Icons.aspect_ratio),
@@ -133,6 +175,7 @@ class _WallpaperPanelPageState extends State<WallpaperPanelPage> {
               FocusableSettingsTile(
                 autofocus: true,
                 title: Text(l.pickDayWallpaper),
+                enabled: !_picking,
                 leading: const Icon(Icons.wb_sunny),
                 trailing: _picking
                     ? const SizedBox(
@@ -141,11 +184,18 @@ class _WallpaperPanelPageState extends State<WallpaperPanelPage> {
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : null,
-                onPressed: () =>
-                    _pickWallpaper(context, (s) => s.pickWallpaperDay(), l),
+                onPressed: () => _pickWallpaper(
+                  context,
+                  (s) => s.pickWallpaperDay(
+                    picker: () => DocumentFiles.pickImage(context: context),
+                  ),
+                  l,
+                ),
               ),
+              _selection(0, l),
               FocusableSettingsTile(
                 title: Text(l.pickNightWallpaper),
+                enabled: !_picking,
                 leading: const Icon(Icons.nights_stay),
                 trailing: _picking
                     ? const SizedBox(
@@ -154,13 +204,20 @@ class _WallpaperPanelPageState extends State<WallpaperPanelPage> {
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : null,
-                onPressed: () =>
-                    _pickWallpaper(context, (s) => s.pickWallpaperNight(), l),
+                onPressed: () => _pickWallpaper(
+                  context,
+                  (s) => s.pickWallpaperNight(
+                    picker: () => DocumentFiles.pickImage(context: context),
+                  ),
+                  l,
+                ),
               ),
+              _selection(1, l),
             ] else
               FocusableSettingsTile(
                 autofocus: true,
                 title: Text(l.openImage),
+                enabled: !_picking,
                 leading: const Icon(Icons.insert_drive_file_outlined),
                 trailing: _picking
                     ? const SizedBox(
@@ -169,10 +226,16 @@ class _WallpaperPanelPageState extends State<WallpaperPanelPage> {
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : null,
-                onPressed: () =>
-                    _pickWallpaper(context, (s) => s.pickWallpaper(), l),
+                onPressed: () => _pickWallpaper(
+                  context,
+                  (s) => s.pickWallpaper(
+                    picker: () => DocumentFiles.pickWallpaper(context: context),
+                  ),
+                  l,
+                ),
               ),
             SettingsHelp(
+              title: l.wallpaper,
               text: source == 'scheduled'
                   ? l.backgroundImageFormats
                   : l.backgroundMediaFormats,
@@ -184,6 +247,7 @@ class _WallpaperPanelPageState extends State<WallpaperPanelPage> {
               final wallpaper = context.read<WallpaperService?>();
               if (parameters) {
                 await wallpaper?.reset();
+                if (mounted) setState(_readSelections);
                 return;
               }
               final online = context.read<OnlineWallpaperService>();
@@ -210,6 +274,7 @@ class _WallpaperPanelPageState extends State<WallpaperPanelPage> {
     try {
       final applied = await action(context.read<WallpaperService>());
       if (context.mounted && applied) {
+        setState(_readSelections);
         showActionNotice(context, localizations.backgroundFileApplied);
       }
     } on BackgroundMediaException catch (error) {

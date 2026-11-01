@@ -1,4 +1,5 @@
 import 'settings_help.dart';
+
 import 'package:flauncher/widgets/launcher_dialog.dart';
 
 import 'focusable_settings_tile.dart';
@@ -141,7 +142,10 @@ class _DonateDialogState extends State<DonateDialog> {
                 ],
               ),
               const SizedBox(height: 6),
-              SettingsHelp(text: AppLocalizations.of(context)!.scanToDonate),
+              SettingsHelp(
+                title: 'QR',
+                text: AppLocalizations.of(context)!.scanToDonate,
+              ),
               const SizedBox(height: 16),
 
               // Platform Selector Buttons (D-pad friendly)

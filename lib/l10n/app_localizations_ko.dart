@@ -10,6 +10,26 @@ class AppLocalizationsKo extends AppLocalizations {
   AppLocalizationsKo([String locale = 'ko']) : super(locale);
 
   @override
+  String get wallhavenWallpaperHint =>
+      '선택한 테마의 무작위 Wallhaven 배경화면: SFW, 16:9, Full HD 이상. 계정이나 API 키가 필요 없습니다. 런처가 열려 있을 때 업데이트하며 오류 시 이전 배경화면을 유지합니다.';
+
+  @override
+  String get renderCompatibilityTitle => '호환 그래픽 출력';
+
+  @override
+  String get renderCompatibilityAutomatic => '이 기기에서 자동으로 활성화됨';
+
+  @override
+  String get renderCompatibilityApply => '적용 후 런처 다시 시작';
+
+  @override
+  String get renderCompatibilityFailed => '설정을 읽거나 적용하지 못했습니다';
+
+  @override
+  String get renderCompatibilityHelp =>
+      '야간 화면 어둡게 사용 시 인터페이스가 깜박이면 이 모드를 사용해 보세요. 검증된 모델에서는 자동으로 활성화됩니다. 다른 TV에서는 선택이 이 기기에만 저장되며 런처를 다시 시작하면 적용됩니다. 그래픽 부하가 증가할 수 있습니다.';
+
+  @override
   String get diagnosticsHubTitle => 'Diagnostics';
 
   @override
@@ -1469,7 +1489,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get weatherCoordinatesError => '도시를 수동으로 입력하거나 자동으로 좌표를 받으세요.';
 
   @override
-  String get weatherRefresh => '업데이트 확인';
+  String get weatherRefresh => '날씨 새로고침';
 
   @override
   String get weatherKeyPrivate => '이 기기에만 저장되며 백업에서는 제외됩니다. 빈 입력은 키를 제거합니다.';
@@ -1479,7 +1499,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get onlineWallpaperError =>
-      '이 이미지를 로드할 수 없습니다. 이전 배경화면은 그대로 유지됩니다. 다운로드를 다시 시도하려면 “업데이트 확인”을 선택하십시오.';
+      '이 이미지를 로드할 수 없습니다. 이전 배경화면은 그대로 유지됩니다. 다운로드를 다시 시도하려면 “배경화면 새로고침”을 선택하십시오.';
 
   @override
   String get onlineWallpaperHint =>
@@ -1899,7 +1919,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get notificationAppsHint =>
-      '알림이 필요하지 않은 앱을 끄세요. 활성화된 스위치는 알림을 허용합니다. 앱은 계속 실행될 수 있습니다.';
+      '알림을 차단할 앱을 선택하세요. 스위치를 켜면 알림이 차단됩니다. 목록은 이름순을 유지합니다.';
 
   @override
   String get notificationPanelLink => '상단 패널 외관';
@@ -1966,7 +1986,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get rememberCategoryFocus => '마지막으로 집중된 카드 기억';
 
   @override
-  String get automaticBackups => '자동 백업';
+  String get automaticBackups => '백업 및 동기화';
 
   @override
   String get automaticBackupsHint =>
@@ -2039,7 +2059,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get resetAppearanceHint => '배경, 강조, 타일, 라벨, 강조표시 및 애니메이션을 재설정하시겠습니까?';
 
   @override
-  String get wallpaperDimming => '디밍';
+  String get wallpaperDimming => '어둡게 하는 강도';
 
   @override
   String get wallpaperPlacement => '배치';
@@ -2630,7 +2650,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get backupDriveHelp =>
-      '연결을 선택하고 휴대폰에서 코드를 확인하세요. 백업은 Google Drive의 CuteLauncher 폴더에 표시되며, 여기서 다운로드하거나 삭제할 수 있습니다. 인앱 복원을 위해 파일 이름을 변경하지 않고 유지하세요. 숨겨진 백업에서 업그레이드한 후 다시 연결하세요. 이전 백업은 자동으로 마이그레이션되지 않습니다.';
+      'Google Drive 연결을 선택하고 휴대폰에서 코드를 확인하세요. 백업은 Google Drive의 CuteLauncher 폴더에 표시되며, 여기서 다운로드하거나 삭제할 수 있습니다. 인앱 복원을 위해 파일 이름을 변경하지 않고 유지하세요. 숨겨진 백업에서 업그레이드한 후 다시 연결하세요. 이전 백업은 자동으로 마이그레이션되지 않습니다.';
 
   @override
   String get backupFrequency => '백업 빈도';
@@ -3088,7 +3108,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get homeOwnReset => '공통 설정 복원';
 
   @override
-  String get homeParameters => '매개변수';
+  String get homeParameters => '홈 화면 동작';
 
   @override
   String get homeSectionStyle => '단면 모양';
@@ -4215,4 +4235,469 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get remoteMappingImportFailed =>
       '읽을 수 없습니다. 접근 가능한 64 KB 이하의 UTF-8 텍스트 파일을 선택하세요.';
+
+  @override
+  String get vpnTitle => 'VPN';
+
+  @override
+  String get vpnSettings => 'VPN 설정';
+
+  @override
+  String get vpnApp => 'VPN 앱';
+
+  @override
+  String get vpnAutomatic => '자동';
+
+  @override
+  String get vpnNone => '선택 안 함';
+
+  @override
+  String get vpnProfile => 'VPN 프로필';
+
+  @override
+  String get vpnOnlyActive => '연결된 경우에만 표시';
+
+  @override
+  String get vpnShowName => '앱 이름 표시';
+
+  @override
+  String get vpnColor => '연결을 색상으로 강조';
+
+  @override
+  String get vpnNotify => '명령 결과 알림';
+
+  @override
+  String get vpnConnected => 'VPN 연결됨';
+
+  @override
+  String get vpnDisconnected => 'VPN 연결 해제됨';
+
+  @override
+  String get vpnUnknown => 'VPN 상태를 확인할 수 없음';
+
+  @override
+  String get vpnConnect => '연결';
+
+  @override
+  String get vpnDisconnect => '연결 해제';
+
+  @override
+  String get vpnOpenApp => 'VPN 앱 열기';
+
+  @override
+  String get vpnAndroidSettings => 'Android VPN 설정';
+
+  @override
+  String get vpnAllowControl => 'VPN 제어 허용';
+
+  @override
+  String get vpnFailed => 'VPN 작업 실패';
+
+  @override
+  String get vpnUnsupported => '이 클라이언트는 직접 제어를 지원하지 않습니다. 앱을 열 수 있습니다.';
+
+  @override
+  String get vpnOther => '다른 VPN 또는 확인되지 않은 VPN이 연결되어 제어할 수 없습니다.';
+
+  @override
+  String get vpnStartup => 'TV 시작 시 VPN';
+
+  @override
+  String get vpnPending => 'VPN 연결 대기 중';
+
+  @override
+  String get vpnHelp =>
+      '자동 선택은 활성 VPN을 감지하고 재연결을 위해 기억합니다. 앱과 프로필 감지에는 로컬 ADB 연결이 필요합니다. AmneziaWG와 WireGuard를 직접 제어하려면 제어 권한과 클라이언트의 원격 제어 설정이 필요합니다. Happ과 MantaRay는 클라이언트에서 선택한 프로필을 사용합니다.';
+
+  @override
+  String get vpnProfileHelp =>
+      'VPN 앱의 정확한 프로필 이름을 입력하세요. 라틴 문자, 숫자 및 _ = + . -를 사용하여 최대 15자입니다. 수동 연결 시 사용 가능한 경우 이름을 자동으로 감지합니다.';
+
+  @override
+  String get vpnStartupHelp =>
+      'VPN은 일반 시작 작업에 추가로 실행됩니다. 먼저 프로필과 권한을 설정하세요. 네트워크 대기 시간은 제한되며 활성 VPN을 대체하지 않습니다. 런처 프로세스가 실행 중일 때만 절전 해제를 감지합니다.';
+
+  @override
+  String get vpnStartupMethod => 'VPN 시작 방식';
+
+  @override
+  String get vpnStartupClient => 'VPN 앱을 통해';
+
+  @override
+  String get vpnStartupAlwaysOn => 'Android 상시 연결 VPN';
+
+  @override
+  String get vpnAlwaysOnManaged =>
+      '이 VPN은 Android 상시 연결 모드로 관리됩니다. 시작 설정 또는 Android 설정에서 모드를 해제하세요.';
+
+  @override
+  String get vpnRestartRequired => '시스템 모드를 적용하려면 TV를 다시 시작하세요.';
+
+  @override
+  String get vpnAlwaysOnHelp =>
+      '로컬 TCP ADB로 설정된 클라이언트를 상시 연결 VPN으로 지정합니다. TV를 다시 시작하면 Android가 선택을 적용합니다. VPN 없는 연결 차단은 켜거나 변경하지 않습니다. 모드를 해제하면 이전 시스템 선택이 복원됩니다.';
+
+  @override
+  String get vpnClientConfirmation => 'MantaRay 창에서 명령을 확인하세요.';
+
+  @override
+  String get informationTapAction => '블록을 눌렀을 때';
+
+  @override
+  String get informationShowBoth => '날씨와 달력';
+
+  @override
+  String get weatherForecastTitle => '날씨 예보';
+
+  @override
+  String get weatherForecastPeriod => '예보 기간';
+
+  @override
+  String weatherForecastDays(int days) {
+    return '$days일';
+  }
+
+  @override
+  String get weatherForecastView => '예보 표시 방식';
+
+  @override
+  String get weatherForecastCards => '간단한 카드';
+
+  @override
+  String get weatherForecastList => '자세한 목록';
+
+  @override
+  String weatherForecastAvailable(int available, int requested) {
+    return '사용 가능한 일수: $requested일 중 $available일';
+  }
+
+  @override
+  String get weatherForecastTvTime => '예보 날짜는 TV 시간을 기준으로 합니다';
+
+  @override
+  String get weatherClear => '맑음';
+
+  @override
+  String get weatherCloudy => '흐림';
+
+  @override
+  String get weatherFog => '안개';
+
+  @override
+  String get weatherWind => '바람';
+
+  @override
+  String get weatherPrecipitation => '강수 확률';
+
+  @override
+  String get showVolume => '볼륨 표시';
+
+  @override
+  String get audioStatusTitle => '볼륨 및 오디오 출력';
+
+  @override
+  String get audioOutputTv => 'TV';
+
+  @override
+  String get audioOutputHeadphones => '헤드폰';
+
+  @override
+  String get audioOutputMultiple => '여러 기기';
+
+  @override
+  String get audioMuted => '음소거';
+
+  @override
+  String get backgroundStartupTitle => '백그라운드 앱';
+
+  @override
+  String get backgroundStartupFailed => '설정을 불러오거나 저장하지 못했습니다';
+
+  @override
+  String get backgroundStartupRetry => '다시 시도';
+
+  @override
+  String get backgroundStartupEmpty => '사용자 앱이 없습니다';
+
+  @override
+  String get backgroundStartupUnavailable => '백그라운드 실행 불가';
+
+  @override
+  String get backgroundStartupRequested => '실행 요청됨';
+
+  @override
+  String get backgroundStartupHelp =>
+      'TV 부팅 후 백그라운드에서 한 번 실행할 앱을 선택하세요. CuteLauncher가 1분 안에 열려야 합니다. 홈 화면으로 지정하거나 부팅 시 실행을 켜세요. 앱은 홈 뒤에서 순서대로 실행되며 선택 즉시 실행되지는 않습니다. 리모컨 입력이나 런처에서 나가면 나머지 실행은 취소됩니다. 절전 해제 시 다시 실행하지 않습니다. 지원하지 않는 앱은 선택할 수 없습니다. 앱 실행은 내부 기능 활성화나 지속 작동을 보장하지 않습니다. 각 앱에서 권한과 백그라운드 작동을 설정하세요. Android나 TV 펌웨어가 앱을 중지할 수 있습니다. 선택은 이 TV에만 저장됩니다.';
+
+  @override
+  String get backgroundStartupToggle => '백그라운드 자동 실행';
+
+  @override
+  String get systemWidgetSettings => '시스템 위젯 설정';
+
+  @override
+  String get systemShowCpu => '패널에 CPU 표시';
+
+  @override
+  String get systemShowRam => '패널에 RAM 표시';
+
+  @override
+  String get systemStorage => '저장 공간: 여유 / 전체';
+
+  @override
+  String get systemUptime => '가동 시간 (시간:분)';
+
+  @override
+  String get systemTemperature => 'CPU 온도';
+
+  @override
+  String get systemAvailable => '사용 가능한 RAM';
+
+  @override
+  String get systemHistory => '최근 1시간 · 평균과 최고값';
+
+  @override
+  String get systemNow => '현재';
+
+  @override
+  String get systemHourAgo => '−60분';
+
+  @override
+  String get systemWidgetHelp =>
+      '런처가 보이는 동안 5초마다 갱신됩니다. 그래프는 분 단위 평균과 최고값을 표시합니다. 다른 앱 사용, 절전 및 읽기 오류 구간은 비워 둡니다. 기록은 메모리에 저장되며 런처 프로세스를 다시 시작하면 초기화됩니다. CPU와 온도는 펌웨어에 따라 제공됩니다. 패널의 두 값을 모두 끄면 아이콘만 표시됩니다.';
+
+  @override
+  String get slideshowBrowseFolders => '폴더 찾아보기';
+
+  @override
+  String get slideshowEnterFolderPath => '폴더 경로 입력';
+
+  @override
+  String get slideshowSystemPicker => '시스템 파일 관리자에서 선택';
+
+  @override
+  String get slideshowFolderPath => '폴더 경로';
+
+  @override
+  String get slideshowUseFolder => '이 폴더 사용';
+
+  @override
+  String get slideshowParentFolder => '상위 폴더';
+
+  @override
+  String get slideshowStoragePermission =>
+      '내장 파일 탐색기를 사용하려면 Android 설정에서 파일 접근을 허용하세요.';
+
+  @override
+  String get slideshowPickerUnavailable =>
+      '이 TV에는 폴더 선택기가 없습니다. 내장 탐색기를 사용하거나 경로를 입력하세요.';
+
+  @override
+  String get slideshowFolderUnavailable =>
+      '폴더에 접근할 수 없습니다. 경로, 저장 장치 연결 및 파일 접근 권한을 확인하세요.';
+
+  @override
+  String get slideshowStorageHelp =>
+      '내장 탐색기는 TV와 연결된 저장 장치의 폴더를 읽습니다. Android 11 이상에서는 모든 파일 접근을, Android 9–10에서는 저장소 접근을 허용하세요. /storage/emulated/0/Pictures 같은 경로를 직접 입력할 수도 있습니다. 파일은 변경되지 않습니다.';
+
+  @override
+  String get fileBrowserTitle => '파일 선택';
+
+  @override
+  String get filePickerChoose => '파일 탐색기 선택';
+
+  @override
+  String get filePickerSystem => '시스템 파일 선택기';
+
+  @override
+  String get filePickerBuiltIn => '내장 파일 탐색기';
+
+  @override
+  String get fileBrowserEmpty => '표시할 항목이 없습니다';
+
+  @override
+  String get fileBrowserUnavailable => '이 위치를 열 수 없습니다. 접근 권한을 확인하고 다시 시도하세요.';
+
+  @override
+  String get networkAndVpnGroup => '네트워크 및 VPN';
+
+  @override
+  String get soundAndInputsGroup => '사운드 및 입력';
+
+  @override
+  String get timerAndNightModeGroup => '타이머 및 야간 모드';
+
+  @override
+  String get systemSettingsGroup => '시스템 설정';
+
+  @override
+  String get appChannelsTitle => '앱 피드';
+
+  @override
+  String get appChannelsHelp =>
+      '최대 16개의 피드를 선택하세요. 사용 가능 여부는 앱이 게시한 채널과 TV 펌웨어에 따라 달라집니다. 빈 피드는 숨겨집니다. 선택은 이 TV에 저장됩니다.';
+
+  @override
+  String get appChannelsUnavailable => '피드를 읽을 수 없습니다. TV 프로그램 접근 권한을 확인하세요.';
+
+  @override
+  String get appChannelsEmpty => '사용 가능한 앱 피드가 없습니다.';
+
+  @override
+  String get appChannelsRefresh => '피드 새로고침';
+
+  @override
+  String get appChannelsLaunchFailed => '이 콘텐츠를 열 수 없습니다.';
+
+  @override
+  String get appChannelsSaveFailed => '선택을 저장할 수 없습니다. 최대 16개의 피드를 선택하세요.';
+
+  @override
+  String get sectionDeleteConfirm => '이 섹션을 삭제할까요? 설치된 앱은 유지됩니다.';
+
+  @override
+  String get sectionDeleteFailed => '섹션을 삭제하지 못했습니다. 다시 시도하세요.';
+
+  @override
+  String get appChannelsAccess => '앱 피드 접근 권한';
+
+  @override
+  String get appChannelsMissing => '사용할 수 없는 피드';
+
+  @override
+  String get wallpaperRefresh => '배경화면 새로고침';
+
+  @override
+  String get wallpaperDimmingHelp =>
+      '100%는 원래의 어두운 정도를 유지하고 200%는 두 배로 늘립니다. 검은 레이어의 불투명도가 아닙니다.';
+
+  @override
+  String get resetLauncherSettings => '모든 설정 초기화';
+
+  @override
+  String get resetLauncherSettingsConfirmation =>
+      '섹션, 즐겨찾기, 리모컨 할당, 연결 및 앱 저장소의 파일을 포함하여 CuteLauncher의 모든 설정과 로컬 데이터가 삭제됩니다. CuteLauncher가 종료되며 다음 실행 시 새로 설치한 상태가 됩니다. 접근 권한을 다시 허용해야 합니다. CuteLauncher 저장소 외부의 파일과 다른 앱은 유지됩니다.';
+
+  @override
+  String get resetLauncherSettingsError => '설정 초기화를 완료하지 못했습니다. 다시 시도하세요.';
+
+  @override
+  String get fileBrowserCurrentFolder => '현재 폴더';
+
+  @override
+  String get fileBrowserFileName => '파일 이름';
+
+  @override
+  String get fileBrowserNoFolders => '하위 폴더 없음';
+
+  @override
+  String get fileBrowserNoFiles => '해당 파일 없음';
+
+  @override
+  String get fileBrowserPartial => '폴더의 일부만 표시됩니다';
+
+  @override
+  String get fileBrowserRemoteHint => '← 전체 이름 · → 확인';
+
+  @override
+  String get fileBrowserReadNameHint => '← 전체 이름 보기';
+
+  @override
+  String fileBrowserSavedTo(String path) {
+    return '저장됨: $path';
+  }
+
+  @override
+  String get backupDriveConnect => 'Google Drive 연결';
+
+  @override
+  String get discardChangesTitle => '변경 사항을 취소할까요?';
+
+  @override
+  String get discardChangesMessage => '저장하지 않은 변경 사항이 사라집니다.';
+
+  @override
+  String get backgroundFileUnavailable => '파일을 사용할 수 없음';
+
+  @override
+  String get backupLastSuccess => '마지막으로 성공한 작업:';
+
+  @override
+  String get informationPlacement => '블록 배치';
+
+  @override
+  String get informationOnBackground => '배경화면 위';
+
+  @override
+  String get informationBackgroundAlignment => '배경화면 정렬';
+
+  @override
+  String get informationBackgroundHelp =>
+      '시계, 날짜, 날씨마다 상단 패널, 배경화면 또는 숨김을 선택하세요. 배경화면 요소는 입력에 반응하지 않고 타일 위치를 바꾸지 않습니다. 동적 풍경에서는 산이 시계 일부를 가립니다. 빠른 설정은 독립적으로 유지됩니다.';
+
+  @override
+  String get informationTime => '시계';
+
+  @override
+  String get informationDate => '날짜';
+
+  @override
+  String get backgroundInformationAppearance => '배경화면 모양';
+
+  @override
+  String onlineWallpaperFailureStage(String stage) {
+    String _temp0 = intl.Intl.selectLogic(stage, {
+      'initialize': '저장소 준비',
+      'metadata': '공급자 요청',
+      'download': '이미지 다운로드',
+      'validation': '이미지 확인',
+      'save': '배경화면 저장',
+      'other': '배경화면 저장',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String onlineWallpaperFailureReason(String reason) {
+    String _temp0 = intl.Intl.selectLogic(reason, {
+      'dns': '서버 주소를 확인할 수 없습니다(DNS).',
+      'connection': '서버 연결을 설정하거나 유지할 수 없습니다.',
+      'tls': '보안 연결 또는 인증서 오류입니다(TLS).',
+      'timeout': '요청 시간이 초과되었습니다.',
+      'http': '서버가 오류를 반환했습니다.',
+      'redirect': '잘못된 리디렉션이거나 리디렉션이 너무 많습니다.',
+      'insecureUrl': '안전하지 않은 URL입니다. 로그인 정보가 없는 HTTPS가 필요합니다.',
+      'tooLarge': '응답이 크기 제한을 초과합니다.',
+      'dimensions': '이미지 크기가 제한을 초과합니다.',
+      'invalidResponse': '공급자가 잘못된 데이터를 반환했습니다.',
+      'noImage': '공급자에 조건에 맞는 새 이미지가 없습니다.',
+      'invalidImage': '파일이 손상되었거나 지원되지 않는 이미지 형식입니다.',
+      'storage': '배경화면 파일을 읽거나 쓸 수 없습니다.',
+      'unknown': '알 수 없는 오류입니다.',
+      'other': '알 수 없는 오류입니다.',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get informationPanelAppearance => '패널 모양';
+
+  @override
+  String get informationData => '형식 및 데이터';
+
+  @override
+  String get informationGroupingMinimum => '최소 두 개의 항목이 필요합니다';
+
+  @override
+  String get screenshotSceneMode => '스크린샷 모드';
+
+  @override
+  String get screenshotSceneHour => '시';
+
+  @override
+  String get screenshotSceneMinute => '분';
+
+  @override
+  String get screenshotSceneHelp =>
+      '풍경과 배경 시계의 시간 및 풍경의 날씨를 설정합니다. 설정을 닫아도 유지됩니다. 시스템 시간, 날씨 데이터 및 저장된 설정은 변경하지 않습니다. 이 빌드를 다시 시작하면 16:00, 흐림으로 설정됩니다.';
 }

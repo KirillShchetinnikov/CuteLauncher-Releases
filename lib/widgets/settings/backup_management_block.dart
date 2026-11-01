@@ -30,6 +30,8 @@ class _BackupManagementBlockState extends State<BackupManagementBlock> {
   List<RemoteBackupFile> _copies = [];
   String? _signature;
   bool _loading = false;
+  bool _loadFailed = false;
+  bool _loaded = false;
   bool _waitForIdle = false;
   int _request = 0;
   int _page = 0;
@@ -44,6 +46,8 @@ class _BackupManagementBlockState extends State<BackupManagementBlock> {
       _waitForIdle = false;
       _signature = next;
       _copies = [];
+      _loaded = false;
+      _loadFailed = false;
       _page = 0;
       final request = ++_request;
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -66,6 +70,8 @@ class _BackupManagementBlockState extends State<BackupManagementBlock> {
       if (mounted && request == _request) {
         setState(() {
           _copies = copies;
+          _loaded = true;
+          _loadFailed = false;
           _page = _page.clamp(
             0,
             copies.isEmpty ? 0 : (copies.length - 1) ~/ 20,
@@ -74,6 +80,7 @@ class _BackupManagementBlockState extends State<BackupManagementBlock> {
       }
     } catch (_) {
       if (mounted && request == _request) {
+        setState(() => _loadFailed = true);
         showActionNotice(
           context,
           AppLocalizations.of(context)!.backupListFailed,
@@ -207,7 +214,15 @@ class _BackupManagementBlockState extends State<BackupManagementBlock> {
           onPressed: _load,
         ),
         if (_loading) const LinearProgressIndicator(),
-        if (!_loading && _copies.isEmpty)
+        if (_loadFailed)
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Text(
+              l.backupListFailed,
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
+            ),
+          ),
+        if (!_loading && _loaded && !_loadFailed && _copies.isEmpty)
           Padding(
             padding: const EdgeInsets.all(12),
             child: Text(l.noRestorePoints),

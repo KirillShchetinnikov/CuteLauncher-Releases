@@ -17,6 +17,10 @@
  */
 
 import 'providers/memory_resources.dart';
+import 'initial_settings_profile.dart';
+import 'package:path_provider/path_provider.dart';
+import 'providers/audio_status_service.dart';
+import 'providers/system_status_service.dart';
 import 'providers/foreground_work.dart';
 import 'providers/app_catalog_cache.dart';
 import 'widgets/deferred_launcher_services.dart';
@@ -38,18 +42,21 @@ import 'package:flauncher/flauncher_channel.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/launcher_state.dart';
 import 'package:flauncher/providers/network_service.dart';
+import 'package:flauncher/providers/vpn_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/brightness_service.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/providers/tv_inputs_service.dart';
 import 'package:flauncher/providers/notifications_service.dart';
 import 'package:flauncher/providers/watch_next_service.dart';
+import 'package:flauncher/providers/app_channels_service.dart';
 import 'package:flauncher/providers/weather_service.dart';
 import 'package:flauncher/providers/online_wallpaper_service.dart';
 import 'package:flauncher/providers/backup_service.dart';
 import 'package:flutter/material.dart';
 import 'providers/slideshow_service.dart';
 import 'providers/now_playing_service.dart';
+import 'providers/background_startup_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'providers/night_mode_service.dart';
@@ -151,6 +158,14 @@ Future<void> _runLauncher({bool remotePanel = false, bool recentApps = false}) a
   };
 
   final sharedPreferences = await SharedPreferences.getInstance();
+  FLauncherDatabase? database;
+  FLauncherDatabase launcherDatabase() => database ??= FLauncherDatabase(connect());
+  // A secondary engine neither creates the profile nor opens the database.
+  if (!remotePanel || sharedPreferences.getString(initialProfileStateKey) == 'pending') {
+    await initializeSettingsProfile(sharedPreferences,
+      await getApplicationDocumentsDirectory(), launcherDatabase,
+      primaryEngine: !remotePanel);
+  }
   StartupTrace.mark('preferences');
   final settingsSync = SettingsSyncService(sharedPreferences);
   try { if (!remotePanel) await settingsSync.recover(); }
@@ -169,8 +184,6 @@ Future<void> _runLauncher({bool remotePanel = false, bool recentApps = false}) a
   };
   final fLauncherChannel = FLauncherChannel();
   final ownPackageName = await fLauncherChannel.getPackageName();
-  FLauncherDatabase? database;
-  FLauncherDatabase launcherDatabase() => database ??= FLauncherDatabase(connect());
   final work = remotePanel ? null : ForegroundWork();
 
   if (remotePanel) {
@@ -215,6 +228,10 @@ Future<void> _runLauncher({bool remotePanel = false, bool recentApps = false}) a
           return timer;
         }, lazy: remotePanel),
         ChangeNotifierProvider(create: (_) => NetworkService(fLauncherChannel, work: work)),
+        ChangeNotifierProvider(create: (_) => AudioStatusService()),
+        ChangeNotifierProvider(create: (_) => SystemStatusService(work: work)),
+        ChangeNotifierProvider(create: (_) => BackgroundStartupService()),
+        ChangeNotifierProvider(create: (context) => VpnService(context.read<NetworkService>(), work: work)),
         ChangeNotifierProvider(
             create: (context) {
               SettingsService settingsService = Provider.of(context, listen: false);
@@ -228,6 +245,9 @@ Future<void> _runLauncher({bool remotePanel = false, bool recentApps = false}) a
         ChangeNotifierProvider(create: (_) => NotificationsService(fLauncherChannel)),
         ChangeNotifierProvider(create: (context) => NowPlayingService(context.read<SettingsService>())),
         ChangeNotifierProvider(create: (context) => WatchNextService(fLauncherChannel, onAppLaunched: context.read<AppsService>().recordAppLaunch, memoryResources: context.read<MemoryResources>(), work: work)),
+        ChangeNotifierProvider(create: (context) => AppChannelsService(fLauncherChannel, context.read<SettingsService>(),
+          apps: context.read<AppsService>(),
+          onAppLaunched: context.read<AppsService>().recordAppLaunch, memory: context.read<MemoryResources>(), work: work)),
         ChangeNotifierProvider(create: (_) => WeatherService(fLauncherChannel, preferences: sharedPreferences, work: work)),
         ChangeNotifierProvider(create: (_) => OnlineWallpaperService(sharedPreferences, work: work)),
         ChangeNotifierProvider(create: (context) => SlideshowService(sharedPreferences, context.read<SettingsService>())),

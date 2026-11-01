@@ -108,7 +108,7 @@ void main() {
       ]) {
         await fixture.appearance.set('settingsInterfaceFont', id);
         await tester.pumpAndSettle();
-        final label = find.text('Стиль интерфейса');
+        final label = find.text('Стиль настроек');
         expect(
           Theme.of(tester.element(label)).textTheme.bodyMedium!.fontFamily,
           family,
@@ -295,7 +295,7 @@ void main() {
                   showWeather: false,
                   timeFormat: 'HH:mm',
                   dateFormat: 'dd.MM.yyyy',
-                  onCalendar: () => opened = true,
+                  onPressed: () => opened = true,
                 ),
               ),
             ),

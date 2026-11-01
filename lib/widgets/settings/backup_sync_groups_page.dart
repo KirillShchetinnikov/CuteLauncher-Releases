@@ -51,7 +51,7 @@ class BackupSyncGroupsPage extends StatelessWidget {
       title: Text(l.backupSyncSettings),
       child: ListView(
         children: [
-          SettingsHelp(text: l.backupSyncGroupsHelp),
+          SettingsHelp(title: l.backupSyncSettings, text: l.backupSyncGroupsHelp),
           for (final section in backupSyncSections.entries) ...[
             if (section.key != BackupSyncSection.home) const Divider(),
             Padding(

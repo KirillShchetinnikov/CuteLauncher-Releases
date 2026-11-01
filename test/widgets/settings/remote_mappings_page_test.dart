@@ -62,6 +62,41 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  testWidgets('Back preserves a dirty draft until discard is confirmed', (
+    tester,
+  ) async {
+    config = const RemoteMappingConfiguration(
+      enabled: true,
+      bindings: [RemoteMapping(keyCode: 3, trigger: 'hold', action: 'recents')],
+    );
+    await open(tester);
+    await tester.tap(find.text('Home — Удержание'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Имя'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField), 'Draft');
+    await tester.tap(
+      find.descendant(
+        of: find.byType(LauncherDialogButton),
+        matching: find.text('Сохранить'),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(find.text('Отменить изменения?'), findsOneWidget);
+    await tester.tap(find.text('Отмена'));
+    await tester.pumpAndSettle();
+    expect(find.text('Draft'), findsOneWidget);
+    expect(config.bindings.single.name, isEmpty);
+    await binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Закрыть'));
+    await tester.pumpAndSettle();
+    expect(find.text('Сохранить'), findsNothing);
+    expect(config.bindings.single.name, isEmpty);
+  });
+
   testWidgets(
     'Home hold exposes recent apps and preserves protected short press',
     (tester) async {
@@ -590,6 +625,7 @@ void main() {
       binding.defaultBinaryMessenger.setMockMethodCallHandler(files, (
         call,
       ) async {
+        if (call.method == 'filePickerAvailable') return true;
         if (call.method == 'pickWebhookDocument') return selected;
         return null;
       });
@@ -605,6 +641,11 @@ void main() {
       Future<void> import() async {
         await tester.runAsync(() async {
           await tester.tap(find.text('Импортировать URL из файла'));
+          await Future<void>.delayed(const Duration(milliseconds: 100));
+        });
+        await tester.pumpAndSettle();
+        await tester.runAsync(() async {
+          await tester.tap(find.text('Системный проводник'));
           await Future<void>.delayed(const Duration(milliseconds: 100));
         });
         await tester.pumpAndSettle();

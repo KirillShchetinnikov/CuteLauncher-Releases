@@ -2,14 +2,16 @@
   "versions": {
     "org.conscrypt:conscrypt-android": "2.5.3",
     "com.github.MuntashirAkon.spake2-java:spake2-android": "2.2.1",
-    "androidx.datastore:datastore-core-android": "1.1.7",
-    "sqlite3": "3.7.0"
+    "androidx.datastore:datastore-core-android": "1.2.1",
+    "sqlite3": "3.8.0",
+    "jni": "1.1.1"
   },
   "libraries": {
     "libapp.so": ["project"],
     "libflutter.so": ["flutter"],
     "libdatastore_shared_counter.so": ["androidx-support"],
     "libsqlite3.so": ["sqlite3-dart", "sqlite-amalgamation"],
+    "libdartjni.so": ["dart-jni"],
     "libconscrypt_jni.so": ["conscrypt", "boringssl"],
     "libspake2.so": ["spake2", "spake2-c"]
   },
@@ -46,27 +48,35 @@
     },
     {
       "name": "androidx-support",
-      "url": "https://android.googlesource.com/platform/frameworks/support/+archive/420da5f291449f11801e378c6789a328a06ec6cb.tar.gz",
-      "revision": "420da5f291449f11801e378c6789a328a06ec6cb",
-      "sha256": "ea13da1c79045c4fe3a8a4afc7c5872b6799286215e2c6edcc69234525873357",
-      "provenance": "Full tree at the DataStore 1.1.7 release revision, including buildSrc, settings, Gradle wrapper and native shared counter",
+      "url": "https://android.googlesource.com/platform/frameworks/support/+archive/03aea68c431abd3fa436e9f8fa9b9cda12f18334.tar.gz",
+      "revision": "03aea68c431abd3fa436e9f8fa9b9cda12f18334",
+      "sha256": "689e742b2956374fc04c41a95a48ecd412d69abde98e00cc0e69c96b2cb035e3",
+      "provenance": "Full tree at the DataStore 1.2.1 release revision linked by AndroidX release notes, including buildSrc, settings, Gradle wrapper and native shared counter",
       "requires": "androidx.datastore:datastore-core-android"
     },
     {
       "name": "sqlite3-dart",
-      "url": "https://codeload.github.com/simolus3/sqlite3.dart/tar.gz/e65e894651e794b65c3fc1076fe230bfb4e80760",
-      "revision": "e65e894651e794b65c3fc1076fe230bfb4e80760",
-      "sha256": "d3a758aa7551fa33b7bad3a9bc141d54427e3d5d2d2afd0215c66867c828ca0a",
-      "provenance": "sqlite3-3.7.0 tag; native compile workflow and tool/download_sqlite.dart",
+      "url": "https://codeload.github.com/simolus3/sqlite3.dart/tar.gz/cfdbb00c1a26858474cc5a94423b966a02246aef",
+      "revision": "cfdbb00c1a26858474cc5a94423b966a02246aef",
+      "sha256": "e0da94a84cd80d847ac0692b8c65176ba54e29e767eab1c7481e67b76fc41351",
+      "provenance": "sqlite3-3.8.0 tag; native compile workflow and tool/download_sqlite.dart",
       "requires": "sqlite3"
     },
     {
       "name": "sqlite-amalgamation",
-      "url": "https://sqlite.org/2026/sqlite-amalgamation-3530400.zip",
-      "version": "3.53.4",
-      "sha256": "1e71ddf93849c6a6ecf58b827c0692073d2dd7ee40196158068f7b29f422e87d",
-      "provenance": "Exact amalgamation selected by sqlite3-3.7.0 tool/download_sqlite.dart and confirmed by release sqlite_version()",
+      "url": "https://sqlite.org/2026/sqlite-amalgamation-3540100.zip",
+      "version": "3.54.1",
+      "sha256": "0a9c8e34352dad46006aa82836d5383bff9dc6bc9ce5a60553c05aa30e6ad1f9",
+      "provenance": "Exact amalgamation selected by sqlite3-3.8.0 tool/download_sqlite.dart and confirmed by release sqlite_version()",
       "requires": "sqlite3"
+    },
+    {
+      "name": "dart-jni",
+      "url": "https://pub.dev/api/archives/jni-1.1.1.tar.gz",
+      "version": "1.1.1",
+      "sha256": "d8df6dab6847855512fe44dd9032b0bbe34dda7bf7597e41d30750879779813f",
+      "provenance": "Exact pubspec.lock archive, including src/dartjni.c, JNI headers and Android/CMake build files",
+      "requires": "jni"
     }
   ]
 }

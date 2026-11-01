@@ -5,12 +5,57 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences_platform_interface/shared_preferences_platform_interface.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/slideshow_service.dart';
 import 'package:flauncher/settings_import.dart';
 
+class _RejectingSlideshowStore extends InMemorySharedPreferencesStore {
+  _RejectingSlideshowStore() : super.empty();
+  @override
+  Future<bool> setValue(String valueType, String key, Object value) async => false;
+  @override
+  Future<bool> remove(String key) async => false;
+}
+
 void main() {
+  for (final operation in ['folder', 'configure', 'reset']) {
+    testWidgets('failed $operation saving preserves slideshow selection and grant', (tester) async {
+      SharedPreferences.setMockInitialValues({
+        'slideshow_folder': 'content://old/tree/root',
+        'slideshow_recursive': true, 'slideshow_interval': 300,
+      });
+      final prefs = await SharedPreferences.getInstance();
+      final settings = SettingsService(prefs);
+      final service = SlideshowService(prefs, settings);
+      final image = MemoryImage(kTransparentImage);
+      service.image = image;
+      var releases = 0;
+      const channel = MethodChannel('me.efesser.flauncher/method');
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, (_) async {
+        releases++;
+        return null;
+      });
+      SharedPreferencesStorePlatform.instance = _RejectingSlideshowStore();
+      try {
+        final task = switch (operation) {
+          'folder' => service.setFolder('content://new/tree/root'),
+          'configure' => service.configure(recursive: false, interval: 30),
+          _ => service.reset(),
+        };
+        await expectLater(task, throwsStateError);
+        expect(service.folder, 'content://old/tree/root');
+        expect(service.recursive, isTrue);
+        expect(service.interval, 300);
+        expect(service.image, same(image));
+        expect(releases, 0);
+      } finally {
+        service.dispose(); settings.dispose();
+        tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, null);
+      }
+    });
+  }
   test('unrelated settings preserve slideshow deadline', () async {
     SharedPreferences.setMockInitialValues({
       'background_source': 'slideshow',

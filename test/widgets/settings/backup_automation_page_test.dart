@@ -1,6 +1,7 @@
 import 'package:flauncher/backup_schedule.dart';
 import 'package:flauncher/backup_sync_groups.dart';
 import 'package:flauncher/widgets/settings/backup_sync_groups_page.dart';
+import 'package:flauncher/widgets/settings/backup_management_block.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/providers/automatic_backup_service.dart';
 import 'package:flauncher/providers/backup_automation_service.dart';
@@ -77,6 +78,7 @@ class _Automation extends ChangeNotifier implements BackupAutomationService {
   @override
   String? get localFolder => null;
   int imports = 0, deletes = 0, creates = 0;
+  bool listFails = false;
   @override
   Future<void> deleteCopy(RemoteBackupFile copy) async {
     deletes++;
@@ -104,12 +106,15 @@ class _Automation extends ChangeNotifier implements BackupAutomationService {
   }
 
   @override
-  Future<List<RemoteBackupFile>> availableCopies() async => [
-    RemoteBackupFile(
-      'cute-backup-shared-${'a' * 32}-100-${'b' * 16}.json',
-      'test',
-    ),
-  ];
+  Future<List<RemoteBackupFile>> availableCopies() async {
+    if (listFails) throw StateError('offline');
+    return [
+      RemoteBackupFile(
+        'cute-backup-shared-${'a' * 32}-100-${'b' * 16}.json',
+        'test',
+      ),
+    ];
+  }
 
   @override
   Future<bool> run({bool manual = false, bool exportOnly = false}) async =>
@@ -119,6 +124,34 @@ class _Automation extends ChangeNotifier implements BackupAutomationService {
 }
 
 void main() {
+  testWidgets('failed copy list stays an error and retry recovers', (
+    tester,
+  ) async {
+    final service = _Automation()..listFails = true;
+    await tester.pumpWidget(
+      ChangeNotifierProvider<BackupAutomationService>.value(
+        value: service,
+        child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const Scaffold(body: BackupManagementPage()),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    final l = AppLocalizations.of(
+      tester.element(find.byType(BackupManagementPage)),
+    )!;
+    expect(find.text(l.noRestorePoints), findsNothing);
+    expect(find.text(l.backupListFailed), findsWidgets);
+    service.listFails = false;
+    await tester.tap(find.text(l.backupRefreshCopyList));
+    await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 10));
+    await tester.pumpAndSettle();
+    expect(find.text(l.backupListFailed), findsNothing);
+    expect(find.text(l.noRestorePoints), findsNothing);
+  });
   for (final language in ['ru', 'en']) {
     testWidgets(
       'automatic backups choose storage, schedule and sync mode; import requires confirmation $language',
@@ -192,7 +225,7 @@ void main() {
         }
 
         expect(find.text(l.backupNever), findsOneWidget);
-        expect(find.text(l.backupLastCreated), findsOneWidget);
+        expect(find.text(l.backupLastSuccess), findsOneWidget);
         expect(find.byType(RoundedSwitchListTile), findsNothing);
         await activate(l.backupOptions);
         expect(find.text(l.automaticBackupsKeep), findsOneWidget);

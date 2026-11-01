@@ -27,7 +27,7 @@ void main() {
           name: 'Телеканалы $key', systemKey: Value(key), order: ids.length,
           visible: const Value(false), columnsCount: const Value(8)));
       }
-      final customId = await db.insertCategory(CategoriesCompanion.insert(name: 'Телеканалы', order: 4));
+      final customId = await db.insertCategory(CategoriesCompanion.insert(name: 'Телеканалы', order: Category.systemKeys.length));
       await db.insertAppsCategories([AppsCategoriesCompanion.insert(
         categoryId: ids['favorites']!, appPackageName: 'sample', order: 7)]);
       await db.close();
@@ -74,12 +74,12 @@ void main() {
       await db.close();
       db = open();
       expect((await db.getCategories()).map((c) => c.name),
-          ['All Apps', 'Favorites', 'Custom', 'TV Apps', 'Non-TV Apps']);
-      expect((await db.getCategories()).map((c) => c.order), [0, 1, 3, 4, 5]);
+          ['All Apps', 'Favorites', 'Custom', 'TV Apps', 'Non-TV Apps', 'App Feeds']);
+      expect((await db.getCategories()).map((c) => c.order), [0, 1, 3, 4, 5, 6]);
       expect((await db.getLauncherSpacers()).single.order, 2);
       expect((await db.getAppsCategories()).single.categoryId, id);
       await db.ensureAllAppsCategory();
-      expect((await db.getCategories()).length, 5);
+      expect((await db.getCategories()).length, 6);
     } finally {
       await db.close();
       await dir.delete(recursive: true);

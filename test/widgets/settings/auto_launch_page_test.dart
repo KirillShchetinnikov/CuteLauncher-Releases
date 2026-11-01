@@ -276,7 +276,7 @@ void main() {
         await tester.pumpAndSettle();
         final target = find.text(
           language == 'ru' ? 'Цель запуска' : 'Launch target',
-        );
+        ).first;
         await tester.scrollUntilVisible(target, 200);
         await tester.tap(target);
         await tester.pumpAndSettle();
@@ -359,7 +359,7 @@ void main() {
       final hint = find.text(AppLocalizations.of(context)!.autoLaunchHint);
       expect(hint, findsNothing);
       expect(
-        tester.getTopLeft(find.text(AppLocalizations.of(context)!.settingsHelp)).dy,
+        tester.getTopLeft(find.text(AppLocalizations.of(context)!.autoLaunchTarget).last).dy,
         greaterThan(tester.getBottomLeft(find.text('Выключен')).dy),
       );
       // Activate the target picker with remote Enter.

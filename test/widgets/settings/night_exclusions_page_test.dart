@@ -7,7 +7,6 @@ import 'package:flauncher/widgets/settings/night_mode_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import '../../support/settings_help.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -69,13 +68,11 @@ void main() {
       final outer = tester.state<ScrollableState>(find.byType(Scrollable).first).position;
       outer.jumpTo(outer.minScrollExtent);
       await tester.pumpAndSettle();
-      await toggleSettingsHelp(tester, 'Текущий режим изображения недоступен');
       expect(
         find.textContaining('Текущий режим изображения недоступен'),
         findsOneWidget,
       );
       expect(service.configuration.ignoredPictureModes, [19]);
-      await toggleSettingsHelp(tester, 'Текущий режим изображения недоступен');
       await tester.scrollUntilVisible(movie.hitTestable(), 180);
       await tester.tap(movie);
       await tester.pumpAndSettle();

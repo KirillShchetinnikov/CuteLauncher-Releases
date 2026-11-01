@@ -10,7 +10,6 @@ import '../../l10n/app_localizations.dart';
 import '../../providers/network_service.dart';
 import '../../providers/notifications_service.dart';
 import '../../providers/tv_inputs_service.dart';
-import '../../providers/weather_service.dart';
 import 'settings_page_layout.dart';
 import 'focusable_settings_tile.dart';
 import 'settings_route.dart';
@@ -62,7 +61,7 @@ class RemotePanelPage extends StatelessWidget {
               ),
             ),
           ),
-          SettingsHelp(text: l.remotePanelDescription),
+          SettingsHelp(title: l.remotePanel, text: l.remotePanelDescription),
           FocusableSettingsTile(
             title: Text(l.remoteButtonsTitle),
             leading: const Icon(Icons.settings_remote_outlined),
@@ -86,12 +85,10 @@ class RemotePanelObjectsPage extends StatelessWidget {
     final network = context.watch<NetworkService>();
     final notifications = context.watch<NotificationsService>();
     final inputs = context.watch<TvInputsService>();
-    final weather = context.watch<WeatherService>();
     bool available(String id) => switch (id) {
       'traffic' => network.hasUsageStatsPermission,
       'notifications' => notifications.hasPermission,
       'inputs' => inputs.hasInputs,
-      'weather' => weather.hasWeather,
       _ => true,
     };
     final labels = {
@@ -102,8 +99,11 @@ class RemotePanelObjectsPage extends StatelessWidget {
       'sleepTimer': l.sleepTimer,
       'nightMode': l.nightModeTitle,
       'network': l.showNetwork,
+      'vpn': l.vpnTitle,
       'traffic': l.showTraffic,
       'weather': l.weather,
+      'system': l.system,
+      'audio': l.showVolume,
       'date': l.showDate,
       'time': l.showTime,
     };
@@ -111,7 +111,7 @@ class RemotePanelObjectsPage extends StatelessWidget {
       title: Text(l.topPanelObjects),
       child: ListView(
         children: [
-          for (final id in panel.order)
+          for (final id in panel.order.where((id) => !const ['network', 'vpn', 'traffic'].contains(id)))
             RoundedSwitchListTile(
               key: ValueKey(id),
               title: Text(labels[id]!),
@@ -119,6 +119,12 @@ class RemotePanelObjectsPage extends StatelessWidget {
               value: available(id) && panel.visible(id),
               onChanged: (value) => panel.show(id, value),
             ),
+          Padding(padding: const EdgeInsets.all(12), child: Text(l.networkAndTrafficGroup,
+            style: Theme.of(context).textTheme.titleSmall)),
+          for (final id in const ['network', 'vpn', 'traffic'])
+            RoundedSwitchListTile(key: ValueKey(id), title: Text(labels[id]!),
+              enabled: available(id), value: available(id) && panel.visible(id),
+              onChanged: (value) => panel.show(id, value)),
         ],
       ),
     );

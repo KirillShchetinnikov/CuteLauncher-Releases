@@ -1,4 +1,5 @@
 import 'settings_help.dart';
+
 import 'package:flauncher/widgets/launcher_dialog.dart';
 
 import 'settings_page_layout.dart';
@@ -183,7 +184,11 @@ class _LauncherSectionsPanelPageState extends State<LauncherSectionsPanelPage> {
                       ? null
                       : () => _resetSections(settingsService),
                 ),
-                SettingsHelp(text: '${localizations.reorderSectionsHint}\n\n${localizations.sectionRulesHelp}'),
+                SettingsHelp(
+                  title: localizations.sectionsAndOrder,
+                  text:
+                      '${localizations.reorderSectionsHint}\n\n${localizations.sectionRulesHelp}',
+                ),
               ],
             ),
           );
@@ -224,11 +229,17 @@ class _LauncherSectionsPanelPageState extends State<LauncherSectionsPanelPage> {
       leading: Icon(isMoving ? Icons.drag_indicator : Icons.drag_handle),
       title: Text(title),
       trailing: isMoving
-          ? const Row(
+          ? Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.keyboard_arrow_up),
-                Icon(Icons.keyboard_arrow_down),
+                Text(localizations.reorder),
+                const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.keyboard_arrow_up),
+                    Icon(Icons.keyboard_arrow_down),
+                  ],
+                ),
               ],
             )
           : null,
@@ -249,7 +260,14 @@ class _LauncherSectionsPanelPageState extends State<LauncherSectionsPanelPage> {
         }
       },
       onKeyEvent: (node, event) {
-        if (event is! KeyDownEvent) return KeyEventResult.ignored;
+        if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
+          return KeyEventResult.ignored;
+        }
+        if (event is KeyRepeatEvent &&
+            event.logicalKey != LogicalKeyboardKey.arrowUp &&
+            event.logicalKey != LogicalKeyboardKey.arrowDown) {
+          return KeyEventResult.handled;
+        }
 
         if (isMoving) {
           if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
@@ -400,7 +418,46 @@ class _LauncherSectionsPanelPageState extends State<LauncherSectionsPanelPage> {
             if (isVisible) await settingsService?.setContinueWatchingOrder(0);
             await settingsService?.setShowContinueWatching(!isVisible);
           } else if (movingSection is Category) {
-            await _appsService.setCategoryVisible(movingSection.id, !isVisible);
+            final destination = isVisible
+                ? _hiddenSections(settingsService)
+                : _getDisplaySections(
+                    _appsService.launcherSections,
+                    settingsService,
+                  );
+            final targets = destination.where(
+              (s) => s is! ContinueWatchingSection,
+            );
+            final target = isVisible ? targets.firstOrNull : targets.lastOrNull;
+            final hiddenWatchingIndex = _hiddenSections(settingsService)
+                .indexWhere((s) => s is ContinueWatchingSection);
+            final changed = await _appsService.setCategoryVisible(
+              movingSection.id,
+              !isVisible,
+            );
+            if (changed) {
+              if (target != null) {
+                final sections = _appsService.launcherSections;
+                int indexOf(LauncherSection section) => sections.indexWhere(
+                  (s) =>
+                      s.runtimeType == section.runtimeType &&
+                      s.id == section.id,
+                );
+                final from = indexOf(movingSection);
+                final anchor = indexOf(target);
+                // Insert at the shared boundary, preserving both lists' order.
+                final to = isVisible
+                    ? anchor - (from < anchor ? 1 : 0)
+                    : anchor + (from > anchor ? 1 : 0);
+                _appsService.moveSectionInMemory(from, to);
+              }
+              if (hiddenWatchingIndex >= 0) {
+                await settingsService?.setContinueWatchingOrder(
+                  isVisible
+                      ? hiddenWatchingIndex + 1
+                      : (hiddenWatchingIndex - 1).clamp(0, hiddenWatchingIndex),
+                );
+              }
+            }
           }
           if (mounted) _focusSection(movingSection);
         } finally {

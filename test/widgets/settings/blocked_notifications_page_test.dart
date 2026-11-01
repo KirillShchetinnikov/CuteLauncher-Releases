@@ -15,7 +15,39 @@ import '../../mocks.dart';
 import '../../mocks.mocks.dart';
 
 void main() {
-  testWidgets('blocked rows have compact unblock actions and no redundant status', (tester) async {
+  testWidgets('large catalog is lazy and live notifications do not rebuild it', (tester) async {
+    final notifications = _LiveNotifications();
+    final apps = MockAppsService();
+    when(notifications.blockedPackages).thenReturn({});
+    when(apps.applications).thenReturn(List.generate(2000,
+      (i) => fakeApp(packageName: 'app.$i', name: 'App $i')));
+    var iconRequests = 0;
+    when(apps.getAppIcon(any)).thenAnswer((_) async {
+      iconRequests++;
+      return Uint8List(0);
+    });
+    await tester.pumpWidget(MultiProvider(
+      providers: [
+        ChangeNotifierProvider<NotificationsService>.value(value: notifications),
+        ChangeNotifierProvider<AppsService>.value(value: apps),
+      ],
+      child: MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: const Scaffold(body: BlockedNotificationsPage()),
+      ),
+    ));
+    await tester.pumpAndSettle();
+    expect(tester.widget<ListView>(find.byType(ListView)).childrenDelegate,
+      isA<SliverChildBuilderDelegate>());
+    expect(iconRequests, inExclusiveRange(0, 40));
+    clearInteractions(apps);
+    notifications.notifyListeners();
+    await tester.pumpAndSettle();
+    verifyNever(apps.applications);
+    expect(tester.takeException(), isNull);
+  });
+  testWidgets('blocked apps appear once and enabled switches unblock them', (tester) async {
     final notifications = MockNotificationsService();
     final apps = MockAppsService();
     when(notifications.blockedPackages).thenReturn({'app.one', 'unknown.app'});
@@ -35,10 +67,11 @@ void main() {
         child: SizedBox(width: 380, child: BlockedNotificationsPage()))))));
     await tester.pumpAndSettle();
     expect(find.text('Блокировка уведомлений от приложений'), findsOneWidget);
-    expect(find.text('Заблокированные приложения (2)'), findsOneWidget);
+    expect(find.text('Заблокированные приложения: 2'), findsOneWidget);
     expect(find.text('Уведомления заблокированы'), findsNothing);
-    expect(find.text('Разблокировать'), findsNWidgets(2));
-    await tester.tap(find.text('Разблокировать').first);
+    expect(find.byType(RoundedSwitchListTile), findsNWidgets(2));
+    expect(tester.widget<RoundedSwitchListTile>(find.byType(RoundedSwitchListTile).first).value, isTrue);
+    await tester.tap(find.byType(RoundedSwitchListTile).first);
     verify(notifications.unblockPackage('app.one')).called(1);
     expect(tester.takeException(), isNull);
   });
@@ -79,4 +112,16 @@ void main() {
     expect(position.pixels, greaterThan(0));
     expect(tester.takeException(), isNull);
   });
+}
+
+class _LiveNotifications extends MockNotificationsService {
+  final _notifier = ChangeNotifier();
+  @override
+  void addListener(VoidCallback? listener) => _notifier.addListener(listener!);
+  @override
+  void removeListener(VoidCallback? listener) => _notifier.removeListener(listener!);
+  @override
+  void notifyListeners() => _notifier.notifyListeners();
+  @override
+  void dispose() => _notifier.dispose();
 }

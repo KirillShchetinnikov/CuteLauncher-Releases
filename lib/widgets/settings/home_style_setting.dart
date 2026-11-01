@@ -9,9 +9,8 @@ import '../../providers/appearance_service.dart';
 import '../../providers/apps_service.dart';
 import '../../providers/settings_service.dart';
 import 'inherited_setting.dart';
-import 'settings_help.dart';
 
-/// Keeps inactive values and their reset actions, explaining why editing is off.
+/// Checks mode dependencies without locking common fields for local overrides.
 class HomeStyleSetting extends StatelessWidget {
   final int? categoryId;
   final String field;
@@ -48,11 +47,6 @@ class HomeStyleSetting extends StatelessWidget {
       final layout = id == null
           ? const CategoryAppearance()
           : service.category(id);
-      if (categoryId == null &&
-          id != null &&
-          ownsHomeStyleField(layout, field)) {
-        return HomeStyleBlock.inherited;
-      }
       return homeStyleBlock(
         field,
         id == null ? service.appearance : service.tilesFor(id),
@@ -76,8 +70,11 @@ class HomeStyleSetting extends StatelessWidget {
     final enabled = results.contains(null);
     final l = AppLocalizations.of(context)!;
     final reasons = results.whereType<HomeStyleBlock>().toSet();
+    final hasOverrides = categoryId == null && targets.any(
+      (c) => ownsHomeStyleField(service.category(c.id), field),
+    );
     final hint = enabled
-        ? reasons.isEmpty
+        ? reasons.isEmpty && !hasOverrides
               ? null
               : field == 'size'
               ? l.homeStyleAutoOnly
@@ -97,7 +94,6 @@ class HomeStyleSetting extends StatelessWidget {
             HomeStyleBlock.opaque => l.homeStyleOpaque,
             HomeStyleBlock.transparent => l.homeStyleTransparent,
             HomeStyleBlock.singleColumn => l.homeStyleSingleColumn,
-            HomeStyleBlock.inherited => l.homeStyleOverridden,
           };
     return InheritedSetting(
       categoryId: categoryId,
@@ -106,11 +102,11 @@ class HomeStyleSetting extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           builder(enabled),
-          if (hint != null || field == 'blurTiles')
-            SettingsHelp(text: [
-              ?hint,
-              if (field == 'blurTiles') l.blurPerformanceHint,
-            ].join('\n\n')),
+          if (!enabled && hint != null)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              child: Text(hint),
+            ),
         ],
       ),
     );

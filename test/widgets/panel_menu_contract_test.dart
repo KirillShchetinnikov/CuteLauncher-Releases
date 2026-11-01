@@ -1,9 +1,16 @@
+import 'package:flauncher/providers/system_status_service.dart';
+import 'package:flauncher/widgets/system_status_menu.dart';
 import 'package:flauncher/widgets/traffic_usage_menu.dart';
+import 'package:flauncher/widgets/weather_forecast_menu.dart';
+import 'package:flauncher/providers/weather_service.dart';
+import 'package:flauncher/weather_sources.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/providers/appearance_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/network_service.dart';
+import 'package:flauncher/providers/vpn_service.dart';
+import 'package:flauncher/widgets/vpn_menu.dart';
 import 'package:flauncher/providers/tv_inputs_service.dart';
 import 'package:flauncher/providers/notifications_service.dart';
 import 'package:flauncher/providers/night_mode_service.dart';
@@ -33,9 +40,13 @@ void main() {
     'sleep',
     'calendar',
     'network',
+    'vpn',
     'traffic',
+    'system',
     'inputs',
     'notifications',
+    'weather',
+    'information',
   ]) {
     testWidgets(
       '$name shares menu geometry, style, dismissal and restored focus',
@@ -70,10 +81,33 @@ void main() {
         }
         final night = NightModeService(prefs);
         final sleep = SleepTimerService();
+        const systemChannel = MethodChannel('cutelauncher/system_status');
+        tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(systemChannel, (call) async =>
+          call.method == 'snapshot' ? {'cpuPercent': 25, 'ramTotalBytes': 1000, 'ramAvailableBytes': 500} : null);
+        final system = SystemStatusService();
         final network = MockNetworkService();
+        VpnService? vpn;
+        if (name == 'vpn') {
+          const channel = MethodChannel('cutelauncher/vpn');
+          tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, (_) async => {
+            'active': true, 'owner': 'org.amnezia.awg', 'target': 'org.amnezia.awg',
+            'profile': 'home', 'canControl': true,
+            'clients': [{'app': 'org.amnezia.awg', 'name': 'AmneziaWG', 'supported': true, 'permission': true}],
+          });
+          addTearDown(() => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, null));
+          vpn = VpnService(network);
+          await vpn.initialLoad;
+        }
         final inputs = MockTvInputsService();
         final notifications = MockNotificationsService();
         final apps = MockAppsService();
+        final weather = MockWeatherService();
+        when(weather.configuration).thenReturn(const WeatherConfiguration());
+        when(weather.loading).thenReturn(false);
+        when(weather.stale).thenReturn(false);
+        when(weather.weatherData).thenReturn(null);
+        when(weather.updatedAt).thenReturn(null);
+        when(weather.failure).thenReturn(null);
         when(network.getSummary()).thenAnswer(
           (_) async => {
             'networkType': 1,
@@ -100,8 +134,11 @@ void main() {
                   providers: [
                     ChangeNotifierProvider.value(value: appearance),
                     ChangeNotifierProvider.value(value: settings),
+                    ChangeNotifierProvider<WeatherService>.value(value: weather),
                     ChangeNotifierProvider.value(value: night),
                     ChangeNotifierProvider.value(value: sleep),
+                    ChangeNotifierProvider.value(value: system),
+                    if (vpn != null) ChangeNotifierProvider<VpnService>.value(value: vpn),
                     ChangeNotifierProvider<NetworkService>.value(
                       value: network,
                     ),
@@ -148,6 +185,8 @@ void main() {
                                 useSafeArea: false,
                                 barrierColor: Colors.transparent,
                                 builder: (_) => switch (name) {
+                                  'weather' => WeatherForecastMenu(anchor: anchor),
+                                  'information' => WeatherForecastMenu(anchor: anchor, showCalendar: true),
                                   'night' => NightModeMenu(anchor: anchor),
                                   'sleep' => SleepTimerMenu(anchor: anchor),
                                   'calendar' => PanelCalendarDialog(
@@ -158,6 +197,8 @@ void main() {
                                     anchor: anchor,
                                   ),
                                   'traffic' => TrafficUsageMenu(anchor: anchor),
+                                  'system' => SystemStatusMenu(anchor: anchor),
+                                  'vpn' => VpnMenu(anchor: anchor),
                                   'inputs' => InputsPanel(anchor: anchor),
                                   _ => NotificationsPanel(anchor: anchor),
                                 },
@@ -257,6 +298,9 @@ void main() {
         opener.dispose();
         night.dispose();
         sleep.dispose();
+        system.dispose();
+        tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(systemChannel, null);
+        vpn?.dispose();
         appearance.dispose();
         settings.dispose();
       },

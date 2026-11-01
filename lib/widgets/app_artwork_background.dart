@@ -3,8 +3,10 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../app_artwork.dart';
+import '../providers/memory_resources.dart';
 import 'wallpaper_background.dart';
 
 /// One current texture, one decode at a time, and only the latest focus request.
@@ -158,6 +160,8 @@ class _AppArtworkBackgroundState extends State<AppArtworkBackground> with Widget
   Widget build(BuildContext context) => WallpaperBackground(
     image: null, gradient: widget.gradient,
     artwork: _image == null ? null : RawImage(image: _image, fit: BoxFit.cover, filterQuality: FilterQuality.medium),
+    cacheArtwork: true,
+    memorySaver: context.select<MemoryResources?, bool>((resources) => resources?.economyEnabled ?? false),
     brightness: widget.brightness, saturation: widget.saturation, dimming: widget.dimming,
   );
 }

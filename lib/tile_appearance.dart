@@ -82,14 +82,28 @@ class TileAppearance {
   bool get blurTiles => values['blurTiles'] == true;
   bool get blurPanel => values['blurPanel'] == true;
   bool get dateCalendar => values['panelDateCalendar'] == true;
+  String get informationAction => values['panelInformationAction'] as String? ??
+      (values.containsKey('panelDateCalendar') ? (dateCalendar ? 'calendar' : 'none') : 'both');
+  int get forecastDays => (number('panelForecastDays') ?? 5).toInt();
+  bool get detailedForecast => values['panelForecastView'] == 'list';
   bool get panelWrapNavigation => values['panelWrapNavigation'] == true;
   bool get combinedInformation => values['panelCombinedInformation'] == true;
+  bool get informationOnBackground => values['panelInformationPlacement'] == 'background';
+  String informationPlacement(String id, {required bool visible}) {
+    final placements = values['panelInformationPlacements'];
+    if (placements is Map && placements[id] is String) return placements[id] as String;
+    return !visible ? 'hidden' : informationOnBackground ? 'background' : 'panel';
+  }
+  PanelClockStyle get backgroundInformationStyle => PanelClockStyle(
+    PanelClockStyle.validValues(values['panelBackgroundInformationStyle'] ?? values['panelInformationStyle'], combined: true));
+  double get backgroundInformationSize => number('panelBackgroundInformationSize') ?? 96;
+  String get backgroundInformationAlignment => values['panelBackgroundInformationAlignment'] as String? ?? 'center';
   String get interfaceStyle => values['settingsInterfaceStyle'] as String? ?? 'standard';
   String get interfaceFont => values['settingsInterfaceFont'] as String? ??
       (interfaceStyle == 'standard' ? 'system' : 'outfit');
   PanelClockStyle get clockStyle => PanelClockStyle(PanelClockStyle.validValues(values['panelClockStyle']));
   PanelClockStyle get informationStyle => PanelClockStyle(
-    PanelClockStyle.validValues(values['panelInformationStyle'], combined: true));
+    PanelClockStyle.validValues(values['panelInformationStyle'] ?? values['panelClockStyle'], combined: true));
   double get panelTextSize => number('panelTextSize') ?? 18;
   String get panelFont => values['panelFont'] as String? ?? 'sans-serif';
   Color get panelTextColor => color('panelTextColor') ?? Colors.white;
@@ -150,8 +164,13 @@ class TileAppearance {
       'panelOpacity': (0, 1),
       'panelTextBackgroundOpacity': (0, 1),
       'panelTextSize': (10, 24),
+      'panelBackgroundInformationSize': (48, 144),
     };
     const choices = {
+      'panelInformationPlacement': ['panel', 'background'],
+      'panelBackgroundInformationAlignment': ['left', 'center', 'right'],
+      'panelInformationAction': ['weather', 'calendar', 'both', 'none'],
+      'panelForecastView': ['cards', 'list'],
       'noticeCorner': ['bottomRight', 'bottomLeft', 'topRight', 'topLeft'],
       'labelPosition': ['below', 'inside'],
       'labels': ['none', 'selected', 'all'], 'sectionScroll': ['free', 'anchored'],
@@ -166,8 +185,19 @@ class TileAppearance {
       final key = entry.key;
       final value = entry.value;
       if (key is! String) continue;
-      if (['panelClockStyle', 'panelInformationStyle'].contains(key) && value is Map) {
-        result[key] = PanelClockStyle.validValues(value, combined: key == 'panelInformationStyle');
+      if (key == 'panelForecastDays' && value is int && [3, 5, 7].contains(value)) {
+        result[key] = value;
+        continue;
+      }
+      if (key == 'panelInformationPlacements' && value is Map) {
+        result[key] = <String, String>{
+          for (final id in ['time', 'date', 'weather'])
+            if (['hidden', 'panel', 'background'].contains(value[id])) id: value[id] as String,
+        };
+        continue;
+      }
+      if (['panelClockStyle', 'panelInformationStyle', 'panelBackgroundInformationStyle'].contains(key) && value is Map) {
+        result[key] = PanelClockStyle.validValues(value, combined: key != 'panelClockStyle');
         continue;
       }
       if (key == 'focusEffect' && value == 'shadow') {

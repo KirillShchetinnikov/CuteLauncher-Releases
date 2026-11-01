@@ -8,8 +8,69 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/settings/flauncher_about_dialog.dart';
+import 'package:flauncher/widgets/launcher_dialog.dart';
 
 void main() {
+  for (final language in ['ru', 'en']) {
+    for (final layout in [
+      (const Size(960, 540), 1.0),
+      (const Size(800, 450), 1.0),
+      (const Size(960, 540), 1.5),
+      (const Size(640, 360), 2.0),
+    ]) {
+      testWidgets('About layout ${layout.$1} at ${layout.$2} in $language', (
+        tester,
+      ) async {
+        await tester.binding.setSurfaceSize(layout.$1);
+        addTearDown(() => tester.binding.setSurfaceSize(null));
+        await tester.pumpWidget(
+          MaterialApp(
+            locale: Locale(language),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            builder: (context, child) => MediaQuery(
+              data: MediaQuery.of(context)
+                  .copyWith(textScaler: TextScaler.linear(layout.$2)),
+              child: child!,
+            ),
+            home: Scaffold(
+              body: LauncherDialogArea(
+                settingsOpen: true,
+                onRight: false,
+                child: CuteLauncherAboutDialog(
+                  packageInfo: PackageInfo(
+                    appName: 'CuteLauncher',
+                    packageName: 'com.leanbitlab.cutelauncher.debug',
+                    version: '1.4.0',
+                    buildNumber: '100',
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        final scroll = tester.state<ScrollableState>(find.byType(Scrollable));
+        final compact = layout.$1.height < 450;
+        expect(scroll.position.maxScrollExtent, compact ? greaterThan(0) : 0);
+        final l = AppLocalizations.of(
+          tester.element(find.byType(CuteLauncherAboutDialog)),
+        )!;
+        for (final text in [
+          if (!compact) l.launcherRepository,
+          if (!compact) l.showRepositoryQrCode,
+          l.close,
+        ]) {
+          final rect = tester.getRect(find.text(text));
+          expect(rect.top, greaterThanOrEqualTo(20));
+          expect(rect.bottom, lessThanOrEqualTo(layout.$1.height - 20));
+        }
+        expect(Focus.of(tester.element(find.text(l.close))).hasFocus, isTrue);
+        expect(tester.takeException(), isNull);
+      });
+    }
+  }
+
   for (final language in ['ru', 'en']) {
     testWidgets('Repository QR opens and closes with remote in $language', (
       tester,
@@ -52,7 +113,7 @@ void main() {
       final l = AppLocalizations.of(
         tester.element(find.byType(CuteLauncherAboutDialog)),
       )!;
-      expect(find.text('${l.updateInstalled}: v1.0.0'), findsOneWidget);
+      expect(find.text('v1.0.0'), findsOneWidget);
       expect(find.textContaining('v1.0.0+1'), findsNothing);
       expect(find.text(l.showRepositoryQrCode), findsOneWidget);
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);

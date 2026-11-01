@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../adaptive_landscape.dart';
+import '../landscape_clouds.dart';
+import '../landscape_cloud_cache.dart';
+import '../providers/memory_resources.dart';
 import '../landscape_meteors.dart';
 import '../providers/launcher_state.dart';
 import '../providers/night_mode_service.dart';
@@ -15,7 +18,21 @@ import 'landscape_horizon.dart';
 
 /// Bounded procedural scene and one decoded photo. Hidden Home does no work.
 class AdaptiveLandscapeBackground extends StatefulWidget {
-  const AdaptiveLandscapeBackground({super.key});
+  final Widget Function(Widget)? staticLayerBuilder;
+  final Widget Function(Widget)? effectsLayerBuilder;
+  final LandscapeEffectsColors? effectsColors;
+
+  /// Decorative content above terrain and below weather, outside color filters.
+  final Widget? informationLayer;
+  final Duration? effectsFrameInterval;
+  const AdaptiveLandscapeBackground({
+    super.key,
+    this.staticLayerBuilder,
+    this.effectsLayerBuilder,
+    this.effectsColors,
+    this.informationLayer,
+    this.effectsFrameInterval,
+  });
   @override
   State<AdaptiveLandscapeBackground> createState() => _LandscapeState();
 }
@@ -23,8 +40,13 @@ class AdaptiveLandscapeBackground extends StatefulWidget {
 class _LandscapeState extends State<AdaptiveLandscapeBackground>
     with WidgetsBindingObserver {
   Timer? _clock, _motion, _meteorWake;
+  Duration _motionInterval = const Duration(milliseconds: 100);
   final _animationClock = Stopwatch();
   final _frame = ValueNotifier<double>(0);
+  final _cloudsMoveLeft = math.Random().nextBool();
+  final _cloudCache = LandscapeCloudCache();
+  MemoryResources? _cloudResources;
+  bool _cloudCachePressure = false;
   DateTime _now = DateTime.now();
   bool _foreground = true;
 
@@ -40,7 +62,24 @@ class _LandscapeState extends State<AdaptiveLandscapeBackground>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    final resources = context.read<MemoryResources?>();
+    if (!identical(resources, _cloudResources)) {
+      _cloudResources?.unregister(this);
+      _cloudResources = resources;
+      resources?.register(
+        this,
+        clear: _cloudCache.clear,
+        stats: () => const MemoryCacheStats(0, 0),
+        activity: () => {'landscape_cloud_bytes': _cloudCache.bytes},
+      );
+    }
     _configure();
+  }
+
+  @override
+  void didHaveMemoryPressure() {
+    _cloudCache.clear();
+    if (mounted) setState(() => _cloudCachePressure = true);
   }
 
   void _configure() {
@@ -51,6 +90,9 @@ class _LandscapeState extends State<AdaptiveLandscapeBackground>
         _foreground &&
         (visible || demo != null) &&
         TickerMode.valuesOf(context).enabled;
+    if (!active || settings.memorySaverEnabled || !settings.landscape.clouds) {
+      _cloudCache.clear();
+    }
     if (active &&
         (settings.landscape.timeOfDay || settings.landscape.seasons)) {
       _now = DateTime.now();
@@ -61,18 +103,23 @@ class _LandscapeState extends State<AdaptiveLandscapeBackground>
       _clock?.cancel();
       _clock = null;
     }
-    final config = demo == null
+    final config = demo == null && settings.screenshotScene == null
         ? settings.landscape
         : settings.landscape.forDemo();
     final source = context.watch<WeatherService?>();
     final condition =
         demo?.weather ??
+        settings.screenshotScene?.weather ??
         (source?.stale == true
             ? LandscapeWeather.clear
             : landscapeWeather(source?.weatherData));
     final precipitation =
         condition == LandscapeWeather.rain ||
         condition == LandscapeWeather.snow;
+    if (!config.clouds ||
+        (!precipitation && condition != LandscapeWeather.cloudy)) {
+      _cloudCache.clear();
+    }
     final weatherMoving =
         config.motion &&
         (config.precipitation && precipitation ||
@@ -90,7 +137,7 @@ class _LandscapeState extends State<AdaptiveLandscapeBackground>
     final seconds =
         _animationClock.elapsedMicroseconds / Duration.microsecondsPerSecond;
     final lighting = landscapeLight(
-      demo?.now ?? _now,
+      demo?.now ?? settings.screenshotScene?.now ?? _now,
       config,
       solarDays:
           demo?.timeline.solarDays ??
@@ -113,10 +160,20 @@ class _LandscapeState extends State<AdaptiveLandscapeBackground>
       );
     }
     final moving = animated && (weatherMoving || meteorMoving);
-    // Capture can supply scene frames at vsync; moving particles stay at 10 Hz.
+    final interval =
+        widget.effectsFrameInterval ??
+        (widget.effectsColors != null
+            ? const Duration(microseconds: 33333)
+            : const Duration(milliseconds: 100));
+    if (interval != _motionInterval) {
+      _motion?.cancel();
+      _motion = null;
+      _motionInterval = interval;
+    }
+    // Optimized Home updates particles at 30 Hz; demo/fallback keeps 10 Hz.
     if (_motion == null || !moving) _frame.value = seconds;
     if (moving) {
-      _motion ??= Timer.periodic(const Duration(milliseconds: 100), (_) {
+      _motion ??= Timer.periodic(_motionInterval, (_) {
         if (mounted) {
           _frame.value =
               _animationClock.elapsedMicroseconds /
@@ -134,6 +191,7 @@ class _LandscapeState extends State<AdaptiveLandscapeBackground>
     _foreground = state == AppLifecycleState.resumed;
     // Dependency registration belongs to didChangeDependencies/build.
     if (!_foreground) {
+      _cloudCache.clear();
       _clock?.cancel();
       _clock = null;
       _motion?.cancel();
@@ -142,6 +200,7 @@ class _LandscapeState extends State<AdaptiveLandscapeBackground>
       _meteorWake = null;
       _animationClock.stop();
     } else if (mounted) {
+      _cloudCachePressure = false;
       setState(() => _now = DateTime.now());
     }
   }
@@ -154,6 +213,8 @@ class _LandscapeState extends State<AdaptiveLandscapeBackground>
     _meteorWake?.cancel();
     _animationClock.stop();
     _frame.dispose();
+    _cloudResources?.unregister(this);
+    _cloudCache.clear();
     super.dispose();
   }
 
@@ -172,10 +233,10 @@ class _LandscapeState extends State<AdaptiveLandscapeBackground>
     LandscapeDemoFrame? demo,
   ) {
     _configure();
-    final config = demo == null
+    final config = demo == null && settings.screenshotScene == null
         ? settings.landscape
         : settings.landscape.forDemo();
-    final now = demo?.now ?? _now;
+    final now = demo?.now ?? settings.screenshotScene?.now ?? _now;
     final weather = context.watch<WeatherService?>();
     final night = context.watch<NightModeService?>();
     final coordinates = weather?.configuration;
@@ -214,6 +275,7 @@ class _LandscapeState extends State<AdaptiveLandscapeBackground>
         : null;
     final condition =
         demo?.weather ??
+        settings.screenshotScene?.weather ??
         (weather?.stale == true
             ? LandscapeWeather.clear
             : landscapeWeather(weather?.weatherData));
@@ -244,49 +306,77 @@ class _LandscapeState extends State<AdaptiveLandscapeBackground>
         child: Stack(
           fit: StackFit.expand,
           children: [
-            AnimatedSwitcher(
-              // Old normal-mode controllers keep their original 3s duration.
-              // Recreate them at demo boundaries so every season uses 500ms.
-              key: ValueKey(demo != null),
-              duration:
-                  settings.memorySaverEnabled ||
-                      MediaQuery.disableAnimationsOf(context)
-                  ? Duration.zero
-                  : demo != null
-                  ? const Duration(milliseconds: 500)
-                  : const Duration(seconds: 3),
-              child: SizedBox.expand(
-                key: ValueKey('${config.variant}_${season.name}'),
-                child: staticScene,
-              ),
-            ),
-            RepaintBoundary(
-              child: CustomPaint(
-                painter: LandscapeMeteorsPainter(
-                  _frame,
-                  nightOpacity: landscapeNightOpacity(lighting),
-                  season: season,
-                  photographic: config.variant == 'realistic',
-                  demo: demo != null,
-                  enabled:
-                      _foreground &&
-                      (demo != null ||
-                          (context.watch<LauncherState?>()?.launcherVisible ??
-                              true)) &&
-                      TickerMode.valuesOf(context).enabled &&
-                      !settings.memorySaverEnabled &&
-                      !MediaQuery.disableAnimationsOf(context),
+            _staticLayer(
+              AnimatedSwitcher(
+                // Old normal-mode controllers keep their original 3s duration.
+                // Recreate them at demo boundaries so every season uses 500ms.
+                key: ValueKey(demo != null),
+                duration:
+                    settings.memorySaverEnabled ||
+                        MediaQuery.disableAnimationsOf(context)
+                    ? Duration.zero
+                    : demo != null
+                    ? const Duration(milliseconds: 500)
+                    : const Duration(seconds: 3),
+                child: SizedBox.expand(
+                  key: ValueKey('${config.variant}_${season.name}'),
+                  child: staticScene,
                 ),
               ),
             ),
-            RepaintBoundary(
-              child: CustomPaint(
-                painter: LandscapeEffectsPainter(
-                  config,
-                  condition,
-                  phase,
-                  _frame,
-                ),
+            if (widget.informationLayer != null) widget.informationLayer!,
+            _effectsLayer(
+              Stack(
+                fit: StackFit.expand,
+                children: [
+                  RepaintBoundary(
+                    child: CustomPaint(
+                      painter: LandscapeMeteorsPainter(
+                        _frame,
+                        nightOpacity: landscapeNightOpacity(lighting),
+                        season: season,
+                        photographic: config.variant == 'realistic',
+                        demo: demo != null,
+                        colors: widget.effectsColors,
+                        enabled:
+                            _foreground &&
+                            (demo != null ||
+                                (context
+                                        .watch<LauncherState?>()
+                                        ?.launcherVisible ??
+                                    true)) &&
+                            TickerMode.valuesOf(context).enabled &&
+                            !settings.memorySaverEnabled &&
+                            !MediaQuery.disableAnimationsOf(context),
+                      ),
+                    ),
+                  ),
+                  RepaintBoundary(
+                    child: CustomPaint(
+                      painter: LandscapeEffectsPainter(
+                        config,
+                        condition,
+                        phase,
+                        _frame,
+                        colors: widget.effectsColors,
+                        cloudsMoveLeft: _cloudsMoveLeft,
+                        cloudCache:
+                            _foreground &&
+                                !_cloudCachePressure &&
+                                !settings.memorySaverEnabled &&
+                                TickerMode.valuesOf(context).enabled &&
+                                (demo != null ||
+                                    (context
+                                            .watch<LauncherState?>()
+                                            ?.launcherVisible ??
+                                        true))
+                            ? _cloudCache
+                            : null,
+                        pixelRatio: MediaQuery.devicePixelRatioOf(context),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -294,6 +384,11 @@ class _LandscapeState extends State<AdaptiveLandscapeBackground>
       ),
     );
   }
+
+  Widget _staticLayer(Widget child) =>
+      widget.staticLayerBuilder?.call(child) ?? child;
+  Widget _effectsLayer(Widget child) =>
+      widget.effectsLayerBuilder?.call(child) ?? child;
 }
 
 class _PhotoScene extends StatelessWidget {
@@ -971,6 +1066,7 @@ double landscapeNightOpacity(LandscapeLight light) =>
     (light.to == LandscapePhase.night ? 1.0 : 0.0) * light.mix;
 
 class LandscapeMeteorsPainter extends CustomPainter {
+  final LandscapeEffectsColors? colors;
   final ValueNotifier<double> frame;
   final double nightOpacity;
   final LandscapeSeason season;
@@ -982,6 +1078,7 @@ class LandscapeMeteorsPainter extends CustomPainter {
     this.photographic = false,
     this.demo = false,
     this.enabled = true,
+    this.colors,
   }) : super(repaint: frame);
   @override
   void paint(Canvas canvas, Size size) {
@@ -995,6 +1092,10 @@ class LandscapeMeteorsPainter extends CustomPainter {
       final tail =
           head - Offset(meteor.tailX * size.width, meteor.tailY * size.height);
       final opacity = meteor.opacity * nightOpacity;
+      final bounds = Rect.fromPoints(tail, head).inflate(3);
+      final dim = colors != null && colors!.dimming != 0;
+      if (dim) canvas.saveLayer(bounds, Paint());
+      Color tone(Color color) => colors?.tone(color) ?? color;
       canvas.drawLine(
         tail,
         head,
@@ -1004,15 +1105,25 @@ class LandscapeMeteorsPainter extends CustomPainter {
           ..shader = LinearGradient(
             colors: [
               Colors.transparent,
-              const Color(0xFFE0EFFF).withValues(alpha: opacity),
+              tone(const Color(0xFFE0EFFF).withValues(alpha: opacity)),
             ],
           ).createShader(Rect.fromPoints(tail, head)),
       );
       canvas.drawCircle(
         head,
         1.5,
-        Paint()..color = const Color(0xFFF1F6FF).withValues(alpha: opacity),
+        Paint()
+          ..color = tone(const Color(0xFFF1F6FF).withValues(alpha: opacity)),
       );
+      if (dim) {
+        canvas.drawRect(
+          bounds,
+          Paint()
+            ..blendMode = BlendMode.modulate
+            ..shader = colors!.dimmingShader(size),
+        );
+        canvas.restore();
+      }
     }
     canvas.restore();
   }
@@ -1024,6 +1135,7 @@ class LandscapeMeteorsPainter extends CustomPainter {
       old.photographic != photographic ||
       old.demo != demo ||
       old.enabled != enabled ||
+      old.colors != colors ||
       old.frame != frame;
 }
 
@@ -1035,13 +1147,76 @@ Offset landscapeRainPosition(int index, double seconds, Size size) => Offset(
 Offset landscapeRainStreak(Size size) =>
     Offset(-size.height * .0215 * .12, size.height * .0215);
 
+/// Linear wallpaper adjustments baked into particle paints, avoiding a
+/// fullscreen ShaderMask pass for every weather update.
+class LandscapeEffectsColors {
+  final double brightness, saturation, dimming;
+  const LandscapeEffectsColors({
+    required this.brightness,
+    required this.saturation,
+    required this.dimming,
+  });
+  Color tone(Color c) {
+    final gray = c.r * .2126 + c.g * .7152 + c.b * .0722;
+    double channel(double value) =>
+        ((gray * (1 - saturation) + value * saturation) * brightness).clamp(
+          0,
+          1,
+        );
+    return c.withValues(
+      red: channel(c.r),
+      green: channel(c.g),
+      blue: channel(c.b),
+    );
+  }
+
+  Shader dimmingShader(Size size, [Color color = Colors.white]) =>
+      LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [
+          for (final alpha in [.35, .15, .45])
+            color.withValues(
+              red: color.r * (1 - (alpha * dimming).clamp(0, 1)),
+              green: color.g * (1 - (alpha * dimming).clamp(0, 1)),
+              blue: color.b * (1 - (alpha * dimming).clamp(0, 1)),
+            ),
+        ],
+      ).createShader(Offset.zero & size);
+  Paint paint(Color color, Size size) => dimming == 0
+      ? (Paint()..color = tone(color))
+      : (Paint()..shader = dimmingShader(size, tone(color)));
+  @override
+  bool operator ==(Object other) =>
+      other is LandscapeEffectsColors &&
+      other.brightness == brightness &&
+      other.saturation == saturation &&
+      other.dimming == dimming;
+  @override
+  int get hashCode => Object.hash(brightness, saturation, dimming);
+}
+
 class LandscapeEffectsPainter extends CustomPainter {
+  final bool cloudsMoveLeft;
+  final LandscapeCloudCache? cloudCache;
+  final double pixelRatio;
+  Size? _cloudSize;
+  List<Path> _cloudPaths = const [];
+  final LandscapeEffectsColors? colors;
   final LandscapeConfiguration config;
   final LandscapeWeather weather;
   final LandscapePhase phase;
   final ValueNotifier<double> frame;
-  LandscapeEffectsPainter(this.config, this.weather, this.phase, this.frame)
-    : super(repaint: frame);
+  LandscapeEffectsPainter(
+    this.config,
+    this.weather,
+    this.phase,
+    this.frame, {
+    this.colors,
+    this.cloudsMoveLeft = false,
+    this.cloudCache,
+    this.pixelRatio = 1,
+  }) : super(repaint: frame);
   @override
   void paint(Canvas canvas, Size size) {
     final w = size.width, h = size.height;
@@ -1050,34 +1225,54 @@ class LandscapeEffectsPainter extends CustomPainter {
     if (config.clouds &&
         weather != LandscapeWeather.clear &&
         weather != LandscapeWeather.fog) {
-      final paint = Paint()
-        ..color =
-            (phase == LandscapePhase.night
-                    ? const Color(0xFF47546B)
-                    : const Color(0xFFC5CCD0))
-                .withValues(alpha: .40);
-      for (var i = 0; i < 7; i++) {
-        final x = ((i * w / 5 + t * w * .001) % (w * 1.4)) - w * .2;
-        canvas.drawOval(
-          Rect.fromCenter(
-            center: Offset(x, h * (.13 + i % 3 * .045)),
-            width: w * .33,
-            height: h * .075,
-          ),
-          paint,
+      final color =
+          (phase == LandscapePhase.night
+                  ? const Color(0xFF47546B)
+                  : const Color(0xFFC5CCD0))
+              .withValues(alpha: .40);
+      final paint = colors?.paint(color, size) ?? (Paint()..color = color);
+      if (_cloudSize != size) {
+        _cloudSize = size;
+        _cloudPaths = [
+          for (final cloud in LandscapeCloud.all)
+            cloud.silhouette(size).shift(Offset(0, cloud.altitude * h)),
+        ];
+      }
+      final cached =
+          cloudCache?.prepare(size, pixelRatio, _cloudPaths, paint, (
+            color,
+            colors,
+          )) ??
+          false;
+      for (var i = 0; i < LandscapeCloud.all.length; i++) {
+        final position = LandscapeCloud.all[i].position(
+          config.motion ? t : 0,
+          size,
+          left: cloudsMoveLeft,
         );
+        if (cached) {
+          cloudCache!.draw(canvas, i, position.dx);
+          continue;
+        }
+        // Reuse path geometry; horizontal translation leaves the vertical
+        // wallpaper dimming gradient in the same screen coordinates.
+        canvas.save();
+        canvas.translate(position.dx, 0);
+        canvas.drawPath(_cloudPaths[i], paint);
+        canvas.restore();
       }
     }
     if (config.precipitation &&
         (weather == LandscapeWeather.rain ||
             weather == LandscapeWeather.snow)) {
       final snow = weather == LandscapeWeather.snow;
-      final paint = Paint()
-        ..color = Colors.white.withValues(alpha: snow ? .62 : .45)
+      final color = Colors.white.withValues(alpha: snow ? .62 : .45);
+      final paint = (colors?.paint(color, size) ?? (Paint()..color = color))
         ..strokeWidth = snow ? 1 : 1.3;
-      final rainEdge = Paint()
-        ..color = const Color(0x33304459)
-        ..strokeWidth = 2;
+      final rainEdge =
+          (colors?.paint(const Color(0x33304459), size) ??
+                (Paint()..color = const Color(0x33304459)))
+            ..strokeWidth = 2;
       for (var i = 0; i < (snow ? 70 : 115); i++) {
         final position = snow
             ? Offset(
@@ -1096,6 +1291,39 @@ class LandscapeEffectsPainter extends CustomPainter {
       }
     }
     if (config.fog && weather == LandscapeWeather.fog) {
+      // Fog is static; retain exact compositing for its varying alpha gradient.
+      final treatment = colors;
+      if (treatment != null) {
+        final inverse = 1 - treatment.saturation;
+        final r = inverse * .2126, g = inverse * .7152, b = inverse * .0722;
+        final v = treatment.brightness, s = treatment.saturation;
+        canvas.saveLayer(
+          Offset.zero & size,
+          Paint()
+            ..colorFilter = ColorFilter.matrix([
+              (r + s) * v,
+              g * v,
+              b * v,
+              0,
+              0,
+              r * v,
+              (g + s) * v,
+              b * v,
+              0,
+              0,
+              r * v,
+              g * v,
+              (b + s) * v,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+            ]),
+        );
+      }
       canvas.drawRect(
         Offset.zero & size,
         Paint()
@@ -1109,13 +1337,26 @@ class LandscapeEffectsPainter extends CustomPainter {
             ],
           ).createShader(Offset.zero & size),
       );
+      if (treatment != null) {
+        canvas.drawRect(
+          Offset.zero & size,
+          Paint()
+            ..blendMode = BlendMode.modulate
+            ..shader = treatment.dimmingShader(size),
+        );
+        canvas.restore();
+      }
     }
   }
 
   @override
   bool shouldRepaint(covariant LandscapeEffectsPainter old) =>
+      old.cloudsMoveLeft != cloudsMoveLeft ||
+      old.cloudCache != cloudCache ||
+      old.pixelRatio != pixelRatio ||
       old.config.encode() != config.encode() ||
       old.weather != weather ||
       old.phase != phase ||
+      old.colors != colors ||
       old.frame != frame;
 }

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+
+import '../file_selection.dart';
+
 import 'package:provider/provider.dart';
 
 import '../../bridge_result.dart';
@@ -9,6 +12,7 @@ import '../action_notice.dart';
 import '../launcher_dialog.dart';
 import 'focusable_settings_tile.dart';
 import 'settings_page_layout.dart';
+import 'settings_read_only_value.dart';
 
 class LocalBackupPage extends StatelessWidget {
   static const routeName = 'local_backup';
@@ -21,6 +25,13 @@ class LocalBackupPage extends StatelessWidget {
       title: Text(l.backupLocal),
       child: ListView(
         children: [
+          if (service.localFolder != null &&
+              service.localFolder != LocalBackupStorage.downloadsFolder)
+            SettingsReadOnlyValue(
+              label: l.fileBrowserCurrentFolder,
+              value: Uri.decodeFull(service.localFolder!),
+              textDirection: TextDirection.ltr,
+            ),
           FocusableSettingsTile(
             title: Text(l.backupFolderPath),
             trailing: Text(
@@ -85,10 +96,17 @@ class LocalBackupPage extends StatelessWidget {
                   );
                   return;
                 }
-                final uri = await channel.invokeMethod<String>(
+                if (!context.mounted) return;
+                final uri = await FileSelection.select<String>(
+                  context,
                   'pickBackupFolder',
+                  initialPath: service.localFolder?.startsWith('file:') == true
+                      ? service.localFolder
+                      : null,
                 );
-                if (uri != null) await service.setLocalFolder(uri);
+                if (uri != null && context.mounted) {
+                  await service.setLocalFolder(uri);
+                }
               } on BridgeException catch (error) {
                 if (context.mounted) {
                   showActionNotice(

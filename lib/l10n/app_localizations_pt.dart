@@ -10,6 +10,28 @@ class AppLocalizationsPt extends AppLocalizations {
   AppLocalizationsPt([String locale = 'pt']) : super(locale);
 
   @override
+  String get wallhavenWallpaperHint =>
+      'Papéis de parede aleatórios do Wallhaven por tema: SFW, 16:9, Full HD ou superior. Sem conta nem chave de API. Atualização com o launcher aberto; em caso de erro, mantém a imagem anterior.';
+
+  @override
+  String get renderCompatibilityTitle => 'Saída gráfica compatível';
+
+  @override
+  String get renderCompatibilityAutomatic =>
+      'Ativada automaticamente neste dispositivo';
+
+  @override
+  String get renderCompatibilityApply => 'Aplicar e reiniciar o launcher';
+
+  @override
+  String get renderCompatibilityFailed =>
+      'Não foi possível ler ou aplicar a configuração';
+
+  @override
+  String get renderCompatibilityHelp =>
+      'Experimente este modo se a interface piscar com o escurecimento noturno. Ele é ativado automaticamente nos modelos verificados. Em outras TVs, a escolha é salva apenas neste dispositivo e aplicada após reiniciar o launcher. Pode aumentar a carga gráfica.';
+
+  @override
   String get diagnosticsHubTitle => 'Diagnostics';
 
   @override
@@ -1507,7 +1529,7 @@ class AppLocalizationsPt extends AppLocalizations {
       'Insira uma cidade manualmente ou obtenha as coordenadas automaticamente.';
 
   @override
-  String get weatherRefresh => 'Verifique se há atualizações';
+  String get weatherRefresh => 'Atualizar meteorologia';
 
   @override
   String get weatherKeyPrivate =>
@@ -1518,7 +1540,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get onlineWallpaperError =>
-      'Não foi possível carregar esta imagem. O papel de parede anterior é mantido. Selecione “Verificar atualizações” para tentar novamente o download.';
+      'Não foi possível carregar esta imagem. O papel de parede anterior é mantido. Selecione “Atualizar fundo” para tentar novamente o download.';
 
   @override
   String get onlineWallpaperHint =>
@@ -1958,7 +1980,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get notificationAppsHint =>
-      'Desative aplicativos cujas notificações você não precisa. Um switch habilitado permite notificações; o aplicativo ainda pode ser iniciado.';
+      'Selecione as aplicações cujas notificações pretende bloquear. Um interruptor ativo significa bloqueio. A lista mantém a ordem alfabética.';
 
   @override
   String get notificationPanelLink => 'Aparência do painel superior';
@@ -2025,7 +2047,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get rememberCategoryFocus => 'Lembre-se do último cartão em foco';
 
   @override
-  String get automaticBackups => 'Backup automático';
+  String get automaticBackups => 'Cópias e sincronização';
 
   @override
   String get automaticBackupsHint =>
@@ -2101,7 +2123,7 @@ class AppLocalizationsPt extends AppLocalizations {
       'Redefinir plano de fundo, destaque, blocos, rótulos, realce e animação?';
 
   @override
-  String get wallpaperDimming => 'Escurecimento';
+  String get wallpaperDimming => 'Intensidade do escurecimento';
 
   @override
   String get wallpaperPlacement => 'Colocação';
@@ -2725,7 +2747,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get backupDriveHelp =>
-      'Selecione Conectar e confirme o código em seu telefone. Os backups ficam visíveis na pasta CuteLauncher em Google Drive, onde você pode baixá-los ou excluí-los. Mantenha os nomes dos arquivos inalterados para restauração no aplicativo. Reconecte após atualizar de backups ocultos; backups antigos não são migrados automaticamente.';
+      'Selecione Ligar Google Drive e confirme o código em seu telefone. Os backups ficam visíveis na pasta CuteLauncher em Google Drive, onde você pode baixá-los ou excluí-los. Mantenha os nomes dos arquivos inalterados para restauração no aplicativo. Reconecte após atualizar de backups ocultos; backups antigos não são migrados automaticamente.';
 
   @override
   String get backupFrequency => 'Frequência de backup';
@@ -3204,7 +3226,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get homeOwnReset => 'Restaurar definições comuns';
 
   @override
-  String get homeParameters => 'Parâmetros';
+  String get homeParameters => 'Comportamento do ecrã inicial';
 
   @override
   String get homeSectionStyle => 'Aparência da seção';
@@ -4372,4 +4394,487 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get remoteMappingImportFailed =>
       'Falha na leitura. Escolha um arquivo UTF-8 acessível de até 64 KB.';
+
+  @override
+  String get vpnTitle => 'VPN';
+
+  @override
+  String get vpnSettings => 'Configurações de VPN';
+
+  @override
+  String get vpnApp => 'Aplicativo VPN';
+
+  @override
+  String get vpnAutomatic => 'Automático';
+
+  @override
+  String get vpnNone => 'Não selecionado';
+
+  @override
+  String get vpnProfile => 'Perfil VPN';
+
+  @override
+  String get vpnOnlyActive => 'Mostrar apenas quando conectado';
+
+  @override
+  String get vpnShowName => 'Mostrar nome do aplicativo';
+
+  @override
+  String get vpnColor => 'Destacar conexão com cor';
+
+  @override
+  String get vpnNotify => 'Notificar resultados dos comandos';
+
+  @override
+  String get vpnConnected => 'VPN conectada';
+
+  @override
+  String get vpnDisconnected => 'VPN desconectada';
+
+  @override
+  String get vpnUnknown => 'Status da VPN indisponível';
+
+  @override
+  String get vpnConnect => 'Conectar';
+
+  @override
+  String get vpnDisconnect => 'Desconectar';
+
+  @override
+  String get vpnOpenApp => 'Abrir aplicativo VPN';
+
+  @override
+  String get vpnAndroidSettings => 'Configurações de VPN do Android';
+
+  @override
+  String get vpnAllowControl => 'Permitir controle da VPN';
+
+  @override
+  String get vpnFailed => 'Falha na ação da VPN';
+
+  @override
+  String get vpnUnsupported =>
+      'O cliente não oferece controle direto. Você pode abrir o aplicativo.';
+
+  @override
+  String get vpnOther =>
+      'Outra VPN ou uma VPN não identificada está conectada. Controle indisponível.';
+
+  @override
+  String get vpnStartup => 'VPN ao iniciar a TV';
+
+  @override
+  String get vpnPending => 'Aguardando conexão VPN';
+
+  @override
+  String get vpnHelp =>
+      'A seleção automática detecta a VPN ativa e a memoriza para reconexão. A detecção de aplicativo e perfil requer ADB local conectado. AmneziaWG e WireGuard precisam de permissão de controle e controle remoto ativado no cliente. Happ e MantaRay usam o perfil selecionado no cliente.';
+
+  @override
+  String get vpnProfileHelp =>
+      'Digite o nome exato do perfil no aplicativo VPN: até 15 letras latinas, dígitos e _ = + . -. O nome é detectado na conexão manual quando disponível.';
+
+  @override
+  String get vpnStartupHelp =>
+      'A VPN inicia além das ações de inicialização normais. Configure antes o perfil e as permissões. A espera pela rede é limitada; uma VPN ativa não é substituída. A ativação após repouso só é detectada enquanto o processo do launcher está em execução.';
+
+  @override
+  String get vpnStartupMethod => 'Método de início da VPN';
+
+  @override
+  String get vpnStartupClient => 'Pelo aplicativo VPN';
+
+  @override
+  String get vpnStartupAlwaysOn => 'VPN sempre ativa do Android';
+
+  @override
+  String get vpnAlwaysOnManaged =>
+      'O Android gerencia esta VPN no modo sempre ativo. Desative o modo nas configurações de início ou do Android.';
+
+  @override
+  String get vpnRestartRequired =>
+      'Reinicie a TV para aplicar o modo do sistema.';
+
+  @override
+  String get vpnAlwaysOnHelp =>
+      'Define um cliente configurado como VPN sempre ativa por ADB TCP local. O Android aplica a seleção após reiniciar a TV. O bloqueio de conexões sem VPN não é ativado nem alterado. Ao sair do modo, a seleção anterior do sistema é restaurada.';
+
+  @override
+  String get vpnClientConfirmation =>
+      'Confirme o comando na janela do MantaRay.';
+
+  @override
+  String get informationTapAction => 'Ao pressionar o bloco';
+
+  @override
+  String get informationShowBoth => 'Tempo e calendário';
+
+  @override
+  String get weatherForecastTitle => 'Previsão do tempo';
+
+  @override
+  String get weatherForecastPeriod => 'Período da previsão';
+
+  @override
+  String weatherForecastDays(int days) {
+    return '$days dias';
+  }
+
+  @override
+  String get weatherForecastView => 'Vista da previsão';
+
+  @override
+  String get weatherForecastCards => 'Cartões compactos';
+
+  @override
+  String get weatherForecastList => 'Lista detalhada';
+
+  @override
+  String weatherForecastAvailable(int available, int requested) {
+    return 'Dias disponíveis: $available de $requested';
+  }
+
+  @override
+  String get weatherForecastTvTime => 'Datas no horário da TV';
+
+  @override
+  String get weatherClear => 'Céu limpo';
+
+  @override
+  String get weatherCloudy => 'Nublado';
+
+  @override
+  String get weatherFog => 'Nevoeiro';
+
+  @override
+  String get weatherWind => 'Vento';
+
+  @override
+  String get weatherPrecipitation => 'Precipitação';
+
+  @override
+  String get showVolume => 'Mostrar volume';
+
+  @override
+  String get audioStatusTitle => 'Volume e saída de áudio';
+
+  @override
+  String get audioOutputTv => 'TV';
+
+  @override
+  String get audioOutputHeadphones => 'Auscultadores';
+
+  @override
+  String get audioOutputMultiple => 'Várias';
+
+  @override
+  String get audioMuted => 'Sem som';
+
+  @override
+  String get backgroundStartupTitle => 'Aplicativos em segundo plano';
+
+  @override
+  String get backgroundStartupFailed =>
+      'Não foi possível carregar ou salvar as configurações';
+
+  @override
+  String get backgroundStartupRetry => 'Tentar novamente';
+
+  @override
+  String get backgroundStartupEmpty => 'Nenhum aplicativo de usuário';
+
+  @override
+  String get backgroundStartupUnavailable =>
+      'Inicialização em segundo plano indisponível';
+
+  @override
+  String get backgroundStartupRequested => 'Inicialização solicitada';
+
+  @override
+  String get backgroundStartupHelp =>
+      'Marque os aplicativos para iniciar uma vez em segundo plano após ligar a TV. O CuteLauncher deve abrir em um minuto: defina-o como tela inicial ou ative sua inicialização ao ligar. Os aplicativos iniciam um a um atrás da tela inicial; marcar não os inicia imediatamente. Usar o controle ou sair do launcher cancela os inícios restantes. Sair do repouso não os inicia novamente. Aplicativos incompatíveis não podem ser selecionados. Iniciar não ativa funções internas nem garante operação contínua. Conceda permissões e configure o segundo plano no próprio aplicativo. O Android ou o firmware pode encerrá-lo. A seleção fica apenas nesta TV.';
+
+  @override
+  String get backgroundStartupToggle =>
+      'Inicialização automática em segundo plano';
+
+  @override
+  String get systemWidgetSettings => 'Definições do widget Sistema';
+
+  @override
+  String get systemShowCpu => 'Mostrar CPU no painel';
+
+  @override
+  String get systemShowRam => 'Mostrar RAM no painel';
+
+  @override
+  String get systemStorage => 'Armazenamento: livre / total';
+
+  @override
+  String get systemUptime => 'Tempo de atividade (horas:minutos)';
+
+  @override
+  String get systemTemperature => 'Temperatura da CPU';
+
+  @override
+  String get systemAvailable => 'RAM disponível';
+
+  @override
+  String get systemHistory => 'Última hora · médias e picos';
+
+  @override
+  String get systemNow => 'Agora';
+
+  @override
+  String get systemHourAgo => '−60 min';
+
+  @override
+  String get systemWidgetHelp =>
+      'Os valores são atualizados a cada 5 segundos enquanto o iniciador está visível. Os gráficos mostram médias e picos por minuto. Outras aplicações, suspensão e erros de leitura deixam intervalos. O histórico fica na memória e é apagado ao reiniciar o processo do iniciador. CPU e temperatura dependem do firmware. Desative ambos os valores do painel para mostrar apenas o ícone.';
+
+  @override
+  String get slideshowBrowseFolders => 'Explorar pastas';
+
+  @override
+  String get slideshowEnterFolderPath => 'Inserir caminho da pasta';
+
+  @override
+  String get slideshowSystemPicker => 'Escolher no gestor do sistema';
+
+  @override
+  String get slideshowFolderPath => 'Caminho da pasta';
+
+  @override
+  String get slideshowUseFolder => 'Usar esta pasta';
+
+  @override
+  String get slideshowParentFolder => 'Pasta superior';
+
+  @override
+  String get slideshowStoragePermission =>
+      'Permita o acesso a arquivos nas configurações do Android para usar o explorador integrado.';
+
+  @override
+  String get slideshowPickerUnavailable =>
+      'Esta TV não tem seletor de pastas. Use o explorador integrado ou introduza um caminho.';
+
+  @override
+  String get slideshowFolderUnavailable =>
+      'Pasta indisponível. Verifique o caminho, a unidade e a permissão de acesso.';
+
+  @override
+  String get slideshowStorageHelp =>
+      'O explorador integrado lê pastas da TV e unidades ligadas. No Android 11 ou mais recente, permita o acesso a todos os ficheiros; no Android 9–10, ao armazenamento. Pode inserir um caminho como /storage/emulated/0/Pictures. Os ficheiros não são alterados.';
+
+  @override
+  String get fileBrowserTitle => 'Escolher um arquivo';
+
+  @override
+  String get filePickerChoose => 'Escolher explorador de arquivos';
+
+  @override
+  String get filePickerSystem => 'Seletor de arquivos do sistema';
+
+  @override
+  String get filePickerBuiltIn => 'Explorador de arquivos integrado';
+
+  @override
+  String get fileBrowserEmpty => 'Nenhum item para exibir';
+
+  @override
+  String get fileBrowserUnavailable =>
+      'Não foi possível abrir este local. Verifique o acesso e tente novamente.';
+
+  @override
+  String get networkAndVpnGroup => 'Rede e VPN';
+
+  @override
+  String get soundAndInputsGroup => 'Som e entradas';
+
+  @override
+  String get timerAndNightModeGroup => 'Temporizador e modo noturno';
+
+  @override
+  String get systemSettingsGroup => 'Configurações do sistema';
+
+  @override
+  String get appChannelsTitle => 'Feeds de aplicativos';
+
+  @override
+  String get appChannelsHelp =>
+      'Escolha até 16 feeds. A disponibilidade depende dos canais publicados pelos aplicativos e do firmware da TV. Feeds vazios ficam ocultos. A seleção permanece nesta TV.';
+
+  @override
+  String get appChannelsUnavailable =>
+      'Não foi possível ler os feeds. Verifique o acesso à programação de TV.';
+
+  @override
+  String get appChannelsEmpty => 'Nenhum feed de aplicativo disponível.';
+
+  @override
+  String get appChannelsRefresh => 'Atualizar feeds';
+
+  @override
+  String get appChannelsLaunchFailed => 'Não foi possível abrir este conteúdo.';
+
+  @override
+  String get appChannelsSaveFailed =>
+      'Não foi possível salvar a seleção. Escolha até 16 feeds.';
+
+  @override
+  String get sectionDeleteConfirm =>
+      'Eliminar esta secção? As aplicações instaladas serão mantidas.';
+
+  @override
+  String get sectionDeleteFailed =>
+      'Não foi possível eliminar a secção. Tente novamente.';
+
+  @override
+  String get appChannelsAccess => 'Acesso aos feeds das aplicações';
+
+  @override
+  String get appChannelsMissing => 'Feed indisponível';
+
+  @override
+  String get wallpaperRefresh => 'Atualizar fundo';
+
+  @override
+  String get wallpaperDimmingHelp =>
+      '100% mantém o escurecimento original; 200% duplica-o. Não é a opacidade de uma camada preta.';
+
+  @override
+  String get resetLauncherSettings => 'Repor todas as definições';
+
+  @override
+  String get resetLauncherSettingsConfirmation =>
+      'Todas as definições e dados locais do CuteLauncher serão eliminados: secções, favoritos, atribuições do comando, ligações e ficheiros no armazenamento da aplicação. O CuteLauncher será fechado e o próximo arranque será como uma instalação nova. Os acessos terão de ser concedidos novamente. Ficheiros fora do armazenamento do CuteLauncher e outras aplicações serão mantidos.';
+
+  @override
+  String get resetLauncherSettingsError =>
+      'Não foi possível concluir a reposição. Tente novamente.';
+
+  @override
+  String get fileBrowserCurrentFolder => 'Pasta atual';
+
+  @override
+  String get fileBrowserFileName => 'Nome do ficheiro';
+
+  @override
+  String get fileBrowserNoFolders => 'Sem subpastas';
+
+  @override
+  String get fileBrowserNoFiles => 'Sem ficheiros compatíveis';
+
+  @override
+  String get fileBrowserPartial => 'Apenas parte da pasta é apresentada';
+
+  @override
+  String get fileBrowserRemoteHint => '← Nome completo · → Confirmar';
+
+  @override
+  String get fileBrowserReadNameHint => '← Mostrar nome completo';
+
+  @override
+  String fileBrowserSavedTo(String path) {
+    return 'Guardado: $path';
+  }
+
+  @override
+  String get backupDriveConnect => 'Ligar Google Drive';
+
+  @override
+  String get discardChangesTitle => 'Descartar alterações?';
+
+  @override
+  String get discardChangesMessage =>
+      'As alterações não guardadas serão perdidas.';
+
+  @override
+  String get backgroundFileUnavailable => 'Arquivo indisponível';
+
+  @override
+  String get backupLastSuccess => 'Última ação bem-sucedida:';
+
+  @override
+  String get informationPlacement => 'Posição do bloco';
+
+  @override
+  String get informationOnBackground => 'Sobre o fundo';
+
+  @override
+  String get informationBackgroundAlignment => 'Alinhamento no fundo';
+
+  @override
+  String get informationBackgroundHelp =>
+      'Escolha painel superior, fundo ou oculto separadamente para relógio, data e clima. Os elementos do fundo não respondem a comandos nem movem os blocos. Na paisagem adaptativa as montanhas cobrem parte do relógio. As definições rápidas são independentes.';
+
+  @override
+  String get informationTime => 'Relógio';
+
+  @override
+  String get informationDate => 'Data';
+
+  @override
+  String get backgroundInformationAppearance => 'Aparência no fundo';
+
+  @override
+  String onlineWallpaperFailureStage(String stage) {
+    String _temp0 = intl.Intl.selectLogic(stage, {
+      'initialize': 'Preparação do armazenamento',
+      'metadata': 'Consulta à fonte',
+      'download': 'Download da imagem',
+      'validation': 'Validação da imagem',
+      'save': 'Gravação do papel de parede',
+      'other': 'Gravação do papel de parede',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String onlineWallpaperFailureReason(String reason) {
+    String _temp0 = intl.Intl.selectLogic(reason, {
+      'dns': 'Não foi possível resolver o endereço do servidor (DNS).',
+      'connection':
+          'Não foi possível estabelecer ou manter a conexão com o servidor.',
+      'tls': 'Erro de conexão segura ou certificado (TLS).',
+      'timeout': 'O tempo de espera da solicitação esgotou.',
+      'http': 'O servidor retornou um erro.',
+      'redirect': 'Redirecionamento inválido ou redirecionamentos demais.',
+      'insecureUrl': 'URL insegura: é necessário HTTPS sem credenciais.',
+      'tooLarge': 'A resposta excede o limite de tamanho.',
+      'dimensions': 'As dimensões da imagem excedem o limite.',
+      'invalidResponse': 'A fonte retornou dados inválidos.',
+      'noImage': 'A fonte não retornou novas imagens adequadas.',
+      'invalidImage':
+          'O arquivo está corrompido ou o formato de imagem não é compatível.',
+      'storage':
+          'Não foi possível ler ou gravar os arquivos do papel de parede.',
+      'unknown': 'Erro desconhecido.',
+      'other': 'Erro desconhecido.',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get informationPanelAppearance => 'Aparência do painel';
+
+  @override
+  String get informationData => 'Formatos e dados';
+
+  @override
+  String get informationGroupingMinimum =>
+      'São necessários pelo menos dois elementos';
+
+  @override
+  String get screenshotSceneMode => 'Modo de captura';
+
+  @override
+  String get screenshotSceneHour => 'Horas';
+
+  @override
+  String get screenshotSceneMinute => 'Minutos';
+
+  @override
+  String get screenshotSceneHelp =>
+      'Define a hora da paisagem e do relógio de fundo e o clima da paisagem. Continua ativo após fechar as definições. Não altera a hora do sistema, os dados meteorológicos nem as definições guardadas. Ao reiniciar esta versão: 16:00, nublado.';
 }

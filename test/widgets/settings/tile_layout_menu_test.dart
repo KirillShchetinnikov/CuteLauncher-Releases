@@ -77,7 +77,7 @@ void main() {
       );
       expect(
         tester.getTopLeft(find.text('Верхняя панель')).dy,
-        lessThan(tester.getTopLeft(find.text('Оформление')).dy),
+        lessThan(tester.getTopLeft(find.text('Стиль интерфейса')).dy),
       );
       await pump(tester, const InterfaceSettingsPage());
       expect(find.text('Верхняя панель'), findsNothing);
@@ -87,7 +87,8 @@ void main() {
       expect(find.text(l.settingsMenuPosition), findsNothing);
       expect(find.byType(FocusableSettingsTile), findsNWidgets(3));
       expect(find.text(l.sectionsAndOrder), findsOneWidget);
-      await tester.tap(find.text(l.appearanceSettings));
+      expect(find.text(l.appChannelsTitle), findsNothing);
+      await tester.tap(find.text('${l.homeScreen} · ${l.appearanceSettings}'));
       await tester.pumpAndSettle();
       expect(find.byType(HomeAppearancePage), findsOneWidget);
       final entries = tester.widgetList<FocusableSettingsTile>(find.byType(FocusableSettingsTile)).toList();
@@ -247,7 +248,7 @@ void main() {
     final size = find.byWidgetPredicate((w) => w is HomeStyleSetting && w.field == 'size');
     Finder marker() => find.descendant(of: size, matching: find.byIcon(Icons.link));
     expect(marker(), findsOneWidget);
-    expect(find.text(l.homeInherited), findsNothing);
+    expect(find.text(l.homeInherited), findsOneWidget);
     expect(find.text(l.homeOwnReset), findsNothing); // The shared button is below the viewport.
     final focus = FocusManager.instance.primaryFocus;
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);

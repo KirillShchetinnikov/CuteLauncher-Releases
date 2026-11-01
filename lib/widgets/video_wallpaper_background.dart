@@ -16,12 +16,14 @@ class VideoWallpaperBackground extends StatefulWidget {
   final bool enabled;
   final String mode;
   final bool memorySaver;
+  final Widget background;
   const VideoWallpaperBackground({
     super.key,
     required this.file,
     required this.enabled,
     required this.mode,
     required this.memorySaver,
+    this.background = const SizedBox.shrink(),
   });
 
   @override
@@ -215,7 +217,7 @@ class _VideoWallpaperBackgroundState extends State<VideoWallpaperBackground>
 
   @override
   Widget build(BuildContext context) {
-    if (!_ready || _failed) return const SizedBox.shrink();
+    if (!_ready || _failed) return widget.background;
     Widget video(BoxFit fit) => SizedBox.expand(
       child: FittedBox(
         fit: fit,
@@ -228,18 +230,34 @@ class _VideoWallpaperBackgroundState extends State<VideoWallpaperBackground>
       ),
     );
     return IgnorePointer(
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          if (widget.mode == 'blurred' && !widget.memorySaver)
-            ClipRect(
-              child: ImageFiltered(
-                imageFilter: ui.ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                child: video(BoxFit.cover),
-              ),
-            ),
-          video(widget.mode == 'cover' ? BoxFit.cover : BoxFit.contain),
-        ],
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final viewport = constraints.biggest;
+          final coversViewport =
+              viewport.isFinite &&
+              viewport.height > 0 &&
+              (viewport.aspectRatio - _controller.value.aspectRatio).abs() <
+                  1e-9;
+          return Stack(
+            fit: StackFit.expand,
+            children: [
+              if (widget.mode != 'cover' &&
+                  !coversViewport &&
+                  (widget.mode != 'blurred' || widget.memorySaver))
+                widget.background,
+              if (widget.mode == 'blurred' &&
+                  !widget.memorySaver &&
+                  !coversViewport)
+                ClipRect(
+                  child: ImageFiltered(
+                    imageFilter: ui.ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                    child: video(BoxFit.cover),
+                  ),
+                ),
+              video(widget.mode == 'cover' ? BoxFit.cover : BoxFit.contain),
+            ],
+          );
+        },
       ),
     );
   }

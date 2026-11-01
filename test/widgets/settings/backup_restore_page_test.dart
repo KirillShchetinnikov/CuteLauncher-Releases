@@ -24,45 +24,43 @@ class _Backup implements BackupService {
 }
 
 void main() {
-  for (final scenario in [
-    'save',
-    'cancel',
-    'failure',
-    'picker cancel',
-    'write error',
-  ]) {
-    testWidgets('backup export fallback: $scenario', (tester) async {
+  for (final scenario in ['save', 'cancel', 'write error', 'system cancel']) {
+    testWidgets('backup export through common picker: $scenario', (
+      tester,
+    ) async {
       final directory = (await tester.runAsync(
-        () => Directory.systemTemp.createTemp('backup-page-test-'),
+        () => Directory.systemTemp.createTemp('backup-picker-test-'),
       ))!;
       SharedPreferences.setMockInitialValues({});
       final settings = SettingsService(await SharedPreferences.getInstance());
       const native = MethodChannel('me.efesser.flauncher/method');
       const paths = MethodChannel('plugins.flutter.io/path_provider');
-      final messenger =
-          TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+      final messenger = tester.binding.defaultBinaryMessenger;
       messenger.setMockMethodCallHandler(paths, (_) async => directory.path);
-      int downloads = 0;
+      final calls = <String>[];
+      String? source;
       messenger.setMockMethodCallHandler(native, (call) async {
-        if (call.method == 'saveBackupDocument') {
-          if (scenario == 'picker cancel') return null;
-          throw PlatformException(
-            code: scenario == 'write error'
-                ? 'document_failed'
-                : 'document_unavailable',
-          );
+        calls.add(call.method);
+        if (call.method == 'filePickerAvailable') {
+          return scenario == 'system cancel';
         }
-        if (call.method == 'saveBackupDownloads') {
-          downloads++;
-          expect(
-            await File((call.arguments as Map)['path'] as String)
-                .readAsString(),
-            '{}',
-          );
-          if (scenario == 'failure') {
+        if (call.method == 'requestFileStorage') return true;
+        if (call.method == 'browseLocalFiles') {
+          return {
+            'path': '/storage/main',
+            'uri': 'file:///storage/main',
+            'parent': '',
+            'folders': [],
+            'files': [],
+          };
+        }
+        if (call.method == 'localDocumentOperation') {
+          source = (call.arguments as Map)['source'] as String;
+          expect(File(source!).readAsStringSync(), '{}');
+          if (scenario == 'write error') {
             throw PlatformException(code: 'document_failed');
           }
-          return 'Download/backup.json';
+          return true;
         }
         return null;
       });
@@ -70,7 +68,7 @@ void main() {
         messenger.setMockMethodCallHandler(native, null);
         messenger.setMockMethodCallHandler(paths, null);
         settings.dispose();
-        await directory.delete(recursive: true);
+        await tester.runAsync(() => directory.delete(recursive: true));
       });
       await tester.pumpWidget(
         MultiProvider(
@@ -91,49 +89,46 @@ void main() {
         tester.element(find.byType(BackupRestorePage)),
       )!;
       await tester.runAsync(() async {
-        tester
+        final export = tester
             .widget<FocusableSettingsTile>(
               find.widgetWithText(FocusableSettingsTile, l.exportBackup),
             )
-            .onPressed!();
+            .onPressed!;
+        export();
+        export(); // A stale callback/rapid OK must not open a second picker.
         await Future<void>.delayed(const Duration(milliseconds: 100));
       });
       await tester.pumpAndSettle();
-      if (scenario == 'picker cancel' || scenario == 'write error') {
-        expect(find.byType(AlertDialog), findsNothing);
-        expect(downloads, 0);
+      if (scenario == 'system cancel') {
+        await tester.tap(find.text(l.filePickerSystem));
+      } else if (scenario == 'cancel') {
+        await tester.tap(find.byTooltip(l.close));
       } else {
-        expect(
-          Focus.of(
-            tester.element(find.text(l.backupSaveDownloads).last),
-          ).hasFocus,
-          isTrue,
-        );
-        await tester.runAsync(() async {
-          await tester.tap(
-            find.widgetWithText(
-              TextButton,
-              scenario == 'cancel' ? l.cancel : l.backupSaveDownloads,
-            ),
-          );
-          await Future<void>.delayed(const Duration(milliseconds: 100));
-        });
-        await tester.pumpAndSettle();
-        await tester.runAsync(
-          () async => Future<void>.delayed(const Duration(milliseconds: 100)),
-        );
-        await tester.pumpAndSettle();
-        expect(downloads, scenario == 'cancel' ? 0 : 1);
-        if (scenario == 'save') {
-          expect(find.textContaining('Download/backup.json'), findsOneWidget);
-        }
-        if (scenario == 'failure') {
-          expect(find.text(l.backupDownloadsFailed), findsOneWidget);
-        }
+        await tester.tap(find.widgetWithText(FocusableSettingsTile, l.save));
       }
       await tester.runAsync(
         () async => Future<void>.delayed(const Duration(milliseconds: 100)),
       );
+      await tester.pumpAndSettle();
+      expect(calls, isNot(contains('saveBackupDownloads')));
+      expect(
+        calls.where((method) => method == 'filePickerAvailable').length,
+        1,
+      );
+      expect(
+        find.text(l.backupSavedToSelectedLocation),
+        scenario == 'save' ? findsOneWidget : findsNothing,
+      );
+      expect(
+        find.text(l.exportFailed),
+        scenario == 'write error' ? findsOneWidget : findsNothing,
+      );
+      if (source != null) {
+        expect(
+          await tester.runAsync(() => File(source!).parent.exists()),
+          isFalse,
+        );
+      }
       expect(directory.listSync(), isEmpty);
       await tester.pumpWidget(const SizedBox());
     });

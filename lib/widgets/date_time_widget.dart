@@ -28,6 +28,7 @@ class DateTimeWidget extends StatefulWidget {
   final String _dateTimeFormatString;
   final TextStyle? textStyle;
   final bool animate;
+  final DateTime? fixedTime;
 
   const DateTimeWidget(
     String dateTimeFormatString, {
@@ -35,6 +36,7 @@ class DateTimeWidget extends StatefulWidget {
     this.updateInterval,
     this.textStyle,
     this.animate = true,
+    this.fixedTime,
   }) : _dateTimeFormatString = dateTimeFormatString;
 
   @override
@@ -62,8 +64,11 @@ class _DateTimeWidgetState extends State<DateTimeWidget>
   }
 
   void _initDateFormatAndRefresh() {
-    _formatter = LauncherDateFormatter(widget._dateTimeFormatString, Localizations.localeOf(context).toString());
-    _now = DateTime.now();
+    _formatter = LauncherDateFormatter(
+      widget._dateTimeFormatString,
+      Localizations.localeOf(context).toString(),
+    );
+    _now = widget.fixedTime ?? DateTime.now();
     _formattedText = _format(_now);
   }
 
@@ -71,6 +76,7 @@ class _DateTimeWidgetState extends State<DateTimeWidget>
 
   void _startTimer() {
     _timer?.cancel();
+    if (widget.fixedTime != null) return;
     final interval = widget.updateInterval ?? _defaultInterval();
     _timer = Timer.periodic(interval, (_) => _refreshTime());
   }
@@ -86,7 +92,8 @@ class _DateTimeWidgetState extends State<DateTimeWidget>
 
     // Update format if it changed or updateInterval changed
     if (oldWidget._dateTimeFormatString != widget._dateTimeFormatString ||
-        oldWidget.updateInterval != widget.updateInterval) {
+        oldWidget.updateInterval != widget.updateInterval ||
+        oldWidget.fixedTime != widget.fixedTime) {
       _initDateFormatAndRefresh();
       _startTimer();
       setState(() {});
@@ -125,7 +132,7 @@ class _DateTimeWidgetState extends State<DateTimeWidget>
   }
 
   void _refreshTime({bool force = false}) {
-    final now = DateTime.now();
+    final now = widget.fixedTime ?? DateTime.now();
     final newFormattedText = _format(now);
 
     if (force || newFormattedText != _formattedText) {

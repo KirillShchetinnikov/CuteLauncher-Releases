@@ -16,6 +16,7 @@ import 'package:flauncher/l10n/app_localizations.dart';
 
 import '../../providers/appearance_service.dart';
 import '../../providers/settings_service.dart';
+import '../../providers/apps_service.dart';
 import '../rounded_switch_list_tile.dart';
 import 'focusable_settings_tile.dart';
 import 'settings_value_stepper.dart';
@@ -77,17 +78,21 @@ class _AppearancePageState extends State<AppearancePage> {
     final settings = context.watch<SettingsService>();
     final panel = widget.remotePanel ? context.watch<RemotePanelService>() : null;
     final appearance = _appearance(service);
+    final categoryName = categoryId == null ? null : context.watch<AppsService?>()
+        ?.categories.where((category) => category.id == categoryId).firstOrNull?.name;
     return SettingsPageLayout(
       title: Text(
-        section == 'panel'
+        (section == 'panel'
             ? (widget.remotePanel ? l.appearanceSettings : l.panelAppearanceSettings)
             : section == 'focus'
             ? l.highlightAndAnimation
-            : l.tilesAndLabels,
+            : l.tilesAndLabels) + (categoryName == null ? '' : ' · $categoryName'),
         style: Theme.of(context).textTheme.titleLarge,
       ),
       child: ListView(
         children: [
+          if (section != 'panel')
+            SettingsHelp(title: l.homeInherited, text: l.homeStylePartial),
           if (section == 'tiles') ...[
             Padding(
               padding: const EdgeInsets.all(12),
@@ -127,7 +132,8 @@ class _AppearancePageState extends State<AppearancePage> {
               0.8,
               1,
             ], percentage: true),
-            SettingsHelp(text: l.homeStyleIconHint),
+            SettingsHelp(title: l.sizeAndLayout,
+              text: '${l.homeStyleAutoOnly}\n\n${l.homeStyleIconHint}'),
             ...[
             Padding(
               padding: const EdgeInsets.all(12),
@@ -198,14 +204,16 @@ class _AppearancePageState extends State<AppearancePage> {
               8,
               16,
             ]),
-            if (settings.memorySaverEnabled)
-              SettingsHelp(text: l.homeStyleShadowHint),
             HomeStyleSetting(categoryId: categoryId, field: 'blurTiles', builder: (enabled) => RoundedSwitchListTile(
               enabled: enabled,
               value: appearance.blurTiles,
               onChanged: (v) => _set(service, 'blurTiles', v),
               title: Text(l.tileBlur),
             )),
+            SettingsHelp(title: l.surfaceGroup, text: [
+              l.blurPerformanceHint,
+              if (settings.memorySaverEnabled) l.homeStyleShadowHint,
+            ].join('\n\n')),
             ],
           ],
           if (section == 'focus') ...[
@@ -356,7 +364,7 @@ class _AppearancePageState extends State<AppearancePage> {
                 onChanged: (v) => service.set('panelWrapNavigation', v),
                 title: Text(l.panelWrapNavigation),
               ),
-              SettingsHelp(text: l.panelWrapNavigationHelp),
+              SettingsHelp(title: l.panelWrapNavigation, text: l.panelWrapNavigationHelp),
               if (!widget.remotePanel)
                 RoundedSwitchListTile(
                   value: appearance.blurPanel,
@@ -365,7 +373,7 @@ class _AppearancePageState extends State<AppearancePage> {
                   title: Text(l.panelBlur),
                 ),
               if (!widget.remotePanel)
-                SettingsHelp(text: l.blurPerformanceHint),
+                SettingsHelp(title: l.panelBlur, text: l.blurPerformanceHint),
             ],
           ],
           ResetStyleTile(

@@ -11,40 +11,83 @@ class TilePaintLayer extends SingleChildRenderObjectWidget {
 
 class RaisedTile extends SingleChildRenderObjectWidget {
   final bool raised;
-  const RaisedTile({super.key, required this.raised, required super.child});
+
+  /// The current selection paints above tiles retained while shrinking.
+  final bool foreground;
+  const RaisedTile({
+    super.key,
+    required this.raised,
+    this.foreground = true,
+    required super.child,
+  });
+  List<ScrollPosition> _innerScrollPositions(BuildContext context) {
+    final owner = context.findAncestorWidgetOfExactType<TilePaintLayer>();
+    if (owner == null) return const [];
+    final positions = <ScrollPosition>[];
+    var ancestor = context;
+    while (true) {
+      final scrollable = Scrollable.maybeOf(ancestor);
+      if (scrollable == null ||
+          scrollable.context.findAncestorWidgetOfExactType<TilePaintLayer>() !=
+              owner) {
+        break;
+      }
+      positions.add(scrollable.position);
+      ancestor = scrollable.context;
+    }
+    return positions;
+  }
+
   @override
-  RenderObject createRenderObject(BuildContext context) => _RaisedTile(raised);
+  RenderObject createRenderObject(BuildContext context) =>
+      _RaisedTile(raised, foreground)
+        ..scrollPositions = _innerScrollPositions(context);
   @override
   void updateRenderObject(
     BuildContext context,
     covariant RenderObject renderObject,
   ) {
-    (renderObject as _RaisedTile).raised = raised;
+    (renderObject as _RaisedTile)
+      ..scrollPositions = _innerScrollPositions(context)
+      ..raised = raised
+      ..foreground = foreground;
   }
 }
 
 class _TilePaintLayer extends RenderProxyBox {
   final Set<_RaisedTile> tiles = {};
-  @override
-  bool get alwaysNeedsCompositing => true;
-  @override
-  void paint(PaintingContext context, Offset offset) {
-    super.paint(context, offset);
-    for (final tile in tiles) {
-      if (tile.raised && tile.canPaintRaised) {
-        context.pushTransform(
-          true,
-          offset,
-          tile.getTransformTo(this),
-          tile.paintRaised,
-        );
+  Iterable<_RaisedTile> get _paintOrder sync* {
+    // Retaining a shrinking tile avoids clipping, but must not delay promotion
+    // of the new selection until that old animation finishes.
+    for (final foreground in const [false, true]) {
+      for (final tile in tiles) {
+        if (tile.raised &&
+            tile.foreground == foreground &&
+            tile.canPaintRaised) {
+          yield tile;
+        }
       }
     }
   }
 
   @override
+  bool get alwaysNeedsCompositing => true;
+  @override
+  void paint(PaintingContext context, Offset offset) {
+    super.paint(context, offset);
+    for (final tile in _paintOrder) {
+      context.pushTransform(
+        true,
+        offset,
+        tile.getTransformTo(this),
+        tile.paintRaised,
+      );
+    }
+  }
+
+  @override
   bool hitTestChildren(BoxHitTestResult result, {required Offset position}) {
-    for (final tile in tiles.toList().reversed) {
+    for (final tile in _paintOrder.toList().reversed) {
       if (tile.raised &&
           tile.canPaintRaised &&
           result.addWithPaintTransform(
@@ -79,17 +122,59 @@ class _TilePaintLayer extends RenderProxyBox {
 }
 
 class _RaisedTile extends RenderProxyBox {
-  _RaisedTile(this._raised);
+  _RaisedTile(this._raised, this._foreground);
   _TilePaintLayer? paintLayer;
   bool _raised;
+  List<ScrollPosition> _scrollPositions = [];
+  bool _listening = false;
+  set scrollPositions(List<ScrollPosition> positions) {
+    if (positions.length == _scrollPositions.length &&
+        Iterable<int>.generate(positions.length)
+            .every((i) => identical(positions[i], _scrollPositions[i]))) {
+      return;
+    }
+    _stopListening();
+    _scrollPositions = positions;
+    _listen();
+  }
+
+  void _listen() {
+    if (_listening || !attached || !_raised) return;
+    for (final position in _scrollPositions) {
+      position.addListener(_scrollChanged);
+    }
+    _listening = true;
+  }
+
+  void _stopListening() {
+    if (!_listening) return;
+    for (final position in _scrollPositions) {
+      position.removeListener(_scrollChanged);
+    }
+    _listening = false;
+  }
+
+  // Inner viewports are repaint boundaries. Their changed offset does not
+  // invalidate the layer which paints our artwork above those viewports.
+  void _scrollChanged() => paintLayer?.markNeedsPaint();
   bool get raised => _raised;
+  bool _foreground;
+  bool get foreground => _foreground;
+  set foreground(bool value) {
+    if (_foreground == value) return;
+    _foreground = value;
+    markNeedsPaint();
+  }
+
   bool get canPaintRaised {
     if (!attached || !hasSize) return false;
     RenderObject? ancestor = this;
     while (ancestor != null && ancestor != paintLayer) {
       if (ancestor is RenderOffstage && ancestor.offstage) return false;
       final data = ancestor.parentData;
-      if (data is SliverMultiBoxAdaptorParentData && data.keptAlive) return false;
+      if (data is SliverMultiBoxAdaptorParentData && data.keptAlive) {
+        return false;
+      }
       ancestor = ancestor.parent;
     }
     return ancestor == paintLayer;
@@ -106,6 +191,11 @@ class _RaisedTile extends RenderProxyBox {
   set raised(bool value) {
     if (_raised == value) return;
     _raised = value;
+    if (value) {
+      _listen();
+    } else {
+      _stopListening();
+    }
     markNeedsPaint();
   }
 
@@ -113,6 +203,7 @@ class _RaisedTile extends RenderProxyBox {
   void attach(PipelineOwner owner) {
     super.attach(owner);
     _connect();
+    _listen();
   }
 
   @override
@@ -136,6 +227,7 @@ class _RaisedTile extends RenderProxyBox {
 
   @override
   void detach() {
+    _stopListening();
     paintLayer?.tiles.remove(this);
     paintLayer?.markNeedsPaint();
     paintLayer = null;

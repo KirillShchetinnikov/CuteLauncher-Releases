@@ -284,6 +284,16 @@ void main() {
       (LogicalKeyboardKey.arrowLeft, 2), (LogicalKeyboardKey.arrowUp, 0),
     ]) {
       await tester.sendKeyEvent(step.$1);
+      await tester.pump();
+      for (final delay in [Duration.zero, const Duration(milliseconds: 16), const Duration(milliseconds: 59)]) {
+        await tester.pump(delay);
+        for (var i = 0; i < keys.length; i++) {
+          final raised = tester.widget<RaisedTile>(find.descendant(
+              of: find.byKey(keys[i]), matching: find.byType(RaisedTile)).first);
+          expect(raised.foreground, i == step.$2,
+              reason: 'New selection must take priority before scaling finishes');
+        }
+      }
       await tester.pumpAndSettle();
       expect(node(step.$2).hasFocus, isTrue);
       expect(node(0).rect, original);

@@ -1,5 +1,6 @@
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/providers/appearance_service.dart';
+import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/remote_panel_service.dart';
 import 'package:flauncher/widgets/settings/panel_order_page.dart';
 import 'package:flutter/material.dart';
@@ -14,10 +15,12 @@ void main() {
       final prefs = await SharedPreferences.getInstance();
       final appearance = AppearanceService(prefs);
       final panel = RemotePanelService(prefs);
+      final settings = SettingsService(prefs);
       await tester.pumpWidget(MultiProvider(
         providers: [
           ChangeNotifierProvider.value(value: appearance),
           ChangeNotifierProvider.value(value: panel),
+          ChangeNotifierProvider.value(value: settings),
         ],
         child: MaterialApp(
           locale: const Locale('ru'),
@@ -40,6 +43,7 @@ void main() {
       await tester.pumpWidget(const SizedBox());
       appearance.dispose();
       panel.dispose();
+      settings.dispose();
     });
   }
 }

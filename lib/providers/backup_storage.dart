@@ -100,7 +100,7 @@ class BackupStorage {
   }
 
   static final validName = RegExp(
-    r'^cute-(backup|sync)-(shared|[a-f0-9]{32})-[a-f0-9]{32}-[0-9]+-[a-f0-9]{16}\.json$',
+    r'^cute-(backup|sync)-(shared|[a-f0-9]{32})-[a-f0-9]{32}-[0-9]{1,16}-[a-f0-9]{16}\.json$',
   );
   // Private markers distinguish our files from user files with similar names.
   static const _driveBackupQuery =

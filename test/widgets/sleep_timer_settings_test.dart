@@ -104,7 +104,7 @@ void main() {
     tester,
   ) async {
     await pump(tester, const SleepTimerSettingsPage(), scale: 1.6);
-    await tapText(tester, 'Настройки');
+    expect(find.text('Настройки'), findsNothing);
     await tapText(tester, 'Показывать секунды');
     await tapText(tester, 'Закрывать виджет после выбора таймера');
     await tapText(tester, 'Показывать при активном таймере');

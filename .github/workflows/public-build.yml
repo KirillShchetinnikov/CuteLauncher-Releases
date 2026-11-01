@@ -28,7 +28,7 @@ jobs:
       version: ${{ steps.metadata.outputs.version }}
       build: ${{ steps.metadata.outputs.build }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7.0.1
         with:
           fetch-depth: 0
           persist-credentials: false
@@ -63,13 +63,13 @@ jobs:
           with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
               output.write(f'version={name}\nbuild={build}\n')
           PY
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6.1.0
         with:
           distribution: zulu
           java-version: '21'
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.47.6'
+          flutter-version: '3.47.9'
       - name: Generate and test
         run: |
           flutter pub get
@@ -87,7 +87,7 @@ jobs:
             cp "build/app/outputs/apk/release/CuteLauncher-$RELEASE_VERSION-$abi-release.apk" unsigned-apks/
           done
           python3 .github/scripts/verify_apks.py unsigned-apks "$RELEASE_VERSION" "$RELEASE_BUILD"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7.0.2
         with:
           name: unsigned-apks
           path: unsigned-apks/*.apk

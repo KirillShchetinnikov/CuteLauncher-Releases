@@ -9,7 +9,12 @@ import 'package:provider/provider.dart';
 
 class WeatherStatusBarWidget extends StatefulWidget {
   final bool? showWeather;
-  const WeatherStatusBarWidget({super.key, this.showWeather});
+  final VoidCallback? onPressed;
+  final FocusNode? focusNode;
+  final bool selected;
+  final TextStyle? textStyle;
+  const WeatherStatusBarWidget({super.key, this.showWeather, this.onPressed,
+    this.focusNode, this.selected = false, this.textStyle});
 
   @override
   State<WeatherStatusBarWidget> createState() => _WeatherStatusBarWidgetState();
@@ -31,7 +36,10 @@ class _WeatherStatusBarWidgetState extends State<WeatherStatusBarWidget> {
         return Consumer<WeatherService>(
           builder: (context, weatherService, _) {
             final weather = weatherService.weatherData;
-            if (weather == null) return const SizedBox.shrink();
+            if (weather == null) {
+              return TopPanelItem(textStyle: widget.textStyle, focusNode: widget.focusNode, selected: widget.selected,
+                onPressed: widget.onPressed, child: const Icon(Icons.cloud_outlined));
+            }
 
             final bool isWarning =
                 showWarnings && weather.hasWarning && !weatherService.stale;
@@ -53,17 +61,22 @@ class _WeatherStatusBarWidgetState extends State<WeatherStatusBarWidget> {
 
             final appearance = topPanelAppearance(context);
             return TopPanelItem(
+              textStyle: widget.textStyle,
+              focusNode: widget.focusNode,
+              selected: widget.selected,
+              onPressed: widget.onPressed,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 textDirection: TextDirection.ltr,
                 children: [
                   Icon(
                     icon,
-                    size: appearance.panelTextSize,
-                    color: appearance.panelTextColor,
+                    size: widget.textStyle?.fontSize ?? appearance.panelTextSize,
+                    color: widget.textStyle?.color ?? appearance.panelTextColor,
+                    shadows: widget.textStyle?.shadows,
                   ),
                   const SizedBox(width: 8),
-                  Text(displayText, style: appearance.panelTextStyleFor(Localizations.localeOf(context))),
+                  Text(displayText, style: widget.textStyle ?? appearance.panelTextStyleFor(Localizations.localeOf(context))),
                 ],
               ),
             );

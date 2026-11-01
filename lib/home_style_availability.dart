@@ -14,7 +14,6 @@ enum HomeStyleBlock {
   opaque,
   transparent,
   singleColumn,
-  inherited,
 }
 
 /// Dependencies use the resolved style, not just the value in the open menu.

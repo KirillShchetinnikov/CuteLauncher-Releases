@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../recent_apps_client.dart';
+import '../recent_apps_access.dart';
 import 'adb_page.dart';
 import 'focusable_settings_tile.dart';
 import 'remote_buttons_page.dart';
@@ -21,7 +22,7 @@ class _RecentAppsPageState extends State<RecentAppsPage>
     with WidgetsBindingObserver {
   final _client = RecentAppsClient();
   String _mode = 'auto';
-  bool _busy = true, _failed = false, _loaded = false;
+  bool _busy = false, _failed = false, _loaded = false;
   bool _systemAvailable = false;
   @override
   void initState() {
@@ -42,6 +43,8 @@ class _RecentAppsPageState extends State<RecentAppsPage>
   }
 
   Future<void> _load() async {
+    if (_busy) return;
+    setState(() => _busy = true);
     try {
       final info = await _client.info();
       if (mounted) {
@@ -77,6 +80,7 @@ class _RecentAppsPageState extends State<RecentAppsPage>
   }
 
   Future<void> _open() async {
+    if (_busy) return;
     setState(() => _busy = true);
     try {
       final opened = await _client.open();
@@ -93,55 +97,75 @@ class _RecentAppsPageState extends State<RecentAppsPage>
     final l = AppLocalizations.of(context)!;
     return SettingsPageLayout(
       title: Text(l.recentAppsTitle),
-      child: ListView(
-        children: [
-          SettingsChoiceTile<String>(
-            title: l.recentAppsPanelType,
-            value: _mode,
-            options: [
-              'auto',
-              'custom',
-              if (_systemAvailable || _mode == 'system') 'system',
-            ],
-            label: (mode) => switch (mode) {
-              'custom' => l.recentAppsCustom,
-              'system' => l.recentAppsSystem,
-              _ => l.recentAppsAutomatic,
-            },
-            enabled: _loaded && !_busy,
-            onChanged: _save,
-          ),
-          FocusableSettingsTile(
-            title: Text(l.recentAppsOpen),
-            leading: const Icon(Icons.recent_actors_outlined),
-            enabled:
-                _loaded && !_busy && (_mode != 'system' || _systemAvailable),
-            onPressed: _open,
-          ),
-          if (_busy) const LinearProgressIndicator(),
-          if (_failed)
-            Text(
-              l.recentAppsUnavailable,
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
+      // Let the shared layout choose entry focus once the first control is
+      // available, rather than focusing a lower navigation link during loading.
+      child: !_loaded && !_failed
+          ? const Center(child: CircularProgressIndicator())
+          : ListView(
+              children: [
+                SettingsChoiceTile<String>(
+                  title: l.recentAppsPanelType,
+                  value: _mode,
+                  options: [
+                    'auto',
+                    'custom',
+                    if (_systemAvailable || _mode == 'system') 'system',
+                  ],
+                  label: (mode) => switch (mode) {
+                    'custom' => l.recentAppsCustom,
+                    'system' => l.recentAppsSystem,
+                    _ =>
+                      '${l.recentAppsAutomatic} · ${_systemAvailable ? l.recentAppsSystem : l.recentAppsCustom}',
+                  },
+                  enabled: _loaded && !_busy,
+                  onChanged: _save,
+                ),
+                FocusableSettingsTile(
+                  title: Text(l.recentAppsOpen),
+                  leading: const Icon(Icons.recent_actors_outlined),
+                  enabled:
+                      _loaded &&
+                      (_mode != 'system' || _systemAvailable),
+                  onPressed: _open,
+                ),
+                if (_busy) const LinearProgressIndicator(),
+                const RecentAppsAccess(inSettings: true),
+                if (_failed)
+                  Text(
+                    l.recentAppsUnavailable,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                  ),
+                if (_failed)
+                  FocusableSettingsTile(
+                    title: Text(l.recentAppsRefresh),
+                    leading: const Icon(Icons.refresh),
+                    enabled: !_busy,
+                    onPressed: _load,
+                  ),
+                SettingsHelp(
+                  title: l.recentAppsTitle,
+                  text: '${l.recentAppsCustom}: ${l.recentAppsHelp}',
+                ),
+                FocusableSettingsTile(
+                  title: Text(l.remoteButtonsTitle),
+                  leading: const Icon(Icons.settings_remote),
+                  onPressed: () =>
+                      Navigator.of(context)
+                          .pushNamed(RemoteButtonsPage.routeName),
+                ),
+                FocusableSettingsTile(
+                  title: Text(l.adbConnectionBlock),
+                  leading: const Icon(Icons.link),
+                  onPressed: () => Navigator.of(context).push(
+                    SettingsRoute(
+                      builder: (_) => const AdbPage(section: 'connection'),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          SettingsHelp(text: '${l.recentAppsCustom}: ${l.recentAppsHelp}'),
-          FocusableSettingsTile(
-            title: Text(l.remoteButtonsTitle),
-            leading: const Icon(Icons.settings_remote),
-            onPressed: () =>
-                Navigator.of(context).pushNamed(RemoteButtonsPage.routeName),
-          ),
-          FocusableSettingsTile(
-            title: Text(l.adbConnectionBlock),
-            leading: const Icon(Icons.link),
-            onPressed: () => Navigator.of(context).push(
-              SettingsRoute(
-                builder: (_) => const AdbPage(section: 'connection'),
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

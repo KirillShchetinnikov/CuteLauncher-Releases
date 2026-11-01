@@ -10,6 +10,26 @@ class AppLocalizationsHi extends AppLocalizations {
   AppLocalizationsHi([String locale = 'hi']) : super(locale);
 
   @override
+  String get wallhavenWallpaperHint =>
+      'चुनी गई थीम के Wallhaven वॉलपेपर: SFW, 16:9, Full HD या अधिक। खाते या API कुंजी की ज़रूरत नहीं। लॉन्चर खुला होने पर अपडेट होते हैं; त्रुटि पर पुराना वॉलपेपर रहता है।';
+
+  @override
+  String get renderCompatibilityTitle => 'संगत ग्राफ़िक्स आउटपुट';
+
+  @override
+  String get renderCompatibilityAutomatic => 'इस डिवाइस के लिए अपने आप चालू';
+
+  @override
+  String get renderCompatibilityApply => 'लागू करें और लॉन्चर फिर शुरू करें';
+
+  @override
+  String get renderCompatibilityFailed => 'सेटिंग पढ़ी या लागू नहीं की जा सकी';
+
+  @override
+  String get renderCompatibilityHelp =>
+      'रात में स्क्रीन धुंधली करने पर इंटरफ़ेस झिलमिलाए तो यह मोड आज़माएँ। जाँचे गए मॉडलों पर यह अपने आप चालू होता है। अन्य टीवी पर चुनाव केवल इसी डिवाइस पर सहेजा जाता है और लॉन्चर फिर शुरू करने के बाद लागू होता है। इससे ग्राफ़िक्स का भार बढ़ सकता है।';
+
+  @override
   String get diagnosticsHubTitle => 'Diagnostics';
 
   @override
@@ -1491,7 +1511,7 @@ class AppLocalizationsHi extends AppLocalizations {
       'किसी शहर को मैन्युअल रूप से दर्ज करें या स्वचालित रूप से निर्देशांक प्राप्त करें।';
 
   @override
-  String get weatherRefresh => 'अपडेट के लिए जांचें';
+  String get weatherRefresh => 'मौसम अपडेट करें';
 
   @override
   String get weatherKeyPrivate =>
@@ -1502,7 +1522,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get onlineWallpaperError =>
-      'इस छवि को लोड करने में असमर्थ. पिछला वॉलपेपर बरकरार रखा गया है. डाउनलोड का पुनः प्रयास करने के लिए \"अपडेट की जांच करें\" चुनें।';
+      'इस छवि को लोड करने में असमर्थ. पिछला वॉलपेपर बरकरार रखा गया है. डाउनलोड का पुनः प्रयास करने के लिए \"वॉलपेपर अपडेट करें\" चुनें।';
 
   @override
   String get onlineWallpaperHint =>
@@ -1934,7 +1954,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get notificationAppsHint =>
-      'जिन ऐप्स के नोटिफिकेशन की आपको जरूरत नहीं है उन्हें बंद कर दें। एक सक्षम स्विच सूचनाओं की अनुमति देता है; ऐप अभी भी लॉन्च किया जा सकता है.';
+      'वे ऐप चुनें जिनकी सूचनाएँ रोकनी हैं। चालू स्विच का मतलब है कि सूचनाएँ रोकी गई हैं। सूची वर्णानुक्रम में रहती है।';
 
   @override
   String get notificationPanelLink => 'शीर्ष पैनल उपस्थिति';
@@ -2001,7 +2021,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get rememberCategoryFocus => 'अंतिम फोकस्ड कार्ड याद रखें';
 
   @override
-  String get automaticBackups => 'स्वचालित बैकअप';
+  String get automaticBackups => 'बैकअप और सिंक्रनाइज़ेशन';
 
   @override
   String get automaticBackupsHint =>
@@ -2076,7 +2096,7 @@ class AppLocalizationsHi extends AppLocalizations {
       'पृष्ठभूमि, उच्चारण, टाइल्स, लेबल, हाइलाइटिंग और एनीमेशन रीसेट करें?';
 
   @override
-  String get wallpaperDimming => 'मंद करना';
+  String get wallpaperDimming => 'अँधेरा करने की तीव्रता';
 
   @override
   String get wallpaperPlacement => 'प्लेसमेंट';
@@ -2698,7 +2718,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get backupDriveHelp =>
-      'कनेक्ट चुनें और अपने फ़ोन पर कोड की पुष्टि करें। बैकअप Google Drive में CuteLauncher फ़ोल्डर में दिखाई देते हैं, जहां आप उन्हें डाउनलोड या हटा सकते हैं। इन-ऐप पुनर्स्थापना के लिए फ़ाइल नाम अपरिवर्तित रखें। छिपे हुए बैकअप से अपग्रेड करने के बाद पुनः कनेक्ट करें; पुराने बैकअप स्वचालित रूप से माइग्रेट नहीं होते हैं.';
+      'Google Drive कनेक्ट करें चुनें और अपने फ़ोन पर कोड की पुष्टि करें। बैकअप Google Drive में CuteLauncher फ़ोल्डर में दिखाई देते हैं, जहां आप उन्हें डाउनलोड या हटा सकते हैं। इन-ऐप पुनर्स्थापना के लिए फ़ाइल नाम अपरिवर्तित रखें। छिपे हुए बैकअप से अपग्रेड करने के बाद पुनः कनेक्ट करें; पुराने बैकअप स्वचालित रूप से माइग्रेट नहीं होते हैं.';
 
   @override
   String get backupFrequency => 'बैकअप आवृत्ति';
@@ -3170,7 +3190,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get homeOwnReset => 'साझा सेटिंग बहाल करें';
 
   @override
-  String get homeParameters => 'पैरामीटर्स';
+  String get homeParameters => 'होम स्क्रीन का व्यवहार';
 
   @override
   String get homeSectionStyle => 'अनुभाग उपस्थिति';
@@ -4329,4 +4349,481 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get remoteMappingImportFailed =>
       'पढ़ी नहीं जा सकी। 64 KB तक की उपलब्ध UTF-8 टेक्स्ट फ़ाइल चुनें।';
+
+  @override
+  String get vpnTitle => 'VPN';
+
+  @override
+  String get vpnSettings => 'VPN सेटिंग';
+
+  @override
+  String get vpnApp => 'VPN ऐप';
+
+  @override
+  String get vpnAutomatic => 'अपने आप';
+
+  @override
+  String get vpnNone => 'चुना नहीं गया';
+
+  @override
+  String get vpnProfile => 'VPN प्रोफ़ाइल';
+
+  @override
+  String get vpnOnlyActive => 'केवल कनेक्ट होने पर दिखाएँ';
+
+  @override
+  String get vpnShowName => 'ऐप का नाम दिखाएँ';
+
+  @override
+  String get vpnColor => 'कनेक्शन को रंग से दिखाएँ';
+
+  @override
+  String get vpnNotify => 'कमांड के नतीजे की सूचना दें';
+
+  @override
+  String get vpnConnected => 'VPN कनेक्ट है';
+
+  @override
+  String get vpnDisconnected => 'VPN डिस्कनेक्ट है';
+
+  @override
+  String get vpnUnknown => 'VPN की स्थिति उपलब्ध नहीं है';
+
+  @override
+  String get vpnConnect => 'कनेक्ट करें';
+
+  @override
+  String get vpnDisconnect => 'डिस्कनेक्ट करें';
+
+  @override
+  String get vpnOpenApp => 'VPN ऐप खोलें';
+
+  @override
+  String get vpnAndroidSettings => 'Android VPN सेटिंग';
+
+  @override
+  String get vpnAllowControl => 'VPN नियंत्रण की अनुमति दें';
+
+  @override
+  String get vpnFailed => 'VPN कार्रवाई विफल';
+
+  @override
+  String get vpnUnsupported =>
+      'यह क्लाइंट सीधे नियंत्रण का समर्थन नहीं करता। आप ऐप खोल सकते हैं।';
+
+  @override
+  String get vpnOther =>
+      'कोई दूसरा या अज्ञात VPN कनेक्ट है। नियंत्रण उपलब्ध नहीं है।';
+
+  @override
+  String get vpnStartup => 'टीवी शुरू होने पर VPN';
+
+  @override
+  String get vpnPending => 'VPN कनेक्शन की प्रतीक्षा है';
+
+  @override
+  String get vpnHelp =>
+      'अपने आप चुनने पर सक्रिय VPN पहचाना जाता है और दोबारा कनेक्ट करने के लिए याद रखा जाता है। ऐप और प्रोफ़ाइल की पहचान के लिए स्थानीय ADB कनेक्शन चाहिए। AmneziaWG और WireGuard में सीधे नियंत्रण के लिए अनुमति और क्लाइंट में रिमोट कंट्रोल चालू होना चाहिए। Happ और MantaRay क्लाइंट में चुनी गई प्रोफ़ाइल का उपयोग करते हैं।';
+
+  @override
+  String get vpnProfileHelp =>
+      'VPN ऐप का सटीक प्रोफ़ाइल नाम लिखें: अधिकतम 15 लैटिन अक्षर, अंक और _ = + . - चिह्न। मैन्युअल कनेक्शन पर उपलब्ध होने पर नाम अपने आप पहचाना जाता है।';
+
+  @override
+  String get vpnStartupHelp =>
+      'VPN सामान्य स्टार्टअप कार्रवाइयों के अतिरिक्त शुरू होता है। पहले प्रोफ़ाइल और अनुमतियाँ सेट करें। नेटवर्क की प्रतीक्षा सीमित है और सक्रिय VPN बदला नहीं जाता। जागने की पहचान केवल लॉन्चर की प्रक्रिया चलने पर होती है।';
+
+  @override
+  String get vpnStartupMethod => 'VPN शुरू करने का तरीका';
+
+  @override
+  String get vpnStartupClient => 'VPN ऐप के ज़रिए';
+
+  @override
+  String get vpnStartupAlwaysOn => 'Android हमेशा चालू VPN';
+
+  @override
+  String get vpnAlwaysOnManaged =>
+      'यह VPN Android के हमेशा चालू मोड से नियंत्रित है। इसे स्टार्टअप या Android सेटिंग में बंद करें।';
+
+  @override
+  String get vpnRestartRequired =>
+      'सिस्टम मोड लागू करने के लिए टीवी रीस्टार्ट करें।';
+
+  @override
+  String get vpnAlwaysOnHelp =>
+      'स्थानीय TCP ADB से कॉन्फ़िगर किए गए क्लाइंट को हमेशा चालू VPN बनाता है। टीवी रीस्टार्ट होने पर Android चयन लागू करता है। VPN के बिना कनेक्शन रोकने की सेटिंग न चालू होती है न बदलती है। मोड छोड़ने पर सिस्टम का पिछला चयन बहाल होता है।';
+
+  @override
+  String get vpnClientConfirmation =>
+      'MantaRay विंडो में कमांड की पुष्टि करें।';
+
+  @override
+  String get informationTapAction => 'ब्लॉक दबाने पर';
+
+  @override
+  String get informationShowBoth => 'मौसम और कैलेंडर';
+
+  @override
+  String get weatherForecastTitle => 'मौसम पूर्वानुमान';
+
+  @override
+  String get weatherForecastPeriod => 'पूर्वानुमान अवधि';
+
+  @override
+  String weatherForecastDays(int days) {
+    return '$days दिन';
+  }
+
+  @override
+  String get weatherForecastView => 'पूर्वानुमान दृश्य';
+
+  @override
+  String get weatherForecastCards => 'छोटे कार्ड';
+
+  @override
+  String get weatherForecastList => 'विस्तृत सूची';
+
+  @override
+  String weatherForecastAvailable(int available, int requested) {
+    return 'उपलब्ध दिन: $requested में से $available';
+  }
+
+  @override
+  String get weatherForecastTvTime =>
+      'पूर्वानुमान की तारीखें टीवी के समय के अनुसार';
+
+  @override
+  String get weatherClear => 'साफ़';
+
+  @override
+  String get weatherCloudy => 'बादल';
+
+  @override
+  String get weatherFog => 'कोहरा';
+
+  @override
+  String get weatherWind => 'हवा';
+
+  @override
+  String get weatherPrecipitation => 'वर्षा';
+
+  @override
+  String get showVolume => 'वॉल्यूम दिखाएँ';
+
+  @override
+  String get audioStatusTitle => 'वॉल्यूम और ऑडियो आउटपुट';
+
+  @override
+  String get audioOutputTv => 'टीवी';
+
+  @override
+  String get audioOutputHeadphones => 'हेडफ़ोन';
+
+  @override
+  String get audioOutputMultiple => 'एकाधिक';
+
+  @override
+  String get audioMuted => 'म्यूट';
+
+  @override
+  String get backgroundStartupTitle => 'बैकग्राउंड ऐप्स';
+
+  @override
+  String get backgroundStartupFailed => 'सेटिंग लोड या सेव नहीं हो सकीं';
+
+  @override
+  String get backgroundStartupRetry => 'फिर कोशिश करें';
+
+  @override
+  String get backgroundStartupEmpty => 'कोई उपयोगकर्ता ऐप नहीं';
+
+  @override
+  String get backgroundStartupUnavailable =>
+      'बैकग्राउंड में शुरू करना उपलब्ध नहीं';
+
+  @override
+  String get backgroundStartupRequested => 'शुरू करने का अनुरोध किया गया';
+
+  @override
+  String get backgroundStartupHelp =>
+      'टीवी बूट होने पर बैकग्राउंड में एक बार शुरू करने के लिए ऐप चुनें। CuteLauncher एक मिनट के अंदर खुलना चाहिए: इसे होम स्क्रीन बनाएँ या बूट पर शुरू करना चालू करें। ऐप होम के पीछे बारी-बारी शुरू होते हैं; चुनने से तुरंत शुरू नहीं होते। रिमोट का इस्तेमाल या लॉन्चर से बाहर जाना बाकी शुरुआत रद्द करता है। स्लीप से जागने पर दोबारा शुरू नहीं होते। असंगत ऐप नहीं चुने जा सकते। शुरू करने से ऐप की अंदरूनी सुविधाएँ चालू नहीं होतीं और लगातार चलने की गारंटी नहीं है। ऐप में अनुमतियाँ दें और बैकग्राउंड संचालन सेट करें। Android या टीवी फ़र्मवेयर इसे रोक सकता है। चयन केवल इस टीवी पर रहता है।';
+
+  @override
+  String get backgroundStartupToggle => 'बैकग्राउंड में अपने आप शुरू करें';
+
+  @override
+  String get systemWidgetSettings => 'सिस्टम विजेट सेटिंग';
+
+  @override
+  String get systemShowCpu => 'पैनल में CPU दिखाएँ';
+
+  @override
+  String get systemShowRam => 'पैनल में RAM दिखाएँ';
+
+  @override
+  String get systemStorage => 'स्टोरेज: उपलब्ध / कुल';
+
+  @override
+  String get systemUptime => 'चालू रहने का समय (घंटे:मिनट)';
+
+  @override
+  String get systemTemperature => 'CPU का तापमान';
+
+  @override
+  String get systemAvailable => 'उपलब्ध RAM';
+
+  @override
+  String get systemHistory => 'पिछला घंटा · औसत और अधिकतम';
+
+  @override
+  String get systemNow => 'अभी';
+
+  @override
+  String get systemHourAgo => '−60 मिनट';
+
+  @override
+  String get systemWidgetHelp =>
+      'लॉन्चर दिखाई देने पर रीडिंग हर 5 सेकंड में अपडेट होती हैं। ग्राफ़ हर मिनट का औसत और अधिकतम दिखाते हैं। अन्य ऐप, स्लीप और रीडिंग की त्रुटियों के समय अंतराल रहता है। इतिहास मेमोरी में रहता है और लॉन्चर प्रक्रिया फिर शुरू होने पर मिट जाता है। CPU और तापमान फ़र्मवेयर पर निर्भर हैं। केवल आइकन दिखाने के लिए पैनल के दोनों मान बंद करें।';
+
+  @override
+  String get slideshowBrowseFolders => 'फ़ोल्डर ब्राउज़ करें';
+
+  @override
+  String get slideshowEnterFolderPath => 'फ़ोल्डर पथ दर्ज करें';
+
+  @override
+  String get slideshowSystemPicker => 'सिस्टम फ़ाइल प्रबंधक में चुनें';
+
+  @override
+  String get slideshowFolderPath => 'फ़ोल्डर पथ';
+
+  @override
+  String get slideshowUseFolder => 'इस फ़ोल्डर का उपयोग करें';
+
+  @override
+  String get slideshowParentFolder => 'ऊपरी फ़ोल्डर';
+
+  @override
+  String get slideshowStoragePermission =>
+      'अंतर्निहित फ़ाइल ब्राउज़र का उपयोग करने के लिए Android सेटिंग में फ़ाइलों की पहुँच की अनुमति दें।';
+
+  @override
+  String get slideshowPickerUnavailable =>
+      'इस टीवी पर फ़ोल्डर चयनकर्ता नहीं है। अंतर्निहित ब्राउज़र इस्तेमाल करें या पथ दर्ज करें।';
+
+  @override
+  String get slideshowFolderUnavailable =>
+      'फ़ोल्डर उपलब्ध नहीं है। पथ, स्टोरेज कनेक्शन और फ़ाइल ऐक्सेस अनुमति जाँचें।';
+
+  @override
+  String get slideshowStorageHelp =>
+      'अंतर्निहित ब्राउज़र टीवी और जुड़े स्टोरेज के फ़ोल्डर पढ़ता है। Android 11 या नए पर सभी फ़ाइलों का ऐक्सेस और Android 9–10 पर स्टोरेज ऐक्सेस दें। /storage/emulated/0/Pictures जैसा पथ भी दर्ज कर सकते हैं। फ़ाइलें बदली नहीं जातीं।';
+
+  @override
+  String get fileBrowserTitle => 'फ़ाइल चुनें';
+
+  @override
+  String get filePickerChoose => 'फ़ाइल ब्राउज़र चुनें';
+
+  @override
+  String get filePickerSystem => 'सिस्टम फ़ाइल चयनकर्ता';
+
+  @override
+  String get filePickerBuiltIn => 'अंतर्निहित फ़ाइल ब्राउज़र';
+
+  @override
+  String get fileBrowserEmpty => 'दिखाने के लिए कोई आइटम नहीं';
+
+  @override
+  String get fileBrowserUnavailable =>
+      'यह स्थान नहीं खोला जा सका। पहुँच जाँचें और फिर से प्रयास करें।';
+
+  @override
+  String get networkAndVpnGroup => 'नेटवर्क और VPN';
+
+  @override
+  String get soundAndInputsGroup => 'ध्वनि और इनपुट';
+
+  @override
+  String get timerAndNightModeGroup => 'टाइमर और नाइट मोड';
+
+  @override
+  String get systemSettingsGroup => 'सिस्टम सेटिंग';
+
+  @override
+  String get appChannelsTitle => 'ऐप फ़ीड';
+
+  @override
+  String get appChannelsHelp =>
+      'अधिकतम 16 फ़ीड चुनें। उपलब्धता ऐप द्वारा प्रकाशित चैनलों और टीवी फ़र्मवेयर पर निर्भर है। खाली फ़ीड छिपी रहती हैं। चयन इसी टीवी पर सहेजा जाता है।';
+
+  @override
+  String get appChannelsUnavailable =>
+      'फ़ीड नहीं पढ़ी जा सकीं। टीवी कार्यक्रमों की अनुमति जाँचें।';
+
+  @override
+  String get appChannelsEmpty => 'कोई ऐप फ़ीड उपलब्ध नहीं है।';
+
+  @override
+  String get appChannelsRefresh => 'फ़ीड रीफ़्रेश करें';
+
+  @override
+  String get appChannelsLaunchFailed => 'यह सामग्री नहीं खोली जा सकी।';
+
+  @override
+  String get appChannelsSaveFailed =>
+      'चयन सहेजा नहीं जा सका। अधिकतम 16 फ़ीड चुनें।';
+
+  @override
+  String get sectionDeleteConfirm =>
+      'यह अनुभाग हटाएँ? इंस्टॉल किए गए ऐप बने रहेंगे।';
+
+  @override
+  String get sectionDeleteFailed =>
+      'अनुभाग हटाया नहीं जा सका। फिर से कोशिश करें।';
+
+  @override
+  String get appChannelsAccess => 'ऐप फ़ीड की अनुमति';
+
+  @override
+  String get appChannelsMissing => 'फ़ीड उपलब्ध नहीं है';
+
+  @override
+  String get wallpaperRefresh => 'वॉलपेपर अपडेट करें';
+
+  @override
+  String get wallpaperDimmingHelp =>
+      '100% मूल अँधेरेपन को बनाए रखता है; 200% उसे दोगुना करता है। यह काली परत की अपारदर्शिता नहीं है।';
+
+  @override
+  String get resetLauncherSettings => 'सभी सेटिंग रीसेट करें';
+
+  @override
+  String get resetLauncherSettingsConfirmation =>
+      'CuteLauncher की सभी सेटिंग और स्थानीय डेटा मिट जाएँगे: अनुभाग, पसंदीदा, रिमोट मैपिंग, कनेक्शन और ऐप के संग्रहण की फ़ाइलें। CuteLauncher बंद हो जाएगा और अगली बार नई स्थापना की तरह खुलेगा। पहुँच की अनुमति फिर देनी होगी। CuteLauncher के संग्रहण से बाहर की फ़ाइलें और दूसरे ऐप रखे जाएँगे।';
+
+  @override
+  String get resetLauncherSettingsError =>
+      'सेटिंग रीसेट पूरी नहीं हो सकी। फिर से कोशिश करें।';
+
+  @override
+  String get fileBrowserCurrentFolder => 'वर्तमान फ़ोल्डर';
+
+  @override
+  String get fileBrowserFileName => 'फ़ाइल का नाम';
+
+  @override
+  String get fileBrowserNoFolders => 'कोई सबफ़ोल्डर नहीं';
+
+  @override
+  String get fileBrowserNoFiles => 'कोई उपयुक्त फ़ाइल नहीं';
+
+  @override
+  String get fileBrowserPartial => 'फ़ोल्डर का केवल कुछ हिस्सा दिखाया गया है';
+
+  @override
+  String get fileBrowserRemoteHint => '← पूरा नाम · → पुष्टि';
+
+  @override
+  String get fileBrowserReadNameHint => '← पूरा नाम दिखाएँ';
+
+  @override
+  String fileBrowserSavedTo(String path) {
+    return 'सहेजा गया: $path';
+  }
+
+  @override
+  String get backupDriveConnect => 'Google Drive कनेक्ट करें';
+
+  @override
+  String get discardChangesTitle => 'बदलाव छोड़ें?';
+
+  @override
+  String get discardChangesMessage => 'सहेजे नहीं गए बदलाव खो जाएँगे।';
+
+  @override
+  String get backgroundFileUnavailable => 'फ़ाइल उपलब्ध नहीं है';
+
+  @override
+  String get backupLastSuccess => 'अंतिम सफल कार्रवाई:';
+
+  @override
+  String get informationPlacement => 'ब्लॉक का स्थान';
+
+  @override
+  String get informationOnBackground => 'वॉलपेपर पर';
+
+  @override
+  String get informationBackgroundAlignment => 'वॉलपेपर पर संरेखण';
+
+  @override
+  String get informationBackgroundHelp =>
+      'घड़ी, तारीख और मौसम के लिए अलग-अलग ऊपरी पैनल, वॉलपेपर या छिपा हुआ चुनें। वॉलपेपर के तत्व दबाने पर प्रतिक्रिया नहीं देते और टाइलों को नहीं खिसकाते। गतिशील दृश्य में पहाड़ घड़ी को आंशिक रूप से ढकते हैं। त्वरित सेटिंग्स स्वतंत्र रहती हैं।';
+
+  @override
+  String get informationTime => 'घड़ी';
+
+  @override
+  String get informationDate => 'तारीख';
+
+  @override
+  String get backgroundInformationAppearance => 'वॉलपेपर पर रूप';
+
+  @override
+  String onlineWallpaperFailureStage(String stage) {
+    String _temp0 = intl.Intl.selectLogic(stage, {
+      'initialize': 'स्टोरेज तैयार करना',
+      'metadata': 'स्रोत से अनुरोध',
+      'download': 'चित्र डाउनलोड',
+      'validation': 'चित्र जाँच',
+      'save': 'वॉलपेपर सहेजना',
+      'other': 'वॉलपेपर सहेजना',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String onlineWallpaperFailureReason(String reason) {
+    String _temp0 = intl.Intl.selectLogic(reason, {
+      'dns': 'सर्वर का पता नहीं मिल सका (DNS)।',
+      'connection': 'सर्वर से कनेक्शन स्थापित या बनाए नहीं रखा जा सका।',
+      'tls': 'सुरक्षित कनेक्शन या प्रमाणपत्र में त्रुटि (TLS)।',
+      'timeout': 'अनुरोध का समय समाप्त हो गया।',
+      'http': 'सर्वर ने त्रुटि लौटाई।',
+      'redirect': 'अमान्य रीडायरेक्ट या बहुत अधिक रीडायरेक्ट।',
+      'insecureUrl': 'असुरक्षित URL: बिना लॉगिन विवरण वाला HTTPS आवश्यक है।',
+      'tooLarge': 'प्रतिक्रिया आकार सीमा से अधिक है।',
+      'dimensions': 'चित्र के आयाम सीमा से अधिक हैं।',
+      'invalidResponse': 'स्रोत ने अमान्य डेटा लौटाया।',
+      'noImage': 'स्रोत ने कोई नया उपयुक्त चित्र नहीं लौटाया।',
+      'invalidImage': 'फ़ाइल खराब है या चित्र प्रारूप समर्थित नहीं है।',
+      'storage': 'वॉलपेपर फ़ाइलें पढ़ी या लिखी नहीं जा सकीं।',
+      'unknown': 'अज्ञात त्रुटि।',
+      'other': 'अज्ञात त्रुटि।',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get informationPanelAppearance => 'पैनल का रूप';
+
+  @override
+  String get informationData => 'प्रारूप और डेटा';
+
+  @override
+  String get informationGroupingMinimum => 'कम से कम दो तत्व आवश्यक हैं';
+
+  @override
+  String get screenshotSceneMode => 'स्क्रीनशॉट मोड';
+
+  @override
+  String get screenshotSceneHour => 'घंटे';
+
+  @override
+  String get screenshotSceneMinute => 'मिनट';
+
+  @override
+  String get screenshotSceneHelp =>
+      'दृश्य और पृष्ठभूमि की घड़ी का समय तथा दृश्य का मौसम सेट करता है। सेटिंग बंद करने के बाद भी सक्रिय रहता है। सिस्टम समय, मौसम डेटा और सहेजी गई सेटिंग नहीं बदलतीं। इस बिल्ड को पुनः शुरू करने पर: 16:00, बादल।';
 }

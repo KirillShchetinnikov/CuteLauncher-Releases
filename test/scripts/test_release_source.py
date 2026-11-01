@@ -16,11 +16,12 @@ spec.loader.exec_module(source)
 class SourcePreparationTests(unittest.TestCase):
     def test_new_native_libraries_cannot_silently_escape_the_source_inventory(self):
         config = json.loads((ROOT / 'scripts/release-native-sources.json').read_text())
-        selected = source.selected_native_sources(config, {'sqlite3': '3.7.0'})
+        selected = source.selected_native_sources(config, {'sqlite3': '3.8.0'})
         names = ['lib/arm64-v8a/libapp.so', 'lib/arm64-v8a/libflutter.so', 'lib/arm64-v8a/libsqlite3.so']
         coverage = source.native_library_sources(names, config, selected)
         self.assertEqual(coverage[names[-1]], ['sqlite3-dart', 'sqlite-amalgamation'])
-        for name in ['lib/arm64-v8a/libunknown.so', 'lib/arm64-v8a/libdatastore_shared_counter.so']:
+        for name in ['lib/arm64-v8a/libunknown.so', 'lib/arm64-v8a/libdatastore_shared_counter.so',
+                     'lib/arm64-v8a/libdartjni.so']:
             with self.subTest(name=name), self.assertRaises(ValueError):
                 source.native_library_sources([name], config, selected)
 
@@ -51,15 +52,26 @@ class SourcePreparationTests(unittest.TestCase):
 
     def test_removed_native_dependencies_do_not_block_current_releases(self):
         config = json.loads((ROOT / 'scripts/release-native-sources.json').read_text())
-        resolved = {'sqlite3': '3.7.0', 'androidx.datastore:datastore-core-android': '1.1.7'}
+        resolved = {'sqlite3': '3.8.0', 'androidx.datastore:datastore-core-android': '1.2.1', 'jni': '1.1.1'}
         selected = source.selected_native_sources(config, resolved)
         self.assertEqual({item['name'] for item in selected},
-                         {'androidx-support', 'sqlite3-dart', 'sqlite-amalgamation'})
+                         {'androidx-support', 'sqlite3-dart', 'sqlite-amalgamation', 'dart-jni'})
+        self.assertEqual(source.native_library_sources(['lib/x86_64/libdartjni.so'], config, selected),
+                         {'lib/x86_64/libdartjni.so': ['dart-jni']})
         for coordinate in resolved:
             with self.subTest(coordinate=coordinate), self.assertRaises(ValueError):
                 source.selected_native_sources(config, {**resolved, coordinate: '999.0'})
         with self.assertRaises(ValueError):
             source.selected_native_sources({'versions': {}, 'sources': [{'name': 'unmapped'}]}, {})
+
+    def test_native_pub_archives_match_the_committed_lockfile(self):
+        config = json.loads((ROOT / 'scripts/release-native-sources.json').read_text())
+        packages = source.lock_packages((ROOT / 'pubspec.lock').read_text())
+        for name, version in config['versions'].items():
+            if ':' not in name:
+                self.assertEqual(packages[name]['version'], version)
+        jni = next(item for item in config['sources'] if item['name'] == 'dart-jni')
+        self.assertEqual(jni['sha256'], packages['jni']['sha256'])
 
     def test_public_kit_filters_internal_docs_and_detects_secrets(self):
         spec = importlib.util.spec_from_file_location('publisher', ROOT / 'scripts/publish-source.py')
@@ -103,7 +115,7 @@ class SourcePreparationTests(unittest.TestCase):
     def test_real_lockfile_is_complete_and_custom_hosts_fail_closed(self):
         text = (ROOT / 'pubspec.lock').read_text()
         packages = source.lock_packages(text)
-        self.assertEqual(packages['sqlite3']['version'], '3.7.0')
+        self.assertEqual(packages['sqlite3']['version'], '3.8.0')
         self.assertIn('flutter', packages)
         with self.assertRaises(ValueError):
             source.lock_packages(text.replace('https://pub.dev', 'https://other.example'))

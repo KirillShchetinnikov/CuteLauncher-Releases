@@ -9,7 +9,6 @@ import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import '../../support/settings_help.dart';
 
 void main() {
   const autoLaunch = MethodChannel('cutelauncher/auto_launch');
@@ -114,8 +113,6 @@ void main() {
         await tester.pumpAndSettle();
         await tester.tap(find.text(l.adbDefaultBlock));
         await tester.pumpAndSettle();
-        expect(find.text(l.adbHomeUnavailable), findsNothing);
-        await toggleSettingsHelp(tester, l.adbHomeUnavailable);
         expect(find.text(l.adbHomeUnavailable), findsOneWidget);
         expect(tile(l.adbAssignDefault).onPressed, isNull);
         expect(tile('${l.adbDisableBuiltin}: $system').onPressed, isNotNull);

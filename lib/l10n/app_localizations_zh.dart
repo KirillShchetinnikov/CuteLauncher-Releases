@@ -10,6 +10,26 @@ class AppLocalizationsZh extends AppLocalizations {
   AppLocalizationsZh([String locale = 'zh']) : super(locale);
 
   @override
+  String get wallhavenWallpaperHint =>
+      '按所选主题随机获取 Wallhaven 壁纸：SFW、16:9、Full HD 或更高。无需账号或 API 密钥。启动器打开时更新；出错时保留上一张壁纸。';
+
+  @override
+  String get renderCompatibilityTitle => '兼容图形输出';
+
+  @override
+  String get renderCompatibilityAutomatic => '已为此设备自动启用';
+
+  @override
+  String get renderCompatibilityApply => '应用并重启启动器';
+
+  @override
+  String get renderCompatibilityFailed => '无法读取或应用设置';
+
+  @override
+  String get renderCompatibilityHelp =>
+      '如果界面在夜间调暗时闪烁，请尝试此模式。已验证的机型会自动启用。其他电视上的选择仅保存在本设备上，重启启动器后生效。可能增加图形处理负载。';
+
+  @override
   String get diagnosticsHubTitle => 'Diagnostics';
 
   @override
@@ -1459,7 +1479,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get weatherCoordinatesError => '手动输入城市或自动获取坐标。';
 
   @override
-  String get weatherRefresh => '检查更新';
+  String get weatherRefresh => '刷新天气';
 
   @override
   String get weatherKeyPrivate => '仅存储在此设备上，不包含在备份中。空输入将删除密钥。';
@@ -1468,7 +1488,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get weatherUpdated => '已更新';
 
   @override
-  String get onlineWallpaperError => '无法加载该图像。保留以前的壁纸。选择“检查更新”以重试下载。';
+  String get onlineWallpaperError => '无法加载该图像。保留以前的壁纸。选择“刷新壁纸”以重试下载。';
 
   @override
   String get onlineWallpaperHint => '最后一张图片会保留，以便离线使用（最大 8 MiB）。';
@@ -1878,7 +1898,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get buttonsGroup => '按钮';
 
   @override
-  String get notificationAppsHint => '关闭不需要通知的应用程序。启用的开关允许通知；该应用程序仍然可以启动。';
+  String get notificationAppsHint => '选择要屏蔽通知的应用。开关开启表示通知已被屏蔽。列表保持按名称排序。';
 
   @override
   String get notificationPanelLink => '顶板外观';
@@ -1944,7 +1964,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get rememberCategoryFocus => '记住最后一张聚焦卡';
 
   @override
-  String get automaticBackups => '自动备份';
+  String get automaticBackups => '备份与同步';
 
   @override
   String get automaticBackupsHint =>
@@ -2017,7 +2037,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get resetAppearanceHint => '重置背景、重音、图块、标签、突出显示和动画？';
 
   @override
-  String get wallpaperDimming => '调光';
+  String get wallpaperDimming => '调暗强度';
 
   @override
   String get wallpaperPlacement => '安置';
@@ -2588,7 +2608,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get backupDriveHelp =>
-      '选择“连接”并确认手机上的代码。备份在 Google Drive 中的 CuteLauncher 文件夹中可见，您可以在其中下载或删除它们。保持文件名不变以进行应用内恢复。从隐藏备份升级后重新连接；旧备份不会自动迁移。';
+      '选择“连接 Google 云端硬盘”并确认手机上的代码。备份在 Google Drive 中的 CuteLauncher 文件夹中可见，您可以在其中下载或删除它们。保持文件名不变以进行应用内恢复。从隐藏备份升级后重新连接；旧备份不会自动迁移。';
 
   @override
   String get backupFrequency => '备份频率';
@@ -3031,7 +3051,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get homeOwnReset => '恢复通用设置';
 
   @override
-  String get homeParameters => '参数';
+  String get homeParameters => '主屏幕行为';
 
   @override
   String get homeSectionStyle => '断面外观';
@@ -4131,4 +4151,465 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get remoteMappingImportFailed => '无法读取。请选择可访问且不超过 64 KB 的 UTF-8 文本文件。';
+
+  @override
+  String get vpnTitle => 'VPN';
+
+  @override
+  String get vpnSettings => 'VPN 设置';
+
+  @override
+  String get vpnApp => 'VPN 应用';
+
+  @override
+  String get vpnAutomatic => '自动';
+
+  @override
+  String get vpnNone => '未选择';
+
+  @override
+  String get vpnProfile => 'VPN 配置';
+
+  @override
+  String get vpnOnlyActive => '仅在连接时显示';
+
+  @override
+  String get vpnShowName => '显示应用名称';
+
+  @override
+  String get vpnColor => '用颜色突出显示连接';
+
+  @override
+  String get vpnNotify => '通知命令执行结果';
+
+  @override
+  String get vpnConnected => 'VPN 已连接';
+
+  @override
+  String get vpnDisconnected => 'VPN 已断开';
+
+  @override
+  String get vpnUnknown => '无法获取 VPN 状态';
+
+  @override
+  String get vpnConnect => '连接';
+
+  @override
+  String get vpnDisconnect => '断开';
+
+  @override
+  String get vpnOpenApp => '打开 VPN 应用';
+
+  @override
+  String get vpnAndroidSettings => 'Android VPN 设置';
+
+  @override
+  String get vpnAllowControl => '允许控制 VPN';
+
+  @override
+  String get vpnFailed => 'VPN 操作失败';
+
+  @override
+  String get vpnUnsupported => '此客户端不支持直接控制。您可以打开应用。';
+
+  @override
+  String get vpnOther => '另一个或未识别的 VPN 已连接，无法控制。';
+
+  @override
+  String get vpnStartup => '电视启动时连接 VPN';
+
+  @override
+  String get vpnPending => '正在等待 VPN 连接';
+
+  @override
+  String get vpnHelp =>
+      '自动选择会识别当前 VPN 并记住它以便重新连接。识别应用和配置需要已连接的本地 ADB。直接控制支持 AmneziaWG 和 WireGuard，需要授予控制权限并在客户端启用远程控制。 Happ 和 MantaRay 使用客户端中选择的配置。';
+
+  @override
+  String get vpnProfileHelp =>
+      '输入 VPN 应用中的准确配置名称：最多 15 个拉丁字母、数字和 _ = + . - 字符。手动连接时会在可用的情况下自动识别名称。';
+
+  @override
+  String get vpnStartupHelp =>
+      'VPN 启动独立于常规启动操作。请先配置客户端及其权限。等待网络有时间限制，已有 VPN 不会被替换。只有启动器进程运行时才能检测唤醒。';
+
+  @override
+  String get vpnStartupMethod => 'VPN 启动方式';
+
+  @override
+  String get vpnStartupClient => '通过 VPN 应用';
+
+  @override
+  String get vpnStartupAlwaysOn => 'Android 始终开启 VPN';
+
+  @override
+  String get vpnAlwaysOnManaged =>
+      '此 VPN 由 Android 始终开启模式管理。请在启动设置或 Android 设置中关闭该模式。';
+
+  @override
+  String get vpnRestartRequired => '请重启电视以应用系统模式。';
+
+  @override
+  String get vpnAlwaysOnHelp =>
+      '通过本地 TCP ADB 将已配置的客户端设为始终开启 VPN。Android 会在电视重启后应用选择。不会启用或更改阻止无 VPN 连接的设置。退出该模式将恢复之前的系统选择。';
+
+  @override
+  String get vpnClientConfirmation => '请在 MantaRay 窗口中确认命令。';
+
+  @override
+  String get informationTapAction => '点击信息块时';
+
+  @override
+  String get informationShowBoth => '天气和日历';
+
+  @override
+  String get weatherForecastTitle => '天气预报';
+
+  @override
+  String get weatherForecastPeriod => '预报时段';
+
+  @override
+  String weatherForecastDays(int days) {
+    return '$days天';
+  }
+
+  @override
+  String get weatherForecastView => '预报显示方式';
+
+  @override
+  String get weatherForecastCards => '简洁卡片';
+
+  @override
+  String get weatherForecastList => '详细列表';
+
+  @override
+  String weatherForecastAvailable(int available, int requested) {
+    return '可用天数：$requested天中的$available天';
+  }
+
+  @override
+  String get weatherForecastTvTime => '预报日期使用电视时间';
+
+  @override
+  String get weatherClear => '晴';
+
+  @override
+  String get weatherCloudy => '多云';
+
+  @override
+  String get weatherFog => '雾';
+
+  @override
+  String get weatherWind => '风';
+
+  @override
+  String get weatherPrecipitation => '降水概率';
+
+  @override
+  String get showVolume => '显示音量';
+
+  @override
+  String get audioStatusTitle => '音量和音频输出';
+
+  @override
+  String get audioOutputTv => '电视';
+
+  @override
+  String get audioOutputHeadphones => '耳机';
+
+  @override
+  String get audioOutputMultiple => '多个';
+
+  @override
+  String get audioMuted => '已静音';
+
+  @override
+  String get backgroundStartupTitle => '后台应用';
+
+  @override
+  String get backgroundStartupFailed => '无法加载或保存设置';
+
+  @override
+  String get backgroundStartupRetry => '重试';
+
+  @override
+  String get backgroundStartupEmpty => '没有用户应用';
+
+  @override
+  String get backgroundStartupUnavailable => '无法在后台启动';
+
+  @override
+  String get backgroundStartupRequested => '已请求启动';
+
+  @override
+  String get backgroundStartupHelp =>
+      '勾选要在电视开机后在后台启动一次的应用。CuteLauncher 须在开机后一分钟内打开：将其设为主屏幕或开启开机启动。应用会在主屏幕后依次启动；勾选不会立即启动。操作遥控器或离开启动器会取消其余启动。休眠唤醒不会再次启动。不支持此模式的应用无法选择。启动不会启用应用内功能，也不保证持续运行。请在应用内授予权限并设置后台运行。Android 或电视固件可能会停止应用。选择仅保存在本电视上。';
+
+  @override
+  String get backgroundStartupToggle => '后台自动启动';
+
+  @override
+  String get systemWidgetSettings => '系统小组件设置';
+
+  @override
+  String get systemShowCpu => '在面板中显示 CPU';
+
+  @override
+  String get systemShowRam => '在面板中显示 RAM';
+
+  @override
+  String get systemStorage => '存储空间：可用 / 总计';
+
+  @override
+  String get systemUptime => '运行时间（小时:分钟）';
+
+  @override
+  String get systemTemperature => 'CPU 温度';
+
+  @override
+  String get systemAvailable => '可用 RAM';
+
+  @override
+  String get systemHistory => '过去一小时 · 平均值和峰值';
+
+  @override
+  String get systemNow => '现在';
+
+  @override
+  String get systemHourAgo => '−60 分钟';
+
+  @override
+  String get systemWidgetHelp =>
+      '启动器可见时每 5 秒更新一次。图表显示每分钟的平均值和峰值。使用其他应用、休眠和读取失败的时段显示为空白。历史记录保存在内存中，启动器进程重启后会清除。CPU 和温度数据取决于固件。关闭两个面板数值后将只显示图标。';
+
+  @override
+  String get slideshowBrowseFolders => '浏览文件夹';
+
+  @override
+  String get slideshowEnterFolderPath => '输入文件夹路径';
+
+  @override
+  String get slideshowSystemPicker => '在系统文件管理器中选择';
+
+  @override
+  String get slideshowFolderPath => '文件夹路径';
+
+  @override
+  String get slideshowUseFolder => '使用此文件夹';
+
+  @override
+  String get slideshowParentFolder => '上级文件夹';
+
+  @override
+  String get slideshowStoragePermission => '请在 Android 设置中允许文件访问，以使用内置文件浏览器。';
+
+  @override
+  String get slideshowPickerUnavailable => '此电视没有文件夹选择器。请使用内置浏览器或手动输入路径。';
+
+  @override
+  String get slideshowFolderUnavailable => '无法访问文件夹。请检查路径、存储设备连接和文件访问权限。';
+
+  @override
+  String get slideshowStorageHelp =>
+      '内置浏览器可读取电视和已连接存储设备上的文件夹。Android 11 及以上请允许所有文件访问；Android 9–10 请允许存储访问。也可手动输入路径，例如 /storage/emulated/0/Pictures。不会修改文件。';
+
+  @override
+  String get fileBrowserTitle => '选择文件';
+
+  @override
+  String get filePickerChoose => '选择文件浏览器';
+
+  @override
+  String get filePickerSystem => '系统文件选择器';
+
+  @override
+  String get filePickerBuiltIn => '内置文件浏览器';
+
+  @override
+  String get fileBrowserEmpty => '没有可显示的项目';
+
+  @override
+  String get fileBrowserUnavailable => '无法打开此位置。请检查访问权限后重试。';
+
+  @override
+  String get networkAndVpnGroup => '网络和 VPN';
+
+  @override
+  String get soundAndInputsGroup => '声音和输入源';
+
+  @override
+  String get timerAndNightModeGroup => '定时器和夜间模式';
+
+  @override
+  String get systemSettingsGroup => '系统设置';
+
+  @override
+  String get appChannelsTitle => '应用内容流';
+
+  @override
+  String get appChannelsHelp =>
+      '最多选择16个内容流。可用性取决于应用发布的频道和电视固件。空内容流会隐藏。选择仅保存在此电视上。';
+
+  @override
+  String get appChannelsUnavailable => '无法读取内容流。请检查电视节目访问权限。';
+
+  @override
+  String get appChannelsEmpty => '没有可用的应用内容流。';
+
+  @override
+  String get appChannelsRefresh => '刷新内容流';
+
+  @override
+  String get appChannelsLaunchFailed => '无法打开此内容。';
+
+  @override
+  String get appChannelsSaveFailed => '无法保存选择。最多可选择16个内容流。';
+
+  @override
+  String get sectionDeleteConfirm => '删除此分区？已安装的应用将保留。';
+
+  @override
+  String get sectionDeleteFailed => '无法删除分区。请重试。';
+
+  @override
+  String get appChannelsAccess => '应用信息流访问权限';
+
+  @override
+  String get appChannelsMissing => '信息流不可用';
+
+  @override
+  String get wallpaperRefresh => '刷新壁纸';
+
+  @override
+  String get wallpaperDimmingHelp => '100%保持原始调暗程度，200%将其加倍。这不是黑色蒙层的不透明度。';
+
+  @override
+  String get resetLauncherSettings => '重置所有设置';
+
+  @override
+  String get resetLauncherSettingsConfirmation =>
+      '将删除 CuteLauncher 的所有设置和本地数据，包括分区、收藏、遥控器映射、连接及应用存储中的文件。CuteLauncher 将关闭，下次启动时将如同全新安装。需要重新授予访问权限。CuteLauncher 存储之外的文件和其他应用将保留。';
+
+  @override
+  String get resetLauncherSettingsError => '无法完成设置重置。请重试。';
+
+  @override
+  String get fileBrowserCurrentFolder => '当前文件夹';
+
+  @override
+  String get fileBrowserFileName => '文件名';
+
+  @override
+  String get fileBrowserNoFolders => '没有子文件夹';
+
+  @override
+  String get fileBrowserNoFiles => '没有匹配的文件';
+
+  @override
+  String get fileBrowserPartial => '仅显示文件夹的部分内容';
+
+  @override
+  String get fileBrowserRemoteHint => '← 完整名称 · → 确认';
+
+  @override
+  String get fileBrowserReadNameHint => '← 显示完整名称';
+
+  @override
+  String fileBrowserSavedTo(String path) {
+    return '已保存：$path';
+  }
+
+  @override
+  String get backupDriveConnect => '连接 Google 云端硬盘';
+
+  @override
+  String get discardChangesTitle => '放弃更改？';
+
+  @override
+  String get discardChangesMessage => '未保存的更改将丢失。';
+
+  @override
+  String get backgroundFileUnavailable => '文件不可用';
+
+  @override
+  String get backupLastSuccess => '上次成功操作：';
+
+  @override
+  String get informationPlacement => '信息块位置';
+
+  @override
+  String get informationOnBackground => '壁纸上';
+
+  @override
+  String get informationBackgroundAlignment => '壁纸对齐方式';
+
+  @override
+  String get informationBackgroundHelp =>
+      '分别为时钟、日期和天气选择顶部面板、壁纸或隐藏。壁纸上的元素不响应操作，也不改变磁贴位置。动态风景中的山峰会遮住部分时钟。快捷设置保持独立。';
+
+  @override
+  String get informationTime => '时钟';
+
+  @override
+  String get informationDate => '日期';
+
+  @override
+  String get backgroundInformationAppearance => '壁纸上的外观';
+
+  @override
+  String onlineWallpaperFailureStage(String stage) {
+    String _temp0 = intl.Intl.selectLogic(stage, {
+      'initialize': '准备存储',
+      'metadata': '请求图片源',
+      'download': '下载图片',
+      'validation': '验证图片',
+      'save': '保存壁纸',
+      'other': '保存壁纸',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String onlineWallpaperFailureReason(String reason) {
+    String _temp0 = intl.Intl.selectLogic(reason, {
+      'dns': '无法解析服务器地址（DNS）。',
+      'connection': '无法建立或维持与服务器的连接。',
+      'tls': '安全连接或证书错误（TLS）。',
+      'timeout': '请求超时。',
+      'http': '服务器返回错误。',
+      'redirect': '重定向无效或次数过多。',
+      'insecureUrl': '链接不安全：需要不含登录信息的 HTTPS。',
+      'tooLarge': '响应超过大小限制。',
+      'dimensions': '图片尺寸超过限制。',
+      'invalidResponse': '图片源返回了无效数据。',
+      'noImage': '图片源未返回符合条件的新图片。',
+      'invalidImage': '文件已损坏或图片格式不受支持。',
+      'storage': '无法读取或写入壁纸文件。',
+      'unknown': '未知错误。',
+      'other': '未知错误。',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get informationPanelAppearance => '面板外观';
+
+  @override
+  String get informationData => '格式和数据';
+
+  @override
+  String get informationGroupingMinimum => '至少需要两个元素';
+
+  @override
+  String get screenshotSceneMode => '截图模式';
+
+  @override
+  String get screenshotSceneHour => '小时';
+
+  @override
+  String get screenshotSceneMinute => '分钟';
+
+  @override
+  String get screenshotSceneHelp =>
+      '设置风景和背景时钟的时间，以及风景的天气。关闭设置后仍然生效。不更改系统时间、天气数据或已保存的设置。此版本重新启动时为16:00，多云。';
 }

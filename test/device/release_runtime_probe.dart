@@ -20,6 +20,9 @@ Future<void> main() async {
   if (!Platform.isAndroid || !['ranchu', 'goldfish'].contains(hardware.stdout.toString().trim())) {
     throw StateError('Emulator required');
   }
+  // Present the Flutter activity before opening another app's document picker.
+  runApp(const MaterialApp(home: Scaffold(body: Center(child: CircularProgressIndicator()))));
+  await WidgetsBinding.instance.endOfFrame;
   final cache = await getTemporaryDirectory();
   final root = Directory('${cache.path}/release-runtime-probe');
   await root.create(recursive: true);

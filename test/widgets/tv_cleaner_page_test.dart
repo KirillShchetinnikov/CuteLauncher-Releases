@@ -1,3 +1,5 @@
+import 'package:flauncher/document_files.dart';
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -93,11 +95,16 @@ class FakeCleaner extends TvCleanerClient {
   final copies = <Map<String, dynamic>>[];
   Map<String, dynamic>? exported;
   String? exportKind;
+  String? exportResult = 'saved';
   @override
-  Future<String?> export(Map<String, dynamic> value, String kind) async {
+  Future<String?> export(
+    Map<String, dynamic> value,
+    String kind, {
+    DocumentExporter? exporter,
+  }) async {
     exported = value;
     exportKind = kind;
-    return 'saved';
+    return exportResult;
   }
 
   Completer<Map<String, dynamic>>? pending;
@@ -187,7 +194,8 @@ class FakeCleaner extends TvCleanerClient {
   }
 
   @override
-  Future<String?> importFile() async => imported;
+  Future<String?> importFile({Future<Map?> Function()? picker}) async =>
+      imported;
 }
 
 Future<void> open(
@@ -737,6 +745,37 @@ void main() {
     expect(find.text('Example video\norg.example.video'), findsOneWidget);
   });
 
+  for (final result in <String?>[
+    'saved',
+    'opened',
+    'failed',
+    'cancelled',
+    null,
+  ]) {
+    testWidgets('export reports the actual result: $result', (tester) async {
+      final client = FakeCleaner()..exportResult = result;
+      await open(tester, client, 'en');
+      final l = AppLocalizations.of(
+        tester.element(find.byType(TvCleanerPage)),
+      )!;
+      await click(tester, 'Refresh applications');
+      await click(tester, 'Reports');
+      await click(tester, 'Export disabled-app report to file');
+      expect(
+        find.text(l.cleanerSaved),
+        result == 'saved' ? findsOneWidget : findsNothing,
+      );
+      expect(
+        find.text(l.diagnosticsExportOpened),
+        result == 'opened' ? findsOneWidget : findsNothing,
+      );
+      expect(
+        find.text(l.diagnosticsSaveFailed),
+        result == 'failed' ? findsOneWidget : findsNothing,
+      );
+    });
+  }
+
   testWidgets(
     'reports refreshes current disabled apps and exports directly to file',
     (tester) async {
@@ -998,43 +1037,70 @@ void main() {
   );
 
   for (final locale in ['ru', 'en']) {
-    testWidgets('preinstalled menu reads cache; only list entry refreshes: $locale', (tester) async {
-      final ru = locale == 'ru';
-      final client = FakeCleaner()..cached = snapshot(saved: true);
-      await open(tester, client, locale);
-      await click(tester, ru ? 'Списки отключения' : 'Disable lists');
-      await click(tester, ru ? 'Предустановленные приложения' : 'Preinstalled applications');
-      expect(client.actions, isEmpty);
+    testWidgets(
+      'preinstalled menu reads cache; only list entry refreshes: $locale',
+      (tester) async {
+        final ru = locale == 'ru';
+        final client = FakeCleaner()..cached = snapshot(saved: true);
+        await open(tester, client, locale);
+        await click(tester, ru ? 'Списки отключения' : 'Disable lists');
+        await click(
+          tester,
+          ru ? 'Предустановленные приложения' : 'Preinstalled applications',
+        );
+        expect(client.actions, isEmpty);
 
-      final listTitle = ru ? 'Список предустановленных приложений' : 'Preinstalled application list';
-      client.pending = Completer<Map<String, dynamic>>();
-      await tester.tap(find.text(listTitle));
-      await tester.pump();
-      expect(client.actions, ['cleanerInventory']);
-      expect(find.text(ru ? 'Обновляется список приложений…' : 'Updating application list…'), findsOneWidget);
-      expect(find.text('Prime Video\ncom.amazon.amazonvideo.livingroom'), findsNothing);
-      client.pending!.complete(snapshot(saved: true)..['packages'] = [
-        {
-          'package': 'com.amazon.amazonvideo.livingroom',
-          'name': 'Prime Video',
-          'system': true,
-          'enabled': true,
-          'protected': false,
-        },
-      ]);
-      await tester.pumpAndSettle();
-      client.pending = null;
-      expect(find.text('Prime Video\ncom.amazon.amazonvideo.livingroom'), findsOneWidget);
-      await back(tester);
-      expect(client.actions, ['cleanerInventory']);
+        final listTitle = ru
+            ? 'Список предустановленных приложений'
+            : 'Preinstalled application list';
+        client.pending = Completer<Map<String, dynamic>>();
+        await tester.tap(find.text(listTitle));
+        await tester.pump();
+        expect(client.actions, ['cleanerInventory']);
+        expect(
+          find.text(
+            ru
+                ? 'Обновляется список приложений…'
+                : 'Updating application list…',
+          ),
+          findsOneWidget,
+        );
+        expect(
+          find.text('Prime Video\ncom.amazon.amazonvideo.livingroom'),
+          findsNothing,
+        );
+        client.pending!.complete(
+          snapshot(saved: true)
+            ..['packages'] = [
+              {
+                'package': 'com.amazon.amazonvideo.livingroom',
+                'name': 'Prime Video',
+                'system': true,
+                'enabled': true,
+                'protected': false,
+              },
+            ],
+        );
+        await tester.pumpAndSettle();
+        client.pending = null;
+        expect(
+          find.text('Prime Video\ncom.amazon.amazonvideo.livingroom'),
+          findsOneWidget,
+        );
+        await back(tester);
+        expect(client.actions, ['cleanerInventory']);
 
-      client.inventoryFailure = true;
-      await click(tester, listTitle);
-      expect(client.actions, ['cleanerInventory', 'cleanerInventory']);
-      expect(find.text('Prime Video\ncom.amazon.amazonvideo.livingroom'), findsNothing);
-      expect(find.text(listTitle), findsOneWidget);
-      expect(client.cached, isNotNull);
-    });
+        client.inventoryFailure = true;
+        await click(tester, listTitle);
+        expect(client.actions, ['cleanerInventory', 'cleanerInventory']);
+        expect(
+          find.text('Prime Video\ncom.amazon.amazonvideo.livingroom'),
+          findsNothing,
+        );
+        expect(find.text(listTitle), findsOneWidget);
+        expect(client.cached, isNotNull);
+      },
+    );
   }
 
   testWidgets(

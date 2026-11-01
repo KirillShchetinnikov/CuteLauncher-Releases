@@ -5,7 +5,7 @@ Map<String, Object> permissionRecoveryDiagnostics(Map raw) {
     'expired', 'exhausted', 'check_unavailable', 'adb_not_configured', 'adb_unavailable',
     'adb_authorization', 'unsupported_user', 'command_rejected', 'permission_rejected',
     'manual_disable', 'connected', 'disabled', 'binding_grace', 'reconnected', 'awaiting_connection',
-    'update_recovery_pending',
+    'update_recovery_pending', 'restored',
   };
   const permissions = {'accessibility', 'notifications', 'overlay', 'usage', 'writeSettings', 'watchNext'};
   return {
@@ -18,5 +18,8 @@ Map<String, Object> permissionRecoveryDiagnostics(Map raw) {
     'pending': raw['pending'] is List
         ? (raw['pending'] as List).whereType<String>().where(permissions.contains).toSet().toList()
         : <String>[],
+    if (raw['remembered'] is List)
+      'remembered': (raw['remembered'] as List)
+          .whereType<String>().where(permissions.contains).toSet().toList(),
   };
 }

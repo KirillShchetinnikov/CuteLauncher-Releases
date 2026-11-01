@@ -1,3 +1,5 @@
+import 'language_font_choice.dart';
+import 'settings_choice_tile.dart';
 import 'package:flauncher/widgets/launcher_dialog.dart';
 
 import '../../providers/screensaver_service.dart';
@@ -23,14 +25,35 @@ class AppearanceSettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
+    final service = context.watch<AppearanceService>();
+    final appearance = service.appearance;
     final screensaver = context.watch<ScreensaverService?>();
     return SettingsPageLayout(
       title: Text(
-        l.appearanceSettings,
+        l.interfaceStyle,
         style: Theme.of(context).textTheme.titleLarge,
       ),
       child: ListView(
         children: [
+
+            SettingsChoiceTile<String>(
+              title: l.interfaceStyle,
+              value: appearance.interfaceStyle,
+              options: const ['standard', 'glass', 'soft', 'outline'],
+              label: (id) => switch (id) {
+                'glass' => l.interfaceGlass,
+                'soft' => l.interfaceSoft,
+                'outline' => l.interfaceOutline,
+                _ => l.interfaceStandard,
+              },
+              onChanged: (v) => service.set('settingsInterfaceStyle', v),
+            ),
+            LanguageFontChoice(
+              title: l.interfaceFont,
+              value: appearance.interfaceFont,
+              onChanged: (v) => service.set('settingsInterfaceFont', v),
+            ),
+
           FocusableSettingsTile(
             autofocus: true,
             leading: const Icon(Icons.palette_outlined),
@@ -62,6 +85,7 @@ class AppearanceSettingsPage extends StatelessWidget {
           ],
           FocusableSettingsTile(
             leading: const Icon(Icons.restore),
+            trailing: const SizedBox.shrink(),
             title: Text(l.resetAppearance),
             onPressed: () async {
               final service = context.read<AppearanceService>();

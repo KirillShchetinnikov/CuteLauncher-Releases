@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:convert';
 import 'package:flauncher/bing_wallpaper.dart';
+import 'package:flauncher/online_wallpaper_failure.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -18,11 +19,12 @@ void main() {
     final prefs = await SharedPreferences.getInstance();
     var attempts = 0;
     var offline = false;
+    Object offlineError = const SocketException('private server address');
     final service = OnlineWallpaperService(prefs, directory: () async => root,
       bingLookup: () async => BingWallpaper(Uri.parse('https://example.com/same.png'), 'Bing image description', DateTime.now().add(const Duration(days: 1))),
       download: (_) async {
         attempts++;
-        if (offline) throw const SocketException('offline');
+        if (offline) throw offlineError;
         return base64Decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aF8UAAAAASUVORK5CYII=');
       });
     addTearDown(() async {
@@ -43,14 +45,35 @@ void main() {
     for (final isOffline in [false, true, false]) {
       offline = isOffline;
       await tester.runAsync(() async {
-        await tester.tap(find.text('Проверить обновления'));
+        await tester.tap(find.text('Обновить обои'));
         while (service.loading) { await Future<void>.delayed(Duration.zero); }
       });
       await tester.pumpAndSettle();
       expect(service.failed, isOffline);
+      if (isOffline) {
+        expect(find.textContaining('Скачивание изображения'), findsWidgets);
+        expect(find.textContaining('соединение с сервером'), findsWidgets);
+        expect(find.textContaining('private server address'), findsNothing);
+      } else {
+        expect(find.descendant(of: find.byType(OnlineWallpaperPage),
+            matching: find.textContaining('соединение с сервером')), findsNothing);
+      }
     }
     expect(attempts, 4);
     expect(service.version, 3);
+    offline = true;
+    offlineError = const WallpaperException(WallpaperFailureReason.http, httpStatus: 429);
+    await tester.runAsync(() async {
+      await tester.tap(find.text('Обновить обои'));
+      while (service.loading) { await Future<void>.delayed(Duration.zero); }
+    });
+    await tester.pumpAndSettle();
+    expect(find.textContaining('HTTP 429'), findsWidgets);
+    expect(find.textContaining('Сервер вернул ошибку.'), findsWidgets);
+    offline = false;
+    await tester.runAsync(() => service.refresh(force: true));
+    await tester.pumpAndSettle(const Duration(seconds: 5));
+    expect(service.failure, isNull);
     expect(find.textContaining('Bing image description'), findsNothing);
     await toggleSettingsHelp(tester, 'Bing image description');
     expect(find.textContaining('Bing image description'), findsOneWidget);
@@ -66,6 +89,52 @@ void main() {
     await toggleSettingsHelp(tester, 'Bing image description');
     expect(find.textContaining('Bing image description'), findsOneWidget);
     expect(tester.takeException(), isNull);
+  });
+  testWidgets('remote selects Wallhaven theme and interval without enabling downloads', (tester) async {
+    tester.view.physicalSize = const Size(1000, 1800);
+    tester.view.devicePixelRatio = 2;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    final root = (await tester.runAsync(() => Directory.systemTemp.createTemp('cute-wallhaven-ui-')))!;
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    final service = OnlineWallpaperService(prefs, directory: () async => root);
+    await service.configure(const OnlineWallpaperConfiguration(source: 'bing'));
+    await tester.pumpWidget(ChangeNotifierProvider.value(value: service, child: const MaterialApp(
+      locale: Locale('ru'), localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales, home: Scaffold(body: OnlineWallpaperPage()))));
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(service.configuration.source, 'wallhaven');
+    expect(find.text('Тема обоев'), findsOneWidget);
+    expect(find.text('Адрес изображения (HTTPS)'), findsNothing);
+    await tester.tap(find.text('Тема обоев'));
+    await tester.pumpAndSettle();
+    for (final theme in ['Разные', 'Природа', 'Космос', 'Города', 'Минимализм']) {
+      expect(find.text(theme), findsWidgets);
+    }
+    await tester.tap(find.text('Космос').last);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Интервал загрузки'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('6 ч').last);
+    await tester.pumpAndSettle();
+    final saved = OnlineWallpaperConfiguration.decode(prefs.getString(onlineWallpaperKey));
+    expect(saved.source, 'wallhaven');
+    expect(saved.wallhavenTheme, 'space');
+    expect(saved.intervalHours, 6);
+    expect(saved.enabled, isFalse);
+    expect(find.textContaining('Случайные обои Wallhaven'), findsNothing);
+    await toggleSettingsHelp(tester, 'Случайные обои Wallhaven');
+    expect(find.textContaining('Случайные обои Wallhaven'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox());
+    service.dispose();
+    await tester.runAsync(() => root.delete(recursive: true));
   });
   testWidgets('Reddit source and controls stay hidden until API access is resolved', (tester) async {
     tester.view.physicalSize = const Size(1000, 1800);

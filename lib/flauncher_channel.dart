@@ -31,6 +31,10 @@ class FLauncherChannel {
 
   Future<String?> getPackageName() => _methodChannel.invokeMethod<String>('getPackageName');
 
+  /// Requests Android's complete app data reset; acceptance ends this process.
+  Future<bool> resetApplicationData() async =>
+      await _methodChannel.invokeMethod<bool>('resetApplicationData') == true;
+
   Future<Map<String, dynamic>> getProcessMemoryUsage() async {
     final data = await _methodChannel.invokeMapMethod<String, dynamic>('getProcessMemoryUsage');
     return data ?? {};
@@ -247,6 +251,22 @@ class FLauncherChannel {
       return false;
     }
   }
+
+  Future<List<Map<dynamic, dynamic>>> getAppChannels(List<String> selected) async {
+    final list = await _methodChannel.invokeListMethod<dynamic>('getAppChannels', {'selected': selected});
+    return list?.cast<Map<dynamic, dynamic>>() ?? [];
+  }
+
+  Future<bool> requestAppChannelsPermission() async =>
+      await _methodChannel.invokeMethod<bool>('requestAppChannelsPermission') ?? false;
+
+  Future<bool> launchAppChannelProgram(String intentUri, String packageName) async =>
+      await _methodChannel.invokeMethod<bool>('launchAppChannelProgram',
+          {'intentUri': intentUri, 'packageName': packageName}) ?? false;
+
+  StreamSubscription<dynamic> addAppChannelsChangedListener(void Function(dynamic) onEvent) =>
+      const EventChannel('me.efesser.flauncher/event_app_channels')
+          .receiveBroadcastStream().listen(onEvent, onError: (_) {});
 
   Future<List<Map<dynamic, dynamic>>> getWatchNextPrograms() async {
     try {

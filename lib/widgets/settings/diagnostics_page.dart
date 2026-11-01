@@ -1,6 +1,9 @@
+import '../../document_files.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+
 import '../../providers/apps_service.dart';
 import '../../providers/settings_service.dart';
 
@@ -35,8 +38,12 @@ class _DiagnosticsPageState extends State<DiagnosticsPage> {
   @override
   Widget build(BuildContext context) => DiagnosticsReportPanel(
     report: _report,
-    collect: widget.collect ?? () => collectDiagnostics(
-      apps: context.read<AppsService?>(), settings: context.read<SettingsService?>()),
+    collect:
+        widget.collect ??
+        () => collectDiagnostics(
+          apps: context.read<AppsService?>(),
+          settings: context.read<SettingsService?>(),
+        ),
   );
 }
 
@@ -147,8 +154,17 @@ class _DiagnosticsReportPanelState extends State<DiagnosticsReportPanel> {
         }
       } else {
         String? saved;
+        String? destination;
         try {
-          saved = await saveDiagnosticsReport(report);
+          saved = await saveDiagnosticsReport(
+            report,
+            exporter: (file, {required name}) => DocumentFiles.saveDiagnostics(
+              file,
+              name: name,
+              context: context,
+              onSaved: (path) => destination = path,
+            ),
+          );
         } catch (_) {
           saved = 'failed';
         }
@@ -156,7 +172,9 @@ class _DiagnosticsReportPanelState extends State<DiagnosticsReportPanel> {
         showActionNotice(
           context,
           saved == 'saved'
-              ? l.diagnosticsSaved
+              ? destination == null
+                    ? l.diagnosticsSaved
+                    : l.fileBrowserSavedTo(destination!)
               : saved == 'opened'
               ? l.diagnosticsExportOpened
               : l.diagnosticsSaveFailed,

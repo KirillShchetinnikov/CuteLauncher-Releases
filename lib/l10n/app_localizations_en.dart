@@ -10,6 +10,27 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get wallhavenWallpaperHint =>
+      'Random Wallhaven wallpapers matching your theme: SFW, 16:9, Full HD or higher. No account or API key needed. Updates run while the launcher is open; previous wallpapers are kept on failure.';
+
+  @override
+  String get renderCompatibilityTitle => 'Compatible graphics output';
+
+  @override
+  String get renderCompatibilityAutomatic =>
+      'Enabled automatically for this device';
+
+  @override
+  String get renderCompatibilityApply => 'Apply and restart launcher';
+
+  @override
+  String get renderCompatibilityFailed => 'Could not read or apply the setting';
+
+  @override
+  String get renderCompatibilityHelp =>
+      'Try this mode if the interface flickers with night dimming. It is enabled automatically on verified models. On other TVs, the choice is saved only on this device and applies after restarting the launcher. It may increase graphics load.';
+
+  @override
   String get diagnosticsHubTitle => 'Diagnostics';
 
   @override
@@ -1493,7 +1514,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Enter a city manually or get coordinates automatically.';
 
   @override
-  String get weatherRefresh => 'Check for updates';
+  String get weatherRefresh => 'Refresh weather';
 
   @override
   String get weatherKeyPrivate =>
@@ -1504,7 +1525,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onlineWallpaperError =>
-      'Unable to load this image. Previous wallpaper is retained. Select “Check for updates” to retry the download.';
+      'Unable to load this image. Previous wallpaper is retained. Select “Refresh wallpaper” to retry the download.';
 
   @override
   String get onlineWallpaperHint =>
@@ -1934,7 +1955,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notificationAppsHint =>
-      'Turn off apps whose notifications you do not need. An enabled switch allows notifications; the app can still be launched.';
+      'Select apps whose notifications should be blocked. An enabled switch means notifications are blocked. The list stays in alphabetical order.';
 
   @override
   String get notificationPanelLink => 'Top panel appearance';
@@ -2001,7 +2022,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rememberCategoryFocus => 'Remember last focused card';
 
   @override
-  String get automaticBackups => 'Automatic backup';
+  String get automaticBackups => 'Backups and synchronization';
 
   @override
   String get automaticBackupsHint =>
@@ -2076,7 +2097,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Reset background, accent, tiles, labels, highlighting and animation?';
 
   @override
-  String get wallpaperDimming => 'Dimming';
+  String get wallpaperDimming => 'Dimming strength';
 
   @override
   String get wallpaperPlacement => 'Placement';
@@ -2693,7 +2714,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backupDriveHelp =>
-      'Select Connect and confirm the code on your phone. Backups are visible in the CuteLauncher folder in Google Drive, where you can download or delete them. Keep file names unchanged for in-app restore. Reconnect after upgrading from hidden backups; old backups are not migrated automatically.';
+      'Select Connect Google Drive and confirm the code on your phone. Backups are visible in the CuteLauncher folder in Google Drive, where you can download or delete them. Keep file names unchanged for in-app restore. Reconnect after upgrading from hidden backups; old backups are not migrated automatically.';
 
   @override
   String get backupFrequency => 'Backup frequency';
@@ -3166,7 +3187,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeOwnReset => 'Restore common settings';
 
   @override
-  String get homeParameters => 'Parameters';
+  String get homeParameters => 'Home screen behavior';
 
   @override
   String get homeSectionStyle => 'Section appearance';
@@ -4326,4 +4347,478 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get remoteMappingImportFailed =>
       'Could not read the file. Choose an accessible UTF-8 text file up to 64 KB.';
+
+  @override
+  String get vpnTitle => 'VPN';
+
+  @override
+  String get vpnSettings => 'VPN settings';
+
+  @override
+  String get vpnApp => 'VPN app';
+
+  @override
+  String get vpnAutomatic => 'Automatic';
+
+  @override
+  String get vpnNone => 'Not selected';
+
+  @override
+  String get vpnProfile => 'VPN profile';
+
+  @override
+  String get vpnOnlyActive => 'Show only when connected';
+
+  @override
+  String get vpnShowName => 'Show app name';
+
+  @override
+  String get vpnColor => 'Highlight connection with color';
+
+  @override
+  String get vpnNotify => 'Notify about command results';
+
+  @override
+  String get vpnConnected => 'VPN connected';
+
+  @override
+  String get vpnDisconnected => 'VPN disconnected';
+
+  @override
+  String get vpnUnknown => 'VPN status unavailable';
+
+  @override
+  String get vpnConnect => 'Connect';
+
+  @override
+  String get vpnDisconnect => 'Disconnect';
+
+  @override
+  String get vpnOpenApp => 'Open VPN app';
+
+  @override
+  String get vpnAndroidSettings => 'Android VPN settings';
+
+  @override
+  String get vpnAllowControl => 'Allow VPN control';
+
+  @override
+  String get vpnFailed => 'VPN action failed';
+
+  @override
+  String get vpnUnsupported =>
+      'This client does not support direct control. You can open the app.';
+
+  @override
+  String get vpnOther =>
+      'Another or unidentified VPN is connected. Control is unavailable.';
+
+  @override
+  String get vpnStartup => 'VPN on TV startup';
+
+  @override
+  String get vpnPending => 'Waiting for VPN connection';
+
+  @override
+  String get vpnHelp =>
+      'Automatic selection detects the active VPN and remembers it for reconnection. App and profile detection requires connected local ADB. Direct control supports AmneziaWG and WireGuard with control permission and remote control enabled in the client. Happ and MantaRay use the profile selected in the client.';
+
+  @override
+  String get vpnProfileHelp =>
+      'Enter the exact profile name from the VPN app: up to 15 Latin letters, digits and _ = + . - characters. Manual connections supply the name automatically when available.';
+
+  @override
+  String get vpnStartupHelp =>
+      'VPN starts in addition to normal startup actions. Configure the client profile and permissions first. Network waiting is bounded; an active VPN is not replaced. Wake is observed only while the launcher process is running.';
+
+  @override
+  String get vpnStartupMethod => 'VPN startup method';
+
+  @override
+  String get vpnStartupClient => 'Through the VPN app';
+
+  @override
+  String get vpnStartupAlwaysOn => 'Android always-on VPN';
+
+  @override
+  String get vpnAlwaysOnManaged =>
+      'Android always-on mode manages this VPN. Disable that mode in startup or Android settings.';
+
+  @override
+  String get vpnRestartRequired => 'Restart the TV to apply the system mode.';
+
+  @override
+  String get vpnAlwaysOnHelp =>
+      'Assigns a configured client as always-on VPN through local TCP ADB. Android applies the selection after restarting the TV. Blocking connections without VPN is neither enabled nor changed. Leaving this mode restores the previous system selection.';
+
+  @override
+  String get vpnClientConfirmation =>
+      'Confirm the command in the MantaRay window.';
+
+  @override
+  String get informationTapAction => 'On block press';
+
+  @override
+  String get informationShowBoth => 'Weather and calendar';
+
+  @override
+  String get weatherForecastTitle => 'Weather forecast';
+
+  @override
+  String get weatherForecastPeriod => 'Forecast period';
+
+  @override
+  String weatherForecastDays(int days) {
+    return '$days days';
+  }
+
+  @override
+  String get weatherForecastView => 'Forecast view';
+
+  @override
+  String get weatherForecastCards => 'Compact cards';
+
+  @override
+  String get weatherForecastList => 'Detailed list';
+
+  @override
+  String weatherForecastAvailable(int available, int requested) {
+    return 'Available days: $available of $requested';
+  }
+
+  @override
+  String get weatherForecastTvTime => 'Forecast dates use TV time';
+
+  @override
+  String get weatherClear => 'Clear';
+
+  @override
+  String get weatherCloudy => 'Cloudy';
+
+  @override
+  String get weatherFog => 'Fog';
+
+  @override
+  String get weatherWind => 'Wind';
+
+  @override
+  String get weatherPrecipitation => 'Precipitation';
+
+  @override
+  String get showVolume => 'Show volume';
+
+  @override
+  String get audioStatusTitle => 'Volume and audio output';
+
+  @override
+  String get audioOutputTv => 'TV';
+
+  @override
+  String get audioOutputHeadphones => 'Headphones';
+
+  @override
+  String get audioOutputMultiple => 'Multiple';
+
+  @override
+  String get audioMuted => 'Muted';
+
+  @override
+  String get backgroundStartupTitle => 'Background apps';
+
+  @override
+  String get backgroundStartupFailed => 'Could not load or save settings';
+
+  @override
+  String get backgroundStartupRetry => 'Retry';
+
+  @override
+  String get backgroundStartupEmpty => 'No user apps';
+
+  @override
+  String get backgroundStartupUnavailable => 'Background launch unavailable';
+
+  @override
+  String get backgroundStartupRequested => 'Launch requested';
+
+  @override
+  String get backgroundStartupHelp =>
+      'Select apps to launch once in the background after TV boot. CuteLauncher must open within one minute of boot: set it as Home or enable launcher startup on boot. Apps start one by one behind Home; selecting a checkbox does not start them immediately. Remote input or leaving the launcher cancels remaining launches. Waking from sleep does not launch them again. Some apps do not support this mode and cannot be selected. Launching does not enable features inside an app or guarantee continuous operation: grant permissions and configure background operation in the app itself. Android and the TV firmware may stop it. Selections stay on this TV only.';
+
+  @override
+  String get backgroundStartupToggle => 'Background autostart';
+
+  @override
+  String get systemWidgetSettings => 'System widget settings';
+
+  @override
+  String get systemShowCpu => 'Show CPU in panel';
+
+  @override
+  String get systemShowRam => 'Show RAM in panel';
+
+  @override
+  String get systemStorage => 'Storage: free / total';
+
+  @override
+  String get systemUptime => 'Uptime (hours:minutes)';
+
+  @override
+  String get systemTemperature => 'CPU temperature';
+
+  @override
+  String get systemAvailable => 'Available RAM';
+
+  @override
+  String get systemHistory => 'Last hour · average and peaks';
+
+  @override
+  String get systemNow => 'Now';
+
+  @override
+  String get systemHourAgo => '−60 min';
+
+  @override
+  String get systemWidgetHelp =>
+      'Readings update every 5 seconds while the launcher is visible. Graphs show minute averages and peaks. Other apps, sleep and read failures leave gaps. History stays in memory and resets when the launcher process restarts. CPU and temperature depend on the firmware. Turn off both panel values to show only the icon.';
+
+  @override
+  String get slideshowBrowseFolders => 'Browse folders';
+
+  @override
+  String get slideshowEnterFolderPath => 'Enter folder path';
+
+  @override
+  String get slideshowSystemPicker => 'Choose in system file manager';
+
+  @override
+  String get slideshowFolderPath => 'Folder path';
+
+  @override
+  String get slideshowUseFolder => 'Use this folder';
+
+  @override
+  String get slideshowParentFolder => 'Parent folder';
+
+  @override
+  String get slideshowStoragePermission =>
+      'Allow file access in Android settings to use the built-in file browser.';
+
+  @override
+  String get slideshowPickerUnavailable =>
+      'This TV has no folder picker. Use the built-in browser or enter a path manually.';
+
+  @override
+  String get slideshowFolderUnavailable =>
+      'Folder unavailable. Check the path, storage connection and file access permission.';
+
+  @override
+  String get slideshowStorageHelp =>
+      'The built-in browser reads folders on the TV and connected storage. On Android 11 or newer, allow all files access; on Android 9–10, allow storage access. You can enter a path manually, such as /storage/emulated/0/Pictures. Files are not modified.';
+
+  @override
+  String get fileBrowserTitle => 'Choose a file';
+
+  @override
+  String get filePickerChoose => 'Choose a file browser';
+
+  @override
+  String get filePickerSystem => 'System file picker';
+
+  @override
+  String get filePickerBuiltIn => 'Built-in file browser';
+
+  @override
+  String get fileBrowserEmpty => 'No items to display';
+
+  @override
+  String get fileBrowserUnavailable =>
+      'Unable to open this location. Check access and try again.';
+
+  @override
+  String get networkAndVpnGroup => 'Network and VPN';
+
+  @override
+  String get soundAndInputsGroup => 'Sound and inputs';
+
+  @override
+  String get timerAndNightModeGroup => 'Timer and night mode';
+
+  @override
+  String get systemSettingsGroup => 'System settings';
+
+  @override
+  String get appChannelsTitle => 'App feeds';
+
+  @override
+  String get appChannelsHelp =>
+      'Choose up to 16 feeds. Availability depends on channels published by apps and the TV firmware. Empty feeds are hidden. Selection stays on this TV.';
+
+  @override
+  String get appChannelsUnavailable =>
+      'Unable to read feeds. Check TV listings access.';
+
+  @override
+  String get appChannelsEmpty => 'No app feeds available.';
+
+  @override
+  String get appChannelsRefresh => 'Refresh feeds';
+
+  @override
+  String get appChannelsLaunchFailed => 'Unable to open this content.';
+
+  @override
+  String get appChannelsSaveFailed =>
+      'Unable to save selection. Select up to 16 feeds.';
+
+  @override
+  String get sectionDeleteConfirm =>
+      'Delete this section? Installed applications will remain.';
+
+  @override
+  String get sectionDeleteFailed => 'Could not delete the section. Try again.';
+
+  @override
+  String get appChannelsAccess => 'App feeds access';
+
+  @override
+  String get appChannelsMissing => 'Unavailable feed';
+
+  @override
+  String get wallpaperRefresh => 'Refresh wallpaper';
+
+  @override
+  String get wallpaperDimmingHelp =>
+      '100% preserves the background’s original dimming; 200% doubles it. This is not the opacity of a black overlay.';
+
+  @override
+  String get resetLauncherSettings => 'Reset all settings';
+
+  @override
+  String get resetLauncherSettingsConfirmation =>
+      'All CuteLauncher settings and local data will be deleted, including sections, Favorites, remote mappings, connections and files in app storage. CuteLauncher will close; the next launch will be like a fresh installation. Access must be granted again. Files outside CuteLauncher storage and other apps will be kept.';
+
+  @override
+  String get resetLauncherSettingsError =>
+      'Could not complete the settings reset. Try again.';
+
+  @override
+  String get fileBrowserCurrentFolder => 'Current folder';
+
+  @override
+  String get fileBrowserFileName => 'File name';
+
+  @override
+  String get fileBrowserNoFolders => 'No subfolders';
+
+  @override
+  String get fileBrowserNoFiles => 'No matching files';
+
+  @override
+  String get fileBrowserPartial => 'Only part of this folder is shown';
+
+  @override
+  String get fileBrowserRemoteHint => '← Full name · → Confirm';
+
+  @override
+  String get fileBrowserReadNameHint => '← Show full name';
+
+  @override
+  String fileBrowserSavedTo(String path) {
+    return 'Saved: $path';
+  }
+
+  @override
+  String get backupDriveConnect => 'Connect Google Drive';
+
+  @override
+  String get discardChangesTitle => 'Discard changes?';
+
+  @override
+  String get discardChangesMessage => 'Unsaved changes will be lost.';
+
+  @override
+  String get backgroundFileUnavailable => 'File unavailable';
+
+  @override
+  String get backupLastSuccess => 'Last successful action:';
+
+  @override
+  String get informationPlacement => 'Block placement';
+
+  @override
+  String get informationOnBackground => 'On wallpaper';
+
+  @override
+  String get informationBackgroundAlignment => 'Wallpaper alignment';
+
+  @override
+  String get informationBackgroundHelp =>
+      'Choose top panel, wallpaper or hidden separately for the clock, date and weather. Wallpaper elements do not respond to input or move tiles. In the adaptive landscape, mountains overlap the clock. Quick settings remain independent.';
+
+  @override
+  String get informationTime => 'Clock';
+
+  @override
+  String get informationDate => 'Date';
+
+  @override
+  String get backgroundInformationAppearance => 'Wallpaper appearance';
+
+  @override
+  String onlineWallpaperFailureStage(String stage) {
+    String _temp0 = intl.Intl.selectLogic(stage, {
+      'initialize': 'Storage initialization',
+      'metadata': 'Source request',
+      'download': 'Image download',
+      'validation': 'Image validation',
+      'save': 'Wallpaper saving',
+      'other': 'Wallpaper saving',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String onlineWallpaperFailureReason(String reason) {
+    String _temp0 = intl.Intl.selectLogic(reason, {
+      'dns': 'Could not resolve the server address (DNS).',
+      'connection':
+          'Could not establish or maintain a connection to the server.',
+      'tls': 'Secure connection or certificate error (TLS).',
+      'timeout': 'The request timed out.',
+      'http': 'The server returned an error.',
+      'redirect': 'Invalid redirect or too many redirects.',
+      'insecureUrl': 'Unsafe URL: HTTPS without login details is required.',
+      'tooLarge': 'The response exceeds the size limit.',
+      'dimensions': 'Image dimensions exceed the limit.',
+      'invalidResponse': 'The source returned invalid data.',
+      'noImage': 'The source returned no new matching images.',
+      'invalidImage': 'The file is corrupt or the image format is unsupported.',
+      'storage': 'Could not read or write wallpaper files.',
+      'unknown': 'Unknown error.',
+      'other': 'Unknown error.',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get informationPanelAppearance => 'Panel appearance';
+
+  @override
+  String get informationData => 'Formats and data';
+
+  @override
+  String get informationGroupingMinimum => 'At least two elements are required';
+
+  @override
+  String get screenshotSceneMode => 'Screenshot mode';
+
+  @override
+  String get screenshotSceneHour => 'Hours';
+
+  @override
+  String get screenshotSceneMinute => 'Minutes';
+
+  @override
+  String get screenshotSceneHelp =>
+      'Sets the landscape and wallpaper clock time, and the landscape weather. Remains active after closing settings. System time, weather data and saved settings are unchanged. This build restarts at 16:00 with cloudy weather.';
 }

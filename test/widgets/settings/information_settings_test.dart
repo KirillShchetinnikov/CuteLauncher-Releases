@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flauncher/information_placement.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/models/weather_data.dart';
 import 'package:flauncher/panel_clock_style.dart';
@@ -18,6 +19,8 @@ import 'package:flauncher/widgets/date_time_widget.dart';
 import 'package:flauncher/widgets/top_panel_item.dart';
 import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
 import 'package:flauncher/widgets/settings/information_settings_page.dart';
+import 'package:flauncher/widgets/settings/date_time_format_page.dart';
+import 'package:flauncher/widgets/rounded_switch_list_tile.dart';
 import 'package:flauncher/widgets/settings/panel_clock_style_page.dart';
 import 'package:flauncher/widgets/settings/settings_value_stepper.dart';
 import 'package:flauncher/widgets/settings/panel_order_page.dart';
@@ -71,60 +74,132 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  for (final popup in [false, true]) {
-    testWidgets(
-      'group settings and calendar persist in both modes: remote=$popup',
-      (tester) async {
-        await pump(tester, InformationObjectsSection(remotePanel: popup));
-        expect(find.text('Настройки блока'), popup ? findsNothing : findsOneWidget);
-        await tester.tap(find.text('Показывать дату'));
-        await tester.pumpAndSettle();
-        expect(
-          popup ? remote.visible('date') : settings.showDateInStatusBar,
-          isFalse,
-        );
-        if (popup) {
-          await pump(tester, const InformationSettingsPage());
-        } else {
-          await tester.tap(find.text('Настройки блока'));
+
+  test('every placement combination groups only visible panel members', () {
+    for (final time in InformationPlacement.destinations) {
+      for (final date in InformationPlacement.destinations) {
+        for (final weather in InformationPlacement.destinations) {
+          final placements = {'time': time, 'date': date, 'weather': weather};
+          for (final requested in [false, true]) {
+            final value = TileAppearance({
+              'panelInformationPlacements': placements,
+              'panelCombinedInformation': requested,
+            });
+            final composition = InformationPanelComposition(value, settings);
+            final members = placements.entries.where((e) => e.value == 'panel').map((e) => e.key).toSet();
+            expect(composition.members, members);
+            expect(composition.combined, requested && members.length >= 2);
+            expect(composition.excluded, InformationPlacement.ids.toSet().difference(members));
+            if (members.isNotEmpty) {
+              expect(composition.action, members.contains('weather')
+                  ? (members.length > 1 ? 'both' : 'weather') : 'calendar');
+            }
+          }
         }
-        await tester.pumpAndSettle();
-        expect(find.text('Оформление часов'), findsOneWidget);
-        expect(find.text('Настройки даты'), findsOneWidget);
-        await tester.tap(find.text('Открывать календарь по нажатию на дату'));
-        await tester.pumpAndSettle();
-        expect(
-          appearance.appearance.dateCalendar,
-          isTrue,
-        );
-        await tester.tap(find.text('Объединить часы, дату и погоду'));
-        await tester.pumpAndSettle();
-        expect(find.text('Оформление часов'), findsNothing);
-        expect(find.text('Настройки даты'), findsNothing);
-        expect(find.text('Оформление блока'), findsOneWidget);
-        expect(find.text('Настройки погоды'), findsOneWidget);
-        expect(
-          appearance.appearance.dateCalendar,
-          isTrue,
-        );
-        await tester.tap(find.text('Оформление блока'));
-        await tester.pumpAndSettle();
-        expect(
-          tester
-              .widget<PanelClockStylePage>(find.byType(PanelClockStylePage))
-              .combined,
-          isTrue,
-        );
-        expect(find.text('Общий размер блока'), findsOneWidget);
-        expect(tester.takeException(), isNull);
-        await tester.pumpWidget(const SizedBox());
-      },
-    );
+      }
+    }
+  });
+
+  test('home grouping freezes the legacy quick-panel choice and reloads independently', () async {
+    expect(remote.combinedInformation(false), isFalse);
+    await appearance.set('panelCombinedInformation', true);
+    expect(remote.combinedInformation(true), isFalse);
+    await remote.show('weather', false);
+    expect(remote.combinedInformation(true), isFalse);
+    await remote.set('combinedInformation', true);
+    await appearance.set('panelCombinedInformation', false);
+    final restored = RemotePanelService(remote.preferences);
+    addTearDown(restored.dispose);
+    expect(restored.combinedInformation(false), isTrue);
+    expect(appearance.appearance.combinedInformation, isFalse);
+    expect(restored.visible('weather'), isFalse);
+  });
+
+
+  testWidgets('shared layout controls remain available for quick-panel-only grouping', (tester) async {
+    await appearance.set('panelInformationPlacements', {
+      'time': 'background', 'date': 'background', 'weather': 'hidden',
+    });
+    await remote.set('combinedInformation', true);
+    await pump(tester, const PanelInformationSettingsPage());
+    final l = AppLocalizations.of(tester.element(find.byType(PanelInformationSettingsPage)))!;
+    await tester.scrollUntilVisible(find.text(l.informationPosition), 150);
+    expect(find.text(l.informationPosition), findsOneWidget);
+    await remote.show('time', false);
+    await tester.pumpAndSettle();
+    expect(find.text(l.informationPosition), findsNothing);
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('placement has one entry point and formats have one page', (tester) async {
+    await pump(tester, const InformationObjectsSection());
+    final l = AppLocalizations.of(tester.element(find.byType(InformationObjectsSection)))!;
+    expect(find.byType(InformationVisibility), findsNothing);
+    await tester.tap(find.text(l.informationGroup));
+    await tester.pumpAndSettle();
+    expect(find.byType(InformationVisibility), findsOneWidget);
+    expect(find.text(l.informationTapAction), findsNothing);
+    expect(find.text(l.dateCalendarEnabled), findsNothing);
+    await tester.scrollUntilVisible(find.text(l.informationData), 100);
+    await tester.tap(find.text(l.informationData));
+    await tester.pumpAndSettle();
+    expect(find.byType(TimeFormatSettingsTile), findsOneWidget);
+    expect(find.byType(DateFormatSettingsTile), findsOneWidget);
+    expect(find.text(l.dateCalendarEnabled), findsNothing);
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('weather-only combined block stays visible and actionable without data', (tester) async {
+    var opened = false;
+    await pump(tester, CombinedInformation(appearance: appearance.appearance,
+      showTime: false, showDate: false, showWeather: true,
+      timeFormat: settings.timeFormat, dateFormat: settings.dateFormat,
+      onPressed: () => opened = true));
+    expect(find.byIcon(Icons.cloud_outlined), findsOneWidget);
+    expect(find.text('—'), findsOneWidget);
+    await tester.tap(find.byType(TopPanelItem));
+    await tester.pumpAndSettle();
+    expect(opened, isTrue);
+    expect(tester.getSize(find.byType(TopPanelItem)).width, greaterThan(24));
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  for (final popup in [false, true]) {
+    testWidgets('grouping is disabled for a singleton: remote=$popup', (tester) async {
+      await appearance.set('panelInformationPlacements', {'time': 'background', 'date': 'panel', 'weather': 'hidden'});
+      await appearance.set('panelCombinedInformation', true);
+      await remote.set('combinedInformation', true);
+      await remote.show('time', false);
+      await remote.show('weather', false);
+      await pump(tester, InformationGroupingControl(remotePanel: popup));
+      var toggle = tester.widget<RoundedSwitchListTile>(find.byType(RoundedSwitchListTile));
+      expect(toggle.enabled, isFalse);
+      expect(toggle.value, isFalse);
+      final l = AppLocalizations.of(tester.element(find.byType(InformationGroupingControl)))!;
+      expect(find.text(l.informationGroupingMinimum), findsOneWidget);
+      if (popup) {
+        await remote.show('weather', true);
+      } else {
+        await appearance.set('panelInformationPlacements', {'time': 'background', 'date': 'panel', 'weather': 'panel'});
+      }
+      await tester.pumpAndSettle();
+      toggle = tester.widget<RoundedSwitchListTile>(find.byType(RoundedSwitchListTile));
+      expect(toggle.enabled, isTrue);
+      expect(toggle.value, isTrue);
+      await tester.tap(find.byType(RoundedSwitchListTile));
+      await tester.pumpAndSettle();
+      expect(popup ? remote.combinedInformation(true) : appearance.appearance.combinedInformation, isFalse);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+    });
 
     testWidgets(
       'combined reorder crosses sides as one persistent unit: remote=$popup',
       (tester) async {
+        await settings.setShowWeatherInStatusBar(true);
         await appearance.set('panelCombinedInformation', true);
+        await remote.set('combinedInformation', true);
         final right = [
           'time',
           'settings',
@@ -163,7 +238,11 @@ void main() {
         );
         restored?.dispose();
         restoredAppearance.dispose();
-        await appearance.set('panelCombinedInformation', false);
+        if (popup) {
+          await remote.set('combinedInformation', false);
+        } else {
+          await appearance.set('panelCombinedInformation', false);
+        }
         await tester.pumpAndSettle();
         expect(find.byKey(const ValueKey('time')), findsOneWidget);
         expect(find.byKey(const ValueKey('date')), findsOneWidget);
@@ -329,6 +408,7 @@ void main() {
   testWidgets(
     'combined editor retains family and separate style; hides unused layout controls',
     (tester) async {
+      await appearance.set('panelCombinedInformation', true);
       await appearance.set('panelClockStyle', {'font': 'serif', 'size': 33});
       await appearance.set('panelInformationStyle', {
         'font': 'manrope',
@@ -375,6 +455,7 @@ void main() {
       });
       await appearance.set('panelCombinedInformation', true);
       await remote.set('inheritAppearance', false);
+      await remote.set('combinedInformation', true);
       expect(
         remote.appearanceFor(appearance.appearance).combinedInformation,
         isTrue,

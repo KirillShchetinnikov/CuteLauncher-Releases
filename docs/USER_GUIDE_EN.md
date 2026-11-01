@@ -17,6 +17,7 @@ update to get new features. Requirements and limitations appear beside each feat
 - [Apps](#apps)
 - [Appearance and backgrounds](#appearance-and-backgrounds)
 - [Continue Watching](#continue-watching)
+- [App feeds](#app-feeds)
 - [Top panel and widgets](#top-panel-and-widgets)
 - [Weather](#weather)
 - [Notifications and playback](#notifications-and-playback)
@@ -31,6 +32,7 @@ update to get new features. Requirements and limitations appear beside each feat
 - [Backups and synchronization](#backups-and-synchronization)
 - [Updates and app information](#updates-and-app-information)
 - [Memory and resource saving](#memory-and-resource-saving)
+- [Compatible graphics output](#compatible-graphics-output)
 - [Diagnostics](#diagnostics)
 - [Device data and reports](#device-data-and-reports)
 - [Permissions and limitations](#permissions-and-limitations)
@@ -47,12 +49,20 @@ Click an app tile to launch it with a mouse. The wheel scrolls app rows
 horizontally and grids with a limited number of visible rows vertically.
 At either end of an app row, the wheel scrolls the home page.
 
-Settings are grouped into Home screen, Top panel, Appearance, Apps, Night mode
+Settings are grouped into Home screen, Top panel, Interface style, Apps, Night mode
 and brightness, Launcher and TV controls, and Advanced. Android TV system
-settings open separately. Help is collapsed under More details. Choose an
+settings open separately. Help is collapsed under a topic title with an information
+icon. Current errors and unavailable-state reasons remain visible. Choose an
 app language in Advanced independently of Android, or follow the system language.
 Back returns to the previous settings page. Expanding help should not replace
 the selected item's normal action.
+
+Clean installations start with Glass, an adaptive landscape, tile labels,
+and a grid of up to three visible rows of six apps. All Apps and nonempty feeds
+are visible. The clock and date work immediately; weather needs a selected city.
+The timer shows 10, 30, 60, 90, and 120 minutes. Updating does not apply this
+profile over your settings. Explicit appearance, category, and timer resets
+affect only their own scope; resetting local appearance restores shared values.
 
 ## Home screen and categories
 
@@ -68,17 +78,24 @@ reaches the top panel.
 Path: **Home screen → Categories and order**.
 
 Create, rename, and delete categories; add apps; reorder apps and categories;
+deleting a category requires confirmation and keeps installed apps;
 hide categories and restore them. Standard categories (All Apps, TV Apps,
-Non-TV Apps, Favorites, and Continue Watching) cannot be deleted;
+Non-TV Apps, Favorites, Continue Watching, and App feeds) cannot be deleted;
 they can be hidden and moved. The four standard app categories can be renamed:
-their names do not change their purpose or membership. Continue Watching keeps
-its name. Favorites app membership is edited manually.
+their names do not change their purpose or membership. App feeds can also be
+renamed; Continue Watching keeps its name. Favorites app membership is edited manually.
 Automatic app lists are built from installed apps. Enable and move Continue
 Watching in the same editor.
+Moving a category across the list boundary places it first among hidden categories;
+restoring it places it last among visible ones. Other categories keep their order.
 
 Choose rows or grids, sorting, column and visible-row counts, scrolling, active
 category pinning, sizes, spacing, headings, backgrounds, and margins. Some
 appearance settings are shared, while others can be overridden per category.
+Shared settings can be changed even if all categories use their own values.
+Settings incompatible with the current mode remain disabled, such as blur
+with an opaque tile background. Category overrides take priority and are
+preserved when shared settings change.
 A link icon marks shared values; changes to shared settings apply immediately,
 including to existing categories. Choosing a value that matches the shared one
 restores inheritance. In Tiles and labels, one Restore common settings button
@@ -86,6 +103,48 @@ restores all settings on that screen. Titles, icons, padding and background are
 available directly in the category appearance editor. Reset category layout also
 restores its shared appearance and clears padding, keeping apps and their order.
 CuteLauncher and system settings tiles can be hidden.
+
+## App feeds
+
+Path: **Home screen → Categories and order → App feeds**.
+
+Select up to 16 feeds published by installed apps. One app may offer several
+feeds, such as new releases and saved items. Enabling or disabling a feed keeps
+focus on its switch. Selected nonempty feeds appear
+as one standard category. Move the entire group or move it between visible
+and hidden categories. Individual feeds cannot be moved within the group.
+Press OK on the category to open its editor: rename it, choose feeds, or open
+Category appearance. Appearance controls include preview size, corner radius,
+horizontal spacing, label size and color, section titles and icon, padding,
+and background. Group and channel titles can be enabled here independently
+of the shared section-title setting. Previews always use a single horizontal
+row with a 16:9 aspect ratio and titles below the artwork; there is no grid.
+Feeds use compact vertical spacing, with side margins that accommodate enlarged
+edge cards when focused.
+Restoring common appearance settings keeps the name and feed selection.
+Each feed shows up to 20 suggestions
+in the source order. Your selection survives restarts on this TV; it is
+excluded from backups and synchronization. The whole group’s name, order,
+visibility and appearance are included in category and appearance backups. Hiding the group
+keeps your feed selection.
+
+Use ←/→ to select content, ↑/↓ to move between sections, and OK to open the
+selected item in its app. Back keeps your configured home-screen behavior;
+returning to the launcher follows your chosen Home focus mode.
+A placeholder appears when artwork is missing or fails to load. Empty feeds
+and feeds from hidden apps are not displayed. Empty feeds remain selectable
+in settings; saved feeds that disappear can still be deselected.
+
+The list refreshes when system channels change, when returning to the launcher,
+and with Refresh feeds. Existing cards and artwork remain visible until their
+replacements are ready; unchanged data preserves focus and scroll position.
+If a refresh temporarily fails, the last successfully loaded feed remains visible.
+TV listings access is required. Without it, the page
+shows an access error, a permission request, and a grant through the configured
+built-in ADB instead of reporting that no feeds are available.
+Available feeds depend on the app, account, and Android TV / Google TV firmware.
+If an app does not publish system channels, CuteLauncher cannot retrieve its
+recommendations. Artwork with network URLs downloads from the app's source.
 
 ## Apps
 
@@ -105,17 +164,24 @@ use the [cleanup manager](#tv-cleanup-manager).
 
 ## Appearance and backgrounds
 
-Paths: **Home screen → Appearance**, **Appearance**, **Top panel → Appearance**.
+Paths: **Home screen → Home screen · Appearance**, **Interface style**, **Top panel → Appearance**.
 
 Customize tiles and labels, sizes and spacing, shapes and backgrounds, focus
 outlines, zoom and animations, accent color, categories, and the top panel.
 Menus and notifications have background, transparency, color, and text-scale
 settings. Menus can open on either side. Reset individual groups or all appearance.
 
-**Appearance → Settings style → Interface style** offers Standard, Glass, Soft,
+With labels below tiles, zoom grows upward and sideways while preserving the
+gap above the text. This applies to app tiles and content feed cards.
+Side margins accommodate enlarged edge cards in rows and grids.
+While scrolling vertically or horizontally, the focus pulse pauses at its
+current brightness. The outline or glow remains visible; once scrolling stops,
+the pulse resumes if enabled.
+
+**Interface style** offers Standard, Glass, Soft,
 and Outline. They change panel materials, buttons, focus, switches and sliders
 while preserving placement, dimensions and remote control. Custom colours and
-transparency remain. Standard stays the initial style. Choose fonts separately
+transparency remain. Clean installations start with Glass; updates preserve existing appearance. Choose fonts separately
 for the interface, top panel and clock: Medeo Sans, Medeo Mono, Google Sans, Onest, Manrope, Outfit or
 the system font; the panel and clock also retain their earlier families.
 Only fonts supporting the current interface language are listed. For example,
@@ -128,8 +194,8 @@ Background sources:
 
 - A gradient with your chosen colors.
 - A local image or video, plus a separate Day/Night image source.
-- A folder slideshow with subfolders, order, interval, and next-image controls.
-- Bing online wallpapers or an image URL with available update options.
+- A folder slideshow with subfolders, order, interval, and next-image controls. Use the shared folder picker or the separate path entry in slideshow settings. For manual input, enter an absolute path such as `/storage/emulated/0/Pictures`, or `/storage/VOLUME_NAME/Wallpapers` for a USB drive. Wallpaper files are not modified.
+- Bing or Wallhaven online wallpapers, or an image URL with available update options. On failure, settings show the source, loading stage and cause, including the HTTP status when available; the diagnostic report also includes these details. Previously downloaded wallpapers are preserved.
 - Selected app colors: a soft background derived from the focused tile's banner or icon.
 - Adaptive landscape: an illustrated valley or realistic nature with four seasons. Spring has fresh light greenery and a flowering meadow, plus blossoming trees in the illustrated valley; summer has deep greenery and warm golden grasses.
 
@@ -147,6 +213,9 @@ If video initialization or playback fails, the launcher automatically tries a co
 
 The **Day/Night image** source accepts images only: the day image is used from
 06:00 to 18:00, and the night image at other times.
+The file name appears below each selection; an empty slot and an unavailable file
+are distinct. Images selected before this update or restored from a backup may
+display the launcher’s internal file name.
 
 After selecting this source, open **Home screen → Background → Source settings**.
 Time of day, seasons, clouds, rain/snow, fog and weather animation have independent
@@ -168,11 +237,24 @@ You can explicitly choose Northern or Southern Hemisphere.
 Weather effects use current data from your selected weather source without extra
 requests; missing or stale data shows clear skies. Motion is off by default,
 stops outside Home, and is disabled in memory-saving mode or with system reduced
-motion. Realistic scenes are bundled; time changes their lighting and weather
+motion. Clouds of different sizes and shapes drift slowly in one direction,
+randomly chosen as left or right when the scene is created. Their speeds vary
+slightly; clouds move off-screen and enter from the opposite side.
+Realistic scenes are bundled; time changes their lighting and weather
 is drawn over them.
 
 Wallpaper placement, brightness, saturation, and dimming depend on the source
-and memory-saving mode. Reddit is currently disabled and cannot be selected.
+and memory-saving mode.
+
+In online wallpaper settings, select **Wallhaven** and a theme: **Mixed**, **Nature**,
+**Space**, **Cities**, or **Minimalism**. No account or API key is needed.
+Random SFW images are downloaded in 16:9 at Full HD or higher.
+Choose an interval of 1, 6, 12, or 24 hours; **Refresh wallpaper** immediately
+selects another image. Automatic updates run while the launcher is open and resume
+when you return. The last wallpaper is available offline and remains on download
+failure. Service availability depends on your network and provider.
+
+Reddit is currently disabled and cannot be selected.
 
 ## Continue Watching
 
@@ -183,6 +265,12 @@ resumes playback through the action supplied by its app. Choose participating
 apps, card size, a total limit, and per-app limits. View details or hide individual
 recommendations. Change the category's visibility and position in the category editor.
 
+Apps appear in one alphabetical list; toggling an app keeps its row in place.
+An enabled switch allows cards; a disabled switch blocks them. Each row shows
+its state or card count. Saved blocks for missing apps can still be removed.
+The limits list puts current card sources and apps with saved limits first,
+followed by other apps.
+
 The launcher does not read viewing history directly from every video service.
 Card availability, freshness, and resuming at the right position depend on the
 source app and Android's Watch Next data.
@@ -191,6 +279,41 @@ source app and Android's Watch Next data.
 
 
 Path: **Top panel → Objects / Object order**.
+
+Enable the **System** widget in **Top panel → Objects**; it is off by default.
+The panel displays CPU and RAM. **System widget settings** lets you keep either
+value or only the icon. Select the widget to see overall CPU load, used and
+available RAM, free/total internal storage, device uptime since boot
+(hours:minutes), and one-hour CPU/RAM charts. CPU temperature appears only when
+the system source is available; GPU is not displayed. CPU availability depends
+on firmware: when direct access is blocked, the widget uses the built-in ADB's
+previously configured and verified local connection. Without that connection,
+missing readings appear as “—” or **Unavailable**. After a pause, CPU first appears
+on the second successful sample, after about 5 seconds.
+
+Readings refresh every 5 seconds while the widget or its menu is visible.
+Charts show minute averages and peak markers on a 0–100% scale. Other apps,
+hiding the widget, turning the screen off, and read failures leave gaps;
+history is not filled retrospectively. The last hour stays in memory and
+resets when the launcher process restarts. RAM refers to device memory;
+“used” means “total − available”. Sizes use binary MiB/GiB units.
+Visibility on the quick settings panel is separate; CPU/RAM display options
+are shared with the top panel.
+
+In the **Sound and inputs** group, **Show volume** enables an informational volume and audio output block.
+It is enabled by default; visibility and position persist after a restart.
+The block shows a speaker icon, a percentage and the current output, such as
+**TV**, **ARC**, **HDMI** or **Bluetooth**. When muted, a crossed-out speaker
+replaces the percentage. No remote action is needed: the block cannot receive
+focus and refreshes about once a second while the panel is visible.
+Its visibility on the quick settings panel is configured separately.
+
+The percentage represents Android media volume. The level of an external audio
+system over ARC/CEC may differ or be unavailable, depending on firmware.
+Fixed or unavailable volume is shown as “—”. Identifying the selected output
+requires Android 13 or later and firmware that exposes the route; otherwise
+a neutral TV icon and “—” appear. **Multiple** indicates several outputs.
+After waking, the output updates as the connection to the audio system recovers.
 
 Enable, hide, and rearrange the clock, date, weather, network status, traffic,
 TV inputs, notifications, sleep timer, night mode, and launcher/Android settings
@@ -223,24 +346,71 @@ receive/send traffic. Wi-Fi link speed is the connection rate to the access poin
 not an internet speed test. Data unavailable from Android is marked explicitly;
 no additional location permission is requested. The summary refreshes every three
 seconds only while open and the app is active. It includes a system network
-settings button; the separate VPN icon opens VPN settings.
+settings button.
 
-In **Top panel → Objects**, the clock, date and weather share one section with
-three independent switches and a **Block settings** button. Block settings contain
-the grouping and calendar switches. The calendar is available in either mode:
-select the date or the combined block while the date is visible to open it.
-Saturday and Sunday dates are shown in red, including today.
+**VPN** is a separate object in the **Network and VPN** group. You can
+independently show, hide and reorder it on the top panel and the quick settings
+panel. Pressing it opens a menu with VPN status, app, profile and available actions.
+The menu can open the VPN app or Android VPN settings; its gear opens **VPN settings**,
+shared by both panels. Options include showing only when connected (the default),
+the app name, connection color and notifications about manual command results.
 
-Without grouping, there are separate clock, date and weather settings. Grouping
-replaces these with **Block appearance** and **Weather settings**, plus a separate
-clock animation switch. Time and date formats are edited in block appearance.
-Block size (10–24), font, font style, weight, color and glow affect the entire
-block; color and glow also affect the weather icon. Place the clock to the left
-or right of the text and set their spacing (0–32). These two controls appear when
-the clock and at least one text item are enabled. The background can inherit the
-panel's background or have its own color, transparency and corner radius.
+With **VPN app → Automatic**, the launcher adopts a manually connected VPN and
+remembers the app and available profile name for reconnection. Connecting another
+VPN updates this choice. Explicit selection keeps the widget bound to that client.
+Identifying the owner and profile requires an already configured local TCP ADB connection (not TLS).
+If identification is unavailable, connection status is shown and unverified control
+is unavailable. The last client is never substituted for an unknown active VPN.
 
-**Font style** sits below the font selector in clock and block appearance. It
+Direct connect and disconnect commands support **AmneziaWG** and **WireGuard**.
+Grant control permission in the launcher's VPN settings and enable remote control
+in the client. Grant the permission from the main launcher, not the overlay panel.
+The profile name is detected during a manual connection when available; otherwise
+enter it exactly as in the client. **Happ** and **MantaRay** also support connect
+and disconnect. Configure and test a connection in the client first; the profile
+is selected there, so no profile name is required in the launcher.
+For MantaRay, confirm the command in its own window. For unattended startup
+after boot, use Android always-on mode.
+Other clients can be opened. Sending a command
+alone does not count as connecting: the launcher waits for the resulting state.
+
+**Clock, date and weather on the wallpaper.** Open **Top panel → Objects →
+Clock, date and weather**. Choose **Disabled**, **Top panel** or **On wallpaper** separately
+for the time, date and weather. For example, move the clock to the wallpaper and
+keep the date and weather in the panel, grouped or separate. Wallpaper appearance
+settings offer left, center or right alignment, size (48–144), font, color and glow.
+The date and weather sit above the large clock. This decorative block has no dimming
+background, cannot receive focus or presses, and does not open widgets. Tile positions
+and the scrolling viewport stay unchanged; tiles can overlap the clock.
+In the adaptive landscape, the mountain outline overlaps the lower part
+of the clock in both illustrated and realistic variants. Clouds, rain, snow and
+fog pass over the wallpaper clock, date and weather; tiles and the top panel
+remain above the effects. Other wallpapers have no overlap effect. Moving the elements hides them from the top panel; choosing
+**Top panel** again restores their previous order and grouping mode. Wallpaper
+elements are also excluded from the top panel order editor. Quick settings panel
+visibility and order remain independent; editing that panel does not hide wallpaper clocks.
+
+**Top panel → Objects** has one **Clock, date and weather** entry with a brief
+placement summary. Each element's placement is edited only inside this entry.
+The remaining settings are split into **Panel appearance**, **Wallpaper appearance**
+(when any element is on the wallpaper), and **Formats and data**. The latter contains
+time and date formats and a link to weather settings.
+
+**Panel appearance** can group the visible elements. Grouping is unavailable when
+only one or no elements remain. Quick settings has independent visibility and grouping.
+Shared size (10–24), font, style, weight, color and glow apply to the clock, date and
+weather in both panels; color and glow also affect the weather icon. Digit animation
+has its own switch. A grouped clock with date or weather offers left/right clock
+position and spacing (0–32). The background and corner radius always match the other
+objects in the corresponding panel, including when only one element remains.
+
+Panel clock and date buttons always open the calendar; weather opens the forecast.
+A combined block opens the calendar, forecast or both according to its visible members.
+Both parts fit in one window without scrolling. Returning from settings updates the
+contents according to the current composition. Saturday and Sunday dates are red,
+including today.
+
+**Font style** sits below the font selector in panel and wallpaper appearance. It
 offers only **Standard** and **Italic**. It changes only the slant, preserving
 family, size, weight, color, glow and background. **Font weight** is an inline
 arrow control offering only distinct weights for the selected font: Manrope
@@ -259,9 +429,9 @@ In **Object order** for either panel, the combined block occupies one row and
 moves as a unit, including hidden items. Its initial position is the first
 information slot in the stored order. Disabling grouping restores individual
 positions until you edit the order. After moving the group, its members occupy
-adjacent slots at the new position. Hidden items stay hidden, missing weather
-data leaves no empty gap, and panel height stays unchanged. Widget settings,
-grouping, block appearance and the calendar switch are shared by both panels
+adjacent slots at the new position. Hidden items stay hidden. Enabled weather
+without data shows a cloud icon that opens its menu; panel height stays unchanged.
+Widget settings, grouping, block appearance and the press action are shared by both panels
 and edited in the main top panel settings. The quick settings panel’s **Objects** page
 contains only visibility switches, so its set of visible objects is independent.
 
@@ -270,17 +440,38 @@ traffic needs usage access, and inputs need support for the relevant TV API.
 
 ## Weather
 
-Path: **Top panel → Objects → Block settings → Weather settings**.
+Path: **Top panel → Objects → Clock, date and weather → Formats and data → Weather settings**.
 
 Sources include Breezy Weather, Open-Meteo, MET Norway, OpenWeather, and Yandex. Choose a city
 or coordinates, detect location with the required permission, refresh data, and
 configure temperature, forecasts, and weather warnings.
+
+Press OK or click the weather to open **Weather forecast**. Settings offer
+**3, 5, or 7 days**, including today (5 by default), and a choice of
+**Compact cards** with the date, icon and minimum/maximum temperatures or a
+**Detailed list** with conditions and precipitation probability. Units follow
+the panel's °C/°F setting. If the source returns fewer days, their number is
+shown; unavailable values use “—” and stale data is marked. The menu shows
+the location, source and update time. Cached forecasts retain their dates;
+sources without time zone information are identified as using TV time.
+
+All selected forecast days fit in one window without scrolling. The detailed list
+uses compact rows and two columns when space permits. The combined window gives
+the calendar and weather matching surfaces; when space is limited, the content
+scales down as a whole, keeping every day visible. Back closes the menu and returns
+focus to the widget. The gear opens shared block settings. Settings remain accessible
+without weather data, and the calendar keeps working in the combined view.
+New combined blocks show weather and calendar together; an explicitly saved
+calendar enable/disable choice is respected until a new block action is selected.
 
 Breezy Weather requires a compatible installed app with a configured provider.
 MET Norway needs no key: data by MET Norway under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/), adapted from https://api.met.no/. Forecast days use the TV time zone; min/max cover available periods and precipitation probability is unavailable. OpenWeather and Yandex require their respective personal keys. Cached data helps during temporary
 outages, but does not make an old forecast current.
 
 ## Notifications and playback
+
+In the notification blocking list, an enabled switch means the app's notifications
+are blocked. Each app appears once; changing a switch keeps the list order.
 
 Path: **Top panel → Objects → Notifications**.
 
@@ -323,6 +514,8 @@ name and icon. Port numbers determine order.
 
 Input availability, labels, and switching depend on firmware. A TV box's HDMI
 connection is not equivalent to the television's own input list.
+When system inputs are unavailable, their settings are also unavailable.
+Saved names, icons, and the CEC option are preserved.
 
 ## Night mode and brightness
 
@@ -330,7 +523,11 @@ Path: **Night mode and brightness**; the night-mode widget provides quick contro
 
 The night filter controls dimming, warmth, and color strength. Enable it manually,
 at scheduled times, or from sunset to sunrise for a chosen location, with offsets
-and smooth transitions. Skip the current night, enable until morning, or resume
+and smooth transitions. When starting without internet, saved solar events are
+used. If events for the required day are missing, yesterday's sunrise and sunset
+times for the same location are reused; without that history, the defaults are
+08:00 and 20:00. The schedule works immediately while times refresh in the background.
+Skip the current night, enable until morning, or resume
 the schedule. The temporary mode ends automatically at the next applicable
 schedule boundary: manual activation ends when the night starts, and skipping
 the current night ends when it finishes. The “Resume schedule” button then
@@ -352,7 +549,7 @@ planned and are not currently available features.
 
 ## Clock and screensaver
 
-Path: **Appearance → Screensaver clock style / Screensaver settings**, when Android
+Path: **Interface style → Screensaver clock style / Screensaver settings**, when Android
 provides a working system selector.
 
 There is a home-screen clock mode and a dedicated clock screensaver. Show clock
@@ -404,7 +601,52 @@ Path: **Launcher and TV controls**.
 - Grant supported special access to the launcher through ADB.
 - Launch an app or switch once to HDMI after TV boot or wake, with event and delay settings.
 
-Autostart acts when Android hands control to the launcher; choosing a target does
+**Autostart** includes a separate **VPN on TV startup** choice:
+**Not selected** disables VPN startup; selecting an installed VPN client enables
+it in addition to the existing app/HDMI target. Direct connection requires a
+supported client, a configured profile and control permissions. Selecting an app
+does not immediately connect it. A separate 0–60 second delay and an optional
+wake trigger (off by default) are available.
+Boot schedules one attempt after a network becomes available, with a network wait
+bounded to one minute after the delay and connection confirmation bounded to 15 seconds.
+Android's scheduler may defer execution. An active VPN is not replaced.
+The client or firmware may restrict background connections; such an attempt is
+not reported as successful.
+Wake is detected only while the launcher process is alive. The latest attempt's
+result appears in autostart settings. VPN client, profile and startup settings
+are local to the TV and excluded from backups; object visibility is backed up.
+
+Under **Startup method**, choose **Android always-on VPN** instead of a client
+command. Select a compatible app after configuring it and approving its first
+connection. The launcher's local ADB connection must be enabled.
+The change is saved in Android; **restart the TV** to apply it. Android starts
+the VPN after boot. Delay and wake settings are unused in this mode.
+Blocking traffic without VPN is not enabled; changes are rejected if this
+protection is already active. Leaving the mode restores the previous system
+selection unless you changed it separately, and also requires a restart.
+The widget cannot temporarily disconnect an always-on VPN: change the system
+mode in autostart or Android settings first.
+Once the system selection is cleared, connection control returns to the widget
+immediately. The restart notice remains in autostart settings; the widget menu
+hides it while autostart is disabled.
+
+In **Autostart → Background apps**, check user apps to launch once behind Home
+after TV boot. CuteLauncher must open within one minute: set it as Home or
+enable launcher startup on boot. Checking an app saves the selection without
+launching it immediately. Apps start one by one; remote input or leaving the
+launcher cancels remaining launches. Waking from sleep does not repeat them.
+Apps incompatible with this mode are marked unavailable; a previously selected
+unavailable app can still be unchecked. Launching does not enable features inside
+an app or guarantee continuous operation: configure permissions and background
+operation in the app itself. Android and the TV firmware may stop it.
+Selections stay on this TV and are not transferred through backups.
+The subsection includes collapsed help explaining how it works.
+The same choice is available in each app's context menu as **Background autostart**.
+It shares its state with the list: switching it in either place immediately updates
+the other. A failed save keeps the previous value. Incompatible apps cannot be
+enabled, but a previously saved selection can still be disabled.
+
+Normal app/HDMI autostart acts when Android hands control to the launcher; choosing a target does
 not launch it immediately. Firmware determines whether HOME can be changed.
 Consequences and confirmation appear before changes. Disabling setupwraith also
 checks ownership of saved Wi-Fi networks: network-loss risk or an inconclusive
@@ -458,9 +700,13 @@ the panel directly and selects its type: Automatic, CuteLauncher panel, or
 Built-in panel. Automatic mode uses the available manufacturer's `com.nes.recents`
 panel (for example, on KP1), otherwise CuteLauncher's own panel. The built-in
 option depends on the firmware.
+When returning from the panel, focus stays on the “Open panel” button.
 
 The CuteLauncher panel requires authorized local ADB and a connected accessibility
-service. It shows icons and names of TV apps with existing tasks, including
+service. Both access statuses appear in the panel and on its settings page.
+If access is missing, select its row: ADB opens CuteLauncher's connection setup,
+and Accessibility opens the system service settings. Statuses refresh on return.
+The panel shows icons and names of TV apps with existing tasks, including
 windows in the background. Apps without a TV launch entry, background services
 without tasks, and launchers are excluded. OK or clicking an app brings its task
 to the foreground; the close button beside it removes all its tasks but does not
@@ -547,19 +793,61 @@ you can also import a suitable local list.
 A package appearing in a disable list does not guarantee that disabling it
 is safe on your firmware. Choose lists for your model and save the original states.
 
+## Choosing files and folders
+
+All file, folder, and document-save actions follow the same rule: if no suitable
+system handler is available, the built-in browser opens directly. If a handler
+exists, you can choose the system picker or the built-in browser.
+The built-in browser shows folders and matching files only: JSON for settings
+imports, TXT/JSON for links and cleaner lists, images for banners and icons,
+and images or videos for wallpapers. Each file shows its size and one available
+date, either creation or modification. Missing details are shown as “Unavailable”.
+
+The built-in browser shows the current path at the top. The up-arrow button
+and Back move to the parent folder; Back at the storage root closes the picker.
+The close button exits from any level. Returning upward restores the scroll
+position and focus of the folder you left. Up from the first item moves focus to
+the top buttons; Left/Right move between them. Down past the end of the list moves
+focus to the confirmation button. For a folder, press “Use this folder”;
+for a file, select its name. To export, choose a folder and press “Save”. A numeric
+suffix is added when a name is already taken; existing files are not overwritten.
+The export success message shows the actual path and name of the created file.
+Cancellation preserves your previous selection.
+
+
+The path is labelled “Current folder”; the export “File name” stays visible while
+scrolling. Press OK on a long path or export name to expand it, use the arrows to
+read it, and press OK again or move focus away to collapse it. In the list, Left
+expands an item's full name only if it is clipped; another Left collapses it.
+If the full name fits, Left keeps the row height unchanged. Right moves to folder confirmation, and
+Left from confirmation returns to the list. Re-entering a folder restores its
+scroll position and focus. The browser indicates when only part of a folder's
+contents is shown.
+
+The built-in browser needs storage access on Android 9–10 (including write access
+when saving) or all files access on Android 11 and newer. It works with TV storage
+and attached drives. The system picker may offer other sources and does not require
+broad file access. Manual path entry is available only in slideshow settings.
+
 ## Backups and synchronization
 
 Path: **Advanced → Backup and restore**.
 
 Export settings to a file and import them again; create, restore, delete, and
-refresh backups. A private rollback point is created before restoration. Backups
+refresh backups. Import/export prevents duplicate requests while running. A list
+loading error remains visible until a successful refresh and does not mean there
+are no backups. A private rollback point is created before restoration. Backups
 contain supported launcher settings, categories, and custom appearance; they
 do not back up installed apps or the entire TV system.
+
+Backups and synchronization shows the current mode, enabled state, storage,
+and the time of the last successful action. Disconnecting WebDAV or Google Drive
+requires confirmation; cancelling keeps the connection.
 
 Automatic backups support schedules, frequency, and retention. Storage includes
 the internal folder, Downloads / CuteLauncher, a selected folder, WebDAV, and
 Google Drive with configured access. Internal storage is removed when app data
-is deleted. External-folder selection depends on the file manager. On Android 9,
+is deleted. Choose an external folder using the system picker or built-in browser. On Android 9,
 saving to Downloads requires storage permission; internal storage and the system
 document picker do not require it.
 
@@ -581,23 +869,32 @@ package and certificate compatibility and need Android installation permission.
 Normal updates preserve user settings. Store-distributed versions have their
 own update-channel restrictions.
 
-On the first launch after an update, the launcher checks previously saved access:
-accessibility for button remapping, notification access, display over other apps,
-usage statistics, system settings changes, and Continue Watching.
-When the previously configured ADB connection is available, missing access is
-restored automatically; access disabled before the update is not granted.
-This requires a state snapshot saved by the previous version. If ADB is temporarily
-unavailable, the recovery queue is retained for up to five attempts within 15 minutes.
-If recovery fails, enable the required access again in Android settings.
+The launcher remembers granted access in local settings: accessibility for button
+remapping, notifications, display over other apps, usage statistics, system settings
+changes, and Continue Watching. If permissions are reset, it periodically tries to
+restore them through the previously configured local ADB connection, including
+outside app updates. Access that has never been granted is not enabled automatically.
+The initial state comes from a snapshot saved by the previous version or permissions
+observed by the current version.
 
-The launcher also checks its accessibility service connection in the background,
-roughly every 15 minutes. Android may postpone checks, particularly during sleep.
-If access remains enabled but the service disconnects, the launcher tries to reconnect
-it through the previously configured ADB connection. System access disabled outside
-an update is not granted automatically. Force-stopping the app in Android suspends
-background checks until its next launch. On the tested TCL TV, force-stop also
-disables accessibility access; enable it again in Android settings after stopping
-the app this way. Waiting and failure reasons are included in the diagnostics report.
+Background checks run roughly every 15 minutes. Android may postpone them,
+particularly during sleep. The service has 30 seconds to connect; after three
+background attempts, recovery pauses for an hour, then continues. ADB unavailability
+does not erase remembered permissions. After an update, up to five additional fast
+attempts run within 15 minutes.
+To stop accessibility recovery, disable it through the ADB page in CuteLauncher.
+Disabling it only in Android settings is treated as lost access and may be reversed
+by a background check. Force-stopping the app suspends checks until its next launch.
+If ADB is unavailable, you can enable the required access manually in Android settings.
+Waiting and failure reasons are included in the diagnostics report.
+
+In **Advanced**, **Reset all settings** appears above **About CuteLauncher**.
+After confirmation, Android completely clears CuteLauncher data: preferences,
+sections, Favorites, statistics, remote mappings, ADB and cloud connections,
+automatic backup preferences, weather keys, and files in app storage. CuteLauncher will close;
+the next launch will use the initial settings, and access must be configured again.
+Files saved outside CuteLauncher storage (for example, backups in Downloads or on
+USB) and other apps are not deleted.
 
 About CuteLauncher shows the version, attribution, and licenses.
 The interface displays versions without a build number; Android keeps an internal
@@ -612,6 +909,16 @@ resource-saving mode. Clearing caches does not reset settings or disable system
 apps. Cache sizes are not independent RAM measurements for each feature.
 
 <a id="диагностика"></a>
+## Compatible graphics output
+
+Path: **Settings → Advanced → Compatible graphics output**.
+If the interface flickers with night dimming, try enabling this mode.
+On verified models, the workaround is enabled automatically, as shown in settings.
+Other TVs have a switch. After changing it, select
+**Apply and restart launcher**: settings close and Home opens.
+The mode may increase graphics load. The choice is saved only on this device
+and is not transferred through backups or synchronization.
+
 ## Diagnostics
 
 Path: **Settings → Advanced → Diagnostics**. One report combines shared TV and
@@ -661,7 +968,7 @@ results as unknown.
 1. Reproduce the actions that cause the problem.
 2. Open **Settings → Advanced → Diagnostics**.
 3. Select **Create report** and wait until it is ready.
-4. Select **Export report → Save to disk**, choose a folder in the file manager,
+4. Select **Export report → Save to disk**, choose a folder in your selected browser,
    and finish saving.
 5. Send `cutelauncher_diagnostics_….json` to the author **in a private message**.
    Do not attach it to a public forum topic or GitHub issue: automatic redaction
@@ -708,9 +1015,13 @@ and a disabled-app list is not a recommendation for a different TV.
 | Location | Automatic weather coordinates and solar scheduling |
 | Exact alarms | System sleep-timer deadline event |
 | Install unknown apps | APK updates through Android's installer |
-| Authorized local ADB | Cleanup manager and relevant TV-control operations |
-| Compatible file manager | File/folder selection and saving reports/backups when system pickers do not work |
+| Authorized local ADB | Cleanup manager, relevant TV-control operations, and the CPU load fallback |
+| Compatible file manager | Additional file sources and system folder selection; a built-in browser is also available |
 
 Permissions are granted by the user and may be revoked by Android. A visible
 setting does not guarantee firmware support. When asking about your device,
 include its exact model, Android version, and firmware build.
+
+The VPN on TV startup switch enables autostart separately. The method and app appear below it. Disabling preserves these choices; changing always-on VPN requires a restart.
+
+TCL firmware may block AmneziaWG from starting in the background. If the boot command fails, the launcher briefly opens the VPN client once, starts the selected tunnel and restores the previous screen. If you have moved to another app, that app stays open.

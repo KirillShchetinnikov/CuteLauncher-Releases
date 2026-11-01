@@ -17,30 +17,62 @@ class WatchNextLimitsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
-    final settings = context.watch<SettingsService>();
-    final apps = context.watch<AppsService>().applications;
-    final names = {for (final app in apps) app.packageName: app.name};
-    final packages = {
-      ...names.keys,
-      ...settings.watchNextAppLimits.keys,
-      ...context.watch<WatchNextService>().programs.map((p) => p.packageName),
-    }.toList()..sort((a, b) => (names[a] ?? a).compareTo(names[b] ?? b));
+    final settings = context.read<SettingsService>();
+    final limits = context.select<SettingsService, Map<String, int>>(
+      (service) => service.watchNextAppLimits,
+    );
+    final names = context.select<AppsService, Map<String, String>>(
+      (service) => {for (final app in service.applications) app.packageName: app.name},
+    );
+    final sources = context.select<WatchNextService, Set<String>>(
+      (service) => service.programs.map((program) => program.packageName).toSet(),
+    );
+    final priority = {
+      ...limits.keys,
+      ...sources,
+    };
+    final packages =
+        {
+          ...names.keys,
+          ...limits.keys,
+          ...sources,
+        }.toList()..sort((a, b) {
+          final group = (priority.contains(a) ? 0 : 1).compareTo(
+            priority.contains(b) ? 0 : 1,
+          );
+          return group != 0
+              ? group
+              : (names[a] ?? a).toLowerCase().compareTo(
+                  (names[b] ?? b).toLowerCase(),
+                );
+        });
+    final indices = {
+      for (var i = 0; i < packages.length; i++) packages[i]: i + 1,
+    };
     return SettingsPageLayout(
       title: Text(l.watchNextAppLimits),
-      child: ListView(
-        children: [
-          SettingsHelp(text: l.watchNextAppLimitsHint),
-          for (final package in packages)
-            SettingsValueStepper(
-              autofocus: package == packages.first,
-              title: names[package] ?? package,
-              options: const [0, 1, 3, 5, 10, 15, 20, 30, 50],
-              value: settings.watchNextAppLimits[package] ?? 0,
-              label: (v) => v == 0 ? l.unlimitedItems : l.itemsCount(v as int),
-              onChanged: (v) =>
-                  settings.setWatchNextAppLimit(package, v as int),
-            ),
-        ],
+      child: ListView.builder(
+        itemCount: packages.length + 1,
+        findChildIndexCallback: (key) =>
+            indices[(key as ValueKey<String>).value],
+        itemBuilder: (context, index) {
+          if (index == 0) {
+            return SettingsHelp(
+              title: l.watchNextAppLimits,
+              text: l.watchNextAppLimitsHint,
+            );
+          }
+          final package = packages[index - 1];
+          return SettingsValueStepper(
+            key: ValueKey(package),
+            autofocus: package == packages.first,
+            title: names[package] ?? package,
+            options: const [0, 1, 3, 5, 10, 15, 20, 30, 50],
+            value: limits[package] ?? 0,
+            label: (v) => v == 0 ? l.unlimitedItems : l.itemsCount(v as int),
+            onChanged: (v) => settings.setWatchNextAppLimit(package, v as int),
+          );
+        },
       ),
     );
   }

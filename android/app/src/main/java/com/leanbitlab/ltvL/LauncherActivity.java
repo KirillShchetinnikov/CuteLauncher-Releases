@@ -33,6 +33,7 @@ import androidx.annotation.NonNull;
 import java.util.Map;
 
 import io.flutter.embedding.android.FlutterActivity;
+import io.flutter.embedding.android.RenderMode;
 import io.flutter.FlutterInjector;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterEngineGroup;
@@ -46,6 +47,22 @@ import java.util.concurrent.Executors;
 
 
 public class LauncherActivity extends FlutterActivity {
+    private RenderMode selectedRenderMode;
+    @NonNull @Override public RenderMode getRenderMode() {
+        // On SEI KP1, the separate Flutter SurfaceView flickers beneath the night
+        // overlay during UI updates. TextureView removes that extra display layer.
+        // Select once at Activity creation; toggling night mode must not recreate Home.
+        if (selectedRenderMode == null) selectedRenderMode = RenderCompatibility.enabled(this)
+                ? RenderMode.texture : super.getRenderMode();
+        return selectedRenderMode;
+    }
+
+    private Map<String, Object> renderCompatibilityState() {
+        return Map.of("automatic", RenderCompatibility.automatic(),
+                "enabled", RenderCompatibility.enabled(this),
+                "active", getRenderMode() == RenderMode.texture);
+    }
+
     @Override public FlutterEngine provideFlutterEngine(@NonNull Context context) {
         var group = LauncherEngineGroup.get(context, getFlutterShellArgs().toArray());
         String bundle = getAppBundlePath();
@@ -76,6 +93,8 @@ public class LauncherActivity extends FlutterActivity {
     private final String WATCH_NEXT_EVENT_CHANNEL = "me.efesser.flauncher/event_watch_next";
     private MethodChannel.Result pendingPermissionResult;
     private WeatherLocationBridge weatherLocationBridge;
+    static final String OPEN_ADB_SETTINGS = "open_adb_settings";
+    private boolean pendingAdbSettings;
     private EventChannel.EventSink homeSink;
     private static java.lang.ref.WeakReference<LauncherActivity> panelHost = new java.lang.ref.WeakReference<>(null);
     static void panelClosed() {
@@ -102,6 +121,8 @@ public class LauncherActivity extends FlutterActivity {
     private NotificationBridge notificationBridge;
     private final NotificationPopupBridge notificationPopups = new NotificationPopupBridge(LauncherNotificationListenerService::transferPopups);
     private WatchNextBridge watchNextBridge;
+    private WatchNextBridge appChannelsObserver;
+    private AppChannelsBridge appChannelsBridge;
     private MediaBridge mediaBridge;
     private DocumentFiles documentFiles;
     private WallpaperFolder wallpaperFolder;
@@ -114,6 +135,7 @@ public class LauncherActivity extends FlutterActivity {
     private RecentAppsBridge recentApps;
 
     @Override public void cleanUpFlutterEngine(@NonNull FlutterEngine flutterEngine) {
+        if (wallpaperFolder != null) wallpaperFolder.local.close();
         if (legacyStorageAccess != null) { legacyStorageAccess.close(); legacyStorageAccess = null; }
         if (tvInputBridge != null) { tvInputBridge.close(); tvInputBridge = null; }
         if (remoteMappings != null) { remoteMappings.close(); remoteMappings = null; }
@@ -124,9 +146,13 @@ public class LauncherActivity extends FlutterActivity {
         if (weatherLocationBridge != null) { weatherLocationBridge.dispose(); weatherLocationBridge = null; }
         BatterySettingsGuide.close(this);
         if (autoLaunch != null) { autoLaunch.close(); autoLaunch=null; }
+        if (vpnBridge != null) { vpnBridge.close(); vpnBridge = null; }
+        if (audioStatus != null) { audioStatus.close(); audioStatus = null; }
+        if (systemStatus != null) { systemStatus.close(); systemStatus = null; }
         if (notificationBridge != null) notificationBridge.onCancel(null);
         notificationPopups.onCancel(null);
         if (watchNextBridge != null) watchNextBridge.onCancel(null);
+        if (appChannelsObserver != null) appChannelsObserver.onCancel(null);
         if (mediaBridge != null) mediaBridge.onCancel(null);
         if (panelHost.get() == this) panelHost.clear();
         super.cleanUpFlutterEngine(flutterEngine);
@@ -138,6 +164,7 @@ public class LauncherActivity extends FlutterActivity {
         if (requestCode == DocumentFiles.REQUEST && documentFiles != null) documentFiles.complete(resultCode, data);
         if (requestCode == BackupFolder.REQUEST && backupFolder != null) backupFolder.complete(resultCode, data);
         if (requestCode == WallpaperFolder.REQUEST && wallpaperFolder != null) wallpaperFolder.complete(resultCode, data);
+        if (requestCode == LocalWallpaperFiles.REQUEST && wallpaperFolder != null) wallpaperFolder.local.complete();
     }
 
     @Override
@@ -145,12 +172,23 @@ public class LauncherActivity extends FlutterActivity {
         super.onNewIntent(intent);
         setIntent(intent);
         if (autoLaunch != null && manualLaunch(intent)) autoLaunch.cancel();
+        if (intent.getBooleanExtra(OPEN_ADB_SETTINGS, false)) {
+            pendingHome = false;
+            intent.removeExtra(OPEN_ADB_SETTINGS);
+            if (homeSink != null) homeSink.success(OPEN_ADB_SETTINGS);
+            else pendingAdbSettings = true;
+            return;
+        }
         if ((Intent.ACTION_MAIN.equals(intent.getAction()) && intent.hasCategory(Intent.CATEGORY_HOME))
                 || intent.getBooleanExtra("return_home", false)) {
+            pendingAdbSettings = false;
             if (homeSink != null) homeSink.success(true);
             else pendingHome = true;
         }
     }
+    private VpnBridge vpnBridge;
+    private AudioStatusBridge audioStatus;
+    private SystemStatusBridge systemStatus;
     private static final ExecutorService sIoExecutor = Executors.newFixedThreadPool(4);
     // Image decode/PNG must not queue behind slow ADB or system statistics.
     private static final ExecutorService sImageExecutor = Executors.newFixedThreadPool(2);
@@ -210,6 +248,9 @@ public class LauncherActivity extends FlutterActivity {
         remoteMappings = new RemoteMappingsBridge(this, messenger, sIoExecutor, this::isAccessibilityServiceEnabled);
         recentApps = new RecentAppsBridge(this, messenger, sIoExecutor, () -> {});
         autoLaunch = new AutoLaunchBridge(this, messenger);
+        vpnBridge = new VpnBridge(this, messenger, sIoExecutor);
+        audioStatus = new AudioStatusBridge(this, messenger, sIoExecutor);
+        systemStatus = new SystemStatusBridge(this, messenger, sIoExecutor);
         Intent initial=getIntent();
         if (initial!=null && Intent.ACTION_MAIN.equals(initial.getAction())
             && (initial.hasCategory(Intent.CATEGORY_LAUNCHER) || initial.hasCategory(Intent.CATEGORY_LEANBACK_LAUNCHER))) autoLaunch.cancel();
@@ -230,6 +271,10 @@ public class LauncherActivity extends FlutterActivity {
         mediaBridge = new MediaBridge(this, sIoExecutor);
         mediaBridge.register(messenger, notificationBridge);
         watchNextBridge = new WatchNextBridge(this);
+        appChannelsObserver = new WatchNextBridge(this,
+                android.media.tv.TvContract.Channels.CONTENT_URI,
+                android.media.tv.TvContract.PreviewPrograms.CONTENT_URI);
+        appChannelsBridge = new AppChannelsBridge(this);
         legacyStorageAccess = new LegacyStorageAccess(this);
         documentFiles = new DocumentFiles(this, sIoExecutor, legacyStorageAccess);
         wallpaperFolder = new WallpaperFolder(this, sIoExecutor);
@@ -237,7 +282,12 @@ public class LauncherActivity extends FlutterActivity {
         new EventChannel(messenger, "me.efesser.flauncher/event_home").setStreamHandler(new EventChannel.StreamHandler() {
             public void onListen(Object arguments, EventChannel.EventSink events) {
                 homeSink = events;
-                if (pendingHome) { pendingHome = false; events.success(true); }
+                if (pendingAdbSettings || getIntent().getBooleanExtra(OPEN_ADB_SETTINGS, false)) {
+                    pendingAdbSettings = false;
+                    pendingHome = false;
+                    getIntent().removeExtra(OPEN_ADB_SETTINGS);
+                    events.success(OPEN_ADB_SETTINGS);
+                } else if (pendingHome) { pendingHome = false; events.success(true); }
             }
             public void onCancel(Object arguments) { homeSink = null; }
         });
@@ -245,12 +295,35 @@ public class LauncherActivity extends FlutterActivity {
         new MethodChannel(messenger, METHOD_CHANNEL).setMethodCallHandler((call, result) -> {
             try {
             switch (call.method) {
+                case "resetApplicationData" -> result.success(ApplicationReset.request(this));
                 case "getNativeShellDiagnostics" -> result.success(NativeShellDiagnostics.snapshot());
                 case "enableBackgroundVideoCompatibility" -> result.success(VideoSurfaceCompatibility.enableAfterFailure(this));
                 case "getVideoPlaybackLog" -> ApplicationLoader.load(sIoExecutor,
                         task -> new Handler(Looper.getMainLooper()).post(task),
                         () -> VideoPlaybackDiagnostics.collect(this), result::success,
                         error -> result.success("Media log unavailable on this firmware"));
+                case "getRenderCompatibility" -> result.success(renderCompatibilityState());
+                case "setRenderCompatibility" -> {
+                    Object enabled = call.argument("enabled");
+                    if (!(enabled instanceof Boolean)) {
+                        result.error("invalid", "Expected a boolean", null);
+                        break;
+                    }
+                    ApplicationLoader.load(sIoExecutor,
+                            task -> new Handler(Looper.getMainLooper()).post(task),
+                            () -> { RenderCompatibility.save(this, (Boolean) enabled); return true; },
+                            saved -> result.success(renderCompatibilityState()),
+                            error -> result.error("render_save_failed", "Unable to save render compatibility", null));
+                }
+                case "applyRenderCompatibility" -> {
+                    result.success(true);
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        if (!isFinishing() && !isDestroyed()) {
+                            getIntent().removeExtra("background_mode");
+                            recreate();
+                        }
+                    });
+                }
                 case "clearNativeShellDiagnostics" -> { NativeShellDiagnostics.clear(); result.success(true); }
                 case "getTvCompatibilityDiagnostics" -> ApplicationLoader.load(sIoExecutor,
                         task -> new Handler(Looper.getMainLooper()).post(task),
@@ -267,9 +340,16 @@ public class LauncherActivity extends FlutterActivity {
                     "accessibilityEnabled", isAccessibilityServiceEnabled(),
                     "writeSettingsAllowed", checkWriteSettingsPermission(),
                     "watchNextAllowed", watchNextBridge.checkWatchNextPermission()));
+                case "filePickerAvailable" -> result.success(documentFiles.pickerAvailable(call.argument("operation")));
+                case "requestFileStorage" -> wallpaperFolder.local.request(Boolean.TRUE.equals(call.argument("write")), result);
+                case "browseLocalFiles" -> wallpaperFolder.local.browse(call.argument("path"), call.argument("kind"), result);
+                case "localDocumentOperation" -> new LocalDocumentFiles(this, sIoExecutor, wallpaperFolder.local)
+                    .operate(call.argument("operation"), call.argument("selected"), call.argument("source"), call.argument("name"), result);
                 case "pickImageDocument" -> documentFiles.open("image/*", 8L * 1024 * 1024, result);
                 case "pickWallpaperDocument" -> documentFiles.openWallpaper(result);
                 case "pickWallpaperFolder" -> wallpaperFolder.pick(result);
+                case "requestWallpaperStorage" -> wallpaperFolder.local.request(result);
+                case "browseWallpaperFolders" -> wallpaperFolder.local.browse(call.argument("path"), result);
                 case "listWallpaperFolder" -> wallpaperFolder.list(call.argument("uri"), Boolean.TRUE.equals(call.argument("recursive")), result);
                 case "readWallpaperFolderImage" -> wallpaperFolder.read(call.argument("uri"), result);
                 case "releaseWallpaperFolder" -> wallpaperFolder.release(call.argument("uri"), result);
@@ -391,8 +471,11 @@ public class LauncherActivity extends FlutterActivity {
                 case "checkAccessibilityPermission" -> result.success(isAccessibilityServiceEnabled());
                 case "requestAccessibilityPermission" -> result.success(openAccessibilitySettings());
                 case "checkWatchNextPermission" -> result.success(watchNextBridge.checkWatchNextPermission());
-                case "requestWatchNextPermission" -> {
-                    if (watchNextBridge.checkWatchNextPermission()) {
+                case "checkAppChannelsPermission" -> result.success(checkSelfPermission("android.permission.READ_TV_LISTINGS") == android.content.pm.PackageManager.PERMISSION_GRANTED);
+                case "requestAppChannelsPermission", "requestWatchNextPermission" -> {
+                    if (call.method.equals("requestAppChannelsPermission")
+                            ? checkSelfPermission("android.permission.READ_TV_LISTINGS") == android.content.pm.PackageManager.PERMISSION_GRANTED
+                            : watchNextBridge.checkWatchNextPermission()) {
                         result.success(true);
                     } else {
                         if (pendingPermissionResult != null) {
@@ -403,6 +486,14 @@ public class LauncherActivity extends FlutterActivity {
                         }
                     }
                 }
+                case "getAppChannels" -> {
+                    java.util.List<String> selected = call.argument("selected");
+                    ApplicationLoader.load(sIoExecutor, this::runOnUiThread,
+                            () -> appChannelsBridge.channels(selected), result::success,
+                            error -> result.error("app_channels_unavailable", "Unable to read app channels", DiagnosticErrorDetails.from(error)));
+                }
+                case "launchAppChannelProgram" -> result.success(appChannelsBridge.launch(
+                        call.argument("intentUri"), call.argument("packageName")));
                 case "getWatchNextPrograms" -> ApplicationLoader.load(sIoExecutor,
                         task -> new Handler(Looper.getMainLooper()).post(task),
                         watchNextBridge::getWatchNextPrograms, result::success,
@@ -486,6 +577,7 @@ public class LauncherActivity extends FlutterActivity {
         );
 
         new EventChannel(messenger, WATCH_NEXT_EVENT_CHANNEL).setStreamHandler(watchNextBridge);
+        new EventChannel(messenger, "me.efesser.flauncher/event_app_channels").setStreamHandler(appChannelsObserver);
     }
 
     private boolean launchActivityFromAction(String action) {
@@ -793,6 +885,7 @@ public class LauncherActivity extends FlutterActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == LegacyStorageAccess.REQUEST && legacyStorageAccess != null) legacyStorageAccess.complete();
+        if (requestCode == LocalWallpaperFiles.REQUEST && wallpaperFolder != null) wallpaperFolder.local.complete();
         if (requestCode == WeatherLocationBridge.PERMISSION_REQUEST && weatherLocationBridge != null) {
             weatherLocationBridge.onPermissionResult();
         }

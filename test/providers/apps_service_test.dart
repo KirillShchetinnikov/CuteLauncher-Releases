@@ -9,7 +9,9 @@ import 'package:flauncher/models/category.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/app_catalog_cache.dart';
 import 'package:flauncher/providers/foreground_work.dart';
+import 'package:flauncher/providers/memory_resources.dart';
 import 'package:flauncher/providers/settings_service.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -188,9 +190,10 @@ void main() {
       await service.refreshState();
       await service.resetSections();
       final categories = await db.getCategories();
-      expect(categories.map((c) => c.systemKey), ['all_apps', 'tv_apps', 'other_apps', 'favorites']);
+      expect(categories.map((c) => c.systemKey), ['all_apps', 'tv_apps', 'other_apps', 'favorites', 'app_channels']);
       expect(categories.first.sort, CategorySort.alphabetical);
-      expect(categories.every((c) => c.visible && c.columnsCount == 6 && c.rowHeight == 110), isTrue);
+      expect(categories.every((c) => c.columnsCount == 6 && c.rowHeight == 110), isTrue);
+      expect(categories.where((c) => c.visible).map((c) => c.systemKey), ['all_apps', 'app_channels']);
       expect(await db.getLauncherSpacers(), isEmpty);
       final tv = (await db.getApplications()).firstWhere((a) => a.packageName == 'tv');
       expect(tv.hidden, isTrue);
@@ -199,7 +202,7 @@ void main() {
       expect(membership.map((m) => (m.categoryId, m.appPackageName)),
         unorderedEquals([(categories[1].id, 'tv'), (categories[2].id, 'other')]));
       await service.resetSections();
-      expect(await db.getCategories(), hasLength(4));
+      expect(await db.getCategories(), hasLength(5));
     } finally { service.dispose(); await db.close(); }
   });
 
@@ -325,6 +328,44 @@ void main() {
     } finally { service.dispose(); }
   });
 
+  test('reading an unchanged application catalog does not repeat name sorting', () async {
+    final channel = MockFLauncherChannel();
+    when(channel.addAppsChangedListener(any)).thenReturn(null);
+    final apps = [_NameCountingApp('b', 'B'), _NameCountingApp('a', 'A')];
+    final service = await _buildInitialisedAppsService(channel, MockFLauncherDatabase(), apps: apps);
+    try {
+      for (final app in apps) {
+        app.nameReads = 0;
+      }
+      expect(service.applications.map((app) => app.packageName), ['a', 'b']);
+      final initialReads = apps.fold<int>(0, (sum, app) => sum + app.nameReads);
+      for (var i = 0; i < 100; i++) {
+        expect(service.applications.map((app) => app.packageName), ['a', 'b']);
+      }
+      expect(apps.fold<int>(0, (sum, app) => sum + app.nameReads), initialReads);
+      expect(() => service.applications.clear(), throwsUnsupportedError);
+    } finally { service.dispose(); }
+  });
+
+  test('sorted catalog reflects replacements, additions and removals after refresh', () async {
+    final channel = MockFLauncherChannel();
+    when(channel.addAppsChangedListener(any)).thenReturn(null);
+    final apps = <App>[_NameCountingApp('b', 'B'), _NameCountingApp('a', 'A')];
+    final service = await _buildInitialisedAppsService(channel, MockFLauncherDatabase(), apps: apps);
+    try {
+      final original = service.applications;
+      apps[0] = _NameCountingApp('b', '0');
+      apps.add(_NameCountingApp('c', 'C'));
+      await service.refreshState();
+      expect(service.applications.map((app) => app.packageName), ['b', 'a', 'c']);
+      expect(service.applications.first.name, '0');
+      expect(original.map((app) => app.packageName), ['a', 'b']);
+      apps.removeWhere((app) => app.packageName == 'a');
+      await service.refreshState();
+      expect(service.applications.map((app) => app.packageName), ['b', 'c']);
+    } finally { service.dispose(); }
+  });
+
   test('invalid custom banner keeps the previous setting', () async {
     final channel = MockFLauncherChannel();
     when(channel.addAppsChangedListener(any)).thenReturn(null);
@@ -338,6 +379,74 @@ void main() {
       expect(prefs.getString('custom_banner_a'), 'previous.png');
       expect(await file.exists(), isTrue);
     } finally { service.dispose(); await directory.delete(recursive: true); }
+  });
+
+  for (final kind in ['icon', 'banner', 'missing banner']) {
+    test('cached $kind does not wait for occupied image loaders', () async {
+      final channel = MockFLauncherChannel();
+      when(channel.addAppsChangedListener(any)).thenReturn(null);
+      final service = await _buildInitialisedAppsService(channel, MockFLauncherDatabase());
+      final bytes = Uint8List(kind == 'missing banner' ? 0 : 3);
+      when(channel.getApplicationIcon('cached')).thenAnswer((_) async => bytes);
+      when(channel.getApplicationBanner('cached')).thenAnswer((_) async => bytes);
+      Future<Uint8List> cached() => kind == 'icon'
+          ? service.getAppIcon('cached') : service.getAppBanner('cached');
+      await cached();
+      clearInteractions(channel);
+      final first = Completer<Uint8List>(), second = Completer<Uint8List>();
+      when(channel.getApplicationIcon('slow-a')).thenAnswer((_) => first.future);
+      when(channel.getApplicationIcon('slow-b')).thenAnswer((_) => second.future);
+      final loading = Future.wait([
+        service.getAppIcon('slow-a'), service.getAppIcon('slow-b'),
+      ]);
+      Uint8List? result;
+      Future<void>? reading;
+      try {
+        await pumpEventQueue();
+        verify(channel.getApplicationIcon('slow-a')).called(1);
+        verify(channel.getApplicationIcon('slow-b')).called(1);
+        reading = cached().then((value) { result = value; });
+        await pumpEventQueue();
+        expect(result, same(bytes));
+        verifyNever(channel.getApplicationIcon('cached'));
+        verifyNever(channel.getApplicationBanner('cached'));
+      } finally {
+        first.complete(Uint8List(1));
+        second.complete(Uint8List(1));
+        await loading;
+        await reading;
+        service.dispose();
+      }
+    });
+  }
+
+  test('cached images still respect background and disposal guards', () async {
+    final channel = MockFLauncherChannel();
+    when(channel.addAppsChangedListener(any)).thenReturn(null);
+    final resources = MemoryResources();
+    final service = await _buildInitialisedAppsService(channel, MockFLauncherDatabase(), resources: resources);
+    final bytes = Uint8List(3);
+    when(channel.getApplicationIcon('cached')).thenAnswer((_) async => bytes);
+    when(channel.getApplicationBanner('cached')).thenAnswer((_) async => bytes);
+    try {
+      await service.getAppIcon('cached');
+      await service.getAppBanner('cached');
+      clearInteractions(channel);
+      resources.didChangeAppLifecycleState(AppLifecycleState.paused);
+      expect(await service.getAppIcon('cached'), isEmpty);
+      expect(await service.getAppBanner('cached'), isEmpty);
+      resources.didChangeAppLifecycleState(AppLifecycleState.resumed);
+      expect(await service.getAppIcon('cached'), same(bytes));
+      expect(await service.getAppBanner('cached'), same(bytes));
+      service.dispose();
+      expect(await service.getAppIcon('cached'), isEmpty);
+      expect(await service.getAppBanner('cached'), isEmpty);
+      verifyNever(channel.getApplicationIcon('cached'));
+      verifyNever(channel.getApplicationBanner('cached'));
+    } finally {
+      if (!service.isDisposed) service.dispose();
+      resources.dispose();
+    }
   });
 
   test('pending image does not refill a cache after memory pressure', () async {
@@ -995,21 +1104,28 @@ void main() {
 
 Future<AppsService> _buildInitialisedAppsService(
   MockFLauncherChannel channel,
-  MockFLauncherDatabase database,
-) async {
-  when(channel.getApplications()).thenAnswer((_) => Future.value([]));
+  MockFLauncherDatabase database, {
+  List<App> apps = const [],
+  MemoryResources? resources,
+}) async {
+  when(channel.getApplications()).thenAnswer((_) async => [
+    for (final app in apps) {
+      'packageName': app.packageName, 'name': app.name,
+      'version': app.version, 'sideloaded': false,
+    },
+  ]);
   when(channel.getApplicationIcon(any))
       .thenAnswer((_) => Future.value(Uint8List(0)));
   when(channel.getApplicationBanner(any))
       .thenAnswer((_) => Future.value(Uint8List(0)));
-  when(database.getApplications()).thenAnswer((_) => Future.value([]));
+  when(database.getApplications()).thenAnswer((_) => Future.value(apps));
   when(database.getAppsCategories()).thenAnswer((_) => Future.value([]));
   when(database.getCategories()).thenAnswer((_) => Future.value([]));
   when(database.getLauncherSpacers()).thenAnswer((_) => Future.value([]));
   when(database.transaction(any))
       .thenAnswer((realInvocation) => realInvocation.positionalArguments[0]());
   when(database.wasCreated).thenReturn(false);
-  final appsService = AppsService(channel, database);
+  final appsService = AppsService(channel, database, memoryResources: resources);
 
   while (!appsService.initialized) {
     await Future.delayed(const Duration(milliseconds: 10));
@@ -1019,4 +1135,16 @@ Future<AppsService> _buildInitialisedAppsService(
   clearInteractions(channel);
   clearInteractions(database);
   return appsService;
+}
+
+class _NameCountingApp extends App {
+  int nameReads = 0;
+  _NameCountingApp(String packageName, String name)
+      : super(packageName: packageName, name: name, version: '1', hidden: false);
+
+  @override
+  String get name {
+    nameReads++;
+    return super.name;
+  }
 }

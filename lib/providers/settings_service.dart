@@ -1,7 +1,9 @@
 import '../sleep_timer_configuration.dart';
+import '../launcher_defaults.dart';
 import '../tv_inputs_configuration.dart';
 import 'online_wallpaper_service.dart';
 import '../adaptive_landscape.dart';
+import '../diagnostics/screenshot_scene.dart';
 // Historical constants and enum names are preserved for upstream and serialized data compatibility.
 // ignore_for_file: constant_identifier_names
 
@@ -106,6 +108,17 @@ enum CardFocusMode { remember, first, settings }
 
 class SettingsService extends ChangeNotifier with ServiceLifecycle {
   final landscapeDemo = ValueNotifier<LandscapeDemoFrame?>(null);
+  ScreenshotScene? _screenshotScene = screenshotBuild
+      ? ScreenshotScene.initial()
+      : null;
+  ScreenshotScene? get screenshotScene => _screenshotScene;
+
+  void setScreenshotScene(ScreenshotScene? value) {
+    if (!screenshotBuild) return;
+    _screenshotScene = value;
+    notifyListeners();
+  }
+
 
   @override
   void dispose() {
@@ -211,7 +224,8 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
       'wallpaper_brightness', 'wallpaper_saturation', 'wallpaper_dimming', landscapeSettingsKey]) {
       await _sharedPreferences.remove(key);
     }
-    await _sharedPreferences.setString('background_source', 'gradient');
+    await _sharedPreferences.setString('background_source', 'landscape');
+    await _sharedPreferences.setString(landscapeSettingsKey, LauncherDefaults.landscape.encode());
     reload();
     notifyListeners();
   }
@@ -230,6 +244,10 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
       _ => <String>[],
     };
     for (final key in keys) { await _sharedPreferences.remove(key); }
+    if (section == 'background') {
+      await _sharedPreferences.setString('background_source', 'landscape');
+      await _sharedPreferences.setString(landscapeSettingsKey, LauncherDefaults.landscape.encode());
+    }
     reload();
     notifyListeners();
   }
@@ -255,6 +273,28 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
   bool get showDataWidgetInStatusBar => _showDataWidgetInStatusBar;
 
   bool get showNetworkIndicatorInStatusBar => _showNetworkIndicatorInStatusBar;
+  bool get showVpnInStatusBar => _sharedPreferences.getBool('show_vpn_in_status_bar') ?? true;
+  bool get showSystemInStatusBar => _sharedPreferences.getBool('show_system_in_status_bar') ?? false;
+  bool get systemShowCpu => _sharedPreferences.getBool('system_show_cpu') ?? true;
+  bool get systemShowRam => _sharedPreferences.getBool('system_show_ram') ?? true;
+  Future<void> _setSystemOption(String key, bool value) async {
+    if (!await _sharedPreferences.setBool(key, value)) throw StateError('Panel settings unavailable');
+    notifyListeners();
+  }
+  Future<void> setShowSystemInStatusBar(bool value) => _setSystemOption('show_system_in_status_bar', value);
+  Future<void> setSystemShowCpu(bool value) => _setSystemOption('system_show_cpu', value);
+  Future<void> setSystemShowRam(bool value) => _setSystemOption('system_show_ram', value);
+  bool get showVolumeInStatusBar => _sharedPreferences.getBool('show_volume_in_status_bar') ?? true;
+  Future<void> setShowVolumeInStatusBar(bool show) async {
+    if (!await _sharedPreferences.setBool('show_volume_in_status_bar', show)) {
+      throw StateError('Panel settings unavailable');
+    }
+    notifyListeners();
+  }
+  Future<void> setShowVpnInStatusBar(bool show) async {
+    await _sharedPreferences.setBool('show_vpn_in_status_bar', show);
+    notifyListeners();
+  }
 
   bool get showInputsWidgetInStatusBar => _showInputsWidgetInStatusBar;
   bool get showSystemSettingsInStatusBar => _showSystemSettingsInStatusBar;
@@ -267,6 +307,18 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
     notifyListeners();
   }
   bool get showContinueWatching => _showContinueWatching;
+  // Channel IDs belong to this TV's provider and are deliberately not synced.
+  List<String> get selectedAppChannels => List.unmodifiable(
+      _sharedPreferences.getStringList('selected_app_channels') ?? <String>[]);
+  Future<void> setSelectedAppChannels(List<String> keys) async {
+    if (keys.length > 16 || keys.any((k) => !RegExp(r'^[a-zA-Z0-9_.]+:\d+$').hasMatch(k))) {
+      throw const FormatException('Invalid app channel selection');
+    }
+    if (!await _sharedPreferences.setStringList('selected_app_channels', keys.toSet().toList())) {
+      throw StateError('Unable to save app channels');
+    }
+    notifyListeners();
+  }
   bool get showNowPlaying => _sharedPreferences.getBool('show_now_playing') ?? false;
   Future<void> setShowNowPlaying(bool value) async {
     await _sharedPreferences.setBool('show_now_playing', value);
@@ -431,6 +483,11 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
       _dataUsagePeriodKey: _dataUsagePeriod,
       _showDataWidgetInStatusBarKey: _showDataWidgetInStatusBar,
       _showNetworkIndicatorInStatusBarKey: _showNetworkIndicatorInStatusBar,
+      'show_vpn_in_status_bar': showVpnInStatusBar,
+      'show_volume_in_status_bar': showVolumeInStatusBar,
+      'show_system_in_status_bar': showSystemInStatusBar,
+      'system_show_cpu': systemShowCpu,
+      'system_show_ram': systemShowRam,
       _accentColorKey: _accentColorHex,
       _screensaverClockStyleKey: _screensaverClockStyle,
       _timeBasedWallpaperEnabledKey: _timeBasedWallpaperEnabled,

@@ -195,6 +195,8 @@ final class AdbLauncherControl {
             boolean disabled = Arrays.asList(adb.execute("pm list packages -d --user 0").split("\\r?\\n")).contains("package:"+resolved);
             return disabled == action.equals("disableSystem") ? "success" : "denied";
         }
-        return AdbBridge.perform(activity, adb, action);
+        String outcome = AdbBridge.perform(activity, adb, action);
+        if (action.equals("accessibility") && outcome.equals("success")) UpdatePermissionRecovery.enabledAccessibility(activity);
+        return outcome;
     }
 }

@@ -9,6 +9,7 @@ import 'package:flauncher/providers/online_wallpaper_service.dart';
 import 'package:flauncher/settings_import.dart';
 import 'package:flauncher/bing_wallpaper.dart';
 import 'package:flauncher/reddit_wallpaper.dart';
+import 'package:flauncher/wallhaven_wallpaper.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -23,6 +24,175 @@ void main() {
   tearDown(() async { await root.delete(recursive: true); });
   Future<void> initialized(OnlineWallpaperService service) async {
     while (!service.initialized) { await Future<void>.delayed(Duration.zero); }
+  }
+  test('Wallhaven rotates, respects interval, keeps cache offline and restores it', () async {
+    var now = DateTime.utc(2026, 11, 1);
+    var calls = 0;
+    var offline = false;
+    final themes = <String>[];
+    final previous = <String?>[];
+    final service = OnlineWallpaperService(preferences, directory: () async => root, clock: () => now,
+      wallhavenLookup: (theme, last) async {
+        calls++;
+        themes.add(theme); previous.add(last);
+        if (offline) throw const SocketException('offline');
+        return WallhavenWallpaper(Uri.parse('https://w.wallhaven.cc/full/ab/wallhaven-ab000$calls.jpg'), 'Credit $calls');
+      }, download: (_) async => image);
+    await initialized(service);
+    await service.configure(const OnlineWallpaperConfiguration(enabled: true, source: 'wallhaven', wallhavenTheme: 'nature', intervalHours: 6));
+    expect(calls, 1);
+    expect(service.copyright, 'Credit 1');
+    await service.refresh();
+    expect(calls, 1);
+    now = now.add(const Duration(hours: 6));
+    await service.refresh();
+    expect(calls, 2);
+    expect(previous.last, endsWith('ab0001.jpg'));
+    final goodCache = preferences.getString(onlineWallpaperCacheKey);
+    final goodBytes = await File('${root.path}/online-wallpaper').readAsBytes();
+    offline = true;
+    await service.refresh(force: true);
+    expect(service.failed, isTrue);
+    expect(service.wallpaper, isNotNull);
+    expect(preferences.getString(onlineWallpaperCacheKey), goodCache);
+    expect(await File('${root.path}/online-wallpaper').readAsBytes(), goodBytes);
+    offline = false;
+    await service.configure(service.configuration.copyWith(wallhavenTheme: 'city'));
+    expect(themes.last, 'city');
+    expect(service.failed, isFalse);
+    service.dispose();
+    final restored = OnlineWallpaperService(preferences, directory: () async => root, clock: () => now,
+      wallhavenLookup: (_, _) async => throw StateError('fresh cache must avoid lookup'));
+    addTearDown(restored.dispose);
+    await initialized(restored);
+    expect(restored.configuration.wallhavenTheme, 'city');
+    expect(restored.configuration.intervalHours, 6);
+    expect(restored.wallpaper, isNotNull);
+    expect(restored.failed, isFalse);
+    expect(restored.copyright, 'Credit 4');
+  });
+  test('Wallhaven rejects repeated images and corrupt downloads without replacing cache', () async {
+    var corrupt = false;
+    var id = 1;
+    final service = OnlineWallpaperService(preferences, directory: () async => root,
+      wallhavenLookup: (_, _) async => WallhavenWallpaper(Uri.parse('https://w.wallhaven.cc/full/ab/wallhaven-ab000$id.jpg'), 'Credit'),
+      download: (_) async => corrupt ? Uint8List.fromList([1, 2, 3]) : image);
+    addTearDown(service.dispose);
+    await initialized(service);
+    await service.configure(const OnlineWallpaperConfiguration(enabled: true, source: 'wallhaven'));
+    final cache = preferences.getString(onlineWallpaperCacheKey);
+    final version = service.version;
+    await service.refresh(force: true);
+    expect(service.failed, isTrue);
+    expect(service.version, version);
+    id = 2; corrupt = true;
+    await service.refresh(force: true);
+    expect(service.failed, isTrue);
+    expect(service.version, version);
+    expect(service.wallpaper, isNotNull);
+    expect(preferences.getString(onlineWallpaperCacheKey), cache);
+    corrupt = false;
+    await service.refresh(force: true);
+    expect(service.failed, isFalse);
+    expect(service.version, version + 1);
+  });
+  test('Wallhaven theme change discards pending lookup and downloads the latest theme', () async {
+    final pending = Completer<WallhavenWallpaper>();
+    final themes = <String>[];
+    final urls = <String>[];
+    final service = OnlineWallpaperService(preferences, directory: () async => root,
+      wallhavenLookup: (theme, _) async {
+        themes.add(theme);
+        if (theme == 'nature') return pending.future;
+        return WallhavenWallpaper(Uri.parse('https://w.wallhaven.cc/full/ab/wallhaven-ab0002.jpg'), 'City');
+      }, download: (uri) async { urls.add(uri.toString()); return image; });
+    addTearDown(service.dispose);
+    await initialized(service);
+    final old = service.configure(const OnlineWallpaperConfiguration(enabled: true, source: 'wallhaven', wallhavenTheme: 'nature'));
+    await Future<void>.delayed(Duration.zero);
+    await service.configure(service.configuration.copyWith(wallhavenTheme: 'city'));
+    pending.complete(WallhavenWallpaper(Uri.parse('https://w.wallhaven.cc/full/ab/wallhaven-ab0001.jpg'), 'Nature'));
+    await old;
+    expect(themes, ['nature', 'city']);
+    expect(urls, ['https://w.wallhaven.cc/full/ab/wallhaven-ab0002.jpg']);
+    expect(service.copyright, 'City');
+    expect(service.configuration.wallhavenTheme, 'city');
+  });
+  test('Wallhaven ignores lookup completing in background and retries on resume', () async {
+    final pending = Completer<WallhavenWallpaper>();
+    var calls = 0, downloads = 0;
+    final service = OnlineWallpaperService(preferences, directory: () async => root,
+      wallhavenLookup: (_, _) async {
+        calls++;
+        return calls == 1 ? pending.future : WallhavenWallpaper(Uri.parse('https://w.wallhaven.cc/full/ab/wallhaven-ab0002.jpg'), 'New');
+      }, download: (_) async { downloads++; return image; });
+    addTearDown(service.dispose);
+    await initialized(service);
+    final task = service.configure(const OnlineWallpaperConfiguration(enabled: true, source: 'wallhaven'));
+    await Future<void>.delayed(Duration.zero);
+    service.didChangeAppLifecycleState(AppLifecycleState.paused);
+    pending.complete(WallhavenWallpaper(Uri.parse('https://w.wallhaven.cc/full/ab/wallhaven-ab0001.jpg'), 'Old'));
+    await task;
+    expect(downloads, 0);
+    service.didChangeAppLifecycleState(AppLifecycleState.resumed);
+    while (service.loading) { await Future<void>.delayed(Duration.zero); }
+    expect(calls, 2);
+    expect(downloads, 1);
+  });
+  test('creation in background defers saved wallpaper download until resume', () async {
+    const config = OnlineWallpaperConfiguration(enabled: true, url: 'https://example.com/day.jpg');
+    await preferences.setString(onlineWallpaperKey, config.encode());
+    var attempts = 0;
+    final binding = TestWidgetsFlutterBinding.instance;
+    binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+    final service = OnlineWallpaperService(preferences, directory: () async => root,
+      download: (_) async { attempts++; return image; });
+    try {
+      await initialized(service);
+      expect(attempts, 0);
+      binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      while (service.loading) { await Future<void>.delayed(Duration.zero); }
+      expect(attempts, 1);
+      expect(service.wallpaper, isNotNull);
+    } finally {
+      service.dispose();
+      binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    }
+  });
+  for (final stage in ['lookup', 'download']) {
+    test('background invalidates a pending $stage and resume retries immediately', () async {
+      final lookup = Completer<BingWallpaper>();
+      final bytes = Completer<Uint8List>();
+      var lookups = 0, downloads = 0;
+      final now = DateTime.utc(2026, 10, 30);
+      final fresh = BingWallpaper(Uri.parse('https://example.com/fresh.png'), 'Fresh', now.add(const Duration(days: 1)));
+      final service = OnlineWallpaperService(preferences, directory: () async => root, clock: () => now,
+        bingLookup: () async => ++lookups == 1 && stage == 'lookup' ? lookup.future : fresh,
+        download: (_) async => ++downloads == 1 && stage == 'download' ? bytes.future : image);
+      addTearDown(service.dispose);
+      await initialized(service);
+      final task = service.configure(const OnlineWallpaperConfiguration(enabled: true, source: 'bing'));
+      await Future<void>.delayed(Duration.zero);
+      expect(service.loading, isTrue);
+      service.didChangeAppLifecycleState(AppLifecycleState.paused);
+      if (stage == 'lookup') {
+        lookup.complete(fresh);
+      } else {
+        bytes.complete(image);
+      }
+      await task;
+      expect(downloads, stage == 'lookup' ? 0 : 1);
+      expect(service.version, 0);
+      expect(service.updatedAt, isNull);
+      expect(preferences.getString(onlineWallpaperCacheKey), isNull);
+      expect(await File('${root.path}/online-wallpaper').exists(), isFalse);
+      service.didChangeAppLifecycleState(AppLifecycleState.resumed);
+      while (service.loading) { await Future<void>.delayed(Duration.zero); }
+      expect(lookups, 2);
+      expect(service.version, 1);
+      expect(service.wallpaper, isNotNull);
+      expect(service.failed, isFalse);
+    });
   }
   test('Reddit remains unavailable for saved settings, import and direct configuration', () async {
     const draft = OnlineWallpaperConfiguration(enabled: true, source: 'reddit',

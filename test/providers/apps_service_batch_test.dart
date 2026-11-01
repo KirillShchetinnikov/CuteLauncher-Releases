@@ -160,6 +160,7 @@ void main() {
   });
 
   test('Test addCategory sets correct order', () async {
+    final initialCount = appsService.launcherSections.length;
     int catId1 =
         await appsService.addCategory("Cat 1", shouldNotifyListeners: false);
     int catId2 =
@@ -168,8 +169,8 @@ void main() {
     Category cat1 = appsService.categories.firstWhere((c) => c.id == catId1);
     Category cat2 = appsService.categories.firstWhere((c) => c.id == catId2);
 
-    expect(cat1.order, 4);
-    expect(cat2.order, 5);
+    expect(cat1.order, initialCount);
+    expect(cat2.order, initialCount + 1);
   });
 
   test(

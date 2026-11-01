@@ -1,7 +1,7 @@
+import 'information_placement.dart';
 import 'widgets/wallpaper_background.dart';
-import 'widgets/background_raster_cache.dart';
+import 'widgets/landscape_wallpaper.dart';
 import 'widgets/video_wallpaper_background.dart';
-import 'widgets/adaptive_landscape_background.dart';
 import 'widgets/app_artwork_background.dart';
 import 'providers/remote_panel_service.dart';
 import 'providers/foreground_work.dart';
@@ -27,6 +27,7 @@ import 'providers/slideshow_service.dart';
 
 import 'widgets/initial_app_images.dart';
 import 'widgets/now_playing_card.dart';
+import 'widgets/background_information.dart';
 import 'providers/appearance_service.dart';
 import 'tile_appearance.dart';
 import 'package:flauncher/actions.dart';
@@ -36,6 +37,10 @@ import 'package:flauncher/providers/launcher_state.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/providers/online_wallpaper_service.dart';
 import 'widgets/home_section.dart';
+import 'widgets/home_scroll_motion.dart';
+import 'widgets/app_content_row.dart';
+import 'section_names.dart';
+import 'providers/app_channels_service.dart';
 
 import 'package:flauncher/widgets/launcher_alternative_view.dart';
 import 'package:flauncher/widgets/focus_aware_app_bar.dart';
@@ -63,6 +68,9 @@ class FLauncherState extends State<FLauncher> {
   final _categoryFocus = <int, CategoryFocusController>{};
   final _watchFocus = CategoryFocusController();
   final _watchSectionKey = GlobalKey();
+  final _feedFocus = <String, CategoryFocusController>{};
+  final _feedKeys = <String, GlobalKey>{};
+  String? _lastFeedKey;
   final _orderedFocus = <CategoryFocusController>[];
   int _focusRequest = 0;
   final _activeCategory = ValueNotifier<int?>(null);
@@ -79,6 +87,16 @@ class FLauncherState extends State<FLauncher> {
     final mode = settings.cardFocusMode;
     final sections = context.read<AppsService>().launcherSections;
     if (mode != CardFocusMode.settings) {
+      if (returningHome && mode == CardFocusMode.remember && _lastFeedKey != null) {
+        final focus = _feedFocus[_lastFeedKey];
+        if (focus != null && _orderedFocus.contains(focus) && focus.hasItems) {
+          focus.rememberLast = true;
+          final focused = await focus.focusEntry(isCurrent: isCurrent);
+          if (!mounted || !isCurrent()) return;
+          focus.rememberLast = false;
+          if (focused) return;
+        }
+      }
       if (returningHome && mode == CardFocusMode.remember &&
           _lastWasWatchNext &&
           settings.showContinueWatching &&
@@ -102,11 +120,12 @@ class FLauncherState extends State<FLauncher> {
             )
             .firstOrNull;
       }
-      if (category == null && _orderedFocus.where((c) => c.hasItems).firstOrNull == _watchFocus) {
-        _watchFocus.rememberLast = false;
-        final focused = await _watchFocus.focusEntry(isCurrent: isCurrent);
+      final firstSection = _orderedFocus.where((c) => c.hasItems).firstOrNull;
+      if (category == null && firstSection != null) {
+        firstSection.rememberLast = false;
+        final focused = await firstSection.focusEntry(isCurrent: isCurrent);
         if (!mounted || !isCurrent()) return;
-        _watchFocus.rememberLast = false;
+        firstSection.rememberLast = false;
         if (focused || !isCurrent()) return;
       }
       category ??= sections
@@ -127,6 +146,8 @@ class FLauncherState extends State<FLauncher> {
         controller?.rememberLast = false;
         if (focused == true) return;
       }
+      final first = _orderedFocus.where((c) => c.hasItems).firstOrNull;
+      if (first != null && await first.focusEntry(isCurrent: isCurrent)) return;
     }
     if (!isCurrent()) return;
     if (_scrollController.hasClients) _scrollController.jumpTo(0);
@@ -134,8 +155,15 @@ class FLauncherState extends State<FLauncher> {
   }
 
   void _revealWatch() {
-    final sectionContext = _watchSectionKey.currentContext;
-    if (sectionContext == null || !_watchFocus.hasFocus) return;
+    _revealContent(_watchSectionKey, _watchFocus);
+  }
+
+  void _revealContent(GlobalKey key, CategoryFocusController focus) {
+    final sectionContext = key.currentContext;
+    if (sectionContext == null || !focus.hasFocus ||
+        ModalRoute.of(context)?.isCurrent == false) {
+      return;
+    }
     final outer = Scrollable.maybeOf(sectionContext);
     final box = sectionContext.findRenderObject();
     final viewport = outer?.context.findRenderObject();
@@ -146,8 +174,8 @@ class FLauncherState extends State<FLauncher> {
     var offset = style.anchored ? top - pos.viewportDimension * style.sectionPosition : pos.pixels;
     if (top < offset) offset = top;
     if (top + box.size.height > offset + pos.viewportDimension) offset = top + box.size.height - pos.viewportDimension;
-    pos.animateTo(offset.clamp(pos.minScrollExtent, pos.maxScrollExtent),
-        duration: const Duration(milliseconds: 120), curve: Curves.easeOut);
+    offset = offset.clamp(pos.minScrollExtent, pos.maxScrollExtent);
+    revealHomeOffset(context, pos, offset);
   }
 
   void returnHome() {
@@ -166,6 +194,7 @@ class FLauncherState extends State<FLauncher> {
     _watchFocus.dispose();
     _activeCategory.dispose();
     for (final controller in _categoryFocus.values) { controller.dispose(); }
+    for (final controller in _feedFocus.values) { controller.dispose(); }
     _scrollController.dispose();
     super.dispose();
   }
@@ -189,6 +218,14 @@ class FLauncherState extends State<FLauncher> {
               builder: (_, wallpaperService, _) => _wallpaper(context, wallpaperService)
             ),
           ),
+          Positioned.fill(child: Builder(builder: (context) =>
+            context.watch<SettingsService>().backgroundSource == 'landscape'
+                ? const SizedBox.shrink()
+                : Selector<LauncherState, bool>(
+                    selector: (_, state) => state.launcherVisible,
+                    builder: (_, visible, _) => visible ? const BackgroundInformation() : const SizedBox.shrink(),
+                  ),
+          )),
           Consumer<LauncherState>(
             builder: (_, state, child) => Visibility(
               replacement: const Center(
@@ -205,7 +242,7 @@ class FLauncherState extends State<FLauncher> {
                     ? context.read<RemotePanelService>() : null,
               ),
               body: Padding(
-                padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+                padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Consumer<AppsService>(
                   builder: (context, appsService, _) {
                     if (appsService.initialized) {
@@ -224,6 +261,7 @@ class FLauncherState extends State<FLauncher> {
                                   LayoutBuilder(builder: (context, constraints) => SingleChildScrollView(
                                     controller: _scrollController,
                                     physics: const ClampingScrollPhysics(),
+                                    padding: const EdgeInsets.only(top: 24),
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -274,6 +312,7 @@ class FLauncherState extends State<FLauncher> {
     _watchFocus.reveal = _revealWatch;
     _watchFocus.leave = (direction, x) => _leaveSection(_watchFocus, direction, x);
     _watchFocus.onSelected = () {
+      _lastFeedKey = null;
       _lastWasWatchNext = true;
       _activeCategory.value = -1;
     };
@@ -281,6 +320,52 @@ class FLauncherState extends State<FLauncher> {
     _orderedFocus.clear();
     bool firstCategoryFound = false;
     bool cwInserted = false;
+    final feeds = context.watch<AppChannelsService?>();
+    final selectedFeeds = feeds == null ? <String>[] : context.watch<SettingsService>().selectedAppChannels;
+    final activeFeedKeys = <String>{};
+
+    Widget? appFeeds(Category category) {
+      final style = context.read<AppearanceService?>()?.tilesFor(category.id) ?? appearance;
+      final hiddenPackages = selectedFeeds.isEmpty ? <String>{} : context.read<AppsService>().applications.where((a) => a.hidden).map((a) => a.packageName).toSet();
+      final rows = <Widget>[];
+      for (final key in selectedFeeds) {
+        final channel = feeds?.channels.where((c) => c.key == key && c.programs.isNotEmpty && !hiddenPackages.contains(c.packageName)).firstOrNull;
+        if (channel == null) continue;
+        activeFeedKeys.add(key);
+        final focus = _feedFocus.putIfAbsent(key, CategoryFocusController.new);
+        final sectionKey = _feedKeys.putIfAbsent(key, GlobalKey.new);
+        focus.configure(channel.programs.map((p) => p.id.toString()));
+        focus.leave = (direction, x) => _leaveSection(focus, direction, x);
+        focus.reveal = () => _revealContent(sectionKey, focus);
+        focus.onSelected = () {
+          _lastFeedKey = key;
+          _lastWasWatchNext = false;
+          _activeCategory.value = -2;
+        };
+        _orderedFocus.add(focus);
+        rows.add(CategoryFocus(key: sectionKey, controller: focus,
+          child: AppContentRow(channel: channel, appearance: style)));
+      }
+      if (rows.isEmpty) return null;
+      return Container(key: const ValueKey('app-channels-group'),
+        color: style.color('sectionBackground'),
+        padding: EdgeInsets.all(style.number('sectionPadding') ?? 0),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          if (style.sectionTitles) Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+            child: Row(children: [
+              if (style.sectionIcons) ...[
+                const Icon(Icons.video_library_outlined),
+                const SizedBox(width: 8),
+              ],
+              Expanded(child: Text(localizedSectionName(category.name, AppLocalizations.of(context)!),
+                style: Theme.of(context).textTheme.titleLarge,
+                maxLines: 1, overflow: TextOverflow.ellipsis)),
+            ]),
+          ),
+          ...rows,
+        ]));
+    }
 
     int sectionIdx = 0;
     for (var section in sections) {
@@ -300,10 +385,18 @@ class FLauncherState extends State<FLauncher> {
         continue;
       }
 
+      if (section is Category && section.isAppChannels) {
+        final group = appFeeds(section);
+        if (group != null) { children.add(group); firstCategoryFound = true; }
+        sectionIdx++;
+        continue;
+      }
+
       Category category = section as Category;
       final focus = _categoryFocus.putIfAbsent(category.id, CategoryFocusController.new)
         ..rememberLast = false
         ..onSelected = () {
+          _lastFeedKey = null;
           _activeCategory.value = category.id;
           _lastCategoryId = category.id;
           _lastWasWatchNext = false;
@@ -337,6 +430,12 @@ class FLauncherState extends State<FLauncher> {
       _orderedFocus.add(_watchFocus);
       cwInserted = true;
       firstCategoryFound = true;
+    }
+
+    for (final key in _feedFocus.keys.where((k) => !activeFeedKeys.contains(k)).toList()) {
+      final removed = _feedFocus.remove(key)!;
+      _feedKeys.remove(key);
+      WidgetsBinding.instance.addPostFrameCallback((_) => removed.dispose());
     }
 
     if (previousActive != null && (!_orderedFocus.contains(previousActive) || !previousActive.hasItems)) {
@@ -384,24 +483,35 @@ class FLauncherState extends State<FLauncher> {
         brightness: settings.wallpaperBrightness, saturation: settings.wallpaperSaturation,
         dimming: settings.wallpaperDimming);
     }
-    final background = WallpaperBackground(
+    if (source == 'landscape') {
+      final placement = InformationPlacement(
+        context.watch<AppearanceService?>()?.appearance ?? const TileAppearance(), settings);
+      final showInformation = context.watch<LauncherState>().launcherVisible && placement.hasBackground;
+      return LandscapeWallpaper(
+        informationLayer: showInformation ? const BackgroundInformation() : null,
+        gradient: wallpaperService.gradient.gradient,
+        brightness: settings.wallpaperBrightness,
+        saturation: settings.wallpaperSaturation,
+        dimming: settings.wallpaperDimming,
+        memorySaver: settings.memorySaverEnabled,
+      );
+    }
+    return WallpaperBackground(
       key: Key('background_${source}_${source == 'online' ? online?.version : wallpaperService.version}'),
       image: source == 'picture' && wallpaperService.video != null ? null : image,
+      cacheStaticLayers: source == 'picture' && wallpaperService.video != null,
       gradient: wallpaperService.gradient.gradient,
       mode: settings.wallpaperFit,
       brightness: settings.wallpaperBrightness,
       saturation: settings.wallpaperSaturation,
       dimming: settings.wallpaperDimming,
       memorySaver: settings.memorySaverEnabled,
-      artwork: source == 'landscape' ? const AdaptiveLandscapeBackground() : source == 'picture' && wallpaperService.video != null
-          ? VideoWallpaperBackground(file: wallpaperService.video!,
+      artworkBuilder: source == 'picture' && wallpaperService.video != null
+          ? (background) => VideoWallpaperBackground(file: wallpaperService.video!, background: background,
               enabled: context.watch<LauncherState>().launcherVisible,
               mode: settings.wallpaperFit, memorySaver: settings.memorySaverEnabled)
           : null,
     );
-    return source == 'landscape'
-        ? BackgroundRasterCache(enabled: !settings.memorySaverEnabled, child: background)
-        : background;
   }
   Widget _emptyState(BuildContext context) {
     AppLocalizations localizations = AppLocalizations.of(context)!;

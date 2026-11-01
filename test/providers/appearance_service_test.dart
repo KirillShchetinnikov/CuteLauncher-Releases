@@ -1,3 +1,4 @@
+import 'package:flauncher/panel_layout.dart';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -249,7 +250,10 @@ void main() {
         await service.set('opacity', 0.25);
         expect(service.appearance.opacity, 0.25);
         await service.reset();
-        expect(service.appearance.active, isFalse);
+        expect(service.appearance.interfaceStyle, 'glass');
+        expect(service.appearance.labels, 'all');
+        expect(service.appearance.number('radius'), 16);
+        expect(service.appearance.opacity, 1);
         expect(prefs.getString('app_banner_shape'), 'capsule');
         expect(prefs.getBool('show_app_names_below_icons'), isFalse);
         expect(prefs.getString('unrelated'), 'retained');
@@ -342,7 +346,7 @@ void main() {
     final restored = TileAppearance.decode(imported[tileAppearanceKey]);
     expect(restored.panelLayout.left.take(2), ['time', 'network']);
     expect(restored.panelLayout.right.take(2), ['settings', 'date']);
-    expect({...restored.panelLayout.left, ...restored.panelLayout.right}.length, 11);
+    expect({...restored.panelLayout.left, ...restored.panelLayout.right}.length, PanelLayout.ids.length);
     expect(restored.panelLayout.left, isNot(contains('settings')));
     expect(TileAppearance.decode('{"panelSwapSides":true}').values, isEmpty);
     await service.setPanelOrder([], [...TileAppearance.panelButtons, ...TileAppearance.panelInfo]);
@@ -363,9 +367,12 @@ void main() {
         'sleepTimer',
         'nightMode',
         'network',
+        'vpn',
         'traffic',
+        'system',
       ]);
       expect(appearance.panelOrder('panelInfoOrder'), [
+        'audio',
         'weather',
         'date',
         'time',

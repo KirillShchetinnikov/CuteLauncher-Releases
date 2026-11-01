@@ -3,7 +3,7 @@ import 'settings_value_stepper.dart';
 import 'settings_choice_tile.dart';
 import 'settings_route.dart';
 import 'settings_page_layout.dart';
-import 'settings_help.dart';
+import '../launcher_dialog.dart';
 import '../../providers/appearance_service.dart';
 /*
  * FLauncher
@@ -35,6 +35,7 @@ import '../../models/category.dart';
 import '../rounded_switch_list_tile.dart';
 import 'focusable_settings_tile.dart';
 import 'category_appearance_page.dart';
+import 'app_channels_settings_page.dart';
 
 // Section name presets for TV remote-friendly selection
 const List<String> sectionNamePresets = [
@@ -277,7 +278,7 @@ class LauncherSectionPanelPage extends StatelessWidget
                           title: Text(localizations.categoryVisible),
                         ),
                         if (!canHide)
-                          SettingsHelp(text: localizations.categoryLastVisibleHint),
+                          Text(localizations.categoryLastVisibleHint),
                         ],
                         );
                       },
@@ -287,7 +288,10 @@ class LauncherSectionPanelPage extends StatelessWidget
                         (state.launcherSection as Category).isSystem))
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      child: FocusableSettingsTile(onPressed:
+                      child: _DeleteSectionTile(section: state.launcherSection!, onDeleted: () {
+                        state.setDeleted();
+                        Navigator.of(context).pop();
+                      }, enabled: !(
                             state.launcherSection is Category &&
                                 ((state.launcherSection as Category).isSystem ||
                                     context
@@ -303,18 +307,7 @@ class LauncherSectionPanelPage extends StatelessWidget
                                                 .whereType<Category>()
                                                 .where((c) => c.visible)
                                                 .length <=
-                                            1))
-                            ? null
-                            : () async {
-                                await context.read<AppsService>().deleteSection(
-                                  sectionIndex!,
-                                );
-                                state.setDeleted();
-                                if (!context.mounted) return;
-                                Navigator.of(context).pop();
-                              },
-                        leading: const Icon(Icons.delete_outline),
-                        title: Text(localizations.delete, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+                                            1))),
                       ),
                     ),
                 ],
@@ -451,7 +444,13 @@ class _CategorySettingsState extends State<_CategorySettings>
               _notifyChange();
             },
           ),
-        _listTile(
+        if (_category?.isAppChannels == true)
+          FocusableSettingsTile(
+            title: Text(localizations.appChannelsTitle),
+            leading: const Icon(Icons.video_library_outlined),
+            onPressed: () => Navigator.pushNamed(context, AppChannelsSettingsPage.routeName),
+          )
+        else _listTile(
           context,
           Text(localizations.sort),
           Padding(
@@ -565,6 +564,68 @@ class _CategorySettingsState extends State<_CategorySettings>
       );
 
     }
+  }
+}
+
+class _DeleteSectionTile extends StatefulWidget {
+  const _DeleteSectionTile({required this.section, required this.enabled,
+    required this.onDeleted});
+  final LauncherSection section;
+  final bool enabled;
+  final VoidCallback onDeleted;
+  @override
+  State<_DeleteSectionTile> createState() => _DeleteSectionTileState();
+}
+
+class _DeleteSectionTileState extends State<_DeleteSectionTile> {
+  bool _busy = false;
+  bool _failed = false;
+
+  Future<void> _delete() async {
+    if (_busy || !widget.enabled) return;
+    setState(() { _busy = true; _failed = false; });
+    final l = AppLocalizations.of(context)!;
+    try {
+      final name = widget.section is Category
+          ? (widget.section as Category).name : l.spacer;
+      final confirmed = await showLauncherDialog<bool>(context: context,
+        builder: (dialog) => LauncherAlertDialog(
+          title: Text('${l.delete}: $name'),
+          content: Text(l.sectionDeleteConfirm),
+          actions: [
+            LauncherDialogButton(autofocus: true, isCancel: true,
+              onPressed: () => Navigator.pop(dialog, false), child: Text(l.cancel)),
+            LauncherDialogButton(primary: true,
+              onPressed: () => Navigator.pop(dialog, true), child: Text(l.delete)),
+          ],
+        ));
+      if (!mounted || confirmed != true) return;
+      final service = context.read<AppsService>();
+      // Resolve again after the dialog: a refreshed catalogue may change order.
+      final index = service.launcherSections.indexWhere((s) =>
+        s.runtimeType == widget.section.runtimeType && s.id == widget.section.id);
+      if (index < 0) return;
+      await service.deleteSection(index);
+      if (mounted) widget.onDeleted();
+    } catch (_) {
+      if (mounted) setState(() => _failed = true);
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      FocusableSettingsTile(enabled: widget.enabled && !_busy,
+        leading: const Icon(Icons.delete_outline),
+        title: Text(l.delete, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+        onPressed: _delete),
+      if (_busy) Text(l.loading),
+      if (_failed) Text(l.sectionDeleteFailed,
+        style: TextStyle(color: Theme.of(context).colorScheme.error)),
+    ]);
   }
 }
 

@@ -24,6 +24,137 @@ Future<void> initialized(UpdateService service) async {
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  Map<String, dynamic> environment() => {
+    'play': false,
+    'version': '1.0.0',
+    'versionCode': 2,
+    'abis': ['armeabi-v7a'],
+    'directory': 'unused',
+  };
+
+  test('creation in background defers automatic lookup until resume', () async {
+    SharedPreferences.setMockInitialValues({automaticUpdatesKey: true});
+    final prefs = await SharedPreferences.getInstance();
+    final binding = TestWidgetsFlutterBinding.instance;
+    var requests = 0;
+    binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+    final service = UpdateService(
+      prefs,
+      environment: () async => environment(),
+      lookup: () async {
+        requests++;
+        return release();
+      },
+    );
+    try {
+      await initialized(service);
+      await Future<void>.delayed(Duration.zero);
+      expect(requests, 0);
+      binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      await Future<void>.delayed(Duration.zero);
+      expect(requests, 1);
+    } finally {
+      service.dispose();
+      binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    }
+  });
+
+  test(
+    'reload rejects an old lookup and checks restored settings once idle',
+    () async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      final pending = Completer<Map<String, dynamic>?>();
+      final replacement = Completer<Map<String, dynamic>?>();
+      var requests = 0;
+      final service = UpdateService(
+        prefs,
+        environment: () async => environment(),
+        lookup: () => ++requests == 1 ? pending.future : replacement.future,
+      );
+      addTearDown(service.dispose);
+      await initialized(service);
+      final task = service.check(force: true);
+      await Future<void>.delayed(Duration.zero);
+      await prefs.setBool(automaticUpdatesKey, true);
+      service.reloadPreferences();
+      pending.complete(release());
+      await task;
+      await Future<void>.delayed(Duration.zero);
+      expect(service.release, isNull);
+      expect(service.checked, isFalse);
+      expect(requests, 2);
+      replacement.complete(release(tag: 'v1.2.0'));
+      await Future<void>.delayed(Duration.zero);
+      expect(service.release!.version, 'v1.2.0');
+    },
+  );
+
+  test('reload in background preserves a forced recheck for resume', () async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    final pending = Completer<Map<String, dynamic>?>();
+    var requests = 0;
+    final service = UpdateService(
+      prefs,
+      environment: () async => environment(),
+      lookup: () async =>
+          ++requests == 1 ? pending.future : release(tag: 'v1.2.0'),
+    );
+    addTearDown(service.dispose);
+    await initialized(service);
+    final task = service.check(force: true);
+    await Future<void>.delayed(Duration.zero);
+    service.didChangeAppLifecycleState(AppLifecycleState.paused);
+    await prefs.setBool(automaticUpdatesKey, true);
+    service.reloadPreferences();
+    pending.complete(release());
+    await task;
+    expect(requests, 1);
+    expect(service.release, isNull);
+    service.didChangeAppLifecycleState(AppLifecycleState.resumed);
+    await Future<void>.delayed(Duration.zero);
+    expect(requests, 2);
+    expect(service.release!.version, 'v1.2.0');
+  });
+
+  for (final fail in [false, true]) {
+    test(
+      'reload during a download rejects its late result (failure=$fail)',
+      () async {
+        SharedPreferences.setMockInitialValues({});
+        final prefs = await SharedPreferences.getInstance();
+        final pending = Completer<File>();
+        var installations = 0;
+        final service = UpdateService(
+          prefs,
+          environment: () async => environment(),
+          lookup: () async => release(),
+          download: (_, _, _) => pending.future,
+          installer: () async {
+            installations++;
+            return 'launched';
+          },
+        );
+        addTearDown(service.dispose);
+        await initialized(service);
+        await service.check(force: true);
+        final task = service.downloadAndInstall();
+        service.reloadPreferences();
+        if (fail) {
+          pending.completeError(StateError('download failed'));
+        } else {
+          pending.complete(File('unused'));
+        }
+        await task;
+        expect(installations, 0);
+        expect(service.ready, isFalse);
+        expect(service.release, isNull);
+        expect(service.failed, isFalse);
+      },
+    );
+  }
+
   test('Versioned APK names select device ABI with universal fallback', () {
     final data = release(tag: 'v1.1.1');
     final asset = (data['assets'] as List).first as Map;
@@ -38,7 +169,10 @@ void main() {
     for (final abi in ['arm64-v8a', 'armeabi-v7a']) {
       expect(AppRelease.parse(data, '1.1.0', 75, [abi])!.uri.query, abi);
     }
-    expect(AppRelease.parse(data, '1.1.0', 75, ['x86_64'])!.uri.query, 'universal');
+    expect(
+      AppRelease.parse(data, '1.1.0', 75, ['x86_64'])!.uri.query,
+      'universal',
+    );
   });
   test('New version tags win over older tags with a build suffix', () {
     final data = {

@@ -21,19 +21,23 @@ final class WallpaperFolder {
     private final Activity activity;
     private final ExecutorService executor;
     private MethodChannel.Result pending;
+    final LocalWallpaperFiles local;
     WallpaperFolder(Activity activity, ExecutorService executor) {
         this.activity = activity;
         this.executor = executor;
+        local = new LocalWallpaperFiles(activity, executor);
     }
     void pick(MethodChannel.Result result) {
         if (pending != null) { result.error("document_busy", "Folder picker already open", null); return; }
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
             .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
-        if (intent.resolveActivity(activity.getPackageManager()) == null) {
+        // TV firmware can resolve this action to a stub even with a real picker installed.
+        Intent selected = DocumentFiles.compatibleIntent(intent, activity.getPackageManager().queryIntentActivities(intent, 0));
+        if (selected == null) {
             result.error("document_unavailable", "No folder provider", null); return;
         }
         pending = result;
-        try { activity.startActivityForResult(intent, REQUEST); }
+        try { activity.startActivityForResult(selected, REQUEST); }
         catch (Exception error) { pending = null; result.error("document_unavailable", "Unable to open folder", DiagnosticErrorDetails.from(error)); }
     }
     void complete(int code, Intent data) {
@@ -48,6 +52,7 @@ final class WallpaperFolder {
         } catch (Exception error) { result.error("document_failed", "Unable to retain folder access", DiagnosticErrorDetails.from(error)); }
     }
     void release(String value, MethodChannel.Result result) {
+        if (value != null && value.startsWith("file:")) { result.success(null); return; }
         try { activity.getContentResolver().releasePersistableUriPermission(Uri.parse(value), Intent.FLAG_GRANT_READ_URI_PERMISSION); }
         catch (Exception ignored) { }
         result.success(null);
@@ -56,6 +61,12 @@ final class WallpaperFolder {
         executor.execute(() -> {
             try {
                 Uri tree = Uri.parse(value);
+                if ("file".equals(tree.getScheme())) {
+                    if (!local.granted()) throw new SecurityException("Storage access required");
+                    var files = LocalWallpaperFiles.images(LocalWallpaperFiles.directory(value), recursive);
+                    new Handler(Looper.getMainLooper()).post(() -> result.success(files));
+                    return;
+                }
                 ArrayList<String> files = new ArrayList<>();
                 ArrayDeque<String> directories = new ArrayDeque<>();
                 HashSet<String> visited = new HashSet<>();
@@ -89,7 +100,7 @@ final class WallpaperFolder {
     }
     void read(String value, MethodChannel.Result result) {
         executor.execute(() -> {
-            try (InputStream input = activity.getContentResolver().openInputStream(Uri.parse(value));
+            try (InputStream input = openImage(value);
                  ByteArrayOutputStream output = new ByteArrayOutputStream()) {
                 if (input == null) throw new IllegalStateException("Image unavailable");
                 byte[] buffer = new byte[16384];
@@ -104,5 +115,13 @@ final class WallpaperFolder {
                 new Handler(Looper.getMainLooper()).post(() -> result.error("document_failed", "Unable to read folder image", DiagnosticErrorDetails.from(error)));
             }
         });
+    }
+
+    private InputStream openImage(String value) throws Exception {
+        if (value != null && value.startsWith("file:")) {
+            if (!local.granted()) throw new SecurityException("Storage access required");
+            return new java.io.FileInputStream(LocalWallpaperFiles.sharedFile(value));
+        }
+        return activity.getContentResolver().openInputStream(Uri.parse(value));
     }
 }

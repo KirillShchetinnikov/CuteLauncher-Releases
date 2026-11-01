@@ -1,8 +1,9 @@
 import 'traffic_settings_page.dart';
+import 'system_widget_settings_page.dart';
+import 'vpn_settings_page.dart';
 import 'sleep_timer_settings_page.dart';
 import 'information_settings_page.dart';
 import 'settings_route.dart';
-import 'settings_help.dart';
 import 'remote_panel_page.dart';
 import 'inputs_settings_page.dart';
 import 'settings_page_layout.dart';
@@ -54,16 +55,23 @@ class StatusBarObjectsPage extends StatelessWidget {
           const InformationObjectsSection(),
           Padding(
             padding: const EdgeInsets.all(12),
-            child: Text(
-              l.networkAndTrafficGroup,
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
+            child: Text(l.networkAndVpnGroup,
+                style: Theme.of(context).textTheme.titleSmall),
           ),
           RoundedSwitchListTile(
             autofocus: false,
             value: s.showNetworkIndicatorInStatusBar,
             onChanged: s.setShowNetworkIndicatorInStatusBar,
             title: Text(l.showNetwork),
+          ),
+          RoundedSwitchListTile(value: s.showVpnInStatusBar,
+            onChanged: s.setShowVpnInStatusBar, title: Text(l.vpnTitle)),
+          FocusableSettingsTile(title: Text(l.vpnSettings), leading: const Icon(Icons.vpn_key),
+            onPressed: () => Navigator.of(context).pushNamed(VpnSettingsPage.routeName)),
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Text(l.trafficTitle,
+                style: Theme.of(context).textTheme.titleSmall),
           ),
           RoundedSwitchListTile(
             autofocus: false,
@@ -75,31 +83,14 @@ class StatusBarObjectsPage extends StatelessWidget {
             onPressed: () => Navigator.of(context).pushNamed(TrafficSettingsPage.routeName)),
           Padding(
             padding: const EdgeInsets.all(12),
-            child: Text(
-              l.buttonsGroup,
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
+            child: Text(l.soundAndInputsGroup,
+                style: Theme.of(context).textTheme.titleSmall),
           ),
           RoundedSwitchListTile(
-            autofocus: false,
-            value: s.showSystemSettingsInStatusBar,
-            onChanged: s.setShowSystemSettingsInStatusBar,
-            title: Text(l.androidTvSettings),
+            value: s.showVolumeInStatusBar,
+            onChanged: s.setShowVolumeInStatusBar,
+            title: Text(l.showVolume),
           ),
-          RoundedSwitchListTile(
-            value: s.showSleepTimerInStatusBar,
-            onChanged: s.setShowSleepTimerInStatusBar,
-            title: Text(l.sleepTimer),
-          ),
-          FocusableSettingsTile(title: Text(l.sleepTimerSettings), leading: const Icon(Icons.timer_outlined),
-            onPressed: () => Navigator.of(context).pushNamed(SleepTimerSettingsPage.routeName)),
-          RoundedSwitchListTile(
-            value: s.showNightModeInStatusBar,
-            onChanged: s.setShowNightModeInStatusBar,
-            title: Text(l.nightModeTitle),
-          ),
-          Padding(padding: const EdgeInsets.all(12), child: Text(l.inputs,
-            style: Theme.of(context).textTheme.titleSmall)),
           RoundedSwitchListTile(
             autofocus: false,
             value: s.showInputsWidgetInStatusBar,
@@ -108,8 +99,9 @@ class StatusBarObjectsPage extends StatelessWidget {
             title: Text(l.inputs),
           ),
           if (inputs?.initialized == true && !inputs!.hasInputs)
-            SettingsHelp(text: l.inputsUnavailableHint),
+            Text(l.inputsUnavailableHint),
           FocusableSettingsTile(title: Text(l.inputsSettings),
+            enabled: inputs?.hasInputs == true,
             onPressed: () => Navigator.of(context).pushNamed(InputsSettingsPage.routeName)),
           Padding(
             padding: const EdgeInsets.all(12),
@@ -127,6 +119,43 @@ class StatusBarObjectsPage extends StatelessWidget {
             title: Text(l.notifications),
             onPressed: () => Navigator.of(context)
                 .pushNamed(NotificationsSettingsPage.routeName),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Text(l.system,
+                style: Theme.of(context).textTheme.titleSmall),
+          ),
+          RoundedSwitchListTile(title: Text(l.system), value: s.showSystemInStatusBar,
+            onChanged: s.setShowSystemInStatusBar),
+          FocusableSettingsTile(title: Text(l.systemWidgetSettings), leading: const Icon(Icons.monitor_heart_outlined),
+            onPressed: () => Navigator.of(context).pushNamed(SystemWidgetSettingsPage.routeName)),
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Text(l.timerAndNightModeGroup,
+                style: Theme.of(context).textTheme.titleSmall),
+          ),
+          RoundedSwitchListTile(
+            value: s.showSleepTimerInStatusBar,
+            onChanged: s.setShowSleepTimerInStatusBar,
+            title: Text(l.sleepTimer),
+          ),
+          FocusableSettingsTile(title: Text(l.sleepTimerSettings), leading: const Icon(Icons.timer_outlined),
+            onPressed: () => Navigator.of(context).pushNamed(SleepTimerSettingsPage.routeName)),
+          RoundedSwitchListTile(
+            value: s.showNightModeInStatusBar,
+            onChanged: s.setShowNightModeInStatusBar,
+            title: Text(l.nightModeTitle),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Text(l.systemSettingsGroup,
+                style: Theme.of(context).textTheme.titleSmall),
+          ),
+          RoundedSwitchListTile(
+            autofocus: false,
+            value: s.showSystemSettingsInStatusBar,
+            onChanged: s.setShowSystemSettingsInStatusBar,
+            title: Text(l.androidTvSettings),
           ),
         ],
       ),

@@ -10,13 +10,17 @@ import '../models/app.dart';
 import '../models/category.dart';
 import '../providers/apps_service.dart';
 import '../providers/appearance_service.dart';
+import '../providers/settings_service.dart';
+import '../theme/launcher_style.dart';
 import '../l10n/app_localizations.dart';
 import '../section_names.dart';
 import '../tile_appearance.dart';
 import 'app_card.dart';
 import 'category_container_common.dart';
 import 'category_focus.dart';
+import 'home_scroll_motion.dart';
 import 'tile_paint_layer.dart';
+import 'tile_theme_outline.dart';
 
 /// A section owns one scroll axis; navigation is based on data, never paint bounds.
 class HomeSection extends StatefulWidget {
@@ -33,6 +37,7 @@ class _HomeSectionState extends State<HomeSection> {
   final _bounds = GlobalKey();
   CategoryFocusController? _focus;
   HomeLayout? _layout;
+  double _horizontalInset = 32;
   List<App> _apps = [];
   bool _active = false;
   CategorySort? _appliedSort;
@@ -40,6 +45,7 @@ class _HomeSectionState extends State<HomeSection> {
   String? _signature;
   String? _pendingPackage;
   int? _preferredColumn;
+  bool _revealScheduled = false;
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -50,7 +56,7 @@ class _HomeSectionState extends State<HomeSection> {
       next?.materialize = _select;
       next?.navigate = _navigate;
       next?.enter = _enter;
-      next?.reveal = _reveal;
+      next?.reveal = _scheduleReveal;
       next?.selected.addListener(_changed);
     }
   }
@@ -73,10 +79,21 @@ class _HomeSectionState extends State<HomeSection> {
 
   void _changed() {
     if (!mounted) return;
-    setState(() {});
+    final style = context.read<AppearanceService?>()?.tilesFor(widget.category.id);
+    if (style?.labels == 'selected') setState(() {});
+    _scheduleReveal();
+  }
+
+  void _scheduleReveal() {
+    if (_revealScheduled || !mounted) return;
+    _revealScheduled = true;
+    // Selection, focus notification and lazy materialization can all request
+    // the same reveal. Read the committed focus once, after this frame.
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _revealScheduled = false;
       if (mounted) _reveal();
     });
+    WidgetsBinding.instance.ensureVisualUpdate();
   }
 
   AxisDirection _logicalDirection(AxisDirection direction) {
@@ -110,7 +127,7 @@ class _HomeSectionState extends State<HomeSection> {
         direction == AxisDirection.down) {
       final box = _bounds.currentContext?.findRenderObject() as RenderBox?;
       final fromStart =
-          layout.inset +
+          _horizontalInset +
           layout.cell(index).$2 * layout.stepX +
           layout.width / 2 -
           (layout.mode != 'grid' && _scroll.hasClients ? _scroll.offset : 0);
@@ -134,7 +151,7 @@ class _HomeSectionState extends State<HomeSection> {
     final localX =
         (Directionality.of(context) == TextDirection.rtl
             ? (box?.size.width ?? 0) - fromLeft : fromLeft) -
-        l.inset +
+        _horizontalInset +
         (l.mode != 'grid' && _scroll.hasClients ? _scroll.offset : 0);
     final col = ((localX - l.width / 2) / l.stepX).round().clamp(
       0,
@@ -152,7 +169,8 @@ class _HomeSectionState extends State<HomeSection> {
     final l = _layout;
     if (index < 0 || l == null) return false;
     _pendingPackage = package;
-    if (_focus?.hasMountedPackage(package) != true) setState(() {});
+    final materializing = _focus?.hasMountedPackage(package) != true;
+    if (materializing) setState(() {});
     final (r, c) = l.cell(index);
     if (_scroll.hasClients) {
       final start = l.mode == 'grid' ? r * l.stepY : c * l.stepX;
@@ -175,17 +193,21 @@ class _HomeSectionState extends State<HomeSection> {
             // sibling. That is not a new navigation request by the user.
             (origin?.context != null || _focus?.hasFocus != true) &&
             FocusManager.instance.primaryFocus is! FocusScopeNode)) {
-      if (request == _request) _pendingPackage = null;
+      if (request == _request) {
+        _pendingPackage = null;
+        if (mounted && materializing) setState(() {});
+      }
       return false;
     }
     _pendingPackage = null;
+    if (materializing) setState(() {});
     final result = _focus?.focusMounted(package) ?? false;
-    if (result) _reveal();
+    if (result) _scheduleReveal();
     return result;
   }
 
   void _reveal() {
-    if (!mounted || !_active) return;
+    if (!mounted || !_active || ModalRoute.isCurrentOf(context) == false) return;
     final outer = Scrollable.maybeOf(context);
     final box = context.findRenderObject();
     final bounds = _bounds.currentContext?.findRenderObject();
@@ -216,13 +238,7 @@ class _HomeSectionState extends State<HomeSection> {
       }
     }
     offset = offset.clamp(pos.minScrollExtent, pos.maxScrollExtent);
-    if ((offset - pos.pixels).abs() > .5) {
-      pos.animateTo(
-        offset,
-        duration: const Duration(milliseconds: 120),
-        curve: Curves.easeOut,
-      );
-    }
+    revealHomeOffset(context, pos, offset);
   }
 
   void _move(App app, AxisDirection direction) {
@@ -353,15 +369,32 @@ class _HomeSectionState extends State<HomeSection> {
                                   1.4 +
                               8
                         : 0.0;
-                    final l = HomeLayout(
+                    HomeLayout makeLayout(double availableWidth) => HomeLayout(
                       mode: mode,
                       count: _apps.length,
-                      availableWidth: constraints.maxWidth,
+                      availableWidth: availableWidth,
                       style: style,
                       requestedRows: categoryStyle?.rows ?? 2,
                       requestedColumns: columns,
                       labelHeight: labelHeight,
                     );
+                    var l = makeLayout(constraints.maxWidth);
+                    final scale = LauncherStyle.of(context).tileFocusScale(
+                      context.watch<SettingsService>().themes,
+                      style,
+                      width: l.width,
+                      focused: true,
+                    );
+                    // Keep the full focus effect inside the section clip,
+                    // including the first and last cards of scrolled rows.
+                    _horizontalInset = math.max(
+                      l.inset, l.width * (scale - 1) / 2 +
+                          (style.focusBorderStyle() == 'glow'
+                              ? TileGlowPainter.extent * scale : 2));
+                    if (_horizontalInset > l.inset) {
+                      l = makeLayout(constraints.maxWidth -
+                          2 * (_horizontalInset - l.inset));
+                    }
                     _layout = l;
                     final signature =
                         '$mode:$columns:${l.rows}:${l.width}:${l.height}:${l.gapX}:${l.gapY}:${style.labels}:${service?.appearance.anchored}:${service?.appearance.sectionPosition}:$padding:${style.sectionTitles}:${_apps.map((a) => a.packageName).join(',')}';
@@ -417,6 +450,7 @@ class _HomeSectionState extends State<HomeSection> {
                       packages: _apps.map((app) => app.packageName).toList(),
                       controller: _scroll,
                       selected: _focus?.lastPackage,
+                      selection: _focus?.selected,
                       requested: _pendingPackage,
                       animate: style.animateReordering && !MediaQuery.disableAnimationsOf(context),
                       physics: mode == 'grid' && maxRows == 0
@@ -429,7 +463,10 @@ class _HomeSectionState extends State<HomeSection> {
                       child: ClipRect(
                         child: TilePaintLayer(
                           child: Padding(
-                            padding: EdgeInsets.all(l.inset),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: _horizontalInset,
+                              vertical: l.inset,
+                            ),
                             child: child,
                           ),
                         ),

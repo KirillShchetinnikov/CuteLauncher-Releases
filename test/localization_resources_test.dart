@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/language_names.dart';
+import 'package:flauncher/online_wallpaper_failure.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -51,6 +52,16 @@ void main() {
         expect(text, isNot(contains('{')), reason: '$locale: $hours');
       }
       expect(l.backgroundSource, isNotEmpty);
+      for (final stage in WallpaperStage.values) {
+        final text = l.onlineWallpaperFailureStage(stage.name);
+        expect(text, isNotEmpty, reason: '$locale: $stage');
+        expect(text, isNot(contains('{')));
+      }
+      for (final reason in WallpaperFailureReason.values) {
+        final text = l.onlineWallpaperFailureReason(reason.name);
+        expect(text, isNotEmpty, reason: '$locale: $reason');
+        expect(text, isNot(contains('{')));
+      }
       expect(AppLocalizations.supportedLocales, contains(Locale(locale.languageCode)));
     }
   });
