@@ -28,6 +28,7 @@ import 'package:flauncher/l10n/app_localizations.dart';
 // Date format presets
 const List<(String format, String example)> dateFormatPresets = [
   (compactDateFormat, 'ПТН 2 Окт'),
+  (shortWeekdayDateFormat, 'Вс, 1 Нояб'),
   ('EEEE d', 'Friday 17'),
   ('E d', 'Fri 17'),
   ('dd/MM/y', '17/01/2026'),
@@ -100,7 +101,7 @@ class DateFormatSettingsTile extends StatelessWidget {
       options: dateFormatPresets.map((v) => v.$1).toList(),
       label: (v) => formatLauncherDate(
         v,
-        DateTime(2026, 10, 2),
+        v == shortWeekdayDateFormat ? DateTime(2026, 11, 1) : DateTime(2026, 10, 2),
         Localizations.localeOf(context).toString(),
       ),
       onChanged: (v) => service.setDateTimeFormat(v, service.timeFormat),

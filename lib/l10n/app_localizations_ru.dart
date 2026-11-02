@@ -10,6 +10,17 @@ class AppLocalizationsRu extends AppLocalizations {
   AppLocalizationsRu([String locale = 'ru']) : super(locale);
 
   @override
+  String get fileStorageSettingsUnavailable =>
+      'На этой прошивке недоступен экран доступа ко всем файлам. Используйте системный проводник или установите совместимый файловый менеджер.';
+
+  @override
+  String get tileFillBanner => 'Заполнять плитку баннером';
+
+  @override
+  String get tileFillBannerHelp =>
+      'Увеличивает баннер до заполнения плитки с сохранением пропорций и обрезкой краёв относительно центра. Часть логотипа может обрезаться. Действует для стандартных и собственных баннеров, не влияет на иконки без баннера. Поля внутри самого изображения не удаляются.';
+
+  @override
   String get wallhavenWallpaperHint =>
       'Случайные обои Wallhaven по выбранной теме: SFW, 16:9, от Full HD. Без регистрации и API-ключа. Обновление работает при открытом лаунчере; при ошибке сохраняются прежние обои.';
 

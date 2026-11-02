@@ -19,4 +19,16 @@ void main() {
     expect(formatLauncherDate(compactDateFormat, DateTime(2026, 12, 31), 'ru'), 'ЧТВ 31 Дек');
     expect(formatLauncherDate(compactDateFormat, DateTime(2026, 10, 2), 'en'), 'Fri 2 Oct');
   });
+  test('short weekday date uses comma, capitals and requested November spelling', () {
+    for (final locale in ['ru', 'ru_RU', 'ru-RU']) {
+      final formatter = LauncherDateFormatter(shortWeekdayDateFormat, locale);
+      const weekdays = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+      for (var day = 1; day <= 7; day++) {
+        expect(formatter.format(DateTime(2026, 11, day)), '${weekdays[day - 1]}, $day Нояб');
+      }
+      expect(formatter.format(DateTime(2026, 12, 1)), 'Вт, 1 Дек');
+      expect(formatter.format(DateTime(2026, 11, 1)), 'Вс, 1 Нояб');
+    }
+    expect(formatLauncherDate(shortWeekdayDateFormat, DateTime(2026, 11, 1), 'en'), 'Sun, 1 Nov');
+  });
 }

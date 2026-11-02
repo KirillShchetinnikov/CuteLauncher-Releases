@@ -1,4 +1,7 @@
 {
+  "fileStorageSettingsUnavailable": "이 펌웨어에서는 모든 파일 접근 권한 화면을 열 수 없습니다. 시스템 파일 선택기를 사용하거나 호환되는 파일 관리자를 설치하세요.",
+  "tileFillBanner": "배너로 타일 채우기",
+  "tileFillBannerHelp": "배너의 비율을 유지하면서 확대하고 중앙을 기준으로 가장자리를 잘라 타일을 채웁니다. 로고 일부가 잘릴 수 있습니다. 기본 및 사용자 지정 배너에 적용되며 배너가 없는 아이콘에는 영향을 주지 않습니다. 이미지 자체에 포함된 여백은 제거되지 않습니다.",
   "wallhavenWallpaperHint": "선택한 테마의 무작위 Wallhaven 배경화면: SFW, 16:9, Full HD 이상. 계정이나 API 키가 필요 없습니다. 런처가 열려 있을 때 업데이트하며 오류 시 이전 배경화면을 유지합니다.",
   "renderCompatibilityTitle": "호환 그래픽 출력",
   "renderCompatibilityAutomatic": "이 기기에서 자동으로 활성화됨",

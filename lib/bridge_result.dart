@@ -87,6 +87,7 @@ class BridgeChannel extends MethodChannel {
 
   static (BridgeStatus, String) _failure(String code) => switch (code
       .toLowerCase()) {
+    'storage_settings_unavailable' => (BridgeStatus.unsupported, 'storage_settings_unavailable'),
     'document_too_large' => (BridgeStatus.error, 'document_too_large'),
     'permission_denied' ||
     'denied' ||

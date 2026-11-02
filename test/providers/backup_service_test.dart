@@ -51,6 +51,22 @@ void main() {
     );
   });
 
+  test('backup round trip preserves global banner fill and the section override', () async {
+    final categoryId = await database.insertCategory(CategoriesCompanion.insert(name: 'Apps', order: 0));
+    final appearance = AppearanceService(sharedPreferences);
+    addTearDown(appearance.dispose);
+    await appearance.set('fillBanner', true);
+    await appearance.setCategoryTile(categoryId, 'fillBanner', false);
+    final archive = File(await backupService.exportBackup());
+    await appearance.reset();
+    await backupService.importBackup(archive);
+    final restored = AppearanceService(sharedPreferences);
+    addTearDown(restored.dispose);
+    expect(restored.appearance.fillBanner, isTrue);
+    expect(restored.tilesFor(categoryId).fillBanner, isFalse);
+    expect(restored.tilesFor(categoryId + 1).fillBanner, isTrue);
+  });
+
   test('old backup on a new profile restores legacy omissions without losing user edits', () async {
     await initializeSettingsProfile(sharedPreferences, tempDir, () => database);
     final appearance = AppearanceService(sharedPreferences);

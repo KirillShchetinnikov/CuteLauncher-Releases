@@ -10,6 +10,17 @@ class AppLocalizationsTr extends AppLocalizations {
   AppLocalizationsTr([String locale = 'tr']) : super(locale);
 
   @override
+  String get fileStorageSettingsUnavailable =>
+      'Bu donanım yazılımında tüm dosyalara erişim ekranı bulunmuyor. Sistem dosya seçicisini kullanın veya uyumlu bir dosya yöneticisi yükleyin.';
+
+  @override
+  String get tileFillBanner => 'Kutucuğu banner ile doldur';
+
+  @override
+  String get tileFillBannerHelp =>
+      'Banner’ı oranlarını koruyarak kutucuğu dolduracak şekilde büyütür ve kenarları merkeze göre kırpar. Logonun bir kısmı kesilebilir. Standart ve özel banner’lar için geçerlidir, banner’ı olmayan simgeleri etkilemez. Görselin kendi içindeki boşluklar kaldırılmaz.';
+
+  @override
   String get wallhavenWallpaperHint =>
       'Seçilen temaya göre rastgele Wallhaven duvar kâğıtları: SFW, 16:9, en az Full HD. Hesap veya API anahtarı gerekmez. Başlatıcı açıkken güncellenir; hata durumunda önceki duvar kâğıdı korunur.';
 

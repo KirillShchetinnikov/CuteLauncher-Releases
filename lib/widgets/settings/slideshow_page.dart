@@ -99,15 +99,9 @@ class SlideshowPage extends StatelessWidget {
         if (path == null || !context.mounted) return;
       }
       if (manual) {
-        final granted = await wallpaperFolderChannel.invokeMethod<bool>(
-          'requestFileStorage',
-          {'write': false},
-        );
+        final granted = await FileSelection.requestStorage(context, write: false);
         if (!context.mounted) return;
-        if (granted != true) {
-          showActionNotice(context, l.slideshowStoragePermission, error: true);
-          return;
-        }
+        if (!granted) return;
       }
       if (manual) {
         final folder = await wallpaperFolderChannel

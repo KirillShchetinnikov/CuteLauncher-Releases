@@ -85,6 +85,24 @@ void main() {
     }
   });
 
+  test('Medeo Serif resolves across interface, panel and clock with its static weight', () {
+    const locale = Locale('ru');
+    expect(AppFonts.available(locale), contains('medeo-serif'));
+    expect(AppFonts.available(locale, panel: true), contains('medeo-serif'));
+    expect(LanguageFontTheme.resolve(ThemeData(), 'medeo-serif', locale)
+        .textTheme.bodyMedium!.fontFamily, 'Medeo Serif');
+    expect(const TileAppearance({'panelFont': 'medeo-serif'})
+        .panelTextStyleFor(locale).fontFamily, 'Medeo Serif');
+    const clock = PanelClockStyle({'font': 'medeo-serif', 'weight': 900});
+    expect(clock.availableWeights(const TextStyle(), locale: locale), [400]);
+    final style = clock.textStyle(const TextStyle(), locale: locale);
+    expect(style.fontFamily, 'Medeo Serif');
+    expect(style.fontWeight, FontWeight.w400);
+    expect(style.fontVariations, isEmpty);
+    expect(AppFonts.family('medeo-serif', const Locale('ja')), isNull);
+    expect(clock.values['font'], 'medeo-serif');
+  });
+
   test('offered fonts cover actual translated letters and combining marks', () {
     const files = {
       'google-sans': [
@@ -95,6 +113,7 @@ void main() {
       ],
       'medeo-sans': ['medeo-sans', 'medeo-sans-italic'],
       'medeo-mono': ['medeo-mono', 'medeo-mono-italic'],
+      'medeo-serif': ['medeo-serif'],
       'onest': ['onest'],
       'manrope': ['manrope'],
       'outfit': ['outfit'],
@@ -135,6 +154,7 @@ void main() {
       'system',
       'medeo-sans',
       'medeo-mono',
+      'medeo-serif',
       'google-sans',
       'onest',
       'manrope',
@@ -209,10 +229,11 @@ void main() {
     expect(find.text('Onest'), findsOneWidget);
     expect(find.text('Medeo Sans'), findsOneWidget);
     expect(find.text('Medeo Mono'), findsOneWidget);
+    expect(find.text('Medeo Serif'), findsOneWidget);
     expect(find.text('Medeo Pixel'), findsNothing);
-    await tester.tap(find.text('Onest'));
+    await tester.tap(find.text('Medeo Serif'));
     await tester.pumpAndSettle();
-    expect(selected, 'onest');
+    expect(selected, 'medeo-serif');
     language = const Locale('en');
     await show();
     expect(find.text('Outfit'), findsWidgets);

@@ -104,6 +104,11 @@ available directly in the category appearance editor. Reset category layout also
 restores its shared appearance and clears padding, keeping apps and their order.
 CuteLauncher and system settings tiles can be hidden.
 
+When the home screen shows just one app category in a single row, the mouse
+wheel scrolls apps horizontally without moving the category vertically.
+Vertical scrolling remains available with multiple categories, multiple rows,
+a grid, or additional content cards.
+
 ## App feeds
 
 Path: **Home screen → Categories and order → App feeds**.
@@ -171,6 +176,14 @@ outlines, zoom and animations, accent color, categories, and the top panel.
 Menus and notifications have background, transparency, color, and text-scale
 settings. Menus can open on either side. Reset individual groups or all appearance.
 
+In **Tiles and labels**, the **Fill tile with banner** switch sits next to tile
+proportions. It enlarges a standard or custom banner to fill the entire tile
+without distorting its proportions, cropping the edges around the center.
+Part of the logo may be cropped. Set a common value or a category override.
+The switch is off by default: at 4:3 and 1:1 the full image is shown, while
+at 16:9 it fills the tile. Icons without a banner use the separate icon-size
+setting. Margins within the image file itself are not removed.
+
 With labels below tiles, zoom grows upward and sideways while preserving the
 gap above the text. This applies to app tiles and content feed cards.
 Side margins accommodate enlarged edge cards in rows and grids.
@@ -182,7 +195,7 @@ the pulse resumes if enabled.
 and Outline. They change panel materials, buttons, focus, switches and sliders
 while preserving placement, dimensions and remote control. Custom colours and
 transparency remain. Clean installations start with Glass; updates preserve existing appearance. Choose fonts separately
-for the interface, top panel and clock: Medeo Sans, Medeo Mono, Google Sans, Onest, Manrope, Outfit or
+for the interface, top panel and clock: Medeo Sans, Medeo Mono, Medeo Serif, Google Sans, Onest, Manrope, Outfit or
 the system font; the panel and clock also retain their earlier families.
 Only fonts supporting the current interface language are listed. For example,
 Outfit is unavailable for Russian. New styles default to Outfit for compatible
@@ -395,6 +408,8 @@ placement summary. Each element's placement is edited only inside this entry.
 The remaining settings are split into **Panel appearance**, **Wallpaper appearance**
 (when any element is on the wallpaper), and **Formats and data**. The latter contains
 time and date formats and a link to weather settings.
+Date settings include a short weekday format, such as “Вс, 1 Нояб” in Russian
+or “Sun, 1 Nov” in English: weekday, comma, day and abbreviated month.
 
 **Panel appearance** can group the visible elements. Grouping is unavailable when
 only one or no elements remain. Quick settings has independent visibility and grouping.
@@ -414,7 +429,7 @@ including today.
 offers only **Standard** and **Italic**. It changes only the slant, preserving
 family, size, weight, color, glow and background. **Font weight** is an inline
 arrow control offering only distinct weights for the selected font: Manrope
-200–800, Roboto Mono 100–700, Google Sans 400/500/700, other bundled families
+200–800, Roboto Mono 100–700, Google Sans 400/500/700, Medeo Serif 400, other bundled families
 100–900, and system 400/700. Ranges use steps of 100. Out-of-range values
 display as the nearest supported weight. Separate clock and combined block
 appearance remain independent. Toggling digit animation preserves clock geometry.
@@ -828,6 +843,12 @@ The built-in browser needs storage access on Android 9–10 (including write acc
 when saving) or all files access on Android 11 and newer. It works with TV storage
 and attached drives. The system picker may offer other sources and does not require
 broad file access. Manual path entry is available only in slideshow settings.
+
+On Android 11 and newer, all files access is a separate setting that may not
+appear in the app’s regular permission list. CuteLauncher opens its page in
+system settings. If the firmware does not provide this screen, the app reports
+it: use the system file picker or a compatible file manager. Opening settings
+does not mean that access has already been granted.
 
 ## Backups and synchronization
 

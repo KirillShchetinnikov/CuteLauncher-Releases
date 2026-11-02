@@ -10,6 +10,17 @@ class AppLocalizationsJa extends AppLocalizations {
   AppLocalizationsJa([String locale = 'ja']) : super(locale);
 
   @override
+  String get fileStorageSettingsUnavailable =>
+      'このファームウェアでは、すべてのファイルへのアクセスを許可する画面を開けません。システムのファイル選択機能を使用するか、対応するファイルマネージャーをインストールしてください。';
+
+  @override
+  String get tileFillBanner => 'バナーでタイル全体を埋める';
+
+  @override
+  String get tileFillBannerHelp =>
+      '縦横比を保ったままバナーを拡大し、中央を基準に端を切り取ってタイル全体を埋めます。ロゴの一部が切れる場合があります。標準およびカスタムのバナーに適用され、バナーのないアイコンには影響しません。画像自体に含まれる余白は削除されません。';
+
+  @override
   String get wallhavenWallpaperHint =>
       '選択したテーマのWallhaven壁紙をランダムに取得：SFW、16:9、Full HD以上。アカウントやAPIキーは不要です。ランチャー表示中に更新し、エラー時は前の壁紙を保持します。';
 

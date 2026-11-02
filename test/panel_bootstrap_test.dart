@@ -8,13 +8,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
-  for (final recent in [false, true]) {
-    testWidgets('panel entry point keeps home services dormant: recent=$recent', (tester) async {
+  for (final (recent, system) in [(false, false), (true, false), (false, true)]) {
+    testWidgets('panel entry point keeps home services dormant: recent=$recent system=$system', (tester) async {
       SharedPreferences.setMockInitialValues({});
       final prefs = await SharedPreferences.getInstance();
       final panel = RemotePanelService(prefs);
       for (final id in RemotePanelService.ids) {
-        await panel.show(id, id == 'settings');
+        await panel.show(id, id == 'settings' || system && id == 'system');
       }
       panel.dispose();
       final calls = <String>[];
@@ -30,6 +30,7 @@ void main() {
         'cutelauncher/tcl_blue_light',
         'cutelauncher/sleep_timer',
         'cutelauncher/recent_apps',
+        'cutelauncher/system_status',
         remotePanelChannel.name,
         'dev.fluttercommunity.plus/package_info',
       ];
@@ -40,6 +41,9 @@ void main() {
           if (call.method == 'getTvInputs' || call.method == 'getActiveNotifications') return [];
           if (name == 'cutelauncher/night') return {'presentationReady': true};
           if (name == 'cutelauncher/recent_apps') return {'status': 'success', 'apps': []};
+          if (name == 'cutelauncher/system_status' && call.method == 'snapshot') {
+            return {'cpuPercent': 24, 'ramTotalBytes': 1000, 'ramAvailableBytes': 400};
+          }
           if (call.method == 'isBreezyWeatherInstalled' || call.method.startsWith('check')) return false;
           return null;
         });
@@ -61,6 +65,12 @@ void main() {
       expect(calls.where((call) => call.contains('sleep_timer')), isEmpty);
       expect(calls.where((call) => call.endsWith('/checkWriteSettingsPermission')), isEmpty);
       expect(calls.where((call) => call.endsWith('/getApplications')), isEmpty);
+      expect(calls.where((call) => call == 'cutelauncher/system_status/snapshot'),
+        hasLength(system ? 1 : 0));
+      if (system) {
+        expect(find.text('CPU 24%'), findsOneWidget);
+        expect(find.text('RAM 60%'), findsOneWidget);
+      }
       expect(cache.maximumSizeBytes, 8 * 1024 * 1024);
       expect(cache.maximumSize, 20);
       expect(tester.takeException(), isNull);
@@ -69,6 +79,9 @@ void main() {
       expect(calls.where((call) => call == '${remotePanelChannel.name}/close'), hasLength(1));
       expect(calls.where((call) => call.endsWith('/getApplications')), isEmpty);
       await tester.pumpWidget(const SizedBox());
+      final reads = calls.where((call) => call == 'cutelauncher/system_status/snapshot').length;
+      await tester.pump(const Duration(seconds: 10));
+      expect(calls.where((call) => call == 'cutelauncher/system_status/snapshot'), hasLength(reads));
       remotePanelChannel.setMethodCallHandler(null);
       for (final name in channels) {
         messenger.setMockMethodCallHandler(MethodChannel(name), null);

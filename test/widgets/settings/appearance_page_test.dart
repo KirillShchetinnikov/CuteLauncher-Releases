@@ -9,8 +9,53 @@ import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/providers/appearance_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/settings/appearance_page.dart';
+import 'package:flauncher/widgets/settings/reset_style_tile.dart';
 
 void main() {
+  for (final categoryId in [null, 1]) {
+    testWidgets('banner fill inherits and resets in narrow Russian settings (category: $categoryId)', (tester) async {
+      SharedPreferences.setMockInitialValues({'settings_menu_on_right': true});
+      final prefs = await SharedPreferences.getInstance();
+      final appearance = AppearanceService(prefs);
+      final settings = SettingsService(prefs);
+      addTearDown(appearance.dispose);
+      addTearDown(settings.dispose);
+      await appearance.set('fillBanner', true);
+      await tester.pumpWidget(MultiProvider(providers: [
+        ChangeNotifierProvider.value(value: appearance),
+        ChangeNotifierProvider.value(value: settings),
+      ], child: MaterialApp(locale: const Locale('ru'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        builder: (context, child) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1.5)), child: child!),
+        home: Scaffold(body: SizedBox(width: 350, child: AppearancePage(categoryId: categoryId))))));
+      await tester.pumpAndSettle();
+      final l = AppLocalizations.of(tester.element(find.byType(AppearancePage)))!;
+      final toggle = find.byKey(const Key('fill-banner'));
+      await tester.ensureVisible(toggle);
+      await tester.pumpAndSettle();
+      // Explanations remain collapsed even with large text in a narrow panel.
+      expect(find.text(l.tileFillBannerHelp), findsNothing);
+      await tester.tap(toggle);
+      await tester.pumpAndSettle();
+      expect(categoryId == null ? appearance.appearance.fillBanner : appearance.tilesFor(categoryId).fillBanner, isFalse);
+      if (categoryId != null) {
+        expect(appearance.appearance.fillBanner, isTrue);
+        expect(appearance.category(categoryId).tiles['fillBanner'], false);
+      }
+      // The group reset must include fillBanner, while preserving other scopes.
+      await tester.scrollUntilVisible(find.byType(ResetStyleTile), 400);
+      await tester.pumpAndSettle();
+      await tester.widget<ResetStyleTile>(find.byType(ResetStyleTile)).onReset();
+      await tester.pumpAndSettle();
+      expect(categoryId == null ? appearance.appearance.fillBanner : appearance.tilesFor(categoryId).fillBanner, categoryId != null);
+      if (categoryId != null) expect(appearance.category(categoryId).tiles.containsKey('fillBanner'), isFalse);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+    });
+  }
+
   testWidgets('remote appearance inherits, edits independently and resets', (tester) async {
     tester.view.physicalSize = const Size(1280, 2400);
     tester.view.devicePixelRatio = 1;
@@ -124,6 +169,18 @@ void main() {
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
     await tester.pumpAndSettle();
     expect(appearance.appearance.aspectRatio, 4 / 3);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.pumpAndSettle();
+    final toggle = find.byKey(const Key('fill-banner'));
+    expect(Focus.of(tester.element(find.descendant(of: toggle, matching: find.byType(Text)).first)).hasFocus, isTrue);
+    final focus = FocusManager.instance.primaryFocus;
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(AppearanceService(prefs).appearance.fillBanner, isTrue);
+    expect(FocusManager.instance.primaryFocus, focus);
+    // The collapsed help is a separate remote stop between the switch and radius.
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.pumpAndSettle();
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.pumpAndSettle();
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);

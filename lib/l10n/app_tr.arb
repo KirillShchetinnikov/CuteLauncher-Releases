@@ -1,4 +1,7 @@
 {
+  "fileStorageSettingsUnavailable": "Bu donanım yazılımında tüm dosyalara erişim ekranı bulunmuyor. Sistem dosya seçicisini kullanın veya uyumlu bir dosya yöneticisi yükleyin.",
+  "tileFillBanner": "Kutucuğu banner ile doldur",
+  "tileFillBannerHelp": "Banner’ı oranlarını koruyarak kutucuğu dolduracak şekilde büyütür ve kenarları merkeze göre kırpar. Logonun bir kısmı kesilebilir. Standart ve özel banner’lar için geçerlidir, banner’ı olmayan simgeleri etkilemez. Görselin kendi içindeki boşluklar kaldırılmaz.",
   "wallhavenWallpaperHint": "Seçilen temaya göre rastgele Wallhaven duvar kâğıtları: SFW, 16:9, en az Full HD. Hesap veya API anahtarı gerekmez. Başlatıcı açıkken güncellenir; hata durumunda önceki duvar kâğıdı korunur.",
   "renderCompatibilityTitle": "Uyumlu grafik çıkışı",
   "renderCompatibilityAutomatic": "Bu cihaz için otomatik olarak etkin",

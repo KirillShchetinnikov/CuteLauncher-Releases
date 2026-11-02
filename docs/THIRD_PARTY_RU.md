@@ -15,12 +15,13 @@ CuteLauncher использует перечисленные ниже проек
 ## Шрифты
 
 Medeo создан Timur Akhimov и DNF для prtner.ai на основе Geist и Inter. Авторы исходных семейств: Andrés Briganti, Mateo Zaragoza, basement.studio, Vercel, Rasmus Andersson и The Inter Project Authors. Сохранён полный [список авторов](../assets/fonts/AUTHORS_medeo.txt).
+Medeo Serif также использует Geist Serif, PT Serif (ParaType) и Noto Serif Display (Google).
 
-[Medeo: исходники](https://github.com/DNFDEVS/medeo-font/tree/4ee86b11d93d8bbd1aab277e088abc62b3ebf74b), [сайт](https://prtner.ai/font). Medeo Sans и Mono RC4 (`v1.0.0-rc.4`): неизменённые TTF из коммита `4ee86b11d93d8bbd1aab277e088abc62b3ebf74b`, SIL OFL 1.1.
+[Medeo: исходники](https://github.com/DNFDEVS/medeo-font/tree/72c9ca7cbd091f8b85ff2cee26e3dcc4e762f1a7), [сайт](https://prtner.ai/font). Medeo Sans, Mono и Serif 1.0 (`v1.0.0`): неизменённые variable TTF Sans/Mono и статический Serif Regular из [официального выпуска](https://github.com/DNFDEVS/medeo-font/releases/tag/v1.0.0), commit `72c9ca7cbd091f8b85ff2cee26e3dcc4e762f1a7`, SIL OFL 1.1. Лицензия и список авторов сохранены из того же выпуска целиком.
 
 | Семейство | Правообладатели | Условия |
 |---|---|---|
-| Medeo Sans / Mono | Copyright 2026 The Medeo Project Authors (https://github.com/DNFDEVS/medeo-font) | [license](../assets/fonts/LICENSE_medeo.txt) |
+| Medeo Sans / Mono / Serif | Copyright 2026 The Medeo Project Authors (https://github.com/DNFDEVS/medeo-font) | [license](../assets/fonts/LICENSE_medeo.txt) |
 | Roboto | Copyright 2011 The Roboto Project Authors (https://github.com/googlefonts/roboto-classic) | [license](../assets/fonts/LICENSE_roboto.txt) |
 | Roboto Condensed | Copyright 2011 Google Inc. All Rights Reserved. | [license](../assets/fonts/LICENSE_robotocondensed.txt) |
 | Roboto Mono | Copyright 2015 The Roboto Mono Project Authors (https://github.com/googlefonts/robotomono) | [license](../assets/fonts/LICENSE_robotomono.txt) |

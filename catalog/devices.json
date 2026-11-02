@@ -196,6 +196,40 @@
           "evidenceSection": "Xiaomi MiTV-AXFU0: пользовательская диагностика — 28 октября 2026"
         }
       ]
+    },
+    {
+      "id": "google-tanix-w2-android11-20261101",
+      "label": "Tanix W2 — пользовательская диагностика (manufacturer: Google)",
+      "kind": "physical",
+      "exactMatch": true,
+      "identity": {
+        "manufacturer": "Google",
+        "model": "Tanix_W2",
+        "device": "p281",
+        "fingerprint": "Google/p281/p281:11/RD2A.211001.002/eng.server.20250806.150613:userdebug/release-keys",
+        "firmware": "11 RD2A.211001.002 2025080615",
+        "android": "11",
+        "sdk": "30",
+        "abis": "armeabi-v7a,armeabi"
+      },
+      "results": [
+        {
+          "feature": "identity-and-installed-app-metadata",
+          "status": "verified",
+          "date": "2026-11-01",
+          "appBuild": "1.6.1+182",
+          "summary": "В отчёте пользователя прочитаны идентичность прошивки, Android/API/ABI и полный список метаданных 133 пакетов. Независимой аппаратной проверки не было.",
+          "evidenceSection": "Tanix W2: пользовательская диагностика — 2 ноября 2026"
+        },
+        {
+          "feature": "functional-compatibility",
+          "status": "unverified",
+          "date": "2026-11-01",
+          "appBuild": "1.6.1+182",
+          "summary": "Пользователь сообщил о вертикальном смещении единственной однорядной группы колесом мыши. Работа функций, применение исправления на этой приставке и безопасность отключения пакетов не проверялись.",
+          "evidenceSection": "Tanix W2: пользовательская диагностика — 2 ноября 2026"
+        }
+      ]
     }
   ]
 }

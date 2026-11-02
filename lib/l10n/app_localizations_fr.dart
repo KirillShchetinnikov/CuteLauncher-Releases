@@ -10,6 +10,17 @@ class AppLocalizationsFr extends AppLocalizations {
   AppLocalizationsFr([String locale = 'fr']) : super(locale);
 
   @override
+  String get fileStorageSettingsUnavailable =>
+      'Ce micrologiciel ne propose pas d’écran d’accès à tous les fichiers. Utilisez le sélecteur de fichiers système ou installez un gestionnaire de fichiers compatible.';
+
+  @override
+  String get tileFillBanner => 'Remplir la tuile avec la bannière';
+
+  @override
+  String get tileFillBannerHelp =>
+      'Agrandit la bannière pour remplir la tuile en conservant ses proportions et en rognant les bords autour du centre. Une partie du logo peut être coupée. S’applique aux bannières standard et personnalisées, pas aux icônes sans bannière. Les marges intégrées à l’image ne sont pas supprimées.';
+
+  @override
   String get wallhavenWallpaperHint =>
       'Fonds Wallhaven aléatoires selon le thème : SFW, 16:9, Full HD ou plus. Sans compte ni clé API. Mise à jour lorsque le lanceur est ouvert ; en cas d’erreur, le fond précédent est conservé.';
 

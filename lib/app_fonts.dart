@@ -5,6 +5,7 @@ class AppFonts {
   static const families = <String, String>{
     'medeo-sans': 'Medeo Sans',
     'medeo-mono': 'Medeo Mono',
+    'medeo-serif': 'Medeo Serif',
     'google-sans': 'Google Sans',
     'onest': 'Onest',
     'manrope': 'Manrope',
@@ -18,6 +19,7 @@ class AppFonts {
     'system',
     'medeo-sans',
     'medeo-mono',
+    'medeo-serif',
     'google-sans',
     'onest',
     'manrope',
@@ -27,6 +29,7 @@ class AppFonts {
     'system',
     'medeo-sans',
     'medeo-mono',
+    'medeo-serif',
     'sans-serif',
     'serif',
     'monospace',

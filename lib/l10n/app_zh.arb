@@ -1,4 +1,7 @@
 {
+  "fileStorageSettingsUnavailable": "此固件无法打开所有文件访问权限页面。请使用系统文件选择器或安装兼容的文件管理器。",
+  "tileFillBanner": "用横幅填满磁贴",
+  "tileFillBannerHelp": "保持横幅比例并放大至填满磁贴，以中心为基准裁剪边缘。徽标的一部分可能被裁掉。适用于默认和自定义横幅，不影响没有横幅的图标。不会移除图片本身包含的留白。",
   "wallhavenWallpaperHint": "按所选主题随机获取 Wallhaven 壁纸：SFW、16:9、Full HD 或更高。无需账号或 API 密钥。启动器打开时更新；出错时保留上一张壁纸。",
   "renderCompatibilityTitle": "兼容图形输出",
   "renderCompatibilityAutomatic": "已为此设备自动启用",

@@ -10,6 +10,17 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get fileStorageSettingsUnavailable =>
+      'This firmware does not provide an all-files access screen. Use the system file picker or install a compatible file manager.';
+
+  @override
+  String get tileFillBanner => 'Fill tile with banner';
+
+  @override
+  String get tileFillBannerHelp =>
+      'Enlarges the banner to fill the tile, preserving its proportions and cropping the edges around the center. Part of the logo may be cropped. Applies to standard and custom banners, not icons without a banner. Margins within the image itself are not removed.';
+
+  @override
   String get wallhavenWallpaperHint =>
       'Random Wallhaven wallpapers matching your theme: SFW, 16:9, Full HD or higher. No account or API key needed. Updates run while the launcher is open; previous wallpapers are kept on failure.';
 

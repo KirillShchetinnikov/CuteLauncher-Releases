@@ -304,6 +304,81 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  for (final ratio in [16 / 9, 4 / 3, 1.0]) {
+    for (final custom in [false, true]) {
+      testWidgets('banner fill crops centrally without changing layout or reloading ($ratio, custom: $custom)', (tester) async {
+        final bytes = (await tester.runAsync(() async {
+          final recorder = ui.PictureRecorder();
+          final canvas = Canvas(recorder);
+          canvas.drawRect(const Rect.fromLTWH(0, 0, 320, 180), Paint()..color = const Color(0xff00ff00));
+          canvas.drawRect(const Rect.fromLTWH(0, 0, 80, 180), Paint()..color = const Color(0xffff0000));
+          canvas.drawRect(const Rect.fromLTWH(240, 0, 80, 180), Paint()..color = const Color(0xff0000ff));
+          final picture = recorder.endRecording();
+          final image = await picture.toImage(320, 180);
+          final data = await image.toByteData(format: ui.ImageByteFormat.png);
+          image.dispose(); picture.dispose();
+          return data!.buffer.asUint8List();
+        }))!;
+        SharedPreferences.setMockInitialValues({});
+        final appearance = AppearanceService(await SharedPreferences.getInstance());
+        addTearDown(appearance.dispose);
+        await appearance.set('aspectRatio', ratio);
+        await appearance.set('focusScale', 0);
+        await appearance.set('focusBorderStyle', 'none');
+        await appearance.set('radius', 0);
+        await appearance.set('backgroundColor', 0xff000000);
+        when(mockAppsService.getAppBanner(any)).thenAnswer((_) async => bytes);
+        when(mockAppsService.hasCustomBanner(any)).thenAnswer((_) async => custom);
+        final capture = GlobalKey();
+        await tester.pumpWidget(createWidgetUnderTest(appearance: appearance, captureKey: capture));
+        await tester.runAsync(() async => Future<void>.delayed(const Duration(milliseconds: 100)));
+        await tester.pumpAndSettle();
+        await tester.runAsync(() async => Future<void>.delayed(const Duration(milliseconds: 100)));
+        await tester.pumpAndSettle();
+        final imageFinder = find.byType(Image).first;
+        final bounds = tester.getRect(imageFinder);
+        final provider = tester.widget<Image>(imageFinder).image;
+        Future<void> checkPixels(bool filled) async {
+          final origin = tester.getTopLeft(find.byKey(capture));
+          final points = [
+            bounds.topLeft + Offset(bounds.width * .5, bounds.height * .06) - origin,
+            bounds.topLeft + Offset(bounds.width * .2, bounds.height * .5) - origin,
+            bounds.topLeft + Offset(bounds.width * .8, bounds.height * .5) - origin,
+          ];
+          final actual = await tester.runAsync(() async {
+            final boundary = capture.currentContext!.findRenderObject() as RenderRepaintBoundary;
+            final image = await boundary.toImage();
+            final data = (await image.toByteData(format: ui.ImageByteFormat.rawRgba))!;
+            final pixels = points.map((point) {
+              final at = (point.dy.floor() * image.width + point.dx.floor()) * 4;
+              return Color.fromARGB(data.getUint8(at + 3), data.getUint8(at),
+                data.getUint8(at + 1), data.getUint8(at + 2)).toARGB32();
+            }).toList();
+            image.dispose();
+            return pixels;
+          });
+          expect(actual, [
+            filled || ratio == 16 / 9 ? 0xff00ff00 : 0xff000000,
+            filled && ratio != 16 / 9 ? 0xff00ff00 : 0xffff0000,
+            filled && ratio != 16 / 9 ? 0xff00ff00 : 0xff0000ff,
+          ], reason: 'fill=$filled');
+        }
+        await checkPixels(false);
+        for (final fill in [true, false]) {
+          await appearance.set('fillBanner', fill);
+          await tester.pumpAndSettle();
+          expect(tester.getRect(imageFinder), bounds);
+          expect(tester.widget<Image>(imageFinder).image, provider);
+          await checkPixels(fill);
+        }
+        verify(mockAppsService.getAppBanner(mockApp.packageName)).called(1);
+        verifyNever(mockAppsService.getAppIcon(any));
+        expect(tester.takeException(), isNull);
+        await tester.pumpWidget(const SizedBox());
+      });
+    }
+  }
+
   testWidgets('icon decode uses its inner area and includes maximum focus growth', (tester) async {
     when(mockAppsService.getAppBanner(any)).thenAnswer((_) async => Uint8List(0));
     when(mockSettingsService.themes).thenReturn('modern');
@@ -318,6 +393,27 @@ void main() {
     expect(provider.height, greaterThanOrEqualTo((bounds.height * ratio).ceil().clamp(1, 1024)));
     expect(provider.width, lessThan((800 * ratio).ceil().clamp(1, 1024)));
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('banner fill preserves the fallback icon, label and legacy style', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final appearance = AppearanceService(await SharedPreferences.getInstance());
+    addTearDown(appearance.dispose);
+    when(mockAppsService.getAppBanner(any)).thenAnswer((_) async => Uint8List(0));
+    await tester.pumpWidget(createWidgetUnderTest(appearance: appearance));
+    await tester.pumpAndSettle();
+    final image = find.byType(Image).first;
+    final bounds = tester.getRect(image);
+    final provider = tester.widget<Image>(image).image;
+    await appearance.set('fillBanner', true);
+    await tester.pumpAndSettle();
+    expect(appearance.appearance.active, isFalse);
+    expect(tester.getRect(image), bounds);
+    expect(tester.widget<Image>(image).image, provider);
+    expect(tester.widget<Image>(image).fit, BoxFit.contain);
+    expect(find.text(mockApp.name), findsOneWidget);
+    verify(mockAppsService.getAppIcon(mockApp.packageName)).called(1);
+    await tester.pumpWidget(const SizedBox());
   });
 
   testWidgets('initial cards stay hidden until the image is decoded', (tester) async {

@@ -1,7 +1,7 @@
 name: flauncher
 description: CuteLauncher, a personal Android TV launcher based on LTvLauncher.
 
-version: 1.6.1+182
+version: 1.6.2+183
 
 environment:
   sdk: ">=3.13.7 <4.0.0"
@@ -91,6 +91,10 @@ flutter:
         - asset: assets/fonts/medeo-mono.ttf
         - asset: assets/fonts/medeo-mono-italic.ttf
           style: italic
+    - family: Medeo Serif
+      fonts:
+        - asset: assets/fonts/medeo-serif.ttf
+          weight: 400
     - family: Outfit
       fonts:
         - asset: assets/fonts/outfit.ttf

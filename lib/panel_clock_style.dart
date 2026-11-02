@@ -27,6 +27,7 @@ class PanelClockStyle {
   }
 
   static List<int> _weights(String? family) {
+    if (family == 'Medeo Serif') return const [400];
     final range = _variableWeightRanges[family];
     if (range != null) {
       return [for (var w = range.$1; w <= range.$2; w += 100) w];

@@ -15,12 +15,13 @@ CuteLauncher uses the projects and resources listed below. Copyright notices and
 ## Fonts
 
 Medeo was created by Timur Akhimov and DNF for prtner.ai, based on Geist and Inter. Upstream authors include Andrés Briganti, Mateo Zaragoza, basement.studio, Vercel, Rasmus Andersson and The Inter Project Authors. The complete [author list](../assets/fonts/AUTHORS_medeo.txt) is preserved.
+Medeo Serif also uses Geist Serif, PT Serif (ParaType) and Noto Serif Display (Google).
 
-[Medeo source](https://github.com/DNFDEVS/medeo-font/tree/4ee86b11d93d8bbd1aab277e088abc62b3ebf74b), [website](https://prtner.ai/font). Medeo Sans and Mono RC4 (`v1.0.0-rc.4`): unmodified TTF files from commit `4ee86b11d93d8bbd1aab277e088abc62b3ebf74b`, SIL OFL 1.1.
+[Medeo source](https://github.com/DNFDEVS/medeo-font/tree/72c9ca7cbd091f8b85ff2cee26e3dcc4e762f1a7), [website](https://prtner.ai/font). Medeo Sans, Mono and Serif 1.0 (`v1.0.0`): unmodified Sans/Mono variable TTF files and static Serif Regular from the [official release](https://github.com/DNFDEVS/medeo-font/releases/tag/v1.0.0), commit `72c9ca7cbd091f8b85ff2cee26e3dcc4e762f1a7`, SIL OFL 1.1. The complete license and author list are preserved from the same release.
 
 | Family | Copyright holders | Terms |
 |---|---|---|
-| Medeo Sans / Mono | Copyright 2026 The Medeo Project Authors (https://github.com/DNFDEVS/medeo-font) | [license](../assets/fonts/LICENSE_medeo.txt) |
+| Medeo Sans / Mono / Serif | Copyright 2026 The Medeo Project Authors (https://github.com/DNFDEVS/medeo-font) | [license](../assets/fonts/LICENSE_medeo.txt) |
 | Roboto | Copyright 2011 The Roboto Project Authors (https://github.com/googlefonts/roboto-classic) | [license](../assets/fonts/LICENSE_roboto.txt) |
 | Roboto Condensed | Copyright 2011 Google Inc. All Rights Reserved. | [license](../assets/fonts/LICENSE_robotocondensed.txt) |
 | Roboto Mono | Copyright 2015 The Roboto Mono Project Authors (https://github.com/googlefonts/robotomono) | [license](../assets/fonts/LICENSE_robotomono.txt) |

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "reviewedAt": "2026-10-28",
+  "reviewedAt": "2026-11-02",
   "sources": [
     "https://developer.android.com/reference/android/content/pm/PackageManager",
     "https://source.android.com/docs/core/runtime/rros",
@@ -17,6 +17,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -94,7 +95,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "droidlogic-x98q-android11-20261026"
+        "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101"
       ]
     },
     "app.smarttube.fdroid": {
@@ -108,6 +110,24 @@
       "observedOn": [
         "droidlogic-x98q-android11-20261026"
       ]
+    },
+    "cm.aptoidetv.pt": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tanix-w2-android11-20261101"
+      ],
+      "category": "user"
+    },
+    "com.TV": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tanix-w2-android11-20261101"
+      ],
+      "category": "user"
     },
     "com.alphainventor.filemanager": {
       "confidence": "identified",
@@ -167,6 +187,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -182,6 +203,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -196,7 +218,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "droidlogic-x98q-android11-20261026"
+        "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101"
       ]
     },
     "com.android.camera2": {
@@ -208,7 +231,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "droidlogic-x98q-android11-20261026"
+        "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101"
       ]
     },
     "com.android.cameraextensions": {
@@ -235,6 +259,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -250,6 +275,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -265,6 +291,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -294,6 +321,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -309,6 +337,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -337,7 +366,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "droidlogic-x98q-android11-20261026"
+        "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101"
       ]
     },
     "com.android.dreams.basic": {
@@ -350,6 +380,7 @@
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -365,6 +396,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -380,6 +412,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -408,7 +441,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "droidlogic-x98q-android11-20261026"
+        "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101"
       ]
     },
     "com.android.health.connect.backuprestore": {
@@ -449,6 +483,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -464,6 +499,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -479,6 +515,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -493,7 +530,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "droidlogic-x98q-android11-20261026"
+        "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101"
       ]
     },
     "com.android.intentresolver": {
@@ -520,6 +558,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -547,6 +586,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -562,6 +602,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -590,7 +631,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "droidlogic-x98q-android11-20261026"
+        "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101"
       ]
     },
     "com.android.mtp": {
@@ -603,6 +645,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz"
       ]
     },
@@ -642,6 +685,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -656,7 +700,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "droidlogic-x98q-android11-20261026"
+        "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101"
       ]
     },
     "com.android.networkstack.tethering": {
@@ -669,6 +714,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -684,6 +730,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz"
       ]
     },
@@ -696,7 +743,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "droidlogic-x98q-android11-20261026"
+        "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101"
       ]
     },
     "com.android.ondevicepersonalization.services": {
@@ -713,6 +761,18 @@
         "tcl-g10"
       ]
     },
+    "com.android.overlay.modules.documentsui": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tanix-w2-android11-20261101"
+      ]
+    },
     "com.android.packageinstaller": {
       "ru": "Приложение не опознано.",
       "en": "Application not identified.",
@@ -722,7 +782,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "droidlogic-x98q-android11-20261026"
+        "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101"
       ]
     },
     "com.android.pacprocessor": {
@@ -735,6 +796,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -749,7 +811,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "droidlogic-x98q-android11-20261026"
+        "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101"
       ]
     },
     "com.android.printspooler": {
@@ -762,6 +825,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -777,6 +841,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -792,6 +857,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -806,7 +872,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "droidlogic-x98q-android11-20261026"
+        "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101"
       ]
     },
     "com.android.providers.downloads": {
@@ -819,6 +886,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -833,7 +901,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "droidlogic-x98q-android11-20261026"
+        "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101"
       ]
     },
     "com.android.providers.media": {
@@ -846,6 +915,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -861,6 +931,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -876,6 +947,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -916,6 +988,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -931,6 +1004,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -946,6 +1020,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -989,6 +1064,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -1003,7 +1079,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "droidlogic-x98q-android11-20261026"
+        "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101"
       ]
     },
     "com.android.settings.intelligence": {
@@ -1016,6 +1093,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -1031,6 +1109,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -1046,6 +1125,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -1061,6 +1141,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz"
       ]
     },
@@ -1074,6 +1155,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -1089,6 +1171,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -1282,6 +1365,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -1362,6 +1446,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -1391,6 +1476,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -1405,7 +1491,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "droidlogic-x98q-android11-20261026"
+        "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101"
       ]
     },
     "com.android.wallpaperbackup": {
@@ -1418,6 +1505,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -1432,7 +1520,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "droidlogic-x98q-android11-20261026"
+        "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101"
       ]
     },
     "com.android.webview": {
@@ -1471,6 +1560,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -1563,6 +1653,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz"
       ]
     },
@@ -1575,7 +1666,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "droidlogic-x98q-android11-20261026"
+        "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101"
       ]
     },
     "com.droidlogic.miracast": {
@@ -1587,7 +1679,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "droidlogic-x98q-android11-20261026"
+        "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101"
       ]
     },
     "com.droidlogic.overlay": {
@@ -1683,7 +1776,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "droidlogic-x98q-android11-20261026"
+        "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101"
       ]
     },
     "com.droidlogic.wifitetheringoverlay": {
@@ -1772,7 +1866,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "droidlogic-x98q-android11-20261026"
+        "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101"
       ]
     },
     "com.google.android.backdrop": {
@@ -1785,7 +1880,32 @@
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz"
+      ]
+    },
+    "com.google.android.backuptransport": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tanix-w2-android11-20261101"
+      ]
+    },
+    "com.google.android.configupdater": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tanix-w2-android11-20261101"
       ]
     },
     "com.google.android.deskclock": {
@@ -1797,7 +1917,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "droidlogic-x98q-android11-20261026"
+        "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101"
       ]
     },
     "com.google.android.ext.services": {
@@ -1810,6 +1931,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -1825,6 +1947,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -1853,6 +1976,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -1867,6 +1991,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -1895,6 +2020,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -1909,7 +2035,20 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "droidlogic-x98q-android11-20261026"
+        "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101"
+      ]
+    },
+    "com.google.android.leanbacklauncher": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tanix-w2-android11-20261101"
       ]
     },
     "com.google.android.leanbacklauncher.recommendations": {
@@ -1921,7 +2060,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "droidlogic-x98q-android11-20261026"
+        "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101"
       ]
     },
     "com.google.android.marvin.talkback": {
@@ -1962,6 +2102,18 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "kp1-yyz"
+      ]
+    },
+    "com.google.android.onetimeinitializer": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tanix-w2-android11-20261101"
       ]
     },
     "com.google.android.overlay.googlewebview": {
@@ -2025,6 +2177,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -2053,6 +2206,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -2067,6 +2221,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -2095,6 +2250,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -2139,6 +2295,18 @@
         "tcl-g10"
       ]
     },
+    "com.google.android.sss.authbridge": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tanix-w2-android11-20261101"
+      ]
+    },
     "com.google.android.syncadapters.calendar": {
       "ru": "Приложение не опознано.",
       "en": "Application not identified.",
@@ -2148,9 +2316,22 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
+      ]
+    },
+    "com.google.android.syncadapters.contacts": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tanix-w2-android11-20261101"
       ]
     },
     "com.google.android.theme.color": {
@@ -2189,6 +2370,7 @@
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10",
@@ -2253,6 +2435,7 @@
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -2282,6 +2465,7 @@
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz"
       ]
     },
@@ -2295,6 +2479,7 @@
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz"
       ]
     },
@@ -2329,6 +2514,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -2388,6 +2574,15 @@
       "observedOn": [
         "droidlogic-x98q-android11-20261026"
       ]
+    },
+    "com.lonelycatgames.Xplore": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tanix-w2-android11-20261101"
+      ],
+      "category": "user"
     },
     "com.looker.droidify": {
       "ru": "Приложение не опознано.",
@@ -2506,7 +2701,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "droidlogic-x98q-android11-20261026"
+        "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101"
       ]
     },
     "com.nes.blerc": {
@@ -2566,6 +2762,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz"
       ]
     },
@@ -2642,6 +2839,30 @@
         "droidlogic-x98q-android11-20261026"
       ]
     },
+    "com.oranth.atvapplist": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tanix-w2-android11-20261101"
+      ]
+    },
+    "com.oranth.ledstatus": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tanix-w2-android11-20261101"
+      ]
+    },
     "com.pittvandewitt.viperfx": {
       "ru": "Приложение не опознано.",
       "en": "Application not identified.",
@@ -2687,6 +2908,18 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026"
+      ]
+    },
+    "com.qstar.powerui": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tanix-w2-android11-20261101"
       ]
     },
     "com.ran4erep.r4ezka": {
@@ -2869,6 +3102,24 @@
         "tcl-g10"
       ]
     },
+    "com.ruet_cse_1503050.ragib.appbackup.pro": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tanix-w2-android11-20261101"
+      ],
+      "category": "user"
+    },
+    "com.seena.app": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tanix-w2-android11-20261101"
+      ],
+      "category": "user"
+    },
     "com.sei.hdmi.services": {
       "ru": "Приложение не опознано.",
       "en": "Application not identified.",
@@ -2890,7 +3141,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "droidlogic-x98q-android11-20261026"
+        "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101"
       ]
     },
     "com.slimbox.tvlauncher.overlay": {
@@ -2902,8 +3154,18 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "droidlogic-x98q-android11-20261026"
+        "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101"
       ]
+    },
+    "com.softmedia.receiver": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tanix-w2-android11-20261101"
+      ],
+      "category": "user"
     },
     "com.spbtv.rosing": {
       "confidence": "identified",
@@ -2934,7 +3196,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "droidlogic-x98q-android11-20261026"
+        "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101"
       ]
     },
     "com.tcl.UpdatePeripheral": {
@@ -3497,7 +3760,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "droidlogic-x98q-android11-20261026"
+        "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101"
       ]
     },
     "com.tpa.kb": {
@@ -3526,6 +3790,18 @@
         "tcl-g10"
       ]
     },
+    "com.ugoos.suggestions": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tanix-w2-android11-20261101"
+      ]
+    },
     "com.utsmta.app": {
       "confidence": "identified",
       "safeToDisable": false,
@@ -3534,6 +3810,15 @@
         "kp1-yyz"
       ],
       "category": "preinstalled"
+    },
+    "com.vafic.launcher": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tanix-w2-android11-20261101"
+      ],
+      "category": "user"
     },
     "com.vk.tv": {
       "confidence": "identified",
@@ -3565,6 +3850,15 @@
       ],
       "category": "user"
     },
+    "com.yandex.browser.tv": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tanix-w2-android11-20261101"
+      ],
+      "category": "user"
+    },
     "com.yxt.memoryclean": {
       "ru": "Приложение не опознано.",
       "en": "Application not identified.",
@@ -3574,7 +3868,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "droidlogic-x98q-android11-20261026"
+        "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101"
       ]
     },
     "cz.ackee.ventusky": {
@@ -3619,9 +3914,28 @@
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
+      ],
+      "category": "user"
+    },
+    "io.github.romanvht.byedpi": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tanix-w2-android11-20261101"
+      ],
+      "category": "user"
+    },
+    "io.lift.app": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tanix-w2-android11-20261101"
       ],
       "category": "user"
     },
@@ -3634,8 +3948,39 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "droidlogic-x98q-android11-20261026"
+        "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101"
       ]
+    },
+    "james.dsp": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tanix-w2-android11-20261101"
+      ]
+    },
+    "limehd.ru.ctvshka": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tanix-w2-android11-20261101"
+      ],
+      "category": "user"
+    },
+    "limehd.ru.lite": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tanix-w2-android11-20261101"
+      ],
+      "category": "user"
     },
     "me.zhanghai.android.files": {
       "ru": "Приложение не опознано.",
@@ -3648,6 +3993,15 @@
       "observedOn": [
         "droidlogic-x98q-android11-20261026"
       ]
+    },
+    "mobi.zona": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tanix-w2-android11-20261101"
+      ],
+      "category": "user"
     },
     "moe.nb4a": {
       "ru": "Приложение не опознано.",
@@ -3670,7 +4024,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "droidlogic-x98q-android11-20261026"
+        "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101"
       ]
     },
     "net.gtvbox.installer": {
@@ -3688,6 +4043,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
+        "google-tanix-w2-android11-20261101",
         "tcl-g08"
       ],
       "category": "preinstalled"
@@ -3763,7 +4119,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "droidlogic-x98q-android11-20261026"
+        "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101"
       ]
     },
     "org.slimboxtv.appdrawer": {
@@ -3784,6 +4141,7 @@
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -3811,7 +4169,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "droidlogic-x98q-android11-20261026"
+        "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101"
       ]
     },
     "rtb.mobile.android": {
@@ -3831,6 +4190,15 @@
         "kp1-yyz"
       ],
       "category": "preinstalled"
+    },
+    "ru.fmplay": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tanix-w2-android11-20261101"
+      ],
+      "category": "user"
     },
     "ru.full.khd.app.overlay": {
       "ru": "Приложение не опознано.",
@@ -3874,7 +4242,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "droidlogic-x98q-android11-20261026"
+        "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101"
       ]
     },
     "ru.more.play": {
@@ -3900,6 +4269,15 @@
         "droidlogic-x98q-android11-20261026"
       ]
     },
+    "ru.reelo.androidtv.compose": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tanix-w2-android11-20261101"
+      ],
+      "category": "user"
+    },
     "ru.rutube.app": {
       "confidence": "identified",
       "safeToDisable": false,
@@ -3908,6 +4286,42 @@
         "kp1-yyz"
       ],
       "category": "preinstalled"
+    },
+    "ru.tiardev.kinotrend": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tanix-w2-android11-20261101"
+      ],
+      "category": "user"
+    },
+    "ru.vk.store.tv": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tanix-w2-android11-20261101"
+      ],
+      "category": "user"
+    },
+    "ru.yourok.num": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tanix-w2-android11-20261101"
+      ],
+      "category": "user"
+    },
+    "ru.yourok.torrserve": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tanix-w2-android11-20261101"
+      ],
+      "category": "user"
     },
     "slim.box.tv.customizer": {
       "ru": "Приложение не опознано.",
@@ -3918,7 +4332,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "droidlogic-x98q-android11-20261026"
+        "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101"
       ]
     },
     "slim.box.tv.project": {
@@ -3930,7 +4345,20 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "droidlogic-x98q-android11-20261026"
+        "droidlogic-x98q-android11-20261026",
+        "google-tanix-w2-android11-20261101"
+      ]
+    },
+    "tv.autostart": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tanix-w2-android11-20261101"
       ]
     },
     "tv.mopa.ginga": {

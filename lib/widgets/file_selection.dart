@@ -20,6 +20,21 @@ class FileSelection {
   static const _channel = BridgeChannel('me.efesser.flauncher/method');
   static bool _selecting = false;
 
+  static Future<bool> requestStorage(BuildContext context, {required bool write}) async {
+    try {
+      final granted = await _channel.invokeMethod<bool>('requestFileStorage', {'write': write});
+      if (!context.mounted) return false;
+      if (granted == true) return true;
+      showActionNotice(context, AppLocalizations.of(context)!.slideshowStoragePermission, error: true);
+    } on BridgeException catch (error) {
+      if (error.code != 'storage_settings_unavailable') rethrow;
+      if (context.mounted) {
+        showActionNotice(context, AppLocalizations.of(context)!.fileStorageSettingsUnavailable, error: true);
+      }
+    }
+    return false;
+  }
+
   static Future<T?> select<T>(
     BuildContext context,
     String operation, {
@@ -83,18 +98,9 @@ class FileSelection {
               'pickCleanerListDocument' => FileBrowserKind.text,
               _ => FileBrowserKind.document,
             };
-      final granted = await _channel.invokeMethod<bool>('requestFileStorage', {
-        'write': save || operation == 'pickBackupFolder',
-      });
+      final granted = await requestStorage(context, write: save || operation == 'pickBackupFolder');
       if (!context.mounted) return null;
-      if (granted != true) {
-        showActionNotice(
-          context,
-          AppLocalizations.of(context)!.slideshowStoragePermission,
-          error: true,
-        );
-        return null;
-      }
+      if (!granted) return null;
       Widget browser(BuildContext _) => LocalFileBrowser(
         initialPath: initialPath,
         kind: kind,

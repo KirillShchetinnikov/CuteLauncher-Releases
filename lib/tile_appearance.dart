@@ -14,6 +14,7 @@ class TileAppearance {
   dynamic homeFieldValue(String key) => switch (key) {
     'size' => tileSize,
     'aspectRatio' => aspectRatio,
+    'fillBanner' => fillBanner,
     'horizontalGap' => horizontalGap,
     'verticalGap' => verticalGap,
     'iconScale' => iconScale,
@@ -38,7 +39,7 @@ class TileAppearance {
   bool get sectionTitles => values['sectionTitles'] != false;
   bool get sectionIcons => values['sectionIcons'] == true;
   bool get active =>
-      values.keys.any((key) => key != 'animateReordering' && key != 'labels' && !key.startsWith('section') && key != 'hideAbove' && key != 'inactiveOpacity' && !key.startsWith('panel') && !key.startsWith('settings') &&
+      values.keys.any((key) => key != 'fillBanner' && key != 'animateReordering' && key != 'labels' && !key.startsWith('section') && key != 'hideAbove' && key != 'inactiveOpacity' && !key.startsWith('panel') && !key.startsWith('settings') &&
           !key.startsWith('notice') && key != 'blurPanel' && key != 'focusAlignment');
   double? number(String key) => (values[key] as num?)?.toDouble();
   double get opacity => number('opacity') ?? 1;
@@ -47,6 +48,7 @@ class TileAppearance {
   double get horizontalGap => number('horizontalGap') ?? 16;
   double get verticalGap => number('verticalGap') ?? 16;
   double get aspectRatio => number('aspectRatio') ?? 16 / 9;
+  bool get fillBanner => values['fillBanner'] == true;
   Color? color(String key) =>
       values[key] is int ? (key == 'sectionBackground' ? Color(values[key] as int) : Color(values[key] as int).withAlpha(255)) : null;
   TextStyle get labelStyle {
@@ -258,6 +260,7 @@ class TileAppearance {
             'focusPulse', 'focusTransition', 'animateReordering',
             'focusShadow',
             'blurTiles',
+            'fillBanner',
             'blurPanel',
             'panelTextBackground',
             'panelDateCalendar',

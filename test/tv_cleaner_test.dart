@@ -240,7 +240,20 @@ void main() {
         }
         continue;
       }
-      expect(report['scope'], 'adbReadOnlyInventory');
+      final fromDiagnostics =
+          report['scope'] == 'userProvidedDiagnosticInventory';
+      expect(report['scope'], isIn([
+        'adbReadOnlyInventory', 'userProvidedDiagnosticInventory',
+      ]));
+      if (fromDiagnostics) {
+        expect(report['verification'], 'observedOnly');
+        expect(report['sourceReport'], isNotEmpty);
+        final completeness = report['completeness'] as Map;
+        expect(completeness['truncated'], isA<bool>());
+        expect(completeness['sourceCount'],
+            greaterThanOrEqualTo((report['packages'] as List).length));
+        expect(completeness['skippedCount'], greaterThanOrEqualTo(0));
+      }
       for (final app in report['packages'] as List) {
         final name = app['package'] as String;
         seen.add(name);
@@ -265,11 +278,13 @@ void main() {
         (report['diagnostics'] as Map)['packageCount'],
         (report['packages'] as List).length,
       );
-      expect(
-        ((report['diagnostics'] as Map)['launcher']
-            as Map)['requestedPermissions'],
-        contains('android.permission.INTERNET'),
-      );
+      if (!fromDiagnostics) {
+        expect(
+          ((report['diagnostics'] as Map)['launcher']
+              as Map)['requestedPermissions'],
+          contains('android.permission.INTERNET'),
+        );
+      }
     }
     expect(entries.keys.toSet(), seen);
     final profiles = jsonDecode(

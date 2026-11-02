@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "reportType": "tvCompatibility",
+  "scope": "readOnlyMetadata",
+  "capturedAt": "2026-11-01T00:00:00.000Z",
+  "kind": "physical",
+  "kindDetection": "buildMetadata",
+  "identity": {
+    "manufacturer": "Google",
+    "model": "Tanix_W2",
+    "firmware": "11 RD2A.211001.002 2025080615",
+    "android": "11",
+    "sdk": "30",
+    "abis": "armeabi-v7a,armeabi"
+  },
+  "installedLauncher": {
+    "versionName": "1.6.1",
+    "versionCode": "182"
+  },
+  "checks": {
+    "androidTv": "available",
+    "androidVersion": "available",
+    "homeRegistered": "available",
+    "defaultHome": "unknown",
+    "homeSelection": "available",
+    "overlay": "unknown",
+    "notifications": "unknown",
+    "notificationListener": "unknown",
+    "accessibility": "unknown",
+    "writeSettings": "unknown",
+    "usageStats": "unknown",
+    "watchNext": "unknown",
+    "tvInputs": "unknown",
+    "documentExport": "available",
+    "screensaverSelection": "available"
+  }
+}

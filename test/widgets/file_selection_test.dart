@@ -17,6 +17,7 @@ void main() {
   Object? systemResult;
   Object? localResult;
   String? systemError;
+  String? storageError;
   Completer<void>? loading;
   var many = false;
   setUp(() {
@@ -26,6 +27,7 @@ void main() {
     systemResult = null;
     localResult = 'staged';
     systemError = null;
+    storageError = null;
     loading = null;
     many = false;
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
@@ -35,6 +37,7 @@ void main() {
             case 'filePickerAvailable':
               return available;
             case 'requestFileStorage':
+              if (storageError != null) throw PlatformException(code: storageError!);
               return granted;
             case 'browseLocalFiles':
               await loading?.future;
@@ -356,6 +359,23 @@ void main() {
       expect(calls.any((c) => c.method == 'pickWallpaperFolder'), isFalse);
     },
   );
+
+  testWidgets('missing all-files settings reports a usable alternative without browsing', (tester) async {
+    storageError = 'storage_settings_unavailable';
+    Object? result = 'unchanged';
+    await start(tester, 'pickBackupDocument', (value) => result = value);
+    expect(result, isNull);
+    expect(find.textContaining('недоступен экран доступа ко всем файлам'), findsOneWidget);
+    expect(find.byType(LocalFileBrowser), findsNothing);
+    expect(calls.map((call) => call.method), ['filePickerAvailable', 'requestFileStorage']);
+    // Failed permission routing must not leave the single-selection gate locked.
+    storageError = null;
+    await tester.tap(find.text('Open'));
+    await tester.pumpAndSettle();
+    expect(find.byType(LocalFileBrowser), findsOneWidget);
+    await tester.tap(find.byTooltip('Закрыть'));
+    await tester.pumpAndSettle();
+  });
 
   testWidgets(
     'denied storage preserves the choice and does not enumerate files',

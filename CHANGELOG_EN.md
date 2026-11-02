@@ -2,6 +2,15 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
+## v1.6.2 — 2026-11-02
+
+- Fixed the all-files access permission route on TVs: the launcher prefers Android TV system settings over third-party permission filters. A clear message appears when no suitable screen is available.
+- Fixed memory and CPU readings in the quick settings panel displayed over apps. CPU availability depends on the firmware and configured access.
+- Fixed vertical movement of a lone single-row app section when scrolling with the mouse wheel.
+- Added a banner fill setting for tiles, with a global value and separate choices for individual sections.
+- Added a date format with an abbreviated weekday and a comma, such as “Sun, 1 Nov”.
+- Updated Medeo Sans and Medeo Mono to version 1.0. Added Medeo Serif for the interface, panel, and clock.
+
 ## v1.6.1 — 2026-11-01
 
 - Added independent placement for the clock, date and weather: each can stay in the top panel, move onto the wallpaper or be hidden. The wallpaper block has size, alignment, font, color and glow settings; mountains in the adaptive landscape overlap the lower part of the clock to create depth.

@@ -10,6 +10,17 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
+  String get fileStorageSettingsUnavailable =>
+      'لا توفّر هذه البرامج الثابتة شاشة للوصول إلى جميع الملفات. استخدم منتقي ملفات النظام أو ثبّت مدير ملفات متوافقًا.';
+
+  @override
+  String get tileFillBanner => 'ملء البلاطة بالبانر';
+
+  @override
+  String get tileFillBannerHelp =>
+      'يكبّر البانر ليملأ البلاطة مع الحفاظ على نسبه وقص الحواف من المنتصف. قد يتم اقتطاع جزء من الشعار. ينطبق على البانرات القياسية والمخصّصة، ولا يؤثر في الأيقونات التي لا تحتوي على بانر. لا يزيل الهوامش الموجودة داخل الصورة نفسها.';
+
+  @override
   String get wallhavenWallpaperHint =>
       'خلفيات عشوائية من Wallhaven حسب الموضوع: آمنة للعمل، بنسبة 16:9 ودقة Full HD أو أعلى. لا يلزم حساب أو مفتاح API. يتم التحديث أثناء فتح المشغّل وتبقى الخلفية السابقة عند حدوث خطأ.';
 

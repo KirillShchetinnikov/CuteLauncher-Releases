@@ -36,6 +36,7 @@ void main() {
         const files = {
           'Medeo Sans': ['medeo-sans'],
           'Medeo Mono': ['medeo-mono'],
+          'Medeo Serif': ['medeo-serif'],
           'Outfit': ['outfit'],
           'Onest': ['onest'],
           'Manrope': ['manrope'],

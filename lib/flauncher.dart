@@ -5,6 +5,7 @@ import 'widgets/video_wallpaper_background.dart';
 import 'widgets/app_artwork_background.dart';
 import 'providers/remote_panel_service.dart';
 import 'providers/foreground_work.dart';
+import 'providers/now_playing_service.dart';
 import 'providers/slideshow_service.dart';
 /*
  * FLauncher
@@ -258,26 +259,28 @@ class FLauncherState extends State<FLauncher> {
                                 order: settings.continueWatchingOrder,
                               ),
                               builder: (context, cwSettings, _) =>
-                                  LayoutBuilder(builder: (context, constraints) => SingleChildScrollView(
-                                    controller: _scrollController,
-                                    physics: const ClampingScrollPhysics(),
-                                    padding: const EdgeInsets.only(top: 24),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const NowPlayingCard(),
-                                        _sections(
-                                            appsService.launcherSections.where((s) => s is! Category || s.visible).toList(),
-                                            continueWatchingActive:
-                                                cwSettings.show &&
-                                                hasContinuingPrograms,
-                                            continueWatchingOrder:
-                                                cwSettings.order,
-                                            viewportHeight: constraints.maxHeight),
-                                      ],
-                                    ),
-                                  )),
+                                  LayoutBuilder(builder: (context, constraints) {
+                                    final sections = _sections(
+                                      appsService.launcherSections.where((s) => s is! Category || s.visible).toList(),
+                                      continueWatchingActive: cwSettings.show && hasContinuingPrograms,
+                                      continueWatchingOrder: cwSettings.order,
+                                      viewportHeight: constraints.maxHeight,
+                                    );
+                                    return SingleChildScrollView(
+                                      controller: _scrollController,
+                                      physics: sections.singleTape
+                                          ? const NeverScrollableScrollPhysics()
+                                          : const ClampingScrollPhysics(),
+                                      padding: const EdgeInsets.only(top: 24),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const NowPlayingCard(),
+                                          sections.child,
+                                        ],
+                                      ),
+                                    );
+                                  }),
                             ),
                     ));
                     }
@@ -294,7 +297,7 @@ class FLauncherState extends State<FLauncher> {
     ),
   );
 
-  Widget _sections(
+  ({Widget child, bool singleTape}) _sections(
     List<LauncherSection> sections, {
     bool continueWatchingActive = false,
     int continueWatchingOrder = 0,
@@ -446,11 +449,26 @@ class FLauncherState extends State<FLauncher> {
         else { available[previousIndex.clamp(0, available.length - 1)].focusEntry(); }
       });
     }
-    return TilePaintLayer(child: Column(children: [
+    final categories = sections.whereType<Category>().where((c) => !c.isAppChannels).toList();
+    final category = categories.length == 1 ? categories.single : null;
+    final categoryStyle = category == null ? null : context.read<AppearanceService?>()?.category(category.id);
+    final mode = categoryStyle?.resolvedLayout(category?.type == CategoryType.row) ??
+        (category?.type == CategoryType.row ? 'row' : 'grid');
+    final nowPlaying = context.watch<NowPlayingService?>();
+    final hasNowPlaying = nowPlaying != null && context.watch<SettingsService>().showNowPlaying &&
+        (nowPlaying.initialized || nowPlaying.failed) &&
+        (nowPlaying.media != null || !nowPlaying.allowed || nowPlaying.failed);
+    // Anchored sections keep extra vertical space for focus reveals. A lone
+    // tape must not let wheel/drag input move it through that space.
+    final singleTape = category != null &&
+        (mode == 'row' || mode == 'rows' && categoryStyle?.rows == 1) &&
+        !continueWatchingActive && activeFeedKeys.isEmpty &&
+        !hasNowPlaying;
+    return (singleTape: singleTape, child: TilePaintLayer(child: Column(children: [
       if (appearance.anchored) SizedBox(height: viewportHeight * appearance.sectionPosition),
       ...children,
       if (appearance.anchored) SizedBox(height: viewportHeight),
-    ]));
+    ])));
   }
 
   void _leaveSection(CategoryFocusController focus, AxisDirection direction, double x) {

@@ -10,6 +10,17 @@ class AppLocalizationsHi extends AppLocalizations {
   AppLocalizationsHi([String locale = 'hi']) : super(locale);
 
   @override
+  String get fileStorageSettingsUnavailable =>
+      'इस फ़र्मवेयर में सभी फ़ाइलों तक पहुँच की स्क्रीन उपलब्ध नहीं है। सिस्टम फ़ाइल चयनकर्ता का उपयोग करें या संगत फ़ाइल प्रबंधक इंस्टॉल करें।';
+
+  @override
+  String get tileFillBanner => 'बैनर से टाइल भरें';
+
+  @override
+  String get tileFillBannerHelp =>
+      'बैनर का अनुपात बनाए रखते हुए उसे बड़ा करके पूरी टाइल भरता है और केंद्र के आसपास किनारों को काटता है। लोगो का कुछ भाग कट सकता है। यह मानक और कस्टम बैनर पर लागू होता है, बिना बैनर वाले आइकन पर नहीं। चित्र में पहले से मौजूद खाली किनारे नहीं हटाए जाते।';
+
+  @override
   String get wallhavenWallpaperHint =>
       'चुनी गई थीम के Wallhaven वॉलपेपर: SFW, 16:9, Full HD या अधिक। खाते या API कुंजी की ज़रूरत नहीं। लॉन्चर खुला होने पर अपडेट होते हैं; त्रुटि पर पुराना वॉलपेपर रहता है।';
 

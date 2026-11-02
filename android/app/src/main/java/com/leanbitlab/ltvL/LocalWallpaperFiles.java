@@ -2,14 +2,11 @@ package com.leanbitlab.ltvL;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
-import android.provider.Settings;
 import io.flutter.plugin.common.MethodChannel;
 import java.io.File;
 import java.io.IOException;
@@ -57,11 +54,10 @@ final class LocalWallpaperFiles {
         pending = result;
         try {
             if (Build.VERSION.SDK_INT >= 30) {
-                Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
-                    Uri.parse("package:" + activity.getPackageName()));
-                if (intent.resolveActivity(activity.getPackageManager()) == null)
-                    intent = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
-                activity.startActivityForResult(intent, REQUEST);
+                if (!AllFilesAccessSettings.open(activity, REQUEST)) {
+                    pending = null;
+                    result.error("storage_settings_unavailable", "All-files access settings unavailable", null);
+                }
             } else activity.requestPermissions(write ? new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}
                 : new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST);
         } catch (RuntimeException error) {

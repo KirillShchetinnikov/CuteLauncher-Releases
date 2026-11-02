@@ -461,7 +461,8 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
               image: sizedImage(record.$2, Size(constraints.maxWidth.isFinite ? constraints.maxWidth : 320,
                   constraints.maxHeight.isFinite ? constraints.maxHeight : 180),
                   MediaQuery.devicePixelRatioOf(context), maximumEdge: 1024),
-              fit: appearance.aspectRatio == 16 / 9 ? BoxFit.cover : BoxFit.contain,
+              fit: appearance.fillBanner || appearance.aspectRatio == 16 / 9
+                  ? BoxFit.cover : BoxFit.contain,
               gaplessPlayback: true,
               frameBuilder: _imageFrame,
               errorBuilder: _imageError,

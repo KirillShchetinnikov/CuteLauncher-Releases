@@ -933,6 +933,95 @@ void main() {
       feeds.dispose(); feedSettings.dispose(); await channel.events.close();
     });
   }
+  for (final layout in ['row', 'rows-one', 'row-override', 'rows', 'grid', 'multiple', 'watch']) {
+    testWidgets('wheel preserves single tape height only: $layout', (tester) async {
+      SharedPreferences.setMockInitialValues({'card_focus_mode': 'first'});
+      final appearance = AppearanceService(await SharedPreferences.getInstance());
+      await appearance.set('focusPulse', false);
+      final apps = mkAppService();
+      final category = fakeCategory(name: 'Apps', type: layout == 'row-override' ? CategoryType.grid : CategoryType.row)
+        ..applications.addAll(List.generate(30, (i) => fakeApp(packageName: 'tape.$i')));
+      final hidden = fakeCategory(name: 'Hidden')..visible = false;
+      final feeds = fakeCategory(name: 'App Feeds')..systemKey = 'app_channels';
+      final second = fakeCategory(name: 'Second', order: 2)
+        ..applications.add(fakeApp(packageName: 'second.app'));
+      await appearance.setCategory(category.id, 'layout', switch (layout) {
+        'multiple' || 'row-override' || 'watch' => 'row',
+        'rows-one' => 'rows',
+        _ => layout,
+      });
+      await appearance.setCategory(category.id, 'rows', layout == 'rows-one' ? 1 : 2);
+      final categories = [hidden, category, feeds, if (layout == 'multiple') second];
+      when(apps.launcherSections).thenReturn(categories);
+      when(apps.categories).thenReturn(categories);
+      when(apps.applications).thenReturn(category.applications);
+      final settings = mkSettingsService();
+      final watch = mkWatchNextService();
+      if (layout == 'watch') {
+        when(settings.showContinueWatching).thenReturn(true);
+        when(settings.hiddenWatchNextProgramIds).thenReturn([]);
+        when(settings.hiddenWatchNextPackages).thenReturn([]);
+        when(settings.continueWatchingShowProgress).thenReturn(false);
+        when(settings.continueWatchingShowPercentage).thenReturn(false);
+        when(settings.continueWatchingShowDescription).thenReturn(false);
+        when(settings.continueWatchingMaxItems).thenReturn(15);
+        when(settings.continueWatchingCardSize).thenReturn('normal');
+        when(watch.hasPermission).thenReturn(true);
+        when(watch.programs).thenReturn([WatchNextProgram.fromMap({'id': 1, 'packageName': 'video.app', 'title': 'Video'})]);
+      }
+      await _pumpWidgetWithProviders(tester, mkWallpaperService(), apps, settings, appearance: appearance, watchNext: watch);
+      final outer = tester.widget<SingleChildScrollView>(find.byType(SingleChildScrollView).first).controller!;
+      expect(outer.position.maxScrollExtent, greaterThan(0));
+      final section = find.byType(HomeSection).first;
+      final before = tester.getTopLeft(section).dy;
+      final offset = outer.offset;
+      // A wheel over empty space must not shift a lone tape vertically.
+      await tester.sendEventToBinding(PointerScrollEvent(
+        position: tester.getRect(find.byType(SingleChildScrollView).first).bottomRight - const Offset(10, 10),
+        scrollDelta: const Offset(0, 100),
+      ));
+      await tester.pumpAndSettle();
+      if (['row', 'rows-one', 'row-override'].contains(layout)) {
+        expect(outer.offset, offset);
+        expect(tester.getTopLeft(section).dy, before);
+        await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+        await tester.pumpAndSettle();
+        expect(isSettingsIconFocused(tester), isTrue);
+        await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+        await tester.pumpAndSettle();
+        expect(isAppCardFocused(tester, 'tape.0'), isTrue);
+        final inner = tester.state<ScrollableState>(find.descendant(of: section, matching: find.byType(Scrollable)).first).position;
+        final tile = find.byWidgetPredicate((w) => w is AppCard && w.application.packageName == 'tape.0');
+        await tester.sendEventToBinding(PointerScrollEvent(position: tester.getCenter(tile), scrollDelta: const Offset(0, 100)));
+        await tester.pumpAndSettle();
+        expect(inner.pixels, greaterThan(0));
+        inner.jumpTo(inner.maxScrollExtent);
+        await tester.pumpAndSettle();
+        await tester.sendEventToBinding(PointerScrollEvent(position: tester.getCenter(section), scrollDelta: const Offset(0, 100)));
+        await tester.pumpAndSettle();
+        expect(outer.offset, offset, reason: 'The tape edge must not hand the wheel to the vertical viewport');
+        await tester.sendEventToBinding(PointerScrollEvent(position: tester.getCenter(section), scrollDelta: const Offset(0, -10000)));
+        await tester.pumpAndSettle();
+        expect(outer.offset, offset);
+        expect(tester.getTopLeft(section).dy, before);
+        // Changing the effective layout must immediately restore vertical input.
+        await appearance.setCategory(category.id, 'layout', 'grid');
+        await tester.pumpAndSettle();
+        final gridOffset = outer.offset;
+        await tester.sendEventToBinding(PointerScrollEvent(
+          position: tester.getRect(find.byType(SingleChildScrollView).first).bottomRight - const Offset(10, 10),
+          scrollDelta: const Offset(0, 100),
+        ));
+        await tester.pumpAndSettle();
+        expect(outer.offset, greaterThan(gridOffset));
+      } else {
+        expect(outer.offset, greaterThan(offset));
+      }
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+      appearance.dispose();
+    });
+  }
   for (final layout in ['row', 'rows', 'grid']) {
     testWidgets('mouse wheel scrolls non-TV $layout over its selected icon', (
       tester,

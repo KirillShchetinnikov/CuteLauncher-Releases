@@ -10,6 +10,37 @@ import 'package:flauncher/settings_import.dart';
 import 'package:flauncher/category_appearance.dart';
 
 void main() {
+  test('banner fill validates, imports and resets without discarding section overrides', () async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    final service = AppearanceService(prefs);
+    addTearDown(service.dispose);
+    expect(service.appearance.fillBanner, isFalse);
+    expect(const TileAppearance({'fillBanner': true}).active, isFalse);
+    expect(TileAppearance.validValues({'fillBanner': 'true'}), isEmpty);
+    expect(CategoryAppearance.validValues({'tiles': {'fillBanner': 1}})['tiles'], isEmpty);
+    await service.set('fillBanner', true);
+    await service.setCategoryTile(1, 'fillBanner', false);
+    await service.setCategory(1, 'layout', 'rows');
+    final imported = compatibleSettings({
+      tileAppearanceKey: prefs.getString(tileAppearanceKey),
+      categoryAppearanceKey: prefs.getString(categoryAppearanceKey),
+    }, {});
+    expect(TileAppearance.decode(imported[tileAppearanceKey]).fillBanner, isTrue);
+    expect(CategoryAppearance.decode(imported[categoryAppearanceKey])['1']['tiles']['fillBanner'], isFalse);
+    await service.resetFields(['fillBanner']);
+    expect(service.appearance.fillBanner, isFalse);
+    expect(service.category(1).tiles['fillBanner'], isFalse);
+    await service.set('fillBanner', true);
+    expect(service.tilesFor(1).fillBanner, isFalse);
+    await service.inheritField(1, 'fillBanner');
+    expect(service.tilesFor(1).fillBanner, isTrue);
+    await service.reset();
+    expect(service.appearance.fillBanner, isFalse);
+    expect(service.category(1).layout, 'rows');
+    expect(service.category(1).tiles.containsKey('fillBanner'), isFalse);
+  });
+
   test('returning each local field to the common value resumes live inheritance', () async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
@@ -17,6 +48,7 @@ void main() {
     addTearDown(service.dispose);
     final fields = <String, (dynamic, dynamic)>{
       'size': (128, 160), 'aspectRatio': (16 / 9, 1),
+      'fillBanner': (false, true),
       'radius': (null, 32), 'horizontalGap': (16, 20), 'verticalGap': (16, 20),
       'iconScale': (1, .5), 'labels': ('none', 'all'),
       'labelPosition': ('below', 'inside'), 'labelSize': (12, 16),

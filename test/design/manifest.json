@@ -295,7 +295,7 @@
         960,
         540
       ],
-      "sha256": "e405c2bcffc62fb372b32feeadc590eed4e61bc2e7f94a49571e75b1a6770485"
+      "sha256": "72d91e707355f65f34be3a04568ef1192dea9c849b57e276912b836dba12b77a"
     },
     {
       "name": "settings-preview-capsule",
@@ -311,7 +311,7 @@
         960,
         540
       ],
-      "sha256": "e8e42c7d016eda3c23cdf69dca7ae0d8e4ac66e3cd5184f01a9e5ffe06adf110"
+      "sha256": "0618f8ab4fcc5d8fb3816f3f2c7e5ca0cbc6f8d035dd55d3c07e13a17cbc8e2a"
     },
     {
       "name": "settings-preview-classic",
@@ -327,7 +327,7 @@
         960,
         540
       ],
-      "sha256": "aa84268d9ef5eb683f9302de627d2d79f17e7a94c34a92b145e251d9e0ddf33b"
+      "sha256": "d015aaab7f4fa25cd2fc73d28028c6d4d7c45eaf96825313f35e49540f6fa310"
     },
     {
       "name": "settings-preview-premium",
@@ -343,7 +343,7 @@
         960,
         540
       ],
-      "sha256": "982bb3bb4c39893af6f9f1bf004716fb79225f9ac68199a6c59fd07d08cd6c2c"
+      "sha256": "44489c2cf133f405c24bbd875b01d1b31a50f9535de6c403700182fc4bace436"
     },
     {
       "name": "settings-preview-zero",
@@ -359,7 +359,7 @@
         960,
         540
       ],
-      "sha256": "a8e8b21a12b69b50d163e2926b2c33951b4fef9424f26a8553540593dc0f4a91"
+      "sha256": "2d60a27e48d121adaf604f6bfcf872f186fd3fe4bca5bd02b579ffcee2e56525"
     },
     {
       "name": "settings-preview",
@@ -375,7 +375,7 @@
         960,
         540
       ],
-      "sha256": "715ea3449b6cdb4b20067c5bf78598feff577d74312ec7847c578de098f02c15"
+      "sha256": "cd5a0118778a5ddec98bc9cfbab345be11b7cb88d0ee3a48f1d3608a34709d3a"
     },
     {
       "name": "settings-root-720p-large",

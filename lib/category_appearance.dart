@@ -44,7 +44,7 @@ class CategoryAppearance {
         result['useGlobalTiles'] = v;
       }
       if (entry.key == 'tiles' && v is Map) {
-        const keys = ['size', 'aspectRatio', 'radius', 'horizontalGap',
+        const keys = ['size', 'aspectRatio', 'fillBanner', 'radius', 'horizontalGap',
           'verticalGap', 'iconScale', 'labels', 'labelPosition', 'labelSize', 'labelColor',
           'backgroundColor', 'opacity', 'shadow', 'blurTiles', 'sectionPadding', 'sectionBackground',
           'sectionTitles', 'sectionIcons'];

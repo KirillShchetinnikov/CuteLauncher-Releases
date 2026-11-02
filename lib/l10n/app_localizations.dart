@@ -122,6 +122,24 @@ abstract class AppLocalizations {
     Locale('zh'),
   ];
 
+  /// No description provided for @fileStorageSettingsUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'This firmware does not provide an all-files access screen. Use the system file picker or install a compatible file manager.'**
+  String get fileStorageSettingsUnavailable;
+
+  /// No description provided for @tileFillBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Fill tile with banner'**
+  String get tileFillBanner;
+
+  /// No description provided for @tileFillBannerHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Enlarges the banner to fill the tile, preserving its proportions and cropping the edges around the center. Part of the logo may be cropped. Applies to standard and custom banners, not icons without a banner. Margins within the image itself are not removed.'**
+  String get tileFillBannerHelp;
+
   /// No description provided for @wallhavenWallpaperHint.
   ///
   /// In en, this message translates to:
