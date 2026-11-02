@@ -206,7 +206,7 @@ mode. Circles and rounded corners are taken into account. Apps without banners
 have the first three modes, applied to their icons; **Icon with edge color** is
 not offered. A replacement icon in the fourth mode follows the setting for apps
 with a banner. Icons retain their separate size setting. Each choice supports
-a common value and category overrides. The first mode is the default for both. If a replacement icon is unavailable, the banner stays with its edge
+a common value and category overrides. The default is **Fill with cropping** for apps with a banner and **Fit whole image** for apps without a banner. If a replacement icon is unavailable, the banner stays with its edge
 colors; if no usable color is found, the normal tile background is used.
 Margins within the image file itself are not removed.
 

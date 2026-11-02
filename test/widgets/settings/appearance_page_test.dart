@@ -20,7 +20,6 @@ void main() {
       final settings = SettingsService(prefs);
       addTearDown(appearance.dispose);
       addTearDown(settings.dispose);
-      await appearance.set('bannerImageMode', 'cover');
       await tester.pumpWidget(MultiProvider(providers: [
         ChangeNotifierProvider.value(value: appearance),
         ChangeNotifierProvider.value(value: settings),
@@ -37,6 +36,7 @@ void main() {
       await tester.pumpAndSettle();
       // Explanations remain collapsed even with large text in a narrow panel.
       expect(find.text(l.tileImageModeHelp), findsNothing);
+      expect(find.text(l.tileImageCover), findsOneWidget);
       await tester.tap(toggle);
       await tester.pumpAndSettle();
       await tester.tap(find.descendant(of: find.byType(SimpleDialog), matching: find.text(l.tileImageContain)));
@@ -62,7 +62,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.widget<ResetStyleTile>(find.byType(ResetStyleTile)).onReset();
       await tester.pumpAndSettle();
-      expect(categoryId == null ? appearance.appearance.bannerImageMode.name : appearance.tilesFor(categoryId).bannerImageMode.name, categoryId != null ? 'cover' : 'contain');
+      expect(categoryId == null ? appearance.appearance.bannerImageMode.name : appearance.tilesFor(categoryId).bannerImageMode.name, 'cover');
       if (categoryId != null) expect(appearance.category(categoryId).tiles.containsKey('bannerImageMode'), isFalse);
       expect((categoryId == null ? appearance.appearance : appearance.tilesFor(categoryId)).iconImageMode.name, 'contain');
       expect(tester.takeException(), isNull);
@@ -194,7 +194,7 @@ void main() {
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
-    expect(AppearanceService(prefs).appearance.bannerImageMode.name, 'cover');
+    expect(AppearanceService(prefs).appearance.bannerImageMode.name, 'edgeColor');
     expect(FocusManager.instance.primaryFocus, focus);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.pumpAndSettle();
@@ -208,7 +208,7 @@ void main() {
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
     expect(appearance.appearance.iconImageMode.name, 'cover');
-    expect(appearance.appearance.bannerImageMode.name, 'cover');
+    expect(appearance.appearance.bannerImageMode.name, 'edgeColor');
     // Collapsed help is a separate remote stop between the icon mode and radius.
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.pumpAndSettle();

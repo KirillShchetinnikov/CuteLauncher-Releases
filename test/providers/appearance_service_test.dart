@@ -10,6 +10,25 @@ import 'package:flauncher/settings_import.dart';
 import 'package:flauncher/category_appearance.dart';
 
 void main() {
+  test('fresh and reset appearance fills banners and fits icons', () async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    final service = AppearanceService(prefs);
+    addTearDown(service.dispose);
+    expect(service.appearance.bannerImageMode.name, 'cover');
+    expect(service.appearance.iconImageMode.name, 'contain');
+    await service.setCategory(1, 'layout', 'rows');
+    expect(service.tilesFor(1).bannerImageMode.name, 'cover');
+    await service.set('bannerImageMode', 'contain');
+    final restored = AppearanceService(prefs);
+    expect(restored.appearance.bannerImageMode.name, 'contain');
+    expect(restored.tilesFor(1).bannerImageMode.name, 'contain');
+    restored.dispose();
+    await service.reset();
+    expect(service.appearance.bannerImageMode.name, 'cover');
+    expect(service.appearance.iconImageMode.name, 'contain');
+  });
+
   test('shared image settings migrate into independent global and local fields', () async {
     for (final mode in ['contain', 'cover', 'edgeColor', 'icon']) {
       SharedPreferences.setMockInitialValues({
@@ -64,7 +83,7 @@ void main() {
     expect(service.tilesFor(1).bannerImageMode.name, 'edgeColor');
     expect(service.tilesFor(1).iconImageMode.name, 'edgeColor');
     await service.resetFields(['bannerImageMode']);
-    expect(service.appearance.bannerImageMode.name, 'contain');
+    expect(service.appearance.bannerImageMode.name, 'cover');
     expect(service.appearance.iconImageMode.name, 'cover');
     final restored = AppearanceService(prefs);
     expect(restored.tilesFor(1).iconImageMode.name, 'edgeColor');
@@ -73,7 +92,7 @@ void main() {
     await service.inheritField(1, 'iconImageMode');
     expect(service.tilesFor(1).iconImageMode.name, 'cover');
     await service.reset();
-    expect(service.appearance.bannerImageMode.name, 'contain');
+    expect(service.appearance.bannerImageMode.name, 'cover');
     expect(service.appearance.iconImageMode.name, 'contain');
     expect(service.category(1).layout, 'rows');
   });
@@ -85,7 +104,7 @@ void main() {
     addTearDown(service.dispose);
     final fields = <String, (dynamic, dynamic)>{
       'size': (128, 160), 'aspectRatio': (16 / 9, 1),
-      'bannerImageMode': ('contain', 'icon'),
+      'bannerImageMode': ('cover', 'icon'),
       'iconImageMode': ('contain', 'edgeColor'),
       'radius': (null, 32), 'horizontalGap': (16, 20), 'verticalGap': (16, 20),
       'iconScale': (1, .5), 'labels': ('none', 'all'),

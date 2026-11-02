@@ -438,7 +438,7 @@ class _AppearancePageState extends State<AppearancePage> {
           'iconScale': 1,
           'size': 128,
           'aspectRatio': 16 / 9,
-          'bannerImageMode': 'contain',
+          'bannerImageMode': 'cover',
           'iconImageMode': 'contain',
           'labelPosition': 'below',
           'focusEffect': 'scale',

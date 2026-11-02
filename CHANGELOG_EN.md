@@ -2,6 +2,10 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
+## v1.6.4 — 2026-11-02
+
+- Apps with a banner now default to **Fill with cropping** in **Tiles and labels** settings.
+
 ## v1.6.3 — 2026-11-02
 
 - Added separate image modes for apps with and without banners: fit the whole image, fill with cropping, and fill unused space with the image edge color. Banners can also be replaced with an app icon; settings account for the tile shape and can be overridden per section.

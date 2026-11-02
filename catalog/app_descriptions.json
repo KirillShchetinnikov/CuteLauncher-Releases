@@ -4,7 +4,8 @@
   "sources": [
     "https://developer.android.com/reference/android/content/pm/PackageManager",
     "https://source.android.com/docs/core/runtime/rros",
-    "https://github.com/Gathin23/cleanyourtv/tree/main/examples"
+    "https://github.com/Gathin23/cleanyourtv/tree/main/examples",
+    "catalog/inventories/formuler-z10-pro-max-android10-20261102.json"
   ],
   "packages": {
     "android": {

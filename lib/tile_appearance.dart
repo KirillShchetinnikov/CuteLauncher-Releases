@@ -64,7 +64,7 @@ class TileAppearance {
   TileImageMode get bannerImageMode => switch (values['bannerImageMode']) {
     'cover' => TileImageMode.cover, 'edgeColor' => TileImageMode.edgeColor,
     'icon' => TileImageMode.icon, 'contain' => TileImageMode.contain,
-    _ => TileImageMode.contain,
+    _ => TileImageMode.cover,
   };
   TileImageMode get iconImageMode => switch (values['iconImageMode']) {
     'cover' => TileImageMode.cover, 'edgeColor' => TileImageMode.edgeColor,
