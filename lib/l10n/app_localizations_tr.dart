@@ -10,15 +10,55 @@ class AppLocalizationsTr extends AppLocalizations {
   AppLocalizationsTr([String locale = 'tr']) : super(locale);
 
   @override
+  String get volumeKeysTitle => 'Ses düğmelerini basılı tutma';
+
+  @override
+  String get volumeKeysMode => 'Düzeltme yöntemi';
+
+  @override
+  String get volumeKeysAuto => 'Otomatik: panel görünürken';
+
+  @override
+  String get volumeKeysTimed => 'Süreli duraklatma';
+
+  @override
+  String get volumeKeysRepeat => 'Özel tekrar';
+
+  @override
+  String get volumeKeysDuration => 'Duraklatma süresi';
+
+  @override
+  String get volumeKeysHelp =>
+      'Bazı Android TV ve Google TV cihazlarında erişilebilirlikle tuş yakalama, sistemin ses tekrarını bozar. Hizmet açıkken tüm uygulamalar etkilenebilir.\n\n‘Otomatik: panel görünürken’, tuş eşleme açıldığında önerilen varsayılan moddur. Gösterge görününce tuş filtresi duraklatılır. Seçilen sürenin ardından pencere kontrol edilir: görünürse duraklatma en fazla bir dakikaya kadar uzatılır. Pencereye erişilemiyorsa zamanlayıcı kullanılır.\n\n‘Süreli duraklatma’, panelin son algılanan görünümünden 3, 5, 10, 15 veya 30 saniye sonra filtreyi geri getirir. Otomatik mod kararsızsa deneyin; süre kısa gelirse artırın.\n\n‘Özel tekrar’, düğmeyi bırakana kadar sesi değiştirir. Yazılımın basma ve bırakma olaylarını hizmete iletmesi gerekir. Olaylar gelmiyorsa yardımcı olmaz; çift adım da oluşabilir. Yanlış çalışıyorsa başka mod seçin.\n\nDuraklatma sırasında eşlemeler ve Home yakalama kullanılamaz. İlk uzun basış tek adım olabilir: bırakıp gösterge görünürken yeniden basılı tutun. ‘Devre dışı’, eşlemeleri koruyarak sistemin ses denetimini geri getirir. Tuş eşlemeyi kapatıp açınca mod seçimi korunur.';
+
+  @override
   String get fileStorageSettingsUnavailable =>
       'Bu donanım yazılımında tüm dosyalara erişim ekranı bulunmuyor. Sistem dosya seçicisini kullanın veya uyumlu bir dosya yöneticisi yükleyin.';
 
   @override
-  String get tileFillBanner => 'Kutucuğu banner ile doldur';
+  String get tileImageMode => 'Kutucuk görseli';
 
   @override
-  String get tileFillBannerHelp =>
-      'Banner’ı oranlarını koruyarak kutucuğu dolduracak şekilde büyütür ve kenarları merkeze göre kırpar. Logonun bir kısmı kesilebilir. Standart ve özel banner’lar için geçerlidir, banner’ı olmayan simgeleri etkilemez. Görselin kendi içindeki boşluklar kaldırılmaz.';
+  String get tileBannerImageMode => 'Banner bulunan uygulamalar';
+
+  @override
+  String get tileIconImageMode => 'Banner bulunmayan uygulamalar';
+
+  @override
+  String get tileImageContain => 'Görselin tamamını sığdır';
+
+  @override
+  String get tileImageCover => 'Kırparak doldur';
+
+  @override
+  String get tileImageEdgeColor => 'Kenar rengiyle sığdır';
+
+  @override
+  String get tileImageIcon => 'Kenar rengiyle simge';
+
+  @override
+  String get tileImageModeHelp =>
+      'Banner bulunan ve bulunmayan uygulamalar için modları ayrı seçin. Kutucuk şekli görseli kırptığında veya boş kenarlar bıraktığında uygulanır. Görselin tamamını sığdırın, oranları koruyarak büyütüp kırpın ya da boşluğu en yakın kenarın rengiyle doldurun. Banner yerine simge ve kenar renklerini kullanma seçeneği yalnızca banner bulunan uygulamalarda vardır. Simge boyutu ayarı korunur.';
 
   @override
   String get wallhavenWallpaperHint =>
@@ -4856,4 +4896,81 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get screenshotSceneHelp =>
       'Manzaranın ve arka plan saatinin zamanını, ayrıca manzaranın hava durumunu ayarlar. Ayarlar kapatıldıktan sonra etkin kalır. Sistem saati, hava durumu verileri ve kayıtlı ayarlar değişmez. Bu sürüm yeniden başladığında: 16:00, bulutlu.';
+
+  @override
+  String get autoLaunchWaitForInternet => 'İnterneti bekle';
+
+  @override
+  String get autoLaunchWaitForInternetHelp =>
+      'Gecikmeden sonra doğrulanmış internet erişimi için en fazla 60 saniye bekler, ardından uygulamayı açar. Kumanda kullanımı veya Ana ekrandan ayrılmak açılışı iptal eder.';
+
+  @override
+  String get remoteMappingIgnore => 'Düğmeyi yok say';
+
+  @override
+  String get adbHomeDependencyProtected =>
+      'Devre dışı bırakma engellendi: sistem işlevi bağımlılığı bulundu veya denetlenemedi. Ayrıntılar için tanılamaya bakın.';
+
+  @override
+  String get cleanerOperationResultTitle => 'Son işlem sonucu';
+
+  @override
+  String get cleanerUnchanged => 'Değişmedi';
+
+  @override
+  String get cleanerNotAttempted => 'Denenmedi';
+
+  @override
+  String get cleanerPackageMissing => 'Uygulama yok';
+
+  @override
+  String get cleanerReadFailed => 'Durum okunamadı';
+
+  @override
+  String get cleanerJournalFailed => 'Kurtarma günlüğü kaydedilemedi';
+
+  @override
+  String get cleanerCommandFailed => 'Komut başarısız oldu';
+
+  @override
+  String get cleanerVerificationFailed => 'Yeni durum doğrulanamadı';
+
+  @override
+  String get inputsCecStateOnly => 'HDMI durumu yalnızca CEC üzerinden';
+
+  @override
+  String get inputsCecStateOnlyHelp =>
+      'Ürün yazılımı yanlış port durumları bildiriyorsa açın. Yalnızca CEC verisi kullanılır; yoksa durum bilinmiyor olarak gösterilir. Tüm girişler listede kalır.';
+
+  @override
+  String get backgroundInformationOrderHint =>
+      'OK veya ◄ / ► — taşımayı başlat veya bitir; ▲ / ▼ — yukarıdan aşağıya sıralamayı değiştir; Geri — bitir.';
+
+  @override
+  String get homeStyleNeedsSectionBackground =>
+      'Bölüm arka plan rengini seçin.';
+
+  @override
+  String get updateWrongPackage =>
+      'Bu APK başka bir uygulamaya ait. CuteLauncher güncellemesini resmi kaynaktan indirin.';
+
+  @override
+  String get updateNotNewer =>
+      'İndirilen APK aynı veya daha eski bir derleme içeriyor. Yalnızca daha yeni bir derleme yüklenebilir.';
+
+  @override
+  String get updateSignersUnavailable =>
+      'Android, yüklü uygulamanın veya APK’nın sertifikalarını sağlamadı. İmza doğrulanamadı; yükleme engellendi.';
+
+  @override
+  String get updateSignatureMismatch =>
+      'APK imzası, yüklü CuteLauncher imzasından farklı. Güncelleme engellendi. Yüklü sürümü nereden edindiğinizi geliştiriciye bildirin.';
+
+  @override
+  String get updateInvalidFile =>
+      'Android APK’yı okuyamadı: dosya eksik, boş, çok büyük veya tanınmıyor. Güncellemeyi yeniden indirin.';
+
+  @override
+  String get updateVerificationFailed =>
+      'APK doğrulanırken hata oluştu. Yükleme engellendi. Tekrar deneyin; hata tekrarlanırsa geliştiriciye tanılama raporu gönderin.';
 }

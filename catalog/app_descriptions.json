@@ -17,6 +17,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -59,6 +60,18 @@
       "observedOn": [
         "tcl-g08",
         "tcl-g10"
+      ]
+    },
+    "android.autoinstalls.config.BRAND_NAME": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "formuler-z10-pro-max-android10-20261102"
       ]
     },
     "android.autoinstalls.config.google.gtvpai": {
@@ -111,6 +124,24 @@
         "droidlogic-x98q-android11-20261026"
       ]
     },
+    "ar.tvplayer.tv": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "formuler-z10-pro-max-android10-20261102"
+      ],
+      "category": "user"
+    },
+    "ca.dstudio.atvlauncher.pro": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "formuler-z10-pro-max-android10-20261102"
+      ],
+      "category": "user"
+    },
     "cm.aptoidetv.pt": {
       "confidence": "unknown",
       "safeToDisable": false,
@@ -134,6 +165,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
+        "formuler-z10-pro-max-android10-20261102",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -187,6 +219,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -203,6 +236,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -259,6 +293,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -275,6 +310,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -291,6 +327,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -321,6 +358,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -337,10 +375,23 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
+      ]
+    },
+    "com.android.deskclock": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "formuler-z10-pro-max-android10-20261102"
       ]
     },
     "com.android.devicelockcontroller": {
@@ -380,6 +431,7 @@
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -396,6 +448,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -412,6 +465,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -442,6 +496,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101"
       ]
     },
@@ -499,6 +554,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -515,6 +571,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -558,6 +615,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -573,7 +631,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "droidlogic-x98q-android11-20261026"
+        "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102"
       ]
     },
     "com.android.localtransport": {
@@ -586,6 +645,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -602,6 +662,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -632,6 +693,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101"
       ]
     },
@@ -647,6 +709,18 @@
         "droidlogic-x98q-android11-20261026",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz"
+      ]
+    },
+    "com.android.music": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "formuler-z10-pro-max-android10-20261102"
       ]
     },
     "com.android.musicfx": {
@@ -691,6 +765,18 @@
         "tcl-g10"
       ]
     },
+    "com.android.networkstack.inprocess": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "formuler-z10-pro-max-android10-20261102"
+      ]
+    },
     "com.android.networkstack.permissionconfig": {
       "ru": "Приложение не опознано.",
       "en": "Application not identified.",
@@ -701,6 +787,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101"
       ]
     },
@@ -796,6 +883,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -825,6 +913,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -841,6 +930,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -857,6 +947,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -886,6 +977,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -902,6 +994,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101"
       ]
     },
@@ -915,6 +1008,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -947,6 +1041,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -988,6 +1083,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -1004,6 +1100,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -1020,6 +1117,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -1064,6 +1162,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -1093,6 +1192,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -1109,6 +1209,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -1125,6 +1226,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -1155,6 +1257,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -1171,6 +1274,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -1365,6 +1469,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -1446,6 +1551,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -1476,6 +1582,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -1505,6 +1612,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -1588,6 +1696,27 @@
       ],
       "category": "user"
     },
+    "com.audio.xyz.audiooptimizer": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "formuler-z10-pro-max-android10-20261102"
+      ],
+      "category": "user"
+    },
+    "com.changhong.factorymode": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "formuler-z10-pro-max-android10-20261102"
+      ]
+    },
     "com.cxinventor.file.explorer": {
       "confidence": "identified",
       "safeToDisable": false,
@@ -1602,6 +1731,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
+        "formuler-z10-pro-max-android10-20261102",
         "tcl-g08",
         "tcl-g10"
       ],
@@ -1642,6 +1772,15 @@
         "tcl-g08",
         "tcl-g10"
       ]
+    },
+    "com.droid27.transparentclockweather": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "formuler-z10-pro-max-android10-20261102"
+      ],
+      "category": "user"
     },
     "com.droidlogic": {
       "ru": "Приложение не опознано.",
@@ -1931,6 +2070,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -1947,6 +2087,7 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -1962,6 +2103,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
+        "formuler-z10-pro-max-android10-20261102",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -1976,6 +2118,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -1991,6 +2134,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -2006,6 +2150,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
+        "formuler-z10-pro-max-android10-20261102",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -2020,6 +2165,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -2073,6 +2219,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
+        "formuler-z10-pro-max-android10-20261102",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -2113,6 +2260,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
       "observedOn": [
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101"
       ]
     },
@@ -2236,6 +2384,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "formuler-z10-pro-max-android10-20261102",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -2250,6 +2399,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -2265,6 +2415,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "formuler-z10-pro-max-android10-20261102",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -2304,6 +2455,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
       "observedOn": [
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101"
       ]
     },
@@ -2316,6 +2468,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -2331,6 +2484,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
       "observedOn": [
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101"
       ]
     },
@@ -2355,6 +2509,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
+        "formuler-z10-pro-max-android10-20261102",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -2401,6 +2556,18 @@
         "kp1-yyz"
       ]
     },
+    "com.google.android.tv.frameworkpackagestubs": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "formuler-z10-pro-max-android10-20261102"
+      ]
+    },
     "com.google.android.tv.googletvremotepairer": {
       "ru": "Служба пульта или его сопряжения.",
       "en": "Remote control or remote pairing service.",
@@ -2435,6 +2602,7 @@
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -2514,6 +2682,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -2525,6 +2694,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
+        "formuler-z10-pro-max-android10-20261102",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -2547,7 +2717,35 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
+        "formuler-z10-pro-max-android10-20261102",
         "kp1-yyz"
+      ],
+      "category": "user"
+    },
+    "com.hikvision.hikconnect": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "formuler-z10-pro-max-android10-20261102"
+      ],
+      "category": "user"
+    },
+    "com.huawei.appmarket": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "formuler-z10-pro-max-android10-20261102"
+      ],
+      "category": "user"
+    },
+    "com.huawei.hwid": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "formuler-z10-pro-max-android10-20261102"
       ],
       "category": "user"
     },
@@ -2575,6 +2773,15 @@
         "droidlogic-x98q-android11-20261026"
       ]
     },
+    "com.laker.weatime": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "formuler-z10-pro-max-android10-20261102"
+      ],
+      "category": "user"
+    },
     "com.lonelycatgames.Xplore": {
       "confidence": "unknown",
       "safeToDisable": false,
@@ -2594,6 +2801,18 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026"
+      ]
+    },
+    "com.market.dvb.dvbmarket": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "formuler-z10-pro-max-android10-20261102"
       ]
     },
     "com.mediatek.AirplayAPK": {
@@ -2690,6 +2909,18 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "tcl-g08"
+      ]
+    },
+    "com.miracastsink": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "formuler-z10-pro-max-android10-20261102"
       ]
     },
     "com.neilturner.aerialviews": {
@@ -3054,6 +3285,18 @@
         "tcl-g10"
       ]
     },
+    "com.realtek.transcode": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "formuler-z10-pro-max-android10-20261102"
+      ]
+    },
     "com.realtek.tv.mdnsoffloadmanager.resoverlay": {
       "ru": "Приложение не опознано.",
       "en": "Application not identified.",
@@ -3100,6 +3343,66 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "tcl-g10"
+      ]
+    },
+    "com.rtk.mediabrowser": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "formuler-z10-pro-max-android10-20261102"
+      ]
+    },
+    "com.rtk.mediabrowser.installer": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "formuler-z10-pro-max-android10-20261102"
+      ]
+    },
+    "com.rtk.partnerconfig": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "formuler-z10-pro-max-android10-20261102"
+      ]
+    },
+    "com.rtk.partnerinterface": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "formuler-z10-pro-max-android10-20261102"
+      ]
+    },
+    "com.rtk.prplmesh": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "formuler-z10-pro-max-android10-20261102"
       ]
     },
     "com.ruet_cse_1503050.ragib.appbackup.pro": {
@@ -3911,13 +4214,15 @@
     "io.github.kirillshchetinnikov.cutelauncher": {
       "confidence": "identified",
       "safeToDisable": false,
-      "source": "catalog/inventories (presence only); manual functional review",
+      "source": "catalog/inventories (presence only); manual functional review; docs/TESTING_RU.md (unknown-update-20261102: user screenshot and cache path, presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
-        "tcl-g10"
+        "tcl-g10",
+        "unknown-update-20261102"
       ],
       "category": "user"
     },
@@ -3926,6 +4231,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
       "observedOn": [
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101"
       ],
       "category": "user"
@@ -4101,6 +4407,15 @@
         "kp1-yyz"
       ]
     },
+    "org.grand.megaclock": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "formuler-z10-pro-max-android10-20261102"
+      ],
+      "category": "user"
+    },
     "org.jellyfin.androidtv": {
       "confidence": "identified",
       "safeToDisable": false,
@@ -4120,8 +4435,18 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101"
       ]
+    },
+    "org.myklos.adbhelper": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "formuler-z10-pro-max-android10-20261102"
+      ],
+      "category": "user"
     },
     "org.slimboxtv.appdrawer": {
       "ru": "Приложение не опознано.",
@@ -4141,6 +4466,7 @@
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
+        "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
         "tcl-g08",
@@ -4159,6 +4485,15 @@
       "observedOn": [
         "droidlogic-x98q-android11-20261026"
       ]
+    },
+    "org.xbmc.kodi": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "formuler-z10-pro-max-android10-20261102"
+      ],
+      "category": "user"
     },
     "reshala.tv.app": {
       "ru": "Приложение не опознано.",
@@ -4227,6 +4562,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
+        "formuler-z10-pro-max-android10-20261102",
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10"
@@ -4296,12 +4632,39 @@
       ],
       "category": "user"
     },
+    "ru.vk.store": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "formuler-z10-pro-max-android10-20261102"
+      ],
+      "category": "user"
+    },
     "ru.vk.store.tv": {
       "confidence": "unknown",
       "safeToDisable": false,
       "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "google-tanix-w2-android11-20261101"
+      ],
+      "category": "user"
+    },
+    "ru.yandex.music": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "formuler-z10-pro-max-android10-20261102"
+      ],
+      "category": "user"
+    },
+    "ru.yandex.radio": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "formuler-z10-pro-max-android10-20261102"
       ],
       "category": "user"
     },
@@ -4361,6 +4724,111 @@
         "google-tanix-w2-android11-20261101"
       ]
     },
+    "tv.formuler.helpcenter": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "formuler-z10-pro-max-android10-20261102"
+      ]
+    },
+    "tv.formuler.mytvonline.real": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "formuler-z10-pro-max-android10-20261102"
+      ],
+      "category": "user"
+    },
+    "tv.formuler.mytvonline.tunerservice.real": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "formuler-z10-pro-max-android10-20261102"
+      ]
+    },
+    "tv.formuler.productservice": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "formuler-z10-pro-max-android10-20261102"
+      ]
+    },
+    "tv.formuler.real.upgrade": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "formuler-z10-pro-max-android10-20261102"
+      ]
+    },
+    "tv.formuler.remoteupgrade.z": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "formuler-z10-pro-max-android10-20261102"
+      ]
+    },
+    "tv.formuler.service.networkstorage.real": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "formuler-z10-pro-max-android10-20261102"
+      ]
+    },
+    "tv.formuler.service.real": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "formuler-z10-pro-max-android10-20261102"
+      ]
+    },
+    "tv.formuler.siptv.leanbacklauncher.real": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "formuler-z10-pro-max-android10-20261102"
+      ]
+    },
     "tv.mopa.ginga": {
       "ru": "Приложение не опознано.",
       "en": "Application not identified.",
@@ -4391,6 +4859,24 @@
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "tcl-g08"
+      ],
+      "category": "user"
+    },
+    "uz.i_tv.player.tv": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "formuler-z10-pro-max-android10-20261102"
+      ],
+      "category": "user"
+    },
+    "yo.app.tv.free": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "formuler-z10-pro-max-android10-20261102"
       ],
       "category": "user"
     }

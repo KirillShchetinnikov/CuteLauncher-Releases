@@ -10,15 +10,55 @@ class AppLocalizationsJa extends AppLocalizations {
   AppLocalizationsJa([String locale = 'ja']) : super(locale);
 
   @override
+  String get volumeKeysTitle => '音量ボタンの長押し';
+
+  @override
+  String get volumeKeysMode => '対処方法';
+
+  @override
+  String get volumeKeysAuto => '自動：パネル表示中';
+
+  @override
+  String get volumeKeysTimed => '時間指定の一時停止';
+
+  @override
+  String get volumeKeysRepeat => '独自のリピート';
+
+  @override
+  String get volumeKeysDuration => '一時停止の長さ';
+
+  @override
+  String get volumeKeysHelp =>
+      '一部のAndroid TVやGoogle TVでは、ユーザー補助によるキー取得が音量の長押しリピートに影響します。サービスが有効な間、すべてのアプリに影響する場合があります。\n\n「自動：パネル表示中」は、ボタン割り当てを有効にした際の推奨初期設定です。音量表示が出るとキーフィルターを一時停止します。指定時間後にウィンドウを確認し、表示中なら最大1分まで延長します。ウィンドウを取得できない場合はタイマーを使います。\n\n「時間指定の一時停止」は、最後に認識したパネル表示から3、5、10、15、30秒後にフィルターを戻します。自動モードが不安定なら試し、短すぎる場合は時間を延ばしてください。\n\n「独自のリピート」はボタンを離すまで音量を調整します。サービスに押下と解放の両方が届く必要があります。届かなければ機能せず、2段階ずつ変わる場合もあります。動作がおかしい場合は別のモードを選んでください。\n\n一時停止中は割り当てとHomeの取得が使えません。最初は1段階だけ変わる場合があるため、離してから音量表示中に再度長押ししてください。「無効」は割り当てを残して標準の音量処理に戻します。割り当て機能を無効にしてから再度有効にしてもモードは保存されます。';
+
+  @override
   String get fileStorageSettingsUnavailable =>
       'このファームウェアでは、すべてのファイルへのアクセスを許可する画面を開けません。システムのファイル選択機能を使用するか、対応するファイルマネージャーをインストールしてください。';
 
   @override
-  String get tileFillBanner => 'バナーでタイル全体を埋める';
+  String get tileImageMode => 'タイルの画像';
 
   @override
-  String get tileFillBannerHelp =>
-      '縦横比を保ったままバナーを拡大し、中央を基準に端を切り取ってタイル全体を埋めます。ロゴの一部が切れる場合があります。標準およびカスタムのバナーに適用され、バナーのないアイコンには影響しません。画像自体に含まれる余白は削除されません。';
+  String get tileBannerImageMode => 'バナーのあるアプリ';
+
+  @override
+  String get tileIconImageMode => 'バナーのないアプリ';
+
+  @override
+  String get tileImageContain => '画像全体を表示';
+
+  @override
+  String get tileImageCover => '拡大して切り抜く';
+
+  @override
+  String get tileImageEdgeColor => '全体表示と端の色';
+
+  @override
+  String get tileImageIcon => 'アイコンと端の色';
+
+  @override
+  String get tileImageModeHelp =>
+      'バナーのあるアプリとないアプリでモードを個別に選べます。タイルの形で画像が切れたり余白が生じる場合に適用します。画像全体の表示、縦横比を保った拡大と切り抜き、最も近い端の色での余白の塗りつぶしを選べます。端の色を使うアイコンへの置き換えは、バナーのあるアプリのみで選べます。アイコンのサイズ設定は保持されます。';
 
   @override
   String get wallhavenWallpaperHint =>
@@ -4707,4 +4747,79 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get screenshotSceneHelp =>
       '風景と背景時計の時刻、および風景の天気を設定します。設定を閉じても有効です。システム時刻、天気データ、保存済み設定は変更されません。このビルドの再起動時は16:00、曇りになります。';
+
+  @override
+  String get autoLaunchWaitForInternet => 'インターネット接続を待つ';
+
+  @override
+  String get autoLaunchWaitForInternetHelp =>
+      '遅延後、インターネット接続の確認を最大60秒待ってからアプリを起動します。リモコン操作やホーム画面からの移動で起動を取り消します。';
+
+  @override
+  String get remoteMappingIgnore => 'ボタンを無視';
+
+  @override
+  String get adbHomeDependencyProtected =>
+      'システム機能の依存関係が見つかったか確認できないため、無効化をブロックしました。詳細は診断を参照してください。';
+
+  @override
+  String get cleanerOperationResultTitle => '前回の操作結果';
+
+  @override
+  String get cleanerUnchanged => '変更なし';
+
+  @override
+  String get cleanerNotAttempted => '未実行';
+
+  @override
+  String get cleanerPackageMissing => 'アプリがありません';
+
+  @override
+  String get cleanerReadFailed => '状態を読み取れませんでした';
+
+  @override
+  String get cleanerJournalFailed => '復元ログを保存できませんでした';
+
+  @override
+  String get cleanerCommandFailed => 'コマンドが失敗しました';
+
+  @override
+  String get cleanerVerificationFailed => '新しい状態を確認できませんでした';
+
+  @override
+  String get inputsCecStateOnly => 'HDMIの状態にCECのみを使用';
+
+  @override
+  String get inputsCecStateOnlyHelp =>
+      'ファームウェアがポートの状態を誤って報告する場合に有効にします。CEC情報のみを使用し、情報がなければ状態は不明になります。すべての入力は一覧に残ります。';
+
+  @override
+  String get backgroundInformationOrderHint =>
+      'OK または ◄ / ►：移動を開始・終了。▲ / ▼：上から下の順序を変更。戻る：終了。';
+
+  @override
+  String get homeStyleNeedsSectionBackground => 'セクションの背景色を選択してください。';
+
+  @override
+  String get updateWrongPackage =>
+      'この APK は別のアプリ用です。公式の配布元から CuteLauncher の更新をダウンロードしてください。';
+
+  @override
+  String get updateNotNewer => 'ダウンロードした APK は同じか古いビルドです。新しいビルドのみインストールできます。';
+
+  @override
+  String get updateSignersUnavailable =>
+      'Android からインストール済みアプリまたは APK の証明書を取得できませんでした。署名を確認できないため、インストールをブロックしました。';
+
+  @override
+  String get updateSignatureMismatch =>
+      'APK の署名がインストール済みの CuteLauncher と異なります。更新をブロックしました。現在のバージョンの入手元を開発者にお知らせください。';
+
+  @override
+  String get updateInvalidFile =>
+      'Android が APK を読み取れませんでした。ファイルが存在しない、空、サイズ超過、または認識できない状態です。更新を再ダウンロードしてください。';
+
+  @override
+  String get updateVerificationFailed =>
+      'APK の確認中にエラーが発生したため、インストールをブロックしました。再試行し、繰り返す場合は診断レポートを開発者に送信してください。';
 }

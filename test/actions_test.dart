@@ -1,4 +1,7 @@
 import 'package:flauncher/actions.dart';
+import 'package:flauncher/key_sounds.dart';
+import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -8,6 +11,45 @@ import 'package:provider/provider.dart';
 import 'mocks.mocks.dart';
 
 void main() {
+  for (final home in [false, true]) {
+    for (final homeSounds in [false, true]) {
+      testWidgets('directional sound respects scope Home=$home, Home sounds=$homeSounds', (tester) async {
+        SharedPreferences.setMockInitialValues({
+          'home_key_click_enabled': homeSounds,
+          'app_key_click_enabled': !homeSounds,
+        });
+        final settings = SettingsService(await SharedPreferences.getInstance());
+        var clicks = 0;
+        const channel = MethodChannel('me.efesser.flauncher/method');
+        tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, (call) async {
+          if (call.method == 'playClickSound') clicks++;
+          return null;
+        });
+        addTearDown(() {
+          settings.dispose();
+          tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, null);
+        });
+        Widget controls = Builder(builder: (context) => Actions(
+          actions: {DirectionalFocusIntent: SoundFeedbackDirectionalFocusAction(context)},
+          child: const Row(children: [
+            Focus(autofocus: true, child: SizedBox(width: 100, height: 100)),
+            Focus(child: SizedBox(width: 100, height: 100)),
+          ]),
+        ));
+        if (home) controls = HomeKeySoundScope(child: controls);
+        await tester.pumpWidget(ChangeNotifierProvider.value(
+          value: settings,
+          child: MaterialApp(home: Scaffold(body: controls)),
+        ));
+        await tester.pumpAndSettle();
+        await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+        await tester.pump();
+        expect(clicks, (home ? homeSounds : !homeSounds) ? 1 : 0);
+        await tester.pumpWidget(const SizedBox());
+      });
+    }
+  }
+
   group('SoundFeedbackDirectionalFocusAction', () {
     late MockSettingsService mockSettingsService;
 

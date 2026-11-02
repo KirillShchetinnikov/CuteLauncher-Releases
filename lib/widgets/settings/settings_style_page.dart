@@ -9,6 +9,7 @@ import '../../launcher_defaults.dart';
 import '../launcher_dialog.dart';
 import '../action_notice.dart';
 import '../notice_placement.dart';
+import '../rounded_switch_list_tile.dart';
 import 'settings_page_layout.dart';
 import 'settings_choice_tile.dart';
 import 'settings_percentage_slider.dart';
@@ -92,6 +93,12 @@ class _SettingsStylePageState extends State<SettingsStylePage> {
       title: Text(notifications ? l.notificationStyle : l.settingsStyle),
       child: ListView(
         children: [
+          if (!notifications)
+            RoundedSwitchListTile(
+              value: settings.appKeyClickEnabled,
+              onChanged: settings.setAppKeyClickEnabled,
+              title: Text(l.appKeyClick),
+            ),
           if (notifications)
             SettingsChoiceTile<NoticeCorner>(
               autofocus: true,

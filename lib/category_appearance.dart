@@ -44,10 +44,10 @@ class CategoryAppearance {
         result['useGlobalTiles'] = v;
       }
       if (entry.key == 'tiles' && v is Map) {
-        const keys = ['size', 'aspectRatio', 'fillBanner', 'radius', 'horizontalGap',
+        const keys = ['size', 'aspectRatio', 'bannerImageMode', 'iconImageMode', 'radius', 'horizontalGap',
           'verticalGap', 'iconScale', 'labels', 'labelPosition', 'labelSize', 'labelColor',
           'backgroundColor', 'opacity', 'shadow', 'blurTiles', 'sectionPadding', 'sectionBackground',
-          'sectionTitles', 'sectionIcons'];
+          'sectionTitles', 'sectionIcons', 'sectionOpacity', 'sectionRadius'];
         result['tiles'] = TileAppearance.validValues(v)
           ..removeWhere((key, _) => !keys.contains(key));
       }

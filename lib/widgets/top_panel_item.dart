@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import '../key_sounds.dart';
 
 import 'dart:math' as math;
 
@@ -130,7 +131,11 @@ class _TopPanelItemState extends State<TopPanelItem> {
         focusNode: widget.focusNode,
         onFocusChange: (value) => setState(() => _focused = value),
         child: InkWell(
-          onTap: widget.onPressed,
+          enableFeedback: false,
+          onTap: widget.onPressed == null ? null : () {
+            playKeySound(context);
+            widget.onPressed!();
+          },
           canRequestFocus: false,
           onHover: (value) => setState(() => _hovered = value),
           focusColor: Colors.transparent,

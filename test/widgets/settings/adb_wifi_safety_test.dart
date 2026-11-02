@@ -11,7 +11,7 @@ import 'adb_test_compatibility.dart';
 
 void main() {
   for (final locale in ['ru', 'en']) {
-    for (final status in ['wifiOwned', 'wifiUnknown']) {
+    for (final status in ['wifiOwned', 'wifiUnknown', 'dependencyProtected']) {
       testWidgets('$locale $status blocks disable before confirmation', (tester) async {
         const adb = MethodChannel('cutelauncher/adb');
         final operations = <String>[];
@@ -49,7 +49,11 @@ void main() {
         disable.onPressed!();
         await tester.pumpAndSettle();
         expect(operations, ['preview']);
-        expect(find.textContaining(status == 'wifiOwned' ? l.adbWifiOwned : l.adbWifiUnknown), findsWidgets);
+        expect(find.textContaining(switch (status) {
+          'wifiOwned' => l.adbWifiOwned,
+          'dependencyProtected' => l.adbHomeDependencyProtected,
+          _ => l.adbWifiUnknown,
+        }), findsWidgets);
         await tester.pump(const Duration(seconds: 6));
       });
     }

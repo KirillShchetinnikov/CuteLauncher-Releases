@@ -16,6 +16,7 @@ final class AdbLauncherControl {
             if (pkg.equals(activity.getPackageName())) continue;
             String component = pkg + "/" + entry.activityInfo.name;
             if (!component.matches("[a-zA-Z0-9_.]+/[a-zA-Z0-9_.]+")) continue;
+            if (!AdbLauncherPolicy.usableHome(component)) continue;
             boolean enabled = !Arrays.asList(disabled.split("\\r?\\n")).contains("package:" + pkg)
                 && AdbCapabilities.enabled(activity, entry);
             items.add(Map.of("package", pkg, "component", component,
@@ -123,6 +124,8 @@ final class AdbLauncherControl {
                     : savedStates(activity, target);
                 if (states.isEmpty()) states.put(target, 1);
                 if (action.equals("disableSystem")) {
+                    String dependency = AdbHomeDependencies.blocked(activity, states, adb);
+                    if (!dependency.isEmpty()) return Map.of("status", "dependencyProtected", "reason", dependency);
                     AdbOperationDiagnostics.stage("wifiSafety");
                     var safety = AdbWifiSafety.checkDetailed(states, adb::execute, allowOwnedWifi);
                     AdbOperationDiagnostics.wifi(safety);

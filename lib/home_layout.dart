@@ -81,24 +81,14 @@ class HomeLayout {
   double get contentHeight => rows == 0 ? 0 : rows * stepY - gapY + inset * 2;
   double get contentWidth =>
       lengths.isEmpty ? 0 : lengths.reduce(math.max) * stepX - gapX + inset * 2;
-  double windowHeight(int maxRows, double availableHeight) =>
-      mode == 'grid' && maxRows > 0
-      ? math.min(
-          contentHeight,
-          math.min(
-            math.max(height + labelHeight + inset * 2, availableHeight),
-            maxRows * stepY - gapY + inset * 2,
-          ),
-        )
-      : contentHeight;
-  int visibleRows(int maxRows, double availableHeight) => math.min(
-    rows,
-    math.max(
-      1,
-      ((windowHeight(maxRows, availableHeight) - inset * 2 + gapY) / stepY)
-          .floor(),
-    ),
-  );
+  // A row limit defines the section's window, not the physical screen height.
+  // Home reveals tall sections; shrinking this window would hide requested rows.
+  double windowHeight(int maxRows) {
+    final count = visibleRows(maxRows);
+    return count == 0 ? 0 : count * stepY - gapY + inset * 2;
+  }
+  int visibleRows(int maxRows) =>
+      mode == 'grid' && maxRows > 0 ? math.min(rows, maxRows) : rows;
   int start(int row) => lengths.take(row).fold(0, (a, b) => a + b);
   (int, int) cell(int index) {
     var rest = index;

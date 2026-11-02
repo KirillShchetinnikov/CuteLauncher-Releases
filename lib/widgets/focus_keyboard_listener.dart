@@ -17,6 +17,7 @@
  */
 
 import 'dart:async';
+import '../key_sounds.dart';
 
 import 'package:flauncher/widgets/app_card_keys.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +40,15 @@ class FocusKeyboardListener extends StatefulWidget {
 }
 
 class _FocusKeyboardListenerState extends State<FocusKeyboardListener> {
+  KeyEventResult _press(BuildContext context, LogicalKeyboardKey key) {
+    final result = widget.onPressed?.call(key) ?? KeyEventResult.ignored;
+    // Custom row navigation consumes arrows before DirectionalFocusAction.
+    if (result == KeyEventResult.handled && HomeKeySoundScope.contains(context) &&
+        (AppCardKeys.isArrowKey(key) || AppCardKeys.validationKeys.contains(key))) {
+      playKeySound(context);
+    }
+    return result;
+  }
   Timer? _longPressTimer;
   bool _longPressFired = false;
   int? _keyDownAt;
@@ -67,7 +77,7 @@ class _FocusKeyboardListenerState extends State<FocusKeyboardListener> {
           key == LogicalKeyboardKey.arrowRight ||
           key == LogicalKeyboardKey.arrowUp ||
           key == LogicalKeyboardKey.arrowDown) {
-        final result = widget.onPressed?.call(key) ?? KeyEventResult.ignored;
+        final result = _press(context, key);
         if (result == KeyEventResult.handled) {
           return KeyEventResult.handled;
         }
@@ -95,7 +105,7 @@ class _FocusKeyboardListenerState extends State<FocusKeyboardListener> {
     }
 
     if (!AppCardKeys.longPressableKeys.contains(key)) {
-      final result = widget.onPressed?.call(key) ?? KeyEventResult.ignored;
+      final result = _press(context, key);
       if (result == KeyEventResult.handled) {
         _handledKeys.add(key);
       }
@@ -135,7 +145,7 @@ class _FocusKeyboardListenerState extends State<FocusKeyboardListener> {
     }
     if (_keyDownAt != null) {
       _keyDownAt = null;
-      return widget.onPressed?.call(key) ?? KeyEventResult.ignored;
+      return _press(context, key);
     }
     return KeyEventResult.ignored;
   }

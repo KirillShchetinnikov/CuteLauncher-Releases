@@ -122,23 +122,101 @@ abstract class AppLocalizations {
     Locale('zh'),
   ];
 
+  /// No description provided for @volumeKeysTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold volume buttons'**
+  String get volumeKeysTitle;
+
+  /// No description provided for @volumeKeysMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Workaround mode'**
+  String get volumeKeysMode;
+
+  /// No description provided for @volumeKeysAuto.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto: while the panel is visible'**
+  String get volumeKeysAuto;
+
+  /// No description provided for @volumeKeysTimed.
+  ///
+  /// In en, this message translates to:
+  /// **'Timed pause'**
+  String get volumeKeysTimed;
+
+  /// No description provided for @volumeKeysRepeat.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom repeat'**
+  String get volumeKeysRepeat;
+
+  /// No description provided for @volumeKeysDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause duration'**
+  String get volumeKeysDuration;
+
+  /// No description provided for @volumeKeysHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'On some Android TV and Google TV devices, accessibility key interception disrupts native volume repeat. This can affect every app while the service is enabled.\n\n“Auto: while the panel is visible” is the recommended default when enabling the remapper. Showing the indicator releases key filtering. After the selected pause, the window is checked: the pause extends while it is visible, up to one minute. If the window is unavailable, a timer is used.\n\n“Timed pause” restores filtering after the selected 3, 5, 10, 15 or 30 seconds following the last recognized panel appearance. Try it if Auto is unreliable; increase the duration if the pause is too short.\n\n“Custom repeat” adjusts volume until you release the button. It requires firmware to deliver both volume press and release events to the service. It cannot help if the events are unavailable; double steps may also occur. Use another mode if it behaves incorrectly.\n\nButton assignments and Home interception are temporarily unavailable during a pause. The first hold may change one step: release and hold again while the indicator is visible. “Disabled” restores native volume handling and preserves assignments. Your selected mode survives turning the remapper off and on.'**
+  String get volumeKeysHelp;
+
   /// No description provided for @fileStorageSettingsUnavailable.
   ///
   /// In en, this message translates to:
   /// **'This firmware does not provide an all-files access screen. Use the system file picker or install a compatible file manager.'**
   String get fileStorageSettingsUnavailable;
 
-  /// No description provided for @tileFillBanner.
+  /// No description provided for @tileImageMode.
   ///
   /// In en, this message translates to:
-  /// **'Fill tile with banner'**
-  String get tileFillBanner;
+  /// **'Tile image'**
+  String get tileImageMode;
 
-  /// No description provided for @tileFillBannerHelp.
+  /// No description provided for @tileBannerImageMode.
   ///
   /// In en, this message translates to:
-  /// **'Enlarges the banner to fill the tile, preserving its proportions and cropping the edges around the center. Part of the logo may be cropped. Applies to standard and custom banners, not icons without a banner. Margins within the image itself are not removed.'**
-  String get tileFillBannerHelp;
+  /// **'Apps with a banner'**
+  String get tileBannerImageMode;
+
+  /// No description provided for @tileIconImageMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Apps without a banner'**
+  String get tileIconImageMode;
+
+  /// No description provided for @tileImageContain.
+  ///
+  /// In en, this message translates to:
+  /// **'Fit whole image'**
+  String get tileImageContain;
+
+  /// No description provided for @tileImageCover.
+  ///
+  /// In en, this message translates to:
+  /// **'Fill with cropping'**
+  String get tileImageCover;
+
+  /// No description provided for @tileImageEdgeColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Fit with edge color'**
+  String get tileImageEdgeColor;
+
+  /// No description provided for @tileImageIcon.
+  ///
+  /// In en, this message translates to:
+  /// **'Icon with edge color'**
+  String get tileImageIcon;
+
+  /// No description provided for @tileImageModeHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose modes separately for apps with and without banners. A mode applies when the tile shape crops the image or leaves empty margins. Fit the whole image, enlarge with cropping while preserving proportions, or fill the free area with the nearest edge color. Replacing the banner with an icon and its edge colors is available only for apps with a banner. The icon size setting is preserved.'**
+  String get tileImageModeHelp;
 
   /// No description provided for @wallhavenWallpaperHint.
   ///
@@ -8917,6 +8995,138 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sets the landscape and wallpaper clock time, and the landscape weather. Remains active after closing settings. System time, weather data and saved settings are unchanged. This build restarts at 16:00 with cloudy weather.'**
   String get screenshotSceneHelp;
+
+  /// No description provided for @autoLaunchWaitForInternet.
+  ///
+  /// In en, this message translates to:
+  /// **'Wait for internet'**
+  String get autoLaunchWaitForInternet;
+
+  /// No description provided for @autoLaunchWaitForInternetHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'After the delay, wait up to 60 seconds for validated internet access, then launch the app. Remote input or leaving Home cancels the launch.'**
+  String get autoLaunchWaitForInternetHelp;
+
+  /// No description provided for @remoteMappingIgnore.
+  ///
+  /// In en, this message translates to:
+  /// **'Ignore button'**
+  String get remoteMappingIgnore;
+
+  /// No description provided for @adbHomeDependencyProtected.
+  ///
+  /// In en, this message translates to:
+  /// **'Disabling is blocked: a system-function dependency was found or could not be checked. See diagnostics for details.'**
+  String get adbHomeDependencyProtected;
+
+  /// No description provided for @cleanerOperationResultTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Last operation result'**
+  String get cleanerOperationResultTitle;
+
+  /// No description provided for @cleanerUnchanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Unchanged'**
+  String get cleanerUnchanged;
+
+  /// No description provided for @cleanerNotAttempted.
+  ///
+  /// In en, this message translates to:
+  /// **'Not attempted'**
+  String get cleanerNotAttempted;
+
+  /// No description provided for @cleanerPackageMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Application is missing'**
+  String get cleanerPackageMissing;
+
+  /// No description provided for @cleanerReadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not read the state'**
+  String get cleanerReadFailed;
+
+  /// No description provided for @cleanerJournalFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save the recovery journal'**
+  String get cleanerJournalFailed;
+
+  /// No description provided for @cleanerCommandFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The command failed'**
+  String get cleanerCommandFailed;
+
+  /// No description provided for @cleanerVerificationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The new state was not confirmed'**
+  String get cleanerVerificationFailed;
+
+  /// No description provided for @inputsCecStateOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Use only CEC for HDMI state'**
+  String get inputsCecStateOnly;
+
+  /// No description provided for @inputsCecStateOnlyHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable if firmware reports incorrect port states. Only CEC data is used; without it, the state is unknown. All inputs remain listed.'**
+  String get inputsCecStateOnlyHelp;
+
+  /// No description provided for @backgroundInformationOrderHint.
+  ///
+  /// In en, this message translates to:
+  /// **'OK or ◄ / ► — start or finish moving; ▲ / ▼ — change the order from top to bottom; Back — finish.'**
+  String get backgroundInformationOrderHint;
+
+  /// No description provided for @homeStyleNeedsSectionBackground.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a section background color.'**
+  String get homeStyleNeedsSectionBackground;
+
+  /// No description provided for @updateWrongPackage.
+  ///
+  /// In en, this message translates to:
+  /// **'This APK is for another app. Download a CuteLauncher update from the official source.'**
+  String get updateWrongPackage;
+
+  /// No description provided for @updateNotNewer.
+  ///
+  /// In en, this message translates to:
+  /// **'The downloaded APK has the same or an older build. Only a newer build can be installed.'**
+  String get updateNotNewer;
+
+  /// No description provided for @updateSignersUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Android did not provide the certificates for the installed app or APK. The signature could not be checked; installation is blocked.'**
+  String get updateSignersUnavailable;
+
+  /// No description provided for @updateSignatureMismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'The APK signature differs from the installed CuteLauncher signature. Update blocked. Tell the author where you obtained the installed version.'**
+  String get updateSignatureMismatch;
+
+  /// No description provided for @updateInvalidFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Android could not read the APK: the file is missing, empty, too large or unrecognized. Download the update again.'**
+  String get updateInvalidFile;
+
+  /// No description provided for @updateVerificationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred while checking the APK. Installation blocked. Try again; if it happens again, send the author a diagnostic report.'**
+  String get updateVerificationFailed;
 }
 
 class _AppLocalizationsDelegate

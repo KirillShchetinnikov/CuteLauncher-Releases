@@ -237,6 +237,28 @@ void main() async {
   });
 
   group("exportSettingsMap and importSettingsMap", () {
+    test('Home and settings sounds default off and persist independently', () async {
+      final service = SettingsService(sharedPreferences);
+      addTearDown(service.dispose);
+      expect(service.homeKeyClickEnabled, isFalse);
+      expect(service.appKeyClickEnabled, isFalse);
+      await service.setHomeKeyClickEnabled(true);
+      expect(service.homeKeyClickEnabled, isTrue);
+      expect(service.appKeyClickEnabled, isFalse);
+      await service.setAppKeyClickEnabled(true);
+      await service.setHomeKeyClickEnabled(false);
+      final restored = SettingsService(sharedPreferences);
+      addTearDown(restored.dispose);
+      expect(restored.homeKeyClickEnabled, isFalse);
+      expect(restored.appKeyClickEnabled, isTrue);
+      await restored.importSettingsMap({
+        'home_key_click_enabled': true, 'app_key_click_enabled': false,
+      });
+      expect(restored.homeKeyClickEnabled, isTrue);
+      expect(restored.appKeyClickEnabled, isFalse);
+      expect(restored.exportSettingsMap()['home_key_click_enabled'], isTrue);
+      expect(restored.exportSettingsMap()['app_key_click_enabled'], isFalse);
+    });
     test("exports complete settings map and restores across another instance", () async {
       final sp1 = await SharedPreferences.getInstance();
       await sp1.clear();

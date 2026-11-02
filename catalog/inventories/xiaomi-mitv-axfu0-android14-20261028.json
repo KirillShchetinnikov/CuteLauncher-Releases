@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "reportType": "tvPackageStateObservation",
-  "scope": "userProvidedPackageStates",
+  "reportType": "tvInventoryMetadata",
+  "scope": "deviceMetadata",
   "capturedAt": "2026-10-28T00:00:00Z",
   "source": "userProvidedDiagnostics",
   "identity": {
@@ -22,16 +22,6 @@
     "Versions, system flags and numeric enabled settings are unknown",
     "Disabled state and successful HOME commands do not verify safety, Wi-Fi preservation or recovery"
   ],
-  "packages": [
-    {
-      "package": "com.google.android.apps.tv.launcherx",
-      "state": "disabled"
-    },
-    {
-      "package": "com.google.android.tungsten.setupwraith",
-      "state": "disabled"
-    }
-  ],
   "sourceReport": "cutelauncher_diagnostics_1793173186526.json",
   "sourceCapturedAt": "2026-10-28T07:39:27.874831Z",
   "reportedCounts": {
@@ -39,5 +29,9 @@
     "identifiedDisabled": 2,
     "redactedDisabled": 11
   },
-  "observationElapsedMs": 516462
+  "observationElapsedMs": 516462,
+  "sourceReportType": "tvPackageStateObservation",
+  "sourceScope": "userProvidedPackageStates",
+  "packageListStorage": "catalog/app_descriptions.json",
+  "observedPackageCount": 2
 }

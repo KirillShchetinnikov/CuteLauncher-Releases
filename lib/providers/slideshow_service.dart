@@ -18,7 +18,9 @@ class SlideshowService extends ChangeNotifier
   final Future<List<String>> Function(String, bool) _list;
   final Future<Uint8List> Function(String) _read;
   final Random _random;
+  final DateTime Function() _clock;
   Timer? _timer;
+  DateTime? _nextChangeAt;
   List<String> _files = [];
   List<String> _remaining = [];
   String? _last;
@@ -45,6 +47,7 @@ class SlideshowService extends ChangeNotifier
     Future<List<String>> Function(String, bool)? list,
     Future<Uint8List> Function(String)? read,
     Random? random,
+    DateTime Function()? clock,
   }) : _list =
            list ??
            ((uri, recursive) async =>
@@ -61,7 +64,8 @@ class SlideshowService extends ChangeNotifier
                  {'uri': uri},
                ) ??
                Uint8List(0)),
-       _random = random ?? Random() {
+       _random = random ?? Random(),
+       _clock = clock ?? DateTime.now {
     _foreground =
         WidgetsBinding.instance.lifecycleState == null ||
         WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed;
@@ -94,6 +98,7 @@ class SlideshowService extends ChangeNotifier
     });
     ++_generation;
     _timer?.cancel();
+    _nextChangeAt = null;
     _remaining = []; _files = []; _last = null; image = null;
     if (old.isNotEmpty) await _channel.invokeMethod<void>('releaseWallpaperFolder', {'uri': old});
     failed = false;
@@ -142,6 +147,7 @@ class SlideshowService extends ChangeNotifier
 
   Future<void> reload() async {
     ++_generation;
+    _nextChangeAt = null;
     _files = [];
     _remaining = [];
     _timer?.cancel();
@@ -154,6 +160,9 @@ class SlideshowService extends ChangeNotifier
     if (!_active) {
       ++_generation;
       _timer?.cancel();
+      if (settings.backgroundSource != 'slideshow' || folder.isEmpty) {
+        _nextChangeAt = null;
+      }
       return;
     }
     if (_timer?.isActive == true) return;
@@ -164,7 +173,16 @@ class SlideshowService extends ChangeNotifier
   void _startTimer() {
     _timer?.cancel();
     if (_active) {
-      _timer = Timer.periodic(Duration(seconds: interval), (_) => advance());
+      final now = _clock();
+      final deadline = _nextChangeAt ??= now.add(Duration(seconds: interval));
+      final remaining = deadline.difference(now);
+      // Keep the deadline across background pauses. Catch up once on return,
+      // then start a fresh interval rather than replaying every missed slide.
+      _timer = Timer(remaining.isNegative ? Duration.zero : remaining, () {
+        _nextChangeAt = _clock().add(Duration(seconds: interval));
+        _startTimer();
+        unawaited(advance());
+      });
     }
   }
 

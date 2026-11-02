@@ -43,7 +43,7 @@ final class RemotePanelChannels implements AutoCloseable {
             }
         };
         networkEvents = new NetworkEventStreamHandler(context);
-        appEvents = new LauncherAppsEventStreamHandler(context);
+        appEvents = new LauncherAppsEventStreamHandler(context, worker, task -> main.post(task));
         notifications = new NotificationBridge(context);
         weather = context.getSharedPreferences(WeatherReceiver.PREFS_NAME, Context.MODE_PRIVATE);
         var network = new NetworkStatistics(context);

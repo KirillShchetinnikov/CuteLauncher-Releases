@@ -14,6 +14,7 @@ import 'focusable_settings_tile.dart';
 import 'settings_page_layout.dart';
 import 'settings_route.dart';
 import 'remote_mappings_page.dart';
+import 'volume_keys_page.dart';
 
 /// Remapper menu, access setup and explicit bounded button diagnostics.
 class RemoteButtonsPage extends StatefulWidget {
@@ -161,6 +162,13 @@ class _RemoteButtonsPageState extends State<RemoteButtonsPage>
                 );
                 if (mounted) setState(() => _revision++);
               },
+            ),
+            FocusableSettingsTile(
+              title: Text(l.volumeKeysTitle),
+              leading: const Icon(Icons.volume_up_outlined),
+              onPressed: () => Navigator.of(context).push(
+                SettingsRoute(builder: (_) => const VolumeKeysPage()),
+              ),
             ),
             FocusableSettingsTile(
               title: Text(l.remoteButtonsTest),

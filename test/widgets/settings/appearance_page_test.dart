@@ -13,14 +13,14 @@ import 'package:flauncher/widgets/settings/reset_style_tile.dart';
 
 void main() {
   for (final categoryId in [null, 1]) {
-    testWidgets('banner fill inherits and resets in narrow Russian settings (category: $categoryId)', (tester) async {
+    testWidgets('separate image modes inherit and reset in narrow Russian settings (category: $categoryId)', (tester) async {
       SharedPreferences.setMockInitialValues({'settings_menu_on_right': true});
       final prefs = await SharedPreferences.getInstance();
       final appearance = AppearanceService(prefs);
       final settings = SettingsService(prefs);
       addTearDown(appearance.dispose);
       addTearDown(settings.dispose);
-      await appearance.set('fillBanner', true);
+      await appearance.set('bannerImageMode', 'cover');
       await tester.pumpWidget(MultiProvider(providers: [
         ChangeNotifierProvider.value(value: appearance),
         ChangeNotifierProvider.value(value: settings),
@@ -32,25 +32,39 @@ void main() {
         home: Scaffold(body: SizedBox(width: 350, child: AppearancePage(categoryId: categoryId))))));
       await tester.pumpAndSettle();
       final l = AppLocalizations.of(tester.element(find.byType(AppearancePage)))!;
-      final toggle = find.byKey(const Key('fill-banner'));
+      final toggle = find.text('Приложения с баннером').first;
       await tester.ensureVisible(toggle);
       await tester.pumpAndSettle();
       // Explanations remain collapsed even with large text in a narrow panel.
-      expect(find.text(l.tileFillBannerHelp), findsNothing);
+      expect(find.text(l.tileImageModeHelp), findsNothing);
       await tester.tap(toggle);
       await tester.pumpAndSettle();
-      expect(categoryId == null ? appearance.appearance.fillBanner : appearance.tilesFor(categoryId).fillBanner, isFalse);
+      await tester.tap(find.descendant(of: find.byType(SimpleDialog), matching: find.text(l.tileImageContain)));
+      await tester.pumpAndSettle();
+      expect(categoryId == null ? appearance.appearance.bannerImageMode.name : appearance.tilesFor(categoryId).bannerImageMode.name, 'contain');
       if (categoryId != null) {
-        expect(appearance.appearance.fillBanner, isTrue);
-        expect(appearance.category(categoryId).tiles['fillBanner'], false);
+        expect(appearance.appearance.bannerImageMode.name, 'cover');
+        expect(appearance.category(categoryId).tiles['bannerImageMode'], 'contain');
       }
-      // The group reset must include fillBanner, while preserving other scopes.
+      // Editing the icon mode leaves the banner mode independent.
+      final iconChoice = find.text(l.tileIconImageMode);
+      await tester.ensureVisible(iconChoice);
+      await tester.tap(iconChoice);
+      await tester.pumpAndSettle();
+      expect(find.descendant(of: find.byType(SimpleDialog), matching: find.text(l.tileImageIcon)), findsNothing);
+      await tester.tap(find.descendant(of: find.byType(SimpleDialog), matching: find.text(l.tileImageEdgeColor)));
+      await tester.pumpAndSettle();
+      final current = categoryId == null ? appearance.appearance : appearance.tilesFor(categoryId);
+      expect(current.iconImageMode.name, 'edgeColor');
+      expect(current.bannerImageMode.name, 'contain');
+      // Reset includes both image fields, while preserving other scopes.
       await tester.scrollUntilVisible(find.byType(ResetStyleTile), 400);
       await tester.pumpAndSettle();
       await tester.widget<ResetStyleTile>(find.byType(ResetStyleTile)).onReset();
       await tester.pumpAndSettle();
-      expect(categoryId == null ? appearance.appearance.fillBanner : appearance.tilesFor(categoryId).fillBanner, categoryId != null);
-      if (categoryId != null) expect(appearance.category(categoryId).tiles.containsKey('fillBanner'), isFalse);
+      expect(categoryId == null ? appearance.appearance.bannerImageMode.name : appearance.tilesFor(categoryId).bannerImageMode.name, categoryId != null ? 'cover' : 'contain');
+      if (categoryId != null) expect(appearance.category(categoryId).tiles.containsKey('bannerImageMode'), isFalse);
+      expect((categoryId == null ? appearance.appearance : appearance.tilesFor(categoryId)).iconImageMode.name, 'contain');
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox());
     });
@@ -171,14 +185,31 @@ void main() {
     expect(appearance.appearance.aspectRatio, 4 / 3);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.pumpAndSettle();
-    final toggle = find.byKey(const Key('fill-banner'));
-    expect(Focus.of(tester.element(find.descendant(of: toggle, matching: find.byType(Text)).first)).hasFocus, isTrue);
+    final toggle = find.text('Приложения с баннером').first;
+    expect(Focus.of(tester.element(toggle)).hasFocus, isTrue);
     final focus = FocusManager.instance.primaryFocus;
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
-    expect(AppearanceService(prefs).appearance.fillBanner, isTrue);
+    expect(find.byType(SimpleDialog), findsOneWidget);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(AppearanceService(prefs).appearance.bannerImageMode.name, 'cover');
     expect(FocusManager.instance.primaryFocus, focus);
-    // The collapsed help is a separate remote stop between the switch and radius.
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.pumpAndSettle();
+    final iconChoice = find.text('Приложения без баннера');
+    expect(Focus.of(tester.element(iconChoice)).hasFocus, isTrue);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    final labels = AppLocalizations.of(tester.element(find.byType(AppearancePage)))!;
+    expect(find.descendant(of: find.byType(SimpleDialog), matching: find.text(labels.tileImageIcon)), findsNothing);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(appearance.appearance.iconImageMode.name, 'cover');
+    expect(appearance.appearance.bannerImageMode.name, 'cover');
+    // Collapsed help is a separate remote stop between the icon mode and radius.
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.pumpAndSettle();
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);

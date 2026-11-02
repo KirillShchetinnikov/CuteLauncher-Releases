@@ -1,4 +1,5 @@
 import 'settings_help.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -154,6 +155,16 @@ class _InputsSettingsPageState extends State<InputsSettingsPage> {
               onChanged: (v) => _save(config.copyWith(useCecNames: v)),
             ),
             SettingsHelp(title: l.inputs, text: l.inputsNamesHint),
+            RoundedSwitchListTile(
+              value: config.cecStateOnly,
+              enabled: service.hasInputs,
+              title: Text(l.inputsCecStateOnly),
+              onChanged: (v) => _save(config.copyWith(cecStateOnly: v)),
+            ),
+            SettingsHelp(
+              title: l.inputsCecStateOnly,
+              text: l.inputsCecStateOnlyHelp,
+            ),
             if (!service.initialized)
               const LinearProgressIndicator()
             else if (!service.hasInputs)
@@ -218,13 +229,17 @@ class _InputNameDialogState extends State<_InputNameDialog> {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [RemoteTextInput(child: TextField(
-          controller: _editor,
-          autofocus: true,
-          maxLength: 80,
-          decoration: const InputDecoration(),
-        ),
-      ), SettingsHelp(title: l.inputsSettings, text: l.inputNameHint)],
+        children: [
+          RemoteTextInput(
+            child: TextField(
+              controller: _editor,
+              autofocus: true,
+              maxLength: 80,
+              decoration: const InputDecoration(),
+            ),
+          ),
+          SettingsHelp(title: l.inputsSettings, text: l.inputNameHint),
+        ],
       ),
       actions: [
         LauncherDialogButton(

@@ -1,4 +1,3 @@
-
 import 'package:flauncher/widgets/action_notice.dart';
 
 import 'settings_page_layout.dart';
@@ -179,6 +178,20 @@ class UpdatesPage extends StatelessWidget {
 }
 
 String updateFailureMessage(AppLocalizations l, UpdateService service) {
+  switch (service.installStatus) {
+    case 'invalid_package':
+      return l.updateWrongPackage;
+    case 'invalid_version':
+      return l.updateNotNewer;
+    case 'invalid_signers':
+      return l.updateSignersUnavailable;
+    case 'invalid_signature':
+      return l.updateSignatureMismatch;
+    case 'invalid_file':
+      return l.updateInvalidFile;
+    case 'invalid_verification':
+      return l.updateVerificationFailed;
+  }
   if (service.installStatus == 'invalid') return l.updateIncompatible;
   if (service.installStatus == 'unavailable' || service.ready) {
     return l.updateInstallerFailed;

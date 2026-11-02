@@ -52,7 +52,8 @@ class SectionStylePage extends StatelessWidget {
             title: title,
             value: value,
             options: options,
-            label: (v) => k == 'inactiveOpacity' ? '${((v as num) * 100).round()}%' : '$v',
+            label: (v) => k == 'inactiveOpacity' || k == 'sectionOpacity'
+                ? '${((v as num) * 100).round()}%' : '$v',
             onChanged: (v) => set(k, v),
           ),
         );
@@ -120,6 +121,12 @@ class SectionStylePage extends StatelessWidget {
           },
         ),
       ),
+      number('sectionOpacity', l.tileOpacity, a.sectionOpacity, [
+        for (var n = 0; n <= 100; n++) n / 100,
+      ]),
+      number('sectionRadius', l.tileCornerRadius, a.sectionRadius, [
+        for (var n = 0; n <= 64; n++) n,
+      ]),
       if (categoryId == null)
         number('sectionGap', l.homeSectionGap, a.sectionGap, [
           for (var n = 0; n <= 96; n += 4) n,
@@ -133,6 +140,8 @@ class SectionStylePage extends StatelessWidget {
             'sectionIcons',
             if (categoryId != null) 'sectionPadding',
             'sectionBackground',
+            'sectionOpacity',
+            'sectionRadius',
             if (categoryId == null) 'inactiveOpacity',
             if (categoryId == null) ...[
               'sectionGap',

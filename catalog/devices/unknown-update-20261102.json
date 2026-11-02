@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "reportType": "tvCompatibility",
+  "scope": "readOnlyMetadata",
+  "capturedAt": "2026-11-02T00:00:00.000Z",
+  "kind": "unknown",
+  "kindDetection": "buildMetadata",
+  "identity": {},
+  "installedLauncher": {
+    "versionName": "1.6.1",
+    "versionCode": "unknown"
+  },
+  "checks": {
+    "androidTv": "unknown",
+    "androidVersion": "unknown",
+    "homeRegistered": "unknown",
+    "defaultHome": "unknown",
+    "homeSelection": "unknown",
+    "overlay": "unknown",
+    "notifications": "unknown",
+    "notificationListener": "unknown",
+    "accessibility": "unknown",
+    "writeSettings": "unknown",
+    "usageStats": "unknown",
+    "watchNext": "unknown",
+    "tvInputs": "unknown",
+    "documentExport": "unknown",
+    "screensaverSelection": "unknown"
+  }
+}

@@ -22,14 +22,17 @@ class TvInputOverride {
 
 class TvInputsConfiguration {
   final bool useCecNames;
+  final bool cecStateOnly;
   final Map<String, TvInputOverride> overrides;
   const TvInputsConfiguration({
     this.useCecNames = true,
+    this.cecStateOnly = false,
     this.overrides = const {},
   });
 
   TvInputsConfiguration copyWith({
     bool? useCecNames,
+    bool? cecStateOnly,
     String? id,
     TvInputOverride? value,
   }) {
@@ -43,6 +46,7 @@ class TvInputsConfiguration {
     }
     return TvInputsConfiguration(
       useCecNames: useCecNames ?? this.useCecNames,
+      cecStateOnly: cecStateOnly ?? this.cecStateOnly,
       overrides: Map.unmodifiable(entries),
     );
   }
@@ -56,17 +60,30 @@ class TvInputsConfiguration {
             ? input.cecLabel!
             : input.standardLabel ?? input.label,
         icon: overrides[input.id]?.icon ?? 'default',
+        connection:
+            cecStateOnly &&
+                input.type == TvInputType.hdmi &&
+                input.parentId == null
+            ? input.cecConnection ?? TvInputConnection.unknown
+            : input.reportedConnection == TvInputConnection.unknown
+            ? input.cecConnection ?? TvInputConnection.unknown
+            : input.reportedConnection,
       ),
   ];
 
   String encode() => jsonEncode({
     'useCecNames': useCecNames,
+    'cecStateOnly': cecStateOnly,
     'overrides': overrides.map((key, value) => MapEntry(key, value.toJson())),
   });
 
   static TvInputsConfiguration parse(Map raw) {
     final useCec = raw['useCecNames'] ?? true, entries = raw['overrides'] ?? {};
-    if (useCec is! bool || entries is! Map || entries.length > 128) {
+    final cecStateOnly = raw['cecStateOnly'] ?? false;
+    if (useCec is! bool ||
+        cecStateOnly is! bool ||
+        entries is! Map ||
+        entries.length > 128) {
       throw const FormatException();
     }
     final result = <String, TvInputOverride>{};
@@ -86,6 +103,7 @@ class TvInputsConfiguration {
     }
     return TvInputsConfiguration(
       useCecNames: useCec,
+      cecStateOnly: cecStateOnly,
       overrides: Map.unmodifiable(result),
     );
   }

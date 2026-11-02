@@ -309,6 +309,12 @@ class _AutoLaunchPageState extends State<AutoLaunchPage>
                       : _config.copyWith(wake: value),
                 ),
               ),
+            if (_config.mode == 'app') RoundedSwitchListTile(
+              title: Text(l.autoLaunchWaitForInternet),
+              enabled: !_busy,
+              value: _config.waitForInternet,
+              onChanged: (value) => _save(_config.copyWith(waitForInternet: value)),
+            ),
             SettingsValueStepper(
               title: l.autoLaunchDelay,
               value: _config.delay,
@@ -321,6 +327,7 @@ class _AutoLaunchPageState extends State<AutoLaunchPage>
           ],
           const SizedBox(height: 16),
           SettingsHelp(title: l.autoLaunchTarget, text: l.autoLaunchHint),
+          if (_config.mode == 'app') SettingsHelp(title: l.autoLaunchWaitForInternet, text: l.autoLaunchWaitForInternetHelp),
           FocusableSettingsTile(
             title: Text(l.backgroundStartupTitle),
             onPressed: () => Navigator.of(context).pushNamed(BackgroundStartupPage.routeName),

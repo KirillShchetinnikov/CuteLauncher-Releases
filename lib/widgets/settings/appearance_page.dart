@@ -112,15 +112,17 @@ class _AppearancePageState extends State<AppearancePage> {
               [1, 4 / 3, 16 / 9],
               labels: {1: '1:1', 4 / 3: '4:3', 16 / 9: '16:9'},
             ),
-            HomeStyleSetting(categoryId: categoryId, field: 'fillBanner',
-              builder: (enabled) => RoundedSwitchListTile(
-                key: const Key('fill-banner'),
-                value: appearance.fillBanner,
-                enabled: enabled,
-                onChanged: (v) => _set(service, 'fillBanner', v),
-                title: Text(l.tileFillBanner),
-              )),
-            SettingsHelp(title: l.tileFillBanner, text: l.tileFillBannerHelp),
+            _choice(context, service, l.tileBannerImageMode, 'bannerImageMode',
+              ['contain', 'cover', 'edgeColor', 'icon'], labels: {
+                'contain': l.tileImageContain, 'cover': l.tileImageCover,
+                'edgeColor': l.tileImageEdgeColor, 'icon': l.tileImageIcon,
+              }),
+            _choice(context, service, l.tileIconImageMode, 'iconImageMode',
+              ['contain', 'cover', 'edgeColor'], labels: {
+                'contain': l.tileImageContain, 'cover': l.tileImageCover,
+                'edgeColor': l.tileImageEdgeColor,
+              }),
+            SettingsHelp(title: l.tileImageMode, text: l.tileImageModeHelp),
             _choice(context, service, l.tileCornerRadius, 'radius', [
               null,
               0,
@@ -397,7 +399,7 @@ class _AppearancePageState extends State<AppearancePage> {
                 : section == 'panel' ? ['panelColor', 'panelOpacity', 'panelTextBackground',
                     'panelTextBackgroundColor', 'panelTextBackgroundOpacity', 'panelTextColor',
                     'panelTextSize', 'panelFont', 'blurPanel', 'panelWrapNavigation']
-                : ['size', 'aspectRatio', 'fillBanner', 'radius', 'horizontalGap', 'verticalGap',
+                : ['size', 'aspectRatio', 'bannerImageMode', 'iconImageMode', 'radius', 'horizontalGap', 'verticalGap',
                     'iconScale', 'labels', 'labelPosition', 'labelSize', 'labelColor',
                     'backgroundColor', 'opacity', 'shadow', 'blurTiles'];
             await service.resetFields(keys, categoryId: categoryId);
@@ -436,6 +438,8 @@ class _AppearancePageState extends State<AppearancePage> {
           'iconScale': 1,
           'size': 128,
           'aspectRatio': 16 / 9,
+          'bannerImageMode': 'contain',
+          'iconImageMode': 'contain',
           'labelPosition': 'below',
           'focusEffect': 'scale',
           'focusStrength': 0.1,

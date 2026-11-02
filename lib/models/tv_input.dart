@@ -44,6 +44,8 @@ class TvInput {
         connection: input.connection == TvInputConnection.unknown
             ? device.connection
             : input.connection,
+        reportedConnection: input.reportedConnection,
+        cecConnection: device.reportedConnection,
         standardLabel: input.standardLabel ?? input.label,
         cecLabel: name.isNotEmpty && !_portLabel.hasMatch(name) ? name : null,
         portNumber: input.portNumber ?? _port(input.label) ?? device.portNumber,
@@ -91,6 +93,9 @@ class TvInput {
   final String? standardLabel, cecLabel;
   final String icon;
   final TvInputConnection connection;
+  // Preserve separate runtime evidence when presentation is applied more than once.
+  final TvInputConnection reportedConnection;
+  final TvInputConnection? cecConnection;
 
   TvInput({
     required this.id,
@@ -103,21 +108,28 @@ class TvInput {
     this.cecLabel,
     this.icon = 'default',
     this.connection = TvInputConnection.unknown,
-  });
+    TvInputConnection? reportedConnection,
+    this.cecConnection,
+  }) : reportedConnection = reportedConnection ?? connection;
 
-  TvInput withPresentation({required String label, required String icon}) =>
-      TvInput(
-        id: id,
-        label: label,
-        type: type,
-        parentId: parentId,
-        portNumber: portNumber,
-        aliases: aliases,
-        standardLabel: standardLabel ?? this.label,
-        cecLabel: cecLabel,
-        icon: icon,
-        connection: connection,
-      );
+  TvInput withPresentation({
+    required String label,
+    required String icon,
+    TvInputConnection? connection,
+  }) => TvInput(
+    id: id,
+    label: label,
+    type: type,
+    parentId: parentId,
+    portNumber: portNumber,
+    aliases: aliases,
+    standardLabel: standardLabel ?? this.label,
+    cecLabel: cecLabel,
+    icon: icon,
+    connection: connection ?? this.connection,
+    reportedConnection: reportedConnection,
+    cecConnection: cecConnection,
+  );
 
   bool matchesId(String value) => id == value || aliases.contains(value);
 

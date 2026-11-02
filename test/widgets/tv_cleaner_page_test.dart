@@ -147,7 +147,18 @@ class FakeCleaner extends TvCleanerClient {
       if (partial) {
         enabled = enable;
         saved = true;
-        return {'status': 'partial'};
+        return {
+          'status': 'partial',
+          'operationResult': [
+            {'package': 'org.example.video', 'status': 'changed'},
+            {
+              'package': 'org.example.failed',
+              'status': 'failed',
+              'reason': 'command',
+            },
+            {'package': 'org.example.pending', 'status': 'notAttempted'},
+          ],
+        };
       }
       enabled = enable;
       saved = true;
@@ -711,6 +722,13 @@ void main() {
       await click(tester, 'OK');
       expect(client.actions.last, 'cleanerInventory');
       expect(client.cached!['pendingRestore'], 1);
+      expect(client.cached!.containsKey('operationResult'), isFalse);
+      await back(tester);
+      await click(tester, 'Refresh applications');
+      await click(tester, 'Last operation result');
+      expect(find.text('org.example.failed'), findsOneWidget);
+      expect(find.textContaining('The command failed'), findsOneWidget);
+      expect(find.text('Not attempted'), findsOneWidget);
       await back(tester);
       await click(tester, 'Backup and recovery');
       final restore = tester.widget<FocusableSettingsTile>(

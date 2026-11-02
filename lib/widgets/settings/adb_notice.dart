@@ -22,6 +22,7 @@ void showAdbNotice(BuildContext context, String? status, {String? title}) {
     'noRecovery' => l.adbNoRecovery,
     'changed' => l.adbChanged,
     'unsupported' => l.adbUnsupported,
+    'dependencyProtected' => l.adbHomeDependencyProtected,
     'wifiOwned' => l.adbWifiOwned,
     'wifiUnknown' => l.adbWifiUnknown,
     _ => l.adbUnavailable,

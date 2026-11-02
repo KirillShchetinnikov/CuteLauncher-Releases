@@ -51,20 +51,25 @@ void main() {
     );
   });
 
-  test('backup round trip preserves global banner fill and the section override', () async {
+  test('backup round trip preserves separate image modes and section overrides', () async {
     final categoryId = await database.insertCategory(CategoriesCompanion.insert(name: 'Apps', order: 0));
     final appearance = AppearanceService(sharedPreferences);
     addTearDown(appearance.dispose);
-    await appearance.set('fillBanner', true);
-    await appearance.setCategoryTile(categoryId, 'fillBanner', false);
+    await appearance.set('bannerImageMode', 'edgeColor');
+    await appearance.set('iconImageMode', 'cover');
+    await appearance.setCategoryTile(categoryId, 'bannerImageMode', 'icon');
+    await appearance.setCategoryTile(categoryId, 'iconImageMode', 'contain');
     final archive = File(await backupService.exportBackup());
     await appearance.reset();
     await backupService.importBackup(archive);
     final restored = AppearanceService(sharedPreferences);
     addTearDown(restored.dispose);
-    expect(restored.appearance.fillBanner, isTrue);
-    expect(restored.tilesFor(categoryId).fillBanner, isFalse);
-    expect(restored.tilesFor(categoryId + 1).fillBanner, isTrue);
+    expect(restored.appearance.bannerImageMode.name, 'edgeColor');
+    expect(restored.tilesFor(categoryId).bannerImageMode.name, 'icon');
+    expect(restored.tilesFor(categoryId + 1).bannerImageMode.name, 'edgeColor');
+    expect(restored.appearance.iconImageMode.name, 'cover');
+    expect(restored.tilesFor(categoryId).iconImageMode.name, 'contain');
+    expect(restored.tilesFor(categoryId + 1).iconImageMode.name, 'cover');
   });
 
   test('old backup on a new profile restores legacy omissions without losing user edits', () async {

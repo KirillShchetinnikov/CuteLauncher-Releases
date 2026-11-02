@@ -210,83 +210,61 @@ void main() {
       throwsFormatException,
     );
   });
-  test('every archived package has bundled description, no unverified recommendations', () {
+  test('one shared package catalog and inventory metadata contain no duplicate lists', () {
     final descriptions = jsonDecode(
       File('catalog/app_descriptions.json').readAsStringSync(),
     ) as Map;
     final entries = descriptions['packages'] as Map;
-    final seen = <String>{};
+    for (final entry in entries.entries) {
+      expect(cleanerPackageId(entry.key as String), isTrue);
+      final description = entry.value as Map;
+      for (final key in [
+        if (!['preinstalled', 'user'].contains(description['category'])) ...[
+          'ru',
+          'en',
+          'riskRu',
+          'riskEn',
+        ],
+        'confidence',
+        'source',
+        'observedOn',
+      ]) {
+        expect(description[key], isNotEmpty, reason: '${entry.key}.$key');
+      }
+      expect(description['safeToDisable'], isFalse);
+    }
     for (final file in Directory(
       'catalog/inventories',
     ).listSync().whereType<File>()) {
       final source = file.readAsStringSync();
       expect(source, isNot(contains('192.168.1.')));
       final report = jsonDecode(source) as Map;
-      if (report['reportType'] == 'tvPackageStateObservation') {
-        expect(report['scope'], 'userProvidedPackageStates');
-        expect(report['verification'], 'observedOnly');
-        for (final app in report['packages'] as List) {
-          final name = app['package'] as String;
-          expect(cleanerPackageId(name), isTrue);
-          expect(app['state'], isIn(['enabled', 'disabled', 'removed']));
-          expect(app.containsKey('system'), isFalse);
-          expect(app.containsKey('enabledSetting'), isFalse);
-          seen.add(name);
-          expect(entries[name]['safeToDisable'], isFalse);
-          expect(
-            entries[name]['observedOn'],
-            contains(file.uri.pathSegments.last.replaceFirst('.json', '')),
-          );
-        }
-        continue;
-      }
-      final fromDiagnostics =
-          report['scope'] == 'userProvidedDiagnosticInventory';
-      expect(report['scope'], isIn([
-        'adbReadOnlyInventory', 'userProvidedDiagnosticInventory',
-      ]));
-      if (fromDiagnostics) {
+      expect(report['reportType'], 'tvInventoryMetadata');
+      expect(report['scope'], 'deviceMetadata');
+      expect(report.containsKey('packages'), isFalse);
+      expect(report.containsKey('applications'), isFalse);
+      expect(report['packageListStorage'], 'catalog/app_descriptions.json');
+      expect(report['observedPackageCount'], greaterThan(0));
+      expect(
+        report['sourceScope'],
+        isIn([
+          'adbReadOnlyInventory',
+          'userProvidedDiagnosticInventory',
+          'userProvidedPackageStates',
+        ]),
+      );
+      if (report['sourceScope'] == 'userProvidedDiagnosticInventory') {
         expect(report['verification'], 'observedOnly');
         expect(report['sourceReport'], isNotEmpty);
         final completeness = report['completeness'] as Map;
         expect(completeness['truncated'], isA<bool>());
-        expect(completeness['sourceCount'],
-            greaterThanOrEqualTo((report['packages'] as List).length));
+        expect(
+          completeness['sourceCount'],
+          greaterThanOrEqualTo(report['observedPackageCount']),
+        );
         expect(completeness['skippedCount'], greaterThanOrEqualTo(0));
       }
-      for (final app in report['packages'] as List) {
-        final name = app['package'] as String;
-        seen.add(name);
-        expect(cleanerPackageId(name), isTrue);
-        expect(app['enabledSetting'], inInclusiveRange(0, 4));
-        final description = entries[name] as Map;
-        for (final key in [
-          if (!['preinstalled', 'user'].contains(description['category'])) ...[
-            'ru',
-            'en',
-            'riskRu',
-            'riskEn',
-          ],
-          'confidence',
-          'source',
-        ]) {
-          expect(description[key], isNotEmpty);
-        }
-        expect(description['safeToDisable'], isFalse);
-      }
-      expect(
-        (report['diagnostics'] as Map)['packageCount'],
-        (report['packages'] as List).length,
-      );
-      if (!fromDiagnostics) {
-        expect(
-          ((report['diagnostics'] as Map)['launcher']
-              as Map)['requestedPermissions'],
-          contains('android.permission.INTERNET'),
-        );
-      }
     }
-    expect(entries.keys.toSet(), seen);
     final profiles = jsonDecode(
       File('catalog/cleaner_profiles.json').readAsStringSync(),
     ) as Map;
@@ -302,22 +280,13 @@ void main() {
     final inventory = jsonDecode(
       File('catalog/inventories/$id.json').readAsStringSync(),
     ) as Map;
-    final rows = inventory['packages'] as List;
-    expect(rows, hasLength(118));
-    expect(rows.map((row) => row['package']).toSet(), hasLength(rows.length));
-    expect(rows.where((row) => row['state'] == 'enabled'), hasLength(113));
+    expect(inventory['observedPackageCount'], 118);
     expect(inventory['reportedCounts']['enabled'], 114);
-    final disabled = rows
-        .where((row) => row['state'] == 'disabled')
-        .map((row) => row['package'])
-        .toSet();
-    final removed = rows
-        .where((row) => row['state'] == 'removed')
-        .map((row) => row['package'])
-        .toSet();
     final example = File('catalog/examples/$id.json').readAsStringSync();
-    expect(parseDisableList(example).toSet(), disabled);
-    expect(disabled.intersection(removed), isEmpty);
+    final disabled = parseDisableList(example).toSet();
+    expect(disabled, hasLength(3));
+    expect(disabled, isNot(contains('com.droidlogic.miracast')));
+    expect(disabled, isNot(contains('com.pittvandewitt.viperfx')));
     final profiles =
         jsonDecode(
               File('catalog/cleaner_profiles.json').readAsStringSync(),

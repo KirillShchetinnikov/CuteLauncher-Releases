@@ -26,6 +26,10 @@ Map<String, dynamic> archive(
   ],
 };
 void main() {
+  test('Home and settings sounds belong to independent sync groups', () {
+    expect(backupSyncPartGroup('setting:home_key_click_enabled'), BackupSyncGroup.homeOptions);
+    expect(backupSyncPartGroup('setting:app_key_click_enabled'), BackupSyncGroup.menuLayout);
+  });
   final zero = DateTime.fromMillisecondsSinceEpoch(0);
   test('independent changes merge and later conflicting setting wins', () {
     final a = BackupSyncDocument.capture(

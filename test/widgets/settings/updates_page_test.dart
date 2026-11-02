@@ -10,6 +10,59 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
+  testWidgets('each APK rejection displays its reason on the narrow page', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(350, 540);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    SharedPreferences.setMockInitialValues({});
+    final service = UpdateService(
+      await SharedPreferences.getInstance(),
+      environment: () async => {
+        'play': false,
+        'version': '1.6.1',
+        'versionCode': 182,
+        'abis': ['armeabi-v7a'],
+        'directory': 'unused',
+      },
+      lookup: () async => null,
+    );
+    addTearDown(service.dispose);
+    await tester.pumpWidget(
+      ChangeNotifierProvider.value(
+        value: service,
+        child: MaterialApp(
+          locale: const Locale('ru'),
+          supportedLocales: AppLocalizations.supportedLocales,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          home: const Scaffold(body: UpdatesPage()),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    final l = AppLocalizations.of(tester.element(find.byType(UpdatesPage)))!;
+    final messages = {
+      'invalid_package': l.updateWrongPackage,
+      'invalid_version': l.updateNotNewer,
+      'invalid_signers': l.updateSignersUnavailable,
+      'invalid_signature': l.updateSignatureMismatch,
+      'invalid_file': l.updateInvalidFile,
+      'invalid_verification': l.updateVerificationFailed,
+      'invalid': l.updateIncompatible,
+    };
+    for (final entry in messages.entries) {
+      service.installStatus = entry.key;
+      service.failed = true;
+      service.notifyListeners();
+      await tester.pumpAndSettle();
+      expect(updateFailureMessage(l, service), entry.value);
+      expect(find.text(entry.value), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    }
+  });
+
   testWidgets('Russian update page works with remote at narrow panel width',
       (tester) async {
     tester.view.physicalSize = const Size(350, 540);

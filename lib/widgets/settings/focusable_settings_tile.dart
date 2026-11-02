@@ -1,9 +1,7 @@
 import 'package:flauncher/theme/launcher_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:provider/provider.dart';
-import 'package:flauncher/providers/settings_service.dart';
-import 'package:flauncher/flauncher_channel.dart';
+import '../../key_sounds.dart';
 
 import 'settings_value_text.dart';
 import 'settings_panel_style.dart';
@@ -69,9 +67,7 @@ class _FocusableSettingsTileState extends State<FocusableSettingsTile>
     if (!widget.enabled || widget.onPressed == null) return;
     // Pointer activation must remember the same opener as remote activation.
     (widget.focusNode ?? _focusNode).requestFocus();
-    if (context.read<SettingsService?>()?.appKeyClickEnabled == true) {
-      FLauncherChannel().playClickSound();
-    }
+    playKeySound(context);
     widget.onPressed!();
   }
 

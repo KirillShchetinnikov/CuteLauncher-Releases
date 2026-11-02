@@ -19,11 +19,8 @@
 package com.leanbitlab.ltvL;
 
 import android.content.Context;
-import android.content.Intent;
 import android.media.tv.TvInputManager;
 import android.media.tv.TvInputInfo;
-import android.media.tv.TvContract;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import io.flutter.plugin.common.BinaryMessenger;
@@ -98,8 +95,9 @@ final class TvInputBridge implements EventChannel.StreamHandler, AutoCloseable {
                         if (input.getType() == TvInputInfo.TYPE_HDMI) {
                             if (input.getParentId() != null) map.put("parentId", input.getParentId());
                             try {
-                                CharSequence custom = input.loadCustomLabel(context);
-                                if (custom != null) map.put("customLabel", custom.toString());
+                                String custom = TvInputLabels.customLabel(input.loadCustomLabel(context),
+                                        android.os.Build.MANUFACTURER, android.os.Build.BRAND);
+                                if (custom != null) map.put("customLabel", custom);
                             } catch (RuntimeException ignored) { /* Keep the system label if OEM settings are unavailable. */ }
                         }
                         result.add(map);
@@ -113,19 +111,6 @@ final class TvInputBridge implements EventChannel.StreamHandler, AutoCloseable {
     }
 
     boolean launchTvInput(String inputId) {
-        try {
-            Uri uri = TvContract.buildChannelUriForPassthroughInput(inputId);
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(uri);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            return tryStartActivity(intent);
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    private boolean tryStartActivity(Intent intent) {
-        try { context.startActivity(intent); return true; }
-        catch (Exception ignored) { return false; }
+        return TvInputLaunch.open(context, inputId);
     }
 }

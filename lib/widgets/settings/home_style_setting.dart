@@ -94,6 +94,7 @@ class HomeStyleSetting extends StatelessWidget {
             HomeStyleBlock.opaque => l.homeStyleOpaque,
             HomeStyleBlock.transparent => l.homeStyleTransparent,
             HomeStyleBlock.singleColumn => l.homeStyleSingleColumn,
+            HomeStyleBlock.sectionBackground => l.homeStyleNeedsSectionBackground,
           };
     return InheritedSetting(
       categoryId: categoryId,

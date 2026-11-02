@@ -2,6 +2,20 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
+## v1.6.3 — 2026-11-02
+
+- Added separate image modes for apps with and without banners: fit the whole image, fill with cropping, and fill unused space with the image edge color. Banners can also be replaced with an app icon; settings account for the tile shape and can be overridden per section.
+- Added section background opacity and corner radius. Fixed layout of the selected number of complete grid rows, including labels and spacing.
+- Added reordering of the wallpaper clock, date, and weather, plus weather warnings next to the temperature.
+- Added volume hold modes when the button remapper is enabled: automatically pause interception while the system volume panel is visible, pause on a timer, generate repeats, or disable the workaround. Button mappings and Home interception are temporarily unavailable during a pause.
+- Added an “Ignore button” action. Home screen and settings key sounds can now be enabled independently.
+- Added an option to wait for internet before automatically launching an app. The VPN widget now supports connecting and disconnecting Incy.
+- Improved opening TV inputs when the standard method fails. Added a CEC-only HDMI status option and fixed system HDMI names on Philips TVs.
+- Strengthened protection of important system components and stock HOME dependencies during TV cleanup. Added per-package results for the last operation, including the reason and stage of failures.
+- Fixed app list updates when returning Home and retries for unavailable tile images.
+- Fixed slideshow wallpaper changes after returning from another app: the next change deadline is preserved, and an elapsed deadline advances to the next image.
+- Clarified APK update validation failures. Diagnostics now include system-reported display, HDR, decoder, and audio output capabilities.
+
 ## v1.6.2 — 2026-11-02
 
 - Fixed the all-files access permission route on TVs: the launcher prefers Android TV system settings over third-party permission filters. A clear message appears when no suitable screen is available.

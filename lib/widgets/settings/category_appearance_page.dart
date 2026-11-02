@@ -122,10 +122,7 @@ class CategoryAppearancePage extends StatelessWidget {
               padding: const EdgeInsets.all(12),
               child: Text(
                 l.homeVisibleRows(
-                  geometry.visibleRows(
-                    style.maxRows,
-                    MediaQuery.sizeOf(context).height - 180,
-                  ),
+                  geometry.visibleRows(style.maxRows),
                 ),
               ),
             ),

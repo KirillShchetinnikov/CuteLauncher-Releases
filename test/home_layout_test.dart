@@ -8,6 +8,42 @@ import 'package:flauncher/settings_import.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
+  test('grid window fits exactly the requested complete rows at every geometry', () {
+    for (final width in [480.0, 960.0, 1920.0]) {
+      for (final columns in [0, 1, 4, 6, 12]) {
+        for (final aspect in [.5, 1.0, 16 / 9, 21 / 9]) {
+          for (final size in [64, 128, 256]) {
+            for (final radius in [0, 16, 50, 100]) {
+              for (final labelHeight in [0.0, 26.0, 60.0]) {
+                for (final gap in [0, 8, 48]) {
+                  final l = HomeLayout(
+                    mode: 'grid', count: 83, availableWidth: width,
+                    requestedColumns: columns, labelHeight: labelHeight,
+                    style: TileAppearance({'aspectRatio': aspect, 'size': size,
+                      'radius': radius, 'horizontalGap': gap, 'verticalGap': gap}),
+                  );
+                  for (var limit = 0; limit <= 6; limit++) {
+                    final rows = limit == 0 || l.rows < limit ? l.rows : limit;
+                    expect(l.visibleRows(limit), rows);
+                    expect(l.windowHeight(limit), closeTo(
+                      rows * (l.height + labelHeight) + (rows - 1) * gap + 2 * l.inset, .001));
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  });
+  test('empty and short grids do not reserve nonexistent rows', () {
+    for (final count in [0, 1, 6, 7, 14]) {
+      final l = HomeLayout(mode: 'grid', count: count, availableWidth: 900,
+        requestedColumns: 6, style: const TileAppearance({'aspectRatio': 1}));
+      expect(l.windowHeight(3), l.contentHeight);
+      expect(l.visibleRows(3), l.rows);
+    }
+  });
   test('focus movement preserves section geometry at every setting', () {
     for (final mode in ['row', 'rows', 'grid']) {
       for (final columns in [0, 1, 4, 12]) {

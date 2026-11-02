@@ -10,35 +10,72 @@ import 'package:flauncher/settings_import.dart';
 import 'package:flauncher/category_appearance.dart';
 
 void main() {
-  test('banner fill validates, imports and resets without discarding section overrides', () async {
-    SharedPreferences.setMockInitialValues({});
+  test('shared image settings migrate into independent global and local fields', () async {
+    for (final mode in ['contain', 'cover', 'edgeColor', 'icon']) {
+      SharedPreferences.setMockInitialValues({
+        tileAppearanceKey: jsonEncode({'imageMode': mode}),
+        categoryAppearanceKey: jsonEncode({'1': {'useGlobalTiles': false, 'tiles': {'imageMode': mode}}}),
+      });
+      final prefs = await SharedPreferences.getInstance();
+      final service = AppearanceService(prefs);
+      final expectedIcon = mode == 'icon' ? 'edgeColor' : mode;
+      expect(service.appearance.bannerImageMode.name, mode);
+      expect(service.appearance.iconImageMode.name, expectedIcon);
+      expect(service.tilesFor(1).bannerImageMode.name, mode);
+      expect(service.tilesFor(1).iconImageMode.name, expectedIcon);
+      expect(service.category(1).tiles.containsKey('imageMode'), false);
+      expect(service.appearance.active, false);
+      final imported = compatibleSettings({
+        tileAppearanceKey: prefs.getString(tileAppearanceKey),
+        categoryAppearanceKey: prefs.getString(categoryAppearanceKey),
+      }, {});
+      expect(TileAppearance.decode(imported[tileAppearanceKey]).iconImageMode.name, expectedIcon);
+      expect(CategoryAppearance.decode(imported[categoryAppearanceKey])['1']['tiles']['bannerImageMode'], mode);
+      service.dispose();
+    }
+    final legacy = TileAppearance.decode('{"fillBanner":true}');
+    expect(legacy.bannerImageMode.name, 'cover');
+    expect(legacy.iconImageMode.name, 'contain');
+    final explicit = TileAppearance.validValues({'imageMode': 'icon', 'bannerImageMode': 'cover', 'iconImageMode': 'contain'});
+    expect(explicit, {'bannerImageMode': 'cover', 'iconImageMode': 'contain'});
+    expect(TileAppearance.validValues({'imageMode': 'unknown', 'iconImageMode': 'icon'}), isEmpty);
+    expect(CategoryAppearance.validValues({'tiles': {'iconImageMode': 'icon'}})['tiles'], isEmpty);
+  });
+
+  test('banner and icon modes save, inherit and reset independently after migration', () async {
+    SharedPreferences.setMockInitialValues({tileAppearanceKey: '{"imageMode":"cover"}'});
     final prefs = await SharedPreferences.getInstance();
     final service = AppearanceService(prefs);
     addTearDown(service.dispose);
-    expect(service.appearance.fillBanner, isFalse);
-    expect(const TileAppearance({'fillBanner': true}).active, isFalse);
-    expect(TileAppearance.validValues({'fillBanner': 'true'}), isEmpty);
-    expect(CategoryAppearance.validValues({'tiles': {'fillBanner': 1}})['tiles'], isEmpty);
-    await service.set('fillBanner', true);
-    await service.setCategoryTile(1, 'fillBanner', false);
+    await service.set('bannerImageMode', 'edgeColor');
+    expect(service.appearance.iconImageMode.name, 'cover');
+    await service.set('iconImageMode', 'contain');
+    expect(service.appearance.bannerImageMode.name, 'edgeColor');
     await service.setCategory(1, 'layout', 'rows');
-    final imported = compatibleSettings({
-      tileAppearanceKey: prefs.getString(tileAppearanceKey),
-      categoryAppearanceKey: prefs.getString(categoryAppearanceKey),
-    }, {});
-    expect(TileAppearance.decode(imported[tileAppearanceKey]).fillBanner, isTrue);
-    expect(CategoryAppearance.decode(imported[categoryAppearanceKey])['1']['tiles']['fillBanner'], isFalse);
-    await service.resetFields(['fillBanner']);
-    expect(service.appearance.fillBanner, isFalse);
-    expect(service.category(1).tiles['fillBanner'], isFalse);
-    await service.set('fillBanner', true);
-    expect(service.tilesFor(1).fillBanner, isFalse);
-    await service.inheritField(1, 'fillBanner');
-    expect(service.tilesFor(1).fillBanner, isTrue);
+    await service.setCategoryTile(1, 'bannerImageMode', 'icon');
+    expect(service.category(1).tiles.containsKey('iconImageMode'), false);
+    await service.set('iconImageMode', 'cover');
+    expect(service.tilesFor(1).bannerImageMode.name, 'icon');
+    expect(service.tilesFor(1).iconImageMode.name, 'cover');
+    await service.setCategoryTile(1, 'iconImageMode', 'edgeColor');
+    await service.setCategoryTile(1, 'iconImageMode', 'icon');
+    expect(service.tilesFor(1).iconImageMode.name, 'edgeColor');
+    await service.resetFields(['bannerImageMode'], categoryId: 1);
+    expect(service.tilesFor(1).bannerImageMode.name, 'edgeColor');
+    expect(service.tilesFor(1).iconImageMode.name, 'edgeColor');
+    await service.resetFields(['bannerImageMode']);
+    expect(service.appearance.bannerImageMode.name, 'contain');
+    expect(service.appearance.iconImageMode.name, 'cover');
+    final restored = AppearanceService(prefs);
+    expect(restored.tilesFor(1).iconImageMode.name, 'edgeColor');
+    expect(restored.appearance.values.containsKey('imageMode'), false);
+    restored.dispose();
+    await service.inheritField(1, 'iconImageMode');
+    expect(service.tilesFor(1).iconImageMode.name, 'cover');
     await service.reset();
-    expect(service.appearance.fillBanner, isFalse);
+    expect(service.appearance.bannerImageMode.name, 'contain');
+    expect(service.appearance.iconImageMode.name, 'contain');
     expect(service.category(1).layout, 'rows');
-    expect(service.category(1).tiles.containsKey('fillBanner'), isFalse);
   });
 
   test('returning each local field to the common value resumes live inheritance', () async {
@@ -48,7 +85,8 @@ void main() {
     addTearDown(service.dispose);
     final fields = <String, (dynamic, dynamic)>{
       'size': (128, 160), 'aspectRatio': (16 / 9, 1),
-      'fillBanner': (false, true),
+      'bannerImageMode': ('contain', 'icon'),
+      'iconImageMode': ('contain', 'edgeColor'),
       'radius': (null, 32), 'horizontalGap': (16, 20), 'verticalGap': (16, 20),
       'iconScale': (1, .5), 'labels': ('none', 'all'),
       'labelPosition': ('below', 'inside'), 'labelSize': (12, 16),
@@ -56,6 +94,7 @@ void main() {
       'opacity': (1, .5), 'shadow': (0, 8), 'blurTiles': (false, true),
       'sectionTitles': (true, false), 'sectionIcons': (false, true),
       'sectionBackground': (0, 0xff123456),
+      'sectionOpacity': (1, .35), 'sectionRadius': (0, 32),
     };
     var id = 1;
     for (final entry in fields.entries) {

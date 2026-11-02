@@ -3,12 +3,14 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flauncher/adaptive_landscape.dart';
 import 'package:flauncher/information_placement.dart';
+import 'package:flauncher/models/weather_data.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/providers/appearance_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
@@ -19,6 +21,9 @@ import 'package:flauncher/widgets/background_information.dart';
 import 'package:flauncher/widgets/landscape_clock_clip.dart';
 import 'package:flauncher/widgets/landscape_horizon.dart';
 import 'package:flauncher/widgets/settings/information_settings_page.dart';
+import 'package:flauncher/widgets/settings/background_information_order_page.dart';
+import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
+import 'package:flauncher/settings_import.dart';
 import 'package:flauncher/widgets/settings/panel_clock_style_page.dart';
 import 'package:flauncher/widgets/settings/settings_help.dart';
 
@@ -28,19 +33,27 @@ void main() {
   late AppearanceService appearance;
   late SettingsService settings;
   late MockWeatherService weather;
+  late ChangeNotifier weatherChanges;
   setUp(() async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
     appearance = AppearanceService(prefs);
     settings = SettingsService(prefs);
     weather = MockWeatherService();
+    weatherChanges = ChangeNotifier();
+    when(weather.addListener(any)).thenAnswer((call) =>
+        weatherChanges.addListener(call.positionalArguments.first as VoidCallback));
+    when(weather.removeListener(any)).thenAnswer((call) =>
+        weatherChanges.removeListener(call.positionalArguments.first as VoidCallback));
     when(weather.weatherData).thenReturn(null);
+    when(weather.stale).thenReturn(false);
     when(weather.configuration).thenReturn(const WeatherConfiguration());
     await appearance.set('panelInformationPlacement', 'background');
   });
   tearDown(() {
     appearance.dispose();
     settings.dispose();
+    weatherChanges.dispose();
   });
 
   Future<void> pump(
@@ -77,6 +90,131 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
+  }
+
+  test('background order validates and survives reload and backup import', () async {
+    expect(appearance.appearance.backgroundInformationOrder, ['date', 'weather', 'time']);
+    await appearance.set('panelBackgroundInformationOrder', ['time', 'bogus', 'time', 42, 'weather']);
+    final restored = AppearanceService(appearance.preferences);
+    expect(restored.appearance.backgroundInformationOrder, ['time', 'weather', 'date']);
+    final imported = compatibleSettings({
+      tileAppearanceKey: appearance.preferences.getString(tileAppearanceKey)!,
+    }, {});
+    expect(TileAppearance.decode(imported[tileAppearanceKey]).backgroundInformationOrder,
+        ['time', 'weather', 'date']);
+    expect(restored.appearance.panelLayout.left, appearance.appearance.panelLayout.left);
+    restored.dispose();
+  });
+
+  testWidgets('remote reorders background, keeps focus and stops at boundaries', (tester) async {
+    await pump(tester, child: const BackgroundInformationOrderPage());
+    final tile = find.byKey(const ValueKey('time'));
+    final node = tester.widget<FocusableSettingsTile>(tile).focusNode!;
+    node.requestFocus();
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    for (var i = 0; i < 3; i++) {
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+      await tester.pumpAndSettle();
+    }
+    expect(appearance.appearance.backgroundInformationOrder, ['time', 'date', 'weather']);
+    expect(node.hasFocus, isTrue);
+    expect(tester.getTopLeft(tile).dy,
+        lessThan(tester.getTopLeft(find.byKey(const ValueKey('date'))).dy));
+    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.pumpAndSettle();
+    expect(appearance.appearance.backgroundInformationOrder, ['time', 'date', 'weather']);
+    expect(tester.widget<FocusableSettingsTile>(find.byKey(const ValueKey('date'))).focusNode!.hasFocus, isTrue);
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('background appearance opens order editor; Back finishes moving before leaving', (tester) async {
+    await pump(tester, child: const BackgroundInformationSettingsPage());
+    final l = AppLocalizations.of(tester.element(find.byType(BackgroundInformationSettingsPage)))!;
+    await tester.tap(find.text(l.panelObjectOrder));
+    await tester.pumpAndSettle();
+    final date = find.byKey(const ValueKey('date'));
+    tester.widget<FocusableSettingsTile>(date).focusNode!.requestFocus();
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(find.byType(BackgroundInformationOrderPage), findsOneWidget);
+    expect(tester.widget<FocusableSettingsTile>(date).selected, isFalse);
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(find.byType(BackgroundInformationOrderPage), findsNothing);
+    expect(find.byType(BackgroundInformationSettingsPage), findsOneWidget);
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('saved order controls rendered positions and survives hidden members', (tester) async {
+    await appearance.set('panelInformationPlacements', {
+      'time': 'background', 'date': 'background', 'weather': 'background',
+    });
+    for (final order in [
+      ['date', 'weather', 'time'],
+      ['time', 'date', 'weather'],
+      ['weather', 'time', 'date'],
+    ]) {
+      await appearance.set('panelBackgroundInformationOrder', order);
+      await pump(tester);
+      double y(String id) => tester.getCenter(find.byKey(Key('background_${id == 'time' ? 'clock' : id}'))).dy;
+      expect(y(order[0]), lessThan(y(order[1])));
+      expect(y(order[1]), lessThan(y(order[2])));
+      await appearance.set('panelInformationPlacements', {
+        'time': 'background', 'date': 'hidden', 'weather': 'background',
+      });
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('background_date')), findsNothing);
+      expect(appearance.appearance.backgroundInformationOrder, order);
+      await appearance.set('panelInformationPlacements', {
+        'time': 'background', 'date': 'background', 'weather': 'background',
+      });
+    }
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  for (final locale in ['ru', 'en', 'ar']) {
+    testWidgets('background warning follows switch and freshness: $locale', (tester) async {
+      await appearance.set('panelInformationPlacements', {
+        'time': 'background', 'date': 'background', 'weather': 'background',
+      });
+      when(weather.weatherData).thenReturn(const WeatherData(
+        currentTemp: 20, currentConditionCode: 800,
+        hasWarning: true, warningType: WeatherWarningType.rain,
+        warningPrecipProbability: 80, warningDayIndex: 1,
+      ));
+      await settings.setShowWeatherWarnings(true);
+      await appearance.set('panelBackgroundInformationSize', 144);
+      await pump(tester, locale: locale, scale: 1.8);
+      final text = find.textContaining('20°C • ');
+      expect(text, findsOneWidget);
+      expect(tester.getRect(text).left, greaterThanOrEqualTo(0));
+      expect(tester.getRect(text).right, lessThanOrEqualTo(960));
+      await settings.setShowWeatherWarnings(false);
+      await tester.pumpAndSettle();
+      expect(find.text('20°C'), findsOneWidget);
+      expect(text, findsNothing);
+      await settings.setShowWeatherWarnings(true);
+      when(weather.stale).thenReturn(true);
+      weatherChanges.notifyListeners();
+      await tester.pumpAndSettle();
+      expect(text, findsNothing);
+      when(weather.stale).thenReturn(false);
+      when(weather.weatherData).thenReturn(null);
+      weatherChanges.notifyListeners();
+      await tester.pumpAndSettle();
+      expect(find.text('—'), findsOneWidget);
+      expect(text, findsNothing);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+    });
   }
 
   for (final time in ['hidden', 'panel', 'background']) {

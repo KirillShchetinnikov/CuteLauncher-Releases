@@ -17,13 +17,20 @@ final class RemoteMappingConfiguration {
             return Map.of("keyCode", keyCode, "enabled", enabled, "action", action, "target", target, "trigger", trigger, "name", name);
         }
     }
-    static final Set<String> ACTIONS = Set.of("app", "home", "back", "webhook", "panel", "recents");
+    static final Set<String> ACTIONS = Set.of("app", "home", "back", "webhook", "panel", "recents", "ignore");
     static boolean assignable(int code, String trigger) { return assignable(code) || code == 3 && "hold".equals(trigger); }
     final boolean enabled;
+    final String volumeMode;
+    final int volumePauseSeconds;
     final Map<String, Binding> bindings;
     RemoteMappingConfiguration(boolean enabled, Map<String, Binding> bindings) {
+        this(enabled, bindings, "auto", 5);
+    }
+    RemoteMappingConfiguration(boolean enabled, Map<String, Binding> bindings, String volumeMode, int volumePauseSeconds) {
         this.enabled = enabled;
         this.bindings = Map.copyOf(bindings);
+        this.volumeMode = volumeMode;
+        this.volumePauseSeconds = volumePauseSeconds;
     }
     static RemoteMappingConfiguration empty() { return new RemoteMappingConfiguration(false, Map.of()); }
     static boolean assignable(int code) {
@@ -66,13 +73,18 @@ final class RemoteMappingConfiguration {
                     || !Set.of("press", "hold").contains(trigger) || bindings.containsKey(slot)) throw new IllegalArgumentException();
             if (action.equals("app") && !target.matches("[A-Za-z][A-Za-z0-9_]*(\\.[A-Za-z0-9_]+)+")
                     || action.equals("webhook") && !webhook(target)
-                    || (action.equals("home") || action.equals("back") || action.equals("panel") || action.equals("recents")) && !target.isEmpty())
+                    || (action.equals("home") || action.equals("back") || action.equals("panel") || action.equals("recents") || action.equals("ignore")) && !target.isEmpty())
                 throw new IllegalArgumentException();
             String name = row.containsKey("name") && row.get("name") instanceof String text ? text : "";
             if (name.length() > 80) throw new IllegalArgumentException();
             bindings.put(slot, new Binding(code, active, action, target, trigger, name));
         }
-        return new RemoteMappingConfiguration(enabled, bindings);
+        Object modeValue = source.containsKey("volumeMode") ? source.get("volumeMode") : "auto";
+        Object secondsValue = source.containsKey("volumePauseSeconds") ? source.get("volumePauseSeconds") : 5;
+        if (!(modeValue instanceof String mode) || !Set.of("off", "auto", "timed", "repeat").contains(mode)
+                || !(secondsValue instanceof Number seconds) || seconds.doubleValue() != seconds.intValue()
+                || !Set.of(3, 5, 10, 15, 30).contains(seconds.intValue())) throw new IllegalArgumentException();
+        return new RemoteMappingConfiguration(enabled, bindings, mode, seconds.intValue());
     }
     Binding binding(int code) {
         return binding(code, "press");
@@ -88,6 +100,6 @@ final class RemoteMappingConfiguration {
         List<Map<String, Object>> rows = new ArrayList<>();
         bindings.values().stream().sorted(java.util.Comparator.comparingInt(Binding::keyCode).thenComparing(Binding::trigger))
             .forEach(binding -> rows.add(binding.toMap()));
-        return Map.of("enabled", enabled, "bindings", rows);
+        return Map.of("enabled", enabled, "bindings", rows, "volumeMode", volumeMode, "volumePauseSeconds", volumePauseSeconds);
     }
 }

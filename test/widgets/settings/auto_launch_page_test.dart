@@ -8,6 +8,29 @@ import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/widgets/settings/auto_launch_page.dart';
 
 void main() {
+  testWidgets('internet wait is saved explicitly and its explanation stays collapsed', (tester) async {
+    const channel = MethodChannel('cutelauncher/auto_launch');
+    final messenger = tester.binding.defaultBinaryMessenger;
+    Map? saved;
+    messenger.setMockMethodCallHandler(channel, (call) async {
+      if (call.method == 'save') { saved = call.arguments as Map; return {'status': 'success'}; }
+      return const AutoLaunchConfiguration(mode: 'app', app: 'org.example.player', boot: true).toMap();
+    });
+    addTearDown(() => messenger.setMockMethodCallHandler(channel, null));
+    await tester.pumpWidget(const MaterialApp(locale: Locale('ru'),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: Scaffold(body: AutoLaunchPage())));
+    await tester.pumpAndSettle();
+    final l = AppLocalizations.of(tester.element(find.byType(AutoLaunchPage)))!;
+    expect(find.text(l.autoLaunchWaitForInternetHelp), findsNothing);
+    await tester.ensureVisible(find.text(l.autoLaunchWaitForInternet).first);
+    await tester.tap(find.text(l.autoLaunchWaitForInternet).first);
+    await tester.pumpAndSettle();
+    expect(saved?['waitForInternet'], true);
+    expect(saved?['app'], 'org.example.player');
+    expect(tester.takeException(), isNull);
+  });
   for (final savedId in ['port', 'cec']) {
     testWidgets('merged HDMI keeps saved $savedId and selects the physical port',
         (tester) async {

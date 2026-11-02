@@ -1,3 +1,4 @@
+import 'tile_image_geometry.dart';
 import 'dart:convert';
 import 'app_fonts.dart';
 import 'panel_layout.dart';
@@ -14,7 +15,8 @@ class TileAppearance {
   dynamic homeFieldValue(String key) => switch (key) {
     'size' => tileSize,
     'aspectRatio' => aspectRatio,
-    'fillBanner' => fillBanner,
+    'bannerImageMode' => bannerImageMode.name,
+    'iconImageMode' => iconImageMode.name,
     'horizontalGap' => horizontalGap,
     'verticalGap' => verticalGap,
     'iconScale' => iconScale,
@@ -30,16 +32,27 @@ class TileAppearance {
     'sectionIcons' => sectionIcons,
     'sectionPadding' => number(key) ?? 0,
     'sectionBackground' => values[key] ?? 0,
+    'sectionOpacity' => sectionOpacity,
+    'sectionRadius' => sectionRadius,
     _ => values[key],
   };
   String get labels => values['labels'] as String? ?? 'none';
   bool get anchored => values['sectionScroll'] != 'free';
   double get sectionPosition => (number('sectionPosition') ?? 0.5).clamp(0, 0.70).toDouble();
   double get sectionGap => number('sectionGap') ?? 24;
+  double get sectionOpacity => number('sectionOpacity') ?? 1;
+  double get sectionRadius => number('sectionRadius') ?? 0;
+  BoxDecoration sectionDecoration({Color? fallbackColor}) {
+    final background = color('sectionBackground') ?? fallbackColor;
+    return BoxDecoration(
+      color: background?.withValues(alpha: background.a * sectionOpacity),
+      borderRadius: BorderRadius.circular(sectionRadius),
+    );
+  }
   bool get sectionTitles => values['sectionTitles'] != false;
   bool get sectionIcons => values['sectionIcons'] == true;
   bool get active =>
-      values.keys.any((key) => key != 'fillBanner' && key != 'animateReordering' && key != 'labels' && !key.startsWith('section') && key != 'hideAbove' && key != 'inactiveOpacity' && !key.startsWith('panel') && !key.startsWith('settings') &&
+      values.keys.any((key) => key != 'bannerImageMode' && key != 'iconImageMode' && key != 'imageMode' && key != 'fillBanner' && key != 'animateReordering' && key != 'labels' && !key.startsWith('section') && key != 'hideAbove' && key != 'inactiveOpacity' && !key.startsWith('panel') && !key.startsWith('settings') &&
           !key.startsWith('notice') && key != 'blurPanel' && key != 'focusAlignment');
   double? number(String key) => (values[key] as num?)?.toDouble();
   double get opacity => number('opacity') ?? 1;
@@ -48,7 +61,15 @@ class TileAppearance {
   double get horizontalGap => number('horizontalGap') ?? 16;
   double get verticalGap => number('verticalGap') ?? 16;
   double get aspectRatio => number('aspectRatio') ?? 16 / 9;
-  bool get fillBanner => values['fillBanner'] == true;
+  TileImageMode get bannerImageMode => switch (values['bannerImageMode']) {
+    'cover' => TileImageMode.cover, 'edgeColor' => TileImageMode.edgeColor,
+    'icon' => TileImageMode.icon, 'contain' => TileImageMode.contain,
+    _ => TileImageMode.contain,
+  };
+  TileImageMode get iconImageMode => switch (values['iconImageMode']) {
+    'cover' => TileImageMode.cover, 'edgeColor' => TileImageMode.edgeColor,
+    _ => TileImageMode.contain,
+  };
   Color? color(String key) =>
       values[key] is int ? (key == 'sectionBackground' ? Color(values[key] as int) : Color(values[key] as int).withAlpha(255)) : null;
   TextStyle get labelStyle {
@@ -99,6 +120,13 @@ class TileAppearance {
   PanelClockStyle get backgroundInformationStyle => PanelClockStyle(
     PanelClockStyle.validValues(values['panelBackgroundInformationStyle'] ?? values['panelInformationStyle'], combined: true));
   double get backgroundInformationSize => number('panelBackgroundInformationSize') ?? 96;
+  static const defaultBackgroundInformationOrder = ['date', 'weather', 'time'];
+  static List<String> cleanBackgroundInformationOrder(dynamic value) => [
+    ...{if (value is List) ...value.whereType<String>().where(defaultBackgroundInformationOrder.contains)},
+    ...defaultBackgroundInformationOrder.where((id) => value is! List || !value.contains(id)),
+  ];
+  List<String> get backgroundInformationOrder =>
+      cleanBackgroundInformationOrder(values['panelBackgroundInformationOrder']);
   String get backgroundInformationAlignment => values['panelBackgroundInformationAlignment'] as String? ?? 'center';
   String get interfaceStyle => values['settingsInterfaceStyle'] as String? ?? 'standard';
   String get interfaceFont => values['settingsInterfaceFont'] as String? ??
@@ -146,6 +174,7 @@ class TileAppearance {
       'size': (64, 256),
       'sectionPosition': (0, 1), 'sectionGap': (0, 96),
       'sectionPadding': (0, 64), 'inactiveOpacity': (0, 1),
+      'sectionOpacity': (0, 1), 'sectionRadius': (0, 64),
       'radius': (0, 100),
       'horizontalGap': (0, 48),
       'verticalGap': (0, 48),
@@ -169,6 +198,8 @@ class TileAppearance {
       'panelBackgroundInformationSize': (48, 144),
     };
     const choices = {
+      'bannerImageMode': ['contain', 'cover', 'edgeColor', 'icon'],
+      'iconImageMode': ['contain', 'cover', 'edgeColor'],
       'panelInformationPlacement': ['panel', 'background'],
       'panelBackgroundInformationAlignment': ['left', 'center', 'right'],
       'panelInformationAction': ['weather', 'calendar', 'both', 'none'],
@@ -187,6 +218,10 @@ class TileAppearance {
       final key = entry.key;
       final value = entry.value;
       if (key is! String) continue;
+      if (key == 'panelBackgroundInformationOrder' && value is List) {
+        result[key] = cleanBackgroundInformationOrder(value);
+        continue;
+      }
       if (key == 'panelForecastDays' && value is int && [3, 5, 7].contains(value)) {
         result[key] = value;
         continue;
@@ -260,7 +295,6 @@ class TileAppearance {
             'focusPulse', 'focusTransition', 'animateReordering',
             'focusShadow',
             'blurTiles',
-            'fillBanner',
             'blurPanel',
             'panelTextBackground',
             'panelDateCalendar',
@@ -270,6 +304,15 @@ class TileAppearance {
           value is bool) {
         result[key] = value;
       }
+    }
+    // Old shared settings become two explicit values. New banner-only edits
+    // never manufacture an icon override or shadow its live inheritance.
+    if (['contain', 'cover', 'edgeColor', 'icon'].contains(input['imageMode'])) {
+      final shared = input['imageMode'] as String;
+      result.putIfAbsent('bannerImageMode', () => shared);
+      result.putIfAbsent('iconImageMode', () => shared == 'icon' ? 'edgeColor' : shared);
+    } else if (input['fillBanner'] is bool) {
+      result.putIfAbsent('bannerImageMode', () => input['fillBanner'] == true ? 'cover' : 'contain');
     }
     return result;
   }

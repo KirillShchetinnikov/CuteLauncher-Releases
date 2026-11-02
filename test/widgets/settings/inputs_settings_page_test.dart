@@ -5,6 +5,7 @@ import 'package:flauncher/providers/night_mode_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/tv_inputs_service.dart';
 import 'package:flauncher/tv_inputs_configuration.dart';
+import 'package:flauncher/models/tv_input.dart';
 import 'package:flauncher/widgets/settings/inputs_settings_page.dart';
 import 'package:flauncher/widgets/settings/inputs_panel.dart';
 import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
@@ -89,24 +90,93 @@ void main() {
       locale: const Locale('ru'),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      routes: {InputsSettingsPage.routeName: (_) => const Scaffold(body: InputsSettingsPage())},
+      routes: {
+        InputsSettingsPage.routeName: (_) =>
+            const Scaffold(body: InputsSettingsPage()),
+      },
       home: Scaffold(body: page),
     ),
   );
 
   Future<void> setInputsAvailable(bool available) async {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(native, (_) async => available
-            ? [{'id': 'port2', 'label': 'HDMI 2', 'type': 1007}]
-            : []);
+        .setMockMethodCallHandler(
+          native,
+          (_) async => available
+              ? [
+                  {'id': 'port2', 'label': 'HDMI 2', 'type': 1007},
+                ]
+              : [],
+        );
     await inputs.refreshInputs();
   }
 
-  testWidgets('input settings entry follows system input availability', (tester) async {
+  testWidgets(
+    'remote toggles CEC-only states, persists and restores original port state',
+    (tester) async {
+      final messenger =
+          TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+      var reads = 0;
+      messenger.setMockMethodCallHandler(native, (_) async {
+        reads++;
+        return [
+          {'id': 'port2', 'label': 'HDMI 2', 'type': 1007, 'state': 2},
+          {
+            'id': 'cec',
+            'label': 'XBOX',
+            'parentId': 'port2',
+            'type': 1007,
+            'state': 0,
+          },
+        ];
+      });
+      await tester.pumpWidget(app(const InputsSettingsPage()));
+      await tester.pumpAndSettle();
+      expect(inputs.inputs.single.connection, TvInputConnection.disconnected);
+      final toggle = find.widgetWithText(
+        RoundedSwitchListTile,
+        'Состояние HDMI только по CEC',
+      );
+      await tester.ensureVisible(toggle);
+      Focus.of(
+        tester.element(
+          find.descendant(
+            of: toggle,
+            matching: find.text('Состояние HDMI только по CEC'),
+          ),
+        ),
+      ).requestFocus();
+      await tester.pump();
+      final beforeReads = reads;
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pumpAndSettle();
+      expect(inputs.configuration.cecStateOnly, isTrue);
+      expect(inputs.inputs.single.connection, TvInputConnection.connected);
+      expect(
+        TvInputsConfiguration.decode(
+          preferences.getString(tvInputsConfigurationKey),
+        ).cecStateOnly,
+        isTrue,
+      );
+      expect(reads, beforeReads);
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pumpAndSettle();
+      expect(inputs.inputs.single.connection, TvInputConnection.disconnected);
+      expect(inputs.inputs.single.label, 'XBOX');
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets('input settings entry follows system input availability', (
+    tester,
+  ) async {
     await setInputsAvailable(false);
     await tester.pumpWidget(app(const StatusBarObjectsPage()));
     await tester.pumpAndSettle();
-    final entry = find.widgetWithText(FocusableSettingsTile, 'Настройки входов');
+    final entry = find.widgetWithText(
+      FocusableSettingsTile,
+      'Настройки входов',
+    );
     await tester.scrollUntilVisible(entry, 150);
     await tester.ensureVisible(entry);
     await tester.pumpAndSettle();
@@ -117,8 +187,10 @@ void main() {
 
     await setInputsAvailable(true);
     await tester.pumpAndSettle();
-    tester.state<ScrollableState>(find.byType(Scrollable).first)
-        .position.jumpTo(0);
+    tester
+        .state<ScrollableState>(find.byType(Scrollable).first)
+        .position
+        .jumpTo(0);
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(entry, 150);
     await tester.ensureVisible(entry);
@@ -142,58 +214,87 @@ void main() {
     await tester.pumpWidget(const SizedBox());
   });
 
-  testWidgets('open input settings disable edits without losing configuration', (tester) async {
-    await inputs.configure(const TvInputsConfiguration(useCecNames: false));
-    final saved = preferences.getString(tvInputsConfigurationKey);
-    await tester.pumpWidget(app(const InputsSettingsPage()));
-    await tester.pumpAndSettle();
-    await setInputsAvailable(false);
-    await tester.pumpAndSettle();
-    final toggle = find.byType(RoundedSwitchListTile);
-    expect(tester.widget<RoundedSwitchListTile>(toggle).enabled, isFalse);
-    await tester.tap(toggle);
-    await tester.pumpAndSettle();
-    expect(preferences.getString(tvInputsConfigurationKey), saved);
+  testWidgets(
+    'open input settings disable edits without losing configuration',
+    (tester) async {
+      await inputs.configure(const TvInputsConfiguration(useCecNames: false));
+      final saved = preferences.getString(tvInputsConfigurationKey);
+      await tester.pumpWidget(app(const InputsSettingsPage()));
+      await tester.pumpAndSettle();
+      await setInputsAvailable(false);
+      await tester.pumpAndSettle();
+      final toggle = find.widgetWithText(
+        RoundedSwitchListTile,
+        'Брать имя устройства из CEC',
+      );
+      final stateToggle = find.widgetWithText(
+        RoundedSwitchListTile,
+        'Состояние HDMI только по CEC',
+      );
+      expect(tester.widget<RoundedSwitchListTile>(toggle).enabled, isFalse);
+      expect(
+        tester.widget<RoundedSwitchListTile>(stateToggle).enabled,
+        isFalse,
+      );
+      await tester.tap(toggle);
+      await tester.pumpAndSettle();
+      expect(preferences.getString(tvInputsConfigurationKey), saved);
 
-    await setInputsAvailable(true);
-    await tester.pumpAndSettle();
-    expect(tester.widget<RoundedSwitchListTile>(toggle).enabled, isTrue);
-    expect(inputs.configuration.useCecNames, isFalse);
-    await tester.pumpWidget(const SizedBox());
-  });
+      await setInputsAvailable(true);
+      await tester.pumpAndSettle();
+      expect(tester.widget<RoundedSwitchListTile>(toggle).enabled, isTrue);
+      expect(tester.widget<RoundedSwitchListTile>(stateToggle).enabled, isTrue);
+      expect(inputs.configuration.useCecNames, isFalse);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
 
-  testWidgets('input disappearance blocks an open name dialog and detail edits', (tester) async {
-    await tester.pumpWidget(app(InputsSettingsPage(input: inputs.inputs.last)));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Своё название'));
-    await tester.pumpAndSettle();
-    await tester.enterText(find.byType(TextField), 'Console');
-    await setInputsAvailable(false);
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('ОК'));
-    await tester.pumpAndSettle();
-    expect(inputs.configuration.overrides, isEmpty);
-    for (final label in ['Своё название', 'Иконка входа']) {
-      expect(tester.widget<FocusableSettingsTile>(
-        find.widgetWithText(FocusableSettingsTile, label)).enabled, isFalse);
-    }
-    await tester.pumpWidget(const SizedBox());
-  });
+  testWidgets(
+    'input disappearance blocks an open name dialog and detail edits',
+    (tester) async {
+      await tester.pumpWidget(
+        app(InputsSettingsPage(input: inputs.inputs.last)),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Своё название'));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextField), 'Console');
+      await setInputsAvailable(false);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('ОК'));
+      await tester.pumpAndSettle();
+      expect(inputs.configuration.overrides, isEmpty);
+      for (final label in ['Своё название', 'Иконка входа']) {
+        expect(
+          tester
+              .widget<FocusableSettingsTile>(
+                find.widgetWithText(FocusableSettingsTile, label),
+              )
+              .enabled,
+          isFalse,
+        );
+      }
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
 
-  testWidgets('input settings remain available when the top panel button is off', (tester) async {
-    await settings.setShowInputsWidgetInStatusBar(false);
-    await tester.pumpWidget(app(const StatusBarObjectsPage()));
-    await tester.pumpAndSettle();
-    await tester.scrollUntilVisible(find.text('Настройки входов'), 150);
-    await tester.ensureVisible(find.text('Настройки входов'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Настройки входов'));
-    await tester.pumpAndSettle();
-    expect(find.text('Брать имя устройства из CEC'), findsOneWidget);
-    expect(find.text('XBOX'), findsOneWidget);
-    expect(settings.showInputsWidgetInStatusBar, isFalse);
-    await tester.pumpWidget(const SizedBox());
-  });
+  testWidgets(
+    'input settings remain available when the top panel button is off',
+    (tester) async {
+      await settings.setShowInputsWidgetInStatusBar(false);
+      await tester.pumpWidget(app(const StatusBarObjectsPage()));
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(find.text('Настройки входов'), 150);
+      await tester.ensureVisible(find.text('Настройки входов'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Настройки входов'));
+      await tester.pumpAndSettle();
+      expect(find.text('Брать имя устройства из CEC'), findsOneWidget);
+      expect(find.text('XBOX'), findsOneWidget);
+      expect(settings.showInputsWidgetInStatusBar, isFalse);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
 
   testWidgets(
     'remote edits own name/icon; CEC can be disabled and name cleared',

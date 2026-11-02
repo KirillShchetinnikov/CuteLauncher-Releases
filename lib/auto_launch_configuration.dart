@@ -1,6 +1,6 @@
 class AutoLaunchConfiguration {
   final String mode, app, input;
-  final bool boot, wake;
+  final bool boot, wake, waitForInternet;
   final int delay;
   const AutoLaunchConfiguration({
     this.mode = 'off',
@@ -9,6 +9,7 @@ class AutoLaunchConfiguration {
     this.boot = false,
     this.wake = false,
     this.delay = 5,
+    this.waitForInternet = false,
   });
   bool get valid =>
       ['off', 'app', 'hdmi'].contains(mode) &&
@@ -29,6 +30,7 @@ class AutoLaunchConfiguration {
     'boot': boot,
     'wake': wake,
     'delay': delay,
+    'waitForInternet': waitForInternet,
   };
   static AutoLaunchConfiguration fromMap(Map<String, dynamic> map) {
     try {
@@ -39,6 +41,7 @@ class AutoLaunchConfiguration {
         boot: map['boot'] as bool? ?? false,
         wake: map['wake'] as bool? ?? false,
         delay: map['delay'] as int? ?? 5,
+        waitForInternet: map['waitForInternet'] as bool? ?? false,
       );
       return config.valid ? config : const AutoLaunchConfiguration();
     } catch (_) {
@@ -53,6 +56,7 @@ class AutoLaunchConfiguration {
     bool? boot,
     bool? wake,
     int? delay,
+    bool? waitForInternet,
   }) => AutoLaunchConfiguration(
     mode: mode ?? this.mode,
     app: app ?? this.app,
@@ -60,5 +64,6 @@ class AutoLaunchConfiguration {
     boot: boot ?? this.boot,
     wake: wake ?? this.wake,
     delay: delay ?? this.delay,
+    waitForInternet: waitForInternet ?? this.waitForInternet,
   );
 }

@@ -1,4 +1,5 @@
 import 'information_placement.dart';
+import 'key_sounds.dart';
 import 'widgets/wallpaper_background.dart';
 import 'widgets/landscape_wallpaper.dart';
 import 'widgets/video_wallpaper_background.dart';
@@ -201,7 +202,7 @@ class FLauncherState extends State<FLauncher> {
   }
 
   @override
-  Widget build(BuildContext context) => Actions(
+  Widget build(BuildContext context) => HomeKeySoundScope(child: Actions(
     actions: <Type, Action<Intent>>{
       MoveFocusToSettingsIntent: CallbackAction<MoveFocusToSettingsIntent>(
         onInvoke: (_) {
@@ -295,7 +296,7 @@ class FLauncherState extends State<FLauncher> {
         ]
       )
     ),
-  );
+  ));
 
   ({Widget child, bool singleTape}) _sections(
     List<LauncherSection> sections, {
@@ -351,7 +352,7 @@ class FLauncherState extends State<FLauncher> {
       }
       if (rows.isEmpty) return null;
       return Container(key: const ValueKey('app-channels-group'),
-        color: style.color('sectionBackground'),
+        decoration: style.sectionDecoration(),
         padding: EdgeInsets.all(style.number('sectionPadding') ?? 0),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           if (style.sectionTitles) Padding(

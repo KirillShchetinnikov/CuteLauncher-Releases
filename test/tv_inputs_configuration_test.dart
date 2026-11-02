@@ -8,6 +8,82 @@ import 'package:flauncher/providers/night_mode_configuration.dart';
 import 'package:flauncher/providers/night_mode_service.dart' show nightModeKey;
 
 void main() {
+  test('CEC-only states never hide ports or fabricate connectivity and are reversible', () {
+    final raw = [
+      TvInput.fromMap({'id': 'p', 'label': 'HDMI 1', 'type': 1007, 'state': 2}),
+      TvInput.fromMap({
+        'id': 'c',
+        'parentId': 'p',
+        'label': 'Console',
+        'type': 1007,
+        'state': 0,
+      }),
+      TvInput.fromMap({
+        'id': 'empty',
+        'label': 'HDMI 2',
+        'type': 1007,
+        'state': 0,
+      }),
+      TvInput.fromMap({'id': 'av', 'label': 'AV', 'type': 1001, 'state': 0}),
+    ];
+    final standard = const TvInputsConfiguration().copyWith(
+      id: 'p',
+      value: const TvInputOverride(name: 'My console', icon: 'game'),
+    );
+    final config = standard.copyWith(cecStateOnly: true);
+    final before = standard.present(raw), after = config.present(raw);
+    expect(before.first.connection, TvInputConnection.disconnected);
+    expect(after.first.connection, TvInputConnection.connected);
+    expect(after[1].connection, TvInputConnection.unknown);
+    expect(after[2].connection, TvInputConnection.connected);
+    expect(
+      after.map((v) => (v.id, v.label, v.icon, v.aliases.join(','))),
+      before.map((v) => (v.id, v.label, v.icon, v.aliases.join(','))),
+    );
+    expect(config.present(after).first.connection, TvInputConnection.connected);
+    expect(
+      standard.present(after).first.connection,
+      TvInputConnection.disconnected,
+    );
+    expect(standard.present(after)[1].connection, TvInputConnection.connected);
+    final backup = compatibleSettings({
+      tvInputsConfigurationKey: config.encode(),
+    }, {});
+    expect(
+      TvInputsConfiguration.decode(backup[tvInputsConfigurationKey] as String)
+          .cecStateOnly,
+      isTrue,
+    );
+    expect(TvInputsConfiguration.parse({}).cecStateOnly, isFalse);
+    // Multiple devices and chains retain their own CEC states and remain individually selectable.
+    final multi = config.present([
+      ...raw,
+      TvInput.fromMap({
+        'id': 'c2',
+        'parentId': 'p',
+        'label': 'Receiver',
+        'type': 1007,
+        'state': 1,
+      }),
+      TvInput.fromMap({
+        'id': 'child',
+        'parentId': 'c2',
+        'label': 'Player',
+        'type': 1007,
+        'state': 2,
+      }),
+    ]);
+    expect(multi.first.connection, TvInputConnection.unknown);
+    expect(
+      multi.firstWhere((v) => v.id == 'c2').connection,
+      TvInputConnection.standby,
+    );
+    expect(
+      multi.firstWhere((v) => v.id == 'child').connection,
+      TvInputConnection.disconnected,
+    );
+    expect(multi, hasLength(6));
+  });
   final raw = [
     TvInput.fromMap({'id': 'port', 'label': 'HDMI 2', 'type': 1007}),
     TvInput.fromMap({
@@ -66,6 +142,7 @@ void main() {
     );
     for (final value in [
       {'useCecNames': 1},
+      {'cecStateOnly': 1},
       {'overrides': []},
       {
         'overrides': {

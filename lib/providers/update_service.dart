@@ -515,10 +515,12 @@ class UpdateService extends ChangeNotifier
       final status = await installer();
       if (!current()) return;
       installStatus = status;
-      if (installStatus == 'invalid') ready = false;
+      final rejected =
+          installStatus == 'invalid' ||
+          (installStatus?.startsWith('invalid_') ?? false);
+      if (rejected) ready = false;
       failed =
-          installStatus == null ||
-          ['invalid', 'unavailable'].contains(installStatus);
+          installStatus == null || rejected || installStatus == 'unavailable';
     } catch (error, stack) {
       DiagnosticsStore.instance.recordException('updateDownloadInstall', error, stack);
       if (current()) failed = true;

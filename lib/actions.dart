@@ -16,10 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'package:flauncher/flauncher_channel.dart';
+import 'key_sounds.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/launcher_state.dart';
-import 'package:flauncher/providers/settings_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:provider/provider.dart';
@@ -31,15 +30,10 @@ class SoundFeedbackDirectionalFocusAction extends DirectionalFocusAction {
 
   @override
   void invoke(DirectionalFocusIntent intent) {
+    final soundContext = FocusManager.instance.primaryFocus?.context ?? context;
     super.invoke(intent);
-
-    SettingsService settingsService = context.read<SettingsService>();
-    if (settingsService.appKeyClickEnabled) {
-      FLauncherChannel().playClickSound();
-      silentForTap(context);
-    } else {
-      silentForTap(context);
-    }
+    playKeySound(soundContext);
+    silentForTap(context);
   }
 
   /// copied from Feedback.forTap, omitting playing a sound

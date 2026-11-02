@@ -72,6 +72,40 @@ public class VpnControllerTest {
             assertEquals("happ://disconnect_without_ui", Shadows.shadowOf(context).getNextStartedActivity().getDataString());
         }
     }
+    @Test public void incyUsesPackageScopedLinksAndKeepsVpnOwnershipChecks() {
+        try (var lifecycle = Robolectric.buildActivity(Activity.class).setup()) {
+            var context = lifecycle.get(); String app = "llc.itdev.incy"; install(context, app);
+            var active = new AtomicBoolean(false);
+            var owner = new AtomicReference<>(new VpnPolicy.Active(app, ""));
+            var vpn = new VpnController(context, owner::get, active::get);
+            assertEquals(true, vpn.clients().get(0).get("supported"));
+            assertEquals(false, vpn.clients().get(0).get("requiresProfile"));
+            assertTrue(vpn.save(Map.of("key", "bootApp", "value", app)));
+            // A client version without the exported link handler must remain unavailable.
+            assertEquals("unsupported", vpn.command(app, "", true));
+            for (String action : java.util.List.of("connect", "disconnect")) {
+                var entry = new ActivityInfo(); entry.packageName = app;
+                entry.name = app + ".MainActivity"; entry.exported = true;
+                var resolved = new ResolveInfo(); resolved.activityInfo = entry;
+                Shadows.shadowOf(context.getPackageManager()).addResolveInfoForIntent(
+                    new Intent(Intent.ACTION_VIEW, android.net.Uri.parse("incy://" + action)).setPackage(app), resolved);
+            }
+            assertEquals("sent", vpn.command(app, "", true));
+            var connect = Shadows.shadowOf(context).getNextStartedActivity();
+            assertEquals("incy://connect", connect.getDataString());
+            assertEquals(app, connect.getPackage());
+            assertTrue((connect.getFlags() & Intent.FLAG_ACTIVITY_NEW_TASK) != 0);
+            active.set(true);
+            assertEquals("connected", vpn.command(app, "", true));
+            owner.set(new VpnPolicy.Active("org.example.other", ""));
+            assertEquals("other", vpn.command(app, "", false));
+            assertNull(Shadows.shadowOf(context).getNextStartedActivity());
+            owner.set(new VpnPolicy.Active(app, ""));
+            assertEquals("sent", vpn.command(app, "", false));
+            assertEquals("incy://disconnect", Shadows.shadowOf(context).getNextStartedActivity().getDataString());
+            assertTrue(Shadows.shadowOf(context).getBroadcastIntents().isEmpty());
+        }
+    }
     @Test public void mantarayUsesPublicActionsAndPreservesClientConfirmation() {
         try (var lifecycle = Robolectric.buildActivity(Activity.class).setup()) {
             var context = lifecycle.get(); String app = "com.mantaray.vpn"; install(context, app);

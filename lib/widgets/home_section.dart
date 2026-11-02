@@ -312,7 +312,7 @@ class _HomeSectionState extends State<HomeSection> {
           child: child,
         ),
         child: Container(
-          color: style.color('sectionBackground') ?? categoryStyle?.background,
+          decoration: style.sectionDecoration(fallbackColor: categoryStyle?.background),
           padding: EdgeInsets.all(padding),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -397,7 +397,7 @@ class _HomeSectionState extends State<HomeSection> {
                     }
                     _layout = l;
                     final signature =
-                        '$mode:$columns:${l.rows}:${l.width}:${l.height}:${l.gapX}:${l.gapY}:${style.labels}:${service?.appearance.anchored}:${service?.appearance.sectionPosition}:$padding:${style.sectionTitles}:${_apps.map((a) => a.packageName).join(',')}';
+                        '$mode:$columns:${l.rows}:${l.width}:${l.height}:${l.gapX}:${l.gapY}:${l.labelHeight}:${categoryStyle?.maxRows ?? 0}:${style.labels}:${service?.appearance.anchored}:${service?.appearance.sectionPosition}:$padding:${style.sectionTitles}:${_apps.map((a) => a.packageName).join(',')}';
                     if (_signature != signature) {
                       _signature = signature;
                       _preferredColumn = null;
@@ -441,10 +441,7 @@ class _HomeSectionState extends State<HomeSection> {
                     }
 
                     final maxRows = categoryStyle?.maxRows ?? 0;
-                    final height = l.windowHeight(
-                      maxRows,
-                      MediaQuery.sizeOf(context).height - 180,
-                    );
+                    final height = l.windowHeight(maxRows);
                     final child = ReorderingTileViewport(
                       layout: l,
                       packages: _apps.map((app) => app.packageName).toList(),

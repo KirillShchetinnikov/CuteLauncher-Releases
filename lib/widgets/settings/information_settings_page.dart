@@ -9,6 +9,7 @@ import '../../providers/remote_panel_service.dart';
 import '../../providers/settings_service.dart';
 import '../rounded_switch_list_tile.dart';
 import 'date_time_format_page.dart';
+import 'background_information_order_page.dart';
 import 'focusable_settings_tile.dart';
 import 'panel_clock_style_page.dart';
 import 'settings_page_layout.dart';
@@ -272,6 +273,12 @@ class BackgroundInformationSettingsPage extends StatelessWidget {
       child: ListView(
         children: [
           SettingsHelp(text: l.informationBackgroundHelp),
+          _informationPage(
+            context,
+            l.panelObjectOrder,
+            const BackgroundInformationOrderPage(),
+            BackgroundInformationOrderPage.routeName,
+          ),
           SettingsChoiceTile<String>(
             title: l.informationBackgroundAlignment,
             value: appearance.backgroundInformationAlignment,

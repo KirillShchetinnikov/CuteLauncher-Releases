@@ -4,6 +4,12 @@ import java.util.regex.Pattern;
 
 /** Shell arguments are package IDs only. Recommendations never follow name heuristics. */
 final class TvCleanerPolicy {
+    // Exact core/middleware IDs: protection must not depend on OEM UID or persistent flags.
+    private static final java.util.Set<String> CORE_PACKAGES = java.util.Set.of(
+        "android.ext.services", "android.ext.shared",
+        "com.google.android.ext.services", "com.google.android.ext.shared",
+        "com.google.android.modulemetadata", "com.cltv.mal",
+        "com.mediatek.tis", "com.mediatek.tv.service", "com.mediatek.tv.agent");
     static int parseState(String dump) {
         var match = Pattern.compile("(?m)^\\s*User 0:.*?installed=true.*?enabled=([0-4])(?:\\s|$)").matcher(dump);
         if (!match.find()) throw new IllegalStateException("Package state unavailable");
@@ -20,7 +26,7 @@ final class TvCleanerPolicy {
         return "pm " + actions[state] + " --user 0 '" + name + "'";
     }
     static boolean critical(String name) {
-        return name.equals("android") || name.contains("setupwraith")
+        return CORE_PACKAGES.contains(name) || name.equals("android") || name.contains("setupwraith")
             || name.startsWith("com.android.") || name.startsWith("com.google.android.overlay.")
             || name.startsWith("com.google.android.networkstack")
             || name.equals("com.google.android.gms") || name.equals("com.google.android.gsf")

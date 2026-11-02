@@ -153,7 +153,7 @@ BackupSyncGroup? backupSyncPartGroup(String part) {
     return BackupSyncGroup.tiles;
   }
   if (key == 'accent_color') return BackupSyncGroup.accent;
-  if (key == 'settings_menu_on_right') return BackupSyncGroup.menuLayout;
+  if (key == 'settings_menu_on_right' || key == 'app_key_click_enabled') return BackupSyncGroup.menuLayout;
   if (const {
     'app_highlight_animation_enabled',
     'hide_highlight_outline_on_homescreen',
@@ -206,7 +206,7 @@ BackupSyncGroup? backupSyncPartGroup(String part) {
   }
   if (const {
     'back_button_action',
-    'app_key_click_enabled',
+    'home_key_click_enabled',
     'card_focus_mode',
     'remember_category_focus',
     'show_category_titles',

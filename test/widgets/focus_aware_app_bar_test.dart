@@ -35,6 +35,8 @@ void main() {
   late MockWeatherService mockWeatherService;
 
   void setupSettingsDefaults(MockSettingsService service) {
+    when(service.appKeyClickEnabled).thenReturn(false);
+    when(service.homeKeyClickEnabled).thenReturn(false);
     final landscape = ValueNotifier<LandscapeDemoFrame?>(null);
     addTearDown(landscape.dispose);
     when(service.landscapeDemo).thenReturn(landscape);

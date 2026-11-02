@@ -30,13 +30,13 @@ final class RemoteButtonRemapper implements AutoCloseable {
         storage.execute(() -> {
             try {
                 RemoteMappingConfiguration loaded = new RemoteMappingStore(service).load();
-                main.post(() -> { if (!closed && generation == expected) configuration = loaded; });
+                main.post(() -> { if (!closed && generation == expected) { configuration = loaded; LauncherAccessibilityService.volumeConfigured(loaded); } });
             } catch (Exception ignored) { if (!closed) status = "storage_error"; }
         });
         storage.shutdown();
     }
     static void updated(RemoteMappingConfiguration configuration) {
-        if (current != null) { current.generation++; current.configuration = configuration; }
+        if (current != null) { current.generation++; current.configuration = configuration; LauncherAccessibilityService.volumeConfigured(configuration); }
         status = "idle";
     }
     private RemoteMappingConfiguration.Binding shortBinding(int code, boolean suspended) {
@@ -71,6 +71,7 @@ final class RemoteButtonRemapper implements AutoCloseable {
     private void execute(RemoteMappingConfiguration.Binding binding) {
         try {
             switch (binding.action()) {
+                case "ignore": status = "success"; break;
                 case "recents":
                     service.dismissPanel();
                     status = RecentAppsBridge.open(service) ? "success" : "unavailable"; break;
@@ -109,6 +110,10 @@ final class RemoteButtonRemapper implements AutoCloseable {
     }
     void interrupt() {
         policy.cancelActions(); holdTimers.values().forEach(main::removeCallbacks); holdTimers.clear();
+    }
+    void filterPaused() {
+        interrupt();
+        policy.clear(); // UP may pass outside the service while filtering is disabled.
     }
     @Override public void close() {
         closed = true; policy.clear(); holdTimers.values().forEach(main::removeCallbacks); holdTimers.clear(); storage.shutdownNow(); network.shutdownNow();

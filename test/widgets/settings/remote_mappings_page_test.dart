@@ -62,6 +62,20 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  testWidgets('ignore action remains selected and saves without a target', (tester) async {
+    config = const RemoteMappingConfiguration(enabled: true, bindings: [
+      RemoteMapping(keyCode: 4137, name: 'Netflix', action: 'ignore'),
+    ]);
+    await open(tester);
+    await tester.tap(find.textContaining('Netflix').first);
+    await tester.pumpAndSettle();
+    expect(find.text('Игнорировать кнопку'), findsOneWidget);
+    await tester.tap(find.text('Сохранить'));
+    await tester.pumpAndSettle();
+    expect(config.bindings.single.action, 'ignore');
+    expect(config.bindings.single.target, isEmpty);
+    expect(tester.takeException(), isNull);
+  });
   testWidgets('Back preserves a dirty draft until discard is confirmed', (
     tester,
   ) async {

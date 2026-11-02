@@ -196,12 +196,17 @@ final class VpnController {
             if (named && !profile.equals(state.get("activeProfile"))) return "profile";
             if (up) return "connected";
         } else if (!up) return "disconnected";
-        if (app.equals("com.happproxy") || app.equals("su.happ.proxyutility")) {
-            var intent = new Intent(Intent.ACTION_VIEW, android.net.Uri.parse("happ://" + (up ? "connect_without_ui" : "disconnect_without_ui")))
+        if (app.equals("com.happproxy") || app.equals("su.happ.proxyutility") || app.equals("llc.itdev.incy")) {
+            // INCY documents connect/disconnect links; unlike Happ they may show the client UI.
+            // https://docs.incy.cc/deep-links/
+            String link = app.equals("llc.itdev.incy") ? "incy://" + (up ? "connect" : "disconnect")
+                : "happ://" + (up ? "connect_without_ui" : "disconnect_without_ui");
+            var intent = new Intent(Intent.ACTION_VIEW, android.net.Uri.parse(link))
                 .setPackage(app).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
             var resolved = context.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
-            if (resolved == null || resolved.activityInfo == null || !resolved.activityInfo.exported) return "unsupported";
-            // The no-UI command must not dismiss the quick-settings overlay's menu.
+            if (resolved == null || resolved.activityInfo == null || !resolved.activityInfo.exported
+                    || !app.equals(resolved.activityInfo.packageName)) return "unsupported";
+            // Application context keeps Happ's no-UI command from dismissing the overlay menu.
             context.getApplicationContext().startActivity(intent);
             return "sent";
         }

@@ -127,6 +127,8 @@ class AppChannelsAppearancePage extends StatelessWidget {
               'sectionIcons',
               'sectionPadding',
               'sectionBackground',
+              'sectionOpacity',
+              'sectionRadius',
             ], categoryId: categoryId),
           ),
         ],

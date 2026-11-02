@@ -10,15 +10,55 @@ class AppLocalizationsUk extends AppLocalizations {
   AppLocalizationsUk([String locale = 'uk']) : super(locale);
 
   @override
+  String get volumeKeysTitle => 'Утримання гучності';
+
+  @override
+  String get volumeKeysMode => 'Спосіб виправлення';
+
+  @override
+  String get volumeKeysAuto => 'Авто: поки видно панель';
+
+  @override
+  String get volumeKeysTimed => 'Пауза за таймером';
+
+  @override
+  String get volumeKeysRepeat => 'Власний повтор';
+
+  @override
+  String get volumeKeysDuration => 'Тривалість паузи';
+
+  @override
+  String get volumeKeysHelp =>
+      'На деяких Android TV і Google TV перехоплення кнопок через спеціальні можливості порушує системний повтор гучності. Це може впливати на всі програми, поки службу ввімкнено.\n\n«Авто: поки видно панель» — рекомендований початковий режим після ввімкнення ремапера. Поява індикатора знімає фільтр. Після вибраної паузи перевіряється вікно: поки воно видиме, пауза подовжується, але не довше хвилини. Якщо вікно недоступне, працює таймер.\n\n«Пауза за таймером» повертає фільтр через 3, 5, 10, 15 або 30 секунд після останньої розпізнаної появи панелі. Спробуйте цей спосіб, якщо «Авто» нестабільне; збільште час, якщо пауза закоротка.\n\n«Власний повтор» змінює гучність до відпускання кнопки. Прошивка має передавати службі натискання та відпускання. Без цих подій спосіб не допоможе; можливий подвійний крок. За неправильної роботи змініть режим.\n\nПід час паузи призначення й перехоплення Home недоступні. Перше утримання може дати один крок: відпустіть і повторіть, поки видно індикатор. «Вимкнено» повертає системне керування гучністю без видалення призначень. Вибраний режим зберігається після вимкнення та повторного ввімкнення ремапера.';
+
+  @override
   String get fileStorageSettingsUnavailable =>
       'На цій прошивці недоступний екран доступу до всіх файлів. Скористайтеся системним провідником або встановіть сумісний файловий менеджер.';
 
   @override
-  String get tileFillBanner => 'Заповнювати плитку банером';
+  String get tileImageMode => 'Зображення плитки';
 
   @override
-  String get tileFillBannerHelp =>
-      'Збільшує банер до заповнення плитки зі збереженням пропорцій та обрізанням країв відносно центру. Частина логотипа може обрізатися. Діє для стандартних і власних банерів, не впливає на іконки без банера. Поля всередині самого зображення не видаляються.';
+  String get tileBannerImageMode => 'Програми з банером';
+
+  @override
+  String get tileIconImageMode => 'Програми без банера';
+
+  @override
+  String get tileImageContain => 'Без розтягування';
+
+  @override
+  String get tileImageCover => 'Зі збільшенням';
+
+  @override
+  String get tileImageEdgeColor => 'Ціле зображення з кольором краю';
+
+  @override
+  String get tileImageIcon => 'Іконка з кольором краю';
+
+  @override
+  String get tileImageModeHelp =>
+      'Режими для програм із банером і без нього вибираються окремо. Режим діє, якщо форма плитки обрізає зображення або залишає порожні краї. Можна показати зображення повністю, збільшити з обрізанням без спотворення пропорцій або заповнити вільну область кольором найближчого краю. Заміна банера іконкою з кольором її краю доступна лише для програм із банером. Налаштування розміру іконки зберігається.';
 
   @override
   String get wallhavenWallpaperHint =>
@@ -4866,4 +4906,80 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String get screenshotSceneHelp =>
       'Задає час пейзажу й фонового годинника та погоду пейзажу. Працює після закриття налаштувань. Системний час, дані погоди й збережені налаштування не змінюються. Після перезапуску цієї збірки: 16:00, хмарно.';
+
+  @override
+  String get autoLaunchWaitForInternet => 'Чекати на інтернет';
+
+  @override
+  String get autoLaunchWaitForInternetHelp =>
+      'Після затримки чекати підтвердженого доступу до інтернету до 60 секунд, потім запустити застосунок. Натискання пульта або вихід із головного екрана скасовує запуск.';
+
+  @override
+  String get remoteMappingIgnore => 'Ігнорувати кнопку';
+
+  @override
+  String get adbHomeDependencyProtected =>
+      'Вимкнення заблоковано: виявлено залежність системних функцій або її неможливо перевірити. Подробиці — у діагностиці.';
+
+  @override
+  String get cleanerOperationResultTitle => 'Результат останньої операції';
+
+  @override
+  String get cleanerUnchanged => 'Без змін';
+
+  @override
+  String get cleanerNotAttempted => 'Не виконувалося';
+
+  @override
+  String get cleanerPackageMissing => 'Програма відсутня';
+
+  @override
+  String get cleanerReadFailed => 'Не вдалося прочитати стан';
+
+  @override
+  String get cleanerJournalFailed => 'Не вдалося зберегти журнал відновлення';
+
+  @override
+  String get cleanerCommandFailed => 'Команда завершилася помилкою';
+
+  @override
+  String get cleanerVerificationFailed => 'Новий стан не підтверджено';
+
+  @override
+  String get inputsCecStateOnly => 'Стан HDMI лише за CEC';
+
+  @override
+  String get inputsCecStateOnlyHelp =>
+      'Увімкніть, якщо прошивка плутає стани портів. Використовуються лише дані CEC; без них стан невідомий. Усі входи залишаються у списку.';
+
+  @override
+  String get backgroundInformationOrderHint =>
+      'OK або ◄ / ► — почати або завершити переміщення; ▲ / ▼ — змінити порядок згори вниз; Back — завершити.';
+
+  @override
+  String get homeStyleNeedsSectionBackground => 'Виберіть колір фону розділу.';
+
+  @override
+  String get updateWrongPackage =>
+      'APK призначений для іншого застосунку. Завантажте оновлення CuteLauncher з офіційного джерела.';
+
+  @override
+  String get updateNotNewer =>
+      'Завантажений APK має ту саму або старішу збірку. Можна встановити лише новішу збірку.';
+
+  @override
+  String get updateSignersUnavailable =>
+      'Android не надав сертифікати встановленого застосунку або APK. Не вдалося перевірити підпис; встановлення заблоковано.';
+
+  @override
+  String get updateSignatureMismatch =>
+      'Підпис APK відрізняється від підпису встановленого CuteLauncher. Оновлення заблоковано. Повідомте автору, звідки встановлено поточну версію.';
+
+  @override
+  String get updateInvalidFile =>
+      'Android не зміг прочитати APK: файл відсутній, порожній, завеликий або не розпізнаний. Завантажте оновлення знову.';
+
+  @override
+  String get updateVerificationFailed =>
+      'Під час перевірки APK сталася помилка. Встановлення заблоковано. Спробуйте ще раз; якщо помилка повториться, надішліть автору звіт діагностики.';
 }

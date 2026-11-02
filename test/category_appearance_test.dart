@@ -8,9 +8,48 @@ import 'package:flauncher/category_appearance.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/providers/appearance_service.dart';
 import 'package:flauncher/settings_import.dart';
+import 'package:flauncher/tile_appearance.dart';
 import 'package:flauncher/widgets/settings/section_style_page.dart';
 
 void main() {
+  test('section background validates, imports and preserves independent overrides', () async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    final service = AppearanceService(prefs);
+    addTearDown(service.dispose);
+    await service.set('sectionBackground', 0x80123456);
+    await service.set('sectionOpacity', .5);
+    await service.set('sectionRadius', 24);
+    await service.setCategoryTile(1, 'sectionRadius', 64);
+    expect(service.category(1).tiles, {'sectionRadius': 64});
+    expect(service.tilesFor(1).sectionOpacity, .5);
+    expect(service.tilesFor(2).sectionRadius, 24);
+    final imported = compatibleSettings({
+      tileAppearanceKey: prefs.getString(tileAppearanceKey),
+      categoryAppearanceKey: prefs.getString(categoryAppearanceKey),
+    }, {});
+    final global = TileAppearance.decode(imported[tileAppearanceKey]);
+    expect(global.sectionRadius, 24);
+    expect(global.sectionDecoration().color!.a, closeTo(128 / 255 * .5, .001));
+    expect(CategoryAppearance.decode(imported[categoryAppearanceKey])['1']['tiles'],
+        {'sectionRadius': 64});
+    for (final value in [-1, 65, double.nan, double.infinity, '24']) {
+      expect(TileAppearance.validValues({'sectionRadius': value}), isEmpty);
+    }
+    for (final value in [-.1, 1.1, double.nan, double.infinity, '0.5']) {
+      expect(TileAppearance.validValues({'sectionOpacity': value}), isEmpty);
+    }
+    await service.resetFields(['sectionOpacity', 'sectionRadius'], categoryId: 1);
+    expect(service.tilesFor(1).sectionRadius, 24);
+    expect(service.appearance.values['sectionBackground'], 0x80123456);
+    expect(const TileAppearance().sectionOpacity, 1);
+    expect(const TileAppearance().sectionRadius, 0);
+    expect(const TileAppearance().sectionDecoration(fallbackColor: Color(0x80123456)).color,
+        const Color(0x80123456));
+    expect(const TileAppearance({'sectionBackground': 0, 'sectionOpacity': .5})
+        .sectionDecoration().color!.a, 0);
+  });
+
   test('category styles persist independently, import validates fields and reset clears them', () async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();

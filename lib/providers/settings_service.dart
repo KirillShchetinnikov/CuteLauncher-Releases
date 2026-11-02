@@ -40,6 +40,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 const _appHighlightAnimationEnabledKey = "app_highlight_animation_enabled";
 const _memorySaverEnabledKey = "memory_saver_enabled";
 const _appKeyClickEnabledKey = "app_key_click_enabled";
+const _homeKeyClickEnabledKey = 'home_key_click_enabled';
 const _autoHideAppBarKey = "auto_hide_app_bar";
 const _gradientUuidKey = "gradient_uuid";
 const _backButtonActionKey = "back_button_action";
@@ -175,6 +176,7 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
   bool get appHighlightAnimationEnabled => _appHighlightAnimationEnabled;
 
   bool get appKeyClickEnabled => _appKeyClickEnabled;
+  bool get homeKeyClickEnabled => _sharedPreferences.getBool(_homeKeyClickEnabledKey) ?? false;
 
   bool get autoHideAppBarEnabled => _autoHideAppBarEnabled;
 
@@ -463,6 +465,7 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
       _memorySaverEnabledKey: _memorySaverEnabled,
       _appHighlightAnimationEnabledKey: _appHighlightAnimationEnabled,
       _appKeyClickEnabledKey: _appKeyClickEnabled,
+      _homeKeyClickEnabledKey: homeKeyClickEnabled,
       _autoHideAppBarKey: _autoHideAppBarEnabled,
       _showCategoryTitlesKey: _showCategoryTitles,
       _showAppNamesBelowIconsKey: _showAppNamesBelowIcons,
@@ -559,6 +562,13 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
   Future<void> setAppKeyClickEnabled(bool value) async {
     await _sharedPreferences.setBool(_appKeyClickEnabledKey, value);
     _appKeyClickEnabled = value;
+    notifyListeners();
+  }
+
+  Future<void> setHomeKeyClickEnabled(bool value) async {
+    if (!await _sharedPreferences.setBool(_homeKeyClickEnabledKey, value)) {
+      throw StateError('Unable to save Home key sounds');
+    }
     notifyListeners();
   }
 

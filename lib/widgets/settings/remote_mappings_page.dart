@@ -45,6 +45,7 @@ String remoteKeyLabel(AppLocalizations l, int code) => switch (code) {
 };
 
 String _actionLabel(AppLocalizations l, String value) => switch (value) {
+  'ignore' => l.remoteMappingIgnore,
   'app' => l.autoLaunchApp,
   'home' => l.homeButtonFix,
   'back' => l.remoteMappingBack,
@@ -187,7 +188,7 @@ class _RemoteMappingsPageState extends State<RemoteMappingsPage>
       enabled: _loaded && !_busy,
       title: Text(l.remoteMappingsEnabled),
       onChanged: (value) => _load(
-        RemoteMappingConfiguration(enabled: value, bindings: _config.bindings),
+        _config.copyWith(enabled: value),
       ),
     );
     if (widget.switchOnly) {
@@ -505,6 +506,7 @@ class _MappingEditorState extends State<_MappingEditor> {
                   'webhook',
                   'panel',
                   'recents',
+                  'ignore',
                 ],
                 label: (value) => _actionLabel(l, value),
                 enabled: !_importing && !_saving,

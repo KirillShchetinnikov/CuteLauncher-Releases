@@ -67,6 +67,7 @@ void main() {
       final settings = SettingsService(prefs);
       var scans = 0;
       final service = SlideshowService(prefs, settings,
+        clock: time.getClock(DateTime(2026)).now,
         list: (_, _) async { scans++; return []; });
       time.flushMicrotasks();
       service.image = MemoryImage(kTransparentImage);
@@ -80,12 +81,104 @@ void main() {
       time.elapse(const Duration(minutes: 1));
       expect(scans, 1);
       service.didChangeAppLifecycleState(AppLifecycleState.resumed);
-      time.elapse(const Duration(seconds: 30));
+      time.elapse(Duration.zero);
       expect(scans, 2);
+      time.elapse(const Duration(seconds: 30));
+      expect(scans, 3);
       service.dispose();
       settings.dispose();
     });
   });
+
+  for (final away in [10, 3600]) {
+    test('resume preserves the wallpaper deadline after $away seconds away', () async {
+      SharedPreferences.setMockInitialValues({
+        'background_source': 'slideshow',
+        'slideshow_folder': '/storage/emulated/0/Pictures',
+        'slideshow_interval': 30,
+      });
+      final prefs = await SharedPreferences.getInstance();
+      fakeAsync((time) {
+        final settings = SettingsService(prefs);
+        var scans = 0;
+        final service = SlideshowService(prefs, settings,
+          clock: time.getClock(DateTime(2026)).now,
+          list: (_, _) async { scans++; return []; });
+        try {
+          time.flushMicrotasks();
+          service.image = MemoryImage(kTransparentImage);
+          scans = 0;
+          time.elapse(const Duration(seconds: 5));
+          service.didChangeAppLifecycleState(AppLifecycleState.inactive);
+          service.didChangeAppLifecycleState(AppLifecycleState.hidden);
+          service.didChangeAppLifecycleState(AppLifecycleState.paused);
+          time.elapse(Duration(seconds: away));
+          settings.setAppKeyClickEnabled(false);
+          time.flushMicrotasks();
+          expect(scans, 0, reason: 'no folder reads while watching another app');
+          service.didChangeAppLifecycleState(AppLifecycleState.resumed);
+          time.elapse(Duration.zero);
+          if (away < 25) {
+            expect(scans, 0);
+            time.elapse(Duration(seconds: 25 - away - 1));
+            expect(scans, 0);
+            time.elapse(const Duration(seconds: 1));
+          }
+          expect(scans, 1, reason: 'one overdue change, without replaying missed intervals');
+          service.didChangeAppLifecycleState(AppLifecycleState.resumed);
+          time.elapse(const Duration(seconds: 29));
+          expect(scans, 1);
+          time.elapse(const Duration(seconds: 1));
+          expect(scans, 2);
+        } finally {
+          service.dispose(); settings.dispose();
+        }
+      });
+    });
+  }
+
+  for (final folder in ['content://fixture/tree/root', '/storage/emulated/0/Pictures']) {
+    testWidgets('overdue resume displays the next image from $folder', (tester) async {
+      await tester.runAsync(() async {
+        SharedPreferences.setMockInitialValues({
+          'background_source': 'gradient',
+          'slideshow_folder': folder,
+          'slideshow_interval': 30,
+        });
+        final prefs = await SharedPreferences.getInstance();
+        final settings = SettingsService(prefs);
+        var now = DateTime(2026);
+        final reads = <String>[];
+        final service = SlideshowService(prefs, settings,
+          clock: () => now,
+          list: (_, _) async => ['a', 'b', 'c'],
+          read: (uri) async { reads.add(uri); return kTransparentImage; });
+        try {
+          await settings.setBackgroundSource('slideshow');
+          while (service.loading) {
+            await Future<void>.delayed(const Duration(milliseconds: 1));
+          }
+          final previous = service.image;
+          expect(previous, isNotNull);
+          expect(reads, ['a']);
+          service.didChangeAppLifecycleState(AppLifecycleState.paused);
+          now = now.add(const Duration(hours: 1));
+          expect(reads, ['a']);
+          final changed = Completer<void>();
+          service.addListener(() {
+            if (service.version == 2 && !changed.isCompleted) changed.complete();
+          });
+          service.didChangeAppLifecycleState(AppLifecycleState.resumed);
+          await changed.future.timeout(const Duration(seconds: 5));
+          expect(reads, ['a', 'b']);
+          expect(service.image, isNot(same(previous)));
+          expect(service.failed, isFalse);
+        } finally {
+          service.dispose(); settings.dispose();
+        }
+      });
+    });
+  }
 
   testWidgets('sequential and shuffle cycles avoid repeats, skip corruption and retain last image', (tester) async {
     await tester.runAsync(() async {

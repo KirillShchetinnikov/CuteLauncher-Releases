@@ -8,6 +8,7 @@ import '../providers/appearance_service.dart';
 import '../providers/settings_service.dart';
 import '../providers/weather_service.dart';
 import '../tile_appearance.dart';
+import '../weather_warning_text.dart';
 import 'date_time_widget.dart';
 import 'landscape_clock_clip.dart';
 import 'landscape_horizon.dart';
@@ -115,19 +116,22 @@ class BackgroundInformation extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: columnAlignment,
                           children: [
-                            if (dateVisible)
-                              RepaintBoundary(
-                                child: DateTimeWidget(
-                                  formats.$2,
-                                  key: const Key('background_date'),
-                                  textStyle: detail,
-                                  animate: false,
-                                  fixedTime: fixedTime,
-                                ),
-                              ),
-                            if (weatherVisible)
-                              _BackgroundWeather(style: detail),
-                            if (timeVisible) time,
+                            for (final id
+                                in appearance.backgroundInformationOrder)
+                              if (id == 'date' && dateVisible)
+                                RepaintBoundary(
+                                  child: DateTimeWidget(
+                                    formats.$2,
+                                    key: const Key('background_date'),
+                                    textStyle: detail,
+                                    animate: false,
+                                    fixedTime: fixedTime,
+                                  ),
+                                )
+                              else if (id == 'weather' && weatherVisible)
+                                _BackgroundWeather(style: detail)
+                              else if (id == 'time' && timeVisible)
+                                time,
                           ],
                         ),
                       ),
@@ -161,12 +165,21 @@ class _BackgroundWeather extends StatelessWidget {
   const _BackgroundWeather({required this.style});
   @override
   Widget build(BuildContext context) {
-    final weather = context.select<WeatherService, WeatherData?>(
-      (s) => s.weatherData,
-    );
+    final (weather, stale) = context
+        .select<WeatherService, (WeatherData?, bool)>(
+          (s) => (s.weatherData, s.stale),
+        );
     final fahrenheit = context.select<SettingsService, bool>(
       (s) => s.useFahrenheit,
     );
+    final showWarnings = context.select<SettingsService, bool>(
+      (s) => s.showWeatherWarnings,
+    );
+    final l = AppLocalizations.of(context)!;
+    final warning =
+        showWarnings && !stale && weather != null && weather.hasWarning
+        ? localizedWeatherWarning(weather, l, DateTime.now())
+        : null;
     return Semantics(
       label: AppLocalizations.of(context)!.weather,
       child: Row(
@@ -182,7 +195,10 @@ class _BackgroundWeather extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           Text(
-            weather?.formatTemperature(useFahrenheit: fahrenheit) ?? '—',
+            [
+              weather?.formatTemperature(useFahrenheit: fahrenheit) ?? '—',
+              ?warning,
+            ].join(' • '),
             style: style,
           ),
         ],

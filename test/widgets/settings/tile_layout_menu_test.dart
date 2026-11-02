@@ -21,6 +21,7 @@ import 'package:flauncher/widgets/settings/wallpaper_panel_page.dart';
 import 'package:flauncher/widgets/settings/color_palette_dialog.dart';
 import 'package:flauncher/widgets/settings/reset_style_tile.dart';
 import 'package:flauncher/widgets/settings/settings_value_stepper.dart';
+import 'package:flauncher/widgets/settings/settings_slider_tile.dart';
 
 
 void main() {
@@ -116,6 +117,12 @@ void main() {
       expect(find.text(l.homeScrollMode), findsNothing);
       expect(tester.getTopLeft(find.text(l.appKeyClick)).dy,
           greaterThan(tester.getTopLeft(find.text(l.backButtonAction)).dy));
+      expect(settings.homeKeyClickEnabled, isFalse);
+      expect(settings.appKeyClickEnabled, isFalse);
+      await tester.tap(find.text(l.appKeyClick));
+      await tester.pumpAndSettle();
+      expect(settings.homeKeyClickEnabled, isTrue);
+      expect(settings.appKeyClickEnabled, isFalse);
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox());
     },
@@ -133,6 +140,11 @@ void main() {
     final l = AppLocalizations.of(
       tester.element(find.byType(SettingsStylePage)),
     )!;
+    expect(find.text(l.appKeyClick), findsOneWidget);
+    await tester.tap(find.text(l.appKeyClick));
+    await tester.pumpAndSettle();
+    expect(settings.appKeyClickEnabled, isTrue);
+    expect(settings.homeKeyClickEnabled, isFalse);
     await tester.tap(find.text(l.settingsMenuPosition));
     await tester.pumpAndSettle();
     await tester.tap(find.text(l.settingsMenuRight));
@@ -168,12 +180,12 @@ void main() {
       final l = AppLocalizations.of(tester.element(find.byType(SectionStylePage)))!;
       expect(find.text(l.categoryPadding), id == null ? findsNothing : findsOneWidget);
       if (id == null) {
-        await tester.ensureVisible(find.byType(ResetStyleTile));
+        await tester.scrollUntilVisible(find.byType(ResetStyleTile), 150);
         expect(tester.getTopLeft(find.text(l.homeSectionGap)).dy,
             lessThan(tester.getTopLeft(find.byType(ResetStyleTile)).dy));
       }
       Future<void> open() async {
-        await tester.ensureVisible(find.text(l.categoryBackground));
+        await tester.scrollUntilVisible(find.text(l.categoryBackground), -150);
         await tester.tap(find.text(l.categoryBackground));
         await tester.pumpAndSettle();
       }
@@ -193,6 +205,54 @@ void main() {
       await tester.tap(find.text(l.categoryTransparent));
       await tester.pumpAndSettle();
       expect((id == null ? appearance.appearance : appearance.tilesFor(id)).values['sectionBackground'], 0);
+      await tester.pumpWidget(const SizedBox());
+    }
+  });
+
+  testWidgets('section background sliders save, inherit and preserve color', (tester) async {
+    for (final id in <int?>[null, 1]) {
+      await pump(tester, SectionStylePage(categoryId: id));
+      final l = AppLocalizations.of(tester.element(find.byType(SectionStylePage)))!;
+      Finder slider(String title) => find.byWidgetPredicate(
+        (w) => w is SettingsSliderTile && w.title == title);
+      expect(tester.widget<SettingsSliderTile>(slider(l.tileOpacity)).enabled, isFalse);
+      expect(tester.widget<SettingsSliderTile>(slider(l.tileCornerRadius)).enabled, isFalse);
+      if (id == null) {
+        await appearance.set('sectionBackground', 0xff123456);
+      } else {
+        await appearance.setCategoryTile(id, 'sectionBackground', 0xff123456);
+      }
+      await tester.pumpAndSettle();
+      for (final title in [l.tileOpacity, l.tileCornerRadius]) {
+        final control = slider(title);
+        expect(tester.widget<SettingsSliderTile>(control).enabled, isTrue);
+        await tester.ensureVisible(control);
+        Focus.of(tester.element(find.descendant(of: control, matching: find.byType(Text)).first)).requestFocus();
+        await tester.pumpAndSettle();
+        await tester.sendKeyEvent(title == l.tileOpacity
+            ? LogicalKeyboardKey.arrowLeft : LogicalKeyboardKey.arrowRight);
+        await tester.pumpAndSettle();
+        final focus = FocusManager.instance.primaryFocus;
+        await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+        await tester.pumpAndSettle();
+        expect(FocusManager.instance.primaryFocus, isNot(same(focus)));
+      }
+      final style = id == null ? appearance.appearance : appearance.tilesFor(id);
+      expect(style.sectionOpacity, .99);
+      expect(style.sectionRadius, 1);
+      expect(style.values['sectionBackground'], 0xff123456);
+      if (id != null) {
+        expect(appearance.tilesFor(2).sectionOpacity, 1);
+        expect(appearance.tilesFor(2).sectionRadius, 0);
+      }
+      await appearance.resetFields(['sectionBackground'], categoryId: id);
+      await tester.pumpAndSettle();
+      expect(tester.widget<SettingsSliderTile>(slider(l.tileOpacity)).enabled, isFalse);
+      expect((id == null ? appearance.appearance : appearance.tilesFor(id)).sectionOpacity, .99);
+      await appearance.resetFields(['sectionOpacity', 'sectionRadius'], categoryId: id);
+      expect((id == null ? appearance.appearance : appearance.tilesFor(id)).sectionOpacity, 1);
+      expect((id == null ? appearance.appearance : appearance.tilesFor(id)).sectionRadius, 0);
+      expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox());
     }
   });
@@ -267,6 +327,8 @@ void main() {
     await appearance.setCategoryTile(1, 'labels', 'all');
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(find.text(l.homeOwnReset), 200);
+      await tester.ensureVisible(find.text(l.homeOwnReset));
+      await tester.pumpAndSettle();
     expect(find.byType(ResetStyleTile), findsOneWidget);
     expect(find.text(l.resetStyleSection), findsNothing);
     await tester.tap(find.text(l.homeOwnReset));

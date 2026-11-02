@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "reportType": "tvInventoryMetadata",
+  "scope": "deviceMetadata",
+  "verification": "observedOnly",
+  "capturedAt": "2026-11-02T00:00:00Z",
+  "sourceReport": "cutelauncher_diagnostics_1793625861002.zip",
+  "identity": {
+    "manufacturer": "FORMULER",
+    "model": "Formuler Z10 Pro MAX",
+    "device": "Z10ProMAX",
+    "fingerprint": "HiSTBAndroidV6/Hi3798CV200/Hi3798CV200:10/QT/2606261233:user/release-keys",
+    "firmware": "QT 2606261233 release-keys",
+    "android": "10",
+    "sdk": "29",
+    "abis": "armeabi-v7a,armeabi"
+  },
+  "diagnostics": {
+    "packageCount": 107,
+    "disabledCount": 9,
+    "launcher": {
+      "versionName": "1.6.2",
+      "versionCode": "183"
+    }
+  },
+  "completeness": {
+    "status": "complete",
+    "sourceCount": 107,
+    "skippedCount": 0,
+    "truncated": false
+  },
+  "limits": [
+    "User-provided diagnostic metadata, not an independent device test",
+    "Labels, personal settings, permissions and shell logs excluded; redacted versions omitted",
+    "Package presence does not validate disabling or functional compatibility"
+  ],
+  "sourceReportType": "tvApplicationInventory",
+  "sourceScope": "userProvidedDiagnosticInventory",
+  "packageListStorage": "catalog/app_descriptions.json",
+  "observedPackageCount": 107
+}

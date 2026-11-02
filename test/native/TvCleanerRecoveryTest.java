@@ -34,6 +34,20 @@ public final class TvCleanerRecoveryTest {
     }
     static void check(boolean condition) { if (!condition) throw new AssertionError(); }
     public static void main(String[] args) throws Exception {
+        // These exact Android 14 / location packages must remain protected even with an ordinary app UID.
+        for (String name : List.of("com.android.sdksandbox", "com.android.location.fused")) {
+            check(TvCleanerPolicy.packageId(name) && TvCleanerPolicy.critical(name));
+            for (int desired : List.of(0, 2, 3, 4)) {
+                Fake core = new Fake(); core.actual.put(name, 1);
+                check(TvCleanerRecovery.restoreStates(Map.of(name, desired), Set.of(name),
+                        Set.of(name), core, core) == 1);
+                check(core.actual.get(name) == 1 && core.operations.isEmpty());
+            }
+            Fake enableCore = new Fake(); enableCore.actual.put(name, 3);
+            check(TvCleanerRecovery.restoreStates(Map.of(name, 1), Set.of(name), Set.of(name),
+                    enableCore, enableCore) == 0);
+            check(enableCore.actual.get(name) == 1); // Protection must never prevent enabling it.
+        }
         for (int original=0; original<=4; original++) {
             Fake fake = new Fake(); fake.actual.put(APP,original);
             TvCleanerRecovery.apply(List.of(APP), original >= 2 ? 1 : 3, fake, fake);
@@ -68,6 +82,20 @@ public final class TvCleanerRecoveryTest {
         for (String name : List.of("android", "com.android.systemui", "com.google.android.tungsten.setupwraith", "com.tcl.tvinput", "com.google.android.gms"))
             check(TvCleanerPolicy.critical(name));
         check(TvCleanerPolicy.command(APP,0).equals("pm default-state --user 0 'org.example.video'"));
+        for (String name : List.of("android.ext.services", "android.ext.shared",
+                "com.google.android.ext.services", "com.google.android.ext.shared",
+                "com.google.android.modulemetadata", "com.cltv.mal", "com.mediatek.tis",
+                "com.mediatek.tv.service", "com.mediatek.tv.agent")) {
+            check(TvCleanerPolicy.critical(name));
+            // A saved state must not bypass the same protection used by disabling.
+            Fake core = new Fake(); core.actual.put(name, 1);
+            check(TvCleanerRecovery.restoreStates(Map.of(name, 3), Set.of(name),
+                    Set.of(name), core, core) == 1);
+            check(core.operations.isEmpty());
+        }
+        for (String name : List.of(APP, "com.mediatek.video", "com.cltv.mall",
+                "com.mediatek.tv.agent.extra", "com.google.android.ext.services.extra"))
+            check(!TvCleanerPolicy.critical(name));
         fails(() -> TvCleanerPolicy.command(APP,5));
         for (int i=0;i<=4;i++) check(TvCleanerPolicy.parseState("  User 10: installed=true enabled=1\n    User 0: ceDataInode=999 installed=true hidden=false stopped=false enabled=" + i + " instant=false\n") == i);
         // Full-state restoration covers externally changed packages as well as our journal.

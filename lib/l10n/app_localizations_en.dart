@@ -10,15 +10,55 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get volumeKeysTitle => 'Hold volume buttons';
+
+  @override
+  String get volumeKeysMode => 'Workaround mode';
+
+  @override
+  String get volumeKeysAuto => 'Auto: while the panel is visible';
+
+  @override
+  String get volumeKeysTimed => 'Timed pause';
+
+  @override
+  String get volumeKeysRepeat => 'Custom repeat';
+
+  @override
+  String get volumeKeysDuration => 'Pause duration';
+
+  @override
+  String get volumeKeysHelp =>
+      'On some Android TV and Google TV devices, accessibility key interception disrupts native volume repeat. This can affect every app while the service is enabled.\n\n“Auto: while the panel is visible” is the recommended default when enabling the remapper. Showing the indicator releases key filtering. After the selected pause, the window is checked: the pause extends while it is visible, up to one minute. If the window is unavailable, a timer is used.\n\n“Timed pause” restores filtering after the selected 3, 5, 10, 15 or 30 seconds following the last recognized panel appearance. Try it if Auto is unreliable; increase the duration if the pause is too short.\n\n“Custom repeat” adjusts volume until you release the button. It requires firmware to deliver both volume press and release events to the service. It cannot help if the events are unavailable; double steps may also occur. Use another mode if it behaves incorrectly.\n\nButton assignments and Home interception are temporarily unavailable during a pause. The first hold may change one step: release and hold again while the indicator is visible. “Disabled” restores native volume handling and preserves assignments. Your selected mode survives turning the remapper off and on.';
+
+  @override
   String get fileStorageSettingsUnavailable =>
       'This firmware does not provide an all-files access screen. Use the system file picker or install a compatible file manager.';
 
   @override
-  String get tileFillBanner => 'Fill tile with banner';
+  String get tileImageMode => 'Tile image';
 
   @override
-  String get tileFillBannerHelp =>
-      'Enlarges the banner to fill the tile, preserving its proportions and cropping the edges around the center. Part of the logo may be cropped. Applies to standard and custom banners, not icons without a banner. Margins within the image itself are not removed.';
+  String get tileBannerImageMode => 'Apps with a banner';
+
+  @override
+  String get tileIconImageMode => 'Apps without a banner';
+
+  @override
+  String get tileImageContain => 'Fit whole image';
+
+  @override
+  String get tileImageCover => 'Fill with cropping';
+
+  @override
+  String get tileImageEdgeColor => 'Fit with edge color';
+
+  @override
+  String get tileImageIcon => 'Icon with edge color';
+
+  @override
+  String get tileImageModeHelp =>
+      'Choose modes separately for apps with and without banners. A mode applies when the tile shape crops the image or leaves empty margins. Fit the whole image, enlarge with cropping while preserving proportions, or fill the free area with the nearest edge color. Replacing the banner with an icon and its edge colors is available only for apps with a banner. The icon size setting is preserved.';
 
   @override
   String get wallhavenWallpaperHint =>
@@ -4832,4 +4872,81 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get screenshotSceneHelp =>
       'Sets the landscape and wallpaper clock time, and the landscape weather. Remains active after closing settings. System time, weather data and saved settings are unchanged. This build restarts at 16:00 with cloudy weather.';
+
+  @override
+  String get autoLaunchWaitForInternet => 'Wait for internet';
+
+  @override
+  String get autoLaunchWaitForInternetHelp =>
+      'After the delay, wait up to 60 seconds for validated internet access, then launch the app. Remote input or leaving Home cancels the launch.';
+
+  @override
+  String get remoteMappingIgnore => 'Ignore button';
+
+  @override
+  String get adbHomeDependencyProtected =>
+      'Disabling is blocked: a system-function dependency was found or could not be checked. See diagnostics for details.';
+
+  @override
+  String get cleanerOperationResultTitle => 'Last operation result';
+
+  @override
+  String get cleanerUnchanged => 'Unchanged';
+
+  @override
+  String get cleanerNotAttempted => 'Not attempted';
+
+  @override
+  String get cleanerPackageMissing => 'Application is missing';
+
+  @override
+  String get cleanerReadFailed => 'Could not read the state';
+
+  @override
+  String get cleanerJournalFailed => 'Could not save the recovery journal';
+
+  @override
+  String get cleanerCommandFailed => 'The command failed';
+
+  @override
+  String get cleanerVerificationFailed => 'The new state was not confirmed';
+
+  @override
+  String get inputsCecStateOnly => 'Use only CEC for HDMI state';
+
+  @override
+  String get inputsCecStateOnlyHelp =>
+      'Enable if firmware reports incorrect port states. Only CEC data is used; without it, the state is unknown. All inputs remain listed.';
+
+  @override
+  String get backgroundInformationOrderHint =>
+      'OK or ◄ / ► — start or finish moving; ▲ / ▼ — change the order from top to bottom; Back — finish.';
+
+  @override
+  String get homeStyleNeedsSectionBackground =>
+      'Choose a section background color.';
+
+  @override
+  String get updateWrongPackage =>
+      'This APK is for another app. Download a CuteLauncher update from the official source.';
+
+  @override
+  String get updateNotNewer =>
+      'The downloaded APK has the same or an older build. Only a newer build can be installed.';
+
+  @override
+  String get updateSignersUnavailable =>
+      'Android did not provide the certificates for the installed app or APK. The signature could not be checked; installation is blocked.';
+
+  @override
+  String get updateSignatureMismatch =>
+      'The APK signature differs from the installed CuteLauncher signature. Update blocked. Tell the author where you obtained the installed version.';
+
+  @override
+  String get updateInvalidFile =>
+      'Android could not read the APK: the file is missing, empty, too large or unrecognized. Download the update again.';
+
+  @override
+  String get updateVerificationFailed =>
+      'An error occurred while checking the APK. Installation blocked. Try again; if it happens again, send the author a diagnostic report.';
 }

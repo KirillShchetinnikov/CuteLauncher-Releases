@@ -58,19 +58,23 @@ final class UpdateBridge {
                 } catch (Exception error) { result.error("unavailable", "Update environment unavailable", DiagnosticErrorDetails.from(error)); }
             } else if (call.method.equals("install")) {
                 executor.execute(() -> {
-                    String status = "invalid";
+                    String status = "invalid_file";
                     try {
                         if (PLAY.equals(installer(activity))) status = "play";
                         else {
                             File apk = new File(activity.getCacheDir(), "updates/update.apk");
-                            int flags = PackageManager.GET_SIGNING_CERTIFICATES;
-                            PackageInfo current = activity.getPackageManager().getPackageInfo(activity.getPackageName(), flags);
-                            PackageInfo candidate = activity.getPackageManager().getPackageArchiveInfo(apk.getAbsolutePath(), flags);
-                            if (apk.isFile() && apk.length() <= 128L * 1024 * 1024 && candidate != null
-                                && UpdatePolicy.allows(activity.getPackageName(), version(current), signerNames(current),
-                                    candidate.packageName, version(candidate), signerNames(candidate))) status = "ready";
+                            if (apk.isFile() && apk.length() > 0 && apk.length() <= 128L * 1024 * 1024) {
+                                int flags = PackageManager.GET_SIGNING_CERTIFICATES;
+                                PackageInfo current = activity.getPackageManager().getPackageInfo(activity.getPackageName(), flags);
+                                PackageInfo candidate = activity.getPackageManager().getPackageArchiveInfo(apk.getAbsolutePath(), flags);
+                                if (candidate != null) {
+                                    String rejection = UpdatePolicy.rejection(activity.getPackageName(), version(current), signerNames(current),
+                                        candidate.packageName, version(candidate), signerNames(candidate));
+                                    status = rejection == null ? "ready" : rejection;
+                                }
+                            }
                         }
-                    } catch (Exception error) { status = "invalid"; }
+                    } catch (Exception error) { status = "invalid_verification"; }
                     if (status.equals("ready")) UpdatePermissionRecovery.snapshot(activity);
                     final String checked = status;
                     new Handler(Looper.getMainLooper()).post(() -> {

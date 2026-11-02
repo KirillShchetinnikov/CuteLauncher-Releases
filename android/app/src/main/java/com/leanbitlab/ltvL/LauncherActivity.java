@@ -27,6 +27,7 @@ import android.os.Build;
 import android.provider.Settings;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.KeyEvent;
 
 import androidx.annotation.NonNull;
 
@@ -47,6 +48,16 @@ import java.util.concurrent.Executors;
 
 
 public class LauncherActivity extends FlutterActivity {
+    @Override public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_UP
+                || event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_DOWN) {
+            // Let ViewRoot's native fallback handle the original DOWN/repeats/UP.
+            // Flutter's asynchronous redispatch can break held volume keys on TVs.
+            return false;
+        }
+        return super.dispatchKeyEvent(event);
+    }
+
     private RenderMode selectedRenderMode;
     @NonNull @Override public RenderMode getRenderMode() {
         // On SEI KP1, the separate Flutter SurfaceView flickers beneath the night
@@ -116,6 +127,7 @@ public class LauncherActivity extends FlutterActivity {
     }
     private boolean pendingHome;
     private ApplicationCatalog applicationCatalog;
+    private LauncherAppsEventStreamHandler appsEvents;
     private NetworkStatistics networkStatistics;
     private TvInputBridge tvInputBridge;
     private NotificationBridge notificationBridge;
@@ -135,6 +147,7 @@ public class LauncherActivity extends FlutterActivity {
     private RecentAppsBridge recentApps;
 
     @Override public void cleanUpFlutterEngine(@NonNull FlutterEngine flutterEngine) {
+        if (appsEvents != null) { appsEvents.close(); appsEvents = null; }
         if (wallpaperFolder != null) wallpaperFolder.local.close();
         if (legacyStorageAccess != null) { legacyStorageAccess.close(); legacyStorageAccess = null; }
         if (tvInputBridge != null) { tvInputBridge.close(); tvInputBridge = null; }
@@ -199,6 +212,7 @@ public class LauncherActivity extends FlutterActivity {
     }
     @Override protected void onResume() {
         super.onResume();
+        if (appsEvents != null) appsEvents.foreground(true);
         BatterySettingsGuide.close(this);
         if(autoLaunch!=null) autoLaunch.resume();
         // Give Android time to rebind services after an APK replacement.
@@ -211,6 +225,7 @@ public class LauncherActivity extends FlutterActivity {
         sIoExecutor.execute(() -> PermissionRecoveryScheduler.foreground(app));
     };
     @Override protected void onPause() {
+        if (appsEvents != null) appsEvents.foreground(false);
         permissionRecoveryHandler.removeCallbacks(permissionRecovery);
         Context app = getApplicationContext();
         sIoExecutor.execute(() -> UpdatePermissionRecovery.snapshot(app));
@@ -541,8 +556,8 @@ public class LauncherActivity extends FlutterActivity {
             }
         });
 
-        new EventChannel(messenger, APPS_EVENT_CHANNEL).setStreamHandler(
-                new LauncherAppsEventStreamHandler(this));
+        appsEvents = new LauncherAppsEventStreamHandler(this, sIoExecutor, this::runOnUiThread);
+        new EventChannel(messenger, APPS_EVENT_CHANNEL).setStreamHandler(appsEvents);
 
         new EventChannel(messenger, NETWORK_EVENT_CHANNEL).setStreamHandler(
                 new NetworkEventStreamHandler(this));

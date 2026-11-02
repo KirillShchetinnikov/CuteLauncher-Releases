@@ -51,7 +51,7 @@ final class TvCleaner {
         String dump = shell.execute("dumpsys package '" + name + "'");
         return TvCleanerPolicy.parseState(dump);
     }
-    private Set<String> protectedPackages() throws Exception {
+    private Set<String> protectedPackages(List<android.content.pm.PackageInfo> installed) throws Exception {
         Set<String> names = new HashSet<>();
         names.add(activity.getPackageName());
         // Every registered HOME, even when disabled, remains a recovery route.
@@ -64,7 +64,14 @@ final class TvCleaner {
         if (policy != null && policy.getActiveAdmins() != null)
             for (var admin : policy.getActiveAdmins()) names.add(admin.getPackageName());
         var inputs = activity.getSystemService(android.media.tv.TvInputManager.class);
-        if (inputs != null) for (var input : inputs.getTvInputList()) names.add(input.getServiceInfo().packageName);
+        var passthroughIds = new ArrayList<String>();
+        if (inputs != null) for (var input : inputs.getTvInputList()) {
+            names.add(input.getServiceInfo().packageName);
+            if (input.isPassthroughInput()) passthroughIds.add(input.getId());
+        }
+        names.addAll(TvCleanerHandlers.collect(pm, passthroughIds));
+        names.addAll(TvCleanerHardware.collect(pm, installed));
+        names.addAll(TvCleanerFirmwareProtection.collect(activity));
         return names;
     }
     private boolean blocked(ApplicationInfo info, Set<String> protectedNames) {
@@ -72,9 +79,12 @@ final class TvCleaner {
             || protectedNames.contains(info.packageName) || TvCleanerPolicy.critical(info.packageName);
     }
     private List<Map<String, Object>> inventory() throws Exception {
-        Set<String> protectedNames = protectedPackages();
+        var installed = pm.getInstalledPackages(PackageManager.MATCH_DISABLED_COMPONENTS | PackageManager.GET_PERMISSIONS);
+        if (installed == null || installed.isEmpty() || installed.size() > 2000)
+            throw new IllegalStateException("Invalid inventory");
+        Set<String> protectedNames = protectedPackages(installed);
         var rows = new ArrayList<Map<String, Object>>();
-        for (var info : pm.getInstalledPackages(PackageManager.MATCH_DISABLED_COMPONENTS)) {
+        for (var info : installed) {
             ApplicationInfo app = info.applicationInfo;
             if (app == null || !TvCleanerPolicy.packageId(info.packageName)) continue;
             var row = new LinkedHashMap<String, Object>();
@@ -179,9 +189,7 @@ final class TvCleaner {
             try { states.saveBeforeList(subset, listName); }
             catch (Exception failedCopy) { return Map.of("status", "snapshotFailed"); }
         }
-        try { TvCleanerRecovery.apply(selected, enable ? 1 : 3, journal(saved), device()); }
-        catch (Exception error) { return Map.of("status", "partial"); }
-        return report();
+        return operationReport(TvCleanerOperation.apply(selected, enable ? 1 : 3, journal(saved), device()));
     }
     private Map<String, Object> restoreState(JSONObject source) throws Exception {
         Map<String, Integer> desired = TvCleanerStateStore.states(source);
@@ -200,11 +208,15 @@ final class TvCleaner {
             else if (Objects.equals(journal.original(entry.getKey()), entry.getValue())) journal.forget(entry.getKey());
         }
         journal.persist();
-        int skipped;
-        try { skipped = TvCleanerRecovery.restoreStates(needed, installed, protectedNames, journal, device()); }
-        catch (Exception error) { return Map.of("status", "partial"); }
-        var result = report();
-        if (skipped > 0) { result.put("status", "partial"); result.put("skippedRestore", skipped); }
+        return operationReport(TvCleanerOperation.restore(needed, installed, protectedNames, journal, device()));
+    }
+    private Map<String, Object> operationReport(TvCleanerOperation.Result operation) {
+        Map<String, Object> result;
+        try { result = report(); }
+        catch (Exception error) { result = new LinkedHashMap<>(Map.of("status", "partial", "inventoryStatus", "unavailable")); }
+        if (operation.failed() || operation.skipped() > 0) result.put("status", "partial");
+        if (operation.skipped() > 0) result.put("skippedRestore", operation.skipped());
+        result.put("operationResult", operation.rows());
         return result;
     }
     private TvCleanerRecovery.Device device() {

@@ -24,6 +24,46 @@ Future<void> initialized(UpdateService service) async {
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  for (final status in [
+    'invalid',
+    'invalid_package',
+    'invalid_version',
+    'invalid_signers',
+    'invalid_signature',
+    'invalid_file',
+    'invalid_verification',
+  ]) {
+    test('$status preserves reason and downloads again on retry', () async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      var downloads = 0;
+      final service = UpdateService(
+        prefs,
+        environment: () async => {
+          'play': false,
+          'version': '1.0.0',
+          'versionCode': 2,
+          'abis': ['armeabi-v7a'],
+          'directory': 'unused',
+        },
+        lookup: () async => release(),
+        download: (_, _, progress) async {
+          downloads++;
+          return File('unused');
+        },
+        installer: () async => status,
+      );
+      addTearDown(service.dispose);
+      await initialized(service);
+      await service.check(force: true);
+      await service.downloadAndInstall();
+      expect(service.installStatus, status);
+      expect(service.failed, isTrue);
+      expect(service.ready, isFalse);
+      await service.downloadAndInstall();
+      expect(downloads, 2);
+    });
+  }
   Map<String, dynamic> environment() => {
     'play': false,
     'version': '1.0.0',

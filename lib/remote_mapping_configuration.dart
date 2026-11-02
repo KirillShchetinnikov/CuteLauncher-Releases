@@ -86,13 +86,29 @@ bool remoteWebhookValid(String value) {
 class RemoteMappingConfiguration {
   final bool enabled;
   final List<RemoteMapping> bindings;
+  final String volumeMode;
+  final int volumePauseSeconds;
   const RemoteMappingConfiguration({
     this.enabled = false,
     this.bindings = const [],
+    this.volumeMode = 'auto',
+    this.volumePauseSeconds = 5,
   });
+  RemoteMappingConfiguration copyWith({
+    bool? enabled,
+    String? volumeMode,
+    int? volumePauseSeconds,
+  }) => RemoteMappingConfiguration(
+    enabled: enabled ?? this.enabled,
+    bindings: bindings,
+    volumeMode: volumeMode ?? this.volumeMode,
+    volumePauseSeconds: volumePauseSeconds ?? this.volumePauseSeconds,
+  );
   factory RemoteMappingConfiguration.fromMap(Map value) =>
       RemoteMappingConfiguration(
         enabled: value['enabled'] as bool,
+        volumeMode: value['volumeMode'] as String? ?? 'auto',
+        volumePauseSeconds: value['volumePauseSeconds'] as int? ?? 5,
         bindings: List.unmodifiable(
           (value['bindings'] as List).map(
             (entry) => RemoteMapping.fromMap(entry as Map),
@@ -102,10 +118,14 @@ class RemoteMappingConfiguration {
   Map<String, dynamic> toMap() => {
     'enabled': enabled,
     'bindings': bindings.map((value) => value.toMap()).toList(),
+    'volumeMode': volumeMode,
+    'volumePauseSeconds': volumePauseSeconds,
   };
   RemoteMappingConfiguration replace(RemoteMapping value) =>
       RemoteMappingConfiguration(
         enabled: enabled,
+        volumeMode: volumeMode,
+        volumePauseSeconds: volumePauseSeconds,
         bindings: [
           for (final old in bindings)
             if (old.slot != value.slot) old,
@@ -115,6 +135,8 @@ class RemoteMappingConfiguration {
   RemoteMappingConfiguration remove(int keyCode, [String trigger = 'press']) =>
       RemoteMappingConfiguration(
         enabled: enabled,
+        volumeMode: volumeMode,
+        volumePauseSeconds: volumePauseSeconds,
         bindings: bindings
             .where((value) => value.slot != '$keyCode:$trigger')
             .toList(),

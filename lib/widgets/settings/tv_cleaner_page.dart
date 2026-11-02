@@ -26,6 +26,7 @@ class _TvCleanerPageState extends State<TvCleanerPage> {
   late final _client = widget.client ?? TvCleanerClient();
   final _report = ValueNotifier<Map<String, dynamic>?>(null);
   final _busy = ValueNotifier(false);
+  final _operationRows = ValueNotifier<List<Map<String, dynamic>>>([]);
   Map<String, dynamic> _descriptions = {},
       _profiles = {},
       _bundledProfiles = {};
@@ -74,6 +75,7 @@ class _TvCleanerPageState extends State<TvCleanerPage> {
     }
     _report.dispose();
     _busy.dispose();
+    _operationRows.dispose();
     super.dispose();
   }
 
@@ -99,7 +101,10 @@ class _TvCleanerPageState extends State<TvCleanerPage> {
     String? listName,
     String? listScope,
   }) async {
-    if (action != 'cleanerInventory') await _client.clearInventory();
+    if (action != 'cleanerInventory') {
+      _operationRows.value = [];
+      await _client.clearInventory();
+    }
     late final Map<String, dynamic> value;
     try {
       value = await _client.call(
@@ -116,6 +121,39 @@ class _TvCleanerPageState extends State<TvCleanerPage> {
       rethrow;
     }
     if (!mounted) return false;
+    if (action != 'cleanerInventory') {
+      _operationRows.value = (value['operationResult'] as List? ?? [])
+          .whereType<Map>()
+          .take(2000)
+          .where(
+            (row) =>
+                row['package'] is String &&
+                RegExp(r'^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$')
+                    .hasMatch(row['package'] as String) &&
+                const {
+                  'changed',
+                  'unchanged',
+                  'failed',
+                  'notAttempted',
+                  'skippedProtected',
+                  'skippedMissing',
+                }.contains(row['status']),
+          )
+          .map(
+            (row) => <String, dynamic>{
+              'package': row['package'],
+              'status': row['status'],
+              if (const {
+                'read',
+                'journal',
+                'command',
+                'verify',
+              }.contains(row['reason']))
+                'reason': row['reason'],
+            },
+          )
+          .toList();
+    }
     if (value['status'] == 'success') {
       await _acceptReport(value);
       if (mounted) showActionNotice(context, l.cleanerDone);
@@ -145,6 +183,7 @@ class _TvCleanerPageState extends State<TvCleanerPage> {
   }
 
   Future<void> _acceptReport(Map<String, dynamic> report) async {
+    report = Map.of(report)..remove('operationResult');
     _report.value = report;
     try {
       await _client.saveInventory(report);
@@ -175,8 +214,48 @@ class _TvCleanerPageState extends State<TvCleanerPage> {
   }
 
   Widget _watch(Widget Function() builder) => ListenableBuilder(
-    listenable: Listenable.merge([_report, _busy]),
+    listenable: Listenable.merge([_report, _busy, _operationRows]),
     builder: (_, _) => builder(),
+  );
+
+  String _operationText(Map<String, dynamic> row) {
+    final status = switch (row['status']) {
+      'changed' => l.cleanerDone,
+      'unchanged' => l.cleanerUnchanged,
+      'notAttempted' => l.cleanerNotAttempted,
+      'skippedProtected' => l.cleanerProtected,
+      'skippedMissing' => l.cleanerPackageMissing,
+      _ => l.cleanerFailure,
+    };
+    final reason = switch (row['reason']) {
+      'read' => l.cleanerReadFailed,
+      'journal' => l.cleanerJournalFailed,
+      'command' => l.cleanerCommandFailed,
+      'verify' => l.cleanerVerificationFailed,
+      _ => '',
+    };
+    return reason.isEmpty ? status : '$status · $reason';
+  }
+
+  void _operationDetails() => _open(
+    l.cleanerOperationResultTitle,
+    () => ListView.builder(
+      itemCount: _operationRows.value.length,
+      itemBuilder: (_, index) {
+        final row = _operationRows.value[index];
+        return FocusableSettingsTile(
+          autofocus: index == 0,
+          showActionChevron: false,
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(row['package'] as String),
+              Text(_operationText(row)),
+            ],
+          ),
+        );
+      },
+    ),
   );
 
   Widget _tile(
@@ -1046,6 +1125,12 @@ class _TvCleanerPageState extends State<TvCleanerPage> {
             ),
           if (report == null && !_busy.value) Text(l.cleanerRefreshRequired),
           _tile(l.cleanerRefresh, _refresh, autofocus: true),
+          if (_operationRows.value.isNotEmpty)
+            _tile(
+              l.cleanerOperationResultTitle,
+              _operationDetails,
+              submenu: true,
+            ),
           _tile(l.cleanerApps, _allApps, ready: report != null, submenu: true),
           _tile(l.cleanerLists, _lists, ready: report != null, submenu: true),
           _tile(

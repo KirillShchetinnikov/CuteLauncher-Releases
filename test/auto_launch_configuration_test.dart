@@ -11,8 +11,11 @@ void main() {
       app: 'sample.player',
       boot: true,
       delay: 30,
+      waitForInternet: true,
     );
     expect(selected.valid, isTrue);
+    expect(AutoLaunchConfiguration.fromMap(selected.toMap()).waitForInternet, isTrue);
+    expect(AutoLaunchConfiguration.fromMap({'mode': 'app', 'app': 'sample.player'}).waitForInternet, isFalse);
     expect(
       AutoLaunchConfiguration.fromMap(selected.toMap()).toMap(),
       selected.toMap(),
@@ -30,6 +33,7 @@ void main() {
         {'delay': 61},
         {'delay': '5'},
         {'wake': 1},
+        {'waitForInternet': 'yes'},
         {'app': '../bad'},
         {'input': 'x' * 513},
       ]) {

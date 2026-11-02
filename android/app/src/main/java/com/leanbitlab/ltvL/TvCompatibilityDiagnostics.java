@@ -61,6 +61,7 @@ final class TvCompatibilityDiagnostics {
         });
         checks.add("screensaverSelection", () -> Boolean.TRUE.equals(new ScreensaverBridge(activity).capabilities().get("canChoose")) ? "available" : "unsupported");
         return Map.of("identity", identity, "kind", emulator ? "emulator" : "physical", "checks", checks.snapshot(),
-                "permissionRecovery", UpdatePermissionRecovery.report(activity));
+                "permissionRecovery", UpdatePermissionRecovery.report(activity),
+                "mediaCapabilities", TvMediaCapabilities.collect(activity));
     }
 }

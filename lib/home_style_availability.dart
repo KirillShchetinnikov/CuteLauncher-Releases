@@ -14,6 +14,7 @@ enum HomeStyleBlock {
   opaque,
   transparent,
   singleColumn,
+  sectionBackground,
 }
 
 /// Dependencies use the resolved style, not just the value in the open menu.
@@ -30,6 +31,11 @@ HomeStyleBlock? homeStyleBlock(
     return HomeStyleBlock.economy;
   }
   switch (field) {
+    case 'sectionOpacity':
+    case 'sectionRadius':
+      if ((tiles.color('sectionBackground')?.a ?? 0) == 0) {
+        return HomeStyleBlock.sectionBackground;
+      }
     case 'size':
       if (layout.resolvedColumns(
             legacyRow: legacyRow,

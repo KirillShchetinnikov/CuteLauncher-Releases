@@ -1,4 +1,5 @@
 import '../information_placement.dart';
+import '../key_sounds.dart';
 import 'dart:async';
 import 'audio_status_widget.dart';
 import 'system_status_widget.dart';
@@ -156,6 +157,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
     final index = nodes.indexWhere((node) => node.hasFocus);
     if (index < 0 || nodes.isEmpty) return KeyEventResult.ignored;
     nodes[(index + delta) % nodes.length].requestFocus();
+    playKeySound(context);
     return KeyEventResult.handled;
   }
   @override

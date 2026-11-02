@@ -97,8 +97,8 @@ class HomeParametersPage extends StatelessWidget {
           ),
           Consumer<SettingsService>(
             builder: (context, s, _) => RoundedSwitchListTile(
-              value: s.appKeyClickEnabled,
-              onChanged: s.setAppKeyClickEnabled,
+              value: s.homeKeyClickEnabled,
+              onChanged: s.setHomeKeyClickEnabled,
               title: Text(l.appKeyClick),
             ),
           ),

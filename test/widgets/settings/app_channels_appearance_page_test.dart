@@ -32,6 +32,10 @@ void main() {
         when(apps.launcherSections).thenReturn([group]);
         await settings.setSelectedAppChannels(['video.app:1']);
         await appearance.set('sectionTitles', false);
+        await appearance.set('sectionOpacity', .75);
+        await appearance.set('sectionRadius', 12);
+        await appearance.setCategoryTile(group.id, 'sectionOpacity', .35);
+        await appearance.setCategoryTile(group.id, 'sectionRadius', 64);
         await appearance.setCategory(group.id, 'layout', 'grid');
         await appearance.setCategory(group.id, 'columns', 6);
         tester.view.physicalSize = const Size(1000, 1800);
@@ -107,11 +111,15 @@ void main() {
         await tester.sendKeyEvent(LogicalKeyboardKey.escape);
         await tester.pumpAndSettle();
         expect(appearance.tilesFor(group.id).sectionTitles, isTrue);
+        await tester.ensureVisible(find.byType(ResetStyleTile));
+        await tester.pumpAndSettle();
         await tester.tap(find.byType(ResetStyleTile));
         await tester.pumpAndSettle();
         await tester.tap(find.text(l.resetSectionToGlobal).last);
         await tester.pumpAndSettle();
         expect(appearance.tilesFor(group.id).sectionTitles, isFalse);
+        expect(appearance.tilesFor(group.id).sectionOpacity, .75);
+        expect(appearance.tilesFor(group.id).sectionRadius, 12);
         expect(appearance.tilesFor(group.id).tileSize, 128);
         expect(settings.selectedAppChannels, ['video.app:1']);
         expect(tester.takeException(), isNull);

@@ -10,15 +10,55 @@ class AppLocalizationsHi extends AppLocalizations {
   AppLocalizationsHi([String locale = 'hi']) : super(locale);
 
   @override
+  String get volumeKeysTitle => 'वॉल्यूम बटन दबाकर रखना';
+
+  @override
+  String get volumeKeysMode => 'समाधान का तरीका';
+
+  @override
+  String get volumeKeysAuto => 'अपने आप: पैनल दिखने तक';
+
+  @override
+  String get volumeKeysTimed => 'तय समय के लिए विराम';
+
+  @override
+  String get volumeKeysRepeat => 'खुद दोहराना';
+
+  @override
+  String get volumeKeysDuration => 'विराम की अवधि';
+
+  @override
+  String get volumeKeysHelp =>
+      'कुछ Android TV और Google TV पर सुलभता से बटन इंटरसेप्ट करने पर सिस्टम का वॉल्यूम दोहराना रुक जाता है। सेवा चालू रहने तक सभी ऐप प्रभावित हो सकते हैं।\n\n‘अपने आप: पैनल दिखने तक’ बटन मैपिंग चालू करने पर सुझाया गया डिफ़ॉल्ट मोड है। वॉल्यूम संकेतक दिखने पर बटन फ़िल्टर रुकता है। चुने हुए विराम के बाद विंडो जाँची जाती है: दिखती रहने पर विराम बढ़ता है, अधिकतम एक मिनट तक। विंडो न मिले तो टाइमर इस्तेमाल होता है।\n\n‘तय समय के लिए विराम’ आखिरी पहचाने गए पैनल के दिखने के 3, 5, 10, 15 या 30 सेकंड बाद फ़िल्टर लौटाता है। अपने आप वाला मोड अस्थिर हो तो इसे आज़माएँ; विराम छोटा हो तो समय बढ़ाएँ।\n\n‘खुद दोहराना’ बटन छोड़ने तक वॉल्यूम बदलता है। सेवा को दबाने और छोड़ने के दोनों इवेंट मिलने चाहिए। इवेंट न मिलें तो यह मदद नहीं करेगा; दोहरे कदम भी हो सकते हैं। गलत काम करे तो दूसरा मोड चुनें।\n\nविराम के दौरान मैपिंग और Home इंटरसेप्ट काम नहीं करते। पहली बार एक कदम बदले तो बटन छोड़कर संकेतक दिखने के दौरान फिर दबाकर रखें। ‘बंद’ मैपिंग को बचाते हुए सिस्टम का वॉल्यूम नियंत्रण लौटाता है। मैपिंग बंद करके फिर चालू करने पर चुना मोड बना रहता है।';
+
+  @override
   String get fileStorageSettingsUnavailable =>
       'इस फ़र्मवेयर में सभी फ़ाइलों तक पहुँच की स्क्रीन उपलब्ध नहीं है। सिस्टम फ़ाइल चयनकर्ता का उपयोग करें या संगत फ़ाइल प्रबंधक इंस्टॉल करें।';
 
   @override
-  String get tileFillBanner => 'बैनर से टाइल भरें';
+  String get tileImageMode => 'टाइल की छवि';
 
   @override
-  String get tileFillBannerHelp =>
-      'बैनर का अनुपात बनाए रखते हुए उसे बड़ा करके पूरी टाइल भरता है और केंद्र के आसपास किनारों को काटता है। लोगो का कुछ भाग कट सकता है। यह मानक और कस्टम बैनर पर लागू होता है, बिना बैनर वाले आइकन पर नहीं। चित्र में पहले से मौजूद खाली किनारे नहीं हटाए जाते।';
+  String get tileBannerImageMode => 'बैनर वाले ऐप';
+
+  @override
+  String get tileIconImageMode => 'बिना बैनर वाले ऐप';
+
+  @override
+  String get tileImageContain => 'पूरी छवि दिखाएँ';
+
+  @override
+  String get tileImageCover => 'काटकर भरें';
+
+  @override
+  String get tileImageEdgeColor => 'किनारे के रंग के साथ फ़िट';
+
+  @override
+  String get tileImageIcon => 'किनारे के रंग वाला आइकन';
+
+  @override
+  String get tileImageModeHelp =>
+      'बैनर वाले और बिना बैनर वाले ऐप के लिए मोड अलग चुनें। टाइल के आकार से छवि कटने या खाली किनारे रहने पर लागू होता है। पूरी छवि दिखाएँ, अनुपात बनाए रखते हुए बड़ा करके काटें या खाली जगह निकटतम किनारे के रंग से भरें। बैनर को आइकन और उसके किनारे के रंगों से बदलना केवल बैनर वाले ऐप में उपलब्ध है। आइकन के आकार की सेटिंग बनी रहती है।';
 
   @override
   String get wallhavenWallpaperHint =>
@@ -4837,4 +4877,81 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get screenshotSceneHelp =>
       'दृश्य और पृष्ठभूमि की घड़ी का समय तथा दृश्य का मौसम सेट करता है। सेटिंग बंद करने के बाद भी सक्रिय रहता है। सिस्टम समय, मौसम डेटा और सहेजी गई सेटिंग नहीं बदलतीं। इस बिल्ड को पुनः शुरू करने पर: 16:00, बादल।';
+
+  @override
+  String get autoLaunchWaitForInternet => 'इंटरनेट की प्रतीक्षा करें';
+
+  @override
+  String get autoLaunchWaitForInternetHelp =>
+      'विलंब के बाद, इंटरनेट पहुँच की पुष्टि के लिए 60 सेकंड तक प्रतीक्षा करें, फिर ऐप खोलें। रिमोट का उपयोग करने या होम छोड़ने पर लॉन्च रद्द हो जाता है।';
+
+  @override
+  String get remoteMappingIgnore => 'बटन को अनदेखा करें';
+
+  @override
+  String get adbHomeDependencyProtected =>
+      'बंद करना अवरुद्ध है: सिस्टम फ़ंक्शन की निर्भरता मिली या उसकी जाँच नहीं हो सकी। विवरण के लिए निदान देखें।';
+
+  @override
+  String get cleanerOperationResultTitle => 'पिछली कार्रवाई का परिणाम';
+
+  @override
+  String get cleanerUnchanged => 'कोई बदलाव नहीं';
+
+  @override
+  String get cleanerNotAttempted => 'प्रयास नहीं किया गया';
+
+  @override
+  String get cleanerPackageMissing => 'ऐप मौजूद नहीं है';
+
+  @override
+  String get cleanerReadFailed => 'स्थिति पढ़ी नहीं जा सकी';
+
+  @override
+  String get cleanerJournalFailed => 'पुनर्प्राप्ति लॉग सहेजा नहीं जा सका';
+
+  @override
+  String get cleanerCommandFailed => 'कमांड विफल हुई';
+
+  @override
+  String get cleanerVerificationFailed => 'नई स्थिति की पुष्टि नहीं हुई';
+
+  @override
+  String get inputsCecStateOnly => 'HDMI स्थिति केवल CEC से';
+
+  @override
+  String get inputsCecStateOnlyHelp =>
+      'फ़र्मवेयर पोर्ट की गलत स्थिति बताए तो सक्षम करें। केवल CEC डेटा इस्तेमाल होगा; इसके बिना स्थिति अज्ञात रहेगी। सभी इनपुट सूची में बने रहेंगे।';
+
+  @override
+  String get backgroundInformationOrderHint =>
+      'OK या ◄ / ► — स्थान बदलना शुरू या समाप्त करें; ▲ / ▼ — ऊपर से नीचे का क्रम बदलें; वापस — समाप्त करें।';
+
+  @override
+  String get homeStyleNeedsSectionBackground =>
+      'अनुभाग की पृष्ठभूमि का रंग चुनें।';
+
+  @override
+  String get updateWrongPackage =>
+      'यह APK किसी अन्य ऐप के लिए है। आधिकारिक स्रोत से CuteLauncher अपडेट डाउनलोड करें।';
+
+  @override
+  String get updateNotNewer =>
+      'डाउनलोड किए गए APK का बिल्ड समान या पुराना है। केवल नया बिल्ड इंस्टॉल किया जा सकता है।';
+
+  @override
+  String get updateSignersUnavailable =>
+      'Android ने इंस्टॉल किए गए ऐप या APK के प्रमाणपत्र नहीं दिए। हस्ताक्षर की जाँच नहीं हो सकी; इंस्टॉलेशन रोक दिया गया है।';
+
+  @override
+  String get updateSignatureMismatch =>
+      'APK का हस्ताक्षर इंस्टॉल किए गए CuteLauncher से अलग है। अपडेट रोक दिया गया है। डेवलपर को बताएँ कि वर्तमान संस्करण कहाँ से लिया था।';
+
+  @override
+  String get updateInvalidFile =>
+      'Android APK नहीं पढ़ सका: फ़ाइल गायब है, खाली है, बहुत बड़ी है या पहचानी नहीं गई। अपडेट फिर से डाउनलोड करें।';
+
+  @override
+  String get updateVerificationFailed =>
+      'APK की जाँच में त्रुटि हुई। इंस्टॉलेशन रोक दिया गया है। फिर कोशिश करें; त्रुटि दोहराने पर डेवलपर को निदान रिपोर्ट भेजें।';
 }

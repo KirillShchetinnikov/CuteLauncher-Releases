@@ -148,6 +148,7 @@ Future<DesignFixture> pumpDesignFixture(
   when(settings.backButtonAction).thenReturn('nothing');
   when(settings.cardFocusMode).thenReturn(CardFocusMode.settings);
   when(settings.appKeyClickEnabled).thenReturn(false);
+  when(settings.homeKeyClickEnabled).thenReturn(false);
   when(settings.settingsMenuOnRight).thenReturn(settingsMenuOnRight);
   when(settings.showCategoryTitles).thenReturn(true);
   when(settings.hideLauncherTile).thenReturn(false);

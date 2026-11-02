@@ -331,7 +331,8 @@ void main() {
     await appearance.setCategory(group.id, 'columns', 6);
     for (final entry in <String, dynamic>{'sectionTitles': true, 'sectionIcons': true,
       'size': 96, 'horizontalGap': 34, 'labelSize': 16, 'labelColor': 0xffffd54f,
-      'radius': 20, 'sectionPadding': 24, 'sectionBackground': 0xff123456}.entries) {
+      'radius': 20, 'sectionPadding': 24, 'sectionBackground': 0xff123456,
+      'sectionOpacity': .35, 'sectionRadius': 32}.entries) {
       await appearance.setCategoryTile(group.id, entry.key, entry.value);
     }
     final feedSettings = SettingsService(prefs);
@@ -350,7 +351,10 @@ void main() {
     expect(find.text('Feed 1 · video.app'), findsOneWidget);
     expect(find.byIcon(Icons.video_library_outlined), findsOneWidget);
     final container = tester.widget<Container>(find.byKey(const ValueKey('app-channels-group')));
-    expect(container.color, const Color(0xff123456));
+    final decoration = container.decoration! as BoxDecoration;
+    expect(decoration.color, const Color(0xff123456).withValues(alpha: .35));
+    expect(decoration.borderRadius, BorderRadius.circular(32));
+    expect(container.clipBehavior, Clip.none);
     expect(container.padding, const EdgeInsets.all(24));
     final viewport = tester.widget<ReorderingTileViewport>(find.descendant(
         of: find.byType(AppContentRow), matching: find.byType(ReorderingTileViewport)));
@@ -1411,6 +1415,9 @@ void main() {
     SharedPreferences.setMockInitialValues({});
     final appearance = AppearanceService(await SharedPreferences.getInstance());
     await appearance.set('inactiveOpacity', .2);
+    await appearance.set('sectionBackground', 0xff123456);
+    await appearance.set('sectionOpacity', .35);
+    await appearance.set('sectionRadius', 32);
     final apps = mkAppService();
     final top = fakeCategory(name: 'Top')..applications.add(fakeApp(packageName: 'opacity.top'));
     final bottom = fakeCategory(name: 'Bottom')..applications.add(fakeApp(packageName: 'opacity.bottom'));
@@ -1419,6 +1426,14 @@ void main() {
     double opacity(String name) => tester.widget<AnimatedOpacity>(find.descendant(
       of: find.byWidgetPredicate((w) => w is HomeSection && w.category.name == name),
       matching: find.byType(AnimatedOpacity)).first).opacity;
+    final background = tester.widget<Container>(find.descendant(
+      of: find.byType(HomeSection).first,
+      matching: find.byWidgetPredicate((w) => w is Container && w.decoration is BoxDecoration),
+    ).first);
+    expect((background.decoration! as BoxDecoration).color,
+        const Color(0xff123456).withValues(alpha: .35));
+    expect((background.decoration! as BoxDecoration).borderRadius, BorderRadius.circular(32));
+    expect(background.clipBehavior, Clip.none);
     for (final entry in [('Top', 'opacity.top', 'Bottom'), ('Bottom', 'opacity.bottom', 'Top')]) {
       getFocusNodeForApp(tester, entry.$2)!.requestFocus();
       await tester.pumpAndSettle();
@@ -1534,6 +1549,94 @@ void main() {
       appearance.dispose();
     });
   }
+  for (final scrollMode in ['anchored', 'free']) {
+    for (final shape in [
+      {'aspectRatio': 1.0, 'radius': 100, 'size': 128, 'labels': 'none'},
+      {'aspectRatio': 1.0, 'radius': 0, 'size': 64, 'labels': 'all'},
+      {'aspectRatio': .5, 'radius': 50, 'size': 256, 'labels': 'all'},
+      {'aspectRatio': 16 / 9, 'radius': 16, 'size': 256, 'labels': 'selected'},
+      {'aspectRatio': 21 / 9, 'radius': 100, 'size': 64, 'labels': 'all'},
+    ]) {
+      testWidgets('three complete grid rows move together: $scrollMode $shape', (tester) async {
+        SharedPreferences.setMockInitialValues({});
+        final appearance = AppearanceService(await SharedPreferences.getInstance());
+        addTearDown(appearance.dispose);
+        await appearance.set('sectionScroll', scrollMode);
+        for (final entry in shape.entries) { await appearance.set(entry.key, entry.value); }
+        await appearance.set('horizontalGap', 8);
+        await appearance.set('verticalGap', 8);
+        await appearance.set('focusPulse', false);
+        final apps = mkAppService();
+        final grid = Category(id: 77, name: 'Three-row grid', type: CategoryType.grid, columnsCount: 6)
+          ..applications.addAll(List.generate(14, (i) => fakeApp(packageName: 'whole.$i')));
+        when(apps.launcherSections).thenReturn([grid]);
+        when(apps.categories).thenReturn([grid]);
+        await appearance.setCategory(77, 'maxRows', 3);
+        await _pumpWidgetWithProviders(tester, mkWallpaperService(), apps, mkSettingsService(), appearance: appearance, pixelRatio: 2);
+        getFocusNodeForApp(tester, 'whole.0')!.requestFocus();
+        await tester.pumpAndSettle();
+        final viewport = find.byType(ReorderingTileViewport);
+        final layout = tester.widget<ReorderingTileViewport>(viewport).layout;
+        expect(tester.getSize(viewport).height, closeTo(3 * layout.stepY - layout.gapY, .01));
+        final inner = tester.state<ScrollableState>(find.descendant(of: viewport, matching: find.byType(Scrollable)).first).position;
+        expect(inner.maxScrollExtent, closeTo(0, .01));
+        final title = find.text('Three-row grid');
+        final first = getFocusNodeForApp(tester, 'whole.0')!.rect;
+        final heading = tester.getRect(title);
+        for (final index in [6, 12]) {
+          await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+          await tester.pumpAndSettle();
+          expect(isAppCardFocused(tester, 'whole.$index'), isTrue);
+          final tile = getFocusNodeForApp(tester, 'whole.$index')!.rect;
+          final outer = tester.getRect(find.byType(SingleChildScrollView).first);
+          // A single tile taller than the screen cannot fit, but its bottom is revealed.
+          expect(tile.bottom, lessThanOrEqualTo(outer.bottom + .1));
+        }
+        expect(heading.top - tester.getRect(title).top,
+          closeTo(first.top - getFocusNodeForApp(tester, 'whole.0')!.rect.top, .1));
+        expect(inner.pixels, 0);
+        for (final index in [6, 0]) {
+          await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+          await tester.pumpAndSettle();
+          expect(isAppCardFocused(tester, 'whole.$index'), isTrue);
+        }
+        if (scrollMode == 'anchored') expect(tester.getRect(title).top, closeTo(heading.top, .1));
+        expect(tester.takeException(), isNull);
+        await tester.pumpWidget(const SizedBox());
+      });
+    }
+  }
+
+  testWidgets('changing grid geometry reveals the selected row inside its new window', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final appearance = AppearanceService(await SharedPreferences.getInstance());
+    addTearDown(appearance.dispose);
+    final apps = mkAppService();
+    final grid = Category(id: 77, name: 'Changing grid', type: CategoryType.grid, columnsCount: 6)
+      ..applications.addAll(List.generate(30, (i) => fakeApp(packageName: 'resize.$i')));
+    when(apps.launcherSections).thenReturn([grid]);
+    await appearance.set('focusPulse', false);
+    await appearance.setCategory(77, 'maxRows', 3);
+    await _pumpWidgetWithProviders(tester, mkWallpaperService(), apps, mkSettingsService(), appearance: appearance, pixelRatio: 2);
+    getFocusNodeForApp(tester, 'resize.0')!.requestFocus();
+    await tester.pumpAndSettle();
+    for (var i = 0; i < 2; i++) {
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      await tester.pumpAndSettle();
+    }
+    for (final limit in [1, 2, 3, 0]) {
+      await appearance.setCategory(77, 'maxRows', limit);
+      await tester.pumpAndSettle();
+      expect(isAppCardFocused(tester, 'resize.12'), isTrue);
+      final viewport = tester.getRect(find.byType(ReorderingTileViewport));
+      final tile = getFocusNodeForApp(tester, 'resize.12')!.rect;
+      expect(tile.top, greaterThanOrEqualTo(viewport.top - .1));
+      expect(tile.bottom, lessThanOrEqualTo(viewport.bottom + .1));
+    }
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox());
+  });
+
   testWidgets('limited category grid keeps every row reachable by remote', (tester) async {
     SharedPreferences.setMockInitialValues({});
     final appearance = AppearanceService(await SharedPreferences.getInstance());
@@ -1545,6 +1648,11 @@ void main() {
     await appearance.setCategory(77, 'padding', 16);
     await appearance.setCategory(77, 'background', 0x8011141B);
     await _pumpWidgetWithProviders(tester, mkWallpaperService(), service, mkSettingsService(), appearance: appearance);
+    final viewport = find.byType(ReorderingTileViewport);
+    final layout = tester.widget<ReorderingTileViewport>(viewport).layout;
+    expect(tester.getSize(viewport).height, closeTo(2 * layout.stepY - layout.gapY, .01));
+    final inner = tester.state<ScrollableState>(find.descendant(of: viewport, matching: find.byType(Scrollable)).first).position;
+    expect(inner.maxScrollExtent, greaterThan(0));
     getFocusNodeForApp(tester, 'limited.0')!.requestFocus();
     await tester.pumpAndSettle();
     for (var row = 1; row < 5; row++) {
@@ -1552,11 +1660,13 @@ void main() {
       await tester.pumpAndSettle();
       expect(getFocusNodeForApp(tester, 'limited.${row * 6}')!.hasFocus, isTrue);
     }
+    expect(inner.pixels, greaterThan(0));
     for (var row = 3; row >= 0; row--) {
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
       await tester.pumpAndSettle();
       expect(getFocusNodeForApp(tester, 'limited.${row * 6}')!.hasFocus, isTrue);
     }
+    expect(inner.pixels, 0);
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox());
     appearance.dispose();
@@ -2612,6 +2722,7 @@ SettingsService mkSettingsService() {
   addTearDown(demo.dispose);
   when(settingsService.landscapeDemo).thenReturn(demo);
   when(settingsService.appKeyClickEnabled).thenReturn(false);
+  when(settingsService.homeKeyClickEnabled).thenReturn(false);
   when(settingsService.showSleepTimerInStatusBar).thenReturn(false);
   when(settingsService.showNightModeInStatusBar).thenReturn(false);
   when(settingsService.settingsMenuOnRight).thenReturn(false);

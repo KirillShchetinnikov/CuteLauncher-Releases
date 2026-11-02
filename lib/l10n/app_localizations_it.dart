@@ -10,15 +10,55 @@ class AppLocalizationsIt extends AppLocalizations {
   AppLocalizationsIt([String locale = 'it']) : super(locale);
 
   @override
+  String get volumeKeysTitle => 'Tenere premuti i tasti volume';
+
+  @override
+  String get volumeKeysMode => 'Modalità di correzione';
+
+  @override
+  String get volumeKeysAuto => 'Auto: finché il pannello è visibile';
+
+  @override
+  String get volumeKeysTimed => 'Pausa temporizzata';
+
+  @override
+  String get volumeKeysRepeat => 'Ripetizione personalizzata';
+
+  @override
+  String get volumeKeysDuration => 'Durata della pausa';
+
+  @override
+  String get volumeKeysHelp =>
+      'Su alcuni Android TV e Google TV, intercettare i tasti tramite accessibilità interferisce con la ripetizione del volume. Il problema può riguardare tutte le app mentre il servizio è attivo.\n\n«Auto: finché il pannello è visibile» è la modalità consigliata predefinita all’attivazione delle assegnazioni. La comparsa dell’indicatore sospende il filtro. Dopo la pausa scelta viene controllata la finestra: la pausa continua finché è visibile, fino a un minuto. Se non è disponibile, viene usato un timer.\n\n«Pausa temporizzata» ripristina il filtro 3, 5, 10, 15 o 30 secondi dopo l’ultima comparsa riconosciuta del pannello. Provarla se Auto è instabile; aumentare la durata se è troppo breve.\n\n«Ripetizione personalizzata» regola il volume fino al rilascio. Richiede che il firmware invii pressione e rilascio al servizio. Senza questi eventi non aiuta; sono possibili anche passi doppi. Se funziona male, scegliere un’altra modalità.\n\nDurante la pausa non funzionano assegnazioni e intercettazione di Home. La prima pressione prolungata può dare un solo passo: rilasciare e riprovare mentre l’indicatore è visibile. «Disattivato» ripristina il controllo nativo senza eliminare assegnazioni. La scelta resta memorizzata dopo disattivazione e riattivazione.';
+
+  @override
   String get fileStorageSettingsUnavailable =>
       'Questo firmware non offre una schermata per l’accesso a tutti i file. Usa il selettore di file di sistema o installa un gestore di file compatibile.';
 
   @override
-  String get tileFillBanner => 'Riempi il riquadro con il banner';
+  String get tileImageMode => 'Immagine del riquadro';
 
   @override
-  String get tileFillBannerHelp =>
-      'Ingrandisce il banner per riempire il riquadro, mantenendo le proporzioni e ritagliando i bordi attorno al centro. Parte del logo potrebbe essere tagliata. Si applica ai banner standard e personalizzati, non alle icone senza banner. I margini presenti nell’immagine stessa non vengono rimossi.';
+  String get tileBannerImageMode => 'App con banner';
+
+  @override
+  String get tileIconImageMode => 'App senza banner';
+
+  @override
+  String get tileImageContain => 'Mostra immagine intera';
+
+  @override
+  String get tileImageCover => 'Riempi con ritaglio';
+
+  @override
+  String get tileImageEdgeColor => 'Adatta con colore del bordo';
+
+  @override
+  String get tileImageIcon => 'Icona con colore del bordo';
+
+  @override
+  String get tileImageModeHelp =>
+      'Scegli separatamente le modalità per le app con e senza banner. Si applicano se la forma ritaglia l’immagine o lascia margini vuoti. Mostra l’immagine intera, ingrandisci in proporzione ritagliando o riempi lo spazio libero con il colore del bordo più vicino. La sostituzione con un’icona e i suoi colori è disponibile solo per le app con banner. L’impostazione della dimensione dell’icona viene mantenuta.';
 
   @override
   String get wallhavenWallpaperHint =>
@@ -4899,4 +4939,82 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get screenshotSceneHelp =>
       'Imposta l’ora del paesaggio e dell’orologio sullo sfondo e il meteo del paesaggio. Resta attiva chiudendo le impostazioni. Non modifica l’ora di sistema, i dati meteo o le impostazioni salvate. Al riavvio di questa versione: 16:00, nuvoloso.';
+
+  @override
+  String get autoLaunchWaitForInternet => 'Attendi Internet';
+
+  @override
+  String get autoLaunchWaitForInternetHelp =>
+      'Dopo il ritardo, attendi fino a 60 secondi la conferma dell’accesso a Internet, poi avvia l’app. Usare il telecomando o lasciare Home annulla l’avvio.';
+
+  @override
+  String get remoteMappingIgnore => 'Ignora pulsante';
+
+  @override
+  String get adbHomeDependencyProtected =>
+      'Disattivazione bloccata: trovata una dipendenza di sistema o verifica non disponibile. Consulta la diagnostica.';
+
+  @override
+  String get cleanerOperationResultTitle => 'Risultato ultima operazione';
+
+  @override
+  String get cleanerUnchanged => 'Invariato';
+
+  @override
+  String get cleanerNotAttempted => 'Non eseguito';
+
+  @override
+  String get cleanerPackageMissing => 'Applicazione assente';
+
+  @override
+  String get cleanerReadFailed => 'Impossibile leggere lo stato';
+
+  @override
+  String get cleanerJournalFailed =>
+      'Impossibile salvare il registro di ripristino';
+
+  @override
+  String get cleanerCommandFailed => 'Comando non riuscito';
+
+  @override
+  String get cleanerVerificationFailed => 'Nuovo stato non confermato';
+
+  @override
+  String get inputsCecStateOnly => 'Stato HDMI solo tramite CEC';
+
+  @override
+  String get inputsCecStateOnlyHelp =>
+      'Attiva se il firmware riporta stati errati delle porte. Vengono usati solo i dati CEC; senza di essi lo stato è sconosciuto. Tutti gli ingressi restano elencati.';
+
+  @override
+  String get backgroundInformationOrderHint =>
+      'OK o ◄ / ►: avvia o termina lo spostamento; ▲ / ▼: cambia l’ordine dall’alto verso il basso; Indietro: termina.';
+
+  @override
+  String get homeStyleNeedsSectionBackground =>
+      'Scegli un colore di sfondo per la sezione.';
+
+  @override
+  String get updateWrongPackage =>
+      'Questo APK è per un’altra app. Scarica un aggiornamento di CuteLauncher dalla fonte ufficiale.';
+
+  @override
+  String get updateNotNewer =>
+      'L’APK scaricato ha la stessa build o una precedente. Si può installare solo una build più recente.';
+
+  @override
+  String get updateSignersUnavailable =>
+      'Android non ha fornito i certificati dell’app installata o dell’APK. Impossibile verificare la firma; installazione bloccata.';
+
+  @override
+  String get updateSignatureMismatch =>
+      'La firma dell’APK è diversa da quella di CuteLauncher installato. Aggiornamento bloccato. Comunica all’autore la provenienza della versione installata.';
+
+  @override
+  String get updateInvalidFile =>
+      'Android non ha potuto leggere l’APK: il file manca, è vuoto, troppo grande o non riconosciuto. Scarica di nuovo l’aggiornamento.';
+
+  @override
+  String get updateVerificationFailed =>
+      'Errore durante la verifica dell’APK. Installazione bloccata. Riprova; se l’errore si ripete, invia all’autore un rapporto diagnostico.';
 }

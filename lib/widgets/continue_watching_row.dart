@@ -1,4 +1,5 @@
 import 'tile_paint_layer.dart';
+import '../key_sounds.dart';
 import '../providers/appearance_service.dart';
 import '../tile_appearance.dart';
 import 'tile_theme_outline.dart';
@@ -385,7 +386,8 @@ class _WatchNextCardState extends State<WatchNextCard> {
           hoverColor: Colors.transparent,
           splashColor: Colors.transparent,
           highlightColor: Colors.transparent,
-          onTap: _onPressed,
+          enableFeedback: false,
+          onTap: () { playKeySound(context); _onPressed(); },
           onLongPress: _onLongPress,
           child: AnimatedScale(
               scale: _clicked ? 0.9 : 1.0,

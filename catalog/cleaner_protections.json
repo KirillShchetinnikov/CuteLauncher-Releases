@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "rules": [
+    {
+      "id": "tcl-g08-au02-input-dependencies",
+      "identity": {
+        "manufacturer": "TCL",
+        "model": "Smart TV Pro",
+        "device": "G08",
+        "fingerprint": "TCL/G08_4K_GB/G08:14/UTT2.250416.001/AU02:user/release-keys"
+      },
+      "protectedPackages": [
+        "com.tcl.ttvs",
+        "com.tcl.interactive",
+        "com.tcl.suspension",
+        "com.tcl.channelplus",
+        "com.tcl.waterfall.overseas"
+      ],
+      "verification": "upstreamObservedBreakage",
+      "source": "https://github.com/Gathin23/cleanyourtv/pull/2990",
+      "notesRu": "Наблюдение на 75T8C в Швеции. Android identity совпадает с другими G08 AU02; правило консервативно сохраняет зависимости на всех точно совпавших identity. Это не проверка других физических ТВ."
+    },
+    {
+      "id": "sony-ur2-s97-airplay-dependency",
+      "identity": {
+        "manufacturer": "Sony",
+        "model": "BRAVIA 4K UR2",
+        "device": "BRAVIA_UR2_4K",
+        "firmware": "QTG3.200305.006.S97 662301"
+      },
+      "protectedPackages": ["com.vewd.core.service"],
+      "verification": "upstreamObservedBreakage",
+      "source": "https://github.com/Gathin23/cleanyourtv/pull/2737",
+      "notesRu": "На этой модели/сборке AirPlay вызывает циклические падения без Vewd. Поля должны совпасть точно; другие варианты device/firmware автоматически не сопоставляются."
+    }
+  ]
+}

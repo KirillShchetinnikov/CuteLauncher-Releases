@@ -11,7 +11,8 @@ final class VpnPolicy {
     }
     static boolean supported(String app) {
         return requiresProfile(app) || "com.happproxy".equals(app)
-            || "su.happ.proxyutility".equals(app) || "com.mantaray.vpn".equals(app);
+            || "su.happ.proxyutility".equals(app) || "com.mantaray.vpn".equals(app)
+            || "llc.itdev.incy".equals(app);
     }
     static boolean requiresProfile(String app) {
         return "org.amnezia.awg".equals(app) || "com.wireguard.android".equals(app);

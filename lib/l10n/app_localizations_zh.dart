@@ -10,15 +10,55 @@ class AppLocalizationsZh extends AppLocalizations {
   AppLocalizationsZh([String locale = 'zh']) : super(locale);
 
   @override
+  String get volumeKeysTitle => '长按音量键';
+
+  @override
+  String get volumeKeysMode => '修复方式';
+
+  @override
+  String get volumeKeysAuto => '自动：面板显示期间';
+
+  @override
+  String get volumeKeysTimed => '定时暂停';
+
+  @override
+  String get volumeKeysRepeat => '自定义重复';
+
+  @override
+  String get volumeKeysDuration => '暂停时长';
+
+  @override
+  String get volumeKeysHelp =>
+      '部分Android TV和Google TV设备的无障碍按键拦截会影响系统的音量长按重复。服务启用期间，所有应用都可能受到影响。\n\n“自动：面板显示期间”是启用按键映射时的推荐默认模式。音量指示器出现后，暂时解除按键过滤。所选暂停时间结束后检查窗口：如果仍然可见，则继续延长，最长一分钟。如果无法获取窗口，则使用计时器。\n\n“定时暂停”会在最后一次识别到面板出现后的3、5、10、15或30秒恢复过滤。如果自动模式不稳定，可尝试此方式；暂停太短时可增加时长。\n\n“自定义重复”会持续调节音量，直到松开按钮。固件必须向服务发送按下和松开事件。收不到事件时无法生效，也可能出现一次两格的情况。调节异常时请切换模式。\n\n暂停期间，按键映射和Home拦截暂不可用。第一次长按可能只调节一格：请松开后，在指示器仍显示时再次长按。“已禁用”会恢复系统音量处理，同时保留映射。关闭并重新启用按键映射后，所选模式仍会保留。';
+
+  @override
   String get fileStorageSettingsUnavailable =>
       '此固件无法打开所有文件访问权限页面。请使用系统文件选择器或安装兼容的文件管理器。';
 
   @override
-  String get tileFillBanner => '用横幅填满磁贴';
+  String get tileImageMode => '磁贴图像';
 
   @override
-  String get tileFillBannerHelp =>
-      '保持横幅比例并放大至填满磁贴，以中心为基准裁剪边缘。徽标的一部分可能被裁掉。适用于默认和自定义横幅，不影响没有横幅的图标。不会移除图片本身包含的留白。';
+  String get tileBannerImageMode => '有横幅的应用';
+
+  @override
+  String get tileIconImageMode => '无横幅的应用';
+
+  @override
+  String get tileImageContain => '完整显示图像';
+
+  @override
+  String get tileImageCover => '放大并裁剪';
+
+  @override
+  String get tileImageEdgeColor => '完整图像与边缘颜色';
+
+  @override
+  String get tileImageIcon => '图标与边缘颜色';
+
+  @override
+  String get tileImageModeHelp =>
+      '为有横幅和无横幅的应用分别选择模式。当磁贴形状裁剪图像或出现空白边缘时生效。可以显示整张图像、按比例放大并裁剪，或使用最近边缘的颜色填充空白。用图标及其边缘颜色替换横幅的选项仅适用于有横幅的应用。保留图标大小设置。';
 
   @override
   String get wallhavenWallpaperHint =>
@@ -4623,4 +4663,76 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get screenshotSceneHelp =>
       '设置风景和背景时钟的时间，以及风景的天气。关闭设置后仍然生效。不更改系统时间、天气数据或已保存的设置。此版本重新启动时为16:00，多云。';
+
+  @override
+  String get autoLaunchWaitForInternet => '等待互联网连接';
+
+  @override
+  String get autoLaunchWaitForInternetHelp =>
+      '延迟结束后，最多等待60秒以确认互联网连接，然后启动应用。操作遥控器或离开主屏幕会取消启动。';
+
+  @override
+  String get remoteMappingIgnore => '忽略按钮';
+
+  @override
+  String get adbHomeDependencyProtected => '已阻止停用：发现系统功能依赖或无法检查依赖关系。详情请查看诊断。';
+
+  @override
+  String get cleanerOperationResultTitle => '上次操作结果';
+
+  @override
+  String get cleanerUnchanged => '未更改';
+
+  @override
+  String get cleanerNotAttempted => '未执行';
+
+  @override
+  String get cleanerPackageMissing => '应用不存在';
+
+  @override
+  String get cleanerReadFailed => '无法读取状态';
+
+  @override
+  String get cleanerJournalFailed => '无法保存恢复日志';
+
+  @override
+  String get cleanerCommandFailed => '命令执行失败';
+
+  @override
+  String get cleanerVerificationFailed => '未能确认新状态';
+
+  @override
+  String get inputsCecStateOnly => '仅使用 CEC 判断 HDMI 状态';
+
+  @override
+  String get inputsCecStateOnlyHelp =>
+      '当固件报告错误的端口状态时启用。仅使用 CEC 数据；没有数据时状态为未知。所有输入仍保留在列表中。';
+
+  @override
+  String get backgroundInformationOrderHint =>
+      'OK 或 ◄ / ►：开始或结束移动；▲ / ▼：更改从上到下的顺序；返回：结束。';
+
+  @override
+  String get homeStyleNeedsSectionBackground => '请选择分区背景颜色。';
+
+  @override
+  String get updateWrongPackage => '此 APK 属于其他应用。请从官方来源下载 CuteLauncher 更新。';
+
+  @override
+  String get updateNotNewer => '下载的 APK 与当前构建相同或更旧。只能安装更新的构建。';
+
+  @override
+  String get updateSignersUnavailable =>
+      'Android 未提供已安装应用或 APK 的证书。无法验证签名，已阻止安装。';
+
+  @override
+  String get updateSignatureMismatch =>
+      'APK 签名与已安装的 CuteLauncher 不同。已阻止更新。请告知开发者当前版本的来源。';
+
+  @override
+  String get updateInvalidFile => 'Android 无法读取 APK：文件缺失、为空、过大或无法识别。请重新下载更新。';
+
+  @override
+  String get updateVerificationFailed =>
+      '验证 APK 时出错，已阻止安装。请重试；如果再次出现，请向开发者发送诊断报告。';
 }

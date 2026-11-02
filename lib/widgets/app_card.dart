@@ -1,3 +1,5 @@
+import 'tile_artwork.dart';
+import '../key_sounds.dart';
 import 'package:flauncher/widgets/launcher_dialog.dart';
 import 'tile_paint_layer.dart';
 import 'tile_focus_scroll.dart';
@@ -22,7 +24,6 @@ import 'package:flauncher/theme/launcher_style.dart';
 
 import 'dart:async';
 import '../app_focus_color.dart';
-import '../image_limits.dart';
 import '../content_image.dart';
 import '../providers/appearance_service.dart';
 import '../tile_appearance.dart';
@@ -89,6 +90,7 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
   (AppImageType, ImageProvider)? _lastAppImage;
   VoidCallback? _imageReady;
   int _imageRequest = 0;
+  bool _imageNeedsRetry = false;
   double _bumpDirection = 0;
   late final AnimationController _bumpController = AnimationController(
     vsync: this,
@@ -201,7 +203,9 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
 
   void _onAppsServiceChanged() {
     final revision = _appsService!.imageRevisionFor(widget.application.packageName);
-    if (revision == _imageRevision) return;
+    // Foreground resume can retry a read skipped in the background without
+    // changing the image revision. Keep successful and pending reads intact.
+    if (revision == _imageRevision && !_imageNeedsRetry) return;
     // Reload the app image when the AppsService notifies of changes
     // (e.g., after setting a custom banner)
     setState(() {
@@ -333,8 +337,11 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
                                   focusNode: _focusNode,
                                   autofocus: widget.autofocus,
                                   focusColor: Colors.transparent,
-                                  child: _appImage(),
-                                  onTap: () => _onPressed(context, LogicalKeyboardKey.enter),
+                                  enableFeedback: false,
+                                  onTap: () {
+                                    playKeySound(context);
+                                    _onPressed(context, LogicalKeyboardKey.enter);
+                                  },
                                   onLongPress: () => _onLongPress(context, LogicalKeyboardKey.enter),
                                   onFocusChange: (focused) {
                                     // Losing focus to Home must not undo its scroll reset.
@@ -348,6 +355,7 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
                                       horizontalStart: widget.isFirstInRow,
                                     );
                                   },
+                                  child: _appImage(),
                                 ),
                               ),
                               if (_moving) ..._arrows(),
@@ -398,6 +406,7 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
   Future<(AppImageType, ImageProvider)> _loadAppBannerOrIcon(AppsService service) async {
     _imageRevision = service.imageRevisionFor(widget.application.packageName);
     final request = ++_imageRequest;
+    _imageNeedsRetry = false;
     final packageName = widget.application.packageName;
     Uint8List bytes = Uint8List(0);
 
@@ -409,7 +418,10 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
       bytes = await service.getAppIcon(packageName);
     }
 
-    if (bytes.isEmpty) throw StateError('App image is unavailable');
+    if (bytes.isEmpty) {
+      if (request == _imageRequest) _imageNeedsRetry = true;
+      throw StateError('App image is unavailable');
+    }
     final image = (type, await contentImage(bytes));
     if (mounted && request == _imageRequest) {
       _lastAppImage = image;
@@ -456,64 +468,27 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
         final record = snapshot.data ?? _lastAppImage;
         if (record != null) {
 
-          if (record.$1 == AppImageType.Banner) {
-            return Image(
-              image: sizedImage(record.$2, Size(constraints.maxWidth.isFinite ? constraints.maxWidth : 320,
-                  constraints.maxHeight.isFinite ? constraints.maxHeight : 180),
-                  MediaQuery.devicePixelRatioOf(context), maximumEdge: 1024),
-              fit: appearance.fillBanner || appearance.aspectRatio == 16 / 9
-                  ? BoxFit.cover : BoxFit.contain,
-              gaplessPlayback: true,
-              frameBuilder: _imageFrame,
-              errorBuilder: _imageError,
-            );
-          }
-          else {
-            return Padding(
-              padding: const EdgeInsets.all(8),
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: FractionallySizedBox(
-                      widthFactor: appearance.iconScale, heightFactor: appearance.iconScale,
-                      child: LayoutBuilder(builder: (context, iconConstraints) => Image(
-                        image: sizedImage(
-                          record.$2,
-                          Size(
-                            iconConstraints.maxWidth.isFinite ? iconConstraints.maxWidth : 128,
-                            iconConstraints.maxHeight.isFinite ? iconConstraints.maxHeight : 128,
-                          ),
-                          MediaQuery.devicePixelRatioOf(context) * LauncherStyle.of(context).tileFocusScale(
-                            context.read<SettingsService>().themes, appearance,
-                            width: constraints.maxWidth.isFinite ? constraints.maxWidth : 320,
-                            focused: true,
-                          ),
-                          maximumEdge: 1024,
-                        ),
-                        fit: BoxFit.contain,
-                        gaplessPlayback: true,
-                        frameBuilder: _imageFrame,
-                        errorBuilder: _imageError,
-                      )),
-                    ),
-                  ),
-                  if (!appearance.active) Flexible(
-                    flex: 3,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 8),
-                      child: Text(
-                        app.name,
-                        style: Theme.of(context).textTheme.bodySmall,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 3,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }
+          final isIcon = record.$1 == AppImageType.Icon;
+          final style = LauncherStyle.of(context);
+          final theme = context.read<SettingsService>().themes;
+          return TileArtwork(
+            key: ValueKey((app.packageName, _imageRevision)),
+            image: record.$2,
+            mode: isIcon ? appearance.iconImageMode : appearance.bannerImageMode,
+            borderRadius: style.tileCorners(theme, radius: appearance.number('radius')),
+            isIcon: isIcon,
+            iconScale: appearance.iconScale,
+            decodeScale: style.tileFocusScale(theme, appearance, width: constraints.maxWidth, focused: true),
+            inlineLabel: isIcon && !appearance.active ? Text(app.name,
+                style: Theme.of(context).textTheme.bodySmall,
+                overflow: TextOverflow.ellipsis, maxLines: 3) : null,
+            loadIcon: () async {
+              final bytes = await _appsService!.getAppIcon(app.packageName);
+              return bytes.isEmpty ? null : await contentImage(bytes);
+            },
+            frameBuilder: _imageFrame,
+            errorBuilder: _imageError,
+          );
         }
         else if (snapshot.hasError) {
           _imageReady?.call();

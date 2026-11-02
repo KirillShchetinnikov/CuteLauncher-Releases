@@ -10,15 +10,55 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
+  String get volumeKeysTitle => 'الضغط المطوّل على أزرار الصوت';
+
+  @override
+  String get volumeKeysMode => 'طريقة المعالجة';
+
+  @override
+  String get volumeKeysAuto => 'تلقائي: أثناء ظهور اللوحة';
+
+  @override
+  String get volumeKeysTimed => 'إيقاف مؤقت بمدة محددة';
+
+  @override
+  String get volumeKeysRepeat => 'تكرار مخصص';
+
+  @override
+  String get volumeKeysDuration => 'مدة الإيقاف المؤقت';
+
+  @override
+  String get volumeKeysHelp =>
+      'في بعض أجهزة Android TV وGoogle TV، يعطل اعتراض الأزرار عبر تسهيل الاستخدام تكرار ضبط الصوت. قد يؤثر ذلك على جميع التطبيقات ما دامت الخدمة مفعلة.\n\n«تلقائي: أثناء ظهور اللوحة» هو الوضع الافتراضي الموصى به عند تفعيل تعيين الأزرار. يوقف ظهور المؤشر ترشيح الأزرار مؤقتًا. بعد المدة المحددة تُفحص النافذة: يستمر التمديد ما دامت ظاهرة، بحد أقصى دقيقة. إذا تعذر الوصول إليها، يُستخدم المؤقت.\n\n«إيقاف مؤقت بمدة محددة» يعيد الترشيح بعد 3 أو 5 أو 10 أو 15 أو 30 ثانية من آخر ظهور معروف للوحة. جرّبه إذا كان الوضع التلقائي غير مستقر، وزد المدة إذا كانت قصيرة.\n\n«تكرار مخصص» يغير الصوت حتى ترك الزر. يجب أن يرسل النظام حدثي الضغط والترك إلى الخدمة. لن يفيد دون هذين الحدثين، وقد يسبب خطوات مزدوجة. بدّل الوضع إذا لم يعمل بشكل صحيح.\n\nأثناء الإيقاف المؤقت لا تعمل التعيينات واعتراض Home. قد تغير الضغطة المطولة الأولى خطوة واحدة: اترك الزر ثم اضغط مطولًا مجددًا والمؤشر ظاهر. «معطل» يعيد التحكم الأصلي بالصوت ويحفظ التعيينات. يبقى الوضع المختار محفوظًا بعد إيقاف تعيين الأزرار وإعادة تشغيله.';
+
+  @override
   String get fileStorageSettingsUnavailable =>
       'لا توفّر هذه البرامج الثابتة شاشة للوصول إلى جميع الملفات. استخدم منتقي ملفات النظام أو ثبّت مدير ملفات متوافقًا.';
 
   @override
-  String get tileFillBanner => 'ملء البلاطة بالبانر';
+  String get tileImageMode => 'صورة البلاطة';
 
   @override
-  String get tileFillBannerHelp =>
-      'يكبّر البانر ليملأ البلاطة مع الحفاظ على نسبه وقص الحواف من المنتصف. قد يتم اقتطاع جزء من الشعار. ينطبق على البانرات القياسية والمخصّصة، ولا يؤثر في الأيقونات التي لا تحتوي على بانر. لا يزيل الهوامش الموجودة داخل الصورة نفسها.';
+  String get tileBannerImageMode => 'تطبيقات لها بانر';
+
+  @override
+  String get tileIconImageMode => 'تطبيقات بلا بانر';
+
+  @override
+  String get tileImageContain => 'إظهار الصورة كاملة';
+
+  @override
+  String get tileImageCover => 'ملء مع اقتصاص';
+
+  @override
+  String get tileImageEdgeColor => 'ملاءمة بلون الحافة';
+
+  @override
+  String get tileImageIcon => 'أيقونة بلون الحافة';
+
+  @override
+  String get tileImageModeHelp =>
+      'اختر الوضع بشكل مستقل للتطبيقات ذات البانر والتي لا تملك بانر. يُطبّق عند اقتصاص الصورة بشكل البلاطة أو ظهور هوامش فارغة. يمكن عرض الصورة كاملة أو تكبيرها مع الحفاظ على نسبها واقتصاص الأطراف أو ملء الفراغ بلون أقرب حافة. استبدال البانر بأيقونة وألوان حوافها متاح فقط للتطبيقات ذات البانر. يُحفظ إعداد حجم الأيقونة.';
 
   @override
   String get wallhavenWallpaperHint =>
@@ -4815,4 +4855,80 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get screenshotSceneHelp =>
       'يضبط وقت المنظر وساعة الخلفية وطقس المنظر. يظل نشطًا بعد إغلاق الإعدادات. لا يغير وقت النظام أو بيانات الطقس أو الإعدادات المحفوظة. تبدأ هذه النسخة بعد إعادة التشغيل عند 16:00 بطقس غائم.';
+
+  @override
+  String get autoLaunchWaitForInternet => 'انتظار الإنترنت';
+
+  @override
+  String get autoLaunchWaitForInternetHelp =>
+      'بعد التأخير، انتظر حتى 60 ثانية لتأكيد الاتصال بالإنترنت، ثم شغّل التطبيق. يؤدي استخدام جهاز التحكم أو مغادرة الشاشة الرئيسية إلى إلغاء التشغيل.';
+
+  @override
+  String get remoteMappingIgnore => 'تجاهل الزر';
+
+  @override
+  String get adbHomeDependencyProtected =>
+      'تم حظر التعطيل: توجد تبعية لوظيفة نظام أو تعذر التحقق منها. راجع التشخيص للتفاصيل.';
+
+  @override
+  String get cleanerOperationResultTitle => 'نتيجة آخر عملية';
+
+  @override
+  String get cleanerUnchanged => 'دون تغيير';
+
+  @override
+  String get cleanerNotAttempted => 'لم تتم المحاولة';
+
+  @override
+  String get cleanerPackageMissing => 'التطبيق غير موجود';
+
+  @override
+  String get cleanerReadFailed => 'تعذرت قراءة الحالة';
+
+  @override
+  String get cleanerJournalFailed => 'تعذر حفظ سجل الاستعادة';
+
+  @override
+  String get cleanerCommandFailed => 'فشل الأمر';
+
+  @override
+  String get cleanerVerificationFailed => 'لم يتم تأكيد الحالة الجديدة';
+
+  @override
+  String get inputsCecStateOnly => 'حالة HDMI عبر CEC فقط';
+
+  @override
+  String get inputsCecStateOnlyHelp =>
+      'فعّل هذا إذا أبلغ البرنامج الثابت عن حالات منافذ غير صحيحة. تُستخدم بيانات CEC فقط؛ بدونها تكون الحالة غير معروفة. تبقى جميع المداخل في القائمة.';
+
+  @override
+  String get backgroundInformationOrderHint =>
+      'OK أو ◄ / ► — بدء النقل أو إنهاؤه؛ ▲ / ▼ — تغيير الترتيب من الأعلى إلى الأسفل؛ رجوع — إنهاء.';
+
+  @override
+  String get homeStyleNeedsSectionBackground => 'اختر لون خلفية القسم.';
+
+  @override
+  String get updateWrongPackage =>
+      'ملف APK مخصص لتطبيق آخر. نزّل تحديث CuteLauncher من المصدر الرسمي.';
+
+  @override
+  String get updateNotNewer =>
+      'ملف APK الذي تم تنزيله يحمل نفس البناء أو بناءً أقدم. لا يمكن تثبيت إلا بناء أحدث.';
+
+  @override
+  String get updateSignersUnavailable =>
+      'لم يوفر Android شهادات التطبيق المثبت أو ملف APK. تعذر التحقق من التوقيع؛ تم حظر التثبيت.';
+
+  @override
+  String get updateSignatureMismatch =>
+      'توقيع APK يختلف عن توقيع CuteLauncher المثبت. تم حظر التحديث. أخبر المطور بمصدر الإصدار المثبت.';
+
+  @override
+  String get updateInvalidFile =>
+      'تعذر على Android قراءة APK: الملف مفقود أو فارغ أو كبير جدًا أو غير معروف. نزّل التحديث مجددًا.';
+
+  @override
+  String get updateVerificationFailed =>
+      'حدث خطأ أثناء التحقق من APK. تم حظر التثبيت. حاول مجددًا؛ إذا تكرر الخطأ، أرسل تقرير تشخيص إلى المطور.';
 }

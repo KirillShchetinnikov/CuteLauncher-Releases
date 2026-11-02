@@ -10,15 +10,55 @@ class AppLocalizationsDe extends AppLocalizations {
   AppLocalizationsDe([String locale = 'de']) : super(locale);
 
   @override
+  String get volumeKeysTitle => 'Lautstärketasten gedrückt halten';
+
+  @override
+  String get volumeKeysMode => 'Lösungsmodus';
+
+  @override
+  String get volumeKeysAuto => 'Auto: solange das Bedienfeld sichtbar ist';
+
+  @override
+  String get volumeKeysTimed => 'Zeitgesteuerte Pause';
+
+  @override
+  String get volumeKeysRepeat => 'Eigene Wiederholung';
+
+  @override
+  String get volumeKeysDuration => 'Pausendauer';
+
+  @override
+  String get volumeKeysHelp =>
+      'Bei manchen Android-TV- und Google-TV-Geräten stört die Tastenfilterung über Bedienungshilfen die Lautstärkewiederholung. Das kann alle Apps betreffen, solange der Dienst aktiv ist.\n\n„Auto: solange das Bedienfeld sichtbar ist“ ist die empfohlene Vorgabe beim Einschalten der Tastenbelegung. Die Lautstärkeanzeige setzt die Filterung aus. Nach der gewählten Pause wird das Fenster geprüft: Solange es sichtbar ist, verlängert sich die Pause, höchstens eine Minute. Ist es nicht verfügbar, gilt der Timer.\n\n„Zeitgesteuerte Pause“ aktiviert den Filter 3, 5, 10, 15 oder 30 Sekunden nach dem letzten erkannten Erscheinen der Anzeige. Bei unzuverlässigem Auto diesen Modus versuchen; ist die Pause zu kurz, die Dauer erhöhen.\n\n„Eigene Wiederholung“ regelt bis zum Loslassen. Dafür muss die Firmware Drücken und Loslassen an den Dienst liefern. Ohne diese Ereignisse hilft der Modus nicht; doppelte Schritte sind möglich. Bei falschem Verhalten einen anderen Modus wählen.\n\nWährend der Pause fehlen Tastenbelegungen und Home-Abfangfunktion. Erfolgt zuerst nur ein Schritt, loslassen und bei sichtbarer Anzeige erneut halten. „Deaktiviert“ stellt die normale Lautstärkeregelung wieder her und bewahrt Belegungen. Die Moduswahl bleibt beim Aus- und Einschalten erhalten.';
+
+  @override
   String get fileStorageSettingsUnavailable =>
       'Diese Firmware bietet keinen Bildschirm für den Zugriff auf alle Dateien. Verwenden Sie die Systemdateiauswahl oder installieren Sie einen kompatiblen Dateimanager.';
 
   @override
-  String get tileFillBanner => 'Kachel mit Banner ausfüllen';
+  String get tileImageMode => 'Kachelbild';
 
   @override
-  String get tileFillBannerHelp =>
-      'Vergrößert das Banner unter Beibehaltung der Proportionen und beschneidet die Ränder zentriert. Teile des Logos können abgeschnitten werden. Gilt für Standardbanner und eigene Banner, nicht für Symbole ohne Banner. Ränder in der Bilddatei selbst werden nicht entfernt.';
+  String get tileBannerImageMode => 'Apps mit Banner';
+
+  @override
+  String get tileIconImageMode => 'Apps ohne Banner';
+
+  @override
+  String get tileImageContain => 'Ganzes Bild einpassen';
+
+  @override
+  String get tileImageCover => 'Mit Zuschnitt ausfüllen';
+
+  @override
+  String get tileImageEdgeColor => 'Einpassen mit Randfarbe';
+
+  @override
+  String get tileImageIcon => 'Symbol mit Randfarbe';
+
+  @override
+  String get tileImageModeHelp =>
+      'Die Modi für Apps mit und ohne Banner werden getrennt gewählt. Sie gelten bei Zuschnitt durch die Kachelform oder freien Rändern. Das ganze Bild einpassen, proportional vergrößern und beschneiden oder freie Flächen mit der nächsten Randfarbe füllen. Der Ersatz durch ein Symbol mit Randfarben ist nur für Apps mit Banner verfügbar. Die Symbolgröße bleibt erhalten.';
 
   @override
   String get wallhavenWallpaperHint =>
@@ -4908,4 +4948,82 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get screenshotSceneHelp =>
       'Legt die Zeit der Landschaft und der Hintergrunduhr sowie das Landschaftswetter fest. Bleibt nach dem Schließen der Einstellungen aktiv. Systemzeit, Wetterdaten und gespeicherte Einstellungen bleiben erhalten. Neustart dieser Version: 16:00 Uhr, bewölkt.';
+
+  @override
+  String get autoLaunchWaitForInternet => 'Auf Internet warten';
+
+  @override
+  String get autoLaunchWaitForInternetHelp =>
+      'Nach der Verzögerung bis zu 60 Sekunden auf bestätigten Internetzugang warten und dann die App starten. Fernbedienungseingaben oder das Verlassen der Startseite brechen den Start ab.';
+
+  @override
+  String get remoteMappingIgnore => 'Taste ignorieren';
+
+  @override
+  String get adbHomeDependencyProtected =>
+      'Deaktivierung blockiert: Eine Abhängigkeit von Systemfunktionen wurde gefunden oder konnte nicht geprüft werden. Details in der Diagnose.';
+
+  @override
+  String get cleanerOperationResultTitle => 'Ergebnis der letzten Aktion';
+
+  @override
+  String get cleanerUnchanged => 'Unverändert';
+
+  @override
+  String get cleanerNotAttempted => 'Nicht ausgeführt';
+
+  @override
+  String get cleanerPackageMissing => 'App nicht vorhanden';
+
+  @override
+  String get cleanerReadFailed => 'Status konnte nicht gelesen werden';
+
+  @override
+  String get cleanerJournalFailed =>
+      'Wiederherstellungsprotokoll konnte nicht gespeichert werden';
+
+  @override
+  String get cleanerCommandFailed => 'Befehl fehlgeschlagen';
+
+  @override
+  String get cleanerVerificationFailed => 'Neuer Status nicht bestätigt';
+
+  @override
+  String get inputsCecStateOnly => 'HDMI-Status nur über CEC';
+
+  @override
+  String get inputsCecStateOnlyHelp =>
+      'Aktivieren, wenn die Firmware falsche Portstatus meldet. Nur CEC-Daten werden verwendet; ohne diese ist der Status unbekannt. Alle Eingänge bleiben sichtbar.';
+
+  @override
+  String get backgroundInformationOrderHint =>
+      'OK oder ◄ / ► — Verschieben starten oder beenden; ▲ / ▼ — Reihenfolge von oben nach unten ändern; Zurück — beenden.';
+
+  @override
+  String get homeStyleNeedsSectionBackground =>
+      'Wähle eine Hintergrundfarbe für den Bereich.';
+
+  @override
+  String get updateWrongPackage =>
+      'Diese APK gehört zu einer anderen App. Laden Sie ein CuteLauncher-Update aus der offiziellen Quelle herunter.';
+
+  @override
+  String get updateNotNewer =>
+      'Die heruntergeladene APK hat denselben oder einen älteren Build. Nur ein neuerer Build kann installiert werden.';
+
+  @override
+  String get updateSignersUnavailable =>
+      'Android hat keine Zertifikate der installierten App oder APK bereitgestellt. Die Signatur konnte nicht geprüft werden; die Installation ist gesperrt.';
+
+  @override
+  String get updateSignatureMismatch =>
+      'Die APK-Signatur unterscheidet sich von der installierten CuteLauncher-Version. Update gesperrt. Teilen Sie dem Autor die Quelle der installierten Version mit.';
+
+  @override
+  String get updateInvalidFile =>
+      'Android konnte die APK nicht lesen: Die Datei fehlt, ist leer, zu groß oder unbekannt. Laden Sie das Update erneut herunter.';
+
+  @override
+  String get updateVerificationFailed =>
+      'Bei der APK-Prüfung ist ein Fehler aufgetreten. Installation gesperrt. Versuchen Sie es erneut; senden Sie bei erneutem Fehler einen Diagnosebericht an den Autor.';
 }

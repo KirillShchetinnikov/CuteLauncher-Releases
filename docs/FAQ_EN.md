@@ -135,6 +135,36 @@ deadline requires exact-alarm permission; standby requires an available system
 action or ADB. With a TV box, the effect on the television also depends on HDMI-CEC
 and firmware. [Sleep timer](USER_GUIDE_EN.md#sleep-timer).
 
+## Why does holding a volume button change only one step?
+
+On some Android TV/Google TV firmware, accessibility key filtering interferes
+with native volume repeat. This can also affect other apps while the remapper
+service is enabled.
+
+Open “Launcher & TV control → Remote button remapper → Hold volume buttons”.
+Enabling the remapper uses Auto by default; an explicitly selected mode is
+preserved when the remapper is turned off and on again.
+
+- **Auto: while the panel is visible.** Showing the system volume panel temporarily
+  releases key filtering. After the selected pause, the launcher checks the window
+  and extends the pause while it is available and visible. If the window cannot
+  be identified, a timer is used instead.
+- **Timed pause.** Filtering resumes after the selected 3, 5, 10, 15 or 30 seconds
+  following the last recognized panel appearance. Try this if Auto is unreliable
+  on your firmware.
+- **Custom repeat.** The launcher adjusts volume while the button is held. This
+  requires the device to deliver both volume press and release events to the
+  service. Some TVs may produce double steps; use another mode in that case.
+- **Disabled.** No workaround is applied; other button assignments are preserved.
+
+Button assignments and Home interception are unavailable during a pause.
+Auto limits a continuous pause to one minute. The first hold may change only
+one step: release and hold again while the indicator is visible. After updating,
+if window access is unavailable, turn the CuteLauncher service off and on again
+in system accessibility settings. Panel availability depends on firmware; the
+setting can be used on different TV brands and is not restricted to TCL.
+If volume behavior gets worse, change the mode or disable the workaround.
+
 ## How do I remap a button and open quick settings over an app?
 
 In Launcher and TV controls → Remote button remapper, create a mapping, capture

@@ -62,7 +62,9 @@ final class RemoteMappingStore {
                 "action", row.getString("action"), "target", row.getString("target"), "trigger", row.optString("trigger", "press"),
                 "name", row.optString("name", "")));
         }
-        return RemoteMappingConfiguration.fromMap(Map.of("enabled", root.getBoolean("enabled"), "bindings", bindings));
+        return RemoteMappingConfiguration.fromMap(Map.of("enabled", root.getBoolean("enabled"), "bindings", bindings,
+            "volumeMode", root.has("volumeMode") ? root.get("volumeMode") : "auto",
+            "volumePauseSeconds", root.has("volumePauseSeconds") ? root.get("volumePauseSeconds") : 5));
     }
     void save(RemoteMappingConfiguration configuration) throws Exception {
         synchronized (LOCK) {

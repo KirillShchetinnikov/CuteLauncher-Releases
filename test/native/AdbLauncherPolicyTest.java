@@ -4,6 +4,17 @@ import java.util.Map;
 public final class AdbLauncherPolicyTest {
     static void check(boolean condition) { if (!condition) throw new AssertionError(); }
     public static void main(String[] args) {
+        for (String component : List.of("com.tcl.keycustomfunctionservice/.FallbackHome",
+                "com.android.tv.settings/.system.FallbackHome", "com.vendor.ui/.LockedHomeActivity",
+                "com.duokan.factorytest/.FactoryLauncher", "com.vendor.factory_test/.Home",
+                "com.google.android.tungsten.setupwraith/.RecoveryActivity", "com.android.provision/.Home",
+                "android/com.android.internal.app.ResolverActivity")) {
+            check(!AdbLauncherPolicy.usableHome(component));
+            var bad = Map.<String,Object>of("component", component, "enabled", true);
+            check(AdbLauncherPolicy.restoreTarget(component, List.of(bad)).isEmpty());
+            check(AdbLauncherPolicy.restoreTarget(component, List.of(bad,
+                Map.of("component", "com.vendor.launcher/.Home", "enabled", true))).equals("com.vendor.launcher/.Home"));
+        }
         var disabled = Map.<String,Object>of("component","builtin/Home", "enabled",false);
         var enabled = Map.<String,Object>of("component","other/Home", "enabled",true);
         var candidates = List.of(disabled,enabled);

@@ -43,7 +43,11 @@ Use the directional pad to move focus and OK to activate the selected item.
 Hold an app tile to open its actions. Back returns from a nested screen;
 its home-screen behavior is configurable. Home returns to the launcher when
 the default home app or Home interception is configured correctly. You can
-choose the focus target after Home and enable navigation sounds.
+choose the focus target after Home. Key sounds have separate switches: for Home,
+go to **Home screen → Home screen behavior**; for settings, go to
+**Interface style → Settings style**. Both switches are off by default.
+On return, the launcher also checks for changes to installed apps so it can
+update tiles even if a system change notification was missed.
 
 Click an app tile to launch it with a mouse. The wheel scrolls app rows
 horizontally and grids with a limited number of visible rows vertically.
@@ -100,9 +104,19 @@ A link icon marks shared values; changes to shared settings apply immediately,
 including to existing categories. Choosing a value that matches the shared one
 restores inheritance. In Tiles and labels, one Restore common settings button
 restores all settings on that screen. Titles, icons, padding and background are
-available directly in the category appearance editor. Reset category layout also
+available directly in the category appearance editor. Colored category backgrounds
+have Background opacity (0–100%) and Corner radius (0–64) sliders. Adjust them
+for all categories in the home appearance settings or for one category, including
+App feeds. Opacity affects only the background; icons and text keep their brightness.
+Choosing a transparent background preserves the slider values. Reset category layout also
 restores its shared appearance and clears padding, keeping apps and their order.
 CuteLauncher and system settings tiles can be hidden.
+
+The grid row limit sets the number of complete rows in the category area,
+including labels and gaps. If this area is taller than the screen, the page
+scrolls to the selected tile together with the heading. Additional rows scroll
+inside the area; All places the whole grid on the home page. Tile size and
+corner rounding do not reduce the selected row count.
 
 When the home screen shows just one app category in a single row, the mouse
 wheel scrolls apps horizontally without moving the category vertically.
@@ -176,13 +190,25 @@ outlines, zoom and animations, accent color, categories, and the top panel.
 Menus and notifications have background, transparency, color, and text-scale
 settings. Menus can open on either side. Reset individual groups or all appearance.
 
-In **Tiles and labels**, the **Fill tile with banner** switch sits next to tile
-proportions. It enlarges a standard or custom banner to fill the entire tile
-without distorting its proportions, cropping the edges around the center.
-Part of the logo may be cropped. Set a common value or a category override.
-The switch is off by default: at 4:3 and 1:1 the full image is shown, while
-at 16:9 it fills the tile. Icons without a banner use the separate icon-size
-setting. Margins within the image file itself are not removed.
+In **Tiles and labels**, **Apps with a banner** and **Apps without a banner**
+are independent choices next to tile proportions. Apps with a banner have four modes:
+
+1. **Fit whole image** — shows the entire image inside the tile shape.
+2. **Fill with cropping** — enlarges with central cropping, preserving proportions.
+3. **Fit with edge color** — shows the whole image and fills the free area
+   with the color of the nearest image edge.
+4. **Icon with edge color** — replaces the banner with the app icon,
+   shows the whole icon and fills the free area with its edge colors.
+
+The mode applies when the original image is cropped by the tile shape or leaves
+empty margins. An image that already fits stays unchanged, including in the fourth
+mode. Circles and rounded corners are taken into account. Apps without banners
+have the first three modes, applied to their icons; **Icon with edge color** is
+not offered. A replacement icon in the fourth mode follows the setting for apps
+with a banner. Icons retain their separate size setting. Each choice supports
+a common value and category overrides. The first mode is the default for both. If a replacement icon is unavailable, the banner stays with its edge
+colors; if no usable color is found, the normal tile background is used.
+Margins within the image file itself are not removed.
 
 With labels below tiles, zoom grows upward and sideways while preserving the
 gap above the text. This applies to app tiles and content feed cards.
@@ -208,6 +234,11 @@ Background sources:
 - A gradient with your chosen colors.
 - A local image or video, plus a separate Day/Night image source.
 - A folder slideshow with subfolders, order, interval, and next-image controls. Use the shared folder picker or the separate path entry in slideshow settings. For manual input, enter an absolute path such as `/storage/emulated/0/Pictures`, or `/storage/VOLUME_NAME/Wallpapers` for a USB drive. Wallpaper files are not modified.
+
+  The slideshow pauses while you watch a film or TV. If the change interval has
+  elapsed, the next image loads when you return to the home screen. Otherwise,
+  the countdown continues for the remaining time.
+
 - Bing or Wallhaven online wallpapers, or an image URL with available update options. On failure, settings show the source, loading stage and cause, including the HTTP status when available; the diagnostic report also includes these details. Previously downloaded wallpapers are preserved.
 - Selected app colors: a soft background derived from the focused tile's banner or icon.
 - Adaptive landscape: an illustrated valley or realistic nature with four seasons. Spring has fresh light greenery and a flowering meadow, plus blossoming trees in the illustrated valley; summer has deep greenery and warm golden grasses.
@@ -379,11 +410,16 @@ Direct connect and disconnect commands support **AmneziaWG** and **WireGuard**.
 Grant control permission in the launcher's VPN settings and enable remote control
 in the client. Grant the permission from the main launcher, not the overlay panel.
 The profile name is detected during a manual connection when available; otherwise
-enter it exactly as in the client. **Happ** and **MantaRay** also support connect
+enter it exactly as in the client. **Happ**, **MantaRay** and **Incy** also support connect
 and disconnect. Configure and test a connection in the client first; the profile
 is selected there, so no profile name is required in the launcher.
 For MantaRay, confirm the command in its own window. For unattended startup
 after boot, use Android always-on mode.
+Incy commands may open its screen. For automatic connection, select Incy under
+**Autostart → VPN on TV startup**; to start without opening the client, use
+**Android always-on VPN** after configuring and approving the first connection.
+**Background autostart** requires a compatible app activity; Incy's main activity
+uses an incompatible launch mode, so that switch is unavailable.
 Other clients can be opened. Sending a command
 alone does not count as connecting: the launcher waits for the resulting state.
 
@@ -392,7 +428,13 @@ Clock, date and weather**. Choose **Disabled**, **Top panel** or **On wallpaper*
 for the time, date and weather. For example, move the clock to the wallpaper and
 keep the date and weather in the panel, grouped or separate. Wallpaper appearance
 settings offer left, center or right alignment, size (48–144), font, color and glow.
-The date and weather sit above the large clock. This decorative block has no dimming
+In **Wallpaper appearance → Object order**, reorder the date, weather and clock
+from top to bottom: OK starts moving, ▲ / ▼ change the order, and OK or Back
+finishes. The order is retained for hidden elements too. By default, the date
+and weather sit above the large clock.
+In **Formats and data → Weather settings**, enable **Show weather and rain warnings**
+to display a warning beside the temperature in both the panel and on the wallpaper.
+Warnings are hidden when weather data is stale. This decorative block has no dimming
 background, cannot receive focus or presses, and does not open widgets. Tile positions
 and the scrolling viewport stay unchanged; tiles can overlap the clock.
 In the adaptive landscape, the mountain outline overlaps the lower part
@@ -526,11 +568,24 @@ connections change. They show source connectivity, not the input selected for vi
 HDMI ports follow their physical numbering, with custom Android labels and
 CEC-device information taken into account. Enable CEC names or assign your own
 name and icon. Port numbers determine order.
+On Philips TVs, metadata suffixes such as `&GAME_CONSOLE` are removed from
+Android's custom HDMI names. A `null` name falls back to the system input name.
+Names you enter in CuteLauncher are kept exactly as entered.
 
 Input availability, labels, and switching depend on firmware. A TV box's HDMI
 connection is not equivalent to the television's own input list.
 When system inputs are unavailable, their settings are also unavailable.
 Saved names, icons, and the CEC option are preserved.
+
+If firmware confuses port states, enable Use only CEC for HDMI state in input
+settings. The indicator then uses CEC-device data; without it, the state is
+unknown. This option is off by default. All inputs, names, and icons remain.
+Turning it off restores the states reported by firmware.
+
+If standard input opening fails, the launcher tries fallback routes.
+Special YaOS and XGIMI handlers are supported; MiTV-NSOP0 opens Xiaomi's
+source picker. If firmware blocks every route, the launcher reports failure.
+An accepted launch does not guarantee a signal.
 
 ## Night mode and brightness
 
@@ -612,9 +667,17 @@ Path: **Launcher and TV controls**.
 - Inspect the current home app, open system launcher selection, assign CuteLauncher
   through supported ADB actions, or restore the previous HOME handler.
 - Manage built-in Google TV / Android TV launchers and Home Button Fix separately.
+  Service screens, factory screens and setup wizards are excluded from recovery
+  home choices. Recovery is unavailable if no suitable launcher remains.
+  Before disabling stock HOME, known Cast and remote-button service dependencies
+  are checked, including additional Android profiles. A dependency or unavailable
+  check blocks disabling; diagnostics include the reason. No profiles are removed.
 - Enable the launcher's accessibility service and configure Home interception.
 - Grant supported special access to the launcher through ADB.
 - Launch an app or switch once to HDMI after TV boot or wake, with event and delay settings.
+  For apps, **Wait for internet** waits up to 60 seconds after the delay, then makes
+  one launch attempt. Remote input or leaving Home cancels it. It is off by default
+  and does not delay HDMI switching.
 
 **Autostart** includes a separate **VPN on TV startup** choice:
 **Not selected** disables VPN startup; selecting an installed VPN client enables
@@ -679,6 +742,10 @@ Restoring the original state requires working ADB and saved recovery data.
 
 ## Remote remapper and quick settings panel
 
+**Ignore button** consumes the selected press without opening an app or sending
+a command. It is available for assignable remapper buttons; essential controls
+remain protected. Disabling the assignment restores the button's normal action.
+
 Path: **Launcher and TV controls → Remote button remapper**.
 
 Button diagnostics records events Android sends to the service and saves the
@@ -706,6 +773,18 @@ current app and closes with Back. Accessibility and the relevant special access
 are required to operate over apps. Not every physical button reaches the service:
 Power is excluded; voice and some branded buttons may be handled by Android.
 Double press is not supported.
+
+### Holding volume buttons
+
+“Hold volume buttons” offers “Auto: while the panel is visible”, “Timed pause”,
+“Custom repeat” and “Disabled”. An enabled remapper initially uses Auto; your
+explicit choice is preserved. The pause can be 3, 5, 10, 15 or 30 seconds.
+Auto extends it while the system window is visible, up to one minute; an
+unavailable window falls back to the timer. Assignments and Home interception
+are unavailable during a pause. Custom repeat requires volume keys to reach
+the service. See the [FAQ](FAQ_EN.md#why-does-holding-a-volume-button-change-only-one-step)
+for the initial single step and choosing another mode.
+
 
 ## Open apps
 
@@ -735,7 +814,18 @@ only on this device.
 
 ## TV cleanup manager
 
+Bundled restrictions for specific models and firmware preserve known system
+dependencies. They apply only when the specified device metadata matches exactly
+and also protect restoration. Observations from another TV do not authorize
+disabling packages on yours.
+
 Path: **Launcher and TV controls → TV cleanup manager**.
+
+After a change or restoration, Last operation result shows each package as
+changed, unchanged, skipped, failed, or not attempted. Failures identify the
+stage: reading, saving the recovery journal, issuing the command, or verifying
+the state. Refreshing the list preserves this result until another operation
+or leaving the page.
 
 The main page contains the refresh action and four groups: All applications,
 Disable lists, Backup and recovery, and Reports. Before first use, select Refresh applications:
@@ -754,6 +844,13 @@ system components show their descriptions and risks; unknown system packages
 are labeled Application not identified. Each application card shows its version,
 state, and an enable or disable action. Protection of important components and
 active services applies in every group.
+Apps that open system settings and TV inputs are also protected. If their handlers
+cannot be identified, cleanup stops before changing packages.
+Low-level HDMI/AV services and packages requesting hardware-input access are also
+protected, even when their input is not currently published. This does not hide
+inputs or change how they are displayed.
+It also prevents disabling core Android modules and known critical MediaTek/CLTV
+services even when the firmware does not mark them as persistent services.
 
 The first successful refresh automatically creates the **baseline original state**
 for the current firmware. Backup and recovery shows its creation date and a restore
@@ -890,6 +987,13 @@ package and certificate compatibility and need Android installation permission.
 Normal updates preserve user settings. Store-distributed versions have their
 own update-channel restrictions.
 
+If validation fails, the launcher reports the reason: an APK for another app,
+the same or an older build, a different signature, unavailable certificates,
+an unreadable file, or a verification error. For file problems, download the
+update again. If the signature differs, tell the author where you obtained
+the installed version; if a verification error persists, send a diagnostic
+report. You do not need to uninstall the launcher or delete its data.
+
 The launcher remembers granted access in local settings: accessibility for button
 remapping, notifications, display over other apps, usage statistics, system settings
 changes, and Continue Watching. If permissions are reset, it periodically tries to
@@ -946,6 +1050,11 @@ Path: **Settings → Advanced → Diagnostics**. One report combines shared TV a
 CuteLauncher metadata, feature compatibility and errors. There is no separate
 compatibility submenu or file. Create a report, view check results, clear it,
 and export it by copying or saving to disk.
+
+Creating it also reads display modes, HDR, video/audio decoders and audio-output
+formats. These are capabilities reported by Android, not playback test results;
+unavailable metadata is marked separately. Audio device names and addresses are
+excluded from this metadata.
 
 The report includes model/firmware, app version, permissions, memory, error stages
 and causes, and redacted arguments, responses and exception text. ADB entries

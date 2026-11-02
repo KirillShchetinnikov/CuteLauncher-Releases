@@ -18,6 +18,46 @@
       },
       "results": [
         {
+          "feature": "volume-hold-auto-timed",
+          "status": "verified",
+          "date": "2026-11-02",
+          "appBuild": "подтверждение после установки локального 1.6.2+183, SHA256 c41bacc82ef5545e5f76fc149d6f927d84af23031b9322a726273fbe922cc3e4",
+          "summary": "Пользователь подтвердил работу режимов «Авто» и «Пауза по таймеру» на TCL .73 после установки обычной сборки с настройками и объединённой справкой. Это аппаратное подтверждение пользователя, не автономная проверка агента. Собственный повтор, предельная минутная пауза и возврат отдельных назначений/Home этим сообщением не подтверждены.",
+          "evidenceSection": "Настройки совместимости громкости — 2 ноября 2026"
+        },
+        {
+          "feature": "volume-modes-installation",
+          "status": "verified",
+          "date": "2026-11-02",
+          "appBuild": "обычный local release 1.6.2+183, SHA256 79d3d8c04b00a97479a6d52daf4a7f83a8f3fcb6bb55b4c7f705c0a9b45c87fb",
+          "summary": "Обычный APK с настройкой auto/timed/repeat/off установлен без очистки данных. Подтверждены совпадение SHA-256, подключённая служба с capabilities=9, TYPE_WINDOW_STATE_CHANGED/TYPE_WINDOWS_CHANGED и сохранность secure-настроек. Физическая проверка новых auto/repeat на этом APK не проводилась; результат прежней фиксированной паузы остаётся отдельным подтверждением пользователя.",
+          "evidenceSection": "Настройки совместимости громкости — 2 ноября 2026"
+        },
+        {
+          "feature": "volume-filter-pause-experiment",
+          "status": "verified",
+          "date": "2026-11-02",
+          "appBuild": "локальный 1.6.2+183 с VolumeFilterPause, SHA256 0c7c82070e5b6301914aca957a9b4d95dfcf9a3b18f27b2ab3335b51d29b99b6",
+          "summary": "Автоматический VolumePanelEventProbe получил TYPE_WINDOW_STATE_CHANGED от com.android.systemui/com.tcl.volume.view.TclVolumeDialog и подтвердил снятие флага фильтра и его возврат после таймера; исходная медиагромкость восстановлена. Тестовый APK удалён, исходная Accessibility-служба переподключена, InputFilterEnabled=true. Пользователь подтвердил работу физического удержания после отпускания и повторного нажатия при видимом индикаторе; первое удержание даёт один шаг. Возврат назначений/Home отдельно не подтверждён. Обычные сборки оставляют эксперимент выключенным.",
+          "evidenceSection": "Удержание громкости на домашнем экране — 2 ноября 2026"
+        },
+        {
+          "feature": "volume-hold-accessibility-conflict",
+          "status": "verified",
+          "date": "2026-11-02",
+          "appBuild": "локальный release 1.6.2+183 с 9f00c8d7",
+          "summary": "Пользователь подтвердил отсутствие повторов громкости при удержании в лаунчере и других приложениях. В журнале прошивка обрабатывает Volume до окна приложения; удержания около двух секунд имеют только DOWN/UP repeatCount=0. После согласованного временного отключения единственной Accessibility-службы CuteLauncher InputFilterEnabled стал false, пользователь подтвердил восстановление удержания. Затем исходная служба и фильтр восстановлены. Обход Flutter проблему не устранил; совместная работа ремаппера и удержания громкости не обеспечена.",
+          "evidenceSection": "Удержание громкости на домашнем экране — 2 ноября 2026"
+        },
+        {
+          "feature": "screensaver-selection-menu",
+          "status": "verified",
+          "date": "2026-11-02",
+          "appBuild": "установлен CuteLauncher 1.6.2+183; сравнение исходников 63d10055",
+          "summary": "DaydreamActivity открывается через ADB shell, но меню и вложенные настройки не показывают выбор сторонних заставок. Действующий Vendor/daydream_x содержит dreamNow и ambient_settings без activeDream; проверка canChoose в исходниках обоснованно скрывает выбор. Bridge установленного APK отдельно не вызывался, параметры не менялись.",
+          "evidenceSection": "Ограничения TCL и сети"
+        },
+        {
           "feature": "tv-cleaner-inventory",
           "status": "verified",
           "date": "2026-10-21",
@@ -82,6 +122,14 @@
       },
       "results": [
         {
+          "feature": "volume-modes-api36",
+          "status": "verified",
+          "date": "2026-11-02",
+          "appBuild": "обычный local release 1.6.2+183, SHA256 79d3d8c04b00a97479a6d52daf4a7f83a8f3fcb6bb55b4c7f705c0a9b45c87fb",
+          "summary": "VolumeModesProbe на TV_Android_TV/emulator-5554: реальные событие и видимость стандартной панели, продление auto и возврат после закрытия, timed, off, изменения громкости и остановка repeat через callback производственной службы, Back/Home/перезапуск — PASS. Доставка физического OEM-пульта этим не проверена. Тестовый APK удалён, исходные настройки и данные восстановлены.",
+          "evidenceSection": "Настройки совместимости громкости — 2 ноября 2026"
+        },
+        {
           "feature": "adb-permissions-and-home-resolve",
           "status": "verified",
           "date": "2026-10-09",
@@ -101,6 +149,14 @@
         "firmware": "BT2A.260319.001/15058170:user/dev-keys", "android": "16", "sdk": "36", "abis": "x86_64"
       },
       "results": [
+        {
+          "feature": "volume-modes-api36",
+          "status": "verified",
+          "date": "2026-11-02",
+          "appBuild": "обычный local release 1.6.2+183, SHA256 79d3d8c04b00a97479a6d52daf4a7f83a8f3fcb6bb55b4c7f705c0a9b45c87fb",
+          "summary": "VolumeModesProbe на TV_Google_TV/emulator-5556: реальные событие и видимость стандартной панели, продление auto и возврат после закрытия, timed, off, изменения громкости и остановка repeat через callback производственной службы, Back/Home/перезапуск — PASS. Доставка физического OEM-пульта этим не проверена. Тестовый APK удалён, исходные настройки и данные восстановлены.",
+          "evidenceSection": "Настройки совместимости громкости — 2 ноября 2026"
+        },
         {
           "feature": "adb-permissions-and-home-resolve",
           "status": "verified",
@@ -228,6 +284,40 @@
           "appBuild": "1.6.1+182",
           "summary": "Пользователь сообщил о вертикальном смещении единственной однорядной группы колесом мыши. Работа функций, применение исправления на этой приставке и безопасность отключения пакетов не проверялись.",
           "evidenceSection": "Tanix W2: пользовательская диагностика — 2 ноября 2026"
+        }
+      ]
+    },
+    {
+      "id": "formuler-z10-pro-max-android10-20261102",
+      "label": "Formuler Z10 Pro MAX — пользовательская диагностика",
+      "kind": "physical",
+      "exactMatch": true,
+      "identity": {
+        "manufacturer": "FORMULER",
+        "model": "Formuler Z10 Pro MAX",
+        "device": "Z10ProMAX",
+        "fingerprint": "HiSTBAndroidV6/Hi3798CV200/Hi3798CV200:10/QT/2606261233:user/release-keys",
+        "firmware": "QT 2606261233 release-keys",
+        "android": "10",
+        "sdk": "29",
+        "abis": "armeabi-v7a,armeabi"
+      },
+      "results": [
+        {
+          "feature": "identity-and-installed-app-metadata",
+          "status": "verified",
+          "date": "2026-11-02",
+          "appBuild": "1.6.2+183",
+          "summary": "В отчёте пользователя прочитаны идентичность прошивки, Android 10/API 29, ARMv7 и полный список метаданных 107 пакетов. Сессия около 15,7 минуты: failures пуст, операции обновления в последних 50 записях отсутствуют. Это метаданные отчёта, без независимой аппаратной проверки.",
+          "evidenceSection": "Formuler Z10 Pro MAX: отчёт после ручного обновления — 2 ноября 2026"
+        },
+        {
+          "feature": "in-app-update",
+          "status": "unverified",
+          "date": "2026-11-02",
+          "appBuild": "1.6.2+183",
+          "summary": "После подтверждённого пользователем ручного обновления отчёт показывает 1.6.2+183. Причина прежнего отказа встроенной установки не сохранена; подписи и кеш APK отсутствуют. Успех встроенного обновления не проверен.",
+          "evidenceSection": "Formuler Z10 Pro MAX: отчёт после ручного обновления — 2 ноября 2026"
         }
       ]
     }

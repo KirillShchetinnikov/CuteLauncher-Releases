@@ -10,6 +10,7 @@ import 'background_video_diagnostics.dart';
 import 'tv_compatibility_report.dart';
 import 'permission_recovery_diagnostics.dart';
 import 'diagnostic_catalog.dart';
+import 'media_capabilities.dart';
 import 'providers/apps_service.dart';
 import 'providers/settings_service.dart';
 
@@ -39,6 +40,7 @@ Future<Map<String, Object>> collectDiagnostics({AppsService? apps, SettingsServi
   Map<dynamic, dynamic>? environment, memory, shell;
   Map<String, Object>? compatibility;
   Map<String, Object>? permissionRecovery;
+  Map<String, Object>? media;
   // Capture the current launcher layout before asynchronous platform queries.
   final sections = diagnosticSections(apps, settings);
   List<dynamic>? installed;
@@ -73,6 +75,7 @@ Future<Map<String, Object>> collectDiagnostics({AppsService? apps, SettingsServi
     if (raw['permissionRecovery'] is Map) {
       permissionRecovery = permissionRecoveryDiagnostics(raw['permissionRecovery'] as Map);
     }
+    media = mediaCapabilities(raw['mediaCapabilities']);
     compatibility = createTvCompatibilityReport(
       raw,
       capturedAt: capturedAt,
@@ -95,6 +98,7 @@ Future<Map<String, Object>> collectDiagnostics({AppsService? apps, SettingsServi
     nativeShell: shell,
   );
   if (permissionRecovery != null) diagnostics['permissionRecovery'] = permissionRecovery;
+  if (media != null) diagnostics['mediaCapabilities'] = media;
   diagnostics['installedApplications'] = diagnosticApplications(installed, apps);
   diagnostics['launcherSections'] = sections;
   diagnostics['privacy'] = <String, Object>{
