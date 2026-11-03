@@ -1,6 +1,4 @@
 {
-  "fileStorageDiagnostics": "Dosya erişimi tanılaması",
-  "fileStorageDiagnosticsHelp": "Dosya erişim iznini ve sistem isteği işleyicilerini gösterir. ADB veya depolama erişimi gerekmez. Sonuçların fotoğrafını çekebilirsiniz; izinler değiştirilmez.",
   "volumeKeysTitle": "Ses düğmelerini basılı tutma",
   "volumeKeysMode": "Düzeltme yöntemi",
   "volumeKeysAuto": "Otomatik: panel görünürken",

@@ -10,13 +10,6 @@ class AppLocalizationsJa extends AppLocalizations {
   AppLocalizationsJa([String locale = 'ja']) : super(locale);
 
   @override
-  String get fileStorageDiagnostics => 'ファイルアクセスの診断';
-
-  @override
-  String get fileStorageDiagnosticsHelp =>
-      'ファイルアクセス権限とシステムの処理先を表示します。ADBやストレージへのアクセスは不要です。結果は撮影できます。権限は変更されません。';
-
-  @override
   String get volumeKeysTitle => '音量ボタンの長押し';
 
   @override

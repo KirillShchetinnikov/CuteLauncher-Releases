@@ -122,18 +122,6 @@ abstract class AppLocalizations {
     Locale('zh'),
   ];
 
-  /// No description provided for @fileStorageDiagnostics.
-  ///
-  /// In en, this message translates to:
-  /// **'File access diagnostics'**
-  String get fileStorageDiagnostics;
-
-  /// No description provided for @fileStorageDiagnosticsHelp.
-  ///
-  /// In en, this message translates to:
-  /// **'Shows file access permission and system request handlers. No ADB or storage access is needed. You can photograph the results; this check does not change permissions.'**
-  String get fileStorageDiagnosticsHelp;
-
   /// No description provided for @volumeKeysTitle.
   ///
   /// In en, this message translates to:

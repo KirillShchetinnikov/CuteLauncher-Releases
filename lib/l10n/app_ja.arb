@@ -1,6 +1,4 @@
 {
-  "fileStorageDiagnostics": "ファイルアクセスの診断",
-  "fileStorageDiagnosticsHelp": "ファイルアクセス権限とシステムの処理先を表示します。ADBやストレージへのアクセスは不要です。結果は撮影できます。権限は変更されません。",
   "volumeKeysTitle": "音量ボタンの長押し",
   "volumeKeysMode": "対処方法",
   "volumeKeysAuto": "自動：パネル表示中",

@@ -46,7 +46,14 @@ class _AppChannelsOrderPageState extends State<AppChannelsOrderPage> {
         if (!mounted) return;
         final node = _nodes[key];
         node?.requestFocus();
-        if (node?.context != null) Scrollable.ensureVisible(node!.context!);
+        if (node?.context != null) {
+          Scrollable.ensureVisible(
+            node!.context!,
+            alignmentPolicy: delta < 0
+                ? ScrollPositionAlignmentPolicy.keepVisibleAtStart
+                : ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
+          );
+        }
       });
     } catch (_) {
       if (mounted) {
@@ -65,7 +72,10 @@ class _AppChannelsOrderPageState extends State<AppChannelsOrderPage> {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
     final order = context.watch<SettingsService>().selectedAppChannels;
-    final channels = context.watch<AppChannelsService>().channels;
+    final channels = {
+      for (final channel in context.watch<AppChannelsService>().channels)
+        channel.key: channel,
+    };
     return PopScope(
       canPop: _moving == null,
       onPopInvokedWithResult: (didPop, _) {
@@ -75,30 +85,41 @@ class _AppChannelsOrderPageState extends State<AppChannelsOrderPage> {
         title: Text('${l.reorder} · ${l.appChannelsTitle}'),
         child: ListView(
           children: [
-            // These are active remote-control instructions, so they stay visible.
-            Text(l.backgroundInformationOrderHint),
             for (final key in order)
               FocusableSettingsTile(
                 key: ValueKey(key),
                 autofocus: key == order.first,
                 focusNode: _nodes.putIfAbsent(key, () => FocusNode()),
-                title: Text(
-                  channels
-                          .where((c) => c.key == key)
-                          .map((c) => '${c.name} · ${c.appName}')
-                          .firstOrNull ??
-                      '${l.appChannelsMissing}\n$key',
+                leading: Icon(
+                  _moving == key ? Icons.drag_indicator : Icons.drag_handle,
+                ),
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(channels[key]?.name ?? l.appChannelsMissing),
+                    Text(
+                      channels[key]?.appName ?? key,
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
                 ),
                 selected: _moving == key,
+                showActionChevron: false,
                 trailing: _moving == key
                     ? Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(l.reorder),
-                          const Icon(Icons.unfold_more),
+                          const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.keyboard_arrow_up),
+                              Icon(Icons.keyboard_arrow_down),
+                            ],
+                          ),
                         ],
                       )
-                    : const Icon(Icons.swap_vert),
+                    : null,
                 onPressed: () =>
                     setState(() => _moving = _moving == key ? null : key),
                 onLongPress: () => setState(() => _moving = key),
@@ -107,6 +128,11 @@ class _AppChannelsOrderPageState extends State<AppChannelsOrderPage> {
                     return KeyEventResult.ignored;
                   }
                   final button = event.logicalKey;
+                  if (event is KeyRepeatEvent &&
+                      button != LogicalKeyboardKey.arrowUp &&
+                      button != LogicalKeyboardKey.arrowDown) {
+                    return KeyEventResult.handled;
+                  }
                   if (event is KeyDownEvent &&
                       (button == LogicalKeyboardKey.arrowLeft ||
                           button == LogicalKeyboardKey.arrowRight)) {
@@ -124,9 +150,9 @@ class _AppChannelsOrderPageState extends State<AppChannelsOrderPage> {
                       _move(key, delta);
                     } else {
                       final next = order.indexOf(key) + delta;
-                    if (next < 0 || next >= order.length) {
+                      if (next < 0 || next >= order.length) {
                         return KeyEventResult.ignored;
-                    }
+                      }
                       _nodes[order[next]]?.requestFocus();
                     }
                     return KeyEventResult.handled;
@@ -134,6 +160,11 @@ class _AppChannelsOrderPageState extends State<AppChannelsOrderPage> {
                   return KeyEventResult.ignored;
                 },
               ),
+            // Active remote-control instructions stay visible, like section order.
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: Text(l.backgroundInformationOrderHint),
+            ),
           ],
         ),
       ),

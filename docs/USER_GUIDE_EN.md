@@ -808,7 +808,8 @@ option depends on the firmware.
 When returning from the panel, focus stays on the “Open panel” button.
 
 The CuteLauncher panel requires authorized local ADB and a connected accessibility
-service. Both access statuses appear in the panel and on its settings page.
+service. Both access statuses appear below the panel title, above its action
+buttons, and on its settings page.
 If access is missing, select its row: ADB opens CuteLauncher's connection setup,
 and Accessibility opens the system service settings. Statuses refresh on return.
 The panel shows icons and names of TV apps with existing tasks, including
@@ -1062,14 +1063,8 @@ CuteLauncher metadata, feature compatibility and errors. There is no separate
 compatibility submenu or file. Create a report, view check results, clear it,
 and export it by copying or saving to disk.
 
-**File access diagnostics** shows the file access permission state and the
-system components that handle access requests. You do not need to create a
-full report, connect ADB or grant storage access. You can photograph the
-results; use Up/Down to scroll. The check does not change permissions.
-To run it again, go back and press the button again. The results compare the
-storage permissions of CuteLauncher and File Manager + when installed. On
-Android 11–12 the request can open the CuteLauncher app details if the special
-access screen is unavailable. Check Permissions → Files and media there.
+On Android 11–12, a file access request can open the CuteLauncher app details
+if the special access screen is unavailable. Check Permissions → Files and media there.
 
 Creating it also reads display modes, HDR, video/audio decoders and audio-output
 formats. These are capabilities reported by Android, not playback test results;

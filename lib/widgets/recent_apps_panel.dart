@@ -123,6 +123,10 @@ class _RecentAppsPanelState extends State<RecentAppsPanel> {
                               l.recentAppsTitle,
                               style: Theme.of(context).textTheme.titleLarge,
                             ),
+                            RecentAppsAccess(
+                              key: const ValueKey('recent_access_header'),
+                              revision: _accessRevision,
+                            ),
                             if (_busy) const LinearProgressIndicator(),
                             Row(
                               key: const ValueKey('recent_actions'),
@@ -162,9 +166,6 @@ class _RecentAppsPanelState extends State<RecentAppsPanel> {
                                   if (index == 0) {
                                     return Column(
                                       children: [
-                                        RecentAppsAccess(
-                                          revision: _accessRevision,
-                                        ),
                                         if (_failed)
                                           Text(
                                             l.recentAppsUnavailable,

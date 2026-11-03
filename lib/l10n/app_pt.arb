@@ -1,6 +1,4 @@
 {
-  "fileStorageDiagnostics": "Diagnóstico de acesso a ficheiros",
-  "fileStorageDiagnosticsHelp": "Mostra a permissão de acesso a ficheiros e os componentes do sistema. Não requer ADB nem acesso ao armazenamento. Pode fotografar os resultados; as permissões não são alteradas.",
   "volumeKeysTitle": "Manter botões de volume",
   "volumeKeysMode": "Modo de correção",
   "volumeKeysAuto": "Auto: enquanto o painel estiver visível",

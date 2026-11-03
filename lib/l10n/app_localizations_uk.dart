@@ -10,13 +10,6 @@ class AppLocalizationsUk extends AppLocalizations {
   AppLocalizationsUk([String locale = 'uk']) : super(locale);
 
   @override
-  String get fileStorageDiagnostics => 'Доступ до файлів: діагностика';
-
-  @override
-  String get fileStorageDiagnosticsHelp =>
-      'Показує дозвіл доступу до файлів і системні обробники запиту. ADB і доступ до пам’яті не потрібні. Результат можна сфотографувати; перевірка не змінює дозволи.';
-
-  @override
   String get volumeKeysTitle => 'Утримання гучності';
 
   @override

@@ -10,13 +10,6 @@ class AppLocalizationsZh extends AppLocalizations {
   AppLocalizationsZh([String locale = 'zh']) : super(locale);
 
   @override
-  String get fileStorageDiagnostics => '文件访问诊断';
-
-  @override
-  String get fileStorageDiagnosticsHelp =>
-      '显示文件访问权限和系统请求处理程序。不需要 ADB 或存储访问权限。可拍摄结果；检查不会更改权限。';
-
-  @override
   String get volumeKeysTitle => '长按音量键';
 
   @override

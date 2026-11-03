@@ -13,11 +13,16 @@ import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
 import '../../support/app_channels.dart';
 
 void main() {
-  for (final language in ['ru', 'ar']) {
+  for (final (language, width) in [
+    ('ru', 960.0),
+    ('ar', 960.0),
+    ('ru', 420.0),
+    ('ar', 420.0),
+  ]) {
     testWidgets(
-      'feed order supports remote, boundaries, repeats and Back: $language',
+      'feed order supports remote, boundaries, repeats and Back: $language $width',
       (tester) async {
-        tester.view.physicalSize = const Size(960, 540);
+        tester.view.physicalSize = Size(width, 540);
         tester.view.devicePixelRatio = 1;
         addTearDown(tester.view.resetPhysicalSize);
         addTearDown(tester.view.resetDevicePixelRatio);
@@ -30,7 +35,18 @@ void main() {
         });
         final prefs = await SharedPreferences.getInstance();
         final settings = SettingsService(prefs);
-        final channel = FeedChannel()..data = [feed(1), feed(2)];
+        final secondTitle = width == 420
+            ? 'Продолжить просмотр любимых фильмов'
+            : 'Feed 2';
+        final channel = FeedChannel()
+          ..data = [
+            feed(1),
+            {
+              ...feed(2),
+              'name': secondTitle,
+              'appName': 'Видеоприложение с длинным названием',
+            },
+          ];
         final service = AppChannelsService(channel, settings);
         await tester.pumpWidget(
           MultiProvider(
@@ -69,9 +85,32 @@ void main() {
             .focusNode!;
         node().requestFocus();
         await tester.pumpAndSettle();
-        await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+        expect(find.byIcon(Icons.drag_handle), findsNWidgets(3));
+        expect(find.byIcon(Icons.swap_vert), findsNothing);
+        await tester.sendKeyDownEvent(LogicalKeyboardKey.enter);
+        await tester.sendKeyRepeatEvent(LogicalKeyboardKey.enter);
+        await tester.sendKeyUpEvent(LogicalKeyboardKey.enter);
+        await tester.pumpAndSettle();
+        expect(
+          tester
+              .widget<FocusableSettingsTile>(
+                find.byKey(const ValueKey('video.app:2')),
+              )
+              .selected,
+          isTrue,
+        );
+        expect(find.byIcon(Icons.drag_indicator), findsOneWidget);
+        expect(find.byIcon(Icons.keyboard_arrow_up), findsOneWidget);
+        expect(find.byIcon(Icons.keyboard_arrow_down), findsOneWidget);
+        expect(find.text(secondTitle), findsOneWidget);
+        expect(tester.takeException(), isNull);
+        final position = Scrollable.of(
+          tester.element(find.byKey(const ValueKey('video.app:2'))),
+        ).position;
+        final previousOffset = position.pixels;
         await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
         await tester.pumpAndSettle();
+        if (width == 960) expect(position.pixels, previousOffset);
         expect(settings.selectedAppChannels, [
           'video.app:2',
           'video.app:1',
@@ -98,7 +137,7 @@ void main() {
         await tester.binding.handlePopRoute();
         await tester.pumpAndSettle();
         expect(find.byType(AppChannelsOrderPage), findsNothing);
-      expect(Focus.of(tester.element(find.text(l.reorder))).hasFocus, isTrue);
+        expect(Focus.of(tester.element(find.text(l.reorder))).hasFocus, isTrue);
         expect(SettingsService(prefs).selectedAppChannels, [
           'video.app:1',
           'missing.app:3',

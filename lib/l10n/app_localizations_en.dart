@@ -10,13 +10,6 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get fileStorageDiagnostics => 'File access diagnostics';
-
-  @override
-  String get fileStorageDiagnosticsHelp =>
-      'Shows file access permission and system request handlers. No ADB or storage access is needed. You can photograph the results; this check does not change permissions.';
-
-  @override
   String get volumeKeysTitle => 'Hold volume buttons';
 
   @override

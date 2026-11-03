@@ -10,13 +10,6 @@ class AppLocalizationsKo extends AppLocalizations {
   AppLocalizationsKo([String locale = 'ko']) : super(locale);
 
   @override
-  String get fileStorageDiagnostics => '파일 접근 진단';
-
-  @override
-  String get fileStorageDiagnosticsHelp =>
-      '파일 접근 권한과 시스템 요청 처리기를 표시합니다. ADB나 저장소 접근 권한이 필요하지 않습니다. 결과를 촬영할 수 있으며 권한은 변경되지 않습니다.';
-
-  @override
   String get volumeKeysTitle => '볼륨 버튼 길게 누르기';
 
   @override

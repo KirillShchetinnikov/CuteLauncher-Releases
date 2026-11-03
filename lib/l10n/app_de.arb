@@ -1,6 +1,4 @@
 {
-  "fileStorageDiagnostics": "Diagnose des Dateizugriffs",
-  "fileStorageDiagnosticsHelp": "Zeigt die Dateizugriffsberechtigung und Systemhandler an. ADB und Speicherzugriff sind nicht erforderlich. Die Ergebnisse können fotografiert werden; Berechtigungen werden nicht geändert.",
   "volumeKeysTitle": "Lautstärketasten gedrückt halten",
   "volumeKeysMode": "Lösungsmodus",
   "volumeKeysAuto": "Auto: solange das Bedienfeld sichtbar ist",

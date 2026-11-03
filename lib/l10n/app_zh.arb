@@ -1,6 +1,4 @@
 {
-  "fileStorageDiagnostics": "文件访问诊断",
-  "fileStorageDiagnosticsHelp": "显示文件访问权限和系统请求处理程序。不需要 ADB 或存储访问权限。可拍摄结果；检查不会更改权限。",
   "volumeKeysTitle": "长按音量键",
   "volumeKeysMode": "修复方式",
   "volumeKeysAuto": "自动：面板显示期间",

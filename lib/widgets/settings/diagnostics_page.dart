@@ -9,7 +9,6 @@ import '../../providers/settings_service.dart';
 
 import '../../diagnostics_report.dart';
 import '../../diagnostics_store.dart';
-import '../../bridge_result.dart';
 import '../../l10n/app_localizations.dart';
 import '../../tv_compatibility_report.dart';
 import '../action_notice.dart';
@@ -18,7 +17,6 @@ import 'focusable_settings_tile.dart';
 import 'settings_help.dart';
 import 'settings_page_layout.dart';
 import 'settings_route.dart';
-import 'file_storage_results_page.dart';
 
 /// A single report retained while diagnostics and its results are open.
 class DiagnosticsPage extends StatefulWidget {
@@ -65,44 +63,6 @@ class _DiagnosticsReportPanelState extends State<DiagnosticsReportPanel> {
   bool _busy = false;
   bool _creating = false;
   bool _exportMenu = false;
-  bool _checkingStorage = false;
-
-  Future<void> _checkFileStorage() async {
-    if (_busy) return;
-    setState(() {
-      _busy = true;
-      _checkingStorage = true;
-    });
-    try {
-      final result = await const BridgeChannel('me.efesser.flauncher/method')
-          .invokeMethod<String>('getFileStorageDiagnostics');
-      if (!mounted) return;
-      if (result == null || result.isEmpty) {
-        throw StateError('Empty diagnostics');
-      }
-      await Navigator.of(context).push(
-        SettingsRoute<void>(
-          builder: (_) => FileStorageResultsPage(result: result),
-        ),
-      );
-    } catch (_) {
-      if (mounted) {
-        showActionNotice(
-          context,
-          AppLocalizations.of(context)!.diagnosticsCreateFailed,
-          error: true,
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _busy = false;
-          _checkingStorage = false;
-        });
-      }
-    }
-  }
-
   Future<void> _create() async {
     if (_busy) return;
     setState(() {
@@ -282,21 +242,8 @@ class _DiagnosticsReportPanelState extends State<DiagnosticsReportPanel> {
             title: Text(l.diagnosticsExport),
             onPressed: _busy || report == null ? null : _export,
           ),
-          FocusableSettingsTile(
-            leading: const Icon(Icons.folder_open),
-            title: Text(l.fileStorageDiagnostics),
-            trailing: _checkingStorage
-                ? const SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : null,
-            onPressed: _checkFileStorage,
-          ),
           SettingsHelp(
-            text:
-                '${l.diagnosticsHint}\n\n${l.diagnosticsSharingNotice}\n\n${l.fileStorageDiagnosticsHelp}',
+            text: '${l.diagnosticsHint}\n\n${l.diagnosticsSharingNotice}',
           ),
         ],
       ),

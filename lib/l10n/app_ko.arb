@@ -1,6 +1,4 @@
 {
-  "fileStorageDiagnostics": "파일 접근 진단",
-  "fileStorageDiagnosticsHelp": "파일 접근 권한과 시스템 요청 처리기를 표시합니다. ADB나 저장소 접근 권한이 필요하지 않습니다. 결과를 촬영할 수 있으며 권한은 변경되지 않습니다.",
   "volumeKeysTitle": "볼륨 버튼 길게 누르기",
   "volumeKeysMode": "해결 방식",
   "volumeKeysAuto": "자동: 패널이 표시되는 동안",

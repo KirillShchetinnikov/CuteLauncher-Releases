@@ -10,13 +10,6 @@ class AppLocalizationsRu extends AppLocalizations {
   AppLocalizationsRu([String locale = 'ru']) : super(locale);
 
   @override
-  String get fileStorageDiagnostics => 'Доступ к файлам: диагностика';
-
-  @override
-  String get fileStorageDiagnosticsHelp =>
-      'Проверка показывает разрешение доступа к файлам и системные обработчики запроса. ADB и доступ к памяти не нужны. Результат можно сфотографировать; проверка не меняет разрешения.';
-
-  @override
   String get volumeKeysTitle => 'Удержание громкости';
 
   @override

@@ -10,13 +10,6 @@ class AppLocalizationsTr extends AppLocalizations {
   AppLocalizationsTr([String locale = 'tr']) : super(locale);
 
   @override
-  String get fileStorageDiagnostics => 'Dosya erişimi tanılaması';
-
-  @override
-  String get fileStorageDiagnosticsHelp =>
-      'Dosya erişim iznini ve sistem isteği işleyicilerini gösterir. ADB veya depolama erişimi gerekmez. Sonuçların fotoğrafını çekebilirsiniz; izinler değiştirilmez.';
-
-  @override
   String get volumeKeysTitle => 'Ses düğmelerini basılı tutma';
 
   @override

@@ -10,13 +10,6 @@ class AppLocalizationsHi extends AppLocalizations {
   AppLocalizationsHi([String locale = 'hi']) : super(locale);
 
   @override
-  String get fileStorageDiagnostics => 'फ़ाइल ऐक्सेस जाँच';
-
-  @override
-  String get fileStorageDiagnosticsHelp =>
-      'फ़ाइल ऐक्सेस की अनुमति और सिस्टम अनुरोध हैंडलर दिखाता है। ADB या स्टोरेज ऐक्सेस की ज़रूरत नहीं है। नतीजों की फ़ोटो ले सकते हैं; जाँच अनुमतियाँ नहीं बदलती।';
-
-  @override
   String get volumeKeysTitle => 'वॉल्यूम बटन दबाकर रखना';
 
   @override

@@ -168,15 +168,36 @@ void main() {
     expect(tester.takeException(), isNull);
   });
   for (final locale in ['en', 'ru']) {
-    testWidgets('missing access links fit and scroll at large text: $locale', (
+    testWidgets('access statuses sit below the title at large text: $locale', (
       tester,
     ) async {
       fail = true;
       await open(tester, scale: 1.8, locale: Locale(locale));
       final link = find.byKey(const ValueKey('recent-access-accessibility'));
-      await tester.scrollUntilVisible(link, 100);
       expect(link, findsOneWidget);
       expect(find.byKey(const ValueKey('recent-access-adb')), findsOneWidget);
+      final l = AppLocalizations.of(
+        tester.element(find.byType(RecentAppsPanel)),
+      )!;
+      final header = find.byKey(const ValueKey('recent_access_header'));
+      final actions = find.byKey(const ValueKey('recent_actions'));
+      expect(
+        tester.getRect(header).top,
+        greaterThanOrEqualTo(
+          tester.getRect(find.text(l.recentAppsTitle)).bottom,
+        ),
+      );
+      expect(
+        tester.getRect(header).bottom,
+        lessThanOrEqualTo(tester.getRect(actions).top),
+      );
+      expect(
+        find.descendant(
+          of: find.byKey(const ValueKey('recent_list')),
+          matching: header,
+        ),
+        findsNothing,
+      );
       expect(tester.takeException(), isNull);
     });
     testWidgets('panel fits TV at large text: $locale', (tester) async {

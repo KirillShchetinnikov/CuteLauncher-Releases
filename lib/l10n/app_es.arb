@@ -1,6 +1,4 @@
 {
-  "fileStorageDiagnostics": "Diagnóstico de acceso a archivos",
-  "fileStorageDiagnosticsHelp": "Muestra el permiso de acceso a archivos y los controladores del sistema. No necesita ADB ni acceso al almacenamiento. Puedes fotografiar los resultados; no cambia los permisos.",
   "volumeKeysTitle": "Mantener botones de volumen",
   "volumeKeysMode": "Modo de solución",
   "volumeKeysAuto": "Auto: mientras el panel sea visible",

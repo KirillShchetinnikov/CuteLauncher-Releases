@@ -6,10 +6,9 @@
 
 - Improved feed artwork sharpness when cropping images and enlarging the focused card.
 - Added automatic artwork format selection and a separate format setting for each feed.
-- Added remote-controlled reordering of selected feeds.
+- Added remote-controlled reordering of selected feeds. The editor follows the section ordering layout, with drag handles, app labels and up/down arrows.
 - Improved file access requests on Android TV 11–12: when the special access screen is unavailable, the launcher offers the app details page with an explanation of the required permission.
-- Added on-screen file access diagnostics that work without saving a report to TV storage.
-- Placed ADB and accessibility statuses side by side in the open apps panel.
+- Placed ADB and accessibility statuses side by side below the open apps panel title, above its action buttons.
 
 ## v1.6.5 — 2026-11-03
 

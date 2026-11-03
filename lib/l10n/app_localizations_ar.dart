@@ -10,13 +10,6 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
-  String get fileStorageDiagnostics => 'تشخيص الوصول إلى الملفات';
-
-  @override
-  String get fileStorageDiagnosticsHelp =>
-      'يعرض إذن الوصول إلى الملفات ومعالجات طلب النظام. لا يحتاج إلى ADB أو الوصول إلى التخزين. يمكنك تصوير النتائج؛ لا يغير الفحص الأذونات.';
-
-  @override
   String get volumeKeysTitle => 'الضغط المطوّل على أزرار الصوت';
 
   @override

@@ -1,6 +1,4 @@
 {
-  "fileStorageDiagnostics": "File access diagnostics",
-  "fileStorageDiagnosticsHelp": "Shows file access permission and system request handlers. No ADB or storage access is needed. You can photograph the results; this check does not change permissions.",
   "volumeKeysTitle": "Hold volume buttons",
   "volumeKeysMode": "Workaround mode",
   "volumeKeysAuto": "Auto: while the panel is visible",

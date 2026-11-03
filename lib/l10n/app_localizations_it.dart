@@ -10,13 +10,6 @@ class AppLocalizationsIt extends AppLocalizations {
   AppLocalizationsIt([String locale = 'it']) : super(locale);
 
   @override
-  String get fileStorageDiagnostics => 'Diagnostica accesso ai file';
-
-  @override
-  String get fileStorageDiagnosticsHelp =>
-      'Mostra il permesso di accesso ai file e i gestori di sistema. Non richiede ADB né accesso alla memoria. Puoi fotografare i risultati; i permessi non vengono modificati.';
-
-  @override
   String get volumeKeysTitle => 'Tenere premuti i tasti volume';
 
   @override
