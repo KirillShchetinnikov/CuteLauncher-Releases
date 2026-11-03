@@ -1,4 +1,6 @@
 {
+  "fileStorageDiagnostics": "File access diagnostics",
+  "fileStorageDiagnosticsHelp": "Shows file access permission and system request handlers. No ADB or storage access is needed. You can photograph the results; this check does not change permissions.",
   "volumeKeysTitle": "Hold volume buttons",
   "volumeKeysMode": "Workaround mode",
   "volumeKeysAuto": "Auto: while the panel is visible",
@@ -1625,5 +1627,10 @@
   "updateSignersUnavailable": "Android did not provide the certificates for the installed app or APK. The signature could not be checked; installation is blocked.",
   "updateSignatureMismatch": "The APK signature differs from the installed CuteLauncher signature. Update blocked. Tell the author where you obtained the installed version.",
   "updateInvalidFile": "Android could not read the APK: the file is missing, empty, too large or unrecognized. Download the update again.",
-  "updateVerificationFailed": "An error occurred while checking the APK. Installation blocked. Try again; if it happens again, send the author a diagnostic report."
+  "updateVerificationFailed": "An error occurred while checking the APK. Installation blocked. Try again; if it happens again, send the author a diagnostic report.",
+  "feedFormat": "Artwork format",
+  "feedFormatAuto": "Auto",
+  "feedFormatLandscape": "Landscape",
+  "feedFormatPortrait": "Portrait",
+  "feedFormatHelp": "Auto chooses one format per feed from app metadata or the first three loaded covers and remembers it on this TV. Ties use landscape. Other proportions are shown in full on a background. You can choose the format manually."
 }

@@ -2,6 +2,15 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
+## v1.6.6 — 2026-11-03
+
+- Improved feed artwork sharpness when cropping images and enlarging the focused card.
+- Added automatic artwork format selection and a separate format setting for each feed.
+- Added remote-controlled reordering of selected feeds.
+- Improved file access requests on Android TV 11–12: when the special access screen is unavailable, the launcher offers the app details page with an explanation of the required permission.
+- Added on-screen file access diagnostics that work without saving a report to TV storage.
+- Placed ADB and accessibility statuses side by side in the open apps panel.
+
 ## v1.6.5 — 2026-11-03
 
 - Fixed signature validation during in-app updates on some TVs: a valid APK is no longer rejected solely because Android does not return signing certificate information.

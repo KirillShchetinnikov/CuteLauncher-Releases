@@ -6,4 +6,7 @@
     <string name="recovery_cleaner_no_baseline">Nessuno stato di base ancora creato.</string>
     <string name="recovery_cleaner_failed">Ripristino incompleto. Controlla ADB locale e riprova.</string>
     <string name="recovery_cleaner_partial">Alcuni stati non sono stati ripristinati. Le app potrebbero mancare o essere protette. Controlla il dispositivo e riprova.</string>
+    <string name="file_card_title">Accesso ai file</string>
+    <string name="file_card_steps">Apri Autorizzazioni → File e contenuti multimediali → Consenti la gestione di tutti i file. Poi premi Indietro per tornare a CuteLauncher.</string>
+    <string name="file_card_open">Apri impostazioni</string>
 </resources>

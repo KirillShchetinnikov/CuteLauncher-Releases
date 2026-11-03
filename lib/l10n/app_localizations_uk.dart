@@ -10,6 +10,13 @@ class AppLocalizationsUk extends AppLocalizations {
   AppLocalizationsUk([String locale = 'uk']) : super(locale);
 
   @override
+  String get fileStorageDiagnostics => 'Доступ до файлів: діагностика';
+
+  @override
+  String get fileStorageDiagnosticsHelp =>
+      'Показує дозвіл доступу до файлів і системні обробники запиту. ADB і доступ до пам’яті не потрібні. Результат можна сфотографувати; перевірка не змінює дозволи.';
+
+  @override
   String get volumeKeysTitle => 'Утримання гучності';
 
   @override
@@ -4982,4 +4989,20 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String get updateVerificationFailed =>
       'Під час перевірки APK сталася помилка. Встановлення заблоковано. Спробуйте ще раз; якщо помилка повториться, надішліть автору звіт діагностики.';
+
+  @override
+  String get feedFormat => 'Формат обкладинок';
+
+  @override
+  String get feedFormatAuto => 'Авто';
+
+  @override
+  String get feedFormatLandscape => 'Горизонтальний';
+
+  @override
+  String get feedFormatPortrait => 'Вертикальний';
+
+  @override
+  String get feedFormatHelp =>
+      'Авто вибирає єдиний формат стрічки за даними застосунку або першими трьома завантаженими обкладинками й запам’ятовує його на цьому ТВ. За рівності вибирається горизонтальний формат. Інші пропорції показуються повністю на підкладці. Формат можна вибрати вручну.';
 }

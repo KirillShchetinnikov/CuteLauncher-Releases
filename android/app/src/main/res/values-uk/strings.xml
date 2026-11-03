@@ -6,4 +6,7 @@
     <string name="recovery_cleaner_no_baseline">Базовий стан ще не створено.</string>
     <string name="recovery_cleaner_failed">Відновлення не завершено. Перевірте локальне ADB-з’єднання й повторіть спробу.</string>
     <string name="recovery_cleaner_partial">Частину станів не відновлено. Застосунки можуть бути відсутні або захищені; перевірте пристрій і повторіть спробу.</string>
+    <string name="file_card_title">Доступ до файлів</string>
+    <string name="file_card_steps">Відкрийте «Дозволи» → «Файли й медіа» → «Дозволити керування всіма файлами». Потім натискайте «Назад», щоб повернутися до CuteLauncher.</string>
+    <string name="file_card_open">Відкрити налаштування</string>
 </resources>

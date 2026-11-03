@@ -10,6 +10,13 @@ class AppLocalizationsHi extends AppLocalizations {
   AppLocalizationsHi([String locale = 'hi']) : super(locale);
 
   @override
+  String get fileStorageDiagnostics => 'फ़ाइल ऐक्सेस जाँच';
+
+  @override
+  String get fileStorageDiagnosticsHelp =>
+      'फ़ाइल ऐक्सेस की अनुमति और सिस्टम अनुरोध हैंडलर दिखाता है। ADB या स्टोरेज ऐक्सेस की ज़रूरत नहीं है। नतीजों की फ़ोटो ले सकते हैं; जाँच अनुमतियाँ नहीं बदलती।';
+
+  @override
   String get volumeKeysTitle => 'वॉल्यूम बटन दबाकर रखना';
 
   @override
@@ -4954,4 +4961,20 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get updateVerificationFailed =>
       'APK की जाँच में त्रुटि हुई। इंस्टॉलेशन रोक दिया गया है। फिर कोशिश करें; त्रुटि दोहराने पर डेवलपर को निदान रिपोर्ट भेजें।';
+
+  @override
+  String get feedFormat => 'कवर का प्रारूप';
+
+  @override
+  String get feedFormatAuto => 'स्वचालित';
+
+  @override
+  String get feedFormatLandscape => 'क्षैतिज';
+
+  @override
+  String get feedFormatPortrait => 'लंबवत';
+
+  @override
+  String get feedFormatHelp =>
+      'स्वचालित मोड ऐप के डेटा या पहले तीन लोड किए गए कवर से हर फ़ीड का एक प्रारूप चुनकर इस टीवी पर याद रखता है। बराबरी पर क्षैतिज चुना जाता है। अन्य अनुपात पृष्ठभूमि पर पूरे दिखते हैं। आप प्रारूप मैन्युअल रूप से चुन सकते हैं।';
 }

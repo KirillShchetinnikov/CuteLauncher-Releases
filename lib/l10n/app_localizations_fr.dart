@@ -10,6 +10,13 @@ class AppLocalizationsFr extends AppLocalizations {
   AppLocalizationsFr([String locale = 'fr']) : super(locale);
 
   @override
+  String get fileStorageDiagnostics => 'Diagnostic d’accès aux fichiers';
+
+  @override
+  String get fileStorageDiagnosticsHelp =>
+      'Affiche l’autorisation d’accès aux fichiers et les gestionnaires système. Aucun accès au stockage ni ADB n’est nécessaire. Vous pouvez photographier les résultats ; les autorisations ne sont pas modifiées.';
+
+  @override
   String get volumeKeysTitle => 'Maintenir les touches de volume';
 
   @override
@@ -5020,4 +5027,20 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get updateVerificationFailed =>
       'Une erreur est survenue lors de la vérification de l’APK. Installation bloquée. Réessayez ; si elle persiste, envoyez un rapport de diagnostic à l’auteur.';
+
+  @override
+  String get feedFormat => 'Format des affiches';
+
+  @override
+  String get feedFormatAuto => 'Automatique';
+
+  @override
+  String get feedFormatLandscape => 'Paysage';
+
+  @override
+  String get feedFormatPortrait => 'Portrait';
+
+  @override
+  String get feedFormatHelp =>
+      'Automatique choisit un format par flux selon les données de l’application ou les trois premières affiches chargées et le mémorise sur ce téléviseur. En cas d’égalité, le paysage est choisi. Les autres proportions sont affichées en entier sur un fond. Le format peut être choisi manuellement.';
 }

@@ -33,26 +33,41 @@ final class AllFilesAccessSettings {
         return start(activity, app, request, tried);
     }
 
+    static Intent appCard(Activity activity) {
+        if (android.os.Build.VERSION.SDK_INT > 32) return null;
+        return resolve(activity, new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                Uri.parse("package:" + activity.getPackageName())));
+    }
+
     private static boolean start(Activity activity, Intent intent, int request,
             HashSet<String> tried) {
+        Intent target = resolve(activity, intent);
+        if (target == null || !tried.add(intent.getAction() + ":" + target.getComponent().flattenToString())) return false;
+        try {
+            activity.startActivityForResult(target, request);
+            return true;
+        } catch (RuntimeException unavailable) {
+            return false;
+        }
+    }
+
+    private static Intent resolve(Activity activity, Intent intent) {
         try {
             var pm = activity.getPackageManager();
             ActivityInfo info;
             if (intent.getComponent() != null) info = pm.getActivityInfo(intent.getComponent(), 0);
             else {
                 var resolved = pm.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
-                if (resolved == null || resolved.activityInfo == null) return false;
+                if (resolved == null || resolved.activityInfo == null) return null;
                 info = resolved.activityInfo;
             }
             if (!info.enabled || !info.exported || info.applicationInfo == null || !info.applicationInfo.enabled
                     || info.permission != null && activity.checkSelfPermission(info.permission)
-                    != PackageManager.PERMISSION_GRANTED) return false;
+                    != PackageManager.PERMISSION_GRANTED) return null;
             var target = new ComponentName(info.packageName, info.name);
-            if (!tried.add(intent.getAction() + ":" + target.flattenToString())) return false;
-            activity.startActivityForResult(new Intent(intent).setComponent(target), request);
-            return true;
+            return new Intent(intent).setComponent(target);
         } catch (PackageManager.NameNotFoundException | RuntimeException unavailable) {
-            return false;
+            return null;
         }
     }
 }

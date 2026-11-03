@@ -1,4 +1,6 @@
 {
+  "fileStorageDiagnostics": "Diagnostica accesso ai file",
+  "fileStorageDiagnosticsHelp": "Mostra il permesso di accesso ai file e i gestori di sistema. Non richiede ADB né accesso alla memoria. Puoi fotografare i risultati; i permessi non vengono modificati.",
   "volumeKeysTitle": "Tenere premuti i tasti volume",
   "volumeKeysMode": "Modalità di correzione",
   "volumeKeysAuto": "Auto: finché il pannello è visibile",
@@ -1711,5 +1713,10 @@
   "updateSignersUnavailable": "Android non ha fornito i certificati dell’app installata o dell’APK. Impossibile verificare la firma; installazione bloccata.",
   "updateSignatureMismatch": "La firma dell’APK è diversa da quella di CuteLauncher installato. Aggiornamento bloccato. Comunica all’autore la provenienza della versione installata.",
   "updateInvalidFile": "Android non ha potuto leggere l’APK: il file manca, è vuoto, troppo grande o non riconosciuto. Scarica di nuovo l’aggiornamento.",
-  "updateVerificationFailed": "Errore durante la verifica dell’APK. Installazione bloccata. Riprova; se l’errore si ripete, invia all’autore un rapporto diagnostico."
+  "updateVerificationFailed": "Errore durante la verifica dell’APK. Installazione bloccata. Riprova; se l’errore si ripete, invia all’autore un rapporto diagnostico.",
+  "feedFormat": "Formato copertine",
+  "feedFormatAuto": "Automatico",
+  "feedFormatLandscape": "Orizzontale",
+  "feedFormatPortrait": "Verticale",
+  "feedFormatHelp": "Automatico sceglie un formato per feed dai dati dell’app o dalle prime tre copertine caricate e lo memorizza su questa TV. In caso di parità usa orizzontale. Le altre proporzioni vengono mostrate interamente su uno sfondo. Puoi scegliere il formato manualmente."
 }

@@ -1,7 +1,7 @@
 {
   "kind": "public-project-source",
-  "version": "1.6.5+186",
-  "sourceCommit": "b316936959ceb15078ffa993c90e4e607ce90caa",
+  "version": "1.6.6+190",
+  "sourceCommit": "c109c57582e691f55216b7dfdd3557698085bfd5",
   "completeCorrespondingSource": false,
   "history": "Independent public snapshots; private history is not included."
 }

@@ -1,5 +1,6 @@
 import 'traffic_settings_page.dart';
 import 'app_channels_settings_page.dart';
+import 'app_channels_order_page.dart';
 import 'system_widget_settings_page.dart';
 import 'vpn_settings_page.dart';
 import 'sleep_timer_settings_page.dart';
@@ -426,6 +427,11 @@ class _SettingsPanelState extends State<SettingsPanel> {
                       return SettingsRoute(
                         settings: settings,
                         builder: (_) => const AppChannelsSettingsPage(),
+                      );
+                    case AppChannelsOrderPage.routeName:
+                      return SettingsRoute(
+                        settings: settings,
+                        builder: (_) => const AppChannelsOrderPage(),
                       );
                     case ContinueWatchingCardSizePage.routeName:
                       return SettingsRoute(

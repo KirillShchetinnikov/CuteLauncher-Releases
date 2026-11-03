@@ -140,12 +140,19 @@ class _RecentAppsAccessState extends State<RecentAppsAccess>
       );
     }
 
+    final statuses = [
+      status('adb', l.adbConnectionBlock, _adb, l.inputConnected),
+      status('accessibility', l.accessibility, _accessibility, l.granted),
+    ];
+    if (!widget.inSettings) {
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [for (final item in statuses) Expanded(child: item)],
+      );
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        status('adb', l.adbConnectionBlock, _adb, l.inputConnected),
-        status('accessibility', l.accessibility, _accessibility, l.granted),
-      ],
+      children: statuses,
     );
   }
 }

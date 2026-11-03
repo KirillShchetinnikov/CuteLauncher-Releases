@@ -1,4 +1,6 @@
 {
+  "fileStorageDiagnostics": "파일 접근 진단",
+  "fileStorageDiagnosticsHelp": "파일 접근 권한과 시스템 요청 처리기를 표시합니다. ADB나 저장소 접근 권한이 필요하지 않습니다. 결과를 촬영할 수 있으며 권한은 변경되지 않습니다.",
   "volumeKeysTitle": "볼륨 버튼 길게 누르기",
   "volumeKeysMode": "해결 방식",
   "volumeKeysAuto": "자동: 패널이 표시되는 동안",
@@ -1711,5 +1713,10 @@
   "updateSignersUnavailable": "Android가 설치된 앱 또는 APK의 인증서를 제공하지 않았습니다. 서명을 확인할 수 없어 설치가 차단되었습니다.",
   "updateSignatureMismatch": "APK 서명이 설치된 CuteLauncher 서명과 다릅니다. 업데이트가 차단되었습니다. 현재 버전을 어디에서 받았는지 개발자에게 알려 주세요.",
   "updateInvalidFile": "Android가 APK를 읽지 못했습니다. 파일이 없거나, 비어 있거나, 너무 크거나, 인식되지 않습니다. 업데이트를 다시 다운로드하세요.",
-  "updateVerificationFailed": "APK 확인 중 오류가 발생하여 설치가 차단되었습니다. 다시 시도하고 오류가 반복되면 개발자에게 진단 보고서를 보내 주세요."
+  "updateVerificationFailed": "APK 확인 중 오류가 발생하여 설치가 차단되었습니다. 다시 시도하고 오류가 반복되면 개발자에게 진단 보고서를 보내 주세요.",
+  "feedFormat": "표지 형식",
+  "feedFormatAuto": "자동",
+  "feedFormatLandscape": "가로",
+  "feedFormatPortrait": "세로",
+  "feedFormatHelp": "자동은 앱 정보 또는 처음 불러온 표지 3개로 피드별 형식을 선택하여 이 TV에 저장합니다. 동률이면 가로를 사용합니다. 다른 비율은 배경 위에 전체가 표시됩니다. 형식을 직접 선택할 수도 있습니다."
 }

@@ -10,6 +10,13 @@ class AppLocalizationsRu extends AppLocalizations {
   AppLocalizationsRu([String locale = 'ru']) : super(locale);
 
   @override
+  String get fileStorageDiagnostics => 'Доступ к файлам: диагностика';
+
+  @override
+  String get fileStorageDiagnosticsHelp =>
+      'Проверка показывает разрешение доступа к файлам и системные обработчики запроса. ADB и доступ к памяти не нужны. Результат можно сфотографировать; проверка не меняет разрешения.';
+
+  @override
   String get volumeKeysTitle => 'Удержание громкости';
 
   @override
@@ -4975,4 +4982,20 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get updateVerificationFailed =>
       'При проверке APK произошла ошибка. Установка заблокирована. Повторите попытку; если ошибка повторится, отправьте автору отчёт диагностики.';
+
+  @override
+  String get feedFormat => 'Формат обложек';
+
+  @override
+  String get feedFormatAuto => 'Авто';
+
+  @override
+  String get feedFormatLandscape => 'Горизонтальный';
+
+  @override
+  String get feedFormatPortrait => 'Вертикальный';
+
+  @override
+  String get feedFormatHelp =>
+      'Авто выбирает единый формат ленты по данным приложения или первым трём загруженным обложкам и запоминает его на этом ТВ. При равенстве выбирается горизонтальный формат. Другие пропорции показываются целиком на подложке. Формат можно выбрать вручную.';
 }

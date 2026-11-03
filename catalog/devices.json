@@ -18,6 +18,14 @@
       },
       "results": [
         {
+          "feature": "all-files-access-with-tguard",
+          "status": "verified",
+          "date": "2026-11-03",
+          "appBuild": "установленный CuteLauncher 1.6.2+183",
+          "summary": "По прямому запросу пользователя на G10 AU01 Android 14 включён com.tcl.guard 3.00.00_53c7d82_260311 (enabled=3 → 1). Он регистрирует PermissionShieldActivity для MANAGE_APP_ALL_FILES_ACCESS_PERMISSION; адресное открытие показывает «Фильтр разрешений». Штатный AllFilesAccessActivity имеет priority=1 против 0 у guard; неявный запрос и запрос из ручного пути слайд-шоу CuteLauncher открыли штатный экран. После временного AppOps deny разрешение выдано переключателем экрана: allow. Перехват на .73 не воспроизведён; Android 12 AS35 этим не проверен. Исходный адаптивный пейзаж и файловый доступ восстановлены; tguard оставлен включённым по запросу.",
+          "evidenceSection": "TGuard и выдача файлового доступа на TCL .73 — 3 ноября 2026"
+        },
+        {
           "feature": "volume-hold-auto-timed",
           "status": "verified",
           "date": "2026-11-02",
@@ -318,6 +326,56 @@
           "appBuild": "1.6.3+184",
           "summary": "Отчёт 1793673426836 подтверждает updates.install → invalid_signers за 107 мс. Проверка пакета и увеличения versionCode пройдена; список сертификатов установленного приложения или APK пуст/недоступен. Это не подтверждение несовпадения подписей. Какой из двух списков отсутствует и причина поведения PackageManager не установлены; системный установщик не запускался.",
           "evidenceSection": "Formuler Z10 Pro MAX: недоступные сертификаты обновления — 3 ноября 2026"
+        }
+      ]
+    },
+    {
+      "id": "tcl-c6k-g08-android12-as35",
+      "label": "TCL C6K по сообщению пользователя — Smart TV Pro, Android 12 AS35",
+      "kind": "physical",
+      "exactMatch": false,
+      "identity": {
+        "manufacturer": "TCL",
+        "model": "Smart TV Pro",
+        "device": null,
+        "fingerprint": "TCL/G08_4K_GB/G08:12/STT2.221228.001/AS35:user/release-keys",
+        "firmware": "STT2.221228.001 release-keys",
+        "android": "12",
+        "sdk": "31",
+        "abis": "armeabi-v7a,armeabi"
+      },
+      "results": [
+        {
+          "feature": "file-access-user-confirmation",
+          "status": "verified",
+          "date": "2026-11-03",
+          "appBuild": "1.6.5+188 по контексту переписки",
+          "summary": "Пользователь подтвердил доступ CuteLauncher к файлам. Уровень разрешения и запуск слайд-шоу отдельно не проверялись.",
+          "evidenceSection": "TCL C6K AS35 — подтверждение доступа к файлам"
+        },
+        {
+          "feature": "file-access-screen-diagnostics-187",
+          "status": "limitation",
+          "date": "2026-11-03",
+          "appBuild": "1.6.5+187 на снимке экранной диагностики",
+          "summary": "На шести снимках подтверждены Android 12/API 31, TCL Smart TV Pro, Build.DISPLAY STT2.221228.001 release-keys; allFilesAccess=false и AppOps=default. Все показанные стандартные APP_ALL_FILES/ALL_FILES_LIST запросы имеют resolved=none visible, handlers=0; явная TV AllFilesAccessActivity — NameNotFoundException. com.tcl.guard 2.10.00_900c2fa_250520 включён (setting=0), но его перехват этими данными не подтверждён. Результат получен API приложения, не ADB; отсутствие других OEM-страниц не проверялось. Fingerprint из прежних снимков повторно не выводился; точная идентичность не повышается.",
+          "evidenceSection": "TCL AS35: результаты экранной файловой диагностики — 3 ноября 2026"
+        },
+        {
+          "feature": "app-permissions-page-165",
+          "status": "limitation",
+          "date": "2026-11-03",
+          "appBuild": "1.6.5 по сообщению пользователя, версия/build на новых снимках отсутствуют",
+          "summary": "На двух новых снимках разрешений CuteLauncher видны местоположение и вложенное чтение списка телепрограмм; категории файлов и медиаконтента нет. Пользователь указал 1.6.5; связь с ранее описанным C6K Android 12 AS35 следует из переписки, повторной идентичности на снимках нет. В manifest тега v1.6.5 READ/WRITE_EXTERNAL_STORAGE ограничены maxSdkVersion=29, MANAGE_EXTERNAL_STORAGE объявлен отдельно. Отсутствие обычной файловой категории не доказывает перехват tguard; обработчик и AppOps на этом ТВ ещё не получены.",
+          "evidenceSection": "TCL C6K: разрешения CuteLauncher 1.6.5 — 3 ноября 2026"
+        },
+        {
+          "feature": "slideshow-storage-permission",
+          "status": "limitation",
+          "date": "2026-11-03",
+          "appBuild": "1.6.2, build на снимке отсутствует",
+          "summary": "Пользователь сообщил об ошибке запроса доступа для слайд-шоу. На снимке диагностики видны версия и fingerprint; на снимке разрешений «Файлового менеджера +» выбран обрезанный пункт «Разрешить управление все…». Это свидетельствует о наличии настройки полного доступа у менеджера, но доступность этой страницы для CuteLauncher и успешное чтение его папки не проверены. Маркетинговая модель C6K дана пользователем; отдельные manufacturer/device и build не выгружены. Список пакетов отсутствует.",
+          "evidenceSection": "TCL C6K: файловый доступ на Android 12 AS35 — 3 ноября 2026"
         }
       ]
     }

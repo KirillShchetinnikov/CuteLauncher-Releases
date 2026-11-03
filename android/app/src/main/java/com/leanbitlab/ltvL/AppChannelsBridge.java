@@ -55,7 +55,8 @@ final class AppChannelsBridge {
     private List<Map<String, Object>> programs(long channel, String owner) {
         List<Map<String, Object>> result = new ArrayList<>();
         String[] projection = {"_id", "package_name", "title", "short_description",
-                "intent_uri", "poster_art_uri", "thumbnail_uri"};
+                "intent_uri", "poster_art_uri", "thumbnail_uri",
+                "poster_art_aspect_ratio", "poster_thumbnail_aspect_ratio"};
         try (Cursor c = context.getContentResolver().query(
                 TvContract.buildPreviewProgramsUriForChannel(channel), projection,
                 null, null, "weight DESC, _id ASC")) {
@@ -70,6 +71,18 @@ final class AppChannelsBridge {
                 row.put("intentUri", c.getString(4));
                 row.put("posterArtUri", !c.isNull(5) && !c.getString(5).isEmpty()
                         ? c.getString(5) : c.isNull(6) ? "" : c.getString(6));
+                int ratioColumn = !c.isNull(5) && !c.getString(5).isEmpty() ? 7 : 8;
+                if (!c.isNull(ratioColumn)) {
+                    Double ratio = switch (c.getInt(ratioColumn)) {
+                        case 0 -> 16.0 / 9;
+                        case 1 -> 3.0 / 2;
+                        case 2 -> 4.0 / 3;
+                        case 3 -> 1.0;
+                        case 4 -> 2.0 / 3;
+                        default -> null;
+                    };
+                    if (ratio != null) row.put("posterAspectRatio", ratio);
+                }
                 result.add(row);
             }
         }

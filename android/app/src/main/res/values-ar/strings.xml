@@ -6,4 +6,7 @@
     <string name="recovery_cleaner_no_baseline">لم تُنشأ حالة أساسية بعد.</string>
     <string name="recovery_cleaner_failed">لم تكتمل الاستعادة. تحقق من اتصال ADB المحلي وأعد المحاولة.</string>
     <string name="recovery_cleaner_partial">تعذر استعادة بعض الحالات. قد تكون التطبيقات مفقودة أو محمية؛ تحقق من الجهاز وأعد المحاولة.</string>
+    <string name="file_card_title">الوصول إلى الملفات</string>
+    <string name="file_card_steps">افتح الأذونات، ثم الملفات والوسائط، ثم اسمح بإدارة جميع الملفات. بعد ذلك اضغط على رجوع للعودة إلى CuteLauncher.</string>
+    <string name="file_card_open">فتح الإعدادات</string>
 </resources>

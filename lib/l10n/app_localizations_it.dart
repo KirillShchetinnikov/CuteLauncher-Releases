@@ -10,6 +10,13 @@ class AppLocalizationsIt extends AppLocalizations {
   AppLocalizationsIt([String locale = 'it']) : super(locale);
 
   @override
+  String get fileStorageDiagnostics => 'Diagnostica accesso ai file';
+
+  @override
+  String get fileStorageDiagnosticsHelp =>
+      'Mostra il permesso di accesso ai file e i gestori di sistema. Non richiede ADB né accesso alla memoria. Puoi fotografare i risultati; i permessi non vengono modificati.';
+
+  @override
   String get volumeKeysTitle => 'Tenere premuti i tasti volume';
 
   @override
@@ -5017,4 +5024,20 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get updateVerificationFailed =>
       'Errore durante la verifica dell’APK. Installazione bloccata. Riprova; se l’errore si ripete, invia all’autore un rapporto diagnostico.';
+
+  @override
+  String get feedFormat => 'Formato copertine';
+
+  @override
+  String get feedFormatAuto => 'Automatico';
+
+  @override
+  String get feedFormatLandscape => 'Orizzontale';
+
+  @override
+  String get feedFormatPortrait => 'Verticale';
+
+  @override
+  String get feedFormatHelp =>
+      'Automatico sceglie un formato per feed dai dati dell’app o dalle prime tre copertine caricate e lo memorizza su questa TV. In caso di parità usa orizzontale. Le altre proporzioni vengono mostrate interamente su uno sfondo. Puoi scegliere il formato manualmente.';
 }

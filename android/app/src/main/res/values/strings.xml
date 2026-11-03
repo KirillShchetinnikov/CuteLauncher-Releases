@@ -19,4 +19,7 @@
     <string name="recovery_cleaner_no_baseline">No baseline app state has been created yet.</string>
     <string name="recovery_cleaner_failed">App recovery did not complete. Check local ADB connectivity and retry.</string>
     <string name="recovery_cleaner_partial">Some application states could not be restored. Apps may be missing or protected; retry after checking the device.</string>
+    <string name="file_card_title">File access</string>
+    <string name="file_card_steps">Open Permissions → Files and media → Allow management of all files. Then press Back to return to CuteLauncher.</string>
+    <string name="file_card_open">Open settings</string>
 </resources>

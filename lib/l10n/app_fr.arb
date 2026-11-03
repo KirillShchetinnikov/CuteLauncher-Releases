@@ -1,4 +1,6 @@
 {
+  "fileStorageDiagnostics": "Diagnostic d’accès aux fichiers",
+  "fileStorageDiagnosticsHelp": "Affiche l’autorisation d’accès aux fichiers et les gestionnaires système. Aucun accès au stockage ni ADB n’est nécessaire. Vous pouvez photographier les résultats ; les autorisations ne sont pas modifiées.",
   "volumeKeysTitle": "Maintenir les touches de volume",
   "volumeKeysMode": "Mode de correction",
   "volumeKeysAuto": "Auto : tant que le panneau est visible",
@@ -1711,5 +1713,10 @@
   "updateSignersUnavailable": "Android n’a pas fourni les certificats de l’application installée ou de l’APK. La signature n’a pas pu être vérifiée ; installation bloquée.",
   "updateSignatureMismatch": "La signature de l’APK diffère de celle de CuteLauncher installé. Mise à jour bloquée. Indiquez à l’auteur la provenance de la version installée.",
   "updateInvalidFile": "Android n’a pas pu lire l’APK : fichier absent, vide, trop volumineux ou non reconnu. Téléchargez à nouveau la mise à jour.",
-  "updateVerificationFailed": "Une erreur est survenue lors de la vérification de l’APK. Installation bloquée. Réessayez ; si elle persiste, envoyez un rapport de diagnostic à l’auteur."
+  "updateVerificationFailed": "Une erreur est survenue lors de la vérification de l’APK. Installation bloquée. Réessayez ; si elle persiste, envoyez un rapport de diagnostic à l’auteur.",
+  "feedFormat": "Format des affiches",
+  "feedFormatAuto": "Automatique",
+  "feedFormatLandscape": "Paysage",
+  "feedFormatPortrait": "Portrait",
+  "feedFormatHelp": "Automatique choisit un format par flux selon les données de l’application ou les trois premières affiches chargées et le mémorise sur ce téléviseur. En cas d’égalité, le paysage est choisi. Les autres proportions sont affichées en entier sur un fond. Le format peut être choisi manuellement."
 }

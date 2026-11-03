@@ -10,6 +10,13 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
+  String get fileStorageDiagnostics => 'Diagnóstico de acceso a archivos';
+
+  @override
+  String get fileStorageDiagnosticsHelp =>
+      'Muestra el permiso de acceso a archivos y los controladores del sistema. No necesita ADB ni acceso al almacenamiento. Puedes fotografiar los resultados; no cambia los permisos.';
+
+  @override
   String get volumeKeysTitle => 'Mantener botones de volumen';
 
   @override
@@ -5015,4 +5022,20 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get updateVerificationFailed =>
       'Se produjo un error al comprobar el APK. Instalación bloqueada. Reinténtelo; si se repite, envíe al autor un informe de diagnóstico.';
+
+  @override
+  String get feedFormat => 'Formato de portadas';
+
+  @override
+  String get feedFormatAuto => 'Automático';
+
+  @override
+  String get feedFormatLandscape => 'Horizontal';
+
+  @override
+  String get feedFormatPortrait => 'Vertical';
+
+  @override
+  String get feedFormatHelp =>
+      'Automático elige un formato por canal según los datos de la app o las tres primeras portadas cargadas y lo guarda en este TV. En caso de empate, usa horizontal. Otras proporciones se muestran completas sobre un fondo. Puedes elegir el formato manualmente.';
 }

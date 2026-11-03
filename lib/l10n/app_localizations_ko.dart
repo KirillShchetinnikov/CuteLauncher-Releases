@@ -10,6 +10,13 @@ class AppLocalizationsKo extends AppLocalizations {
   AppLocalizationsKo([String locale = 'ko']) : super(locale);
 
   @override
+  String get fileStorageDiagnostics => '파일 접근 진단';
+
+  @override
+  String get fileStorageDiagnosticsHelp =>
+      '파일 접근 권한과 시스템 요청 처리기를 표시합니다. ADB나 저장소 접근 권한이 필요하지 않습니다. 결과를 촬영할 수 있으며 권한은 변경되지 않습니다.';
+
+  @override
   String get volumeKeysTitle => '볼륨 버튼 길게 누르기';
 
   @override
@@ -4826,4 +4833,20 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get updateVerificationFailed =>
       'APK 확인 중 오류가 발생하여 설치가 차단되었습니다. 다시 시도하고 오류가 반복되면 개발자에게 진단 보고서를 보내 주세요.';
+
+  @override
+  String get feedFormat => '표지 형식';
+
+  @override
+  String get feedFormatAuto => '자동';
+
+  @override
+  String get feedFormatLandscape => '가로';
+
+  @override
+  String get feedFormatPortrait => '세로';
+
+  @override
+  String get feedFormatHelp =>
+      '자동은 앱 정보 또는 처음 불러온 표지 3개로 피드별 형식을 선택하여 이 TV에 저장합니다. 동률이면 가로를 사용합니다. 다른 비율은 배경 위에 전체가 표시됩니다. 형식을 직접 선택할 수도 있습니다.';
 }

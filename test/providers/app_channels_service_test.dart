@@ -61,6 +61,21 @@ void main() {
     expect(settings.selectedAppChannels, ['video.app:2', 'video.app:1']);
   });
 
+  test('reordering selected feeds keeps catalogue and poster requests unchanged', () async {
+    final service = AppChannelsService(channel, settings);
+    addTearDown(service.dispose);
+    await settings.setSelectedAppChannels(['video.app:1', 'video.app:2']);
+    await service.refresh();
+    final requests = channel.requests.length;
+    final original = service.channels.first;
+    await settings.setSelectedAppChannels(['video.app:2', 'video.app:1']);
+    await Future<void>.delayed(Duration.zero);
+    expect(channel.requests.length, requests);
+    expect(channel.posters, isEmpty);
+    expect(service.channels.first, same(original));
+    expect(SettingsService(preferences).selectedAppChannels, ['video.app:2', 'video.app:1']);
+  });
+
   test(
     'unchanged catalogue is silent, errors retain content and recovery works',
     () async {

@@ -64,5 +64,6 @@ class AppContentChannel {
       a.playbackPosition == b.playbackPosition &&
       a.duration == b.duration &&
       a.intentUri == b.intentUri &&
-      a.posterArtUri == b.posterArtUri;
+      a.posterArtUri == b.posterArtUri &&
+      a.posterAspectRatio == b.posterAspectRatio;
 }

@@ -1,4 +1,6 @@
 {
+  "fileStorageDiagnostics": "文件访问诊断",
+  "fileStorageDiagnosticsHelp": "显示文件访问权限和系统请求处理程序。不需要 ADB 或存储访问权限。可拍摄结果；检查不会更改权限。",
   "volumeKeysTitle": "长按音量键",
   "volumeKeysMode": "修复方式",
   "volumeKeysAuto": "自动：面板显示期间",
@@ -1711,5 +1713,10 @@
   "updateSignersUnavailable": "Android 未提供已安装应用或 APK 的证书。无法验证签名，已阻止安装。",
   "updateSignatureMismatch": "APK 签名与已安装的 CuteLauncher 不同。已阻止更新。请告知开发者当前版本的来源。",
   "updateInvalidFile": "Android 无法读取 APK：文件缺失、为空、过大或无法识别。请重新下载更新。",
-  "updateVerificationFailed": "验证 APK 时出错，已阻止安装。请重试；如果再次出现，请向开发者发送诊断报告。"
+  "updateVerificationFailed": "验证 APK 时出错，已阻止安装。请重试；如果再次出现，请向开发者发送诊断报告。",
+  "feedFormat": "封面格式",
+  "feedFormatAuto": "自动",
+  "feedFormatLandscape": "横向",
+  "feedFormatPortrait": "纵向",
+  "feedFormatHelp": "自动模式根据应用信息或最先加载的三张封面为每个内容流选择统一格式，并保存在此电视上。数量相同时使用横向。其他比例的封面会完整显示在背景上。也可手动选择格式。"
 }

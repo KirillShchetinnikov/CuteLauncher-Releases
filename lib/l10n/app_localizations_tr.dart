@@ -10,6 +10,13 @@ class AppLocalizationsTr extends AppLocalizations {
   AppLocalizationsTr([String locale = 'tr']) : super(locale);
 
   @override
+  String get fileStorageDiagnostics => 'Dosya erişimi tanılaması';
+
+  @override
+  String get fileStorageDiagnosticsHelp =>
+      'Dosya erişim iznini ve sistem isteği işleyicilerini gösterir. ADB veya depolama erişimi gerekmez. Sonuçların fotoğrafını çekebilirsiniz; izinler değiştirilmez.';
+
+  @override
   String get volumeKeysTitle => 'Ses düğmelerini basılı tutma';
 
   @override
@@ -4973,4 +4980,20 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get updateVerificationFailed =>
       'APK doğrulanırken hata oluştu. Yükleme engellendi. Tekrar deneyin; hata tekrarlanırsa geliştiriciye tanılama raporu gönderin.';
+
+  @override
+  String get feedFormat => 'Kapak biçimi';
+
+  @override
+  String get feedFormatAuto => 'Otomatik';
+
+  @override
+  String get feedFormatLandscape => 'Yatay';
+
+  @override
+  String get feedFormatPortrait => 'Dikey';
+
+  @override
+  String get feedFormatHelp =>
+      'Otomatik, uygulama verilerinden veya yüklenen ilk üç kapaktan her akış için tek bir biçim seçer ve bu TV’de hatırlar. Eşitlikte yatay kullanılır. Diğer oranlar arka plan üzerinde tam gösterilir. Biçimi elle seçebilirsiniz.';
 }

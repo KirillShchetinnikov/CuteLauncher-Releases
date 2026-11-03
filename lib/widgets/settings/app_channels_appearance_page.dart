@@ -14,7 +14,7 @@ import 'focusable_settings_tile.dart';
 import 'settings_page_layout.dart';
 import 'settings_value_stepper.dart';
 
-/// Content previews always use a single 16:9 tape with titles below the image.
+/// Content previews use one row per feed with titles below the image.
 class AppChannelsAppearancePage extends StatelessWidget {
   final int categoryId;
   const AppChannelsAppearancePage({super.key, required this.categoryId});

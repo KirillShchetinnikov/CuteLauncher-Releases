@@ -10,6 +10,13 @@ class AppLocalizationsJa extends AppLocalizations {
   AppLocalizationsJa([String locale = 'ja']) : super(locale);
 
   @override
+  String get fileStorageDiagnostics => 'ファイルアクセスの診断';
+
+  @override
+  String get fileStorageDiagnosticsHelp =>
+      'ファイルアクセス権限とシステムの処理先を表示します。ADBやストレージへのアクセスは不要です。結果は撮影できます。権限は変更されません。';
+
+  @override
   String get volumeKeysTitle => '音量ボタンの長押し';
 
   @override
@@ -4822,4 +4829,20 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get updateVerificationFailed =>
       'APK の確認中にエラーが発生したため、インストールをブロックしました。再試行し、繰り返す場合は診断レポートを開発者に送信してください。';
+
+  @override
+  String get feedFormat => 'カバーの形式';
+
+  @override
+  String get feedFormatAuto => '自動';
+
+  @override
+  String get feedFormatLandscape => '横長';
+
+  @override
+  String get feedFormatPortrait => '縦長';
+
+  @override
+  String get feedFormatHelp =>
+      '自動ではアプリの情報または最初に読み込んだ3枚のカバーからフィードごとの形式を選び、このテレビに保存します。同数の場合は横長です。異なる縦横比の画像は背景の上に全体を表示します。形式は手動でも選べます。';
 }

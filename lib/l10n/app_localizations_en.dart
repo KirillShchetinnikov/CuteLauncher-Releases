@@ -10,6 +10,13 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get fileStorageDiagnostics => 'File access diagnostics';
+
+  @override
+  String get fileStorageDiagnosticsHelp =>
+      'Shows file access permission and system request handlers. No ADB or storage access is needed. You can photograph the results; this check does not change permissions.';
+
+  @override
   String get volumeKeysTitle => 'Hold volume buttons';
 
   @override
@@ -4949,4 +4956,20 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get updateVerificationFailed =>
       'An error occurred while checking the APK. Installation blocked. Try again; if it happens again, send the author a diagnostic report.';
+
+  @override
+  String get feedFormat => 'Artwork format';
+
+  @override
+  String get feedFormatAuto => 'Auto';
+
+  @override
+  String get feedFormatLandscape => 'Landscape';
+
+  @override
+  String get feedFormatPortrait => 'Portrait';
+
+  @override
+  String get feedFormatHelp =>
+      'Auto chooses one format per feed from app metadata or the first three loaded covers and remembers it on this TV. Ties use landscape. Other proportions are shown in full on a background. You can choose the format manually.';
 }

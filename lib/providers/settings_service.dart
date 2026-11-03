@@ -27,6 +27,7 @@ import '../diagnostics/screenshot_scene.dart';
 
 import 'service_lifecycle.dart';
 import 'dart:async';
+import '../feed_format.dart';
 import 'dart:convert';
 import '../watch_next_selection.dart';
 import '../settings_import.dart';
@@ -309,6 +310,44 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
     notifyListeners();
   }
   bool get showContinueWatching => _showContinueWatching;
+  FeedFormat appChannelFormat(String key, {bool detected = false}) {
+    final values =
+        _sharedPreferences.getStringList(
+          detected ? 'app_channel_detected_formats' : 'app_channel_formats',
+        ) ??
+        [];
+    final saved = values.where((v) => v.startsWith('$key=')).firstOrNull;
+    return FeedFormat.values
+            .where((v) => saved == '$key=${v.name}')
+            .firstOrNull ??
+        FeedFormat.auto;
+  }
+
+  Future<void> setAppChannelFormat(
+    String key,
+    FeedFormat format, {
+    bool detected = false,
+  }) async {
+    if (!RegExp(r'^[a-zA-Z0-9_.]+:\d+$').hasMatch(key)) {
+      throw const FormatException('Invalid app channel');
+    }
+    if (appChannelFormat(key, detected: detected) == format) return;
+    final preference = detected
+        ? 'app_channel_detected_formats'
+        : 'app_channel_formats';
+    final values = (_sharedPreferences.getStringList(preference) ?? [])
+        .where((v) => !v.startsWith('$key='))
+        .toList();
+    if (format != FeedFormat.auto) values.add('$key=${format.name}');
+    if (!await _sharedPreferences.setStringList(
+      preference,
+      values.reversed.take(128).toList().reversed.toList(),
+    )) {
+      throw StateError('Unable to save feed format');
+    }
+    notifyListeners();
+  }
+
   // Channel IDs belong to this TV's provider and are deliberately not synced.
   List<String> get selectedAppChannels => List.unmodifiable(
       _sharedPreferences.getStringList('selected_app_channels') ?? <String>[]);

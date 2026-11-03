@@ -19,4 +19,7 @@
     <string name="recovery_cleaner_no_baseline">Базовое состояние приложений ещё не создано.</string>
     <string name="recovery_cleaner_failed">Восстановление приложений не завершено. Проверьте локальное ADB-подключение и повторите попытку.</string>
     <string name="recovery_cleaner_partial">Часть состояний не восстановлена. Приложения могут отсутствовать или быть защищены; проверьте устройство и повторите попытку.</string>
+    <string name="file_card_title">Доступ к файлам</string>
+    <string name="file_card_steps">В карточке CuteLauncher откройте «Разрешения» → «Файлы и медиаконтент» → «Разрешить управление всеми файлами». Затем нажимайте «Назад», пока не вернётесь в лаунчер.</string>
+    <string name="file_card_open">Открыть настройки</string>
 </resources>

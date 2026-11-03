@@ -6,4 +6,7 @@
     <string name="recovery_cleaner_no_baseline">अभी कोई आधार स्थिति नहीं बनी है।</string>
     <string name="recovery_cleaner_failed">ऐप बहाली पूरी नहीं हुई। स्थानीय ADB कनेक्शन जाँचें और फिर प्रयास करें।</string>
     <string name="recovery_cleaner_partial">कुछ स्थितियाँ बहाल नहीं हुईं। ऐप अनुपस्थित या सुरक्षित हो सकते हैं। डिवाइस जाँचें और फिर प्रयास करें।</string>
+    <string name="file_card_title">फ़ाइलों का ऐक्सेस</string>
+    <string name="file_card_steps">अनुमतियाँ खोलें, फिर फ़ाइलें और मीडिया चुनें और सभी फ़ाइलों को प्रबंधित करने की अनुमति दें। इसके बाद वापस बटन दबाकर CuteLauncher पर लौटें।</string>
+    <string name="file_card_open">सेटिंग खोलें</string>
 </resources>

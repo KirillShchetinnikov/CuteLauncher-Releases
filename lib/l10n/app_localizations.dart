@@ -122,6 +122,18 @@ abstract class AppLocalizations {
     Locale('zh'),
   ];
 
+  /// No description provided for @fileStorageDiagnostics.
+  ///
+  /// In en, this message translates to:
+  /// **'File access diagnostics'**
+  String get fileStorageDiagnostics;
+
+  /// No description provided for @fileStorageDiagnosticsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Shows file access permission and system request handlers. No ADB or storage access is needed. You can photograph the results; this check does not change permissions.'**
+  String get fileStorageDiagnosticsHelp;
+
   /// No description provided for @volumeKeysTitle.
   ///
   /// In en, this message translates to:
@@ -9127,6 +9139,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'An error occurred while checking the APK. Installation blocked. Try again; if it happens again, send the author a diagnostic report.'**
   String get updateVerificationFailed;
+
+  /// No description provided for @feedFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Artwork format'**
+  String get feedFormat;
+
+  /// No description provided for @feedFormatAuto.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto'**
+  String get feedFormatAuto;
+
+  /// No description provided for @feedFormatLandscape.
+  ///
+  /// In en, this message translates to:
+  /// **'Landscape'**
+  String get feedFormatLandscape;
+
+  /// No description provided for @feedFormatPortrait.
+  ///
+  /// In en, this message translates to:
+  /// **'Portrait'**
+  String get feedFormatPortrait;
+
+  /// No description provided for @feedFormatHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto chooses one format per feed from app metadata or the first three loaded covers and remembers it on this TV. Ties use landscape. Other proportions are shown in full on a background. You can choose the format manually.'**
+  String get feedFormatHelp;
 }
 
 class _AppLocalizationsDelegate

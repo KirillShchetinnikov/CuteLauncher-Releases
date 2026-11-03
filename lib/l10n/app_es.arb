@@ -1,4 +1,6 @@
 {
+  "fileStorageDiagnostics": "Diagnóstico de acceso a archivos",
+  "fileStorageDiagnosticsHelp": "Muestra el permiso de acceso a archivos y los controladores del sistema. No necesita ADB ni acceso al almacenamiento. Puedes fotografiar los resultados; no cambia los permisos.",
   "volumeKeysTitle": "Mantener botones de volumen",
   "volumeKeysMode": "Modo de solución",
   "volumeKeysAuto": "Auto: mientras el panel sea visible",
@@ -1711,5 +1713,10 @@
   "updateSignersUnavailable": "Android no proporcionó los certificados de la aplicación instalada o del APK. No se pudo comprobar la firma; instalación bloqueada.",
   "updateSignatureMismatch": "La firma del APK difiere de la del CuteLauncher instalado. Actualización bloqueada. Indique al autor de dónde obtuvo la versión instalada.",
   "updateInvalidFile": "Android no pudo leer el APK: falta el archivo, está vacío, es demasiado grande o no se reconoce. Descargue la actualización de nuevo.",
-  "updateVerificationFailed": "Se produjo un error al comprobar el APK. Instalación bloqueada. Reinténtelo; si se repite, envíe al autor un informe de diagnóstico."
+  "updateVerificationFailed": "Se produjo un error al comprobar el APK. Instalación bloqueada. Reinténtelo; si se repite, envíe al autor un informe de diagnóstico.",
+  "feedFormat": "Formato de portadas",
+  "feedFormatAuto": "Automático",
+  "feedFormatLandscape": "Horizontal",
+  "feedFormatPortrait": "Vertical",
+  "feedFormatHelp": "Automático elige un formato por canal según los datos de la app o las tres primeras portadas cargadas y lo guarda en este TV. En caso de empate, usa horizontal. Otras proporciones se muestran completas sobre un fondo. Puedes elegir el formato manualmente."
 }

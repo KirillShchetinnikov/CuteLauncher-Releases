@@ -3664,8 +3664,9 @@
       "riskEn": "High: exact dependencies are unverified; core TV functions may fail.",
       "confidence": "identified",
       "safeToDisable": false,
-      "source": "catalog/inventories (presence only); manual functional review",
+      "source": "catalog/inventories (presence only); manual functional review; docs/TESTING_RU.md (tcl-c6k-g08-android12-as35: on-screen diagnostics 1.6.5+187, presence only)",
       "observedOn": [
+        "tcl-c6k-g08-android12-as35",
         "tcl-g08",
         "tcl-g10"
       ]
@@ -4215,12 +4216,13 @@
     "io.github.kirillshchetinnikov.cutelauncher": {
       "confidence": "identified",
       "safeToDisable": false,
-      "source": "catalog/inventories (presence only); manual functional review; docs/TESTING_RU.md (unknown-update-20261102: user screenshot and cache path, presence only)",
+      "source": "catalog/inventories (presence only); manual functional review; docs/TESTING_RU.md (unknown-update-20261102: user screenshot and cache path, presence only); docs/TESTING_RU.md (tcl-c6k-g08-android12-as35: on-screen diagnostics 1.6.5+187, presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
         "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
+        "tcl-c6k-g08-android12-as35",
         "tcl-g08",
         "tcl-g10",
         "unknown-update-20261102"

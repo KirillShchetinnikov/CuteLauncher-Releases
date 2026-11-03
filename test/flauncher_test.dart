@@ -79,6 +79,47 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 
 void main() {
+  testWidgets('portrait feeds use one stable geometry and remote navigates between formats', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    final appearance = AppearanceService(prefs);
+    await appearance.set('focusPulse', false);
+    final feedSettings = SettingsService(prefs);
+    final data = feed(1, count: 8);
+    for (final item in data['programs'] as List) { item['posterAspectRatio'] = 2/3; }
+    final channel = FeedChannel()..data = [data, feed(2)];
+    final feeds = AppChannelsService(channel, feedSettings);
+    await feedSettings.setSelectedAppChannels(['video.app:1', 'video.app:2']);
+    await tester.runAsync(feeds.refresh);
+    final apps = mkAppService();
+    when(apps.applications).thenReturn([]);
+    when(apps.launcherSections).thenReturn([appChannelsGroup()]);
+    final settings = mkSettingsService();
+    when(settings.selectedAppChannels).thenReturn(feedSettings.selectedAppChannels);
+    await _pumpWidgetWithProviders(tester, mkWallpaperService(), apps, settings,
+        feeds: feeds, appearance: appearance);
+    final row = find.byType(AppContentRow).first;
+    final cards = find.descendant(of: row, matching: find.byType(InkWell));
+    final art = find.descendant(of: cards.first, matching: find.byType(RaisedTile));
+    final size = tester.getSize(art);
+    expect(size.aspectRatio, closeTo(2/3, .001));
+    tester.widget<InkWell>(cards.first).focusNode!.requestFocus();
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.pumpAndSettle();
+    expect(tester.widget<InkWell>(cards.at(1)).focusNode!.hasFocus, isTrue);
+    expect(tester.getSize(art), size);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.pumpAndSettle();
+    final second = find.descendant(of: find.byType(AppContentRow).at(1), matching: find.byType(InkWell));
+    expect(second.evaluate().any((e) => (e.widget as InkWell).focusNode!.hasFocus), isTrue);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+    await tester.pumpAndSettle();
+    expect(cards.evaluate().any((e) => (e.widget as InkWell).focusNode!.hasFocus), isTrue);
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox());
+    feeds.dispose(); feedSettings.dispose(); appearance.dispose(); await channel.events.close();
+  });
   testWidgets('wallpaper information never changes tile viewport or remote navigation', (tester) async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();

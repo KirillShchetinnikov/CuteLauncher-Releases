@@ -6,4 +6,7 @@
     <string name="recovery_cleaner_no_baseline">Henüz temel durum oluşturulmadı.</string>
     <string name="recovery_cleaner_failed">Geri yükleme tamamlanmadı. Yerel ADB bağlantısını kontrol edip yeniden deneyin.</string>
     <string name="recovery_cleaner_partial">Bazı durumlar geri yüklenemedi. Uygulamalar eksik veya korumalı olabilir. Cihazı kontrol edip yeniden deneyin.</string>
+    <string name="file_card_title">Dosya erişimi</string>
+    <string name="file_card_steps">İzinler → Dosyalar ve medya → Tüm dosyaların yönetimine izin ver yolunu izleyin. Ardından Geri tuşuyla CuteLauncher uygulamasına dönün.</string>
+    <string name="file_card_open">Ayarları aç</string>
 </resources>

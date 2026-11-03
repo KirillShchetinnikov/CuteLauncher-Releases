@@ -6,4 +6,7 @@
     <string name="recovery_cleaner_no_baseline">基準状態はまだ作成されていません。</string>
     <string name="recovery_cleaner_failed">復元が完了しませんでした。ローカルADB接続を確認して再試行してください。</string>
     <string name="recovery_cleaner_partial">一部の状態を復元できませんでした。アプリが存在しないか保護されている可能性があります。端末を確認して再試行してください。</string>
+    <string name="file_card_title">ファイルへのアクセス</string>
+    <string name="file_card_steps">「権限」→「ファイルとメディア」→「すべてのファイルの管理を許可」の順に選びます。その後、戻るボタンで CuteLauncher に戻ってください。</string>
+    <string name="file_card_open">設定を開く</string>
 </resources>

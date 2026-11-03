@@ -10,6 +10,13 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
+  String get fileStorageDiagnostics => 'تشخيص الوصول إلى الملفات';
+
+  @override
+  String get fileStorageDiagnosticsHelp =>
+      'يعرض إذن الوصول إلى الملفات ومعالجات طلب النظام. لا يحتاج إلى ADB أو الوصول إلى التخزين. يمكنك تصوير النتائج؛ لا يغير الفحص الأذونات.';
+
+  @override
   String get volumeKeysTitle => 'الضغط المطوّل على أزرار الصوت';
 
   @override
@@ -4931,4 +4938,20 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get updateVerificationFailed =>
       'حدث خطأ أثناء التحقق من APK. تم حظر التثبيت. حاول مجددًا؛ إذا تكرر الخطأ، أرسل تقرير تشخيص إلى المطور.';
+
+  @override
+  String get feedFormat => 'تنسيق الأغلفة';
+
+  @override
+  String get feedFormatAuto => 'تلقائي';
+
+  @override
+  String get feedFormatLandscape => 'أفقي';
+
+  @override
+  String get feedFormatPortrait => 'عمودي';
+
+  @override
+  String get feedFormatHelp =>
+      'يختار الوضع التلقائي تنسيقًا واحدًا لكل خلاصة من بيانات التطبيق أو أول ثلاثة أغلفة محملة ويحفظه على هذا التلفاز. عند التعادل يُستخدم الأفقي. تُعرض النسب الأخرى كاملة على خلفية. يمكنك اختيار التنسيق يدويًا.';
 }

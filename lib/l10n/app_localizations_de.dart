@@ -10,6 +10,13 @@ class AppLocalizationsDe extends AppLocalizations {
   AppLocalizationsDe([String locale = 'de']) : super(locale);
 
   @override
+  String get fileStorageDiagnostics => 'Diagnose des Dateizugriffs';
+
+  @override
+  String get fileStorageDiagnosticsHelp =>
+      'Zeigt die Dateizugriffsberechtigung und Systemhandler an. ADB und Speicherzugriff sind nicht erforderlich. Die Ergebnisse können fotografiert werden; Berechtigungen werden nicht geändert.';
+
+  @override
   String get volumeKeysTitle => 'Lautstärketasten gedrückt halten';
 
   @override
@@ -5026,4 +5033,20 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get updateVerificationFailed =>
       'Bei der APK-Prüfung ist ein Fehler aufgetreten. Installation gesperrt. Versuchen Sie es erneut; senden Sie bei erneutem Fehler einen Diagnosebericht an den Autor.';
+
+  @override
+  String get feedFormat => 'Coverformat';
+
+  @override
+  String get feedFormatAuto => 'Automatisch';
+
+  @override
+  String get feedFormatLandscape => 'Querformat';
+
+  @override
+  String get feedFormatPortrait => 'Hochformat';
+
+  @override
+  String get feedFormatHelp =>
+      'Automatisch wählt ein einheitliches Format je Feed anhand der App-Daten oder der ersten drei geladenen Cover und speichert es auf diesem TV. Bei Gleichstand wird Querformat verwendet. Andere Proportionen werden vollständig auf einem Hintergrund gezeigt. Das Format ist manuell wählbar.';
 }

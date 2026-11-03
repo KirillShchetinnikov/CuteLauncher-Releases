@@ -13,10 +13,40 @@ import 'package:flauncher/widgets/rounded_switch_list_tile.dart';
 import 'package:flauncher/widgets/settings/app_channels_settings_page.dart';
 import 'package:flauncher/widgets/settings/settings_help.dart';
 import 'package:flauncher/widgets/settings/adb_permission_tile.dart';
+import 'package:flauncher/feed_format.dart';
 
 import '../../support/app_channels.dart';
 
 void main() {
+  testWidgets('format choice persists and returns focus to its feed control', (tester) async {
+    SharedPreferences.setMockInitialValues({'selected_app_channels': ['video.app:1']});
+    final prefs = await SharedPreferences.getInstance();
+    final settings = SettingsService(prefs);
+    final channel = FeedChannel()..data = [feed(1)];
+    final service = AppChannelsService(channel, settings);
+    await tester.pumpWidget(MultiProvider(providers: [
+      ChangeNotifierProvider<SettingsService>.value(value: settings),
+      ChangeNotifierProvider.value(value: service),
+    ], child: MaterialApp(
+      locale: const Locale('en'),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: const Scaffold(body: AppChannelsSettingsPage()),
+    )));
+    await tester.pumpAndSettle();
+    final control = find.byKey(const ValueKey('format:video.app:1'));
+    await tester.ensureVisible(control);
+    await tester.tap(control);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Portrait'));
+    await tester.pumpAndSettle();
+    expect(settings.appChannelFormat('video.app:1'), FeedFormat.portrait);
+    expect(SettingsService(prefs).appChannelFormat('video.app:1'), FeedFormat.portrait);
+    expect(find.text('Portrait'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox());
+    service.dispose(); settings.dispose(); await channel.events.close();
+  });
   for (final pointer in [false, true]) {
     testWidgets('feed selection retains focus while saving: pointer=$pointer', (
       tester,

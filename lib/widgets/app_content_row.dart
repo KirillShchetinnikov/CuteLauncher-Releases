@@ -13,7 +13,7 @@ import '../providers/appearance_service.dart';
 import '../providers/settings_service.dart';
 import '../tile_appearance.dart';
 import '../home_layout.dart';
-import '../image_limits.dart';
+import '../cover_memory_image.dart';
 import '../theme/launcher_style.dart';
 import 'action_notice.dart';
 import 'app_card_keys.dart';
@@ -168,14 +168,19 @@ class _AppContentRowState extends State<AppContentRow> {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<SettingsService>();
+    final ratio = context
+        .read<AppChannelsService>()
+        .formatFor(widget.channel)
+        .aspectRatio;
     final style =
         widget.appearance ??
         context.watch<AppearanceService?>()?.appearance ??
         const TileAppearance();
     final textHeight =
         style.labelSize * MediaQuery.textScalerOf(context).scale(1) * 2.8 + 12;
-    final height = style.tileSize;
-    final width = height * 16 / 9;
+    final height = style.tileSize * (ratio < 1 ? 1.5 : 1);
+    final width = height * ratio;
     _extent = width + style.horizontalGap;
     _focus?.gap = style.horizontalGap;
     return Padding(
@@ -200,7 +205,11 @@ class _AppContentRowState extends State<AppContentRow> {
                 count: widget.channel.programs.length,
                 availableWidth: availableWidth,
                 labelHeight: textHeight,
-                style: TileAppearance({...style.values, 'aspectRatio': 16 / 9}),
+                style: TileAppearance({
+                  ...style.values,
+                  'aspectRatio': ratio,
+                  'size': height,
+                }),
               );
               var layout = makeLayout(constraints.maxWidth);
               final scale = LauncherStyle.of(context).tileFocusScale(
@@ -215,7 +224,8 @@ class _AppContentRowState extends State<AppContentRow> {
                 layout.inset,
                 layout.width * (scale - 1) / 2 +
                     (style.focusBorderStyle() == 'glow'
-                        ? TileGlowPainter.extent * scale : 2),
+                        ? TileGlowPainter.extent * scale
+                        : 2),
               );
               if (_horizontalInset > layout.inset) {
                 layout = makeLayout(
@@ -251,6 +261,8 @@ class _AppContentRowState extends State<AppContentRow> {
                     animate: false,
                     physics: const ClampingScrollPhysics(),
                     itemBuilder: (_, i) => _ContentCard(
+                      feed: widget.channel,
+                      aspectRatio: ratio,
                       program: widget.channel.programs[i],
                       style: style,
                       height: layout.height,
@@ -267,10 +279,14 @@ class _AppContentRowState extends State<AppContentRow> {
 }
 
 class _ContentCard extends StatefulWidget {
+  final AppContentChannel feed;
+  final double aspectRatio;
   final WatchNextProgram program;
   final TileAppearance style;
   final double height;
   const _ContentCard({
+    required this.feed,
+    required this.aspectRatio,
     required this.program,
     required this.style,
     required this.height,
@@ -320,6 +336,9 @@ class _ContentCardState extends State<_ContentCard> {
     final request = ++_posterRequest;
     final uri = widget.program.posterArtUri;
     final bytes = await _service!.poster(uri);
+    if (!mounted || request != _posterRequest) return;
+    // Observe only materialized cards; format stays fixed once learned.
+    await _service!.observePoster(widget.feed, widget.program.id, bytes);
     if (!mounted || request != _posterRequest) return;
     // A failed revalidation keeps the existing image at this URI. A genuinely
     // different, unavailable image still gets the normal placeholder.
@@ -371,21 +390,22 @@ class _ContentCardState extends State<_ContentCard> {
     final scale = launcherStyle.tileFocusScale(
       settings.themes,
       style,
-      width: widget.height * 16 / 9,
+      width: widget.height * widget.aspectRatio,
       focused: _node.hasFocus,
     );
     final transform = Matrix4.diagonal3Values(scale, scale, 1);
     if (_node.hasFocus && style.focusEffect == 'lift') {
       transform.setTranslationRaw(0, -style.focusLift, 0);
     }
-    final animate = (style.values['focusTransition'] as bool? ??
-        settings.appSelectorTransitionAnimationEnabled) &&
+    final animate =
+        (style.values['focusTransition'] as bool? ??
+            settings.appSelectorTransitionAnimationEnabled) &&
         !MediaQuery.disableAnimationsOf(context);
     if (!animate) {
       _paintFocusTransition = false;
     } else if (_node.hasFocus) {
-      _paintFocusTransition = scale != 1 ||
-          (style.focusEffect == 'lift' && style.focusLift != 0);
+      _paintFocusTransition =
+          scale != 1 || (style.focusEffect == 'lift' && style.focusLift != 0);
     }
     Widget fallback() => ColoredBox(
       color: Theme.of(context).colorScheme.surfaceContainerHighest,
@@ -394,16 +414,27 @@ class _ContentCardState extends State<_ContentCard> {
     Widget image() {
       final bytes = _posterBytes;
       if (bytes == null || bytes.isEmpty) return fallback();
-      return Image(
-        image: sizedImage(
-          MemoryImage(bytes),
-          Size(widget.height * 16 / 9, widget.height),
-          MediaQuery.devicePixelRatioOf(context),
-          maximumEdge: 960,
+      return ColoredBox(
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+        child: Image(
+          image: CoverMemoryImage(
+            bytes,
+            logicalSize: Size(
+              widget.height * widget.aspectRatio,
+              widget.height,
+            ),
+            pixelRatio: MediaQuery.devicePixelRatioOf(context),
+            focusScale: launcherStyle.tileFocusScale(
+              settings.themes,
+              style,
+              width: widget.height * widget.aspectRatio,
+              focused: true,
+            ),
+          ),
+          fit: BoxFit.contain,
+          gaplessPlayback: true,
+          errorBuilder: (_, _, _) => fallback(),
         ),
-        fit: BoxFit.cover,
-        gaplessPlayback: true,
-        errorBuilder: (_, _, _) => fallback(),
       );
     }
 
@@ -464,41 +495,47 @@ class _ContentCardState extends State<_ContentCard> {
                 raised: _node.hasFocus || _paintFocusTransition,
                 // Raised artwork paints outside the row's viewport boundary.
                 // Keep its pulse/transform from repainting the shared Home layer.
-                child: RepaintBoundary(child: AnimatedContainer(
-                  duration: animate
-                      ? const Duration(milliseconds: 150)
-                      : Duration.zero,
-                  // Keep the shrinking artwork outside the viewport clip until
-                  // it returns to its cell, below the new focused artwork.
-                  onEnd: () {
-                    if (!_node.hasFocus && _paintFocusTransition) {
-                      setState(() => _paintFocusTransition = false);
-                    }
-                  },
-                  transform: transform,
-                  transformAlignment: Alignment.bottomCenter,
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    fit: StackFit.expand,
-                    children: [
-                      RepaintBoundary(
-                        child: ClipRRect(borderRadius: corners, child: image()),
-                      ),
-                      if (_node.hasFocus)
-                        TileThemeOutline(
-                          theme: settings.themes,
-                          accent: Theme.of(context).colorScheme.primary,
-                          radius: radius,
-                          borderStyle: style.focusBorderStyle(
-                            legacyHidden:
-                                settings.hideHighlightOutlineOnHomescreen,
+                child: RepaintBoundary(
+                  child: AnimatedContainer(
+                    duration: animate
+                        ? const Duration(milliseconds: 150)
+                        : Duration.zero,
+                    // Keep the shrinking artwork outside the viewport clip until
+                    // it returns to its cell, below the new focused artwork.
+                    onEnd: () {
+                      if (!_node.hasFocus && _paintFocusTransition) {
+                        setState(() => _paintFocusTransition = false);
+                      }
+                    },
+                    transform: transform,
+                    transformAlignment: Alignment.bottomCenter,
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      fit: StackFit.expand,
+                      children: [
+                        RepaintBoundary(
+                          child: ClipRRect(
+                            borderRadius: corners,
+                            child: image(),
                           ),
-                          pulse: style.values['focusPulse'] as bool? ??
-                              settings.appHighlightAnimationEnabled,
                         ),
-                    ],
+                        if (_node.hasFocus)
+                          TileThemeOutline(
+                            theme: settings.themes,
+                            accent: Theme.of(context).colorScheme.primary,
+                            radius: radius,
+                            borderStyle: style.focusBorderStyle(
+                              legacyHidden:
+                                  settings.hideHighlightOutlineOnHomescreen,
+                            ),
+                            pulse:
+                                style.values['focusPulse'] as bool? ??
+                                settings.appHighlightAnimationEnabled,
+                          ),
+                      ],
+                    ),
                   ),
-                )),
+                ),
               ),
             ),
             const SizedBox(height: 8),

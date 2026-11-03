@@ -344,6 +344,10 @@ public class LauncherActivity extends FlutterActivity {
                         task -> new Handler(Looper.getMainLooper()).post(task),
                         () -> TvCompatibilityDiagnostics.collect(this, this::isAccessibilityServiceEnabled), result::success,
                         error -> result.error("diagnostics_unavailable", "Unable to read compatibility metadata", DiagnosticErrorDetails.from(error)));
+                case "getFileStorageDiagnostics" -> ApplicationLoader.load(sIoExecutor,
+                        task -> new Handler(Looper.getMainLooper()).post(task),
+                        () -> FileStorageDiagnostics.collect(getApplicationContext()), result::success,
+                        error -> result.error("diagnostics_unavailable", "Unable to read file access metadata", null));
                 case "getDiagnosticEnvironment" -> result.success(Map.of(
                     "androidApi", Build.VERSION.SDK_INT,
                     "device", Map.of("manufacturer", Build.MANUFACTURER, "model", Build.MODEL,

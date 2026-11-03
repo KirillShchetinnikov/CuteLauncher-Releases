@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../../feed_format.dart';
 import '../../providers/app_channels_service.dart';
 import '../../providers/settings_service.dart';
 import '../action_notice.dart';
@@ -10,6 +11,8 @@ import 'adb_permission_tile.dart';
 import 'focusable_settings_tile.dart';
 import 'settings_help.dart';
 import 'settings_page_layout.dart';
+import 'settings_value_stepper.dart';
+import 'app_channels_order_page.dart';
 
 class AppChannelsSettingsPage extends StatefulWidget {
   static const routeName = 'app_channels_settings';
@@ -97,11 +100,31 @@ class _AppChannelsSettingsPageState extends State<AppChannelsSettingsPage>
     if (mounted) await _refresh();
   }
 
+  Future<void> _format(String key, FeedFormat format) async {
+    try {
+      await context.read<SettingsService>().setAppChannelFormat(key, format);
+    } catch (_) {
+      if (mounted) {
+        showActionNotice(
+          context,
+          AppLocalizations.of(context)!.appChannelsSaveFailed,
+          error: true,
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
     final service = context.watch<AppChannelsService>();
-    final selected = context.watch<SettingsService>().selectedAppChannels;
+    final settings = context.watch<SettingsService>();
+    final selected = settings.selectedAppChannels;
+    final channels = [
+      for (final key in selected)
+        ...service.channels.where((c) => c.key == key),
+      ...service.channels.where((c) => !selected.contains(c.key)),
+    ];
     return SettingsPageLayout(
       title: Text(l.appChannelsTitle),
       child: ListView(
@@ -120,7 +143,17 @@ class _AppChannelsSettingsPageState extends State<AppChannelsSettingsPage>
                   )
                 : null,
           ),
-          SettingsHelp(title: l.appChannelsTitle, text: l.appChannelsHelp),
+          SettingsHelp(
+            title: l.appChannelsTitle,
+            text: '${l.appChannelsHelp}\n\n${l.feedFormatHelp}',
+          ),
+          if (selected.length > 1)
+            FocusableSettingsTile(
+              leading: const Icon(Icons.swap_vert),
+              title: Text(l.reorder),
+              onPressed: () =>
+                  Navigator.pushNamed(context, AppChannelsOrderPage.routeName),
+            ),
           if (service.unavailable) ...[
             Padding(
               padding: const EdgeInsets.all(16),
@@ -143,13 +176,27 @@ class _AppChannelsSettingsPageState extends State<AppChannelsSettingsPage>
               padding: const EdgeInsets.all(16),
               child: Text(l.appChannelsEmpty),
             ),
-          for (final channel in service.channels)
+          for (final channel in channels) ...[
             RoundedSwitchListTile(
               key: ValueKey(channel.key),
               title: Text('${channel.name} · ${channel.appName}'),
               value: selected.contains(channel.key),
               onChanged: (value) => _select(channel.key, value),
             ),
+            if (selected.contains(channel.key))
+              SettingsValueStepper(
+                key: ValueKey('format:${channel.key}'),
+                title: '${l.feedFormat} · ${channel.name}',
+                value: settings.appChannelFormat(channel.key),
+                options: FeedFormat.values,
+                label: (value) => switch (value as FeedFormat) {
+                  FeedFormat.auto => l.feedFormatAuto,
+                  FeedFormat.landscape => l.feedFormatLandscape,
+                  FeedFormat.portrait => l.feedFormatPortrait,
+                },
+                onChanged: (value) => _format(channel.key, value as FeedFormat),
+              ),
+          ],
           for (final key in selected.where(
             (key) => !service.channels.any((c) => c.key == key),
           ))

@@ -10,6 +10,13 @@ class AppLocalizationsZh extends AppLocalizations {
   AppLocalizationsZh([String locale = 'zh']) : super(locale);
 
   @override
+  String get fileStorageDiagnostics => '文件访问诊断';
+
+  @override
+  String get fileStorageDiagnosticsHelp =>
+      '显示文件访问权限和系统请求处理程序。不需要 ADB 或存储访问权限。可拍摄结果；检查不会更改权限。';
+
+  @override
   String get volumeKeysTitle => '长按音量键';
 
   @override
@@ -4735,4 +4742,20 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get updateVerificationFailed =>
       '验证 APK 时出错，已阻止安装。请重试；如果再次出现，请向开发者发送诊断报告。';
+
+  @override
+  String get feedFormat => '封面格式';
+
+  @override
+  String get feedFormatAuto => '自动';
+
+  @override
+  String get feedFormatLandscape => '横向';
+
+  @override
+  String get feedFormatPortrait => '纵向';
+
+  @override
+  String get feedFormatHelp =>
+      '自动模式根据应用信息或最先加载的三张封面为每个内容流选择统一格式，并保存在此电视上。数量相同时使用横向。其他比例的封面会完整显示在背景上。也可手动选择格式。';
 }

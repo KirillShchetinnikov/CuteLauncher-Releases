@@ -55,8 +55,7 @@ final class LocalWallpaperFiles {
         try {
             if (Build.VERSION.SDK_INT >= 30) {
                 if (!AllFilesAccessSettings.open(activity, REQUEST)) {
-                    pending = null;
-                    result.error("storage_settings_unavailable", "All-files access settings unavailable", null);
+                    showAppCardInstructions();
                 }
             } else activity.requestPermissions(write ? new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}
                 : new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST);
@@ -64,6 +63,34 @@ final class LocalWallpaperFiles {
             pending = null;
             result.error("document_unavailable", "Storage permission settings unavailable", DiagnosticErrorDetails.from(error));
         }
+    }
+
+    private void showAppCardInstructions() {
+        var card = AllFilesAccessSettings.appCard(activity);
+        if (card == null) {
+            settingsUnavailable();
+            return;
+        }
+        var dialog = new android.app.AlertDialog.Builder(activity)
+            .setTitle(R.string.file_card_title)
+            .setMessage(R.string.file_card_steps)
+            .setPositiveButton(R.string.file_card_open, (d, which) -> {
+                try {
+                    activity.startActivityForResult(card, REQUEST);
+                } catch (RuntimeException unavailable) {
+                    settingsUnavailable();
+                }
+            })
+            .setNegativeButton(android.R.string.cancel, (d, which) -> complete())
+            .setOnCancelListener(d -> complete())
+            .show();
+        dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).requestFocus();
+    }
+
+    private void settingsUnavailable() {
+        var result = pending;
+        pending = null;
+        if (result != null) result.error("storage_settings_unavailable", "All-files access settings unavailable", null);
     }
 
     void complete() {

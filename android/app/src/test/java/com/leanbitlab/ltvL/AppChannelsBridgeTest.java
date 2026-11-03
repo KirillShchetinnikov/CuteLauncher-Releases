@@ -26,6 +26,8 @@ public class AppChannelsBridgeTest {
         int programQueries;
         boolean denied;
         boolean filteredEmpty;
+        boolean posterArt;
+        boolean unknownAspect;
         public boolean onCreate() { return true; }
         public Cursor query(Uri uri, String[] projection, String selection, String[] args, String sort) {
             if (denied) throw new SecurityException("denied");
@@ -38,11 +40,12 @@ public class AppChannelsBridgeTest {
             } else {
                 assertEquals(TvContract.buildPreviewProgramsUriForChannel(2), uri);
                 programQueries++;
-                c.addRow(new Object[]{1L, "other.app", "Wrong owner", "", "video://wrong", "", ""});
-                c.addRow(new Object[]{2L, "video.app", "No intent", "", "", "", ""});
+                c.addRow(new Object[]{1L, "other.app", "Wrong owner", "", "video://wrong", "", "", null, null});
+                c.addRow(new Object[]{2L, "video.app", "No intent", "", "", "", "", null, null});
                 for (int i = 0; i < 30; i++) {
                     c.addRow(new Object[]{10L + i, "video.app", "Item " + i, "Description",
-                            "video://watch/" + i, "", "content://thumbnail/" + i});
+                            "video://watch/" + i, posterArt ? "content://poster/" + i : "",
+                            "content://thumbnail/" + i, unknownAspect ? 99 : 0, unknownAspect ? 99 : 4});
                 }
             }
             return c;
@@ -69,6 +72,14 @@ public class AppChannelsBridgeTest {
             assertEquals(20, programs.size());
             assertEquals("content://thumbnail/0", programs.get(0).get("posterArtUri"));
             assertEquals("video://watch/0", programs.get(0).get("intentUri"));
+            assertEquals(2.0 / 3, (Double) programs.get(0).get("posterAspectRatio"), 0.0001);
+            provider.posterArt = true;
+            programs = (List<Map<String, Object>>) bridge.channels(List.of("video.app:2")).get(1).get("programs");
+            assertEquals("content://poster/0", programs.get(0).get("posterArtUri"));
+            assertEquals(16.0 / 9, (Double) programs.get(0).get("posterAspectRatio"), 0.0001);
+            provider.unknownAspect = true;
+            programs = (List<Map<String, Object>>) bridge.channels(List.of("video.app:2")).get(1).get("programs");
+            assertFalse(programs.get(0).containsKey("posterAspectRatio"));
             provider.denied = true;
             assertThrows(SecurityException.class, () -> bridge.channels(List.of()));
         }

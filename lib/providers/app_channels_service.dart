@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
+import 'dart:ui' as ui;
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter/foundation.dart' show listEquals;
@@ -10,6 +11,7 @@ import 'package:pool/pool.dart';
 import '../flauncher_channel.dart';
 import '../image_byte_cache.dart';
 import '../image_limits.dart';
+import '../feed_format.dart';
 import '../models/app_content_channel.dart';
 import '../models/watch_next_program.dart';
 import 'foreground_work.dart';
@@ -28,6 +30,74 @@ class AppChannelsService extends ChangeNotifier
   final MemoryResources? memory;
   final Future<void> Function(String)? onAppLaunched;
   final _posterVersions = <String, int>{};
+  final _formatSamples = <String, Map<int, double?>>{};
+
+  FeedFormat formatFor(AppContentChannel feed) {
+    final manual = settings.appChannelFormat(feed.key);
+    if (manual != FeedFormat.auto) return manual;
+    final detected = settings.appChannelFormat(feed.key, detected: true);
+    if (detected != FeedFormat.auto) return detected;
+    return FeedFormat.majority(
+      feed.programs.map((p) => p.posterAspectRatio).whereType<double>(),
+    );
+  }
+
+  /// Uses only the first three already requested covers. Never warms distant feeds.
+  Future<void> observePoster(
+    AppContentChannel feed,
+    int id,
+    Uint8List? bytes,
+  ) async {
+    if (isDisposed ||
+        !_foreground ||
+        settings.appChannelFormat(feed.key, detected: true) !=
+            FeedFormat.auto ||
+        settings.appChannelFormat(feed.key) != FeedFormat.auto) {
+      return;
+    }
+    final metadata = feed.programs
+        .map((p) => p.posterAspectRatio)
+        .whereType<double>()
+        .where((r) => r.isFinite && r > 0)
+        .toList();
+    FeedFormat? format;
+    if (metadata.isNotEmpty) {
+      format = FeedFormat.majority(metadata);
+    } else {
+      if (!feed.programs.take(3).any((p) => p.id == id)) return;
+      if (_formatSamples[feed.key]?.containsKey(id) == true) return;
+      final generation = _generation;
+      double? ratio;
+      if (bytes != null) {
+        ui.ImmutableBuffer? buffer;
+        ui.ImageDescriptor? descriptor;
+        try {
+          buffer = await ui.ImmutableBuffer.fromUint8List(bytes);
+          descriptor = await ui.ImageDescriptor.encoded(buffer);
+          ratio = descriptor.width / descriptor.height;
+        } catch (_) {
+          // An invalid image contributes no orientation vote.
+        } finally {
+          descriptor?.dispose();
+          buffer?.dispose();
+        }
+      }
+      if (isDisposed || !_foreground || generation != _generation) return;
+      final samples = _formatSamples.putIfAbsent(feed.key, () => {});
+      samples[id] = ratio;
+      if (samples.length < feed.programs.take(3).length) return;
+      final valid = samples.values.whereType<double>().toList();
+      if (valid.isEmpty) return;
+      format = FeedFormat.majority(valid);
+    }
+    if (isDisposed || !_foreground) return;
+    try {
+      await settings.setAppChannelFormat(feed.key, format, detected: true);
+    } catch (_) {
+      // Keep the current layout when local preferences cannot be written.
+    }
+  }
+
   late final _posters = ImageByteCache(
     maximumBytes: 4 * 1024 * 1024,
     onEvict: (uri, _) => _posterVersions.remove(uri),
@@ -96,6 +166,7 @@ class AppChannelsService extends ChangeNotifier
   }
 
   void _invalidatePosters() {
+    _formatSamples.clear();
     ++_generation;
     ++_posterEpoch;
     if (loading) _again = true;
@@ -104,7 +175,16 @@ class AppChannelsService extends ChangeNotifier
   void _settingsChanged() {
     final next = jsonEncode(settings.selectedAppChannels);
     if (next == _selection) return;
+    final previousKeys = _selection.isEmpty
+        ? <String>[]
+        : (jsonDecode(_selection) as List).cast<String>();
     _selection = next;
+    if (listEquals(
+      previousKeys..sort(),
+      settings.selectedAppChannels.toList()..sort(),
+    )) {
+      return;
+    }
     ++_generation;
     _snapshot = null;
     notifyListeners();
@@ -190,6 +270,9 @@ class AppChannelsService extends ChangeNotifier
             .toList();
         if (!listEquals(next, _channels)) {
           _channels = next;
+          _formatSamples.removeWhere(
+            (key, _) => !next.any((c) => c.key == key),
+          );
           changed = true;
         }
       }

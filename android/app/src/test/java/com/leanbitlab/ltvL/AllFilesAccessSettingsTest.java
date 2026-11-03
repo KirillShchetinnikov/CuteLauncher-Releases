@@ -66,6 +66,38 @@ public class AllFilesAccessSettingsTest {
         }
     }
 
+    @Test public void android12CanFallBackToOwnAppCardWhenSpecialScreensAreMissing() {
+        try (var lifecycle = Robolectric.buildActivity(Host.class).setup()) {
+            var host = lifecycle.get();
+            var card = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, app(host).getData());
+            install(host, TV, TV + ".AppCard", true, card);
+            boolean applicable = android.os.Build.VERSION.SDK_INT <= 32;
+            var worker = Executors.newSingleThreadExecutor();
+            try {
+                LocalWallpaperFilesTest.StorageEnvironment.manager = false;
+                var files = new LocalWallpaperFiles(host, worker);
+                var reply = new Reply();
+                files.request(reply);
+                assertTrue(host.started.isEmpty());
+                if (applicable) {
+                    var dialog = org.robolectric.shadows.ShadowAlertDialog.getLatestAlertDialog();
+                    assertTrue(dialog.isShowing());
+                    dialog.cancel();
+                    Shadows.shadowOf(android.os.Looper.getMainLooper()).idle();
+                    assertEquals(false, reply.value);
+                    files.request(new Reply());
+                    dialog = org.robolectric.shadows.ShadowAlertDialog.getLatestAlertDialog();
+                    dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).performClick();
+                    Shadows.shadowOf(android.os.Looper.getMainLooper()).idle();
+                    assertEquals(card.getAction(), host.started.get(0).getAction());
+                    assertEquals(card.getData(), host.started.get(0).getData());
+                } else assertEquals("storage_settings_unavailable", reply.error);
+            } finally {
+                worker.shutdownNow();
+            }
+        }
+    }
+
     @Test public void exportedTvPageWinsOverOemPermissionFilterEvenWithoutIntentFilter() {
         try (var lifecycle = Robolectric.buildActivity(Host.class).setup()) {
             var host = lifecycle.get();

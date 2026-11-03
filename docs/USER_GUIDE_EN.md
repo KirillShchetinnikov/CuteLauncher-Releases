@@ -131,16 +131,27 @@ Select up to 16 feeds published by installed apps. One app may offer several
 feeds, such as new releases and saved items. Enabling or disabling a feed keeps
 focus on its switch. Selected nonempty feeds appear
 as one standard category. Move the entire group or move it between visible
-and hidden categories. Individual feeds cannot be moved within the group.
+and hidden categories. On the feed selection page, **Reorder** opens the order
+of enabled feeds when at least two are selected. OK or ◄/► starts or finishes
+moving, ↑/↓ changes the position, and Back finishes moving; the next Back returns
+to the previous page. The order stays on this TV and applies to feeds on the home screen.
+Unavailable and empty selected feeds keep their positions in the saved order.
 Press OK on the category to open its editor: rename it, choose feeds, or open
 Category appearance. Appearance controls include preview size, corner radius,
 horizontal spacing, label size and color, section titles and icon, padding,
 and background. Group and channel titles can be enabled here independently
 of the shared section-title setting. Previews always use a single horizontal
-row with a 16:9 aspect ratio and titles below the artwork; there is no grid.
+row with a uniform format within each feed and titles below the artwork; there is no grid.
+On the feed selection page, each enabled feed has an **Artwork format** choice:
+**Auto**, **Landscape** (16:9), or **Portrait** (2:3). Auto uses app metadata or,
+when absent, the first three loaded covers. Ties use landscape. The result is
+remembered on this TV; manual selection takes priority. Other proportions are
+shown in full on a background. Feed formats are excluded from backups and synchronization.
 Feeds use compact vertical spacing, with side margins that accommodate enlarged
 edge cards when focused.
 Restoring common appearance settings keeps the name and feed selection.
+Artwork is shown without cropping and accounts for the enlarged selected card.
+The quality of the source image depends on the app publishing the feed.
 Each feed shows up to 20 suggestions
 in the source order. Your selection survives restarts on this TV; it is
 excluded from backups and synchronization. The whole group’s name, order,
@@ -1050,6 +1061,15 @@ Path: **Settings → Advanced → Diagnostics**. One report combines shared TV a
 CuteLauncher metadata, feature compatibility and errors. There is no separate
 compatibility submenu or file. Create a report, view check results, clear it,
 and export it by copying or saving to disk.
+
+**File access diagnostics** shows the file access permission state and the
+system components that handle access requests. You do not need to create a
+full report, connect ADB or grant storage access. You can photograph the
+results; use Up/Down to scroll. The check does not change permissions.
+To run it again, go back and press the button again. The results compare the
+storage permissions of CuteLauncher and File Manager + when installed. On
+Android 11–12 the request can open the CuteLauncher app details if the special
+access screen is unavailable. Check Permissions → Files and media there.
 
 Creating it also reads display modes, HDR, video/audio decoders and audio-output
 formats. These are capabilities reported by Android, not playback test results;

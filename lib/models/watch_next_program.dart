@@ -11,6 +11,7 @@ class WatchNextProgram {
   final int duration;
   final String intentUri;
   final String posterArtUri;
+  final double? posterAspectRatio;
   Uint8List? posterBytes;
 
   WatchNextProgram({
@@ -24,6 +25,7 @@ class WatchNextProgram {
     required this.duration,
     required this.intentUri,
     required this.posterArtUri,
+    this.posterAspectRatio,
     this.posterBytes,
   });
 
@@ -39,6 +41,7 @@ class WatchNextProgram {
       duration: map['duration'] as int? ?? 0,
       intentUri: map['intentUri'] as String? ?? '',
       posterArtUri: map['posterArtUri'] as String? ?? '',
+      posterAspectRatio: (map['posterAspectRatio'] as num?)?.toDouble(),
     );
   }
 }

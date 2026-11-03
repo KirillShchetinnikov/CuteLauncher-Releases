@@ -1,4 +1,6 @@
 {
+  "fileStorageDiagnostics": "ファイルアクセスの診断",
+  "fileStorageDiagnosticsHelp": "ファイルアクセス権限とシステムの処理先を表示します。ADBやストレージへのアクセスは不要です。結果は撮影できます。権限は変更されません。",
   "volumeKeysTitle": "音量ボタンの長押し",
   "volumeKeysMode": "対処方法",
   "volumeKeysAuto": "自動：パネル表示中",
@@ -1711,5 +1713,10 @@
   "updateSignersUnavailable": "Android からインストール済みアプリまたは APK の証明書を取得できませんでした。署名を確認できないため、インストールをブロックしました。",
   "updateSignatureMismatch": "APK の署名がインストール済みの CuteLauncher と異なります。更新をブロックしました。現在のバージョンの入手元を開発者にお知らせください。",
   "updateInvalidFile": "Android が APK を読み取れませんでした。ファイルが存在しない、空、サイズ超過、または認識できない状態です。更新を再ダウンロードしてください。",
-  "updateVerificationFailed": "APK の確認中にエラーが発生したため、インストールをブロックしました。再試行し、繰り返す場合は診断レポートを開発者に送信してください。"
+  "updateVerificationFailed": "APK の確認中にエラーが発生したため、インストールをブロックしました。再試行し、繰り返す場合は診断レポートを開発者に送信してください。",
+  "feedFormat": "カバーの形式",
+  "feedFormatAuto": "自動",
+  "feedFormatLandscape": "横長",
+  "feedFormatPortrait": "縦長",
+  "feedFormatHelp": "自動ではアプリの情報または最初に読み込んだ3枚のカバーからフィードごとの形式を選び、このテレビに保存します。同数の場合は横長です。異なる縦横比の画像は背景の上に全体を表示します。形式は手動でも選べます。"
 }

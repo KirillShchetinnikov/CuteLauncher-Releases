@@ -1,4 +1,6 @@
 {
+  "fileStorageDiagnostics": "Dosya erişimi tanılaması",
+  "fileStorageDiagnosticsHelp": "Dosya erişim iznini ve sistem isteği işleyicilerini gösterir. ADB veya depolama erişimi gerekmez. Sonuçların fotoğrafını çekebilirsiniz; izinler değiştirilmez.",
   "volumeKeysTitle": "Ses düğmelerini basılı tutma",
   "volumeKeysMode": "Düzeltme yöntemi",
   "volumeKeysAuto": "Otomatik: panel görünürken",
@@ -1711,5 +1713,10 @@
   "updateSignersUnavailable": "Android, yüklü uygulamanın veya APK’nın sertifikalarını sağlamadı. İmza doğrulanamadı; yükleme engellendi.",
   "updateSignatureMismatch": "APK imzası, yüklü CuteLauncher imzasından farklı. Güncelleme engellendi. Yüklü sürümü nereden edindiğinizi geliştiriciye bildirin.",
   "updateInvalidFile": "Android APK’yı okuyamadı: dosya eksik, boş, çok büyük veya tanınmıyor. Güncellemeyi yeniden indirin.",
-  "updateVerificationFailed": "APK doğrulanırken hata oluştu. Yükleme engellendi. Tekrar deneyin; hata tekrarlanırsa geliştiriciye tanılama raporu gönderin."
+  "updateVerificationFailed": "APK doğrulanırken hata oluştu. Yükleme engellendi. Tekrar deneyin; hata tekrarlanırsa geliştiriciye tanılama raporu gönderin.",
+  "feedFormat": "Kapak biçimi",
+  "feedFormatAuto": "Otomatik",
+  "feedFormatLandscape": "Yatay",
+  "feedFormatPortrait": "Dikey",
+  "feedFormatHelp": "Otomatik, uygulama verilerinden veya yüklenen ilk üç kapaktan her akış için tek bir biçim seçer ve bu TV’de hatırlar. Eşitlikte yatay kullanılır. Diğer oranlar arka plan üzerinde tam gösterilir. Biçimi elle seçebilirsiniz."
 }
