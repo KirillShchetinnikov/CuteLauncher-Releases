@@ -4751,4 +4751,22 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get feedFormatHelp =>
       '自动模式根据应用信息或最先加载的三张封面为每个内容流选择统一格式，并保存在此电视上。数量相同时使用横向。其他比例的封面会完整显示在背景上。也可手动选择格式。';
+
+  @override
+  String get networkSpeedTitle => '网络速度';
+
+  @override
+  String get networkSpeedSettings => '网络速度设置';
+
+  @override
+  String get networkSpeedInterval => '更新间隔';
+
+  @override
+  String get networkSpeedHelp =>
+      '设备各网络接口的平均接收和发送速率。这是当前流量，并非连接速度测试。隐藏组件、进入后台或关闭屏幕时暂停采样。暂停后的首次读数显示为 —。';
+
+  @override
+  String networkSpeedUnit(String unit) {
+    return '$unit/秒';
+  }
 }

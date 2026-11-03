@@ -47,6 +47,7 @@ abstract final class LauncherDefaults {
       'notifications',
       'nightMode',
       'traffic',
+      'networkSpeed',
       'system',
     ],
     'panelInfoOrder': ['network', 'vpn', 'audio', 'time', 'date', 'weather'],
@@ -86,7 +87,7 @@ abstract final class LauncherDefaults {
     ).encode(),
     'remote_panel_configuration': jsonEncode({
       'inheritAppearance': true,
-      'hidden': ['nightMode', 'traffic', 'system'],
+      'hidden': ['nightMode', 'traffic', 'system', 'networkSpeed'],
       'leftOrder': appearance['panelButtonsOrder'],
       'rightOrder': appearance['panelInfoOrder'],
     }),

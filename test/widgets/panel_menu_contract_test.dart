@@ -1,4 +1,6 @@
 import 'package:flauncher/providers/system_status_service.dart';
+import 'package:flauncher/providers/network_speed_service.dart';
+import 'package:flauncher/widgets/network_speed_menu.dart';
 import 'package:flauncher/widgets/system_status_menu.dart';
 import 'package:flauncher/widgets/traffic_usage_menu.dart';
 import 'package:flauncher/widgets/weather_forecast_menu.dart';
@@ -43,6 +45,7 @@ void main() {
     'vpn',
     'traffic',
     'system',
+    'networkSpeed',
     'inputs',
     'notifications',
     'weather',
@@ -85,6 +88,10 @@ void main() {
         tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(systemChannel, (call) async =>
           call.method == 'snapshot' ? {'cpuPercent': 25, 'ramTotalBytes': 1000, 'ramAvailableBytes': 500} : null);
         final system = SystemStatusService();
+        const speedChannel = MethodChannel('cutelauncher/network_speed');
+        tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(speedChannel, (call) async =>
+          call.method == 'snapshot' ? {'rxBytes': 1000, 'txBytes': 2000, 'elapsedMs': 3000} : null);
+        final speed = NetworkSpeedService();
         final network = MockNetworkService();
         VpnService? vpn;
         if (name == 'vpn') {
@@ -138,6 +145,7 @@ void main() {
                     ChangeNotifierProvider.value(value: night),
                     ChangeNotifierProvider.value(value: sleep),
                     ChangeNotifierProvider.value(value: system),
+                    ChangeNotifierProvider.value(value: speed),
                     if (vpn != null) ChangeNotifierProvider<VpnService>.value(value: vpn),
                     ChangeNotifierProvider<NetworkService>.value(
                       value: network,
@@ -198,6 +206,7 @@ void main() {
                                   ),
                                   'traffic' => TrafficUsageMenu(anchor: anchor),
                                   'system' => SystemStatusMenu(anchor: anchor),
+                                  'networkSpeed' => NetworkSpeedMenu(anchor: anchor),
                                   'vpn' => VpnMenu(anchor: anchor),
                                   'inputs' => InputsPanel(anchor: anchor),
                                   _ => NotificationsPanel(anchor: anchor),
@@ -299,6 +308,8 @@ void main() {
         night.dispose();
         sleep.dispose();
         system.dispose();
+        speed.dispose();
+        tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(speedChannel, null);
         tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(systemChannel, null);
         vpn?.dispose();
         appearance.dispose();

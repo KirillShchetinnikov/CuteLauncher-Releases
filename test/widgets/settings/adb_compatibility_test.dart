@@ -22,6 +22,57 @@ void main() {
   });
   const adb = MethodChannel('cutelauncher/adb');
   const platform = MethodChannel('me.efesser.flauncher/method');
+  for (final status in ['operation_failed', 'unavailable']) {
+    testWidgets('connection check reports $status accurately', (tester) async {
+      tester.view.physicalSize = const Size(1280, 900);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        platform,
+        (_) async => false,
+      );
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(adb, (
+        call,
+      ) async {
+        if (call.method == 'info') {
+          return {'port': 5555, 'compatibility': supportedAdbCompatibility};
+        }
+        return {'status': status};
+      });
+      addTearDown(() {
+        tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+          adb,
+          null,
+        );
+        tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+          platform,
+          null,
+        );
+      });
+      await tester.pumpWidget(
+        MaterialApp(
+          locale: const Locale('ru'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const Scaffold(body: AdbPage(section: 'connection')),
+        ),
+      );
+      await tester.pumpAndSettle();
+      final l = AppLocalizations.of(tester.element(find.byType(AdbPage)))!;
+      await tester.ensureVisible(find.text(l.adbCheck));
+      await tester.tap(find.text(l.adbCheck));
+      await tester.pumpAndSettle();
+      final message = status == 'operation_failed'
+          ? l.appError
+          : l.adbUnavailable;
+      expect(find.text('${l.adbCheck}: $message'), findsOneWidget);
+      expect(find.text(message), findsOneWidget);
+      if (status == 'operation_failed') {
+        expect(find.text(l.adbUnavailable), findsNothing);
+      }
+    });
+  }
   for (final system in ['Android TV', 'Google TV']) {
     testWidgets(
       '$system blocks pinned HOME but offers safe built-in replacement',

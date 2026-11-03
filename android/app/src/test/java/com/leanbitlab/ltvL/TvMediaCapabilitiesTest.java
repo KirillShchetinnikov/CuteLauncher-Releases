@@ -11,6 +11,18 @@ import static org.junit.Assert.*;
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = {28, 29, 30, 36})
 public class TvMediaCapabilitiesTest {
+    @Test public void numericCapabilitiesPreserveOrderAndBoundOutput() {
+        assertEquals(java.util.List.of(), TvMediaCapabilities.numbers(new int[0]));
+        assertEquals(java.util.List.of(48000, 44100, 48000),
+                TvMediaCapabilities.numbers(new int[] {48000, 44100, 48000}));
+        int[] values = new int[70];
+        for (int i = 0; i < values.length; i++) values[i] = i;
+        var numbers = TvMediaCapabilities.numbers(values);
+        assertEquals(64, numbers.size());
+        assertEquals(Integer.valueOf(0), numbers.get(0));
+        assertEquals(Integer.valueOf(63), numbers.get(63));
+        assertEquals(69, values[69]);
+    }
     @Test public void metadataIsReadOnlyAndSectionFailuresAreIsolated() {
         var result = TvMediaCapabilities.collect(RuntimeEnvironment.getApplication());
         assertEquals("reportedCapabilitiesOnly", result.get("scope"));

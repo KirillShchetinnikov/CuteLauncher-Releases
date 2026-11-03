@@ -4970,4 +4970,22 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get feedFormatHelp =>
       'स्वचालित मोड ऐप के डेटा या पहले तीन लोड किए गए कवर से हर फ़ीड का एक प्रारूप चुनकर इस टीवी पर याद रखता है। बराबरी पर क्षैतिज चुना जाता है। अन्य अनुपात पृष्ठभूमि पर पूरे दिखते हैं। आप प्रारूप मैन्युअल रूप से चुन सकते हैं।';
+
+  @override
+  String get networkSpeedTitle => 'नेटवर्क गति';
+
+  @override
+  String get networkSpeedSettings => 'नेटवर्क गति सेटिंग';
+
+  @override
+  String get networkSpeedInterval => 'अपडेट अंतराल';
+
+  @override
+  String get networkSpeedHelp =>
+      'डिवाइस के नेटवर्क इंटरफ़ेस पर औसत प्राप्ति और प्रेषण दर। यह वर्तमान ट्रैफ़िक है, कनेक्शन गति परीक्षण नहीं। विजेट छिपने पर, पृष्ठभूमि में या स्क्रीन बंद होने पर रीडिंग रुक जाती हैं। विराम के बाद पहली रीडिंग — होती है।';
+
+  @override
+  String networkSpeedUnit(String unit) {
+    return '$unit/से';
+  }
 }

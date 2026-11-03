@@ -1,4 +1,8 @@
 import 'package:flauncher/providers/system_status_service.dart';
+import 'package:flauncher/providers/network_speed_service.dart';
+import 'package:flauncher/widgets/network_speed_widget.dart';
+import 'package:flauncher/widgets/network_speed_menu.dart';
+import 'package:flauncher/widgets/settings/network_speed_settings_page.dart';
 import 'package:flauncher/widgets/system_status_widget.dart';
 import 'package:flauncher/widgets/system_status_menu.dart';
 import 'package:flauncher/widgets/settings/system_widget_settings_page.dart';
@@ -137,6 +141,7 @@ void main() {
           ChangeNotifierProvider.value(value: settings),
           ChangeNotifierProvider.value(value: sleepTimer),
           ChangeNotifierProvider(create: (_) => SystemStatusService()),
+          ChangeNotifierProvider(create: (_) => NetworkSpeedService(settings: settings)),
           if (night != null) ChangeNotifierProvider.value(value: night),
           ChangeNotifierProvider.value(value: appearance),
           ChangeNotifierProvider<NetworkService>.value(value: network),
@@ -161,6 +166,35 @@ void main() {
     );
     await tester.pumpAndSettle();
   }
+
+  testWidgets('network speed menu keeps highlight and restores focus after settings and Back', (tester) async {
+    const channel = MethodChannel('cutelauncher/network_speed');
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, (call) async =>
+      call.method == 'snapshot' ? {'rxBytes': 1000, 'txBytes': 2000, 'elapsedMs': 3000} : null);
+    addTearDown(() => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, null));
+    await settings.setShowNetworkSpeedInStatusBar(true);
+    await pump(tester, const Scaffold(appBar: FocusAwareAppBar()));
+    final widget = find.byType(NetworkSpeedWidget);
+    final button = find.descendant(of: widget, matching: find.byType(TopPanelItem));
+    final node = tester.widget<TopPanelItem>(button).focusNode!;
+    node.requestFocus(); await tester.pump();
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter); await tester.pumpAndSettle();
+    expect(find.byType(NetworkSpeedMenu), findsOneWidget);
+    expectWidgetHighlight(tester, button);
+    final gear = find.descendant(of: find.byType(NetworkSpeedMenu), matching: find.byType(IconButton));
+    final gearNode = tester.widget<IconButton>(gear).focusNode!;
+    await tester.tap(gear); await tester.pumpAndSettle();
+    expect(find.byType(NetworkSpeedSettingsPage), findsOneWidget);
+    expect(tester.widget<SidePanelDialog>(find.byType(SidePanelDialog)).topInset, kToolbarHeight);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight); await tester.pumpAndSettle();
+    expect(settings.networkSpeedInterval, 4);
+    await tester.binding.handlePopRoute(); await tester.pumpAndSettle();
+    expect(gearNode.hasFocus, true);
+    await tester.binding.handlePopRoute(); await tester.pumpAndSettle();
+    expect(node.hasFocus, true);
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox()); await tester.pump();
+  });
 
   testWidgets('system opt-in, details, shared settings and focus survive return', (tester) async {
     const channel = MethodChannel('cutelauncher/system_status');

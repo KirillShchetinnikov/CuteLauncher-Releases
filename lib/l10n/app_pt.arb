@@ -1716,5 +1716,10 @@
   "feedFormatAuto": "Automático",
   "feedFormatLandscape": "Horizontal",
   "feedFormatPortrait": "Vertical",
-  "feedFormatHelp": "Automático escolhe um formato por feed pelos dados do aplicativo ou pelas três primeiras capas carregadas e o salva nesta TV. Em caso de empate, usa horizontal. Outras proporções são exibidas inteiras sobre um fundo. Você pode escolher o formato manualmente."
+  "feedFormatHelp": "Automático escolhe um formato por feed pelos dados do aplicativo ou pelas três primeiras capas carregadas e o salva nesta TV. Em caso de empate, usa horizontal. Outras proporções são exibidas inteiras sobre um fundo. Você pode escolher o formato manualmente.",
+  "networkSpeedTitle": "Velocidade da rede",
+  "networkSpeedSettings": "Definições de velocidade da rede",
+  "networkSpeedInterval": "Intervalo de atualização",
+  "networkSpeedHelp": "Taxas médias de recepção e envio nas interfaces de rede do dispositivo. É o tráfego atual, não um teste da conexão. As leituras pausam quando o widget está oculto, em segundo plano ou com a tela desligada. A primeira leitura após uma pausa mostra —.",
+  "networkSpeedUnit": "{unit}/s"
 }

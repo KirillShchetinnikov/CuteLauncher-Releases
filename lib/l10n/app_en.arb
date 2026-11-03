@@ -1630,5 +1630,17 @@
   "feedFormatAuto": "Auto",
   "feedFormatLandscape": "Landscape",
   "feedFormatPortrait": "Portrait",
-  "feedFormatHelp": "Auto chooses one format per feed from app metadata or the first three loaded covers and remembers it on this TV. Ties use landscape. Other proportions are shown in full on a background. You can choose the format manually."
+  "feedFormatHelp": "Auto chooses one format per feed from app metadata or the first three loaded covers and remembers it on this TV. Ties use landscape. Other proportions are shown in full on a background. You can choose the format manually.",
+  "networkSpeedTitle": "Network speed",
+  "networkSpeedSettings": "Network speed settings",
+  "networkSpeedInterval": "Update interval",
+  "networkSpeedHelp": "Average receive and send rates across the device’s network interfaces. This is current traffic, not a connection speed test. Readings pause when hidden, in the background or while the screen is off. The first reading after a pause is shown as —.",
+  "networkSpeedUnit": "{unit}/s",
+  "@networkSpeedUnit": {
+    "placeholders": {
+      "unit": {
+        "type": "String"
+      }
+    }
+  }
 }

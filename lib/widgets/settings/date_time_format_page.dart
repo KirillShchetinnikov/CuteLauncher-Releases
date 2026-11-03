@@ -37,13 +37,13 @@ const List<(String format, String example)> dateFormatPresets = [
   ('M/d/y', '1/17/2026'),
 ];
 
-// Time format presets (using 3:45 PM / 15:45 for clear 12h/24h distinction)
+// Morning and afternoon examples distinguish zero padding in 24-hour formats.
 const List<(String format, String example)> timeFormatPresets = [
-  ('H:mm', '3:45'),
+  ('H:mm', '3:45 / 15:45'),
   ('hh:mm', '03:45'),
   ('h:mm a', '3:45 PM'),
   ('hh:mm a', '03:45 PM'),
-  ('HH:mm', '15:45'),
+  ('HH:mm', '03:45 / 15:45'),
 ];
 
 /// Date settings; the time format is edited together with the shared clock style.
@@ -79,10 +79,14 @@ class TimeFormatSettingsTile extends StatelessWidget {
       title: AppLocalizations.of(context)!.time,
       value: service.timeFormat,
       options: timeFormatPresets.map((v) => v.$1).toList(),
-      label: (v) => DateFormat(
-        v,
-        Localizations.localeOf(context).toString(),
-      ).format(DateTime(2026, 1, 17, 15, 45)),
+      label: (v) {
+        final formatter = DateFormat(v, Localizations.localeOf(context).toString());
+        final afternoon = formatter.format(DateTime(2026, 1, 17, 15, 45));
+        if (v == 'H:mm' || v == 'HH:mm') {
+          return '${formatter.format(DateTime(2026, 1, 17, 3, 45))} / $afternoon';
+        }
+        return afternoon;
+      },
       onChanged: (v) => service.setDateTimeFormat(service.dateFormat, v),
     );
   }

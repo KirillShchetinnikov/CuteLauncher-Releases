@@ -68,6 +68,9 @@ final class AdbOperationDiagnostics {
         if (failure instanceof LinkageError) return "linkage";
         return "other";
     }
+    static String failureStatus(Throwable failure) {
+        return failure instanceof LinkageError ? "operation_failed" : "unavailable";
+    }
     static String commandKind(String command) {
         if (AdbWifiSafety.COMMAND.equals(command)) return "wifi_configurations";
         if (command.equals("am get-current-user")) return "current_user";

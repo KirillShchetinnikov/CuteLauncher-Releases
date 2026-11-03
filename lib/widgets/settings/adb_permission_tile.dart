@@ -220,6 +220,7 @@ class _AdbPermissionTileState extends State<AdbPermissionTile>
               'unsupported' => l.adbUnsupported,
               'denied' => l.adbDenied,
               'authorization' => l.adbAuthorization,
+              'operation_failed' => l.appError,
               'invalid' => l.adbInvalid,
               'changed' => l.adbChanged,
               'noRecovery' => l.adbNoRecovery,

@@ -5,6 +5,8 @@ import 'audio_status_widget.dart';
 import 'system_status_widget.dart';
 import 'system_status_menu.dart';
 import 'traffic_usage_menu.dart';
+import 'network_speed_widget.dart';
+import 'network_speed_menu.dart';
 import 'sleep_timer_label.dart';
 import '../panel_layout.dart';
 import 'information_menu.dart';
@@ -65,6 +67,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
   final _notificationsFocusNode = FocusNode();
   final _sleepTimerFocusNode = FocusNode();
   final _trafficFocusNode = FocusNode();
+  final _networkSpeedFocusNode = FocusNode();
   final _systemFocusNode = FocusNode();
   final _vpnFocusNode = FocusNode();
   final _nightModeFocusNode = FocusNode();
@@ -80,7 +83,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
   void focusFirst() {
     final nodes = {'settings': _settingsFocusNode, 'systemSettings': _systemSettingsFocusNode,
       'inputs': _inputsFocusNode, 'notifications': _notificationsFocusNode,
-      'system': _systemFocusNode, 'traffic': _trafficFocusNode, 'vpn': _vpnFocusNode, 'sleepTimer': _sleepTimerFocusNode, 'nightMode': _nightModeFocusNode, 'weather': _weatherFocusNode, 'date': _dateFocusNode, 'time': _clockFocusNode, PanelLayout.informationGroup: _dateFocusNode};
+      'networkSpeed': _networkSpeedFocusNode, 'system': _systemFocusNode, 'traffic': _trafficFocusNode, 'vpn': _vpnFocusNode, 'sleepTimer': _sleepTimerFocusNode, 'nightMode': _nightModeFocusNode, 'weather': _weatherFocusNode, 'date': _dateFocusNode, 'time': _clockFocusNode, PanelLayout.informationGroup: _dateFocusNode};
     final layout = widget.remotePanel?.layout ??
         (context.read<AppearanceService?>()?.appearance ?? const TileAppearance()).panelLayout;
     final composition = InformationPanelComposition(context.read<AppearanceService?>()?.appearance ?? const TileAppearance(), context.read<SettingsService>(), remote: widget.remotePanel);
@@ -169,6 +172,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
       _notificationsFocusNode,
       _sleepTimerFocusNode,
       _trafficFocusNode,
+      _networkSpeedFocusNode,
       _systemFocusNode,
       _vpnFocusNode,
       _nightModeFocusNode,
@@ -278,6 +282,28 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
     }
   }
 
+  Future<void> _openNetworkSpeed() async {
+    final box = _networkSpeedFocusNode.context?.findRenderObject();
+    if (box is! RenderBox || !box.hasSize) return;
+    final anchor = box.localToGlobal(Offset.zero) & box.size;
+    _setOpenWidget('networkSpeed');
+    try {
+      await showLauncherDialog<void>(context: context, highlightRect: anchor,
+        highlightRectResolver: () => launcherControlBounds(_networkSpeedFocusNode),
+        useSafeArea: false, styleDialog: false, barrierColor: Colors.transparent,
+        builder: (_) => NetworkSpeedMenu(anchor: anchor));
+    } finally {
+      if (mounted) {
+        _setOpenWidget(null);
+        if (_networkSpeedFocusNode.context != null) {
+          _networkSpeedFocusNode.requestFocus();
+        } else {
+          _settingsFocusNode.requestFocus();
+        }
+      }
+    }
+  }
+
   Future<void> _openTraffic() async {
     final box = _trafficFocusNode.context?.findRenderObject();
     if (box is! RenderBox || !box.hasSize) return;
@@ -341,6 +367,10 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
       vpn != null && (vpn.active || !vpn.onlyActive || vpn.failed));
     final direction = TextDirection.ltr;
     final objects = <String, Widget>{
+      if (widget.remotePanel?.visible('networkSpeed') ?? settings.showNetworkSpeedInStatusBar)
+        'networkSpeed': NetworkSpeedWidget(focusNode: _networkSpeedFocusNode, selected: _activeWidget == 'networkSpeed',
+          onPressed: _openNetworkSpeed, visible: widget.remotePanel != null ||
+            !settings.autoHideAppBarEnabled || focused || _settingsOpen),
       if (widget.remotePanel?.visible('system') ?? settings.showSystemInStatusBar)
         'system': SystemStatusWidget(focusNode: _systemFocusNode, selected: _activeWidget == 'system',
           onPressed: _openSystem, visible: widget.remotePanel != null ||

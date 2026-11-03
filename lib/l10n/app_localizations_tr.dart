@@ -4989,4 +4989,22 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get feedFormatHelp =>
       'Otomatik, uygulama verilerinden veya yüklenen ilk üç kapaktan her akış için tek bir biçim seçer ve bu TV’de hatırlar. Eşitlikte yatay kullanılır. Diğer oranlar arka plan üzerinde tam gösterilir. Biçimi elle seçebilirsiniz.';
+
+  @override
+  String get networkSpeedTitle => 'Ağ hızı';
+
+  @override
+  String get networkSpeedSettings => 'Ağ hızı ayarları';
+
+  @override
+  String get networkSpeedInterval => 'Güncelleme aralığı';
+
+  @override
+  String get networkSpeedHelp =>
+      'Cihazın ağ arayüzlerindeki ortalama alma ve gönderme hızları. Bu, bağlantı hız testi değil, mevcut trafiktir. Widget gizlendiğinde, arka planda veya ekran kapalıyken ölçümler duraklar. Duraklama sonrası ilk ölçüm — olarak gösterilir.';
+
+  @override
+  String networkSpeedUnit(String unit) {
+    return '$unit/sn';
+  }
 }

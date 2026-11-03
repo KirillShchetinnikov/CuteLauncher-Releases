@@ -459,6 +459,7 @@ void main() {
         'network',
         'vpn',
         'traffic',
+        'networkSpeed',
         'system',
       ]);
       expect(appearance.panelOrder('panelInfoOrder'), [

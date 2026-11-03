@@ -4838,4 +4838,22 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get feedFormatHelp =>
       '自動ではアプリの情報または最初に読み込んだ3枚のカバーからフィードごとの形式を選び、このテレビに保存します。同数の場合は横長です。異なる縦横比の画像は背景の上に全体を表示します。形式は手動でも選べます。';
+
+  @override
+  String get networkSpeedTitle => 'ネットワーク速度';
+
+  @override
+  String get networkSpeedSettings => 'ネットワーク速度の設定';
+
+  @override
+  String get networkSpeedInterval => '更新間隔';
+
+  @override
+  String get networkSpeedHelp =>
+      '端末のネットワークインターフェース全体の平均受信・送信速度です。現在の通信量であり、接続速度テストではありません。ウィジェット非表示時、バックグラウンド時、画面消灯時は測定を停止します。再開後の最初の値は — です。';
+
+  @override
+  String networkSpeedUnit(String unit) {
+    return '$unit/秒';
+  }
 }

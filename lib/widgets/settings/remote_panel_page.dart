@@ -101,6 +101,7 @@ class RemotePanelObjectsPage extends StatelessWidget {
       'network': l.showNetwork,
       'vpn': l.vpnTitle,
       'traffic': l.showTraffic,
+      'networkSpeed': l.networkSpeedTitle,
       'weather': l.weather,
       'system': l.system,
       'audio': l.showVolume,
@@ -111,7 +112,7 @@ class RemotePanelObjectsPage extends StatelessWidget {
       title: Text(l.topPanelObjects),
       child: ListView(
         children: [
-          for (final id in panel.order.where((id) => !const ['network', 'vpn', 'traffic'].contains(id)))
+          for (final id in panel.order.where((id) => !const ['network', 'vpn', 'networkSpeed', 'traffic'].contains(id)))
             RoundedSwitchListTile(
               key: ValueKey(id),
               title: Text(labels[id]!),
@@ -119,9 +120,9 @@ class RemotePanelObjectsPage extends StatelessWidget {
               value: available(id) && panel.visible(id),
               onChanged: (value) => panel.show(id, value),
             ),
-          Padding(padding: const EdgeInsets.all(12), child: Text(l.networkAndTrafficGroup,
+          Padding(padding: const EdgeInsets.all(12), child: Text(l.networkSummary,
             style: Theme.of(context).textTheme.titleSmall)),
-          for (final id in const ['network', 'vpn', 'traffic'])
+          for (final id in const ['network', 'vpn', 'networkSpeed', 'traffic'])
             RoundedSwitchListTile(key: ValueKey(id), title: Text(labels[id]!),
               enabled: available(id), value: available(id) && panel.visible(id),
               onChanged: (value) => panel.show(id, value)),

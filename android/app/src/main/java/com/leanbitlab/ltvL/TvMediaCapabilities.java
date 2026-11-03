@@ -91,7 +91,9 @@ final class TvMediaCapabilities {
         }
         return rows;
     }
-    private static List<Integer> numbers(int[] values) {
-        return Arrays.stream(values).limit(64).boxed().toList();
+    static List<Integer> numbers(int[] values) {
+        var result = new ArrayList<Integer>(Math.min(values.length, 64));
+        for (int i = 0; i < values.length && i < 64; i++) result.add(values[i]);
+        return result;
     }
 }

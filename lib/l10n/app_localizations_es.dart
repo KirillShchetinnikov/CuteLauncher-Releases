@@ -5031,4 +5031,22 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get feedFormatHelp =>
       'Automático elige un formato por canal según los datos de la app o las tres primeras portadas cargadas y lo guarda en este TV. En caso de empate, usa horizontal. Otras proporciones se muestran completas sobre un fondo. Puedes elegir el formato manualmente.';
+
+  @override
+  String get networkSpeedTitle => 'Velocidad de red';
+
+  @override
+  String get networkSpeedSettings => 'Ajustes de velocidad de red';
+
+  @override
+  String get networkSpeedInterval => 'Intervalo de actualización';
+
+  @override
+  String get networkSpeedHelp =>
+      'Velocidad media de recepción y envío en las interfaces de red del dispositivo. Es el tráfico actual, no una prueba de conexión. Las lecturas se pausan al ocultar el widget, en segundo plano o con la pantalla apagada. La primera lectura tras una pausa muestra —.';
+
+  @override
+  String networkSpeedUnit(String unit) {
+    return '$unit/s';
+  }
 }

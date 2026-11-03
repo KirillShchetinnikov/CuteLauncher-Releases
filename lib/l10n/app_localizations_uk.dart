@@ -4998,4 +4998,22 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String get feedFormatHelp =>
       'Авто вибирає єдиний формат стрічки за даними застосунку або першими трьома завантаженими обкладинками й запам’ятовує його на цьому ТВ. За рівності вибирається горизонтальний формат. Інші пропорції показуються повністю на підкладці. Формат можна вибрати вручну.';
+
+  @override
+  String get networkSpeedTitle => 'Швидкість мережі';
+
+  @override
+  String get networkSpeedSettings => 'Налаштування швидкості мережі';
+
+  @override
+  String get networkSpeedInterval => 'Інтервал оновлення';
+
+  @override
+  String get networkSpeedHelp =>
+      'Середня швидкість приймання й передавання через мережеві інтерфейси пристрою. Це поточний трафік, а не тест швидкості з’єднання. Опитування зупиняється, коли віджет приховано, у фоні та з вимкненим екраном. Перше показання після паузи — «—».';
+
+  @override
+  String networkSpeedUnit(String unit) {
+    return '$unit/с';
+  }
 }

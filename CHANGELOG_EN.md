@@ -2,6 +2,16 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
+## v1.6.7 — 2026-11-03
+
+- Added a download and upload speed widget with a configurable refresh interval. It can be enabled in the top bar and quick settings panel.
+- Grouped network status, VPN, speed, and data usage under Network in panel object settings.
+- Fixed ADB connection checks on older Android versions: a successful connection no longer fails while reading launcher information. Compatibility errors are no longer reported as connection failures.
+- Fixed audio output information collection on older Android versions.
+- Feed artwork now fills each card without distortion, cropping excess edges to remove extra margins around wide previews.
+- Fixed the diagnostics export dialog: copy and save buttons display correctly, and the explanation is available in collapsed help.
+- The 24-hour time format picker now shows morning and afternoon examples to distinguish formats with and without a leading zero.
+
 ## v1.6.6 — 2026-11-03
 
 - Improved feed artwork sharpness when cropping images and enlarging the focused card.

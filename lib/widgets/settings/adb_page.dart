@@ -348,6 +348,7 @@ class _AdbPageState extends State<AdbPage> with WidgetsBindingObserver {
           'noRecovery' => l.adbNoRecovery,
           'changed' => l.adbChanged,
           'unavailable' => l.adbUnavailable,
+          'operation_failed' => l.appError,
           'unsupported' => l.adbUnsupported,
           'dependencyProtected' => l.adbHomeDependencyProtected,
           'wifiOwned' => l.adbWifiOwned,

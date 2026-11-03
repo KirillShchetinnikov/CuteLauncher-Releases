@@ -5042,4 +5042,23 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get feedFormatHelp =>
       'Automatisch wählt ein einheitliches Format je Feed anhand der App-Daten oder der ersten drei geladenen Cover und speichert es auf diesem TV. Bei Gleichstand wird Querformat verwendet. Andere Proportionen werden vollständig auf einem Hintergrund gezeigt. Das Format ist manuell wählbar.';
+
+  @override
+  String get networkSpeedTitle => 'Netzwerkgeschwindigkeit';
+
+  @override
+  String get networkSpeedSettings =>
+      'Einstellungen zur Netzwerkgeschwindigkeit';
+
+  @override
+  String get networkSpeedInterval => 'Aktualisierungsintervall';
+
+  @override
+  String get networkSpeedHelp =>
+      'Mittlere Empfangs- und Senderate über die Netzwerkschnittstellen des Geräts. Dies ist der aktuelle Datenverkehr, kein Verbindungsgeschwindigkeitstest. Bei ausgeblendetem Widget, im Hintergrund oder ausgeschaltetem Bildschirm pausiert die Abfrage. Der erste Wert nach einer Pause ist —.';
+
+  @override
+  String networkSpeedUnit(String unit) {
+    return '$unit/s';
+  }
 }

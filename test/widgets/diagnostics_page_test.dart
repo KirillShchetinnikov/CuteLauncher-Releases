@@ -5,50 +5,101 @@ import 'dart:io';
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/widgets/settings/diagnostics_page.dart';
 import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
+import 'package:flauncher/widgets/settings/settings_menu_layout.dart';
+import 'package:flauncher/widgets/launcher_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   for (final locale in ['ru', 'en']) {
-    testWidgets('sharing disclosure fits a small TV with large text $locale', (
-      tester,
-    ) async {
-      tester.view.physicalSize = const Size(960, 540);
-      tester.view.devicePixelRatio = 1;
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
-      await tester.pumpWidget(
-        MaterialApp(
-          locale: Locale(locale),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          builder: (context, child) => MediaQuery(
-            data: MediaQuery.of(context)
-                .copyWith(textScaler: const TextScaler.linear(1.8)),
-            child: child!,
-          ),
-          home: Scaffold(
-            body: DiagnosticsPage(
-              collect: () async => {'reportType': 'diagnostics'},
+    for (final onRight in [false, true]) {
+      testWidgets(
+        'sharing disclosure fits a small TV with large text $locale right=$onRight',
+        (tester) async {
+          tester.view.physicalSize = const Size(960, 540);
+          tester.view.devicePixelRatio = 1;
+          addTearDown(tester.view.resetPhysicalSize);
+          addTearDown(tester.view.resetDevicePixelRatio);
+          await tester.pumpWidget(
+            MaterialApp(
+              locale: Locale(locale),
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              builder: (context, child) => MediaQuery(
+                data: MediaQuery.of(context)
+                    .copyWith(textScaler: const TextScaler.linear(1.8)),
+                child: child!,
+              ),
+              home: Scaffold(
+                body: SettingsMenuLayout(
+                  onRight: onRight,
+                  child: DiagnosticsPage(
+                    collect: () async => {'reportType': 'diagnostics'},
+                  ),
+                ),
+              ),
             ),
-          ),
-        ),
+          );
+          final l = AppLocalizations.of(
+            tester.element(find.byType(DiagnosticsPage)),
+          )!;
+          await tester.tap(find.text(l.diagnosticsCreate));
+          await tester.pumpAndSettle();
+          await tester.ensureVisible(find.text(l.diagnosticsExport));
+          await tester.pumpAndSettle();
+          await tester.tap(find.text(l.diagnosticsExport));
+          await tester.pumpAndSettle();
+          expect(find.text(l.diagnosticsSharingNotice), findsNothing);
+          expect(tester.takeException(), isNull);
+          final surface = find.descendant(
+            of: find.byType(Dialog),
+            matching: find.byWidgetPredicate(
+              (w) => w is Material && w.type == MaterialType.card,
+            ),
+          );
+          final bounds = tester.getRect(surface);
+          expect(bounds.left, greaterThanOrEqualTo(onRight ? 16 : 428));
+          expect(bounds.right, lessThanOrEqualTo(onRight ? 532 : 944));
+          expect(bounds.top, greaterThanOrEqualTo(16));
+          expect(bounds.bottom, lessThanOrEqualTo(524));
+          for (final label in [
+            l.diagnosticsCopyClipboard,
+            l.diagnosticsSaveDisk,
+          ]) {
+            final row = tester.getRect(find.text(label));
+            expect(row.left, greaterThanOrEqualTo(bounds.left));
+            expect(row.right, lessThanOrEqualTo(bounds.right));
+            expect(row.top, greaterThanOrEqualTo(bounds.top));
+            expect(row.bottom, lessThanOrEqualTo(bounds.bottom));
+          }
+          expect(
+            Focus.of(tester.element(find.text(l.diagnosticsCopyClipboard)))
+                .hasFocus,
+            isTrue,
+          );
+          await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+          await tester.pumpAndSettle();
+          expect(
+            Focus.of(tester.element(find.text(l.diagnosticsSaveDisk))).hasFocus,
+            isTrue,
+          );
+          final help = find.descendant(
+            of: find.byType(LauncherAlertDialog),
+            matching: find.byIcon(Icons.info_outline_rounded),
+          );
+          await tester.ensureVisible(help);
+          await tester.pumpAndSettle();
+          await tester.tap(help);
+          await tester.pumpAndSettle();
+          expect(find.text(l.diagnosticsSharingNotice), findsOneWidget);
+          expect(tester.takeException(), isNull);
+          await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+          await tester.pumpAndSettle();
+          expect(find.text(l.diagnosticsSharingNotice), findsNothing);
+        },
       );
-      final l = AppLocalizations.of(
-        tester.element(find.byType(DiagnosticsPage)),
-      )!;
-      await tester.tap(find.text(l.diagnosticsCreate));
-      await tester.pumpAndSettle();
-      await tester.ensureVisible(find.text(l.diagnosticsExport));
-      await tester.tap(find.text(l.diagnosticsExport));
-      await tester.pumpAndSettle();
-      expect(find.text(l.diagnosticsSharingNotice), findsOneWidget);
-      expect(tester.takeException(), isNull);
-      await tester.sendKeyEvent(LogicalKeyboardKey.escape);
-      await tester.pumpAndSettle();
-      expect(find.text(l.diagnosticsSharingNotice), findsNothing);
-    });
+    }
   }
   for (final outcome in ['saved', 'cancelled', 'failed']) {
     testWidgets(

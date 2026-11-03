@@ -138,7 +138,7 @@ final class AdbBridge {
                     catch (Exception | LinkageError e) {
                         AdbOperationDiagnostics.failure(e);
                         android.util.Log.w("CuteLauncherADB", "ADB operation failed: " + e.getClass().getSimpleName());
-                        response = Map.of("status", "unavailable");
+                        response = Map.of("status", AdbOperationDiagnostics.failureStatus(e));
                     }
                     var diagnostic = AdbOperationDiagnostics.finish();
                     response = new java.util.LinkedHashMap<>(response);

@@ -15,7 +15,10 @@ final class AdbLauncherPolicy {
         return slash < 0 ? component : component.substring(0, slash+1) + component.substring(0, slash) + component.substring(slash+1);
     }
     static String restoreTarget(String previous, List<Map<String,Object>> launchers) {
-        launchers = launchers.stream().filter(item -> usableHome((String)item.get("component"))).toList();
+        // Stream.toList() is absent on older Android runtimes (including API 29).
+        var usable = new java.util.ArrayList<Map<String, Object>>();
+        for (var item : launchers) if (usableHome((String)item.get("component"))) usable.add(item);
+        launchers = usable;
         for (var item : launchers) if (item.get("component").equals(normalizeComponent(previous))) return (String)item.get("component");
         for (var item : launchers) if (Boolean.TRUE.equals(item.get("enabled"))) return (String)item.get("component");
         return launchers.isEmpty() ? "" : (String)launchers.get(0).get("component");

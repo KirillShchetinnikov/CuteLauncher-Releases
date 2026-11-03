@@ -278,6 +278,15 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
   bool get showNetworkIndicatorInStatusBar => _showNetworkIndicatorInStatusBar;
   bool get showVpnInStatusBar => _sharedPreferences.getBool('show_vpn_in_status_bar') ?? true;
   bool get showSystemInStatusBar => _sharedPreferences.getBool('show_system_in_status_bar') ?? false;
+  bool get showNetworkSpeedInStatusBar => _sharedPreferences.getBool('show_network_speed_in_status_bar') ?? false;
+  int get networkSpeedInterval => (_sharedPreferences.getInt('network_speed_interval') ?? 3).clamp(1, 10);
+  Future<void> setShowNetworkSpeedInStatusBar(bool value) => _setSystemOption('show_network_speed_in_status_bar', value);
+  Future<void> setNetworkSpeedInterval(int value) async {
+    if (!await _sharedPreferences.setInt('network_speed_interval', value.clamp(1, 10))) {
+      throw StateError('Panel settings unavailable');
+    }
+    notifyListeners();
+  }
   bool get systemShowCpu => _sharedPreferences.getBool('system_show_cpu') ?? true;
   bool get systemShowRam => _sharedPreferences.getBool('system_show_ram') ?? true;
   Future<void> _setSystemOption(String key, bool value) async {
@@ -528,6 +537,8 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
       'show_vpn_in_status_bar': showVpnInStatusBar,
       'show_volume_in_status_bar': showVolumeInStatusBar,
       'show_system_in_status_bar': showSystemInStatusBar,
+      'show_network_speed_in_status_bar': showNetworkSpeedInStatusBar,
+      'network_speed_interval': networkSpeedInterval,
       'system_show_cpu': systemShowCpu,
       'system_show_ram': systemShowRam,
       _accentColorKey: _accentColorHex,

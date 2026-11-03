@@ -17,6 +17,7 @@ void showAdbNotice(BuildContext context, String? status, {String? title}) {
     'success' => l.actionCompleted,
     'ready' => l.adbReady,
     'authorization' => l.adbAuthorization,
+    'operation_failed' => l.appError,
     'denied' => l.adbDenied,
     'invalid' => l.adbInvalid,
     'noRecovery' => l.adbNoRecovery,

@@ -9157,6 +9157,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Auto chooses one format per feed from app metadata or the first three loaded covers and remembers it on this TV. Ties use landscape. Other proportions are shown in full on a background. You can choose the format manually.'**
   String get feedFormatHelp;
+
+  /// No description provided for @networkSpeedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Network speed'**
+  String get networkSpeedTitle;
+
+  /// No description provided for @networkSpeedSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Network speed settings'**
+  String get networkSpeedSettings;
+
+  /// No description provided for @networkSpeedInterval.
+  ///
+  /// In en, this message translates to:
+  /// **'Update interval'**
+  String get networkSpeedInterval;
+
+  /// No description provided for @networkSpeedHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Average receive and send rates across the device’s network interfaces. This is current traffic, not a connection speed test. Readings pause when hidden, in the background or while the screen is off. The first reading after a pause is shown as —.'**
+  String get networkSpeedHelp;
+
+  /// No description provided for @networkSpeedUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'{unit}/s'**
+  String networkSpeedUnit(String unit);
 }
 
 class _AppLocalizationsDelegate

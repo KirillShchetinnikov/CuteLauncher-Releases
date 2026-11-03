@@ -145,12 +145,12 @@ row with a uniform format within each feed and titles below the artwork; there i
 On the feed selection page, each enabled feed has an **Artwork format** choice:
 **Auto**, **Landscape** (16:9), or **Portrait** (2:3). Auto uses app metadata or,
 when absent, the first three loaded covers. Ties use landscape. The result is
-remembered on this TV; manual selection takes priority. Other proportions are
-shown in full on a background. Feed formats are excluded from backups and synchronization.
+remembered on this TV; manual selection takes priority. Artwork fills each card
+without distortion, with excess edges cropped around the center. Feed formats are excluded from backups and synchronization.
 Feeds use compact vertical spacing, with side margins that accommodate enlarged
 edge cards when focused.
 Restoring common appearance settings keeps the name and feed selection.
-Artwork is shown without cropping and accounts for the enlarged selected card.
+Artwork resolution accounts for the enlarged selected card.
 The quality of the source image depends on the app publishing the feed.
 Each feed shows up to 20 suggestions
 in the source order. Your selection survives restarts on this TV; it is
@@ -335,6 +335,20 @@ source app and Android's Watch Next data.
 
 Path: **Top panel → Objects / Object order**.
 
+The **Network** group offers a separate **Network speed** widget.
+It is off by default and shows **↓ receive** and **↑ send** in B/s, KiB/s,
+MiB/s or GiB/s. In **Network speed settings**, choose an update interval
+from **1 to 10 seconds** in one-second steps; the default is 3 seconds.
+Selecting the widget opens a readings menu with a gear for these settings.
+
+This is average current traffic across the device’s network interfaces,
+not an internet bandwidth test. Usage statistics access and ADB are not required.
+Until the second sample, after a pause or when counters are unavailable,
+readings show “—”; no traffic is displayed as 0 B/s. Sampling pauses when
+the widget is hidden, another app is opened or the screen is off.
+Visibility on the quick settings panel is separate; the interval is shared.
+Use **Object order** to change its position.
+
 Enable the **System** widget in **Top panel → Objects**; it is off by default.
 The panel displays CPU and RAM. **System widget settings** lets you keep either
 value or only the icon. Select the widget to see overall CPU load, used and
@@ -403,7 +417,7 @@ no additional location permission is requested. The summary refreshes every thre
 seconds only while open and the app is active. It includes a system network
 settings button.
 
-**VPN** is a separate object in the **Network and VPN** group. You can
+**VPN** is a separate object in the **Network** group. You can
 independently show, hide and reorder it on the top panel and the quick settings
 panel. Pressing it opens a menu with VPN status, app, profile and available actions.
 The menu can open the VPN app or Android VPN settings; its gear opens **VPN settings**,

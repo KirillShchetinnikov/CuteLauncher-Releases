@@ -162,6 +162,7 @@ public class LauncherActivity extends FlutterActivity {
         if (vpnBridge != null) { vpnBridge.close(); vpnBridge = null; }
         if (audioStatus != null) { audioStatus.close(); audioStatus = null; }
         if (systemStatus != null) { systemStatus.close(); systemStatus = null; }
+        if (networkSpeed != null) { networkSpeed.close(); networkSpeed = null; }
         if (notificationBridge != null) notificationBridge.onCancel(null);
         notificationPopups.onCancel(null);
         if (watchNextBridge != null) watchNextBridge.onCancel(null);
@@ -202,6 +203,7 @@ public class LauncherActivity extends FlutterActivity {
     private VpnBridge vpnBridge;
     private AudioStatusBridge audioStatus;
     private SystemStatusBridge systemStatus;
+    private NetworkSpeedBridge networkSpeed;
     private static final ExecutorService sIoExecutor = Executors.newFixedThreadPool(4);
     // Image decode/PNG must not queue behind slow ADB or system statistics.
     private static final ExecutorService sImageExecutor = Executors.newFixedThreadPool(2);
@@ -266,6 +268,7 @@ public class LauncherActivity extends FlutterActivity {
         vpnBridge = new VpnBridge(this, messenger, sIoExecutor);
         audioStatus = new AudioStatusBridge(this, messenger, sIoExecutor);
         systemStatus = new SystemStatusBridge(this, messenger, sIoExecutor);
+        networkSpeed = new NetworkSpeedBridge(this, messenger, sIoExecutor);
         Intent initial=getIntent();
         if (initial!=null && Intent.ACTION_MAIN.equals(initial.getAction())
             && (initial.hasCategory(Intent.CATEGORY_LAUNCHER) || initial.hasCategory(Intent.CATEGORY_LEANBACK_LAUNCHER))) autoLaunch.cancel();

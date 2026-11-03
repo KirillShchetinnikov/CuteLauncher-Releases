@@ -431,7 +431,7 @@ class _ContentCardState extends State<_ContentCard> {
               focused: true,
             ),
           ),
-          fit: BoxFit.contain,
+          fit: BoxFit.cover,
           gaplessPlayback: true,
           errorBuilder: (_, _, _) => fallback(),
         ),

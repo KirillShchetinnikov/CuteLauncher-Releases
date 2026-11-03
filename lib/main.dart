@@ -21,6 +21,7 @@ import 'initial_settings_profile.dart';
 import 'package:path_provider/path_provider.dart';
 import 'providers/audio_status_service.dart';
 import 'providers/system_status_service.dart';
+import 'providers/network_speed_service.dart';
 import 'providers/foreground_work.dart';
 import 'providers/app_catalog_cache.dart';
 import 'widgets/deferred_launcher_services.dart';
@@ -230,6 +231,7 @@ Future<void> _runLauncher({bool remotePanel = false, bool recentApps = false}) a
         ChangeNotifierProvider(create: (_) => NetworkService(fLauncherChannel, work: work)),
         ChangeNotifierProvider(create: (_) => AudioStatusService()),
         ChangeNotifierProvider(create: (_) => SystemStatusService(work: work)),
+        ChangeNotifierProvider(create: (context) => NetworkSpeedService(work: work, settings: context.read<SettingsService>())),
         ChangeNotifierProvider(create: (_) => BackgroundStartupService()),
         ChangeNotifierProvider(create: (context) => VpnService(context.read<NetworkService>(), work: work)),
         ChangeNotifierProvider(

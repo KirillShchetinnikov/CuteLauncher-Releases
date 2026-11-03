@@ -1,4 +1,5 @@
 import 'traffic_settings_page.dart';
+import 'network_speed_settings_page.dart';
 import 'system_widget_settings_page.dart';
 import 'vpn_settings_page.dart';
 import 'sleep_timer_settings_page.dart';
@@ -55,7 +56,7 @@ class StatusBarObjectsPage extends StatelessWidget {
           const InformationObjectsSection(),
           Padding(
             padding: const EdgeInsets.all(12),
-            child: Text(l.networkAndVpnGroup,
+            child: Text(l.networkSummary,
                 style: Theme.of(context).textTheme.titleSmall),
           ),
           RoundedSwitchListTile(
@@ -68,11 +69,10 @@ class StatusBarObjectsPage extends StatelessWidget {
             onChanged: s.setShowVpnInStatusBar, title: Text(l.vpnTitle)),
           FocusableSettingsTile(title: Text(l.vpnSettings), leading: const Icon(Icons.vpn_key),
             onPressed: () => Navigator.of(context).pushNamed(VpnSettingsPage.routeName)),
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Text(l.trafficTitle,
-                style: Theme.of(context).textTheme.titleSmall),
-          ),
+          RoundedSwitchListTile(value: s.showNetworkSpeedInStatusBar,
+            onChanged: s.setShowNetworkSpeedInStatusBar, title: Text(l.networkSpeedTitle)),
+          FocusableSettingsTile(title: Text(l.networkSpeedSettings), leading: const Icon(Icons.speed),
+            onPressed: () => Navigator.of(context).pushNamed(NetworkSpeedSettingsPage.routeName)),
           RoundedSwitchListTile(
             autofocus: false,
             value: s.showDataWidgetInStatusBar,

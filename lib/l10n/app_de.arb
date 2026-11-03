@@ -1716,5 +1716,10 @@
   "feedFormatAuto": "Automatisch",
   "feedFormatLandscape": "Querformat",
   "feedFormatPortrait": "Hochformat",
-  "feedFormatHelp": "Automatisch wählt ein einheitliches Format je Feed anhand der App-Daten oder der ersten drei geladenen Cover und speichert es auf diesem TV. Bei Gleichstand wird Querformat verwendet. Andere Proportionen werden vollständig auf einem Hintergrund gezeigt. Das Format ist manuell wählbar."
+  "feedFormatHelp": "Automatisch wählt ein einheitliches Format je Feed anhand der App-Daten oder der ersten drei geladenen Cover und speichert es auf diesem TV. Bei Gleichstand wird Querformat verwendet. Andere Proportionen werden vollständig auf einem Hintergrund gezeigt. Das Format ist manuell wählbar.",
+  "networkSpeedTitle": "Netzwerkgeschwindigkeit",
+  "networkSpeedSettings": "Einstellungen zur Netzwerkgeschwindigkeit",
+  "networkSpeedInterval": "Aktualisierungsintervall",
+  "networkSpeedHelp": "Mittlere Empfangs- und Senderate über die Netzwerkschnittstellen des Geräts. Dies ist der aktuelle Datenverkehr, kein Verbindungsgeschwindigkeitstest. Bei ausgeblendetem Widget, im Hintergrund oder ausgeschaltetem Bildschirm pausiert die Abfrage. Der erste Wert nach einer Pause ist —.",
+  "networkSpeedUnit": "{unit}/s"
 }

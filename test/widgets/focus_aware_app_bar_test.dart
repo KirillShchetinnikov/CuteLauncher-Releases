@@ -45,6 +45,8 @@ void main() {
     when(service.showNetworkIndicatorInStatusBar).thenReturn(false);
     when(service.showVolumeInStatusBar).thenReturn(false);
     when(service.showSystemInStatusBar).thenReturn(false);
+    when(service.showNetworkSpeedInStatusBar).thenReturn(false);
+    when(service.networkSpeedInterval).thenReturn(3);
     when(service.showDataWidgetInStatusBar).thenReturn(false);
     when(service.showDateInStatusBar).thenReturn(true);
     when(service.showTimeInStatusBar).thenReturn(true);

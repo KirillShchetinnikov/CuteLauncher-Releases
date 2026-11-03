@@ -23,6 +23,8 @@ const syncSettingsKeys = <String>{
   'show_vpn_in_status_bar',
   'show_volume_in_status_bar',
   'show_system_in_status_bar',
+  'show_network_speed_in_status_bar',
+  'network_speed_interval',
   'system_show_cpu',
   'system_show_ram',
   'show_inputs_widget_in_status_bar',

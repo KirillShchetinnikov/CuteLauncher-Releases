@@ -10,6 +10,7 @@ class PanelLayout {
     'network',
     'vpn',
     'traffic',
+    'networkSpeed',
     'system',
   ];
   static const information = ['weather', 'date', 'time'];

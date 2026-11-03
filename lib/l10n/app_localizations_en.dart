@@ -4965,4 +4965,22 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get feedFormatHelp =>
       'Auto chooses one format per feed from app metadata or the first three loaded covers and remembers it on this TV. Ties use landscape. Other proportions are shown in full on a background. You can choose the format manually.';
+
+  @override
+  String get networkSpeedTitle => 'Network speed';
+
+  @override
+  String get networkSpeedSettings => 'Network speed settings';
+
+  @override
+  String get networkSpeedInterval => 'Update interval';
+
+  @override
+  String get networkSpeedHelp =>
+      'Average receive and send rates across the device’s network interfaces. This is current traffic, not a connection speed test. Readings pause when hidden, in the background or while the screen is off. The first reading after a pause is shown as —.';
+
+  @override
+  String networkSpeedUnit(String unit) {
+    return '$unit/s';
+  }
 }

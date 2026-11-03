@@ -79,6 +79,58 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 
 void main() {
+  testWidgets('wide feed artwork fills the card when source has letterbox bars', (tester) async {
+    final bytes = await tester.runAsync(() async {
+      final recorder = ui.PictureRecorder();
+      final canvas = ui.Canvas(recorder);
+      canvas.drawColor(const Color(0xff000000), ui.BlendMode.src);
+      // A 16:9 thumbnail inside a 4:3 bitmap, as shown on the user's TV.
+      canvas.drawRect(const Rect.fromLTWH(0, 45, 480, 270),
+          Paint()..color = const Color(0xff20a0e0));
+      final picture = recorder.endRecording();
+      final image = await picture.toImage(480, 360);
+      final data = await image.toByteData(format: ui.ImageByteFormat.png);
+      image.dispose();
+      picture.dispose();
+      return data!.buffer.asUint8List();
+    });
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    final appearance = AppearanceService(prefs);
+    await appearance.set('focusPulse', false);
+    final feedSettings = SettingsService(prefs);
+    final channel = FeedChannel()
+      ..data = [feed(1, count: 1, poster: 'content://poster/letterbox')]
+      ..posterResponse = () async => bytes;
+    final feeds = AppChannelsService(channel, feedSettings);
+    await feedSettings.setSelectedAppChannels(['video.app:1']);
+    await tester.runAsync(feeds.refresh);
+    final apps = mkAppService();
+    when(apps.applications).thenReturn([]);
+    when(apps.launcherSections).thenReturn([appChannelsGroup()]);
+    final settings = mkSettingsService();
+    when(settings.selectedAppChannels).thenReturn(feedSettings.selectedAppChannels);
+    await _pumpWidgetWithProviders(tester, mkWallpaperService(), apps, settings,
+        feeds: feeds, appearance: appearance);
+    final artwork = find.descendant(of: find.byType(AppContentRow), matching: find.byType(Image)).first;
+    await tester.runAsync(() => precacheImage(tester.widget<Image>(artwork).image, tester.element(artwork)));
+    await tester.pump();
+    final boundary = tester.renderObject<RenderRepaintBoundary>(
+      find.ancestor(of: artwork, matching: find.byType(RepaintBoundary)).first);
+    final capture = (await tester.runAsync(() => boundary.toImage()))!;
+    final pixels = await tester.runAsync(() => capture.toByteData(format: ui.ImageByteFormat.rawRgba));
+    for (final point in [const Offset(.1, .5), const Offset(.9, .5),
+        const Offset(.5, .1), const Offset(.5, .9), const Offset(.5, .5)]) {
+      final index = ((capture.height * point.dy).floor() * capture.width +
+          (capture.width * point.dx).floor()) * 4;
+      expect(pixels!.buffer.asUint8List().sublist(index, index + 4), [32, 160, 224, 255],
+          reason: 'Artwork must reach each edge without black bars or theme margins');
+    }
+    capture.dispose();
+    expect(channel.posters, ['content://poster/letterbox']);
+    await tester.pumpWidget(const SizedBox());
+    feeds.dispose(); feedSettings.dispose(); appearance.dispose(); await channel.events.close();
+  });
   testWidgets('portrait feeds use one stable geometry and remote navigates between formats', (tester) async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
@@ -2786,6 +2838,8 @@ SettingsService mkSettingsService() {
   when(settingsService.showNetworkIndicatorInStatusBar).thenReturn(true);
   when(settingsService.showVolumeInStatusBar).thenReturn(false);
   when(settingsService.showSystemInStatusBar).thenReturn(false);
+  when(settingsService.showNetworkSpeedInStatusBar).thenReturn(false);
+  when(settingsService.networkSpeedInterval).thenReturn(3);
   when(settingsService.showDataWidgetInStatusBar).thenReturn(true);
   when(settingsService.showDateInStatusBar).thenReturn(true);
   when(settingsService.showTimeInStatusBar).thenReturn(true);

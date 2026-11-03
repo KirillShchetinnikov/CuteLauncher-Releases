@@ -5036,4 +5036,22 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get feedFormatHelp =>
       'Automatique choisit un format par flux selon les données de l’application ou les trois premières affiches chargées et le mémorise sur ce téléviseur. En cas d’égalité, le paysage est choisi. Les autres proportions sont affichées en entier sur un fond. Le format peut être choisi manuellement.';
+
+  @override
+  String get networkSpeedTitle => 'Débit réseau';
+
+  @override
+  String get networkSpeedSettings => 'Paramètres du débit réseau';
+
+  @override
+  String get networkSpeedInterval => 'Intervalle de mise à jour';
+
+  @override
+  String get networkSpeedHelp =>
+      'Débits moyens de réception et d’envoi sur les interfaces réseau de l’appareil. Il s’agit du trafic actuel, pas d’un test de connexion. Les relevés s’arrêtent lorsque le widget est masqué, en arrière-plan ou écran éteint. Le premier relevé après une pause affiche —.';
+
+  @override
+  String networkSpeedUnit(String unit) {
+    return '$unit/s';
+  }
 }

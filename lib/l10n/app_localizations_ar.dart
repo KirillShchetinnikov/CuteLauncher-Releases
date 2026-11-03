@@ -4947,4 +4947,22 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get feedFormatHelp =>
       'يختار الوضع التلقائي تنسيقًا واحدًا لكل خلاصة من بيانات التطبيق أو أول ثلاثة أغلفة محملة ويحفظه على هذا التلفاز. عند التعادل يُستخدم الأفقي. تُعرض النسب الأخرى كاملة على خلفية. يمكنك اختيار التنسيق يدويًا.';
+
+  @override
+  String get networkSpeedTitle => 'سرعة الشبكة';
+
+  @override
+  String get networkSpeedSettings => 'إعدادات سرعة الشبكة';
+
+  @override
+  String get networkSpeedInterval => 'فاصل التحديث';
+
+  @override
+  String get networkSpeedHelp =>
+      'متوسط سرعتي الاستقبال والإرسال عبر واجهات شبكة الجهاز. هذه حركة البيانات الحالية وليست اختبار سرعة اتصال. تتوقف القراءات عند إخفاء الأداة أو في الخلفية أو عند إطفاء الشاشة. تظهر القراءة الأولى بعد التوقف بالشكل —.';
+
+  @override
+  String networkSpeedUnit(String unit) {
+    return '$unit/ث';
+  }
 }

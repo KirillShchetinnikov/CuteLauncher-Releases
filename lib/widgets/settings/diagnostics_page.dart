@@ -100,31 +100,28 @@ class _DiagnosticsReportPanelState extends State<DiagnosticsReportPanel> {
         context: context,
         builder: (dialog) => LauncherAlertDialog(
           title: Text(l.diagnosticsExport),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(l.diagnosticsSharingNotice),
-                const SizedBox(height: 12),
-                FocusableSettingsTile(
-                  autofocus: true,
-                  leading: const Icon(Icons.copy),
-                  title: Text(l.diagnosticsCopyClipboard),
-                  onPressed: () async {
-                    Navigator.pop(dialog);
-                    await _performExport(report, copy: true);
-                  },
-                ),
-                FocusableSettingsTile(
-                  leading: const Icon(Icons.save_alt),
-                  title: Text(l.diagnosticsSaveDisk),
-                  onPressed: () async {
-                    Navigator.pop(dialog);
-                    await _performExport(report, copy: false);
-                  },
-                ),
-              ],
-            ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              FocusableSettingsTile(
+                autofocus: true,
+                leading: const Icon(Icons.copy),
+                title: Text(l.diagnosticsCopyClipboard),
+                onPressed: () async {
+                  Navigator.pop(dialog);
+                  await _performExport(report, copy: true);
+                },
+              ),
+              FocusableSettingsTile(
+                leading: const Icon(Icons.save_alt),
+                title: Text(l.diagnosticsSaveDisk),
+                onPressed: () async {
+                  Navigator.pop(dialog);
+                  await _performExport(report, copy: false);
+                },
+              ),
+              SettingsHelp(text: l.diagnosticsSharingNotice),
+            ],
           ),
         ),
       );
