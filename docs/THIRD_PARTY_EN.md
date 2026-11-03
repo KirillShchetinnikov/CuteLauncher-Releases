@@ -9,6 +9,7 @@ CuteLauncher uses the projects and resources listed below. Copyright notices and
 - [LTvLauncher](https://github.com/leanbitlab-org/LtvLauncher), [FLauncher](https://gitlab.com/flauncher/flauncher) — Étienne Fesser, [osrosal](https://github.com/osrosal/flauncher): [GNU GPLv3](../LICENSE).
 - [Flutter / Dart](https://github.com/flutter/flutter): Flutter / Dart authors; BSD-style licenses and third-party notices in Flutter NOTICES.
 - [dadb](https://github.com/mobile-dev-inc/dadb) — mobile.dev inc.: [Apache 2.0](DADB_LICENSE.txt).
+- [apksig](https://android.googlesource.com/platform/tools/apksig/) — Android Open Source Project, APK signature verification: [Apache 2.0](../assets/licenses/android_runtime.txt).
 - AndroidX / AOSP, Media3 / ExoPlayer, Kotlin / JetBrains, Kotlinx Coroutines, Okio / Square, ReLinker / KeepSafe, Guava, JSpecify: [Android runtime notices](../assets/licenses/android_runtime.txt).
 - [TLS notices for earlier builds](../assets/licenses/adb_tls.txt).
 

@@ -2,6 +2,10 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
+## v1.6.5 — 2026-11-03
+
+- Fixed signature validation during in-app updates on some TVs: a valid APK is no longer rejected solely because Android does not return signing certificate information.
+
 ## v1.6.4 — 2026-11-02
 
 - Apps with a banner now default to **Fill with cropping** in **Tiles and labels** settings.

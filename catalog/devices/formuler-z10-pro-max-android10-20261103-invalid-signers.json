@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "reportType": "tvCompatibility",
+  "scope": "readOnlyMetadata",
+  "capturedAt": "2026-11-03T00:00:00.000Z",
+  "kind": "physical",
+  "kindDetection": "buildMetadata",
+  "identity": {
+    "manufacturer": "FORMULER",
+    "model": "Formuler Z10 Pro MAX",
+    "firmware": "QT 2606261233 release-keys",
+    "android": "10",
+    "sdk": "29",
+    "abis": "armeabi-v7a,armeabi"
+  },
+  "installedLauncher": {
+    "versionName": "1.6.3",
+    "versionCode": "184"
+  },
+  "checks": {
+    "androidTv": "available",
+    "androidVersion": "available",
+    "homeRegistered": "available",
+    "defaultHome": "unknown",
+    "homeSelection": "available",
+    "overlay": "unknown",
+    "notifications": "unknown",
+    "notificationListener": "unknown",
+    "accessibility": "unknown",
+    "writeSettings": "unknown",
+    "usageStats": "unknown",
+    "watchNext": "unknown",
+    "tvInputs": "unknown",
+    "documentExport": "available",
+    "screensaverSelection": "unsupported"
+  }
+}

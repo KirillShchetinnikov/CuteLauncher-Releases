@@ -3,8 +3,8 @@
   "reportType": "tvInventoryMetadata",
   "scope": "deviceMetadata",
   "verification": "observedOnly",
-  "capturedAt": "2026-11-02T00:00:00Z",
-  "sourceReport": "cutelauncher_diagnostics_1793642518255.zip",
+  "capturedAt": "2026-11-03T00:00:00Z",
+  "sourceReport": "cutelauncher_diagnostics_1793673426836.zip",
   "identity": {
     "manufacturer": "FORMULER",
     "model": "Formuler Z10 Pro MAX",
@@ -19,8 +19,8 @@
     "packageCount": 107,
     "disabledCount": 9,
     "launcher": {
-      "versionName": "1.6.2",
-      "versionCode": "183"
+      "versionName": "1.6.3",
+      "versionCode": "184"
     }
   },
   "completeness": {
@@ -40,6 +40,7 @@
   "observedPackageCount": 107,
   "sourceReports": [
     "cutelauncher_diagnostics_1793625861002.zip",
-    "cutelauncher_diagnostics_1793642518255.zip"
+    "cutelauncher_diagnostics_1793642518255.zip",
+    "cutelauncher_diagnostics_1793673426836.zip"
   ]
 }

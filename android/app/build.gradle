@@ -182,6 +182,7 @@ flutter {
 }
 
 dependencies {
+    implementation 'com.android.tools.build:apksig:9.5.0'
     implementation 'androidx.work:work-runtime:2.12.0'
     implementation 'dev.mobile:dadb:2.0.0'
     testImplementation 'junit:junit:4.13.2'

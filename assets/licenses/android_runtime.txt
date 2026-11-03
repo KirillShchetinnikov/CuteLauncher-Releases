@@ -2,6 +2,10 @@ Android runtime dependencies (resolved 8 October 2026)
 
 Additional resolved Apache-2.0 libraries; the full license text below applies:
 
+apksig 9.5.0 — Copyright The Android Open Source Project.
+Source: https://android.googlesource.com/platform/tools/apksig/
+APK signature verification fallback, added 3 November 2026.
+
 ReLinker 1.4.5 — Copyright 2015 - 2016 KeepSafe Software, Inc.
 Source: https://github.com/KeepSafe/ReLinker
 Guava ListenableFuture 1.0 — Copyright (C) 2007 The Guava Authors

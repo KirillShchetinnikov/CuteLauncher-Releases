@@ -1,7 +1,7 @@
 name: flauncher
 description: CuteLauncher, a personal Android TV launcher based on LTvLauncher.
 
-version: 1.6.4+185
+version: 1.6.5+186
 
 environment:
   sdk: ">=3.13.7 <4.0.0"

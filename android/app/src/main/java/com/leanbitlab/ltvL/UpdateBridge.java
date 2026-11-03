@@ -43,6 +43,13 @@ final class UpdateBridge {
         for (int index = 0; index < values.length; index++) names[index] = values[index].toCharsString();
         return names;
     }
+    static String[] signerNames(PackageInfo info, File apk) throws Exception {
+        String[] names = signerNames(info);
+        // Some TV firmware parses package/version but omits SigningInfo. Do not use
+        // legacy signatures (which may expose an old rotation certificate) or trust
+        // an unverified certificate from META-INF. Verify the APK bytes instead.
+        return names.length > 0 ? names : VerifiedApkSigners.read(apk, Build.VERSION.SDK_INT);
+    }
     static void register(Activity activity, BinaryMessenger messenger, Executor executor) {
         new MethodChannel(messenger, "cutelauncher/updates").setMethodCallHandler((call, result) -> {
             if (call.method.equals("environment")) {
@@ -68,8 +75,9 @@ final class UpdateBridge {
                                 PackageInfo current = activity.getPackageManager().getPackageInfo(activity.getPackageName(), flags);
                                 PackageInfo candidate = activity.getPackageManager().getPackageArchiveInfo(apk.getAbsolutePath(), flags);
                                 if (candidate != null) {
-                                    String rejection = UpdatePolicy.rejection(activity.getPackageName(), version(current), signerNames(current),
-                                        candidate.packageName, version(candidate), signerNames(candidate));
+                                    String rejection = UpdatePolicy.rejection(activity.getPackageName(), version(current),
+                                        signerNames(current, new File(activity.getApplicationInfo().sourceDir)),
+                                        candidate.packageName, version(candidate), signerNames(candidate, apk));
                                     status = rejection == null ? "ready" : rejection;
                                 }
                             }
