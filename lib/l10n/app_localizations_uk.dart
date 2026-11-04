@@ -4662,8 +4662,11 @@ class AppLocalizationsUk extends AppLocalizations {
   String get systemHourAgo => '−60 хв';
 
   @override
+  String get systemUpdateInterval => 'Інтервал оновлення';
+
+  @override
   String get systemWidgetHelp =>
-      'Показники оновлюються кожні 5 секунд, поки лаунчер видимий. Графіки показують середні значення та піки за хвилину. Інші програми, сон і помилки читання залишають розриви. Історія зберігається в пам’яті та скидається після перезапуску процесу лаунчера. CPU і температура залежать від прошивки. Вимкніть обидва показники панелі, щоб залишити лише значок.';
+      'Показники оновлюються з вибраним інтервалом від 1 до 10 секунд (типово 5), поки панель видима. Графіки показують середні значення та піки за хвилину. Інші програми, сон і помилки читання залишають розриви. Історія зберігається в пам’яті та скидається після перезапуску процесу лаунчера. CPU і температура залежать від прошивки. Вимкніть обидва показники панелі, щоб залишити лише значок.';
 
   @override
   String get slideshowBrowseFolders => 'Перегляд папок';
@@ -4838,7 +4841,13 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get informationBackgroundHelp =>
-      'Для годинника, дати й погоди окремо виберіть верхню панель, тло або приховування. Елементи на тлі не реагують на натискання й не змінюють положення плиток. У динамічному пейзажі гори перекривають годинник. Швидкі налаштування незалежні.';
+      'Для годинника, дати й погоди окремо виберіть верхню панель, тло або приховування. Елементи на тлі не реагують на натискання й не змінюють положення плиток. Швидкі налаштування незалежні. Обидва перемикачі стосуються всього фонового блоку: годинника, дати й погоди. Перший прибирає перекриття горами, другий піднімає блок над хмарами, опадами й туманом.';
+
+  @override
+  String get informationAboveLandscape => 'Поверх пейзажу';
+
+  @override
+  String get informationAboveWeather => 'Поверх погодних ефектів';
 
   @override
   String get informationTime => 'Годинник';
@@ -5016,4 +5025,59 @@ class AppLocalizationsUk extends AppLocalizations {
   String networkSpeedUnit(String unit) {
     return '$unit/с';
   }
+
+  @override
+  String get customDateFormat => 'Власний формат';
+
+  @override
+  String get customDateFormatError =>
+      'Використовуйте позначення дати з довідки. Текст беріть в одинарні лапки та закривайте їх.';
+
+  @override
+  String get customDateFormatHelp =>
+      'd / dd — число місяця\nM / MM — номер місяця\nMMM / MMMM — коротка / повна назва місяця\nEEE / EEEE — короткий / повний день тижня\nyy / yyyy — рік\nL…LLLL — місяць у самостійній формі\nD…DDD — день року; G — ера\nРоздільники: пробіл, . / - ,\nТекст: \'Дата:\'; одна лапка: \'\'\nРегістр важливий. Позначення часу не підтримуються.\nПриклад: EEEE, d. MMMM yyyy';
+
+  @override
+  String get apodWallpaper => 'NASA APOD — астрономічне зображення дня';
+
+  @override
+  String get apodWallpaperHint =>
+      'Щоденне зображення NASA APOD. У дні з відео використовується нещодавнє зображення. Розміри та пропорції різняться. Тут показано авторство та посилання на публікацію. Зображення належать їхнім правовласникам.';
+
+  @override
+  String get backupDriveClientImport =>
+      'Імпортувати Client ID і Secret із JSON';
+
+  @override
+  String get backupDriveClientImported =>
+      'Дані клієнта імпортовано. Підключіть Google Диск.';
+
+  @override
+  String get backupDriveClientImportFailed =>
+      'Не вдалося імпортувати дані. Виберіть JSON клієнта Google Cloud типу «TVs and Limited Input devices» розміром до 64 КіБ.';
+
+  @override
+  String get dateFormatPreview => 'Попередній перегляд';
+
+  @override
+  String get backupDriveConnectionStatus => 'Стан підключення Google Диска';
+
+  @override
+  String get backupDriveReconnect => 'Перепідключити Google Диск';
+
+  @override
+  String get backupSyncRefresh => 'Оновити';
+
+  @override
+  String get backupSyncRefreshFailed =>
+      'Не вдалося синхронізувати налаштування. Перевірте доступ до сховища та повторіть спробу.';
+
+  @override
+  String get backupThisTv => 'Цей ТВ';
+
+  @override
+  String get backupOtherTv => 'Інший ТВ';
+
+  @override
+  String get backupTvUnknown => 'ТВ не визначено';
 }

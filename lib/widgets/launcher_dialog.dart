@@ -6,6 +6,7 @@ import '../theme/launcher_style.dart';
 import '../theme/interface_style.dart';
 import 'action_notice.dart';
 import 'settings/settings_menu_layout.dart';
+import 'settings/settings_scroll_behavior.dart';
 import 'app_card_keys.dart';
 import 'notice_placement.dart';
 
@@ -37,6 +38,7 @@ Future<T?> showLauncherDialog<T>({
   final parentPanelOpen =
       parent != null && (ModalRoute.of(context)?.isActive ?? false);
   final panelOnRight = onRight ?? menu?.onRight ?? parent?.onRight ?? false;
+  final topInset = menu?.topInset ?? parent?.topInset ?? 0;
   final highlight =
       highlightRect ??
       context
@@ -70,13 +72,17 @@ Future<T?> showLauncherDialog<T>({
           settingsOpen: settingsOpen,
           onRight: panelOnRight,
           panelWidth: parentPanelWidth ?? parent?.panelWidth,
-          child: Builder(
-            builder: (context) => styleDialog
-                ? Theme(
-                    data: launcherDialogTheme(context),
-                    child: Builder(builder: builder),
-                  )
-                : Builder(builder: builder),
+          topInset: topInset,
+          child: ScrollConfiguration(
+            behavior: const SettingsScrollBehavior(),
+            child: Builder(
+              builder: (context) => styleDialog
+                  ? Theme(
+                      data: launcherDialogTheme(context),
+                      child: Builder(builder: builder),
+                    )
+                  : Builder(builder: builder),
+            ),
           ),
         ),
       ),
@@ -230,12 +236,14 @@ class LauncherDialogArea extends InheritedWidget {
   final Rect? occupied;
   final bool settingsOpen, onRight;
   final double? panelWidth;
+  final double topInset;
   LauncherDialogArea({
     super.key,
     this.occupied,
     required this.settingsOpen,
     required this.onRight,
     this.panelWidth,
+    this.topInset = 0,
     required Widget child,
   }) : super(
          child: _FreeScreenArea(
@@ -243,6 +251,7 @@ class LauncherDialogArea extends InheritedWidget {
            settingsOpen: settingsOpen,
            onRight: onRight,
            panelWidth: panelWidth,
+           topInset: topInset,
            child: child,
          ),
        );
@@ -252,19 +261,22 @@ class LauncherDialogArea extends InheritedWidget {
       occupied != oldWidget.occupied ||
       settingsOpen != oldWidget.settingsOpen ||
       onRight != oldWidget.onRight ||
-      panelWidth != oldWidget.panelWidth;
+      panelWidth != oldWidget.panelWidth ||
+      topInset != oldWidget.topInset;
 }
 
 class _FreeScreenArea extends StatelessWidget {
   final Rect? occupied;
   final bool settingsOpen, onRight;
   final double? panelWidth;
+  final double topInset;
   final Widget child;
   const _FreeScreenArea({
     this.occupied,
     required this.settingsOpen,
     required this.onRight,
     this.panelWidth,
+    required this.topInset,
     required this.child,
   });
 
@@ -272,13 +284,19 @@ class _FreeScreenArea extends StatelessWidget {
   Widget build(BuildContext context) => LayoutBuilder(
     builder: (context, constraints) {
       final style = LauncherStyle.of(context);
+      final box = context.findRenderObject() as RenderBox;
+      // SafeArea may already have removed part of the reserved toolbar space.
+      final top = topInset == 0
+          ? 0.0
+          : (topInset - box.localToGlobal(Offset.zero).dy)
+              .clamp(0.0, constraints.maxHeight);
       if (occupied != null) {
-        final box = context.findRenderObject() as RenderBox;
         final left = box.globalToLocal(occupied!.topLeft).dx;
         final right = box.globalToLocal(occupied!.topRight).dx;
         final useLeft = left > constraints.maxWidth - right;
         return Padding(
           padding: EdgeInsets.only(
+            top: top,
             left: useLeft ? 0 : right.clamp(0, constraints.maxWidth),
             right: useLeft
                 ? (constraints.maxWidth - left).clamp(0, constraints.maxWidth)
@@ -295,6 +313,7 @@ class _FreeScreenArea extends StatelessWidget {
           : 0.0;
       return Padding(
         padding: EdgeInsets.only(
+          top: top,
           left: onRight ? 0 : reserved,
           right: onRight ? reserved : 0,
         ),
@@ -308,8 +327,11 @@ ThemeData launcherDialogTheme(BuildContext context) {
   final theme = Theme.of(context);
   final colors = theme.colorScheme;
   final style = LauncherStyle.of(context);
+  final topInset = context.dependOnInheritedWidgetOfExactType<LauncherDialogArea>()?.topInset ?? 0;
   return InterfaceSkin.of(context).apply(theme.copyWith(
     dialogTheme: theme.dialogTheme.copyWith(
+      clipBehavior: topInset > 0
+          ? Clip.antiAlias : theme.dialogTheme.clipBehavior,
       alignment: Alignment.center,
       insetPadding: const EdgeInsets.all(16),
       constraints: const BoxConstraints(minWidth: 0),
@@ -326,6 +348,9 @@ ThemeData launcherDialogTheme(BuildContext context) {
       actionsPadding: const EdgeInsets.fromLTRB(24, 12, 24, 20),
     ),
     iconTheme: theme.iconTheme.copyWith(color: colors.primary),
+    scrollbarTheme: theme.scrollbarTheme.copyWith(
+      thumbColor: WidgetStatePropertyAll(colors.onSurface.withValues(alpha: .6)),
+    ),
     inputDecorationTheme: theme.inputDecorationTheme.copyWith(
       filled: true,
       fillColor: colors.onSurface.withValues(alpha: .04),
@@ -381,19 +406,21 @@ class LauncherAlertDialog extends StatelessWidget {
   final Widget? title, content;
   final List<Widget>? actions;
   final double contentWidth;
+  final bool scrollContent;
   const LauncherAlertDialog({
     super.key,
     this.title,
     this.content,
     this.actions,
     this.contentWidth = 400,
+    this.scrollContent = true,
   });
 
   @override
   Widget build(BuildContext context) => AlertDialog(
     title: title,
-    content: content == null
-        ? null
+    content: content == null || !scrollContent
+        ? content
         : SingleChildScrollView(
             child: content is Text || content is SizedBox
                 ? content

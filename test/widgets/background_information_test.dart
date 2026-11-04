@@ -92,6 +92,55 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  test('depth switches validate and survive reload and backup import independently', () async {
+    expect(appearance.appearance.backgroundInformationAboveLandscape, isFalse);
+    expect(appearance.appearance.backgroundInformationAboveWeather, isFalse);
+    for (final landscape in [false, true]) {
+      for (final weather in [false, true]) {
+        await appearance.set('panelBackgroundInformationAboveLandscape', landscape);
+        await appearance.set('panelBackgroundInformationAboveWeather', weather);
+        final restored = AppearanceService(appearance.preferences);
+        expect(restored.appearance.backgroundInformationAboveLandscape, landscape);
+        expect(restored.appearance.backgroundInformationAboveWeather, weather);
+        restored.dispose();
+        final imported = compatibleSettings({
+          tileAppearanceKey: appearance.preferences.getString(tileAppearanceKey)!,
+        }, {});
+        final value = TileAppearance.decode(imported[tileAppearanceKey]);
+        expect(value.backgroundInformationAboveLandscape, landscape);
+        expect(value.backgroundInformationAboveWeather, weather);
+      }
+    }
+    final invalid = TileAppearance.validValues({
+      'panelBackgroundInformationAboveLandscape': 'true',
+      'panelBackgroundInformationAboveWeather': 1,
+    });
+    expect(invalid, isEmpty);
+  });
+
+  testWidgets('remote toggles depth switches independently for the whole block', (tester) async {
+    await pump(tester, child: const BackgroundInformationSettingsPage());
+    final l = AppLocalizations.of(tester.element(find.byType(BackgroundInformationSettingsPage)))!;
+    final landscape = find.text(l.informationAboveLandscape);
+    final weather = find.text(l.informationAboveWeather);
+    await tester.tap(landscape);
+    await tester.pumpAndSettle();
+    expect(appearance.appearance.backgroundInformationAboveLandscape, isTrue);
+    expect(appearance.appearance.backgroundInformationAboveWeather, isFalse);
+    // The focused switch is operable with the remote's OK key.
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(appearance.appearance.backgroundInformationAboveWeather, isTrue);
+    await tester.tap(weather);
+    await tester.pumpAndSettle();
+    expect(appearance.appearance.backgroundInformationAboveLandscape, isTrue);
+    expect(appearance.appearance.backgroundInformationAboveWeather, isFalse);
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox());
+  });
+
   test('background order validates and survives reload and backup import', () async {
     expect(appearance.appearance.backgroundInformationOrder, ['date', 'weather', 'time']);
     await appearance.set('panelBackgroundInformationOrder', ['time', 'bogus', 'time', 42, 'weather']);
@@ -375,6 +424,17 @@ void main() {
             findsNothing,
           );
           expect(tester.takeException(), isNull);
+          await appearance.set('panelBackgroundInformationAboveLandscape', true);
+          await tester.pumpAndSettle();
+          expect(find.byType(LandscapeSkyClip), findsNothing);
+          expect(tester.getRect(find.byKey(const Key('background_clock'))), clockRect);
+          expect(find.byKey(const Key('background_date')), findsOneWidget);
+          expect(find.byKey(const Key('background_weather')), findsOneWidget);
+          // Weather protection is independent of terrain depth.
+          await appearance.set('panelBackgroundInformationAboveLandscape', false);
+          await appearance.set('panelBackgroundInformationAboveWeather', true);
+          await tester.pumpAndSettle();
+          expect(find.byType(LandscapeSkyClip), findsOneWidget);
           await settings.setBackgroundSource('gradient');
           await tester.pumpAndSettle();
           expect(find.byType(LandscapeSkyClip), findsNothing);

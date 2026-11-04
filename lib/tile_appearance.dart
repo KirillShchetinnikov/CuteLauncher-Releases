@@ -120,6 +120,8 @@ class TileAppearance {
   PanelClockStyle get backgroundInformationStyle => PanelClockStyle(
     PanelClockStyle.validValues(values['panelBackgroundInformationStyle'] ?? values['panelInformationStyle'], combined: true));
   double get backgroundInformationSize => number('panelBackgroundInformationSize') ?? 96;
+  bool get backgroundInformationAboveLandscape => values['panelBackgroundInformationAboveLandscape'] == true;
+  bool get backgroundInformationAboveWeather => values['panelBackgroundInformationAboveWeather'] == true;
   static const defaultBackgroundInformationOrder = ['date', 'weather', 'time'];
   static List<String> cleanBackgroundInformationOrder(dynamic value) => [
     ...{if (value is List) ...value.whereType<String>().where(defaultBackgroundInformationOrder.contains)},
@@ -299,6 +301,8 @@ class TileAppearance {
             'panelTextBackground',
             'panelDateCalendar',
             'panelCombinedInformation',
+            'panelBackgroundInformationAboveLandscape',
+            'panelBackgroundInformationAboveWeather',
             'panelWrapNavigation',
           ].contains(key) &&
           value is bool) {

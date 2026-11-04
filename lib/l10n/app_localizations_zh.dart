@@ -4430,8 +4430,11 @@ class AppLocalizationsZh extends AppLocalizations {
   String get systemHourAgo => '−60 分钟';
 
   @override
+  String get systemUpdateInterval => '更新间隔';
+
+  @override
   String get systemWidgetHelp =>
-      '启动器可见时每 5 秒更新一次。图表显示每分钟的平均值和峰值。使用其他应用、休眠和读取失败的时段显示为空白。历史记录保存在内存中，启动器进程重启后会清除。CPU 和温度数据取决于固件。关闭两个面板数值后将只显示图标。';
+      '面板可见时按所选的1至10秒间隔更新（默认为5秒）。图表显示每分钟的平均值和峰值。使用其他应用、休眠和读取失败的时段显示为空白。历史记录保存在内存中，启动器进程重启后会清除。CPU 和温度数据取决于固件。关闭两个面板数值后将只显示图标。';
 
   @override
   String get slideshowBrowseFolders => '浏览文件夹';
@@ -4596,7 +4599,13 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get informationBackgroundHelp =>
-      '分别为时钟、日期和天气选择顶部面板、壁纸或隐藏。壁纸上的元素不响应操作，也不改变磁贴位置。动态风景中的山峰会遮住部分时钟。快捷设置保持独立。';
+      '分别为时钟、日期和天气选择顶部面板、壁纸或隐藏。壁纸上的元素不响应操作，也不改变磁贴位置。快捷设置保持独立。 两个开关均作用于整个背景信息块：时间、日期和天气。第一个取消山脉遮挡，第二个将信息块显示在云、雨雪和雾的前方。';
+
+  @override
+  String get informationAboveLandscape => '显示在风景前方';
+
+  @override
+  String get informationAboveWeather => '显示在天气效果前方';
 
   @override
   String get informationTime => '时钟';
@@ -4769,4 +4778,55 @@ class AppLocalizationsZh extends AppLocalizations {
   String networkSpeedUnit(String unit) {
     return '$unit/秒';
   }
+
+  @override
+  String get customDateFormat => '自定义格式';
+
+  @override
+  String get customDateFormatError => '请使用帮助中的日期符号。文字须用单引号括起，并闭合引号。';
+
+  @override
+  String get customDateFormatHelp =>
+      'd / dd — 日\nM / MM — 月份数字\nMMM / MMMM — 月份简称 / 全称\nEEE / EEEE — 星期简称 / 全称\nyy / yyyy — 年\nL…LLLL — 独立形式月份\nD…DDD — 年内天数；G — 纪元\n分隔符：空格、. / - ,\n文字：\'日期:\'；单个引号：\'\'\n区分大小写。不支持时间符号。\n示例：EEEE, d. MMMM yyyy';
+
+  @override
+  String get apodWallpaper => 'NASA APOD — 每日天文一图';
+
+  @override
+  String get apodWallpaperHint =>
+      'NASA APOD的每日图片。发布视频时使用近期图片。图片尺寸和宽高比各不相同。此处显示作者信息和发布页面链接。图片权利归各自权利人所有。';
+
+  @override
+  String get backupDriveClientImport => '从JSON导入Client ID和Secret';
+
+  @override
+  String get backupDriveClientImported => '已导入客户端信息。请连接Google Drive。';
+
+  @override
+  String get backupDriveClientImportFailed =>
+      '无法导入。请选择Google Cloud中TVs and Limited Input devices类型的JSON文件，大小不超过64 KiB。';
+
+  @override
+  String get dateFormatPreview => '预览';
+
+  @override
+  String get backupDriveConnectionStatus => 'Google Drive连接状态';
+
+  @override
+  String get backupDriveReconnect => '重新连接Google Drive';
+
+  @override
+  String get backupSyncRefresh => '刷新';
+
+  @override
+  String get backupSyncRefreshFailed => '无法同步设置。请检查存储访问权限后重试。';
+
+  @override
+  String get backupThisTv => '此电视';
+
+  @override
+  String get backupOtherTv => '其他电视';
+
+  @override
+  String get backupTvUnknown => '电视未知';
 }

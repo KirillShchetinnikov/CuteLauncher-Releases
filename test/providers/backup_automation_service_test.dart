@@ -59,6 +59,7 @@ class _Storage extends BackupStorage {
     await beforeDownload?.call();
     return File('${target.path}/${file.name}').writeAsBytes(files[file.id]!);
   }
+
   @override
   Future<void> delete(RemoteBackupFile file) async {
     files.remove(file.id);
@@ -82,6 +83,7 @@ class _TV {
     Directory parent,
     Map<String, List<int>> files, {
     bool legacy = false,
+    Map? identity,
   }) async {
     root = await parent.createTemp('tv-');
     SharedPreferences.setMockInitialValues({});
@@ -110,6 +112,7 @@ class _TV {
       webdav,
       drive,
       sources: [settings],
+      identityLoader: () async => identity,
       directory: () async => root,
       now: () => clock,
       storageFactory: (_) => storage,
@@ -137,6 +140,37 @@ class _TV {
 }
 
 void main() {
+  test('backup ownership uses exact device ID, not model or short ID', () {
+    final own = 'a' * 32;
+    final other = '${'a' * 31}b';
+    RemoteBackupFile file(String id, {bool legacy = false}) => RemoteBackupFile(
+      'cute-backup-shared-$id-100-${'b' * 16}${legacy ? '' : '-TCL_TV'}.json',
+      'file',
+    );
+    expect(BackupAutomationService.copyBelongsToDevice(file(own), own), true);
+    expect(
+      BackupAutomationService.copyBelongsToDevice(file(other), own),
+      false,
+    );
+    expect(
+      BackupAutomationService.copyBelongsToDevice(file(own, legacy: true), own),
+      true,
+    );
+    expect(
+      BackupAutomationService.copyBelongsToDevice(
+        file(other, legacy: true),
+        own,
+      ),
+      isNull,
+    );
+    expect(
+      BackupAutomationService.copyBelongsToDevice(
+        const RemoteBackupFile('invalid', 'file'),
+        own,
+      ),
+      isNull,
+    );
+  });
   TestWidgetsFlutterBinding.ensureInitialized();
   late Directory root;
   late Map<String, List<int>> files;
@@ -164,6 +198,88 @@ void main() {
           null,
         );
   });
+  test('manual backup in sync mode is full, separate and cannot restore/delete sync heads', () async {
+    await a.settings.setAppLanguage('ru');
+    expect(await a.automation.run(manual: true), true);
+    final syncName = files.keys.single;
+    final stateBefore = await File('${a.root.path}/backup_sync_state.json')
+        .readAsString();
+    final lastSuccess = a.automation.lastSuccess;
+    final checkedBefore = a.prefs.getInt(
+      'backup_transport_checked_webdav_synchronization',
+    );
+    await b.settings.setAppLanguage('en');
+    expect(await b.automation.run(manual: true), true);
+    await a.automation.setSyncGroupEnabled(BackupSyncGroup.language, false);
+    a.clock = a.clock.add(const Duration(hours: 1));
+    expect(await a.automation.run(manual: true, exportOnly: true), true);
+    expect(a.settings.appLanguage, 'ru');
+    expect(a.automation.lastSuccess, lastSuccess);
+    expect(
+      a.prefs.getInt('backup_transport_checked_webdav_synchronization'),
+      checkedBefore,
+    );
+    expect(
+      await File('${a.root.path}/backup_sync_state.json').readAsString(),
+      stateBefore,
+    );
+    final copies = await a.automation.availableCopies();
+    expect(copies, hasLength(1));
+    expect(copies.single.name.startsWith('cute-backup-'), true);
+    final json = jsonDecode(utf8.decode(files[copies.single.name]!)) as Map;
+    expect(json.containsKey('syncVersion'), false);
+    expect(json['settings']['app_language'], 'ru');
+    await expectLater(
+      a.automation.importLatest(
+        selected: RemoteBackupFile(syncName, syncName),
+        backupOnly: true,
+      ),
+      throwsStateError,
+    );
+    await expectLater(
+      a.automation.deleteCopy(RemoteBackupFile(syncName, syncName)),
+      throwsStateError,
+    );
+    await a.settings.setAppLanguage('de');
+    await a.automation.importLatest(selected: copies.single, backupOnly: true);
+    expect(a.settings.appLanguage, 'ru');
+    await a.automation.deleteCopy(copies.single);
+    expect(await a.automation.availableCopies(), isEmpty);
+    expect(files.containsKey(syncName), true);
+  });
+
+  test(
+    'device identity survives fresh preferences and names include TV model',
+    () async {
+      final id = 'c' * 32;
+      final first = _TV(), reinstalled = _TV();
+      final started = <_TV>[];
+      try {
+        for (final tv in [first, reinstalled]) {
+          await tv.start(
+            root,
+            files,
+            identity: {'id': id, 'label': 'TCL_Smart_TV_Pro'},
+          );
+          started.add(tv);
+          expect(tv.automation.device, id);
+          expect(await tv.automation.run(manual: true, exportOnly: true), true);
+          final copy = (await tv.automation.availableCopies()).first;
+          expect(copy.name, contains('-TCL_Smart_TV_Pro.json'));
+          expect(BackupStorage.validName.hasMatch(copy.name), true);
+          expect(
+            BackupAutomationService.copyDeviceLabel(copy),
+            'TCL Smart TV Pro · cccccc',
+          );
+        }
+        expect(first.automation.device, reinstalled.automation.device);
+      } finally {
+        for (final tv in started) {
+          await tv.close();
+        }
+      }
+    },
+  );
   test(
     'old local points remain intact and appear in managed local storage',
     () async {
@@ -278,14 +394,14 @@ void main() {
       expect(await b.automation.run(manual: true), true);
       expect(b.settings.appLanguage, 'en');
       final copies = await b.automation.availableCopies();
-      expect(copies, hasLength(1));
+      expect(copies, isEmpty); // Sync heads are never ordinary restore points.
       expect(files.length, 2);
-      await b.automation.deleteCopy(copies.single);
-      expect(files.length, 1);
+      final sync = files.keys.first;
       await expectLater(
-        b.automation.deleteCopy(copies.single),
+        b.automation.deleteCopy(RemoteBackupFile(sync, sync)),
         throwsStateError,
       );
+      expect(files.length, 2);
     },
   );
   test(
@@ -402,7 +518,10 @@ void main() {
       await Future<void>.delayed(const Duration(milliseconds: 10));
     }
     expect(a.prefs.getString('backup_transport_change_times'), isNotNull);
-    expect(jsonDecode(a.prefs.getString('backup_transport_change_times')!), contains('setting:app_language'));
+    expect(
+      jsonDecode(a.prefs.getString('backup_transport_change_times')!),
+      contains('setting:app_language'),
+    );
   });
   test('an edit during a fast download aborts sync before the batched fingerprint runs', () async {
     await a.settings.setAppLanguage('ru');

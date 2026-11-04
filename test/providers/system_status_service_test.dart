@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:flauncher/providers/system_status_service.dart';
 import 'package:flauncher/providers/foreground_work.dart';
+import 'package:flauncher/providers/settings_service.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   final binding = TestWidgetsFlutterBinding.ensureInitialized();
@@ -63,6 +65,89 @@ void main() {
       (_) {},
     );
   }
+
+  check('saved interval changes cadence without hidden work or duplicate loops', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({'system_update_interval': 2});
+    final settings = SettingsService(await SharedPreferences.getInstance());
+    service.dispose();
+    service = SystemStatusService(settings: settings, now: () => now);
+    try {
+      expect(service.interval, const Duration(seconds: 2));
+      final owner = Object();
+      service.setVisible(owner, true);
+      service.setVisible(Object(), true);
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+      expect(reads, 1);
+      await tester.pump(const Duration(seconds: 1));
+      expect(reads, 2);
+      await settings.setSystemUpdateInterval(10);
+      await tester.pump(const Duration(seconds: 9));
+      expect(reads, 2);
+      await tester.pump(const Duration(seconds: 1));
+      expect(reads, 3);
+      expect(resets, [true, false, false]);
+      // Unrelated settings must not postpone the next sample.
+      await tester.pump(const Duration(seconds: 9));
+      await settings.setSystemShowCpu(false);
+      await tester.pump(const Duration(seconds: 1));
+      expect(reads, 4);
+      service.didChangeAppLifecycleState(AppLifecycleState.paused);
+      await settings.setSystemUpdateInterval(1);
+      await tester.pump(const Duration(seconds: 20));
+      expect(reads, 4);
+      service.didChangeAppLifecycleState(AppLifecycleState.resumed);
+      await tester.pump();
+      expect(reads, 5);
+      await tester.pump(const Duration(seconds: 1));
+      expect(reads, 6);
+      await screen(false);
+      await settings.setSystemUpdateInterval(2);
+      await tester.pump(const Duration(seconds: 20));
+      expect(reads, 6);
+      service.dispose();
+      await settings.setSystemUpdateInterval(1);
+      await tester.pump(const Duration(seconds: 20));
+      expect(reads, 6);
+    } finally {
+      service.dispose();
+      settings.dispose();
+    }
+  });
+
+  check('interval change during a read waits for completion without overlap', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final settings = SettingsService(await SharedPreferences.getInstance());
+    service.dispose();
+    service = SystemStatusService(settings: settings);
+    final pending = Completer<Map<String, dynamic>>();
+    binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, (call) async {
+      if (call.method == 'watch') return null;
+      reads++;
+      return reads == 1 ? pending.future : snapshot;
+    });
+    try {
+      service.setVisible(Object(), true);
+      await tester.pump();
+      await settings.setSystemUpdateInterval(1);
+      await tester.pump(const Duration(seconds: 1));
+      expect(reads, 1);
+      pending.complete(snapshot);
+      await tester.pump();
+      expect(service.state.cpu, 20);
+      await tester.pump(const Duration(milliseconds: 999));
+      expect(reads, 1);
+      await tester.pump(const Duration(milliseconds: 1));
+      expect(reads, 2);
+    } finally {
+      service.dispose();
+      settings.dispose();
+    }
+  });
 
   check('queued collection waits for Home/input and cancels hidden work', (
     tester,

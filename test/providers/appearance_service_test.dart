@@ -29,6 +29,48 @@ void main() {
     expect(service.appearance.iconImageMode.name, 'contain');
   });
 
+  test('old appearance without image modes fits icons and preserves local choices', () async {
+    final oldCommon = jsonEncode({'radius': 100, 'size': 160});
+    final oldCategories = jsonEncode({
+      '1': {'useGlobalTiles': false, 'tiles': {'radius': 32}},
+      '2': {'useGlobalTiles': false, 'tiles': {'iconImageMode': 'cover', 'bannerImageMode': 'edgeColor'}},
+    });
+    SharedPreferences.setMockInitialValues({
+      tileAppearanceKey: oldCommon,
+      categoryAppearanceKey: oldCategories,
+    });
+    final prefs = await SharedPreferences.getInstance();
+    final service = AppearanceService(prefs);
+    addTearDown(service.dispose);
+    expect(service.appearance.bannerImageMode.name, 'cover');
+    expect(service.appearance.iconImageMode.name, 'contain');
+    expect(service.tilesFor(1).bannerImageMode.name, 'cover');
+    expect(service.tilesFor(1).iconImageMode.name, 'contain');
+    expect(service.tilesFor(1).number('radius'), 32);
+    expect(service.tilesFor(2).iconImageMode.name, 'cover');
+    expect(service.tilesFor(2).bannerImageMode.name, 'edgeColor');
+    expect(prefs.getString(tileAppearanceKey), oldCommon);
+    expect(prefs.getString(categoryAppearanceKey), oldCategories);
+    // A new manual choice survives the next launch too.
+    await service.set('iconImageMode', 'cover');
+    final restored = AppearanceService(prefs);
+    addTearDown(restored.dispose);
+    expect(restored.appearance.iconImageMode.name, 'cover');
+    expect(restored.tilesFor(1).iconImageMode.name, 'cover');
+    expect(restored.appearance.bannerImageMode.name, 'cover');
+  });
+
+  test('legacy banner choice remains explicit while unspecified icons fit', () {
+    final old = TileAppearance.decode('{"fillBanner":false}');
+    expect(old.bannerImageMode.name, 'contain');
+    expect(old.iconImageMode.name, 'contain');
+    final explicit = TileAppearance.decode('{"bannerImageMode":"contain","iconImageMode":"contain"}');
+    expect(explicit.bannerImageMode.name, 'contain');
+    expect(explicit.iconImageMode.name, 'contain');
+    final imported = compatibleSettings({tileAppearanceKey: '{"radius":100}'}, {});
+    expect(TileAppearance.decode(imported[tileAppearanceKey]).iconImageMode.name, 'contain');
+  });
+
   test('shared image settings migrate into independent global and local fields', () async {
     for (final mode in ['contain', 'cover', 'edgeColor', 'icon']) {
       SharedPreferences.setMockInitialValues({

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// Value labels wrap between words and shrink only when a whole word cannot fit.
+/// Explicit single-line ellipsis keeps the normal font size.
 class SettingsValueText extends StatelessWidget {
   final Text text;
   final TextAlign alignment;
@@ -76,7 +77,9 @@ class SettingsValueText extends StatelessWidget {
           return true;
         }
 
-        if (!fitsWholeWords()) {
+        final truncate =
+            text.maxLines == 1 && text.overflow == TextOverflow.ellipsis;
+        if (!truncate && !fitsWholeWords()) {
           var low = 0.0;
           var high = fontSize;
           for (var i = 0; i < 16; i++) {

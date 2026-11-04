@@ -57,7 +57,7 @@ final class DocumentFiles {
             case "pickImageDocument" -> readIntent("image/*");
             case "pickWallpaperDocument" -> wallpaperIntent();
             case "pickWebhookDocument" -> readIntent("text/plain");
-            case "pickBackupDocument", "pickCleanerDocument", "pickCleanerListDocument" -> readIntent("*/*");
+            case "pickDriveClientDocument", "pickBackupDocument", "pickCleanerDocument", "pickCleanerListDocument" -> readIntent("*/*");
             default -> throw new IllegalArgumentException("Unknown picker operation");
         };
         return compatibleIntent(intent) != null;

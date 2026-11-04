@@ -22,8 +22,9 @@ class AdaptiveLandscapeBackground extends StatefulWidget {
   final Widget Function(Widget)? effectsLayerBuilder;
   final LandscapeEffectsColors? effectsColors;
 
-  /// Decorative content above terrain and below weather, outside color filters.
+  /// Decorative content above terrain, outside color filters.
   final Widget? informationLayer;
+  final bool informationAboveWeather;
   final Duration? effectsFrameInterval;
   const AdaptiveLandscapeBackground({
     super.key,
@@ -31,6 +32,7 @@ class AdaptiveLandscapeBackground extends StatefulWidget {
     this.effectsLayerBuilder,
     this.effectsColors,
     this.informationLayer,
+    this.informationAboveWeather = false,
     this.effectsFrameInterval,
   });
   @override
@@ -324,7 +326,8 @@ class _LandscapeState extends State<AdaptiveLandscapeBackground>
                 ),
               ),
             ),
-            if (widget.informationLayer != null) widget.informationLayer!,
+            if (widget.informationLayer != null && !widget.informationAboveWeather)
+              widget.informationLayer!,
             _effectsLayer(
               Stack(
                 fit: StackFit.expand,
@@ -379,6 +382,8 @@ class _LandscapeState extends State<AdaptiveLandscapeBackground>
                 ],
               ),
             ),
+            if (widget.informationLayer != null && widget.informationAboveWeather)
+              widget.informationLayer!,
           ],
         ),
       ),

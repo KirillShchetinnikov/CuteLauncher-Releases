@@ -8,13 +8,56 @@ import 'dart:ui' as ui;
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  for (final scale in [1.0, 1.5]) {
+    testWidgets('single-line ellipsis keeps readable font at scale $scale', (
+      tester,
+    ) async {
+      const value =
+          '123456789012-long-client-identifier.apps.googleusercontent.com';
+      await tester.pumpWidget(
+        MaterialApp(
+          home: MediaQuery(
+            data: MediaQueryData(textScaler: TextScaler.linear(scale)),
+            child: const Center(
+              child: SizedBox(
+                width: 120,
+                child: SettingsValueText(
+                  text: Text(
+                    value,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 20),
+                    textDirection: TextDirection.ltr,
+                  ),
+                  alignment: TextAlign.end,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      final text = tester.widget<Text>(find.text(value));
+      expect(text.style!.fontSize, 20);
+      expect(text.maxLines, 1);
+      expect(text.overflow, TextOverflow.ellipsis);
+      final paragraph = tester.renderObject<RenderParagraph>(find.text(value));
+      expect(paragraph.didExceedMaxLines, true);
+      expect(tester.takeException(), isNull);
+    });
+  }
+
   testWidgets('Manrope values keep ink clear of paragraph raster bounds', (
     tester,
   ) async {
     final loader = FontLoader('Manrope')
       ..addFont(rootBundle.load('assets/fonts/manrope.ttf'));
     await loader.load();
-    for (final value in ['Все приложения', 'По частоте запусков', 'Слева', 'Справа']) {
+    for (final value in [
+      'Все приложения',
+      'По частоте запусков',
+      'Слева',
+      'Справа',
+    ]) {
       for (final scale in [1.0, 1.5]) {
         for (final offset in [0.0, .25, .5, .75]) {
           final key = GlobalKey();

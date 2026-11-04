@@ -4651,8 +4651,11 @@ class AppLocalizationsRu extends AppLocalizations {
   String get systemHourAgo => '−60 мин';
 
   @override
+  String get systemUpdateInterval => 'Интервал обновления';
+
+  @override
   String get systemWidgetHelp =>
-      'Показания обновляются раз в 5 секунд, пока лаунчер виден. Графики показывают средние значения и пики за минуту. Другие приложения, сон и ошибки чтения оставляют разрывы. История хранится в памяти и сбрасывается при перезапуске процесса лаунчера. CPU и температура зависят от прошивки. Выключите оба показателя панели, чтобы оставить только значок.';
+      'Показания обновляются с выбранным интервалом от 1 до 10 секунд (по умолчанию 5), пока панель видна. Графики показывают средние значения и пики за минуту. Другие приложения, сон и ошибки чтения оставляют разрывы. История хранится в памяти и сбрасывается при перезапуске процесса лаунчера. CPU и температура зависят от прошивки. Выключите оба показателя панели, чтобы оставить только значок.';
 
   @override
   String get slideshowBrowseFolders => 'Просмотр папок';
@@ -4827,7 +4830,13 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get informationBackgroundHelp =>
-      'Для часов, даты и погоды отдельно выберите верхнюю панель, фон или скрытие. На фоне элементы не реагируют на нажатия и не меняют положение плиток. В динамическом пейзаже горы перекрывают часы. Быстрые настройки независимы.';
+      'Для часов, даты и погоды отдельно выберите верхнюю панель, фон или скрытие. На фоне элементы не реагируют на нажатия и не меняют положение плиток. Быстрые настройки независимы. Оба переключателя относятся ко всему фоновому блоку: часам, дате и погоде. Первый убирает перекрытие горами, второй поднимает блок над облаками, осадками и туманом.';
+
+  @override
+  String get informationAboveLandscape => 'Поверх пейзажа';
+
+  @override
+  String get informationAboveWeather => 'Поверх погодных эффектов';
 
   @override
   String get informationTime => 'Часы';
@@ -5009,4 +5018,60 @@ class AppLocalizationsRu extends AppLocalizations {
   String networkSpeedUnit(String unit) {
     return '$unit/с';
   }
+
+  @override
+  String get customDateFormat => 'Свой формат';
+
+  @override
+  String get customDateFormatError =>
+      'Используйте обозначения даты из справки. Текст заключайте в одинарные кавычки и закрывайте их.';
+
+  @override
+  String get customDateFormatHelp =>
+      'd / dd — число месяца\nM / MM — номер месяца\nMMM / MMMM — краткое / полное название месяца\nEEE / EEEE — краткий / полный день недели\nyy / yyyy — год\nL…LLLL — месяц в самостоятельной форме\nD…DDD — день года; G — эра\nРазделители: пробел, . / - ,\nОбычный текст: \'Дата:\'; одна кавычка: \'\'\nРегистр важен. Обозначения времени не поддерживаются.\nПример: EEEE, d. MMMM yyyy';
+
+  @override
+  String get apodWallpaper => 'NASA APOD — астрономическая картинка дня';
+
+  @override
+  String get apodWallpaperHint =>
+      'Ежедневное изображение NASA APOD. В дни с видео используется недавняя картинка. Размеры и пропорции изображений различаются. Здесь показаны авторство и ссылка на публикацию. Изображения принадлежат их правообладателям.';
+
+  @override
+  String get backupDriveClientImport =>
+      'Импортировать Client ID и Secret из JSON';
+
+  @override
+  String get backupDriveClientImported =>
+      'Данные клиента импортированы. Подключите Google Диск.';
+
+  @override
+  String get backupDriveClientImportFailed =>
+      'Не удалось импортировать данные клиента. Выберите JSON клиента Google Cloud типа «TVs and Limited Input devices» размером до 64 КиБ.';
+
+  @override
+  String get dateFormatPreview => 'Предпросмотр';
+
+  @override
+  String get backupDriveConnectionStatus =>
+      'Состояние подключения Google Диска';
+
+  @override
+  String get backupDriveReconnect => 'Переподключить Google Диск';
+
+  @override
+  String get backupSyncRefresh => 'Обновить';
+
+  @override
+  String get backupSyncRefreshFailed =>
+      'Не удалось синхронизировать настройки. Проверьте доступ к хранилищу и повторите попытку.';
+
+  @override
+  String get backupThisTv => 'Этот ТВ';
+
+  @override
+  String get backupOtherTv => 'Другой ТВ';
+
+  @override
+  String get backupTvUnknown => 'ТВ не определён';
 }

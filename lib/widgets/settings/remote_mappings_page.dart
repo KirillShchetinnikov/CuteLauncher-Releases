@@ -52,6 +52,8 @@ String _actionLabel(AppLocalizations l, String value) => switch (value) {
   'webhook' => 'Webhook (POST)',
   'panel' => l.remotePanel,
   'recents' => l.remoteMappingRecents,
+  'sleep' => l.tvPowerOff,
+  'reboot' => l.tvPowerReboot,
   _ => value,
 };
 
@@ -187,9 +189,7 @@ class _RemoteMappingsPageState extends State<RemoteMappingsPage>
       value: _config.enabled,
       enabled: _loaded && !_busy,
       title: Text(l.remoteMappingsEnabled),
-      onChanged: (value) => _load(
-        _config.copyWith(enabled: value),
-      ),
+      onChanged: (value) => _load(_config.copyWith(enabled: value)),
     );
     if (widget.switchOnly) {
       return Column(
@@ -506,6 +506,8 @@ class _MappingEditorState extends State<_MappingEditor> {
                   'webhook',
                   'panel',
                   'recents',
+                  'sleep',
+                  'reboot',
                   'ignore',
                 ],
                 label: (value) => _actionLabel(l, value),
@@ -515,6 +517,8 @@ class _MappingEditorState extends State<_MappingEditor> {
                   _target = '';
                 }),
               ),
+              if (_action == 'sleep' || _action == 'reboot')
+                SettingsHelp(text: l.tvPowerHelp),
               if (_action == 'app')
                 FocusableSettingsTile(
                   title: Text(l.applications),

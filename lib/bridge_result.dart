@@ -141,6 +141,7 @@ class BridgeChannel extends MethodChannel {
                   method == 'pickWallpaperDocument' ||
                   method == 'pickCleanerDocument' ||
                   method == 'pickBackupDocument' ||
+                  method == 'pickDriveClientDocument' ||
                   method == 'pickWallpaperFolder') &&
               raw == null ||
           method == 'saveBackupDocument' && raw == false) {

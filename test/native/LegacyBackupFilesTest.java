@@ -24,6 +24,10 @@ public final class LegacyBackupFilesTest {
             Files.writeString(source.toPath(), "{\"backup\":true}");
             check(Boolean.TRUE.equals(storage.operate("verify", null, null)));
             check(directory.list().length == 0);
+            String labelled = NAME.replace(".json", "-TCL_Smart_TV_Pro.json");
+            storage.operate("upload", labelled, source);
+            check(((List<?>)storage.operate("list", null, null)).size() == 1);
+            storage.operate("delete", labelled, null);
             storage.operate("upload", NAME, source);
             var entries = (List<?>) storage.operate("list", null, null);
             check(entries.size() == 1);

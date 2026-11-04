@@ -14,6 +14,8 @@ final class RemoteButtonRemapper implements AutoCloseable {
     private final LauncherAccessibilityService service;
     private final Handler main = new Handler(Looper.getMainLooper());
     private final ExecutorService storage = Executors.newSingleThreadExecutor();
+    private final ThreadPoolExecutor power = new ThreadPoolExecutor(1, 1, 30, TimeUnit.SECONDS,
+        new SynchronousQueue<>(), new ThreadPoolExecutor.AbortPolicy());
     private final ThreadPoolExecutor network = new ThreadPoolExecutor(1, 1, 30, TimeUnit.SECONDS,
         new ArrayBlockingQueue<>(2), new ThreadPoolExecutor.AbortPolicy());
     private final RemoteMappingPolicy policy = new RemoteMappingPolicy();
@@ -26,6 +28,7 @@ final class RemoteButtonRemapper implements AutoCloseable {
     RemoteButtonRemapper(LauncherAccessibilityService service) {
         this.service = service; current = this;
         network.allowCoreThreadTimeOut(true);
+        power.allowCoreThreadTimeOut(true);
         int expected = ++generation;
         storage.execute(() -> {
             try {
@@ -93,6 +96,12 @@ final class RemoteButtonRemapper implements AutoCloseable {
                     if (app == null) { status = "unavailable"; break; }
                     app.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     service.startActivity(app); status = "success"; break;
+                case "sleep":
+                case "reboot":
+                    status = "busy";
+                    TvPowerBridge.request(service, binding.action().equals("reboot"), power,
+                        result -> { if (!closed) status = result; });
+                    break;
                 case "webhook":
                     status = "busy";
                     network.execute(() -> webhook(binding)); break;
@@ -116,6 +125,8 @@ final class RemoteButtonRemapper implements AutoCloseable {
         policy.clear(); // UP may pass outside the service while filtering is disabled.
     }
     @Override public void close() {
+        // Allow an accepted bounded power request to finish and release the shared busy guard.
+        power.shutdown();
         closed = true; policy.clear(); holdTimers.values().forEach(main::removeCallbacks); holdTimers.clear(); storage.shutdownNow(); network.shutdownNow();
         if (current == this) current = null;
     }

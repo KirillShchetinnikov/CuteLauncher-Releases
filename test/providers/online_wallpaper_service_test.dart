@@ -10,6 +10,7 @@ import 'package:flauncher/settings_import.dart';
 import 'package:flauncher/bing_wallpaper.dart';
 import 'package:flauncher/reddit_wallpaper.dart';
 import 'package:flauncher/wallhaven_wallpaper.dart';
+import 'package:flauncher/apod_wallpaper.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -25,6 +26,71 @@ void main() {
   Future<void> initialized(OnlineWallpaperService service) async {
     while (!service.initialized) { await Future<void>.delayed(Duration.zero); }
   }
+  test('APOD checks hourly, reuses unchanged image, keeps offline cache and restores it', () async {
+    var now = DateTime.utc(2026, 11, 4);
+    var lookups = 0, downloads = 0;
+    var offline = false;
+    final current = ApodWallpaper(Uri.parse('https://assets.science.nasa.gov/day.jpg'),
+        'NASA APOD · Author · 2026-11-04', '2026-11-04');
+    final service = OnlineWallpaperService(preferences, directory: () async => root,
+      clock: () => now, apodLookup: () async {
+        lookups++;
+        if (offline) throw const SocketException('offline');
+        return current;
+      }, download: (_) async { downloads++; return image; });
+    await initialized(service);
+    await service.configure(const OnlineWallpaperConfiguration(enabled: true, source: 'apod'));
+    expect(downloads, 1);
+    await service.refresh();
+    expect(lookups, 1);
+    now = now.add(const Duration(hours: 1));
+    await service.refresh();
+    expect(lookups, 2);
+    expect(downloads, 1);
+    expect(service.version, 1);
+    await service.refresh(force: true);
+    expect(downloads, 2);
+    final metadata = preferences.getString(onlineWallpaperCacheKey);
+    offline = true;
+    now = now.add(const Duration(hours: 1));
+    await service.refresh();
+    expect(service.failed, isTrue);
+    expect(service.wallpaper, isNotNull);
+    expect(service.copyright, contains('Author'));
+    expect(downloads, 2);
+    expect(preferences.getString(onlineWallpaperCacheKey), metadata);
+    service.dispose();
+    final restored = OnlineWallpaperService(preferences, directory: () async => root,
+      clock: () => now, apodLookup: () async => throw const SocketException('offline'));
+    addTearDown(restored.dispose);
+    await initialized(restored);
+    expect(restored.configuration.source, 'apod');
+    expect(restored.wallpaper, isNotNull);
+    expect(restored.copyright, current.credit);
+  });
+  test('APOD pending metadata is ignored in background and after changing source', () async {
+    for (final background in [true, false]) {
+      final pending = Completer<ApodWallpaper>();
+      var downloads = 0;
+      final service = OnlineWallpaperService(preferences, directory: () async => root,
+        apodLookup: () => pending.future,
+        download: (_) async { downloads++; return image; });
+      await initialized(service);
+      final task = service.configure(const OnlineWallpaperConfiguration(enabled: true, source: 'apod'));
+      await Future<void>.delayed(Duration.zero);
+      if (background) {
+        service.didChangeAppLifecycleState(AppLifecycleState.paused);
+      } else {
+        await service.configure(const OnlineWallpaperConfiguration(source: 'url'));
+      }
+      pending.complete(ApodWallpaper(Uri.parse('https://assets.science.nasa.gov/day.jpg'), 'Old', '2026-11-04'));
+      await task;
+      expect(downloads, 0);
+      expect(service.version, 0);
+      service.dispose();
+      await preferences.clear();
+    }
+  });
   test('Wallhaven rotates, respects interval, keeps cache offline and restores it', () async {
     var now = DateTime.utc(2026, 11, 1);
     var calls = 0;

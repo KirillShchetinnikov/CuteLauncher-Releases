@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../adaptive_landscape.dart';
+import '../providers/appearance_service.dart';
 import '../providers/settings_service.dart';
 import '../providers/weather_service.dart';
 
@@ -55,6 +56,9 @@ class LandscapeWallpaper extends StatelessWidget {
     final ratio = MediaQuery.devicePixelRatioOf(context);
     final settings = context.watch<SettingsService>();
     final weather = context.watch<WeatherService?>();
+    final aboveWeather = context.select<AppearanceService?, bool>(
+      (service) => service?.appearance.backgroundInformationAboveWeather ?? false,
+    );
     final fog =
         settings.landscape.fog &&
         weather?.stale != true &&
@@ -62,12 +66,14 @@ class LandscapeWallpaper extends StatelessWidget {
     // Keep the terrain texture within the existing 16 MiB cache budget.
     return ValueListenableBuilder<LandscapeDemoFrame?>(
       valueListenable: settings.landscapeDemo,
-      builder: (context, demo, _) =>
-          _scene(canSeparateAt(size, ratio) && demo == null && !fog),
+      builder: (context, demo, _) => _scene(
+        canSeparateAt(size, ratio) && demo == null && !fog,
+        aboveWeather,
+      ),
     );
   }
 
-  Widget _scene(bool separate) {
+  Widget _scene(bool separate, bool informationAboveWeather) {
     // Static fog is cheaper in the original cached composition. A demo also
     // animates terrain lighting and seasons, so there is no stable
     // base to cache separately. Preserve its original single composition when
@@ -82,6 +88,7 @@ class LandscapeWallpaper extends StatelessWidget {
     }
     return AdaptiveLandscapeBackground(
       informationLayer: informationLayer,
+      informationAboveWeather: informationAboveWeather,
       effectsFrameInterval: separate ? null : const Duration(milliseconds: 100),
       effectsColors: LandscapeEffectsColors(
         brightness: brightness,

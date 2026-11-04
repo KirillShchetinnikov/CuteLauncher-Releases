@@ -4654,8 +4654,11 @@ class AppLocalizationsTr extends AppLocalizations {
   String get systemHourAgo => '−60 dk';
 
   @override
+  String get systemUpdateInterval => 'Güncelleme aralığı';
+
+  @override
   String get systemWidgetHelp =>
-      'Başlatıcı görünürken değerler 5 saniyede bir güncellenir. Grafikler dakika ortalamalarını ve zirvelerini gösterir. Diğer uygulamalar, uyku ve okuma hataları boşluk bırakır. Geçmiş bellekte tutulur ve başlatıcı işlemi yeniden başladığında sıfırlanır. CPU ve sıcaklık aygıt yazılımına bağlıdır. Yalnızca simgeyi göstermek için iki panel değerini de kapatın.';
+      'Panel görünürken değerler seçilen 1–10 saniyelik aralıkla güncellenir (varsayılan 5). Grafikler dakika ortalamalarını ve zirvelerini gösterir. Diğer uygulamalar, uyku ve okuma hataları boşluk bırakır. Geçmiş bellekte tutulur ve başlatıcı işlemi yeniden başladığında sıfırlanır. CPU ve sıcaklık aygıt yazılımına bağlıdır. Yalnızca simgeyi göstermek için iki panel değerini de kapatın.';
 
   @override
   String get slideshowBrowseFolders => 'Klasörlere göz at';
@@ -4829,7 +4832,13 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get informationBackgroundHelp =>
-      'Saat, tarih ve hava durumu için üst panel, duvar kâğıdı veya gizli seçeneğini ayrı ayrı belirleyin. Duvar kâğıdı öğeleri girişe yanıt vermez ve kutucukları taşımaz. Dinamik manzarada dağlar saatin bir kısmını örter. Hızlı ayarlar bağımsız kalır.';
+      'Saat, tarih ve hava durumu için üst panel, duvar kâğıdı veya gizli seçeneğini ayrı ayrı belirleyin. Duvar kâğıdı öğeleri girişe yanıt vermez ve kutucukları taşımaz. Hızlı ayarlar bağımsız kalır. Her iki seçenek de arka plandaki saat, tarih ve hava durumu bloğunun tamamına uygulanır. İlki dağların örtmesini kaldırır; ikincisi bloğu bulutların, yağışın ve sisin önüne getirir.';
+
+  @override
+  String get informationAboveLandscape => 'Manzaranın önünde';
+
+  @override
+  String get informationAboveWeather => 'Hava efektlerinin önünde';
 
   @override
   String get informationTime => 'Saat';
@@ -5007,4 +5016,59 @@ class AppLocalizationsTr extends AppLocalizations {
   String networkSpeedUnit(String unit) {
     return '$unit/sn';
   }
+
+  @override
+  String get customDateFormat => 'Özel biçim';
+
+  @override
+  String get customDateFormatError =>
+      'Yardımdaki tarih simgelerini kullanın. Metni tek tırnak içine alın ve tırnakları kapatın.';
+
+  @override
+  String get customDateFormatHelp =>
+      'd / dd — gün\nM / MM — ay numarası\nMMM / MMMM — kısa / tam ay adı\nEEE / EEEE — kısa / tam hafta günü\nyy / yyyy — yıl\nL…LLLL — bağımsız ay\nD…DDD — yılın günü; G — çağ\nAyırıcılar: boşluk, . / - ,\nMetin: \'Tarih:\'; kesme işareti: \'\'\nBüyük/küçük harf önemlidir. Saat simgeleri desteklenmez.\nÖrnek: EEEE, d. MMMM yyyy';
+
+  @override
+  String get apodWallpaper => 'NASA APOD — günün astronomi görseli';
+
+  @override
+  String get apodWallpaperHint =>
+      'NASA APOD’dan günlük görsel. Video günlerinde yakın tarihli bir görsel kullanılır. Boyut ve en boy oranı değişir. Yazar bilgisi ve yayın bağlantısı burada gösterilir. Görseller ilgili hak sahiplerine aittir.';
+
+  @override
+  String get backupDriveClientImport =>
+      'Client ID ve Secret değerlerini JSON’dan içe aktar';
+
+  @override
+  String get backupDriveClientImported =>
+      'İstemci bilgileri içe aktarıldı. Google Drive’a bağlanın.';
+
+  @override
+  String get backupDriveClientImportFailed =>
+      'Bilgiler içe aktarılamadı. Google Cloud’dan TVs and Limited Input devices için en fazla 64 KiB boyutunda bir JSON seçin.';
+
+  @override
+  String get dateFormatPreview => 'Önizleme';
+
+  @override
+  String get backupDriveConnectionStatus => 'Google Drive bağlantı durumu';
+
+  @override
+  String get backupDriveReconnect => 'Google Drive’a yeniden bağlan';
+
+  @override
+  String get backupSyncRefresh => 'Yenile';
+
+  @override
+  String get backupSyncRefreshFailed =>
+      'Ayarlar eşitlenemedi. Depolama erişimini kontrol edip tekrar deneyin.';
+
+  @override
+  String get backupThisTv => 'Bu TV';
+
+  @override
+  String get backupOtherTv => 'Başka TV';
+
+  @override
+  String get backupTvUnknown => 'TV bilinmiyor';
 }

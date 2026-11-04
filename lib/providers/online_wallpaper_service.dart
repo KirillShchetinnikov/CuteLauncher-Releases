@@ -10,6 +10,7 @@ import '../online_wallpaper_failure.dart';
 import '../diagnostics_store.dart';
 import '../versioned_file_image.dart';
 import '../bing_wallpaper.dart';
+import '../apod_wallpaper.dart';
 import '../reddit_wallpaper.dart';
 import '../wallhaven_wallpaper.dart';
 import 'service_lifecycle.dart';
@@ -20,7 +21,7 @@ const onlineWallpaperCacheKey = 'online_wallpaper_cache';
 bool validOnlineWallpaperConfiguration(String value) {
   try {
     final map = jsonDecode(value) as Map;
-    if (map['source'] != null && !['url', 'bing', 'reddit', 'wallhaven'].contains(map['source'])) return false;
+    if (map['source'] != null && !['url', 'bing', 'reddit', 'wallhaven', 'apod'].contains(map['source'])) return false;
     if (map['wallhavenTheme'] != null && !wallhavenWallpaperThemes.containsKey(map['wallhavenTheme'])) return false;
     if (map['redditTheme'] != null && !redditWallpaperThemes.containsKey(map['redditTheme'])) return false;
     if (map['redditResolution'] != null && !redditWallpaperResolutions.contains(map['redditResolution'])) return false;
@@ -37,7 +38,7 @@ class OnlineWallpaperConfiguration {
   final String source;
   final String redditTheme, redditResolution;
   final String wallhavenTheme;
-  String get identity => source == 'wallhaven' ? 'wallhaven:$wallhavenTheme' : source == 'reddit' ? 'reddit:$redditTheme:$redditResolution' : source == 'bing' ? 'bing' : url;
+  String get identity => source == 'wallhaven' ? 'wallhaven:$wallhavenTheme' : source == 'reddit' ? 'reddit:$redditTheme:$redditResolution' : ['bing', 'apod'].contains(source) ? source : url;
   const OnlineWallpaperConfiguration({this.enabled = false, this.url = '', int intervalHours = 24, this.source = 'url',
     // Keep the public constructor argument while normalizing Bing/URL intervals in the getter.
     // ignore: prefer_initializing_formals
@@ -48,7 +49,7 @@ class OnlineWallpaperConfiguration {
       redditResolution: redditResolution ?? this.redditResolution, wallhavenTheme: wallhavenTheme ?? this.wallhavenTheme);
   bool get validUrl {
     if (source == 'wallhaven') return wallhavenWallpaperThemes.containsKey(wallhavenTheme);
-    if (source == 'bing') return true;
+    if (source == 'bing' || source == 'apod') return true;
     if (source == 'reddit') return redditWallpaperThemes.containsKey(redditTheme) && redditWallpaperResolutions.contains(redditResolution);
     final uri = Uri.tryParse(url);
     return url.length <= 2048 && uri != null && uri.scheme == 'https' && uri.host.isNotEmpty && uri.userInfo.isEmpty;
@@ -60,7 +61,7 @@ class OnlineWallpaperConfiguration {
       final map = jsonDecode(value ?? '{}') as Map;
       final config = OnlineWallpaperConfiguration(enabled: map['enabled'] == true,
         source: map['source'] == 'reddit' && !redditWallpapersAvailable ? 'bing' :
-          ['bing', 'reddit', 'wallhaven'].contains(map['source']) ? map['source'] as String : 'url',
+          ['bing', 'reddit', 'wallhaven', 'apod'].contains(map['source']) ? map['source'] as String : 'url',
         wallhavenTheme: wallhavenWallpaperThemes.containsKey(map['wallhavenTheme']) ? map['wallhavenTheme'] as String : 'all',
         redditTheme: redditWallpaperThemes.containsKey(map['redditTheme']) ? map['redditTheme'] as String : 'all',
         redditResolution: redditWallpaperResolutions.contains(map['redditResolution']) ? map['redditResolution'] as String : 'fullHd',
@@ -107,6 +108,7 @@ class OnlineWallpaperService extends ChangeNotifier with ServiceLifecycle, Widge
   final WallpaperDownload download;
   final Future<Directory> Function() directory;
   final Future<BingWallpaper> Function() bingLookup;
+  final Future<ApodWallpaper> Function() apodLookup;
   final RedditWallpaperLookup redditLookup;
   final WallhavenWallpaperLookup wallhavenLookup;
   final DateTime Function() clock;
@@ -125,9 +127,9 @@ class OnlineWallpaperService extends ChangeNotifier with ServiceLifecycle, Widge
   Timer? _timer;
   bool get loading => _loading;
   ImageProvider? get wallpaper => configuration.enabled && _ready && _file != null ? VersionedFileImage(_file!, version) : null;
-  OnlineWallpaperService(this.preferences, {WallpaperDownload? download, Future<Directory> Function()? directory, Future<BingWallpaper> Function()? bingLookup, RedditWallpaperLookup? redditLookup, WallhavenWallpaperLookup? wallhavenLookup, DateTime Function()? clock, this.work})
+  OnlineWallpaperService(this.preferences, {WallpaperDownload? download, Future<Directory> Function()? directory, Future<BingWallpaper> Function()? bingLookup, Future<ApodWallpaper> Function()? apodLookup, RedditWallpaperLookup? redditLookup, WallhavenWallpaperLookup? wallhavenLookup, DateTime Function()? clock, this.work})
       : download = download ?? downloadWallpaper, directory = directory ?? getApplicationSupportDirectory, bingLookup = bingLookup ?? fetchBingWallpaper,
-        redditLookup = redditLookup ?? fetchRedditWallpaper, wallhavenLookup = wallhavenLookup ?? fetchWallhavenWallpaper, clock = clock ?? DateTime.now {
+        apodLookup = apodLookup ?? fetchApodWallpaper, redditLookup = redditLookup ?? fetchRedditWallpaper, wallhavenLookup = wallhavenLookup ?? fetchWallhavenWallpaper, clock = clock ?? DateTime.now {
     configuration = OnlineWallpaperConfiguration.decode(preferences.getString(onlineWallpaperKey));
     final lifecycle = WidgetsBinding.instance.lifecycleState;
     _foreground = lifecycle == null || lifecycle == AppLifecycleState.resumed;
@@ -153,7 +155,7 @@ class OnlineWallpaperService extends ChangeNotifier with ServiceLifecycle, Widge
   Future<void> _restore() async {
     try {
       final cache = jsonDecode(preferences.getString(onlineWallpaperCacheKey) ?? '{}') as Map;
-      if (cache['url'] is String && (cache['url'] == 'bing' ||
+      if (cache['url'] is String && (cache['url'] == 'bing' || cache['url'] == 'apod' ||
           wallhavenWallpaperThemes.keys.any((theme) => cache['url'] == 'wallhaven:$theme') ||
           redditWallpapersAvailable && RegExp(r'^reddit:(all|nature|space|city|minimal):(hd|fullHd|4k)$').hasMatch(cache['url'] as String) ||
           OnlineWallpaperConfiguration(url: cache['url'] as String).validUrl) && _file != null && await _file!.exists() && await _file!.length() <= maximumImageInputBytes) {
@@ -169,7 +171,7 @@ class OnlineWallpaperService extends ChangeNotifier with ServiceLifecycle, Widge
   }
   Future<void> configure(OnlineWallpaperConfiguration value) async {
     if (value.source == 'reddit' && !redditWallpapersAvailable) value = value.copyWith(source: 'bing');
-    if (!['url', 'bing', 'reddit', 'wallhaven'].contains(value.source) ||
+    if (!['url', 'bing', 'reddit', 'wallhaven', 'apod'].contains(value.source) ||
         !wallhavenWallpaperThemes.containsKey(value.wallhavenTheme) ||
         !redditWallpaperThemes.containsKey(value.redditTheme) ||
         !redditWallpaperResolutions.contains(value.redditResolution)) {
@@ -209,13 +211,14 @@ class OnlineWallpaperService extends ChangeNotifier with ServiceLifecycle, Widge
     final stopwatch = Stopwatch()..start();
     try {
       final bing = config.source == 'bing' ? await bingLookup() : null;
+      final apod = config.source == 'apod' ? await apodLookup() : null;
       final reddit = config.source == 'reddit' ? await redditLookup(config.redditTheme, config.redditResolution, _imageUrl) : null;
       final wallhaven = config.source == 'wallhaven' ? await wallhavenLookup(config.wallhavenTheme, _imageUrl) : null;
-      final uri = wallhaven?.uri ?? reddit?.uri ?? bing?.uri ?? Uri.parse(config.url);
+      final uri = wallhaven?.uri ?? reddit?.uri ?? apod?.uri ?? bing?.uri ?? Uri.parse(config.url);
       if (wallhaven != null && uri.toString() == _imageUrl) throw const WallpaperException(WallpaperFailureReason.noImage);
       if (reddit != null && uri.toString() == _imageUrl) throw const WallpaperException(WallpaperFailureReason.noImage);
       if (isDisposed || generation != _generation) return;
-      if (force || !_ready || _imageUrl != uri.toString() || config.source != 'bing') {
+      if (force || !_ready || _imageUrl != uri.toString() || !['bing', 'apod'].contains(config.source)) {
       stage = WallpaperStage.download;
       final bytes = await download(uri);
       if (isDisposed || generation != _generation) return;
@@ -237,7 +240,7 @@ class OnlineWallpaperService extends ChangeNotifier with ServiceLifecycle, Widge
       updatedAt = clock();
       _imageUrl = uri.toString();
       _bingExpiresAt = bing?.expiresAt;
-      copyright = wallhaven?.credit ?? reddit?.credit ?? bing?.copyright ?? '';
+      copyright = wallhaven?.credit ?? reddit?.credit ?? apod?.credit ?? bing?.copyright ?? '';
       await preferences.setString(onlineWallpaperCacheKey, jsonEncode({'url': config.identity, 'updatedAt': updatedAt!.toIso8601String(),
         'imageUrl': _imageUrl, 'copyright': copyright, 'expiresAt': _bingExpiresAt?.toIso8601String()}));
       _ready = true;

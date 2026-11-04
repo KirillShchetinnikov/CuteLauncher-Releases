@@ -1529,7 +1529,8 @@
   "systemHistory": "Last hour · average and peaks",
   "systemNow": "Now",
   "systemHourAgo": "−60 min",
-  "systemWidgetHelp": "Readings update every 5 seconds while the launcher is visible. Graphs show minute averages and peaks. Other apps, sleep and read failures leave gaps. History stays in memory and resets when the launcher process restarts. CPU and temperature depend on the firmware. Turn off both panel values to show only the icon.",
+  "systemUpdateInterval": "Update interval",
+  "systemWidgetHelp": "Readings update at the selected interval of 1–10 seconds (5 by default) while the panel is visible. Graphs show minute averages and peaks. Other apps, sleep and read failures leave gaps. History stays in memory and resets when the launcher process restarts. CPU and temperature depend on the firmware. Turn off both panel values to show only the icon.",
   "slideshowBrowseFolders": "Browse folders",
   "slideshowEnterFolderPath": "Enter folder path",
   "slideshowSystemPicker": "Choose in system file manager",
@@ -1589,7 +1590,9 @@
   "informationPlacement": "Block placement",
   "informationOnBackground": "On wallpaper",
   "informationBackgroundAlignment": "Wallpaper alignment",
-  "informationBackgroundHelp": "Choose top panel, wallpaper or hidden separately for the clock, date and weather. Wallpaper elements do not respond to input or move tiles. In the adaptive landscape, mountains overlap the clock. Quick settings remain independent.",
+  "informationBackgroundHelp": "Choose top panel, wallpaper or hidden separately for the clock, date and weather. Wallpaper elements do not respond to input or move tiles. Quick settings remain independent. Both switches apply to the entire background block: time, date and weather. The first removes mountain overlap; the second places the block above clouds, precipitation and fog.",
+  "informationAboveLandscape": "Above landscape",
+  "informationAboveWeather": "Above weather effects",
   "informationTime": "Clock",
   "informationDate": "Date",
   "backgroundInformationAppearance": "Wallpaper appearance",
@@ -1642,5 +1645,21 @@
         "type": "String"
       }
     }
-  }
+  },
+  "customDateFormat": "Custom format",
+  "customDateFormatError": "Use date symbols from the guide. Quote literal text and close all quotes.",
+  "customDateFormatHelp": "d / dd — day\nM / MM — month number\nMMM / MMMM — short / full month name\nEEE / EEEE — short / full weekday\nyy / yyyy — year\nL…LLLL — standalone month\nD…DDD — day of year; G — era\nSeparators: spaces, . / - ,\nLiteral text: 'Date:'; one apostrophe: ''\nCase matters. Time symbols are not supported.\nExample: EEEE, d. MMMM yyyy",
+  "apodWallpaper": "NASA APOD — astronomy picture of the day",
+  "apodWallpaperHint": "A daily image from NASA APOD. Video days use a recent image. Image sizes and aspect ratios vary. Author credits and the publication link appear here. Images belong to their respective owners.",
+  "backupDriveClientImport": "Import Client ID and Secret from JSON",
+  "backupDriveClientImported": "Client details imported. Connect Google Drive.",
+  "backupDriveClientImportFailed": "Could not import client details. Select a Google Cloud JSON for TVs and Limited Input devices, up to 64 KiB.",
+  "dateFormatPreview": "Preview",
+  "backupDriveConnectionStatus": "Google Drive connection status",
+  "backupDriveReconnect": "Reconnect Google Drive",
+  "backupSyncRefresh": "Refresh",
+  "backupSyncRefreshFailed": "Could not synchronize settings. Check storage access and try again.",
+  "backupThisTv": "This TV",
+  "backupOtherTv": "Another TV",
+  "backupTvUnknown": "TV unknown"
 }

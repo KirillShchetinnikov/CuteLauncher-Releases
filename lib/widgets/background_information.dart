@@ -90,7 +90,7 @@ class BackgroundInformation extends StatelessWidget {
             fixedTime: fixedTime,
           ),
         );
-        if (horizon != null) {
+        if (horizon != null && !appearance.backgroundInformationAboveLandscape) {
           time = LandscapeSkyClip(horizon: horizon, child: time);
         }
         return Align(

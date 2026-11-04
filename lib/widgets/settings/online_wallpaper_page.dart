@@ -30,6 +30,7 @@ class OnlineWallpaperPage extends StatelessWidget {
     final sourceName = switch (config.source) {
       'bing' => l.bingWallpaper,
       'wallhaven' => 'Wallhaven',
+      'apod' => l.apodWallpaper,
       'reddit' => 'Reddit',
       _ => l.onlineWallpaperUrlSource,
     };
@@ -56,10 +57,10 @@ class OnlineWallpaperPage extends StatelessWidget {
             autofocus: true,
             title: l.onlineWallpaperSource,
             value: config.source,
-            options: const ['bing', 'wallhaven', 'url', if (redditWallpapersAvailable) 'reddit'],
+            options: const ['bing', 'wallhaven', 'apod', 'url', if (redditWallpapersAvailable) 'reddit'],
             enabled: !service.loading,
             label: (v) =>
-                v == 'wallhaven' ? 'Wallhaven' : v == 'reddit' ? 'Reddit' : v == 'bing' ? l.bingWallpaper : l.onlineWallpaperUrlSource,
+                v == 'apod' ? l.apodWallpaper : v == 'wallhaven' ? 'Wallhaven' : v == 'reddit' ? 'Reddit' : v == 'bing' ? l.bingWallpaper : l.onlineWallpaperUrlSource,
             onChanged: (v) => service.configure(config.copyWith(source: v)),
           ),
           if (config.source == 'url')
@@ -177,9 +178,10 @@ class OnlineWallpaperPage extends StatelessWidget {
               child: Text(errorText),
             ),
           SettingsHelp(title: l.wallpaper, text: [
-            if (['bing', 'wallhaven'].contains(config.source) && service.copyright.isNotEmpty)
+            if (['bing', 'wallhaven', 'apod'].contains(config.source) && service.copyright.isNotEmpty)
               service.copyright,
             if (config.source == 'wallhaven') l.wallhavenWallpaperHint,
+            if (config.source == 'apod') l.apodWallpaperHint,
             config.source == 'reddit' ? l.redditWallpaperHint : l.onlineWallpaperHint,
           ].join('\n\n')),
           ResetStyleTile(onReset: () => service.configure(OnlineWallpaperConfiguration(

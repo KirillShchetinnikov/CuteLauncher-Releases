@@ -60,6 +60,8 @@ icon. Current errors and unavailable-state reasons remain visible. Choose an
 app language in Advanced independently of Android, or follow the system language.
 Back returns to the previous settings page. Expanding help should not replace
 the selected item's normal action.
+In settings, menus and dialogs, the scrollbar stays visible whenever the full
+list does not fit, helping you notice items below the visible area.
 
 Clean installations start with Glass, an adaptive landscape, tile labels,
 and a grid of up to three visible rows of six apps. All Apps and nonempty feeds
@@ -217,7 +219,10 @@ mode. Circles and rounded corners are taken into account. Apps without banners
 have the first three modes, applied to their icons; **Icon with edge color** is
 not offered. A replacement icon in the fourth mode follows the setting for apps
 with a banner. Icons retain their separate size setting. Each choice supports
-a common value and category overrides. The default is **Fill with cropping** for apps with a banner and **Fit whole image** for apps without a banner. If a replacement icon is unavailable, the banner stays with its edge
+a common value and category overrides. The default is **Fill with cropping** for
+apps with a banner and **Fit whole image** for apps without a banner.
+After an update the default applies when no mode was previously saved;
+explicitly selected modes are preserved. If a replacement icon is unavailable, the banner stays with its edge
 colors; if no usable color is found, the normal tile background is used.
 Margins within the image file itself are not removed.
 
@@ -250,7 +255,7 @@ Background sources:
   elapsed, the next image loads when you return to the home screen. Otherwise,
   the countdown continues for the remaining time.
 
-- Bing or Wallhaven online wallpapers, or an image URL with available update options. On failure, settings show the source, loading stage and cause, including the HTTP status when available; the diagnostic report also includes these details. Previously downloaded wallpapers are preserved.
+- Bing, Wallhaven or NASA APOD online wallpapers, or an image URL with available update options. On failure, settings show the source, loading stage and cause, including the HTTP status when available; the diagnostic report also includes these details. Previously downloaded wallpapers are preserved.
 - Selected app colors: a soft background derived from the focused tile's banner or icon.
 - Adaptive landscape: an illustrated valley or realistic nature with four seasons. Spring has fresh light greenery and a flowering meadow, plus blossoming trees in the illustrated valley; summer has deep greenery and warm golden grasses.
 
@@ -309,6 +314,15 @@ selects another image. Automatic updates run while the launcher is open and resu
 when you return. The last wallpaper is available offline and remains on download
 failure. Service availability depends on your network and provider.
 
+**NASA APOD — astronomy picture of the day** downloads images directly from NASA
+without an API key or a separate app. New publications are checked hourly while
+the launcher is open; an unchanged image is not downloaded again. On video days,
+the latest suitable image among seven publications is used. **Refresh wallpaper**
+retries the download immediately. On failure, the last successful wallpaper remains.
+Sizes and aspect ratios vary; 16:9 and 4K are not guaranteed. Collapsed help shows
+the date, title, author credits and publication link. Images belong to their
+respective rights holders.
+
 Reddit is currently disabled and cannot be selected.
 
 ## Continue Watching
@@ -335,6 +349,9 @@ source app and Android's Watch Next data.
 
 Path: **Top panel → Objects / Object order**.
 
+Nested settings windows, including font and color selection, open below
+the top panel. Long lists scroll within the window bounds.
+
 The **Network** group offers a separate **Network speed** widget.
 It is off by default and shows **↓ receive** and **↑ send** in B/s, KiB/s,
 MiB/s or GiB/s. In **Network speed settings**, choose an update interval
@@ -351,16 +368,18 @@ Use **Object order** to change its position.
 
 Enable the **System** widget in **Top panel → Objects**; it is off by default.
 The panel displays CPU and RAM. **System widget settings** lets you keep either
-value or only the icon. Select the widget to see overall CPU load, used and
+value or only the icon and choose an **Update interval** from 1 to 10 seconds
+(5 by default). The interval applies to CPU, RAM and the other widget readings
+on both panels. Select the widget to see overall CPU load, used and
 available RAM, free/total internal storage, device uptime since boot
 (hours:minutes), and one-hour CPU/RAM charts. CPU temperature appears only when
 the system source is available; GPU is not displayed. CPU availability depends
 on firmware: when direct access is blocked, the widget uses the built-in ADB's
 previously configured and verified local connection. Without that connection,
 missing readings appear as “—” or **Unavailable**. After a pause, CPU first appears
-on the second successful sample, after about 5 seconds.
+on the second successful sample, after the selected interval.
 
-Readings refresh every 5 seconds while the widget or its menu is visible.
+Readings refresh at the selected interval while the widget or its menu is visible.
 Charts show minute averages and peak markers on a 0–100% scale. Other apps,
 hiding the widget, turning the screen off, and read failures leave gaps;
 history is not filled retrospectively. The last hour stays in memory and
@@ -410,7 +429,8 @@ the menu. The calendar gear opens the shared Clock, date and weather settings.
 Selecting the network icon opens a compact menu below the button, using settings
 appearance. The gear at the top right opens Android network settings; Back or
 clicking outside closes the menu. It shows internet availability, connection
- type, Wi-Fi name, signal, link speed, frequency, IP addresses and current device
+ type, Wi-Fi name, signal, link speed, frequency, separate IPv4 and IPv6 address
+groups (IPv4 first), and current device
 receive/send traffic. Wi-Fi link speed is the connection rate to the access point,
 not an internet speed test. Data unavailable from Android is marked explicitly;
 no additional location permission is requested. The summary refreshes every three
@@ -457,15 +477,20 @@ In **Wallpaper appearance → Object order**, reorder the date, weather and cloc
 from top to bottom: OK starts moving, ▲ / ▼ change the order, and OK or Back
 finishes. The order is retained for hidden elements too. By default, the date
 and weather sit above the large clock.
-In **Formats and data → Weather settings**, enable **Show weather and rain warnings**
+In **Clock, date and weather → Weather settings**, enable **Show weather and rain warnings**
 to display a warning beside the temperature in both the panel and on the wallpaper.
 Warnings are hidden when weather data is stale. This decorative block has no dimming
 background, cannot receive focus or presses, and does not open widgets. Tile positions
 and the scrolling viewport stay unchanged; tiles can overlap the clock.
 In the adaptive landscape, the mountain outline overlaps the lower part
-of the clock in both illustrated and realistic variants. Clouds, rain, snow and
+of the clock by default in both illustrated and realistic variants. Clouds, rain, snow and
 fog pass over the wallpaper clock, date and weather; tiles and the top panel
-remain above the effects. Other wallpapers have no overlap effect. Moving the elements hides them from the top panel; choosing
+remain above the effects. Other wallpapers have no overlap effect.
+**Wallpaper appearance** offers two independent switches for the entire clock,
+date and weather block: **Above landscape** removes mountain overlap, while
+**Above weather effects** places the block in front of clouds, rain, snow and fog.
+Both are off by default and can be enabled together or separately.
+Moving the elements hides them from the top panel; choosing
 **Top panel** again restores their previous order and grouping mode. Wallpaper
 elements are also excluded from the top panel order editor. Quick settings panel
 visibility and order remain independent; editing that panel does not hide wallpaper clocks.
@@ -474,9 +499,19 @@ visibility and order remain independent; editing that panel does not hide wallpa
 placement summary. Each element's placement is edited only inside this entry.
 The remaining settings are split into **Panel appearance**, **Wallpaper appearance**
 (when any element is on the wallpaper), and **Formats and data**. The latter contains
-time and date formats and a link to weather settings.
+time and date formats. **Weather settings** is a separate entry on the main
+**Clock, date and weather** page.
 Date settings include a short weekday format, such as “Вс, 1 Нояб” in Russian
 or “Sun, 1 Nov” in English: weekday, comma, day and abbreviated month.
+The first choice is **Custom format**: enter a date pattern with validation
+and underlined unsupported characters. A labelled **Preview** appears above the
+input. The legend is always visible, and the dialog needs no scrolling.
+The settings panel is hidden while editing. Saving or cancelling restores
+the previous page with focus on the date setting.
+It explains the library symbols: `d`/`dd` for day, `M`/`MM` for month number, `MMM`/`MMMM` for
+month name, `EEE`/`EEEE` for weekday and `yy`/`yyyy` for year.
+For example, `EEEE, d. MMMM yyyy`. Enclose literal text in single quotes.
+Cancel keeps the previous value; the existing format remains selected until you save.
 
 **Panel appearance** can group the visible elements. Grouping is unavailable when
 only one or no elements remain. Quick settings has independent visibility and grouping.
@@ -522,7 +557,7 @@ traffic needs usage access, and inputs need support for the relevant TV API.
 
 ## Weather
 
-Path: **Top panel → Objects → Clock, date and weather → Formats and data → Weather settings**.
+Path: **Top panel → Objects → Clock, date and weather → Weather settings**.
 
 Sources include Breezy Weather, Open-Meteo, MET Norway, OpenWeather, and Yandex. Choose a city
 or coordinates, detect location with the required permission, refresh data, and
@@ -775,7 +810,11 @@ Path: **Launcher and TV controls → Remote button remapper**.
 
 Button diagnostics records events Android sends to the service and saves the
 latest text report. Assign a short press or hold to an app, Home, Back, a webhook,
-the quick settings panel, or open apps. There are global and per-mapping switches and reset.
+the quick settings panel, open apps, TV power off, or TV reboot.
+“Turn off TV” puts the device in standby; “Reboot TV” requires configured ADB.
+An assigned power action runs immediately without an additional confirmation.
+On a TV box, the command controls the box; the TV's response depends on HDMI-CEC
+and firmware. There are global and per-mapping switches and reset.
 An empty name field shows “Button name”. Below it, select “Assign button”,
 then “Capture” in the separate dialog and press the remote button. The dialog
 shows the captured button; capture another or select OK to accept. Cancel and
@@ -994,6 +1033,30 @@ Google Drive with configured access. Internal storage is removed when app data
 is deleted. Choose an external folder using the system picker or built-in browser. On Android 9,
 saving to Downloads requires storage permission; internal storage and the system
 document picker do not require it.
+
+A separate card at the top of the Google Drive connection page shows the connection
+status. For a configured account, the button reads “Reconnect Google Drive”.
+Help is at the bottom of the page.
+
+In Google Drive connection settings, import Client ID and Client Secret from the
+JSON downloaded from Google Cloud for a “TVs and Limited Input devices” client.
+Transfer the file to the TV or a USB drive and select “Import Client ID and Secret from JSON”.
+Files up to 64 KiB with an `installed` object are supported. Then select “Connect Google Drive”
+and confirm the code in your browser. Import fills the fields without connecting the account
+automatically. Errors and cancellation preserve the fields; Client Secret stays masked.
+
+In Synchronization mode, “Refresh” starts a manual settings exchange.
+“Backup management” always creates, lists, restores and deletes full backups,
+regardless of the selected mode. Sync files are excluded; creating a backup does
+not apply settings from other TVs.
+New file names and backup labels include the TV manufacturer/model and device ID.
+The ID survives a normal reinstall with the same signing key; a factory reset,
+a different Android user or signing key may change it. If the firmware provides
+no ID, an installation-local ID is used. Older backups remain accessible.
+Each backup is marked “This TV” or “Another TV” using the full device ID rather
+than the model name. An older backup with a different installation ID is marked
+“TV unknown”: after a reinstall, its origin cannot reliably be determined.
+Use an updated CuteLauncher version on other TVs to read the new file names.
 
 Synchronize selected settings groups between TVs while leaving other groups local.
 Multiple TVs need a shared accessible folder or cloud storage; their internal

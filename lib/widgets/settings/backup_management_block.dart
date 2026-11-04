@@ -129,7 +129,7 @@ class _BackupManagementBlockState extends State<BackupManagementBlock> {
       if (delete) {
         await service.deleteCopy(copy);
       } else {
-        await service.importLatest(selected: copy);
+        await service.importLatest(selected: copy, backupOnly: true);
       }
       if (mounted) {
         showActionNotice(context, delete ? l.actionCompleted : l.importSuccess);
@@ -180,8 +180,21 @@ class _BackupManagementBlockState extends State<BackupManagementBlock> {
 
   String _label(RemoteBackupFile copy, MaterialLocalizations material) {
     final created = BackupAutomationService.createdAt(copy);
-    return '${material.formatMediumDate(created)} ${material.formatTimeOfDay(TimeOfDay.fromDateTime(created))} · TV ${copy.name.split('-')[3].substring(0, 6)}';
+    return '${material.formatMediumDate(created)} ${material.formatTimeOfDay(TimeOfDay.fromDateTime(created))} · ${BackupAutomationService.copyDeviceLabel(copy)}';
   }
+
+  String _origin(
+    RemoteBackupFile copy,
+    BackupAutomationService service,
+    AppLocalizations l,
+  ) => switch (BackupAutomationService.copyBelongsToDevice(
+    copy,
+    service.device,
+  )) {
+    true => l.backupThisTv,
+    false => l.backupOtherTv,
+    null => l.backupTvUnknown,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -195,9 +208,12 @@ class _BackupManagementBlockState extends State<BackupManagementBlock> {
         FocusableSettingsTile(
           title: Text(l.backupCreateNow),
           leading: const Icon(Icons.save_outlined),
-          enabled: enabled,
+          // Keep entry/remote focus while the initial list request is running.
+          // Activation stays guarded until storage is idle.
+          enabled: service.configured,
           onPressed: () async {
-            final saved = await service.run(manual: true);
+            if (!enabled) return;
+            final saved = await service.run(manual: true, exportOnly: true);
             if (!context.mounted) return;
             showActionNotice(
               context,
@@ -210,8 +226,10 @@ class _BackupManagementBlockState extends State<BackupManagementBlock> {
         FocusableSettingsTile(
           title: Text(l.backupRefreshCopyList),
           leading: const Icon(Icons.refresh),
-          enabled: enabled,
-          onPressed: _load,
+          enabled: service.configured,
+          onPressed: () {
+            if (enabled) _load();
+          },
         ),
         if (_loading) const LinearProgressIndicator(),
         if (_loadFailed)
@@ -230,7 +248,18 @@ class _BackupManagementBlockState extends State<BackupManagementBlock> {
         for (final copy in _copies.skip(_page * 20).take(20))
           FocusableSettingsTile(
             key: ValueKey(copy.name),
-            title: Text(_label(copy, material)),
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(_label(copy, material)),
+                Text(
+                  _origin(copy, service, l),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
             leading: const Icon(Icons.description_outlined),
             enabled: enabled,
             onPressed: () => _chooseAction(copy, _label(copy, material)),

@@ -16,6 +16,7 @@ import 'settings_style_page.dart';
 import 'settings_panel_style.dart';
 import 'automatic_backup_page.dart';
 import 'settings_menu_layout.dart';
+import 'settings_panel_presentation.dart';
 import '../launcher_dialog.dart';
 import 'package:provider/provider.dart';
 import '../../providers/settings_service.dart';
@@ -168,7 +169,12 @@ class _SettingsPanelState extends State<SettingsPanel> {
     return SettingsPanelStyle(
       builder: (context) => SettingsMenuLayout(
         onRight: onRight,
-        child: LandscapeDemoPresentation(child: Builder(builder: (context) => _buildPanel(context, onRight))),
+        topInset: _topPanel ? kToolbarHeight : 0,
+        child: SettingsPanelPresentation(
+          child: LandscapeDemoPresentation(
+            child: Builder(builder: (context) => _buildPanel(context, onRight)),
+          ),
+        ),
       ),
     );
   }

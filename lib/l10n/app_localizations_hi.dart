@@ -4634,8 +4634,11 @@ class AppLocalizationsHi extends AppLocalizations {
   String get systemHourAgo => '−60 मिनट';
 
   @override
+  String get systemUpdateInterval => 'अपडेट अंतराल';
+
+  @override
   String get systemWidgetHelp =>
-      'लॉन्चर दिखाई देने पर रीडिंग हर 5 सेकंड में अपडेट होती हैं। ग्राफ़ हर मिनट का औसत और अधिकतम दिखाते हैं। अन्य ऐप, स्लीप और रीडिंग की त्रुटियों के समय अंतराल रहता है। इतिहास मेमोरी में रहता है और लॉन्चर प्रक्रिया फिर शुरू होने पर मिट जाता है। CPU और तापमान फ़र्मवेयर पर निर्भर हैं। केवल आइकन दिखाने के लिए पैनल के दोनों मान बंद करें।';
+      'पैनल दिखाई देने पर रीडिंग चुने गए 1–10 सेकंड के अंतराल पर अपडेट होती हैं (डिफ़ॉल्ट 5)। ग्राफ़ हर मिनट का औसत और अधिकतम दिखाते हैं। अन्य ऐप, स्लीप और रीडिंग की त्रुटियों के समय अंतराल रहता है। इतिहास मेमोरी में रहता है और लॉन्चर प्रक्रिया फिर शुरू होने पर मिट जाता है। CPU और तापमान फ़र्मवेयर पर निर्भर हैं। केवल आइकन दिखाने के लिए पैनल के दोनों मान बंद करें।';
 
   @override
   String get slideshowBrowseFolders => 'फ़ोल्डर ब्राउज़ करें';
@@ -4810,7 +4813,13 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get informationBackgroundHelp =>
-      'घड़ी, तारीख और मौसम के लिए अलग-अलग ऊपरी पैनल, वॉलपेपर या छिपा हुआ चुनें। वॉलपेपर के तत्व दबाने पर प्रतिक्रिया नहीं देते और टाइलों को नहीं खिसकाते। गतिशील दृश्य में पहाड़ घड़ी को आंशिक रूप से ढकते हैं। त्वरित सेटिंग्स स्वतंत्र रहती हैं।';
+      'घड़ी, तारीख और मौसम के लिए अलग-अलग ऊपरी पैनल, वॉलपेपर या छिपा हुआ चुनें। वॉलपेपर के तत्व दबाने पर प्रतिक्रिया नहीं देते और टाइलों को नहीं खिसकाते। त्वरित सेटिंग्स स्वतंत्र रहती हैं। दोनों विकल्प पूरे पृष्ठभूमि खंड पर लागू होते हैं: समय, तारीख और मौसम। पहला पहाड़ों से ढकना हटाता है; दूसरा खंड को बादलों, वर्षा और कोहरे के आगे रखता है।';
+
+  @override
+  String get informationAboveLandscape => 'परिदृश्य के आगे';
+
+  @override
+  String get informationAboveWeather => 'मौसम प्रभावों के आगे';
 
   @override
   String get informationTime => 'घड़ी';
@@ -4988,4 +4997,58 @@ class AppLocalizationsHi extends AppLocalizations {
   String networkSpeedUnit(String unit) {
     return '$unit/से';
   }
+
+  @override
+  String get customDateFormat => 'कस्टम प्रारूप';
+
+  @override
+  String get customDateFormatError =>
+      'सहायता में दिए दिनांक चिह्नों का उपयोग करें। पाठ को एकल उद्धरण चिह्नों में रखें और उन्हें बंद करें।';
+
+  @override
+  String get customDateFormatHelp =>
+      'd / dd — दिन\nM / MM — महीने की संख्या\nMMM / MMMM — महीने का छोटा / पूरा नाम\nEEE / EEEE — सप्ताह के दिन का छोटा / पूरा नाम\nyy / yyyy — वर्ष\nL…LLLL — स्वतंत्र महीने का नाम\nD…DDD — वर्ष का दिन; G — युग\nविभाजक: रिक्त स्थान, . / - ,\nपाठ: \'दिनांक:\'; एक उद्धरण: \'\'\nबड़े और छोटे अक्षर अलग हैं। समय चिह्न समर्थित नहीं हैं।\nउदाहरण: EEEE, d. MMMM yyyy';
+
+  @override
+  String get apodWallpaper => 'NASA APOD — दिन की खगोलीय तस्वीर';
+
+  @override
+  String get apodWallpaperHint =>
+      'NASA APOD की दैनिक तस्वीर। वीडियो वाले दिन हाल की तस्वीर उपयोग होती है। आकार और अनुपात अलग-अलग होते हैं। लेखक और प्रकाशन का लिंक यहाँ दिखते हैं। तस्वीरें संबंधित अधिकार धारकों की हैं।';
+
+  @override
+  String get backupDriveClientImport => 'JSON से Client ID और Secret आयात करें';
+
+  @override
+  String get backupDriveClientImported =>
+      'क्लाइंट विवरण आयात हो गए। Google Drive कनेक्ट करें।';
+
+  @override
+  String get backupDriveClientImportFailed =>
+      'क्लाइंट विवरण आयात नहीं हुए। TVs and Limited Input devices के लिए 64 KiB तक की Google Cloud JSON फ़ाइल चुनें।';
+
+  @override
+  String get dateFormatPreview => 'पूर्वावलोकन';
+
+  @override
+  String get backupDriveConnectionStatus => 'Google Drive कनेक्शन की स्थिति';
+
+  @override
+  String get backupDriveReconnect => 'Google Drive फिर से कनेक्ट करें';
+
+  @override
+  String get backupSyncRefresh => 'रीफ़्रेश करें';
+
+  @override
+  String get backupSyncRefreshFailed =>
+      'सेटिंग सिंक नहीं हो सकीं। स्टोरेज का ऐक्सेस जाँचें और फिर कोशिश करें।';
+
+  @override
+  String get backupThisTv => 'यह टीवी';
+
+  @override
+  String get backupOtherTv => 'दूसरा टीवी';
+
+  @override
+  String get backupTvUnknown => 'टीवी अज्ञात';
 }

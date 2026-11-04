@@ -288,6 +288,13 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
     notifyListeners();
   }
   bool get systemShowCpu => _sharedPreferences.getBool('system_show_cpu') ?? true;
+  int get systemUpdateInterval => (_sharedPreferences.getInt('system_update_interval') ?? 5).clamp(1, 10);
+  Future<void> setSystemUpdateInterval(int value) async {
+    if (!await _sharedPreferences.setInt('system_update_interval', value.clamp(1, 10))) {
+      throw StateError('Panel settings unavailable');
+    }
+    notifyListeners();
+  }
   bool get systemShowRam => _sharedPreferences.getBool('system_show_ram') ?? true;
   Future<void> _setSystemOption(String key, bool value) async {
     if (!await _sharedPreferences.setBool(key, value)) throw StateError('Panel settings unavailable');
@@ -540,6 +547,7 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
       'show_network_speed_in_status_bar': showNetworkSpeedInStatusBar,
       'network_speed_interval': networkSpeedInterval,
       'system_show_cpu': systemShowCpu,
+      'system_update_interval': systemUpdateInterval,
       'system_show_ram': systemShowRam,
       _accentColorKey: _accentColorHex,
       _screensaverClockStyleKey: _screensaverClockStyle,

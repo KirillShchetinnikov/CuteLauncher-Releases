@@ -62,10 +62,51 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('ignore action remains selected and saves without a target', (tester) async {
-    config = const RemoteMappingConfiguration(enabled: true, bindings: [
-      RemoteMapping(keyCode: 4137, name: 'Netflix', action: 'ignore'),
-    ]);
+  for (final action in {
+    'sleep': 'Выключить ТВ',
+    'reboot': 'Перезагрузить ТВ',
+  }.entries) {
+    for (final trigger in ['press', 'hold']) {
+      testWidgets('select and reload ${action.key} on $trigger', (
+        tester,
+      ) async {
+        config = RemoteMappingConfiguration(
+          enabled: true,
+          bindings: [
+            RemoteMapping(keyCode: 4137, name: 'Power test', trigger: trigger),
+          ],
+        );
+        await open(tester);
+        await tester.tap(find.textContaining('Power test').first);
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Действие'));
+        await tester.pumpAndSettle();
+        await tester.ensureVisible(find.text(action.value));
+        await tester.tap(find.text(action.value));
+        await tester.pumpAndSettle();
+        await tester.ensureVisible(find.text('Сохранить'));
+        await tester.tap(find.text('Сохранить'));
+        await tester.pumpAndSettle();
+        expect(config.bindings.single.action, action.key);
+        expect(config.bindings.single.target, isEmpty);
+        expect(config.bindings.single.trigger, trigger);
+        await tester.tap(find.textContaining('Power test').first);
+        await tester.pumpAndSettle();
+        expect(find.text(action.value), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      });
+    }
+  }
+
+  testWidgets('ignore action remains selected and saves without a target', (
+    tester,
+  ) async {
+    config = const RemoteMappingConfiguration(
+      enabled: true,
+      bindings: [
+        RemoteMapping(keyCode: 4137, name: 'Netflix', action: 'ignore'),
+      ],
+    );
     await open(tester);
     await tester.tap(find.textContaining('Netflix').first);
     await tester.pumpAndSettle();

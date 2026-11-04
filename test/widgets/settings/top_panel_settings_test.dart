@@ -6,9 +6,12 @@ import 'package:flauncher/widgets/settings/network_speed_settings_page.dart';
 import 'package:flauncher/widgets/system_status_widget.dart';
 import 'package:flauncher/widgets/system_status_menu.dart';
 import 'package:flauncher/widgets/settings/system_widget_settings_page.dart';
+import 'package:flauncher/widgets/settings/settings_value_stepper.dart';
 import 'package:flauncher/widgets/settings/sleep_timer_settings_page.dart';
 import 'package:flauncher/widgets/traffic_usage_menu.dart';
 import 'package:flauncher/widgets/settings/information_settings_page.dart';
+import 'package:flauncher/widgets/settings/weather_page.dart';
+import 'package:flauncher/weather_sources.dart';
 import 'package:flauncher/widgets/panel_clock.dart';
 import 'package:flauncher/widgets/settings/panel_clock_style_page.dart';
 import 'package:flauncher/models/tv_input.dart';
@@ -140,7 +143,7 @@ void main() {
         providers: [
           ChangeNotifierProvider.value(value: settings),
           ChangeNotifierProvider.value(value: sleepTimer),
-          ChangeNotifierProvider(create: (_) => SystemStatusService()),
+          ChangeNotifierProvider(create: (_) => SystemStatusService(settings: settings)),
           ChangeNotifierProvider(create: (_) => NetworkSpeedService(settings: settings)),
           if (night != null) ChangeNotifierProvider.value(value: night),
           ChangeNotifierProvider.value(value: appearance),
@@ -235,6 +238,71 @@ void main() {
     expect(node.hasFocus, isTrue);
     await tester.pumpWidget(const SizedBox()); await tester.pump();
   });
+
+  testWidgets('system interval supports remote keys, large text and storage', (tester) async {
+    await pump(tester, const Scaffold(body: SystemWidgetSettingsPage()), largeText: true);
+    expect(find.textContaining('Показания обновляются'), findsNothing);
+    final stepper = find.byType(SettingsValueStepper);
+    final tileFocus = tester.widgetList<Focus>(find.descendant(
+      of: stepper, matching: find.byType(Focus),
+    )).firstWhere((focus) => focus.focusNode != null && focus.canRequestFocus);
+    tileFocus.focusNode!.requestFocus();
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.pumpAndSettle();
+    expect(settings.systemUpdateInterval, 6);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+    await tester.pumpAndSettle();
+    expect(settings.systemUpdateInterval, 5);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.pumpAndSettle();
+    expect(settings.systemUpdateInterval, 5);
+    final restored = SettingsService(prefs);
+    expect(restored.systemUpdateInterval, 5);
+    restored.dispose();
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  for (final right in [false, true]) {
+    for (final language in ['ru', 'en']) {
+      testWidgets('weather opens from clock group and Back restores focus: $right $language', (tester) async {
+        when(weather.configuration).thenReturn(const WeatherConfiguration());
+        when(weather.loading).thenReturn(false);
+        when(weather.locating).thenReturn(false);
+        await settings.setSettingsMenuOnRight(right);
+        await appearance.set('panelInformationPlacements', {
+          'time': 'panel', 'date': 'panel', 'weather': 'hidden',
+        });
+        await pump(tester, const SettingsPanel(initialRoute: InformationSettingsPage.routeName),
+          locale: Locale(language), largeText: true);
+        final l = AppLocalizations.of(tester.element(find.byType(InformationSettingsPage)))!;
+        final opener = find.text(l.weatherSettings);
+        await tester.scrollUntilVisible(opener, 160);
+        await tester.ensureVisible(opener);
+        await tester.pumpAndSettle();
+        Focus.of(tester.element(opener)).requestFocus();
+        await tester.pumpAndSettle();
+        final focus = FocusManager.instance.primaryFocus;
+        await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+        await tester.pumpAndSettle();
+        expect(find.byType(WeatherPage), findsOneWidget);
+        expect(tester.getTopLeft(find.byType(WeatherPage)).dy, greaterThan(kToolbarHeight));
+        await tester.binding.handlePopRoute();
+        await tester.pumpAndSettle();
+        expect(find.byType(InformationSettingsPage), findsOneWidget);
+        expect(FocusManager.instance.primaryFocus, focus);
+        final formats = find.text(l.informationData);
+        await tester.ensureVisible(formats);
+        await tester.tap(formats);
+        await tester.pumpAndSettle();
+        expect(find.byType(InformationDataSettingsPage), findsOneWidget);
+        expect(find.text(l.weatherSettings), findsNothing);
+        expect(tester.takeException(), isNull);
+        await tester.pumpWidget(const SizedBox());
+      });
+    }
+  }
 
   testWidgets('audio object is enabled by default and its switch updates the panel', (tester) async {
     await pump(tester, const Scaffold(appBar: FocusAwareAppBar(), body: StatusBarObjectsPage()));
@@ -801,7 +869,7 @@ void main() {
     await tester.tap(find.text('Форматы и данные'));
     await tester.pumpAndSettle();
     expect(find.byType(InformationDataSettingsPage), findsOneWidget);
-    expect(find.text('Настройки погоды'), findsOneWidget);
+    expect(find.text('Настройки погоды'), findsNothing);
     expect(find.text('Открывать календарь по нажатию на дату'), findsNothing);
     expect(tester.takeException(), isNull);
   });
@@ -1044,6 +1112,48 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+
+  for (final right in [false, true]) {
+    for (final target in ['font', 'panelColor', 'textBackground', 'textColor', 'clockFont', 'clockColor', 'clockPreset']) {
+      testWidgets('top panel subdialog stays below toolbar and clips: $target right=$right', (tester) async {
+        await settings.setSettingsMenuOnRight(right);
+        await pump(tester, SettingsPanel(initialRoute:
+          target.startsWith('clock') ? PanelClockStylePage.routeName : 'panel_appearance'), largeText: true);
+        final l = AppLocalizations.of(tester.element(find.byType(SettingsPanel)))!;
+        final title = switch (target) {
+          'font' || 'clockFont' => l.panelFont,
+          'panelColor' => l.panelBackground,
+          'textBackground' => l.panelTextBackgroundColor,
+          'textColor' => l.panelTextColor,
+          'clockColor' => l.styleTextColor,
+          _ => l.clockPreset,
+        };
+        final opener = find.text(title);
+        await tester.scrollUntilVisible(opener, 180);
+        await tester.ensureVisible(opener);
+        await tester.pumpAndSettle();
+        Focus.of(tester.element(opener)).requestFocus();
+        await tester.pumpAndSettle();
+        final focus = FocusManager.instance.primaryFocus;
+        await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+        await tester.pumpAndSettle();
+        final dialog = find.byType(Dialog).last;
+        final surface = find.descendant(of: dialog, matching: find.byWidgetPredicate(
+          (widget) => widget is Material && widget.type == MaterialType.card)).first;
+        final rect = tester.getRect(surface);
+        expect(rect.top, greaterThanOrEqualTo(kToolbarHeight + 16));
+        expect(rect.bottom, lessThanOrEqualTo(540 - 16));
+        expect(tester.widget<Material>(surface).clipBehavior, Clip.antiAlias);
+        final panelRect = tester.getRect(find.descendant(of: find.byType(SidePanelDialog), matching: find.byType(Material)).first);
+        expect(right ? rect.right <= panelRect.left : rect.left >= panelRect.right, isTrue);
+        await tester.binding.handlePopRoute();
+        await tester.pumpAndSettle();
+        expect(FocusManager.instance.primaryFocus, focus);
+        expect(tester.takeException(), isNull);
+        await tester.pumpWidget(const SizedBox());
+      });
+    }
+  }
 
   testWidgets(
     'usage permission lives in traffic settings and never on the panel',

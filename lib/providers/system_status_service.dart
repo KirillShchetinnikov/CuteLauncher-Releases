@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 import 'foreground_work.dart';
+import 'settings_service.dart';
 
 typedef SystemStatus = ({
   int? cpu,
@@ -58,7 +59,9 @@ class SystemStatusService extends ChangeNotifier with WidgetsBindingObserver {
   final ForegroundWork? work;
   final MethodChannel channel;
   final DateTime Function() now;
-  final Duration interval;
+  final SettingsService? settings;
+  Duration _interval;
+  Duration get interval => _interval;
   final _owners = <Object>{};
   final _history = <SystemHistoryMinute>[];
   SystemStatus state = unknownSystemStatus;
@@ -73,15 +76,20 @@ class SystemStatusService extends ChangeNotifier with WidgetsBindingObserver {
 
   SystemStatusService({
     this.work,
+    this.settings,
     this.channel = const MethodChannel('cutelauncher/system_status'),
     DateTime Function()? now,
-    this.interval = const Duration(seconds: 5),
-  }) : now = now ?? DateTime.now {
+    Duration interval = const Duration(seconds: 5),
+  }) : now = now ?? DateTime.now,
+       _interval = settings == null
+           ? interval
+           : Duration(seconds: settings.systemUpdateInterval) {
     final binding = WidgetsBinding.instance;
     _foreground =
         binding.lifecycleState == null ||
         binding.lifecycleState == AppLifecycleState.resumed;
     binding.addObserver(this);
+    settings?.addListener(_settingsChanged);
     channel.setMethodCallHandler((call) async {
       if (call.method != 'changed' || !_enabled || call.arguments is! bool) {
         return;
@@ -98,6 +106,18 @@ class SystemStatusService extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   bool get _enabled => !_disposed && _foreground && _owners.isNotEmpty;
+  void _settingsChanged() {
+    final next = Duration(seconds: settings!.systemUpdateInterval);
+    if (_disposed || next == _interval) return;
+    _interval = next;
+    _timer?.cancel();
+    work?.cancel(this);
+    // An in-flight sample schedules its next timer with the new interval.
+    if (_enabled && _screenOn && !_running) {
+      _timer = Timer(interval, refresh);
+    }
+  }
+
   void setVisible(Object owner, bool visible) {
     if (_disposed) return;
     final was = _enabled;
@@ -233,6 +253,7 @@ class SystemStatusService extends ChangeNotifier with WidgetsBindingObserver {
     _timer?.cancel();
     _owners.clear();
     work?.cancel(this);
+    settings?.removeListener(_settingsChanged);
     WidgetsBinding.instance.removeObserver(this);
     channel.setMethodCallHandler(null);
     unawaited(_watch(false));

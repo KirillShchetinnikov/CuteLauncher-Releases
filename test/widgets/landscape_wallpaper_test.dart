@@ -10,6 +10,7 @@ import 'package:flauncher/widgets/landscape_wallpaper.dart';
 import 'package:flauncher/widgets/wallpaper_background.dart';
 import 'package:flauncher/widgets/background_raster_cache.dart';
 import 'package:flauncher/providers/settings_service.dart';
+import 'package:flauncher/providers/appearance_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 import 'package:mockito/mockito.dart';
@@ -29,51 +30,59 @@ void main() {
     final weather = MockWeatherService();
     when(weather.configuration).thenReturn(const WeatherConfiguration());
     when(weather.stale).thenReturn(false);
-    const info = ValueKey('decorative-information');
-    const captureKey = ValueKey('weather-over-information');
-    for (final condition in [803, 500, 600, 741]) {
-      when(weather.weatherData).thenReturn(WeatherData(currentConditionCode: condition));
-      for (final mode in ['normal', 'memory', 'bright', 'demo']) {
-        settings.landscapeDemo.value = mode == 'demo'
-            ? LandscapeDemoFrame(LandscapeDemoTimeline(DateTime(2026, 11, 1, 12)).dayDuration + Duration(seconds: 2 + [803, 500, 600, 741].indexOf(condition) * 5), DateTime(2026, 11, 1, 12))
-            : null;
-        await tester.pumpWidget(MultiProvider(
-          providers: [
-            ChangeNotifierProvider.value(value: settings),
-            ChangeNotifierProvider<WeatherService>.value(value: weather),
-          ],
-          child: MaterialApp(home: RepaintBoundary(key: captureKey,
-            child: LandscapeWallpaper(
-              gradient: const LinearGradient(colors: [Colors.black, Colors.black]),
-              brightness: mode == 'bright' ? 1.4 : 1,
-              memorySaver: mode == 'memory',
-              informationLayer: const ColoredBox(key: info, color: Colors.white),
-            ),
-          )),
-        ));
-        await tester.pump();
-        final scene = tester.widget<AdaptiveLandscapeBackground>(find.byType(AdaptiveLandscapeBackground));
-        expect(scene.informationLayer, isNotNull);
-        expect(find.ancestor(of: find.byKey(info), matching: find.byType(ColorFiltered)), findsNothing);
-        expect(find.ancestor(of: find.byKey(info), matching: find.byType(BackgroundRasterCache)), findsNothing);
-        final effects = find.byWidgetPredicate((w) => w is CustomPaint && w.painter is LandscapeEffectsPainter);
-        expect(effects, findsOneWidget);
-        final parent = tester.widget<Stack>(find.ancestor(of: find.byKey(info), matching: find.byType(Stack)).first);
-        expect(parent.children.indexWhere((w) => w.key == info), 1);
-        expect(parent.children.length, 3);
-        final bytes = (await tester.runAsync(() async {
-          final image = await tester.renderObject<RenderRepaintBoundary>(find.byKey(captureKey)).toImage();
-          final data = await image.toByteData(format: ui.ImageByteFormat.rawRgba);
-          image.dispose();
-          return data!.buffer.asUint8List();
-        }))!;
-        // Terrain is fully covered by the white surrogate. Only weather can
-        // change these pixels, proving that effects paint above the content.
-        var changed = 0;
-        for (var i = 0; i < bytes.length; i += 4) {
-          if (bytes[i] < 250 || bytes[i + 1] < 250 || bytes[i + 2] < 250) changed++;
+    final appearance = AppearanceService(await SharedPreferences.getInstance());
+    addTearDown(appearance.dispose);
+    for (final above in [false, true]) {
+      await appearance.set('panelBackgroundInformationAboveWeather', above);
+      const info = ValueKey('decorative-information');
+      const captureKey = ValueKey('weather-over-information');
+      for (final condition in [803, 500, 600, 741]) {
+        when(weather.weatherData).thenReturn(WeatherData(currentConditionCode: condition));
+        for (final mode in ['normal', 'memory', 'bright', 'demo']) {
+          settings.landscapeDemo.value = mode == 'demo'
+              ? LandscapeDemoFrame(LandscapeDemoTimeline(DateTime(2026, 11, 1, 12)).dayDuration + Duration(seconds: 2 + [803, 500, 600, 741].indexOf(condition) * 5), DateTime(2026, 11, 1, 12))
+              : null;
+          await tester.pumpWidget(MultiProvider(
+            providers: [
+              ChangeNotifierProvider.value(value: appearance),
+              ChangeNotifierProvider.value(value: settings),
+              ChangeNotifierProvider<WeatherService>.value(value: weather),
+            ],
+            child: MaterialApp(home: RepaintBoundary(key: captureKey,
+              child: LandscapeWallpaper(
+                gradient: const LinearGradient(colors: [Colors.black, Colors.black]),
+                brightness: mode == 'bright' ? 1.4 : 1,
+                memorySaver: mode == 'memory',
+                informationLayer: const ColoredBox(key: info, color: Colors.white),
+              ),
+            )),
+          ));
+          await tester.pump();
+          final scene = tester.widget<AdaptiveLandscapeBackground>(find.byType(AdaptiveLandscapeBackground));
+          expect(scene.informationLayer, isNotNull);
+          expect(scene.informationAboveWeather, above);
+          expect(find.ancestor(of: find.byKey(info), matching: find.byType(ColorFiltered)), findsNothing);
+          expect(find.ancestor(of: find.byKey(info), matching: find.byType(BackgroundRasterCache)), findsNothing);
+          final effects = find.byWidgetPredicate((w) => w is CustomPaint && w.painter is LandscapeEffectsPainter);
+          expect(effects, findsOneWidget);
+          final parent = tester.widget<Stack>(find.ancestor(of: find.byKey(info), matching: find.byType(Stack)).first);
+          expect(parent.children.indexWhere((w) => w.key == info), above ? 2 : 1);
+          expect(parent.children.length, 3);
+          final bytes = (await tester.runAsync(() async {
+            final image = await tester.renderObject<RenderRepaintBoundary>(find.byKey(captureKey)).toImage();
+            final data = await image.toByteData(format: ui.ImageByteFormat.rawRgba);
+            image.dispose();
+            return data!.buffer.asUint8List();
+          }))!;
+          // Terrain is fully covered by the white surrogate. Only weather can
+          // change these pixels when effects paint above the content. When the
+          // entire block is above effects, every pixel must stay white.
+          var changed = 0;
+          for (var i = 0; i < bytes.length; i += 4) {
+            if (bytes[i] < 250 || bytes[i + 1] < 250 || bytes[i + 2] < 250) changed++;
+          }
+          expect(changed, above ? 0 : greaterThan(100), reason: '$condition / $mode / above=$above');
         }
-        expect(changed, greaterThan(100), reason: '$condition / $mode');
       }
     }
     await tester.pumpWidget(const SizedBox());

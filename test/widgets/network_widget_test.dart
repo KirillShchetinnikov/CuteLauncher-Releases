@@ -347,6 +347,43 @@ void main() {
     await tester.pumpWidget(const SizedBox());
   });
 
+  for (final sample in [
+    ('fe80::1%wlan0\n192.168.1.10\n2001:db8::1\n10.0.0.2',
+      '192.168.1.10\n10.0.0.2', 'fe80::1%wlan0\n2001:db8::1'),
+    ('192.168.1.10', '192.168.1.10', ''),
+    ('::ffff:192.0.2.1\n2001:db8:1234:5678:90ab:cdef:1234:5678', '',
+      '::ffff:192.0.2.1\n2001:db8:1234:5678:90ab:cdef:1234:5678'),
+    ('\n  \n', '', ''),
+  ]) {
+    testWidgets('summary groups IP families with IPv4 first: ${sample.$1}', (tester) async {
+      when(mockNetworkService.networkType).thenReturn(NetworkType.Wifi);
+      when(mockNetworkService.cellularNetworkType).thenReturn(CellularNetworkType.Unknown);
+      when(mockNetworkService.wirelessNetworkSignalLevel).thenReturn(4);
+      when(mockNetworkService.getSummary()).thenAnswer((_) async => {
+        'networkType': 3, 'internetAccess': true, 'addresses': sample.$1,
+      });
+      await tester.pumpWidget(createWidgetUnderTest(scale: 1.5));
+      await tester.tap(find.byType(InkWell));
+      await tester.pumpAndSettle();
+      expect(find.text('IP'), findsNothing);
+      expect(find.text('IPv4'), sample.$2.isEmpty ? findsNothing : findsOneWidget);
+      expect(find.text('IPv6'), sample.$3.isEmpty ? findsNothing : findsOneWidget);
+      if (sample.$2.isNotEmpty) expect(find.text(sample.$2), findsOneWidget);
+      if (sample.$3.isNotEmpty) expect(find.text(sample.$3), findsOneWidget);
+      if (sample.$2.isNotEmpty && sample.$3.isNotEmpty) {
+        expect(tester.getTopLeft(find.text(sample.$2)).dy,
+          lessThan(tester.getTopLeft(find.text('IPv6')).dy));
+      }
+      // A later summary removes both old groups when addresses disappear.
+      when(mockNetworkService.getSummary()).thenAnswer((_) async => {'networkType': 3});
+      await tester.pump(const Duration(seconds: 3));
+      expect(find.text('IPv4'), findsNothing);
+      expect(find.text('IPv6'), findsNothing);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+    });
+  }
+
   testWidgets(
     'physical network does not embed the independent VPN object',
     (WidgetTester tester) async {

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../providers/appearance_service.dart';
 import '../../app_fonts.dart';
+import 'settings_scroll_behavior.dart';
 
 /// Shared appearance for settings and all side panels with settings/actions.
 class SettingsPanelStyle extends StatelessWidget {
@@ -74,6 +75,9 @@ class SettingsPanelStyle extends StatelessWidget {
         iconTheme: appearance?.color('settingsTextColor') == null
             ? theme.iconTheme
             : theme.iconTheme.copyWith(color: foreground),
+        scrollbarTheme: theme.scrollbarTheme.copyWith(
+          thumbColor: WidgetStatePropertyAll(foreground.withValues(alpha: .6)),
+        ),
       ),
       child: MediaQuery(
         data: MediaQuery.of(context).copyWith(
@@ -84,7 +88,10 @@ class SettingsPanelStyle extends StatelessWidget {
         child: DefaultTextStyle.merge(
           style: theme.textTheme.bodyMedium?.copyWith(color: foreground),
           textHeightBehavior: const TextHeightBehavior(),
-          child: Builder(builder: builder),
+          child: ScrollConfiguration(
+            behavior: const SettingsScrollBehavior(),
+            child: Builder(builder: builder),
+          ),
         ),
       ),
     );

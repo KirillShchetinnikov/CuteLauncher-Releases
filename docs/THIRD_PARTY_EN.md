@@ -182,4 +182,9 @@ Links point to locked versions with authors, source repositories and licenses. F
 
 ## Images
 
+The [NASA Astronomy Picture of the Day (APOD)](https://science.nasa.gov/apod/)
+online source displays author credits and the original publication link. APOD
+includes images by third-party authors; publication on NASA does not automatically
+make them freely reusable. [Usage terms and copyright information](https://apod.nasa.gov/apod/lib/about_apod.html).
+
 Bundled seasonal realistic landscapes were created for CuteLauncher using OpenAI image generation. User wallpapers, online-source images, and third-party application icons and banners belong to their respective rights holders.

@@ -57,6 +57,7 @@ class _Apps extends ChangeNotifier implements AppsService {
 Future<void> _open(
   WidgetTester tester, {
   bool? onRight,
+  double topInset = 0,
   Widget? content,
 }) async {
   tester.view.physicalSize = const Size(1280, 720);
@@ -94,7 +95,7 @@ Future<void> _open(
       home: Scaffold(
         body: onRight == null
             ? child
-            : SettingsMenuLayout(onRight: onRight, child: child),
+            : SettingsMenuLayout(onRight: onRight, topInset: topInset, child: child),
       ),
     ),
   );
@@ -372,6 +373,40 @@ void main() {
     );
   }
   for (final right in [false, true]) {
+    testWidgets('tall and nested dialogs reserve toolbar space and clip their shape right=$right', (tester) async {
+      await _open(tester, onRight: right, topInset: kToolbarHeight,
+        content: SizedBox(height: 2000, child: Align(
+          alignment: Alignment.topCenter,
+          child: Builder(builder: (context) => TextButton(
+            child: const Text('Вложенный список'),
+            onPressed: () => showLauncherDialog<void>(context: context,
+              builder: (_) => SimpleDialog(title: const Text('Шрифты'), children: [
+                for (var i = 0; i < 30; i++)
+                  SizedBox(height: 60, child: Text('Шрифт $i')),
+              ])),
+          )),
+        )));
+      void checkBounds() {
+        final rect = tester.getRect(_surface);
+        expect(rect.top, greaterThanOrEqualTo(kToolbarHeight + 16));
+        expect(rect.bottom, lessThanOrEqualTo(704));
+        expect(tester.widget<Material>(_surface).clipBehavior, Clip.antiAlias);
+        final area = tester.widget<LauncherDialogArea>(find.byType(LauncherDialogArea).last);
+        expect(area.topInset, kToolbarHeight);
+      }
+      checkBounds();
+      await tester.tap(find.text('Вложенный список'));
+      await tester.pumpAndSettle();
+      checkBounds();
+      final scroll = find.descendant(of: find.byType(SimpleDialog), matching: find.byType(Scrollable)).first;
+      await tester.scrollUntilVisible(find.text('Шрифт 29'), 300, scrollable: scroll);
+      expect(find.text('Шрифт 29').hitTestable(), findsOneWidget);
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      checkBounds();
+      expect(tester.takeException(), isNull);
+    });
+
     testWidgets('QR window fits narrow remaining TV area right=$right', (
       tester,
     ) async {

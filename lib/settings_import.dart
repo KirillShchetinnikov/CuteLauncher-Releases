@@ -10,6 +10,8 @@ import 'dart:convert';
 import 'watch_next_selection.dart';
 import 'backup_sync_groups.dart';
 import 'providers/online_wallpaper_service.dart';
+import 'custom_date_format.dart';
+import 'date_time_format.dart';
 
 /// Merge only compatible entries. Missing or invalid settings never reset values.
 /// Unknown primitive keys are retained for round-tripping between app releases.
@@ -44,6 +46,13 @@ Map<String, dynamic> compatibleSettings(dynamic source, Map<String, dynamic> exp
       continue;
     }
     if (isDeviceLocalBackupKey(key)) continue;
+    if (key == 'date_format') {
+      if (value is String && (value == compactDateFormat || value == shortWeekdayDateFormat ||
+          validateCustomDatePattern(value).valid)) {
+        result[key] = value;
+      }
+      continue;
+    }
     if (key == categoryAppearanceKey) {
       if (value is String) {
         try {

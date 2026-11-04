@@ -13,6 +13,31 @@ import 'package:flauncher/widgets/settings/online_wallpaper_page.dart';
 import '../../support/settings_help.dart';
 
 void main() {
+  testWidgets('APOD selection persists and only shows its own controls and collapsed help', (tester) async {
+    final root = (await tester.runAsync(() => Directory.systemTemp.createTemp('cute-apod-ui-')))!;
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    final service = OnlineWallpaperService(prefs, directory: () async => root);
+    await service.configure(const OnlineWallpaperConfiguration(source: 'bing'));
+    await tester.pumpWidget(ChangeNotifierProvider.value(value: service, child: const MaterialApp(
+      locale: Locale('ru'), localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales, home: Scaffold(body: OnlineWallpaperPage()))));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Источник изображения'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('NASA APOD — астрономическая картинка дня'));
+    await tester.pumpAndSettle();
+    expect(OnlineWallpaperConfiguration.decode(prefs.getString(onlineWallpaperKey)).source, 'apod');
+    expect(find.text('Адрес изображения (HTTPS)'), findsNothing);
+    expect(find.text('Интервал загрузки'), findsNothing);
+    expect(find.textContaining('Ежедневное изображение NASA APOD'), findsNothing);
+    await toggleSettingsHelp(tester, 'Ежедневное изображение NASA APOD');
+    expect(find.textContaining('Ежедневное изображение NASA APOD'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox());
+    service.dispose();
+    await tester.runAsync(() => root.delete(recursive: true));
+  });
   testWidgets('refresh button always downloads Bing again, including immediate offline retry', (tester) async {
     final root = (await tester.runAsync(() => Directory.systemTemp.createTemp('cute-refresh-ui-')))!;
     SharedPreferences.setMockInitialValues({});

@@ -4,6 +4,7 @@ import 'package:flauncher/providers/remote_panel_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/system_status_service.dart';
 import 'package:flauncher/settings_import.dart';
+import 'package:flauncher/settings_sync.dart';
 import 'package:flauncher/widgets/system_status_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,6 +18,15 @@ void main() {
     final prefs = await SharedPreferences.getInstance();
     final settings = SettingsService(prefs), panel = RemotePanelService(prefs);
     expect(settings.showSystemInStatusBar, isFalse);
+    expect(settings.systemUpdateInterval, 5);
+    await settings.setSystemUpdateInterval(0);
+    expect(settings.systemUpdateInterval, 1);
+    await settings.setSystemUpdateInterval(99);
+    expect(settings.systemUpdateInterval, 10);
+    await settings.setSystemUpdateInterval(3);
+    final restoredSettings = SettingsService(prefs);
+    expect(restoredSettings.systemUpdateInterval, 3);
+    restoredSettings.dispose();
     expect(panel.visible('system'), isFalse);
     await panel.show('weather', false);
     await panel.show('system', true);
@@ -33,9 +43,11 @@ void main() {
       'show_system_in_status_bar',
       'system_show_cpu',
       'system_show_ram',
+      'system_update_interval',
     ]) {
       expect(valid[key], exported[key]);
       expect(backupSyncPartGroup('setting:$key'), BackupSyncGroup.topPanel);
+      expect(syncSettingsKeys, contains(key));
     }
     await panel.show('system', false);
     expect(panel.visible('system'), isFalse);

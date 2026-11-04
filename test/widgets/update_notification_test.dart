@@ -211,6 +211,8 @@ void main() {
       expect(find.text('Обновление приложения: 50%'), findsOneWidget);
       downloaded.complete(File('update.apk'));
       await tester.pump();
+      // The notice host removes its overlay after the completed frame.
+      await tester.pump();
       expect(find.text('Обновление приложения: 50%'), findsNothing);
       installed.complete('permission');
       await tester.pumpAndSettle();

@@ -4514,8 +4514,11 @@ class AppLocalizationsKo extends AppLocalizations {
   String get systemHourAgo => '−60분';
 
   @override
+  String get systemUpdateInterval => '갱신 간격';
+
+  @override
   String get systemWidgetHelp =>
-      '런처가 보이는 동안 5초마다 갱신됩니다. 그래프는 분 단위 평균과 최고값을 표시합니다. 다른 앱 사용, 절전 및 읽기 오류 구간은 비워 둡니다. 기록은 메모리에 저장되며 런처 프로세스를 다시 시작하면 초기화됩니다. CPU와 온도는 펌웨어에 따라 제공됩니다. 패널의 두 값을 모두 끄면 아이콘만 표시됩니다.';
+      '패널이 보이는 동안 선택한 1~10초 간격으로 갱신됩니다(기본값 5초). 그래프는 분 단위 평균과 최고값을 표시합니다. 다른 앱 사용, 절전 및 읽기 오류 구간은 비워 둡니다. 기록은 메모리에 저장되며 런처 프로세스를 다시 시작하면 초기화됩니다. CPU와 온도는 펌웨어에 따라 제공됩니다. 패널의 두 값을 모두 끄면 아이콘만 표시됩니다.';
 
   @override
   String get slideshowBrowseFolders => '폴더 찾아보기';
@@ -4684,7 +4687,13 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get informationBackgroundHelp =>
-      '시계, 날짜, 날씨마다 상단 패널, 배경화면 또는 숨김을 선택하세요. 배경화면 요소는 입력에 반응하지 않고 타일 위치를 바꾸지 않습니다. 동적 풍경에서는 산이 시계 일부를 가립니다. 빠른 설정은 독립적으로 유지됩니다.';
+      '시계, 날짜, 날씨마다 상단 패널, 배경화면 또는 숨김을 선택하세요. 배경화면 요소는 입력에 반응하지 않고 타일 위치를 바꾸지 않습니다. 빠른 설정은 독립적으로 유지됩니다. 두 설정은 배경의 시간, 날짜, 날씨 블록 전체에 적용됩니다. 첫 번째는 산에 가려지지 않게 하고, 두 번째는 구름, 비, 눈, 안개 앞에 블록을 표시합니다.';
+
+  @override
+  String get informationAboveLandscape => '풍경 앞에 표시';
+
+  @override
+  String get informationAboveWeather => '날씨 효과 앞에 표시';
 
   @override
   String get informationTime => '시계';
@@ -4860,4 +4869,58 @@ class AppLocalizationsKo extends AppLocalizations {
   String networkSpeedUnit(String unit) {
     return '$unit/초';
   }
+
+  @override
+  String get customDateFormat => '사용자 지정 형식';
+
+  @override
+  String get customDateFormatError =>
+      '도움말의 날짜 기호를 사용하세요. 텍스트는 작은따옴표로 묶고 따옴표를 닫으세요.';
+
+  @override
+  String get customDateFormatHelp =>
+      'd / dd — 일\nM / MM — 월 숫자\nMMM / MMMM — 짧은 / 전체 월 이름\nEEE / EEEE — 짧은 / 전체 요일\nyy / yyyy — 연도\nL…LLLL — 독립형 월\nD…DDD — 연중 일수; G — 연호\n구분자: 공백, . / - ,\n텍스트: \'날짜:\'; 따옴표 한 개: \'\'\n대소문자를 구분합니다. 시간 기호는 지원하지 않습니다.\n예: EEEE, d. MMMM yyyy';
+
+  @override
+  String get apodWallpaper => 'NASA APOD — 오늘의 천체 사진';
+
+  @override
+  String get apodWallpaperHint =>
+      'NASA APOD의 일일 이미지입니다. 동영상이 게시된 날에는 최근 이미지를 사용합니다. 크기와 가로세로 비율은 다릅니다. 저작자와 게시물 링크가 여기에 표시됩니다. 이미지의 권리는 각 권리자에게 있습니다.';
+
+  @override
+  String get backupDriveClientImport => 'JSON에서 Client ID 및 Secret 가져오기';
+
+  @override
+  String get backupDriveClientImported =>
+      '클라이언트 정보를 가져왔습니다. Google Drive에 연결하세요.';
+
+  @override
+  String get backupDriveClientImportFailed =>
+      '가져올 수 없습니다. Google Cloud의 TVs and Limited Input devices용 JSON 파일을 선택하세요(최대 64 KiB).';
+
+  @override
+  String get dateFormatPreview => '미리 보기';
+
+  @override
+  String get backupDriveConnectionStatus => 'Google Drive 연결 상태';
+
+  @override
+  String get backupDriveReconnect => 'Google Drive 다시 연결';
+
+  @override
+  String get backupSyncRefresh => '새로고침';
+
+  @override
+  String get backupSyncRefreshFailed =>
+      '설정을 동기화할 수 없습니다. 저장소 접근 권한을 확인하고 다시 시도하세요.';
+
+  @override
+  String get backupThisTv => '이 TV';
+
+  @override
+  String get backupOtherTv => '다른 TV';
+
+  @override
+  String get backupTvUnknown => 'TV 알 수 없음';
 }

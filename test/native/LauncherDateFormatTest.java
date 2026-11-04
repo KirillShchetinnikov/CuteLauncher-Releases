@@ -13,6 +13,10 @@ public final class LauncherDateFormatTest {
                 LauncherDateFormat.locale("en"), "EEEE d"));
         check("15:45", LauncherDateFormat.format("invalid", calendar.getTime(), Locale.US, "H:mm"));
         check("ru", LauncherDateFormat.locale("ru_RU").getLanguage());
+        check("Friday, 2. October 2026", LauncherDateFormat.format("EEEE, d. MMMM yyyy",
+                calendar.getTime(), Locale.US, "EEEE d"));
+        check("Дата: 02.10.2026", LauncherDateFormat.format("'Дата:' dd.MM.yyyy",
+                calendar.getTime(), LauncherDateFormat.locale("ru"), "EEEE d"));
         System.out.println("Launcher date format checks passed");
     }
 

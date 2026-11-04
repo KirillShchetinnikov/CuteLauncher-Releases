@@ -2,6 +2,40 @@
   "schemaVersion": 1,
   "devices": [
     {
+      "id": "tcl-c655-pro-65-android12-user",
+      "label": "TCL C655 Pro 65 — Android 12 по сообщению пользователя",
+      "kind": "physical",
+      "exactMatch": false,
+      "identity": {
+        "manufacturer": "TCL",
+        "model": "C655 Pro 65",
+        "device": "G10",
+        "fingerprint": "TCL/G10_4K_GB/G10:12/STT2.230203.001/AS16:user/release-keys",
+        "firmware": "STT2.230203.001 AS16 release-keys",
+        "android": "12",
+        "sdk": "31",
+        "abis": null
+      },
+      "results": [
+        {
+          "feature": "file-access-adb-as16",
+          "status": "limitation",
+          "date": "2026-11-04",
+          "appBuild": "1.6.7+194, targetSdk=35, minSdk=28",
+          "summary": "Пользователь прислал shell-вывод: Android 12/API31, fingerprint G10 AS16. В установленном CuteLauncher объявлены READ_EXTERNAL_STORAGE и MANAGE_EXTERNAL_STORAGE; READ_EXTERNAL_STORAGE granted=false. MANAGE_EXTERNAL_STORAGE granted=false в dumpsys не заменяет проверку AppOps. Дополнительная команда AppOps CuteLauncher вернула No operations; Default mode: default, явной выдачи полного доступа нет. Для File Manager + получено Uid mode MANAGE_EXTERNAL_STORAGE allow при отдельной записи default. APPLICATION_DETAILS_SETTINGS для CuteLauncher принят без ошибки, содержимое карточки пока не прислано. Исправление маршрута +195 на этом ТВ не проверено.",
+          "evidenceSection": "TCL C655 Pro G10 AS16 — ADB-диагностика файлов, 4 ноября 2026"
+        },
+        {
+          "feature": "file-permission-route",
+          "status": "failed",
+          "date": "2026-11-04",
+          "appBuild": "1.6.7 по сообщению пользователя",
+          "summary": "На присланном видео подтверждён переход из ручного пути слайд-шоу в OEM-экран «Фильтр разрешений» без файлового переключателя. На другом видео Файловый менеджер + 3.8.3 открывает карточку приложения и выдачу полного доступа через «Файлы и медиаконтент», затем показывает файлы. Пользователь сообщает отсутствие CuteLauncher в общем файловом списке, показана часть списка. Компонент фильтра и установленный manifest не получены. Точная прошивка неизвестна; это отдельный пользователь, связь с C6K AS35 не предполагается.",
+          "evidenceSection": "TCL C655 Pro Android 12 — файловые разрешения, 4 ноября 2026"
+        }
+      ]
+    },
+    {
       "id": "tcl43-g10-android14-au01",
       "label": "TCL 43 — текущее устройство",
       "kind": "physical",

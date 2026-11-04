@@ -108,6 +108,10 @@ void main() {
           cloud.notifyListeners();
         }
         await tester.pumpAndSettle();
+        final connectedAction = google
+            ? l.backupDriveReconnect
+            : l.cloudConnect;
+        expectEnabled(connectedAction, true);
         expectEnabled(l.cloudDisconnect, true);
         if (google) {
           drive.busy = true;
@@ -117,7 +121,7 @@ void main() {
           cloud.notifyListeners();
         }
         await tester.pump();
-        expectEnabled(google ? l.backupDriveConnect : l.cloudConnect, false);
+        expectEnabled(connectedAction, false);
         expectEnabled(l.cloudDisconnect, false);
         await tester.pumpWidget(const SizedBox());
         drive.dispose();

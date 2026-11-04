@@ -177,6 +177,12 @@ class InformationSettingsPage extends StatelessWidget {
             const InformationDataSettingsPage(),
             InformationDataSettingsPage.routeName,
           ),
+          _informationPage(
+            context,
+            l.weatherSettings,
+            const WeatherPage(),
+            WeatherPage.routeName,
+          ),
         ],
       ),
     );
@@ -248,12 +254,6 @@ class InformationDataSettingsPage extends StatelessWidget {
         children: [
           const TimeFormatSettingsTile(),
           const DateFormatSettingsTile(),
-          _informationPage(
-            context,
-            l.weatherSettings,
-            const WeatherPage(),
-            WeatherPage.routeName,
-          ),
         ],
       ),
     );
@@ -273,6 +273,18 @@ class BackgroundInformationSettingsPage extends StatelessWidget {
       child: ListView(
         children: [
           SettingsHelp(text: l.informationBackgroundHelp),
+          RoundedSwitchListTile(
+            title: Text(l.informationAboveLandscape),
+            value: appearance.backgroundInformationAboveLandscape,
+            onChanged: (value) =>
+                service.set('panelBackgroundInformationAboveLandscape', value),
+          ),
+          RoundedSwitchListTile(
+            title: Text(l.informationAboveWeather),
+            value: appearance.backgroundInformationAboveWeather,
+            onChanged: (value) =>
+                service.set('panelBackgroundInformationAboveWeather', value),
+          ),
           _informationPage(
             context,
             l.panelObjectOrder,

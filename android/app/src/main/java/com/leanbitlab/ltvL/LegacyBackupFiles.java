@@ -7,7 +7,7 @@ import java.util.*;
 /** Bounded Android 9 Downloads backend. Partial writes never enter the backup listing. */
 final class LegacyBackupFiles {
     static final long LIMIT = 64L * 1024 * 1024;
-    static final String NAME = "^cute-(backup|sync)-(shared|[a-f0-9]{32})-[a-f0-9]{32}-[0-9]+-[a-f0-9]{16}\\.json$";
+    static final String NAME = "^cute-(backup|sync)-(shared|[a-f0-9]{32})-[a-f0-9]{32}-[0-9]+-[a-f0-9]{16}(?:-[A-Za-z0-9_]{1,64})?\\.json$";
     private final File directory;
 
     LegacyBackupFiles(File directory) throws IOException {

@@ -22,7 +22,7 @@ final class BackupFolder {
     static final int REQUEST = 4109;
     private static final long LIMIT = 64L * 1024 * 1024;
     private static final String DOWNLOADS = "cutelauncher://downloads/CuteLauncher";
-    private static final String NAME = "^cute-(backup|sync)-(shared|[a-f0-9]{32})-[a-f0-9]{32}-[0-9]+-[a-f0-9]{16}\\.json$";
+    private static final String NAME = "^cute-(backup|sync)-(shared|[a-f0-9]{32})-[a-f0-9]{32}-[0-9]+-[a-f0-9]{16}(?:-[A-Za-z0-9_]{1,64})?\\.json$";
     private final Activity activity;
     private final ExecutorService executor;
     private final LegacyStorageAccess storageAccess;

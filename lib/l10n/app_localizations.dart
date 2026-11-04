@@ -8600,10 +8600,16 @@ abstract class AppLocalizations {
   /// **'−60 min'**
   String get systemHourAgo;
 
+  /// No description provided for @systemUpdateInterval.
+  ///
+  /// In en, this message translates to:
+  /// **'Update interval'**
+  String get systemUpdateInterval;
+
   /// No description provided for @systemWidgetHelp.
   ///
   /// In en, this message translates to:
-  /// **'Readings update every 5 seconds while the launcher is visible. Graphs show minute averages and peaks. Other apps, sleep and read failures leave gaps. History stays in memory and resets when the launcher process restarts. CPU and temperature depend on the firmware. Turn off both panel values to show only the icon.'**
+  /// **'Readings update at the selected interval of 1–10 seconds (5 by default) while the panel is visible. Graphs show minute averages and peaks. Other apps, sleep and read failures leave gaps. History stays in memory and resets when the launcher process restarts. CPU and temperature depend on the firmware. Turn off both panel values to show only the icon.'**
   String get systemWidgetHelp;
 
   /// No description provided for @slideshowBrowseFolders.
@@ -8921,8 +8927,20 @@ abstract class AppLocalizations {
   /// No description provided for @informationBackgroundHelp.
   ///
   /// In en, this message translates to:
-  /// **'Choose top panel, wallpaper or hidden separately for the clock, date and weather. Wallpaper elements do not respond to input or move tiles. In the adaptive landscape, mountains overlap the clock. Quick settings remain independent.'**
+  /// **'Choose top panel, wallpaper or hidden separately for the clock, date and weather. Wallpaper elements do not respond to input or move tiles. Quick settings remain independent. Both switches apply to the entire background block: time, date and weather. The first removes mountain overlap; the second places the block above clouds, precipitation and fog.'**
   String get informationBackgroundHelp;
+
+  /// No description provided for @informationAboveLandscape.
+  ///
+  /// In en, this message translates to:
+  /// **'Above landscape'**
+  String get informationAboveLandscape;
+
+  /// No description provided for @informationAboveWeather.
+  ///
+  /// In en, this message translates to:
+  /// **'Above weather effects'**
+  String get informationAboveWeather;
 
   /// No description provided for @informationTime.
   ///
@@ -9187,6 +9205,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{unit}/s'**
   String networkSpeedUnit(String unit);
+
+  /// No description provided for @customDateFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom format'**
+  String get customDateFormat;
+
+  /// No description provided for @customDateFormatError.
+  ///
+  /// In en, this message translates to:
+  /// **'Use date symbols from the guide. Quote literal text and close all quotes.'**
+  String get customDateFormatError;
+
+  /// No description provided for @customDateFormatHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'d / dd — day\nM / MM — month number\nMMM / MMMM — short / full month name\nEEE / EEEE — short / full weekday\nyy / yyyy — year\nL…LLLL — standalone month\nD…DDD — day of year; G — era\nSeparators: spaces, . / - ,\nLiteral text: \'Date:\'; one apostrophe: \'\'\nCase matters. Time symbols are not supported.\nExample: EEEE, d. MMMM yyyy'**
+  String get customDateFormatHelp;
+
+  /// No description provided for @apodWallpaper.
+  ///
+  /// In en, this message translates to:
+  /// **'NASA APOD — astronomy picture of the day'**
+  String get apodWallpaper;
+
+  /// No description provided for @apodWallpaperHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A daily image from NASA APOD. Video days use a recent image. Image sizes and aspect ratios vary. Author credits and the publication link appear here. Images belong to their respective owners.'**
+  String get apodWallpaperHint;
+
+  /// No description provided for @backupDriveClientImport.
+  ///
+  /// In en, this message translates to:
+  /// **'Import Client ID and Secret from JSON'**
+  String get backupDriveClientImport;
+
+  /// No description provided for @backupDriveClientImported.
+  ///
+  /// In en, this message translates to:
+  /// **'Client details imported. Connect Google Drive.'**
+  String get backupDriveClientImported;
+
+  /// No description provided for @backupDriveClientImportFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not import client details. Select a Google Cloud JSON for TVs and Limited Input devices, up to 64 KiB.'**
+  String get backupDriveClientImportFailed;
+
+  /// No description provided for @dateFormatPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get dateFormatPreview;
+
+  /// No description provided for @backupDriveConnectionStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Drive connection status'**
+  String get backupDriveConnectionStatus;
+
+  /// No description provided for @backupDriveReconnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Reconnect Google Drive'**
+  String get backupDriveReconnect;
+
+  /// No description provided for @backupSyncRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get backupSyncRefresh;
+
+  /// No description provided for @backupSyncRefreshFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not synchronize settings. Check storage access and try again.'**
+  String get backupSyncRefreshFailed;
+
+  /// No description provided for @backupThisTv.
+  ///
+  /// In en, this message translates to:
+  /// **'This TV'**
+  String get backupThisTv;
+
+  /// No description provided for @backupOtherTv.
+  ///
+  /// In en, this message translates to:
+  /// **'Another TV'**
+  String get backupOtherTv;
+
+  /// No description provided for @backupTvUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'TV unknown'**
+  String get backupTvUnknown;
 }
 
 class _AppLocalizationsDelegate

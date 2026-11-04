@@ -15,6 +15,7 @@ import '../../providers/backup_automation_service.dart';
 import 'backup_management_block.dart';
 import 'backup_sync_groups_page.dart';
 import '../rounded_switch_list_tile.dart';
+import '../action_notice.dart';
 import 'cloud_backup_page.dart';
 import 'drive_backup_page.dart';
 import 'local_backup_page.dart';
@@ -171,6 +172,21 @@ class AutomaticBackupPage extends StatelessWidget {
                   ),
                   icon: Icons.tune,
                 ),
+                if (service.mode == BackupMode.synchronization)
+                  button(
+                    l.backupSyncRefresh,
+                    () async {
+                      final success = await service.run(manual: true);
+                      if (!context.mounted) return;
+                      showActionNotice(
+                        context,
+                        success ? l.cloudSuccess : l.backupSyncRefreshFailed,
+                        error: !success,
+                      );
+                    },
+                    icon: Icons.sync,
+                    requiresStorage: true,
+                  ),
               ],
             ),
           ),

@@ -4691,8 +4691,11 @@ class AppLocalizationsEs extends AppLocalizations {
   String get systemHourAgo => '−60 min';
 
   @override
+  String get systemUpdateInterval => 'Intervalo de actualización';
+
+  @override
   String get systemWidgetHelp =>
-      'Los valores se actualizan cada 5 segundos mientras el lanzador está visible. Los gráficos muestran medias y picos por minuto. Otras apps, la suspensión y los errores de lectura dejan huecos. El historial se guarda en memoria y se borra al reiniciar el proceso del lanzador. CPU y temperatura dependen del firmware. Desactiva ambos valores del panel para mostrar solo el icono.';
+      'Los valores se actualizan con el intervalo elegido de 1 a 10 segundos (5 por defecto) mientras el panel está visible. Los gráficos muestran medias y picos por minuto. Otras apps, la suspensión y los errores de lectura dejan huecos. El historial se guarda en memoria y se borra al reiniciar el proceso del lanzador. CPU y temperatura dependen del firmware. Desactiva ambos valores del panel para mostrar solo el icono.';
 
   @override
   String get slideshowBrowseFolders => 'Explorar carpetas';
@@ -4867,7 +4870,13 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get informationBackgroundHelp =>
-      'Elige panel superior, fondo u oculto por separado para reloj, fecha y tiempo. Los elementos del fondo no responden a pulsaciones ni mueven los mosaicos. En el paisaje adaptable las montañas cubren parte del reloj. Los ajustes rápidos son independientes.';
+      'Elige panel superior, fondo u oculto por separado para reloj, fecha y tiempo. Los elementos del fondo no responden a pulsaciones ni mueven los mosaicos. Los ajustes rápidos son independientes. Ambas opciones se aplican a todo el bloque del fondo: hora, fecha y tiempo. La primera evita que las montañas lo oculten; la segunda lo sitúa por encima de las nubes, las precipitaciones y la niebla.';
+
+  @override
+  String get informationAboveLandscape => 'Encima del paisaje';
+
+  @override
+  String get informationAboveWeather => 'Encima de los efectos meteorológicos';
 
   @override
   String get informationTime => 'Reloj';
@@ -5049,4 +5058,60 @@ class AppLocalizationsEs extends AppLocalizations {
   String networkSpeedUnit(String unit) {
     return '$unit/s';
   }
+
+  @override
+  String get customDateFormat => 'Formato personalizado';
+
+  @override
+  String get customDateFormatError =>
+      'Use los símbolos de fecha de la ayuda. Ponga el texto entre comillas simples y ciérrelas.';
+
+  @override
+  String get customDateFormatHelp =>
+      'd / dd — día\nM / MM — número de mes\nMMM / MMMM — mes abreviado / completo\nEEE / EEEE — día de semana abreviado / completo\nyy / yyyy — año\nL…LLLL — mes independiente\nD…DDD — día del año; G — era\nSeparadores: espacio, . / - ,\nTexto: \'Fecha:\'; apóstrofo: \'\'\nSe distinguen mayúsculas. No se admiten símbolos de hora.\nEjemplo: EEEE, d. MMMM yyyy';
+
+  @override
+  String get apodWallpaper => 'NASA APOD — imagen astronómica del día';
+
+  @override
+  String get apodWallpaperHint =>
+      'Imagen diaria de NASA APOD. En días con vídeo se usa una imagen reciente. El tamaño y las proporciones varían. Aquí aparecen el autor y el enlace a la publicación. Las imágenes pertenecen a sus respectivos propietarios.';
+
+  @override
+  String get backupDriveClientImport =>
+      'Importar Client ID y Secret desde JSON';
+
+  @override
+  String get backupDriveClientImported =>
+      'Datos del cliente importados. Conecta Google Drive.';
+
+  @override
+  String get backupDriveClientImportFailed =>
+      'No se pudieron importar los datos. Selecciona un JSON de Google Cloud para TVs and Limited Input devices de hasta 64 KiB.';
+
+  @override
+  String get dateFormatPreview => 'Vista previa';
+
+  @override
+  String get backupDriveConnectionStatus =>
+      'Estado de conexión de Google Drive';
+
+  @override
+  String get backupDriveReconnect => 'Volver a conectar Google Drive';
+
+  @override
+  String get backupSyncRefresh => 'Actualizar';
+
+  @override
+  String get backupSyncRefreshFailed =>
+      'No se pudieron sincronizar los ajustes. Comprueba el acceso al almacenamiento e inténtalo de nuevo.';
+
+  @override
+  String get backupThisTv => 'Este televisor';
+
+  @override
+  String get backupOtherTv => 'Otro televisor';
+
+  @override
+  String get backupTvUnknown => 'Televisor desconocido';
 }

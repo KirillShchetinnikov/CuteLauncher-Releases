@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/widgets.dart';
+import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -22,6 +23,7 @@ import 'drive_backup_service.dart';
 import 'settings_service.dart';
 import 'foreground_work.dart';
 import 'apps_service.dart';
+
 import 'package:collection/collection.dart';
 
 enum BackupDestination { webdav, googleDrive, local }
@@ -37,6 +39,9 @@ class BackupAutomationService extends ChangeNotifier
   final CloudBackupService webdav;
   final DriveBackupService drive;
   final List<ChangeNotifier> sources;
+  final Future<Map?> Function() identityLoader;
+  String get deviceLabel =>
+      preferences.getString('backup_transport_device_label') ?? 'TV';
   final List<ChangeNotifier> databaseSources, resourceSources;
   final Map<ChangeNotifier, VoidCallback> _callbacks = {};
   final Future<void> Function(File) apply;
@@ -154,7 +159,8 @@ class BackupAutomationService extends ChangeNotifier
     _storage = storage;
     try {
       final files = await storage.list();
-      if (!files.any((f) => f.name == selected.name && f.id == selected.id)) {
+      if (!selected.name.startsWith('cute-backup-') ||
+          !files.any((f) => f.name == selected.name && f.id == selected.id)) {
         throw StateError('Copy missing');
       }
       await storage.delete(selected);
@@ -195,7 +201,12 @@ class BackupAutomationService extends ChangeNotifier
     DateTime Function()? now,
     BackupStorage Function(bool)? storageFactory,
     this.work,
-  }) : directory = directory ?? getApplicationDocumentsDirectory,
+    Future<Map?> Function()? identityLoader,
+  }) : identityLoader =
+           identityLoader ??
+           (() => const MethodChannel('me.efesser.flauncher/method')
+               .invokeMethod<Map>('getBackupDeviceIdentity')),
+       directory = directory ?? getApplicationDocumentsDirectory,
        now = now ?? DateTime.now,
        storageFactory =
            storageFactory ??
@@ -236,19 +247,22 @@ class BackupAutomationService extends ChangeNotifier
   }
 
   Map<String, Object?> _settingsValues() => <String, Object?>{
-      ...settings.exportSettingsMap(),
-      for (final key in preferences.getKeys())
-        if (!isDeviceLocalBackupKey(key)) key: preferences.get(key),
-    }..removeWhere((key, _) => isDeviceLocalBackupKey(key));
+    ...settings.exportSettingsMap(),
+    for (final key in preferences.getKeys())
+      if (!isDeviceLocalBackupKey(key)) key: preferences.get(key),
+  }..removeWhere((key, _) => isDeviceLocalBackupKey(key));
 
   Map<String, String> _settingsHashes() {
     final values = _settingsValues();
-    final keys = values.keys.where((key) => !isDeviceLocalBackupKey(key)).toSet();
+    final keys = values.keys
+        .where((key) => !isDeviceLocalBackupKey(key))
+        .toSet();
     _hashes.removeWhere((key, _) => !keys.contains(key));
     _hashValues.removeWhere((key, _) => !keys.contains(key));
     for (final key in keys) {
       final value = values[key];
-      if (!_hashes.containsKey(key) || !const DeepCollectionEquality().equals(value, _hashValues[key])) {
+      if (!_hashes.containsKey(key) ||
+          !const DeepCollectionEquality().equals(value, _hashValues[key])) {
         _hashes[key] = backupFingerprint(value);
         // SharedPreferences string lists must not mutate the comparison baseline.
         _hashValues[key] = value is List ? List.of(value) : value;
@@ -261,6 +275,23 @@ class BackupAutomationService extends ChangeNotifier
       File('${(await directory()).path}/backup_sync_state.json');
   Future<void> _initialize() async {
     try {
+      // The native bridge returns a domain-separated hash, never raw Android ID.
+      try {
+        final identity = await identityLoader().timeout(
+          const Duration(seconds: 5),
+        );
+        final id = identity?['id'];
+        final label = identity?['label'];
+        if (id is String && RegExp(r'^[a-f0-9]{32}$').hasMatch(id)) {
+          await _set('backup_transport_device', id);
+        }
+        if (label is String &&
+            RegExp(r'^[A-Za-z0-9_]{1,64}$').hasMatch(label)) {
+          await _set('backup_transport_device_label', label);
+        }
+      } catch (_) {
+        // Keep the installation ID when the firmware cannot supply an identity.
+      }
       if (preferences.getString('backup_transport_device') == null) {
         await _set('backup_transport_device', _random(16));
       }
@@ -373,8 +404,11 @@ class BackupAutomationService extends ChangeNotifier
       if (_appRevisions[source] == source.contentRevision) return;
       _appRevisions[source] = source.contentRevision;
     }
-    if (!databaseSources.contains(source) && !resourceSources.contains(source) &&
-        const DeepCollectionEquality().equals(_settingsValues(), _hashValues)) { return; }
+    if (!databaseSources.contains(source) &&
+        !resourceSources.contains(source) &&
+        const DeepCollectionEquality().equals(_settingsValues(), _hashValues)) {
+      return;
+    }
     // Reserve a revision immediately: a fast remote reply must not overwrite
     // a local edit while its batched fingerprint is still waiting for the timer.
     if (_changedSources.isEmpty) _revision++;
@@ -391,7 +425,8 @@ class BackupAutomationService extends ChangeNotifier
     final hashes = _settingsHashes();
     final stamp = now().millisecondsSinceEpoch;
     var changed =
-        databaseSources.any(sources.contains) || resourceSources.any(sources.contains);
+        databaseSources.any(sources.contains) ||
+        resourceSources.any(sources.contains);
     for (final key in {...hashes.keys, ..._observedSettings.keys}) {
       if (hashes[key] != _observedSettings[key]) {
         _changeTimes[key] = stamp;
@@ -403,7 +438,9 @@ class BackupAutomationService extends ChangeNotifier
       ..addAll(hashes);
     if (!changed) return;
     if (databaseSources.any(sources.contains)) _changeTimes['database'] = stamp;
-    if (resourceSources.any(sources.contains)) _changeTimes['resources'] = stamp;
+    if (resourceSources.any(sources.contains)) {
+      _changeTimes['resources'] = stamp;
+    }
     final encoded = jsonEncode(_changeTimes);
     _pendingTimes = _pendingTimes
         .then((_) => _set('backup_transport_change_times', encoded))
@@ -538,7 +575,9 @@ class BackupAutomationService extends ChangeNotifier
       }
       final captureRevision = _revision;
       var localDocument = await _capture(root);
-      if (_disposed || !_foreground || captureRevision != _revision) throw StateError('Local settings changed during capture');
+      if (_disposed || !_foreground || captureRevision != _revision) {
+        throw StateError('Local settings changed during capture');
+      }
       final originalDocument = localDocument;
       final unchanged =
           _baseline != null &&
@@ -548,7 +587,7 @@ class BackupAutomationService extends ChangeNotifier
           unchanged &&
           lastSuccess != null) {
         await _set(
-          'backup_transport_checked_${destination.name}_${mode.name}',
+          'backup_transport_checked_${destination.name}_${operationMode.name}',
           now().millisecondsSinceEpoch,
         );
         return true;
@@ -570,14 +609,21 @@ class BackupAutomationService extends ChangeNotifier
         final revision = _revision;
         for (final file in heads.values) {
           final downloaded = await storage.download(file, root);
-          localDocument = await mergeBackup(localDocument, await readBackupJson(downloaded.path));
+          localDocument = await mergeBackup(
+            localDocument,
+            await readBackupJson(downloaded.path),
+          );
           await downloaded.delete();
         }
-        localDocument = await preserveBackupGroups(localDocument, originalDocument);
+        localDocument = await preserveBackupGroups(
+          localDocument,
+          originalDocument,
+        );
         if (_disposed || !_foreground || revision != _revision) {
           throw StateError('Local settings changed during synchronization');
         }
-        if (await fingerprintBackup(localDocument.backup) != _baselineFingerprint) {
+        if (await fingerprintBackup(localDocument.backup) !=
+            _baselineFingerprint) {
           if (!await local.createNow()) {
             throw StateError('Restore point failed');
           }
@@ -586,7 +632,9 @@ class BackupAutomationService extends ChangeNotifier
           }
           final file = File('${root.path}/merged.json');
           await writeBackupJson(file.path, localDocument.backup);
-          if (_disposed || !_foreground || revision != _revision) throw StateError('Local settings changed during synchronization');
+          if (_disposed || !_foreground || revision != _revision) {
+            throw StateError('Local settings changed during synchronization');
+          }
           _applying = true;
           try {
             await apply(file);
@@ -605,19 +653,26 @@ class BackupAutomationService extends ChangeNotifier
         (preferences.getInt('backup_transport_sequence') ?? 0) + 1,
       );
       await _set('backup_transport_sequence', stamp);
-      final name = '$prefix$device-$stamp-${_random(8)}.json';
+      final name = '$prefix$device-$stamp-${_random(8)}-$deviceLabel.json';
       final upload = File('${root.path}/upload.json');
-      await writeBackupJson(upload.path, operationMode == BackupMode.backup ? localDocument.backup : localDocument.toJson());
+      await writeBackupJson(
+        upload.path,
+        operationMode == BackupMode.backup
+            ? localDocument.backup
+            : localDocument.toJson(),
+      );
       await storage.upload(upload, name);
-      if (operationMode == BackupMode.backup) {
+      if (operationMode == BackupMode.backup && mode == BackupMode.backup) {
         await _saveBaseline(localDocument);
       }
+      if (operationMode == mode) {
+        await _set(
+          'backup_transport_success_${destination.name}',
+          now().millisecondsSinceEpoch,
+        );
+      }
       await _set(
-        'backup_transport_success_${destination.name}',
-        now().millisecondsSinceEpoch,
-      );
-      await _set(
-        'backup_transport_checked_${destination.name}_${mode.name}',
+        'backup_transport_checked_${destination.name}_${operationMode.name}',
         now().millisecondsSinceEpoch,
       );
       final owned =
@@ -647,6 +702,21 @@ class BackupAutomationService extends ChangeNotifier
     }
   }
 
+  static String copyDeviceLabel(RemoteBackupFile file) {
+    final parts = file.name.replaceFirst(RegExp(r'\.json$'), '').split('-');
+    return parts.length == 7
+        ? "${parts[6].replaceAll('_', ' ')} · ${parts[3].substring(0, 6)}"
+        : 'TV ${parts[3].substring(0, 6)}';
+  }
+
+  /// Old mismatching installation IDs cannot identify a different physical TV.
+  static bool? copyBelongsToDevice(RemoteBackupFile file, String device) {
+    if (!BackupStorage.validName.hasMatch(file.name)) return null;
+    final parts = file.name.split('-');
+    if (parts[3] == device) return true;
+    return parts.length == 7 ? false : null;
+  }
+
   static int _stamp(RemoteBackupFile file) =>
       int.parse(file.name.split('-')[4]);
   static DateTime createdAt(RemoteBackupFile file) =>
@@ -666,16 +736,10 @@ class BackupAutomationService extends ChangeNotifier
     try {
       final files =
           (await storage.list())
-              .where(
-                (f) => f.name.startsWith(
-                  'cute-${mode == BackupMode.backup ? 'backup' : 'sync'}-',
-                ),
-              )
+              .where((f) => f.name.startsWith('cute-backup-'))
               .toList()
             ..sort((a, b) => _stamp(b).compareTo(_stamp(a)));
-      return mode == BackupMode.synchronization
-          ? files.take(1).toList()
-          : files;
+      return files;
     } finally {
       _storage = null;
       busy = false;
@@ -684,7 +748,10 @@ class BackupAutomationService extends ChangeNotifier
     }
   }
 
-  Future<void> importLatest({RemoteBackupFile? selected}) async {
+  Future<void> importLatest({
+    RemoteBackupFile? selected,
+    bool backupOnly = false,
+  }) async {
     await initialized;
     if (_disposed || !_foreground || busy || !configured) {
       throw StateError('Connection is unavailable');
@@ -703,14 +770,19 @@ class BackupAutomationService extends ChangeNotifier
       final files =
           (await storage.list())
               .where(
-                (f) =>
-                    f.name.startsWith('cute-backup-$scope-') ||
-                    f.name.startsWith('cute-sync-$scope-'),
+                (f) => backupOnly
+                    ? f.name.startsWith('cute-backup-')
+                    : f.name.startsWith('cute-backup-$scope-') ||
+                          f.name.startsWith('cute-sync-$scope-'),
               )
               .toList()
             ..sort((a, b) => _stamp(b).compareTo(_stamp(a)));
       if (selected == null && files.isEmpty) {
         throw StateError('No server backup');
+      }
+      if (selected != null &&
+          !files.any((f) => f.name == selected.name && f.id == selected.id)) {
+        throw StateError('Copy unavailable');
       }
       final file = await storage.download(selected ?? files.first, root);
       final data = jsonDecode(
@@ -765,8 +837,13 @@ class BackupAutomationService extends ChangeNotifier
     _foreground = state == AppLifecycleState.resumed;
     if (_foreground) {
       _changed();
-      if (work == null) { checkDue(); }
-      else { work!.schedule(_resumeWork, () async { await checkDue(); }, delay: const Duration(seconds: 2)); }
+      if (work == null) {
+        checkDue();
+      } else {
+        work!.schedule(_resumeWork, () async {
+          await checkDue();
+        }, delay: const Duration(seconds: 2));
+      }
     } else {
       _timer?.cancel();
 

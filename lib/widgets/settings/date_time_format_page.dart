@@ -1,5 +1,8 @@
 import 'settings_choice_tile.dart';
 import 'settings_page_layout.dart';
+import 'custom_date_format_dialog.dart';
+import '../launcher_dialog.dart';
+import 'settings_panel_presentation.dart';
 /*
  * FLauncher
  * Copyright (C) 2021  Oscar Rojas
@@ -98,17 +101,43 @@ class DateFormatSettingsTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
     final service = context.watch<SettingsService>();
+    const custom = 'custom';
+    final isCustom = !dateFormatPresets.any((v) => v.$1 == service.dateFormat);
     return SettingsChoiceTile<String>(
       title: l.date,
       autofocus: true,
-      value: service.dateFormat,
-      options: dateFormatPresets.map((v) => v.$1).toList(),
-      label: (v) => formatLauncherDate(
+      value: isCustom ? custom : service.dateFormat,
+      valueLabel: isCustom ? formatLauncherDate(service.dateFormat,
+          DateTime.now(), Localizations.localeOf(context).toString()) : null,
+      options: [custom, ...dateFormatPresets.map((v) => v.$1)],
+      label: (v) => v == custom ? l.customDateFormat : formatLauncherDate(
         v,
         v == shortWeekdayDateFormat ? DateTime(2026, 11, 1) : DateTime(2026, 10, 2),
         Localizations.localeOf(context).toString(),
       ),
-      onChanged: (v) => service.setDateTimeFormat(v, service.timeFormat),
+      onChanged: (v) async {
+        if (v == custom) {
+          final pattern = switch (service.dateFormat) {
+            compactDateFormat => 'E d MMM',
+            shortWeekdayDateFormat => 'E, d MMM',
+            _ => service.dateFormat,
+          };
+          final result = await SettingsPanelPresentation.runHidden(
+            context,
+            () => showLauncherDialog<String>(
+              context: context,
+              parentPanelHidden: true,
+              parentPanelWidth: 0,
+              builder: (_) => CustomDateFormatDialog(pattern: pattern),
+            ),
+          );
+          if (result != null && context.mounted) {
+            await service.setDateTimeFormat(result, service.timeFormat);
+          }
+        } else {
+          await service.setDateTimeFormat(v, service.timeFormat);
+        }
+      },
     );
   }
 }

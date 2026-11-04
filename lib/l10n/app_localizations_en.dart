@@ -4629,8 +4629,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get systemHourAgo => '−60 min';
 
   @override
+  String get systemUpdateInterval => 'Update interval';
+
+  @override
   String get systemWidgetHelp =>
-      'Readings update every 5 seconds while the launcher is visible. Graphs show minute averages and peaks. Other apps, sleep and read failures leave gaps. History stays in memory and resets when the launcher process restarts. CPU and temperature depend on the firmware. Turn off both panel values to show only the icon.';
+      'Readings update at the selected interval of 1–10 seconds (5 by default) while the panel is visible. Graphs show minute averages and peaks. Other apps, sleep and read failures leave gaps. History stays in memory and resets when the launcher process restarts. CPU and temperature depend on the firmware. Turn off both panel values to show only the icon.';
 
   @override
   String get slideshowBrowseFolders => 'Browse folders';
@@ -4804,7 +4807,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get informationBackgroundHelp =>
-      'Choose top panel, wallpaper or hidden separately for the clock, date and weather. Wallpaper elements do not respond to input or move tiles. In the adaptive landscape, mountains overlap the clock. Quick settings remain independent.';
+      'Choose top panel, wallpaper or hidden separately for the clock, date and weather. Wallpaper elements do not respond to input or move tiles. Quick settings remain independent. Both switches apply to the entire background block: time, date and weather. The first removes mountain overlap; the second places the block above clouds, precipitation and fog.';
+
+  @override
+  String get informationAboveLandscape => 'Above landscape';
+
+  @override
+  String get informationAboveWeather => 'Above weather effects';
 
   @override
   String get informationTime => 'Clock';
@@ -4983,4 +4992,58 @@ class AppLocalizationsEn extends AppLocalizations {
   String networkSpeedUnit(String unit) {
     return '$unit/s';
   }
+
+  @override
+  String get customDateFormat => 'Custom format';
+
+  @override
+  String get customDateFormatError =>
+      'Use date symbols from the guide. Quote literal text and close all quotes.';
+
+  @override
+  String get customDateFormatHelp =>
+      'd / dd — day\nM / MM — month number\nMMM / MMMM — short / full month name\nEEE / EEEE — short / full weekday\nyy / yyyy — year\nL…LLLL — standalone month\nD…DDD — day of year; G — era\nSeparators: spaces, . / - ,\nLiteral text: \'Date:\'; one apostrophe: \'\'\nCase matters. Time symbols are not supported.\nExample: EEEE, d. MMMM yyyy';
+
+  @override
+  String get apodWallpaper => 'NASA APOD — astronomy picture of the day';
+
+  @override
+  String get apodWallpaperHint =>
+      'A daily image from NASA APOD. Video days use a recent image. Image sizes and aspect ratios vary. Author credits and the publication link appear here. Images belong to their respective owners.';
+
+  @override
+  String get backupDriveClientImport => 'Import Client ID and Secret from JSON';
+
+  @override
+  String get backupDriveClientImported =>
+      'Client details imported. Connect Google Drive.';
+
+  @override
+  String get backupDriveClientImportFailed =>
+      'Could not import client details. Select a Google Cloud JSON for TVs and Limited Input devices, up to 64 KiB.';
+
+  @override
+  String get dateFormatPreview => 'Preview';
+
+  @override
+  String get backupDriveConnectionStatus => 'Google Drive connection status';
+
+  @override
+  String get backupDriveReconnect => 'Reconnect Google Drive';
+
+  @override
+  String get backupSyncRefresh => 'Refresh';
+
+  @override
+  String get backupSyncRefreshFailed =>
+      'Could not synchronize settings. Check storage access and try again.';
+
+  @override
+  String get backupThisTv => 'This TV';
+
+  @override
+  String get backupOtherTv => 'Another TV';
+
+  @override
+  String get backupTvUnknown => 'TV unknown';
 }

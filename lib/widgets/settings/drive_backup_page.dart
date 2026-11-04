@@ -1,3 +1,5 @@
+import '../../document_files.dart';
+import '../../drive_client_configuration.dart';
 import 'settings_help.dart';
 import 'settings_read_only_value.dart';
 import '../remote_text_input.dart';
@@ -16,7 +18,9 @@ import 'focusable_settings_tile.dart';
 import 'settings_page_layout.dart';
 
 class DriveBackupPage extends StatefulWidget {
-  const DriveBackupPage({super.key});
+  const DriveBackupPage({super.key, this.pickClient});
+
+  final Future<String?> Function(BuildContext)? pickClient;
   @override
   State<DriveBackupPage> createState() => _DriveBackupPageState();
 }
@@ -24,6 +28,7 @@ class DriveBackupPage extends StatefulWidget {
 class _DriveBackupPageState extends State<DriveBackupPage>
     with WidgetsBindingObserver {
   String _id = '', _secret = '';
+  bool _importing = false;
   TextEditingController? _activeSecretEditor;
   late DriveBackupService _service;
   @override
@@ -87,22 +92,78 @@ class _DriveBackupPageState extends State<DriveBackupPage>
     }
   }
 
+  Future<void> _importClient() async {
+    if (_importing || _service.busy) return;
+    final l = AppLocalizations.of(context)!;
+    setState(() => _importing = true);
+    try {
+      final source =
+          await (widget.pickClient?.call(context) ??
+              DocumentFiles.pickDriveClientText(context: context));
+      if (source == null || !mounted) return;
+      final client = DriveClientConfiguration.parse(source);
+      setState(() {
+        _id = client.clientId;
+        _secret = client.clientSecret;
+      });
+      showActionNotice(context, l.backupDriveClientImported);
+    } catch (_) {
+      if (mounted) {
+        showActionNotice(context, l.backupDriveClientImportFailed, error: true);
+      }
+    } finally {
+      if (mounted) setState(() => _importing = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
     final service = context.watch<DriveBackupService>();
     final canConnect =
-        !service.busy && _id.trim().isNotEmpty && _secret.trim().isNotEmpty;
-    final canDisconnect = !service.busy && service.configured;
+        !service.busy &&
+        !_importing &&
+        _id.trim().isNotEmpty &&
+        _secret.trim().isNotEmpty;
+    final canDisconnect = !service.busy && !_importing && service.configured;
     return SettingsPageLayout(
       title: Text(l.backupGoogleDrive),
       child: ListView(
         children: [
-          SettingsHelp(title: l.backupManagement, text: l.backupDriveHelp),
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Text(
-              service.configured ? l.backupConfigured : l.backupNotConfigured,
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Row(
+                children: [
+                  Icon(
+                    service.configured
+                        ? Icons.cloud_done_outlined
+                        : Icons.cloud_off_outlined,
+                    color: service.configured
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          l.backupDriveConnectionStatus,
+                          style: Theme.of(context).textTheme.labelLarge,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          service.configured
+                              ? l.backupConfigured
+                              : l.backupNotConfigured,
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           if (service.code.isNotEmpty) ...[
@@ -128,25 +189,41 @@ class _DriveBackupPageState extends State<DriveBackupPage>
             ),
           ],
           FocusableSettingsTile(
+            title: Text(l.backupDriveClientImport),
+            leading: const Icon(Icons.file_open_outlined),
+            enabled: !service.busy && !_importing,
+            onPressed: service.busy || _importing ? null : _importClient,
+          ),
+          SizedBox(
+            height: 4,
+            child: _importing ? const LinearProgressIndicator() : null,
+          ),
+          FocusableSettingsTile(
             title: Text(l.backupClientId),
-            enabled: !service.busy,
+            enabled: !service.busy && !_importing,
             valueIcon: Icons.edit_outlined,
             trailing: Text(
               _id.isEmpty ? l.settingsValueNotSet : _id,
+              maxLines: 1,
               overflow: TextOverflow.ellipsis,
+              textDirection: TextDirection.ltr,
             ),
-            onPressed: service.busy ? null : () => _edit(false),
+            onPressed: service.busy || _importing ? null : () => _edit(false),
           ),
           FocusableSettingsTile(
             title: Text(l.backupClientSecret),
-            enabled: !service.busy,
+            enabled: !service.busy && !_importing,
             valueIcon: Icons.edit_outlined,
             trailing: Text(_secret.isEmpty ? l.settingsValueNotSet : '••••••'),
-            onPressed: service.busy ? null : () => _edit(true),
+            onPressed: service.busy || _importing ? null : () => _edit(true),
           ),
           FocusableSettingsTile(
             leading: const Icon(Icons.link),
-            title: Text(l.backupDriveConnect),
+            title: Text(
+              service.configured
+                  ? l.backupDriveReconnect
+                  : l.backupDriveConnect,
+            ),
             enabled: canConnect,
             onPressed: !canConnect
                 ? null
@@ -231,6 +308,7 @@ class _DriveBackupPageState extends State<DriveBackupPage>
                     }
                   },
           ),
+          SettingsHelp(title: l.backupManagement, text: l.backupDriveHelp),
         ],
       ),
     );

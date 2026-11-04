@@ -4510,8 +4510,11 @@ class AppLocalizationsJa extends AppLocalizations {
   String get systemHourAgo => '−60分';
 
   @override
+  String get systemUpdateInterval => '更新間隔';
+
+  @override
   String get systemWidgetHelp =>
-      'ランチャーの表示中は5秒ごとに更新されます。グラフには1分ごとの平均とピークが表示されます。他のアプリの使用中、スリープ中、読み取り失敗時は空白になります。履歴はメモリに保存され、ランチャーのプロセスを再起動すると消去されます。CPUと温度の取得可否はファームウェアに依存します。パネルの両方の値をオフにすると、アイコンのみ表示されます。';
+      'パネルの表示中は、選択した1～10秒の間隔（既定は5秒）で更新されます。グラフには1分ごとの平均とピークが表示されます。他のアプリの使用中、スリープ中、読み取り失敗時は空白になります。履歴はメモリに保存され、ランチャーのプロセスを再起動すると消去されます。CPUと温度の取得可否はファームウェアに依存します。パネルの両方の値をオフにすると、アイコンのみ表示されます。';
 
   @override
   String get slideshowBrowseFolders => 'フォルダを参照';
@@ -4680,7 +4683,13 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get informationBackgroundHelp =>
-      '時計、日付、天気ごとに上部パネル、壁紙上、非表示を選びます。壁紙上の要素は操作に反応せず、タイルの位置を変えません。動的な風景では山が時計の一部に重なります。クイック設定は独立しています。';
+      '時計、日付、天気ごとに上部パネル、壁紙上、非表示を選びます。壁紙上の要素は操作に反応せず、タイルの位置を変えません。クイック設定は独立しています。 両方の設定は背景の時刻・日付・天気のブロック全体に適用されます。1つ目は山による遮蔽を解除し、2つ目は雲・雨・雪・霧の手前にブロックを表示します。';
+
+  @override
+  String get informationAboveLandscape => '風景の手前に表示';
+
+  @override
+  String get informationAboveWeather => '天気エフェクトの手前に表示';
 
   @override
   String get informationTime => '時計';
@@ -4856,4 +4865,58 @@ class AppLocalizationsJa extends AppLocalizations {
   String networkSpeedUnit(String unit) {
     return '$unit/秒';
   }
+
+  @override
+  String get customDateFormat => 'カスタム書式';
+
+  @override
+  String get customDateFormatError =>
+      'ヘルプの日付記号を使ってください。文字列は一重引用符で囲み、引用符を閉じてください。';
+
+  @override
+  String get customDateFormatHelp =>
+      'd / dd — 日\nM / MM — 月の数字\nMMM / MMMM — 月名の省略形 / 完全形\nEEE / EEEE — 曜日の省略形 / 完全形\nyy / yyyy — 年\nL…LLLL — 独立形式の月\nD…DDD — 年内の通算日; G — 紀元\n区切り: 空白、. / - ,\n文字列: \'日付:\'; 引用符1文字: \'\'\n大文字と小文字を区別します。時刻記号は使用できません。\n例: EEEE, d. MMMM yyyy';
+
+  @override
+  String get apodWallpaper => 'NASA APOD — 今日の天体写真';
+
+  @override
+  String get apodWallpaperHint =>
+      'NASA APODの毎日の画像です。動画の日は最近の画像を使います。画像のサイズと縦横比は異なります。著作者情報と掲載ページへのリンクをここに表示します。画像の権利は各権利者に帰属します。';
+
+  @override
+  String get backupDriveClientImport => 'JSONからClient IDとSecretを読み込む';
+
+  @override
+  String get backupDriveClientImported =>
+      'クライアント情報を読み込みました。Google Driveに接続してください。';
+
+  @override
+  String get backupDriveClientImportFailed =>
+      '読み込めませんでした。Google Cloudの「TVs and Limited Input devices」用JSON（64 KiB以下）を選択してください。';
+
+  @override
+  String get dateFormatPreview => 'プレビュー';
+
+  @override
+  String get backupDriveConnectionStatus => 'Google Driveの接続状態';
+
+  @override
+  String get backupDriveReconnect => 'Google Driveに再接続';
+
+  @override
+  String get backupSyncRefresh => '更新';
+
+  @override
+  String get backupSyncRefreshFailed =>
+      '設定を同期できませんでした。ストレージへのアクセスを確認して再試行してください。';
+
+  @override
+  String get backupThisTv => 'このテレビ';
+
+  @override
+  String get backupOtherTv => '別のテレビ';
+
+  @override
+  String get backupTvUnknown => 'テレビ不明';
 }

@@ -110,6 +110,7 @@ class FileSelection {
           'saveDiagnosticsDocument' => AppLocalizations.of(
             context,
           )!.diagnosticsExport,
+          'pickDriveClientDocument' => AppLocalizations.of(context)!.backupDriveClientImport,
           'pickBackupDocument' => AppLocalizations.of(context)!.importBackup,
           'pickImageDocument' => AppLocalizations.of(context)!.openImage,
           'pickWallpaperDocument' => AppLocalizations.of(context)!.wallpaper,
@@ -124,7 +125,8 @@ class FileSelection {
         formatHint: switch (operation) {
           'saveBackupDocument' ||
           'saveDiagnosticsDocument' ||
-          'pickBackupDocument' => 'JSON',
+          'pickBackupDocument' ||
+          'pickDriveClientDocument' => 'JSON',
           'pickWebhookDocument' ||
           'pickCleanerDocument' ||
           'pickCleanerListDocument' => 'TXT · JSON',

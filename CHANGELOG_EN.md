@@ -2,6 +2,18 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
+## v1.6.8 — 2026-11-04
+
+- Added NASA APOD as an online wallpaper source — the astronomy picture of the day.
+- Added a custom date format with a preview and a format reference. Weather settings moved to the main Clock, date and weather page.
+- Background clock, date and weather can now be placed independently above landscape mountains and weather effects.
+- Added a configurable update interval for the System widget. The network menu now groups IPv4 and IPv6 addresses separately.
+- Added Turn off TV and Restart TV actions to the remote button remapper. Turning off puts the device into standby; restarting requires configured ADB. Assigned power actions run without an additional confirmation.
+- Added Google Drive Client ID and Client Secret import from JSON. Redesigned the connection page with a separate account status card and a reconnect action.
+- Separated manual settings synchronization from full backup management. Backup names include the device model and ID, and the list identifies backups from the current TV. The ID persists across a normal reinstall with the same signing certificate; old backups remain accessible.
+- Scrollbars in settings and menus stay visible while content overflows. Fixed nested top panel menu sizing and focus restoration when managing backups.
+- Restored fitting app icons in full as the default while preserving user-selected modes. Improved navigation to file permissions on Android TV 12.
+
 ## v1.6.7 — 2026-11-03
 
 - Added a download and upload speed widget with a configurable refresh interval. It can be enabled in the top bar and quick settings panel.

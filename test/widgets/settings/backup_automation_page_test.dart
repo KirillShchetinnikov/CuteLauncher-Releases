@@ -76,9 +76,14 @@ class _Automation extends ChangeNotifier implements BackupAutomationService {
   @override
   String get scope => 'shared';
   @override
+  String get device => 'a' * 32;
+  @override
   String? get localFolder => null;
   int imports = 0, deletes = 0, creates = 0;
   bool listFails = false;
+  List<RemoteBackupFile>? returnedCopies;
+  final manualRuns = <bool>[];
+  bool? lastBackupOnly;
   @override
   Future<void> deleteCopy(RemoteBackupFile copy) async {
     deletes++;
@@ -101,29 +106,102 @@ class _Automation extends ChangeNotifier implements BackupAutomationService {
   }
 
   @override
-  Future<void> importLatest({RemoteBackupFile? selected}) async {
+  Future<void> importLatest({
+    RemoteBackupFile? selected,
+    bool backupOnly = false,
+  }) async {
     imports++;
+    lastBackupOnly = backupOnly;
   }
 
   @override
   Future<List<RemoteBackupFile>> availableCopies() async {
+    busy = true;
+    notifyListeners();
+    await Future<void>.delayed(const Duration(milliseconds: 30));
+    busy = false;
+    notifyListeners();
     if (listFails) throw StateError('offline');
-    return [
-      RemoteBackupFile(
-        'cute-backup-shared-${'a' * 32}-100-${'b' * 16}.json',
-        'test',
-      ),
-    ];
+    return returnedCopies ??
+        [
+          RemoteBackupFile(
+            'cute-backup-shared-${'a' * 32}-100-${'b' * 16}.json',
+            'test',
+          ),
+        ];
   }
 
   @override
-  Future<bool> run({bool manual = false, bool exportOnly = false}) async =>
-      (++creates) > 0;
+  Future<bool> run({bool manual = false, bool exportOnly = false}) async {
+    manualRuns.add(exportOnly);
+    return (++creates) > 0;
+  }
+
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
 void main() {
+  for (final language in ['ru', 'en', 'ar']) {
+    testWidgets(
+      'backup source labels distinguish same-model TVs and old IDs $language',
+      (tester) async {
+        final service = _Automation();
+        service.returnedCopies = [
+          RemoteBackupFile(
+            'cute-backup-shared-${'a' * 32}-100-${'b' * 16}-TCL_TV.json',
+            'own',
+          ),
+          RemoteBackupFile(
+            'cute-backup-shared-${'c' * 32}-200-${'b' * 16}-TCL_TV.json',
+            'other',
+          ),
+          RemoteBackupFile(
+            'cute-backup-shared-${'d' * 32}-300-${'b' * 16}.json',
+            'legacy',
+          ),
+        ];
+        await tester.pumpWidget(
+          ChangeNotifierProvider<BackupAutomationService>.value(
+            value: service,
+            child: MaterialApp(
+              locale: Locale(language),
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              home: MediaQuery(
+                data: const MediaQueryData(textScaler: TextScaler.linear(1.5)),
+                child: const Scaffold(
+                  body: SizedBox(width: 360, child: BackupManagementPage()),
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        final l = AppLocalizations.of(
+          tester.element(find.byType(BackupManagementPage)),
+        )!;
+        for (final entry in service.returnedCopies!.indexed) {
+          final status = [
+            l.backupThisTv,
+            l.backupOtherTv,
+            l.backupTvUnknown,
+          ][entry.$1];
+          expect(
+            find.descendant(
+              of: find.byKey(ValueKey(entry.$2.name)),
+              matching: find.text(status),
+            ),
+            findsOneWidget,
+          );
+        }
+        expect(tester.takeException(), isNull);
+        await tester.pumpWidget(const SizedBox());
+        service.dispose();
+      },
+    );
+  }
+
   testWidgets('failed copy list stays an error and retry recovers', (
     tester,
   ) async {
@@ -295,6 +373,8 @@ void main() {
           find.widgetWithText(FocusableSettingsTile, l.backupSyncMode),
         );
         await tester.pumpAndSettle();
+        await activate(l.backupSyncRefresh);
+        expect(automation.manualRuns, [false]);
         await activate(l.backupSyncOptions);
         expect(find.text(l.backupSyncScope), findsOneWidget);
         expect(find.text(l.backupShared), findsOneWidget);
@@ -353,12 +433,25 @@ void main() {
         expect(find.byType(BackupOptionsPage), findsOneWidget);
         await back();
         await activate(l.backupManagement);
+        expect(
+          Focus.of(tester.element(find.text(l.backupCreateNow))).hasFocus,
+          true,
+        );
+        await activate(l.backupRefreshCopyList);
+        expect(
+          Focus.of(tester.element(find.text(l.backupRefreshCopyList))).hasFocus,
+          true,
+        );
         expect(find.text(l.backupRestoreCopy), findsNothing);
         expect(find.text(l.delete), findsNothing);
         final copy = find.byKey(
           ValueKey('cute-backup-shared-${'a' * 32}-100-${'b' * 16}.json'),
         );
         expect(copy, findsOneWidget);
+        expect(
+          find.descendant(of: copy, matching: find.text(l.backupThisTv)),
+          findsOneWidget,
+        );
         Future<void> openCopy() async {
           await tester.ensureVisible(copy);
           await tester.pumpAndSettle();
@@ -378,6 +471,7 @@ void main() {
         await tester.tap(find.widgetWithText(TextButton, l.importAction));
         await tester.pumpAndSettle();
         expect(automation.imports, 1);
+        expect(automation.lastBackupOnly, true);
         await openCopy();
         await activate(l.delete);
         expect(find.text(l.backupDeleteConfirm), findsOneWidget);
@@ -385,7 +479,8 @@ void main() {
         await tester.pumpAndSettle();
         expect(automation.deletes, 1);
         await activate(l.backupCreateNow);
-        expect(automation.creates, 1);
+        expect(automation.creates, 2);
+        expect(automation.manualRuns, [false, true]);
         expect(tester.takeException(), isNull);
         for (final element in find.byType(RichText).evaluate()) {
           expect(

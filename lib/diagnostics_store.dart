@@ -91,6 +91,7 @@ class DiagnosticsStore {
     'pickImageDocument',
     'pickWallpaperDocument',
     'pickBackupDocument',
+    'pickDriveClientDocument',
     'saveBackupDocument',
     'saveBackupDownloads',
     'pickBackupFolder',
@@ -240,7 +241,7 @@ class DiagnosticsStore {
   static const _detailEnums = {
     'recovery': {'enabled', 'unavailable', 'succeeded', 'failed'},
     'availability': {'unsupported'},
-    'wallpaperSource': {'bing', 'wallhaven', 'reddit', 'url'},
+    'wallpaperSource': {'bing', 'wallhaven', 'reddit', 'url', 'apod'},
     'stage': {
       'wallpaper_initialize', 'wallpaper_metadata', 'wallpaper_download', 'wallpaper_validation', 'wallpaper_save',
       'connect',

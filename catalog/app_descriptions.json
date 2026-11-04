@@ -166,6 +166,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
+        "tcl-c655-pro-65-android12-user",
         "formuler-z10-pro-max-android10-20261102",
         "kp1-yyz",
         "tcl-g08",
@@ -4218,6 +4219,7 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review; docs/TESTING_RU.md (unknown-update-20261102: user screenshot and cache path, presence only); docs/TESTING_RU.md (tcl-c6k-g08-android12-as35: on-screen diagnostics 1.6.5+187, presence only)",
       "observedOn": [
+        "tcl-c655-pro-65-android12-user",
         "droidlogic-x98q-android11-20261026",
         "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",

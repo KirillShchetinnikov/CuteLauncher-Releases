@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flauncher/bing_wallpaper.dart';
+import 'package:flauncher/apod_wallpaper.dart';
 import 'package:flauncher/diagnostics_store.dart';
 import 'package:flauncher/online_wallpaper_failure.dart';
 import 'package:flauncher/providers/online_wallpaper_service.dart';
@@ -33,7 +34,7 @@ void main() {
     }
   }
 
-  for (final source in ['bing', 'wallhaven', 'url']) {
+  for (final source in ['bing', 'wallhaven', 'apod', 'url']) {
     test(
       '$source download errors retain source and HTTP code in diagnostics',
       () async {
@@ -42,6 +43,7 @@ void main() {
           preferences,
           directory: () async => root,
           bingLookup: () async => BingWallpaper(uri, '', DateTime.now()),
+          apodLookup: () async => ApodWallpaper(uri, '', '2026-11-04'),
           wallhavenLookup: (_, _) async => WallhavenWallpaper(uri, ''),
           download: (_) async => throw const WallpaperException(
             WallpaperFailureReason.http,

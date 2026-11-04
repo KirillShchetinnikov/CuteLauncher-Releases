@@ -133,6 +133,7 @@ void main() {
     'pickImageDocument',
     'pickWallpaperDocument',
     'pickBackupDocument',
+    'pickDriveClientDocument',
     'pickWebhookDocument',
     'pickCleanerListDocument',
     'pickWallpaperFolder',
@@ -147,7 +148,7 @@ void main() {
         final kind = switch (operation) {
           'pickImageDocument' => 'image',
           'pickWallpaperDocument' => 'media',
-          'pickBackupDocument' => 'document',
+          'pickBackupDocument' || 'pickDriveClientDocument' => 'document',
           'pickWebhookDocument' || 'pickCleanerListDocument' => 'text',
           _ => 'folder',
         };

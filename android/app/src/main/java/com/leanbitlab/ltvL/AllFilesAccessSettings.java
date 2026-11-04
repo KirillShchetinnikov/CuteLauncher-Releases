@@ -30,6 +30,9 @@ final class AllFilesAccessSettings {
             Intent list = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION).setPackage(settings);
             if (start(activity, list, request, tried)) return true;
         }
+        // Android 11–12 TV exposes all-files access in the app card. An OEM
+        // catch-all handler may open a permission filter without that switch.
+        if (appCard(activity) != null) return false;
         return start(activity, app, request, tried);
     }
 

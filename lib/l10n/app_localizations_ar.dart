@@ -4614,8 +4614,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get systemHourAgo => '−60 دقيقة';
 
   @override
+  String get systemUpdateInterval => 'فاصل التحديث';
+
+  @override
   String get systemWidgetHelp =>
-      'تتحدث القراءات كل 5 ثوانٍ عندما يكون المشغّل مرئيًا. تعرض الرسوم متوسطات كل دقيقة وقممها. تترك التطبيقات الأخرى والسكون وأخطاء القراءة فجوات. يُحفظ السجل في الذاكرة ويُمسح عند إعادة تشغيل عملية المشغّل. يعتمد توفر CPU ودرجة الحرارة على البرنامج الثابت. أوقف قيمتي اللوحة لعرض الأيقونة فقط.';
+      'تتحدث القراءات بالفاصل المحدد من ثانية إلى 10 ثوانٍ (5 افتراضيًا) عندما تكون اللوحة مرئية. تعرض الرسوم متوسطات كل دقيقة وقممها. تترك التطبيقات الأخرى والسكون وأخطاء القراءة فجوات. يُحفظ السجل في الذاكرة ويُمسح عند إعادة تشغيل عملية المشغّل. يعتمد توفر CPU ودرجة الحرارة على البرنامج الثابت. أوقف قيمتي اللوحة لعرض الأيقونة فقط.';
 
   @override
   String get slideshowBrowseFolders => 'تصفح المجلدات';
@@ -4788,7 +4791,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get informationBackgroundHelp =>
-      'اختر اللوحة العلوية أو الخلفية أو الإخفاء لكل من الساعة والتاريخ والطقس بشكل مستقل. عناصر الخلفية لا تستجيب للإدخال ولا تحرك المربعات. في المنظر الطبيعي المتكيف تغطي الجبال جزءاً من الساعة. تظل الإعدادات السريعة مستقلة.';
+      'اختر اللوحة العلوية أو الخلفية أو الإخفاء لكل من الساعة والتاريخ والطقس بشكل مستقل. عناصر الخلفية لا تستجيب للإدخال ولا تحرك المربعات. تظل الإعدادات السريعة مستقلة. ينطبق الخياران على كتلة الخلفية بأكملها: الوقت والتاريخ والطقس. يزيل الأول حجب الجبال، ويضع الثاني الكتلة أمام السحب والهطول والضباب.';
+
+  @override
+  String get informationAboveLandscape => 'أمام المنظر الطبيعي';
+
+  @override
+  String get informationAboveWeather => 'أمام تأثيرات الطقس';
 
   @override
   String get informationTime => 'الساعة';
@@ -4965,4 +4974,58 @@ class AppLocalizationsAr extends AppLocalizations {
   String networkSpeedUnit(String unit) {
     return '$unit/ث';
   }
+
+  @override
+  String get customDateFormat => 'تنسيق مخصص';
+
+  @override
+  String get customDateFormatError =>
+      'استخدم رموز التاريخ في المساعدة. ضع النص بين علامتي اقتباس مفردتين وأغلقهما.';
+
+  @override
+  String get customDateFormatHelp =>
+      'd / dd — اليوم\nM / MM — رقم الشهر\nMMM / MMMM — اسم الشهر المختصر / الكامل\nEEE / EEEE — يوم الأسبوع المختصر / الكامل\nyy / yyyy — السنة\nL…LLLL — الشهر المستقل\nD…DDD — يوم السنة؛ G — العصر\nالفواصل: مسافة، . / - ,\nنص: \'التاريخ:\'؛ علامة اقتباس واحدة: \'\'\nحالة الأحرف مهمة. رموز الوقت غير مدعومة.\nمثال: EEEE, d. MMMM yyyy';
+
+  @override
+  String get apodWallpaper => 'NASA APOD — صورة اليوم الفلكية';
+
+  @override
+  String get apodWallpaperHint =>
+      'صورة يومية من NASA APOD. في أيام الفيديو تُستخدم صورة حديثة. تختلف الأحجام ونسب الأبعاد. تظهر هنا معلومات المؤلف ورابط النشر. الصور ملك لأصحاب الحقوق.';
+
+  @override
+  String get backupDriveClientImport => 'استيراد Client ID وSecret من JSON';
+
+  @override
+  String get backupDriveClientImported =>
+      'تم استيراد بيانات العميل. اتصل بـ Google Drive.';
+
+  @override
+  String get backupDriveClientImportFailed =>
+      'تعذر استيراد بيانات العميل. اختر ملف JSON من Google Cloud لنوع TVs and Limited Input devices بحجم لا يتجاوز 64 KiB.';
+
+  @override
+  String get dateFormatPreview => 'معاينة';
+
+  @override
+  String get backupDriveConnectionStatus => 'حالة اتصال Google Drive';
+
+  @override
+  String get backupDriveReconnect => 'إعادة الاتصال بـ Google Drive';
+
+  @override
+  String get backupSyncRefresh => 'تحديث';
+
+  @override
+  String get backupSyncRefreshFailed =>
+      'تعذرت مزامنة الإعدادات. تحقق من الوصول إلى التخزين وحاول مجددًا.';
+
+  @override
+  String get backupThisTv => 'هذا التلفاز';
+
+  @override
+  String get backupOtherTv => 'تلفاز آخر';
+
+  @override
+  String get backupTvUnknown => 'التلفاز غير معروف';
 }

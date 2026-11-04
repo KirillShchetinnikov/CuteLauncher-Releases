@@ -32,12 +32,29 @@ class SettingsPageLayout extends StatefulWidget {
 }
 
 class _SettingsPageLayoutState extends State<SettingsPageLayout> {
-  final _controller = ScrollController();
+  late final _controller = ScrollController(
+    onAttach: (_) => _updateScrollbar(),
+    onDetach: (_) => _updateScrollbar(),
+  );
+  bool _scrollbarUpdatePending = false, _hasScrollPosition = false;
   final _viewportKey = GlobalKey();
   final _pageFocus = FocusScopeNode(skipTraversal: true);
   bool _entryFocused = false;
   FocusNode? _lastFocus;
   double? _focusContentY;
+
+  void _updateScrollbar() {
+    if (_scrollbarUpdatePending) return;
+    _scrollbarUpdatePending = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollbarUpdatePending = false;
+      if (!mounted) return;
+      final attached = _controller.positions.length == 1;
+      if (_hasScrollPosition != attached) {
+        setState(() => _hasScrollPosition = attached);
+      }
+    });
+  }
 
   KeyEventResult _scrollText(FocusNode page, KeyEvent event) {
     if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
@@ -165,6 +182,8 @@ class _SettingsPageLayoutState extends State<SettingsPageLayout> {
                 skipTraversal: true,
                 onKeyEvent: _scrollText,
                 child: Scrollbar(
+                  controller: _controller,
+                  thumbVisibility: _hasScrollPosition,
                   // No extra focus stops or pointer actions for the TV remote.
                   interactive: false,
                   scrollbarOrientation: mirrored

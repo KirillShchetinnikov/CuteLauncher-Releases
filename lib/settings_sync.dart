@@ -26,6 +26,7 @@ const syncSettingsKeys = <String>{
   'show_network_speed_in_status_bar',
   'network_speed_interval',
   'system_show_cpu',
+  'system_update_interval',
   'system_show_ram',
   'show_inputs_widget_in_status_bar',
   'tv_inputs_configuration',

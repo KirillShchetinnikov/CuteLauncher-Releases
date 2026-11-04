@@ -27,7 +27,7 @@ final class LocalDocumentFiles {
         return switch (operation) {
             case "pickImageDocument" -> 8L * 1024 * 1024;
             case "pickWallpaperDocument" -> 256L * 1024 * 1024;
-            case "pickWebhookDocument" -> 64L * 1024;
+            case "pickWebhookDocument", "pickDriveClientDocument" -> 64L * 1024;
             case "pickCleanerDocument", "pickCleanerListDocument" -> 256L * 1024;
             case "pickBackupDocument", "saveBackupDocument", "saveDiagnosticsDocument" -> 64L * 1024 * 1024;
             default -> throw new IllegalArgumentException("Unknown document operation");
@@ -39,7 +39,7 @@ final class LocalDocumentFiles {
             case "pickImageDocument" -> "image";
             case "pickWallpaperDocument" -> "media";
             case "pickWebhookDocument", "pickCleanerDocument", "pickCleanerListDocument" -> "text";
-            case "pickBackupDocument" -> "document";
+            case "pickBackupDocument", "pickDriveClientDocument" -> "document";
             default -> throw new IllegalArgumentException("Unknown import operation");
         };
     }

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flauncher/bing_wallpaper.dart';
+import 'package:flauncher/apod_wallpaper.dart';
 import 'package:flauncher/image_limits.dart';
 import 'package:flauncher/online_wallpaper_failure.dart';
 import 'package:flauncher/providers/online_wallpaper_service.dart';
@@ -109,6 +110,7 @@ void main() {
       for (final status in [302, 403, 404, 429, 503]) {
         for (final request in <Future<Object> Function()>[
           fetchBingWallpaper,
+          fetchApodWallpaper,
           () => fetchWallhavenWallpaper('all', null),
           if (status != 302) () => downloadWallpaper(uri),
         ]) {

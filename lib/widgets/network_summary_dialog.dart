@@ -141,6 +141,11 @@ class _NetworkSummaryDialogState extends State<NetworkSummaryDialog>
     final l = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final data = _snapshot;
+    final addresses = (data?['addresses'] as String? ?? '')
+        .split('\n').map((address) => address.trim())
+        .where((address) => address.isNotEmpty);
+    final ipv4 = addresses.where((address) => !address.contains(':')).toList();
+    final ipv6 = addresses.where((address) => address.contains(':')).toList();
     final type = data?['networkType'];
     final connected = type is int && type >= 0 && type < 4;
     final internet = data?['internetAccess'] == true;
@@ -295,12 +300,13 @@ class _NetworkSummaryDialogState extends State<NetworkSummaryDialog>
                             : '${_tx!.toStringAsFixed(1)} ${l.networkKbps}',
                       ),
                     ]),
-                    if ((data['addresses'] as String? ?? '').isNotEmpty) ...[
-                      const SizedBox(height: 12),
-                      Text('IP', style: theme.textTheme.labelMedium),
-                      const SizedBox(height: 4),
-                      Text(data['addresses'] as String),
-                    ],
+                    for (final group in [('IPv4', ipv4), ('IPv6', ipv6)])
+                      if (group.$2.isNotEmpty) ...[
+                        const SizedBox(height: 12),
+                        Text(group.$1, style: theme.textTheme.labelMedium),
+                        const SizedBox(height: 4),
+                        Text(group.$2.join('\n')),
+                      ],
                   ],
                 ],
               ),

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
-/// Shares the menu side so the scrollbar can follow the panel.
+/// Shares the menu side and the toolbar space reserved by top-panel settings.
 class SettingsMenuLayout extends InheritedWidget {
   final bool onRight;
+  final double topInset;
 
   const SettingsMenuLayout({
     super.key,
     required this.onRight,
+    this.topInset = 0,
     required super.child,
   });
 
@@ -21,5 +23,5 @@ class SettingsMenuLayout extends InheritedWidget {
 
   @override
   bool updateShouldNotify(SettingsMenuLayout oldWidget) =>
-      onRight != oldWidget.onRight;
+      onRight != oldWidget.onRight || topInset != oldWidget.topInset;
 }

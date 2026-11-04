@@ -230,7 +230,7 @@ Future<void> _runLauncher({bool remotePanel = false, bool recentApps = false}) a
         }, lazy: remotePanel),
         ChangeNotifierProvider(create: (_) => NetworkService(fLauncherChannel, work: work)),
         ChangeNotifierProvider(create: (_) => AudioStatusService()),
-        ChangeNotifierProvider(create: (_) => SystemStatusService(work: work)),
+        ChangeNotifierProvider(create: (context) => SystemStatusService(work: work, settings: context.read<SettingsService>())),
         ChangeNotifierProvider(create: (context) => NetworkSpeedService(work: work, settings: context.read<SettingsService>())),
         ChangeNotifierProvider(create: (_) => BackgroundStartupService()),
         ChangeNotifierProvider(create: (context) => VpnService(context.read<NetworkService>(), work: work)),

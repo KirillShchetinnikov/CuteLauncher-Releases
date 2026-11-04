@@ -1,6 +1,7 @@
 import 'package:flauncher/bridge_result.dart';
 
 import 'dart:io';
+import 'dart:convert';
 
 import 'package:flutter/widgets.dart';
 
@@ -10,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'image_limits.dart';
+import 'drive_client_configuration.dart';
 
 typedef DocumentExporter = Future<String?> Function(
   File file, {
@@ -68,6 +70,27 @@ class DocumentFiles {
         throw const FormatException('Webhook document too large');
       }
       return await file.readAsString();
+    } finally {
+      await file.delete();
+    }
+  }
+
+  static Future<String?> pickDriveClientText({BuildContext? context}) async {
+    final path = await (context != null
+        ? FileSelection.select<String>(context, 'pickDriveClientDocument')
+        : _channel.invokeMethod<String>('pickDriveClientDocument'));
+    if (path == null) return null;
+    final file = File(path);
+    try {
+      final bytes = <int>[];
+      await for (final chunk in file.openRead()) {
+        if (bytes.length + chunk.length >
+            DriveClientConfiguration.maximumBytes) {
+          throw const FormatException('Google Drive client document too large');
+        }
+        bytes.addAll(chunk);
+      }
+      return utf8.decode(bytes);
     } finally {
       await file.delete();
     }

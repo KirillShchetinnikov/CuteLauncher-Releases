@@ -17,7 +17,7 @@ final class RemoteMappingConfiguration {
             return Map.of("keyCode", keyCode, "enabled", enabled, "action", action, "target", target, "trigger", trigger, "name", name);
         }
     }
-    static final Set<String> ACTIONS = Set.of("app", "home", "back", "webhook", "panel", "recents", "ignore");
+    static final Set<String> ACTIONS = Set.of("app", "home", "back", "webhook", "panel", "recents", "ignore", "sleep", "reboot");
     static boolean assignable(int code, String trigger) { return assignable(code) || code == 3 && "hold".equals(trigger); }
     final boolean enabled;
     final String volumeMode;
@@ -73,7 +73,7 @@ final class RemoteMappingConfiguration {
                     || !Set.of("press", "hold").contains(trigger) || bindings.containsKey(slot)) throw new IllegalArgumentException();
             if (action.equals("app") && !target.matches("[A-Za-z][A-Za-z0-9_]*(\\.[A-Za-z0-9_]+)+")
                     || action.equals("webhook") && !webhook(target)
-                    || (action.equals("home") || action.equals("back") || action.equals("panel") || action.equals("recents") || action.equals("ignore")) && !target.isEmpty())
+                    || (action.equals("home") || action.equals("back") || action.equals("panel") || action.equals("recents") || action.equals("ignore") || action.equals("sleep") || action.equals("reboot")) && !target.isEmpty())
                 throw new IllegalArgumentException();
             String name = row.containsKey("name") && row.get("name") instanceof String text ? text : "";
             if (name.length() > 80) throw new IllegalArgumentException();

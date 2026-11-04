@@ -98,6 +98,36 @@ public class AllFilesAccessSettingsTest {
         }
     }
 
+    @Test @Config(sdk = 31)
+    public void appCardWithInstructionsWinsOverOemCatchAllFilterOnAndroid12() {
+        try (var lifecycle = Robolectric.buildActivity(Host.class).setup()) {
+            var host = lifecycle.get();
+            var card = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, app(host).getData());
+            install(host, TV, TV + ".AppCard", true, card);
+            install(host, "com.tcl.guard", "com.tcl.guard.PermissionFilter", true, app(host));
+            var worker = Executors.newSingleThreadExecutor();
+            try {
+                LocalWallpaperFilesTest.StorageEnvironment.manager = false;
+                var files = new LocalWallpaperFiles(host, worker);
+                var reply = new Reply();
+                files.request(reply);
+                assertTrue(host.started.isEmpty());
+                var dialog = org.robolectric.shadows.ShadowAlertDialog.getLatestAlertDialog();
+                assertTrue(dialog.isShowing());
+                dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).performClick();
+                Shadows.shadowOf(android.os.Looper.getMainLooper()).idle();
+                assertEquals(1, host.started.size());
+                assertEquals(card.getAction(), host.started.get(0).getAction());
+                assertEquals(card.getData(), host.started.get(0).getData());
+                LocalWallpaperFilesTest.StorageEnvironment.manager = true;
+                files.complete();
+                assertEquals(true, reply.value);
+            } finally {
+                worker.shutdownNow();
+            }
+        }
+    }
+
     @Test public void exportedTvPageWinsOverOemPermissionFilterEvenWithoutIntentFilter() {
         try (var lifecycle = Robolectric.buildActivity(Host.class).setup()) {
             var host = lifecycle.get();
