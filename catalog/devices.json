@@ -52,6 +52,14 @@
       },
       "results": [
         {
+          "feature": "cast-with-setupwraith-disabled-observation",
+          "status": "limitation",
+          "date": "2026-11-04",
+          "appBuild": "1.6.6+190",
+          "summary": "Read-only ADB на TCL .73: setupwraith и launcherx отключены для user 0, setupwraith enabled=3; CastInfoProvider объявлен. mediashell включён и имеет работающий процесс; HOME — CuteLauncher. Пользователь сообщает о работающей трансляции; сеанс Cast агент не проверял. Наличие провайдера не доказывает обязательный отказ Cast. Пакеты и настройки не менялись.",
+          "evidenceSection": "TCL .73: setupwraith отключён при активном Cast — 4 ноября 2026"
+        },
+        {
           "feature": "all-files-access-with-tguard",
           "status": "verified",
           "date": "2026-11-03",
@@ -252,6 +260,14 @@
       },
       "results": [
         {
+          "feature": "home-disable-cast-dependency",
+          "status": "limitation",
+          "date": "2026-11-04",
+          "appBuild": "1.6.8+199",
+          "summary": "В присланном отчёте план отключения HOME отклонён с dependencyProtected/castDependency. По реализации это сочетание CastInfoProvider в setupwraith и активного mediashell. resolve HOME в журнале возвращает launcherx с priority=2; успешное назначение CuteLauncher не подтверждено. Работа Cast и последствия принудительного отключения не проверены. Список installedApplications полный по флагам отчёта: 178 строк, skippedCount=0, truncated=false; это наблюдение метаданных, не аппаратная проверка функций.",
+          "evidenceSection": "TCL G08 AU04: блокировка отключения HOME из-за Cast — 4 ноября 2026"
+        },
+        {
           "feature": "read-only-app-inventory",
           "status": "verified",
           "date": "2026-10-21",
@@ -418,6 +434,58 @@
           "appBuild": "1.6.2, build на снимке отсутствует",
           "summary": "Пользователь сообщил об ошибке запроса доступа для слайд-шоу. На снимке диагностики видны версия и fingerprint; на снимке разрешений «Файлового менеджера +» выбран обрезанный пункт «Разрешить управление все…». Это свидетельствует о наличии настройки полного доступа у менеджера, но доступность этой страницы для CuteLauncher и успешное чтение его папки не проверены. Маркетинговая модель C6K дана пользователем; отдельные manufacturer/device и build не выгружены. Список пакетов отсутствует.",
           "evidenceSection": "TCL C6K: файловый доступ на Android 12 AS35 — 3 ноября 2026"
+        }
+      ]
+    },
+    {
+      "id": "formuler-z11-pro-max-user-adb-20261104",
+      "label": "Formuler Z11 Pro Max — модель по переписке, пользовательский ADB",
+      "kind": "physical",
+      "exactMatch": false,
+      "identity": {
+        "manufacturer": null,
+        "model": "Formuler Z11 Pro Max",
+        "device": null,
+        "fingerprint": null,
+        "firmware": null,
+        "android": null,
+        "sdk": null,
+        "abis": null
+      },
+      "results": [
+        {
+          "feature": "nas-usb-shell-observations",
+          "status": "unverified",
+          "date": "2026-11-04",
+          "appBuild": "Версия CuteLauncher в присланных дампах не указана",
+          "summary": "Пользовательские дампы показывают экран NetworkStorage и одновременно смонтированные CIFS- и USB-тома. Явный запуск MainActivity из ADB shell вернул Status: ok; пользователь подтвердил открытие экрана. NetworkStorage 10.10.21-42-233399c (101021) работает с системным UID 1000. По сообщению пользователя значок NAS появляется только после подключения. Доступность Activity и событий накопителей в UID CuteLauncher не проверена; точная модель и прошивка через getprop не получены. Отдельный профиль, без объединения с Z10 Pro MAX.",
+          "evidenceSection": "Formuler Z11 Pro Max: пользовательские ADB-данные NAS и USB — 4 ноября 2026"
+        }
+      ]
+    },
+    {
+      "id": "tcl-g10-android12-as16",
+      "label": "TCL Smart TV Pro G10 AS16 — Android 12",
+      "kind": "physical",
+      "exactMatch": true,
+      "identity": {
+        "manufacturer": "TCL",
+        "model": "Smart TV Pro",
+        "device": "G10",
+        "fingerprint": "TCL/G10_4K_GB/G10:12/STT2.230203.001/AS16:user/release-keys",
+        "firmware": "STT2.230203.001 release-keys",
+        "android": "12",
+        "abis": "armeabi-v7a,armeabi",
+        "sdk": "31"
+      },
+      "results": [
+        {
+          "feature": "release-metadata-http-response",
+          "status": "failed",
+          "date": "2026-11-04",
+          "appBuild": "1.6.8+199",
+          "summary": "В присланной диагностике три dart.updateCheck завершились FormatException: Release unavailable. По исходникам это HTTP-ответ, отличный от 200 и 404; точный статус в этой сборке не записан. DNS/TLS/таймаут не являются зафиксированной ошибкой этих трёх попыток. Отказ до загрузки APK; причина HTTP-ответа и связь с тестовой сборкой +195 не установлены. Метаданные прошивки и 159 приложений получены из отчёта; агент ТВ не проверял.",
+          "evidenceSection": "Ошибка запроса обновлений после file-access APK — 4 ноября 2026"
         }
       ]
     }

@@ -153,7 +153,7 @@ BackupSyncGroup? backupSyncPartGroup(String part) {
     return BackupSyncGroup.tiles;
   }
   if (key == 'accent_color') return BackupSyncGroup.accent;
-  if (key == 'settings_menu_on_right' || key == 'app_key_click_enabled') return BackupSyncGroup.menuLayout;
+  if (key == 'settings_menu_on_right' || key == 'app_key_click_enabled' || key == 'panel_tooltips_enabled') return BackupSyncGroup.menuLayout;
   if (const {
     'app_highlight_animation_enabled',
     'hide_highlight_outline_on_homescreen',
@@ -192,6 +192,9 @@ BackupSyncGroup? backupSyncPartGroup(String part) {
     'show_network_indicator_in_status_bar',
     'show_vpn_in_status_bar',
     'show_volume_in_status_bar',
+    'volume_update_interval',
+    'show_nas_in_status_bar',
+    'show_usb_in_status_bar',
     'show_system_in_status_bar',
     'show_network_speed_in_status_bar',
     'network_speed_interval',

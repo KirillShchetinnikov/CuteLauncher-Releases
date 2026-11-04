@@ -7,6 +7,7 @@ import 'settings_value_text.dart';
 import 'settings_panel_style.dart';
 import 'inherited_setting.dart';
 import '../../theme/interface_style.dart';
+import '../panel_tooltip.dart';
 
 class FocusableSettingsTile extends StatefulWidget {
   final Widget title;
@@ -222,7 +223,7 @@ class _FocusableSettingsTileState extends State<FocusableSettingsTile>
                                   children: [
                                     Expanded(child: widget.title),
                                     const SizedBox(width: 6),
-                                    Tooltip(
+                                    PanelTooltip(
                                       message: inheritedLabel,
                                       excludeFromSemantics: true,
                                       child: Icon(

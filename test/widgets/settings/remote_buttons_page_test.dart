@@ -7,9 +7,12 @@ import 'package:flauncher/widgets/settings/adb_page.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
 import 'package:flauncher/widgets/settings/remote_buttons_page.dart';
+import 'package:flauncher/widgets/settings/settings_help.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import '../../support/settings_help.dart';
 
 void main() {
   const methods = MethodChannel('cutelauncher/remote_buttons');
@@ -51,6 +54,7 @@ void main() {
   Future<void> open(
     WidgetTester tester, {
     String section = 'diagnostics',
+    String language = 'ru',
   }) async {
     tester.view.physicalSize = const Size(1280, 1080);
     tester.view.devicePixelRatio = 1;
@@ -58,7 +62,7 @@ void main() {
     addTearDown(tester.view.resetDevicePixelRatio);
     await tester.pumpWidget(
       MaterialApp(
-        locale: const Locale('ru'),
+        locale: Locale(language),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         routes: {
@@ -72,6 +76,54 @@ void main() {
 
   FocusableSettingsTile capture(WidgetTester tester) =>
       tester.widget(find.byKey(const ValueKey('remote-buttons-capture')));
+
+  for (final language in ['ru', 'en', 'ar']) {
+    testWidgets('button controls and report path stay visible: $language', (
+      tester,
+    ) async {
+      const path = '/storage/emulated/0/remote-buttons-last.txt';
+      info['reportPath'] = path;
+      await open(tester, language: language);
+      final l = AppLocalizations.of(
+        tester.element(find.byType(RemoteButtonsPage)),
+      )!;
+      final hint = find.text(l.remoteButtonsControlsHint);
+      expect(hint.hitTestable(), findsOneWidget);
+      expect(find.text(path).hitTestable(), findsOneWidget);
+      expect(
+        tester.widget<Text>(find.text(path)).textDirection,
+        TextDirection.ltr,
+      );
+      expect(find.text(l.remoteButtonsHint), findsNothing);
+      expect(
+        find.ancestor(of: hint, matching: find.byType(SettingsHelp)),
+        findsNothing,
+      );
+      expect(calls, ['info']);
+
+      await toggleSettingsHelp(tester, l.remoteButtonsHint);
+      expect(find.text(l.remoteButtonsHint), findsOneWidget);
+      await toggleSettingsHelp(tester, l.remoteButtonsHint);
+      expect(find.text(l.remoteButtonsHint), findsNothing);
+      expect(hint, findsOneWidget);
+      expect(find.text(path), findsOneWidget);
+      expect(calls, ['info']);
+
+      await tester.ensureVisible(
+        find.byKey(const ValueKey('remote-buttons-capture')),
+      );
+      await tester.tap(find.byKey(const ValueKey('remote-buttons-capture')));
+      await tester.pumpAndSettle();
+      expect(calls.last, 'start');
+      expect(hint, findsOneWidget);
+      await tester.tap(find.byKey(const ValueKey('remote-buttons-capture')));
+      await tester.pumpAndSettle();
+      expect(calls.last, 'stop');
+      expect(hint, findsOneWidget);
+      expect(find.text(path), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
+  }
 
   for (final connection in ['ready', 'unavailable']) {
     testWidgets('remapper accessibility grant via ADB: $connection', (

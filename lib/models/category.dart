@@ -63,9 +63,9 @@ class Category extends LauncherSection
     'app_channels': 'App Feeds',
   };
 
-  // Section identity follows systemKey independently of the display name.
+  // Feed groups have a fixed name; other sections keep their editable names.
   static String normalizeName(String name, String? systemKey) =>
-      name;
+      systemKey == 'app_channels' ? standardNames['app_channels']! : name;
 
   static const systemKeys = {'all_apps', 'tv_apps', 'other_apps', 'favorites', 'app_channels'};
   String? systemKey;

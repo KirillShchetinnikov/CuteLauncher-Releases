@@ -1,3 +1,4 @@
+import '../diagnostics_store.dart';
 /*
  * FLauncher
  * Copyright (C) 2021  Étienne Fesser
@@ -206,7 +207,10 @@ class WallpaperService extends ChangeNotifier with ServiceLifecycle {
             final candidate = data['name'];
             if (candidate is String && candidate.isNotEmpty) name = candidate;
           }
-        } on FormatException {
+        } on FormatException catch (diagnosticError, diagnosticStack) {
+          DiagnosticsStore.instance.recordException(
+            'wallpaperService', diagnosticError, diagnosticStack,
+          );
           /* A label must never prevent reading the image. */
         } on TypeError {
           /* Ignore incompatible metadata. */

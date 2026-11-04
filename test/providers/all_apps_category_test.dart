@@ -35,7 +35,7 @@ void main() {
       final categories = await db.getCategories();
       for (final key in Category.systemKeys) {
         final category = categories.firstWhere((c) => c.id == ids[key]);
-        expect(category.name, 'Телеканалы $key');
+        expect(category.name, key == 'app_channels' ? 'App Feeds' : 'Телеканалы $key');
         expect(category.order, Category.systemKeys.toList().indexOf(key));
         expect(category.visible, isFalse);
         expect(category.columnsCount, 8);

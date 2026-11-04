@@ -1,3 +1,4 @@
+import '../diagnostics_store.dart';
 import 'package:flauncher/bridge_result.dart';
 import 'dart:async';
 import 'package:flutter/services.dart';
@@ -96,7 +97,10 @@ class NowPlayingService extends ChangeNotifier with ServiceLifecycle, WidgetsBin
     try {
       final value = await transport.snapshot();
       if (!isDisposed && generation == _generation) _accept(value);
-    } catch (_) {
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'nowPlayingService', diagnosticError, diagnosticStack,
+      );
       if (!isDisposed && generation == _generation) { initialized = true; failed = true; media = null; notifyListeners(); }
     }
   }
@@ -116,11 +120,17 @@ class NowPlayingService extends ChangeNotifier with ServiceLifecycle, WidgetsBin
         if (!isDisposed && generation == _generation) failed = failed || !success;
       }
       return success;
-    } catch (_) { if (!isDisposed && generation == _generation) failed = true; return false; }
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'nowPlayingService', diagnosticError, diagnosticStack,
+      ); if (!isDisposed && generation == _generation) failed = true; return false; }
     finally { if (!isDisposed && generation == _generation) { busy = false; notifyListeners(); } }
   }
   Future<bool> requestPermission() async {
-    try { return await transport.permission(); } catch (_) { return false; }
+    try { return await transport.permission(); } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'nowPlayingService', diagnosticError, diagnosticStack,
+      ); return false; }
   }
   @override void didChangeAppLifecycleState(AppLifecycleState state) {
     _foreground = state == AppLifecycleState.resumed;

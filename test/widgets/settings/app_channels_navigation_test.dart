@@ -7,6 +7,9 @@ import 'package:flauncher/widgets/settings/launcher_section_panel_page.dart';
 import 'package:flauncher/widgets/settings/settings_panel.dart';
 import 'package:flauncher/widgets/settings/settings_page_layout.dart';
 import 'package:flauncher/widgets/settings/settings_slider_tile.dart';
+import 'package:flauncher/widgets/settings/settings_read_only_value.dart';
+import 'package:flauncher/widgets/settings/settings_choice_tile.dart';
+import 'package:flauncher/widgets/settings/settings_text_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -67,6 +70,12 @@ void main() {
           tester.element(find.byType(LauncherSectionPanelPage)),
         )!;
         final opener = find.text(l.categoryAppearance);
+        final name = tester.widget<SettingsReadOnlyValue>(
+          find.byType(SettingsReadOnlyValue),
+        );
+        expect((name.label, name.value), (l.name, l.appChannelsTitle));
+        expect(find.byType(SettingsTextTile), findsNothing);
+        expect(find.byType(SettingsChoiceTile<String>), findsNothing);
         await tester.tap(opener);
         await tester.pump();
         expect(find.byType(AppChannelsAppearancePage), findsOneWidget);

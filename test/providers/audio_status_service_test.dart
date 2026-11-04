@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flauncher/providers/audio_status_service.dart';
+import 'package:flauncher/providers/settings_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -224,4 +226,92 @@ void main() {
     expect(notifications, 0);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets(
+    'saved interval reschedules one loop and ignores unrelated settings',
+    (tester) async {
+      SharedPreferences.setMockInitialValues({'volume_update_interval': 2});
+      final settings = SettingsService(await SharedPreferences.getInstance());
+      service.dispose();
+      service = AudioStatusService(settings: settings);
+      final first = Object(), second = Object();
+      service.setVisible(first, true);
+      service.setVisible(second, true);
+      await tester.pump();
+      expect(service.interval, const Duration(seconds: 2));
+      expect(reads, 1);
+      await tester.pump(const Duration(seconds: 2));
+      expect(reads, 2);
+      await settings.setVolumeUpdateInterval(10);
+      await tester.pump(const Duration(seconds: 9));
+      expect(reads, 2);
+      await settings.setSystemUpdateInterval(1);
+      await tester.pump(const Duration(seconds: 1));
+      expect(reads, 3);
+      // Native volume/route changes still refresh immediately at a slow interval.
+      snapshot = {...snapshot, 'percent': 40};
+      await changed(null);
+      await tester.pump();
+      expect(reads, 4);
+      expect(service.state.percent, 40);
+      service.setVisible(first, false);
+      service.setVisible(second, false);
+      await settings.setVolumeUpdateInterval(1);
+      await tester.pump(const Duration(seconds: 20));
+      expect(reads, 4);
+      service.setVisible(first, true);
+      await tester.pump();
+      expect(reads, 5);
+      await tester.pump(const Duration(seconds: 1));
+      expect(reads, 6);
+      await changed(false);
+      await settings.setVolumeUpdateInterval(2);
+      await tester.pump(const Duration(seconds: 20));
+      expect(reads, 6);
+      await changed(true);
+      await tester.pump();
+      expect(reads, 7);
+      service.didChangeAppLifecycleState(AppLifecycleState.paused);
+      await settings.setVolumeUpdateInterval(1);
+      await tester.pump(const Duration(seconds: 20));
+      expect(reads, 7);
+      service.dispose();
+      await settings.setVolumeUpdateInterval(3);
+      await tester.pump(const Duration(seconds: 20));
+      expect(reads, 7);
+      settings.dispose();
+    },
+  );
+
+  testWidgets(
+    'interval change during a read keeps the result and schedules the new delay',
+    (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final settings = SettingsService(await SharedPreferences.getInstance());
+      service.dispose();
+      service = AudioStatusService(settings: settings);
+      final pending = Completer<Map<String, dynamic>>();
+      binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, (
+        call,
+      ) async {
+        if (call.method == 'watch') return null;
+        reads++;
+        return reads == 1 ? pending.future : snapshot;
+      });
+      service.setVisible(Object(), true);
+      await tester.pump();
+      await settings.setVolumeUpdateInterval(1);
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(reads, 1);
+      pending.complete(snapshot);
+      await tester.pump();
+      expect(service.state.percent, 15);
+      await tester.pump(const Duration(milliseconds: 999));
+      expect(reads, 1);
+      await tester.pump(const Duration(milliseconds: 1));
+      expect(reads, 2);
+      service.dispose();
+      settings.dispose();
+    },
+  );
 }

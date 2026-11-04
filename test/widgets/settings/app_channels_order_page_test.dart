@@ -9,6 +9,7 @@ import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/settings/app_channels_order_page.dart';
 import 'package:flauncher/widgets/settings/app_channels_settings_page.dart';
 import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
+import 'package:flauncher/widgets/settings/settings_help.dart';
 
 import '../../support/app_channels.dart';
 
@@ -134,6 +135,14 @@ void main() {
         await tester.binding.handlePopRoute();
         await tester.pumpAndSettle();
         expect(find.byType(AppChannelsOrderPage), findsOneWidget);
+        final hint = find.text(l.backgroundInformationOrderHint);
+        await tester.scrollUntilVisible(hint, 160);
+        await tester.pumpAndSettle();
+        expect(hint.hitTestable(), findsOneWidget);
+        expect(
+          find.ancestor(of: hint, matching: find.byType(SettingsHelp)),
+          findsNothing,
+        );
         await tester.binding.handlePopRoute();
         await tester.pumpAndSettle();
         expect(find.byType(AppChannelsOrderPage), findsNothing);

@@ -118,7 +118,8 @@ void main() {
         await tester.pumpAndSettle();
         page = find.byType(RemotePanelObjectsPage);
         expect(page, findsOneWidget);
-        expect(find.descendant(of: page, matching: find.byType(FocusableSettingsTile)), findsNWidgets(RemotePanelService.ids.length));
+        expect(find.descendant(of: page, matching: find.byType(FocusableSettingsTile)), findsNWidgets(RemotePanelService.ids.length + 1));
+        expect(find.text(l.volumeWidgetSettings), findsOneWidget);
         expect(find.text(l.informationSettings), findsNothing);
         expect(
           find.descendant(

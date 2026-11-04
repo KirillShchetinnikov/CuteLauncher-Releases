@@ -1,4 +1,5 @@
 import 'traffic_settings_page.dart';
+import 'volume_widget_settings_page.dart';
 import 'network_speed_settings_page.dart';
 import 'system_widget_settings_page.dart';
 import 'vpn_settings_page.dart';
@@ -65,6 +66,9 @@ class StatusBarObjectsPage extends StatelessWidget {
             onChanged: s.setShowNetworkIndicatorInStatusBar,
             title: Text(l.showNetwork),
           ),
+          RoundedSwitchListTile(key: const ValueKey('show_nas'),
+            value: s.showNasInStatusBar, onChanged: s.setShowNasInStatusBar,
+            title: Text(l.networkStorageTitle)),
           RoundedSwitchListTile(value: s.showVpnInStatusBar,
             onChanged: s.setShowVpnInStatusBar, title: Text(l.vpnTitle)),
           FocusableSettingsTile(title: Text(l.vpnSettings), leading: const Icon(Icons.vpn_key),
@@ -91,6 +95,14 @@ class StatusBarObjectsPage extends StatelessWidget {
             onChanged: s.setShowVolumeInStatusBar,
             title: Text(l.showVolume),
           ),
+          FocusableSettingsTile(
+            title: Text(l.volumeWidgetSettings),
+            leading: const Icon(Icons.volume_up_outlined),
+            onPressed: () => Navigator.of(context).pushNamed(VolumeWidgetSettingsPage.routeName),
+          ),
+          RoundedSwitchListTile(key: const ValueKey('show_usb'),
+            value: s.showUsbInStatusBar, onChanged: s.setShowUsbInStatusBar,
+            title: Text(l.usbStorageTitle)),
           RoundedSwitchListTile(
             autofocus: false,
             value: s.showInputsWidgetInStatusBar,

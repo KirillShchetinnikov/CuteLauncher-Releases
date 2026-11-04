@@ -63,6 +63,139 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  for (final valid in [true, false]) {
+    for (final cancel in [true, false]) {
+      testWidgets(
+        'Done focuses footer and remote reaches actions; valid=$valid cancel=$cancel',
+        (tester) async {
+          final settings = await open(tester);
+          final original = settings.dateFormat;
+          await editor(tester);
+          await tester.enterText(
+            find.byType(TextField),
+            valid ? 'yyyy-MM-dd' : 'HH:mm',
+          );
+          tester.view.viewInsets = const FakeViewPadding(bottom: 280);
+          addTearDown(tester.view.resetViewInsets);
+          await tester.pumpAndSettle();
+          final material = MaterialLocalizations.of(
+            tester.element(find.byType(CustomDateFormatDialog)),
+          );
+          final save = find.widgetWithText(
+            LauncherDialogButton,
+            material.okButtonLabel,
+          );
+          final dismiss = find.widgetWithText(
+            LauncherDialogButton,
+            material.cancelButtonLabel,
+          );
+          await tester.testTextInput.receiveAction(TextInputAction.done);
+          tester.view.viewInsets = FakeViewPadding.zero;
+          await tester.pumpAndSettle();
+          expect(
+            tester
+                .widget<LauncherDialogButton>(valid ? save : dismiss)
+                .focusNode!
+                .hasFocus,
+            isTrue,
+          );
+          expect(settings.dateFormat, original);
+          if (valid) {
+            await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+            await tester.pumpAndSettle();
+            expect(
+              tester.widget<LauncherDialogButton>(dismiss).focusNode!.hasFocus,
+              isTrue,
+            );
+            if (!cancel) {
+              await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+              await tester.pumpAndSettle();
+              expect(
+                tester.widget<LauncherDialogButton>(save).focusNode!.hasFocus,
+                isTrue,
+              );
+            }
+          }
+          await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+          await tester.pumpAndSettle();
+          expect(find.byType(CustomDateFormatDialog), findsNothing);
+          expect(
+            settings.dateFormat,
+            valid && !cancel ? 'yyyy-MM-dd' : original,
+          );
+          expect(tester.takeException(), isNull);
+        },
+      );
+    }
+  }
+
+  testWidgets('editor stays usable across repeated keyboard resize and Back', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(960, 540);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    addTearDown(tester.view.resetViewInsets);
+    final settings = await open(tester);
+    final original = settings.dateFormat;
+    await editor(tester);
+    final field = find.byType(TextField);
+    await tester.enterText(field, 'yyyy-MM-dd');
+    final editorFocus = FocusManager.instance.primaryFocus;
+    for (final height in [260.0, 0.0, 280.0, 0.0, 260.0]) {
+      if (height == 0) {
+        // Android consumes Back to dismiss the IME.
+        tester.testTextInput.hide();
+      } else {
+        await tester.sendKeyEvent(LogicalKeyboardKey.select);
+      }
+      tester.view.viewInsets = FakeViewPadding(bottom: height);
+      await tester.pumpAndSettle();
+      expect(find.byType(CustomDateFormatDialog), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      expect(FocusManager.instance.primaryFocus, same(editorFocus));
+      final body = find.descendant(
+        of: find.byType(CustomDateFormatDialog),
+        matching: find.byType(SingleChildScrollView),
+      );
+      final viewport = tester.getRect(body);
+      final input = tester.getRect(field);
+      final preview = tester.getRect(
+        find.byKey(const ValueKey('custom-date-preview')),
+      );
+      expect(preview.top, greaterThanOrEqualTo(0));
+      expect(preview.bottom, lessThanOrEqualTo(input.top));
+      expect(input.bottom, lessThanOrEqualTo(540 - height));
+      expect(input.bottom, lessThanOrEqualTo(viewport.top));
+      expect(viewport.bottom, lessThanOrEqualTo(540 - height));
+      for (final label in ['ОК', 'Отмена']) {
+        final button = find.widgetWithText(LauncherDialogButton, label);
+        expect(tester.getRect(button).bottom, lessThanOrEqualTo(540 - height));
+        expect(button.hitTestable(), findsOneWidget);
+      }
+      if (height == 0) {
+        final scrollable = tester.state<ScrollableState>(
+          find.descendant(of: body, matching: find.byType(Scrollable)).first,
+        );
+        expect(scrollable.position.maxScrollExtent, 0);
+      } else {
+        await tester.ensureVisible(
+          find.byKey(const ValueKey('custom-date-legend')),
+        );
+        await tester.pumpAndSettle();
+      }
+      expect(settings.dateFormat, original);
+      expect(tester.widget<TextField>(field).controller!.text, 'yyyy-MM-dd');
+    }
+    tester.view.viewInsets = FakeViewPadding.zero;
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(LauncherDialogButton, 'ОК'));
+    await tester.pumpAndSettle();
+    expect(settings.dateFormat, 'yyyy-MM-dd');
+    expect(tester.takeException(), isNull);
+  });
+
   for (final onRight in [false, true]) {
     for (final close in ['save', 'cancel', 'back']) {
       testWidgets(
@@ -72,6 +205,7 @@ void main() {
           tester.view.devicePixelRatio = 1;
           addTearDown(tester.view.resetPhysicalSize);
           addTearDown(tester.view.resetDevicePixelRatio);
+          addTearDown(tester.view.resetViewInsets);
           SharedPreferences.setMockInitialValues({
             'settings_menu_on_right': onRight,
           });
@@ -114,6 +248,20 @@ void main() {
             isNotNull,
           );
           await tester.enterText(find.byType(TextField), 'yyyy-MM-dd');
+          await tester.pumpAndSettle();
+          for (final keyboardHeight in [300.0, 0.0, 300.0]) {
+            tester.view.viewInsets = FakeViewPadding(bottom: keyboardHeight);
+            await tester.pumpAndSettle();
+            final preview = tester.getRect(
+              find.byKey(const ValueKey('custom-date-preview')),
+            );
+            final input = tester.getRect(find.byType(TextField));
+            expect(preview.top, greaterThanOrEqualTo(kToolbarHeight));
+            expect(preview.bottom, lessThanOrEqualTo(input.top));
+            expect(input.bottom, lessThanOrEqualTo(540 - keyboardHeight));
+            expect(tester.takeException(), isNull);
+          }
+          tester.view.viewInsets = FakeViewPadding.zero;
           await tester.pumpAndSettle();
           if (close == 'back') {
             await tester.binding.handlePopRoute();
@@ -233,7 +381,7 @@ void main() {
           of: dialog,
           matching: find.byType(SingleChildScrollView),
         ),
-        findsNothing,
+        findsOneWidget,
       );
       final legend = tester.getRect(
         find.byKey(const ValueKey('custom-date-legend')),
@@ -266,7 +414,7 @@ void main() {
           of: dialog,
           matching: find.byType(SingleChildScrollView),
         ),
-        findsNothing,
+        findsOneWidget,
       );
       final legend = tester.getRect(
         find.byKey(const ValueKey('custom-date-legend')),
@@ -287,6 +435,33 @@ void main() {
       await tester.enterText(find.byType(TextField), 'HH:mm');
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
+      addTearDown(tester.view.resetViewInsets);
+      await tester.enterText(find.byType(TextField), 'EEEE, d. MMMM yyyy');
+      for (final keyboardHeight in [280.0, 0.0, 300.0]) {
+        tester.view.viewInsets = FakeViewPadding(bottom: keyboardHeight);
+        await tester.pumpAndSettle();
+        final preview = tester.getRect(
+          find.byKey(const ValueKey('custom-date-preview')),
+        );
+        final input = tester.getRect(find.byType(TextField));
+        expect(preview.top, greaterThanOrEqualTo(0));
+        expect(preview.bottom, lessThanOrEqualTo(input.top));
+        expect(input.bottom, lessThanOrEqualTo(540 - keyboardHeight));
+        expect(
+          find.ancestor(
+            of: find.byType(TextField),
+            matching: find.byType(SingleChildScrollView),
+          ),
+          findsNothing,
+        );
+        for (final element in buttons.evaluate()) {
+          expect(
+            tester.getRect(find.byWidget(element.widget)).bottom,
+            lessThanOrEqualTo(540 - keyboardHeight),
+          );
+        }
+        expect(tester.takeException(), isNull);
+      }
     });
   }
 }

@@ -88,7 +88,7 @@ class DriveBackupService extends ChangeNotifier with WidgetsBindingObserver {
           if (bytes.length > 65536) throw const CloudBackupException('size');
         }
         if (response.statusCode >= 300 && response.statusCode < 400) {
-          throw const CloudBackupException('redirect');
+          throw CloudBackupException('redirect', httpStatus: response.statusCode);
         }
         final result = Map<String, dynamic>.from(
           jsonDecode(utf8.decode(bytes)) as Map,
@@ -104,7 +104,7 @@ class DriveBackupService extends ChangeNotifier with WidgetsBindingObserver {
             'access_denied' || 'invalid_grant' => 'authorization',
             'expired_token' => 'expired',
             _ => 'response',
-          });
+          }, httpStatus: response.statusCode);
         }
         return result;
       })().timeout(const Duration(seconds: 30));

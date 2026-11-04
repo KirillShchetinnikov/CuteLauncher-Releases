@@ -122,6 +122,12 @@ abstract class AppLocalizations {
     Locale('zh'),
   ];
 
+  /// No description provided for @settingsScrollbarAlwaysVisible.
+  ///
+  /// In en, this message translates to:
+  /// **'Always show scrollbar'**
+  String get settingsScrollbarAlwaysVisible;
+
   /// No description provided for @volumeKeysTitle.
   ///
   /// In en, this message translates to:
@@ -6506,10 +6512,16 @@ abstract class AppLocalizations {
   /// **'Stop checking'**
   String get remoteButtonsStop;
 
+  /// No description provided for @remoteButtonsControlsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Start the test, then press buttons in any menu or open app. Stop it here or wait 120 seconds.'**
+  String get remoteButtonsControlsHint;
+
   /// No description provided for @remoteButtonsHint.
   ///
   /// In en, this message translates to:
-  /// **'Start the test, then press buttons in any menu or open app. Stop it here or wait 120 seconds. After the test, the report is saved at the path below, replacing the previous report. Copy it using ADB: adb pull <path>. Some system and manufacturer buttons may be unavailable to the service.'**
+  /// **'After the test, the report is saved at the displayed path, replacing the previous report. Copy it using ADB: adb pull <path>. Some system and manufacturer buttons may be unavailable to the service.'**
   String get remoteButtonsHint;
 
   /// No description provided for @remoteButtonsEmpty.
@@ -9301,6 +9313,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'TV unknown'**
   String get backupTvUnknown;
+
+  /// No description provided for @panelTooltips.
+  ///
+  /// In en, this message translates to:
+  /// **'Show tooltips in all panels'**
+  String get panelTooltips;
+
+  /// No description provided for @networkStorageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Network storage'**
+  String get networkStorageTitle;
+
+  /// No description provided for @usbStorageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'USB drives'**
+  String get usbStorageTitle;
+
+  /// No description provided for @storageScreenUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage settings are unavailable.'**
+  String get storageScreenUnavailable;
+
+  /// No description provided for @appSections.
+  ///
+  /// In en, this message translates to:
+  /// **'App sections'**
+  String get appSections;
+
+  /// No description provided for @noAppSections.
+  ///
+  /// In en, this message translates to:
+  /// **'This app is not in any section.'**
+  String get noAppSections;
+
+  /// No description provided for @volumeWidgetSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Volume settings'**
+  String get volumeWidgetSettings;
+
+  /// No description provided for @volumeUpdateInterval.
+  ///
+  /// In en, this message translates to:
+  /// **'Update interval'**
+  String get volumeUpdateInterval;
 }
 
 class _AppLocalizationsDelegate

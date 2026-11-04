@@ -2,6 +2,9 @@ import '../information_placement.dart';
 import '../key_sounds.dart';
 import 'dart:async';
 import 'audio_status_widget.dart';
+import '../providers/storage_status_service.dart';
+import 'storage_status_watch.dart';
+import 'panel_tooltip.dart';
 import 'system_status_widget.dart';
 import 'system_status_menu.dart';
 import 'traffic_usage_menu.dart';
@@ -70,6 +73,8 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
   final _networkSpeedFocusNode = FocusNode();
   final _systemFocusNode = FocusNode();
   final _vpnFocusNode = FocusNode();
+  final _nasFocusNode = FocusNode();
+  final _usbFocusNode = FocusNode();
   final _nightModeFocusNode = FocusNode();
   final _dateFocusNode = FocusNode();
   final _clockFocusNode = FocusNode();
@@ -82,6 +87,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
   void focusSettings() => _settingsFocusNode.requestFocus();
   void focusFirst() {
     final nodes = {'settings': _settingsFocusNode, 'systemSettings': _systemSettingsFocusNode,
+      'nas': _nasFocusNode, 'usb': _usbFocusNode,
       'inputs': _inputsFocusNode, 'notifications': _notificationsFocusNode,
       'networkSpeed': _networkSpeedFocusNode, 'system': _systemFocusNode, 'traffic': _trafficFocusNode, 'vpn': _vpnFocusNode, 'sleepTimer': _sleepTimerFocusNode, 'nightMode': _nightModeFocusNode, 'weather': _weatherFocusNode, 'date': _dateFocusNode, 'time': _clockFocusNode, PanelLayout.informationGroup: _dateFocusNode};
     final layout = widget.remotePanel?.layout ??
@@ -175,6 +181,8 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
       _networkSpeedFocusNode,
       _systemFocusNode,
       _vpnFocusNode,
+      _nasFocusNode,
+      _usbFocusNode,
       _nightModeFocusNode,
       _dateFocusNode,
       _clockFocusNode,
@@ -323,6 +331,13 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
     }
   }
 
+  Future<void> _openStorage(bool nas) async {
+    final opened = await context.read<StorageStatusService>().open(nas);
+    if (!mounted || opened) return;
+    ScaffoldMessenger.maybeOf(context)?.showSnackBar(SnackBar(
+      content: Text(AppLocalizations.of(context)!.storageScreenUnavailable)));
+  }
+
   Future<void> _openSleepTimer() async {
     final box = _sleepTimerFocusNode.context?.findRenderObject();
     if (box is! RenderBox || !box.hasSize) return;
@@ -365,8 +380,24 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
     final nightEnabled = context.select<NightModeService?, bool>((service) => (service?.intensity ?? 0) > 0);
     final vpnVisible = context.select<VpnService?, bool>((vpn) =>
       vpn != null && (vpn.active || !vpn.onlyActive || vpn.failed));
+    final storage = context.select<StorageStatusService?, StorageStatus>(
+      (service) => service?.state ?? noStorageStatus);
+    final hasStorageService = context.read<StorageStatusService?>() != null;
+    final nasEnabled = hasStorageService && (widget.remotePanel?.visible('nas') ?? settings.showNasInStatusBar);
+    final usbEnabled = hasStorageService && (widget.remotePanel?.visible('usb') ?? settings.showUsbInStatusBar);
+    final nasVisible = nasEnabled && storage.nasSupported && storage.nas;
+    final usbVisible = usbEnabled && storage.usb;
+    if ((!nasVisible && _nasFocusNode.hasFocus) || (!usbVisible && _usbFocusNode.hasFocus)) {
+      WidgetsBinding.instance.addPostFrameCallback((_) { if (mounted) focusFirst(); });
+    }
     final direction = TextDirection.ltr;
     final objects = <String, Widget>{
+      if (nasVisible) 'nas': PanelTooltip(message: AppLocalizations.of(context)!.networkStorageTitle,
+        child: TopPanelItem(key: const ValueKey('nas_button'), focusNode: _nasFocusNode,
+          onPressed: () => _openStorage(true), child: const Icon(Icons.dns_outlined))),
+      if (usbVisible) 'usb': PanelTooltip(message: AppLocalizations.of(context)!.usbStorageTitle,
+        child: TopPanelItem(key: const ValueKey('usb_button'), focusNode: _usbFocusNode,
+          onPressed: () => _openStorage(false), child: const Icon(Icons.usb))),
       if (widget.remotePanel?.visible('networkSpeed') ?? settings.showNetworkSpeedInStatusBar)
         'networkSpeed': NetworkSpeedWidget(focusNode: _networkSpeedFocusNode, selected: _activeWidget == 'networkSpeed',
           onPressed: _openNetworkSpeed, visible: widget.remotePanel != null ||
@@ -572,7 +603,10 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
         ),
       ),
     ));
-    return Focus(
+    return StorageStatusWatch(
+      visible: (nasEnabled || usbEnabled) && (widget.remotePanel != null ||
+          !settings.autoHideAppBarEnabled || focused || _settingsOpen),
+      child: Focus(
       canRequestFocus: false,
       onKeyEvent: (node, event) => _cyclePanelFocus(node, event, appearance.panelWrapNavigation),
       onFocusChange: (value) => setState(() => focused = value),
@@ -587,6 +621,6 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
         decoration: const BoxDecoration(),
         child: panel,
       ),
-    );
+    ));
   }
 }

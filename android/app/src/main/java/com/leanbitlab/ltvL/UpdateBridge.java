@@ -66,6 +66,7 @@ final class UpdateBridge {
             } else if (call.method.equals("install")) {
                 executor.execute(() -> {
                     String status = "invalid_file";
+                    Map<String, Object> verificationFailure = null;
                     try {
                         if (PLAY.equals(installer(activity))) status = "play";
                         else {
@@ -82,11 +83,18 @@ final class UpdateBridge {
                                 }
                             }
                         }
-                    } catch (Exception error) { status = "invalid_verification"; }
+                    } catch (Exception error) {
+                        status = "invalid_verification";
+                        verificationFailure = DiagnosticErrorDetails.from(error);
+                    }
                     if (status.equals("ready")) UpdatePermissionRecovery.snapshot(activity);
                     final String checked = status;
+                    final Map<String, Object> evidence = verificationFailure;
                     new Handler(Looper.getMainLooper()).post(() -> {
-                        if (!checked.equals("ready")) { result.success(checked); return; }
+                        if (!checked.equals("ready")) {
+                            result.success(evidence == null ? checked : Map.of("status", checked, "diagnostic", evidence));
+                            return;
+                        }
                         try {
                             if (!activity.getPackageManager().canRequestPackageInstalls()) {
                                 activity.startActivity(new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
@@ -101,7 +109,9 @@ final class UpdateBridge {
                                 .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                             activity.startActivity(intent);
                             result.success("launched");
-                        } catch (Exception error) { result.success("unavailable"); }
+                        } catch (Exception error) {
+                            result.success(Map.of("status", "unavailable", "diagnostic", DiagnosticErrorDetails.from(error)));
+                        }
                     });
                 });
             } else result.notImplemented();

@@ -1,3 +1,5 @@
+import '../bridge_result.dart';
+import '../diagnostics_store.dart';
 import 'dart:async';
 
 import 'package:collection/collection.dart';
@@ -38,7 +40,7 @@ class VpnService extends ChangeNotifier with WidgetsBindingObserver {
   VpnService(
     this.network, {
     this.work,
-    this.channel = const MethodChannel('cutelauncher/vpn'),
+    this.channel = const BridgeChannel('cutelauncher/vpn'),
   }) {
     final lifecycle = WidgetsBinding.instance.lifecycleState;
     _foreground = lifecycle == null || lifecycle == AppLifecycleState.resumed;
@@ -134,7 +136,10 @@ class VpnService extends ChangeNotifier with WidgetsBindingObserver {
       }
       _state = next;
       failed = false;
-    } catch (_) {
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'vpnService', diagnosticError, diagnosticStack,
+      );
       if (_disposed || generation != _generation) return;
       if (failed) return;
       failed = true;
@@ -155,7 +160,10 @@ class VpnService extends ChangeNotifier with WidgetsBindingObserver {
           }) ==
           true;
       await refresh();
-    } catch (_) {
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'vpnService', diagnosticError, diagnosticStack,
+      );
       ok = false;
     }
     if (!_disposed) {
@@ -169,7 +177,10 @@ class VpnService extends ChangeNotifier with WidgetsBindingObserver {
   Future<void> requestPermission(String app) async {
     try {
       await channel.invokeMethod<bool>('permission', {'app': app});
-    } catch (_) {
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'vpnService', diagnosticError, diagnosticStack,
+      );
       result = 'permission';
       _changed();
     }
@@ -178,7 +189,10 @@ class VpnService extends ChangeNotifier with WidgetsBindingObserver {
   Future<bool> open() async {
     try {
       return await channel.invokeMethod<bool>('open', {'app': target}) == true;
-    } catch (_) {
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'vpnService', diagnosticError, diagnosticStack,
+      );
       return false;
     }
   }
@@ -224,7 +238,10 @@ class VpnService extends ChangeNotifier with WidgetsBindingObserver {
         }
         if (result == 'pending') result = 'failed';
       }
-    } catch (_) {
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'vpnService', diagnosticError, diagnosticStack,
+      );
       result = 'failed';
     }
     if (!_disposed) {

@@ -267,7 +267,21 @@ void main() {
       expect(MediaQuery.textScalerOf(element).scale(16), 24);
       await tester.tap(find.text('Стиль настроек'));
       await tester.pumpAndSettle();
-      await tester.ensureVisible(find.text('Сбросить настройки этого раздела'));
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      await tester.pumpAndSettle();
+      final focus = FocusManager.instance.primaryFocus;
+      await tester.sendKeyEvent(LogicalKeyboardKey.select);
+      await tester.pumpAndSettle();
+      expect(appearance.appearance.settingsScrollbarAlwaysVisible, isFalse);
+      expect(FocusManager.instance.primaryFocus, same(focus));
+      final reloaded = AppearanceService(prefs);
+      expect(reloaded.appearance.settingsScrollbarAlwaysVisible, isFalse);
+      reloaded.dispose();
+      await tester.scrollUntilVisible(
+        find.text('Сбросить настройки этого раздела'),
+        250,
+        scrollable: find.descendant(of: find.byType(SettingsStylePage), matching: find.byType(Scrollable)).first,
+      );
       await tester.tap(find.text('Сбросить настройки этого раздела'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Отмена'));
@@ -277,6 +291,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('Сбросить настройки этого раздела').last);
       await tester.pumpAndSettle();
+      expect(appearance.appearance.settingsScrollbarAlwaysVisible, isTrue);
       expect(appearance.appearance.number('settingsOpacity'), 1);
       expect(appearance.appearance.number('settingsTextSize'), 18);
       expect(appearance.appearance.number('noticeOpacity'), .7);

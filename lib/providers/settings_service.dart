@@ -223,7 +223,7 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
     for (final key in [_gradientUuidKey, _accentColorKey, _themesKey,
       _showAppNamesBelowIconsKey, _hideHighlightOutlineOnHomescreenKey,
       _appHighlightAnimationEnabledKey, _appSelectorTransitionAnimationEnabledKey,
-      _timeBasedWallpaperEnabledKey, _screensaverClockStyleKey, 'settings_menu_on_right', 'background_source', 'wallpaper_fit',
+      _timeBasedWallpaperEnabledKey, _screensaverClockStyleKey, 'settings_menu_on_right', 'panel_tooltips_enabled', 'background_source', 'wallpaper_fit',
       'wallpaper_brightness', 'wallpaper_saturation', 'wallpaper_dimming', landscapeSettingsKey]) {
       await _sharedPreferences.remove(key);
     }
@@ -238,7 +238,7 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
       'tiles' => [_themesKey, _showAppNamesBelowIconsKey],
       'focus' => [_hideHighlightOutlineOnHomescreenKey,
         _appHighlightAnimationEnabledKey, _appSelectorTransitionAnimationEnabledKey],
-      'settings' => ['settings_menu_on_right'],
+      'settings' => ['settings_menu_on_right', 'panel_tooltips_enabled'],
       'accent' => [_accentColorKey],
       'clock' => [_screensaverClockStyleKey],
       'wallpaperDisplay' => ['wallpaper_fit', 'wallpaper_brightness', 'wallpaper_saturation', 'wallpaper_dimming'],
@@ -276,6 +276,10 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
   bool get showDataWidgetInStatusBar => _showDataWidgetInStatusBar;
 
   bool get showNetworkIndicatorInStatusBar => _showNetworkIndicatorInStatusBar;
+  bool get showNasInStatusBar => _sharedPreferences.getBool('show_nas_in_status_bar') ?? true;
+  bool get showUsbInStatusBar => _sharedPreferences.getBool('show_usb_in_status_bar') ?? true;
+  Future<void> setShowNasInStatusBar(bool value) => _setSystemOption('show_nas_in_status_bar', value);
+  Future<void> setShowUsbInStatusBar(bool value) => _setSystemOption('show_usb_in_status_bar', value);
   bool get showVpnInStatusBar => _sharedPreferences.getBool('show_vpn_in_status_bar') ?? true;
   bool get showSystemInStatusBar => _sharedPreferences.getBool('show_system_in_status_bar') ?? false;
   bool get showNetworkSpeedInStatusBar => _sharedPreferences.getBool('show_network_speed_in_status_bar') ?? false;
@@ -304,6 +308,13 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
   Future<void> setSystemShowCpu(bool value) => _setSystemOption('system_show_cpu', value);
   Future<void> setSystemShowRam(bool value) => _setSystemOption('system_show_ram', value);
   bool get showVolumeInStatusBar => _sharedPreferences.getBool('show_volume_in_status_bar') ?? true;
+  int get volumeUpdateInterval => (_sharedPreferences.getInt('volume_update_interval') ?? 3).clamp(1, 10);
+  Future<void> setVolumeUpdateInterval(int value) async {
+    if (!await _sharedPreferences.setInt('volume_update_interval', value.clamp(1, 10))) {
+      throw StateError('Panel settings unavailable');
+    }
+    notifyListeners();
+  }
   Future<void> setShowVolumeInStatusBar(bool show) async {
     if (!await _sharedPreferences.setBool('show_volume_in_status_bar', show)) {
       throw StateError('Panel settings unavailable');
@@ -320,6 +331,14 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
   bool get hideLauncherTile => _hideLauncherTile;
   bool get hideAndroidSettingsTile => _hideAndroidSettingsTile;
   bool get settingsMenuOnRight => _sharedPreferences.getBool('settings_menu_on_right') ?? false;
+  bool get panelTooltipsEnabled => _sharedPreferences.getBool('panel_tooltips_enabled') ?? false;
+
+  Future<void> setPanelTooltipsEnabled(bool value) async {
+    if (!await _sharedPreferences.setBool('panel_tooltips_enabled', value)) {
+      throw StateError('Unable to save panel tooltips setting');
+    }
+    notifyListeners();
+  }
 
   Future<void> setSettingsMenuOnRight(bool value) async {
     await _sharedPreferences.setBool('settings_menu_on_right', value);
@@ -543,9 +562,12 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
       _showNetworkIndicatorInStatusBarKey: _showNetworkIndicatorInStatusBar,
       'show_vpn_in_status_bar': showVpnInStatusBar,
       'show_volume_in_status_bar': showVolumeInStatusBar,
+      'show_nas_in_status_bar': showNasInStatusBar,
+      'show_usb_in_status_bar': showUsbInStatusBar,
       'show_system_in_status_bar': showSystemInStatusBar,
       'show_network_speed_in_status_bar': showNetworkSpeedInStatusBar,
       'network_speed_interval': networkSpeedInterval,
+      'volume_update_interval': volumeUpdateInterval,
       'system_show_cpu': systemShowCpu,
       'system_update_interval': systemUpdateInterval,
       'system_show_ram': systemShowRam,
@@ -563,6 +585,7 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
       'remember_category_focus': rememberCategoryFocus,
       'card_focus_mode': cardFocusMode.name,
       'settings_menu_on_right': settingsMenuOnRight,
+      'panel_tooltips_enabled': panelTooltipsEnabled,
       watchNextAppLimitsKey: jsonEncode(watchNextAppLimits),
       _continueWatchingShowProgressKey: _continueWatchingShowProgress,
       _continueWatchingShowPercentageKey: _continueWatchingShowPercentage,

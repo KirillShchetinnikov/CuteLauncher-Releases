@@ -124,7 +124,12 @@ class BridgeChannel extends MethodChannel {
     }
 
     try {
-      final raw = await super.invokeMethod<dynamic>(method, arguments);
+      var raw = await super.invokeMethod<dynamic>(method, arguments);
+      // Update errors carry evidence while callers retain the historical String contract.
+      if (name == 'cutelauncher/updates' && method == 'install' && raw is Map && raw['status'] is String) {
+        context['errorDetails'] = raw['diagnostic'];
+        raw = raw['status'];
+      }
       context['response'] = raw;
       if (raw is Map) {
         context['nativeCode'] = raw['status'];

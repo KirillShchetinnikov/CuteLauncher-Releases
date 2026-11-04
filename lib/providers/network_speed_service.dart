@@ -1,3 +1,5 @@
+import '../diagnostics_store.dart';
+import '../bridge_result.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
@@ -25,7 +27,7 @@ class NetworkSpeedService extends ChangeNotifier with WidgetsBindingObserver {
       _screenOn = true;
 
   NetworkSpeedService({
-    this.channel = const MethodChannel('cutelauncher/network_speed'),
+    this.channel = const BridgeChannel('cutelauncher/network_speed'),
     this.work,
     this.settings,
     int seconds = 3,
@@ -82,9 +84,15 @@ class NetworkSpeedService extends ChangeNotifier with WidgetsBindingObserver {
   Future<void> _watch(bool enabled) async {
     try {
       await channel.invokeMethod<void>('watch', enabled);
-    } on PlatformException {
+    } on PlatformException catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'networkSpeedService', diagnosticError, diagnosticStack,
+      );
       // The snapshot also checks whether the screen is on.
-    } on MissingPluginException {
+    } on MissingPluginException catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'networkSpeedService', diagnosticError, diagnosticStack,
+      );
       // Unsupported host.
     }
   }
@@ -146,7 +154,10 @@ class NetworkSpeedService extends ChangeNotifier with WidgetsBindingObserver {
           sent: ((after.tx - before.tx) * 1000 / duration).round(),
         ));
       }
-    } on Object {
+    } on Object catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'networkSpeedService', diagnosticError, diagnosticStack,
+      );
       if (_enabled && generation == _generation) {
         _previous = null;
         _publish(unknownNetworkSpeed);

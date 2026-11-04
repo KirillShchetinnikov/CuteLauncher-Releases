@@ -29,20 +29,29 @@ class BackupService {
     Directory? dir;
     try {
       dir = await getDownloadsDirectory();
-    } catch (_) {
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'backupService', diagnosticError, diagnosticStack,
+      );
       // Ignored, fallback below
     }
     if (dir == null) {
       try {
         dir = await getExternalStorageDirectory();
-      } catch (_) {
+      } catch (diagnosticError, diagnosticStack) {
+        DiagnosticsStore.instance.recordException(
+          'backupService', diagnosticError, diagnosticStack,
+        );
         // Ignored, fallback below
       }
     }
     if (dir == null) {
       try {
         dir = await getApplicationDocumentsDirectory();
-      } catch (_) {
+      } catch (diagnosticError, diagnosticStack) {
+        DiagnosticsStore.instance.recordException(
+          'backupService', diagnosticError, diagnosticStack,
+        );
         // Ignored
       }
     }
@@ -73,13 +82,25 @@ class BackupService {
 
     try {
       addDir(await getDownloadsDirectory());
-    } catch (_) {}
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'backupService', diagnosticError, diagnosticStack,
+      );
+    }
     try {
       addDir(await getExternalStorageDirectory());
-    } catch (_) {}
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'backupService', diagnosticError, diagnosticStack,
+      );
+    }
     try {
       addDir(await getApplicationDocumentsDirectory());
-    } catch (_) {}
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'backupService', diagnosticError, diagnosticStack,
+      );
+    }
 
     final standardPaths = [
       '/storage/emulated/0/Download',
@@ -114,7 +135,11 @@ class BackupService {
           }
         }
       }
-    } catch (_) {}
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'backupService', diagnosticError, diagnosticStack,
+      );
+    }
 
     return dirs;
   }
@@ -141,11 +166,19 @@ class BackupService {
                   lastModified: lastModified,
                   size: size,
                 ));
-              } catch (_) {}
+              } catch (diagnosticError, diagnosticStack) {
+                DiagnosticsStore.instance.recordException(
+                  'backupService', diagnosticError, diagnosticStack,
+                );
+    }
             }
           }
         }
-      } catch (_) {}
+      } catch (diagnosticError, diagnosticStack) {
+        DiagnosticsStore.instance.recordException(
+          'backupService', diagnosticError, diagnosticStack,
+        );
+    }
     }
 
     // Sort by modification date (newest first)
@@ -396,7 +429,10 @@ class BackupService {
       }
       await assets.installWallpapers(replace: replaceSettings);
     });
-    } catch (_) {
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'backupService', diagnosticError, diagnosticStack,
+      );
       try {
         await assets.rollback();
       } finally {

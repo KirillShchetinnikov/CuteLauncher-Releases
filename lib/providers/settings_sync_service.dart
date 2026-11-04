@@ -1,3 +1,4 @@
+import '../diagnostics_store.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -220,7 +221,10 @@ class SettingsSyncService {
       }
       await _put(syncStateKey, next.encode());
       await _put(_journalKey, null);
-    } catch (_) {
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'settingsSyncService', diagnosticError, diagnosticStack,
+      );
       await _recover();
       rethrow;
     }

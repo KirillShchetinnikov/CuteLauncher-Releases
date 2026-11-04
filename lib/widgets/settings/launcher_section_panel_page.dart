@@ -1,4 +1,5 @@
 import 'settings_text_tile.dart';
+import 'settings_read_only_value.dart';
 import 'settings_value_stepper.dart';
 import 'settings_choice_tile.dart';
 import 'settings_route.dart';
@@ -377,7 +378,7 @@ class _CategorySettingsState extends State<_CategorySettings>
     _creating = _category == null;
 
     if (!_creating) {
-      _name = _category!.name;
+      _name = Category.normalizeName(_category!.name, _category!.systemKey);
       _categorySort = _category!.sort;
       _categoryType = _category!.type;
       _columnsCount = _category!.columnsCount;
@@ -406,7 +407,12 @@ class _CategorySettingsState extends State<_CategorySettings>
       canPop: true,
       child: Column(
         children: [
-          _listTile(
+          if (_category?.isAppChannels == true)
+            SettingsReadOnlyValue(
+              label: localizations.name,
+              value: localizedSectionName(_name, localizations),
+            )
+          else _listTile(
             context,
             Text(localizations.name),
           Padding(
@@ -436,7 +442,7 @@ class _CategorySettingsState extends State<_CategorySettings>
             )
           )
         ),
-        if (!namePresets.contains(_name) || _name.isEmpty)
+        if (_category?.isAppChannels != true && (!namePresets.contains(_name) || _name.isEmpty))
           SettingsTextTile(
             title: localizations.customName, value: _name, maxLength: 256,
             onChanged: (value) {

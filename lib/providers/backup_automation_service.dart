@@ -1,10 +1,11 @@
+import '../bridge_result.dart';
+import '../diagnostics_store.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/widgets.dart';
-import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -204,7 +205,7 @@ class BackupAutomationService extends ChangeNotifier
     Future<Map?> Function()? identityLoader,
   }) : identityLoader =
            identityLoader ??
-           (() => const MethodChannel('me.efesser.flauncher/method')
+           (() => const BridgeChannel('me.efesser.flauncher/method')
                .invokeMethod<Map>('getBackupDeviceIdentity')),
        directory = directory ?? getApplicationDocumentsDirectory,
        now = now ?? DateTime.now,
@@ -221,7 +222,10 @@ class BackupAutomationService extends ChangeNotifier
         _changeTimes.addAll(
           (jsonDecode(savedTimes) as Map).cast<String, int>(),
         );
-      } catch (_) {
+      } catch (diagnosticError, diagnosticStack) {
+        DiagnosticsStore.instance.recordException(
+          'backupAutomationService', diagnosticError, diagnosticStack,
+        );
         failed = true;
       }
     }
@@ -289,7 +293,10 @@ class BackupAutomationService extends ChangeNotifier
             RegExp(r'^[A-Za-z0-9_]{1,64}$').hasMatch(label)) {
           await _set('backup_transport_device_label', label);
         }
-      } catch (_) {
+      } catch (diagnosticError, diagnosticStack) {
+        DiagnosticsStore.instance.recordException(
+          'backupAutomationService', diagnosticError, diagnosticStack,
+        );
         // Keep the installation ID when the firmware cannot supply an identity.
       }
       if (preferences.getString('backup_transport_device') == null) {
@@ -350,7 +357,10 @@ class BackupAutomationService extends ChangeNotifier
         webdav.refreshAccount().catchError((_) {}),
         drive.refreshAccount().catchError((_) {}),
       ]);
-    } catch (_) {
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'backupAutomationService', diagnosticError, diagnosticStack,
+      );
       failed = true;
       _syncStateBroken = true;
     }
@@ -686,7 +696,10 @@ class BackupAutomationService extends ChangeNotifier
         await storage.delete(old);
       }
       return true;
-    } catch (_) {
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'backupAutomationService', diagnosticError, diagnosticStack,
+      );
       failed = true;
       return false;
     } finally {
@@ -694,7 +707,10 @@ class BackupAutomationService extends ChangeNotifier
       busy = false;
       try {
         await stage?.delete(recursive: true);
-      } catch (_) {
+      } catch (diagnosticError, diagnosticStack) {
+        DiagnosticsStore.instance.recordException(
+          'backupAutomationService', diagnosticError, diagnosticStack,
+        );
         failed = true;
       }
       _notify();
@@ -824,7 +840,10 @@ class BackupAutomationService extends ChangeNotifier
       busy = false;
       try {
         await stage?.delete(recursive: true);
-      } catch (_) {
+      } catch (diagnosticError, diagnosticStack) {
+        DiagnosticsStore.instance.recordException(
+          'backupAutomationService', diagnosticError, diagnosticStack,
+        );
         failed = true;
       }
       _notify();

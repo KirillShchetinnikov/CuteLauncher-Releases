@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'focusable_settings_tile.dart';
+import 'settings_scroll_behavior.dart';
 
 /// Optional help, with a separate D-pad reading stop and bounded text viewport.
 class SettingsHelp extends StatefulWidget {
@@ -139,7 +140,8 @@ class _SettingsHelpState extends State<SettingsHelp>
                         onNotification: _metrics,
                         child: Scrollbar(
                           controller: _scroll,
-                          thumbVisibility: true,
+                          thumbVisibility:
+                              SettingsScrollBehavior.alwaysShowScrollbar(context),
                           interactive: false,
                           child: RepaintBoundary(
                             child: SingleChildScrollView(

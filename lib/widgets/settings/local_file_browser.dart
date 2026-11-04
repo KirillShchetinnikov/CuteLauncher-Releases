@@ -8,6 +8,7 @@ import '../launcher_dialog.dart';
 import '../remote_text_input.dart';
 import '../menu_header_action.dart';
 import 'focusable_settings_tile.dart';
+import 'settings_scroll_behavior.dart';
 import 'settings_page_layout.dart';
 import 'settings_read_only_value.dart';
 
@@ -578,7 +579,8 @@ class _FileBrowserRowState extends State<_FileBrowserRow> {
                 height: 80,
                 child: Scrollbar(
                   controller: _scroll,
-                  thumbVisibility: true,
+                  thumbVisibility:
+                              SettingsScrollBehavior.alwaysShowScrollbar(context),
                   child: SingleChildScrollView(
                     controller: _scroll,
                     primary: false,

@@ -47,7 +47,7 @@ class _SystemStatusMenuState extends State<SystemStatusMenu> {
   void _syncScrollFocus() {
     if (_settingsOpen) return;
     if (_scroll.offset > 0 && _settingsNode.hasFocus) {
-      // Keep remote scrolling active without the header's focus tooltip.
+      // Keep remote scrolling active after the header leaves the viewport.
       _contentNode.requestFocus();
     } else if (_scroll.offset <= 0 && _contentNode.hasPrimaryFocus) {
       _settingsNode.requestFocus();
@@ -154,6 +154,7 @@ class _SystemStatusMenuState extends State<SystemStatusMenu> {
                   width: 480,
                   child: SingleChildScrollView(
                     controller: _scroll,
+                    padding: const EdgeInsetsDirectional.only(end: 14),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.stretch,

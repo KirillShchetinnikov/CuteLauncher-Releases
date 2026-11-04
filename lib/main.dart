@@ -20,6 +20,7 @@ import 'providers/memory_resources.dart';
 import 'initial_settings_profile.dart';
 import 'package:path_provider/path_provider.dart';
 import 'providers/audio_status_service.dart';
+import 'providers/storage_status_service.dart';
 import 'providers/system_status_service.dart';
 import 'providers/network_speed_service.dart';
 import 'providers/foreground_work.dart';
@@ -229,7 +230,8 @@ Future<void> _runLauncher({bool remotePanel = false, bool recentApps = false}) a
           return timer;
         }, lazy: remotePanel),
         ChangeNotifierProvider(create: (_) => NetworkService(fLauncherChannel, work: work)),
-        ChangeNotifierProvider(create: (_) => AudioStatusService()),
+        ChangeNotifierProvider(create: (context) => AudioStatusService(settings: context.read<SettingsService>())),
+        ChangeNotifierProvider(create: (_) => StorageStatusService(work: work)),
         ChangeNotifierProvider(create: (context) => SystemStatusService(work: work, settings: context.read<SettingsService>())),
         ChangeNotifierProvider(create: (context) => NetworkSpeedService(work: work, settings: context.read<SettingsService>())),
         ChangeNotifierProvider(create: (_) => BackgroundStartupService()),

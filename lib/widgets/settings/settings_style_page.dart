@@ -99,6 +99,12 @@ class _SettingsStylePageState extends State<SettingsStylePage> {
               onChanged: settings.setAppKeyClickEnabled,
               title: Text(l.appKeyClick),
             ),
+          if (!notifications)
+            RoundedSwitchListTile(
+              value: appearance.settingsScrollbarAlwaysVisible,
+              onChanged: (value) => service.set('settingsScrollbarAlwaysVisible', value),
+              title: Text(l.settingsScrollbarAlwaysVisible),
+            ),
           if (notifications)
             SettingsChoiceTile<NoticeCorner>(
               autofocus: true,
@@ -113,6 +119,12 @@ class _SettingsStylePageState extends State<SettingsStylePage> {
                 NoticeCorner.topLeft => l.noticeTopLeft,
               },
               onChanged: (corner) => service.set('noticeCorner', corner.name),
+            ),
+          if (!notifications)
+            RoundedSwitchListTile(
+              value: settings.panelTooltipsEnabled,
+              onChanged: settings.setPanelTooltipsEnabled,
+              title: Text(l.panelTooltips),
             ),
           if (!notifications)
             SettingsChoiceTile<bool>(
@@ -162,7 +174,10 @@ class _SettingsStylePageState extends State<SettingsStylePage> {
                     .where((key) => key.startsWith(prefix) && !key.startsWith('settingsInterface'))
                     .toList(),
               );
-              if (!notifications) await settings.setSettingsMenuOnRight(false);
+              if (!notifications) {
+                await settings.setSettingsMenuOnRight(false);
+                await settings.setPanelTooltipsEnabled(false);
+              }
             },
           ),
         ],

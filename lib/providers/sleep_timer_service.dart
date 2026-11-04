@@ -1,3 +1,4 @@
+import '../diagnostics_store.dart';
 import 'package:flauncher/bridge_result.dart';
 import '../sleep_timer_configuration.dart';
 
@@ -79,7 +80,10 @@ class SleepTimerService extends ChangeNotifier with WidgetsBindingObserver {
     try {
       final value = await channel.invokeMethod<Object?>('state');
       if (!_disposed && revision == _revision) _accept(value);
-    } catch (_) {
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'sleepTimerService', diagnosticError, diagnosticStack,
+      );
       if (!_disposed && revision == _revision) {
         error = 'unavailable';
         notifyListeners();
@@ -118,7 +122,10 @@ class SleepTimerService extends ChangeNotifier with WidgetsBindingObserver {
       if (_disposed) return false;
       _accept(value);
       return true;
-    } catch (e) {
+    } catch (e, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'sleepTimerService', e, diagnosticStack,
+      );
       if (!_disposed) error = e is PlatformException ? e.code : 'unavailable';
       return false;
     } finally {
@@ -130,7 +137,10 @@ class SleepTimerService extends ChangeNotifier with WidgetsBindingObserver {
   Future<bool> requestExact() async {
     try {
       return await channel.invokeMethod<bool>('requestExact') ?? false;
-    } catch (_) {
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'sleepTimerService', diagnosticError, diagnosticStack,
+      );
       return false;
     }
   }

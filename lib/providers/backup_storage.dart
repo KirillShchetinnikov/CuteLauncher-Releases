@@ -1,3 +1,4 @@
+import '../diagnostics_store.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -46,9 +47,15 @@ class BackupStorage {
       })().timeout(const Duration(seconds: 90));
     } on CloudBackupException {
       rethrow;
-    } on TimeoutException {
+    } on TimeoutException catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'backupStorage', diagnosticError, diagnosticStack,
+      );
       throw const CloudBackupException('timeout');
-    } catch (_) {
+    } catch (error, stack) {
+      DiagnosticsStore.instance.recordException(
+        'cloudTransfer', error, stack,
+      );
       throw const CloudBackupException('network');
     } finally {
       client.close(force: true);
@@ -81,7 +88,7 @@ class BackupStorage {
         412 => 'conflict',
         >= 300 && < 400 => 'redirect',
         _ => 'server',
-      });
+      }, httpStatus: response.statusCode);
     }
   }
 

@@ -10,6 +10,9 @@ class AppLocalizationsZh extends AppLocalizations {
   AppLocalizationsZh([String locale = 'zh']) : super(locale);
 
   @override
+  String get settingsScrollbarAlwaysVisible => '始终显示滚动条';
+
+  @override
   String get volumeKeysTitle => '长按音量键';
 
   @override
@@ -3335,8 +3338,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get remoteButtonsStop => '停止检查';
 
   @override
+  String get remoteButtonsControlsHint =>
+      '开始测试，然后在任意菜单或已打开的应用中按下按钮。在此停止测试或等待120秒。';
+
+  @override
   String get remoteButtonsHint =>
-      '检查会显示代码、松开和重复事件，并将文本报告保存在电视上。开始后请离开此页面，以免OK控制记录。';
+      '测试结束后，报告将保存到显示的路径并替换上一份报告。使用ADB复制：adb pull <path>。某些系统和厂商按钮可能无法传递给服务。';
 
   @override
   String get remoteButtonsEmpty => '暂无事件。如果按键打开了应用，请返回此处查看结果。';
@@ -4829,4 +4836,28 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get backupTvUnknown => '电视未知';
+
+  @override
+  String get panelTooltips => '在所有面板中显示工具提示';
+
+  @override
+  String get networkStorageTitle => '网络存储';
+
+  @override
+  String get usbStorageTitle => 'USB 存储设备';
+
+  @override
+  String get storageScreenUnavailable => '存储设置不可用。';
+
+  @override
+  String get appSections => '应用所在分区';
+
+  @override
+  String get noAppSections => '此应用不在任何分区中。';
+
+  @override
+  String get volumeWidgetSettings => '音量设置';
+
+  @override
+  String get volumeUpdateInterval => '更新间隔';
 }

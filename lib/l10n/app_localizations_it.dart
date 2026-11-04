@@ -10,6 +10,10 @@ class AppLocalizationsIt extends AppLocalizations {
   AppLocalizationsIt([String locale = 'it']) : super(locale);
 
   @override
+  String get settingsScrollbarAlwaysVisible =>
+      'Mostra sempre la barra di scorrimento';
+
+  @override
   String get volumeKeysTitle => 'Tenere premuti i tasti volume';
 
   @override
@@ -3546,8 +3550,12 @@ class AppLocalizationsIt extends AppLocalizations {
   String get remoteButtonsStop => 'Termina verifica';
 
   @override
+  String get remoteButtonsControlsHint =>
+      'Avvia la verifica, poi premi i pulsanti in un menu o in un’app aperta. Fermala qui oppure attendi 120 secondi.';
+
+  @override
   String get remoteButtonsHint =>
-      'La verifica mostra codici, rilasci e ripetizioni e salva un rapporto di testo sul TV. Esci dalla pagina dopo l’avvio per evitare che OK controlli la registrazione.';
+      'Al termine, il rapporto viene salvato nel percorso indicato e sostituisce il precedente. Copialo tramite ADB: adb pull <path>. Alcuni pulsanti di sistema o del produttore potrebbero non essere disponibili al servizio.';
 
   @override
   String get remoteButtonsEmpty =>
@@ -5115,4 +5123,29 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get backupTvUnknown => 'TV sconosciuta';
+
+  @override
+  String get panelTooltips => 'Mostra suggerimenti in tutti i pannelli';
+
+  @override
+  String get networkStorageTitle => 'Archiviazione di rete';
+
+  @override
+  String get usbStorageTitle => 'Unità USB';
+
+  @override
+  String get storageScreenUnavailable =>
+      'Le impostazioni di archiviazione non sono disponibili.';
+
+  @override
+  String get appSections => 'Sezioni dell’app';
+
+  @override
+  String get noAppSections => 'Questa app non è presente in nessuna sezione.';
+
+  @override
+  String get volumeWidgetSettings => 'Impostazioni volume';
+
+  @override
+  String get volumeUpdateInterval => 'Intervallo di aggiornamento';
 }

@@ -22,6 +22,7 @@ import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/settings/continue_watching_settings_page.dart';
 import 'package:flauncher/widgets/settings/launcher_sections_panel_page.dart';
 import 'package:flauncher/widgets/settings/launcher_section_panel_page.dart';
+import 'package:flauncher/widgets/settings/settings_help.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -32,6 +33,7 @@ import 'package:provider/provider.dart';
 
 import '../../mocks.dart';
 import '../../mocks.mocks.dart';
+import '../../support/settings_help.dart';
 
 void main() {
   setUpAll(() async {
@@ -54,6 +56,37 @@ void main() {
     expect(find.text("Favorites"), findsOneWidget);
     expect(find.text("Applications"), findsOneWidget);
   });
+
+  for (final language in ['ru', 'en']) {
+    testWidgets('section controls stay visible with help collapsed: $language', (
+      tester,
+    ) async {
+      final apps = MockAppsService();
+      when(apps.launcherSections).thenReturn([fakeCategory(name: 'Favorites')]);
+      await _pumpWidgetWithProviders(tester, apps, locale: Locale(language));
+      final l = AppLocalizations.of(
+        tester.element(find.byType(LauncherSectionsPanelPage)),
+      )!;
+
+      final hint = find.text(l.reorderSectionsHint);
+      expect(hint, findsOneWidget);
+      expect(find.textContaining(l.sectionRulesHelp), findsNothing);
+      expect(
+        find.ancestor(of: hint, matching: find.byType(SettingsHelp)),
+        findsNothing,
+      );
+      await tester.ensureVisible(hint);
+      await tester.pumpAndSettle();
+      expect(hint.hitTestable(), findsOneWidget);
+      await toggleSettingsHelp(tester, l.sectionRulesHelp);
+      expect(find.text(l.sectionRulesHelp), findsOneWidget);
+      expect(hint, findsOneWidget);
+      await toggleSettingsHelp(tester, l.sectionRulesHelp);
+      expect(find.text(l.sectionRulesHelp), findsNothing);
+      expect(hint, findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
+  }
 
   testWidgets("'Arrow down' change category order", (tester) async {
     final appsService = MockAppsService();
@@ -214,6 +247,7 @@ Future<void> _pumpWidgetWithProviders(
   WidgetTester tester,
   AppsService appsService, {
   SettingsService? settingsService,
+  Locale? locale,
 }) async {
   await tester.pumpWidget(
     MultiProvider(
@@ -223,10 +257,12 @@ Future<void> _pumpWidgetWithProviders(
           ChangeNotifierProvider<SettingsService>.value(value: settingsService),
       ],
       builder: (_, _) => MaterialApp(
+        locale: locale,
         localizationsDelegates: const [
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
         ],
         supportedLocales: AppLocalizations.supportedLocales,
         routes: {

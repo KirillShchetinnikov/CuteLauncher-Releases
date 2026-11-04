@@ -153,7 +153,7 @@ class CloudBackupService extends ChangeNotifier with WidgetsBindingObserver {
       507 => 'quota',
       >= 300 && < 400 => 'redirect',
       _ => 'server',
-    });
+    }, httpStatus: response.statusCode);
   }
 
   Future<List<int>> _metadata(Stream<List<int>> response) async {

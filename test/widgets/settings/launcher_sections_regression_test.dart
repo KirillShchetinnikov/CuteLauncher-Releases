@@ -1,7 +1,7 @@
 import 'package:flauncher/widgets/settings/settings_slider_tile.dart';
 import 'package:flauncher/widgets/settings/app_channels_settings_page.dart';
 import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
-import 'package:flauncher/section_names.dart';
+import 'package:flauncher/widgets/settings/settings_read_only_value.dart';
 import 'package:drift/drift.dart' show Value;
 import 'package:flauncher/database.dart';
 import 'package:flauncher/models/category.dart';
@@ -213,7 +213,7 @@ void main() {
     },
   );
 
-  testWidgets('app feeds editor saves a custom name without exposing sorting', (
+  testWidgets('app feeds editor keeps a fixed name without exposing sorting', (
     tester,
   ) async {
     await mount(tester, count: 2);
@@ -227,27 +227,17 @@ void main() {
     final l = AppLocalizations.of(
       tester.element(find.byType(LauncherSectionPanelPage)),
     )!;
-    await tester.tap(find.text(l.name));
-    await tester.pumpAndSettle();
-    final custom = find.text(localizedSectionName('Custom...', l));
-    await tester.ensureVisible(custom);
-    await tester.tap(custom);
-    await tester.pumpAndSettle();
-    await tester.tap(find.text(l.customName));
-    await tester.pumpAndSettle();
-    await tester.enterText(find.byType(TextField), 'Movie night');
-    await tester.tap(find.text(l.save));
-    await tester.runAsync(
-      () => Future<void>.delayed(const Duration(milliseconds: 80)),
-    );
-    await tester.pumpAndSettle();
+    expect(find.byWidgetPredicate((w) => w is SettingsReadOnlyValue &&
+        w.label == l.name && w.value == l.appChannelsTitle), findsOneWidget);
+    expect(find.text(l.customName), findsNothing);
+    expect(find.byType(TextField), findsNothing);
     final group = apps.categories.singleWhere((c) => c.isAppChannels);
-    expect(group.name, 'Movie night');
+    expect(group.name, 'App Feeds');
     expect(
       (await tester.runAsync(db.getCategories))!
           .singleWhere((c) => c.systemKey == 'app_channels')
           .name,
-      'Movie night',
+      'App Feeds',
     );
     expect(find.text(l.sort), findsNothing);
     await finish(tester);

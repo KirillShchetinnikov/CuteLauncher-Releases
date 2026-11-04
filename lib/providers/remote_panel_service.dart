@@ -1,3 +1,4 @@
+import '../diagnostics_store.dart';
 import '../tile_appearance.dart';
 import 'dart:convert';
 import '../panel_layout.dart';
@@ -31,7 +32,10 @@ class RemotePanelService extends ChangeNotifier {
     if (_disposed) return;
     ++_generation;
     try { _data = Map<String, dynamic>.from(jsonDecode(preferences.getString(preferenceKey) ?? '{}') as Map); }
-    catch (_) { _data = {}; }
+    catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'remotePanelService', diagnosticError, diagnosticStack,
+      ); _data = {}; }
     notifyListeners();
   }
   PanelLayout get layout => _data.containsKey('leftOrder') || _data.containsKey('rightOrder')
@@ -56,7 +60,10 @@ class RemotePanelService extends ChangeNotifier {
         if (!await preferences.setString(preferenceKey, encoded)) {
           throw StateError('Panel settings unavailable');
         }
-      } catch (_) {
+      } catch (diagnosticError, diagnosticStack) {
+        DiagnosticsStore.instance.recordException(
+          'remotePanelService', diagnosticError, diagnosticStack,
+        );
         // Failed platform writes still mutate SharedPreferences' local cache.
         if (generation == _generation && preferences.getString(preferenceKey) == encoded) {
           try {
@@ -65,7 +72,10 @@ class RemotePanelService extends ChangeNotifier {
             } else {
               await preferences.setString(preferenceKey, previous);
             }
-          } catch (_) { /* Keep the original save error. */ }
+          } catch (diagnosticError, diagnosticStack) {
+            DiagnosticsStore.instance.recordException(
+              'remotePanelService', diagnosticError, diagnosticStack,
+            ); /* Keep the original save error. */ }
         }
         rethrow;
       }
@@ -95,7 +105,10 @@ class RemotePanelService extends ChangeNotifier {
   static Map<String, dynamic> _stored(SharedPreferences preferences) {
     try {
       return Map<String, dynamic>.from(jsonDecode(preferences.getString(preferenceKey) ?? '{}') as Map);
-    } catch (_) { return {}; }
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'remotePanelService', diagnosticError, diagnosticStack,
+      ); return {}; }
   }
   // Freeze the formerly shared choice before the home setting changes.
   static Future<void> preserveLegacyGrouping(SharedPreferences preferences, bool value) async {

@@ -62,6 +62,8 @@ Back returns to the previous settings page. Expanding help should not replace
 the selected item's normal action.
 In settings, menus and dialogs, the scrollbar stays visible whenever the full
 list does not fit, helping you notice items below the visible area.
+To show the scrollbar only while scrolling and let it fade afterwards, turn off
+**Interface style → Settings style → Always show scrollbar**.
 
 Clean installations start with Glass, an adaptive landscape, tile labels,
 and a grid of up to three visible rows of six apps. All Apps and nonempty feeds
@@ -83,13 +85,16 @@ reaches the top panel.
 
 Path: **Home screen → Categories and order**.
 
+The button instructions for moving sections are always shown below the list actions.
+General information about sections opens separately in collapsed help.
+
 Create, rename, and delete categories; add apps; reorder apps and categories;
 deleting a category requires confirmation and keeps installed apps;
 hide categories and restore them. Standard categories (All Apps, TV Apps,
 Non-TV Apps, Favorites, Continue Watching, and App feeds) cannot be deleted;
 they can be hidden and moved. The four standard app categories can be renamed:
-their names do not change their purpose or membership. App feeds can also be
-renamed; Continue Watching keeps its name. Favorites app membership is edited manually.
+their names do not change their purpose or membership. App feeds and Continue Watching
+keep their names. Favorites app membership is edited manually.
 Automatic app lists are built from installed apps. Enable and move Continue
 Watching in the same editor.
 Moving a category across the list boundary places it first among hidden categories;
@@ -138,10 +143,11 @@ of enabled feeds when at least two are selected. OK or ◄/► starts or finishe
 moving, ↑/↓ changes the position, and Back finishes moving; the next Back returns
 to the previous page. The order stays on this TV and applies to feeds on the home screen.
 Unavailable and empty selected feeds keep their positions in the saved order.
-Press OK on the category to open its editor: rename it, choose feeds, or open
+Press OK on the category to open its editor: view its fixed name, choose feeds, or open
 Category appearance. Appearance controls include preview size, corner radius,
-horizontal spacing, label size and color, section titles and icon, padding,
-and background. Group and channel titles can be enabled here independently
+horizontal spacing, label size and color, feed titles, padding,
+and background. The App feeds group name stays in settings and is hidden on the home screen.
+Individual feed titles can be enabled here independently
 of the shared section-title setting. Previews always use a single horizontal
 row with a uniform format within each feed and titles below the artwork; there is no grid.
 On the feed selection page, each enabled feed has an **Artwork format** choice:
@@ -185,7 +191,10 @@ Path: **Apps**, or the selected tile's actions.
 Lists include All apps, System apps, and Hidden apps. Hidden apps also includes
 CuteLauncher and Android settings when their tiles are hidden by the dedicated
 switches. Show restores the tile and turns off its hide switch. App details show its name,
-package, and version. Launch an available app, open Android app information,
+package, and version. **App sections** shows the section count and expands to list
+their names in launcher order, including hidden sections with a hidden icon.
+The list updates when membership changes and explicitly states when no sections apply.
+Launch an available app, open Android app information,
 request uninstall where Android allows it, hide or restore it, add it to a
 category, and change its tile. Set a custom tile banner or restore the default. With ADB connected, Stop appears when an app process is detected and force-stops the app. CuteLauncher itself cannot be stopped from this menu.
 
@@ -245,6 +254,11 @@ languages and Manrope for Cyrillic. Switching languages temporarily substitutes
 Manrope or the system font if the saved font is incompatible; switching back
 restores the previous choice. All fonts are bundled and work offline.
 
+In **Interface style → Settings style**, **Show tooltips in all panels** enables
+button and icon hints when focused with the remote or hovered with a mouse.
+This single setting applies to all panels and is off by default. Changes apply
+immediately; on-screen control instructions remain visible.
+
 Background sources:
 
 - A gradient with your chosen colors.
@@ -254,6 +268,8 @@ Background sources:
   The slideshow pauses while you watch a film or TV. If the change interval has
   elapsed, the next image loads when you return to the home screen. Otherwise,
   the countdown continues for the remaining time.
+  When the slide changes, the previous wallpaper stays visible until the next
+  image is ready to display.
 
 - Bing, Wallhaven or NASA APOD online wallpapers, or an image URL with available update options. On failure, settings show the source, loading stage and cause, including the HTTP status when available; the diagnostic report also includes these details. Previously downloaded wallpapers are preserved.
 - Selected app colors: a soft background derived from the focused tile's banner or icon.
@@ -346,6 +362,18 @@ source app and Android's Watch Next data.
 
 ## Top panel and widgets
 
+**Network storage and USB.** Under **Top panel → Objects**, you can turn
+**Network storage** and **USB drives** off independently. Icons appear only
+when a mounted volume is detected; the USB icon does not represent a keyboard,
+remote or other USB peripheral. NAS appears only on compatible firmware with
+an accessible Formuler network storage screen. Selecting NAS opens that screen;
+USB opens the system storage settings. If the firmware does not provide these
+settings, an unavailable message appears. The NAS icon indicates a mounted share,
+not a check that the server's files can be reached. Firmware that hides volume
+or disk type information may prevent the corresponding icon from appearing.
+Quick settings has separate visibility switches; both icons can be moved
+using their panel's object order settings.
+
 
 Path: **Top panel → Objects / Object order**.
 
@@ -390,10 +418,13 @@ are shared with the top panel.
 
 In the **Sound and inputs** group, **Show volume** enables an informational volume and audio output block.
 It is enabled by default; visibility and position persist after a restart.
+In **Volume settings → Update interval**, choose a polling interval from 1 to
+10 seconds; the default is 3 seconds. The setting is available in both panels'
+object lists, is shared between them, and takes effect immediately.
 The block shows a speaker icon, a percentage and the current output, such as
 **TV**, **ARC**, **HDMI** or **Bluetooth**. When muted, a crossed-out speaker
 replaces the percentage. No remote action is needed: the block cannot receive
-focus and refreshes about once a second while the panel is visible.
+focus and refreshes at the selected interval while the panel is visible.
 Its visibility on the quick settings panel is configured separately.
 
 The percentage represents Android media volume. The level of an external audio
@@ -505,7 +536,10 @@ Date settings include a short weekday format, such as “Вс, 1 Нояб” in 
 or “Sun, 1 Nov” in English: weekday, comma, day and abbreviated month.
 The first choice is **Custom format**: enter a date pattern with validation
 and underlined unsupported characters. A labelled **Preview** appears above the
-input. The legend is always visible, and the dialog needs no scrolling.
+input. The input and preview stay visible while the keyboard is open; only the
+help scrolls when space is limited. Without the keyboard, the full legend is visible.
+Done on the keyboard focuses OK, or Cancel if the pattern is invalid.
+Use Left/Right to select a button, then confirm it with the remote.
 The settings panel is hidden while editing. Saving or cancelling restores
 the previous page with focus on the date setting.
 It explains the library symbols: `d`/`dd` for day, `M`/`MM` for month number, `MMM`/`MMMM` for
@@ -729,8 +763,9 @@ Path: **Launcher and TV controls**.
 - Manage built-in Google TV / Android TV launchers and Home Button Fix separately.
   Service screens, factory screens and setup wizards are excluded from recovery
   home choices. Recovery is unavailable if no suitable launcher remains.
-  Before disabling stock HOME, known Cast and remote-button service dependencies
-  are checked, including additional Android profiles. A dependency or unavailable
+  Before disabling stock HOME, known remote-button and Live TV service dependencies
+  are checked, including additional Android profiles. Google Cast presence alone
+  does not block disabling the launcher. A dependency or unavailable
   check blocks disabling; diagnostics include the reason. No profiles are removed.
 - Enable the launcher's accessibility service and configure Home interception.
 - Grant supported special access to the launcher through ADB.
@@ -808,6 +843,8 @@ remain protected. Disabling the assignment restores the button's normal action.
 
 Path: **Launcher and TV controls → Remote button remapper**.
 
+In button diagnostics, the start/stop instructions and the report path, when known,
+are visible without expanding help. Help explains copying the report and limitations.
 Button diagnostics records events Android sends to the service and saves the
 latest text report. Assign a short press or hold to an app, Home, Back, a webhook,
 the quick settings panel, open apps, TV power off, or TV reboot.

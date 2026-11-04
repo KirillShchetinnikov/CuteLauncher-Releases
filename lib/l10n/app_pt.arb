@@ -1,4 +1,5 @@
 {
+  "settingsScrollbarAlwaysVisible": "Mostrar sempre a barra de rolagem",
   "volumeKeysTitle": "Manter botões de volume",
   "volumeKeysMode": "Modo de correção",
   "volumeKeysAuto": "Auto: enquanto o painel estiver visível",
@@ -1232,7 +1233,8 @@
   "remoteButtonsTitle": "Remapeamento dos botões do comando",
   "remoteButtonsStart": "Verificar botões (120 s)",
   "remoteButtonsStop": "Terminar verificação",
-  "remoteButtonsHint": "A verificação mostra códigos, libertações e repetições e guarda um relatório de texto no TV. Saia da página após iniciar para que OK não controle a gravação.",
+  "remoteButtonsControlsHint": "Inicie a verificação e prima botões em qualquer menu ou aplicação aberta. Termine-a aqui ou aguarde 120 segundos.",
+  "remoteButtonsHint": "Após a verificação, o relatório é guardado no caminho indicado e substitui o anterior. Copie-o com ADB: adb pull <path>. Alguns botões do sistema e do fabricante podem não estar disponíveis para o serviço.",
   "remoteButtonsEmpty": "Ainda não há eventos. Se um botão abrir uma aplicação, volte aqui para ver o resultado.",
   "remoteButtonsService": "Serviço ligado",
   "remoteButtonsRefresh": "Atualizar",
@@ -1740,5 +1742,13 @@
   "backupSyncRefreshFailed": "Não foi possível sincronizar as definições. Verifique o acesso ao armazenamento e tente novamente.",
   "backupThisTv": "Esta TV",
   "backupOtherTv": "Outra TV",
-  "backupTvUnknown": "TV desconhecida"
+  "backupTvUnknown": "TV desconhecida",
+  "panelTooltips": "Mostrar dicas em todos os painéis",
+  "networkStorageTitle": "Armazenamento de rede",
+  "usbStorageTitle": "Unidades USB",
+  "storageScreenUnavailable": "As definições de armazenamento não estão disponíveis.",
+  "appSections": "Seções do aplicativo",
+  "noAppSections": "Este aplicativo não está em nenhuma seção.",
+  "volumeWidgetSettings": "Configurações de volume",
+  "volumeUpdateInterval": "Intervalo de atualização"
 }

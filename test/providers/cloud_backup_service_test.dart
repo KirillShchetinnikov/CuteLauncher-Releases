@@ -216,7 +216,9 @@ void main() {
       'maps HTTP ${entry.key} without exposing response or credentials',
       () async {
         dav.status = entry.key;
-        await expectLater(connect(), throwsA(errorCode(entry.value)));
+        await expectLater(connect(), throwsA(isA<CloudBackupException>()
+          .having((error) => error.code, 'code', entry.value)
+          .having((error) => error.httpStatus, 'HTTP status', entry.key)));
         expect(accounts.saves, 0);
       },
     );

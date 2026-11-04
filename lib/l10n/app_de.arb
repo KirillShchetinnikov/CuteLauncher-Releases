@@ -1,4 +1,5 @@
 {
+  "settingsScrollbarAlwaysVisible": "Bildlaufleiste immer anzeigen",
   "volumeKeysTitle": "Lautstärketasten gedrückt halten",
   "volumeKeysMode": "Lösungsmodus",
   "volumeKeysAuto": "Auto: solange das Bedienfeld sichtbar ist",
@@ -1232,7 +1233,8 @@
   "remoteButtonsTitle": "Fernbedienungstasten neu belegen",
   "remoteButtonsStart": "Tasten prüfen (120 s)",
   "remoteButtonsStop": "Prüfung beenden",
-  "remoteButtonsHint": "Die Prüfung zeigt Tastencodes, Loslassen und Wiederholungen und speichert einen Textbericht auf dem TV. Verlassen Sie nach dem Start diese Seite, damit OK die Aufnahme nicht steuert.",
+  "remoteButtonsControlsHint": "Starten Sie den Test und drücken Sie dann Tasten in einem beliebigen Menü oder einer geöffneten App. Beenden Sie ihn hier oder warten Sie 120 Sekunden.",
+  "remoteButtonsHint": "Nach dem Test wird der Bericht unter dem angezeigten Pfad gespeichert und ersetzt den vorherigen Bericht. Kopieren Sie ihn mit ADB: adb pull <path>. Einige System- und Herstellertasten sind für den Dienst möglicherweise nicht verfügbar.",
   "remoteButtonsEmpty": "Noch keine Ereignisse. Wenn eine Taste eine App öffnet, kehren Sie hierher zurück, um das Ergebnis zu sehen.",
   "remoteButtonsService": "Dienst verbunden",
   "remoteButtonsRefresh": "Aktualisieren",
@@ -1740,5 +1742,13 @@
   "backupSyncRefreshFailed": "Einstellungen konnten nicht synchronisiert werden. Prüfe den Speicherzugriff und versuche es erneut.",
   "backupThisTv": "Dieser Fernseher",
   "backupOtherTv": "Anderer Fernseher",
-  "backupTvUnknown": "Fernseher unbekannt"
+  "backupTvUnknown": "Fernseher unbekannt",
+  "panelTooltips": "Tooltips in allen Bedienfeldern anzeigen",
+  "networkStorageTitle": "Netzwerkspeicher",
+  "usbStorageTitle": "USB-Laufwerke",
+  "storageScreenUnavailable": "Die Speichereinstellungen sind nicht verfügbar.",
+  "appSections": "App-Bereiche",
+  "noAppSections": "Diese App befindet sich in keinem Bereich.",
+  "volumeWidgetSettings": "Lautstärkeeinstellungen",
+  "volumeUpdateInterval": "Aktualisierungsintervall"
 }

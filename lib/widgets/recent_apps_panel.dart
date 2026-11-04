@@ -11,6 +11,7 @@ import 'remote_panel.dart';
 import 'recent_apps_access.dart';
 import 'settings/settings_panel_style.dart';
 import 'settings/focusable_settings_tile.dart';
+import 'panel_tooltip.dart';
 
 /// A focusable service window: icons only, with no background polling or task snapshots on disk.
 class RecentAppsPanel extends StatefulWidget {
@@ -149,11 +150,13 @@ class _RecentAppsPanelState extends State<RecentAppsPanel> {
                                     onPressed: () => _run('closeAll'),
                                   ),
                                 ),
-                                IconButton(
-                                  tooltip: l.close,
-                                  onPressed: () => remotePanelChannel
-                                      .invokeMethod<void>('close'),
-                                  icon: const Icon(Icons.close),
+                                PanelTooltip(
+                                  message: l.close,
+                                  child: IconButton(
+                                    onPressed: () => remotePanelChannel
+                                        .invokeMethod<void>('close'),
+                                    icon: const Icon(Icons.close),
+                                  ),
                                 ),
                               ],
                             ),
@@ -213,15 +216,17 @@ class _RecentAppsPanelState extends State<RecentAppsPanel> {
                                               _run('switch', app.packageName),
                                         ),
                                       ),
-                                      IconButton(
-                                        tooltip: l.close,
-                                        onPressed: _busy
-                                            ? null
-                                            : () => _run(
-                                                'close',
-                                                app.packageName,
-                                              ),
-                                        icon: const Icon(Icons.close),
+                                      PanelTooltip(
+                                        message: l.close,
+                                        child: IconButton(
+                                          onPressed: _busy
+                                              ? null
+                                              : () => _run(
+                                                  'close',
+                                                  app.packageName,
+                                                ),
+                                          icon: const Icon(Icons.close),
+                                        ),
                                       ),
                                     ],
                                   );

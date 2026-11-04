@@ -13,6 +13,7 @@ abstract final class LauncherDefaults {
     'settingsTextSize': 18,
     'settingsColor': 0xff242935,
     'settingsOpacity': 1.0,
+    'settingsScrollbarAlwaysVisible': true,
     'size': 128,
     'aspectRatio': 16 / 9,
     'radius': 16,

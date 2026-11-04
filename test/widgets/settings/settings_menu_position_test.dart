@@ -49,6 +49,8 @@ void main() {
       ));
       await tester.pumpAndSettle();
       final l = AppLocalizations.of(tester.element(find.byType(SettingsStylePage)))!;
+      Focus.of(tester.element(find.text(l.settingsMenuPosition))).requestFocus();
+      await tester.pumpAndSettle();
       final focus = FocusManager.instance.primaryFocus;
       final page = tester.state(find.byType(Scrollable).first);
       expect(tester.widget<SidePanelDialog>(find.byType(SidePanelDialog)).isRightSide, isFalse);

@@ -116,6 +116,7 @@ class _RemoteButtonsPageState extends State<RemoteButtonsPage>
     final active = info?['active'] == true;
     final ready = info?['permission'] == true && info?['connected'] == true;
     final events = (info?['events'] as List? ?? const []).whereType<Map>();
+    final reportPath = info?['reportPath']?.toString() ?? '';
     String state(String name) => info == null
         ? '—'
         : info[name] == true
@@ -213,9 +214,10 @@ class _RemoteButtonsPageState extends State<RemoteButtonsPage>
               ),
               onPressed: () => _call(active ? 'stop' : 'start'),
             ),
-            SettingsHelp(
-              text: '${l.remoteButtonsHint}\n${info?['reportPath'] ?? ''}',
-            ),
+            Text(l.remoteButtonsControlsHint),
+            if (reportPath.isNotEmpty)
+              Text(reportPath, textDirection: TextDirection.ltr),
+            SettingsHelp(title: l.remoteButtonsTest, text: l.remoteButtonsHint),
             if (_failed) Text(l.memoryUnavailable),
             const Divider(),
             if (events.isEmpty) Text(l.remoteButtonsEmpty),

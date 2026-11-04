@@ -31,12 +31,12 @@ void main() {
   tearDown(() async { service.dispose(); await db.close(); });
 
   for (final key in Category.systemKeys) {
-    test('$key allows renaming while preserving its key', () async {
+    test('$key preserves its key and applies its naming policy', () async {
       final existing = service.categories.where((c) => c.systemKey == key);
       final id = existing.isNotEmpty ? existing.first.id
           : await service.addCategory('Original', systemKey: key);
       final category = service.categories.firstWhere((c) => c.id == id);
-      const original = 'Changed';
+      final original = key == 'app_channels' ? 'App Feeds' : 'Changed';
       await service.renameCategory(category, 'Changed');
       expect(service.categories.firstWhere((c) => c.id == id).name, original);
       expect((await db.getCategories()).firstWhere((c) => c.id == id).name, original);

@@ -10,6 +10,9 @@ class AppLocalizationsHi extends AppLocalizations {
   AppLocalizationsHi([String locale = 'hi']) : super(locale);
 
   @override
+  String get settingsScrollbarAlwaysVisible => 'स्क्रॉलबार हमेशा दिखाएँ';
+
+  @override
   String get volumeKeysTitle => 'वॉल्यूम बटन दबाकर रखना';
 
   @override
@@ -3495,8 +3498,12 @@ class AppLocalizationsHi extends AppLocalizations {
   String get remoteButtonsStop => 'जाँच रोकें';
 
   @override
+  String get remoteButtonsControlsHint =>
+      'जाँच शुरू करें, फिर किसी भी मेन्यू या खुले ऐप में बटन दबाएँ। इसे यहाँ रोकें या 120 सेकंड प्रतीक्षा करें।';
+
+  @override
   String get remoteButtonsHint =>
-      'जाँच कोड, छोड़ने और दोहराव दिखाती है और टीवी पर टेक्स्ट रिपोर्ट सहेजती है। शुरू करने के बाद इस पेज से बाहर निकलें ताकि OK रिकॉर्डिंग को नियंत्रित न करे।';
+      'जाँच के बाद रिपोर्ट दिखाए गए पथ पर सहेजी जाती है और पिछली रिपोर्ट बदल देती है। इसे ADB से कॉपी करें: adb pull <path>। सिस्टम और निर्माता के कुछ बटन सेवा को उपलब्ध नहीं हो सकते।';
 
   @override
   String get remoteButtonsEmpty =>
@@ -5051,4 +5058,28 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get backupTvUnknown => 'टीवी अज्ञात';
+
+  @override
+  String get panelTooltips => 'सभी पैनल में टूलटिप दिखाएँ';
+
+  @override
+  String get networkStorageTitle => 'नेटवर्क स्टोरेज';
+
+  @override
+  String get usbStorageTitle => 'USB ड्राइव';
+
+  @override
+  String get storageScreenUnavailable => 'स्टोरेज सेटिंग उपलब्ध नहीं हैं।';
+
+  @override
+  String get appSections => 'ऐप के अनुभाग';
+
+  @override
+  String get noAppSections => 'यह ऐप किसी अनुभाग में नहीं है।';
+
+  @override
+  String get volumeWidgetSettings => 'वॉल्यूम सेटिंग';
+
+  @override
+  String get volumeUpdateInterval => 'अपडेट अंतराल';
 }

@@ -1,3 +1,4 @@
+import '../diagnostics_store.dart';
 import 'dart:async';
 import 'dart:math';
 import 'dart:typed_data';
@@ -136,10 +137,16 @@ class SlideshowService extends ChangeNotifier
           throw StateError('Unable to save slideshow settings');
         }
       }
-    } catch (_) {
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'slideshowService', diagnosticError, diagnosticStack,
+      );
       // SharedPreferences changes its memory cache even when the platform rejects a write.
       for (final entry in previous.entries) {
-        try { await write(entry.key, entry.value); } catch (_) { /* Preserve the original error. */ }
+        try { await write(entry.key, entry.value); } catch (diagnosticError, diagnosticStack) {
+          DiagnosticsStore.instance.recordException(
+            'slideshowService', diagnosticError, diagnosticStack,
+          ); /* Preserve the original error. */ }
       }
       rethrow;
     }
@@ -224,12 +231,18 @@ class SlideshowService extends ChangeNotifier
           failed = false;
           if (oldImage != null) unawaited(oldImage.evict());
           return;
-        } catch (_) {
+        } catch (diagnosticError, diagnosticStack) {
+          DiagnosticsStore.instance.recordException(
+            'slideshowService', diagnosticError, diagnosticStack,
+          );
           /* Skip inaccessible or corrupt files; retain the last good image. */
         }
       }
       if (current()) failed = true;
-    } catch (_) {
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'slideshowService', diagnosticError, diagnosticStack,
+      );
       if (current()) failed = true;
     } finally {
       _loading = false;

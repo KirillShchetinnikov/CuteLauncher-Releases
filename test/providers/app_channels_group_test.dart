@@ -1,5 +1,5 @@
-
 import 'package:flutter_test/flutter_test.dart';
+import 'package:drift/drift.dart' show Value;
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flauncher/database.dart';
@@ -67,7 +67,16 @@ void main() {
       await apps.deleteSection(0);
       expect(group().id, id);
       await apps.renameCategory(group(), 'Renamed');
-      expect(group().name, 'Renamed');
+      expect(group().name, 'App Feeds');
+      await apps.updateCategory(
+        id,
+        'Another name',
+        group().sort,
+        group().type,
+        group().columnsCount,
+        group().rowHeight,
+      );
+      expect(group().name, 'App Feeds');
       final app = apps.getApp('video.app')!;
       expect(
         AddToCategoryDialog.availableCategories(
@@ -86,7 +95,7 @@ void main() {
       await ready();
       expect(apps.launcherSections.first.id, id);
       expect(group().visible, isFalse);
-      expect(group().name, 'Renamed');
+      expect(group().name, 'App Feeds');
       expect(settings.selectedAppChannels, ['video.app:1', 'video.app:2']);
     },
   );
@@ -115,6 +124,25 @@ void main() {
       expect(settings.selectedAppChannels, ['video.app:1', 'video.app:2']);
     },
   );
+
+  test('legacy feed name is normalized without changing identity, order or visibility', () async {
+    final id = group().id;
+    await apps.setCategoryVisible(id, false);
+    final order = group().order;
+    await db.updateCategory(
+      id,
+      const CategoriesCompanion(name: Value('Old feed name')),
+    );
+    await db.ensureStandardCategories();
+    await apps.refreshState();
+    expect(
+      (group().id, group().order, group().visible, group().name),
+      (id, order, false, 'App Feeds'),
+    );
+    expect(settings.selectedAppChannels, ['video.app:1', 'video.app:2']);
+    expect(Category.normalizeName('My apps', 'all_apps'), 'My apps');
+    expect(Category.normalizeName('My section', null), 'My section');
+  });
 
   test('hidden group stops queries while its source picker can still discover feeds', () async {
     final channel = FeedChannel()..data = [feed(1), feed(2)];

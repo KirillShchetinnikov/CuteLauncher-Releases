@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'settings_scroll_behavior.dart';
+
 import 'settings_menu_layout.dart';
 import 'settings_help.dart';
 
@@ -183,7 +185,9 @@ class _SettingsPageLayoutState extends State<SettingsPageLayout> {
                 onKeyEvent: _scrollText,
                 child: Scrollbar(
                   controller: _controller,
-                  thumbVisibility: _hasScrollPosition,
+                  thumbVisibility:
+                      _hasScrollPosition &&
+                      SettingsScrollBehavior.alwaysShowScrollbar(context),
                   // No extra focus stops or pointer actions for the TV remote.
                   interactive: false,
                   scrollbarOrientation: mirrored

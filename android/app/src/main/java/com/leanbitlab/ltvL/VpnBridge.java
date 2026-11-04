@@ -59,10 +59,10 @@ final class VpnBridge implements AutoCloseable {
                     main.post(() -> {
                         if (closed) return;
                         try { result.success(call.method.equals("open") ? vpn.open(call.argument("app")) : value); }
-                        catch (RuntimeException unavailable) { result.error("unavailable", "VPN unavailable", null); }
+                        catch (RuntimeException unavailable) { result.error("unavailable", "VPN unavailable", DiagnosticErrorDetails.from(unavailable)); }
                     });
                 } catch (Exception unavailable) {
-                    main.post(() -> { if (!closed) result.error("unavailable", "VPN unavailable", null); });
+                    main.post(() -> { if (!closed) result.error("unavailable", "VPN unavailable", DiagnosticErrorDetails.from(unavailable)); });
                 }
             });
         });

@@ -21,6 +21,7 @@ class SectionStylePage extends StatelessWidget {
     BuildContext context, {
     int? categoryId,
     bool includeReset = true,
+    bool includeIcons = true,
   }) {
     final l = AppLocalizations.of(context)!;
     final s = context.watch<AppearanceService>();
@@ -77,7 +78,7 @@ class SectionStylePage extends StatelessWidget {
           ),
       ],
       toggle('sectionTitles', l.showSectionTitles, a.sectionTitles),
-      toggle('sectionIcons', l.homeSectionIcons, a.sectionIcons),
+      if (includeIcons) toggle('sectionIcons', l.homeSectionIcons, a.sectionIcons),
       if (categoryId != null)
         SettingsValueStepper(
           title: l.categoryPadding,

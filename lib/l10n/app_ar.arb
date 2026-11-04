@@ -1,4 +1,5 @@
 {
+  "settingsScrollbarAlwaysVisible": "إظهار شريط التمرير دائمًا",
   "volumeKeysTitle": "الضغط المطوّل على أزرار الصوت",
   "volumeKeysMode": "طريقة المعالجة",
   "volumeKeysAuto": "تلقائي: أثناء ظهور اللوحة",
@@ -1232,7 +1233,8 @@
   "remoteButtonsTitle": "إعادة تعيين أزرار جهاز التحكم",
   "remoteButtonsStart": "فحص الأزرار (120 ثانية)",
   "remoteButtonsStop": "إيقاف الفحص",
-  "remoteButtonsHint": "يعرض الفحص الرموز والتحرير والتكرار ويحفظ تقريرًا نصيًا على التلفزيون. غادر الصفحة بعد بدء الفحص حتى لا يتحكم OK بالتسجيل.",
+  "remoteButtonsControlsHint": "ابدأ الفحص، ثم اضغط الأزرار في أي قائمة أو تطبيق مفتوح. أوقفه هنا أو انتظر 120 ثانية.",
+  "remoteButtonsHint": "بعد الفحص يُحفظ التقرير في المسار المعروض ويستبدل التقرير السابق. انسخه عبر ADB: adb pull <path>. قد لا تتاح بعض أزرار النظام والشركة المصنعة للخدمة.",
   "remoteButtonsEmpty": "لا توجد أحداث بعد. إذا فتح زر تطبيقًا، عُد إلى هنا لرؤية النتيجة.",
   "remoteButtonsService": "الخدمة متصلة",
   "remoteButtonsRefresh": "تحديث",
@@ -1740,5 +1742,13 @@
   "backupSyncRefreshFailed": "تعذرت مزامنة الإعدادات. تحقق من الوصول إلى التخزين وحاول مجددًا.",
   "backupThisTv": "هذا التلفاز",
   "backupOtherTv": "تلفاز آخر",
-  "backupTvUnknown": "التلفاز غير معروف"
+  "backupTvUnknown": "التلفاز غير معروف",
+  "panelTooltips": "إظهار التلميحات المنبثقة في اللوحات",
+  "networkStorageTitle": "التخزين الشبكي",
+  "usbStorageTitle": "وحدات تخزين USB",
+  "storageScreenUnavailable": "إعدادات التخزين غير متاحة.",
+  "appSections": "أقسام التطبيق",
+  "noAppSections": "هذا التطبيق غير موجود في أي قسم.",
+  "volumeWidgetSettings": "إعدادات مستوى الصوت",
+  "volumeUpdateInterval": "فاصل التحديث"
 }

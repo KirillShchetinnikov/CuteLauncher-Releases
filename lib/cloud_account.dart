@@ -4,9 +4,10 @@ import 'bridge_result.dart';
 
 class CloudBackupException implements Exception {
   final String code;
-  const CloudBackupException(this.code);
+  final int? httpStatus;
+  const CloudBackupException(this.code, {this.httpStatus});
   @override
-  String toString() => 'Cloud backup operation failed ($code)';
+  String toString() => 'Cloud backup operation failed ($code)${httpStatus == null ? '' : ' HTTP $httpStatus'}';
 }
 
 Uri cloudDirectory(String input) {

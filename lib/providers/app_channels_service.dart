@@ -1,3 +1,4 @@
+import '../diagnostics_store.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -75,7 +76,10 @@ class AppChannelsService extends ChangeNotifier
           buffer = await ui.ImmutableBuffer.fromUint8List(bytes);
           descriptor = await ui.ImageDescriptor.encoded(buffer);
           ratio = descriptor.width / descriptor.height;
-        } catch (_) {
+        } catch (diagnosticError, diagnosticStack) {
+          DiagnosticsStore.instance.recordException(
+            'appChannelsService', diagnosticError, diagnosticStack,
+          );
           // An invalid image contributes no orientation vote.
         } finally {
           descriptor?.dispose();
@@ -93,7 +97,10 @@ class AppChannelsService extends ChangeNotifier
     if (isDisposed || !_foreground) return;
     try {
       await settings.setAppChannelFormat(feed.key, format, detected: true);
-    } catch (_) {
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'appChannelsService', diagnosticError, diagnosticStack,
+      );
       // Keep the current layout when local preferences cannot be written.
     }
   }
@@ -280,7 +287,10 @@ class AppChannelsService extends ChangeNotifier
       unavailable = false;
       initialized = true;
       posterRefreshes.value = _posterEpoch;
-    } catch (_) {
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'appChannelsService', diagnosticError, diagnosticStack,
+      );
       if (isDisposed || !_foreground || generation != _generation) return;
       changed = !unavailable || !initialized;
       unavailable = true;
@@ -335,20 +345,23 @@ class AppChannelsService extends ChangeNotifier
                 );
                 if (response.statusCode != 200) {
                   request.abort();
-                  throw const ImageInputException();
+                  throw FormatException('App channel poster HTTP ${response.statusCode}');
                 }
                 bytes = await readBoundedImage(response).timeout(
                   const Duration(seconds: 8),
                   onTimeout: () {
                     request?.abort();
-                    throw const ImageInputException();
+                    throw TimeoutException('App channel poster read', const Duration(seconds: 8));
                   },
                 );
                 await validateImageBytes(bytes);
               } else {
                 bytes = await channel.getWatchNextPoster(uri);
               }
-            } catch (_) {
+            } catch (diagnosticError, diagnosticStack) {
+              DiagnosticsStore.instance.recordException(
+                'appChannelsService', diagnosticError, diagnosticStack,
+              );
               bytes = null;
               abandoned = true;
               request?.abort();
@@ -378,12 +391,18 @@ class AppChannelsService extends ChangeNotifier
       if (ok && !isDisposed) {
         try {
           await onAppLaunched?.call(program.packageName);
-        } catch (_) {
+        } catch (diagnosticError, diagnosticStack) {
+          DiagnosticsStore.instance.recordException(
+            'appChannelsService', diagnosticError, diagnosticStack,
+          );
           debugPrint('Unable to record app feed launch');
         }
       }
       return ok;
-    } catch (_) {
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'appChannelsService', diagnosticError, diagnosticStack,
+      );
       return false;
     }
   }

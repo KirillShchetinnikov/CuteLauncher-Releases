@@ -1,4 +1,5 @@
 {
+  "settingsScrollbarAlwaysVisible": "Always show scrollbar",
   "volumeKeysTitle": "Hold volume buttons",
   "volumeKeysMode": "Workaround mode",
   "volumeKeysAuto": "Auto: while the panel is visible",
@@ -1147,7 +1148,8 @@
   "remoteButtonsTitle": "Remote button remapper",
   "remoteButtonsStart": "Check buttons (120 s)",
   "remoteButtonsStop": "Stop checking",
-  "remoteButtonsHint": "Start the test, then press buttons in any menu or open app. Stop it here or wait 120 seconds. After the test, the report is saved at the path below, replacing the previous report. Copy it using ADB: adb pull <path>. Some system and manufacturer buttons may be unavailable to the service.",
+  "remoteButtonsControlsHint": "Start the test, then press buttons in any menu or open app. Stop it here or wait 120 seconds.",
+  "remoteButtonsHint": "After the test, the report is saved at the displayed path, replacing the previous report. Copy it using ADB: adb pull <path>. Some system and manufacturer buttons may be unavailable to the service.",
   "remoteButtonsEmpty": "No events yet. If a button opens an app, return here to see the result.",
   "remoteButtonsService": "Service connected",
   "remoteButtonsRefresh": "Refresh",
@@ -1661,5 +1663,13 @@
   "backupSyncRefreshFailed": "Could not synchronize settings. Check storage access and try again.",
   "backupThisTv": "This TV",
   "backupOtherTv": "Another TV",
-  "backupTvUnknown": "TV unknown"
+  "backupTvUnknown": "TV unknown",
+  "panelTooltips": "Show tooltips in all panels",
+  "networkStorageTitle": "Network storage",
+  "usbStorageTitle": "USB drives",
+  "storageScreenUnavailable": "Storage settings are unavailable.",
+  "appSections": "App sections",
+  "noAppSections": "This app is not in any section.",
+  "volumeWidgetSettings": "Volume settings",
+  "volumeUpdateInterval": "Update interval"
 }

@@ -10,6 +10,9 @@ class AppLocalizationsJa extends AppLocalizations {
   AppLocalizationsJa([String locale = 'ja']) : super(locale);
 
   @override
+  String get settingsScrollbarAlwaysVisible => 'スクロールバーを常に表示';
+
+  @override
   String get volumeKeysTitle => '音量ボタンの長押し';
 
   @override
@@ -3399,8 +3402,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get remoteButtonsStop => '確認を終了';
 
   @override
+  String get remoteButtonsControlsHint =>
+      'テストを開始し、任意のメニューや開いているアプリでボタンを押してください。この画面で停止するか、120秒待ってください。';
+
+  @override
   String get remoteButtonsHint =>
-      'コード、解放、リピートを表示し、テレビにテキストレポートを保存します。OKが記録を操作しないよう、開始後はこのページを離れてください。';
+      'テスト後、表示されたパスにレポートが保存され、前のレポートが置き換えられます。ADBでコピーできます: adb pull <path>。システムやメーカー独自の一部のボタンはサービスで取得できない場合があります。';
 
   @override
   String get remoteButtonsEmpty =>
@@ -4919,4 +4926,28 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get backupTvUnknown => 'テレビ不明';
+
+  @override
+  String get panelTooltips => 'すべてのパネルにツールチップを表示';
+
+  @override
+  String get networkStorageTitle => 'ネットワークストレージ';
+
+  @override
+  String get usbStorageTitle => 'USBドライブ';
+
+  @override
+  String get storageScreenUnavailable => 'ストレージ設定を利用できません。';
+
+  @override
+  String get appSections => 'アプリのセクション';
+
+  @override
+  String get noAppSections => 'このアプリはどのセクションにも含まれていません。';
+
+  @override
+  String get volumeWidgetSettings => '音量の設定';
+
+  @override
+  String get volumeUpdateInterval => '更新間隔';
 }

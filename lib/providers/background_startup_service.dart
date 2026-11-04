@@ -1,3 +1,4 @@
+import '../diagnostics_store.dart';
 import 'package:flutter/foundation.dart';
 
 import '../bridge_result.dart';
@@ -48,7 +49,10 @@ class BackgroundStartupService extends ChangeNotifier {
       _outcomes = info['outcomes'] as Map? ?? {};
       loaded = true;
       failed = false;
-    } catch (_) {
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'backgroundStartupService', diagnosticError, diagnosticStack,
+      );
       if (!_disposed) failed = true;
     } finally {
       loading = false;
@@ -84,7 +88,10 @@ class BackgroundStartupService extends ChangeNotifier {
           {...entry, 'selected': selected.contains(entry['packageName'])},
       ]);
       failed = false;
-    } catch (_) {
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'backgroundStartupService', diagnosticError, diagnosticStack,
+      );
       if (!_disposed) failed = true;
     } finally {
       saving = false;

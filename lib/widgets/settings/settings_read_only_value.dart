@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'focusable_settings_tile.dart';
+import 'settings_scroll_behavior.dart';
 
 /// A labelled value, not help: only truncated values add a focus/expand action.
 class SettingsReadOnlyValue extends StatefulWidget {
@@ -131,7 +132,8 @@ class _SettingsReadOnlyValueState extends State<SettingsReadOnlyValue> {
                     ),
                     child: Scrollbar(
                       controller: _scroll,
-                      thumbVisibility: true,
+                      thumbVisibility:
+                              SettingsScrollBehavior.alwaysShowScrollbar(context),
                       interactive: false,
                       child: SingleChildScrollView(
                         controller: _scroll,

@@ -1,4 +1,5 @@
 {
+  "settingsScrollbarAlwaysVisible": "Kaydırma çubuğunu her zaman göster",
   "volumeKeysTitle": "Ses düğmelerini basılı tutma",
   "volumeKeysMode": "Düzeltme yöntemi",
   "volumeKeysAuto": "Otomatik: panel görünürken",
@@ -1232,7 +1233,8 @@
   "remoteButtonsTitle": "Kumanda tuşlarını yeniden eşleme",
   "remoteButtonsStart": "Tuşları kontrol et (120 sn)",
   "remoteButtonsStop": "Kontrolü durdur",
-  "remoteButtonsHint": "Kontrol kodları, bırakmaları ve tekrarları gösterir ve TV üzerinde metin raporu kaydeder. OK kaydı yönetmesin diye başlattıktan sonra bu sayfadan çıkın.",
+  "remoteButtonsControlsHint": "Testi başlatın, ardından herhangi bir menüde veya açık uygulamada düğmelere basın. Buradan durdurun veya 120 saniye bekleyin.",
+  "remoteButtonsHint": "Testten sonra rapor gösterilen yola kaydedilir ve önceki raporun yerini alır. ADB ile kopyalayın: adb pull <path>. Bazı sistem ve üretici düğmeleri hizmete iletilmeyebilir.",
   "remoteButtonsEmpty": "Henüz olay yok. Bir tuş uygulama açarsa sonucu görmek için buraya dönün.",
   "remoteButtonsService": "Hizmet bağlı",
   "remoteButtonsRefresh": "Yenile",
@@ -1740,5 +1742,13 @@
   "backupSyncRefreshFailed": "Ayarlar eşitlenemedi. Depolama erişimini kontrol edip tekrar deneyin.",
   "backupThisTv": "Bu TV",
   "backupOtherTv": "Başka TV",
-  "backupTvUnknown": "TV bilinmiyor"
+  "backupTvUnknown": "TV bilinmiyor",
+  "panelTooltips": "Tüm panellerde araç ipuçlarını göster",
+  "networkStorageTitle": "Ağ depolaması",
+  "usbStorageTitle": "USB sürücüler",
+  "storageScreenUnavailable": "Depolama ayarları kullanılamıyor.",
+  "appSections": "Uygulama bölümleri",
+  "noAppSections": "Bu uygulama hiçbir bölümde yer almıyor.",
+  "volumeWidgetSettings": "Ses düzeyi ayarları",
+  "volumeUpdateInterval": "Güncelleme aralığı"
 }

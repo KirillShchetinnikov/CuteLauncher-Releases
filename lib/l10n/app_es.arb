@@ -1,4 +1,5 @@
 {
+  "settingsScrollbarAlwaysVisible": "Mostrar siempre la barra de desplazamiento",
   "volumeKeysTitle": "Mantener botones de volumen",
   "volumeKeysMode": "Modo de solución",
   "volumeKeysAuto": "Auto: mientras el panel sea visible",
@@ -1232,7 +1233,8 @@
   "remoteButtonsTitle": "Reasignación de botones del mando",
   "remoteButtonsStart": "Comprobar botones (120 s)",
   "remoteButtonsStop": "Detener comprobación",
-  "remoteButtonsHint": "La prueba muestra códigos, liberaciones y repeticiones y guarda un informe de texto en el TV. Salga de esta página al iniciar para que OK no controle la grabación.",
+  "remoteButtonsControlsHint": "Inicie la prueba y pulse botones en cualquier menú o aplicación abierta. Deténgala aquí o espere 120 segundos.",
+  "remoteButtonsHint": "Al terminar, el informe se guarda en la ruta indicada y sustituye al anterior. Cópielo con ADB: adb pull <path>. Es posible que el servicio no reciba algunos botones del sistema o del fabricante.",
   "remoteButtonsEmpty": "Aún no hay eventos. Si un botón abre una aplicación, vuelva aquí para ver el resultado.",
   "remoteButtonsService": "Servicio conectado",
   "remoteButtonsRefresh": "Actualizar",
@@ -1740,5 +1742,13 @@
   "backupSyncRefreshFailed": "No se pudieron sincronizar los ajustes. Comprueba el acceso al almacenamiento e inténtalo de nuevo.",
   "backupThisTv": "Este televisor",
   "backupOtherTv": "Otro televisor",
-  "backupTvUnknown": "Televisor desconocido"
+  "backupTvUnknown": "Televisor desconocido",
+  "panelTooltips": "Mostrar ayudas emergentes en todos los paneles",
+  "networkStorageTitle": "Almacenamiento de red",
+  "usbStorageTitle": "Unidades USB",
+  "storageScreenUnavailable": "La configuración de almacenamiento no está disponible.",
+  "appSections": "Secciones de la aplicación",
+  "noAppSections": "Esta aplicación no está en ninguna sección.",
+  "volumeWidgetSettings": "Ajustes de volumen",
+  "volumeUpdateInterval": "Intervalo de actualización"
 }

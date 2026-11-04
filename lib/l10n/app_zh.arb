@@ -1,4 +1,5 @@
 {
+  "settingsScrollbarAlwaysVisible": "始终显示滚动条",
   "volumeKeysTitle": "长按音量键",
   "volumeKeysMode": "修复方式",
   "volumeKeysAuto": "自动：面板显示期间",
@@ -1232,7 +1233,8 @@
   "remoteButtonsTitle": "遥控器按键重映射",
   "remoteButtonsStart": "检查按键（120秒）",
   "remoteButtonsStop": "停止检查",
-  "remoteButtonsHint": "检查会显示代码、松开和重复事件，并将文本报告保存在电视上。开始后请离开此页面，以免OK控制记录。",
+  "remoteButtonsControlsHint": "开始测试，然后在任意菜单或已打开的应用中按下按钮。在此停止测试或等待120秒。",
+  "remoteButtonsHint": "测试结束后，报告将保存到显示的路径并替换上一份报告。使用ADB复制：adb pull <path>。某些系统和厂商按钮可能无法传递给服务。",
   "remoteButtonsEmpty": "暂无事件。如果按键打开了应用，请返回此处查看结果。",
   "remoteButtonsService": "服务已连接",
   "remoteButtonsRefresh": "刷新",
@@ -1740,5 +1742,13 @@
   "backupSyncRefreshFailed": "无法同步设置。请检查存储访问权限后重试。",
   "backupThisTv": "此电视",
   "backupOtherTv": "其他电视",
-  "backupTvUnknown": "电视未知"
+  "backupTvUnknown": "电视未知",
+  "panelTooltips": "在所有面板中显示工具提示",
+  "networkStorageTitle": "网络存储",
+  "usbStorageTitle": "USB 存储设备",
+  "storageScreenUnavailable": "存储设置不可用。",
+  "appSections": "应用所在分区",
+  "noAppSections": "此应用不在任何分区中。",
+  "volumeWidgetSettings": "音量设置",
+  "volumeUpdateInterval": "更新间隔"
 }

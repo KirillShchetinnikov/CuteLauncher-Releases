@@ -130,6 +130,7 @@ class TileAppearance {
   List<String> get backgroundInformationOrder =>
       cleanBackgroundInformationOrder(values['panelBackgroundInformationOrder']);
   String get backgroundInformationAlignment => values['panelBackgroundInformationAlignment'] as String? ?? 'center';
+  bool get settingsScrollbarAlwaysVisible => values['settingsScrollbarAlwaysVisible'] != false;
   String get interfaceStyle => values['settingsInterfaceStyle'] as String? ?? 'standard';
   String get interfaceFont => values['settingsInterfaceFont'] as String? ??
       (interfaceStyle == 'standard' ? 'system' : 'outfit');
@@ -298,6 +299,7 @@ class TileAppearance {
             'focusShadow',
             'blurTiles',
             'blurPanel',
+            'settingsScrollbarAlwaysVisible',
             'panelTextBackground',
             'panelDateCalendar',
             'panelCombinedInformation',

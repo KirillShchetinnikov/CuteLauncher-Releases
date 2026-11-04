@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'package:crypto/crypto.dart';
 import 'package:flauncher/providers/update_service.dart';
@@ -32,11 +33,18 @@ class _Response extends Fake implements HttpClientResponse {
       Stream<List<int>>.value(bytes).drain<E>(futureValue);
 }
 
+class _RequestHeaders extends Fake implements HttpHeaders {
+  @override
+  void set(String name, Object value, {bool preserveHeaderCase = false}) {}
+}
+
 class _Request extends Fake implements HttpClientRequest {
   final _Response response;
   _Request(this.response);
   @override
   bool followRedirects = false;
+  @override
+  HttpHeaders get headers => _RequestHeaders();
   @override
   Future<HttpClientResponse> close() async => response;
 }
@@ -60,6 +68,36 @@ class _Overrides extends HttpOverrides {
 }
 
 void main() {
+  group('Release lookup HTTP diagnostics', () {
+    setUp(() {
+      final previous = HttpOverrides.current;
+      addTearDown(() => HttpOverrides.global = previous);
+    });
+
+    for (final status in [301, 403, 429, 500]) {
+      test('preserves HTTP $status without the response body', () async {
+        HttpOverrides.global = _Overrides(
+          _Response(utf8.encode('private response body'), status: status),
+        );
+        await expectLater(
+          fetchAppRelease(),
+          throwsA(isA<FormatException>().having(
+            (error) => error.message,
+            'message',
+            'Release unavailable (HTTP $status)',
+          )),
+        );
+      });
+    }
+
+    test('retains missing repository and successful list behavior', () async {
+      HttpOverrides.global = _Overrides(_Response([], status: 404));
+      expect(await fetchAppRelease(), isNull);
+      HttpOverrides.global = _Overrides(_Response(utf8.encode('[]')));
+      expect(await fetchAppRelease(), {'releases': []});
+    });
+  });
+
   test('Download validates size and SHA256 before replacing the cached APK',
       () async {
     final previous = HttpOverrides.current;

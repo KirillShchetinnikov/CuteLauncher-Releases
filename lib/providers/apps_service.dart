@@ -1,3 +1,4 @@
+import '../diagnostics_store.dart';
 /*
  * FLauncher
  * Copyright (C) 2021  Étienne Fesser
@@ -234,7 +235,10 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
     var initialCatalog = cached;
     if (initialCatalog == null && fastInitialCatalog) {
       try { initialCatalog = await _fLauncherChannel.getLauncherApplications(); }
-      catch (_) { /* A failed fast query falls back to the complete catalog. */ }
+      catch (diagnosticError, diagnosticStack) {
+        DiagnosticsStore.instance.recordException(
+          'appsService', diagnosticError, diagnosticStack,
+        ); /* A failed fast query falls back to the complete catalog. */ }
     }
     await _refreshState(shouldNotifyListeners: false, catalog: initialCatalog,
         persistCatalog: cached == null && initialCatalog != null);
@@ -432,7 +436,10 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
         throw StateError('Could not reset section layout');
       }
     });
-    } catch (_) {
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'appsService', diagnosticError, diagnosticStack,
+      );
       if (previousLayouts == null) { await prefs.remove(categoryAppearanceKey); }
       else { await prefs.setString(categoryAppearanceKey, previousLayouts); }
       rethrow;
@@ -741,7 +748,10 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
       // File was deleted between check and read - clear stale reference
       final prefs = await _prefsAsync;
       await prefs.remove('custom_banner_$packageName');
-    } catch (_) {
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'appsService', diagnosticError, diagnosticStack,
+      );
       // Ignore other errors reading custom banner
     }
 
@@ -770,7 +780,10 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
     if (customBannerPath != null) {
       try {
         await File(customBannerPath).delete();
-      } catch (_) {
+      } catch (diagnosticError, diagnosticStack) {
+        DiagnosticsStore.instance.recordException(
+          'appsService', diagnosticError, diagnosticStack,
+        );
         // Ignore file deletion errors
       }
     }
@@ -809,7 +822,10 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
       launched = app.action == null
           ? await _fLauncherChannel.launchApp(app.packageName)
           : await _fLauncherChannel.launchActivityFromAction(app.action!);
-    } catch (error) {
+    } catch (error, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'appsService', error, diagnosticStack,
+      );
       debugPrint('Failed to launch ${app.packageName}: $error');
       return false;
     }
@@ -1123,7 +1139,10 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
       if (shouldNotifyListeners) {
         notifyListeners();
       }
-    } catch (ex) {
+    } catch (ex, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'appsService', ex, diagnosticStack,
+      );
       // Preserve the existing fallback when category creation fails.
     }
 

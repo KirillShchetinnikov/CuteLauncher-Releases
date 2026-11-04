@@ -631,7 +631,7 @@
         960,
         540
       ],
-      "sha256": "6aaab9d0a56f66cfc249fe3e275b6deeb9ca01ef392187a969585ec5e3842149"
+      "sha256": "562bfc9c192422403f1ae1033b589e4377ca51ed7a00e2932f9156242b905b95"
     },
     {
       "name": "settings-notification-style",
@@ -807,7 +807,7 @@
         960,
         540
       ],
-      "sha256": "183e85024a199ed71429a31a9493c629f4b31778b7ca6f6b4ccec3b758e5baba"
+      "sha256": "f6900986011cc78b8651e946861595e30b8b36840cb5e363f9948e84d2f4466e"
     },
     {
       "name": "settings-style-soft",
@@ -823,7 +823,7 @@
         960,
         540
       ],
-      "sha256": "16d3750e1e372d451b2120171abf94eef7ba786c971ef99678c4d6356aa55990"
+      "sha256": "6a39b435e3aabe9cc58848a8da84f99bf1a8408f1bf8b9db09eada2d6e596d0a"
     },
     {
       "name": "settings-style-outline",
@@ -839,7 +839,7 @@
         960,
         540
       ],
-      "sha256": "a4c7d5aa0b40a196b523ee78231cf066b2ac791daea4d41ecb3687407b967113"
+      "sha256": "358cd7c25168be908d425ca4d615f8a50a292e8dad8edf023838b0c01a4fb1f2"
     },
     {
       "name": "home-combined-information",
@@ -871,7 +871,7 @@
         960,
         540
       ],
-      "sha256": "750a8655e9ce3f2993dce8f802d6ce61b0370f68957a64e0bceb6710b1bf260a"
+      "sha256": "64d518911086a93a2fc1a94f7df1367ec444d8977d5b88b48562228cc59e887e"
     },
     {
       "name": "settings-font-onest",
@@ -887,7 +887,7 @@
         960,
         540
       ],
-      "sha256": "e2667576771da464300e681dccd3042580b34587eb5a01e4d8d1e65e3bf0c243"
+      "sha256": "0e7675d7819055f0638b020cff4eb61a98a00aeeb61863844074cc4b34bea7cc"
     },
     {
       "name": "settings-font-manrope",
@@ -903,7 +903,7 @@
         960,
         540
       ],
-      "sha256": "183e85024a199ed71429a31a9493c629f4b31778b7ca6f6b4ccec3b758e5baba"
+      "sha256": "f6900986011cc78b8651e946861595e30b8b36840cb5e363f9948e84d2f4466e"
     }
   ]
 }

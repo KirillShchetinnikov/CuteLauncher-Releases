@@ -7,6 +7,8 @@ class PanelLayout {
     'notifications',
     'sleepTimer',
     'nightMode',
+    'nas',
+    'usb',
     'network',
     'vpn',
     'traffic',

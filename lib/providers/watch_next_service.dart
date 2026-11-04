@@ -1,3 +1,4 @@
+import '../diagnostics_store.dart';
 import 'service_lifecycle.dart';
 import 'foreground_work.dart';
 import 'memory_resources.dart';
@@ -81,7 +82,10 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
       _watchNextSubscription = _channel.addWatchNextChangedListener((_) {
         _scheduleRefresh(reloadPosters: true);
       });
-    } catch (e) {
+    } catch (e, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'watchNextService', e, diagnosticStack,
+      );
       log('Failed to listen to watch next events', name: 'WatchNextService', error: e);
     }
 
@@ -150,7 +154,10 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
       List<Map<dynamic, dynamic>> list;
       try {
         list = await _channel.getWatchNextPrograms();
-      } catch (e) {
+      } catch (e, diagnosticStack) {
+        DiagnosticsStore.instance.recordException(
+          'watchNextService', e, diagnosticStack,
+        );
         log('Failed to fetch watch next programs', name: 'WatchNextService', error: e);
         list = const [];
       }
@@ -199,7 +206,10 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
                 _posterCache[p.posterArtUri] = bytes;
                 p.posterBytes = _posterCache[p.posterArtUri];
               }
-            } catch (e) {
+            } catch (e, diagnosticStack) {
+              DiagnosticsStore.instance.recordException(
+                'watchNextService', e, diagnosticStack,
+              );
               log('Failed to fetch poster for ${p.title}', name: 'WatchNextService', error: e);
             }
           })),
@@ -209,7 +219,10 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
         );
         if (callSnapshot == _callCount) notifyListeners();
       }
-    } catch (e) {
+    } catch (e, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'watchNextService', e, diagnosticStack,
+      );
       log('Failed to refresh watch next programs', name: 'WatchNextService', error: e);
     } finally {
       _isFetching = false;
@@ -239,14 +252,20 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
     if (program.intentUri.isNotEmpty) {
       try {
         launched = await _channel.launchWatchNextProgram(program.intentUri);
-      } catch (e) {
+      } catch (e, diagnosticStack) {
+        DiagnosticsStore.instance.recordException(
+          'watchNextService', e, diagnosticStack,
+        );
         log('Failed to launch watch next program intent', name: 'WatchNextService', error: e);
       }
     }
     if (!launched && program.packageName.isNotEmpty) {
       try {
         launched = await _channel.launchApp(program.packageName);
-      } catch (e) {
+      } catch (e, diagnosticStack) {
+        DiagnosticsStore.instance.recordException(
+          'watchNextService', e, diagnosticStack,
+        );
         log('Failed to launch app ${program.packageName}', name: 'WatchNextService', error: e);
       }
     }
@@ -258,7 +277,10 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
     bool deleted = false;
     try {
       deleted = await _channel.deleteWatchNextProgram(program.id);
-    } catch (e) {
+    } catch (e, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'watchNextService', e, diagnosticStack,
+      );
       log('Failed to delete watch next program', name: 'WatchNextService', error: e);
     }
     if (deleted && !isDisposed) {

@@ -127,7 +127,7 @@ final class BackgroundStartup {
                     apps.sort(java.util.Comparator.comparing(app -> (String) app.get("name"), String.CASE_INSENSITIVE_ORDER));
                     main.post(() -> result.success(Map.of("apps", apps, "outcomes", new java.util.HashMap<>(outcomes))));
                 } catch (RuntimeException error) {
-                    main.post(() -> result.error("unavailable", "Application list unavailable", null));
+                    main.post(() -> result.error("unavailable", "Application list unavailable", DiagnosticErrorDetails.from(error)));
                 }
             });
         }

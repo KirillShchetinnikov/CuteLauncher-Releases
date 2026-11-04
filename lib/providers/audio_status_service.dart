@@ -1,7 +1,11 @@
+import '../diagnostics_store.dart';
+import '../bridge_result.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+
+import 'settings_service.dart';
 
 typedef AudioStatus = ({int? percent, bool? muted, bool fixed, String output});
 const unknownAudioStatus = (
@@ -14,7 +18,9 @@ const unknownAudioStatus = (
 /// A bounded refresh for a visible panel; never intercepts volume buttons.
 class AudioStatusService extends ChangeNotifier with WidgetsBindingObserver {
   final MethodChannel channel;
-  final Duration interval;
+  final SettingsService? settings;
+  Duration _interval;
+  Duration get interval => _interval;
   final _owners = <Object>{};
   AudioStatus state = unknownAudioStatus;
   Timer? _timer;
@@ -26,14 +32,18 @@ class AudioStatusService extends ChangeNotifier with WidgetsBindingObserver {
   int _generation = 0;
 
   AudioStatusService({
-    this.channel = const MethodChannel('cutelauncher/audio_status'),
-    this.interval = const Duration(seconds: 3),
-  }) {
+    this.settings,
+    this.channel = const BridgeChannel('cutelauncher/audio_status'),
+    Duration interval = const Duration(seconds: 3),
+  }) : _interval = settings == null
+           ? interval
+           : Duration(seconds: settings.volumeUpdateInterval) {
     final binding = WidgetsBinding.instance;
     _foreground =
         binding.lifecycleState == null ||
         binding.lifecycleState == AppLifecycleState.resumed;
     binding.addObserver(this);
+    settings?.addListener(_settingsChanged);
     channel.setMethodCallHandler((call) async {
       if (call.method != 'changed' || !_enabled || _disposed) return;
       if (call.arguments is bool) _screenOn = call.arguments as bool;
@@ -47,6 +57,17 @@ class AudioStatusService extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   bool get _enabled => !_disposed && _foreground && _owners.isNotEmpty;
+  void _settingsChanged() {
+    final next = Duration(seconds: settings!.volumeUpdateInterval);
+    if (_disposed || next == _interval) return;
+    _interval = next;
+    _timer?.cancel();
+    // An active request keeps its result and uses the new interval afterwards.
+    if (_enabled && _screenOn && !_running) {
+      _timer = Timer(interval, refresh);
+    }
+  }
+
   void setVisible(Object owner, bool visible) {
     if (_disposed) return;
     final was = _enabled;
@@ -67,9 +88,15 @@ class AudioStatusService extends ChangeNotifier with WidgetsBindingObserver {
   Future<void> _watch(bool enabled) async {
     try {
       await channel.invokeMethod<void>('watch', enabled);
-    } on PlatformException {
+    } on PlatformException catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'audioStatusService', diagnosticError, diagnosticStack,
+      );
       /* Snapshot can still succeed without notifications. */
-    } on MissingPluginException {
+    } on MissingPluginException catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'audioStatusService', diagnosticError, diagnosticStack,
+      );
       /* Widget tests and unsupported hosts. */
     }
   }
@@ -114,7 +141,10 @@ class AudioStatusService extends ChangeNotifier with WidgetsBindingObserver {
         output: output,
       );
       _setState(next);
-    } on Object {
+    } on Object catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'audioStatusService', diagnosticError, diagnosticStack,
+      );
       if (!_disposed && generation == _generation && _enabled) {
         _setState(unknownAudioStatus);
       }
@@ -146,6 +176,7 @@ class AudioStatusService extends ChangeNotifier with WidgetsBindingObserver {
     _generation++;
     _timer?.cancel();
     _owners.clear();
+    settings?.removeListener(_settingsChanged);
     WidgetsBinding.instance.removeObserver(this);
     channel.setMethodCallHandler(null);
     unawaited(_watch(false));

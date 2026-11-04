@@ -2,6 +2,21 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
+## v1.6.9 — 2026-11-04
+
+- Added NAS and USB storage indicators to the top bar and quick settings. NAS is available on compatible Formuler firmware.
+- Added a volume refresh interval setting: from 1 to 10 seconds, with a default of 3 seconds.
+- Application information now lists the sections containing the app, including hidden sections.
+- Panel tooltips can now be toggled and are disabled by default.
+- Added an option to turn off always-visible scrollbars.
+- Fixed the custom date format editor: the input and preview stay above the keyboard, and Done moves focus to the dialog buttons.
+- Fixed wallpaper slideshow transitions: the previous image stays on screen until the next one is ready.
+- Removed the overall App Feeds heading from the home screen; the section name in settings is now fixed.
+- Tidied up the System and Network widget menus.
+- Remote control instructions in settings are now visible without expanding help.
+- The presence of Google Cast alone no longer blocks disabling the stock launcher.
+- Expanded service and network error diagnostics, including the HTTP status code when an update check fails.
+
 ## v1.6.8 — 2026-11-04
 
 - Added NASA APOD as an online wallpaper source — the astronomy picture of the day.

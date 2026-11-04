@@ -412,7 +412,7 @@ void main() {
       feeds.dispose(); feedSettings.dispose(); appearance.dispose(); await channel.events.close();
     });
   }
-  testWidgets('feeds use their section title and supported local appearance', (tester) async {
+  testWidgets('feeds hide the group title and use supported local appearance', (tester) async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
     final appearance = AppearanceService(prefs);
@@ -440,9 +440,9 @@ void main() {
     when(settings.selectedAppChannels).thenReturn(feedSettings.selectedAppChannels);
     await _pumpWidgetWithProviders(tester, mkWallpaperService(), apps, settings,
         feeds: feeds, appearance: appearance);
-    expect(find.text('My recommendations'), findsOneWidget);
+    expect(find.text('My recommendations'), findsNothing);
     expect(find.text('Feed 1 · video.app'), findsOneWidget);
-    expect(find.byIcon(Icons.video_library_outlined), findsOneWidget);
+    expect(find.byIcon(Icons.video_library_outlined), findsNothing);
     final container = tester.widget<Container>(find.byKey(const ValueKey('app-channels-group')));
     final decoration = container.decoration! as BoxDecoration;
     expect(decoration.color, const Color(0xff123456).withValues(alpha: .35));
@@ -999,6 +999,11 @@ void main() {
       await _pumpWidgetWithProviders(tester, mkWallpaperService(), apps, settings,
         feeds: feeds, locale: locale);
       expect(find.byType(AppContentRow), findsNWidgets(2));
+      final group = find.byKey(const ValueKey('app-channels-group'));
+      final l = AppLocalizations.of(tester.element(group))!;
+      expect(find.descendant(of: group, matching: find.text(l.appChannelsTitle)), findsNothing);
+      expect(find.descendant(of: group, matching: find.textContaining('Feed 1')), findsOneWidget);
+      expect(find.descendant(of: group, matching: find.textContaining('Feed 2')), findsOneWidget);
       expect(find.byIcon(Icons.movie_outlined), findsWidgets);
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
       await tester.pumpAndSettle();
@@ -2810,6 +2815,7 @@ void main() {
 SettingsService mkSettingsService() {
   final settingsService = MockSettingsService();
   when(settingsService.screenshotScene).thenReturn(null);
+  when(settingsService.panelTooltipsEnabled).thenReturn(false);
   when(settingsService.sleepTimerConfiguration).thenReturn(SleepTimerConfiguration());
   final demo = ValueNotifier<LandscapeDemoFrame?>(null);
   addTearDown(demo.dispose);

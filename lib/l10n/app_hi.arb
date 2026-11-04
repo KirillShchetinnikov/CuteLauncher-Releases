@@ -1,4 +1,5 @@
 {
+  "settingsScrollbarAlwaysVisible": "स्क्रॉलबार हमेशा दिखाएँ",
   "volumeKeysTitle": "वॉल्यूम बटन दबाकर रखना",
   "volumeKeysMode": "समाधान का तरीका",
   "volumeKeysAuto": "अपने आप: पैनल दिखने तक",
@@ -1232,7 +1233,8 @@
   "remoteButtonsTitle": "रिमोट बटन रीमैपर",
   "remoteButtonsStart": "बटन जाँचें (120 सेकंड)",
   "remoteButtonsStop": "जाँच रोकें",
-  "remoteButtonsHint": "जाँच कोड, छोड़ने और दोहराव दिखाती है और टीवी पर टेक्स्ट रिपोर्ट सहेजती है। शुरू करने के बाद इस पेज से बाहर निकलें ताकि OK रिकॉर्डिंग को नियंत्रित न करे।",
+  "remoteButtonsControlsHint": "जाँच शुरू करें, फिर किसी भी मेन्यू या खुले ऐप में बटन दबाएँ। इसे यहाँ रोकें या 120 सेकंड प्रतीक्षा करें।",
+  "remoteButtonsHint": "जाँच के बाद रिपोर्ट दिखाए गए पथ पर सहेजी जाती है और पिछली रिपोर्ट बदल देती है। इसे ADB से कॉपी करें: adb pull <path>। सिस्टम और निर्माता के कुछ बटन सेवा को उपलब्ध नहीं हो सकते।",
   "remoteButtonsEmpty": "अभी कोई ईवेंट नहीं है। यदि कोई बटन ऐप खोलता है, तो परिणाम देखने के लिए यहाँ लौटें।",
   "remoteButtonsService": "सेवा जुड़ी हुई है",
   "remoteButtonsRefresh": "रीफ़्रेश करें",
@@ -1740,5 +1742,13 @@
   "backupSyncRefreshFailed": "सेटिंग सिंक नहीं हो सकीं। स्टोरेज का ऐक्सेस जाँचें और फिर कोशिश करें।",
   "backupThisTv": "यह टीवी",
   "backupOtherTv": "दूसरा टीवी",
-  "backupTvUnknown": "टीवी अज्ञात"
+  "backupTvUnknown": "टीवी अज्ञात",
+  "panelTooltips": "सभी पैनल में टूलटिप दिखाएँ",
+  "networkStorageTitle": "नेटवर्क स्टोरेज",
+  "usbStorageTitle": "USB ड्राइव",
+  "storageScreenUnavailable": "स्टोरेज सेटिंग उपलब्ध नहीं हैं।",
+  "appSections": "ऐप के अनुभाग",
+  "noAppSections": "यह ऐप किसी अनुभाग में नहीं है।",
+  "volumeWidgetSettings": "वॉल्यूम सेटिंग",
+  "volumeUpdateInterval": "अपडेट अंतराल"
 }

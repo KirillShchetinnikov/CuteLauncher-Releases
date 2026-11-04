@@ -41,7 +41,6 @@ import 'package:flauncher/providers/online_wallpaper_service.dart';
 import 'widgets/home_section.dart';
 import 'widgets/home_scroll_motion.dart';
 import 'widgets/app_content_row.dart';
-import 'section_names.dart';
 import 'providers/app_channels_service.dart';
 
 import 'package:flauncher/widgets/launcher_alternative_view.dart';
@@ -355,18 +354,6 @@ class FLauncherState extends State<FLauncher> {
         decoration: style.sectionDecoration(),
         padding: EdgeInsets.all(style.number('sectionPadding') ?? 0),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          if (style.sectionTitles) Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-            child: Row(children: [
-              if (style.sectionIcons) ...[
-                const Icon(Icons.video_library_outlined),
-                const SizedBox(width: 8),
-              ],
-              Expanded(child: Text(localizedSectionName(category.name, AppLocalizations.of(context)!),
-                style: Theme.of(context).textTheme.titleLarge,
-                maxLines: 1, overflow: TextOverflow.ellipsis)),
-            ]),
-          ),
           ...rows,
         ]));
     }

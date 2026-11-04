@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "reportType": "tvInventoryMetadata",
+  "scope": "deviceMetadata",
+  "verification": "observedOnly",
+  "sourceReportType": "adbPackageList",
+  "sourceScope": "adbReadOnlyInventory",
+  "identity": {
+    "manufacturer": null,
+    "model": "Formuler Z11 Pro Max",
+    "device": null,
+    "fingerprint": null,
+    "firmware": null,
+    "android": null,
+    "sdk": null,
+    "abis": null
+  },
+  "packageListStorage": "catalog/app_descriptions.json",
+  "observedPackageCount": 107,
+  "completeness": {
+    "status": "unknown",
+    "sourceCount": 107,
+    "skippedCount": 0,
+    "truncated": false
+  },
+  "limits": [
+    "Model from conversation and screenshot only; getprop identity and firmware absent",
+    "User-provided pm list packages -f; versions, enabled state and permissions absent",
+    "Package presence does not validate disabling or functional compatibility",
+    "No unified diagnostic JSON supplied; compatibility archive not generated",
+    "Raw shell logs, APK paths, network addresses, share names and volume identifiers excluded"
+  ]
+}

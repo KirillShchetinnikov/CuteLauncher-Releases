@@ -10,6 +10,10 @@ class AppLocalizationsTr extends AppLocalizations {
   AppLocalizationsTr([String locale = 'tr']) : super(locale);
 
   @override
+  String get settingsScrollbarAlwaysVisible =>
+      'Kaydırma çubuğunu her zaman göster';
+
+  @override
   String get volumeKeysTitle => 'Ses düğmelerini basılı tutma';
 
   @override
@@ -3513,8 +3517,12 @@ class AppLocalizationsTr extends AppLocalizations {
   String get remoteButtonsStop => 'Kontrolü durdur';
 
   @override
+  String get remoteButtonsControlsHint =>
+      'Testi başlatın, ardından herhangi bir menüde veya açık uygulamada düğmelere basın. Buradan durdurun veya 120 saniye bekleyin.';
+
+  @override
   String get remoteButtonsHint =>
-      'Kontrol kodları, bırakmaları ve tekrarları gösterir ve TV üzerinde metin raporu kaydeder. OK kaydı yönetmesin diye başlattıktan sonra bu sayfadan çıkın.';
+      'Testten sonra rapor gösterilen yola kaydedilir ve önceki raporun yerini alır. ADB ile kopyalayın: adb pull <path>. Bazı sistem ve üretici düğmeleri hizmete iletilmeyebilir.';
 
   @override
   String get remoteButtonsEmpty =>
@@ -5071,4 +5079,28 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get backupTvUnknown => 'TV bilinmiyor';
+
+  @override
+  String get panelTooltips => 'Tüm panellerde araç ipuçlarını göster';
+
+  @override
+  String get networkStorageTitle => 'Ağ depolaması';
+
+  @override
+  String get usbStorageTitle => 'USB sürücüler';
+
+  @override
+  String get storageScreenUnavailable => 'Depolama ayarları kullanılamıyor.';
+
+  @override
+  String get appSections => 'Uygulama bölümleri';
+
+  @override
+  String get noAppSections => 'Bu uygulama hiçbir bölümde yer almıyor.';
+
+  @override
+  String get volumeWidgetSettings => 'Ses düzeyi ayarları';
+
+  @override
+  String get volumeUpdateInterval => 'Güncelleme aralığı';
 }

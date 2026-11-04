@@ -10,6 +10,9 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get settingsScrollbarAlwaysVisible => 'Always show scrollbar';
+
+  @override
   String get volumeKeysTitle => 'Hold volume buttons';
 
   @override
@@ -3490,8 +3493,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get remoteButtonsStop => 'Stop checking';
 
   @override
+  String get remoteButtonsControlsHint =>
+      'Start the test, then press buttons in any menu or open app. Stop it here or wait 120 seconds.';
+
+  @override
   String get remoteButtonsHint =>
-      'Start the test, then press buttons in any menu or open app. Stop it here or wait 120 seconds. After the test, the report is saved at the path below, replacing the previous report. Copy it using ADB: adb pull <path>. Some system and manufacturer buttons may be unavailable to the service.';
+      'After the test, the report is saved at the displayed path, replacing the previous report. Copy it using ADB: adb pull <path>. Some system and manufacturer buttons may be unavailable to the service.';
 
   @override
   String get remoteButtonsEmpty =>
@@ -5046,4 +5053,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backupTvUnknown => 'TV unknown';
+
+  @override
+  String get panelTooltips => 'Show tooltips in all panels';
+
+  @override
+  String get networkStorageTitle => 'Network storage';
+
+  @override
+  String get usbStorageTitle => 'USB drives';
+
+  @override
+  String get storageScreenUnavailable => 'Storage settings are unavailable.';
+
+  @override
+  String get appSections => 'App sections';
+
+  @override
+  String get noAppSections => 'This app is not in any section.';
+
+  @override
+  String get volumeWidgetSettings => 'Volume settings';
+
+  @override
+  String get volumeUpdateInterval => 'Update interval';
 }

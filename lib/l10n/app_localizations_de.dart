@@ -10,6 +10,9 @@ class AppLocalizationsDe extends AppLocalizations {
   AppLocalizationsDe([String locale = 'de']) : super(locale);
 
   @override
+  String get settingsScrollbarAlwaysVisible => 'Bildlaufleiste immer anzeigen';
+
+  @override
   String get volumeKeysTitle => 'Lautstärketasten gedrückt halten';
 
   @override
@@ -3549,8 +3552,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get remoteButtonsStop => 'Prüfung beenden';
 
   @override
+  String get remoteButtonsControlsHint =>
+      'Starten Sie den Test und drücken Sie dann Tasten in einem beliebigen Menü oder einer geöffneten App. Beenden Sie ihn hier oder warten Sie 120 Sekunden.';
+
+  @override
   String get remoteButtonsHint =>
-      'Die Prüfung zeigt Tastencodes, Loslassen und Wiederholungen und speichert einen Textbericht auf dem TV. Verlassen Sie nach dem Start diese Seite, damit OK die Aufnahme nicht steuert.';
+      'Nach dem Test wird der Bericht unter dem angezeigten Pfad gespeichert und ersetzt den vorherigen Bericht. Kopieren Sie ihn mit ADB: adb pull <path>. Einige System- und Herstellertasten sind für den Dienst möglicherweise nicht verfügbar.';
 
   @override
   String get remoteButtonsEmpty =>
@@ -5125,4 +5132,29 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get backupTvUnknown => 'Fernseher unbekannt';
+
+  @override
+  String get panelTooltips => 'Tooltips in allen Bedienfeldern anzeigen';
+
+  @override
+  String get networkStorageTitle => 'Netzwerkspeicher';
+
+  @override
+  String get usbStorageTitle => 'USB-Laufwerke';
+
+  @override
+  String get storageScreenUnavailable =>
+      'Die Speichereinstellungen sind nicht verfügbar.';
+
+  @override
+  String get appSections => 'App-Bereiche';
+
+  @override
+  String get noAppSections => 'Diese App befindet sich in keinem Bereich.';
+
+  @override
+  String get volumeWidgetSettings => 'Lautstärkeeinstellungen';
+
+  @override
+  String get volumeUpdateInterval => 'Aktualisierungsintervall';
 }

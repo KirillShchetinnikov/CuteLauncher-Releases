@@ -1,4 +1,5 @@
 {
+  "settingsScrollbarAlwaysVisible": "Toujours afficher la barre de défilement",
   "volumeKeysTitle": "Maintenir les touches de volume",
   "volumeKeysMode": "Mode de correction",
   "volumeKeysAuto": "Auto : tant que le panneau est visible",
@@ -1232,7 +1233,8 @@
   "remoteButtonsTitle": "Réaffectation des boutons de télécommande",
   "remoteButtonsStart": "Tester les boutons (120 s)",
   "remoteButtonsStop": "Arrêter le test",
-  "remoteButtonsHint": "Le test affiche les codes, relâchements et répétitions et enregistre un rapport texte sur le TV. Quittez cette page après le démarrage pour que OK ne contrôle pas l’enregistrement.",
+  "remoteButtonsControlsHint": "Démarrez le test, puis appuyez sur les boutons dans un menu ou une application ouverte. Arrêtez-le ici ou attendez 120 secondes.",
+  "remoteButtonsHint": "Après le test, le rapport est enregistré au chemin affiché et remplace le précédent. Copiez-le avec ADB : adb pull <path>. Certains boutons système ou du fabricant peuvent être inaccessibles au service.",
   "remoteButtonsEmpty": "Aucun événement. Si un bouton ouvre une application, revenez ici pour voir le résultat.",
   "remoteButtonsService": "Service connecté",
   "remoteButtonsRefresh": "Actualiser",
@@ -1740,5 +1742,13 @@
   "backupSyncRefreshFailed": "Impossible de synchroniser les paramètres. Vérifiez l’accès au stockage et réessayez.",
   "backupThisTv": "Ce téléviseur",
   "backupOtherTv": "Autre téléviseur",
-  "backupTvUnknown": "Téléviseur inconnu"
+  "backupTvUnknown": "Téléviseur inconnu",
+  "panelTooltips": "Afficher les infobulles dans tous les panneaux",
+  "networkStorageTitle": "Stockage réseau",
+  "usbStorageTitle": "Lecteurs USB",
+  "storageScreenUnavailable": "Les paramètres de stockage sont indisponibles.",
+  "appSections": "Sections de l’application",
+  "noAppSections": "Cette application ne figure dans aucune section.",
+  "volumeWidgetSettings": "Paramètres du volume",
+  "volumeUpdateInterval": "Intervalle d’actualisation"
 }

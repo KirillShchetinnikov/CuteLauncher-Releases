@@ -92,7 +92,7 @@ final class RecentAppsBridge implements AutoCloseable {
                                 if (call.method.equals("switch") && response instanceof Map<?, ?> map && "success".equals(map.get("status"))) dismiss.run();
                             });
                         } catch (Exception unavailable) {
-                            main.post(() -> { if (!closed) result.error("unavailable", "Open apps unavailable", null); });
+                            main.post(() -> { if (!closed) result.error("unavailable", "Open apps unavailable", DiagnosticErrorDetails.from(unavailable)); });
                         }
                     });
                 }

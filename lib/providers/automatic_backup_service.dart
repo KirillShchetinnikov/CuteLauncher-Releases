@@ -1,3 +1,4 @@
+import '../diagnostics_store.dart';
 import 'dart:async';
 import 'dart:io';
 
@@ -98,7 +99,10 @@ class AutomaticBackupService extends ChangeNotifier
       await _cleanupPending(await _root());
       await _prune();
       await refresh();
-    } catch (_) {
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'automaticBackupService', diagnosticError, diagnosticStack,
+      );
       _failed = true;
     }
     notifyListeners();
@@ -137,7 +141,10 @@ class AutomaticBackupService extends ChangeNotifier
       final result = await _list();
       if (isDisposed || request != _refresh) return;
       _entries = result;
-    } catch (_) {
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'automaticBackupService', diagnosticError, diagnosticStack,
+      );
       _failed = true;
     }
     notifyListeners();
@@ -182,10 +189,17 @@ class AutomaticBackupService extends ChangeNotifier
             throw StateError('Preference write failed');
           }
         }
-      } catch (_) {
+      } catch (diagnosticError, diagnosticStack) {
+        DiagnosticsStore.instance.recordException(
+          'automaticBackupService', diagnosticError, diagnosticStack,
+        );
         // Legacy SharedPreferences mutates its cache even when commit returns false.
         for (final entry in previous.entries) {
-          try { await _writePreference(entry.key, entry.value); } catch (_) {}
+          try { await _writePreference(entry.key, entry.value); } catch (diagnosticError, diagnosticStack) {
+            DiagnosticsStore.instance.recordException(
+              'automaticBackupService', diagnosticError, diagnosticStack,
+            );
+    }
         }
         rethrow;
       }
@@ -204,7 +218,10 @@ class AutomaticBackupService extends ChangeNotifier
     if (isDisposed) return;
     try {
       await _savePreferences({automaticBackupEnabledKey: value});
-    } catch (_) {
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'automaticBackupService', diagnosticError, diagnosticStack,
+      );
       _failed = true;
       notifyListeners();
       _schedule();
@@ -221,7 +238,10 @@ class AutomaticBackupService extends ChangeNotifier
     if (isDisposed) return;
     try {
       await _savePreferences({automaticBackupCountKey: value});
-    } catch (_) {
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'automaticBackupService', diagnosticError, diagnosticStack,
+      );
       _failed = true;
       notifyListeners();
       return;
@@ -231,7 +251,10 @@ class AutomaticBackupService extends ChangeNotifier
       notifyListeners();
       try {
         await _prune();
-      } catch (_) {
+      } catch (diagnosticError, diagnosticStack) {
+        DiagnosticsStore.instance.recordException(
+          'automaticBackupService', diagnosticError, diagnosticStack,
+        );
         _failed = true;
       } finally {
         _busy = false;
@@ -325,13 +348,19 @@ class AutomaticBackupService extends ChangeNotifier
       await _savePreferences({automaticBackupTimeKey: now().millisecondsSinceEpoch});
       await _prune();
       return true;
-    } catch (_) {
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'automaticBackupService', diagnosticError, diagnosticStack,
+      );
       _failed = true;
       return false;
     } finally {
       try {
         if (pending != null && await pending.exists()) await pending.delete();
-      } catch (_) {
+      } catch (diagnosticError, diagnosticStack) {
+        DiagnosticsStore.instance.recordException(
+          'automaticBackupService', diagnosticError, diagnosticStack,
+        );
         _failed = true;
       }
       _busy = false;
@@ -366,7 +395,10 @@ class AutomaticBackupService extends ChangeNotifier
     try {
       await backup.replaceBackup(entry.file, settings);
       await _prune();
-    } catch (_) {
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'automaticBackupService', diagnosticError, diagnosticStack,
+      );
       _failed = true;
       rethrow;
     } finally {
@@ -382,7 +414,10 @@ class AutomaticBackupService extends ChangeNotifier
       _busy = true;
       try {
         await _prune();
-      } catch (_) {
+      } catch (diagnosticError, diagnosticStack) {
+        DiagnosticsStore.instance.recordException(
+          'automaticBackupService', diagnosticError, diagnosticStack,
+        );
         _failed = true;
       } finally {
         _busy = false;

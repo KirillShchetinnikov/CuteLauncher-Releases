@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/models/tv_input.dart';
+import 'panel_tooltip.dart';
 
 /// Connection information is independent of keyboard focus or selected playback.
 class TvInputConnectionIndicator extends StatelessWidget {
@@ -32,12 +33,9 @@ class TvInputConnectionIndicator extends StatelessWidget {
         Icons.help_outline,
       ),
     };
-    return Semantics(
-      label: label,
-      child: Tooltip(
-        message: label,
-        child: Icon(icon, size: 12, color: color),
-      ),
+    return PanelTooltip(
+      message: label,
+      child: Icon(icon, size: 12, color: color),
     );
   }
 }

@@ -10,6 +10,10 @@ class AppLocalizationsUk extends AppLocalizations {
   AppLocalizationsUk([String locale = 'uk']) : super(locale);
 
   @override
+  String get settingsScrollbarAlwaysVisible =>
+      'Завжди показувати смугу прокручування';
+
+  @override
   String get volumeKeysTitle => 'Утримання гучності';
 
   @override
@@ -3519,8 +3523,12 @@ class AppLocalizationsUk extends AppLocalizations {
   String get remoteButtonsStop => 'Завершити перевірку';
 
   @override
+  String get remoteButtonsControlsHint =>
+      'Натисніть «Перевірити кнопки», потім натискайте кнопки в будь-якому меню чи відкритому застосунку. Завершіть перевірку тут або зачекайте 120 секунд.';
+
+  @override
   String get remoteButtonsHint =>
-      'Перевірка показує коди, відпускання й повтори та зберігає текстовий звіт на ТВ. Запустіть перевірку й вийдіть зі сторінки, щоб OK не керував записом.';
+      'Після завершення звіт зберігається за вказаним шляхом і замінює попередній. Скопіюйте його через ADB: adb pull <path>. Деякі системні та фірмові кнопки можуть бути недоступні службі.';
 
   @override
   String get remoteButtonsEmpty =>
@@ -5080,4 +5088,29 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get backupTvUnknown => 'ТВ не визначено';
+
+  @override
+  String get panelTooltips => 'Спливні підказки в усіх панелях';
+
+  @override
+  String get networkStorageTitle => 'Мережеве сховище';
+
+  @override
+  String get usbStorageTitle => 'USB-накопичувачі';
+
+  @override
+  String get storageScreenUnavailable =>
+      'Екран керування сховищем недоступний.';
+
+  @override
+  String get appSections => 'Розділи застосунку';
+
+  @override
+  String get noAppSections => 'Застосунок не входить до жодного розділу.';
+
+  @override
+  String get volumeWidgetSettings => 'Налаштування гучності';
+
+  @override
+  String get volumeUpdateInterval => 'Інтервал оновлення';
 }

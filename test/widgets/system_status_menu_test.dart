@@ -8,12 +8,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  for (final tooltipVisible in [false, true]) {
+  for (final waitBeforeScrolling in [false, true]) {
     for (final touch in [false, true]) {
-      testWidgets('scroll ${touch ? 'by touch' : 'by remote'} clears '
-          '${tooltipVisible ? 'visible' : 'pending'} settings tooltip', (
-        tester,
-      ) async {
+      testWidgets('scroll ${touch ? 'by touch' : 'by remote'} keeps gutter and '
+          'settings label hidden; wait=$waitBeforeScrolling', (tester) async {
+        final semantics = tester.ensureSemantics();
         const channel = MethodChannel('cutelauncher/system_status');
         tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
           channel,
@@ -46,11 +45,18 @@ void main() {
         final node = action.focusNode!;
         expect(node.hasFocus, isTrue);
         final hint = find.text(action.tooltip);
-        if (tooltipVisible) {
+        if (waitBeforeScrolling) {
           await tester.pump(const Duration(seconds: 2));
           await tester.pump(const Duration(milliseconds: 200));
-          expect(hint, findsOneWidget);
+          expect(hint, findsNothing);
         }
+        expect(find.bySemanticsLabel(action.tooltip), findsOneWidget);
+        final view = tester.widget<SingleChildScrollView>(
+          find.byType(SingleChildScrollView),
+        );
+        final content = tester.getRect(find.byWidget(view.child!));
+        final indicator = tester.getRect(find.byType(Scrollbar));
+        expect(content.right, lessThanOrEqualTo(indicator.right - 14));
         final scroll = tester
             .widget<SingleChildScrollView>(find.byType(SingleChildScrollView))
             .controller!;
@@ -78,8 +84,9 @@ void main() {
         expect(node.hasFocus, isTrue);
         await tester.pump(const Duration(seconds: 2));
         await tester.pump(const Duration(milliseconds: 200));
-        expect(hint, findsOneWidget);
+        expect(hint, findsNothing);
         await tester.pumpWidget(const SizedBox());
+        semantics.dispose();
       });
     }
   }

@@ -123,6 +123,7 @@ Map<String, dynamic> compatibleSettings(dynamic source, Map<String, dynamic> exp
 }
 
 bool _validValue(String key, dynamic value) {
+  if (key == 'volume_update_interval') return value is int && value >= 1 && value <= 10;
   if (key == backupSyncGroupsKey) {
     try {
       disabledBackupSyncGroups(value);

@@ -27,6 +27,7 @@ import 'focusable_settings_tile.dart';
 import 'settings_page_layout.dart';
 import 'settings_help.dart';
 import 'settings_route.dart';
+import '../panel_tooltip.dart';
 
 /// Both former entry routes display the same launcher and TV settings.
 class AdbPage extends StatefulWidget {
@@ -400,7 +401,7 @@ class _AdbPageState extends State<AdbPage> with WidgetsBindingObserver {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (showStatus) ...[
-            Tooltip(
+            PanelTooltip(
               message: '${statusLabel ?? title}: $state',
               child: Icon(
                 value == null

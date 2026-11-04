@@ -71,6 +71,7 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel>
     with WidgetsBindingObserver {
   bool _running = false;
   bool _stopping = false;
+  bool _sectionsExpanded = false;
   int _processRequest = 0;
 
   Future<void> _refreshProcess() async {
@@ -191,6 +192,14 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel>
 
   Widget _buildPanel(BuildContext context) {
     final localizations = AppLocalizations.of(context) ?? AppLocalizationsEn();
+    final sections = context.watch<AppsService>().categories.where((section) =>
+        !section.isAppChannels &&
+        ((!section.isAutomatic && widget.application.categoryOrders.containsKey(section.id)) ||
+            section.applications.any((app) => app.packageName == widget.application.packageName)))
+        .toList()..sort((a, b) {
+          final order = a.order.compareTo(b.order);
+          return order == 0 ? a.id.compareTo(b.id) : order;
+        });
     final page = SettingsPageLayout(
       title: Row(
         children: [
@@ -336,6 +345,35 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel>
                 );
                 if (mounted) _removeFromCategoryNode.requestFocus();
               },
+            ),
+          Semantics(
+            expanded: _sectionsExpanded,
+            child: FocusableSettingsTile(
+              leading: const Icon(Icons.category_outlined),
+              title: Text(localizations.appSections),
+              trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+                Text('${sections.length}'),
+                const SizedBox(width: 8),
+                Icon(_sectionsExpanded ? Icons.expand_less : Icons.expand_more),
+              ]),
+              onPressed: () => setState(() => _sectionsExpanded = !_sectionsExpanded),
+            ),
+          ),
+          if (_sectionsExpanded)
+            Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(16, 4, 16, 12),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                if (sections.isEmpty) Text(localizations.noAppSections),
+                for (final section in sections)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Expanded(child: Text(localizedSectionName(section.name, localizations))),
+                      if (!section.visible)
+                        Icon(Icons.visibility_off_outlined, semanticLabel: localizations.hiddenCategories),
+                    ]),
+                  ),
+              ]),
             ),
           const Divider(),
           FutureBuilder<bool>(

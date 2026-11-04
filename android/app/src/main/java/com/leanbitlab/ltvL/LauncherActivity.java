@@ -161,6 +161,7 @@ public class LauncherActivity extends FlutterActivity {
         if (autoLaunch != null) { autoLaunch.close(); autoLaunch=null; }
         if (vpnBridge != null) { vpnBridge.close(); vpnBridge = null; }
         if (audioStatus != null) { audioStatus.close(); audioStatus = null; }
+        if (storageStatus != null) { storageStatus.close(); storageStatus = null; }
         if (systemStatus != null) { systemStatus.close(); systemStatus = null; }
         if (networkSpeed != null) { networkSpeed.close(); networkSpeed = null; }
         if (notificationBridge != null) notificationBridge.onCancel(null);
@@ -202,6 +203,7 @@ public class LauncherActivity extends FlutterActivity {
     }
     private VpnBridge vpnBridge;
     private AudioStatusBridge audioStatus;
+    private StorageStatusBridge storageStatus;
     private SystemStatusBridge systemStatus;
     private NetworkSpeedBridge networkSpeed;
     private static final ExecutorService sIoExecutor = Executors.newFixedThreadPool(4);
@@ -267,6 +269,7 @@ public class LauncherActivity extends FlutterActivity {
         autoLaunch = new AutoLaunchBridge(this, messenger);
         vpnBridge = new VpnBridge(this, messenger, sIoExecutor);
         audioStatus = new AudioStatusBridge(this, messenger, sIoExecutor);
+        storageStatus = new StorageStatusBridge(this, messenger, sIoExecutor);
         systemStatus = new SystemStatusBridge(this, messenger, sIoExecutor);
         networkSpeed = new NetworkSpeedBridge(this, messenger, sIoExecutor);
         Intent initial=getIntent();

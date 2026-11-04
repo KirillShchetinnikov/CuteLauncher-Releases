@@ -10,6 +10,7 @@ import 'menu_header.dart';
 import 'menu_header_action.dart';
 import 'side_panel_dialog.dart';
 import 'settings/settings_panel_style.dart';
+import 'panel_tooltip.dart';
 
 /// Owns polling only for the lifetime of the visible network summary.
 class NetworkSummaryDialog extends StatefulWidget {
@@ -267,7 +268,7 @@ class _NetworkSummaryDialogState extends State<NetworkSummaryDialog>
                           if (data['vpnActive'] == true)
                             const Padding(
                               padding: EdgeInsetsDirectional.only(start: 8),
-                              child: Tooltip(
+                              child: PanelTooltip(
                                 message: 'VPN',
                                 child: Icon(Icons.vpn_key_outlined),
                               ),

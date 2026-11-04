@@ -11,9 +11,7 @@ final class HomeDependencyPolicy {
                 if (entry.getValue() < 2) continue;
                 App host = reader.app(entry.getKey());
                 if (host == null) return "dependencyUnavailable";
-                if (entry.getKey().equals(AdbSystemHomeOps.RECOVERY_PACKAGE)
-                        && host.providers().stream().anyMatch(name -> name.endsWith(".CastInfoProvider"))
-                        && active(reader.app("com.google.android.apps.mediashell"))) return "castDependency";
+                // CastInfoProvider presence alone does not establish a dependency on setupwraith.
                 if (!entry.getKey().equals("com.google.android.apps.tv.launcherx")) continue;
                 if (host.receivers().stream().anyMatch(name -> name.endsWith(".GlobalButtonLaunch_Receiver"))
                         && active(reader.app("com.realtek.advancesetting"))) return "shortcutDependency";

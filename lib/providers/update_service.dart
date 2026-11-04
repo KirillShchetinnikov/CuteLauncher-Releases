@@ -163,7 +163,7 @@ Future<Map<String, dynamic>?> fetchAppRelease() async {
       final response = await request.close();
       if (response.statusCode == 404) return null;
       if (response.statusCode != 200) {
-        throw const FormatException('Release unavailable');
+        throw FormatException('Release unavailable (HTTP ${response.statusCode})');
       }
       final bytes = await readBoundedImage(response, limit: 2 * 1024 * 1024);
       return {'releases': jsonDecode(utf8.decode(bytes)) as List};
@@ -203,9 +203,11 @@ Future<File> downloadAppRelease(
           await response.drain<void>();
           continue;
         }
-        if (response.statusCode != 200 ||
-            response.contentLength > maximumUpdateBytes) {
-          throw const FormatException('Invalid APK download');
+        if (response.statusCode != 200) {
+          throw FormatException('Invalid APK download (HTTP ${response.statusCode})');
+        }
+        if (response.contentLength > maximumUpdateBytes) {
+          throw FormatException('APK Content-Length ${response.contentLength} exceeds $maximumUpdateBytes');
         }
         sink = temporary.openWrite();
         var received = 0;
@@ -222,7 +224,7 @@ Future<File> downloadAppRelease(
         await sink!.close();
         sink = null;
         if (received != release.size) {
-          throw const FormatException('Incomplete APK');
+          throw FormatException('Incomplete APK: received $received of ${release.size} bytes');
         }
         if (release.digest != null &&
             (await sha256.bind(temporary.openRead()).first).toString() !=

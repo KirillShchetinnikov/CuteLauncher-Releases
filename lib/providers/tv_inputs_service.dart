@@ -1,3 +1,4 @@
+import '../diagnostics_store.dart';
 import 'dart:convert';
 import 'dart:async';
 
@@ -70,7 +71,10 @@ class TvInputsService extends ChangeNotifier
   Future<void> _refreshSafely() async {
     try {
       await refreshInputs();
-    } catch (error) {
+    } catch (error, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'tvInputsService', error, diagnosticStack,
+      );
       debugPrint('Unable to refresh TV inputs: $error');
     }
   }
@@ -149,7 +153,10 @@ class TvInputsService extends ChangeNotifier
       _inputs = configuration.present(_rawInputs);
       _initialized = true;
       notifyListeners();
-    } catch (_) {
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'tvInputsService', diagnosticError, diagnosticStack,
+      );
       if (current() && !_initialized) {
         _initialized = true;
         notifyListeners();

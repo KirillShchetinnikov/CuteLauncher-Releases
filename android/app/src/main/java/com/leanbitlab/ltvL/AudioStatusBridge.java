@@ -49,7 +49,7 @@ final class AudioStatusBridge implements AutoCloseable {
                         var state = new AudioStatusController(context).snapshot();
                         main.post(() -> { if (!closed) result.success(state); });
                     } catch (RuntimeException unavailable) {
-                        main.post(() -> { if (!closed) result.error("unavailable", "Audio status unavailable", null); });
+                        main.post(() -> { if (!closed) result.error("unavailable", "Audio status unavailable", DiagnosticErrorDetails.from(unavailable)); });
                     } finally { sampling.set(false); }
                 });
             } else result.notImplemented();

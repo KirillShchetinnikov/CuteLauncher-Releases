@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "reportType": "tvInventoryMetadata",
+  "scope": "deviceMetadata",
+  "verification": "observedOnly",
+  "capturedAt": "2026-11-04T00:00:00Z",
+  "sourceReport": "cutelauncher_diagnostics_1793809923301.zip",
+  "identity": {
+    "manufacturer": "TCL",
+    "model": "Smart TV Pro",
+    "device": "G08",
+    "fingerprint": "TCL/G08_4K_GB/G08:14/UTT2.250416.001/AU04:user/release-keys",
+    "firmware": "tcl9618-user 14 UTT2.250416.001 AU04 release-keys",
+    "android": "14",
+    "sdk": "34",
+    "abis": "armeabi-v7a,armeabi"
+  },
+  "diagnostics": {
+    "packageCount": 178,
+    "launcher": {
+      "versionName": "1.6.8",
+      "versionCode": "199"
+    }
+  },
+  "completeness": {
+    "status": "complete",
+    "sourceCount": 178,
+    "skippedCount": 0,
+    "truncated": false
+  },
+  "limits": [
+    "User-provided diagnostic metadata, not an independent device test",
+    "Labels, personal settings, permissions, commands and shell logs excluded",
+    "Redacted identifiers are not reconstructed; package presence does not validate disabling"
+  ],
+  "sourceReportType": "diagnostics",
+  "sourceScope": "userProvidedDiagnosticInventory",
+  "packageListStorage": "catalog/app_descriptions.json",
+  "observedPackageCount": 178,
+  "redactedPackageCount": 0
+}

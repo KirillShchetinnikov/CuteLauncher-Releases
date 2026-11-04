@@ -17,7 +17,7 @@ void main() {
     expect(catalog.validateCatalog(data, evidence), isEmpty);
   });
   test('identity matches only an exact model, device, firmware and device type', () {
-    final entry = (data['devices'] as List).first as Map;
+    final entry = (data['devices'] as List).firstWhere((entry) => entry['exactMatch'] == true) as Map;
     final profile = {'schemaVersion': 1, 'kind': entry['kind'], 'identity': entry['identity']};
     expect(catalog.matchingDevices(data, profile).single['id'], entry['id']);
     for (final key in catalog.identityKeys) {
@@ -25,7 +25,7 @@ void main() {
     }
     expect(catalog.matchingDevices(data, {...profile, 'kind': 'emulator'}), isEmpty);
     expect(catalog.matchingDevices(data, {...profile, 'schemaVersion': 2}), isEmpty);
-    final historical = (data['devices'] as List)[1] as Map;
+    final historical = (data['devices'] as List).firstWhere((entry) => entry['exactMatch'] == false) as Map;
     expect(catalog.matchingDevices(data, {'schemaVersion': 1, 'kind': 'physical', 'identity': historical['identity']}), isEmpty);
   });
   test('invalid evidence, dates, duplicate records and incomplete exact identities fail', () {
@@ -33,7 +33,7 @@ void main() {
     for (final mutate in <void Function(Map<String, dynamic>)>[
       (c) => c['schemaVersion'] = 2,
       (c) => c['devices'].add(c['devices'].first),
-      (c) => c['devices'].first['identity']['fingerprint'] = null,
+      (c) => (c['devices'] as List).firstWhere((entry) => entry['exactMatch'] == true)['identity']['fingerprint'] = null,
       (c) => c['devices'].first['results'].first['date'] = '2026-02-30',
       (c) => c['devices'].first['results'].first['evidenceSection'] = 'No such result',
       (c) => c['devices'].first['results'].first['appBuild'] = '',

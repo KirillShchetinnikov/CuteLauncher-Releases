@@ -1,4 +1,5 @@
 {
+  "settingsScrollbarAlwaysVisible": "Mostra sempre la barra di scorrimento",
   "volumeKeysTitle": "Tenere premuti i tasti volume",
   "volumeKeysMode": "Modalità di correzione",
   "volumeKeysAuto": "Auto: finché il pannello è visibile",
@@ -1232,7 +1233,8 @@
   "remoteButtonsTitle": "Rimappatura dei tasti del telecomando",
   "remoteButtonsStart": "Verifica tasti (120 s)",
   "remoteButtonsStop": "Termina verifica",
-  "remoteButtonsHint": "La verifica mostra codici, rilasci e ripetizioni e salva un rapporto di testo sul TV. Esci dalla pagina dopo l’avvio per evitare che OK controlli la registrazione.",
+  "remoteButtonsControlsHint": "Avvia la verifica, poi premi i pulsanti in un menu o in un’app aperta. Fermala qui oppure attendi 120 secondi.",
+  "remoteButtonsHint": "Al termine, il rapporto viene salvato nel percorso indicato e sostituisce il precedente. Copialo tramite ADB: adb pull <path>. Alcuni pulsanti di sistema o del produttore potrebbero non essere disponibili al servizio.",
   "remoteButtonsEmpty": "Nessun evento. Se un tasto apre un’app, torna qui per vedere il risultato.",
   "remoteButtonsService": "Servizio connesso",
   "remoteButtonsRefresh": "Aggiorna",
@@ -1740,5 +1742,13 @@
   "backupSyncRefreshFailed": "Impossibile sincronizzare le impostazioni. Controlla l’accesso allo spazio di archiviazione e riprova.",
   "backupThisTv": "Questa TV",
   "backupOtherTv": "Altra TV",
-  "backupTvUnknown": "TV sconosciuta"
+  "backupTvUnknown": "TV sconosciuta",
+  "panelTooltips": "Mostra suggerimenti in tutti i pannelli",
+  "networkStorageTitle": "Archiviazione di rete",
+  "usbStorageTitle": "Unità USB",
+  "storageScreenUnavailable": "Le impostazioni di archiviazione non sono disponibili.",
+  "appSections": "Sezioni dell’app",
+  "noAppSections": "Questa app non è presente in nessuna sezione.",
+  "volumeWidgetSettings": "Impostazioni volume",
+  "volumeUpdateInterval": "Intervallo di aggiornamento"
 }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:async';
 import 'dart:io';
+import 'package:flutter/services.dart';
 
 import 'diagnostic_redactor.dart';
 import 'diagnostic_settings.dart';
@@ -27,9 +28,61 @@ class DiagnosticsStore {
     'cutelauncher/tv_power': 'tvPower',
     'cutelauncher/tv_ime_editor': 'tvImeEditor',
     'cutelauncher/remote_panel': 'remotePanel',
+    'cutelauncher/audio_status': 'audio_status',
+    'cutelauncher/network_speed': 'network_speed',
+    'cutelauncher/storage_status': 'storage_status',
+    'cutelauncher/system_status': 'system_status',
+    'cutelauncher/vpn': 'vpn',
+    'cutelauncher/recent_apps': 'recent_apps',
     'dart': 'dart',
   };
   static const _methods = {
+    'wallpaperService',
+    'systemStatusService',
+    'storageStatusService',
+    'networkSpeedService',
+    'backupStorage',
+    'audioStatusService',
+    'access',
+    'applyRenderCompatibility',
+    'backgroundInfo',
+    'backgroundSetApp',
+    'getAppChannels',
+    'getBackupDeviceIdentity',
+    'getLauncherApplications',
+    'icon',
+    'launchAppChannelProgram',
+    'mode',
+    'open',
+    'openNotification',
+    'pickWebhookDocument',
+    'requestAppChannelsPermission',
+    'resetApplicationData',
+    'setup',
+
+    'watch',
+    'command',
+    'openNas',
+    'openUsb',
+    'appsService',
+    'appChannelsService',
+    'automaticBackupService',
+    'backgroundStartupService',
+    'backupAutomationService',
+    'backupService',
+    'brightnessService',
+    'networkService',
+    'nightModeService',
+    'notificationsService',
+    'nowPlayingService',
+    'remotePanelService',
+    'settingsSyncService',
+    'sleepTimerService',
+    'slideshowService',
+    'tvInputsService',
+    'vpnService',
+    'watchNextService',
+
     'pickCleanerDocument',
     'getDiagnosticEnvironment',
     'getTvCompatibilityDiagnostics',
@@ -410,11 +463,15 @@ class DiagnosticsStore {
         final value = details[key];
         if (value is int && value >= -1 && value <= 65535) safe[key] = value;
       }
-      if (method == 'onlineWallpaperRefresh') {
+      {
         final status = details['httpStatus'];
         if (status is int && status >= 100 && status <= 599) safe['httpStatus'] = status;
         final osCode = details['osErrorCode'];
         if (osCode is int && osCode >= -65535 && osCode <= 65535) safe['osErrorCode'] = osCode;
+        for (final key in ['timeoutMs', 'offset']) {
+          final value = details[key];
+          if (value is int && value >= 0 && value <= 9007199254740991) safe[key] = value;
+        }
       }
       if (safe.isNotEmpty) event['details'] = safe;
       if (method.startsWith('backgroundVideo')) {
@@ -475,6 +532,9 @@ class DiagnosticsStore {
       }
     }
     final frames = context['frames'];
+    if (context['exceptionType'] is String) {
+      event['exceptionType'] = DiagnosticRedactor.text(context['exceptionType'] as String);
+    }
     if (frames is List<String>) {
       final safe = frames
           .where(
@@ -541,7 +601,16 @@ class DiagnosticsStore {
       'error',
       'operation_failed',
       context: {
-        'details': {'exception': exceptionKind(error), 'reason': reason},
+        'details': {
+          'exception': exceptionKind(error), 'reason': reason,
+          if (error is SocketException) 'osErrorCode': error.osError?.errorCode,
+          if (error is FileSystemException) 'osErrorCode': error.osError?.errorCode,
+          if (error is TimeoutException) 'timeoutMs': error.duration?.inMilliseconds,
+          if (error is FormatException) 'offset': error.offset,
+        },
+        'exceptionType': error.runtimeType.toString(),
+        if (error is PlatformException) 'nativeCode': error.code,
+        if (error is PlatformException) 'errorDetails': error.details,
         'frames': safeFrames(stack),
         'errorText': error.toString(),
       },

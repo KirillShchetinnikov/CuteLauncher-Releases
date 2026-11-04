@@ -1,3 +1,4 @@
+import '../diagnostics_store.dart';
 import 'service_lifecycle.dart';
 import 'dart:async';
 import 'dart:convert';
@@ -76,7 +77,10 @@ class NotificationsService extends ChangeNotifier with ServiceLifecycle, Widgets
   Future<void> _init() async {
     try {
       await _loadInitialState();
-    } catch (error) {
+    } catch (error, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'notificationsService', error, diagnosticStack,
+      );
       debugPrint('Unable to initialize notifications: $error');
     } finally {
       if (!isDisposed) {
@@ -150,7 +154,10 @@ class NotificationsService extends ChangeNotifier with ServiceLifecycle, Widgets
         if (localCallCount == _callCount && eventRevision == _eventRevision) {
           _updateNotificationCounts(list);
         }
-      } catch (e) {
+      } catch (e, diagnosticStack) {
+        DiagnosticsStore.instance.recordException(
+          'notificationsService', e, diagnosticStack,
+        );
         // ignore
       }
       if (isDisposed || localCallCount != _callCount) return;

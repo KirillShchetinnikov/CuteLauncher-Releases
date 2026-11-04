@@ -46,7 +46,7 @@ final class NetworkSpeedBridge implements AutoCloseable {
                         var state = snapshot(context);
                         main.post(() -> { if (!closed) result.success(state); });
                     } catch (RuntimeException unavailable) {
-                        main.post(() -> { if (!closed) result.error("unavailable", "Network counters unavailable", null); });
+                        main.post(() -> { if (!closed) result.error("unavailable", "Network counters unavailable", DiagnosticErrorDetails.from(unavailable)); });
                     } finally { sampling.set(false); }
                 });
             } else result.notImplemented();

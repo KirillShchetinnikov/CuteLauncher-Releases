@@ -1,4 +1,5 @@
 import 'traffic_settings_page.dart';
+import 'volume_widget_settings_page.dart';
 import 'network_speed_settings_page.dart';
 import 'app_channels_settings_page.dart';
 import 'app_channels_order_page.dart';
@@ -135,6 +136,7 @@ class _SettingsPanelState extends State<SettingsPanel> {
       SleepTimerEditorPage.routeName,
       TrafficSettingsPage.routeName,
       NetworkSpeedSettingsPage.routeName,
+      VolumeWidgetSettingsPage.routeName,
       SystemWidgetSettingsPage.routeName,
       VpnSettingsPage.routeName,
       PanelOrderPage.routeName,
@@ -297,6 +299,8 @@ class _SettingsPanelState extends State<SettingsPanel> {
                       return SettingsRoute(settings: settings, builder: (_) => const SystemWidgetSettingsPage());
                     case NetworkSpeedSettingsPage.routeName:
                       return SettingsRoute(settings: settings, builder: (_) => const NetworkSpeedSettingsPage());
+                    case VolumeWidgetSettingsPage.routeName:
+                      return SettingsRoute(settings: settings, builder: (_) => const VolumeWidgetSettingsPage());
                     case TrafficSettingsPage.routeName:
                       return SettingsRoute(settings: settings, builder: (_) => const TrafficSettingsPage());
                     case VpnSettingsPage.routeName:

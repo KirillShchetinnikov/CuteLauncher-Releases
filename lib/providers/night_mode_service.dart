@@ -1,3 +1,4 @@
+import '../diagnostics_store.dart';
 import 'night_mode_configuration.dart';
 export 'night_mode_configuration.dart';
 import 'package:flauncher/bridge_result.dart';
@@ -41,7 +42,10 @@ class NightModeService extends ChangeNotifier with WidgetsBindingObserver {
       final mode = await _channel.invokeMethod<int>('pictureMode');
       if (_disposed) return;
       pictureMode = mode != null && mode >= 0 && mode <= 255 ? mode : null;
-    } catch (_) {
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'nightModeService', diagnosticError, diagnosticStack,
+      );
       if (_disposed) return;
       pictureMode = null;
     }
@@ -147,7 +151,10 @@ class NightModeService extends ChangeNotifier with WidgetsBindingObserver {
         tclFilterAvailable = false;
         if (tclFilterStatus == 'success') tclFilterStatus = 'error';
       }
-    } catch (_) {
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'nightModeService', diagnosticError, diagnosticStack,
+      );
       if (!_disposed) {
         tclFilterAvailable = false;
         tclFilterStatus = 'unsupported';
@@ -254,7 +261,10 @@ class NightModeService extends ChangeNotifier with WidgetsBindingObserver {
       }
       _tick();
       notifyListeners();
-    } catch (_) {
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'nightModeService', diagnosticError, diagnosticStack,
+      );
       if (!_disposed) {
         systemFilter = false;
         _nativeRunning = false;
@@ -276,7 +286,10 @@ class NightModeService extends ChangeNotifier with WidgetsBindingObserver {
       }) ?? 'unavailable';
       if (_disposed) return status;
       batterySettingsUnavailable = status != 'opened' && status != 'hintRequired';
-    } catch (_) {
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'nightModeService', diagnosticError, diagnosticStack,
+      );
       if (_disposed) return status;
       batterySettingsUnavailable = true;
     }
@@ -287,20 +300,32 @@ class NightModeService extends ChangeNotifier with WidgetsBindingObserver {
   Future<void> requestOverlayPermission() async {
     try {
       await _channel.invokeMethod<void>('permission');
-    } catch (_) {}
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'nightModeService', diagnosticError, diagnosticStack,
+      );
+    }
   }
 
   Future<void> requestUsagePermission() async {
     try {
       await _channel.invokeMethod<void>('usagePermission');
-    } catch (_) {}
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'nightModeService', diagnosticError, diagnosticStack,
+      );
+    }
   }
 
   Future<void> requestNotificationPermission() async {
     try {
       await _channel.invokeMethod<void>('notifications');
       await syncSystem();
-    } catch (_) {}
+    } catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'nightModeService', diagnosticError, diagnosticStack,
+      );
+    }
   }
 
   Future<void> refreshSystem() async {

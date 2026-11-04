@@ -1,3 +1,7 @@
+import 'package:flauncher/providers/appearance_service.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'dart:ui' as ui;
 
 import 'package:flauncher/widgets/settings/settings_scroll_behavior.dart';
@@ -9,11 +13,18 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   Future<bool> paintsThumb(WidgetTester tester) async {
     final raw = find.byWidgetPredicate((widget) => widget is RawScrollbar);
-    final painter = tester.widget<CustomPaint>(find.descendant(
-      of: raw,
-      matching: find.byWidgetPredicate((widget) =>
-        widget is CustomPaint && widget.foregroundPainter is ScrollbarPainter),
-    )).foregroundPainter!;
+    final painter = tester
+        .widget<CustomPaint>(
+          find.descendant(
+            of: raw,
+            matching: find.byWidgetPredicate(
+              (widget) =>
+                  widget is CustomPaint &&
+                  widget.foregroundPainter is ScrollbarPainter,
+            ),
+          ),
+        )
+        .foregroundPainter!;
     final size = tester.getSize(raw);
     return (await tester.runAsync(() async {
       final recorder = ui.PictureRecorder();
@@ -43,33 +54,40 @@ void main() {
     testWidgets('scrollbar persists only with overflow; page=$page', (
       tester,
     ) async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      final appearance = AppearanceService(prefs);
+      addTearDown(appearance.dispose);
       final height = ValueNotifier(800.0);
       addTearDown(height.dispose);
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Center(
-              child: SizedBox(
-                width: 300,
-                height: 250,
-                child: SettingsPanelStyle(
-                  builder: (_) {
-                    final content = SingleChildScrollView(
-                      child: ValueListenableBuilder<double>(
-                        valueListenable: height,
-                        builder: (_, value, _) => SizedBox(
-                          height: value,
-                          child: const Text('Содержимое'),
+        ChangeNotifierProvider.value(
+          value: appearance,
+          child: MaterialApp(
+            home: Scaffold(
+              body: Center(
+                child: SizedBox(
+                  width: 300,
+                  height: 250,
+                  child: SettingsPanelStyle(
+                    builder: (_) {
+                      final content = SingleChildScrollView(
+                        child: ValueListenableBuilder<double>(
+                          valueListenable: height,
+                          builder: (_, value, _) => SizedBox(
+                            height: value,
+                            child: const Text('Содержимое'),
+                          ),
                         ),
-                      ),
-                    );
-                    return page
-                        ? SettingsPageLayout(
-                            title: const Text('Настройки'),
-                            child: content,
-                          )
-                        : content;
-                  },
+                      );
+                      return page
+                          ? SettingsPageLayout(
+                              title: const Text('Настройки'),
+                              child: content,
+                            )
+                          : content;
+                    },
+                  ),
                 ),
               ),
             ),
@@ -90,26 +108,69 @@ void main() {
       height.value = 1000;
       await tester.pumpAndSettle();
       expect(await paintsThumb(tester), isTrue);
+      await appearance.set('settingsScrollbarAlwaysVisible', false);
+      await tester.pumpAndSettle();
+      expect(await paintsThumb(tester), isFalse);
+      final reloaded = AppearanceService(prefs);
+      expect(reloaded.appearance.settingsScrollbarAlwaysVisible, isFalse);
+      reloaded.dispose();
+      await tester.drag(
+        find.byType(SingleChildScrollView),
+        const Offset(0, -100),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(await paintsThumb(tester), isTrue);
+      await tester.pumpAndSettle();
+      await tester.pump(const Duration(seconds: 10));
+      await tester.pumpAndSettle();
+      expect(await paintsThumb(tester), isFalse);
+      final scrollable = tester.state<ScrollableState>(find.byType(Scrollable));
+      final offset = scrollable.position.pixels;
+      await appearance.resetFields(['settingsScrollbarAlwaysVisible']);
+      await tester.pumpAndSettle();
+      expect(await paintsThumb(tester), isTrue);
+      expect(scrollable.position.pixels, offset);
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox());
     });
   }
 
-  testWidgets('loading and empty pages can attach and detach scrolling', (tester) async {
+  testWidgets('loading and empty pages can attach and detach scrolling', (
+    tester,
+  ) async {
     final loaded = ValueNotifier(false);
     addTearDown(loaded.dispose);
-    await tester.pumpWidget(MaterialApp(home: Scaffold(body: SizedBox(height: 250,
-      child: ValueListenableBuilder<bool>(valueListenable: loaded,
-        builder: (_, value, _) => SettingsPageLayout(title: const Text('Страница'),
-          child: value ? ListView(children: const [SizedBox(height: 1000)]) : const Text('Пусто')),
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: SizedBox(
+            height: 250,
+            child: ValueListenableBuilder<bool>(
+              valueListenable: loaded,
+              builder: (_, value, _) => SettingsPageLayout(
+                title: const Text('Страница'),
+                child: value
+                    ? ListView(children: const [SizedBox(height: 1000)])
+                    : const Text('Пусто'),
+              ),
+            ),
+          ),
+        ),
       ),
-    ))));
+    );
     await tester.pumpAndSettle();
-    expect(tester.widget<Scrollbar>(find.byType(Scrollbar)).thumbVisibility, isFalse);
+    expect(
+      tester.widget<Scrollbar>(find.byType(Scrollbar)).thumbVisibility,
+      isFalse,
+    );
     for (final value in [true, false, true]) {
       loaded.value = value;
       await tester.pumpAndSettle();
-      expect(tester.widget<Scrollbar>(find.byType(Scrollbar)).thumbVisibility, value);
+      expect(
+        tester.widget<Scrollbar>(find.byType(Scrollbar)).thumbVisibility,
+        value,
+      );
       expect(await paintsThumb(tester), value);
       expect(tester.takeException(), isNull);
     }

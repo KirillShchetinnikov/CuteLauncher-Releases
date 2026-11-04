@@ -10,6 +10,9 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
+  String get settingsScrollbarAlwaysVisible => 'إظهار شريط التمرير دائمًا';
+
+  @override
   String get volumeKeysTitle => 'الضغط المطوّل على أزرار الصوت';
 
   @override
@@ -3486,8 +3489,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get remoteButtonsStop => 'إيقاف الفحص';
 
   @override
+  String get remoteButtonsControlsHint =>
+      'ابدأ الفحص، ثم اضغط الأزرار في أي قائمة أو تطبيق مفتوح. أوقفه هنا أو انتظر 120 ثانية.';
+
+  @override
   String get remoteButtonsHint =>
-      'يعرض الفحص الرموز والتحرير والتكرار ويحفظ تقريرًا نصيًا على التلفزيون. غادر الصفحة بعد بدء الفحص حتى لا يتحكم OK بالتسجيل.';
+      'بعد الفحص يُحفظ التقرير في المسار المعروض ويستبدل التقرير السابق. انسخه عبر ADB: adb pull <path>. قد لا تتاح بعض أزرار النظام والشركة المصنعة للخدمة.';
 
   @override
   String get remoteButtonsEmpty =>
@@ -5028,4 +5035,28 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get backupTvUnknown => 'التلفاز غير معروف';
+
+  @override
+  String get panelTooltips => 'إظهار التلميحات المنبثقة في اللوحات';
+
+  @override
+  String get networkStorageTitle => 'التخزين الشبكي';
+
+  @override
+  String get usbStorageTitle => 'وحدات تخزين USB';
+
+  @override
+  String get storageScreenUnavailable => 'إعدادات التخزين غير متاحة.';
+
+  @override
+  String get appSections => 'أقسام التطبيق';
+
+  @override
+  String get noAppSections => 'هذا التطبيق غير موجود في أي قسم.';
+
+  @override
+  String get volumeWidgetSettings => 'إعدادات مستوى الصوت';
+
+  @override
+  String get volumeUpdateInterval => 'فاصل التحديث';
 }

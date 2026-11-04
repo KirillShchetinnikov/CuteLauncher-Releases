@@ -1,3 +1,4 @@
+import '../diagnostics_store.dart';
 import 'package:flauncher/bridge_result.dart';
 /*
  * FLauncher
@@ -110,7 +111,10 @@ class BrightnessService extends ChangeNotifier with ServiceLifecycle {
           false;
       if (isDisposed) return;
       _hasPermission = permission;
-    } catch (e) {
+    } catch (e, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'brightnessService', e, diagnosticStack,
+      );
       debugPrint('Error checking brightness permission: $e');
       if (isDisposed) return;
       _hasPermission = false;
@@ -122,7 +126,10 @@ class BrightnessService extends ChangeNotifier with ServiceLifecycle {
   Future<void> requestPermission() async {
     try {
       await _platform.invokeMethod('requestWriteSettingsPermission');
-    } catch (e) {
+    } catch (e, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'brightnessService', e, diagnosticStack,
+      );
       debugPrint('Error requesting brightness permission: $e');
     }
   }
@@ -324,14 +331,20 @@ class BrightnessService extends ChangeNotifier with ServiceLifecycle {
             'System brightness restoration pending; baseline retained for retry',
           );
         }
-      } catch (e) {
+      } catch (e, diagnosticStack) {
+        DiagnosticsStore.instance.recordException(
+          'brightnessService', e, diagnosticStack,
+        );
         debugPrint('Error restoring system brightness: $e');
       }
       // Reset to system brightness
       try {
         await ScreenBrightness().resetApplicationScreenBrightness();
         _lastWindowApplied = null;
-      } catch (e) {
+      } catch (e, diagnosticStack) {
+        DiagnosticsStore.instance.recordException(
+          'brightnessService', e, diagnosticStack,
+        );
         debugPrint('Error resetting brightness: $e');
       }
     }
@@ -406,14 +419,20 @@ class BrightnessService extends ChangeNotifier with ServiceLifecycle {
             'brightness': brightnessValue255,
           }) ??
           false;
-    } catch (e) {
+    } catch (e, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'brightnessService', e, diagnosticStack,
+      );
       debugPrint('Error setting system brightness ($brightnessPct%): $e');
     }
     if (success && _lastWindowApplied != null) {
       try {
         await ScreenBrightness().resetApplicationScreenBrightness();
         _lastWindowApplied = null;
-      } catch (e) {
+      } catch (e, diagnosticStack) {
+        DiagnosticsStore.instance.recordException(
+          'brightnessService', e, diagnosticStack,
+        );
         debugPrint('Error clearing window brightness fallback: $e');
       }
     }
@@ -427,7 +446,10 @@ class BrightnessService extends ChangeNotifier with ServiceLifecycle {
           brightnessPct / 100.0,
         );
         _lastWindowApplied = brightnessPct;
-      } catch (e) {
+      } catch (e, diagnosticStack) {
+        DiagnosticsStore.instance.recordException(
+          'brightnessService', e, diagnosticStack,
+        );
         debugPrint('Error setting window brightness ($brightnessPct%): $e');
       }
     }
@@ -448,7 +470,10 @@ class BrightnessService extends ChangeNotifier with ServiceLifecycle {
     _checkingSchedule = true;
     try {
       await applyCurrentSlotBrightness();
-    } catch (e) {
+    } catch (e, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'brightnessService', e, diagnosticStack,
+      );
       debugPrint('Error checking brightness schedule: $e');
     } finally {
       _checkingSchedule = false;
@@ -463,7 +488,10 @@ class BrightnessService extends ChangeNotifier with ServiceLifecycle {
   Future<double> getCurrentBrightness() async {
     try {
       return await ScreenBrightness().application;
-    } catch (e) {
+    } catch (e, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'brightnessService', e, diagnosticStack,
+      );
       return 1.0;
     }
   }

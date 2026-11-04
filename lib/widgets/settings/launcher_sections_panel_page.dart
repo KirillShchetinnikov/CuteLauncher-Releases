@@ -184,10 +184,10 @@ class _LauncherSectionsPanelPageState extends State<LauncherSectionsPanelPage> {
                       ? null
                       : () => _resetSections(settingsService),
                 ),
+                Text(localizations.reorderSectionsHint),
                 SettingsHelp(
                   title: localizations.sectionsAndOrder,
-                  text:
-                      '${localizations.reorderSectionsHint}\n\n${localizations.sectionRulesHelp}',
+                  text: localizations.sectionRulesHelp,
                 ),
               ],
             ),

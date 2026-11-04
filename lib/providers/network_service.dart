@@ -1,3 +1,4 @@
+import '../diagnostics_store.dart';
 // Historical constants and enum names are preserved for upstream and serialized data compatibility.
 // ignore_for_file: constant_identifier_names
 
@@ -136,7 +137,10 @@ class NetworkService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
     bool allowed;
     try {
       allowed = await _channel.checkUsageStatsPermission();
-    } catch (e) {
+    } catch (e, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'networkService', e, diagnosticStack,
+      );
       log("Error checking usage permission: $e");
       return;
     }
@@ -187,7 +191,10 @@ class NetworkService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
     int usage = -1;
     try {
       usage = await _channel.getDailyDataUsage();
-    } catch (e) {
+    } catch (e, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'networkService', e, diagnosticStack,
+      );
       log("Error fetching usage: $e");
     }
     if (isDisposed || !_foreground || localCallCount != _usageCallCount) return;
@@ -263,7 +270,10 @@ class NetworkService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
         _wirelessNetworkSignalLevel = map["wirelessSignalLevel"] as int;
       }
       log("NetworkService: parsed type $_networkType, signal $_wirelessNetworkSignalLevel, vpn $_vpnActive");
-    } catch (e) {
+    } catch (e, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'networkService', e, diagnosticStack,
+      );
       log("NetworkService error parsing: $e");
     }
   }

@@ -35,7 +35,7 @@ void main() {
   testWidgets(
     'remote actions, side options, focus recovery and persistent filter',
     (tester) async {
-      SharedPreferences.setMockInitialValues({});
+      SharedPreferences.setMockInitialValues({'panel_tooltips_enabled': true});
       final channel = _ActionChannel();
       final apps = MockAppsService();
       final stream = StreamController<List<Map<dynamic, dynamic>>>.broadcast();

@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 class SettingsScrollBehavior extends MaterialScrollBehavior {
   const SettingsScrollBehavior();
 
+  static bool alwaysShowScrollbar(BuildContext context) =>
+      Theme.of(context).scrollbarTheme.thumbVisibility?.resolve({}) ?? true;
+
   @override
   Widget buildOverscrollIndicator(
     BuildContext context,
@@ -23,7 +26,7 @@ class SettingsScrollBehavior extends MaterialScrollBehavior {
     }
     return Scrollbar(
       controller: details.controller,
-      thumbVisibility: true,
+      thumbVisibility: SettingsScrollBehavior.alwaysShowScrollbar(context),
       interactive: false,
       thickness: 4,
       child: child,

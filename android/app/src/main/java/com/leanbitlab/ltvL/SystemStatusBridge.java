@@ -42,7 +42,7 @@ final class SystemStatusBridge implements AutoCloseable {
                         var state = controller.snapshot(context);
                         main.post(() -> { if (!closed) result.success(state); });
                     } catch (RuntimeException unavailable) {
-                        main.post(() -> { if (!closed) result.error("unavailable", "System status unavailable", null); });
+                        main.post(() -> { if (!closed) result.error("unavailable", "System status unavailable", DiagnosticErrorDetails.from(unavailable)); });
                     } finally { sampling.set(false); }
                 });
             } else result.notImplemented();

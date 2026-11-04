@@ -117,6 +117,7 @@ void main() {
         );
       });
       final settings = MockSettingsService();
+      when(settings.panelTooltipsEnabled).thenReturn(false);
       when(settings.startOnBoot).thenReturn(true);
       when(settings.appKeyClickEnabled).thenReturn(false);
       when(settings.accentColorHex).thenReturn('7C4DFF');

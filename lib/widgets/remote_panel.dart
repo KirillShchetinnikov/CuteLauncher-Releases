@@ -2,6 +2,7 @@ import 'package:flauncher/bridge_result.dart';
 import 'dart:async';
 
 import '../providers/network_service.dart';
+import '../providers/storage_status_service.dart';
 import '../providers/vpn_service.dart';
 import '../providers/tv_inputs_service.dart';
 import '../providers/notifications_service.dart';
@@ -26,6 +27,7 @@ class RemotePanel extends StatefulWidget {
 class _RemotePanelState extends State<RemotePanel> {
   final _bar = GlobalKey<FocusAwareAppBarState>();
   bool _ready = false;
+  StorageStatusService? _storage;
   final _removeListeners = <VoidCallback>[];
 
   Future<void> _waitFor(ChangeNotifier source, bool Function() ready) {
@@ -45,6 +47,11 @@ class _RemotePanelState extends State<RemotePanel> {
   Future<void> _prepare() async {
     final panel = context.read<RemotePanelService>();
     final pending = <Future<void>>[];
+    if (panel.visible('nas') || panel.visible('usb')) {
+      final storage = context.read<StorageStatusService?>();
+      _storage = storage;
+      if (storage != null) pending.add(storage.prepare(this));
+    }
     final night = context.read<NightModeService?>();
     if (night != null) {
       pending.add(_waitFor(night, () => night.panelPresentationReady));
@@ -83,6 +90,9 @@ class _RemotePanelState extends State<RemotePanel> {
     setState(() => _ready = true);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
+        // The rendered bar now owns observation; preparation must not keep
+        // polling alive after both drive objects have been hidden.
+        _storage?.setVisible(this, false);
         _bar.currentState?.focusFirst();
         remotePanelChannel.invokeMethod<void>('ready');
       }
@@ -91,6 +101,7 @@ class _RemotePanelState extends State<RemotePanel> {
 
   @override
   void dispose() {
+    _storage?.setVisible(this, false);
     for (final remove in _removeListeners) {
       remove();
     }

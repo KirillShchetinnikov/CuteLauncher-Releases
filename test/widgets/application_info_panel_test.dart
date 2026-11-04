@@ -103,6 +103,65 @@ void main() {
     binding.platformDispatcher.textScaleFactorTestValue = 0.8;
   });
 
+  for (final locale in [const Locale('ru'), const Locale('en')]) {
+    testWidgets('app sections expand with automatic and hidden memberships: $locale', (tester) async {
+      final apps = _ObservableAppsService();
+      final app = fakeApp(packageName: 'test.app', name: 'Test');
+      final hidden = Category(id: 3, name: 'My hidden section', order: 2, visible: false);
+      app.categoryOrders[3] = 0;
+      final games = Category(id: 2, name: 'Games', order: 1)..applications.add(app);
+      final automatic = Category(id: 1, name: 'All Apps', systemKey: 'all_apps', order: 0)
+        ..applications.add(fakeApp(packageName: 'test.app', name: 'Old instance'));
+      final unrelated = Category(id: 4, name: 'Unrelated', order: 3);
+      final feeds = Category(id: 5, name: 'App Feeds', systemKey: 'app_channels')..applications.add(app);
+      final absentAutomatic = Category(id: 6, name: 'Absent automatic section', systemKey: 'tv_apps');
+      app.categoryOrders[6] = 0;
+      when(apps.categories).thenReturn([hidden, unrelated, games, feeds, automatic, absentAutomatic]);
+      when(apps.applications).thenReturn([app]);
+      when(apps.isTileHidden(any)).thenReturn(false);
+      await _pumpWidgetWithProviders(tester, apps, null, app, locale: locale);
+      final l = AppLocalizations.of(tester.element(find.byType(ApplicationInfoPanel)))!;
+      await tester.scrollUntilVisible(find.text(l.appSections), 150);
+      expect(find.text('My hidden section'), findsNothing);
+      await tester.tap(find.text(l.appSections));
+      await tester.pumpAndSettle();
+      expect(find.text('My hidden section'), findsOneWidget);
+      expect(find.text(l.allApplications), findsOneWidget);
+      expect(find.text(l.games), findsOneWidget);
+      expect(tester.getTopLeft(find.text(l.allApplications)).dy,
+          lessThan(tester.getTopLeft(find.text(l.games)).dy));
+      expect(tester.getTopLeft(find.text(l.games)).dy,
+          lessThan(tester.getTopLeft(find.text('My hidden section')).dy));
+      expect(find.text('Unrelated'), findsNothing);
+      expect(find.text('Absent automatic section'), findsNothing);
+      expect(find.byIcon(Icons.visibility_off_outlined), findsWidgets);
+      games.applications.clear();
+      apps.notifyListeners();
+      await tester.pumpAndSettle();
+      expect(find.text(l.games), findsNothing);
+      expect(find.text('My hidden section'), findsOneWidget);
+      await tester.tap(find.text(l.appSections));
+      await tester.pumpAndSettle();
+      expect(find.text('My hidden section'), findsNothing);
+      expect(tester.takeException(), isNull);
+    });
+  }
+
+  testWidgets('empty section list explains absence without changing membership', (tester) async {
+    final apps = MockAppsService();
+    final app = fakeApp(packageName: 'test.app', name: 'Test');
+    when(apps.categories).thenReturn([]);
+    when(apps.applications).thenReturn([app]);
+    when(apps.isTileHidden(any)).thenReturn(false);
+    await _pumpWidgetWithProviders(tester, apps, null, app);
+    final l = AppLocalizations.of(tester.element(find.byType(ApplicationInfoPanel)))!;
+    await tester.scrollUntilVisible(find.text(l.appSections), 150);
+    await tester.tap(find.text(l.appSections));
+    await tester.pumpAndSettle();
+    expect(find.text(l.noAppSections), findsOneWidget);
+    expect(app.categoryOrders, isEmpty);
+  });
+
   testWidgets('Russian app actions fit the panel and retain the app name', (
     tester,
   ) async {
@@ -470,7 +529,7 @@ void main() {
     await _pumpWidgetWithProviders(tester, appsService, category, app);
 
     final finder = find.text("Application info");
-    await tester.ensureVisible(finder);
+    await tester.scrollUntilVisible(finder, 150);
     await tester.tap(finder);
     await tester.pumpAndSettle();
     verify(appsService.openAppInfo(app));
@@ -498,6 +557,20 @@ void main() {
     await tester.pumpAndSettle();
     verify(appsService.uninstallApp(app));
   });
+}
+
+class _ObservableAppsService extends MockAppsService {
+  final _listeners = <VoidCallback>{};
+  @override
+  void addListener(VoidCallback? listener) {
+    if (listener != null) _listeners.add(listener);
+  }
+  @override
+  void removeListener(VoidCallback? listener) => _listeners.remove(listener);
+  @override
+  void notifyListeners() {
+    for (final listener in _listeners.toList()) { listener(); }
+  }
 }
 
 Future<void> _pumpWidgetWithProviders(

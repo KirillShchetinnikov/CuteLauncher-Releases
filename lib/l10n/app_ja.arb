@@ -1,4 +1,5 @@
 {
+  "settingsScrollbarAlwaysVisible": "スクロールバーを常に表示",
   "volumeKeysTitle": "音量ボタンの長押し",
   "volumeKeysMode": "対処方法",
   "volumeKeysAuto": "自動：パネル表示中",
@@ -1232,7 +1233,8 @@
   "remoteButtonsTitle": "リモコンボタンの割り当て",
   "remoteButtonsStart": "ボタンを確認（120秒）",
   "remoteButtonsStop": "確認を終了",
-  "remoteButtonsHint": "コード、解放、リピートを表示し、テレビにテキストレポートを保存します。OKが記録を操作しないよう、開始後はこのページを離れてください。",
+  "remoteButtonsControlsHint": "テストを開始し、任意のメニューや開いているアプリでボタンを押してください。この画面で停止するか、120秒待ってください。",
+  "remoteButtonsHint": "テスト後、表示されたパスにレポートが保存され、前のレポートが置き換えられます。ADBでコピーできます: adb pull <path>。システムやメーカー独自の一部のボタンはサービスで取得できない場合があります。",
   "remoteButtonsEmpty": "イベントはまだありません。ボタンでアプリが開いた場合は、ここに戻ると結果を確認できます。",
   "remoteButtonsService": "サービス接続済み",
   "remoteButtonsRefresh": "更新",
@@ -1740,5 +1742,13 @@
   "backupSyncRefreshFailed": "設定を同期できませんでした。ストレージへのアクセスを確認して再試行してください。",
   "backupThisTv": "このテレビ",
   "backupOtherTv": "別のテレビ",
-  "backupTvUnknown": "テレビ不明"
+  "backupTvUnknown": "テレビ不明",
+  "panelTooltips": "すべてのパネルにツールチップを表示",
+  "networkStorageTitle": "ネットワークストレージ",
+  "usbStorageTitle": "USBドライブ",
+  "storageScreenUnavailable": "ストレージ設定を利用できません。",
+  "appSections": "アプリのセクション",
+  "noAppSections": "このアプリはどのセクションにも含まれていません。",
+  "volumeWidgetSettings": "音量の設定",
+  "volumeUpdateInterval": "更新間隔"
 }

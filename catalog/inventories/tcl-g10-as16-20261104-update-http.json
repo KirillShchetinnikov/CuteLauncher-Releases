@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "reportType": "tvInventoryMetadata",
+  "scope": "deviceMetadata",
+  "verification": "observedOnly",
+  "capturedAt": "2026-11-04T00:00:00Z",
+  "sourceReport": "user-pasted-diagnostics-1.6.8-199",
+  "sourceReportType": "diagnostics",
+  "sourceScope": "userProvidedDiagnosticInventory",
+  "identity": {
+    "manufacturer": "TCL",
+    "model": "Smart TV Pro",
+    "device": "G10",
+    "fingerprint": "TCL/G10_4K_GB/G10:12/STT2.230203.001/AS16:user/release-keys",
+    "firmware": "STT2.230203.001 release-keys",
+    "android": "12",
+    "abis": "armeabi-v7a,armeabi",
+    "sdk": "31"
+  },
+  "diagnostics": {
+    "packageCount": 159,
+    "launcher": {
+      "versionName": "1.6.8",
+      "versionCode": "199"
+    }
+  },
+  "completeness": {
+    "status": "complete",
+    "sourceCount": 159,
+    "skippedCount": 0,
+    "truncated": false
+  },
+  "limits": [
+    "User-provided diagnostic metadata, not an independent device test",
+    "Personal settings, labels, permission states and error logs excluded",
+    "Package presence does not validate disabling"
+  ],
+  "packageListStorage": "catalog/app_descriptions.json",
+  "observedPackageCount": 159,
+  "redactedPackageCount": 0
+}

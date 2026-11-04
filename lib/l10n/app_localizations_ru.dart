@@ -10,6 +10,10 @@ class AppLocalizationsRu extends AppLocalizations {
   AppLocalizationsRu([String locale = 'ru']) : super(locale);
 
   @override
+  String get settingsScrollbarAlwaysVisible =>
+      'Всегда показывать полосу прокрутки';
+
+  @override
   String get volumeKeysTitle => 'Удержание громкости';
 
   @override
@@ -3509,8 +3513,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get remoteButtonsStop => 'Завершить проверку';
 
   @override
+  String get remoteButtonsControlsHint =>
+      'Нажмите «Проверить кнопки», затем нажимайте кнопки в любом меню или открытом приложении. Проверка завершается кнопкой «Завершить проверку» или через 120 секунд.';
+
+  @override
   String get remoteButtonsHint =>
-      'Нажмите «Проверить кнопки», затем нажимайте кнопки в любом меню или открытом приложении. Проверка завершается кнопкой «Завершить проверку» или через 120 секунд. После завершения отчёт сохраняется в файл по пути ниже и заменяет предыдущий. Прочитайте или скопируйте файл через ADB: adb pull <путь>. Некоторые системные и фирменные кнопки могут быть недоступны службе.';
+      'После завершения отчёт сохраняется в файл по указанному пути и заменяет предыдущий. Прочитайте или скопируйте файл через ADB: adb pull <путь>. Некоторые системные и фирменные кнопки могут быть недоступны службе.';
 
   @override
   String get remoteButtonsEmpty =>
@@ -5074,4 +5082,29 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get backupTvUnknown => 'ТВ не определён';
+
+  @override
+  String get panelTooltips => 'Всплывающие подсказки во всех панелях';
+
+  @override
+  String get networkStorageTitle => 'Сетевое хранилище';
+
+  @override
+  String get usbStorageTitle => 'USB-накопители';
+
+  @override
+  String get storageScreenUnavailable =>
+      'Экран управления хранилищем недоступен.';
+
+  @override
+  String get appSections => 'Разделы приложения';
+
+  @override
+  String get noAppSections => 'Приложение не входит ни в один раздел.';
+
+  @override
+  String get volumeWidgetSettings => 'Настройки громкости';
+
+  @override
+  String get volumeUpdateInterval => 'Интервал обновления';
 }

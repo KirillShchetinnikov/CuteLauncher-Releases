@@ -17,6 +17,7 @@ import 'focusable_settings_tile.dart';
 import 'notifications_settings_page.dart';
 import 'settings_panel.dart';
 import 'settings_panel_style.dart';
+import '../panel_tooltip.dart';
 
 class NotificationsPanel extends StatefulWidget {
   final bool? isRightSide;
@@ -422,7 +423,7 @@ class _NotificationsPanelState extends State<NotificationsPanel> {
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             if (item.isClearable)
-                                              Tooltip(
+                                              PanelTooltip(
                                                 message: l.dismiss,
                                                 preferBelow: false,
                                                 waitDuration: const Duration(

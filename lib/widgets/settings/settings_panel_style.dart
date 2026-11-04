@@ -76,6 +76,9 @@ class SettingsPanelStyle extends StatelessWidget {
             ? theme.iconTheme
             : theme.iconTheme.copyWith(color: foreground),
         scrollbarTheme: theme.scrollbarTheme.copyWith(
+          thumbVisibility: WidgetStatePropertyAll(
+            appearance?.settingsScrollbarAlwaysVisible ?? true,
+          ),
           thumbColor: WidgetStatePropertyAll(foreground.withValues(alpha: .6)),
         ),
       ),

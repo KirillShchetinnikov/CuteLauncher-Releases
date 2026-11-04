@@ -10,6 +10,9 @@ class AppLocalizationsKo extends AppLocalizations {
   AppLocalizationsKo([String locale = 'ko']) : super(locale);
 
   @override
+  String get settingsScrollbarAlwaysVisible => '스크롤 막대 항상 표시';
+
+  @override
   String get volumeKeysTitle => '볼륨 버튼 길게 누르기';
 
   @override
@@ -3402,8 +3405,12 @@ class AppLocalizationsKo extends AppLocalizations {
   String get remoteButtonsStop => '확인 종료';
 
   @override
+  String get remoteButtonsControlsHint =>
+      '테스트를 시작한 다음 메뉴나 열린 앱에서 버튼을 누르세요. 여기에서 중지하거나 120초 동안 기다리세요.';
+
+  @override
   String get remoteButtonsHint =>
-      '코드, 놓기 및 반복을 표시하고 TV에 텍스트 보고서를 저장합니다. OK가 기록을 조작하지 않도록 시작 후 이 페이지에서 나가세요.';
+      '테스트 후 보고서는 표시된 경로에 저장되며 이전 보고서를 대체합니다. ADB로 복사하세요: adb pull <path>. 일부 시스템 및 제조사 버튼은 서비스에 전달되지 않을 수 있습니다.';
 
   @override
   String get remoteButtonsEmpty =>
@@ -4923,4 +4930,28 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get backupTvUnknown => 'TV 알 수 없음';
+
+  @override
+  String get panelTooltips => '모든 패널에 도구 설명 표시';
+
+  @override
+  String get networkStorageTitle => '네트워크 저장소';
+
+  @override
+  String get usbStorageTitle => 'USB 드라이브';
+
+  @override
+  String get storageScreenUnavailable => '저장소 설정을 사용할 수 없습니다.';
+
+  @override
+  String get appSections => '앱 섹션';
+
+  @override
+  String get noAppSections => '이 앱은 어떤 섹션에도 포함되어 있지 않습니다.';
+
+  @override
+  String get volumeWidgetSettings => '음량 설정';
+
+  @override
+  String get volumeUpdateInterval => '갱신 간격';
 }

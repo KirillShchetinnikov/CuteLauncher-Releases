@@ -64,6 +64,8 @@ class WallpaperBackground extends StatelessWidget {
       fit: fit,
       width: size.width,
       height: size.height,
+      // Keep the displayed slide until the replacement finishes decoding.
+      gaplessPlayback: true,
       errorBuilder: (_, _, _) => fallback(),
     );
     Widget background = artworkBuilder != null

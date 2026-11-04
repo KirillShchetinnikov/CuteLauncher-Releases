@@ -1,3 +1,5 @@
+import '../diagnostics_store.dart';
+import '../bridge_result.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
@@ -77,7 +79,7 @@ class SystemStatusService extends ChangeNotifier with WidgetsBindingObserver {
   SystemStatusService({
     this.work,
     this.settings,
-    this.channel = const MethodChannel('cutelauncher/system_status'),
+    this.channel = const BridgeChannel('cutelauncher/system_status'),
     DateTime Function()? now,
     Duration interval = const Duration(seconds: 5),
   }) : now = now ?? DateTime.now,
@@ -140,9 +142,15 @@ class SystemStatusService extends ChangeNotifier with WidgetsBindingObserver {
   Future<void> _watch(bool enabled) async {
     try {
       await channel.invokeMethod<void>('watch', enabled);
-    } on PlatformException {
+    } on PlatformException catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'systemStatusService', diagnosticError, diagnosticStack,
+      );
       /* Snapshot checks screen state too. */
-    } on MissingPluginException {
+    } on MissingPluginException catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'systemStatusService', diagnosticError, diagnosticStack,
+      );
       /* Unsupported host. */
     }
   }
@@ -224,7 +232,10 @@ class SystemStatusService extends ChangeNotifier with WidgetsBindingObserver {
           before != (point.cpu, point.ram, point.cpuPeak, point.ramPeak);
       state = next;
       if (changed) notifyListeners();
-    } on Object {
+    } on Object catch (diagnosticError, diagnosticStack) {
+      DiagnosticsStore.instance.recordException(
+        'systemStatusService', diagnosticError, diagnosticStack,
+      );
       failed = true;
       if (!_disposed && generation == _generation && _enabled) {
         _generation++;

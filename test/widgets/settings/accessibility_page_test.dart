@@ -39,6 +39,7 @@ void main() {
     final appsService = MockAppsService();
     final launcherState = LauncherState();
     final settingsService = MockSettingsService();
+    when(settingsService.panelTooltipsEnabled).thenReturn(false);
 
     when(appsService.isDefaultLauncher()).thenAnswer((_) async => true);
     when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
@@ -81,6 +82,7 @@ void main() {
     final appsService = MockAppsService();
     final launcherState = LauncherState();
     final settingsService = MockSettingsService();
+    when(settingsService.panelTooltipsEnabled).thenReturn(false);
 
     when(appsService.isDefaultLauncher()).thenAnswer((_) async => false);
     when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
