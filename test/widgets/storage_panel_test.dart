@@ -1,4 +1,6 @@
 import 'package:flauncher/l10n/app_localizations.dart';
+import 'package:flauncher/providers/appearance_service.dart';
+import 'package:flauncher/providers/network_service.dart';
 import 'package:flauncher/providers/notifications_service.dart';
 import 'package:flauncher/providers/remote_panel_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
@@ -6,6 +8,9 @@ import 'package:flauncher/providers/storage_status_service.dart';
 import 'package:flauncher/providers/tv_inputs_service.dart';
 import 'package:flauncher/providers/weather_service.dart';
 import 'package:flauncher/widgets/focus_aware_app_bar.dart';
+import 'package:flauncher/widgets/rounded_switch_list_tile.dart';
+import 'package:flauncher/widgets/settings/remote_panel_page.dart';
+import 'package:flauncher/widgets/settings/status_bar_panel_page.dart';
 import 'package:flauncher/widgets/top_panel_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -40,6 +45,122 @@ void main() {
     },
   );
   for (final remoteMode in [false, true]) {
+    testWidgets(
+      'NAS toggle requires firmware support but no mounted share: remote=$remoteMode',
+      (tester) async {
+        tester.view.physicalSize = const Size(1280, 1200);
+        tester.view.devicePixelRatio = 1;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        SharedPreferences.setMockInitialValues({
+          'show_usb_in_status_bar': false,
+        });
+        final prefs = await SharedPreferences.getInstance();
+        final settings = SettingsService(prefs);
+        final remote = RemotePanelService(prefs);
+        final appearance = AppearanceService(prefs);
+        final storage = StorageStatusService();
+        addTearDown(settings.dispose);
+        addTearDown(remote.dispose);
+        addTearDown(appearance.dispose);
+        addTearDown(storage.dispose);
+        await remote.show('usb', false);
+        final inputs = MockTvInputsService();
+        final network = MockNetworkService();
+        final notifications = MockNotificationsService();
+        when(inputs.hasInputs).thenReturn(false);
+        when(inputs.initialized).thenReturn(true);
+        when(network.hasUsageStatsPermission).thenReturn(false);
+        when(notifications.hasPermission).thenReturn(false);
+        const channel = MethodChannel('cutelauncher/storage_status');
+        final watches = <bool>[];
+        var nasSupported = false;
+        tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+          channel,
+          (call) async {
+            if (call.method == 'watch') watches.add(call.arguments as bool);
+            if (call.method == 'snapshot') {
+              return {'nasSupported': nasSupported, 'nas': false};
+            }
+            return null;
+          },
+        );
+
+        await tester.pumpWidget(
+          MultiProvider(
+            providers: [
+              ChangeNotifierProvider.value(value: settings),
+              ChangeNotifierProvider.value(value: remote),
+              ChangeNotifierProvider.value(value: appearance),
+              ChangeNotifierProvider.value(value: storage),
+              ChangeNotifierProvider<TvInputsService>.value(value: inputs),
+              ChangeNotifierProvider<NetworkService>.value(value: network),
+              ChangeNotifierProvider<NotificationsService>.value(
+                value: notifications,
+              ),
+            ],
+            child: MaterialApp(
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              home: Scaffold(
+                body: remoteMode
+                    ? const RemotePanelObjectsPage()
+                    : const StatusBarObjectsPage(),
+              ),
+            ),
+          ),
+        );
+        await tester.pump(const Duration(milliseconds: 100));
+        await tester.pumpAndSettle();
+        final nas = find.byKey(ValueKey(remoteMode ? 'nas' : 'show_nas'));
+        final usb = find.byKey(ValueKey(remoteMode ? 'usb' : 'show_usb'));
+        RoundedSwitchListTile toggle(Finder finder) => tester.widget(finder);
+        bool savedNas() =>
+            remoteMode ? remote.visible('nas') : settings.showNasInStatusBar;
+
+        expect(watches, [true]);
+        expect(toggle(nas).enabled, false);
+        expect(toggle(nas).value, false);
+        expect(savedNas(), true);
+        expect(toggle(usb).enabled, true);
+
+        Future<void> refresh(bool supported) async {
+          nasSupported = supported;
+          await tester.binding.defaultBinaryMessenger.handlePlatformMessage(
+            channel.name,
+            channel.codec.encodeMethodCall(const MethodCall('changed')),
+            (_) {},
+          );
+          await tester.pump(const Duration(milliseconds: 100));
+          await tester.pumpAndSettle();
+        }
+
+        await refresh(true);
+        expect(toggle(nas).enabled, true);
+        expect(toggle(nas).value, true);
+        await tester.tap(nas);
+        await tester.pumpAndSettle();
+        expect(savedNas(), false);
+
+        await refresh(false);
+        await tester.tap(nas);
+        await tester.pumpAndSettle();
+        expect(savedNas(), false);
+
+        await refresh(true);
+        await tester.tap(nas);
+        await tester.pumpAndSettle();
+        expect(savedNas(), true);
+
+        await tester.pumpWidget(const SizedBox());
+        expect(watches, [true, false]);
+        tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+          channel,
+          null,
+        );
+      },
+    );
+
     testWidgets(
       'connected icons, actions, independent switches and removal focus: remote=$remoteMode',
       (tester) async {

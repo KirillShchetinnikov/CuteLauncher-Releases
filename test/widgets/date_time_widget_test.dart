@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flauncher/widgets/date_time_widget.dart';
+import 'package:flauncher/panel_clock_style.dart';
 import 'package:flauncher/widgets/animated_character.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
@@ -12,6 +13,71 @@ void main() {
   });
 
   group('DateTimeWidget Tests', () {
+    testWidgets(
+      'clock colors, glow and colon update without changing geometry',
+      (tester) async {
+        for (final format in ['H:mm', 'HH:mm', 'hh:mm', 'h:mm a', 'hh:mm a']) {
+          for (final locale in ['en', 'ru', 'ar']) {
+            Future<void> pump(bool showColon) => tester.pumpWidget(
+              MaterialApp(
+                locale: Locale(locale),
+                localizationsDelegates: AppLocalizations.localizationsDelegates,
+                supportedLocales: AppLocalizations.supportedLocales,
+                home: Center(
+                  child: DateTimeWidget(
+                    format,
+                    fixedTime: DateTime(2026, 11, 4, 3, 45),
+                    animate: false,
+                    textStyle: const TextStyle(
+                      color: Colors.white,
+                      shadows: [Shadow(blurRadius: 8)],
+                    ),
+                    clockStyle: PanelClockStyle({
+                      'hoursColor': Colors.red.toARGB32(),
+                      'minutesColor': Colors.blue.toARGB32(),
+                      'showColon': showColon,
+                    }),
+                  ),
+                ),
+              ),
+            );
+            await pump(true);
+            final size = tester.getSize(find.byType(Row));
+            final chars = tester
+                .widgetList<AnimatedCharacter>(find.byType(AnimatedCharacter))
+                .toList();
+            final colon = chars.indexWhere((c) => c.character == ':');
+            expect(
+              chars.map((c) => c.character).join(),
+              DateFormat(format, locale).format(DateTime(2026, 11, 4, 3, 45)),
+            );
+            for (var i = 0; i < chars.length; i++) {
+              final color = i < colon
+                  ? Colors.red
+                  : i > colon && i <= colon + 2
+                  ? Colors.blue
+                  : Colors.white;
+              expect(chars[i].textStyle!.color!.toARGB32(), color.toARGB32());
+              if (color != Colors.white) {
+                expect(
+                  chars[i].textStyle!.shadows!.single.color.toARGB32(),
+                  color.toARGB32(),
+                );
+              }
+            }
+            await pump(false);
+            expect(tester.getSize(find.byType(Row)), size);
+            final hidden = tester.widget<Opacity>(
+              find
+                  .ancestor(of: find.text(':'), matching: find.byType(Opacity))
+                  .first,
+            );
+            expect(hidden.opacity, 0);
+            expect(tester.takeException(), isNull);
+          }
+        }
+      },
+    );
     testWidgets('date follows app locale and updates when language changes', (
       tester,
     ) async {

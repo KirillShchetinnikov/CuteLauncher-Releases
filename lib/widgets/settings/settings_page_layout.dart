@@ -183,13 +183,10 @@ class _SettingsPageLayoutState extends State<SettingsPageLayout> {
               child: Focus(
                 skipTraversal: true,
                 onKeyEvent: _scrollText,
-                child: Scrollbar(
+                child: SettingsScrollbar(
                   controller: _controller,
-                  thumbVisibility:
-                      _hasScrollPosition &&
-                      SettingsScrollBehavior.alwaysShowScrollbar(context),
+                  hasScrollPosition: _hasScrollPosition,
                   // No extra focus stops or pointer actions for the TV remote.
-                  interactive: false,
                   scrollbarOrientation: mirrored
                       ? ScrollbarOrientation.right
                       : ScrollbarOrientation.left,

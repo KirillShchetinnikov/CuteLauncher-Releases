@@ -68,6 +68,7 @@ class CombinedInformation extends StatelessWidget {
                 key: const Key('statusbar_clock'),
                 textStyle: clock.copyWith(fontSize: size * 1.55, height: 1),
                 animate: style.animate,
+                clockStyle: style,
               ),
             if (showTime && (showDate || showWeather))
               SizedBox(width: style.spacing),

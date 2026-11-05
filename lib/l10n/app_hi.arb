@@ -1,5 +1,8 @@
 {
-  "settingsScrollbarAlwaysVisible": "स्क्रॉलबार हमेशा दिखाएँ",
+  "settingsScrollbar": "स्क्रॉलबार",
+  "settingsScrollbarHidden": "पूरी तरह छिपाएँ",
+  "settingsScrollbarOnScroll": "स्क्रॉल करते समय दिखाएँ",
+  "settingsScrollbarAlways": "हमेशा दिखाएँ",
   "volumeKeysTitle": "वॉल्यूम बटन दबाकर रखना",
   "volumeKeysMode": "समाधान का तरीका",
   "volumeKeysAuto": "अपने आप: पैनल दिखने तक",
@@ -1750,5 +1753,17 @@
   "appSections": "ऐप के अनुभाग",
   "noAppSections": "यह ऐप किसी अनुभाग में नहीं है।",
   "volumeWidgetSettings": "वॉल्यूम सेटिंग",
-  "volumeUpdateInterval": "अपडेट अंतराल"
+  "volumeUpdateInterval": "अपडेट अंतराल",
+  "clockHoursColor": "घंटों का रंग",
+  "clockMinutesColor": "मिनटों का रंग",
+  "clockColorMode": "घड़ी का रंग मोड",
+  "clockSingleColor": "घड़ी का एक रंग",
+  "clockSplitColors": "घड़ी के अलग-अलग रंग",
+  "clockShowColon": "कोलन दिखाएँ",
+  "appLaunchGroup": "लॉन्च",
+  "appManagementGroup": "ऐप प्रबंधित करें",
+  "appCheckProcess": "स्थिति जाँचें",
+  "appProcessNotChecked": "स्थिति की जाँच नहीं हुई",
+  "appProcessRunning": "चल रहा है",
+  "appProcessStopped": "नहीं चल रहा है"
 }

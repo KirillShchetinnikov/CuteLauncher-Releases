@@ -67,42 +67,54 @@ class ApplicationInfoPanel extends StatefulWidget {
   State<ApplicationInfoPanel> createState() => _ApplicationInfoPanelState();
 }
 
-class _ApplicationInfoPanelState extends State<ApplicationInfoPanel>
-    with WidgetsBindingObserver {
-  bool _running = false;
+class _ApplicationInfoPanelState extends State<ApplicationInfoPanel> {
+  bool? _running;
+  bool _checking = false;
+  String? _processError;
   bool _stopping = false;
   bool _sectionsExpanded = false;
   int _processRequest = 0;
 
   Future<void> _refreshProcess() async {
+    if (_checking || _stopping) return;
     final request = ++_processRequest;
+    setState(() {
+      _checking = true;
+      _processError = null;
+    });
     try {
       final result = await TvCleanerClient().call(
         'appProcessStatus',
         packages: [widget.application.packageName],
       );
       if (mounted && request == _processRequest) {
-        setState(
-          () => _running =
-              result['status'] == 'success' && result['running'] == true,
-        );
+        setState(() => _setProcessResult(result));
       }
     } catch (_) {
       if (mounted && request == _processRequest) {
-        setState(() => _running = false);
+        setState(() {
+          _running = null;
+          _processError = 'unavailable';
+        });
+      }
+    } finally {
+      if (mounted && request == _processRequest) {
+        setState(() => _checking = false);
       }
     }
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed && !_stopping) {
-      _refreshProcess();
-    }
+  void _setProcessResult(Map<String, dynamic> result) {
+    final status = result['status'];
+    final known =
+        (status == 'success' || status == 'denied') &&
+        result['running'] is bool;
+    _running = known ? result['running'] as bool : null;
+    _processError = known ? null : status as String? ?? 'unavailable';
   }
 
   Future<void> _stopApp() async {
-    if (_stopping) return;
+    if (_stopping || _checking || _running != true) return;
     ++_processRequest;
     setState(() => _stopping = true);
     try {
@@ -111,14 +123,22 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel>
         packages: [widget.application.packageName],
       );
       if (!mounted) return;
+      // stopApp already verifies the process after force-stop. Do not open
+      // another ADB connection just to repeat that check.
+      setState(() => _setProcessResult(result));
       showAdbNotice(context, result['status'] as String?);
     } catch (_) {
-      if (mounted) showAdbNotice(context, 'unavailable');
+      if (mounted) {
+        setState(() {
+          _running = null;
+          _processError = 'unavailable';
+        });
+        showAdbNotice(context, 'unavailable');
+      }
     } finally {
       if (mounted) {
         setState(() => _stopping = false);
-        await _refreshProcess();
-        if (mounted && !_running) _appInfoNode.requestFocus();
+        if (_running != true) _appInfoNode.requestFocus();
       }
     }
   }
@@ -132,8 +152,6 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
-    _refreshProcess();
     _hasCustomBannerFuture = context.read<AppsService>().hasCustomBanner(
       widget.application.packageName,
     );
@@ -144,7 +162,6 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel>
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
     _addToCategoryNode.dispose();
     _removeFromCategoryNode.dispose();
     _appInfoNode.dispose();
@@ -192,14 +209,40 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel>
 
   Widget _buildPanel(BuildContext context) {
     final localizations = AppLocalizations.of(context) ?? AppLocalizationsEn();
-    final sections = context.watch<AppsService>().categories.where((section) =>
-        !section.isAppChannels &&
-        ((!section.isAutomatic && widget.application.categoryOrders.containsKey(section.id)) ||
-            section.applications.any((app) => app.packageName == widget.application.packageName)))
-        .toList()..sort((a, b) {
-          final order = a.order.compareTo(b.order);
-          return order == 0 ? a.id.compareTo(b.id) : order;
-        });
+    final processStatus = _checking
+        ? localizations.loading
+        : _processError != null
+        ? switch (_processError) {
+            'authorization' => localizations.adbAuthorization,
+            'unavailable' => localizations.adbUnavailable,
+            _ => localizations.appError,
+          }
+        : switch (_running) {
+            true => localizations.appProcessRunning,
+            false => localizations.appProcessStopped,
+            null => localizations.appProcessNotChecked,
+          };
+    final sections =
+        context
+            .watch<AppsService>()
+            .categories
+            .where(
+              (section) =>
+                  !section.isAppChannels &&
+                  ((!section.isAutomatic &&
+                          widget.application.categoryOrders.containsKey(
+                            section.id,
+                          )) ||
+                      section.applications.any(
+                        (app) =>
+                            app.packageName == widget.application.packageName,
+                      )),
+            )
+            .toList()
+          ..sort((a, b) {
+            final order = a.order.compareTo(b.order);
+            return order == 0 ? a.id.compareTo(b.id) : order;
+          });
     final page = SettingsPageLayout(
       title: Row(
         children: [
@@ -232,7 +275,7 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel>
       ),
       child: ListView(
         children: [
-          // Add to Category button (First as requested)
+          _groupHeading(context, localizations.homeScreen),
           FocusableSettingsTile(
             autofocus: true,
             focusNode: _addToCategoryNode,
@@ -252,7 +295,6 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel>
               if (mounted) _addToCategoryNode.requestFocus();
             },
           ),
-          // Reorder button (Second as requested)
           if (widget.category?.sort == CategorySort.manual)
             FocusableSettingsTile(
               leading: const Icon(Icons.open_with),
@@ -264,34 +306,29 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel>
                   Navigator.of(context)
                       .pop(ApplicationInfoPanelResult.reorderApp),
             ),
-          if (widget.application.isLaunchable)
-            FocusableSettingsTile(
-              leading: const Icon(Icons.open_in_new),
-              title: Text(
-                localizations.open,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              onPressed: () async {
-                await context.read<AppsService>().launchApp(widget.application);
-                if (!context.mounted) return;
-                Navigator.of(context).pop(ApplicationInfoPanelResult.none);
-              },
-            ),
-          BackgroundStartupAppTile(packageName: widget.application.packageName),
           FocusableSettingsTile(
             leading: Icon(
-              (widget.application.hidden || context.watch<AppsService>().isTileHidden(widget.application))
+              (widget.application.hidden ||
+                      context.watch<AppsService>().isTileHidden(
+                        widget.application,
+                      ))
                   ? Icons.visibility
                   : Icons.visibility_off_outlined,
             ),
             title: Text(
-              (widget.application.hidden || context.watch<AppsService>().isTileHidden(widget.application))
+              (widget.application.hidden ||
+                      context.watch<AppsService>().isTileHidden(
+                        widget.application,
+                      ))
                   ? localizations.show
                   : localizations.hide,
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             onPressed: () async {
-              if (widget.application.hidden || context.read<AppsService>().isTileHidden(widget.application)) {
+              if (widget.application.hidden ||
+                  context.read<AppsService>().isTileHidden(
+                    widget.application,
+                  )) {
                 await context.read<AppsService>().showApplication(
                   widget.application,
                 );
@@ -351,31 +388,62 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel>
             child: FocusableSettingsTile(
               leading: const Icon(Icons.category_outlined),
               title: Text(localizations.appSections),
-              trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-                Text('${sections.length}'),
-                const SizedBox(width: 8),
-                Icon(_sectionsExpanded ? Icons.expand_less : Icons.expand_more),
-              ]),
-              onPressed: () => setState(() => _sectionsExpanded = !_sectionsExpanded),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('${sections.length}'),
+                  const SizedBox(width: 8),
+                  Icon(
+                    _sectionsExpanded ? Icons.expand_less : Icons.expand_more,
+                  ),
+                ],
+              ),
+              onPressed: () =>
+                  setState(() => _sectionsExpanded = !_sectionsExpanded),
             ),
           ),
           if (_sectionsExpanded)
             Padding(
               padding: const EdgeInsetsDirectional.fromSTEB(16, 4, 16, 12),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-                if (sections.isEmpty) Text(localizations.noAppSections),
-                for (final section in sections)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Expanded(child: Text(localizedSectionName(section.name, localizations))),
-                      if (!section.visible)
-                        Icon(Icons.visibility_off_outlined, semanticLabel: localizations.hiddenCategories),
-                    ]),
-                  ),
-              ]),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (sections.isEmpty) Text(localizations.noAppSections),
+                  for (final section in sections)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              localizedSectionName(section.name, localizations),
+                            ),
+                          ),
+                          if (!section.visible)
+                            Icon(
+                              Icons.visibility_off_outlined,
+                              semanticLabel: localizations.hiddenCategories,
+                            ),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
             ),
-          const Divider(),
+          _groupHeading(context, localizations.appLaunchGroup),
+          if (widget.application.isLaunchable)
+            FocusableSettingsTile(
+              leading: const Icon(Icons.open_in_new),
+              title: Text(localizations.open),
+              onPressed: () async {
+                await context.read<AppsService>().launchApp(widget.application);
+                if (!context.mounted) return;
+                Navigator.of(context).pop(ApplicationInfoPanelResult.none);
+              },
+            ),
+          BackgroundStartupAppTile(packageName: widget.application.packageName),
+          _groupHeading(context, localizations.appearanceSettings),
           FutureBuilder<bool>(
             future: _hasCustomBannerFuture,
             builder: (context, snapshot) {
@@ -391,7 +459,9 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel>
                     ),
                     onPressed: () async {
                       try {
-                        final pickedFile = await DocumentFiles.pickImage(context: context);
+                        final pickedFile = await DocumentFiles.pickImage(
+                          context: context,
+                        );
                         if (pickedFile != null) {
                           final imageBytes = await DocumentFiles.readImage(
                             pickedFile,
@@ -479,8 +549,18 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel>
               );
             },
           ),
-          const Divider(),
-          if (_running)
+          _groupHeading(context, localizations.appManagementGroup),
+          FocusableSettingsTile(
+            key: const ValueKey('app_check_process'),
+            leading: const Icon(Icons.refresh),
+            title: Text(localizations.appCheckProcess),
+            onPressed: _refreshProcess,
+          ),
+          Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(12, 4, 12, 12),
+            child: Semantics(liveRegion: true, child: Text(processStatus)),
+          ),
+          if (_running == true)
             FocusableSettingsTile(
               leading: _stopping
                   ? const SizedBox(
@@ -528,6 +608,14 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel>
       child: page,
     );
   }
+
+  Widget _groupHeading(BuildContext context, String title) => Padding(
+    padding: const EdgeInsets.all(12),
+    child: Semantics(
+      header: true,
+      child: Text(title, style: Theme.of(context).textTheme.titleSmall),
+    ),
+  );
 }
 
 enum ApplicationInfoPanelResult { none, reorderApp }

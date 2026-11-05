@@ -268,7 +268,10 @@ void main() {
   ) async {
     await mount(tester, count: 12);
     expect(focusedTitle(tester), 'Section 0');
-    expect(find.textContaining('Cross the list boundary'), findsNothing);
+    expect(
+      find.textContaining('Cross the list boundary').hitTestable(),
+      findsNothing,
+    );
     final first = find.text('Section 0');
     final firstY = tester.getTopLeft(first).dy;
     final add = find.text('Add section');

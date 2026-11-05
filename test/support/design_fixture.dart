@@ -140,6 +140,7 @@ Future<DesignFixture> pumpDesignFixture(
   final apps = fixtures.mkAppService() as MockAppsService;
   when(apps.isDefaultLauncher()).thenAnswer((_) async => true);
   final settings = fixtures.mkSettingsService();
+  when(settings.showUsbInStatusBar).thenReturn(true);
   when(settings.accentColor).thenReturn(accent);
   when(settings.accentColorHex)
       .thenReturn(accent.toARGB32().toRadixString(16).substring(2));

@@ -38,6 +38,7 @@ class PanelClock extends StatelessWidget {
         key: const Key('statusbar_clock'),
         textStyle: textStyle,
         animate: style.animate,
+        clockStyle: style,
       ),
     );
   }

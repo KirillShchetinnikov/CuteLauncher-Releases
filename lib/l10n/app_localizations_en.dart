@@ -10,7 +10,16 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get settingsScrollbarAlwaysVisible => 'Always show scrollbar';
+  String get settingsScrollbar => 'Scrollbar';
+
+  @override
+  String get settingsScrollbarHidden => 'Hide completely';
+
+  @override
+  String get settingsScrollbarOnScroll => 'Show while scrolling';
+
+  @override
+  String get settingsScrollbarAlways => 'Always show';
 
   @override
   String get volumeKeysTitle => 'Hold volume buttons';
@@ -5077,4 +5086,40 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get volumeUpdateInterval => 'Update interval';
+
+  @override
+  String get clockHoursColor => 'Hours color';
+
+  @override
+  String get clockMinutesColor => 'Minutes color';
+
+  @override
+  String get clockColorMode => 'Clock color mode';
+
+  @override
+  String get clockSingleColor => 'One clock color';
+
+  @override
+  String get clockSplitColors => 'Separate clock colors';
+
+  @override
+  String get clockShowColon => 'Show colon';
+
+  @override
+  String get appLaunchGroup => 'Launch';
+
+  @override
+  String get appManagementGroup => 'Manage app';
+
+  @override
+  String get appCheckProcess => 'Check status';
+
+  @override
+  String get appProcessNotChecked => 'Status not checked';
+
+  @override
+  String get appProcessRunning => 'Running';
+
+  @override
+  String get appProcessStopped => 'Not running';
 }

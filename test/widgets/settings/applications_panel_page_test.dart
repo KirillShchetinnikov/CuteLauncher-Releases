@@ -228,8 +228,17 @@ void main() {
     await tester.tap(find.text("FLauncher"));
     await tester.pumpAndSettle();
 
-    await tester.ensureVisible(find.text("Application info"));
-    await tester.tap(find.text("Application info"));
+    when(appsService.openAppInfo(any)).thenAnswer((_) async {});
+    final info = find.text("Application info");
+    await tester.scrollUntilVisible(
+      info,
+      200,
+      scrollable: find.descendant(
+        of: find.byType(AppDetailsPage),
+        matching: find.byType(Scrollable),
+      ).first,
+    );
+    await tester.tap(info);
     await tester.pumpAndSettle();
     verify(appsService.openAppInfo(application));
   });

@@ -1,5 +1,8 @@
 {
-  "settingsScrollbarAlwaysVisible": "始终显示滚动条",
+  "settingsScrollbar": "滚动条",
+  "settingsScrollbarHidden": "完全隐藏",
+  "settingsScrollbarOnScroll": "滚动时显示",
+  "settingsScrollbarAlways": "始终显示",
   "volumeKeysTitle": "长按音量键",
   "volumeKeysMode": "修复方式",
   "volumeKeysAuto": "自动：面板显示期间",
@@ -1750,5 +1753,17 @@
   "appSections": "应用所在分区",
   "noAppSections": "此应用不在任何分区中。",
   "volumeWidgetSettings": "音量设置",
-  "volumeUpdateInterval": "更新间隔"
+  "volumeUpdateInterval": "更新间隔",
+  "clockHoursColor": "小时颜色",
+  "clockMinutesColor": "分钟颜色",
+  "clockColorMode": "时钟颜色模式",
+  "clockSingleColor": "时钟使用同一颜色",
+  "clockSplitColors": "时钟使用不同颜色",
+  "clockShowColon": "显示冒号",
+  "appLaunchGroup": "启动",
+  "appManagementGroup": "应用管理",
+  "appCheckProcess": "检查状态",
+  "appProcessNotChecked": "尚未检查状态",
+  "appProcessRunning": "正在运行",
+  "appProcessStopped": "未运行"
 }

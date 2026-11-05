@@ -1,5 +1,8 @@
 {
-  "settingsScrollbarAlwaysVisible": "Всегда показывать полосу прокрутки",
+  "settingsScrollbar": "Полоса прокрутки",
+  "settingsScrollbarHidden": "Скрывать полностью",
+  "settingsScrollbarOnScroll": "Показывать в момент прокрутки",
+  "settingsScrollbarAlways": "Показывать всегда",
   "volumeKeysTitle": "Удержание громкости",
   "volumeKeysMode": "Способ исправления",
   "volumeKeysAuto": "Авто: пока видна панель",
@@ -1537,5 +1540,17 @@
   "appSections": "Разделы приложения",
   "noAppSections": "Приложение не входит ни в один раздел.",
   "volumeWidgetSettings": "Настройки громкости",
-  "volumeUpdateInterval": "Интервал обновления"
+  "volumeUpdateInterval": "Интервал обновления",
+  "clockHoursColor": "Цвет часов",
+  "clockMinutesColor": "Цвет минут",
+  "clockColorMode": "Режим цвета часов",
+  "clockSingleColor": "Один цвет часов",
+  "clockSplitColors": "Разные цвета часов",
+  "clockShowColon": "Показывать двоеточие",
+  "appLaunchGroup": "Запуск",
+  "appManagementGroup": "Управление приложением",
+  "appCheckProcess": "Проверить состояние",
+  "appProcessNotChecked": "Состояние не проверено",
+  "appProcessRunning": "Запущено",
+  "appProcessStopped": "Не запущено"
 }

@@ -19,7 +19,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:flauncher/date_time_format.dart';
+
+import '../panel_clock_style.dart';
 
 import 'animated_character.dart';
 
@@ -29,6 +32,7 @@ class DateTimeWidget extends StatefulWidget {
   final TextStyle? textStyle;
   final bool animate;
   final DateTime? fixedTime;
+  final PanelClockStyle? clockStyle;
 
   const DateTimeWidget(
     String dateTimeFormatString, {
@@ -37,6 +41,7 @@ class DateTimeWidget extends StatefulWidget {
     this.textStyle,
     this.animate = true,
     this.fixedTime,
+    this.clockStyle,
   }) : _dateTimeFormatString = dateTimeFormatString;
 
   @override
@@ -49,6 +54,9 @@ class _DateTimeWidgetState extends State<DateTimeWidget>
   late LauncherDateFormatter _formatter;
   String _formattedText = '';
   Timer? _timer;
+  List<(DateFormat, String)> _clockParts = const [];
+  // Preserve quoted literals and group repeated date-format letters.
+  static final _tokens = RegExp(r"'(?:[^']|'')*'|([a-zA-Z])\1*|[^a-zA-Z']+|'");
 
   @override
   void initState() {
@@ -70,6 +78,22 @@ class _DateTimeWidgetState extends State<DateTimeWidget>
     );
     _now = widget.fixedTime ?? DateTime.now();
     _formattedText = _format(_now);
+    _clockParts = widget.clockStyle == null
+        ? const []
+        : [
+            for (final match in _tokens.allMatches(
+              widget._dateTimeFormatString,
+            ))
+              (
+                // A literal suffix prevents intl interpreting a single token
+                // such as H as a locale-dependent skeleton (which may add 0).
+                DateFormat(
+                  '${match[0]!}|',
+                  Localizations.localeOf(context).toString(),
+                ),
+                match[0]!.startsWith("'") ? '' : match[0]![0],
+              ),
+          ];
   }
 
   String _format(DateTime date) => _formatter.format(date);
@@ -93,7 +117,8 @@ class _DateTimeWidgetState extends State<DateTimeWidget>
     // Update format if it changed or updateInterval changed
     if (oldWidget._dateTimeFormatString != widget._dateTimeFormatString ||
         oldWidget.updateInterval != widget.updateInterval ||
-        oldWidget.fixedTime != widget.fixedTime) {
+        oldWidget.fixedTime != widget.fixedTime ||
+        (oldWidget.clockStyle == null) != (widget.clockStyle == null)) {
       _initDateFormatAndRefresh();
       _startTimer();
       setState(() {});
@@ -120,6 +145,52 @@ class _DateTimeWidgetState extends State<DateTimeWidget>
 
   @override
   Widget build(BuildContext context) {
+    final clock = widget.clockStyle;
+    if (clock != null &&
+        (clock.hoursColor != null ||
+            clock.minutesColor != null ||
+            !clock.showColon)) {
+      final base = widget.textStyle ?? DefaultTextStyle.of(context).style;
+      TextStyle colored(Color? color) => color == null
+          ? base
+          : base.copyWith(
+              color: color,
+              shadows: [
+                for (final shadow in base.shadows ?? <Shadow>[])
+                  Shadow(
+                    color: color,
+                    offset: shadow.offset,
+                    blurRadius: shadow.blurRadius,
+                  ),
+              ],
+            );
+      String partText(DateFormat formatter) {
+        final text = formatter.format(_now);
+        return text.substring(0, text.length - 1);
+      }
+
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (final (formatter, token) in _clockParts)
+            for (final char in partText(formatter).split(''))
+              Opacity(
+                opacity: char == ':' && !clock.showColon ? 0 : 1,
+                child: AnimatedCharacter(
+                  character: char,
+                  animate: widget.animate,
+                  textStyle: colored(
+                    'HhKk'.contains(token) && token.isNotEmpty
+                        ? clock.hoursColor
+                        : token == 'm'
+                        ? clock.minutesColor
+                        : null,
+                  ),
+                ),
+              ),
+        ],
+      );
+    }
     final formattedText = _formattedText.isNotEmpty
         ? _formattedText
         : _format(_now);

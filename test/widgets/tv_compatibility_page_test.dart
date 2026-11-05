@@ -5,6 +5,7 @@ import 'dart:convert';
 
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/tv_compatibility_report.dart';
+import 'package:flauncher/widgets/launcher_dialog.dart';
 import 'package:flauncher/widgets/settings/diagnostics_page.dart';
 import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
 import 'package:flauncher/widgets/settings/settings_menu_layout.dart';
@@ -124,6 +125,12 @@ void main() {
           await tester.tap(find.text(l.diagnosticsExport));
           await tester.pumpAndSettle();
           expect(clipboard, isNull);
+          expect(find.text(l.diagnosticsSharingNotice), findsNothing);
+          await tester.tap(find.descendant(
+            of: find.byType(LauncherAlertDialog),
+            matching: find.text(l.settingsHelp),
+          ));
+          await tester.pumpAndSettle();
           expect(find.text(l.diagnosticsSharingNotice), findsOneWidget);
           await tester.sendKeyEvent(LogicalKeyboardKey.escape);
           await tester.pumpAndSettle();

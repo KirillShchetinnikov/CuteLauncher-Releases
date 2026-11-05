@@ -130,11 +130,8 @@ class _SettingsReadOnlyValueState extends State<SettingsReadOnlyValue> {
                     constraints: BoxConstraints(
                       maxHeight: widget.readingHeight,
                     ),
-                    child: Scrollbar(
+                    child: SettingsScrollbar(
                       controller: _scroll,
-                      thumbVisibility:
-                              SettingsScrollBehavior.alwaysShowScrollbar(context),
-                      interactive: false,
                       child: SingleChildScrollView(
                         controller: _scroll,
                         primary: false,

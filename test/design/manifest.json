@@ -39,7 +39,7 @@
         640,
         360
       ],
-      "sha256": "2a41a67c22a8c5f5562a1d1db82467a55a8c919397733b6e687176272e3db3f2"
+      "sha256": "555482cde747658138d148c8a62715c71ef5f513f22784c3de248be1d6499ea7"
     },
     {
       "name": "home-blur-economy",
@@ -55,7 +55,7 @@
         960,
         540
       ],
-      "sha256": "18d2c9e7af5ba4b573d1d2d62e4aeecf8b0128e05a41cbae95f4fc46837ac754"
+      "sha256": "19d5d0ee231b4ed99f5096d40743918836bc7f5d4664720b3abe2290e6936dde"
     },
     {
       "name": "home-blur",
@@ -71,7 +71,7 @@
         960,
         540
       ],
-      "sha256": "14f42486064584b0e901ae39d92e4a5a842f8ba56c1115ce2c67b9417fe4e5d6"
+      "sha256": "466c959a2d4a2cd7705b764b740e84549282c8789660961380b0ff4967505602"
     },
     {
       "name": "home-capsule",
@@ -87,7 +87,7 @@
         960,
         540
       ],
-      "sha256": "79b37deff5cd008fe19067dcef87c23760a7f499f8729faba3f41308241d34f3"
+      "sha256": "0b366319608556c908afb4399c64da46e349950819022197a12b38f8c66ff27b"
     },
     {
       "name": "home-classic",
@@ -119,7 +119,7 @@
         960,
         540
       ],
-      "sha256": "8b3b1bb8f82e85422eccf131d12aca569c148cb276af4040792572b1d05d1056"
+      "sha256": "68738eed1bbfd5d7aa693e5963b1b7e203753913a65e159b7d497e51b2cf37be"
     },
     {
       "name": "home-light-accent-bright",
@@ -135,7 +135,7 @@
         960,
         540
       ],
-      "sha256": "6df7f7c936f3813f8e5f2504007314021e55ffd26533f49d1e9fff59916fc5af"
+      "sha256": "0f35e3a1d59aa2a219826693dcb60dfab1ea4d956a31213523957c447d9aad21"
     },
     {
       "name": "home-modern-focused",
@@ -151,7 +151,7 @@
         960,
         540
       ],
-      "sha256": "ea41a65776382ec3d33da33fe37c0d747ca71b51912d2f21553cd27bda45b813"
+      "sha256": "cdc9299db19391c58fd335f019c42b2a8c940ddae8efa717939a44dc1d0f81b7"
     },
     {
       "name": "home-modern-idle",
@@ -167,7 +167,7 @@
         960,
         540
       ],
-      "sha256": "a24539e5648bea9d7f92fb1c36d197b6a1a0586e673ae6bee477b12e9d33c8f0"
+      "sha256": "4ca3ac9cb7263a461f1e06dbb36a1cc43f83671c6a88595c72ff996d8e3a2ef7"
     },
     {
       "name": "home-premium",
@@ -183,7 +183,7 @@
         960,
         540
       ],
-      "sha256": "7bc11f58db425be7b3011da15e8fa0a7c4e105e90bd6f1b65bc8b1e76e90991e"
+      "sha256": "298775426a35d9fa9de7e7983abca9dad6167204fe5fc13239d7d53e95ea6c7a"
     },
     {
       "name": "home-rtl",
@@ -199,7 +199,7 @@
         960,
         540
       ],
-      "sha256": "ac87952a60cad6abd1ee8bc0756bd53b3368ebc8073637bd4196136336881b7f"
+      "sha256": "461ae8d3b282e1e4c6a351f1f84aee9a3d514f58c001da81c8e34afe9783b96e"
     },
     {
       "name": "home-top-button",
@@ -215,7 +215,7 @@
         960,
         540
       ],
-      "sha256": "a9c9b5d5c068bf8a086b20cfcf1b9d2c539ba6ea36313150771fa0fbfdcf7402"
+      "sha256": "00ee7dcf7679523cc313839263a1b58593545a704077f2bd4121bfa531ed07f7"
     },
     {
       "name": "home-zero-radius-opacity",
@@ -247,7 +247,7 @@
         960,
         540
       ],
-      "sha256": "879d22f017d225cefbf39515aff2540633f176559a0c512393c2520776c27eb5"
+      "sha256": "c0773a050b60ce39d5d7145fee321e9090e5881d8eed80eb9f528210431a00cf"
     },
     {
       "name": "settings-nested",
@@ -263,7 +263,7 @@
         960,
         540
       ],
-      "sha256": "7a271e21471c5530c1424504e5e6332fb49398bd69023e645bcb6ea3d14b1b8a"
+      "sha256": "d5c1925a67f189246e7675f7016bdba7b0b3c813fe0240ddd453d3ff41158995"
     },
     {
       "name": "settings-preview-720p-large",
@@ -279,7 +279,7 @@
         640,
         360
       ],
-      "sha256": "0f0cda791de4efd60c72c574c8cd37da89937bbb6e553253df3afa1f223d2830"
+      "sha256": "512a27fad2013a7004a6e87799b67690feffd5f0d280ced92bf9b12a308e49c4"
     },
     {
       "name": "settings-preview-bottom",
@@ -295,7 +295,7 @@
         960,
         540
       ],
-      "sha256": "c3a0117c16e2f121d18d1987aa0ac8fee8ac77be62ca6b7e07e09028bde9b6d0"
+      "sha256": "30e8ae339b73f2666ac24d5309bdce802e67433c3198626b671ff4579b41fc83"
     },
     {
       "name": "settings-preview-capsule",
@@ -311,7 +311,7 @@
         960,
         540
       ],
-      "sha256": "5e1e0786968fd523a9eb7ad405e1e6135cf8786b6ffaec1e5448275618488705"
+      "sha256": "a57b13ee54165df334eb7c01d660b004abced4d179ba59d93c6f20c42f303544"
     },
     {
       "name": "settings-preview-classic",
@@ -327,7 +327,7 @@
         960,
         540
       ],
-      "sha256": "ac7dafb91f662026075b020191727fb37d7c9ce9f75b10acdec2db44e31b119c"
+      "sha256": "e030a0062a353962760e2def41e1963ab0b667b433d9c67c228bcc781eb45dce"
     },
     {
       "name": "settings-preview-premium",
@@ -343,7 +343,7 @@
         960,
         540
       ],
-      "sha256": "43127b26214af230871d77c20662092343909bb11a725ae6c7144ac3d9e50ceb"
+      "sha256": "b0363292665214075dc89b2bb47a802a1a93eb4fb2ccc0c14ffda2565f3ad7fd"
     },
     {
       "name": "settings-preview-zero",
@@ -359,7 +359,7 @@
         960,
         540
       ],
-      "sha256": "b306a02f9a0851a37ffbb28b255165496134a25ed0a5b3894a4e0d013a883580"
+      "sha256": "0c932624203f6662aceaac51362ee2a2e10aa35c5ac7edd85c90d234b82a4f1c"
     },
     {
       "name": "settings-preview",
@@ -375,7 +375,7 @@
         960,
         540
       ],
-      "sha256": "422d9f3982dbea0ceb9e543bbc2b285364b08f5efdbf869a615e566d9f31b040"
+      "sha256": "9cdf83035c231b57c083a32398c3f938dfaad135c654d5330cb64b56eca8e86d"
     },
     {
       "name": "settings-root-720p-large",
@@ -391,7 +391,7 @@
         640,
         360
       ],
-      "sha256": "5d8a7de5637456ea3dc14ed269c664e7c5ed6db1d1c3d9f5a425499ad0998577"
+      "sha256": "f759bfc507956475a92f07e0cf5e0c0977d49b1b96a7c7d7b68070f6b11c9fc6"
     },
     {
       "name": "settings-root-bottom",
@@ -407,7 +407,7 @@
         960,
         540
       ],
-      "sha256": "9b8a6028f9585bda24c37061ba2b8a1f07bf00f11cd17f217ffa151a6324368a"
+      "sha256": "791bbca91ee4f714b59fd315a28c1390dceee37fe40b9f7ecef6b8838a28c337"
     },
     {
       "name": "settings-root",
@@ -423,7 +423,7 @@
         960,
         540
       ],
-      "sha256": "dce108671b8cc54531f02c1edaa370b06eeb5c3a2cb2131ecdd7e5029987052f"
+      "sha256": "5713003ba0086dae3c66128a03c5eb63c7078b65305386fe99416db83ba3302d"
     },
     {
       "name": "settings-rtl-large",
@@ -439,7 +439,7 @@
         960,
         540
       ],
-      "sha256": "250ff95beb977a035c50789968025e35bffa553bd285844e734e15259e2789b8"
+      "sha256": "78e5c171aab5d88f2d3181b8fa6281420669a1a3f5be0fda02b75edf4525ce79"
     },
     {
       "name": "settings-top-appearance",
@@ -455,7 +455,7 @@
         960,
         540
       ],
-      "sha256": "1ac08c6d33184b031b4cf90740df2a7a9501156a5713715946589597e42c7cb4"
+      "sha256": "995d72602beaea786eaba8673a71d6dc53a892170d8a347b017c6b4dd6ecad3c"
     },
     {
       "name": "settings-top-objects",
@@ -471,7 +471,7 @@
         960,
         540
       ],
-      "sha256": "3a6482e8db9f0598deea23637b894cb80c777a9b423861cc1ca7e542e12a57cd"
+      "sha256": "e6070523ea05ea63c1a7b837f016ac8c56055a4d12b9cf5515de7e9a6ad8a730"
     },
     {
       "name": "home-top-custom",
@@ -487,7 +487,7 @@
         960,
         540
       ],
-      "sha256": "6906e32fa06a35b48e9f892b25c5feee89b8baec998e9ad9ac048cca92990ef2"
+      "sha256": "495dc6954720d340287b87aaf186f601a235a107588416baf827debbd4972fb6"
     },
     {
       "name": "settings-memory",
@@ -503,7 +503,7 @@
         960,
         540
       ],
-      "sha256": "bc624ea009e78a872ef2d92b1fc037dc94d617cfa76edf06eb83d2801546d83e"
+      "sha256": "9a13056b41eebbafbe8598e73df9b0a74aaff914ba8ead014566ca76216089d6"
     },
     {
       "name": "settings-memory-bottom",
@@ -519,7 +519,7 @@
         960,
         540
       ],
-      "sha256": "f928787355ae58b90b7ee895fe8ea2266d9858cb8ae50937607bceca359a4dc1"
+      "sha256": "fc1d9c63c82cf2a3f57976f210fc497abf5d78bc387d33a701895c2d016e4357"
     },
     {
       "name": "settings-memory-saver",
@@ -535,7 +535,7 @@
         960,
         540
       ],
-      "sha256": "c2338ccaae22a7822465dd5947bab0d8e7c68211642a60d3794609efab7fd065"
+      "sha256": "ddd8a444f97ce68b94f788f0b1df119de366aa77b2ee01a2e25ce465e5a4dddd"
     },
     {
       "name": "settings-nested-right",
@@ -551,7 +551,7 @@
         960,
         540
       ],
-      "sha256": "3f1120e80b399fcd3594d25a7caeb53d1e1815c0244f0e71a5069be283875f8a"
+      "sha256": "a80190ecde7024ba98ae68e173506fb94574d894db9f645bcb828875bc2a6854"
     },
     {
       "name": "dialog-editor-left",
@@ -567,7 +567,7 @@
         960,
         540
       ],
-      "sha256": "1d4de119f2e6817bd696cc415fa550f42883abd64ea8332e55c71defb090d9ca"
+      "sha256": "fff1a96b252e04b1cf29139695e00e436d1598a87b587953214c6026ef8a103f"
     },
     {
       "name": "dialog-editor-right",
@@ -583,7 +583,7 @@
         960,
         540
       ],
-      "sha256": "286049be022d17d3336b491013b765050bbd278564eb00d7cda7004cf70b31c5"
+      "sha256": "410222c0ed467afc62815308147fc5170d400b82fec818908f6e9c4336636758"
     },
     {
       "name": "dialog-adb-left",
@@ -599,7 +599,7 @@
         960,
         540
       ],
-      "sha256": "900d877820857b89b82f3f3f4ab71ac5cd62691db6ff68a515b69dcd6740aaa4"
+      "sha256": "4a67084323924544596dbeb70dcebf10ab8a954872d878a4f7613bb9a1c639c0"
     },
     {
       "name": "dialog-adb-right",
@@ -615,7 +615,7 @@
         960,
         540
       ],
-      "sha256": "e905a942a0e3cc8d12b425afa389c8c2294e47e5bb4a98cdb5a5b7e5a766018e"
+      "sha256": "3bf2d79b61e28ca0250883188cba3c350c378aea54aac9b8b8a7987c5112c889"
     },
     {
       "name": "settings-style",
@@ -631,7 +631,7 @@
         960,
         540
       ],
-      "sha256": "562bfc9c192422403f1ae1033b589e4377ca51ed7a00e2932f9156242b905b95"
+      "sha256": "ba83d5ddc7174b31f19cf3a776da52d1a96368615bbfd52d5d002c40e8f8e0fd"
     },
     {
       "name": "settings-notification-style",
@@ -647,7 +647,7 @@
         960,
         540
       ],
-      "sha256": "ea2911cc52237a57e995c1c4c9b798d262fac041b07640ce6b7d59d285aeef74"
+      "sha256": "0bb31bacf366f848f5a7879807ebec9b82842d8c0c0845784f7ebcd46c6684d1"
     },
     {
       "name": "home-shared-rows",
@@ -663,7 +663,7 @@
         960,
         540
       ],
-      "sha256": "4eb6e18e47afe5c1fc2e42444bff691522189d6fae4290e786aafaf47c27dc8e"
+      "sha256": "be3a8acd5eb86a1d1ecc129a5ed85e144eafa0ac7f54618dd31f3692f27d2f4c"
     },
     {
       "name": "home-grid-window",
@@ -679,7 +679,7 @@
         960,
         540
       ],
-      "sha256": "11f555df04f664e8cf4570ec04911b9fe5668c7aa0bad743bc441eed81425687"
+      "sha256": "cb3ad6c4438a82139c721b5b5e2009f16615165fec8258736b9e892121dd8c78"
     },
     {
       "name": "home-free-three-rows",
@@ -695,7 +695,7 @@
         960,
         540
       ],
-      "sha256": "fcc29c309b89a006a6a53cce0dfeaecd151d500db613349843c5f308c82fbe9f"
+      "sha256": "6087ec61cbf2247e4954e0a6e240a7baca930b4457e84a4048b5594c9214fb84"
     },
     {
       "name": "home-large-lift",
@@ -711,7 +711,7 @@
         960,
         540
       ],
-      "sha256": "6023dca6a748fa6c32751a96548ea4e94f1fbd4895786eaa3ccb8de1012c9946"
+      "sha256": "53579557ef60087af5381aae62fccf56ee3f7d4d17a0899cc8177fd69456a83f"
     },
     {
       "name": "settings-clock-style",
@@ -727,7 +727,7 @@
         960,
         540
       ],
-      "sha256": "4e3147dbcf718d456911e2a85cb5b6a3a0fd050f805539749ff8471641f90d23"
+      "sha256": "d7f6965507b6f1cf02a9bb93bcf84345833fe6e87a5d152ea44de1c30465c393"
     },
     {
       "name": "home-clock-digital",
@@ -743,7 +743,7 @@
         960,
         540
       ],
-      "sha256": "4a1415ea2a555e3aec098bcc565a9d613edd04486bce08dfd1fb83ae27d0f738"
+      "sha256": "8c7a2dc45eadb26f395f16bb35eabf68231079616a9ff798e2de31dec85dc4c9"
     },
     {
       "name": "calendar-ru",
@@ -759,7 +759,7 @@
         960,
         540
       ],
-      "sha256": "b2c04be182abb636d492b87bb43d06daff9f9d078d60f48685e9815707b8ae8c"
+      "sha256": "b5808721095f409b5e237d4c74b68e34d6a264d5757a1f07ce8a39debdcdd7b8"
     },
     {
       "name": "calendar-rtl-large",
@@ -775,7 +775,7 @@
         960,
         540
       ],
-      "sha256": "afd476c3d3e6d0f8ad8dc490f876ad1de9c232578a7f55a5c83feaf96d50e316"
+      "sha256": "381983b6ff321470438fea6e849666f4624502829a3c767abddf2915298c8bd9"
     },
     {
       "name": "settings-date",
@@ -791,7 +791,7 @@
         960,
         540
       ],
-      "sha256": "561a7f9e244e1e612a5fc1c002e36397487fb7843a35adcb132923cdb3954aab"
+      "sha256": "6188d714406703bd01890117c7dab2bb41df50b3e531c59a8667b77dc167ed64"
     },
     {
       "name": "settings-style-glass",
@@ -807,7 +807,7 @@
         960,
         540
       ],
-      "sha256": "f6900986011cc78b8651e946861595e30b8b36840cb5e363f9948e84d2f4466e"
+      "sha256": "9f37d8bf6c186669b1e2af144cdfddd20c41069db2e5aa99b8a875e4d16be47b"
     },
     {
       "name": "settings-style-soft",
@@ -823,7 +823,7 @@
         960,
         540
       ],
-      "sha256": "6a39b435e3aabe9cc58848a8da84f99bf1a8408f1bf8b9db09eada2d6e596d0a"
+      "sha256": "015bf3399e8f9163d193a0c9a7d94087860f4ca13d6937b05f1025fde736889f"
     },
     {
       "name": "settings-style-outline",
@@ -839,7 +839,7 @@
         960,
         540
       ],
-      "sha256": "358cd7c25168be908d425ca4d615f8a50a292e8dad8edf023838b0c01a4fb1f2"
+      "sha256": "075809e91ea03102ece385883ae21b5aedbc8dde58a44710b6eca2d79f05342e"
     },
     {
       "name": "home-combined-information",
@@ -855,7 +855,7 @@
         960,
         540
       ],
-      "sha256": "3f009d427a82331189480df608e5156d9e4ca5be43a279deac2d46d41299c559"
+      "sha256": "b88c2ff2b584dad5f000bb296a4b6d8ce84bb2a9a840b4b5d1f15e2bd3ec0d85"
     },
     {
       "name": "settings-font-google-sans",
@@ -871,7 +871,7 @@
         960,
         540
       ],
-      "sha256": "64d518911086a93a2fc1a94f7df1367ec444d8977d5b88b48562228cc59e887e"
+      "sha256": "8f7c9786141855d114813534f25e733dfacb6d3ad95f2781fc279a4d785686f2"
     },
     {
       "name": "settings-font-onest",
@@ -887,7 +887,7 @@
         960,
         540
       ],
-      "sha256": "0e7675d7819055f0638b020cff4eb61a98a00aeeb61863844074cc4b34bea7cc"
+      "sha256": "99c45ab651dba21db30d594b06ef98ec3a2848d5dc7881b06fed398da23c56f2"
     },
     {
       "name": "settings-font-manrope",
@@ -903,7 +903,7 @@
         960,
         540
       ],
-      "sha256": "f6900986011cc78b8651e946861595e30b8b36840cb5e363f9948e84d2f4466e"
+      "sha256": "9f37d8bf6c186669b1e2af144cdfddd20c41069db2e5aa99b8a875e4d16be47b"
     }
   ]
 }

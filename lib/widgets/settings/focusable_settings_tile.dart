@@ -1,6 +1,7 @@
 import 'package:flauncher/theme/launcher_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+
 import '../../key_sounds.dart';
 
 import 'settings_value_text.dart';
@@ -84,10 +85,30 @@ class _FocusableSettingsTileState extends State<FocusableSettingsTile>
     final start = viewport.getOffsetToReveal(target, 0).offset;
     final end = viewport.getOffsetToReveal(target, 1).offset;
     final offset = scrollable.position.pixels;
-    // A visible row needs only its focus highlight. Recentring it on every
-    // D-pad step starts needless animations and interrupts an ongoing scroll.
-    if (offset >= end - 0.5 && offset <= start + 0.5) return;
-    Scrollable.ensureVisible(context, alignment: 0.5, duration: duration);
+    final vertical =
+        axisDirectionToAxis(scrollable.axisDirection) == Axis.vertical;
+    // Keep ordinary rows in a central band. Crossing it starts scrolling while
+    // the next controls are still visible; reversing within it stays still.
+    // Oversized rows and horizontal menus retain the visibility-only behavior.
+    final band = vertical && start >= end;
+    final lower = band ? start + (end - start) * 0.6 : end;
+    final upper = band ? start + (end - start) * 0.4 : start;
+    final position = scrollable.position;
+    final destination = (offset < lower ? lower : upper).clamp(
+      position.minScrollExtent,
+      position.maxScrollExtent,
+    );
+    if ((offset >= lower - 0.5 && offset <= upper + 0.5) ||
+        (destination - offset).abs() <= 0.5) {
+      return;
+    }
+    Scrollable.ensureVisible(
+      context,
+      alignment: band ? (offset < lower ? 0.6 : 0.4) : 0.5,
+      duration: MediaQuery.disableAnimationsOf(context)
+          ? Duration.zero
+          : duration,
+    );
   }
 
   Widget _fullTextMetrics(Widget child) {

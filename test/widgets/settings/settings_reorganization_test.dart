@@ -172,9 +172,10 @@ void main() {
     await tester.scrollUntilVisible(find.text('Formats and data'), 100);
     await tester.tap(find.text('Formats and data'));
     await tester.pumpAndSettle();
-    expect(find.text('Weather settings'), findsOneWidget);
     await Navigator.of(tester.element(find.byType(InformationDataSettingsPage))).maybePop();
     await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(find.text('Weather settings'), 100);
+    expect(find.text('Weather settings'), findsOneWidget);
     await Navigator.of(tester.element(find.byType(InformationSettingsPage))).maybePop();
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(find.text('Traffic settings'), 200);

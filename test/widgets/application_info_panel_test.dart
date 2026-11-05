@@ -16,6 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
+
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/models/category.dart';
 import 'package:flauncher/models/app.dart';
@@ -49,6 +51,7 @@ void main() {
       const channel = MethodChannel('cutelauncher/adb');
       var running = active;
       var stops = 0;
+      var checks = 0;
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
           .setMockMethodCallHandler(channel, (call) async {
             if (call.method == 'info') return {'port': 5555};
@@ -57,6 +60,8 @@ void main() {
             if (args['action'] == 'stopApp') {
               stops++;
               running = status != "success";
+            } else {
+              checks++;
             }
             return {
               'status': args['action'] == 'stopApp' ? status : 'success',
@@ -80,12 +85,26 @@ void main() {
         locale: const Locale('ru'),
       );
       await tester.pumpAndSettle();
+      expect(checks, 0);
+      expect(find.text('Остановить'), findsNothing);
+      await tester.scrollUntilVisible(
+        find.byKey(const ValueKey('app_check_process')),
+        150,
+      );
+      await tester.tap(find.byKey(const ValueKey('app_check_process')));
+      await tester.pumpAndSettle();
+      expect(checks, 1);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      await tester.pumpAndSettle();
+      expect(checks, 1);
       expect(find.text('Остановить'), active ? findsOneWidget : findsNothing);
       if (active) {
         await tester.ensureVisible(find.text('Остановить'));
         await tester.tap(find.text('Остановить'));
         await tester.pumpAndSettle();
         expect(stops, 1);
+        expect(checks, 1, reason: 'stopApp returns the verified process state');
         expect(
           find.text('Остановить'),
           status == 'success' ? findsNothing : findsOneWidget,
@@ -94,6 +113,166 @@ void main() {
       expect(tester.takeException(), isNull);
     });
   }
+
+  testWidgets('opening, resuming, rebuilding and reopening never call ADB', (
+    tester,
+  ) async {
+    final calls = <MethodCall>[];
+    const channel = MethodChannel('cutelauncher/adb');
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, (
+      call,
+    ) async {
+      calls.add(call);
+      return {'status': 'success', 'running': true};
+    });
+    addTearDown(
+      () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        channel,
+        null,
+      ),
+    );
+    final apps = _ObservableAppsService();
+    when(apps.categories).thenReturn([]);
+    when(apps.isTileHidden(any)).thenReturn(false);
+    final app = fakeApp(packageName: 'test.app', name: 'Test');
+    await _pumpWidgetWithProviders(tester, apps, null, app, asDialog: true);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    apps.notifyListeners();
+    await tester.pumpAndSettle();
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Open info'));
+    await tester.pumpAndSettle();
+    expect(calls, isEmpty);
+    await tester.scrollUntilVisible(
+      find.byKey(const ValueKey('app_check_process')),
+      150,
+    );
+    expect(find.text('Status not checked'), findsOneWidget);
+    expect(find.text('Stop'), findsNothing);
+  });
+
+  for (final failure in [
+    'authorization',
+    'unavailable',
+    'exception',
+    'malformed',
+  ]) {
+    testWidgets(
+      'manual check distinguishes $failure from stopped and permits retry',
+      (tester) async {
+        const channel = MethodChannel('cutelauncher/adb');
+        var checks = 0;
+        tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+          channel,
+          (call) async {
+            if (call.method == 'info') return {'port': 5555};
+            checks++;
+            if (checks > 1) return {'status': 'success', 'running': false};
+            if (failure == 'exception') {
+              throw PlatformException(code: 'unavailable');
+            }
+            return {'status': failure == 'malformed' ? 'success' : failure};
+          },
+        );
+        addTearDown(
+          () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+            channel,
+            null,
+          ),
+        );
+        final apps = MockAppsService();
+        when(apps.categories).thenReturn([]);
+        when(apps.isTileHidden(any)).thenReturn(false);
+        await _pumpWidgetWithProviders(
+          tester,
+          apps,
+          null,
+          fakeApp(packageName: 'test.app', name: 'Test'),
+        );
+        final l = AppLocalizations.of(
+          tester.element(find.byType(ApplicationInfoPanel)),
+        )!;
+        final check = find.byKey(const ValueKey('app_check_process'));
+        await tester.scrollUntilVisible(check, 150);
+        await tester.tap(check);
+        await tester.pumpAndSettle();
+        expect(checks, 1);
+        expect(find.text(l.appProcessStopped), findsNothing);
+        expect(find.text(l.stopApp), findsNothing);
+        expect(
+          find.text(
+            failure == 'authorization'
+                ? l.adbAuthorization
+                : failure == 'malformed'
+                ? l.appError
+                : l.adbUnavailable,
+          ),
+          findsOneWidget,
+        );
+        await tester.tap(check);
+        await tester.pumpAndSettle();
+        expect(checks, 2);
+        expect(find.text(l.appProcessStopped), findsOneWidget);
+        expect(
+          Focus.of(tester.element(find.text(l.appCheckProcess)))
+              .hasPrimaryFocus,
+          isTrue,
+        );
+      },
+    );
+  }
+
+  testWidgets(
+    'manual check is single-flight and late completion after close is safe',
+    (tester) async {
+      const channel = MethodChannel('cutelauncher/adb');
+      final response = Completer<Map<String, dynamic>>();
+      var checks = 0;
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, (
+        call,
+      ) async {
+        if (call.method == 'info') return {'port': 5555};
+        checks++;
+        return response.future;
+      });
+      addTearDown(
+        () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+          channel,
+          null,
+        ),
+      );
+      final apps = MockAppsService();
+      when(apps.categories).thenReturn([]);
+      when(apps.isTileHidden(any)).thenReturn(false);
+      await _pumpWidgetWithProviders(
+        tester,
+        apps,
+        null,
+        fakeApp(packageName: 'test.app', name: 'Test'),
+        asDialog: true,
+      );
+      final check = find.byKey(const ValueKey('app_check_process'));
+      await tester.scrollUntilVisible(check, 150);
+      await tester.tap(check);
+      await tester.pump();
+      await tester.tap(check);
+      await tester.pump();
+      expect(checks, 1);
+      expect(find.text('Loading'), findsOneWidget);
+      expect(
+        Focus.of(tester.element(find.text('Check status'))).hasPrimaryFocus,
+        isTrue,
+      );
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      response.complete({'status': 'success', 'running': true});
+      await tester.pumpAndSettle();
+      expect(find.byType(ApplicationInfoPanel), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
 
   setUpAll(() async {
     final binding = TestWidgetsFlutterBinding.ensureInitialized();
@@ -104,63 +283,141 @@ void main() {
   });
 
   for (final locale in [const Locale('ru'), const Locale('en')]) {
-    testWidgets('app sections expand with automatic and hidden memberships: $locale', (tester) async {
-      final apps = _ObservableAppsService();
-      final app = fakeApp(packageName: 'test.app', name: 'Test');
-      final hidden = Category(id: 3, name: 'My hidden section', order: 2, visible: false);
-      app.categoryOrders[3] = 0;
-      final games = Category(id: 2, name: 'Games', order: 1)..applications.add(app);
-      final automatic = Category(id: 1, name: 'All Apps', systemKey: 'all_apps', order: 0)
-        ..applications.add(fakeApp(packageName: 'test.app', name: 'Old instance'));
-      final unrelated = Category(id: 4, name: 'Unrelated', order: 3);
-      final feeds = Category(id: 5, name: 'App Feeds', systemKey: 'app_channels')..applications.add(app);
-      final absentAutomatic = Category(id: 6, name: 'Absent automatic section', systemKey: 'tv_apps');
-      app.categoryOrders[6] = 0;
-      when(apps.categories).thenReturn([hidden, unrelated, games, feeds, automatic, absentAutomatic]);
-      when(apps.applications).thenReturn([app]);
-      when(apps.isTileHidden(any)).thenReturn(false);
-      await _pumpWidgetWithProviders(tester, apps, null, app, locale: locale);
-      final l = AppLocalizations.of(tester.element(find.byType(ApplicationInfoPanel)))!;
-      await tester.scrollUntilVisible(find.text(l.appSections), 150);
-      expect(find.text('My hidden section'), findsNothing);
-      await tester.tap(find.text(l.appSections));
-      await tester.pumpAndSettle();
-      expect(find.text('My hidden section'), findsOneWidget);
-      expect(find.text(l.allApplications), findsOneWidget);
-      expect(find.text(l.games), findsOneWidget);
-      expect(tester.getTopLeft(find.text(l.allApplications)).dy,
-          lessThan(tester.getTopLeft(find.text(l.games)).dy));
-      expect(tester.getTopLeft(find.text(l.games)).dy,
-          lessThan(tester.getTopLeft(find.text('My hidden section')).dy));
-      expect(find.text('Unrelated'), findsNothing);
-      expect(find.text('Absent automatic section'), findsNothing);
-      expect(find.byIcon(Icons.visibility_off_outlined), findsWidgets);
-      games.applications.clear();
-      apps.notifyListeners();
-      await tester.pumpAndSettle();
-      expect(find.text(l.games), findsNothing);
-      expect(find.text('My hidden section'), findsOneWidget);
-      await tester.tap(find.text(l.appSections));
-      await tester.pumpAndSettle();
-      expect(find.text('My hidden section'), findsNothing);
-      expect(tester.takeException(), isNull);
-    });
+    testWidgets(
+      'grouped app actions remain accessible with large text: $locale',
+      (tester) async {
+        tester.binding.platformDispatcher.textScaleFactorTestValue = 1.5;
+        addTearDown(
+          () =>
+              tester.binding.platformDispatcher.textScaleFactorTestValue = 0.8,
+        );
+        final apps = MockAppsService();
+        when(apps.categories).thenReturn([]);
+        when(apps.isTileHidden(any)).thenReturn(false);
+        await _pumpWidgetWithProviders(
+          tester,
+          apps,
+          null,
+          fakeApp(
+            packageName: 'test.app',
+            name: 'Application with a long name',
+          ),
+          locale: locale,
+        );
+        final l = AppLocalizations.of(
+          tester.element(find.byType(ApplicationInfoPanel)),
+        )!;
+        expect(find.text(l.homeScreen), findsOneWidget);
+        for (final label in [
+          l.appLaunchGroup,
+          l.appearanceSettings,
+          l.appManagementGroup,
+          l.appCheckProcess,
+          l.uninstall,
+        ]) {
+          await tester.scrollUntilVisible(find.text(label), 100);
+          await tester.pumpAndSettle();
+          expect(find.text(label), findsOneWidget);
+          expect(tester.takeException(), isNull);
+        }
+      },
+    );
+
+    testWidgets(
+      'app sections expand with automatic and hidden memberships: $locale',
+      (tester) async {
+        final apps = _ObservableAppsService();
+        final app = fakeApp(packageName: 'test.app', name: 'Test');
+        final hidden = Category(
+          id: 3,
+          name: 'My hidden section',
+          order: 2,
+          visible: false,
+        );
+        app.categoryOrders[3] = 0;
+        final games = Category(id: 2, name: 'Games', order: 1)
+          ..applications.add(app);
+        final automatic =
+            Category(id: 1, name: 'All Apps', systemKey: 'all_apps', order: 0)
+              ..applications.add(
+                fakeApp(packageName: 'test.app', name: 'Old instance'),
+              );
+        final unrelated = Category(id: 4, name: 'Unrelated', order: 3);
+        final feeds = Category(
+          id: 5,
+          name: 'App Feeds',
+          systemKey: 'app_channels',
+        )..applications.add(app);
+        final absentAutomatic = Category(
+          id: 6,
+          name: 'Absent automatic section',
+          systemKey: 'tv_apps',
+        );
+        app.categoryOrders[6] = 0;
+        when(apps.categories).thenReturn([
+          hidden,
+          unrelated,
+          games,
+          feeds,
+          automatic,
+          absentAutomatic,
+        ]);
+        when(apps.applications).thenReturn([app]);
+        when(apps.isTileHidden(any)).thenReturn(false);
+        await _pumpWidgetWithProviders(tester, apps, null, app, locale: locale);
+        final l = AppLocalizations.of(
+          tester.element(find.byType(ApplicationInfoPanel)),
+        )!;
+        await tester.scrollUntilVisible(find.text(l.appSections), 150);
+        expect(find.text('My hidden section'), findsNothing);
+        await tester.tap(find.text(l.appSections));
+        await tester.pumpAndSettle();
+        expect(find.text('My hidden section'), findsOneWidget);
+        expect(find.text(l.allApplications), findsOneWidget);
+        expect(find.text(l.games), findsOneWidget);
+        expect(
+          tester.getTopLeft(find.text(l.allApplications)).dy,
+          lessThan(tester.getTopLeft(find.text(l.games)).dy),
+        );
+        expect(
+          tester.getTopLeft(find.text(l.games)).dy,
+          lessThan(tester.getTopLeft(find.text('My hidden section')).dy),
+        );
+        expect(find.text('Unrelated'), findsNothing);
+        expect(find.text('Absent automatic section'), findsNothing);
+        expect(find.byIcon(Icons.visibility_off_outlined), findsWidgets);
+        games.applications.clear();
+        apps.notifyListeners();
+        await tester.pumpAndSettle();
+        expect(find.text(l.games), findsNothing);
+        expect(find.text('My hidden section'), findsOneWidget);
+        await tester.tap(find.text(l.appSections));
+        await tester.pumpAndSettle();
+        expect(find.text('My hidden section'), findsNothing);
+        expect(tester.takeException(), isNull);
+      },
+    );
   }
 
-  testWidgets('empty section list explains absence without changing membership', (tester) async {
-    final apps = MockAppsService();
-    final app = fakeApp(packageName: 'test.app', name: 'Test');
-    when(apps.categories).thenReturn([]);
-    when(apps.applications).thenReturn([app]);
-    when(apps.isTileHidden(any)).thenReturn(false);
-    await _pumpWidgetWithProviders(tester, apps, null, app);
-    final l = AppLocalizations.of(tester.element(find.byType(ApplicationInfoPanel)))!;
-    await tester.scrollUntilVisible(find.text(l.appSections), 150);
-    await tester.tap(find.text(l.appSections));
-    await tester.pumpAndSettle();
-    expect(find.text(l.noAppSections), findsOneWidget);
-    expect(app.categoryOrders, isEmpty);
-  });
+  testWidgets(
+    'empty section list explains absence without changing membership',
+    (tester) async {
+      final apps = MockAppsService();
+      final app = fakeApp(packageName: 'test.app', name: 'Test');
+      when(apps.categories).thenReturn([]);
+      when(apps.applications).thenReturn([app]);
+      when(apps.isTileHidden(any)).thenReturn(false);
+      await _pumpWidgetWithProviders(tester, apps, null, app);
+      final l = AppLocalizations.of(
+        tester.element(find.byType(ApplicationInfoPanel)),
+      )!;
+      await tester.scrollUntilVisible(find.text(l.appSections), 150);
+      await tester.tap(find.text(l.appSections));
+      await tester.pumpAndSettle();
+      expect(find.text(l.noAppSections), findsOneWidget);
+      expect(app.categoryOrders, isEmpty);
+    },
+  );
 
   testWidgets('Russian app actions fit the panel and retain the app name', (
     tester,
@@ -184,21 +441,33 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('system package without launch activity opens details without Open action', (tester) async {
-    final apps = MockAppsService();
-    when(apps.isTileHidden(any)).thenReturn(false);
-    when(apps.categories).thenReturn([]);
-    final app = fakeApp(packageName: 'com.google.android.partnersetup', name: 'Google Partner Setup')
-      ..isSystem = true ..isLaunchable = false;
-    await _pumpWidgetWithProviders(tester, apps, null, app);
-    final l = AppLocalizations.of(tester.element(find.byType(ApplicationInfoPanel)))!;
-    expect(find.text(app.packageName), findsOneWidget);
-    expect(find.text(l.open), findsNothing);
-    await tester.ensureVisible(find.text(l.appInfo));
-    await tester.tap(find.text(l.appInfo));
-    await tester.pumpAndSettle();
-    verify(apps.openAppInfo(app)).called(1);
-  });
+  testWidgets(
+    'system package without launch activity opens details without Open action',
+    (tester) async {
+      final apps = MockAppsService();
+      when(apps.isTileHidden(any)).thenReturn(false);
+      when(apps.categories).thenReturn([]);
+      final app =
+          fakeApp(
+              packageName: 'com.google.android.partnersetup',
+              name: 'Google Partner Setup',
+            )
+            ..isSystem = true
+            ..isLaunchable = false;
+      await _pumpWidgetWithProviders(tester, apps, null, app);
+      final l = AppLocalizations.of(
+        tester.element(find.byType(ApplicationInfoPanel)),
+      )!;
+      expect(find.text(app.packageName), findsOneWidget);
+      expect(find.text(l.open), findsNothing);
+      await tester.scrollUntilVisible(find.text(l.appInfo), 150);
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text(l.appInfo));
+      await tester.tap(find.text(l.appInfo));
+      await tester.pumpAndSettle();
+      verify(apps.openAppInfo(app)).called(1);
+    },
+  );
 
   testWidgets('header loads the app icon without a broken image placeholder', (
     tester,
@@ -224,7 +493,7 @@ void main() {
       'category picker stays beside info and Back restores focus; right=$onRight',
       (tester) async {
         final apps = MockAppsService();
-    when(apps.isTileHidden(any)).thenReturn(false);
+        when(apps.isTileHidden(any)).thenReturn(false);
         when(apps.categories).thenReturn([]);
         final app = fakeApp(packageName: 'sample', name: 'Sample');
         final all = fakeCategory(name: 'Renamed catalog')
@@ -303,7 +572,7 @@ void main() {
       'no eligible sections shows a notice without opening picker; empty=$noSections',
       (tester) async {
         final apps = MockAppsService();
-    when(apps.isTileHidden(any)).thenReturn(false);
+        when(apps.isTileHidden(any)).thenReturn(false);
         when(apps.categories).thenReturn([]);
         final app = fakeApp(packageName: 'sample', name: 'Sample');
         when(apps.categories).thenReturn(
@@ -380,27 +649,42 @@ void main() {
     expect(outline(l.addToCategory).color, accent);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.pumpAndSettle();
-    expect(Focus.of(tester.element(find.text(l.open))).hasPrimaryFocus, isTrue);
+    expect(Focus.of(tester.element(find.text(l.hide))).hasPrimaryFocus, isTrue);
     expect(outline(l.addToCategory).color.a, 0);
-    expect(outline(l.open).color, accent);
+    expect(outline(l.hide).color, accent);
   });
 
   for (final key in ['all_apps', 'tv_apps', 'other_apps']) {
-    testWidgets('info from $key removes manual membership and restores focus', (tester) async {
+    testWidgets('info from $key removes manual membership and restores focus', (
+      tester,
+    ) async {
       final apps = MockAppsService();
-    when(apps.isTileHidden(any)).thenReturn(false);
+      when(apps.isTileHidden(any)).thenReturn(false);
       final app = fakeApp(packageName: 'sample', name: 'Sample');
       final automatic = fakeCategory(name: 'Automatic')..systemKey = key;
       automatic.applications.add(app);
-      final favorite = Category(id: 4, name: 'Favorites')..systemKey = 'favorites' ..visible = false;
+      final favorite = Category(id: 4, name: 'Favorites')
+        ..systemKey = 'favorites'
+        ..visible = false;
       // Persisted membership must remain removable even when the tile is filtered.
       app.categoryOrders[favorite.id] = 0;
-      when(apps.categories).thenReturn([automatic, favorite, Category(id: 5, name: 'Unrelated')]);
+      when(
+        apps.categories,
+      ).thenReturn([automatic, favorite, Category(id: 5, name: 'Unrelated')]);
       when(apps.removeFromCategory(app, favorite)).thenAnswer((_) async {
         app.categoryOrders.remove(favorite.id);
       });
-      await _pumpWidgetWithProviders(tester, apps, automatic, app, asDialog: true, onRight: key == 'tv_apps');
-      final l = AppLocalizations.of(tester.element(find.byType(ApplicationInfoPanel)))!;
+      await _pumpWidgetWithProviders(
+        tester,
+        apps,
+        automatic,
+        app,
+        asDialog: true,
+        onRight: key == 'tv_apps',
+      );
+      final l = AppLocalizations.of(
+        tester.element(find.byType(ApplicationInfoPanel)),
+      )!;
       await tester.tap(find.text(l.removeFromCategory));
       await tester.pumpAndSettle();
       expect(find.text('Automatic'), findsNothing);
@@ -408,7 +692,11 @@ void main() {
       expect(find.text(l.favorites), findsOneWidget);
       await tester.sendKeyEvent(LogicalKeyboardKey.escape);
       await tester.pumpAndSettle();
-      expect(Focus.of(tester.element(find.text(l.removeFromCategory))).hasPrimaryFocus, isTrue);
+      expect(
+        Focus.of(tester.element(find.text(l.removeFromCategory)))
+            .hasPrimaryFocus,
+        isTrue,
+      );
       await tester.tap(find.text(l.removeFromCategory));
       await tester.pumpAndSettle();
       await tester.tap(find.text(l.favorites));
@@ -424,27 +712,28 @@ void main() {
     });
   }
 
-  testWidgets('All Apps has no direct automatic removal action but keeps global Hide', (
-    tester,
-  ) async {
-    final appsService = MockAppsService();
-    when(appsService.isTileHidden(any)).thenReturn(false);
-    when(appsService.categories).thenReturn([]);
-    final app = fakeApp(packageName: 'sample.app', name: 'Sample');
-    final category = fakeCategory(name: 'Renamed catalog')
-      ..systemKey = 'all_apps';
-    when(appsService.hideApplication(app)).thenAnswer((_) async {});
-    await _pumpWidgetWithProviders(tester, appsService, category, app);
-    final l = AppLocalizations.of(
-      tester.element(find.byType(ApplicationInfoPanel)),
-    )!;
-    expect(find.text(l.removeFrom(category.name)), findsNothing);
-    await tester.ensureVisible(find.text(l.hide));
-    await tester.tap(find.text(l.hide));
-    await tester.pumpAndSettle();
-    verify(appsService.hideApplication(app)).called(1);
-    verifyNever(appsService.removeFromCategory(any, any));
-  });
+  testWidgets(
+    'All Apps has no direct automatic removal action but keeps global Hide',
+    (tester) async {
+      final appsService = MockAppsService();
+      when(appsService.isTileHidden(any)).thenReturn(false);
+      when(appsService.categories).thenReturn([]);
+      final app = fakeApp(packageName: 'sample.app', name: 'Sample');
+      final category = fakeCategory(name: 'Renamed catalog')
+        ..systemKey = 'all_apps';
+      when(appsService.hideApplication(app)).thenAnswer((_) async {});
+      await _pumpWidgetWithProviders(tester, appsService, category, app);
+      final l = AppLocalizations.of(
+        tester.element(find.byType(ApplicationInfoPanel)),
+      )!;
+      expect(find.text(l.removeFrom(category.name)), findsNothing);
+      await tester.ensureVisible(find.text(l.hide));
+      await tester.tap(find.text(l.hide));
+      await tester.pumpAndSettle();
+      verify(appsService.hideApplication(app)).called(1);
+      verifyNever(appsService.removeFromCategory(any, any));
+    },
+  );
 
   testWidgets("'Open' calls launchApp on AppsService", (tester) async {
     final appsService = MockAppsService();
@@ -565,11 +854,14 @@ class _ObservableAppsService extends MockAppsService {
   void addListener(VoidCallback? listener) {
     if (listener != null) _listeners.add(listener);
   }
+
   @override
   void removeListener(VoidCallback? listener) => _listeners.remove(listener);
   @override
   void notifyListeners() {
-    for (final listener in _listeners.toList()) { listener(); }
+    for (final listener in _listeners.toList()) {
+      listener();
+    }
   }
 }
 

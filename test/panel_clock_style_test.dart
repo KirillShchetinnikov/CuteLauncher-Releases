@@ -68,6 +68,10 @@ void main() {
           'opacity': double.nan,
           'weight': 550,
           'glow': 'true',
+          'hoursColor': -1,
+          'minutesColor': 0x100000000,
+          'showColon': 'false',
+          'splitColors': 'false',
         }),
         isEmpty,
       );
@@ -146,6 +150,9 @@ void main() {
       'font': 'serif',
       'size': 30,
       'background': false,
+      'hoursColor': 0xff123456,
+      'minutesColor': 0xffabcdef,
+      'showColon': false,
     });
     await appearance.set('panelDateCalendar', true);
     await remote.set('clockStyle', {'font': 'monospace', 'size': 14});
@@ -157,6 +164,9 @@ void main() {
     }, {});
     final restored = TileAppearance.decode(imported[tileAppearanceKey]);
     expect(restored.clockStyle.values['size'], 30);
+    expect(restored.clockStyle.hoursColor, const Color(0xff123456));
+    expect(restored.clockStyle.minutesColor, const Color(0xffabcdef));
+    expect(restored.clockStyle.showColon, isFalse);
     expect(restored.dateCalendar, isTrue);
     expect(restored.active, isFalse);
     expect(

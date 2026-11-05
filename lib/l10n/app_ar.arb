@@ -1,5 +1,8 @@
 {
-  "settingsScrollbarAlwaysVisible": "إظهار شريط التمرير دائمًا",
+  "settingsScrollbar": "شريط التمرير",
+  "settingsScrollbarHidden": "إخفاء تمامًا",
+  "settingsScrollbarOnScroll": "إظهار أثناء التمرير",
+  "settingsScrollbarAlways": "إظهار دائمًا",
   "volumeKeysTitle": "الضغط المطوّل على أزرار الصوت",
   "volumeKeysMode": "طريقة المعالجة",
   "volumeKeysAuto": "تلقائي: أثناء ظهور اللوحة",
@@ -1750,5 +1753,17 @@
   "appSections": "أقسام التطبيق",
   "noAppSections": "هذا التطبيق غير موجود في أي قسم.",
   "volumeWidgetSettings": "إعدادات مستوى الصوت",
-  "volumeUpdateInterval": "فاصل التحديث"
+  "volumeUpdateInterval": "فاصل التحديث",
+  "clockHoursColor": "لون الساعات",
+  "clockMinutesColor": "لون الدقائق",
+  "clockColorMode": "وضع ألوان الساعة",
+  "clockSingleColor": "لون واحد للساعة",
+  "clockSplitColors": "ألوان مختلفة للساعة",
+  "clockShowColon": "إظهار النقطتين",
+  "appLaunchGroup": "التشغيل",
+  "appManagementGroup": "إدارة التطبيق",
+  "appCheckProcess": "التحقق من الحالة",
+  "appProcessNotChecked": "لم يتم التحقق من الحالة",
+  "appProcessRunning": "قيد التشغيل",
+  "appProcessStopped": "ليس قيد التشغيل"
 }

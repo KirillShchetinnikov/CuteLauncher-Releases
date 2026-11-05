@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('focusing a fully visible row does not restart scrolling', (
+  testWidgets('focusing rows inside the central band does not restart scrolling', (
     tester,
   ) async {
     final controller = ScrollController();
@@ -23,7 +23,7 @@ void main() {
             height: 400,
             child: ListView.builder(
               controller: controller,
-              itemExtent: 80,
+              itemExtent: 60,
               itemCount: nodes.length,
               itemBuilder: (_, i) => FocusableSettingsTile(
                 focusNode: nodes[i],
@@ -38,11 +38,11 @@ void main() {
     await tester.pumpAndSettle();
     controller.jumpTo(400);
     await tester.pumpAndSettle();
-    nodes[6].requestFocus();
+    nodes[9].requestFocus();
     await tester.pumpAndSettle();
-    expect(nodes[6].hasFocus, isTrue);
+    expect(nodes[9].hasFocus, isTrue);
     expect(controller.offset, 400);
-    nodes[7].requestFocus();
+    nodes[10].requestFocus();
     await tester.pumpAndSettle();
     expect(controller.offset, 400);
   });

@@ -159,6 +159,74 @@ void main() {
     expect(find.text("Section 9"), findsOneWidget);
   });
 
+  testWidgets('D-pad follows section actions through the help row', (tester) async {
+    final apps = MockAppsService();
+    final names = List.generate(15, (index) => 'Section $index');
+    when(apps.launcherSections).thenReturn([
+      for (final name in names) fakeCategory(name: name),
+    ]);
+    await _pumpWidgetWithProviders(
+      tester,
+      apps,
+      locale: const Locale('ru'),
+      panelSize: const Size(320, 300),
+    );
+    final l = AppLocalizations.of(
+      tester.element(find.byType(LauncherSectionsPanelPage)),
+    )!;
+
+    void expectFocus(String title) {
+      final focused = FocusManager.instance.primaryFocus?.context;
+      final currentTitle = focused == null
+          ? null
+          : tester
+                .widgetList<Text>(
+                  find.descendant(
+                    of: find.byElementPredicate((element) => element == focused),
+                    matching: find.byType(Text),
+                  ),
+                )
+                .firstOrNull
+                ?.data;
+      expect(currentTitle, title);
+    }
+
+    Future<void> press(LogicalKeyboardKey key) async {
+      await tester.sendKeyEvent(key);
+      await tester.pumpAndSettle();
+    }
+
+    Future<void> goToReset() async {
+      expectFocus(names.first);
+      for (final title in [...names.skip(1), l.addSection, l.resetSections]) {
+        await press(LogicalKeyboardKey.arrowDown);
+        expectFocus(title);
+      }
+    }
+
+    await goToReset();
+    await press(LogicalKeyboardKey.arrowDown);
+    await press(LogicalKeyboardKey.arrowDown);
+    expectFocus(l.sectionsAndOrder);
+
+    await tester.sendKeyDownEvent(LogicalKeyboardKey.arrowUp);
+    await tester.pumpAndSettle();
+    expectFocus(l.resetSections);
+    for (final title in [l.addSection, ...names.reversed]) {
+      await tester.sendKeyRepeatEvent(LogicalKeyboardKey.arrowUp);
+      await tester.pumpAndSettle();
+      expectFocus(title);
+    }
+    await tester.sendKeyUpEvent(LogicalKeyboardKey.arrowUp);
+
+    await goToReset();
+    await press(LogicalKeyboardKey.arrowDown);
+    await press(LogicalKeyboardKey.arrowDown);
+    expectFocus(l.sectionsAndOrder);
+    await press(LogicalKeyboardKey.arrowDown);
+    expectFocus(l.sectionsAndOrder);
+  });
+
   testWidgets("Continue watching section is displayed when SettingsService is provided", (tester) async {
     final appsService = MockAppsService();
     when(appsService.launcherSections).thenReturn([
@@ -248,6 +316,7 @@ Future<void> _pumpWidgetWithProviders(
   AppsService appsService, {
   SettingsService? settingsService,
   Locale? locale,
+  Size? panelSize,
 }) async {
   await tester.pumpWidget(
     MultiProvider(
@@ -269,7 +338,13 @@ Future<void> _pumpWidgetWithProviders(
           LauncherSectionPanelPage.routeName: (_) => Container(key: Key("LauncherSectionPanelPage")),
           ContinueWatchingSettingsPage.routeName: (_) => Container(key: Key("ContinueWatchingSettingsPage")),
         },
-        home: Scaffold(body: LauncherSectionsPanelPage()),
+        home: Scaffold(
+          body: SizedBox(
+            width: panelSize?.width,
+            height: panelSize?.height,
+            child: const LauncherSectionsPanelPage(),
+          ),
+        ),
       ),
     ),
   );

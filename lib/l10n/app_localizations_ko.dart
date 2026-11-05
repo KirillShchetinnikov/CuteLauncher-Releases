@@ -10,7 +10,16 @@ class AppLocalizationsKo extends AppLocalizations {
   AppLocalizationsKo([String locale = 'ko']) : super(locale);
 
   @override
-  String get settingsScrollbarAlwaysVisible => '스크롤 막대 항상 표시';
+  String get settingsScrollbar => '스크롤 막대';
+
+  @override
+  String get settingsScrollbarHidden => '완전히 숨기기';
+
+  @override
+  String get settingsScrollbarOnScroll => '스크롤할 때 표시';
+
+  @override
+  String get settingsScrollbarAlways => '항상 표시';
 
   @override
   String get volumeKeysTitle => '볼륨 버튼 길게 누르기';
@@ -4954,4 +4963,40 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get volumeUpdateInterval => '갱신 간격';
+
+  @override
+  String get clockHoursColor => '시 색상';
+
+  @override
+  String get clockMinutesColor => '분 색상';
+
+  @override
+  String get clockColorMode => '시계 색상 모드';
+
+  @override
+  String get clockSingleColor => '시계에 한 가지 색상 사용';
+
+  @override
+  String get clockSplitColors => '시계에 서로 다른 색상 사용';
+
+  @override
+  String get clockShowColon => '콜론 표시';
+
+  @override
+  String get appLaunchGroup => '실행';
+
+  @override
+  String get appManagementGroup => '앱 관리';
+
+  @override
+  String get appCheckProcess => '상태 확인';
+
+  @override
+  String get appProcessNotChecked => '상태 확인 안 됨';
+
+  @override
+  String get appProcessRunning => '실행 중';
+
+  @override
+  String get appProcessStopped => '실행 중이 아님';
 }

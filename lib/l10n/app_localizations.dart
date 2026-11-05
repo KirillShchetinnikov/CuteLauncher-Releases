@@ -122,11 +122,29 @@ abstract class AppLocalizations {
     Locale('zh'),
   ];
 
-  /// No description provided for @settingsScrollbarAlwaysVisible.
+  /// No description provided for @settingsScrollbar.
   ///
   /// In en, this message translates to:
-  /// **'Always show scrollbar'**
-  String get settingsScrollbarAlwaysVisible;
+  /// **'Scrollbar'**
+  String get settingsScrollbar;
+
+  /// No description provided for @settingsScrollbarHidden.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide completely'**
+  String get settingsScrollbarHidden;
+
+  /// No description provided for @settingsScrollbarOnScroll.
+  ///
+  /// In en, this message translates to:
+  /// **'Show while scrolling'**
+  String get settingsScrollbarOnScroll;
+
+  /// No description provided for @settingsScrollbarAlways.
+  ///
+  /// In en, this message translates to:
+  /// **'Always show'**
+  String get settingsScrollbarAlways;
 
   /// No description provided for @volumeKeysTitle.
   ///
@@ -9361,6 +9379,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Update interval'**
   String get volumeUpdateInterval;
+
+  /// No description provided for @clockHoursColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Hours color'**
+  String get clockHoursColor;
+
+  /// No description provided for @clockMinutesColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Minutes color'**
+  String get clockMinutesColor;
+
+  /// No description provided for @clockColorMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Clock color mode'**
+  String get clockColorMode;
+
+  /// No description provided for @clockSingleColor.
+  ///
+  /// In en, this message translates to:
+  /// **'One clock color'**
+  String get clockSingleColor;
+
+  /// No description provided for @clockSplitColors.
+  ///
+  /// In en, this message translates to:
+  /// **'Separate clock colors'**
+  String get clockSplitColors;
+
+  /// No description provided for @clockShowColon.
+  ///
+  /// In en, this message translates to:
+  /// **'Show colon'**
+  String get clockShowColon;
+
+  /// No description provided for @appLaunchGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Launch'**
+  String get appLaunchGroup;
+
+  /// No description provided for @appManagementGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage app'**
+  String get appManagementGroup;
+
+  /// No description provided for @appCheckProcess.
+  ///
+  /// In en, this message translates to:
+  /// **'Check status'**
+  String get appCheckProcess;
+
+  /// No description provided for @appProcessNotChecked.
+  ///
+  /// In en, this message translates to:
+  /// **'Status not checked'**
+  String get appProcessNotChecked;
+
+  /// No description provided for @appProcessRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'Running'**
+  String get appProcessRunning;
+
+  /// No description provided for @appProcessStopped.
+  ///
+  /// In en, this message translates to:
+  /// **'Not running'**
+  String get appProcessStopped;
 }
 
 class _AppLocalizationsDelegate

@@ -2,6 +2,7 @@ import 'settings_help.dart';
 import 'volume_widget_settings_page.dart';
 import '../../providers/remote_panel_service.dart';
 import '../rounded_switch_list_tile.dart';
+import '../storage_status_watch.dart';
 import 'appearance_page.dart';
 
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'package:provider/provider.dart';
 import '../../l10n/app_localizations.dart';
 import '../../providers/network_service.dart';
 import '../../providers/notifications_service.dart';
+import '../../providers/storage_status_service.dart';
 import '../../providers/tv_inputs_service.dart';
 import 'settings_page_layout.dart';
 import 'focusable_settings_tile.dart';
@@ -86,10 +88,14 @@ class RemotePanelObjectsPage extends StatelessWidget {
     final network = context.watch<NetworkService>();
     final notifications = context.watch<NotificationsService>();
     final inputs = context.watch<TvInputsService>();
+    final nasSupported = context.select<StorageStatusService?, bool>(
+      (storage) => storage?.state.nasSupported == true,
+    );
     bool available(String id) => switch (id) {
       'traffic' => network.hasUsageStatsPermission,
       'notifications' => notifications.hasPermission,
       'inputs' => inputs.hasInputs,
+      'nas' => nasSupported,
       _ => true,
     };
     final labels = {
@@ -111,7 +117,7 @@ class RemotePanelObjectsPage extends StatelessWidget {
       'date': l.showDate,
       'time': l.showTime,
     };
-    return SettingsPageLayout(
+    final page = SettingsPageLayout(
       title: Text(l.topPanelObjects),
       child: ListView(
         children: [
@@ -138,6 +144,10 @@ class RemotePanelObjectsPage extends StatelessWidget {
               onChanged: (value) => panel.show(id, value)),
         ],
       ),
+    );
+    return StorageStatusWatch(
+      visible: ModalRoute.isCurrentOf(context) != false,
+      child: page,
     );
   }
 }

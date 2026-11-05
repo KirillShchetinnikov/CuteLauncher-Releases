@@ -11,6 +11,7 @@ import 'package:flauncher/providers/remote_panel_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/panel_clock.dart';
 import 'package:flauncher/widgets/top_panel_item.dart';
+import 'package:flauncher/widgets/launcher_dialog.dart';
 
 
 import 'package:flauncher/widgets/settings/date_time_format_page.dart';
@@ -114,6 +115,74 @@ void main() {
     expect(find.byType(TimeFormatSettingsTile), findsNothing);
     expect(find.byType(DateFormatSettingsTile), findsNothing);
   });
+  for (final mode in ['panelClockStyle', 'panelInformationStyle', 'panelBackgroundInformationStyle']) {
+    testWidgets('clock colors and colon persist and can inherit again: $mode', (tester) async {
+      tester.view.physicalSize = const Size(1000, 1200);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      await pump(tester, PanelClockStylePage(
+        combined: mode == 'panelInformationStyle',
+        background: mode == 'panelBackgroundInformationStyle',
+      ));
+      final l = AppLocalizations.of(tester.element(find.byType(PanelClockStylePage)))!;
+      Future<void> selectMode(String option) async {
+        await tester.tap(find.text(l.clockColorMode));
+        await tester.pumpAndSettle();
+        await tester.tap(find.descendant(
+          of: find.byType(LauncherAlertDialog),
+          matching: find.text(option),
+        ));
+        await tester.pumpAndSettle();
+      }
+
+      PanelClockStyle styleOf(AppearanceService service) => switch (mode) {
+        'panelClockStyle' => service.appearance.clockStyle,
+        'panelInformationStyle' => service.appearance.informationStyle,
+        _ => service.appearance.backgroundInformationStyle,
+      };
+
+      expect(find.text(l.clockSingleColor), findsOneWidget);
+      expect(find.text(l.styleTextColor), findsOneWidget);
+      expect(find.text(l.clockHoursColor), findsNothing);
+      expect(find.text(l.clockMinutesColor), findsNothing);
+      await selectMode(l.clockSplitColors);
+      expect(find.text(l.styleTextColor), findsNothing);
+      for (final title in [l.clockHoursColor, l.clockMinutesColor]) {
+        await tester.scrollUntilVisible(find.text(title), 100);
+        await tester.tap(find.text(title));
+        await tester.pumpAndSettle();
+        await tester.tap(find.byWidgetPredicate((w) => w.runtimeType.toString() == '_ColorCell').first);
+        await tester.pumpAndSettle();
+      }
+      await tester.scrollUntilVisible(find.text('Показывать двоеточие'), 100);
+      await tester.tap(find.text('Показывать двоеточие'));
+      await tester.pumpAndSettle();
+      await selectMode(l.clockSingleColor);
+      expect(find.text(l.styleTextColor), findsOneWidget);
+      expect(find.text(l.clockHoursColor), findsNothing);
+      expect(find.text(l.clockMinutesColor), findsNothing);
+      final restored = AppearanceService(await SharedPreferences.getInstance());
+      final style = styleOf(restored);
+      expect(style.splitColors, isFalse);
+      expect(style.hoursColor, isNull);
+      expect(style.minutesColor, isNull);
+      expect(style.showColon, isFalse);
+      restored.dispose();
+      await selectMode(l.clockSplitColors);
+      expect(styleOf(appearance).hoursColor, Colors.black);
+      expect(styleOf(appearance).minutesColor, Colors.black);
+      await tester.tap(find.text(l.clockHoursColor));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l.defaultOption));
+      await tester.pumpAndSettle();
+      final current = styleOf(appearance);
+      expect(current.hoursColor, isNull);
+      expect(current.minutesColor, Colors.black);
+      expect(current.showColon, isFalse);
+      expect(tester.takeException(), isNull);
+    });
+  }
   for (final remote in [false, true]) {
     testWidgets('short weekday date is selectable and saved: remote=$remote', (tester) async {
       final previousTime = settings.timeFormat;

@@ -306,16 +306,22 @@ void main() {
 
   testWidgets('audio object is enabled by default and its switch updates the panel', (tester) async {
     await pump(tester, const Scaffold(appBar: FocusAwareAppBar(), body: StatusBarObjectsPage()));
+    final audioIcon = find.descendant(
+      of: find.byType(FocusAwareAppBar),
+      matching: find.byIcon(Icons.volume_up_outlined),
+    );
     await tester.scrollUntilVisible(find.text('Показывать громкость'), 200,
         scrollable: find.descendant(
             of: find.byType(StatusBarObjectsPage),
             matching: find.byType(Scrollable)).first);
     expect(find.text('Показывать громкость'), findsOneWidget);
-    expect(find.byIcon(Icons.volume_up_outlined), findsOneWidget);
+    expect(audioIcon, findsOneWidget);
+    await tester.ensureVisible(find.text('Показывать громкость'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Показывать громкость'));
     await tester.pumpAndSettle();
     expect(settings.showVolumeInStatusBar, isFalse);
-    expect(find.byIcon(Icons.volume_up_outlined), findsNothing);
+    expect(audioIcon, findsNothing);
     expect(SettingsService(prefs).showVolumeInStatusBar, isFalse);
   });
 

@@ -52,6 +52,7 @@ void main() {
 
     mockApp = fakeApp(packageName: "test.app.package", name: "Test App");
     mockCategory = fakeCategory();
+    when(mockAppsService.categories).thenReturn([mockCategory]);
 
     when(mockAppsService.getAppIcon(any)).thenAnswer((_) async => kTransparentImage);
     when(mockAppsService.getAppBanner(any)).thenAnswer((_) async => kTransparentImage);

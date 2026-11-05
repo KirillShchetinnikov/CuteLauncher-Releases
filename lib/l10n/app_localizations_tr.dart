@@ -10,8 +10,16 @@ class AppLocalizationsTr extends AppLocalizations {
   AppLocalizationsTr([String locale = 'tr']) : super(locale);
 
   @override
-  String get settingsScrollbarAlwaysVisible =>
-      'Kaydırma çubuğunu her zaman göster';
+  String get settingsScrollbar => 'Kaydırma çubuğu';
+
+  @override
+  String get settingsScrollbarHidden => 'Tamamen gizle';
+
+  @override
+  String get settingsScrollbarOnScroll => 'Kaydırırken göster';
+
+  @override
+  String get settingsScrollbarAlways => 'Her zaman göster';
 
   @override
   String get volumeKeysTitle => 'Ses düğmelerini basılı tutma';
@@ -5103,4 +5111,40 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get volumeUpdateInterval => 'Güncelleme aralığı';
+
+  @override
+  String get clockHoursColor => 'Saat rengi';
+
+  @override
+  String get clockMinutesColor => 'Dakika rengi';
+
+  @override
+  String get clockColorMode => 'Saat renk modu';
+
+  @override
+  String get clockSingleColor => 'Saat için tek renk';
+
+  @override
+  String get clockSplitColors => 'Saat için ayrı renkler';
+
+  @override
+  String get clockShowColon => 'İki nokta üst üste göster';
+
+  @override
+  String get appLaunchGroup => 'Başlatma';
+
+  @override
+  String get appManagementGroup => 'Uygulamayı yönet';
+
+  @override
+  String get appCheckProcess => 'Durumu kontrol et';
+
+  @override
+  String get appProcessNotChecked => 'Durum kontrol edilmedi';
+
+  @override
+  String get appProcessRunning => 'Çalışıyor';
+
+  @override
+  String get appProcessStopped => 'Çalışmıyor';
 }

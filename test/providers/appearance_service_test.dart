@@ -10,6 +10,26 @@ import 'package:flauncher/settings_import.dart';
 import 'package:flauncher/category_appearance.dart';
 
 void main() {
+  test('legacy scrollbar choices restore and reset with the settings style', () async {
+    const legacy = '{"settingsScrollbarAlwaysVisible":false}';
+    expect(TileAppearance.decode(legacy).settingsScrollbarMode, SettingsScrollbarMode.onScroll);
+    expect(
+      TileAppearance.decode('{"settingsScrollbarAlwaysVisible":true}').settingsScrollbarMode,
+      SettingsScrollbarMode.always,
+    );
+    expect(
+      TileAppearance.decode('{"settingsScrollbarAlwaysVisible":true,"settingsScrollbarMode":"hidden"}').settingsScrollbarMode,
+      SettingsScrollbarMode.hidden,
+    );
+    final restored = TileAppearance.merge('{"settingsScrollbarMode":"always"}', legacy);
+    expect(TileAppearance.decode(restored).settingsScrollbarMode, SettingsScrollbarMode.onScroll);
+    SharedPreferences.setMockInitialValues({tileAppearanceKey: restored});
+    final service = AppearanceService(await SharedPreferences.getInstance());
+    addTearDown(service.dispose);
+    await service.resetFields(['settingsScrollbarMode']);
+    expect(service.appearance.settingsScrollbarMode, SettingsScrollbarMode.always);
+  });
+
   test('fresh and reset appearance fills banners and fits icons', () async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
@@ -498,6 +518,8 @@ void main() {
         'notifications',
         'sleepTimer',
         'nightMode',
+        'nas',
+        'usb',
         'network',
         'vpn',
         'traffic',

@@ -577,10 +577,9 @@ class _FileBrowserRowState extends State<_FileBrowserRow> {
             if (_expanded && _nameOverflows)
               SizedBox(
                 height: 80,
-                child: Scrollbar(
+                child: SettingsScrollbar(
                   controller: _scroll,
-                  thumbVisibility:
-                              SettingsScrollBehavior.alwaysShowScrollbar(context),
+                  interactive: null,
                   child: SingleChildScrollView(
                     controller: _scroll,
                     primary: false,

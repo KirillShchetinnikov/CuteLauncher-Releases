@@ -138,11 +138,8 @@ class _SettingsHelpState extends State<SettingsHelp>
                       ),
                       child: NotificationListener<ScrollMetricsNotification>(
                         onNotification: _metrics,
-                        child: Scrollbar(
+                        child: SettingsScrollbar(
                           controller: _scroll,
-                          thumbVisibility:
-                              SettingsScrollBehavior.alwaysShowScrollbar(context),
-                          interactive: false,
                           child: RepaintBoundary(
                             child: SingleChildScrollView(
                               controller: _scroll,

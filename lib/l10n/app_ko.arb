@@ -1,5 +1,8 @@
 {
-  "settingsScrollbarAlwaysVisible": "스크롤 막대 항상 표시",
+  "settingsScrollbar": "스크롤 막대",
+  "settingsScrollbarHidden": "완전히 숨기기",
+  "settingsScrollbarOnScroll": "스크롤할 때 표시",
+  "settingsScrollbarAlways": "항상 표시",
   "volumeKeysTitle": "볼륨 버튼 길게 누르기",
   "volumeKeysMode": "해결 방식",
   "volumeKeysAuto": "자동: 패널이 표시되는 동안",
@@ -1750,5 +1753,17 @@
   "appSections": "앱 섹션",
   "noAppSections": "이 앱은 어떤 섹션에도 포함되어 있지 않습니다.",
   "volumeWidgetSettings": "음량 설정",
-  "volumeUpdateInterval": "갱신 간격"
+  "volumeUpdateInterval": "갱신 간격",
+  "clockHoursColor": "시 색상",
+  "clockMinutesColor": "분 색상",
+  "clockColorMode": "시계 색상 모드",
+  "clockSingleColor": "시계에 한 가지 색상 사용",
+  "clockSplitColors": "시계에 서로 다른 색상 사용",
+  "clockShowColon": "콜론 표시",
+  "appLaunchGroup": "실행",
+  "appManagementGroup": "앱 관리",
+  "appCheckProcess": "상태 확인",
+  "appProcessNotChecked": "상태 확인 안 됨",
+  "appProcessRunning": "실행 중",
+  "appProcessStopped": "실행 중이 아님"
 }

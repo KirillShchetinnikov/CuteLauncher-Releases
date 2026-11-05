@@ -1,5 +1,8 @@
 {
-  "settingsScrollbarAlwaysVisible": "Bildlaufleiste immer anzeigen",
+  "settingsScrollbar": "Bildlaufleiste",
+  "settingsScrollbarHidden": "Vollständig ausblenden",
+  "settingsScrollbarOnScroll": "Beim Scrollen anzeigen",
+  "settingsScrollbarAlways": "Immer anzeigen",
   "volumeKeysTitle": "Lautstärketasten gedrückt halten",
   "volumeKeysMode": "Lösungsmodus",
   "volumeKeysAuto": "Auto: solange das Bedienfeld sichtbar ist",
@@ -1750,5 +1753,17 @@
   "appSections": "App-Bereiche",
   "noAppSections": "Diese App befindet sich in keinem Bereich.",
   "volumeWidgetSettings": "Lautstärkeeinstellungen",
-  "volumeUpdateInterval": "Aktualisierungsintervall"
+  "volumeUpdateInterval": "Aktualisierungsintervall",
+  "clockHoursColor": "Stundenfarbe",
+  "clockMinutesColor": "Minutenfarbe",
+  "clockColorMode": "Farbmodus der Uhr",
+  "clockSingleColor": "Eine Uhrenfarbe",
+  "clockSplitColors": "Unterschiedliche Uhrenfarben",
+  "clockShowColon": "Doppelpunkt anzeigen",
+  "appLaunchGroup": "Start",
+  "appManagementGroup": "App verwalten",
+  "appCheckProcess": "Status prüfen",
+  "appProcessNotChecked": "Status nicht geprüft",
+  "appProcessRunning": "Wird ausgeführt",
+  "appProcessStopped": "Wird nicht ausgeführt"
 }

@@ -10,8 +10,16 @@ class AppLocalizationsRu extends AppLocalizations {
   AppLocalizationsRu([String locale = 'ru']) : super(locale);
 
   @override
-  String get settingsScrollbarAlwaysVisible =>
-      'Всегда показывать полосу прокрутки';
+  String get settingsScrollbar => 'Полоса прокрутки';
+
+  @override
+  String get settingsScrollbarHidden => 'Скрывать полностью';
+
+  @override
+  String get settingsScrollbarOnScroll => 'Показывать в момент прокрутки';
+
+  @override
+  String get settingsScrollbarAlways => 'Показывать всегда';
 
   @override
   String get volumeKeysTitle => 'Удержание громкости';
@@ -5107,4 +5115,40 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get volumeUpdateInterval => 'Интервал обновления';
+
+  @override
+  String get clockHoursColor => 'Цвет часов';
+
+  @override
+  String get clockMinutesColor => 'Цвет минут';
+
+  @override
+  String get clockColorMode => 'Режим цвета часов';
+
+  @override
+  String get clockSingleColor => 'Один цвет часов';
+
+  @override
+  String get clockSplitColors => 'Разные цвета часов';
+
+  @override
+  String get clockShowColon => 'Показывать двоеточие';
+
+  @override
+  String get appLaunchGroup => 'Запуск';
+
+  @override
+  String get appManagementGroup => 'Управление приложением';
+
+  @override
+  String get appCheckProcess => 'Проверить состояние';
+
+  @override
+  String get appProcessNotChecked => 'Состояние не проверено';
+
+  @override
+  String get appProcessRunning => 'Запущено';
+
+  @override
+  String get appProcessStopped => 'Не запущено';
 }

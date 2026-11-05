@@ -1,6 +1,7 @@
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/providers/appearance_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
+import 'package:flauncher/tile_appearance.dart';
 import 'package:flauncher/widgets/action_notice.dart';
 import 'package:flauncher/widgets/notice_style.dart';
 import 'package:flauncher/widgets/notice_placement.dart';
@@ -272,10 +273,17 @@ void main() {
       final focus = FocusManager.instance.primaryFocus;
       await tester.sendKeyEvent(LogicalKeyboardKey.select);
       await tester.pumpAndSettle();
-      expect(appearance.appearance.settingsScrollbarAlwaysVisible, isFalse);
+      expect(find.text('Показывать в момент прокрутки'), findsOneWidget);
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+      await tester.pumpAndSettle();
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+      await tester.pumpAndSettle();
+      await tester.sendKeyEvent(LogicalKeyboardKey.select);
+      await tester.pumpAndSettle();
+      expect(appearance.appearance.settingsScrollbarMode, SettingsScrollbarMode.hidden);
       expect(FocusManager.instance.primaryFocus, same(focus));
       final reloaded = AppearanceService(prefs);
-      expect(reloaded.appearance.settingsScrollbarAlwaysVisible, isFalse);
+      expect(reloaded.appearance.settingsScrollbarMode, SettingsScrollbarMode.hidden);
       reloaded.dispose();
       await tester.scrollUntilVisible(
         find.text('Сбросить настройки этого раздела'),
@@ -291,7 +299,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('Сбросить настройки этого раздела').last);
       await tester.pumpAndSettle();
-      expect(appearance.appearance.settingsScrollbarAlwaysVisible, isTrue);
+      expect(appearance.appearance.settingsScrollbarMode, SettingsScrollbarMode.always);
       expect(appearance.appearance.number('settingsOpacity'), 1);
       expect(appearance.appearance.number('settingsTextSize'), 18);
       expect(appearance.appearance.number('noticeOpacity'), .7);

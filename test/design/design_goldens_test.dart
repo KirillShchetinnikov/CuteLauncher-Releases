@@ -466,6 +466,11 @@ void main() {
               "cmd package set-home-activity 'example.launcher/MainActivity'",
             ]);
           } else {
+            final previousCursorMode = EditableText.debugDeterministicCursor;
+            EditableText.debugDeterministicCursor = true;
+            addTearDown(() {
+              EditableText.debugDeterministicCursor = previousCursorMode;
+            });
             final tile = SettingsTextTile(
               title: l.weatherLocationManual,
               value: 'Moscow',

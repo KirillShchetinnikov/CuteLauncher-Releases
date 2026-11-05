@@ -2,6 +2,14 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
+## v1.6.10 — 2026-11-05
+
+- Top bar and background clocks can use one color or separate colors for hours and minutes. The colon can also be hidden.
+- Scrollbars have three modes: always hidden, visible while scrolling, and always visible (the default).
+- Redesigned the app details panel. Information, status, and actions have separate sections, and the status check is started manually.
+- Fixed remote navigation between Add section and Reset settings. Long settings lists begin scrolling as focus approaches the middle of the screen.
+- The NAS setting is unavailable on devices without NAS support.
+
 ## v1.6.9 — 2026-11-04
 
 - Added NAS and USB storage indicators to the top bar and quick settings. NAS is available on compatible Formuler firmware.

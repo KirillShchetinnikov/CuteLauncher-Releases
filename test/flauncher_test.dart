@@ -2416,6 +2416,7 @@ void main() {
       fakeCategory(name: "Favorites", order: 0),
       applicationsCategory,
     ]);
+    when(appsService.categories).thenReturn([applicationsCategory]);
     await _pumpWidgetWith(tester, appsService);
 
     await tester.longPress(find.byKey(Key("me.efesser.flauncher")));
@@ -2423,6 +2424,20 @@ void main() {
 
     expect(find.byType(ApplicationInfoPanel), findsOneWidget);
   });
+
+  Future<void> tapAppReorder(WidgetTester tester) async {
+    final reorder = find.text("Reorder");
+    await tester.scrollUntilVisible(
+      reorder,
+      180,
+      scrollable: find.descendant(
+        of: find.byType(ApplicationInfoPanel),
+        matching: find.byType(Scrollable),
+      ).first,
+    );
+    await tester.tap(reorder);
+    await tester.pumpAndSettle();
+  }
 
   testWidgets("AppCard moves in grid", (tester) async {
     final appsService = mkAppService();
@@ -2441,12 +2456,12 @@ void main() {
       fakeCategory(name: "Favorites", order: 0),
       applicationsCategory,
     ]);
+    when(appsService.categories).thenReturn([applicationsCategory]);
     await _pumpWidgetWith(tester, appsService);
 
     await tester.longPress(find.byKey(Key("me.efesser.flauncher")));
     await tester.pumpAndSettle();
-    await tester.tap(find.text("Reorder"));
-    await tester.pumpAndSettle();
+    await tapAppReorder(tester);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
     await tester.pump();
     verify(appsService.reorderApplication(applicationsCategory, 0, 1));
@@ -2472,12 +2487,12 @@ void main() {
       fakeCategory(name: "Favorites", order: 0),
       applicationsCategory,
     ]);
+    when(appsService.categories).thenReturn([applicationsCategory]);
     await _pumpWidgetWith(tester, appsService);
 
     await tester.longPress(find.byKey(Key("me.efesser.flauncher")));
     await tester.pumpAndSettle();
-    await tester.tap(find.text("Reorder"));
-    await tester.pumpAndSettle();
+    await tapAppReorder(tester);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
     await tester.pump();
     verify(appsService.reorderApplication(applicationsCategory, 0, 1));
@@ -2503,12 +2518,12 @@ void main() {
       fakeCategory(name: "Favorites", order: 0),
       applicationsCategory,
     ]);
+    when(appsService.categories).thenReturn([applicationsCategory]);
     await _pumpWidgetWith(tester, appsService);
 
     await tester.longPress(find.byKey(Key("me.efesser.flauncher")));
     await tester.pumpAndSettle();
-    await tester.tap(find.text("Reorder"));
-    await tester.pumpAndSettle();
+    await tapAppReorder(tester);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
     await tester.pump();
     verify(appsService.reorderApplication(applicationsCategory, 0, 1));

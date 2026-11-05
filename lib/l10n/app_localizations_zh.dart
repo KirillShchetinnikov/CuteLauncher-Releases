@@ -10,7 +10,16 @@ class AppLocalizationsZh extends AppLocalizations {
   AppLocalizationsZh([String locale = 'zh']) : super(locale);
 
   @override
-  String get settingsScrollbarAlwaysVisible => '始终显示滚动条';
+  String get settingsScrollbar => '滚动条';
+
+  @override
+  String get settingsScrollbarHidden => '完全隐藏';
+
+  @override
+  String get settingsScrollbarOnScroll => '滚动时显示';
+
+  @override
+  String get settingsScrollbarAlways => '始终显示';
 
   @override
   String get volumeKeysTitle => '长按音量键';
@@ -4860,4 +4869,40 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get volumeUpdateInterval => '更新间隔';
+
+  @override
+  String get clockHoursColor => '小时颜色';
+
+  @override
+  String get clockMinutesColor => '分钟颜色';
+
+  @override
+  String get clockColorMode => '时钟颜色模式';
+
+  @override
+  String get clockSingleColor => '时钟使用同一颜色';
+
+  @override
+  String get clockSplitColors => '时钟使用不同颜色';
+
+  @override
+  String get clockShowColon => '显示冒号';
+
+  @override
+  String get appLaunchGroup => '启动';
+
+  @override
+  String get appManagementGroup => '应用管理';
+
+  @override
+  String get appCheckProcess => '检查状态';
+
+  @override
+  String get appProcessNotChecked => '尚未检查状态';
+
+  @override
+  String get appProcessRunning => '正在运行';
+
+  @override
+  String get appProcessStopped => '未运行';
 }

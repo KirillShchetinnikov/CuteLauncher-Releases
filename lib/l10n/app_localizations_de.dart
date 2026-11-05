@@ -10,7 +10,16 @@ class AppLocalizationsDe extends AppLocalizations {
   AppLocalizationsDe([String locale = 'de']) : super(locale);
 
   @override
-  String get settingsScrollbarAlwaysVisible => 'Bildlaufleiste immer anzeigen';
+  String get settingsScrollbar => 'Bildlaufleiste';
+
+  @override
+  String get settingsScrollbarHidden => 'Vollständig ausblenden';
+
+  @override
+  String get settingsScrollbarOnScroll => 'Beim Scrollen anzeigen';
+
+  @override
+  String get settingsScrollbarAlways => 'Immer anzeigen';
 
   @override
   String get volumeKeysTitle => 'Lautstärketasten gedrückt halten';
@@ -5157,4 +5166,40 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get volumeUpdateInterval => 'Aktualisierungsintervall';
+
+  @override
+  String get clockHoursColor => 'Stundenfarbe';
+
+  @override
+  String get clockMinutesColor => 'Minutenfarbe';
+
+  @override
+  String get clockColorMode => 'Farbmodus der Uhr';
+
+  @override
+  String get clockSingleColor => 'Eine Uhrenfarbe';
+
+  @override
+  String get clockSplitColors => 'Unterschiedliche Uhrenfarben';
+
+  @override
+  String get clockShowColon => 'Doppelpunkt anzeigen';
+
+  @override
+  String get appLaunchGroup => 'Start';
+
+  @override
+  String get appManagementGroup => 'App verwalten';
+
+  @override
+  String get appCheckProcess => 'Status prüfen';
+
+  @override
+  String get appProcessNotChecked => 'Status nicht geprüft';
+
+  @override
+  String get appProcessRunning => 'Wird ausgeführt';
+
+  @override
+  String get appProcessStopped => 'Wird nicht ausgeführt';
 }

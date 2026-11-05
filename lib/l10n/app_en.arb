@@ -1,5 +1,8 @@
 {
-  "settingsScrollbarAlwaysVisible": "Always show scrollbar",
+  "settingsScrollbar": "Scrollbar",
+  "settingsScrollbarHidden": "Hide completely",
+  "settingsScrollbarOnScroll": "Show while scrolling",
+  "settingsScrollbarAlways": "Always show",
   "volumeKeysTitle": "Hold volume buttons",
   "volumeKeysMode": "Workaround mode",
   "volumeKeysAuto": "Auto: while the panel is visible",
@@ -1671,5 +1674,17 @@
   "appSections": "App sections",
   "noAppSections": "This app is not in any section.",
   "volumeWidgetSettings": "Volume settings",
-  "volumeUpdateInterval": "Update interval"
+  "volumeUpdateInterval": "Update interval",
+  "clockHoursColor": "Hours color",
+  "clockMinutesColor": "Minutes color",
+  "clockColorMode": "Clock color mode",
+  "clockSingleColor": "One clock color",
+  "clockSplitColors": "Separate clock colors",
+  "clockShowColon": "Show colon",
+  "appLaunchGroup": "Launch",
+  "appManagementGroup": "Manage app",
+  "appCheckProcess": "Check status",
+  "appProcessNotChecked": "Status not checked",
+  "appProcessRunning": "Running",
+  "appProcessStopped": "Not running"
 }

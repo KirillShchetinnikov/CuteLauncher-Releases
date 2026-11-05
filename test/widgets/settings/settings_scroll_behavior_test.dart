@@ -1,4 +1,5 @@
 import 'package:flauncher/providers/appearance_service.dart';
+import 'package:flauncher/tile_appearance.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -51,7 +52,7 @@ void main() {
   }
 
   for (final page in [false, true]) {
-    testWidgets('scrollbar persists only with overflow; page=$page', (
+    testWidgets('scrollbar modes preserve scrolling; page=$page', (
       tester,
     ) async {
       SharedPreferences.setMockInitialValues({});
@@ -108,11 +109,11 @@ void main() {
       height.value = 1000;
       await tester.pumpAndSettle();
       expect(await paintsThumb(tester), isTrue);
-      await appearance.set('settingsScrollbarAlwaysVisible', false);
+      await appearance.set('settingsScrollbarMode', 'onScroll');
       await tester.pumpAndSettle();
       expect(await paintsThumb(tester), isFalse);
       final reloaded = AppearanceService(prefs);
-      expect(reloaded.appearance.settingsScrollbarAlwaysVisible, isFalse);
+      expect(reloaded.appearance.settingsScrollbarMode, SettingsScrollbarMode.onScroll);
       reloaded.dispose();
       await tester.drag(
         find.byType(SingleChildScrollView),
@@ -126,8 +127,24 @@ void main() {
       await tester.pumpAndSettle();
       expect(await paintsThumb(tester), isFalse);
       final scrollable = tester.state<ScrollableState>(find.byType(Scrollable));
+      await tester.drag(find.byType(SingleChildScrollView), const Offset(0, -100));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(await paintsThumb(tester), isTrue);
+
+      final beforeHiding = scrollable.position.pixels;
+      await appearance.set('settingsScrollbarMode', 'hidden');
+      await tester.pumpAndSettle();
+      expect(await paintsThumb(tester), isFalse);
+      expect(scrollable.position.pixels, beforeHiding);
+      await tester.drag(find.byType(SingleChildScrollView), const Offset(0, -100));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(await paintsThumb(tester), isFalse);
+      expect(scrollable.position.pixels, greaterThan(beforeHiding));
+
       final offset = scrollable.position.pixels;
-      await appearance.resetFields(['settingsScrollbarAlwaysVisible']);
+      await appearance.resetFields(['settingsScrollbarMode']);
       await tester.pumpAndSettle();
       expect(await paintsThumb(tester), isTrue);
       expect(scrollable.position.pixels, offset);

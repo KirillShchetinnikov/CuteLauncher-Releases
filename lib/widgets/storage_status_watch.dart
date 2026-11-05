@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/storage_status_service.dart';
 
-/// Keeps detection alive even when no drive icon is currently present.
+/// Keeps storage detection active while a panel or its object settings need it.
 class StorageStatusWatch extends StatefulWidget {
   final bool visible;
   final Widget child;

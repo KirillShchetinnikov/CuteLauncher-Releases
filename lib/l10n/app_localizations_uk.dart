@@ -10,8 +10,16 @@ class AppLocalizationsUk extends AppLocalizations {
   AppLocalizationsUk([String locale = 'uk']) : super(locale);
 
   @override
-  String get settingsScrollbarAlwaysVisible =>
-      'Завжди показувати смугу прокручування';
+  String get settingsScrollbar => 'Смуга прокручування';
+
+  @override
+  String get settingsScrollbarHidden => 'Повністю приховувати';
+
+  @override
+  String get settingsScrollbarOnScroll => 'Показувати під час прокручування';
+
+  @override
+  String get settingsScrollbarAlways => 'Показувати завжди';
 
   @override
   String get volumeKeysTitle => 'Утримання гучності';
@@ -5113,4 +5121,40 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get volumeUpdateInterval => 'Інтервал оновлення';
+
+  @override
+  String get clockHoursColor => 'Колір годин';
+
+  @override
+  String get clockMinutesColor => 'Колір хвилин';
+
+  @override
+  String get clockColorMode => 'Режим кольору годинника';
+
+  @override
+  String get clockSingleColor => 'Один колір годинника';
+
+  @override
+  String get clockSplitColors => 'Різні кольори годинника';
+
+  @override
+  String get clockShowColon => 'Показувати двокрапку';
+
+  @override
+  String get appLaunchGroup => 'Запуск';
+
+  @override
+  String get appManagementGroup => 'Керування застосунком';
+
+  @override
+  String get appCheckProcess => 'Перевірити стан';
+
+  @override
+  String get appProcessNotChecked => 'Стан не перевірено';
+
+  @override
+  String get appProcessRunning => 'Запущено';
+
+  @override
+  String get appProcessStopped => 'Не запущено';
 }

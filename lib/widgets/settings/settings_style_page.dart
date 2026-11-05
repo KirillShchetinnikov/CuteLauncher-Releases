@@ -6,6 +6,7 @@ import '../../l10n/app_localizations.dart';
 import '../../providers/appearance_service.dart';
 import '../../providers/settings_service.dart';
 import '../../launcher_defaults.dart';
+import '../../tile_appearance.dart';
 import '../launcher_dialog.dart';
 import '../action_notice.dart';
 import '../notice_placement.dart';
@@ -100,10 +101,18 @@ class _SettingsStylePageState extends State<SettingsStylePage> {
               title: Text(l.appKeyClick),
             ),
           if (!notifications)
-            RoundedSwitchListTile(
-              value: appearance.settingsScrollbarAlwaysVisible,
-              onChanged: (value) => service.set('settingsScrollbarAlwaysVisible', value),
-              title: Text(l.settingsScrollbarAlwaysVisible),
+            SettingsChoiceTile<SettingsScrollbarMode>(
+              title: l.settingsScrollbar,
+              value: appearance.settingsScrollbarMode,
+              options: SettingsScrollbarMode.values,
+              valueBelow: true,
+              label: (mode) => switch (mode) {
+                SettingsScrollbarMode.hidden => l.settingsScrollbarHidden,
+                SettingsScrollbarMode.onScroll => l.settingsScrollbarOnScroll,
+                SettingsScrollbarMode.always => l.settingsScrollbarAlways,
+              },
+              onChanged: (mode) =>
+                  service.set('settingsScrollbarMode', mode.name),
             ),
           if (notifications)
             SettingsChoiceTile<NoticeCorner>(

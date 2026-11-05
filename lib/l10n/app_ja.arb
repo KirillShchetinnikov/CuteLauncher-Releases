@@ -1,5 +1,8 @@
 {
-  "settingsScrollbarAlwaysVisible": "スクロールバーを常に表示",
+  "settingsScrollbar": "スクロールバー",
+  "settingsScrollbarHidden": "完全に非表示",
+  "settingsScrollbarOnScroll": "スクロール中に表示",
+  "settingsScrollbarAlways": "常に表示",
   "volumeKeysTitle": "音量ボタンの長押し",
   "volumeKeysMode": "対処方法",
   "volumeKeysAuto": "自動：パネル表示中",
@@ -1750,5 +1753,17 @@
   "appSections": "アプリのセクション",
   "noAppSections": "このアプリはどのセクションにも含まれていません。",
   "volumeWidgetSettings": "音量の設定",
-  "volumeUpdateInterval": "更新間隔"
+  "volumeUpdateInterval": "更新間隔",
+  "clockHoursColor": "時の色",
+  "clockMinutesColor": "分の色",
+  "clockColorMode": "時計の色モード",
+  "clockSingleColor": "時計を同じ色にする",
+  "clockSplitColors": "時計を別々の色にする",
+  "clockShowColon": "コロンを表示",
+  "appLaunchGroup": "起動",
+  "appManagementGroup": "アプリの管理",
+  "appCheckProcess": "状態を確認",
+  "appProcessNotChecked": "状態未確認",
+  "appProcessRunning": "実行中",
+  "appProcessStopped": "停止中"
 }

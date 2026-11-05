@@ -54,6 +54,19 @@ class PanelClockStyle {
   double get spacing => (values['spacing'] as num?)?.toDouble() ?? 12;
   bool get inheritBackground => values['inheritBackground'] != false;
   bool get animate => values['animate'] != false;
+  bool get showColon => values['showColon'] != false;
+  bool get splitColors => switch (values['splitColors']) {
+    bool split => split,
+    _ => values['hoursColor'] is int || values['minutesColor'] is int,
+  };
+  Color? get hoursColor =>
+      splitColors && values['hoursColor'] is int
+      ? Color(values['hoursColor'])
+      : null;
+  Color? get minutesColor =>
+      splitColors && values['minutesColor'] is int
+      ? Color(values['minutesColor'])
+      : null;
   double size(double inherited) =>
       (values['size'] as num?)?.toDouble() ?? inherited;
   double radius(double inherited) => inheritBackground
@@ -111,13 +124,20 @@ class PanelClockStyle {
                 'inheritBackground',
                 'glow',
                 'animate',
+                'showColon',
+                'splitColors',
                 'italic',
                 'clockOnRight',
               ].contains(key) &&
               value is bool) {
         result[key] = value;
       }
-      if (['color', 'backgroundColor'].contains(key) &&
+      if ([
+            'color',
+            'backgroundColor',
+            'hoursColor',
+            'minutesColor',
+          ].contains(key) &&
           value is int &&
           value >= 0 &&
           value <= 0xffffffff) {

@@ -1,5 +1,8 @@
 {
-  "settingsScrollbarAlwaysVisible": "Toujours afficher la barre de défilement",
+  "settingsScrollbar": "Barre de défilement",
+  "settingsScrollbarHidden": "Masquer complètement",
+  "settingsScrollbarOnScroll": "Afficher pendant le défilement",
+  "settingsScrollbarAlways": "Toujours afficher",
   "volumeKeysTitle": "Maintenir les touches de volume",
   "volumeKeysMode": "Mode de correction",
   "volumeKeysAuto": "Auto : tant que le panneau est visible",
@@ -1750,5 +1753,17 @@
   "appSections": "Sections de l’application",
   "noAppSections": "Cette application ne figure dans aucune section.",
   "volumeWidgetSettings": "Paramètres du volume",
-  "volumeUpdateInterval": "Intervalle d’actualisation"
+  "volumeUpdateInterval": "Intervalle d’actualisation",
+  "clockHoursColor": "Couleur des heures",
+  "clockMinutesColor": "Couleur des minutes",
+  "clockColorMode": "Mode de couleur de l’horloge",
+  "clockSingleColor": "Une couleur pour l’horloge",
+  "clockSplitColors": "Couleurs distinctes pour l’horloge",
+  "clockShowColon": "Afficher les deux-points",
+  "appLaunchGroup": "Lancement",
+  "appManagementGroup": "Gérer l’application",
+  "appCheckProcess": "Vérifier l’état",
+  "appProcessNotChecked": "État non vérifié",
+  "appProcessRunning": "En cours d’exécution",
+  "appProcessStopped": "Non exécutée"
 }

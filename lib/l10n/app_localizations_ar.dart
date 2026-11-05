@@ -10,7 +10,16 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
-  String get settingsScrollbarAlwaysVisible => 'إظهار شريط التمرير دائمًا';
+  String get settingsScrollbar => 'شريط التمرير';
+
+  @override
+  String get settingsScrollbarHidden => 'إخفاء تمامًا';
+
+  @override
+  String get settingsScrollbarOnScroll => 'إظهار أثناء التمرير';
+
+  @override
+  String get settingsScrollbarAlways => 'إظهار دائمًا';
 
   @override
   String get volumeKeysTitle => 'الضغط المطوّل على أزرار الصوت';
@@ -5059,4 +5068,40 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get volumeUpdateInterval => 'فاصل التحديث';
+
+  @override
+  String get clockHoursColor => 'لون الساعات';
+
+  @override
+  String get clockMinutesColor => 'لون الدقائق';
+
+  @override
+  String get clockColorMode => 'وضع ألوان الساعة';
+
+  @override
+  String get clockSingleColor => 'لون واحد للساعة';
+
+  @override
+  String get clockSplitColors => 'ألوان مختلفة للساعة';
+
+  @override
+  String get clockShowColon => 'إظهار النقطتين';
+
+  @override
+  String get appLaunchGroup => 'التشغيل';
+
+  @override
+  String get appManagementGroup => 'إدارة التطبيق';
+
+  @override
+  String get appCheckProcess => 'التحقق من الحالة';
+
+  @override
+  String get appProcessNotChecked => 'لم يتم التحقق من الحالة';
+
+  @override
+  String get appProcessRunning => 'قيد التشغيل';
+
+  @override
+  String get appProcessStopped => 'ليس قيد التشغيل';
 }

@@ -1,5 +1,8 @@
 {
-  "settingsScrollbarAlwaysVisible": "Завжди показувати смугу прокручування",
+  "settingsScrollbar": "Смуга прокручування",
+  "settingsScrollbarHidden": "Повністю приховувати",
+  "settingsScrollbarOnScroll": "Показувати під час прокручування",
+  "settingsScrollbarAlways": "Показувати завжди",
   "volumeKeysTitle": "Утримання гучності",
   "volumeKeysMode": "Спосіб виправлення",
   "volumeKeysAuto": "Авто: поки видно панель",
@@ -1750,5 +1753,17 @@
   "appSections": "Розділи застосунку",
   "noAppSections": "Застосунок не входить до жодного розділу.",
   "volumeWidgetSettings": "Налаштування гучності",
-  "volumeUpdateInterval": "Інтервал оновлення"
+  "volumeUpdateInterval": "Інтервал оновлення",
+  "clockHoursColor": "Колір годин",
+  "clockMinutesColor": "Колір хвилин",
+  "clockColorMode": "Режим кольору годинника",
+  "clockSingleColor": "Один колір годинника",
+  "clockSplitColors": "Різні кольори годинника",
+  "clockShowColon": "Показувати двокрапку",
+  "appLaunchGroup": "Запуск",
+  "appManagementGroup": "Керування застосунком",
+  "appCheckProcess": "Перевірити стан",
+  "appProcessNotChecked": "Стан не перевірено",
+  "appProcessRunning": "Запущено",
+  "appProcessStopped": "Не запущено"
 }

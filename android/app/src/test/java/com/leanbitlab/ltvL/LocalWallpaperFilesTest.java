@@ -7,7 +7,9 @@ import android.os.Environment;
 import android.os.Looper;
 import io.flutter.plugin.common.MethodChannel;
 import java.io.File;
+import java.nio.file.FileSystemException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -42,6 +44,27 @@ public class LocalWallpaperFilesTest {
 
     private static File folder() throws Exception {
         return Files.createTempDirectory(Environment.getExternalStorageDirectory().toPath(), "wallpapers-").toFile().getCanonicalFile();
+    }
+
+    private static void linkDirectory(Path link, Path target) throws Exception {
+        try {
+            Files.createSymbolicLink(link, target);
+        } catch (FileSystemException error) {
+            if (!System.getProperty("os.name").startsWith("Windows")) throw error;
+            // A junction also resolves to its target through File.getCanonicalFile().
+            var builder = new ProcessBuilder("powershell.exe", "-NoProfile", "-NonInteractive", "-Command",
+                    "New-Item -ItemType Junction -Path $env:CUTE_TEST_LINK "
+                            + "-Target $env:CUTE_TEST_TARGET -ErrorAction Stop | Out-Null");
+            builder.environment().put("CUTE_TEST_LINK", link.toString());
+            builder.environment().put("CUTE_TEST_TARGET", target.toString());
+            var process = builder.redirectErrorStream(true).start();
+            if (!process.waitFor(15, TimeUnit.SECONDS)) {
+                process.destroyForcibly();
+                fail("Creating the test junction timed out");
+            }
+            assertEquals(new String(process.getInputStream().readAllBytes()), 0, process.exitValue());
+        }
+        assertEquals(target.toFile().getCanonicalFile(), link.toFile().getCanonicalFile());
     }
 
     @Test public void everyPickerKindFiltersExtensionsAndRejectsUnrelatedFiles() {
@@ -120,14 +143,20 @@ public class LocalWallpaperFilesTest {
     @Test public void recursionDoesNotFollowLinksOutsideSelectedFolderOrLoop() throws Exception {
         File root = folder();
         File outside = folder();
+        Path nested = Files.createDirectory(root.toPath().resolve("nested"));
+        Path inside = Files.write(nested.resolve("inside.png"), new byte[]{1});
         Files.write(new File(outside, "outside.png").toPath(), new byte[]{1});
+        Path escape = root.toPath().resolve("escape");
+        Path loop = nested.resolve("loop");
         try {
-            Files.createSymbolicLink(new File(root, "escape").toPath(), outside.toPath());
-            Files.createSymbolicLink(new File(root, "loop").toPath(), root.toPath());
-        } catch (java.nio.file.FileSystemException error) {
-            org.junit.Assume.assumeNoException("Host does not permit symbolic links", error);
+            linkDirectory(escape, outside.toPath());
+            linkDirectory(loop, nested);
+            assertEquals(List.of(inside.toFile().toURI().toASCIIString()),
+                    LocalWallpaperFiles.images(root, true));
+        } finally {
+            Files.deleteIfExists(loop);
+            Files.deleteIfExists(escape);
         }
-        assertTrue(LocalWallpaperFiles.images(root, true).isEmpty());
     }
 
     @Test public void imageEnumerationIsBounded() throws Exception {

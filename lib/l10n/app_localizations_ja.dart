@@ -10,7 +10,16 @@ class AppLocalizationsJa extends AppLocalizations {
   AppLocalizationsJa([String locale = 'ja']) : super(locale);
 
   @override
-  String get settingsScrollbarAlwaysVisible => 'スクロールバーを常に表示';
+  String get settingsScrollbar => 'スクロールバー';
+
+  @override
+  String get settingsScrollbarHidden => '完全に非表示';
+
+  @override
+  String get settingsScrollbarOnScroll => 'スクロール中に表示';
+
+  @override
+  String get settingsScrollbarAlways => '常に表示';
 
   @override
   String get volumeKeysTitle => '音量ボタンの長押し';
@@ -4950,4 +4959,40 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get volumeUpdateInterval => '更新間隔';
+
+  @override
+  String get clockHoursColor => '時の色';
+
+  @override
+  String get clockMinutesColor => '分の色';
+
+  @override
+  String get clockColorMode => '時計の色モード';
+
+  @override
+  String get clockSingleColor => '時計を同じ色にする';
+
+  @override
+  String get clockSplitColors => '時計を別々の色にする';
+
+  @override
+  String get clockShowColon => 'コロンを表示';
+
+  @override
+  String get appLaunchGroup => '起動';
+
+  @override
+  String get appManagementGroup => 'アプリの管理';
+
+  @override
+  String get appCheckProcess => '状態を確認';
+
+  @override
+  String get appProcessNotChecked => '状態未確認';
+
+  @override
+  String get appProcessRunning => '実行中';
+
+  @override
+  String get appProcessStopped => '停止中';
 }

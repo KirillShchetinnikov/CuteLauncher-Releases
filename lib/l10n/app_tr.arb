@@ -1,5 +1,8 @@
 {
-  "settingsScrollbarAlwaysVisible": "Kaydırma çubuğunu her zaman göster",
+  "settingsScrollbar": "Kaydırma çubuğu",
+  "settingsScrollbarHidden": "Tamamen gizle",
+  "settingsScrollbarOnScroll": "Kaydırırken göster",
+  "settingsScrollbarAlways": "Her zaman göster",
   "volumeKeysTitle": "Ses düğmelerini basılı tutma",
   "volumeKeysMode": "Düzeltme yöntemi",
   "volumeKeysAuto": "Otomatik: panel görünürken",
@@ -1750,5 +1753,17 @@
   "appSections": "Uygulama bölümleri",
   "noAppSections": "Bu uygulama hiçbir bölümde yer almıyor.",
   "volumeWidgetSettings": "Ses düzeyi ayarları",
-  "volumeUpdateInterval": "Güncelleme aralığı"
+  "volumeUpdateInterval": "Güncelleme aralığı",
+  "clockHoursColor": "Saat rengi",
+  "clockMinutesColor": "Dakika rengi",
+  "clockColorMode": "Saat renk modu",
+  "clockSingleColor": "Saat için tek renk",
+  "clockSplitColors": "Saat için ayrı renkler",
+  "clockShowColon": "İki nokta üst üste göster",
+  "appLaunchGroup": "Başlatma",
+  "appManagementGroup": "Uygulamayı yönet",
+  "appCheckProcess": "Durumu kontrol et",
+  "appProcessNotChecked": "Durum kontrol edilmedi",
+  "appProcessRunning": "Çalışıyor",
+  "appProcessStopped": "Çalışmıyor"
 }

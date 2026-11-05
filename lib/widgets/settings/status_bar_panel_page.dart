@@ -32,8 +32,10 @@ import 'package:provider/provider.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 
 import '../../providers/settings_service.dart';
+import '../../providers/storage_status_service.dart';
 import '../../providers/tv_inputs_service.dart';
 import '../rounded_switch_list_tile.dart';
+import '../storage_status_watch.dart';
 import 'focusable_settings_tile.dart';
 import 'panel_order_page.dart';
 import 'notifications_settings_page.dart';
@@ -47,7 +49,10 @@ class StatusBarObjectsPage extends StatelessWidget {
     final l = AppLocalizations.of(context)!;
     final s = context.watch<SettingsService>();
     final inputs = context.watch<TvInputsService?>();
-    return SettingsPageLayout(
+    final nasSupported = context.select<StorageStatusService?, bool>(
+      (storage) => storage?.state.nasSupported == true,
+    );
+    final page = SettingsPageLayout(
       title: Text(
         l.topPanelObjects,
         style: Theme.of(context).textTheme.titleLarge,
@@ -66,9 +71,13 @@ class StatusBarObjectsPage extends StatelessWidget {
             onChanged: s.setShowNetworkIndicatorInStatusBar,
             title: Text(l.showNetwork),
           ),
-          RoundedSwitchListTile(key: const ValueKey('show_nas'),
-            value: s.showNasInStatusBar, onChanged: s.setShowNasInStatusBar,
-            title: Text(l.networkStorageTitle)),
+          RoundedSwitchListTile(
+            key: const ValueKey('show_nas'),
+            enabled: nasSupported,
+            value: nasSupported && s.showNasInStatusBar,
+            onChanged: s.setShowNasInStatusBar,
+            title: Text(l.networkStorageTitle),
+          ),
           RoundedSwitchListTile(value: s.showVpnInStatusBar,
             onChanged: s.setShowVpnInStatusBar, title: Text(l.vpnTitle)),
           FocusableSettingsTile(title: Text(l.vpnSettings), leading: const Icon(Icons.vpn_key),
@@ -171,6 +180,10 @@ class StatusBarObjectsPage extends StatelessWidget {
           ),
         ],
       ),
+    );
+    return StorageStatusWatch(
+      visible: ModalRoute.isCurrentOf(context) != false,
+      child: page,
     );
   }
 }

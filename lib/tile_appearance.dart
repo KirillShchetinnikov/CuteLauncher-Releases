@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 
 const tileAppearanceKey = 'tile_appearance';
 
+enum SettingsScrollbarMode { hidden, onScroll, always }
+
 class TileAppearance {
   final Map<String, dynamic> values;
   const TileAppearance([this.values = const {}]);
@@ -130,7 +132,12 @@ class TileAppearance {
   List<String> get backgroundInformationOrder =>
       cleanBackgroundInformationOrder(values['panelBackgroundInformationOrder']);
   String get backgroundInformationAlignment => values['panelBackgroundInformationAlignment'] as String? ?? 'center';
-  bool get settingsScrollbarAlwaysVisible => values['settingsScrollbarAlwaysVisible'] != false;
+  SettingsScrollbarMode get settingsScrollbarMode =>
+      switch (values['settingsScrollbarMode']) {
+        'hidden' => SettingsScrollbarMode.hidden,
+        'onScroll' => SettingsScrollbarMode.onScroll,
+        _ => SettingsScrollbarMode.always,
+      };
   String get interfaceStyle => values['settingsInterfaceStyle'] as String? ?? 'standard';
   String get interfaceFont => values['settingsInterfaceFont'] as String? ??
       (interfaceStyle == 'standard' ? 'system' : 'outfit');
@@ -216,6 +223,7 @@ class TileAppearance {
       'panelFont': AppFonts.panelIds,
       'settingsInterfaceStyle': ['standard', 'glass', 'soft', 'outline'],
       'settingsInterfaceFont': AppFonts.interfaceIds,
+      'settingsScrollbarMode': ['hidden', 'onScroll', 'always'],
     };
     for (final entry in input.entries) {
       final key = entry.key;
@@ -325,9 +333,8 @@ class TileAppearance {
 
   static TileAppearance decode(String? source) {
     try {
-      return TileAppearance(
-        Map.unmodifiable(validValues(jsonDecode(source ?? '{}'))),
-      );
+      final values = validValues(jsonDecode(source ?? '{}'));
+      return TileAppearance(Map.unmodifiable(_migrateScrollbar(values)));
     } catch (_) {
       return const TileAppearance();
     }
@@ -341,6 +348,18 @@ class TileAppearance {
     } catch (_) {
       return current;
     }
-    return jsonEncode({...previous, ...validValues(input)});
+    return jsonEncode({...previous, ..._migrateScrollbar(validValues(input))});
+  }
+
+  static Map<String, dynamic> _migrateScrollbar(Map<String, dynamic> values) {
+    // Keep the old field valid on the wire, but resolve it before merging.
+    final legacy = values.remove('settingsScrollbarAlwaysVisible');
+    if (legacy is bool) {
+      values.putIfAbsent(
+        'settingsScrollbarMode',
+        () => legacy ? 'always' : 'onScroll',
+      );
+    }
+    return values;
   }
 }

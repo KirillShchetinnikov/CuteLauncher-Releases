@@ -1,5 +1,8 @@
 {
-  "settingsScrollbarAlwaysVisible": "Mostrar sempre a barra de rolagem",
+  "settingsScrollbar": "Barra de rolagem",
+  "settingsScrollbarHidden": "Ocultar completamente",
+  "settingsScrollbarOnScroll": "Mostrar durante a rolagem",
+  "settingsScrollbarAlways": "Mostrar sempre",
   "volumeKeysTitle": "Manter botões de volume",
   "volumeKeysMode": "Modo de correção",
   "volumeKeysAuto": "Auto: enquanto o painel estiver visível",
@@ -1750,5 +1753,17 @@
   "appSections": "Seções do aplicativo",
   "noAppSections": "Este aplicativo não está em nenhuma seção.",
   "volumeWidgetSettings": "Configurações de volume",
-  "volumeUpdateInterval": "Intervalo de atualização"
+  "volumeUpdateInterval": "Intervalo de atualização",
+  "clockHoursColor": "Cor das horas",
+  "clockMinutesColor": "Cor dos minutos",
+  "clockColorMode": "Modo de cor do relógio",
+  "clockSingleColor": "Uma cor para o relógio",
+  "clockSplitColors": "Cores diferentes para o relógio",
+  "clockShowColon": "Mostrar dois-pontos",
+  "appLaunchGroup": "Inicialização",
+  "appManagementGroup": "Gerir aplicação",
+  "appCheckProcess": "Verificar estado",
+  "appProcessNotChecked": "Estado não verificado",
+  "appProcessRunning": "Em execução",
+  "appProcessStopped": "Não está em execução"
 }

@@ -85,10 +85,19 @@ class PanelClockStylePage extends StatelessWidget {
           onPressed: () async {
             final chosen = await showLauncherDialog<(int?,)>(
               context: context,
-              builder: (_) =>
-                  ColorPaletteDialog(title: title, current: current.toARGB32()),
+              builder: (_) => ColorPaletteDialog(
+                title: title,
+                current: current.toARGB32(),
+                allowDefault: key == 'hoursColor' || key == 'minutesColor',
+              ),
             );
-            if (chosen != null && chosen.$1 != null) set(key, chosen.$1);
+            if (chosen != null) {
+              if (chosen.$1 != null) {
+                set(key, chosen.$1);
+              } else {
+                save({...clock.values}..remove(key));
+              }
+            }
           },
         );
     final fields = <Widget>[
@@ -126,7 +135,32 @@ class PanelClockStylePage extends StatelessWidget {
         label: (v) => '$v',
         onChanged: (v) => set('weight', v),
       ),
-      color(l.styleTextColor, 'color', textStyle.color!),
+      SettingsChoiceTile<bool>(
+        title: l.clockColorMode,
+        value: clock.splitColors,
+        options: const [false, true],
+        label: (split) => split ? l.clockSplitColors : l.clockSingleColor,
+        valueBelow: true,
+        onChanged: (split) => set('splitColors', split),
+      ),
+      if (clock.splitColors) ...[
+        color(
+          l.clockHoursColor,
+          'hoursColor',
+          clock.hoursColor ?? textStyle.color!,
+        ),
+        color(
+          l.clockMinutesColor,
+          'minutesColor',
+          clock.minutesColor ?? textStyle.color!,
+        ),
+      ] else
+        color(l.styleTextColor, 'color', textStyle.color!),
+      RoundedSwitchListTile(
+        title: Text(l.clockShowColon),
+        value: clock.showColon,
+        onChanged: (v) => set('showColon', v),
+      ),
       RoundedSwitchListTile(
         title: Text(l.clockGlow),
         value: clock.values['glow'] == true,

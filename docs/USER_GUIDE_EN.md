@@ -60,10 +60,13 @@ icon. Current errors and unavailable-state reasons remain visible. Choose an
 app language in Advanced independently of Android, or follow the system language.
 Back returns to the previous settings page. Expanding help should not replace
 the selected item's normal action.
-In settings, menus and dialogs, the scrollbar stays visible whenever the full
-list does not fit, helping you notice items below the visible area.
-To show the scrollbar only while scrolling and let it fade afterwards, turn off
-**Interface style → Settings style → Always show scrollbar**.
+When moving down with the remote, settings start scrolling as the selected
+item passes slightly below the middle of the window. Moving up uses a point
+slightly above the middle. At either end of the list, focus can reach the edge.
+Under **Interface style → Settings style → Scrollbar**, choose **Hide completely**,
+**Show while scrolling**, or **Always show** (the default). This applies to
+settings, menus, and dialogs. Scrolling works in all three modes. If you previously
+turned off persistent scrollbars, they still appear only while scrolling after the update.
 
 Clean installations start with Glass, an adaptive landscape, tile labels,
 and a grid of up to three visible rows of six apps. All Apps and nonempty feeds
@@ -196,7 +199,14 @@ their names in launcher order, including hidden sections with a hidden icon.
 The list updates when membership changes and explicitly states when no sections apply.
 Launch an available app, open Android app information,
 request uninstall where Android allows it, hide or restore it, add it to a
-category, and change its tile. Set a custom tile banner or restore the default. With ADB connected, Stop appears when an app process is detected and force-stops the app. CuteLauncher itself cannot be stopped from this menu.
+category, and change its tile. Actions are grouped into home screen, launch,
+appearance, and app management blocks. Set a custom tile banner or restore the
+default. Opening the panel does not connect to ADB. **Check status** in the
+management block runs a manual check through local ADB on the TV; Android may
+ask you to authorize debugging. The status is unknown until checked, then shows
+the last check result or an access error. **Stop** appears when an app process
+is detected; it force-stops the app and displays the verified command result.
+CuteLauncher itself cannot be stopped from this menu.
 
 Hiding an app removes it from automatic launcher lists; it does not disable
 the app in Android. The normal system-app list belongs to the launcher catalog.
@@ -373,6 +383,8 @@ not a check that the server's files can be reached. Firmware that hides volume
 or disk type information may prevent the corresponding icon from appearing.
 Quick settings has separate visibility switches; both icons can be moved
 using their panel's object order settings.
+On incompatible firmware, the network storage switch is disabled in both panels.
+On compatible firmware, you can turn it on before mounting a network share.
 
 
 Path: **Top panel → Objects / Object order**.
@@ -551,7 +563,12 @@ Cancel keeps the previous value; the existing format remains selected until you 
 only one or no elements remain. Quick settings has independent visibility and grouping.
 Shared size (10–24), font, style, weight, color and glow apply to the clock, date and
 weather in both panels; color and glow also affect the weather icon. Digit animation
-has its own switch. A grouped clock with date or weather offers left/right clock
+has its own switch. In panel and wallpaper appearance, **Clock color mode**
+switches between one **Text color** button and separate **Hours color** and
+**Minutes color** buttons. Separate colors are saved when you change modes.
+The default option in either separate palette restores the shared text color.
+Turning off **Show colon** preserves the gap
+between hours and minutes. A grouped clock with date or weather offers left/right clock
 position and spacing (0–32). The background and corner radius always match the other
 objects in the corresponding panel, including when only one element remains.
 

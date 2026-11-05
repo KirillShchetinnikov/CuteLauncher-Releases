@@ -10,8 +10,16 @@ class AppLocalizationsFr extends AppLocalizations {
   AppLocalizationsFr([String locale = 'fr']) : super(locale);
 
   @override
-  String get settingsScrollbarAlwaysVisible =>
-      'Toujours afficher la barre de défilement';
+  String get settingsScrollbar => 'Barre de défilement';
+
+  @override
+  String get settingsScrollbarHidden => 'Masquer complètement';
+
+  @override
+  String get settingsScrollbarOnScroll => 'Afficher pendant le défilement';
+
+  @override
+  String get settingsScrollbarAlways => 'Toujours afficher';
 
   @override
   String get volumeKeysTitle => 'Maintenir les touches de volume';
@@ -5152,4 +5160,40 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get volumeUpdateInterval => 'Intervalle d’actualisation';
+
+  @override
+  String get clockHoursColor => 'Couleur des heures';
+
+  @override
+  String get clockMinutesColor => 'Couleur des minutes';
+
+  @override
+  String get clockColorMode => 'Mode de couleur de l’horloge';
+
+  @override
+  String get clockSingleColor => 'Une couleur pour l’horloge';
+
+  @override
+  String get clockSplitColors => 'Couleurs distinctes pour l’horloge';
+
+  @override
+  String get clockShowColon => 'Afficher les deux-points';
+
+  @override
+  String get appLaunchGroup => 'Lancement';
+
+  @override
+  String get appManagementGroup => 'Gérer l’application';
+
+  @override
+  String get appCheckProcess => 'Vérifier l’état';
+
+  @override
+  String get appProcessNotChecked => 'État non vérifié';
+
+  @override
+  String get appProcessRunning => 'En cours d’exécution';
+
+  @override
+  String get appProcessStopped => 'Non exécutée';
 }

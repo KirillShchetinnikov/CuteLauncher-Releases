@@ -87,6 +87,7 @@ class BackgroundInformation extends StatelessWidget {
             key: const Key('background_clock'),
             textStyle: clock,
             animate: style.animate,
+            clockStyle: style,
             fixedTime: fixedTime,
           ),
         );

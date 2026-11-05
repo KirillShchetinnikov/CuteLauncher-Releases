@@ -143,37 +143,35 @@ class _LauncherSectionsPanelPageState extends State<LauncherSectionsPanelPage> {
                 for (var i = 0; i < hidden.length; i++)
                   _section(context, hidden[i], settingsService),
                 const Divider(),
-                Focus(
-                  canRequestFocus: false,
+                FocusableSettingsTile(
+                  focusNode: _addFocusNode,
+                  leading: const Icon(Icons.add),
+                  title: Text(localizations.addSection),
+                  onPressed: () => _openEditor(),
                   onKeyEvent: (_, event) {
-                    if (event is KeyDownEvent &&
-                        event.logicalKey == LogicalKeyboardKey.arrowUp) {
+                    if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
+                      return KeyEventResult.ignored;
+                    }
+                    if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
                       final sections = _navigationSections(settingsService);
                       if (sections.isNotEmpty) {
                         _getFocusNode(sections.last).requestFocus();
                       }
                       return KeyEventResult.handled;
                     }
-                    if (event is KeyDownEvent &&
-                        event.logicalKey == LogicalKeyboardKey.arrowDown) {
+                    if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
                       _resetFocusNode.requestFocus();
                       return KeyEventResult.handled;
                     }
                     return KeyEventResult.ignored;
                   },
-                  child: FocusableSettingsTile(
-                    focusNode: _addFocusNode,
-                    leading: const Icon(Icons.add),
-                    title: Text(localizations.addSection),
-                    onPressed: () => _openEditor(),
-                  ),
                 ),
                 FocusableSettingsTile(
                   focusNode: _resetFocusNode,
                   leading: const Icon(Icons.restore),
                   title: Text(localizations.resetSections),
                   onKeyEvent: (_, event) {
-                    if (event is KeyDownEvent &&
+                    if ((event is KeyDownEvent || event is KeyRepeatEvent) &&
                         event.logicalKey == LogicalKeyboardKey.arrowUp) {
                       _addFocusNode.requestFocus();
                       return KeyEventResult.handled;

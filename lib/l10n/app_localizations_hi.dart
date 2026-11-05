@@ -10,7 +10,16 @@ class AppLocalizationsHi extends AppLocalizations {
   AppLocalizationsHi([String locale = 'hi']) : super(locale);
 
   @override
-  String get settingsScrollbarAlwaysVisible => 'स्क्रॉलबार हमेशा दिखाएँ';
+  String get settingsScrollbar => 'स्क्रॉलबार';
+
+  @override
+  String get settingsScrollbarHidden => 'पूरी तरह छिपाएँ';
+
+  @override
+  String get settingsScrollbarOnScroll => 'स्क्रॉल करते समय दिखाएँ';
+
+  @override
+  String get settingsScrollbarAlways => 'हमेशा दिखाएँ';
 
   @override
   String get volumeKeysTitle => 'वॉल्यूम बटन दबाकर रखना';
@@ -5082,4 +5091,40 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get volumeUpdateInterval => 'अपडेट अंतराल';
+
+  @override
+  String get clockHoursColor => 'घंटों का रंग';
+
+  @override
+  String get clockMinutesColor => 'मिनटों का रंग';
+
+  @override
+  String get clockColorMode => 'घड़ी का रंग मोड';
+
+  @override
+  String get clockSingleColor => 'घड़ी का एक रंग';
+
+  @override
+  String get clockSplitColors => 'घड़ी के अलग-अलग रंग';
+
+  @override
+  String get clockShowColon => 'कोलन दिखाएँ';
+
+  @override
+  String get appLaunchGroup => 'लॉन्च';
+
+  @override
+  String get appManagementGroup => 'ऐप प्रबंधित करें';
+
+  @override
+  String get appCheckProcess => 'स्थिति जाँचें';
+
+  @override
+  String get appProcessNotChecked => 'स्थिति की जाँच नहीं हुई';
+
+  @override
+  String get appProcessRunning => 'चल रहा है';
+
+  @override
+  String get appProcessStopped => 'नहीं चल रहा है';
 }
