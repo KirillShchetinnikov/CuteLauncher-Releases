@@ -41,12 +41,24 @@ jobs:
           path: unsigned-apks
       - name: Verify unsigned inputs
         run: python3 .github/scripts/verify_apks.py unsigned-apks "$RELEASE_VERSION" "$RELEASE_BUILD"
+      - name: Read signing secrets from Bitwarden
+        if: vars.BW_KEYSTORE_BASE64_ID != ''
+        id: bitwarden
+        uses: bitwarden/sm-action@1238aae8fc64b212641190a9227c8a734ab1a793 # v3.0.1
+        with:
+          access_token: ${{ secrets.BW_ACCESS_TOKEN }}
+          set_env: 'false'
+          secrets: |
+            ${{ vars.BW_KEYSTORE_BASE64_ID }} > KEYSTORE_BASE64
+            ${{ vars.BW_KEYSTORE_PASSWORD_ID }} > KEYSTORE_PASSWORD
+            ${{ vars.BW_KEY_PASSWORD_ID }} > KEY_PASSWORD
+            ${{ vars.BW_KEY_ALIAS_ID }} > KEY_ALIAS
       - name: Sign with the permanent certificate
         env:
-          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          KEYSTORE_BASE64: ${{ (vars.BW_KEYSTORE_BASE64_ID == '' && secrets.KEYSTORE_BASE64) || steps.bitwarden.outputs.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ (vars.BW_KEYSTORE_BASE64_ID == '' && secrets.KEYSTORE_PASSWORD) || steps.bitwarden.outputs.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ (vars.BW_KEYSTORE_BASE64_ID == '' && secrets.KEY_ALIAS) || steps.bitwarden.outputs.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ (vars.BW_KEYSTORE_BASE64_ID == '' && secrets.KEY_PASSWORD) || steps.bitwarden.outputs.KEY_PASSWORD }}
         run: |
           python3 - <<'PY'
           import base64, os, pathlib
