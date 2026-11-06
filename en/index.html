@@ -17,6 +17,7 @@
   <link rel="icon" href="../assets/icon.png" type="image/png">
   <link rel="stylesheet" href="../styles.css">
   <script src="../gallery.js" defer></script>
+  <script src="../download.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#content">Skip to content</a>
@@ -26,7 +27,7 @@
       <nav class="site-nav" aria-label="Navigation"><a href="#screenshots">Screenshots</a><a href="#features">Features</a><a href="#install">Installation</a></nav>
       <div class="header-actions">
         <a class="language" href="../" hreflang="ru" lang="ru" aria-label="RU – Читать по-русски">RU</a>
-        <a class="header-download" href="https://github.com/KirillShchetinnikov/CuteLauncher-Releases/releases/latest">Download APK <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
+        <a class="header-download" href="https://github.com/KirillShchetinnikov/CuteLauncher-Releases/releases/latest" data-universal-apk>Download APK <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M5 16v4h14v-4"/></svg></a>
       </div>
     </div>
   </header>
@@ -38,11 +39,11 @@
             <p class="eyebrow"><span class="status-dot"></span>For Android TV and Google TV</p>
             <h1>Your home screen, <span>your style</span></h1>
             <p class="hero-intro">Put your favorite apps in one place, make it look the way you like, and control it from your remote. The home screen has no ad blocks.</p>
-            <div class="hero-actions">
-              <a class="button button-primary" href="https://github.com/KirillShchetinnikov/CuteLauncher-Releases/releases/latest"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M5 16v4h14v-4"/></svg>Download APK</a>
-              <a class="text-link" href="#screenshots">Explore screenshots <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></a>
+            <div class="download-actions">
+              <a class="button button-primary" href="https://github.com/KirillShchetinnikov/CuteLauncher-Releases/releases/latest" data-universal-apk><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M5 16v4h14v-4"/></svg>Download APK</a>
+              <a class="button button-secondary" href="https://github.com/KirillShchetinnikov/CuteLauncher-Releases/releases">Choose a version</a>
             </div>
-            <p class="hero-meta"><span>Android 9 or later</span><span>Open source</span></p>
+            <p class="hero-meta"><span>Android 9 or later</span><span>Open source</span><span><a href="#screenshots">Explore screenshots</a></span></p>
           </div>
           <figure class="hero-tv">
             <div class="tv-frame">
@@ -152,12 +153,15 @@
           <p class="eyebrow section-label"><span>03</span> Installation</p>
           <h2>Install it on your TV</h2>
           <p>For Android TV and Google TV televisions and streaming devices running Android 9 or later.</p>
-          <a class="button button-primary" href="https://github.com/KirillShchetinnikov/CuteLauncher-Releases/releases/latest"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M5 16v4h14v-4"/></svg>Download APK</a>
+          <div class="download-actions">
+            <a class="button button-primary" href="https://github.com/KirillShchetinnikov/CuteLauncher-Releases/releases/latest" data-universal-apk><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M5 16v4h14v-4"/></svg>Download APK</a>
+            <a class="button button-secondary" href="https://github.com/KirillShchetinnikov/CuteLauncher-Releases/releases">Choose a version</a>
+          </div>
           <a class="text-link" href="https://github.com/KirillShchetinnikov/CuteLauncher-Releases/blob/main/docs/USER_GUIDE_EN.md">User guide <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
         </div>
         <div>
           <ol class="install-steps">
-          <li><h3>Download the APK</h3><p>Open the latest release. Choose the universal APK if you are unsure which architecture your TV uses.</p></li>
+          <li><h3>Download the APK</h3><p>The Download APK button downloads the latest stable universal build. Other versions and builds are available in the release list.</p></li>
           <li><h3>Install it on your TV</h3><p>Open the APK on your TV. If prompted, allow installation from the source you used.</p></li>
           <li><h3>Set up your home screen</h3><p>Open CuteLauncher and arrange your apps. Selecting a default home app depends on your TV firmware.</p></li>
           </ol>
