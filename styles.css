@@ -195,17 +195,17 @@ h2 span { color: var(--lavender); }
   margin-top: 14px;
 }
 
-.hero-tv::before {
+.tv-frame::before {
   content: "";
   position: absolute;
   z-index: -1;
-  inset: -14px -14px 14px;
+  inset: -8px;
   border: 1px solid #c4baf13d;
   border-radius: 23px;
-  transform: rotate(-2deg);
 }
 
 .tv-frame {
+  position: relative;
   padding: 7px;
   background: linear-gradient(145deg, #bdb6e26b, #151523 35%, #171722 77%, #c3857e6b);
   border: 1px solid #d5ceff4d;
@@ -418,7 +418,6 @@ body:has(.lightbox[open]) { overflow: hidden; }
   .hero-grid { grid-template-columns: 1fr; gap: 34px; }
   h1 { font-size: clamp(2.85rem, 8.8vw, 4.55rem); }
   .hero-tv { margin-inline: 9px; }
-  .hero-tv::before { inset-inline: -9px; }
   .hero-intro { max-width: 54ch; }
   .gallery { grid-template-columns: 1fr; }
   .style-options { grid-template-columns: repeat(4, minmax(0, 1fr)); }
