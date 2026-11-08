@@ -1,4 +1,7 @@
+import 'settings_section.dart';
 import '../../information_placement.dart';
+import '../../information_formats.dart';
+import '../../theme/launcher_style.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -7,7 +10,10 @@ import '../../l10n/app_localizations.dart';
 import '../../providers/appearance_service.dart';
 import '../../providers/remote_panel_service.dart';
 import '../../providers/settings_service.dart';
+import '../launcher_dialog.dart';
+import '../action_notice.dart';
 import '../rounded_switch_list_tile.dart';
+import 'color_palette_dialog.dart';
 import 'date_time_format_page.dart';
 import 'background_information_order_page.dart';
 import 'focusable_settings_tile.dart';
@@ -16,8 +22,13 @@ import 'settings_page_layout.dart';
 import 'settings_route.dart';
 import 'weather_page.dart';
 import 'settings_choice_tile.dart';
-import 'settings_value_stepper.dart';
+import 'settings_color_swatch.dart';
+import 'settings_slider_tile.dart';
 import 'settings_help.dart';
+import 'reset_style_tile.dart';
+import 'information_weather_format_tile.dart';
+import 'weather_appearance_options.dart';
+import 'background_information_layout_control.dart';
 
 /// Object visibility is panel-specific; block settings are shared.
 class InformationObjectsSection extends StatelessWidget {
@@ -110,6 +121,13 @@ class InformationVisibility extends StatelessWidget {
                 _ => l.weather,
               },
               value: placement.values[id]!,
+              wideValue: true,
+              valueStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                letterSpacing: 0,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
               options: InformationPlacement.destinations,
               label: (value) => switch (value) {
                 'panel' => l.topPanel,
@@ -130,16 +148,32 @@ Widget _informationPage(
   BuildContext context,
   String title,
   Widget child,
-  String name,
-) => FocusableSettingsTile(
+  String name, {
+  IconData? icon,
+}) => FocusableSettingsTile(
   title: Text(title),
-  leading: const Icon(Icons.tune),
+  leading: icon == null ? null : Icon(icon),
   onPressed: () => Navigator.of(context).push(
     SettingsRoute(
       settings: RouteSettings(name: name),
       builder: (_) => child,
     ),
   ),
+);
+
+/// Short navigation lists keep a 48dp target and leave space between groups.
+Widget _informationNavigation(BuildContext context, Widget child) => Theme(
+  data: Theme.of(context).copyWith(
+    extensions: [
+      ...Theme.of(context).extensions.values
+          .where((value) => value is! LauncherStyle),
+      LauncherStyle.of(context).copyWith(
+        rowMinHeight: 48,
+        rowPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      ),
+    ],
+  ),
+  child: child,
 );
 
 class InformationSettingsPage extends StatelessWidget {
@@ -149,41 +183,37 @@ class InformationSettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
-    final placement = InformationPlacement(
-      context.watch<AppearanceService>().appearance,
-      context.watch<SettingsService>(),
-    );
-    return SettingsPageLayout(
-      title: Text(l.informationGroup),
-      child: ListView(
-        children: [
-          const InformationVisibility(),
-          _informationPage(
-            context,
-            l.informationPanelAppearance,
-            const PanelInformationSettingsPage(),
-            PanelInformationSettingsPage.routeName,
-          ),
-          if (placement.hasBackground)
+    return _informationNavigation(
+      context,
+      SettingsPageLayout(
+        title: Text(l.informationGroup),
+        child: ListView(
+          children: [
+            const InformationVisibility(),
+            const SizedBox(height: 12),
+            _informationPage(
+              context,
+              l.informationPanelAppearance,
+              const PanelInformationSettingsPage(),
+              PanelInformationSettingsPage.routeName,
+              icon: Icons.view_day_outlined,
+            ),
             _informationPage(
               context,
               l.backgroundInformationAppearance,
               const BackgroundInformationSettingsPage(),
               BackgroundInformationSettingsPage.routeName,
+              icon: Icons.wallpaper_outlined,
             ),
-          _informationPage(
-            context,
-            l.informationData,
-            const InformationDataSettingsPage(),
-            InformationDataSettingsPage.routeName,
-          ),
-          _informationPage(
-            context,
-            l.weatherSettings,
-            const WeatherPage(),
-            WeatherPage.routeName,
-          ),
-        ],
+            _informationPage(
+              context,
+              l.weatherSettings,
+              const WeatherPage(),
+              WeatherPage.routeName,
+              icon: Icons.cloud_outlined,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -228,14 +258,50 @@ class PanelInformationSettingsPage extends StatelessWidget {
   static const routeName = 'panel_information_settings';
   const PanelInformationSettingsPage({super.key});
   @override
+  Widget build(BuildContext context) => const InformationAppearancePage();
+}
+
+class BackgroundInformationSettingsPage extends StatelessWidget {
+  static const routeName = 'background_information_settings';
+  const BackgroundInformationSettingsPage({super.key});
+  @override
+  Widget build(BuildContext context) =>
+      const InformationAppearancePage(background: true);
+}
+
+class InformationAppearancePage extends StatelessWidget {
+  final bool background;
+  const InformationAppearancePage({super.key, this.background = false});
+  @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
+    Widget page(String label, String section) => _informationPage(
+      context,
+      label,
+      InformationSectionPage(background: background, section: section),
+      'information_${background ? 'background' : 'panel'}_$section',
+    );
     return SettingsPageLayout(
-      title: Text(l.informationPanelAppearance),
+      title: Text(
+        background
+            ? l.backgroundInformationAppearance
+            : l.informationPanelAppearance,
+      ),
+      showObscuredInformationPreview: !background,
       child: ListView(
-        children: const [
-          InformationGroupingControl(),
-          PanelClockStylePage(combined: true, embedded: true),
+        children: [
+          _informationPage(
+            context,
+            l.informationComposition,
+            InformationDataSettingsPage(background: background),
+            'information_${background ? 'background' : 'panel'}_formats',
+          ),
+          page(
+            background ? l.informationPositionSize : l.informationLayout,
+            'layout',
+          ),
+          page(l.informationTypography, 'typography'),
+          page(l.informationColors, 'colors'),
         ],
       ),
     );
@@ -244,80 +310,298 @@ class PanelInformationSettingsPage extends StatelessWidget {
 
 class InformationDataSettingsPage extends StatelessWidget {
   static const routeName = 'information_data_settings';
-  const InformationDataSettingsPage({super.key});
+  final bool background;
+  const InformationDataSettingsPage({super.key, this.background = false});
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
+    final service = context.watch<AppearanceService>();
+    final clock = background
+        ? service.appearance.backgroundInformationStyle
+        : service.appearance.informationStyle;
+    void setClock(String key, bool value) => service.set(
+      background ? 'panelBackgroundInformationStyle' : 'panelInformationStyle',
+      {...clock.values, key: value},
+    );
     return SettingsPageLayout(
-      title: Text(l.informationData),
+      title: Text(l.informationComposition),
+      showObscuredInformationPreview: false,
       child: ListView(
         children: [
-          const TimeFormatSettingsTile(),
-          const DateFormatSettingsTile(),
+          SettingsSection(
+            key: const ValueKey('information-time-section'),
+            title: l.informationTime,
+            children: [
+              TimeFormatSettingsTile(background: background),
+              RoundedSwitchListTile(
+                title: Text(l.clockShowColon),
+                value: clock.showColon,
+                onChanged: (value) => setClock('showColon', value),
+              ),
+              RoundedSwitchListTile(
+                title: Text(l.clockAnimate),
+                value: clock.animate,
+                onChanged: (value) => setClock('animate', value),
+              ),
+            ],
+          ),
+          SettingsSection(
+            key: const ValueKey('information-date-section'),
+            title: l.informationDate,
+            children: [DateFormatSettingsTile(background: background)],
+          ),
+          SettingsSection(
+            key: const ValueKey('information-weather-section'),
+            title: l.weather,
+            children: [
+              SettingsChoiceTile<bool>(
+                title: l.temperatureUnit,
+                value: context.watch<SettingsService>().informationWeather(background: background).fahrenheit,
+                options: const [false, true],
+                label: (value) => value ? l.fahrenheit : l.celsius,
+                onChanged: (value) async {
+                  final settings = context.read<SettingsService>();
+                  final current = settings.informationWeather(background: background);
+                  try {
+                    await settings.setInformationWeather(WeatherDisplayOptions(
+                      format: current.format, fahrenheit: value, warnings: current.warnings,
+                    ), background: background);
+                  } catch (_) {
+                    if (context.mounted) {
+                      showActionNotice(context, l.weatherTextSaveError, error: true);
+                    }
+                  }
+                },
+              ),
+              InformationWeatherFormatTile(background: background),
+            ],
+          ),
+          SettingsHelp(text: l.informationProfileHelp),
         ],
       ),
     );
   }
 }
 
-class BackgroundInformationSettingsPage extends StatelessWidget {
-  static const routeName = 'background_information_settings';
-  const BackgroundInformationSettingsPage({super.key});
+class InformationSectionPage extends StatelessWidget {
+  final bool background;
+  final String section;
+  const InformationSectionPage({
+    super.key,
+    required this.background,
+    required this.section,
+  });
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
     final service = context.watch<AppearanceService>();
-    final appearance = service.appearance;
-    return SettingsPageLayout(
-      title: Text(l.backgroundInformationAppearance),
+    final appearance = service.appearance.forInformation(
+      background: background,
+    );
+    String horizontalLabel(String value) => switch (value) {
+      'left' => l.settingsMenuLeft,
+      'right' => l.settingsMenuRight,
+      _ => l.selectionCenter,
+    };
+    const horizontalChoices = ['left', 'center', 'right'];
+    final title = switch (section) {
+      'layout' => background ? l.informationPositionSize : l.informationLayout,
+      'typography' => l.informationTypography,
+      _ => l.informationColors,
+    };
+    final page = SettingsPageLayout(
+      title: Text(title),
+      showObscuredInformationPreview: !background,
       child: ListView(
         children: [
-          SettingsHelp(text: l.informationBackgroundHelp),
-          RoundedSwitchListTile(
-            title: Text(l.informationAboveLandscape),
-            value: appearance.backgroundInformationAboveLandscape,
-            onChanged: (value) =>
-                service.set('panelBackgroundInformationAboveLandscape', value),
-          ),
-          RoundedSwitchListTile(
-            title: Text(l.informationAboveWeather),
-            value: appearance.backgroundInformationAboveWeather,
-            onChanged: (value) =>
-                service.set('panelBackgroundInformationAboveWeather', value),
-          ),
-          _informationPage(
-            context,
-            l.panelObjectOrder,
-            const BackgroundInformationOrderPage(),
-            BackgroundInformationOrderPage.routeName,
-          ),
-          SettingsChoiceTile<String>(
-            title: l.informationBackgroundAlignment,
-            value: appearance.backgroundInformationAlignment,
-            options: const ['left', 'center', 'right'],
-            label: (value) => switch (value) {
-              'left' => l.settingsMenuLeft,
-              'right' => l.settingsMenuRight,
-              _ => l.selectionCenter,
-            },
-            onChanged: (value) =>
-                service.set('panelBackgroundInformationAlignment', value),
-          ),
-          SettingsValueStepper(
-            title: l.informationSize,
-            value: appearance.backgroundInformationSize,
-            options: [for (var size = 48; size <= 144; size += 4) size],
-            label: (value) => '${(value as num).round()}',
-            onChanged: (value) =>
-                service.set('panelBackgroundInformationSize', value),
-          ),
-          const PanelClockStylePage(
-            combined: true,
-            background: true,
-            embedded: true,
-          ),
+          if (section == 'layout' && background) ...[
+            SettingsSection(
+              title: l.settingsGroupBlockPosition,
+              children: [
+                SettingsChoiceTile<String>(
+                  title: l.informationBackgroundPosition,
+                  value: appearance.backgroundInformationPosition,
+                  options: horizontalChoices,
+                  label: horizontalLabel,
+                  onChanged: (value) =>
+                      service.set('panelBackgroundInformationAlignment', value),
+                ),
+                SettingsSliderTile(
+                  title: l.informationBackgroundOffset,
+                  value: appearance.backgroundInformationOffset,
+                  options: [
+                    for (var offset = -100; offset <= 100; offset += 5) offset,
+                  ],
+                  label: (value) => '${value > 0 ? '+' : ''}${value.round()}%',
+                  sliderTextDirection: TextDirection.ltr,
+                  onChanged: (value) =>
+                      service.set('panelBackgroundInformationOffset', value),
+                ),
+                const BackgroundInformationLayoutControl.verticalOffset(),
+              ],
+            ),
+            SettingsSection(
+              title: l.settingsGroupBlockContent,
+              children: [
+                _informationPage(
+                  context,
+                  l.panelObjectOrder,
+                  const BackgroundInformationOrderPage(),
+                  BackgroundInformationOrderPage.routeName,
+                ),
+                SettingsChoiceTile<String>(
+                  title: l.informationBackgroundContentAlignment,
+                  value: appearance.backgroundInformationAlignment,
+                  options: horizontalChoices,
+                  label: horizontalLabel,
+                  onChanged: (value) => service.set(
+                    'panelBackgroundInformationContentAlignment',
+                    value,
+                  ),
+                ),
+                const BackgroundInformationLayoutControl.size(),
+              ],
+            ),
+            SettingsSection(
+              title: l.settingsGroupLayers,
+              children: [
+                RoundedSwitchListTile(
+                  title: Text(l.informationAboveLandscape),
+                  value: appearance.backgroundInformationAboveLandscape,
+                  onChanged: (v) => service.set(
+                    'panelBackgroundInformationAboveLandscape',
+                    v,
+                  ),
+                ),
+                RoundedSwitchListTile(
+                  title: Text(l.informationAboveWeather),
+                  value: appearance.backgroundInformationAboveWeather,
+                  onChanged: (v) =>
+                      service.set('panelBackgroundInformationAboveWeather', v),
+                ),
+                SettingsHelp(
+                  text:
+                      '${l.informationAvoidOverlapHelp}\n\n${l.informationBackgroundHelp}',
+                ),
+              ],
+            ),
+            ResetStyleTile(
+              title: l.informationResetPositionSize,
+              onReset: service.resetBackgroundInformationLayout,
+            ),
+          ],
+          if (section == 'layout' && !background) ...[
+            const InformationGroupingControl(),
+            const PanelClockStylePage(
+              combined: true,
+              embedded: true,
+              section: InformationStyleSection.layout,
+            ),
+            SettingsHelp(text: l.weatherCompactLayout),
+          ],
+          if (section == 'typography')
+            PanelClockStylePage(
+              combined: true,
+              background: background,
+              embedded: true,
+              section: InformationStyleSection.typography,
+            ),
+          if (section == 'colors') ...[
+            SettingsSection(
+              key: const ValueKey('information-common-section'),
+              title: l.informationCommonAppearance,
+              children: [
+                PanelClockStylePage(
+                  combined: true,
+                  background: background,
+                  embedded: true,
+                  section: InformationStyleSection.effects,
+                ),
+              ],
+            ),
+            SettingsSection(
+              key: const ValueKey('information-time-section'),
+              title: l.informationTime,
+              children: [
+                PanelClockStylePage(
+                  combined: true,
+                  background: background,
+                  embedded: true,
+                  section: InformationStyleSection.colors,
+                ),
+              ],
+            ),
+            SettingsSection(
+              key: const ValueKey('information-date-section'),
+              title: l.informationDate,
+              children: [
+                FocusableSettingsTile(
+                  title: Text(l.informationDateColor),
+                  trailing: SettingsColorSwatch(
+                    inherited: appearance.dateTextColor == null,
+                    tooltip: appearance.dateTextColor == null
+                        ? l.defaultOption
+                        : l.informationDateColor,
+                    color:
+                        appearance.dateTextColor ??
+                        (background
+                                ? appearance.backgroundInformationStyle
+                                : appearance.informationStyle)
+                            .textStyle(appearance.panelTextStyle)
+                            .color ??
+                        appearance.panelTextColor,
+                  ),
+                  onPressed: () async {
+                    final picked = await showLauncherDialog<(int?,)>(
+                      context: context,
+                      builder: (_) => ColorPaletteDialog(
+                        title: l.informationDateColor,
+                        current: appearance.dateTextColor?.toARGB32(),
+                        allowDefault: true,
+                      ),
+                    );
+                    if (picked != null && context.mounted) {
+                      await service.setInformationAppearance(
+                        'dateTextColor',
+                        picked.$1,
+                        background: background,
+                      );
+                    }
+                  },
+                ),
+              ],
+            ),
+            SettingsSection(
+              key: const ValueKey('information-weather-section'),
+              title: l.weather,
+              children: [
+                WeatherAppearanceOptions(
+                  service: service,
+                  appearance: appearance,
+                  background: background,
+                ),
+              ],
+            ),
+            ResetStyleTile(
+              title: l.informationResetPositionSize,
+              onReset: () => service.resetInformationColors(background: background),
+            ),
+          ],
+          if (!background && section == 'typography')
+            ResetStyleTile(
+              title: l.informationResetTypography,
+              onReset: service.resetInformationTypography,
+            ),
         ],
       ),
     );
+    return background && section == 'layout'
+        ? SliderTheme(
+            data: SliderTheme.of(context).copyWith(
+              tickMarkShape: SliderTickMarkShape.noTickMark,
+            ),
+            child: page,
+          )
+        : page;
   }
 }

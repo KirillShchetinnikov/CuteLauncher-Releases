@@ -15,9 +15,11 @@ import 'package:flauncher/widgets/menu_header_action.dart';
 import 'package:flauncher/widgets/settings/information_settings_page.dart';
 import 'package:flauncher/providers/remote_panel_service.dart';
 import 'package:flauncher/weather_sources.dart';
+import 'package:flauncher/weather_text_format.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
+import 'package:flauncher/widgets/weather_glyph.dart';
 import 'package:flutter/services.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/widgets/focus_aware_app_bar.dart';
@@ -62,6 +64,7 @@ void main() {
     when(service.showWeatherInStatusBar).thenReturn(false);
     when(service.showWeatherWarnings).thenReturn(false);
     when(service.useFahrenheit).thenReturn(false);
+    when(service.weatherTextFormat).thenReturn(WeatherTextFormat.standard);
   }
 
   setUp(() {
@@ -69,6 +72,7 @@ void main() {
     mockTvInputsService = MockTvInputsService();
     mockNotificationsService = MockNotificationsService();
     mockWeatherService = MockWeatherService();
+    when(mockWeatherService.stale).thenReturn(false);
 
     setupSettingsDefaults(mockSettingsService);
 
@@ -171,7 +175,7 @@ void main() {
       ], child: createWidgetUnderTest()));
       await tester.pumpAndSettle();
       expect(find.byType(CombinedInformation), findsNothing);
-      final content = id == 'weather' ? find.byIcon(Icons.cloud_outlined)
+      final content = id == 'weather' ? find.byType(WeatherGlyph)
           : find.byKey(Key(id == 'time' ? 'statusbar_clock' : 'statusbar_date'));
       final item = tester.widget<TopPanelItem>(find.ancestor(of: content, matching: find.byType(TopPanelItem)));
       expect(item.backgroundColor, isNull);
@@ -201,7 +205,7 @@ void main() {
       ChangeNotifierProvider<WeatherService>.value(value: mockWeatherService),
     ], child: createWidgetUnderTest()));
     await tester.pumpAndSettle();
-    final item = tester.widget<TopPanelItem>(find.ancestor(of: find.byIcon(Icons.cloud_outlined),
+    final item = tester.widget<TopPanelItem>(find.ancestor(of: find.byType(WeatherGlyph),
       matching: find.byType(TopPanelItem)));
     item.focusNode!.requestFocus(); await tester.pump();
     await tester.sendKeyEvent(LogicalKeyboardKey.enter); await tester.pumpAndSettle();

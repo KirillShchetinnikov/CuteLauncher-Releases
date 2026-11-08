@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 
 /// Component materials only. Layout, user colours and traversal are independent.
-enum InterfaceStyle { standard, glass, soft, outline }
+enum InterfaceStyle { standard, glass, soft, outline, calm }
 
 InterfaceStyle interfaceStyleFrom(String? value) => InterfaceStyle.values
     .firstWhere((s) => s.name == value, orElse: () => InterfaceStyle.standard);
+
+extension InterfaceMaterial on InterfaceStyle {
+  bool get isGlass =>
+      this == InterfaceStyle.glass || this == InterfaceStyle.calm;
+}
 
 @immutable
 class InterfaceSkin extends ThemeExtension<InterfaceSkin> {
@@ -12,10 +17,13 @@ class InterfaceSkin extends ThemeExtension<InterfaceSkin> {
   const InterfaceSkin([this.style = InterfaceStyle.standard]);
   static InterfaceSkin of(BuildContext context) =>
       Theme.of(context).extension<InterfaceSkin>() ?? const InterfaceSkin();
+  bool get calm => style == InterfaceStyle.calm;
   bool get standard => style == InterfaceStyle.standard;
+  Color selectionColor(ColorScheme colors) =>
+      calm ? colors.primary : colors.onSurface;
   double get radius => switch (style) {
     InterfaceStyle.standard => 14,
-    InterfaceStyle.glass => 22,
+    InterfaceStyle.glass || InterfaceStyle.calm => 22,
     InterfaceStyle.soft => 18,
     InterfaceStyle.outline => 6,
   };
@@ -27,20 +35,28 @@ class InterfaceSkin extends ThemeExtension<InterfaceSkin> {
     Color? accent,
     double? cornerRadius,
     double borderWidth = 1.5,
+    bool quiet = false,
+    double focusTint = .18,
   }) {
     final focus = accent ?? foreground;
     final fill = focused
-        ? Color.alphaBlend(focus.withValues(alpha: .18), base)
+        ? Color.alphaBlend(focus.withValues(alpha: focusTint), base)
         : base;
     return BoxDecoration(
-      color: style == InterfaceStyle.glass ? null : fill,
-      gradient: style == InterfaceStyle.glass
+      color: style.isGlass ? null : fill,
+      gradient: style.isGlass
           ? LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
                 Color.alphaBlend(
-                  foreground.withValues(alpha: focused ? .20 : .08),
+                  foreground.withValues(
+                    alpha: focused
+                        ? .20
+                        : quiet
+                        ? .025
+                        : .08,
+                  ),
                   fill,
                 ).withValues(alpha: fill.a),
                 fill,
@@ -53,15 +69,15 @@ class InterfaceSkin extends ThemeExtension<InterfaceSkin> {
             ? focus
             : foreground.withValues(
                 alpha: style == InterfaceStyle.outline
-                    ? .30
-                    : style == InterfaceStyle.glass
-                    ? .16
+                    ? (quiet ? .10 : .30)
+                    : style.isGlass
+                    ? (quiet ? .04 : .16)
                     : 0,
               ),
         width: borderWidth,
       ),
       boxShadow: switch (style) {
-        InterfaceStyle.glass => [
+        InterfaceStyle.glass || InterfaceStyle.calm when focused || !quiet => [
           BoxShadow(
             color: Colors.black.withValues(alpha: focused ? .32 : .18),
             blurRadius: focused ? 12 : 6,
@@ -90,9 +106,15 @@ class InterfaceSkin extends ThemeExtension<InterfaceSkin> {
         (base ?? const ButtonStyle()).copyWith(
           shape: WidgetStatePropertyAll(shape),
           backgroundColor: WidgetStateProperty.resolveWith(
-            (states) => colors.onSurface.withValues(
-              alpha: states.contains(WidgetState.focused) ? .18 : .055,
-            ),
+            (states) =>
+                (calm &&
+                            states.contains(WidgetState.focused) &&
+                            !states.contains(WidgetState.disabled)
+                        ? colors.primary
+                        : colors.onSurface)
+                    .withValues(
+                      alpha: states.contains(WidgetState.focused) ? .18 : .055,
+                    ),
           ),
           side: WidgetStateProperty.resolveWith(
             (states) => BorderSide(
@@ -104,9 +126,7 @@ class InterfaceSkin extends ThemeExtension<InterfaceSkin> {
               width: states.contains(WidgetState.focused) ? 2 : 1,
             ),
           ),
-          elevation: WidgetStatePropertyAll(
-            style == InterfaceStyle.glass ? 3 : 0,
-          ),
+          elevation: WidgetStatePropertyAll(style.isGlass ? 3 : 0),
           shadowColor: const WidgetStatePropertyAll(Colors.black38),
         );
     return theme.copyWith(
@@ -213,11 +233,11 @@ class SkinSliderThumb extends SliderComponentShape {
       );
     } else {
       final path = Path()..addOval(Rect.fromCircle(center: center, radius: 12));
-      if (style == InterfaceStyle.glass) {
+      if (style.isGlass) {
         canvas.drawShadow(path, Colors.black54, 3, true);
       }
       canvas.drawCircle(center, 12, Paint()..color = color);
-      if (style == InterfaceStyle.glass) {
+      if (style.isGlass) {
         canvas.drawCircle(
           center.translate(0, -2),
           9,
@@ -248,7 +268,7 @@ class SkinSwitch extends StatelessWidget {
     final skin = InterfaceSkin.of(context);
     final colors = Theme.of(context).colorScheme;
     final outline = skin.style == InterfaceStyle.outline;
-    final glass = skin.style == InterfaceStyle.glass;
+    final glass = skin.style.isGlass;
     final radius = outline
         ? 5.0
         : glass

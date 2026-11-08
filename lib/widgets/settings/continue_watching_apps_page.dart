@@ -15,6 +15,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import 'settings_information.dart';
+import 'settings_read_only_value.dart';
+
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -39,7 +42,9 @@ class ContinueWatchingAppsPage extends StatelessWidget {
     final settings = context.read<SettingsService>();
     final source = context.read<WatchNextService>();
     final names = context.select<AppsService, Map<String, String>>(
-      (service) => {for (final app in service.applications) app.packageName: app.name},
+      (service) => {
+        for (final app in service.applications) app.packageName: app.name,
+      },
     );
     final blocked = context
         .select<SettingsService, List<String>>(
@@ -76,11 +81,23 @@ class ContinueWatchingAppsPage extends StatelessWidget {
               children: [
                 SettingsHelp(
                   title: l.continueWatchingApps,
-                  text: l.blockWatchNextHint,
+                  text: [
+                    l.blockWatchNextHint,
+                    if (blocked.isEmpty) l.allAppsCanContinueWatching,
+                    if (counts.isEmpty) l.noWatchNextApps,
+                  ].join('\n\n'),
                 ),
-                Text(l.blockedWatchNextCount(blocked.length)),
-                if (blocked.isEmpty) Text(l.allAppsCanContinueWatching),
-                if (counts.isEmpty) Text(l.noWatchNextApps),
+                SettingsReadOnlyValue(
+                  label: l.blockedAppsGroup,
+                  value: '${blocked.length}',
+                  wrapLines: true,
+                ),
+
+                if (counts.isEmpty)
+                  SettingsEmptyState(
+                    text: l.watchNextEmpty,
+                    icon: Icons.video_library_outlined,
+                  ),
                 if (blocked.isNotEmpty)
                   FocusableSettingsTile(
                     leading: const Icon(Icons.clear_all),

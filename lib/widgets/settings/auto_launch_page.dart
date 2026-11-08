@@ -1,6 +1,9 @@
+import 'settings_information.dart';
+import 'settings_section.dart';
 import 'settings_help.dart';
 import 'vpn_settings_page.dart';
 import '../../providers/tv_inputs_service.dart';
+
 import 'package:flauncher/widgets/launcher_dialog.dart';
 
 import 'settings_choice_tile.dart';
@@ -141,8 +144,15 @@ class _AutoLaunchPageState extends State<AutoLaunchPage>
       if (!mounted) return [];
       setState(() {
         _appsLoaded = true;
-        _apps = apps.where((app) => app['launchable'] != false && app['packageName'] != _ownPackage).toList()
-          ..sort((a, b) => '${a['name']}'.compareTo('${b['name']}'));
+        _apps =
+            apps
+                .where(
+                  (app) =>
+                      app['launchable'] != false &&
+                      app['packageName'] != _ownPackage,
+                )
+                .toList()
+              ..sort((a, b) => '${a['name']}'.compareTo('${b['name']}'));
       });
       return [
         for (final app in _apps) ('${app['packageName']}', '${app['name']}'),
@@ -160,7 +170,11 @@ class _AutoLaunchPageState extends State<AutoLaunchPage>
             .where((input) => input.type == TvInputType.hdmi),
       );
     });
-    return [for (final input in context.read<TvInputsService?>()?.present(_inputs) ?? _inputs) (input.id, input.label)];
+    return [
+      for (final input
+          in context.read<TvInputsService?>()?.present(_inputs) ?? _inputs)
+        (input.id, input.label),
+    ];
   }
 
   Future<String?> _pick(String mode) async {
@@ -181,9 +195,9 @@ class _AutoLaunchPageState extends State<AutoLaunchPage>
             }
             final values = snapshot.data ?? [];
             if (values.isEmpty) {
-              return Padding(
-                padding: const EdgeInsets.all(16),
-                child: Text(l.autoLaunchUnavailable),
+              return SettingsMessage(
+                text: l.autoLaunchUnavailable,
+                kind: SettingsMessageKind.error,
               );
             }
             return Column(
@@ -239,7 +253,8 @@ class _AutoLaunchPageState extends State<AutoLaunchPage>
         if (app['packageName'] == _config.app) return '${app['name']}';
       }
     } else {
-      for (final input in context.read<TvInputsService?>()?.present(_inputs) ?? _inputs) {
+      for (final input
+          in context.read<TvInputsService?>()?.present(_inputs) ?? _inputs) {
         if (input.matchesId(_config.input)) return input.label;
       }
     }
@@ -263,74 +278,95 @@ class _AutoLaunchPageState extends State<AutoLaunchPage>
         children: [
           if (_busy) const LinearProgressIndicator(),
           if (_failed || _status == 'unavailable')
-            Text(l.autoLaunchUnavailable),
-          if (_status == 'cancelled') Text(l.autoLaunchCancelled),
-          SettingsChoiceTile<String>(
-            title: l.autoLaunchTitle,
-            value: _config.mode,
-            options: const ['off', 'app', 'hdmi'],
-            autofocus: true,
-            enabled: !_busy,
-            label: (mode) => switch (mode) {
-              'app' => l.autoLaunchApp,
-              'hdmi' => l.autoLaunchHdmi,
-              _ => l.autoLaunchOff,
-            },
-            onChanged: _mode,
-          ),
-          if (_config.mode != 'off') ...[
-            FocusableSettingsTile(
-              title: Text(l.autoLaunchTarget),
-              trailing: Text(_target(l)),
-              onPressed: _busy
-                  ? null
-                  : () async {
-                      final target = await _pick(_config.mode);
-                      if (mounted && target != null) {
-                        await _save(
-                          _config.mode == 'app'
-                              ? _config.copyWith(app: target)
-                              : _config.copyWith(input: target),
-                        );
-                      }
-                    },
+            SettingsMessage(
+              text: l.autoLaunchUnavailable,
+              kind: SettingsMessageKind.error,
             ),
-            for (final event in [
-              (l.autoLaunchBoot, true),
-              (l.autoLaunchWake, false),
-            ])
-              RoundedSwitchListTile(
-                title: Text(event.$1),
+          if (_status == 'cancelled')
+            SettingsMessage(text: l.autoLaunchCancelled),
+          SettingsSection(
+            title: l.settingsGroupLaunchTarget,
+            children: [
+              SettingsChoiceTile<String>(
+                title: l.autoLaunchTitle,
+                value: _config.mode,
+                options: const ['off', 'app', 'hdmi'],
+                autofocus: true,
                 enabled: !_busy,
-                value: event.$2 ? _config.boot : _config.wake,
-                onChanged: (value) => _save(
-                  event.$2
-                      ? _config.copyWith(boot: value)
-                      : _config.copyWith(wake: value),
-                ),
+                label: (mode) => switch (mode) {
+                  'app' => l.autoLaunchApp,
+                  'hdmi' => l.autoLaunchHdmi,
+                  _ => l.autoLaunchOff,
+                },
+                onChanged: _mode,
               ),
-            if (_config.mode == 'app') RoundedSwitchListTile(
-              title: Text(l.autoLaunchWaitForInternet),
-              enabled: !_busy,
-              value: _config.waitForInternet,
-              onChanged: (value) => _save(_config.copyWith(waitForInternet: value)),
+              if (_config.mode != 'off')
+                FocusableSettingsTile(
+                  title: Text(l.autoLaunchTarget),
+                  trailing: Text(_target(l)),
+                  onPressed: _busy
+                      ? null
+                      : () async {
+                          final target = await _pick(_config.mode);
+                          if (mounted && target != null) {
+                            await _save(
+                              _config.mode == 'app'
+                                  ? _config.copyWith(app: target)
+                                  : _config.copyWith(input: target),
+                            );
+                          }
+                        },
+                ),
+            ],
+          ),
+          if (_config.mode != 'off')
+            SettingsSection(
+              title: l.settingsGroupLaunchTiming,
+              children: [
+                for (final event in [
+                  (l.autoLaunchBoot, true),
+                  (l.autoLaunchWake, false),
+                ])
+                  RoundedSwitchListTile(
+                    title: Text(event.$1),
+                    enabled: !_busy,
+                    value: event.$2 ? _config.boot : _config.wake,
+                    onChanged: (value) => _save(
+                      event.$2
+                          ? _config.copyWith(boot: value)
+                          : _config.copyWith(wake: value),
+                    ),
+                  ),
+                if (_config.mode == 'app')
+                  RoundedSwitchListTile(
+                    title: Text(l.autoLaunchWaitForInternet),
+                    enabled: !_busy,
+                    value: _config.waitForInternet,
+                    onChanged: (value) =>
+                        _save(_config.copyWith(waitForInternet: value)),
+                  ),
+                SettingsValueStepper(
+                  title: l.autoLaunchDelay,
+                  value: _config.delay,
+                  enabled: !_busy,
+                  options: ({0, 3, 5, 10, 20, 30, 60, _config.delay}.toList()
+                    ..sort()),
+                  label: (v) => l.autoLaunchSeconds(v as int),
+                  onChanged: (v) => _save(_config.copyWith(delay: v as int)),
+                ),
+                if (_config.mode == 'app')
+                  SettingsHelp(
+                    title: l.autoLaunchWaitForInternet,
+                    text: l.autoLaunchWaitForInternetHelp,
+                  ),
+              ],
             ),
-            SettingsValueStepper(
-              title: l.autoLaunchDelay,
-              value: _config.delay,
-              enabled: !_busy,
-              options: ({0, 3, 5, 10, 20, 30, 60, _config.delay}.toList()
-                ..sort()),
-              label: (v) => l.autoLaunchSeconds(v as int),
-              onChanged: (v) => _save(_config.copyWith(delay: v as int)),
-            ),
-          ],
-          const SizedBox(height: 16),
           SettingsHelp(title: l.autoLaunchTarget, text: l.autoLaunchHint),
-          if (_config.mode == 'app') SettingsHelp(title: l.autoLaunchWaitForInternet, text: l.autoLaunchWaitForInternetHelp),
           FocusableSettingsTile(
             title: Text(l.backgroundStartupTitle),
-            onPressed: () => Navigator.of(context).pushNamed(BackgroundStartupPage.routeName),
+            onPressed: () =>
+                Navigator.of(context)
+                    .pushNamed(BackgroundStartupPage.routeName),
           ),
           const VpnStartupSection(),
         ],

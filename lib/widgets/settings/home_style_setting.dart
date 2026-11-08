@@ -64,7 +64,8 @@ class HomeStyleSetting extends StatelessWidget {
     // The separate Watch Next renderer also consumes these global fields.
     if (categoryId == null &&
         (settings?.showContinueWatching ?? false) &&
-        {'sectionTitles', 'focusShadow', 'focusBorderStyle'}.contains(field)) {
+        ({'sectionTitles', 'focusShadow', 'focusBorderStyle'}.contains(field) ||
+            field == 'sectionTitleAligned' && service.appearance.sectionTitles)) {
       results.add(null);
     }
     final enabled = results.contains(null);

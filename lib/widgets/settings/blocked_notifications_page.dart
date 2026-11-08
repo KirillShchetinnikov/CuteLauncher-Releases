@@ -1,6 +1,3 @@
-import 'settings_help.dart';
-import 'settings_page_layout.dart';
-import '../application_list_icon.dart';
 /*
  * FLauncher
  * Copyright (C) 2026 LeanBitLab
@@ -18,6 +15,12 @@ import '../application_list_icon.dart';
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import 'settings_information.dart';
+import 'settings_read_only_value.dart';
+import 'settings_help.dart';
+import 'settings_page_layout.dart';
+import '../application_list_icon.dart';
+
 
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/providers/apps_service.dart';
@@ -76,10 +79,16 @@ class BlockedNotificationsPage extends StatelessWidget {
                   title: localizations.blockedAppsGroup,
                   text: localizations.notificationAppsHint,
                 ),
-                Text(
-                  '${localizations.blockedAppsGroup}: ${blockedPackages.length}',
+                SettingsReadOnlyValue(
+                  label: localizations.blockedAppsGroup,
+                  value: '${blockedPackages.length}',
+                  wrapLines: true,
                 ),
-                if (blockedPackages.isEmpty) Text(localizations.noBlockedApps),
+                if (blockedPackages.isEmpty)
+                  SettingsEmptyState(
+                    text: localizations.noBlockedApps,
+                    icon: Icons.notifications_none_rounded,
+                  ),
                 if (blockedPackages.isNotEmpty)
                   FocusableSettingsTile(
                     leading: const Icon(Icons.clear_all),

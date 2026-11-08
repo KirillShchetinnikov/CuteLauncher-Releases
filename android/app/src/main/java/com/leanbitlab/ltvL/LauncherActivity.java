@@ -282,6 +282,7 @@ public class LauncherActivity extends FlutterActivity {
         SleepTimerBridge.register(this, messenger, sIoExecutor);
         TvPowerBridge.register(this, messenger, sIoExecutor);
         CloudAccountBridge.register(this, messenger, sIoExecutor);
+        WeatherTokenBridge.register(this, messenger);
         DriveAccountBridge.register(this, messenger, sIoExecutor);
         NightOverlayService.register(this, messenger, sIoExecutor);
         TclBlueLight.register(this, messenger, sIoExecutor);
@@ -366,7 +367,9 @@ public class LauncherActivity extends FlutterActivity {
                     "watchNextAllowed", watchNextBridge.checkWatchNextPermission()));
                 case "filePickerAvailable" -> result.success(documentFiles.pickerAvailable(call.argument("operation")));
                 case "requestFileStorage" -> wallpaperFolder.local.request(Boolean.TRUE.equals(call.argument("write")), result);
-                case "browseLocalFiles" -> wallpaperFolder.local.browse(call.argument("path"), call.argument("kind"), result);
+                case "browseLocalFiles" -> wallpaperFolder.local.browse(call.argument("path"), call.argument("kind"),
+                    Boolean.TRUE.equals(call.argument("showHidden")), Boolean.TRUE.equals(call.argument("initial")),
+                    call.argument("startFolder"), result);
                 case "localDocumentOperation" -> new LocalDocumentFiles(this, sIoExecutor, wallpaperFolder.local)
                     .operate(call.argument("operation"), call.argument("selected"), call.argument("source"), call.argument("name"), result);
                 case "pickImageDocument" -> documentFiles.open("image/*", 8L * 1024 * 1024, result);
@@ -382,6 +385,7 @@ public class LauncherActivity extends FlutterActivity {
                 case "pickDriveClientDocument" -> documentFiles.open("*/*", 64L * 1024, result);
                 case "pickBackupDocument" -> documentFiles.open("*/*", 64L * 1024 * 1024, result);
                 case "pickWebhookDocument" -> documentFiles.open("text/plain", 64L * 1024, result);
+                case "pickWeatherTokenDocument", "pickWeatherServerDocument" -> documentFiles.openWeatherToken(result);
                 case "pickCleanerListDocument" -> documentFiles.openNamed("*/*", 256L * 1024, result);
                 case "pickCleanerDocument" -> documentFiles.open("*/*", 256L * 1024, result);
                 case "saveBackupDocument" -> documentFiles.save(call.argument("path"), call.argument("name"), result);

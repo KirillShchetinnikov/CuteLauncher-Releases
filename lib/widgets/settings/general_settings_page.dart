@@ -3,6 +3,8 @@ import 'package:flauncher/widgets/launcher_dialog.dart';
 import 'memory_page.dart';
 import 'diagnostics_page.dart';
 import 'settings_page_layout.dart';
+import 'settings_choice_tile.dart';
+import 'file_browser_settings_page.dart';
 import 'reset_settings_tile.dart';
 import 'render_compatibility_tile.dart';
 
@@ -69,6 +71,28 @@ class GeneralSettingsPage extends StatelessWidget {
             title: Text(l.appUpdates),
             onPressed: () =>
                 Navigator.of(context).pushNamed(UpdatesPage.routeName),
+          ),
+          Consumer<SettingsService>(
+            builder: (context, settings, _) =>
+                SettingsChoiceTile<FileManagerPreference>(
+                  title: l.fileManagerPreference,
+                  leading: const Icon(Icons.folder_outlined),
+                  value: settings.fileManagerPreference,
+                  options: FileManagerPreference.values,
+                  label: (value) => switch (value) {
+                    FileManagerPreference.ask => l.fileManagerAsk,
+                    FileManagerPreference.builtIn => l.fileManagerBuiltIn,
+                    FileManagerPreference.external => l.fileManagerExternal,
+                  },
+                  onChanged: settings.setFileManagerPreference,
+                ),
+          ),
+          FocusableSettingsTile(
+            title: Text(l.filePickerBuiltIn),
+            leading: const Icon(Icons.folder_open_outlined),
+            onPressed: () =>
+                Navigator.of(context)
+                    .pushNamed(FileBrowserSettingsPage.routeName),
           ),
           FocusableSettingsTile(
             autofocus: false,

@@ -1,3 +1,4 @@
+import 'settings_section.dart';
 import '../../document_files.dart';
 import '../../drive_client_configuration.dart';
 import 'settings_help.dart';
@@ -130,183 +131,203 @@ class _DriveBackupPageState extends State<DriveBackupPage>
       title: Text(l.backupGoogleDrive),
       child: ListView(
         children: [
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Row(
-                children: [
-                  Icon(
-                    service.configured
-                        ? Icons.cloud_done_outlined
-                        : Icons.cloud_off_outlined,
-                    color: service.configured
-                        ? Theme.of(context).colorScheme.primary
-                        : Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          l.backupDriveConnectionStatus,
-                          style: Theme.of(context).textTheme.labelLarge,
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          service.configured
-                              ? l.backupConfigured
-                              : l.backupNotConfigured,
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+          SettingsSection(
+            title: l.settingsGroupClient,
+            children: [
+              FocusableSettingsTile(
+                title: Text(l.backupDriveClientImport),
+                leading: const Icon(Icons.file_open_outlined),
+                enabled: !service.busy && !_importing,
+                onPressed: service.busy || _importing ? null : _importClient,
               ),
-            ),
-          ),
-          if (service.code.isNotEmpty) ...[
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: SelectableText(
-                service.code,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headlineMedium,
+              SizedBox(
+                height: 4,
+                child: _importing ? const LinearProgressIndicator() : null,
               ),
-            ),
-            SettingsReadOnlyValue(
-              label: 'URL',
-              value: service.verificationUrl,
-              textDirection: TextDirection.ltr,
-            ),
-            Center(
-              child: QrImageView(
-                data: service.verificationUrl,
-                size: 160,
-                backgroundColor: Colors.white,
+              FocusableSettingsTile(
+                title: Text(l.backupClientId),
+                enabled: !service.busy && !_importing,
+                valueIcon: Icons.edit_outlined,
+                trailing: Text(
+                  _id.isEmpty ? l.settingsValueNotSet : _id,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textDirection: TextDirection.ltr,
+                ),
+                onPressed: service.busy || _importing
+                    ? null
+                    : () => _edit(false),
               ),
-            ),
-          ],
-          FocusableSettingsTile(
-            title: Text(l.backupDriveClientImport),
-            leading: const Icon(Icons.file_open_outlined),
-            enabled: !service.busy && !_importing,
-            onPressed: service.busy || _importing ? null : _importClient,
-          ),
-          SizedBox(
-            height: 4,
-            child: _importing ? const LinearProgressIndicator() : null,
-          ),
-          FocusableSettingsTile(
-            title: Text(l.backupClientId),
-            enabled: !service.busy && !_importing,
-            valueIcon: Icons.edit_outlined,
-            trailing: Text(
-              _id.isEmpty ? l.settingsValueNotSet : _id,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              textDirection: TextDirection.ltr,
-            ),
-            onPressed: service.busy || _importing ? null : () => _edit(false),
-          ),
-          FocusableSettingsTile(
-            title: Text(l.backupClientSecret),
-            enabled: !service.busy && !_importing,
-            valueIcon: Icons.edit_outlined,
-            trailing: Text(_secret.isEmpty ? l.settingsValueNotSet : '••••••'),
-            onPressed: service.busy || _importing ? null : () => _edit(true),
-          ),
-          FocusableSettingsTile(
-            leading: const Icon(Icons.link),
-            title: Text(
-              service.configured
-                  ? l.backupDriveReconnect
-                  : l.backupDriveConnect,
-            ),
-            enabled: canConnect,
-            onPressed: !canConnect
-                ? null
-                : () async {
-                    try {
-                      await service.connect(_id, _secret);
-                    } catch (error) {
-                      if (context.mounted) {
-                        final message = cloudErrorMessage(
-                          l,
-                          error,
-                          drive: true,
-                        );
-                        if (message == null) return;
-                        showActionNotice(context, message, error: true);
-                      }
-                    }
-                  },
-          ),
-          if (service.busy) const LinearProgressIndicator(),
-          if (service.failed)
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Text(
-                cloudErrorMessage(
-                      l,
-                      CloudBackupException(service.failureCode ?? 'unknown'),
-                      drive: true,
-                    ) ??
-                    l.cloudFailed,
+              FocusableSettingsTile(
+                title: Text(l.backupClientSecret),
+                enabled: !service.busy && !_importing,
+                valueIcon: Icons.edit_outlined,
+                trailing: Text(
+                  _secret.isEmpty ? l.settingsValueNotSet : '••••••',
+                ),
+                onPressed: service.busy || _importing
+                    ? null
+                    : () => _edit(true),
               ),
-            ),
-          if (service.busy)
-            FocusableSettingsTile(
-              title: Text(l.cancel),
-              onPressed: service.cancel,
-            ),
-          FocusableSettingsTile(
-            leading: const Icon(Icons.link_off),
-            title: Text(l.cloudDisconnect),
-            enabled: canDisconnect,
-            onPressed: !canDisconnect
-                ? null
-                : () async {
-                    final confirmed = await showLauncherDialog<bool>(
-                      context: context,
-                      builder: (dialog) => LauncherAlertDialog(
-                        title: Text(l.cloudDisconnect),
-                        content: Text(l.cloudDisconnectConfirm),
-                        actions: [
-                          LauncherDialogButton(
-                            autofocus: true,
-                            isCancel: true,
-                            onPressed: () => Navigator.pop(dialog, false),
-                            child: Text(l.cancel),
-                          ),
-                          LauncherDialogButton(
-                            primary: true,
-                            onPressed: () => Navigator.pop(dialog, true),
-                            child: Text(l.cloudDisconnect),
-                          ),
-                        ],
+            ],
+          ),
+          SettingsSection(
+            title: l.settingsGroupAccount,
+            children: [
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Row(
+                    children: [
+                      Icon(
+                        service.configured
+                            ? Icons.cloud_done_outlined
+                            : Icons.cloud_off_outlined,
+                        color: service.configured
+                            ? Theme.of(context).colorScheme.primary
+                            : Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
-                    );
-                    if (confirmed != true || !mounted || service.busy) return;
-                    try {
-                      await service.disconnect();
-                      if (mounted) {
-                        setState(() {
-                          _id = '';
-                          _secret = '';
-                        });
-                      }
-                    } catch (_) {
-                      if (context.mounted) {
-                        showActionNotice(
-                          context,
-                          l.cloudStorageError,
-                          error: true,
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              l.backupDriveConnectionStatus,
+                              style: Theme.of(context).textTheme.labelLarge,
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              service.configured
+                                  ? l.backupConfigured
+                                  : l.backupNotConfigured,
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              if (service.code.isNotEmpty) ...[
+                Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: SelectableText(
+                    service.code,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.headlineMedium,
+                  ),
+                ),
+                SettingsReadOnlyValue(
+                  label: 'URL',
+                  value: service.verificationUrl,
+                  textDirection: TextDirection.ltr,
+                ),
+                Center(
+                  child: QrImageView(
+                    data: service.verificationUrl,
+                    size: 160,
+                    backgroundColor: Colors.white,
+                  ),
+                ),
+              ],
+              FocusableSettingsTile(
+                leading: const Icon(Icons.link),
+                title: Text(
+                  service.configured
+                      ? l.backupDriveReconnect
+                      : l.backupDriveConnect,
+                ),
+                enabled: canConnect,
+                onPressed: !canConnect
+                    ? null
+                    : () async {
+                        try {
+                          await service.connect(_id, _secret);
+                        } catch (error) {
+                          if (context.mounted) {
+                            final message = cloudErrorMessage(
+                              l,
+                              error,
+                              drive: true,
+                            );
+                            if (message == null) return;
+                            showActionNotice(context, message, error: true);
+                          }
+                        }
+                      },
+              ),
+              if (service.busy) const LinearProgressIndicator(),
+              if (service.failed)
+                Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Text(
+                    cloudErrorMessage(
+                          l,
+                          CloudBackupException(
+                            service.failureCode ?? 'unknown',
+                          ),
+                          drive: true,
+                        ) ??
+                        l.cloudFailed,
+                  ),
+                ),
+              if (service.busy)
+                FocusableSettingsTile(
+                  title: Text(l.cancel),
+                  onPressed: service.cancel,
+                ),
+              FocusableSettingsTile(
+                leading: const Icon(Icons.link_off),
+                title: Text(l.cloudDisconnect),
+                enabled: canDisconnect,
+                onPressed: !canDisconnect
+                    ? null
+                    : () async {
+                        final confirmed = await showLauncherDialog<bool>(
+                          context: context,
+                          builder: (dialog) => LauncherAlertDialog(
+                            title: Text(l.cloudDisconnect),
+                            content: Text(l.cloudDisconnectConfirm),
+                            actions: [
+                              LauncherDialogButton(
+                                autofocus: true,
+                                isCancel: true,
+                                onPressed: () => Navigator.pop(dialog, false),
+                                child: Text(l.cancel),
+                              ),
+                              LauncherDialogButton(
+                                primary: true,
+                                onPressed: () => Navigator.pop(dialog, true),
+                                child: Text(l.cloudDisconnect),
+                              ),
+                            ],
+                          ),
                         );
-                      }
-                    }
-                  },
+                        if (confirmed != true || !mounted || service.busy) {
+                          return;
+                        }
+                        try {
+                          await service.disconnect();
+                          if (mounted) {
+                            setState(() {
+                              _id = '';
+                              _secret = '';
+                            });
+                          }
+                        } catch (_) {
+                          if (context.mounted) {
+                            showActionNotice(
+                              context,
+                              l.cloudStorageError,
+                              error: true,
+                            );
+                          }
+                        }
+                      },
+              ),
+            ],
           ),
           SettingsHelp(title: l.backupManagement, text: l.backupDriveHelp),
         ],

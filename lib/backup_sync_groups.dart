@@ -127,6 +127,7 @@ BackupSyncGroup? backupSyncPartGroup(String part) {
   if (part == 'resources') return BackupSyncGroup.background;
   final key = part.substring('setting:'.length);
   if (key == backupSyncGroupsKey) return null;
+  if (key == 'information_panel_datetime' || key == 'information_background_datetime') return BackupSyncGroup.topPanel;
   if (key == 'weather_configuration') return BackupSyncGroup.weatherSource;
   if (key.startsWith('weather_') ||
       key == 'show_weather_in_status_bar' ||

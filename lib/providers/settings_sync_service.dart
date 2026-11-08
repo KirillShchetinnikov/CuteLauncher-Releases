@@ -10,11 +10,14 @@ import '../settings_import.dart';
 import '../settings_sync.dart';
 import '../tile_appearance.dart';
 import '../image_limits.dart';
+import '../weather_text_format.dart';
+import '../information_formats.dart';
 
 const _journalKey = 'settings_sync_pending';
 final _schema = <String, Object>{
   for (final key in syncSettingsKeys) key: false,
   for (final key in [
+    ...informationFormatKeys,
     'app_language',
     'accent_color',
     'app_banner_shape',
@@ -23,6 +26,7 @@ final _schema = <String, Object>{
     'time_format',
     'wifi_usage_period',
     'temperature_unit',
+    weatherTextFormatKey,
     'continue_watching_card_size',
     'card_focus_mode',
     'back_button_action',

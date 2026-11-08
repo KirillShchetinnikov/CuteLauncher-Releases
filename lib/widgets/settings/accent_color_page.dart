@@ -1,3 +1,4 @@
+import 'settings_option_tile.dart';
 import 'reset_style_tile.dart';
 import 'settings_page_layout.dart';
 /*
@@ -68,26 +69,17 @@ class AccentColorPage extends StatelessWidget {
           ),
           child: CustomScrollView(
             slivers: [
-              SliverGrid(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount:
-                      MediaQuery.textScalerOf(context).scale(16) > 22 ? 1 : 2,
-                  mainAxisExtent:
-                      MediaQuery.textScalerOf(context).scale(16) * 3 + 32,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                  childAspectRatio: 1.7,
-                ),
+              SliverList(
                 delegate: SliverChildBuilderDelegate((context, index) {
                   final (hex, name) = colorPresets(localizations)[index];
                   final isSelected = currentColorHex == hex;
 
-                  return _ColorTile(
-                    color: _hexToColor(hex),
-                    name: name,
-                    isSelected: isSelected,
-                    autofocus: index == 0,
-                    onTap: () => settingsService.setAccentColor(hex),
+                  return SettingsOptionTile(
+                    title: Text(name),
+                    leading: Icon(Icons.circle, color: _hexToColor(hex)),
+                    selected: isSelected,
+                    autofocus: isSelected,
+                    onPressed: () => settingsService.setAccentColor(hex),
                   );
                 }, childCount: colorPresets(localizations).length),
               ),
@@ -148,116 +140,6 @@ class AccentColorPage extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-}
-
-class _ColorTile extends StatefulWidget {
-  final Color color;
-  final String name;
-  final bool isSelected;
-  final bool autofocus;
-  final VoidCallback onTap;
-
-  const _ColorTile({
-    required this.color,
-    required this.name,
-    required this.isSelected,
-    required this.onTap,
-    this.autofocus = false,
-  });
-
-  @override
-  State<_ColorTile> createState() => _ColorTileState();
-}
-
-class _ColorTileState extends State<_ColorTile>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => _focused;
-  bool _focused = false;
-
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    final isLightColor = widget.color.computeLuminance() > 0.5;
-    final iconColor = isLightColor ? Colors.black : Colors.white;
-
-    return Actions(
-      actions: <Type, Action<Intent>>{
-        ActivateIntent: CallbackAction<ActivateIntent>(
-          onInvoke: (_) => widget.onTap(),
-        ),
-        ButtonActivateIntent: CallbackAction<ButtonActivateIntent>(
-          onInvoke: (_) => widget.onTap(),
-        ),
-      },
-      child: Focus(
-        debugLabel: widget.name,
-        autofocus: widget.autofocus,
-        onFocusChange: (hasFocus) {
-          setState(() => _focused = hasFocus);
-          updateKeepAlive();
-          if (hasFocus) {
-            Scrollable.ensureVisible(
-              context,
-              alignment: 0.5,
-              duration: const Duration(milliseconds: 100),
-            );
-          }
-        },
-        child: GestureDetector(
-          onTap: widget.onTap,
-          child: Container(
-            decoration: BoxDecoration(
-              color: widget.color.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(
-                color: _focused
-                    ? Theme.of(context).colorScheme.primary
-                    : (widget.isSelected ? widget.color : Colors.transparent),
-                width: _focused ? 2.5 : (widget.isSelected ? 2 : 0),
-              ),
-              boxShadow: _focused
-                  ? [
-                      BoxShadow(
-                        color: widget.color.withValues(alpha: 0.5),
-                        blurRadius: 8,
-                      ),
-                    ]
-                  : null,
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: 14,
-                  height: 14,
-                  decoration: BoxDecoration(
-                    color: widget.color,
-                    shape: BoxShape.circle,
-                  ),
-                  child: widget.isSelected
-                      ? Icon(Icons.check, color: iconColor, size: 10)
-                      : null,
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    widget.name,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontWeight: _focused || widget.isSelected
-                          ? FontWeight.bold
-                          : FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

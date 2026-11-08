@@ -28,6 +28,7 @@ final class LocalDocumentFiles {
             case "pickImageDocument" -> 8L * 1024 * 1024;
             case "pickWallpaperDocument" -> 256L * 1024 * 1024;
             case "pickWebhookDocument", "pickDriveClientDocument" -> 64L * 1024;
+            case "pickWeatherTokenDocument", "pickWeatherServerDocument" -> DocumentFiles.TOKEN_DOCUMENT_LIMIT;
             case "pickCleanerDocument", "pickCleanerListDocument" -> 256L * 1024;
             case "pickBackupDocument", "saveBackupDocument", "saveDiagnosticsDocument" -> 64L * 1024 * 1024;
             default -> throw new IllegalArgumentException("Unknown document operation");
@@ -38,7 +39,7 @@ final class LocalDocumentFiles {
         return switch (operation) {
             case "pickImageDocument" -> "image";
             case "pickWallpaperDocument" -> "media";
-            case "pickWebhookDocument", "pickCleanerDocument", "pickCleanerListDocument" -> "text";
+            case "pickWebhookDocument", "pickWeatherTokenDocument", "pickWeatherServerDocument", "pickCleanerDocument", "pickCleanerListDocument" -> "text";
             case "pickBackupDocument", "pickDriveClientDocument" -> "document";
             default -> throw new IllegalArgumentException("Unknown import operation");
         };
@@ -101,16 +102,21 @@ final class LocalDocumentFiles {
                     if (!input.isFile() || !input.canRead()) throw new IOException("File unavailable");
                     if (!LocalWallpaperFiles.matches(input, kind(operation)))
                         throw new IOException("Unsupported file type");
-                    temporary = File.createTempFile("selected-document-", ".bin", activity.getCacheDir());
-                    copy(input, temporary, maximum);
-                    reply = "pickCleanerListDocument".equals(operation)
-                        ? Map.of("path", temporary.getPath(), "name", input.getName()) : temporary.getPath();
-                    temporary = null; // Ownership passes to the Dart caller.
+                    if ("pickWeatherTokenDocument".equals(operation) || "pickWeatherServerDocument".equals(operation)) {
+                        reply = DocumentFiles.readWeatherToken(new FileInputStream(input));
+                    } else {
+                        temporary = File.createTempFile("selected-document-", ".bin", activity.getCacheDir());
+                        copy(input, temporary, maximum);
+                        reply = "pickCleanerListDocument".equals(operation)
+                            ? Map.of("path", temporary.getPath(), "name", input.getName()) : temporary.getPath();
+                        temporary = null; // Ownership passes to the Dart caller.
+                    }
                 }
                 Object value = reply;
                 new Handler(Looper.getMainLooper()).post(() -> result.success(value));
             } catch (Exception error) {
-                String code = error instanceof TooLargeException ? "document_too_large" : "document_failed";
+                String code = error instanceof TooLargeException || error instanceof DocumentFiles.DocumentTooLargeException
+                    ? "document_too_large" : "document_failed";
                 new Handler(Looper.getMainLooper()).post(() -> result.error(code, "Local document operation failed", DiagnosticErrorDetails.from(error)));
             } finally {
                 if (temporary != null) temporary.delete();

@@ -65,6 +65,9 @@ class SettingsPanelStyle extends StatelessWidget {
         colorScheme: theme.colorScheme.copyWith(
           surface: surface,
           onSurface: foreground,
+          onSurfaceVariant: appearance?.color('settingsTextColor') == null
+              ? theme.colorScheme.onSurfaceVariant
+              : foreground,
         ),
         textTheme: appearance?.color('settingsTextColor') == null
             ? theme.textTheme

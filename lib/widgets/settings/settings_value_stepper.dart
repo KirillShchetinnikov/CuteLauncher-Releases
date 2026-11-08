@@ -1,3 +1,5 @@
+import 'settings_adjustment_semantics.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -18,6 +20,7 @@ class SettingsValueStepper extends StatelessWidget {
   final bool valueBelow;
   final bool enabled;
   final bool useSlider;
+  final bool inlineChoices;
   const SettingsValueStepper({
     super.key,
     required this.title,
@@ -30,12 +33,14 @@ class SettingsValueStepper extends StatelessWidget {
     this.valueBelow = false,
     this.enabled = true,
     this.useSlider = true,
+    this.inlineChoices = false,
   });
 
   @override
   Widget build(BuildContext context) {
     if (options.isEmpty) return const SizedBox.shrink();
-    if (!options.every((option) => option == null || option is num)) {
+    if (!inlineChoices &&
+        !options.every((option) => option == null || option is num)) {
       return SettingsChoiceTile<dynamic>(
         leading: leading,
         title: title,
@@ -47,7 +52,9 @@ class SettingsValueStepper extends StatelessWidget {
         autofocus: autofocus,
       );
     }
-    if (useSlider && options.length > 10 && options.every((option) => option is num)) {
+    if (useSlider &&
+        options.length > 10 &&
+        options.every((option) => option is num)) {
       return SettingsSliderTile(
         title: title,
         value: value as num,
@@ -81,7 +88,10 @@ class SettingsValueStepper extends StatelessWidget {
     Widget arrow(bool enabled, IconData icon, int direction) => GestureDetector(
       onTap: enabled ? () => change(direction) : null,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+        padding: EdgeInsets.symmetric(
+          horizontal: inlineChoices ? 4 : 8,
+          vertical: 12,
+        ),
         child: Icon(
           icon,
           size: 20,
@@ -91,33 +101,34 @@ class SettingsValueStepper extends StatelessWidget {
         ),
       ),
     );
-    return Focus(
-      canRequestFocus: false,
-      onKeyEvent: (_, event) {
-        if (enabled && (event is KeyDownEvent || event is KeyRepeatEvent)) {
-          if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
-            change(-1);
-            return KeyEventResult.handled;
+    return SettingsAdjustmentSemantics(
+      enabled: enabled,
+      label: title,
+      value: label(value),
+      increasedValue: canIncrease ? label(options[index + 1]) : null,
+      decreasedValue: canDecrease ? label(options[index - 1]) : null,
+      onDecrease: canDecrease ? () => change(-1) : null,
+      onIncrease: canIncrease ? () => change(1) : null,
+      child: FocusableSettingsTile(
+        onKeyEvent: (_, event) {
+          if (enabled && (event is KeyDownEvent || event is KeyRepeatEvent)) {
+            if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+              change(-1);
+              return KeyEventResult.handled;
+            }
+            if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+              change(1);
+              return KeyEventResult.handled;
+            }
           }
-          if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
-            change(1);
-            return KeyEventResult.handled;
-          }
-        }
-        return KeyEventResult.ignored;
-      },
-      child: Semantics(
-        label: title,
-        value: label(value),
-        increasedValue: canIncrease ? label(options[index + 1]) : null,
-        decreasedValue: canDecrease ? label(options[index - 1]) : null,
-        onDecrease: canDecrease ? () => change(-1) : null,
-        onIncrease: canIncrease ? () => change(1) : null,
-        child: FocusableSettingsTile(
-          leading: leading,
-          autofocus: autofocus,
-          enabled: enabled,
-          title: valueBelow
+          return KeyEventResult.ignored;
+        },
+        semanticContainer: false,
+        leading: leading == null ? null : ExcludeSemantics(child: leading!),
+        autofocus: autofocus,
+        enabled: enabled,
+        title: ExcludeSemantics(
+          child: valueBelow
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -125,26 +136,36 @@ class SettingsValueStepper extends StatelessWidget {
                     Row(
                       children: [
                         arrow(canDecrease, Icons.chevron_left, -1),
-                        Expanded(child: SettingsValueText(
-                          text: Text(label(value)), alignment: TextAlign.start)),
+                        Expanded(
+                          child: SettingsValueText(
+                            text: Text(label(value)),
+                            alignment: TextAlign.start,
+                          ),
+                        ),
                         arrow(canIncrease, Icons.chevron_right, 1),
                       ],
                     ),
                   ],
                 )
               : Text(title),
-          trailing: valueBelow
-              ? null
-              : Row(
+        ),
+        trailing: valueBelow
+            ? null
+            : ExcludeSemantics(
+                child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     arrow(canDecrease, Icons.chevron_left, -1),
-                    Flexible(child: SettingsValueText(
-                      text: Text(label(value)), alignment: TextAlign.end)),
+                    Flexible(
+                      child: SettingsValueText(
+                        text: Text(label(value)),
+                        alignment: TextAlign.end,
+                      ),
+                    ),
                     arrow(canIncrease, Icons.chevron_right, 1),
                   ],
                 ),
-        ),
+              ),
       ),
     );
   }

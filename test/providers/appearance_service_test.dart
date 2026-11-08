@@ -10,6 +10,35 @@ import 'package:flauncher/settings_import.dart';
 import 'package:flauncher/category_appearance.dart';
 
 void main() {
+  test('group styles validate, survive import and reset to surface', () async {
+    expect(
+      const TileAppearance().settingsSectionStyle,
+      SettingsSectionStyle.surface,
+    );
+    expect(
+      TileAppearance.validValues({'settingsSectionStyle': 'line'}),
+      isEmpty,
+    );
+    expect(TileAppearance.validValues({'settingsSectionStyle': 3}), isEmpty);
+    for (final style in SettingsSectionStyle.values) {
+      final data = jsonEncode({
+        'settingsSectionStyle': style.name,
+        'settingsOpacity': .6,
+      });
+      final restored = TileAppearance.merge('{}', data);
+      expect(TileAppearance.decode(restored).settingsSectionStyle, style);
+      SharedPreferences.setMockInitialValues({tileAppearanceKey: restored});
+      final service = AppearanceService(await SharedPreferences.getInstance());
+      await service.resetFields(['settingsSectionStyle']);
+      expect(
+        service.appearance.settingsSectionStyle,
+        SettingsSectionStyle.surface,
+      );
+      expect(service.appearance.number('settingsOpacity'), .6);
+      service.dispose();
+    }
+  });
+
   test('legacy scrollbar choices restore and reset with the settings style', () async {
     const legacy = '{"settingsScrollbarAlwaysVisible":false}';
     expect(TileAppearance.decode(legacy).settingsScrollbarMode, SettingsScrollbarMode.onScroll);

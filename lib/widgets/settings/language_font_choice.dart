@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../app_fonts.dart';
 import '../../l10n/app_localizations.dart';
-import 'settings_choice_tile.dart';
+import 'settings_value_stepper.dart';
 
 class LanguageFontChoice extends StatelessWidget {
   final String title, value;
@@ -20,10 +20,13 @@ class LanguageFontChoice extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
     final locale = Localizations.localeOf(context);
-    return SettingsChoiceTile<String>(
+    final options = AppFonts.available(locale, panel: panel);
+    return SettingsValueStepper(
       title: title,
       value: AppFonts.effective(value, locale),
-      options: AppFonts.available(locale, panel: panel),
+      options: options,
+      inlineChoices: true,
+      enabled: options.length > 1,
       label: (id) => switch (id) {
         'system' => l.interfaceSystemFont,
         'sans-serif' => l.fontSans,
@@ -32,7 +35,7 @@ class LanguageFontChoice extends StatelessWidget {
         'sans-serif-condensed' => l.fontCondensed,
         _ => AppFonts.families[id]!,
       },
-      onChanged: onChanged,
+      onChanged: (value) => onChanged(value as String),
     );
   }
 }

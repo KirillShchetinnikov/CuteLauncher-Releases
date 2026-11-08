@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import java.io.File;
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -24,6 +25,7 @@ import io.flutter.plugin.common.MethodChannel;
 /** One document operation at a time; content URIs never become filesystem paths. */
 final class DocumentFiles {
     static final int REQUEST = 4107;
+    static final int TOKEN_DOCUMENT_LIMIT = 4096;
     private final Activity activity;
     private final ExecutorService executor;
     private final LegacyStorageAccess storageAccess;
@@ -31,6 +33,7 @@ final class DocumentFiles {
     private String savePath;
     private long limit;
     private boolean includeDisplayName;
+    private boolean tokenDocument;
 
     DocumentFiles(Activity activity, ExecutorService executor) {
         this(activity, executor, new LegacyStorageAccess(activity));
@@ -56,7 +59,7 @@ final class DocumentFiles {
                 .setType("application/json").addCategory(Intent.CATEGORY_OPENABLE);
             case "pickImageDocument" -> readIntent("image/*");
             case "pickWallpaperDocument" -> wallpaperIntent();
-            case "pickWebhookDocument" -> readIntent("text/plain");
+            case "pickWebhookDocument", "pickWeatherTokenDocument", "pickWeatherServerDocument" -> readIntent("text/plain");
             case "pickDriveClientDocument", "pickBackupDocument", "pickCleanerDocument", "pickCleanerListDocument" -> readIntent("*/*");
             default -> throw new IllegalArgumentException("Unknown picker operation");
         };
@@ -80,6 +83,11 @@ final class DocumentFiles {
     }
     void open(String mime, long maximumBytes, MethodChannel.Result result) {
         begin(readIntent(mime), null, maximumBytes, result);
+    }
+
+    void openWeatherToken(MethodChannel.Result result) {
+        open("text/plain", TOKEN_DOCUMENT_LIMIT, result);
+        if (pending == result) tokenDocument = true;
     }
 
     void openWallpaper(MethodChannel.Result result) {
@@ -189,6 +197,7 @@ final class DocumentFiles {
         }
         pending = result;
         includeDisplayName = false;
+        tokenDocument = false;
         savePath = source;
         limit = maximumBytes;
         try { activity.startActivityForResult(selected, REQUEST); }
@@ -225,10 +234,14 @@ final class DocumentFiles {
         final String source = savePath;
         final long maximumBytes = limit;
         final boolean named = includeDisplayName;
+        final boolean token = tokenDocument;
         executor.execute(() -> {
             File temporary = null;
             try {
-                if (source == null) {
+                if (token) {
+                    byte[] bytes = readWeatherToken(activity.getContentResolver().openInputStream(uri));
+                    new Handler(Looper.getMainLooper()).post(() -> result.success(bytes));
+                } else if (source == null) {
                     temporary = File.createTempFile("selected-document-", ".bin", activity.getCacheDir());
                     try (InputStream input = activity.getContentResolver().openInputStream(uri);
                          OutputStream output = new FileOutputStream(temporary)) { copy(input, output, maximumBytes); }
@@ -255,6 +268,13 @@ final class DocumentFiles {
         });
     }
 
+    static byte[] readWeatherToken(InputStream input) throws Exception {
+        try (input; ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+            copy(input, output, TOKEN_DOCUMENT_LIMIT);
+            return output.toByteArray();
+        }
+    }
+
     private static void copy(InputStream input, OutputStream output, long maximumBytes) throws Exception {
         if (input == null || output == null) throw new IllegalArgumentException("Document stream unavailable");
         byte[] buffer = new byte[16 * 1024];
@@ -268,5 +288,5 @@ final class DocumentFiles {
         output.flush();
     }
 
-    private static final class DocumentTooLargeException extends java.io.IOException {}
+    static final class DocumentTooLargeException extends java.io.IOException {}
 }

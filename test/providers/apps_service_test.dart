@@ -220,7 +220,7 @@ void main() {
         expect(app.lastLaunchedAt, previous);
         return result;
       });
-      when(database.updateApp(any, any)).thenAnswer((_) async => true);
+      when(database.updateApp(any, any)).thenAnswer((_) async => 1);
       try {
         expect(await service.launchApp(app), result == true);
         if (result == true) {
@@ -267,7 +267,7 @@ void main() {
     when(database.wasCreated).thenReturn(false);
     when(database.transaction(any)).thenAnswer((call) => call.positionalArguments[0]());
     when(database.persistApps(any)).thenAnswer((_) async {});
-    when(database.updateApp(any, any)).thenAnswer((_) async => true);
+    when(database.updateApp(any, any)).thenAnswer((_) async => 1);
     when(channel.launchApp(any)).thenAnswer((_) async => true);
     final service = AppsService(channel, database);
     while (!service.initialized) { await Future<void>.delayed(Duration.zero); }
@@ -298,7 +298,10 @@ void main() {
     final db = MockFLauncherDatabase();
     final service = await _buildInitialisedAppsService(channel, db);
     when(channel.launchApp(any)).thenAnswer((_) async => true);
-    when(db.updateApp(any, any)).thenAnswer((_) async { await Future<void>.delayed(Duration.zero); });
+    when(db.updateApp(any, any)).thenAnswer((_) async {
+      await Future<void>.delayed(Duration.zero);
+      return 1;
+    });
     final app = App(packageName: 'a', name: 'A', version: '1', hidden: false);
     await Future.wait([service.launchApp(app), service.launchApp(app), service.launchApp(app)]);
     expect(app.launchCount, 3);

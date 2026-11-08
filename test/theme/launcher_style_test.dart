@@ -22,7 +22,7 @@ void main() {
       const first = LauncherStyle();
       final second = first.copyWith(
         rowRadius: 0,
-        rowFocusColor: Colors.black,
+        rowFocusTint: .32,
         rowDuration: Duration.zero,
         rowPadding: EdgeInsets.zero,
       );
@@ -31,8 +31,8 @@ void main() {
       expect(first.lerp(second, .5).rowDuration.inMilliseconds, 80);
       expect(first.lerp(second, .5).rowPadding.horizontal, 12);
       expect(
-        first.lerp(second, .5).rowFocusColor,
-        Color.lerp(first.rowFocusColor, Colors.black, .5),
+        first.lerp(second, .5).rowFocusTint,
+        .24,
       );
       expect(first.lerp(null, .5), same(first));
     },

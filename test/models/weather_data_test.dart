@@ -42,6 +42,7 @@ void main() {
       {
         "location": "Breezy Location",
         "currentTemp": 300,
+        "feelsLikeTemp": 306,
         "todayMinTemp": 293,
         "todayMaxTemp": 303,
         "forecasts": [
@@ -58,12 +59,24 @@ void main() {
 
       // 300 K - 273.15 = 26.85 -> 27°C
       expect(weather.currentTemp, 27);
+      expect(weather.feelsLikeTemp, 33);
       expect(weather.todayMinTemp, 20); // 293 - 273.15 = 19.85 -> 20°C
       expect(weather.todayMaxTemp, 30); // 303 - 273.15 = 29.85 -> 30°C
       expect(weather.forecasts.first.minTemp, 21); // 294 - 273.15 = 20.85 -> 21°C
       expect(weather.forecasts.first.maxTemp, 31); // 304 - 273.15 = 30.85 -> 31°C
       expect(weather.formatTemperature(useFahrenheit: false), "27°C");
       expect(weather.formatTemperature(useFahrenheit: true), "81°F");
+    });
+
+    test('missing or malformed feels-like temperature is optional', () {
+      for (final value in [null, 'unknown', 'NaN', double.infinity]) {
+        final weather = WeatherData.fromJson({
+          'currentTemp': 12,
+          'feelsLikeTemp': value,
+        });
+        expect(weather.currentTemp, 12);
+        expect(weather.feelsLikeTemp, isNull);
+      }
     });
 
     test('detects rain warning today in forecast', () {

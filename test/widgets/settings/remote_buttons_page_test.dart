@@ -94,7 +94,7 @@ void main() {
         tester.widget<Text>(find.text(path)).textDirection,
         TextDirection.ltr,
       );
-      expect(find.text(l.remoteButtonsHint), findsNothing);
+      expect(find.textContaining(l.remoteButtonsHint), findsNothing);
       expect(
         find.ancestor(of: hint, matching: find.byType(SettingsHelp)),
         findsNothing,
@@ -102,9 +102,9 @@ void main() {
       expect(calls, ['info']);
 
       await toggleSettingsHelp(tester, l.remoteButtonsHint);
-      expect(find.text(l.remoteButtonsHint), findsOneWidget);
+      expect(find.textContaining(l.remoteButtonsHint), findsOneWidget);
       await toggleSettingsHelp(tester, l.remoteButtonsHint);
-      expect(find.text(l.remoteButtonsHint), findsNothing);
+      expect(find.textContaining(l.remoteButtonsHint), findsNothing);
       expect(hint, findsOneWidget);
       expect(find.text(path), findsOneWidget);
       expect(calls, ['info']);

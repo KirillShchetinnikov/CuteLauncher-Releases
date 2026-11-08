@@ -14,6 +14,7 @@ abstract final class LauncherDefaults {
     'settingsColor': 0xff242935,
     'settingsOpacity': 1.0,
     'settingsScrollbarMode': 'always',
+    'settingsSectionStyle': 'surface',
     'size': 128,
     'aspectRatio': 16 / 9,
     'radius': 16,
@@ -30,8 +31,10 @@ abstract final class LauncherDefaults {
     'animateReordering': true,
     'panelCombinedInformation': true,
     'panelTextSize': 18,
+    'weatherIconPack': 'outline',
     'panelInformationAction': 'both',
     'panelInformationStyle': {
+      'inheritPanelTypography': true,
       'size': 18,
       'weight': 400,
       'animate': false,

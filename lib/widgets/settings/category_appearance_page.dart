@@ -1,3 +1,6 @@
+import 'settings_information.dart';
+import 'settings_read_only_value.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -73,65 +76,75 @@ class CategoryAppearancePage extends StatelessWidget {
       title: Text(l.categoryAppearance),
       child: ListView(
         children: [
-          SettingsChoiceTile<String>(
-            autofocus: true,
-            title: l.layout,
-            value: mode == 'grid' ? 'grid' : 'row',
-            options: const ['row', 'grid'],
-            label: (v) => {
-              'row': l.homeLayoutRow,
-              'grid': l.homeLayoutGrid,
-            }[v]!,
-            onChanged: (v) => service.setCategory(categoryId, 'layout',
-                v == 'row' && mode == 'rows' ? 'rows' : v),
-          ),
-          SettingsValueStepper(
-            useSlider: false,
-            title: l.homeCardCount,
-            value: columns,
-            options: [for (var n = 0; n <= 12; n++) n],
-            label: (v) => v == 0 ? '${l.homeAuto} — $autoCount' : '$v',
-            onChanged: (v) => service.setCategory(categoryId, 'columns', (v as num).toInt()),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Text(
-              '${columns > 0 ? l.homeCalculatedSize : l.tileSize}: ${geometry.width.round()} × ${geometry.height.round()}',
-            ),
-          ),
-          if (geometry.gapX < tiles.horizontalGap)
-            Text(l.homeGapLimited(geometry.gapX.round())),
-          if (mode != 'grid')
-            SettingsValueStepper(
-              title: l.tileRowCount,
-              value: mode == 'row' ? 1 : style.rows.clamp(1, 6),
-              options: const [1, 2, 3, 4, 5, 6],
-              label: (v) => '$v',
-              onChanged: (v) => service.setTapeRows(categoryId, (v as num).toInt()),
-            ),
-          if (mode == 'grid')
-            SettingsValueStepper(
-              title: l.categoryMaxRows,
-              value: style.maxRows.clamp(0, 6),
-              options: const [0, 1, 2, 3, 4, 5, 6],
-              label: (v) => v == 0 ? l.categoryAllRows : '$v',
-              onChanged: (v) => service.setCategory(categoryId, 'maxRows', v),
-            ),
-          if (mode == 'grid' && style.maxRows > 0)
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Text(
-                l.homeVisibleRows(
-                  geometry.visibleRows(style.maxRows),
+          ...SectionStylePage.controls(
+            context,
+            categoryId: categoryId,
+            includeReset: false,
+            layoutControls: [
+              SettingsChoiceTile<String>(
+                autofocus: true,
+                title: l.layout,
+                value: mode == 'grid' ? 'grid' : 'row',
+                options: const ['row', 'grid'],
+                label: (v) =>
+                    {'row': l.homeLayoutRow, 'grid': l.homeLayoutGrid}[v]!,
+                onChanged: (v) => service.setCategory(
+                  categoryId,
+                  'layout',
+                  v == 'row' && mode == 'rows' ? 'rows' : v,
                 ),
               ),
-            ),
-          page(l.tilesAndLabels, AppearancePage(categoryId: categoryId)),
-          ...SectionStylePage.controls(context, categoryId: categoryId, includeReset: false),
+              SettingsValueStepper(
+                useSlider: false,
+                title: l.homeCardCount,
+                value: columns,
+                options: [for (var n = 0; n <= 12; n++) n],
+                label: (v) => v == 0 ? '${l.homeAuto} — $autoCount' : '$v',
+                onChanged: (v) => service.setCategory(
+                  categoryId,
+                  'columns',
+                  (v as num).toInt(),
+                ),
+              ),
+              SettingsReadOnlyValue(
+                label: columns > 0 ? l.homeCalculatedSize : l.tileSize,
+                value: '${geometry.width.round()} × ${geometry.height.round()}',
+                wrapLines: true,
+              ),
+              if (geometry.gapX < tiles.horizontalGap)
+                SettingsMessage(text: l.homeGapLimited(geometry.gapX.round())),
+              if (mode != 'grid')
+                SettingsValueStepper(
+                  title: l.tileRowCount,
+                  value: mode == 'row' ? 1 : style.rows.clamp(1, 6),
+                  options: const [1, 2, 3, 4, 5, 6],
+                  label: (v) => '$v',
+                  onChanged: (v) =>
+                      service.setTapeRows(categoryId, (v as num).toInt()),
+                ),
+              if (mode == 'grid')
+                SettingsValueStepper(
+                  title: l.categoryMaxRows,
+                  value: style.maxRows.clamp(0, 6),
+                  options: const [0, 1, 2, 3, 4, 5, 6],
+                  label: (v) => v == 0 ? l.categoryAllRows : '$v',
+                  onChanged: (v) =>
+                      service.setCategory(categoryId, 'maxRows', v),
+                ),
+              if (mode == 'grid' && style.maxRows > 0)
+                SettingsReadOnlyValue(
+                  label: l.homeVisibleRowsLabel,
+                  value: '${geometry.visibleRows(style.maxRows)}',
+                  wrapLines: true,
+                ),
+              page(l.tilesAndLabels, AppearancePage(categoryId: categoryId)),
+            ],
+          ),
           ResetStyleTile(
             title: l.homeResetLayout,
             hint: l.homeResetLayoutHint,
-            onReset: () => service.resetCategoryLayout(categoryId, grid: mode == 'grid'),
+            onReset: () =>
+                service.resetCategoryLayout(categoryId, grid: mode == 'grid'),
           ),
         ],
       ),

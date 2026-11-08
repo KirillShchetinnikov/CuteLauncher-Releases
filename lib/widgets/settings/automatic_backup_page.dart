@@ -1,3 +1,6 @@
+import 'settings_section.dart';
+import 'settings_choice_dialog.dart';
+
 import 'package:flauncher/widgets/launcher_dialog.dart';
 
 import 'settings_value_stepper.dart';
@@ -30,27 +33,12 @@ Future<T?> backupChoice<T>(
   T current,
 ) => showLauncherDialog<T>(
   context: context,
-  builder: (dialog) => SimpleDialog(
+  builder: (dialog) => SettingsChoiceDialog<T>(
     title: Text(title),
-    children: [
-      SizedBox(
-        width: 400,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            for (final e in values.entries)
-              FocusableSettingsTile(
-                autofocus: e.key == current,
-                onPressed: () => Navigator.pop(dialog, e.key),
-                title: Text(e.value),
-                trailing: e.key == current
-                    ? const Icon(Icons.check)
-                    : const SizedBox.shrink(),
-              ),
-          ],
-        ),
-      ),
-    ],
+    value: current,
+    options: values.keys.toList(),
+    optionBuilder: (value) => Text(values[value]!),
+    onSelected: (value) => Navigator.pop(dialog, value),
   ),
 );
 
@@ -113,90 +101,86 @@ class AutomaticBackupPage extends StatelessWidget {
               ),
             ),
           ),
-          Card(
-            child: Column(
-              children: [
-                button(l.backupStorage, () async {
-                  final value = await backupChoice(
-                    context,
-                    l.backupStorage,
-                    destinations,
-                    service.destination,
-                  );
-                  if (value != null) {
-                    await service.configure(destination: value);
-                  }
-                }, value: destinations[service.destination]),
-                Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Text(
-                    service.configured
-                        ? l.backupConfigured
-                        : l.backupNotConfigured,
-                  ),
+          SettingsSection(
+            title: l.backupStorage,
+            children: [
+              button(l.backupStorage, () async {
+                final value = await backupChoice(
+                  context,
+                  l.backupStorage,
+                  destinations,
+                  service.destination,
+                );
+                if (value != null) {
+                  await service.configure(destination: value);
+                }
+              }, value: destinations[service.destination]),
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: Text(
+                  service.configured
+                      ? l.backupConfigured
+                      : l.backupNotConfigured,
                 ),
-                button(
-                  service.destination == BackupDestination.local
-                      ? l.backupLocal
-                      : l.backupConnection,
-                  () => open(switch (service.destination) {
-                    BackupDestination.webdav => const CloudBackupPage(),
-                    BackupDestination.googleDrive => const DriveBackupPage(),
-                    BackupDestination.local => const LocalBackupPage(),
-                  }),
-                  icon: Icons.settings_backup_restore,
-                ),
-              ],
-            ),
+              ),
+              button(
+                service.destination == BackupDestination.local
+                    ? l.backupLocal
+                    : l.backupConnection,
+                () => open(switch (service.destination) {
+                  BackupDestination.webdav => const CloudBackupPage(),
+                  BackupDestination.googleDrive => const DriveBackupPage(),
+                  BackupDestination.local => const LocalBackupPage(),
+                }),
+                icon: Icons.settings_backup_restore,
+              ),
+            ],
           ),
-          Card(
-            child: Column(
-              children: [
-                button(l.backupMode, () async {
-                  final value = await backupChoice(
-                    context,
-                    l.backupMode,
-                    modes,
-                    service.mode,
-                  );
-                  if (value != null) await service.configure(mode: value);
-                }, value: modes[service.mode]),
-                button(
-                  service.mode == BackupMode.backup
-                      ? l.backupOptions
-                      : l.backupSyncOptions,
-                  () => open(
-                    BackupOptionsPage(
-                      sync: service.mode == BackupMode.synchronization,
-                    ),
+          SettingsSection(
+            title: l.backupMode,
+            children: [
+              button(l.backupMode, () async {
+                final value = await backupChoice(
+                  context,
+                  l.backupMode,
+                  modes,
+                  service.mode,
+                );
+                if (value != null) await service.configure(mode: value);
+              }, value: modes[service.mode]),
+              button(
+                service.mode == BackupMode.backup
+                    ? l.backupOptions
+                    : l.backupSyncOptions,
+                () => open(
+                  BackupOptionsPage(
+                    sync: service.mode == BackupMode.synchronization,
                   ),
-                  icon: Icons.tune,
                 ),
-                if (service.mode == BackupMode.synchronization)
-                  button(
-                    l.backupSyncRefresh,
-                    () async {
-                      final success = await service.run(manual: true);
-                      if (!context.mounted) return;
-                      showActionNotice(
-                        context,
-                        success ? l.cloudSuccess : l.backupSyncRefreshFailed,
-                        error: !success,
-                      );
-                    },
-                    icon: Icons.sync,
-                    requiresStorage: true,
-                  ),
-              ],
-            ),
+                icon: Icons.tune,
+              ),
+              if (service.mode == BackupMode.synchronization)
+                button(
+                  l.backupSyncRefresh,
+                  () async {
+                    final success = await service.run(manual: true);
+                    if (!context.mounted) return;
+                    showActionNotice(
+                      context,
+                      success ? l.cloudSuccess : l.backupSyncRefreshFailed,
+                      error: !success,
+                    );
+                  },
+                  icon: Icons.sync,
+                  requiresStorage: true,
+                ),
+            ],
           ),
-          Card(
-            child: button(
-              l.backupManagement,
-              () => open(const BackupManagementPage()),
-              icon: Icons.backup_outlined,
-              requiresStorage: true,
-            ),
+          button(
+            l.backupManagement,
+            () => open(const BackupManagementPage()),
+            icon: Icons.backup_outlined,
+            requiresStorage: true,
           ),
           if (service.busy) const LinearProgressIndicator(),
         ],
@@ -247,33 +231,108 @@ class BackupOptionsPage extends StatelessWidget {
             value: automation.enabled,
             onChanged: (v) => automation.configure(enabled: v),
           ),
-          if (!localOnly)
-            FocusableSettingsTile(
-              title: Text(sync ? l.backupSyncScope : l.backupScope),
-              trailing: Text(
-                automation.shared ? l.backupShared : l.backupSeparate,
-              ),
-              enabled: !automation.busy,
-              onPressed: () async {
-                final value = await backupChoice(
-                  context,
-                  sync ? l.backupSyncScope : l.backupScope,
-                  {false: l.backupSeparate, true: l.backupShared},
-                  automation.shared,
-                );
-                if (value != null) await automation.configure(shared: value);
-              },
+          if (!sync)
+            SettingsSection(
+              title: l.settingsGroupStorage,
+              children: [
+                if (!localOnly)
+                  FocusableSettingsTile(
+                    title: Text(sync ? l.backupSyncScope : l.backupScope),
+                    trailing: Text(
+                      automation.shared ? l.backupShared : l.backupSeparate,
+                    ),
+                    enabled: !automation.busy,
+                    onPressed: () async {
+                      final value = await backupChoice(
+                        context,
+                        sync ? l.backupSyncScope : l.backupScope,
+                        {false: l.backupSeparate, true: l.backupShared},
+                        automation.shared,
+                      );
+                      if (value != null) {
+                        await automation.configure(shared: value);
+                      }
+                    },
+                  ),
+                if (!sync)
+                  SettingsValueStepper(
+                    title: l.automaticBackupsKeep,
+                    value: service.keepCount,
+                    options: const [1, 3, 5, 10],
+                    enabled: !automation.busy,
+                    label: (v) => '$v',
+                    onChanged: (v) => service.setKeepCount(v as int),
+                  ),
+              ],
             ),
           if (!sync)
-            SettingsValueStepper(
-              title: l.automaticBackupsKeep,
-              value: service.keepCount,
-              options: const [1, 3, 5, 10],
-              enabled: !automation.busy,
-              label: (v) => '$v',
-              onChanged: (v) => service.setKeepCount(v as int),
+            SettingsSection(
+              title: l.nightScheduleMenu,
+              children: [
+                FocusableSettingsTile(
+                  title: Text(l.backupFrequency),
+                  trailing: Text(frequencies[schedule.frequency]!),
+                  onPressed: () async {
+                    final value = await backupChoice(
+                      context,
+                      l.backupFrequency,
+                      frequencies,
+                      schedule.frequency,
+                    );
+                    if (value != null) await save(frequency: value);
+                  },
+                ),
+                if (!localOnly)
+                  if (schedule.frequency == BackupFrequency.hourly)
+                    SettingsSliderTile(
+                      title: l.backupTime,
+                      value: schedule.minute,
+                      options: [for (var i = 0; i < 60; i++) i],
+                      label: (v) => ':${v.toInt().toString().padLeft(2, '0')}',
+                      onChanged: (v) => save(minute: v.toInt()),
+                    )
+                  else
+                    SettingsTimeTile(
+                      title: l.backupTime,
+                      value: schedule.hour * 60 + schedule.minute,
+                      onChanged: (v) => save(hour: v ~/ 60, minute: v % 60),
+                    ),
+                if (!localOnly && schedule.frequency == BackupFrequency.weekly)
+                  FocusableSettingsTile(
+                    title: Text(l.backupWeekday),
+                    trailing: Text(
+                      DateFormat.EEEE(l.localeName)
+                          .format(DateTime(2026, 10, 4 + schedule.weekday)),
+                    ),
+                    onPressed: () async {
+                      final day = await backupChoice(context, l.backupWeekday, {
+                        for (final n in [1, 2, 3, 4, 5, 6, 7])
+                          n: DateFormat.EEEE(l.localeName)
+                              .format(DateTime(2026, 10, 4 + n)),
+                      }, schedule.weekday);
+                      if (day != null) await save(weekday: day);
+                    },
+                  ),
+              ],
             ),
           if (sync) ...[
+            if (!localOnly)
+              FocusableSettingsTile(
+                title: Text(sync ? l.backupSyncScope : l.backupScope),
+                trailing: Text(
+                  automation.shared ? l.backupShared : l.backupSeparate,
+                ),
+                enabled: !automation.busy,
+                onPressed: () async {
+                  final value = await backupChoice(
+                    context,
+                    sync ? l.backupSyncScope : l.backupScope,
+                    {false: l.backupSeparate, true: l.backupShared},
+                    automation.shared,
+                  );
+                  if (value != null) await automation.configure(shared: value);
+                },
+              ),
             FocusableSettingsTile(
               title: Text(l.backupSyncSettings),
               enabled: !automation.busy,
@@ -292,51 +351,6 @@ class BackupOptionsPage extends StatelessWidget {
               label: (v) => '$v ${l.backupMinutes}',
               onChanged: (v) => automation.configure(syncMinutes: v as int),
             ),
-          ] else ...[
-            FocusableSettingsTile(
-              title: Text(l.backupFrequency),
-              trailing: Text(frequencies[schedule.frequency]!),
-              onPressed: () async {
-                final value = await backupChoice(
-                  context,
-                  l.backupFrequency,
-                  frequencies,
-                  schedule.frequency,
-                );
-                if (value != null) await save(frequency: value);
-              },
-            ),
-            if (!localOnly)
-              if (schedule.frequency == BackupFrequency.hourly)
-                SettingsSliderTile(
-                  title: l.backupTime,
-                  value: schedule.minute,
-                  options: [for (var i = 0; i < 60; i++) i],
-                  label: (v) => ':${v.toInt().toString().padLeft(2, '0')}',
-                  onChanged: (v) => save(minute: v.toInt()),
-                )
-              else
-                SettingsTimeTile(
-                  title: l.backupTime,
-                  value: schedule.hour * 60 + schedule.minute,
-                  onChanged: (v) => save(hour: v ~/ 60, minute: v % 60),
-                ),
-            if (!localOnly && schedule.frequency == BackupFrequency.weekly)
-              FocusableSettingsTile(
-                title: Text(l.backupWeekday),
-                trailing: Text(
-                  DateFormat.EEEE(l.localeName)
-                      .format(DateTime(2026, 10, 4 + schedule.weekday)),
-                ),
-                onPressed: () async {
-                  final day = await backupChoice(context, l.backupWeekday, {
-                    for (final n in [1, 2, 3, 4, 5, 6, 7])
-                      n: DateFormat.EEEE(l.localeName)
-                          .format(DateTime(2026, 10, 4 + n)),
-                  }, schedule.weekday);
-                  if (day != null) await save(weekday: day);
-                },
-              ),
           ],
         ],
       ),

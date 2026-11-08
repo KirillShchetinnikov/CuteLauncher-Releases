@@ -28,12 +28,34 @@ import 'generated_migrations/schema_v3.dart' as v3;
 import 'generated_migrations/schema_v4.dart' as v4;
 import 'generated_migrations/schema_v8.dart' as v8;
 import 'generated_migrations/schema_v9.dart' as v9;
+import 'generated_migrations/schema_v10.dart' as v10;
 
 void main() {
   late SchemaVerifier verifier;
 
   setUpAll(() {
     verifier = SchemaVerifier(GeneratedHelper());
+  });
+
+  test('v10 migration preserves app data and starts with the system name', () async {
+    final schema = await verifier.schemaAt(10);
+    final oldDb = v10.DatabaseAtV10(schema.newConnection().executor);
+    await oldDb.customStatement(
+      "INSERT INTO apps (package_name, name, version, hidden, launch_count) "
+      "VALUES ('sample', 'Sample', '1', 1, 12)",
+    );
+    await oldDb.close();
+    final db = FLauncherDatabase(schema.newConnection());
+    try {
+      await verifier.migrateAndValidate(db, db.schemaVersion);
+      final app = (await db.getApplications()).single;
+      expect(app.displayName, 'Sample');
+      expect(app.customName, isNull);
+      expect(app.hidden, isTrue);
+      expect(app.launchCount, 12);
+    } finally {
+      await db.close();
+    }
   });
 
   test('v9 migration adds empty local counters and preserves user data', () async {
@@ -46,7 +68,7 @@ void main() {
     await oldDb.close();
     final db = FLauncherDatabase(schema.newConnection());
     try {
-      await verifier.migrateAndValidate(db, 10);
+      await verifier.migrateAndValidate(db, db.schemaVersion);
       final app = (await db.getApplications()).single;
       expect(app.launchCount, 0);
       expect(app.hidden, isTrue);
@@ -65,7 +87,7 @@ void main() {
     await oldDb.close();
     final db = FLauncherDatabase(schema.newConnection());
     try {
-      await verifier.migrateAndValidate(db, 10);
+      await verifier.migrateAndValidate(db, db.schemaVersion);
       final categories = await db.getCategories();
       expect(categories.map((c) => c.systemKey), ['all_apps', 'favorites', null, 'tv_apps', 'other_apps', 'app_channels']);
       expect(categories.every((c) => c.visible), isTrue);
@@ -73,7 +95,7 @@ void main() {
     } finally { await db.close(); }
   });
 
-  test("upgrade from v1 to v10", () async {
+  test("upgrade from v1 to v11", () async {
     final schema = await verifier.schemaAt(1);
 
     final oldDb = v1.DatabaseAtV1(schema.newConnection().executor);
@@ -89,7 +111,7 @@ void main() {
     await oldDb.close();
 
     final db = FLauncherDatabase(schema.newConnection());
-    await verifier.migrateAndValidate(db, 10);
+    await verifier.migrateAndValidate(db, db.schemaVersion);
 
     final app = await db.select(db.apps).getSingle();
     final category = await (db.select(db.categories)..where((c) => c.id.equals(1))).getSingle();
@@ -111,7 +133,7 @@ void main() {
     await db.close();
   });
 
-  test("upgrade from v2 to v10", () async {
+  test("upgrade from v2 to v11", () async {
     final schema = await verifier.schemaAt(2);
 
     final oldDb = v2.DatabaseAtV2(schema.newConnection().executor);
@@ -127,7 +149,7 @@ void main() {
     await oldDb.close();
 
     final db = FLauncherDatabase(schema.newConnection());
-    await verifier.migrateAndValidate(db, 10);
+    await verifier.migrateAndValidate(db, db.schemaVersion);
 
     final app = await db.select(db.apps).getSingle();
     final category = await (db.select(db.categories)..where((c) => c.id.equals(1))).getSingle();
@@ -149,7 +171,7 @@ void main() {
     await db.close();
   });
 
-  test("upgrade from v3 to v10", () async {
+  test("upgrade from v3 to v11", () async {
     final schema = await verifier.schemaAt(3);
 
     final oldDb = v3.DatabaseAtV3(schema.newConnection().executor);
@@ -165,7 +187,7 @@ void main() {
     await oldDb.close();
 
     final db = FLauncherDatabase(schema.newConnection());
-    await verifier.migrateAndValidate(db, 10);
+    await verifier.migrateAndValidate(db, db.schemaVersion);
 
     final app = await db.select(db.apps).getSingle();
     final category = await (db.select(db.categories)..where((c) => c.id.equals(1))).getSingle();
@@ -187,7 +209,7 @@ void main() {
     await db.close();
   });
 
-  test("upgrade from v4 to v10", () async {
+  test("upgrade from v4 to v11", () async {
     final schema = await verifier.schemaAt(4);
 
     final oldDb = v4.DatabaseAtV4(schema.newConnection().executor);
@@ -203,7 +225,7 @@ void main() {
     await oldDb.close();
 
     final db = FLauncherDatabase(schema.newConnection());
-    await verifier.migrateAndValidate(db, 10);
+    await verifier.migrateAndValidate(db, db.schemaVersion);
 
     final app = await db.select(db.apps).getSingle();
     final category = await (db.select(db.categories)..where((c) => c.id.equals(1))).getSingle();

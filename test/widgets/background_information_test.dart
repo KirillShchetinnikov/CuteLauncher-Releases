@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -9,6 +10,8 @@ import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flauncher/adaptive_landscape.dart';
+import 'package:flauncher/background_information_geometry.dart';
+import 'package:flauncher/widgets/settings/settings_slider_tile.dart';
 import 'package:flauncher/information_placement.dart';
 import 'package:flauncher/models/weather_data.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
@@ -18,8 +21,11 @@ import 'package:flauncher/providers/weather_service.dart';
 import 'package:flauncher/tile_appearance.dart';
 import 'package:flauncher/weather_sources.dart';
 import 'package:flauncher/widgets/background_information.dart';
+import 'package:flauncher/widgets/launcher_dialog.dart';
+import 'package:flauncher/widgets/date_time_widget.dart';
 import 'package:flauncher/widgets/landscape_clock_clip.dart';
 import 'package:flauncher/widgets/landscape_horizon.dart';
+import 'package:flauncher/widgets/landscape_wallpaper.dart';
 import 'package:flauncher/widgets/settings/information_settings_page.dart';
 import 'package:flauncher/widgets/settings/background_information_order_page.dart';
 import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
@@ -61,8 +67,9 @@ void main() {
     Widget? child,
     String locale = 'ru',
     double scale = 1,
+    Size size = const Size(960, 540),
   }) async {
-    tester.view.physicalSize = const Size(960, 540);
+    tester.view.physicalSize = size;
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
@@ -80,7 +87,7 @@ void main() {
           builder: (context, child) => MediaQuery(
             data: MediaQuery.of(context)
                 .copyWith(textScaler: TextScaler.linear(scale)),
-            child: child!,
+            child: Material(child: child!),
           ),
           // Wallpaper information lives outside Scaffold in the real launcher.
           home: child == null
@@ -121,8 +128,13 @@ void main() {
   testWidgets('remote toggles depth switches independently for the whole block', (tester) async {
     await pump(tester, child: const BackgroundInformationSettingsPage());
     final l = AppLocalizations.of(tester.element(find.byType(BackgroundInformationSettingsPage)))!;
+    expect(find.text(l.informationLayers), findsNothing);
+    await tester.tap(find.text(l.informationPositionSize));
+    await tester.pumpAndSettle();
     final landscape = find.text(l.informationAboveLandscape);
     final weather = find.text(l.informationAboveWeather);
+    await tester.scrollUntilVisible(landscape, 120);
+    await tester.pumpAndSettle();
     await tester.tap(landscape);
     await tester.pumpAndSettle();
     expect(appearance.appearance.backgroundInformationAboveLandscape, isTrue);
@@ -182,6 +194,8 @@ void main() {
   testWidgets('background appearance opens order editor; Back finishes moving before leaving', (tester) async {
     await pump(tester, child: const BackgroundInformationSettingsPage());
     final l = AppLocalizations.of(tester.element(find.byType(BackgroundInformationSettingsPage)))!;
+    await tester.tap(find.text(l.informationPositionSize));
+    await tester.pumpAndSettle();
     await tester.tap(find.text(l.panelObjectOrder));
     await tester.pumpAndSettle();
     final date = find.byKey(const ValueKey('date'));
@@ -196,8 +210,341 @@ void main() {
     await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
     expect(find.byType(BackgroundInformationOrderPage), findsNothing);
+    expect(find.byType(InformationSectionPage), findsOneWidget);
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
     expect(find.byType(BackgroundInformationSettingsPage), findsOneWidget);
     expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('remote changes offset independently of alignment; position resets offset', (tester) async {
+    await appearance.set('panelBackgroundInformationContentAlignment', 'left');
+    await pump(tester, child: const BackgroundInformationSettingsPage());
+    final l = AppLocalizations.of(tester.element(find.byType(BackgroundInformationSettingsPage)))!;
+    await tester.tap(find.text(l.informationPositionSize));
+    await tester.pumpAndSettle();
+    final offsetLabel = find.text(l.informationBackgroundOffset);
+    Focus.of(tester.element(offsetLabel)).requestFocus();
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.pumpAndSettle();
+    expect(appearance.appearance.backgroundInformationOffset, 5);
+    expect(find.text('+5%'), findsOneWidget);
+
+    expect(find.text(l.informationBackgroundResetOffset), findsNothing);
+    expect(find.text(l.informationAvoidOverlap), findsNothing);
+    final reset = find.text(l.informationResetPositionSize);
+    expect(reset.hitTestable(), findsNothing);
+    bool resetFocused() => reset.evaluate().isNotEmpty &&
+        Focus.of(tester.element(reset)).hasFocus;
+    for (var step = 0; step < 16 && !resetFocused(); step++) {
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      await tester.pumpAndSettle();
+    }
+    expect(resetFocused(), isTrue);
+    expect(reset.hitTestable(), findsOneWidget);
+
+    await appearance.set('panelBackgroundInformationOffset', -50);
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.widgetWithText(FocusableSettingsTile, l.informationBackgroundPosition), -120,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(l.informationBackgroundPosition).last);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(l.settingsMenuRight).last);
+    await tester.pumpAndSettle();
+    expect(appearance.appearance.backgroundInformationPosition, 'right');
+    expect(appearance.appearance.backgroundInformationOffset, 0);
+    expect(appearance.appearance.backgroundInformationAlignment, 'left');
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('background layout reset confirms and resets only this screen', (tester) async {
+    for (final entry in {
+      'panelBackgroundInformationAlignment': 'right',
+      'panelBackgroundInformationContentAlignment': 'left',
+      'panelBackgroundInformationOffset': 65,
+      'panelBackgroundInformationVerticalOffset': 35,
+      'panelBackgroundInformationSize': 144,
+      'panelBackgroundInformationOrder': ['time', 'weather', 'date'],
+      'panelBackgroundInformationAboveLandscape': true,
+      'panelBackgroundInformationAboveWeather': true,
+      'panelBackgroundInformationStyle': {'font': 'serif', 'weight': 700},
+      'panelInformationStyle': {'font': 'manrope', 'size': 22},
+    }.entries) {
+      await appearance.set(entry.key, entry.value);
+    }
+    await appearance.setInformationAppearance('weatherIconPack', 'circled', background: true);
+    await appearance.setInformationAppearance('dateTextColor', 0xff557799, background: true);
+    final saved = appearance.appearance;
+    final formats = settings.exportSettingsMap();
+    await pump(tester, child: const InformationSectionPage(background: true, section: 'layout'));
+    final l = AppLocalizations.of(tester.element(find.byType(InformationSectionPage)))!;
+    final reset = find.text(l.informationResetPositionSize);
+    expect(reset.hitTestable(), findsNothing);
+    await tester.scrollUntilVisible(reset, 120);
+    await tester.pumpAndSettle();
+    expect(reset.hitTestable(), findsOneWidget);
+    Focus.of(tester.element(reset)).requestFocus();
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+    await tester.pumpAndSettle();
+    expect(appearance.appearance.values, saved.values);
+    await tester.tap(reset);
+    await tester.pumpAndSettle();
+    await tester.tap(find.descendant(
+      of: find.byType(LauncherAlertDialog), matching: find.text(l.informationResetPositionSize),
+    ).last);
+    await tester.pumpAndSettle();
+    final restored = AppearanceService(appearance.preferences);
+    addTearDown(restored.dispose);
+    final value = restored.appearance;
+    expect(value.backgroundInformationPosition, 'center');
+    expect(value.backgroundInformationAlignment, 'center');
+    expect(value.backgroundInformationOffset, 0);
+    expect(value.backgroundInformationVerticalOffset, 0);
+    expect(value.backgroundInformationSize, 96);
+    expect(value.backgroundInformationOrder, ['date', 'weather', 'time']);
+    expect(value.backgroundInformationAboveLandscape, isFalse);
+    expect(value.backgroundInformationAboveWeather, isFalse);
+    expect(value.backgroundInformationStyle.values, saved.backgroundInformationStyle.values);
+    expect(value.informationStyle.values, saved.informationStyle.values);
+    expect(value.values['backgroundInformationAppearance'], saved.values['backgroundInformationAppearance']);
+    expect(InformationPlacement(value, settings).values, InformationPlacement(saved, settings).values);
+    expect(settings.exportSettingsMap(), formats);
+    expect(reset.hitTestable(), findsOneWidget);
+    expect(Focus.of(tester.element(reset)).hasFocus, isTrue);
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('vertical movement keeps size and respects toolbar and screen middle', (tester) async {
+    await settings.setBackgroundSource('gradient');
+    await appearance.set('panelInformationPlacements', {
+      'time': 'background', 'date': 'background', 'weather': 'background',
+    });
+    await appearance.set('panelBackgroundInformationSize', 60);
+    await pump(tester, child: const Stack(children: [
+      Positioned.fill(child: BackgroundInformation()),
+      Align(alignment: Alignment.topLeft, child: SizedBox(width: 390,
+        child: InformationSectionPage(background: true, section: 'layout'))),
+    ]));
+    final block = find.byKey(const Key('background_information_block'));
+    final initial = tester.getRect(block);
+    final maximum = appearance.backgroundInformationMetrics.value!.maximumVerticalOffset;
+    expect(initial.top, closeTo(kToolbarHeight + 8, .001));
+    final l = AppLocalizations.of(tester.element(find.byType(InformationSectionPage)))!;
+    final vertical = find.text(l.informationBackgroundVerticalOffset);
+    await tester.scrollUntilVisible(vertical, 120);
+    await tester.pumpAndSettle();
+    Focus.of(tester.element(vertical)).requestFocus();
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.pumpAndSettle();
+    expect(appearance.appearance.backgroundInformationVerticalOffset, 5);
+    expect(tester.getRect(block).height, closeTo(initial.height, .001));
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+    await tester.pumpAndSettle();
+    expect(appearance.appearance.backgroundInformationVerticalOffset, 0);
+    for (final offset in [0, maximum ~/ 2, maximum]) {
+      await appearance.setBackgroundInformationVerticalOffset(offset);
+      await tester.pumpAndSettle();
+      final rect = tester.getRect(block);
+      expect(rect.height, closeTo(initial.height, .001));
+      expect(rect.width, closeTo(initial.width, .001));
+      expect(rect.top, greaterThanOrEqualTo(kToolbarHeight + 8 - .001));
+      expect(rect.bottom, lessThanOrEqualTo(270 + .001));
+      expect(rect.top, closeTo(BackgroundInformationGeometry(
+        const Size(960, 540), offset.toDouble()).top, .001));
+      if (offset > 0) expect(rect.top, greaterThan(initial.top));
+    }
+    Focus.of(tester.element(vertical)).requestFocus();
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.pumpAndSettle();
+    expect(appearance.appearance.backgroundInformationVerticalOffset, maximum);
+    expect(tester.takeException(), isNull);
+    final lastMetrics = appearance.backgroundInformationMetrics.value!;
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump();
+    expect(appearance.backgroundInformationMetrics.value, isNull);
+    final firstOwner = Object(), nextOwner = Object();
+    appearance.reportBackgroundInformationMetrics(firstOwner, lastMetrics);
+    appearance.reportBackgroundInformationMetrics(nextOwner, lastMetrics);
+    appearance.reportBackgroundInformationMetrics(firstOwner, null);
+    expect(appearance.backgroundInformationMetrics.value, lastMetrics);
+    appearance.reportBackgroundInformationMetrics(nextOwner, null);
+    expect(appearance.backgroundInformationMetrics.value, isNull);
+  });
+
+  testWidgets('size limit is measured; growth keeps top fixed and stops at screen middle', (tester) async {
+    await settings.setBackgroundSource('gradient');
+    await appearance.set('panelInformationPlacements', {
+      'time': 'background', 'date': 'hidden', 'weather': 'hidden',
+    });
+    await appearance.set('panelBackgroundInformationSize', 96);
+    await appearance.set('panelBackgroundInformationVerticalOffset', 0);
+    await pump(tester, child: const Stack(children: [
+      Positioned.fill(child: BackgroundInformation()),
+      Align(alignment: Alignment.topLeft, child: SizedBox(width: 390,
+        child: InformationSectionPage(background: true, section: 'layout'))),
+    ]));
+    final block = find.byKey(const Key('background_information_block'));
+    final l = AppLocalizations.of(tester.element(find.byType(InformationSectionPage)))!;
+    final label = find.text(l.informationSize);
+    await tester.scrollUntilVisible(label, 120);
+    await tester.pumpAndSettle();
+    final control = find.ancestor(of: label, matching: find.byType(SettingsSliderTile));
+    final maximum = tester.widget<SettingsSliderTile>(control).options.last as int;
+    expect(maximum, greaterThan(144));
+    expect(maximum, appearance.backgroundInformationMetrics.value!.maximumSize);
+    Focus.of(tester.element(label)).requestFocus();
+    await tester.pumpAndSettle();
+    var previous = tester.getRect(block);
+    for (var attempt = 0; attempt < 100 && appearance.appearance.backgroundInformationSize < maximum; attempt++) {
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+      await tester.pumpAndSettle();
+      final next = tester.getRect(block);
+      expect(next.top, closeTo(kToolbarHeight + 8, .001));
+      expect(next.bottom, lessThanOrEqualTo(270 + .001));
+      expect(next.height, greaterThanOrEqualTo(previous.height - .001));
+      previous = next;
+    }
+    expect(appearance.appearance.backgroundInformationSize, maximum);
+    expect(previous.bottom, closeTo(270, 2));
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.pumpAndSettle();
+    expect(appearance.appearance.backgroundInformationSize, maximum);
+    expect(tester.getRect(block).top, closeTo(previous.top, .001));
+    await appearance.set('panelInformationPlacements', {
+      'time': 'background', 'date': 'background', 'weather': 'background',
+    });
+    await tester.pumpAndSettle();
+    expect(appearance.backgroundInformationMetrics.value!.maximumSize, lessThan(maximum));
+    expect(tester.getRect(block).top, closeTo(kToolbarHeight + 8, .001));
+    expect(tester.getRect(block).bottom, closeTo(270, .001));
+    await appearance.set('panelBackgroundInformationSize', 48);
+    await appearance.setBackgroundInformationVerticalOffset(20);
+    await tester.pumpAndSettle();
+    final shifted = tester.getRect(block);
+    await appearance.set('panelBackgroundInformationSize', 80);
+    await tester.pumpAndSettle();
+    final larger = tester.getRect(block);
+    expect(larger.top, closeTo(shifted.top, .001));
+    expect(larger.bottom, greaterThan(shifted.bottom));
+    expect(larger.bottom, lessThanOrEqualTo(270 + .001));
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('oversized imported endpoint stays visible and does not grow while moving up', (tester) async {
+    await settings.setBackgroundSource('gradient');
+    await appearance.set('panelInformationPlacements', {
+      'time': 'background', 'date': 'background', 'weather': 'background',
+    });
+    await appearance.set('panelBackgroundInformationSize', 144);
+    await appearance.set('panelBackgroundInformationVerticalOffset', 100);
+    await pump(tester);
+    final block = find.byKey(const Key('background_information_block'));
+    final initial = tester.getRect(block);
+    expect(initial.height, greaterThan(0));
+    expect(initial.height, lessThanOrEqualTo(8 + .001));
+    await appearance.setBackgroundInformationVerticalOffset(0);
+    await tester.pumpAndSettle();
+    final moved = tester.getRect(block);
+    expect(moved.height, closeTo(initial.height, .001));
+    expect(moved.width, closeTo(initial.width, .001));
+    expect(moved.top, closeTo(kToolbarHeight + 8, .001));
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('the whole block moves within its zone and the screen', (tester) async {
+    await settings.setBackgroundSource('gradient');
+    await appearance.set('panelInformationPlacements', {
+      'time': 'background', 'date': 'background', 'weather': 'background',
+    });
+    final block = find.byKey(const Key('background_information_block'));
+    const width = 960.0;
+    await pump(tester);
+    for (final position in ['left', 'center', 'right']) {
+      await appearance.set('panelBackgroundInformationAlignment', position);
+      await tester.pumpAndSettle();
+      final neutral = tester.getRect(block);
+      final free = width - 48 - neutral.width;
+      final (left, right) = switch (position) {
+        'left' => (12.0, 24.0 + free / 4),
+        'right' => (24.0 + free * .75, width - 12 - neutral.width),
+        _ => (24.0 + free / 3, 24.0 + free * 2 / 3),
+      };
+      final original = [
+        for (final id in ['clock', 'date', 'weather'])
+          tester.getRect(find.byKey(Key('background_$id'))),
+      ];
+      for (final (offset, expected) in [(-100, left), (100, right)]) {
+        await appearance.set('panelBackgroundInformationOffset', offset);
+        await tester.pumpAndSettle();
+        final shifted = tester.getRect(block);
+        expect(appearance.informationBounds.value, shifted);
+        expect(shifted.left, closeTo(expected, .01));
+        for (final (index, id) in ['clock', 'date', 'weather'].indexed) {
+          final element = tester.getRect(find.byKey(Key('background_$id')));
+          expect(element.left - original[index].left,
+              closeTo(shifted.left - neutral.left, .01));
+          expect(element.top, closeTo(original[index].top, .01));
+        }
+      }
+    }
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('large background content fits at either extreme on a narrow screen', (tester) async {
+    await settings.setBackgroundSource('gradient');
+    await appearance.set('panelInformationPlacements', {
+      'time': 'background', 'date': 'background', 'weather': 'background',
+    });
+    await appearance.set('panelBackgroundInformationSize', 144);
+    const size = Size(340, 220);
+    await pump(tester, locale: 'ar', scale: 2, size: size);
+    for (final position in ['left', 'center', 'right']) {
+      await appearance.set('panelBackgroundInformationAlignment', position);
+      for (final offset in [-100, 100]) {
+        await appearance.set('panelBackgroundInformationOffset', offset);
+        await tester.pumpAndSettle();
+        final block = tester.getRect(find.byKey(const Key('background_information_block')));
+        expect(block.left, greaterThanOrEqualTo(12));
+        expect(block.right, lessThanOrEqualTo(size.width - 12));
+        expect(block.top, greaterThanOrEqualTo(kToolbarHeight));
+        expect(block.bottom, lessThanOrEqualTo(size.height / 2 + .001));
+      }
+    }
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('content can align physically left or right in a right-side RTL block', (tester) async {
+    await appearance.set('panelInformationPlacements', {
+      'time': 'background', 'date': 'background',
+    });
+    await appearance.set('panelBackgroundInformationAlignment', 'right');
+    await pump(tester, locale: 'ar');
+    for (final alignment in ['left', 'center', 'right']) {
+      await appearance.set('panelBackgroundInformationContentAlignment', alignment);
+      await tester.pumpAndSettle();
+      final clock = tester.getRect(find.byKey(const Key('background_clock')));
+      final date = tester.getRect(find.byKey(const Key('background_date')));
+      final block = tester.getRect(find.byKey(const Key('background_information_block')));
+      final double Function(Rect) alignedX = switch (alignment) {
+        'left' => (rect) => rect.left,
+        'right' => (rect) => rect.right,
+        _ => (rect) => rect.center.dx,
+      };
+      expect(alignedX(date), closeTo(alignedX(clock), .01));
+      expect(block.right, closeTo(936, .01));
+    }
     await tester.pumpWidget(const SizedBox());
   });
 
@@ -335,6 +682,28 @@ void main() {
     },
   );
 
+  testWidgets('background date uses its own color and restores the background color', (tester) async {
+    await appearance.set('panelInformationPlacements', {
+      'time': 'hidden', 'date': 'background', 'weather': 'hidden',
+    });
+    await appearance.set('panelBackgroundInformationStyle', {
+      'color': 0xff88aadd, 'clockColor': 0xff66ddaa, 'glow': true,
+    });
+    await pump(tester);
+    TextStyle dateStyle() => tester.widget<DateTimeWidget>(
+      find.byKey(const Key('background_date')),
+    ).textStyle!;
+    expect(dateStyle().color, const Color(0xff88aadd));
+    await appearance.set('dateTextColor', 0xffdd7788);
+    await tester.pumpAndSettle();
+    expect(dateStyle().color, const Color(0xffdd7788));
+    expect(dateStyle().shadows?.single.color, const Color(0xffdd7788));
+    await appearance.set('dateTextColor', null);
+    await tester.pumpAndSettle();
+    expect(dateStyle().color, const Color(0xff88aadd));
+    await tester.pumpWidget(const SizedBox());
+  });
+
   test('invalid destination entries fall back to legacy visibility', () {
     final imported = TileAppearance.decode(
       jsonEncode({
@@ -386,9 +755,92 @@ void main() {
   }
 
   for (final variant in ['illustrated', 'realistic']) {
+    for (final members in const [ ['date'], ['weather'], ['date', 'weather'] ]) {
+      testWidgets('$variant depth works without a clock for $members', (tester) async {
+        const captureImages = bool.fromEnvironment('PARTIAL_DEPTH_CAPTURE');
+        if (captureImages) {
+          await (FontLoader('PanelSans')..addFont(rootBundle.load('assets/fonts/sans.ttf'))).load();
+        }
+        await settings.setBackgroundSource('landscape');
+        await settings.setLandscape(LandscapeConfiguration(
+          variant: variant, timeOfDay: false, motion: false,
+        ));
+        await appearance.set('panelInformationPlacements', {
+          for (final id in InformationPlacement.ids)
+            id: members.contains(id) ? 'background' : 'hidden',
+        });
+        await appearance.set('panelBackgroundInformationSize', 144);
+        await appearance.set('panelBackgroundInformationVerticalOffset', 100);
+        when(weather.weatherData).thenReturn(const WeatherData(
+          currentTemp: 8, currentConditionCode: 500,
+        ));
+        final capture = GlobalKey();
+        final sceneCapture = GlobalKey();
+        await pump(tester, child: RepaintBoundary(key: sceneCapture, child: LandscapeWallpaper(
+          gradient: const LinearGradient(colors: [Colors.black, Colors.black]),
+          informationLayer: RepaintBoundary(key: capture, child: const BackgroundInformation()),
+        )));
+        final block = find.byKey(const Key('background_information_block'));
+        final original = tester.getRect(block);
+        expect(find.byKey(const Key('background_clock')), findsNothing);
+        for (final aboveWeather in [false, true]) {
+          var foregroundPixels = 0;
+          for (final aboveLandscape in [true, false]) {
+            await appearance.set('panelBackgroundInformationAboveLandscape', aboveLandscape);
+            await appearance.set('panelBackgroundInformationAboveWeather', aboveWeather);
+            await tester.pumpAndSettle();
+            expect(find.byType(LandscapeSkyClip), aboveLandscape ? findsNothing : findsOneWidget);
+            final scene = tester.widget<Stack>(find.ancestor(
+              of: find.byKey(capture), matching: find.byType(Stack),
+            ).first);
+            expect(scene.children.indexWhere((child) => child.key == capture), aboveWeather ? 2 : 1);
+            expect(tester.getRect(block), original);
+            final painted = (await tester.runAsync(() async {
+              final bitmap = await (capture.currentContext!.findRenderObject()! as RenderRepaintBoundary)
+                  .toImage(pixelRatio: 2);
+              final pixels = (await bitmap.toByteData(format: ui.ImageByteFormat.rawRgba))!;
+              var count = 0;
+              for (var offset = 3; offset < pixels.lengthInBytes; offset += 4) {
+                if (pixels.getUint8(offset) > 0) count++;
+              }
+              bitmap.dispose();
+              return count;
+            }))!;
+            // Terrain hides some or all of the low block, preserving its bounds.
+            if (aboveLandscape) {
+              expect(painted, greaterThan(0));
+              foregroundPixels = painted;
+            } else {
+              expect(painted, lessThan(foregroundPixels));
+            }
+          }
+        }
+        if (captureImages && members.length == 1) {
+          await appearance.set('panelBackgroundInformationVerticalOffset', 80);
+          for (final above in [false, true]) {
+            await appearance.set('panelBackgroundInformationAboveLandscape', above);
+            await tester.pumpAndSettle();
+            await tester.runAsync(() async {
+              final bitmap = await (sceneCapture.currentContext!.findRenderObject()! as RenderRepaintBoundary).toImage();
+              final bytes = (await bitmap.toByteData(format: ui.ImageByteFormat.png))!;
+              final file = File('.local/partial-background-depth/$variant-${members.single}-${above ? 'above' : 'behind'}.png');
+              await file.parent.create(recursive: true);
+              await file.writeAsBytes(bytes.buffer.asUint8List());
+              bitmap.dispose();
+            });
+          }
+        }
+        verifyNever(weather.refresh());
+        expect(tester.takeException(), isNull);
+        await tester.pumpWidget(const SizedBox());
+      });
+    }
+  }
+
+  for (final variant in ['illustrated', 'realistic']) {
     for (final alignment in ['left', 'center', 'right']) {
       testWidgets(
-        '$variant $alignment depth only clips the clock, fits large text',
+        '$variant $alignment depth clips the whole block, fits large text',
         (tester) async {
           await settings.setBackgroundSource('landscape');
           await settings.setLandscape(LandscapeConfiguration(variant: variant));
@@ -400,15 +852,13 @@ void main() {
           await appearance.set('panelBackgroundInformationSize', 144);
           await pump(tester, locale: 'ar', scale: 1.8);
           expect(find.byType(LandscapeSkyClip), findsOneWidget);
-          final skyline = tester
-              .widget<LandscapeSkyClip>(find.byType(LandscapeSkyClip))
-              .horizon;
           final clockRect = tester.getRect(
             find.byKey(const Key('background_clock')),
           );
-          final ridge = skyline.heightAt(clockRect.center.dx);
-          expect(ridge, greaterThan(clockRect.top));
-          expect(ridge, lessThan(clockRect.bottom));
+          final blockRect = tester.getRect(find.byKey(const Key('background_information_block')));
+          expect(blockRect.top, greaterThanOrEqualTo(kToolbarHeight));
+          expect(blockRect.top, closeTo(kToolbarHeight + 8, .001));
+          expect(blockRect.bottom, lessThanOrEqualTo(270 + .001));
           expect(
             find.descendant(
               of: find.byType(LandscapeSkyClip),
@@ -421,13 +871,24 @@ void main() {
               of: find.byType(LandscapeSkyClip),
               matching: find.byKey(const Key('background_weather')),
             ),
-            findsNothing,
+            findsOneWidget,
           );
+          expect(find.descendant(of: find.byType(LandscapeSkyClip),
+            matching: find.byKey(const Key('background_date'))), findsOneWidget);
+          final offset = alignment == 'right' ? -50 : 50;
+          await appearance.set('panelBackgroundInformationOffset', offset);
+          await tester.pumpAndSettle();
+          final shifted = tester.getRect(find.byKey(const Key('background_clock')));
+          expect((shifted.center.dx - clockRect.center.dx) * offset, greaterThan(0));
+          expect(shifted.top, closeTo(clockRect.top, .001));
+          expect(shifted.bottom, closeTo(clockRect.bottom, .001));
+          expect(shifted.width, closeTo(clockRect.width, .001));
+          expect(shifted.height, closeTo(clockRect.height, .001));
           expect(tester.takeException(), isNull);
           await appearance.set('panelBackgroundInformationAboveLandscape', true);
           await tester.pumpAndSettle();
           expect(find.byType(LandscapeSkyClip), findsNothing);
-          expect(tester.getRect(find.byKey(const Key('background_clock'))), clockRect);
+          expect(tester.getRect(find.byKey(const Key('background_clock'))), shifted);
           expect(find.byKey(const Key('background_date')), findsOneWidget);
           expect(find.byKey(const Key('background_weather')), findsOneWidget);
           // Weather protection is independent of terrain depth.
@@ -449,24 +910,54 @@ void main() {
     () async {
       await appearance.set('panelBackgroundInformationAlignment', 'right');
       await appearance.set('panelBackgroundInformationSize', 120);
+      await appearance.set('panelBackgroundInformationVerticalOffset', 25);
+      await appearance.setBackgroundInformationVerticalOffset(101);
+      expect(appearance.appearance.backgroundInformationVerticalOffset, 25);
       final restored = TileAppearance.decode(
         jsonEncode(appearance.appearance.values),
       );
       expect(restored.informationOnBackground, isTrue);
-      expect(restored.backgroundInformationAlignment, 'right');
+      expect(restored.backgroundInformationPosition, 'right');
       expect(restored.backgroundInformationSize, 120);
+      expect(restored.backgroundInformationVerticalOffset, 25);
+      expect(TileAppearance.decode(jsonEncode({'panelBackgroundInformationVerticalOffset': -25}))
+        .backgroundInformationVerticalOffset, 0);
       final invalid = TileAppearance.decode(
         jsonEncode({
           'panelInformationPlacement': 'invalid',
           'panelBackgroundInformationAlignment': 3,
           'panelBackgroundInformationSize': 10000,
+          'panelBackgroundInformationVerticalOffset': 101,
         }),
       );
       expect(invalid.informationOnBackground, isFalse);
-      expect(invalid.backgroundInformationAlignment, 'center');
+      expect(invalid.backgroundInformationPosition, 'center');
       expect(invalid.backgroundInformationSize, 96);
+      expect(invalid.backgroundInformationVerticalOffset, 0);
     },
   );
+
+  test('legacy position sets initial alignment and only a changed position resets offset', () async {
+    await appearance.preferences.setString(
+      tileAppearanceKey, '{"panelBackgroundInformationAlignment":"left"}',
+    );
+    expect(appearance.appearance.backgroundInformationPosition, 'left');
+    expect(appearance.appearance.backgroundInformationAlignment, 'left');
+    expect(appearance.appearance.backgroundInformationOffset, 0);
+    await appearance.set('panelBackgroundInformationOffset', 50);
+    await appearance.set('panelBackgroundInformationAlignment', 'left');
+    expect(appearance.appearance.backgroundInformationOffset, 50);
+    await appearance.set('panelBackgroundInformationAlignment', 'center');
+    expect(appearance.appearance.backgroundInformationAlignment, 'left');
+    expect(appearance.appearance.backgroundInformationOffset, 0);
+    await appearance.set('panelBackgroundInformationOffset', -25);
+    await appearance.set('panelBackgroundInformationAlignment', 'left');
+    expect(appearance.appearance.backgroundInformationOffset, 0);
+    expect(TileAppearance.validValues({
+      'panelBackgroundInformationOffset': 101,
+      'panelBackgroundInformationContentAlignment': 'invalid',
+    }), isEmpty);
+  });
 
   testWidgets(
     'background settings expose visibility, hide irrelevant panel controls',

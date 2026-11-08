@@ -181,10 +181,13 @@ void main() {
     when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
     when(settingsService.accentColorHex).thenReturn("7C4DFF");
     when(settingsService.appLanguage).thenReturn('');
+    when(settingsService.fileManagerPreference).thenReturn(FileManagerPreference.ask);
     PackageInfoPlatform.instance = _MockPackageInfoPlatform();
 
     await _pumpWidgetWithProviders(tester, settingsService, appsService, general: true);
 
+    await tester.ensureVisible(find.text("About CuteLauncher"));
+    await tester.pumpAndSettle();
     await tester.tap(find.text("About CuteLauncher"));
     await tester.pumpAndSettle();
     expect(find.byType(CuteLauncherAboutDialog), findsOneWidget);

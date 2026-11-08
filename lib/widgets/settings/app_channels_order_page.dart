@@ -1,3 +1,5 @@
+import 'settings_information.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -161,10 +163,7 @@ class _AppChannelsOrderPageState extends State<AppChannelsOrderPage> {
                 },
               ),
             // Active remote-control instructions stay visible, like section order.
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Text(l.backgroundInformationOrderHint),
-            ),
+            SettingsControlHint(text: l.backgroundInformationOrderHint),
           ],
         ),
       ),

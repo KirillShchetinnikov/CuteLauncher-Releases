@@ -5,7 +5,19 @@ import 'app_fonts.dart';
 /// Validated overrides for the shared panel clock; omitted fields inherit the panel.
 class PanelClockStyle {
   final Map<String, dynamic> values;
-  const PanelClockStyle([this.values = const {}]);
+  final bool panelTypography;
+  const PanelClockStyle([this.values = const {}]) : panelTypography = false;
+  const PanelClockStyle.panel([this.values = const {}]) : panelTypography = true;
+  static const typographyKeys = {
+    'inheritPanelTypography', 'size', 'font', 'preset', 'italic', 'weight',
+  };
+  static const colorsAndEffectsKeys = {
+    'color', 'clockColor', 'hoursColor', 'minutesColor', 'splitColors', 'glow',
+  };
+  bool get inheritsPanelTypography =>
+      panelTypography && values['inheritPanelTypography'] != false;
+  dynamic _typographyValue(String key) =>
+      inheritsPanelTypography ? null : values[key];
   static const fonts = {'system': 'Roboto', ...AppFonts.families};
   // Match the wght axes of the bundled variable fonts and the actual static faces.
   static const _variableWeightRanges = <String, (int, int)>{
@@ -21,7 +33,7 @@ class PanelClockStyle {
   };
   TextStyle _localizedBase(TextStyle inherited, Locale? locale) {
     final style = inherited.copyWith(
-      fontFamily: fonts[values['font']] ?? inherited.fontFamily,
+      fontFamily: fonts[_typographyValue('font')] ?? inherited.fontFamily,
     );
     return locale == null ? style : AppFonts.localize(style, locale);
   }
@@ -40,7 +52,7 @@ class PanelClockStyle {
 
   List<int> availableWeights(TextStyle inherited, {Locale? locale}) =>
       _weights(_localizedBase(inherited, locale).fontFamily);
-  String get preset => values['italic'] == true ? 'italic' : 'default';
+  String get preset => _typographyValue('italic') == true ? 'italic' : 'default';
   static const fontStyles = <String, Map<String, dynamic>>{
     'default': {'italic': false},
     'italic': {'italic': true},
@@ -53,8 +65,9 @@ class PanelClockStyle {
   bool get clockOnRight => values['clockOnRight'] == true;
   double get spacing => (values['spacing'] as num?)?.toDouble() ?? 12;
   bool get inheritBackground => values['inheritBackground'] != false;
-  bool get animate => values['animate'] != false;
+  bool get animate => values['animate'] as bool? ?? !panelTypography;
   bool get showColon => values['showColon'] != false;
+  Color? get clockColor => values['clockColor'] is int ? Color(values['clockColor']) : null;
   bool get splitColors => switch (values['splitColors']) {
     bool split => split,
     _ => values['hoursColor'] is int || values['minutesColor'] is int,
@@ -68,7 +81,7 @@ class PanelClockStyle {
       ? Color(values['minutesColor'])
       : null;
   double size(double inherited) =>
-      (values['size'] as num?)?.toDouble() ?? inherited;
+      (_typographyValue('size') as num?)?.toDouble() ?? inherited;
   double radius(double inherited) => inheritBackground
       ? inherited
       : (values['radius'] as num?)?.toDouble() ?? inherited;
@@ -85,7 +98,7 @@ class PanelClockStyle {
             .withValues(alpha: (values['opacity'] as num?)?.toDouble() ?? 1);
   TextStyle textStyle(TextStyle inherited, {Locale? locale}) {
     final base = _localizedBase(inherited, locale);
-    final requested = values['weight'] as int? ?? 400;
+    final requested = _typographyValue('weight') as int? ?? 400;
     final weight = _weights(
       base.fontFamily,
     ).reduce((a, b) => (b - requested).abs() <= (a - requested).abs() ? b : a);
@@ -98,11 +111,23 @@ class PanelClockStyle {
       fontVariations: _variableWeightRanges.containsKey(base.fontFamily)
           ? [FontVariation('wght', weight.toDouble())]
           : const [],
-      fontStyle: values['italic'] == true ? FontStyle.italic : FontStyle.normal,
+      fontStyle: _typographyValue('italic') == true ? FontStyle.italic : FontStyle.normal,
       color: color,
       shadows: values['glow'] == true
           ? [Shadow(color: color ?? Colors.white, blurRadius: 8)]
           : const [],
+    );
+  }
+
+  static TextStyle withTextColor(TextStyle base, Color? color) {
+    if (color == null) return base;
+    return base.copyWith(
+      color: color,
+      shadows: base.shadows?.map((shadow) => Shadow(
+        color: color,
+        offset: shadow.offset,
+        blurRadius: shadow.blurRadius,
+      )).toList(),
     );
   }
 
@@ -122,6 +147,7 @@ class PanelClockStyle {
           [
                 'background',
                 'inheritBackground',
+                'inheritPanelTypography',
                 'glow',
                 'animate',
                 'showColon',
@@ -135,6 +161,7 @@ class PanelClockStyle {
       if ([
             'color',
             'backgroundColor',
+            'clockColor',
             'hoursColor',
             'minutesColor',
           ].contains(key) &&

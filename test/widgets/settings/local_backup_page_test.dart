@@ -83,7 +83,7 @@ void main() {
         find.widgetWithText(FocusableSettingsTile, l.backupFolderPath),
       );
       await tester.pumpAndSettle();
-      expect(find.byType(SimpleDialog), findsOneWidget);
+      expect(find.byType(AlertDialog), findsOneWidget);
       final choice = scenario == 'private'
           ? l.backupPrivateFolder
           : scenario == 'unsupported' || scenario == 'cancel'
@@ -91,7 +91,7 @@ void main() {
           : l.backupDownloadsFolder;
       await tester.tap(
         find.descendant(
-          of: find.byType(SimpleDialog),
+          of: find.byType(AlertDialog),
           matching: find.widgetWithText(FocusableSettingsTile, choice),
         ),
       );

@@ -73,6 +73,7 @@ HomeStyleBlock? homeStyleBlock(
         return HomeStyleBlock.border;
       }
     case 'sectionIcons':
+    case 'sectionTitleAligned':
       if (!tiles.sectionTitles) return HomeStyleBlock.title;
     case 'blurTiles':
       if (tiles.opacity == 1) return HomeStyleBlock.opaque;

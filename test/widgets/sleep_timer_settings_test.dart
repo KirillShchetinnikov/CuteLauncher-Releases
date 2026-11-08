@@ -1,3 +1,5 @@
+import 'package:flauncher/widgets/settings/settings_list_heading.dart';
+import 'package:flauncher/widgets/settings/settings_information.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/sleep_timer_service.dart';
@@ -131,6 +133,8 @@ void main() {
         ),
       );
       await pump(tester, const SleepTimerPresetsPage());
+      expect(find.byType(SettingsListHeading), findsNWidgets(2));
+      expect(find.byType(SettingsControlHint), findsOneWidget);
       final row = find.byKey(const ValueKey('default_600'));
       tester.widget<FocusableSettingsTile>(row).focusNode!.requestFocus();
       await tester.pump();

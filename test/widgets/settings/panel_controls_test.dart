@@ -177,7 +177,7 @@ void main() {
     (tester) async {
       expect(appearancePalette.toSet().length, 100);
       await pump(tester, const AppearancePage(section: 'panel'));
-      await tester.tap(find.text('Фон панели'));
+      await tester.tap(find.widgetWithText(FocusableSettingsTile, 'Фон панели'));
       await tester.pumpAndSettle();
       expect(find.byType(ColorPaletteDialog), findsOneWidget);
       final grid = tester.widget<GridView>(find.byType(GridView));

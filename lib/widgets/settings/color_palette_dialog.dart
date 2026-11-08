@@ -1,3 +1,5 @@
+import '../../theme/launcher_colors.dart';
+
 import 'package:flauncher/widgets/launcher_dialog.dart';
 import 'package:flutter/material.dart';
 
@@ -48,7 +50,9 @@ class ColorPaletteDialog extends StatelessWidget {
             if (allowDefault)
               LauncherDialogButton(
                 onPressed: () => Navigator.pop(context, (null,)),
-                child: Text(defaultLabel ?? AppLocalizations.of(context)!.defaultOption),
+                child: Text(
+                  defaultLabel ?? AppLocalizations.of(context)!.defaultOption,
+                ),
               ),
             GridView.count(
               shrinkWrap: true,
@@ -95,12 +99,11 @@ class _ColorCellState extends State<_ColorCell> {
   @override
   Widget build(BuildContext context) {
     final color = Color(widget.value);
-    final contrast = color.computeLuminance() > .5
-        ? Colors.black
-        : Colors.white;
+    final contrast = LauncherColors.onAccent(color);
     return Semantics(
       label: '#${widget.value.toRadixString(16).substring(2).toUpperCase()}',
       selected: widget.selected,
+      button: true,
       child: InkWell(
         autofocus: widget.autofocus,
         onFocusChange: (value) {
@@ -116,7 +119,7 @@ class _ColorCellState extends State<_ColorCell> {
             border: Border.all(
               color: focused
                   ? Theme.of(context).colorScheme.primary
-                  : Colors.grey,
+                  : Theme.of(context).colorScheme.outline,
               width: focused ? 4 : 1,
             ),
           ),

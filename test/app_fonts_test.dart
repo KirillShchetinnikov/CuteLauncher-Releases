@@ -1,14 +1,15 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flauncher/app_fonts.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/panel_clock_style.dart';
 import 'package:flauncher/tile_appearance.dart';
 import 'package:flauncher/widgets/settings/language_font_choice.dart';
+import 'package:flauncher/widgets/settings/settings_value_stepper.dart';
 
 Set<int> fontCharacters(String path) {
   final bytes = ByteData.sublistView(File(path).readAsBytesSync());
@@ -198,7 +199,7 @@ void main() {
     expect(AppFonts.family('outfit', const Locale('ru')), 'Manrope');
   });
 
-  testWidgets('picker hides incompatible fonts and updates with locale', (
+  testWidgets('inline font control filters locale and preserves saved preference', (
     tester,
   ) async {
     var language = const Locale('ru');
@@ -210,33 +211,42 @@ void main() {
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: Scaffold(
-            body: LanguageFontChoice(
+            body: StatefulBuilder(builder: (context, setState) => LanguageFontChoice(
               title: 'Font',
-              value: 'outfit',
-              onChanged: (v) => selected = v,
-            ),
+              value: selected ?? 'outfit',
+              onChanged: (v) => setState(() => selected = v),
+            )),
           ),
         ),
       );
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Font'));
       await tester.pumpAndSettle();
     }
 
     await show();
     expect(find.text('Outfit'), findsNothing);
-    expect(find.text('Google Sans'), findsOneWidget);
-    expect(find.text('Onest'), findsOneWidget);
-    expect(find.text('Medeo Sans'), findsOneWidget);
-    expect(find.text('Medeo Mono'), findsOneWidget);
-    expect(find.text('Medeo Serif'), findsOneWidget);
-    expect(find.text('Medeo Pixel'), findsNothing);
-    await tester.tap(find.text('Medeo Serif'));
-    await tester.pumpAndSettle();
-    expect(selected, 'medeo-serif');
+    var control = tester.widget<SettingsValueStepper>(find.byType(SettingsValueStepper));
+    expect(control.options, AppFonts.available(language));
+    expect(control.value, 'manrope');
+    expect(control.inlineChoices, isTrue);
+    expect(selected, isNull);
     language = const Locale('en');
     await show();
-    expect(find.text('Outfit'), findsWidgets);
+    control = tester.widget<SettingsValueStepper>(find.byType(SettingsValueStepper));
+    expect(control.value, 'outfit');
+    expect(control.options, contains('outfit'));
+    Focus.of(tester.element(find.text('Font'))).requestFocus();
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+    await tester.pumpAndSettle();
+    expect(selected, 'manrope');
+    expect(find.byType(AlertDialog), findsNothing);
+    language = const Locale('ar');
+    await show();
+    control = tester.widget<SettingsValueStepper>(find.byType(SettingsValueStepper));
+    expect(control.options, ['system']);
+    expect(control.enabled, isFalse);
+    expect(control.value, 'system');
+    expect(selected, 'manrope');
   });
 
   testWidgets('theme uses resolved locale without changing saved preference', (

@@ -13,6 +13,9 @@ class SettingsReadOnlyValue extends StatefulWidget {
   final TextDirection? textDirection;
   final bool compact;
 
+  /// Static metadata wraps in place and never adds a remote-control stop.
+  final bool wrapLines;
+
   const SettingsReadOnlyValue({
     super.key,
     required this.label,
@@ -21,6 +24,7 @@ class SettingsReadOnlyValue extends StatefulWidget {
     this.readingHeight = 80,
     this.textDirection,
     this.compact = false,
+    this.wrapLines = false,
   });
 
   @override
@@ -69,6 +73,30 @@ class _SettingsReadOnlyValueState extends State<SettingsReadOnlyValue> {
   @override
   Widget build(BuildContext context) => LayoutBuilder(
     builder: (context, box) {
+      if (widget.wrapLines) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Text(
+                  widget.label,
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  widget.value,
+                  textAlign: TextAlign.end,
+                  textDirection: widget.textDirection,
+                ),
+              ),
+            ],
+          ),
+        );
+      }
       final style = DefaultTextStyle.of(context).style;
       final labelPainter = TextPainter(
         text: TextSpan(

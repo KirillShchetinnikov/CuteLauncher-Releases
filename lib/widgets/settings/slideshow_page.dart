@@ -1,3 +1,5 @@
+import 'settings_information.dart';
+import 'settings_section.dart';
 import 'settings_help.dart';
 import 'reset_style_tile.dart';
 
@@ -28,52 +30,65 @@ class SlideshowPage extends StatelessWidget {
       ),
       child: ListView(
         children: [
-          FocusableSettingsTile(
-            autofocus: true,
-            title: Text(l.slideshowBrowseFolders),
-            trailing: Text(
-              s.folder.isEmpty ? l.settingsValueNotSet : s.folder,
-              overflow: TextOverflow.ellipsis,
-            ),
-            leading: const Icon(Icons.folder_open),
-            onPressed: () => _localFolder(context, s),
+          SettingsSection(
+            title: l.settingsGroupSource,
+            children: [
+              FocusableSettingsTile(
+                autofocus: true,
+                title: Text(l.slideshowBrowseFolders),
+                trailing: Text(
+                  s.folder.isEmpty ? l.settingsValueNotSet : s.folder,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                leading: const Icon(Icons.folder_open),
+                onPressed: () => _localFolder(context, s),
+              ),
+              FocusableSettingsTile(
+                title: Text(l.slideshowEnterFolderPath),
+                leading: const Icon(Icons.edit),
+                onPressed: () => _localFolder(context, s, manual: true),
+              ),
+              if (s.folder.isEmpty)
+                SettingsMessage(text: l.slideshowFolderRequired),
+              RoundedSwitchListTile(
+                value: s.recursive,
+                title: Text(l.slideshowRecursive),
+                onChanged: (v) => s.configure(recursive: v),
+              ),
+            ],
           ),
-          FocusableSettingsTile(
-            title: Text(l.slideshowEnterFolderPath),
-            leading: const Icon(Icons.edit),
-            onPressed: () => _localFolder(context, s, manual: true),
+          SettingsSection(
+            title: l.settingsGroupImageChange,
+            children: [
+              RoundedSwitchListTile(
+                value: s.randomOrder,
+                title: Text(l.slideshowRandom),
+                onChanged: (v) => s.configure(randomOrder: v),
+              ),
+              SettingsValueStepper(
+                title: l.slideshowInterval,
+                options: const [30, 60, 300, 600, 1800, 3600],
+                value: s.interval,
+                label: (v) => '$v ${l.slideshowSeconds}',
+                onChanged: (v) => s.configure(interval: v as int),
+              ),
+              FocusableSettingsTile(
+                leading: const Icon(Icons.skip_next),
+                title: Text(l.slideshowNext),
+                onPressed: s.loading ? null : s.advance,
+              ),
+              if (s.loading) const LinearProgressIndicator(),
+              if (s.failed)
+                SettingsMessage(
+                  text: l.slideshowError,
+                  kind: SettingsMessageKind.error,
+                ),
+            ],
           ),
-          if (s.folder.isEmpty) Text(l.slideshowFolderRequired),
-          RoundedSwitchListTile(
-            value: s.recursive,
-            title: Text(l.slideshowRecursive),
-            onChanged: (v) => s.configure(recursive: v),
+          SettingsHelp(
+            title: l.wallpaperSlideshow,
+            text: '${l.slideshowStorageHelp}\n\n${l.slideshowHint}',
           ),
-          RoundedSwitchListTile(
-            value: s.randomOrder,
-            title: Text(l.slideshowRandom),
-            onChanged: (v) => s.configure(randomOrder: v),
-          ),
-          SettingsValueStepper(
-            title: l.slideshowInterval,
-            options: const [30, 60, 300, 600, 1800, 3600],
-            value: s.interval,
-            label: (v) => '$v ${l.slideshowSeconds}',
-            onChanged: (v) => s.configure(interval: v as int),
-          ),
-          FocusableSettingsTile(
-            leading: const Icon(Icons.skip_next),
-            title: Text(l.slideshowNext),
-            onPressed: s.loading ? null : s.advance,
-          ),
-          if (s.loading) const LinearProgressIndicator(),
-          if (s.failed)
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Text(l.slideshowError),
-            ),
-          SettingsHelp(title: l.wallpaperSlideshow,
-            text: '${l.slideshowStorageHelp}\n\n${l.slideshowHint}'),
           ResetStyleTile(onReset: s.reset),
         ],
       ),
@@ -99,7 +114,10 @@ class SlideshowPage extends StatelessWidget {
         if (path == null || !context.mounted) return;
       }
       if (manual) {
-        final granted = await FileSelection.requestStorage(context, write: false);
+        final granted = await FileSelection.requestStorage(
+          context,
+          write: false,
+        );
         if (!context.mounted) return;
         if (!granted) return;
       }
@@ -116,7 +134,7 @@ class SlideshowPage extends StatelessWidget {
         final folder = await FileSelection.select<String>(
           context,
           'pickWallpaperFolder',
-          initialPath: path,
+          initialPath: path ?? (service.folder.isEmpty ? null : service.folder),
         );
         if (folder != null && context.mounted) await service.setFolder(folder);
       }

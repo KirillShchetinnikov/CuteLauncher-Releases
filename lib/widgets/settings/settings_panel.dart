@@ -1,4 +1,5 @@
 import 'traffic_settings_page.dart';
+import 'file_browser_settings_page.dart';
 import 'volume_widget_settings_page.dart';
 import 'network_speed_settings_page.dart';
 import 'app_channels_settings_page.dart';
@@ -17,6 +18,8 @@ import 'settings_style_page.dart';
 import 'settings_panel_style.dart';
 import 'automatic_backup_page.dart';
 import 'settings_menu_layout.dart';
+import '../../information_settings_geometry.dart';
+import '../../providers/appearance_service.dart';
 import 'settings_panel_presentation.dart';
 import '../launcher_dialog.dart';
 import 'package:provider/provider.dart';
@@ -103,12 +106,15 @@ class _SettingsPanelState extends State<SettingsPanel> {
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
   late final _observer = _SettingsRouteObserver(_routeChanged);
   bool _topPanel = false;
+  bool _backgroundEditing = false;
+  bool? _informationSide;
   RemotePanelService? _previewService;
 
   @override
   void initState() {
     super.initState();
     _topPanel = _isTopPanelRoute(widget.initialRoute);
+    _backgroundEditing = widget.initialRoute == BackgroundInformationSettingsPage.routeName;
   }
 
   @override
@@ -120,7 +126,7 @@ class _SettingsPanelState extends State<SettingsPanel> {
     super.dispose();
   }
 
-  static bool _isTopPanelRoute(String? name) => {
+  static bool _isTopPanelRoute(String? name) => name?.startsWith('information_') == true || {
       StatusBarPanelPage.routeName,
       RemotePanelPage.routeName,
       StatusBarObjectsPage.routeName,
@@ -149,7 +155,7 @@ class _SettingsPanelState extends State<SettingsPanel> {
       BlockedNotificationsPage.routeName,
     }.contains(name);
 
-  void _routeChanged(String? name, bool remotePreview) {
+  void _routeChanged(String? name, bool remotePreview, bool backgroundEditing) {
     final topPanel = remotePreview || _isTopPanelRoute(name);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
@@ -157,8 +163,8 @@ class _SettingsPanelState extends State<SettingsPanel> {
         _previewService ??= context.read<RemotePanelService?>();
       }
       _previewService?.setSettingsPreview(this, remotePreview);
-      if (_topPanel != topPanel) {
-        setState(() => _topPanel = topPanel);
+      if (_topPanel != topPanel || _backgroundEditing != backgroundEditing) {
+        setState(() { _topPanel = topPanel; _backgroundEditing = backgroundEditing; });
       }
     });
   }
@@ -168,9 +174,28 @@ class _SettingsPanelState extends State<SettingsPanel> {
     final onRight = context.select<SettingsService, bool>(
       (settings) => settings.settingsMenuOnRight,
     );
+    final service = context.watch<AppearanceService?>();
+    if (service == null) {
+      return _layout(context, onRight, false);
+    }
+    return ValueListenableBuilder<Rect?>(valueListenable: service.informationBounds,
+      builder: (context, bounds, _) {
+        if (!_backgroundEditing) {
+          _informationSide = null;
+          return _layout(context, onRight, false);
+        }
+        final side = informationSettingsSide(screen: MediaQuery.sizeOf(context),
+          panelWidth: LauncherStyle.of(context).settingsWidth, block: bounds, preferredRight: _informationSide ?? onRight);
+        _informationSide = side.onRight;
+        return _layout(context, side.onRight, side.obscured);
+      });
+  }
+
+  Widget _layout(BuildContext context, bool onRight, bool obscured) {
     return SettingsPanelStyle(
       builder: (context) => SettingsMenuLayout(
         onRight: onRight,
+        informationObscured: obscured,
         topInset: _topPanel ? kToolbarHeight : 0,
         child: SettingsPanelPresentation(
           child: LandscapeDemoPresentation(
@@ -269,6 +294,8 @@ class _SettingsPanelState extends State<SettingsPanel> {
                         settings: settings,
                         builder: (_) => const GeneralSettingsPage(),
                       );
+                    case FileBrowserSettingsPage.routeName:
+                      return SettingsRoute(settings: settings, builder: (_) => const FileBrowserSettingsPage());
                     case UpdatesPage.routeName:
                       return SettingsRoute(
                         settings: settings,
@@ -381,6 +408,8 @@ class _SettingsPanelState extends State<SettingsPanel> {
                       return SettingsRoute(settings: settings, builder: (_) => const PanelInformationSettingsPage());
                     case InformationSettingsPage.routeName:
                       return SettingsRoute(settings: settings, builder: (_) => const InformationSettingsPage());
+                    case BackgroundInformationSettingsPage.routeName:
+                      return SettingsRoute(settings: settings, builder: (_) => const BackgroundInformationSettingsPage());
                     case InformationDataSettingsPage.routeName:
                     case DateTimeFormatPage.routeName:
                       return SettingsRoute(
@@ -497,11 +526,12 @@ class _SettingsPanelState extends State<SettingsPanel> {
 }
 
 class _SettingsRouteObserver extends NavigatorObserver {
-  final void Function(String?, bool) changed;
+  final void Function(String?, bool, bool) changed;
   final _routes = <Route<dynamic>>[];
   _SettingsRouteObserver(this.changed);
   void _notify() => changed(_routes.lastOrNull?.settings.name,
-      _routes.any((route) => route.settings.name == RemotePanelPage.routeName));
+      _routes.any((route) => route.settings.name == RemotePanelPage.routeName),
+      _routes.any((route) => route.settings.name == BackgroundInformationSettingsPage.routeName));
   @override
   void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
     _routes.add(route);

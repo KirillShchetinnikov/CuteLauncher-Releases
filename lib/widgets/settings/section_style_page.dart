@@ -1,3 +1,5 @@
+import 'settings_section.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -22,6 +24,7 @@ class SectionStylePage extends StatelessWidget {
     int? categoryId,
     bool includeReset = true,
     bool includeIcons = true,
+    List<Widget> layoutControls = const [],
   }) {
     final l = AppLocalizations.of(context)!;
     final s = context.watch<AppearanceService>();
@@ -54,32 +57,50 @@ class SectionStylePage extends StatelessWidget {
             value: value,
             options: options,
             label: (v) => k == 'inactiveOpacity' || k == 'sectionOpacity'
-                ? '${((v as num) * 100).round()}%' : '$v',
+                ? '${((v as num) * 100).round()}%'
+                : '$v',
             onChanged: (v) => set(k, v),
           ),
         );
     return [
       SettingsHelp(title: l.homeInherited, text: l.homeStylePartial),
-      if (categoryId == null) ...[
-        SettingsChoiceTile<String>(
-          title: l.homeScrollMode,
-          value: a.anchored ? 'anchored' : 'free',
-          options: const ['free', 'anchored'],
-          label: (v) => v == 'free' ? l.homeFree : l.homeAnchored,
-          onChanged: (v) => set('sectionScroll', v),
-        ),
-        if (a.anchored)
-          SettingsValueStepper(
-            title: l.homeSectionPosition,
-            value: a.sectionPosition,
-            options: [for (var n = 0; n <= 14; n++) n / 20],
-            label: (v) => '${((v as num) * 100).round()}%',
-            onChanged: (v) => set('sectionPosition', v),
-          ),
-      ],
-      toggle('sectionTitles', l.showSectionTitles, a.sectionTitles),
-      if (includeIcons) toggle('sectionIcons', l.homeSectionIcons, a.sectionIcons),
-      if (categoryId != null)
+      if (categoryId == null || layoutControls.isNotEmpty)
+        SettingsSection(
+          title: l.settingsGroupLayout,
+          children: [
+            ...layoutControls,
+            if (categoryId == null) ...[
+              SettingsChoiceTile<String>(
+                title: l.homeScrollMode,
+                value: a.anchored ? 'anchored' : 'free',
+                options: const ['free', 'anchored'],
+                label: (v) => v == 'free' ? l.homeFree : l.homeAnchored,
+                onChanged: (v) => set('sectionScroll', v),
+              ),
+              if (a.anchored)
+                SettingsValueStepper(
+                  title: l.homeSectionPosition,
+                  value: a.sectionPosition,
+                  options: [for (var n = 0; n <= 14; n++) n / 20],
+                  label: (v) => '${((v as num) * 100).round()}%',
+                  onChanged: (v) => set('sectionPosition', v),
+                ),
+            ],
+            if (categoryId != null)
+              SettingsValueStepper(
+                title: l.categoryPadding,
+                value: a.number('sectionPadding') ?? 0,
+                options: [for (var n = 0; n <= 64; n += 4) n],
+                label: (v) => '$v',
+                onChanged: (v) => set('sectionPadding', v),
+              ),
+            if (categoryId == null)
+              number('sectionGap', l.homeSectionGap, a.sectionGap, [
+                for (var n = 0; n <= 96; n += 4) n,
+              ]),
+          ],
+        )
+      else ...[
         SettingsValueStepper(
           title: l.categoryPadding,
           value: a.number('sectionPadding') ?? 0,
@@ -87,57 +108,73 @@ class SectionStylePage extends StatelessWidget {
           label: (v) => '$v',
           onChanged: (v) => set('sectionPadding', v),
         ),
-      if (categoryId == null)
-        number(
-          'inactiveOpacity',
-          l.homeInactiveOpacity,
-          a.number('inactiveOpacity') ?? 1,
-          [for (var n = 0; n <= 10; n++) n / 10],
-        ),
-      inherited(
-        'sectionBackground',
-        (enabled) => FocusableSettingsTile(
-          enabled: enabled,
-          title: Text(l.categoryBackground),
-          trailing: (a.values['sectionBackground'] as int? ?? 0) == 0
-              ? Text(l.categoryTransparent)
-              : Container(
-                  width: 36,
-                  height: 24,
-                  color: Color(a.values['sectionBackground'] as int),
-                ),
-          onPressed: () async {
-            final selected = await showLauncherDialog<(int?,)>(
-              context: context,
-              builder: (_) => ColorPaletteDialog(
-                title: l.categoryBackground,
-                current: a.values['sectionBackground'] as int?,
-                allowDefault: true,
-                defaultLabel: l.categoryTransparent,
-              ),
-            );
-            if (selected != null) {
-              set('sectionBackground', selected.$1 ?? 0);
-            }
-          },
-        ),
+      ],
+      SettingsSection(
+        title: l.settingsGroupHeadings,
+        children: [
+          toggle('sectionTitles', l.showSectionTitles, a.sectionTitles),
+          if (includeIcons)
+            toggle('sectionIcons', l.homeSectionIcons, a.sectionIcons),
+          toggle(
+            'sectionTitleAligned',
+            l.alignSectionTitles,
+            a.sectionTitleAligned,
+          ),
+        ],
       ),
-      number('sectionOpacity', l.tileOpacity, a.sectionOpacity, [
-        for (var n = 0; n <= 100; n++) n / 100,
-      ]),
-      number('sectionRadius', l.tileCornerRadius, a.sectionRadius, [
-        for (var n = 0; n <= 64; n++) n,
-      ]),
-      if (categoryId == null)
-        number('sectionGap', l.homeSectionGap, a.sectionGap, [
-          for (var n = 0; n <= 96; n += 4) n,
-        ]),
+      SettingsSection(
+        title: l.surfaceGroup,
+        children: [
+          inherited(
+            'sectionBackground',
+            (enabled) => FocusableSettingsTile(
+              enabled: enabled,
+              title: Text(l.categoryBackground),
+              trailing: (a.values['sectionBackground'] as int? ?? 0) == 0
+                  ? Text(l.categoryTransparent)
+                  : Container(
+                      width: 36,
+                      height: 24,
+                      color: Color(a.values['sectionBackground'] as int),
+                    ),
+              onPressed: () async {
+                final selected = await showLauncherDialog<(int?,)>(
+                  context: context,
+                  builder: (_) => ColorPaletteDialog(
+                    title: l.categoryBackground,
+                    current: a.values['sectionBackground'] as int?,
+                    allowDefault: true,
+                    defaultLabel: l.categoryTransparent,
+                  ),
+                );
+                if (selected != null) {
+                  set('sectionBackground', selected.$1 ?? 0);
+                }
+              },
+            ),
+          ),
+          number('sectionOpacity', l.tileOpacity, a.sectionOpacity, [
+            for (var n = 0; n <= 100; n++) n / 100,
+          ]),
+          number('sectionRadius', l.tileCornerRadius, a.sectionRadius, [
+            for (var n = 0; n <= 64; n++) n,
+          ]),
+          if (categoryId == null)
+            number(
+              'inactiveOpacity',
+              l.homeInactiveOpacity,
+              a.number('inactiveOpacity') ?? 1,
+              [for (var n = 0; n <= 10; n++) n / 10],
+            ),
+        ],
+      ),
       if (includeReset)
         ResetStyleTile(
           title: categoryId == null ? null : l.resetSectionToGlobal,
           hint: categoryId == null ? null : l.resetSectionToGlobalHint,
           onReset: () => s.resetFields([
             'sectionTitles',
+            'sectionTitleAligned',
             'sectionIcons',
             if (categoryId != null) 'sectionPadding',
             'sectionBackground',

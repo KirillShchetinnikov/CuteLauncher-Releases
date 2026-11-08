@@ -30,6 +30,47 @@ void focus(WidgetTester tester, String title) =>
     Focus.of(tester.element(find.text(title).first)).requestFocus();
 
 void main() {
+  testWidgets('inline named choices use arrows, keep one focus and stop at endpoints', (tester) async {
+    final options = List.generate(12, (index) => 'Font $index');
+    var value = options[5];
+    await pump(tester, (state) => Center(child: SizedBox(width: 390,
+      child: Column(children: [
+        SettingsValueStepper(
+          title: 'Шрифт', value: value, options: options,
+          inlineChoices: true, autofocus: true,
+          label: (value) => value as String,
+          onChanged: (next) => state(() => value = next as String),
+        ),
+        FocusableSettingsTile(title: const Text('Следующая'), onPressed: () {}),
+      ]),
+    )));
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(find.byType(AlertDialog), findsNothing);
+    expect(find.byType(Slider), findsNothing);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+    await tester.pumpAndSettle();
+    expect(value, options[4]);
+    await tester.tap(find.byIcon(Icons.chevron_right));
+    await tester.pumpAndSettle();
+    expect(value, options[5]);
+    for (var i = 0; i < 15; i++) {
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+      await tester.pumpAndSettle();
+    }
+    expect(value, options.last);
+    for (var i = 0; i < 15; i++) {
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+      await tester.pumpAndSettle();
+    }
+    expect(value, options.first);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.pumpAndSettle();
+    expect(Focus.of(tester.element(find.text('Следующая'))).hasFocus, isTrue);
+    expect(value, options.first);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('choice values keep the arrow at the same right edge', (tester) async {
     Future<double> arrowRight(String value) async {
       await pump(tester, (_) => Center(

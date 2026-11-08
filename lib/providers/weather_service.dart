@@ -13,6 +13,8 @@ import '../diagnostics_store.dart';
 import 'package:flauncher/flauncher_channel.dart';
 import 'package:flauncher/models/weather_data.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter/services.dart';
+import '../tile_appearance.dart';
 
 class WeatherService extends ChangeNotifier with ServiceLifecycle, WidgetsBindingObserver {
   final FLauncherChannel _channel;
@@ -26,7 +28,9 @@ class WeatherService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
   WeatherConfiguration _configuration;
   WeatherFailure? _failure;
   bool _directBusy = false;
+  bool _forceNextServerFetch = false;
   bool _hasKey = false;
+  bool _credentialsPendingCheck = false;
   bool _locating = false;
   bool get locating => _locating;
   Future<List<Map<String, dynamic>>> searchCities(String query) async {
@@ -35,7 +39,9 @@ class WeatherService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
     return (result ?? []).whereType<Map>().map((e) => Map<String, dynamic>.from(e)).toList();
   }
   bool get canRefresh => _configuration.source == WeatherSource.breezy ||
+      (_configuration.source == WeatherSource.customOpenMeteo && _configuration.server != null) ||
       (_configuration.hasLocation &&
+       _configuration.source != WeatherSource.customOpenMeteo &&
        ((_configuration.source != WeatherSource.yandex && _configuration.source != WeatherSource.openWeather) || _hasKey));
   Future<void> locateAutomatically() async {
     if (_locating || isDisposed) return;
@@ -44,12 +50,13 @@ class WeatherService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
     try {
       final result = await const BridgeChannel('cutelauncher/weather_location', preserveErrorCodes: true).invokeMapMethod<String, dynamic>('locate');
       if (isDisposed) return;
-      final value = WeatherConfiguration(source: _configuration.source,
-        location: _configuration.location, cityLatitude: _configuration.cityLatitude, cityLongitude: _configuration.cityLongitude,
-        latitude: (result?['latitude'] as num?)?.toDouble(), longitude: (result?['longitude'] as num?)?.toDouble(),
-        intervalMinutes: _configuration.intervalMinutes);
-      if (!value.validCoordinates) throw const WeatherException(WeatherFailure.coordinates);
-      await configure(value);
+      final latitude = (result?['latitude'] as num?)?.toDouble();
+      final longitude = (result?['longitude'] as num?)?.toDouble();
+      if (!WeatherConfiguration(latitude: latitude, longitude: longitude).validCoordinates) {
+        throw const WeatherException(WeatherFailure.coordinates);
+      }
+      await configure(_configuration.copyWith(locationMode: WeatherLocationMode.automatic,
+        latitude: latitude, longitude: longitude));
     } finally {
       _locating = false;
       if (!isDisposed) notifyListeners();
@@ -64,11 +71,32 @@ class WeatherService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
   bool _foreground = true;
   DateTime? _lastAttempt;
   DateTime? _updatedAt;
+  DateTime? _fetchedAt;
   WeatherConfiguration get configuration => _configuration;
   WeatherFailure? get failure => _failure;
   bool get loading => _directBusy;
   DateTime? get updatedAt => _updatedAt;
-  bool get stale => _updatedAt != null && DateTime.now().difference(_updatedAt!) > Duration(minutes: _configuration.intervalMinutes);
+  bool get stale => _updatedAt != null &&
+    (DateTime.now().difference(_updatedAt!) > Duration(minutes: _configuration.intervalMinutes) ||
+      (_configuration.source == WeatherSource.customOpenMeteo && _failure == WeatherFailure.unavailable) ||
+      (_configuration.source == WeatherSource.gismeteo && _failure != null));
+
+  // The ordinary BridgeChannel records arguments/results for diagnostics.
+  static const _weatherToken = MethodChannel('cutelauncher/weather_token');
+
+  Future<bool> hasServerToken(Uri server) async {
+    return await _weatherToken.invokeMethod<bool>('has', {'server': server.toString()}) ?? false;
+  }
+
+  Future<void> setServerToken(Uri server, String value) async {
+    final token = value.trim();
+    if (token.isNotEmpty && !isWeatherBearerToken(token)) {
+      throw const WeatherException(WeatherFailure.authorization);
+    }
+    await _weatherToken.invokeMethod<void>('save', {'server': server.toString(), 'token': token});
+    if (isDisposed || _configuration.source != WeatherSource.customOpenMeteo || _configuration.server != server) return;
+    _credentialsChanged();
+  }
   Future<File> _keyFile(WeatherSource source) async {
     final name = source == WeatherSource.yandex ? 'weather-api-key' : 'weather-api-key-openweather';
     if (source != WeatherSource.yandex && source != WeatherSource.openWeather) {
@@ -87,31 +115,47 @@ class WeatherService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
     else { await file.parent.create(recursive: true); await file.writeAsString(value.trim(), flush: true); }
     if (selected == _configuration.source) {
       _hasKey = value.trim().isNotEmpty;
-      _fetchGeneration++;
-      _lastAttempt = null;
-      _updatedAt = null;
-      _failure = _hasKey ? null : WeatherFailure.keyRequired;
-      notifyListeners();
-      _startPeriodicTimer();
+      _credentialsChanged();
     }
   }
+
+  void _credentialsChanged() {
+    _credentialsPendingCheck = true;
+    _fetchGeneration++;
+    _lastAttempt = null;
+    _forceNextServerFetch = false;
+    _refreshTimer?.cancel();
+    _refreshTimer = null;
+    _failure = _configuration.source != WeatherSource.customOpenMeteo && !_hasKey
+        ? WeatherFailure.keyRequired : null;
+    notifyListeners();
+  }
+
   Future<void> configure(WeatherConfiguration value) async {
     await _preferences?.setString(weatherConfigurationKey, jsonEncode(value.toJson()));
+    if (value.source != _configuration.source || value.server != _configuration.server) {
+      _credentialsPendingCheck = false;
+    }
     _fetchGeneration++;
     _configuration = value;
     _weatherData = null;
     _lastJson = null;
     _lastAttempt = null;
     _updatedAt = null;
+    _fetchedAt = null;
     _failure = null;
     await _readKeyPresence();
     if (value.source != WeatherSource.breezy && !canRefresh) {
-      _failure = value.hasLocation ? WeatherFailure.keyRequired : WeatherFailure.coordinates;
+      _failure = _configurationFailure(value);
     }
     notifyListeners();
     _startPeriodicTimer();
     await refresh();
   }
+
+  WeatherFailure _configurationFailure(WeatherConfiguration config) =>
+      config.source == WeatherSource.customOpenMeteo && config.server == null ? WeatherFailure.serverAddress :
+      !config.hasLocation ? WeatherFailure.coordinates : WeatherFailure.keyRequired;
   Future<void> reloadConfiguration() async {
     final value = WeatherConfiguration.decode(_preferences?.getString(weatherConfigurationKey));
     if (jsonEncode(value.toJson()) != jsonEncode(_configuration.toJson())) await configure(value);
@@ -162,18 +206,31 @@ class WeatherService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
   }
 
   void _startPeriodicTimer() {
-    if (isDisposed || !_foreground) return;
+    if (isDisposed || !_foreground || _credentialsPendingCheck) return;
     _refreshTimer?.cancel();
     _refreshTimer = null;
     if (!canRefresh) return;
     // 15-minute fallback timer in case a broadcast was missed while paused
-    _refreshTimer = Timer.periodic(Duration(minutes: _configuration.source == WeatherSource.breezy ? 15 : _configuration.intervalMinutes), (_) => _fetchLatest());
+    _refreshTimer = Timer.periodic(Duration(minutes: _configuration.source == WeatherSource.breezy ? 15 : _configuration.intervalMinutes), (_) {
+      if (_configuration.source == WeatherSource.gismeteo && work != null) {
+        work!.schedule(this, _fetchLatest);
+      } else {
+        _fetchLatest();
+      }
+    });
   }
+
+  bool get _requiresForegroundResult => _configuration.source == WeatherSource.customOpenMeteo ||
+      _configuration.source == WeatherSource.gismeteo;
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (isDisposed) return;
     if (state == AppLifecycleState.paused || state == AppLifecycleState.hidden) {
+      if (_foreground && _directBusy && _requiresForegroundResult) {
+        _fetchGeneration++;
+        _lastAttempt = null;
+      }
       _foreground = false;
       _refreshTimer?.cancel();
       _refreshTimer = null;
@@ -218,25 +275,34 @@ class WeatherService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
   }
 
   Future<void> _fetchDirect({bool force = false}) async {
-    if (_directBusy || !_foreground || !canRefresh) return;
+    if (_directBusy || !_foreground || _credentialsPendingCheck) return;
     final config = _configuration;
+    final custom = config.source == WeatherSource.customOpenMeteo;
+    final requiresForeground = _requiresForegroundResult;
+    if (!canRefresh) {
+      if (custom) _failure = _configurationFailure(config);
+      return;
+    }
     final identity = jsonEncode(config.toJson());
     if (_weatherData == null) {
       try {
         final cache = jsonDecode(_preferences?.getString('weather_cache') ?? '{}') as Map;
         final date = DateTime.tryParse(cache['fetchedAt'] as String? ?? '');
         if (cache['configuration'] == identity && date != null && !date.isAfter(DateTime.now()) && DateTime.now().difference(date).inHours < 24) {
-          _weatherData = WeatherData.fromJson(Map<String, dynamic>.from(cache['data'] as Map), referenceTime: date);
-          _updatedAt = date;
+          final data = Map<String, dynamic>.from(cache['data'] as Map);
+          _weatherData = WeatherData.fromJson(data, referenceTime: date);
+          _fetchedAt = date;
+          _updatedAt = requiresForeground ? _observationUpdatedAt(data, date) : date;
         }
       } catch (_) {}
     }
-    if (_updatedAt != null && DateTime.now().difference(_updatedAt!).inHours >= 24) {
+    if (_fetchedAt != null && DateTime.now().difference(_fetchedAt!).inHours >= 24) {
       _weatherData = null;
       _updatedAt = null;
+      _fetchedAt = null;
     }
     if (!force && _lastAttempt != null && DateTime.now().difference(_lastAttempt!) < const Duration(minutes: 5)) return;
-    if (!force && _updatedAt != null && DateTime.now().difference(_updatedAt!) < Duration(minutes: config.intervalMinutes)) return;
+    if (!force && _fetchedAt != null && DateTime.now().difference(_fetchedAt!) < Duration(minutes: config.intervalMinutes)) return;
     final generation = ++_fetchGeneration;
     _directBusy = true;
     _lastAttempt = DateTime.now();
@@ -247,25 +313,38 @@ class WeatherService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
         final file = await _keyFile(config.source);
         if (await file.exists()) key = await file.readAsString();
       }
-      final data = await _direct.fetch(config, key: key);
-      if (isDisposed || generation != _fetchGeneration) return;
-      _weatherData = WeatherData.fromJson(data);
-      _updatedAt = DateTime.now();
+      final token = custom ? await _weatherToken.invokeMethod<String>('read', {'server': config.server.toString()}) : null;
+      if (isDisposed || generation != _fetchGeneration || (requiresForeground && !_foreground)) return;
+      final data = await _direct.fetch(config, key: key, bearerToken: token,
+        forecastDays: custom ? TileAppearance.decode(_preferences?.getString(tileAppearanceKey)).forecastDays : 5);
+      if (isDisposed || generation != _fetchGeneration || (requiresForeground && !_foreground)) return;
+      final fetched = DateTime.now();
+      _weatherData = WeatherData.fromJson(data, referenceTime: fetched);
+      _fetchedAt = fetched;
+      _updatedAt = requiresForeground ? _observationUpdatedAt(data, fetched) : fetched;
       _failure = null;
-      await _preferences?.setString('weather_cache', jsonEncode({'configuration': identity, 'fetchedAt': _updatedAt!.toIso8601String(), 'data': data}));
+      await _preferences?.setString('weather_cache', jsonEncode({'configuration': identity, 'fetchedAt': fetched.toIso8601String(), 'data': data}));
     } on WeatherException catch (error, stack) {
       DiagnosticsStore.instance.recordException('weatherFetch', error, stack, reason: 'weather_${error.failure.name}');
-      if (!isDisposed && generation == _fetchGeneration) _failure = error.failure;
+      if (!isDisposed && generation == _fetchGeneration && (!requiresForeground || _foreground)) _failure = error.failure;
     } catch (error, stack) {
-      DiagnosticsStore.instance.recordException('weatherFetch', error, stack);
-      if (!isDisposed && generation == _fetchGeneration) _failure = WeatherFailure.unavailable;
+      DiagnosticsStore.instance.recordException('weatherFetch', custom ? const WeatherException(WeatherFailure.unavailable) : error, stack);
+      if (!isDisposed && generation == _fetchGeneration && (!requiresForeground || _foreground)) _failure = WeatherFailure.unavailable;
     } finally {
       _directBusy = false;
+      final force = _forceNextServerFetch && _configuration.source == WeatherSource.customOpenMeteo;
+      _forceNextServerFetch = false;
       if (!isDisposed) {
         notifyListeners();
-        if (generation != _fetchGeneration && _configuration.source != WeatherSource.breezy) await _fetchDirect();
+        if (generation != _fetchGeneration && _configuration.source != WeatherSource.breezy) await _fetchDirect(force: force);
       }
     }
+  }
+
+  DateTime _observationUpdatedAt(Map<String, dynamic> data, DateTime fetched) {
+    final timestamp = data['timestamp'];
+    return DateTime.tryParse(data['updatedAt'] as String? ?? '') ??
+      (timestamp is int ? DateTime.fromMillisecondsSinceEpoch(timestamp * 1000, isUtc: true) : fetched);
   }
 
   void _processWeatherJson(String jsonString) {
@@ -296,8 +375,19 @@ class WeatherService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
   }
 
   Future<void> refresh() async {
+    final resumeUpdates = _credentialsPendingCheck;
+    _credentialsPendingCheck = false;
     await _fetchLatest(force: true);
+    if (resumeUpdates) _startPeriodicTimer();
     notifyListeners();
+  }
+
+  Future<void> refreshForecastDays() async {
+    if (isDisposed || _configuration.source != WeatherSource.customOpenMeteo) return;
+    _fetchGeneration++;
+    _lastAttempt = null;
+    _forceNextServerFetch = _directBusy;
+    await _fetchDirect(force: true);
   }
 
   @override

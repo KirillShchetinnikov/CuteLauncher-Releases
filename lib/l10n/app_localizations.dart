@@ -122,6 +122,114 @@ abstract class AppLocalizations {
     Locale('zh'),
   ];
 
+  /// No description provided for @weatherTextResetFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset format'**
+  String get weatherTextResetFormat;
+
+  /// No description provided for @settingsReportFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Report file'**
+  String get settingsReportFile;
+
+  /// No description provided for @homeVisibleRowsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Fully visible rows'**
+  String get homeVisibleRowsLabel;
+
+  /// No description provided for @watchNextEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No Continue Watching cards yet'**
+  String get watchNextEmpty;
+
+  /// No description provided for @inputsUnavailableStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'No inputs available'**
+  String get inputsUnavailableStatus;
+
+  /// No description provided for @remoteButtonsNoEvents.
+  ///
+  /// In en, this message translates to:
+  /// **'No events yet'**
+  String get remoteButtonsNoEvents;
+
+  /// No description provided for @informationBackgroundVerticalOffset.
+  ///
+  /// In en, this message translates to:
+  /// **'Vertical offset'**
+  String get informationBackgroundVerticalOffset;
+
+  /// No description provided for @informationResetPositionSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset all settings on this screen'**
+  String get informationResetPositionSize;
+
+  /// No description provided for @weatherIconsGeometric.
+  ///
+  /// In en, this message translates to:
+  /// **'Geometric'**
+  String get weatherIconsGeometric;
+
+  /// No description provided for @weatherIconsCircled.
+  ///
+  /// In en, this message translates to:
+  /// **'Circled'**
+  String get weatherIconsCircled;
+
+  /// No description provided for @informationCommonAppearance.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared settings'**
+  String get informationCommonAppearance;
+
+  /// No description provided for @informationTimeFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Time format'**
+  String get informationTimeFormat;
+
+  /// No description provided for @informationDateFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Date format'**
+  String get informationDateFormat;
+
+  /// No description provided for @informationInheritPanelTypography.
+  ///
+  /// In en, this message translates to:
+  /// **'Inherit top panel appearance'**
+  String get informationInheritPanelTypography;
+
+  /// No description provided for @informationResetTypography.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset settings'**
+  String get informationResetTypography;
+
+  /// No description provided for @alignSectionTitles.
+  ///
+  /// In en, this message translates to:
+  /// **'Align section titles with tiles'**
+  String get alignSectionTitles;
+
+  /// No description provided for @homeAppName.
+  ///
+  /// In en, this message translates to:
+  /// **'App name on Home'**
+  String get homeAppName;
+
+  /// No description provided for @restoreSystemAppName.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore system name'**
+  String get restoreSystemAppName;
+
   /// No description provided for @settingsScrollbar.
   ///
   /// In en, this message translates to:
@@ -7058,6 +7166,12 @@ abstract class AppLocalizations {
   /// **'Standard'**
   String get interfaceStandard;
 
+  /// No description provided for @interfaceCalm.
+  ///
+  /// In en, this message translates to:
+  /// **'Calm'**
+  String get interfaceCalm;
+
   /// No description provided for @interfaceGlass.
   ///
   /// In en, this message translates to:
@@ -8408,6 +8522,126 @@ abstract class AppLocalizations {
   /// **'Weather and calendar'**
   String get informationShowBoth;
 
+  /// No description provided for @weatherTextFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather text format'**
+  String get weatherTextFormat;
+
+  /// No description provided for @weatherTextTemperature.
+  ///
+  /// In en, this message translates to:
+  /// **'Temperature'**
+  String get weatherTextTemperature;
+
+  /// No description provided for @weatherTextApparent.
+  ///
+  /// In en, this message translates to:
+  /// **'Feels like'**
+  String get weatherTextApparent;
+
+  /// No description provided for @weatherTextConditions.
+  ///
+  /// In en, this message translates to:
+  /// **'Conditions'**
+  String get weatherTextConditions;
+
+  /// No description provided for @weatherTextHumidity.
+  ///
+  /// In en, this message translates to:
+  /// **'Humidity'**
+  String get weatherTextHumidity;
+
+  /// No description provided for @weatherTextLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Today’s low'**
+  String get weatherTextLow;
+
+  /// No description provided for @weatherTextHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'Today’s high'**
+  String get weatherTextHigh;
+
+  /// No description provided for @weatherTextLiteral.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom text'**
+  String get weatherTextLiteral;
+
+  /// No description provided for @weatherTextNewline.
+  ///
+  /// In en, this message translates to:
+  /// **'Line break'**
+  String get weatherTextNewline;
+
+  /// No description provided for @weatherTextBefore.
+  ///
+  /// In en, this message translates to:
+  /// **'Before the block'**
+  String get weatherTextBefore;
+
+  /// No description provided for @weatherTextAfter.
+  ///
+  /// In en, this message translates to:
+  /// **'After the block'**
+  String get weatherTextAfter;
+
+  /// No description provided for @weatherTextYourFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Your format'**
+  String get weatherTextYourFormat;
+
+  /// No description provided for @weatherTextAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a block'**
+  String get weatherTextAdd;
+
+  /// No description provided for @weatherTextMoveEarlier.
+  ///
+  /// In en, this message translates to:
+  /// **'Move earlier'**
+  String get weatherTextMoveEarlier;
+
+  /// No description provided for @weatherTextMoveLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Move later'**
+  String get weatherTextMoveLater;
+
+  /// No description provided for @weatherTextHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter text and tokens in curly braces, or insert them at the cursor with the buttons. Tokens are case-insensitive. Parentheses around a single value disappear when its data is unavailable. Double literal curly braces. One line break is allowed.'**
+  String get weatherTextHelp;
+
+  /// No description provided for @weatherTextSaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save the weather text format.'**
+  String get weatherTextSaveError;
+
+  /// No description provided for @weatherTextSampleCity.
+  ///
+  /// In en, this message translates to:
+  /// **'London'**
+  String get weatherTextSampleCity;
+
+  /// No description provided for @weatherTextMetersPerSecond.
+  ///
+  /// In en, this message translates to:
+  /// **'{speed} m/s'**
+  String weatherTextMetersPerSecond(String speed);
+
+  /// Current apparent temperature in the weather forecast menu
+  ///
+  /// In en, this message translates to:
+  /// **'Feels like {temperature}'**
+  String weatherFeelsLike(String temperature);
+
   /// No description provided for @weatherForecastTitle.
   ///
   /// In en, this message translates to:
@@ -8948,11 +9182,29 @@ abstract class AppLocalizations {
   /// **'On wallpaper'**
   String get informationOnBackground;
 
-  /// No description provided for @informationBackgroundAlignment.
+  /// No description provided for @informationBackgroundPosition.
   ///
   /// In en, this message translates to:
-  /// **'Wallpaper alignment'**
-  String get informationBackgroundAlignment;
+  /// **'Block position'**
+  String get informationBackgroundPosition;
+
+  /// No description provided for @informationBackgroundOffset.
+  ///
+  /// In en, this message translates to:
+  /// **'Horizontal offset'**
+  String get informationBackgroundOffset;
+
+  /// No description provided for @informationBackgroundResetOffset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset offset'**
+  String get informationBackgroundResetOffset;
+
+  /// No description provided for @informationBackgroundContentAlignment.
+  ///
+  /// In en, this message translates to:
+  /// **'Alignment within block'**
+  String get informationBackgroundContentAlignment;
 
   /// No description provided for @informationBackgroundHelp.
   ///
@@ -9451,6 +9703,684 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Not running'**
   String get appProcessStopped;
+
+  /// No description provided for @weatherCustomServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom server (Open-Meteo)'**
+  String get weatherCustomServer;
+
+  /// No description provided for @widgetSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Widget settings'**
+  String get widgetSettings;
+
+  /// No description provided for @weatherServerUrlImport.
+  ///
+  /// In en, this message translates to:
+  /// **'Import address from file'**
+  String get weatherServerUrlImport;
+
+  /// No description provided for @weatherServerUrlImportError.
+  ///
+  /// In en, this message translates to:
+  /// **'Import failed: Choose a UTF-8 text file up to 4 KB containing only the base HTTPS server address.'**
+  String get weatherServerUrlImportError;
+
+  /// No description provided for @weatherImportReadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not read the import file. Check file access.'**
+  String get weatherImportReadError;
+
+  /// No description provided for @weatherImportEncodingError.
+  ///
+  /// In en, this message translates to:
+  /// **'Import failed: the file is not UTF-8.'**
+  String get weatherImportEncodingError;
+
+  /// No description provided for @weatherImportTooLargeError.
+  ///
+  /// In en, this message translates to:
+  /// **'Import failed: the file exceeds 4 KB.'**
+  String get weatherImportTooLargeError;
+
+  /// No description provided for @weatherImportSaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save the value. Try entering or importing it again.'**
+  String get weatherImportSaveError;
+
+  /// No description provided for @weatherTokenInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid token format.'**
+  String get weatherTokenInvalid;
+
+  /// No description provided for @weatherServerUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Server HTTPS address'**
+  String get weatherServerUrl;
+
+  /// No description provided for @weatherServerUrlHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a base HTTPS URL without /v1/forecast, credentials, a query or a fragment.'**
+  String get weatherServerUrlHint;
+
+  /// No description provided for @weatherServerCoordinates.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter coordinates'**
+  String get weatherServerCoordinates;
+
+  /// No description provided for @weatherServerCoordinatesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter latitude and longitude separated by a comma, using decimal points. Example: 50.0, 30.0.'**
+  String get weatherServerCoordinatesHint;
+
+  /// No description provided for @weatherIconPack.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather icon set'**
+  String get weatherIconPack;
+
+  /// No description provided for @weatherIconsStandard.
+  ///
+  /// In en, this message translates to:
+  /// **'Standard'**
+  String get weatherIconsStandard;
+
+  /// No description provided for @weatherIconsOutline.
+  ///
+  /// In en, this message translates to:
+  /// **'Outline'**
+  String get weatherIconsOutline;
+
+  /// No description provided for @weatherIconsSolid.
+  ///
+  /// In en, this message translates to:
+  /// **'Filled'**
+  String get weatherIconsSolid;
+
+  /// No description provided for @weatherIconsDuotone.
+  ///
+  /// In en, this message translates to:
+  /// **'Two-tone'**
+  String get weatherIconsDuotone;
+
+  /// No description provided for @weatherIconsPixel.
+  ///
+  /// In en, this message translates to:
+  /// **'Pixel'**
+  String get weatherIconsPixel;
+
+  /// No description provided for @weatherTextColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather text color'**
+  String get weatherTextColor;
+
+  /// No description provided for @weatherIconColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather icon color'**
+  String get weatherIconColor;
+
+  /// No description provided for @weatherIconFollowsText.
+  ///
+  /// In en, this message translates to:
+  /// **'Match weather text'**
+  String get weatherIconFollowsText;
+
+  /// No description provided for @informationDateColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Date color'**
+  String get informationDateColor;
+
+  /// No description provided for @clockTextColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Clock color'**
+  String get clockTextColor;
+
+  /// No description provided for @weatherServerToken.
+  ///
+  /// In en, this message translates to:
+  /// **'Bearer token (optional)'**
+  String get weatherServerToken;
+
+  /// No description provided for @weatherServerTokenImport.
+  ///
+  /// In en, this message translates to:
+  /// **'Import token from file'**
+  String get weatherServerTokenImport;
+
+  /// No description provided for @weatherServerTokenImportError.
+  ///
+  /// In en, this message translates to:
+  /// **'Import failed: Choose a UTF-8 text file up to 4 KB containing only the token.'**
+  String get weatherServerTokenImportError;
+
+  /// No description provided for @weatherCheckConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'Check connection'**
+  String get weatherCheckConnection;
+
+  /// No description provided for @weatherServerAccessError.
+  ///
+  /// In en, this message translates to:
+  /// **'The server denied access. Check the token and server permissions.'**
+  String get weatherServerAccessError;
+
+  /// No description provided for @weatherServerParametersError.
+  ///
+  /// In en, this message translates to:
+  /// **'The server rejected the request parameters or coordinates.'**
+  String get weatherServerParametersError;
+
+  /// No description provided for @informationComposition.
+  ///
+  /// In en, this message translates to:
+  /// **'Object formats'**
+  String get informationComposition;
+
+  /// No description provided for @informationLayout.
+  ///
+  /// In en, this message translates to:
+  /// **'Block layout'**
+  String get informationLayout;
+
+  /// No description provided for @informationPositionSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Position and size'**
+  String get informationPositionSize;
+
+  /// No description provided for @informationTypography.
+  ///
+  /// In en, this message translates to:
+  /// **'Font and digits'**
+  String get informationTypography;
+
+  /// No description provided for @informationColors.
+  ///
+  /// In en, this message translates to:
+  /// **'Colors and effects'**
+  String get informationColors;
+
+  /// No description provided for @informationLayers.
+  ///
+  /// In en, this message translates to:
+  /// **'Background layers'**
+  String get informationLayers;
+
+  /// No description provided for @informationAvoidOverlap.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep settings clear of the block'**
+  String get informationAvoidOverlap;
+
+  /// No description provided for @weatherPresetBrief.
+  ///
+  /// In en, this message translates to:
+  /// **'Brief'**
+  String get weatherPresetBrief;
+
+  /// No description provided for @weatherPresetFeels.
+  ///
+  /// In en, this message translates to:
+  /// **'Feels like'**
+  String get weatherPresetFeels;
+
+  /// No description provided for @weatherPresetDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Detailed'**
+  String get weatherPresetDetails;
+
+  /// No description provided for @informationAvoidOverlapHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'While editing the background, settings temporarily use the side that overlaps the block least. A separate preview appears if neither side is clear. The usual menu side returns on exit.'**
+  String get informationAvoidOverlapHelp;
+
+  /// No description provided for @informationProfileHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Panel and background formats and colors are independent. The weather source is shared. Quick settings and the forecast use the top panel appearance; quick settings keep their own visibility and grouping.'**
+  String get informationProfileHelp;
+
+  /// No description provided for @weatherCompactLayout.
+  ///
+  /// In en, this message translates to:
+  /// **'When weather shares a combined block with the date, its line break is displayed as a space. The saved format is unchanged.'**
+  String get weatherCompactLayout;
+
+  /// No description provided for @weatherFormatInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a weather field. Up to 12 blocks, one line break and 60 characters per text field are allowed.'**
+  String get weatherFormatInvalid;
+
+  /// No description provided for @fileManagerPreference.
+  ///
+  /// In en, this message translates to:
+  /// **'File manager'**
+  String get fileManagerPreference;
+
+  /// No description provided for @fileManagerAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask every time'**
+  String get fileManagerAsk;
+
+  /// No description provided for @fileManagerBuiltIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Built-in'**
+  String get fileManagerBuiltIn;
+
+  /// No description provided for @fileManagerExternal.
+  ///
+  /// In en, this message translates to:
+  /// **'External'**
+  String get fileManagerExternal;
+
+  /// No description provided for @fileBrowserStartFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting folder'**
+  String get fileBrowserStartFolder;
+
+  /// No description provided for @fileBrowserStorage.
+  ///
+  /// In en, this message translates to:
+  /// **'TV storage'**
+  String get fileBrowserStorage;
+
+  /// No description provided for @fileBrowserDownloads.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloads'**
+  String get fileBrowserDownloads;
+
+  /// No description provided for @fileBrowserLastFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Last opened folder'**
+  String get fileBrowserLastFolder;
+
+  /// No description provided for @fileBrowserSort.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort by'**
+  String get fileBrowserSort;
+
+  /// No description provided for @fileBrowserSortName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get fileBrowserSortName;
+
+  /// No description provided for @fileBrowserSortDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date modified'**
+  String get fileBrowserSortDate;
+
+  /// No description provided for @fileBrowserSortSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Size'**
+  String get fileBrowserSortSize;
+
+  /// No description provided for @fileBrowserOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort order'**
+  String get fileBrowserOrder;
+
+  /// No description provided for @fileBrowserAscending.
+  ///
+  /// In en, this message translates to:
+  /// **'Ascending'**
+  String get fileBrowserAscending;
+
+  /// No description provided for @fileBrowserDescending.
+  ///
+  /// In en, this message translates to:
+  /// **'Descending'**
+  String get fileBrowserDescending;
+
+  /// No description provided for @fileBrowserFoldersFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Folders always first'**
+  String get fileBrowserFoldersFirst;
+
+  /// No description provided for @fileBrowserShowHidden.
+  ///
+  /// In en, this message translates to:
+  /// **'Show hidden files and folders'**
+  String get fileBrowserShowHidden;
+
+  /// No description provided for @fileBrowserShowDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Show size and date'**
+  String get fileBrowserShowDetails;
+
+  /// No description provided for @fileBrowserOptionsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The selected folder or the original folder of the selected image opens first. The last opened folder is remembered separately for each action, including after cancellation. If a folder is unavailable, TV storage or Downloads opens. Folder history stays on this TV.'**
+  String get fileBrowserOptionsHelp;
+
+  /// No description provided for @fileBrowserSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save file browser settings.'**
+  String get fileBrowserSaveFailed;
+
+  /// No description provided for @settingsSectionStyle.
+  ///
+  /// In en, this message translates to:
+  /// **'Group appearance'**
+  String get settingsSectionStyle;
+
+  /// No description provided for @settingsSectionAccentBand.
+  ///
+  /// In en, this message translates to:
+  /// **'Accent strip'**
+  String get settingsSectionAccentBand;
+
+  /// No description provided for @settingsSectionSurface.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared surface'**
+  String get settingsSectionSurface;
+
+  /// No description provided for @panelTextAndButtonsGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Text and buttons'**
+  String get panelTextAndButtonsGroup;
+
+  /// No description provided for @settingsGroupScene.
+  ///
+  /// In en, this message translates to:
+  /// **'Scene'**
+  String get settingsGroupScene;
+
+  /// No description provided for @settingsGroupSky.
+  ///
+  /// In en, this message translates to:
+  /// **'Sky and weather'**
+  String get settingsGroupSky;
+
+  /// No description provided for @settingsGroupAnimation.
+  ///
+  /// In en, this message translates to:
+  /// **'Animation and preview'**
+  String get settingsGroupAnimation;
+
+  /// No description provided for @settingsGroupSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Source'**
+  String get settingsGroupSource;
+
+  /// No description provided for @settingsGroupImageChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Image changes'**
+  String get settingsGroupImageChange;
+
+  /// No description provided for @settingsGroupBrightness.
+  ///
+  /// In en, this message translates to:
+  /// **'Brightness levels'**
+  String get settingsGroupBrightness;
+
+  /// No description provided for @settingsGroupDisplay.
+  ///
+  /// In en, this message translates to:
+  /// **'Display'**
+  String get settingsGroupDisplay;
+
+  /// No description provided for @settingsGroupCredentials.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection details'**
+  String get settingsGroupCredentials;
+
+  /// No description provided for @settingsGroupClient.
+  ///
+  /// In en, this message translates to:
+  /// **'Client parameters'**
+  String get settingsGroupClient;
+
+  /// No description provided for @settingsGroupAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Account connection'**
+  String get settingsGroupAccount;
+
+  /// No description provided for @settingsGroupIndicators.
+  ///
+  /// In en, this message translates to:
+  /// **'Indicators and messages'**
+  String get settingsGroupIndicators;
+
+  /// No description provided for @settingsGroupFocusShape.
+  ///
+  /// In en, this message translates to:
+  /// **'Focus appearance'**
+  String get settingsGroupFocusShape;
+
+  /// No description provided for @settingsGroupBorder.
+  ///
+  /// In en, this message translates to:
+  /// **'Border'**
+  String get settingsGroupBorder;
+
+  /// No description provided for @settingsGroupMotion.
+  ///
+  /// In en, this message translates to:
+  /// **'Motion'**
+  String get settingsGroupMotion;
+
+  /// No description provided for @settingsGroupControl.
+  ///
+  /// In en, this message translates to:
+  /// **'Controls'**
+  String get settingsGroupControl;
+
+  /// No description provided for @settingsGroupPositionSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Position and size'**
+  String get settingsGroupPositionSize;
+
+  /// No description provided for @settingsGroupGroupsBackground.
+  ///
+  /// In en, this message translates to:
+  /// **'Groups and background'**
+  String get settingsGroupGroupsBackground;
+
+  /// No description provided for @settingsGroupText.
+  ///
+  /// In en, this message translates to:
+  /// **'Text'**
+  String get settingsGroupText;
+
+  /// No description provided for @settingsGroupLayout.
+  ///
+  /// In en, this message translates to:
+  /// **'Layout'**
+  String get settingsGroupLayout;
+
+  /// No description provided for @settingsGroupHeadings.
+  ///
+  /// In en, this message translates to:
+  /// **'Headings'**
+  String get settingsGroupHeadings;
+
+  /// No description provided for @settingsGroupLaunchTarget.
+  ///
+  /// In en, this message translates to:
+  /// **'What to launch'**
+  String get settingsGroupLaunchTarget;
+
+  /// No description provided for @settingsGroupLaunchTiming.
+  ///
+  /// In en, this message translates to:
+  /// **'When to launch'**
+  String get settingsGroupLaunchTiming;
+
+  /// No description provided for @settingsGroupBlockPosition.
+  ///
+  /// In en, this message translates to:
+  /// **'Block position'**
+  String get settingsGroupBlockPosition;
+
+  /// No description provided for @settingsGroupBlockContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Block content'**
+  String get settingsGroupBlockContent;
+
+  /// No description provided for @settingsGroupLayers.
+  ///
+  /// In en, this message translates to:
+  /// **'Display layers'**
+  String get settingsGroupLayers;
+
+  /// No description provided for @settingsGroupAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Access'**
+  String get settingsGroupAccess;
+
+  /// No description provided for @settingsGroupContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Content'**
+  String get settingsGroupContent;
+
+  /// No description provided for @settingsGroupSourcesLimits.
+  ///
+  /// In en, this message translates to:
+  /// **'Sources and limits'**
+  String get settingsGroupSourcesLimits;
+
+  /// No description provided for @settingsGroupCards.
+  ///
+  /// In en, this message translates to:
+  /// **'Cards'**
+  String get settingsGroupCards;
+
+  /// No description provided for @settingsGroupStorage.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage'**
+  String get settingsGroupStorage;
+
+  /// No description provided for @settingsGroupMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Mode'**
+  String get settingsGroupMode;
+
+  /// No description provided for @settingsGroupExceptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Exceptions'**
+  String get settingsGroupExceptions;
+
+  /// No description provided for @settingsGroupCurrentAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Current action'**
+  String get settingsGroupCurrentAction;
+
+  /// No description provided for @settingsGroupHours.
+  ///
+  /// In en, this message translates to:
+  /// **'Operating hours'**
+  String get settingsGroupHours;
+
+  /// No description provided for @settingsGroupSourceAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Source and access'**
+  String get settingsGroupSourceAccess;
+
+  /// No description provided for @settingsGroupUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Updates'**
+  String get settingsGroupUpdate;
+
+  /// No description provided for @settingsGroupSystemCommands.
+  ///
+  /// In en, this message translates to:
+  /// **'System and commands'**
+  String get settingsGroupSystemCommands;
+
+  /// No description provided for @weatherTemplateWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Warning'**
+  String get weatherTemplateWarning;
+
+  /// No description provided for @weatherTemplateDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Description without icon'**
+  String get weatherTemplateDescription;
+
+  /// No description provided for @weatherTemplateIcon.
+  ///
+  /// In en, this message translates to:
+  /// **'Icon'**
+  String get weatherTemplateIcon;
+
+  /// No description provided for @weatherTemplateBracesError.
+  ///
+  /// In en, this message translates to:
+  /// **'Check matching curly braces. Double a brace to display it literally.'**
+  String get weatherTemplateBracesError;
+
+  /// No description provided for @weatherTemplateUnknownError.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown token:'**
+  String get weatherTemplateUnknownError;
+
+  /// No description provided for @weatherTemplateBreakError.
+  ///
+  /// In en, this message translates to:
+  /// **'Only one line break is allowed.'**
+  String get weatherTemplateBreakError;
+
+  /// No description provided for @weatherTemplateValueError.
+  ///
+  /// In en, this message translates to:
+  /// **'Add at least one weather token.'**
+  String get weatherTemplateValueError;
+
+  /// No description provided for @weatherTemplateLengthError.
+  ///
+  /// In en, this message translates to:
+  /// **'The format is too long: up to 2048 characters and 64 elements.'**
+  String get weatherTemplateLengthError;
 }
 
 class _AppLocalizationsDelegate

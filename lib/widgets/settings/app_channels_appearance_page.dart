@@ -125,6 +125,7 @@ class AppChannelsAppearancePage extends StatelessWidget {
               'labelSize',
               'labelColor',
               'sectionTitles',
+              'sectionTitleAligned',
               'sectionIcons',
               'sectionPadding',
               'sectionBackground',

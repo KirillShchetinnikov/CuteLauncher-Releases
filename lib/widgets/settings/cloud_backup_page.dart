@@ -1,3 +1,6 @@
+import 'settings_information.dart';
+import 'settings_read_only_value.dart';
+import 'settings_section.dart';
 import '../remote_text_input.dart';
 
 import 'package:flauncher/widgets/launcher_dialog.dart';
@@ -30,6 +33,7 @@ class _CloudBackupPageState extends State<CloudBackupPage>
   bool _busy = false;
   int _generation = 0;
   String? _message;
+  bool _messageFailed = false;
   TextEditingController? _activeSecretEditor;
   @override
   void initState() {
@@ -66,6 +70,7 @@ class _CloudBackupPageState extends State<CloudBackupPage>
     setState(() {
       _busy = true;
       _message = null;
+      _messageFailed = false;
     });
     try {
       await action();
@@ -73,6 +78,7 @@ class _CloudBackupPageState extends State<CloudBackupPage>
       if (mounted && _current(generation)) {
         final l = AppLocalizations.of(context)!;
         _message = cloudErrorMessage(l, error);
+        _messageFailed = true;
       }
     } finally {
       if (mounted) {
@@ -221,83 +227,99 @@ class _CloudBackupPageState extends State<CloudBackupPage>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Text(
-                service.account.configured
-                    ? l.backupConfigured
-                    : l.backupNotConfigured,
-              ),
+            SettingsSection(
+              title: l.settingsGroupCredentials,
+              children: [
+                _labelledInput(
+                  l.cloudUrl,
+                  TextField(
+                    key: const ValueKey('cloud-url'),
+                    controller: _url,
+                    enabled: enabled,
+                    maxLength: 2048,
+                    keyboardType: TextInputType.url,
+                    autocorrect: false,
+                    decoration: const InputDecoration(),
+                  ),
+                ),
+                _labelledInput(
+                  l.cloudUser,
+                  TextField(
+                    key: const ValueKey('cloud-user'),
+                    controller: _user,
+                    enabled: enabled,
+                    maxLength: 256,
+                    autocorrect: false,
+                    decoration: const InputDecoration(),
+                  ),
+                ),
+                _labelledInput(
+                  l.cloudPassword,
+                  TextField(
+                    key: const ValueKey('cloud-password'),
+                    controller: _password,
+                    enabled: enabled,
+                    maxLength: 4096,
+                    obscureText: true,
+                    enableSuggestions: false,
+                    autocorrect: false,
+                    decoration: const InputDecoration(),
+                  ),
+                ),
+              ],
             ),
-            if (service.account.configured) ...[
-              const SizedBox(height: 12),
-              Text(service.account.url),
-              Text(service.account.user),
-            ],
-            _labelledInput(
-              l.cloudUrl,
-              TextField(
-                key: const ValueKey('cloud-url'),
-                controller: _url,
-                enabled: enabled,
-                maxLength: 2048,
-                keyboardType: TextInputType.url,
-                autocorrect: false,
-                decoration: const InputDecoration(),
-              ),
+            SettingsSection(
+              title: l.networkConnection,
+              children: [
+                SettingsMessage(
+                  text: service.account.configured
+                      ? l.backupConfigured
+                      : l.backupNotConfigured,
+                ),
+                if (service.account.configured) ...[
+                  const SizedBox(height: 12),
+                  SettingsReadOnlyValue(
+                    label: l.cloudUrl,
+                    value: service.account.url,
+                    textDirection: TextDirection.ltr,
+                  ),
+                  SettingsReadOnlyValue(
+                    label: l.cloudUser,
+                    value: service.account.user,
+                  ),
+                ],
+                action(
+                  l.cloudConnect,
+                  Icons.link,
+                  _connect,
+                  available: _hasCredentials,
+                ),
+                if (service.account.configured) ...[
+                  action(
+                    l.cloudCheck,
+                    Icons.refresh,
+                    () => _run(() async {
+                      await service.checkAccount();
+                      if (mounted) _message = l.cloudSuccess;
+                    }),
+                  ),
+                ],
+                action(
+                  l.cloudDisconnect,
+                  Icons.link_off,
+                  _disconnect,
+                  available: service.account.configured,
+                ),
+                if (_busy) const LinearProgressIndicator(),
+                if (_message != null)
+                  SettingsMessage(
+                    text: _message!,
+                    kind: _messageFailed
+                        ? SettingsMessageKind.error
+                        : SettingsMessageKind.info,
+                  ),
+              ],
             ),
-            _labelledInput(
-              l.cloudUser,
-              TextField(
-                key: const ValueKey('cloud-user'),
-                controller: _user,
-                enabled: enabled,
-                maxLength: 256,
-                autocorrect: false,
-                decoration: const InputDecoration(),
-              ),
-            ),
-            _labelledInput(
-              l.cloudPassword,
-              TextField(
-                key: const ValueKey('cloud-password'),
-                controller: _password,
-                enabled: enabled,
-                maxLength: 4096,
-                obscureText: true,
-                enableSuggestions: false,
-                autocorrect: false,
-                decoration: const InputDecoration(),
-              ),
-            ),
-            action(
-              l.cloudConnect,
-              Icons.link,
-              _connect,
-              available: _hasCredentials,
-            ),
-            if (service.account.configured) ...[
-              action(
-                l.cloudCheck,
-                Icons.refresh,
-                () => _run(() async {
-                  await service.checkAccount();
-                  if (mounted) _message = l.cloudSuccess;
-                }),
-              ),
-            ],
-            action(
-              l.cloudDisconnect,
-              Icons.link_off,
-              _disconnect,
-              available: service.account.configured,
-            ),
-            if (_busy) const LinearProgressIndicator(),
-            if (_message != null)
-              Padding(
-                padding: const EdgeInsets.all(12),
-                child: Text(_message!),
-              ),
           ],
         ),
       ),

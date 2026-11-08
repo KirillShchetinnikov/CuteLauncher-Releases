@@ -7,6 +7,8 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.net.Uri;
+import android.provider.DocumentsContract;
 import io.flutter.plugin.common.MethodChannel;
 import java.io.File;
 import java.io.IOException;
@@ -196,14 +198,48 @@ final class LocalWallpaperFiles {
     void browse(String path, MethodChannel.Result result) { browse(path, "folder", result); }
 
     void browse(String path, String kind, MethodChannel.Result result) {
+        browse(path, kind, false, false, "storage", result);
+    }
+
+    static File initialDirectory(String path, String start) throws IOException {
+        if (path != null && !path.isBlank()) {
+            try {
+                if ("cutelauncher://downloads/CuteLauncher".equals(path)) {
+                    path = new File(new File(Environment.getExternalStorageDirectory(), Environment.DIRECTORY_DOWNLOADS), "CuteLauncher").getPath();
+                }
+                if (path.startsWith("content:")) {
+                    Uri uri = Uri.parse(path);
+                    if (!"com.android.externalstorage.documents".equals(uri.getAuthority()))
+                        throw new IOException("Not local storage");
+                    String id = DocumentsContract.isTreeUri(uri)
+                        ? DocumentsContract.getTreeDocumentId(uri) : DocumentsContract.getDocumentId(uri);
+                    String[] parts = id.split(":", 2);
+                    File root = "primary".equals(parts[0]) ? Environment.getExternalStorageDirectory()
+                        : new File("/storage", parts[0]);
+                    path = new File(root, parts.length > 1 ? parts[1] : "").getPath();
+                }
+                File selected = sharedFile(path);
+                return directory(selected.isFile() ? selected.getParent() : selected.getPath());
+            } catch (IOException | RuntimeException ignored) { }
+        }
+        if ("downloads".equals(start)) {
+            try { return directory(new File(Environment.getExternalStorageDirectory(), Environment.DIRECTORY_DOWNLOADS).getPath()); }
+            catch (IOException | SecurityException ignored) { }
+        }
+        return directory(Environment.getExternalStorageDirectory().getPath());
+    }
+
+    void browse(String path, String kind, boolean showHidden, boolean initial, String start,
+                MethodChannel.Result result) {
         if (!granted()) { result.error("permission_denied", "Storage access required", null); return; }
         executor.execute(() -> {
             try {
-                File folder = directory(path == null || path.isBlank() ? Environment.getExternalStorageDirectory().getPath() : path);
+                File folder = initial ? initialDirectory(path, start)
+                    : directory(path == null || path.isBlank() ? Environment.getExternalStorageDirectory().getPath() : path);
                 File[] children = folder.listFiles();
                 if (children == null) throw new IOException("Folder unavailable");
                 Arrays.sort(children, Comparator.comparing(File::getName, String.CASE_INSENSITIVE_ORDER));
-                ArrayList<Map<String, String>> directories = new ArrayList<>();
+                ArrayList<Map<String, Object>> directories = new ArrayList<>();
                 ArrayList<Map<String, Object>> files = new ArrayList<>();
                 HashSet<String> seen = new HashSet<>();
                 int entries = 0;
@@ -214,9 +250,10 @@ final class LocalWallpaperFiles {
                         break;
                     }
                     try {
+                        if (!showHidden && (child.getName().startsWith(".") || child.isHidden())) continue;
                         File safe = sharedFile(child.getPath());
                         if (!seen.add(safe.getPath())) continue;
-                        if (safe.isDirectory()) directories.add(Map.of("name", child.getName(), "path", safe.getPath()));
+                        if (safe.isDirectory()) directories.add(fileEntry(safe, child.getName()));
                         else if (safe.isFile() && matches(safe, kind))
                             files.add(fileEntry(safe, child.getName()));
                     } catch (SecurityException ignored) { }

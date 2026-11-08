@@ -238,6 +238,9 @@ void main() {
         matching: find.byType(Scrollable),
       ).first,
     );
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(info);
+    await tester.pumpAndSettle();
     await tester.tap(info);
     await tester.pumpAndSettle();
     verify(appsService.openAppInfo(application));

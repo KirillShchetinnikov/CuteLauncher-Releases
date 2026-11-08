@@ -1,3 +1,5 @@
+import 'settings_section.dart';
+
 import 'package:flauncher/widgets/launcher_dialog.dart';
 
 import 'adb_permission_tile.dart';
@@ -86,111 +88,131 @@ class _NotificationsSettingsPageState extends State<NotificationsSettingsPage>
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                FocusableSettingsTile(
-                  autofocus: true,
-                  leading: const Icon(Icons.notifications_active_outlined),
-                  title: Text(
-                    localizations.notificationAccess,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                  trailing: Text(
-                    service.hasPermission
-                        ? localizations.granted
-                        : localizations.permissionRequired,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: service.hasPermission
-                          ? Theme.of(context).colorScheme.primary
-                          : Theme.of(context).colorScheme.tertiary,
-                      fontWeight: FontWeight.bold,
+                SettingsSection(
+                  title: localizations.settingsGroupAccess,
+                  children: [
+                    FocusableSettingsTile(
+                      autofocus: true,
+                      leading: const Icon(Icons.notifications_active_outlined),
+                      title: Text(
+                        localizations.notificationAccess,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                      trailing: Text(
+                        service.hasPermission
+                            ? localizations.granted
+                            : localizations.permissionRequired,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: service.hasPermission
+                              ? Theme.of(context).colorScheme.primary
+                              : Theme.of(context).colorScheme.tertiary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      onPressed: () async {
+                        await service.checkPermission();
+                        if (!service.hasPermission) {
+                          final success = await service.requestPermission();
+                          if (!success && context.mounted) {
+                            _showNotificationPermissionGuide(context);
+                          }
+                        }
+                      },
                     ),
-                  ),
-                  onPressed: () async {
-                    await service.checkPermission();
-                    if (!service.hasPermission) {
-                      final success = await service.requestPermission();
-                      if (!success && context.mounted) {
-                        _showNotificationPermissionGuide(context);
-                      }
-                    }
-                  },
-                ),
-                AdbPermissionTile(
-                  title: localizations.notificationAccessAdb,
-                  action: 'notifications',
-                  permissionMethod: 'checkNotificationListenerPermission',
-                  onRefresh: service.checkPermission,
-                ),
-                if (service.hasPermission) ...[
-                  FocusableSettingsTile(
-                    leading: const Icon(Icons.block),
-                    title: Text(
-                      localizations.blockedNotificationApps,
-                      style: Theme.of(context).textTheme.bodyMedium,
+                    AdbPermissionTile(
+                      title: localizations.notificationAccessAdb,
+                      action: 'notifications',
+                      permissionMethod: 'checkNotificationListenerPermission',
+                      onRefresh: service.checkPermission,
                     ),
-                    trailing: Text(
-                      service.blockedPackages.isEmpty
-                          ? '0'
-                          : '${service.blockedPackages.length}',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: service.blockedPackages.isNotEmpty
-                            ? Theme.of(context).colorScheme.tertiary
-                            : Theme.of(context).colorScheme.onSurfaceVariant,
+                  ],
+                ),
+                SettingsSection(
+                  title: localizations.settingsGroupContent,
+                  children: [
+                    if (service.hasPermission) ...[
+                      FocusableSettingsTile(
+                        leading: const Icon(Icons.block),
+                        title: Text(
+                          localizations.blockedNotificationApps,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                        trailing: Text(
+                          service.blockedPackages.isEmpty
+                              ? '0'
+                              : '${service.blockedPackages.length}',
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: service.blockedPackages.isNotEmpty
+                                    ? Theme.of(context).colorScheme.tertiary
+                                    : Theme.of(context)
+                                          .colorScheme
+                                          .onSurfaceVariant,
+                              ),
+                        ),
+                        onPressed: () =>
+                            Navigator.of(context)
+                                .pushNamed(BlockedNotificationsPage.routeName),
+                      ),
+                      RoundedSwitchListTile(
+                        title: Text(localizations.hidePersistentNotifications),
+                        value: service.hidePersistentNotifications,
+                        onChanged: service.setHidePersistentNotifications,
+                      ),
+                    ],
+                    Consumer<SettingsService>(
+                      builder: (context, settings, _) => RoundedSwitchListTile(
+                        value: settings.showNowPlaying,
+                        onChanged: settings.setShowNowPlaying,
+                        title: Text(localizations.showNowPlaying),
                       ),
                     ),
-                    onPressed: () =>
-                        Navigator.of(context)
-                            .pushNamed(BlockedNotificationsPage.routeName),
-                  ),
-                  RoundedSwitchListTile(
-                    title: Text(localizations.hidePersistentNotifications),
-                    value: service.hidePersistentNotifications,
-                    onChanged: service.setHidePersistentNotifications,
-                  ),
-                  RoundedSwitchListTile(
-                    title: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(localizations.systemWidePopupAlert),
-                        if (!service.hasOverlayPermission)
-                          Text(localizations.overlayPermissionRequired),
-                      ],
-                    ),
-                    value:
-                        service.hasOverlayPermission &&
-                        service.systemPopupEnabled,
-                    onChanged: (value) async {
-                      await service.checkOverlayPermission();
-                      if (!service.hasOverlayPermission) {
-                        final success = await service
-                            .requestOverlayPermission();
-                        if (!success && context.mounted) {
-                          _showOverlayPermissionGuide(context);
-                        }
-                      } else {
-                        await service.setSystemPopupEnabled(value);
-                      }
-                    },
-                  ),
-                  AdbPermissionTile(
-                    title: localizations.overlayAccessAdb,
-                    action: 'overlay',
-                    permissionMethod: 'checkOverlayPermission',
-                    onRefresh: service.checkOverlayPermission,
-                  ),
-                ],
-                Consumer<SettingsService>(
-                  builder: (context, settings, _) => RoundedSwitchListTile(
-                    value: settings.showNowPlaying,
-                    onChanged: settings.setShowNowPlaying,
-                    title: Text(localizations.showNowPlaying),
-                  ),
+                  ],
                 ),
-                Consumer<SettingsService>(
-                  builder: (context, settings, _) => RoundedSwitchListTile(
-                    value: settings.autoHideNotificationsWidget,
-                    onChanged: settings.setAutoHideNotificationsWidget,
-                    title: Text(localizations.autoHideNotificationBell),
-                  ),
+                SettingsSection(
+                  title: localizations.settingsGroupDisplay,
+                  children: [
+                    if (service.hasPermission) ...[
+                      RoundedSwitchListTile(
+                        title: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(localizations.systemWidePopupAlert),
+                            if (!service.hasOverlayPermission)
+                              Text(localizations.overlayPermissionRequired),
+                          ],
+                        ),
+                        value:
+                            service.hasOverlayPermission &&
+                            service.systemPopupEnabled,
+                        onChanged: (value) async {
+                          await service.checkOverlayPermission();
+                          if (!service.hasOverlayPermission) {
+                            final success = await service
+                                .requestOverlayPermission();
+                            if (!success && context.mounted) {
+                              _showOverlayPermissionGuide(context);
+                            }
+                          } else {
+                            await service.setSystemPopupEnabled(value);
+                          }
+                        },
+                      ),
+                      AdbPermissionTile(
+                        title: localizations.overlayAccessAdb,
+                        action: 'overlay',
+                        permissionMethod: 'checkOverlayPermission',
+                        onRefresh: service.checkOverlayPermission,
+                      ),
+                    ],
+                    Consumer<SettingsService>(
+                      builder: (context, settings, _) => RoundedSwitchListTile(
+                        value: settings.autoHideNotificationsWidget,
+                        onChanged: settings.setAutoHideNotificationsWidget,
+                        title: Text(localizations.autoHideNotificationBell),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             );

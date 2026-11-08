@@ -205,8 +205,11 @@ void main() {
     }
 
     await goToReset();
-    await press(LogicalKeyboardKey.arrowDown);
-    await press(LogicalKeyboardKey.arrowDown);
+    // The non-focusable remote guide can require several viewport steps.
+    for (var step = 0; step < 8; step++) {
+      if (FocusManager.instance.primaryFocus?.context?.findAncestorWidgetOfExactType<SettingsHelp>() != null) break;
+      await press(LogicalKeyboardKey.arrowDown);
+    }
     expectFocus(l.sectionsAndOrder);
 
     await tester.sendKeyDownEvent(LogicalKeyboardKey.arrowUp);
@@ -220,8 +223,11 @@ void main() {
     await tester.sendKeyUpEvent(LogicalKeyboardKey.arrowUp);
 
     await goToReset();
-    await press(LogicalKeyboardKey.arrowDown);
-    await press(LogicalKeyboardKey.arrowDown);
+    // The non-focusable remote guide can require several viewport steps.
+    for (var step = 0; step < 8; step++) {
+      if (FocusManager.instance.primaryFocus?.context?.findAncestorWidgetOfExactType<SettingsHelp>() != null) break;
+      await press(LogicalKeyboardKey.arrowDown);
+    }
     expectFocus(l.sectionsAndOrder);
     await press(LogicalKeyboardKey.arrowDown);
     expectFocus(l.sectionsAndOrder);

@@ -10,6 +10,41 @@ import 'package:flauncher/settings_import.dart';
 import 'package:flauncher/tile_appearance.dart';
 
 void main() {
+  test('panel typography inherits by default and preserves custom overrides', () {
+    const base = TextStyle(fontSize: 24, fontFamily: 'PanelSerif');
+    const custom = {
+      'font': 'monospace', 'size': 12, 'weight': 700, 'italic': true,
+      'animate': true, 'showColon': false, 'glow': true, 'spacing': 8,
+      'clockOnRight': true, 'clockColor': 0xff112233,
+    };
+    const inherited = PanelClockStyle.panel(custom);
+    expect(inherited.inheritsPanelTypography, isTrue);
+    expect(inherited.textStyle(base).fontFamily, base.fontFamily);
+    expect(inherited.textStyle(base).fontSize, 24);
+    expect(inherited.textStyle(base).fontWeight, FontWeight.w400);
+    expect(inherited.textStyle(base).fontStyle, FontStyle.normal);
+    expect(inherited.animate, isTrue);
+    expect(inherited.showColon, isFalse);
+    expect(const PanelClockStyle.panel().animate, isFalse);
+    expect(inherited.clockColor, const Color(0xff112233));
+    expect(inherited.spacing, 8);
+    expect(inherited.clockOnRight, isTrue);
+    expect(inherited.textStyle(base).shadows, isNotEmpty);
+    expect(inherited.values, custom);
+    final own = PanelClockStyle.panel(PanelClockStyle.validValues({
+      ...custom, 'inheritPanelTypography': false,
+    }, combined: true));
+    expect(own.inheritsPanelTypography, isFalse);
+    expect(own.textStyle(base).fontFamily, 'PanelMono');
+    expect(own.textStyle(base).fontSize, 12);
+    expect(own.textStyle(base).fontWeight, FontWeight.w700);
+    expect(own.textStyle(base).fontStyle, FontStyle.italic);
+    expect(own.animate, isTrue);
+    expect(own.showColon, isFalse);
+    expect(PanelClockStyle.validValues({'inheritPanelTypography': 'false'}), isEmpty);
+    // The wallpaper profile keeps its own typography regardless of this flag.
+    expect(const PanelClockStyle(custom).textStyle(base).fontSize, 12);
+  });
   test(
     'weight ranges resolve after locale fallback and normalize old selections',
     () {
@@ -65,6 +100,7 @@ void main() {
           'radius': -1,
           'font': 'unknown',
           'color': -1,
+          'clockColor': 0x100000000,
           'opacity': double.nan,
           'weight': 550,
           'glow': 'true',
@@ -150,11 +186,15 @@ void main() {
       'font': 'serif',
       'size': 30,
       'background': false,
+      'color': 0xff112233,
+      'clockColor': 0xff778899,
       'hoursColor': 0xff123456,
       'minutesColor': 0xffabcdef,
       'showColon': false,
     });
     await appearance.set('panelDateCalendar', true);
+    await appearance.set('dateTextColor', 0xff66bb88);
+    await appearance.set('weatherTextColor', 0xff556677);
     await remote.set('clockStyle', {'font': 'monospace', 'size': 14});
     await remote.set('dateCalendar', false);
     remote.reload();
@@ -164,6 +204,10 @@ void main() {
     }, {});
     final restored = TileAppearance.decode(imported[tileAppearanceKey]);
     expect(restored.clockStyle.values['size'], 30);
+    expect(restored.clockStyle.textStyle(const TextStyle()).color, const Color(0xff112233));
+    expect(restored.clockStyle.clockColor, const Color(0xff778899));
+    expect(restored.dateTextColor, const Color(0xff66bb88));
+    expect(restored.weatherTextColor, const Color(0xff556677));
     expect(restored.clockStyle.hoursColor, const Color(0xff123456));
     expect(restored.clockStyle.minutesColor, const Color(0xffabcdef));
     expect(restored.clockStyle.showColon, isFalse);

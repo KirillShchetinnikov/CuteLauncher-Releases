@@ -2,6 +2,7 @@ import 'package:flauncher/widgets/launcher_dialog.dart';
 import 'package:flutter/material.dart';
 
 import 'focusable_settings_tile.dart';
+import 'settings_choice_dialog.dart';
 
 /// Named choices share the same row and selected-item presentation.
 class SettingsChoiceTile<T> extends StatelessWidget {
@@ -14,6 +15,8 @@ class SettingsChoiceTile<T> extends StatelessWidget {
   final bool enabled, autofocus;
   final String? valueLabel;
   final bool valueBelow;
+  final TextStyle? valueStyle;
+  final bool wideValue;
   const SettingsChoiceTile({
     super.key,
     required this.title,
@@ -26,43 +29,42 @@ class SettingsChoiceTile<T> extends StatelessWidget {
     this.autofocus = false,
     this.valueLabel,
     this.valueBelow = false,
+    this.valueStyle,
+    this.wideValue = false,
   });
 
   @override
   Widget build(BuildContext context) => FocusableSettingsTile(
     leading: leading,
-    title: valueBelow ? Column(crossAxisAlignment: CrossAxisAlignment.start,
-      children: [Text(title), Text(valueLabel ?? label(value))]) : Text(title),
-    trailing: valueBelow ? null : Text(valueLabel ?? label(value), textAlign: TextAlign.end),
+    title: valueBelow
+        ? Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title),
+              Text(valueLabel ?? label(value), style: valueStyle),
+            ],
+          )
+        : Text(title),
+    trailing: valueBelow
+        ? null
+        : Text(
+            valueLabel ?? label(value),
+            textAlign: TextAlign.end,
+            style: valueStyle,
+          ),
     alignValueToEnd: true,
+    wideValue: wideValue,
     enabled: enabled,
     autofocus: autofocus,
     onPressed: () async {
       final result = await showLauncherDialog<(T,)>(
         context: context,
-        builder: (dialog) => LauncherAlertDialog(
+        builder: (dialog) => SettingsChoiceDialog<T>(
           title: Text(title),
-          content: SizedBox(
-            width: 400,
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  for (final option in options)
-                    FocusableSettingsTile(
-                      title: Text(label(option)),
-                      autofocus:
-                          option == value ||
-                          (!options.contains(value) && option == options.first),
-                      trailing: option == value
-                          ? const Icon(Icons.check)
-                          : const SizedBox.shrink(),
-                      onPressed: () => Navigator.pop(dialog, (option,)),
-                    ),
-                ],
-              ),
-            ),
-          ),
+          value: value,
+          options: options,
+          optionBuilder: (option) => Text(label(option)),
+          onSelected: (option) => Navigator.pop(dialog, (option,)),
         ),
       );
       if (result != null && context.mounted) onChanged(result.$1);

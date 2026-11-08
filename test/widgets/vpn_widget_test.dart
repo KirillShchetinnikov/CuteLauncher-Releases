@@ -1,3 +1,4 @@
+import 'package:flauncher/widgets/settings/settings_read_only_value.dart';
 import 'dart:async';
 
 import 'package:flauncher/l10n/app_localizations.dart';
@@ -284,7 +285,7 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      expect(find.text('Постоянный VPN Android'), findsOneWidget);
+      expect(find.descendant(of: find.byType(SettingsReadOnlyValue), matching: find.text('Постоянный VPN Android')), findsOneWidget);
       expect(
         find.text('Для применения системного режима перезапустите ТВ.'),
         findsOneWidget,

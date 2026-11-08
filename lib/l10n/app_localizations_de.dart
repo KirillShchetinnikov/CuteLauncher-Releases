@@ -10,6 +10,62 @@ class AppLocalizationsDe extends AppLocalizations {
   AppLocalizationsDe([String locale = 'de']) : super(locale);
 
   @override
+  String get weatherTextResetFormat => 'Format zurücksetzen';
+
+  @override
+  String get settingsReportFile => 'Berichtsdatei';
+
+  @override
+  String get homeVisibleRowsLabel => 'Vollständig sichtbare Zeilen';
+
+  @override
+  String get watchNextEmpty => 'Noch keine Karten zum Weiterschauen';
+
+  @override
+  String get inputsUnavailableStatus => 'Keine Eingänge verfügbar';
+
+  @override
+  String get remoteButtonsNoEvents => 'Noch keine Ereignisse';
+
+  @override
+  String get informationBackgroundVerticalOffset => 'Vertikaler Versatz';
+
+  @override
+  String get informationResetPositionSize =>
+      'Alle Einstellungen dieser Seite zurücksetzen';
+
+  @override
+  String get weatherIconsGeometric => 'Geometrisch';
+
+  @override
+  String get weatherIconsCircled => 'Im Kreis';
+
+  @override
+  String get informationCommonAppearance => 'Allgemeine Einstellungen';
+
+  @override
+  String get informationTimeFormat => 'Zeitformat';
+
+  @override
+  String get informationDateFormat => 'Datumsformat';
+
+  @override
+  String get informationInheritPanelTypography =>
+      'Darstellung der oberen Leiste übernehmen';
+
+  @override
+  String get informationResetTypography => 'Einstellungen zurücksetzen';
+
+  @override
+  String get alignSectionTitles => 'Abschnittstitel an Kacheln ausrichten';
+
+  @override
+  String get homeAppName => 'App-Name auf dem Startbildschirm';
+
+  @override
+  String get restoreSystemAppName => 'Systemnamen wiederherstellen';
+
+  @override
   String get settingsScrollbar => 'Bildlaufleiste';
 
   @override
@@ -3852,6 +3908,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get interfaceStandard => 'Standard';
 
   @override
+  String get interfaceCalm => 'Ruhig';
+
+  @override
   String get interfaceGlass => 'Glass';
 
   @override
@@ -4598,6 +4657,72 @@ class AppLocalizationsDe extends AppLocalizations {
   String get informationShowBoth => 'Wetter und Kalender';
 
   @override
+  String get weatherTextFormat => 'Wettertextformat';
+
+  @override
+  String get weatherTextTemperature => 'Temperatur';
+
+  @override
+  String get weatherTextApparent => 'Gefühlt';
+
+  @override
+  String get weatherTextConditions => 'Wetterlage';
+
+  @override
+  String get weatherTextHumidity => 'Luftfeuchtigkeit';
+
+  @override
+  String get weatherTextLow => 'Tiefstwert heute';
+
+  @override
+  String get weatherTextHigh => 'Höchstwert heute';
+
+  @override
+  String get weatherTextLiteral => 'Eigener Text';
+
+  @override
+  String get weatherTextNewline => 'Zeilenumbruch';
+
+  @override
+  String get weatherTextBefore => 'Vor dem Block';
+
+  @override
+  String get weatherTextAfter => 'Nach dem Block';
+
+  @override
+  String get weatherTextYourFormat => 'Ihr Format';
+
+  @override
+  String get weatherTextAdd => 'Block hinzufügen';
+
+  @override
+  String get weatherTextMoveEarlier => 'Nach vorn verschieben';
+
+  @override
+  String get weatherTextMoveLater => 'Nach hinten verschieben';
+
+  @override
+  String get weatherTextHelp =>
+      'Geben Sie Text und Kürzel in geschweiften Klammern ein oder fügen Sie sie mit den Tasten am Cursor ein. Groß- und Kleinschreibung ist egal. Runde Klammern um einen Wert werden bei fehlenden Daten mit ausgeblendet. Normale geschweifte Klammern verdoppeln. Ein Zeilenumbruch ist erlaubt.';
+
+  @override
+  String get weatherTextSaveError =>
+      'Das Wettertextformat konnte nicht gespeichert werden.';
+
+  @override
+  String get weatherTextSampleCity => 'Berlin';
+
+  @override
+  String weatherTextMetersPerSecond(String speed) {
+    return '$speed m/s';
+  }
+
+  @override
+  String weatherFeelsLike(String temperature) {
+    return 'Gefühlt $temperature';
+  }
+
+  @override
   String get weatherForecastTitle => 'Wettervorhersage';
 
   @override
@@ -4892,8 +5017,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get informationOnBackground => 'Auf dem Hintergrund';
 
   @override
-  String get informationBackgroundAlignment =>
-      'Ausrichtung auf dem Hintergrund';
+  String get informationBackgroundPosition => 'Position des Blocks';
+
+  @override
+  String get informationBackgroundOffset => 'Horizontaler Versatz';
+
+  @override
+  String get informationBackgroundResetOffset => 'Versatz zurücksetzen';
+
+  @override
+  String get informationBackgroundContentAlignment => 'Ausrichtung im Block';
 
   @override
   String get informationBackgroundHelp =>
@@ -5202,4 +5335,363 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get appProcessStopped => 'Wird nicht ausgeführt';
+
+  @override
+  String get weatherCustomServer => 'Eigener Server (Open-Meteo)';
+
+  @override
+  String get widgetSettings => 'Widget-Einstellungen';
+
+  @override
+  String get weatherServerUrlImport => 'Adresse aus Datei importieren';
+
+  @override
+  String get weatherServerUrlImportError =>
+      'Import fehlgeschlagen: Wählen Sie eine UTF-8-Textdatei bis 4 KB, die nur die HTTPS-Basisadresse des Servers enthält.';
+
+  @override
+  String get weatherImportReadError =>
+      'Die Importdatei konnte nicht gelesen werden. Prüfen Sie den Dateizugriff.';
+
+  @override
+  String get weatherImportEncodingError =>
+      'Import fehlgeschlagen: Die Datei ist nicht UTF-8-codiert.';
+
+  @override
+  String get weatherImportTooLargeError =>
+      'Import fehlgeschlagen: Die Datei ist größer als 4 KB.';
+
+  @override
+  String get weatherImportSaveError =>
+      'Der Wert konnte nicht gespeichert werden. Erneut eingeben oder importieren.';
+
+  @override
+  String get weatherTokenInvalid => 'Ungültiges Tokenformat.';
+
+  @override
+  String get weatherServerUrl => 'HTTPS-Adresse des Servers';
+
+  @override
+  String get weatherServerUrlHint =>
+      'Gib eine HTTPS-Basisadresse ohne /v1/forecast, Zugangsdaten, Abfrage oder Fragment ein.';
+
+  @override
+  String get weatherServerCoordinates => 'Koordinaten eingeben';
+
+  @override
+  String get weatherServerCoordinatesHint =>
+      'Gib Breiten- und Längengrad mit Komma als Trennzeichen und Dezimalpunkt ein. Beispiel: 50.0, 30.0.';
+
+  @override
+  String get weatherIconPack => 'Wettersymbolsatz';
+
+  @override
+  String get weatherIconsStandard => 'Standard';
+
+  @override
+  String get weatherIconsOutline => 'Konturen';
+
+  @override
+  String get weatherIconsSolid => 'Gefüllt';
+
+  @override
+  String get weatherIconsDuotone => 'Zweifarbig';
+
+  @override
+  String get weatherIconsPixel => 'Pixel';
+
+  @override
+  String get weatherTextColor => 'Wettertextfarbe';
+
+  @override
+  String get weatherIconColor => 'Farbe der Wettersymbole';
+
+  @override
+  String get weatherIconFollowsText => 'Wie der Wettertext';
+
+  @override
+  String get informationDateColor => 'Datumsfarbe';
+
+  @override
+  String get clockTextColor => 'Uhrfarbe';
+
+  @override
+  String get weatherServerToken => 'Bearer-Token (optional)';
+
+  @override
+  String get weatherServerTokenImport => 'Token aus Datei importieren';
+
+  @override
+  String get weatherServerTokenImportError =>
+      'Import fehlgeschlagen: Wähle eine UTF-8-Textdatei mit höchstens 4 KB, die nur das Token enthält.';
+
+  @override
+  String get weatherCheckConnection => 'Verbindung prüfen';
+
+  @override
+  String get weatherServerAccessError =>
+      'Der Server hat den Zugriff verweigert. Prüfe Token und Zugriffsrechte.';
+
+  @override
+  String get weatherServerParametersError =>
+      'Der Server hat die Anfrageparameter oder Koordinaten abgelehnt.';
+
+  @override
+  String get informationComposition => 'Objektformate';
+
+  @override
+  String get informationLayout => 'Blockanordnung';
+
+  @override
+  String get informationPositionSize => 'Position und Größe';
+
+  @override
+  String get informationTypography => 'Schrift und Ziffern';
+
+  @override
+  String get informationColors => 'Farben und Effekte';
+
+  @override
+  String get informationLayers => 'Hintergrundebenen';
+
+  @override
+  String get informationAvoidOverlap =>
+      'Einstellungen neben dem Block anzeigen';
+
+  @override
+  String get weatherPresetBrief => 'Kurz';
+
+  @override
+  String get weatherPresetFeels => 'Gefühlt';
+
+  @override
+  String get weatherPresetDetails => 'Ausführlich';
+
+  @override
+  String get informationAvoidOverlapHelp =>
+      'Beim Bearbeiten des Hintergrunds weichen die Einstellungen vorübergehend auf die Seite mit der geringsten Überdeckung aus. Ist keine Seite frei, erscheint eine separate Vorschau. Beim Verlassen kehrt die gewohnte Menüseite zurück.';
+
+  @override
+  String get informationProfileHelp =>
+      'Formate und Farben für Leiste und Hintergrund sind unabhängig. Die Wetterquelle ist gemeinsam. Schnelleinstellungen und Vorhersage nutzen das Aussehen der oberen Leiste; Sichtbarkeit und Gruppierung der Schnelleinstellungen bleiben separat.';
+
+  @override
+  String get weatherCompactLayout =>
+      'Im gemeinsamen Block mit dem Datum erscheint der Wetter-Zeilenumbruch als Leerzeichen. Das gespeicherte Format bleibt erhalten.';
+
+  @override
+  String get weatherFormatInvalid =>
+      'Fügen Sie ein Wetterfeld hinzu. Zulässig sind bis zu 12 Blöcke, ein Zeilenumbruch und 60 Zeichen pro Textfeld.';
+
+  @override
+  String get fileManagerPreference => 'Dateimanager';
+
+  @override
+  String get fileManagerAsk => 'Jedes Mal fragen';
+
+  @override
+  String get fileManagerBuiltIn => 'Integriert';
+
+  @override
+  String get fileManagerExternal => 'Extern';
+
+  @override
+  String get fileBrowserStartFolder => 'Startordner';
+
+  @override
+  String get fileBrowserStorage => 'TV-Speicher';
+
+  @override
+  String get fileBrowserDownloads => 'Downloads';
+
+  @override
+  String get fileBrowserLastFolder => 'Zuletzt geöffneter Ordner';
+
+  @override
+  String get fileBrowserSort => 'Sortieren nach';
+
+  @override
+  String get fileBrowserSortName => 'Name';
+
+  @override
+  String get fileBrowserSortDate => 'Änderungsdatum';
+
+  @override
+  String get fileBrowserSortSize => 'Größe';
+
+  @override
+  String get fileBrowserOrder => 'Sortierreihenfolge';
+
+  @override
+  String get fileBrowserAscending => 'Aufsteigend';
+
+  @override
+  String get fileBrowserDescending => 'Absteigend';
+
+  @override
+  String get fileBrowserFoldersFirst => 'Ordner immer zuerst';
+
+  @override
+  String get fileBrowserShowHidden => 'Versteckte Dateien und Ordner anzeigen';
+
+  @override
+  String get fileBrowserShowDetails => 'Größe und Datum anzeigen';
+
+  @override
+  String get fileBrowserOptionsHelp =>
+      'Der gewählte Ordner oder der ursprüngliche Ordner des gewählten Bildes wird zuerst geöffnet. Der zuletzt geöffnete Ordner wird für jede Aktion separat gespeichert, auch nach einem Abbruch. Ist ein Ordner nicht verfügbar, öffnet sich der TV-Speicher oder Downloads. Der Ordnerverlauf bleibt auf diesem TV.';
+
+  @override
+  String get fileBrowserSaveFailed =>
+      'Die Dateibrowser-Einstellungen konnten nicht gespeichert werden.';
+
+  @override
+  String get settingsSectionStyle => 'Gruppendarstellung';
+
+  @override
+  String get settingsSectionAccentBand => 'Akzentstreifen';
+
+  @override
+  String get settingsSectionSurface => 'Gemeinsame Fläche';
+
+  @override
+  String get panelTextAndButtonsGroup => 'Text und Schaltflächen';
+
+  @override
+  String get settingsGroupScene => 'Szene';
+
+  @override
+  String get settingsGroupSky => 'Himmel und Wetter';
+
+  @override
+  String get settingsGroupAnimation => 'Animation und Vorschau';
+
+  @override
+  String get settingsGroupSource => 'Quelle';
+
+  @override
+  String get settingsGroupImageChange => 'Bildwechsel';
+
+  @override
+  String get settingsGroupBrightness => 'Helligkeitsstufen';
+
+  @override
+  String get settingsGroupDisplay => 'Anzeige';
+
+  @override
+  String get settingsGroupCredentials => 'Verbindungsdaten';
+
+  @override
+  String get settingsGroupClient => 'Client-Parameter';
+
+  @override
+  String get settingsGroupAccount => 'Kontoverbindung';
+
+  @override
+  String get settingsGroupIndicators => 'Anzeigen und Meldungen';
+
+  @override
+  String get settingsGroupFocusShape => 'Fokusdarstellung';
+
+  @override
+  String get settingsGroupBorder => 'Rahmen';
+
+  @override
+  String get settingsGroupMotion => 'Bewegung';
+
+  @override
+  String get settingsGroupControl => 'Bedienung';
+
+  @override
+  String get settingsGroupPositionSize => 'Position und Größe';
+
+  @override
+  String get settingsGroupGroupsBackground => 'Gruppen und Hintergrund';
+
+  @override
+  String get settingsGroupText => 'Text';
+
+  @override
+  String get settingsGroupLayout => 'Anordnung';
+
+  @override
+  String get settingsGroupHeadings => 'Überschriften';
+
+  @override
+  String get settingsGroupLaunchTarget => 'Startziel';
+
+  @override
+  String get settingsGroupLaunchTiming => 'Startzeitpunkt';
+
+  @override
+  String get settingsGroupBlockPosition => 'Blockposition';
+
+  @override
+  String get settingsGroupBlockContent => 'Blockinhalt';
+
+  @override
+  String get settingsGroupLayers => 'Anzeigeebenen';
+
+  @override
+  String get settingsGroupAccess => 'Zugriff';
+
+  @override
+  String get settingsGroupContent => 'Inhalt';
+
+  @override
+  String get settingsGroupSourcesLimits => 'Quellen und Grenzen';
+
+  @override
+  String get settingsGroupCards => 'Karten';
+
+  @override
+  String get settingsGroupStorage => 'Speicherung';
+
+  @override
+  String get settingsGroupMode => 'Modus';
+
+  @override
+  String get settingsGroupExceptions => 'Ausnahmen';
+
+  @override
+  String get settingsGroupCurrentAction => 'Aktuelle Aktion';
+
+  @override
+  String get settingsGroupHours => 'Betriebszeiten';
+
+  @override
+  String get settingsGroupSourceAccess => 'Quelle und Zugriff';
+
+  @override
+  String get settingsGroupUpdate => 'Aktualisierung';
+
+  @override
+  String get settingsGroupSystemCommands => 'System und Befehle';
+
+  @override
+  String get weatherTemplateWarning => 'Warnung';
+
+  @override
+  String get weatherTemplateDescription => 'Beschreibung ohne Symbol';
+
+  @override
+  String get weatherTemplateIcon => 'Symbol';
+
+  @override
+  String get weatherTemplateBracesError =>
+      'Prüfen Sie die geschweiften Klammern. Verdoppeln Sie eine Klammer für normalen Text.';
+
+  @override
+  String get weatherTemplateUnknownError => 'Unbekanntes Kürzel:';
+
+  @override
+  String get weatherTemplateBreakError => 'Nur ein Zeilenumbruch ist erlaubt.';
+
+  @override
+  String get weatherTemplateValueError =>
+      'Fügen Sie mindestens ein Wetterkürzel hinzu.';
+
+  @override
+  String get weatherTemplateLengthError =>
+      'Das Format ist zu lang: maximal 2048 Zeichen und 64 Elemente.';
 }

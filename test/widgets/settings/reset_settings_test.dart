@@ -49,6 +49,8 @@ void main() {
       final l = AppLocalizations.of(
         tester.element(find.byType(ResetSettingsTile)),
       )!;
+      await tester.scrollUntilVisible(find.text(l.aboutFlauncher), 120);
+      await tester.pumpAndSettle();
       expect(
         tester.getTopLeft(find.text(l.resetLauncherSettings)).dy,
         lessThan(tester.getTopLeft(find.text(l.aboutFlauncher)).dy),

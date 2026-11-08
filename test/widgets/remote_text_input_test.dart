@@ -13,6 +13,7 @@ void main() {
       final editor = FocusNode();
       final save = FocusNode();
       final focusChanges = <bool>[];
+      final keyboardChanges = <bool>[];
       addTearDown(() {
         editor.dispose();
         save.dispose();
@@ -26,6 +27,7 @@ void main() {
                 RemoteTextInput(
                   imeVisibility: events.stream,
                   onEditorFocusChanged: focusChanges.add,
+                  onKeyboardVisibilityChanged: keyboardChanges.add,
                   child: TextField(focusNode: editor, autofocus: true),
                 ),
                 TextButton(
@@ -46,6 +48,7 @@ void main() {
       }
 
       await visibility(true);
+      expect(keyboardChanges, [true]);
       expect(tester.view.viewInsets.bottom, 0);
       for (final key in [
         LogicalKeyboardKey.arrowDown,
@@ -65,6 +68,8 @@ void main() {
         expect(save.hasFocus, isFalse);
       }
       await visibility(false);
+      await visibility(false);
+      expect(keyboardChanges, [true, false]);
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
       await tester.pump();
       expect(save.hasFocus, isTrue);

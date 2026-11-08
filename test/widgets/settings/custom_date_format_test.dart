@@ -1,3 +1,4 @@
+import 'package:flauncher/providers/appearance_service.dart';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -57,7 +58,7 @@ void main() {
     final l = AppLocalizations.of(
       tester.element(find.byType(DateFormatSettingsTile)),
     )!;
-    await tester.tap(find.text(l.date).first);
+    await tester.tap(find.text(l.informationDateFormat).first);
     await tester.pumpAndSettle();
     await tester.tap(find.text(l.customDateFormat));
     await tester.pumpAndSettle();
@@ -209,12 +210,12 @@ void main() {
           SharedPreferences.setMockInitialValues({
             'settings_menu_on_right': onRight,
           });
-          final settings = SettingsService(
-            await SharedPreferences.getInstance(),
-          );
+          final prefs = await SharedPreferences.getInstance();
+          final settings = SettingsService(prefs);
           await tester.pumpWidget(
-            ChangeNotifierProvider.value(
-              value: settings,
+            MultiProvider(
+              providers: [ChangeNotifierProvider.value(value: settings),
+                ChangeNotifierProvider(create: (_) => AppearanceService(prefs))],
               child: MaterialApp(
                 locale: const Locale('ru'),
                 localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -315,7 +316,7 @@ void main() {
       final settings = await open(tester);
       final original = settings.dateFormat;
       final time = settings.timeFormat;
-      await tester.tap(find.text('Дата').first);
+      await tester.tap(find.text('Формат даты').first);
       await tester.pumpAndSettle();
       expect(
         tester.getTopLeft(find.text('Свой формат')).dy,

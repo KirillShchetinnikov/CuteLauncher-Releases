@@ -4,6 +4,9 @@ import '../tv_inputs_configuration.dart';
 import 'online_wallpaper_service.dart';
 import '../adaptive_landscape.dart';
 import '../diagnostics/screenshot_scene.dart';
+import '../weather_text_format.dart';
+import '../information_formats.dart';
+import '../file_browser_options.dart';
 // Historical constants and enum names are preserved for upstream and serialized data compatibility.
 // ignore_for_file: constant_identifier_names
 
@@ -108,6 +111,8 @@ const String ACCENT_COLOR_ICE_BLUE = "80D8FF";
 
 enum CardFocusMode { remember, first, settings }
 
+enum FileManagerPreference { ask, builtIn, external }
+
 class SettingsService extends ChangeNotifier with ServiceLifecycle {
   final landscapeDemo = ValueNotifier<LandscapeDemoFrame?>(null);
   ScreenshotScene? _screenshotScene = screenshotBuild
@@ -173,6 +178,7 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
   late bool _showWeatherInStatusBar;
   late bool _showWeatherWarnings;
   late String _temperatureUnit;
+  late WeatherTextFormat _weatherTextFormat;
 
   bool get appHighlightAnimationEnabled => _appHighlightAnimationEnabled;
 
@@ -267,9 +273,9 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
 
   String get backButtonAction => _backButtonAction;
 
-  String get dateFormat => _dateFormat;
+  String get dateFormat => informationDateTime().date;
 
-  String get timeFormat => _timeFormat;
+  String get timeFormat => informationDateTime().time;
 
   String get dataUsagePeriod => _dataUsagePeriod;
 
@@ -450,11 +456,100 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
   }
   bool get autoHideNotificationsWidget => _autoHideNotificationsWidget;
   bool get showWeatherInStatusBar => _showWeatherInStatusBar;
-  bool get showWeatherWarnings => _showWeatherWarnings;
-  String get temperatureUnit => _temperatureUnit;
-  bool get useFahrenheit => _temperatureUnit == TEMPERATURE_UNIT_FAHRENHEIT;
+  bool get showWeatherWarnings => informationWeather().warnings;
+  String get temperatureUnit => useFahrenheit ? TEMPERATURE_UNIT_FAHRENHEIT : TEMPERATURE_UNIT_CELSIUS;
+  bool get useFahrenheit => informationWeather().fahrenheit;
+  WeatherTextFormat get weatherTextFormat => informationWeather().format;
+
+  final _informationDates = <bool, InformationDateTimeFormat>{};
+  final _informationWeather = <bool, WeatherDisplayOptions>{};
+  InformationDateTimeFormat informationDateTime({bool background = false}) =>
+      _informationDates[background] ?? InformationDateTimeFormat(time: _timeFormat, date: _dateFormat);
+  WeatherDisplayOptions informationWeather({bool background = false}) =>
+      _informationWeather[background] ?? WeatherDisplayOptions(format: _weatherTextFormat,
+        fahrenheit: _temperatureUnit == TEMPERATURE_UNIT_FAHRENHEIT, warnings: _showWeatherWarnings);
+
+  Future<void> setInformationDateTime(InformationDateTimeFormat value, {bool background = false}) async {
+    if (InformationDateTimeFormat.decode(value.encode()) == null) throw const FormatException('Invalid date/time format');
+    if (!await _sharedPreferences.setString(informationDateTimeKey(background), value.encode())) {
+      throw StateError('Unable to save information format');
+    }
+    _informationDates[background] = value;
+    notifyListeners();
+  }
+
+  Future<void> setInformationWeather(WeatherDisplayOptions value, {bool background = false}) async {
+    if (!await _sharedPreferences.setString(informationWeatherKey(background), value.encode())) {
+      throw StateError('Unable to save weather display');
+    }
+    _informationWeather[background] = value;
+    notifyListeners();
+  }
 
   String get appLanguage => _appLanguage;
+
+  FileBrowserOptions get fileBrowserOptions =>
+      FileBrowserOptions.tryDecode(
+        _sharedPreferences.get(fileBrowserOptionsKey),
+      ) ??
+      const FileBrowserOptions();
+
+  Future<void> setFileBrowserOptions(FileBrowserOptions value) async {
+    if (!await _sharedPreferences.setString(
+      fileBrowserOptionsKey,
+      value.encode(),
+    )) {
+      throw StateError('Unable to save file browser options');
+    }
+    notifyListeners();
+  }
+
+  Map<String, String> _fileBrowserLocations() {
+    try {
+      final data = jsonDecode(
+        _sharedPreferences.getString(fileBrowserLocationsKey) ?? '{}',
+      );
+      return data is Map
+          ? {
+              for (final entry in data.entries)
+                if (entry.key is String && entry.value is String)
+                  entry.key as String: entry.value as String,
+            }
+          : {};
+    } catch (_) {
+      return {};
+    }
+  }
+
+  String? fileBrowserLocation(String key) => _fileBrowserLocations()[key];
+
+  Future<void> rememberFileBrowserLocation(String key, String? path) async {
+    final locations = _fileBrowserLocations();
+    if (locations[key] == path) return;
+    locations.remove(key);
+    if (path != null) locations[key] = path;
+    while (locations.length > 100) {
+      locations.remove(locations.keys.first);
+    }
+    // Local navigation history does not notify preference/synchronization listeners.
+    await _sharedPreferences.setString(
+      fileBrowserLocationsKey,
+      jsonEncode(locations),
+    );
+  }
+
+  FileManagerPreference get fileManagerPreference =>
+      FileManagerPreference.values
+          .where((value) => value.name == _sharedPreferences.get('file_manager_preference'))
+          .firstOrNull ??
+      FileManagerPreference.ask;
+
+  Future<void> setFileManagerPreference(FileManagerPreference value) async {
+    if (!await _sharedPreferences.setString('file_manager_preference', value.name)) {
+      throw StateError('Unable to save file manager preference');
+    }
+    notifyListeners();
+  }
 
   Locale? get appLocale {
     if (_appLanguage.isEmpty || !AppLocalizations.supportedLocales.any(
@@ -479,6 +574,14 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
   }
 
   void reload() {
+    _informationDates.clear();
+    _informationWeather.clear();
+    for (final background in [false, true]) {
+      final dates = InformationDateTimeFormat.decode(_sharedPreferences.get(informationDateTimeKey(background)));
+      final weather = WeatherDisplayOptions.decode(_sharedPreferences.get(informationWeatherKey(background)));
+      if (dates != null) _informationDates[background] = dates;
+      if (weather != null) _informationWeather[background] = weather;
+    }
     _memorySaverEnabled = _sharedPreferences.getBool(_memorySaverEnabledKey) ?? false;
     _appHighlightAnimationEnabled = _sharedPreferences.getBool(_appHighlightAnimationEnabledKey) ?? true;
     _appKeyClickEnabled = _sharedPreferences.getBool(_appKeyClickEnabledKey) ?? false;
@@ -519,6 +622,8 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
     _showWeatherInStatusBar = _sharedPreferences.getBool(_showWeatherInStatusBarKey) ?? false;
     _showWeatherWarnings = _sharedPreferences.getBool(_showWeatherWarningsKey) ?? true;
     _temperatureUnit = _sharedPreferences.getString(_temperatureUnitKey) ?? TEMPERATURE_UNIT_CELSIUS;
+    _weatherTextFormat = WeatherTextFormat.tryDecode(_sharedPreferences.get(weatherTextFormatKey)) ??
+        WeatherTextFormat.standard;
     notifyListeners();
   }
 
@@ -539,6 +644,8 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
       _memorySaverEnabledKey: _memorySaverEnabled,
       _appHighlightAnimationEnabledKey: _appHighlightAnimationEnabled,
       _appKeyClickEnabledKey: _appKeyClickEnabled,
+      for (final key in informationFormatKeys)
+        if (_sharedPreferences.containsKey(key)) key: _sharedPreferences.getString(key),
       _homeKeyClickEnabledKey: homeKeyClickEnabled,
       _autoHideAppBarKey: _autoHideAppBarEnabled,
       _showCategoryTitlesKey: _showCategoryTitles,
@@ -599,9 +706,12 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
       'show_night_mode_in_status_bar': showNightModeInStatusBar,
       _autoHideNotificationsWidgetKey: _autoHideNotificationsWidget,
       _appLanguageKey: _appLanguage,
+      'file_manager_preference': fileManagerPreference.name,
+      fileBrowserOptionsKey: fileBrowserOptions.encode(),
       _showWeatherInStatusBarKey: _showWeatherInStatusBar,
       _showWeatherWarningsKey: _showWeatherWarnings,
       _temperatureUnitKey: _temperatureUnit,
+      weatherTextFormatKey: _weatherTextFormat.encode(),
     };
   }
 
@@ -909,6 +1019,15 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
   Future<void> setShowWeatherWarnings(bool show) async {
     await _sharedPreferences.setBool(_showWeatherWarningsKey, show);
     _showWeatherWarnings = show;
+    notifyListeners();
+  }
+
+  Future<void> setWeatherTextFormat(WeatherTextFormat format) async {
+    if (!await _sharedPreferences.setString(weatherTextFormatKey, format.encode())) {
+      throw StateError('Could not save the weather text format');
+    }
+    if (isDisposed) return;
+    _weatherTextFormat = format;
     notifyListeners();
   }
 

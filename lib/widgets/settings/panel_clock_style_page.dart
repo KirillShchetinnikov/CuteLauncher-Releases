@@ -15,9 +15,12 @@ import '../rounded_switch_list_tile.dart';
 import 'color_palette_dialog.dart';
 import 'focusable_settings_tile.dart';
 import 'settings_choice_tile.dart';
+import 'settings_color_swatch.dart';
 import 'settings_page_layout.dart';
 
 import 'settings_value_stepper.dart';
+
+enum InformationStyleSection { all, layout, typography, colors, effects }
 
 class PanelClockStylePage extends StatelessWidget {
   static const routeName = 'panel_clock_style';
@@ -25,12 +28,14 @@ class PanelClockStylePage extends StatelessWidget {
   final bool remotePanel;
   final bool background;
   final bool embedded;
+  final InformationStyleSection section;
   const PanelClockStylePage({
     super.key,
     this.combined = false,
     this.remotePanel = false,
     this.background = false,
     this.embedded = false,
+    this.section = InformationStyleSection.all,
   });
   @override
   Widget build(BuildContext context) {
@@ -41,21 +46,13 @@ class PanelClockStylePage extends StatelessWidget {
         ? remote.appearanceFor(service.appearance)
         : service.appearance;
     final settings = context.watch<SettingsService>();
-    final quickPanel = context.watch<RemotePanelService?>();
-    bool needsLayout(InformationPanelComposition value) =>
-        value.combined && value.members.contains('time');
+    final composition = InformationPanelComposition(
+      service.appearance,
+      settings,
+      remote: remote,
+    );
     final hasClockAndText =
-        needsLayout(
-          InformationPanelComposition(service.appearance, settings),
-        ) ||
-        (quickPanel != null &&
-            needsLayout(
-              InformationPanelComposition(
-                service.appearance,
-                settings,
-                remote: quickPanel,
-              ),
-            ));
+        composition.combined && composition.members.contains('time');
     final clock = background
         ? appearance.backgroundInformationStyle
         : combined
@@ -78,20 +75,27 @@ class PanelClockStylePage extends StatelessWidget {
       locale: Localizations.localeOf(context),
     );
 
-    Widget color(String title, String key, Color current) =>
+    final clockColor = clock.clockColor ?? textStyle.color!;
+    final panelTypography = combined && !background;
+    final showTypography = !panelTypography || !clock.inheritsPanelTypography;
+    Widget color(String title, String key, Color? selected) =>
         FocusableSettingsTile(
           title: Text(title),
-          trailing: Container(width: 32, height: 24, color: current),
+          trailing: SettingsColorSwatch(
+            color: selected ?? clockColor,
+            inherited: selected == null,
+            tooltip: selected == null ? l.defaultOption : title,
+          ),
           onPressed: () async {
             final chosen = await showLauncherDialog<(int?,)>(
               context: context,
               builder: (_) => ColorPaletteDialog(
                 title: title,
-                current: current.toARGB32(),
-                allowDefault: key == 'hoursColor' || key == 'minutesColor',
+                current: selected?.toARGB32(),
+                allowDefault: true,
               ),
             );
-            if (chosen != null) {
+            if (chosen != null && context.mounted) {
               if (chosen.$1 != null) {
                 set(key, chosen.$1);
               } else {
@@ -101,6 +105,14 @@ class PanelClockStylePage extends StatelessWidget {
           },
         );
     final fields = <Widget>[
+      if (panelTypography &&
+          (section == InformationStyleSection.all || section == InformationStyleSection.typography))
+        RoundedSwitchListTile(
+          title: Text(l.informationInheritPanelTypography),
+          value: clock.inheritsPanelTypography,
+          onChanged: (value) => set('inheritPanelTypography', value),
+        ),
+      if (showTypography && (section == InformationStyleSection.all || section == InformationStyleSection.typography)) ...[
       if (!background)
         SettingsValueStepper(
           title: combined ? l.informationSize : l.styleTextSize,
@@ -117,12 +129,13 @@ class PanelClockStylePage extends StatelessWidget {
         panel: true,
         onChanged: (v) => set('font', v),
       ),
-      SettingsChoiceTile<String>(
+      SettingsValueStepper(
         title: l.clockPreset,
         value: clock.preset,
         options: [...PanelClockStyle.fontStyles.keys],
+        inlineChoices: true,
         label: (id) => id == 'italic' ? l.clockItalic : l.interfaceStandard,
-        onChanged: (id) => save(clock.withFontStyle(id)),
+        onChanged: (id) => save(clock.withFontStyle(id as String)),
       ),
       SettingsValueStepper(
         title: l.clockWeight,
@@ -135,6 +148,8 @@ class PanelClockStylePage extends StatelessWidget {
         label: (v) => '$v',
         onChanged: (v) => set('weight', v),
       ),
+      ],
+      if (section == InformationStyleSection.all || section == InformationStyleSection.colors) ...[
       SettingsChoiceTile<bool>(
         title: l.clockColorMode,
         value: clock.splitColors,
@@ -147,33 +162,27 @@ class PanelClockStylePage extends StatelessWidget {
         color(
           l.clockHoursColor,
           'hoursColor',
-          clock.hoursColor ?? textStyle.color!,
+          clock.hoursColor,
         ),
         color(
           l.clockMinutesColor,
           'minutesColor',
-          clock.minutesColor ?? textStyle.color!,
+          clock.minutesColor,
         ),
       ] else
-        color(l.styleTextColor, 'color', textStyle.color!),
-      RoundedSwitchListTile(
-        title: Text(l.clockShowColon),
-        value: clock.showColon,
-        onChanged: (v) => set('showColon', v),
-      ),
+        color(l.clockTextColor, 'clockColor', clock.clockColor),
+      ],
+      if (section == InformationStyleSection.all || section == InformationStyleSection.effects) ...[
       RoundedSwitchListTile(
         title: Text(l.clockGlow),
         value: clock.values['glow'] == true,
         onChanged: (v) => set('glow', v),
       ),
-      RoundedSwitchListTile(
-        title: Text(l.clockAnimate),
-        value: clock.animate,
-        onChanged: (v) => set('animate', v),
-      ),
-      if (combined && hasClockAndText && !background) ...[
+      ],
+      if ((section == InformationStyleSection.all || section == InformationStyleSection.layout) && combined && !background) ...[
         SettingsChoiceTile<bool>(
           title: l.informationPosition,
+          enabled: hasClockAndText,
           value: clock.clockOnRight,
           options: const [false, true],
           label: (v) => v ? l.informationClockRight : l.informationClockLeft,
@@ -181,6 +190,7 @@ class PanelClockStylePage extends StatelessWidget {
         ),
         SettingsValueStepper(
           title: l.informationSpacing,
+          enabled: hasClockAndText,
           value: clock.spacing,
           options: [for (var gap = 0; gap <= 32; gap++) gap],
           label: (v) => '${(v as num).round()}',
@@ -200,6 +210,7 @@ class PanelClockStylePage extends StatelessWidget {
             ? l.backgroundInformationAppearance
             : l.informationPanelAppearance,
       ),
+      showObscuredInformationPreview: !background,
       child: ListView(children: fields),
     );
   }

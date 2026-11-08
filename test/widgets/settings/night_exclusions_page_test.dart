@@ -1,3 +1,5 @@
+import 'package:flauncher/widgets/settings/settings_checkbox_tile.dart';
+import 'package:flauncher/widgets/settings/settings_read_only_value.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/models/app.dart';
 import 'package:flauncher/models/category.dart';
@@ -45,10 +47,10 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      expect(find.text('Текущий режим: Кино (HDR)'), findsOneWidget);
+      expect(find.descendant(of: find.byType(SettingsReadOnlyValue), matching: find.text('Кино (HDR)')), findsOneWidget);
       await tester.scrollUntilVisible(find.text('Обычный'), 180);
       expect(find.text('Обычный'), findsOneWidget);
-      final movie = find.text('Кино (HDR)');
+      final movie = find.descendant(of: find.byType(SettingsCheckboxTile), matching: find.text('Кино (HDR)'));
       await tester.scrollUntilVisible(movie.hitTestable(), 180);
       Focus.of(tester.element(movie)).requestFocus();
       await tester.pump();

@@ -75,6 +75,17 @@ class $AppsTable extends Apps with TableInfo<$AppsTable, App> {
         type: DriftSqlType.dateTime,
         requiredDuringInsert: false,
       );
+  static const VerificationMeta _customNameMeta = const VerificationMeta(
+    'customName',
+  );
+  @override
+  late final GeneratedColumn<String> customName = GeneratedColumn<String>(
+    'custom_name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     packageName,
@@ -83,6 +94,7 @@ class $AppsTable extends Apps with TableInfo<$AppsTable, App> {
     hidden,
     launchCount,
     lastLaunchedAt,
+    customName,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -147,6 +159,12 @@ class $AppsTable extends Apps with TableInfo<$AppsTable, App> {
         ),
       );
     }
+    if (data.containsKey('custom_name')) {
+      context.handle(
+        _customNameMeta,
+        customName.isAcceptableOrUnknown(data['custom_name']!, _customNameMeta),
+      );
+    }
     return context;
   }
 
@@ -164,6 +182,10 @@ class $AppsTable extends Apps with TableInfo<$AppsTable, App> {
         DriftSqlType.string,
         data['${effectivePrefix}name'],
       )!,
+      customName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}custom_name'],
+      ),
       version: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}version'],
@@ -196,6 +218,7 @@ class AppsCompanion extends UpdateCompanion<App> {
   final Value<bool> hidden;
   final Value<int> launchCount;
   final Value<DateTime?> lastLaunchedAt;
+  final Value<String?> customName;
   final Value<int> rowid;
   const AppsCompanion({
     this.packageName = const Value.absent(),
@@ -204,6 +227,7 @@ class AppsCompanion extends UpdateCompanion<App> {
     this.hidden = const Value.absent(),
     this.launchCount = const Value.absent(),
     this.lastLaunchedAt = const Value.absent(),
+    this.customName = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   AppsCompanion.insert({
@@ -213,6 +237,7 @@ class AppsCompanion extends UpdateCompanion<App> {
     this.hidden = const Value.absent(),
     this.launchCount = const Value.absent(),
     this.lastLaunchedAt = const Value.absent(),
+    this.customName = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : packageName = Value(packageName),
        name = Value(name),
@@ -224,6 +249,7 @@ class AppsCompanion extends UpdateCompanion<App> {
     Expression<bool>? hidden,
     Expression<int>? launchCount,
     Expression<DateTime>? lastLaunchedAt,
+    Expression<String>? customName,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -233,6 +259,7 @@ class AppsCompanion extends UpdateCompanion<App> {
       if (hidden != null) 'hidden': hidden,
       if (launchCount != null) 'launch_count': launchCount,
       if (lastLaunchedAt != null) 'last_launched_at': lastLaunchedAt,
+      if (customName != null) 'custom_name': customName,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -244,6 +271,7 @@ class AppsCompanion extends UpdateCompanion<App> {
     Value<bool>? hidden,
     Value<int>? launchCount,
     Value<DateTime?>? lastLaunchedAt,
+    Value<String?>? customName,
     Value<int>? rowid,
   }) {
     return AppsCompanion(
@@ -253,6 +281,7 @@ class AppsCompanion extends UpdateCompanion<App> {
       hidden: hidden ?? this.hidden,
       launchCount: launchCount ?? this.launchCount,
       lastLaunchedAt: lastLaunchedAt ?? this.lastLaunchedAt,
+      customName: customName ?? this.customName,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -278,6 +307,9 @@ class AppsCompanion extends UpdateCompanion<App> {
     if (lastLaunchedAt.present) {
       map['last_launched_at'] = Variable<DateTime>(lastLaunchedAt.value);
     }
+    if (customName.present) {
+      map['custom_name'] = Variable<String>(customName.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -293,6 +325,7 @@ class AppsCompanion extends UpdateCompanion<App> {
           ..write('hidden: $hidden, ')
           ..write('launchCount: $launchCount, ')
           ..write('lastLaunchedAt: $lastLaunchedAt, ')
+          ..write('customName: $customName, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -1158,6 +1191,7 @@ typedef $$AppsTableCreateCompanionBuilder = AppsCompanion Function({
   Value<bool> hidden,
   Value<int> launchCount,
   Value<DateTime?> lastLaunchedAt,
+  Value<String?> customName,
   Value<int> rowid,
 });
 typedef $$AppsTableUpdateCompanionBuilder = AppsCompanion Function({
@@ -1167,6 +1201,7 @@ typedef $$AppsTableUpdateCompanionBuilder = AppsCompanion Function({
   Value<bool> hidden,
   Value<int> launchCount,
   Value<DateTime?> lastLaunchedAt,
+  Value<String?> customName,
   Value<int> rowid,
 });
 
@@ -1235,6 +1270,11 @@ class $$AppsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get customName => $composableBuilder(
+    column: $table.customName,
+    builder: (column) => ColumnFilters(column),
+  );
+
   Expression<bool> appsCategoriesRefs(
     Expression<bool> Function($$AppsCategoriesTableFilterComposer f) f,
   ) {
@@ -1299,6 +1339,11 @@ class $$AppsTableOrderingComposer
     column: $table.lastLaunchedAt,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get customName => $composableBuilder(
+    column: $table.customName,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$AppsTableAnnotationComposer
@@ -1331,6 +1376,11 @@ class $$AppsTableAnnotationComposer
 
   GeneratedColumn<DateTime> get lastLaunchedAt => $composableBuilder(
     column: $table.lastLaunchedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get customName => $composableBuilder(
+    column: $table.customName,
     builder: (column) => column,
   );
 
@@ -1394,6 +1444,7 @@ class $$AppsTableTableManager
                 Value<bool> hidden = const Value.absent(),
                 Value<int> launchCount = const Value.absent(),
                 Value<DateTime?> lastLaunchedAt = const Value.absent(),
+                Value<String?> customName = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => AppsCompanion(
                 packageName: packageName,
@@ -1402,6 +1453,7 @@ class $$AppsTableTableManager
                 hidden: hidden,
                 launchCount: launchCount,
                 lastLaunchedAt: lastLaunchedAt,
+                customName: customName,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -1412,6 +1464,7 @@ class $$AppsTableTableManager
                 Value<bool> hidden = const Value.absent(),
                 Value<int> launchCount = const Value.absent(),
                 Value<DateTime?> lastLaunchedAt = const Value.absent(),
+                Value<String?> customName = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => AppsCompanion.insert(
                 packageName: packageName,
@@ -1420,6 +1473,7 @@ class $$AppsTableTableManager
                 hidden: hidden,
                 launchCount: launchCount,
                 lastLaunchedAt: lastLaunchedAt,
+                customName: customName,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

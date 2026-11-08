@@ -1,7 +1,12 @@
+import 'package:flauncher/widgets/settings/continue_watching_apps_page.dart';
 import 'package:flauncher/widgets/panel_calendar_dialog.dart';
 import 'package:flauncher/widgets/settings/panel_clock_style_page.dart';
 import 'package:flauncher/widgets/settings/date_time_format_page.dart';
 import 'package:flauncher/widgets/settings/settings_style_page.dart';
+import 'package:flauncher/widgets/settings/information_settings_page.dart';
+import 'package:flauncher/widgets/settings/accent_color_page.dart';
+import 'package:flauncher/widgets/settings/launcher_sections_panel_page.dart';
+import 'package:flauncher/widgets/settings/panel_order_page.dart';
 
 import 'dart:io';
 
@@ -67,6 +72,60 @@ class DesignState {
 
 const designStates = [
   DesignState(
+    'settings-information-controls',
+    route: PanelOrderPage.routeName,
+    bottom: true,
+  ),
+  DesignState(
+    'settings-information-empty',
+    route: ContinueWatchingAppsPage.routeName,
+  ),
+  DesignState(
+    'settings-information-empty-rtl',
+    route: ContinueWatchingAppsPage.routeName,
+    language: 'ar',
+    scale: 1.5,
+  ),
+  DesignState(
+    'settings-list-headings-sections',
+    route: LauncherSectionsPanelPage.routeName,
+  ),
+  DesignState(
+    'settings-list-headings-rtl-large',
+    route: LauncherSectionsPanelPage.routeName,
+    language: 'ar',
+    scale: 1.5,
+  ),
+  DesignState(
+    'settings-list-headings-panel-order',
+    route: PanelOrderPage.routeName,
+  ),
+  DesignState(
+    'settings-accent-glass',
+    route: AccentColorPage.routeName,
+    appearance: {'settingsInterfaceStyle': 'glass'},
+  ),
+  DesignState(
+    'settings-accent-calm',
+    route: AccentColorPage.routeName,
+    appearance: {'settingsInterfaceStyle': 'calm'},
+  ),
+  DesignState(
+    'settings-information-main',
+    route: InformationSettingsPage.routeName,
+    appearance: {'interfaceFont': 'manrope'},
+  ),
+  DesignState(
+    'settings-information-panel',
+    route: PanelInformationSettingsPage.routeName,
+    appearance: {'interfaceFont': 'manrope'},
+  ),
+  DesignState(
+    'settings-information-background',
+    route: BackgroundInformationSettingsPage.routeName,
+    appearance: {'interfaceFont': 'manrope'},
+  ),
+  DesignState(
     'settings-font-google-sans',
     route: SettingsStylePage.routeName,
     appearance: {
@@ -101,6 +160,11 @@ const designStates = [
     appearance: {'settingsInterfaceStyle': 'soft'},
   ),
   DesignState(
+    'settings-style-calm',
+    route: SettingsStylePage.routeName,
+    appearance: {'settingsInterfaceStyle': 'calm'},
+  ),
+  DesignState(
     'settings-style-outline',
     route: SettingsStylePage.routeName,
     appearance: {'settingsInterfaceStyle': 'outline'},
@@ -115,6 +179,7 @@ const designStates = [
     route: PanelClockStylePage.routeName,
     appearance: {
       'panelClockStyle': {
+        'inheritPanelTypography': false,
         'preset': 'elegant',
         'inheritBackground': false,
         'font': 'serif',
@@ -129,6 +194,7 @@ const designStates = [
     'home-clock-digital',
     appearance: {
       'panelClockStyle': {
+        'inheritPanelTypography': false,
         'preset': 'digital',
         'inheritBackground': false,
         'font': 'monospace',
@@ -330,6 +396,11 @@ const designStates = [
     scale: 1.3,
   ),
   DesignState('settings-top-appearance', route: 'panel_appearance'),
+  DesignState(
+    'settings-top-appearance-accent',
+    route: 'panel_appearance',
+    appearance: {'settingsSectionStyle': 'accentBand'},
+  ),
   DesignState('settings-top-objects', route: StatusBarObjectsPage.routeName),
   DesignState(
     'home-top-custom',

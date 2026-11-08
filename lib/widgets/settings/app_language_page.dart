@@ -1,3 +1,4 @@
+import 'settings_option_tile.dart';
 import 'settings_page_layout.dart';
 /*
  * FLauncher
@@ -20,7 +21,6 @@ import 'settings_page_layout.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/language_names.dart';
 import 'package:flauncher/providers/settings_service.dart';
-import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -68,9 +68,9 @@ class AppLanguagePage extends StatelessWidget {
     bool autofocus = false,
   }) {
     final isSelected = service.appLanguage == value;
-    return FocusableSettingsTile(
+    return SettingsOptionTile(
       autofocus: autofocus && isSelected,
-      trailing: isSelected ? const Icon(Icons.check) : const SizedBox.shrink(),
+      selected: isSelected,
       title: Text(label, style: Theme.of(context).textTheme.bodyMedium),
       onPressed: () => service.setAppLanguage(value),
     );

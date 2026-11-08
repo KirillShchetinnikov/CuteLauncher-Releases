@@ -325,6 +325,7 @@ class WallpaperService extends ChangeNotifier with ServiceLifecycle {
         await FileImage(target).evict();
         _version++;
         await _updateWallpaper(force: true);
+        await DocumentFiles.rememberImageSelection(picked, _settingsService);
         return true;
       } finally {
         await DocumentFiles.releaseImage(picked);

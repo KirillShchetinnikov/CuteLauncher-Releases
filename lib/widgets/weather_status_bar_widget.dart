@@ -1,7 +1,11 @@
 import 'top_panel_item.dart';
+import 'weather_display_text.dart';
+import 'weather_glyph.dart';
 
+import 'package:flauncher/weather_text_format.dart';
 import 'package:flauncher/weather_warning_text.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
+import 'package:flauncher/models/weather_data.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/weather_service.dart';
 import 'package:flutter/material.dart';
@@ -23,45 +27,49 @@ class WeatherStatusBarWidget extends StatefulWidget {
 class _WeatherStatusBarWidgetState extends State<WeatherStatusBarWidget> {
   @override
   Widget build(BuildContext context) {
-    return Selector<SettingsService, (bool, bool, bool)>(
+    return Selector<SettingsService, (bool, bool, bool, WeatherTextFormat)>(
       selector: (_, settings) => (
         settings.showWeatherInStatusBar,
         settings.showWeatherWarnings,
         settings.useFahrenheit,
+        settings.weatherTextFormat,
       ),
       builder: (context, settingsTuple, _) {
-        final (showWeather, showWarnings, useFahrenheit) = settingsTuple;
+        final (showWeather, showWarnings, useFahrenheit, format) = settingsTuple;
         if (!(widget.showWeather ?? showWeather)) return const SizedBox.shrink();
 
         return Consumer<WeatherService>(
           builder: (context, weatherService, _) {
             final weather = weatherService.weatherData;
-            if (weather == null) {
+            final appearance = topPanelAppearance(context);
+            final base = widget.textStyle ?? appearance.panelTextStyleFor(Localizations.localeOf(context));
+            final textStyle = appearance.weatherTextStyle(base);
+            final icon = WeatherGlyph(
+              condition: weather?.getCondition() ?? WeatherCondition.unknown,
+              pack: appearance.weatherIconPack,
+              size: base.fontSize,
+              color: appearance.weatherIconColor ?? textStyle.color,
+              shadows: base.shadows,
+            );
+            if (weather == null && format.isStandard) {
               return TopPanelItem(textStyle: widget.textStyle, focusNode: widget.focusNode, selected: widget.selected,
-                onPressed: widget.onPressed, child: const Icon(Icons.cloud_outlined));
+                onPressed: widget.onPressed, child: icon);
             }
 
             final bool isWarning =
-                showWarnings && weather.hasWarning && !weatherService.stale;
-            final icon = weather.getConditionIcon();
-            final tempText = weather.formatTemperature(
-              useFahrenheit: useFahrenheit,
-            );
+                !format.explicitLayout && showWarnings && weather?.hasWarning == true && !weatherService.stale;
 
             final l10n = AppLocalizations.of(context);
-            final warning = l10n == null
-                ? weather.warningText
-                : localizedWeatherWarning(weather, l10n, DateTime.now());
-            String displayText;
-            if (isWarning && warning != null) {
-              displayText = "$tempText • $warning";
-            } else {
-              displayText = tempText;
-            }
+            final warning = isWarning && weather != null
+                ? (l10n == null ? weather.warningText : localizedWeatherWarning(weather, l10n, DateTime.now()))
+                : null;
+            final displayText = [
+              format.format(weather, l10n, fahrenheit: useFahrenheit, warningsAvailable: !weatherService.stale),
+              ?warning,
+            ].join(' • ');
 
-            final appearance = topPanelAppearance(context);
             return TopPanelItem(
-              textStyle: widget.textStyle,
+              textStyle: format.isStandard ? widget.textStyle : base,
               focusNode: widget.focusNode,
               selected: widget.selected,
               onPressed: widget.onPressed,
@@ -69,14 +77,8 @@ class _WeatherStatusBarWidgetState extends State<WeatherStatusBarWidget> {
                 mainAxisSize: MainAxisSize.min,
                 textDirection: TextDirection.ltr,
                 children: [
-                  Icon(
-                    icon,
-                    size: widget.textStyle?.fontSize ?? appearance.panelTextSize,
-                    color: widget.textStyle?.color ?? appearance.panelTextColor,
-                    shadows: widget.textStyle?.shadows,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(displayText, style: widget.textStyle ?? appearance.panelTextStyleFor(Localizations.localeOf(context))),
+                  if (!format.explicitLayout) ...[icon, const SizedBox(width: 8)],
+                  WeatherDisplayText(displayText, style: textStyle, inlineIcon: icon, maxWidth: weatherTextMaxWidth(format)),
                 ],
               ),
             );

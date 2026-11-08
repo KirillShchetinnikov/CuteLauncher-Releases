@@ -146,24 +146,18 @@ class _DateTimeWidgetState extends State<DateTimeWidget>
   @override
   Widget build(BuildContext context) {
     final clock = widget.clockStyle;
+    final clockColor = clock?.clockColor;
+    final textStyle = clockColor == null
+        ? widget.textStyle
+        : PanelClockStyle.withTextColor(
+            widget.textStyle ?? DefaultTextStyle.of(context).style,
+            clockColor,
+          );
     if (clock != null &&
         (clock.hoursColor != null ||
             clock.minutesColor != null ||
             !clock.showColon)) {
-      final base = widget.textStyle ?? DefaultTextStyle.of(context).style;
-      TextStyle colored(Color? color) => color == null
-          ? base
-          : base.copyWith(
-              color: color,
-              shadows: [
-                for (final shadow in base.shadows ?? <Shadow>[])
-                  Shadow(
-                    color: color,
-                    offset: shadow.offset,
-                    blurRadius: shadow.blurRadius,
-                  ),
-              ],
-            );
+      final base = textStyle ?? DefaultTextStyle.of(context).style;
       String partText(DateFormat formatter) {
         final text = formatter.format(_now);
         return text.substring(0, text.length - 1);
@@ -179,7 +173,8 @@ class _DateTimeWidgetState extends State<DateTimeWidget>
                 child: AnimatedCharacter(
                   character: char,
                   animate: widget.animate,
-                  textStyle: colored(
+                  textStyle: PanelClockStyle.withTextColor(
+                    base,
                     'HhKk'.contains(token) && token.isNotEmpty
                         ? clock.hoursColor
                         : token == 'm'
@@ -197,7 +192,7 @@ class _DateTimeWidgetState extends State<DateTimeWidget>
 
     return AnimatedTimeDisplay(
       displayText: formattedText,
-      textStyle: widget.textStyle,
+      textStyle: textStyle,
       animate: widget.animate,
     );
   }

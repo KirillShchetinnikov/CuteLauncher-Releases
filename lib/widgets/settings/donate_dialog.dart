@@ -2,7 +2,8 @@ import 'settings_help.dart';
 
 import 'package:flauncher/widgets/launcher_dialog.dart';
 
-import 'focusable_settings_tile.dart';
+import 'settings_option_tile.dart';
+import '../../theme/launcher_style.dart';
 /*
  * FLauncher
  * Copyright (C) 2024 LeanBitLab
@@ -50,13 +51,12 @@ class _PlatformTabButton extends StatelessWidget {
     this.autofocus = false,
   });
   @override
-  Widget build(BuildContext context) => FocusableSettingsTile(
+  Widget build(BuildContext context) => SettingsOptionTile(
     title: Text(label),
     leading: Icon(icon),
     selected: isSelected,
     autofocus: autofocus,
     onPressed: onPressed,
-    trailing: isSelected ? const Icon(Icons.check) : const SizedBox.shrink(),
   );
 }
 
@@ -65,7 +65,9 @@ class _DialogActionButton extends StatelessWidget {
   final IconData icon;
   final Color accentColor;
   final VoidCallback onPressed;
+  final bool primary;
   const _DialogActionButton({
+    this.primary = false,
     required this.label,
     required this.icon,
     required this.accentColor,
@@ -73,6 +75,7 @@ class _DialogActionButton extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) => LauncherDialogButton(
+    primary: primary,
     onPressed: onPressed,
     child: Row(
       mainAxisSize: MainAxisSize.min,
@@ -113,7 +116,7 @@ class _DonateDialogState extends State<DonateDialog> {
         : const Color(0xFFEA4AAA);
 
     return Dialog(
-      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      insetPadding: LauncherStyle.of(context).screenInsets(context),
       child: Container(
         width: 440,
 
@@ -132,9 +135,7 @@ class _DonateDialogState extends State<DonateDialog> {
                   Flexible(
                     child: Text(
                       AppLocalizations.of(context)!.supportLtvLauncher,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -235,9 +236,8 @@ class _DonateDialogState extends State<DonateDialog> {
                 ),
                 child: Text(
                   currentPlatform,
-                  style: TextStyle(
-                    color: currentBrandColor,
-                    fontSize: 12,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurface,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -245,7 +245,7 @@ class _DonateDialogState extends State<DonateDialog> {
               const SizedBox(height: 4),
               SelectableText(
                 currentUrl,
-                style: const TextStyle(color: Colors.white38, fontSize: 11),
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
               const SizedBox(height: 12),
 
@@ -256,6 +256,7 @@ class _DonateDialogState extends State<DonateDialog> {
                 runSpacing: 8,
                 children: [
                   _DialogActionButton(
+                    primary: true,
                     icon: Icons.open_in_browser,
                     label: AppLocalizations.of(context)!.openInBrowser,
                     accentColor: accentColor,

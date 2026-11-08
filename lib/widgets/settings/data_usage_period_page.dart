@@ -1,8 +1,8 @@
+import 'settings_option_tile.dart';
 import 'settings_page_layout.dart';
 
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/providers/settings_service.dart';
-import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -50,9 +50,9 @@ class DataUsagePeriodPage extends StatelessWidget {
 
   Widget _radioTile(BuildContext context, SettingsService service, String label, String value) {
     final isSelected = service.dataUsagePeriod == value;
-    return FocusableSettingsTile(
+    return SettingsOptionTile(
       autofocus: isSelected,
-      trailing: isSelected ? const Icon(Icons.check) : const SizedBox.shrink(),
+      selected: isSelected,
       title: Text(label, style: Theme.of(context).textTheme.bodyMedium),
       onPressed: () => service.setDataUsagePeriod(value),
     );

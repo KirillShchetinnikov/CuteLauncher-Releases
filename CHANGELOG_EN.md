@@ -2,6 +2,33 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
+## v1.7.0 — 2026-11-08
+
+- Redesigned settings: long pages are divided into related groups. Added Accent strip and Shared surface group styles.
+- Added the Calm interface style. Improved readability, highlighting, and remote navigation.
+- Added custom app names and an option to align section headings with tiles.
+- Added independent clock, date, and weather appearance profiles for the top panel and wallpaper, including formats, fonts, colors, and icons.
+- Added horizontal and vertical offsets, size, and alignment for the wallpaper information block. Layer settings apply to the entire block; the menu automatically chooses the side with less overlap.
+- Added a weather text editor with previews for the panel and wallpaper, insertion of weather fields at the cursor, and reset to the default template. It supports custom text, a line break, temperature, feels-like temperature, city, description, wind, humidity, and warnings, with remote navigation and on-screen keyboard support.
+- Added seven weather icon sets, separate text and icon colors, and feels-like temperature in the forecast.
+- Added a custom Open-Meteo server option with address and token import from files, along with OpenWeather and Yandex API key import.
+- Added an experimental Gismeteo source with forecasts for up to seven days; it is not intended for regular use.
+- Added a preferred file manager setting. The built-in browser now offers starting folder, sorting, hidden file, and file information options, and remembers visited folders.
+- Added switching of font family and style with the arrow buttons directly in the settings row.
+
+## v1.6.12 — 2026-11-08
+
+- Long settings pages now use consistent groups with clear headings. Related controls stay together, while short menus keep their simple layout.
+- Added a shared choice of group appearance: Accent strip or Shared surface (the default).
+- Group appearance applies to home and panel settings, weather, night mode, brightness, notifications, VPN, startup, Continue watching, the file browser, button mappings, and backups.
+
+## v1.6.11 — 2026-11-06
+
+- Redesigned clock, date and weather settings with independent panel and wallpaper profiles, a shared preview, and sections for formats, position, fonts, colors and layers. Existing settings are preserved.
+- Weather editing now offers presets and saves the template, units and warnings together. Back discards the entire draft.
+- While editing wallpaper information, settings automatically move to the side with less overlap. This option can be disabled.
+- Grouped date and weather use two rows in total in the top panel. Saved weather line breaks remain available in other layouts.
+
 ## v1.6.10 — 2026-11-05
 
 - Top bar and background clocks can use one color or separate colors for hours and minutes. The colon can also be hidden.

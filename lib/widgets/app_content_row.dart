@@ -185,94 +185,99 @@ class _AppContentRowState extends State<AppContentRow> {
     _focus?.gap = style.horizontalGap;
     return Padding(
       padding: EdgeInsets.symmetric(vertical: style.sectionGap / 2),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (style.sectionTitles)
-            Padding(
-              padding: const EdgeInsetsDirectional.only(start: 16, bottom: 8),
-              child: Text(
-                '${widget.channel.name} · ${widget.channel.appName}',
-                style: Theme.of(context).textTheme.titleLarge,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+      child: LayoutBuilder(
+        builder: (_, constraints) {
+          HomeLayout makeLayout(double availableWidth) => HomeLayout(
+            mode: 'row',
+            count: widget.channel.programs.length,
+            availableWidth: availableWidth,
+            labelHeight: textHeight,
+            style: TileAppearance({
+              ...style.values,
+              'aspectRatio': ratio,
+              'size': height,
+            }),
+          );
+          var layout = makeLayout(constraints.maxWidth);
+          final scale = LauncherStyle.of(context).tileFocusScale(
+            context.watch<SettingsService>().themes,
+            style,
+            width: layout.width,
+            focused: true,
+          );
+          // Reserve focus growth at both ends even before a card is focused.
+          // On narrow windows, shrink the base card to keep that reserve.
+          _horizontalInset = math.max(
+            layout.inset,
+            layout.width * (scale - 1) / 2 +
+                (style.focusBorderStyle() == 'glow'
+                    ? TileGlowPainter.extent * scale
+                    : 2),
+          );
+          if (_horizontalInset > layout.inset) {
+            layout = makeLayout(
+              constraints.maxWidth - 2 * (_horizontalInset - layout.inset),
+            );
+          }
+          final topInset = math.max(
+            8.0,
+            layout.height * (scale - 1) +
+                (style.focusEffect == 'lift' ? style.focusLift : 0) +
+                2,
+          );
+          _extent = layout.stepX;
+          final tiles = SizedBox(
+            key: _bounds,
+            height: layout.height + textHeight + topInset + 8,
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(
+                _horizontalInset,
+                topInset,
+                _horizontalInset,
+                8,
+              ),
+              child: ReorderingTileViewport(
+                layout: layout,
+                packages: widget.channel.programs
+                    .map((p) => p.id.toString())
+                    .toList(),
+                controller: _focus!.scrollController,
+                selected: _focus?.lastPackage,
+                selection: _focus?.selected,
+                requested: _pending,
+                animate: false,
+                physics: const ClampingScrollPhysics(),
+                itemBuilder: (_, i) => _ContentCard(
+                  feed: widget.channel,
+                  aspectRatio: ratio,
+                  program: widget.channel.programs[i],
+                  style: style,
+                  height: layout.height,
+                ),
               ),
             ),
-          LayoutBuilder(
-            builder: (_, constraints) {
-              HomeLayout makeLayout(double availableWidth) => HomeLayout(
-                mode: 'row',
-                count: widget.channel.programs.length,
-                availableWidth: availableWidth,
-                labelHeight: textHeight,
-                style: TileAppearance({
-                  ...style.values,
-                  'aspectRatio': ratio,
-                  'size': height,
-                }),
-              );
-              var layout = makeLayout(constraints.maxWidth);
-              final scale = LauncherStyle.of(context).tileFocusScale(
-                context.watch<SettingsService>().themes,
-                style,
-                width: layout.width,
-                focused: true,
-              );
-              // Reserve focus growth at both ends even before a card is focused.
-              // On narrow windows, shrink the base card to keep that reserve.
-              _horizontalInset = math.max(
-                layout.inset,
-                layout.width * (scale - 1) / 2 +
-                    (style.focusBorderStyle() == 'glow'
-                        ? TileGlowPainter.extent * scale
-                        : 2),
-              );
-              if (_horizontalInset > layout.inset) {
-                layout = makeLayout(
-                  constraints.maxWidth - 2 * (_horizontalInset - layout.inset),
-                );
-              }
-              final topInset = math.max(
-                8.0,
-                layout.height * (scale - 1) +
-                    (style.focusEffect == 'lift' ? style.focusLift : 0) +
-                    2,
-              );
-              _extent = layout.stepX;
-              return SizedBox(
-                key: _bounds,
-                height: layout.height + textHeight + topInset + 8,
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(
-                    _horizontalInset,
-                    topInset,
-                    _horizontalInset,
-                    8,
+          );
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (style.sectionTitles)
+                Padding(
+                  padding: EdgeInsetsDirectional.only(
+                    start: style.sectionTitleAligned ? _horizontalInset : 16,
+                    end: style.sectionTitleAligned ? _horizontalInset : 0,
+                    bottom: 8,
                   ),
-                  child: ReorderingTileViewport(
-                    layout: layout,
-                    packages: widget.channel.programs
-                        .map((p) => p.id.toString())
-                        .toList(),
-                    controller: _focus!.scrollController,
-                    selected: _focus?.lastPackage,
-                    selection: _focus?.selected,
-                    requested: _pending,
-                    animate: false,
-                    physics: const ClampingScrollPhysics(),
-                    itemBuilder: (_, i) => _ContentCard(
-                      feed: widget.channel,
-                      aspectRatio: ratio,
-                      program: widget.channel.programs[i],
-                      style: style,
-                      height: layout.height,
-                    ),
+                  child: Text(
+                    '${widget.channel.name} · ${widget.channel.appName}',
+                    style: Theme.of(context).textTheme.titleLarge,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
-              );
-            },
-          ),
-        ],
+              tiles,
+            ],
+          );
+        },
       ),
     );
   }

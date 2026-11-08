@@ -10,6 +10,61 @@ class AppLocalizationsUk extends AppLocalizations {
   AppLocalizationsUk([String locale = 'uk']) : super(locale);
 
   @override
+  String get weatherTextResetFormat => 'Скинути формат';
+
+  @override
+  String get settingsReportFile => 'Файл звіту';
+
+  @override
+  String get homeVisibleRowsLabel => 'Повністю видимих рядків';
+
+  @override
+  String get watchNextEmpty => 'Карток «Продовжити перегляд» поки немає';
+
+  @override
+  String get inputsUnavailableStatus => 'Доступних входів немає';
+
+  @override
+  String get remoteButtonsNoEvents => 'Подій поки немає';
+
+  @override
+  String get informationBackgroundVerticalOffset => 'Зміщення по вертикалі';
+
+  @override
+  String get informationResetPositionSize => 'Скинути всі налаштування екрана';
+
+  @override
+  String get weatherIconsGeometric => 'Геометричні';
+
+  @override
+  String get weatherIconsCircled => 'У колі';
+
+  @override
+  String get informationCommonAppearance => 'Спільні налаштування';
+
+  @override
+  String get informationTimeFormat => 'Формат часу';
+
+  @override
+  String get informationDateFormat => 'Формат дати';
+
+  @override
+  String get informationInheritPanelTypography =>
+      'Успадковувати оформлення верхньої панелі';
+
+  @override
+  String get informationResetTypography => 'Скинути налаштування';
+
+  @override
+  String get alignSectionTitles => 'Вирівняти заголовки за плитками';
+
+  @override
+  String get homeAppName => 'Назва програми на головному екрані';
+
+  @override
+  String get restoreSystemAppName => 'Відновити системну назву';
+
+  @override
   String get settingsScrollbar => 'Смуга прокручування';
 
   @override
@@ -3819,6 +3874,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get interfaceStandard => 'Standard';
 
   @override
+  String get interfaceCalm => 'Спокійний';
+
+  @override
   String get interfaceGlass => 'Glass';
 
   @override
@@ -4561,6 +4619,72 @@ class AppLocalizationsUk extends AppLocalizations {
   String get informationShowBoth => 'Погода й календар';
 
   @override
+  String get weatherTextFormat => 'Формат тексту погоди';
+
+  @override
+  String get weatherTextTemperature => 'Температура';
+
+  @override
+  String get weatherTextApparent => 'Відчувається як';
+
+  @override
+  String get weatherTextConditions => 'Умови';
+
+  @override
+  String get weatherTextHumidity => 'Вологість';
+
+  @override
+  String get weatherTextLow => 'Мін. сьогодні';
+
+  @override
+  String get weatherTextHigh => 'Макс. сьогодні';
+
+  @override
+  String get weatherTextLiteral => 'Власний текст';
+
+  @override
+  String get weatherTextNewline => 'Перенесення рядка';
+
+  @override
+  String get weatherTextBefore => 'Перед блоком';
+
+  @override
+  String get weatherTextAfter => 'Після блоку';
+
+  @override
+  String get weatherTextYourFormat => 'Ваш формат';
+
+  @override
+  String get weatherTextAdd => 'Додати блок';
+
+  @override
+  String get weatherTextMoveEarlier => 'Перемістити раніше';
+
+  @override
+  String get weatherTextMoveLater => 'Перемістити пізніше';
+
+  @override
+  String get weatherTextHelp =>
+      'Введіть текст і позначення у фігурних дужках або вставляйте їх кнопками в позицію курсора. Регістр не важливий. Круглі дужки навколо одного значення приховуються разом із ним, якщо даних немає. Звичайні фігурні дужки подвоюйте. Дозволено один перенос рядка.';
+
+  @override
+  String get weatherTextSaveError =>
+      'Не вдалося зберегти формат тексту погоди.';
+
+  @override
+  String get weatherTextSampleCity => 'Київ';
+
+  @override
+  String weatherTextMetersPerSecond(String speed) {
+    return '$speed м/с';
+  }
+
+  @override
+  String weatherFeelsLike(String temperature) {
+    return 'Відчувається як $temperature';
+  }
+
+  @override
   String get weatherForecastTitle => 'Прогноз погоди';
 
   @override
@@ -4853,7 +4977,17 @@ class AppLocalizationsUk extends AppLocalizations {
   String get informationOnBackground => 'На тлі';
 
   @override
-  String get informationBackgroundAlignment => 'Розташування на тлі';
+  String get informationBackgroundPosition => 'Розташування блока';
+
+  @override
+  String get informationBackgroundOffset => 'Зміщення по горизонталі';
+
+  @override
+  String get informationBackgroundResetOffset => 'Скинути зміщення';
+
+  @override
+  String get informationBackgroundContentAlignment =>
+      'Вирівнювання всередині блока';
 
   @override
   String get informationBackgroundHelp =>
@@ -5157,4 +5291,362 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get appProcessStopped => 'Не запущено';
+
+  @override
+  String get weatherCustomServer => 'Власний сервер (Open-Meteo)';
+
+  @override
+  String get widgetSettings => 'Налаштування віджета';
+
+  @override
+  String get weatherServerUrlImport => 'Імпортувати адресу з файла';
+
+  @override
+  String get weatherServerUrlImportError =>
+      'Помилка імпорту: Виберіть текстовий файл UTF-8 розміром до 4 КБ, що містить лише базову HTTPS-адресу сервера.';
+
+  @override
+  String get weatherImportReadError =>
+      'Не вдалося прочитати файл імпорту. Перевірте доступ до файла.';
+
+  @override
+  String get weatherImportEncodingError =>
+      'Помилка імпорту: файл не в кодуванні UTF-8.';
+
+  @override
+  String get weatherImportTooLargeError =>
+      'Помилка імпорту: файл більший за 4 КБ.';
+
+  @override
+  String get weatherImportSaveError =>
+      'Не вдалося зберегти значення. Повторіть введення або імпорт.';
+
+  @override
+  String get weatherTokenInvalid => 'Некоректний формат токена.';
+
+  @override
+  String get weatherServerUrl => 'HTTPS-адреса сервера';
+
+  @override
+  String get weatherServerUrlHint =>
+      'Введіть базову HTTPS-адресу без /v1/forecast, облікових даних, параметрів запиту та фрагмента.';
+
+  @override
+  String get weatherServerCoordinates => 'Ввести координати';
+
+  @override
+  String get weatherServerCoordinatesHint =>
+      'Введіть широту й довготу через кому. Для дробової частини використовуйте крапку. Приклад: 50.0, 30.0.';
+
+  @override
+  String get weatherIconPack => 'Набір значків погоди';
+
+  @override
+  String get weatherIconsStandard => 'Стандартні';
+
+  @override
+  String get weatherIconsOutline => 'Контурні';
+
+  @override
+  String get weatherIconsSolid => 'Із заливкою';
+
+  @override
+  String get weatherIconsDuotone => 'Двотонні';
+
+  @override
+  String get weatherIconsPixel => 'Піксельні';
+
+  @override
+  String get weatherTextColor => 'Колір тексту погоди';
+
+  @override
+  String get weatherIconColor => 'Колір значків погоди';
+
+  @override
+  String get weatherIconFollowsText => 'Як у тексту погоди';
+
+  @override
+  String get informationDateColor => 'Колір дати';
+
+  @override
+  String get clockTextColor => 'Колір годинника';
+
+  @override
+  String get weatherServerToken => 'Bearer-токен (необов’язково)';
+
+  @override
+  String get weatherServerTokenImport => 'Імпортувати токен із файла';
+
+  @override
+  String get weatherServerTokenImportError =>
+      'Помилка імпорту: Виберіть текстовий файл UTF-8 розміром до 4 КБ, що містить лише токен.';
+
+  @override
+  String get weatherCheckConnection => 'Перевірити з’єднання';
+
+  @override
+  String get weatherServerAccessError =>
+      'Сервер відмовив у доступі. Перевірте токен і дозволи на сервері.';
+
+  @override
+  String get weatherServerParametersError =>
+      'Сервер відхилив параметри запиту або координати.';
+
+  @override
+  String get informationComposition => 'Формат об’єктів';
+
+  @override
+  String get informationLayout => 'Компонування блока';
+
+  @override
+  String get informationPositionSize => 'Положення та розмір';
+
+  @override
+  String get informationTypography => 'Шрифт і цифри';
+
+  @override
+  String get informationColors => 'Кольори й ефекти';
+
+  @override
+  String get informationLayers => 'Шари фонового блока';
+
+  @override
+  String get informationAvoidOverlap => 'Не перекривати блок налаштуваннями';
+
+  @override
+  String get weatherPresetBrief => 'Стисло';
+
+  @override
+  String get weatherPresetFeels => 'З відчуттям';
+
+  @override
+  String get weatherPresetDetails => 'Докладно';
+
+  @override
+  String get informationAvoidOverlapHelp =>
+      'Під час оформлення фону меню тимчасово переходить на бік із найменшим перекриттям блока. Якщо вільного місця немає, з’являється окремий попередній перегляд. Після виходу повертається звичайний бік меню.';
+
+  @override
+  String get informationProfileHelp =>
+      'Формати й кольори панелі та фону незалежні. Джерело погоди спільне. Швидка панель і прогноз використовують оформлення верхньої панелі; видимість та об’єднання швидкої панелі зберігаються окремо.';
+
+  @override
+  String get weatherCompactLayout =>
+      'У спільному блоці з датою перенос погоди відображається пробілом. Збережений формат не змінюється.';
+
+  @override
+  String get weatherFormatInvalid =>
+      'Додайте погодне поле. Дозволено до 12 блоків, один перенос рядка та до 60 символів у кожному текстовому полі.';
+
+  @override
+  String get fileManagerPreference => 'Файловий менеджер';
+
+  @override
+  String get fileManagerAsk => 'Вибирати щоразу';
+
+  @override
+  String get fileManagerBuiltIn => 'Вбудований';
+
+  @override
+  String get fileManagerExternal => 'Зовнішній';
+
+  @override
+  String get fileBrowserStartFolder => 'Початкова папка';
+
+  @override
+  String get fileBrowserStorage => 'Пам’ять ТВ';
+
+  @override
+  String get fileBrowserDownloads => 'Завантаження';
+
+  @override
+  String get fileBrowserLastFolder => 'Остання відкрита папка';
+
+  @override
+  String get fileBrowserSort => 'Сортування';
+
+  @override
+  String get fileBrowserSortName => 'За назвою';
+
+  @override
+  String get fileBrowserSortDate => 'За датою зміни';
+
+  @override
+  String get fileBrowserSortSize => 'За розміром';
+
+  @override
+  String get fileBrowserOrder => 'Порядок сортування';
+
+  @override
+  String get fileBrowserAscending => 'За зростанням';
+
+  @override
+  String get fileBrowserDescending => 'За спаданням';
+
+  @override
+  String get fileBrowserFoldersFirst => 'Папки завжди зверху';
+
+  @override
+  String get fileBrowserShowHidden => 'Показувати приховані файли й папки';
+
+  @override
+  String get fileBrowserShowDetails => 'Показувати розмір і дату';
+
+  @override
+  String get fileBrowserOptionsHelp =>
+      'Спочатку відкривається вибрана папка або початкова папка вибраного зображення. Остання відкрита папка запам’ятовується окремо для кожної дії, навіть після скасування. Якщо папка недоступна, відкривається пам’ять ТВ або «Завантаження». Історія папок зберігається лише на цьому ТВ.';
+
+  @override
+  String get fileBrowserSaveFailed =>
+      'Не вдалося зберегти налаштування провідника.';
+
+  @override
+  String get settingsSectionStyle => 'Оформлення груп';
+
+  @override
+  String get settingsSectionAccentBand => 'Акцентна смуга';
+
+  @override
+  String get settingsSectionSurface => 'Спільна поверхня';
+
+  @override
+  String get panelTextAndButtonsGroup => 'Текст і кнопки';
+
+  @override
+  String get settingsGroupScene => 'Сцена';
+
+  @override
+  String get settingsGroupSky => 'Небо й погода';
+
+  @override
+  String get settingsGroupAnimation => 'Анімація та перегляд';
+
+  @override
+  String get settingsGroupSource => 'Джерело';
+
+  @override
+  String get settingsGroupImageChange => 'Зміна зображень';
+
+  @override
+  String get settingsGroupBrightness => 'Рівні яскравості';
+
+  @override
+  String get settingsGroupDisplay => 'Відображення';
+
+  @override
+  String get settingsGroupCredentials => 'Дані підключення';
+
+  @override
+  String get settingsGroupClient => 'Параметри клієнта';
+
+  @override
+  String get settingsGroupAccount => 'Підключення облікового запису';
+
+  @override
+  String get settingsGroupIndicators => 'Індикація та повідомлення';
+
+  @override
+  String get settingsGroupFocusShape => 'Форма виділення';
+
+  @override
+  String get settingsGroupBorder => 'Рамка';
+
+  @override
+  String get settingsGroupMotion => 'Рух';
+
+  @override
+  String get settingsGroupControl => 'Керування';
+
+  @override
+  String get settingsGroupPositionSize => 'Розташування та розмір';
+
+  @override
+  String get settingsGroupGroupsBackground => 'Групи та фон';
+
+  @override
+  String get settingsGroupText => 'Текст';
+
+  @override
+  String get settingsGroupLayout => 'Розташування';
+
+  @override
+  String get settingsGroupHeadings => 'Заголовки';
+
+  @override
+  String get settingsGroupLaunchTarget => 'Що запускати';
+
+  @override
+  String get settingsGroupLaunchTiming => 'Коли запускати';
+
+  @override
+  String get settingsGroupBlockPosition => 'Розташування блока';
+
+  @override
+  String get settingsGroupBlockContent => 'Вміст блока';
+
+  @override
+  String get settingsGroupLayers => 'Шари відображення';
+
+  @override
+  String get settingsGroupAccess => 'Доступ';
+
+  @override
+  String get settingsGroupContent => 'Вміст';
+
+  @override
+  String get settingsGroupSourcesLimits => 'Джерела та ліміти';
+
+  @override
+  String get settingsGroupCards => 'Картки';
+
+  @override
+  String get settingsGroupStorage => 'Зберігання';
+
+  @override
+  String get settingsGroupMode => 'Режим';
+
+  @override
+  String get settingsGroupExceptions => 'Винятки';
+
+  @override
+  String get settingsGroupCurrentAction => 'Поточна дія';
+
+  @override
+  String get settingsGroupHours => 'Час роботи';
+
+  @override
+  String get settingsGroupSourceAccess => 'Джерело та доступ';
+
+  @override
+  String get settingsGroupUpdate => 'Оновлення';
+
+  @override
+  String get settingsGroupSystemCommands => 'Система та команди';
+
+  @override
+  String get weatherTemplateWarning => 'Попередження';
+
+  @override
+  String get weatherTemplateDescription => 'Опис без значка';
+
+  @override
+  String get weatherTemplateIcon => 'Значок';
+
+  @override
+  String get weatherTemplateBracesError =>
+      'Перевірте парні фігурні дужки. Для звичайної дужки введіть її двічі.';
+
+  @override
+  String get weatherTemplateUnknownError => 'Невідоме позначення:';
+
+  @override
+  String get weatherTemplateBreakError => 'Дозволено лише один перенос рядка.';
+
+  @override
+  String get weatherTemplateValueError =>
+      'Додайте хоча б одне позначення погоди.';
+
+  @override
+  String get weatherTemplateLengthError =>
+      'Формат задовгий: до 2048 символів і 64 елементів.';
 }

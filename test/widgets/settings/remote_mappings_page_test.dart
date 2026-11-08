@@ -79,7 +79,7 @@ void main() {
         await open(tester);
         await tester.tap(find.textContaining('Power test').first);
         await tester.pumpAndSettle();
-        await tester.tap(find.text('Действие'));
+        await tester.tap(find.text('Действие').last);
         await tester.pumpAndSettle();
         await tester.ensureVisible(find.text(action.value));
         await tester.tap(find.text(action.value));
@@ -456,7 +456,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('Удержание'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Действие'));
+      await tester.tap(find.text('Действие').last);
       await tester.pumpAndSettle();
       await tester.tap(find.text('Назад'));
       await tester.pumpAndSettle();
@@ -496,7 +496,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('ОК'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Действие'));
+      await tester.tap(find.text('Действие').last);
       await tester.pumpAndSettle();
       await tester.tap(find.text('Открывать выбранное приложение'));
       await tester.pumpAndSettle();

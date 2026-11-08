@@ -1,3 +1,4 @@
+import 'dart:ui' show Tristate;
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/widgets/settings/applications_panel_page.dart';
@@ -19,6 +20,7 @@ void main() {
   });
 
   testWidgets("Left/Right arrow keys switch categories in ApplicationsPanelPage", (tester) async {
+    final semantics = tester.ensureSemantics();
     final appsService = MockAppsService();
     when(appsService.getAppIcon(any)).thenAnswer((_) async => Uint8List(0));
   when(appsService.isTileHidden(any)).thenReturn(false);
@@ -48,6 +50,11 @@ ChangeNotifierProvider<SettingsService>.value(value: MockSettingsService()..stub
     );
     await tester.pumpAndSettle();
 
+    final systemTab = find.byWidgetPredicate((w) => w is Semantics &&
+        w.properties.label == 'System apps' && w.properties.selected != null);
+    expect(tester.getSemantics(systemTab).getSemanticsData().flagsCollection.isSelected, Tristate.isFalse);
+    expect(tester.getSemantics(systemTab).getSemanticsData().flagsCollection.isButton, isTrue);
+
     // Initial state: TV Applications (index 0)
     expect(find.text("All applications"), findsOneWidget, reason: "Should start on All applications tab");
 
@@ -64,6 +71,7 @@ ChangeNotifierProvider<SettingsService>.value(value: MockSettingsService()..stub
     // Should now be on Non-TV Applications (index 1)
     expect(find.text("System apps"), findsOneWidget, reason: "Should switch to System apps after Right Arrow");
     expect(find.text("Sideload App"), findsOneWidget);
+    expect(tester.getSemantics(systemTab).getSemanticsData().flagsCollection.isSelected, Tristate.isTrue);
 
     // Simulate Left Arrow
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
@@ -77,6 +85,7 @@ ChangeNotifierProvider<SettingsService>.value(value: MockSettingsService()..stub
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
     await tester.pumpAndSettle();
     expect(find.text("All applications"), findsOneWidget, reason: "Should stay on All applications when pressing Left on first tab");
+    semantics.dispose();
   });
 }
 

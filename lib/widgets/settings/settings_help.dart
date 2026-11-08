@@ -10,7 +10,19 @@ class SettingsHelp extends StatefulWidget {
   final String text;
   final String? title;
 
-  const SettingsHelp({super.key, required this.text, this.title});
+  /// Optional header focus owned and disposed by the caller.
+  final FocusNode? focusNode;
+
+  /// Header keys not consumed by the built-in expanded-help navigation.
+  final FocusOnKeyEventCallback? onKeyEvent;
+
+  const SettingsHelp({
+    super.key,
+    required this.text,
+    this.title,
+    this.focusNode,
+    this.onKeyEvent,
+  });
 
   @override
   State<SettingsHelp> createState() => _SettingsHelpState();
@@ -19,6 +31,7 @@ class SettingsHelp extends StatefulWidget {
 class _SettingsHelpState extends State<SettingsHelp>
     with AutomaticKeepAliveClientMixin {
   final _headerFocus = FocusNode();
+  FocusNode get _effectiveHeaderFocus => widget.focusNode ?? _headerFocus;
   final _textFocus = FocusNode();
   final _scroll = ScrollController();
   bool _expanded = false;
@@ -41,7 +54,7 @@ class _SettingsHelpState extends State<SettingsHelp>
   bool get wantKeepAlive => _expanded;
 
   void _toggle() {
-    if (_expanded) _headerFocus.requestFocus();
+    if (_expanded) _effectiveHeaderFocus.requestFocus();
     setState(() => _expanded = !_expanded);
     updateKeepAlive();
   }
@@ -62,7 +75,7 @@ class _SettingsHelpState extends State<SettingsHelp>
     if (target != position.pixels) {
       _scroll.jumpTo(target);
     } else if (up) {
-      _headerFocus.requestFocus();
+      _effectiveHeaderFocus.requestFocus();
     } else {
       _textFocus.focusInDirection(TraversalDirection.down);
     }
@@ -89,7 +102,7 @@ class _SettingsHelpState extends State<SettingsHelp>
           expanded: _expanded,
           child: FocusableSettingsTile(
             subtle: true,
-            focusNode: _headerFocus,
+            focusNode: _effectiveHeaderFocus,
             leading: const Icon(Icons.info_outline_rounded),
             title: Text(widget.title ?? l.settingsHelp),
             trailing: Icon(_expanded ? Icons.expand_less : Icons.expand_more),
@@ -101,7 +114,8 @@ class _SettingsHelpState extends State<SettingsHelp>
                 _textFocus.requestFocus();
                 return KeyEventResult.handled;
               }
-              return KeyEventResult.ignored;
+              return widget.onKeyEvent?.call(_effectiveHeaderFocus, event) ??
+                  KeyEventResult.ignored;
             },
           ),
         ),

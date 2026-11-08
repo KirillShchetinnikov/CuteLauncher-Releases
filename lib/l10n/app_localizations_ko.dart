@@ -10,6 +10,60 @@ class AppLocalizationsKo extends AppLocalizations {
   AppLocalizationsKo([String locale = 'ko']) : super(locale);
 
   @override
+  String get weatherTextResetFormat => '형식 초기화';
+
+  @override
+  String get settingsReportFile => '보고서 파일';
+
+  @override
+  String get homeVisibleRowsLabel => '완전히 표시되는 행';
+
+  @override
+  String get watchNextEmpty => '아직 이어보기 카드가 없습니다';
+
+  @override
+  String get inputsUnavailableStatus => '사용 가능한 입력이 없습니다';
+
+  @override
+  String get remoteButtonsNoEvents => '아직 이벤트가 없습니다';
+
+  @override
+  String get informationBackgroundVerticalOffset => '세로 이동';
+
+  @override
+  String get informationResetPositionSize => '이 화면의 모든 설정 초기화';
+
+  @override
+  String get weatherIconsGeometric => '기하학';
+
+  @override
+  String get weatherIconsCircled => '원형 테두리';
+
+  @override
+  String get informationCommonAppearance => '공통 설정';
+
+  @override
+  String get informationTimeFormat => '시간 형식';
+
+  @override
+  String get informationDateFormat => '날짜 형식';
+
+  @override
+  String get informationInheritPanelTypography => '상단 패널 모양 상속';
+
+  @override
+  String get informationResetTypography => '설정 초기화';
+
+  @override
+  String get alignSectionTitles => '섹션 제목을 타일에 맞춰 정렬';
+
+  @override
+  String get homeAppName => '홈 화면의 앱 이름';
+
+  @override
+  String get restoreSystemAppName => '시스템 이름으로 복원';
+
+  @override
   String get settingsScrollbar => '스크롤 막대';
 
   @override
@@ -3699,6 +3753,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get interfaceStandard => 'Standard';
 
   @override
+  String get interfaceCalm => '차분함';
+
+  @override
   String get interfaceGlass => 'Glass';
 
   @override
@@ -4414,6 +4471,71 @@ class AppLocalizationsKo extends AppLocalizations {
   String get informationShowBoth => '날씨와 달력';
 
   @override
+  String get weatherTextFormat => '날씨 텍스트 형식';
+
+  @override
+  String get weatherTextTemperature => '기온';
+
+  @override
+  String get weatherTextApparent => '체감 온도';
+
+  @override
+  String get weatherTextConditions => '날씨 상태';
+
+  @override
+  String get weatherTextHumidity => '습도';
+
+  @override
+  String get weatherTextLow => '오늘 최저 기온';
+
+  @override
+  String get weatherTextHigh => '오늘 최고 기온';
+
+  @override
+  String get weatherTextLiteral => '사용자 지정 텍스트';
+
+  @override
+  String get weatherTextNewline => '줄바꿈';
+
+  @override
+  String get weatherTextBefore => '블록 앞';
+
+  @override
+  String get weatherTextAfter => '블록 뒤';
+
+  @override
+  String get weatherTextYourFormat => '내 형식';
+
+  @override
+  String get weatherTextAdd => '블록 추가';
+
+  @override
+  String get weatherTextMoveEarlier => '앞으로 이동';
+
+  @override
+  String get weatherTextMoveLater => '뒤로 이동';
+
+  @override
+  String get weatherTextHelp =>
+      '텍스트와 중괄호로 감싼 코드를 입력하거나 버튼으로 커서 위치에 삽입하세요. 대소문자를 구분하지 않습니다. 값을 둘러싼 소괄호는 데이터가 없으면 함께 숨겨집니다. 일반 중괄호는 두 번 입력하세요. 줄바꿈은 하나만 허용됩니다.';
+
+  @override
+  String get weatherTextSaveError => '날씨 텍스트 형식을 저장할 수 없습니다.';
+
+  @override
+  String get weatherTextSampleCity => '서울';
+
+  @override
+  String weatherTextMetersPerSecond(String speed) {
+    return '$speed m/s';
+  }
+
+  @override
+  String weatherFeelsLike(String temperature) {
+    return '체감 온도 $temperature';
+  }
+
+  @override
   String get weatherForecastTitle => '날씨 예보';
 
   @override
@@ -4699,7 +4821,16 @@ class AppLocalizationsKo extends AppLocalizations {
   String get informationOnBackground => '배경화면 위';
 
   @override
-  String get informationBackgroundAlignment => '배경화면 정렬';
+  String get informationBackgroundPosition => '블록 위치';
+
+  @override
+  String get informationBackgroundOffset => '가로 이동';
+
+  @override
+  String get informationBackgroundResetOffset => '이동 초기화';
+
+  @override
+  String get informationBackgroundContentAlignment => '블록 안 정렬';
 
   @override
   String get informationBackgroundHelp =>
@@ -4999,4 +5130,353 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get appProcessStopped => '실행 중이 아님';
+
+  @override
+  String get weatherCustomServer => '사용자 지정 서버 (Open-Meteo)';
+
+  @override
+  String get widgetSettings => '위젯 설정';
+
+  @override
+  String get weatherServerUrlImport => '파일에서 주소 가져오기';
+
+  @override
+  String get weatherServerUrlImportError =>
+      '가져오기 실패: 서버의 기본 HTTPS 주소만 포함된 4 KB 이하의 UTF-8 텍스트 파일을 선택하세요.';
+
+  @override
+  String get weatherImportReadError => '가져올 파일을 읽을 수 없습니다. 파일 접근 권한을 확인하세요.';
+
+  @override
+  String get weatherImportEncodingError => '가져오기 실패: 파일이 UTF-8 형식이 아닙니다.';
+
+  @override
+  String get weatherImportTooLargeError => '가져오기 실패: 파일이 4 KB를 초과합니다.';
+
+  @override
+  String get weatherImportSaveError => '값을 저장할 수 없습니다. 다시 입력하거나 가져오세요.';
+
+  @override
+  String get weatherTokenInvalid => '잘못된 토큰 형식입니다.';
+
+  @override
+  String get weatherServerUrl => '서버 HTTPS 주소';
+
+  @override
+  String get weatherServerUrlHint =>
+      '/v1/forecast, 인증 정보, 쿼리 또는 프래그먼트가 없는 기본 HTTPS URL을 입력하세요.';
+
+  @override
+  String get weatherServerCoordinates => '좌표 입력';
+
+  @override
+  String get weatherServerCoordinatesHint =>
+      '위도와 경도를 쉼표로 구분하고 소수점에는 마침표를 사용하세요. 예: 50.0, 30.0.';
+
+  @override
+  String get weatherIconPack => '날씨 아이콘 세트';
+
+  @override
+  String get weatherIconsStandard => '기본';
+
+  @override
+  String get weatherIconsOutline => '윤곽선';
+
+  @override
+  String get weatherIconsSolid => '채움';
+
+  @override
+  String get weatherIconsDuotone => '투톤';
+
+  @override
+  String get weatherIconsPixel => '픽셀';
+
+  @override
+  String get weatherTextColor => '날씨 텍스트 색상';
+
+  @override
+  String get weatherIconColor => '날씨 아이콘 색상';
+
+  @override
+  String get weatherIconFollowsText => '날씨 텍스트와 같은 색상';
+
+  @override
+  String get informationDateColor => '날짜 색상';
+
+  @override
+  String get clockTextColor => '시계 색상';
+
+  @override
+  String get weatherServerToken => 'Bearer 토큰 (선택 사항)';
+
+  @override
+  String get weatherServerTokenImport => '파일에서 토큰 가져오기';
+
+  @override
+  String get weatherServerTokenImportError =>
+      '가져오기 실패: 토큰만 포함된 4 KB 이하의 UTF-8 텍스트 파일을 선택하세요.';
+
+  @override
+  String get weatherCheckConnection => '연결 확인';
+
+  @override
+  String get weatherServerAccessError => '서버가 액세스를 거부했습니다. 토큰과 서버 권한을 확인하세요.';
+
+  @override
+  String get weatherServerParametersError => '서버가 요청 매개변수 또는 좌표를 거부했습니다.';
+
+  @override
+  String get informationComposition => '객체 형식';
+
+  @override
+  String get informationLayout => '블록 배치';
+
+  @override
+  String get informationPositionSize => '위치 및 크기';
+
+  @override
+  String get informationTypography => '글꼴 및 숫자';
+
+  @override
+  String get informationColors => '색상 및 효과';
+
+  @override
+  String get informationLayers => '배경 레이어';
+
+  @override
+  String get informationAvoidOverlap => '설정으로 블록을 가리지 않기';
+
+  @override
+  String get weatherPresetBrief => '간단히';
+
+  @override
+  String get weatherPresetFeels => '체감 온도 포함';
+
+  @override
+  String get weatherPresetDetails => '자세히';
+
+  @override
+  String get informationAvoidOverlapHelp =>
+      '배경을 편집하는 동안 설정 메뉴가 블록을 가장 적게 가리는 쪽으로 잠시 이동합니다. 양쪽 모두 공간이 없으면 별도 미리보기가 표시됩니다. 나가면 원래 메뉴 위치로 돌아갑니다.';
+
+  @override
+  String get informationProfileHelp =>
+      '패널과 배경의 형식과 색상은 독립적이며 날씨 제공자는 공통입니다. 빠른 설정과 예보는 상단 패널의 모양을 사용하고, 빠른 설정의 표시와 그룹화는 별도로 유지됩니다.';
+
+  @override
+  String get weatherCompactLayout =>
+      '날짜와 같은 블록에 표시하면 날씨 줄바꿈은 공백으로 표시됩니다. 저장된 형식은 바뀌지 않습니다.';
+
+  @override
+  String get weatherFormatInvalid =>
+      '날씨 항목을 추가하세요. 최대 12개 블록, 줄바꿈 1개, 텍스트 필드당 60자를 사용할 수 있습니다.';
+
+  @override
+  String get fileManagerPreference => '파일 관리자';
+
+  @override
+  String get fileManagerAsk => '매번 선택';
+
+  @override
+  String get fileManagerBuiltIn => '내장';
+
+  @override
+  String get fileManagerExternal => '외부';
+
+  @override
+  String get fileBrowserStartFolder => '시작 폴더';
+
+  @override
+  String get fileBrowserStorage => 'TV 저장소';
+
+  @override
+  String get fileBrowserDownloads => '다운로드';
+
+  @override
+  String get fileBrowserLastFolder => '마지막으로 연 폴더';
+
+  @override
+  String get fileBrowserSort => '정렬 기준';
+
+  @override
+  String get fileBrowserSortName => '이름';
+
+  @override
+  String get fileBrowserSortDate => '수정 날짜';
+
+  @override
+  String get fileBrowserSortSize => '크기';
+
+  @override
+  String get fileBrowserOrder => '정렬 순서';
+
+  @override
+  String get fileBrowserAscending => '오름차순';
+
+  @override
+  String get fileBrowserDescending => '내림차순';
+
+  @override
+  String get fileBrowserFoldersFirst => '항상 폴더 먼저 표시';
+
+  @override
+  String get fileBrowserShowHidden => '숨김 파일 및 폴더 표시';
+
+  @override
+  String get fileBrowserShowDetails => '크기와 날짜 표시';
+
+  @override
+  String get fileBrowserOptionsHelp =>
+      '선택한 폴더 또는 선택한 이미지의 원래 폴더를 먼저 엽니다. 마지막으로 연 폴더는 작업마다 별도로 기억되며 취소 후에도 유지됩니다. 폴더를 사용할 수 없으면 TV 저장소 또는 다운로드를 엽니다. 폴더 기록은 이 TV에만 저장됩니다.';
+
+  @override
+  String get fileBrowserSaveFailed => '파일 탐색기 설정을 저장하지 못했습니다.';
+
+  @override
+  String get settingsSectionStyle => '그룹 모양';
+
+  @override
+  String get settingsSectionAccentBand => '강조 띠';
+
+  @override
+  String get settingsSectionSurface => '공통 배경';
+
+  @override
+  String get panelTextAndButtonsGroup => '텍스트 및 버튼';
+
+  @override
+  String get settingsGroupScene => '장면';
+
+  @override
+  String get settingsGroupSky => '하늘과 날씨';
+
+  @override
+  String get settingsGroupAnimation => '애니메이션 및 미리보기';
+
+  @override
+  String get settingsGroupSource => '소스';
+
+  @override
+  String get settingsGroupImageChange => '이미지 전환';
+
+  @override
+  String get settingsGroupBrightness => '밝기 수준';
+
+  @override
+  String get settingsGroupDisplay => '표시';
+
+  @override
+  String get settingsGroupCredentials => '연결 정보';
+
+  @override
+  String get settingsGroupClient => '클라이언트 설정';
+
+  @override
+  String get settingsGroupAccount => '계정 연결';
+
+  @override
+  String get settingsGroupIndicators => '표시 및 메시지';
+
+  @override
+  String get settingsGroupFocusShape => '포커스 모양';
+
+  @override
+  String get settingsGroupBorder => '테두리';
+
+  @override
+  String get settingsGroupMotion => '움직임';
+
+  @override
+  String get settingsGroupControl => '조작';
+
+  @override
+  String get settingsGroupPositionSize => '위치 및 크기';
+
+  @override
+  String get settingsGroupGroupsBackground => '그룹 및 배경';
+
+  @override
+  String get settingsGroupText => '텍스트';
+
+  @override
+  String get settingsGroupLayout => '배치';
+
+  @override
+  String get settingsGroupHeadings => '제목';
+
+  @override
+  String get settingsGroupLaunchTarget => '실행할 항목';
+
+  @override
+  String get settingsGroupLaunchTiming => '실행 시점';
+
+  @override
+  String get settingsGroupBlockPosition => '블록 위치';
+
+  @override
+  String get settingsGroupBlockContent => '블록 내용';
+
+  @override
+  String get settingsGroupLayers => '표시 레이어';
+
+  @override
+  String get settingsGroupAccess => '접근 권한';
+
+  @override
+  String get settingsGroupContent => '내용';
+
+  @override
+  String get settingsGroupSourcesLimits => '소스 및 제한';
+
+  @override
+  String get settingsGroupCards => '카드';
+
+  @override
+  String get settingsGroupStorage => '저장';
+
+  @override
+  String get settingsGroupMode => '모드';
+
+  @override
+  String get settingsGroupExceptions => '예외';
+
+  @override
+  String get settingsGroupCurrentAction => '현재 동작';
+
+  @override
+  String get settingsGroupHours => '작동 시간';
+
+  @override
+  String get settingsGroupSourceAccess => '소스 및 접근 권한';
+
+  @override
+  String get settingsGroupUpdate => '업데이트';
+
+  @override
+  String get settingsGroupSystemCommands => '시스템 및 명령';
+
+  @override
+  String get weatherTemplateWarning => '경고';
+
+  @override
+  String get weatherTemplateDescription => '아이콘 없는 설명';
+
+  @override
+  String get weatherTemplateIcon => '아이콘';
+
+  @override
+  String get weatherTemplateBracesError =>
+      '중괄호 쌍을 확인하세요. 일반 문자로 표시하려면 괄호를 두 번 입력하세요.';
+
+  @override
+  String get weatherTemplateUnknownError => '알 수 없는 코드:';
+
+  @override
+  String get weatherTemplateBreakError => '줄바꿈은 하나만 허용됩니다.';
+
+  @override
+  String get weatherTemplateValueError => '날씨 코드를 하나 이상 추가하세요.';
+
+  @override
+  String get weatherTemplateLengthError => '형식이 너무 깁니다. 최대 2048자, 64개 요소입니다.';
 }

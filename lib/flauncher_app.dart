@@ -42,6 +42,7 @@ import 'widgets/launcher_dialog.dart';
 import 'widgets/settings/settings_panel.dart';
 import 'widgets/settings/adb_page.dart';
 import 'dart:async';
+import 'theme/launcher_colors.dart';
 
 class FLauncherApp extends StatefulWidget
 {
@@ -195,6 +196,7 @@ class _FLauncherAppState extends State<FLauncherApp> {
             seedColor: accentColor,
             brightness: Brightness.dark,
             primary: accentColor,
+            onPrimary: LauncherColors.onAccent(accentColor),
             secondary: accentColor,
             tertiary: accentColor,
             surface: const Color(0xFF1C2029),

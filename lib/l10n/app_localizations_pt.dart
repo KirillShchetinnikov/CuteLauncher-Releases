@@ -10,6 +10,63 @@ class AppLocalizationsPt extends AppLocalizations {
   AppLocalizationsPt([String locale = 'pt']) : super(locale);
 
   @override
+  String get weatherTextResetFormat => 'Redefinir formato';
+
+  @override
+  String get settingsReportFile => 'Ficheiro do relatório';
+
+  @override
+  String get homeVisibleRowsLabel => 'Linhas totalmente visíveis';
+
+  @override
+  String get watchNextEmpty => 'Ainda não há cartões para continuar a assistir';
+
+  @override
+  String get inputsUnavailableStatus => 'Nenhuma entrada disponível';
+
+  @override
+  String get remoteButtonsNoEvents => 'Ainda não há eventos';
+
+  @override
+  String get informationBackgroundVerticalOffset => 'Deslocamento vertical';
+
+  @override
+  String get informationResetPositionSize =>
+      'Redefinir todas as configurações desta tela';
+
+  @override
+  String get weatherIconsGeometric => 'Geométricos';
+
+  @override
+  String get weatherIconsCircled => 'Em círculo';
+
+  @override
+  String get informationCommonAppearance => 'Configurações comuns';
+
+  @override
+  String get informationTimeFormat => 'Formato de hora';
+
+  @override
+  String get informationDateFormat => 'Formato de data';
+
+  @override
+  String get informationInheritPanelTypography =>
+      'Herdar a aparência do painel superior';
+
+  @override
+  String get informationResetTypography => 'Redefinir configurações';
+
+  @override
+  String get alignSectionTitles =>
+      'Alinhar os títulos das secções com os mosaicos';
+
+  @override
+  String get homeAppName => 'Nome da aplicação no ecrã inicial';
+
+  @override
+  String get restoreSystemAppName => 'Restaurar o nome do sistema';
+
+  @override
   String get settingsScrollbar => 'Barra de rolagem';
 
   @override
@@ -3833,6 +3890,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get interfaceStandard => 'Standard';
 
   @override
+  String get interfaceCalm => 'Suave e discreto';
+
+  @override
   String get interfaceGlass => 'Glass';
 
   @override
@@ -4577,6 +4637,72 @@ class AppLocalizationsPt extends AppLocalizations {
   String get informationShowBoth => 'Tempo e calendário';
 
   @override
+  String get weatherTextFormat => 'Formato do texto do tempo';
+
+  @override
+  String get weatherTextTemperature => 'Temperatura';
+
+  @override
+  String get weatherTextApparent => 'Sensação térmica';
+
+  @override
+  String get weatherTextConditions => 'Condições';
+
+  @override
+  String get weatherTextHumidity => 'Humidade';
+
+  @override
+  String get weatherTextLow => 'Mínima de hoje';
+
+  @override
+  String get weatherTextHigh => 'Máxima de hoje';
+
+  @override
+  String get weatherTextLiteral => 'Texto personalizado';
+
+  @override
+  String get weatherTextNewline => 'Quebra de linha';
+
+  @override
+  String get weatherTextBefore => 'Antes do bloco';
+
+  @override
+  String get weatherTextAfter => 'Depois do bloco';
+
+  @override
+  String get weatherTextYourFormat => 'O seu formato';
+
+  @override
+  String get weatherTextAdd => 'Adicionar bloco';
+
+  @override
+  String get weatherTextMoveEarlier => 'Mover para trás';
+
+  @override
+  String get weatherTextMoveLater => 'Mover para a frente';
+
+  @override
+  String get weatherTextHelp =>
+      'Introduza texto e códigos entre chavetas ou insira-os no cursor com os botões. Maiúsculas e minúsculas são equivalentes. Os parênteses em torno de um valor desaparecem se faltarem dados. Duplique as chavetas literais. É permitida uma quebra de linha.';
+
+  @override
+  String get weatherTextSaveError =>
+      'Não foi possível guardar o formato do texto do tempo.';
+
+  @override
+  String get weatherTextSampleCity => 'Lisboa';
+
+  @override
+  String weatherTextMetersPerSecond(String speed) {
+    return '$speed m/s';
+  }
+
+  @override
+  String weatherFeelsLike(String temperature) {
+    return 'Sensação térmica $temperature';
+  }
+
+  @override
   String get weatherForecastTitle => 'Previsão do tempo';
 
   @override
@@ -4872,7 +4998,17 @@ class AppLocalizationsPt extends AppLocalizations {
   String get informationOnBackground => 'Sobre o fundo';
 
   @override
-  String get informationBackgroundAlignment => 'Alinhamento no fundo';
+  String get informationBackgroundPosition => 'Posição do bloco';
+
+  @override
+  String get informationBackgroundOffset => 'Deslocamento horizontal';
+
+  @override
+  String get informationBackgroundResetOffset => 'Redefinir deslocamento';
+
+  @override
+  String get informationBackgroundContentAlignment =>
+      'Alinhamento dentro do bloco';
 
   @override
   String get informationBackgroundHelp =>
@@ -5181,4 +5317,362 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get appProcessStopped => 'Não está em execução';
+
+  @override
+  String get weatherCustomServer => 'Servidor personalizado (Open-Meteo)';
+
+  @override
+  String get widgetSettings => 'Definições do widget';
+
+  @override
+  String get weatherServerUrlImport => 'Importar endereço de um ficheiro';
+
+  @override
+  String get weatherServerUrlImportError =>
+      'Falha na importação: Escolha um ficheiro de texto UTF-8 de até 4 KB que contenha apenas o endereço HTTPS de base do servidor.';
+
+  @override
+  String get weatherImportReadError =>
+      'Não foi possível ler o ficheiro a importar. Verifique o acesso ao ficheiro.';
+
+  @override
+  String get weatherImportEncodingError =>
+      'Falha na importação: o ficheiro não está em UTF-8.';
+
+  @override
+  String get weatherImportTooLargeError =>
+      'Falha na importação: o ficheiro excede 4 KB.';
+
+  @override
+  String get weatherImportSaveError =>
+      'Não foi possível guardar o valor. Volte a introduzi-lo ou importá-lo.';
+
+  @override
+  String get weatherTokenInvalid => 'Formato de token inválido.';
+
+  @override
+  String get weatherServerUrl => 'Endereço HTTPS do servidor';
+
+  @override
+  String get weatherServerUrlHint =>
+      'Introduza um URL HTTPS de base sem /v1/forecast, credenciais, consulta ou fragmento.';
+
+  @override
+  String get weatherServerCoordinates => 'Introduzir coordenadas';
+
+  @override
+  String get weatherServerCoordinatesHint =>
+      'Introduza a latitude e a longitude separadas por vírgula, usando o ponto decimal. Exemplo: 50.0, 30.0.';
+
+  @override
+  String get weatherIconPack => 'Conjunto de ícones meteorológicos';
+
+  @override
+  String get weatherIconsStandard => 'Padrão';
+
+  @override
+  String get weatherIconsOutline => 'Contorno';
+
+  @override
+  String get weatherIconsSolid => 'Preenchidos';
+
+  @override
+  String get weatherIconsDuotone => 'Dois tons';
+
+  @override
+  String get weatherIconsPixel => 'Pixel';
+
+  @override
+  String get weatherTextColor => 'Cor do texto meteorológico';
+
+  @override
+  String get weatherIconColor => 'Cor dos ícones meteorológicos';
+
+  @override
+  String get weatherIconFollowsText => 'Igual ao texto meteorológico';
+
+  @override
+  String get informationDateColor => 'Cor da data';
+
+  @override
+  String get clockTextColor => 'Cor do relógio';
+
+  @override
+  String get weatherServerToken => 'Token Bearer (opcional)';
+
+  @override
+  String get weatherServerTokenImport => 'Importar token de um ficheiro';
+
+  @override
+  String get weatherServerTokenImportError =>
+      'Falha na importação: Escolha um ficheiro de texto UTF-8 de até 4 KB que contenha apenas o token.';
+
+  @override
+  String get weatherCheckConnection => 'Verificar ligação';
+
+  @override
+  String get weatherServerAccessError =>
+      'O servidor negou o acesso. Verifique o token e as permissões do servidor.';
+
+  @override
+  String get weatherServerParametersError =>
+      'O servidor rejeitou os parâmetros do pedido ou as coordenadas.';
+
+  @override
+  String get informationComposition => 'Formato dos objetos';
+
+  @override
+  String get informationLayout => 'Disposição do bloco';
+
+  @override
+  String get informationPositionSize => 'Posição e tamanho';
+
+  @override
+  String get informationTypography => 'Fonte e dígitos';
+
+  @override
+  String get informationColors => 'Cores e efeitos';
+
+  @override
+  String get informationLayers => 'Camadas do fundo';
+
+  @override
+  String get informationAvoidOverlap => 'Não cobrir o bloco com as definições';
+
+  @override
+  String get weatherPresetBrief => 'Resumido';
+
+  @override
+  String get weatherPresetFeels => 'Sensação térmica';
+
+  @override
+  String get weatherPresetDetails => 'Detalhado';
+
+  @override
+  String get informationAvoidOverlapHelp =>
+      'Ao editar o fundo, as definições mudam temporariamente para o lado que menos cobre o bloco. Se nenhum lado estiver livre, aparece uma pré-visualização separada. Ao sair, regressa o lado habitual.';
+
+  @override
+  String get informationProfileHelp =>
+      'Os formatos e as cores do painel e do fundo são independentes. A fonte meteorológica é comum. As definições rápidas e a previsão usam o aspeto do painel superior; a visibilidade e o agrupamento das definições rápidas são separados.';
+
+  @override
+  String get weatherCompactLayout =>
+      'Quando o tempo partilha um bloco com a data, a quebra aparece como um espaço. O formato guardado não muda.';
+
+  @override
+  String get weatherFormatInvalid =>
+      'Adicione um campo meteorológico. São permitidos até 12 blocos, uma quebra de linha e 60 caracteres por campo de texto.';
+
+  @override
+  String get fileManagerPreference => 'Gerenciador de arquivos';
+
+  @override
+  String get fileManagerAsk => 'Perguntar sempre';
+
+  @override
+  String get fileManagerBuiltIn => 'Integrado';
+
+  @override
+  String get fileManagerExternal => 'Externo';
+
+  @override
+  String get fileBrowserStartFolder => 'Pasta inicial';
+
+  @override
+  String get fileBrowserStorage => 'Armazenamento da TV';
+
+  @override
+  String get fileBrowserDownloads => 'Downloads';
+
+  @override
+  String get fileBrowserLastFolder => 'Última pasta aberta';
+
+  @override
+  String get fileBrowserSort => 'Ordenar por';
+
+  @override
+  String get fileBrowserSortName => 'Nome';
+
+  @override
+  String get fileBrowserSortDate => 'Data de modificação';
+
+  @override
+  String get fileBrowserSortSize => 'Tamanho';
+
+  @override
+  String get fileBrowserOrder => 'Ordem';
+
+  @override
+  String get fileBrowserAscending => 'Crescente';
+
+  @override
+  String get fileBrowserDescending => 'Decrescente';
+
+  @override
+  String get fileBrowserFoldersFirst => 'Pastas sempre primeiro';
+
+  @override
+  String get fileBrowserShowHidden => 'Mostrar arquivos e pastas ocultos';
+
+  @override
+  String get fileBrowserShowDetails => 'Mostrar tamanho e data';
+
+  @override
+  String get fileBrowserOptionsHelp =>
+      'A pasta selecionada ou a pasta original da imagem escolhida abre primeiro. A última pasta aberta é lembrada separadamente para cada ação, mesmo após o cancelamento. Se uma pasta estiver indisponível, abre o armazenamento da TV ou Downloads. O histórico de pastas fica apenas nesta TV.';
+
+  @override
+  String get fileBrowserSaveFailed =>
+      'Não foi possível salvar as configurações do explorador.';
+
+  @override
+  String get settingsSectionStyle => 'Aparência dos grupos';
+
+  @override
+  String get settingsSectionAccentBand => 'Faixa de destaque';
+
+  @override
+  String get settingsSectionSurface => 'Superfície comum';
+
+  @override
+  String get panelTextAndButtonsGroup => 'Texto e botões';
+
+  @override
+  String get settingsGroupScene => 'Cena';
+
+  @override
+  String get settingsGroupSky => 'Céu e clima';
+
+  @override
+  String get settingsGroupAnimation => 'Animação e prévia';
+
+  @override
+  String get settingsGroupSource => 'Origem';
+
+  @override
+  String get settingsGroupImageChange => 'Troca de imagens';
+
+  @override
+  String get settingsGroupBrightness => 'Níveis de brilho';
+
+  @override
+  String get settingsGroupDisplay => 'Exibição';
+
+  @override
+  String get settingsGroupCredentials => 'Dados de conexão';
+
+  @override
+  String get settingsGroupClient => 'Parâmetros do cliente';
+
+  @override
+  String get settingsGroupAccount => 'Conexão da conta';
+
+  @override
+  String get settingsGroupIndicators => 'Indicadores e mensagens';
+
+  @override
+  String get settingsGroupFocusShape => 'Aparência do foco';
+
+  @override
+  String get settingsGroupBorder => 'Borda';
+
+  @override
+  String get settingsGroupMotion => 'Movimento';
+
+  @override
+  String get settingsGroupControl => 'Controles';
+
+  @override
+  String get settingsGroupPositionSize => 'Posição e tamanho';
+
+  @override
+  String get settingsGroupGroupsBackground => 'Grupos e fundo';
+
+  @override
+  String get settingsGroupText => 'Texto';
+
+  @override
+  String get settingsGroupLayout => 'Disposição';
+
+  @override
+  String get settingsGroupHeadings => 'Títulos';
+
+  @override
+  String get settingsGroupLaunchTarget => 'O que iniciar';
+
+  @override
+  String get settingsGroupLaunchTiming => 'Quando iniciar';
+
+  @override
+  String get settingsGroupBlockPosition => 'Posição do bloco';
+
+  @override
+  String get settingsGroupBlockContent => 'Conteúdo do bloco';
+
+  @override
+  String get settingsGroupLayers => 'Camadas de exibição';
+
+  @override
+  String get settingsGroupAccess => 'Acesso';
+
+  @override
+  String get settingsGroupContent => 'Conteúdo';
+
+  @override
+  String get settingsGroupSourcesLimits => 'Fontes e limites';
+
+  @override
+  String get settingsGroupCards => 'Cartões';
+
+  @override
+  String get settingsGroupStorage => 'Armazenamento';
+
+  @override
+  String get settingsGroupMode => 'Modo';
+
+  @override
+  String get settingsGroupExceptions => 'Exceções';
+
+  @override
+  String get settingsGroupCurrentAction => 'Ação atual';
+
+  @override
+  String get settingsGroupHours => 'Horário de funcionamento';
+
+  @override
+  String get settingsGroupSourceAccess => 'Origem e acesso';
+
+  @override
+  String get settingsGroupUpdate => 'Atualização';
+
+  @override
+  String get settingsGroupSystemCommands => 'Sistema e comandos';
+
+  @override
+  String get weatherTemplateWarning => 'Aviso';
+
+  @override
+  String get weatherTemplateDescription => 'Descrição sem ícone';
+
+  @override
+  String get weatherTemplateIcon => 'Ícone';
+
+  @override
+  String get weatherTemplateBracesError =>
+      'Verifique as chavetas emparelhadas. Duplique uma chaveta para a mostrar como texto.';
+
+  @override
+  String get weatherTemplateUnknownError => 'Código desconhecido:';
+
+  @override
+  String get weatherTemplateBreakError => 'Só é permitida uma quebra de linha.';
+
+  @override
+  String get weatherTemplateValueError =>
+      'Adicione pelo menos um código meteorológico.';
+
+  @override
+  String get weatherTemplateLengthError =>
+      'O formato é demasiado longo: até 2048 caracteres e 64 elementos.';
 }

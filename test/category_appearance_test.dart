@@ -87,12 +87,20 @@ void main() {
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(body: SizedBox(width: 380, child: SectionStylePage(categoryId: 1))))));
     await tester.pumpAndSettle();
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    final l = AppLocalizations.of(tester.element(find.byType(SectionStylePage)))!;
+    final padding = find.text(l.categoryPadding);
+    await tester.ensureVisible(padding);
+    Focus.of(tester.element(padding)).requestFocus();
     await tester.pumpAndSettle();
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
     await tester.pumpAndSettle();
     expect(service.tilesFor(1).number('sectionPadding'), 4);
+    final alignment = find.text('Выровнять заголовки по плиткам');
+    await tester.ensureVisible(alignment);
+    await tester.tap(alignment);
+    await tester.pumpAndSettle();
+    expect(service.tilesFor(1).sectionTitleAligned, isTrue);
+    expect(service.tilesFor(2).sectionTitleAligned, isFalse);
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox());
     service.dispose();

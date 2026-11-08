@@ -1,18 +1,35 @@
 import 'dart:convert';
+import 'dart:math' as math;
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../tile_appearance.dart';
 import 'remote_panel_service.dart';
 import '../category_appearance.dart';
 import '../launcher_defaults.dart';
+import '../panel_clock_style.dart';
+import '../background_information_geometry.dart';
 
 class AppearanceService extends ChangeNotifier {
   final focusedAppImage = ValueNotifier<ImageProvider?>(null);
+  final informationBounds = ValueNotifier<Rect?>(null);
+  final backgroundInformationMetrics = ValueNotifier<BackgroundInformationMetrics?>(null);
+  Object? _informationMetricsOwner;
+  void reportBackgroundInformationMetrics(Object owner, BackgroundInformationMetrics? metrics) {
+    if (_disposed || (metrics == null && owner != _informationMetricsOwner)) return;
+    _informationMetricsOwner = metrics == null ? null : owner;
+    backgroundInformationMetrics.value = metrics;
+  }
+  void reportInformationBounds(Rect? bounds) {
+    if (!_disposed) informationBounds.value = bounds;
+  }
   bool _disposed = false;
   @override
   void dispose() {
     _disposed = true;
     focusedAppImage.dispose();
+    informationBounds.dispose();
+    backgroundInformationMetrics.dispose();
+    _informationMetricsOwner = null;
     _previewTiles.clear();
     _previewCategories.clear();
     super.dispose();
@@ -131,18 +148,88 @@ class AppearanceService extends ChangeNotifier {
     if (key == 'panelCombinedInformation' && value is bool) {
       await RemotePanelService.preserveLegacyGrouping(preferences, previous.combinedInformation);
     }
+    final update = TileAppearance.validValues({key: value});
+    final position = update['panelBackgroundInformationAlignment'];
+    if (position != null && position != previous.backgroundInformationPosition) {
+      update['panelBackgroundInformationOffset'] = 0;
+      update['panelBackgroundInformationContentAlignment'] = previous.backgroundInformationAlignment;
+    }
     final next = {...previous.values,
       if (key == 'panelInformationStyle' && !previous.values.containsKey('panelBackgroundInformationStyle'))
         'panelBackgroundInformationStyle': previous.backgroundInformationStyle.values,
-      ...TileAppearance.validValues({key: value})};
+      ...update};
     if (!await preferences.setString(tileAppearanceKey, jsonEncode(next))) throw StateError('Unable to save appearance');
     notifyListeners();
   }
+  Future<void> setInformationAppearance(String key, dynamic value, {bool background = false}) {
+    final profileKey = TileAppearance.informationAppearanceKey(background);
+    return set(profileKey, {...?appearance.values[profileKey] as Map<String, dynamic>?, key: value});
+  }
+  Future<void> resetInformationTypography() => set('panelInformationStyle', {
+    ...({...appearance.informationStyle.values}
+      ..removeWhere((key, _) => PanelClockStyle.typographyKeys.contains(key))),
+    for (final entry in (LauncherDefaults.appearance['panelInformationStyle']
+        as Map<String, dynamic>).entries)
+      if (PanelClockStyle.typographyKeys.contains(entry.key)) entry.key: entry.value,
+  });
+  Future<void> resetInformationColors({bool background = false}) async {
+    final current = appearance;
+    final styleKey = background ? 'panelBackgroundInformationStyle' : 'panelInformationStyle';
+    final profileKey = TileAppearance.informationAppearanceKey(background);
+    final style = background ? current.backgroundInformationStyle : current.informationStyle;
+    final next = {
+      ...current.values,
+      // Keep an older wallpaper profile which still inherits the panel style.
+      if (!background && !current.values.containsKey('panelBackgroundInformationStyle'))
+        'panelBackgroundInformationStyle': current.backgroundInformationStyle.values,
+      styleKey: {...style.values}
+        ..removeWhere((key, _) => PanelClockStyle.colorsAndEffectsKeys.contains(key)),
+      profileKey: {
+        ...?current.values[profileKey] as Map<String, dynamic>?,
+        // Explicit defaults mask legacy colors stored outside the profile.
+        for (final key in TileAppearance.informationAppearanceKeys)
+          key: LauncherDefaults.appearance[key],
+      },
+    };
+    if (!await preferences.setString(tileAppearanceKey, jsonEncode(next))) {
+      throw StateError('Unable to reset information colors');
+    }
+    notifyListeners();
+  }
+  Future<void> resetBackgroundInformationLayout() => resetFields(const [
+    'panelBackgroundInformationOrder',
+    'panelBackgroundInformationAlignment',
+    'panelBackgroundInformationContentAlignment',
+    'panelBackgroundInformationOffset',
+    'panelBackgroundInformationVerticalOffset',
+    'panelBackgroundInformationSize',
+    'panelBackgroundInformationAboveLandscape',
+    'panelBackgroundInformationAboveWeather',
+  ]);
   Future<void> setPanelOrder(List<String> left, List<String> right) async {
     final next = {...appearance.values,
       'panelButtonsOrder': left, 'panelInfoOrder': right};
     if (!await preferences.setString(tileAppearanceKey, jsonEncode(next))) {
       throw StateError('Unable to save panel order');
+    }
+    notifyListeners();
+  }
+  Future<void> setBackgroundInformationVerticalOffset(num value) async {
+    final current = appearance;
+    final update = TileAppearance.validValues({'panelBackgroundInformationVerticalOffset': value});
+    if (update.isEmpty) return;
+    final metrics = backgroundInformationMetrics.value;
+    final fields = {...current.values, ...update};
+    // Preserve the visible size when moving an old, oversized block.
+    if (metrics != null && metrics.requestedSize == current.backgroundInformationSize &&
+        metrics.verticalOffset == current.backgroundInformationVerticalOffset) {
+      fields['panelBackgroundInformationSize'] = math.min(
+        current.backgroundInformationSize, metrics.effectiveSize,
+      ).clamp(1, BackgroundInformationGeometry.maximumStoredSize);
+    }
+    if (!await preferences.setString(tileAppearanceKey,
+        jsonEncode(TileAppearance.validValues(fields)))) {
+      throw StateError('Unable to save background position');
     }
     notifyListeners();
   }

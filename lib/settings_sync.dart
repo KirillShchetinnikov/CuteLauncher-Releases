@@ -1,8 +1,14 @@
 import 'dart:convert';
+import 'weather_text_format.dart';
+import 'information_formats.dart';
+import 'file_browser_options.dart';
 
 /// An explicit portable surface. New preferences remain local until reviewed.
 const syncSettingsKeys = <String>{
+  ...informationFormatKeys,
   'app_language',
+  'file_manager_preference',
+  fileBrowserOptionsKey,
   'accent_color',
   'app_banner_shape',
   'screensaver_clock_style',
@@ -40,6 +46,7 @@ const syncSettingsKeys = <String>{
   'show_weather_in_status_bar',
   'show_weather_warnings',
   'temperature_unit',
+  weatherTextFormatKey,
   'show_continue_watching',
   'continue_watching_card_size',
   'continue_watching_max_items',

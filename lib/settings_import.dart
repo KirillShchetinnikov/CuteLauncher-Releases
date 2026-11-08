@@ -12,6 +12,9 @@ import 'backup_sync_groups.dart';
 import 'providers/online_wallpaper_service.dart';
 import 'custom_date_format.dart';
 import 'date_time_format.dart';
+import 'weather_text_format.dart';
+import 'information_formats.dart';
+import 'file_browser_options.dart';
 
 /// Merge only compatible entries. Missing or invalid settings never reset values.
 /// Unknown primitive keys are retained for round-tripping between app releases.
@@ -46,6 +49,21 @@ Map<String, dynamic> compatibleSettings(dynamic source, Map<String, dynamic> exp
       continue;
     }
     if (isDeviceLocalBackupKey(key)) continue;
+    if (key == fileBrowserOptionsKey) {
+      final options = FileBrowserOptions.tryDecode(value);
+      if (options != null) result[key] = options.encode();
+      continue;
+    }
+    if (informationFormatKeys.contains(key)) {
+      final valid = validateInformationFormat(key, value);
+      if (valid != null) result[key] = valid;
+      continue;
+    }
+    if (key == weatherTextFormatKey) {
+      final format = WeatherTextFormat.tryDecode(value);
+      if (format != null) result[key] = format.encode();
+      continue;
+    }
     if (key == 'date_format') {
       if (value is String && (value == compactDateFormat || value == shortWeekdayDateFormat ||
           validateCustomDatePattern(value).valid)) {
@@ -73,7 +91,10 @@ Map<String, dynamic> compatibleSettings(dynamic source, Map<String, dynamic> exp
     if (key == weatherConfigurationKey) {
       if (value is! String || !validWeatherConfiguration(value)) continue;
       final configuration = WeatherConfiguration.decode(value);
-      if (configuration.source != WeatherSource.breezy && !configuration.validCoordinates) continue;
+      if (configuration.source != WeatherSource.breezy && configuration.source != WeatherSource.customOpenMeteo &&
+          configuration.source != WeatherSource.gismeteo && !configuration.validCoordinates) {
+        continue;
+      }
       try { if (jsonDecode(value) is! Map) continue; } catch (_) { continue; }
       result[key] = jsonEncode(configuration.toJson());
       continue;
@@ -148,6 +169,7 @@ bool _validValue(String key, dynamic value) {
   if (key == 'automatic_backup_enabled') return value is bool;
   if (key == 'card_focus_mode') return value is String && ['remember', 'first', 'settings'].contains(value);
   const choices = {
+    'file_manager_preference': ['ask', 'builtIn', 'external'],
     'app_banner_shape': ['modern', 'premium', 'classic', 'capsule'],
     'back_button_action': ['', 'CLOCK', 'SCREENSAVER'],
     'wifi_usage_period': ['daily', 'weekly', 'monthly'],
@@ -175,6 +197,7 @@ bool _validValue(String key, dynamic value) {
 
 /// Runtime state and credentials must never travel with a portable settings copy.
 bool isDeviceLocalBackupKey(String key) => key.startsWith('initial_profile_') || key.startsWith('adb_') ||
+    key == fileBrowserLocationsKey ||
     key == 'selected_app_channels' ||
     key.startsWith('app_channel_') ||
     key.startsWith('settings_sync_') ||

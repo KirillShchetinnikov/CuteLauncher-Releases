@@ -44,6 +44,8 @@ class Apps extends Table
 
   DateTimeColumn get lastLaunchedAt => dateTime().nullable()();
 
+  TextColumn get customName => text().nullable()();
+
   @override
   Set<Column> get primaryKey => {packageName};
 }
@@ -101,7 +103,7 @@ class FLauncherDatabase extends _$FLauncherDatabase
   FLauncherDatabase.inMemory() : super(LazyDatabase(() => NativeDatabase.memory()));
 
   @override
-  int get schemaVersion => 10;
+  int get schemaVersion => 11;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -118,6 +120,7 @@ class FLauncherDatabase extends _$FLauncherDatabase
                 apps.hidden,
                 if (to >= 8) apps.lastLaunchedAt,
                 if (to >= 10) apps.launchCount,
+                if (to >= 11) apps.customName,
               ],
             ));
           }
@@ -163,6 +166,9 @@ class FLauncherDatabase extends _$FLauncherDatabase
           }
           if (from < 10 && from != 1 && to >= 10) {
             await migrator.addColumn(apps, apps.launchCount);
+          }
+          if (from < 11 && from != 1 && to >= 11) {
+            await migrator.addColumn(apps, apps.customName);
           }
         },
         beforeOpen: (openingDetails) async {
@@ -217,7 +223,7 @@ class FLauncherDatabase extends _$FLauncherDatabase
     }
   }
 
-  Future<void> updateApp(String packageName, AppsCompanion value) =>
+  Future<int> updateApp(String packageName, AppsCompanion value) =>
       (update(apps)..where((tbl) => tbl.packageName.equals(packageName))).write(value);
 
   Future<void> deleteApps(List<String> packageNames) =>
@@ -295,8 +301,12 @@ class FLauncherDatabase extends _$FLauncherDatabase
     return query.get();
   }
 
-  Future<List<App>> getApplications() {
-    return select(apps).get();
+  Future<List<App>> getApplications({Iterable<String>? packages}) {
+    final query = select(apps);
+    if (packages != null) {
+      query.where((app) => app.packageName.isIn(packages));
+    }
+    return query.get();
   }
 
   Future<int?> nextAppCategoryOrder(int categoryId) async {

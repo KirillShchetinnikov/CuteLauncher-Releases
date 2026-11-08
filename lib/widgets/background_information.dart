@@ -1,7 +1,10 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../information_placement.dart';
+import '../background_information_geometry.dart';
 import '../l10n/app_localizations.dart';
 import '../models/weather_data.dart';
 import '../providers/appearance_service.dart';
@@ -9,9 +12,13 @@ import '../providers/settings_service.dart';
 import '../providers/weather_service.dart';
 import '../tile_appearance.dart';
 import '../weather_warning_text.dart';
+import '../weather_text_format.dart';
 import 'date_time_widget.dart';
 import 'landscape_clock_clip.dart';
-import 'landscape_horizon.dart';
+import 'weather_display_text.dart';
+import 'weather_glyph.dart';
+import 'information_bounds.dart';
+import 'background_information_scale.dart';
 
 /// Decorative wallpaper layer: never consumes input or space in the app viewport.
 class BackgroundInformation extends StatelessWidget {
@@ -20,7 +27,7 @@ class BackgroundInformation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appearance =
-        context.watch<AppearanceService?>()?.appearance ??
+        context.watch<AppearanceService?>()?.appearance.forInformation(background: true) ??
         const TileAppearance();
     final placements = context.select<SettingsService, Map<String, String>>(
       (settings) => InformationPlacement(appearance, settings).values,
@@ -32,7 +39,7 @@ class BackgroundInformation extends StatelessWidget {
       return const SizedBox.shrink();
     }
     final formats = context.select<SettingsService, (String, String)>(
-      (s) => (s.timeFormat, s.dateFormat),
+      (s) => (s.informationDateTime(background: true).time, s.informationDateTime(background: true).date),
     );
     final style = appearance.backgroundInformationStyle;
     final fixedTime = context.select<SettingsService, DateTime?>(
@@ -45,18 +52,30 @@ class BackgroundInformation extends StatelessWidget {
         )
         .copyWith(decoration: TextDecoration.none);
     final clock = text.copyWith(
-      fontSize: appearance.backgroundInformationSize,
+      fontSize: BackgroundInformationGeometry.referenceSize,
       height: 1.1,
     );
     final detail = text.copyWith(
-      fontSize: appearance.backgroundInformationSize * .27,
+      fontSize: BackgroundInformationGeometry.referenceSize * .27,
       height: 1.3,
     );
-    final alignment = switch (appearance.backgroundInformationAlignment) {
-      'left' => Alignment.centerLeft,
-      'right' => Alignment.centerRight,
-      _ => Alignment.center,
+    final anchor = switch (appearance.backgroundInformationPosition) {
+      'left' => -1.0,
+      'right' => 1.0,
+      _ => 0.0,
     };
+    final offset = appearance.backgroundInformationOffset / 100;
+    final towardEdge = offset * anchor > 0;
+    const defaultInset = 24.0;
+    const edgeInset = 12.0;
+    final inset = towardEdge
+        ? defaultInset - (defaultInset - edgeInset) * offset.abs()
+        : defaultInset;
+    // Alignment interpolates over the space left after laying out the block.
+    final alignment = Alignment(
+      anchor + (towardEdge ? 0 : offset * (anchor == 0 ? 1 / 3 : .5)),
+      0,
+    );
     final columnAlignment = switch (appearance.backgroundInformationAlignment) {
       'left' => CrossAxisAlignment.start,
       'right' => CrossAxisAlignment.end,
@@ -65,23 +84,13 @@ class BackgroundInformation extends StatelessWidget {
     final landscape = context.select<SettingsService, bool>(
       (s) => s.backgroundSource == 'landscape',
     );
-    Widget content(LandscapeHorizon? horizon) => LayoutBuilder(
+    final content = LayoutBuilder(
       builder: (context, constraints) {
         final screen = constraints.biggest;
-        final maxHeight = (screen.height - kToolbarHeight - 16).clamp(
-          0.0,
-          screen.height * .5,
+        final geometry = BackgroundInformationGeometry(
+          screen, appearance.backgroundInformationVerticalOffset,
         );
-        final x = switch (appearance.backgroundInformationAlignment) {
-          'left' => screen.width * .2,
-          'right' => screen.width * .8,
-          _ => screen.width * .5,
-        };
-        final headerHeight = horizon == null
-            ? null
-            : (horizon.heightAt(x) - kToolbarHeight + clock.fontSize! * .12 + 8)
-                  .clamp(0.0, maxHeight);
-        Widget time = RepaintBoundary(
+        final time = RepaintBoundary(
           child: DateTimeWidget(
             formats.$1,
             key: const Key('background_clock'),
@@ -91,31 +100,37 @@ class BackgroundInformation extends StatelessWidget {
             fixedTime: fixedTime,
           ),
         );
-        if (horizon != null && !appearance.backgroundInformationAboveLandscape) {
-          time = LandscapeSkyClip(horizon: horizon, child: time);
-        }
         return Align(
           alignment: Alignment.topCenter,
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(24, kToolbarHeight + 8, 24, 8),
+            padding: EdgeInsets.fromLTRB(inset, geometry.top, inset, 0),
             child: Align(
               alignment: alignment,
               heightFactor: 1,
               child: SizedBox(
-                height: headerHeight,
+                height: geometry.availableHeight,
                 child: Align(
-                  alignment: Alignment.bottomCenter,
+                  alignment: Alignment.topCenter,
                   widthFactor: 1,
                   heightFactor: 1,
                   child: ConstrainedBox(
-                    constraints: BoxConstraints(maxHeight: maxHeight),
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
+                    constraints: BoxConstraints(
+                      maxWidth: math.max(0.0, screen.width - 2 * defaultInset),
+                      maxHeight: geometry.availableHeight,
+                    ),
+                    child: InformationBounds(
+                      onBounds: context.read<AppearanceService?>()?.reportInformationBounds ?? (_) {},
+                      child: BackgroundInformationScale(
+                      key: const Key('background_information_block'),
+                      value: appearance.backgroundInformationSize,
+                      geometry: geometry,
+                      onMetrics: context.read<AppearanceService?>()?.reportBackgroundInformationMetrics ?? (_, _) {},
                       child: Padding(
                         padding: const EdgeInsets.all(8),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: columnAlignment,
+                          textDirection: TextDirection.ltr,
                           children: [
                             for (final id
                                 in appearance.backgroundInformationOrder)
@@ -124,18 +139,19 @@ class BackgroundInformation extends StatelessWidget {
                                   child: DateTimeWidget(
                                     formats.$2,
                                     key: const Key('background_date'),
-                                    textStyle: detail,
+                                    textStyle: appearance.dateTextStyle(detail),
                                     animate: false,
                                     fixedTime: fixedTime,
                                   ),
                                 )
                               else if (id == 'weather' && weatherVisible)
-                                _BackgroundWeather(style: detail)
+                                _BackgroundWeather(style: detail, appearance: appearance)
                               else if (id == 'time' && timeVisible)
                                 time,
                           ],
                         ),
                       ),
+                    ),
                     ),
                   ),
                 ),
@@ -149,11 +165,11 @@ class BackgroundInformation extends StatelessWidget {
       child: ExcludeFocus(
         child: ExcludeSemantics(
           child: RepaintBoundary(
-            child: landscape && timeVisible
+            child: landscape && !appearance.backgroundInformationAboveLandscape
                 ? LandscapeInformationGeometry(
-                    builder: (_, horizon) => content(horizon),
+                    builder: (_, horizon) => LandscapeSkyClip(horizon: horizon, child: content),
                   )
-                : content(null),
+                : content,
           ),
         ),
       ),
@@ -163,7 +179,8 @@ class BackgroundInformation extends StatelessWidget {
 
 class _BackgroundWeather extends StatelessWidget {
   final TextStyle style;
-  const _BackgroundWeather({required this.style});
+  final TileAppearance appearance;
+  const _BackgroundWeather({required this.style, required this.appearance});
   @override
   Widget build(BuildContext context) {
     final (weather, stale) = context
@@ -171,16 +188,27 @@ class _BackgroundWeather extends StatelessWidget {
           (s) => (s.weatherData, s.stale),
         );
     final fahrenheit = context.select<SettingsService, bool>(
-      (s) => s.useFahrenheit,
+      (s) => s.informationWeather(background: true).fahrenheit,
+    );
+    final format = context.select<SettingsService, WeatherTextFormat>(
+      (s) => s.informationWeather(background: true).format,
     );
     final showWarnings = context.select<SettingsService, bool>(
-      (s) => s.showWeatherWarnings,
+      (s) => s.informationWeather(background: true).warnings,
     );
     final l = AppLocalizations.of(context)!;
+    final textStyle = appearance.weatherTextStyle(style);
     final warning =
-        showWarnings && !stale && weather != null && weather.hasWarning
+        !format.explicitLayout && showWarnings && !stale && weather != null && weather.hasWarning
         ? localizedWeatherWarning(weather, l, DateTime.now())
         : null;
+    final icon = WeatherGlyph(
+      condition: weather?.getCondition() ?? WeatherCondition.unknown,
+      pack: appearance.weatherIconPack,
+      size: style.fontSize,
+      color: appearance.weatherIconColor ?? textStyle.color,
+      shadows: style.shadows,
+    );
     return Semantics(
       label: AppLocalizations.of(context)!.weather,
       child: Row(
@@ -188,19 +216,16 @@ class _BackgroundWeather extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         textDirection: TextDirection.ltr,
         children: [
-          Icon(
-            weather?.getConditionIcon() ?? Icons.cloud_outlined,
-            size: style.fontSize,
-            color: style.color,
-            shadows: style.shadows,
-          ),
-          const SizedBox(width: 8),
-          Text(
+          if (!format.explicitLayout) ...[icon, const SizedBox(width: 8)],
+          WeatherDisplayText(
             [
-              weather?.formatTemperature(useFahrenheit: fahrenheit) ?? '—',
+              format.format(weather, l, fahrenheit: fahrenheit, warningsAvailable: !stale),
               ?warning,
             ].join(' • '),
-            style: style,
+            style: textStyle,
+            inlineIcon: icon,
+            maxWidth: weatherTextMaxWidth(format,
+              backgroundScreenWidth: MediaQuery.sizeOf(context).width),
           ),
         ],
       ),

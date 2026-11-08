@@ -523,7 +523,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
           child: DateTimeWidget(
             settings.dateFormat,
             key: const Key('statusbar_date'),
-            textStyle: informationText,
+            textStyle: appearance.dateTextStyle(informationText),
           ),
         ),
       if ((widget.remotePanel?.visible('time') ?? placement!.onPanel('time')))
@@ -544,7 +544,9 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
           appearance: appearance,
           showTime: objects.containsKey('time'), showDate: objects.containsKey('date'),
           showWeather: objects.containsKey('weather'), weather: weather.weatherData,
+          weatherTextFormat: settings.weatherTextFormat,
           showWarnings: settings.showWeatherWarnings && !weather.stale,
+          weatherStale: weather.stale,
           useFahrenheit: settings.useFahrenheit,
           timeFormat: settings.timeFormat, dateFormat: settings.dateFormat,
           focusNode: _dateFocusNode, selected: _activeWidget == 'date',

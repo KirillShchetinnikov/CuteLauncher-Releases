@@ -187,7 +187,7 @@ class _WallpaperPanelPageState extends State<WallpaperPanelPage> {
                 onPressed: () => _pickWallpaper(
                   context,
                   (s) => s.pickWallpaperDay(
-                    picker: () => DocumentFiles.pickImage(context: context),
+                    picker: () => DocumentFiles.pickImage(context: context, selectionKey: 'wallpaper:day'),
                   ),
                   l,
                 ),
@@ -207,7 +207,7 @@ class _WallpaperPanelPageState extends State<WallpaperPanelPage> {
                 onPressed: () => _pickWallpaper(
                   context,
                   (s) => s.pickWallpaperNight(
-                    picker: () => DocumentFiles.pickImage(context: context),
+                    picker: () => DocumentFiles.pickImage(context: context, selectionKey: 'wallpaper:night'),
                   ),
                   l,
                 ),
@@ -229,7 +229,7 @@ class _WallpaperPanelPageState extends State<WallpaperPanelPage> {
                 onPressed: () => _pickWallpaper(
                   context,
                   (s) => s.pickWallpaper(
-                    picker: () => DocumentFiles.pickWallpaper(context: context),
+                    picker: () => DocumentFiles.pickWallpaper(context: context, selectionKey: 'wallpaper'),
                   ),
                   l,
                 ),

@@ -15,6 +15,8 @@ import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/weather_service.dart';
 import 'package:flauncher/weather_sources.dart';
 import 'package:flauncher/widgets/weather_forecast_menu.dart';
+import 'package:flauncher/widgets/weather_glyph.dart';
+import 'package:flauncher/tile_appearance.dart';
 import 'package:flauncher/widgets/panel_calendar_dialog.dart';
 import 'package:flauncher/widgets/launcher_dialog.dart';
 import 'package:flauncher/widgets/menu_header_action.dart';
@@ -123,6 +125,7 @@ void main() {
         tester.element(find.byType(WeatherForecastContent)),
       )!;
       expect(find.textContaining(l.weatherStale), findsOneWidget);
+      expect(find.textContaining('Ощущается как'), findsNothing);
       expect(find.byKey(const ValueKey('forecast_2026-10-29')), findsOneWidget);
       expect(find.text('— / 12°C'), findsOneWidget);
       await appearance.set('panelForecastView', 'list');
@@ -136,6 +139,59 @@ void main() {
       await tester.pumpWidget(const SizedBox());
     },
   );
+
+  testWidgets('custom server displays response coordinates, timezone and provider', (tester) async {
+    when(weather.configuration).thenReturn(const WeatherConfiguration(
+      source: WeatherSource.customOpenMeteo,
+      latitude: -33, longitude: 151, location: 'Old city',
+    ));
+    when(weather.weatherData).thenReturn(const WeatherData(
+      latitude: 50, longitude: 30, timezone: 'Europe/Kyiv', source: 'Тестовый сервер',
+    ));
+    await mount(tester);
+    expect(find.text('50.000, 30.000'), findsOneWidget);
+    expect(find.text('Europe/Kyiv'), findsOneWidget);
+    expect(find.textContaining('Тестовый сервер'), findsOneWidget);
+    expect(find.textContaining('Old city'), findsNothing);
+    expect(find.textContaining('-33.000'), findsNothing);
+    verifyNever(weather.refresh());
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('shows current feels-like temperature in the selected unit', (
+    tester,
+  ) async {
+    when(weather.weatherData)
+        .thenReturn(const WeatherData(currentTemp: 6, feelsLikeTemp: 0));
+    await mount(tester, both: true);
+    expect(find.text('Ощущается как 0°C'), findsOneWidget);
+    await settings.setTemperatureUnit(TEMPERATURE_UNIT_FAHRENHEIT);
+    await tester.pumpAndSettle();
+    expect(find.text('Ощущается как 32°F'), findsOneWidget);
+    verifyNever(weather.refresh());
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('forecast glyphs follow weather text until an icon tint is chosen', (tester) async {
+    await appearance.set('weatherIconPack', 'solid');
+    await appearance.set('weatherTextColor', 0xffaadebb);
+    await mount(tester);
+    final glyphs = find.byType(WeatherGlyph);
+    expect(glyphs, findsNWidgets(2));
+    expect(tester.widgetList<WeatherGlyph>(glyphs).map((glyph) => glyph.pack),
+        everyElement(WeatherIconPack.solid));
+    expect(tester.widgetList<WeatherGlyph>(glyphs).map((glyph) => glyph.color),
+        everyElement(const Color(0xffaadebb)));
+    final temperature = find.text('0°C / 10°C');
+    expect(tester.widget<Text>(temperature).style?.color, const Color(0xffaadebb));
+    await appearance.set('weatherIconColor', 0xfffabbed);
+    await tester.pumpAndSettle();
+    expect(tester.widgetList<WeatherGlyph>(glyphs).map((glyph) => glyph.color),
+        everyElement(const Color(0xfffabbed)));
+    expect(tester.widget<Text>(temperature).style?.color, const Color(0xffaadebb));
+    await tester.pumpWidget(const SizedBox());
+  });
 
   for (final locale in ['ru', 'en', 'ar']) {
     testWidgets(
@@ -195,6 +251,7 @@ void main() {
               WeatherData(
                 location: 'Санкт-Петербург',
                 utcOffsetSeconds: 0,
+                feelsLikeTemp: -15,
                 forecasts: [
                   for (var i = 0; i < 7; i++)
                     WeatherForecastItem(
@@ -299,6 +356,7 @@ void main() {
             WeatherData(
               location: 'Петропавловск-Камчатский',
               utcOffsetSeconds: 0,
+              feelsLikeTemp: -29,
               forecasts: [
                 for (var i = 0; i < 7; i++)
                   WeatherForecastItem(
@@ -313,6 +371,10 @@ void main() {
           );
           await mount(tester, both: both, locale: locale, scale: 1.6);
           expect(find.byType(Scrollable), findsNothing);
+          final l = AppLocalizations.of(
+            tester.element(find.byType(WeatherForecastContent)),
+          )!;
+          expect(find.text(l.weatherFeelsLike('-29°C')), findsOneWidget);
           for (final text
               in find
                   .descendant(

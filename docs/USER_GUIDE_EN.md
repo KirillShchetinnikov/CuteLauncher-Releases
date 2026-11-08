@@ -68,6 +68,24 @@ Under **Interface style → Settings style → Scrollbar**, choose **Hide comple
 settings, menus, and dialogs. Scrolling works in all three modes. If you previously
 turned off persistent scrollbars, they still appear only while scrolling after the update.
 
+Under **Interface style → Settings style → Group appearance**, choose
+**Accent strip** or **Shared surface** (the default). One choice applies to groups
+across settings pages. Long pages for appearance, weather, night mode,
+brightness, notifications, VPN, startup, Continue watching, the file browser,
+button mappings, and backups are divided by purpose. Short menus and app
+lists keep their simple layout. In the section list, panel object ordering, and
+the TV cleaner app list, headings have a divider that starts after the text.
+Visible and hidden sleep timer presets use the same separation.
+Remote instructions appear as compact guides with highlighted button names.
+Sizes, counts, and dates have labels; states and errors appear as separate
+messages beside the relevant setting. Empty lists have an icon and a short
+message. Detailed explanations remain in collapsed help.
+Under **Top panel → Appearance**, groups
+separate background, text, and additional options.
+The row material and focus color stay the same. Your group appearance choice
+is included in appearance backups; resetting the settings style restores
+**Shared surface**.
+
 Clean installations start with Glass, an adaptive landscape, tile labels,
 and a grid of up to three visible rows of six apps. All Apps and nonempty feeds
 are visible. The clock and date work immediately; weather needs a selected city.
@@ -114,7 +132,11 @@ A link icon marks shared values; changes to shared settings apply immediately,
 including to existing categories. Choosing a value that matches the shared one
 restores inheritance. In Tiles and labels, one Restore common settings button
 restores all settings on that screen. Titles, icons, padding and background are
-available directly in the category appearance editor. Colored category backgrounds
+available directly in the category appearance editor. Find **Align section titles
+with tiles** under **Home screen → Appearance → Sections** and in the appearance
+settings for an individual section. When enabled, the title starts at the tile
+edge and moves with the tiles when you adjust padding. Titles use edge alignment
+by default. Colored category backgrounds
 have Background opacity (0–100%) and Corner radius (0–64) sliders. Adjust them
 for all categories in the home appearance settings or for one category, including
 App feeds. Opacity affects only the background; icons and text keep their brightness.
@@ -208,6 +230,11 @@ the last check result or an access error. **Stop** appears when an app process
 is detected; it force-stops the app and displays the verified command result.
 CuteLauncher itself cannot be stopped from this menu.
 
+To change a tile label, hold **OK** on the tile and select **App name on Home**.
+The saved name applies across all sections, is used for alphabetical sorting,
+and is included in backups and sync. Choose **Restore system name** in the
+same editor to switch back.
+
 Hiding an app removes it from automatic launcher lists; it does not disable
 the app in Android. The normal system-app list belongs to the launcher catalog.
 For the complete installed-package list, including background system components,
@@ -253,7 +280,10 @@ current brightness. The outline or glow remains visible; once scrolling stops,
 the pulse resumes if enabled.
 
 **Interface style** offers Standard, Glass, Soft,
-and Outline. They change panel materials, buttons, focus, switches and sliders
+Outline, and Calm. Calm removes persistent outlines from ordinary rows and marks
+the focused row with an accent-coloured outline and tint. Selection marks,
+active switches and sliders also use the chosen accent; the existing styles keep
+their surfaces and accent-coloured focus. They change panel materials, buttons, focus, switches and sliders
 while preserving placement, dimensions and remote control. Custom colours and
 transparency remain. Clean installations start with Glass; updates preserve existing appearance. Choose fonts separately
 for the interface, top panel and clock: Medeo Sans, Medeo Mono, Medeo Serif, Google Sans, Onest, Manrope, Outfit or
@@ -263,6 +293,13 @@ Outfit is unavailable for Russian. New styles default to Outfit for compatible
 languages and Manrope for Cyrillic. Switching languages temporarily substitutes
 Manrope or the system font if the saved font is incompatible; switching back
 restores the previous choice. All fonts are bundled and work offline.
+Choose the font family and style directly in their settings rows:
+**Font ‹ font name ›**, **Font style ‹ value ›**. Use ◀ / ▶ on the remote
+or tap the arrows; changes apply immediately. Switching is disabled when only
+one font supports the current language.
+
+Other value selection dialogs open with the selected row visible, even at the
+end of a long list. The scrollbar stays separate from the selection buttons.
 
 In **Interface style → Settings style**, **Show tooltips in all panels** enables
 button and icon hints when focused with the remote or hovered with a mouse.
@@ -389,7 +426,7 @@ On compatible firmware, you can turn it on before mounting a network share.
 
 Path: **Top panel → Objects / Object order**.
 
-Nested settings windows, including font and color selection, open below
+Nested settings windows, including value and color selection, open below
 the top panel. Long lists scroll within the window bounds.
 
 The **Network** group offers a separate **Network speed** widget.
@@ -514,25 +551,41 @@ alone does not count as connecting: the launcher waits for the resulting state.
 **Clock, date and weather on the wallpaper.** Open **Top panel → Objects →
 Clock, date and weather**. Choose **Disabled**, **Top panel** or **On wallpaper** separately
 for the time, date and weather. For example, move the clock to the wallpaper and
-keep the date and weather in the panel, grouped or separate. Wallpaper appearance
-settings offer left, center or right alignment, size (48–144), font, color and glow.
-In **Wallpaper appearance → Object order**, reorder the date, weather and clock
+keep the date and weather in the panel, grouped or separate. In **Wallpaper appearance → Position and size**,
+set **Block position** to left, center or right. On the **Horizontal offset** slider,
+press ◀ / ▶ to move the whole block within the selected zone. Changing the position
+returns the block to its default point in that zone.
+Set **Alignment within block** separately. It stays the same when the position
+changes. **Vertical offset** starts at 0 below the top panel. Increase it to move
+the entire block down; decrease it to move up. The maximum depends on the block
+size: its bottom edge cannot go below the middle of the screen. Changing the
+season or horizontal position does not adjust the height automatically.
+Both offset sliders and the overall size slider use the same track without tick marks.
+**Block size** grows the block downward while keeping its top point fixed.
+The maximum depends on its contents, font and available space: growth stops at
+the middle of the screen or side boundaries. All values transfer with backups and appearance sync.
+Font, colors and glow are in the corresponding appearance sections.
+**Reset all settings on this screen** is at the end of the scrolling list. After confirmation, it
+restores the default position, alignment, both offsets, size, object order and layers.
+Formats, fonts, colors and object placement are kept.
+In **Wallpaper appearance → Position and size → Object order**, reorder the date, weather and clock
 from top to bottom: OK starts moving, ▲ / ▼ change the order, and OK or Back
 finishes. The order is retained for hidden elements too. By default, the date
 and weather sit above the large clock.
-In **Clock, date and weather → Weather settings**, enable **Show weather and rain warnings**
-to display a warning beside the temperature in both the panel and on the wallpaper.
+In the desired appearance profile, open **Object formats → Weather text format**
+and insert `{WARN}` at the desired position. Panel and wallpaper templates are independent.
 Warnings are hidden when weather data is stale. This decorative block has no dimming
 background, cannot receive focus or presses, and does not open widgets. Tile positions
 and the scrolling viewport stay unchanged; tiles can overlap the clock.
-In the adaptive landscape, the mountain outline overlaps the lower part
-of the clock by default in both illustrated and realistic variants. Clouds, rain, snow and
+In the adaptive landscape, the mountain outline can overlap the clock, date and weather in both
+illustrated and realistic variants. You adjust the block height yourself. Clouds, rain, snow and
 fog pass over the wallpaper clock, date and weather; tiles and the top panel
 remain above the effects. Other wallpapers have no overlap effect.
-**Wallpaper appearance** offers two independent switches for the entire clock,
+**Wallpaper appearance → Position and size** offers two independent switches for the entire clock,
 date and weather block: **Above landscape** removes mountain overlap, while
 **Above weather effects** places the block in front of clouds, rain, snow and fog.
 Both are off by default and can be enabled together or separately.
+They also work when only the date or weather is shown on the wallpaper without a clock.
 Moving the elements hides them from the top panel; choosing
 **Top panel** again restores their previous order and grouping mode. Wallpaper
 elements are also excluded from the top panel order editor. Quick settings panel
@@ -541,14 +594,28 @@ visibility and order remain independent; editing that panel does not hide wallpa
 **Top panel → Objects** has one **Clock, date and weather** entry with a brief
 placement summary. Each element's placement is edited only inside this entry.
 The remaining settings are split into **Panel appearance**, **Wallpaper appearance**
-(when any element is on the wallpaper), and **Formats and data**. The latter contains
-time and date formats. **Weather settings** is a separate entry on the main
+(available even when hidden). Both profiles contain **Object formats**,
+**Font and digits**, and **Colors and effects**. The panel has **Block layout**;
+the wallpaper has **Position and size**, including layer settings.
+**Object formats** edits time, date and weather formats.
+Headings and dividers separate **Clock**, **Date** and **Weather** groups.
+**Clock** contains **Time format**, **Show colon** and **Animate digits**;
+**Date** contains **Date format**, and **Weather** contains **Temperature unit** and **Weather text format**.
+Colon and animation controls remain available when inheriting the top panel font.
+Formats, units, warnings, colors and icons are independent for panel and wallpaper.
+Existing settings remain until you edit the corresponding profile.
+When editing the wallpaper block, the menu always temporarily chooses the side
+with less overlap. This behavior cannot be disabled. All **Wallpaper appearance**
+windows hide the preview except the **Weather text format** and **Custom date format** editors.
+Focus and the current page remain,
+and leaving restores the usual menu side. **Weather settings** is a separate entry on the main
 **Clock, date and weather** page.
 Date settings include a short weekday format, such as “Вс, 1 Нояб” in Russian
 or “Sun, 1 Nov” in English: weekday, comma, day and abbreviated month.
 The first choice is **Custom format**: enter a date pattern with validation
-and underlined unsupported characters. A labelled **Preview** appears above the
-input. The input and preview stay visible while the keyboard is open; only the
+and underlined unsupported characters. For both panel and wallpaper appearance,
+a labelled **Preview** above the input updates as you type.
+The input and preview stay visible while the keyboard is open; only the
 help scrolls when space is limited. Without the keyboard, the full legend is visible.
 Done on the keyboard focuses OK, or Cancel if the pattern is invalid.
 Use Left/Right to select a button, then confirm it with the remote.
@@ -559,17 +626,44 @@ month name, `EEE`/`EEEE` for weekday and `yy`/`yyyy` for year.
 For example, `EEEE, d. MMMM yyyy`. Enclose literal text in single quotes.
 Cancel keeps the previous value; the existing format remains selected until you save.
 
-**Panel appearance** can group the visible elements. Grouping is unavailable when
+**Panel appearance → Block layout** can group the visible elements.
+A grouped block places the date above weather, using two rows in total.
+A weather template line break becomes a space here without changing the saved
+template; weather can use two lines again when the date is hidden. Grouping is unavailable when
 only one or no elements remain. Quick settings has independent visibility and grouping.
-Shared size (10–24), font, style, weight, color and glow apply to the clock, date and
-weather in both panels; color and glow also affect the weather icon. Digit animation
-has its own switch. In panel and wallpaper appearance, **Clock color mode**
-switches between one **Text color** button and separate **Hours color** and
-**Minutes color** buttons. Separate colors are saved when you change modes.
-The default option in either separate palette restores the shared text color.
+Shared size (10–24), font, style, weight and glow apply to the clock, date and
+weather in both panels. Digit animation has its own switch. In panel and wallpaper
+appearance, **Clock color mode** lets you choose one color for the whole clock or
+separate colors for hours and minutes. Your choices are saved when you switch modes.
+**Colors and effects → Date color** sets the date color for the selected profile.
+Weather text and icon palettes are here too.
+**Colors and effects** is split into **Shared settings** for the whole block’s text glow,
+**Clock** for color mode and palettes, **Date** for the date color,
+and **Weather** for the icon set and text and icon colors.
+**Reset all settings on this screen** is the final list item and scrolls with
+the settings. After confirmation,
+it restores inherited colors, a single clock color, disabled glow and outline weather
+icons for the selected appearance profile. Fonts, formats, colon visibility,
+animation, placement, layout, layers and the other appearance profile are kept.
+Quick settings uses the top-panel
+profile while keeping its own visibility, order and grouping.
+Select **Default** to restore the inherited color.
+The swatch then shows a chain icon for the whole clock, separate hours and minutes,
+date, weather text and weather icons. This applies to panel and wallpaper appearance.
+Custom colors appear without the icon.
 Turning off **Show colon** preserves the gap
 between hours and minutes. A grouped clock with date or weather offers left/right clock
-position and spacing (0–32). The background and corner radius always match the other
+position and spacing (0–32).
+In **Panel appearance → Font and digits**, **Inherit top panel appearance** is on
+by default. Custom controls are hidden; the panel supplies the size and font,
+and the font style is regular.
+Turn inheritance off to edit these settings. Turning it back on keeps your custom
+values. **Reset settings** is the final list item and scrolls with the settings.
+It restores this screen’s defaults after
+confirmation and enables inheritance; colors, layout, colon, digit animation and wallpaper appearance stay as set.
+When top-panel grouping is off, both layout controls remain
+visible but disabled, keeping their saved values. Quick-settings grouping does
+not enable them. The background and corner radius always match the other
 objects in the corresponding panel, including when only one element remains.
 
 Panel clock and date buttons always open the calendar; weather opens the forecast.
@@ -610,18 +704,104 @@ traffic needs usage access, and inputs need support for the relevant TV API.
 
 Path: **Top panel → Objects → Clock, date and weather → Weather settings**.
 
-Sources include Breezy Weather, Open-Meteo, MET Norway, OpenWeather, and Yandex. Choose a city
+Sources include Breezy Weather, Open-Meteo, MET Norway, OpenWeather, Yandex, Gismeteo, and Custom server (Open-Meteo). Choose a city
 or coordinates, detect location with the required permission, refresh data, and
-configure temperature, forecasts, and weather warnings.
+configure the forecast. Units are in each profile’s **Object formats**;
+warnings are inserted as a token in its weather editor.
 
-Press OK or click the weather to open **Weather forecast**. Settings offer
+**Gismeteo is a test source. Do not use it in production.** It retrieves
+current weather and a forecast of up to seven days from the Gismeteo XML service without a key.
+
+For a custom server, enter a base HTTPS address such as
+`https://weather.example.test/home`. The launcher adds `/v1/forecast`.
+Enter the address manually or select **Import address from file** below the
+**Server HTTPS address** button. Choose a UTF-8 TXT file up to 4 KB containing
+a single base HTTPS address. A valid address is saved as soon as you select the file.
+The built-in browser opens in the same panel; cancellation or an error keeps
+the previous address.
+The server determines the location: city entry, coordinates, and location
+detection are hidden for this source. The launcher sends no `latitude` or
+`longitude`; the forecast uses the coordinates and time zone returned by the server.
+Selecting public Open-Meteo directly still requires a location.
+If the server requires authentication, enter a Bearer token and select **Check connection**.
+Below manual entry for the Bearer token, OpenWeather key, and Yandex API key,
+select **Import token from file**. Choose a UTF-8 TXT file up to 4 KB containing
+a single token or key. The built-in browser opens in the same panel.
+A valid value is saved after selecting the file; cancellation or an error keeps
+the previous secret. Manual entry still opens a masked field and saves with **OK**.
+Saving or importing a token/key does not check the connection. After changing it,
+select **Check connection** for a custom server or **Refresh weather** for another
+source. File reading, UTF-8 encoding, size, format, and value-saving errors are
+reported separately from weather server access errors.
+The token is stored on this TV and is tied to the address you entered. Enter it
+again after moving to another TV. During a temporary outage, the launcher shows
+the last available data from that server and when it was updated.
+
+Press OK or click the weather to open **Weather forecast**. **Widget settings** offer
 **3, 5, or 7 days**, including today (5 by default), and a choice of
 **Compact cards** with the date, icon and minimum/maximum temperatures or a
 **Detailed list** with conditions and precipitation probability. Units follow
 the panel's °C/°F setting. If the source returns fewer days, their number is
 shown; unavailable values use “—” and stale data is marked. The menu shows
-the location, source and update time. Cached forecasts retain their dates;
+the location, source and update time. If the source provides a feels-like
+temperature, the menu displays it in the selected °C/°F unit.
+Cached forecasts retain their dates;
 sources without time zone information are identified as using TV time.
+
+In the selected profile, open **Colors and effects → Weather icon set**, preview seven sets:
+Standard, Outline, Filled, Two-tone, Pixel, Geometric, and Circled.
+Geometric uses angular silhouettes; Circled places weather symbols inside a round frame.
+Outline icons are used by default. Your previously selected set is kept.
+The wallpaper set is independent; the forecast
+and quick settings use the top-panel set. The selected set is visible and focused
+as soon as the dialog opens; remote arrows scroll the list. **Weather text color** and
+**Weather icon color** can be set separately. Select **Match weather text** in
+the icon palette to inherit the weather text color.
+
+In **Object formats → Weather text format**, edit the selected profile’s entire
+template in one field. The title identifies the destination: **Top panel** or **On wallpaper**.
+Below it, the preview uses the same line limit as the selected destination.
+Type your own text with the keyboard
+or use the compact buttons below to insert tokens at the cursor. Buttons show
+short names without braces in a single row; they insert tokens with curly braces.
+A separate legend below the buttons keeps all token descriptions visible in two
+columns of six items, each token and its description on its own line.
+The expandable help at the bottom contains the detailed editing rules.
+The preview appears larger in a taller frame with small padding around its
+contents. The **Preview:** label is to its left, vertically centered.
+OK or pressing the field opens the keyboard;
+after dismissing it, arrow keys move focus between controls.
+The title, input field and preview stay above the keyboard when it opens;
+the preview becomes shorter.
+On insertion buttons, ◄ / ► select a function in the row, ▲ returns to the
+field, and ▼ goes straight to the reference in one press. Returning upward from
+the reference or downward from the field restores the last selected button.
+The cursor position and selection are preserved when moving to buttons, returning
+to the field and reopening the keyboard. A static insertion marker remains visible
+while the field is unfocused and follows the cursor after inserting a token.
+Save applies the template; Cancel or Back discards the draft.
+**Reset format**, next to Cancel, restores the default template with an icon,
+temperature and warning. Select **Save** to apply it; the temperature unit is kept.
+Choose °C/°F separately in **Object formats → Temperature unit**.
+
+Tokens are case-insensitive: `{TEMP}` is temperature, `{FEELS}` is feels-like temperature,
+`{MAX}` and `{MIN}` are today’s high and low, `{WARN}` is a warning,
+`{CITY}` is the city, `{COND}` is the weather description with an icon, `{DESC}` is
+the description without an icon, `{ICON}` is just the icon, `{WIND}` is wind,
+and `{HUM}` is humidity. `{BR}` inserts the single allowed line break; in a combined
+panel with the date, it appears as a space while staying saved in the template.
+A regular keyboard line break also works. Russian token aliases are supported too. For example:
+
+```text
+My weather: {TEMP} / {MAX} / {MIN} ({WARN}){BR}{CITY} {COND}
+```
+
+Parentheses around a single value, such as `({WARN})`, disappear with that value
+when its data is unavailable. Use `{{` and `}}` for literal curly braces.
+An unknown token or extra line break is highlighted in red, with the reason below
+the field. Saving becomes available after fixing the error.
+Templates allow up to 2048 characters and 64 elements,
+and must include at least one weather token.
 
 All selected forecast days fit in one window without scrolling. The detailed list
 uses compact rows and two columns when space permits. The combined window gives
@@ -1026,12 +1206,40 @@ is safe on your firmware. Choose lists for your model and save the original stat
 
 ## Choosing files and folders
 
-All file, folder, and document-save actions follow the same rule: if no suitable
-system handler is available, the built-in browser opens directly. If a handler
-exists, you can choose the system picker or the built-in browser.
+In **Advanced → File manager**, choose the preferred method for all file, folder,
+and document-save actions:
+
+- **Ask every time** — the default: when an external picker is available, choose
+  between the system picker and the built-in browser.
+- **Built-in** — open the CuteLauncher browser directly.
+- **External** — open a compatible system or installed picker directly.
+
+If no compatible external handler is available, or it becomes unavailable before
+launch, the built-in browser opens. Cancelling the external picker ends selection.
+The preference persists between launches and is included in backups and synchronization.
+
+**Advanced → Built-in file browser** provides:
+
+- a starting folder: TV storage, Downloads, or the last opened folder;
+- sorting by name, modification date, or size, in ascending or descending order;
+- keeping folders at the top;
+- showing hidden files and folders;
+- showing file sizes and dates.
+
+By default, the last folder for that action opens, names are sorted in ascending
+order, folders come first, hidden items are excluded, and sizes and dates are shown.
+An already selected folder takes priority over the starting folder. The original
+folder is remembered separately for the wallpaper, day and night images, and each
+application's banner when selected in the built-in browser. Select an older image
+again if its original folder was not saved. Cancelling keeps the selected file or
+folder unchanged but remembers the last visited folder. If a folder was removed
+or a drive disconnected, TV storage or the selected Downloads folder opens;
+unavailable Downloads falls back to TV storage. Folder history stays on this TV,
+while browser options are included in backups and synchronization.
+
 The built-in browser shows folders and matching files only: JSON for settings
 imports, TXT/JSON for links and cleaner lists, images for banners and icons,
-and images or videos for wallpapers. Each file shows its size and one available
+and images or videos for wallpapers. When details are enabled, each file shows its size and one available
 date, either creation or modification. Missing details are shown as “Unavailable”.
 
 The built-in browser shows the current path at the top. The up-arrow button

@@ -1,3 +1,5 @@
+import 'settings_section.dart';
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -133,44 +135,59 @@ class _LandscapePageState extends State<LandscapePage>
         child: ListView(
           children: [
             if (screenshotBuild) const ScreenshotSceneControls(),
-            FocusableSettingsTile(
-              title: Text(l.landscapeDemoStart),
-              leading: const Icon(Icons.play_arrow),
-              onPressed: _toggle,
+            SettingsSection(
+              title: l.settingsGroupScene,
+              children: [
+                SettingsChoiceTile<String>(
+                  autofocus: true,
+                  title: l.landscapeVariant,
+                  value: config.variant,
+                  options: const ['illustrated', 'realistic'],
+                  label: (v) => v == 'realistic'
+                      ? l.landscapeRealistic
+                      : l.landscapeIllustrated,
+                  onChanged: (v) => settings.setLandscape(
+                    settings.landscape.withValue('variant', v),
+                  ),
+                ),
+                effect(l.landscapeTimeOfDay, 'timeOfDay'),
+                effect(l.landscapeSeasons, 'seasons'),
+                SettingsChoiceTile<String>(
+                  title: l.landscapeHemisphere,
+                  value: config.hemisphere,
+                  options: const ['auto', 'north', 'south'],
+                  label: (v) => switch (v) {
+                    'north' => l.landscapeNorth,
+                    'south' => l.landscapeSouth,
+                    _ => l.landscapeAuto,
+                  },
+                  onChanged: (v) => settings.setLandscape(
+                    settings.landscape.withValue('hemisphere', v),
+                  ),
+                ),
+              ],
             ),
-            SettingsChoiceTile<String>(
-              autofocus: true,
-              title: l.landscapeVariant,
-              value: config.variant,
-              options: const ['illustrated', 'realistic'],
-              label: (v) => v == 'realistic'
-                  ? l.landscapeRealistic
-                  : l.landscapeIllustrated,
-              onChanged: (v) => settings.setLandscape(
-                settings.landscape.withValue('variant', v),
-              ),
+            SettingsSection(
+              title: l.settingsGroupSky,
+              children: [
+                effect(l.landscapeCelestialBodies, 'celestialBodies'),
+                effect(l.landscapeStarRotation, 'starRotation'),
+                effect(l.landscapeClouds, 'clouds'),
+                effect(l.landscapePrecipitation, 'precipitation'),
+                effect(l.landscapeFog, 'fog'),
+              ],
             ),
-            effect(l.landscapeTimeOfDay, 'timeOfDay'),
-            effect(l.landscapeCelestialBodies, 'celestialBodies'),
-            effect(l.landscapeStarRotation, 'starRotation'),
-            effect(l.landscapeSeasons, 'seasons'),
-            SettingsChoiceTile<String>(
-              title: l.landscapeHemisphere,
-              value: config.hemisphere,
-              options: const ['auto', 'north', 'south'],
-              label: (v) => switch (v) {
-                'north' => l.landscapeNorth,
-                'south' => l.landscapeSouth,
-                _ => l.landscapeAuto,
-              },
-              onChanged: (v) => settings.setLandscape(
-                settings.landscape.withValue('hemisphere', v),
-              ),
+            SettingsSection(
+              title: l.settingsGroupAnimation,
+              children: [
+                effect(l.landscapeMotion, 'motion'),
+                FocusableSettingsTile(
+                  title: Text(l.landscapeDemoStart),
+                  leading: const Icon(Icons.play_arrow),
+                  onPressed: _toggle,
+                ),
+              ],
             ),
-            effect(l.landscapeClouds, 'clouds'),
-            effect(l.landscapePrecipitation, 'precipitation'),
-            effect(l.landscapeFog, 'fog'),
-            effect(l.landscapeMotion, 'motion'),
             SettingsHelp(title: l.adaptiveLandscape, text: l.landscapeHelp),
             ResetStyleTile(
               onReset: () =>

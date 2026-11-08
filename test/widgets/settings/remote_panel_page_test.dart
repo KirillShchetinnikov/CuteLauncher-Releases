@@ -35,6 +35,8 @@ void main() {
         });
         final prefs = await SharedPreferences.getInstance();
         final panel = RemotePanelService(prefs);
+        final savedOrder = RemotePanelService.ids.reversed.toList();
+        await panel.setPanelOrder(savedOrder, const []);
         await panel.show('network', false);
         final settings = SettingsService(prefs);
         final appearance = AppearanceService(prefs);
@@ -118,6 +120,8 @@ void main() {
         await tester.pumpAndSettle();
         page = find.byType(RemotePanelObjectsPage);
         expect(page, findsOneWidget);
+        expect(panel.layout.left, savedOrder);
+        expect(panel.layout.right, isEmpty);
         expect(find.descendant(of: page, matching: find.byType(FocusableSettingsTile)), findsNWidgets(RemotePanelService.ids.length + 1));
         expect(find.text(l.volumeWidgetSettings), findsOneWidget);
         expect(find.text(l.informationSettings), findsNothing);

@@ -1,3 +1,4 @@
+import 'settings_section.dart';
 import 'settings_help.dart';
 import 'volume_widget_settings_page.dart';
 import '../../providers/remote_panel_service.dart';
@@ -121,27 +122,47 @@ class RemotePanelObjectsPage extends StatelessWidget {
       title: Text(l.topPanelObjects),
       child: ListView(
         children: [
-          for (final id in panel.order.where((id) => !const ['network', 'vpn', 'networkSpeed', 'traffic'].contains(id))) ...[
-            RoundedSwitchListTile(
-              key: ValueKey(id),
-              title: Text(labels[id]!),
-              enabled: available(id),
-              value: available(id) && panel.visible(id),
-              onChanged: (value) => panel.show(id, value),
+          for (final group in <(String, List<String>)>[
+            (l.informationGroup, const ['time', 'date', 'weather']),
+            (
+              l.networkSummary,
+              const ['network', 'nas', 'vpn', 'networkSpeed', 'traffic'],
             ),
-            if (id == 'audio')
-              FocusableSettingsTile(
-                title: Text(l.volumeWidgetSettings),
-                leading: const Icon(Icons.volume_up_outlined),
-                onPressed: () => Navigator.of(context).pushNamed(VolumeWidgetSettingsPage.routeName),
-              ),
-          ],
-          Padding(padding: const EdgeInsets.all(12), child: Text(l.networkSummary,
-            style: Theme.of(context).textTheme.titleSmall)),
-          for (final id in const ['network', 'vpn', 'networkSpeed', 'traffic'])
-            RoundedSwitchListTile(key: ValueKey(id), title: Text(labels[id]!),
-              enabled: available(id), value: available(id) && panel.visible(id),
-              onChanged: (value) => panel.show(id, value)),
+            (l.soundAndInputsGroup, const ['audio', 'usb', 'inputs']),
+            (
+              l.settingsGroupSystemCommands,
+              const [
+                'settings',
+                'systemSettings',
+                'system',
+                'notifications',
+                'sleepTimer',
+                'nightMode',
+              ],
+            ),
+          ])
+            SettingsSection(
+              title: group.$1,
+              children: [
+                for (final id in group.$2) ...[
+                  RoundedSwitchListTile(
+                    key: ValueKey(id),
+                    title: Text(labels[id]!),
+                    enabled: available(id),
+                    value: available(id) && panel.visible(id),
+                    onChanged: (value) => panel.show(id, value),
+                  ),
+                  if (id == 'audio')
+                    FocusableSettingsTile(
+                      title: Text(l.volumeWidgetSettings),
+                      leading: const Icon(Icons.volume_up_outlined),
+                      onPressed: () =>
+                          Navigator.of(context)
+                              .pushNamed(VolumeWidgetSettingsPage.routeName),
+                    ),
+                ],
+              ],
+            ),
         ],
       ),
     );

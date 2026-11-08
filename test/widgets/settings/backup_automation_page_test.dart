@@ -361,7 +361,7 @@ void main() {
         await tester.tap(
           find
               .descendant(
-                of: find.byType(SimpleDialog),
+                of: find.byType(AlertDialog),
                 matching: find.byType(FocusableSettingsTile),
               )
               .first,
@@ -383,7 +383,11 @@ void main() {
         expect(find.text(l.backupFrequency), findsNothing);
         await activate(l.backupSyncSettings);
         expect(find.byType(BackupSyncGroupsPage), findsOneWidget);
-        final firstHeading = find.byKey(const ValueKey(BackupSyncSection.home));
+        final firstHeading = find.descendant(
+          of: find.byKey(const ValueKey(BackupSyncSection.home)),
+          matching: find.byWidgetPredicate(
+            (widget) => widget is Semantics && widget.properties.header == true),
+        );
         expect(firstHeading, findsOneWidget);
         expect(
           find.descendant(of: firstHeading, matching: find.byType(Focus)),

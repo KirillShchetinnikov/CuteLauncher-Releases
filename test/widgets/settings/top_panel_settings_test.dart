@@ -22,6 +22,7 @@ import 'package:flauncher/widgets/launcher_dialog.dart';
 import 'package:flauncher/tv_inputs_configuration.dart';
 import 'package:flauncher/widgets/settings/night_mode_page.dart';
 import 'package:flauncher/widgets/settings/inputs_settings_page.dart';
+import 'package:flauncher/widgets/settings/settings_help.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
@@ -292,7 +293,10 @@ void main() {
         await tester.pumpAndSettle();
         expect(find.byType(InformationSettingsPage), findsOneWidget);
         expect(FocusManager.instance.primaryFocus, focus);
-        final formats = find.text(l.informationData);
+        await tester.ensureVisible(find.text(l.informationPanelAppearance));
+        await tester.tap(find.text(l.informationPanelAppearance));
+        await tester.pumpAndSettle();
+        final formats = find.text(l.informationComposition);
         await tester.ensureVisible(formats);
         await tester.tap(formats);
         await tester.pumpAndSettle();
@@ -685,14 +689,28 @@ void main() {
     },
   );
 
-  testWidgets('missing inputs explain hidden icon without changing saved preference', (tester) async {
+  testWidgets('missing inputs help starts collapsed without changing saved preference', (tester) async {
     when(inputs.initialized).thenReturn(true);
     await pump(tester, const SettingsPanel(initialRoute: StatusBarObjectsPage.routeName));
     final l = AppLocalizations.of(tester.element(find.byType(StatusBarObjectsPage)))!;
     expect(find.text(l.inputsUnavailableHint), findsNothing);
-    await tester.scrollUntilVisible(find.text(l.inputsUnavailableHint), 180,
+    final help = find.byWidgetPredicate(
+      (widget) => widget is SettingsHelp && widget.text == l.inputsUnavailableHint,
+    );
+    await tester.scrollUntilVisible(help, 180,
         scrollable: find.byType(Scrollable).last);
+    expect(find.text(l.inputsUnavailableHint), findsNothing);
+    final helpHeader = find.descendant(
+      of: help, matching: find.byType(FocusableSettingsTile),
+    );
+    tester.widget<FocusableSettingsTile>(helpHeader).focusNode!.requestFocus();
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
     expect(find.text(l.inputsUnavailableHint), findsOneWidget);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(find.text(l.inputsUnavailableHint), findsNothing);
     expect(settings.showInputsWidgetInStatusBar, isTrue);
     final toggle = find.widgetWithText(RoundedSwitchListTile, l.inputs);
     expect(tester.widget<RoundedSwitchListTile>(toggle).value, isTrue);
@@ -708,6 +726,7 @@ void main() {
     await tester.scrollUntilVisible(find.widgetWithText(RoundedSwitchListTile, l.inputs), 180,
         scrollable: find.descendant(of: find.byType(StatusBarObjectsPage), matching: find.byType(Scrollable)).first);
     expect(find.text(l.inputsUnavailableHint), findsNothing);
+    expect(help, findsNothing);
     expect(tester.widget<RoundedSwitchListTile>(find.widgetWithText(RoundedSwitchListTile, l.inputs)).enabled, isTrue);
     expect(settings.showInputsWidgetInStatusBar, isTrue);
   });
@@ -849,7 +868,7 @@ void main() {
         of: find.byType(SidePanelDialog), matching: find.byType(Material),
       ).first;
       final rect = tester.getRect(surface);
-      expect(rect.left, (anchorLeft + 24 - rect.width / 2).clamp(16, 960 - rect.width - 16));
+      expect(rect.left, (anchorLeft + 24 - rect.width / 2).clamp(28, 960 - rect.width - 28));
       expect(rect.top, 64);
       expect(rect.bottom, lessThanOrEqualTo(528));
       if (count == 1) {
@@ -871,8 +890,9 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(InformationSettingsPage), findsOneWidget);
     expect(find.byType(InformationVisibility), findsOneWidget);
-    await tester.scrollUntilVisible(find.text('Форматы и данные'), 100);
-    await tester.tap(find.text('Форматы и данные'));
+    await tester.tap(find.text('Оформление в панели'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Формат объектов'));
     await tester.pumpAndSettle();
     expect(find.byType(InformationDataSettingsPage), findsOneWidget);
     expect(find.text('Настройки погоды'), findsNothing);
@@ -891,7 +911,7 @@ void main() {
       const SizedBox(height: kToolbarHeight, child: FocusAwareAppBar()),
       SizedBox(height: kToolbarHeight, child: FocusAwareAppBar(remotePanel: panel)),
     ])));
-    await appearance.set('panelInformationStyle', {'font': 'serif', 'size': 20});
+    await appearance.set('panelInformationStyle', {'inheritPanelTypography': false, 'font': 'serif', 'size': 20});
     await tester.pumpAndSettle();
     final clocks = tester.widgetList<PanelClock>(find.byType(PanelClock));
     expect(clocks.length, 2);
@@ -911,9 +931,14 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('Оформление в панели'));
     await tester.pumpAndSettle();
+    await tester.tap(find.text('Шрифт и цифры'));
+    await tester.pumpAndSettle();
     expect(find.byType(PanelClockStylePage), findsOneWidget);
     expect(tester.getTopLeft(find.byType(PanelClockStylePage)).dy, greaterThan(kToolbarHeight));
     await Navigator.of(tester.element(find.byType(PanelClockStylePage))).maybePop();
+    await tester.pumpAndSettle();
+    expect(find.byType(PanelInformationSettingsPage), findsOneWidget);
+    await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
     expect(find.byType(InformationSettingsPage), findsOneWidget);
     expect(tester.takeException(), isNull);
@@ -1096,7 +1121,7 @@ void main() {
       await pump(tester, const SettingsPanel(initialRoute: 'panel_appearance'));
       expect(find.text('Стиль верхней панели'), findsNothing);
       expect(find.text('Поменять местами левую и правую стороны'), findsNothing);
-      expect(find.text('Фон панели'), findsOneWidget);
+      expect(find.widgetWithText(FocusableSettingsTile, 'Фон панели'), findsOneWidget);
       expect(find.byType(PanelAppearanceSurface), findsNothing);
       expect(appearance.appearance.panelTextSize, 22);
       expect(appearance.appearance.blurPanel, isTrue);
@@ -1126,15 +1151,24 @@ void main() {
         await pump(tester, SettingsPanel(initialRoute:
           target.startsWith('clock') ? PanelClockStylePage.routeName : 'panel_appearance'), largeText: true);
         final l = AppLocalizations.of(tester.element(find.byType(SettingsPanel)))!;
+        if (target.startsWith('clock')) {
+          await tester.tap(find.text(target == 'clockColor' ? l.informationColors : l.informationTypography));
+          await tester.pumpAndSettle();
+          if (target != 'clockColor') {
+            await tester.tap(find.text(l.informationInheritPanelTypography));
+            await tester.pumpAndSettle();
+          }
+        }
         final title = switch (target) {
           'font' || 'clockFont' => l.panelFont,
           'panelColor' => l.panelBackground,
           'textBackground' => l.panelTextBackgroundColor,
           'textColor' => l.panelTextColor,
-          'clockColor' => l.styleTextColor,
+          'clockColor' => l.clockTextColor,
           _ => l.clockPreset,
         };
-        final opener = find.text(title);
+        final opener = find.descendant(
+          of: find.byType(FocusableSettingsTile), matching: find.text(title));
         await tester.scrollUntilVisible(opener, 180);
         await tester.ensureVisible(opener);
         await tester.pumpAndSettle();
@@ -1143,6 +1177,23 @@ void main() {
         final focus = FocusManager.instance.primaryFocus;
         await tester.sendKeyEvent(LogicalKeyboardKey.enter);
         await tester.pumpAndSettle();
+        if (['font', 'clockFont', 'clockPreset'].contains(target)) {
+          await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+          await tester.pumpAndSettle();
+          expect(find.byType(AlertDialog), findsNothing);
+          expect(FocusManager.instance.primaryFocus, focus);
+          final saved = appearance.appearance;
+          if (target == 'font') {
+            expect(saved.panelFont, 'serif');
+          } else if (target == 'clockFont') {
+            expect(saved.informationStyle.values['font'], 'serif');
+          } else {
+            expect(saved.informationStyle.values['italic'], isTrue);
+          }
+          expect(tester.takeException(), isNull);
+          await tester.pumpWidget(const SizedBox());
+          return;
+        }
         final dialog = find.byType(Dialog).last;
         final surface = find.descendant(of: dialog, matching: find.byWidgetPredicate(
           (widget) => widget is Material && widget.type == MaterialType.card)).first;

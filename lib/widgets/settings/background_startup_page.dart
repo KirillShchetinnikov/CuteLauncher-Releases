@@ -1,3 +1,6 @@
+import 'settings_information.dart';
+import 'settings_checkbox_tile.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -84,21 +87,31 @@ class _BackgroundStartupPageState extends State<BackgroundStartupPage>
           if (index == 1) {
             return Column(
               children: [
-                if (_failed) Text(l.backgroundStartupFailed),
+                if (_failed)
+                  SettingsMessage(
+                    text: l.backgroundStartupFailed,
+                    kind: SettingsMessageKind.error,
+                  ),
                 if (_failed)
                   FocusableSettingsTile(
                     title: Text(l.backgroundStartupRetry),
                     onPressed: _loading || _saving ? null : _load,
                   ),
                 if (!_loading && !_failed && _apps.isEmpty)
-                  Text(l.backgroundStartupEmpty),
+                  SettingsEmptyState(
+                    text: l.backgroundStartupEmpty,
+                    icon: Icons.apps_outlined,
+                  ),
               ],
             );
           }
           if (index == _apps.length + 2) {
             // Let the common page focus the first app after initial loading.
             if (_loading && _apps.isEmpty) return const SizedBox.shrink();
-            return SettingsHelp(title: l.backgroundStartupTitle, text: l.backgroundStartupHelp);
+            return SettingsHelp(
+              title: l.backgroundStartupTitle,
+              text: l.backgroundStartupHelp,
+            );
           }
           final app = _apps[index - 2];
           final package = app['packageName'] as String;
@@ -110,28 +123,23 @@ class _BackgroundStartupPageState extends State<BackgroundStartupPage>
               : _service.outcome(package) == 'requested'
               ? l.backgroundStartupRequested
               : null;
-          return Semantics(
-            checked: selected,
-            child: FocusableSettingsTile(
-              key: ValueKey(package),
-              leading: context.read<AppsService?>() != null
-                  ? ApplicationListIcon(packageName: package)
-                  : const Icon(Icons.android, size: 32),
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(app['name'] as String),
-                  if (status != null)
-                    Text(status, style: Theme.of(context).textTheme.bodySmall),
-                ],
-              ),
-              trailing: Icon(
-                selected ? Icons.check_box : Icons.check_box_outline_blank,
-              ),
-              enabled: available || selected,
-              // Keep focus during short saves; the guard prevents duplicate commands.
-              onPressed: () => _toggle(package),
+          return SettingsCheckboxTile(
+            value: selected,
+            key: ValueKey(package),
+            leading: context.read<AppsService?>() != null
+                ? ApplicationListIcon(packageName: package)
+                : const Icon(Icons.android, size: 32),
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(app['name'] as String),
+                if (status != null)
+                  Text(status, style: Theme.of(context).textTheme.bodySmall),
+              ],
             ),
+            enabled: available || selected,
+            // Keep focus during short saves; the guard prevents duplicate commands.
+            onChanged: (_) => _toggle(package),
           );
         },
       ),

@@ -10,6 +10,61 @@ class AppLocalizationsTr extends AppLocalizations {
   AppLocalizationsTr([String locale = 'tr']) : super(locale);
 
   @override
+  String get weatherTextResetFormat => 'Biçimi sıfırla';
+
+  @override
+  String get settingsReportFile => 'Rapor dosyası';
+
+  @override
+  String get homeVisibleRowsLabel => 'Tamamen görünür satırlar';
+
+  @override
+  String get watchNextEmpty => 'Henüz izlemeye devam etme kartı yok';
+
+  @override
+  String get inputsUnavailableStatus => 'Kullanılabilir giriş yok';
+
+  @override
+  String get remoteButtonsNoEvents => 'Henüz olay yok';
+
+  @override
+  String get informationBackgroundVerticalOffset => 'Dikey kaydırma';
+
+  @override
+  String get informationResetPositionSize =>
+      'Bu ekrandaki tüm ayarları sıfırla';
+
+  @override
+  String get weatherIconsGeometric => 'Geometrik';
+
+  @override
+  String get weatherIconsCircled => 'Daire içinde';
+
+  @override
+  String get informationCommonAppearance => 'Ortak ayarlar';
+
+  @override
+  String get informationTimeFormat => 'Saat biçimi';
+
+  @override
+  String get informationDateFormat => 'Tarih biçimi';
+
+  @override
+  String get informationInheritPanelTypography => 'Üst panel görünümünü devral';
+
+  @override
+  String get informationResetTypography => 'Ayarları sıfırla';
+
+  @override
+  String get alignSectionTitles => 'Bölüm başlıklarını kutucuklarla hizala';
+
+  @override
+  String get homeAppName => 'Ana ekrandaki uygulama adı';
+
+  @override
+  String get restoreSystemAppName => 'Sistem adını geri yükle';
+
+  @override
   String get settingsScrollbar => 'Kaydırma çubuğu';
 
   @override
@@ -3814,6 +3869,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get interfaceStandard => 'Standard';
 
   @override
+  String get interfaceCalm => 'Sade';
+
+  @override
   String get interfaceGlass => 'Glass';
 
   @override
@@ -4552,6 +4610,71 @@ class AppLocalizationsTr extends AppLocalizations {
   String get informationShowBoth => 'Hava durumu ve takvim';
 
   @override
+  String get weatherTextFormat => 'Hava durumu metin biçimi';
+
+  @override
+  String get weatherTextTemperature => 'Sıcaklık';
+
+  @override
+  String get weatherTextApparent => 'Hissedilen sıcaklık';
+
+  @override
+  String get weatherTextConditions => 'Hava durumu';
+
+  @override
+  String get weatherTextHumidity => 'Nem';
+
+  @override
+  String get weatherTextLow => 'Bugünün en düşüğü';
+
+  @override
+  String get weatherTextHigh => 'Bugünün en yükseği';
+
+  @override
+  String get weatherTextLiteral => 'Özel metin';
+
+  @override
+  String get weatherTextNewline => 'Satır sonu';
+
+  @override
+  String get weatherTextBefore => 'Bloğun önünde';
+
+  @override
+  String get weatherTextAfter => 'Bloğun arkasında';
+
+  @override
+  String get weatherTextYourFormat => 'Biçiminiz';
+
+  @override
+  String get weatherTextAdd => 'Blok ekle';
+
+  @override
+  String get weatherTextMoveEarlier => 'Daha önceye taşı';
+
+  @override
+  String get weatherTextMoveLater => 'Daha sonraya taşı';
+
+  @override
+  String get weatherTextHelp =>
+      'Metninizi ve kodları süslü parantezler içinde yazın veya düğmelerle imlece ekleyin. Büyük ve küçük harf ayrımı yoktur. Bir değeri çevreleyen normal parantezler veri yoksa gizlenir. Düz metin süslü parantezlerini çift yazın. Bir satır sonuna izin verilir.';
+
+  @override
+  String get weatherTextSaveError => 'Hava durumu metin biçimi kaydedilemedi.';
+
+  @override
+  String get weatherTextSampleCity => 'İstanbul';
+
+  @override
+  String weatherTextMetersPerSecond(String speed) {
+    return '$speed m/sn';
+  }
+
+  @override
+  String weatherFeelsLike(String temperature) {
+    return 'Hissedilen $temperature';
+  }
+
+  @override
   String get weatherForecastTitle => 'Hava tahmini';
 
   @override
@@ -4844,7 +4967,16 @@ class AppLocalizationsTr extends AppLocalizations {
   String get informationOnBackground => 'Duvar kâğıdında';
 
   @override
-  String get informationBackgroundAlignment => 'Duvar kâğıdı hizalaması';
+  String get informationBackgroundPosition => 'Blok konumu';
+
+  @override
+  String get informationBackgroundOffset => 'Yatay kaydırma';
+
+  @override
+  String get informationBackgroundResetOffset => 'Kaydırmayı sıfırla';
+
+  @override
+  String get informationBackgroundContentAlignment => 'Blok içi hizalama';
 
   @override
   String get informationBackgroundHelp =>
@@ -5147,4 +5279,362 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get appProcessStopped => 'Çalışmıyor';
+
+  @override
+  String get weatherCustomServer => 'Özel sunucu (Open-Meteo)';
+
+  @override
+  String get widgetSettings => 'Widget ayarları';
+
+  @override
+  String get weatherServerUrlImport => 'Dosyadan adres içe aktar';
+
+  @override
+  String get weatherServerUrlImportError =>
+      'İçe aktarma başarısız: Yalnızca sunucunun temel HTTPS adresini içeren, en fazla 4 KB boyutunda bir UTF-8 metin dosyası seçin.';
+
+  @override
+  String get weatherImportReadError =>
+      'İçe aktarılacak dosya okunamadı. Dosya erişimini kontrol edin.';
+
+  @override
+  String get weatherImportEncodingError =>
+      'İçe aktarma başarısız: dosya UTF-8 değil.';
+
+  @override
+  String get weatherImportTooLargeError =>
+      'İçe aktarma başarısız: dosya 4 KB sınırını aşıyor.';
+
+  @override
+  String get weatherImportSaveError =>
+      'Değer kaydedilemedi. Yeniden girin veya içe aktarın.';
+
+  @override
+  String get weatherTokenInvalid => 'Geçersiz belirteç biçimi.';
+
+  @override
+  String get weatherServerUrl => 'Sunucu HTTPS adresi';
+
+  @override
+  String get weatherServerUrlHint =>
+      '/v1/forecast, kimlik bilgileri, sorgu veya parça içermeyen bir temel HTTPS adresi girin.';
+
+  @override
+  String get weatherServerCoordinates => 'Koordinatları gir';
+
+  @override
+  String get weatherServerCoordinatesHint =>
+      'Enlem ve boylamı virgülle ayırın, ondalık işareti olarak nokta kullanın. Örnek: 50.0, 30.0.';
+
+  @override
+  String get weatherIconPack => 'Hava durumu simge seti';
+
+  @override
+  String get weatherIconsStandard => 'Standart';
+
+  @override
+  String get weatherIconsOutline => 'Çizgili';
+
+  @override
+  String get weatherIconsSolid => 'Dolgulu';
+
+  @override
+  String get weatherIconsDuotone => 'İki tonlu';
+
+  @override
+  String get weatherIconsPixel => 'Piksel';
+
+  @override
+  String get weatherTextColor => 'Hava durumu metin rengi';
+
+  @override
+  String get weatherIconColor => 'Hava durumu simge rengi';
+
+  @override
+  String get weatherIconFollowsText => 'Hava durumu metniyle aynı';
+
+  @override
+  String get informationDateColor => 'Tarih rengi';
+
+  @override
+  String get clockTextColor => 'Saat rengi';
+
+  @override
+  String get weatherServerToken => 'Bearer belirteci (isteğe bağlı)';
+
+  @override
+  String get weatherServerTokenImport => 'Belirteci dosyadan içe aktar';
+
+  @override
+  String get weatherServerTokenImportError =>
+      'İçe aktarma başarısız: Yalnızca belirteci içeren, en fazla 4 KB boyutunda bir UTF-8 metin dosyası seçin.';
+
+  @override
+  String get weatherCheckConnection => 'Bağlantıyı denetle';
+
+  @override
+  String get weatherServerAccessError =>
+      'Sunucu erişimi reddetti. Belirteci ve sunucu izinlerini denetleyin.';
+
+  @override
+  String get weatherServerParametersError =>
+      'Sunucu istek parametrelerini veya koordinatları reddetti.';
+
+  @override
+  String get informationComposition => 'Nesne biçimi';
+
+  @override
+  String get informationLayout => 'Blok düzeni';
+
+  @override
+  String get informationPositionSize => 'Konum ve boyut';
+
+  @override
+  String get informationTypography => 'Yazı tipi ve rakamlar';
+
+  @override
+  String get informationColors => 'Renkler ve efektler';
+
+  @override
+  String get informationLayers => 'Arka plan katmanları';
+
+  @override
+  String get informationAvoidOverlap => 'Ayarlarla bloğun üzerini kapatma';
+
+  @override
+  String get weatherPresetBrief => 'Kısa';
+
+  @override
+  String get weatherPresetFeels => 'Hissedilen';
+
+  @override
+  String get weatherPresetDetails => 'Ayrıntılı';
+
+  @override
+  String get informationAvoidOverlapHelp =>
+      'Arka plan düzenlenirken ayarlar geçici olarak bloğu en az örten tarafa geçer. İki taraf da doluysa ayrı bir önizleme gösterilir. Çıkışta normal menü tarafına dönülür.';
+
+  @override
+  String get informationProfileHelp =>
+      'Panel ve arka planın biçimleri ve renkleri bağımsızdır. Hava durumu kaynağı ortaktır. Hızlı ayarlar ve tahmin üst panelin görünümünü kullanır; hızlı ayarların görünürlüğü ve gruplaması ayrı kalır.';
+
+  @override
+  String get weatherCompactLayout =>
+      'Hava durumu tarihle aynı bloktayken satır sonu boşluk olarak gösterilir. Kayıtlı biçim değişmez.';
+
+  @override
+  String get weatherFormatInvalid =>
+      'Bir hava durumu alanı ekleyin. En fazla 12 blok, bir satır sonu ve metin alanı başına 60 karakter kullanılabilir.';
+
+  @override
+  String get fileManagerPreference => 'Dosya yöneticisi';
+
+  @override
+  String get fileManagerAsk => 'Her seferinde sor';
+
+  @override
+  String get fileManagerBuiltIn => 'Yerleşik';
+
+  @override
+  String get fileManagerExternal => 'Harici';
+
+  @override
+  String get fileBrowserStartFolder => 'Başlangıç klasörü';
+
+  @override
+  String get fileBrowserStorage => 'TV depolaması';
+
+  @override
+  String get fileBrowserDownloads => 'İndirilenler';
+
+  @override
+  String get fileBrowserLastFolder => 'Son açılan klasör';
+
+  @override
+  String get fileBrowserSort => 'Sıralama ölçütü';
+
+  @override
+  String get fileBrowserSortName => 'Ad';
+
+  @override
+  String get fileBrowserSortDate => 'Değiştirilme tarihi';
+
+  @override
+  String get fileBrowserSortSize => 'Boyut';
+
+  @override
+  String get fileBrowserOrder => 'Sıralama düzeni';
+
+  @override
+  String get fileBrowserAscending => 'Artan';
+
+  @override
+  String get fileBrowserDescending => 'Azalan';
+
+  @override
+  String get fileBrowserFoldersFirst => 'Klasörler her zaman önce';
+
+  @override
+  String get fileBrowserShowHidden => 'Gizli dosya ve klasörleri göster';
+
+  @override
+  String get fileBrowserShowDetails => 'Boyut ve tarihi göster';
+
+  @override
+  String get fileBrowserOptionsHelp =>
+      'Önce seçili klasör veya seçilen resmin kaynak klasörü açılır. Son açılan klasör, iptalden sonra da her işlem için ayrı hatırlanır. Klasör kullanılamıyorsa TV depolaması veya İndirilenler açılır. Klasör geçmişi yalnızca bu TV’de tutulur.';
+
+  @override
+  String get fileBrowserSaveFailed =>
+      'Dosya tarayıcısı ayarları kaydedilemedi.';
+
+  @override
+  String get settingsSectionStyle => 'Grup görünümü';
+
+  @override
+  String get settingsSectionAccentBand => 'Vurgu şeridi';
+
+  @override
+  String get settingsSectionSurface => 'Ortak yüzey';
+
+  @override
+  String get panelTextAndButtonsGroup => 'Metin ve düğmeler';
+
+  @override
+  String get settingsGroupScene => 'Sahne';
+
+  @override
+  String get settingsGroupSky => 'Gökyüzü ve hava';
+
+  @override
+  String get settingsGroupAnimation => 'Animasyon ve önizleme';
+
+  @override
+  String get settingsGroupSource => 'Kaynak';
+
+  @override
+  String get settingsGroupImageChange => 'Görsel değişimi';
+
+  @override
+  String get settingsGroupBrightness => 'Parlaklık düzeyleri';
+
+  @override
+  String get settingsGroupDisplay => 'Görüntüleme';
+
+  @override
+  String get settingsGroupCredentials => 'Bağlantı bilgileri';
+
+  @override
+  String get settingsGroupClient => 'İstemci parametreleri';
+
+  @override
+  String get settingsGroupAccount => 'Hesap bağlantısı';
+
+  @override
+  String get settingsGroupIndicators => 'Göstergeler ve mesajlar';
+
+  @override
+  String get settingsGroupFocusShape => 'Odak görünümü';
+
+  @override
+  String get settingsGroupBorder => 'Kenarlık';
+
+  @override
+  String get settingsGroupMotion => 'Hareket';
+
+  @override
+  String get settingsGroupControl => 'Kontroller';
+
+  @override
+  String get settingsGroupPositionSize => 'Konum ve boyut';
+
+  @override
+  String get settingsGroupGroupsBackground => 'Gruplar ve arka plan';
+
+  @override
+  String get settingsGroupText => 'Metin';
+
+  @override
+  String get settingsGroupLayout => 'Yerleşim';
+
+  @override
+  String get settingsGroupHeadings => 'Başlıklar';
+
+  @override
+  String get settingsGroupLaunchTarget => 'Ne başlatılacak';
+
+  @override
+  String get settingsGroupLaunchTiming => 'Ne zaman başlatılacak';
+
+  @override
+  String get settingsGroupBlockPosition => 'Blok konumu';
+
+  @override
+  String get settingsGroupBlockContent => 'Blok içeriği';
+
+  @override
+  String get settingsGroupLayers => 'Görüntüleme katmanları';
+
+  @override
+  String get settingsGroupAccess => 'Erişim';
+
+  @override
+  String get settingsGroupContent => 'İçerik';
+
+  @override
+  String get settingsGroupSourcesLimits => 'Kaynaklar ve sınırlar';
+
+  @override
+  String get settingsGroupCards => 'Kartlar';
+
+  @override
+  String get settingsGroupStorage => 'Depolama';
+
+  @override
+  String get settingsGroupMode => 'Mod';
+
+  @override
+  String get settingsGroupExceptions => 'İstisnalar';
+
+  @override
+  String get settingsGroupCurrentAction => 'Geçerli işlem';
+
+  @override
+  String get settingsGroupHours => 'Çalışma saatleri';
+
+  @override
+  String get settingsGroupSourceAccess => 'Kaynak ve erişim';
+
+  @override
+  String get settingsGroupUpdate => 'Güncelleme';
+
+  @override
+  String get settingsGroupSystemCommands => 'Sistem ve komutlar';
+
+  @override
+  String get weatherTemplateWarning => 'Uyarı';
+
+  @override
+  String get weatherTemplateDescription => 'Simgesiz açıklama';
+
+  @override
+  String get weatherTemplateIcon => 'Simge';
+
+  @override
+  String get weatherTemplateBracesError =>
+      'Eşleşen süslü parantezleri kontrol edin. Normal metin için parantezi iki kez yazın.';
+
+  @override
+  String get weatherTemplateUnknownError => 'Bilinmeyen kod:';
+
+  @override
+  String get weatherTemplateBreakError =>
+      'Yalnızca bir satır sonuna izin verilir.';
+
+  @override
+  String get weatherTemplateValueError => 'En az bir hava durumu kodu ekleyin.';
+
+  @override
+  String get weatherTemplateLengthError =>
+      'Biçim çok uzun: en fazla 2048 karakter ve 64 öğe.';
 }

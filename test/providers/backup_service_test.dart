@@ -72,6 +72,46 @@ void main() {
     expect(restored.tilesFor(categoryId + 1).iconImageMode.name, 'cover');
   });
 
+  test('backup restores a custom app name and accepts old rows without it', () async {
+    await database.insertCategory(CategoriesCompanion.insert(name: 'Apps', order: 0));
+    await database.persistApps([
+      AppsCompanion.insert(
+        packageName: 'sample.app',
+        name: 'System name',
+        version: '1',
+        customName: const Value('My app'),
+      ),
+    ]);
+    final archive = File(await backupService.exportBackup());
+    await database.deleteApps(['sample.app']);
+    await backupService.importBackup(archive);
+    expect((await database.getApplications()).single.name, 'System name');
+    expect((await database.getApplications()).single.displayName, 'My app');
+
+    final data = jsonDecode(await archive.readAsString()) as Map<String, dynamic>;
+    (data['apps'] as List).single.remove('customName');
+    await archive.writeAsString(jsonEncode(data));
+    await backupService.importBackup(archive);
+    expect((await database.getApplications()).single.displayName, 'System name');
+  });
+
+  test('backup round trip restores wallpaper block position, offset and alignment', () async {
+    await database.insertCategory(CategoriesCompanion.insert(name: 'Apps', order: 0));
+    final appearance = AppearanceService(sharedPreferences);
+    addTearDown(appearance.dispose);
+    await appearance.set('panelBackgroundInformationAlignment', 'right');
+    await appearance.set('panelBackgroundInformationContentAlignment', 'left');
+    await appearance.set('panelBackgroundInformationOffset', -35);
+    final archive = File(await backupService.exportBackup());
+    await appearance.reset();
+    await backupService.importBackup(archive);
+
+    final restored = appearance.appearance;
+    expect(restored.backgroundInformationPosition, 'right');
+    expect(restored.backgroundInformationAlignment, 'left');
+    expect(restored.backgroundInformationOffset, -35);
+  });
+
   test('old backup on a new profile restores legacy omissions without losing user edits', () async {
     await initializeSettingsProfile(sharedPreferences, tempDir, () => database);
     final appearance = AppearanceService(sharedPreferences);

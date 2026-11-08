@@ -26,6 +26,8 @@ void validateBackup(Map<String, dynamic> data) {
     require(row['packageName'] is String && (row['packageName'] as String).isNotEmpty &&
       row['name'] is String && row['version'] is String && row['hidden'] is bool &&
       (row['lastLaunchedAt'] == null || row['lastLaunchedAt'] is int));
+    final customName = row['customName'];
+    require(customName == null || (customName is String && customName.trim().isNotEmpty));
     if (row['lastLaunchedAt'] != null) DateTime.fromMillisecondsSinceEpoch(row['lastLaunchedAt'] as int);
     require(packages.add(row['packageName'] as String));
   }

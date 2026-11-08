@@ -1,3 +1,4 @@
+import 'settings_section.dart';
 import 'traffic_settings_page.dart';
 import 'volume_widget_settings_page.dart';
 import 'network_speed_settings_page.dart';
@@ -39,6 +40,7 @@ import '../storage_status_watch.dart';
 import 'focusable_settings_tile.dart';
 import 'panel_order_page.dart';
 import 'notifications_settings_page.dart';
+import 'settings_help.dart';
 
 class StatusBarObjectsPage extends StatelessWidget {
   static const routeName = 'status_bar_objects';
@@ -60,11 +62,7 @@ class StatusBarObjectsPage extends StatelessWidget {
       child: ListView(
         children: [
           const InformationObjectsSection(),
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Text(l.networkSummary,
-                style: Theme.of(context).textTheme.titleSmall),
-          ),
+          SettingsSection(title: l.networkSummary, children: [
           RoundedSwitchListTile(
             autofocus: false,
             value: s.showNetworkIndicatorInStatusBar,
@@ -94,11 +92,8 @@ class StatusBarObjectsPage extends StatelessWidget {
           ),
           FocusableSettingsTile(title: Text(l.trafficSettings), leading: const Icon(Icons.data_usage),
             onPressed: () => Navigator.of(context).pushNamed(TrafficSettingsPage.routeName)),
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Text(l.soundAndInputsGroup,
-                style: Theme.of(context).textTheme.titleSmall),
-          ),
+          ]),
+          SettingsSection(title: l.soundAndInputsGroup, children: [
           RoundedSwitchListTile(
             value: s.showVolumeInStatusBar,
             onChanged: s.setShowVolumeInStatusBar,
@@ -120,15 +115,13 @@ class StatusBarObjectsPage extends StatelessWidget {
             title: Text(l.inputs),
           ),
           if (inputs?.initialized == true && !inputs!.hasInputs)
-            Text(l.inputsUnavailableHint),
+            SettingsHelp(title: l.inputs, text: l.inputsUnavailableHint),
           FocusableSettingsTile(title: Text(l.inputsSettings),
+            leading: const Icon(Icons.settings_input_hdmi),
             enabled: inputs?.hasInputs == true,
             onPressed: () => Navigator.of(context).pushNamed(InputsSettingsPage.routeName)),
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Text(l.notifications,
-                style: Theme.of(context).textTheme.titleSmall),
-          ),
+          ]),
+          SettingsSection(title: l.notifications, children: [
           RoundedSwitchListTile(
             autofocus: false,
             value: s.showNotificationsWidgetInStatusBar,
@@ -141,20 +134,14 @@ class StatusBarObjectsPage extends StatelessWidget {
             onPressed: () => Navigator.of(context)
                 .pushNamed(NotificationsSettingsPage.routeName),
           ),
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Text(l.system,
-                style: Theme.of(context).textTheme.titleSmall),
-          ),
+          ]),
+          SettingsSection(title: l.system, children: [
           RoundedSwitchListTile(title: Text(l.system), value: s.showSystemInStatusBar,
             onChanged: s.setShowSystemInStatusBar),
           FocusableSettingsTile(title: Text(l.systemWidgetSettings), leading: const Icon(Icons.monitor_heart_outlined),
             onPressed: () => Navigator.of(context).pushNamed(SystemWidgetSettingsPage.routeName)),
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Text(l.timerAndNightModeGroup,
-                style: Theme.of(context).textTheme.titleSmall),
-          ),
+          ]),
+          SettingsSection(title: l.timerAndNightModeGroup, children: [
           RoundedSwitchListTile(
             value: s.showSleepTimerInStatusBar,
             onChanged: s.setShowSleepTimerInStatusBar,
@@ -167,11 +154,8 @@ class StatusBarObjectsPage extends StatelessWidget {
             onChanged: s.setShowNightModeInStatusBar,
             title: Text(l.nightModeTitle),
           ),
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Text(l.systemSettingsGroup,
-                style: Theme.of(context).textTheme.titleSmall),
-          ),
+          ]),
+
           RoundedSwitchListTile(
             autofocus: false,
             value: s.showSystemSettingsInStatusBar,

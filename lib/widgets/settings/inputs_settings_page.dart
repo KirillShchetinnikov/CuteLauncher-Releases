@@ -1,3 +1,5 @@
+import 'settings_information.dart';
+import 'settings_choice_dialog.dart';
 import 'settings_help.dart';
 
 import 'package:flutter/material.dart';
@@ -89,32 +91,15 @@ class _InputsSettingsPageState extends State<InputsSettingsPage> {
     final l = AppLocalizations.of(context)!;
     final value = await showLauncherDialog<String>(
       context: context,
-      builder: (dialog) => LauncherAlertDialog(
+      builder: (dialog) => SettingsChoiceDialog<String>(
         title: Text(l.inputIcon),
-        content: SizedBox(
-          width: 400,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                for (final icon in tvInputIcons)
-                  FocusableSettingsTile(
-                    autofocus: icon == input.icon,
-                    leading: Icon(
-                      tvInputIcon(
-                        input.withPresentation(label: input.label, icon: icon),
-                      ),
-                    ),
-                    title: Text(_iconLabel(l, icon)),
-                    trailing: icon == input.icon
-                        ? const Icon(Icons.check)
-                        : const SizedBox.shrink(),
-                    onPressed: () => Navigator.pop(dialog, icon),
-                  ),
-              ],
-            ),
-          ),
+        value: input.icon,
+        options: tvInputIcons,
+        leadingBuilder: (icon) => Icon(
+          tvInputIcon(input.withPresentation(label: input.label, icon: icon)),
         ),
+        optionBuilder: (icon) => Text(_iconLabel(l, icon)),
+        onSelected: (icon) => Navigator.pop(dialog, icon),
       ),
     );
     if (value != null && mounted) {
@@ -168,7 +153,16 @@ class _InputsSettingsPageState extends State<InputsSettingsPage> {
             if (!service.initialized)
               const LinearProgressIndicator()
             else if (!service.hasInputs)
-              Text(l.inputsUnavailableHint),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  SettingsMessage(
+                    text: l.inputsUnavailableStatus,
+                    kind: SettingsMessageKind.warning,
+                  ),
+                  SettingsHelp(title: l.inputs, text: l.inputsUnavailableHint),
+                ],
+              ),
             for (final source in service.inputs)
               FocusableSettingsTile(
                 leading: Icon(tvInputIcon(source)),

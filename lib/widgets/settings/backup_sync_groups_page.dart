@@ -1,3 +1,4 @@
+import 'settings_section.dart';
 import 'settings_help.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -52,16 +53,9 @@ class BackupSyncGroupsPage extends StatelessWidget {
       child: ListView(
         children: [
           SettingsHelp(title: l.backupSyncSettings, text: l.backupSyncGroupsHelp),
-          for (final section in backupSyncSections.entries) ...[
-            if (section.key != BackupSyncSection.home) const Divider(),
-            Padding(
-              key: ValueKey(section.key),
-              padding: const EdgeInsets.fromLTRB(12, 16, 12, 8),
-              child: Text(
-                headings[section.key]!,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-            ),
+          for (final section in backupSyncSections.entries)
+            SettingsSection(key: ValueKey(section.key),
+              title: headings[section.key]!, children: [
             for (final group in section.value)
               RoundedSwitchListTile(
                 key: ValueKey(group),
@@ -83,7 +77,7 @@ class BackupSyncGroupsPage extends StatelessWidget {
                   }
                 },
               ),
-          ],
+          ]),
         ],
       ),
     );

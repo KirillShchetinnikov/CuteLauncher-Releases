@@ -115,6 +115,9 @@ void main() {
             300,
             scrollable: find.byType(Scrollable).first,
           );
+          await tester.pumpAndSettle();
+          await tester.ensureVisible(entry);
+          await tester.pumpAndSettle();
           await tester.tap(entry);
           await tester.pumpAndSettle();
           expect(find.byType(VolumeWidgetSettingsPage), findsOneWidget);

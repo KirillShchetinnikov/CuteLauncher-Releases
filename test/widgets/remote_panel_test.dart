@@ -11,6 +11,7 @@ import 'package:flauncher/providers/weather_service.dart';
 import 'package:flauncher/providers/remote_panel_service.dart';
 import 'package:flauncher/widgets/remote_panel.dart';
 import 'package:flauncher/widgets/focus_aware_app_bar.dart';
+import 'package:flauncher/widgets/date_time_widget.dart';
 import 'package:flauncher/widgets/top_panel_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -359,6 +360,10 @@ void main() {
     final background = find.byWidget(bar.flexibleSpace!);
     expect(tester.getSize(background), Size(tester.getSize(find.byType(AppBar)).width, kToolbarHeight));
     final homeAppearance = tester.element(find.byType(AppBar)).read<AppearanceService>();
+    await homeAppearance.set('dateTextColor', 0xffc0ffee);
+    await tester.pumpAndSettle();
+    expect(tester.widget<DateTimeWidget>(find.byKey(const Key('statusbar_date'))).textStyle?.color,
+        const Color(0xffc0ffee));
     await homeAppearance.set('panelColor', 0xffabcdef);
     await homeAppearance.set('panelOpacity', .8);
     await panel.set('inheritAppearance', true);

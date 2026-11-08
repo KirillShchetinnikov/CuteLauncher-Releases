@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -14,12 +16,15 @@ import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/settings_import.dart';
 import 'package:flauncher/tile_appearance.dart';
 import 'package:flauncher/widgets/combined_information.dart';
+import 'package:flauncher/widgets/weather_glyph.dart';
 import 'package:flauncher/widgets/animated_character.dart';
 import 'package:flauncher/widgets/date_time_widget.dart';
 import 'package:flauncher/widgets/top_panel_item.dart';
+import 'package:flauncher/widgets/launcher_dialog.dart';
 import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
 import 'package:flauncher/widgets/settings/information_settings_page.dart';
 import 'package:flauncher/widgets/settings/date_time_format_page.dart';
+import 'package:flauncher/widgets/settings/color_palette_dialog.dart';
 import 'package:flauncher/widgets/rounded_switch_list_tile.dart';
 import 'package:flauncher/widgets/settings/panel_clock_style_page.dart';
 import 'package:flauncher/widgets/settings/settings_value_stepper.dart';
@@ -116,18 +121,51 @@ void main() {
   });
 
 
-  testWidgets('shared layout controls remain available for quick-panel-only grouping', (tester) async {
+  testWidgets('top-panel layout stays disabled for quick-panel-only grouping', (tester) async {
     await appearance.set('panelInformationPlacements', {
       'time': 'background', 'date': 'background', 'weather': 'hidden',
     });
     await remote.set('combinedInformation', true);
     await pump(tester, const PanelInformationSettingsPage());
     final l = AppLocalizations.of(tester.element(find.byType(PanelInformationSettingsPage)))!;
+    await tester.tap(find.text(l.informationLayout));
+    await tester.pumpAndSettle();
     await tester.scrollUntilVisible(find.text(l.informationPosition), 150);
-    expect(find.text(l.informationPosition), findsOneWidget);
+    FocusableSettingsTile control(String title) =>
+        tester.widget<FocusableSettingsTile>(find.ancestor(
+          of: find.text(title),
+          matching: find.byType(FocusableSettingsTile),
+        ).first);
+    for (final title in [l.informationPosition, l.informationSpacing]) {
+      expect(control(title).enabled, isFalse);
+    }
     await remote.show('time', false);
     await tester.pumpAndSettle();
-    expect(find.text(l.informationPosition), findsNothing);
+    for (final title in [l.informationPosition, l.informationSpacing]) {
+      expect(control(title).enabled, isFalse);
+    }
+    await appearance.set('panelInformationPlacements', {
+      'time': 'panel', 'date': 'panel', 'weather': 'hidden',
+    });
+    await appearance.set('panelInformationStyle', {
+      'clockOnRight': true, 'spacing': 12,
+    });
+    await appearance.set('panelCombinedInformation', true);
+    await tester.pumpAndSettle();
+    for (final title in [l.informationPosition, l.informationSpacing]) {
+      expect(control(title).enabled, isTrue);
+    }
+    await tester.tap(find.byKey(const ValueKey('information_grouping')));
+    await tester.pumpAndSettle();
+    for (final title in [l.informationPosition, l.informationSpacing]) {
+      expect(control(title).enabled, isFalse);
+    }
+    await tester.tap(find.text(l.informationPosition));
+    await tester.pumpAndSettle();
+    expect(find.byType(AlertDialog), findsNothing);
+    expect(appearance.appearance.informationStyle.clockOnRight, isTrue);
+    expect(appearance.appearance.informationStyle.spacing, 12);
+    expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox());
   });
 
@@ -140,8 +178,9 @@ void main() {
     expect(find.byType(InformationVisibility), findsOneWidget);
     expect(find.text(l.informationTapAction), findsNothing);
     expect(find.text(l.dateCalendarEnabled), findsNothing);
-    await tester.scrollUntilVisible(find.text(l.informationData), 100);
-    await tester.tap(find.text(l.informationData));
+    await tester.tap(find.text(l.informationPanelAppearance));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(l.informationComposition));
     await tester.pumpAndSettle();
     expect(find.byType(TimeFormatSettingsTile), findsOneWidget);
     expect(find.byType(DateFormatSettingsTile), findsOneWidget);
@@ -150,13 +189,274 @@ void main() {
     await tester.pumpWidget(const SizedBox());
   });
 
+  testWidgets('date palette saves separately and restores inheritance', (tester) async {
+    await appearance.set('weatherTextColor', 0xff16b44c);
+    await appearance.set('panelInformationStyle', {'clockColor': 0xffaa3344});
+    await pump(tester, const InformationSectionPage(background: false, section: 'colors'));
+    final headings = [for (final id in ['common', 'time', 'date', 'weather'])
+      find.byKey(ValueKey('information-$id-section'))];
+    final positions = <double>[];
+    double? glowY;
+    for (final heading in headings) {
+      await tester.scrollUntilVisible(heading, 100);
+      await tester.pumpAndSettle();
+      expect(find.descendant(of: heading, matching: find.byWidgetPredicate(
+        (widget) => widget is Semantics && widget.properties.header == true)), findsOneWidget);
+      final offset = Scrollable.of(tester.element(heading)).position.pixels;
+      positions.add(tester.getTopLeft(heading).dy + offset);
+      if (heading == headings.first) {
+        glowY = tester.getCenter(find.text('Свечение текста')).dy + offset;
+      }
+    }
+    for (var index = 1; index < positions.length; index++) {
+      expect(positions[index], greaterThan(positions[index - 1]));
+    }
+    expect(glowY, greaterThan(positions.first));
+    expect(glowY, lessThan(positions[1]));
+    final title = find.text('Цвет даты');
+    await tester.scrollUntilVisible(title, -100);
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(title);
+    await tester.pumpAndSettle();
+    await tester.tap(title);
+    await tester.pumpAndSettle();
+    final value = appearancePalette[4];
+    await tester.tap(find.byKey(ValueKey('palette-$value')));
+    await tester.pumpAndSettle();
+    final restored = TileAppearance.decode(appearance.preferences.getString(tileAppearanceKey));
+    expect(restored.dateTextColor, Color(value));
+    expect(restored.informationStyle.clockColor, const Color(0xffaa3344));
+    expect(restored.weatherTextColor, const Color(0xff16b44c));
+    await tester.tap(title);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('По умолчанию'));
+    await tester.pumpAndSettle();
+    expect(appearance.appearance.dateTextColor, isNull);
+    expect(appearance.appearance.informationStyle.clockColor, const Color(0xffaa3344));
+    expect(appearance.appearance.weatherTextColor, const Color(0xff16b44c));
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  for (final background in [false, true]) {
+    for (final split in [false, true]) {
+      testWidgets('default color shows inheritance for every object: background=$background split=$split', (tester) async {
+        final styleKey = background ? 'panelBackgroundInformationStyle' : 'panelInformationStyle';
+        await appearance.set(styleKey, {
+          'clockColor': (split ? Colors.black : Colors.white).toARGB32(),
+          'color': (split ? Colors.black : Colors.white).toARGB32(),
+          'splitColors': split,
+          'hoursColor': Colors.black.toARGB32(),
+          'minutesColor': Colors.white.toARGB32(),
+        });
+        for (final key in ['dateTextColor', 'weatherTextColor', 'weatherIconColor']) {
+          await appearance.setInformationAppearance(key, Colors.black.toARGB32(), background: background);
+        }
+        final other = appearance.appearance.forInformation(background: !background);
+        final otherStyle = background ? other.informationStyle.values : other.backgroundInformationStyle.values;
+        await pump(tester, InformationSectionPage(background: background, section: 'colors'));
+        final l = AppLocalizations.of(tester.element(find.byType(InformationSectionPage)))!;
+        final titles = [
+          if (split) ...[l.clockHoursColor, l.clockMinutesColor] else l.clockTextColor,
+          l.informationDateColor, l.weatherTextColor, l.weatherIconColor,
+        ];
+        for (final title in titles) {
+          final row = find.widgetWithText(FocusableSettingsTile, title);
+          await tester.scrollUntilVisible(row, 100);
+          await tester.pumpAndSettle();
+          expect(find.descendant(of: row, matching: find.byIcon(Icons.link)), findsNothing);
+          await tester.tap(row);
+          await tester.pumpAndSettle();
+          await tester.tap(find.text(title == l.weatherIconColor ? l.weatherIconFollowsText : l.defaultOption));
+          await tester.pumpAndSettle();
+          expect(find.descendant(of: row, matching: find.byIcon(Icons.link)), findsOneWidget);
+          expect(tester.widget<Icon>(find.descendant(of: row, matching: find.byIcon(Icons.link))).color,
+            split ? Colors.white : Colors.black);
+          expect(Focus.of(tester.element(find.text(title))).hasFocus, isTrue);
+          await tester.tap(row);
+          await tester.pumpAndSettle();
+          await tester.tap(find.byKey(ValueKey('palette-${appearancePalette[4]}')));
+          await tester.pumpAndSettle();
+          expect(find.descendant(of: row, matching: find.byIcon(Icons.link)), findsNothing);
+          await tester.tap(row);
+          await tester.pumpAndSettle();
+          await tester.tap(find.text(title == l.weatherIconColor ? l.weatherIconFollowsText : l.defaultOption));
+          await tester.pumpAndSettle();
+          expect(find.descendant(of: row, matching: find.byIcon(Icons.link)), findsOneWidget);
+        }
+        final restored = TileAppearance.decode(appearance.preferences.getString(tileAppearanceKey));
+        final profile = restored.forInformation(background: background);
+        final clock = background ? profile.backgroundInformationStyle : profile.informationStyle;
+        expect(profile.dateTextColor, isNull);
+        expect(profile.weatherTextColor, isNull);
+        expect(profile.weatherIconColor, isNull);
+        expect(split ? clock.hoursColor : clock.clockColor, isNull);
+        if (split) expect(clock.minutesColor, isNull);
+        final restoredOther = restored.forInformation(background: !background);
+        expect(restoredOther.dateTextColor, other.dateTextColor);
+        expect(restoredOther.weatherTextColor, other.weatherTextColor);
+        expect(restoredOther.weatherIconColor, other.weatherIconColor);
+        expect(background ? restoredOther.informationStyle.values : restoredOther.backgroundInformationStyle.values, otherStyle);
+        expect(tester.takeException(), isNull);
+        await tester.pumpWidget(const SizedBox());
+      });
+    }
+  }
+
+  for (final profile in [
+    (background: false, section: 'typography'),
+    (background: false, section: 'colors'),
+    (background: true, section: 'colors'),
+  ]) {
+    for (final scale in [1.0, 1.5]) {
+      testWidgets('reset scrolls after controls and is reachable by remote: $profile scale=$scale', (tester) async {
+        tester.view.physicalSize = const Size(960, 540);
+        tester.view.devicePixelRatio = 1;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        await appearance.set('panelInformationStyle', {'inheritPanelTypography': false});
+        await pump(tester, SizedBox(
+          height: 300,
+          child: InformationSectionPage(background: profile.background, section: profile.section),
+        ), scale: scale);
+        final l = AppLocalizations.of(tester.element(find.byType(InformationSectionPage)))!;
+        final reset = find.text(profile.section == 'typography'
+            ? l.informationResetTypography : l.informationResetPositionSize);
+        bool resetFocused() => reset.evaluate().isNotEmpty &&
+            Focus.of(tester.element(reset)).hasFocus;
+        expect(reset.hitTestable(), findsNothing);
+        expect(resetFocused(), isFalse);
+        for (var step = 0; step < 30 && !resetFocused(); step++) {
+          await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+          await tester.pumpAndSettle();
+        }
+        expect(resetFocused(), isTrue);
+        expect(reset.hitTestable(), findsOneWidget);
+        final position = Scrollable.of(tester.element(reset)).position;
+        expect(position.pixels, greaterThan(0));
+        await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+        await tester.pumpAndSettle();
+        expect(resetFocused(), isFalse);
+        await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+        await tester.pumpAndSettle();
+        expect(resetFocused(), isTrue);
+        // The action leaves the screen together with the rest of the list.
+        position.jumpTo(0);
+        await tester.pumpAndSettle();
+        expect(reset.hitTestable(), findsNothing);
+        expect(tester.takeException(), isNull);
+        await tester.pumpWidget(const SizedBox());
+      });
+    }
+  }
+
+  for (final background in [false, true]) {
+    for (final legacy in [false, true]) {
+      testWidgets('colors reset confirms and changes only this screen: background=$background legacy=$legacy', (tester) async {
+        tester.view.physicalSize = const Size(960, 540);
+        tester.view.devicePixelRatio = 1;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        const retained = {
+          'inheritPanelTypography': false, 'size': 20, 'font': 'serif',
+          'preset': 'italic', 'italic': true, 'weight': 700,
+          'animate': true, 'showColon': false, 'clockOnRight': true, 'spacing': 24,
+          'inheritBackground': false, 'background': true,
+          'backgroundColor': 0xff443322, 'opacity': .7, 'radius': 12,
+        };
+        const customColors = {
+          'color': 0xffaa3344, 'clockColor': 0xffbb4455,
+          'hoursColor': 0xffcc5566, 'minutesColor': 0xffdd6677,
+          'splitColors': true, 'glow': true,
+        };
+        const customProfile = {
+          'dateTextColor': 0xff55aacc, 'weatherTextColor': 0xff66bbdd,
+          'weatherIconColor': 0xff77ccee, 'weatherIconPack': 'pixel',
+        };
+        await appearance.preferences.setString(tileAppearanceKey, jsonEncode({
+          'panelInformationStyle': {...retained, ...customColors},
+          if (!legacy)
+            'panelBackgroundInformationStyle': {...retained, 'font': 'manrope', ...customColors},
+          ...customProfile,
+          if (!legacy) ...{
+            'panelInformationAppearance': customProfile,
+            'backgroundInformationAppearance': customProfile,
+          },
+          'panelCombinedInformation': true, 'panelTextColor': 0xff123456,
+          'panelTextSize': 21, 'panelFont': 'monospace',
+          'panelInformationPlacements': {'time': 'background', 'date': 'panel', 'weather': 'hidden'},
+          'panelBackgroundInformationSize': 120,
+          'panelBackgroundInformationOffset': 25,
+          'panelBackgroundInformationVerticalOffset': 15,
+          'panelBackgroundInformationAboveLandscape': true,
+          'panelBackgroundInformationAboveWeather': true,
+        }));
+        final before = appearance.appearance;
+        final beforeText = appearance.preferences.getString(tileAppearanceKey);
+        final styleKey = background ? 'panelBackgroundInformationStyle' : 'panelInformationStyle';
+        final profileKey = TileAppearance.informationAppearanceKey(background);
+        await pump(tester, InformationSectionPage(background: background, section: 'colors'));
+        final l = AppLocalizations.of(tester.element(find.byType(InformationSectionPage)))!;
+        final reset = find.text(l.informationResetPositionSize);
+        await tester.scrollUntilVisible(reset, 120);
+        await tester.pumpAndSettle();
+        expect(reset.hitTestable(), findsOneWidget);
+        Focus.of(tester.element(reset)).requestFocus();
+        await tester.pumpAndSettle();
+        await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+        await tester.pumpAndSettle();
+        expect(find.byType(LauncherAlertDialog), findsOneWidget);
+        await tester.binding.handlePopRoute();
+        await tester.pumpAndSettle();
+        expect(appearance.preferences.getString(tileAppearanceKey), beforeText);
+        expect(Focus.of(tester.element(reset)).hasFocus, isTrue);
+        var notifications = 0;
+        void changed() => notifications++;
+        appearance.addListener(changed);
+        await tester.tap(reset);
+        await tester.pumpAndSettle();
+        await tester.tap(find.descendant(of: find.byType(LauncherAlertDialog),
+          matching: find.text(l.informationResetPositionSize)).last);
+        await tester.pumpAndSettle();
+        appearance.removeListener(changed);
+        expect(notifications, 1);
+        final restored = AppearanceService(appearance.preferences);
+        final after = restored.appearance;
+        final style = background ? after.backgroundInformationStyle : after.informationStyle;
+        expect(style.values, {...retained, if (background && !legacy) 'font': 'manrope'});
+        expect(style.splitColors, isFalse);
+        final profile = after.forInformation(background: background);
+        expect(profile.dateTextColor, isNull);
+        expect(profile.weatherTextColor, isNull);
+        expect(profile.weatherIconColor, isNull);
+        expect(profile.weatherIconPack, WeatherIconPack.outline);
+        final beforeOther = before.forInformation(background: !background);
+        final afterOther = after.forInformation(background: !background);
+        expect(afterOther.dateTextColor, beforeOther.dateTextColor);
+        expect(afterOther.weatherTextColor, beforeOther.weatherTextColor);
+        expect(afterOther.weatherIconColor, beforeOther.weatherIconColor);
+        expect(afterOther.weatherIconPack, beforeOther.weatherIconPack);
+        expect(background ? after.informationStyle.values : after.backgroundInformationStyle.values,
+          background ? before.informationStyle.values : before.backgroundInformationStyle.values);
+        final outsideBefore = {...before.values}..remove(styleKey)..remove(profileKey);
+        final outsideAfter = {...after.values}..remove(styleKey)..remove(profileKey);
+        if (!background && legacy) outsideAfter.remove('panelBackgroundInformationStyle');
+        expect(outsideAfter, outsideBefore);
+        restored.dispose();
+        expect(reset.hitTestable(), findsOneWidget);
+        expect(Focus.of(tester.element(reset)).hasFocus, isTrue);
+        expect(tester.takeException(), isNull);
+        await tester.pumpWidget(const SizedBox());
+      });
+    }
+  }
+
   testWidgets('weather-only combined block stays visible and actionable without data', (tester) async {
     var opened = false;
     await pump(tester, CombinedInformation(appearance: appearance.appearance,
       showTime: false, showDate: false, showWeather: true,
       timeFormat: settings.timeFormat, dateFormat: settings.dateFormat,
       onPressed: () => opened = true));
-    expect(find.byIcon(Icons.cloud_outlined), findsOneWidget);
+    expect(find.byType(WeatherGlyph), findsOneWidget);
     expect(find.text('—'), findsOneWidget);
     await tester.tap(find.byType(TopPanelItem));
     await tester.pumpAndSettle();
@@ -296,6 +596,7 @@ void main() {
               child: CombinedInformation(
                 appearance: TileAppearance({
                   'panelInformationStyle': {
+                    'inheritPanelTypography': false,
                     'font': font,
                     'size': size,
                     'animate': animate,
@@ -342,6 +643,7 @@ void main() {
     'font weight steps through the actual family range independently of italic',
     (tester) async {
       await appearance.set('panelInformationStyle', {
+        'inheritPanelTypography': false,
         'font': 'manrope',
         'weight': 200,
         'italic': true,
@@ -381,7 +683,7 @@ void main() {
         };
         final key = combined ? 'panelInformationStyle' : 'panelClockStyle';
         for (final entry in options.entries) {
-          await appearance.set(key, {'font': entry.key, 'weight': 900});
+          await appearance.set(key, {'inheritPanelTypography': false, 'font': entry.key, 'weight': 900});
           await pump(tester, PanelClockStylePage(combined: combined));
           await tester.ensureVisible(find.text('Толщина шрифта'));
           final finder = find.ancestor(
@@ -406,19 +708,20 @@ void main() {
   }
 
   testWidgets(
-    'combined editor retains family and separate style; hides unused layout controls',
+    'combined editor retains family and separate style; disables unused layout controls',
     (tester) async {
       await appearance.set('panelCombinedInformation', true);
       await appearance.set('panelClockStyle', {'font': 'serif', 'size': 33});
       await appearance.set('panelInformationStyle', {
+        'inheritPanelTypography': false,
         'font': 'manrope',
         'size': 20,
       });
       await pump(tester, const PanelClockStylePage(combined: true));
       await tester.ensureVisible(find.text('Стиль шрифта'));
-      await tester.tap(find.text('Стиль шрифта'));
+      Focus.of(tester.element(find.text('Стиль шрифта'))).requestFocus();
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Курсив'));
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
       await tester.pumpAndSettle();
       expect(appearance.appearance.informationStyle.values['font'], 'manrope');
       expect(appearance.appearance.informationStyle.values['size'], 20);
@@ -434,8 +737,13 @@ void main() {
       expect(find.text('Расположение часов и текста'), findsOneWidget);
       await settings.setShowTimeInStatusBar(false);
       await tester.pumpAndSettle();
-      expect(find.text('Расположение часов и текста'), findsNothing);
-      expect(find.text('Расстояние между часами и текстом'), findsNothing);
+      for (final title in ['Расположение часов и текста', 'Расстояние между часами и текстом']) {
+        final tile = find.ancestor(
+          of: find.text(title),
+          matching: find.byType(FocusableSettingsTile),
+        ).first;
+        expect(tester.widget<FocusableSettingsTile>(tile).enabled, isFalse);
+      }
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox());
     },
@@ -446,6 +754,7 @@ void main() {
     () async {
       await appearance.set('panelClockStyle', {'font': 'serif', 'size': 33});
       await appearance.set('panelInformationStyle', {
+        'inheritPanelTypography': false,
         'font': 'manrope',
         'size': 22,
         'clockOnRight': true,
@@ -469,6 +778,7 @@ void main() {
         tileAppearanceKey: appearance.preferences.getString(tileAppearanceKey)!,
       }, {});
       final restored = TileAppearance.decode(imported[tileAppearanceKey]);
+      expect(restored.informationStyle.inheritsPanelTypography, isFalse);
       expect(restored.clockStyle.values['size'], 33);
       expect(
         restored.informationStyle.values,
@@ -497,16 +807,21 @@ void main() {
         bool right = false,
         bool date = true,
         bool weather = true,
+        bool separateColors = false,
       }) => SizedBox(
         height: kToolbarHeight,
         child: Align(
           alignment: Alignment.centerLeft,
           child: CombinedInformation(
             appearance: TileAppearance({
+              if (separateColors) 'dateTextColor': 0xff6699dd,
+              if (separateColors) 'weatherTextColor': 0xff55bb77,
               'panelInformationStyle': {
+                'inheritPanelTypography': false,
                 'font': 'manrope',
                 'size': size,
                 'color': 0xff80efb0,
+                if (separateColors) 'clockColor': 0xffdd7799,
                 'weight': 700,
                 'italic': true,
                 'glow': true,
@@ -549,7 +864,7 @@ void main() {
           expect(glyph.textStyle!.fontStyle, FontStyle.italic);
           expect(glyph.textStyle!.shadows, isNotEmpty);
         }
-        final icon = tester.widget<Icon>(find.byType(Icon));
+        final icon = tester.widget<WeatherGlyph>(find.byType(WeatherGlyph));
         expect(icon.color, const Color(0xff80efb0));
         expect(icon.shadows, isNotEmpty);
         expect(
@@ -557,6 +872,17 @@ void main() {
           'Manrope',
         );
       }
+      await pump(tester, block(20, separateColors: true));
+      final clock = find.byKey(const Key('statusbar_clock'));
+      final digits = tester.widgetList<AnimatedCharacter>(
+        find.descendant(of: clock, matching: find.byType(AnimatedCharacter)),
+      );
+      expect(digits, isNotEmpty);
+      expect(digits.map((digit) => digit.textStyle?.color), everyElement(const Color(0xffdd7799)));
+      final date = tester.widget<DateTimeWidget>(find.byKey(const Key('statusbar_date'))).textStyle!;
+      expect(date.color, const Color(0xff6699dd));
+      expect(date.shadows?.single.color, const Color(0xff6699dd));
+      expect(tester.widget<Text>(find.text('20°C')).style?.color, const Color(0xff55bb77));
       await pump(tester, block(24, date: false, weather: false), scale: 1.8);
       expect(find.byKey(const Key('statusbar_date')), findsNothing);
       expect(find.byType(Icon), findsNothing);

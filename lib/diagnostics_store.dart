@@ -37,6 +37,7 @@ class DiagnosticsStore {
     'dart': 'dart',
   };
   static const _methods = {
+    'weatherImport',
     'wallpaperService',
     'systemStatusService',
     'storageStatusService',
@@ -361,6 +362,11 @@ class DiagnosticsStore {
       'weather_rateLimit',
       'weather_unavailable',
       'weather_invalidResponse',
+      'weather_import_read',
+      'weather_import_encoding',
+      'weather_import_too_large',
+      'weather_import_format',
+      'weather_import_save',
       'video_timeout',
       'video_player',
       'video_metadata',

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:provider/provider.dart';
 
+import '../file_browser_options.dart';
 import '../providers/settings_service.dart';
 
 import '../bridge_result.dart';
@@ -40,40 +42,70 @@ class FileSelection {
     String operation, {
     Map<String, Object?> arguments = const {},
     String? initialPath,
+    String? selectionKey,
+    ValueChanged<String>? onSelectedFolder,
     ValueChanged<String>? onSaved,
   }) async {
     if (_selecting) return null;
     _selecting = true;
     try {
-      final available = await _channel.invokeMethod<bool>(
-        'filePickerAvailable',
-        {'operation': operation},
-      );
+      final settings = context.read<SettingsService?>();
+      final preference =
+          settings?.fileManagerPreference ?? FileManagerPreference.ask;
+      final options =
+          settings?.fileBrowserOptions ?? const FileBrowserOptions();
+      final selectedFolder = selectionKey == null
+          ? null
+          : settings?.fileBrowserLocation('selected:$selectionKey');
+      final startPath =
+          initialPath ??
+          selectedFolder ??
+          (options.start == FileBrowserStart.last
+              ? settings?.fileBrowserLocation('last:$operation')
+              : null);
+      void remember(String key, String path) {
+        if (settings != null) {
+          unawaited(
+            settings
+                .rememberFileBrowserLocation(key, path)
+                .catchError((Object _) {}),
+          );
+        }
+      }
+
+      final available =
+          preference != FileManagerPreference.builtIn &&
+          await _channel.invokeMethod<bool>('filePickerAvailable', {
+                'operation': operation,
+              }) ==
+              true;
       if (!context.mounted) return null;
       if (available == true) {
         final l = AppLocalizations.of(context)!;
-        final system = await showLauncherDialog<bool>(
-          context: context,
-          builder: (dialog) => LauncherAlertDialog(
-            title: Text(l.filePickerChoose),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                FocusableSettingsTile(
-                  autofocus: true,
-                  title: Text(l.filePickerSystem),
-                  leading: const Icon(Icons.folder_shared_outlined),
-                  onPressed: () => Navigator.pop(dialog, true),
+        final system = preference == FileManagerPreference.external
+            ? true
+            : await showLauncherDialog<bool>(
+                context: context,
+                builder: (dialog) => LauncherAlertDialog(
+                  title: Text(l.filePickerChoose),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      FocusableSettingsTile(
+                        autofocus: true,
+                        title: Text(l.filePickerSystem),
+                        leading: const Icon(Icons.folder_shared_outlined),
+                        onPressed: () => Navigator.pop(dialog, true),
+                      ),
+                      FocusableSettingsTile(
+                        title: Text(l.filePickerBuiltIn),
+                        leading: const Icon(Icons.folder_outlined),
+                        onPressed: () => Navigator.pop(dialog, false),
+                      ),
+                    ],
+                  ),
                 ),
-                FocusableSettingsTile(
-                  title: Text(l.filePickerBuiltIn),
-                  leading: const Icon(Icons.folder_outlined),
-                  onPressed: () => Navigator.pop(dialog, false),
-                ),
-              ],
-            ),
-          ),
-        );
+              );
         if (system == null || !context.mounted) return null;
         if (system) {
           try {
@@ -93,6 +125,8 @@ class FileSelection {
           : switch (operation) {
               'pickImageDocument' => FileBrowserKind.image,
               'pickWallpaperDocument' => FileBrowserKind.media,
+              'pickWeatherTokenDocument' ||
+              'pickWeatherServerDocument' ||
               'pickWebhookDocument' ||
               'pickCleanerDocument' ||
               'pickCleanerListDocument' => FileBrowserKind.text,
@@ -102,7 +136,9 @@ class FileSelection {
       if (!context.mounted) return null;
       if (!granted) return null;
       Widget browser(BuildContext _) => LocalFileBrowser(
-        initialPath: initialPath,
+        initialPath: startPath,
+        options: options,
+        onFolderOpened: (path) => remember('last:$operation', path),
         kind: kind,
         saveName: save ? arguments['name'] as String? : null,
         title: switch (operation) {
@@ -114,6 +150,8 @@ class FileSelection {
           'pickBackupDocument' => AppLocalizations.of(context)!.importBackup,
           'pickImageDocument' => AppLocalizations.of(context)!.openImage,
           'pickWallpaperDocument' => AppLocalizations.of(context)!.wallpaper,
+          'pickWeatherTokenDocument' => AppLocalizations.of(context)!.weatherServerTokenImport,
+          'pickWeatherServerDocument' => AppLocalizations.of(context)!.weatherServerUrlImport,
           'pickWebhookDocument' => AppLocalizations.of(
             context,
           )!.remoteMappingImport,
@@ -127,6 +165,7 @@ class FileSelection {
           'saveDiagnosticsDocument' ||
           'pickBackupDocument' ||
           'pickDriveClientDocument' => 'JSON',
+          'pickWeatherTokenDocument' || 'pickWeatherServerDocument' => 'TXT',
           'pickWebhookDocument' ||
           'pickCleanerDocument' ||
           'pickCleanerListDocument' => 'TXT · JSON',
@@ -158,6 +197,18 @@ class FileSelection {
               ),
             );
       if (selected == null || !context.mounted) return null;
+      void rememberSelection() {
+        if (selectionKey == null) return;
+        final uri = Uri.parse(selected);
+        final directory = folder || save ? uri : uri.resolve('.');
+        final path = directory.toFilePath(windows: false);
+        if (onSelectedFolder != null) {
+          onSelectedFolder(path);
+        } else {
+          remember('selected:$selectionKey', path);
+        }
+      }
+
       if (folder) {
         if (operation == 'pickBackupFolder') {
           await _channel.invokeMethod<Object>('backupFolderOperation', {
@@ -165,6 +216,7 @@ class FileSelection {
             'uri': selected,
           });
         }
+        rememberSelection();
         return context.mounted ? selected as T : null;
       }
       final result = await _channel.invokeMethod<Object>(
@@ -176,6 +228,7 @@ class FileSelection {
           'name': arguments['name'],
         },
       );
+      if (result != null) rememberSelection();
       if (save && result is Map && result['path'] is String) {
         onSaved?.call(result['path'] as String);
         return result['result'] as T?;

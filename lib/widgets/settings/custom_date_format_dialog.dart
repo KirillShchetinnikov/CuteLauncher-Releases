@@ -48,7 +48,12 @@ class DatePatternEditingController extends TextEditingController {
 
 class CustomDateFormatDialog extends StatefulWidget {
   final String pattern;
-  const CustomDateFormatDialog({super.key, required this.pattern});
+  final bool showPreview;
+  const CustomDateFormatDialog({
+    super.key,
+    required this.pattern,
+    this.showPreview = true,
+  });
 
   @override
   State<CustomDateFormatDialog> createState() => _CustomDateFormatDialogState();
@@ -110,22 +115,24 @@ class _CustomDateFormatDialogState extends State<CustomDateFormatDialog> {
                     ),
                     const SizedBox(height: 12),
                   ],
-                  Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: '${l.dateFormatPreview}: ',
-                          style: const TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                        TextSpan(text: valid ? preview : l.invalidDateFormat),
-                      ],
+                  if (widget.showPreview) ...[
+                    Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(
+                            text: '${l.dateFormatPreview}: ',
+                            style: const TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                          TextSpan(text: valid ? preview : l.invalidDateFormat),
+                        ],
+                      ),
+                      key: const ValueKey('custom-date-preview'),
+                      maxLines: compact ? 1 : null,
+                      overflow: compact ? TextOverflow.ellipsis : null,
+                      style: Theme.of(context).textTheme.bodyMedium,
                     ),
-                    key: const ValueKey('custom-date-preview'),
-                    maxLines: compact ? 1 : null,
-                    overflow: compact ? TextOverflow.ellipsis : null,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                  const SizedBox(height: 8),
+                    const SizedBox(height: 8),
+                  ],
                   RemoteTextInput(
                     key: const ValueKey('custom-date-editor'),
                     child: TextField(

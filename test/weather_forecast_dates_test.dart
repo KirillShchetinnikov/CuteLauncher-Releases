@@ -7,6 +7,17 @@ import 'package:flauncher/tile_appearance.dart';
 import 'package:flauncher/settings_import.dart';
 
 void main() {
+  test('new icon sets survive backup in separate panel and wallpaper profiles', () {
+    for (final pack in [WeatherIconPack.geometric, WeatherIconPack.circled]) {
+      final result = compatibleSettings({tileAppearanceKey: jsonEncode({
+        'panelInformationAppearance': {'weatherIconPack': pack.name},
+        'backgroundInformationAppearance': {'weatherIconPack': 'outline'},
+      })}, {});
+      final restored = TileAppearance.decode(result[tileAppearanceKey]);
+      expect(restored.weatherIconPack, pack);
+      expect(restored.forInformation(background: true).weatherIconPack, WeatherIconPack.outline);
+    }
+  });
   test(
     'cached forecast keeps dates across midnight and uses the city offset',
     () {
@@ -111,21 +122,30 @@ void main() {
       'panelForecastDays': 7,
       'panelForecastView': 'list',
       'panelInformationAction': 'weather',
+      'weatherIconPack': 'duotone',
+      'weatherTextColor': 0xff12ab34,
+      'weatherIconColor': null,
     };
     final encoded = jsonEncode(fields);
     final result = compatibleSettings(
       {tileAppearanceKey: encoded},
-      {tileAppearanceKey: '{}'},
+      {tileAppearanceKey: '{"weatherIconColor":4278190080}'},
     );
     final restored = TileAppearance.decode(result[tileAppearanceKey]);
     expect(restored.forecastDays, 7);
     expect(restored.detailedForecast, isTrue);
     expect(restored.informationAction, 'weather');
+    expect(restored.weatherIconPack, WeatherIconPack.duotone);
+    expect(restored.weatherTextColor?.toARGB32(), 0xff12ab34);
+    expect(restored.weatherIconColor, isNull);
     expect(
       TileAppearance.validValues({
         'panelForecastDays': 100,
         'panelForecastView': 'bad',
         'panelInformationAction': 'bad',
+        'weatherIconPack': 'bad',
+        'weatherTextColor': -1,
+        'weatherIconColor': 'invalid',
       }),
       isEmpty,
     );

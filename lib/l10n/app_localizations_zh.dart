@@ -10,6 +10,60 @@ class AppLocalizationsZh extends AppLocalizations {
   AppLocalizationsZh([String locale = 'zh']) : super(locale);
 
   @override
+  String get weatherTextResetFormat => '重置格式';
+
+  @override
+  String get settingsReportFile => '报告文件';
+
+  @override
+  String get homeVisibleRowsLabel => '完整显示的行数';
+
+  @override
+  String get watchNextEmpty => '暂无继续观看卡片';
+
+  @override
+  String get inputsUnavailableStatus => '没有可用的输入源';
+
+  @override
+  String get remoteButtonsNoEvents => '暂无事件';
+
+  @override
+  String get informationBackgroundVerticalOffset => '垂直偏移';
+
+  @override
+  String get informationResetPositionSize => '重置此页面的所有设置';
+
+  @override
+  String get weatherIconsGeometric => '几何';
+
+  @override
+  String get weatherIconsCircled => '圆框';
+
+  @override
+  String get informationCommonAppearance => '通用设置';
+
+  @override
+  String get informationTimeFormat => '时间格式';
+
+  @override
+  String get informationDateFormat => '日期格式';
+
+  @override
+  String get informationInheritPanelTypography => '继承顶部面板外观';
+
+  @override
+  String get informationResetTypography => '重置设置';
+
+  @override
+  String get alignSectionTitles => '将分区标题与卡片对齐';
+
+  @override
+  String get homeAppName => '主屏幕上的应用名称';
+
+  @override
+  String get restoreSystemAppName => '恢复系统名称';
+
+  @override
   String get settingsScrollbar => '滚动条';
 
   @override
@@ -3626,6 +3680,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get interfaceStandard => 'Standard';
 
   @override
+  String get interfaceCalm => '简约';
+
+  @override
   String get interfaceGlass => 'Glass';
 
   @override
@@ -4330,6 +4387,71 @@ class AppLocalizationsZh extends AppLocalizations {
   String get informationShowBoth => '天气和日历';
 
   @override
+  String get weatherTextFormat => '天气文本格式';
+
+  @override
+  String get weatherTextTemperature => '温度';
+
+  @override
+  String get weatherTextApparent => '体感温度';
+
+  @override
+  String get weatherTextConditions => '天气状况';
+
+  @override
+  String get weatherTextHumidity => '湿度';
+
+  @override
+  String get weatherTextLow => '今日最低温';
+
+  @override
+  String get weatherTextHigh => '今日最高温';
+
+  @override
+  String get weatherTextLiteral => '自定义文本';
+
+  @override
+  String get weatherTextNewline => '换行';
+
+  @override
+  String get weatherTextBefore => '数据块前';
+
+  @override
+  String get weatherTextAfter => '数据块后';
+
+  @override
+  String get weatherTextYourFormat => '你的格式';
+
+  @override
+  String get weatherTextAdd => '添加数据块';
+
+  @override
+  String get weatherTextMoveEarlier => '向前移动';
+
+  @override
+  String get weatherTextMoveLater => '向后移动';
+
+  @override
+  String get weatherTextHelp =>
+      '输入文本及大括号内的代码，或用按钮在光标处插入代码。不区分大小写。值外的圆括号会在数据缺失时一同隐藏。普通大括号需输入两次。允许一个换行。';
+
+  @override
+  String get weatherTextSaveError => '无法保存天气文本格式。';
+
+  @override
+  String get weatherTextSampleCity => '北京';
+
+  @override
+  String weatherTextMetersPerSecond(String speed) {
+    return '$speed 米/秒';
+  }
+
+  @override
+  String weatherFeelsLike(String temperature) {
+    return '体感温度 $temperature';
+  }
+
+  @override
   String get weatherForecastTitle => '天气预报';
 
   @override
@@ -4611,7 +4733,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get informationOnBackground => '壁纸上';
 
   @override
-  String get informationBackgroundAlignment => '壁纸对齐方式';
+  String get informationBackgroundPosition => '信息块位置';
+
+  @override
+  String get informationBackgroundOffset => '水平偏移';
+
+  @override
+  String get informationBackgroundResetOffset => '重置偏移';
+
+  @override
+  String get informationBackgroundContentAlignment => '块内对齐';
 
   @override
   String get informationBackgroundHelp =>
@@ -4905,4 +5036,350 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get appProcessStopped => '未运行';
+
+  @override
+  String get weatherCustomServer => '自定义服务器 (Open-Meteo)';
+
+  @override
+  String get widgetSettings => '小组件设置';
+
+  @override
+  String get weatherServerUrlImport => '从文件导入地址';
+
+  @override
+  String get weatherServerUrlImportError =>
+      '导入失败：请选择不超过 4 KB 且仅包含服务器基本 HTTPS 地址的 UTF-8 文本文件。';
+
+  @override
+  String get weatherImportReadError => '无法读取导入文件。请检查文件访问权限。';
+
+  @override
+  String get weatherImportEncodingError => '导入失败：文件不是 UTF-8 编码。';
+
+  @override
+  String get weatherImportTooLargeError => '导入失败：文件超过 4 KB。';
+
+  @override
+  String get weatherImportSaveError => '无法保存该值。请重新输入或导入。';
+
+  @override
+  String get weatherTokenInvalid => '令牌格式无效。';
+
+  @override
+  String get weatherServerUrl => '服务器 HTTPS 地址';
+
+  @override
+  String get weatherServerUrlHint =>
+      '请输入基本 HTTPS 网址，不含 /v1/forecast、凭据、查询参数或片段。';
+
+  @override
+  String get weatherServerCoordinates => '输入坐标';
+
+  @override
+  String get weatherServerCoordinatesHint =>
+      '请输入纬度和经度，用逗号分隔，小数点用英文句点。示例：50.0, 30.0。';
+
+  @override
+  String get weatherIconPack => '天气图标套装';
+
+  @override
+  String get weatherIconsStandard => '标准';
+
+  @override
+  String get weatherIconsOutline => '轮廓';
+
+  @override
+  String get weatherIconsSolid => '实心';
+
+  @override
+  String get weatherIconsDuotone => '双色';
+
+  @override
+  String get weatherIconsPixel => '像素';
+
+  @override
+  String get weatherTextColor => '天气文字颜色';
+
+  @override
+  String get weatherIconColor => '天气图标颜色';
+
+  @override
+  String get weatherIconFollowsText => '与天气文字同色';
+
+  @override
+  String get informationDateColor => '日期颜色';
+
+  @override
+  String get clockTextColor => '时钟颜色';
+
+  @override
+  String get weatherServerToken => 'Bearer 令牌（可选）';
+
+  @override
+  String get weatherServerTokenImport => '从文件导入令牌';
+
+  @override
+  String get weatherServerTokenImportError =>
+      '导入失败：请选择不超过 4 KB 且仅包含令牌的 UTF-8 文本文件。';
+
+  @override
+  String get weatherCheckConnection => '检查连接';
+
+  @override
+  String get weatherServerAccessError => '服务器拒绝访问。请检查令牌和服务器权限。';
+
+  @override
+  String get weatherServerParametersError => '服务器拒绝了请求参数或坐标。';
+
+  @override
+  String get informationComposition => '对象格式';
+
+  @override
+  String get informationLayout => '信息块布局';
+
+  @override
+  String get informationPositionSize => '位置与大小';
+
+  @override
+  String get informationTypography => '字体与数字';
+
+  @override
+  String get informationColors => '颜色与效果';
+
+  @override
+  String get informationLayers => '背景图层';
+
+  @override
+  String get informationAvoidOverlap => '避免设置遮挡信息块';
+
+  @override
+  String get weatherPresetBrief => '简洁';
+
+  @override
+  String get weatherPresetFeels => '包含体感温度';
+
+  @override
+  String get weatherPresetDetails => '详细';
+
+  @override
+  String get informationAvoidOverlapHelp =>
+      '编辑背景时，设置菜单会暂时移到遮挡信息块较少的一侧。两侧都没有空间时会显示独立预览。退出后恢复通常的菜单位置。';
+
+  @override
+  String get informationProfileHelp =>
+      '面板与背景的格式和颜色相互独立，天气来源共用。快捷设置和预报使用顶部面板的外观；快捷设置的显示与合并选项单独保存。';
+
+  @override
+  String get weatherCompactLayout => '天气与日期合并显示时，天气换行显示为空格。保存的格式保持不变。';
+
+  @override
+  String get weatherFormatInvalid => '请添加天气字段。最多允许12个块、1个换行，每个文本字段最多60个字符。';
+
+  @override
+  String get fileManagerPreference => '文件管理器';
+
+  @override
+  String get fileManagerAsk => '每次询问';
+
+  @override
+  String get fileManagerBuiltIn => '内置';
+
+  @override
+  String get fileManagerExternal => '外部';
+
+  @override
+  String get fileBrowserStartFolder => '起始文件夹';
+
+  @override
+  String get fileBrowserStorage => '电视存储空间';
+
+  @override
+  String get fileBrowserDownloads => '下载';
+
+  @override
+  String get fileBrowserLastFolder => '上次打开的文件夹';
+
+  @override
+  String get fileBrowserSort => '排序方式';
+
+  @override
+  String get fileBrowserSortName => '名称';
+
+  @override
+  String get fileBrowserSortDate => '修改日期';
+
+  @override
+  String get fileBrowserSortSize => '大小';
+
+  @override
+  String get fileBrowserOrder => '排序顺序';
+
+  @override
+  String get fileBrowserAscending => '升序';
+
+  @override
+  String get fileBrowserDescending => '降序';
+
+  @override
+  String get fileBrowserFoldersFirst => '始终将文件夹置顶';
+
+  @override
+  String get fileBrowserShowHidden => '显示隐藏文件和文件夹';
+
+  @override
+  String get fileBrowserShowDetails => '显示大小和日期';
+
+  @override
+  String get fileBrowserOptionsHelp =>
+      '优先打开已选择的文件夹或已选图片的原始文件夹。每项操作分别记住上次打开的文件夹，取消后也会保留。如果文件夹不可用，则打开电视存储空间或下载文件夹。文件夹历史记录仅保存在此电视上。';
+
+  @override
+  String get fileBrowserSaveFailed => '无法保存文件浏览器设置。';
+
+  @override
+  String get settingsSectionStyle => '分组外观';
+
+  @override
+  String get settingsSectionAccentBand => '强调色条';
+
+  @override
+  String get settingsSectionSurface => '共用背景';
+
+  @override
+  String get panelTextAndButtonsGroup => '文字和按钮';
+
+  @override
+  String get settingsGroupScene => '场景';
+
+  @override
+  String get settingsGroupSky => '天空与天气';
+
+  @override
+  String get settingsGroupAnimation => '动画与预览';
+
+  @override
+  String get settingsGroupSource => '来源';
+
+  @override
+  String get settingsGroupImageChange => '图片切换';
+
+  @override
+  String get settingsGroupBrightness => '亮度级别';
+
+  @override
+  String get settingsGroupDisplay => '显示';
+
+  @override
+  String get settingsGroupCredentials => '连接信息';
+
+  @override
+  String get settingsGroupClient => '客户端参数';
+
+  @override
+  String get settingsGroupAccount => '账号连接';
+
+  @override
+  String get settingsGroupIndicators => '指示与消息';
+
+  @override
+  String get settingsGroupFocusShape => '焦点外观';
+
+  @override
+  String get settingsGroupBorder => '边框';
+
+  @override
+  String get settingsGroupMotion => '动态';
+
+  @override
+  String get settingsGroupControl => '控制';
+
+  @override
+  String get settingsGroupPositionSize => '位置与大小';
+
+  @override
+  String get settingsGroupGroupsBackground => '分组与背景';
+
+  @override
+  String get settingsGroupText => '文字';
+
+  @override
+  String get settingsGroupLayout => '布局';
+
+  @override
+  String get settingsGroupHeadings => '标题';
+
+  @override
+  String get settingsGroupLaunchTarget => '启动内容';
+
+  @override
+  String get settingsGroupLaunchTiming => '启动时机';
+
+  @override
+  String get settingsGroupBlockPosition => '信息块位置';
+
+  @override
+  String get settingsGroupBlockContent => '信息块内容';
+
+  @override
+  String get settingsGroupLayers => '显示层级';
+
+  @override
+  String get settingsGroupAccess => '访问权限';
+
+  @override
+  String get settingsGroupContent => '内容';
+
+  @override
+  String get settingsGroupSourcesLimits => '来源与限制';
+
+  @override
+  String get settingsGroupCards => '卡片';
+
+  @override
+  String get settingsGroupStorage => '存储';
+
+  @override
+  String get settingsGroupMode => '模式';
+
+  @override
+  String get settingsGroupExceptions => '例外';
+
+  @override
+  String get settingsGroupCurrentAction => '当前操作';
+
+  @override
+  String get settingsGroupHours => '运行时间';
+
+  @override
+  String get settingsGroupSourceAccess => '来源与访问';
+
+  @override
+  String get settingsGroupUpdate => '更新';
+
+  @override
+  String get settingsGroupSystemCommands => '系统与命令';
+
+  @override
+  String get weatherTemplateWarning => '预警';
+
+  @override
+  String get weatherTemplateDescription => '不含图标的描述';
+
+  @override
+  String get weatherTemplateIcon => '图标';
+
+  @override
+  String get weatherTemplateBracesError => '请检查成对的大括号。如需显示普通括号，请输入两次。';
+
+  @override
+  String get weatherTemplateUnknownError => '未知代码：';
+
+  @override
+  String get weatherTemplateBreakError => '只允许一个换行。';
+
+  @override
+  String get weatherTemplateValueError => '请至少添加一个天气代码。';
+
+  @override
+  String get weatherTemplateLengthError => '格式过长：最多2048个字符和64个元素。';
 }

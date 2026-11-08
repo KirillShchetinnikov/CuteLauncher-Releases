@@ -328,12 +328,20 @@ ThemeData launcherDialogTheme(BuildContext context) {
   final colors = theme.colorScheme;
   final style = LauncherStyle.of(context);
   final topInset = context.dependOnInheritedWidgetOfExactType<LauncherDialogArea>()?.topInset ?? 0;
+  final keyboard = MediaQuery.viewInsetsOf(context).bottom > 0;
+  final safe = style.screenInsets(context);
+  final dialogInsets = EdgeInsets.fromLTRB(
+    (safe.left - 24).clamp(style.panelMargin, double.infinity),
+    keyboard && topInset > 0 ? 0 : style.panelMargin,
+    (safe.right - 24).clamp(style.panelMargin, double.infinity),
+    keyboard ? 0 : style.panelMargin,
+  );
   return InterfaceSkin.of(context).apply(theme.copyWith(
     dialogTheme: theme.dialogTheme.copyWith(
       clipBehavior: topInset > 0
           ? Clip.antiAlias : theme.dialogTheme.clipBehavior,
       alignment: Alignment.center,
-      insetPadding: const EdgeInsets.all(16),
+      insetPadding: dialogInsets,
       constraints: const BoxConstraints(minWidth: 0),
       backgroundColor: colors.surface,
       surfaceTintColor: Colors.transparent,
@@ -374,8 +382,10 @@ ThemeData launcherDialogTheme(BuildContext context) {
               ? colors.onSurface.withValues(alpha: .38)
               : colors.onSurface,
         ),
-        backgroundColor: const WidgetStatePropertyAll(Colors.transparent),
-        overlayColor: const WidgetStatePropertyAll(Colors.transparent),
+        backgroundColor: WidgetStateProperty.resolveWith((states) =>
+          colors.onSurface.withValues(alpha: states.contains(WidgetState.focused) ? .10 : 0)),
+        overlayColor: WidgetStateProperty.resolveWith((states) =>
+          colors.onSurface.withValues(alpha: states.contains(WidgetState.pressed) ? .18 : 0)),
         side: WidgetStateProperty.resolveWith(
           (states) => BorderSide(
             color:
@@ -427,6 +437,8 @@ class LauncherAlertDialog extends StatelessWidget {
                 : SizedBox(width: contentWidth, child: content),
           ),
     actions: actions,
+    actionsOverflowButtonSpacing: 8,
+    actionsOverflowAlignment: OverflowBarAlignment.end,
   );
 }
 
@@ -454,6 +466,17 @@ class LauncherDialogButton extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
     final defaults = launcherDialogTheme(context).textButtonTheme.style;
     final base = style?.merge(defaults) ?? defaults;
+    final primaryStyle = ButtonStyle(
+      foregroundColor: WidgetStateProperty.resolveWith((states) =>
+          states.contains(WidgetState.disabled) ? colors.onSurface.withValues(alpha: .38) : colors.onPrimary),
+      backgroundColor: WidgetStateProperty.resolveWith((states) =>
+          states.contains(WidgetState.disabled) ? colors.onSurface.withValues(alpha: .08) : colors.primary),
+      overlayColor: WidgetStateProperty.resolveWith((states) =>
+          colors.onPrimary.withValues(alpha: states.contains(WidgetState.pressed) ? .20 : 0)),
+      side: WidgetStateProperty.resolveWith((states) => BorderSide(
+          color: states.contains(WidgetState.focused) ? colors.onPrimary : Colors.transparent,
+          width: LauncherStyle.of(context).rowFocusWidth)),
+    );
     final dangerStyle = ButtonStyle(
       foregroundColor: WidgetStateProperty.resolveWith((states) =>
           states.contains(WidgetState.disabled) ? null : primary ? colors.onError : colors.error),
@@ -463,7 +486,8 @@ class LauncherDialogButton extends StatelessWidget {
           ? BorderSide(color: primary ? colors.onError : colors.error, width: LauncherStyle.of(context).rowFocusWidth)
           : const BorderSide(color: Colors.transparent)),
     );
-    final effectiveStyle = danger ? dangerStyle.merge(base) : base;
+    final effectiveStyle = danger ? dangerStyle.merge(base)
+        : primary ? primaryStyle.merge(base) : base;
     return TextButton(
       autofocus: autofocus,
       focusNode: focusNode,

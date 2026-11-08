@@ -135,7 +135,7 @@ class _WatchNextInfoPanelState extends State<WatchNextInfoPanel> {
             const SizedBox(height: 6),
             Text(
               widget.program.description,
-              style: theme.textTheme.bodySmall?.copyWith(fontSize: 11),
+              style: theme.textTheme.bodySmall,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),

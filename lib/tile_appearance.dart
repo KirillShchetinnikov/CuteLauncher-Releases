@@ -10,9 +10,29 @@ const tileAppearanceKey = 'tile_appearance';
 
 enum SettingsScrollbarMode { hidden, onScroll, always }
 
+enum SettingsSectionStyle { accentBand, surface }
+enum WeatherIconPack { standard, outline, solid, duotone, pixel, geometric, circled }
+
 class TileAppearance {
+  static const informationAppearanceKeys = [
+    'dateTextColor', 'weatherIconPack', 'weatherTextColor', 'weatherIconColor',
+  ];
   final Map<String, dynamic> values;
   const TileAppearance([this.values = const {}]);
+  static String informationAppearanceKey(bool background) =>
+      background ? 'backgroundInformationAppearance' : 'panelInformationAppearance';
+  Object? _informationValue(String key) {
+    final profile = values[informationAppearanceKey(false)];
+    return profile is Map && profile.containsKey(key) ? profile[key] : values[key];
+  }
+  Color? _informationColor(String key) {
+    final value = _informationValue(key);
+    return value is int ? Color(value) : null;
+  }
+  TileAppearance forInformation({bool background = false}) => TileAppearance({
+    ...values,
+    ...?values[informationAppearanceKey(background)] as Map<String, dynamic>?,
+  }..remove('panelInformationAppearance')..remove('backgroundInformationAppearance'));
   /// Resolved values for fields that may inherit from the common home style.
   dynamic homeFieldValue(String key) => switch (key) {
     'size' => tileSize,
@@ -31,6 +51,7 @@ class TileAppearance {
     'shadow' => number('shadow') ?? 0,
     'blurTiles' => blurTiles,
     'sectionTitles' => sectionTitles,
+    'sectionTitleAligned' => sectionTitleAligned,
     'sectionIcons' => sectionIcons,
     'sectionPadding' => number(key) ?? 0,
     'sectionBackground' => values[key] ?? 0,
@@ -52,10 +73,16 @@ class TileAppearance {
     );
   }
   bool get sectionTitles => values['sectionTitles'] != false;
+  bool get sectionTitleAligned => values['sectionTitleAligned'] == true;
   bool get sectionIcons => values['sectionIcons'] == true;
   bool get active =>
-      values.keys.any((key) => key != 'bannerImageMode' && key != 'iconImageMode' && key != 'imageMode' && key != 'fillBanner' && key != 'animateReordering' && key != 'labels' && !key.startsWith('section') && key != 'hideAbove' && key != 'inactiveOpacity' && !key.startsWith('panel') && !key.startsWith('settings') &&
-          !key.startsWith('notice') && key != 'blurPanel' && key != 'focusAlignment');
+      values.keys.any((key) =>
+          !const {'bannerImageMode', 'iconImageMode', 'imageMode', 'fillBanner',
+            'animateReordering', 'labels', 'hideAbove', 'inactiveOpacity', 'blurPanel',
+            'focusAlignment', 'backgroundInformationAppearance'}.contains(key) &&
+          !informationAppearanceKeys.contains(key) &&
+          !key.startsWith('section') && !key.startsWith('panel') &&
+          !key.startsWith('settings') && !key.startsWith('notice'));
   double? number(String key) => (values[key] as num?)?.toDouble();
   double get opacity => number('opacity') ?? 1;
   double get labelSize => number('labelSize') ?? 12;
@@ -111,6 +138,23 @@ class TileAppearance {
       (values.containsKey('panelDateCalendar') ? (dateCalendar ? 'calendar' : 'none') : 'both');
   int get forecastDays => (number('panelForecastDays') ?? 5).toInt();
   bool get detailedForecast => values['panelForecastView'] == 'list';
+  WeatherIconPack get weatherIconPack => switch (_informationValue('weatherIconPack')) {
+    'standard' => WeatherIconPack.standard,
+    'outline' => WeatherIconPack.outline,
+    'solid' => WeatherIconPack.solid,
+    'duotone' => WeatherIconPack.duotone,
+    'pixel' => WeatherIconPack.pixel,
+    'geometric' => WeatherIconPack.geometric,
+    'circled' => WeatherIconPack.circled,
+    _ => WeatherIconPack.outline,
+  };
+  Color? get weatherTextColor => _informationColor('weatherTextColor');
+  Color? get weatherIconColor => _informationColor('weatherIconColor');
+  TextStyle weatherTextStyle(TextStyle base) =>
+      weatherTextColor == null ? base : base.copyWith(color: weatherTextColor);
+  Color? get dateTextColor => _informationColor('dateTextColor');
+  TextStyle dateTextStyle(TextStyle base) =>
+      PanelClockStyle.withTextColor(base, dateTextColor);
   bool get panelWrapNavigation => values['panelWrapNavigation'] == true;
   bool get combinedInformation => values['panelCombinedInformation'] == true;
   bool get informationOnBackground => values['panelInformationPlacement'] == 'background';
@@ -131,7 +175,11 @@ class TileAppearance {
   ];
   List<String> get backgroundInformationOrder =>
       cleanBackgroundInformationOrder(values['panelBackgroundInformationOrder']);
-  String get backgroundInformationAlignment => values['panelBackgroundInformationAlignment'] as String? ?? 'center';
+  // The legacy field placed the block and also aligned its contents.
+  String get backgroundInformationPosition => values['panelBackgroundInformationAlignment'] as String? ?? 'center';
+  String get backgroundInformationAlignment => values['panelBackgroundInformationContentAlignment'] as String? ?? backgroundInformationPosition;
+  double get backgroundInformationOffset => number('panelBackgroundInformationOffset') ?? 0;
+  double get backgroundInformationVerticalOffset => number('panelBackgroundInformationVerticalOffset') ?? 0;
   SettingsScrollbarMode get settingsScrollbarMode =>
       switch (values['settingsScrollbarMode']) {
         'hidden' => SettingsScrollbarMode.hidden,
@@ -139,10 +187,14 @@ class TileAppearance {
         _ => SettingsScrollbarMode.always,
       };
   String get interfaceStyle => values['settingsInterfaceStyle'] as String? ?? 'standard';
+  SettingsSectionStyle get settingsSectionStyle =>
+      values['settingsSectionStyle'] == 'accentBand'
+          ? SettingsSectionStyle.accentBand
+          : SettingsSectionStyle.surface;
   String get interfaceFont => values['settingsInterfaceFont'] as String? ??
       (interfaceStyle == 'standard' ? 'system' : 'outfit');
   PanelClockStyle get clockStyle => PanelClockStyle(PanelClockStyle.validValues(values['panelClockStyle']));
-  PanelClockStyle get informationStyle => PanelClockStyle(
+  PanelClockStyle get informationStyle => PanelClockStyle.panel(
     PanelClockStyle.validValues(values['panelInformationStyle'] ?? values['panelClockStyle'], combined: true));
   double get panelTextSize => number('panelTextSize') ?? 18;
   String get panelFont => values['panelFont'] as String? ?? 'sans-serif';
@@ -205,15 +257,19 @@ class TileAppearance {
       'panelOpacity': (0, 1),
       'panelTextBackgroundOpacity': (0, 1),
       'panelTextSize': (10, 24),
-      'panelBackgroundInformationSize': (48, 144),
+      'panelBackgroundInformationSize': (1, 4096),
+      'panelBackgroundInformationOffset': (-100, 100),
+      'panelBackgroundInformationVerticalOffset': (0, 100),
     };
     const choices = {
       'bannerImageMode': ['contain', 'cover', 'edgeColor', 'icon'],
       'iconImageMode': ['contain', 'cover', 'edgeColor'],
       'panelInformationPlacement': ['panel', 'background'],
       'panelBackgroundInformationAlignment': ['left', 'center', 'right'],
+      'panelBackgroundInformationContentAlignment': ['left', 'center', 'right'],
       'panelInformationAction': ['weather', 'calendar', 'both', 'none'],
       'panelForecastView': ['cards', 'list'],
+      'weatherIconPack': ['standard', 'outline', 'solid', 'duotone', 'pixel', 'geometric', 'circled'],
       'noticeCorner': ['bottomRight', 'bottomLeft', 'topRight', 'topLeft'],
       'labelPosition': ['below', 'inside'],
       'labels': ['none', 'selected', 'all'], 'sectionScroll': ['free', 'anchored'],
@@ -221,14 +277,20 @@ class TileAppearance {
       'focusBorderColor': ['accent', 'dynamic'],
       'focusBorderStyle': ['outline', 'glow', 'none'],
       'panelFont': AppFonts.panelIds,
-      'settingsInterfaceStyle': ['standard', 'glass', 'soft', 'outline'],
+      'settingsInterfaceStyle': ['standard', 'glass', 'soft', 'outline', 'calm'],
       'settingsInterfaceFont': AppFonts.interfaceIds,
       'settingsScrollbarMode': ['hidden', 'onScroll', 'always'],
+      'settingsSectionStyle': ['accentBand', 'surface'],
     };
     for (final entry in input.entries) {
       final key = entry.key;
       final value = entry.value;
       if (key is! String) continue;
+      if (['panelInformationAppearance', 'backgroundInformationAppearance'].contains(key) && value is Map) {
+        result[key] = validValues({for (final field in informationAppearanceKeys)
+          if (value.containsKey(field)) field: value[field]});
+        continue;
+      }
       if (key == 'panelBackgroundInformationOrder' && value is List) {
         result[key] = cleanBackgroundInformationOrder(value);
         continue;
@@ -264,6 +326,9 @@ class TileAppearance {
             'labelColor',
             'shadow',
             'panelColor',
+            'weatherTextColor',
+            'weatherIconColor',
+            'dateTextColor',
           ].contains(key)) {
         result[key] = null;
         continue;
@@ -285,6 +350,9 @@ class TileAppearance {
             'labelColor',
             'panelColor',
             'panelTextColor',
+            'weatherTextColor',
+            'weatherIconColor',
+            'dateTextColor',
             'panelTextBackgroundColor',
             'settingsColor',
             'settingsTextColor',
@@ -302,7 +370,7 @@ class TileAppearance {
         result[key] = value;
       }
       if ([
-            'sectionTitles', 'sectionIcons', 'hideAbove',
+            'sectionTitles', 'sectionTitleAligned', 'sectionIcons', 'hideAbove',
             'focusPulse', 'focusTransition', 'animateReordering',
             'focusShadow',
             'blurTiles',

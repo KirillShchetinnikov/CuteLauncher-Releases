@@ -47,7 +47,7 @@ class CategoryAppearance {
         const keys = ['size', 'aspectRatio', 'bannerImageMode', 'iconImageMode', 'radius', 'horizontalGap',
           'verticalGap', 'iconScale', 'labels', 'labelPosition', 'labelSize', 'labelColor',
           'backgroundColor', 'opacity', 'shadow', 'blurTiles', 'sectionPadding', 'sectionBackground',
-          'sectionTitles', 'sectionIcons', 'sectionOpacity', 'sectionRadius'];
+          'sectionTitles', 'sectionTitleAligned', 'sectionIcons', 'sectionOpacity', 'sectionRadius'];
         result['tiles'] = TileAppearance.validValues(v)
           ..removeWhere((key, _) => !keys.contains(key));
       }

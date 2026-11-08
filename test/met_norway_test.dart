@@ -16,7 +16,7 @@ Map<String, dynamic> fixture() => {'properties': {'timeseries': [
 class Transport implements WeatherTransport {
   Uri? uri;
   @override
-  Future<Map<String, dynamic>> request(Uri value, {String? key}) async {
+  Future<Map<String, dynamic>> request(Uri value, {String? key, bool customServer = false, String? bearerToken, WeatherResponseDecoder? decode}) async {
     uri = value;
     expect(key, isNull);
     final data = fixture();
@@ -41,6 +41,7 @@ void main() {
     final raw = normalizeMetNorway(fixture(), now: DateTime.utc(2026, 10, 22));
     final weather = WeatherData.fromJson(raw);
     expect(weather.currentTemp, -5);
+    expect(weather.feelsLikeTemp, isNull);
     expect(weather.currentHumidity, 80);
     expect(weather.windSpeed, 3.5);
     expect(weather.forecasts.first.precipProbability, isNull);

@@ -8,6 +8,14 @@ void main() {
   SettingsSyncState initial(String device) => SettingsSyncState(device, {});
   SettingsSyncState copy(String device, SettingsSyncState state) =>
       SettingsSyncState(device, state.entries);
+  test('file manager preference propagates between devices', () {
+    const key = 'file_manager_preference';
+    final base = initial('A').capture({key: 'ask'});
+    final changed = base.capture({key: 'external'});
+    final merged = copy('B', base).plan(changed).resolve({});
+    expect(merged.entries[key]!.value, 'external');
+    expect(SettingsSyncState.decode(merged.encode()).entries[key]!.value, 'external');
+  });
   test(
     'disjoint edits converge in both directions without clock timestamps',
     () {

@@ -1,3 +1,4 @@
+import 'settings_information.dart';
 import 'settings_text_tile.dart';
 import 'settings_read_only_value.dart';
 import 'settings_value_stepper.dart';
@@ -279,7 +280,7 @@ class LauncherSectionPanelPage extends StatelessWidget
                           title: Text(localizations.categoryVisible),
                         ),
                         if (!canHide)
-                          Text(localizations.categoryLastVisibleHint),
+                          SettingsMessage(text: localizations.categoryLastVisibleHint),
                         ],
                         );
                       },

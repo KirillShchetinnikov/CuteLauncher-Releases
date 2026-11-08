@@ -1,3 +1,4 @@
+import 'settings_section.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -95,92 +96,153 @@ class _SettingsStylePageState extends State<SettingsStylePage> {
       child: ListView(
         children: [
           if (!notifications)
-            RoundedSwitchListTile(
-              value: settings.appKeyClickEnabled,
-              onChanged: settings.setAppKeyClickEnabled,
-              title: Text(l.appKeyClick),
-            ),
-          if (!notifications)
-            SettingsChoiceTile<SettingsScrollbarMode>(
-              title: l.settingsScrollbar,
-              value: appearance.settingsScrollbarMode,
-              options: SettingsScrollbarMode.values,
-              valueBelow: true,
-              label: (mode) => switch (mode) {
-                SettingsScrollbarMode.hidden => l.settingsScrollbarHidden,
-                SettingsScrollbarMode.onScroll => l.settingsScrollbarOnScroll,
-                SettingsScrollbarMode.always => l.settingsScrollbarAlways,
-              },
-              onChanged: (mode) =>
-                  service.set('settingsScrollbarMode', mode.name),
+            SettingsSection(
+              title: l.settingsGroupControl,
+              children: [
+                if (!notifications)
+                  RoundedSwitchListTile(
+                    value: settings.appKeyClickEnabled,
+                    onChanged: settings.setAppKeyClickEnabled,
+                    title: Text(l.appKeyClick),
+                  ),
+                if (!notifications)
+                  RoundedSwitchListTile(
+                    value: settings.panelTooltipsEnabled,
+                    onChanged: settings.setPanelTooltipsEnabled,
+                    title: Text(l.panelTooltips),
+                  ),
+                if (!notifications)
+                  SettingsChoiceTile<SettingsScrollbarMode>(
+                    title: l.settingsScrollbar,
+                    value: appearance.settingsScrollbarMode,
+                    options: SettingsScrollbarMode.values,
+                    valueBelow: true,
+                    label: (mode) => switch (mode) {
+                      SettingsScrollbarMode.hidden => l.settingsScrollbarHidden,
+                      SettingsScrollbarMode.onScroll =>
+                        l.settingsScrollbarOnScroll,
+                      SettingsScrollbarMode.always => l.settingsScrollbarAlways,
+                    },
+                    onChanged: (mode) =>
+                        service.set('settingsScrollbarMode', mode.name),
+                  ),
+                if (!notifications)
+                  SettingsChoiceTile<bool>(
+                    autofocus: true,
+                    valueBelow: true,
+                    title: l.settingsMenuPosition,
+                    value: settings.settingsMenuOnRight,
+                    options: const [false, true],
+                    label: (right) =>
+                        right ? l.settingsMenuRight : l.settingsMenuLeft,
+                    onChanged: settings.setSettingsMenuOnRight,
+                  ),
+              ],
             ),
           if (notifications)
-            SettingsChoiceTile<NoticeCorner>(
-              autofocus: true,
-              valueBelow: true,
-              title: l.noticePosition,
-              value: NoticeCorner.parse(appearance.values['noticeCorner']),
-              options: NoticeCorner.values,
-              label: (corner) => switch (corner) {
-                NoticeCorner.bottomRight => l.noticeBottomRight,
-                NoticeCorner.bottomLeft => l.noticeBottomLeft,
-                NoticeCorner.topRight => l.noticeTopRight,
-                NoticeCorner.topLeft => l.noticeTopLeft,
-              },
-              onChanged: (corner) => service.set('noticeCorner', corner.name),
+            SettingsSection(
+              title: l.settingsGroupPositionSize,
+              children: [
+                if (notifications)
+                  SettingsChoiceTile<NoticeCorner>(
+                    autofocus: true,
+                    valueBelow: true,
+                    title: l.noticePosition,
+                    value: NoticeCorner.parse(
+                      appearance.values['noticeCorner'],
+                    ),
+                    options: NoticeCorner.values,
+                    label: (corner) => switch (corner) {
+                      NoticeCorner.bottomRight => l.noticeBottomRight,
+                      NoticeCorner.bottomLeft => l.noticeBottomLeft,
+                      NoticeCorner.topRight => l.noticeTopRight,
+                      NoticeCorner.topLeft => l.noticeTopLeft,
+                    },
+                    onChanged: (corner) =>
+                        service.set('noticeCorner', corner.name),
+                  ),
+                if (notifications)
+                  SettingsValueStepper(
+                    title: l.noticeSize,
+                    options: [for (var n = 240; n <= 600; n += 20) n],
+                    value: appearance.number('noticeWidth') ?? 360,
+                    label: (v) => '${(v as num).round()}',
+                    onChanged: (v) => service.set('noticeWidth', v),
+                  ),
+              ],
             ),
           if (!notifications)
-            RoundedSwitchListTile(
-              value: settings.panelTooltipsEnabled,
-              onChanged: settings.setPanelTooltipsEnabled,
-              title: Text(l.panelTooltips),
+            SettingsSection(
+              title: l.settingsGroupGroupsBackground,
+              children: [
+                if (!notifications)
+                  SettingsChoiceTile<SettingsSectionStyle>(
+                    title: l.settingsSectionStyle,
+                    value: appearance.settingsSectionStyle,
+                    options: SettingsSectionStyle.values,
+                    valueBelow: true,
+                    label: (style) => switch (style) {
+                      SettingsSectionStyle.accentBand =>
+                        l.settingsSectionAccentBand,
+                      SettingsSectionStyle.surface => l.settingsSectionSurface,
+                    },
+                    onChanged: (style) =>
+                        service.set('settingsSectionStyle', style.name),
+                  ),
+                color(
+                  l.styleBackgroundColor,
+                  '${prefix}Color',
+                  Theme.of(context).colorScheme.surface.withAlpha(255),
+                ),
+                SettingsPercentageSlider(
+                  title: l.styleTransparency,
+                  value: 1 - (appearance.number('${prefix}Opacity') ?? 1),
+                  onChanged: (v) => service.set('${prefix}Opacity', 1 - v),
+                ),
+              ],
             ),
-          if (!notifications)
-            SettingsChoiceTile<bool>(
-              autofocus: true,
-              valueBelow: true,
-              title: l.settingsMenuPosition,
-              value: settings.settingsMenuOnRight,
-              options: const [false, true],
-              label: (right) =>
-                  right ? l.settingsMenuRight : l.settingsMenuLeft,
-              onChanged: settings.setSettingsMenuOnRight,
-            ),
-          color(
-            l.styleBackgroundColor,
-            '${prefix}Color',
-            Theme.of(context).colorScheme.surface.withAlpha(255),
-          ),
-          SettingsPercentageSlider(
-            title: l.styleTransparency,
-            value: 1 - (appearance.number('${prefix}Opacity') ?? 1),
-            onChanged: (v) => service.set('${prefix}Opacity', 1 - v),
-          ),
           if (notifications)
-            SettingsValueStepper(
-              title: l.noticeSize,
-              options: [for (var n = 240; n <= 600; n += 20) n],
-              value: appearance.number('noticeWidth') ?? 360,
-              label: (v) => '${(v as num).round()}',
-              onChanged: (v) => service.set('noticeWidth', v),
+            SettingsSection(
+              title: l.background,
+              children: [
+                color(
+                  l.styleBackgroundColor,
+                  '${prefix}Color',
+                  Theme.of(context).colorScheme.surface.withAlpha(255),
+                ),
+                SettingsPercentageSlider(
+                  title: l.styleTransparency,
+                  value: 1 - (appearance.number('${prefix}Opacity') ?? 1),
+                  onChanged: (v) => service.set('${prefix}Opacity', 1 - v),
+                ),
+              ],
             ),
-          SettingsValueStepper(
-            title: l.styleTextSize,
-            options: [for (var n = 12; n <= 24; n++) n],
-            value: appearance.number('${prefix}TextSize') ?? 16,
-            label: (v) => '${(v as num).round()}',
-            onChanged: (v) => service.set('${prefix}TextSize', v),
-          ),
-          color(
-            l.styleTextColor,
-            '${prefix}TextColor',
-            Theme.of(context).colorScheme.onSurface,
+          SettingsSection(
+            title: l.settingsGroupText,
+            children: [
+              SettingsValueStepper(
+                title: l.styleTextSize,
+                options: [for (var n = 12; n <= 24; n++) n],
+                value: appearance.number('${prefix}TextSize') ?? 16,
+                label: (v) => '${(v as num).round()}',
+                onChanged: (v) => service.set('${prefix}TextSize', v),
+              ),
+              color(
+                l.styleTextColor,
+                '${prefix}TextColor',
+                Theme.of(context).colorScheme.onSurface,
+              ),
+            ],
           ),
           ResetStyleTile(
             onReset: () async {
               await service.resetFields(
                 {...appearance.values.keys, ...LauncherDefaults.appearance.keys}
-                    .where((key) => key.startsWith(prefix) && !key.startsWith('settingsInterface'))
+                    .where(
+                      (key) =>
+                          key.startsWith(prefix) &&
+                          !key.startsWith('settingsInterface'),
+                    )
                     .toList(),
               );
               if (!notifications) {

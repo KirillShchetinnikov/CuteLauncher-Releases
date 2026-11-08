@@ -12,6 +12,7 @@ import '../action_notice.dart';
 import '../launcher_dialog.dart';
 import 'focusable_settings_tile.dart';
 import 'settings_page_layout.dart';
+import 'settings_choice_dialog.dart';
 import 'settings_read_only_value.dart';
 
 class LocalBackupPage extends StatelessWidget {
@@ -48,36 +49,18 @@ class LocalBackupPage extends StatelessWidget {
               try {
                 final folder = await showLauncherDialog<String>(
                   context: context,
-                  builder: (dialog) => SimpleDialog(
+                  builder: (dialog) => SettingsChoiceDialog<String>(
                     title: Text(l.backupFolderPath),
-                    children: [
-                      SizedBox(
-                        width: 400,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            FocusableSettingsTile(
-                              autofocus: service.localFolder == null,
-                              title: Text(l.backupPrivateFolder),
-                              onPressed: () => Navigator.pop(dialog, 'private'),
-                            ),
-                            FocusableSettingsTile(
-                              autofocus:
-                                  service.localFolder ==
-                                  LocalBackupStorage.downloadsFolder,
-                              title: Text(l.backupDownloadsFolder),
-                              onPressed: () =>
-                                  Navigator.pop(dialog, 'downloads'),
-                            ),
-                            FocusableSettingsTile(
-                              title: Text(l.backupChooseFolder),
-                              onPressed: () =>
-                                  Navigator.pop(dialog, 'external'),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                    value: service.localFolder == null ? 'private'
+                        : service.localFolder == LocalBackupStorage.downloadsFolder
+                        ? 'downloads' : 'external',
+                    options: const ['private', 'downloads', 'external'],
+                    optionBuilder: (value) => Text(switch (value) {
+                      'private' => l.backupPrivateFolder,
+                      'downloads' => l.backupDownloadsFolder,
+                      _ => l.backupChooseFolder,
+                    }),
+                    onSelected: (value) => Navigator.pop(dialog, value),
                   ),
                 );
                 if (folder == null) return;
@@ -100,9 +83,7 @@ class LocalBackupPage extends StatelessWidget {
                 final uri = await FileSelection.select<String>(
                   context,
                   'pickBackupFolder',
-                  initialPath: service.localFolder?.startsWith('file:') == true
-                      ? service.localFolder
-                      : null,
+                  initialPath: service.localFolder,
                 );
                 if (uri != null && context.mounted) {
                   await service.setLocalFolder(uri);

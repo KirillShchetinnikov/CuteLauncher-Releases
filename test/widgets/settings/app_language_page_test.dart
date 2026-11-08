@@ -2,7 +2,7 @@ import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/language_names.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/settings/app_language_page.dart';
-import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
+import 'package:flauncher/widgets/settings/settings_option_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -48,7 +48,7 @@ void main() {
       await tester.pumpAndSettle();
       final list = tester.widget<ListView>(find.byType(ListView));
       final rows = (list.childrenDelegate as SliverChildListDelegate).children;
-      final labels = rows.whereType<FocusableSettingsTile>()
+      final labels = rows.whereType<SettingsOptionTile>()
           .map((row) => (row.title as Text).data).toList();
       expect(labels, containsAll(languageNames.values));
       expect(Directionality.of(tester.element(find.byType(AppLanguagePage))),

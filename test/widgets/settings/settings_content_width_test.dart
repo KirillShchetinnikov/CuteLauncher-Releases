@@ -13,6 +13,7 @@ import 'package:flauncher/widgets/settings/continue_watching_card_size_page.dart
 import 'package:flauncher/widgets/settings/continue_watching_max_items_page.dart';
 import 'package:flauncher/widgets/settings/screensaver_clock_style_page.dart';
 import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
+import 'package:flauncher/widgets/settings/settings_section.dart';
 import 'package:flauncher/widgets/settings/interface_settings_page.dart';
 import 'package:flauncher/widgets/settings/notifications_settings_page.dart';
 import 'package:flauncher/widgets/settings/updates_page.dart';
@@ -99,14 +100,20 @@ void main() {
         await tester.pumpAndSettle();
         final viewport = tester.getRect(find.byType(Scrollbar).first);
         for (final tile in find.byType(FocusableSettingsTile).evaluate()) {
-          final rect = tester.getRect(find.byWidget(tile.widget));
-          expect(rect.left, closeTo(viewport.left + 14, .01));
-          expect(rect.right, closeTo(viewport.right, .01));
+          final finder = find.byWidget(tile.widget);
+          final grouped = find.ancestor(of: finder, matching: find.byType(SettingsSection)).evaluate().isNotEmpty;
+          final inset = grouped ? 6 : 0;
+          final rect = tester.getRect(finder);
+          expect(rect.left, closeTo(viewport.left + 14 + inset, .01));
+          expect(rect.right, closeTo(viewport.right - inset, .01));
         }
         for (final button in find.byType(InkWell).evaluate()) {
-          final rect = tester.getRect(find.byWidget(button.widget));
-          expect(rect.left, closeTo(viewport.left + 14, .01));
-          expect(rect.right, closeTo(viewport.right, .01));
+          final finder = find.byWidget(button.widget);
+          final grouped = find.ancestor(of: finder, matching: find.byType(SettingsSection)).evaluate().isNotEmpty;
+          final inset = grouped ? 6 : 0;
+          final rect = tester.getRect(finder);
+          expect(rect.left, closeTo(viewport.left + 14 + inset, .01));
+          expect(rect.right, closeTo(viewport.right - inset, .01));
         }
         expect(tester.takeException(), isNull);
         await tester.pumpWidget(const SizedBox.shrink());

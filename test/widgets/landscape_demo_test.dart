@@ -54,6 +54,10 @@ void main() {
       SettingsRoute(builder: (_) => const LandscapePage()),
     );
     await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(find.text('Демонстрация изменений'), 180);
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Демонстрация изменений'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Демонстрация изменений'));
     await tester.pump();
     await tester.pump(const Duration(seconds: 3));
@@ -62,6 +66,10 @@ void main() {
     await tester.pumpAndSettle();
     expect(settings.landscapeDemo.value, isNull);
     expect(find.byType(LandscapePage), findsOneWidget);
+    await tester.scrollUntilVisible(find.text('Демонстрация изменений'), 180);
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Демонстрация изменений'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Демонстрация изменений'));
     await tester.pump();
     await navigator.currentState!.maybePop();
@@ -124,6 +132,10 @@ void main() {
       navigator.push(SettingsRoute(builder: (_) => const LandscapePage()));
       await tester.pumpAndSettle();
       final pageState = tester.state(find.byType(LandscapePage));
+      await tester.scrollUntilVisible(find.text('Демонстрация изменений'), 180);
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('Демонстрация изменений'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Демонстрация изменений'));
       await tester.pumpAndSettle();
       expect(find.byType(LandscapePage), findsNothing);
@@ -749,6 +761,10 @@ void main() {
     );
     await tester.pumpAndSettle();
     final beforeStart = DateTime.now();
+    await tester.scrollUntilVisible(find.text('Демонстрация изменений'), 180);
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Демонстрация изменений'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Демонстрация изменений'));
     final afterStart = DateTime.now();
     await tester.pump();
@@ -774,6 +790,10 @@ void main() {
     await tester.tap(find.text('Стоп'));
     await tester.pump();
     expect(settings.landscapeDemo.value, isNull);
+    await tester.scrollUntilVisible(find.text('Демонстрация изменений'), 180);
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Демонстрация изменений'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Демонстрация изменений'));
     await tester.pump();
     tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
@@ -781,6 +801,10 @@ void main() {
     expect(settings.landscapeDemo.value, isNull);
     tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
     await tester.pump();
+    await tester.scrollUntilVisible(find.text('Облака'), -180);
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Облака'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Облака'));
     await tester.pumpAndSettle();
     expect(settings.landscape.clouds, false);
@@ -804,6 +828,10 @@ void main() {
       scrollable.position.jumpTo(scrollable.position.minScrollExtent);
       await tester.pumpAndSettle();
     }
+    await tester.scrollUntilVisible(find.text('Демонстрация изменений'), 180);
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Демонстрация изменений'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Демонстрация изменений'));
     await tester.pump();
     await tester.pump(
@@ -825,6 +853,10 @@ void main() {
       scrollable.position.jumpTo(scrollable.position.minScrollExtent);
       await tester.pumpAndSettle();
     }
+    await tester.scrollUntilVisible(find.text('Демонстрация изменений'), 180);
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Демонстрация изменений'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Демонстрация изменений'));
     await tester.pump();
     await tester.pumpWidget(const SizedBox.shrink());

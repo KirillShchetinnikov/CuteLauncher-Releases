@@ -1,4 +1,5 @@
 import 'package:flauncher/bridge_result.dart';
+
 import 'dart:async';
 import 'dart:io';
 
@@ -11,12 +12,17 @@ class RemoteTextInput extends StatefulWidget {
   final bool traverseWhenHidden;
   final Stream<bool>? imeVisibility;
   final ValueChanged<bool>? onEditorFocusChanged;
+  final VoidCallback? onActivate;
+  /// Native IME visibility, including floating keyboards with zero insets.
+  final ValueChanged<bool>? onKeyboardVisibilityChanged;
   const RemoteTextInput({
     super.key,
     required this.child,
     this.traverseWhenHidden = true,
     this.imeVisibility,
     this.onEditorFocusChanged,
+    this.onActivate,
+    this.onKeyboardVisibilityChanged,
   });
 
   @override
@@ -24,7 +30,10 @@ class RemoteTextInput extends StatefulWidget {
 }
 
 class _RemoteTextInputState extends State<RemoteTextInput> {
-  static const _editorChannel = BridgeChannel('cutelauncher/tv_ime_editor', preserveErrorCodes: true);
+  static const _editorChannel = BridgeChannel(
+    'cutelauncher/tv_ime_editor',
+    preserveErrorCodes: true,
+  );
   static int _nextEditor = 0;
   final int _editor = ++_nextEditor;
   bool _focused = false;
@@ -46,6 +55,7 @@ class _RemoteTextInputState extends State<RemoteTextInput> {
     _subscription = events.listen((value) {
       if (mounted && value is bool && value != _imeVisible) {
         setState(() => _imeVisible = value);
+        widget.onKeyboardVisibilityChanged?.call(value);
       }
     }, onError: (_) {});
   }
@@ -105,6 +115,10 @@ class _RemoteTextInputState extends State<RemoteTextInput> {
         actions: {
           ActivateIntent: CallbackAction<ActivateIntent>(
             onInvoke: (_) {
+              if (widget.onActivate != null) {
+                widget.onActivate!();
+                return null;
+              }
               FocusManager.instance.primaryFocus?.context
                   ?.findAncestorStateOfType<EditableTextState>()
                   ?.requestKeyboard();

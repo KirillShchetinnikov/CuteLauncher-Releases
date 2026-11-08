@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flauncher/providers/remote_panel_service.dart';
 import 'package:flauncher/settings_import.dart';
+import 'package:flauncher/tile_appearance.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_platform_interface.dart';
@@ -33,6 +34,21 @@ class _RejectOnceStore extends InMemorySharedPreferencesStore {
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   setUp(() => SharedPreferences.setMockInitialValues({}));
+
+  test('quick panel shares weather appearance while using its own panel text color', () async {
+    final service = RemotePanelService(await SharedPreferences.getInstance());
+    addTearDown(service.dispose);
+    await service.set('inheritAppearance', false);
+    await service.setAppearance('panelTextColor', 0xff224466);
+    final appearance = service.appearanceFor(const TileAppearance({
+      'panelTextColor': 0xffeeeeee,
+      'weatherIconPack': 'pixel',
+      'weatherIconColor': 0xff99bbdd,
+    }));
+    expect(appearance.weatherIconPack, WeatherIconPack.pixel);
+    expect(appearance.weatherIconColor?.toARGB32(), 0xff99bbdd);
+    expect(appearance.weatherTextStyle(appearance.panelTextStyle).color?.toARGB32(), 0xff224466);
+  });
 
   test(
     'overlapping visibility and appearance changes preserve both choices',

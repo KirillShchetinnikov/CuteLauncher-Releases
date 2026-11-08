@@ -3,6 +3,7 @@ import 'settings_page_layout.dart';
 import 'custom_date_format_dialog.dart';
 import '../launcher_dialog.dart';
 import 'settings_panel_presentation.dart';
+import '../../information_formats.dart';
 /*
  * FLauncher
  * Copyright (C) 2021  Oscar Rojas
@@ -74,13 +75,15 @@ class DateTimeFormatPage extends StatelessWidget {
 }
 
 class TimeFormatSettingsTile extends StatelessWidget {
-  const TimeFormatSettingsTile({super.key});
+  final bool background;
+  const TimeFormatSettingsTile({super.key, this.background = false});
   @override
   Widget build(BuildContext context) {
     final service = context.watch<SettingsService>();
+    final formats = service.informationDateTime(background: background);
     return SettingsChoiceTile<String>(
-      title: AppLocalizations.of(context)!.time,
-      value: service.timeFormat,
+      title: AppLocalizations.of(context)!.informationTimeFormat,
+      value: formats.time,
       options: timeFormatPresets.map((v) => v.$1).toList(),
       label: (v) {
         final formatter = DateFormat(v, Localizations.localeOf(context).toString());
@@ -90,24 +93,27 @@ class TimeFormatSettingsTile extends StatelessWidget {
         }
         return afternoon;
       },
-      onChanged: (v) => service.setDateTimeFormat(service.dateFormat, v),
+      onChanged: (v) => service.setInformationDateTime(
+        InformationDateTimeFormat(date: formats.date, time: v), background: background),
     );
   }
 }
 
 class DateFormatSettingsTile extends StatelessWidget {
-  const DateFormatSettingsTile({super.key});
+  final bool background;
+  const DateFormatSettingsTile({super.key, this.background = false});
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
     final service = context.watch<SettingsService>();
+    final formats = service.informationDateTime(background: background);
     const custom = 'custom';
-    final isCustom = !dateFormatPresets.any((v) => v.$1 == service.dateFormat);
+    final isCustom = !dateFormatPresets.any((v) => v.$1 == formats.date);
     return SettingsChoiceTile<String>(
-      title: l.date,
+      title: l.informationDateFormat,
       autofocus: true,
-      value: isCustom ? custom : service.dateFormat,
-      valueLabel: isCustom ? formatLauncherDate(service.dateFormat,
+      value: isCustom ? custom : formats.date,
+      valueLabel: isCustom ? formatLauncherDate(formats.date,
           DateTime.now(), Localizations.localeOf(context).toString()) : null,
       options: [custom, ...dateFormatPresets.map((v) => v.$1)],
       label: (v) => v == custom ? l.customDateFormat : formatLauncherDate(
@@ -117,10 +123,10 @@ class DateFormatSettingsTile extends StatelessWidget {
       ),
       onChanged: (v) async {
         if (v == custom) {
-          final pattern = switch (service.dateFormat) {
+          final pattern = switch (formats.date) {
             compactDateFormat => 'E d MMM',
             shortWeekdayDateFormat => 'E, d MMM',
-            _ => service.dateFormat,
+            _ => formats.date,
           };
           final result = await SettingsPanelPresentation.runHidden(
             context,
@@ -128,14 +134,16 @@ class DateFormatSettingsTile extends StatelessWidget {
               context: context,
               parentPanelHidden: true,
               parentPanelWidth: 0,
-              builder: (_) => CustomDateFormatDialog(pattern: pattern),
+              builder: (_) => CustomDateFormatDialog(
+                pattern: pattern,
+              ),
             ),
           );
           if (result != null && context.mounted) {
-            await service.setDateTimeFormat(result, service.timeFormat);
+            await service.setInformationDateTime(InformationDateTimeFormat(date: result, time: formats.time), background: background);
           }
         } else {
-          await service.setDateTimeFormat(v, service.timeFormat);
+          await service.setInformationDateTime(InformationDateTimeFormat(date: v, time: formats.time), background: background);
         }
       },
     );

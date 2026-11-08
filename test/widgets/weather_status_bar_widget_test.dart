@@ -2,6 +2,10 @@ import 'package:flauncher/models/weather_data.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/weather_service.dart';
 import 'package:flauncher/widgets/weather_status_bar_widget.dart';
+import 'package:flauncher/widgets/weather_glyph.dart';
+import 'package:flauncher/tile_appearance.dart';
+import 'package:flauncher/weather_text_format.dart';
+import 'package:flauncher/weather_format_template.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flauncher/custom_traversal_policy.dart';
@@ -37,6 +41,7 @@ void main() {
 
     when(mockSettingsService.showWeatherInStatusBar).thenReturn(true);
     when(mockSettingsService.useFahrenheit).thenReturn(false);
+    when(mockSettingsService.weatherTextFormat).thenReturn(WeatherTextFormat.standard);
     when(mockWeatherService.hasWeather).thenReturn(true);
     when(mockWeatherService.stale).thenReturn(false);
     when(mockWeatherService.weatherData).thenReturn(testWeatherWithWarning);
@@ -67,8 +72,9 @@ void main() {
     expect(textWidget.style?.color, Colors.white);
     expect(textWidget.style?.fontWeight, FontWeight.w400);
 
-    final iconWidget = tester.widget<Icon>(find.byType(Icon));
-    expect(iconWidget.icon, Icons.wb_sunny_outlined);
+    final iconWidget = tester.widget<WeatherGlyph>(find.byType(WeatherGlyph));
+    expect(iconWidget.condition, WeatherCondition.sun);
+    expect(iconWidget.pack, WeatherIconPack.outline);
     expect(iconWidget.color, Colors.white);
 
     final container = tester.widget<AnimatedContainer>(find.byType(AnimatedContainer));
@@ -76,6 +82,40 @@ void main() {
     final border = boxDecoration.border as Border;
     expect(border.top.color, Colors.transparent);
     expect(border.top.width, 2.0);
+  });
+
+  testWidgets('template warnings are inline, unique and suppressed for stale data', (tester) async {
+    when(mockSettingsService.showWeatherWarnings).thenReturn(true);
+    when(mockSettingsService.weatherTextFormat).thenReturn(parseWeatherTemplate('{TEMP} ({WARN})').format!);
+    await tester.pumpWidget(createWidgetUnderTest());
+    expect(find.text('27°C (80% Rain today)'), findsOneWidget);
+    expect(find.byType(WeatherGlyph), findsNothing);
+    when(mockWeatherService.stale).thenReturn(true);
+    await tester.pumpWidget(KeyedSubtree(key: const ValueKey('stale'), child: createWidgetUnderTest()));
+    expect(find.text('27°C'), findsOneWidget);
+    expect(find.textContaining('Rain'), findsNothing);
+  });
+
+  testWidgets('renders two custom weather lines inside one panel button', (tester) async {
+    when(mockSettingsService.showWeatherWarnings).thenReturn(false);
+    when(mockSettingsService.weatherTextFormat).thenReturn(
+      WeatherTextFormat.fromBlocks(const [
+        WeatherTextBlock(WeatherTextField.temperature),
+        WeatherTextBlock(WeatherTextField.lineBreak),
+        WeatherTextBlock(WeatherTextField.feelsLike, before: '(', after: ')'),
+      ])!,
+    );
+    when(mockWeatherService.weatherData).thenReturn(
+      const WeatherData(currentTemp: 6, feelsLikeTemp: 0),
+    );
+    await tester.pumpWidget(createWidgetUnderTest());
+    final first = tester.getRect(find.text('6°C'));
+    final second = tester.getRect(find.text('(0°C)'));
+    final button = tester.getRect(find.byType(AnimatedContainer));
+    expect(first.bottom, lessThanOrEqualTo(second.top));
+    expect(button.contains(first.center), isTrue);
+    expect(button.contains(second.center), isTrue);
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('renders harmonized styling and current icon when weather warnings is enabled', (tester) async {
@@ -91,8 +131,9 @@ void main() {
     expect(textWidget.style?.fontWeight, FontWeight.w400);
 
     // Current condition icon remains sunny, not overridden by warning
-    final iconWidget = tester.widget<Icon>(find.byType(Icon));
-    expect(iconWidget.icon, Icons.wb_sunny_outlined);
+    final iconWidget = tester.widget<WeatherGlyph>(find.byType(WeatherGlyph));
+    expect(iconWidget.condition, WeatherCondition.sun);
+    expect(iconWidget.pack, WeatherIconPack.outline);
     expect(iconWidget.color, Colors.white);
 
     // Border remains subtle white with width 1.0, not amber

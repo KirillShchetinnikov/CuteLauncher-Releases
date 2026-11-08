@@ -1,5 +1,5 @@
+import 'settings_option_tile.dart';
 import 'reset_style_tile.dart';
-import 'focusable_settings_tile.dart';
 import 'settings_page_layout.dart';
 import 'settings_help.dart';
 /*
@@ -141,12 +141,10 @@ class _StyleRadioTile extends StatelessWidget {
     this.autofocus = false,
   });
   @override
-  Widget build(BuildContext context) => FocusableSettingsTile(
+  Widget build(BuildContext context) => SettingsOptionTile(
     autofocus: autofocus,
     title: Text(title),
-    trailing: value == groupValue
-        ? const Icon(Icons.check)
-        : const SizedBox.shrink(),
+    selected: value == groupValue,
     onPressed: () => onChanged(value),
   );
 }

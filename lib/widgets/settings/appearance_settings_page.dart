@@ -39,11 +39,12 @@ class AppearanceSettingsPage extends StatelessWidget {
             SettingsChoiceTile<String>(
               title: l.interfaceStyle,
               value: appearance.interfaceStyle,
-              options: const ['standard', 'glass', 'soft', 'outline'],
+              options: const ['standard', 'glass', 'soft', 'outline', 'calm'],
               label: (id) => switch (id) {
                 'glass' => l.interfaceGlass,
                 'soft' => l.interfaceSoft,
                 'outline' => l.interfaceOutline,
+                'calm' => l.interfaceCalm,
                 _ => l.interfaceStandard,
               },
               onChanged: (v) => service.set('settingsInterfaceStyle', v),

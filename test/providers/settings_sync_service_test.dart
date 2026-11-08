@@ -7,6 +7,7 @@ import 'package:shared_preferences_platform_interface/shared_preferences_platfor
 import 'package:flauncher/providers/settings_sync_service.dart';
 import 'package:flauncher/settings_import.dart';
 import 'package:flauncher/settings_sync.dart';
+import 'package:flauncher/tile_appearance.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -184,6 +185,25 @@ void main() {
     expect(preferences.getString(syncStateKey), baseline.encode());
     expect(preferences.get('settings_sync_pending'), isNull);
     expect(preferences.getString('weather_api_key'), 'secret');
+  });
+
+  test('sync transfers wallpaper block placement together', () async {
+    final baseline = await export();
+    final other = SettingsSyncState('B', baseline.entries).capture({
+      tileAppearanceKey: jsonEncode({
+        'panelBackgroundInformationAlignment': 'left',
+        'panelBackgroundInformationContentAlignment': 'right',
+        'panelBackgroundInformationOffset': 60,
+      }),
+    });
+    final preview = await service.preview(await remote(other));
+    await service.apply(preview, {});
+
+    final appearance = TileAppearance.decode(preferences.getString(tileAppearanceKey));
+    expect(appearance.backgroundInformationPosition, 'left');
+    expect(appearance.backgroundInformationAlignment, 'right');
+    expect(appearance.backgroundInformationOffset, 60);
+    expect((await export()).entries[tileAppearanceKey]!.value, isNotNull);
   });
   test(
     'files larger than the exchange budget are rejected before parsing',

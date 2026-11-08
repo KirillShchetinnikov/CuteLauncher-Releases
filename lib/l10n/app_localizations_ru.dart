@@ -10,6 +10,61 @@ class AppLocalizationsRu extends AppLocalizations {
   AppLocalizationsRu([String locale = 'ru']) : super(locale);
 
   @override
+  String get weatherTextResetFormat => 'Сбросить формат';
+
+  @override
+  String get settingsReportFile => 'Файл отчёта';
+
+  @override
+  String get homeVisibleRowsLabel => 'Полностью видимых строк';
+
+  @override
+  String get watchNextEmpty => 'Карточек «Продолжить просмотр» пока нет';
+
+  @override
+  String get inputsUnavailableStatus => 'Доступных входов нет';
+
+  @override
+  String get remoteButtonsNoEvents => 'Событий пока нет';
+
+  @override
+  String get informationBackgroundVerticalOffset => 'Смещение по вертикали';
+
+  @override
+  String get informationResetPositionSize => 'Сбросить все настройки экрана';
+
+  @override
+  String get weatherIconsGeometric => 'Геометрические';
+
+  @override
+  String get weatherIconsCircled => 'В круге';
+
+  @override
+  String get informationCommonAppearance => 'Общие настройки';
+
+  @override
+  String get informationTimeFormat => 'Формат времени';
+
+  @override
+  String get informationDateFormat => 'Формат даты';
+
+  @override
+  String get informationInheritPanelTypography =>
+      'Наследовать оформление верхней панели';
+
+  @override
+  String get informationResetTypography => 'Сбросить настройки';
+
+  @override
+  String get alignSectionTitles => 'Выровнять заголовки по плиткам';
+
+  @override
+  String get homeAppName => 'Имя на главном экране';
+
+  @override
+  String get restoreSystemAppName => 'Вернуть системное имя';
+
+  @override
   String get settingsScrollbar => 'Полоса прокрутки';
 
   @override
@@ -3810,6 +3865,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get interfaceStandard => 'Стандартный';
 
   @override
+  String get interfaceCalm => 'Спокойный';
+
+  @override
   String get interfaceGlass => 'Стекло';
 
   @override
@@ -4550,6 +4608,72 @@ class AppLocalizationsRu extends AppLocalizations {
   String get informationShowBoth => 'Погода и календарь';
 
   @override
+  String get weatherTextFormat => 'Формат текста погоды';
+
+  @override
+  String get weatherTextTemperature => 'Температура';
+
+  @override
+  String get weatherTextApparent => 'Ощущается';
+
+  @override
+  String get weatherTextConditions => 'Условия';
+
+  @override
+  String get weatherTextHumidity => 'Влажность';
+
+  @override
+  String get weatherTextLow => 'Мин. сегодня';
+
+  @override
+  String get weatherTextHigh => 'Макс. сегодня';
+
+  @override
+  String get weatherTextLiteral => 'Свой текст';
+
+  @override
+  String get weatherTextNewline => 'Перенос строки';
+
+  @override
+  String get weatherTextBefore => 'Перед блоком';
+
+  @override
+  String get weatherTextAfter => 'После блока';
+
+  @override
+  String get weatherTextYourFormat => 'Ваш формат';
+
+  @override
+  String get weatherTextAdd => 'Добавить блок';
+
+  @override
+  String get weatherTextMoveEarlier => 'Переместить раньше';
+
+  @override
+  String get weatherTextMoveLater => 'Переместить позже';
+
+  @override
+  String get weatherTextHelp =>
+      'Введите свой текст и обозначения в фигурных скобках или вставляйте их кнопками в позицию курсора. Регистр не важен. Круглые скобки вокруг одного значения скрываются вместе с ним, если данных нет. Обычные фигурные скобки удваивайте. Разрешён один перенос строки.';
+
+  @override
+  String get weatherTextSaveError =>
+      'Не удалось сохранить формат текста погоды.';
+
+  @override
+  String get weatherTextSampleCity => 'Санкт-Петербург';
+
+  @override
+  String weatherTextMetersPerSecond(String speed) {
+    return '$speed м/с';
+  }
+
+  @override
+  String weatherFeelsLike(String temperature) {
+    return 'Ощущается как $temperature';
+  }
+
+  @override
   String get weatherForecastTitle => 'Прогноз погоды';
 
   @override
@@ -4842,7 +4966,17 @@ class AppLocalizationsRu extends AppLocalizations {
   String get informationOnBackground => 'На фоне';
 
   @override
-  String get informationBackgroundAlignment => 'Расположение на фоне';
+  String get informationBackgroundPosition => 'Расположение блока';
+
+  @override
+  String get informationBackgroundOffset => 'Смещение по горизонтали';
+
+  @override
+  String get informationBackgroundResetOffset => 'Сбросить смещение';
+
+  @override
+  String get informationBackgroundContentAlignment =>
+      'Выравнивание внутри блока';
 
   @override
   String get informationBackgroundHelp =>
@@ -5151,4 +5285,362 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get appProcessStopped => 'Не запущено';
+
+  @override
+  String get weatherCustomServer => 'Свой сервер (Open-Meteo)';
+
+  @override
+  String get widgetSettings => 'Настройки виджета';
+
+  @override
+  String get weatherServerUrlImport => 'Импортировать адрес из файла';
+
+  @override
+  String get weatherServerUrlImportError =>
+      'Ошибка импорта: Выберите текстовый файл UTF-8 до 4 КБ, содержащий только базовый HTTPS-адрес сервера.';
+
+  @override
+  String get weatherImportReadError =>
+      'Не удалось прочитать файл импорта. Проверьте доступ к файлу.';
+
+  @override
+  String get weatherImportEncodingError =>
+      'Ошибка импорта: файл не в кодировке UTF-8.';
+
+  @override
+  String get weatherImportTooLargeError => 'Ошибка импорта: файл больше 4 КБ.';
+
+  @override
+  String get weatherImportSaveError =>
+      'Не удалось сохранить значение. Повторите ввод или импорт.';
+
+  @override
+  String get weatherTokenInvalid => 'Некорректный формат токена.';
+
+  @override
+  String get weatherServerUrl => 'HTTPS-адрес сервера';
+
+  @override
+  String get weatherServerUrlHint =>
+      'Введите базовый HTTPS-адрес без /v1/forecast, учётных данных, параметров запроса и фрагмента.';
+
+  @override
+  String get weatherServerCoordinates => 'Ввести координаты';
+
+  @override
+  String get weatherServerCoordinatesHint =>
+      'Введите широту и долготу через запятую. Для дробной части используйте точку. Пример: 50.0, 30.0.';
+
+  @override
+  String get weatherIconPack => 'Набор значков погоды';
+
+  @override
+  String get weatherIconsStandard => 'Стандартные';
+
+  @override
+  String get weatherIconsOutline => 'Контурные';
+
+  @override
+  String get weatherIconsSolid => 'С заливкой';
+
+  @override
+  String get weatherIconsDuotone => 'Двухтонные';
+
+  @override
+  String get weatherIconsPixel => 'Пиксельные';
+
+  @override
+  String get weatherTextColor => 'Цвет текста погоды';
+
+  @override
+  String get weatherIconColor => 'Цвет значков погоды';
+
+  @override
+  String get weatherIconFollowsText => 'Как у текста погоды';
+
+  @override
+  String get informationDateColor => 'Цвет даты';
+
+  @override
+  String get clockTextColor => 'Цвет часов';
+
+  @override
+  String get weatherServerToken => 'Bearer-токен (необязательно)';
+
+  @override
+  String get weatherServerTokenImport => 'Импортировать токен из файла';
+
+  @override
+  String get weatherServerTokenImportError =>
+      'Ошибка импорта: Выберите текстовый файл UTF-8 до 4 КБ, содержащий только токен.';
+
+  @override
+  String get weatherCheckConnection => 'Проверить соединение';
+
+  @override
+  String get weatherServerAccessError =>
+      'Сервер отказал в доступе. Проверьте токен и права доступа на сервере.';
+
+  @override
+  String get weatherServerParametersError =>
+      'Сервер отклонил параметры запроса или координаты.';
+
+  @override
+  String get informationComposition => 'Формат объектов';
+
+  @override
+  String get informationLayout => 'Компоновка блока';
+
+  @override
+  String get informationPositionSize => 'Положение и размер';
+
+  @override
+  String get informationTypography => 'Шрифт и цифры';
+
+  @override
+  String get informationColors => 'Цвета и эффекты';
+
+  @override
+  String get informationLayers => 'Слои фонового блока';
+
+  @override
+  String get informationAvoidOverlap => 'Не перекрывать блок настройками';
+
+  @override
+  String get weatherPresetBrief => 'Кратко';
+
+  @override
+  String get weatherPresetFeels => 'С ощущением';
+
+  @override
+  String get weatherPresetDetails => 'Подробно';
+
+  @override
+  String get informationAvoidOverlapHelp =>
+      'При оформлении фона меню временно выбирает сторону с меньшим перекрытием блока. Если свободного места нет, показывается отдельный предпросмотр. После выхода возвращается обычная сторона меню.';
+
+  @override
+  String get informationProfileHelp =>
+      'Форматы и цвета панели и фона независимы. Источник погоды общий. Быстрая панель и прогноз используют оформление верхней панели; видимость и объединение быстрой панели сохраняются отдельно.';
+
+  @override
+  String get weatherCompactLayout =>
+      'В объединённом блоке с датой перенос погоды отображается пробелом. Сохранённый формат не меняется.';
+
+  @override
+  String get weatherFormatInvalid =>
+      'Добавьте погодное поле. Допустимы до 12 блоков, один перенос строки и до 60 символов в каждом текстовом поле.';
+
+  @override
+  String get fileManagerPreference => 'Файловый менеджер';
+
+  @override
+  String get fileManagerAsk => 'Выбирать каждый раз';
+
+  @override
+  String get fileManagerBuiltIn => 'Встроенный';
+
+  @override
+  String get fileManagerExternal => 'Внешний';
+
+  @override
+  String get fileBrowserStartFolder => 'Начальная папка';
+
+  @override
+  String get fileBrowserStorage => 'Память ТВ';
+
+  @override
+  String get fileBrowserDownloads => 'Загрузки';
+
+  @override
+  String get fileBrowserLastFolder => 'Последняя открытая';
+
+  @override
+  String get fileBrowserSort => 'Сортировка';
+
+  @override
+  String get fileBrowserSortName => 'По имени';
+
+  @override
+  String get fileBrowserSortDate => 'По дате изменения';
+
+  @override
+  String get fileBrowserSortSize => 'По размеру';
+
+  @override
+  String get fileBrowserOrder => 'Порядок сортировки';
+
+  @override
+  String get fileBrowserAscending => 'По возрастанию';
+
+  @override
+  String get fileBrowserDescending => 'По убыванию';
+
+  @override
+  String get fileBrowserFoldersFirst => 'Папки всегда сверху';
+
+  @override
+  String get fileBrowserShowHidden => 'Показывать скрытые файлы и папки';
+
+  @override
+  String get fileBrowserShowDetails => 'Показывать размер и дату';
+
+  @override
+  String get fileBrowserOptionsHelp =>
+      'Уже выбранная папка или исходная папка выбранного изображения открывается в первую очередь. Последняя открытая папка запоминается отдельно для каждого действия, в том числе после отмены. Если папка недоступна, открываются память ТВ или «Загрузки». История папок хранится только на этом ТВ.';
+
+  @override
+  String get fileBrowserSaveFailed =>
+      'Не удалось сохранить настройки проводника.';
+
+  @override
+  String get settingsSectionStyle => 'Оформление групп';
+
+  @override
+  String get settingsSectionAccentBand => 'Акцентная полоса';
+
+  @override
+  String get settingsSectionSurface => 'Общая поверхность';
+
+  @override
+  String get panelTextAndButtonsGroup => 'Текст и кнопки';
+
+  @override
+  String get settingsGroupScene => 'Сцена';
+
+  @override
+  String get settingsGroupSky => 'Небо и погода';
+
+  @override
+  String get settingsGroupAnimation => 'Анимация и просмотр';
+
+  @override
+  String get settingsGroupSource => 'Источник';
+
+  @override
+  String get settingsGroupImageChange => 'Смена изображений';
+
+  @override
+  String get settingsGroupBrightness => 'Уровни яркости';
+
+  @override
+  String get settingsGroupDisplay => 'Отображение';
+
+  @override
+  String get settingsGroupCredentials => 'Данные подключения';
+
+  @override
+  String get settingsGroupClient => 'Параметры клиента';
+
+  @override
+  String get settingsGroupAccount => 'Подключение аккаунта';
+
+  @override
+  String get settingsGroupIndicators => 'Индикация и сообщения';
+
+  @override
+  String get settingsGroupFocusShape => 'Форма выделения';
+
+  @override
+  String get settingsGroupBorder => 'Рамка';
+
+  @override
+  String get settingsGroupMotion => 'Движение';
+
+  @override
+  String get settingsGroupControl => 'Управление';
+
+  @override
+  String get settingsGroupPositionSize => 'Расположение и размер';
+
+  @override
+  String get settingsGroupGroupsBackground => 'Группы и фон';
+
+  @override
+  String get settingsGroupText => 'Текст';
+
+  @override
+  String get settingsGroupLayout => 'Расположение';
+
+  @override
+  String get settingsGroupHeadings => 'Заголовки';
+
+  @override
+  String get settingsGroupLaunchTarget => 'Что запускать';
+
+  @override
+  String get settingsGroupLaunchTiming => 'Когда запускать';
+
+  @override
+  String get settingsGroupBlockPosition => 'Расположение блока';
+
+  @override
+  String get settingsGroupBlockContent => 'Содержимое блока';
+
+  @override
+  String get settingsGroupLayers => 'Слои отображения';
+
+  @override
+  String get settingsGroupAccess => 'Доступ';
+
+  @override
+  String get settingsGroupContent => 'Содержимое';
+
+  @override
+  String get settingsGroupSourcesLimits => 'Источники и лимиты';
+
+  @override
+  String get settingsGroupCards => 'Карточки';
+
+  @override
+  String get settingsGroupStorage => 'Хранение';
+
+  @override
+  String get settingsGroupMode => 'Режим';
+
+  @override
+  String get settingsGroupExceptions => 'Исключения';
+
+  @override
+  String get settingsGroupCurrentAction => 'Текущее действие';
+
+  @override
+  String get settingsGroupHours => 'Время работы';
+
+  @override
+  String get settingsGroupSourceAccess => 'Источник и доступ';
+
+  @override
+  String get settingsGroupUpdate => 'Обновление';
+
+  @override
+  String get settingsGroupSystemCommands => 'Система и команды';
+
+  @override
+  String get weatherTemplateWarning => 'Предупреждение';
+
+  @override
+  String get weatherTemplateDescription => 'Описание без значка';
+
+  @override
+  String get weatherTemplateIcon => 'Значок';
+
+  @override
+  String get weatherTemplateBracesError =>
+      'Проверьте парные фигурные скобки. Для обычной скобки введите её дважды.';
+
+  @override
+  String get weatherTemplateUnknownError => 'Неизвестное обозначение:';
+
+  @override
+  String get weatherTemplateBreakError =>
+      'Допускается только один перенос строки.';
+
+  @override
+  String get weatherTemplateValueError =>
+      'Добавьте хотя бы одно обозначение погоды.';
+
+  @override
+  String get weatherTemplateLengthError =>
+      'Формат слишком длинный: до 2048 символов и 64 элементов.';
 }

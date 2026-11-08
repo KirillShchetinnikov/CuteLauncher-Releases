@@ -1,3 +1,7 @@
+import 'settings_information.dart';
+import 'settings_read_only_value.dart';
+import 'settings_section.dart';
+import 'settings_checkbox_tile.dart';
 import 'settings_help.dart';
 import '../../providers/tv_inputs_service.dart';
 import '../../models/tv_input.dart';
@@ -178,21 +182,14 @@ class _NightModePageState extends State<NightModePage> {
       'HDR': [16, 17, 19, 20, 26, 27, 29],
       'Dolby Vision': [46, 51, 53],
     };
-    Widget pictureTile(int mode) => Semantics(
-      checked: c.ignoredPictureModes.contains(mode),
-      child: FocusableSettingsTile(
-        title: Text(modeLabel(mode)),
-        trailing: Icon(
-          c.ignoredPictureModes.contains(mode)
-              ? Icons.check_box
-              : Icons.check_box_outline_blank,
-        ),
-        onPressed: () {
-          final selected = c.ignoredPictureModes.toSet();
-          if (!selected.add(mode)) selected.remove(mode);
-          service.configure(c.copyWith(ignoredPictureModes: selected.toList()));
-        },
-      ),
+    Widget pictureTile(int mode) => SettingsCheckboxTile(
+      value: c.ignoredPictureModes.contains(mode),
+      title: Text(modeLabel(mode)),
+      onChanged: (_) {
+        final selected = c.ignoredPictureModes.toSet();
+        if (!selected.add(mode)) selected.remove(mode);
+        service.configure(c.copyWith(ignoredPictureModes: selected.toList()));
+      },
     );
     Future<void> update(NightModeConfiguration value) =>
         service.configure(value);
@@ -239,41 +236,51 @@ class _NightModePageState extends State<NightModePage> {
         padding: EdgeInsets.zero,
         children: [
           if (widget.section == 'main') ...[
-            RoundedSwitchListTile(
-              autofocus: true,
-              value: c.enabled,
-              title: Text(l.nightModeEnabled),
-              onChanged: (v) =>
-                  update(c.copyWith(enabled: v, clearOverrides: true)),
+            SettingsSection(
+              title: l.settingsGroupMode,
+              children: [
+                RoundedSwitchListTile(
+                  autofocus: true,
+                  value: c.enabled,
+                  title: Text(l.nightModeEnabled),
+                  onChanged: (v) =>
+                      update(c.copyWith(enabled: v, clearOverrides: true)),
+                ),
+                FocusableSettingsTile(
+                  leading: const Icon(Icons.tune),
+                  title: Text(l.nightFilterSettings),
+                  onPressed: () => open('filter'),
+                ),
+                FocusableSettingsTile(
+                  leading: const Icon(Icons.schedule),
+                  title: Text(l.nightScheduleMenu),
+                  onPressed: () => open('schedule'),
+                ),
+              ],
             ),
-            FocusableSettingsTile(
-              leading: const Icon(Icons.tune),
-              title: Text(l.nightFilterSettings),
-              onPressed: () => open('filter'),
-            ),
-            FocusableSettingsTile(
-              leading: const Icon(Icons.schedule),
-              title: Text(l.nightScheduleMenu),
-              onPressed: () => open('schedule'),
-            ),
-            FocusableSettingsTile(
-              leading: const Icon(Icons.filter_alt_off),
-              title: Text(
-                '${l.nightExcludedApps} (${c.excludedPackages.length})',
-              ),
-              onPressed: () => open('excluded'),
-            ),
-            FocusableSettingsTile(
-              leading: const Icon(Icons.settings_input_hdmi),
-              title: Text(l.nightInputExclusions),
-              onPressed: () => open('inputs'),
-            ),
-            FocusableSettingsTile(
-              leading: const Icon(Icons.image_outlined),
-              title: Text(
-                '${l.nightPictureExclusions} (${c.ignoredPictureModes.length})',
-              ),
-              onPressed: () => open('picture'),
+            SettingsSection(
+              title: l.settingsGroupExceptions,
+              children: [
+                FocusableSettingsTile(
+                  leading: const Icon(Icons.filter_alt_off),
+                  title: Text(
+                    '${l.nightExcludedApps} (${c.excludedPackages.length})',
+                  ),
+                  onPressed: () => open('excluded'),
+                ),
+                FocusableSettingsTile(
+                  leading: const Icon(Icons.settings_input_hdmi),
+                  title: Text(l.nightInputExclusions),
+                  onPressed: () => open('inputs'),
+                ),
+                FocusableSettingsTile(
+                  leading: const Icon(Icons.image_outlined),
+                  title: Text(
+                    '${l.nightPictureExclusions} (${c.ignoredPictureModes.length})',
+                  ),
+                  onPressed: () => open('picture'),
+                ),
+              ],
             ),
           ],
           if (widget.section == 'picture') ...[
@@ -282,10 +289,15 @@ class _NightModePageState extends State<NightModePage> {
               text: l.nightPictureExclusionsHint,
             ),
             if (service.pictureModeKnown && service.pictureMode == null)
-              Text(l.nightPictureUnavailable),
+              SettingsMessage(
+                text: l.nightPictureUnavailable,
+                kind: SettingsMessageKind.warning,
+              ),
             if (service.pictureMode != null)
-              Text(
-                '${l.nightPictureCurrent}: ${modeLabel(service.pictureMode!)}',
+              SettingsReadOnlyValue(
+                label: l.nightPictureCurrent,
+                value: modeLabel(service.pictureMode!),
+                wrapLines: true,
               ),
             FocusableSettingsTile(
               autofocus: true,
@@ -293,20 +305,11 @@ class _NightModePageState extends State<NightModePage> {
               title: Text(l.nightPictureRefresh),
               onPressed: service.refreshPictureMode,
             ),
-            for (final group in pictureGroups.entries) ...[
-              const Divider(),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                child: Semantics(
-                  header: true,
-                  child: Text(
-                    group.key,
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                ),
+            for (final group in pictureGroups.entries)
+              SettingsSection(
+                title: group.key,
+                children: [for (final mode in group.value) pictureTile(mode)],
               ),
-              for (final mode in group.value) pictureTile(mode),
-            ],
             for (final mode in pictureModes.keys.where(
               (mode) =>
                   !pictureGroups.values.any((codes) => codes.contains(mode)),
@@ -336,28 +339,34 @@ class _NightModePageState extends State<NightModePage> {
                 onChanged: (v) => update(c.copyWith(selectHdmiInputs: v)),
               ),
               if (c.selectHdmiInputs) ...[
-                if (inputs.isEmpty) Text(l.inputsUnavailableHint),
-                if (c.ignoredHdmiInputIds.isEmpty)
-                  Text(l.nightNoInputsSelected),
-                for (final input in inputs)
-                  Semantics(
-                    checked: c.ignoredHdmiInputIds.contains(input.id),
-                    child: FocusableSettingsTile(
-                      leading: Icon(tvInputIcon(input)),
-                      title: Text(input.label),
-                      trailing: Icon(
-                        c.ignoredHdmiInputIds.contains(input.id)
-                            ? Icons.check_box
-                            : Icons.check_box_outline_blank,
+                if (inputs.isEmpty)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      SettingsMessage(
+                        text: l.inputsUnavailableStatus,
+                        kind: SettingsMessageKind.warning,
                       ),
-                      onPressed: () {
-                        final selected = c.ignoredHdmiInputIds.toSet();
-                        if (!selected.add(input.id)) selected.remove(input.id);
-                        update(
-                          c.copyWith(ignoredHdmiInputIds: selected.toList()),
-                        );
-                      },
-                    ),
+                      SettingsHelp(
+                        title: l.inputs,
+                        text: l.inputsUnavailableHint,
+                      ),
+                    ],
+                  ),
+                if (c.ignoredHdmiInputIds.isEmpty)
+                  SettingsMessage(text: l.nightNoInputsSelected),
+                for (final input in inputs)
+                  SettingsCheckboxTile(
+                    value: c.ignoredHdmiInputIds.contains(input.id),
+                    leading: Icon(tvInputIcon(input)),
+                    title: Text(input.label),
+                    onChanged: (_) {
+                      final selected = c.ignoredHdmiInputIds.toSet();
+                      if (!selected.add(input.id)) selected.remove(input.id);
+                      update(
+                        c.copyWith(ignoredHdmiInputIds: selected.toList()),
+                      );
+                    },
                   ),
               ],
             ],
@@ -380,204 +389,219 @@ class _NightModePageState extends State<NightModePage> {
             ..._excluded(context, service),
           ],
           if (widget.section == 'schedule') ...[
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: Text(
-                  !c.enabled || !c.scheduled
-                      ? l.nightScheduleInactive
-                      : '${c.solar ? l.nightSolarSchedule : l.nightManualSchedule}\n${l.nightModeStart}: ${date(actualStart)}\n${l.nightModeEnd}: ${date(actualEnd)}'
-                            '${overrideActive ? "\n${c.overrideMode == 'on' ? l.nightTemporaryOn : l.nightTemporaryOff}: ${date(DateTime.fromMillisecondsSinceEpoch(c.overrideUntil))}" : ""}',
+            SettingsSection(
+              title: l.settingsGroupCurrentAction,
+              children: [
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Text(
+                      !c.enabled || !c.scheduled
+                          ? l.nightScheduleInactive
+                          : '${c.solar ? l.nightSolarSchedule : l.nightManualSchedule}\n${l.nightModeStart}: ${date(actualStart)}\n${l.nightModeEnd}: ${date(actualEnd)}'
+                                '${overrideActive ? "\n${c.overrideMode == 'on' ? l.nightTemporaryOn : l.nightTemporaryOff}: ${date(DateTime.fromMillisecondsSinceEpoch(c.overrideUntil))}" : ""}',
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            RoundedSwitchListTile(
-              autofocus: true,
-              value: c.scheduled,
-              title: Text(l.nightModeScheduled),
-              onChanged: (v) =>
-                  update(c.copyWith(scheduled: v, clearOverrides: true)),
-            ),
-            if (c.scheduled) ...[
-              if (service.intensity > 0)
-                FocusableSettingsTile(
-                  leading: const Icon(Icons.pause_circle_outline),
-                  title: Text(l.nightSkipUntilNext),
-                  onPressed: service.nextStart == null
-                      ? null
-                      : () => service.temporaryMode(false),
-                )
-              else
-                FocusableSettingsTile(
-                  leading: const Icon(Icons.wb_twilight),
-                  title: Text(l.nightEnableUntilMorning),
-                  onPressed: service.nextEnd == null
-                      ? null
-                      : () => service.temporaryMode(true),
+                RoundedSwitchListTile(
+                  autofocus: true,
+                  value: c.scheduled,
+                  title: Text(l.nightModeScheduled),
+                  onChanged: (v) =>
+                      update(c.copyWith(scheduled: v, clearOverrides: true)),
                 ),
-              if (overrideActive) ...[
-                Text(
-                  '${c.overrideMode == 'on' ? l.nightTemporaryOn : l.nightTemporaryOff}: ${date(DateTime.fromMillisecondsSinceEpoch(c.overrideUntil))}',
-                ),
-                FocusableSettingsTile(
-                  leading: const Icon(Icons.play_circle_outline),
-                  title: Text(l.nightResumeSchedule),
-                  onPressed: service.clearTemporaryMode,
-                ),
+                if (c.scheduled) ...[
+                  if (service.intensity > 0)
+                    FocusableSettingsTile(
+                      leading: const Icon(Icons.pause_circle_outline),
+                      title: Text(l.nightSkipUntilNext),
+                      onPressed: service.nextStart == null
+                          ? null
+                          : () => service.temporaryMode(false),
+                    )
+                  else
+                    FocusableSettingsTile(
+                      leading: const Icon(Icons.wb_twilight),
+                      title: Text(l.nightEnableUntilMorning),
+                      onPressed: service.nextEnd == null
+                          ? null
+                          : () => service.temporaryMode(true),
+                    ),
+                  if (overrideActive) ...[
+                    Text(
+                      '${c.overrideMode == 'on' ? l.nightTemporaryOn : l.nightTemporaryOff}: ${date(DateTime.fromMillisecondsSinceEpoch(c.overrideUntil))}',
+                    ),
+                    FocusableSettingsTile(
+                      leading: const Icon(Icons.play_circle_outline),
+                      title: Text(l.nightResumeSchedule),
+                      onPressed: service.clearTemporaryMode,
+                    ),
+                  ],
+                ],
               ],
-            ],
-            ...[
-              const Divider(),
-              Text(
-                l.nightScheduleSettings,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              SettingsChoiceTile<bool>(
-                title: l.nightScheduleSource,
-                value: c.solar,
-                options: const [false, true],
-                label: (v) => v ? l.nightSolarSchedule : l.nightManualSchedule,
-                onChanged: (v) =>
-                    update(c.copyWith(solar: v, clearOverrides: true)),
-              ),
-              if (!c.solar) ...[
-                time(
-                  l.nightModeStart,
-                  c.startHour * 60 + c.startMinute,
-                  (v) => update(
-                    c.copyWith(
-                      startHour: v ~/ 60,
-                      startMinute: v % 60,
-                      clearOverrides: true,
-                    ),
-                  ),
-                ),
-                time(
-                  l.nightModeEnd,
-                  c.endHour * 60 + c.endMinute,
-                  (v) => update(
-                    c.copyWith(
-                      endHour: v ~/ 60,
-                      endMinute: v % 60,
-                      clearOverrides: true,
-                    ),
-                  ),
-                ),
-              ] else ...[
+            ),
+            SettingsSection(
+              title: l.settingsGroupHours,
+              children: [
                 SettingsChoiceTile<bool>(
-                  title: l.nightLocation,
-                  value: c.automaticLocation,
-                  enabled: !_locating,
-                  options: const [true, false],
+                  title: l.nightScheduleSource,
+                  value: c.solar,
+                  options: const [false, true],
                   label: (v) =>
-                      v ? l.nightLocationAutomatic : l.nightLocationManual,
-                  onChanged: (v) => update(c.copyWith(automaticLocation: v)),
+                      v ? l.nightSolarSchedule : l.nightManualSchedule,
+                  onChanged: (v) =>
+                      update(c.copyWith(solar: v, clearOverrides: true)),
                 ),
-                if (c.automaticLocation)
-                  FocusableSettingsTile(
-                    title: Text(l.weatherGetLocation),
-                    trailing: Text(
-                      c.latitude == null
-                          ? l.settingsValueNotSet
-                          : '${c.latitude!.toStringAsFixed(3)}, ${c.longitude!.toStringAsFixed(3)}',
+                if (!c.solar) ...[
+                  time(
+                    l.nightModeStart,
+                    c.startHour * 60 + c.startMinute,
+                    (v) => update(
+                      c.copyWith(
+                        startHour: v ~/ 60,
+                        startMinute: v % 60,
+                        clearOverrides: true,
+                      ),
                     ),
-                    enabled: !_locating,
-                    onPressed: () async {
-                      setState(() => _locating = true);
-                      try {
-                        final point = await service.locate();
-                        if (!mounted) return;
-                        await update(
-                          service.configuration.copyWith(
-                            city: '',
-                            latitude: (point['latitude'] as num).toDouble(),
-                            longitude: (point['longitude'] as num).toDouble(),
-                            clearOverrides: true,
-                          ),
-                        );
-                        await service.refreshSolar();
-                      } catch (_) {
-                        if (context.mounted) {
-                          setState(() => _locating = false);
-                          showActionNotice(
-                            context,
-                            l.nightLocationFailed,
-                            error: true,
-                          );
-                        }
-                      } finally {
-                        if (mounted) setState(() => _locating = false);
-                      }
-                    },
-                  )
-                else
-                  FocusableSettingsTile(
-                    valueIcon: Icons.edit_outlined,
-                    title: Text(l.nightCityName),
-                    trailing: Text(
-                      c.city.isEmpty ? l.settingsValueNotSet : c.city,
+                  ),
+                  time(
+                    l.nightModeEnd,
+                    c.endHour * 60 + c.endMinute,
+                    (v) => update(
+                      c.copyWith(
+                        endHour: v ~/ 60,
+                        endMinute: v % 60,
+                        clearOverrides: true,
+                      ),
                     ),
-                    onPressed: () async {
-                      final city =
-                          await showLauncherDialog<Map<String, dynamic>>(
-                            context: context,
-                            builder: (_) => CitySearchDialog(
-                              searchCities: (query) =>
-                                  service.searchCities(query, 'en'),
-                            ),
-                          );
-                      if (city != null && context.mounted) {
-                        await update(
-                          service.configuration.copyWith(
-                            city: city['city'] as String,
-                            latitude: (city['latitude'] as num).toDouble(),
-                            longitude: (city['longitude'] as num).toDouble(),
-                            clearOverrides: true,
-                          ),
-                        );
-                        await service.refreshSolar();
-                      }
-                    },
                   ),
-                if (_locating) const LinearProgressIndicator(),
-
-                offset(
-                  l.nightSunsetOffset,
-                  c.sunsetOffset,
-                  (v) =>
-                      update(c.copyWith(sunsetOffset: v, clearOverrides: true)),
-                ),
-                offset(
-                  l.nightSunriseOffset,
-                  c.sunriseOffset,
-                  (v) => update(
-                    c.copyWith(sunriseOffset: v, clearOverrides: true),
+                ] else ...[
+                  offset(
+                    l.nightSunsetOffset,
+                    c.sunsetOffset,
+                    (v) => update(
+                      c.copyWith(sunsetOffset: v, clearOverrides: true),
+                    ),
                   ),
+                  offset(
+                    l.nightSunriseOffset,
+                    c.sunriseOffset,
+                    (v) => update(
+                      c.copyWith(sunriseOffset: v, clearOverrides: true),
+                    ),
+                  ),
+                ],
+                SettingsSliderTile(
+                  title: l.nightTransitionTime,
+                  value: c.transitionMinutes,
+                  options: [for (var i = 15; i <= 120; i += 15) i],
+                  label: (v) => '${v.round()} ${l.weatherMinutes}',
+                  onChanged: (v) =>
+                      update(c.copyWith(transitionMinutes: v.toInt())),
                 ),
-                if (service.solarLoading) const LinearProgressIndicator(),
-                if (!service.solarLoading &&
-                    (service.nextStart == null || service.nextEnd == null))
-                  Text(l.nightSolarUnavailable),
-                if (service.solarUpdated > 0 &&
-                    DateTime.now().millisecondsSinceEpoch -
-                            service.solarUpdated >
-                        86400000)
-                  Text(l.nightSolarCached),
               ],
-            ],
-            SettingsSliderTile(
-              title: l.nightTransitionTime,
-              value: c.transitionMinutes,
-              options: [for (var i = 15; i <= 120; i += 15) i],
-              label: (v) => '${v.round()} ${l.weatherMinutes}',
-              onChanged: (v) =>
-                  update(c.copyWith(transitionMinutes: v.toInt())),
             ),
             if (c.solar)
-              FocusableSettingsTile(
-                leading: const Icon(Icons.refresh),
-                title: Text(l.nightRefreshSun),
-                onPressed: service.solarLoading ? null : service.refreshSolar,
+              SettingsSection(
+                title: l.weatherLocation,
+                children: [
+                  SettingsChoiceTile<bool>(
+                    title: l.nightLocation,
+                    value: c.automaticLocation,
+                    enabled: !_locating,
+                    options: const [true, false],
+                    label: (v) =>
+                        v ? l.nightLocationAutomatic : l.nightLocationManual,
+                    onChanged: (v) => update(c.copyWith(automaticLocation: v)),
+                  ),
+                  if (c.automaticLocation)
+                    FocusableSettingsTile(
+                      title: Text(l.weatherGetLocation),
+                      trailing: Text(
+                        c.latitude == null
+                            ? l.settingsValueNotSet
+                            : '${c.latitude!.toStringAsFixed(3)}, ${c.longitude!.toStringAsFixed(3)}',
+                      ),
+                      enabled: !_locating,
+                      onPressed: () async {
+                        setState(() => _locating = true);
+                        try {
+                          final point = await service.locate();
+                          if (!mounted) return;
+                          await update(
+                            service.configuration.copyWith(
+                              city: '',
+                              latitude: (point['latitude'] as num).toDouble(),
+                              longitude: (point['longitude'] as num).toDouble(),
+                              clearOverrides: true,
+                            ),
+                          );
+                          await service.refreshSolar();
+                        } catch (_) {
+                          if (context.mounted) {
+                            setState(() => _locating = false);
+                            showActionNotice(
+                              context,
+                              l.nightLocationFailed,
+                              error: true,
+                            );
+                          }
+                        } finally {
+                          if (mounted) setState(() => _locating = false);
+                        }
+                      },
+                    )
+                  else
+                    FocusableSettingsTile(
+                      valueIcon: Icons.edit_outlined,
+                      title: Text(l.nightCityName),
+                      trailing: Text(
+                        c.city.isEmpty ? l.settingsValueNotSet : c.city,
+                      ),
+                      onPressed: () async {
+                        final city =
+                            await showLauncherDialog<Map<String, dynamic>>(
+                              context: context,
+                              builder: (_) => CitySearchDialog(
+                                searchCities: (query) =>
+                                    service.searchCities(query, 'en'),
+                              ),
+                            );
+                        if (city != null && context.mounted) {
+                          await update(
+                            service.configuration.copyWith(
+                              city: city['city'] as String,
+                              latitude: (city['latitude'] as num).toDouble(),
+                              longitude: (city['longitude'] as num).toDouble(),
+                              clearOverrides: true,
+                            ),
+                          );
+                          await service.refreshSolar();
+                        }
+                      },
+                    ),
+                  if (_locating) const LinearProgressIndicator(),
+                  if (service.solarLoading) const LinearProgressIndicator(),
+                  if (!service.solarLoading &&
+                      (service.nextStart == null || service.nextEnd == null))
+                    SettingsMessage(
+                      text: l.nightSolarUnavailable,
+                      kind: SettingsMessageKind.warning,
+                    ),
+                  if (service.solarUpdated > 0 &&
+                      DateTime.now().millisecondsSinceEpoch -
+                              service.solarUpdated >
+                          86400000)
+                    SettingsMessage(text: l.nightSolarCached),
+                  if (c.solar)
+                    FocusableSettingsTile(
+                      leading: const Icon(Icons.refresh),
+                      title: Text(l.nightRefreshSun),
+                      onPressed: service.solarLoading
+                          ? null
+                          : service.refreshSolar,
+                    ),
+                ],
               ),
           ],
           if (widget.section == 'filter') ...[
@@ -618,68 +642,79 @@ class _NightModePageState extends State<NightModePage> {
             ),
             if (service.tclFilterBusy) const LinearProgressIndicator(),
             if (service.tclFilterStatus == 'unsupported')
-              Text(l.tclBlueLightUnsupported),
-            if (service.tclFilterStatus == 'error') Text(l.tclBlueLightError),
-          ],
-          if (widget.section == 'main') ...[
-            const Divider(),
-            Text(
-              l.nightPermissions,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-
-            FocusableSettingsTile(
-              leading: Icon(
-                service.batteryExempt == null
-                    ? Icons.help_outline
-                    : service.batteryExempt!
-                    ? Icons.check_circle_outline
-                    : Icons.cancel_outlined,
+              SettingsMessage(
+                text: l.tclBlueLightUnsupported,
+                kind: SettingsMessageKind.warning,
               ),
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(l.nightBatteryTitle),
-                  Text(
+            if (service.tclFilterStatus == 'error')
+              SettingsMessage(
+                text: l.tclBlueLightError,
+                kind: SettingsMessageKind.error,
+              ),
+          ],
+          if (widget.section == 'main')
+            SettingsSection(
+              title: l.nightPermissions,
+              children: [
+                FocusableSettingsTile(
+                  leading: Icon(
                     service.batteryExempt == null
-                        ? l.nightBatteryUnknown
+                        ? Icons.help_outline
                         : service.batteryExempt!
-                        ? l.nightBatteryExempt
-                        : l.nightBatteryOptimized,
-                    style: Theme.of(context).textTheme.bodySmall,
+                        ? Icons.check_circle_outline
+                        : Icons.cancel_outlined,
                   ),
-                ],
-              ),
-              onPressed: () => _openBatterySettings(context, service),
+                  title: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(l.nightBatteryTitle),
+                      Text(
+                        service.batteryExempt == null
+                            ? l.nightBatteryUnknown
+                            : service.batteryExempt!
+                            ? l.nightBatteryExempt
+                            : l.nightBatteryOptimized,
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ],
+                  ),
+                  onPressed: () => _openBatterySettings(context, service),
+                ),
+                SettingsHelp(title: l.nightModeTitle, text: l.nightBatteryHint),
+                if (service.batterySettingsUnavailable)
+                  SettingsMessage(
+                    text: l.nightBatteryUnavailable,
+                    kind: SettingsMessageKind.warning,
+                  ),
+                FocusableSettingsTile(
+                  leading: Icon(
+                    !service.overlayPermissionKnown
+                        ? Icons.help_outline
+                        : service.overlayPermission
+                        ? Icons.check_circle
+                        : Icons.layers,
+                  ),
+                  title: Text(
+                    !service.overlayPermissionKnown
+                        ? l.nightPermissionUnknown
+                        : service.overlayPermission
+                        ? l.nightModePermissionGranted
+                        : l.nightModePermission,
+                  ),
+                  onPressed: service.requestOverlayPermission,
+                ),
+                AdbPermissionTile(
+                  title: l.nightModeAdbPermission,
+                  action: 'overlay',
+                  permissionMethod: 'checkOverlayPermission',
+                  onRefresh: service.refreshSystem,
+                ),
+                SettingsHelp(
+                  title: l.nightModeTitle,
+                  text: l.nightOverlayBrief,
+                ),
+              ],
             ),
-            SettingsHelp(title: l.nightModeTitle, text: l.nightBatteryHint),
-            if (service.batterySettingsUnavailable)
-              Text(l.nightBatteryUnavailable),
-            FocusableSettingsTile(
-              leading: Icon(
-                !service.overlayPermissionKnown
-                    ? Icons.help_outline
-                    : service.overlayPermission
-                    ? Icons.check_circle
-                    : Icons.layers,
-              ),
-              title: Text(
-                !service.overlayPermissionKnown
-                    ? l.nightPermissionUnknown
-                    : service.overlayPermission
-                    ? l.nightModePermissionGranted
-                    : l.nightModePermission,
-              ),
-              onPressed: service.requestOverlayPermission,
-            ),
-            AdbPermissionTile(
-              title: l.nightModeAdbPermission,
-              action: 'overlay',
-              permissionMethod: 'checkOverlayPermission',
-              onRefresh: service.refreshSystem,
-            ),
-            SettingsHelp(title: l.nightModeTitle, text: l.nightOverlayBrief),
-          ],
         ],
       ),
     );

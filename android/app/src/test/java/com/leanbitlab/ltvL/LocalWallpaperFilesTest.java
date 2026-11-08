@@ -239,4 +239,62 @@ public class LocalWallpaperFilesTest {
         }
     }
 
+    @Test public void initialFolderUsesSelectedFolderOrFileAndFallsBackWithoutCreatingFolders() throws Exception {
+        File root = folder();
+        File image = new File(root, "wallpaper.png");
+        Files.write(image.toPath(), new byte[]{1});
+        assertEquals(root, LocalWallpaperFiles.initialDirectory(root.getPath(), "downloads"));
+        assertEquals(root, LocalWallpaperFiles.initialDirectory(image.toURI().toASCIIString(), "storage"));
+        File storage = Environment.getExternalStorageDirectory().getCanonicalFile();
+        File downloads = new File(storage, Environment.DIRECTORY_DOWNLOADS);
+        assertTrue(downloads.isDirectory() || downloads.mkdir());
+        assertEquals(downloads.getCanonicalFile(), LocalWallpaperFiles.initialDirectory(null, "downloads"));
+        File backups = new File(downloads, "CuteLauncher");
+        assertTrue(backups.isDirectory() || backups.mkdir());
+        assertEquals(backups.getCanonicalFile(), LocalWallpaperFiles.initialDirectory("cutelauncher://downloads/CuteLauncher", "storage"));
+        assertEquals(downloads.getCanonicalFile(), LocalWallpaperFiles.initialDirectory(new File(root, "missing").getPath(), "downloads"));
+        assertEquals(storage, LocalWallpaperFiles.initialDirectory("/storage/disconnected-USB/missing", "last"));
+        assertEquals(storage, LocalWallpaperFiles.initialDirectory("/data/private", "storage"));
+        String relative = storage.toPath().relativize(root.toPath()).toString().replace(File.separatorChar, '/');
+        Uri tree = android.provider.DocumentsContract.buildTreeDocumentUri("com.android.externalstorage.documents", "primary:" + relative);
+        assertEquals(root, LocalWallpaperFiles.initialDirectory(tree.toString(), "storage"));
+        assertEquals(storage, LocalWallpaperFiles.initialDirectory("content://unknown/provider", "storage"));
+        assertFalse(new File(root, "missing").exists());
+    }
+
+    @Test public void hiddenEntriesAreFilteredBeforeReplyAndFolderDatesAreAvailable() throws Exception {
+        try (var controller = Robolectric.buildActivity(Activity.class).setup()) {
+            var activity = controller.get();
+            if (android.os.Build.VERSION.SDK_INT >= 30) StorageEnvironment.manager = true;
+            else Shadows.shadowOf(activity.getApplication()).grantPermissions(Manifest.permission.READ_EXTERNAL_STORAGE);
+            var executor = Executors.newSingleThreadExecutor();
+            try {
+                File root = folder();
+                assertTrue(new File(root, "visible").mkdir());
+                assertTrue(new File(root, ".hidden").mkdir());
+                Files.write(new File(root, "visible.json").toPath(), new byte[]{1});
+                Files.write(new File(root, ".hidden.json").toPath(), new byte[]{1});
+                Files.write(new File(root, ".wrong.png").toPath(), new byte[]{1});
+                var hidden = new Reply();
+                var shown = new Reply();
+                var local = new LocalWallpaperFiles(activity, executor);
+                local.browse(root.getPath(), "document", false, false, "storage", hidden);
+                local.browse(root.getPath(), "document", true, false, "storage", shown);
+                executor.shutdown();
+                assertTrue(executor.awaitTermination(10, TimeUnit.SECONDS));
+                Shadows.shadowOf(Looper.getMainLooper()).idle();
+                assertNull(hidden.error);
+                assertNull(shown.error);
+                var first = (java.util.Map<?, ?>) hidden.value;
+                var second = (java.util.Map<?, ?>) shown.value;
+                assertEquals(1, ((List<?>) first.get("folders")).size());
+                assertEquals(1, ((List<?>) first.get("files")).size());
+                assertEquals(2, ((List<?>) second.get("folders")).size());
+                assertEquals(2, ((List<?>) second.get("files")).size());
+                var directory = (java.util.Map<?, ?>) ((List<?>) first.get("folders")).get(0);
+                assertEquals(new File(root, "visible").lastModified(), directory.get("modified"));
+            } finally { executor.shutdownNow(); }
+        }
+    }
+
 }

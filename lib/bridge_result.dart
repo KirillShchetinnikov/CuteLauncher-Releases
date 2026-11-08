@@ -112,14 +112,20 @@ class BridgeChannel extends MethodChannel {
   ]) async {
     final timer = Stopwatch()..start();
     final context = <String, Object?>{};
+    final importsWeatherToken = method == 'pickWeatherTokenDocument' ||
+        method == 'pickWeatherServerDocument' ||
+        (method == 'localDocumentOperation' && arguments is Map &&
+            (arguments['operation'] == 'pickWeatherTokenDocument' ||
+             arguments['operation'] == 'pickWeatherServerDocument'));
     if (name == 'cutelauncher/adb' && arguments is Map) {
       // Project only fixed action names, never targets, commands or addresses.
       context['action'] = arguments['action'];
       context['requestedOperation'] = arguments['operation'];
     }
     BridgeResult<T> finish(BridgeResult<T> result) {
+      if (importsWeatherToken) context.clear();
       context['durationMs'] = timer.elapsedMilliseconds;
-      if (!result.isSuccess) context['arguments'] = arguments;
+      if (!importsWeatherToken && !result.isSuccess) context['arguments'] = arguments;
       return _finish(method, result, context);
     }
 
@@ -147,6 +153,8 @@ class BridgeChannel extends MethodChannel {
                   method == 'pickCleanerDocument' ||
                   method == 'pickBackupDocument' ||
                   method == 'pickDriveClientDocument' ||
+                  method == 'pickWeatherTokenDocument' ||
+                  method == 'pickWeatherServerDocument' ||
                   method == 'pickWallpaperFolder') &&
               raw == null ||
           method == 'saveBackupDocument' && raw == false) {

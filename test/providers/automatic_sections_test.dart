@@ -99,6 +99,41 @@ void main() {
     await db.close();
   });
 
+  test('custom names are shared and survive package events and refresh', () async {
+    await service.setCategorySort(section('all_apps'), CategorySort.alphabetical);
+    await service.setCustomAppName('tv', '  A TV  ');
+
+    for (final key in ['all_apps', 'tv_apps', 'favorites']) {
+      expect(
+        section(key).applications.singleWhere((a) => a.packageName == 'tv').displayName,
+        'A TV',
+      );
+    }
+    expect(section('all_apps').applications.first.packageName, 'tv');
+    expect(service.getApp('tv')!.name, 'tv');
+
+    final updated = {...app('tv'), 'name': 'Updated TV', 'version': '2'};
+    catalog[0] = updated;
+    final changed = Completer<void>();
+    void onChanged() {
+      if (service.getApp('tv')?.name == 'Updated TV' && !changed.isCompleted) {
+        changed.complete();
+      }
+    }
+    service.addListener(onChanged);
+    events.add({'action': 'PACKAGE_CHANGED', 'activityInfo': updated});
+    await changed.future.timeout(const Duration(seconds: 2));
+    service.removeListener(onChanged);
+    expect(service.getApp('tv')!.displayName, 'A TV');
+
+    await service.refreshState();
+    expect(service.getApp('tv')!.displayName, 'A TV');
+    await service.setCustomAppName('tv', null);
+    await service.refreshState();
+    expect(service.getApp('tv')!.displayName, 'Updated TV');
+    expect(section('all_apps').applications.first.packageName, 'mobile');
+  });
+
   for (final key in ['all_apps', 'tv_apps', 'other_apps']) {
     test('$key persists manual order with missing and existing rows', () async {
       catalog.addAll([app('tv2'), app('mobile2', mobile: true)]);

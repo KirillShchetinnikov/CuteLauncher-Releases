@@ -17,12 +17,12 @@ class FakeTransport implements WeatherTransport {
   Future<Map<String, dynamic>> Function() response;
   FakeTransport(this.response);
   @override
-  Future<Map<String, dynamic>> request(Uri value, {String? key}) {
+  Future<Map<String, dynamic>> request(Uri value, {String? key, bool customServer = false, String? bearerToken, WeatherResponseDecoder? decode}) {
     calls++; uri = value; this.key = key; return response();
   }
 }
 Map<String, dynamic> payload() => {
-  'current': {'time': 1780000000, 'temperature_2m': -3.5, 'relative_humidity_2m': 80.0, 'weather_code': 71, 'wind_speed_10m': 4.5},
+  'current': {'time': 1780000000, 'temperature_2m': -3.5, 'apparent_temperature': -8.6, 'relative_humidity_2m': 80.0, 'weather_code': 71, 'wind_speed_10m': 4.5},
   'daily': {'weather_code': [71, 95], 'temperature_2m_min': [-5, -2], 'temperature_2m_max': [0, 4], 'precipitation_probability_max': [80.0, 90.0]}
 };
 const config = WeatherConfiguration(source: WeatherSource.openMeteo, latitude: 55.75, longitude: 37.62, location: 'Москва');
@@ -110,13 +110,16 @@ void main() {
     final transport = FakeTransport(() async => payload());
     final data = WeatherData.fromJson(await DirectWeatherProvider(transport).fetch(config));
     expect(data.currentTemp, -4);
+    expect(data.feelsLikeTemp, -9);
+    expect(transport.calls, 1);
+    expect(transport.uri!.queryParameters['current']!.split(','), contains('apparent_temperature'));
     expect(data.warningType, WeatherWarningType.snow);
     expect(data.forecasts[1].conditionCode, 211);
     expect(transport.uri!.queryParameters['wind_speed_unit'], 'ms');
     expect(transport.key, isNull);
   });
   test('Yandex uses its header only for Yandex and rejects missing key before network', () async {
-    final transport = FakeTransport(() async => {'now': 1780000000, 'fact': {'temp': 7, 'condition': 'clear'}, 'forecasts': []});
+    final transport = FakeTransport(() async => {'now': 1780000000, 'fact': {'temp': 7, 'feels_like': 0, 'condition': 'clear'}, 'forecasts': []});
     final provider = DirectWeatherProvider(transport);
     const yandex = WeatherConfiguration(source: WeatherSource.yandex, latitude: 0, longitude: 0);
     await expectLater(provider.fetch(yandex), throwsA(isA<WeatherException>().having((e) => e.failure, 'failure', WeatherFailure.keyRequired)));
@@ -125,6 +128,7 @@ void main() {
     expect(transport.key, 'test-key');
     expect(transport.uri!.host, 'api.weather.yandex.ru');
     expect(data['currentConditionCode'], 800);
+    expect(WeatherData.fromJson(data).feelsLikeTemp, 0);
   });
   test('invalid coordinates and malformed payload fail without inventing weather', () async {
     final transport = FakeTransport(() async => {});
@@ -161,6 +165,7 @@ void main() {
     final offline = WeatherService(channel, preferences: prefs, transport: FakeTransport(() async => throw const WeatherException(WeatherFailure.unavailable)));
     while (!offline.initialized) { await Future<void>.delayed(Duration.zero); }
     expect(offline.weatherData!.location, 'Москва');
+    expect(offline.weatherData!.feelsLikeTemp, -9);
     expect(offline.failure, WeatherFailure.unavailable);
     expect(offline.stale, isTrue);
     offline.dispose();

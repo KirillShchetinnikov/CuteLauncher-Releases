@@ -1,3 +1,4 @@
+import 'settings_section.dart';
 import 'settings_help.dart';
 import '../action_notice.dart';
 
@@ -452,109 +453,121 @@ class _MappingEditorState extends State<_MappingEditor> {
           title: Text(l.remoteBindings),
           child: ListView(
             children: [
-              SettingsTextTile(
-                title: l.name,
-                value: _name,
-                emptyLabel: l.remoteMappingNamePlaceholder,
-                enabled: !_saving && !_importing,
-                maxLength: 80,
-                onChanged: (value) => setState(() => _name = value.trim()),
-              ),
-              FocusableSettingsTile(
-                title: Text(l.remoteMappingAssign),
-                trailing: Text(
-                  _key == 0
-                      ? l.settingsValueNotSet
-                      : '${remoteKeyLabel(l, _key)} ($_key)',
-                ),
-                enabled: !_saving && !_importing,
-                onPressed: _assign,
-              ),
-              if (widget.mapping != null)
-                RoundedSwitchListTile(
-                  title: Text(l.remoteMappingsEnabled),
-                  value: _enabled,
-                  enabled: !_saving && !_importing,
-                  onChanged: (value) => setState(() => _enabled = value),
-                ),
-              SettingsChoiceTile<String>(
-                title: l.remoteMappingTrigger,
-                value: _trigger,
-                options: const ['press', 'hold'],
-                enabled: !_importing && !_saving,
-                label: (value) => value == 'hold'
-                    ? l.remoteMappingHold
-                    : l.remoteMappingPress,
-                onChanged: (value) => setState(() {
-                  _trigger = value;
-                }),
-              ),
-              if (_trigger == 'hold')
-                SettingsHelp(
-                  title: '${l.remoteMappingTrigger}: ${l.remoteMappingHold}',
-                  text: _key == 3
-                      ? l.recentAppsHomeHint
-                      : l.remoteMappingHoldHint,
-                ),
-              SettingsChoiceTile<String>(
-                title: l.remoteMappingAction,
-                value: _action,
-                options: const [
-                  'app',
-                  'home',
-                  'back',
-                  'webhook',
-                  'panel',
-                  'recents',
-                  'sleep',
-                  'reboot',
-                  'ignore',
-                ],
-                label: (value) => _actionLabel(l, value),
-                enabled: !_importing && !_saving,
-                onChanged: (value) => setState(() {
-                  _action = value;
-                  _target = '';
-                }),
-              ),
-              if (_action == 'sleep' || _action == 'reboot')
-                SettingsHelp(text: l.tvPowerHelp),
-              if (_action == 'app')
-                FocusableSettingsTile(
-                  title: Text(l.applications),
-                  trailing: Text(
-                    context
-                            .read<AppsService?>()
-                            ?.applications
-                            .where((app) => app.packageName == _target)
-                            .firstOrNull
-                            ?.name ??
-                        (_target.isEmpty ? l.settingsValueNotSet : _target),
+              SettingsSection(
+                title: l.remoteMappingKey,
+                children: [
+                  SettingsTextTile(
+                    title: l.name,
+                    value: _name,
+                    emptyLabel: l.remoteMappingNamePlaceholder,
+                    enabled: !_saving && !_importing,
+                    maxLength: 80,
+                    onChanged: (value) => setState(() => _name = value.trim()),
                   ),
-                  enabled: !_saving && !_importing,
-                  onPressed: _app,
-                ),
-              if (_action == 'webhook') ...[
-                SettingsTextTile(
-                  enabled: !_saving && !_importing,
-                  title: 'Webhook URL',
-                  value: _target,
-                  obscureText: true,
-                  maxLength: 4096,
-                  keyboardType: TextInputType.url,
-                  onChanged: (value) => setState(() => _target = value.trim()),
-                ),
-                FocusableSettingsTile(
-                  title: Text(l.remoteMappingImport),
-                  leading: const Icon(Icons.file_open_outlined),
-                  enabled: !_saving && !_importing,
-                  onPressed: _importWebhook,
-                ),
-                SettingsHelp(
-                  title: l.importAction,
-                  text: l.remoteMappingImportHint,
-                ),
-              ],
+                  FocusableSettingsTile(
+                    title: Text(l.remoteMappingAssign),
+                    trailing: Text(
+                      _key == 0
+                          ? l.settingsValueNotSet
+                          : '${remoteKeyLabel(l, _key)} ($_key)',
+                    ),
+                    enabled: !_saving && !_importing,
+                    onPressed: _assign,
+                  ),
+                  if (widget.mapping != null)
+                    RoundedSwitchListTile(
+                      title: Text(l.remoteMappingsEnabled),
+                      value: _enabled,
+                      enabled: !_saving && !_importing,
+                      onChanged: (value) => setState(() => _enabled = value),
+                    ),
+                  SettingsChoiceTile<String>(
+                    title: l.remoteMappingTrigger,
+                    value: _trigger,
+                    options: const ['press', 'hold'],
+                    enabled: !_importing && !_saving,
+                    label: (value) => value == 'hold'
+                        ? l.remoteMappingHold
+                        : l.remoteMappingPress,
+                    onChanged: (value) => setState(() {
+                      _trigger = value;
+                    }),
+                  ),
+                  if (_trigger == 'hold')
+                    SettingsHelp(
+                      title:
+                          '${l.remoteMappingTrigger}: ${l.remoteMappingHold}',
+                      text: _key == 3
+                          ? l.recentAppsHomeHint
+                          : l.remoteMappingHoldHint,
+                    ),
+                ],
+              ),
+              SettingsSection(
+                title: l.remoteMappingAction,
+                children: [
+                  SettingsChoiceTile<String>(
+                    title: l.remoteMappingAction,
+                    value: _action,
+                    options: const [
+                      'app',
+                      'home',
+                      'back',
+                      'webhook',
+                      'panel',
+                      'recents',
+                      'sleep',
+                      'reboot',
+                      'ignore',
+                    ],
+                    label: (value) => _actionLabel(l, value),
+                    enabled: !_importing && !_saving,
+                    onChanged: (value) => setState(() {
+                      _action = value;
+                      _target = '';
+                    }),
+                  ),
+                  if (_action == 'sleep' || _action == 'reboot')
+                    SettingsHelp(text: l.tvPowerHelp),
+                  if (_action == 'app')
+                    FocusableSettingsTile(
+                      title: Text(l.applications),
+                      trailing: Text(
+                        context
+                                .read<AppsService?>()
+                                ?.applications
+                                .where((app) => app.packageName == _target)
+                                .firstOrNull
+                                ?.name ??
+                            (_target.isEmpty ? l.settingsValueNotSet : _target),
+                      ),
+                      enabled: !_saving && !_importing,
+                      onPressed: _app,
+                    ),
+                  if (_action == 'webhook') ...[
+                    SettingsTextTile(
+                      enabled: !_saving && !_importing,
+                      title: 'Webhook URL',
+                      value: _target,
+                      obscureText: true,
+                      maxLength: 4096,
+                      keyboardType: TextInputType.url,
+                      onChanged: (value) =>
+                          setState(() => _target = value.trim()),
+                    ),
+                    FocusableSettingsTile(
+                      title: Text(l.remoteMappingImport),
+                      leading: const Icon(Icons.file_open_outlined),
+                      enabled: !_saving && !_importing,
+                      onPressed: _importWebhook,
+                    ),
+                    SettingsHelp(
+                      title: l.importAction,
+                      text: l.remoteMappingImportHint,
+                    ),
+                  ],
+                ],
+              ),
               if (widget.onDelete != null)
                 FocusableSettingsTile(
                   title: Text(l.delete),

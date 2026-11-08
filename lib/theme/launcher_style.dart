@@ -1,4 +1,5 @@
 import 'dart:ui' show lerpDouble;
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
@@ -8,6 +9,7 @@ import '../tile_appearance.dart';
 @immutable
 class LauncherStyle extends ThemeExtension<LauncherStyle> {
   final double panelRadius;
+  final double screenSafeFraction;
   final double dialogRadius;
   final double panelMargin;
   final double panelPadding;
@@ -17,10 +19,11 @@ class LauncherStyle extends ThemeExtension<LauncherStyle> {
   final double rowMinHeight;
   final EdgeInsets rowPadding;
   final double rowFocusWidth;
-  final Color rowFocusColor;
-  final Color rowFocusSurface;
+  final double rowAccentFocusWidth;
   final double rowFocusTint;
   final double rowIdleOpacity;
+  final double rowSelectedTint;
+  final double rowPressedTint;
   final Duration rowDuration;
   final Duration scrollDuration;
   final double iconRadius;
@@ -38,6 +41,7 @@ class LauncherStyle extends ThemeExtension<LauncherStyle> {
 
   const LauncherStyle({
     this.panelRadius = 28,
+    this.screenSafeFraction = .05,
     this.dialogRadius = 24,
     this.panelMargin = 16,
     this.panelPadding = 20,
@@ -46,11 +50,12 @@ class LauncherStyle extends ThemeExtension<LauncherStyle> {
     this.rowRadius = 14,
     this.rowMinHeight = 52,
     this.rowPadding = const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-    this.rowFocusWidth = 1.5,
-    this.rowFocusColor = const Color(0xFFE9EDF5),
-    this.rowFocusSurface = const Color(0xFF343A47),
+    this.rowFocusWidth = 2.5,
+    this.rowAccentFocusWidth = 1.5,
     this.rowFocusTint = 0.16,
-    this.rowIdleOpacity = 0.025,
+    this.rowIdleOpacity = 0.015,
+    this.rowSelectedTint = .08,
+    this.rowPressedTint = .24,
     this.rowDuration = const Duration(milliseconds: 160),
     this.scrollDuration = const Duration(milliseconds: 100),
     this.iconRadius = 10,
@@ -70,9 +75,33 @@ class LauncherStyle extends ThemeExtension<LauncherStyle> {
   static LauncherStyle of(BuildContext context) =>
       Theme.of(context).extension<LauncherStyle>() ?? const LauncherStyle();
 
+  /// TV overscan and platform insets. Decorative backgrounds remain full bleed.
+  EdgeInsets screenInsets(BuildContext context) {
+    final size = MediaQuery.sizeOf(context);
+    final system = MediaQuery.viewPaddingOf(context);
+    return EdgeInsets.fromLTRB(
+      math.max(size.width * screenSafeFraction, system.left),
+      math.max(size.height * screenSafeFraction, system.top),
+      math.max(size.width * screenSafeFraction, system.right),
+      math.max(size.height * screenSafeFraction, system.bottom),
+    );
+  }
+
+  /// Only meaningful content needs the full inset; panel chrome can extend out.
+  EdgeInsets panelInsets(BuildContext context) {
+    final safe = screenInsets(context);
+    return EdgeInsets.fromLTRB(
+      math.max(panelMargin, safe.left - panelPadding),
+      math.max(panelMargin, safe.top - panelPadding),
+      math.max(panelMargin, safe.right - panelPadding),
+      math.max(panelMargin, safe.bottom - panelPadding),
+    );
+  }
+
   @override
   LauncherStyle copyWith({
     double? panelRadius,
+    double? screenSafeFraction,
     double? dialogRadius,
     double? panelMargin,
     double? panelPadding,
@@ -82,10 +111,11 @@ class LauncherStyle extends ThemeExtension<LauncherStyle> {
     double? rowMinHeight,
     EdgeInsets? rowPadding,
     double? rowFocusWidth,
-    Color? rowFocusColor,
-    Color? rowFocusSurface,
+    double? rowAccentFocusWidth,
     double? rowFocusTint,
     double? rowIdleOpacity,
+    double? rowSelectedTint,
+    double? rowPressedTint,
     Duration? rowDuration,
     Duration? scrollDuration,
     double? iconRadius,
@@ -102,6 +132,7 @@ class LauncherStyle extends ThemeExtension<LauncherStyle> {
     Duration? pulseDuration,
   }) => LauncherStyle(
     panelRadius: panelRadius ?? this.panelRadius,
+    screenSafeFraction: screenSafeFraction ?? this.screenSafeFraction,
     dialogRadius: dialogRadius ?? this.dialogRadius,
     panelMargin: panelMargin ?? this.panelMargin,
     panelPadding: panelPadding ?? this.panelPadding,
@@ -112,10 +143,11 @@ class LauncherStyle extends ThemeExtension<LauncherStyle> {
     rowMinHeight: rowMinHeight ?? this.rowMinHeight,
     rowPadding: rowPadding ?? this.rowPadding,
     rowFocusWidth: rowFocusWidth ?? this.rowFocusWidth,
-    rowFocusColor: rowFocusColor ?? this.rowFocusColor,
-    rowFocusSurface: rowFocusSurface ?? this.rowFocusSurface,
+    rowAccentFocusWidth: rowAccentFocusWidth ?? this.rowAccentFocusWidth,
     rowFocusTint: rowFocusTint ?? this.rowFocusTint,
     rowIdleOpacity: rowIdleOpacity ?? this.rowIdleOpacity,
+    rowSelectedTint: rowSelectedTint ?? this.rowSelectedTint,
+    rowPressedTint: rowPressedTint ?? this.rowPressedTint,
     rowDuration: rowDuration ?? this.rowDuration,
     scrollDuration: scrollDuration ?? this.scrollDuration,
     iconRadius: iconRadius ?? this.iconRadius,
@@ -137,6 +169,11 @@ class LauncherStyle extends ThemeExtension<LauncherStyle> {
     if (other == null) return this;
     return LauncherStyle(
       panelRadius: lerpDouble(panelRadius, other.panelRadius, t)!,
+      screenSafeFraction: lerpDouble(
+        screenSafeFraction,
+        other.screenSafeFraction,
+        t,
+      )!,
       dialogRadius: lerpDouble(dialogRadius, other.dialogRadius, t)!,
       panelMargin: lerpDouble(panelMargin, other.panelMargin, t)!,
       panelPadding: lerpDouble(panelPadding, other.panelPadding, t)!,
@@ -150,10 +187,15 @@ class LauncherStyle extends ThemeExtension<LauncherStyle> {
       rowMinHeight: lerpDouble(rowMinHeight, other.rowMinHeight, t)!,
       rowPadding: EdgeInsets.lerp(rowPadding, other.rowPadding, t)!,
       rowFocusWidth: lerpDouble(rowFocusWidth, other.rowFocusWidth, t)!,
-      rowFocusColor: Color.lerp(rowFocusColor, other.rowFocusColor, t)!,
-      rowFocusSurface: Color.lerp(rowFocusSurface, other.rowFocusSurface, t)!,
+      rowAccentFocusWidth: lerpDouble(
+        rowAccentFocusWidth,
+        other.rowAccentFocusWidth,
+        t,
+      )!,
       rowFocusTint: lerpDouble(rowFocusTint, other.rowFocusTint, t)!,
       rowIdleOpacity: lerpDouble(rowIdleOpacity, other.rowIdleOpacity, t)!,
+      rowSelectedTint: lerpDouble(rowSelectedTint, other.rowSelectedTint, t)!,
+      rowPressedTint: lerpDouble(rowPressedTint, other.rowPressedTint, t)!,
       rowDuration: Duration(
         microseconds: lerpDouble(
           rowDuration.inMicroseconds,
@@ -258,7 +300,9 @@ class LauncherStyle extends ThemeExtension<LauncherStyle> {
             'classic' => 1.0,
             _ => 1.1,
           };
-    if (width > 0 && appearance.number('focusScale') == null && appearance.number('focusStrength') == null) {
+    if (width > 0 &&
+        appearance.number('focusScale') == null &&
+        appearance.number('focusStrength') == null) {
       final growth = appearance.active
           ? (appearance.horizontalGap - 4).clamp(
               0,

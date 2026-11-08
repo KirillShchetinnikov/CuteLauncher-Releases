@@ -1,3 +1,5 @@
+import 'settings_information.dart';
+import 'settings_section.dart';
 import 'settings_value_stepper.dart';
 import 'settings_slider_tile.dart';
 import 'adb_permission_tile.dart';
@@ -70,54 +72,75 @@ class _BrightnessPageState extends State<BrightnessPage>
             onChanged: (value) => _toggle(service, value),
             title: Text(l.brightnessScheduler),
           ),
-          FocusableSettingsTile(
-            title: Text(
-              service.hasPermission ? l.granted : l.permissionRequired,
-            ),
-            leading: const Icon(Icons.security),
-            onPressed: service.requestPermission,
-          ),
-          AdbPermissionTile(
-            title: l.nightModeAdbPermission,
-            action: 'writeSettings',
-            permissionMethod: 'checkWriteSettingsPermission',
-            onRefresh: service.checkPermission,
-          ),
-          RoundedSwitchListTile(
-            value: service.solarEnabled,
-            title: Text(l.brightnessSolar),
-            onChanged: service.setSolarEnabled,
-          ),
-          SettingsSliderTile(
-            title: l.brightnessTransitionTime,
-            value: service.transitionMinutes,
-            options: [for (var i = 1; i <= 60; i++) i],
-            label: (v) => '${v.round()} ${l.weatherMinutes}',
-            onChanged: (v) => service.setTransitionMinutes(v.toInt()),
-          ),
-          if (service.solarEnabled) ...[
-            for (final sunrise in [true, false])
-              SettingsValueStepper(
-                title: sunrise
-                    ? l.brightnessAfterNightEnd
-                    : l.brightnessAfterNightStart,
-                value: sunrise
-                    ? service.sunriseBrightness
-                    : service.sunsetBrightness,
-                options: [for (var i = 0; i <= 100; i += 5) i],
-                label: (v) => '$v%',
-                onChanged: (v) => service.setSolarBrightness(sunrise, v as int),
+          SettingsSection(
+            title: l.nightPermissions,
+            children: [
+              FocusableSettingsTile(
+                title: Text(
+                  service.hasPermission ? l.granted : l.permissionRequired,
+                ),
+                leading: const Icon(Icons.security),
+                onPressed: service.requestPermission,
               ),
-            if (!service.solarAvailable) Text(l.brightnessSolarUnavailable),
-          ] else
-            for (final slot in TimeSlot.values)
-              SettingsValueStepper(
-                title: _hours(slot),
-                value: service.getBrightnessForSlot(slot),
-                options: const [10, 20, 40, 50, 60, 80, 100],
-                label: (v) => '$v%',
-                onChanged: (v) => service.setBrightnessForSlot(slot, v as int),
+              AdbPermissionTile(
+                title: l.nightModeAdbPermission,
+                action: 'writeSettings',
+                permissionMethod: 'checkWriteSettingsPermission',
+                onRefresh: service.checkPermission,
               ),
+            ],
+          ),
+          SettingsSection(
+            title: l.nightScheduleMenu,
+            children: [
+              RoundedSwitchListTile(
+                value: service.solarEnabled,
+                title: Text(l.brightnessSolar),
+                onChanged: service.setSolarEnabled,
+              ),
+              SettingsSliderTile(
+                title: l.brightnessTransitionTime,
+                value: service.transitionMinutes,
+                options: [for (var i = 1; i <= 60; i++) i],
+                label: (v) => '${v.round()} ${l.weatherMinutes}',
+                onChanged: (v) => service.setTransitionMinutes(v.toInt()),
+              ),
+            ],
+          ),
+          SettingsSection(
+            title: l.settingsGroupBrightness,
+            children: [
+              if (service.solarEnabled) ...[
+                for (final sunrise in [true, false])
+                  SettingsValueStepper(
+                    title: sunrise
+                        ? l.brightnessAfterNightEnd
+                        : l.brightnessAfterNightStart,
+                    value: sunrise
+                        ? service.sunriseBrightness
+                        : service.sunsetBrightness,
+                    options: [for (var i = 0; i <= 100; i += 5) i],
+                    label: (v) => '$v%',
+                    onChanged: (v) =>
+                        service.setSolarBrightness(sunrise, v as int),
+                  ),
+                if (!service.solarAvailable)
+                  SettingsMessage(
+                    text: l.brightnessSolarUnavailable,
+                    kind: SettingsMessageKind.warning,
+                  ),
+              ] else
+                for (final slot in TimeSlot.values)
+                  SettingsValueStepper(
+                    title: _hours(slot),
+                    value: service.getBrightnessForSlot(slot),
+                    options: const [10, 20, 40, 50, 60, 80, 100],
+                    label: (v) => '$v%',
+                    onChanged: (v) =>
+                        service.setBrightnessForSlot(slot, v as int),
+                  ),
+            ],
+          ),
         ],
       ),
     );

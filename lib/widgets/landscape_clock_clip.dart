@@ -1,3 +1,4 @@
+import '../weather_sources.dart';
 import 'dart:async';
 
 import 'package:flutter/rendering.dart';
@@ -71,9 +72,11 @@ class _LandscapeInformationGeometryState
           ({double? latitude, double? cityLatitude, String? mode})
         >(
           (s) => (
-            latitude: s?.configuration.latitude,
+            latitude: s?.configuration.source == WeatherSource.customOpenMeteo
+                ? s?.weatherData?.latitude : s?.configuration.latitude,
             cityLatitude: s?.configuration.cityLatitude,
-            mode: s?.configuration.locationMode.name,
+            mode: s?.configuration.source == WeatherSource.customOpenMeteo
+                ? 'automatic' : s?.configuration.locationMode.name,
           ),
         );
     final nightLatitude = context.select<NightModeService?, double?>(

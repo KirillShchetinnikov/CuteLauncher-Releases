@@ -183,29 +183,34 @@ class _ApplicationsPanelPageState extends State<ApplicationsPanelPage> {
     String title,
     IconData icon,
   ) {
-    // ... (same)
-    return InkWell(
-      canRequestFocus: false,
-      focusColor: Colors.transparent,
-      hoverColor: Colors.transparent,
-      splashColor: Colors.transparent,
-      highlightColor: Colors.transparent,
-      onTap: () {
-        _selectTab(index, title);
-      },
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        constraints: const BoxConstraints(minHeight: 48),
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        decoration: InterfaceSkin.of(context).surface(
-          selected
-              ? Theme.of(context).colorScheme.onSurface.withValues(alpha: .15)
-              : Colors.transparent,
-          Theme.of(context).colorScheme.onSurface,
-          focused: focused,
-          accent: Theme.of(context).colorScheme.primary,
+    return Semantics(
+      label: title,
+      selected: selected,
+      button: true,
+      child: InkWell(
+        canRequestFocus: false,
+        focusColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        onTap: () {
+          _tabFocusNodes[index].requestFocus();
+          _selectTab(index, title);
+        },
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          constraints: const BoxConstraints(minHeight: 48),
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          decoration: InterfaceSkin.of(context).surface(
+            selected
+                ? Theme.of(context).colorScheme.onSurface.withValues(alpha: .15)
+                : Colors.transparent,
+            Theme.of(context).colorScheme.onSurface,
+            focused: focused,
+            accent: Theme.of(context).colorScheme.primary,
+          ),
+          child: Icon(icon, color: Theme.of(context).colorScheme.onSurface),
         ),
-        child: Icon(icon, color: Theme.of(context).colorScheme.onSurface),
       ),
     );
   }
@@ -278,11 +283,14 @@ class _AllTab extends StatelessWidget {
           autofocus: true,
         );
       }
-      final indices = {for (var i = 0; i < applications.length; i++)
-        applications[i].packageName: i};
+      final indices = {
+        for (var i = 0; i < applications.length; i++)
+          applications[i].packageName: i,
+      };
       return ListView.builder(
         itemCount: applications.length,
-        findChildIndexCallback: (key) => indices[(key as ValueKey<String>).value],
+        findChildIndexCallback: (key) =>
+            indices[(key as ValueKey<String>).value],
         itemBuilder: (_, index) => _AppListItem(
           applications[index],
           key: ValueKey(applications[index].packageName),
@@ -298,7 +306,10 @@ class _SystemTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Selector<AppsService, List<App>>(
     selector: (_, appsService) => appsService.applications
-        .where((app) => app.isSystem && !app.hidden && !appsService.isTileHidden(app))
+        .where(
+          (app) =>
+              app.isSystem && !app.hidden && !appsService.isTileHidden(app),
+        )
         .toList(),
     builder: (context, applications, _) {
       if (applications.isEmpty) {
@@ -307,11 +318,14 @@ class _SystemTab extends StatelessWidget {
           autofocus: true,
         );
       }
-      final indices = {for (var i = 0; i < applications.length; i++)
-        applications[i].packageName: i};
+      final indices = {
+        for (var i = 0; i < applications.length; i++)
+          applications[i].packageName: i,
+      };
       return ListView.builder(
         itemCount: applications.length,
-        findChildIndexCallback: (key) => indices[(key as ValueKey<String>).value],
+        findChildIndexCallback: (key) =>
+            indices[(key as ValueKey<String>).value],
         itemBuilder: (_, index) => _AppListItem(
           applications[index],
           key: ValueKey(applications[index].packageName),
@@ -326,8 +340,9 @@ class _SystemTab extends StatelessWidget {
 class _HiddenTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Selector<AppsService, List<App>>(
-    selector: (_, appsService) =>
-        appsService.applications.where((app) => app.hidden || appsService.isTileHidden(app)).toList(),
+    selector: (_, appsService) => appsService.applications
+        .where((app) => app.hidden || appsService.isTileHidden(app))
+        .toList(),
     builder: (context, applications, _) {
       if (applications.isEmpty) {
         return _EmptyListPlaceholder(
@@ -335,11 +350,14 @@ class _HiddenTab extends StatelessWidget {
           autofocus: true,
         );
       }
-      final indices = {for (var i = 0; i < applications.length; i++)
-        applications[i].packageName: i};
+      final indices = {
+        for (var i = 0; i < applications.length; i++)
+          applications[i].packageName: i,
+      };
       return ListView.builder(
         itemCount: applications.length,
-        findChildIndexCallback: (key) => indices[(key as ValueKey<String>).value],
+        findChildIndexCallback: (key) =>
+            indices[(key as ValueKey<String>).value],
         itemBuilder: (_, index) => _AppListItem(
           applications[index],
           key: ValueKey(applications[index].packageName),
@@ -458,5 +476,4 @@ class _AppListItemState extends State<_AppListItem> {
     leading: ApplicationListIcon(packageName: widget.application.packageName),
     onPressed: _openAppDetails,
   );
-
 }

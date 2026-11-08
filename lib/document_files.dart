@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'package:flutter/widgets.dart';
 
 import 'widgets/file_selection.dart';
+import 'providers/settings_service.dart';
 
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -17,6 +18,12 @@ typedef DocumentExporter = Future<String?> Function(
   File file, {
   required String name,
 });
+
+class _PickedImage extends XFile {
+  final String selectionKey;
+  final String? sourceFolder;
+  _PickedImage(super.path, this.selectionKey, this.sourceFolder);
+}
 
 class DocumentFiles {
   static Future<String?> saveDiagnostics(
@@ -39,24 +46,66 @@ class DocumentFiles {
       _channel.invokeMethod<String>('saveBackupDownloads', {'path': file.path});
   static const _channel = BridgeChannel('me.efesser.flauncher/method');
 
-  static Future<XFile?> pickImage({BuildContext? context}) async {
+  static Future<XFile?> pickImage({
+    BuildContext? context,
+    String? selectionKey,
+  }) async {
     if (context == null && !Platform.isAndroid) {
       return ImagePicker().pickImage(source: ImageSource.gallery);
     }
+    String? sourceFolder;
     final path = await (context != null
-        ? FileSelection.select<String>(context, 'pickImageDocument')
+        ? FileSelection.select<String>(
+            context,
+            'pickImageDocument',
+            selectionKey: selectionKey,
+            onSelectedFolder: (value) => sourceFolder = value,
+          )
         : _channel.invokeMethod<String>('pickImageDocument'));
-    return path == null ? null : XFile(path);
+    return path == null
+        ? null
+        : selectionKey == null
+        ? XFile(path)
+        : _PickedImage(path, selectionKey, sourceFolder);
   }
 
-  static Future<XFile?> pickWallpaper({BuildContext? context}) async {
+  static Future<XFile?> pickWallpaper({
+    BuildContext? context,
+    String? selectionKey,
+  }) async {
     if (context == null && !Platform.isAndroid) {
       return ImagePicker().pickMedia();
     }
+    String? sourceFolder;
     final path = await (context != null
-        ? FileSelection.select<String>(context, 'pickWallpaperDocument')
+        ? FileSelection.select<String>(
+            context,
+            'pickWallpaperDocument',
+            selectionKey: selectionKey,
+            onSelectedFolder: (value) => sourceFolder = value,
+          )
         : _channel.invokeMethod<String>('pickWallpaperDocument'));
-    return path == null ? null : XFile(path);
+    return path == null
+        ? null
+        : selectionKey == null
+        ? XFile(path)
+        : _PickedImage(path, selectionKey, sourceFolder);
+  }
+
+  /// Commit the source only after the consumer has validated and applied the image.
+  static Future<void> rememberImageSelection(
+    XFile file,
+    SettingsService settings,
+  ) async {
+    if (file is! _PickedImage) return;
+    try {
+      await settings.rememberFileBrowserLocation(
+        'selected:${file.selectionKey}',
+        file.sourceFolder,
+      );
+    } catch (_) {
+      /* Navigation history must not fail a successfully applied image. */
+    }
   }
 
   static Future<String?> pickWebhookText({BuildContext? context}) async {
@@ -72,6 +121,30 @@ class DocumentFiles {
       return await file.readAsString();
     } finally {
       await file.delete();
+    }
+  }
+
+  static Future<String?> pickWeatherTokenText(BuildContext context) =>
+      _pickWeatherText(context, 'pickWeatherTokenDocument');
+
+  static Future<String?> pickWeatherServerText(BuildContext context) =>
+      _pickWeatherText(context, 'pickWeatherServerDocument');
+
+  static Future<String?> _pickWeatherText(
+    BuildContext context,
+    String operation,
+  ) async {
+    final bytes = await FileSelection.select<Uint8List>(context, operation);
+    if (bytes == null) return null;
+    try {
+      return utf8.decode(bytes);
+    } finally {
+      try {
+        bytes.fillRange(0, bytes.length, 0);
+      } on UnsupportedError {
+        // Engine messages may own an unmodifiable buffer. Clearing is best effort
+        // and must not turn a decoded document into an import error.
+      }
     }
   }
 

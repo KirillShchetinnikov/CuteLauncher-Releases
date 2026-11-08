@@ -1,3 +1,5 @@
+import 'settings_information.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -66,6 +68,7 @@ class _BackgroundInformationOrderPageState
       },
       child: SettingsPageLayout(
         title: Text(l.panelObjectOrder),
+        showObscuredInformationPreview: false,
         child: ListView(
           children: [
             for (final id in order)
@@ -122,7 +125,7 @@ class _BackgroundInformationOrderPageState
                   return KeyEventResult.ignored;
                 },
               ),
-            Text(l.backgroundInformationOrderHint),
+            SettingsControlHint(text: l.backgroundInformationOrderHint),
           ],
         ),
       ),

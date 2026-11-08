@@ -129,6 +129,10 @@ class RemotePanelService extends ChangeNotifier {
   }
   TileAppearance appearanceFor(TileAppearance home) => TileAppearance({
     ...(inheritAppearance ? home : ownAppearance).values,
+    for (final key in TileAppearance.informationAppearanceKeys)
+      if (home.values.containsKey(key)) key: home.values[key],
+    if (home.values.containsKey('panelInformationAppearance'))
+      'panelInformationAppearance': home.values['panelInformationAppearance'],
     'panelCombinedInformation': combinedInformation(home.combinedInformation),
     'panelInformationStyle': home.informationStyle.values,
     'blurPanel': false, 'panelWrapNavigation': home.panelWrapNavigation,

@@ -91,6 +91,10 @@ void main() {
           160,
           scrollable: scroll,
         );
+        await tester.pumpAndSettle();
+        await tester.ensureVisible(find.text(l.showSectionTitles));
+        await tester.pumpAndSettle(
+        );
         await tester.tap(find.text(l.showSectionTitles));
         await tester.pumpAndSettle();
         expect(appearance.tilesFor(group.id).sectionTitles, isTrue);
@@ -107,6 +111,9 @@ void main() {
           160,
           scrollable: scroll,
         );
+        await tester.pumpAndSettle();
+        await tester.ensureVisible(find.byType(ResetStyleTile));
+        await tester.pumpAndSettle();
         await tester.tap(find.byType(ResetStyleTile));
         await tester.pumpAndSettle();
         await tester.sendKeyEvent(LogicalKeyboardKey.escape);

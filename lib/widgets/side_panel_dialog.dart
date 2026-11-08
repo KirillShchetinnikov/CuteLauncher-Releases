@@ -28,6 +28,7 @@ class SidePanelDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final style = LauncherStyle.of(context);
+    final safe = style.panelInsets(context);
     final skin = InterfaceSkin.of(context);
     final borderRadius = BorderRadius.circular(style.panelRadius);
     final onRight =
@@ -40,7 +41,7 @@ class SidePanelDialog extends StatelessWidget {
         ? BoxDecoration(
             borderRadius: borderRadius,
             border: Border.all(
-              color: Colors.white.withValues(alpha: .10),
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: .10),
               width: 1,
             ),
           )
@@ -55,10 +56,10 @@ class SidePanelDialog extends StatelessWidget {
       alignment: onRight ? Alignment.centerRight : Alignment.centerLeft,
       child: Padding(
         padding: EdgeInsets.fromLTRB(
-          anchor == null ? style.panelMargin : 0,
-          anchor == null ? style.panelMargin + topInset : 0,
-          anchor == null ? style.panelMargin : 0,
-          anchor == null ? style.panelMargin : 0,
+          anchor == null ? math.max(style.panelMargin, safe.left) : 0,
+          anchor == null ? math.max(style.panelMargin, safe.top) + topInset : 0,
+          anchor == null ? math.max(style.panelMargin, safe.right) : 0,
+          anchor == null ? math.max(style.panelMargin, safe.bottom) : 0,
         ),
         child: NoticePanelRegion(
           child: Material(
@@ -83,14 +84,15 @@ class SidePanelDialog extends StatelessWidget {
     if (anchor == null) return panel;
     return LayoutBuilder(
       builder: (context, constraints) {
-        final margin = math.max(12.0, style.panelMargin);
+        final margin = math.max(style.panelMargin, math.max(safe.left, safe.right));
+        final bottom = math.max(style.panelMargin, safe.bottom);
         final panelWidth = math.min(
           width,
           math.max(0.0, constraints.maxWidth - margin * 2),
         );
         final top = math.min(
           math.max(anchor!.bottom, topInset) + 8,
-          constraints.maxHeight - margin,
+          constraints.maxHeight - bottom,
         );
         final left = (anchor!.center.dx - panelWidth / 2)
             .clamp(
@@ -106,7 +108,7 @@ class SidePanelDialog extends StatelessWidget {
               width: panelWidth,
               child: ConstrainedBox(
                 constraints: BoxConstraints(
-                  maxHeight: math.max(0, constraints.maxHeight - top - margin),
+                  maxHeight: math.max(0, constraints.maxHeight - top - bottom),
                 ),
                 child: panel,
               ),

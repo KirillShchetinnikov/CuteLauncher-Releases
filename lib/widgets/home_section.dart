@@ -297,6 +297,48 @@ class _HomeSectionState extends State<HomeSection> {
         (mode == 'grid' ? widget.category.columnsCount : 0);
     final padding =
         style.number('sectionPadding') ?? categoryStyle?.padding ?? 0;
+    final showHeader = style.sectionTitles || style.labels == 'selected';
+    Widget sectionHeader(double inset) =>
+      Padding(
+        padding: EdgeInsets.fromLTRB(inset, 8, inset, 8),
+        child: Row(
+          children: [
+            if (style.sectionTitles && style.sectionIcons) ...[
+              const Icon(Icons.apps),
+              const SizedBox(width: 8),
+            ],
+            if (style.sectionTitles) Flexible(
+              child: Text(
+                localizedSectionName(
+                  widget.category.name,
+                  AppLocalizations.of(context)!,
+                ),
+                style: Theme.of(context).textTheme.titleLarge,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            if (style.labels == 'selected') ...[
+              if (style.sectionTitles)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Text('·', style: style.labelStyle),
+                ),
+              Expanded(
+                child: Text(
+                  _apps.where((a) => a.packageName == _focus?.lastPackage)
+                      .firstOrNull?.displayName ?? '',
+                  key: ValueKey(('selected-app-label', widget.category.id)),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: style.labelStyle,
+                ),
+              ),
+            ],
+          ],
+        ),
+      );
+
     return Focus(
       onFocusChange: (active) {
         if (mounted && active != _active) setState(() => _active = active);
@@ -317,46 +359,7 @@ class _HomeSectionState extends State<HomeSection> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (style.sectionTitles || style.labels == 'selected')
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-                  child: Row(
-                    children: [
-                      if (style.sectionTitles && style.sectionIcons) ...[
-                        const Icon(Icons.apps),
-                        const SizedBox(width: 8),
-                      ],
-                      if (style.sectionTitles) Flexible(
-                        child: Text(
-                          localizedSectionName(
-                            widget.category.name,
-                            AppLocalizations.of(context)!,
-                          ),
-                          style: Theme.of(context).textTheme.titleLarge,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      if (style.labels == 'selected') ...[
-                        if (style.sectionTitles)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            child: Text('·', style: style.labelStyle),
-                          ),
-                        Expanded(
-                          child: Text(
-                            _apps.where((a) => a.packageName == _focus?.lastPackage)
-                                .firstOrNull?.name ?? '',
-                            key: ValueKey(('selected-app-label', widget.category.id)),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: style.labelStyle,
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
-                ),
+              if (_apps.isEmpty && showHeader) sectionHeader(16),
               if (_apps.isEmpty)
                 ExcludeFocus(child: categoryContainerEmptyState(context)),
               if (_apps.isNotEmpty)
@@ -454,7 +457,7 @@ class _HomeSectionState extends State<HomeSection> {
                           ? const NeverScrollableScrollPhysics() : const ClampingScrollPhysics(),
                       itemBuilder: (_, index) => card(index),
                     );
-                    return SizedBox(
+                    final tiles = SizedBox(
                       key: _bounds,
                       height: height,
                       child: ClipRect(
@@ -468,6 +471,18 @@ class _HomeSectionState extends State<HomeSection> {
                           ),
                         ),
                       ),
+                    );
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (showHeader)
+                          sectionHeader(
+                            style.sectionTitles && style.sectionTitleAligned
+                                ? _horizontalInset
+                                : 16,
+                          ),
+                        tiles,
+                      ],
                     );
                   },
                 ),

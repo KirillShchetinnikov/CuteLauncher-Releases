@@ -248,6 +248,7 @@ class BackupService {
       "apps": apps.map((a) => {
         "packageName": a.packageName,
         "name": a.name,
+        if (a.customName != null) "customName": a.customName,
         "version": a.version,
         "hidden": a.hidden,
         "lastLaunchedAt": a.lastLaunchedAt?.millisecondsSinceEpoch,
@@ -347,6 +348,7 @@ class BackupService {
         return AppsCompanion(
           packageName: Value(map["packageName"] as String),
           name: Value(map["name"] as String),
+          customName: Value((map["customName"] as String?)?.trim()),
           version: Value(map["version"] as String),
           hidden: Value(map["hidden"] as bool),
           lastLaunchedAt: Value(lla != null ? DateTime.fromMillisecondsSinceEpoch(lla) : null),

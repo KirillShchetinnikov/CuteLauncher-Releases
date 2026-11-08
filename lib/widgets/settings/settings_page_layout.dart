@@ -4,6 +4,7 @@ import 'settings_scroll_behavior.dart';
 
 import 'settings_menu_layout.dart';
 import 'settings_help.dart';
+import 'information_preview.dart';
 
 import 'package:flutter/services.dart';
 
@@ -17,6 +18,7 @@ class SettingsPageLayout extends StatefulWidget {
   final Widget? footer;
   final EdgeInsetsGeometry? footerPadding;
   final bool showDivider;
+  final bool showObscuredInformationPreview;
 
   const SettingsPageLayout({
     super.key,
@@ -27,6 +29,7 @@ class SettingsPageLayout extends StatefulWidget {
     this.footer,
     this.footerPadding,
     this.showDivider = true,
+    this.showObscuredInformationPreview = true,
   });
 
   @override
@@ -171,10 +174,11 @@ class _SettingsPageLayoutState extends State<SettingsPageLayout> {
           ),
           if (widget.subtitle != null) widget.subtitle!,
           if (widget.showDivider) const Divider(),
-          if (widget.header != null)
+          if (widget.header != null || widget.showObscuredInformationPreview &&
+              SettingsMenuLayout.maybeOf(context)?.informationObscured == true)
             Padding(
               padding: const EdgeInsets.only(left: 14),
-              child: widget.header!,
+              child: widget.header ?? const InformationPreview(background: true),
             ),
           Expanded(
             child: PrimaryScrollController(

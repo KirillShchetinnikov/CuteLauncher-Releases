@@ -46,6 +46,29 @@ void main() async {
     expect(settings.showSystemSettingsInStatusBar, isFalse);
   });
 
+  test('file manager preference defaults to ask and survives restart and import', () async {
+    final settings = SettingsService(sharedPreferences);
+    expect(settings.fileManagerPreference, FileManagerPreference.ask);
+    for (final value in FileManagerPreference.values) {
+      await settings.setFileManagerPreference(value);
+      final reloaded = SettingsService(sharedPreferences);
+      expect(reloaded.fileManagerPreference, value);
+      reloaded.dispose();
+      final backup = settings.exportSettingsMap();
+      await sharedPreferences.clear();
+      await settings.importSettingsMap(backup);
+      expect(settings.fileManagerPreference, value);
+    }
+    await settings.setFileManagerPreference(FileManagerPreference.external);
+    await settings.importSettingsMap({'file_manager_preference': 'invalid'});
+    await settings.importSettingsMap({'file_manager_preference': false});
+    await settings.importSettingsMap({});
+    expect(settings.fileManagerPreference, FileManagerPreference.external);
+    await sharedPreferences.setString('file_manager_preference', 'invalid');
+    expect(settings.fileManagerPreference, FileManagerPreference.ask);
+    settings.dispose();
+  });
+
   test('audio visibility defaults on, persists and survives backup import', () async {
     final settings = SettingsService(sharedPreferences);
     expect(settings.showVolumeInStatusBar, isTrue);

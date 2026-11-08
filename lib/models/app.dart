@@ -19,6 +19,8 @@
 class App
 {
   final String name;
+  String? customName;
+  String get displayName => customName ?? name;
 
   final String packageName;
 
@@ -42,6 +44,7 @@ class App
   App({
     required this.packageName,
     required this.name,
+    this.customName,
     required this.version,
     required this.hidden,
     this.action,

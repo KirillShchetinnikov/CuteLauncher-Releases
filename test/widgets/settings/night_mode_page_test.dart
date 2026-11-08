@@ -14,9 +14,14 @@ import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
 
 void main() {
   Future<void> reveal(WidgetTester tester, String text) async {
-    final target = find.text(text);
+    final target = find.descendant(
+      of: find.byType(FocusableSettingsTile),
+      matching: find.text(text),
+    );
     await tester.scrollUntilVisible(target, 350,
-        scrollable: find.byType(Scrollable).first);
+        scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
     await Scrollable.ensureVisible(tester.element(target), alignment: 0.2);
     await tester.pumpAndSettle();
   }
@@ -245,7 +250,7 @@ void main() {
     await tester.tap(find.text('Расписание'));
     await tester.pumpAndSettle();
     await reveal(tester, 'Местоположение');
-    await tester.tap(find.text('Местоположение'));
+    await tester.tap(find.text('Местоположение').last);
     await tester.pumpAndSettle();
     await tester.tap(find.text('Ввести вручную').last);
     await tester.pumpAndSettle();

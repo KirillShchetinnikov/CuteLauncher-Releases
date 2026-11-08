@@ -39,7 +39,7 @@ void main() {
       expect(find.text(l.tileImageCover), findsOneWidget);
       await tester.tap(toggle);
       await tester.pumpAndSettle();
-      await tester.tap(find.descendant(of: find.byType(SimpleDialog), matching: find.text(l.tileImageContain)));
+      await tester.tap(find.descendant(of: find.byType(AlertDialog), matching: find.text(l.tileImageContain)));
       await tester.pumpAndSettle();
       expect(categoryId == null ? appearance.appearance.bannerImageMode.name : appearance.tilesFor(categoryId).bannerImageMode.name, 'contain');
       if (categoryId != null) {
@@ -51,8 +51,8 @@ void main() {
       await tester.ensureVisible(iconChoice);
       await tester.tap(iconChoice);
       await tester.pumpAndSettle();
-      expect(find.descendant(of: find.byType(SimpleDialog), matching: find.text(l.tileImageIcon)), findsNothing);
-      await tester.tap(find.descendant(of: find.byType(SimpleDialog), matching: find.text(l.tileImageEdgeColor)));
+      expect(find.descendant(of: find.byType(AlertDialog), matching: find.text(l.tileImageIcon)), findsNothing);
+      await tester.tap(find.descendant(of: find.byType(AlertDialog), matching: find.text(l.tileImageEdgeColor)));
       await tester.pumpAndSettle();
       final current = categoryId == null ? appearance.appearance : appearance.tilesFor(categoryId);
       expect(current.iconImageMode.name, 'edgeColor');
@@ -94,7 +94,7 @@ void main() {
     await tester.tap(find.text(l.remotePanelInheritAppearance));
     await tester.pumpAndSettle();
     expect(panel.inheritAppearance, isFalse);
-    expect(find.text(l.panelBackground), findsOneWidget);
+    expect(find.text(l.panelBackground), findsNWidgets(2));
     expect(find.text(l.autoHideTopPanel), findsNothing);
     expect(find.text(l.panelBlur), findsNothing);
     final slider = tester.widget<SettingsPercentageSlider>(find.byKey(const Key('panel-transparency')));
@@ -108,6 +108,8 @@ void main() {
     await tester.tap(find.text(l.remotePanelInheritAppearance));
     await tester.pumpAndSettle();
     expect(panel.ownAppearance.number('panelOpacity'), .75);
+    await tester.scrollUntilVisible(find.text(l.resetStyleSection), 200);
+    await tester.pumpAndSettle();
     await tester.tap(find.text(l.resetStyleSection));
     await tester.pumpAndSettle();
     await tester.tap(find.text(l.resetStyleSection).last);
@@ -177,7 +179,7 @@ void main() {
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
     await tester.pumpAndSettle();
     expect(appearance.appearance.tileSize, 128);
-    expect(find.byType(SimpleDialog), findsNothing);
+    expect(find.byType(AlertDialog), findsNothing);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.pumpAndSettle();
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
@@ -190,7 +192,7 @@ void main() {
     final focus = FocusManager.instance.primaryFocus;
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
-    expect(find.byType(SimpleDialog), findsOneWidget);
+    expect(find.byType(AlertDialog), findsOneWidget);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
@@ -203,7 +205,7 @@ void main() {
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
     final labels = AppLocalizations.of(tester.element(find.byType(AppearancePage)))!;
-    expect(find.descendant(of: find.byType(SimpleDialog), matching: find.text(labels.tileImageIcon)), findsNothing);
+    expect(find.descendant(of: find.byType(AlertDialog), matching: find.text(labels.tileImageIcon)), findsNothing);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
@@ -220,7 +222,7 @@ void main() {
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
     await tester.pumpAndSettle();
     expect(appearance.appearance.number('radius'), isNull);
-    expect(find.byType(SimpleDialog), findsNothing);
+    expect(find.byType(AlertDialog), findsNothing);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.pumpAndSettle();
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);

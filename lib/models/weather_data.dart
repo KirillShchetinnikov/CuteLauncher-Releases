@@ -4,6 +4,22 @@ import 'package:flutter/material.dart';
 
 enum WeatherWarningType { none, rain, snow, storm }
 
+enum WeatherCondition {
+  unknown(Icons.cloud_outlined),
+  sun(Icons.wb_sunny_outlined),
+  moon(Icons.nightlight_outlined),
+  partlyCloudy(Icons.wb_cloudy_outlined),
+  cloudy(Icons.cloud_outlined),
+  rain(Icons.grain_outlined),
+  snow(Icons.ac_unit_outlined),
+  storm(Icons.flash_on_outlined),
+  fog(Icons.waves_outlined),
+  wind(Icons.air_outlined);
+
+  const WeatherCondition(this.standardIcon);
+  final IconData standardIcon;
+}
+
 class WeatherForecastItem {
   /// Calendar date in the forecast's time zone, without a time component.
   final DateTime? date;
@@ -27,7 +43,9 @@ class WeatherForecastItem {
     DateTime? fallbackDate,
   }) {
     return WeatherForecastItem(
-      date: json['date'] == null ? fallbackDate : parseWeatherDate(json['date']),
+      date: json['date'] == null
+          ? fallbackDate
+          : parseWeatherDate(json['date']),
       minTemp: WeatherData.parseTemperature(json['minTemp']),
       maxTemp: WeatherData.parseTemperature(json['maxTemp']),
       conditionCode: json['conditionCode'] as int?,
@@ -40,9 +58,14 @@ class WeatherForecastItem {
 class WeatherData {
   /// Null means the source uses the TV's local calendar (Breezy / MET Norway).
   final int? utcOffsetSeconds;
+  final double? latitude, longitude;
+  final String? timezone;
   final int? timestamp;
   final String? location;
+  final String? source;
+  final bool? isDay;
   final int? currentTemp;
+  final int? feelsLikeTemp;
   final int? currentConditionCode;
   final String? currentCondition;
   final int? currentHumidity;
@@ -61,9 +84,15 @@ class WeatherData {
 
   const WeatherData({
     this.utcOffsetSeconds,
+    this.latitude,
+    this.longitude,
+    this.timezone,
     this.timestamp,
     this.location,
+    this.source,
+    this.isDay,
     this.currentTemp,
+    this.feelsLikeTemp,
     this.currentConditionCode,
     this.currentCondition,
     this.currentHumidity,
@@ -83,6 +112,11 @@ class WeatherData {
   static const snowCodes = {600, 601, 602, 611, 612, 615, 616, 620, 621, 622};
   static const stormCodes = {200, 201, 202, 210, 211, 212, 221, 230, 231, 232};
 
+  static double? _coordinate(Object? value, int limit) =>
+      value is num && value.isFinite && value.abs() <= limit
+          ? value.toDouble()
+          : null;
+
   factory WeatherData.fromJsonString(String jsonString) {
     final Map<String, dynamic> json = jsonDecode(jsonString);
     return WeatherData.fromJson(json);
@@ -96,7 +130,7 @@ class WeatherData {
     } else if (val is String) {
       n = num.tryParse(val);
     }
-    if (n == null) return null;
+    if (n == null || !n.isFinite) return null;
     // Gadgetbridge / Breezy Weather WeatherSpec sends temperatures in Kelvin (e.g., 300K for ~27°C).
     // If value > 100, treat as Kelvin and convert to Celsius.
     if (n > 100) {
@@ -184,9 +218,15 @@ class WeatherData {
 
     return WeatherData(
       utcOffsetSeconds: offset,
+      latitude: _coordinate(json['latitude'], 90),
+      longitude: _coordinate(json['longitude'], 180),
+      timezone: json['timezone'] is String ? json['timezone'] as String : null,
       timestamp: json['timestamp'] as int?,
       location: json['location'] as String?,
+      source: json['source'] is String ? json['source'] as String : null,
+      isDay: json['isDay'] is bool ? json['isDay'] as bool : null,
       currentTemp: parseTemperature(json['currentTemp']),
+      feelsLikeTemp: parseTemperature(json['feelsLikeTemp']),
       currentConditionCode: json['currentConditionCode'] as int?,
       currentCondition: json['currentCondition'] as String?,
       currentHumidity: json['currentHumidity'] as int?,
@@ -221,38 +261,53 @@ class WeatherData {
     return result;
   }
 
-  IconData getConditionIcon({bool isWarning = false}) {
+  IconData getConditionIcon({bool isWarning = false}) =>
+      getCondition(isWarning: isWarning).standardIcon;
+
+  WeatherCondition getCondition({bool isWarning = false}) {
     final code = isWarning
         ? (warningConditionCode ?? currentConditionCode)
         : currentConditionCode;
-    if (code == null) return Icons.cloud_outlined;
+    if (code == null) return WeatherCondition.unknown;
 
-    if (code == 800) return Icons.wb_sunny_outlined;
-    if (code == 801 || code == 802) return Icons.wb_cloudy_outlined;
-    if (code == 803 || code == 804) return Icons.cloud_outlined;
-    if (rainCodes.contains(code)) return Icons.grain_outlined;
-    if (snowCodes.contains(code)) return Icons.ac_unit_outlined;
-    if (stormCodes.contains(code)) return Icons.flash_on_outlined;
+    if (code == 800) {
+      var daylight = isDay;
+      if (daylight == null && timestamp != null && utcOffsetSeconds != null) {
+        // Match the landscape's approximate hours when daylight is unknown.
+        final hour = DateTime.fromMillisecondsSinceEpoch(
+          (timestamp! + utcOffsetSeconds!) * 1000,
+          isUtc: true,
+        ).hour;
+        daylight = hour >= 6 && hour < 18;
+      }
+      return daylight == false ? WeatherCondition.moon : WeatherCondition.sun;
+    }
+    if (code == 801 || code == 802) return WeatherCondition.partlyCloudy;
+    if (code == 803 || code == 804) return WeatherCondition.cloudy;
+    if (rainCodes.contains(code)) return WeatherCondition.rain;
+    if (snowCodes.contains(code)) return WeatherCondition.snow;
+    if (stormCodes.contains(code)) return WeatherCondition.storm;
     if (code == 741 ||
         code == 701 ||
         code == 711 ||
         code == 721 ||
         code == 751) {
-      return Icons.waves_outlined;
+      return WeatherCondition.fog;
     }
-    if (code == 771) return Icons.air_outlined;
+    if (code == 771) return WeatherCondition.wind;
 
-    return Icons.cloud_outlined;
+    return WeatherCondition.unknown;
   }
 
   String formatTemperature({bool useFahrenheit = false}) {
-    if (currentTemp == null) return "--°";
-    if (useFahrenheit) {
-      final fahrenheit = (currentTemp! * 9 / 5 + 32).round();
-      return "$fahrenheit°F";
-    }
-    return "$currentTemp°C";
+    final value = currentTemp;
+    return value == null
+        ? '--°'
+        : formatDegrees(value, useFahrenheit: useFahrenheit);
   }
+
+  static String formatDegrees(int celsius, {required bool useFahrenheit}) =>
+      useFahrenheit ? '${(celsius * 9 / 5 + 32).round()}°F' : '$celsius°C';
 }
 
 DateTime weatherCalendarDay(DateTime instant, int? utcOffsetSeconds) {

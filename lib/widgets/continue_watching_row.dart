@@ -1,3 +1,4 @@
+import 'watch_next_card_layout.dart';
 import 'tile_paint_layer.dart';
 import '../key_sounds.dart';
 import '../providers/appearance_service.dart';
@@ -56,34 +57,21 @@ class ContinueWatchingRow extends StatelessWidget {
           return const SizedBox.shrink();
         }
 
-        double cardHeight;
-        final int? customHeight = int.tryParse(settingsService.continueWatchingCardSize);
-        if (customHeight != null) {
-          cardHeight = customHeight.toDouble();
-        } else {
-          switch (settingsService.continueWatchingCardSize) {
-            case 'compact':
-              cardHeight = 112.0;
-              break;
-            case 'large':
-              cardHeight = 157.0;
-              break;
-            case 'normal':
-            default:
-              cardHeight = 135.0;
-              break;
-          }
-        }
+        final cardHeight = watchNextCardSize(context, settingsService.continueWatchingCardSize).height;
         final double rowHeight = cardHeight + 36.0;
+        final appearance = context.watch<AppearanceService?>()?.appearance;
+        const cardPadding = 8.0;
 
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (context.watch<AppearanceService?>()?.appearance.sectionTitles ?? settingsService.showCategoryTitles)
+              if (appearance?.sectionTitles ?? settingsService.showCategoryTitles)
                 Padding(
-                  padding: const EdgeInsets.only(left: 16, bottom: 8),
+                  padding: appearance?.sectionTitleAligned == true
+                      ? const EdgeInsetsDirectional.only(start: 2 * cardPadding, bottom: 8)
+                      : const EdgeInsets.only(left: 16, bottom: 8),
                   child: Row(
                     children: [
                       Text(
@@ -102,7 +90,7 @@ class ContinueWatchingRow extends StatelessWidget {
                       Text(
                         '•  ${programs.length}',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Colors.white54,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -113,7 +101,7 @@ class ContinueWatchingRow extends StatelessWidget {
                 height: rowHeight,
                 child: ListView.builder(
                   clipBehavior: Clip.none,
-                  padding: const EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(cardPadding),
                   physics: const ClampingScrollPhysics(),
                   controller: focus?.scrollController,
                   scrollDirection: Axis.horizontal,
@@ -122,7 +110,7 @@ class ContinueWatchingRow extends StatelessWidget {
                     final program = programs[index];
                     return Padding(
                       key: ValueKey(program.id),
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      padding: const EdgeInsets.symmetric(horizontal: cardPadding),
                       child: RepaintBoundary(
                         child: WatchNextCard(
                           program: program,
@@ -282,29 +270,9 @@ class _WatchNextCardState extends State<WatchNextCard> {
     final bool showDescription = context.select<SettingsService, bool>((s) => s.continueWatchingShowDescription);
 
     final Color accentColor = Color(int.parse('FF$accentColorHex', radix: 16));
-    double cardWidth;
-    double cardHeight;
-    final int? customHeight = int.tryParse(cardSize);
-    if (customHeight != null) {
-      cardHeight = customHeight.toDouble();
-      cardWidth = (cardHeight * 16 / 9).roundToDouble();
-    } else {
-      switch (cardSize) {
-        case 'compact':
-          cardWidth = 200.0;
-          cardHeight = 112.0;
-          break;
-        case 'large':
-          cardWidth = 280.0;
-          cardHeight = 157.0;
-          break;
-        case 'normal':
-        default:
-          cardWidth = 240.0;
-          cardHeight = 135.0;
-          break;
-      }
-    }
+    final cardSizeResolved = watchNextCardSize(context, cardSize);
+    final cardWidth = cardSizeResolved.width;
+    final cardHeight = cardSizeResolved.height;
 
     BorderRadius borderRadius;
 
@@ -418,16 +386,10 @@ class _WatchNextCardState extends State<WatchNextCard> {
                         Container(
                           decoration: BoxDecoration(
                             borderRadius: borderRadius,
-                            gradient: const LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                Color(0xFF141517),
-                                Color(0xFF090A0B),
-                              ],
-                            ),
+                            // Text owns an opaque surface, independent of wallpaper.
+                            color: theme.colorScheme.surface.withAlpha(255),
                             border: Border.all(
-                              color: _focused ? Colors.transparent : Colors.white.withValues(alpha: 0.06),
+                              color: _focused ? Colors.transparent : theme.colorScheme.onSurface.withValues(alpha: 0.06),
                               width: 1,
                             ),
                           ),
@@ -458,8 +420,7 @@ class _WatchNextCardState extends State<WatchNextCard> {
                                     Text(
                                       '${(progress * 100).round()}%',
                                       style: theme.textTheme.bodySmall?.copyWith(
-                                        color: accentColor,
-                                        fontSize: 10.5,
+                                        color: theme.colorScheme.onSurface,
                                         fontWeight: FontWeight.w700,
                                       ),
                                     ),
@@ -470,10 +431,8 @@ class _WatchNextCardState extends State<WatchNextCard> {
                               Text(
                                 widget.program.title.trim(),
                                 style: theme.textTheme.bodyMedium?.copyWith(
-                                  color: Colors.white,
+                                  color: theme.colorScheme.onSurface,
                                   fontWeight: FontWeight.w700,
-                                  fontSize: 13.5,
-                                  height: 1.25,
                                 ),
                                 maxLines: (showDescription &&
                                         widget.program.description.trim().isNotEmpty &&
@@ -491,8 +450,7 @@ class _WatchNextCardState extends State<WatchNextCard> {
                                 Text(
                                   widget.program.description.trim(),
                                   style: theme.textTheme.bodySmall?.copyWith(
-                                    color: Colors.white60,
-                                    fontSize: 10.5,
+                                    color: theme.colorScheme.onSurfaceVariant,
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -505,7 +463,7 @@ class _WatchNextCardState extends State<WatchNextCard> {
                                   borderRadius: BorderRadius.circular(2),
                                   child: LinearProgressIndicator(
                                     value: progress,
-                                    backgroundColor: Colors.white.withValues(alpha: 0.12),
+                                    backgroundColor: theme.colorScheme.onSurface.withValues(alpha: 0.12),
                                     valueColor: AlwaysStoppedAnimation<Color>(accentColor),
                                     minHeight: 3.5,
                                   ),

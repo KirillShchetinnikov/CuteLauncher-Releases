@@ -1,3 +1,4 @@
+import 'settings/settings_section.dart';
 import 'settings/settings_page_layout.dart';
 import 'settings/settings_menu_layout.dart';
 import 'settings/focusable_settings_tile.dart';
@@ -34,8 +35,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/widgets/add_to_category_dialog.dart';
+import 'package:flauncher/widgets/launcher_dialog.dart';
 import 'package:flauncher/widgets/side_panel_dialog.dart';
 
+import 'app_name_dialog.dart';
 import 'settings/settings_panel_style.dart';
 
 import 'package:provider/provider.dart';
@@ -73,7 +76,41 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel> {
   String? _processError;
   bool _stopping = false;
   bool _sectionsExpanded = false;
+  bool _editingName = false;
   int _processRequest = 0;
+
+  Future<void> _editAppName(BuildContext context) async {
+    if (_editingName) return;
+    _editingName = true;
+    final apps = context.read<AppsService>();
+    try {
+      final packageName = widget.application.packageName;
+      final application = apps.getApp(packageName) ?? widget.application;
+      final initialName = application.displayName;
+      final result = await showLauncherDialog<String>(
+        context: context,
+        builder: (_) => AppNameDialog(
+          initialName: initialName,
+          canRestoreSystemName: application.customName != null,
+        ),
+      );
+      if (result == null || result == initialName || !context.mounted) return;
+      await apps.setCustomAppName(
+        packageName,
+        result.isEmpty ? null : result,
+      );
+    } catch (_) {
+      if (context.mounted) {
+        showActionNotice(
+          context,
+          (AppLocalizations.of(context) ?? AppLocalizationsEn()).appError,
+          error: true,
+        );
+      }
+    } finally {
+      _editingName = false;
+    }
+  }
 
   Future<void> _refreshProcess() async {
     if (_checking || _stopping) return;
@@ -209,6 +246,7 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel> {
 
   Widget _buildPanel(BuildContext context) {
     final localizations = AppLocalizations.of(context) ?? AppLocalizationsEn();
+    final apps = context.watch<AppsService>();
     final processStatus = _checking
         ? localizations.loading
         : _processError != null
@@ -223,9 +261,7 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel> {
             null => localizations.appProcessNotChecked,
           };
     final sections =
-        context
-            .watch<AppsService>()
-            .categories
+        apps.categories
             .where(
               (section) =>
                   !section.isAppChannels &&
@@ -275,7 +311,7 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel> {
       ),
       child: ListView(
         children: [
-          _groupHeading(context, localizations.homeScreen),
+          SettingsSection(title: localizations.homeScreen, children: [
           FocusableSettingsTile(
             autofocus: true,
             focusNode: _addToCategoryNode,
@@ -431,7 +467,8 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel> {
                 ],
               ),
             ),
-          _groupHeading(context, localizations.appLaunchGroup),
+          ]),
+          SettingsSection(title: localizations.appLaunchGroup, children: [
           if (widget.application.isLaunchable)
             FocusableSettingsTile(
               leading: const Icon(Icons.open_in_new),
@@ -443,7 +480,14 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel> {
               },
             ),
           BackgroundStartupAppTile(packageName: widget.application.packageName),
-          _groupHeading(context, localizations.appearanceSettings),
+          ]),
+          SettingsSection(title: localizations.appearanceSettings, children: [
+          if (widget.category != null)
+            FocusableSettingsTile(
+              leading: const Icon(Icons.edit_outlined),
+              title: Text(localizations.homeAppName),
+              onPressed: () => _editAppName(context),
+            ),
           FutureBuilder<bool>(
             future: _hasCustomBannerFuture,
             builder: (context, snapshot) {
@@ -461,6 +505,7 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel> {
                       try {
                         final pickedFile = await DocumentFiles.pickImage(
                           context: context,
+                          selectionKey: 'banner:${widget.application.packageName}',
                         );
                         if (pickedFile != null) {
                           final imageBytes = await DocumentFiles.readImage(
@@ -484,6 +529,9 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel> {
                             widget.application.packageName,
                             savedImage.path,
                           );
+                          if (!context.mounted) return;
+                          await DocumentFiles.rememberImageSelection(pickedFile, context.read<SettingsService>());
+                          if (!mounted) return;
                           // Refresh the future to reflect the change
                           setState(() {
                             _hasCustomBannerFuture = context
@@ -549,7 +597,8 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel> {
               );
             },
           ),
-          _groupHeading(context, localizations.appManagementGroup),
+          ]),
+          SettingsSection(title: localizations.appManagementGroup, children: [
           FocusableSettingsTile(
             key: const ValueKey('app_check_process'),
             leading: const Icon(Icons.refresh),
@@ -599,6 +648,7 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel> {
               Navigator.of(context).pop(ApplicationInfoPanelResult.none);
             },
           ),
+          ]),
         ],
       ),
     );
@@ -609,13 +659,7 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel> {
     );
   }
 
-  Widget _groupHeading(BuildContext context, String title) => Padding(
-    padding: const EdgeInsets.all(12),
-    child: Semantics(
-      header: true,
-      child: Text(title, style: Theme.of(context).textTheme.titleSmall),
-    ),
-  );
+
 }
 
 enum ApplicationInfoPanelResult { none, reorderApp }

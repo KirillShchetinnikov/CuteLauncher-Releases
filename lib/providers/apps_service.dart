@@ -49,6 +49,7 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
   final bool fastInitialCatalog;
   Future<void>? _refreshOperation;
   bool _refreshAgain = false;
+  int _appNameRevision = 0;
   final _imageVersions = <String, int>{};
   final _catalogEvents = Object();
   int contentRevision = 0;
@@ -275,13 +276,16 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
         case "PACKAGE_ADDED":
         case "PACKAGE_CHANGED":
           Map<dynamic, dynamic> applicationInfo = event['activityInfo'];
+          final changedPackage = applicationInfo['packageName'] as String;
           await _database.persistApps([_buildAppCompanion(applicationInfo)]);
+          final savedApps = await _database.getApplications(packages: [changedPackage]);
 
           if (isDisposed) return;
           App newApp = App.fromSystem(applicationInfo);
           App? existingApp = _applications[newApp.packageName];
 
           if (existingApp != null) {
+            newApp.customName = existingApp.customName;
             newApp.hidden = existingApp.hidden;
             newApp.categoryOrders = Map.from(existingApp.categoryOrders);
             for (int categoryId in newApp.categoryOrders.keys) {
@@ -297,6 +301,7 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
             }
             _applications[newApp.packageName] = newApp;
           } else {
+            newApp.customName = savedApps.firstOrNull?.customName;
             _applications[newApp.packageName] = newApp;
             final targetCategory =
                 newApp.isLaunchable ? _findTargetCategoryForNewApp(newApp.sideloaded) : null;
@@ -310,6 +315,10 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
           List<dynamic> applicationsInfo = event["activitiesInfo"];
           await _database
               .persistApps((applicationsInfo).map(_buildAppCompanion));
+          final savedApps = await _database.getApplications(
+            packages: applicationsInfo.map((info) => info['packageName'] as String),
+          );
+          final savedNames = {for (final app in savedApps) app.packageName: app.customName};
 
           if (isDisposed) return;
           for (Map<dynamic, dynamic> applicationInfo in applicationsInfo) {
@@ -317,6 +326,7 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
             App? existingApp = _applications[newApp.packageName];
 
             if (existingApp != null) {
+              newApp.customName = existingApp.customName;
               newApp.hidden = existingApp.hidden;
               newApp.categoryOrders = Map.from(existingApp.categoryOrders);
               for (int categoryId in newApp.categoryOrders.keys) {
@@ -332,6 +342,7 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
               }
               _applications[newApp.packageName] = newApp;
             } else {
+              newApp.customName = savedNames[newApp.packageName];
               _applications[newApp.packageName] = newApp;
             }
             _iconCache.remove(newApp.packageName);
@@ -514,6 +525,7 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
 
   Future<void> _refreshState({bool shouldNotifyListeners = true, List<Map<dynamic, dynamic>>? catalog, bool persistCatalog = false}) async {
     if (isDisposed) return;
+    var nameRevision = _appNameRevision;
     Future<List<App>> appsFromDatabaseFuture = _database.getApplications();
     Future<List<AppCategory>> appsCategoriesFuture =
         _database.getAppsCategories();
@@ -566,6 +578,12 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
     List<AppCategory> appsCategories = await appsCategoriesFuture;
     List<Category> categories = await categoriesFuture;
     List<LauncherSpacer> spacers = await spacersFuture;
+
+    // The database snapshot can predate a rename while Android loads its catalog.
+    while (nameRevision != _appNameRevision && !isDisposed) {
+      nameRevision = _appNameRevision;
+      appsFromDatabase = await _database.getApplications();
+    }
 
     if (isDisposed) return;
     _categoriesById = Map.fromEntries(
@@ -639,8 +657,9 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
 
   void sortCategory(Category category) {
     if (category.sort == CategorySort.alphabetical) {
-      category.applications
-          .sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+      category.applications.sort(
+        (a, b) => a.displayName.toLowerCase().compareTo(b.displayName.toLowerCase()),
+      );
     } else if (category.sort == CategorySort.mostUsed) {
       category.applications.sort((a, b) {
         final frequency = b.launchCount.compareTo(a.launchCount);
@@ -799,6 +818,36 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
   }
 
   App? getApp(String packageName) => _applications[packageName];
+
+  Future<void> setCustomAppName(String packageName, String? name) async {
+    final customName = name?.trim();
+    if (customName != null && customName.isEmpty) {
+      throw ArgumentError('Custom app names must not be empty');
+    }
+    final app = _applications[packageName];
+    if (app == null) throw StateError('Application is unavailable');
+    if (app.customName == customName) return;
+
+    final updated = await _database.updateApp(
+      packageName,
+      AppsCompanion(customName: Value(customName)),
+    );
+    if (updated == 0) throw StateError('Application is unavailable');
+    if (isDisposed) return;
+    _appNameRevision++;
+
+    final current = _applications[packageName];
+    if (current != null) {
+      current.customName = customName;
+      for (final category in _categoriesById.values) {
+        if (category.sort == CategorySort.alphabetical &&
+            category.applications.contains(current)) {
+          sortCategory(category);
+        }
+      }
+    }
+    notifyListeners();
+  }
 
   Future<Uint8List> getAppIcon(String packageName) =>
       _loadImage('icon:$packageName', _iconCache, () => _readAppIcon(packageName));

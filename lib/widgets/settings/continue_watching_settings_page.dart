@@ -1,3 +1,6 @@
+import 'settings_information.dart';
+import 'settings_section.dart';
+
 import 'package:flauncher/widgets/launcher_dialog.dart';
 
 import 'settings_value_stepper.dart';
@@ -97,159 +100,168 @@ class _ContinueWatchingSettingsPageState
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          // Watch Next Permission
-          FocusableSettingsTile(
-            autofocus: true,
-            leading: const Icon(Icons.security),
-            title: Text(
-              localizations.watchNextAccess,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            trailing: Text(
-              watchNextService.hasPermission
-                  ? localizations.granted
-                  : localizations.permissionRequired,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: watchNextService.hasPermission
-                    ? Theme.of(context).colorScheme.primary
-                    : Theme.of(context).colorScheme.tertiary,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            onPressed: () async {
-              final has = await watchNextService.checkPermission();
-              if (!has && context.mounted) {
-                final granted = await watchNextService.requestPermission();
-                if (!granted && context.mounted) {
-                  _showWatchNextPermissionGuide(context);
-                }
-              }
-            },
-          ),
-          AdbPermissionTile(
-            title: localizations.watchNextAccessAdb,
-            action: 'watchNext',
-            permissionMethod: 'checkWatchNextPermission',
-            onRefresh: watchNextService.refresh,
-          ),
-          if (!settingsService.showContinueWatching)
-            Text('${localizations.continueWatching} · ${localizations.hiddenCategories}'),
-          ...[
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 4),
-              child: Divider(),
-            ),
-            // App Management (Apps & Blocked Content)
-            FocusableSettingsTile(
-              leading: const Icon(Icons.apps_outlined),
-              title: Text(
-                AppLocalizations.of(context)!.appsWithContinueWatching,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              trailing: Text(
-                blockedCount > 0
-                    ? localizations.blockedCount(blockedCount)
-                    : localizations.manage,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: blockedCount > 0
-                      ? Theme.of(context).colorScheme.tertiary
-                      : Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-              ),
-              onPressed: () =>
-                  Navigator.of(context)
-                      .pushNamed(ContinueWatchingAppsPage.routeName),
-            ),
-            FocusableSettingsTile(
-              leading: const Icon(Icons.apps_outlined),
-              title: Text(localizations.watchNextAppLimits),
-              onPressed: () =>
-                  Navigator.of(context)
-                      .pushNamed(WatchNextLimitsPage.routeName),
-            ),
-            SettingsValueStepper(
-              title: localizations.maximumItems,
-              options: ContinueWatchingMaxItemsPage.maxItemsPresets,
-              value: settingsService.continueWatchingMaxItems,
-              label: (v) => v == 0
-                  ? localizations.unlimitedItems
-                  : localizations.itemsCount(v as int),
-              onChanged: (v) =>
-                  settingsService.setContinueWatchingMaxItems(v as int),
-            ),
-            SettingsValueStepper(
-              title: localizations.cardSize,
-              value: height,
-              options: ContinueWatchingCardSizePage.cardSizePresets(
-                localizations,
-              ).map((preset) => preset.$1).toList(),
-              label: (v) => '$v dp',
-              onChanged: (v) =>
-                  settingsService.setContinueWatchingCardSize('$v'),
-            ),
-            // Show progress bar
-            RoundedSwitchListTile(
-              value: settingsService.continueWatchingShowProgress,
-              onChanged: (v) =>
-                  settingsService.setContinueWatchingShowProgress(v),
-              title: Text(
-                AppLocalizations.of(context)!.playbackProgressBar,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-            ),
-            // Show percentage badge
-            RoundedSwitchListTile(
-              value: settingsService.continueWatchingShowPercentage,
-              onChanged: (v) =>
-                  settingsService.setContinueWatchingShowPercentage(v),
-              title: Text(
-                AppLocalizations.of(context)!.playbackPercentage,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-            ),
-            // Show description
-            RoundedSwitchListTile(
-              value: settingsService.continueWatchingShowDescription,
-              onChanged: (v) =>
-                  settingsService.setContinueWatchingShowDescription(v),
-              title: Text(
-                AppLocalizations.of(context)!.episodeVideoDetails,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-            ),
-            // Hidden individual programs
-            if (hiddenProgramsCount > 0)
+          SettingsSection(
+            title: localizations.settingsGroupAccess,
+            children: [
+              // Watch Next Permission
               FocusableSettingsTile(
-                leading: Icon(
-                  Icons.restore,
-                  color: Theme.of(context).colorScheme.tertiary,
-                ),
+                autofocus: true,
+                leading: const Icon(Icons.security),
                 title: Text(
-                  AppLocalizations.of(context)!.restoreHiddenPrograms,
-                  style: Theme.of(context).textTheme.bodyMedium
-                      ?.copyWith(color: Theme.of(context).colorScheme.tertiary),
+                  localizations.watchNextAccess,
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 trailing: Text(
-                  localizations.hiddenCount(hiddenProgramsCount),
-                  style: Theme.of(context).textTheme.bodySmall
-                      ?.copyWith(color: Theme.of(context).colorScheme.tertiary),
+                  watchNextService.hasPermission
+                      ? localizations.granted
+                      : localizations.permissionRequired,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: watchNextService.hasPermission
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).colorScheme.tertiary,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 onPressed: () async {
-                  await settingsService.clearHiddenWatchNextPrograms();
-                  await watchNextService.refresh();
-                  if (context.mounted) {
-                    showActionNotice(
-                      context,
-                      AppLocalizations.of(context)!.allHiddenProgramsRestored,
-                    );
+                  final has = await watchNextService.checkPermission();
+                  if (!has && context.mounted) {
+                    final granted = await watchNextService.requestPermission();
+                    if (!granted && context.mounted) {
+                      _showWatchNextPermissionGuide(context);
+                    }
                   }
                 },
               ),
-          ],
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 4),
-            child: Divider(),
+              AdbPermissionTile(
+                title: localizations.watchNextAccessAdb,
+                action: 'watchNext',
+                permissionMethod: 'checkWatchNextPermission',
+                onRefresh: watchNextService.refresh,
+              ),
+            ],
           ),
+          if (!settingsService.showContinueWatching)
+            SettingsMessage(
+              text:
+                  '${localizations.continueWatching} · ${localizations.hiddenCategories}',
+              icon: Icons.visibility_off_outlined,
+            ),
+          SettingsSection(
+            title: localizations.settingsGroupSourcesLimits,
+            children: [
+              // App Management (Apps & Blocked Content)
+              FocusableSettingsTile(
+                leading: const Icon(Icons.apps_outlined),
+                title: Text(
+                  AppLocalizations.of(context)!.appsWithContinueWatching,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                trailing: Text(
+                  blockedCount > 0
+                      ? localizations.blockedCount(blockedCount)
+                      : localizations.manage,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: blockedCount > 0
+                        ? Theme.of(context).colorScheme.tertiary
+                        : Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                onPressed: () =>
+                    Navigator.of(context)
+                        .pushNamed(ContinueWatchingAppsPage.routeName),
+              ),
+              FocusableSettingsTile(
+                leading: const Icon(Icons.apps_outlined),
+                title: Text(localizations.watchNextAppLimits),
+                onPressed: () =>
+                    Navigator.of(context)
+                        .pushNamed(WatchNextLimitsPage.routeName),
+              ),
+              SettingsValueStepper(
+                title: localizations.maximumItems,
+                options: ContinueWatchingMaxItemsPage.maxItemsPresets,
+                value: settingsService.continueWatchingMaxItems,
+                label: (v) => v == 0
+                    ? localizations.unlimitedItems
+                    : localizations.itemsCount(v as int),
+                onChanged: (v) =>
+                    settingsService.setContinueWatchingMaxItems(v as int),
+              ),
+            ],
+          ),
+          SettingsSection(
+            title: localizations.settingsGroupCards,
+            children: [
+              SettingsValueStepper(
+                title: localizations.cardSize,
+                value: height,
+                options: ContinueWatchingCardSizePage.cardSizePresets(
+                  localizations,
+                ).map((preset) => preset.$1).toList(),
+                label: (v) => '$v dp',
+                onChanged: (v) =>
+                    settingsService.setContinueWatchingCardSize('$v'),
+              ),
+              // Show progress bar
+              RoundedSwitchListTile(
+                value: settingsService.continueWatchingShowProgress,
+                onChanged: (v) =>
+                    settingsService.setContinueWatchingShowProgress(v),
+                title: Text(
+                  AppLocalizations.of(context)!.playbackProgressBar,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ),
+              // Show percentage badge
+              RoundedSwitchListTile(
+                value: settingsService.continueWatchingShowPercentage,
+                onChanged: (v) =>
+                    settingsService.setContinueWatchingShowPercentage(v),
+                title: Text(
+                  AppLocalizations.of(context)!.playbackPercentage,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ),
+              // Show description
+              RoundedSwitchListTile(
+                value: settingsService.continueWatchingShowDescription,
+                onChanged: (v) =>
+                    settingsService.setContinueWatchingShowDescription(v),
+                title: Text(
+                  AppLocalizations.of(context)!.episodeVideoDetails,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ),
+            ],
+          ),
+          // Hidden individual programs
+          if (hiddenProgramsCount > 0)
+            FocusableSettingsTile(
+              leading: Icon(
+                Icons.restore,
+                color: Theme.of(context).colorScheme.tertiary,
+              ),
+              title: Text(
+                AppLocalizations.of(context)!.restoreHiddenPrograms,
+                style: Theme.of(context).textTheme.bodyMedium
+                    ?.copyWith(color: Theme.of(context).colorScheme.tertiary),
+              ),
+              trailing: Text(
+                localizations.hiddenCount(hiddenProgramsCount),
+                style: Theme.of(context).textTheme.bodySmall
+                    ?.copyWith(color: Theme.of(context).colorScheme.tertiary),
+              ),
+              onPressed: () async {
+                await settingsService.clearHiddenWatchNextPrograms();
+                await watchNextService.refresh();
+                if (context.mounted) {
+                  showActionNotice(
+                    context,
+                    AppLocalizations.of(context)!.allHiddenProgramsRestored,
+                  );
+                }
+              },
+            ),
         ],
       ),
     );

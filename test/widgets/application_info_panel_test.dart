@@ -819,6 +819,9 @@ void main() {
 
     final finder = find.text("Application info");
     await tester.scrollUntilVisible(finder, 150);
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(finder);
+    await tester.pumpAndSettle();
     await tester.tap(finder);
     await tester.pumpAndSettle();
     verify(appsService.openAppInfo(app));
@@ -842,6 +845,7 @@ void main() {
 
     final finder = find.text("Uninstall");
     await tester.scrollUntilVisible(finder, 200);
+    await tester.pumpAndSettle();
     await tester.tap(finder);
     await tester.pumpAndSettle();
     verify(appsService.uninstallApp(app));

@@ -1,8 +1,3 @@
-import 'settings_help.dart';
-
-import 'package:flauncher/widgets/launcher_dialog.dart';
-
-import 'settings_page_layout.dart';
 /*
  * FLauncher
  * Copyright (C) 2021  Étienne Fesser
@@ -20,6 +15,13 @@ import 'settings_page_layout.dart';
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import 'settings_information.dart';
+import 'settings_help.dart';
+
+import 'package:flauncher/widgets/launcher_dialog.dart';
+
+import 'settings_page_layout.dart';
+
 
 import 'package:flauncher/section_names.dart';
 import 'package:flauncher/providers/apps_service.dart';
@@ -33,6 +35,7 @@ import 'package:provider/provider.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 
 import '../../models/category.dart';
+import 'settings_list_heading.dart';
 
 class LauncherSectionsPanelPage extends StatefulWidget {
   static const String routeName = "launcher_sections_panel";
@@ -131,7 +134,7 @@ class _LauncherSectionsPanelPageState extends State<LauncherSectionsPanelPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text(localizations.visibleCategories),
+                SettingsListHeading(title: localizations.visibleCategories),
                 for (var i = 0; i < displaySections.length; i++)
                   _section(
                     context,
@@ -139,7 +142,7 @@ class _LauncherSectionsPanelPageState extends State<LauncherSectionsPanelPage> {
                     settingsService,
                     autofocus: i == 0,
                   ),
-                Text(localizations.hiddenCategories),
+                SettingsListHeading(title: localizations.hiddenCategories),
                 for (var i = 0; i < hidden.length; i++)
                   _section(context, hidden[i], settingsService),
                 const Divider(),
@@ -182,7 +185,7 @@ class _LauncherSectionsPanelPageState extends State<LauncherSectionsPanelPage> {
                       ? null
                       : () => _resetSections(settingsService),
                 ),
-                Text(localizations.reorderSectionsHint),
+                SettingsControlHint(text: localizations.reorderSectionsHint),
                 SettingsHelp(
                   title: localizations.sectionsAndOrder,
                   text: localizations.sectionRulesHelp,

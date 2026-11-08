@@ -164,6 +164,60 @@ void main() {
     });
   }
 
+  testWidgets('holding OK opens the app name editor and can restore the system name', (tester) async {
+    when(mockSettingsService.settingsMenuOnRight).thenReturn(false);
+    when(mockAppsService.getApp(mockApp.packageName)).thenReturn(mockApp);
+    when(mockAppsService.setCustomAppName(mockApp.packageName, any))
+        .thenAnswer((call) async {
+          mockApp.customName = call.positionalArguments[1] as String?;
+        });
+    await tester.pumpWidget(createWidgetUnderTest());
+    await tester.pumpAndSettle();
+    const ok = LogicalKeyboardKey.select;
+    await tester.sendKeyDownEvent(ok);
+    await tester.pump(const Duration(milliseconds: 500));
+    await tester.sendKeyUpEvent(ok);
+    await tester.pumpAndSettle();
+
+    final edit = find.text('App name on Home');
+    Future<void> openEditor() async {
+      await tester.scrollUntilVisible(
+        edit,
+        160,
+        scrollable: find.descendant(
+          of: find.byType(ApplicationInfoPanel),
+          matching: find.byType(Scrollable),
+        ).first,
+      );
+        await tester.pumpAndSettle();
+        await tester.ensureVisible(edit);
+        await tester.pumpAndSettle();
+        await tester.tap(edit);
+      await tester.pumpAndSettle();
+    }
+
+    await openEditor();
+    final input = find.byType(TextFormField);
+    expect(tester.widget<TextFormField>(input).controller!.text, 'Test App');
+    await tester.enterText(input, '  ');
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+    expect(input, findsOneWidget);
+    verifyNever(mockAppsService.setCustomAppName(any, any));
+
+    await tester.enterText(input, '  My app  ');
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+    verify(mockAppsService.setCustomAppName(mockApp.packageName, 'My app')).called(1);
+    expect(find.byType(ApplicationInfoPanel), findsOneWidget);
+
+    await openEditor();
+    expect(tester.widget<TextFormField>(input).controller!.text, 'My app');
+    await tester.tap(find.text('Restore system name'));
+    await tester.pumpAndSettle();
+    verify(mockAppsService.setCustomAppName(mockApp.packageName, null)).called(1);
+  });
+
   testWidgets('custom Home row navigation uses only Home sounds once per press', (tester) async {
     var navigation = 0;
     var clicks = 0;

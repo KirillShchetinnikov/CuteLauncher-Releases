@@ -10,6 +10,62 @@ class AppLocalizationsHi extends AppLocalizations {
   AppLocalizationsHi([String locale = 'hi']) : super(locale);
 
   @override
+  String get weatherTextResetFormat => 'प्रारूप रीसेट करें';
+
+  @override
+  String get settingsReportFile => 'रिपोर्ट फ़ाइल';
+
+  @override
+  String get homeVisibleRowsLabel => 'पूरी तरह दिखाई देने वाली पंक्तियाँ';
+
+  @override
+  String get watchNextEmpty => 'देखना जारी रखने के लिए अभी कोई कार्ड नहीं है';
+
+  @override
+  String get inputsUnavailableStatus => 'कोई इनपुट उपलब्ध नहीं है';
+
+  @override
+  String get remoteButtonsNoEvents => 'अभी कोई इवेंट नहीं है';
+
+  @override
+  String get informationBackgroundVerticalOffset => 'लंबवत खिसकाव';
+
+  @override
+  String get informationResetPositionSize =>
+      'इस स्क्रीन की सभी सेटिंग रीसेट करें';
+
+  @override
+  String get weatherIconsGeometric => 'ज्यामितीय';
+
+  @override
+  String get weatherIconsCircled => 'वृत्त में';
+
+  @override
+  String get informationCommonAppearance => 'साझा सेटिंग';
+
+  @override
+  String get informationTimeFormat => 'समय का प्रारूप';
+
+  @override
+  String get informationDateFormat => 'तारीख का प्रारूप';
+
+  @override
+  String get informationInheritPanelTypography => 'ऊपरी पैनल की शैली अपनाएँ';
+
+  @override
+  String get informationResetTypography => 'सेटिंग रीसेट करें';
+
+  @override
+  String get alignSectionTitles =>
+      'सेक्शन के शीर्षक टाइलों के साथ संरेखित करें';
+
+  @override
+  String get homeAppName => 'होम स्क्रीन पर ऐप का नाम';
+
+  @override
+  String get restoreSystemAppName => 'सिस्टम का नाम वापस लाएँ';
+
+  @override
   String get settingsScrollbar => 'स्क्रॉलबार';
 
   @override
@@ -3796,6 +3852,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get interfaceStandard => 'Standard';
 
   @override
+  String get interfaceCalm => 'शांत';
+
+  @override
   String get interfaceGlass => 'Glass';
 
   @override
@@ -4532,6 +4591,72 @@ class AppLocalizationsHi extends AppLocalizations {
   String get informationShowBoth => 'मौसम और कैलेंडर';
 
   @override
+  String get weatherTextFormat => 'मौसम के टेक्स्ट का फ़ॉर्मैट';
+
+  @override
+  String get weatherTextTemperature => 'तापमान';
+
+  @override
+  String get weatherTextApparent => 'महसूस होने वाला तापमान';
+
+  @override
+  String get weatherTextConditions => 'मौसम की स्थिति';
+
+  @override
+  String get weatherTextHumidity => 'नमी';
+
+  @override
+  String get weatherTextLow => 'आज का न्यूनतम';
+
+  @override
+  String get weatherTextHigh => 'आज का अधिकतम';
+
+  @override
+  String get weatherTextLiteral => 'अपना टेक्स्ट';
+
+  @override
+  String get weatherTextNewline => 'नई पंक्ति';
+
+  @override
+  String get weatherTextBefore => 'ब्लॉक से पहले';
+
+  @override
+  String get weatherTextAfter => 'ब्लॉक के बाद';
+
+  @override
+  String get weatherTextYourFormat => 'आपका फ़ॉर्मैट';
+
+  @override
+  String get weatherTextAdd => 'ब्लॉक जोड़ें';
+
+  @override
+  String get weatherTextMoveEarlier => 'पहले ले जाएँ';
+
+  @override
+  String get weatherTextMoveLater => 'बाद में ले जाएँ';
+
+  @override
+  String get weatherTextHelp =>
+      'पाठ और घुंघराले कोष्ठकों में संकेत लिखें या बटनों से कर्सर पर जोड़ें। बड़े और छोटे अक्षर समान हैं। डेटा न होने पर मान के आसपास के साधारण कोष्ठक भी छिप जाते हैं। साधारण घुंघराले कोष्ठक दो बार लिखें। एक पंक्ति विराम की अनुमति है।';
+
+  @override
+  String get weatherTextSaveError =>
+      'मौसम के टेक्स्ट का फ़ॉर्मैट सहेजा नहीं जा सका।';
+
+  @override
+  String get weatherTextSampleCity => 'नई दिल्ली';
+
+  @override
+  String weatherTextMetersPerSecond(String speed) {
+    return '$speed मी/से';
+  }
+
+  @override
+  String weatherFeelsLike(String temperature) {
+    return '$temperature जैसा महसूस होता है';
+  }
+
+  @override
   String get weatherForecastTitle => 'मौसम पूर्वानुमान';
 
   @override
@@ -4825,7 +4950,16 @@ class AppLocalizationsHi extends AppLocalizations {
   String get informationOnBackground => 'वॉलपेपर पर';
 
   @override
-  String get informationBackgroundAlignment => 'वॉलपेपर पर संरेखण';
+  String get informationBackgroundPosition => 'ब्लॉक की स्थिति';
+
+  @override
+  String get informationBackgroundOffset => 'क्षैतिज खिसकाव';
+
+  @override
+  String get informationBackgroundResetOffset => 'खिसकाव रीसेट करें';
+
+  @override
+  String get informationBackgroundContentAlignment => 'ब्लॉक के भीतर संरेखण';
 
   @override
   String get informationBackgroundHelp =>
@@ -5127,4 +5261,360 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get appProcessStopped => 'नहीं चल रहा है';
+
+  @override
+  String get weatherCustomServer => 'अपना सर्वर (Open-Meteo)';
+
+  @override
+  String get widgetSettings => 'विजेट सेटिंग';
+
+  @override
+  String get weatherServerUrlImport => 'फ़ाइल से पता आयात करें';
+
+  @override
+  String get weatherServerUrlImportError =>
+      'आयात विफल: अधिकतम 4 KB की UTF-8 टेक्स्ट फ़ाइल चुनें जिसमें केवल सर्वर का मूल HTTPS पता हो।';
+
+  @override
+  String get weatherImportReadError =>
+      'आयात फ़ाइल पढ़ी नहीं जा सकी। फ़ाइल की पहुँच जाँचें।';
+
+  @override
+  String get weatherImportEncodingError =>
+      'आयात विफल: फ़ाइल UTF-8 में नहीं है।';
+
+  @override
+  String get weatherImportTooLargeError => 'आयात विफल: फ़ाइल 4 KB से बड़ी है।';
+
+  @override
+  String get weatherImportSaveError =>
+      'मान सहेजा नहीं जा सका। इसे फिर से दर्ज करें या आयात करें।';
+
+  @override
+  String get weatherTokenInvalid => 'टोकन का फ़ॉर्मैट अमान्य है।';
+
+  @override
+  String get weatherServerUrl => 'सर्वर का HTTPS पता';
+
+  @override
+  String get weatherServerUrlHint =>
+      'बिना /v1/forecast, लॉगिन जानकारी, क्वेरी या फ़्रैगमेंट के मूल HTTPS पता डालें।';
+
+  @override
+  String get weatherServerCoordinates => 'निर्देशांक डालें';
+
+  @override
+  String get weatherServerCoordinatesHint =>
+      'अक्षांश और देशांतर को अल्पविराम से अलग करें और दशमलव बिंदु का उपयोग करें। उदाहरण: 50.0, 30.0।';
+
+  @override
+  String get weatherIconPack => 'मौसम आइकन सेट';
+
+  @override
+  String get weatherIconsStandard => 'मानक';
+
+  @override
+  String get weatherIconsOutline => 'रूपरेखा';
+
+  @override
+  String get weatherIconsSolid => 'भरे हुए';
+
+  @override
+  String get weatherIconsDuotone => 'दो रंगों वाले';
+
+  @override
+  String get weatherIconsPixel => 'पिक्सेल';
+
+  @override
+  String get weatherTextColor => 'मौसम के टेक्स्ट का रंग';
+
+  @override
+  String get weatherIconColor => 'मौसम आइकन का रंग';
+
+  @override
+  String get weatherIconFollowsText => 'मौसम के टेक्स्ट जैसा';
+
+  @override
+  String get informationDateColor => 'तारीख का रंग';
+
+  @override
+  String get clockTextColor => 'घड़ी का रंग';
+
+  @override
+  String get weatherServerToken => 'Bearer टोकन (वैकल्पिक)';
+
+  @override
+  String get weatherServerTokenImport => 'फ़ाइल से टोकन आयात करें';
+
+  @override
+  String get weatherServerTokenImportError =>
+      'आयात विफल: अधिकतम 4 केबी की UTF-8 टेक्स्ट फ़ाइल चुनें जिसमें केवल टोकन हो।';
+
+  @override
+  String get weatherCheckConnection => 'कनेक्शन जाँचें';
+
+  @override
+  String get weatherServerAccessError =>
+      'सर्वर ने पहुँच अस्वीकार की। टोकन और सर्वर की अनुमतियाँ जाँचें।';
+
+  @override
+  String get weatherServerParametersError =>
+      'सर्वर ने अनुरोध के पैरामीटर या निर्देशांक अस्वीकार किए।';
+
+  @override
+  String get informationComposition => 'ऑब्जेक्ट का प्रारूप';
+
+  @override
+  String get informationLayout => 'ब्लॉक लेआउट';
+
+  @override
+  String get informationPositionSize => 'स्थान और आकार';
+
+  @override
+  String get informationTypography => 'फ़ॉन्ट और अंक';
+
+  @override
+  String get informationColors => 'रंग और प्रभाव';
+
+  @override
+  String get informationLayers => 'पृष्ठभूमि की परतें';
+
+  @override
+  String get informationAvoidOverlap => 'सेटिंग से ब्लॉक न ढकें';
+
+  @override
+  String get weatherPresetBrief => 'संक्षिप्त';
+
+  @override
+  String get weatherPresetFeels => 'महसूस होने वाला';
+
+  @override
+  String get weatherPresetDetails => 'विस्तृत';
+
+  @override
+  String get informationAvoidOverlapHelp =>
+      'पृष्ठभूमि संपादित करते समय सेटिंग अस्थायी रूप से उस ओर जाती है जहाँ ब्लॉक कम ढकता है। दोनों ओर जगह न होने पर अलग पूर्वावलोकन दिखता है। बाहर निकलने पर मेनू की सामान्य दिशा लौटती है।';
+
+  @override
+  String get informationProfileHelp =>
+      'पैनल और पृष्ठभूमि के प्रारूप और रंग स्वतंत्र हैं। मौसम का स्रोत साझा है। त्वरित सेटिंग और पूर्वानुमान ऊपरी पैनल का रूप लेते हैं; त्वरित सेटिंग की दृश्यता और समूहन अलग रहते हैं।';
+
+  @override
+  String get weatherCompactLayout =>
+      'तारीख के साथ एक ब्लॉक में मौसम का पंक्ति विराम रिक्त स्थान बन जाता है। सहेजा गया प्रारूप नहीं बदलता।';
+
+  @override
+  String get weatherFormatInvalid =>
+      'मौसम का फ़ील्ड जोड़ें। अधिकतम 12 ब्लॉक, एक नई पंक्ति और हर टेक्स्ट फ़ील्ड में 60 अक्षर हो सकते हैं।';
+
+  @override
+  String get fileManagerPreference => 'फ़ाइल प्रबंधक';
+
+  @override
+  String get fileManagerAsk => 'हर बार पूछें';
+
+  @override
+  String get fileManagerBuiltIn => 'अंतर्निहित';
+
+  @override
+  String get fileManagerExternal => 'बाहरी';
+
+  @override
+  String get fileBrowserStartFolder => 'प्रारंभिक फ़ोल्डर';
+
+  @override
+  String get fileBrowserStorage => 'टीवी संग्रहण';
+
+  @override
+  String get fileBrowserDownloads => 'डाउनलोड';
+
+  @override
+  String get fileBrowserLastFolder => 'पिछला खुला फ़ोल्डर';
+
+  @override
+  String get fileBrowserSort => 'इसके अनुसार क्रमबद्ध करें';
+
+  @override
+  String get fileBrowserSortName => 'नाम';
+
+  @override
+  String get fileBrowserSortDate => 'बदलाव की तारीख';
+
+  @override
+  String get fileBrowserSortSize => 'आकार';
+
+  @override
+  String get fileBrowserOrder => 'क्रम';
+
+  @override
+  String get fileBrowserAscending => 'आरोही';
+
+  @override
+  String get fileBrowserDescending => 'अवरोही';
+
+  @override
+  String get fileBrowserFoldersFirst => 'फ़ोल्डर हमेशा पहले';
+
+  @override
+  String get fileBrowserShowHidden => 'छिपी फ़ाइलें और फ़ोल्डर दिखाएँ';
+
+  @override
+  String get fileBrowserShowDetails => 'आकार और तारीख दिखाएँ';
+
+  @override
+  String get fileBrowserOptionsHelp =>
+      'चुना हुआ फ़ोल्डर या चुनी हुई छवि का मूल फ़ोल्डर पहले खुलता है। हर क्रिया के लिए पिछला खुला फ़ोल्डर अलग याद रखा जाता है, रद्द करने के बाद भी। फ़ोल्डर उपलब्ध न होने पर टीवी संग्रहण या डाउनलोड खुलता है। फ़ोल्डर इतिहास केवल इसी टीवी पर रहता है।';
+
+  @override
+  String get fileBrowserSaveFailed =>
+      'फ़ाइल ब्राउज़र की सेटिंग सहेजी नहीं जा सकीं।';
+
+  @override
+  String get settingsSectionStyle => 'समूहों का रूप';
+
+  @override
+  String get settingsSectionAccentBand => 'एक्सेंट पट्टी';
+
+  @override
+  String get settingsSectionSurface => 'साझा सतह';
+
+  @override
+  String get panelTextAndButtonsGroup => 'टेक्स्ट और बटन';
+
+  @override
+  String get settingsGroupScene => 'दृश्य';
+
+  @override
+  String get settingsGroupSky => 'आकाश और मौसम';
+
+  @override
+  String get settingsGroupAnimation => 'एनिमेशन और पूर्वावलोकन';
+
+  @override
+  String get settingsGroupSource => 'स्रोत';
+
+  @override
+  String get settingsGroupImageChange => 'चित्र बदलना';
+
+  @override
+  String get settingsGroupBrightness => 'चमक के स्तर';
+
+  @override
+  String get settingsGroupDisplay => 'प्रदर्शन';
+
+  @override
+  String get settingsGroupCredentials => 'कनेक्शन विवरण';
+
+  @override
+  String get settingsGroupClient => 'क्लाइंट पैरामीटर';
+
+  @override
+  String get settingsGroupAccount => 'खाता कनेक्शन';
+
+  @override
+  String get settingsGroupIndicators => 'संकेतक और संदेश';
+
+  @override
+  String get settingsGroupFocusShape => 'फ़ोकस का रूप';
+
+  @override
+  String get settingsGroupBorder => 'बॉर्डर';
+
+  @override
+  String get settingsGroupMotion => 'गति';
+
+  @override
+  String get settingsGroupControl => 'नियंत्रण';
+
+  @override
+  String get settingsGroupPositionSize => 'स्थान और आकार';
+
+  @override
+  String get settingsGroupGroupsBackground => 'समूह और पृष्ठभूमि';
+
+  @override
+  String get settingsGroupText => 'पाठ';
+
+  @override
+  String get settingsGroupLayout => 'लेआउट';
+
+  @override
+  String get settingsGroupHeadings => 'शीर्षक';
+
+  @override
+  String get settingsGroupLaunchTarget => 'क्या लॉन्च करें';
+
+  @override
+  String get settingsGroupLaunchTiming => 'कब लॉन्च करें';
+
+  @override
+  String get settingsGroupBlockPosition => 'ब्लॉक का स्थान';
+
+  @override
+  String get settingsGroupBlockContent => 'ब्लॉक की सामग्री';
+
+  @override
+  String get settingsGroupLayers => 'प्रदर्शन परतें';
+
+  @override
+  String get settingsGroupAccess => 'पहुँच';
+
+  @override
+  String get settingsGroupContent => 'सामग्री';
+
+  @override
+  String get settingsGroupSourcesLimits => 'स्रोत और सीमाएँ';
+
+  @override
+  String get settingsGroupCards => 'कार्ड';
+
+  @override
+  String get settingsGroupStorage => 'संग्रहण';
+
+  @override
+  String get settingsGroupMode => 'मोड';
+
+  @override
+  String get settingsGroupExceptions => 'अपवाद';
+
+  @override
+  String get settingsGroupCurrentAction => 'वर्तमान कार्रवाई';
+
+  @override
+  String get settingsGroupHours => 'सक्रिय समय';
+
+  @override
+  String get settingsGroupSourceAccess => 'स्रोत और पहुँच';
+
+  @override
+  String get settingsGroupUpdate => 'अपडेट';
+
+  @override
+  String get settingsGroupSystemCommands => 'सिस्टम और आदेश';
+
+  @override
+  String get weatherTemplateWarning => 'चेतावनी';
+
+  @override
+  String get weatherTemplateDescription => 'बिना चिह्न का विवरण';
+
+  @override
+  String get weatherTemplateIcon => 'चिह्न';
+
+  @override
+  String get weatherTemplateBracesError =>
+      'जोड़ेदार घुंघराले कोष्ठक जाँचें। साधारण कोष्ठक दिखाने के लिए उसे दो बार लिखें।';
+
+  @override
+  String get weatherTemplateUnknownError => 'अज्ञात संकेत:';
+
+  @override
+  String get weatherTemplateBreakError => 'केवल एक पंक्ति विराम की अनुमति है।';
+
+  @override
+  String get weatherTemplateValueError => 'कम से कम एक मौसम संकेत जोड़ें।';
+
+  @override
+  String get weatherTemplateLengthError =>
+      'प्रारूप बहुत लंबा है: अधिकतम 2048 अक्षर और 64 तत्व।';
 }

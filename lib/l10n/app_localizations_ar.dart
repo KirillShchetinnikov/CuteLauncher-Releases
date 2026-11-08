@@ -10,6 +10,61 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
+  String get weatherTextResetFormat => 'إعادة ضبط التنسيق';
+
+  @override
+  String get settingsReportFile => 'ملف التقرير';
+
+  @override
+  String get homeVisibleRowsLabel => 'الصفوف الظاهرة بالكامل';
+
+  @override
+  String get watchNextEmpty => 'لا توجد بطاقات لمتابعة المشاهدة بعد';
+
+  @override
+  String get inputsUnavailableStatus => 'لا توجد مداخل متاحة';
+
+  @override
+  String get remoteButtonsNoEvents => 'لا توجد أحداث بعد';
+
+  @override
+  String get informationBackgroundVerticalOffset => 'الإزاحة الرأسية';
+
+  @override
+  String get informationResetPositionSize =>
+      'إعادة ضبط جميع إعدادات هذه الشاشة';
+
+  @override
+  String get weatherIconsGeometric => 'هندسية';
+
+  @override
+  String get weatherIconsCircled => 'داخل دائرة';
+
+  @override
+  String get informationCommonAppearance => 'الإعدادات العامة';
+
+  @override
+  String get informationTimeFormat => 'تنسيق الوقت';
+
+  @override
+  String get informationDateFormat => 'تنسيق التاريخ';
+
+  @override
+  String get informationInheritPanelTypography => 'وراثة مظهر اللوحة العلوية';
+
+  @override
+  String get informationResetTypography => 'إعادة ضبط الإعدادات';
+
+  @override
+  String get alignSectionTitles => 'محاذاة عناوين الأقسام مع البطاقات';
+
+  @override
+  String get homeAppName => 'اسم التطبيق على الشاشة الرئيسية';
+
+  @override
+  String get restoreSystemAppName => 'استعادة اسم النظام';
+
+  @override
   String get settingsScrollbar => 'شريط التمرير';
 
   @override
@@ -3785,6 +3840,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get interfaceStandard => 'Standard';
 
   @override
+  String get interfaceCalm => 'هادئ';
+
+  @override
   String get interfaceGlass => 'Glass';
 
   @override
@@ -4514,6 +4572,71 @@ class AppLocalizationsAr extends AppLocalizations {
   String get informationShowBoth => 'الطقس والتقويم';
 
   @override
+  String get weatherTextFormat => 'تنسيق نص الطقس';
+
+  @override
+  String get weatherTextTemperature => 'درجة الحرارة';
+
+  @override
+  String get weatherTextApparent => 'الحرارة المحسوسة';
+
+  @override
+  String get weatherTextConditions => 'حالة الطقس';
+
+  @override
+  String get weatherTextHumidity => 'الرطوبة';
+
+  @override
+  String get weatherTextLow => 'الصغرى اليوم';
+
+  @override
+  String get weatherTextHigh => 'العظمى اليوم';
+
+  @override
+  String get weatherTextLiteral => 'نص مخصص';
+
+  @override
+  String get weatherTextNewline => 'فاصل سطر';
+
+  @override
+  String get weatherTextBefore => 'قبل الكتلة';
+
+  @override
+  String get weatherTextAfter => 'بعد الكتلة';
+
+  @override
+  String get weatherTextYourFormat => 'تنسيقك';
+
+  @override
+  String get weatherTextAdd => 'إضافة كتلة';
+
+  @override
+  String get weatherTextMoveEarlier => 'نقل إلى موضع سابق';
+
+  @override
+  String get weatherTextMoveLater => 'نقل إلى موضع لاحق';
+
+  @override
+  String get weatherTextHelp =>
+      'أدخل النص والاختصارات بين أقواس معقوفة أو أدرجها عند المؤشر بالأزرار. لا فرق بين الأحرف الكبيرة والصغيرة. تختفي الأقواس العادية حول قيمة عند غياب بياناتها. كرر الأقواس المعقوفة لعرضها كنص. يسمح بفاصل سطر واحد.';
+
+  @override
+  String get weatherTextSaveError => 'تعذّر حفظ تنسيق نص الطقس.';
+
+  @override
+  String get weatherTextSampleCity => 'القاهرة';
+
+  @override
+  String weatherTextMetersPerSecond(String speed) {
+    return '$speed م/ث';
+  }
+
+  @override
+  String weatherFeelsLike(String temperature) {
+    return 'المحسوسة $temperature';
+  }
+
+  @override
   String get weatherForecastTitle => 'توقعات الطقس';
 
   @override
@@ -4803,7 +4926,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get informationOnBackground => 'على الخلفية';
 
   @override
-  String get informationBackgroundAlignment => 'المحاذاة على الخلفية';
+  String get informationBackgroundPosition => 'موضع المجموعة';
+
+  @override
+  String get informationBackgroundOffset => 'الإزاحة الأفقية';
+
+  @override
+  String get informationBackgroundResetOffset => 'إعادة ضبط الإزاحة';
+
+  @override
+  String get informationBackgroundContentAlignment => 'المحاذاة داخل المجموعة';
 
   @override
   String get informationBackgroundHelp =>
@@ -5104,4 +5236,360 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get appProcessStopped => 'ليس قيد التشغيل';
+
+  @override
+  String get weatherCustomServer => 'خادم مخصص (Open-Meteo)';
+
+  @override
+  String get widgetSettings => 'إعدادات الأداة';
+
+  @override
+  String get weatherServerUrlImport => 'استيراد العنوان من ملف';
+
+  @override
+  String get weatherServerUrlImportError =>
+      'فشل الاستيراد: اختر ملفًا نصيًا بترميز UTF-8 بحجم يصل إلى 4 كيلوبايت يحتوي فقط على عنوان HTTPS الأساسي للخادم.';
+
+  @override
+  String get weatherImportReadError =>
+      'تعذرت قراءة ملف الاستيراد. تحقق من إمكانية الوصول إلى الملف.';
+
+  @override
+  String get weatherImportEncodingError =>
+      'فشل الاستيراد: الملف ليس بترميز UTF-8.';
+
+  @override
+  String get weatherImportTooLargeError =>
+      'فشل الاستيراد: حجم الملف أكبر من 4 كيلوبايت.';
+
+  @override
+  String get weatherImportSaveError =>
+      'تعذر حفظ القيمة. حاول إدخالها أو استيرادها مجددًا.';
+
+  @override
+  String get weatherTokenInvalid => 'تنسيق الرمز غير صالح.';
+
+  @override
+  String get weatherServerUrl => 'عنوان HTTPS للخادم';
+
+  @override
+  String get weatherServerUrlHint =>
+      'أدخل عنوان HTTPS الأساسي دون /v1/forecast أو بيانات اعتماد أو استعلام أو جزء.';
+
+  @override
+  String get weatherServerCoordinates => 'إدخال الإحداثيات';
+
+  @override
+  String get weatherServerCoordinatesHint =>
+      'أدخل خط العرض وخط الطول مفصولين بفاصلة، واستخدم نقطة عشرية. مثال: 50.0, 30.0.';
+
+  @override
+  String get weatherIconPack => 'مجموعة أيقونات الطقس';
+
+  @override
+  String get weatherIconsStandard => 'قياسية';
+
+  @override
+  String get weatherIconsOutline => 'مخططة';
+
+  @override
+  String get weatherIconsSolid => 'ممتلئة';
+
+  @override
+  String get weatherIconsDuotone => 'ثنائية اللون';
+
+  @override
+  String get weatherIconsPixel => 'بكسلية';
+
+  @override
+  String get weatherTextColor => 'لون نص الطقس';
+
+  @override
+  String get weatherIconColor => 'لون أيقونات الطقس';
+
+  @override
+  String get weatherIconFollowsText => 'مطابقة لون نص الطقس';
+
+  @override
+  String get informationDateColor => 'لون التاريخ';
+
+  @override
+  String get clockTextColor => 'لون الساعة';
+
+  @override
+  String get weatherServerToken => 'رمز Bearer (اختياري)';
+
+  @override
+  String get weatherServerTokenImport => 'استيراد الرمز من ملف';
+
+  @override
+  String get weatherServerTokenImportError =>
+      'فشل الاستيراد: اختر ملفًا نصيًا بترميز UTF-8 بحجم لا يتجاوز 4 كيلوبايت ويحتوي على الرمز فقط.';
+
+  @override
+  String get weatherCheckConnection => 'فحص الاتصال';
+
+  @override
+  String get weatherServerAccessError =>
+      'رفض الخادم الوصول. تحقق من الرمز وأذونات الخادم.';
+
+  @override
+  String get weatherServerParametersError =>
+      'رفض الخادم معاملات الطلب أو الإحداثيات.';
+
+  @override
+  String get informationComposition => 'تنسيق العناصر';
+
+  @override
+  String get informationLayout => 'تخطيط الكتلة';
+
+  @override
+  String get informationPositionSize => 'الموضع والحجم';
+
+  @override
+  String get informationTypography => 'الخط والأرقام';
+
+  @override
+  String get informationColors => 'الألوان والتأثيرات';
+
+  @override
+  String get informationLayers => 'طبقات الخلفية';
+
+  @override
+  String get informationAvoidOverlap => 'عدم حجب الكتلة بالإعدادات';
+
+  @override
+  String get weatherPresetBrief => 'مختصر';
+
+  @override
+  String get weatherPresetFeels => 'المحسوسة';
+
+  @override
+  String get weatherPresetDetails => 'مفصل';
+
+  @override
+  String get informationAvoidOverlapHelp =>
+      'أثناء تعديل الخلفية تنتقل الإعدادات مؤقتًا إلى الجانب الأقل حجبًا للكتلة. تظهر معاينة منفصلة إذا لم يتوفر جانب خالٍ. يعود جانب القائمة المعتاد عند الخروج.';
+
+  @override
+  String get informationProfileHelp =>
+      'تنسيقات وألوان اللوحة والخلفية مستقلة، ومصدر الطقس مشترك. تستخدم الإعدادات السريعة والتوقعات مظهر اللوحة العلوية، مع احتفاظ الإعدادات السريعة بإعدادات الظهور والتجميع الخاصة بها.';
+
+  @override
+  String get weatherCompactLayout =>
+      'عندما يكون الطقس مع التاريخ في كتلة واحدة، يظهر فاصل السطر كمسافة. لا يتغير التنسيق المحفوظ.';
+
+  @override
+  String get weatherFormatInvalid =>
+      'أضف حقل طقس. يُسمح بما يصل إلى 12 كتلة وفاصل سطر واحد و60 حرفًا لكل حقل نصي.';
+
+  @override
+  String get fileManagerPreference => 'مدير الملفات';
+
+  @override
+  String get fileManagerAsk => 'السؤال في كل مرة';
+
+  @override
+  String get fileManagerBuiltIn => 'مدمج';
+
+  @override
+  String get fileManagerExternal => 'خارجي';
+
+  @override
+  String get fileBrowserStartFolder => 'مجلد البداية';
+
+  @override
+  String get fileBrowserStorage => 'تخزين التلفزيون';
+
+  @override
+  String get fileBrowserDownloads => 'التنزيلات';
+
+  @override
+  String get fileBrowserLastFolder => 'آخر مجلد مفتوح';
+
+  @override
+  String get fileBrowserSort => 'الترتيب حسب';
+
+  @override
+  String get fileBrowserSortName => 'الاسم';
+
+  @override
+  String get fileBrowserSortDate => 'تاريخ التعديل';
+
+  @override
+  String get fileBrowserSortSize => 'الحجم';
+
+  @override
+  String get fileBrowserOrder => 'اتجاه الترتيب';
+
+  @override
+  String get fileBrowserAscending => 'تصاعدي';
+
+  @override
+  String get fileBrowserDescending => 'تنازلي';
+
+  @override
+  String get fileBrowserFoldersFirst => 'المجلدات أولاً دائماً';
+
+  @override
+  String get fileBrowserShowHidden => 'إظهار الملفات والمجلدات المخفية';
+
+  @override
+  String get fileBrowserShowDetails => 'إظهار الحجم والتاريخ';
+
+  @override
+  String get fileBrowserOptionsHelp =>
+      'يُفتح المجلد المحدد أو المجلد الأصلي للصورة المحددة أولاً. يتم تذكر آخر مجلد مفتوح لكل إجراء على حدة، حتى بعد الإلغاء. إذا كان المجلد غير متاح، يُفتح تخزين التلفزيون أو التنزيلات. يبقى سجل المجلدات على هذا التلفزيون فقط.';
+
+  @override
+  String get fileBrowserSaveFailed => 'تعذر حفظ إعدادات متصفح الملفات.';
+
+  @override
+  String get settingsSectionStyle => 'مظهر المجموعات';
+
+  @override
+  String get settingsSectionAccentBand => 'شريط بلون التمييز';
+
+  @override
+  String get settingsSectionSurface => 'سطح مشترك';
+
+  @override
+  String get panelTextAndButtonsGroup => 'النص والأزرار';
+
+  @override
+  String get settingsGroupScene => 'المشهد';
+
+  @override
+  String get settingsGroupSky => 'السماء والطقس';
+
+  @override
+  String get settingsGroupAnimation => 'الحركة والمعاينة';
+
+  @override
+  String get settingsGroupSource => 'المصدر';
+
+  @override
+  String get settingsGroupImageChange => 'تبديل الصور';
+
+  @override
+  String get settingsGroupBrightness => 'مستويات السطوع';
+
+  @override
+  String get settingsGroupDisplay => 'العرض';
+
+  @override
+  String get settingsGroupCredentials => 'بيانات الاتصال';
+
+  @override
+  String get settingsGroupClient => 'إعدادات العميل';
+
+  @override
+  String get settingsGroupAccount => 'ربط الحساب';
+
+  @override
+  String get settingsGroupIndicators => 'المؤشرات والرسائل';
+
+  @override
+  String get settingsGroupFocusShape => 'مظهر التركيز';
+
+  @override
+  String get settingsGroupBorder => 'الإطار';
+
+  @override
+  String get settingsGroupMotion => 'الحركة';
+
+  @override
+  String get settingsGroupControl => 'التحكم';
+
+  @override
+  String get settingsGroupPositionSize => 'الموضع والحجم';
+
+  @override
+  String get settingsGroupGroupsBackground => 'المجموعات والخلفية';
+
+  @override
+  String get settingsGroupText => 'النص';
+
+  @override
+  String get settingsGroupLayout => 'التخطيط';
+
+  @override
+  String get settingsGroupHeadings => 'العناوين';
+
+  @override
+  String get settingsGroupLaunchTarget => 'ما سيتم تشغيله';
+
+  @override
+  String get settingsGroupLaunchTiming => 'وقت التشغيل';
+
+  @override
+  String get settingsGroupBlockPosition => 'موضع الكتلة';
+
+  @override
+  String get settingsGroupBlockContent => 'محتوى الكتلة';
+
+  @override
+  String get settingsGroupLayers => 'طبقات العرض';
+
+  @override
+  String get settingsGroupAccess => 'الوصول';
+
+  @override
+  String get settingsGroupContent => 'المحتوى';
+
+  @override
+  String get settingsGroupSourcesLimits => 'المصادر والحدود';
+
+  @override
+  String get settingsGroupCards => 'البطاقات';
+
+  @override
+  String get settingsGroupStorage => 'التخزين';
+
+  @override
+  String get settingsGroupMode => 'الوضع';
+
+  @override
+  String get settingsGroupExceptions => 'الاستثناءات';
+
+  @override
+  String get settingsGroupCurrentAction => 'الإجراء الحالي';
+
+  @override
+  String get settingsGroupHours => 'أوقات العمل';
+
+  @override
+  String get settingsGroupSourceAccess => 'المصدر والوصول';
+
+  @override
+  String get settingsGroupUpdate => 'التحديث';
+
+  @override
+  String get settingsGroupSystemCommands => 'النظام والأوامر';
+
+  @override
+  String get weatherTemplateWarning => 'تحذير';
+
+  @override
+  String get weatherTemplateDescription => 'وصف بدون رمز';
+
+  @override
+  String get weatherTemplateIcon => 'رمز';
+
+  @override
+  String get weatherTemplateBracesError =>
+      'تحقق من تطابق الأقواس المعقوفة. كرر القوس لعرضه كنص.';
+
+  @override
+  String get weatherTemplateUnknownError => 'اختصار غير معروف:';
+
+  @override
+  String get weatherTemplateBreakError => 'يسمح بفاصل سطر واحد فقط.';
+
+  @override
+  String get weatherTemplateValueError => 'أضف اختصار طقس واحدًا على الأقل.';
+
+  @override
+  String get weatherTemplateLengthError =>
+      'التنسيق طويل جدًا: الحد الأقصى 2048 حرفًا و64 عنصرًا.';
 }

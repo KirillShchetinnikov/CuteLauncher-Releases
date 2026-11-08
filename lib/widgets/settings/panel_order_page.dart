@@ -1,3 +1,4 @@
+import 'settings_information.dart';
 import '../../panel_layout.dart';
 import '../../information_placement.dart';
 import '../../providers/settings_service.dart';
@@ -11,7 +12,7 @@ import '../../l10n/app_localizations.dart';
 import '../../providers/appearance_service.dart';
 import 'focusable_settings_tile.dart';
 import 'settings_page_layout.dart';
-import 'settings_value_text.dart';
+import 'settings_list_heading.dart';
 
 class PanelOrderPage extends StatefulWidget {
   static const routeName = 'panel_order';
@@ -41,9 +42,16 @@ class _PanelOrderPageState extends State<PanelOrderPage> {
         : null;
     final layout = panel?.layout ?? service.appearance.panelLayout;
     final left = key == 'panelButtonsOrder';
-    final composition = InformationPanelComposition(service.appearance, context.read<SettingsService>(), remote: panel);
+    final composition = InformationPanelComposition(
+      service.appearance,
+      context.read<SettingsService>(),
+      remote: panel,
+    );
     final excluded = composition.excluded;
-    final (first, second) = layout.displayOrders(composition.combined, excluded: excluded);
+    final (first, second) = layout.displayOrders(
+      composition.combined,
+      excluded: excluded,
+    );
     final order = left ? first : second;
     final other = left ? second : first;
     final index = order.indexOf(id);
@@ -61,7 +69,11 @@ class _PanelOrderPageState extends State<PanelOrderPage> {
     } else {
       return;
     }
-    final (savedLeft, savedRight) = layout.expandOrders(first, second, excluded: excluded);
+    final (savedLeft, savedRight) = layout.expandOrders(
+      first,
+      second,
+      excluded: excluded,
+    );
     _busy = true;
     try {
       if (panel != null) {
@@ -95,7 +107,11 @@ class _PanelOrderPageState extends State<PanelOrderPage> {
     final panel = widget.remotePanel
         ? context.watch<RemotePanelService>()
         : null;
-    final composition = InformationPanelComposition(appearance, context.watch<SettingsService>(), remote: panel);
+    final composition = InformationPanelComposition(
+      appearance,
+      context.watch<SettingsService>(),
+      remote: panel,
+    );
     final excluded = composition.excluded;
     final (leftOrder, rightOrder) = (panel?.layout ?? appearance.panelLayout)
         .displayOrders(composition.combined, excluded: excluded);
@@ -155,16 +171,10 @@ class _PanelOrderPageState extends State<PanelOrderPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               for (final key in ['panelButtonsOrder', 'panelInfoOrder']) ...[
-                Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: SettingsValueText(
-                    alignment: TextAlign.start,
-                    text: Text(
-                      key == 'panelButtonsOrder'
-                          ? l.settingsMenuLeft
-                          : l.settingsMenuRight,
-                    ),
-                  ),
+                SettingsListHeading(
+                  title: key == 'panelButtonsOrder'
+                      ? l.settingsMenuLeft
+                      : l.settingsMenuRight,
                 ),
                 for (final id
                     in key == 'panelButtonsOrder' ? leftOrder : rightOrder)
@@ -235,7 +245,7 @@ class _PanelOrderPageState extends State<PanelOrderPage> {
                     },
                   ),
               ],
-              Text(l.panelOrderHint),
+              SettingsControlHint(text: l.panelOrderHint),
             ],
           ),
         ),

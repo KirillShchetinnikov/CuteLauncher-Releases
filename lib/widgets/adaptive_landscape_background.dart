@@ -1,3 +1,4 @@
+import '../weather_sources.dart';
 import 'dart:async';
 import 'dart:math' as math;
 
@@ -242,7 +243,9 @@ class _LandscapeState extends State<AdaptiveLandscapeBackground>
     final weather = context.watch<WeatherService?>();
     final night = context.watch<NightModeService?>();
     final coordinates = weather?.configuration;
-    final latitude = coordinates?.locationMode.name == 'manual'
+    final latitude = coordinates?.source == WeatherSource.customOpenMeteo
+        ? weather?.weatherData?.latitude
+        : coordinates?.locationMode.name == 'manual'
         ? coordinates?.cityLatitude
         : coordinates?.latitude;
     final season =

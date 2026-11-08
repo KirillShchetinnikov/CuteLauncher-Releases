@@ -363,7 +363,7 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
                                 Positioned(left: 0, right: 0, bottom: 0,
                                   child: IgnorePointer(child: Container(color: appearance.labelBackground,
                                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                    child: Text(widget.application.name, maxLines: 1, overflow: TextOverflow.ellipsis,
+                                    child: Text(widget.application.displayName, maxLines: 1, overflow: TextOverflow.ellipsis,
                                       style: appearance.labelStyle),
                                   ))),
                               IgnorePointer(
@@ -387,7 +387,7 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Text(
-                      widget.application.name,
+                      widget.application.displayName,
                       style: style.tileLabelStyle(context, appearance, shouldHighlight),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
@@ -479,7 +479,7 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
             isIcon: isIcon,
             iconScale: appearance.iconScale,
             decodeScale: style.tileFocusScale(theme, appearance, width: constraints.maxWidth, focused: true),
-            inlineLabel: isIcon && !appearance.active ? Text(app.name,
+            inlineLabel: isIcon && !appearance.active ? Text(app.displayName,
                 style: Theme.of(context).textTheme.bodySmall,
                 overflow: TextOverflow.ellipsis, maxLines: 3) : null,
             loadIcon: () async {
@@ -496,7 +496,7 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
             padding: const EdgeInsets.all(8),
             child: Center(
               child: Text(
-                app.name,
+                app.displayName,
                 style: Theme.of(context).textTheme.bodySmall,
                 overflow: TextOverflow.ellipsis,
                 maxLines: 3,
@@ -685,20 +685,21 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
   }
 
   Future<void> _showPanel(BuildContext context) async {
-    final controller = _categoryFocus;
-    final package = widget.application.packageName;
+    final controller = _categoryFocus?.root;
+    final application = widget.application;
+    final category = widget.category;
     final index = widget.index;
     try {
       _focusNode.requestFocus();
       final result = await showLauncherDialog<ApplicationInfoPanelResult>(
         context: context,
         builder: (context) => ApplicationInfoPanel(
-          category: widget.category,
-          application: widget.application,
+          category: category,
+          application: application,
         ),
       );
       if (!mounted) {
-        await controller?.restoreAfterEdit(package, index);
+        await controller?.restoreAfterEdit(application.packageName, index);
         return;
       }
       _focusNode.requestFocus();

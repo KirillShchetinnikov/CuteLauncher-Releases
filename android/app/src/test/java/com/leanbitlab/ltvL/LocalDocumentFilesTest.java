@@ -194,6 +194,40 @@ public class LocalDocumentFilesTest {
         }
     }
 
+    @Test public void tokenAndServerImportsAreBoundedAndLeaveNoCacheFile() throws Exception {
+        try (var controller = Robolectric.buildActivity(Activity.class).setup()) {
+            var activity = controller.get();
+            grant(activity);
+            var executor = Executors.newSingleThreadExecutor();
+            try {
+                File root = folder();
+                File source = new File(root, "token.txt");
+                File large = new File(root, "large.txt");
+                byte[] fixture = "fixture-token\n".getBytes(java.nio.charset.StandardCharsets.UTF_8);
+                Files.write(source.toPath(), fixture);
+                Files.write(large.toPath(), new byte[4097]);
+                var local = new LocalDocumentFiles(activity, executor, new LocalWallpaperFiles(activity, executor));
+                var imported = new Reply();
+                var rejected = new Reply();
+                var serverImported = new Reply();
+                var serverRejected = new Reply();
+                local.operate("pickWeatherTokenDocument", source.getPath(), null, null, imported);
+                local.operate("pickWeatherTokenDocument", large.getPath(), null, null, rejected);
+                local.operate("pickWeatherServerDocument", source.getPath(), null, null, serverImported);
+                local.operate("pickWeatherServerDocument", large.getPath(), null, null, serverRejected);
+                finish(executor);
+                assertNull(imported.error);
+                assertArrayEquals(fixture, (byte[]) imported.value);
+                assertArrayEquals(fixture, Files.readAllBytes(source.toPath()));
+                assertEquals("document_too_large", rejected.error);
+                assertNull(serverImported.error);
+                assertArrayEquals(fixture, (byte[]) serverImported.value);
+                assertEquals("document_too_large", serverRejected.error);
+                assertEquals(0, activity.getCacheDir().listFiles((dir, name) -> name.startsWith("selected-document-")).length);
+            } finally { executor.shutdownNow(); }
+        }
+    }
+
     @Test public void localBackupFolderVerifiesUploadsListsDownloadsAndDeletes() throws Exception {
         try (var controller = Robolectric.buildActivity(Activity.class).setup()) {
             var activity = controller.get();

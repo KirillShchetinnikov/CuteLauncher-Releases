@@ -2,6 +2,17 @@ import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/models/weather_data.dart';
 import 'package:intl/intl.dart';
 
+String? localizedWeatherCondition(int? code, AppLocalizations? l) =>
+    switch (code) {
+      800 => l?.weatherClear,
+      801 || 802 || 803 || 804 => l?.weatherCloudy,
+      701 || 711 || 721 || 741 || 751 => l?.weatherFog,
+      771 => l?.weatherWind,
+      _ => WeatherData.stormCodes.contains(code) ? l?.weatherStorm
+          : WeatherData.snowCodes.contains(code) ? l?.weatherSnow
+          : WeatherData.rainCodes.contains(code) ? l?.weatherRain : null,
+    };
+
 String? localizedWeatherWarning(WeatherData weather, AppLocalizations l10n, DateTime now) {
   var type = weather.warningType;
   var probability = weather.warningPrecipProbability;

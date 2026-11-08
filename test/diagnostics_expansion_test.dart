@@ -83,18 +83,39 @@ void main() {
     expect(event['errorDetails'], contains('Permission denied'));
   });
 
-  test('all declared production method channels are represented in the journal', () {
-    final pattern = RegExp(r'''(?:BridgeChannel|MethodChannel)\(\s*['"]([^'"]+)['"]''');
+  test('production method channels are journaled except the secret store and crash bootstrap', () {
+    final pattern = RegExp(r'''(BridgeChannel|MethodChannel)\(\s*['"]([^'"]+)['"]''');
     final store = DiagnosticsStore();
     for (final file in Directory('lib').listSync(recursive: true).whereType<File>().where((f) => f.path.endsWith('.dart'))) {
       if (file.path.replaceAll('\\', '/').contains('/diagnostics/')) continue;
       for (final match in pattern.allMatches(file.readAsStringSync())) {
-        final name = match[1]!;
+        final name = match[2]!;
         if (name == 'cutelauncher/crash_guard') continue; // Crash-safe bootstrap, before Flutter.
+        if (name == 'cutelauncher/weather_token') {
+          // Raw secret-store payloads deliberately bypass bridge diagnostics.
+          expect(match[1], 'MethodChannel', reason: '${file.path}: $name');
+          continue;
+        }
         store.clear();
         store.record(name, 'snapshot', 'error', 'unavailable');
         expect(store.snapshot()['failures'], hasLength(1), reason: '${file.path}: $name');
       }
     }
+  });
+
+  test('weather secret store cannot record payloads or failures in diagnostics', () {
+    final store = DiagnosticsStore();
+    final before = jsonEncode(store.snapshot());
+    for (final method in ['has', 'save', 'read']) {
+      for (final status in ['success', 'error']) {
+        store.record('cutelauncher/weather_token', method, status, 'unavailable', context: {
+          'arguments': {'server': 'https://private-weather.test/home', 'token': 'fixture-secret'},
+          'response': 'fixture-secret',
+          'errorText': 'fixture-secret',
+          'errorDetails': 'https://private-weather.test/home',
+        });
+      }
+    }
+    expect(jsonEncode(store.snapshot()), before);
   });
 }

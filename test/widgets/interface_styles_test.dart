@@ -190,6 +190,12 @@ void main() {
       final a = TileAppearance(values);
       expect(a.active, false);
       expect(a.interfaceStyle, 'glass');
+      final calm = TileAppearance(
+        TileAppearance.validValues({'settingsInterfaceStyle': 'calm'}),
+      );
+      expect(calm.interfaceStyle, 'calm');
+      expect(calm.active, isFalse);
+      expect(interfaceStyleFrom(calm.interfaceStyle), InterfaceStyle.calm);
       expect(a.combinedInformation, true);
       expect(a.panelTextStyle.fontFamily, 'Outfit');
       expect(

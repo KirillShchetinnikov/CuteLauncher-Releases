@@ -16,7 +16,7 @@ const openConfig = WeatherConfiguration(source: WeatherSource.openWeather,
   latitude: 55.75, longitude: 37.62, location: 'Москва');
 final day = DateTime.utc(2026, 10, 5).millisecondsSinceEpoch ~/ 1000;
 Map<String, dynamic> current() => {'cod': 200, 'dt': day + 20 * 3600, 'timezone': 3 * 3600,
-  'main': {'temp': 7.5, 'humidity': 80}, 'weather': [{'id': 800}], 'wind': {'speed': 2.5}};
+  'main': {'temp': 7.5, 'feels_like': 4.4, 'humidity': 80}, 'weather': [{'id': 800}], 'wind': {'speed': 2.5}};
 Map<String, dynamic> forecast() => {'cod': '200', 'list': [
   for (var i = 0; i < 3; i++) {'dt': day + (20 + i * 3) * 3600,
     'main': {'temp_min': 4 - i, 'temp_max': 10 + i}, 'pop': i * .4,
@@ -27,7 +27,7 @@ class OpenTransport implements WeatherTransport {
   final requests = <Uri>[];
   final headers = <String?>[];
   Future<Map<String, dynamic>> Function(Uri)? response;
-  @override Future<Map<String, dynamic>> request(Uri uri, {String? key}) async {
+  @override Future<Map<String, dynamic>> request(Uri uri, {String? key, bool customServer = false, String? bearerToken, WeatherResponseDecoder? decode}) async {
     requests.add(uri); headers.add(key);
     return response != null ? response!(uri) : uri.path.endsWith('/weather') ? current() : forecast();
   }
@@ -49,6 +49,7 @@ void main() {
       expect(uri.queryParameters['units'], 'metric'); expect(uri.queryParameters['appid'], 'test-key');
     }
     expect(transport.headers, [null, null]);
+    expect(data.feelsLikeTemp, 4);
     expect(data.currentTemp, 8); expect(data.windSpeed, 2.5); expect(data.location, 'Москва');
     expect(data.forecasts.length, 2);
     expect(data.forecasts[1].minTemp, 2); expect(data.forecasts[1].maxTemp, 12);

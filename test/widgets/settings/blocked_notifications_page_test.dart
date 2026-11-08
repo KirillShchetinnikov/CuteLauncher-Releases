@@ -1,3 +1,4 @@
+import 'package:flauncher/widgets/settings/settings_read_only_value.dart';
 import 'dart:async';
 import 'dart:typed_data';
 
@@ -67,7 +68,9 @@ void main() {
         child: SizedBox(width: 380, child: BlockedNotificationsPage()))))));
     await tester.pumpAndSettle();
     expect(find.text('Блокировка уведомлений от приложений'), findsOneWidget);
-    expect(find.text('Заблокированные приложения: 2'), findsOneWidget);
+    final countRow = find.byType(SettingsReadOnlyValue);
+    expect(find.descendant(of: countRow, matching: find.text('Заблокированные приложения')), findsOneWidget);
+    expect(find.descendant(of: countRow, matching: find.text('2')), findsOneWidget);
     expect(find.text('Уведомления заблокированы'), findsNothing);
     expect(find.byType(RoundedSwitchListTile), findsNWidgets(2));
     expect(tester.widget<RoundedSwitchListTile>(find.byType(RoundedSwitchListTile).first).value, isTrue);

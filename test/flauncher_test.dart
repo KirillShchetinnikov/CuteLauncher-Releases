@@ -1,4 +1,6 @@
 import 'package:flauncher/weather_sources.dart';
+import 'package:flauncher/weather_text_format.dart';
+import 'package:flauncher/information_formats.dart';
 import 'dart:async';
 import 'dart:ui' as ui;
 import 'package:flauncher/models/watch_next_program.dart';
@@ -183,6 +185,8 @@ void main() {
     when(apps.applications).thenReturn(category.applications);
     when(apps.launcherSections).thenReturn([category]);
     final settings = mkSettingsService();
+    when(settings.noSuchMethod(Invocation.method(#informationDateTime, [], {#background: true})))
+        .thenAnswer((_) => InformationDateTimeFormat(time: settings.timeFormat, date: settings.dateFormat));
     when(settings.showTimeInStatusBar).thenReturn(true);
     when(settings.showDateInStatusBar).thenReturn(true);
     when(settings.showWeatherInStatusBar).thenReturn(false);
@@ -412,6 +416,48 @@ void main() {
       feeds.dispose(); feedSettings.dispose(); appearance.dispose(); await channel.events.close();
     });
   }
+  for (final (type, locale) in [
+    (CategoryType.row, const Locale('en')),
+    (CategoryType.grid, const Locale('ar')),
+  ]) {
+    testWidgets('section heading follows tile padding in ${type.name} ${locale.languageCode}', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final appearance = AppearanceService(await SharedPreferences.getInstance());
+      addTearDown(appearance.dispose);
+      await appearance.set('focusPulse', false);
+      final section = fakeCategory(name: 'My section', type: type)
+        ..applications.add(fakeApp(packageName: 'aligned.app'));
+      final apps = mkAppService();
+      when(apps.launcherSections).thenReturn([section]);
+      await _pumpWidgetWithProviders(tester, mkWallpaperService(), apps,
+          mkSettingsService(), appearance: appearance, locale: locale);
+
+      double start(Finder finder) => locale.languageCode == 'ar'
+          ? tester.getTopRight(finder).dx
+          : tester.getTopLeft(finder).dx;
+      final title = find.text('My section');
+      final tile = find.byKey(const ValueKey('aligned.app'));
+      final oldTitle = start(title);
+      final oldTile = start(tile);
+      expect((oldTitle - oldTile).abs(), greaterThan(1));
+
+      await appearance.set('sectionTitleAligned', true);
+      await tester.pumpAndSettle();
+      expect(start(title), closeTo(start(tile), .01));
+      expect(start(tile), closeTo(oldTile, .01));
+
+      await appearance.setCategoryTile(section.id, 'sectionPadding', 24);
+      await tester.pumpAndSettle();
+      expect(start(title), closeTo(start(tile), .01));
+      expect((start(tile) - oldTile).abs(), closeTo(24, .01));
+
+      await appearance.setCategoryTile(section.id, 'sectionTitleAligned', false);
+      await tester.pumpAndSettle();
+      expect((start(title) - oldTitle).abs(), closeTo(24, .01));
+      expect((start(title) - start(tile)).abs(), greaterThan(1));
+    });
+  }
+
   testWidgets('feeds hide the group title and use supported local appearance', (tester) async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
@@ -459,6 +505,12 @@ void main() {
     final caption = tester.widget<Text>(find.text('Content 1/0'));
     expect(caption.style!.fontSize, 16);
     expect(caption.style!.color, const Color(0xffffd54f));
+    await appearance.setCategoryTile(group.id, 'sectionTitleAligned', true);
+    await tester.pumpAndSettle();
+    final firstTile = find.descendant(
+      of: find.byType(AppContentRow), matching: find.byType(InkWell)).first;
+    expect(tester.getTopLeft(find.text('Feed 1 · video.app')).dx,
+        closeTo(tester.getTopLeft(firstTile).dx, .01));
     final restored = AppearanceService(prefs);
     expect(restored.tilesFor(group.id).values, appearance.tilesFor(group.id).values);
     restored.dispose();
@@ -2877,6 +2929,7 @@ SettingsService mkSettingsService() {
   when(settingsService.showWeatherInStatusBar).thenReturn(false);
   when(settingsService.showWeatherWarnings).thenReturn(false);
   when(settingsService.useFahrenheit).thenReturn(false);
+  when(settingsService.weatherTextFormat).thenReturn(WeatherTextFormat.standard);
   return settingsService;
 }
 

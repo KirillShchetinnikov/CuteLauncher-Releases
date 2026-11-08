@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flauncher/l10n/app_localizations.dart';
+import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/file_selection.dart';
 import 'package:flauncher/widgets/menu_header_action.dart';
 import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
@@ -8,6 +9,8 @@ import 'package:flauncher/widgets/settings/local_file_browser.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   const channel = MethodChannel('me.efesser.flauncher/method');
@@ -92,42 +95,149 @@ void main() {
     String locale = 'ru',
     double scale = 1,
     ValueChanged<String>? onSaved,
+    FileManagerPreference? preference,
   }) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        locale: Locale(locale),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        builder: (context, child) => MediaQuery(
-          data: MediaQuery.of(context)
-              .copyWith(textScaler: TextScaler.linear(scale)),
-          child: child!,
-        ),
-        home: Scaffold(
-          body: Builder(
-            builder: (context) => FocusableSettingsTile(
-              autofocus: true,
-              title: const Text('Open'),
-              onPressed: () async => result(
-                await FileSelection.select<Object>(
-                  context,
-                  operation,
-                  onSaved: onSaved,
-                  arguments: const {
-                    'path': '/private/report.json',
-                    'name': 'report.json',
-                  },
-                ),
+    final app = MaterialApp(
+      locale: Locale(locale),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      builder: (context, child) => MediaQuery(
+        data: MediaQuery.of(context)
+            .copyWith(textScaler: TextScaler.linear(scale)),
+        child: child!,
+      ),
+      home: Scaffold(
+        body: Builder(
+          builder: (context) => FocusableSettingsTile(
+            autofocus: true,
+            title: const Text('Open'),
+            onPressed: () async => result(
+              await FileSelection.select<Object>(
+                context,
+                operation,
+                onSaved: onSaved,
+                arguments: const {
+                  'path': '/private/report.json',
+                  'name': 'report.json',
+                },
               ),
             ),
           ),
         ),
       ),
     );
+    if (preference == null) {
+      await tester.pumpWidget(app);
+    } else {
+      SharedPreferences.setMockInitialValues({});
+      final settings = SettingsService(await SharedPreferences.getInstance());
+      await settings.setFileManagerPreference(preference);
+      addTearDown(settings.dispose);
+      await tester.pumpWidget(
+        ChangeNotifierProvider.value(value: settings, child: app),
+      );
+    }
     await tester.pumpAndSettle();
     await tester.tap(find.text('Open'));
     await tester.pumpAndSettle();
   }
+
+  testWidgets('built-in preference skips external availability and chooser', (
+    tester,
+  ) async {
+    available = true;
+    await start(
+      tester,
+      'pickImageDocument',
+      (_) {},
+      preference: FileManagerPreference.builtIn,
+    );
+    expect(find.text('Выбор проводника'), findsNothing);
+    expect(find.byType(LocalFileBrowser), findsOneWidget);
+    expect(calls.any((call) => call.method == 'filePickerAvailable'), isFalse);
+    await tester.tap(find.byTooltip('Закрыть'));
+    await tester.pumpAndSettle();
+  });
+
+  for (final operation in [
+    'pickImageDocument',
+    'pickBackupFolder',
+    'saveBackupDocument',
+  ]) {
+    testWidgets('external preference opens $operation directly', (
+      tester,
+    ) async {
+      available = true;
+      systemResult = 'external-result';
+      Object? result;
+      await start(
+        tester,
+        operation,
+        (value) => result = value,
+        preference: FileManagerPreference.external,
+      );
+      expect(result, 'external-result');
+      expect(calls.map((call) => call.method), [
+        'filePickerAvailable',
+        operation,
+      ]);
+      expect(find.text('Выбор проводника'), findsNothing);
+      expect(find.byType(LocalFileBrowser), findsNothing);
+    });
+  }
+
+  testWidgets('external cancellation preserves null without opening built-in', (
+    tester,
+  ) async {
+    available = true;
+    Object? result = 'unchanged';
+    await start(
+      tester,
+      'pickImageDocument',
+      (value) => result = value,
+      preference: FileManagerPreference.external,
+    );
+    expect(result, isNull);
+    expect(find.byType(LocalFileBrowser), findsNothing);
+    expect(calls.map((call) => call.method), [
+      'filePickerAvailable',
+      'pickImageDocument',
+    ]);
+  });
+
+  for (final missingHandler in [true, false]) {
+    testWidgets(
+      'external preference falls back when handler ${missingHandler ? 'is missing' : 'disappears'}',
+      (tester) async {
+        available = !missingHandler;
+        systemError = 'document_unavailable';
+        await start(
+          tester,
+          'pickWallpaperFolder',
+          (_) {},
+          preference: FileManagerPreference.external,
+        );
+        expect(find.byType(LocalFileBrowser), findsOneWidget);
+        expect(find.text('Выбор проводника'), findsNothing);
+        await tester.tap(find.byTooltip('Закрыть'));
+        await tester.pumpAndSettle();
+      },
+    );
+  }
+
+  testWidgets('ask preference keeps the chooser', (tester) async {
+    available = true;
+    await start(
+      tester,
+      'pickImageDocument',
+      (_) {},
+      preference: FileManagerPreference.ask,
+    );
+    expect(find.text('Выбор проводника'), findsOneWidget);
+    expect(calls.map((call) => call.method), ['filePickerAvailable']);
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+  });
 
   for (final operation in [
     'pickImageDocument',
@@ -135,6 +245,8 @@ void main() {
     'pickBackupDocument',
     'pickDriveClientDocument',
     'pickWebhookDocument',
+    'pickWeatherTokenDocument',
+    'pickWeatherServerDocument',
     'pickCleanerListDocument',
     'pickWallpaperFolder',
     'pickBackupFolder',
@@ -149,7 +261,7 @@ void main() {
           'pickImageDocument' => 'image',
           'pickWallpaperDocument' => 'media',
           'pickBackupDocument' || 'pickDriveClientDocument' => 'document',
-          'pickWebhookDocument' || 'pickCleanerListDocument' => 'text',
+          'pickWebhookDocument' || 'pickWeatherTokenDocument' || 'pickWeatherServerDocument' || 'pickCleanerListDocument' => 'text',
           _ => 'folder',
         };
         final name = kind == 'document'
@@ -157,11 +269,12 @@ void main() {
             : kind == 'text'
             ? 'sample.txt'
             : 'sample.png';
-        localResult = operation == 'saveBackupDocument'
-            ? true
-            : operation == 'pickCleanerListDocument'
-            ? {'path': 'staged', 'name': name}
-            : 'staged';
+        localResult = switch (operation) {
+          'saveBackupDocument' => true,
+          'pickCleanerListDocument' => {'path': 'staged', 'name': name},
+          'pickWeatherTokenDocument' || 'pickWeatherServerDocument' => Uint8List.fromList([65, 66]),
+          _ => 'staged',
+        };
         await start(tester, operation, (value) => result = value);
         expect(find.text('Выбор проводника'), findsNothing);
         expect(find.byType(LocalFileBrowser), findsOneWidget);
@@ -313,10 +426,10 @@ void main() {
     }
     expect(scroll.pixels, scroll.maxScrollExtent);
     expect(confirmation.focusNode!.hasFocus, isTrue);
-    expect(find.text('Folder 79'), findsOneWidget);
+    expect(find.text('Folder 9'), findsOneWidget);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
     await tester.pumpAndSettle();
-    expect(Focus.of(tester.element(find.text('Folder 79'))).hasFocus, isTrue);
+    expect(Focus.of(tester.element(find.text('Folder 9'))).hasFocus, isTrue);
     expect(tester.takeException(), isNull);
     await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();

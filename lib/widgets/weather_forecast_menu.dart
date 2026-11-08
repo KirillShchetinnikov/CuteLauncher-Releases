@@ -10,6 +10,7 @@ import '../providers/weather_service.dart';
 import '../theme/interface_style.dart';
 import '../tile_appearance.dart';
 import '../weather_sources.dart';
+import '../weather_warning_text.dart';
 import 'launcher_dialog.dart';
 import 'menu_header.dart';
 import 'menu_header_action.dart';
@@ -19,6 +20,7 @@ import 'settings/settings_panel.dart';
 import 'settings/settings_panel_style.dart';
 import 'settings/weather_page.dart';
 import 'side_panel_dialog.dart';
+import 'weather_glyph.dart';
 
 /// Reads the shared service's snapshot; opening a menu never starts another poll.
 class WeatherForecastMenu extends StatefulWidget {
@@ -177,6 +179,7 @@ class WeatherForecastContent extends StatelessWidget {
         const TileAppearance();
     final fahrenheit = context.watch<SettingsService>().useFahrenheit;
     final weather = service.weatherData;
+    final feelsLike = weather?.feelsLikeTemp;
     final count = appearance.forecastDays;
     final days =
         weather
@@ -193,8 +196,10 @@ class WeatherForecastContent extends StatelessWidget {
     final source = switch (service.configuration.source) {
       WeatherSource.breezy => 'Breezy Weather',
       WeatherSource.openMeteo => 'Open-Meteo',
+      WeatherSource.customOpenMeteo => weather?.source ?? l.weatherCustomServer,
       WeatherSource.metNorway => 'MET Norway',
       WeatherSource.openWeather => 'OpenWeather',
+      WeatherSource.gismeteo => 'Gismeteo',
       WeatherSource.yandex => l.yandexWeather,
     };
     final updated = service.updatedAt;
@@ -213,6 +218,9 @@ class WeatherForecastContent extends StatelessWidget {
               child: Text(
                 weather?.location?.isNotEmpty == true
                     ? weather!.location!
+                    : service.configuration.source == WeatherSource.customOpenMeteo &&
+                        weather?.latitude != null && weather?.longitude != null
+                    ? '${weather!.latitude!.toStringAsFixed(3)}, ${weather.longitude!.toStringAsFixed(3)}'
                     : l.weatherForecastTitle,
                 style: theme.textTheme.titleMedium,
               ),
@@ -220,12 +228,26 @@ class WeatherForecastContent extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 4),
+        if (service.configuration.source == WeatherSource.customOpenMeteo &&
+            weather?.timezone != null)
+          Text(weather!.timezone!, style: theme.textTheme.bodySmall),
         DefaultTextStyle.merge(
           style: theme.textTheme.bodySmall,
           child: Wrap(
             spacing: 12,
             runSpacing: 2,
             children: [
+              if (feelsLike != null)
+                Text(
+                  l.weatherFeelsLike(
+                    WeatherData.formatDegrees(
+                      feelsLike,
+                      useFahrenheit: fahrenheit,
+                    ),
+                  ),
+                  style: appearance.weatherTextColor == null
+                      ? null : TextStyle(color: appearance.weatherTextColor),
+                ),
               Text('${l.weatherSource}: $source'),
               Text(
                 weather?.utcOffsetSeconds == null
@@ -275,7 +297,7 @@ class WeatherForecastContent extends StatelessWidget {
                   for (final day in days)
                     SizedBox(
                       width: width,
-                      child: _day(context, day, fahrenheit, detailed: detailed),
+                      child: _day(context, day, fahrenheit, appearance, detailed: detailed),
                     ),
                 ],
               );
@@ -305,12 +327,17 @@ class WeatherForecastContent extends StatelessWidget {
   Widget _day(
     BuildContext context,
     WeatherForecastItem day,
-    bool fahrenheit, {
+    bool fahrenheit,
+    TileAppearance appearance, {
     bool detailed = false,
   }) {
     final l = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final code = day.conditionCode;
+    final inherited = DefaultTextStyle.of(context).style;
+    final small = appearance.weatherTextStyle(theme.textTheme.bodySmall ?? inherited);
+    final temperatureStyle = appearance.weatherTextStyle(theme.textTheme.titleSmall ?? inherited);
+    final dataStyle = detailed ? small : temperatureStyle;
     final today = DateUtils.isSameDay(
       day.date,
       weatherCalendarDay(
@@ -320,21 +347,8 @@ class WeatherForecastContent extends StatelessWidget {
     );
     String temperature(int? value) => value == null
         ? '—'
-        : '${fahrenheit ? (value * 9 / 5 + 32).round() : value}°${fahrenheit ? 'F' : 'C'}';
-    final condition = switch (code) {
-      800 => l.weatherClear,
-      801 || 802 || 803 || 804 => l.weatherCloudy,
-      701 || 711 || 721 || 741 || 751 => l.weatherFog,
-      771 => l.weatherWind,
-      _ =>
-        WeatherData.stormCodes.contains(code)
-            ? l.weatherStorm
-            : WeatherData.snowCodes.contains(code)
-            ? l.weatherSnow
-            : WeatherData.rainCodes.contains(code)
-            ? l.weatherRain
-            : '—',
-    };
+        : WeatherData.formatDegrees(value, useFahrenheit: fahrenheit);
+    final condition = localizedWeatherCondition(code, l) ?? '—';
     return Container(
       key: ValueKey('forecast_${weatherDateString(day.date!)}'),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
@@ -361,7 +375,7 @@ class WeatherForecastContent extends StatelessWidget {
               if (detailed) ...[
                 Text(
                   '${temperature(day.minTemp)} / ${temperature(day.maxTemp)}',
-                  style: theme.textTheme.titleSmall,
+                  style: temperatureStyle,
                 ),
               ],
             ],
@@ -370,13 +384,11 @@ class WeatherForecastContent extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Icon(
-                code == null
-                    ? Icons.cloud_outlined
-                    : WeatherData(currentConditionCode: code)
-                          .getConditionIcon(),
+              WeatherGlyph(
+                condition: WeatherData(currentConditionCode: code).getCondition(),
+                pack: appearance.weatherIconPack,
                 size: detailed ? 18 : 24,
-                color: theme.colorScheme.primary,
+                color: appearance.weatherIconColor ?? dataStyle.color ?? inherited.color,
               ),
               const SizedBox(width: 8),
               Expanded(
@@ -384,9 +396,7 @@ class WeatherForecastContent extends StatelessWidget {
                   detailed
                       ? condition
                       : '${temperature(day.minTemp)} / ${temperature(day.maxTemp)}',
-                  style: detailed
-                      ? theme.textTheme.bodySmall
-                      : theme.textTheme.titleSmall,
+                  style: dataStyle,
                 ),
               ),
               if (detailed) ...[
@@ -394,7 +404,7 @@ class WeatherForecastContent extends StatelessWidget {
                 Flexible(
                   child: Text(
                     '${l.weatherPrecipitation}: ${day.precipProbability == null ? '—' : '${day.precipProbability}%'}',
-                    style: theme.textTheme.bodySmall,
+                    style: small,
                     textAlign: TextAlign.end,
                   ),
                 ),

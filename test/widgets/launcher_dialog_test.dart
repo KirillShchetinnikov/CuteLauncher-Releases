@@ -295,7 +295,8 @@ void main() {
         ),
       );
       final colors = Theme.of(tester.element(find.text(label))).colorScheme;
-      expect(material.color, label == 'Confirm' ? colors.error : Colors.transparent);
+      expect(material.color, label == 'Confirm' ? colors.error
+          : colors.onSurface.withValues(alpha: focused ? .10 : 0));
       final border = (material.shape! as OutlinedBorder).side;
       expect(border.color.a, focused ? 1 : 0);
     }
@@ -494,7 +495,8 @@ void main() {
         ),
       );
       final wide = tester.getRect(_surface);
-      expect(wide.width, closeTo(836, .1));
+      // The free area also reserves TV margins minus the dialog content padding (40 dp per side).
+      expect(wide.width, closeTo(788, .1));
       await tester.tap(find.text('Следующее окно'));
       await tester.pumpAndSettle();
       expect(

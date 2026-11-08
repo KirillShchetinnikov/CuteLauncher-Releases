@@ -2,7 +2,10 @@ import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/settings/settings_style_page.dart';
 import 'package:flauncher/providers/appearance_service.dart';
+import 'package:flauncher/tile_appearance.dart';
 import 'package:flauncher/widgets/settings/settings_panel.dart';
+import 'package:flauncher/widgets/settings/information_settings_page.dart';
+import 'package:flauncher/widgets/settings/information_preview.dart';
 import 'package:flauncher/widgets/side_panel_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,6 +14,61 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
+  testWidgets('background auto side keeps route, focus and scroll; restores saved side', (tester) async {
+    tester.view.physicalSize = const Size(960, 540);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    SharedPreferences.setMockInitialValues({
+      tileAppearanceKey: '{"avoidBackgroundInformation":false}',
+    });
+    final prefs = await SharedPreferences.getInstance();
+    final settings = SettingsService(prefs);
+    final appearance = AppearanceService(prefs);
+    addTearDown(settings.dispose); addTearDown(appearance.dispose);
+    await tester.pumpWidget(MultiProvider(providers: [
+      ChangeNotifierProvider.value(value: settings), ChangeNotifierProvider.value(value: appearance),
+    ], child: MaterialApp(locale: const Locale('ru'),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: const SettingsPanel(initialRoute: InformationSettingsPage.routeName))));
+    await tester.pumpAndSettle();
+    final l = AppLocalizations.of(tester.element(find.byType(InformationSettingsPage)))!;
+    await tester.ensureVisible(find.text(l.backgroundInformationAppearance));
+    await tester.tap(find.text(l.backgroundInformationAppearance));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(l.informationPositionSize));
+    await tester.pumpAndSettle();
+    final section = tester.element(find.byType(InformationSectionPage));
+    Focus.of(tester.element(find.text(l.informationBackgroundPosition).last)).requestFocus();
+    await tester.pumpAndSettle();
+    final focus = FocusManager.instance.primaryFocus;
+    final scroll = tester.state(find.byType(Scrollable).first);
+    for (final right in [true, false, true]) {
+      appearance.reportInformationBounds(Rect.fromLTWH(right ? 20 : 720, 80, 210, 200));
+      await tester.pumpAndSettle();
+      expect(tester.widget<SidePanelDialog>(find.byType(SidePanelDialog)).isRightSide, right);
+      expect(tester.element(find.byType(InformationSectionPage)), same(section));
+      expect(FocusManager.instance.primaryFocus, same(focus));
+      expect(tester.state(find.byType(Scrollable).first), same(scroll));
+      expect(settings.settingsMenuOnRight, isFalse);
+    }
+    appearance.reportInformationBounds(const Rect.fromLTWH(20, 80, 920, 200));
+    await tester.pumpAndSettle();
+    expect(find.byType(InformationPreview), findsNothing);
+    expect(appearance.appearance.values.containsKey('avoidBackgroundInformation'), isFalse);
+    expect(TileAppearance.validValues({'avoidBackgroundInformation': false}), isEmpty);
+    appearance.reportInformationBounds(const Rect.fromLTWH(20, 80, 210, 200));
+    await tester.pumpAndSettle();
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(find.byType(InformationSettingsPage), findsOneWidget);
+    expect(tester.widget<SidePanelDialog>(find.byType(SidePanelDialog)).isRightSide, isFalse);
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox());
+  });
   test('menu side persists, validates imports and round-trips in backup', () async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();

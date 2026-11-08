@@ -14,6 +14,8 @@ import 'package:flauncher/providers/notifications_service.dart';
 import 'package:flauncher/providers/watch_next_service.dart';
 import 'package:flauncher/providers/weather_service.dart';
 import 'package:flauncher/gradients.dart';
+import 'package:flauncher/information_formats.dart';
+import 'package:flauncher/weather_text_format.dart';
 import 'package:flauncher/models/category.dart';
 import 'package:flauncher/models/weather_data.dart';
 import 'package:flutter/material.dart';
@@ -139,7 +141,9 @@ Future<DesignFixture> pumpDesignFixture(
   final appearance = AppearanceService(await SharedPreferences.getInstance());
   final apps = fixtures.mkAppService() as MockAppsService;
   when(apps.isDefaultLauncher()).thenAnswer((_) async => true);
+  when(apps.applications).thenReturn([]);
   final settings = fixtures.mkSettingsService();
+  when(settings.hiddenWatchNextPackages).thenReturn([]);
   when(settings.showUsbInStatusBar).thenReturn(true);
   when(settings.accentColor).thenReturn(accent);
   when(settings.accentColorHex)
@@ -165,6 +169,18 @@ Future<DesignFixture> pumpDesignFixture(
   when(settings.showDataWidgetInStatusBar).thenReturn(false);
   when(settings.timeFormat).thenReturn("'20:30'");
   when(settings.dateFormat).thenReturn("'4 октября'");
+  for (final background in [false, true]) {
+    when(settings.noSuchMethod(Invocation.method(#informationDateTime, [], {#background: background}))).thenReturn(
+      const InformationDateTimeFormat(time: "'20:30'", date: "'4 октября'"),
+    );
+    when(settings.noSuchMethod(Invocation.method(#informationWeather, [], {#background: background}))).thenReturn(
+      const WeatherDisplayOptions(
+        format: WeatherTextFormat.standard,
+        fahrenheit: false,
+        warnings: false,
+      ),
+    );
+  }
   final wallpaper = fixtures.mkWallpaperService(false);
   when(wallpaper.gradient)
       .thenReturn(gradient ?? FLauncherGradients.viciousStance);

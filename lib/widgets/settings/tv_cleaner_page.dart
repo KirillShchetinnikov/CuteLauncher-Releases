@@ -1,3 +1,4 @@
+import 'settings_information.dart';
 import '../../document_files.dart';
 import '../file_selection.dart';
 
@@ -10,6 +11,7 @@ import '../../tv_cleaner.dart';
 import '../action_notice.dart';
 import '../launcher_dialog.dart';
 import 'focusable_settings_tile.dart';
+import 'settings_list_heading.dart';
 import 'settings_help.dart';
 import 'settings_page_layout.dart';
 import 'settings_route.dart';
@@ -469,7 +471,11 @@ class _TvCleanerPageState extends State<TvCleanerPage> {
               .toList();
           final header = <Widget>[
             _tile(l.cleanerRemoteProject, update),
-            if (!ready()) Text(l.cleanerCatalogUpdateRequired),
+            if (!ready())
+              SettingsMessage(
+                text: l.cleanerCatalogUpdateRequired,
+                kind: SettingsMessageKind.warning,
+              ),
             SettingsTextTile(
               title: l.cleanerSearch,
               value: query,
@@ -482,7 +488,12 @@ class _TvCleanerPageState extends State<TvCleanerPage> {
                 header.length + rows.length + (ready() && rows.isEmpty ? 1 : 0),
             itemBuilder: (_, index) {
               if (index < header.length) return header[index];
-              if (rows.isEmpty) return Text(l.cleanerNoSearchResults);
+              if (rows.isEmpty) {
+                return SettingsEmptyState(
+                  text: l.cleanerNoSearchResults,
+                  icon: Icons.search_off_rounded,
+                );
+              }
               final row = rows[index - header.length];
               return _tile(
                 label(row),
@@ -666,7 +677,12 @@ class _TvCleanerPageState extends State<TvCleanerPage> {
     String? scope,
   }) => _open(package, () {
     final found = apps.where((row) => row['package'] == package);
-    if (found.isEmpty) return Text(l.cleanerMissing);
+    if (found.isEmpty) {
+      return SettingsEmptyState(
+        text: l.cleanerMissing,
+        icon: Icons.apps_outlined,
+      );
+    }
     final app = found.first;
     final description = _descriptions[package] as Map?;
     final kind = cleanerAppKind(app, description);
@@ -698,7 +714,11 @@ class _TvCleanerPageState extends State<TvCleanerPage> {
           Text(l.cleanerRisk, style: Theme.of(context).textTheme.titleMedium),
           Text(l.cleanerMinimalRisk),
         ],
-        if (app['protected'] == true) Text(l.cleanerProtected),
+        if (app['protected'] == true)
+          SettingsMessage(
+            text: l.cleanerProtected,
+            kind: SettingsMessageKind.warning,
+          ),
         _tile(
           app['enabled'] == true ? l.cleanerDisable : l.cleanerEnable,
           () => _preview(
@@ -755,16 +775,15 @@ class _TvCleanerPageState extends State<TvCleanerPage> {
                   onChanged: (value) => change(() => query = value),
                 );
               }
-              if (rows.isEmpty) return Text(l.cleanerNoSearchResults);
+              if (rows.isEmpty) {
+                return SettingsEmptyState(
+                  text: l.cleanerNoSearchResults,
+                  icon: Icons.search_off_rounded,
+                );
+              }
               final row = rows[index - 1];
               if (row is String) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  child: Text(
-                    row,
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                );
+                return SettingsListHeading(title: row);
               }
               final app = row as Map;
               return FocusableSettingsTile(
@@ -1123,7 +1142,8 @@ class _TvCleanerPageState extends State<TvCleanerPage> {
               '${(report['identity'] as Map)['model']} · ${(report['identity'] as Map)['device']}\n'
               '${l.cleanerApps}: ${apps.length}\n${l.cleanerPending}: ${report['pendingRestore']}',
             ),
-          if (report == null && !_busy.value) Text(l.cleanerRefreshRequired),
+          if (report == null && !_busy.value)
+            SettingsMessage(text: l.cleanerRefreshRequired),
           _tile(l.cleanerRefresh, _refresh, autofocus: true),
           if (_operationRows.value.isNotEmpty)
             _tile(

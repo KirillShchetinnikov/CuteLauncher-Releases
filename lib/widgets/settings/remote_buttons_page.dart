@@ -1,3 +1,5 @@
+import 'settings_read_only_value.dart';
+import 'settings_information.dart';
 import 'settings_help.dart';
 
 import 'dart:async';
@@ -167,9 +169,8 @@ class _RemoteButtonsPageState extends State<RemoteButtonsPage>
             FocusableSettingsTile(
               title: Text(l.volumeKeysTitle),
               leading: const Icon(Icons.volume_up_outlined),
-              onPressed: () => Navigator.of(context).push(
-                SettingsRoute(builder: (_) => const VolumeKeysPage()),
-              ),
+              onPressed: () => Navigator.of(context)
+                  .push(SettingsRoute(builder: (_) => const VolumeKeysPage())),
             ),
             FocusableSettingsTile(
               title: Text(l.remoteButtonsTest),
@@ -214,13 +215,28 @@ class _RemoteButtonsPageState extends State<RemoteButtonsPage>
               ),
               onPressed: () => _call(active ? 'stop' : 'start'),
             ),
-            Text(l.remoteButtonsControlsHint),
+            SettingsControlHint(text: l.remoteButtonsControlsHint),
             if (reportPath.isNotEmpty)
-              Text(reportPath, textDirection: TextDirection.ltr),
-            SettingsHelp(title: l.remoteButtonsTest, text: l.remoteButtonsHint),
-            if (_failed) Text(l.memoryUnavailable),
+              SettingsReadOnlyValue(
+                label: l.settingsReportFile,
+                value: reportPath,
+                textDirection: TextDirection.ltr,
+              ),
+            SettingsHelp(
+              title: l.remoteButtonsTest,
+              text: '${l.remoteButtonsHint}\n\n${l.remoteButtonsEmpty}',
+            ),
+            if (_failed)
+              SettingsMessage(
+                text: l.memoryUnavailable,
+                kind: SettingsMessageKind.error,
+              ),
             const Divider(),
-            if (events.isEmpty) Text(l.remoteButtonsEmpty),
+            if (events.isEmpty)
+              SettingsEmptyState(
+                text: l.remoteButtonsNoEvents,
+                icon: Icons.settings_remote_outlined,
+              ),
             for (final event in events.toList().reversed)
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 6),

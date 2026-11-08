@@ -1,3 +1,7 @@
+import 'settings_information.dart';
+import 'settings_read_only_value.dart';
+import 'settings_section.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -88,38 +92,56 @@ class _VpnSettingsPageState extends State<VpnSettingsPage> {
         vpn: vpn,
         child: ListView(
           children: [
-            if (vpn.failed) Text(l.vpnUnknown),
-            SettingsChoiceTile<String>(
-              key: const ValueKey('vpn_app'),
+            if (vpn.failed)
+              SettingsMessage(
+                text: l.vpnUnknown,
+                kind: SettingsMessageKind.error,
+              ),
+            SettingsSection(
               title: l.vpnApp,
-              value: vpn.selected,
-              options: ['', ...vpn.clients.map((client) => client.app)],
-              valueLabel: vpn.selected.isEmpty
-                  ? l.vpnAutomatic
-                  : vpn.name(vpn.selected),
-              enabled: vpn.initialized,
-              label: (app) => app.isEmpty ? l.vpnAutomatic : vpn.name(app),
-              onChanged: (app) => _save(context, 'selected', app),
+              children: [
+                SettingsChoiceTile<String>(
+                  key: const ValueKey('vpn_app'),
+                  title: l.vpnApp,
+                  value: vpn.selected,
+                  options: ['', ...vpn.clients.map((client) => client.app)],
+                  valueLabel: vpn.selected.isEmpty
+                      ? l.vpnAutomatic
+                      : vpn.name(vpn.selected),
+                  enabled: vpn.initialized,
+                  label: (app) => app.isEmpty ? l.vpnAutomatic : vpn.name(app),
+                  onChanged: (app) => _save(context, 'selected', app),
+                ),
+                if (vpn.target.isNotEmpty)
+                  VpnClientSettings(
+                    key: const ValueKey('vpn_client'),
+                    app: vpn.target,
+                  ),
+              ],
             ),
-            if (vpn.target.isNotEmpty)
-              VpnClientSettings(
-                key: const ValueKey('vpn_client'),
-                app: vpn.target,
-              ),
-            for (final setting in [
-              ('onlyActive', l.vpnOnlyActive, vpn.onlyActive),
-              ('showName', l.vpnShowName, vpn.showName),
-              ('color', l.vpnColor, vpn.color),
-              ('notify', l.vpnNotify, vpn.notify),
-            ])
-              RoundedSwitchListTile(
-                key: ValueKey('vpn_${setting.$1}'),
-                title: Text(setting.$2),
-                value: setting.$3,
-                enabled: vpn.initialized,
-                onChanged: (value) => _save(context, setting.$1, value),
-              ),
-            SettingsHelp(key: const ValueKey('vpn_help'), title: l.vpnTitle, text: l.vpnHelp),
+            SettingsSection(
+              title: l.settingsGroupIndicators,
+              children: [
+                for (final setting in [
+                  ('onlyActive', l.vpnOnlyActive, vpn.onlyActive),
+                  ('showName', l.vpnShowName, vpn.showName),
+                  ('color', l.vpnColor, vpn.color),
+                  ('notify', l.vpnNotify, vpn.notify),
+                ])
+                  RoundedSwitchListTile(
+                    key: ValueKey('vpn_${setting.$1}'),
+                    title: Text(setting.$2),
+                    value: setting.$3,
+                    enabled: vpn.initialized,
+                    onChanged: (value) => _save(context, setting.$1, value),
+                  ),
+              ],
+            ),
+            SettingsHelp(
+              key: const ValueKey('vpn_help'),
+              title: l.vpnTitle,
+              text: l.vpnHelp,
+            ),
           ],
         ),
       ),
@@ -137,7 +159,10 @@ class VpnClientSettings extends StatelessWidget {
     final l = AppLocalizations.of(context)!;
     final client = vpn.clients.where((client) => client.app == app).firstOrNull;
     if (client == null || !client.supported) {
-      return Text(l.vpnUnsupported);
+      return SettingsMessage(
+        text: l.vpnUnsupported,
+        kind: SettingsMessageKind.warning,
+      );
     }
     final profile = vpn.profileFor(app);
     return Column(
@@ -195,10 +220,9 @@ class _VpnStartupSectionState extends State<VpnStartupSection> {
     final l = AppLocalizations.of(context)!;
     return _VpnSettingsInteraction(
       vpn: vpn,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      child: SettingsSection(
+        title: l.vpnStartup,
         children: [
-          const Divider(),
           RoundedSwitchListTile(
             key: const ValueKey('vpn_boot_enabled'),
             title: Text(l.vpnStartup),
@@ -256,26 +280,37 @@ class _VpnStartupSectionState extends State<VpnStartupSection> {
                 onChanged: (value) => _save(context, 'delay', value as int),
               ),
               if (vpn.startupStatus != 'idle')
-                Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Text(vpnResultLabel(l, vpn.startupStatus)),
+                SettingsMessage(
+                  text: vpnResultLabel(l, vpn.startupStatus),
+                  kind: switch (vpn.startupStatus) {
+                    'permission' ||
+                    'profile' ||
+                    'unsupported' ||
+                    'other' ||
+                    'alwaysOn' => SettingsMessageKind.warning,
+                    'connected' ||
+                    'disconnected' ||
+                    'pending' ||
+                    'sent' => SettingsMessageKind.info,
+                    _ => SettingsMessageKind.error,
+                  },
                 ),
             ],
             if (vpn.systemApp.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.all(8),
-                child: Text(
-                  '${l.vpnStartupAlwaysOn}: ${vpn.name(vpn.systemApp)}',
-                ),
+              SettingsReadOnlyValue(
+                label: l.vpnStartupAlwaysOn,
+                value: vpn.name(vpn.systemApp),
+                wrapLines: true,
               ),
             if (vpn.bootMode == 'alwaysOn')
               SettingsHelp(title: l.vpnStartup, text: l.vpnAlwaysOnHelp),
-            if (vpn.bootMode == 'client') SettingsHelp(title: l.vpnStartup, text: l.vpnStartupHelp),
+            if (vpn.bootMode == 'client')
+              SettingsHelp(title: l.vpnStartup, text: l.vpnStartupHelp),
           ],
           if (vpn.restartRequired)
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: Text(l.vpnRestartRequired),
+            SettingsMessage(
+              text: l.vpnRestartRequired,
+              kind: SettingsMessageKind.warning,
             ),
         ],
       ),

@@ -10,6 +10,60 @@ class AppLocalizationsJa extends AppLocalizations {
   AppLocalizationsJa([String locale = 'ja']) : super(locale);
 
   @override
+  String get weatherTextResetFormat => '書式をリセット';
+
+  @override
+  String get settingsReportFile => 'レポートファイル';
+
+  @override
+  String get homeVisibleRowsLabel => '完全に表示される行数';
+
+  @override
+  String get watchNextEmpty => '「視聴を続ける」のカードはまだありません';
+
+  @override
+  String get inputsUnavailableStatus => '利用可能な入力がありません';
+
+  @override
+  String get remoteButtonsNoEvents => 'イベントはまだありません';
+
+  @override
+  String get informationBackgroundVerticalOffset => '垂直方向のオフセット';
+
+  @override
+  String get informationResetPositionSize => 'この画面の設定をすべてリセット';
+
+  @override
+  String get weatherIconsGeometric => '幾何学';
+
+  @override
+  String get weatherIconsCircled => '円囲み';
+
+  @override
+  String get informationCommonAppearance => '共通設定';
+
+  @override
+  String get informationTimeFormat => '時刻の形式';
+
+  @override
+  String get informationDateFormat => '日付の形式';
+
+  @override
+  String get informationInheritPanelTypography => '上部パネルの外観を継承';
+
+  @override
+  String get informationResetTypography => '設定をリセット';
+
+  @override
+  String get alignSectionTitles => 'セクション名をタイルの位置にそろえる';
+
+  @override
+  String get homeAppName => 'ホーム画面のアプリ名';
+
+  @override
+  String get restoreSystemAppName => 'システムの名前に戻す';
+
+  @override
   String get settingsScrollbar => 'スクロールバー';
 
   @override
@@ -3696,6 +3750,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get interfaceStandard => 'Standard';
 
   @override
+  String get interfaceCalm => '落ち着いた';
+
+  @override
   String get interfaceGlass => 'Glass';
 
   @override
@@ -4410,6 +4467,71 @@ class AppLocalizationsJa extends AppLocalizations {
   String get informationShowBoth => '天気とカレンダー';
 
   @override
+  String get weatherTextFormat => '天気テキストの書式';
+
+  @override
+  String get weatherTextTemperature => '気温';
+
+  @override
+  String get weatherTextApparent => '体感温度';
+
+  @override
+  String get weatherTextConditions => '天気';
+
+  @override
+  String get weatherTextHumidity => '湿度';
+
+  @override
+  String get weatherTextLow => '今日の最低気温';
+
+  @override
+  String get weatherTextHigh => '今日の最高気温';
+
+  @override
+  String get weatherTextLiteral => 'カスタムテキスト';
+
+  @override
+  String get weatherTextNewline => '改行';
+
+  @override
+  String get weatherTextBefore => 'ブロックの前';
+
+  @override
+  String get weatherTextAfter => 'ブロックの後';
+
+  @override
+  String get weatherTextYourFormat => '現在の書式';
+
+  @override
+  String get weatherTextAdd => 'ブロックを追加';
+
+  @override
+  String get weatherTextMoveEarlier => '前へ移動';
+
+  @override
+  String get weatherTextMoveLater => '後ろへ移動';
+
+  @override
+  String get weatherTextHelp =>
+      'テキストと波括弧で囲んだコードを入力するか、ボタンでカーソル位置に挿入します。大文字と小文字は区別しません。値を囲む丸括弧は、データがない場合は一緒に非表示になります。文字として使う波括弧は二重にします。改行は1つ使用できます。';
+
+  @override
+  String get weatherTextSaveError => '天気テキストの書式を保存できませんでした。';
+
+  @override
+  String get weatherTextSampleCity => '東京';
+
+  @override
+  String weatherTextMetersPerSecond(String speed) {
+    return '$speed m/s';
+  }
+
+  @override
+  String weatherFeelsLike(String temperature) {
+    return '体感温度 $temperature';
+  }
+
+  @override
   String get weatherForecastTitle => '天気予報';
 
   @override
@@ -4695,7 +4817,16 @@ class AppLocalizationsJa extends AppLocalizations {
   String get informationOnBackground => '壁紙上';
 
   @override
-  String get informationBackgroundAlignment => '壁紙上の配置';
+  String get informationBackgroundPosition => 'ブロックの位置';
+
+  @override
+  String get informationBackgroundOffset => '左右のずれ';
+
+  @override
+  String get informationBackgroundResetOffset => 'ずれをリセット';
+
+  @override
+  String get informationBackgroundContentAlignment => 'ブロック内の配置';
 
   @override
   String get informationBackgroundHelp =>
@@ -4995,4 +5126,355 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get appProcessStopped => '停止中';
+
+  @override
+  String get weatherCustomServer => 'カスタムサーバー (Open-Meteo)';
+
+  @override
+  String get widgetSettings => 'ウィジェット設定';
+
+  @override
+  String get weatherServerUrlImport => 'ファイルからアドレスをインポート';
+
+  @override
+  String get weatherServerUrlImportError =>
+      'インポート失敗：サーバーのベース HTTPS アドレスのみを含む、4 KB 以下の UTF-8 テキストファイルを選択してください。';
+
+  @override
+  String get weatherImportReadError =>
+      'インポートファイルを読み取れませんでした。ファイルへのアクセスを確認してください。';
+
+  @override
+  String get weatherImportEncodingError => 'インポート失敗：ファイルは UTF-8 ではありません。';
+
+  @override
+  String get weatherImportTooLargeError => 'インポート失敗：ファイルが 4 KB を超えています。';
+
+  @override
+  String get weatherImportSaveError => '値を保存できませんでした。再入力または再インポートしてください。';
+
+  @override
+  String get weatherTokenInvalid => 'トークンの形式が無効です。';
+
+  @override
+  String get weatherServerUrl => 'サーバーの HTTPS アドレス';
+
+  @override
+  String get weatherServerUrlHint =>
+      '/v1/forecast、認証情報、クエリ、フラグメントを含まないベース HTTPS URL を入力してください。';
+
+  @override
+  String get weatherServerCoordinates => '座標を入力';
+
+  @override
+  String get weatherServerCoordinatesHint =>
+      '緯度と経度をコンマで区切り、小数点にはピリオドを使ってください。例: 50.0, 30.0。';
+
+  @override
+  String get weatherIconPack => '天気アイコンセット';
+
+  @override
+  String get weatherIconsStandard => '標準';
+
+  @override
+  String get weatherIconsOutline => '輪郭';
+
+  @override
+  String get weatherIconsSolid => '塗りつぶし';
+
+  @override
+  String get weatherIconsDuotone => 'ツートーン';
+
+  @override
+  String get weatherIconsPixel => 'ピクセル';
+
+  @override
+  String get weatherTextColor => '天気テキストの色';
+
+  @override
+  String get weatherIconColor => '天気アイコンの色';
+
+  @override
+  String get weatherIconFollowsText => '天気テキストと同じ色';
+
+  @override
+  String get informationDateColor => '日付の色';
+
+  @override
+  String get clockTextColor => '時計の色';
+
+  @override
+  String get weatherServerToken => 'Bearer トークン（任意）';
+
+  @override
+  String get weatherServerTokenImport => 'ファイルからトークンを読み込む';
+
+  @override
+  String get weatherServerTokenImportError =>
+      'インポート失敗：トークンだけを含む 4 KB 以下の UTF-8 テキストファイルを選んでください。';
+
+  @override
+  String get weatherCheckConnection => '接続を確認';
+
+  @override
+  String get weatherServerAccessError =>
+      'サーバーにアクセスが拒否されました。トークンとサーバーの権限を確認してください。';
+
+  @override
+  String get weatherServerParametersError => 'サーバーがリクエストのパラメーターまたは座標を拒否しました。';
+
+  @override
+  String get informationComposition => 'オブジェクトの書式';
+
+  @override
+  String get informationLayout => 'ブロックの配置';
+
+  @override
+  String get informationPositionSize => '位置とサイズ';
+
+  @override
+  String get informationTypography => 'フォントと数字';
+
+  @override
+  String get informationColors => '色と効果';
+
+  @override
+  String get informationLayers => '背景のレイヤー';
+
+  @override
+  String get informationAvoidOverlap => '設定でブロックを隠さない';
+
+  @override
+  String get weatherPresetBrief => '簡潔';
+
+  @override
+  String get weatherPresetFeels => '体感温度付き';
+
+  @override
+  String get weatherPresetDetails => '詳細';
+
+  @override
+  String get informationAvoidOverlapHelp =>
+      '背景の編集中は、ブロックを隠す範囲が最も小さい側に設定メニューを一時的に移動します。どちらにも空きがなければ別のプレビューを表示します。終了時に通常の側へ戻ります。';
+
+  @override
+  String get informationProfileHelp =>
+      'パネルと背景の書式と色は独立しています。天気の提供元は共通です。クイック設定と予報は上部パネルの外観を使用し、クイック設定の表示とグループ化は個別に保持します。';
+
+  @override
+  String get weatherCompactLayout =>
+      '日付と同じブロックに表示する場合、天気の改行は空白になります。保存した形式は変わりません。';
+
+  @override
+  String get weatherFormatInvalid =>
+      '天気の項目を追加してください。最大12ブロック、改行1つ、各テキスト欄60文字まで使用できます。';
+
+  @override
+  String get fileManagerPreference => 'ファイルマネージャー';
+
+  @override
+  String get fileManagerAsk => '毎回確認する';
+
+  @override
+  String get fileManagerBuiltIn => '内蔵';
+
+  @override
+  String get fileManagerExternal => '外部';
+
+  @override
+  String get fileBrowserStartFolder => '開始フォルダー';
+
+  @override
+  String get fileBrowserStorage => 'テレビのストレージ';
+
+  @override
+  String get fileBrowserDownloads => 'ダウンロード';
+
+  @override
+  String get fileBrowserLastFolder => '最後に開いたフォルダー';
+
+  @override
+  String get fileBrowserSort => '並べ替え';
+
+  @override
+  String get fileBrowserSortName => '名前';
+
+  @override
+  String get fileBrowserSortDate => '更新日時';
+
+  @override
+  String get fileBrowserSortSize => 'サイズ';
+
+  @override
+  String get fileBrowserOrder => '並び順';
+
+  @override
+  String get fileBrowserAscending => '昇順';
+
+  @override
+  String get fileBrowserDescending => '降順';
+
+  @override
+  String get fileBrowserFoldersFirst => '常にフォルダーを先に表示';
+
+  @override
+  String get fileBrowserShowHidden => '隠しファイルとフォルダーを表示';
+
+  @override
+  String get fileBrowserShowDetails => 'サイズと日時を表示';
+
+  @override
+  String get fileBrowserOptionsHelp =>
+      '選択済みのフォルダー、または選択した画像の元のフォルダーを優先して開きます。最後に開いたフォルダーは操作ごとに記憶され、キャンセル後も保持されます。フォルダーが利用できない場合は、テレビのストレージまたはダウンロードを開きます。フォルダー履歴はこのテレビにのみ保存されます。';
+
+  @override
+  String get fileBrowserSaveFailed => 'ファイルブラウザーの設定を保存できませんでした。';
+
+  @override
+  String get settingsSectionStyle => 'グループの外観';
+
+  @override
+  String get settingsSectionAccentBand => 'アクセントストリップ';
+
+  @override
+  String get settingsSectionSurface => '共通の背景';
+
+  @override
+  String get panelTextAndButtonsGroup => 'テキストとボタン';
+
+  @override
+  String get settingsGroupScene => 'シーン';
+
+  @override
+  String get settingsGroupSky => '空と天気';
+
+  @override
+  String get settingsGroupAnimation => 'アニメーションとプレビュー';
+
+  @override
+  String get settingsGroupSource => 'ソース';
+
+  @override
+  String get settingsGroupImageChange => '画像の切り替え';
+
+  @override
+  String get settingsGroupBrightness => '明るさのレベル';
+
+  @override
+  String get settingsGroupDisplay => '表示';
+
+  @override
+  String get settingsGroupCredentials => '接続情報';
+
+  @override
+  String get settingsGroupClient => 'クライアント設定';
+
+  @override
+  String get settingsGroupAccount => 'アカウント接続';
+
+  @override
+  String get settingsGroupIndicators => 'インジケーターとメッセージ';
+
+  @override
+  String get settingsGroupFocusShape => 'フォーカスの形';
+
+  @override
+  String get settingsGroupBorder => '枠線';
+
+  @override
+  String get settingsGroupMotion => '動き';
+
+  @override
+  String get settingsGroupControl => '操作';
+
+  @override
+  String get settingsGroupPositionSize => '位置とサイズ';
+
+  @override
+  String get settingsGroupGroupsBackground => 'グループと背景';
+
+  @override
+  String get settingsGroupText => 'テキスト';
+
+  @override
+  String get settingsGroupLayout => 'レイアウト';
+
+  @override
+  String get settingsGroupHeadings => '見出し';
+
+  @override
+  String get settingsGroupLaunchTarget => '起動する項目';
+
+  @override
+  String get settingsGroupLaunchTiming => '起動のタイミング';
+
+  @override
+  String get settingsGroupBlockPosition => 'ブロックの位置';
+
+  @override
+  String get settingsGroupBlockContent => 'ブロックの内容';
+
+  @override
+  String get settingsGroupLayers => '表示レイヤー';
+
+  @override
+  String get settingsGroupAccess => 'アクセス';
+
+  @override
+  String get settingsGroupContent => '内容';
+
+  @override
+  String get settingsGroupSourcesLimits => 'ソースと上限';
+
+  @override
+  String get settingsGroupCards => 'カード';
+
+  @override
+  String get settingsGroupStorage => '保存';
+
+  @override
+  String get settingsGroupMode => 'モード';
+
+  @override
+  String get settingsGroupExceptions => '例外';
+
+  @override
+  String get settingsGroupCurrentAction => '現在の動作';
+
+  @override
+  String get settingsGroupHours => '動作時間';
+
+  @override
+  String get settingsGroupSourceAccess => 'ソースとアクセス';
+
+  @override
+  String get settingsGroupUpdate => '更新';
+
+  @override
+  String get settingsGroupSystemCommands => 'システムとコマンド';
+
+  @override
+  String get weatherTemplateWarning => '警報';
+
+  @override
+  String get weatherTemplateDescription => 'アイコンなしの説明';
+
+  @override
+  String get weatherTemplateIcon => 'アイコン';
+
+  @override
+  String get weatherTemplateBracesError =>
+      '波括弧の対応を確認してください。文字として表示するには括弧を二重にします。';
+
+  @override
+  String get weatherTemplateUnknownError => '不明なコード:';
+
+  @override
+  String get weatherTemplateBreakError => '改行は1つだけ使用できます。';
+
+  @override
+  String get weatherTemplateValueError => '天気コードを1つ以上追加してください。';
+
+  @override
+  String get weatherTemplateLengthError => '形式が長すぎます。最大2048文字、64要素です。';
 }

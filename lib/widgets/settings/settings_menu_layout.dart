@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 class SettingsMenuLayout extends InheritedWidget {
   final bool onRight;
   final double topInset;
+  final bool informationObscured;
 
   const SettingsMenuLayout({
     super.key,
     required this.onRight,
     this.topInset = 0,
+    this.informationObscured = false,
     required super.child,
   });
 
@@ -23,5 +25,5 @@ class SettingsMenuLayout extends InheritedWidget {
 
   @override
   bool updateShouldNotify(SettingsMenuLayout oldWidget) =>
-      onRight != oldWidget.onRight || topInset != oldWidget.topInset;
+      onRight != oldWidget.onRight || topInset != oldWidget.topInset || informationObscured != oldWidget.informationObscured;
 }

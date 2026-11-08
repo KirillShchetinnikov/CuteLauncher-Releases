@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart' show DateFormat, NumberFormat;
 
+import '../../file_browser_options.dart';
 import '../../bridge_result.dart';
 import '../../l10n/app_localizations.dart';
 import '../launcher_dialog.dart';
@@ -72,6 +73,8 @@ class LocalFileBrowser extends StatefulWidget {
   final String? saveName;
   final String? title;
   final String? formatHint;
+  final FileBrowserOptions options;
+  final ValueChanged<String>? onFolderOpened;
   const LocalFileBrowser({
     super.key,
     this.initialPath,
@@ -79,6 +82,8 @@ class LocalFileBrowser extends StatefulWidget {
     this.saveName,
     this.title,
     this.formatHint,
+    this.options = const FileBrowserOptions(),
+    this.onFolderOpened,
   });
   @override
   State<LocalFileBrowser> createState() => _LocalFileBrowserState();
@@ -112,7 +117,7 @@ class _LocalFileBrowserState extends State<LocalFileBrowser> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback(
-      (_) => open(widget.initialPath),
+      (_) => open(widget.initialPath, initial: true),
     );
   }
 
@@ -128,11 +133,6 @@ class _LocalFileBrowserState extends State<LocalFileBrowser> {
     }
     super.dispose();
   }
-
-  List<Map> _entries(Map<Object?, Object?>? data) => [
-    ...(data?['folders'] as List? ?? const []).cast<Map>(),
-    ...(data?['files'] as List? ?? const []).cast<Map>(),
-  ];
 
   FocusNode _node(String path) => _nodes.putIfAbsent(path, () {
     final node = FocusNode();
@@ -159,7 +159,7 @@ class _LocalFileBrowserState extends State<LocalFileBrowser> {
     return null;
   }
 
-  Future<void> open(String? path, {String? restore}) async {
+  Future<void> open(String? path, {String? restore, bool initial = false}) async {
     if (!mounted || busy && folder != null) return;
     _attemptedPath = path;
     final generation = ++_generation;
@@ -184,16 +184,20 @@ class _LocalFileBrowserState extends State<LocalFileBrowser> {
           .invokeMapMethod<Object?, Object?>('browseLocalFiles', {
             'path': path,
             'kind': widget.kind.name,
+            'showHidden': widget.options.showHidden,
+            'initial': initial,
+            'startFolder': widget.options.start.name,
           });
       if (!mounted || generation != _generation) return;
       if (data == null) throw StateError('Missing folder');
       final oldNodes = _nodes;
       setState(() {
         folder = data;
-        _cachedEntries = _entries(data);
+        _cachedEntries = widget.options.entries(data);
         _nodes = {};
         busy = false;
       });
+      widget.onFolderOpened?.call(_path);
       WidgetsBinding.instance.addPostFrameCallback((_) {
         for (final node in oldNodes.values) {
           node.dispose();
@@ -276,7 +280,6 @@ class _LocalFileBrowserState extends State<LocalFileBrowser> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
-    final directories = (folder?['folders'] as List? ?? const []).cast<Map>();
     final entries = _cachedEntries;
     return PopScope<String>(
       canPop: !busy && _parent.isEmpty,
@@ -450,7 +453,7 @@ class _LocalFileBrowserState extends State<LocalFileBrowser> {
                   }
                   final entry = entries[index - 2];
                   final path = entry['path'] as String;
-                  final directory = index - 2 < directories.length;
+                  final directory = entry['directory'] == true;
                   return _FileBrowserRow(
                     key: ValueKey(path),
                     focusNode: _node(path),
@@ -467,7 +470,7 @@ class _LocalFileBrowserState extends State<LocalFileBrowser> {
                       return KeyEventResult.ignored;
                     },
                     name: entry['name'] as String,
-                    details: directory ? null : _fileDetails(entry),
+                    details: directory || !widget.options.showDetails ? null : _fileDetails(entry),
                     leading: Icon(
                       directory
                           ? Icons.folder_outlined

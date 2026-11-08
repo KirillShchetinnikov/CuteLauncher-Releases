@@ -8,7 +8,9 @@
     "catalog/inventories/formuler-z10-pro-max-android10-20261102.json",
     "catalog/inventories/formuler-z11-pro-max-user-adb-20261104.json",
     "catalog/inventories/tcl-g08-au04-20261104.json",
-    "catalog/inventories/tcl-g10-as16-20261104-update-http.json"
+    "catalog/inventories/tcl-g10-as16-20261104-update-http.json",
+    "catalog/inventories/tcl-g08-au04-20261107-weather-import.json",
+    "catalog/inventories/tcl-g08-au04-20261107-weather-read-error.json"
   ],
   "packages": {
     "android": {
@@ -28,7 +30,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "android.auto_generated_rro__": {
@@ -55,7 +59,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "android.auto_generated_rro_vendor__": {
@@ -69,7 +75,9 @@
       "observedOn": [
         "tcl-g08",
         "tcl-g10",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "android.autoinstalls.config.BRAND_NAME": {
@@ -97,7 +105,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "android.autoinstalls.config.sei": {
@@ -186,7 +196,9 @@
         "tcl-g08",
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ],
       "category": "user"
     },
@@ -199,7 +211,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ],
       "category": "preinstalled"
     },
@@ -215,7 +229,9 @@
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.app.cus.aging": {
@@ -247,7 +263,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.bluetooth": {
@@ -267,7 +285,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.bluetoothmidiservice": {
@@ -308,7 +328,9 @@
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.captiveportallogin": {
@@ -328,7 +350,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.certinstaller": {
@@ -348,7 +372,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.companiondevicemanager": {
@@ -368,7 +394,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.connectivity.resources": {
@@ -384,7 +412,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.cts.ctsshim": {
@@ -404,7 +434,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.cts.priv.ctsshim": {
@@ -424,7 +456,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.deskclock": {
@@ -452,7 +486,9 @@
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.documentsui": {
@@ -485,7 +521,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.dynsystem": {
@@ -505,7 +543,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.externalstorage": {
@@ -525,7 +565,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.federatedcompute.services": {
@@ -540,7 +582,9 @@
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.gallery3d": {
@@ -570,7 +614,9 @@
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.healthconnect.controller": {
@@ -585,7 +631,9 @@
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.hotspot2.osulogin": {
@@ -603,7 +651,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.htmlviewer": {
@@ -623,7 +673,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.inputdevices": {
@@ -643,7 +695,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.inputmethod.latin": {
@@ -671,7 +725,9 @@
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.keychain": {
@@ -691,7 +747,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.launcher3": {
@@ -725,7 +783,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.location.fused": {
@@ -745,7 +805,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.managedprovisioning": {
@@ -761,7 +823,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.modulemetadata": {
@@ -830,7 +894,9 @@
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.networkstack": {
@@ -847,7 +913,9 @@
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.networkstack.inprocess": {
@@ -894,7 +962,9 @@
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.networkstack.tethering.droidlogic": {
@@ -936,7 +1006,9 @@
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.overlay.modules.documentsui": {
@@ -981,7 +1053,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.permissioncontroller": {
@@ -1014,7 +1088,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.providers.calendar": {
@@ -1034,7 +1110,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.providers.contacts": {
@@ -1054,7 +1132,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.providers.contacts.auto_generated_rro_product__": {
@@ -1087,7 +1167,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.providers.downloads.ui": {
@@ -1122,7 +1204,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.providers.media.module": {
@@ -1140,7 +1224,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.providers.settings": {
@@ -1160,7 +1246,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.providers.settings.auto_generated_rro_product__": {
@@ -1173,7 +1261,9 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "tcl-g08",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.providers.settings.auto_generated_rro_vendor__": {
@@ -1187,7 +1277,9 @@
       "observedOn": [
         "tcl-g08",
         "tcl-g10",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.providers.tv": {
@@ -1207,7 +1299,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.providers.userdictionary": {
@@ -1227,7 +1321,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.proxyhandler": {
@@ -1247,7 +1343,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.rkpdapp": {
@@ -1262,7 +1360,9 @@
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.sdksandbox": {
@@ -1277,7 +1377,9 @@
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.se": {
@@ -1297,7 +1399,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.settings": {
@@ -1330,7 +1434,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.sharedstoragebackup": {
@@ -1350,7 +1456,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.shell": {
@@ -1370,7 +1478,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.soundpicker": {
@@ -1405,7 +1515,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.systemui": {
@@ -1425,7 +1537,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.systemui.auto_generated_rro_vendor__": {
@@ -1438,7 +1552,9 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "tcl-g08",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.tethering.overlay": {
@@ -1453,7 +1569,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.tethering.overlay.gsi": {
@@ -1468,7 +1586,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.tv.feedbackconsent": {
@@ -1483,7 +1603,9 @@
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.tv.frameworkpackagestubs": {
@@ -1499,7 +1621,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.tv.globalkeyhandler.overlay": {
@@ -1525,7 +1649,9 @@
       "observedOn": [
         "tcl-g08",
         "tcl-g10",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.tv.overlay.framework": {
@@ -1577,7 +1703,9 @@
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.tv.overlay.settingsprovider": {
@@ -1605,7 +1733,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.tv.sei.overlay.framework": {
@@ -1637,7 +1767,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.tv.settings.gms.resoverlay": {
@@ -1653,7 +1785,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.tv.settings.google.resoverlay": {
@@ -1668,7 +1802,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.tv.settings.mediatek.resoverlay.subatomic": {
@@ -1681,7 +1817,9 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "tcl-g08",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.tv.settings.vendor.resoverlay": {
@@ -1696,7 +1834,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.uwb.resources": {
@@ -1711,7 +1851,9 @@
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.vending": {
@@ -1730,7 +1872,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.virtualmachine.res": {
@@ -1745,7 +1889,9 @@
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.vpndialogs": {
@@ -1765,7 +1911,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.wallpaper.livepicker": {
@@ -1799,7 +1947,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.wallpapercropper": {
@@ -1839,7 +1989,9 @@
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.wifi.resources": {
@@ -1857,7 +2009,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.android.zdtd.service": {
@@ -1923,7 +2077,9 @@
         "formuler-z10-pro-max-android10-20261102",
         "tcl-g08",
         "tcl-g10",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ],
       "category": "user"
     },
@@ -1933,7 +2089,9 @@
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "kp1-yyz",
-        "tcl-g08"
+        "tcl-g08",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ],
       "category": "user"
     },
@@ -1947,7 +2105,9 @@
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "tcl-g08",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.dolby.android.audio.service": {
@@ -1962,7 +2122,9 @@
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.droid27.transparentclockweather": {
@@ -2149,7 +2311,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.google.android.apps.tv.dreamx": {
@@ -2164,7 +2328,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.google.android.apps.tv.launcherx": {
@@ -2180,7 +2346,9 @@
         "tcl-g10",
         "xiaomi-mitv-axfu0-android14-20261028",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.google.android.appsearch.apk": {
@@ -2193,7 +2361,9 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "tcl-g08",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.google.android.atv.widget": {
@@ -2277,7 +2447,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.google.android.ext.shared": {
@@ -2297,7 +2469,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.google.android.feedback": {
@@ -2315,7 +2489,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.google.android.gms": {
@@ -2334,7 +2510,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.google.android.gsf": {
@@ -2353,7 +2531,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.google.android.inputmethod.latin": {
@@ -2371,7 +2551,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.google.android.katniss": {
@@ -2390,7 +2572,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.google.android.landscape": {
@@ -2446,7 +2630,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.google.android.modulemetadata": {
@@ -2462,7 +2648,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.google.android.networkstack.tethering.google": {
@@ -2505,7 +2693,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.google.android.overlay.gtvsconfig": {
@@ -2532,7 +2722,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.google.android.overlay.gtvssettingsprovider": {
@@ -2547,7 +2739,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.google.android.overlay.modules.ext.services": {
@@ -2564,7 +2758,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.google.android.overlay.modules.modulemetadata.forframework": {
@@ -2580,7 +2776,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.google.android.overlay.modules.permissioncontroller": {
@@ -2597,7 +2795,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.google.android.overlay.modules.permissioncontroller.forframework": {
@@ -2614,7 +2814,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.google.android.packageinstaller": {
@@ -2632,7 +2834,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.google.android.partnersetup": {
@@ -2651,7 +2855,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.google.android.permissioncontroller": {
@@ -2669,7 +2875,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.google.android.play.games": {
@@ -2681,7 +2889,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ],
       "category": "preinstalled"
     },
@@ -2697,7 +2907,9 @@
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.google.android.sss.authbridge": {
@@ -2730,7 +2942,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.google.android.syncadapters.contacts": {
@@ -2774,7 +2988,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.google.android.tungsten.setupwraith": {
@@ -2793,7 +3009,9 @@
         "tcl-g10",
         "xiaomi-mitv-axfu0-android14-20261028",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.google.android.tv.axel": {
@@ -2874,7 +3092,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.google.android.tv.settings.energymodes.resoverlay": {
@@ -2889,7 +3109,9 @@
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.google.android.tvlauncher": {
@@ -2939,7 +3161,9 @@
       "observedOn": [
         "kp1-yyz",
         "tcl-g08",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ],
       "category": "preinstalled"
     },
@@ -2959,7 +3183,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.google.android.youtube.tv": {
@@ -2973,7 +3199,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ],
       "category": "preinstalled"
     },
@@ -2986,7 +3214,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ],
       "category": "preinstalled"
     },
@@ -3109,7 +3339,9 @@
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "tcl-g08",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.mediatek.airplaydaemon": {
@@ -3122,7 +3354,9 @@
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "tcl-g08",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.mediatek.android.tv.mdns.offload": {
@@ -3135,7 +3369,9 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "tcl-g08",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.mediatek.android.tv.mdns.offload.overlay": {
@@ -3148,7 +3384,9 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "tcl-g08",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.mediatek.backgrounddetection": {
@@ -3161,7 +3399,9 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "tcl-g08",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.mediatek.network": {
@@ -3174,7 +3414,9 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "tcl-g08",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.mediatek.speakerservice": {
@@ -3187,7 +3429,9 @@
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "tcl-g08",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.mediatek.support.webview": {
@@ -3200,7 +3444,9 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "tcl-g08",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.miracastsink": {
@@ -3335,7 +3581,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ],
       "category": "preinstalled"
     },
@@ -3352,7 +3600,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.opengapps.atvoverlay": {
@@ -3422,7 +3672,9 @@
       "observedOn": [
         "kp1-yyz",
         "tcl-g08",
-        "tcl-g10"
+        "tcl-g10",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ],
       "category": "preinstalled"
     },
@@ -3782,7 +4034,9 @@
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "tcl-g08",
-        "tcl-g10"
+        "tcl-g10",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ],
       "category": "user"
     },
@@ -3792,7 +4046,9 @@
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "kp1-yyz",
-        "tcl-g08"
+        "tcl-g08",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ],
       "category": "user"
     },
@@ -3821,7 +4077,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.tcl.airplay2": {
@@ -3836,7 +4094,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.tcl.android.webview": {
@@ -3864,7 +4124,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.tcl.channelplus": {
@@ -3879,7 +4141,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.tcl.dashboard": {
@@ -3908,7 +4172,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.tcl.eva": {
@@ -3921,7 +4187,9 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "tcl-g08",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.tcl.exhibit": {
@@ -3936,7 +4204,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.tcl.factory.view": {
@@ -3951,7 +4221,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.tcl.gamebar": {
@@ -3966,7 +4238,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.tcl.globalkeyoverlay": {
@@ -3981,7 +4255,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.tcl.guard": {
@@ -3997,7 +4273,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.tcl.hearaid": {
@@ -4012,7 +4290,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.tcl.hotelmenu": {
@@ -4027,7 +4307,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.tcl.initsetup": {
@@ -4042,7 +4324,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.tcl.inputmethod.international": {
@@ -4057,7 +4341,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.tcl.interactive": {
@@ -4072,7 +4358,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.tcl.logkit": {
@@ -4087,7 +4375,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.tcl.magiconnectfree": {
@@ -4116,7 +4406,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.tcl.miracast": {
@@ -4145,7 +4437,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.tcl.overlay.frameworkres": {
@@ -4159,7 +4453,9 @@
       "observedOn": [
         "tcl-g08",
         "tcl-g10",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.tcl.partnercustomizer": {
@@ -4174,7 +4470,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.tcl.providers.config": {
@@ -4189,7 +4487,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.tcl.repairguide": {
@@ -4204,7 +4504,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.tcl.smartalexa": {
@@ -4232,7 +4534,9 @@
       "observedOn": [
         "tcl-g08",
         "tcl-g10",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.tcl.suspension": {
@@ -4247,7 +4551,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.tcl.systemserver": {
@@ -4262,7 +4568,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.tcl.systemui.plugin": {
@@ -4276,7 +4584,9 @@
       "observedOn": [
         "tcl-g08",
         "tcl-g10",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.tcl.t_solo": {
@@ -4291,7 +4601,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.tcl.ttvs": {
@@ -4306,7 +4618,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.tcl.tv": {
@@ -4321,7 +4635,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.tcl.tv.overlay": {
@@ -4334,7 +4650,9 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "tcl-g08",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.tcl.tv.tclhome_passive": {
@@ -4349,7 +4667,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.tcl.tvinput": {
@@ -4364,7 +4684,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.tcl.ui_mediaCenter": {
@@ -4379,7 +4701,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.tcl.useragreement": {
@@ -4394,7 +4718,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.tcl.usercenter": {
@@ -4409,7 +4735,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.tcl.waterfall.overseas": {
@@ -4424,7 +4752,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.tcl.webview": {
@@ -4437,7 +4767,9 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "tcl-g08",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.topjohnwu.magisk": {
@@ -4464,7 +4796,9 @@
       "observedOn": [
         "tcl-g08",
         "tcl-g10",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.tvos": {
@@ -4479,7 +4813,9 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "com.ugoos.suggestions": {
@@ -4617,7 +4953,9 @@
         "unknown-update-20261102",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ],
       "category": "user"
     },
@@ -4738,7 +5076,9 @@
       "observedOn": [
         "tcl-g08",
         "tcl-g10",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ],
       "category": "user"
     },
@@ -4749,7 +5089,9 @@
       "observedOn": [
         "google-tanix-w2-android11-20261101",
         "tcl-g08",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ],
       "category": "preinstalled"
     },
@@ -4791,7 +5133,9 @@
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "kp1-yyz",
-        "tcl-g08"
+        "tcl-g08",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ],
       "category": "preinstalled"
     },
@@ -4822,7 +5166,9 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
-        "tcl-g08"
+        "tcl-g08",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ],
       "category": "preinstalled"
     },
@@ -4875,7 +5221,9 @@
         "kp1-yyz",
         "tcl-g08",
         "tcl-g10",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ],
       "category": "preinstalled"
     },
@@ -4921,7 +5269,9 @@
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "tcl-g08",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ],
       "category": "user"
     },
@@ -4961,7 +5311,9 @@
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "kp1-yyz",
-        "tcl-g08"
+        "tcl-g08",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ],
       "category": "preinstalled"
     },
@@ -4975,7 +5327,9 @@
         "tcl-g08",
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ],
       "category": "preinstalled"
     },
@@ -4999,7 +5353,9 @@
       "observedOn": [
         "kp1-yyz",
         "tcl-g08",
-        "tcl-g10"
+        "tcl-g10",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ],
       "category": "preinstalled"
     },
@@ -5262,7 +5618,9 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "tcl-g08",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
     "tv.samba.ssm.ui": {
@@ -5283,7 +5641,9 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
-        "tcl-g08"
+        "tcl-g08",
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ],
       "category": "user"
     },
@@ -5581,6 +5941,19 @@
       "source": "catalog/inventories/tcl-g10-as16-20261104-update-http.json (presence only)",
       "observedOn": [
         "tcl-g10-as16-20261104-update-http"
+      ]
+    },
+    "com.github.dimzon.smartrutube.beta": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories (presence only)",
+      "observedOn": [
+        "tcl-g08-au04-20261107-weather-import",
+        "tcl-g08-au04-20261107-weather-read-error"
       ]
     }
   }

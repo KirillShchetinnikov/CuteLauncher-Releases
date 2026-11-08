@@ -41,15 +41,17 @@ void main() {
     final lastName = AppLocalizations.of(
       tester.element(find.byType(AccentColorPage)),
     )!.colorIceBlue;
+    bool lastHasFocus() => find.text(lastName).evaluate().isNotEmpty &&
+        Focus.of(tester.element(find.text(lastName))).hasFocus;
     for (
       var index = 0;
-      index < 60 && FocusManager.instance.primaryFocus?.debugLabel != lastName;
+      index < 60 && !lastHasFocus();
       index++
     ) {
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
       await tester.pumpAndSettle();
     }
-    expect(FocusManager.instance.primaryFocus?.debugLabel, lastName);
+    expect(lastHasFocus(), isTrue);
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
     expect(settings.accentColorHex, ACCENT_COLOR_ICE_BLUE);
