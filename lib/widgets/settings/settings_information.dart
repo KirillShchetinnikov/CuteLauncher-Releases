@@ -90,7 +90,54 @@ class SettingsControlHint extends StatelessWidget {
     return _InformationBody(
       icon: Icons.settings_remote_outlined,
       surface: true,
-      child: Text.rich(TextSpan(children: spans)),
+      compact: true,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final inherited = DefaultTextStyle.of(context);
+          final style = inherited.style.copyWith(
+            fontSize: SettingsInfoTokens.controlHintFontSize,
+            height: inherited.style.fontFamily == 'Manrope' ? 1.5 : 1.3,
+          );
+          final scaler = MediaQuery.textScalerOf(context);
+          final painter = TextPainter(
+            textDirection: Directionality.of(context),
+            textScaler: scaler,
+            locale: Localizations.maybeLocaleOf(context),
+            textHeightBehavior: inherited.textHeightBehavior,
+            maxLines: SettingsInfoTokens.controlHintLines,
+          );
+          bool fits(double size) {
+            painter.text = TextSpan(
+              style: style.copyWith(fontSize: size),
+              children: spans,
+            );
+            painter.layout(maxWidth: constraints.maxWidth);
+            return !painter.didExceedMaxLines;
+          }
+
+          // Fit the full translation rather than clipping long instructions.
+          var size = SettingsInfoTokens.controlHintFontSize;
+          if (!fits(size)) {
+            var lower = 0.0, upper = size;
+            for (var i = 0; i < 12; i++) {
+              final candidate = (lower + upper) / 2;
+              if (fits(candidate)) {
+                lower = candidate;
+              } else {
+                upper = candidate;
+              }
+            }
+            size = lower;
+          }
+          painter.dispose();
+          return Text.rich(
+            TextSpan(children: spans),
+            style: style.copyWith(fontSize: size),
+            textScaler: scaler,
+            maxLines: SettingsInfoTokens.controlHintLines,
+          );
+        },
+      ),
     );
   }
 }
@@ -102,12 +149,14 @@ class _InformationBody extends StatelessWidget {
     required this.child,
     this.iconColor,
     this.liveRegion = false,
+    this.compact = false,
   });
 
   final IconData icon;
   final Color? iconColor;
   final bool surface;
   final bool liveRegion;
+  final bool compact;
   final Widget child;
 
   @override
@@ -117,7 +166,9 @@ class _InformationBody extends StatelessWidget {
       container: true,
       liveRegion: liveRegion,
       child: Padding(
-        padding: SettingsInfoTokens.margin,
+        padding: compact
+            ? SettingsInfoTokens.controlHintMargin
+            : SettingsInfoTokens.margin,
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: surface
@@ -129,18 +180,26 @@ class _InformationBody extends StatelessWidget {
             borderRadius: BorderRadius.circular(SettingsInfoTokens.radius),
           ),
           child: Padding(
-            padding: SettingsInfoTokens.padding,
+            padding: compact
+                ? SettingsInfoTokens.controlHintPadding
+                : SettingsInfoTokens.padding,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ExcludeSemantics(
                   child: Icon(
                     icon,
-                    size: SettingsInfoTokens.iconSize,
+                    size: compact
+                        ? SettingsInfoTokens.controlHintIconSize
+                        : SettingsInfoTokens.iconSize,
                     color: iconColor ?? colors.onSurface,
                   ),
                 ),
-                const SizedBox(width: SettingsInfoTokens.gap),
+                SizedBox(
+                  width: compact
+                      ? SettingsInfoTokens.controlHintGap
+                      : SettingsInfoTokens.gap,
+                ),
                 Expanded(child: child),
               ],
             ),

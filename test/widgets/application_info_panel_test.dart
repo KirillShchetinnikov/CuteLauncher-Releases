@@ -889,6 +889,7 @@ Future<void> _pumpWidgetWithProviders(
       .thenAnswer((_) async => Uint8List(0));
 
   final settings = MockSettingsService();
+  when(settings.accentColorHex).thenReturn(ACCENT_COLOR_PURPLE);
   when(settings.settingsMenuOnRight).thenReturn(onRight ?? false);
   when(settings.appKeyClickEnabled).thenReturn(false);
   Widget info() =>

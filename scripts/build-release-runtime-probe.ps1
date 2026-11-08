@@ -7,7 +7,7 @@ if (-not $JavaHome) { throw 'Specify a JDK 21 installation.' }
 Invoke-ReleaseSigning -JavaHome $JavaHome -Action {
     & '.tools/flutter-upgrade/bin/flutter.bat' build apk --no-pub --release `
         --target=test/device/release_runtime_probe.dart `
-        --target-platform=android-arm,android-arm64,android-x64
+        --target-platform=android-x64
     if ($LASTEXITCODE) { throw 'Release runtime probe build failed.' }
     New-Item -ItemType Directory -Force '.local/device-probes' | Out-Null
     Copy-Item -LiteralPath 'build/app/outputs/flutter-apk/app-release.apk' `

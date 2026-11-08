@@ -118,6 +118,7 @@ class _LauncherSectionsPanelPageState extends State<LauncherSectionsPanelPage> {
     final settingsService = Provider.of<SettingsService?>(context);
 
     return SettingsPageLayout(
+      footer: SettingsControlHint(text: localizations.reorderSectionsHint),
       title: Text(
         localizations.launcherSections,
         style: Theme.of(context).textTheme.titleLarge,
@@ -185,7 +186,6 @@ class _LauncherSectionsPanelPageState extends State<LauncherSectionsPanelPage> {
                       ? null
                       : () => _resetSections(settingsService),
                 ),
-                SettingsControlHint(text: localizations.reorderSectionsHint),
                 SettingsHelp(
                   title: localizations.sectionsAndOrder,
                   text: localizations.sectionRulesHelp,

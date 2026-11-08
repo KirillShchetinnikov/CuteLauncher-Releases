@@ -318,10 +318,10 @@ void main() {
       await tester.pumpAndSettle();
       expect(
         appearance.appearance.settingsScrollbarMode,
-        SettingsScrollbarMode.always,
+        SettingsScrollbarMode.onScroll,
       );
       expect(appearance.appearance.number('settingsOpacity'), 1);
-      expect(appearance.appearance.number('settingsTextSize'), 18);
+      expect(appearance.appearance.number('settingsTextSize'), 16);
       expect(appearance.appearance.number('noticeOpacity'), .7);
       expect(appearance.appearance.horizontalGap, 0);
       expect(tester.takeException(), isNull);

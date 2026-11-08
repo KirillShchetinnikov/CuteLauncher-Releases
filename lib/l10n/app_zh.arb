@@ -1920,5 +1920,6 @@
   "weatherTemplateUnknownError": "未知代码：",
   "weatherTemplateBreakError": "只允许一个换行。",
   "weatherTemplateValueError": "请至少添加一个天气代码。",
-  "weatherTemplateLengthError": "格式过长：最多2048个字符和64个元素。"
+  "weatherTemplateLengthError": "格式过长：最多2048个字符和64个元素。",
+  "sectionTitleSize": "分区标题大小"
 }

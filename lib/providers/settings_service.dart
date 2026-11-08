@@ -231,7 +231,7 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
       _appHighlightAnimationEnabledKey, _appSelectorTransitionAnimationEnabledKey,
       _timeBasedWallpaperEnabledKey, _screensaverClockStyleKey, 'settings_menu_on_right', 'panel_tooltips_enabled', 'background_source', 'wallpaper_fit',
       'wallpaper_brightness', 'wallpaper_saturation', 'wallpaper_dimming', landscapeSettingsKey]) {
-      await _sharedPreferences.remove(key);
+      await _resetAppearancePreference(key);
     }
     await _sharedPreferences.setString('background_source', 'landscape');
     await _sharedPreferences.setString(landscapeSettingsKey, LauncherDefaults.landscape.encode());
@@ -252,13 +252,26 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
       'panel' => ['auto_hide_app_bar'],
       _ => <String>[],
     };
-    for (final key in keys) { await _sharedPreferences.remove(key); }
+    for (final key in keys) { await _resetAppearancePreference(key); }
     if (section == 'background') {
       await _sharedPreferences.setString('background_source', 'landscape');
       await _sharedPreferences.setString(landscapeSettingsKey, LauncherDefaults.landscape.encode());
     }
     reload();
     notifyListeners();
+  }
+
+  // Apply the current profile only on explicit reset, never while reading old data.
+  Future<void> _resetAppearancePreference(String key) async {
+    final value = LauncherDefaults.preferences[key];
+    final saved = switch (value) {
+      String v => await _sharedPreferences.setString(key, v),
+      bool v => await _sharedPreferences.setBool(key, v),
+      int v => await _sharedPreferences.setInt(key, v),
+      double v => await _sharedPreferences.setDouble(key, v),
+      _ => await _sharedPreferences.remove(key),
+    };
+    if (!saved) throw StateError('Unable to reset appearance preference');
   }
 
   bool get hideHighlightOutlineOnHomescreen => _hideHighlightOutlineOnHomescreen;

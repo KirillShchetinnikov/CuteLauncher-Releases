@@ -280,4 +280,4 @@ ChangeNotifierProvider<SettingsService>.value(value: MockSettingsService()..stub
   await tester.pumpAndSettle();
 }
 
-extension on MockSettingsService { void stubHide() { when(settingsMenuOnRight).thenReturn(false); when(hideLauncherTile).thenReturn(false); when(appKeyClickEnabled).thenReturn(false); } }
+extension on MockSettingsService { void stubHide() { when(accentColorHex).thenReturn(ACCENT_COLOR_PURPLE); when(settingsMenuOnRight).thenReturn(false); when(hideLauncherTile).thenReturn(false); when(appKeyClickEnabled).thenReturn(false); } }

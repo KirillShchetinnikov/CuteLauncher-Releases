@@ -436,6 +436,15 @@ void main() {
           ? tester.getTopRight(finder).dx
           : tester.getTopLeft(finder).dx;
       final title = find.text('My section');
+      expect(tester.widget<Text>(title).style!.fontSize,
+          Theme.of(tester.element(title)).textTheme.titleLarge!.fontSize);
+      await appearance.set('sectionTitleSize', 30);
+      await tester.pumpAndSettle();
+      expect(tester.widget<Text>(title).style!.fontSize, 30);
+      await appearance.setCategoryTile(section.id, 'sectionTitleSize', 40);
+      await appearance.set('sectionTitleSize', 28);
+      await tester.pumpAndSettle();
+      expect(tester.widget<Text>(title).style!.fontSize, 40);
       final tile = find.byKey(const ValueKey('aligned.app'));
       final oldTitle = start(title);
       final oldTile = start(tile);
@@ -455,6 +464,7 @@ void main() {
       await tester.pumpAndSettle();
       expect((start(title) - oldTitle).abs(), closeTo(24, .01));
       expect((start(title) - start(tile)).abs(), greaterThan(1));
+      expect(tester.takeException(), isNull);
     });
   }
 
@@ -471,7 +481,7 @@ void main() {
     for (final entry in <String, dynamic>{'sectionTitles': true, 'sectionIcons': true,
       'size': 96, 'horizontalGap': 34, 'labelSize': 16, 'labelColor': 0xffffd54f,
       'radius': 20, 'sectionPadding': 24, 'sectionBackground': 0xff123456,
-      'sectionOpacity': .35, 'sectionRadius': 32}.entries) {
+      'sectionOpacity': .35, 'sectionRadius': 32, 'sectionTitleSize': 40}.entries) {
       await appearance.setCategoryTile(group.id, entry.key, entry.value);
     }
     final feedSettings = SettingsService(prefs);
@@ -488,6 +498,7 @@ void main() {
         feeds: feeds, appearance: appearance);
     expect(find.text('My recommendations'), findsNothing);
     expect(find.text('Feed 1 · video.app'), findsOneWidget);
+    expect(tester.widget<Text>(find.text('Feed 1 · video.app')).style!.fontSize, 40);
     expect(find.byIcon(Icons.video_library_outlined), findsNothing);
     final container = tester.widget<Container>(find.byKey(const ValueKey('app-channels-group')));
     final decoration = container.decoration! as BoxDecoration;

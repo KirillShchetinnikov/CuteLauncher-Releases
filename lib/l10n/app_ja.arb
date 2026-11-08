@@ -1920,5 +1920,6 @@
   "weatherTemplateUnknownError": "不明なコード:",
   "weatherTemplateBreakError": "改行は1つだけ使用できます。",
   "weatherTemplateValueError": "天気コードを1つ以上追加してください。",
-  "weatherTemplateLengthError": "形式が長すぎます。最大2048文字、64要素です。"
+  "weatherTemplateLengthError": "形式が長すぎます。最大2048文字、64要素です。",
+  "sectionTitleSize": "セクション見出しのサイズ"
 }

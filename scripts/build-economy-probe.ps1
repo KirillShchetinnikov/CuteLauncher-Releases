@@ -10,8 +10,9 @@ if (Test-Path -LiteralPath ".local/economy-probe/probe-$BuildNumber.apk") { thro
 if (-not $JavaHome) { throw 'Set JAVA_HOME to JDK 21.' }
 . "$PSScriptRoot/release-signing.ps1"
 Invoke-ReleaseSigning -JavaHome $JavaHome -Action {
+    $probePlatforms = if ($AllowTcl) { 'android-arm,android-arm64' } else { 'android-x64' }
     & '.tools/flutter-upgrade/bin/flutter.bat' build apk --release `
-        --target-platform=android-arm,android-arm64,android-x64 `
+        "--target-platform=$probePlatforms" `
         --target=test/device/economy_probe.dart "--build-number=$BuildNumber" `
         --dart-define=CUTE_PERFORMANCE_PROBE=true "--dart-define=ALLOW_TCL_PROBE=$($AllowTcl.IsPresent.ToString().ToLowerInvariant())"
     if ($LASTEXITCODE -ne 0) { throw 'Economy probe build failed.' }

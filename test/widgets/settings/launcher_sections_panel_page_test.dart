@@ -70,6 +70,7 @@ void main() {
 
       final hint = find.text(l.reorderSectionsHint);
       expect(hint, findsOneWidget);
+      expect(find.ancestor(of: hint, matching: find.byType(Scrollable)), findsNothing);
       expect(find.textContaining(l.sectionRulesHelp), findsNothing);
       expect(
         find.ancestor(of: hint, matching: find.byType(SettingsHelp)),

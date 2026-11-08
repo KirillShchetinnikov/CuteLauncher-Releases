@@ -5649,4 +5649,7 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String get weatherTemplateLengthError =>
       'Формат задовгий: до 2048 символів і 64 елементів.';
+
+  @override
+  String get sectionTitleSize => 'Розмір заголовка розділу';
 }

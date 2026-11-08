@@ -2,6 +2,14 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
+## v1.7.1 — 2026-11-08
+
+- Added shared and per-section title size settings, from 12 to 40.
+- Fixed accent colour updates: open panels now apply a newly selected colour immediately.
+- Remote instructions stay pinned to the bottom of settings and remain visible while scrolling. Compact text fits in at most three lines.
+- Updated the first-run profile: Standard style, Medeo Sans, an orange accent, tile labels off, spacing of 6, and enlarged tiles with glow. Updating preserves existing settings, including earlier defaults that were never selected manually.
+- Reduced APK size without removing landscapes or fonts. Universal now contains ARMv7 and ARM64; a separate APK is available for x86_64.
+
 ## v1.7.0 — 2026-11-08
 
 - Redesigned settings: long pages are divided into related groups. Added Accent strip and Shared surface group styles.

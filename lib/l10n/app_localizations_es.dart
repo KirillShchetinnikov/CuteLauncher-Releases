@@ -5685,4 +5685,7 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get weatherTemplateLengthError =>
       'El formato es demasiado largo: hasta 2048 caracteres y 64 elementos.';
+
+  @override
+  String get sectionTitleSize => 'Tamaño del título de sección';
 }

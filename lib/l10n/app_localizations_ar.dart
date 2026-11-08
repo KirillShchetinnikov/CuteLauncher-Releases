@@ -5592,4 +5592,7 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get weatherTemplateLengthError =>
       'التنسيق طويل جدًا: الحد الأقصى 2048 حرفًا و64 عنصرًا.';
+
+  @override
+  String get sectionTitleSize => 'حجم عنوان القسم';
 }

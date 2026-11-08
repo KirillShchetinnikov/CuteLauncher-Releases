@@ -76,7 +76,8 @@ button mappings, and backups are divided by purpose. Short menus and app
 lists keep their simple layout. In the section list, panel object ordering, and
 the TV cleaner app list, headings have a divider that starts after the text.
 Visible and hidden sleep timer presets use the same separation.
-Remote instructions appear as compact guides with highlighted button names.
+Remote instructions stay pinned to the bottom of the settings panel while
+the list scrolls. Compact guides take at most three lines and highlight button names.
 Sizes, counts, and dates have labels; states and errors appear as separate
 messages beside the relevant setting. Empty lists have an icon and a short
 message. Detailed explanations remain in collapsed help.
@@ -86,11 +87,16 @@ The row material and focus color stay the same. Your group appearance choice
 is included in appearance backups; resetting the settings style restores
 **Shared surface**.
 
-Clean installations start with Glass, an adaptive landscape, tile labels,
-and a grid of up to three visible rows of six apps. All Apps and nonempty feeds
+Clean installations start with Standard style, Medeo Sans, an orange accent,
+and an adaptive landscape. Settings open on the left in an opaque dark grey panel.
+Tile labels are off; section titles and icons are on. Tile spacing is 6, and
+focused tiles grow by 20% with a pulsing glow coloured from the image.
+The grid shows up to three visible rows of six apps. All Apps and nonempty feeds
 are visible. The clock and date work immediately; weather needs a selected city.
 The timer shows 10, 30, 60, 90, and 120 minutes. Updating does not apply this
-profile over your settings. Explicit appearance, category, and timer resets
+profile over your settings, including earlier defaults you never selected manually.
+An explicit appearance reset restores the new starting style.
+Appearance, category, and timer resets
 affect only their own scope; resetting local appearance restores shared values.
 
 ## Home screen and categories
@@ -106,7 +112,7 @@ reaches the top panel.
 
 Path: **Home screen → Categories and order**.
 
-The button instructions for moving sections are always shown below the list actions.
+The button instructions for moving sections stay pinned to the bottom of the panel.
 General information about sections opens separately in collapsed help.
 
 Create, rename, and delete categories; add apps; reorder apps and categories;
@@ -136,7 +142,11 @@ available directly in the category appearance editor. Find **Align section title
 with tiles** under **Home screen → Appearance → Sections** and in the appearance
 settings for an individual section. When enabled, the title starts at the tile
 edge and moves with the tiles when you adjust padding. Titles use edge alignment
-by default. Colored category backgrounds
+by default. **Section title size** in the same settings lets you choose a size
+from 12 to 40 (default 24), shared across sections or overridden for an individual
+section, including App feeds. Continue Watching uses the shared size. When
+titles are hidden, the control is disabled and the saved size is kept.
+Colored category backgrounds
 have Background opacity (0–100%) and Corner radius (0–64) sliders. Adjust them
 for all categories in the home appearance settings or for one category, including
 App feeds. Opacity affects only the background; icons and text keep their brightness.
@@ -285,7 +295,7 @@ the focused row with an accent-coloured outline and tint. Selection marks,
 active switches and sliders also use the chosen accent; the existing styles keep
 their surfaces and accent-coloured focus. They change panel materials, buttons, focus, switches and sliders
 while preserving placement, dimensions and remote control. Custom colours and
-transparency remain. Clean installations start with Glass; updates preserve existing appearance. Choose fonts separately
+transparency remain. Clean installations start with Standard style and Medeo Sans; updates preserve existing appearance. Choose fonts separately
 for the interface, top panel and clock: Medeo Sans, Medeo Mono, Medeo Serif, Google Sans, Onest, Manrope, Outfit or
 the system font; the panel and clock also retain their earlier families.
 Only fonts supporting the current interface language are listed. For example,

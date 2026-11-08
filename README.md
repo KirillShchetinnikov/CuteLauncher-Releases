@@ -129,7 +129,7 @@ Open-Meteo, MET Norway, OpenWeather и Яндекс с требованиями 
 
 Скачайте APK из [последнего релиза](https://github.com/KirillShchetinnikov/CuteLauncher-Releases/releases/latest)
 и установите его на телевизор или приставку. Доступны ARMv7, ARM64, x86_64
-и universal; если архитектура неизвестна, можно выбрать universal.
+и universal. Universal включает ARMv7 и ARM64; для x86_64 нужен отдельный APK.
 Android может потребовать разрешение установки из выбранного источника.
 
 Требуется **Android 9 или новее**. Выбор домашнего приложения, Home, ADB, наложения,

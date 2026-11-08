@@ -136,6 +136,7 @@ void main() {
         await tester.pumpAndSettle();
         expect(find.byType(AppChannelsOrderPage), findsOneWidget);
         final hint = find.text(l.backgroundInformationOrderHint);
+        expect(find.ancestor(of: hint, matching: find.byType(Scrollable)), findsNothing);
         await tester.scrollUntilVisible(hint, 160);
         await tester.pumpAndSettle();
         expect(hint.hitTestable(), findsOneWidget);

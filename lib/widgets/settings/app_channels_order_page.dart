@@ -84,6 +84,7 @@ class _AppChannelsOrderPageState extends State<AppChannelsOrderPage> {
         if (!didPop && _moving != null) setState(() => _moving = null);
       },
       child: SettingsPageLayout(
+        footer: SettingsControlHint(text: l.backgroundInformationOrderHint),
         title: Text('${l.reorder} · ${l.appChannelsTitle}'),
         child: ListView(
           children: [
@@ -163,7 +164,6 @@ class _AppChannelsOrderPageState extends State<AppChannelsOrderPage> {
                 },
               ),
             // Active remote-control instructions stay visible, like section order.
-            SettingsControlHint(text: l.backgroundInformationOrderHint),
           ],
         ),
       ),

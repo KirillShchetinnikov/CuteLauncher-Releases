@@ -81,12 +81,25 @@ jobs:
           RELEASE_VERSION: ${{ steps.metadata.outputs.version }}
           RELEASE_BUILD: ${{ steps.metadata.outputs.build }}
         run: |
-          flutter build apk --release --target-platform=android-arm,android-arm64,android-x64 --dart-define=BUILD_COMMIT="$(git rev-parse --short=12 HEAD)"
+          flutter build apk --release --target-platform=android-arm,android-arm64 --split-debug-info=debug-symbols --dart-define=BUILD_COMMIT="$(git rev-parse --short=12 HEAD)"
           mkdir unsigned-apks
-          for abi in universal armeabi-v7a arm64-v8a x86_64; do
+          for abi in universal armeabi-v7a arm64-v8a; do
             cp "build/app/outputs/apk/release/CuteLauncher-$RELEASE_VERSION-$abi-release.apk" unsigned-apks/
           done
+          flutter build apk --release --split-per-abi --target-platform=android-x64 --split-debug-info=debug-symbols --dart-define=BUILD_COMMIT="$(git rev-parse --short=12 HEAD)"
+          cp "build/app/outputs/apk/release/CuteLauncher-$RELEASE_VERSION-x86_64-release.apk" unsigned-apks/
           python3 .github/scripts/verify_apks.py unsigned-apks "$RELEASE_VERSION" "$RELEASE_BUILD"
+          for target in android-arm android-arm64 android-x64; do
+            test -s "debug-symbols/app.$target.symbols"
+          done
+          printf 'version=%s\nbuild=%s\ncommit=%s\n' "$RELEASE_VERSION" "$RELEASE_BUILD" "$GITHUB_SHA" > debug-symbols/build.txt
+          sha256sum unsigned-apks/*.apk debug-symbols/*.symbols > debug-symbols/SHA256SUMS
+      - uses: actions/upload-artifact@v7.0.2
+        with:
+          name: dart-debug-symbols
+          path: debug-symbols/
+          if-no-files-found: error
+          retention-days: 90
       - uses: actions/upload-artifact@v7.0.2
         with:
           name: unsigned-apks

@@ -20,7 +20,7 @@ class ApkVerificationTests(unittest.TestCase):
         self.apks.mkdir()
         (self.root / 'sdk/build-tools/36.0.0').mkdir(parents=True)
         for abi in ('universal', *sorted(module.ABIS)):
-            self.write_apk(abi, module.ABIS if abi == 'universal' else {abi})
+            self.write_apk(abi, module.UNIVERSAL_ABIS if abi == 'universal' else {abi})
 
     def write_apk(self, abi, abis):
         with ZipFile(self.apks / f'CuteLauncher-1.2.3-{abi}-release.apk', 'w') as archive:
@@ -48,6 +48,13 @@ class ApkVerificationTests(unittest.TestCase):
         next(self.apks.glob('*.apk')).unlink()
         with self.assertRaisesRegex(ValueError, 'APK names'):
             module.check_files(self.apks, '1.2.3')
+
+    def test_universal_rejects_x64_and_missing_arm(self):
+        for abis in ({'armeabi-v7a', 'arm64-v8a', 'x86_64'}, {'arm64-v8a'}):
+            with self.subTest(abis=abis):
+                self.write_apk('universal', abis)
+                with self.assertRaisesRegex(ValueError, 'ABI composition'):
+                    module.check_files(self.apks, '1.2.3')
 
     def test_wrong_metadata_and_certificate_are_rejected(self):
         for field in ('application-id', 'version-name', 'version-code', 'certificate'):

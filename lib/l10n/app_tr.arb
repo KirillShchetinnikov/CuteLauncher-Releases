@@ -1920,5 +1920,6 @@
   "weatherTemplateUnknownError": "Bilinmeyen kod:",
   "weatherTemplateBreakError": "Yalnızca bir satır sonuna izin verilir.",
   "weatherTemplateValueError": "En az bir hava durumu kodu ekleyin.",
-  "weatherTemplateLengthError": "Biçim çok uzun: en fazla 2048 karakter ve 64 öğe."
+  "weatherTemplateLengthError": "Biçim çok uzun: en fazla 2048 karakter ve 64 öğe.",
+  "sectionTitleSize": "Bölüm başlığı boyutu"
 }

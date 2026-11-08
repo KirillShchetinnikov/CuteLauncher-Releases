@@ -511,7 +511,7 @@ void main() {
     }, exported);
     expect(invalid.containsKey(landscapeSettingsKey), false);
     await settings.resetAppearanceSection('background');
-    expect(settings.landscape.motion, false);
+    expect(settings.landscape.motion, true);
     expect(settings.landscape.variant, 'realistic');
   });
 }

@@ -39,7 +39,7 @@
         960,
         540
       ],
-      "sha256": "2946c6df5d4df85bc4f89c1441925b300403e9ab7b97f5e770db297d46fbb0b2"
+      "sha256": "17c22140096b994924b1cd3dd10cb9b47a40d1808787b872378c221ee1f0a129"
     },
     {
       "name": "settings-list-headings-rtl-large",
@@ -55,7 +55,7 @@
         960,
         540
       ],
-      "sha256": "e6bce2b87946ff9f39e62175d7acd7d61e66efeeb2de3023efdd1aa729f2cea6"
+      "sha256": "c2fb07a814845295f070df5c8a5c755d1dee0a608c16b98b1eacfabeb73201c3"
     },
     {
       "name": "settings-list-headings-panel-order",
@@ -71,7 +71,7 @@
         960,
         540
       ],
-      "sha256": "47a0bccad9eaf69479a184864e7f749761e58897803cc06a731e3266324e8e80"
+      "sha256": "82c62684e64789ae40fb00005856e8ec79ea77c0999371a8acc633694f6e4a97"
     },
     {
       "name": "settings-accent-glass",
@@ -1111,7 +1111,7 @@
         960,
         540
       ],
-      "sha256": "38745499c23d36bf3effa270acbb51f14d2945a43e4b9cf7813c91e0cf9b9d63",
+      "sha256": "28b6666bf3d9fc951413e26f99427fca97c8fc1fa5f29f18870cd69d66a9f515",
       "bottom": true
     }
   ]

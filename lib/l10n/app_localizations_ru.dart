@@ -5643,4 +5643,7 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get weatherTemplateLengthError =>
       'Формат слишком длинный: до 2048 символов и 64 элементов.';
+
+  @override
+  String get sectionTitleSize => 'Размер заголовка раздела';
 }

@@ -269,7 +269,9 @@ class _AppContentRowState extends State<AppContentRow> {
                   ),
                   child: Text(
                     '${widget.channel.name} · ${widget.channel.appName}',
-                    style: Theme.of(context).textTheme.titleLarge,
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontSize: style.number('sectionTitleSize'),
+                    ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),

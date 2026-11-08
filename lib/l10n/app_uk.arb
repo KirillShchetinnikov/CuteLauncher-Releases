@@ -1920,5 +1920,6 @@
   "weatherTemplateUnknownError": "Невідоме позначення:",
   "weatherTemplateBreakError": "Дозволено лише один перенос рядка.",
   "weatherTemplateValueError": "Додайте хоча б одне позначення погоди.",
-  "weatherTemplateLengthError": "Формат задовгий: до 2048 символів і 64 елементів."
+  "weatherTemplateLengthError": "Формат задовгий: до 2048 символів і 64 елементів.",
+  "sectionTitleSize": "Розмір заголовка розділу"
 }

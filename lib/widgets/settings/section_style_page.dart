@@ -113,6 +113,9 @@ class SectionStylePage extends StatelessWidget {
         title: l.settingsGroupHeadings,
         children: [
           toggle('sectionTitles', l.showSectionTitles, a.sectionTitles),
+          number('sectionTitleSize', l.sectionTitleSize, a.sectionTitleSize, [
+            for (var n = 12; n <= 40; n++) n,
+          ]),
           if (includeIcons)
             toggle('sectionIcons', l.homeSectionIcons, a.sectionIcons),
           toggle(
@@ -174,6 +177,7 @@ class SectionStylePage extends StatelessWidget {
           hint: categoryId == null ? null : l.resetSectionToGlobalHint,
           onReset: () => s.resetFields([
             'sectionTitles',
+            'sectionTitleSize',
             'sectionTitleAligned',
             'sectionIcons',
             if (categoryId != null) 'sectionPadding',

@@ -210,9 +210,15 @@ void main() {
       expect(AppRelease.parse(data, '1.1.0', 75, [abi])!.uri.query, abi);
     }
     expect(
-      AppRelease.parse(data, '1.1.0', 75, ['x86_64'])!.uri.query,
-      'universal',
+      AppRelease.parse(data, '1.1.0', 75, ['x86_64']),
+      isNull,
     );
+    (data['assets'] as List).add({
+      ...asset,
+      'name': 'CuteLauncher-1.1.1-x86_64-release.apk',
+      'browser_download_url': '${asset['browser_download_url']}?x86_64',
+    });
+    expect(AppRelease.parse(data, '1.1.0', 75, ['x86_64'])!.uri.query, 'x86_64');
   });
   test('New version tags win over older tags with a build suffix', () {
     final data = {
@@ -477,8 +483,8 @@ void main() {
     expect(
       AppRelease.parse(data, '1.0.0', 14, [
         'x86_64',
-      ], includePrereleases: true)!.uri.query,
-      isEmpty,
+        ], includePrereleases: true),
+        isNull,
     );
     expect(AppRelease.parse(data, '1.0.0', 15, ['arm64-v8a']), isNull);
     expect(

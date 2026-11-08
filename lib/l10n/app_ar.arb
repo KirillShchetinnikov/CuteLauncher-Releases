@@ -1920,5 +1920,6 @@
   "weatherTemplateUnknownError": "اختصار غير معروف:",
   "weatherTemplateBreakError": "يسمح بفاصل سطر واحد فقط.",
   "weatherTemplateValueError": "أضف اختصار طقس واحدًا على الأقل.",
-  "weatherTemplateLengthError": "التنسيق طويل جدًا: الحد الأقصى 2048 حرفًا و64 عنصرًا."
+  "weatherTemplateLengthError": "التنسيق طويل جدًا: الحد الأقصى 2048 حرفًا و64 عنصرًا.",
+  "sectionTitleSize": "حجم عنوان القسم"
 }

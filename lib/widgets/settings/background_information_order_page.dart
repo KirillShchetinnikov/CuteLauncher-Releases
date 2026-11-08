@@ -67,6 +67,7 @@ class _BackgroundInformationOrderPageState
         if (!didPop && _moving != null) setState(() => _moving = null);
       },
       child: SettingsPageLayout(
+        footer: SettingsControlHint(text: l.backgroundInformationOrderHint),
         title: Text(l.panelObjectOrder),
         showObscuredInformationPreview: false,
         child: ListView(
@@ -125,7 +126,6 @@ class _BackgroundInformationOrderPageState
                   return KeyEventResult.ignored;
                 },
               ),
-            SettingsControlHint(text: l.backgroundInformationOrderHint),
           ],
         ),
       ),

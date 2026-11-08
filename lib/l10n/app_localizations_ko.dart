@@ -5479,4 +5479,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get weatherTemplateLengthError => '형식이 너무 깁니다. 최대 2048자, 64개 요소입니다.';
+
+  @override
+  String get sectionTitleSize => '섹션 제목 크기';
 }

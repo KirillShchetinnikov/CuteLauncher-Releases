@@ -5382,4 +5382,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get weatherTemplateLengthError => '格式过长：最多2048个字符和64个元素。';
+
+  @override
+  String get sectionTitleSize => '分区标题大小';
 }

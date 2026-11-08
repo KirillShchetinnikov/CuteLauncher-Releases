@@ -1920,5 +1920,6 @@
   "weatherTemplateUnknownError": "알 수 없는 코드:",
   "weatherTemplateBreakError": "줄바꿈은 하나만 허용됩니다.",
   "weatherTemplateValueError": "날씨 코드를 하나 이상 추가하세요.",
-  "weatherTemplateLengthError": "형식이 너무 깁니다. 최대 2048자, 64개 요소입니다."
+  "weatherTemplateLengthError": "형식이 너무 깁니다. 최대 2048자, 64개 요소입니다.",
+  "sectionTitleSize": "섹션 제목 크기"
 }

@@ -204,6 +204,7 @@ class _SleepTimerPresetsPageState extends State<SleepTimerPresetsPage> {
         if (!didPop && _moving != null) setState(() => _moving = null);
       },
       child: SettingsPageLayout(
+        footer: SettingsControlHint(text: l.sleepTimerReorderHint),
         title: Text(l.sleepTimerPresets),
         child: SingleChildScrollView(
           child: Column(
@@ -323,7 +324,6 @@ class _SleepTimerPresetsPageState extends State<SleepTimerPresetsPage> {
                         }
                       },
               ),
-              SettingsControlHint(text: l.sleepTimerReorderHint),
             ],
           ),
         ),

@@ -313,7 +313,9 @@ class _HomeSectionState extends State<HomeSection> {
                   widget.category.name,
                   AppLocalizations.of(context)!,
                 ),
-                style: Theme.of(context).textTheme.titleLarge,
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontSize: style.number('sectionTitleSize'),
+                ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -400,7 +402,7 @@ class _HomeSectionState extends State<HomeSection> {
                     }
                     _layout = l;
                     final signature =
-                        '$mode:$columns:${l.rows}:${l.width}:${l.height}:${l.gapX}:${l.gapY}:${l.labelHeight}:${categoryStyle?.maxRows ?? 0}:${style.labels}:${service?.appearance.anchored}:${service?.appearance.sectionPosition}:$padding:${style.sectionTitles}:${_apps.map((a) => a.packageName).join(',')}';
+                        '$mode:$columns:${l.rows}:${l.width}:${l.height}:${l.gapX}:${l.gapY}:${l.labelHeight}:${categoryStyle?.maxRows ?? 0}:${style.labels}:${service?.appearance.anchored}:${service?.appearance.sectionPosition}:$padding:${style.sectionTitles}:${style.sectionTitleSize}:${_apps.map((a) => a.packageName).join(',')}';
                     if (_signature != signature) {
                       _signature = signature;
                       _preferredColumn = null;

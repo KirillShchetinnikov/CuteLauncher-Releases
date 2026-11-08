@@ -89,6 +89,7 @@ void main() {
       )!;
       final hint = find.text(l.remoteButtonsControlsHint);
       expect(hint.hitTestable(), findsOneWidget);
+      expect(find.ancestor(of: hint, matching: find.byType(Scrollable)), findsNothing);
       expect(find.text(path).hitTestable(), findsOneWidget);
       expect(
         tester.widget<Text>(find.text(path)).textDirection,

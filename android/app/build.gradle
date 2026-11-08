@@ -21,11 +21,19 @@ plugins {
     id "dev.flutter.flutter-gradle-plugin"
 }
 
-// Support physical ARM TVs and x64 TV emulators in the same release APK.
+// Release distribution builds ARM universal and a separate x64 APK in two passes.
 if (!project.hasProperty('target-platform')) {
     project.ext.set('target-platform', 'android-arm,android-arm64,android-x64')
 }
 
+def requestedAbis = project.property('target-platform').split(',').collect {
+    ['android-arm': 'armeabi-v7a', 'android-arm64': 'arm64-v8a', 'android-x64': 'x86_64'][it]
+}.findAll { it != null }
+def splitPerAbi = project.findProperty('split-per-abi')?.toString()?.toBoolean() ?: false
+// A multi-ABI universal release is ARM-only. x64 remains available as a split
+// or an explicitly requested single-ABI diagnostic build.
+def releaseAbis = splitPerAbi || requestedAbis.size() == 1
+    ? requestedAbis : requestedAbis.findAll { it != 'x86_64' }
 
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
@@ -98,14 +106,14 @@ android {
             resValue "string", "screensaver_settings_activity", "io.github.kirillshchetinnikov.cutelauncher.debug/com.leanbitlab.ltvL.MainActivity"
             signingConfig signingConfigs.debug
             ndk {
-                abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64'
+                if (!splitPerAbi) abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64'
             }
         }
         profile {
             // Allow a local profile APK to update the signed release for measurement.
             signingConfig hasKeystore ? signingConfigs.release : signingConfigs.debug
             ndk {
-                abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64'
+                if (!splitPerAbi) abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64'
             }
         }
         release {
@@ -116,7 +124,8 @@ android {
                 signingConfig signingConfigs.release
             }
             ndk {
-                abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64'
+                abiFilters.clear()
+                if (!splitPerAbi) abiFilters.addAll(releaseAbis)
             }
         }
     }
@@ -126,8 +135,8 @@ android {
             // https://stackoverflow.com/a/39950584/21037183
             enable gradle.startParameter.taskNames.any { it.contains("assembleRelease") } && System.getenv("UNIVERSAL_ONLY") != "true"
             reset()
-            include "armeabi-v7a", "arm64-v8a", "x86_64"
-            universalApk true
+            include(*releaseAbis)
+            universalApk !splitPerAbi
         }
     }
 
@@ -166,14 +175,26 @@ androidComponents {
             def abi = output.filters.find {
                 it.filterType == com.android.build.api.variant.FilterConfiguration.FilterType.ABI
             }?.identifier
+            if (abi == null && variant.buildType == 'release' && releaseAbis == ['x86_64']) {
+                abi = 'x86_64'
+            }
             output.outputFileName.set(output.versionName.map { version ->
                 "CuteLauncher-${version}-${abi ?: 'universal'}-${variant.buildType}.apk"
             })
         }
     }
     onVariants(selector().withBuildType('release')) { variant ->
+        // Compress release downloads; false is available for size comparisons.
+        variant.packaging.jniLibs.useLegacyPackaging.set(
+            providers.environmentVariable('CUTE_COMPRESS_NATIVE_LIBRARIES')
+                .map { it.toBoolean() }.orElse(true))
         // Flutter no longer supports 32-bit x86, even if AARs contain those libs.
         variant.packaging.jniLibs.excludes.add('lib/x86/**')
+        // Flutter's defaultConfig filters merge with buildType filters. Exclude
+        // unrequested AAR/native-hook ABIs explicitly from the universal output.
+        ['armeabi-v7a', 'arm64-v8a', 'x86_64'].findAll { !releaseAbis.contains(it) }.each { abi ->
+            variant.packaging.jniLibs.excludes.add("lib/${abi}/**")
+        }
     }
 }
 

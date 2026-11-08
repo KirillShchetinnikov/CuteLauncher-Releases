@@ -36,6 +36,7 @@ void main() {
         await appearance.set('sectionRadius', 12);
         await appearance.setCategoryTile(group.id, 'sectionOpacity', .35);
         await appearance.setCategoryTile(group.id, 'sectionRadius', 64);
+        await appearance.setCategoryTile(group.id, 'sectionTitleSize', 40);
         await appearance.setCategory(group.id, 'layout', 'grid');
         await appearance.setCategory(group.id, 'columns', 6);
         tester.view.physicalSize = const Size(1000, 1800);
@@ -128,6 +129,7 @@ void main() {
         expect(appearance.tilesFor(group.id).sectionTitles, isFalse);
         expect(appearance.tilesFor(group.id).sectionOpacity, .75);
         expect(appearance.tilesFor(group.id).sectionRadius, 12);
+        expect(appearance.tilesFor(group.id).sectionTitleSize, 24);
         expect(appearance.tilesFor(group.id).tileSize, 128);
         expect(settings.selectedAppChannels, ['video.app:1']);
         expect(tester.takeException(), isNull);

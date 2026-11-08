@@ -122,7 +122,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(appearance.appearance.showFocusShadow, isFalse);
     expect(appearance.appearance.focusEffect, 'scale');
-    expect(appearance.appearance.focusBorderStyle(), 'outline');
+    expect(appearance.appearance.focusBorderStyle(), 'glow');
     expect(appearance.appearance.opacity, .4);
 
   });
@@ -150,13 +150,13 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(TextButton, 'Reset appearance'));
     await tester.pumpAndSettle();
-    expect(appearance.appearance.interfaceStyle, 'glass');
-    expect(appearance.appearance.labels, 'all');
+    expect(appearance.appearance.interfaceStyle, 'standard');
+    expect(appearance.appearance.labels, 'none');
     expect(settings.themes, 'modern');
     expect(settings.showAppNamesBelowIcons, isFalse);
     expect(settings.showCategoryTitles, isFalse);
     expect(settings.backgroundSource, 'landscape');
-    expect(settings.accentColorHex, ACCENT_COLOR_PURPLE);
+    expect(settings.accentColorHex, ACCENT_COLOR_ORANGE);
     expect(settings.appHighlightAnimationEnabled, isTrue);
     expect(online.configuration.enabled, isFalse);
   });

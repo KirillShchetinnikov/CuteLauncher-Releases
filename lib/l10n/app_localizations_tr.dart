@@ -5637,4 +5637,7 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get weatherTemplateLengthError =>
       'Biçim çok uzun: en fazla 2048 karakter ve 64 öğe.';
+
+  @override
+  String get sectionTitleSize => 'Bölüm başlığı boyutu';
 }

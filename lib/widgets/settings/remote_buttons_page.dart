@@ -125,6 +125,9 @@ class _RemoteButtonsPageState extends State<RemoteButtonsPage>
         ? l.enabled
         : l.disabled;
     return SettingsPageLayout(
+      footer: widget.section == 'diagnostics'
+          ? SettingsControlHint(text: l.remoteButtonsControlsHint)
+          : null,
       title: Text(
         widget.section == 'access'
             ? l.remoteAccessSettings
@@ -215,7 +218,6 @@ class _RemoteButtonsPageState extends State<RemoteButtonsPage>
               ),
               onPressed: () => _call(active ? 'stop' : 'start'),
             ),
-            SettingsControlHint(text: l.remoteButtonsControlsHint),
             if (reportPath.isNotEmpty)
               SettingsReadOnlyValue(
                 label: l.settingsReportFile,

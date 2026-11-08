@@ -56,7 +56,7 @@ void main() {
     final service = AppearanceService(await SharedPreferences.getInstance());
     addTearDown(service.dispose);
     await service.resetFields(['settingsScrollbarMode']);
-    expect(service.appearance.settingsScrollbarMode, SettingsScrollbarMode.always);
+    expect(service.appearance.settingsScrollbarMode, SettingsScrollbarMode.onScroll);
   });
 
   test('fresh and reset appearance fills banners and fits icons', () async {
@@ -347,12 +347,12 @@ void main() {
     expect(TileAppearance.decode(imported[tileAppearanceKey]).horizontalGap, 0);
     expect(TileAppearance.decode(imported[tileAppearanceKey]).verticalGap, 0);
     await service.resetFields(['noticeOpacity']);
-    expect(service.appearance.number('noticeOpacity'), isNull);
+    expect(service.appearance.number('noticeOpacity'), .8);
     expect(service.appearance.number('settingsTextSize'), 24);
     expect(service.category(1).tiles['horizontalGap'], 0);
     await service.resetFields(['horizontalGap', 'verticalGap']);
-    expect(service.appearance.horizontalGap, 16);
-    expect(service.appearance.verticalGap, 16);
+    expect(service.appearance.horizontalGap, 6);
+    expect(service.appearance.verticalGap, 6);
     expect(service.category(1).tiles['horizontalGap'], 0);
     expect(TileAppearance({'noticeWidth': 500, 'settingsTextSize': 20}).active, false);
     expect(TileAppearance.validValues({'noticeWidth': 9999, 'settingsOpacity': -1}), isEmpty);
@@ -431,8 +431,8 @@ void main() {
         await service.set('opacity', 0.25);
         expect(service.appearance.opacity, 0.25);
         await service.reset();
-        expect(service.appearance.interfaceStyle, 'glass');
-        expect(service.appearance.labels, 'all');
+        expect(service.appearance.interfaceStyle, 'standard');
+        expect(service.appearance.labels, 'none');
         expect(service.appearance.number('radius'), 16);
         expect(service.appearance.opacity, 1);
         expect(prefs.getString('app_banner_shape'), 'capsule');

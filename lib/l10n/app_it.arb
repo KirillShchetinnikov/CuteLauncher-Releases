@@ -1920,5 +1920,6 @@
   "weatherTemplateUnknownError": "Codice sconosciuto:",
   "weatherTemplateBreakError": "È consentito un solo ritorno a capo.",
   "weatherTemplateValueError": "Aggiungi almeno un codice meteo.",
-  "weatherTemplateLengthError": "Formato troppo lungo: massimo 2048 caratteri e 64 elementi."
+  "weatherTemplateLengthError": "Formato troppo lungo: massimo 2048 caratteri e 64 elementi.",
+  "sectionTitleSize": "Dimensione del titolo della sezione"
 }

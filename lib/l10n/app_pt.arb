@@ -1920,5 +1920,6 @@
   "weatherTemplateUnknownError": "Código desconhecido:",
   "weatherTemplateBreakError": "Só é permitida uma quebra de linha.",
   "weatherTemplateValueError": "Adicione pelo menos um código meteorológico.",
-  "weatherTemplateLengthError": "O formato é demasiado longo: até 2048 caracteres e 64 elementos."
+  "weatherTemplateLengthError": "O formato é demasiado longo: até 2048 caracteres e 64 elementos.",
+  "sectionTitleSize": "Tamanho do título da seção"
 }

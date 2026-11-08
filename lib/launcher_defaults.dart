@@ -6,31 +6,48 @@ import 'sleep_timer_configuration.dart';
 import 'tile_appearance.dart';
 import 'weather_sources.dart';
 
-/// Explicit first-run/reset values. Legacy getters intentionally keep their fallbacks.
+/// Explicit first-run/reset values. Never merge these into existing preferences:
+/// legacy getters keep their fallbacks so an update cannot restyle an old install.
 abstract final class LauncherDefaults {
   static const appearance = <String, dynamic>{
-    'settingsInterfaceStyle': 'glass',
-    'settingsTextSize': 18,
-    'settingsColor': 0xff242935,
+    'settingsInterfaceStyle': 'standard',
+    'settingsInterfaceFont': 'medeo-sans',
+    'settingsTextSize': 16,
+    'settingsColor': 0xff393939,
     'settingsOpacity': 1.0,
-    'settingsScrollbarMode': 'always',
+    'settingsScrollbarMode': 'onScroll',
     'settingsSectionStyle': 'surface',
     'size': 128,
     'aspectRatio': 16 / 9,
     'radius': 16,
-    'horizontalGap': 16,
-    'verticalGap': 16,
-    'labels': 'all',
+    'horizontalGap': 6,
+    'verticalGap': 6,
+    'labels': 'none',
     'labelPosition': 'below',
     'labelSize': 14,
     'focusEffect': 'scale',
-    'focusScale': 0.05,
-    'focusBorderStyle': 'outline',
-    'focusPulse': false,
+    'focusScale': 0.2,
+    'focusBorderStyle': 'glow',
+    'focusBorderColor': 'dynamic',
+    'focusPulse': true,
+    'focusShadow': false,
     'focusTransition': true,
     'animateReordering': true,
     'panelCombinedInformation': true,
-    'panelTextSize': 18,
+    'panelTextSize': 16,
+    'panelFont': 'medeo-sans',
+    'panelTextBackground': true,
+    'panelTextBackgroundOpacity': 0.5,
+    'panelTextBackgroundColor': 0xff393939,
+    'panelWrapNavigation': true,
+    'sectionTitles': true,
+    'sectionTitleSize': 24,
+    'sectionIcons': true,
+    'sectionTitleAligned': false,
+    'noticeWidth': 360,
+    'noticeColor': 0xff393939,
+    'noticeOpacity': 0.8,
+    'noticeTextSize': 16,
     'weatherIconPack': 'outline',
     'panelInformationAction': 'both',
     'panelInformationStyle': {
@@ -45,21 +62,23 @@ abstract final class LauncherDefaults {
     'panelForecastView': 'cards',
     'panelButtonsOrder': [
       'settings',
+      'systemSettings',
       'inputs',
       'sleepTimer',
-      'systemSettings',
       'notifications',
       'nightMode',
       'traffic',
       'networkSpeed',
       'system',
+      'nas',
+      'usb',
     ],
     'panelInfoOrder': ['network', 'vpn', 'audio', 'time', 'date', 'weather'],
   };
   static const landscape = LandscapeConfiguration(
     variant: 'realistic',
-    precipitation: false,
-    fog: false,
+    motion: true,
+    starRotation: true,
   );
   static List<SleepTimerPreset> get timerPresets => [
     for (final preset in SleepTimerConfiguration.defaults)
@@ -70,14 +89,28 @@ abstract final class LauncherDefaults {
       ),
   ];
   static Map<String, Object> get preferences => {
-    tileAppearanceKey: jsonEncode({...appearance, 'sectionPosition': 0.1}),
+    tileAppearanceKey: jsonEncode({
+      ...appearance,
+      'sectionScroll': 'anchored',
+      'sectionPosition': 0.2,
+    }),
+    'accent_color': 'FF6D00',
+    'settings_menu_on_right': false,
     'background_source': 'landscape',
     landscapeSettingsKey: landscape.encode(),
-    'card_focus_mode': 'remember',
+    'card_focus_mode': 'first',
+    'remember_category_focus': false,
     'hide_launcher_tile': true,
+    'hide_android_settings_tile': true,
+    'show_app_names_below_icons': false,
+    'show_category_titles': true,
+    'panel_tooltips_enabled': false,
     'auto_hide_notifications_widget': true,
     'show_weather_in_status_bar': true,
     'show_night_mode_in_status_bar': false,
+    'show_volume_in_status_bar': true,
+    'show_nas_in_status_bar': true,
+    'show_usb_in_status_bar': true,
     'date_format': compactDateFormat,
     weatherConfigurationKey: jsonEncode(
       const WeatherConfiguration(
@@ -91,7 +124,7 @@ abstract final class LauncherDefaults {
     ).encode(),
     'remote_panel_configuration': jsonEncode({
       'inheritAppearance': true,
-      'hidden': ['nightMode', 'traffic', 'system', 'networkSpeed'],
+      'hidden': ['traffic', 'networkSpeed', 'system'],
       'leftOrder': appearance['panelButtonsOrder'],
       'rightOrder': appearance['panelInfoOrder'],
     }),

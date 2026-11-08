@@ -10,11 +10,12 @@ from zipfile import ZipFile
 CERTIFICATE = 'c503e78d308fcde372b136beb5fed0f0b8d58739eac5e7f84258f630eda06b60'
 APPLICATION_ID = 'io.github.kirillshchetinnikov.cutelauncher'
 ABIS = {'armeabi-v7a', 'arm64-v8a', 'x86_64'}
+UNIVERSAL_ABIS = {'armeabi-v7a', 'arm64-v8a'}
 
 
 def check_files(folder, version):
     expected = {
-        f'CuteLauncher-{version}-{abi}-release.apk': ABIS if abi == 'universal' else {abi}
+        f'CuteLauncher-{version}-{abi}-release.apk': UNIVERSAL_ABIS if abi == 'universal' else {abi}
         for abi in ('universal', *sorted(ABIS))
     }
     files = {apk.name: apk for apk in folder.glob('*.apk')}

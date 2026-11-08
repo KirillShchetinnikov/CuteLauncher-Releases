@@ -191,7 +191,7 @@ void main() {
     expect(service.appearance.labels, 'all');
     expect(service.appearance.sectionTitles, isFalse);
     await service.resetFields(['labels', 'sectionTitles']);
-    expect(service.appearance.labels, 'all');
+    expect(service.appearance.labels, 'none');
     expect(service.appearance.sectionTitles, isTrue);
     expect(TileAppearance.decode(prefs.getString(tileAppearanceKey)).sectionTitles, isTrue);
   });

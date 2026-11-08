@@ -165,6 +165,7 @@ class _PanelOrderPageState extends State<PanelOrderPage> {
         if (!didPop && _moving != null) setState(() => _moving = null);
       },
       child: SettingsPageLayout(
+        footer: SettingsControlHint(text: l.panelOrderHint),
         title: Text(l.panelObjectOrder),
         child: SingleChildScrollView(
           child: Column(
@@ -245,7 +246,6 @@ class _PanelOrderPageState extends State<PanelOrderPage> {
                     },
                   ),
               ],
-              SettingsControlHint(text: l.panelOrderHint),
             ],
           ),
         ),

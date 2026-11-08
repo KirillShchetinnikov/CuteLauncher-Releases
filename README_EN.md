@@ -128,7 +128,7 @@ app data. A third-party disable list cannot be assumed safe for every TV model.
 
 Download an APK from the [latest release](https://github.com/KirillShchetinnikov/CuteLauncher-Releases/releases/latest)
 and install it on your TV or TV box. ARMv7, ARM64, x86_64, and universal builds
-are available; choose universal if you do not know your device's architecture.
+are available. Universal includes ARMv7 and ARM64; x86_64 requires its separate APK.
 Android may ask you to allow installation from your chosen source.
 
 Requires **Android 9 or later**. Home-app selection, Home behavior,

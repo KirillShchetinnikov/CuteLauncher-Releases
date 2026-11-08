@@ -5477,4 +5477,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get weatherTemplateLengthError => '形式が長すぎます。最大2048文字、64要素です。';
+
+  @override
+  String get sectionTitleSize => 'セクション見出しのサイズ';
 }

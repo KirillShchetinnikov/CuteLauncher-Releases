@@ -74,16 +74,21 @@ class ContinueWatchingRow extends StatelessWidget {
                       : const EdgeInsets.only(left: 16, bottom: 8),
                   child: Row(
                     children: [
-                      Text(
-                        AppLocalizations.of(context)!.continueWatching,
-                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                          shadows: [
-                            const Shadow(
-                              color: Colors.black54,
-                              offset: Offset(1, 1),
-                              blurRadius: 8,
-                            )
-                          ],
+                      Flexible(
+                        child: Text(
+                          AppLocalizations.of(context)!.continueWatching,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                            fontSize: appearance?.number('sectionTitleSize'),
+                            shadows: [
+                              const Shadow(
+                                color: Colors.black54,
+                                offset: Offset(1, 1),
+                                blurRadius: 8,
+                              )
+                            ],
+                          ),
                         ),
                       ),
                       const SizedBox(width: 8),

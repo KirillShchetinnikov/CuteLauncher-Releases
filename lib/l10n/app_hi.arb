@@ -1920,5 +1920,6 @@
   "weatherTemplateUnknownError": "अज्ञात संकेत:",
   "weatherTemplateBreakError": "केवल एक पंक्ति विराम की अनुमति है।",
   "weatherTemplateValueError": "कम से कम एक मौसम संकेत जोड़ें।",
-  "weatherTemplateLengthError": "प्रारूप बहुत लंबा है: अधिकतम 2048 अक्षर और 64 तत्व।"
+  "weatherTemplateLengthError": "प्रारूप बहुत लंबा है: अधिकतम 2048 अक्षर और 64 तत्व।",
+  "sectionTitleSize": "अनुभाग शीर्षक का आकार"
 }

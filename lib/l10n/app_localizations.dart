@@ -10381,6 +10381,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The format is too long: up to 2048 characters and 64 elements.'**
   String get weatherTemplateLengthError;
+
+  /// No description provided for @sectionTitleSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Section title size'**
+  String get sectionTitleSize;
 }
 
 class _AppLocalizationsDelegate

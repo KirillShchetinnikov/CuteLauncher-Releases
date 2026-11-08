@@ -1,15 +1,6 @@
-# Preserve the previous proguard-android.txt behavior during the SDK migration.
-# Optimization can be enabled after separate release regression checks.
--dontoptimize
-
-## Flutter wrapper
--keep class io.flutter.app.** { *; }
--keep class io.flutter.plugin.**  { *; }
--keep class io.flutter.util.**  { *; }
--keep class io.flutter.view.**  { *; }
--keep class io.flutter.**  { *; }
--keep class io.flutter.plugins.**  { *; }
--dontwarn io.flutter.embedding.**
+# Flutter's JNI entry points and generated plugin registrant use @Keep.
+# Keep annotation and plugin consumer rules are supplied by their libraries and
+# Flutter's Gradle plugin; do not retain the entire io.flutter package.
 -dontwarn com.google.android.play.core.splitcompat.SplitCompatApplication
 # WorkManager persists this class name across APK updates.
 -keep class com.leanbitlab.ltvL.PermissionRecoveryWorker { *; }

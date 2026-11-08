@@ -37,6 +37,7 @@ void main() {
   late MockWeatherService mockWeatherService;
 
   void setupSettingsDefaults(MockSettingsService service) {
+    when(service.accentColorHex).thenReturn(ACCENT_COLOR_PURPLE);
     when(service.panelTooltipsEnabled).thenReturn(false);
     when(service.appKeyClickEnabled).thenReturn(false);
     when(service.homeKeyClickEnabled).thenReturn(false);

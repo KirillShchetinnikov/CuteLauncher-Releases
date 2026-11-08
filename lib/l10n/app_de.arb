@@ -1920,5 +1920,6 @@
   "weatherTemplateUnknownError": "Unbekanntes Kürzel:",
   "weatherTemplateBreakError": "Nur ein Zeilenumbruch ist erlaubt.",
   "weatherTemplateValueError": "Fügen Sie mindestens ein Wetterkürzel hinzu.",
-  "weatherTemplateLengthError": "Das Format ist zu lang: maximal 2048 Zeichen und 64 Elemente."
+  "weatherTemplateLengthError": "Das Format ist zu lang: maximal 2048 Zeichen und 64 Elemente.",
+  "sectionTitleSize": "Größe der Abschnittsüberschrift"
 }

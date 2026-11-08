@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/appearance_service.dart';
+import '../../providers/settings_service.dart';
 import '../../app_fonts.dart';
 import 'settings_scroll_behavior.dart';
 
@@ -39,6 +40,9 @@ class SettingsPanelStyle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appearance = context.watch<AppearanceService?>()?.appearance;
+    // Reading MaterialApp.theme below does not subscribe to accent changes.
+    // Open dialogs retain their captured Theme until this wrapper rebuilds.
+    context.select<SettingsService?, String?>((settings) => settings?.accentColorHex);
     // A dialog captures Theme at opening. Use the current MaterialApp theme,
     // rather than that snapshot or a still-interpolating AnimatedTheme.
     final base =

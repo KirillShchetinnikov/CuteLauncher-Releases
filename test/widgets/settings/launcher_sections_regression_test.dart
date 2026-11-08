@@ -270,8 +270,10 @@ void main() {
     expect(focusedTitle(tester), 'Section 0');
     expect(
       find.textContaining('Cross the list boundary').hitTestable(),
-      findsNothing,
+      findsOneWidget,
     );
+    final hint = find.textContaining('Cross the list boundary');
+    final hintRect = tester.getRect(hint);
     final first = find.text('Section 0');
     final firstY = tester.getTopLeft(first).dy;
     final add = find.text('Add section');
@@ -283,6 +285,7 @@ void main() {
     );
     expect(tester.getTopLeft(add).dy, lessThan(300));
     expect(tester.getTopLeft(first).dy, lessThan(firstY));
+    expect(tester.getRect(hint), hintRect);
     await finish(tester);
   });
 

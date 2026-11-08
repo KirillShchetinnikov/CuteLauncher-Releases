@@ -12,6 +12,7 @@ void main() {
   for (final deleted in [false, true]) {
     testWidgets('only hides card after confirmed deletion ($deleted)', (tester) async {
       final settings = MockSettingsService();
+      when(settings.accentColorHex).thenReturn(ACCENT_COLOR_PURPLE);
       when(settings.settingsMenuOnRight).thenReturn(false);
       final apps = MockAppsService();
       final watchNext = MockWatchNextService();

@@ -2,6 +2,7 @@ import 'package:flauncher/custom_traversal_policy.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/models/watch_next_program.dart';
 import 'package:flauncher/providers/apps_service.dart';
+import 'package:flauncher/providers/appearance_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/watch_next_service.dart';
 import 'package:flauncher/widgets/category_focus.dart';
@@ -23,6 +24,9 @@ void main() {
     ) async {
       SharedPreferences.setMockInitialValues({});
       final settings = SettingsService(await SharedPreferences.getInstance());
+      final appearance = AppearanceService(await SharedPreferences.getInstance());
+      addTearDown(appearance.dispose);
+      await appearance.set('sectionTitleSize', 40);
       await settings.setShowContinueWatching(true);
       await settings.setAppHighlightAnimationEnabled(false);
       final apps = MockAppsService(), watch = MockWatchNextService();
@@ -44,6 +48,7 @@ void main() {
         MultiProvider(
           providers: [
             ChangeNotifierProvider.value(value: settings),
+            ChangeNotifierProvider.value(value: appearance),
             ChangeNotifierProvider<AppsService>.value(value: apps),
             ChangeNotifierProvider<WatchNextService>.value(value: watch),
           ],
@@ -71,6 +76,7 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
+      expect(tester.widget<Text>(find.text('Continue Watching')).style!.fontSize, 40);
       bool selected(int id) => tester
           .widget<InkWell>(
             find

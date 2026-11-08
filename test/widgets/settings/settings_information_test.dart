@@ -1,4 +1,5 @@
 import 'package:flauncher/widgets/settings/settings_information.dart';
+import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/widgets/settings/settings_read_only_value.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -6,6 +7,59 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  testWidgets(
+    'all translated control hints fit three lines without losing text',
+    (tester) async {
+      for (final locale in AppLocalizations.supportedLocales) {
+        final l = await AppLocalizations.delegate.load(locale);
+        for (final text in [
+          l.reorderSectionsHint,
+          l.panelOrderHint,
+          l.backgroundInformationOrderHint,
+          l.sleepTimerReorderHint,
+          l.remoteButtonsControlsHint,
+        ]) {
+          await tester.pumpWidget(
+            MaterialApp(
+              locale: locale,
+              supportedLocales: AppLocalizations.supportedLocales,
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              home: Scaffold(
+                body: MediaQuery(
+                  data: const MediaQueryData(textScaler: TextScaler.linear(2)),
+                  child: Align(
+                    alignment: Alignment.bottomLeft,
+                    child: SizedBox(
+                      width: 300,
+                      child: SettingsControlHint(text: text),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+          await tester.pumpAndSettle();
+          final hint = find.text(text);
+          final paragraph = tester.renderObject<RenderParagraph>(
+            find.descendant(of: hint, matching: find.byType(RichText)),
+          );
+          expect(paragraph.maxLines, 3, reason: locale.languageCode);
+          expect(
+            paragraph.didExceedMaxLines,
+            isFalse,
+            reason: '$locale: $text',
+          );
+          expect(paragraph.text.toPlainText(), text);
+          expect(
+            tester.widget<Text>(hint).style!.fontSize,
+            lessThanOrEqualTo(12),
+          );
+          expect(tester.takeException(), isNull);
+        }
+      }
+    },
+  );
+
   const hint = '◄ / ► — выбрать; ▲ / ▼ — переместить; OK / Back — закончить.';
   for (final direction in TextDirection.values) {
     for (final scale in [1.0, 1.5, 2.0]) {

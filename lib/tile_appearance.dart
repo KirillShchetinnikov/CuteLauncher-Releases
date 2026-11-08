@@ -51,6 +51,7 @@ class TileAppearance {
     'shadow' => number('shadow') ?? 0,
     'blurTiles' => blurTiles,
     'sectionTitles' => sectionTitles,
+    'sectionTitleSize' => sectionTitleSize,
     'sectionTitleAligned' => sectionTitleAligned,
     'sectionIcons' => sectionIcons,
     'sectionPadding' => number(key) ?? 0,
@@ -73,6 +74,7 @@ class TileAppearance {
     );
   }
   bool get sectionTitles => values['sectionTitles'] != false;
+  double get sectionTitleSize => number('sectionTitleSize') ?? 24;
   bool get sectionTitleAligned => values['sectionTitleAligned'] == true;
   bool get sectionIcons => values['sectionIcons'] == true;
   bool get active =>
@@ -237,6 +239,7 @@ class TileAppearance {
       'sectionPosition': (0, 1), 'sectionGap': (0, 96),
       'sectionPadding': (0, 64), 'inactiveOpacity': (0, 1),
       'sectionOpacity': (0, 1), 'sectionRadius': (0, 64),
+      'sectionTitleSize': (12, 40),
       'radius': (0, 100),
       'horizontalGap': (0, 48),
       'verticalGap': (0, 48),

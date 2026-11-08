@@ -1707,5 +1707,6 @@
   "weatherTemplateUnknownError": "Неизвестное обозначение:",
   "weatherTemplateBreakError": "Допускается только один перенос строки.",
   "weatherTemplateValueError": "Добавьте хотя бы одно обозначение погоды.",
-  "weatherTemplateLengthError": "Формат слишком длинный: до 2048 символов и 64 элементов."
+  "weatherTemplateLengthError": "Формат слишком длинный: до 2048 символов и 64 элементов.",
+  "sectionTitleSize": "Размер заголовка раздела"
 }

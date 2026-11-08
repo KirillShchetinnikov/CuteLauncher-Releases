@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flauncher/database.dart';
+import 'package:flauncher/category_appearance.dart';
 import 'package:flauncher/date_time_format.dart';
 import 'package:flauncher/initial_settings_profile.dart';
 import 'package:flauncher/initial_profile_restore.dart';
@@ -9,6 +10,7 @@ import 'package:flauncher/launcher_defaults.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/appearance_service.dart';
 import 'package:flauncher/settings_import.dart';
+import 'package:flauncher/tile_appearance.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -37,27 +39,122 @@ void main() {
       addTearDown(appearance.dispose);
       expect(settings.backgroundSource, 'landscape');
       expect(settings.dateFormat, compactDateFormat);
-      expect(appearance.appearance.interfaceStyle, 'glass');
-      expect(appearance.appearance.labels, 'all');
-      expect(appearance.appearance.focusScale, 0.05);
-      expect(appearance.appearance.sectionPosition, 0.1);
+      expect(settings.accentColorHex, 'FF6D00');
+      expect(settings.settingsMenuOnRight, isFalse);
+      expect(appearance.appearance.interfaceStyle, 'standard');
+      expect(appearance.appearance.interfaceFont, 'medeo-sans');
+      expect(appearance.appearance.panelFont, 'medeo-sans');
+      expect(appearance.appearance.number('settingsColor'), 0xff393939);
+      expect(appearance.appearance.number('settingsTextSize'), 16);
+      expect(
+        appearance.appearance.settingsScrollbarMode,
+        SettingsScrollbarMode.onScroll,
+      );
+      expect(appearance.appearance.labels, 'none');
+      expect(appearance.appearance.horizontalGap, 6);
+      expect(appearance.appearance.verticalGap, 6);
+      expect(appearance.appearance.focusScale, 0.2);
+      expect(appearance.appearance.focusBorderStyle(), 'glow');
+      expect(appearance.appearance.dynamicFocusColor, isTrue);
+      expect(appearance.appearance.values['focusPulse'], isTrue);
+      expect(appearance.appearance.sectionTitles, isTrue);
+      expect(appearance.appearance.sectionIcons, isTrue);
+      expect(appearance.appearance.sectionPosition, 0.2);
+      expect(settings.landscape.motion, isTrue);
+      expect(settings.landscape.precipitation, isTrue);
+      expect(settings.landscape.fog, isTrue);
+      expect(settings.landscape.starRotation, isTrue);
+      expect(
+        TileAppearance.validValues(LauncherDefaults.appearance),
+        LauncherDefaults.appearance,
+      );
       final categories = await database.getCategories();
       expect(categories.where((c) => c.visible).map((c) => c.systemKey), [
         'all_apps',
         'app_channels',
       ]);
       expect(appearance.category(categories.first.id).maxRows, 3);
-      await appearance.set('labels', 'none');
+      await appearance.set('labels', 'all');
       await initializeSettingsProfile(
         prefs,
         directory,
         () => throw StateError('must not reopen'),
       );
-      expect(appearance.appearance.labels, 'none');
+      expect(appearance.appearance.labels, 'all');
       expect(isDeviceLocalBackupKey(initialProfileStateKey), isTrue);
       expect(isDeviceLocalBackupKey(initialProfileSeedKey), isTrue);
     },
   );
+
+  for (final marker in <String?>[null, 'legacy', 'complete']) {
+    for (final hasProfile in [false, true]) {
+      test(
+        'upgrade preserves implicit and explicit choices: marker=$marker profile=$hasProfile',
+        () async {
+          const oldProfile =
+              '{"settingsInterfaceStyle":"glass","settingsTextSize":18,"labels":"all","focusScale":0.05,"sectionPosition":0.1}';
+          final saved = <String, Object>{
+            initialProfileStateKey: ?marker,
+            if (hasProfile) tileAppearanceKey: oldProfile,
+            if (hasProfile)
+              initialProfileSeedKey: jsonEncode({
+                tileAppearanceKey: oldProfile,
+              }),
+            categoryAppearanceKey:
+                '{"1":{"layout":"grid","columns":4,"maxRows":2}}',
+            'unrelated_setting': 'preserved',
+          };
+          SharedPreferences.setMockInitialValues(saved);
+          final prefs = await SharedPreferences.getInstance();
+          final beforeSettings = SettingsService(prefs);
+          final beforeAppearance = AppearanceService(prefs);
+          addTearDown(beforeSettings.dispose);
+          addTearDown(beforeAppearance.dispose);
+          final oldSettings = beforeSettings.exportSettingsMap();
+          final oldAppearance = beforeAppearance.appearance;
+          expect(beforeSettings.accentColorHex, ACCENT_COLOR_PURPLE);
+          expect(oldAppearance.horizontalGap, 16);
+          expect(oldAppearance.verticalGap, 16);
+          expect(oldAppearance.interfaceFont, hasProfile ? 'outfit' : 'system');
+          expect(oldAppearance.panelFont, 'sans-serif');
+          expect(oldAppearance.sectionIcons, isFalse);
+          expect(oldAppearance.focusBorderStyle(), 'outline');
+          await initializeSettingsProfile(
+            prefs,
+            directory,
+            () => throw StateError(
+              'an upgrade must not open or rewrite the database',
+            ),
+          );
+          final afterSettings = SettingsService(prefs);
+          final afterAppearance = AppearanceService(prefs);
+          addTearDown(afterSettings.dispose);
+          addTearDown(afterAppearance.dispose);
+          expect(afterSettings.exportSettingsMap(), oldSettings);
+          expect(afterAppearance.appearance.values, oldAppearance.values);
+          expect(
+            afterAppearance.appearance.interfaceFont,
+            oldAppearance.interfaceFont,
+          );
+          expect(
+            afterAppearance.appearance.horizontalGap,
+            oldAppearance.horizontalGap,
+          );
+          expect(
+            afterAppearance.appearance.focusScale,
+            oldAppearance.focusScale,
+          );
+          for (final entry in saved.entries) {
+            expect(prefs.get(entry.key), entry.value, reason: entry.key);
+          }
+          expect(
+            prefs.getKeys().difference(saved.keys.toSet()),
+            marker == null ? {initialProfileStateKey} : isEmpty,
+          );
+        },
+      );
+    }
+  }
 
   test('sparse old settings keep legacy effective defaults', () async {
     SharedPreferences.setMockInitialValues({
@@ -106,7 +203,7 @@ void main() {
       await prefs.setString('tile_appearance', '{}');
       await initializeSettingsProfile(prefs, directory, () => database);
       expect(prefs.getString(initialProfileStateKey), 'complete');
-      expect(jsonDecode(prefs.getString('tile_appearance')!)['labels'], 'all');
+      expect(jsonDecode(prefs.getString('tile_appearance')!)['labels'], 'none');
     },
   );
 
@@ -139,6 +236,6 @@ void main() {
     expect(restored.containsKey('background_source'), isFalse);
     final newCopy = initialProfileRestoreBaseline(current, seeds);
     expect(newCopy['background_source'], 'landscape');
-    expect(jsonDecode(newCopy['tile_appearance'])['labels'], 'all');
+    expect(jsonDecode(newCopy['tile_appearance'])['labels'], 'none');
   });
 }

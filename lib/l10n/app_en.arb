@@ -1846,5 +1846,6 @@
   "weatherTemplateUnknownError": "Unknown token:",
   "weatherTemplateBreakError": "Only one line break is allowed.",
   "weatherTemplateValueError": "Add at least one weather token.",
-  "weatherTemplateLengthError": "The format is too long: up to 2048 characters and 64 elements."
+  "weatherTemplateLengthError": "The format is too long: up to 2048 characters and 64 elements.",
+  "sectionTitleSize": "Section title size"
 }

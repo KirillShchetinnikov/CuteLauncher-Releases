@@ -180,9 +180,11 @@ void main() {
       final l = AppLocalizations.of(tester.element(find.byType(SectionStylePage)))!;
       expect(find.text(l.categoryPadding), id == null ? findsNothing : findsOneWidget);
       if (id == null) {
+        await tester.scrollUntilVisible(find.text(l.homeSectionGap), -150);
+        final position = tester.state<ScrollableState>(find.byType(Scrollable).first).position;
+        final gapY = tester.getTopLeft(find.text(l.homeSectionGap)).dy + position.pixels;
         await tester.scrollUntilVisible(find.byType(ResetStyleTile), 150);
-        expect(tester.getTopLeft(find.text(l.homeSectionGap)).dy,
-            lessThan(tester.getTopLeft(find.byType(ResetStyleTile)).dy));
+        expect(gapY, lessThan(tester.getTopLeft(find.byType(ResetStyleTile)).dy + position.pixels));
       }
       Future<void> open() async {
         await tester.scrollUntilVisible(find.text(l.categoryBackground), -150);

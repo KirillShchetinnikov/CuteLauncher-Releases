@@ -68,7 +68,7 @@ class CuteLauncherAboutDialog extends StatelessWidget {
                           ClipRRect(
                             borderRadius: BorderRadius.circular(16),
                             child: Image.asset(
-                              'assets/icon.png',
+                              'assets/about-icon.png',
                               height: 56,
                               width: 56,
                               fit: BoxFit.cover,

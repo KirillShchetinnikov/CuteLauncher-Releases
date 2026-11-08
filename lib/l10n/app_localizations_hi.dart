@@ -5617,4 +5617,7 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get weatherTemplateLengthError =>
       'प्रारूप बहुत लंबा है: अधिकतम 2048 अक्षर और 64 तत्व।';
+
+  @override
+  String get sectionTitleSize => 'अनुभाग शीर्षक का आकार';
 }

@@ -7,9 +7,10 @@ unless stated otherwise. Follow the guide links for details.
 
 ## Where do I start and which APK should I choose?
 
-You need Android TV or Google TV with Android 9 or later. If you do not know the
-architecture, choose the universal APK; otherwise choose ARMv7, ARM64 or x86_64
-for your device. Allow installation from the selected source.
+You need Android TV or Google TV with Android 9 or later. The universal APK supports
+ARMv7 and ARM64; separate APKs are also available for each of these architectures.
+For an x86_64 device or emulator, choose the separate x86_64 APK.
+Allow installation from the selected source.
 [Download and installation](README_EN.md#downloads-and-installation).
 
 ## How do I open settings and change the language?

@@ -65,7 +65,7 @@ class HomeStyleSetting extends StatelessWidget {
     if (categoryId == null &&
         (settings?.showContinueWatching ?? false) &&
         ({'sectionTitles', 'focusShadow', 'focusBorderStyle'}.contains(field) ||
-            field == 'sectionTitleAligned' && service.appearance.sectionTitles)) {
+            {'sectionTitleAligned', 'sectionTitleSize'}.contains(field) && service.appearance.sectionTitles)) {
       results.add(null);
     }
     final enabled = results.contains(null);

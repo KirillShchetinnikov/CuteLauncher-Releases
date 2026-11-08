@@ -105,7 +105,9 @@ class AppRelease {
           item['size'] > maximumUpdateBytes) {
         continue;
       }
-      if (name.contains('universal') ||
+      // Universal now contains ARM only; x64 devices require their own APK.
+      if ((name.contains('universal') &&
+              abis.any((abi) => abi == 'armeabi-v7a' || abi == 'arm64-v8a')) ||
           name == 'app-release.apk' ||
           abis.any(name.contains)) {
         candidates.add(item);
