@@ -60,7 +60,8 @@ import 'package:flauncher/widgets/settings/blocked_notifications_page.dart';
 import 'package:flauncher/widgets/settings/display_settings_page.dart';
 import 'package:flauncher/widgets/settings/notifications_settings_page.dart';
 import 'package:flauncher/widgets/settings/continue_watching_settings_page.dart';
-import 'package:flauncher/widgets/settings/continue_watching_card_size_page.dart';
+import 'package:flauncher/models/category.dart';
+import 'package:flauncher/widgets/settings/app_channels_appearance_page.dart';
 import 'package:flauncher/widgets/settings/continue_watching_max_items_page.dart';
 import 'package:flauncher/widgets/settings/continue_watching_apps_page.dart';
 
@@ -152,7 +153,7 @@ void main() {
           DisplaySettingsPage(),
           NotificationsSettingsPage(),
           ContinueWatchingSettingsPage(),
-          ContinueWatchingCardSizePage(),
+          AppChannelsAppearancePage(categoryId: ContinueWatchingSection.sectionId),
           ContinueWatchingMaxItemsPage(),
           ContinueWatchingAppsPage(),
         ]) {

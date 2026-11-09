@@ -1,11 +1,13 @@
 import 'package:flauncher/custom_traversal_policy.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
+import 'package:flauncher/models/category.dart';
 import 'package:flauncher/models/watch_next_program.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/appearance_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/watch_next_service.dart';
 import 'package:flauncher/widgets/category_focus.dart';
+import 'package:flauncher/widgets/appearance_surface.dart';
 import 'package:flauncher/widgets/continue_watching_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -30,6 +32,7 @@ void main() {
       await settings.setShowContinueWatching(true);
       await settings.setAppHighlightAnimationEnabled(false);
       final apps = MockAppsService(), watch = MockWatchNextService();
+      when(apps.getApp(any)).thenReturn(null);
       when(apps.imageRevisionFor(any)).thenReturn((0, 0));
       when(apps.applications).thenReturn([]);
       when(apps.getAppIcon(any)).thenAnswer((_) async => kTransparentImage);
@@ -66,7 +69,13 @@ void main() {
                     ),
                     CategoryFocus(
                       controller: focus,
-                      child: const ContinueWatchingRow(),
+                      child: Consumer<SettingsService>(
+                        builder: (_, settings, _) => ContinueWatchingRow(
+                          programs: ContinueWatchingRow.visiblePrograms(
+                            settings, apps, watch,
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -77,6 +86,12 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(tester.widget<Text>(find.text('Continue Watching')).style!.fontSize, 40);
+      await appearance.setCategoryTile(ContinueWatchingSection.sectionId, 'size', 144);
+      await appearance.setCategoryTile(ContinueWatchingSection.sectionId, 'sectionTitleSize', 32);
+      await tester.pumpAndSettle();
+      expect(tester.widget<Text>(find.text('Continue Watching')).style!.fontSize, 32);
+      expect(tester.widget<WatchNextCard>(find.byType(WatchNextCard).first).size.height, 144);
+      expect(appearance.appearance.tileSize, 128);
       bool selected(int id) => tester
           .widget<InkWell>(
             find
@@ -111,6 +126,28 @@ void main() {
       await tester.pumpAndSettle();
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
       await tester.pumpAndSettle();
+      expect(selected(0), isTrue);
+      await appearance.set('size', 96);
+      await appearance.set('aspectRatio', 1);
+      await appearance.set('labels', 'all');
+      await appearance.set('labelPosition', 'inside');
+      await appearance.setCategoryTile(ContinueWatchingSection.sectionId, 'contentAppTileStyle', true);
+      await tester.pumpAndSettle();
+      expect(selected(0), isTrue);
+      final card = find.byType(WatchNextCard).first;
+      expect(tester.widget<WatchNextCard>(card).size, const Size(96, 96));
+      expect(find.descendant(
+        of: find.descendant(of: card, matching: find.byType(AppearanceSurface)),
+        matching: find.text('Movie 0'),
+      ), findsOneWidget);
+      await appearance.set('labels', 'selected');
+      await tester.pumpAndSettle();
+      expect(find.text('Movie 0'), findsOneWidget);
+      expect(find.descendant(of: card, matching: find.text('Movie 0')), findsNothing);
+      expect(selected(0), isTrue);
+      await appearance.setCategoryTile(ContinueWatchingSection.sectionId, 'contentAppTileStyle', false);
+      await tester.pumpAndSettle();
+      expect(tester.widget<WatchNextCard>(card).size.height, 144);
       expect(selected(0), isTrue);
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox());

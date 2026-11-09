@@ -10,6 +10,24 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
+  String get contentAppTileStyle => 'مصدر المظهر';
+
+  @override
+  String get contentTileOwnAppearance => 'مظهر مخصص';
+
+  @override
+  String get contentTileCommonAppearance => 'المظهر العام';
+
+  @override
+  String get contentUseSourceLabels => 'استخدام التسميات من المظهر المحدد';
+
+  @override
+  String get contentLabelSelected => 'البطاقة المحددة فقط';
+
+  @override
+  String get contentLabelAll => 'كل البطاقات';
+
+  @override
   String get weatherTextResetFormat => 'إعادة ضبط التنسيق';
 
   @override
@@ -385,6 +403,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get delete => 'حذف';
+
+  @override
+  String get dialogOptionBackButtonActionFirstFeedCard =>
+      'أول بطاقة في الخلاصة الحالية';
 
   @override
   String get dialogOptionBackButtonActionDoNothing => 'عدم القيام بشيء';
@@ -3586,6 +3608,33 @@ class AppLocalizationsAr extends AppLocalizations {
   String get remoteMappingAction => 'الإجراء';
 
   @override
+  String get remoteMappingChooseAction => 'اختيار إجراء';
+
+  @override
+  String get remoteMappingNavigationGroup => 'التطبيقات والتنقّل';
+
+  @override
+  String get remoteMappingScreenSoundGroup => 'الشاشة والصوت';
+
+  @override
+  String get remoteMappingAutomationGroup => 'الأتمتة';
+
+  @override
+  String get remoteMappingLiveTv => 'فتح البث التلفزيوني';
+
+  @override
+  String get remoteMappingDisplaySettings => 'إعدادات العرض';
+
+  @override
+  String get remoteMappingBluetoothSettings => 'إعدادات البلوتوث';
+
+  @override
+  String get remoteMappingMute => 'كتم الصوت أو إعادته';
+
+  @override
+  String get remoteMappingNeedsAdb => 'يتطلب ADB';
+
+  @override
   String get remoteMappingLearn => 'اكتشاف زر التحكم';
 
   @override
@@ -5024,6 +5073,27 @@ class AppLocalizationsAr extends AppLocalizations {
   String get remoteMappingIgnore => 'تجاهل الزر';
 
   @override
+  String get remoteMappingBlackScreen => 'تبديل Black Screen';
+
+  @override
+  String get remoteMappingBlackOverlay => 'شاشة سوداء';
+
+  @override
+  String get remoteMappingBlackOverlayHelp =>
+      'اضغط مرة لإخفاء الصورة ومرة أخرى أو اضغط رجوع لإعادتها. يظل التلفاز قيد التشغيل.';
+
+  @override
+  String get remoteMappingTclScreenOff => 'إطفاء شاشة TCL';
+
+  @override
+  String get remoteMappingTclScreenOffHelp =>
+      'يُفعّل وضع الصوت فقط في أجهزة TCL المتوافقة. إذا منع Android تشغيله، يلزم تفعيل اتصال ADB محلي.';
+
+  @override
+  String get remoteMappingBlackScreenHelp =>
+      'اضغط مرة لإظهار الشاشة السوداء ومرة أخرى لإخفائها. يلزم تثبيت Black Screen من jApp وتفعيل الإصدار المدفوع والسماح بالظهور فوق التطبيقات الأخرى.';
+
+  @override
   String get adbHomeDependencyProtected =>
       'تم حظر التعطيل: توجد تبعية لوظيفة نظام أو تعذر التحقق منها. راجع التشخيص للتفاصيل.';
 
@@ -5488,6 +5558,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get settingsGroupIndicators => 'المؤشرات والرسائل';
+
+  @override
+  String get nightModePanelFill => 'تلوين زر اللوحة العلوية';
 
   @override
   String get settingsGroupFocusShape => 'مظهر التركيز';

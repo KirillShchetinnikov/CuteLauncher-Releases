@@ -29,6 +29,7 @@ import '../providers/appearance_service.dart';
 import '../tile_appearance.dart';
 import 'appearance_surface.dart';
 import 'initial_app_images.dart';
+import 'home_skeleton.dart';
 
 import 'package:flauncher/actions.dart';
 import 'package:flauncher/app_image_type.dart';
@@ -448,7 +449,7 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
 
   Widget _imageFrame(BuildContext context, Widget child, int? frame, bool synchronous) {
     if (frame != null || synchronous) _imageReady?.call();
-    return child;
+    return frame != null || synchronous ? child : const HomeSkeletonBlock();
   }
 
   Widget _imageError(BuildContext context, Object error, StackTrace? stack) {
@@ -505,20 +506,8 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
           );
         }
         else {
-          return Padding(
-            padding: EdgeInsets.all(8),
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(),
-                  SizedBox(height: 0, width: 16),
-                  Text(AppLocalizations.of(context)!.loading)
-                ],
-              ),
-            ),
-          );
+          return Semantics(label: AppLocalizations.of(context)!.loading,
+            child: const HomeSkeletonBlock());
         }
       }
     ));

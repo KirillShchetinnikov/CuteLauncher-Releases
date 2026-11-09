@@ -5,11 +5,24 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.tv.TvContract;
+import android.media.tv.TvInputInfo;
+import android.media.tv.TvInputManager;
 import android.os.Build;
 import java.util.*;
 
 /** Fixed input routes shared with cleaner protection; no shell commands or guessed source numbers. */
 final class TvInputLaunch {
+    static boolean supportsDirectHdmi() {
+        return !"MiTV-NSOP0".equals(Build.MODEL);
+    }
+
+    static boolean openHdmi(Context context, String id) {
+        if (!supportsDirectHdmi()) return false;
+        TvInputManager manager = context.getSystemService(TvInputManager.class);
+        TvInputInfo input = manager == null ? null : manager.getTvInputInfo(id);
+        return input != null && input.getType() == TvInputInfo.TYPE_HDMI && open(context, id);
+    }
+
     static List<Intent> candidates(String id, String model) {
         if (id == null || id.isEmpty() || id.length() > 512) throw new IllegalArgumentException("Invalid input");
         var uri = TvContract.buildChannelUriForPassthroughInput(id);

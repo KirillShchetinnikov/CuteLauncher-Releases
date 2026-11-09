@@ -118,6 +118,97 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets(
+    'direction reversal follows independently rebuilt settings rows',
+    (tester) async {
+      final rows = ValueNotifier(['First', 'Second', 'Third']);
+      addTearDown(rows.dispose);
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: SettingsPageLayout(
+              title: const Text('Settings'),
+              child: ValueListenableBuilder(
+                valueListenable: rows,
+                builder: (_, values, _) => ListView(
+                  children: [
+                    for (final value in values)
+                      FocusableSettingsTile(
+                        key: ValueKey(value),
+                        title: Text(value),
+                        onPressed: () {},
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      FocusNode focus(String label) =>
+          Focus.of(tester.element(find.text(label)));
+      Future<void> press(LogicalKeyboardKey key) async {
+        await tester.sendKeyEvent(key);
+        await tester.pumpAndSettle();
+      }
+
+      expect(focus('First').hasPrimaryFocus, isTrue);
+      await press(LogicalKeyboardKey.arrowDown);
+      expect(focus('Second').hasPrimaryFocus, isTrue);
+
+      rows.value = ['Third', 'Second', 'First'];
+      await tester.pumpAndSettle();
+      expect(focus('Second').hasPrimaryFocus, isTrue);
+      await press(LogicalKeyboardKey.arrowUp);
+      expect(focus('Third').hasPrimaryFocus, isTrue);
+      await press(LogicalKeyboardKey.arrowDown);
+      expect(focus('Second').hasPrimaryFocus, isTrue);
+
+      rows.value = ['Third', 'Inserted', 'Second'];
+      await tester.pumpAndSettle();
+      expect(focus('Second').hasPrimaryFocus, isTrue);
+      await press(LogicalKeyboardKey.arrowUp);
+      expect(focus('Inserted').hasPrimaryFocus, isTrue);
+    },
+  );
+
+  testWidgets('direction reversal preserves the path across unchanged columns', (
+    tester,
+  ) async {
+    Widget tile(String label) => SizedBox(
+      width: 120,
+      child: FocusableSettingsTile(title: Text(label), onPressed: () {}),
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: SettingsPageLayout(
+            title: const Text('Settings'),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(children: [tile('Left'), tile('Right')]),
+                Row(children: [const SizedBox(width: 120), tile('Below')]),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    bool focused(String label) =>
+        Focus.of(tester.element(find.text(label))).hasPrimaryFocus;
+
+    expect(focused('Left'), isTrue);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.pumpAndSettle();
+    expect(focused('Below'), isTrue);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+    await tester.pumpAndSettle();
+    expect(focused('Left'), isTrue);
+  });
+
   for (final direction in TextDirection.values) {
     testWidgets('scrollbar has a separate left gutter in $direction', (
       tester,

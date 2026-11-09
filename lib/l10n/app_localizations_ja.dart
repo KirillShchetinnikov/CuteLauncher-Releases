@@ -10,6 +10,24 @@ class AppLocalizationsJa extends AppLocalizations {
   AppLocalizationsJa([String locale = 'ja']) : super(locale);
 
   @override
+  String get contentAppTileStyle => '外観の参照元';
+
+  @override
+  String get contentTileOwnAppearance => '個別の外観';
+
+  @override
+  String get contentTileCommonAppearance => '共通の外観';
+
+  @override
+  String get contentUseSourceLabels => '選択した外観のラベルを使用する';
+
+  @override
+  String get contentLabelSelected => '選択したカードのみ';
+
+  @override
+  String get contentLabelAll => 'すべてのカード';
+
+  @override
   String get weatherTextResetFormat => '書式をリセット';
 
   @override
@@ -383,6 +401,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get delete => '削除';
+
+  @override
+  String get dialogOptionBackButtonActionFirstFeedCard => '現在のフィードの先頭カードへ';
 
   @override
   String get dialogOptionBackButtonActionDoNothing => '何もしない';
@@ -3498,6 +3519,33 @@ class AppLocalizationsJa extends AppLocalizations {
   String get remoteMappingAction => '動作';
 
   @override
+  String get remoteMappingChooseAction => '操作を選択';
+
+  @override
+  String get remoteMappingNavigationGroup => 'アプリとナビゲーション';
+
+  @override
+  String get remoteMappingScreenSoundGroup => '画面と音声';
+
+  @override
+  String get remoteMappingAutomationGroup => '自動化';
+
+  @override
+  String get remoteMappingLiveTv => 'ライブテレビを開く';
+
+  @override
+  String get remoteMappingDisplaySettings => '画面設定';
+
+  @override
+  String get remoteMappingBluetoothSettings => 'Bluetooth 設定';
+
+  @override
+  String get remoteMappingMute => 'ミュートを切り替え';
+
+  @override
+  String get remoteMappingNeedsAdb => 'ADB が必要';
+
+  @override
   String get remoteMappingLearn => 'リモコンボタンを検出';
 
   @override
@@ -4915,6 +4963,27 @@ class AppLocalizationsJa extends AppLocalizations {
   String get remoteMappingIgnore => 'ボタンを無視';
 
   @override
+  String get remoteMappingBlackScreen => 'Black Screen を切り替える';
+
+  @override
+  String get remoteMappingBlackOverlay => '黒い画面';
+
+  @override
+  String get remoteMappingBlackOverlayHelp =>
+      '1 回押すと映像が隠れます。もう一度押すか、戻るボタンを押すと映像が戻ります。テレビの電源は入ったままです。';
+
+  @override
+  String get remoteMappingTclScreenOff => 'TCL の画面を消す';
+
+  @override
+  String get remoteMappingTclScreenOffHelp =>
+      '対応する TCL テレビで音声のみモードを有効にします。 Android が起動をブロックする場合は、ローカル ADB 接続が必要です。';
+
+  @override
+  String get remoteMappingBlackScreenHelp =>
+      '1 回押すと黒い画面が表示され、もう一度押すと消えます。jApp の Black Screen の有料版と、他のアプリの上に表示する権限が必要です。';
+
+  @override
   String get adbHomeDependencyProtected =>
       'システム機能の依存関係が見つかったか確認できないため、無効化をブロックしました。詳細は診断を参照してください。';
 
@@ -5374,6 +5443,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get settingsGroupIndicators => 'インジケーターとメッセージ';
+
+  @override
+  String get nightModePanelFill => '上部パネルのボタンを塗りつぶす';
 
   @override
   String get settingsGroupFocusShape => 'フォーカスの形';

@@ -3,13 +3,16 @@ import 'service_lifecycle.dart';
 import 'foreground_work.dart';
 import 'memory_resources.dart';
 import '../image_byte_cache.dart';
+import '../network_poster.dart';
 import 'package:pool/pool.dart';
 import 'dart:async';
 import 'dart:developer';
-import 'dart:io' show Platform;
+import 'dart:io' show HttpClient, Platform;
+import 'dart:typed_data';
 import 'package:flutter/widgets.dart';
 import 'package:flauncher/flauncher_channel.dart';
 import '../models/watch_next_program.dart';
+import '../models/content_load_state.dart';
 
 class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBindingObserver {
   final FLauncherChannel _channel;
@@ -18,32 +21,31 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
   final MemoryResources? _memoryResources;
   List<WatchNextProgram> _programs = [];
   bool _initialized = false;
+  bool _failed = false;
+  static const metadataTimeout = Duration(seconds: 8);
+  ContentLoadState get loadState => contentLoadState(
+    initialized: _initialized, loading: _isFetching,
+    failed: _failed || !_hasPermission, hasContent: _programs.isNotEmpty,
+  );
   DateTime? _lastPosterReload;
   bool _hasPermission = true;
   Timer? _refreshTimer;
   StreamSubscription<dynamic>? _watchNextSubscription;
   int _callCount = 0;
   final _posterPool = Pool(2);
-  late final _posterCache = ImageByteCache(maximumBytes: 6 * 1024 * 1024,
-    onEvict: (uri, bytes) {
-      for (final program in _programs) {
-        if (program.posterArtUri == uri && identical(program.posterBytes, bytes)) program.posterBytes = null;
-      }
-    });
+  final _posterCache = ImageByteCache(maximumBytes: 6 * 1024 * 1024);
+  final _http = HttpClient()
+    ..connectionTimeout = const Duration(seconds: 5)
+    ..maxConnectionsPerHost = 2;
+  final _pendingPosters = <(int, String), Future<Uint8List?>>{};
+  final posterRefreshes = ValueNotifier<int>(0);
+  int _posterGeneration = 0;
+  bool _foreground = true;
   int get posterCacheBytes => _posterCache.byteCount;
   int get posterCacheEntries => _posterCache.length;
-  int posterWindowSize = 32;
   void clearImageCaches() {
-    ++_callCount;
-    _hasPendingRefresh = false;
-    _hasPendingPosterReload = false;
+    ++_posterGeneration;
     _posterCache.clear();
-    for (final program in _programs) { program.posterBytes = null; }
-  }
-
-  void configureImageCache({required int posterBytes, required int windowSize}) {
-    _posterCache.maximumBytes = posterBytes;
-    posterWindowSize = windowSize;
   }
   bool _isFetching = false;
   bool _hasPendingRefresh = false;
@@ -57,9 +59,10 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
       activity: () => _posterCache.activity,
       stats: () => MemoryCacheStats(posterCacheBytes, posterCacheEntries),
       breakdown: () => {MemoryCacheKind.watchNextPosters: MemoryCacheStats(posterCacheBytes, posterCacheEntries)},
-      configure: (economy) => configureImageCache(posterBytes: (economy ? 2 : 6) * 1024 * 1024,
-        windowSize: economy ? 16 : 32));
+      configure: (economy) => _posterCache.maximumBytes = (economy ? 2 : 6) * 1024 * 1024);
     if (!_isTest) {
+      final lifecycle = WidgetsBinding.instance.lifecycleState;
+      _foreground = lifecycle == null || lifecycle == AppLifecycleState.resumed;
       WidgetsBinding.instance.addObserver(this);
     }
     (work?.schedule(this, _init) ?? _init()).catchError((Object error) {
@@ -116,14 +119,18 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (isDisposed) return;
     if (state == AppLifecycleState.paused || state == AppLifecycleState.hidden) {
+      _foreground = false;
+      ++_posterGeneration;
       ++_callCount;
       _refreshTimer?.cancel();
       _refreshTimer = null;
     } else if (state == AppLifecycleState.resumed) {
+      _foreground = true;
       if (_initialized) {
         final reload = _lastPosterReload == null || DateTime.now().difference(_lastPosterReload!) >= const Duration(minutes: 5);
         _scheduleRefresh(reloadPosters: reload, maxAge: const Duration(seconds: 30));
       }
+      ++posterRefreshes.value;
       _startPeriodicTimer();
     }
   }
@@ -139,40 +146,27 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
 
     final int callSnapshot = ++_callCount;
     try {
-      final bool hasPermission = await checkPermission();
+      final bool hasPermission = await checkPermission().timeout(metadataTimeout);
       if (isDisposed || callSnapshot != _callCount) return;
 
       _hasPermission = hasPermission;
+      _failed = false;
       if (!hasPermission) {
         if (_programs.isNotEmpty) {
           _programs = [];
         }
-        if (callSnapshot == _callCount) notifyListeners();
         return;
       }
 
-      List<Map<dynamic, dynamic>> list;
-      try {
-        list = await _channel.getWatchNextPrograms();
-      } catch (e, diagnosticStack) {
-        DiagnosticsStore.instance.recordException(
-          'watchNextService', e, diagnosticStack,
-        );
-        log('Failed to fetch watch next programs', name: 'WatchNextService', error: e);
-        list = const [];
-      }
+      final list = await _channel.getWatchNextPrograms().timeout(metadataTimeout);
       if (isDisposed || callSnapshot != _callCount) return;
 
-      if (reloadPosters) _posterCache.clear();
+      if (reloadPosters) clearImageCaches();
       if (reloadPosters || _lastPosterReload == null) _lastPosterReload = DateTime.now();
-      // Phase 1: Emit programs immediately with cached posters where available
-      final List<WatchNextProgram> newPrograms = [];
-      for (final map in list) {
-        final program = WatchNextProgram.fromMap(map);
-        // Reuse a poster only while both the program and its image URI match.
-        program.posterBytes = _posterCache[program.posterArtUri];
-        newPrograms.add(program);
-      }
+      final newPrograms = list
+          .map(WatchNextProgram.fromMap)
+          .where((program) => program.displayTitle.isNotEmpty)
+          .toList();
 
       // Explicitly sort programs so the most recently watched content is first
       newPrograms.sort((a, b) {
@@ -187,45 +181,17 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
       });
 
       _programs = newPrograms;
-      if (callSnapshot == _callCount) notifyListeners();
-
-      // Phase 2: Fetch local posters if present (content://, android.resource://, file://)
-      final needsPoster = newPrograms.take(posterWindowSize).where(
-        (p) => p.posterArtUri.isNotEmpty &&
-               p.posterBytes == null &&
-               !p.posterArtUri.startsWith('http://') &&
-               !p.posterArtUri.startsWith('https://'),
-      ).toList();
-      if (needsPoster.isNotEmpty) {
-        await Future.wait(
-          needsPoster.map((p) => _posterPool.withResource(() async {
-            if (isDisposed || callSnapshot != _callCount || _memoryResources?.isForeground == false) return;
-            try {
-              final bytes = await _channel.getWatchNextPoster(p.posterArtUri);
-              if (!isDisposed && callSnapshot == _callCount && bytes != null && bytes.isNotEmpty) {
-                _posterCache[p.posterArtUri] = bytes;
-                p.posterBytes = _posterCache[p.posterArtUri];
-              }
-            } catch (e, diagnosticStack) {
-              DiagnosticsStore.instance.recordException(
-                'watchNextService', e, diagnosticStack,
-              );
-              log('Failed to fetch poster for ${p.title}', name: 'WatchNextService', error: e);
-            }
-          })),
-        ).timeout(
-          const Duration(seconds: 2),
-          onTimeout: () => [],
-        );
-        if (callSnapshot == _callCount) notifyListeners();
-      }
+      if (reloadPosters) ++posterRefreshes.value;
     } catch (e, diagnosticStack) {
+      if (isDisposed || callSnapshot != _callCount) return;
+      _failed = true;
       DiagnosticsStore.instance.recordException(
         'watchNextService', e, diagnosticStack,
       );
       log('Failed to refresh watch next programs', name: 'WatchNextService', error: e);
     } finally {
       _isFetching = false;
+      if (!isDisposed && callSnapshot == _callCount) notifyListeners();
       if (!isDisposed && _hasPendingRefresh) {
         _hasPendingRefresh = false;
         final reload = _hasPendingPosterReload;
@@ -233,6 +199,49 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
         _scheduleRefresh(reloadPosters: reload);
       }
     }
+  }
+
+  bool _canLoadPoster(int generation) =>
+      !isDisposed && _foreground && _memoryResources?.isForeground != false &&
+      generation == _posterGeneration;
+
+  Future<Uint8List?> poster(WatchNextProgram program) async {
+    final generation = _posterGeneration;
+    final primary = await _loadPoster(program.posterArtUri, generation);
+    if (!_canLoadPoster(generation)) return null;
+    if (primary != null || program.posterArtUri == program.thumbnailUri) {
+      return primary;
+    }
+    return _loadPoster(program.thumbnailUri, generation);
+  }
+
+  Future<Uint8List?> _loadPoster(String address, int generation) async {
+    if (address.isEmpty || !_canLoadPoster(generation)) return null;
+    final cached = _posterCache[address];
+    if (cached != null) return cached;
+
+    final key = (generation, address);
+    return _pendingPosters.putIfAbsent(key, () => _posterPool.withResource(() async {
+      if (!_canLoadPoster(generation)) return null;
+      try {
+        final uri = Uri.tryParse(address);
+        final bytes = uri != null && (uri.scheme == 'http' || uri.scheme == 'https')
+            ? await readNetworkPoster(_http, uri)
+            : await _channel.getWatchNextPoster(address);
+        if (!_canLoadPoster(generation) || bytes == null || bytes.isEmpty) {
+          return null;
+        }
+        _posterCache[address] = bytes;
+        return bytes;
+      } catch (error, stack) {
+        if (_canLoadPoster(generation)) {
+          DiagnosticsStore.instance.recordException('watchNextPoster', error, stack);
+        }
+        return null;
+      }
+    }).whenComplete(() {
+      _pendingPosters.remove(key);
+    }));
   }
 
   Future<bool> checkPermission() async {
@@ -296,6 +305,8 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
     _memoryResources?.unregister(this);
     ++_callCount;
     _posterCache.clear();
+    posterRefreshes.dispose();
+    _http.close(force: true);
     unawaited(_posterPool.close());
     _hasPendingRefresh = false;
     _hasPendingPosterReload = false;

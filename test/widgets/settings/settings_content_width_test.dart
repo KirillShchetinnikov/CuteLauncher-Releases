@@ -1,4 +1,5 @@
 import 'package:flauncher/l10n/app_localizations.dart';
+import 'package:flauncher/models/category.dart';
 import 'package:flauncher/providers/memory_resources.dart';
 import 'package:flauncher/widgets/settings/memory_page.dart';
 import 'package:flauncher/providers/appearance_service.dart';
@@ -9,7 +10,7 @@ import 'package:flauncher/providers/watch_next_service.dart';
 import 'package:flauncher/widgets/settings/appearance_page.dart';
 import 'package:flauncher/widgets/settings/backup_restore_page.dart';
 import 'package:flauncher/widgets/settings/continue_watching_settings_page.dart';
-import 'package:flauncher/widgets/settings/continue_watching_card_size_page.dart';
+import 'package:flauncher/widgets/settings/app_channels_appearance_page.dart';
 import 'package:flauncher/widgets/settings/continue_watching_max_items_page.dart';
 import 'package:flauncher/widgets/settings/screensaver_clock_style_page.dart';
 import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
@@ -35,7 +36,9 @@ void main() {
     'updates': const UpdatesPage(),
     'notifications': const NotificationsSettingsPage(),
     'continue watching': const ContinueWatchingSettingsPage(),
-    'card size': const ContinueWatchingCardSizePage(),
+    'continue watching appearance': const AppChannelsAppearancePage(
+      categoryId: ContinueWatchingSection.sectionId,
+    ),
     'card count': const ContinueWatchingMaxItemsPage(),
     'clock style': const ScreensaverClockStylePage(),
   };

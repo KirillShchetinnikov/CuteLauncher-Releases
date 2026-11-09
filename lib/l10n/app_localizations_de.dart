@@ -10,6 +10,25 @@ class AppLocalizationsDe extends AppLocalizations {
   AppLocalizationsDe([String locale = 'de']) : super(locale);
 
   @override
+  String get contentAppTileStyle => 'Darstellungsquelle';
+
+  @override
+  String get contentTileOwnAppearance => 'Eigene Darstellung';
+
+  @override
+  String get contentTileCommonAppearance => 'Globale Darstellung';
+
+  @override
+  String get contentUseSourceLabels =>
+      'Beschriftungen der ausgewählten Darstellung verwenden';
+
+  @override
+  String get contentLabelSelected => 'Nur ausgewählte Karte';
+
+  @override
+  String get contentLabelAll => 'Alle Karten';
+
+  @override
   String get weatherTextResetFormat => 'Format zurücksetzen';
 
   @override
@@ -389,6 +408,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get delete => 'Löschen';
+
+  @override
+  String get dialogOptionBackButtonActionFirstFeedCard =>
+      'Erste Karte im aktuellen Feed';
 
   @override
   String get dialogOptionBackButtonActionDoNothing => 'Nichts tun';
@@ -3650,6 +3673,33 @@ class AppLocalizationsDe extends AppLocalizations {
   String get remoteMappingAction => 'Aktion';
 
   @override
+  String get remoteMappingChooseAction => 'Aktion auswählen';
+
+  @override
+  String get remoteMappingNavigationGroup => 'Apps und Navigation';
+
+  @override
+  String get remoteMappingScreenSoundGroup => 'Bildschirm und Ton';
+
+  @override
+  String get remoteMappingAutomationGroup => 'Automatisierung';
+
+  @override
+  String get remoteMappingLiveTv => 'Live-TV öffnen';
+
+  @override
+  String get remoteMappingDisplaySettings => 'Anzeigeeinstellungen';
+
+  @override
+  String get remoteMappingBluetoothSettings => 'Bluetooth-Einstellungen';
+
+  @override
+  String get remoteMappingMute => 'Ton stumm- oder einschalten';
+
+  @override
+  String get remoteMappingNeedsAdb => 'ADB erforderlich';
+
+  @override
   String get remoteMappingLearn => 'Fernbedienungstaste erkennen';
 
   @override
@@ -5118,6 +5168,27 @@ class AppLocalizationsDe extends AppLocalizations {
   String get remoteMappingIgnore => 'Taste ignorieren';
 
   @override
+  String get remoteMappingBlackScreen => 'Black Screen umschalten';
+
+  @override
+  String get remoteMappingBlackOverlay => 'Schwarzer Bildschirm';
+
+  @override
+  String get remoteMappingBlackOverlayHelp =>
+      'Ein Tastendruck blendet das Bild aus. Erneut drücken oder Zurück wählen, um es wieder einzublenden. Der Fernseher bleibt eingeschaltet.';
+
+  @override
+  String get remoteMappingTclScreenOff => 'TCL-Bildschirm ausschalten';
+
+  @override
+  String get remoteMappingTclScreenOffHelp =>
+      'Aktiviert den Modus „Nur Audio“ auf kompatiblen TCL-Fernsehern. Blockiert Android den Start, ist eine lokale ADB-Verbindung erforderlich.';
+
+  @override
+  String get remoteMappingBlackScreenHelp =>
+      'Ein Tastendruck blendet den schwarzen Bildschirm ein, der nächste blendet ihn aus. Erforderlich sind Black Screen von jApp, die kostenpflichtige Version und die Berechtigung zur Anzeige über anderen Apps.';
+
+  @override
   String get adbHomeDependencyProtected =>
       'Deaktivierung blockiert: Eine Abhängigkeit von Systemfunktionen wurde gefunden oder konnte nicht geprüft werden. Details in der Diagnose.';
 
@@ -5589,6 +5660,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get settingsGroupIndicators => 'Anzeigen und Meldungen';
+
+  @override
+  String get nightModePanelFill =>
+      'Schaltfläche in der oberen Leiste einfärben';
 
   @override
   String get settingsGroupFocusShape => 'Fokusdarstellung';

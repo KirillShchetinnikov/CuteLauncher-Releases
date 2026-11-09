@@ -12,6 +12,9 @@ import '../landscape_demo_presentation.dart';
 import 'information_settings_page.dart';
 import 'panel_clock_style_page.dart';
 import 'remote_panel_page.dart';
+import '../../models/category.dart';
+import '../../providers/apps_service.dart';
+import '../../providers/launcher_state.dart';
 import '../../providers/remote_panel_service.dart';
 import 'inputs_settings_page.dart';
 import 'settings_style_page.dart';
@@ -87,7 +90,6 @@ import 'package:flauncher/widgets/settings/blocked_notifications_page.dart';
 import 'package:flauncher/widgets/settings/display_settings_page.dart';
 import 'package:flauncher/widgets/settings/notifications_settings_page.dart';
 import 'package:flauncher/widgets/settings/continue_watching_settings_page.dart';
-import 'package:flauncher/widgets/settings/continue_watching_card_size_page.dart';
 import 'package:flauncher/widgets/settings/continue_watching_max_items_page.dart';
 import 'package:flauncher/widgets/settings/continue_watching_apps_page.dart';
 import 'package:flauncher/models/app.dart';
@@ -109,6 +111,7 @@ class _SettingsPanelState extends State<SettingsPanel> {
   bool _backgroundEditing = false;
   bool? _informationSide;
   RemotePanelService? _previewService;
+  LauncherState? _launcherState;
 
   @override
   void initState() {
@@ -122,6 +125,12 @@ class _SettingsPanelState extends State<SettingsPanel> {
     final preview = _previewService;
     if (preview != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) => preview.setSettingsPreview(this, false));
+    }
+    final launcher = _launcherState;
+    if (launcher != null) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => launcher.setSectionPreview(this, null),
+      );
     }
     super.dispose();
   }
@@ -155,7 +164,12 @@ class _SettingsPanelState extends State<SettingsPanel> {
       BlockedNotificationsPage.routeName,
     }.contains(name);
 
-  void _routeChanged(String? name, bool remotePreview, bool backgroundEditing) {
+  void _routeChanged(
+    String? name,
+    bool remotePreview,
+    bool backgroundEditing,
+    int? sectionId,
+  ) {
     final topPanel = remotePreview || _isTopPanelRoute(name);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
@@ -163,6 +177,8 @@ class _SettingsPanelState extends State<SettingsPanel> {
         _previewService ??= context.read<RemotePanelService?>();
       }
       _previewService?.setSettingsPreview(this, remotePreview);
+      if (sectionId != null) _launcherState ??= context.read<LauncherState?>();
+      _launcherState?.setSectionPreview(this, sectionId);
       if (_topPanel != topPanel || _backgroundEditing != backgroundEditing) {
         setState(() { _topPanel = topPanel; _backgroundEditing = backgroundEditing; });
       }
@@ -392,10 +408,16 @@ class _SettingsPanelState extends State<SettingsPanel> {
                         builder: (_) => LauncherSectionsPanelPage(),
                       );
                     case LauncherSectionPanelPage.routeName:
-                      return SettingsRoute(
+                      final index = settings.arguments as int?;
+                      final sections = context.read<AppsService>().launcherSections;
+                      final section = index != null && index >= 0 && index < sections.length
+                          ? sections[index]
+                          : null;
+                      return _SectionSettingsRoute(
                         settings: settings,
+                        sectionId: section is Category ? section.id : null,
                         builder: (_) => LauncherSectionPanelPage(
-                          sectionIndex: settings.arguments as int?,
+                          sectionIndex: index,
                         ),
                       );
                     case DataUsagePeriodPage.routeName:
@@ -462,8 +484,9 @@ class _SettingsPanelState extends State<SettingsPanel> {
                         builder: (_) => const NotificationsSettingsPage(),
                       );
                     case ContinueWatchingSettingsPage.routeName:
-                      return SettingsRoute(
+                      return _SectionSettingsRoute(
                         settings: settings,
+                        sectionId: ContinueWatchingSection.sectionId,
                         builder: (_) => const ContinueWatchingSettingsPage(),
                       );
                     case AppChannelsSettingsPage.routeName:
@@ -475,11 +498,6 @@ class _SettingsPanelState extends State<SettingsPanel> {
                       return SettingsRoute(
                         settings: settings,
                         builder: (_) => const AppChannelsOrderPage(),
-                      );
-                    case ContinueWatchingCardSizePage.routeName:
-                      return SettingsRoute(
-                        settings: settings,
-                        builder: (_) => const ContinueWatchingCardSizePage(),
                       );
                     case ContinueWatchingMaxItemsPage.routeName:
                       return SettingsRoute(
@@ -525,13 +543,24 @@ class _SettingsPanelState extends State<SettingsPanel> {
   }
 }
 
+class _SectionSettingsRoute extends SettingsRoute<dynamic> {
+  final int? sectionId;
+
+  _SectionSettingsRoute({
+    required super.settings,
+    required super.builder,
+    required this.sectionId,
+  });
+}
+
 class _SettingsRouteObserver extends NavigatorObserver {
-  final void Function(String?, bool, bool) changed;
+  final void Function(String?, bool, bool, int?) changed;
   final _routes = <Route<dynamic>>[];
   _SettingsRouteObserver(this.changed);
   void _notify() => changed(_routes.lastOrNull?.settings.name,
       _routes.any((route) => route.settings.name == RemotePanelPage.routeName),
-      _routes.any((route) => route.settings.name == BackgroundInformationSettingsPage.routeName));
+      _routes.any((route) => route.settings.name == BackgroundInformationSettingsPage.routeName),
+      _routes.whereType<_SectionSettingsRoute>().lastOrNull?.sectionId);
   @override
   void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
     _routes.add(route);

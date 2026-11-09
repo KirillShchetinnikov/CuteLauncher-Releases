@@ -18,6 +18,10 @@ class CategoryFocusController {
   bool get hasFocus => _nodes.values.any((node) => node.hasFocus);
   String? get lastPackage => _lastPackage;
   Future<bool> focusPackage(String package) => _materialize(package);
+  Future<bool> focusFirst() {
+    final first = _packages.firstOrNull;
+    return first == null ? Future.value(false) : _materialize(first);
+  }
   bool hasMountedPackage(String package) => _nodes[package]?.context != null;
   Future<bool> restoreAfterEdit(String package, int oldIndex) {
     if (_disposed || _packages.isEmpty) return Future.value(false);

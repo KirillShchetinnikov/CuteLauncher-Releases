@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 class WatchNextProgram {
   final int id;
   final String packageName;
@@ -11,8 +9,10 @@ class WatchNextProgram {
   final int duration;
   final String intentUri;
   final String posterArtUri;
+  final String thumbnailUri;
   final double? posterAspectRatio;
-  Uint8List? posterBytes;
+  final String? feedSubtitle;
+  String get displayTitle => title.trim().isEmpty ? description.trim() : title.trim();
 
   WatchNextProgram({
     required this.id,
@@ -25,11 +25,15 @@ class WatchNextProgram {
     required this.duration,
     required this.intentUri,
     required this.posterArtUri,
+    this.thumbnailUri = '',
     this.posterAspectRatio,
-    this.posterBytes,
+    this.feedSubtitle,
   });
 
-  factory WatchNextProgram.fromMap(Map<dynamic, dynamic> map) {
+  factory WatchNextProgram.fromMap(
+    Map<dynamic, dynamic> map, {
+    String? feedSubtitle,
+  }) {
     return WatchNextProgram(
       id: map['id'] as int? ?? 0,
       packageName: map['packageName'] as String? ?? '',
@@ -41,7 +45,9 @@ class WatchNextProgram {
       duration: map['duration'] as int? ?? 0,
       intentUri: map['intentUri'] as String? ?? '',
       posterArtUri: map['posterArtUri'] as String? ?? '',
+      thumbnailUri: map['thumbnailUri'] as String? ?? '',
       posterAspectRatio: (map['posterAspectRatio'] as num?)?.toDouble(),
+      feedSubtitle: feedSubtitle,
     );
   }
 }

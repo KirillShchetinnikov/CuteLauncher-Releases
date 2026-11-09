@@ -5,6 +5,22 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  testWidgets('skeleton mode is visible and ready without an image answer', (tester) async {
+    var calls = 0;
+    await tester.pumpWidget(Directionality(textDirection: TextDirection.ltr,
+      child: InitialAppImages(showSkeletons: true, onReady: () async { calls++; },
+        child: Builder(builder: (context) {
+          context.getInheritedWidgetOfExactType<AppImagesReadiness>()!.register();
+          return const SizedBox();
+        }))));
+    expect(tester.widget<Opacity>(find.byType(Opacity)).opacity, 1);
+    await tester.pumpAndSettle();
+    expect(calls, 1);
+    expect(tester.widget<IgnorePointer>(find.byType(IgnorePointer)).ignoring, isFalse);
+    await tester.pump(const Duration(seconds: 2));
+    expect(calls, 1);
+    await tester.pumpWidget(const SizedBox());
+  });
   testWidgets('a hung image cannot keep the launcher hidden', (tester) async {
     await tester.pumpWidget(Directionality(textDirection: TextDirection.ltr,
       child: InitialAppImages(child: Builder(builder: (context) {

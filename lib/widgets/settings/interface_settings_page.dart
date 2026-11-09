@@ -52,6 +52,7 @@ class HomeParametersPage extends StatelessWidget {
           Consumer<SettingsService>(
             builder: (context, s, _) => SettingsChoiceTile<String>(
               title: l.backButtonAction,
+              wideValue: true,
               value:
                   s.backButtonAction == BACK_BUTTON_ACTION_SCREENSAVER &&
                       !canStartScreensaver
@@ -61,12 +62,15 @@ class HomeParametersPage extends StatelessWidget {
                 BACK_BUTTON_ACTION_NOTHING,
                 BACK_BUTTON_ACTION_CLOCK,
                 if (canStartScreensaver) BACK_BUTTON_ACTION_SCREENSAVER,
+                BACK_BUTTON_ACTION_FIRST_FEED_CARD,
               ],
               label: (value) => switch (value) {
                 BACK_BUTTON_ACTION_CLOCK =>
                   l.dialogOptionBackButtonActionShowClock,
                 BACK_BUTTON_ACTION_SCREENSAVER when canStartScreensaver =>
                   l.dialogOptionBackButtonActionShowScreensaver,
+                BACK_BUTTON_ACTION_FIRST_FEED_CARD =>
+                  l.dialogOptionBackButtonActionFirstFeedCard,
                 _ => l.dialogOptionBackButtonActionDoNothing,
               },
               onChanged: s.setBackButtonAction,

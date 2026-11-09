@@ -5,11 +5,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../tile_appearance.dart';
 import 'remote_panel_service.dart';
 import '../category_appearance.dart';
+import '../models/category.dart';
 import '../launcher_defaults.dart';
 import '../panel_clock_style.dart';
 import '../background_information_geometry.dart';
 
 class AppearanceService extends ChangeNotifier {
+  static const _labelFields = {'labels', 'labelPosition', 'labelSize', 'labelColor'};
+  static const _contentLabelDefaults = {'labels': 'all', 'labelPosition': 'below'};
   final focusedAppImage = ValueNotifier<ImageProvider?>(null);
   final informationBounds = ValueNotifier<Rect?>(null);
   final backgroundInformationMetrics = ValueNotifier<BackgroundInformationMetrics?>(null);
@@ -79,26 +82,64 @@ class AppearanceService extends ChangeNotifier {
       ...stored.values,
     });
   }
-  TileAppearance tilesFor(int id) {
+  TileAppearance tilesFor(int id, {Category? contentSource}) {
     final style = category(id);
-    return TileAppearance({...({...appearance.values}..remove('sectionPadding')),
+    final local = style.useGlobalTiles ? const <String, dynamic>{} : style.tiles;
+    final source = local['contentAppTileStyle'];
+    final appTiles = source == true || source is int;
+    final ownLabels = appTiles && local['contentUseSourceLabels'] == false;
+    final linked = contentSource != null && !contentSource.isAppChannels &&
+            contentSource.id != id && contentSource.id == source
+        ? category(contentSource.id)
+        : const CategoryAppearance();
+    final common = appearance;
+    final resolved = TileAppearance({
+      ...({...common.values}
+        ..remove('sectionPadding')
+        ..remove('contentAppTileStyle')
+        ..remove('contentUseSourceLabels')),
+      if (!linked.useGlobalTiles)
+        for (final entry in linked.tiles.entries)
+          if (!entry.key.startsWith('section') &&
+              entry.key != 'contentAppTileStyle' &&
+              entry.key != 'contentUseSourceLabels')
+            entry.key: entry.value,
       if (style.values.containsKey('padding')) 'sectionPadding': style.padding,
       if (style.values.containsKey('background')) 'sectionBackground': style.values['background'],
-      if (!style.useGlobalTiles) ...style.tiles});
+      for (final entry in local.entries)
+        if (!appTiles || entry.key.startsWith('section') ||
+            entry.key == 'contentAppTileStyle' || entry.key == 'contentUseSourceLabels')
+          entry.key: entry.value,
+    });
+    if (!ownLabels) return resolved;
+    return resolved.withContentLabels(TileAppearance({
+      ...common.values,
+      ..._contentLabelDefaults,
+      for (final entry in local.entries)
+        if (_labelFields.contains(entry.key)) entry.key: entry.value,
+    }));
   }
   Future<void> setCategoryTile(int id, String key, dynamic value) async {
-    if (id <= 0) return;
+    if (id <= 0 && id != ContinueWatchingSection.sectionId) return;
     final valid = CategoryAppearance.validValues({'tiles': {key: value}})['tiles'] as Map<String, dynamic>;
     if (!valid.containsKey(key)) return;
-    // Equality with today's common value means following future common edits too.
-    final global = key == 'sectionPadding' ? const TileAppearance() : appearance;
-    if (TileAppearance({...global.values, ...valid}).homeFieldValue(key) == global.homeFieldValue(key)) {
+    final categoryStyle = category(id);
+    final local = categoryStyle.useGlobalTiles ? const <String, dynamic>{} : categoryStyle.tiles;
+    final ownLabel = local['contentUseSourceLabels'] == false && _labelFields.contains(key);
+    final defaults = switch (key) {
+      'sectionPadding' || 'contentAppTileStyle' || 'contentUseSourceLabels' => const TileAppearance(),
+      'labels' || 'labelPosition' when ownLabel => const TileAppearance(_contentLabelDefaults),
+      _ => appearance,
+    };
+    // Explicit local size and color stay independent even if they match today.
+    final retainValue = ownLabel && !_contentLabelDefaults.containsKey(key);
+    if (!retainValue && TileAppearance({...defaults.values, ...valid}).homeFieldValue(key) ==
+        defaults.homeFieldValue(key)) {
       await inheritField(id, key);
       return;
     }
-    final values = {...category(id).values, 'useGlobalTiles': false,
-      'tiles': {...(category(id).useGlobalTiles ? <String, dynamic>{} : category(id).tiles),
-        ...valid}};
+    final values = {...categoryStyle.values, 'useGlobalTiles': false,
+      'tiles': {...local, ...valid}};
     final all = CategoryAppearance.decode(preferences.getString(categoryAppearanceKey));
     all['$id'] = CategoryAppearance.validValues(values);
     if (!await preferences.setString(categoryAppearanceKey, jsonEncode(all))) throw StateError('Unable to save category');
@@ -124,8 +165,25 @@ class AppearanceService extends ChangeNotifier {
   Future<void> setUseGlobalTiles(int id, bool useGlobal) async {
     await setCategory(id, 'useGlobalTiles', useGlobal);
   }
-  CategoryAppearance category(int id) => CategoryAppearance(
-    (CategoryAppearance.decode(preferences.getString(categoryAppearanceKey))['$id'] as Map<String, dynamic>?) ?? {});
+  CategoryAppearance category(int id) {
+    final saved = CategoryAppearance.decode(preferences.getString(categoryAppearanceKey))['$id'];
+    if (saved is Map<String, dynamic>) return CategoryAppearance(saved);
+    if (id != ContinueWatchingSection.sectionId) return const CategoryAppearance();
+
+    // An explicit old size remains a local override until the user resets it.
+    final legacy = preferences.getString(legacyWatchNextCardSizeKey);
+    final size = switch (legacy) {
+      'compact' => 112,
+      'large' => 157,
+      final value? => int.tryParse(value),
+      _ => null,
+    };
+    if (size == null) return const CategoryAppearance();
+    return CategoryAppearance({
+      'useGlobalTiles': false,
+      'tiles': {'size': size.clamp(64, 256)},
+    });
+  }
   Future<void> setTapeRows(int id, int rows) async {
     if (id <= 0 || rows < 1 || rows > 6) return;
     final values = CategoryAppearance.decode(preferences.getString(categoryAppearanceKey));
@@ -238,6 +296,7 @@ class AppearanceService extends ChangeNotifier {
     navigation.addAll({...LauncherDefaults.appearance, 'sectionTitles': true});
     if (!await preferences.setString(tileAppearanceKey, jsonEncode(navigation))) throw StateError('Unable to reset appearance');
     final all = CategoryAppearance.decode(preferences.getString(categoryAppearanceKey));
+    all.putIfAbsent('${ContinueWatchingSection.sectionId}', () => <String, dynamic>{});
     for (final id in all.keys.toList()) {
       all[id] = {...(all[id] as Map<String, dynamic>)}..remove('tiles')..remove('padding')..remove('background')..remove('useGlobalTiles');
     }

@@ -12,6 +12,7 @@ final class RemoteButtonRemapper implements AutoCloseable {
     static boolean editing;
     static volatile String status = "idle";
     private final LauncherAccessibilityService service;
+    private final BlackScreenWindow blackScreen;
     private final Handler main = new Handler(Looper.getMainLooper());
     private final ExecutorService storage = Executors.newSingleThreadExecutor();
     private final ThreadPoolExecutor power = new ThreadPoolExecutor(1, 1, 30, TimeUnit.SECONDS,
@@ -27,6 +28,7 @@ final class RemoteButtonRemapper implements AutoCloseable {
 
     RemoteButtonRemapper(LauncherAccessibilityService service) {
         this.service = service; current = this;
+        blackScreen = new BlackScreenWindow(service);
         network.allowCoreThreadTimeOut(true);
         power.allowCoreThreadTimeOut(true);
         int expected = ++generation;
@@ -39,9 +41,18 @@ final class RemoteButtonRemapper implements AutoCloseable {
         storage.shutdown();
     }
     static void updated(RemoteMappingConfiguration configuration) {
-        if (current != null) { current.generation++; current.configuration = configuration; LauncherAccessibilityService.volumeConfigured(configuration); }
+        if (current != null) {
+            current.generation++;
+            current.configuration = configuration;
+            if (!configuration.enabled || configuration.bindings.values().stream()
+                    .noneMatch(binding -> binding.enabled() && binding.action().equals("black_overlay"))) {
+                current.blackScreen.close();
+            }
+            LauncherAccessibilityService.volumeConfigured(configuration);
+        }
         status = "idle";
     }
+    boolean dismissBlackScreenOnBack(KeyEvent event) { return blackScreen.back(event); }
     private RemoteMappingConfiguration.Binding shortBinding(int code, boolean suspended) {
         if (suspended) return null;
         return configuration.pressBinding(code);
@@ -89,6 +100,22 @@ final class RemoteButtonRemapper implements AutoCloseable {
                 case "back":
                     status = service.performGlobalAction(android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BACK)
                         ? "success" : "unavailable"; break;
+                case "black_screen":
+                    Intent toggle = new Intent().setClassName("io.japp.blackscreen",
+                        "io.japp.blackscreen.ui.ToggleBlackScreenActivity");
+                    toggle.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    service.startActivity(toggle); status = "success"; break;
+                case "black_overlay":
+                    blackScreen.toggle(); status = "success"; break;
+                case "tcl_screen_off":
+                    if (!TclScreenOff.available(service)) { status = "unavailable"; break; }
+                    try {
+                        status = service.startService(TclScreenOff.intent()) != null ? "success" : "unavailable";
+                    } catch (IllegalStateException backgroundStartDenied) {
+                        status = "busy";
+                        TvPowerBridge.requestTclScreenOff(service, power, result -> { if (!closed) status = result; });
+                    }
+                    break;
                 case "app":
                     service.dismissPanel();
                     Intent app = service.getPackageManager().getLeanbackLaunchIntentForPackage(binding.target());
@@ -96,6 +123,17 @@ final class RemoteButtonRemapper implements AutoCloseable {
                     if (app == null) { status = "unavailable"; break; }
                     app.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     service.startActivity(app); status = "success"; break;
+                case "hdmi":
+                    service.dismissPanel();
+                    status = TvInputLaunch.openHdmi(service, binding.target()) ? "success" : "unavailable"; break;
+                case "live_tv":
+                case "display_settings":
+                case "wifi_settings":
+                case "bluetooth_settings":
+                    service.dismissPanel();
+                    status = RemoteTvActions.open(service, binding.action()) ? "success" : "unavailable"; break;
+                case "mute":
+                    status = RemoteTvActions.toggleMute(service) ? "success" : "unavailable"; break;
                 case "sleep":
                 case "reboot":
                     status = "busy";
@@ -118,6 +156,7 @@ final class RemoteButtonRemapper implements AutoCloseable {
         } catch (Exception ignored) { if (!closed) status = "network_error"; }
     }
     void interrupt() {
+        blackScreen.close();
         policy.cancelActions(); holdTimers.values().forEach(main::removeCallbacks); holdTimers.clear();
     }
     void filterPaused() {
@@ -125,6 +164,7 @@ final class RemoteButtonRemapper implements AutoCloseable {
         policy.clear(); // UP may pass outside the service while filtering is disabled.
     }
     @Override public void close() {
+        blackScreen.close();
         // Allow an accepted bounded power request to finish and release the shared busy guard.
         power.shutdown();
         closed = true; policy.clear(); holdTimers.values().forEach(main::removeCallbacks); holdTimers.clear(); storage.shutdownNow(); network.shutdownNow();

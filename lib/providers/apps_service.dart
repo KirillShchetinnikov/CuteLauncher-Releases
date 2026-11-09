@@ -368,6 +368,16 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
               }
             }
           }
+          if (_settingsService?.selectedAppChannels.any(
+                (key) => key.startsWith('$packageName:'),
+              ) == true) {
+            try {
+              await refreshState();
+              return;
+            } catch (error, stack) {
+              DiagnosticsStore.instance.recordException('appsService', error, stack);
+            }
+          }
           break;
       }
 
@@ -403,7 +413,10 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
     final previousLayouts = prefs.getString(categoryAppearanceKey);
     try {
     await _database.transaction(() async {
-      final layouts = <String, dynamic>{};
+      final layouts = <String, dynamic>{
+        if (prefs.containsKey(legacyWatchNextCardSizeKey))
+          '${ContinueWatchingSection.sectionId}': <String, dynamic>{},
+      };
       await _database.delete(_database.appsCategories).go();
       await _database.delete(_database.launcherSpacers).go();
       await _database.delete(_database.categories).go();
@@ -648,6 +661,23 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
 
     for (Category category in _categoriesById.values) {
       sortCategory(category);
+    }
+
+    // A cached or launcher-only startup list omits installed publishers.
+    final settings = _settingsService;
+    if (catalog == null && settings != null && !isDisposed) {
+      final selected = settings.selectedAppChannels;
+      final remaining = selected
+          .where((key) =>
+              appsFromSystemByPackageName.containsKey(key.split(':').first))
+          .toList();
+      if (remaining.length != selected.length) {
+        try {
+          await settings.setSelectedAppChannels(remaining);
+        } catch (error, stack) {
+          DiagnosticsStore.instance.recordException('appsService', error, stack);
+        }
+      }
     }
 
     if (shouldNotifyListeners) {

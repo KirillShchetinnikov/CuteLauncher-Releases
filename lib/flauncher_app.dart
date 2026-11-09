@@ -60,6 +60,8 @@ class _FLauncherAppState extends State<FLauncherApp> {
   VoidCallback? _closePanelNotice;
   int _settingsRequest = 0;
 
+  void _focusFirstFeedCard() => _launcherKey.currentState?.focusFirstFeedCard();
+
   @override
   void initState() {
     super.initState();
@@ -180,7 +182,7 @@ class _FLauncherAppState extends State<FLauncherApp> {
                 _navigatorKey.currentState?.maybePop();
                 return null;
               })
-            : BackAction(context),
+            : BackAction(context, onFirstFeedCard: _focusFirstFeedCard),
         DirectionalFocusIntent: SoundFeedbackDirectionalFocusAction(context)
       },
       localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -270,7 +272,7 @@ class _FLauncherAppState extends State<FLauncherApp> {
           child: FLauncher(key: _launcherKey),
           onPopInvokedWithResult: (didPop, result) {
             LauncherState launcherState = context.read<LauncherState>();
-            launcherState.handleBackNavigation(context);
+            launcherState.handleBackNavigation(context, onFirstFeedCard: _focusFirstFeedCard);
           }
         )
       ),

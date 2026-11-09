@@ -134,6 +134,45 @@ void main() {
     },
   );
   testWidgets(
+    'configured feeds in app tile mode keep the common size editable',
+    (tester) async {
+      final grid = Category(id: 1, name: 'Grid', type: CategoryType.grid);
+      grid.applications.add(
+        App(packageName: 'app', name: 'App', version: '1', hidden: false),
+      );
+      when(apps.categories).thenReturn([
+        grid,
+        Category(id: 2, name: 'Feeds', systemKey: 'app_channels'),
+      ]);
+      await pump(tester, control('size'));
+      bool enabled() => tester
+          .widget<SettingsValueStepper>(find.byType(SettingsValueStepper))
+          .enabled;
+
+      await appearance.setCategoryTile(2, 'contentAppTileStyle', true);
+      await tester.pumpAndSettle();
+      expect(enabled(), isFalse);
+
+      await settings.setSelectedAppChannels(['app:1']);
+      await tester.pumpAndSettle();
+      expect(enabled(), isTrue);
+
+      await appearance.setCategoryTile(2, 'contentAppTileStyle', grid.id);
+      await appearance.setCategoryTile(
+        ContinueWatchingSection.sectionId, 'contentAppTileStyle', grid.id,
+      );
+      await settings.setShowContinueWatching(true);
+      await tester.pumpAndSettle();
+      expect(enabled(), isFalse);
+
+      await settings.setShowContinueWatching(false);
+      await appearance.setCategoryTile(2, 'contentAppTileStyle', false);
+      await tester.pumpAndSettle();
+      expect(enabled(), isFalse);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+  testWidgets(
     'global dependent field follows local label mode, not global label mode',
     (tester) async {
       await appearance.setCategoryTile(1, 'labels', 'all');

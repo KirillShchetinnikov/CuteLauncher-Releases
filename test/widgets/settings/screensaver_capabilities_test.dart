@@ -1,4 +1,5 @@
 import 'package:flauncher/l10n/app_localizations.dart';
+import 'package:flauncher/settings_import.dart';
 import 'package:flauncher/providers/screensaver_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/appearance_service.dart';
@@ -105,6 +106,25 @@ void main() {
       expect(find.byType(AlertDialog), findsNothing);
       await pump(tester, const AppearanceSettingsPage());
       expect(find.text('Choose screensaver in Android TV'), findsNothing);
+    },
+  );
+
+  testWidgets(
+    'Back can be assigned to the first feed card and restored from settings',
+    (tester) async {
+      await pump(tester, const HomeParametersPage());
+      await tester.tap(find.text('Back button action'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('First card in current feed'));
+      await tester.pumpAndSettle();
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.getString('back_button_action'), BACK_BUTTON_ACTION_FIRST_FEED_CARD);
+      expect(compatibleSettings({
+        'back_button_action': BACK_BUTTON_ACTION_FIRST_FEED_CARD,
+      }, {'back_button_action': ''}), {
+        'back_button_action': BACK_BUTTON_ACTION_FIRST_FEED_CARD,
+      });
+      expect(find.text('First card in current feed'), findsOneWidget);
     },
   );
 

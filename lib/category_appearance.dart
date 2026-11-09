@@ -1,9 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'models/category.dart';
 import 'tile_appearance.dart';
 
 const categoryAppearanceKey = 'category_appearance';
+const legacyWatchNextCardSizeKey = 'continue_watching_card_size';
 
 class CategoryAppearance {
   final Map<String, dynamic> values;
@@ -46,7 +48,8 @@ class CategoryAppearance {
       if (entry.key == 'tiles' && v is Map) {
         const keys = ['size', 'aspectRatio', 'bannerImageMode', 'iconImageMode', 'radius', 'horizontalGap',
           'verticalGap', 'iconScale', 'labels', 'labelPosition', 'labelSize', 'labelColor',
-          'backgroundColor', 'opacity', 'shadow', 'blurTiles', 'sectionPadding', 'sectionBackground',
+          'backgroundColor', 'opacity', 'shadow', 'blurTiles', 'contentAppTileStyle',
+          'contentUseSourceLabels', 'sectionPadding', 'sectionBackground',
           'sectionTitles', 'sectionTitleSize', 'sectionTitleAligned', 'sectionIcons', 'sectionOpacity', 'sectionRadius'];
         result['tiles'] = TileAppearance.validValues(v)
           ..removeWhere((key, _) => !keys.contains(key));
@@ -72,7 +75,8 @@ class CategoryAppearance {
         for (final entry in data.entries)
           if (entry.key is String &&
               int.tryParse(entry.key) != null &&
-              int.parse(entry.key) > 0 &&
+              (int.parse(entry.key) > 0 ||
+                  int.parse(entry.key) == ContinueWatchingSection.sectionId) &&
               entry.value is Map)
             entry.key as String: validValues(entry.value),
       };

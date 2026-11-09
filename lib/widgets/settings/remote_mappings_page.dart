@@ -10,12 +10,15 @@ import 'package:provider/provider.dart';
 import '../../bridge_result.dart';
 import '../../document_files.dart';
 import '../../l10n/app_localizations.dart';
+import '../../models/tv_input.dart';
 import '../../providers/apps_service.dart';
+import '../../providers/tv_inputs_service.dart';
 import '../../remote_mapping_configuration.dart';
 import '../application_list_icon.dart';
 import '../launcher_dialog.dart';
 import '../rounded_switch_list_tile.dart';
 import 'focusable_settings_tile.dart';
+import 'remote_action_picker.dart';
 import 'settings_choice_tile.dart';
 import 'settings_page_layout.dart';
 import 'settings_route.dart';
@@ -55,8 +58,21 @@ String _actionLabel(AppLocalizations l, String value) => switch (value) {
   'recents' => l.remoteMappingRecents,
   'sleep' => l.tvPowerOff,
   'reboot' => l.tvPowerReboot,
+  'black_screen' => l.remoteMappingBlackScreen,
+  'black_overlay' => l.remoteMappingBlackOverlay,
+  'tcl_screen_off' => l.remoteMappingTclScreenOff,
+  'hdmi' => l.autoLaunchHdmi,
+  'live_tv' => l.remoteMappingLiveTv,
+  'display_settings' => l.remoteMappingDisplaySettings,
+  'wifi_settings' => l.networkSystemSettings,
+  'bluetooth_settings' => l.remoteMappingBluetoothSettings,
+  'mute' => l.remoteMappingMute,
   _ => value,
 };
+
+String _hdmiLabel(AppLocalizations l, List<TvInput> inputs, String id) =>
+    inputs.where((input) => input.matchesId(id)).firstOrNull?.label ??
+    l.inputsUnavailableStatus;
 
 String _bindingLabel(AppLocalizations l, RemoteMapping item) =>
     '${item.name.isEmpty ? remoteKeyLabel(l, item.keyCode) : item.name}${item.trigger == 'hold' ? ' — ${l.remoteMappingHold}' : ''}';
@@ -73,6 +89,9 @@ class _RemoteMappingsPageState extends State<RemoteMappingsPage>
   RemoteMappingConfiguration _config = const RemoteMappingConfiguration();
   bool _busy = true, _failed = false, _loaded = false;
   bool _connected = false;
+  bool _tclScreenOff = false;
+  bool _directHdmi = false;
+  Set<String> _tvActions = {};
   String _status = 'idle';
 
   @override
@@ -122,6 +141,10 @@ class _RemoteMappingsPageState extends State<RemoteMappingsPage>
           _failed = false;
           _connected =
               result['permission'] == true && result['connected'] == true;
+          _tclScreenOff = result['tclScreenOff'] == true;
+          _directHdmi = result['directHdmi'] == true;
+          _tvActions =
+              (result['tvActions'] as List?)?.whereType<String>().toSet() ?? {};
           _status = result['status'] as String? ?? 'idle';
         });
       }
@@ -169,6 +192,9 @@ class _RemoteMappingsPageState extends State<RemoteMappingsPage>
               .map((item) => item.slot)
               .toSet(),
           connected: _connected,
+          tclScreenOff: _tclScreenOff,
+          directHdmi: _directHdmi,
+          tvActions: _tvActions,
           onSave: (value) => _load(
             (mapping == null
                     ? _config
@@ -197,6 +223,7 @@ class _RemoteMappingsPageState extends State<RemoteMappingsPage>
         children: [master, if (_failed) Text(l.remoteMappingInvalid)],
       );
     }
+    final inputs = context.watch<TvInputsService?>()?.inputs ?? [];
     return SettingsPageLayout(
       title: Text(l.remoteBindings),
       child: ListView(
@@ -211,7 +238,7 @@ class _RemoteMappingsPageState extends State<RemoteMappingsPage>
             FocusableSettingsTile(
               title: Text(_bindingLabel(l, item)),
               trailing: Text(
-                '${_actionLabel(l, item.action)} · ${item.enabled ? l.enabled : l.disabled}',
+                '${item.action == 'hdmi' ? _hdmiLabel(l, inputs, item.target) : _actionLabel(l, item.action)} · ${item.enabled ? l.enabled : l.disabled}',
               ),
               enabled: !_busy,
               onPressed: () => _edit(item),
@@ -241,12 +268,18 @@ class _MappingEditor extends StatefulWidget {
   final RemoteMapping? mapping;
   final Set<String> used;
   final bool connected;
+  final bool tclScreenOff;
+  final bool directHdmi;
+  final Set<String> tvActions;
   final Future<bool> Function(RemoteMapping) onSave;
   final Future<bool> Function()? onDelete;
   const _MappingEditor({
     this.mapping,
     required this.used,
     required this.connected,
+    required this.tclScreenOff,
+    required this.directHdmi,
+    required this.tvActions,
     required this.onSave,
     this.onDelete,
   });
@@ -396,6 +429,111 @@ class _MappingEditorState extends State<_MappingEditor> {
     return null;
   }
 
+  Future<void> _chooseAction() async {
+    final l = AppLocalizations.of(context)!;
+    final inputs = context.read<TvInputsService?>()?.inputs ?? [];
+    RemoteActionChoice choice(
+      String action, {
+      String target = '',
+      String? label,
+      String? detail,
+      bool enabled = true,
+    }) => (
+      action: action,
+      target: target,
+      label: label ?? _actionLabel(l, action),
+      detail: detail,
+      enabled: enabled,
+    );
+    bool visible(String action) =>
+        widget.tvActions.contains(action) || _action == action;
+    RemoteActionChoice systemChoice(String action) => choice(
+      action,
+      enabled: widget.tvActions.contains(action),
+      detail: widget.tvActions.contains(action) ? null : l.networkUnavailable,
+    );
+    final hdmi = [
+      if (widget.directHdmi)
+        for (final input in inputs)
+          if (input.type == TvInputType.hdmi && input.id.isNotEmpty)
+            choice(
+              'hdmi',
+              target: input.matchesId(_target) && _action == 'hdmi'
+                  ? _target
+                  : input.id,
+              label: input.label,
+            ),
+    ];
+    final inputChoices = [
+      ...hdmi,
+      if (_action == 'hdmi' && !hdmi.any((item) => item.target == _target))
+        choice(
+          'hdmi',
+          target: _target,
+          enabled: false,
+          detail: l.inputsUnavailableStatus,
+        ),
+      if (visible('live_tv')) systemChoice('live_tv'),
+    ];
+    final systemChoices = [
+      for (final action in ['wifi_settings', 'bluetooth_settings'])
+        if (visible(action)) systemChoice(action),
+    ];
+    final result = await showLauncherDialog<RemoteActionChoice>(
+      context: context,
+      builder: (_) => RemoteActionPicker(
+        action: _action,
+        target: _action == 'hdmi' ? _target : '',
+        ignore: choice('ignore'),
+        groups: [
+          (
+            label: l.remoteMappingNavigationGroup,
+            choices: [
+              for (final action in ['app', 'home', 'back', 'panel', 'recents'])
+                choice(action),
+            ],
+          ),
+          if (inputChoices.isNotEmpty) (label: l.inputs, choices: inputChoices),
+          (
+            label: l.remoteMappingScreenSoundGroup,
+            choices: [
+              if (visible('display_settings')) systemChoice('display_settings'),
+              choice('black_overlay'),
+              if (widget.tclScreenOff || _action == 'tcl_screen_off')
+                choice(
+                  'tcl_screen_off',
+                  enabled: widget.tclScreenOff,
+                  detail: widget.tclScreenOff ? null : l.networkUnavailable,
+                ),
+              choice('black_screen'),
+              if (visible('mute')) systemChoice('mute'),
+            ],
+          ),
+          (
+            label: l.tvPowerTitle,
+            choices: [
+              choice('sleep'),
+              choice('reboot', detail: l.remoteMappingNeedsAdb),
+            ],
+          ),
+          if (systemChoices.isNotEmpty)
+            (label: l.system, choices: systemChoices),
+          (label: l.remoteMappingAutomationGroup, choices: [choice('webhook')]),
+        ],
+      ),
+    );
+    if (!mounted ||
+        result == null ||
+        (result.action == _action &&
+            (result.action != 'hdmi' || result.target == _target))) {
+      return;
+    }
+    setState(() {
+      _action = result.action;
+      _target = result.target;
+    });
+  }
+
   Future<void> _app() async {
     final l = AppLocalizations.of(context)!;
     final apps =
@@ -506,29 +644,29 @@ class _MappingEditorState extends State<_MappingEditor> {
               SettingsSection(
                 title: l.remoteMappingAction,
                 children: [
-                  SettingsChoiceTile<String>(
-                    title: l.remoteMappingAction,
-                    value: _action,
-                    options: const [
-                      'app',
-                      'home',
-                      'back',
-                      'webhook',
-                      'panel',
-                      'recents',
-                      'sleep',
-                      'reboot',
-                      'ignore',
-                    ],
-                    label: (value) => _actionLabel(l, value),
+                  FocusableSettingsTile(
+                    title: Text(l.remoteMappingAction),
+                    trailing: Text(
+                      _action == 'hdmi'
+                          ? _hdmiLabel(
+                              l,
+                              context.watch<TvInputsService?>()?.inputs ?? [],
+                              _target,
+                            )
+                          : _actionLabel(l, _action),
+                    ),
+                    wideValue: true,
                     enabled: !_importing && !_saving,
-                    onChanged: (value) => setState(() {
-                      _action = value;
-                      _target = '';
-                    }),
+                    onPressed: _chooseAction,
                   ),
                   if (_action == 'sleep' || _action == 'reboot')
                     SettingsHelp(text: l.tvPowerHelp),
+                  if (_action == 'black_screen')
+                    SettingsHelp(text: l.remoteMappingBlackScreenHelp),
+                  if (_action == 'black_overlay')
+                    SettingsHelp(text: l.remoteMappingBlackOverlayHelp),
+                  if (_action == 'tcl_screen_off')
+                    SettingsHelp(text: l.remoteMappingTclScreenOffHelp),
                   if (_action == 'app')
                     FocusableSettingsTile(
                       title: Text(l.applications),

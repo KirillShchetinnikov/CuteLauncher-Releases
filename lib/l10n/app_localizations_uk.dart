@@ -10,6 +10,25 @@ class AppLocalizationsUk extends AppLocalizations {
   AppLocalizationsUk([String locale = 'uk']) : super(locale);
 
   @override
+  String get contentAppTileStyle => 'Джерело оформлення';
+
+  @override
+  String get contentTileOwnAppearance => 'Власне оформлення';
+
+  @override
+  String get contentTileCommonAppearance => 'Спільне оформлення';
+
+  @override
+  String get contentUseSourceLabels =>
+      'Використовувати підписи з вибраного оформлення';
+
+  @override
+  String get contentLabelSelected => 'Лише вибрана картка';
+
+  @override
+  String get contentLabelAll => 'Усі картки';
+
+  @override
   String get weatherTextResetFormat => 'Скинути формат';
 
   @override
@@ -388,6 +407,10 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get delete => 'Видалити';
+
+  @override
+  String get dialogOptionBackButtonActionFirstFeedCard =>
+      'На першу картку поточної стрічки';
 
   @override
   String get dialogOptionBackButtonActionDoNothing => 'Нічого не робити';
@@ -3619,6 +3642,33 @@ class AppLocalizationsUk extends AppLocalizations {
   String get remoteMappingAction => 'Дія';
 
   @override
+  String get remoteMappingChooseAction => 'Вибрати дію';
+
+  @override
+  String get remoteMappingNavigationGroup => 'Застосунки й навігація';
+
+  @override
+  String get remoteMappingScreenSoundGroup => 'Екран і звук';
+
+  @override
+  String get remoteMappingAutomationGroup => 'Автоматизація';
+
+  @override
+  String get remoteMappingLiveTv => 'Відкрити ефірне ТБ';
+
+  @override
+  String get remoteMappingDisplaySettings => 'Налаштування екрана';
+
+  @override
+  String get remoteMappingBluetoothSettings => 'Налаштування Bluetooth';
+
+  @override
+  String get remoteMappingMute => 'Вимкнути або повернути звук';
+
+  @override
+  String get remoteMappingNeedsAdb => 'Потрібен ADB';
+
+  @override
   String get remoteMappingLearn => 'Визначити кнопку пульта';
 
   @override
@@ -5077,6 +5127,27 @@ class AppLocalizationsUk extends AppLocalizations {
   String get remoteMappingIgnore => 'Ігнорувати кнопку';
 
   @override
+  String get remoteMappingBlackScreen => 'Перемкнути Black Screen';
+
+  @override
+  String get remoteMappingBlackOverlay => 'Чорний екран';
+
+  @override
+  String get remoteMappingBlackOverlayHelp =>
+      'Натисніть один раз, щоб приховати зображення. Натисніть ще раз або натисніть Назад, щоб повернути його. Телевізор залишається ввімкненим.';
+
+  @override
+  String get remoteMappingTclScreenOff => 'Вимкнути екран TCL';
+
+  @override
+  String get remoteMappingTclScreenOffHelp =>
+      'Вмикає штатний режим «Лише звук» на сумісних телевізорах TCL. Якщо Android блокує запуск, потрібне локальне з’єднання ADB.';
+
+  @override
+  String get remoteMappingBlackScreenHelp =>
+      'Натисніть один раз, щоб показати чорний екран, і ще раз, щоб приховати його. Потрібні платна версія Black Screen від jApp і дозвіл на показ поверх інших застосунків.';
+
+  @override
   String get adbHomeDependencyProtected =>
       'Вимкнення заблоковано: виявлено залежність системних функцій або її неможливо перевірити. Подробиці — у діагностиці.';
 
@@ -5544,6 +5615,9 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get settingsGroupIndicators => 'Індикація та повідомлення';
+
+  @override
+  String get nightModePanelFill => 'Заливка кнопки у верхній панелі';
 
   @override
   String get settingsGroupFocusShape => 'Форма виділення';

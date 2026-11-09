@@ -7,7 +7,9 @@ import '../diagnostics/startup_trace.dart';
 class InitialAppImages extends StatefulWidget {
   final Widget child;
   final Future<void> Function()? onReady;
-  const InitialAppImages({super.key, required this.child, this.onReady});
+  final bool showSkeletons;
+  const InitialAppImages({super.key, required this.child, this.onReady,
+    this.showSkeletons = false});
 
   @override
   State<InitialAppImages> createState() => _InitialAppImagesState();
@@ -21,7 +23,7 @@ class _InitialAppImagesState extends State<InitialAppImages> {
   Timer? _timeout;
 
   VoidCallback _register([BuildContext? context]) {
-    if (_ready) return () {};
+    if (_ready || widget.showSkeletons) return () {};
     final ticket = Object();
     _pending[ticket] = context;
     bool completed = false;
@@ -78,10 +80,12 @@ class _InitialAppImagesState extends State<InitialAppImages> {
   @override
   void initState() {
     super.initState();
-    _timeout = Timer(const Duration(milliseconds: 1200), () {
-      _timedOut = true;
-      _checkReady();
-    });
+    if (!widget.showSkeletons) {
+      _timeout = Timer(const Duration(milliseconds: 1200), () {
+        _timedOut = true;
+        _checkReady();
+      });
+    }
     _checkReady();
   }
 
@@ -93,7 +97,7 @@ class _InitialAppImagesState extends State<InitialAppImages> {
         register: _register,
         child: IgnorePointer(
           ignoring: !_ready,
-          child: Opacity(opacity: _ready ? 1 : 0, child: widget.child),
+          child: Opacity(opacity: _ready || widget.showSkeletons ? 1 : 0, child: widget.child),
         ),
       );
 }

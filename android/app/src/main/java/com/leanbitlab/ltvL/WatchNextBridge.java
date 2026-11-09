@@ -118,7 +118,7 @@ final class WatchNextBridge implements EventChannel.StreamHandler {
                 TvContract.WatchNextPrograms.COLUMN_LAST_ENGAGEMENT_TIME_UTC_MILLIS + " DESC")) {
 
             if (cursor == null) {
-                return list;
+                throw new IllegalStateException("Watch Next provider returned no cursor");
             }
 
             final int maxFetch = 100;
@@ -136,18 +136,16 @@ final class WatchNextBridge implements EventChannel.StreamHandler {
                 }
 
                 String poster = cursorStringOrEmpty(cursor, TvContract.WatchNextPrograms.COLUMN_POSTER_ART_URI);
-                if (poster.isEmpty()) {
-                    poster = cursorStringOrEmpty(cursor, TvContract.WatchNextPrograms.COLUMN_THUMBNAIL_URI);
-                }
+                String thumbnail = cursorStringOrEmpty(cursor, TvContract.WatchNextPrograms.COLUMN_THUMBNAIL_URI);
 
-                String title = cursorStringOrEmpty(cursor, TvContract.WatchNextPrograms.COLUMN_TITLE);
-                String episodeTitle = cursorStringOrEmpty(cursor, TvContract.WatchNextPrograms.COLUMN_EPISODE_TITLE);
+                String title = cursorStringOrEmpty(cursor, TvContract.WatchNextPrograms.COLUMN_TITLE).trim();
+                String episodeTitle = cursorStringOrEmpty(cursor, TvContract.WatchNextPrograms.COLUMN_EPISODE_TITLE).trim();
                 if (title.isEmpty() && !episodeTitle.isEmpty()) {
                     title = episodeTitle;
                 }
 
-                String shortDesc = cursorStringOrEmpty(cursor, TvContract.WatchNextPrograms.COLUMN_SHORT_DESCRIPTION);
-                String longDesc = cursorStringOrEmpty(cursor, TvContract.WatchNextPrograms.COLUMN_LONG_DESCRIPTION);
+                String shortDesc = cursorStringOrEmpty(cursor, TvContract.WatchNextPrograms.COLUMN_SHORT_DESCRIPTION).trim();
+                String longDesc = cursorStringOrEmpty(cursor, TvContract.WatchNextPrograms.COLUMN_LONG_DESCRIPTION).trim();
 
                 String description = shortDesc;
                 if (description.isEmpty() || description.trim().equalsIgnoreCase(title.trim())) {
@@ -168,7 +166,10 @@ final class WatchNextBridge implements EventChannel.StreamHandler {
                 map.put("playbackPosition", cursor.getLong(cursor.getColumnIndexOrThrow(TvContract.WatchNextPrograms.COLUMN_LAST_PLAYBACK_POSITION_MILLIS)));
                 map.put("duration", cursor.getLong(cursor.getColumnIndexOrThrow(TvContract.WatchNextPrograms.COLUMN_DURATION_MILLIS)));
                 map.put("intentUri", cursorStringOrEmpty(cursor, TvContract.WatchNextPrograms.COLUMN_INTENT_URI));
-                map.put("posterArtUri", poster);
+                map.put("posterArtUri", poster.isEmpty() ? thumbnail : poster);
+                if (!poster.isEmpty() && !thumbnail.isEmpty() && !poster.equals(thumbnail)) {
+                    map.put("thumbnailUri", thumbnail);
+                }
                 list.add(map);
             }
 
@@ -189,7 +190,7 @@ final class WatchNextBridge implements EventChannel.StreamHandler {
                 list = new ArrayList<>(list.subList(0, 20));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new IllegalStateException("Unable to read Watch Next", e);
         }
 
         return list;
@@ -210,7 +211,7 @@ final class WatchNextBridge implements EventChannel.StreamHandler {
         }
     }
 
-    private byte[] readPosterImage(java.io.InputStream input) throws java.io.IOException {
+    private static byte[] readPosterImage(java.io.InputStream input) throws java.io.IOException {
         byte[] bytes = BoundedImageInput.read(input, BoundedImageInput.MAX_BYTES);
         android.graphics.BitmapFactory.Options dimensions = new android.graphics.BitmapFactory.Options();
         dimensions.inJustDecodeBounds = true;
@@ -223,8 +224,6 @@ final class WatchNextBridge implements EventChannel.StreamHandler {
         return bytes;
     }
 
-    // android.resource URIs name resources of other installed apps, not this APK's R table.
-    @android.annotation.SuppressLint("DiscouragedApi")
     byte[] getWatchNextPoster(String posterArtUri) {
         if (posterArtUri == null || posterArtUri.isEmpty()) {
             return null;
@@ -249,34 +248,7 @@ final class WatchNextBridge implements EventChannel.StreamHandler {
                     }
                 }
             } else if (posterArtUri.startsWith("android.resource://")) {
-                Uri uri = Uri.parse(posterArtUri);
-                try (java.io.InputStream inputStream = context.getContentResolver().openInputStream(uri)) {
-                    if (inputStream != null) {
-                        return readPosterImage(inputStream);
-                    }
-                } catch (Exception ignored) {}
-                try {
-                    String authority = uri.getAuthority();
-                    if (authority != null && !authority.isEmpty()) {
-                        android.content.res.Resources res = context.getPackageManager().getResourcesForApplication(authority);
-                        List<String> pathSegments = uri.getPathSegments();
-                        int resId = 0;
-                        if (pathSegments.size() == 1) {
-                            try {
-                                resId = Integer.parseInt(pathSegments.get(0));
-                            } catch (NumberFormatException ignored) {}
-                        } else if (pathSegments.size() >= 2) {
-                            String type = pathSegments.get(0);
-                            String name = pathSegments.get(1);
-                            resId = res.getIdentifier(name, type, authority);
-                        }
-                        if (resId != 0) {
-                            try (java.io.InputStream is = res.openRawResource(resId)) {
-                                return readPosterImage(is);
-                            }
-                        }
-                    }
-                } catch (Exception ignored) {}
+                return readResourcePoster(context, Uri.parse(posterArtUri));
             } else {
                 Uri uri = Uri.parse(posterArtUri);
                 try (java.io.InputStream inputStream = context.getContentResolver().openInputStream(uri)) {
@@ -288,6 +260,33 @@ final class WatchNextBridge implements EventChannel.StreamHandler {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
+    }
+
+    // Resource URIs can name resources of other installed apps.
+    @android.annotation.SuppressLint("DiscouragedApi")
+    static byte[] readResourcePoster(Context context, Uri uri) {
+        try (java.io.InputStream input = context.getContentResolver().openInputStream(uri)) {
+            if (input != null) return readPosterImage(input);
+        } catch (Exception ignored) {}
+
+        String authority = uri.getAuthority();
+        if (authority == null || authority.isEmpty()) return null;
+        try {
+            var resources = context.getPackageManager().getResourcesForApplication(authority);
+            List<String> segments = uri.getPathSegments();
+            int resourceId = 0;
+            if (segments.size() == 1) {
+                resourceId = Integer.parseInt(segments.get(0));
+            } else if (segments.size() >= 2) {
+                resourceId = resources.getIdentifier(segments.get(1), segments.get(0), authority);
+            }
+            if (resourceId != 0) {
+                try (java.io.InputStream input = resources.openRawResource(resourceId)) {
+                    return readPosterImage(input);
+                }
+            }
+        } catch (Exception ignored) {}
         return null;
     }
 

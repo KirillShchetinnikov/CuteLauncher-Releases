@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/widgets.dart';
 
 import 'tile_appearance.dart';
+import 'widgets/tile_theme_outline.dart';
 
 /// One geometry shared by rendering, remote navigation and materialization.
 class HomeLayout {
@@ -32,6 +33,7 @@ class HomeLayout {
     int requestedRows = 1,
     int requestedColumns = 0,
     double labelHeight = 0,
+    Size? fixedTileSize,
   }) {
     final safeWidth = math.max(48.0, availableWidth);
     // Focus effects paint above sections through TilePaintLayer. Keep their
@@ -50,9 +52,11 @@ class HomeLayout {
             math.max(0.0, (inner - columns * 48) / (columns - 1)),
           )
         : style.horizontalGap;
-    final width = requestedColumns > 0
-        ? (inner - (columns - 1) * gapX) / columns
-        : math.min(inner, style.tileSize * style.aspectRatio);
+    final width =
+        fixedTileSize?.width ??
+        (requestedColumns > 0
+            ? (inner - (columns - 1) * gapX) / columns
+            : math.min(inner, style.tileSize * style.aspectRatio));
     final rows = mode == 'grid'
         ? (count / columns).ceil()
         : math.min(count, mode == 'row' ? 1 : requestedRows.clamp(1, 6));
@@ -68,7 +72,7 @@ class HomeLayout {
       columns,
       rows,
       width,
-      width / style.aspectRatio,
+      fixedTileSize?.height ?? width / style.aspectRatio,
       gapX,
       style.verticalGap,
       inset,
@@ -76,6 +80,30 @@ class HomeLayout {
       lengths,
     );
   }
+
+  static ({HomeLayout layout, double horizontalInset, double focusScale})
+  withFocusReserve({
+    required double availableWidth,
+    required HomeLayout Function(double) layoutForWidth,
+    required double Function(double) focusScale,
+    required bool glow,
+  }) {
+    final layout = layoutForWidth(availableWidth);
+    final scale = focusScale(layout.width);
+    final inset = math.max(
+      layout.inset,
+      layout.width * (scale - 1) / 2 +
+          (glow ? TileGlowPainter.extent * scale : 2),
+    );
+    return (
+      layout: inset > layout.inset
+          ? layoutForWidth(availableWidth - 2 * (inset - layout.inset))
+          : layout,
+      horizontalInset: inset,
+      focusScale: scale,
+    );
+  }
+
   double get stepX => width + gapX;
   double get stepY => height + labelHeight + gapY;
   double get contentHeight => rows == 0 ? 0 : rows * stepY - gapY + inset * 2;
@@ -87,6 +115,7 @@ class HomeLayout {
     final count = visibleRows(maxRows);
     return count == 0 ? 0 : count * stepY - gapY + inset * 2;
   }
+
   int visibleRows(int maxRows) =>
       mode == 'grid' && maxRows > 0 ? math.min(rows, maxRows) : rows;
   int start(int row) => lengths.take(row).fold(0, (a, b) => a + b);

@@ -9,6 +9,7 @@ import 'package:flauncher/providers/app_channels_service.dart';
 import 'package:flauncher/providers/foreground_work.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/settings_import.dart';
+import 'package:flauncher/models/content_load_state.dart';
 
 import '../support/app_channels.dart';
 
@@ -26,6 +27,74 @@ void main() {
   tearDown(() async {
     settings.dispose();
     await channel.events.close();
+  });
+
+  test('metadata timeout settles without accepting a late response', () {
+    fakeAsync((time) {
+      final pending = Completer<List<Map<dynamic, dynamic>>>();
+      channel.response = () => pending.future;
+      final service = AppChannelsService(channel, settings);
+      service.refresh();
+      expect(service.loadState, ContentLoadState.initial);
+      time.elapse(AppChannelsService.metadataTimeout);
+      expect(service.loadState, ContentLoadState.error);
+      pending.complete([feed(1)]);
+      time.flushMicrotasks();
+      expect(service.channels, isEmpty);
+      channel.response = null;
+      service.refresh();
+      time.flushMicrotasks();
+      expect(service.loadState, ContentLoadState.ready);
+      channel.fail = true;
+      service.refresh();
+      time.flushMicrotasks();
+      expect(service.loadState, ContentLoadState.error);
+      expect(service.channels, hasLength(3));
+      service.dispose();
+    });
+  });
+
+  test('feed metadata refreshes the second line of the card', () async {
+    final source = feed(1, count: 5);
+    final programs = (source['programs'] as List).cast<Map>();
+    // Build the bridge response with the same optional fields as TvProvider.
+    final rows = [for (final row in programs) Map<String, dynamic>.from(row)];
+    rows[0].addAll({
+      'releaseDate': '2025-03-01',
+      'reviewRating': '7.8',
+      'genre': 'SCI_FI',
+      'duration': 7200000,
+    });
+    rows[1].addAll({'description': 'Channel name', 'duration': 754000});
+    rows[2].addAll({
+      'author': 'Creator',
+      'description': 'Video summary',
+      'duration': 3701000,
+    });
+    rows[3].addAll({'description': ' Content 1/3 ', 'duration': -1});
+    rows[4].addAll({
+      'releaseDate': 'unknown',
+      'reviewRating': '95',
+      'reviewRatingStyle': 2,
+    });
+    channel.data = [{...source, 'programs': rows}];
+    final service = AppChannelsService(channel, settings);
+    addTearDown(service.dispose);
+    await service.refresh();
+    final previous = service.channels.single;
+    expect(previous.programs.map((program) => program.feedSubtitle), [
+      '2025 · ★ 7.8 · Sci fi',
+      '12:34 · Channel name',
+      '1:01:41 · Creator',
+      null,
+      '95%',
+    ]);
+
+    rows[0]['reviewRating'] = '8.2';
+    await service.refresh();
+    final updated = service.channels.single;
+    expect(updated.programs.first.feedSubtitle, '2025 · ★ 8.2 · Sci fi');
+    expect(updated.programs[1], same(previous.programs[1]));
   });
 
   test('opt-in, independent feeds, persistence and device-local IDs', () async {
@@ -175,6 +244,54 @@ void main() {
   );
 
   test(
+    'catalogue updates let queued and running poster requests finish',
+    () async {
+      final service = AppChannelsService(channel, settings);
+      addTearDown(service.dispose);
+      service.openCatalog();
+      await service.refresh();
+      final response = Completer<Uint8List?>();
+      channel.posterResponse = () => response.future;
+      final posters = [
+        for (var i = 0; i < 3; i++) service.poster('content://poster/$i'),
+      ];
+      await Future<void>.delayed(Duration.zero);
+      expect(channel.posters, hasLength(2));
+      channel.events.add(true);
+      await service.refresh(reloadPosters: true);
+      final image = Uint8List.fromList([1]);
+      response.complete(image);
+      expect(await Future.wait(posters), [image, image, image]);
+      expect(channel.posters, hasLength(3));
+    },
+  );
+
+  test('a failed poster uses the published thumbnail', () async {
+    final service = AppChannelsService(channel, settings);
+    addTearDown(service.dispose);
+    channel.data = [feed(1, poster: 'content://poster/1')];
+    final programs = channel.data.first['programs'] as List;
+    (programs.first as Map)['thumbnailUri'] = 'content://thumbnail/1';
+    await service.refresh();
+    final program = service.channels.first.programs.first;
+    final image = Uint8List.fromList([1]);
+    channel.posterResponse = () async =>
+        channel.posters.last == program.thumbnailUri ? image : null;
+    expect(await service.programPoster(program), image);
+    expect(channel.posters, [program.posterArtUri, program.thumbnailUri]);
+  });
+
+  test('a valid poster larger than the cache still reaches the card', () async {
+    final service = AppChannelsService(channel, settings);
+    addTearDown(service.dispose);
+    const uri = 'content://poster/large';
+    final image = Uint8List(4 * 1024 * 1024 + 1);
+    channel.posterResponse = () async => image;
+    expect(await service.poster(uri), same(image));
+    expect(service.cachedPoster(uri), isNull);
+  });
+
+  test(
     'posters share pending work and cache; launch passes content URI and owner',
     () async {
       final launched = <String>[];
@@ -245,7 +362,7 @@ void main() {
     },
   );
 
-  test('an invalidated poster request cannot replace the new image at the same URI', () async {
+  test('a poster finishing after refresh remains eligible for revalidation', () async {
     final service = AppChannelsService(channel, settings);
     addTearDown(service.dispose);
     service.openCatalog();
@@ -257,8 +374,10 @@ void main() {
     channel.posterResponse = () async => Uint8List.fromList([2]);
     final second = service.poster('content://poster/shared');
     old.complete(Uint8List.fromList([1]));
-    expect(await first, isNull);
-    expect(await second, [2]);
+    expect(await first, [1]);
+    expect(await second, [1]);
     expect(await service.poster('content://poster/shared'), [2]);
+    expect(await service.poster('content://poster/shared'), [2]);
+    expect(channel.posters, hasLength(2));
   });
 }

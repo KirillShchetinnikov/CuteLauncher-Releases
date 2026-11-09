@@ -116,6 +116,8 @@ void main() {
     when(weather.hasWeather).thenReturn(false);
     when(weather.weatherData).thenReturn(null);
     when(weather.stale).thenReturn(false);
+    when(weather.initialized).thenReturn(true);
+    when(weather.loading).thenReturn(false);
     when(notifications.hasPermission).thenReturn(false);
     when(notifications.notifications).thenReturn([]);
     when(inputs.hasInputs).thenReturn(false);

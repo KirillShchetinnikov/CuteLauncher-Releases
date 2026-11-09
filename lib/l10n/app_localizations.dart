@@ -122,6 +122,42 @@ abstract class AppLocalizations {
     Locale('zh'),
   ];
 
+  /// No description provided for @contentAppTileStyle.
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance source'**
+  String get contentAppTileStyle;
+
+  /// No description provided for @contentTileOwnAppearance.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom appearance'**
+  String get contentTileOwnAppearance;
+
+  /// No description provided for @contentTileCommonAppearance.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared appearance'**
+  String get contentTileCommonAppearance;
+
+  /// No description provided for @contentUseSourceLabels.
+  ///
+  /// In en, this message translates to:
+  /// **'Use labels from the selected appearance'**
+  String get contentUseSourceLabels;
+
+  /// No description provided for @contentLabelSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected card only'**
+  String get contentLabelSelected;
+
+  /// No description provided for @contentLabelAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All cards'**
+  String get contentLabelAll;
+
   /// No description provided for @weatherTextResetFormat.
   ///
   /// In en, this message translates to:
@@ -847,6 +883,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete'**
   String get delete;
+
+  /// No description provided for @dialogOptionBackButtonActionFirstFeedCard.
+  ///
+  /// In en, this message translates to:
+  /// **'First card in current feed'**
+  String get dialogOptionBackButtonActionFirstFeedCard;
 
   /// No description provided for @dialogOptionBackButtonActionDoNothing.
   ///
@@ -6698,6 +6740,60 @@ abstract class AppLocalizations {
   /// **'Action'**
   String get remoteMappingAction;
 
+  /// No description provided for @remoteMappingChooseAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose an action'**
+  String get remoteMappingChooseAction;
+
+  /// No description provided for @remoteMappingNavigationGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Apps and navigation'**
+  String get remoteMappingNavigationGroup;
+
+  /// No description provided for @remoteMappingScreenSoundGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Screen and sound'**
+  String get remoteMappingScreenSoundGroup;
+
+  /// No description provided for @remoteMappingAutomationGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Automation'**
+  String get remoteMappingAutomationGroup;
+
+  /// No description provided for @remoteMappingLiveTv.
+  ///
+  /// In en, this message translates to:
+  /// **'Open live TV'**
+  String get remoteMappingLiveTv;
+
+  /// No description provided for @remoteMappingDisplaySettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Display settings'**
+  String get remoteMappingDisplaySettings;
+
+  /// No description provided for @remoteMappingBluetoothSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Bluetooth settings'**
+  String get remoteMappingBluetoothSettings;
+
+  /// No description provided for @remoteMappingMute.
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle mute'**
+  String get remoteMappingMute;
+
+  /// No description provided for @remoteMappingNeedsAdb.
+  ///
+  /// In en, this message translates to:
+  /// **'Requires ADB'**
+  String get remoteMappingNeedsAdb;
+
   /// No description provided for @remoteMappingLearn.
   ///
   /// In en, this message translates to:
@@ -9314,6 +9410,42 @@ abstract class AppLocalizations {
   /// **'Ignore button'**
   String get remoteMappingIgnore;
 
+  /// No description provided for @remoteMappingBlackScreen.
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle Black Screen'**
+  String get remoteMappingBlackScreen;
+
+  /// No description provided for @remoteMappingBlackOverlay.
+  ///
+  /// In en, this message translates to:
+  /// **'Black screen'**
+  String get remoteMappingBlackOverlay;
+
+  /// No description provided for @remoteMappingBlackOverlayHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Press once to hide the picture. Press again or press Back to show it. The TV stays on.'**
+  String get remoteMappingBlackOverlayHelp;
+
+  /// No description provided for @remoteMappingTclScreenOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off TCL screen'**
+  String get remoteMappingTclScreenOff;
+
+  /// No description provided for @remoteMappingTclScreenOffHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Activates the TV’s Audio Only mode on compatible TCL models. If Android blocks the request, a local ADB connection is required.'**
+  String get remoteMappingTclScreenOffHelp;
+
+  /// No description provided for @remoteMappingBlackScreenHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Press once to show the black overlay and again to hide it. Requires the paid version of Black Screen by jApp and permission to display over other apps.'**
+  String get remoteMappingBlackScreenHelp;
+
   /// No description provided for @adbHomeDependencyProtected.
   ///
   /// In en, this message translates to:
@@ -10177,6 +10309,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Indicators and messages'**
   String get settingsGroupIndicators;
+
+  /// No description provided for @nightModePanelFill.
+  ///
+  /// In en, this message translates to:
+  /// **'Fill the top panel button'**
+  String get nightModePanelFill;
 
   /// No description provided for @settingsGroupFocusShape.
   ///

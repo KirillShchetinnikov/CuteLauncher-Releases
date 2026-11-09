@@ -18,7 +18,19 @@ class TileAppearance {
     'dateTextColor', 'weatherIconPack', 'weatherTextColor', 'weatherIconColor',
   ];
   final Map<String, dynamic> values;
-  const TileAppearance([this.values = const {}]);
+  final bool? _tileStyleActive;
+  const TileAppearance([this.values = const {}]) : _tileStyleActive = null;
+  TileAppearance._withLabels(this.values, this._tileStyleActive);
+
+  // Labels can change while the source still controls the surface and focus.
+  TileAppearance withContentLabels(TileAppearance labelStyle) =>
+      TileAppearance._withLabels({
+        ...values,
+        'labels': labelStyle.labels,
+        'labelPosition': labelStyle.labelPosition,
+        'labelSize': labelStyle.labelSize,
+        'labelColor': labelStyle.values['labelColor'],
+      }, active);
   static String informationAppearanceKey(bool background) =>
       background ? 'backgroundInformationAppearance' : 'panelInformationAppearance';
   Object? _informationValue(String key) {
@@ -50,6 +62,8 @@ class TileAppearance {
     'opacity' => opacity,
     'shadow' => number('shadow') ?? 0,
     'blurTiles' => blurTiles,
+    'contentAppTileStyle' => contentAppTileSectionId ?? contentAppTileStyle,
+    'contentUseSourceLabels' => contentUseSourceLabels,
     'sectionTitles' => sectionTitles,
     'sectionTitleSize' => sectionTitleSize,
     'sectionTitleAligned' => sectionTitleAligned,
@@ -61,6 +75,13 @@ class TileAppearance {
     _ => values[key],
   };
   String get labels => values['labels'] as String? ?? 'none';
+  bool get contentAppTileStyle =>
+      values['contentAppTileStyle'] == true || contentAppTileSectionId != null;
+  bool get contentUseSourceLabels => values['contentUseSourceLabels'] != false;
+  int? get contentAppTileSectionId {
+    final source = values['contentAppTileStyle'];
+    return source is int && source > 0 ? source : null;
+  }
   bool get anchored => values['sectionScroll'] != 'free';
   double get sectionPosition => (number('sectionPosition') ?? 0.5).clamp(0, 0.70).toDouble();
   double get sectionGap => number('sectionGap') ?? 24;
@@ -77,11 +98,12 @@ class TileAppearance {
   double get sectionTitleSize => number('sectionTitleSize') ?? 24;
   bool get sectionTitleAligned => values['sectionTitleAligned'] == true;
   bool get sectionIcons => values['sectionIcons'] == true;
-  bool get active =>
+  bool get active => _tileStyleActive ??
       values.keys.any((key) =>
           !const {'bannerImageMode', 'iconImageMode', 'imageMode', 'fillBanner',
             'animateReordering', 'labels', 'hideAbove', 'inactiveOpacity', 'blurPanel',
-            'focusAlignment', 'backgroundInformationAppearance'}.contains(key) &&
+            'focusAlignment', 'backgroundInformationAppearance',
+            'contentAppTileStyle', 'contentUseSourceLabels'}.contains(key) &&
           !informationAppearanceKeys.contains(key) &&
           !key.startsWith('section') && !key.startsWith('panel') &&
           !key.startsWith('settings') && !key.startsWith('notice'));
@@ -367,6 +389,9 @@ class TileAppearance {
           value <= 0xffffffff) {
         result[key] = value;
       }
+      if (key == 'contentAppTileStyle' && value is int && value > 0) {
+        result[key] = value;
+      }
       if (key == 'aspectRatio' &&
           value is num &&
           [1, 4 / 3, 16 / 9].contains(value)) {
@@ -376,7 +401,7 @@ class TileAppearance {
             'sectionTitles', 'sectionTitleAligned', 'sectionIcons', 'hideAbove',
             'focusPulse', 'focusTransition', 'animateReordering',
             'focusShadow',
-            'blurTiles',
+            'blurTiles', 'contentAppTileStyle', 'contentUseSourceLabels',
             'blurPanel',
             'settingsScrollbarAlwaysVisible',
             'panelTextBackground',

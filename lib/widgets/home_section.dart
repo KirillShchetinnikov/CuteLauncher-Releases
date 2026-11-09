@@ -2,9 +2,11 @@ import 'dart:math' as math;
 import 'package:flutter/foundation.dart' show ValueListenable;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'reordering_tile_viewport.dart';
 import 'package:provider/provider.dart';
 
+import '../category_appearance.dart';
 import '../home_layout.dart';
 import '../models/app.dart';
 import '../models/category.dart';
@@ -20,20 +22,103 @@ import 'category_container_common.dart';
 import 'category_focus.dart';
 import 'home_scroll_motion.dart';
 import 'tile_paint_layer.dart';
-import 'tile_theme_outline.dart';
+
+class HomeSectionOpacity extends StatelessWidget {
+  const HomeSectionOpacity({
+    super.key,
+    required this.sectionId,
+    required this.activeSectionId,
+    required this.first,
+    required this.inactiveOpacity,
+    required this.child,
+    this.forceOpaque = false,
+  });
+
+  final int sectionId;
+  final ValueListenable<int?>? activeSectionId;
+  final bool first;
+  final double inactiveOpacity;
+  final Widget child;
+  final bool forceOpaque;
+
+  @override
+  Widget build(BuildContext context) {
+    final active = activeSectionId;
+    Widget fade(bool selected, Widget? child) => AnimatedOpacity(
+      duration: const Duration(milliseconds: 100),
+      opacity: forceOpaque || selected ? 1 : inactiveOpacity,
+      child: child,
+    );
+    if (active == null) return fade(false, child);
+    return ValueListenableBuilder<int?>(
+      valueListenable: active,
+      builder: (_, id, child) => fade(id == null ? first : id == sectionId, child),
+      child: child,
+    );
+  }
+}
 
 /// A section owns one scroll axis; navigation is based on data, never paint bounds.
 class HomeSection extends StatefulWidget {
+  // Package names cannot contain a colon.
+  static const emptyTileKey = ':empty-section';
   final Category category;
   final bool first;
-  final ValueListenable<int?>? activeCategory;
-  const HomeSection({super.key, required this.category, this.first = false, this.activeCategory});
+  final ValueListenable<int?>? activeSectionId;
+  final bool previewed;
+  const HomeSection({
+    super.key,
+    required this.category,
+    this.first = false,
+    this.activeSectionId,
+    this.previewed = false,
+  });
+
+  static ({HomeLayout layout, double horizontalInset, double focusScale})
+  layoutFor(
+    BuildContext context, {
+    required double availableWidth,
+    required TileAppearance style,
+    required int count,
+    Category? category,
+    CategoryAppearance? categoryStyle,
+    double labelHeight = 0,
+  }) {
+    final legacyRow = category == null || category.type == CategoryType.row;
+    final mode = categoryStyle?.resolvedLayout(legacyRow) ??
+        (legacyRow ? 'row' : 'grid');
+    final columns = categoryStyle?.resolvedColumns(
+          legacyRow: legacyRow,
+          legacyColumns: category?.columnsCount ?? 0,
+        ) ??
+        (mode == 'grid' ? category?.columnsCount ?? 0 : 0);
+    final launcherStyle = LauncherStyle.of(context);
+    final theme = context.watch<SettingsService>().themes;
+    return HomeLayout.withFocusReserve(
+      availableWidth: availableWidth,
+      glow: style.focusBorderStyle() == 'glow',
+      layoutForWidth: (width) => HomeLayout(
+        mode: mode,
+        count: count,
+        availableWidth: width,
+        style: style,
+        requestedRows: categoryStyle?.rows ?? 2,
+        requestedColumns: columns,
+        labelHeight: labelHeight,
+      ),
+      focusScale: (width) => launcherStyle.tileFocusScale(
+        theme, style, width: width, focused: true,
+      ),
+    );
+  }
+
   @override
   State<HomeSection> createState() => _HomeSectionState();
 }
 
 class _HomeSectionState extends State<HomeSection> {
   final _scroll = ScrollController();
+  final _emptyTile = FocusNode();
   final _bounds = GlobalKey();
   CategoryFocusController? _focus;
   HomeLayout? _layout;
@@ -53,6 +138,7 @@ class _HomeSectionState extends State<HomeSection> {
     if (next != _focus) {
       _disconnect();
       _focus = next;
+      next?.register(HomeSection.emptyTileKey, _emptyTile);
       next?.materialize = _select;
       next?.navigate = _navigate;
       next?.enter = _enter;
@@ -62,6 +148,7 @@ class _HomeSectionState extends State<HomeSection> {
   }
 
   void _disconnect() {
+    _focus?.unregister(HomeSection.emptyTileKey, _emptyTile);
     _focus?.selected.removeListener(_changed);
     _focus?.materialize = null;
     _focus?.navigate = null;
@@ -73,6 +160,7 @@ class _HomeSectionState extends State<HomeSection> {
   void dispose() {
     ++_request;
     _disconnect();
+    _emptyTile.dispose();
     _scroll.dispose();
     super.dispose();
   }
@@ -142,7 +230,8 @@ class _HomeSectionState extends State<HomeSection> {
   }
 
   Future<bool> _enter(AxisDirection direction, double x) async {
-    if (_apps.isEmpty || _layout == null) return false;
+    if (_apps.isEmpty) return _select(HomeSection.emptyTileKey);
+    if (_layout == null) return false;
     _preferredColumn = null;
     final l = _layout!;
     final row = direction == AxisDirection.down ? 0 : l.rows - 1;
@@ -162,6 +251,10 @@ class _HomeSectionState extends State<HomeSection> {
 
   Future<bool> _select(String package, {bool preserveColumn = false}) async {
     if (!preserveColumn) _preferredColumn = null;
+    if (_apps.isEmpty && package == HomeSection.emptyTileKey) {
+      ++_request;
+      return _focus?.focusMounted(package) ?? false;
+    }
 
     final request = ++_request;
     final origin = FocusManager.instance.primaryFocus;
@@ -225,13 +318,16 @@ class _HomeSectionState extends State<HomeSection> {
         : pos.pixels;
     final index = _apps.indexWhere((a) => a.packageName == _focus?.lastPackage);
     final l = _layout;
-    if (index >= 0 && l != null) {
-      final top =
-          bounds.localToGlobal(Offset.zero, ancestor: viewport).dy +
-          pos.pixels +
-          l.cell(index).$1 * l.stepY -
-          (l.mode == 'grid' && _scroll.hasClients ? _scroll.offset : 0);
-      final bottom = top + l.height + l.labelHeight + 2 * l.inset;
+    if (_apps.isEmpty || (index >= 0 && l != null)) {
+      var top = bounds.localToGlobal(Offset.zero, ancestor: viewport).dy +
+          pos.pixels;
+      var height = bounds.size.height;
+      if (index >= 0 && l != null) {
+        top += l.cell(index).$1 * l.stepY -
+            (l.mode == 'grid' && _scroll.hasClients ? _scroll.offset : 0);
+        height = l.height + l.labelHeight + 2 * l.inset;
+      }
+      final bottom = top + height;
       if (top < offset) offset = top;
       if (bottom > offset + pos.viewportDimension) {
         offset = bottom - pos.viewportDimension;
@@ -260,11 +356,6 @@ class _HomeSectionState extends State<HomeSection> {
     final style =
         service?.tilesFor(widget.category.id) ?? const TileAppearance();
     final categoryStyle = service?.category(widget.category.id);
-    final mode =
-        categoryStyle?.resolvedLayout(
-          widget.category.type == CategoryType.row,
-        ) ??
-        (widget.category.type == CategoryType.row ? 'row' : 'grid');
     final oldSelected = _focus?.lastPackage;
     final oldIndex = _apps.indexWhere((a) => a.packageName == oldSelected);
     // An explicit sort-mode change must bypass the focused section order lock.
@@ -288,13 +379,11 @@ class _HomeSectionState extends State<HomeSection> {
     } else {
       _apps = incoming;
     }
-    _focus?.configure(_apps.map((a) => a.packageName));
-    final columns =
-        categoryStyle?.resolvedColumns(
-          legacyRow: widget.category.type == CategoryType.row,
-          legacyColumns: widget.category.columnsCount,
-        ) ??
-        (mode == 'grid' ? widget.category.columnsCount : 0);
+    _focus?.configure(
+      _apps.isEmpty
+          ? const [HomeSection.emptyTileKey]
+          : _apps.map((a) => a.packageName),
+    );
     final padding =
         style.number('sectionPadding') ?? categoryStyle?.padding ?? 0;
     final showHeader = style.sectionTitles || style.labels == 'selected';
@@ -345,16 +434,12 @@ class _HomeSectionState extends State<HomeSection> {
       onFocusChange: (active) {
         if (mounted && active != _active) setState(() => _active = active);
       },
-      child: ListenableBuilder(
-        listenable: widget.activeCategory ?? _scroll,
-        builder: (_, child) => AnimatedOpacity(
-          duration: const Duration(milliseconds: 100),
-          opacity: _active || (widget.activeCategory != null &&
-              (widget.activeCategory!.value == widget.category.id ||
-               widget.activeCategory!.value == null && widget.first))
-              ? 1 : style.number('inactiveOpacity') ?? 1,
-          child: child,
-        ),
+      child: HomeSectionOpacity(
+        sectionId: widget.category.id,
+        activeSectionId: widget.activeSectionId,
+        first: widget.first,
+        forceOpaque: widget.previewed || _active,
+        inactiveOpacity: style.number('inactiveOpacity') ?? 1,
         child: Container(
           decoration: style.sectionDecoration(fallbackColor: categoryStyle?.background),
           padding: EdgeInsets.all(padding),
@@ -363,7 +448,41 @@ class _HomeSectionState extends State<HomeSection> {
             children: [
               if (_apps.isEmpty && showHeader) sectionHeader(16),
               if (_apps.isEmpty)
-                ExcludeFocus(child: categoryContainerEmptyState(context)),
+                Focus(
+                  key: _bounds,
+                  canRequestFocus: false,
+                  onKeyEvent: (_, event) {
+                    if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
+                      return KeyEventResult.ignored;
+                    }
+                    if (event.logicalKey == LogicalKeyboardKey.arrowLeft ||
+                        event.logicalKey == LogicalKeyboardKey.arrowRight) {
+                      return KeyEventResult.handled;
+                    }
+                    final direction = switch (event.logicalKey) {
+                      LogicalKeyboardKey.arrowUp => AxisDirection.up,
+                      LogicalKeyboardKey.arrowDown => AxisDirection.down,
+                      _ => null,
+                    };
+                    final leave = _focus?.leave;
+                    if (direction == null || leave == null) {
+                      return KeyEventResult.ignored;
+                    }
+                    leave(direction, _emptyTile.rect.center.dx);
+                    return KeyEventResult.handled;
+                  },
+                  child: categoryContainerEmptyState(
+                    context,
+                    focusNode: _emptyTile,
+                    scrollOnFocus: false,
+                    onFocusChange: (focused) {
+                      if (focused) {
+                        _focus?.record(HomeSection.emptyTileKey, _emptyTile);
+                        _scheduleReveal();
+                      }
+                    },
+                  ),
+                ),
               if (_apps.isNotEmpty)
                 LayoutBuilder(
                   builder: (context, constraints) {
@@ -374,35 +493,20 @@ class _HomeSectionState extends State<HomeSection> {
                                   1.4 +
                               8
                         : 0.0;
-                    HomeLayout makeLayout(double availableWidth) => HomeLayout(
-                      mode: mode,
-                      count: _apps.length,
-                      availableWidth: availableWidth,
+                    final result = HomeSection.layoutFor(
+                      context,
+                      availableWidth: constraints.maxWidth,
                       style: style,
-                      requestedRows: categoryStyle?.rows ?? 2,
-                      requestedColumns: columns,
+                      count: _apps.length,
+                      category: widget.category,
+                      categoryStyle: categoryStyle,
                       labelHeight: labelHeight,
                     );
-                    var l = makeLayout(constraints.maxWidth);
-                    final scale = LauncherStyle.of(context).tileFocusScale(
-                      context.watch<SettingsService>().themes,
-                      style,
-                      width: l.width,
-                      focused: true,
-                    );
-                    // Keep the full focus effect inside the section clip,
-                    // including the first and last cards of scrolled rows.
-                    _horizontalInset = math.max(
-                      l.inset, l.width * (scale - 1) / 2 +
-                          (style.focusBorderStyle() == 'glow'
-                              ? TileGlowPainter.extent * scale : 2));
-                    if (_horizontalInset > l.inset) {
-                      l = makeLayout(constraints.maxWidth -
-                          2 * (_horizontalInset - l.inset));
-                    }
+                    final l = result.layout;
+                    _horizontalInset = result.horizontalInset;
                     _layout = l;
                     final signature =
-                        '$mode:$columns:${l.rows}:${l.width}:${l.height}:${l.gapX}:${l.gapY}:${l.labelHeight}:${categoryStyle?.maxRows ?? 0}:${style.labels}:${service?.appearance.anchored}:${service?.appearance.sectionPosition}:$padding:${style.sectionTitles}:${style.sectionTitleSize}:${_apps.map((a) => a.packageName).join(',')}';
+                        '${l.mode}:${l.columns}:${l.rows}:${l.width}:${l.height}:${l.gapX}:${l.gapY}:${l.labelHeight}:${categoryStyle?.maxRows ?? 0}:${style.labels}:${service?.appearance.anchored}:${service?.appearance.sectionPosition}:$padding:${style.sectionTitles}:${style.sectionTitleSize}:${_apps.map((a) => a.packageName).join(',')}';
                     if (_signature != signature) {
                       _signature = signature;
                       _preferredColumn = null;
@@ -455,7 +559,7 @@ class _HomeSectionState extends State<HomeSection> {
                       selection: _focus?.selected,
                       requested: _pendingPackage,
                       animate: style.animateReordering && !MediaQuery.disableAnimationsOf(context),
-                      physics: mode == 'grid' && maxRows == 0
+                      physics: l.mode == 'grid' && maxRows == 0
                           ? const NeverScrollableScrollPhysics() : const ClampingScrollPhysics(),
                       itemBuilder: (_, index) => card(index),
                     );

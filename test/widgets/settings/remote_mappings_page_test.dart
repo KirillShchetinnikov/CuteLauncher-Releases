@@ -2,13 +2,28 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flauncher/l10n/app_localizations.dart';
+import 'package:flauncher/models/tv_input.dart';
+import 'package:flauncher/providers/tv_inputs_service.dart';
 import 'package:flauncher/remote_mapping_configuration.dart';
 import 'package:flauncher/widgets/launcher_dialog.dart';
 import 'package:flauncher/widgets/rounded_switch_list_tile.dart';
+import 'package:flauncher/widgets/settings/remote_action_picker.dart';
 import 'package:flauncher/widgets/settings/remote_mappings_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:provider/provider.dart';
+
+class _TestTvInputs extends ChangeNotifier implements TvInputsService {
+  _TestTvInputs(this.inputs);
+
+  @override
+  final List<TvInput> inputs;
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
 
 void main() {
   const channel = MethodChannel('cutelauncher/remote_mappings');
@@ -17,12 +32,14 @@ void main() {
   late List<MethodCall> calls;
   bool failSave = false;
   bool connected = true;
+  Set<String> tvActions = {};
   Future<int?> Function()? learn;
   setUp(() {
     config = const RemoteMappingConfiguration();
     calls = [];
     failSave = false;
     connected = true;
+    tvActions = {};
     learn = null;
     binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, (
       call,
@@ -38,6 +55,9 @@ void main() {
         ...config.toMap(),
         'permission': true,
         'connected': connected,
+        'tclScreenOff': true,
+        'directHdmi': true,
+        'tvActions': tvActions.toList(),
         'status': 'idle',
       };
     });
@@ -46,17 +66,24 @@ void main() {
     () =>
         binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, null),
   );
-  Future<void> open(WidgetTester tester, {bool switchOnly = false}) async {
+  Future<void> open(
+    WidgetTester tester, {
+    bool switchOnly = false,
+    List<TvInput> inputs = const [],
+  }) async {
     tester.view.physicalSize = const Size(1280, 1440);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
     await tester.pumpWidget(
-      MaterialApp(
-        locale: const Locale('ru'),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: Scaffold(body: RemoteMappingsPage(switchOnly: switchOnly)),
+      ChangeNotifierProvider<TvInputsService>.value(
+        value: _TestTvInputs(inputs),
+        child: MaterialApp(
+          locale: const Locale('ru'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(body: RemoteMappingsPage(switchOnly: switchOnly)),
+        ),
       ),
     );
     await tester.pumpAndSettle();
@@ -65,6 +92,9 @@ void main() {
   for (final action in {
     'sleep': 'Выключить ТВ',
     'reboot': 'Перезагрузить ТВ',
+    'black_screen': 'Переключить Black Screen',
+    'black_overlay': 'Чёрный экран',
+    'tcl_screen_off': 'Отключить экран TCL',
   }.entries) {
     for (final trigger in ['press', 'hold']) {
       testWidgets('select and reload ${action.key} on $trigger', (
@@ -73,13 +103,25 @@ void main() {
         config = RemoteMappingConfiguration(
           enabled: true,
           bindings: [
-            RemoteMapping(keyCode: 4137, name: 'Power test', trigger: trigger),
+            RemoteMapping(
+              keyCode: 4137,
+              name: 'TCL shortcut',
+              trigger: trigger,
+            ),
           ],
         );
         await open(tester);
-        await tester.tap(find.textContaining('Power test').first);
+        await tester.tap(find.textContaining('TCL shortcut').first);
         await tester.pumpAndSettle();
         await tester.tap(find.text('Действие').last);
+        await tester.pumpAndSettle();
+        await tester.tap(
+          find.text(
+            action.key == 'sleep' || action.key == 'reboot'
+                ? 'Управление питанием'
+                : 'Экран и звук',
+          ),
+        );
         await tester.pumpAndSettle();
         await tester.ensureVisible(find.text(action.value));
         await tester.tap(find.text(action.value));
@@ -90,13 +132,201 @@ void main() {
         expect(config.bindings.single.action, action.key);
         expect(config.bindings.single.target, isEmpty);
         expect(config.bindings.single.trigger, trigger);
-        await tester.tap(find.textContaining('Power test').first);
+        await tester.tap(find.textContaining('TCL shortcut').first);
         await tester.pumpAndSettle();
         expect(find.text(action.value), findsOneWidget);
         expect(tester.takeException(), isNull);
       });
     }
   }
+
+  testWidgets('D-pad chooses HDMI and reopening restores the saved row', (
+    tester,
+  ) async {
+    config = const RemoteMappingConfiguration(
+      bindings: [RemoteMapping(keyCode: 190)],
+    );
+    await open(
+      tester,
+      inputs: [
+        TvInput(
+          id: 'vendor.tv/.Input/HW1',
+          label: 'HDMI 1',
+          type: TvInputType.hdmi,
+        ),
+        TvInput(
+          id: 'vendor.tv/.Input/HW2',
+          label: 'HDMI 2',
+          type: TvInputType.hdmi,
+        ),
+      ],
+    );
+    await tester.tap(find.text('YouTube'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Действие').last);
+    await tester.pumpAndSettle();
+    for (final key in [
+      LogicalKeyboardKey.arrowLeft,
+      LogicalKeyboardKey.arrowDown,
+      LogicalKeyboardKey.arrowRight,
+      LogicalKeyboardKey.arrowDown,
+      LogicalKeyboardKey.select,
+    ]) {
+      await tester.sendKeyEvent(key);
+      await tester.pumpAndSettle();
+    }
+    expect(find.text('Выбрать действие'), findsNothing);
+    expect(find.text('HDMI 2'), findsOneWidget);
+    await tester.tap(find.text('Сохранить'));
+    await tester.pumpAndSettle();
+    expect(config.bindings.single.action, 'hdmi');
+    expect(config.bindings.single.target, 'vendor.tv/.Input/HW2');
+    await tester.tap(find.text('YouTube'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Действие').last);
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.select);
+    await tester.pumpAndSettle();
+    expect(find.text('Выбрать действие'), findsNothing);
+    expect(find.text('HDMI 2'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('system actions reflect available firmware handlers', (
+    tester,
+  ) async {
+    config = const RemoteMappingConfiguration(
+      bindings: [RemoteMapping(keyCode: 190)],
+    );
+    tvActions = {'wifi_settings'};
+    await open(tester);
+    await tester.tap(find.text('YouTube'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Действие').last);
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Система'));
+    await tester.tap(find.text('Система'));
+    await tester.pumpAndSettle();
+    expect(find.text('Настройки Bluetooth'), findsNothing);
+    await tester.tap(find.text('Системные настройки сети'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Сохранить'));
+    await tester.pumpAndSettle();
+    expect(config.bindings.single.action, 'wifi_settings');
+  });
+
+  testWidgets('picker widens sections and wraps whole words', (tester) async {
+    tester.view.physicalSize = const Size(560, 720);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    const section = 'VeryLongSectionNameWithoutAnySpaces Next';
+    const action = 'VeryLongActionNameWithoutAnySpaces Next';
+    const detail = 'ExtraLongRequirement Next';
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: const RemoteActionPicker(
+          action: 'action',
+          target: '',
+          ignore: (
+            action: 'ignore',
+            target: '',
+            label: 'Ignore',
+            detail: null,
+            enabled: true,
+          ),
+          groups: [
+            (
+              label: section,
+              choices: [
+                (
+                  action: 'action',
+                  target: '',
+                  label: action,
+                  detail: detail,
+                  enabled: true,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    final columns = find.byType(Scrollbar);
+    expect(columns, findsNWidgets(2));
+    final sectionsWidth = tester.getSize(columns.first).width;
+    final actionsWidth = tester.getSize(columns.last).width;
+    expect(
+      sectionsWidth / (sectionsWidth + actionsWidth),
+      closeTo(5 / 11, .01),
+    );
+    for (final label in [section, action, detail]) {
+      final text = tester.renderObject<RenderParagraph>(find.text(label));
+      final endOfWord = label.indexOf(' ');
+      final boxes = text.getBoxesForSelection(
+        TextSelection(baseOffset: 0, extentOffset: endOfWord),
+      );
+      expect(boxes.map((box) => box.top).toSet(), hasLength(1));
+      final nextWord = text.getBoxesForSelection(
+        TextSelection(baseOffset: endOfWord + 1, extentOffset: label.length),
+      );
+      expect(nextWord.first.top, greaterThan(boxes.first.top));
+    }
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('narrow picker retains the previous action on Back', (
+    tester,
+  ) async {
+    config = const RemoteMappingConfiguration(
+      bindings: [RemoteMapping(keyCode: 190, action: 'reboot')],
+    );
+    await open(tester);
+    tester.view.physicalSize = const Size(400, 720);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('YouTube'));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Действие').last);
+    await tester.tap(find.text('Действие').last);
+    await tester.pumpAndSettle();
+    expect(find.text('Нужен ADB'), findsOneWidget);
+    final dialog = find.byType(AlertDialog);
+    final scrollbars = find.descendant(
+      of: dialog,
+      matching: find.byType(Scrollbar),
+    );
+    expect(scrollbars, findsNWidgets(2));
+    for (var index = 0; index < 2; index++) {
+      final scrollbar = scrollbars.at(index);
+      final viewport = find.descendant(
+        of: scrollbar,
+        matching: find.byType(SingleChildScrollView),
+      );
+      expect(
+        tester.widget<Scrollbar>(scrollbar).scrollbarOrientation,
+        ScrollbarOrientation.left,
+      );
+      expect(
+        tester.getRect(viewport).left - tester.getRect(scrollbar).left,
+        14,
+      );
+    }
+    final cancel = find.widgetWithText(TextButton, 'Отмена');
+    expect(tester.getSize(cancel).height, greaterThanOrEqualTo(48));
+    expect(
+      tester.getRect(cancel).top - tester.getRect(scrollbars.last).bottom,
+      6,
+    );
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(find.text('Выбрать действие'), findsNothing);
+    expect(find.text('Перезагрузить ТВ'), findsOneWidget);
+    expect(calls.where((call) => call.method == 'save'), isEmpty);
+    expect(tester.takeException(), isNull);
+  });
 
   testWidgets('ignore action remains selected and saves without a target', (
     tester,

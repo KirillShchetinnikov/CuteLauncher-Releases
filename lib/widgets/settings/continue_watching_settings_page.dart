@@ -33,14 +33,16 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flauncher/l10n/app_localizations.dart';
+import 'package:flauncher/models/category.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/watch_next_service.dart';
 import 'package:flauncher/widgets/rounded_switch_list_tile.dart';
 
 import 'continue_watching_apps_page.dart';
-import 'continue_watching_card_size_page.dart';
+import 'app_channels_appearance_page.dart';
 import 'continue_watching_max_items_page.dart';
 import 'focusable_settings_tile.dart';
+import 'settings_route.dart';
 
 class ContinueWatchingSettingsPage extends StatefulWidget {
   static const String routeName = "continue_watching_settings_panel";
@@ -80,14 +82,6 @@ class _ContinueWatchingSettingsPageState
     final settingsService = context.watch<SettingsService>();
     final watchNextService = context.watch<WatchNextService>();
 
-    final rawSize = settingsService.continueWatchingCardSize;
-    final height =
-        int.tryParse(rawSize) ??
-        (rawSize == 'compact'
-            ? 112
-            : rawSize == 'large'
-            ? 157
-            : 135);
     final blockedCount = settingsService.hiddenWatchNextPackages.length;
     final hiddenProgramsCount =
         settingsService.hiddenWatchNextProgramIds.length;
@@ -192,15 +186,14 @@ class _ContinueWatchingSettingsPageState
           SettingsSection(
             title: localizations.settingsGroupCards,
             children: [
-              SettingsValueStepper(
-                title: localizations.cardSize,
-                value: height,
-                options: ContinueWatchingCardSizePage.cardSizePresets(
-                  localizations,
-                ).map((preset) => preset.$1).toList(),
-                label: (v) => '$v dp',
-                onChanged: (v) =>
-                    settingsService.setContinueWatchingCardSize('$v'),
+              FocusableSettingsTile(
+                title: Text(localizations.categoryAppearance),
+                leading: const Icon(Icons.palette_outlined),
+                onPressed: () => Navigator.of(context).push(SettingsRoute<void>(
+                  builder: (_) => const AppChannelsAppearancePage(
+                    categoryId: ContinueWatchingSection.sectionId,
+                  ),
+                )),
               ),
               // Show progress bar
               RoundedSwitchListTile(
@@ -209,16 +202,6 @@ class _ContinueWatchingSettingsPageState
                     settingsService.setContinueWatchingShowProgress(v),
                 title: Text(
                   AppLocalizations.of(context)!.playbackProgressBar,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-              ),
-              // Show percentage badge
-              RoundedSwitchListTile(
-                value: settingsService.continueWatchingShowPercentage,
-                onChanged: (v) =>
-                    settingsService.setContinueWatchingShowPercentage(v),
-                title: Text(
-                  AppLocalizations.of(context)!.playbackPercentage,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ),

@@ -66,7 +66,7 @@ class NowPlayingService extends ChangeNotifier with ServiceLifecycle, WidgetsBin
       final subscription = _subscription;
       _subscription = null;
       subscription?.cancel().catchError((_) {});
-      media = null;
+      if (!settings.showNowPlaying) media = null;
       busy = false;
       notifyListeners();
       return;
@@ -75,7 +75,7 @@ class NowPlayingService extends ChangeNotifier with ServiceLifecycle, WidgetsBin
     initialized = false;
     _subscription = transport.events.listen((value) {
       if (!isDisposed && generation == _generation) _accept(value);
-    }, onError: (_) { if (!isDisposed && generation == _generation) { failed = true; media = null; notifyListeners(); } });
+    }, onError: (_) { if (!isDisposed && generation == _generation) { failed = true; notifyListeners(); } });
     refresh();
   }
   void _accept(dynamic value) {
@@ -95,13 +95,13 @@ class NowPlayingService extends ChangeNotifier with ServiceLifecycle, WidgetsBin
     if (!_active || isDisposed) return;
     final generation = _generation;
     try {
-      final value = await transport.snapshot();
+      final value = await transport.snapshot().timeout(const Duration(seconds: 8));
       if (!isDisposed && generation == _generation) _accept(value);
     } catch (diagnosticError, diagnosticStack) {
       DiagnosticsStore.instance.recordException(
         'nowPlayingService', diagnosticError, diagnosticStack,
       );
-      if (!isDisposed && generation == _generation) { initialized = true; failed = true; media = null; notifyListeners(); }
+      if (!isDisposed && generation == _generation) { initialized = true; failed = true; notifyListeners(); }
     }
   }
   Future<bool> control(String action) async {

@@ -60,7 +60,7 @@ void main() {
     final stream = StreamController<dynamic>.broadcast();
     var uri = 'content://poster/old';
     when(channel.checkWatchNextPermission()).thenAnswer((_) async => true);
-    when(channel.getWatchNextPrograms()).thenAnswer((_) async => [{'id': 7, 'posterArtUri': uri}]);
+    when(channel.getWatchNextPrograms()).thenAnswer((_) async => [{'id': 7, 'title': 'Video', 'posterArtUri': uri}]);
     when(channel.getWatchNextPoster(any)).thenAnswer((inv) async => Uint8List.fromList([inv.positionalArguments[0] == 'content://poster/old' ? 1 : 2]));
     when(channel.addWatchNextChangedListener(any)).thenAnswer((inv) => stream.stream.listen(inv.positionalArguments[0]));
     when(channel.deleteWatchNextProgram(7)).thenAnswer((_) async => false);
@@ -70,7 +70,7 @@ void main() {
       uri = 'content://poster/new';
       await service.refresh();
       expect(service.programs.single.posterArtUri, uri);
-      expect(service.programs.single.posterBytes, [2]);
+      expect(await service.poster(service.programs.single), [2]);
       verify(channel.getWatchNextPoster('content://poster/new')).called(1);
       expect(await service.deleteProgram(service.programs.single), false);
       expect(service.programs.single.id, 7);

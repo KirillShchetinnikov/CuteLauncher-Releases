@@ -417,6 +417,7 @@ class LauncherAlertDialog extends StatelessWidget {
   final List<Widget>? actions;
   final double contentWidth;
   final bool scrollContent;
+  final EdgeInsetsGeometry? contentPadding, actionsPadding;
   const LauncherAlertDialog({
     super.key,
     this.title,
@@ -424,11 +425,14 @@ class LauncherAlertDialog extends StatelessWidget {
     this.actions,
     this.contentWidth = 400,
     this.scrollContent = true,
+    this.contentPadding,
+    this.actionsPadding,
   });
 
   @override
   Widget build(BuildContext context) => AlertDialog(
     title: title,
+    contentPadding: contentPadding,
     content: content == null || !scrollContent
         ? content
         : SingleChildScrollView(
@@ -437,6 +441,7 @@ class LauncherAlertDialog extends StatelessWidget {
                 : SizedBox(width: contentWidth, child: content),
           ),
     actions: actions,
+    actionsPadding: actionsPadding,
     actionsOverflowButtonSpacing: 8,
     actionsOverflowAlignment: OverflowBarAlignment.end,
   );

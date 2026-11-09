@@ -24,6 +24,43 @@ void main() {
     SharedPreferences.setMockInitialValues({});
   });
 
+  test('feed selections are pruned only against the complete installed catalogue', () async {
+    final channel = MockFLauncherChannel();
+    final db = FLauncherDatabase.inMemory();
+    final work = ForegroundWork();
+    final settings = SettingsService(await SharedPreferences.getInstance());
+    await settings.setSelectedAppChannels([
+      'removed.app:1', 'installed.app:2', 'removed.app:3',
+    ]);
+    when(channel.addAppsChangedListener(any)).thenReturn(null);
+    when(channel.getLauncherApplications()).thenAnswer((_) async => []);
+    when(channel.getApplications()).thenAnswer((_) async => [
+      {'packageName': 'installed.app', 'name': 'Installed', 'version': '1',
+        'sideloaded': true, 'launchable': false},
+    ]);
+    final service = AppsService(channel, db, settingsService: settings,
+        work: work, fastInitialCatalog: true);
+    try {
+      await Future<void>(() async {
+        while (!service.initialized) {
+          await Future<void>.delayed(const Duration(milliseconds: 1));
+        }
+      }).timeout(const Duration(seconds: 3));
+      expect(settings.selectedAppChannels, [
+        'removed.app:1', 'installed.app:2', 'removed.app:3',
+      ]);
+      await service.refreshState();
+      expect(settings.selectedAppChannels, ['installed.app:2']);
+      expect(SettingsService(await SharedPreferences.getInstance()).selectedAppChannels,
+          ['installed.app:2']);
+    } finally {
+      service.dispose();
+      work.dispose();
+      settings.dispose();
+      await db.close();
+    }
+  });
+
   test('cached catalog makes home usable before a slow system query and preserves launch statistics', () async {
     final root = await Directory.systemTemp.createTemp('cute-catalog-start-');
     final cache = AppCatalogCache(directory: () async => root);

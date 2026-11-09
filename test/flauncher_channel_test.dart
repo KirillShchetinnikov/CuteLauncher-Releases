@@ -40,6 +40,13 @@ void main() {
     expect(calls.first.arguments, {'key': 'specific-key'});
   });
 
+  test('Watch Next errors reach the service rather than clearing its snapshot', () async {
+    const channel = MethodChannel('me.efesser.flauncher/method');
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(channel, (_) async => throw PlatformException(code: 'unavailable'));
+    await expectLater(FLauncherChannel().getWatchNextPrograms(), throwsA(isA<PlatformException>()));
+  });
+
   test("getApplications", () async {
     final channel = MethodChannel('me.efesser.flauncher/method');
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(channel, (call) async {

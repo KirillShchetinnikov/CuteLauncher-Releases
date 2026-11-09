@@ -6,15 +6,16 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter/widgets.dart';
-import 'package:flutter/foundation.dart' show listEquals;
+import 'package:flutter/foundation.dart' show listEquals, setEquals;
 import 'package:pool/pool.dart';
 
 import '../flauncher_channel.dart';
 import '../image_byte_cache.dart';
-import '../image_limits.dart';
 import '../feed_format.dart';
 import '../models/app_content_channel.dart';
+import '../models/content_load_state.dart';
 import '../models/watch_next_program.dart';
+import '../network_poster.dart';
 import 'foreground_work.dart';
 import 'memory_resources.dart';
 import 'service_lifecycle.dart';
@@ -68,6 +69,7 @@ class AppChannelsService extends ChangeNotifier
       if (!feed.programs.take(3).any((p) => p.id == id)) return;
       if (_formatSamples[feed.key]?.containsKey(id) == true) return;
       final generation = _generation;
+      final epoch = _posterEpoch;
       double? ratio;
       if (bytes != null) {
         ui.ImmutableBuffer? buffer;
@@ -86,7 +88,12 @@ class AppChannelsService extends ChangeNotifier
           buffer?.dispose();
         }
       }
-      if (isDisposed || !_foreground || generation != _generation) return;
+      if (isDisposed ||
+          !_foreground ||
+          generation != _generation ||
+          epoch != _posterEpoch) {
+        return;
+      }
       final samples = _formatSamples.putIfAbsent(feed.key, () => {});
       samples[id] = ratio;
       if (samples.length < feed.programs.take(3).length) return;
@@ -123,11 +130,18 @@ class AppChannelsService extends ChangeNotifier
   bool initialized = false;
   bool unavailable = false;
   bool loading = false;
+  static const metadataTimeout = Duration(seconds: 8);
+  ContentLoadState get loadState => contentLoadState(
+    initialized: initialized, loading: loading, failed: unavailable,
+    hasContent: _channels.any((channel) => channel.programs.isNotEmpty),
+  );
   Completer<void>? _inFlight;
   bool _foreground = true;
   bool _again = false;
   int _generation = 0;
-  String _selection = '';
+  late Set<String> _selection;
+  late int _cardLimit;
+  int get cardLimit => _cardLimit;
   String? _snapshot;
   int _catalogUsers = 0;
   bool _wasGroupVisible = true;
@@ -163,35 +177,34 @@ class AppChannelsService extends ChangeNotifier
       configure: (economy) =>
           _posters.maximumBytes = (economy ? 1 : 4) * 1024 * 1024,
     );
-    _selection = jsonEncode(settings.selectedAppChannels);
+    _selection = settings.selectedAppChannels.toSet();
+    _cardLimit = settings.appChannelCardLimit;
     if (settings.selectedAppChannels.isNotEmpty) _listenAndRefresh();
   }
 
   void _clearPosters() {
+    ++_generation;
     _invalidatePosters();
     _posters.clear();
   }
 
   void _invalidatePosters() {
+    // A new catalogue may keep the same URIs. Let their queued loads finish.
     _formatSamples.clear();
-    ++_generation;
     ++_posterEpoch;
     if (loading) _again = true;
   }
 
   void _settingsChanged() {
-    final next = jsonEncode(settings.selectedAppChannels);
-    if (next == _selection) return;
-    final previousKeys = _selection.isEmpty
-        ? <String>[]
-        : (jsonDecode(_selection) as List).cast<String>();
-    _selection = next;
-    if (listEquals(
-      previousKeys..sort(),
-      settings.selectedAppChannels.toList()..sort(),
-    )) {
+    final selected = settings.selectedAppChannels.toSet();
+    final limit = settings.appChannelCardLimit;
+    final limitChanged = limit != _cardLimit;
+    _cardLimit = limit;
+    if (setEquals(selected, _selection)) {
+      if (limitChanged) notifyListeners();
       return;
     }
+    _selection = selected;
     ++_generation;
     _snapshot = null;
     notifyListeners();
@@ -259,9 +272,16 @@ class AppChannelsService extends ChangeNotifier
     final completion = _inFlight = Completer<void>();
     var changed = false;
     final generation = _generation;
+    final epoch = _posterEpoch;
     try {
-      final raw = await channel.getAppChannels(settings.selectedAppChannels);
-      if (isDisposed || !_foreground || generation != _generation) return;
+      final raw = await channel.getAppChannels(settings.selectedAppChannels)
+          .timeout(metadataTimeout);
+      if (isDisposed ||
+          !_foreground ||
+          generation != _generation ||
+          epoch != _posterEpoch) {
+        return;
+      }
       final snapshot = jsonEncode(raw);
       changed = unavailable || !initialized;
       if (snapshot != _snapshot) {
@@ -291,7 +311,12 @@ class AppChannelsService extends ChangeNotifier
       DiagnosticsStore.instance.recordException(
         'appChannelsService', diagnosticError, diagnosticStack,
       );
-      if (isDisposed || !_foreground || generation != _generation) return;
+      if (isDisposed ||
+          !_foreground ||
+          generation != _generation ||
+          epoch != _posterEpoch) {
+        return;
+      }
       changed = !unavailable || !initialized;
       unavailable = true;
       initialized = true;
@@ -308,6 +333,17 @@ class AppChannelsService extends ChangeNotifier
   }
 
   Uint8List? cachedPoster(String uri) => _posters[uri];
+
+  Future<Uint8List?> programPoster(WatchNextProgram program) async {
+    final generation = _generation;
+    final primary = await poster(program.posterArtUri);
+    if (primary != null ||
+        generation != _generation ||
+        program.posterArtUri == program.thumbnailUri) {
+      return primary;
+    }
+    return poster(program.thumbnailUri);
+  }
 
   Future<Uint8List?> poster(String uri) {
     if (uri.isEmpty || !_foreground || isDisposed || !_groupVisible) {
@@ -327,34 +363,11 @@ class AppChannelsService extends ChangeNotifier
               return null;
             }
             Uint8List? bytes;
-            HttpClientRequest? request;
-            var abandoned = false;
             try {
               final parsed = Uri.tryParse(uri);
               if (parsed != null &&
                   (parsed.scheme == 'https' || parsed.scheme == 'http')) {
-                request = await _http
-                    .getUrl(parsed)
-                    .then((value) {
-                      if (abandoned) value.abort();
-                      return value;
-                    })
-                    .timeout(const Duration(seconds: 5));
-                final response = await request.close().timeout(
-                  const Duration(seconds: 5),
-                );
-                if (response.statusCode != 200) {
-                  request.abort();
-                  throw FormatException('App channel poster HTTP ${response.statusCode}');
-                }
-                bytes = await readBoundedImage(response).timeout(
-                  const Duration(seconds: 8),
-                  onTimeout: () {
-                    request?.abort();
-                    throw TimeoutException('App channel poster read', const Duration(seconds: 8));
-                  },
-                );
-                await validateImageBytes(bytes);
+                bytes = await readNetworkPoster(_http, parsed);
               } else {
                 bytes = await channel.getWatchNextPoster(uri);
               }
@@ -363,8 +376,6 @@ class AppChannelsService extends ChangeNotifier
                 'appChannelsService', diagnosticError, diagnosticStack,
               );
               bytes = null;
-              abandoned = true;
-              request?.abort();
             }
             if (isDisposed || !_foreground || generation != _generation) {
               return null;
@@ -373,8 +384,9 @@ class AppChannelsService extends ChangeNotifier
             if (bytes != null && bytes.isNotEmpty) {
               if (!listEquals(bytes, previous)) _posters[uri] = bytes;
               if (_posters.containsKey(uri)) _posterVersions[uri] = epoch;
+              return _posters[uri] ?? bytes;
             }
-            return _posters[uri];
+            return previous;
           })
           .whenComplete(() {
             _pendingPosters.remove(pendingKey);

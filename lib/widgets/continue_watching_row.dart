@@ -1,491 +1,213 @@
-import 'watch_next_card_layout.dart';
-import 'tile_paint_layer.dart';
-import '../key_sounds.dart';
-import '../providers/appearance_service.dart';
-import '../tile_appearance.dart';
-import 'tile_theme_outline.dart';
-import 'package:flauncher/widgets/launcher_dialog.dart';
-import 'category_focus.dart';
-import 'package:flauncher/models/watch_next_program.dart';
-import 'package:flauncher/watch_next_selection.dart';
-import 'package:flauncher/providers/apps_service.dart';
-import 'package:flauncher/providers/settings_service.dart';
-import 'package:flauncher/providers/memory_resources.dart';
-import 'package:flauncher/providers/watch_next_service.dart';
-import 'package:flauncher/actions.dart';
-import 'package:flauncher/widgets/app_card_keys.dart';
-import 'package:flauncher/widgets/focus_keyboard_listener.dart';
-import 'package:flauncher/widgets/watch_next_info_panel.dart';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:flauncher/l10n/app_localizations.dart';
+
+import '../actions.dart';
+import '../l10n/app_localizations.dart';
+import '../models/category.dart';
+import '../models/watch_next_program.dart';
+import '../providers/appearance_service.dart';
+import '../providers/apps_service.dart';
+import '../providers/settings_service.dart';
+import '../providers/watch_next_service.dart';
+import '../tile_appearance.dart';
+import '../watch_next_selection.dart';
+import 'app_content_row.dart';
+import 'application_list_icon.dart';
+import 'category_focus.dart';
+import 'launcher_dialog.dart';
+import 'watch_next_info_panel.dart';
 
 class ContinueWatchingRow extends StatelessWidget {
   final bool isFirstSection;
+  final bool focusLoading;
+  final List<WatchNextProgram> programs;
+  final TileAppearance? appearance;
+  final Size? appTileSize;
 
   const ContinueWatchingRow({
     super.key,
+    required this.programs,
     this.isFirstSection = true,
+    this.focusLoading = false,
+    this.appearance,
+    this.appTileSize,
   });
+
+  static List<WatchNextProgram> visiblePrograms(
+    SettingsService settings,
+    AppsService apps,
+    WatchNextService watchNext,
+  ) {
+    if (!settings.showContinueWatching || !watchNext.hasPermission) return const [];
+    final available = watchNext.programs;
+    if (available.isEmpty) return const [];
+    return selectWatchNextPrograms(
+      available,
+      hiddenIds: settings.hiddenWatchNextProgramIds.toSet(),
+      hiddenPackages: {
+        ...settings.hiddenWatchNextPackages,
+        ...apps.applications.where((app) => app.hidden).map((app) => app.packageName),
+      },
+      appLimits: settings.watchNextAppLimits,
+      totalLimit: settings.continueWatchingMaxItems,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final settingsService = Provider.of<SettingsService>(context);
-    if (!settingsService.showContinueWatching) {
-      return const SizedBox.shrink();
-    }
-
-    return Consumer2<WatchNextService, AppsService>(
-      builder: (context, watchNextService, appsService, _) {
-        if (!watchNextService.hasPermission) {
-          return const SizedBox.shrink();
-        }
-
-        final programs = selectWatchNextPrograms(watchNextService.programs,
-          hiddenIds: settingsService.hiddenWatchNextProgramIds.toSet(),
-          hiddenPackages: {...settingsService.hiddenWatchNextPackages,
-            ...appsService.applications.where((app) => app.hidden).map((app) => app.packageName)},
-          appLimits: settingsService.watchNextAppLimits,
-          totalLimit: settingsService.continueWatchingMaxItems);
-
-        final focus = CategoryFocus.maybeOf(context);
-        focus?.gap = 16;
-        focus?.configure(programs.map((program) => program.id.toString()));
-
-        if (programs.isEmpty) {
-          return const SizedBox.shrink();
-        }
-
-        final cardHeight = watchNextCardSize(context, settingsService.continueWatchingCardSize).height;
-        final double rowHeight = cardHeight + 36.0;
-        final appearance = context.watch<AppearanceService?>()?.appearance;
-        const cardPadding = 8.0;
-
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (appearance?.sectionTitles ?? settingsService.showCategoryTitles)
-                Padding(
-                  padding: appearance?.sectionTitleAligned == true
-                      ? const EdgeInsetsDirectional.only(start: 2 * cardPadding, bottom: 8)
-                      : const EdgeInsets.only(left: 16, bottom: 8),
-                  child: Row(
-                    children: [
-                      Flexible(
-                        child: Text(
-                          AppLocalizations.of(context)!.continueWatching,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                            fontSize: appearance?.number('sectionTitleSize'),
-                            shadows: [
-                              const Shadow(
-                                color: Colors.black54,
-                                offset: Offset(1, 1),
-                                blurRadius: 8,
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        '•  ${programs.length}',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              SizedBox(
-                height: rowHeight,
-                child: ListView.builder(
-                  clipBehavior: Clip.none,
-                  padding: const EdgeInsets.all(cardPadding),
-                  physics: const ClampingScrollPhysics(),
-                  controller: focus?.scrollController,
-                  scrollDirection: Axis.horizontal,
-                  itemCount: programs.length,
-                  itemBuilder: (context, index) {
-                    final program = programs[index];
-                    return Padding(
-                      key: ValueKey(program.id),
-                      padding: const EdgeInsets.symmetric(horizontal: cardPadding),
-                      child: RepaintBoundary(
-                        child: WatchNextCard(
-                          program: program,
-                          appsService: appsService,
-                          watchNextService: watchNextService,
-                          handleUpNavigationToSettings: isFirstSection,
-                        ),
-                      ),
-                    );
-                  },
-                ),
+    final settings = context.watch<SettingsService>();
+    final watchNext = context.read<WatchNextService>();
+    final apps = context.read<AppsService>();
+    CategoryFocus.maybeOf(context)?.configure(
+      focusLoading ? const [ContentPreviewRow.loadingFocusKey]
+          : programs.map((p) => p.id.toString()),
+    );
+    final style =
+        appearance ??
+        context.watch<AppearanceService?>()?.tilesFor(
+          ContinueWatchingSection.sectionId,
+        ) ??
+        TileAppearance({'sectionTitles': settings.showCategoryTitles});
+    final title = AppLocalizations.of(context)!.continueWatching;
+    return Container(
+      decoration: style.sectionDecoration(),
+      padding: EdgeInsets.all(style.number('sectionPadding') ?? 0),
+      child: programs.isEmpty
+          ? ContentPreviewRow.loading(
+              title: title,
+              style: style,
+              appTileSize: appTileSize,
+              aspectRatio: 16 / 9,
+              focusLoading: focusLoading,
+              reserveDescription: settings.continueWatchingShowDescription,
+            )
+          : ContentPreviewRow(
+              programs: programs,
+              title: title,
+              style: style,
+              appTileSize: appTileSize,
+              aspectRatio: 16 / 9,
+              geometricEntry: false,
+              reserveDescription: settings.continueWatchingShowDescription,
+              card: (program, size) => WatchNextCard(
+                program: program,
+                appsService: apps,
+                watchNextService: watchNext,
+                handleUpNavigationToSettings: isFirstSection,
+                style: style,
+                size: size,
               ),
-            ],
-          ),
-        );
-      },
+            ),
     );
   }
 }
 
-class WatchNextCard extends StatefulWidget {
-  final WatchNextProgram program;
-  final AppsService appsService;
-  final WatchNextService watchNextService;
-  final bool handleUpNavigationToSettings;
-
+class WatchNextCard extends StatelessWidget {
   const WatchNextCard({
     super.key,
     required this.program,
     required this.appsService,
     required this.watchNextService,
-    this.handleUpNavigationToSettings = true,
+    required this.handleUpNavigationToSettings,
+    required this.style,
+    required this.size,
   });
 
-  @override
-  State<WatchNextCard> createState() => _WatchNextCardState();
-}
+  final WatchNextProgram program;
+  final AppsService appsService;
+  final WatchNextService watchNextService;
+  final bool handleUpNavigationToSettings;
+  final TileAppearance style;
+  final Size size;
 
-class _WatchNextCardState extends State<WatchNextCard> {
-  CategoryFocusController? _categoryFocus;
-  late final FocusNode _focusNode;
-  bool _focused = false;
-  bool _clicked = false;
-  Uint8List? _appIconBytes;
-  @override
-  void initState() {
-    super.initState();
-    _focusNode = FocusNode();
-    _focusNode.addListener(_onFocusChange);
-    _loadAppIcon();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final controller = CategoryFocus.maybeOf(context);
-    if (controller != _categoryFocus) {
-      _categoryFocus?.unregister(widget.program.id.toString(), _focusNode);
-      _categoryFocus = controller;
-      _categoryFocus?.register(widget.program.id.toString(), _focusNode);
-    }
-  }
-
-  Future<void> _loadAppIcon() async {
-    try {
-      final bytes = await widget.appsService.getAppIcon(widget.program.packageName);
-      if (mounted && bytes.isNotEmpty) {
-        setState(() => _appIconBytes = bytes);
-      }
-    } catch (_) {}
-  }
-
-  @override
-  void didUpdateWidget(covariant WatchNextCard oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.program.id != widget.program.id) {
-      _categoryFocus?.unregister(oldWidget.program.id.toString(), _focusNode);
-      _categoryFocus?.register(widget.program.id.toString(), _focusNode);
-    }
-    if (oldWidget.program.packageName != widget.program.packageName) {
-      _loadAppIcon();
-    }
-  }
-
-  void _onFocusChange() {
-    setState(() {
-      _focused = _focusNode.hasFocus;
-    });
-    if (_focusNode.hasFocus) {
-      _categoryFocus?.record(widget.program.id.toString(), _focusNode);
-      if (_categoryFocus?.reveal != null) {
-        final inner = Scrollable.maybeOf(context);
-        final box = context.findRenderObject();
-        if (inner != null && box != null) { inner.position.ensureVisible(box,
-          alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
-          duration: const Duration(milliseconds: 100)); }
-        _categoryFocus!.reveal!();
-        return;
-      }
-      Scrollable.ensureVisible(
-        context,
-        alignment: 0.5,
-        curve: Curves.easeInOut,
-        duration: const Duration(milliseconds: 100),
-      );
-    }
-  }
-
-  @override
-  void dispose() {
-    _categoryFocus?.unregister(widget.program.id.toString(), _focusNode);
-    _focusNode.removeListener(_onFocusChange);
-    _focusNode.dispose();
-    super.dispose();
-  }
-
-  void _onPressed() {
-    if (!_clicked) {
-      setState(() => _clicked = true);
-      Future.delayed(const Duration(milliseconds: 150), () {
-        if (!mounted) return;
-        widget.watchNextService.launch(widget.program);
-        Future.delayed(const Duration(milliseconds: 500), () {
-          if (mounted) {
-            setState(() => _clicked = false);
-          }
-        });
-      });
-    }
-  }
-
-  void _onLongPress() {
+  void _showDetails(BuildContext context) {
+    final appIcon = appsService
+        .getAppIcon(program.packageName)
+        .catchError((Object _) => Uint8List(0));
     showLauncherDialog(
       context: context,
-      builder: (context) => WatchNextInfoPanel(
-        program: widget.program,
-        watchNextService: widget.watchNextService,
-        appsService: widget.appsService,
-        appIconBytes: _appIconBytes,
+      builder: (_) => FutureBuilder<Uint8List>(
+        future: appIcon,
+        builder: (_, snapshot) => WatchNextInfoPanel(
+          program: program,
+          watchNextService: watchNextService,
+          appsService: appsService,
+          appIconBytes: snapshot.data,
+        ),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final settings = context.watch<SettingsService>();
     final theme = Theme.of(context);
-    final String themes = context.select<SettingsService, String>((s) => s.themes);
-    final String accentColorHex = context.select<SettingsService, String>((s) => s.accentColorHex);
-    final memory = context.watch<MemoryResources?>();
-    final bool appHighlightAnimationEnabled = context.select<SettingsService, bool>((s) => s.appHighlightAnimationEnabled) &&
-        !(memory?.economyEnabled ?? false) && (memory?.isForeground ?? true) && TickerMode.valuesOf(context).enabled;
-    final bool hideHighlightOutlineOnHomescreen = context.select<SettingsService, bool>((s) => s.hideHighlightOutlineOnHomescreen);
-    final bool appSelectorTransitionAnimationEnabled = context.select<SettingsService, bool>((s) => s.appSelectorTransitionAnimationEnabled);
-    final String cardSize = context.select<SettingsService, String>((s) => s.continueWatchingCardSize);
-    final bool showProgress = context.select<SettingsService, bool>((s) => s.continueWatchingShowProgress);
-    final bool showPercentage = context.select<SettingsService, bool>((s) => s.continueWatchingShowPercentage);
-    final bool showDescription = context.select<SettingsService, bool>((s) => s.continueWatchingShowDescription);
-
-    final Color accentColor = Color(int.parse('FF$accentColorHex', radix: 16));
-    final cardSizeResolved = watchNextCardSize(context, cardSize);
-    final cardWidth = cardSizeResolved.width;
-    final cardHeight = cardSizeResolved.height;
-
-    BorderRadius borderRadius;
-
-    switch (themes) {
-      case 'premium':
-        borderRadius = BorderRadius.circular(16);
-        break;
-      case 'classic':
-        borderRadius = BorderRadius.zero;
-        break;
-      case 'capsule':
-        borderRadius = BorderRadius.circular(100);
-        break;
-      case 'modern':
-      default:
-        borderRadius = BorderRadius.circular(8);
-        break;
-    }
-
-    double scale = 1.0;
-    if (_focused) {
-      if (themes == 'premium') {
-        scale = 1.15;
-      } else if (themes == 'classic') {
-        scale = 1.0;
-      } else {
-        scale = 1.1;
-      }
-    }
-
-    final appearance = context.watch<AppearanceService?>()?.appearance ?? const TileAppearance();
-    final double elevation = _focused && appearance.showFocusShadow
-        ? (themes == 'classic' ? 8 : 16)
-        : 0;
-    final Color shadowColor = Colors.black;
-
-    final borderStyle = appearance.focusBorderStyle(legacyHidden: hideHighlightOutlineOnHomescreen);
-    final Widget? highlightWidget = _focused && borderStyle != 'none'
-      ? TileThemeOutline(theme: borderStyle == 'glow' ? 'modern' : themes,
-          accent: accentColor, radius: borderRadius.topLeft.x,
-          borderStyle: borderStyle, pulse: appHighlightAnimationEnabled)
-      : null;
-
-    // Progress percentage
-    double progress = 0;
-    if (widget.program.duration > 0 && widget.program.playbackPosition >= 0) {
-      progress = widget.program.playbackPosition / widget.program.duration;
-      if (progress > 1.0) progress = 1.0;
-    }
-
-    return FocusKeyboardListener(
-      onPressed: (key) {
-        if ((key == LogicalKeyboardKey.arrowUp || key == LogicalKeyboardKey.arrowDown) &&
-            _categoryFocus?.leave != null) {
-          _categoryFocus!.leave!(key == LogicalKeyboardKey.arrowUp ? AxisDirection.up : AxisDirection.down,
-            _focusNode.rect.center.dx);
-          return KeyEventResult.handled;
-        }
-        if (key == LogicalKeyboardKey.arrowUp && widget.handleUpNavigationToSettings) {
-          Actions.invoke(context, const MoveFocusToSettingsIntent());
-          return KeyEventResult.handled;
-        } else if (AppCardKeys.validationKeys.contains(key)) {
-          _onPressed();
-          return KeyEventResult.handled;
-        }
-        return KeyEventResult.ignored;
+    final package = program.packageName;
+    final appName = package.isEmpty
+        ? null
+        : appsService.getApp(package)?.displayName.trim();
+    final description = program.description.trim();
+    final progress = program.duration > 0 && program.playbackPosition > 0
+        ? (program.playbackPosition / program.duration).clamp(0.0, 1.0)
+        : null;
+    final hasPoster =
+        program.posterArtUri.isNotEmpty || program.thumbnailUri.isNotEmpty;
+    return ContentPreviewCard(
+      program: program,
+      title: program.displayTitle,
+      style: style,
+      size: size,
+      posterRefreshes: hasPoster ? watchNextService.posterRefreshes : null,
+      loadPoster: hasPoster ? () => watchNextService.poster(program) : null,
+      onOpen: (_) async {
+        await watchNextService.launch(program);
       },
-      onLongPress: (key) {
-        if (AppCardKeys.longPressableKeys.contains(key) || AppCardKeys.menuKeys.contains(key)) {
-          _onLongPress();
-          return KeyEventResult.handled;
-        }
-        return KeyEventResult.ignored;
-      },
-      builder: (context) {
-        return RaisedTile(raised: _focused, child: InkWell(
-          focusNode: _focusNode,
-          focusColor: Colors.transparent,
-          hoverColor: Colors.transparent,
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          enableFeedback: false,
-          onTap: () { playKeySound(context); _onPressed(); },
-          onLongPress: _onLongPress,
-          child: AnimatedScale(
-              scale: _clicked ? 0.9 : 1.0,
-              duration: const Duration(milliseconds: 150),
-              curve: Curves.easeOutCubic,
-              child: AnimatedOpacity(
-                opacity: _clicked ? 0.5 : 1.0,
-                duration: const Duration(milliseconds: 150),
-                child: AnimatedContainer(
-                  duration: appSelectorTransitionAnimationEnabled
-                      ? const Duration(milliseconds: 200)
-                      : Duration.zero,
-                  curve: Curves.easeOutBack,
-                  width: cardWidth,
-                  height: cardHeight,
-                  transform: Matrix4.diagonal3Values(scale, scale, 1.0),
-                  transformAlignment: Alignment.center,
-                  child: Stack(clipBehavior: Clip.none, fit: StackFit.expand, children: [Material(
-                    borderRadius: borderRadius,
-                    clipBehavior: Clip.antiAlias,
-                    elevation: elevation,
-                    shadowColor: shadowColor,
-                    color: Colors.transparent,
-                    child: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        // Card surface with subtle dark gradient and border
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: borderRadius,
-                            // Text owns an opaque surface, independent of wallpaper.
-                            color: theme.colorScheme.surface.withAlpha(255),
-                            border: Border.all(
-                              color: _focused ? Colors.transparent : theme.colorScheme.onSurface.withValues(alpha: 0.06),
-                              width: 1,
-                            ),
-                          ),
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Top row: App icon + Progress badge (no text app title)
-                              Row(
-                                children: [
-                                  if (_appIconBytes != null)
-                                    Container(
-                                      width: 24,
-                                      height: 24,
-                                      margin: const EdgeInsets.only(right: 8),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(5),
-                                        child: Image.memory(
-                    _appIconBytes!,
-                    cacheWidth: (64 * MediaQuery.devicePixelRatioOf(context)).ceil().clamp(1, 512),
-                                          fit: BoxFit.contain,
-                                          filterQuality: FilterQuality.low,
-                                        ),
-                                      ),
-                                    ),
-                                  const Spacer(),
-                                  if (showPercentage && progress > 0)
-                                    Text(
-                                      '${(progress * 100).round()}%',
-                                      style: theme.textTheme.bodySmall?.copyWith(
-                                        color: theme.colorScheme.onSurface,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                ],
-                              ),
-                              const Spacer(),
-                              // Program Title
-                              Text(
-                                widget.program.title.trim(),
-                                style: theme.textTheme.bodyMedium?.copyWith(
-                                  color: theme.colorScheme.onSurface,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                                maxLines: (showDescription &&
-                                        widget.program.description.trim().isNotEmpty &&
-                                        widget.program.description.trim().toLowerCase() !=
-                                            widget.program.title.trim().toLowerCase())
-                                    ? 2
-                                    : 3,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              if (showDescription &&
-                                  widget.program.description.trim().isNotEmpty &&
-                                  widget.program.description.trim().toLowerCase() !=
-                                      widget.program.title.trim().toLowerCase()) ...[
-                                const SizedBox(height: 3),
-                                Text(
-                                  widget.program.description.trim(),
-                                  style: theme.textTheme.bodySmall?.copyWith(
-                                    color: theme.colorScheme.onSurfaceVariant,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
-                              const Spacer(),
-                              // Bottom progress indicator
-                              if (showProgress && progress > 0)
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(2),
-                                  child: LinearProgressIndicator(
-                                    value: progress,
-                                    backgroundColor: theme.colorScheme.onSurface.withValues(alpha: 0.12),
-                                    valueColor: AlwaysStoppedAnimation<Color>(accentColor),
-                                    minHeight: 3.5,
-                                  ),
-                                )
-                              else
-                                const SizedBox(height: 3.5),
-                            ],
-                          ),
-                        ),
-                      ],
+      onDetails: _showDetails,
+      onUp: handleUpNavigationToSettings
+          ? () => Actions.invoke(context, const MoveFocusToSettingsIntent())
+          : null,
+      subtitle:
+          settings.continueWatchingShowDescription &&
+              description.isNotEmpty &&
+              description.toLowerCase() != program.displayTitle.toLowerCase()
+          ? description
+          : null,
+      progress: settings.continueWatchingShowProgress ? progress : null,
+      artworkBadge: package.isEmpty
+          ? null
+          : DecoratedBox(
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surface.withAlpha(255),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ExcludeSemantics(
+                      child: ApplicationListIcon(
+                        packageName: package,
+                        size: 18,
+                      ),
                     ),
-                  ), ?highlightWidget]),
+                    const SizedBox(width: 5),
+                    Flexible(
+                      child: Text(
+                        appName?.isNotEmpty == true ? appName! : package,
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: theme.colorScheme.onSurface,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
-          ));
-        },
-      );
-    }
+    );
+  }
 }

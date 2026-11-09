@@ -256,6 +256,11 @@ class _NightModePageState extends State<NightModePage> {
                   title: Text(l.nightScheduleMenu),
                   onPressed: () => open('schedule'),
                 ),
+                RoundedSwitchListTile(
+                  title: Text(l.nightModePanelFill),
+                  value: service.panelFill,
+                  onChanged: service.setPanelFill,
+                ),
               ],
             ),
             SettingsSection(

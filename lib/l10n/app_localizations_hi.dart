@@ -10,6 +10,24 @@ class AppLocalizationsHi extends AppLocalizations {
   AppLocalizationsHi([String locale = 'hi']) : super(locale);
 
   @override
+  String get contentAppTileStyle => 'दिखावट का स्रोत';
+
+  @override
+  String get contentTileOwnAppearance => 'कस्टम दिखावट';
+
+  @override
+  String get contentTileCommonAppearance => 'साझा दिखावट';
+
+  @override
+  String get contentUseSourceLabels => 'चुने गए रूप के लेबल इस्तेमाल करें';
+
+  @override
+  String get contentLabelSelected => 'केवल चुना गया कार्ड';
+
+  @override
+  String get contentLabelAll => 'सभी कार्ड';
+
+  @override
   String get weatherTextResetFormat => 'प्रारूप रीसेट करें';
 
   @override
@@ -386,6 +404,10 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get delete => 'हटाएं';
+
+  @override
+  String get dialogOptionBackButtonActionFirstFeedCard =>
+      'मौजूदा फ़ीड के पहले कार्ड पर जाएँ';
 
   @override
   String get dialogOptionBackButtonActionDoNothing => 'कुछ न करें';
@@ -3596,6 +3618,33 @@ class AppLocalizationsHi extends AppLocalizations {
   String get remoteMappingAction => 'कार्य';
 
   @override
+  String get remoteMappingChooseAction => 'कार्रवाई चुनें';
+
+  @override
+  String get remoteMappingNavigationGroup => 'ऐप और नेविगेशन';
+
+  @override
+  String get remoteMappingScreenSoundGroup => 'स्क्रीन और आवाज़';
+
+  @override
+  String get remoteMappingAutomationGroup => 'स्वचालन';
+
+  @override
+  String get remoteMappingLiveTv => 'लाइव टीवी खोलें';
+
+  @override
+  String get remoteMappingDisplaySettings => 'डिस्प्ले सेटिंग';
+
+  @override
+  String get remoteMappingBluetoothSettings => 'ब्लूटूथ सेटिंग';
+
+  @override
+  String get remoteMappingMute => 'आवाज़ बंद या चालू करें';
+
+  @override
+  String get remoteMappingNeedsAdb => 'ADB आवश्यक';
+
+  @override
   String get remoteMappingLearn => 'रिमोट बटन पहचानें';
 
   @override
@@ -5048,6 +5097,27 @@ class AppLocalizationsHi extends AppLocalizations {
   String get remoteMappingIgnore => 'बटन को अनदेखा करें';
 
   @override
+  String get remoteMappingBlackScreen => 'Black Screen टॉगल करें';
+
+  @override
+  String get remoteMappingBlackOverlay => 'काली स्क्रीन';
+
+  @override
+  String get remoteMappingBlackOverlayHelp =>
+      'तस्वीर छिपाने के लिए एक बार दबाएँ। उसे वापस लाने के लिए फिर से दबाएँ या वापस बटन दबाएँ। टीवी चालू रहता है।';
+
+  @override
+  String get remoteMappingTclScreenOff => 'TCL स्क्रीन बंद करें';
+
+  @override
+  String get remoteMappingTclScreenOffHelp =>
+      'संगत TCL टीवी पर सिर्फ़ ऑडियो मोड चालू करता है। अगर Android इसे चालू करने से रोके, तो स्थानीय ADB कनेक्शन चाहिए।';
+
+  @override
+  String get remoteMappingBlackScreenHelp =>
+      'काली स्क्रीन दिखाने के लिए एक बार और छिपाने के लिए दोबारा दबाएँ। इसके लिए jApp के Black Screen का सशुल्क संस्करण और अन्य ऐप्लिकेशन के ऊपर दिखाने की अनुमति चाहिए।';
+
+  @override
   String get adbHomeDependencyProtected =>
       'बंद करना अवरुद्ध है: सिस्टम फ़ंक्शन की निर्भरता मिली या उसकी जाँच नहीं हो सकी। विवरण के लिए निदान देखें।';
 
@@ -5513,6 +5583,9 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get settingsGroupIndicators => 'संकेतक और संदेश';
+
+  @override
+  String get nightModePanelFill => 'ऊपरी पैनल के बटन में रंग भरें';
 
   @override
   String get settingsGroupFocusShape => 'फ़ोकस का रूप';

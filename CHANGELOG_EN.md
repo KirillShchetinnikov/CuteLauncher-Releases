@@ -2,6 +2,19 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
+## v1.7.2 — 2026-11-09
+
+- You can navigate the home screen as soon as it opens. Static placeholders appear in place of tiles and cards while artwork and data load. Focus and scroll position are preserved as content loads. Previously loaded cards stay visible if a refresh temporarily fails.
+- App feeds and Continue Watching can each use their own appearance, the shared tile settings, or the appearance of a specific app section. Captions can be configured separately. Inactive section opacity now applies to feeds and Continue Watching as well.
+- Artwork is back in Continue Watching. Covers show the app icon and name, along with a progress bar when progress data is available. Feed cards can show the year, rating, genre, duration, or channel name below the title.
+- The maximum number of cards in each feed can be set from 20 to 50. Feeds scroll smoothly with the arrow buttons, and Back can be configured to return to the first card in the current feed.
+- Empty feeds, feeds with no available cover art or thumbnails, and the TCL system Favorites feed are hidden from the home screen and feed picker. A feed returns with its previous setting when its artwork becomes available again. Uninstalling an app also removes its feeds from the saved selection.
+- When you enable or disable a feed, focus stays on its toggle. The arrow buttons follow the new order of settings. The home screen scrolls smoothly to empty sections, where OK opens section settings.
+- Opening settings for a visible section scrolls the home screen to that section so you can see appearance changes immediately. Exiting restores the previous position.
+- Remote button remapping now supports switching to a specific HDMI input, opening live TV, toggling media mute, and opening network or Bluetooth settings. The picker is more compact, actions are grouped by category, and long names wrap at word boundaries.
+- A remote button can now trigger the built-in Black Screen, the native Audio Only mode on compatible TCL TVs, or toggle the paid Black Screen app.
+- An optional accent fill highlights the Night Mode button in the top panel while the mode is active.
+
 ## v1.7.1 — 2026-11-08
 
 - Added shared and per-section title size settings, from 12 to 40.
@@ -28,7 +41,7 @@
 
 - Long settings pages now use consistent groups with clear headings. Related controls stay together, while short menus keep their simple layout.
 - Added a shared choice of group appearance: Accent strip or Shared surface (the default).
-- Group appearance applies to home and panel settings, weather, night mode, brightness, notifications, VPN, startup, Continue watching, the file browser, button mappings, and backups.
+- Group appearance applies to home and panel settings, weather, night mode, brightness, notifications, KVN, startup, Continue watching, the file browser, button mappings, and backups.
 
 ## v1.6.11 — 2026-11-06
 
@@ -75,7 +88,7 @@
 ## v1.6.7 — 2026-11-03
 
 - Added a download and upload speed widget with a configurable refresh interval. It can be enabled in the top bar and quick settings panel.
-- Grouped network status, VPN, speed, and data usage under Network in panel object settings.
+- Grouped network status, KVN, speed, and data usage under Network in panel object settings.
 - Fixed ADB connection checks on older Android versions: a successful connection no longer fails while reading launcher information. Compatibility errors are no longer reported as connection failures.
 - Fixed audio output information collection on older Android versions.
 - Feed artwork now fills each card without distortion, cropping excess edges to remove extra margins around wide previews.
@@ -105,7 +118,7 @@
 - Added reordering of the wallpaper clock, date, and weather, plus weather warnings next to the temperature.
 - Added volume hold modes when the button remapper is enabled: automatically pause interception while the system volume panel is visible, pause on a timer, generate repeats, or disable the workaround. Button mappings and Home interception are temporarily unavailable during a pause.
 - Added an “Ignore button” action. Home screen and settings key sounds can now be enabled independently.
-- Added an option to wait for internet before automatically launching an app. The VPN widget now supports connecting and disconnecting Incy.
+- Added an option to wait for internet before automatically launching an app. The KVN widget now supports connecting and disconnecting Incy.
 - Improved opening TV inputs when the standard method fails. Added a CEC-only HDMI status option and fixed system HDMI names on Philips TVs.
 - Strengthened protection of important system components and stock HOME dependencies during TV cleanup. Added per-package results for the last operation, including the reason and stage of failures.
 - Fixed app list updates when returning Home and retries for unavailable tile images.
@@ -127,7 +140,7 @@
 - Updated adaptive landscape clouds with varied shapes and sizes, slow movement at slightly different speeds and smooth wrapping at screen edges. Clouds and other weather effects appear above the wallpaper clock.
 - Reworked Clock, date and weather settings with separate placement, panel appearance, wallpaper appearance, formats and data options. Quick settings have independent visibility and grouping; calendar and forecast views open according to the selected block's contents.
 - Added Wallhaven online wallpapers with Mixed, Nature, Space, Cities and Minimalism themes, manual switching and scheduled updates. No account or API key is required; availability depends on the network and provider.
-- Added a VPN widget with client selection, supported connection controls and TV startup settings. Available actions depend on the VPN client and firmware.
+- Added a KVN widget with client selection, supported connection controls and TV startup settings. Available actions depend on the KVN client and firmware.
 - Added volume and current audio output to the top panel, plus a System widget with memory, storage and CPU/RAM charts. Individual readings depend on the device and granted access.
 - Added content feeds from installed apps, with channel selection, section appearance settings and opening content from the home screen. App and system support is required.
 - Reworked settings with grouped help, clearer shared and individual appearance options, and improved remote navigation, focus and scrolling in long lists.
@@ -135,7 +148,7 @@
 - Improved the weather forecast and calendar, and added app selection for background startup with the TV.
 - Added launcher settings reset and full app data reset with confirmation. New installations receive prepared initial settings.
 - Fixed night filter flicker after sleep, feed artwork refresh, backup saving and cloud storage error handling. Improved recovery of previously granted permissions.
-- Improved VPN configuration and TV startup behavior, including handling of autostart restrictions, cancelled actions, removed clients and connection confirmation.
+- Improved KVN configuration and TV startup behavior, including handling of autostart restrictions, cancelled actions, removed clients and connection confirmation.
 - Open apps settings now show the status of required access and provide shortcuts to configure it. Unavailable TV input settings are no longer offered for editing.
 - Added suitable-file filtering, file size and modification date to the file browser. Long names expand when truncated, with improved access to controls and remote navigation.
 - Fixed clipping of enlarged tiles and glow at section edges, neighboring tiles covering the focused tile, focus rendering in feeds and thin seams in glow effects. Improved card spacing and section behavior when hiding or restoring sections.

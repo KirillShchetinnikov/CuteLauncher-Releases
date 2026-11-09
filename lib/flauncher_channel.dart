@@ -269,12 +269,8 @@ class FLauncherChannel {
           .receiveBroadcastStream().listen(onEvent, onError: (_) {});
 
   Future<List<Map<dynamic, dynamic>>> getWatchNextPrograms() async {
-    try {
       final List<dynamic>? list = await _methodChannel.invokeMethod("getWatchNextPrograms");
       return list?.cast<Map<dynamic, dynamic>>() ?? [];
-    } catch (_) {
-      return [];
-    }
   }
 
   Future<Uint8List?> getWatchNextPoster(String posterArtUri) async {

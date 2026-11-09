@@ -1,6 +1,7 @@
 import 'top_panel_item.dart';
 import 'weather_display_text.dart';
 import 'weather_glyph.dart';
+import 'home_skeleton.dart';
 
 import 'package:flauncher/weather_text_format.dart';
 import 'package:flauncher/weather_warning_text.dart';
@@ -53,7 +54,11 @@ class _WeatherStatusBarWidgetState extends State<WeatherStatusBarWidget> {
             );
             if (weather == null && format.isStandard) {
               return TopPanelItem(textStyle: widget.textStyle, focusNode: widget.focusNode, selected: widget.selected,
-                onPressed: widget.onPressed, child: icon);
+                onPressed: widget.onPressed, child: Row(mainAxisSize: MainAxisSize.min,
+                  children: [icon, const SizedBox(width: 8),
+                    HomeSkeletonValue(sample: '−99°', style: textStyle,
+                      loading: !weatherService.initialized || weatherService.loading,
+                      child: Text('—', style: textStyle))]));
             }
 
             final bool isWarning =
@@ -78,7 +83,11 @@ class _WeatherStatusBarWidgetState extends State<WeatherStatusBarWidget> {
                 textDirection: TextDirection.ltr,
                 children: [
                   if (!format.explicitLayout) ...[icon, const SizedBox(width: 8)],
-                  WeatherDisplayText(displayText, style: textStyle, inlineIcon: icon, maxWidth: weatherTextMaxWidth(format)),
+                  if (format.isStandard)
+                    HomeSkeletonValue(sample: '−99°', style: textStyle,
+                      child: WeatherDisplayText(displayText, style: textStyle, inlineIcon: icon, maxWidth: weatherTextMaxWidth(format)))
+                  else
+                    WeatherDisplayText(displayText, style: textStyle, inlineIcon: icon, maxWidth: weatherTextMaxWidth(format)),
                 ],
               ),
             );

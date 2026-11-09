@@ -10,6 +10,24 @@ class AppLocalizationsTr extends AppLocalizations {
   AppLocalizationsTr([String locale = 'tr']) : super(locale);
 
   @override
+  String get contentAppTileStyle => 'Görünüm kaynağı';
+
+  @override
+  String get contentTileOwnAppearance => 'Özel görünüm';
+
+  @override
+  String get contentTileCommonAppearance => 'Ortak görünüm';
+
+  @override
+  String get contentUseSourceLabels => 'Seçilen görünümün etiketlerini kullan';
+
+  @override
+  String get contentLabelSelected => 'Yalnızca seçili kart';
+
+  @override
+  String get contentLabelAll => 'Tüm kartlar';
+
+  @override
   String get weatherTextResetFormat => 'Biçimi sıfırla';
 
   @override
@@ -386,6 +404,10 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get delete => 'Sil';
+
+  @override
+  String get dialogOptionBackButtonActionFirstFeedCard =>
+      'Geçerli akışın ilk kartına git';
 
   @override
   String get dialogOptionBackButtonActionDoNothing => 'Hiçbir şey yapma';
@@ -3613,6 +3635,33 @@ class AppLocalizationsTr extends AppLocalizations {
   String get remoteMappingAction => 'Eylem';
 
   @override
+  String get remoteMappingChooseAction => 'Eylem seç';
+
+  @override
+  String get remoteMappingNavigationGroup => 'Uygulamalar ve gezinme';
+
+  @override
+  String get remoteMappingScreenSoundGroup => 'Ekran ve ses';
+
+  @override
+  String get remoteMappingAutomationGroup => 'Otomasyon';
+
+  @override
+  String get remoteMappingLiveTv => 'Canlı TV’yi aç';
+
+  @override
+  String get remoteMappingDisplaySettings => 'Ekran ayarları';
+
+  @override
+  String get remoteMappingBluetoothSettings => 'Bluetooth ayarları';
+
+  @override
+  String get remoteMappingMute => 'Sesi kapat veya aç';
+
+  @override
+  String get remoteMappingNeedsAdb => 'ADB gerekli';
+
+  @override
   String get remoteMappingLearn => 'Kumanda tuşunu algıla';
 
   @override
@@ -5065,6 +5114,27 @@ class AppLocalizationsTr extends AppLocalizations {
   String get remoteMappingIgnore => 'Düğmeyi yok say';
 
   @override
+  String get remoteMappingBlackScreen => 'Black Screen’i aç/kapat';
+
+  @override
+  String get remoteMappingBlackOverlay => 'Siyah ekran';
+
+  @override
+  String get remoteMappingBlackOverlayHelp =>
+      'Görüntüyü gizlemek için bir kez basın. Geri getirmek için tekrar basın veya Geri tuşunu kullanın. TV açık kalır.';
+
+  @override
+  String get remoteMappingTclScreenOff => 'TCL ekranını kapat';
+
+  @override
+  String get remoteMappingTclScreenOffHelp =>
+      'Uyumlu TCL TV’lerde Yalnızca ses modunu açar. Android başlatmayı engellerse yerel ADB bağlantısı gerekir.';
+
+  @override
+  String get remoteMappingBlackScreenHelp =>
+      'Siyah ekranı göstermek için bir kez, gizlemek için tekrar basın. jApp’in ücretli Black Screen sürümü ve diğer uygulamaların üzerinde gösterme izni gerekir.';
+
+  @override
   String get adbHomeDependencyProtected =>
       'Devre dışı bırakma engellendi: sistem işlevi bağımlılığı bulundu veya denetlenemedi. Ayrıntılar için tanılamaya bakın.';
 
@@ -5532,6 +5602,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get settingsGroupIndicators => 'Göstergeler ve mesajlar';
+
+  @override
+  String get nightModePanelFill => 'Üst panel düğmesini renkle doldur';
 
   @override
   String get settingsGroupFocusShape => 'Odak görünümü';

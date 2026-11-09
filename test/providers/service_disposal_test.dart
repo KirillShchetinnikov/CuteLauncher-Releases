@@ -165,21 +165,29 @@ void main() {
     await events.close();
   });
 
-  test('late poster cannot mutate card after disposal', () {
+  test('late poster is discarded after disposal', () {
     fakeAsync((async) {
       final channel = MockFLauncherChannel();
       final pending = Completer<Uint8List?>();
       when(channel.checkWatchNextPermission()).thenAnswer((_) async => true);
-      when(channel.getWatchNextPrograms()).thenAnswer((_) async => [{'id': 1, 'posterArtUri': 'content://late'}]);
+      when(channel.getWatchNextPrograms()).thenAnswer((_) async => [{'id': 1, 'title': 'Video', 'posterArtUri': 'content://late'}]);
       when(channel.getWatchNextPoster(any)).thenAnswer((_) => pending.future);
       final service = WatchNextService(channel);
       async.flushMicrotasks();
-      final card = service.programs.single;
+      Uint8List? result;
+      var completed = false;
+      service.poster(service.programs.single).then((bytes) {
+        result = bytes;
+        completed = true;
+      });
+      async.flushMicrotasks();
+      verify(channel.getWatchNextPoster('content://late')).called(1);
       service.dispose();
       pending.complete(Uint8List.fromList([1]));
       async.flushMicrotasks();
-      expect(card.posterBytes, isNull);
-      verifyNever(channel.addWatchNextChangedListener(any));
+      expect(completed, isTrue);
+      expect(result, isNull);
+      expect(service.posterCacheEntries, 0);
       expect(async.periodicTimerCount, 0);
     });
   });

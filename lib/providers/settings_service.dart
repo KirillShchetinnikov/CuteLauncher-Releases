@@ -1,3 +1,4 @@
+import '../category_appearance.dart';
 import '../sleep_timer_configuration.dart';
 import '../launcher_defaults.dart';
 import '../tv_inputs_configuration.dart';
@@ -68,10 +69,8 @@ const String _showSystemSettingsInStatusBarKey = "show_system_settings_in_status
 const String _hideLauncherTileKey = "hide_launcher_tile";
 const String _hideAndroidSettingsTileKey = "hide_android_settings_tile";
 const String _showContinueWatchingKey = "show_continue_watching";
-const String _continueWatchingCardSizeKey = "continue_watching_card_size";
 const String _continueWatchingMaxItemsKey = "continue_watching_max_items";
 const String _continueWatchingShowProgressKey = "continue_watching_show_progress";
-const String _continueWatchingShowPercentageKey = "continue_watching_show_percentage";
 const String _continueWatchingShowDescriptionKey = "continue_watching_show_description";
 const String _continueWatchingOrderKey = "continue_watching_order";
 const String _hiddenWatchNextProgramIdsKey = "hidden_watch_next_program_ids";
@@ -114,6 +113,9 @@ enum CardFocusMode { remember, first, settings }
 enum FileManagerPreference { ask, builtIn, external }
 
 class SettingsService extends ChangeNotifier with ServiceLifecycle {
+  static const minAppChannelCardLimit = 20;
+  static const maxAppChannelCardLimit = 50;
+  static const _appChannelCardLimitKey = 'app_channel_card_limit';
   final landscapeDemo = ValueNotifier<LandscapeDemoFrame?>(null);
   ScreenshotScene? _screenshotScene = screenshotBuild
       ? ScreenshotScene.initial()
@@ -166,7 +168,6 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
   late String _continueWatchingCardSize;
   late int _continueWatchingMaxItems;
   late bool _continueWatchingShowProgress;
-  late bool _continueWatchingShowPercentage;
   late bool _continueWatchingShowDescription;
   late int _continueWatchingOrder;
   late List<String> _hiddenWatchNextProgramIds;
@@ -364,6 +365,27 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
     notifyListeners();
   }
   bool get showContinueWatching => _showContinueWatching;
+  int get appChannelCardLimit {
+    final saved = _sharedPreferences.get(_appChannelCardLimitKey);
+    return saved is int
+        ? saved.clamp(minAppChannelCardLimit, maxAppChannelCardLimit)
+        : minAppChannelCardLimit;
+  }
+
+  Future<void> setAppChannelCardLimit(int value) async {
+    RangeError.checkValueInInterval(
+      value,
+      minAppChannelCardLimit,
+      maxAppChannelCardLimit,
+      'value',
+    );
+    if (value == appChannelCardLimit) return;
+    if (!await _sharedPreferences.setInt(_appChannelCardLimitKey, value)) {
+      throw StateError('Unable to save feed card limit');
+    }
+    notifyListeners();
+  }
+
   FeedFormat appChannelFormat(String key, {bool detected = false}) {
     final values =
         _sharedPreferences.getStringList(
@@ -450,7 +472,6 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
     notifyListeners();
   }
   bool get continueWatchingShowProgress => _continueWatchingShowProgress;
-  bool get continueWatchingShowPercentage => _continueWatchingShowPercentage;
   bool get continueWatchingShowDescription => _continueWatchingShowDescription;
   int get continueWatchingOrder => _continueWatchingOrder;
   List<String> get hiddenWatchNextProgramIds => List.unmodifiable(_hiddenWatchNextProgramIds);
@@ -620,10 +641,9 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
     _hideLauncherTile = _sharedPreferences.getBool(_hideLauncherTileKey) ?? false;
     _hideAndroidSettingsTile = _sharedPreferences.getBool(_hideAndroidSettingsTileKey) ?? true;
     _showContinueWatching = _sharedPreferences.getBool(_showContinueWatchingKey) ?? false;
-    _continueWatchingCardSize = _sharedPreferences.getString(_continueWatchingCardSizeKey) ?? "normal";
+    _continueWatchingCardSize = _sharedPreferences.getString(legacyWatchNextCardSizeKey) ?? "normal";
     _continueWatchingMaxItems = _sharedPreferences.getInt(_continueWatchingMaxItemsKey) ?? 15;
     _continueWatchingShowProgress = _sharedPreferences.getBool(_continueWatchingShowProgressKey) ?? true;
-    _continueWatchingShowPercentage = _sharedPreferences.getBool(_continueWatchingShowPercentageKey) ?? true;
     _continueWatchingShowDescription = _sharedPreferences.getBool(_continueWatchingShowDescriptionKey) ?? true;
     _continueWatchingOrder = _sharedPreferences.getInt(_continueWatchingOrderKey) ?? 0;
     _hiddenWatchNextProgramIds = _sharedPreferences.getStringList(_hiddenWatchNextProgramIdsKey) ?? [];
@@ -700,7 +720,7 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
       _hideAndroidSettingsTileKey: _hideAndroidSettingsTile,
       _showContinueWatchingKey: _showContinueWatching,
       'show_now_playing': showNowPlaying,
-      _continueWatchingCardSizeKey: _continueWatchingCardSize,
+      legacyWatchNextCardSizeKey: _continueWatchingCardSize,
       _continueWatchingMaxItemsKey: _continueWatchingMaxItems,
       'remember_category_focus': rememberCategoryFocus,
       'card_focus_mode': cardFocusMode.name,
@@ -708,7 +728,6 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
       'panel_tooltips_enabled': panelTooltipsEnabled,
       watchNextAppLimitsKey: jsonEncode(watchNextAppLimits),
       _continueWatchingShowProgressKey: _continueWatchingShowProgress,
-      _continueWatchingShowPercentageKey: _continueWatchingShowPercentage,
       _continueWatchingShowDescriptionKey: _continueWatchingShowDescription,
       _continueWatchingOrderKey: _continueWatchingOrder,
       _hiddenWatchNextProgramIdsKey: _hiddenWatchNextProgramIds,
@@ -916,7 +935,7 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
   }
 
   Future<void> setContinueWatchingCardSize(String size) async {
-    await _sharedPreferences.setString(_continueWatchingCardSizeKey, size);
+    await _sharedPreferences.setString(legacyWatchNextCardSizeKey, size);
     _continueWatchingCardSize = size;
     notifyListeners();
   }
@@ -930,12 +949,6 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
   Future<void> setContinueWatchingShowProgress(bool show) async {
     await _sharedPreferences.setBool(_continueWatchingShowProgressKey, show);
     _continueWatchingShowProgress = show;
-    notifyListeners();
-  }
-
-  Future<void> setContinueWatchingShowPercentage(bool show) async {
-    await _sharedPreferences.setBool(_continueWatchingShowPercentageKey, show);
-    _continueWatchingShowPercentage = show;
     notifyListeners();
   }
 

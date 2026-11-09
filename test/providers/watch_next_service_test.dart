@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter/widgets.dart';
@@ -7,7 +9,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:flauncher/providers/watch_next_service.dart';
 import 'package:flauncher/models/watch_next_program.dart';
+import 'package:flauncher/models/content_load_state.dart';
 import '../mocks.mocks.dart';
+
+class _LocalHttpOverrides extends HttpOverrides {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -31,17 +36,64 @@ void main() {
     watchNextStreamController.close();
   });
 
+  test('refresh failure retains content and a later empty response clears it', () async {
+    when(mockChannel.getWatchNextPrograms()).thenAnswer((_) async => [
+      {'id': 1, 'title': 'Saved video'},
+    ]);
+    watchNextService = WatchNextService(mockChannel);
+    await Future<void>.delayed(Duration.zero);
+    expect(watchNextService.loadState, ContentLoadState.ready);
+    final pending = Completer<List<Map<dynamic, dynamic>>>();
+    when(mockChannel.getWatchNextPrograms()).thenAnswer((_) => pending.future);
+    final refresh = watchNextService.refresh();
+    expect(watchNextService.loadState, ContentLoadState.refreshing);
+    final observed = <ContentLoadState>[];
+    watchNextService.addListener(() => observed.add(watchNextService.loadState));
+    pending.completeError(StateError('offline'));
+    await refresh;
+    expect(watchNextService.loadState, ContentLoadState.error);
+    expect(observed.last, ContentLoadState.error);
+    expect(watchNextService.programs.single.title, 'Saved video');
+    when(mockChannel.getWatchNextPrograms()).thenAnswer((_) async => []);
+    await watchNextService.refresh();
+    expect(watchNextService.loadState, ContentLoadState.empty);
+    watchNextService.dispose();
+  });
+
+  test('initial metadata timeout settles and ignores the late answer', () {
+    fakeAsync((time) {
+      final pending = Completer<List<Map<dynamic, dynamic>>>();
+      when(mockChannel.getWatchNextPrograms()).thenAnswer((_) => pending.future);
+      final service = WatchNextService(mockChannel);
+      expect(service.loadState, ContentLoadState.initial);
+      time.elapse(WatchNextService.metadataTimeout);
+      expect(service.initialized, isTrue);
+      expect(service.loadState, ContentLoadState.error);
+      pending.complete([{'id': 1, 'title': 'Too late'}]);
+      time.flushMicrotasks();
+      expect(service.programs, isEmpty);
+      service.dispose();
+    });
+  });
+
   test('event bursts wait for remote idle and coalesce poster reloads', () {
     fakeAsync((time) {
       final work = ForegroundWork(now: () => DateTime(2026).add(time.elapsed))..homeReady();
       when(mockChannel.getWatchNextPrograms()).thenAnswer((_) async => [
-        {'id': 1, 'posterArtUri': 'content://poster'},
+        {'id': 1, 'title': 'Video', 'posterArtUri': 'content://poster'},
       ]);
       var image = 1;
       when(mockChannel.getWatchNextPoster(any)).thenAnswer((_) async => Uint8List.fromList([image]));
       final service = WatchNextService(mockChannel, work: work);
       time.elapse(const Duration(milliseconds: 350));
       expect(service.initialized, isTrue);
+      List<int>? poster;
+      service.poster(service.programs.single).then((bytes) => poster = bytes);
+      time.flushMicrotasks();
+      expect(poster, [1]);
+      service.posterRefreshes.addListener(() {
+        service.poster(service.programs.single).then((bytes) => poster = bytes);
+      });
       clearInteractions(mockChannel);
       image = 2;
       for (var i = 0; i < 20; i++) {
@@ -56,7 +108,7 @@ void main() {
       time.elapse(const Duration(milliseconds: 1));
       verify(mockChannel.getWatchNextPrograms()).called(1);
       verify(mockChannel.getWatchNextPoster('content://poster')).called(1);
-      expect(service.programs.single.posterBytes, [2]);
+      expect(poster, [2]);
       service.dispose();
       work.dispose();
     });
@@ -134,12 +186,19 @@ void main() {
     fakeAsync((time) {
       final work = ForegroundWork(now: () => DateTime(2026).add(time.elapsed))..homeReady();
       when(mockChannel.getWatchNextPrograms()).thenAnswer((_) async => [
-        {'id': 1, 'posterArtUri': 'content://poster'},
+        {'id': 1, 'title': 'Video', 'posterArtUri': 'content://poster'},
       ]);
       var image = 1;
       when(mockChannel.getWatchNextPoster(any)).thenAnswer((_) async => Uint8List.fromList([image]));
       final service = WatchNextService(mockChannel, work: work);
       time.elapse(const Duration(milliseconds: 350));
+      List<int>? poster;
+      service.poster(service.programs.single).then((bytes) => poster = bytes);
+      time.flushMicrotasks();
+      expect(poster, [1]);
+      service.posterRefreshes.addListener(() {
+        service.poster(service.programs.single).then((bytes) => poster = bytes);
+      });
       clearInteractions(mockChannel);
       work.didChangeAppLifecycleState(AppLifecycleState.paused);
       service.didChangeAppLifecycleState(AppLifecycleState.paused);
@@ -154,13 +213,28 @@ void main() {
       service.didChangeAppLifecycleState(AppLifecycleState.resumed);
       time.elapse(const Duration(milliseconds: 350));
       verify(mockChannel.getWatchNextPrograms()).called(1);
-      expect(service.programs.single.posterBytes, [2]);
+      expect(poster, [2]);
       service.dispose();
       work.dispose();
     });
   });
 
   group('WatchNextService Initialization', () {
+    test('drops rows without meaningful text and keeps description-only rows', () async {
+      when(mockChannel.getWatchNextPrograms()).thenAnswer((_) async => [
+        {'id': 1, 'title': '  ', 'description': '\t', 'posterArtUri': 'content://unused'},
+        {'id': 2, 'description': '  Episode 2  '},
+        {'id': 3, 'title': 'Movie'},
+      ]);
+      final service = WatchNextService(mockChannel);
+      addTearDown(service.dispose);
+      await pumpEventQueue();
+
+      expect(service.programs.map((p) => p.id), [3, 2]);
+      expect(service.programs.last.displayTitle, 'Episode 2');
+      verifyNever(mockChannel.getWatchNextPoster(any));
+    });
+
     test('initializes with empty programs list', () async {
       watchNextService = WatchNextService(mockChannel);
       while (!watchNextService.initialized) {
@@ -204,7 +278,7 @@ void main() {
       verify(mockChannel.getWatchNextPrograms()).called(1);
     });
 
-    test('fetches watch next programs and poster art on init', () async {
+    test('fetches metadata on init and loads poster only on request', () async {
       final fakePrograms = [
         {
           'id': 1,
@@ -233,7 +307,8 @@ void main() {
 
       expect(watchNextService.programs.length, 1);
       expect(watchNextService.programs[0].title, 'Stranger Things');
-      expect(watchNextService.programs[0].posterBytes, mockPosterBytes);
+      verifyNever(mockChannel.getWatchNextPoster(any));
+      expect(await watchNextService.poster(watchNextService.programs.single), mockPosterBytes);
 
       verify(mockChannel.getWatchNextPrograms()).called(1);
       verify(mockChannel.getWatchNextPoster('content://netflix/poster/1')).called(1);
@@ -306,8 +381,47 @@ void main() {
   });
 
   group('WatchNextService Permissions', () {
+    test('loads and shares a network cover, then falls back to the thumbnail', () async {
+      final image = base64Decode(
+        'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aF8UAAAAASUVORK5CYII=',
+      );
+      final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+      addTearDown(() => server.close(force: true));
+      var requests = 0;
+      server.listen((request) async {
+        ++requests;
+        if (request.uri.path == '/poster') {
+          request.response.add(image);
+        } else {
+          request.response.statusCode = HttpStatus.notFound;
+        }
+        await request.response.close();
+      });
+      final service = HttpOverrides.runWithHttpOverrides(
+        () => WatchNextService(mockChannel),
+        _LocalHttpOverrides(),
+      );
+      addTearDown(service.dispose);
+      final base = 'http://127.0.0.1:${server.port}';
+      final program = WatchNextProgram.fromMap({'posterArtUri': '$base/poster'});
+      expect(await Future.wait([service.poster(program), service.poster(program)]), [image, image]);
+      expect(await service.poster(program), image);
+      expect(requests, 1);
+      verifyNever(mockChannel.getWatchNextPoster(any));
+
+      when(mockChannel.getWatchNextPoster('content://thumbnail'))
+          .thenAnswer((_) async => image);
+      final fallback = WatchNextProgram.fromMap({
+        'posterArtUri': '$base/missing',
+        'thumbnailUri': 'content://thumbnail',
+      });
+      expect(await service.poster(fallback), image);
+      expect(requests, 2);
+      verify(mockChannel.getWatchNextPoster('content://thumbnail')).called(1);
+    });
+
     test('explicit and event refresh reload poster contents under the same URI', () async {
-      when(mockChannel.getWatchNextPrograms()).thenAnswer((_) async => [{'id': 7, 'posterArtUri': 'content://same'}]);
+      when(mockChannel.getWatchNextPrograms()).thenAnswer((_) async => [{'id': 7, 'title': 'Video', 'posterArtUri': 'content://same'}]);
       var image = 1;
       when(mockChannel.getWatchNextPoster(any)).thenAnswer((_) async => Uint8List.fromList([image]));
       watchNextService = WatchNextService(mockChannel);
@@ -315,34 +429,37 @@ void main() {
       try {
         image = 2;
         await watchNextService.refresh(reloadPosters: true);
-        expect(watchNextService.programs.single.posterBytes, [2]);
+        expect(await watchNextService.poster(watchNextService.programs.single), [2]);
         image = 3;
         watchNextStreamController.add(true);
         await pumpEventQueue();
-        expect(watchNextService.programs.single.posterBytes, [3]);
+        expect(await watchNextService.poster(watchNextService.programs.single), [3]);
       } finally {
         watchNextService.dispose();
       }
     });
 
-    test('poster byte budget also releases bytes held by program models', () async {
+    test('poster cache keeps its byte budget and does not prefetch', () async {
       when(mockChannel.getWatchNextPrograms()).thenAnswer((_) async => [
-        for (var i = 0; i < 8; i++) {'id': i, 'posterArtUri': 'content://poster/$i'},
+        for (var i = 0; i < 8; i++) {'id': i, 'title': 'Video $i', 'posterArtUri': 'content://poster/$i'},
       ]);
-      when(mockChannel.getWatchNextPoster(any)).thenAnswer((_) async => Uint8List(3));
+      when(mockChannel.getWatchNextPoster(any)).thenAnswer((_) async => Uint8List(3 * 1024 * 1024));
       watchNextService = WatchNextService(mockChannel);
-      watchNextService.configureImageCache(posterBytes: 4, windowSize: 3);
       await pumpEventQueue();
       try {
-        expect(watchNextService.posterCacheBytes, lessThanOrEqualTo(4));
-        expect(watchNextService.programs.where((p) => p.posterBytes != null).length, 1);
+        verifyNever(mockChannel.getWatchNextPoster(any));
+        for (final program in watchNextService.programs.take(3)) {
+          expect(await watchNextService.poster(program), isNotNull);
+        }
+        expect(watchNextService.posterCacheBytes, 6 * 1024 * 1024);
+        expect(watchNextService.posterCacheEntries, 2);
         verify(mockChannel.getWatchNextPoster(any)).called(3);
       } finally { watchNextService.dispose(); }
     });
 
     test('reuses unchanged poster and reloads it when URI changes', () async {
       var uri = 'content://poster/old';
-      when(mockChannel.getWatchNextPrograms()).thenAnswer((_) async => [{'id': 7, 'posterArtUri': uri}]);
+      when(mockChannel.getWatchNextPrograms()).thenAnswer((_) async => [{'id': 7, 'title': 'Video', 'posterArtUri': uri}]);
       when(mockChannel.getWatchNextPoster(any)).thenAnswer((invocation) async =>
           Uint8List.fromList([invocation.positionalArguments[0] == 'content://poster/old' ? 1 : 2]));
       watchNextService = WatchNextService(mockChannel);
@@ -351,15 +468,15 @@ void main() {
       }
       try {
         await watchNextService.refresh();
-        expect(watchNextService.programs.single.posterBytes, [1]);
+        expect(await watchNextService.poster(watchNextService.programs.single), [1]);
         verify(mockChannel.getWatchNextPoster('content://poster/old')).called(1);
         uri = 'content://poster/new';
         await watchNextService.refresh();
-        expect(watchNextService.programs.single.posterBytes, [2]);
+        expect(await watchNextService.poster(watchNextService.programs.single), [2]);
         verify(mockChannel.getWatchNextPoster(uri)).called(1);
         uri = '';
         await watchNextService.refresh();
-        expect(watchNextService.programs.single.posterBytes, isNull);
+        expect(await watchNextService.poster(watchNextService.programs.single), isNull);
       } finally {
         watchNextService.dispose();
       }
@@ -491,7 +608,10 @@ void main() {
   group('WatchNextService deleteProgram', () {
     for (final throwsError in [false, true]) {
       test('keeps card and position when deletion ${throwsError ? 'throws' : 'is denied'}', () async {
-        when(mockChannel.getWatchNextPrograms()).thenAnswer((_) async => [{'id': 1}, {'id': 2}]);
+        when(mockChannel.getWatchNextPrograms()).thenAnswer((_) async => [
+          {'id': 1, 'title': 'First'},
+          {'id': 2, 'title': 'Second'},
+        ]);
         when(mockChannel.deleteWatchNextProgram(2)).thenAnswer((_) async {
           if (throwsError) throw StateError('unavailable');
           return false;

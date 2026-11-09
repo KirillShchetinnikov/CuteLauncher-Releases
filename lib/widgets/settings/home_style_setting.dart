@@ -42,8 +42,8 @@ class HomeStyleSetting extends StatelessWidget {
             populated.isNotEmpty
         ? populated
         : configuredTargets;
-    HomeStyleBlock? check(Category? c) {
-      final id = categoryId ?? c?.id;
+    HomeStyleBlock? check(Category? c, {int? sectionId}) {
+      final id = sectionId ?? categoryId ?? c?.id;
       final layout = id == null
           ? const CategoryAppearance()
           : service.category(id);
@@ -57,22 +57,49 @@ class HomeStyleSetting extends StatelessWidget {
         legacyHiddenBorder: settings?.hideHighlightOutlineOnHomescreen ?? false,
       );
     }
+    Category? contentSource(int id) {
+      final sourceId = service.tilesFor(id).contentAppTileSectionId;
+      return sourceId == null ? null : categories
+          ?.where((c) => c.id == sourceId && c.id != id && !c.isAppChannels)
+          .firstOrNull;
+    }
 
     final results = targets.isEmpty
         ? [check(null)]
         : targets.map(check).toList();
-    // The separate Watch Next renderer also consumes these global fields.
-    if (categoryId == null &&
+    final watchNextApplies = categoryId == null &&
         (settings?.showContinueWatching ?? false) &&
-        ({'sectionTitles', 'focusShadow', 'focusBorderStyle'}.contains(field) ||
-            {'sectionTitleAligned', 'sectionTitleSize'}.contains(field) && service.appearance.sectionTitles)) {
+        const {
+          'size', 'radius', 'horizontalGap', 'labelSize', 'labelColor',
+          'sectionTitles', 'sectionTitleAligned', 'sectionTitleSize',
+          'sectionBackground', 'sectionOpacity', 'sectionRadius',
+          'focusEffect', 'focusScale', 'focusLift', 'focusBorderStyle',
+          'focusPulse', 'focusTransition',
+        }.contains(field);
+    if (watchNextApplies) {
+      const id = ContinueWatchingSection.sectionId;
+      final source = field == 'size' ? contentSource(id) : null;
+      results.add(const {'labelSize', 'labelColor'}.contains(field)
+          ? null
+          : check(source, sectionId: source == null ? id : null));
+    }
+    if (categoryId == null &&
+        field == 'size' &&
+        configuredTargets.any(
+          (c) => c.isAppChannels && service.tilesFor(c.id).contentAppTileStyle &&
+              check(contentSource(c.id)) == null,
+        ) &&
+        settings?.selectedAppChannels.isNotEmpty == true) {
       results.add(null);
     }
     final enabled = results.contains(null);
     final l = AppLocalizations.of(context)!;
     final reasons = results.whereType<HomeStyleBlock>().toSet();
-    final hasOverrides = categoryId == null && targets.any(
-      (c) => ownsHomeStyleField(service.category(c.id), field),
+    final hasOverrides = categoryId == null && (
+      targets.any((c) => ownsHomeStyleField(service.category(c.id), field)) ||
+      watchNextApplies && ownsHomeStyleField(
+        service.category(ContinueWatchingSection.sectionId), field,
+      )
     );
     final hint = enabled
         ? reasons.isEmpty && !hasOverrides

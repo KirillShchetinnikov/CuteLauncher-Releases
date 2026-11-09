@@ -109,7 +109,7 @@ class _WatchNextInfoPanelState extends State<WatchNextInfoPanel> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      widget.program.title,
+                      widget.program.displayTitle,
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -131,7 +131,9 @@ class _WatchNextInfoPanelState extends State<WatchNextInfoPanel> {
               ),
             ],
           ),
-          if (widget.program.description.isNotEmpty) ...[
+          if (widget.program.description.trim().isNotEmpty &&
+              widget.program.description.trim().toLowerCase() !=
+                  widget.program.displayTitle.toLowerCase()) ...[
             const SizedBox(height: 6),
             Text(
               widget.program.description,

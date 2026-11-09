@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'settings_scroll_behavior.dart';
@@ -44,6 +45,7 @@ class _SettingsPageLayoutState extends State<SettingsPageLayout> {
   bool _scrollbarUpdatePending = false, _hasScrollPosition = false;
   final _viewportKey = GlobalKey();
   final _pageFocus = FocusScopeNode(skipTraversal: true);
+  final _traversal = _SettingsTraversalPolicy();
   bool _entryFocused = false;
   FocusNode? _lastFocus;
   double? _focusContentY;
@@ -160,7 +162,7 @@ class _SettingsPageLayoutState extends State<SettingsPageLayout> {
         first.requestFocus();
       });
     }
-    return FocusScope(
+    final page = FocusScope(
       node: _pageFocus,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -213,5 +215,39 @@ class _SettingsPageLayoutState extends State<SettingsPageLayout> {
         ],
       ),
     );
+    return FocusTraversalGroup(policy: _traversal, child: page);
+  }
+}
+
+class _SettingsTraversalPolicy extends ReadingOrderTraversalPolicy {
+  final _layouts = Expando<Map<FocusNode, Rect>>();
+
+  @override
+  bool inDirection(FocusNode currentNode, TraversalDirection direction) {
+    final scope = currentNode.nearestScope!;
+    final layout = {
+      for (final node in scope.traversalDescendants) node: _contentRect(node),
+    };
+    // Flutter can reuse the previous focus path when reversing direction.
+    // Keep it only while the available controls still occupy the same places.
+    if (!mapEquals(_layouts[scope], layout)) invalidateScopeData(scope);
+    _layouts[scope] = layout;
+    return super.inDirection(currentNode, direction);
+  }
+
+  Rect _contentRect(FocusNode node) {
+    final rect = node.rect;
+    final context = node.context;
+    final scrollable = context == null ? null : Scrollable.maybeOf(context);
+    if (scrollable == null) return rect;
+    // Scrolling moves the viewport over the same rows without reordering them.
+    final pixels = scrollable.position.pixels;
+    final offset = switch (scrollable.axisDirection) {
+      AxisDirection.down => Offset(0, pixels),
+      AxisDirection.up => Offset(0, -pixels),
+      AxisDirection.right => Offset(pixels, 0),
+      AxisDirection.left => Offset(-pixels, 0),
+    };
+    return rect.shift(offset);
   }
 }

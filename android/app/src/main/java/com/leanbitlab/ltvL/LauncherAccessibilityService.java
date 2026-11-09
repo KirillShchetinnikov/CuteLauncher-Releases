@@ -140,6 +140,7 @@ public class LauncherAccessibilityService extends AccessibilityService {
         if (volumeRepeater != null && volumeRepeater.event(event)) return true;
         if (volumePause != null && volumePause.paused()) return false;
         RemoteButtonsBridge.observe(event);
+        if (remapper != null && remapper.dismissBlackScreenOnBack(event)) return true;
         if (recents != null && recents.event(event)) return true;
         if (panel != null && panel.event(event)) return true;
         if (remapper != null && remapper.event(event)) return true;

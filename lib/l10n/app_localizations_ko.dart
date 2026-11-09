@@ -10,6 +10,24 @@ class AppLocalizationsKo extends AppLocalizations {
   AppLocalizationsKo([String locale = 'ko']) : super(locale);
 
   @override
+  String get contentAppTileStyle => '모양 기준';
+
+  @override
+  String get contentTileOwnAppearance => '개별 모양';
+
+  @override
+  String get contentTileCommonAppearance => '공통 모양';
+
+  @override
+  String get contentUseSourceLabels => '선택한 모양의 라벨 사용';
+
+  @override
+  String get contentLabelSelected => '선택한 카드만';
+
+  @override
+  String get contentLabelAll => '모든 카드';
+
+  @override
   String get weatherTextResetFormat => '형식 초기화';
 
   @override
@@ -383,6 +401,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get delete => '삭제';
+
+  @override
+  String get dialogOptionBackButtonActionFirstFeedCard => '현재 피드의 첫 카드로 이동';
 
   @override
   String get dialogOptionBackButtonActionDoNothing => '아무 작업 안 함';
@@ -3501,6 +3522,33 @@ class AppLocalizationsKo extends AppLocalizations {
   String get remoteMappingAction => '동작';
 
   @override
+  String get remoteMappingChooseAction => '동작 선택';
+
+  @override
+  String get remoteMappingNavigationGroup => '앱 및 탐색';
+
+  @override
+  String get remoteMappingScreenSoundGroup => '화면 및 소리';
+
+  @override
+  String get remoteMappingAutomationGroup => '자동화';
+
+  @override
+  String get remoteMappingLiveTv => '실시간 TV 열기';
+
+  @override
+  String get remoteMappingDisplaySettings => '디스플레이 설정';
+
+  @override
+  String get remoteMappingBluetoothSettings => '블루투스 설정';
+
+  @override
+  String get remoteMappingMute => '음소거 전환';
+
+  @override
+  String get remoteMappingNeedsAdb => 'ADB 필요';
+
+  @override
   String get remoteMappingLearn => '리모컨 버튼 감지';
 
   @override
@@ -4919,6 +4967,27 @@ class AppLocalizationsKo extends AppLocalizations {
   String get remoteMappingIgnore => '버튼 무시';
 
   @override
+  String get remoteMappingBlackScreen => 'Black Screen 전환';
+
+  @override
+  String get remoteMappingBlackOverlay => '검은 화면';
+
+  @override
+  String get remoteMappingBlackOverlayHelp =>
+      '한 번 누르면 화면이 가려집니다. 다시 누르거나 뒤로 버튼을 누르면 화면이 돌아옵니다. TV는 켜진 상태를 유지합니다.';
+
+  @override
+  String get remoteMappingTclScreenOff => 'TCL 화면 끄기';
+
+  @override
+  String get remoteMappingTclScreenOffHelp =>
+      '호환되는 TCL TV에서 오디오 전용 모드를 켭니다. Android가 실행을 차단하면 로컬 ADB 연결이 필요합니다.';
+
+  @override
+  String get remoteMappingBlackScreenHelp =>
+      '한 번 누르면 검은 화면이 표시되고 다시 누르면 사라집니다. jApp의 Black Screen 유료 버전과 다른 앱 위에 표시할 권한이 필요합니다.';
+
+  @override
   String get adbHomeDependencyProtected =>
       '시스템 기능 종속성이 발견되었거나 확인할 수 없어 비활성화가 차단되었습니다. 자세한 내용은 진단을 확인하세요.';
 
@@ -5376,6 +5445,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get settingsGroupIndicators => '표시 및 메시지';
+
+  @override
+  String get nightModePanelFill => '상단 패널 버튼에 색 채우기';
 
   @override
   String get settingsGroupFocusShape => '포커스 모양';

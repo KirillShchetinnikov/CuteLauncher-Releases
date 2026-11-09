@@ -5,6 +5,7 @@ import '../l10n/app_localizations.dart';
 import '../providers/settings_service.dart';
 import '../providers/system_status_service.dart';
 import 'top_panel_item.dart';
+import 'home_skeleton.dart';
 
 class SystemStatusWidget extends StatefulWidget {
   final bool visible, selected;
@@ -74,11 +75,13 @@ class _SystemStatusWidgetState extends State<SystemStatusWidget> {
             const Icon(Icons.monitor_heart_outlined),
             if (settings.systemShowCpu) ...[
               const SizedBox(width: 4),
-              Text('CPU ${state.cpu == null ? '—' : '${state.cpu}%'}'),
+              HomeSkeletonValue(sample: 'CPU 100%',
+                child: Text('CPU ${state.cpu == null ? '—' : '${state.cpu}%'}')),
             ],
             if (settings.systemShowRam) ...[
               const SizedBox(width: 8),
-              Text('RAM ${ram == null ? '—' : '$ram%'}'),
+              HomeSkeletonValue(sample: 'RAM 100%',
+                child: Text('RAM ${ram == null ? '—' : '$ram%'}')),
             ],
           ],
         ),

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flauncher/providers/now_playing_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/now_playing_card.dart';
+import 'package:flauncher/widgets/home_skeleton.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/settings_import.dart';
 import 'package:flutter/material.dart';
@@ -43,6 +44,24 @@ void main() {
     service = NowPlayingService(settings, transport: transport);
   });
   tearDown(() async { service.dispose(); await transport.updates.close(); settings.dispose(); });
+  testWidgets('initial media skeleton settles on timeout and ignores late data', (tester) async {
+    final pending = Completer<dynamic>();
+    transport.query = () => pending.future;
+    await settings.setShowNowPlaying(true);
+    await tester.pumpWidget(MultiProvider(providers: [
+      ChangeNotifierProvider.value(value: settings), ChangeNotifierProvider.value(value: service),
+    ], child: const MaterialApp(localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales, home: Scaffold(body: NowPlayingCard()))));
+    expect(tester.getSize(find.byType(HomeSkeletonBlock)).width, greaterThan(64));
+    await tester.pump(const Duration(seconds: 8));
+    expect(service.initialized, isTrue);
+    expect(service.failed, isTrue);
+    pending.complete(packet(1));
+    await tester.pump();
+    expect(service.media, isNull);
+    expect(find.byType(HomeSkeletonBlock), findsNothing);
+    await tester.pumpWidget(const SizedBox());
+  });
   test('opt in is persisted/exported/validated and disabled mode has no subscriptions', () async {
     expect(transport.subscriptions, 0); expect(transport.snapshots, 0);
     await settings.setShowNowPlaying(true); await Future<void>.delayed(Duration.zero);
@@ -61,6 +80,25 @@ void main() {
     transport.query = () async => packet(2, allowed: false);
     service.didChangeAppLifecycleState(AppLifecycleState.resumed); await Future<void>.delayed(Duration.zero);
     expect(service.allowed, false); expect(service.media, isNull); expect(transport.subscriptions, 2);
+  });
+
+  test('resume and failed refresh preserve the media until permission is revoked', () async {
+    await settings.setShowNowPlaying(true);
+    await Future<void>.delayed(Duration.zero);
+    final previous = service.media;
+    expect(previous, isNotNull);
+    service.didChangeAppLifecycleState(AppLifecycleState.paused);
+    final pending = Completer<dynamic>();
+    transport.query = () => pending.future;
+    service.didChangeAppLifecycleState(AppLifecycleState.resumed);
+    expect(service.media, same(previous));
+    pending.completeError(StateError('temporarily unavailable'));
+    await Future<void>.delayed(Duration.zero);
+    expect(service.failed, isTrue);
+    expect(service.media, same(previous));
+    transport.query = () async => packet(100, allowed: false);
+    await service.refresh();
+    expect(service.media, isNull);
   });
   test('creation in background waits for resume before subscribing', () async {
     service.dispose();
@@ -86,7 +124,7 @@ void main() {
     transport.query = () async => throw StateError('snapshot unavailable');
     expect(await service.control('pause'), isTrue);
     expect(service.failed, isTrue);
-    expect(service.media, isNull);
+    expect(service.media, isNotNull);
     expect(service.busy, isFalse);
   });
   test('old command completion cannot change failure state after resume', () async {

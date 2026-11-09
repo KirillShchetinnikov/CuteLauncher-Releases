@@ -42,8 +42,12 @@ update to get new features. Requirements and limitations appear beside each feat
 Use the directional pad to move focus and OK to activate the selected item.
 Hold an app tile to open its actions. Back returns from a nested screen;
 its home-screen behavior is configurable. Home returns to the launcher when
-the default home app or Home interception is configured correctly. You can
-choose the focus target after Home. Key sounds have separate switches: for Home,
+the default home app or Home interception is configured correctly.
+Under **Home screen → Home screen behavior → Back button action**, choose
+**First card in current feed** to return focus and scrolling to the start of the
+app feed or Continue Watching row that contains the selected card. On the home
+screen outside those feeds, the action leaves focus where it is.
+You can choose the focus target after Home. Key sounds have separate switches: for Home,
 go to **Home screen → Home screen behavior**; for settings, go to
 **Interface style → Settings style**. Both switches are off by default.
 On return, the launcher also checks for changes to installed apps so it can
@@ -52,6 +56,9 @@ update tiles even if a system change notification was missed.
 Click an app tile to launch it with a mouse. The wheel scrolls app rows
 horizontally and grids with a limited number of visible rows vertically.
 At either end of an app row, the wheel scrolls the home page.
+
+When settings move, appear, or disappear on a page, the directional pad follows
+their new order.
 
 Settings are grouped into Home screen, Top panel, Interface style, Apps, Night mode
 and brightness, Launcher and TV controls, and Advanced. Android TV system
@@ -71,7 +78,7 @@ turned off persistent scrollbars, they still appear only while scrolling after t
 Under **Interface style → Settings style → Group appearance**, choose
 **Accent strip** or **Shared surface** (the default). One choice applies to groups
 across settings pages. Long pages for appearance, weather, night mode,
-brightness, notifications, VPN, startup, Continue watching, the file browser,
+brightness, notifications, KVN, startup, Continue watching, the file browser,
 button mappings, and backups are divided by purpose. Short menus and app
 lists keep their simple layout. In the section list, panel object ordering, and
 the TV cleaner app list, headings have a divider that starts after the text.
@@ -106,14 +113,21 @@ background. Installing, removing, or disabling an app updates the list
 automatically. When returning from an app or waking the TV, remote control
 remains available while weather, posters, and statistics refresh.
 
-Use ↑/↓ to move between nonempty sections, including Continue Watching,
-skipping empty sections and spacers. Moving above the first nonempty section
+Use ↑/↓ to move between sections, including Continue Watching.
+An empty app section has a focusable “This category is empty.” tile.
+Moving to it uses the same scroll animation as moving to other sections.
+Press OK on it to open section settings. Navigation skips spacers.
+Moving above the first available section
 reaches the top panel.
 
 Path: **Home screen → Categories and order**.
 
 The button instructions for moving sections stay pinned to the bottom of the panel.
 General information about sections opens separately in collapsed help.
+Opening settings for a visible category scrolls Home to its cards. Appearance
+changes are visible beside the panel as you make them, while the arrow buttons
+and OK continue to control settings. Leaving the editor restores the previous
+category on Home and returns focus to the item you opened the editor from.
 
 Create, rename, and delete categories; add apps; reorder apps and categories;
 deleting a category requires confirmation and keeps installed apps;
@@ -144,7 +158,7 @@ settings for an individual section. When enabled, the title starts at the tile
 edge and moves with the tiles when you adjust padding. Titles use edge alignment
 by default. **Section title size** in the same settings lets you choose a size
 from 12 to 40 (default 24), shared across sections or overridden for an individual
-section, including App feeds. Continue Watching uses the shared size. When
+section, including App feeds and Continue Watching. When
 titles are hidden, the control is disabled and the saved size is kept.
 Colored category backgrounds
 have Background opacity (0–100%) and Corner radius (0–64) sliders. Adjust them
@@ -167,11 +181,18 @@ a grid, or additional content cards.
 
 ## App feeds
 
+At startup, static card placeholders reserve space for each selected feed and
+Continue Watching. Content fills those positions; you can immediately use the
+arrow keys to move to another section. Loading does not pull focus back.
+Existing cards stay visible during refreshes, and empty feeds disappear after
+the source responds.
+
 Path: **Home screen → Categories and order → App feeds**.
 
 Select up to 16 feeds published by installed apps. One app may offer several
-feeds, such as new releases and saved items. Enabling or disabling a feed keeps
-focus on its switch. Selected nonempty feeds appear
+feeds, such as new releases and saved items. When you enable or disable an
+available feed, its switch stays focused and visible. The ↑/↓ buttons move
+through the updated order. Selected nonempty feeds appear
 as one standard category. Move the entire group or move it between visible
 and hidden categories. On the feed selection page, **Reorder** opens the order
 of enabled feeds when at least two are selected. OK or ◄/► starts or finishes
@@ -181,10 +202,27 @@ Unavailable and empty selected feeds keep their positions in the saved order.
 Press OK on the category to open its editor: view its fixed name, choose feeds, or open
 Category appearance. Appearance controls include preview size, corner radius,
 horizontal spacing, label size and color, feed titles, padding,
-and background. The App feeds group name stays in settings and is hidden on the home screen.
+and background. In **Appearance source**, choose **Custom appearance** (the
+default), **Shared appearance**, or an app section such as All Apps. Shared
+appearance uses the common tile size, proportions, and style. A selected app
+section supplies its tile style and calculated size, including sizing by
+column count. Headings, padding, and backgrounds have their own settings.
+Custom appearance restores your saved preview settings. If the selected app
+section is deleted, shared appearance is used.
+When using shared appearance or another section, **Use labels from the selected
+appearance** is on by default. Turn it off to set label visibility, position,
+size, and color separately. The selected source still controls tile size and
+other styling.
+While selected feeds load for the first time, the home screen
+shows one empty card and the App feeds heading if headings are enabled.
+After loading, individual feed names are used.
 Individual feed titles can be enabled here independently
 of the shared section-title setting. Previews always use a single horizontal
 row with a uniform format within each feed and titles below the artwork; there is no grid.
+Below the title, a card can show a movie's year, rating, and first genre, or a
+video's duration and channel name. The line depends on what the app publishes
+in its feed. A short description can serve as the second line when it is the only
+detail available. The line is visible when labels are shown below the artwork.
 On the feed selection page, each enabled feed has an **Artwork format** choice:
 **Auto**, **Landscape** (16:9), or **Portrait** (2:3). Auto uses app metadata or,
 when absent, the first three loaded covers. Ties use landscape. The result is
@@ -195,22 +233,33 @@ edge cards when focused.
 Restoring common appearance settings keeps the name and feed selection.
 Artwork resolution accounts for the enlarged selected card.
 The quality of the source image depends on the app publishing the feed.
-Each feed shows up to 20 suggestions
-in the source order. Your selection survives restarts on this TV; it is
+Each feed shows up to 20 cards in the source order by default. On the feed
+selection page, the **Maximum Items** slider sets the same limit from 20 to 50
+for each feed. The value is saved on this TV. Your feed selection survives restarts on this TV and is
 excluded from backups and synchronization. The whole group’s name, order,
 visibility and appearance are included in category and appearance backups. Hiding the group
 keeps your feed selection.
 
 Use ←/→ to select content, ↑/↓ to move between sections, and OK to open the
-selected item in its app. Back keeps your configured home-screen behavior;
+selected item in its app. At the edge of the screen, ←/→ smoothly scrolls the
+feed to the selected card. If system animations are disabled, the feed moves
+immediately. Back keeps your configured home-screen behavior;
 returning to the launcher follows your chosen Home focus mode.
-A placeholder appears when artwork is missing or fails to load. Empty feeds
-and feeds from hidden apps are not displayed. Empty feeds remain selectable
-in settings; saved feeds that disappear can still be deselected.
+If the main artwork is unavailable, the launcher tries the feed's fallback image.
+A card shows a placeholder when no image is available. Empty feeds are hidden
+from the chooser and home screen. Feeds from hidden apps are hidden on the home
+screen. Saved feeds that disappear can still be deselected while their
+app is installed. Uninstalling the app removes its feeds from the list and
+the saved selection.
+A feed is hidden from the chooser and home screen if its cards have no
+available artwork or thumbnails because resources are broken or providers
+are missing. When artwork is available again, the feed reappears with its previous setting.
 
 The list refreshes when system channels change, when returning to the launcher,
-and with Refresh feeds. Existing cards and artwork remain visible until their
-replacements are ready; unchanged data preserves focus and scroll position.
+and with Refresh feeds. The button receives focus when you open feed selection
+and keeps it during loading until you move to another control. Existing cards
+and artwork remain visible until their replacements are ready. Unchanged data
+preserves focus and scroll position.
 If a refresh temporarily fails, the last successfully loaded feed remains visible.
 TV listings access is required. Without it, the page
 shows an access error, a permission request, and a grant through the configured
@@ -258,6 +307,10 @@ Customize tiles and labels, sizes and spacing, shapes and backgrounds, focus
 outlines, zoom and animations, accent color, categories, and the top panel.
 Menus and notifications have background, transparency, color, and text-scale
 settings. Menus can open on either side. Reset individual groups or all appearance.
+
+**Inactive section opacity** applies to app categories, the app feeds group,
+and Continue watching. The last selected section stays fully opaque when
+you move to the top panel or settings.
 
 In **Tiles and labels**, **Apps with a banner** and **Apps without a banner**
 are independent choices next to tile proportions. Apps with a banner have four modes:
@@ -403,9 +456,27 @@ Reddit is currently disabled and cannot be selected.
 Path: **Home screen → Categories and order → Continue Watching**.
 
 This category shows programs apps have submitted to Android Watch Next. A card
-resumes playback through the action supplied by its app. Choose participating
-apps, card size, a total limit, and per-app limits. View details or hide individual
-recommendations. Change the category's visibility and position in the category editor.
+resumes playback through the action supplied by its app. Like App feeds, it uses
+one row of cards with cover art and captions below. If the app supplied only a
+description, the card uses it as the title. Entries that have neither a title
+nor a description are hidden. The app icon and name appear at the top of the
+cover. When the app reports playback progress, a bar appears along the bottom
+of the cover. Choose participating apps, a total limit, and per-app limits,
+and choose whether to show the progress bar and description. Hold OK to view
+program details or hide a card. Change the
+category's visibility and position in the category editor.
+While this category loads at launcher startup, it shows one empty card
+and the heading if headings are enabled. When the category is first and startup
+focus is set to cards, the placeholder receives focus. Use the arrow buttons
+to move away. If the placeholder still has focus when loading finishes, focus
+moves to the first available card. An empty response hides the category.
+
+**Category appearance** offers the same controls as App feeds. Cover size and
+corners, spacing, captions, heading, padding, and background inherit the shared
+appearance. Set overrides for this category or reset them to the shared
+values. A previously customized card size is kept until reset.
+The appearance source and label settings are saved independently for this section.
+The source badge and progress bar stay on the covers.
 
 Apps appear in one alphabetical list; toggling an app keeps its row in place.
 An enabled switch allows cards; a disabled switch blocks them. Each row shows
@@ -527,22 +598,22 @@ no additional location permission is requested. The summary refreshes every thre
 seconds only while open and the app is active. It includes a system network
 settings button.
 
-**VPN** is a separate object in the **Network** group. You can
+**KVN** is a separate object in the **Network** group. You can
 independently show, hide and reorder it on the top panel and the quick settings
-panel. Pressing it opens a menu with VPN status, app, profile and available actions.
-The menu can open the VPN app or Android VPN settings; its gear opens **VPN settings**,
+panel. Pressing it opens a menu with KVN status, app, profile and available actions.
+The menu can open the KVN app or Android KVN settings; its gear opens **KVN settings**,
 shared by both panels. Options include showing only when connected (the default),
 the app name, connection color and notifications about manual command results.
 
-With **VPN app → Automatic**, the launcher adopts a manually connected VPN and
+With **KVN app → Automatic**, the launcher adopts a manually connected KVN and
 remembers the app and available profile name for reconnection. Connecting another
-VPN updates this choice. Explicit selection keeps the widget bound to that client.
+KVN updates this choice. Explicit selection keeps the widget bound to that client.
 Identifying the owner and profile requires an already configured local TCP ADB connection (not TLS).
 If identification is unavailable, connection status is shown and unverified control
-is unavailable. The last client is never substituted for an unknown active VPN.
+is unavailable. The last client is never substituted for an unknown active KVN.
 
 Direct connect and disconnect commands support **AmneziaWG** and **WireGuard**.
-Grant control permission in the launcher's VPN settings and enable remote control
+Grant control permission in the launcher's KVN settings and enable remote control
 in the client. Grant the permission from the main launcher, not the overlay panel.
 The profile name is detected during a manual connection when available; otherwise
 enter it exactly as in the client. **Happ**, **MantaRay** and **Incy** also support connect
@@ -551,8 +622,8 @@ is selected there, so no profile name is required in the launcher.
 For MantaRay, confirm the command in its own window. For unattended startup
 after boot, use Android always-on mode.
 Incy commands may open its screen. For automatic connection, select Incy under
-**Autostart → VPN on TV startup**; to start without opening the client, use
-**Android always-on VPN** after configuring and approving the first connection.
+**Autostart → KVN on TV startup**; to start without opening the client, use
+**Android always-on KVN** after configuring and approving the first connection.
 **Background autostart** requires a compatible app activity; Incy's main activity
 uses an incompatible launch mode, so that switch is unavailable.
 Other clients can be opened. Sending a command
@@ -892,6 +963,9 @@ An accepted launch does not guarantee a signal.
 
 Path: **Night mode and brightness**; the night-mode widget provides quick controls.
 
+**Fill the top panel button** highlights active night mode with the theme's
+accent color. The fill is off by default.
+
 The night filter controls dimming, warmth, and color strength. Enable it manually,
 at scheduled times, or from sunset to sunrise for a chosen location, with offsets
 and smooth transitions. When starting without internet, saved solar events are
@@ -981,30 +1055,30 @@ Path: **Launcher and TV controls**.
   one launch attempt. Remote input or leaving Home cancels it. It is off by default
   and does not delay HDMI switching.
 
-**Autostart** includes a separate **VPN on TV startup** choice:
-**Not selected** disables VPN startup; selecting an installed VPN client enables
+**Autostart** includes a separate **KVN on TV startup** choice:
+**Not selected** disables KVN startup; selecting an installed KVN client enables
 it in addition to the existing app/HDMI target. Direct connection requires a
 supported client, a configured profile and control permissions. Selecting an app
 does not immediately connect it. A separate 0–60 second delay and an optional
 wake trigger (off by default) are available.
 Boot schedules one attempt after a network becomes available, with a network wait
 bounded to one minute after the delay and connection confirmation bounded to 15 seconds.
-Android's scheduler may defer execution. An active VPN is not replaced.
+Android's scheduler may defer execution. An active KVN is not replaced.
 The client or firmware may restrict background connections; such an attempt is
 not reported as successful.
 Wake is detected only while the launcher process is alive. The latest attempt's
-result appears in autostart settings. VPN client, profile and startup settings
+result appears in autostart settings. KVN client, profile and startup settings
 are local to the TV and excluded from backups; object visibility is backed up.
 
-Under **Startup method**, choose **Android always-on VPN** instead of a client
+Under **Startup method**, choose **Android always-on KVN** instead of a client
 command. Select a compatible app after configuring it and approving its first
 connection. The launcher's local ADB connection must be enabled.
 The change is saved in Android; **restart the TV** to apply it. Android starts
-the VPN after boot. Delay and wake settings are unused in this mode.
-Blocking traffic without VPN is not enabled; changes are rejected if this
+the KVN after boot. Delay and wake settings are unused in this mode.
+Blocking traffic without KVN is not enabled; changes are rejected if this
 protection is already active. Leaving the mode restores the previous system
 selection unless you changed it separately, and also requires a restart.
-The widget cannot temporarily disconnect an always-on VPN: change the system
+The widget cannot temporarily disconnect an always-on KVN: change the system
 mode in autostart or Android settings first.
 Once the system selection is cleared, connection control returns to the widget
 immediately. The restart notice remains in autostart settings; the widget menu
@@ -1053,12 +1127,36 @@ Path: **Launcher and TV controls → Remote button remapper**.
 In button diagnostics, the start/stop instructions and the report path, when known,
 are visible without expanding help. Help explains copying the report and limitations.
 Button diagnostics records events Android sends to the service and saves the
-latest text report. Assign a short press or hold to an app, Home, Back, a webhook,
-the quick settings panel, open apps, TV power off, or TV reboot.
+latest text report. Assign a short press or hold to a chosen action. The
+“Action” row opens the grouped picker. Up and Down move within a column,
+and Left and Right switch columns. OK on an action returns to the editor
+with that action selected. Back closes the picker and keeps the previous
+choice. “Ignore button” is below the categories.
+
+In “Inputs,” select a specific HDMI input or open live TV. The choices
+depend on the device's inputs and system TV app. “Screen and sound” groups
+display actions and the media mute toggle. “System” opens network or
+Bluetooth settings. System screens appear when the firmware provides an
+accessible handler.
+
 “Turn off TV” puts the device in standby; “Reboot TV” requires configured ADB.
 An assigned power action runs immediately without an additional confirmation.
 On a TV box, the command controls the box; the TV's response depends on HDMI-CEC
 and firmware. There are global and per-mapping switches and reset.
+
+“Black screen” covers the current app with a black layer. Repeat the same press
+or press Back to show the picture. This action uses CuteLauncher’s enabled
+accessibility service.
+
+On compatible TCL TVs, “Turn off TCL screen” starts the TV’s Audio Only countdown.
+After the countdown, the TV turns off the picture and keeps the sound playing.
+If Android blocks the background service start, set up local ADB. Use the
+remote to restore the picture as supported by the TCL firmware.
+
+“Toggle Black Screen” shows a black overlay over the current app. Press or hold
+the same button again to hide it. This action requires the paid version of Black
+Screen by jApp and permission to display over other apps. [Black Screen on Google Play](https://play.google.com/store/apps/details?id=io.japp.blackscreen).
+
 An empty name field shows “Button name”. Below it, select “Assign button”,
 then “Capture” in the separate dialog and press the remote button. The dialog
 shows the captured button; capture another or select OK to accept. Cancel and
@@ -1516,6 +1614,6 @@ Permissions are granted by the user and may be revoked by Android. A visible
 setting does not guarantee firmware support. When asking about your device,
 include its exact model, Android version, and firmware build.
 
-The VPN on TV startup switch enables autostart separately. The method and app appear below it. Disabling preserves these choices; changing always-on VPN requires a restart.
+The KVN on TV startup switch enables autostart separately. The method and app appear below it. Disabling preserves these choices; changing always-on KVN requires a restart.
 
-TCL firmware may block AmneziaWG from starting in the background. If the boot command fails, the launcher briefly opens the VPN client once, starts the selected tunnel and restores the previous screen. If you have moved to another app, that app stays open.
+TCL firmware may block AmneziaWG from starting in the background. If the boot command fails, the launcher briefly opens the KVN client once, starts the selected tunnel and restores the previous screen. If you have moved to another app, that app stays open.

@@ -10,6 +10,25 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get contentAppTileStyle => 'Appearance source';
+
+  @override
+  String get contentTileOwnAppearance => 'Custom appearance';
+
+  @override
+  String get contentTileCommonAppearance => 'Shared appearance';
+
+  @override
+  String get contentUseSourceLabels =>
+      'Use labels from the selected appearance';
+
+  @override
+  String get contentLabelSelected => 'Selected card only';
+
+  @override
+  String get contentLabelAll => 'All cards';
+
+  @override
   String get weatherTextResetFormat => 'Reset format';
 
   @override
@@ -387,6 +406,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get delete => 'Delete';
+
+  @override
+  String get dialogOptionBackButtonActionFirstFeedCard =>
+      'First card in current feed';
 
   @override
   String get dialogOptionBackButtonActionDoNothing => 'Do nothing';
@@ -3591,6 +3614,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String get remoteMappingAction => 'Action';
 
   @override
+  String get remoteMappingChooseAction => 'Choose an action';
+
+  @override
+  String get remoteMappingNavigationGroup => 'Apps and navigation';
+
+  @override
+  String get remoteMappingScreenSoundGroup => 'Screen and sound';
+
+  @override
+  String get remoteMappingAutomationGroup => 'Automation';
+
+  @override
+  String get remoteMappingLiveTv => 'Open live TV';
+
+  @override
+  String get remoteMappingDisplaySettings => 'Display settings';
+
+  @override
+  String get remoteMappingBluetoothSettings => 'Bluetooth settings';
+
+  @override
+  String get remoteMappingMute => 'Toggle mute';
+
+  @override
+  String get remoteMappingNeedsAdb => 'Requires ADB';
+
+  @override
   String get remoteMappingLearn => 'Learn a remote button';
 
   @override
@@ -5042,6 +5092,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get remoteMappingIgnore => 'Ignore button';
 
   @override
+  String get remoteMappingBlackScreen => 'Toggle Black Screen';
+
+  @override
+  String get remoteMappingBlackOverlay => 'Black screen';
+
+  @override
+  String get remoteMappingBlackOverlayHelp =>
+      'Press once to hide the picture. Press again or press Back to show it. The TV stays on.';
+
+  @override
+  String get remoteMappingTclScreenOff => 'Turn off TCL screen';
+
+  @override
+  String get remoteMappingTclScreenOffHelp =>
+      'Activates the TV’s Audio Only mode on compatible TCL models. If Android blocks the request, a local ADB connection is required.';
+
+  @override
+  String get remoteMappingBlackScreenHelp =>
+      'Press once to show the black overlay and again to hide it. Requires the paid version of Black Screen by jApp and permission to display over other apps.';
+
+  @override
   String get adbHomeDependencyProtected =>
       'Disabling is blocked: a system-function dependency was found or could not be checked. See diagnostics for details.';
 
@@ -5507,6 +5578,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsGroupIndicators => 'Indicators and messages';
+
+  @override
+  String get nightModePanelFill => 'Fill the top panel button';
 
   @override
   String get settingsGroupFocusShape => 'Focus appearance';

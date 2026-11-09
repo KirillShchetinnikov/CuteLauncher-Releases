@@ -79,6 +79,8 @@ void main() {
           (w) => w is SettingsValueStepper && w.title == l.tileSize,
         );
         expect(tester.widget<SettingsValueStepper>(size).enabled, isTrue);
+        await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+        await tester.pumpAndSettle();
         await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
         await tester.pumpAndSettle();
         expect(

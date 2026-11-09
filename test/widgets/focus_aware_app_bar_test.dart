@@ -26,6 +26,7 @@ import 'package:flauncher/widgets/focus_aware_app_bar.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/tv_inputs_service.dart';
 import 'package:flauncher/providers/notifications_service.dart';
+import 'package:flauncher/providers/night_mode_service.dart';
 import 'package:provider/provider.dart';
 import 'package:mockito/mockito.dart';
 import '../mocks.mocks.dart';
@@ -74,6 +75,7 @@ void main() {
     mockNotificationsService = MockNotificationsService();
     mockWeatherService = MockWeatherService();
     when(mockWeatherService.stale).thenReturn(false);
+    when(mockWeatherService.initialized).thenReturn(true);
 
     setupSettingsDefaults(mockSettingsService);
 
@@ -309,6 +311,87 @@ void main() {
     expect(find.byIcon(Icons.settings_outlined), findsOneWidget);
     expect(find.byKey(const Key('statusbar_date')), findsOneWidget);
     expect(find.byKey(const Key('statusbar_clock')), findsOneWidget);
+  });
+
+  testWidgets('night button fill follows the saved option and active state', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    final messenger = tester.binding.defaultBinaryMessenger;
+    const nightChannel = MethodChannel('cutelauncher/night');
+    const tclChannel = MethodChannel('cutelauncher/tcl_blue_light');
+    messenger.setMockMethodCallHandler(
+      nightChannel,
+      (_) async => {'permission': false},
+    );
+    messenger.setMockMethodCallHandler(
+      tclChannel,
+      (_) async => {'status': 'unsupported'},
+    );
+    addTearDown(() {
+      messenger.setMockMethodCallHandler(nightChannel, null);
+      messenger.setMockMethodCallHandler(tclChannel, null);
+    });
+    final night = NightModeService(prefs);
+    final remote = RemotePanelService(prefs);
+    addTearDown(remote.dispose);
+    for (final id in RemotePanelService.ids) {
+      await remote.show(id, id == 'nightMode');
+    }
+    when(mockSettingsService.showNightModeInStatusBar).thenReturn(true);
+
+    Future<void> show({RemotePanelService? panel}) => tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider.value(value: night),
+          ChangeNotifierProvider<SettingsService>.value(
+            value: mockSettingsService,
+          ),
+          ChangeNotifierProvider<TvInputsService>.value(
+            value: mockTvInputsService,
+          ),
+          ChangeNotifierProvider<NotificationsService>.value(
+            value: mockNotificationsService,
+          ),
+          ChangeNotifierProvider<WeatherService>.value(
+            value: mockWeatherService,
+          ),
+        ],
+        child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(appBar: FocusAwareAppBar(remotePanel: panel)),
+        ),
+      ),
+    );
+
+    final button = find.byKey(const ValueKey('night_mode_button'));
+    TopPanelItem item() => tester.widget<TopPanelItem>(button);
+    await show();
+    await night.configure(night.configuration.copyWith(enabled: true));
+    await tester.pumpAndSettle();
+    expect((item().child as Icon).icon, Icons.nightlight_round);
+    expect(item().backgroundColor, isNull);
+    final size = tester.getSize(button);
+
+    await night.setPanelFill(true);
+    await tester.pumpAndSettle();
+    final colors = Theme.of(tester.element(button)).colorScheme;
+    expect(item().backgroundColor, colors.primaryContainer);
+    expect((item().child as Icon).color, colors.onPrimaryContainer);
+    expect(tester.getSize(button), size);
+    expect(prefs.getBool(nightModePanelFillKey), isTrue);
+
+    await show(panel: remote);
+    expect(item().backgroundColor, colors.primaryContainer);
+    await night.configure(night.configuration.copyWith(enabled: false));
+    await tester.pumpAndSettle();
+    expect((item().child as Icon).icon, Icons.nightlight_outlined);
+    expect(item().backgroundColor, isNull);
+    expect(night.panelFill, isTrue);
+    await tester.pumpWidget(const SizedBox.shrink());
+    night.dispose();
   });
 
   testWidgets('system settings button opens Android settings using remote activation', (tester) async {

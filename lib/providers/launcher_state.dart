@@ -33,11 +33,25 @@ class LauncherState extends ChangeNotifier with ServiceLifecycle
   bool _launcherVisible;
 
   DateTime? _suppressBackUntil;
+  Object? _sectionPreviewOwner;
+  int? _sectionPreviewId;
 
   bool  get isDefaultLauncher => _isDefaultLauncher;
   bool  get launcherVisible => _launcherVisible;
+  int? get sectionPreviewId => _sectionPreviewId;
 
   LauncherState() : _isDefaultLauncher = false, _launcherVisible = true;
+
+  /// Selects the Home section shown behind a settings panel.
+  void setSectionPreview(Object owner, int? sectionId) {
+    if (isDisposed || (sectionId == null && _sectionPreviewOwner != owner)) {
+      return;
+    }
+    _sectionPreviewOwner = sectionId == null ? null : owner;
+    if (_sectionPreviewId == sectionId) return;
+    _sectionPreviewId = sectionId;
+    notifyListeners();
+  }
 
   void toggleLauncherVisibility() {
     _launcherVisible = !_launcherVisible;
@@ -62,7 +76,7 @@ class LauncherState extends ChangeNotifier with ServiceLifecycle
     notifyListeners();
   }
 
-  void handleBackNavigation(BuildContext context) {
+  void handleBackNavigation(BuildContext context, {VoidCallback? onFirstFeedCard}) {
     if (_suppressBackUntil != null && DateTime.now().isBefore(_suppressBackUntil!)) {
       _suppressBackUntil = null;
       return;
@@ -81,6 +95,9 @@ class LauncherState extends ChangeNotifier with ServiceLifecycle
           break;
         case BACK_BUTTON_ACTION_SCREENSAVER:
           context.read<ScreensaverService?>()?.startAmbientMode();
+          break;
+        case BACK_BUTTON_ACTION_FIRST_FEED_CARD:
+          if (launcherState.launcherVisible) onFirstFeedCard?.call();
           break;
       }
     }

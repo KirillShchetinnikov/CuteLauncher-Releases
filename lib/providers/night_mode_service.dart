@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const nightModeKey = 'night_mode_configuration';
+const nightModePanelFillKey = 'night_mode_panel_fill';
 
 class NightModeService extends ChangeNotifier with WidgetsBindingObserver {
   final SharedPreferences preferences;
@@ -168,6 +169,15 @@ class NightModeService extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   static const _channel = BridgeChannel('cutelauncher/night');
+
+  /// Whether the panel button uses the theme accent while night mode is active.
+  bool get panelFill => preferences.getBool(nightModePanelFillKey) ?? false;
+
+  Future<void> setPanelFill(bool value) async {
+    await preferences.setBool(nightModePanelFillKey, value);
+    if (!_disposed) notifyListeners();
+  }
+
   bool get active => _active &&
       !(remotePanel ? _foregroundExcluded : localExcluded) && !pictureModeExcluded;
   NightModeService(this.preferences, {this.remotePanel = false})
@@ -330,11 +340,13 @@ class NightModeService extends ChangeNotifier with WidgetsBindingObserver {
 
   Future<void> refreshSystem() async {
     final previous = jsonEncode(configuration.toJson());
+    final previousPanelFill = panelFill;
     await preferences.reload();
     if (_disposed) return;
     configuration =
         NightModeConfiguration.decode(preferences.getString(nightModeKey));
     _tick();
+    if (panelFill != previousPanelFill) notifyListeners();
     if (remotePanel) {
       await _readNativeStatus('status');
       if (_disposed) return;

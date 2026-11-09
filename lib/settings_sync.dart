@@ -51,7 +51,6 @@ const syncSettingsKeys = <String>{
   'continue_watching_card_size',
   'continue_watching_max_items',
   'continue_watching_show_progress',
-  'continue_watching_show_percentage',
   'continue_watching_show_description',
   'continue_watching_order',
   'show_now_playing',

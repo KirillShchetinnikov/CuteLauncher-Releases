@@ -377,7 +377,11 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
     final notifications = context.watch<NotificationsService>();
     final weather = context.watch<WeatherService>();
     final night = context.read<NightModeService?>();
-    final nightEnabled = context.select<NightModeService?, bool>((service) => (service?.intensity ?? 0) > 0);
+    final (nightEnabled, nightPanelFill) = context.select<NightModeService?, (bool, bool)>(
+      (service) => ((service?.intensity ?? 0) > 0, service?.panelFill ?? false),
+    );
+    final nightButtonFilled = nightEnabled && nightPanelFill;
+    final colors = Theme.of(context).colorScheme;
     final vpnVisible = context.select<VpnService?, bool>((vpn) =>
       vpn != null && (vpn.active || !vpn.onlyActive || vpn.failed));
     final storage = context.select<StorageStatusService?, StorageStatus>(
@@ -489,8 +493,11 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
             focusNode: _nightModeFocusNode,
             selected: _activeWidget == 'nightMode',
             onPressed: _openNightMode,
-            child: Icon(nightEnabled
-                ? Icons.nightlight_round : Icons.nightlight_outlined),
+            backgroundColor: nightButtonFilled ? colors.primaryContainer : null,
+            child: Icon(
+              nightEnabled ? Icons.nightlight_round : Icons.nightlight_outlined,
+              color: nightButtonFilled ? colors.onPrimaryContainer : null,
+            ),
           ),
         ),
       if ((widget.remotePanel?.visible('network') ?? settings.showNetworkIndicatorInStatusBar))

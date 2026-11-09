@@ -15,6 +15,7 @@ import 'date_time_format.dart';
 import 'weather_text_format.dart';
 import 'information_formats.dart';
 import 'file_browser_options.dart';
+import 'widgets/settings/back_button_actions.dart';
 
 /// Merge only compatible entries. Missing or invalid settings never reset values.
 /// Unknown primitive keys are retained for round-tripping between app releases.
@@ -22,6 +23,7 @@ Map<String, dynamic> compatibleSettings(dynamic source, Map<String, dynamic> exp
   if (source is! Map) return {};
   final schema = <String, dynamic>{
     'gradient_uuid': '',
+    nightModePanelFillKey: false,
     'brightness_scheduler_enabled': false,
     'brightness_solar': false,
     'brightness_transition_minutes': 1,
@@ -171,7 +173,12 @@ bool _validValue(String key, dynamic value) {
   const choices = {
     'file_manager_preference': ['ask', 'builtIn', 'external'],
     'app_banner_shape': ['modern', 'premium', 'classic', 'capsule'],
-    'back_button_action': ['', 'CLOCK', 'SCREENSAVER'],
+    'back_button_action': [
+      BACK_BUTTON_ACTION_NOTHING,
+      BACK_BUTTON_ACTION_CLOCK,
+      BACK_BUTTON_ACTION_SCREENSAVER,
+      BACK_BUTTON_ACTION_FIRST_FEED_CARD,
+    ],
     'wifi_usage_period': ['daily', 'weekly', 'monthly'],
     'temperature_unit': ['celsius', 'fahrenheit'],
     'screensaver_clock_style': ['minimal', 'bold', 'retro', 'elegant', 'neon', 'pixel', 'digital'],

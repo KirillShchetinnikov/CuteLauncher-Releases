@@ -8,8 +8,140 @@ import 'package:flauncher/providers/appearance_service.dart';
 import 'package:flauncher/tile_appearance.dart';
 import 'package:flauncher/settings_import.dart';
 import 'package:flauncher/category_appearance.dart';
+import 'package:flauncher/models/category.dart';
 
 void main() {
+  test('content sections opt into app tiles independently and keep local previews', () async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    final service = AppearanceService(prefs);
+    addTearDown(service.dispose);
+    const watch = ContinueWatchingSection.sectionId;
+    const feeds = 11;
+    const mode = 'contentAppTileStyle';
+    expect(service.tilesFor(watch).contentAppTileStyle, isFalse);
+    expect(service.tilesFor(feeds).contentAppTileStyle, isFalse);
+    await service.set('size', 96);
+    await service.set('aspectRatio', 1);
+    await service.setCategoryTile(feeds, 'size', 144);
+    await service.setCategoryTile(feeds, 'sectionTitleSize', 30);
+    await service.setCategoryTile(feeds, mode, true);
+    expect(service.tilesFor(feeds).contentAppTileStyle, isTrue);
+    expect(service.tilesFor(feeds).tileSize, 96);
+    expect(service.tilesFor(feeds).aspectRatio, 1);
+    expect(service.tilesFor(feeds).sectionTitleSize, 30);
+    expect(service.tilesFor(watch).contentAppTileStyle, isFalse);
+
+    final imported = compatibleSettings({
+      categoryAppearanceKey: prefs.getString(categoryAppearanceKey),
+    }, {});
+    expect(CategoryAppearance.decode(imported[categoryAppearanceKey])['$feeds']['tiles'][mode], isTrue);
+    final source = Category(id: 12, name: 'Apps');
+    await service.setCategoryTile(source.id, 'size', 176);
+    await service.setCategoryTile(source.id, 'sectionTitleSize', 32);
+    await service.setCategoryTile(feeds, mode, source.id);
+    expect(service.tilesFor(feeds, contentSource: source).tileSize, 176);
+    expect(service.tilesFor(feeds, contentSource: source).sectionTitleSize, 30);
+    expect(service.tilesFor(feeds).tileSize, 96);
+    final linkedImport = compatibleSettings({
+      categoryAppearanceKey: prefs.getString(categoryAppearanceKey),
+    }, {});
+    expect(
+      CategoryAppearance.decode(linkedImport[categoryAppearanceKey])['$feeds']['tiles'][mode],
+      source.id,
+    );
+    await service.setCategoryTile(feeds, mode, false);
+    expect(service.tilesFor(feeds).tileSize, 144);
+    expect(service.tilesFor(feeds).contentAppTileStyle, isFalse);
+
+    await service.setCategoryTile(watch, mode, true);
+    await service.resetFields([mode], categoryId: watch);
+    expect(service.tilesFor(watch).contentAppTileStyle, isFalse);
+  });
+
+  test('linked content can keep its own label settings across source changes and import', () async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    final service = AppearanceService(prefs);
+    addTearDown(service.dispose);
+    const feeds = 11;
+    const watch = ContinueWatchingSection.sectionId;
+    final source = Category(id: 12, name: 'Apps');
+    const inheritance = 'contentUseSourceLabels';
+    const mode = 'contentAppTileStyle';
+    await service.setCategoryTile(source.id, 'size', 176);
+    await service.setCategoryTile(source.id, 'labels', 'selected');
+    await service.setCategoryTile(source.id, 'labelSize', 20);
+    await service.setCategoryTile(feeds, 'labelSize', 16);
+    await service.setCategoryTile(feeds, mode, source.id);
+    TileAppearance resolved() => service.tilesFor(feeds, contentSource: source);
+    expect(resolved().contentUseSourceLabels, isTrue);
+    expect(resolved().labels, 'selected');
+    expect(resolved().labelSize, 20);
+
+    await service.setCategoryTile(feeds, inheritance, false);
+    expect(resolved().tileSize, 176);
+    expect(resolved().labels, 'all');
+    expect(resolved().labelPosition, 'below');
+    expect(resolved().labelSize, 16);
+    await service.setCategoryTile(feeds, 'labels', 'none');
+    expect(resolved().labels, 'none');
+    await service.setCategoryTile(feeds, 'labels', 'all');
+    await service.setCategoryTile(feeds, 'labelPosition', 'inside');
+    await service.setCategoryTile(feeds, 'labelSize', 12);
+    await service.setCategoryTile(feeds, 'labelColor', 0xff000000);
+    await service.set('labelSize', 14);
+    expect(resolved().labelSize, 12);
+    expect(resolved().labelPosition, 'inside');
+    expect(resolved().color('labelColor'), Colors.black);
+    expect(service.tilesFor(watch).contentUseSourceLabels, isTrue);
+
+    final imported = compatibleSettings({
+      categoryAppearanceKey: prefs.getString(categoryAppearanceKey),
+    }, {});
+    final importedTiles = CategoryAppearance.decode(imported[categoryAppearanceKey])['$feeds']['tiles'];
+    expect(importedTiles[inheritance], isFalse);
+    expect(importedTiles['labelPosition'], 'inside');
+    await service.setCategoryTile(feeds, inheritance, true);
+    expect(resolved().labels, 'selected');
+    expect(resolved().labelSize, 20);
+    await service.setCategoryTile(feeds, inheritance, false);
+    await service.setCategoryTile(feeds, mode, true);
+    expect(service.tilesFor(feeds).labelPosition, 'inside');
+    expect(service.tilesFor(feeds).labelSize, 12);
+  });
+
+  test('Watch Next inherits feed styling, saves its own overrides and resets legacy size', () async {
+    SharedPreferences.setMockInitialValues({
+      legacyWatchNextCardSizeKey: 'compact',
+    });
+    final prefs = await SharedPreferences.getInstance();
+    final service = AppearanceService(prefs);
+    addTearDown(service.dispose);
+    const watchNext = ContinueWatchingSection.sectionId;
+    const feeds = 11;
+    await service.set('size', 144);
+    expect(service.tilesFor(watchNext).tileSize, 112);
+    expect(service.tilesFor(feeds).tileSize, 144);
+
+    await service.setCategoryTile(watchNext, 'horizontalGap', 24);
+    await service.setCategoryTile(feeds, 'horizontalGap', 32);
+    await service.set('sectionTitleSize', 31);
+    expect(service.tilesFor(watchNext).sectionTitleSize, 31);
+    expect(service.tilesFor(watchNext).horizontalGap, 24);
+    expect(service.tilesFor(feeds).horizontalGap, 32);
+    final serialized = prefs.getString(categoryAppearanceKey)!;
+    final imported = compatibleSettings({categoryAppearanceKey: serialized}, {});
+    expect(CategoryAppearance.decode(imported[categoryAppearanceKey])['$watchNext']['tiles'],
+        {'size': 112, 'horizontalGap': 24});
+
+    await service.resetFields(['size', 'horizontalGap'], categoryId: watchNext);
+    await service.set('size', 160);
+    expect(service.tilesFor(watchNext).tileSize, 160);
+    expect(service.tilesFor(watchNext).horizontalGap, service.appearance.horizontalGap);
+    expect(service.tilesFor(feeds).horizontalGap, 32);
+  });
+
   test('group styles validate, survive import and reset to surface', () async {
     expect(
       const TileAppearance().settingsSectionStyle,

@@ -10,6 +10,24 @@ class AppLocalizationsZh extends AppLocalizations {
   AppLocalizationsZh([String locale = 'zh']) : super(locale);
 
   @override
+  String get contentAppTileStyle => '外观来源';
+
+  @override
+  String get contentTileOwnAppearance => '自定义外观';
+
+  @override
+  String get contentTileCommonAppearance => '通用外观';
+
+  @override
+  String get contentUseSourceLabels => '使用所选外观的标签';
+
+  @override
+  String get contentLabelSelected => '仅选中的卡片';
+
+  @override
+  String get contentLabelAll => '所有卡片';
+
+  @override
   String get weatherTextResetFormat => '重置格式';
 
   @override
@@ -382,6 +400,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get delete => '删除';
+
+  @override
+  String get dialogOptionBackButtonActionFirstFeedCard => '转到当前内容栏的第一张卡片';
 
   @override
   String get dialogOptionBackButtonActionDoNothing => '无操作';
@@ -3433,6 +3454,33 @@ class AppLocalizationsZh extends AppLocalizations {
   String get remoteMappingAction => '操作';
 
   @override
+  String get remoteMappingChooseAction => '选择操作';
+
+  @override
+  String get remoteMappingNavigationGroup => '应用与导航';
+
+  @override
+  String get remoteMappingScreenSoundGroup => '屏幕和声音';
+
+  @override
+  String get remoteMappingAutomationGroup => '自动化';
+
+  @override
+  String get remoteMappingLiveTv => '打开电视直播';
+
+  @override
+  String get remoteMappingDisplaySettings => '显示设置';
+
+  @override
+  String get remoteMappingBluetoothSettings => '蓝牙设置';
+
+  @override
+  String get remoteMappingMute => '切换静音';
+
+  @override
+  String get remoteMappingNeedsAdb => '需要 ADB';
+
+  @override
   String get remoteMappingLearn => '识别遥控器按键';
 
   @override
@@ -4831,6 +4879,26 @@ class AppLocalizationsZh extends AppLocalizations {
   String get remoteMappingIgnore => '忽略按钮';
 
   @override
+  String get remoteMappingBlackScreen => '切换 Black Screen';
+
+  @override
+  String get remoteMappingBlackOverlay => '黑屏';
+
+  @override
+  String get remoteMappingBlackOverlayHelp => '按一次隐藏画面，再按一次或按返回键恢复画面。电视保持开启。';
+
+  @override
+  String get remoteMappingTclScreenOff => '关闭 TCL 屏幕';
+
+  @override
+  String get remoteMappingTclScreenOffHelp =>
+      '在兼容的 TCL 电视上启用纯音频模式。如果 Android 阻止启动，则需要本地 ADB 连接。';
+
+  @override
+  String get remoteMappingBlackScreenHelp =>
+      '按一次显示黑色遮罩，再按一次隐藏。需要 jApp 的 Black Screen 付费版，并允许其在其他应用上层显示。';
+
+  @override
   String get adbHomeDependencyProtected => '已阻止停用：发现系统功能依赖或无法检查依赖关系。详情请查看诊断。';
 
   @override
@@ -5280,6 +5348,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsGroupIndicators => '指示与消息';
+
+  @override
+  String get nightModePanelFill => '填充顶部面板按钮';
 
   @override
   String get settingsGroupFocusShape => '焦点外观';

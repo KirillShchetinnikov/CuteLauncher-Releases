@@ -4,14 +4,26 @@ import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
 import '../providers/now_playing_service.dart';
 import '../providers/settings_service.dart';
+import 'home_skeleton.dart';
 
 class NowPlayingCard extends StatelessWidget {
   const NowPlayingCard({super.key});
   @override Widget build(BuildContext context) {
     final service = context.watch<NowPlayingService?>();
     if (service == null || !context.watch<SettingsService>().showNowPlaying) return const SizedBox.shrink();
-    if (!service.initialized && !service.failed) return const SizedBox.shrink();
     final l = AppLocalizations.of(context)!;
+    if (!service.initialized && !service.failed && service.media == null) {
+      return Semantics(label: l.loading, child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+        child: Card(child: Padding(padding: const EdgeInsets.all(16),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(l.nowPlaying, style: Theme.of(context).textTheme.titleMedium),
+            const SizedBox(height: 8),
+            const SizedBox(width: double.infinity, height: 64, child: HomeSkeletonBlock()),
+            const SizedBox(height: 48),
+          ]))),
+      ));
+    }
     final media = service.media;
     if (media == null && service.allowed && !service.failed) return const SizedBox.shrink();
     return Padding(padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
