@@ -39,9 +39,9 @@ class BackgroundInformation extends StatelessWidget {
       return const SizedBox.shrink();
     }
     final formats = context.select<SettingsService, (String, String)>(
-      (s) => (s.informationDateTime(background: true).time, s.informationDateTime(background: true).date),
+      (s) => (s.timeFormat, s.dateFormat),
     );
-    final style = appearance.backgroundInformationStyle;
+    final style = appearance.renderedInformationStyle(background: true);
     final fixedTime = context.select<SettingsService, DateTime?>(
       (s) => s.screenshotScene?.now,
     );
@@ -188,13 +188,13 @@ class _BackgroundWeather extends StatelessWidget {
           (s) => (s.weatherData, s.stale),
         );
     final fahrenheit = context.select<SettingsService, bool>(
-      (s) => s.informationWeather(background: true).fahrenheit,
+      (s) => s.useFahrenheit,
     );
     final format = context.select<SettingsService, WeatherTextFormat>(
-      (s) => s.informationWeather(background: true).format,
+      (s) => s.weatherTextFormat,
     );
     final showWarnings = context.select<SettingsService, bool>(
-      (s) => s.informationWeather(background: true).warnings,
+      (s) => s.showWeatherWarnings,
     );
     final l = AppLocalizations.of(context)!;
     final textStyle = appearance.weatherTextStyle(style);

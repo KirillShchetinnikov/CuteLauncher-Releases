@@ -15,14 +15,17 @@ import 'settings_panel_presentation.dart';
 import 'weather_text_format_dialog.dart';
 
 class InformationWeatherFormatTile extends StatelessWidget {
-  final bool background;
-  const InformationWeatherFormatTile({super.key, this.background = false});
+  const InformationWeatherFormatTile({super.key});
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
     final settings = context.watch<SettingsService>();
-    final options = settings.informationWeather(background: background);
+    final options = settings.informationWeather();
     final appearance = context.watch<AppearanceService>().appearance;
+    final background = InformationPlacement(
+      appearance,
+      settings,
+    ).onBackground('weather');
     final composition = InformationPanelComposition(appearance, settings);
     return FocusableSettingsTile(
       title: Text(l.weatherTextFormat),
@@ -55,7 +58,7 @@ class InformationWeatherFormatTile extends StatelessWidget {
         );
         if (result == null || !context.mounted) return;
         try {
-          await settings.setInformationWeather(result, background: background);
+          await settings.setInformationWeather(result);
         } catch (_) {
           if (context.mounted) {
             showActionNotice(context, l.weatherTextSaveError, error: true);

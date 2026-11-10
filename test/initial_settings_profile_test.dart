@@ -38,7 +38,11 @@ void main() {
       addTearDown(settings.dispose);
       addTearDown(appearance.dispose);
       expect(settings.backgroundSource, 'landscape');
-      expect(settings.dateFormat, compactDateFormat);
+      expect(settings.dateFormat, shortWeekdayDateFormat);
+      expect(
+        formatLauncherDate(settings.dateFormat, DateTime(2026, 11, 10), 'ru'),
+        'Вт, 10 Нояб',
+      );
       expect(settings.accentColorHex, 'FF6D00');
       expect(settings.settingsMenuOnRight, isFalse);
       expect(appearance.appearance.interfaceStyle, 'standard');

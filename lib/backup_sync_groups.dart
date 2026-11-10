@@ -1,3 +1,5 @@
+import 'information_formats.dart';
+
 /// Portable policy: even when every block is local, this choice is synchronized.
 const backupSyncGroupsKey = 'backup_sync_disabled_groups';
 
@@ -127,7 +129,11 @@ BackupSyncGroup? backupSyncPartGroup(String part) {
   if (part == 'resources') return BackupSyncGroup.background;
   final key = part.substring('setting:'.length);
   if (key == backupSyncGroupsKey) return null;
-  if (key == 'information_panel_datetime' || key == 'information_background_datetime') return BackupSyncGroup.topPanel;
+  if (key == sharedInformationDateTimeKey ||
+      key == 'information_panel_datetime' ||
+      key == 'information_background_datetime') {
+    return BackupSyncGroup.topPanel;
+  }
   if (key == 'weather_configuration') return BackupSyncGroup.weatherSource;
   if (key.startsWith('weather_') ||
       key == 'show_weather_in_status_bar' ||
@@ -150,7 +156,8 @@ BackupSyncGroup? backupSyncPartGroup(String part) {
   if (key == 'app_language') return BackupSyncGroup.language;
   if (key == 'memory_saver_enabled') return BackupSyncGroup.memory;
   if (key == 'start_on_boot') return BackupSyncGroup.startup;
-  if (key == 'tile_appearance' || key == 'app_banner_shape') {
+  if (key == 'tile_appearance' || key == 'app_banner_shape' ||
+      key == sharedInformationClockBehaviorKey) {
     return BackupSyncGroup.tiles;
   }
   if (key == 'accent_color') return BackupSyncGroup.accent;

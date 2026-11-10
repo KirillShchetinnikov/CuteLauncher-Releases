@@ -512,6 +512,32 @@
           "evidenceSection": "Ошибка запроса обновлений после file-access APK — 4 ноября 2026"
         }
       ]
+    },
+    {
+      "id": "tcl-beyondtv4-ar10-20261110",
+      "label": "TCL Smart TV Pro BeyondTV4 AR10 — Android 11",
+      "kind": "physical",
+      "exactMatch": true,
+      "identity": {
+        "manufacturer": "TCL",
+        "model": "Smart TV Pro",
+        "device": "BeyondTV4",
+        "fingerprint": "TCL/BeyondTV6/BeyondTV4:11/RP1A.200622.001/AR10:user/release-keys",
+        "firmware": "RP1A.200622.001 release-keys",
+        "android": "11",
+        "sdk": "30",
+        "abis": "armeabi-v7a,armeabi"
+      },
+      "results": [
+        {
+          "feature": "hdmi-arc-route",
+          "status": "verified",
+          "date": "2026-11-10",
+          "appBuild": "1.7.2+234",
+          "summary": "Пользователь подтвердил отображение ARC в виджете на TCL BeyondTV4 AR10 после установки сборки 234.",
+          "evidenceSection": "TCL BeyondTV4 AR10: переход Bluetooth → HDMI ARC — 10 ноября 2026"
+        }
+      ]
     }
   ]
 }

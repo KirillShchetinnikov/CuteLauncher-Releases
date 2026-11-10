@@ -102,7 +102,7 @@ void main() {
             );
             expect(
               button.style!.side!.resolve({WidgetState.focused})!.color,
-              accent,
+              theme.colorScheme.onSurface,
             );
             expect(
               button.style!.backgroundColor!.resolve({WidgetState.focused}),

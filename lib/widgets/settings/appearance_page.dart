@@ -126,6 +126,7 @@ class _AppearancePageState extends State<AppearancePage> {
             SettingsHelp(title: l.homeInherited, text: l.homeStylePartial),
           if (section == 'tiles') ...[
             SettingsSection(
+              key: const ValueKey('sizeAndLayout'),
               title: l.sizeAndLayout,
               children: [
                 _choice(context, service, l.tileSize, 'size', [
@@ -196,6 +197,7 @@ class _AppearancePageState extends State<AppearancePage> {
               ],
             ),
             SettingsSection(
+              key: const ValueKey('labelsGroup'),
               title: l.labelsGroup,
               children: [
                 HomeStyleSetting(
@@ -242,6 +244,7 @@ class _AppearancePageState extends State<AppearancePage> {
               ],
             ),
             SettingsSection(
+              key: const ValueKey('surfaceGroup'),
               title: l.surfaceGroup,
               children: [
                 _choice(
@@ -294,6 +297,7 @@ class _AppearancePageState extends State<AppearancePage> {
           ],
           if (section == 'focus') ...[
             SettingsSection(
+              key: const ValueKey('settingsGroupFocusShape'),
               title: l.settingsGroupFocusShape,
               children: [
                 _choice(
@@ -333,6 +337,7 @@ class _AppearancePageState extends State<AppearancePage> {
               ],
             ),
             SettingsSection(
+              key: const ValueKey('settingsGroupBorder'),
               title: l.settingsGroupBorder,
               children: [
                 _choice(
@@ -373,6 +378,7 @@ class _AppearancePageState extends State<AppearancePage> {
               ],
             ),
             SettingsSection(
+              key: const ValueKey('settingsGroupMotion'),
               title: l.settingsGroupMotion,
               children: [
                 HomeStyleSetting(

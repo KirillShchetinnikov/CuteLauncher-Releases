@@ -92,7 +92,7 @@ final class RemotePanelChannels implements AutoCloseable {
                     case "requestAccessibilityPermission" -> result.success(start(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)));
                     case "requestOverlayPermission" -> result.success(start(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + context.getPackageName()))));
                     case "requestWriteSettingsPermission" -> result.success(start(new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS, Uri.parse("package:" + context.getPackageName()))));
-                    case "openSettings" -> result.success(start(new Intent(Settings.ACTION_SETTINGS)));
+                    case "openSettings" -> result.success(RemoteTvActions.openSettings(context));
                     case "openWifiSettings" -> result.success(start(new Intent(Settings.ACTION_WIFI_SETTINGS)));
                     case "openVpnSettings" -> result.success(start(new Intent(Settings.ACTION_VPN_SETTINGS)));
                     case "openDefaultLauncherSettings" -> result.success(start(new Intent(Settings.ACTION_HOME_SETTINGS)));
@@ -108,7 +108,7 @@ final class RemotePanelChannels implements AutoCloseable {
                         result.success(info != null && info.activityInfo != null && context.getPackageName().equals(info.activityInfo.packageName));
                     }
                     case "launchApp" -> result.success(launch(call.arguments()));
-                    case "launchActivityFromAction" -> result.success(Settings.ACTION_SETTINGS.equals(call.arguments()) && start(new Intent(Settings.ACTION_SETTINGS)));
+                    case "launchActivityFromAction" -> result.success(Settings.ACTION_SETTINGS.equals(call.arguments()) && RemoteTvActions.openSettings(context));
                     case "openUrl" -> result.success(start(new Intent(Intent.ACTION_VIEW, Uri.parse(call.arguments()))));
                     case "playClickSound" -> {
                         context.getSystemService(android.media.AudioManager.class).playSoundEffect(android.media.AudioManager.FX_KEY_CLICK, 1f);

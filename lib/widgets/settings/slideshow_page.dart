@@ -31,6 +31,7 @@ class SlideshowPage extends StatelessWidget {
       child: ListView(
         children: [
           SettingsSection(
+            key: const ValueKey('settingsGroupSource'),
             title: l.settingsGroupSource,
             children: [
               FocusableSettingsTile(
@@ -58,6 +59,7 @@ class SlideshowPage extends StatelessWidget {
             ],
           ),
           SettingsSection(
+            key: const ValueKey('settingsGroupImageChange'),
             title: l.settingsGroupImageChange,
             children: [
               RoundedSwitchListTile(
@@ -77,7 +79,7 @@ class SlideshowPage extends StatelessWidget {
                 title: Text(l.slideshowNext),
                 onPressed: s.loading ? null : s.advance,
               ),
-              if (s.loading) const LinearProgressIndicator(),
+              SizedBox(child: s.loading ? const LinearProgressIndicator() : null),
               if (s.failed)
                 SettingsMessage(
                   text: l.slideshowError,

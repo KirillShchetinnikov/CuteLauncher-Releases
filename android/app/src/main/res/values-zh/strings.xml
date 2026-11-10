@@ -9,4 +9,14 @@
     <string name="file_card_title">文件访问权限</string>
     <string name="file_card_steps">依次选择“权限”→“文件和媒体”→“允许管理所有文件”，然后按返回键回到 CuteLauncher。</string>
     <string name="file_card_open">打开设置</string>
+    <string name="remap_error_black_screen">未安装 Black Screen，或应用不可用。</string>
+    <string name="remap_error_app">指定的应用未安装或无法打开。</string>
+    <string name="remap_error_hdmi">指定的 HDMI 输入不可用。</string>
+    <string name="remap_error_power">电源命令执行失败。请检查本地 ADB。</string>
+    <string name="remap_error_permission">电视拒绝执行此遥控操作。</string>
+    <string name="remap_error_busy">已有遥控操作正在执行。</string>
+    <string name="remap_error_unavailable">此电视不支持该遥控操作。</string>
+    <string name="remap_error_webhook_http">Webhook 拒绝了请求（HTTP %1$d）。</string>
+    <string name="remap_error_webhook_timeout">Webhook 请求超时。</string>
+    <string name="remap_error_webhook">无法连接到 Webhook。</string>
 </resources>

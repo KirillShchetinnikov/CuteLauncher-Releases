@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "reviewedAt": "2026-11-02",
+  "reviewedAt": "2026-11-10",
   "sources": [
     "https://developer.android.com/reference/android/content/pm/PackageManager",
     "https://source.android.com/docs/core/runtime/rros",
@@ -10,7 +10,8 @@
     "catalog/inventories/tcl-g08-au04-20261104.json",
     "catalog/inventories/tcl-g10-as16-20261104-update-http.json",
     "catalog/inventories/tcl-g08-au04-20261107-weather-import.json",
-    "catalog/inventories/tcl-g08-au04-20261107-weather-read-error.json"
+    "catalog/inventories/tcl-g08-au04-20261107-weather-read-error.json",
+    "catalog/inventories/tcl-beyondtv4-ar10-20261110.json"
   ],
   "packages": {
     "android": {
@@ -32,7 +33,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "android.auto_generated_rro__": {
@@ -94,13 +96,13 @@
       ]
     },
     "android.autoinstalls.config.google.gtvpai": {
-      "ru": "Приложение не опознано.",
-      "en": "Application not identified.",
-      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
-      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
-      "confidence": "unknown",
+      "ru": "Конфигурация автоматической установки партнёрских приложений Google TV.",
+      "en": "Configuration for automatic installation of Google TV partner apps.",
+      "riskRu": "Может измениться набор приложений при первичной настройке.",
+      "riskEn": "The selection of apps installed during setup may change.",
+      "confidence": "identified",
       "safeToDisable": false,
-      "source": "catalog/inventories (presence only)",
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/tcl-75a300-pro/debloat.txt; catalog/inventories (presence only)",
       "observedOn": [
         "tcl-g08",
         "tcl-g10",
@@ -198,7 +200,8 @@
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ],
       "category": "user"
     },
@@ -218,13 +221,13 @@
       "category": "preinstalled"
     },
     "com.android.adservices.api": {
-      "ru": "Приложение не опознано.",
-      "en": "Application not identified.",
-      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
-      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
-      "confidence": "unknown",
+      "ru": "Компонент Android AdServices для API Privacy Sandbox.",
+      "en": "Android AdServices component for Privacy Sandbox APIs.",
+      "riskRu": "Могут стать недоступны рекламные API, которыми пользуются приложения.",
+      "riskEn": "Advertising APIs used by apps may become unavailable.",
+      "confidence": "identified",
       "safeToDisable": false,
-      "source": "catalog/inventories (presence only)",
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/tcl-65c6k-google-tv/debloat.txt; catalog/inventories (presence only)",
       "observedOn": [
         "kp1-yyz",
         "tcl-g08",
@@ -287,7 +290,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.android.bluetoothmidiservice": {
@@ -352,7 +356,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.android.certinstaller": {
@@ -374,7 +379,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.android.companiondevicemanager": {
@@ -396,7 +402,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.android.connectivity.resources": {
@@ -436,7 +443,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.android.cts.priv.ctsshim": {
@@ -458,7 +466,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.android.deskclock": {
@@ -523,7 +532,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.android.dynsystem": {
@@ -567,7 +577,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.android.federatedcompute.services": {
@@ -653,7 +664,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.android.htmlviewer": {
@@ -675,7 +687,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.android.inputdevices": {
@@ -697,7 +710,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.android.inputmethod.latin": {
@@ -749,7 +763,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.android.launcher3": {
@@ -785,7 +800,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.android.location.fused": {
@@ -807,7 +823,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.android.managedprovisioning": {
@@ -929,7 +946,8 @@
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
         "formuler-z11-pro-max-user-adb-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.android.networkstack.permissionconfig": {
@@ -945,7 +963,8 @@
         "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "formuler-z11-pro-max-user-adb-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.android.networkstack.tethering": {
@@ -1055,7 +1074,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.android.permissioncontroller": {
@@ -1169,7 +1189,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.android.providers.downloads.ui": {
@@ -1206,7 +1227,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.android.providers.media.module": {
@@ -1226,7 +1248,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.android.providers.settings": {
@@ -1248,7 +1271,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.android.providers.settings.auto_generated_rro_product__": {
@@ -1301,7 +1325,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.android.providers.userdictionary": {
@@ -1345,7 +1370,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.android.rkpdapp": {
@@ -1401,7 +1427,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.android.settings": {
@@ -1436,7 +1463,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.android.sharedstoragebackup": {
@@ -1458,7 +1486,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.android.shell": {
@@ -1480,7 +1509,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.android.soundpicker": {
@@ -1495,7 +1525,8 @@
         "droidlogic-x98q-android11-20261026",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.android.statementservice": {
@@ -1517,7 +1548,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.android.systemui": {
@@ -1539,7 +1571,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.android.systemui.auto_generated_rro_vendor__": {
@@ -1571,7 +1604,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.android.tethering.overlay.gsi": {
@@ -1588,7 +1622,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.android.tv.feedbackconsent": {
@@ -1769,7 +1804,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.android.tv.settings.gms.resoverlay": {
@@ -1787,7 +1823,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.android.tv.settings.google.resoverlay": {
@@ -1874,7 +1911,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.android.virtualmachine.res": {
@@ -1913,7 +1951,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.android.wallpaper.livepicker": {
@@ -2011,7 +2050,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.android.zdtd.service": {
@@ -2226,13 +2266,13 @@
       ]
     },
     "com.droidlogic.tvinput": {
-      "ru": "Телевизионные входы или просмотр эфирных каналов.",
-      "en": "TV input or broadcast channel playback.",
-      "riskRu": "Высокий: возможен отказ входов, каналов или переключения источника.",
-      "riskEn": "High: inputs, channels or source switching may fail.",
+      "ru": "Системный провайдер аппаратных входов Amlogic, включая HDMI и DVB на MiTV-AXFU0.",
+      "en": "Amlogic hardware input provider, including HDMI and DVB on MiTV-AXFU0.",
+      "riskRu": "Могут перестать работать тюнер и переключение HDMI.",
+      "riskEn": "The tuner and HDMI switching may stop working.",
       "confidence": "identified",
       "safeToDisable": false,
-      "source": "catalog/inventories (presence only); manual functional review",
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/xiaomi-mitv-axfu0/debloat.txt; catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "kp1-yyz"
       ]
@@ -2313,7 +2353,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.google.android.apps.tv.dreamx": {
@@ -2390,7 +2431,8 @@
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
         "google-tanix-w2-android11-20261101",
-        "kp1-yyz"
+        "kp1-yyz",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.google.android.backuptransport": {
@@ -2449,7 +2491,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.google.android.ext.shared": {
@@ -2471,7 +2514,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.google.android.feedback": {
@@ -2512,7 +2556,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.google.android.gsf": {
@@ -2533,7 +2578,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.google.android.inputmethod.latin": {
@@ -2553,7 +2599,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.google.android.katniss": {
@@ -2574,7 +2621,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.google.android.landscape": {
@@ -2650,7 +2698,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.google.android.networkstack.tethering.google": {
@@ -2666,13 +2715,13 @@
       ]
     },
     "com.google.android.onetimeinitializer": {
-      "ru": "Приложение не опознано.",
-      "en": "Application not identified.",
-      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
-      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
-      "confidence": "unknown",
+      "ru": "Компонент одноразовой первичной настройки Google.",
+      "en": "Google one-time setup initializer.",
+      "riskRu": "Может нарушиться первичная настройка Google.",
+      "riskEn": "Google first-run setup may be affected.",
+      "confidence": "identified",
       "safeToDisable": false,
-      "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/philips-50pus8517/debloat.txt; catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
@@ -2760,7 +2809,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.google.android.overlay.modules.modulemetadata.forframework": {
@@ -2778,7 +2828,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.google.android.overlay.modules.permissioncontroller": {
@@ -2797,7 +2848,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.google.android.overlay.modules.permissioncontroller.forframework": {
@@ -2816,7 +2868,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.google.android.packageinstaller": {
@@ -2836,17 +2889,18 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.google.android.partnersetup": {
-      "ru": "Приложение не опознано.",
-      "en": "Application not identified.",
-      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
-      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
-      "confidence": "unknown",
+      "ru": "Компонент Google для партнёрской настройки и атрибуции приложений.",
+      "en": "Google component for partner setup and app attribution.",
+      "riskRu": "Могут измениться партнёрские функции настройки и атрибуции.",
+      "riskEn": "Partner setup and attribution features may change.",
+      "confidence": "identified",
       "safeToDisable": false,
-      "source": "catalog/inventories (presence only)",
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/philips-50pus8517/debloat.txt; catalog/inventories (presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
@@ -2877,7 +2931,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.google.android.play.games": {
@@ -2913,27 +2968,28 @@
       ]
     },
     "com.google.android.sss.authbridge": {
-      "ru": "Приложение не опознано.",
-      "en": "Application not identified.",
-      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
-      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
-      "confidence": "unknown",
+      "ru": "Компонент авторизации Google для настройки ТВ с телефона.",
+      "en": "Google authentication bridge for setting up a TV from a phone.",
+      "riskRu": "Может перестать работать авторизация при настройке с телефона.",
+      "riskEn": "Authentication during phone-assisted setup may stop working.",
+      "confidence": "identified",
       "safeToDisable": false,
-      "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/philips-50pus8517/debloat.txt; catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.google.android.syncadapters.calendar": {
-      "ru": "Приложение не опознано.",
-      "en": "Application not identified.",
-      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
-      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
-      "confidence": "unknown",
+      "ru": "Адаптер синхронизации Google Календаря.",
+      "en": "Google Calendar sync adapter.",
+      "riskRu": "Может остановиться синхронизация календаря.",
+      "riskEn": "Calendar sync may stop.",
+      "confidence": "identified",
       "safeToDisable": false,
-      "source": "catalog/inventories (presence only)",
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/philips-50pus8517/debloat.txt; catalog/inventories (presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
@@ -2994,13 +3050,13 @@
       ]
     },
     "com.google.android.tungsten.setupwraith": {
-      "ru": "Мастер настройки Google TV; на отдельных прошивках связан с сохранёнными Wi-Fi-сетями и HOME.",
-      "en": "Google TV setup wizard; some firmware ties saved Wi-Fi networks and HOME to it.",
-      "riskRu": "Высокий: риск потери сетей и восстановления HOME. В этом менеджере отключение запрещено.",
-      "riskEn": "High: saved networks and HOME recovery can be affected. Disabling is blocked here.",
+      "ru": "Мастер настройки Google TV и резервный обработчик Home.",
+      "en": "Google TV setup wizard and fallback Home handler.",
+      "riskRu": "Отключение может нарушить первоначальную настройку, Cast и Wi-Fi при настройке через Google Home. Возврат Home выполняйте отдельным действием лаунчера.",
+      "riskEn": "Disabling may affect first-run setup, Cast and Wi-Fi configured through Google Home. Use the dedicated launcher action to change Home.",
       "confidence": "identified",
       "safeToDisable": false,
-      "source": "catalog/inventories (presence only); manual functional review",
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/xiaomi-mitv-axfu0/debloat.txt; catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
         "google-tanix-w2-android11-20261101",
@@ -3011,7 +3067,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.google.android.tv.axel": {
@@ -3048,7 +3105,8 @@
       "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.google.android.tv.googletvremotepairer": {
@@ -3094,7 +3152,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.google.android.tv.settings.energymodes.resoverlay": {
@@ -3125,7 +3184,8 @@
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
         "google-tanix-w2-android11-20261101",
-        "kp1-yyz"
+        "kp1-yyz",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.google.android.tvrecommendations": {
@@ -3185,7 +3245,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.google.android.youtube.tv": {
@@ -3472,7 +3533,8 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
-        "google-tanix-w2-android11-20261101"
+        "google-tanix-w2-android11-20261101",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.nes.blerc": {
@@ -3588,13 +3650,13 @@
       "category": "preinstalled"
     },
     "com.netflix.tokenmanager": {
-      "ru": "Приложение не опознано.",
-      "en": "Application not identified.",
-      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
-      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
-      "confidence": "unknown",
+      "ru": "Компонент входа и хранения токенов Netflix на ТВ.",
+      "en": "Netflix TV sign-in and token component.",
+      "riskRu": "Может перестать работать вход в Netflix.",
+      "riskEn": "Netflix sign-in may stop working.",
+      "confidence": "identified",
       "safeToDisable": false,
-      "source": "catalog/inventories (presence only)",
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/tcl-55p7k/debloat.txt; catalog/inventories (presence only)",
       "observedOn": [
         "kp1-yyz",
         "tcl-g08",
@@ -4100,16 +4162,17 @@
       ]
     },
     "com.tcl.android.webview": {
-      "ru": "Приложение не опознано.",
-      "en": "Application not identified.",
-      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
-      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
-      "confidence": "unknown",
+      "ru": "Компонент TCL WebView. На проверенном G03 активным провайдером оставался Google WebView.",
+      "en": "TCL WebView component. Google WebView remained the active provider on the tested G03.",
+      "riskRu": "Если прошивка использует TCL WebView, могут перестать открываться встроенные веб-страницы.",
+      "riskEn": "If the firmware uses TCL WebView, embedded web pages may stop opening.",
+      "confidence": "identified",
       "safeToDisable": false,
-      "source": "catalog/inventories (presence only)",
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/tcl-g03-google-tv/debloat.txt; catalog/inventories (presence only)",
       "observedOn": [
         "tcl-g10",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.tcl.autopair": {
@@ -4126,7 +4189,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.tcl.channelplus": {
@@ -4147,13 +4211,13 @@
       ]
     },
     "com.tcl.dashboard": {
-      "ru": "Приложение не опознано.",
-      "en": "Application not identified.",
-      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
-      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
-      "confidence": "unknown",
+      "ru": "Панель TCL Home и её промоблоки.",
+      "en": "TCL Home panel and its promotional content.",
+      "riskRu": "Могут пропасть панель TCL Home и её карточки.",
+      "riskEn": "The TCL Home panel and its cards may disappear.",
+      "confidence": "identified",
       "safeToDisable": false,
-      "source": "catalog/inventories (presence only)",
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/tcl-g03-google-tv/debloat.txt; catalog/inventories (presence only); https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/tcl-55p7k/debloat.txt",
       "observedOn": [
         "tcl-g10",
         "tcl-g08-au04-20261104",
@@ -4161,13 +4225,13 @@
       ]
     },
     "com.tcl.esticker": {
-      "ru": "Приложение не опознано.",
-      "en": "Application not identified.",
-      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
-      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
-      "confidence": "unknown",
+      "ru": "Демонстрационная наклейка TCL для витринного режима.",
+      "en": "TCL retail demo sticker.",
+      "riskRu": "Отключится витринная наклейка. Другие режимы на всех прошивках не проверены.",
+      "riskEn": "The retail sticker is disabled. Other modes have not been checked across firmware builds.",
+      "confidence": "identified",
       "safeToDisable": false,
-      "source": "catalog/inventories (presence only)",
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/tcl-g08-eu-android12/debloat.txt; catalog/inventories (presence only)",
       "observedOn": [
         "tcl-g08",
         "tcl-g10",
@@ -4178,13 +4242,13 @@
       ]
     },
     "com.tcl.eva": {
-      "ru": "Приложение не опознано.",
-      "en": "Application not identified.",
-      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
-      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
-      "confidence": "unknown",
+      "ru": "Компонент голосового помощника TCL.",
+      "en": "TCL voice assistant component.",
+      "riskRu": "Возможна потеря голосовых функций TCL.",
+      "riskEn": "TCL voice features may stop working.",
+      "confidence": "identified",
       "safeToDisable": false,
-      "source": "catalog/inventories (presence only)",
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/tcl-g08-eu-android12/debloat.txt; catalog/inventories (presence only)",
       "observedOn": [
         "tcl-g08",
         "tcl-g08-au04-20261104",
@@ -4193,13 +4257,13 @@
       ]
     },
     "com.tcl.exhibit": {
-      "ru": "Приложение не опознано.",
-      "en": "Application not identified.",
-      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
-      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
-      "confidence": "unknown",
+      "ru": "На TCL A300 Pro AS19 открывает галерею и режим Art по кнопке пульта.",
+      "en": "On TCL A300 Pro AS19, opens the gallery and Art mode from the remote.",
+      "riskRu": "На A300 Pro AS19 отключение ломает кнопку Art. Для других моделей риск не установлен.",
+      "riskEn": "Disabling breaks the Art button on A300 Pro AS19. The risk on other models is unknown.",
+      "confidence": "identified",
       "safeToDisable": false,
-      "source": "catalog/inventories (presence only)",
+      "source": "https://github.com/Gathin23/cleanyourtv/pull/3182; catalog/inventories (presence only)",
       "observedOn": [
         "tcl-g08",
         "tcl-g10",
@@ -4223,7 +4287,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.tcl.gamebar": {
@@ -4261,13 +4326,13 @@
       ]
     },
     "com.tcl.guard": {
-      "ru": "Служебный компонент прошивки ТВ.",
-      "en": "TV firmware service component.",
-      "riskRu": "Высокий: точные зависимости не подтверждены, возможны нарушения основных функций.",
-      "riskEn": "High: exact dependencies are unverified; core TV functions may fail.",
+      "ru": "TGuard для обслуживания ТВ. На отдельных прошивках также открывает фильтр разрешений TCL.",
+      "en": "TGuard TV maintenance service. On some firmware builds it also opens the TCL permission shield.",
+      "riskRu": "На G08 AS34 после отключения система циклически пыталась запустить службу. Фильтр разрешений может стать недоступен.",
+      "riskEn": "On G08 AS34 the system repeatedly tried to start the disabled service. The permission shield may become unavailable.",
       "confidence": "identified",
       "safeToDisable": false,
-      "source": "catalog/inventories (presence only); manual functional review; docs/TESTING_RU.md (tcl-c6k-g08-android12-as35: on-screen diagnostics 1.6.5+187, presence only)",
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/tcl-g08-eu-android12/debloat.txt; catalog/inventories (presence only); manual functional review; docs/TESTING_RU.md (tcl-c6k-g08-android12-as35: on-screen diagnostics 1.6.5+187, presence only)",
       "observedOn": [
         "tcl-c6k-g08-android12-as35",
         "tcl-g08",
@@ -4296,13 +4361,13 @@
       ]
     },
     "com.tcl.hotelmenu": {
-      "ru": "Приложение не опознано.",
-      "en": "Application not identified.",
-      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
-      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
-      "confidence": "unknown",
+      "ru": "Панель гостиничного режима TCL.",
+      "en": "TCL hotel-mode panel.",
+      "riskRu": "Может стать недоступной настройка гостиничного режима.",
+      "riskEn": "Hotel-mode configuration may become unavailable.",
+      "confidence": "identified",
       "safeToDisable": false,
-      "source": "catalog/inventories (presence only)",
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/tcl-g08-au-android12/debloat.txt; catalog/inventories (presence only)",
       "observedOn": [
         "tcl-g08",
         "tcl-g10",
@@ -4326,7 +4391,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.tcl.inputmethod.international": {
@@ -4343,17 +4409,18 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.tcl.interactive": {
-      "ru": "Приложение не опознано.",
-      "en": "Application not identified.",
-      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
-      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
-      "confidence": "unknown",
+      "ru": "Служба TCL TIAS для интерактивного ТВ и интерфейса источников.",
+      "en": "TCL TIAS service for interactive TV and source overlays.",
+      "riskRu": "На G08 AS34 отключение вызывало повторяющиеся ошибки интерфейса источников.",
+      "riskEn": "Disabling caused repeated source overlay errors on G08 AS34.",
+      "confidence": "identified",
       "safeToDisable": false,
-      "source": "catalog/inventories (presence only)",
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/tcl-g08-eu-android12/debloat.txt; catalog/inventories (presence only)",
       "observedOn": [
         "tcl-g08",
         "tcl-g10",
@@ -4381,13 +4448,13 @@
       ]
     },
     "com.tcl.magiconnectfree": {
-      "ru": "Приложение не опознано.",
-      "en": "Application not identified.",
-      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
-      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
-      "confidence": "unknown",
+      "ru": "Связь телефона с телевизором через TCL MagiConnect.",
+      "en": "Phone-to-TV integration through TCL MagiConnect.",
+      "riskRu": "Может пропасть управление телевизором из MagiConnect.",
+      "riskEn": "TV control from MagiConnect may stop working.",
+      "confidence": "identified",
       "safeToDisable": false,
-      "source": "catalog/inventories (presence only)",
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/tcl-g10-google-tv/debloat.txt; catalog/inventories (presence only)",
       "observedOn": [
         "tcl-g10",
         "tcl-g08-au04-20261104",
@@ -4422,7 +4489,8 @@
       "observedOn": [
         "tcl-g10",
         "tcl-g08-au04-20261104",
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.tcl.ocean.instructions": {
@@ -4459,13 +4527,13 @@
       ]
     },
     "com.tcl.partnercustomizer": {
-      "ru": "Настройка TCL строк системного домашнего экрана.",
-      "en": "TCL customization of stock home screen rows.",
-      "riskRu": "Средний: могут исчезнуть строки и плитка TV в системном Home.",
-      "riskEn": "Medium: rows and the TV tile in the stock Home may disappear.",
+      "ru": "Настройка штатного главного экрана TCL и обработчики быстрых кнопок TKey на отдельных моделях.",
+      "en": "TCL stock Home customization and TKey shortcut handlers on some models.",
+      "riskRu": "Могут пропасть быстрые кнопки приложений и элементы штатного главного экрана.",
+      "riskEn": "App shortcut buttons and stock Home items may stop working.",
       "confidence": "identified",
       "safeToDisable": false,
-      "source": "https://github.com/Gathin23/cleanyourtv/blob/main/examples/tcl-g09-google-tv/debloat.txt",
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/tcl-g03-google-tv/debloat.txt; https://github.com/Gathin23/cleanyourtv/blob/main/examples/tcl-g09-google-tv/debloat.txt",
       "observedOn": [
         "tcl-g08",
         "tcl-g10",
@@ -4489,17 +4557,18 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.tcl.repairguide": {
-      "ru": "Приложение не опознано.",
-      "en": "Application not identified.",
-      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
-      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
-      "confidence": "unknown",
+      "ru": "Самодиагностика телевизора TCL.",
+      "en": "TCL TV self-diagnostics.",
+      "riskRu": "Может стать недоступной штатная самодиагностика.",
+      "riskEn": "Stock self-diagnostics may become unavailable.",
+      "confidence": "identified",
       "safeToDisable": false,
-      "source": "catalog/inventories (presence only)",
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/tcl-g08-us-google-tv/debloat.txt; catalog/inventories (presence only)",
       "observedOn": [
         "tcl-g08",
         "tcl-g10",
@@ -4510,13 +4579,13 @@
       ]
     },
     "com.tcl.smartalexa": {
-      "ru": "Приложение не опознано.",
-      "en": "Application not identified.",
-      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
-      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
-      "confidence": "unknown",
+      "ru": "Интеграция TCL с Amazon Alexa.",
+      "en": "TCL integration with Amazon Alexa.",
+      "riskRu": "Может пропасть управление телевизором через Alexa.",
+      "riskEn": "Alexa control of the TV may stop working.",
+      "confidence": "identified",
       "safeToDisable": false,
-      "source": "catalog/inventories (presence only)",
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/tcl-g10-google-tv/debloat.txt; catalog/inventories (presence only)",
       "observedOn": [
         "tcl-g10",
         "tcl-g08-au04-20261104",
@@ -4590,13 +4659,13 @@
       ]
     },
     "com.tcl.t_solo": {
-      "ru": "Приложение не опознано.",
-      "en": "Application not identified.",
-      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
-      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
-      "confidence": "unknown",
+      "ru": "Режим TCL T-Solo для прослушивания телевизора через Bluetooth-наушники. На G03 AR09 пакет также заявляет TV_INPUT_HARDWARE.",
+      "en": "TCL T-Solo mode for listening through Bluetooth headphones. On G03 AR09 the package also requests TV_INPUT_HARDWARE.",
+      "riskRu": "Может пропасть T-Solo. Для G03 AR09 безопасность входов при отключении не подтверждена.",
+      "riskEn": "T-Solo may stop working. Input operation after disabling on G03 AR09 has not been verified.",
+      "confidence": "identified",
       "safeToDisable": false,
-      "source": "catalog/inventories (presence only)",
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/tcl-g03-google-tv/debloat.txt; catalog/inventories (presence only)",
       "observedOn": [
         "tcl-g08",
         "tcl-g10",
@@ -4607,13 +4676,13 @@
       ]
     },
     "com.tcl.ttvs": {
-      "ru": "Приложение не опознано.",
-      "en": "Application not identified.",
-      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
-      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
-      "confidence": "unknown",
+      "ru": "Службы TCL. На отдельных сборках участвуют в обновлении прошивки, а на G08 AS34 входят в цепочку TIAS и экранов источников.",
+      "en": "TCL services. Some builds use them for firmware updates, and G08 AS34 uses them in the TIAS and source overlay chain.",
+      "riskRu": "Могут нарушиться обновления или интерфейс телевизионных входов.",
+      "riskEn": "Firmware updates or the TV input interface may stop working.",
+      "confidence": "identified",
       "safeToDisable": false,
-      "source": "catalog/inventories (presence only)",
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/tcl-g10-google-tv/debloat.txt; catalog/inventories (presence only)",
       "observedOn": [
         "tcl-g08",
         "tcl-g10",
@@ -4624,20 +4693,21 @@
       ]
     },
     "com.tcl.tv": {
-      "ru": "Телевизионные входы или просмотр эфирных каналов.",
-      "en": "TV input or broadcast channel playback.",
-      "riskRu": "Высокий: возможен отказ входов, каналов или переключения источника.",
-      "riskEn": "High: inputs, channels or source switching may fail.",
+      "ru": "Штатный проигрыватель TCL для эфирного ТВ, HDMI и других источников.",
+      "en": "TCL stock player for broadcast TV, HDMI and other inputs.",
+      "riskRu": "Могут перестать открываться эфирные каналы, программа передач и входы.",
+      "riskEn": "Broadcast channels, the programme guide and inputs may stop opening.",
       "confidence": "identified",
       "safeToDisable": false,
-      "source": "catalog/inventories (presence only); manual functional review",
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/tcl-g10-google-tv/debloat.txt; catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.tcl.tv.overlay": {
@@ -4669,7 +4739,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.tcl.tvinput": {
@@ -4686,7 +4757,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.tcl.ui_mediaCenter": {
@@ -4703,17 +4775,18 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.tcl.useragreement": {
-      "ru": "Приложение не опознано.",
-      "en": "Application not identified.",
-      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
-      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
-      "confidence": "unknown",
+      "ru": "Экран пользовательского соглашения TCL при настройке ТВ.",
+      "en": "TCL user agreement screen during TV setup.",
+      "riskRu": "Может не открыться экран соглашения при настройке.",
+      "riskEn": "The agreement screen may not open during setup.",
+      "confidence": "identified",
       "safeToDisable": false,
-      "source": "catalog/inventories (presence only)",
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/tcl-g10-google-tv/debloat.txt; catalog/inventories (presence only)",
       "observedOn": [
         "tcl-g08",
         "tcl-g10",
@@ -4741,13 +4814,13 @@
       ]
     },
     "com.tcl.waterfall.overseas": {
-      "ru": "Рекомендации контента TCL.",
-      "en": "TCL content recommendations.",
-      "riskRu": "Не проверен: рекомендации и интеграции TCL могут исчезнуть.",
-      "riskEn": "Unverified: TCL recommendations and integrations may disappear.",
+      "ru": "Каталог TCL Channel с рекомендациями фильмов и передач.",
+      "en": "TCL Channel catalogue with film and programme recommendations.",
+      "riskRu": "Может пропасть TCL Channel. На отдельных прошивках этот пакет связан с телевизионными функциями.",
+      "riskEn": "TCL Channel may disappear. Some firmware builds use this package for TV functions.",
       "confidence": "identified",
       "safeToDisable": false,
-      "source": "https://github.com/Gathin23/cleanyourtv/blob/main/examples/tcl-g09-google-tv/debloat.txt",
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/tcl-g10-google-tv/debloat.txt; https://github.com/Gathin23/cleanyourtv/blob/main/examples/tcl-g09-google-tv/debloat.txt",
       "observedOn": [
         "tcl-g08",
         "tcl-g10",
@@ -4782,7 +4855,8 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
-        "google-tanix-w2-android11-20261101"
+        "google-tanix-w2-android11-20261101",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.tpa.kb": {
@@ -4815,7 +4889,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.ugoos.suggestions": {
@@ -4853,7 +4928,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
-        "kp1-yyz"
+        "kp1-yyz",
+        "tcl-beyondtv4-ar10-20261110"
       ],
       "category": "preinstalled"
     },
@@ -4955,7 +5031,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar10-20261110"
       ],
       "category": "user"
     },
@@ -5138,6 +5215,16 @@
         "tcl-g08-au04-20261107-weather-read-error"
       ],
       "category": "preinstalled"
+    },
+    "org.droidtv.xtv": {
+      "ru": "Телевизионный сервис Philips с API JointSpace, который использует Home Assistant.",
+      "en": "Philips TV service that provides the JointSpace API used by Home Assistant.",
+      "riskRu": "Отключение может нарушить управление из Home Assistant и работу телевизионных функций.",
+      "riskEn": "Disabling may break Home Assistant controls and TV functions.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "https://github.com/Gathin23/cleanyourtv/pull/2688",
+      "observedOn": []
     },
     "org.dtvkit.inputsource": {
       "ru": "Телевизионные входы или просмотр эфирных каналов.",
@@ -5413,7 +5500,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
       "observedOn": [
-        "google-tanix-w2-android11-20261101"
+        "google-tanix-w2-android11-20261101",
+        "tcl-beyondtv4-ar10-20261110"
       ],
       "category": "user"
     },
@@ -5609,13 +5697,13 @@
       ]
     },
     "tv.mopa.ginga": {
-      "ru": "Приложение не опознано.",
-      "en": "Application not identified.",
-      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
-      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
-      "confidence": "unknown",
+      "ru": "Среда Ginga для интерактивных функций цифрового телевидения в Бразилии.",
+      "en": "Ginga middleware for Brazilian interactive digital TV.",
+      "riskRu": "Могут пропасть интерактивные сервисы совместимых телеканалов.",
+      "riskEn": "Interactive services on compatible channels may become unavailable.",
+      "confidence": "identified",
       "safeToDisable": false,
-      "source": "catalog/inventories (presence only)",
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/tcl-75a300-pro/debloat.txt; catalog/inventories (presence only)",
       "observedOn": [
         "tcl-g08",
         "tcl-g08-au04-20261104",
@@ -5624,13 +5712,13 @@
       ]
     },
     "tv.samba.ssm.ui": {
-      "ru": "Приложение не опознано.",
-      "en": "Application not identified.",
-      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
-      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
-      "confidence": "unknown",
+      "ru": "Компонент Samba TV для распознавания просматриваемого контента (ACR).",
+      "en": "Samba TV component for automatic content recognition (ACR).",
+      "riskRu": "Могут перестать работать распознавание и связанные функции Samba TV.",
+      "riskEn": "Content recognition and related Samba TV features may stop working.",
+      "confidence": "identified",
       "safeToDisable": false,
-      "source": "catalog/inventories (presence only)",
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/tcl-g10-google-tv/debloat.txt; catalog/inventories (presence only)",
       "observedOn": [
         "tcl-g10",
         "tcl-g10-as16-20261104-update-http"
@@ -5677,13 +5765,13 @@
       "category": "user"
     },
     "com.tcl.gallery": {
-      "ru": "Приложение не опознано.",
-      "en": "Application not identified.",
-      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
-      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
-      "confidence": "unknown",
+      "ru": "Галерея фотографий TCL.",
+      "en": "TCL photo gallery.",
+      "riskRu": "Может стать недоступен штатный просмотр фотографий.",
+      "riskEn": "The stock photo viewer may become unavailable.",
+      "confidence": "identified",
       "safeToDisable": false,
-      "source": "catalog/inventories/tcl-g08-au04-20261104.json (user diagnostic metadata; presence only)",
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/tcl-g03-google-tv/debloat.txt; catalog/inventories/tcl-g08-au04-20261104.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "tcl-g08-au04-20261104"
       ]
@@ -5711,7 +5799,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories/tcl-g08-au04-20261104.json (user diagnostic metadata; presence only)",
       "observedOn": [
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-beyondtv4-ar10-20261110"
       ],
       "category": "user"
     },
@@ -5772,7 +5861,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories/tcl-g10-as16-20261104-update-http.json (presence only)",
       "observedOn": [
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "com.android.tv.overlay.networkstack.inprocess": {
@@ -5872,13 +5962,13 @@
       ]
     },
     "com.tcl.browser": {
-      "ru": "Приложение не опознано.",
-      "en": "Application not identified.",
-      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
-      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
-      "confidence": "unknown",
+      "ru": "Браузер TCL BrowseHere и связанная карточка штатного главного экрана.",
+      "en": "TCL BrowseHere browser and its stock Home card.",
+      "riskRu": "Браузер и его карточка могут исчезнуть.",
+      "riskEn": "The browser and its card may disappear.",
+      "confidence": "identified",
       "safeToDisable": false,
-      "source": "catalog/inventories/tcl-g10-as16-20261104-update-http.json (presence only)",
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/tcl-g03-google-tv/debloat.txt; catalog/inventories/tcl-g10-as16-20261104-update-http.json (presence only)",
       "observedOn": [
         "tcl-g10-as16-20261104-update-http"
       ]
@@ -5904,7 +5994,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories/tcl-g10-as16-20261104-update-http.json (presence only)",
       "observedOn": [
-        "tcl-g10-as16-20261104-update-http"
+        "tcl-g10-as16-20261104-update-http",
+        "tcl-beyondtv4-ar10-20261110"
       ]
     },
     "org.telegram.messenger.web": {
@@ -5954,6 +6045,280 @@
       "observedOn": [
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error"
+      ]
+    },
+    "com.mi.bluetooth": {
+      "ru": "Компонент Xiaomi для Bluetooth-пульта.",
+      "en": "Xiaomi Bluetooth remote component.",
+      "riskRu": "Могут нарушиться сопряжение и работа кнопок пульта.",
+      "riskEn": "Remote pairing and button operation may be affected.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/xiaomi-mitv-axfu0/debloat.txt",
+      "observedOn": []
+    },
+    "com.mitv.gallery": {
+      "ru": "Штатная галерея Xiaomi. На MiTV-AXFU0 проводник использует её для открытия файлов с USB.",
+      "en": "Xiaomi stock gallery. The file explorer on MiTV-AXFU0 uses it to open files from USB.",
+      "riskRu": "Может перестать открываться часть медиафайлов с USB.",
+      "riskEn": "Some media files from USB may stop opening.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/xiaomi-mitv-axfu0/debloat.txt",
+      "observedOn": []
+    },
+    "com.mitv.livetv": {
+      "ru": "Штатное приложение Xiaomi для эфирного DVB-телевидения.",
+      "en": "Xiaomi stock app for DVB live TV.",
+      "riskRu": "Может пропасть просмотр эфирных каналов.",
+      "riskEn": "Broadcast TV playback may stop working.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/xiaomi-mitv-axfu0/debloat.txt",
+      "observedOn": []
+    },
+    "com.mitv.overseaservice": {
+      "ru": "Служба Xiaomi, участвующая в работе Bluetooth-пульта на MiTV-AXFU0.",
+      "en": "Xiaomi service involved in Bluetooth remote operation on MiTV-AXFU0.",
+      "riskRu": "На проверенной сборке V816.0.9.0 пульт терял сопряжение после ожидания.",
+      "riskEn": "On the tested V816.0.9.0 build the remote lost pairing after standby.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/xiaomi-mitv-axfu0/debloat.txt",
+      "observedOn": []
+    },
+    "com.mitv.videoplayer": {
+      "ru": "Штатный видеопроигрыватель Xiaomi для локальных файлов.",
+      "en": "Xiaomi stock video player for local files.",
+      "riskRu": "Может перестать работать воспроизведение видео с USB в штатном проводнике.",
+      "riskEn": "USB video playback from the stock file explorer may stop working.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/xiaomi-mitv-axfu0/debloat.txt",
+      "observedOn": []
+    },
+    "com.xiaomi.android.tvsetup.partnercustomizer": {
+      "ru": "Компонент настройки Xiaomi для быстрых кнопок и, на отдельных моделях, сопряжения пульта.",
+      "en": "Xiaomi setup component for remote shortcuts and, on some models, remote pairing.",
+      "riskRu": "Могут перестать работать быстрые кнопки или сопряжение Bluetooth-пульта.",
+      "riskEn": "Shortcut buttons or Bluetooth remote pairing may stop working.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/xiaomi-mitv-axfu0/debloat.txt",
+      "observedOn": []
+    },
+    "org.droidtv.ipcontrol": {
+      "ru": "Сетевое управление громкостью, аудиовыходом и Ambilight на отдельных Philips. JointSpace обслуживает org.droidtv.xtv.",
+      "en": "LAN control of volume, audio output and Ambilight on some Philips TVs. JointSpace is provided by org.droidtv.xtv.",
+      "riskRu": "Могут пропасть связанные команды управления по локальной сети.",
+      "riskEn": "Related local network controls may stop working.",
+      "confidence": "identified",
+      "safeToDisable": false,
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/philips-50pus8517/debloat.txt",
+      "observedOn": []
+    },
+    "android.autoinstalls.config.tcl.device": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/tcl-beyondtv4-ar10-20261110.json",
+      "observedOn": [
+        "tcl-beyondtv4-ar10-20261110"
+      ]
+    },
+    "com.deepnight.dsp.app": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/tcl-beyondtv4-ar10-20261110.json",
+      "observedOn": [
+        "tcl-beyondtv4-ar10-20261110"
+      ]
+    },
+    "com.deepnight.volumepanel": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/tcl-beyondtv4-ar10-20261110.json",
+      "observedOn": [
+        "tcl-beyondtv4-ar10-20261110"
+      ]
+    },
+    "com.google.android.apps.nbu.smartconnect.tv": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/tcl-beyondtv4-ar10-20261110.json",
+      "observedOn": [
+        "tcl-beyondtv4-ar10-20261110"
+      ]
+    },
+    "com.google.android.tv.assistant": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/tcl-beyondtv4-ar10-20261110.json",
+      "observedOn": [
+        "tcl-beyondtv4-ar10-20261110"
+      ]
+    },
+    "com.saveser.soundbarantisleep": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/tcl-beyondtv4-ar10-20261110.json",
+      "observedOn": [
+        "tcl-beyondtv4-ar10-20261110"
+      ]
+    },
+    "com.tcl.assistant": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/tcl-beyondtv4-ar10-20261110.json",
+      "observedOn": [
+        "tcl-beyondtv4-ar10-20261110"
+      ]
+    },
+    "com.tcl.bi": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/tcl-beyondtv4-ar10-20261110.json",
+      "observedOn": [
+        "tcl-beyondtv4-ar10-20261110"
+      ]
+    },
+    "com.tcl.common.shortcutmenu": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/tcl-beyondtv4-ar10-20261110.json",
+      "observedOn": [
+        "tcl-beyondtv4-ar10-20261110"
+      ]
+    },
+    "com.tcl.keyhelp": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/tcl-beyondtv4-ar10-20261110.json",
+      "observedOn": [
+        "tcl-beyondtv4-ar10-20261110"
+      ]
+    },
+    "com.tcl.micmanager": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/tcl-beyondtv4-ar10-20261110.json",
+      "observedOn": [
+        "tcl-beyondtv4-ar10-20261110"
+      ]
+    },
+    "com.tcl.overseasappshow": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/tcl-beyondtv4-ar10-20261110.json",
+      "observedOn": [
+        "tcl-beyondtv4-ar10-20261110"
+      ]
+    },
+    "com.tcl.settings": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/tcl-beyondtv4-ar10-20261110.json",
+      "observedOn": [
+        "tcl-beyondtv4-ar10-20261110"
+      ]
+    },
+    "com.tcl.system.server": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/tcl-beyondtv4-ar10-20261110.json",
+      "observedOn": [
+        "tcl-beyondtv4-ar10-20261110"
+      ]
+    },
+    "com.tcl.tcl_bt_rcu_service": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/tcl-beyondtv4-ar10-20261110.json",
+      "observedOn": [
+        "tcl-beyondtv4-ar10-20261110"
+      ]
+    },
+    "com.tcl.xian.StartandroidService": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/tcl-beyondtv4-ar10-20261110.json",
+      "observedOn": [
+        "tcl-beyondtv4-ar10-20261110"
+      ]
+    },
+    "uz.ikplay.lite": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/tcl-beyondtv4-ar10-20261110.json",
+      "observedOn": [
+        "tcl-beyondtv4-ar10-20261110"
       ]
     }
   }

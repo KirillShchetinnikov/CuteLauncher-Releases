@@ -69,7 +69,9 @@ public class MainActivity extends Activity {
                     else android.widget.Toast.makeText(this, R.string.recovery_unavailable, android.widget.Toast.LENGTH_LONG).show();
                 });
             })).show());
-        button(body, getString(R.string.recovery_settings), () -> open(new Intent(android.provider.Settings.ACTION_SETTINGS)));
+        button(body, getString(R.string.recovery_settings), () -> {
+            if (!RemoteTvActions.openSettings(this)) showUnavailable();
+        });
         button(body, getString(R.string.recovery_home), () -> open(new Intent(android.provider.Settings.ACTION_HOME_SETTINGS)));
         var pm = getPackageManager();
         var apps = pm.queryIntentActivities(new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LEANBACK_LAUNCHER), 0);
@@ -107,7 +109,10 @@ public class MainActivity extends Activity {
     }
     private void open(Intent intent) {
         try { startActivity(intent); }
-        catch (RuntimeException e) { android.widget.Toast.makeText(this, R.string.recovery_unavailable, android.widget.Toast.LENGTH_LONG).show(); }
+        catch (RuntimeException e) { showUnavailable(); }
+    }
+    private void showUnavailable() {
+        android.widget.Toast.makeText(this, R.string.recovery_unavailable, android.widget.Toast.LENGTH_LONG).show();
     }
     @Override public void onBackPressed() { /* HOME recovery stays available until explicit retry or app launch. */ }
 }

@@ -8,6 +8,44 @@ import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/widgets/settings/auto_launch_page.dart';
 
 void main() {
+  for (final success in [true, false]) {
+    testWidgets('saving an autostart toggle preserves its focus; success=$success', (tester) async {
+      const channel = MethodChannel('cutelauncher/auto_launch');
+      final save = Completer<Map<String, dynamic>>();
+      var saves = 0;
+      final messenger = tester.binding.defaultBinaryMessenger;
+      messenger.setMockMethodCallHandler(channel, (call) async {
+        if (call.method == 'save') {
+          saves++;
+          return save.future;
+        }
+        return const AutoLaunchConfiguration(mode: 'app', app: 'example.app').toMap();
+      });
+      addTearDown(() => messenger.setMockMethodCallHandler(channel, null));
+      await tester.pumpWidget(const MaterialApp(
+        locale: Locale('ru'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(body: AutoLaunchPage()),
+      ));
+      await tester.pumpAndSettle();
+      final l = AppLocalizations.of(tester.element(find.byType(AutoLaunchPage)))!;
+      final toggle = find.text(l.autoLaunchBoot);
+      await tester.ensureVisible(toggle);
+      await tester.tap(toggle);
+      await tester.pump();
+      final focus = Focus.of(tester.element(toggle));
+      expect(focus.hasPrimaryFocus, isTrue);
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pump();
+      expect(saves, 1);
+      save.complete({'status': success ? 'success' : 'unavailable'});
+      await tester.pumpAndSettle();
+      expect(Focus.of(tester.element(toggle)), same(focus));
+      expect(focus.hasPrimaryFocus, isTrue);
+    });
+  }
+
   testWidgets('internet wait is saved explicitly and its explanation stays collapsed', (tester) async {
     const channel = MethodChannel('cutelauncher/auto_launch');
     final messenger = tester.binding.defaultBinaryMessenger;
@@ -165,7 +203,7 @@ void main() {
   }
 
   testWidgets(
-    'initial loading disables mode; completed settings focus the row and chooser',
+    'initial loading blocks activation while retaining mode focus',
     (tester) async {
       const channel = MethodChannel('cutelauncher/auto_launch');
       const native = MethodChannel('me.efesser.flauncher/method');
@@ -190,7 +228,10 @@ void main() {
         ),
       );
       await tester.pump();
-      expect(Focus.of(tester.element(find.text('Выключен'))).hasFocus, isFalse);
+      expect(Focus.of(tester.element(find.text('Выключен'))).hasFocus, isTrue);
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pump();
+      expect(find.byType(AlertDialog), findsNothing);
       info.complete(const AutoLaunchConfiguration().toMap());
       await tester.pumpAndSettle();
       expect(Focus.of(tester.element(find.text('Выключен'))).hasFocus, isTrue);

@@ -334,6 +334,11 @@ class AppChannelsService extends ChangeNotifier
 
   Uint8List? cachedPoster(String uri) => _posters[uri];
 
+  void evictPoster(WatchNextProgram program) {
+    _posters.remove(program.posterArtUri);
+    _posters.remove(program.thumbnailUri);
+  }
+
   Future<Uint8List?> programPoster(WatchNextProgram program) async {
     final generation = _generation;
     final primary = await poster(program.posterArtUri);

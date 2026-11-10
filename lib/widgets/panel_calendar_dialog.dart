@@ -151,6 +151,8 @@ class _PanelCalendarDialogState extends State<PanelCalendarDialog> {
       ),
       actions: [
         LauncherDialogButton(
+          style: const ButtonStyle(padding: WidgetStatePropertyAll(
+              EdgeInsets.symmetric(horizontal: 10, vertical: 12))),
           child: Semantics(
             label: material.previousMonthTooltip,
             child: const Icon(Icons.chevron_left),
@@ -158,12 +160,16 @@ class _PanelCalendarDialogState extends State<PanelCalendarDialog> {
           onPressed: () => _move(-1),
         ),
         LauncherDialogButton(
+          style: const ButtonStyle(padding: WidgetStatePropertyAll(
+              EdgeInsets.symmetric(horizontal: 10, vertical: 12))),
           autofocus: true,
           child: Text(material.currentDateLabel),
           onPressed: () =>
               setState(() => _month = DateTime(_today.year, _today.month)),
         ),
         LauncherDialogButton(
+          style: const ButtonStyle(padding: WidgetStatePropertyAll(
+              EdgeInsets.symmetric(horizontal: 10, vertical: 12))),
           child: Semantics(
             label: material.nextMonthTooltip,
             child: const Icon(Icons.chevron_right),
@@ -180,7 +186,7 @@ class _PanelCalendarDialogState extends State<PanelCalendarDialog> {
     if (widget.embedded) {
       return Container(
         key: const Key('embedded_calendar'),
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
         decoration: InterfaceSkin.of(context).surface(
           scheme.onSurface.withValues(alpha: .035),
           scheme.onSurface,

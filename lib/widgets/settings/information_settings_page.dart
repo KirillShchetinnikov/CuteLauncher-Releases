@@ -1,6 +1,7 @@
 import 'settings_section.dart';
 import '../../information_placement.dart';
 import '../../information_formats.dart';
+import '../../panel_clock_style.dart';
 import '../../theme/launcher_style.dart';
 
 import 'package:flutter/material.dart';
@@ -47,39 +48,17 @@ class InformationObjectsSection extends StatelessWidget {
         ],
       );
     }
-    final placement = InformationPlacement(
-      context.watch<AppearanceService>().appearance,
-      context.watch<SettingsService>(),
-    );
-    final summary = [
-      for (final id in InformationPlacement.ids)
-        '${switch (id) {
-          'time' => l.informationTime,
-          'date' => l.informationDate,
-          _ => l.weather,
-        }}: ${switch (placement.values[id]) {
-          'panel' => l.topPanel,
-          'background' => l.informationOnBackground,
-          _ => l.disabled,
-        }}',
-    ].join(' · ');
-    return FocusableSettingsTile(
-      title: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(l.informationGroup),
-          Text(summary, style: Theme.of(context).textTheme.bodySmall),
-        ],
-      ),
-      leading: const Icon(Icons.schedule),
-      onPressed: () => Navigator.of(context).push(
-        SettingsRoute(
-          settings: const RouteSettings(
-            name: InformationSettingsPage.routeName,
-          ),
-          builder: (_) => const InformationSettingsPage(),
+    return SettingsSection(
+      title: l.informationGroup,
+      children: [
+        _informationPage(
+          context,
+          l.settings,
+          const InformationSettingsPage(),
+          InformationSettingsPage.routeName,
+          icon: Icons.settings_outlined,
         ),
-      ),
+      ],
     );
   }
 }
@@ -189,28 +168,47 @@ class InformationSettingsPage extends StatelessWidget {
         title: Text(l.informationGroup),
         child: ListView(
           children: [
-            const InformationVisibility(),
-            const SizedBox(height: 12),
-            _informationPage(
-              context,
-              l.informationPanelAppearance,
-              const PanelInformationSettingsPage(),
-              PanelInformationSettingsPage.routeName,
-              icon: Icons.view_day_outlined,
+            SettingsSection(
+              title: l.informationObjectPlacement,
+              children: const [InformationVisibility()],
             ),
-            _informationPage(
-              context,
-              l.backgroundInformationAppearance,
-              const BackgroundInformationSettingsPage(),
-              BackgroundInformationSettingsPage.routeName,
-              icon: Icons.wallpaper_outlined,
+            SettingsSection(
+              title: l.appearanceSettings,
+              children: [
+                _informationPage(
+                  context,
+                  l.informationComposition,
+                  const InformationDataSettingsPage(),
+                  InformationDataSettingsPage.routeName,
+                  icon: Icons.tune,
+                ),
+                _informationPage(
+                  context,
+                  l.informationPanelAppearance,
+                  const PanelInformationSettingsPage(),
+                  PanelInformationSettingsPage.routeName,
+                  icon: Icons.view_day_outlined,
+                ),
+                _informationPage(
+                  context,
+                  l.backgroundInformationAppearance,
+                  const BackgroundInformationSettingsPage(),
+                  BackgroundInformationSettingsPage.routeName,
+                  icon: Icons.wallpaper_outlined,
+                ),
+              ],
             ),
-            _informationPage(
-              context,
-              l.weatherSettings,
-              const WeatherPage(),
-              WeatherPage.routeName,
-              icon: Icons.cloud_outlined,
+            SettingsSection(
+              title: l.weather,
+              children: [
+                _informationPage(
+                  context,
+                  l.weatherSettings,
+                  const WeatherPage(),
+                  WeatherPage.routeName,
+                  icon: Icons.cloud_outlined,
+                ),
+              ],
             ),
           ],
         ),
@@ -290,12 +288,6 @@ class InformationAppearancePage extends StatelessWidget {
       showObscuredInformationPreview: !background,
       child: ListView(
         children: [
-          _informationPage(
-            context,
-            l.informationComposition,
-            InformationDataSettingsPage(background: background),
-            'information_${background ? 'background' : 'panel'}_formats',
-          ),
           page(
             background ? l.informationPositionSize : l.informationLayout,
             'layout',
@@ -310,19 +302,12 @@ class InformationAppearancePage extends StatelessWidget {
 
 class InformationDataSettingsPage extends StatelessWidget {
   static const routeName = 'information_data_settings';
-  final bool background;
-  const InformationDataSettingsPage({super.key, this.background = false});
+  const InformationDataSettingsPage({super.key});
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
-    final service = context.watch<AppearanceService>();
-    final clock = background
-        ? service.appearance.backgroundInformationStyle
-        : service.appearance.informationStyle;
-    void setClock(String key, bool value) => service.set(
-      background ? 'panelBackgroundInformationStyle' : 'panelInformationStyle',
-      {...clock.values, key: value},
-    );
+    final appearance = context.watch<AppearanceService>();
+    final clock = appearance.informationClockBehavior;
     return SettingsPageLayout(
       title: Text(l.informationComposition),
       showObscuredInformationPreview: false,
@@ -332,23 +317,33 @@ class InformationDataSettingsPage extends StatelessWidget {
             key: const ValueKey('information-time-section'),
             title: l.informationTime,
             children: [
-              TimeFormatSettingsTile(background: background),
+              const TimeFormatSettingsTile(),
               RoundedSwitchListTile(
                 title: Text(l.clockShowColon),
                 value: clock.showColon,
-                onChanged: (value) => setClock('showColon', value),
+                onChanged: (value) => appearance.setInformationClockBehavior(
+                  InformationClockBehavior(
+                    showColon: value,
+                    animate: appearance.informationClockBehavior.animate,
+                  ),
+                ),
               ),
               RoundedSwitchListTile(
                 title: Text(l.clockAnimate),
                 value: clock.animate,
-                onChanged: (value) => setClock('animate', value),
+                onChanged: (value) => appearance.setInformationClockBehavior(
+                  InformationClockBehavior(
+                    showColon: appearance.informationClockBehavior.showColon,
+                    animate: value,
+                  ),
+                ),
               ),
             ],
           ),
           SettingsSection(
             key: const ValueKey('information-date-section'),
             title: l.informationDate,
-            children: [DateFormatSettingsTile(background: background)],
+            children: const [DateFormatSettingsTile()],
           ),
           SettingsSection(
             key: const ValueKey('information-weather-section'),
@@ -356,16 +351,16 @@ class InformationDataSettingsPage extends StatelessWidget {
             children: [
               SettingsChoiceTile<bool>(
                 title: l.temperatureUnit,
-                value: context.watch<SettingsService>().informationWeather(background: background).fahrenheit,
+                value: context.watch<SettingsService>().useFahrenheit,
                 options: const [false, true],
                 label: (value) => value ? l.fahrenheit : l.celsius,
                 onChanged: (value) async {
                   final settings = context.read<SettingsService>();
-                  final current = settings.informationWeather(background: background);
+                  final current = settings.informationWeather();
                   try {
                     await settings.setInformationWeather(WeatherDisplayOptions(
                       format: current.format, fahrenheit: value, warnings: current.warnings,
-                    ), background: background);
+                    ));
                   } catch (_) {
                     if (context.mounted) {
                       showActionNotice(context, l.weatherTextSaveError, error: true);
@@ -373,10 +368,9 @@ class InformationDataSettingsPage extends StatelessWidget {
                   }
                 },
               ),
-              InformationWeatherFormatTile(background: background),
+              const InformationWeatherFormatTile(),
             ],
           ),
-          SettingsHelp(text: l.informationProfileHelp),
         ],
       ),
     );
@@ -416,6 +410,7 @@ class InformationSectionPage extends StatelessWidget {
         children: [
           if (section == 'layout' && background) ...[
             SettingsSection(
+              key: const ValueKey('settingsGroupBlockPosition'),
               title: l.settingsGroupBlockPosition,
               children: [
                 SettingsChoiceTile<String>(
@@ -441,6 +436,7 @@ class InformationSectionPage extends StatelessWidget {
               ],
             ),
             SettingsSection(
+              key: const ValueKey('settingsGroupBlockContent'),
               title: l.settingsGroupBlockContent,
               children: [
                 _informationPage(
@@ -463,6 +459,7 @@ class InformationSectionPage extends StatelessWidget {
               ],
             ),
             SettingsSection(
+              key: const ValueKey('settingsGroupLayers'),
               title: l.settingsGroupLayers,
               children: [
                 RoundedSwitchListTile(

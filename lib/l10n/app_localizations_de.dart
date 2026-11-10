@@ -120,7 +120,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get fileStorageSettingsUnavailable =>
-      'Diese Firmware bietet keinen Bildschirm für den Zugriff auf alle Dateien. Verwenden Sie die Systemdateiauswahl oder installieren Sie einen kompatiblen Dateimanager.';
+      'Diese Firmware bietet keinen Bildschirm für den Zugriff auf alle Dateien. Verwenden Sie den externen Dateimanager oder installieren Sie einen kompatiblen Dateimanager.';
 
   @override
   String get tileImageMode => 'Kachelbild';
@@ -4903,7 +4903,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get slideshowEnterFolderPath => 'Ordnerpfad eingeben';
 
   @override
-  String get slideshowSystemPicker => 'Im System-Dateimanager auswählen';
+  String get slideshowSystemPicker => 'Im externen Dateimanager auswählen';
 
   @override
   String get slideshowFolderPath => 'Ordnerpfad';
@@ -4937,7 +4937,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get filePickerChoose => 'Dateibrowser auswählen';
 
   @override
-  String get filePickerSystem => 'System-Dateiauswahl';
+  String get filePickerSystem => 'Externer Dateimanager';
 
   @override
   String get filePickerBuiltIn => 'Integrierter Dateibrowser';
@@ -5059,6 +5059,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get backupLastSuccess => 'Letzte erfolgreiche Aktion:';
+
+  @override
+  String get informationObjectPlacement => 'Platzierung';
 
   @override
   String get informationPlacement => 'Platzierung des Blocks';
@@ -5662,8 +5665,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settingsGroupIndicators => 'Anzeigen und Meldungen';
 
   @override
-  String get nightModePanelFill =>
-      'Schaltfläche in der oberen Leiste einfärben';
+  String get nightModePanelFill => 'Akzentfarbe für den Mond';
 
   @override
   String get settingsGroupFocusShape => 'Fokusdarstellung';
@@ -5772,4 +5774,31 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get sectionTitleSize => 'Größe der Abschnittsüberschrift';
+
+  @override
+  String get backupSyncResume => 'Synchronisierung fortsetzen';
+
+  @override
+  String get backupSyncUseLocal => 'Einstellungen dieses Fernsehers verwenden';
+
+  @override
+  String get backupSyncUseRemote => 'Einstellungen aus dem Speicher verwenden';
+
+  @override
+  String get backupSyncMergeLocal =>
+      'Zusammenführen mit Vorrang für diesen Fernseher';
+
+  @override
+  String get backupSyncMergeRemote =>
+      'Zusammenführen mit Vorrang für den Speicher';
+
+  @override
+  String backupSyncPreviousDate(String date) {
+    return 'Letzte Synchronisierung dieses Fernsehers: $date';
+  }
+
+  @override
+  String backupSyncRemoteDate(String date) {
+    return 'Kopie im Speicher: $date';
+  }
 }

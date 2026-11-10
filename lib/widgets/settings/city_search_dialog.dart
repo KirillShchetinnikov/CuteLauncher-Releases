@@ -63,7 +63,7 @@ class _CitySearchDialogState extends State<CitySearchDialog> {
               ),
             ),
             SettingsHelp(title: l.weatherLocation, text: l.nightCityEnglish),
-            if (busy) const LinearProgressIndicator(),
+            SizedBox(child: busy ? const LinearProgressIndicator() : null),
             if (failed) Text(l.nightCitySearchFailed),
             if (searched && !busy && !failed && cities.isEmpty)
               Text(l.nightCityNotFound),

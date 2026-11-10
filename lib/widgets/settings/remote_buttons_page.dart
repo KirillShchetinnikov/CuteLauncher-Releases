@@ -211,7 +211,8 @@ class _RemoteButtonsPageState extends State<RemoteButtonsPage>
           if (widget.section == 'diagnostics') ...[
             FocusableSettingsTile(
               key: const ValueKey('remote-buttons-capture'),
-              enabled: !_busy && (active || ready),
+              enabled: (active || ready),
+              busy: _busy,
               title: Text(active ? l.remoteButtonsStop : l.remoteButtonsStart),
               leading: Icon(
                 active ? Icons.stop_circle_outlined : Icons.settings_remote,

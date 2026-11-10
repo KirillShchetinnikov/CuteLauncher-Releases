@@ -231,7 +231,7 @@ class _BackupManagementBlockState extends State<BackupManagementBlock> {
             if (enabled) _load();
           },
         ),
-        if (_loading) const LinearProgressIndicator(),
+        SizedBox(child: _loading ? const LinearProgressIndicator() : null),
         if (_loadFailed)
           Padding(
             padding: const EdgeInsets.all(12),

@@ -1,0 +1,28 @@
+import 'database.dart';
+
+CREATE TABLE archived_app_launch_counts (
+  package_name TEXT NOT NULL PRIMARY KEY,
+  launch_count INTEGER NOT NULL
+);
+
+-- Keep local history when an app row is removed by restore or uninstall.
+CREATE TRIGGER archive_app_launch_count
+AFTER DELETE ON apps
+WHEN OLD.launch_count > 0
+BEGIN
+  INSERT INTO archived_app_launch_counts (package_name, launch_count)
+  VALUES (OLD.package_name, OLD.launch_count)
+  ON CONFLICT (package_name) DO UPDATE SET launch_count = excluded.launch_count;
+END;
+
+CREATE TRIGGER recover_app_launch_count
+AFTER INSERT ON apps
+WHEN EXISTS (SELECT 1 FROM archived_app_launch_counts WHERE package_name = NEW.package_name)
+BEGIN
+  UPDATE apps
+  SET launch_count = max(NEW.launch_count, (
+    SELECT launch_count FROM archived_app_launch_counts WHERE package_name = NEW.package_name
+  ))
+  WHERE package_name = NEW.package_name;
+  DELETE FROM archived_app_launch_counts WHERE package_name = NEW.package_name;
+END;

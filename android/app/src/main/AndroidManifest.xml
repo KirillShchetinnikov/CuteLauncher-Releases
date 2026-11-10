@@ -97,6 +97,8 @@
             <action android:name="android.settings.IGNORE_BATTERY_OPTIMIZATION_SETTINGS" />
         </intent>
         <package android:name="com.android.tv.settings" />
+        <package android:name="com.tcl.tv" />
+        <package android:name="com.xiaomi.mitv.tvplayer" />
         <package android:name="com.android.systemui" />
         <intent>
             <action android:name="android.settings.DREAM_SETTINGS" />

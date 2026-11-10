@@ -44,7 +44,7 @@ class LocalBackupPage extends StatelessWidget {
                       Uri.parse(service.localFolder!).pathSegments.last,
                     ),
             ),
-            enabled: !service.busy,
+            busy: service.busy,
             onPressed: () async {
               try {
                 final folder = await showLauncherDialog<String>(

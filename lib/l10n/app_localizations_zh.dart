@@ -117,7 +117,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get fileStorageSettingsUnavailable =>
-      '此固件无法打开所有文件访问权限页面。请使用系统文件选择器或安装兼容的文件管理器。';
+      '此固件无法打开所有文件访问权限页面。请使用外部文件浏览器或安装兼容的文件管理器。';
 
   @override
   String get tileImageMode => '磁贴图像';
@@ -4629,7 +4629,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get slideshowEnterFolderPath => '输入文件夹路径';
 
   @override
-  String get slideshowSystemPicker => '在系统文件管理器中选择';
+  String get slideshowSystemPicker => '在外部文件浏览器中选择';
 
   @override
   String get slideshowFolderPath => '文件夹路径';
@@ -4660,7 +4660,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get filePickerChoose => '选择文件浏览器';
 
   @override
-  String get filePickerSystem => '系统文件选择器';
+  String get filePickerSystem => '外部文件浏览器';
 
   @override
   String get filePickerBuiltIn => '内置文件浏览器';
@@ -4773,6 +4773,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get backupLastSuccess => '上次成功操作：';
+
+  @override
+  String get informationObjectPlacement => '显示位置';
 
   @override
   String get informationPlacement => '信息块位置';
@@ -5350,7 +5353,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsGroupIndicators => '指示与消息';
 
   @override
-  String get nightModePanelFill => '填充顶部面板按钮';
+  String get nightModePanelFill => '为月亮图标使用强调色';
 
   @override
   String get settingsGroupFocusShape => '焦点外观';
@@ -5456,4 +5459,29 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get sectionTitleSize => '分区标题大小';
+
+  @override
+  String get backupSyncResume => '恢复同步';
+
+  @override
+  String get backupSyncUseLocal => '使用此电视的设置';
+
+  @override
+  String get backupSyncUseRemote => '使用存储中的设置';
+
+  @override
+  String get backupSyncMergeLocal => '合并并优先采用此电视的设置';
+
+  @override
+  String get backupSyncMergeRemote => '合并并优先采用存储中的设置';
+
+  @override
+  String backupSyncPreviousDate(String date) {
+    return '此电视上次同步：$date';
+  }
+
+  @override
+  String backupSyncRemoteDate(String date) {
+    return '存储中的副本：$date';
+  }
 }

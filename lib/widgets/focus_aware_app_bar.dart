@@ -380,8 +380,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
     final (nightEnabled, nightPanelFill) = context.select<NightModeService?, (bool, bool)>(
       (service) => ((service?.intensity ?? 0) > 0, service?.panelFill ?? false),
     );
-    final nightButtonFilled = nightEnabled && nightPanelFill;
-    final colors = Theme.of(context).colorScheme;
+    final accentMoon = nightEnabled && nightPanelFill;
     final vpnVisible = context.select<VpnService?, bool>((vpn) =>
       vpn != null && (vpn.active || !vpn.onlyActive || vpn.failed));
     final storage = context.select<StorageStatusService?, StorageStatus>(
@@ -493,10 +492,9 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
             focusNode: _nightModeFocusNode,
             selected: _activeWidget == 'nightMode',
             onPressed: _openNightMode,
-            backgroundColor: nightButtonFilled ? colors.primaryContainer : null,
             child: Icon(
               nightEnabled ? Icons.nightlight_round : Icons.nightlight_outlined,
-              color: nightButtonFilled ? colors.onPrimaryContainer : null,
+              color: accentMoon ? Theme.of(context).colorScheme.primary : null,
             ),
           ),
         ),
@@ -535,7 +533,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
         ),
       if ((widget.remotePanel?.visible('time') ?? placement!.onPanel('time')))
         'time': PanelClock(
-          style: homeAppearance.informationStyle,
+          style: homeAppearance.renderedInformationStyle(),
           focusNode: _clockFocusNode,
           selected: _activeWidget == 'time',
           onPressed: () => _openInformation('calendar', _clockFocusNode),

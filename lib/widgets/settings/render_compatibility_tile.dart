@@ -79,7 +79,7 @@ class _RenderCompatibilityTileState extends State<RenderCompatibilityTile> {
             title: Text(
               '${l.renderCompatibilityTitle}\n${_failed ? l.renderCompatibilityFailed : l.loading}',
             ),
-            enabled: !_busy,
+            busy: _busy,
             onPressed: _update,
           )
         else ...[
@@ -95,14 +95,14 @@ class _RenderCompatibilityTileState extends State<RenderCompatibilityTile> {
               title: Text(l.renderCompatibilityTitle),
               secondary: const Icon(Icons.display_settings),
               value: state['enabled'] == true,
-              enabled: !_busy,
+              busy: _busy,
               onChanged: _update,
             ),
           if (state['enabled'] != state['active'])
             FocusableSettingsTile(
               leading: const Icon(Icons.refresh),
               title: Text(l.renderCompatibilityApply),
-              enabled: !_busy,
+              busy: _busy,
               onPressed: _apply,
             ),
           if (_failed) Text(l.renderCompatibilityFailed),

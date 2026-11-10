@@ -82,10 +82,7 @@
       "observedAt": "2026-10-25T10:52:39.476061+00:00",
       "userApprovedSystemPackages": [
         "com.google.android.feedback",
-        "com.tcl.exhibit",
-        "com.tcl.guard",
-        "com.tcl.ocean.instructions",
-        "com.tcl.partnercustomizer"
+        "com.tcl.ocean.instructions"
       ],
       "approval": "userRequestedObservedSystemList"
     },
@@ -128,17 +125,10 @@
         "com.android.printspooler",
         "com.google.android.feedback",
         "com.google.android.partnersetup",
-        "com.realtek.airplay2",
-        "com.tcl.dashboard",
-        "com.tcl.exhibit",
-        "com.tcl.guard",
         "com.tcl.messagebox",
         "com.tcl.smartalexa",
-        "com.tcl.t_solo",
-        "com.tcl.tv",
         "com.tcl.tv.tclhome_passive",
-        "com.tcl.usercenter",
-        "com.tcl.waterfall.overseas"
+        "com.tcl.usercenter"
       ],
       "approval": "userRequestedObservedSystemList"
     },

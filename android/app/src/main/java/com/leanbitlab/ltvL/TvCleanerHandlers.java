@@ -12,8 +12,11 @@ final class TvCleanerHandlers {
         var settings = new LinkedHashSet<String>();
         collect(pm, new Intent(Settings.ACTION_SETTINGS), settings);
         collect(pm, new Intent("android.settings.TV_SETTINGS"), settings);
+        collect(pm, new Intent().setComponent(RemoteTvActions.TV_SETTINGS), settings);
+        collect(pm, new Intent().setComponent(RemoteTvActions.XIAOMI_PICTURE_SETTINGS), settings);
         if (settings.isEmpty()) throw new IllegalStateException("Settings handlers unavailable");
         var names = new LinkedHashSet<>(settings);
+        for (Intent route : TvInputLaunch.tclTunerCandidates()) collect(pm, route, names);
         for (String id : passthroughIds) {
             var handlers = new LinkedHashSet<String>();
             for (var intent : TvInputLaunch.candidates(id, android.os.Build.MODEL)) collect(pm, intent, handlers);

@@ -19,7 +19,8 @@ void main() {
       expect(identity['manufacturer'], isNotEmpty);
       expect(identity['model'], isNotEmpty);
       expect(identity.containsKey('fingerprint') || identity.containsKey('firmware'), true);
-      expect(rule['verification'], 'upstreamObservedBreakage');
+      expect(rule['verification'],
+          anyOf('upstreamObservedBreakage', 'upstreamVerifiedDependency'));
       expect(rule['source'], startsWith('https://github.com/Gathin23/cleanyourtv/'));
       expect(rule['protectedPackages'], isNotEmpty);
       expect(rule.containsKey('recommended'), false);

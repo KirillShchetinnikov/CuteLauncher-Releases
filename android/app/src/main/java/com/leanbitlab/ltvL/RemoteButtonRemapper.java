@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.KeyEvent;
+import android.widget.Toast;
 import java.util.concurrent.*;
 
 /** Service-owned executor. No action depends on the Flutter engine being alive. */
@@ -13,6 +14,7 @@ final class RemoteButtonRemapper implements AutoCloseable {
     static volatile String status = "idle";
     private final LauncherAccessibilityService service;
     private final BlackScreenWindow blackScreen;
+    private Toast errorToast;
     private final Handler main = new Handler(Looper.getMainLooper());
     private final ExecutorService storage = Executors.newSingleThreadExecutor();
     private final ThreadPoolExecutor power = new ThreadPoolExecutor(1, 1, 30, TimeUnit.SECONDS,
@@ -57,8 +59,11 @@ final class RemoteButtonRemapper implements AutoCloseable {
         if (suspended) return null;
         return configuration.pressBinding(code);
     }
+    private static boolean assignmentsPaused() {
+        return editing || RemoteButtonsBridge.capturing() || RemoteButtonLearning.active();
+    }
     boolean event(KeyEvent event) {
-        boolean suspended = editing || RemoteButtonsBridge.capturing() || RemoteButtonLearning.active();
+        boolean suspended = assignmentsPaused();
         RemoteMappingConfiguration.Binding binding = shortBinding(event.getKeyCode(), suspended);
         RemoteMappingConfiguration.Binding hold = suspended ? null : configuration.binding(event.getKeyCode(), "hold");
         RemoteMappingPolicy.Decision decision = policy.event(event.getDeviceId(), event.getKeyCode(),
@@ -71,7 +76,7 @@ final class RemoteButtonRemapper implements AutoCloseable {
             long downTime = event.getDownTime();
             Runnable timer = () -> {
                 holdTimers.remove(key);
-                boolean paused = closed || editing || RemoteButtonsBridge.capturing() || RemoteButtonLearning.active();
+                boolean paused = closed || assignmentsPaused();
                 var action = policy.hold(key.device, key.code, downTime, android.os.SystemClock.uptimeMillis(),
                     shortBinding(key.code, paused), paused ? null : configuration.binding(key.code, "hold"));
                 if (action != null) execute(action);
@@ -84,76 +89,132 @@ final class RemoteButtonRemapper implements AutoCloseable {
     }
     private void execute(RemoteMappingConfiguration.Binding binding) {
         try {
-            switch (binding.action()) {
-                case "ignore": status = "success"; break;
-                case "recents":
-                    service.dismissPanel();
-                    status = RecentAppsBridge.open(service) ? "success" : "unavailable"; break;
-                case "panel":
-                    status = service.togglePanel() ? "success" : "unavailable"; break;
-                case "home":
-                    service.dismissPanel();
-                    Intent home = new Intent(service, MainActivity.class);
-                    home.putExtra("return_home", true);
-                    home.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    service.startActivity(home); status = "success"; break;
-                case "back":
-                    status = service.performGlobalAction(android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BACK)
-                        ? "success" : "unavailable"; break;
-                case "black_screen":
-                    Intent toggle = new Intent().setClassName("io.japp.blackscreen",
-                        "io.japp.blackscreen.ui.ToggleBlackScreenActivity");
-                    toggle.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    service.startActivity(toggle); status = "success"; break;
-                case "black_overlay":
-                    blackScreen.toggle(); status = "success"; break;
-                case "tcl_screen_off":
-                    if (!TclScreenOff.available(service)) { status = "unavailable"; break; }
-                    try {
-                        status = service.startService(TclScreenOff.intent()) != null ? "success" : "unavailable";
-                    } catch (IllegalStateException backgroundStartDenied) {
-                        status = "busy";
-                        TvPowerBridge.requestTclScreenOff(service, power, result -> { if (!closed) status = result; });
-                    }
-                    break;
-                case "app":
-                    service.dismissPanel();
-                    Intent app = service.getPackageManager().getLeanbackLaunchIntentForPackage(binding.target());
-                    if (app == null) app = service.getPackageManager().getLaunchIntentForPackage(binding.target());
-                    if (app == null) { status = "unavailable"; break; }
-                    app.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    service.startActivity(app); status = "success"; break;
-                case "hdmi":
-                    service.dismissPanel();
-                    status = TvInputLaunch.openHdmi(service, binding.target()) ? "success" : "unavailable"; break;
-                case "live_tv":
-                case "display_settings":
-                case "wifi_settings":
-                case "bluetooth_settings":
-                    service.dismissPanel();
-                    status = RemoteTvActions.open(service, binding.action()) ? "success" : "unavailable"; break;
-                case "mute":
-                    status = RemoteTvActions.toggleMute(service) ? "success" : "unavailable"; break;
-                case "sleep":
-                case "reboot":
-                    status = "busy";
-                    TvPowerBridge.request(service, binding.action().equals("reboot"), power,
-                        result -> { if (!closed) status = result; });
-                    break;
-                case "webhook":
-                    status = "busy";
-                    network.execute(() -> webhook(binding)); break;
-                default: status = "unavailable";
-            }
-        } catch (RejectedExecutionException busy) { status = "busy"; }
-        catch (RuntimeException unavailable) { status = "unavailable"; }
+            String result = dispatch(binding);
+            if (result != null) complete(binding, result);
+        } catch (RejectedExecutionException busy) {
+            complete(binding, "busy");
+        } catch (SecurityException denied) {
+            finish("unavailable", R.string.remap_error_permission);
+        } catch (RuntimeException unavailable) {
+            complete(binding, "unavailable");
+        }
     }
+
+    /** A null result means the action reports completion through its callback. */
+    private String dispatch(RemoteMappingConfiguration.Binding binding) {
+        return switch (binding.action()) {
+            case "ignore" -> "success";
+            case "recents" -> {
+                service.dismissPanel();
+                yield availability(RecentAppsBridge.open(service));
+            }
+            case "panel" -> availability(service.togglePanel());
+            case "home" -> {
+                service.dismissPanel();
+                Intent home = new Intent(service, MainActivity.class);
+                home.putExtra("return_home", true);
+                home.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                service.startActivity(home);
+                yield "success";
+            }
+            case "back" -> availability(service.performGlobalAction(
+                android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BACK));
+            case "black_screen" -> {
+                Intent toggle = new Intent().setClassName("io.japp.blackscreen",
+                    "io.japp.blackscreen.ui.ToggleBlackScreenActivity");
+                toggle.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                service.startActivity(toggle);
+                yield "success";
+            }
+            case "black_overlay" -> {
+                blackScreen.toggle();
+                yield "success";
+            }
+            case "tcl_screen_off" -> {
+                if (!TclScreenOff.available(service)) yield "unavailable";
+                try {
+                    yield availability(service.startService(TclScreenOff.intent()) != null);
+                } catch (IllegalStateException backgroundStartDenied) {
+                    status = "busy";
+                    TvPowerBridge.requestTclScreenOff(service, power, result -> complete(binding, result));
+                    yield null;
+                }
+            }
+            case "app" -> {
+                service.dismissPanel();
+                Intent app = service.getPackageManager().getLeanbackLaunchIntentForPackage(binding.target());
+                if (app == null) app = service.getPackageManager().getLaunchIntentForPackage(binding.target());
+                if (app == null) yield "unavailable";
+                app.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                service.startActivity(app);
+                yield "success";
+            }
+            case "hdmi" -> {
+                service.dismissPanel();
+                yield availability(TvInputLaunch.openHdmi(service, binding.target()));
+            }
+            case "live_tv", "display_settings", "wifi_settings", "bluetooth_settings" -> {
+                service.dismissPanel();
+                yield availability(RemoteTvActions.open(service, binding.action()));
+            }
+            case "mute" -> availability(RemoteTvActions.toggleMute(service));
+            case "sleep", "reboot" -> {
+                status = "busy";
+                TvPowerBridge.request(service, binding.action().equals("reboot"), power,
+                    result -> complete(binding, result));
+                yield null;
+            }
+            case "webhook" -> {
+                status = "busy";
+                network.execute(() -> webhook(binding));
+                yield null;
+            }
+            default -> "unavailable";
+        };
+    }
+
+    private static String availability(boolean available) {
+        return available ? "success" : "unavailable";
+    }
+
+    private void complete(RemoteMappingConfiguration.Binding binding, String result) {
+        int message = switch (result) {
+            case "success" -> 0;
+            case "busy" -> R.string.remap_error_busy;
+            default -> switch (binding.action()) {
+                case "black_screen" -> R.string.remap_error_black_screen;
+                case "app" -> R.string.remap_error_app;
+                case "hdmi" -> R.string.remap_error_hdmi;
+                case "sleep", "reboot" -> R.string.remap_error_power;
+                default -> R.string.remap_error_unavailable;
+            };
+        };
+        finish(result, message);
+    }
+
+    /** Called on the service main thread, including asynchronous results. */
+    private void finish(String result, int message, Object... arguments) {
+        if (closed) return;
+        status = result;
+        if (message == 0) return;
+        if (errorToast != null) errorToast.cancel();
+        errorToast = Toast.makeText(service, service.getString(message, arguments), Toast.LENGTH_LONG);
+        errorToast.show();
+    }
+
     private void webhook(RemoteMappingConfiguration.Binding binding) {
         if (closed || !binding.equals(configuration.binding(binding.keyCode(), binding.trigger()))) return;
         try {
-            boolean success = RemoteWebhookClient.post(binding.target(), 5000);
-            if (!closed) status = success ? "success" : "network_error";
-        } catch (Exception ignored) { if (!closed) status = "network_error"; }
+            int code = RemoteWebhookClient.post(binding.target(), 5000);
+            main.post(() -> {
+                if (code >= 200 && code < 300) finish("success", 0);
+                else finish("network_error", R.string.remap_error_webhook_http, code);
+            });
+        } catch (java.net.SocketTimeoutException timeout) {
+            main.post(() -> finish("network_error", R.string.remap_error_webhook_timeout));
+        } catch (Exception ignored) {
+            main.post(() -> finish("network_error", R.string.remap_error_webhook));
+        }
     }
     void interrupt() {
         blackScreen.close();
@@ -164,6 +225,7 @@ final class RemoteButtonRemapper implements AutoCloseable {
         policy.clear(); // UP may pass outside the service while filtering is disabled.
     }
     @Override public void close() {
+        if (errorToast != null) errorToast.cancel();
         blackScreen.close();
         // Allow an accepted bounded power request to finish and release the shared busy guard.
         power.shutdown();

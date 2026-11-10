@@ -9,4 +9,14 @@
     <string name="file_card_title">Acceso a archivos</string>
     <string name="file_card_steps">Abre Permisos → Archivos y contenido multimedia → Permitir la gestión de todos los archivos. Después pulsa Atrás para volver a CuteLauncher.</string>
     <string name="file_card_open">Abrir ajustes</string>
+    <string name="remap_error_black_screen">Black Screen no está instalado o no está disponible.</string>
+    <string name="remap_error_app">La aplicación asignada no está instalada o no se abre.</string>
+    <string name="remap_error_hdmi">La entrada HDMI asignada no está disponible.</string>
+    <string name="remap_error_power">Falló el comando de energía. Comprueba el ADB local.</string>
+    <string name="remap_error_permission">El televisor denegó esta acción.</string>
+    <string name="remap_error_busy">Ya hay una acción del mando en curso.</string>
+    <string name="remap_error_unavailable">Esta acción no está disponible en el televisor.</string>
+    <string name="remap_error_webhook_http">El webhook rechazó la solicitud (HTTP %1$d).</string>
+    <string name="remap_error_webhook_timeout">Se agotó el tiempo de espera del webhook.</string>
+    <string name="remap_error_webhook">No se pudo conectar con el webhook.</string>
 </resources>

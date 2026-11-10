@@ -161,6 +161,7 @@ class WatchNextCard extends StatelessWidget {
       size: size,
       posterRefreshes: hasPoster ? watchNextService.posterRefreshes : null,
       loadPoster: hasPoster ? () => watchNextService.poster(program) : null,
+      invalidatePoster: () => watchNextService.evictPoster(program),
       onOpen: (_) async {
         await watchNextService.launch(program);
       },

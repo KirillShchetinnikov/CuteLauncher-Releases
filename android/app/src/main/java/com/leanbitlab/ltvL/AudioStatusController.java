@@ -1,15 +1,22 @@
 package com.leanbitlab.ltvL;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.media.AudioAttributes;
 import android.media.AudioDeviceInfo;
 import android.media.AudioManager;
+import android.media.MediaRouter;
 import android.os.Build;
 import android.os.PowerManager;
+import android.text.TextUtils;
+import androidx.annotation.MainThread;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.TreeSet;
 
 /** Read-only media state. Connected devices are never substituted for a selected route. */
 final class AudioStatusController {
@@ -18,12 +25,48 @@ final class AudioStatusController {
     private final Context context;
     AudioStatusController(Context context) { this.context = context; }
 
-    Map<String, Object> snapshot() {
+    @MainThread
+    @Nullable String legacyOutput(@Nullable Map<String, Object> diagnostics) {
+        try {
+            var router = context.getSystemService(MediaRouter.class);
+            var route = router == null ? null : router.getSelectedRoute(MediaRouter.ROUTE_TYPE_LIVE_AUDIO);
+            if (route == null) return null;
+            if (diagnostics != null) {
+                diagnostics.put("legacyRouteType", route.getDeviceType());
+            }
+            if (route.getDeviceType() == MediaRouter.RouteInfo.DEVICE_TYPE_BLUETOOTH) return "bluetooth";
+            boolean hdmi = Build.VERSION.SDK_INT >= 30
+                && matchesHdmiLabel(route.getName(), context.getResources());
+            if (diagnostics != null) diagnostics.put("legacyRouteMatchesHdmiLabel", hdmi);
+            return hdmi ? "hdmi" : null;
+        } catch (RuntimeException unavailable) {
+            if (diagnostics != null) diagnostics.put("legacyRouteReadFailed", true);
+            return null;
+        }
+    }
+
+    static int hdmiLabel(Resources resources) {
+        return resources.getIdentifier("default_audio_route_name_hdmi", "string", "android");
+    }
+
+    static boolean matchesHdmiLabel(CharSequence name, Resources resources) {
+        int label = hdmiLabel(resources);
+        return label != 0 && TextUtils.equals(name, resources.getText(label));
+    }
+
+    @NonNull Map<String, Object> snapshot(@Nullable String legacyRoute, boolean router2HdmiSelected,
+                                         @Nullable Map<String, Object> routeDiagnostics) {
         var state = new HashMap<String, Object>();
         var power = context.getSystemService(PowerManager.class);
         state.put("screenOn", power != null && power.isInteractive());
         if (!Boolean.TRUE.equals(state.get("screenOn"))) return state;
         var audio = context.getSystemService(AudioManager.class);
+        boolean legacyBluetooth = "bluetooth".equals(legacyRoute);
+        boolean hdmiSelected = router2HdmiSelected || "hdmi".equals(legacyRoute);
+        if (routeDiagnostics != null) {
+            routeDiagnostics.put("hdmiSelected", hdmiSelected);
+            state.put("routeDiagnostics", routeDiagnostics);
+        }
         if (audio == null) return state;
         // Each field can be unavailable independently on an OEM implementation.
         try { state.put("muted", audio.isStreamMute(AudioManager.STREAM_MUSIC)); }
@@ -39,11 +82,45 @@ final class AudioStatusController {
                 }
             }
         } catch (RuntimeException unavailable) { /* Keep level unknown. */ }
+        String legacyArc = null;
+        if ((hdmiSelected && !legacyBluetooth) || routeDiagnostics != null) {
+            try {
+                var devices = audio.getDevices(AudioManager.GET_DEVICES_OUTPUTS);
+                if (routeDiagnostics != null) {
+                    var types = new TreeSet<Integer>();
+                    for (var device : devices) types.add(device.getType());
+                    routeDiagnostics.put("availableOutputTypes", List.copyOf(types));
+                }
+                if (hdmiSelected && !legacyBluetooth) legacyArc = legacyArcOutput(devices);
+            } catch (RuntimeException unavailable) {
+                if (routeDiagnostics != null) routeDiagnostics.put("outputsReadFailed", true);
+            }
+        }
         if (Build.VERSION.SDK_INT >= 33) {
             try { state.put("outputs", outputs(audio.getAudioDevicesForAttributes(MEDIA))); }
             catch (RuntimeException unavailable) { /* No permission or unsupported OEM route query. */ }
+        } else if (legacyBluetooth) {
+            state.put("outputs", List.of("bluetooth"));
+        } else if (legacyArc != null) {
+            state.put("outputs", List.of(legacyArc));
         }
         return state;
+    }
+
+    @Nullable private static String legacyArcOutput(@NonNull AudioDeviceInfo[] devices) {
+        String output = null;
+        for (var device : devices) {
+            switch (device.getType()) {
+                case AudioDeviceInfo.TYPE_HDMI -> { return null; }
+                case AudioDeviceInfo.TYPE_HDMI_ARC, AudioDeviceInfo.TYPE_HDMI_EARC -> {
+                    String type = kind(device.getType());
+                    if (output != null && !output.equals(type)) return null;
+                    output = type;
+                }
+                default -> { }
+            }
+        }
+        return output;
     }
 
     static List<String> outputs(List<AudioDeviceInfo> devices) {

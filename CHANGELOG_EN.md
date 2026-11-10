@@ -2,6 +2,18 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
+## v1.7.3 — 2026-11-10
+
+- Clock, date, and weather settings are grouped in one section. The top bar and wallpaper share formats and can be styled separately. Date format previews use the current date. New installations default to a short date format with the weekday.
+- Pressing Back in the date and weather format editors now asks for confirmation. Fixed Gboard language switching in the weather editor.
+- Focus moves directly to cards when quickly moving between home screen feeds. If artwork fails to load, the launcher retries while the card remains active.
+- Fixed button focus indicators across dialog styles and preserved focus when settings refresh. The section editor now opens on the right. The preview stays in place when settings open on the left.
+- The night mode accent highlights the moon icon. It is enabled by default on new installations.
+- Improved detection of active Bluetooth audio on Android 9–12 and HDMI ARC on Android 11–12. Fixed a crash when selecting HDMI ARC on Android 11. System settings and input switching depend on the firmware.
+- Remote mappings pause while testing buttons. After capturing a button, focus moves to OK. If a mapped action fails, the launcher explains why.
+- When resuming sync with a conflict, you can choose which settings to keep. Restoring and syncing settings preserve local app launch counts.
+- Updated app dependency information in the TV cleaner for supported firmware. The system file browser is now called External file browser in settings.
+
 ## v1.7.2 — 2026-11-09
 
 - You can navigate the home screen as soon as it opens. Static placeholders appear in place of tiles and cards while artwork and data load. Focus and scroll position are preserved as content loads. Previously loaded cards stay visible if a refresh temporarily fails.

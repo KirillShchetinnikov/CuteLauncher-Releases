@@ -9,4 +9,14 @@
     <string name="file_card_title">الوصول إلى الملفات</string>
     <string name="file_card_steps">افتح الأذونات، ثم الملفات والوسائط، ثم اسمح بإدارة جميع الملفات. بعد ذلك اضغط على رجوع للعودة إلى CuteLauncher.</string>
     <string name="file_card_open">فتح الإعدادات</string>
+    <string name="remap_error_black_screen">تطبيق Black Screen غير مثبّت أو غير متاح.</string>
+    <string name="remap_error_app">التطبيق المعيّن غير مثبّت أو يتعذّر فتحه.</string>
+    <string name="remap_error_hdmi">مدخل HDMI المعيّن غير متاح.</string>
+    <string name="remap_error_power">فشل أمر الطاقة. تحقّق من اتصال ADB المحلي.</string>
+    <string name="remap_error_permission">رفض التلفزيون تنفيذ إجراء جهاز التحكّم.</string>
+    <string name="remap_error_busy">هناك إجراء لجهاز التحكّم قيد التنفيذ.</string>
+    <string name="remap_error_unavailable">إجراء جهاز التحكّم غير متاح على هذا التلفزيون.</string>
+    <string name="remap_error_webhook_http">رفض خطّاف الويب الطلب (HTTP %1$d).</string>
+    <string name="remap_error_webhook_timeout">انتهت مهلة طلب خطّاف الويب.</string>
+    <string name="remap_error_webhook">تعذّر الاتصال بخطّاف الويب.</string>
 </resources>

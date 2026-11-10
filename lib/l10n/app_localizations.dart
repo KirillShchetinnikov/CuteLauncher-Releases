@@ -335,7 +335,7 @@ abstract class AppLocalizations {
   /// No description provided for @fileStorageSettingsUnavailable.
   ///
   /// In en, this message translates to:
-  /// **'This firmware does not provide an all-files access screen. Use the system file picker or install a compatible file manager.'**
+  /// **'This firmware does not provide an all-files access screen. Use the external file browser or install a compatible file manager.'**
   String get fileStorageSettingsUnavailable;
 
   /// No description provided for @tileImageMode.
@@ -8987,7 +8987,7 @@ abstract class AppLocalizations {
   /// No description provided for @slideshowSystemPicker.
   ///
   /// In en, this message translates to:
-  /// **'Choose in system file manager'**
+  /// **'Choose in external file browser'**
   String get slideshowSystemPicker;
 
   /// No description provided for @slideshowFolderPath.
@@ -9047,7 +9047,7 @@ abstract class AppLocalizations {
   /// No description provided for @filePickerSystem.
   ///
   /// In en, this message translates to:
-  /// **'System file picker'**
+  /// **'External file browser'**
   String get filePickerSystem;
 
   /// No description provided for @filePickerBuiltIn.
@@ -9265,6 +9265,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Last successful action:'**
   String get backupLastSuccess;
+
+  /// No description provided for @informationObjectPlacement.
+  ///
+  /// In en, this message translates to:
+  /// **'Placement'**
+  String get informationObjectPlacement;
 
   /// No description provided for @informationPlacement.
   ///
@@ -10313,7 +10319,7 @@ abstract class AppLocalizations {
   /// No description provided for @nightModePanelFill.
   ///
   /// In en, this message translates to:
-  /// **'Fill the top panel button'**
+  /// **'Accent color for the moon'**
   String get nightModePanelFill;
 
   /// No description provided for @settingsGroupFocusShape.
@@ -10525,6 +10531,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Section title size'**
   String get sectionTitleSize;
+
+  /// No description provided for @backupSyncResume.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume synchronization'**
+  String get backupSyncResume;
+
+  /// No description provided for @backupSyncUseLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'Use settings from this TV'**
+  String get backupSyncUseLocal;
+
+  /// No description provided for @backupSyncUseRemote.
+  ///
+  /// In en, this message translates to:
+  /// **'Use settings from storage'**
+  String get backupSyncUseRemote;
+
+  /// No description provided for @backupSyncMergeLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'Merge and prefer this TV'**
+  String get backupSyncMergeLocal;
+
+  /// No description provided for @backupSyncMergeRemote.
+  ///
+  /// In en, this message translates to:
+  /// **'Merge and prefer storage'**
+  String get backupSyncMergeRemote;
+
+  /// No description provided for @backupSyncPreviousDate.
+  ///
+  /// In en, this message translates to:
+  /// **'This TV last synchronized: {date}'**
+  String backupSyncPreviousDate(String date);
+
+  /// No description provided for @backupSyncRemoteDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy in storage: {date}'**
+  String backupSyncRemoteDate(String date);
 }
 
 class _AppLocalizationsDelegate

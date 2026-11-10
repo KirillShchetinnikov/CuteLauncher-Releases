@@ -433,17 +433,13 @@ class FLauncherState extends State<FLauncher> {
     final appearanceService = context.watch<AppearanceService?>();
     final appearance = appearanceService?.appearance ?? const TileAppearance();
     var previewShift = Offset.zero;
-    if (previewId != null) {
-      final onRight = context.watch<SettingsService>().settingsMenuOnRight;
-      final rtl = Directionality.of(context) == TextDirection.rtl;
-      if (onRight == rtl) {
-        final style = LauncherStyle.of(context);
-        final safe = style.panelInsets(context);
-        final panelEdge = style.settingsWidth +
-            math.max(style.panelMargin, onRight ? safe.right : safe.left);
-        if (panelEdge < viewportWidth) {
-          previewShift = Offset(onRight ? -panelEdge : panelEdge, 0);
-        }
+    if (previewId != null && Directionality.of(context) == TextDirection.rtl) {
+      final style = LauncherStyle.of(context);
+      final safe = style.panelInsets(context);
+      final panelEdge = style.settingsWidth +
+          math.max(style.panelMargin, safe.right);
+      if (panelEdge < viewportWidth) {
+        previewShift = Offset(-panelEdge, 0);
       }
     }
     Offset previewOffset(int id) => previewId == id ? previewShift : Offset.zero;

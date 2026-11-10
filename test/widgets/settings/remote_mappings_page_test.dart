@@ -317,7 +317,8 @@ void main() {
     final cancel = find.widgetWithText(TextButton, 'Отмена');
     expect(tester.getSize(cancel).height, greaterThanOrEqualTo(48));
     expect(
-      tester.getRect(cancel).top - tester.getRect(scrollbars.last).bottom,
+      tester.getRect(find.widgetWithText(LauncherDialogButton, 'Отмена')).top -
+          tester.getRect(scrollbars.last).bottom,
       6,
     );
     await tester.binding.handlePopRoute();
@@ -402,32 +403,43 @@ void main() {
       expect(config.bindings.single.action, 'recents');
     },
   );
-  testWidgets(
-    'entry pauses editing without rewriting assignments; exit releases pause',
-    (tester) async {
-      await open(tester);
-      expect(calls.where((call) => call.method == 'save'), isEmpty);
-      expect(
-        calls.any((call) => call.method == 'editing' && call.arguments == true),
-        isTrue,
+  for (final add in [true, false]) {
+    testWidgets('only the mapping editor pauses assignments: add=$add', (
+      tester,
+    ) async {
+      config = const RemoteMappingConfiguration(
+        enabled: true,
+        bindings: [RemoteMapping(keyCode: 4137, name: 'TCL shortcut')],
       );
-      binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+      Iterable<dynamic> editingCalls() => calls
+          .where((call) => call.method == 'editing')
+          .map((call) => call.arguments);
+
+      await open(tester);
+      expect(editingCalls(), isEmpty);
+      await tester.tap(find.text(add ? 'Добавить назначение' : 'TCL shortcut'));
+      await tester.pumpAndSettle();
+      expect(editingCalls(), [true]);
+
       binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
       await tester.pump();
-      expect(
-        calls.any(
-          (call) => call.method == 'editing' && call.arguments == false,
-        ),
-        isTrue,
-      );
+      expect(editingCalls().last, false);
       binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
       await tester.pumpAndSettle();
-      await tester.pumpWidget(const SizedBox());
+      expect(editingCalls().last, true);
+
+      await tester.binding.handlePopRoute();
       await tester.pumpAndSettle();
-      expect(calls.last.method, 'editing');
-      expect(calls.last.arguments, false);
-    },
-  );
+      expect(find.text('Добавить назначение'), findsOneWidget);
+      expect(editingCalls().last, false);
+      calls.clear();
+      binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+      binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      await tester.pumpAndSettle();
+      expect(editingCalls(), isEmpty);
+      expect(calls.where((call) => call.method == 'save'), isEmpty);
+    });
+  }
   testWidgets(
     'master switch waits for native save; failure does not claim enabled',
     (tester) async {
@@ -674,7 +686,14 @@ void main() {
       await tester.tap(find.text('Имя'));
       await tester.pumpAndSettle();
       await tester.enterText(find.byType(TextField), 'Моя кнопка');
-      await tester.tap(find.text('Сохранить').last);
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pumpAndSettle();
+      final saveName = find.widgetWithText(LauncherDialogButton, 'Сохранить');
+      expect(
+        tester.widget<LauncherDialogButton>(saveName).focusNode?.hasPrimaryFocus,
+        isTrue,
+      );
+      await tester.sendKeyEvent(LogicalKeyboardKey.select);
       await tester.pumpAndSettle();
       await tester.tap(find.text('Назначить кнопку').first);
       await tester.pumpAndSettle();
@@ -821,10 +840,13 @@ void main() {
     await tester.tap(find.text('Захватить'));
     await tester.pumpAndSettle();
     expect(find.text('Захваченная кнопка: TCL Home (4137)'), findsOneWidget);
+    final ok = find.widgetWithText(TextButton, 'ОК');
+    expect(tester.widget<TextButton>(ok).focusNode?.hasPrimaryFocus, isTrue);
     learn = () async => 164;
     await tester.tap(find.text('Захватить'));
     await tester.pumpAndSettle();
     expect(find.text('Захваченная кнопка: Mute (164)'), findsOneWidget);
+    expect(tester.widget<TextButton>(ok).focusNode?.hasPrimaryFocus, isTrue);
     await tester.tap(find.text('Отмена'));
     await tester.pumpAndSettle();
     expect(find.text('YouTube (190)'), findsOneWidget);
@@ -839,7 +861,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('Захватить'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('ОК'));
+    await tester.sendKeyEvent(LogicalKeyboardKey.select);
     await tester.pumpAndSettle();
     expect(find.text('Mute (164)'), findsOneWidget);
     expect(config.bindings.single.keyCode, 190);
@@ -930,7 +952,7 @@ void main() {
         });
         await tester.pumpAndSettle();
         await tester.runAsync(() async {
-          await tester.tap(find.text('Системный проводник'));
+          await tester.tap(find.text('Внешний проводник'));
           await Future<void>.delayed(const Duration(milliseconds: 100));
         });
         await tester.pumpAndSettle();

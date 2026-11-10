@@ -1,4 +1,5 @@
 import 'package:flauncher/providers/appearance_service.dart';
+import 'package:flauncher/date_time_format.dart';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -265,7 +266,28 @@ void main() {
           tester.view.viewInsets = FakeViewPadding.zero;
           await tester.pumpAndSettle();
           if (close == 'back') {
+            tester.testTextInput.hide();
+            final field = find.byType(TextField);
+            final controller = tester.widget<TextField>(field).controller!;
+            controller.selection = const TextSelection(baseOffset: 0, extentOffset: 4);
+            final draft = controller.value;
+            final editorFocus = FocusManager.instance.primaryFocus;
+            final l = AppLocalizations.of(tester.element(field))!;
+            final confirmation = find.byType(LauncherAlertDialog);
             await tester.binding.handlePopRoute();
+            await tester.pumpAndSettle();
+            expect(find.text(l.discardChangesTitle), findsOneWidget);
+            expect(find.byType(SidePanelDialog), findsNothing);
+            await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+            await tester.pumpAndSettle();
+            expect(confirmation, findsNothing);
+            expect(controller.value, draft);
+            expect(FocusManager.instance.primaryFocus, same(editorFocus));
+            expect(settings.dateFormat, original);
+
+            await tester.binding.handlePopRoute();
+            await tester.pumpAndSettle();
+            await tester.tap(find.descendant(of: confirmation, matching: find.text(l.close)));
           } else {
             final material = MaterialLocalizations.of(
               tester.element(find.byType(CustomDateFormatDialog)),
@@ -310,6 +332,21 @@ void main() {
     }
   }
 
+  testWidgets('Back confirms exit even before editing the date pattern', (tester) async {
+    final settings = await open(tester);
+    addTearDown(settings.dispose);
+    await editor(tester);
+    final dialog = find.byType(CustomDateFormatDialog);
+    final l = AppLocalizations.of(tester.element(dialog))!;
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(find.text(l.discardChangesTitle), findsOneWidget);
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(find.byType(LauncherAlertDialog), findsNothing);
+    expect(dialog, findsOneWidget);
+  });
+
   testWidgets(
     'custom comes first, preview validates, save persists without changing time',
     (tester) async {
@@ -318,9 +355,10 @@ void main() {
       final time = settings.timeFormat;
       await tester.tap(find.text('Формат даты').first);
       await tester.pumpAndSettle();
+      final shortDate = formatLauncherDate(shortWeekdayDateFormat, DateTime.now(), 'ru');
       expect(
         tester.getTopLeft(find.text('Свой формат')).dy,
-        lessThan(tester.getTopLeft(find.textContaining('ПТН').last).dy),
+        lessThan(tester.getTopLeft(find.text(shortDate).last).dy),
       );
       expect(settings.dateFormat, original);
       await tester.tap(find.text('Свой формат'));

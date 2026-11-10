@@ -276,7 +276,7 @@ class _AutoLaunchPageState extends State<AutoLaunchPage>
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          if (_busy) const LinearProgressIndicator(),
+          SizedBox(child: _busy ? const LinearProgressIndicator() : null),
           if (_failed || _status == 'unavailable')
             SettingsMessage(
               text: l.autoLaunchUnavailable,
@@ -285,6 +285,7 @@ class _AutoLaunchPageState extends State<AutoLaunchPage>
           if (_status == 'cancelled')
             SettingsMessage(text: l.autoLaunchCancelled),
           SettingsSection(
+            key: const ValueKey('settingsGroupLaunchTarget'),
             title: l.settingsGroupLaunchTarget,
             children: [
               SettingsChoiceTile<String>(
@@ -292,7 +293,7 @@ class _AutoLaunchPageState extends State<AutoLaunchPage>
                 value: _config.mode,
                 options: const ['off', 'app', 'hdmi'],
                 autofocus: true,
-                enabled: !_busy,
+                busy: _busy,
                 label: (mode) => switch (mode) {
                   'app' => l.autoLaunchApp,
                   'hdmi' => l.autoLaunchHdmi,
@@ -321,6 +322,7 @@ class _AutoLaunchPageState extends State<AutoLaunchPage>
           ),
           if (_config.mode != 'off')
             SettingsSection(
+              key: const ValueKey('settingsGroupLaunchTiming'),
               title: l.settingsGroupLaunchTiming,
               children: [
                 for (final event in [
@@ -329,7 +331,7 @@ class _AutoLaunchPageState extends State<AutoLaunchPage>
                 ])
                   RoundedSwitchListTile(
                     title: Text(event.$1),
-                    enabled: !_busy,
+                    busy: _busy,
                     value: event.$2 ? _config.boot : _config.wake,
                     onChanged: (value) => _save(
                       event.$2
@@ -340,7 +342,7 @@ class _AutoLaunchPageState extends State<AutoLaunchPage>
                 if (_config.mode == 'app')
                   RoundedSwitchListTile(
                     title: Text(l.autoLaunchWaitForInternet),
-                    enabled: !_busy,
+                    busy: _busy,
                     value: _config.waitForInternet,
                     onChanged: (value) =>
                         _save(_config.copyWith(waitForInternet: value)),
@@ -348,7 +350,7 @@ class _AutoLaunchPageState extends State<AutoLaunchPage>
                 SettingsValueStepper(
                   title: l.autoLaunchDelay,
                   value: _config.delay,
-                  enabled: !_busy,
+                  busy: _busy,
                   options: ({0, 3, 5, 10, 20, 30, 60, _config.delay}.toList()
                     ..sort()),
                   label: (v) => l.autoLaunchSeconds(v as int),

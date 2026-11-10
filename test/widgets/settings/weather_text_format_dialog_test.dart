@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flauncher/theme/interface_style.dart';
 
 void main() {
   Future<void> mount(
@@ -24,9 +25,13 @@ void main() {
     Locale locale = const Locale('ru'),
     WeatherTextFormat? format,
     Stream<bool>? imeVisibility,
+    InterfaceStyle skin = InterfaceStyle.standard,
   }) async {
     await tester.pumpWidget(
       MaterialApp(
+        theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange,
+            brightness: Brightness.dark, primary: Colors.orange),
+            extensions: [InterfaceSkin(skin)]),
         locale: locale,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
@@ -63,9 +68,85 @@ void main() {
   }
 
   final input = find.byKey(const Key('weather_format_input'));
+  for (final skin in InterfaceStyle.values) {
+    testWidgets('Save retains a separate focus ring in the real editor: $skin', (tester) async {
+      await mount(tester, skin: skin);
+      final save = find.byKey(const Key('weather_format_save'));
+      final action = tester.widget<LauncherDialogButton>(save);
+      action.focusNode!.requestFocus();
+      await tester.pumpAndSettle();
+      expect(action.focusNode!.hasPrimaryFocus, isTrue);
+      final material = tester.widget<Material>(find.descendant(
+        of: save, matching: find.byType(Material)));
+      final colors = Theme.of(tester.element(save)).colorScheme;
+      final border = (material.shape! as OutlinedBorder).side;
+      expect(material.color, colors.primary);
+      expect(border.color, colors.onSurface);
+      expect(border.color, isNot(material.color));
+      expect(border.width, greaterThanOrEqualTo(4));
+      expect(border.strokeAlign, BorderSide.strokeAlignOutside);
+      expect(tester.takeException(), isNull);
+    });
+  }
   final firstInsert = find.byKey(
     const ValueKey('weather_format_add_temperature'),
   );
+
+  testWidgets('uses a regular IME text field with autocorrect off', (
+    tester,
+  ) async {
+    await mount(tester);
+    await tester.tap(input);
+    await tester.pumpAndSettle();
+
+    final configuration = tester.testTextInput.setClientArgs!;
+    expect(configuration['enableSuggestions'], isTrue);
+    expect(configuration['autocorrect'], isFalse);
+  });
+
+  for (final edited in [false, true]) {
+    testWidgets('Back confirms exit from the weather format: edited=$edited', (
+      tester,
+    ) async {
+      await mount(tester);
+      final l = AppLocalizations.of(tester.element(input))!;
+      if (edited) {
+        await tester.tap(input);
+        await tester.enterText(input, 'Погода: {ТЕМП}');
+        await tester.pumpAndSettle();
+      }
+      final draft = tester.widget<TextField>(input).controller!.value;
+      final confirmation = find.byType(LauncherAlertDialog);
+
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(find.text(l.discardChangesTitle), findsOneWidget);
+      expect(input, findsOneWidget);
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pumpAndSettle();
+      expect(confirmation, findsNothing);
+      final restored = tester.widget<TextField>(input).controller!.value;
+      expect(restored.text, draft.text);
+      expect(restored.selection, draft.selection);
+
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(confirmation, findsNothing);
+      expect(input, findsOneWidget);
+
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      await tester.tap(
+        find.descendant(of: confirmation, matching: find.text(l.close)),
+      );
+      await tester.pumpAndSettle();
+      expect(confirmation, findsNothing);
+      expect(input, findsNothing);
+    });
+  }
 
   for (final locale in [const Locale('ru'), const Locale('ar')]) {
     testWidgets(

@@ -18,9 +18,11 @@ class TileAppearance {
     'dateTextColor', 'weatherIconPack', 'weatherTextColor', 'weatherIconColor',
   ];
   final Map<String, dynamic> values;
+  final InformationClockBehavior? informationClockBehavior;
   final bool? _tileStyleActive;
-  const TileAppearance([this.values = const {}]) : _tileStyleActive = null;
-  TileAppearance._withLabels(this.values, this._tileStyleActive);
+  const TileAppearance([this.values = const {}, this.informationClockBehavior])
+    : _tileStyleActive = null;
+  TileAppearance._withLabels(this.values, this._tileStyleActive, this.informationClockBehavior);
 
   // Labels can change while the source still controls the surface and focus.
   TileAppearance withContentLabels(TileAppearance labelStyle) =>
@@ -30,7 +32,7 @@ class TileAppearance {
         'labelPosition': labelStyle.labelPosition,
         'labelSize': labelStyle.labelSize,
         'labelColor': labelStyle.values['labelColor'],
-      }, active);
+      }, active, informationClockBehavior);
   static String informationAppearanceKey(bool background) =>
       background ? 'backgroundInformationAppearance' : 'panelInformationAppearance';
   Object? _informationValue(String key) {
@@ -44,7 +46,7 @@ class TileAppearance {
   TileAppearance forInformation({bool background = false}) => TileAppearance({
     ...values,
     ...?values[informationAppearanceKey(background)] as Map<String, dynamic>?,
-  }..remove('panelInformationAppearance')..remove('backgroundInformationAppearance'));
+  }..remove('panelInformationAppearance')..remove('backgroundInformationAppearance'), informationClockBehavior);
   /// Resolved values for fields that may inherit from the common home style.
   dynamic homeFieldValue(String key) => switch (key) {
     'size' => tileSize,
@@ -220,6 +222,16 @@ class TileAppearance {
   PanelClockStyle get clockStyle => PanelClockStyle(PanelClockStyle.validValues(values['panelClockStyle']));
   PanelClockStyle get informationStyle => PanelClockStyle.panel(
     PanelClockStyle.validValues(values['panelInformationStyle'] ?? values['panelClockStyle'], combined: true));
+  PanelClockStyle renderedInformationStyle({bool background = false}) {
+    final style = background ? backgroundInformationStyle : informationStyle;
+    final behavior = informationClockBehavior;
+    if (behavior == null ||
+        (behavior.showColon == style.showColon && behavior.animate == style.animate)) {
+      return style;
+    }
+    final values = {...style.values, ...behavior.toMap()};
+    return background ? PanelClockStyle(values) : PanelClockStyle.panel(values);
+  }
   double get panelTextSize => number('panelTextSize') ?? 18;
   String get panelFont => values['panelFont'] as String? ?? 'sans-serif';
   Color get panelTextColor => color('panelTextColor') ?? Colors.white;

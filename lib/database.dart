@@ -93,7 +93,10 @@ class AppsCategories extends Table
   Set<Column> get primaryKey => {categoryId, appPackageName};
 }
 
-@DriftDatabase(tables: [Apps, Categories, AppsCategories, LauncherSpacers])
+@DriftDatabase(
+  tables: [Apps, Categories, AppsCategories, LauncherSpacers],
+  include: {'archived_app_launch_counts.drift'},
+)
 class FLauncherDatabase extends _$FLauncherDatabase
 {
   late final bool wasCreated;
@@ -103,7 +106,7 @@ class FLauncherDatabase extends _$FLauncherDatabase
   FLauncherDatabase.inMemory() : super(LazyDatabase(() => NativeDatabase.memory()));
 
   @override
-  int get schemaVersion => 11;
+  int get schemaVersion => 12;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -170,6 +173,13 @@ class FLauncherDatabase extends _$FLauncherDatabase
           if (from < 11 && from != 1 && to >= 11) {
             await migrator.addColumn(apps, apps.customName);
           }
+          if (from < 12 && to >= 12) {
+            await transaction(() async {
+              await migrator.createTable(archivedAppLaunchCounts);
+              await migrator.createTrigger(archiveAppLaunchCount);
+              await migrator.createTrigger(recoverAppLaunchCount);
+            });
+          }
         },
         beforeOpen: (openingDetails) async {
           await customStatement('PRAGMA foreign_keys = ON;');
@@ -225,6 +235,29 @@ class FLauncherDatabase extends _$FLauncherDatabase
 
   Future<int> updateApp(String packageName, AppsCompanion value) =>
       (update(apps)..where((tbl) => tbl.packageName.equals(packageName))).write(value);
+
+  Future<int> incrementAppLaunchCount(String packageName, DateTime time) =>
+      transaction(() async {
+        final updated = await (update(apps)
+              ..where((app) => app.packageName.equals(packageName)))
+            .writeReturning(AppsCompanion.custom(
+          launchCount: apps.launchCount + const Constant(1),
+          lastLaunchedAt: Variable(time),
+        ));
+        if (updated.isNotEmpty) return updated.single.launchCount;
+
+        // A restore can remove the row before the catalog adds it back.
+        final archived = await into(archivedAppLaunchCounts).insertReturning(
+          ArchivedAppLaunchCountsCompanion.insert(
+            packageName: packageName,
+            launchCount: 1,
+          ),
+          onConflict: DoUpdate((row) => ArchivedAppLaunchCountsCompanion.custom(
+            launchCount: row.launchCount + const Constant(1),
+          )),
+        );
+        return archived.launchCount;
+      });
 
   Future<void> deleteApps(List<String> packageNames) =>
       (delete(apps)..where((tbl) => tbl.packageName.isIn(packageNames))).go();

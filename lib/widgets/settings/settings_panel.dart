@@ -109,6 +109,7 @@ class _SettingsPanelState extends State<SettingsPanel> {
   late final _observer = _SettingsRouteObserver(_routeChanged);
   bool _topPanel = false;
   bool _backgroundEditing = false;
+  bool _sectionEditing = false;
   bool? _informationSide;
   RemotePanelService? _previewService;
   LauncherState? _launcherState;
@@ -118,6 +119,7 @@ class _SettingsPanelState extends State<SettingsPanel> {
     super.initState();
     _topPanel = _isTopPanelRoute(widget.initialRoute);
     _backgroundEditing = widget.initialRoute == BackgroundInformationSettingsPage.routeName;
+    _sectionEditing = widget.initialRoute == ContinueWatchingSettingsPage.routeName;
   }
 
   @override
@@ -168,9 +170,11 @@ class _SettingsPanelState extends State<SettingsPanel> {
     String? name,
     bool remotePreview,
     bool backgroundEditing,
-    int? sectionId,
+    _SectionSettingsRoute? sectionRoute,
   ) {
     final topPanel = remotePreview || _isTopPanelRoute(name);
+    final sectionId = sectionRoute?.sectionId;
+    final sectionEditing = sectionRoute?.editing == true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       if (remotePreview) {
@@ -179,29 +183,36 @@ class _SettingsPanelState extends State<SettingsPanel> {
       _previewService?.setSettingsPreview(this, remotePreview);
       if (sectionId != null) _launcherState ??= context.read<LauncherState?>();
       _launcherState?.setSectionPreview(this, sectionId);
-      if (_topPanel != topPanel || _backgroundEditing != backgroundEditing) {
-        setState(() { _topPanel = topPanel; _backgroundEditing = backgroundEditing; });
+      if (_topPanel != topPanel ||
+          _backgroundEditing != backgroundEditing ||
+          _sectionEditing != sectionEditing) {
+        setState(() {
+          _topPanel = topPanel;
+          _backgroundEditing = backgroundEditing;
+          _sectionEditing = sectionEditing;
+        });
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final onRight = context.select<SettingsService, bool>(
+    final preferredRight = context.select<SettingsService, bool>(
       (settings) => settings.settingsMenuOnRight,
     );
+    final onRight = _sectionEditing || preferredRight;
     final service = context.watch<AppearanceService?>();
     if (service == null) {
       return _layout(context, onRight, false);
     }
     return ValueListenableBuilder<Rect?>(valueListenable: service.informationBounds,
       builder: (context, bounds, _) {
-        if (!_backgroundEditing) {
+        if (!_backgroundEditing || _sectionEditing) {
           _informationSide = null;
           return _layout(context, onRight, false);
         }
         final side = informationSettingsSide(screen: MediaQuery.sizeOf(context),
-          panelWidth: LauncherStyle.of(context).settingsWidth, block: bounds, preferredRight: _informationSide ?? onRight);
+          panelWidth: LauncherStyle.of(context).settingsWidth, block: bounds, preferredRight: _informationSide ?? preferredRight);
         _informationSide = side.onRight;
         return _layout(context, side.onRight, side.obscured);
       });
@@ -416,6 +427,7 @@ class _SettingsPanelState extends State<SettingsPanel> {
                       return _SectionSettingsRoute(
                         settings: settings,
                         sectionId: section is Category ? section.id : null,
+                        editing: section != null,
                         builder: (_) => LauncherSectionPanelPage(
                           sectionIndex: index,
                         ),
@@ -545,22 +557,24 @@ class _SettingsPanelState extends State<SettingsPanel> {
 
 class _SectionSettingsRoute extends SettingsRoute<dynamic> {
   final int? sectionId;
+  final bool editing;
 
   _SectionSettingsRoute({
     required super.settings,
     required super.builder,
     required this.sectionId,
+    this.editing = true,
   });
 }
 
 class _SettingsRouteObserver extends NavigatorObserver {
-  final void Function(String?, bool, bool, int?) changed;
+  final void Function(String?, bool, bool, _SectionSettingsRoute?) changed;
   final _routes = <Route<dynamic>>[];
   _SettingsRouteObserver(this.changed);
   void _notify() => changed(_routes.lastOrNull?.settings.name,
       _routes.any((route) => route.settings.name == RemotePanelPage.routeName),
       _routes.any((route) => route.settings.name == BackgroundInformationSettingsPage.routeName),
-      _routes.whereType<_SectionSettingsRoute>().lastOrNull?.sectionId);
+      _routes.whereType<_SectionSettingsRoute>().lastOrNull);
   @override
   void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
     _routes.add(route);

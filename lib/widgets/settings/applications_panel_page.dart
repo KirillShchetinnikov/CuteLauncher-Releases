@@ -386,11 +386,6 @@ class _EmptyListPlaceholderState extends State<_EmptyListPlaceholder> {
   void initState() {
     super.initState();
     _focusNode = FocusNode();
-    if (widget.autofocus) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) _focusNode.requestFocus();
-      });
-    }
   }
 
   @override
@@ -407,6 +402,7 @@ class _EmptyListPlaceholderState extends State<_EmptyListPlaceholder> {
       },
       child: Focus(
         focusNode: _focusNode,
+    autofocus: widget.autofocus,
         child: Center(
           child: Text(
             widget.message,
@@ -441,12 +437,6 @@ class _AppListItemState extends State<_AppListItem> {
   void initState() {
     super.initState();
     _focusNode = FocusNode();
-
-    if (widget.autofocus) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) _focusNode.requestFocus();
-      });
-    }
   }
 
   @override
@@ -463,6 +453,7 @@ class _AppListItemState extends State<_AppListItem> {
   @override
   Widget build(BuildContext context) => FocusableSettingsTile(
     focusNode: _focusNode,
+        autofocus: widget.autofocus,
     onKeyEvent: (node, event) {
       if (widget.isFirst &&
           event is KeyDownEvent &&

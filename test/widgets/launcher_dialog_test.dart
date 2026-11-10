@@ -1,4 +1,5 @@
 import 'dart:ui' as ui;
+import 'package:flauncher/theme/interface_style.dart';
 
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/widgets/launcher_dialog.dart';
@@ -105,6 +106,72 @@ Future<void> _open(
 }
 
 void main() {
+  for (final skin in InterfaceStyle.values) {
+    for (final brightness in Brightness.values) {
+      for (final accent in [Colors.white, Colors.black]) {
+        testWidgets('focus ring has a visible gap and survives clipping: $skin $brightness $accent', (tester) async {
+          final focus = FocusNode();
+          addTearDown(focus.dispose);
+          final boundaryKey = GlobalKey();
+          const backdrop = Color(0xff456789);
+          final colors = ColorScheme.fromSeed(seedColor: accent,
+              brightness: brightness, primary: accent);
+          await tester.pumpWidget(MaterialApp(
+            theme: ThemeData(colorScheme: colors, extensions: [InterfaceSkin(skin)]),
+            home: Scaffold(body: Center(child: RepaintBoundary(
+              key: boundaryKey,
+              child: ClipRect(child: ColoredBox(color: backdrop,
+                child: Row(mainAxisSize: MainAxisSize.min, children: [
+                  LauncherDialogButton(primary: true, focusNode: focus,
+                      // Isolate the ring from the material's optional drop shadow.
+                      style: const ButtonStyle(fixedSize: WidgetStatePropertyAll(Size(120, 48)),
+                          shadowColor: WidgetStatePropertyAll(Colors.transparent)),
+                      onPressed: () {}, child: const Text('OK')),
+                ]),
+              )),
+            ))),
+          ));
+          await tester.pumpAndSettle();
+          final button = find.byType(TextButton);
+          final material = find.descendant(of: button, matching: find.byType(Material));
+          final idleRect = tester.getRect(material);
+          final idleSize = tester.getSize(find.byKey(boundaryKey));
+          focus.requestFocus();
+          await tester.pumpAndSettle();
+          expect(tester.getRect(material), idleRect);
+          expect(tester.getSize(find.byKey(boundaryKey)), idleSize);
+          final origin = tester.getTopLeft(find.byKey(boundaryKey));
+          final rect = idleRect.shift(-origin);
+          final boundary = boundaryKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+          final pixels = await tester.runAsync(() async {
+            final image = await boundary.toImage();
+            try {
+              return (data: (await image.toByteData(format: ui.ImageByteFormat.rawRgba))!, width: image.width);
+            } finally {
+              image.dispose();
+            }
+          });
+          Color at(int x, int y) {
+            final offset = (y * pixels!.width + x) * 4;
+            return Color.fromARGB(pixels.data.getUint8(offset + 3),
+                pixels.data.getUint8(offset), pixels.data.getUint8(offset + 1), pixels.data.getUint8(offset + 2));
+          }
+          final y = rect.center.dy.floor();
+          // Test the full 4px ring and 2px transparent gap on both sides,
+          // including the outermost pixel against the clipping boundary.
+          for (var distance = 1; distance <= 6; distance++) {
+            final expected = distance <= 2 ? backdrop : colors.onSurface;
+            expect(at(rect.left.toInt() - distance, y), expected);
+            expect(at(rect.right.toInt() + distance - 1, y), expected);
+          }
+          expect(at(rect.left.toInt(), y), accent);
+          expect(tester.takeException(), isNull);
+        });
+      }
+    }
+
+  }
+
   for (final inset in [Offset.zero, const Offset(30, 40)]) {
     testWidgets('backdrop has its cutout on the first frame at $inset',
         (tester) async {
@@ -258,10 +325,12 @@ void main() {
     await tester.pumpAndSettle();
   });
 
-  testWidgets('dialog actions preserve focus outlines and danger colors', (tester) async {
+  testWidgets('dialog actions distinguish focus and preserve danger colors', (tester) async {
     final cancel = FocusNode();
+    final ok = FocusNode();
     final confirm = FocusNode();
     addTearDown(cancel.dispose);
+    addTearDown(ok.dispose);
     addTearDown(confirm.dispose);
     await tester.pumpWidget(
       MaterialApp(
@@ -273,6 +342,12 @@ void main() {
                 autofocus: true,
                 onPressed: () {},
                 child: const Text('Cancel'),
+              ),
+              LauncherDialogButton(
+                focusNode: ok,
+                primary: true,
+                onPressed: () {},
+                child: const Text('OK'),
               ),
               LauncherDialogButton(
                 focusNode: confirm,
@@ -295,18 +370,36 @@ void main() {
         ),
       );
       final colors = Theme.of(tester.element(find.text(label))).colorScheme;
-      expect(material.color, label == 'Confirm' ? colors.error
-          : colors.onSurface.withValues(alpha: focused ? .10 : 0));
+      expect(material.color, switch (label) {
+        'Confirm' => colors.error,
+        'OK' => colors.primary,
+        _ => colors.onSurface.withValues(alpha: focused ? .10 : 0),
+      });
+      expect(material.textStyle?.color, switch (label) {
+        'Confirm' => colors.onError,
+        'OK' => colors.onPrimary,
+        _ => colors.onSurface,
+      });
       final border = (material.shape! as OutlinedBorder).side;
-      expect(border.color.a, focused ? 1 : 0);
+      expect(border.color, focused ? colors.onSurface : Colors.transparent);
+      if (focused) {
+        expect(border.width, greaterThanOrEqualTo(4.0));
+        expect(border.strokeAlign, BorderSide.strokeAlignOutside);
+      }
     }
 
     checkOutline('Cancel', true);
+    checkOutline('OK', false);
     checkOutline('Confirm', false);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
     await tester.pumpAndSettle();
-    expect(confirm.hasFocus, isTrue);
+    expect(ok.hasPrimaryFocus, isTrue);
     checkOutline('Cancel', false);
+    checkOutline('OK', true);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.pumpAndSettle();
+    expect(confirm.hasPrimaryFocus, isTrue);
+    checkOutline('OK', false);
     checkOutline('Confirm', true);
   });
 

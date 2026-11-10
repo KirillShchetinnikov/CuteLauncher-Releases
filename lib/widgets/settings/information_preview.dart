@@ -49,9 +49,8 @@ class InformationPreview extends StatelessWidget {
           todayMinTemp: 3,
           todayMaxTemp: 8,
         );
-    final options =
-        weatherOptions ?? settings.informationWeather(background: background);
-    final formats = settings.informationDateTime(background: background);
+    final options = weatherOptions ?? settings.informationWeather();
+    final formats = settings.informationDateTime();
     final placement = InformationPlacement(appearance, settings);
     final members = InformationPlacement.ids
         .where(background ? placement.onBackground : placement.onPanel)
@@ -60,9 +59,7 @@ class InformationPreview extends StatelessWidget {
     if (weatherOptions != null) members.add('weather');
     final now = DateTime.now();
     final compact = this.compact || MediaQuery.viewInsetsOf(context).bottom > 0;
-    final style = background
-        ? appearance.backgroundInformationStyle
-        : appearance.informationStyle;
+    final style = appearance.renderedInformationStyle(background: background);
     final baseText = style.textStyle(
       appearance.panelTextStyleFor(Localizations.localeOf(context)),
       locale: Localizations.localeOf(context),

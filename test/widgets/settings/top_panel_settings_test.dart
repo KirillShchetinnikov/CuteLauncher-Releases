@@ -14,6 +14,7 @@ import 'package:flauncher/widgets/settings/weather_page.dart';
 import 'package:flauncher/weather_sources.dart';
 import 'package:flauncher/widgets/panel_clock.dart';
 import 'package:flauncher/widgets/settings/panel_clock_style_page.dart';
+import 'package:flauncher/panel_clock_style.dart';
 import 'package:flauncher/models/tv_input.dart';
 import 'package:flauncher/widgets/panel_calendar_dialog.dart';
 import 'package:flauncher/providers/remote_panel_service.dart';
@@ -281,11 +282,13 @@ void main() {
           locale: Locale(language), largeText: true);
         final l = AppLocalizations.of(tester.element(find.byType(InformationSettingsPage)))!;
         final opener = find.text(l.weatherSettings);
-        await tester.scrollUntilVisible(opener, 160);
-        await tester.ensureVisible(opener);
-        await tester.pumpAndSettle();
-        Focus.of(tester.element(opener)).requestFocus();
-        await tester.pumpAndSettle();
+        expect(Focus.of(tester.element(find.text(l.informationTime))).hasFocus, isTrue);
+        for (var row = 0; row < 6; row++) {
+          await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+          await tester.pumpAndSettle();
+        }
+        expect(opener.hitTestable(), findsOneWidget);
+        expect(Focus.of(tester.element(opener)).hasFocus, isTrue);
         final focus = FocusManager.instance.primaryFocus;
         await tester.sendKeyEvent(LogicalKeyboardKey.enter);
         await tester.pumpAndSettle();
@@ -295,12 +298,14 @@ void main() {
         await tester.pumpAndSettle();
         expect(find.byType(InformationSettingsPage), findsOneWidget);
         expect(FocusManager.instance.primaryFocus, focus);
-        await tester.ensureVisible(find.text(l.informationPanelAppearance));
-        await tester.tap(find.text(l.informationPanelAppearance));
-        await tester.pumpAndSettle();
         final formats = find.text(l.informationComposition);
-        await tester.ensureVisible(formats);
-        await tester.tap(formats);
+        for (var row = 0; row < 3; row++) {
+          await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+          await tester.pumpAndSettle();
+        }
+        expect(formats.hitTestable(), findsOneWidget);
+        expect(Focus.of(tester.element(formats)).hasFocus, isTrue);
+        await tester.sendKeyEvent(LogicalKeyboardKey.enter);
         await tester.pumpAndSettle();
         expect(find.byType(InformationDataSettingsPage), findsOneWidget);
         expect(find.text(l.weatherSettings), findsNothing);
@@ -479,6 +484,47 @@ void main() {
       expect(settings.showNightModeInStatusBar, isFalse);
       expect(syncSettingsKeys, contains('show_night_mode_in_status_bar'));
       expect(backupSyncPartGroup('setting:show_night_mode_in_status_bar'), BackupSyncGroup.topPanel);
+    } finally {
+      night.dispose();
+    }
+  });
+
+  testWidgets('moon accent defaults on and can be disabled in night settings', (tester) async {
+    final night = NightModeService(prefs);
+    try {
+      when(inputs.inputs).thenReturn([]);
+      final toggle = find.widgetWithText(
+        RoundedSwitchListTile,
+        'Акцентная заливка луны',
+      );
+      await pump(tester, const Scaffold(body: NightModePage()), night: night);
+      await tester.ensureVisible(toggle);
+      expect(tester.widget<RoundedSwitchListTile>(toggle).value, isTrue);
+      await tester.tap(toggle);
+      await tester.pumpAndSettle();
+      expect(tester.widget<RoundedSwitchListTile>(toggle).value, isFalse);
+      expect(prefs.getBool(nightModePanelFillKey), isFalse);
+      expect(night.configuration.enabled, isFalse);
+      final restored = NightModeService(prefs);
+      final restoredAccent = restored.panelFill;
+      restored.dispose();
+      expect(restoredAccent, isFalse);
+      await pump(
+        tester,
+        const SettingsPanel(initialRoute: StatusBarObjectsPage.routeName),
+        night: night,
+      );
+      final visibility = find.widgetWithText(RoundedSwitchListTile, 'Ночной режим');
+      await tester.scrollUntilVisible(
+        visibility,
+        150,
+        scrollable: find.descendant(
+          of: find.byType(StatusBarObjectsPage),
+          matching: find.byType(Scrollable),
+        ).first,
+      );
+      expect(toggle, findsNothing);
+      await tester.pumpWidget(const SizedBox.shrink());
     } finally {
       night.dispose();
     }
@@ -888,17 +934,29 @@ void main() {
   testWidgets('visibility group opens common settings with separate editors', (tester) async {
     await pump(tester, const SettingsPanel(initialRoute: StatusBarObjectsPage.routeName));
     expect(find.byType(InformationVisibility), findsNothing);
-    await tester.tap(find.text('Часы, дата и погода'));
+    final opener = find.descendant(
+      of: find.byType(InformationObjectsSection),
+      matching: find.text('Настройки'),
+    );
+    final focus = Focus.of(tester.element(opener));
+    expect(focus.hasFocus, isTrue);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
     expect(find.byType(InformationSettingsPage), findsOneWidget);
     expect(find.byType(InformationVisibility), findsOneWidget);
-    await tester.tap(find.text('Оформление в панели'));
+    final formats = find.widgetWithText(FocusableSettingsTile, 'Формат объектов');
+    await tester.ensureVisible(formats);
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Формат объектов'));
+    await tester.tap(formats);
     await tester.pumpAndSettle();
     expect(find.byType(InformationDataSettingsPage), findsOneWidget);
     expect(find.text('Настройки погоды'), findsNothing);
     expect(find.text('Открывать календарь по нажатию на дату'), findsNothing);
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(focus.hasFocus, isTrue);
     expect(tester.takeException(), isNull);
   });
 
@@ -914,6 +972,9 @@ void main() {
       SizedBox(height: kToolbarHeight, child: FocusAwareAppBar(remotePanel: panel)),
     ])));
     await appearance.set('panelInformationStyle', {'inheritPanelTypography': false, 'font': 'serif', 'size': 20});
+    await appearance.setInformationClockBehavior(
+      const InformationClockBehavior(showColon: false, animate: true),
+    );
     await tester.pumpAndSettle();
     final clocks = tester.widgetList<PanelClock>(find.byType(PanelClock));
     expect(clocks.length, 2);
@@ -921,7 +982,9 @@ void main() {
       final item = tester.widget<TopPanelItem>(find.descendant(of: find.byWidget(clock), matching: find.byType(TopPanelItem)));
       expect(item.backgroundColor, isNull);
       expect(item.borderRadius, isNull);
-      expect(clock.style.values, appearance.appearance.informationStyle.values);
+      expect(clock.style.values, appearance.appearance.renderedInformationStyle().values);
+      expect(clock.style.showColon, isFalse);
+      expect(clock.style.animate, isTrue);
       expect(clock.style.textStyle(appearance.appearance.panelTextStyle).fontFamily, 'PanelSerif');
     }
     expect(tester.takeException(), isNull);
@@ -929,9 +992,15 @@ void main() {
 
   testWidgets('clock style route stays below toolbar and Back restores block settings', (tester) async {
     await pump(tester, const SettingsPanel(initialRoute: StatusBarObjectsPage.routeName));
-    await tester.tap(find.text('Часы, дата и погода'));
+    await tester.tap(find.descendant(
+      of: find.byType(InformationObjectsSection),
+      matching: find.text('Настройки'),
+    ));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Оформление в панели'));
+    final panelAppearance = find.widgetWithText(FocusableSettingsTile, 'Оформление в панели');
+    await tester.ensureVisible(panelAppearance);
+    await tester.pumpAndSettle();
+    await tester.tap(panelAppearance);
     await tester.pumpAndSettle();
     await tester.tap(find.text('Шрифт и цифры'));
     await tester.pumpAndSettle();

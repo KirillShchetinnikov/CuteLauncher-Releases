@@ -287,7 +287,9 @@ class _TvCleanerPageState extends State<TvCleanerPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  if (_busy.value) const LinearProgressIndicator(),
+                  SizedBox(
+                    child: _busy.value ? const LinearProgressIndicator() : null,
+                  ),
                   Expanded(key: const ValueKey('content'), child: builder()),
                 ],
               ),
@@ -787,7 +789,7 @@ class _TvCleanerPageState extends State<TvCleanerPage> {
               }
               final app = row as Map;
               return FocusableSettingsTile(
-                enabled: !_busy.value,
+                busy: _busy.value,
                 leading: Icon(
                   app['enabled'] == true
                       ? Icons.check_circle_outline
@@ -1136,7 +1138,7 @@ class _TvCleanerPageState extends State<TvCleanerPage> {
       title: Text(l.cleanerTitle),
       child: ListView(
         children: [
-          if (_busy.value) const LinearProgressIndicator(),
+          SizedBox(child: _busy.value ? const LinearProgressIndicator() : null),
           if (report != null)
             Text(
               '${(report['identity'] as Map)['model']} · ${(report['identity'] as Map)['device']}\n'

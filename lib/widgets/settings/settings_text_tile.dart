@@ -13,12 +13,14 @@ class SettingsTextTile extends StatelessWidget {
   final String? emptyLabel;
   final int? maxLength;
   final TextInputType? keyboardType;
+  final bool busy;
   const SettingsTextTile({
     super.key,
     required this.title,
     required this.value,
     required this.onChanged,
     this.enabled = true,
+    this.busy = false,
     this.obscureText = false,
     this.maxLength,
     this.emptyLabel,
@@ -29,6 +31,7 @@ class SettingsTextTile extends StatelessWidget {
   Widget build(BuildContext context) => FocusableSettingsTile(
     title: Text(title),
     enabled: enabled,
+    busy: busy,
     valueIcon: Icons.edit_outlined,
     trailing: Text(
       value.isEmpty

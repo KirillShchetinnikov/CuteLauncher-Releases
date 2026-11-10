@@ -132,12 +132,13 @@ class _DriveBackupPageState extends State<DriveBackupPage>
       child: ListView(
         children: [
           SettingsSection(
+            key: const ValueKey('settingsGroupClient'),
             title: l.settingsGroupClient,
             children: [
               FocusableSettingsTile(
                 title: Text(l.backupDriveClientImport),
                 leading: const Icon(Icons.file_open_outlined),
-                enabled: !service.busy && !_importing,
+                busy: service.busy || _importing,
                 onPressed: service.busy || _importing ? null : _importClient,
               ),
               SizedBox(
@@ -146,7 +147,7 @@ class _DriveBackupPageState extends State<DriveBackupPage>
               ),
               FocusableSettingsTile(
                 title: Text(l.backupClientId),
-                enabled: !service.busy && !_importing,
+                busy: service.busy || _importing,
                 valueIcon: Icons.edit_outlined,
                 trailing: Text(
                   _id.isEmpty ? l.settingsValueNotSet : _id,
@@ -160,7 +161,7 @@ class _DriveBackupPageState extends State<DriveBackupPage>
               ),
               FocusableSettingsTile(
                 title: Text(l.backupClientSecret),
-                enabled: !service.busy && !_importing,
+                busy: service.busy || _importing,
                 valueIcon: Icons.edit_outlined,
                 trailing: Text(
                   _secret.isEmpty ? l.settingsValueNotSet : '••••••',
@@ -172,6 +173,7 @@ class _DriveBackupPageState extends State<DriveBackupPage>
             ],
           ),
           SettingsSection(
+            key: const ValueKey('settingsGroupAccount'),
             title: l.settingsGroupAccount,
             children: [
               Card(
@@ -258,7 +260,9 @@ class _DriveBackupPageState extends State<DriveBackupPage>
                         }
                       },
               ),
-              if (service.busy) const LinearProgressIndicator(),
+              SizedBox(
+                child: service.busy ? const LinearProgressIndicator() : null,
+              ),
               if (service.failed)
                 Padding(
                   padding: const EdgeInsets.all(12),

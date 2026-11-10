@@ -257,17 +257,17 @@ void main() {
         expect(app.lastLaunchedAt, previous);
         return result;
       });
-      when(database.updateApp(any, any)).thenAnswer((_) async => 1);
+      when(database.incrementAppLaunchCount(any, any)).thenAnswer((_) async => 1);
       try {
         expect(await service.launchApp(app), result == true);
         if (result == true) {
           expect(app.lastLaunchedAt!.isAfter(previous), isTrue);
           expect(app.launchCount, 1);
-          verify(database.updateApp('test.app', any)).called(1);
+          verify(database.incrementAppLaunchCount('test.app', any)).called(1);
         } else {
           expect(app.lastLaunchedAt, previous);
           expect(app.launchCount, 0);
-          verifyNever(database.updateApp(any, any));
+          verifyNever(database.incrementAppLaunchCount(any, any));
         }
       } finally {
         service.dispose();
@@ -304,7 +304,7 @@ void main() {
     when(database.wasCreated).thenReturn(false);
     when(database.transaction(any)).thenAnswer((call) => call.positionalArguments[0]());
     when(database.persistApps(any)).thenAnswer((_) async {});
-    when(database.updateApp(any, any)).thenAnswer((_) async => 1);
+    when(database.incrementAppLaunchCount(any, any)).thenAnswer((_) async => 1);
     when(channel.launchApp(any)).thenAnswer((_) async => true);
     final service = AppsService(channel, database);
     while (!service.initialized) { await Future<void>.delayed(Duration.zero); }
@@ -335,15 +335,15 @@ void main() {
     final db = MockFLauncherDatabase();
     final service = await _buildInitialisedAppsService(channel, db);
     when(channel.launchApp(any)).thenAnswer((_) async => true);
-    when(db.updateApp(any, any)).thenAnswer((_) async {
+    var count = 0;
+    when(db.incrementAppLaunchCount('a', any)).thenAnswer((_) async {
       await Future<void>.delayed(Duration.zero);
-      return 1;
+      return ++count;
     });
     final app = App(packageName: 'a', name: 'A', version: '1', hidden: false);
     await Future.wait([service.launchApp(app), service.launchApp(app), service.launchApp(app)]);
     expect(app.launchCount, 3);
-    final writes = verify(db.updateApp('a', captureAny)).captured.cast<AppsCompanion>();
-    expect(writes.map((w) => w.launchCount.value), [1,2,3]);
+    verify(db.incrementAppLaunchCount('a', any)).called(3);
     service.dispose();
   });
 

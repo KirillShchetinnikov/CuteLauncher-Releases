@@ -237,6 +237,7 @@ class _NightModePageState extends State<NightModePage> {
         children: [
           if (widget.section == 'main') ...[
             SettingsSection(
+              key: const ValueKey('settingsGroupMode'),
               title: l.settingsGroupMode,
               children: [
                 RoundedSwitchListTile(
@@ -264,6 +265,7 @@ class _NightModePageState extends State<NightModePage> {
               ],
             ),
             SettingsSection(
+              key: const ValueKey('settingsGroupExceptions'),
               title: l.settingsGroupExceptions,
               children: [
                 FocusableSettingsTile(
@@ -395,6 +397,7 @@ class _NightModePageState extends State<NightModePage> {
           ],
           if (widget.section == 'schedule') ...[
             SettingsSection(
+              key: const ValueKey('settingsGroupCurrentAction'),
               title: l.settingsGroupCurrentAction,
               children: [
                 Card(
@@ -446,6 +449,7 @@ class _NightModePageState extends State<NightModePage> {
               ],
             ),
             SettingsSection(
+              key: const ValueKey('settingsGroupHours'),
               title: l.settingsGroupHours,
               children: [
                 SettingsChoiceTile<bool>(
@@ -508,12 +512,13 @@ class _NightModePageState extends State<NightModePage> {
             ),
             if (c.solar)
               SettingsSection(
+                key: const ValueKey('weatherLocation'),
                 title: l.weatherLocation,
                 children: [
                   SettingsChoiceTile<bool>(
                     title: l.nightLocation,
                     value: c.automaticLocation,
-                    enabled: !_locating,
+                    busy: _locating,
                     options: const [true, false],
                     label: (v) =>
                         v ? l.nightLocationAutomatic : l.nightLocationManual,
@@ -527,7 +532,7 @@ class _NightModePageState extends State<NightModePage> {
                             ? l.settingsValueNotSet
                             : '${c.latitude!.toStringAsFixed(3)}, ${c.longitude!.toStringAsFixed(3)}',
                       ),
-                      enabled: !_locating,
+                      busy: _locating,
                       onPressed: () async {
                         setState(() => _locating = true);
                         try {
@@ -585,8 +590,14 @@ class _NightModePageState extends State<NightModePage> {
                         }
                       },
                     ),
-                  if (_locating) const LinearProgressIndicator(),
-                  if (service.solarLoading) const LinearProgressIndicator(),
+                  SizedBox(
+                    child: _locating ? const LinearProgressIndicator() : null,
+                  ),
+                  SizedBox(
+                    child: service.solarLoading
+                        ? const LinearProgressIndicator()
+                        : null,
+                  ),
                   if (!service.solarLoading &&
                       (service.nextStart == null || service.nextEnd == null))
                     SettingsMessage(
@@ -645,7 +656,11 @@ class _NightModePageState extends State<NightModePage> {
                 ),
               ),
             ),
-            if (service.tclFilterBusy) const LinearProgressIndicator(),
+            SizedBox(
+              child: service.tclFilterBusy
+                  ? const LinearProgressIndicator()
+                  : null,
+            ),
             if (service.tclFilterStatus == 'unsupported')
               SettingsMessage(
                 text: l.tclBlueLightUnsupported,
@@ -659,6 +674,7 @@ class _NightModePageState extends State<NightModePage> {
           ],
           if (widget.section == 'main')
             SettingsSection(
+              key: const ValueKey('nightPermissions'),
               title: l.nightPermissions,
               children: [
                 FocusableSettingsTile(

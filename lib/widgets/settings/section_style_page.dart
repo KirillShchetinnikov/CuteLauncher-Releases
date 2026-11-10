@@ -66,6 +66,7 @@ class SectionStylePage extends StatelessWidget {
       SettingsHelp(title: l.homeInherited, text: l.homeStylePartial),
       if (categoryId == null || layoutControls.isNotEmpty)
         SettingsSection(
+          key: const ValueKey('settingsGroupLayout'),
           title: l.settingsGroupLayout,
           children: [
             ...layoutControls,
@@ -110,6 +111,7 @@ class SectionStylePage extends StatelessWidget {
         ),
       ],
       SettingsSection(
+        key: const ValueKey('settingsGroupHeadings'),
         title: l.settingsGroupHeadings,
         children: [
           toggle('sectionTitles', l.showSectionTitles, a.sectionTitles),
@@ -126,6 +128,7 @@ class SectionStylePage extends StatelessWidget {
         ],
       ),
       SettingsSection(
+        key: const ValueKey('surfaceGroup'),
         title: l.surfaceGroup,
         children: [
           inherited(

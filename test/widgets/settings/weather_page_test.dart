@@ -194,8 +194,11 @@ void main() {
           addTearDown(tester.view.resetDevicePixelRatio);
           addTearDown(tester.view.resetViewInsets);
           await appearance.set('panelCombinedInformation', !background);
+          await appearance.set('panelInformationPlacements', {
+            'weather': background ? 'background' : 'panel',
+          });
           await settings.setWeatherTextFormat(parseWeatherTemplate('Моя погода: {TEMP} / {MAX} / {MIN} ({WARN}){BR}{CITY} {COND}').format!);
-          await mount(tester, page: InformationDataSettingsPage(background: background), locale: locale, scale: scale, topInset: kToolbarHeight);
+          await mount(tester, page: const InformationDataSettingsPage(), locale: locale, scale: scale, topInset: kToolbarHeight);
           final l = AppLocalizations.of(tester.element(find.byType(InformationDataSettingsPage)))!;
           final open = tile(l.weatherTextFormat);
           await tester.scrollUntilVisible(open, 150);
@@ -205,10 +208,8 @@ void main() {
           final dialog = find.byType(WeatherTextFormatDialog);
           final title = find.byKey(const Key('weather_format_title'));
           expect(tester.widget<Text>(title).data, l.weatherTextFormat);
-          final destination = find.byKey(const Key('weather_format_destination'));
-          expect(tester.widget<Text>(destination).data,
-            ' — ${background ? l.informationOnBackground : l.topPanel}');
-          expect(tester.renderObject<RenderParagraph>(find.descendant(of: destination, matching: find.byType(RichText))).didExceedMaxLines, isFalse);
+          expect(tester.widget<WeatherTextFormatDialog>(dialog).background, background);
+          expect(tester.renderObject<RenderParagraph>(find.descendant(of: title, matching: find.byType(RichText))).didExceedMaxLines, isFalse);
           final viewport = find.descendant(of: dialog, matching: find.byType(SingleChildScrollView)).first;
           final scrollable = Scrollable.of(tester.element(find.byKey(const Key('weather_format_insert_buttons'))));
           expect(scrollable.position.pixels, 0);
@@ -327,7 +328,7 @@ void main() {
           final length = overflowing ? (background ? 80 : combined ? 30 : 20) : 10;
           final format = parseWeatherTemplate('${List.filled(length, 'W').join()}{TEMP}').format!;
           final options = WeatherDisplayOptions(format: format, fahrenheit: false, warnings: false);
-          await settings.setInformationWeather(options, background: background);
+          await settings.setInformationWeather(options);
           final actual = background ? const BackgroundInformation()
             : combined ? CombinedInformation(appearance: appearance.appearance,
               showTime: false, showDate: true, showWeather: true,
@@ -416,9 +417,11 @@ void main() {
         format: parseWeatherTemplate('{CITY}: {TEMP}{BR}{FEELS}').format!,
         fahrenheit: true, warnings: false,
       );
-      await settings.setInformationWeather(original, background: background);
-      final otherProfile = settings.informationWeather(background: !background).encode();
-      await mount(tester, page: InformationDataSettingsPage(background: background));
+      await appearance.set('panelInformationPlacements', {
+        'weather': background ? 'background' : 'panel',
+      });
+      await settings.setInformationWeather(original);
+      await mount(tester, page: const InformationDataSettingsPage());
       for (final save in [false, true]) {
         final open = tile('Формат текста погоды');
         await tester.scrollUntilVisible(open, 150);
@@ -428,7 +431,7 @@ void main() {
         await tester.tap(find.byKey(const Key('weather_format_reset')));
         await tester.pumpAndSettle();
         expect(tester.widget<TextField>(input).controller!.text, '{ЗНАЧ} {ТЕМП} ({ПРЕД})');
-        expect(settings.informationWeather(background: background).encode(), original.encode());
+        expect(settings.informationWeather().encode(), original.encode());
         if (save) {
           await tester.tap(find.byKey(const Key('weather_format_save')));
         } else {
@@ -437,29 +440,28 @@ void main() {
         }
         await tester.pumpAndSettle();
         expect(find.byType(WeatherTextFormatDialog), findsNothing);
-        if (!save) expect(settings.informationWeather(background: background).encode(), original.encode());
+        if (!save) expect(settings.informationWeather().encode(), original.encode());
       }
-      final saved = settings.informationWeather(background: background);
+      final saved = settings.informationWeather();
       expect(saved.format.encode(), parseWeatherTemplate('{ЗНАЧ} {ТЕМП} ({ПРЕД})').format!.encode());
       expect(saved.fahrenheit, isTrue);
       expect(saved.warnings, isFalse);
-      expect(settings.informationWeather(background: !background).encode(), otherProfile);
       expect(transport.requests, isEmpty);
       expect(tester.takeException(), isNull);
     });
   }
 
-  testWidgets('temperature units are outside the editor and profiles save independently', (tester) async {
-    await mount(tester, page: const InformationDataSettingsPage(background: true));
+  testWidgets('temperature units and template are shared', (tester) async {
+    await mount(tester, page: const InformationDataSettingsPage());
     final l = AppLocalizations.of(tester.element(find.byType(InformationDataSettingsPage)))!;
     await tester.scrollUntilVisible(find.text(l.temperatureUnit), 150);
     await tester.tap(find.text(l.temperatureUnit));
     await tester.pumpAndSettle();
     await tester.tap(find.text(l.fahrenheit).last);
     await tester.pumpAndSettle();
-    expect(settings.informationWeather(background: true).fahrenheit, isTrue);
-    expect(settings.useFahrenheit, isFalse);
-    final before = settings.informationWeather(background: true).encode();
+    expect(settings.informationWeather().fahrenheit, isTrue);
+    expect(settings.useFahrenheit, isTrue);
+    final before = settings.informationWeather().encode();
     for (final save in [false, true]) {
       await tester.scrollUntilVisible(tile(l.weatherTextFormat), 150);
       await tester.tap(tile(l.weatherTextFormat));
@@ -472,22 +474,31 @@ void main() {
       await tester.tap(input);
       await tester.enterText(input, '{ТЕМП} ({ПРЕД}) {УСЛ}');
       await tester.pumpAndSettle();
-      expect(settings.informationWeather(background: true).encode(), before);
+      expect(settings.informationWeather().encode(), before);
       if (save) {
         await tester.tap(find.byKey(const Key('weather_format_save')));
       } else {
         await tester.binding.handlePopRoute();
+        await tester.pumpAndSettle();
+        final confirmation = find.ancestor(
+          of: find.text(l.discardChangesTitle),
+          matching: find.byType(LauncherAlertDialog),
+        );
+        expect(dialog, findsOneWidget);
+        await tester.tap(
+          find.descendant(of: confirmation, matching: find.text(l.close)),
+        );
       }
       await tester.pumpAndSettle();
       expect(dialog, findsNothing);
-      if (!save) expect(settings.informationWeather(background: true).encode(), before);
+      if (!save) expect(settings.informationWeather().encode(), before);
     }
-    final background = settings.informationWeather(background: true);
+    final background = settings.informationWeather();
     expect(background.fahrenheit, isTrue);
     expect(background.warnings, isFalse);
     expect(background.format.explicitLayout, isTrue);
     expect(background.format.blocks.any((b) => b.field == WeatherTextField.warning), isTrue);
-    expect(settings.weatherTextFormat, WeatherTextFormat.standard);
+    expect(settings.weatherTextFormat, background.format);
     expect(transport.requests, isEmpty);
     expect(tester.takeException(), isNull);
   });
@@ -792,7 +803,7 @@ void main() {
       selected = bytes;
       await tester.tap(tile(l.weatherServerUrlImport));
       await tester.pumpAndSettle();
-      await tester.tap(tile('Системный проводник'));
+      await tester.tap(tile('Внешний проводник'));
       await tester.pump();
       if (pending == null) {
         await waitFor(tester, () => tester.widget<FocusableSettingsTile>(tile(l.weatherServerUrlImport)).onPressed != null);
@@ -1009,7 +1020,7 @@ void main() {
         await tester.pumpAndSettle();
         await tester.tap(importButton);
         await tester.pumpAndSettle();
-        await tester.tap(tile('Системный проводник'));
+        await tester.tap(tile('Внешний проводник'));
         await tester.pumpAndSettle();
       }
       final keyFile = File('${directory.path}/${source == WeatherSource.yandex ? 'weather-api-key' : 'weather-api-key-openweather'}');
@@ -1147,7 +1158,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(button);
       await tester.pumpAndSettle();
-      await tester.tap(tile('Системный проводник'));
+      await tester.tap(tile('Внешний проводник'));
       await tester.pumpAndSettle();
       expect(find.text(expected), findsWidgets);
     }

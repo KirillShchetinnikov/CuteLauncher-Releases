@@ -9,4 +9,14 @@
     <string name="file_card_title">Dosya erişimi</string>
     <string name="file_card_steps">İzinler → Dosyalar ve medya → Tüm dosyaların yönetimine izin ver yolunu izleyin. Ardından Geri tuşuyla CuteLauncher uygulamasına dönün.</string>
     <string name="file_card_open">Ayarları aç</string>
+    <string name="remap_error_black_screen">Black Screen yüklü değil veya kullanılamıyor.</string>
+    <string name="remap_error_app">Atanan uygulama yüklü değil veya açılamıyor.</string>
+    <string name="remap_error_hdmi">Atanan HDMI girişi kullanılamıyor.</string>
+    <string name="remap_error_power">Güç komutu başarısız. Yerel ADB bağlantısını kontrol edin.</string>
+    <string name="remap_error_permission">TV bu kumanda işlemine izin vermedi.</string>
+    <string name="remap_error_busy">Bir kumanda işlemi zaten sürüyor.</string>
+    <string name="remap_error_unavailable">Bu kumanda işlemi TV’de kullanılamıyor.</string>
+    <string name="remap_error_webhook_http">Webhook isteği reddetti (HTTP %1$d).</string>
+    <string name="remap_error_webhook_timeout">Webhook isteği zaman aşımına uğradı.</string>
+    <string name="remap_error_webhook">Webhook bağlantısı kurulamadı.</string>
 </resources>

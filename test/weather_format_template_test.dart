@@ -5,8 +5,10 @@ import 'package:flauncher/settings_import.dart';
 import 'package:flauncher/weather_format_template.dart';
 import 'package:flauncher/weather_text_format.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 void main() {
+  setUpAll(() => initializeDateFormatting('ru'));
   final l = AppLocalizationsRu();
   const weather = WeatherData(
     currentTemp: 30,
@@ -171,7 +173,7 @@ void main() {
     },
   );
 
-  test('new template profiles validate for backup import and retain placement units', () {
+  test('shared weather format validates for backup import and retains units', () {
     final format = parseWeatherTemplate('{TEMP} ({WARN}){BR}{CITY} {COND}')
         .format!;
     final options = WeatherDisplayOptions(
@@ -179,7 +181,7 @@ void main() {
       fahrenheit: true,
       warnings: false,
     );
-    final key = informationWeatherKey(true);
+    final key = sharedInformationWeatherKey;
     expect(
       compatibleSettings({key: options.encode()}, {})[key],
       options.encode(),

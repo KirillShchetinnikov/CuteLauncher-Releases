@@ -95,6 +95,44 @@ void main() {
     expect((await database.getApplications()).single.displayName, 'System name');
   });
 
+  test('restoring a backup keeps local counts for present and missing apps', () async {
+    await database.ensureStandardCategories();
+    final restoredApp = AppsCompanion.insert(
+      packageName: 'restored.app', name: 'Restored', version: '1',
+    );
+    final localApp = AppsCompanion.insert(
+      packageName: 'local.app', name: 'Local', version: '1',
+    );
+    await database.persistApps([restoredApp.copyWith(launchCount: const Value(2))]);
+    final archive = File(await backupService.exportBackup());
+    final data = jsonDecode(await archive.readAsString()) as Map<String, dynamic>;
+    expect((data['apps'] as List).single, isNot(contains('launchCount')));
+
+    await database.persistApps([
+      restoredApp.copyWith(launchCount: const Value(5)),
+      localApp.copyWith(launchCount: const Value(9)),
+    ]);
+    final settings = SettingsService(sharedPreferences);
+    addTearDown(settings.dispose);
+    await backupService.replaceBackup(archive, settings);
+    expect((await database.getApplications()).single.launchCount, 5);
+
+    final time = DateTime(2026, 11, 10);
+    final concurrentCounts = await Future.wait([
+      database.incrementAppLaunchCount('local.app', time),
+      database.incrementAppLaunchCount('local.app', time),
+    ]);
+    expect(concurrentCounts, [10, 11]);
+    await database.persistApps([
+      localApp,
+      AppsCompanion.insert(packageName: 'new.app', name: 'New', version: '1'),
+    ]);
+    final counts = {
+      for (final app in await database.getApplications()) app.packageName: app.launchCount,
+    };
+    expect(counts, {'restored.app': 5, 'local.app': 11, 'new.app': 0});
+  });
+
   test('backup round trip restores wallpaper block position, offset and alignment', () async {
     await database.insertCategory(CategoriesCompanion.insert(name: 'Apps', order: 0));
     final appearance = AppearanceService(sharedPreferences);

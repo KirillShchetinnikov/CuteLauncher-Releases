@@ -66,10 +66,11 @@ class _ReorderingTileViewportState extends State<ReorderingTileViewport>
       final box = context.findRenderObject();
       if (box is! RenderBox || !box.hasSize || !box.attached) return;
       final screen = Offset.zero & MediaQuery.sizeOf(context);
-      // Load only near the screen, but keep a visited row for one extra screen.
-      // Equal enter/exit margins used to dispose and recreate whole neighboring
-      // feeds during a short down/up reversal, including their artwork state.
-      final margin = _nearScreen ? math.max(120.0, screen.height) : 120.0;
+      // Prepare neighboring rows before a fast D-pad descent reaches them.
+      // A 120 dp entry margin created whole feeds during the transition frame.
+      // Keep one more screen of visited rows to avoid churn on a short reversal;
+      // distant rows and horizontal cards still remain lazily materialized.
+      final margin = math.max(120.0, screen.height * (_nearScreen ? 2 : 1));
       final visible = (box.localToGlobal(Offset.zero) & box.size)
           .overlaps(screen.inflate(margin));
       if (visible != _nearScreen) setState(() => _nearScreen = visible);

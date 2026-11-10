@@ -35,6 +35,27 @@ import '../../mocks.dart';
 import '../../mocks.mocks.dart';
 
 void main() {
+  testWidgets('a newly inserted first app does not steal focus from another app', (tester) async {
+    final apps = MockAppsService();
+    when(apps.isTileHidden(any)).thenReturn(false);
+    when(apps.applications).thenReturn([
+      fakeApp(packageName: 'first', name: 'First'),
+      fakeApp(packageName: 'selected', name: 'Selected'),
+    ]);
+    final category = fakeCategory()..systemKey = 'all_apps'
+      ..applications.addAll(apps.applications);
+    await _pumpWidgetWithProviders(tester, apps, categories: [category]);
+    final selected = Focus.of(tester.element(find.text('Selected')));
+    selected.requestFocus();
+    await tester.pumpAndSettle();
+    final listener = verify(apps.addListener(captureAny)).captured.last as VoidCallback;
+    category.applications.insert(0, fakeApp(packageName: 'new', name: 'New'));
+    listener();
+    await tester.pumpAndSettle();
+    expect(find.text('New'), findsOneWidget);
+    expect(selected.hasPrimaryFocus, isTrue);
+  });
+
   setUpAll(() async {
     final binding = TestWidgetsFlutterBinding.ensureInitialized();
     binding.platformDispatcher.views.single.physicalSize = Size(1280, 720);

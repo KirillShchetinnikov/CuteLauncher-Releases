@@ -44,7 +44,7 @@ class CombinedInformation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final base = appearance.panelTextStyleFor(Localizations.localeOf(context));
-    final style = appearance.informationStyle;
+    final style = appearance.renderedInformationStyle();
     final clock = style.textStyle(
       base,
       locale: Localizations.localeOf(context),

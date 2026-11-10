@@ -62,7 +62,7 @@ void main() {
 
   for (final entry in const <String, Widget>{
     'appearance': BackgroundInformationSettingsPage(),
-    'formats': InformationDataSettingsPage(background: true),
+    'shared formats': InformationDataSettingsPage(),
     'layout': InformationSectionPage(background: true, section: 'layout'),
     'typography': InformationSectionPage(
       background: true,
@@ -83,7 +83,8 @@ void main() {
   }
 
   testWidgets('wallpaper weather editor retains one preview', (tester) async {
-    await pump(tester, const InformationDataSettingsPage(background: true));
+    await appearance.set('panelInformationPlacements', {'weather': 'background'});
+    await pump(tester, const InformationDataSettingsPage());
     final l = AppLocalizations.of(
       tester.element(find.byType(InformationDataSettingsPage)),
     )!;
@@ -106,12 +107,15 @@ void main() {
   });
 
   for (final background in [false, true]) {
-    testWidgets('date editor previews both profiles above the keyboard: background=$background', (
+    testWidgets('shared date editor previews above the keyboard: background=$background', (
       tester,
     ) async {
-      await pump(tester, InformationDataSettingsPage(background: background));
+      await appearance.set('panelInformationPlacements', {
+        'date': background ? 'background' : 'panel',
+      });
+      await pump(tester, const InformationDataSettingsPage());
       addTearDown(tester.view.resetViewInsets);
-      final original = settings.informationDateTime(background: background).encode();
+      final original = settings.informationDateTime().encode();
       final l = AppLocalizations.of(
         tester.element(find.byType(InformationDataSettingsPage)),
       )!;
@@ -137,7 +141,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text(l.customDateFormatError), findsOneWidget);
       expect(tester.widget<Text>(preview).textSpan!.toPlainText(), contains(l.invalidDateFormat));
-      expect(settings.informationDateTime(background: background).encode(), original);
+      expect(settings.informationDateTime().encode(), original);
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox());
     });

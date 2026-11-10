@@ -136,6 +136,7 @@ class _LandscapePageState extends State<LandscapePage>
           children: [
             if (screenshotBuild) const ScreenshotSceneControls(),
             SettingsSection(
+              key: const ValueKey('settingsGroupScene'),
               title: l.settingsGroupScene,
               children: [
                 SettingsChoiceTile<String>(
@@ -168,6 +169,7 @@ class _LandscapePageState extends State<LandscapePage>
               ],
             ),
             SettingsSection(
+              key: const ValueKey('settingsGroupSky'),
               title: l.settingsGroupSky,
               children: [
                 effect(l.landscapeCelestialBodies, 'celestialBodies'),
@@ -178,6 +180,7 @@ class _LandscapePageState extends State<LandscapePage>
               ],
             ),
             SettingsSection(
+              key: const ValueKey('settingsGroupAnimation'),
               title: l.settingsGroupAnimation,
               children: [
                 effect(l.landscapeMotion, 'motion'),

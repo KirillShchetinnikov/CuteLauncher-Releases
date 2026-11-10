@@ -3,7 +3,9 @@ import 'dart:io';
 import 'dart:convert';
 
 import 'package:flauncher/cloud_account.dart';
+import 'package:flauncher/backup_sync.dart';
 import 'package:flauncher/backup_sync_groups.dart';
+import 'package:drift/drift.dart' show Value;
 import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/automatic_backup_service.dart';
 import 'package:flauncher/providers/backup_automation_service.dart';
@@ -197,6 +199,137 @@ void main() {
           const MethodChannel('plugins.flutter.io/path_provider'),
           null,
         );
+  });
+
+  for (final choice in BackupSyncResumeChoice.values) {
+    test('resume applies $choice once and other TVs converge', () async {
+      await a.settings.setAppLanguage('en');
+      expect(await a.automation.run(manual: true), true);
+      expect(await b.automation.run(manual: true), true);
+      a.clock = a.clock.add(const Duration(hours: 1));
+      b.clock = b.clock.add(const Duration(hours: 2));
+      await a.settings.setAppLanguage('ru');
+      await a.settings.setShowCategoryTitles(false);
+      await b.settings.setAppLanguage('de');
+      await b.settings.setMemorySaverEnabled(true);
+      expect(await b.automation.run(manual: true), true);
+
+      expect(
+        await a.automation.resumeSynchronization((previous, remote) async {
+          expect(previous, isNotNull);
+          expect(remote.isAfter(previous!), true);
+          expect(a.automation.enabled, false);
+          return choice;
+        }),
+        true,
+      );
+      expect(a.automation.enabled, true);
+      expect(a.local.entries, isNotEmpty);
+
+      final remoteLanguage =
+          choice == BackupSyncResumeChoice.remote ||
+          choice == BackupSyncResumeChoice.mergeRemote;
+      for (final tv in [a, b]) {
+        if (tv == b) expect(await b.automation.run(manual: true), true);
+        expect(tv.settings.appLanguage, remoteLanguage ? 'de' : 'ru');
+        expect(
+          tv.settings.showCategoryTitles,
+          choice == BackupSyncResumeChoice.remote,
+        );
+        expect(
+          tv.settings.memorySaverEnabled,
+          choice != BackupSyncResumeChoice.local,
+        );
+      }
+    });
+  }
+
+  test('resume cancellation and unreadable storage leave sync off', () async {
+    await b.settings.setAppLanguage('de');
+    expect(await b.automation.run(manual: true), true);
+    await a.settings.setAppLanguage('ru');
+    final before = Map.of(files);
+    var offered = 0;
+    expect(
+      await a.automation.resumeSynchronization((previous, remote) async {
+        offered++;
+        expect(previous, isNull);
+        return null;
+      }),
+      false,
+    );
+    expect(offered, 1);
+    expect(a.automation.failed, false);
+    expect(a.automation.enabled, false);
+    expect(a.local.entries, isEmpty);
+    expect(a.settings.appLanguage, 'ru');
+    expect(files, before);
+
+    a.storage.beforeDownload = () async => throw StateError('offline');
+    expect(
+      await a.automation.resumeSynchronization((_, _) async {
+        fail('Unavailable storage must not be treated as an empty folder');
+      }),
+      false,
+    );
+    expect(a.automation.enabled, false);
+    expect(a.automation.failed, true);
+    expect(files, before);
+  });
+
+  test(
+    'resume with empty storage and identical copies skips the prompt',
+    () async {
+      await a.settings.setAppLanguage('ru');
+      Future<BackupSyncResumeChoice?> unexpected(
+        DateTime? _,
+        DateTime _,
+      ) async => fail('No decision is required');
+      expect(await a.automation.resumeSynchronization(unexpected), true);
+      expect(files, hasLength(1));
+      await a.automation.configure(enabled: false);
+      expect(await a.automation.resumeSynchronization(unexpected), true);
+      expect(a.automation.enabled, true);
+      expect(a.applies, 0);
+    },
+  );
+
+  test(
+    'resume rejects a choice if another TV syncs while the dialog is open',
+    () async {
+      await b.settings.setAppLanguage('de');
+      expect(await b.automation.run(manual: true), true);
+      await a.settings.setAppLanguage('ru');
+      expect(
+        await a.automation.resumeSynchronization((_, _) async {
+          await b.settings.setAppLanguage('en');
+          expect(await b.automation.run(manual: true), true);
+          return BackupSyncResumeChoice.remote;
+        }),
+        false,
+      );
+      expect(a.automation.enabled, false);
+      expect(a.automation.failed, true);
+      expect(a.settings.appLanguage, 'ru');
+      expect(files, hasLength(1));
+    },
+  );
+
+  test('resume does not apply downloaded settings when upload fails', () async {
+    await b.settings.setAppLanguage('de');
+    expect(await b.automation.run(manual: true), true);
+    await a.settings.setAppLanguage('ru');
+    a.storage.failUpload = true;
+    expect(
+      await a.automation.resumeSynchronization(
+        (_, _) async => BackupSyncResumeChoice.remote,
+      ),
+      false,
+    );
+    expect(a.automation.enabled, false);
+    expect(a.settings.appLanguage, 'ru');
+    expect(a.applies, 0);
+    expect(files, hasLength(1));
   });
   test('manual backup in sync mode is full, separate and cannot restore/delete sync heads', () async {
     await a.settings.setAppLanguage('ru');
@@ -551,6 +684,30 @@ void main() {
       (point['resources'] as Map)['wallpaper'],
       base64Encode(kTransparentImage),
     );
+  });
+  test('synchronizing the app catalog preserves local launch counts', () async {
+    final app = AppsCompanion.insert(
+      packageName: 'sample.app',
+      name: 'Sample',
+      version: '1',
+    );
+    await a.db.persistApps([app.copyWith(launchCount: const Value(2))]);
+    await b.db.persistApps([app.copyWith(launchCount: const Value(7))]);
+    expect(await a.automation.run(manual: true), isTrue);
+    expect(await b.automation.run(manual: true), isTrue);
+
+    a.clock = b.clock.add(const Duration(hours: 1));
+    await a.db.updateApp(
+      'sample.app',
+      const AppsCompanion(customName: Value('Synced name')),
+    );
+    expect(await a.automation.run(manual: true), isTrue);
+    expect(await b.automation.run(manual: true), isTrue);
+
+    final synced = (await b.db.getApplications()).single;
+    expect(synced.displayName, 'Synced name');
+    expect(synced.launchCount, 7);
+    expect((await a.db.getApplications()).single.launchCount, 2);
   });
   test('all blocks may be local while the policy still synchronizes and restores safely', () async {
     a.clock = a.clock.add(const Duration(hours: 1));

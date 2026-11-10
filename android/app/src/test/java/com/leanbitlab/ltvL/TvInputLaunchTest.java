@@ -15,6 +15,21 @@ import static org.junit.Assert.*;
 @Config(sdk = {28, 36})
 public class TvInputLaunchTest {
     final String id = "vendor.input/.Service/HW1";
+
+    @Test public void vendorRoutesAreLimitedToVerifiedModelsAndInputs() {
+        String tuner = "com.tcl.tvinput/.TDTVInputService/HW1413742848";
+        var tcl = TvInputLaunch.candidates(tuner, "Smart TV Pro", "G03_4K_GB");
+        assertEquals("com.tcl.tv", tcl.get(1).getPackage());
+        assertEquals(TvContract.buildChannelUriForPassthroughInput(tuner), tcl.get(1).getData());
+        assertEquals("com.tcl.tvinput", TvInputLaunch.candidates(tuner, "Smart TV Pro", "G10_4K_GB")
+            .get(1).getPackage());
+        String hdmi = "com.mediatek.tvinput/.hdmi.HDMIInputService/HW7";
+        var xiaomi = TvInputLaunch.candidates(hdmi, "MiTV-MTEQ0", "baymax").get(0);
+        assertEquals("com.xiaomi.mitv.tvplayer.EXTSRC_PLAY", xiaomi.getAction());
+        assertEquals(25, xiaomi.getIntExtra("input", -1));
+        assertNull(TvInputLaunch.candidates(hdmi, "other", "baymax").get(0).getComponent());
+        assertNull(TvInputLaunch.candidates(id, "MiTV-MTEQ0", "baymax").get(0).getComponent());
+    }
     @Test public void boundedRoutesRetainInputIdentityAndFirmwarePickerIsExact() {
         var routes = TvInputLaunch.candidates(id, "unknown");
         assertEquals(6, routes.size());

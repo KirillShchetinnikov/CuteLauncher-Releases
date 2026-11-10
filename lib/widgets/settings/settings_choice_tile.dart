@@ -11,12 +11,14 @@ class SettingsChoiceTile<T> extends StatelessWidget {
   final T value;
   final List<T> options;
   final String Function(T) label;
+  final String Function(T) Function()? dialogLabels;
   final ValueChanged<T> onChanged;
   final bool enabled, autofocus;
   final String? valueLabel;
   final bool valueBelow;
   final TextStyle? valueStyle;
   final bool wideValue;
+  final bool busy;
   const SettingsChoiceTile({
     super.key,
     required this.title,
@@ -24,8 +26,10 @@ class SettingsChoiceTile<T> extends StatelessWidget {
     required this.value,
     required this.options,
     required this.label,
+    this.dialogLabels,
     required this.onChanged,
     this.enabled = true,
+    this.busy = false,
     this.autofocus = false,
     this.valueLabel,
     this.valueBelow = false,
@@ -55,15 +59,17 @@ class SettingsChoiceTile<T> extends StatelessWidget {
     alignValueToEnd: true,
     wideValue: wideValue,
     enabled: enabled,
+    busy: busy,
     autofocus: autofocus,
     onPressed: () async {
+      final optionLabel = dialogLabels?.call() ?? label;
       final result = await showLauncherDialog<(T,)>(
         context: context,
         builder: (dialog) => SettingsChoiceDialog<T>(
           title: Text(title),
           value: value,
           options: options,
-          optionBuilder: (option) => Text(label(option)),
+          optionBuilder: (option) => Text(optionLabel(option)),
           onSelected: (option) => Navigator.pop(dialog, (option,)),
         ),
       );

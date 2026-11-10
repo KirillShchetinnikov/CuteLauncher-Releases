@@ -120,7 +120,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fileStorageSettingsUnavailable =>
-      'This firmware does not provide an all-files access screen. Use the system file picker or install a compatible file manager.';
+      'This firmware does not provide an all-files access screen. Use the external file browser or install a compatible file manager.';
 
   @override
   String get tileImageMode => 'Tile image';
@@ -4832,7 +4832,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get slideshowEnterFolderPath => 'Enter folder path';
 
   @override
-  String get slideshowSystemPicker => 'Choose in system file manager';
+  String get slideshowSystemPicker => 'Choose in external file browser';
 
   @override
   String get slideshowFolderPath => 'Folder path';
@@ -4866,7 +4866,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get filePickerChoose => 'Choose a file browser';
 
   @override
-  String get filePickerSystem => 'System file picker';
+  String get filePickerSystem => 'External file browser';
 
   @override
   String get filePickerBuiltIn => 'Built-in file browser';
@@ -4985,6 +4985,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backupLastSuccess => 'Last successful action:';
+
+  @override
+  String get informationObjectPlacement => 'Placement';
 
   @override
   String get informationPlacement => 'Block placement';
@@ -5580,7 +5583,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsGroupIndicators => 'Indicators and messages';
 
   @override
-  String get nightModePanelFill => 'Fill the top panel button';
+  String get nightModePanelFill => 'Accent color for the moon';
 
   @override
   String get settingsGroupFocusShape => 'Focus appearance';
@@ -5688,4 +5691,29 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sectionTitleSize => 'Section title size';
+
+  @override
+  String get backupSyncResume => 'Resume synchronization';
+
+  @override
+  String get backupSyncUseLocal => 'Use settings from this TV';
+
+  @override
+  String get backupSyncUseRemote => 'Use settings from storage';
+
+  @override
+  String get backupSyncMergeLocal => 'Merge and prefer this TV';
+
+  @override
+  String get backupSyncMergeRemote => 'Merge and prefer storage';
+
+  @override
+  String backupSyncPreviousDate(String date) {
+    return 'This TV last synchronized: $date';
+  }
+
+  @override
+  String backupSyncRemoteDate(String date) {
+    return 'Copy in storage: $date';
+  }
 }

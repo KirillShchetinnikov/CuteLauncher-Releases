@@ -124,10 +124,11 @@ Path: **Home screen → Categories and order**.
 
 The button instructions for moving sections stay pinned to the bottom of the panel.
 General information about sections opens separately in collapsed help.
-Opening settings for a visible category scrolls Home to its cards. Appearance
-changes are visible beside the panel as you make them, while the arrow buttons
-and OK continue to control settings. Leaving the editor restores the previous
-category on Home and returns focus to the item you opened the editor from.
+While editing a section, the settings panel temporarily moves to the right.
+For a visible section, Home scrolls to its cards. Appearance changes are visible
+beside the panel as you make them, while the arrow buttons and OK continue to
+control settings. Leaving the editor restores the panel's chosen side and the
+previous section on Home, and returns focus to the item that opened the editor.
 
 Create, rename, and delete categories; add apps; reorder apps and categories;
 deleting a category requires confirmation and keeps installed apps;
@@ -186,6 +187,9 @@ Continue Watching. Content fills those positions; you can immediately use the
 arrow keys to move to another section. Loading does not pull focus back.
 Existing cards stay visible during refreshes, and empty feeds disappear after
 the source responds.
+If a cover fails to load or is damaged, the launcher automatically retries with
+an increasing delay between attempts. This also applies to Continue Watching;
+retries pause while the launcher is in the background.
 
 Path: **Home screen → Categories and order → App feeds**.
 
@@ -559,9 +563,13 @@ Its visibility on the quick settings panel is configured separately.
 
 The percentage represents Android media volume. The level of an external audio
 system over ARC/CEC may differ or be unavailable, depending on firmware.
-Fixed or unavailable volume is shown as “—”. Identifying the selected output
-requires Android 13 or later and firmware that exposes the route; otherwise
-a neutral TV icon and “—” appear. **Multiple** indicates several outputs.
+Fixed or unavailable volume is shown as “—”. On Android 9–12, the widget identifies
+Bluetooth when the system reports it as the selected route. On Android 11–12,
+it also shows ARC, and on Android 12 it can show eARC, when the system reports HDMI
+as selected and the output type can be identified unambiguously. On Android 13 and
+later, it can distinguish other outputs when the firmware exposes their type.
+An unknown route appears as a neutral TV icon and “—”.
+**Multiple** indicates several outputs.
 After waking, the output updates as the connection to the audio system recovers.
 
 Enable, hide, and rearrange the clock, date, weather, network status, traffic,
@@ -653,8 +661,8 @@ In **Wallpaper appearance → Position and size → Object order**, reorder the 
 from top to bottom: OK starts moving, ▲ / ▼ change the order, and OK or Back
 finishes. The order is retained for hidden elements too. By default, the date
 and weather sit above the large clock.
-In the desired appearance profile, open **Object formats → Weather text format**
-and insert `{WARN}` at the desired position. Panel and wallpaper templates are independent.
+Open **Clock, date and weather → Object formats → Weather text format**
+and insert `{WARN}` at the desired position in the shared template.
 Warnings are hidden when weather data is stale. This decorative block has no dimming
 background, cannot receive focus or presses, and does not open widgets. Tile positions
 and the scrolling viewport stay unchanged; tiles can overlap the clock.
@@ -672,25 +680,29 @@ Moving the elements hides them from the top panel; choosing
 elements are also excluded from the top panel order editor. Quick settings panel
 visibility and order remain independent; editing that panel does not hide wallpaper clocks.
 
-**Top panel → Objects** has one **Clock, date and weather** entry with a brief
-placement summary. Each element's placement is edited only inside this entry.
-The remaining settings are split into **Panel appearance**, **Wallpaper appearance**
-(available even when hidden). Both profiles contain **Object formats**,
-**Font and digits**, and **Colors and effects**. The panel has **Block layout**;
-the wallpaper has **Position and size**, including layer settings.
-**Object formats** edits time, date and weather formats.
-Headings and dividers separate **Clock**, **Date** and **Weather** groups.
-**Clock** contains **Time format**, **Show colon** and **Animate digits**;
-**Date** contains **Date format**, and **Weather** contains **Temperature unit** and **Weather text format**.
-Colon and animation controls remain available when inheriting the top panel font.
-Formats, units, warnings, colors and icons are independent for panel and wallpaper.
-Existing settings remain until you edit the corresponding profile.
+In **Top panel → Objects**, open **Settings** in the **Clock, date and weather**
+group. The **Placement** group lets you choose where each element appears.
+The **Appearance** group starts with the shared **Object formats** page, followed
+by **Panel appearance** and **Wallpaper appearance**. Both appearance pages
+remain available for hidden objects.
+**Object formats** contains **Time format**, **Show colon**, **Animate digits**,
+**Date format**, **Temperature unit** and **Weather text format**. When you
+update, each object keeps the settings from where it was displayed. Moving an
+object between the wallpaper and the panel keeps those settings.
+Both appearance pages contain **Font and digits** and **Colors and effects**.
+The panel has **Block layout**, and the wallpaper has **Position and size**
+with layer settings.
+New installations display the date with an abbreviated weekday and month, for example “Tue, 10 Nov”.
+When you open the format list, every example uses the TV’s current date.
+Colon and animation controls remain available when inheriting the top panel
+font. Colors and icons are configured separately for each placement.
 When editing the wallpaper block, the menu always temporarily chooses the side
 with less overlap. This behavior cannot be disabled. All **Wallpaper appearance**
-windows hide the preview except the **Weather text format** and **Custom date format** editors.
+windows hide the preview. Previews are available in the shared **Weather text format**
+and custom date format editors.
 Focus and the current page remain,
-and leaving restores the usual menu side. **Weather settings** is a separate entry on the main
-**Clock, date and weather** page.
+and leaving restores the usual menu side. **Weather settings** is in the
+**Weather** group on the **Clock, date and weather** page.
 Date settings include a short weekday format, such as “Вс, 1 Нояб” in Russian
 or “Sun, 1 Nov” in English: weekday, comma, day and abbreviated month.
 The first choice is **Custom format**: enter a date pattern with validation
@@ -702,6 +714,9 @@ Done on the keyboard focuses OK, or Cancel if the pattern is invalid.
 Use Left/Right to select a button, then confirm it with the remote.
 The settings panel is hidden while editing. Saving or cancelling restores
 the previous page with focus on the date setting.
+Back first hides the keyboard. In the editor, Back asks you to confirm
+leaving. **Cancel** in the confirmation returns to the draft, and **Close**
+leaves without saving.
 It explains the library symbols: `d`/`dd` for day, `M`/`MM` for month number, `MMM`/`MMMM` for
 month name, `EEE`/`EEEE` for weekday and `yy`/`yyyy` for year.
 For example, `EEEE, d. MMMM yyyy`. Enclose literal text in single quotes.
@@ -783,12 +798,12 @@ traffic needs usage access, and inputs need support for the relevant TV API.
 
 ## Weather
 
-Path: **Top panel → Objects → Clock, date and weather → Weather settings**.
+Path: **Top panel → Objects → Clock, date and weather → Settings → Weather settings**.
 
 Sources include Breezy Weather, Open-Meteo, MET Norway, OpenWeather, Yandex, Gismeteo, and Custom server (Open-Meteo). Choose a city
 or coordinates, detect location with the required permission, refresh data, and
-configure the forecast. Units are in each profile’s **Object formats**;
-warnings are inserted as a token in its weather editor.
+configure the forecast. Units are in the shared **Object formats** page.
+Warnings are inserted as a token in the weather editor.
 
 **Gismeteo is a test source. Do not use it in production.** It retrieves
 current weather and a forecast of up to seven days from the Gismeteo XML service without a key.
@@ -839,9 +854,8 @@ as soon as the dialog opens; remote arrows scroll the list. **Weather text color
 **Weather icon color** can be set separately. Select **Match weather text** in
 the icon palette to inherit the weather text color.
 
-In **Object formats → Weather text format**, edit the selected profile’s entire
-template in one field. The title identifies the destination: **Top panel** or **On wallpaper**.
-Below it, the preview uses the same line limit as the selected destination.
+In **Object formats → Weather text format**, edit the shared template in one
+field. The preview uses the line limit of the weather’s current placement.
 Type your own text with the keyboard
 or use the compact buttons below to insert tokens at the cursor. Buttons show
 short names without braces in a single row; they insert tokens with curly braces.
@@ -852,6 +866,7 @@ The preview appears larger in a taller frame with small padding around its
 contents. The **Preview:** label is to its left, vertically centered.
 OK or pressing the field opens the keyboard;
 after dismissing it, arrow keys move focus between controls.
+In Gboard, use the globe key to switch languages when multiple layouts are enabled.
 The title, input field and preview stay above the keyboard when it opens;
 the preview becomes shorter.
 On insertion buttons, ◄ / ► select a function in the row, ▲ returns to the
@@ -860,7 +875,9 @@ the reference or downward from the field restores the last selected button.
 The cursor position and selection are preserved when moving to buttons, returning
 to the field and reopening the keyboard. A static insertion marker remains visible
 while the field is unfocused and follows the cursor after inserting a token.
-Save applies the template; Cancel or Back discards the draft.
+Save applies the template. Cancel in the editor closes it without saving.
+Back first dismisses the keyboard if it is open. Back in the editor asks for
+confirmation. Close exits without saving, and Cancel returns to the template.
 **Reset format**, next to Cancel, restores the default template with an icon,
 temperature and warning. Select **Save** to apply it; the temperature unit is kept.
 Choose °C/°F separately in **Object formats → Temperature unit**.
@@ -963,8 +980,8 @@ An accepted launch does not guarantee a signal.
 
 Path: **Night mode and brightness**; the night-mode widget provides quick controls.
 
-**Fill the top panel button** highlights active night mode with the theme's
-accent color. The fill is off by default.
+In the night mode settings, **Accent color for the moon** applies the theme's
+accent color to the moon icon while night mode is active. It is on by default.
 
 The night filter controls dimming, warmth, and color strength. Enable it manually,
 at scheduled times, or from sunset to sunrise for a chosen location, with offsets
@@ -1042,6 +1059,9 @@ Path: **Launcher and TV controls**.
 - Inspect the current home app, open system launcher selection, assign CuteLauncher
   through supported ADB actions, or restore the previous HOME handler.
 - Manage built-in Google TV / Android TV launchers and Home Button Fix separately.
+  On TCL Smart TV Pro G10 with Android 14, the system app menu has no Disable
+  button after Google TV is re-enabled. Returning to CuteLauncher by disabling
+  Google TV requires a working ADB connection.
   Service screens, factory screens and setup wizards are excluded from recovery
   home choices. Recovery is unavailable if no suitable launcher remains.
   Before disabling stock HOME, known remote-button and Live TV service dependencies
@@ -1127,8 +1147,11 @@ Path: **Launcher and TV controls → Remote button remapper**.
 In button diagnostics, the start/stop instructions and the report path, when known,
 are visible without expanding help. Help explains copying the report and limitations.
 Button diagnostics records events Android sends to the service and saves the
-latest text report. Assign a short press or hold to a chosen action. The
-“Action” row opens the grouped picker. Up and Down move within a column,
+latest text report. Assignments pause during an active test and while you add
+or edit an assignment. Opening the assignment list or diagnostics screen
+alone does not pause them. Assign an action to a short
+press or hold in the editor. The “Action” row opens the grouped picker.
+Up and Down move within a column,
 and Left and Right switch columns. OK on an action returns to the editor
 with that action selected. Back closes the picker and keeps the previous
 choice. “Ignore button” is below the categories.
@@ -1156,6 +1179,9 @@ remote to restore the picture as supported by the TCL firmware.
 “Toggle Black Screen” shows a black overlay over the current app. Press or hold
 the same button again to hide it. This action requires the paid version of Black
 Screen by jApp and permission to display over other apps. [Black Screen on Google Play](https://play.google.com/store/apps/details?id=io.japp.blackscreen).
+
+If an assigned action fails, a short message explains why. For example,
+Black Screen is missing, the HDMI input is unavailable, or a webhook times out.
 
 An empty name field shows “Button name”. Below it, select “Assign button”,
 then “Capture” in the separate dialog and press the remote button. The dialog
@@ -1318,7 +1344,7 @@ In **Advanced → File manager**, choose the preferred method for all file, fold
 and document-save actions:
 
 - **Ask every time** — the default: when an external picker is available, choose
-  between the system picker and the built-in browser.
+  between the external file browser and the built-in browser.
 - **Built-in** — open the CuteLauncher browser directly.
 - **External** — open a compatible system or installed picker directly.
 
@@ -1373,7 +1399,7 @@ contents is shown.
 
 The built-in browser needs storage access on Android 9–10 (including write access
 when saving) or all files access on Android 11 and newer. It works with TV storage
-and attached drives. The system picker may offer other sources and does not require
+and attached drives. The external file browser may offer other sources and does not require
 broad file access. Manual path entry is available only in slideshow settings.
 
 On Android 11 and newer, all files access is a separate setting that may not
@@ -1392,6 +1418,8 @@ loading error remains visible until a successful refresh and does not mean there
 are no backups. A private rollback point is created before restoration. Backups
 contain supported launcher settings, categories, and custom appearance; they
 do not back up installed apps or the entire TV system.
+App launch counts stay on each TV and survive sync, backup restoration and app
+reinstallation. A full launcher reset clears them.
 
 Backups and synchronization shows the current mode, enabled state, storage,
 and the time of the last successful action. Disconnecting WebDAV or Google Drive
@@ -1400,7 +1428,7 @@ requires confirmation; cancelling keeps the connection.
 Automatic backups support schedules, frequency, and retention. Storage includes
 the internal folder, Downloads / CuteLauncher, a selected folder, WebDAV, and
 Google Drive with configured access. Internal storage is removed when app data
-is deleted. Choose an external folder using the system picker or built-in browser. On Android 9,
+is deleted. Choose an external folder using the external file browser or built-in browser. On Android 9,
 saving to Downloads requires storage permission; internal storage and the system
 document picker do not require it.
 
@@ -1431,6 +1459,14 @@ Use an updated CuteLauncher version on other TVs to read the new file names.
 Synchronize selected settings groups between TVs while leaving other groups local.
 Multiple TVs need a shared accessible folder or cloud storage; their internal
 folders are not shared storage.
+
+When you turn on synchronization, CuteLauncher checks the settings in the chosen
+storage. If they differ from this TV's settings, you can use this TV's settings,
+use the settings in storage, or merge the two and give either side priority.
+Merging keeps changes from both sides and uses the selected priority to resolve
+conflicts. A local restore point is created before the choice is applied.
+Cancel and Back leave synchronization off. If there is no synchronization copy
+or the settings match, synchronization starts without a prompt.
 
 ADB keys, Android permissions, and private service data are not transferred as
 ordinary settings. A settings backup does not grant permissions or transfer ADB

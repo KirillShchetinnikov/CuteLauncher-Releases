@@ -64,6 +64,7 @@ class _FileBrowserSettingsPageState extends State<FileBrowserSettingsPage> {
             onChanged: (value) => _save(options.copyWith(start: value)),
           ),
           SettingsSection(
+            key: const ValueKey('fileBrowserSort'),
             title: l.fileBrowserSort,
             children: [
               SettingsChoiceTile<FileBrowserSort>(
@@ -95,6 +96,7 @@ class _FileBrowserSettingsPageState extends State<FileBrowserSettingsPage> {
             ],
           ),
           SettingsSection(
+            key: const ValueKey('settingsGroupDisplay'),
             title: l.settingsGroupDisplay,
             children: [
               RoundedSwitchListTile(

@@ -228,6 +228,7 @@ class _CloudBackupPageState extends State<CloudBackupPage>
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             SettingsSection(
+              key: const ValueKey('settingsGroupCredentials'),
               title: l.settingsGroupCredentials,
               children: [
                 _labelledInput(
@@ -269,6 +270,7 @@ class _CloudBackupPageState extends State<CloudBackupPage>
               ],
             ),
             SettingsSection(
+              key: const ValueKey('networkConnection'),
               title: l.networkConnection,
               children: [
                 SettingsMessage(
@@ -310,7 +312,7 @@ class _CloudBackupPageState extends State<CloudBackupPage>
                   _disconnect,
                   available: service.account.configured,
                 ),
-                if (_busy) const LinearProgressIndicator(),
+                SizedBox(child: _busy ? const LinearProgressIndicator() : null),
                 if (_message != null)
                   SettingsMessage(
                     text: _message!,

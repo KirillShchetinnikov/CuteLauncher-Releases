@@ -26,5 +26,27 @@ Future<BackupSyncDocument> captureBackup(Map<String, dynamic> data,
 Future<BackupSyncDocument> mergeBackup(BackupSyncDocument local, Map<String, dynamic> remote) =>
     Isolate.run(() => local.merge(BackupSyncDocument.parse(remote)));
 
-Future<BackupSyncDocument> preserveBackupGroups(BackupSyncDocument merged, BackupSyncDocument original) =>
-    Isolate.run(() => merged.preserveLocalGroups(original));
+Future<(BackupSyncDocument, Map<String, dynamic>?)> mergeRemoteBackup(
+  BackupSyncDocument local,
+  Map<String, dynamic> remote,
+  bool own,
+) => Isolate.run(() {
+  final document = BackupSyncDocument.parse(remote);
+  return (
+    local.merge(document, partial: true),
+    own ? document.revisions : null,
+  );
+});
+
+Future<BackupSyncDocument> resumeBackup(
+  BackupSyncDocument local,
+  BackupSyncDocument remote,
+  Map<String, dynamic> common,
+  BackupSyncResumeChoice choice,
+  String device,
+) => Isolate.run(() => local.resumeWith(remote, common, choice, device));
+
+Future<BackupSyncDocument> preserveBackupGroups(
+  BackupSyncDocument merged,
+  BackupSyncDocument original,
+) => Isolate.run(() => merged.preserveLocalGroups(original));

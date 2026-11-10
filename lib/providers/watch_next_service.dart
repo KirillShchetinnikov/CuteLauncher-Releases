@@ -215,6 +215,11 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
     return _loadPoster(program.thumbnailUri, generation);
   }
 
+  void evictPoster(WatchNextProgram program) {
+    _posterCache.remove(program.posterArtUri);
+    _posterCache.remove(program.thumbnailUri);
+  }
+
   Future<Uint8List?> _loadPoster(String address, int generation) async {
     if (address.isEmpty || !_canLoadPoster(generation)) return null;
     final cached = _posterCache[address];

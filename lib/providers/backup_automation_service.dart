@@ -31,6 +31,11 @@ enum BackupDestination { webdav, googleDrive, local }
 
 enum BackupMode { backup, synchronization }
 
+typedef ChooseBackupSyncResume = Future<BackupSyncResumeChoice?> Function(
+  DateTime? previousSync,
+  DateTime remoteCopy,
+);
+
 class BackupAutomationService extends ChangeNotifier
     with WidgetsBindingObserver {
   final SharedPreferences preferences;
@@ -559,9 +564,22 @@ class BackupAutomationService extends ChangeNotifier
     );
   }
 
-  Future<bool> run({bool manual = false, bool exportOnly = false}) async {
+  Future<bool> resumeSynchronization(ChooseBackupSyncResume choose) =>
+      _run(manual: true, choose: choose);
+
+  Future<bool> run({bool manual = false, bool exportOnly = false}) =>
+      _run(manual: manual, exportOnly: exportOnly);
+
+  Future<bool> _run({
+    required bool manual,
+    bool exportOnly = false,
+    ChooseBackupSyncResume? choose,
+  }) async {
     await initialized;
     if (_disposed || !_foreground || busy || !manual && !enabled) return false;
+    if (choose != null && (enabled || mode != BackupMode.synchronization)) {
+      return false;
+    }
     _flushChanges();
     busy = true;
     failed = false;
@@ -589,9 +607,12 @@ class BackupAutomationService extends ChangeNotifier
         throw StateError('Local settings changed during capture');
       }
       final originalDocument = localDocument;
+      final originalFingerprint =
+          operationMode == BackupMode.synchronization || _baseline != null
+          ? await fingerprintBackup(localDocument.backup)
+          : null;
       final unchanged =
-          _baseline != null &&
-          await fingerprintBackup(localDocument.backup) == _baselineFingerprint;
+          _baseline != null && originalFingerprint == _baselineFingerprint;
       if (!manual &&
           operationMode == BackupMode.backup &&
           unchanged &&
@@ -602,62 +623,63 @@ class BackupAutomationService extends ChangeNotifier
         );
         return true;
       }
-      if (operationMode == BackupMode.synchronization) {
+      if (operationMode == BackupMode.synchronization && choose == null) {
         await _saveBaseline(localDocument);
       }
       final files = await storage.list();
       final prefix =
           'cute-${operationMode == BackupMode.backup ? 'backup' : 'sync'}-$scope-';
+      var applyChanges = false;
       if (operationMode == BackupMode.synchronization) {
-        final heads = <String, RemoteBackupFile>{};
-        for (final file in files.where((f) => f.name.startsWith(prefix))) {
-          final id = file.name.substring(prefix.length, prefix.length + 32);
-          if (heads[id] == null || _stamp(file) > _stamp(heads[id]!)) {
-            heads[id] = file;
+        final heads = _syncHeads(files, prefix);
+        if (choose == null) {
+          for (final file in heads.values) {
+            final downloaded = await storage.download(file, root);
+            localDocument = await mergeBackup(
+              localDocument,
+              await readBackupJson(downloaded.path),
+            );
+            await downloaded.delete();
           }
-        }
-        final revision = _revision;
-        for (final file in heads.values) {
-          final downloaded = await storage.download(file, root);
-          localDocument = await mergeBackup(
+          localDocument = await preserveBackupGroups(
             localDocument,
-            await readBackupJson(downloaded.path),
+            originalDocument,
           );
-          await downloaded.delete();
         }
-        localDocument = await preserveBackupGroups(
-          localDocument,
-          originalDocument,
-        );
-        if (_disposed || !_foreground || revision != _revision) {
-          throw StateError('Local settings changed during synchronization');
+        var confirmed = false;
+        if (choose != null && heads.isNotEmpty) {
+          final prepared = await _prepareResume(
+            originalDocument,
+            originalFingerprint!,
+            heads,
+            storage,
+            root,
+            prefix,
+            captureRevision,
+            choose,
+          );
+          if (prepared == null) return false;
+          (localDocument, confirmed) = prepared;
         }
-        if (await fingerprintBackup(localDocument.backup) !=
-            _baselineFingerprint) {
+        _requireSyncRevision(captureRevision);
+        applyChanges =
+            await fingerprintBackup(localDocument.backup) !=
+            originalFingerprint;
+        if (confirmed || applyChanges) {
           if (!await local.createNow()) {
             throw StateError('Restore point failed');
           }
-          if (_disposed || !_foreground || revision != _revision) {
-            throw StateError('Local settings changed during synchronization');
-          }
-          final file = File('${root.path}/merged.json');
-          await writeBackupJson(file.path, localDocument.backup);
-          if (_disposed || !_foreground || revision != _revision) {
-            throw StateError('Local settings changed during synchronization');
-          }
-          _applying = true;
-          try {
-            await apply(file);
-            _observedSettings
-              ..clear()
-              ..addAll(_settingsHashes());
-          } finally {
-            _applying = false;
-          }
+        }
+        if (applyChanges && choose == null) {
+          await _applySyncDocument(localDocument, root, captureRevision);
           await _saveBaseline(localDocument);
         }
       }
-      if (_disposed || !_foreground) throw StateError('Cancelled');
+      if (_disposed ||
+          !_foreground ||
+          choose != null && captureRevision != _revision) {
+        throw StateError('Cancelled');
+      }
       final stamp = max(
         now().millisecondsSinceEpoch,
         (preferences.getInt('backup_transport_sequence') ?? 0) + 1,
@@ -671,7 +693,15 @@ class BackupAutomationService extends ChangeNotifier
             ? localDocument.backup
             : localDocument.toJson(),
       );
+      if (choose != null) _requireSyncRevision(captureRevision);
       await storage.upload(upload, name);
+      if (choose != null) {
+        _requireSyncRevision(captureRevision);
+        if (applyChanges) {
+          await _applySyncDocument(localDocument, root, captureRevision);
+        }
+        await _saveBaseline(localDocument);
+      }
       if (operationMode == BackupMode.backup && mode == BackupMode.backup) {
         await _saveBaseline(localDocument);
       }
@@ -695,6 +725,7 @@ class BackupAutomationService extends ChangeNotifier
         if (_disposed || !_foreground) break;
         await storage.delete(old);
       }
+      if (choose != null) await _set('backup_transport_enabled', true);
       return true;
     } catch (diagnosticError, diagnosticStack) {
       DiagnosticsStore.instance.recordException(
@@ -716,6 +747,100 @@ class BackupAutomationService extends ChangeNotifier
       _notify();
       _schedule();
     }
+  }
+
+  Future<void> _applySyncDocument(
+    BackupSyncDocument document,
+    Directory root,
+    int revision,
+  ) async {
+    _requireSyncRevision(revision);
+    final file = File('${root.path}/merged.json');
+    await writeBackupJson(file.path, document.backup);
+    _requireSyncRevision(revision);
+    _applying = true;
+    try {
+      await apply(file);
+      _observedSettings
+        ..clear()
+        ..addAll(_settingsHashes());
+    } finally {
+      _applying = false;
+    }
+  }
+
+  Future<(BackupSyncDocument, bool)?> _prepareResume(
+    BackupSyncDocument original,
+    String originalFingerprint,
+    Map<String, RemoteBackupFile> heads,
+    BackupStorage storage,
+    Directory root,
+    String prefix,
+    int revision,
+    ChooseBackupSyncResume choose,
+  ) async {
+    var remote = BackupSyncDocument({'version': 3, 'settings': {}}, {});
+    var common = <String, dynamic>{};
+    for (final entry in heads.entries) {
+      final downloaded = await storage.download(entry.value, root);
+      final (merged, own) = await mergeRemoteBackup(
+        remote,
+        await readBackupJson(downloaded.path),
+        entry.key == device,
+      );
+      remote = merged;
+      if (own != null) common = own;
+      await downloaded.delete();
+    }
+    final candidate = await resumeBackup(
+      original,
+      remote,
+      common,
+      BackupSyncResumeChoice.remote,
+      device,
+    );
+    if (await fingerprintBackup(candidate.backup) == originalFingerprint) {
+      return (candidate, false);
+    }
+    _requireSyncRevision(revision);
+    final latest = heads.values.reduce((a, b) => _stamp(a) > _stamp(b) ? a : b);
+    final previous = heads[device];
+    final choice = await choose(
+      previous == null ? null : createdAt(previous),
+      createdAt(latest),
+    );
+    if (choice == null) return null;
+    _requireSyncRevision(revision);
+    final current = _syncHeads(await storage.list(), prefix);
+    if (heads.length != current.length ||
+        heads.entries.any(
+          (entry) =>
+              current[entry.key]?.id != entry.value.id ||
+              current[entry.key]?.name != entry.value.name,
+        )) {
+      throw StateError('Remote settings changed during synchronization');
+    }
+    if (choice == BackupSyncResumeChoice.remote) return (candidate, true);
+    return (await resumeBackup(original, remote, common, choice, device), true);
+  }
+
+  void _requireSyncRevision(int revision) {
+    if (_disposed || !_foreground || revision != _revision) {
+      throw StateError('Local settings changed during synchronization');
+    }
+  }
+
+  static Map<String, RemoteBackupFile> _syncHeads(
+    List<RemoteBackupFile> files,
+    String prefix,
+  ) {
+    final heads = <String, RemoteBackupFile>{};
+    for (final file in files.where((file) => file.name.startsWith(prefix))) {
+      final id = file.name.substring(prefix.length, prefix.length + 32);
+      final previous = heads[id];
+      if (previous == null || _stamp(file) > _stamp(previous)) heads[id] = file;
+    }
+    return heads;
   }
 
   static String copyDeviceLabel(RemoteBackupFile file) {

@@ -122,7 +122,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get fileStorageSettingsUnavailable =>
-      'Ce micrologiciel ne propose pas d’écran d’accès à tous les fichiers. Utilisez le sélecteur de fichiers système ou installez un gestionnaire de fichiers compatible.';
+      'Ce micrologiciel ne propose pas d’écran d’accès à tous les fichiers. Utilisez le explorateur de fichiers externe ou installez un gestionnaire de fichiers compatible.';
 
   @override
   String get tileImageMode => 'Image de la tuile';
@@ -4902,7 +4902,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get slideshowEnterFolderPath => 'Saisir le chemin du dossier';
 
   @override
-  String get slideshowSystemPicker => 'Choisir dans le gestionnaire système';
+  String get slideshowSystemPicker =>
+      'Choisir dans le explorateur de fichiers externe';
 
   @override
   String get slideshowFolderPath => 'Chemin du dossier';
@@ -4936,7 +4937,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get filePickerChoose => 'Choisir un explorateur de fichiers';
 
   @override
-  String get filePickerSystem => 'Sélecteur de fichiers du système';
+  String get filePickerSystem => 'Explorateur de fichiers externe';
 
   @override
   String get filePickerBuiltIn => 'Explorateur de fichiers intégré';
@@ -5057,6 +5058,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get backupLastSuccess => 'Dernière action réussie :';
+
+  @override
+  String get informationObjectPlacement => 'Emplacement';
 
   @override
   String get informationPlacement => 'Emplacement du bloc';
@@ -5660,7 +5664,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settingsGroupIndicators => 'Indicateurs et messages';
 
   @override
-  String get nightModePanelFill => 'Colorer le bouton du panneau supérieur';
+  String get nightModePanelFill => 'Couleur d\'accentuation pour la lune';
 
   @override
   String get settingsGroupFocusShape => 'Apparence du focus';
@@ -5768,4 +5772,29 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get sectionTitleSize => 'Taille du titre de section';
+
+  @override
+  String get backupSyncResume => 'Reprendre la synchronisation';
+
+  @override
+  String get backupSyncUseLocal => 'Utiliser les réglages de ce téléviseur';
+
+  @override
+  String get backupSyncUseRemote => 'Utiliser les réglages du stockage';
+
+  @override
+  String get backupSyncMergeLocal => 'Fusionner en privilégiant ce téléviseur';
+
+  @override
+  String get backupSyncMergeRemote => 'Fusionner en privilégiant le stockage';
+
+  @override
+  String backupSyncPreviousDate(String date) {
+    return 'Dernière synchronisation de ce téléviseur : $date';
+  }
+
+  @override
+  String backupSyncRemoteDate(String date) {
+    return 'Copie dans le stockage : $date';
+  }
 }

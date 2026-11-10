@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../tile_appearance.dart';
+import '../information_formats.dart';
 import 'remote_panel_service.dart';
 import '../category_appearance.dart';
 import '../models/category.dart';
@@ -74,13 +75,29 @@ class AppearanceService extends ChangeNotifier {
   AppearanceService(this.preferences);
   TileAppearance get appearance {
     final stored = TileAppearance.decode(preferences.getString(tileAppearanceKey));
+    final clockBehavior = decodeInformationClockBehavior(
+      preferences.get(sharedInformationClockBehaviorKey),
+    ) ?? legacyInformationClockBehavior(
+      stored,
+      showTime: preferences.getBool('show_time_in_status_bar') ?? true,
+    );
     return TileAppearance({
       if (preferences.containsKey('show_app_names_below_icons'))
         'labels': preferences.getBool('show_app_names_below_icons') == true ? 'all' : 'none',
       if (preferences.containsKey('show_category_titles'))
         'sectionTitles': preferences.getBool('show_category_titles'),
       ...stored.values,
-    });
+    }, clockBehavior);
+  }
+
+  InformationClockBehavior get informationClockBehavior =>
+      appearance.informationClockBehavior!;
+
+  Future<void> setInformationClockBehavior(InformationClockBehavior value) async {
+    if (!await preferences.setString(sharedInformationClockBehaviorKey, jsonEncode(value.toMap()))) {
+      throw StateError('Unable to save information clock behavior');
+    }
+    notifyListeners();
   }
   TileAppearance tilesFor(int id, {Category? contentSource}) {
     final style = category(id);

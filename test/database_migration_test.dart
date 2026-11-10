@@ -53,6 +53,14 @@ void main() {
       expect(app.customName, isNull);
       expect(app.hidden, isTrue);
       expect(app.launchCount, 12);
+      await db.deleteApps(['sample']);
+      expect(await db.getApplications(), isEmpty);
+      await db.persistApps([
+        AppsCompanion.insert(packageName: 'sample', name: 'Sample', version: '2'),
+      ]);
+      final reinstalled = (await db.getApplications()).single;
+      expect(reinstalled.version, '2');
+      expect(reinstalled.launchCount, 12);
     } finally {
       await db.close();
     }
@@ -95,7 +103,7 @@ void main() {
     } finally { await db.close(); }
   });
 
-  test("upgrade from v1 to v11", () async {
+  test("upgrade from v1 to the current schema", () async {
     final schema = await verifier.schemaAt(1);
 
     final oldDb = v1.DatabaseAtV1(schema.newConnection().executor);
@@ -133,7 +141,7 @@ void main() {
     await db.close();
   });
 
-  test("upgrade from v2 to v11", () async {
+  test("upgrade from v2 to the current schema", () async {
     final schema = await verifier.schemaAt(2);
 
     final oldDb = v2.DatabaseAtV2(schema.newConnection().executor);
@@ -171,7 +179,7 @@ void main() {
     await db.close();
   });
 
-  test("upgrade from v3 to v11", () async {
+  test("upgrade from v3 to the current schema", () async {
     final schema = await verifier.schemaAt(3);
 
     final oldDb = v3.DatabaseAtV3(schema.newConnection().executor);
@@ -209,7 +217,7 @@ void main() {
     await db.close();
   });
 
-  test("upgrade from v4 to v11", () async {
+  test("upgrade from v4 to the current schema", () async {
     final schema = await verifier.schemaAt(4);
 
     final oldDb = v4.DatabaseAtV4(schema.newConnection().executor);

@@ -13,6 +13,7 @@ import '../panel_tooltip.dart';
 import '../remote_text_input.dart';
 import '../weather_display_text.dart';
 import '../weather_glyph.dart';
+import 'format_editor_exit_guard.dart';
 import 'settings_help.dart';
 import 'settings_information.dart';
 
@@ -419,9 +420,9 @@ class _WeatherTextFormatDialogState extends State<WeatherTextFormatDialog> {
                     key: ValueKey('weather_format_add_${field.name}'),
                     focusNode: _insertFocus[field],
                     style: ButtonStyle(
-                      minimumSize: const WidgetStatePropertyAll(Size(0, 32)),
+                      minimumSize: const WidgetStatePropertyAll(Size(0, 20)),
                       padding: const WidgetStatePropertyAll(
-                        EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                        EdgeInsets.symmetric(horizontal: 4),
                       ),
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       textStyle: WidgetStatePropertyAll(
@@ -490,8 +491,6 @@ class _WeatherTextFormatDialogState extends State<WeatherTextFormatDialog> {
         ? _initialFormat ?? parsed.format
         : parsed.format;
     final theme = Theme.of(context);
-    final title =
-        '${l.weatherTextFormat} — ${widget.background ? l.informationOnBackground : l.topPanel}';
     final sample =
         widget.weather ??
         WeatherData(
@@ -516,7 +515,7 @@ class _WeatherTextFormatDialogState extends State<WeatherTextFormatDialog> {
     final keyboardOpen =
         _nativeKeyboardVisible || MediaQuery.viewInsetsOf(context).bottom > 0;
     if (keyboardOpen) _finishKeyboardOpening();
-    return Dialog(
+    final dialog = Dialog(
       alignment: keyboardOpen ? Alignment.topCenter : null,
       child: LayoutBuilder(
         builder: (context, constraints) {
@@ -525,37 +524,24 @@ class _WeatherTextFormatDialogState extends State<WeatherTextFormatDialog> {
             key: const Key('weather_format_body'),
             width: 900,
             child: Padding(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(6),
               child: FocusTraversalGroup(
                 policy: ReadingOrderTraversalPolicy(),
                 child: Semantics(
                   namesRoute: true,
-                  label: title,
+                  label: l.weatherTextFormat,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      DefaultTextStyle.merge(
+                      Text(
+                        l.weatherTextFormat,
+                        key: const Key('weather_format_title'),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: compact
                             ? theme.textTheme.bodySmall
                             : theme.textTheme.titleMedium,
-                        child: Row(
-                          children: [
-                            Flexible(
-                              child: Text(
-                                l.weatherTextFormat,
-                                key: const Key('weather_format_title'),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                            Text(
-                              ' — ${widget.background ? l.informationOnBackground : l.topPanel}',
-                              key: const Key('weather_format_destination'),
-                              maxLines: 1,
-                            ),
-                          ],
-                        ),
                       ),
                       const SizedBox(height: 2),
                       Row(
@@ -660,8 +646,10 @@ class _WeatherTextFormatDialogState extends State<WeatherTextFormatDialog> {
                                     onTap: _activateEditor,
                                     minLines: 1,
                                     maxLines: compact ? 1 : 2,
+                                    // Disabling suggestions gives Android a
+                                    // visible-password input type, which breaks
+                                    // Gboard TV's language switch.
                                     autocorrect: false,
-                                    enableSuggestions: false,
                                     textInputAction: TextInputAction.done,
                                     onSubmitted: (_) =>
                                         (format != null
@@ -689,7 +677,7 @@ class _WeatherTextFormatDialogState extends State<WeatherTextFormatDialog> {
                         child: SingleChildScrollView(
                           controller: _scroll,
                           child: Padding(
-                            padding: const EdgeInsets.only(top: 8),
+                            padding: const EdgeInsets.only(top: 6),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
@@ -739,7 +727,7 @@ class _WeatherTextFormatDialogState extends State<WeatherTextFormatDialog> {
                               padding: WidgetStatePropertyAll(
                                 EdgeInsets.symmetric(
                                   horizontal: 8,
-                                  vertical: 4,
+                                  vertical: 0,
                                 ),
                               ),
                               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -754,7 +742,7 @@ class _WeatherTextFormatDialogState extends State<WeatherTextFormatDialog> {
                               padding: WidgetStatePropertyAll(
                                 EdgeInsets.symmetric(
                                   horizontal: 8,
-                                  vertical: 4,
+                                  vertical: 0,
                                 ),
                               ),
                               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -771,7 +759,7 @@ class _WeatherTextFormatDialogState extends State<WeatherTextFormatDialog> {
                               padding: WidgetStatePropertyAll(
                                 EdgeInsets.symmetric(
                                   horizontal: 8,
-                                  vertical: 4,
+                                  vertical: 0,
                                 ),
                               ),
                               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -797,6 +785,7 @@ class _WeatherTextFormatDialogState extends State<WeatherTextFormatDialog> {
         },
       ),
     );
+    return FormatEditorExitGuard(child: dialog);
   }
 }
 

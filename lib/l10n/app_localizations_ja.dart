@@ -117,7 +117,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get fileStorageSettingsUnavailable =>
-      'このファームウェアでは、すべてのファイルへのアクセスを許可する画面を開けません。システムのファイル選択機能を使用するか、対応するファイルマネージャーをインストールしてください。';
+      'このファームウェアでは、すべてのファイルへのアクセスを許可する画面を開けません。外部ファイルブラウザーを使用するか、対応するファイルマネージャーをインストールしてください。';
 
   @override
   String get tileImageMode => 'タイルの画像';
@@ -4709,7 +4709,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get slideshowEnterFolderPath => 'フォルダのパスを入力';
 
   @override
-  String get slideshowSystemPicker => 'システムのファイル管理で選択';
+  String get slideshowSystemPicker => '外部ファイルブラウザーで選択';
 
   @override
   String get slideshowFolderPath => 'フォルダのパス';
@@ -4743,7 +4743,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get filePickerChoose => 'ファイルブラウザーを選択';
 
   @override
-  String get filePickerSystem => 'システムのファイル選択';
+  String get filePickerSystem => '外部ファイルブラウザー';
 
   @override
   String get filePickerBuiltIn => '内蔵ファイルブラウザー';
@@ -4857,6 +4857,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get backupLastSuccess => '最後に成功した操作:';
+
+  @override
+  String get informationObjectPlacement => '配置';
 
   @override
   String get informationPlacement => 'ブロックの配置';
@@ -5445,7 +5448,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settingsGroupIndicators => 'インジケーターとメッセージ';
 
   @override
-  String get nightModePanelFill => '上部パネルのボタンを塗りつぶす';
+  String get nightModePanelFill => '月のアイコンにアクセントカラーを適用';
 
   @override
   String get settingsGroupFocusShape => 'フォーカスの形';
@@ -5552,4 +5555,29 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get sectionTitleSize => 'セクション見出しのサイズ';
+
+  @override
+  String get backupSyncResume => '同期を再開';
+
+  @override
+  String get backupSyncUseLocal => 'このテレビの設定を使用';
+
+  @override
+  String get backupSyncUseRemote => 'ストレージの設定を使用';
+
+  @override
+  String get backupSyncMergeLocal => 'このテレビを優先して統合';
+
+  @override
+  String get backupSyncMergeRemote => 'ストレージを優先して統合';
+
+  @override
+  String backupSyncPreviousDate(String date) {
+    return 'このテレビの最終同期：$date';
+  }
+
+  @override
+  String backupSyncRemoteDate(String date) {
+    return 'ストレージ内のコピー：$date';
+  }
 }

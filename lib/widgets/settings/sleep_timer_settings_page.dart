@@ -402,7 +402,7 @@ class _SleepTimerEditorPageState extends State<SleepTimerEditorPage> {
           SettingsTextTile(
             title: l.sleepTimerHoursLabel,
             value: _hours,
-            enabled: !_busy,
+            busy: _busy,
             keyboardType: TextInputType.number,
             maxLength: 6,
             onChanged: (v) => setState(() => _hours = v),
@@ -410,7 +410,7 @@ class _SleepTimerEditorPageState extends State<SleepTimerEditorPage> {
           SettingsTextTile(
             title: l.sleepTimerMinutesLabel,
             value: _minutes,
-            enabled: !_busy,
+            busy: _busy,
             keyboardType: TextInputType.number,
             maxLength: 2,
             onChanged: (v) => setState(() => _minutes = v),
@@ -418,7 +418,7 @@ class _SleepTimerEditorPageState extends State<SleepTimerEditorPage> {
           SettingsTextTile(
             title: l.sleepTimerSecondsLabel,
             value: _seconds,
-            enabled: !_busy,
+            busy: _busy,
             keyboardType: TextInputType.number,
             maxLength: 2,
             onChanged: (v) => setState(() => _seconds = v),

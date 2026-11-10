@@ -9,4 +9,14 @@
     <string name="file_card_title">Acesso a arquivos</string>
     <string name="file_card_steps">Abra Permissões → Arquivos e mídia → Permitir gerenciamento de todos os arquivos. Depois pressione Voltar para retornar ao CuteLauncher.</string>
     <string name="file_card_open">Abrir configurações</string>
+    <string name="remap_error_black_screen">Black Screen não está instalado ou está indisponível.</string>
+    <string name="remap_error_app">O aplicativo atribuído está ausente ou não abre.</string>
+    <string name="remap_error_hdmi">A entrada HDMI atribuída está indisponível.</string>
+    <string name="remap_error_power">Falha no comando de energia. Verifique o ADB local.</string>
+    <string name="remap_error_permission">A TV bloqueou esta ação do controle remoto.</string>
+    <string name="remap_error_busy">Uma ação do controle remoto já está em andamento.</string>
+    <string name="remap_error_unavailable">Esta ação está indisponível na TV.</string>
+    <string name="remap_error_webhook_http">O webhook rejeitou a solicitação (HTTP %1$d).</string>
+    <string name="remap_error_webhook_timeout">O tempo de espera do webhook expirou.</string>
+    <string name="remap_error_webhook">Não foi possível conectar ao webhook.</string>
 </resources>

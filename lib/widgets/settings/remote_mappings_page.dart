@@ -98,28 +98,17 @@ class _RemoteMappingsPageState extends State<RemoteMappingsPage>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    if (!widget.switchOnly) _editing(true);
     _load();
-  }
-
-  Future<void> _editing(bool value) async {
-    try {
-      await _bridge.invokeMethod<void>('editing', value);
-    } catch (_) {
-      /* no mapping mutation */
-    }
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (!widget.switchOnly) _editing(state == AppLifecycleState.resumed);
     if (state == AppLifecycleState.resumed && !_busy) _load();
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    if (!widget.switchOnly) _editing(false);
     super.dispose();
   }
 
@@ -214,7 +203,8 @@ class _RemoteMappingsPageState extends State<RemoteMappingsPage>
     final l = AppLocalizations.of(context)!;
     final master = RoundedSwitchListTile(
       value: _config.enabled,
-      enabled: _loaded && !_busy,
+      enabled: _loaded,
+      busy: _busy,
       title: Text(l.remoteMappingsEnabled),
       onChanged: (value) => _load(_config.copyWith(enabled: value)),
     );
@@ -231,7 +221,8 @@ class _RemoteMappingsPageState extends State<RemoteMappingsPage>
           FocusableSettingsTile(
             title: Text(l.remoteMappingsAdd),
             leading: const Icon(Icons.add),
-            enabled: _loaded && !_busy && _config.bindings.length < 64,
+            enabled: _loaded && _config.bindings.length < 64,
+            busy: _busy,
             onPressed: () => _edit(null),
           ),
           for (final item in _config.bindings)
@@ -240,7 +231,7 @@ class _RemoteMappingsPageState extends State<RemoteMappingsPage>
               trailing: Text(
                 '${item.action == 'hdmi' ? _hdmiLabel(l, inputs, item.target) : _actionLabel(l, item.action)} · ${item.enabled ? l.enabled : l.disabled}',
               ),
-              enabled: !_busy,
+              busy: _busy,
               onPressed: () => _edit(item),
             ),
           if (_status != 'idle' && _status != 'success')
@@ -248,7 +239,7 @@ class _RemoteMappingsPageState extends State<RemoteMappingsPage>
           if (_failed) Text(l.remoteMappingInvalid),
           FocusableSettingsTile(
             title: Text(l.remoteMappingsReset),
-            enabled: !_busy,
+            busy: _busy,
             onPressed: _reset,
           ),
         ],
@@ -287,7 +278,8 @@ class _MappingEditor extends StatefulWidget {
   State<_MappingEditor> createState() => _MappingEditorState();
 }
 
-class _MappingEditorState extends State<_MappingEditor> {
+class _MappingEditorState extends State<_MappingEditor>
+    with WidgetsBindingObserver {
   late int _key = widget.mapping?.keyCode ?? 0;
   late String _action = widget.mapping?.action ?? 'home';
   late String _target = widget.mapping?.target ?? '';
@@ -305,6 +297,24 @@ class _MappingEditorState extends State<_MappingEditor> {
       _trigger != (widget.mapping?.trigger ?? 'press') ||
       _name != (widget.mapping?.name ?? '') ||
       _enabled != (widget.mapping?.enabled ?? true);
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _setEditing(true);
+  }
+
+  void _setEditing(bool editing) {
+    unawaited(
+      _bridge.invokeMethod<void>('editing', editing).catchError((Object _) {}),
+    );
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    _setEditing(state == AppLifecycleState.resumed);
+  }
 
   Future<void> _requestExit() async {
     if (_saving || _importing || _confirmingExit) return;
@@ -374,7 +384,8 @@ class _MappingEditorState extends State<_MappingEditor> {
 
   @override
   void dispose() {
-    _bridge.invokeMethod<void>('cancelLearn').catchError((Object _) {});
+    WidgetsBinding.instance.removeObserver(this);
+    _setEditing(false);
     super.dispose();
   }
 
@@ -592,13 +603,14 @@ class _MappingEditorState extends State<_MappingEditor> {
           child: ListView(
             children: [
               SettingsSection(
+                key: const ValueKey('remoteMappingKey'),
                 title: l.remoteMappingKey,
                 children: [
                   SettingsTextTile(
                     title: l.name,
                     value: _name,
                     emptyLabel: l.remoteMappingNamePlaceholder,
-                    enabled: !_saving && !_importing,
+                    busy: _saving || _importing,
                     maxLength: 80,
                     onChanged: (value) => setState(() => _name = value.trim()),
                   ),
@@ -609,21 +621,21 @@ class _MappingEditorState extends State<_MappingEditor> {
                           ? l.settingsValueNotSet
                           : '${remoteKeyLabel(l, _key)} ($_key)',
                     ),
-                    enabled: !_saving && !_importing,
+                    busy: _saving || _importing,
                     onPressed: _assign,
                   ),
                   if (widget.mapping != null)
                     RoundedSwitchListTile(
                       title: Text(l.remoteMappingsEnabled),
                       value: _enabled,
-                      enabled: !_saving && !_importing,
+                      busy: _saving || _importing,
                       onChanged: (value) => setState(() => _enabled = value),
                     ),
                   SettingsChoiceTile<String>(
                     title: l.remoteMappingTrigger,
                     value: _trigger,
                     options: const ['press', 'hold'],
-                    enabled: !_importing && !_saving,
+                    busy: _importing || _saving,
                     label: (value) => value == 'hold'
                         ? l.remoteMappingHold
                         : l.remoteMappingPress,
@@ -642,6 +654,7 @@ class _MappingEditorState extends State<_MappingEditor> {
                 ],
               ),
               SettingsSection(
+                key: const ValueKey('remoteMappingAction'),
                 title: l.remoteMappingAction,
                 children: [
                   FocusableSettingsTile(
@@ -656,7 +669,7 @@ class _MappingEditorState extends State<_MappingEditor> {
                           : _actionLabel(l, _action),
                     ),
                     wideValue: true,
-                    enabled: !_importing && !_saving,
+                    busy: _importing || _saving,
                     onPressed: _chooseAction,
                   ),
                   if (_action == 'sleep' || _action == 'reboot')
@@ -679,12 +692,12 @@ class _MappingEditorState extends State<_MappingEditor> {
                                 ?.name ??
                             (_target.isEmpty ? l.settingsValueNotSet : _target),
                       ),
-                      enabled: !_saving && !_importing,
+                      busy: _saving || _importing,
                       onPressed: _app,
                     ),
                   if (_action == 'webhook') ...[
                     SettingsTextTile(
-                      enabled: !_saving && !_importing,
+                      busy: _saving || _importing,
                       title: 'Webhook URL',
                       value: _target,
                       obscureText: true,
@@ -696,7 +709,7 @@ class _MappingEditorState extends State<_MappingEditor> {
                     FocusableSettingsTile(
                       title: Text(l.remoteMappingImport),
                       leading: const Icon(Icons.file_open_outlined),
-                      enabled: !_saving && !_importing,
+                      busy: _saving || _importing,
                       onPressed: _importWebhook,
                     ),
                     SettingsHelp(
@@ -710,13 +723,13 @@ class _MappingEditorState extends State<_MappingEditor> {
                 FocusableSettingsTile(
                   title: Text(l.delete),
                   leading: const Icon(Icons.delete_outline),
-                  enabled: !_saving && !_importing,
+                  busy: _saving || _importing,
                   onPressed: _delete,
                 ),
               FocusableSettingsTile(
                 title: Text(l.save),
                 leading: const Icon(Icons.check),
-                enabled: !_importing && !_saving,
+                busy: _importing || _saving,
                 onPressed: () async {
                   final error = _validationError(l);
                   if (error != null) {
@@ -764,6 +777,7 @@ class _ButtonCaptureDialog extends StatefulWidget {
 
 class _ButtonCaptureDialogState extends State<_ButtonCaptureDialog>
     with WidgetsBindingObserver {
+  final _okFocus = FocusNode();
   late int _captured = widget.initialKey;
   bool _learning = false;
   String? _error;
@@ -792,6 +806,7 @@ class _ButtonCaptureDialogState extends State<_ButtonCaptureDialog>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _cancel();
+    _okFocus.dispose();
     super.dispose();
   }
 
@@ -802,8 +817,9 @@ class _ButtonCaptureDialogState extends State<_ButtonCaptureDialog>
       _learning = true;
       _error = null;
     });
+    int? code;
     try {
-      final code = await _bridge
+      code = await _bridge
           .invokeMethod<int>('learn')
           .timeout(const Duration(seconds: 32));
       if (!mounted || request != _request) return;
@@ -823,7 +839,18 @@ class _ButtonCaptureDialogState extends State<_ButtonCaptureDialog>
         await _bridge
             .invokeMethod<void>('cancelLearn')
             .catchError((Object _) {});
-        if (mounted && request == _request) setState(() => _learning = false);
+        if (mounted && request == _request) {
+          setState(() => _learning = false);
+          if (code != null && code != 0) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted &&
+                  request == _request &&
+                  ModalRoute.isCurrentOf(context) == true) {
+                _okFocus.requestFocus();
+              }
+            });
+          }
+        }
       }
     }
   }
@@ -862,6 +889,7 @@ class _ButtonCaptureDialogState extends State<_ButtonCaptureDialog>
           child: Text(l.cancel),
         ),
         LauncherDialogButton(
+          focusNode: _okFocus,
           primary: true,
           onPressed: _captured == 0 || _learning
               ? null

@@ -16,87 +16,222 @@ import 'package:flauncher/weather_text_format.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  test('upgrade preserves legacy data; profiles edit, reload and restore independently', () async {
-    final legacy = WeatherTextFormat.fromBlocks(const [
+  final panelWeather = WeatherDisplayOptions(
+    format: WeatherTextFormat.standard,
+    fahrenheit: false,
+    warnings: true,
+  );
+  final backgroundWeather = WeatherDisplayOptions(
+    format: WeatherTextFormat.fromBlocks(const [
       WeatherTextBlock(WeatherTextField.feelsLike),
-    ])!;
-    SharedPreferences.setMockInitialValues({
-      'time_format': 'HH:mm',
-      'date_format': 'yyyy-MM-dd',
-      'temperature_unit': 'fahrenheit',
-      'show_weather_warnings': false,
-      weatherTextFormatKey: legacy.encode(),
-    });
-    final prefs = await SharedPreferences.getInstance();
-    final settings = SettingsService(prefs);
-    addTearDown(settings.dispose);
-    for (final background in [false, true]) {
+    ])!,
+    fahrenheit: true,
+    warnings: false,
+  );
+  const panelDateTime = InformationDateTimeFormat(
+    time: 'h:mm a',
+    date: 'MMMM d',
+  );
+  const backgroundDateTime = InformationDateTimeFormat(
+    time: 'HH:mm',
+    date: 'yyyy-MM-dd',
+  );
+
+  Map<String, Object> legacySettings(Map<String, String> placements) => {
+    tileAppearanceKey: jsonEncode({
+      'panelInformationPlacements': placements,
+      'panelInformationStyle': {'showColon': true, 'animate': false},
+      'panelBackgroundInformationStyle': {'showColon': false, 'animate': true},
+    }),
+    'information_panel_datetime': panelDateTime.encode(),
+    'information_background_datetime': backgroundDateTime.encode(),
+    'weather_panel_display': panelWeather.encode(),
+    'weather_background_display': backgroundWeather.encode(),
+  };
+
+  for (final timeOnBackground in [false, true]) {
+    test(
+      'upgrade keeps each active format and freezes it on placement changes: timeOnBackground=$timeOnBackground',
+      () async {
+        SharedPreferences.setMockInitialValues(
+          legacySettings({
+            'time': timeOnBackground ? 'background' : 'panel',
+            'date': timeOnBackground ? 'panel' : 'background',
+            'weather': timeOnBackground ? 'panel' : 'background',
+          }),
+        );
+        final prefs = await SharedPreferences.getInstance();
+        await SettingsService.upgradeInformationFormats(prefs);
+        final settings = SettingsService(prefs);
+        final appearance = AppearanceService(prefs);
+        addTearDown(settings.dispose);
+        addTearDown(appearance.dispose);
+
+        void expectClockBehavior() {
+          for (final background in [false, true]) {
+            final clock = appearance.appearance.renderedInformationStyle(
+              background: background,
+            );
+            expect(clock.showColon, !timeOnBackground);
+            expect(clock.animate, timeOnBackground);
+          }
+        }
+
+        expectClockBehavior();
+
+        final time = timeOnBackground
+            ? backgroundDateTime.time
+            : panelDateTime.time;
+        final date = timeOnBackground
+            ? panelDateTime.date
+            : backgroundDateTime.date;
+        final weather = timeOnBackground ? panelWeather : backgroundWeather;
+        expect(settings.timeFormat, time);
+        expect(settings.dateFormat, date);
+        expect(settings.informationWeather().encode(), weather.encode());
+
+        await prefs.setString(
+          tileAppearanceKey,
+          jsonEncode({
+            'panelInformationPlacements': {
+              'time': timeOnBackground ? 'panel' : 'background',
+              'date': timeOnBackground ? 'background' : 'panel',
+              'weather': timeOnBackground ? 'background' : 'panel',
+            },
+          }),
+        );
+        await SettingsService.upgradeInformationFormats(prefs);
+        settings.reload();
+        expect(settings.timeFormat, time);
+        expect(settings.dateFormat, date);
+        expect(settings.informationWeather().encode(), weather.encode());
+
+        await settings.setInformationDateTime(panelDateTime);
+        await settings.setInformationWeather(backgroundWeather);
+        expectClockBehavior();
+        final saved = settings.exportSettingsMap();
+        for (final key in informationFormatKeys) {
+          expect(syncSettingsKeys, contains(key));
+          expect(compatibleSettings({key: saved[key]}, {})[key], saved[key]);
+        }
+        await prefs.clear();
+        await settings.importSettingsMap(saved);
+        expectClockBehavior();
+        expect(settings.informationDateTime().encode(), panelDateTime.encode());
+        expect(
+          settings.informationWeather().encode(),
+          backgroundWeather.encode(),
+        );
+      },
+    );
+  }
+
+  test(
+    'old backup restores active formats over existing shared formats',
+    () async {
+      SharedPreferences.setMockInitialValues({
+        sharedInformationDateTimeKey: backgroundDateTime.encode(),
+        sharedInformationWeatherKey: panelWeather.encode(),
+        sharedInformationClockBehaviorKey: '{"showColon":false,"animate":true}',
+      });
+      final settings = SettingsService(await SharedPreferences.getInstance());
+      addTearDown(settings.dispose);
+      await settings.importSettingsMap(
+        legacySettings({
+          'time': 'panel',
+          'date': 'hidden',
+          'weather': 'background',
+        }),
+      );
+      expect(settings.informationDateTime().encode(), panelDateTime.encode());
       expect(
-        settings.informationDateTime(background: background).date,
-        'yyyy-MM-dd',
+        settings.informationWeather().encode(),
+        backgroundWeather.encode(),
+      );
+      final behavior = decodeInformationClockBehavior(
+        settings.exportSettingsMap()[sharedInformationClockBehaviorKey],
+      );
+      expect(behavior?.showColon, isTrue);
+      expect(behavior?.animate, isFalse);
+
+      expect(
+        backupSyncPartGroup('setting:$sharedInformationDateTimeKey'),
+        BackupSyncGroup.topPanel,
       );
       expect(
-        settings.informationWeather(background: background).format.encode(),
-        legacy.encode(),
+        backupSyncPartGroup('setting:$sharedInformationWeatherKey'),
+        BackupSyncGroup.weatherDisplay,
       );
       expect(
-        settings.informationWeather(background: background).fahrenheit,
-        isTrue,
+        backupSyncPartGroup('setting:$sharedInformationClockBehaviorKey'),
+        BackupSyncGroup.tiles,
       );
+    },
+  );
+
+  test(
+    'clock behavior migrates when date and time are already shared',
+    () async {
+      SharedPreferences.setMockInitialValues({
+        sharedInformationDateTimeKey: panelDateTime.encode(),
+        tileAppearanceKey: jsonEncode({
+          'panelInformationPlacements': {'time': 'background'},
+          'panelInformationStyle': {'showColon': true, 'animate': false},
+          'panelBackgroundInformationStyle': {
+            'showColon': false,
+            'animate': true,
+          },
+        }),
+      });
+      final prefs = await SharedPreferences.getInstance();
+      await SettingsService.upgradeInformationFormats(prefs);
       expect(
-        settings.informationWeather(background: background).warnings,
-        isFalse,
+        prefs.getString(sharedInformationDateTimeKey),
+        panelDateTime.encode(),
       );
-    }
-    await settings.setInformationDateTime(
-      const InformationDateTimeFormat(time: 'h:mm a', date: 'MMMM d'),
-    );
-    await settings.setInformationWeather(
-      const WeatherDisplayOptions(
-        format: WeatherTextFormat.standard,
-        fahrenheit: false,
-        warnings: true,
-      ),
-    );
-    expect(settings.informationDateTime(background: true).time, 'HH:mm');
-    expect(
-      settings.informationWeather(background: true).format.encode(),
-      legacy.encode(),
-    );
-    await settings.setInformationDateTime(
-      const InformationDateTimeFormat(time: 'H:mm', date: 'd MMM'),
-      background: true,
-    );
-    await settings.setInformationWeather(
-      WeatherDisplayOptions(format: legacy, fahrenheit: true, warnings: false),
-      background: true,
-    );
-    final saved = settings.exportSettingsMap();
-    final profile = settings.informationWeather().encode();
-    await settings.importSettingsMap({
-      'weather_panel_display': '{bad}',
-      'unrelated': false,
-    });
-    expect(settings.informationWeather().encode(), profile);
-    await prefs.clear();
-    await settings.importSettingsMap(saved);
-    expect(settings.timeFormat, 'h:mm a');
-    expect(settings.informationDateTime(background: true).time, 'H:mm');
-    expect(settings.useFahrenheit, isFalse);
-    expect(settings.informationWeather(background: true).fahrenheit, isTrue);
-    for (final key in informationFormatKeys) {
-      expect(syncSettingsKeys, contains(key));
-      expect(compatibleSettings({key: saved[key]}, {})[key], saved[key]);
-    }
-    expect(
-      backupSyncPartGroup('setting:weather_background_display'),
-      BackupSyncGroup.weatherDisplay,
-    );
-  });
+      final behavior = decodeInformationClockBehavior(
+        prefs.get(sharedInformationClockBehaviorKey),
+      );
+      expect(behavior?.showColon, isFalse);
+      expect(behavior?.animate, isTrue);
+    },
+  );
+
+  test(
+    'legacy whole-block placement and missing profile retain effective values',
+    () async {
+      SharedPreferences.setMockInitialValues({
+        tileAppearanceKey: jsonEncode({
+          'panelInformationPlacement': 'background',
+        }),
+        'show_weather_in_status_bar': true,
+        'information_panel_datetime': panelDateTime.encode(),
+        'weather_background_display': backgroundWeather.encode(),
+        'time_format': 'H:mm',
+        'date_format': 'd MMM',
+      });
+      final prefs = await SharedPreferences.getInstance();
+      await SettingsService.upgradeInformationFormats(prefs);
+      final settings = SettingsService(prefs);
+      addTearDown(settings.dispose);
+      expect(settings.timeFormat, 'H:mm');
+      expect(settings.dateFormat, 'd MMM');
+      expect(
+        settings.informationWeather().encode(),
+        backgroundWeather.encode(),
+      );
+    },
+  );
   test('appearance overrides preserve legacy color and explicit reset; quick panel shares panel only', () async {
     expect(const TileAppearance().weatherIconPack, WeatherIconPack.outline);
-    expect(const TileAppearance().forInformation(background: true).weatherIconPack, WeatherIconPack.outline);
-    expect(const TileAppearance({'weatherIconPack': 'standard'}).weatherIconPack, WeatherIconPack.standard);
+    expect(
+      const TileAppearance().forInformation(background: true).weatherIconPack,
+      WeatherIconPack.outline,
+    );
+    expect(
+      const TileAppearance({'weatherIconPack': 'standard'}).weatherIconPack,
+      WeatherIconPack.standard,
+    );
     SharedPreferences.setMockInitialValues({
       tileAppearanceKey: jsonEncode({
         'weatherTextColor': 0xff123456,
@@ -135,7 +270,10 @@ void main() {
     final popup = quick.appearanceFor(restored);
     expect(popup.weatherTextColor, restored.weatherTextColor);
     expect(restored.weatherIconPack, WeatherIconPack.standard);
-    expect(restored.forInformation(background: true).weatherIconPack, WeatherIconPack.standard);
+    expect(
+      restored.forInformation(background: true).weatherIconPack,
+      WeatherIconPack.standard,
+    );
     expect(popup.weatherIconPack, WeatherIconPack.standard);
     expect(popup.weatherIconColor, isNull);
     expect(popup.combinedInformation, isFalse);

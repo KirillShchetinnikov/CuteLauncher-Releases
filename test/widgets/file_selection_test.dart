@@ -445,7 +445,7 @@ void main() {
       await start(tester, 'pickImageDocument', (_) {});
       expect(find.text('Выбор проводника'), findsOneWidget);
       expect(calls.map((c) => c.method), ['filePickerAvailable']);
-      await tester.tap(find.text('Системный проводник'));
+      await tester.tap(find.text('Внешний проводник'));
       await tester.pumpAndSettle();
       expect(calls.map((c) => c.method), [
         'filePickerAvailable',
@@ -512,7 +512,7 @@ void main() {
     available = true;
     systemError = 'document_unavailable';
     await start(tester, 'pickWallpaperFolder', (_) {});
-    await tester.tap(find.text('Системный проводник'));
+    await tester.tap(find.text('Внешний проводник'));
     await tester.pumpAndSettle();
     expect(find.byType(LocalFileBrowser), findsOneWidget);
     await tester.tap(find.byTooltip('Закрыть'));

@@ -167,17 +167,13 @@ void main() {
     await settings.setShowDateInStatusBar(false);
     await settings.setShowDataWidgetInStatusBar(false);
     await pump(tester, const StatusBarObjectsPage());
-    await tester.tap(find.text('Clock, date and weather'));
+    await tester.tap(find.widgetWithText(FocusableSettingsTile, 'Settings'));
     await tester.pumpAndSettle();
     expect(find.byType(InformationSettingsPage), findsOneWidget);
     expect(find.text('Panel appearance'), findsOneWidget);
-    await tester.tap(find.text('Panel appearance'));
-    await tester.pumpAndSettle();
     await tester.tap(find.text('Object formats'));
     await tester.pumpAndSettle();
     await Navigator.of(tester.element(find.byType(InformationDataSettingsPage))).maybePop();
-    await tester.pumpAndSettle();
-    await Navigator.of(tester.element(find.byType(PanelInformationSettingsPage))).maybePop();
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(find.text('Weather settings'), 100);
     expect(find.text('Weather settings'), findsOneWidget);

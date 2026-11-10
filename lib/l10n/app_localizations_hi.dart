@@ -119,7 +119,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get fileStorageSettingsUnavailable =>
-      'इस फ़र्मवेयर में सभी फ़ाइलों तक पहुँच की स्क्रीन उपलब्ध नहीं है। सिस्टम फ़ाइल चयनकर्ता का उपयोग करें या संगत फ़ाइल प्रबंधक इंस्टॉल करें।';
+      'इस फ़र्मवेयर में सभी फ़ाइलों तक पहुँच की स्क्रीन उपलब्ध नहीं है। बाहरी फ़ाइल ब्राउज़र का उपयोग करें या संगत फ़ाइल प्रबंधक इंस्टॉल करें।';
 
   @override
   String get tileImageMode => 'टाइल की छवि';
@@ -4837,7 +4837,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get slideshowEnterFolderPath => 'फ़ोल्डर पथ दर्ज करें';
 
   @override
-  String get slideshowSystemPicker => 'सिस्टम फ़ाइल प्रबंधक में चुनें';
+  String get slideshowSystemPicker => 'बाहरी फ़ाइल ब्राउज़र में चुनें';
 
   @override
   String get slideshowFolderPath => 'फ़ोल्डर पथ';
@@ -4871,7 +4871,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get filePickerChoose => 'फ़ाइल ब्राउज़र चुनें';
 
   @override
-  String get filePickerSystem => 'सिस्टम फ़ाइल चयनकर्ता';
+  String get filePickerSystem => 'बाहरी फ़ाइल ब्राउज़र';
 
   @override
   String get filePickerBuiltIn => 'अंतर्निहित फ़ाइल ब्राउज़र';
@@ -4991,6 +4991,9 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get backupLastSuccess => 'अंतिम सफल कार्रवाई:';
+
+  @override
+  String get informationObjectPlacement => 'स्थान';
 
   @override
   String get informationPlacement => 'ब्लॉक का स्थान';
@@ -5585,7 +5588,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get settingsGroupIndicators => 'संकेतक और संदेश';
 
   @override
-  String get nightModePanelFill => 'ऊपरी पैनल के बटन में रंग भरें';
+  String get nightModePanelFill => 'चाँद के आइकन के लिए ऐक्सेंट रंग';
 
   @override
   String get settingsGroupFocusShape => 'फ़ोकस का रूप';
@@ -5693,4 +5696,29 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get sectionTitleSize => 'अनुभाग शीर्षक का आकार';
+
+  @override
+  String get backupSyncResume => 'सिंक फिर से शुरू करें';
+
+  @override
+  String get backupSyncUseLocal => 'इस टीवी की सेटिंग इस्तेमाल करें';
+
+  @override
+  String get backupSyncUseRemote => 'स्टोरेज की सेटिंग इस्तेमाल करें';
+
+  @override
+  String get backupSyncMergeLocal => 'इस टीवी को प्राथमिकता देकर मिलाएँ';
+
+  @override
+  String get backupSyncMergeRemote => 'स्टोरेज को प्राथमिकता देकर मिलाएँ';
+
+  @override
+  String backupSyncPreviousDate(String date) {
+    return 'इस टीवी का पिछला सिंक: $date';
+  }
+
+  @override
+  String backupSyncRemoteDate(String date) {
+    return 'स्टोरेज में मौजूद कॉपी: $date';
+  }
 }

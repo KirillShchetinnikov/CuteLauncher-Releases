@@ -181,7 +181,7 @@ void main() {
           await Future<void>.delayed(const Duration(milliseconds: 100));
         });
         await tester.pumpAndSettle();
-        await tester.tap(find.text('Системный проводник'));
+        await tester.tap(find.text('Внешний проводник'));
         await tester.pumpAndSettle();
         for (
           var attempt = 0;

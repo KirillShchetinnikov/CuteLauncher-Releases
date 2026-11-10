@@ -58,7 +58,7 @@ class OnlineWallpaperPage extends StatelessWidget {
             title: l.onlineWallpaperSource,
             value: config.source,
             options: const ['bing', 'wallhaven', 'apod', 'url', if (redditWallpapersAvailable) 'reddit'],
-            enabled: !service.loading,
+            busy: service.loading,
             label: (v) =>
                 v == 'apod' ? l.apodWallpaper : v == 'wallhaven' ? 'Wallhaven' : v == 'reddit' ? 'Reddit' : v == 'bing' ? l.bingWallpaper : l.onlineWallpaperUrlSource,
             onChanged: (v) => service.configure(config.copyWith(source: v)),
@@ -71,7 +71,7 @@ class OnlineWallpaperPage extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
               valueIcon: Icons.edit_outlined,
-              enabled: !service.loading,
+              busy: service.loading,
               onPressed: () => _source(context, service),
             ),
           if (config.source == 'wallhaven') ...[
@@ -79,7 +79,7 @@ class OnlineWallpaperPage extends StatelessWidget {
               title: l.redditWallpaperTheme,
               value: config.wallhavenTheme,
               options: wallhavenWallpaperThemes.keys.toList(),
-              enabled: !service.loading,
+              busy: service.loading,
               label: (v) => switch (v) {
                 'nature' => l.redditThemeNature,
                 'space' => l.redditThemeSpace,
@@ -93,7 +93,7 @@ class OnlineWallpaperPage extends StatelessWidget {
               title: l.onlineWallpaperInterval,
               value: config.intervalHours,
               options: const [1, 6, 12, 24],
-              enabled: !service.loading,
+              busy: service.loading,
               label: (v) => '$v ${l.onlineWallpaperHours}',
               onChanged: (v) => service.configure(config.copyWith(intervalHours: v)),
             ),
@@ -103,7 +103,7 @@ class OnlineWallpaperPage extends StatelessWidget {
               title: l.redditWallpaperTheme,
               value: config.redditTheme,
               options: redditWallpaperThemes.keys.toList(),
-              enabled: !service.loading,
+              busy: service.loading,
               valueBelow: true,
               label: (v) => '${switch (v) {
                 'nature' => l.redditThemeNature,
@@ -118,7 +118,7 @@ class OnlineWallpaperPage extends StatelessWidget {
               title: l.redditWallpaperResolution,
               value: config.redditResolution,
               options: redditWallpaperResolutions,
-              enabled: !service.loading,
+              busy: service.loading,
               valueBelow: true,
               label: (v) => switch (v) {
                 'hd' => 'HD · 1280 × 720',
@@ -131,7 +131,7 @@ class OnlineWallpaperPage extends StatelessWidget {
               title: l.onlineWallpaperInterval,
               value: config.intervalHours,
               options: const [1, 6, 12, 24],
-              enabled: !service.loading,
+              busy: service.loading,
               label: (v) => '$v ${l.onlineWallpaperHours}',
               onChanged: (v) => service.configure(config.copyWith(intervalHours: v)),
             ),
@@ -171,7 +171,7 @@ class OnlineWallpaperPage extends StatelessWidget {
                     }
                   },
           ),
-          if (service.loading) const LinearProgressIndicator(),
+          SizedBox(child: service.loading ? const LinearProgressIndicator() : null),
           if (service.failed)
             Padding(
               padding: const EdgeInsets.all(12),

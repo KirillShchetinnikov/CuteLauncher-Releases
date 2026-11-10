@@ -67,7 +67,7 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
                 localizations.exportBackup,
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
-              enabled: !_busy,
+              busy: _busy,
               onPressed: () => _run(() => _export(context, localizations)),
             ),
             FocusableSettingsTile(
@@ -76,7 +76,7 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
                 localizations.importBackup,
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
-              enabled: !_busy,
+              busy: _busy,
               onPressed: () => _run(() => _pickImport(context, localizations)),
             ),
             if (_busy) Text(localizations.loading),

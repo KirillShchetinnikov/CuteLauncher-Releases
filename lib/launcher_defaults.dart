@@ -111,7 +111,7 @@ abstract final class LauncherDefaults {
     'show_volume_in_status_bar': true,
     'show_nas_in_status_bar': true,
     'show_usb_in_status_bar': true,
-    'date_format': compactDateFormat,
+    'date_format': shortWeekdayDateFormat,
     weatherConfigurationKey: jsonEncode(
       const WeatherConfiguration(
         source: WeatherSource.openMeteo,

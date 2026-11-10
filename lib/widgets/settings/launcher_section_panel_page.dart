@@ -625,7 +625,8 @@ class _DeleteSectionTileState extends State<_DeleteSectionTile> {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      FocusableSettingsTile(enabled: widget.enabled && !_busy,
+      FocusableSettingsTile(enabled: widget.enabled,
+        busy: _busy,
         leading: const Icon(Icons.delete_outline),
         title: Text(l.delete, style: TextStyle(color: Theme.of(context).colorScheme.error)),
         onPressed: _delete),

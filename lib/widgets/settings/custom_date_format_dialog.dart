@@ -6,6 +6,7 @@ import '../../date_time_format.dart';
 import '../../l10n/app_localizations.dart';
 import '../launcher_dialog.dart';
 import '../remote_text_input.dart';
+import 'format_editor_exit_guard.dart';
 
 class DatePatternEditingController extends TextEditingController {
   DatePatternEditingController({super.text});
@@ -94,7 +95,7 @@ class _CustomDateFormatDialogState extends State<CustomDateFormatDialog> {
     }
     // Only the legend scrolls. EditableText may scroll its caret into view after
     // IME resize, so putting the preview and editor in that viewport hides them.
-    return Dialog(
+    final dialog = Dialog(
       child: LayoutBuilder(
         builder: (context, constraints) {
           final compact = constraints.maxHeight < 300;
@@ -277,5 +278,6 @@ class _CustomDateFormatDialogState extends State<CustomDateFormatDialog> {
         },
       ),
     );
+    return FormatEditorExitGuard(child: dialog);
   }
 }

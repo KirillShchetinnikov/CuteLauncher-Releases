@@ -1,4 +1,5 @@
 import 'package:flauncher/backup_schedule.dart';
+import 'package:flauncher/backup_sync.dart';
 import 'package:flauncher/backup_sync_groups.dart';
 import 'package:flauncher/widgets/settings/backup_sync_groups_page.dart';
 import 'package:flauncher/widgets/settings/backup_management_block.dart';
@@ -15,6 +16,7 @@ import 'package:flauncher/widgets/settings/settings_value_stepper.dart';
 import 'package:flauncher/widgets/rounded_switch_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
@@ -83,6 +85,7 @@ class _Automation extends ChangeNotifier implements BackupAutomationService {
   bool listFails = false;
   List<RemoteBackupFile>? returnedCopies;
   final manualRuns = <bool>[];
+  BackupSyncResumeChoice? resumeChoice;
   bool? lastBackupOnly;
   @override
   Future<void> deleteCopy(RemoteBackupFile copy) async {
@@ -138,10 +141,77 @@ class _Automation extends ChangeNotifier implements BackupAutomationService {
   }
 
   @override
+  Future<bool> resumeSynchronization(ChooseBackupSyncResume choose) async {
+    resumeChoice = await choose(DateTime(2026, 11, 9), DateTime(2026, 11, 10));
+    enabled = resumeChoice != null;
+    notifyListeners();
+    return enabled;
+  }
+
+  @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
 void main() {
+  testWidgets(
+    'resume offers all choices and Cancel or Back keeps the switch off',
+    (tester) async {
+      final automation = _Automation()..mode = BackupMode.synchronization;
+      await tester.pumpWidget(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider<AutomaticBackupService>.value(
+              value: _Automatic(),
+            ),
+            ChangeNotifierProvider<BackupAutomationService>.value(
+              value: automation,
+            ),
+          ],
+          child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: const Scaffold(body: BackupOptionsPage(sync: true)),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      final l = AppLocalizations.of(
+        tester.element(find.byType(BackupOptionsPage)),
+      )!;
+      Future<void> open() async {
+        await tester.tap(find.text(l.backupAutoEnabled));
+        await tester.pumpAndSettle();
+        expect(find.text(l.backupSyncResume), findsOneWidget);
+        for (final label in [
+          l.backupSyncUseLocal,
+          l.backupSyncUseRemote,
+          l.backupSyncMergeLocal,
+          l.backupSyncMergeRemote,
+        ]) {
+          expect(find.text(label), findsOneWidget);
+        }
+      }
+
+      await open();
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pumpAndSettle();
+      expect(find.text(l.backupSyncResume), findsNothing);
+      expect(automation.enabled, false);
+      await open();
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(find.text(l.backupSyncResume), findsNothing);
+      expect(automation.enabled, false);
+      await open();
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+      await tester.pumpAndSettle();
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pumpAndSettle();
+      expect(automation.enabled, true);
+      expect(automation.resumeChoice, BackupSyncResumeChoice.mergeRemote);
+    },
+  );
+
   for (final language in ['ru', 'en', 'ar']) {
     testWidgets(
       'backup source labels distinguish same-model TVs and old IDs $language',
@@ -429,7 +499,12 @@ void main() {
         automation.busy = true;
         automation.notifyListeners();
         await tester.pump();
-        expect(tester.widget<RoundedSwitchListTile>(weather).enabled, false);
+        expect(tester.widget<RoundedSwitchListTile>(weather).busy, true);
+        final focusBeforeBusyActivation = FocusManager.instance.primaryFocus;
+        await tester.tap(weather);
+        await tester.pump();
+        expect(tester.widget<RoundedSwitchListTile>(weather).value, false);
+        expect(FocusManager.instance.primaryFocus, same(focusBeforeBusyActivation));
         automation.busy = false;
         automation.notifyListeners();
         Navigator.of(tester.element(find.byType(BackupSyncGroupsPage))).pop();

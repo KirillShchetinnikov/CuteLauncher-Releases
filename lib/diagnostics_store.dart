@@ -404,6 +404,7 @@ class DiagnosticsStore {
   int get generation => _generation;
   final List<Map<String, Object>> _events = [];
   final List<Map<String, Object>> _failures = [];
+  final List<Map<String, Object>> _audioRouting = [];
   final Map<String, int> _counts = {};
   Map<dynamic, dynamic> Function()? settingsProvider;
   final Map<int, Map<String, Object>> _settings = {};
@@ -633,10 +634,71 @@ class DiagnosticsStore {
             .map((m) => m.group(0)!)
             .toList();
 
+  void recordAudioRouting(Map<Object?, Object?> raw, String output) {
+    final sample = <String, Object>{};
+    for (final key in const [
+      'api',
+      'selectedRouteCount',
+      'selectedRouteType',
+      'legacyRouteType',
+    ]) {
+      final value = raw[key];
+      if (value is int && value >= 0 && value <= 1000) sample[key] = value;
+    }
+    for (final key in const [
+      'legacyBluetooth',
+      'routerAvailable',
+      'hdmiSelected',
+      'routeNameMentionsHdmi',
+      'routeNameMentionsArc',
+      'frameworkHdmiLabelAvailable',
+      'routeTypeUnavailable',
+      'routeReadFailed',
+      'outputsReadFailed',
+      'legacyRouteReadFailed',
+      'legacyRouteMatchesHdmiLabel',
+    ]) {
+      final value = raw[key];
+      if (value is bool) sample[key] = value;
+    }
+    final types = raw['availableOutputTypes'];
+    if (types is List) {
+      sample['availableOutputTypes'] = types
+          .whereType<int>()
+          .where((type) => type >= 0 && type <= 1000)
+          .take(32)
+          .toList();
+    }
+    if (sample.isEmpty) return;
+    sample['widgetOutput'] =
+        const {
+          'tv',
+          'arc',
+          'earc',
+          'hdmi',
+          'bluetooth',
+          'usb',
+          'headphones',
+          'spdif',
+          'line',
+          'multiple',
+        }.contains(output)
+        ? output
+        : 'unknown';
+    final previous = _audioRouting.lastOrNull;
+    if (previous != null &&
+        jsonEncode(sample) == jsonEncode({...previous}..remove('elapsedMs'))) {
+      return;
+    }
+    if (_audioRouting.length == 16) _audioRouting.removeAt(0);
+    _audioRouting.add({...sample, 'elapsedMs': _clock.elapsedMilliseconds});
+  }
+
   void clear() {
     _generation++;
     _events.clear();
     _failures.clear();
+    _audioRouting.clear();
     _counts.clear();
     _settings.clear();
     _lastSettingsId = null;
@@ -717,6 +779,8 @@ class DiagnosticsStore {
       'operationCounts': Map<String, int>.from(_counts),
       'recentOperations': jsonDecode(jsonEncode(_events)),
       'failures': jsonDecode(jsonEncode(_failures)),
+      if (_audioRouting.isNotEmpty)
+        'audioRouting': jsonDecode(jsonEncode(_audioRouting)),
       'nativeShell': {
         for (final key in ['recent', 'failures'])
           key:

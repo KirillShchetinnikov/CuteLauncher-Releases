@@ -118,7 +118,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get fileStorageSettingsUnavailable =>
-      'لا توفّر هذه البرامج الثابتة شاشة للوصول إلى جميع الملفات. استخدم منتقي ملفات النظام أو ثبّت مدير ملفات متوافقًا.';
+      'لا توفّر هذه البرامج الثابتة شاشة للوصول إلى جميع الملفات. استخدم مستعرض ملفات خارجي أو ثبّت مدير ملفات متوافقًا.';
 
   @override
   String get tileImageMode => 'صورة البلاطة';
@@ -4815,7 +4815,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get slideshowEnterFolderPath => 'إدخال مسار المجلد';
 
   @override
-  String get slideshowSystemPicker => 'الاختيار في مدير ملفات النظام';
+  String get slideshowSystemPicker => 'الاختيار في مستعرض الملفات الخارجي';
 
   @override
   String get slideshowFolderPath => 'مسار المجلد';
@@ -4849,7 +4849,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get filePickerChoose => 'اختيار متصفح الملفات';
 
   @override
-  String get filePickerSystem => 'منتقي ملفات النظام';
+  String get filePickerSystem => 'مستعرض ملفات خارجي';
 
   @override
   String get filePickerBuiltIn => 'متصفح الملفات المدمج';
@@ -4967,6 +4967,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get backupLastSuccess => 'آخر إجراء ناجح:';
+
+  @override
+  String get informationObjectPlacement => 'الموضع';
 
   @override
   String get informationPlacement => 'موضع المجموعة';
@@ -5560,7 +5563,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get settingsGroupIndicators => 'المؤشرات والرسائل';
 
   @override
-  String get nightModePanelFill => 'تلوين زر اللوحة العلوية';
+  String get nightModePanelFill => 'لون تمييز لأيقونة القمر';
 
   @override
   String get settingsGroupFocusShape => 'مظهر التركيز';
@@ -5668,4 +5671,29 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get sectionTitleSize => 'حجم عنوان القسم';
+
+  @override
+  String get backupSyncResume => 'استئناف المزامنة';
+
+  @override
+  String get backupSyncUseLocal => 'استخدام إعدادات هذا التلفزيون';
+
+  @override
+  String get backupSyncUseRemote => 'استخدام إعدادات التخزين';
+
+  @override
+  String get backupSyncMergeLocal => 'دمج مع أولوية لهذا التلفزيون';
+
+  @override
+  String get backupSyncMergeRemote => 'دمج مع أولوية للتخزين';
+
+  @override
+  String backupSyncPreviousDate(String date) {
+    return 'آخر مزامنة لهذا التلفزيون: $date';
+  }
+
+  @override
+  String backupSyncRemoteDate(String date) {
+    return 'نسخة التخزين: $date';
+  }
 }

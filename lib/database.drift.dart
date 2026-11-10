@@ -2,6 +2,244 @@
 // ignore_for_file: type=lint
 part of 'database.dart';
 
+class ArchivedAppLaunchCounts extends Table
+    with TableInfo<ArchivedAppLaunchCounts, ArchivedAppLaunchCount> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  ArchivedAppLaunchCounts(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _packageNameMeta = const VerificationMeta(
+    'packageName',
+  );
+  late final GeneratedColumn<String> packageName = GeneratedColumn<String>(
+    'package_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    $customConstraints: 'NOT NULL PRIMARY KEY',
+  );
+  static const VerificationMeta _launchCountMeta = const VerificationMeta(
+    'launchCount',
+  );
+  late final GeneratedColumn<int> launchCount = GeneratedColumn<int>(
+    'launch_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    $customConstraints: 'NOT NULL',
+  );
+  @override
+  List<GeneratedColumn> get $columns => [packageName, launchCount];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'archived_app_launch_counts';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ArchivedAppLaunchCount> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('package_name')) {
+      context.handle(
+        _packageNameMeta,
+        packageName.isAcceptableOrUnknown(
+          data['package_name']!,
+          _packageNameMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_packageNameMeta);
+    }
+    if (data.containsKey('launch_count')) {
+      context.handle(
+        _launchCountMeta,
+        launchCount.isAcceptableOrUnknown(
+          data['launch_count']!,
+          _launchCountMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_launchCountMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {packageName};
+  @override
+  ArchivedAppLaunchCount map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ArchivedAppLaunchCount(
+      packageName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}package_name'],
+      )!,
+      launchCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}launch_count'],
+      )!,
+    );
+  }
+
+  @override
+  ArchivedAppLaunchCounts createAlias(String alias) {
+    return ArchivedAppLaunchCounts(attachedDatabase, alias);
+  }
+
+  @override
+  bool get dontWriteConstraints => true;
+}
+
+class ArchivedAppLaunchCount extends DataClass
+    implements Insertable<ArchivedAppLaunchCount> {
+  final String packageName;
+  final int launchCount;
+  const ArchivedAppLaunchCount({
+    required this.packageName,
+    required this.launchCount,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['package_name'] = Variable<String>(packageName);
+    map['launch_count'] = Variable<int>(launchCount);
+    return map;
+  }
+
+  ArchivedAppLaunchCountsCompanion toCompanion(bool nullToAbsent) {
+    return ArchivedAppLaunchCountsCompanion(
+      packageName: Value(packageName),
+      launchCount: Value(launchCount),
+    );
+  }
+
+  factory ArchivedAppLaunchCount.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ArchivedAppLaunchCount(
+      packageName: serializer.fromJson<String>(json['package_name']),
+      launchCount: serializer.fromJson<int>(json['launch_count']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'package_name': serializer.toJson<String>(packageName),
+      'launch_count': serializer.toJson<int>(launchCount),
+    };
+  }
+
+  ArchivedAppLaunchCount copyWith({String? packageName, int? launchCount}) =>
+      ArchivedAppLaunchCount(
+        packageName: packageName ?? this.packageName,
+        launchCount: launchCount ?? this.launchCount,
+      );
+  ArchivedAppLaunchCount copyWithCompanion(
+    ArchivedAppLaunchCountsCompanion data,
+  ) {
+    return ArchivedAppLaunchCount(
+      packageName: data.packageName.present
+          ? data.packageName.value
+          : this.packageName,
+      launchCount: data.launchCount.present
+          ? data.launchCount.value
+          : this.launchCount,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ArchivedAppLaunchCount(')
+          ..write('packageName: $packageName, ')
+          ..write('launchCount: $launchCount')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(packageName, launchCount);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ArchivedAppLaunchCount &&
+          other.packageName == this.packageName &&
+          other.launchCount == this.launchCount);
+}
+
+class ArchivedAppLaunchCountsCompanion
+    extends UpdateCompanion<ArchivedAppLaunchCount> {
+  final Value<String> packageName;
+  final Value<int> launchCount;
+  final Value<int> rowid;
+  const ArchivedAppLaunchCountsCompanion({
+    this.packageName = const Value.absent(),
+    this.launchCount = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ArchivedAppLaunchCountsCompanion.insert({
+    required String packageName,
+    required int launchCount,
+    this.rowid = const Value.absent(),
+  }) : packageName = Value(packageName),
+       launchCount = Value(launchCount);
+  static Insertable<ArchivedAppLaunchCount> custom({
+    Expression<String>? packageName,
+    Expression<int>? launchCount,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (packageName != null) 'package_name': packageName,
+      if (launchCount != null) 'launch_count': launchCount,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ArchivedAppLaunchCountsCompanion copyWith({
+    Value<String>? packageName,
+    Value<int>? launchCount,
+    Value<int>? rowid,
+  }) {
+    return ArchivedAppLaunchCountsCompanion(
+      packageName: packageName ?? this.packageName,
+      launchCount: launchCount ?? this.launchCount,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (packageName.present) {
+      map['package_name'] = Variable<String>(packageName.value);
+    }
+    if (launchCount.present) {
+      map['launch_count'] = Variable<int>(launchCount.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ArchivedAppLaunchCountsCompanion(')
+          ..write('packageName: $packageName, ')
+          ..write('launchCount: $launchCount, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $AppsTable extends Apps with TableInfo<$AppsTable, App> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -1149,7 +1387,17 @@ class LauncherSpacersCompanion extends UpdateCompanion<LauncherSpacer> {
 abstract class _$FLauncherDatabase extends GeneratedDatabase {
   _$FLauncherDatabase(QueryExecutor e) : super(e);
   $FLauncherDatabaseManager get managers => $FLauncherDatabaseManager(this);
+  late final ArchivedAppLaunchCounts archivedAppLaunchCounts =
+      ArchivedAppLaunchCounts(this);
   late final $AppsTable apps = $AppsTable(this);
+  late final Trigger archiveAppLaunchCount = Trigger(
+    'CREATE TRIGGER archive_app_launch_count AFTER DELETE ON apps WHEN OLD.launch_count > 0 BEGIN INSERT INTO archived_app_launch_counts (package_name, launch_count) VALUES (OLD.package_name, OLD.launch_count) ON CONFLICT (package_name) DO UPDATE SET launch_count = excluded.launch_count;END',
+    'archive_app_launch_count',
+  );
+  late final Trigger recoverAppLaunchCount = Trigger(
+    'CREATE TRIGGER recover_app_launch_count AFTER INSERT ON apps WHEN EXISTS (SELECT 1 FROM archived_app_launch_counts WHERE package_name = NEW.package_name) BEGIN UPDATE apps SET launch_count = max(NEW.launch_count, (SELECT launch_count FROM archived_app_launch_counts WHERE package_name = NEW.package_name)) WHERE package_name = NEW.package_name;DELETE FROM archived_app_launch_counts WHERE package_name = NEW.package_name;END',
+    'recover_app_launch_count',
+  );
   late final $CategoriesTable categories = $CategoriesTable(this);
   late final $AppsCategoriesTable appsCategories = $AppsCategoriesTable(this);
   late final $LauncherSpacersTable launcherSpacers = $LauncherSpacersTable(
@@ -1160,13 +1408,35 @@ abstract class _$FLauncherDatabase extends GeneratedDatabase {
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
+    archivedAppLaunchCounts,
     apps,
+    archiveAppLaunchCount,
+    recoverAppLaunchCount,
     categories,
     appsCategories,
     launcherSpacers,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'apps',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [
+        TableUpdate('archived_app_launch_counts', kind: UpdateKind.insert),
+      ],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'apps',
+        limitUpdateKind: UpdateKind.insert,
+      ),
+      result: [
+        TableUpdate('apps', kind: UpdateKind.update),
+        TableUpdate('archived_app_launch_counts', kind: UpdateKind.delete),
+      ],
+    ),
     WritePropagation(
       on: TableUpdateQuery.onTableName(
         'categories',
@@ -1184,6 +1454,177 @@ abstract class _$FLauncherDatabase extends GeneratedDatabase {
   ]);
 }
 
+typedef $ArchivedAppLaunchCountsCreateCompanionBuilder =
+    ArchivedAppLaunchCountsCompanion Function({
+      required String packageName,
+      required int launchCount,
+      Value<int> rowid,
+    });
+typedef $ArchivedAppLaunchCountsUpdateCompanionBuilder =
+    ArchivedAppLaunchCountsCompanion Function({
+      Value<String> packageName,
+      Value<int> launchCount,
+      Value<int> rowid,
+    });
+
+class $ArchivedAppLaunchCountsFilterComposer
+    extends Composer<_$FLauncherDatabase, ArchivedAppLaunchCounts> {
+  $ArchivedAppLaunchCountsFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get packageName => $composableBuilder(
+    column: $table.packageName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get launchCount => $composableBuilder(
+    column: $table.launchCount,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $ArchivedAppLaunchCountsOrderingComposer
+    extends Composer<_$FLauncherDatabase, ArchivedAppLaunchCounts> {
+  $ArchivedAppLaunchCountsOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get packageName => $composableBuilder(
+    column: $table.packageName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get launchCount => $composableBuilder(
+    column: $table.launchCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $ArchivedAppLaunchCountsAnnotationComposer
+    extends Composer<_$FLauncherDatabase, ArchivedAppLaunchCounts> {
+  $ArchivedAppLaunchCountsAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get packageName => $composableBuilder(
+    column: $table.packageName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get launchCount => $composableBuilder(
+    column: $table.launchCount,
+    builder: (column) => column,
+  );
+}
+
+class $ArchivedAppLaunchCountsTableManager
+    extends
+        RootTableManager<
+          _$FLauncherDatabase,
+          ArchivedAppLaunchCounts,
+          ArchivedAppLaunchCount,
+          $ArchivedAppLaunchCountsFilterComposer,
+          $ArchivedAppLaunchCountsOrderingComposer,
+          $ArchivedAppLaunchCountsAnnotationComposer,
+          $ArchivedAppLaunchCountsCreateCompanionBuilder,
+          $ArchivedAppLaunchCountsUpdateCompanionBuilder,
+          (
+            ArchivedAppLaunchCount,
+            BaseReferences<
+              _$FLauncherDatabase,
+              ArchivedAppLaunchCounts,
+              ArchivedAppLaunchCount
+            >,
+          ),
+          ArchivedAppLaunchCount,
+          PrefetchHooks Function()
+        > {
+  $ArchivedAppLaunchCountsTableManager(
+    _$FLauncherDatabase db,
+    ArchivedAppLaunchCounts table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $ArchivedAppLaunchCountsFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $ArchivedAppLaunchCountsOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $ArchivedAppLaunchCountsAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> packageName = const Value.absent(),
+                Value<int> launchCount = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ArchivedAppLaunchCountsCompanion(
+                packageName: packageName,
+                launchCount: launchCount,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String packageName,
+                required int launchCount,
+                Value<int> rowid = const Value.absent(),
+              }) => ArchivedAppLaunchCountsCompanion.insert(
+                packageName: packageName,
+                launchCount: launchCount,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<ArchivedAppLaunchCounts, ArchivedAppLaunchCount>(
+                    table,
+                  ),
+                  BaseReferences<
+                    _$FLauncherDatabase,
+                    ArchivedAppLaunchCounts,
+                    ArchivedAppLaunchCount
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $ArchivedAppLaunchCountsProcessedTableManager =
+    ProcessedTableManager<
+      _$FLauncherDatabase,
+      ArchivedAppLaunchCounts,
+      ArchivedAppLaunchCount,
+      $ArchivedAppLaunchCountsFilterComposer,
+      $ArchivedAppLaunchCountsOrderingComposer,
+      $ArchivedAppLaunchCountsAnnotationComposer,
+      $ArchivedAppLaunchCountsCreateCompanionBuilder,
+      $ArchivedAppLaunchCountsUpdateCompanionBuilder,
+      (
+        ArchivedAppLaunchCount,
+        BaseReferences<
+          _$FLauncherDatabase,
+          ArchivedAppLaunchCounts,
+          ArchivedAppLaunchCount
+        >,
+      ),
+      ArchivedAppLaunchCount,
+      PrefetchHooks Function()
+    >;
 typedef $$AppsTableCreateCompanionBuilder = AppsCompanion Function({
   required String packageName,
   required String name,
@@ -2454,6 +2895,8 @@ typedef $$LauncherSpacersTableProcessedTableManager =
 class $FLauncherDatabaseManager {
   final _$FLauncherDatabase _db;
   $FLauncherDatabaseManager(this._db);
+  $ArchivedAppLaunchCountsTableManager get archivedAppLaunchCounts =>
+      $ArchivedAppLaunchCountsTableManager(_db, _db.archivedAppLaunchCounts);
   $$AppsTableTableManager get apps => $$AppsTableTableManager(_db, _db.apps);
   $$CategoriesTableTableManager get categories =>
       $$CategoriesTableTableManager(_db, _db.categories);

@@ -18,6 +18,7 @@ final _schema = <String, Object>{
   for (final key in syncSettingsKeys) key: false,
   for (final key in [
     ...informationFormatKeys,
+    ...legacyInformationFormatKeys,
     'app_language',
     'accent_color',
     'app_banner_shape',

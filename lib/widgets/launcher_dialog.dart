@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -336,7 +338,7 @@ ThemeData launcherDialogTheme(BuildContext context) {
     (safe.right - 24).clamp(style.panelMargin, double.infinity),
     keyboard ? 0 : style.panelMargin,
   );
-  return InterfaceSkin.of(context).apply(theme.copyWith(
+  final dialogTheme = theme.copyWith(
     dialogTheme: theme.dialogTheme.copyWith(
       clipBehavior: topInset > 0
           ? Clip.antiAlias : theme.dialogTheme.clipBehavior,
@@ -393,11 +395,12 @@ ThemeData launcherDialogTheme(BuildContext context) {
                     !states.contains(WidgetState.disabled)
                 ? colors.onSurface
                 : Colors.transparent,
-            width: style.rowFocusWidth,
+            width: math.max(4.0, style.rowFocusWidth),
+            strokeAlign: BorderSide.strokeAlignOutside,
           ),
         ),
         shape: WidgetStatePropertyAll(
-          RoundedRectangleBorder(
+          _DialogButtonBorder(
             borderRadius: BorderRadius.circular(style.rowRadius),
           ),
         ),
@@ -407,7 +410,21 @@ ThemeData launcherDialogTheme(BuildContext context) {
         ),
       ),
     ),
-  ));
+  );
+  final skin = InterfaceSkin.of(context);
+  final skinnedTheme = skin.apply(dialogTheme);
+  // Materials may style the fill, but must not replace the separate focus ring
+  // with an accent border that disappears against primary/danger fills.
+  return skinnedTheme.copyWith(
+    textButtonTheme: TextButtonThemeData(
+      style: skinnedTheme.textButtonTheme.style!.copyWith(
+        side: dialogTheme.textButtonTheme.style!.side,
+        shape: WidgetStatePropertyAll(_DialogButtonBorder(
+          borderRadius: BorderRadius.circular(skin.standard ? style.rowRadius : skin.radius),
+        )),
+      ),
+    ),
+  );
 }
 
 /// A bounded, scrollable body with a footer that stays visible. The explicit
@@ -478,38 +495,71 @@ class LauncherDialogButton extends StatelessWidget {
           states.contains(WidgetState.disabled) ? colors.onSurface.withValues(alpha: .08) : colors.primary),
       overlayColor: WidgetStateProperty.resolveWith((states) =>
           colors.onPrimary.withValues(alpha: states.contains(WidgetState.pressed) ? .20 : 0)),
-      side: WidgetStateProperty.resolveWith((states) => BorderSide(
-          color: states.contains(WidgetState.focused) ? colors.onPrimary : Colors.transparent,
-          width: LauncherStyle.of(context).rowFocusWidth)),
     );
     final dangerStyle = ButtonStyle(
       foregroundColor: WidgetStateProperty.resolveWith((states) =>
           states.contains(WidgetState.disabled) ? null : primary ? colors.onError : colors.error),
       backgroundColor: WidgetStateProperty.resolveWith((states) =>
           states.contains(WidgetState.disabled) ? null : primary ? colors.error : colors.errorContainer),
-      side: WidgetStateProperty.resolveWith((states) => states.contains(WidgetState.focused)
-          ? BorderSide(color: primary ? colors.onError : colors.error, width: LauncherStyle.of(context).rowFocusWidth)
-          : const BorderSide(color: Colors.transparent)),
     );
     final effectiveStyle = danger ? dangerStyle.merge(base)
         : primary ? primaryStyle.merge(base) : base;
-    return TextButton(
-      autofocus: autofocus,
-      focusNode: focusNode,
-      onPressed: onPressed == null
-          ? null
-          : () {
-              if (isCancel) {
-                showActionNotice(
-                  context,
-                  AppLocalizations.of(context)!.actionCancelled,
-                );
-              }
-              onPressed!();
-            },
-      style: effectiveStyle,
-      child: child,
+    return Padding(
+      // Reserve the ring even when idle, including in clipped custom footers.
+      padding: EdgeInsets.all(_DialogButtonBorder.gap +
+          math.max(4.0, LauncherStyle.of(context).rowFocusWidth)),
+      child: TextButton(
+        autofocus: autofocus,
+        focusNode: focusNode,
+        onPressed: onPressed == null
+            ? null
+            : () {
+                if (isCancel) {
+                  showActionNotice(
+                    context,
+                    AppLocalizations.of(context)!.actionCancelled,
+                  );
+                }
+                onPressed!();
+              },
+        style: effectiveStyle,
+        child: child,
+      ),
     );
+  }
+}
+
+/// Keep the focus ring separate from the fill, including during interpolation.
+class _DialogButtonBorder extends RoundedRectangleBorder {
+  static const gap = 2.0;
+
+  const _DialogButtonBorder({super.side, super.borderRadius});
+
+  @override
+  _DialogButtonBorder copyWith({BorderSide? side, BorderRadiusGeometry? borderRadius}) =>
+      _DialogButtonBorder(side: side ?? this.side,
+          borderRadius: borderRadius ?? this.borderRadius);
+
+  @override
+  ShapeBorder scale(double t) => _DialogButtonBorder(
+      side: side.scale(t), borderRadius: borderRadius * t);
+
+  @override
+  ShapeBorder? lerpFrom(ShapeBorder? a, double t) => a is _DialogButtonBorder
+      ? _DialogButtonBorder(side: BorderSide.lerp(a.side, side, t),
+          borderRadius: BorderRadiusGeometry.lerp(a.borderRadius, borderRadius, t)!)
+      : super.lerpFrom(a, t);
+
+  @override
+  ShapeBorder? lerpTo(ShapeBorder? b, double t) => b is _DialogButtonBorder
+      ? b.lerpFrom(this, t)
+      : super.lerpTo(b, t);
+
+  @override
+  void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {
+    if (side.style == BorderStyle.none || side.width == 0) return;
+    final inner = borderRadius.resolve(textDirection).toRRect(rect).inflate(gap);
+    canvas.drawDRRect(inner.inflate(side.width), inner, Paint()..color = side.color);
   }
 }
 

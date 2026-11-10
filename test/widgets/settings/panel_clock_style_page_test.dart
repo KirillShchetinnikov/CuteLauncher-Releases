@@ -18,9 +18,6 @@ import 'package:flauncher/widgets/settings/date_time_format_page.dart';
 import 'package:flauncher/widgets/settings/color_palette_dialog.dart';
 import 'package:flauncher/widgets/settings/panel_clock_style_page.dart';
 import 'package:flauncher/widgets/settings/information_settings_page.dart';
-import 'package:flauncher/widgets/settings/information_preview.dart';
-import 'package:flauncher/widgets/settings/settings_page_layout.dart';
-import 'package:flauncher/widgets/settings/settings_menu_layout.dart';
 import 'package:flauncher/widgets/rounded_switch_list_tile.dart';
 import 'package:flauncher/widgets/settings/settings_value_stepper.dart';
 
@@ -59,68 +56,36 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  for (final background in [false, true]) {
-    testWidgets('composition separates objects and edits clock behavior: background=$background', (tester) async {
-      final key = background ? 'panelBackgroundInformationStyle' : 'panelInformationStyle';
-      await appearance.set(key, {'showColon': true, 'animate': false});
-      final other = background
-          ? appearance.appearance.informationStyle.values
-          : appearance.appearance.backgroundInformationStyle.values;
-      await pump(tester, SettingsMenuLayout(
-        onRight: false, informationObscured: true,
-        child: InformationDataSettingsPage(background: background),
-      ));
-      expect(find.byType(InformationPreview), findsNothing);
-      expect(tester.widget<SettingsPageLayout>(find.byType(SettingsPageLayout)).header, isNull);
-      final l = AppLocalizations.of(tester.element(find.byType(InformationDataSettingsPage)))!;
-      final positions = <double>[];
-      for (final id in ['time', 'date', 'weather']) {
-        final header = find.byKey(ValueKey('information-$id-section'));
-        await tester.scrollUntilVisible(header, 100);
-        await tester.pumpAndSettle();
-        expect(header, findsOneWidget);
-        expect(find.descendant(of: header, matching: find.byWidgetPredicate(
-          (widget) => widget is Semantics && widget.properties.header == true)),
-          findsOneWidget);
-        positions.add(tester.getTopLeft(header).dy +
-          Scrollable.of(tester.element(header)).position.pixels);
-      }
-      expect(positions[1], greaterThan(positions[0]));
-      expect(positions[2], greaterThan(positions[1]));
-      await tester.scrollUntilVisible(find.byKey(const ValueKey('information-time-section')), -100);
-      await tester.pumpAndSettle();
-      expect(find.text(l.informationTimeFormat), findsOneWidget);
-      expect(find.text(l.informationDateFormat), findsOneWidget);
-      final colon = find.widgetWithText(RoundedSwitchListTile, l.clockShowColon);
-      final animation = find.widgetWithText(RoundedSwitchListTile, l.clockAnimate);
-      await tester.scrollUntilVisible(colon, 100);
-      Focus.of(tester.element(find.text(l.clockShowColon))).requestFocus();
-      await tester.pumpAndSettle();
-      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
-      await tester.pumpAndSettle();
-      await tester.scrollUntilVisible(animation, 100);
-      await tester.tap(animation);
-      await tester.pumpAndSettle();
-      final restored = AppearanceService(await SharedPreferences.getInstance());
-      final style = background ? restored.appearance.backgroundInformationStyle : restored.appearance.informationStyle;
+  testWidgets('shared formats edit clock behavior for both placements', (tester) async {
+    await appearance.set('panelInformationStyle', {'showColon': true, 'animate': false});
+    final stored = appearance.appearance.values;
+    await pump(tester, const InformationDataSettingsPage());
+    final l = AppLocalizations.of(tester.element(find.byType(InformationDataSettingsPage)))!;
+    final colon = find.widgetWithText(RoundedSwitchListTile, l.clockShowColon);
+    final animation = find.widgetWithText(RoundedSwitchListTile, l.clockAnimate);
+    await tester.scrollUntilVisible(colon, 100);
+    Focus.of(tester.element(find.text(l.clockShowColon))).requestFocus();
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(animation, 100);
+    await tester.tap(animation);
+    await tester.pumpAndSettle();
+    final restored = AppearanceService(await SharedPreferences.getInstance());
+    addTearDown(restored.dispose);
+    for (final background in [false, true]) {
+      final style = restored.appearance.renderedInformationStyle(background: background);
       expect(style.showColon, isFalse);
       expect(style.animate, isTrue);
-      expect(background ? restored.appearance.informationStyle.values : restored.appearance.backgroundInformationStyle.values, other);
-      if (!background) expect(style.inheritsPanelTypography, isTrue);
-      restored.dispose();
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-      await tester.pumpAndSettle();
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-      await tester.pumpAndSettle();
-      expect(Focus.of(tester.element(find.text(l.temperatureUnit))).hasFocus, isTrue);
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-      await tester.pumpAndSettle();
-      expect(Focus.of(tester.element(find.text(l.weatherTextFormat))).hasFocus, isTrue);
-      expect(find.text(l.weatherTextFormat).hitTestable(), findsOneWidget);
-      expect(tester.takeException(), isNull);
-      await tester.pumpWidget(const SizedBox());
-    });
-  }
+    }
+    expect(restored.appearance.values, stored);
+    await panel.set('inheritAppearance', false);
+    final popup = panel.appearanceFor(restored.appearance).renderedInformationStyle();
+    expect(popup.showColon, isFalse);
+    expect(popup.animate, isTrue);
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox());
+  });
 
   testWidgets('panel typography toggles inheritance and resets only this screen', (tester) async {
     const custom = {
@@ -135,17 +100,17 @@ void main() {
     final l = AppLocalizations.of(tester.element(find.byType(InformationSectionPage)))!;
     final inherit = find.widgetWithText(RoundedSwitchListTile, l.informationInheritPanelTypography);
     expect(tester.widget<RoundedSwitchListTile>(inherit).value, isTrue);
-    for (final title in [l.informationSize, l.panelFont, l.clockPreset, l.clockWeight, l.clockShowColon, l.clockAnimate]) {
+    for (final title in [l.informationSize, l.panelFont, l.clockPreset, l.clockWeight]) {
       expect(find.text(title), findsNothing);
     }
+    expect(find.text(l.clockAnimate), findsNothing);
+    expect(find.text(l.clockShowColon), findsNothing);
     expect(find.text(l.informationResetTypography), findsOneWidget);
     await tester.tap(inherit);
     await tester.pumpAndSettle();
     expect(appearance.appearance.informationStyle.inheritsPanelTypography, isFalse);
     expect(find.text(l.informationSize), findsOneWidget);
     expect(find.text(l.panelFont), findsOneWidget);
-    expect(find.text(l.clockAnimate), findsNothing);
-    expect(find.text(l.clockShowColon), findsNothing);
     await tester.scrollUntilVisible(inherit, -100);
     await tester.tap(inherit);
     await tester.pumpAndSettle();
@@ -335,15 +300,18 @@ void main() {
       final previousTime = settings.timeFormat;
       await settings.setDateTimeFormat(compactDateFormat, previousTime);
       await pump(tester, DateTimeFormatPage(remotePanel: remote));
+      final today = DateTime.now();
+      final shortDate = formatLauncherDate(shortWeekdayDateFormat, today, 'ru');
       await tester.tap(find.text('Формат даты'));
       await tester.pumpAndSettle();
-      expect(find.text('Вс, 1 Нояб'), findsOneWidget);
+      expect(find.text(shortDate), findsOneWidget);
+      expect(find.text(formatLauncherDate('dd/MM/y', today, 'ru')), findsOneWidget);
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
       await tester.sendKeyEvent(LogicalKeyboardKey.enter);
       await tester.pumpAndSettle();
       expect(settings.dateFormat, shortWeekdayDateFormat);
       expect(settings.timeFormat, previousTime);
-      expect(find.text('Вс, 1 Нояб'), findsOneWidget);
+      expect(find.text(shortDate), findsOneWidget);
       final restored = SettingsService(await SharedPreferences.getInstance());
       expect(restored.dateFormat, shortWeekdayDateFormat);
       restored.dispose();

@@ -12,6 +12,50 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
+  test('audio route export keeps distinct samples and drops device names', () {
+    final store = DiagnosticsStore();
+    final bluetooth = {'api': 30, 'legacyBluetooth': true, 'name': 'Private'};
+    store.recordAudioRouting(bluetooth, 'bluetooth');
+    store.recordAudioRouting(bluetooth, 'bluetooth');
+    store.recordAudioRouting({
+      'hdmiSelected': false,
+      'availableOutputTypes': [2, 10, 'Private'],
+    }, 'unknown');
+    final samples = store.snapshot()['audioRouting'] as List;
+    expect(samples, hasLength(2));
+    expect(samples.first['widgetOutput'], 'bluetooth');
+    expect(samples.last['availableOutputTypes'], [2, 10]);
+    expect(jsonEncode(samples), isNot(contains('Private')));
+    store.clear();
+    expect(store.snapshot(), isNot(contains('audioRouting')));
+  });
+
+  testWidgets('diagnostic build captures the widget result and native route', (tester) async {
+    final store = DiagnosticsStore.instance..clear();
+    const channel = MethodChannel('cutelauncher/audio_status');
+    final messenger = TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+    messenger.setMockMethodCallHandler(channel, (call) async {
+      if (call.method != 'snapshot') return null;
+      expect(call.arguments, true);
+      return {
+        'outputs': ['bluetooth'],
+        'routeDiagnostics': {'api': 30, 'legacyBluetooth': true},
+      };
+    });
+    final service = AudioStatusService();
+    addTearDown(() {
+      messenger.setMockMethodCallHandler(channel, null);
+      store.clear();
+    });
+    service.setVisible(Object(), true);
+    await tester.pump();
+    final sample = (store.snapshot()['audioRouting'] as List).single;
+    service.dispose();
+    await tester.pump();
+    expect(sample['widgetOutput'], 'bluetooth');
+    expect(sample['legacyBluetooth'], true);
+  }, skip: !const bool.fromEnvironment('CUTE_AUDIO_ROUTE_DIAGNOSTICS'));
+
   test('APK verification evidence retains the legacy installer result', () async {
     final store = DiagnosticsStore.instance..clear();
     const channel = BridgeChannel('cutelauncher/updates');

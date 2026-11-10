@@ -5,6 +5,31 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  testWidgets('offscreen focus returns to the nearest visible row upwards', (tester) async {
+    final nodes = List.generate(15, (_) => FocusNode());
+    addTearDown(() { for (final node in nodes) { node.dispose(); } });
+    await tester.pumpWidget(MaterialApp(home: Scaffold(body: SizedBox(
+      height: 300,
+      child: SettingsPageLayout(title: const Text('Page'), child: SingleChildScrollView(
+        child: Column(children: [for (var i = 0; i < nodes.length; i++)
+          FocusableSettingsTile(focusNode: nodes[i], title: Text('Row $i'), onPressed: () {}),
+        ]),
+      )),
+    ))));
+    await tester.pumpAndSettle();
+    nodes.last.requestFocus();
+    await tester.pumpAndSettle();
+    final scroll = tester.state<ScrollableState>(find.byType(Scrollable));
+    scroll.position.jumpTo(0);
+    await tester.pump();
+    final viewport = tester.getRect(find.byType(SingleChildScrollView));
+    final nearest = nodes.lastWhere((node) => node.rect.overlaps(viewport));
+    expect(nearest, isNot(nodes.first));
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+    await tester.pumpAndSettle();
+    expect(nearest.hasPrimaryFocus, isTrue);
+  });
+
   testWidgets('entry focuses first control despite later autofocus', (
     tester,
   ) async {

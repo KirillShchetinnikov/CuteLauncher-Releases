@@ -27,11 +27,11 @@ public class RemoteWebhookClientTest {
         server.start();
         String base = "http://127.0.0.1:" + server.getAddress().getPort();
         try {
-            require(RemoteWebhookClient.post(base + "/ok", 1000), "Accept success");
+            require(RemoteWebhookClient.post(base + "/ok", 1000) == 200, "Report success status");
             require(posts.get() == 1, "One POST per action");
-            require(!RemoteWebhookClient.post(base + "/redirect", 1000), "Reject redirect");
+            require(RemoteWebhookClient.post(base + "/redirect", 1000) == 302, "Report redirect status");
             require(redirected.get() == 0, "Never forward secret webhook to redirect target");
-            require(!RemoteWebhookClient.post(base + "/fail", 1000), "Report non-success");
+            require(RemoteWebhookClient.post(base + "/fail", 1000) == 503, "Report server error status");
             require(posts.get() == 2, "Do not retry failed POST");
             try {
                 RemoteWebhookClient.post(base + "/slow", 100);

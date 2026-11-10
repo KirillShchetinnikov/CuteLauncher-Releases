@@ -81,6 +81,80 @@ void main() {
     );
     expect((fresh.merge(remote).backup['settings'] as Map)['language'], 'en');
   });
+  test('resume preserves tombstones, one-sided values and disabled blocks', () {
+    final base = BackupSyncDocument.capture(
+      archive({'reset': true}),
+      null,
+      'A',
+      zero,
+    );
+    final local = BackupSyncDocument.capture(
+      archive({
+        'localOnly': true,
+        'app_language': 'ru',
+        backupSyncGroupsKey: ['language'],
+      }),
+      base,
+      'A',
+      zero,
+    );
+    final remote = BackupSyncDocument.capture(
+      archive({'reset': true, 'remoteOnly': true, 'app_language': 'en'}),
+      base,
+      'B',
+      DateTime(2026, 10, 9),
+    );
+    final merged = local.resumeWith(
+      remote,
+      base.revisions,
+      BackupSyncResumeChoice.mergeRemote,
+      'A',
+    );
+    expect(merged.backup['settings'], {
+      'localOnly': true,
+      'remoteOnly': true,
+      'app_language': 'ru',
+      backupSyncGroupsKey: ['language'],
+    });
+    final published = BackupSyncDocument.parse(merged.toJson());
+    expect(
+      (remote.merge(published).backup['settings'] as Map),
+      isNot(contains('reset')),
+    );
+    expect(
+      (published.backup['settings'] as Map),
+      isNot(contains('app_language')),
+    );
+  });
+
+  test('resume chooses section tables and their appearance together', () {
+    final base = BackupSyncDocument.capture(
+      archive({'category_appearance': 'base'}),
+      null,
+      'A',
+      zero,
+    );
+    final local = BackupSyncDocument.capture(
+      archive({'category_appearance': 'base'}, name: 'Local'),
+      base,
+      'A',
+      zero,
+    );
+    final remote = BackupSyncDocument.capture(
+      archive({'category_appearance': 'remote'}),
+      base,
+      'B',
+      zero,
+    );
+    final merged = local.resumeWith(
+      remote,
+      base.revisions,
+      BackupSyncResumeChoice.mergeLocal,
+      'A',
+    );
+    expect((merged.backup['categories'] as List).single['name'], 'Local');
+    expect((merged.backup['settings'] as Map)['category_appearance'], 'base');
+  });
   test('resets travel as tombstones and stale data cannot resurrect them', () {
     final original = BackupSyncDocument.capture(
       archive({'extra': true}),

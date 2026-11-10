@@ -7,6 +7,44 @@ import 'package:flutter/services.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  test('TCL packages with firmware dependencies stay out of bulk approval', () {
+    final profiles =
+        (jsonDecode(
+                  File('catalog/cleaner_profiles.json').readAsStringSync(),
+                )['profiles']
+                as List)
+            .cast<Map>();
+    final descriptions =
+        jsonDecode(
+              File('catalog/app_descriptions.json').readAsStringSync(),
+            )['packages']
+            as Map;
+    final approved = {
+      for (final profile in profiles)
+        ...((profile['userApprovedSystemPackages'] as List?) ?? const []),
+    };
+    final observed = {
+      for (final profile in profiles.where(
+        (profile) => ['tcl-g08', 'tcl-g10'].contains(profile['id']),
+      ))
+        ...(profile['packages'] as List),
+    };
+    for (final package in [
+      'com.realtek.airplay2',
+      'com.tcl.dashboard',
+      'com.tcl.exhibit',
+      'com.tcl.guard',
+      'com.tcl.partnercustomizer',
+      'com.tcl.t_solo',
+      'com.tcl.tv',
+      'com.tcl.waterfall.overseas',
+    ]) {
+      expect(observed, contains(package));
+      expect(approved, isNot(contains(package)));
+      expect(descriptions[package]['safeToDisable'], isFalse);
+    }
+  });
+
   test('classification uses installation flag and explicit consumer catalog; helpers stay system', () {
     final entries =
         jsonDecode(
@@ -227,9 +265,24 @@ void main() {
         ],
         'confidence',
         'source',
-        'observedOn',
       ]) {
         expect(description[key], isNotEmpty, reason: '${entry.key}.$key');
+      }
+      final observedOn = description['observedOn'] as List;
+      if (observedOn.isEmpty) {
+        expect(
+          description['confidence'],
+          'identified',
+          reason: entry.key as String,
+        );
+        expect(
+          description['source'],
+          matches(
+            r'^https://github\.com/Gathin23/cleanyourtv/(?:pull/[0-9]+|blob/[a-f0-9]{40}/examples/[^/]+/debloat\.txt)$',
+          ),
+          reason:
+              '${entry.key} needs a traceable external source without a local observation',
+        );
       }
       expect(description['safeToDisable'], isFalse);
     }

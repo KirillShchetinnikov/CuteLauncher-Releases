@@ -117,18 +117,17 @@ class _RecentAppsPageState extends State<RecentAppsPage>
                     _ =>
                       '${l.recentAppsAutomatic} · ${_systemAvailable ? l.recentAppsSystem : l.recentAppsCustom}',
                   },
-                  enabled: _loaded && !_busy,
+                  enabled: _loaded,
+                  busy: _busy,
                   onChanged: _save,
                 ),
                 FocusableSettingsTile(
                   title: Text(l.recentAppsOpen),
                   leading: const Icon(Icons.recent_actors_outlined),
-                  enabled:
-                      _loaded &&
-                      (_mode != 'system' || _systemAvailable),
+                  enabled: _loaded && (_mode != 'system' || _systemAvailable),
                   onPressed: _open,
                 ),
-                if (_busy) const LinearProgressIndicator(),
+                SizedBox(child: _busy ? const LinearProgressIndicator() : null),
                 const RecentAppsAccess(inSettings: true),
                 if (_failed)
                   Text(
@@ -141,7 +140,7 @@ class _RecentAppsPageState extends State<RecentAppsPage>
                   FocusableSettingsTile(
                     title: Text(l.recentAppsRefresh),
                     leading: const Icon(Icons.refresh),
-                    enabled: !_busy,
+                    busy: _busy,
                     onPressed: _load,
                   ),
                 SettingsHelp(

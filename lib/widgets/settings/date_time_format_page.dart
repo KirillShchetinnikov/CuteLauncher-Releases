@@ -30,15 +30,15 @@ import 'package:provider/provider.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 
 // Date format presets
-const List<(String format, String example)> dateFormatPresets = [
-  (compactDateFormat, 'ПТН 2 Окт'),
-  (shortWeekdayDateFormat, 'Вс, 1 Нояб'),
-  ('EEEE d', 'Friday 17'),
-  ('E d', 'Fri 17'),
-  ('dd/MM/y', '17/01/2026'),
-  ('MMM d, y', 'Jan 17, 2026'),
-  ('d MMMM', '17 January'),
-  ('M/d/y', '1/17/2026'),
+const dateFormatPresets = [
+  compactDateFormat,
+  shortWeekdayDateFormat,
+  'EEEE d',
+  'E d',
+  'dd/MM/y',
+  'MMM d, y',
+  'd MMMM',
+  'M/d/y',
 ];
 
 // Morning and afternoon examples distinguish zero padding in 24-hour formats.
@@ -75,12 +75,11 @@ class DateTimeFormatPage extends StatelessWidget {
 }
 
 class TimeFormatSettingsTile extends StatelessWidget {
-  final bool background;
-  const TimeFormatSettingsTile({super.key, this.background = false});
+  const TimeFormatSettingsTile({super.key});
   @override
   Widget build(BuildContext context) {
     final service = context.watch<SettingsService>();
-    final formats = service.informationDateTime(background: background);
+    final formats = service.informationDateTime();
     return SettingsChoiceTile<String>(
       title: AppLocalizations.of(context)!.informationTimeFormat,
       value: formats.time,
@@ -94,33 +93,35 @@ class TimeFormatSettingsTile extends StatelessWidget {
         return afternoon;
       },
       onChanged: (v) => service.setInformationDateTime(
-        InformationDateTimeFormat(date: formats.date, time: v), background: background),
+        InformationDateTimeFormat(date: service.dateFormat, time: v),
+      ),
     );
   }
 }
 
 class DateFormatSettingsTile extends StatelessWidget {
-  final bool background;
-  const DateFormatSettingsTile({super.key, this.background = false});
+  const DateFormatSettingsTile({super.key});
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
     final service = context.watch<SettingsService>();
-    final formats = service.informationDateTime(background: background);
+    final formats = service.informationDateTime();
     const custom = 'custom';
-    final isCustom = !dateFormatPresets.any((v) => v.$1 == formats.date);
+    final isCustom = !dateFormatPresets.contains(formats.date);
+    final locale = Localizations.localeOf(context).toString();
+    String Function(String) labelsFor(DateTime date) => (pattern) =>
+        pattern == custom
+            ? l.customDateFormat
+            : formatLauncherDate(pattern, date, locale);
+    final today = DateTime.now();
     return SettingsChoiceTile<String>(
       title: l.informationDateFormat,
       autofocus: true,
       value: isCustom ? custom : formats.date,
-      valueLabel: isCustom ? formatLauncherDate(formats.date,
-          DateTime.now(), Localizations.localeOf(context).toString()) : null,
-      options: [custom, ...dateFormatPresets.map((v) => v.$1)],
-      label: (v) => v == custom ? l.customDateFormat : formatLauncherDate(
-        v,
-        v == shortWeekdayDateFormat ? DateTime(2026, 11, 1) : DateTime(2026, 10, 2),
-        Localizations.localeOf(context).toString(),
-      ),
+      valueLabel: isCustom ? formatLauncherDate(formats.date, today, locale) : null,
+      options: [custom, ...dateFormatPresets],
+      label: labelsFor(today),
+      dialogLabels: () => labelsFor(DateTime.now()),
       onChanged: (v) async {
         if (v == custom) {
           final pattern = switch (formats.date) {
@@ -140,10 +141,10 @@ class DateFormatSettingsTile extends StatelessWidget {
             ),
           );
           if (result != null && context.mounted) {
-            await service.setInformationDateTime(InformationDateTimeFormat(date: result, time: formats.time), background: background);
+            await service.setInformationDateTime(InformationDateTimeFormat(date: result, time: service.timeFormat));
           }
         } else {
-          await service.setInformationDateTime(InformationDateTimeFormat(date: v, time: formats.time), background: background);
+          await service.setInformationDateTime(InformationDateTimeFormat(date: v, time: service.timeFormat));
         }
       },
     );

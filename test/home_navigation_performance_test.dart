@@ -73,6 +73,8 @@ void main() {
         await appearance.setCategory(category.id, 'layout', 'grid');
         await appearance.setCategory(category.id, 'columns', 4);
         final focus = CategoryFocusController();
+        final outside = FocusNode();
+        addTearDown(outside.dispose);
         final outer = _TrackingScrollController();
         await tester.pumpWidget(
           MultiProvider(
@@ -97,7 +99,7 @@ void main() {
                   controller: outer,
                   child: Column(
                     children: [
-                      const SizedBox(height: 160),
+                      Focus(focusNode: outside, child: const SizedBox(height: 160)),
                       CategoryFocus(
                         controller: focus,
                         child: HomeSection(category: category),
@@ -113,6 +115,39 @@ void main() {
         await tester.pumpAndSettle();
         unawaited(focus.focusPackage('grid.0'));
         await tester.pumpAndSettle();
+        // Entering a section whose destination is mounted must apply focus
+        // before another frame, just like entering a recommendation row.
+        final nextCard = find.byWidgetPredicate((widget) =>
+            widget is AppCard && widget.application.packageName == 'grid.1');
+        expect(focus.hasMountedPackage('grid.1'), isTrue);
+        unawaited(focus.enter!(
+          AxisDirection.down, tester.getCenter(nextCard).dx,
+        ));
+        await tester.idle();
+        expect(focus.lastPackage, 'grid.1',
+            reason: 'Mounted section entry must not wait for endOfFrame');
+        await tester.pumpAndSettle();
+        unawaited(focus.focusPackage('grid.0'));
+        await tester.pumpAndSettle();
+        var idleCardBuilds = 0;
+        final previousRebuild = debugOnRebuildDirtyWidget;
+        debugOnRebuildDirtyWidget = (element, builtOnce) {
+          previousRebuild?.call(element, builtOnce);
+          if (element.widget case AppCard(application: final app)
+              when app.packageName == 'grid.3') {
+            idleCardBuilds++;
+          }
+        };
+        addTearDown(() => debugOnRebuildDirtyWidget = previousRebuild);
+        for (var i = 0; i < 5; i++) {
+          outside.requestFocus();
+          await tester.pumpAndSettle();
+          unawaited(focus.focusPackage('grid.0'));
+          await tester.pumpAndSettle();
+        }
+        debugOnRebuildDirtyWidget = previousRebuild;
+        expect(idleCardBuilds, 0,
+            reason: 'Entering and leaving a section must reuse idle cards');
         final staticLabels = find
             .descendant(
               of: find.text('Grid app 3'),
@@ -183,6 +218,24 @@ void main() {
         }
         await tester.pumpAndSettle();
         expect(focus.lastPackage, 'grid.8');
+        await appearance.set('labels', 'selected');
+        await tester.pumpAndSettle();
+        unawaited(focus.focusPackage('grid.0'));
+        await tester.pumpAndSettle();
+        idleCardBuilds = 0;
+        debugOnRebuildDirtyWidget = (element, builtOnce) {
+          previousRebuild?.call(element, builtOnce);
+          if (element.widget case AppCard(application: final app)
+              when app.packageName == 'grid.3') {
+            idleCardBuilds++;
+          }
+        };
+        unawaited(focus.focusPackage('grid.1'));
+        await tester.pumpAndSettle();
+        debugOnRebuildDirtyWidget = previousRebuild;
+        expect(idleCardBuilds, 0,
+            reason: 'Updating the selected label must not rebuild idle cards');
+        expect(find.text('Grid app 1'), findsOneWidget);
         // An already queued reveal must not scroll the wallpaper behind a menu.
         outer.jumpTo(0);
         await tester.pumpAndSettle();

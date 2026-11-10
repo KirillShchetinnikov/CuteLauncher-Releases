@@ -9,4 +9,14 @@
     <string name="file_card_title">파일 액세스</string>
     <string name="file_card_steps">권한 → 파일 및 미디어 → 모든 파일 관리 허용을 선택하세요. 그런 다음 뒤로 버튼을 눌러 CuteLauncher로 돌아오세요.</string>
     <string name="file_card_open">설정 열기</string>
+    <string name="remap_error_black_screen">Black Screen이 설치되지 않았거나 사용할 수 없습니다.</string>
+    <string name="remap_error_app">지정한 앱이 없거나 열 수 없습니다.</string>
+    <string name="remap_error_hdmi">지정한 HDMI 입력을 사용할 수 없습니다.</string>
+    <string name="remap_error_power">전원 명령이 실패했습니다. 로컬 ADB를 확인하세요.</string>
+    <string name="remap_error_permission">TV가 이 리모컨 동작을 차단했습니다.</string>
+    <string name="remap_error_busy">리모컨 동작이 이미 진행 중입니다.</string>
+    <string name="remap_error_unavailable">이 TV에서는 해당 리모컨 동작을 사용할 수 없습니다.</string>
+    <string name="remap_error_webhook_http">웹훅이 요청을 거부했습니다(HTTP %1$d).</string>
+    <string name="remap_error_webhook_timeout">웹훅 요청 시간이 초과되었습니다.</string>
+    <string name="remap_error_webhook">웹훅에 연결할 수 없습니다.</string>
 </resources>

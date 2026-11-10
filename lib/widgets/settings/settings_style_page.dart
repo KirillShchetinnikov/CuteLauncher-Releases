@@ -97,6 +97,7 @@ class _SettingsStylePageState extends State<SettingsStylePage> {
         children: [
           if (!notifications)
             SettingsSection(
+              key: const ValueKey('settingsGroupControl'),
               title: l.settingsGroupControl,
               children: [
                 if (!notifications)
@@ -141,6 +142,7 @@ class _SettingsStylePageState extends State<SettingsStylePage> {
             ),
           if (notifications)
             SettingsSection(
+              key: const ValueKey('settingsGroupPositionSize'),
               title: l.settingsGroupPositionSize,
               children: [
                 if (notifications)
@@ -173,6 +175,7 @@ class _SettingsStylePageState extends State<SettingsStylePage> {
             ),
           if (!notifications)
             SettingsSection(
+              key: const ValueKey('settingsGroupGroupsBackground'),
               title: l.settingsGroupGroupsBackground,
               children: [
                 if (!notifications)
@@ -203,6 +206,7 @@ class _SettingsStylePageState extends State<SettingsStylePage> {
             ),
           if (notifications)
             SettingsSection(
+              key: const ValueKey('background'),
               title: l.background,
               children: [
                 color(
@@ -218,6 +222,7 @@ class _SettingsStylePageState extends State<SettingsStylePage> {
               ],
             ),
           SettingsSection(
+            key: const ValueKey('settingsGroupText'),
             title: l.settingsGroupText,
             children: [
               SettingsValueStepper(

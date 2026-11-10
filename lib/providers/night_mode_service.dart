@@ -171,7 +171,7 @@ class NightModeService extends ChangeNotifier with WidgetsBindingObserver {
   static const _channel = BridgeChannel('cutelauncher/night');
 
   /// Whether the panel button uses the theme accent while night mode is active.
-  bool get panelFill => preferences.getBool(nightModePanelFillKey) ?? false;
+  bool get panelFill => preferences.getBool(nightModePanelFillKey) ?? true;
 
   Future<void> setPanelFill(bool value) async {
     await preferences.setBool(nightModePanelFillKey, value);

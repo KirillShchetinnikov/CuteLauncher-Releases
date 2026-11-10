@@ -29,6 +29,9 @@ class FocusableSettingsTile extends StatefulWidget {
   final bool? toggled;
   final bool? checked;
   final bool enabled;
+
+  /// Blocks activation temporarily while preserving focus and traversal.
+  final bool busy;
   final IconData valueIcon;
   final bool alignValueToEnd;
   final bool scrollOnFocus;
@@ -58,6 +61,7 @@ class FocusableSettingsTile extends StatefulWidget {
     this.toggled,
     this.checked,
     this.enabled = true,
+    this.busy = false,
     this.valueIcon = Icons.chevron_right_rounded,
     this.alignValueToEnd = true,
     this.scrollOnFocus = true,
@@ -87,7 +91,7 @@ class _FocusableSettingsTileState extends State<FocusableSettingsTile>
   }
 
   void _activate() {
-    if (!widget.enabled || widget.onPressed == null) return;
+    if (!widget.enabled || widget.busy || widget.onPressed == null) return;
     // Pointer activation must remember the same opener as remote activation.
     (widget.focusNode ?? _focusNode).requestFocus();
     _pressTimer?.cancel();
@@ -158,7 +162,7 @@ class _FocusableSettingsTileState extends State<FocusableSettingsTile>
     final skin = InterfaceSkin.of(context);
     final colors = Theme.of(context).colorScheme;
     final selected = widget.selected == true;
-    final active = widget.enabled && widget.onPressed != null;
+    final active = widget.enabled && !widget.busy && widget.onPressed != null;
     final borderWidth = skin.calm
         ? style.rowFocusWidth
         : style.rowAccentFocusWidth;
@@ -255,11 +259,11 @@ class _FocusableSettingsTileState extends State<FocusableSettingsTile>
         selected: widget.selected,
         toggled: widget.toggled,
         checked: widget.checked,
-        enabled: widget.enabled,
+        enabled: widget.enabled && !widget.busy,
         focusable: widget.enabled,
         focused: _focused,
         onTap: active ? _activate : null,
-        onLongPress: widget.enabled ? widget.onLongPress : null,
+        onLongPress: widget.enabled && !widget.busy ? widget.onLongPress : null,
         child: Actions(
           actions: <Type, Action<Intent>>{
             ActivateIntent: CallbackAction<ActivateIntent>(
@@ -273,7 +277,7 @@ class _FocusableSettingsTileState extends State<FocusableSettingsTile>
             includeSemantics: false,
             canRequestFocus: widget.enabled,
             descendantsAreFocusable: widget.enabled,
-            onKeyEvent: widget.enabled
+            onKeyEvent: widget.enabled && !widget.busy
                 ? (node, event) {
                     if (active &&
                         AppCardKeys.validationKeys.contains(event.logicalKey)) {
@@ -303,10 +307,12 @@ class _FocusableSettingsTileState extends State<FocusableSettingsTile>
               onTapCancel: active
                   ? () => setState(() => _pressed = false)
                   : null,
-              onTap: !widget.enabled || widget.onPressed == null
+              onTap: !widget.enabled || widget.busy || widget.onPressed == null
                   ? null
                   : _activate,
-              onLongPress: widget.enabled ? widget.onLongPress : null,
+              onLongPress: widget.enabled && !widget.busy
+                  ? widget.onLongPress
+                  : null,
               behavior: HitTestBehavior.opaque,
               child: Container(
                 constraints: BoxConstraints(

@@ -89,6 +89,7 @@ final class ApplicationCatalog {
             PackageManager packageManager = context.getPackageManager();
             Intent settingsIntent = new Intent(Settings.ACTION_SETTINGS);
             ActivityInfo activityInfo = settingsIntent.resolveActivityInfo(packageManager, 0);
+            if (activityInfo == null) activityInfo = RemoteTvActions.tvSettingsActivity(context);
 
             if (activityInfo != null) {
                 if (packages.add(activityInfo.packageName)) {

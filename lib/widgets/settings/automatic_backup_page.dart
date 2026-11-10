@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
 import '../../backup_schedule.dart';
+import '../../backup_sync.dart';
 import '../../l10n/app_localizations.dart';
 import '../../providers/automatic_backup_service.dart';
 import '../../providers/backup_automation_service.dart';
@@ -23,6 +24,7 @@ import 'cloud_backup_page.dart';
 import 'drive_backup_page.dart';
 import 'local_backup_page.dart';
 import 'focusable_settings_tile.dart';
+import 'settings_option_tile.dart';
 import 'settings_page_layout.dart';
 import 'settings_route.dart';
 
@@ -72,7 +74,8 @@ class AutomaticBackupPage extends StatelessWidget {
       leading: icon == null ? null : Icon(icon),
       title: Text(label),
       trailing: value == null ? null : Text(value),
-      enabled: !service.busy && (!requiresStorage || service.configured),
+      enabled: (!requiresStorage || service.configured),
+      busy: service.busy,
       onPressed: service.busy || (requiresStorage && !service.configured)
           ? null
           : callback,
@@ -102,6 +105,7 @@ class AutomaticBackupPage extends StatelessWidget {
             ),
           ),
           SettingsSection(
+            key: const ValueKey('backupStorage'),
             title: l.backupStorage,
             children: [
               button(l.backupStorage, () async {
@@ -137,6 +141,7 @@ class AutomaticBackupPage extends StatelessWidget {
             ],
           ),
           SettingsSection(
+            key: const ValueKey('backupMode'),
             title: l.backupMode,
             children: [
               button(l.backupMode, () async {
@@ -182,7 +187,9 @@ class AutomaticBackupPage extends StatelessWidget {
             icon: Icons.backup_outlined,
             requiresStorage: true,
           ),
-          if (service.busy) const LinearProgressIndicator(),
+          SizedBox(
+            child: service.busy ? const LinearProgressIndicator() : null,
+          ),
         ],
       ),
     );
@@ -196,6 +203,69 @@ class BackupOptionsPage extends StatelessWidget {
     this.sync = false,
     this.localOnly = false,
   });
+
+  Future<void> _setEnabled(
+    BuildContext context,
+    BackupAutomationService automation,
+    bool enabled,
+  ) async {
+    if (!enabled || automation.mode != BackupMode.synchronization) {
+      await automation.configure(enabled: enabled);
+      return;
+    }
+    final l = AppLocalizations.of(context)!;
+    final result = await automation.resumeSynchronization((previous, remote) {
+      if (!context.mounted || ModalRoute.of(context)?.isCurrent == false) {
+        return Future.value(null);
+      }
+      final material = MaterialLocalizations.of(context);
+      String date(DateTime value) =>
+          '${material.formatMediumDate(value)} ${material.formatTimeOfDay(TimeOfDay.fromDateTime(value))}';
+      final labels = {
+        BackupSyncResumeChoice.local: l.backupSyncUseLocal,
+        BackupSyncResumeChoice.remote: l.backupSyncUseRemote,
+        BackupSyncResumeChoice.mergeLocal: l.backupSyncMergeLocal,
+        BackupSyncResumeChoice.mergeRemote: l.backupSyncMergeRemote,
+      };
+      return showLauncherDialog<BackupSyncResumeChoice>(
+        context: context,
+        builder: (dialog) => LauncherAlertDialog(
+          title: Text(l.backupSyncResume),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l.backupSyncPreviousDate(
+                  previous == null ? l.backupNever : date(previous),
+                ),
+              ),
+              Text(l.backupSyncRemoteDate(date(remote))),
+              const SizedBox(height: 8),
+              for (final choice in labels.entries)
+                SettingsOptionTile(
+                  selected: false,
+                  title: Text(choice.value),
+                  onPressed: () => Navigator.pop(dialog, choice.key),
+                ),
+            ],
+          ),
+          actions: [
+            LauncherDialogButton(
+              autofocus: true,
+              isCancel: true,
+              onPressed: () => Navigator.pop(dialog),
+              child: Text(l.cancel),
+            ),
+          ],
+        ),
+      );
+    });
+    if (!result && automation.failed && context.mounted) {
+      showActionNotice(context, l.backupSyncRefreshFailed, error: true);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
@@ -226,13 +296,15 @@ class BackupOptionsPage extends StatelessWidget {
         children: [
           RoundedSwitchListTile(
             autofocus: true,
-            enabled: !automation.busy && automation.configured,
+            enabled: automation.configured,
+            busy: automation.busy,
             title: Text(l.backupAutoEnabled),
             value: automation.enabled,
-            onChanged: (v) => automation.configure(enabled: v),
+            onChanged: (v) => _setEnabled(context, automation, v),
           ),
           if (!sync)
             SettingsSection(
+              key: const ValueKey('settingsGroupStorage'),
               title: l.settingsGroupStorage,
               children: [
                 if (!localOnly)
@@ -241,7 +313,7 @@ class BackupOptionsPage extends StatelessWidget {
                     trailing: Text(
                       automation.shared ? l.backupShared : l.backupSeparate,
                     ),
-                    enabled: !automation.busy,
+                    busy: automation.busy,
                     onPressed: () async {
                       final value = await backupChoice(
                         context,
@@ -259,7 +331,7 @@ class BackupOptionsPage extends StatelessWidget {
                     title: l.automaticBackupsKeep,
                     value: service.keepCount,
                     options: const [1, 3, 5, 10],
-                    enabled: !automation.busy,
+                    busy: automation.busy,
                     label: (v) => '$v',
                     onChanged: (v) => service.setKeepCount(v as int),
                   ),
@@ -267,6 +339,7 @@ class BackupOptionsPage extends StatelessWidget {
             ),
           if (!sync)
             SettingsSection(
+              key: const ValueKey('nightScheduleMenu'),
               title: l.nightScheduleMenu,
               children: [
                 FocusableSettingsTile(
@@ -322,7 +395,7 @@ class BackupOptionsPage extends StatelessWidget {
                 trailing: Text(
                   automation.shared ? l.backupShared : l.backupSeparate,
                 ),
-                enabled: !automation.busy,
+                busy: automation.busy,
                 onPressed: () async {
                   final value = await backupChoice(
                     context,
@@ -335,7 +408,7 @@ class BackupOptionsPage extends StatelessWidget {
               ),
             FocusableSettingsTile(
               title: Text(l.backupSyncSettings),
-              enabled: !automation.busy,
+              busy: automation.busy,
               onPressed: automation.busy
                   ? null
                   : () => Navigator.of(context).push(

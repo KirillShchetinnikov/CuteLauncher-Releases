@@ -9,4 +9,14 @@
     <string name="file_card_title">Доступ до файлів</string>
     <string name="file_card_steps">Відкрийте «Дозволи» → «Файли й медіа» → «Дозволити керування всіма файлами». Потім натискайте «Назад», щоб повернутися до CuteLauncher.</string>
     <string name="file_card_open">Відкрити налаштування</string>
+    <string name="remap_error_black_screen">Black Screen не встановлено або недоступний.</string>
+    <string name="remap_error_app">Призначений застосунок відсутній або не відкривається.</string>
+    <string name="remap_error_hdmi">Призначений вхід HDMI недоступний.</string>
+    <string name="remap_error_power">Команду живлення не виконано. Перевірте локальний ADB.</string>
+    <string name="remap_error_permission">Телевізор заборонив виконання дії пульта.</string>
+    <string name="remap_error_busy">Дія пульта вже виконується.</string>
+    <string name="remap_error_unavailable">Ця дія пульта недоступна на телевізорі.</string>
+    <string name="remap_error_webhook_http">Webhook відхилив запит (HTTP %1$d).</string>
+    <string name="remap_error_webhook_timeout">Час очікування відповіді webhook минув.</string>
+    <string name="remap_error_webhook">Не вдалося підключитися до webhook.</string>
 </resources>

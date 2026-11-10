@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "reportType": "tvInventoryMetadata",
+  "scope": "deviceMetadata",
+  "verification": "observedOnly",
+  "capturedAt": "2026-11-10T00:00:00Z",
+  "sourceReport": "cutelauncher_diagnostics_1794302183383.json",
+  "identity": {
+    "manufacturer": "TCL",
+    "model": "Smart TV Pro",
+    "device": "BeyondTV4",
+    "fingerprint": "TCL/BeyondTV6/BeyondTV4:11/RP1A.200622.001/AR10:user/release-keys",
+    "firmware": "RP1A.200622.001 release-keys",
+    "android": "11",
+    "sdk": "30",
+    "abis": "armeabi-v7a,armeabi"
+  },
+  "diagnostics": {
+    "packageCount": 97,
+    "launcher": {
+      "versionName": "1.7.2",
+      "versionCode": "233"
+    }
+  },
+  "completeness": {
+    "status": "complete",
+    "sourceCount": 97,
+    "skippedCount": 0,
+    "truncated": false
+  },
+  "limits": [
+    "User-provided diagnostic metadata, not an independent device test",
+    "Labels, personal settings, permissions, commands and shell logs excluded",
+    "Redacted identifiers are not reconstructed; package presence does not validate disabling"
+  ],
+  "sourceReportType": "diagnostics",
+  "sourceScope": "userProvidedDiagnosticInventory",
+  "packageListStorage": "catalog/app_descriptions.json",
+  "observedPackageCount": 97,
+  "redactedPackageCount": 0
+}

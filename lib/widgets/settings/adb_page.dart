@@ -641,7 +641,8 @@ class _AdbPageState extends State<AdbPage> with WidgetsBindingObserver {
                   else
                     RoundedSwitchListTile(
                       value: _overrideHome!,
-                      enabled: !_busy && _accessibility == true,
+                      enabled: _accessibility == true,
+                      busy: _busy,
                       title: Text(l.adbHomeOverride),
                       onChanged: (value) async {
                         try {
@@ -673,7 +674,8 @@ class _AdbPageState extends State<AdbPage> with WidgetsBindingObserver {
                   if (settings != null)
                     RoundedSwitchListTile(
                       value: settings.startOnBoot,
-                      enabled: !_busy && _accessibility == true,
+                      enabled: _accessibility == true,
+                      busy: _busy,
                       onChanged: settings.setStartOnBoot,
                       title: Text(l.startOnBoot),
                     ),

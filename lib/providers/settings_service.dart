@@ -7,6 +7,7 @@ import '../adaptive_landscape.dart';
 import '../diagnostics/screenshot_scene.dart';
 import '../weather_text_format.dart';
 import '../information_formats.dart';
+import '../tile_appearance.dart';
 import '../file_browser_options.dart';
 // Historical constants and enum names are preserved for upstream and serialized data compatibility.
 // ignore_for_file: constant_identifier_names
@@ -135,8 +136,8 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
     super.dispose();
   }
 
-  static final defaultDateFormat = "EEEE d";
-  static final defaultTimeFormat = "H:mm";
+  static const defaultDateFormat = defaultInformationDateFormat;
+  static const defaultTimeFormat = defaultInformationTimeFormat;
   final SharedPreferences _sharedPreferences;
 
   late bool _appHighlightAnimationEnabled;
@@ -495,28 +496,29 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
   bool get useFahrenheit => informationWeather().fahrenheit;
   WeatherTextFormat get weatherTextFormat => informationWeather().format;
 
-  final _informationDates = <bool, InformationDateTimeFormat>{};
-  final _informationWeather = <bool, WeatherDisplayOptions>{};
-  InformationDateTimeFormat informationDateTime({bool background = false}) =>
-      _informationDates[background] ?? InformationDateTimeFormat(time: _timeFormat, date: _dateFormat);
-  WeatherDisplayOptions informationWeather({bool background = false}) =>
-      _informationWeather[background] ?? WeatherDisplayOptions(format: _weatherTextFormat,
+  InformationDateTimeFormat? _informationDates;
+  WeatherDisplayOptions? _informationWeather;
+  InformationDateTimeFormat informationDateTime() =>
+      _informationDates ?? InformationDateTimeFormat(time: _timeFormat, date: _dateFormat);
+  WeatherDisplayOptions informationWeather() =>
+      _informationWeather ?? WeatherDisplayOptions(format: _weatherTextFormat,
         fahrenheit: _temperatureUnit == TEMPERATURE_UNIT_FAHRENHEIT, warnings: _showWeatherWarnings);
 
-  Future<void> setInformationDateTime(InformationDateTimeFormat value, {bool background = false}) async {
-    if (InformationDateTimeFormat.decode(value.encode()) == null) throw const FormatException('Invalid date/time format');
-    if (!await _sharedPreferences.setString(informationDateTimeKey(background), value.encode())) {
+  Future<void> setInformationDateTime(InformationDateTimeFormat value) async {
+    final encoded = value.encode();
+    if (InformationDateTimeFormat.decode(encoded) == null) throw const FormatException('Invalid date/time format');
+    if (!await _sharedPreferences.setString(sharedInformationDateTimeKey, encoded)) {
       throw StateError('Unable to save information format');
     }
-    _informationDates[background] = value;
+    _informationDates = value;
     notifyListeners();
   }
 
-  Future<void> setInformationWeather(WeatherDisplayOptions value, {bool background = false}) async {
-    if (!await _sharedPreferences.setString(informationWeatherKey(background), value.encode())) {
+  Future<void> setInformationWeather(WeatherDisplayOptions value) async {
+    if (!await _sharedPreferences.setString(sharedInformationWeatherKey, value.encode())) {
       throw StateError('Unable to save weather display');
     }
-    _informationWeather[background] = value;
+    _informationWeather = value;
     notifyListeners();
   }
 
@@ -607,15 +609,36 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
     reload();
   }
 
-  void reload() {
-    _informationDates.clear();
-    _informationWeather.clear();
-    for (final background in [false, true]) {
-      final dates = InformationDateTimeFormat.decode(_sharedPreferences.get(informationDateTimeKey(background)));
-      final weather = WeatherDisplayOptions.decode(_sharedPreferences.get(informationWeatherKey(background)));
-      if (dates != null) _informationDates[background] = dates;
-      if (weather != null) _informationWeather[background] = weather;
+  static Map<String, String> _legacyInformationFormats(SharedPreferences preferences) {
+    if (!legacyInformationFormatKeys.any(preferences.containsKey)) return {};
+    return migrateInformationFormats({
+      for (final key in preferences.getKeys()) key: preferences.get(key),
+    });
+  }
+
+  static Future<void> upgradeInformationFormats(SharedPreferences preferences) async {
+    final migrated = _legacyInformationFormats(preferences);
+    if (decodeInformationClockBehavior(preferences.get(sharedInformationClockBehaviorKey)) == null) {
+      final behavior = legacyInformationClockBehavior(
+        TileAppearance.decode(preferences.getString(tileAppearanceKey)),
+        showTime: preferences.getBool(_showTimeInStatusBarKey) ?? true,
+      );
+      migrated[sharedInformationClockBehaviorKey] = jsonEncode(behavior.toMap());
     }
+    for (final entry in migrated.entries) {
+      if (!await preferences.setString(entry.key, entry.value)) {
+        await preferences.reload();
+        throw StateError('Unable to migrate information formats');
+      }
+    }
+  }
+
+  void reload() {
+    final migrated = _legacyInformationFormats(_sharedPreferences);
+    _informationDates = InformationDateTimeFormat.decode(_sharedPreferences.get(sharedInformationDateTimeKey)) ??
+        InformationDateTimeFormat.decode(migrated[sharedInformationDateTimeKey]);
+    _informationWeather = WeatherDisplayOptions.decode(_sharedPreferences.get(sharedInformationWeatherKey)) ??
+        WeatherDisplayOptions.decode(migrated[sharedInformationWeatherKey]);
     _memorySaverEnabled = _sharedPreferences.getBool(_memorySaverEnabledKey) ?? false;
     _appHighlightAnimationEnabled = _sharedPreferences.getBool(_appHighlightAnimationEnabledKey) ?? true;
     _appKeyClickEnabled = _sharedPreferences.getBool(_appKeyClickEnabledKey) ?? false;
@@ -677,8 +700,14 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
       _memorySaverEnabledKey: _memorySaverEnabled,
       _appHighlightAnimationEnabledKey: _appHighlightAnimationEnabled,
       _appKeyClickEnabledKey: _appKeyClickEnabled,
-      for (final key in informationFormatKeys)
-        if (_sharedPreferences.containsKey(key)) key: _sharedPreferences.getString(key),
+      if (_informationDates case final dates?)
+        sharedInformationDateTimeKey: dates.encode(),
+      if (_informationWeather case final weather?)
+        sharedInformationWeatherKey: weather.encode(),
+      sharedInformationClockBehaviorKey: ?validateInformationFormat(
+        sharedInformationClockBehaviorKey,
+        _sharedPreferences.get(sharedInformationClockBehaviorKey),
+      ),
       _homeKeyClickEnabledKey: homeKeyClickEnabled,
       _autoHideAppBarKey: _autoHideAppBarEnabled,
       _showCategoryTitlesKey: _showCategoryTitles,
@@ -752,7 +781,7 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
       for (final key in _sharedPreferences.getKeys()) key: _sharedPreferences.get(key),
       ...exportSettingsMap(),
     };
-    for (final entry in compatibleSettings(settingsMap, expected).entries) {
+    for (final entry in compatibleSettingsForRestore(settingsMap, expected).entries) {
       final key = entry.key;
       final value = entry.value;
       if (value is bool) {

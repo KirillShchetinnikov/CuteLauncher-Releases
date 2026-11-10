@@ -62,7 +62,7 @@ class BackupSyncGroupsPage extends StatelessWidget {
                 autofocus: group == BackupSyncGroup.sections,
                 title: Text(labels[group]!),
                 value: service.syncGroupEnabled(group),
-                enabled: !service.busy,
+                busy: service.busy,
                 onChanged: (value) async {
                   try {
                     await service.setSyncGroupEnabled(group, value);

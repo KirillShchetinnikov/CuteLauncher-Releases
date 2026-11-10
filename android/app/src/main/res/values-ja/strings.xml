@@ -9,4 +9,14 @@
     <string name="file_card_title">ファイルへのアクセス</string>
     <string name="file_card_steps">「権限」→「ファイルとメディア」→「すべてのファイルの管理を許可」の順に選びます。その後、戻るボタンで CuteLauncher に戻ってください。</string>
     <string name="file_card_open">設定を開く</string>
+    <string name="remap_error_black_screen">Black Screen が未インストールか、利用できません。</string>
+    <string name="remap_error_app">割り当てたアプリが見つからないか、起動できません。</string>
+    <string name="remap_error_hdmi">割り当てた HDMI 入力を利用できません。</string>
+    <string name="remap_error_power">電源コマンドが失敗しました。ローカル ADB を確認してください。</string>
+    <string name="remap_error_permission">テレビがリモコン操作を拒否しました。</string>
+    <string name="remap_error_busy">リモコンの操作を実行中です。</string>
+    <string name="remap_error_unavailable">このテレビではこのリモコン操作を利用できません。</string>
+    <string name="remap_error_webhook_http">Webhook が要求を拒否しました（HTTP %1$d）。</string>
+    <string name="remap_error_webhook_timeout">Webhook の応答がタイムアウトしました。</string>
+    <string name="remap_error_webhook">Webhook に接続できませんでした。</string>
 </resources>

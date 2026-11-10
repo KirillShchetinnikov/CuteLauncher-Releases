@@ -9,4 +9,14 @@
     <string name="file_card_title">फ़ाइलों का ऐक्सेस</string>
     <string name="file_card_steps">अनुमतियाँ खोलें, फिर फ़ाइलें और मीडिया चुनें और सभी फ़ाइलों को प्रबंधित करने की अनुमति दें। इसके बाद वापस बटन दबाकर CuteLauncher पर लौटें।</string>
     <string name="file_card_open">सेटिंग खोलें</string>
+    <string name="remap_error_black_screen">Black Screen इंस्टॉल नहीं है या उपलब्ध नहीं है।</string>
+    <string name="remap_error_app">असाइन किया गया ऐप मौजूद नहीं है या खुल नहीं सकता।</string>
+    <string name="remap_error_hdmi">असाइन किया गया HDMI इनपुट उपलब्ध नहीं है।</string>
+    <string name="remap_error_power">पावर कमांड विफल रही। स्थानीय ADB जाँचें।</string>
+    <string name="remap_error_permission">टीवी ने रिमोट की इस कार्रवाई की अनुमति नहीं दी।</string>
+    <string name="remap_error_busy">रिमोट की एक कार्रवाई पहले से चल रही है।</string>
+    <string name="remap_error_unavailable">रिमोट की यह कार्रवाई इस टीवी पर उपलब्ध नहीं है।</string>
+    <string name="remap_error_webhook_http">वेबहुक ने अनुरोध अस्वीकार किया (HTTP %1$d)।</string>
+    <string name="remap_error_webhook_timeout">वेबहुक अनुरोध का समय समाप्त हो गया।</string>
+    <string name="remap_error_webhook">वेबहुक से कनेक्ट नहीं हो सका।</string>
 </resources>

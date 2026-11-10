@@ -7,6 +7,42 @@ import 'package:flauncher/widgets/reordering_tile_viewport.dart';
 import 'package:flauncher/widgets/tile_paint_layer.dart';
 
 void main() {
+  testWidgets('neighboring feeds are mounted before fast downward navigation', (tester) async {
+    final outer = ScrollController();
+    final rows = List.generate(12, (_) => ScrollController());
+    final builds = <int, int>{};
+    final layout = HomeLayout(mode: 'row', count: 20, availableWidth: 400,
+        style: const TileAppearance({'size': 70}));
+    await tester.pumpWidget(MaterialApp(home: SingleChildScrollView(
+      controller: outer,
+      child: Column(children: [
+        for (var row = 0; row < rows.length; row++)
+          SizedBox(height: 200, child: ReorderingTileViewport(
+            layout: layout, packages: List.generate(20, (i) => '$i'),
+            controller: rows[row], itemBuilder: (_, i) {
+              builds.update(row, (n) => n + 1, ifAbsent: () => 1);
+              return ColoredBox(key: ValueKey('prepared-$row-$i'), color: Colors.blue);
+            },
+          )),
+      ]),
+    )));
+    await tester.pumpAndSettle();
+    // The 600 px screen ends before this row at y=800. A 120 px
+    // entry margin would leave its cards unmounted until the descent.
+    final prepared = tester.element(find.byKey(const ValueKey('prepared-4-0')));
+    final before = builds[4];
+    expect(find.byKey(const ValueKey('prepared-10-0')), findsNothing);
+    outer.jumpTo(400);
+    await tester.pumpAndSettle();
+    expect(tester.element(find.byKey(const ValueKey('prepared-4-0'))), same(prepared));
+    expect(builds[4], before, reason: 'Entering a prepared feed must reuse its cards');
+    outer.jumpTo(1800);
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('prepared-0-0')), findsNothing);
+    await tester.pumpWidget(const SizedBox());
+    outer.dispose();
+    for (final row in rows) { row.dispose(); }
+  });
   testWidgets('full materialization keeps all rows and horizontal cards mounted', (tester) async {
     final outer = ScrollController();
     final rows = List.generate(8, (_) => ScrollController());

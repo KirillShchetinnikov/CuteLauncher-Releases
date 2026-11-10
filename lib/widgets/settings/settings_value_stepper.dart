@@ -21,6 +21,7 @@ class SettingsValueStepper extends StatelessWidget {
   final bool enabled;
   final bool useSlider;
   final bool inlineChoices;
+  final bool busy;
   const SettingsValueStepper({
     super.key,
     required this.title,
@@ -32,6 +33,7 @@ class SettingsValueStepper extends StatelessWidget {
     this.autofocus = false,
     this.valueBelow = false,
     this.enabled = true,
+    this.busy = false,
     this.useSlider = true,
     this.inlineChoices = false,
   });
@@ -49,6 +51,7 @@ class SettingsValueStepper extends StatelessWidget {
         label: label,
         onChanged: onChanged,
         enabled: enabled,
+        busy: busy,
         autofocus: autofocus,
       );
     }
@@ -62,6 +65,7 @@ class SettingsValueStepper extends StatelessWidget {
         label: label,
         onChanged: onChanged,
         enabled: enabled,
+        busy: busy,
         autofocus: autofocus,
       );
     }
@@ -77,10 +81,10 @@ class SettingsValueStepper extends StatelessWidget {
       }
     }
     index = index.clamp(0, options.length - 1);
-    final canDecrease = enabled && index > 0;
-    final canIncrease = enabled && index < options.length - 1;
+    final canDecrease = enabled && !busy && index > 0;
+    final canIncrease = enabled && !busy && index < options.length - 1;
     void change(int direction) {
-      if (!enabled) return;
+      if (!enabled || busy) return;
       final next = index + direction;
       if (next >= 0 && next < options.length) onChanged(options[next]);
     }
@@ -102,7 +106,7 @@ class SettingsValueStepper extends StatelessWidget {
       ),
     );
     return SettingsAdjustmentSemantics(
-      enabled: enabled,
+      enabled: enabled && !busy,
       label: title,
       value: label(value),
       increasedValue: canIncrease ? label(options[index + 1]) : null,
@@ -111,7 +115,9 @@ class SettingsValueStepper extends StatelessWidget {
       onIncrease: canIncrease ? () => change(1) : null,
       child: FocusableSettingsTile(
         onKeyEvent: (_, event) {
-          if (enabled && (event is KeyDownEvent || event is KeyRepeatEvent)) {
+          if (enabled &&
+              !busy &&
+              (event is KeyDownEvent || event is KeyRepeatEvent)) {
             if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
               change(-1);
               return KeyEventResult.handled;
@@ -127,6 +133,7 @@ class SettingsValueStepper extends StatelessWidget {
         leading: leading == null ? null : ExcludeSemantics(child: leading!),
         autofocus: autofocus,
         enabled: enabled,
+        busy: busy,
         title: ExcludeSemantics(
           child: valueBelow
               ? Column(

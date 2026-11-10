@@ -11,6 +11,7 @@ class SettingsCheckboxTile extends StatelessWidget {
   final bool value, enabled, autofocus;
   final ValueChanged<bool> onChanged;
 
+  final bool busy;
   const SettingsCheckboxTile({
     super.key,
     required this.title,
@@ -18,6 +19,7 @@ class SettingsCheckboxTile extends StatelessWidget {
     required this.onChanged,
     this.leading,
     this.enabled = true,
+    this.busy = false,
     this.autofocus = false,
   });
 
@@ -27,6 +29,7 @@ class SettingsCheckboxTile extends StatelessWidget {
     leading: leading,
     checked: value,
     enabled: enabled,
+    busy: busy,
     autofocus: autofocus,
     showActionChevron: false,
     onPressed: () => onChanged(!value),

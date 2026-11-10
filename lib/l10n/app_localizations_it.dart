@@ -121,7 +121,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get fileStorageSettingsUnavailable =>
-      'Questo firmware non offre una schermata per l’accesso a tutti i file. Usa il selettore di file di sistema o installa un gestore di file compatibile.';
+      'Questo firmware non offre una schermata per l’accesso a tutti i file. Usa il gestore file esterno o installa un gestore di file compatibile.';
 
   @override
   String get tileImageMode => 'Immagine del riquadro';
@@ -4899,7 +4899,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get slideshowEnterFolderPath => 'Inserisci percorso cartella';
 
   @override
-  String get slideshowSystemPicker => 'Scegli nel gestore di sistema';
+  String get slideshowSystemPicker => 'Scegli nel gestore file esterno';
 
   @override
   String get slideshowFolderPath => 'Percorso cartella';
@@ -4933,7 +4933,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get filePickerChoose => 'Scegli un gestore di file';
 
   @override
-  String get filePickerSystem => 'Selettore di file di sistema';
+  String get filePickerSystem => 'Gestore file esterno';
 
   @override
   String get filePickerBuiltIn => 'Gestore di file integrato';
@@ -5054,6 +5054,9 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get backupLastSuccess => 'Ultima azione riuscita:';
+
+  @override
+  String get informationObjectPlacement => 'Posizione';
 
   @override
   String get informationPlacement => 'Posizione del blocco';
@@ -5654,7 +5657,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get settingsGroupIndicators => 'Indicatori e messaggi';
 
   @override
-  String get nightModePanelFill => 'Colora il pulsante del pannello superiore';
+  String get nightModePanelFill => 'Colore di accento per la luna';
 
   @override
   String get settingsGroupFocusShape => 'Aspetto del focus';
@@ -5763,4 +5766,29 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get sectionTitleSize => 'Dimensione del titolo della sezione';
+
+  @override
+  String get backupSyncResume => 'Riprendi la sincronizzazione';
+
+  @override
+  String get backupSyncUseLocal => 'Usa le impostazioni di questa TV';
+
+  @override
+  String get backupSyncUseRemote => 'Usa le impostazioni dall’archivio';
+
+  @override
+  String get backupSyncMergeLocal => 'Unisci dando priorità a questa TV';
+
+  @override
+  String get backupSyncMergeRemote => 'Unisci dando priorità all’archivio';
+
+  @override
+  String backupSyncPreviousDate(String date) {
+    return 'Ultima sincronizzazione di questa TV: $date';
+  }
+
+  @override
+  String backupSyncRemoteDate(String date) {
+    return 'Copia nell’archivio: $date';
+  }
 }

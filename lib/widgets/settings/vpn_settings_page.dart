@@ -98,6 +98,7 @@ class _VpnSettingsPageState extends State<VpnSettingsPage> {
                 kind: SettingsMessageKind.error,
               ),
             SettingsSection(
+              key: const ValueKey('vpnApp'),
               title: l.vpnApp,
               children: [
                 SettingsChoiceTile<String>(
@@ -120,6 +121,7 @@ class _VpnSettingsPageState extends State<VpnSettingsPage> {
               ],
             ),
             SettingsSection(
+              key: const ValueKey('settingsGroupIndicators'),
               title: l.settingsGroupIndicators,
               children: [
                 for (final setting in [
@@ -221,6 +223,7 @@ class _VpnStartupSectionState extends State<VpnStartupSection> {
     return _VpnSettingsInteraction(
       vpn: vpn,
       child: SettingsSection(
+        key: const ValueKey('vpnStartup'),
         title: l.vpnStartup,
         children: [
           RoundedSwitchListTile(

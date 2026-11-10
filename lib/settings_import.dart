@@ -17,6 +17,28 @@ import 'information_formats.dart';
 import 'file_browser_options.dart';
 import 'widgets/settings/back_button_actions.dart';
 
+Map<String, dynamic> compatibleSettingsForRestore(
+  dynamic source,
+  Map<String, dynamic> expected,
+) {
+  final settings = compatibleSettings(source, expected);
+  settings.addAll(migrateInformationFormats(settings, fallback: expected));
+  if (!settings.containsKey(sharedInformationClockBehaviorKey) &&
+      source is Map && source[tileAppearanceKey] is String) {
+    final appearance = TileAppearance.decode(source[tileAppearanceKey] as String);
+    if (const ['panelInformationStyle', 'panelBackgroundInformationStyle', 'panelClockStyle']
+        .any(appearance.values.containsKey)) {
+      final behavior = legacyInformationClockBehavior(
+        appearance,
+        showTime: source['show_time_in_status_bar'] != false,
+      );
+      settings[sharedInformationClockBehaviorKey] = jsonEncode(behavior.toMap());
+    }
+  }
+  legacyInformationFormatKeys.forEach(settings.remove);
+  return settings;
+}
+
 /// Merge only compatible entries. Missing or invalid settings never reset values.
 /// Unknown primitive keys are retained for round-tripping between app releases.
 Map<String, dynamic> compatibleSettings(dynamic source, Map<String, dynamic> expected) {
@@ -56,7 +78,7 @@ Map<String, dynamic> compatibleSettings(dynamic source, Map<String, dynamic> exp
       if (options != null) result[key] = options.encode();
       continue;
     }
-    if (informationFormatKeys.contains(key)) {
+    if (informationFormatKeys.contains(key) || legacyInformationFormatKeys.contains(key)) {
       final valid = validateInformationFormat(key, value);
       if (valid != null) result[key] = valid;
       continue;

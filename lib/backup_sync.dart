@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:crypto/crypto.dart';
 
@@ -17,6 +18,8 @@ String backupFingerprint(Object? value) {
       : v;
   return sha256.convert(utf8.encode(jsonEncode(sorted(value)))).toString();
 }
+
+enum BackupSyncResumeChoice { local, remote, mergeLocal, mergeRemote }
 
 /// Settings merge individually. Relational tables and image resources each
 /// form a coherent block. Ties use device ID, so equal clocks converge.
@@ -158,8 +161,12 @@ class BackupSyncDocument {
     for (final key in {...partsNow.keys, ...revisions.keys}) {
       final hash = backupFingerprint(partsNow[key]);
       if (revisions[key]?['hash'] != hash) {
+        final previousTime = revisions[key]?['time'] as int? ?? -1;
         revisions[key] = {
-          'time': changedTimes[key] ?? time.millisecondsSinceEpoch,
+          'time': max(
+            changedTimes[key] ?? time.millisecondsSinceEpoch,
+            min(previousTime + 1, 8640000000000000),
+          ),
           'device': device,
           'hash': hash,
         };
@@ -168,33 +175,130 @@ class BackupSyncDocument {
     return BackupSyncDocument(backup, revisions);
   }
 
-  BackupSyncDocument merge(BackupSyncDocument remote) {
+  BackupSyncDocument merge(BackupSyncDocument remote, {bool partial = false}) {
     final localParts = parts(backup), remoteParts = parts(remote.backup);
     final merged = <String, dynamic>{}, clocks = <String, dynamic>{};
     for (final key in {...revisions.keys, ...remote.revisions.keys}) {
       final a = revisions[key] as Map?, b = remote.revisions[key] as Map?;
-      final fromRemote =
-          b != null &&
-          (a == null ||
-              b['time'] > a['time'] ||
-              b['time'] == a['time'] &&
-                  (b['device'] as String).compareTo(a['device'] as String) > 0);
+      final fromRemote = _newer(b, a);
       final source = fromRemote ? remoteParts : localParts;
       clocks[key] = fromRemote ? b : a;
       if (source.containsKey(key)) merged[key] = source[key];
     }
-    final result = <String, dynamic>{
-      ...backup,
-      ...?(merged['database'] as Map?)?.cast<String, dynamic>(),
-      if (merged.containsKey('resources')) 'resources': merged['resources'],
-      'settings': {
-        for (final e in merged.entries)
-          if (e.key.startsWith('setting:')) e.key.substring(8): e.value,
-      },
-    };
+    final result = _withParts(merged);
+    if (!partial) validateBackup(result);
+    return BackupSyncDocument(result, clocks);
+  }
+
+  static bool _newer(Map? a, Map? b) =>
+      a != null &&
+      (b == null ||
+          a['time'] > b['time'] ||
+          a['time'] == b['time'] &&
+              (a['device'] as String).compareTo(b['device'] as String) > 0);
+
+  Map<String, dynamic> _withParts(Map<String, dynamic> merged) => {
+    ...backup,
+    ...?(merged['database'] as Map?)?.cast<String, dynamic>(),
+    if (merged.containsKey('resources')) 'resources': merged['resources'],
+    'settings': {
+      for (final e in merged.entries)
+        if (e.key.startsWith('setting:')) e.key.substring(8): e.value,
+    },
+  };
+
+  /// Resolve the resumed exchange against this TV's last published snapshot.
+  /// An absent revision in a merge has no opinion. A tombstone has a revision.
+  BackupSyncDocument resumeWith(
+    BackupSyncDocument remote,
+    Map<String, dynamic> common,
+    BackupSyncResumeChoice choice,
+    String device,
+  ) {
+    final localParts = parts(backup);
+    final remoteParts = parts(remote.backup);
+    final localSettings = backup['settings'] as Map;
+    final remoteSettings = remote.backup['settings'] as Map;
+    final keys = {...revisions.keys, ...remote.revisions.keys};
+    final combined = Map<String, dynamic>.of(localParts);
+    final clocks = Map<String, dynamic>.of(revisions);
+    final merge =
+        choice == BackupSyncResumeChoice.mergeLocal ||
+        choice == BackupSyncResumeChoice.mergeRemote;
+    final preferRemote =
+        choice == BackupSyncResumeChoice.remote ||
+        choice == BackupSyncResumeChoice.mergeRemote;
+    final sections = keys
+        .where((key) => backupSyncPartGroup(key) == BackupSyncGroup.sections)
+        .toList();
+    final background = keys
+        .where((key) => backupSyncPartGroup(key) == BackupSyncGroup.background)
+        .toList();
+    const policy = 'setting:$backupSyncGroupsKey';
+
+    for (final block in [
+      sections,
+      background,
+      for (final key in keys)
+        if (!sections.contains(key) && !background.contains(key)) [key],
+    ]) {
+      if (block.isEmpty) continue;
+      final first = block.first;
+      if (!backupSyncPartEnabled(first, localSettings)) continue;
+      final available =
+          backupSyncPartEnabled(first, remoteSettings) &&
+          (!block.contains('database') ||
+              remoteParts.containsKey('database')) &&
+          (!block.contains('resources') ||
+              remoteParts.containsKey('resources'));
+      bool changed(Map<String, dynamic> source) => block.any(
+        (key) =>
+            (source[key]?['hash'] ?? _absentHash) !=
+            (common[key]?['hash'] ?? _absentHash),
+      );
+      final localChanged = changed(revisions);
+      final remoteChanged = changed(remote.revisions);
+      final takeRemote =
+          first != policy &&
+          available &&
+          (merge
+              ? block.any(remote.revisions.containsKey) &&
+                    (!block.any(revisions.containsKey) ||
+                        (localChanged == remoteChanged
+                            ? preferRemote
+                            : remoteChanged))
+              : preferRemote);
+      final source = takeRemote ? remoteParts : localParts;
+      for (final key in block) {
+        if (source.containsKey(key)) {
+          combined[key] = source[key];
+        } else {
+          combined.remove(key);
+        }
+        final a = revisions[key] as Map?;
+        final b = remote.revisions[key] as Map?;
+        final hash = source.containsKey(key)
+            ? (takeRemote ? b : a)!['hash']
+            : _absentHash;
+        if ((a == null || a['hash'] == hash) &&
+            (b == null || b['hash'] == hash)) {
+          clocks[key] = _newer(b, a) ? b : a;
+        } else {
+          // Beat the clocks of both inputs, including TVs with faster clocks.
+          final time = max(a?['time'] as int? ?? 0, b?['time'] as int? ?? 0);
+          if (time >= 8640000000000000) {
+            throw const FormatException('Sync revision overflow');
+          }
+          clocks[key] = {'time': time + 1, 'device': device, 'hash': hash};
+        }
+      }
+    }
+    final result = _withParts(combined);
     validateBackup(result);
     return BackupSyncDocument(result, clocks);
   }
+
+  static final _absentHash = backupFingerprint(null);
 
   /// Apply the final policy after all heads were merged, so head order cannot
   /// temporarily overwrite a block that a later head makes local.

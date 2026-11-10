@@ -118,7 +118,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get fileStorageSettingsUnavailable =>
-      'Bu donanım yazılımında tüm dosyalara erişim ekranı bulunmuyor. Sistem dosya seçicisini kullanın veya uyumlu bir dosya yöneticisi yükleyin.';
+      'Bu donanım yazılımında tüm dosyalara erişim ekranı bulunmuyor. Harici dosya gezginini kullanın veya uyumlu bir dosya yöneticisi yükleyin.';
 
   @override
   String get tileImageMode => 'Kutucuk görseli';
@@ -4855,7 +4855,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get slideshowEnterFolderPath => 'Klasör yolunu gir';
 
   @override
-  String get slideshowSystemPicker => 'Sistem dosya yöneticisinde seç';
+  String get slideshowSystemPicker => 'Harici dosya gezgininde seç';
 
   @override
   String get slideshowFolderPath => 'Klasör yolu';
@@ -4889,7 +4889,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get filePickerChoose => 'Dosya tarayıcısı seç';
 
   @override
-  String get filePickerSystem => 'Sistem dosya seçicisi';
+  String get filePickerSystem => 'Harici dosya gezgini';
 
   @override
   String get filePickerBuiltIn => 'Yerleşik dosya tarayıcısı';
@@ -5008,6 +5008,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get backupLastSuccess => 'Son başarılı işlem:';
+
+  @override
+  String get informationObjectPlacement => 'Yerleşim';
 
   @override
   String get informationPlacement => 'Blok yerleşimi';
@@ -5604,7 +5607,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get settingsGroupIndicators => 'Göstergeler ve mesajlar';
 
   @override
-  String get nightModePanelFill => 'Üst panel düğmesini renkle doldur';
+  String get nightModePanelFill => 'Ay simgesi için vurgu rengi';
 
   @override
   String get settingsGroupFocusShape => 'Odak görünümü';
@@ -5713,4 +5716,29 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get sectionTitleSize => 'Bölüm başlığı boyutu';
+
+  @override
+  String get backupSyncResume => 'Senkronizasyona devam et';
+
+  @override
+  String get backupSyncUseLocal => 'Bu TV’nin ayarlarını kullan';
+
+  @override
+  String get backupSyncUseRemote => 'Depolamadaki ayarları kullan';
+
+  @override
+  String get backupSyncMergeLocal => 'Bu TV’ye öncelik vererek birleştir';
+
+  @override
+  String get backupSyncMergeRemote => 'Depolamaya öncelik vererek birleştir';
+
+  @override
+  String backupSyncPreviousDate(String date) {
+    return 'Bu TV’nin son senkronizasyonu: $date';
+  }
+
+  @override
+  String backupSyncRemoteDate(String date) {
+    return 'Depolamadaki kopya: $date';
+  }
 }

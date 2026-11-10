@@ -5,7 +5,7 @@ import java.net.URI;
 
 /** One POST, fixed body, no application retry and no redirect forwarding of the secret URL. */
 final class RemoteWebhookClient {
-    static boolean post(String url, int timeoutMs) throws Exception {
+    static int post(String url, int timeoutMs) throws Exception {
         if (!RemoteMappingConfiguration.webhook(url)) throw new IllegalArgumentException();
         HttpURLConnection connection = (HttpURLConnection)new URI(url).toURL().openConnection();
         try {
@@ -15,8 +15,7 @@ final class RemoteWebhookClient {
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setFixedLengthStreamingMode(2);
             try (java.io.OutputStream body = connection.getOutputStream()) { body.write(new byte[]{'{', '}'}); }
-            int code = connection.getResponseCode();
-            return code >= 200 && code < 300;
+            return connection.getResponseCode();
         } finally { connection.disconnect(); }
     }
 }

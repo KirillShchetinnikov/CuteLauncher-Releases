@@ -1,5 +1,5 @@
 import 'dart:math' as math;
-import 'package:flutter/foundation.dart' show ValueListenable;
+import 'package:flutter/foundation.dart' show ValueListenable, listEquals;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -125,6 +125,7 @@ class _HomeSectionState extends State<HomeSection> {
   double _horizontalInset = 32;
   List<App> _apps = [];
   bool _active = false;
+  final _activeChanges = ValueNotifier<bool>(false);
   CategorySort? _appliedSort;
   int _request = 0;
   String? _signature;
@@ -161,14 +162,13 @@ class _HomeSectionState extends State<HomeSection> {
     ++_request;
     _disconnect();
     _emptyTile.dispose();
+    _activeChanges.dispose();
     _scroll.dispose();
     super.dispose();
   }
 
   void _changed() {
     if (!mounted) return;
-    final style = context.read<AppearanceService?>()?.tilesFor(widget.category.id);
-    if (style?.labels == 'selected') setState(() {});
     _scheduleReveal();
   }
 
@@ -250,6 +250,7 @@ class _HomeSectionState extends State<HomeSection> {
   }
 
   Future<bool> _select(String package, {bool preserveColumn = false}) async {
+    if (!mounted || ModalRoute.isCurrentOf(context) == false) return false;
     if (!preserveColumn) _preferredColumn = null;
     if (_apps.isEmpty && package == HomeSection.emptyTileKey) {
       ++_request;
@@ -275,6 +276,14 @@ class _HomeSectionState extends State<HomeSection> {
         offset = end - _scroll.position.viewportDimension;
       }
       _scroll.jumpTo(offset.clamp(0, _scroll.position.maxScrollExtent));
+    }
+    // Mounted destinations can receive focus in this event's microtask. Waiting
+    // for layout here adds a blank frame before the post-frame scroll reveal.
+    if (!materializing) {
+      _pendingPackage = null;
+      final result = _focus?.focusMounted(package) ?? false;
+      if (result) _scheduleReveal();
+      return result;
     }
     WidgetsBinding.instance.ensureVisualUpdate();
     await WidgetsBinding.instance.endOfFrame;
@@ -387,6 +396,13 @@ class _HomeSectionState extends State<HomeSection> {
     final padding =
         style.number('sectionPadding') ?? categoryStyle?.padding ?? 0;
     final showHeader = style.sectionTitles || style.labels == 'selected';
+    Widget selectedLabel(String? package) => Text(
+      _apps.where((a) => a.packageName == package).firstOrNull?.displayName ?? '',
+      key: ValueKey(('selected-app-label', widget.category.id)),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      style: style.labelStyle,
+    );
     Widget sectionHeader(double inset) =>
       Padding(
         padding: EdgeInsets.fromLTRB(inset, 8, inset, 8),
@@ -416,14 +432,11 @@ class _HomeSectionState extends State<HomeSection> {
                   child: Text('·', style: style.labelStyle),
                 ),
               Expanded(
-                child: Text(
-                  _apps.where((a) => a.packageName == _focus?.lastPackage)
-                      .firstOrNull?.displayName ?? '',
-                  key: ValueKey(('selected-app-label', widget.category.id)),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: style.labelStyle,
-                ),
+                child: _focus == null ? selectedLabel(null) :
+                    ValueListenableBuilder<String?>(
+                      valueListenable: _focus!.selected,
+                      builder: (_, package, _) => selectedLabel(package),
+                    ),
               ),
             ],
           ],
@@ -432,14 +445,25 @@ class _HomeSectionState extends State<HomeSection> {
 
     return Focus(
       onFocusChange: (active) {
-        if (mounted && active != _active) setState(() => _active = active);
+        if (!mounted || active == _active) return;
+        _active = active;
+        _activeChanges.value = active;
+        // Only releasing a deferred automatic order requires a new layout.
+        // Focus decoration itself must not rebuild every card in the section.
+        if (!active && !listEquals(widget.category.applications, _apps)) {
+          setState(() {});
+        }
       },
-      child: HomeSectionOpacity(
-        sectionId: widget.category.id,
-        activeSectionId: widget.activeSectionId,
-        first: widget.first,
-        forceOpaque: widget.previewed || _active,
-        inactiveOpacity: style.number('inactiveOpacity') ?? 1,
+      child: ValueListenableBuilder<bool>(
+        valueListenable: _activeChanges,
+        builder: (_, active, child) => HomeSectionOpacity(
+          sectionId: widget.category.id,
+          activeSectionId: widget.activeSectionId,
+          first: widget.first,
+          forceOpaque: widget.previewed || active,
+          inactiveOpacity: style.number('inactiveOpacity') ?? 1,
+          child: child!,
+        ),
         child: Container(
           decoration: style.sectionDecoration(fallbackColor: categoryStyle?.background),
           padding: EdgeInsets.all(padding),

@@ -172,6 +172,11 @@ Future<void> _runLauncher({bool remotePanel = false, bool recentApps = false}) a
   final settingsSync = SettingsSyncService(sharedPreferences);
   try { if (!remotePanel) await settingsSync.recover(); }
   catch (_) { debugPrint('Settings exchange recovery will be retried.'); }
+  try {
+    if (!remotePanel) await SettingsService.upgradeInformationFormats(sharedPreferences);
+  } catch (_) {
+    debugPrint('Information format migration will be retried.');
+  }
   final settingsService = SettingsService(sharedPreferences);
   DiagnosticsStore.instance.settingsProvider = () => {
     ...settingsService.exportSettingsMap(),

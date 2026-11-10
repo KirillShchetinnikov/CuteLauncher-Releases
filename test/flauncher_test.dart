@@ -1,6 +1,5 @@
 import 'package:flauncher/weather_sources.dart';
 import 'package:flauncher/weather_text_format.dart';
-import 'package:flauncher/information_formats.dart';
 import 'dart:async';
 import 'dart:ui' as ui;
 import 'package:flauncher/models/watch_next_program.dart';
@@ -378,7 +377,7 @@ void main() {
       }
       if (showsContent) {
         expect(rows, findsNWidgets(2));
-        expect(find.byType(ContentPreviewCard), findsNWidgets(outcome == 'later' ? 1 : 2));
+        expect(find.byType(ContentPreviewCard), findsNWidgets(2));
         expect(tester.getSize(row(l.continueWatching)), watchSize);
         expect(tester.getSize(find.descendant(of: find.byType(AppContentRow), matching: rows)), feedSize);
         if (outcome != 'later') expect(find.text('Watch Next video'), findsOneWidget);
@@ -509,8 +508,6 @@ void main() {
     when(apps.applications).thenReturn(category.applications);
     when(apps.launcherSections).thenReturn([category]);
     final settings = mkSettingsService();
-    when(settings.noSuchMethod(Invocation.method(#informationDateTime, [], {#background: true})))
-        .thenAnswer((_) => InformationDateTimeFormat(time: settings.timeFormat, date: settings.dateFormat));
     when(settings.showTimeInStatusBar).thenReturn(true);
     when(settings.showDateInStatusBar).thenReturn(true);
     when(settings.showWeatherInStatusBar).thenReturn(false);
@@ -2217,7 +2214,7 @@ void main() {
     await tester.pumpWidget(const SizedBox());
   });
 
-  testWidgets('section preview keeps settings focus and restores the previous Home section', (tester) async {
+  testWidgets('section editing moves left settings to the right and restores Home and focus', (tester) async {
     SharedPreferences.setMockInitialValues({});
     final appearance = AppearanceService(await SharedPreferences.getInstance());
     await appearance.set('inactiveOpacity', .2);
@@ -2243,7 +2240,8 @@ void main() {
         w is HomeSection && w.category.id == bottom.id);
     final original = tester.getTopLeft(topCard);
     expect(tester.getTopLeft(bottomSection).dy, greaterThan(1080));
-    expect(card, findsNothing);
+    // Neighboring cards may be prepared offscreen before the preview scroll.
+    expect(tester.getTopLeft(card).dy, greaterThan(1080));
     getSettingsFocusNode(tester)!.requestFocus();
     await tester.pump();
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
@@ -2253,6 +2251,8 @@ void main() {
     await tester.pumpAndSettle();
 
     final list = find.byType(LauncherSectionsPanelPage);
+    bool? panelOnRight() => tester.widget<SidePanelDialog>(find.byType(SidePanelDialog)).isRightSide;
+    expect(panelOnRight(), isFalse);
     final bottomTile = find.ancestor(
       of: find.descendant(of: list, matching: find.text('Bottom')),
       matching: find.byType(FocusableSettingsTile),
@@ -2265,9 +2265,10 @@ void main() {
     final editor = find.byType(LauncherSectionPanelPage);
     final editorContext = tester.element(editor);
     final l = AppLocalizations.of(editorContext)!;
+    expect(panelOnRight(), isTrue);
     expect(tester.getBottomRight(card).dy, lessThanOrEqualTo(1080));
     final previewX = tester.getTopLeft(card).dx;
-    expect(previewX, greaterThan(original.dx));
+    expect(previewX, closeTo(original.dx, .01));
     expect(isAppCardFocused(tester, 'preview.bottom'), isFalse);
 
     final appearanceTile = find.descendant(of: editor, matching: find.text(l.categoryAppearance));
@@ -2275,6 +2276,7 @@ void main() {
     await tester.tap(appearanceTile);
     await tester.pumpAndSettle();
     expect(find.byType(CategoryAppearancePage), findsOneWidget);
+    expect(panelOnRight(), isTrue);
     expect(FocusManager.instance.primaryFocus?.context
         ?.findAncestorWidgetOfExactType<CategoryAppearancePage>(), isNotNull);
     await appearance.setCategoryTile(bottom.id, 'sectionPadding', 48);
@@ -2287,11 +2289,13 @@ void main() {
     await tester.pumpAndSettle();
     navigator.pop();
     await tester.pumpAndSettle();
+    expect(panelOnRight(), isFalse);
     expect(tester.getTopLeft(topCard), original);
     expect(bottomTileNode.hasPrimaryFocus, isTrue);
-    expect(card, findsNothing);
+    expect(tester.getTopLeft(card).dy, greaterThan(1080));
     await tester.tap(find.descendant(of: list, matching: find.text('Hidden')));
     await tester.pumpAndSettle();
+    expect(panelOnRight(), isTrue);
     expect(tester.getTopLeft(topCard), original);
     await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
@@ -2996,8 +3000,16 @@ void main() {
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown); await tester.pumpAndSettle();
       for(var i=0;i<3;i++) { await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight); await tester.pumpAndSettle(); }
       expect(isAppCardFocused(tester,'memory.3'),isTrue);
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp); await tester.pumpAndSettle();
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown); await tester.pumpAndSettle();
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+      await tester.idle();
+      expect(isAppCardFocused(tester,'memory.top'),isTrue,
+          reason: 'Returning to a mounted section must not wait for a frame');
+      await tester.pumpAndSettle();
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      await tester.idle();
+      expect(isAppCardFocused(tester,'memory.0'),isTrue,
+          reason: 'Entering a mounted section must not wait for a frame');
+      await tester.pumpAndSettle();
       expect(isAppCardFocused(tester,'memory.0'),isTrue);
       await tester.pumpWidget(const SizedBox());appearance.dispose();
     });

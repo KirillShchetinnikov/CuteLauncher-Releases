@@ -9,4 +9,14 @@
     <string name="file_card_title">Dateizugriff</string>
     <string name="file_card_steps">Öffnen Sie Berechtigungen → Dateien und Medien → Verwaltung aller Dateien zulassen. Kehren Sie dann mit der Zurück-Taste zu CuteLauncher zurück.</string>
     <string name="file_card_open">Einstellungen öffnen</string>
+    <string name="remap_error_black_screen">Black Screen fehlt oder ist nicht verfügbar.</string>
+    <string name="remap_error_app">Die zugewiesene App fehlt oder lässt sich nicht öffnen.</string>
+    <string name="remap_error_hdmi">Der zugewiesene HDMI-Eingang ist nicht verfügbar.</string>
+    <string name="remap_error_power">Energiebefehl fehlgeschlagen. Lokales ADB prüfen.</string>
+    <string name="remap_error_permission">Der Fernseher hat die Aktion verweigert.</string>
+    <string name="remap_error_busy">Eine Fernbedienungsaktion läuft bereits.</string>
+    <string name="remap_error_unavailable">Diese Aktion ist auf dem Fernseher nicht verfügbar.</string>
+    <string name="remap_error_webhook_http">Webhook hat die Anfrage abgelehnt (HTTP %1$d).</string>
+    <string name="remap_error_webhook_timeout">Zeitüberschreitung beim Webhook.</string>
+    <string name="remap_error_webhook">Verbindung zum Webhook fehlgeschlagen.</string>
 </resources>

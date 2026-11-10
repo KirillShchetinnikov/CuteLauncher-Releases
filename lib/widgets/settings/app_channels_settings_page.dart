@@ -216,7 +216,7 @@ class _AppChannelsSettingsPageState extends State<AppChannelsSettingsPage>
               FocusableSettingsTile(
                 leading: const Icon(Icons.security),
                 title: Text(l.appChannelsAccess),
-                enabled: !_busy,
+                busy: _busy,
                 onPressed: _requestAccess,
               ),
               AdbPermissionTile(

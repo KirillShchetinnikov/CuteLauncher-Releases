@@ -329,7 +329,7 @@ class BackupService {
       expected['category_appearance'] = '{}';
     }
     validateBackup(backupData);
-    final settingsMap = compatibleSettings(backupData['settings'], expected);
+    final settingsMap = compatibleSettingsForRestore(backupData['settings'], expected);
     final assets = await BackupAssets.prepare(await getApplicationDocumentsDirectory(), backupData['version'] == 3 ? backupData['resources'] : null, settingsMap);
     try {
     // 2. Restore database tables in a single transaction

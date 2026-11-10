@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ import '../models/watch_next_program.dart';
 import '../providers/app_channels_service.dart';
 import '../providers/appearance_service.dart';
 import '../providers/settings_service.dart';
+import '../providers/foreground_work.dart';
 import '../tile_appearance.dart';
 import '../tile_image_geometry.dart';
 import '../home_layout.dart';
@@ -89,6 +91,7 @@ class AppContentRow extends StatelessWidget {
             service.cachedPoster(program.posterArtUri) ??
             service.cachedPoster(program.thumbnailUri),
         loadPoster: () => service.programPoster(program),
+        invalidatePoster: () => service.evictPoster(program),
         observePoster: (bytes) =>
             service.observePoster(channel, program.id, bytes),
         onOpen: (context) async {
@@ -582,6 +585,7 @@ class ContentPreviewCard extends StatefulWidget {
     this.posterRefreshes,
     this.cachedPoster,
     this.loadPoster,
+    this.invalidatePoster,
     this.observePoster,
     this.onDetails,
     this.onUp,
@@ -598,6 +602,7 @@ class ContentPreviewCard extends StatefulWidget {
   final Listenable? posterRefreshes;
   final Uint8List? Function()? cachedPoster;
   final Future<Uint8List?> Function()? loadPoster;
+  final VoidCallback? invalidatePoster;
   final Future<void> Function(Uint8List?)? observePoster;
   final void Function(BuildContext)? onDetails;
   final VoidCallback? onUp;
@@ -609,7 +614,8 @@ class ContentPreviewCard extends StatefulWidget {
   State<ContentPreviewCard> createState() => _ContentPreviewCardState();
 }
 
-class _ContentPreviewCardState extends State<ContentPreviewCard> {
+class _ContentPreviewCardState extends State<ContentPreviewCard>
+    with WidgetsBindingObserver {
   final _node = FocusNode();
   CategoryFocusController? _focus;
   Uint8List? _posterBytes;
@@ -619,10 +625,67 @@ class _ContentPreviewCardState extends State<ContentPreviewCard> {
   int _posterRequest = 0;
   bool _launching = false;
   bool _paintFocusTransition = false;
+  Timer? _posterRetry;
+  ForegroundWork? _work;
+  bool _needsRetry = false, _decodeFailed = false, _enabled = true;
+  int _retryAttempt = 0;
+  int _posterRevision = 0;
+  bool _loadingPoster = false;
+  bool get _foreground => WidgetsBinding.instance.lifecycleState == null ||
+      WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed;
+
+  void _cancelRetry() {
+    _posterRetry?.cancel();
+    _posterRetry = null;
+    _work?.cancel(this);
+  }
+
+  void _scheduleRetry() {
+    _needsRetry = true;
+    if (!mounted || !_foreground || !_enabled || _posterRetry != null ||
+        widget.loadPoster == null ||
+        (_source.$1.isEmpty && _source.$2.isEmpty)) {
+      return;
+    }
+    final delay = Duration(seconds: math.min(30, 2 << math.min(_retryAttempt, 4)));
+    _posterRetry = Timer(delay, () {
+      _posterRetry = null;
+      if (!mounted || !_foreground || !_enabled) return;
+      _retryAttempt++;
+      final work = _work;
+      if (work == null) {
+        unawaited(_loadPoster());
+      } else {
+        unawaited(work.schedule(this, _loadPoster));
+      }
+    });
+  }
+
+  void _posterDecodeFailed() {
+    if (_decodeFailed) return;
+    _decodeFailed = true;
+    widget.invalidatePoster?.call();
+    _scheduleRetry();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state != AppLifecycleState.resumed) {
+      _cancelRetry();
+      if (_loadingPoster) {
+        ++_posterRequest;
+        _loadingPoster = false;
+        _needsRetry = true;
+      }
+    } else if (_needsRetry) {
+      _scheduleRetry();
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     widget.posterRefreshes?.addListener(_loadPoster);
     _posterBytes = widget.cachedPoster?.call();
     _posterSource = _posterBytes == null ? null : _source;
@@ -632,6 +695,13 @@ class _ContentPreviewCardState extends State<ContentPreviewCard> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    _work = context.read<ForegroundWork?>();
+    _enabled = TickerMode.valuesOf(context).enabled;
+    if (!_enabled) {
+      _cancelRetry();
+    } else if (_needsRetry) {
+      _scheduleRetry();
+    }
     final focus = CategoryFocus.maybeOf(context);
     if (focus != _focus) {
       _focus?.unregister(widget.program.id.toString(), _node);
@@ -657,26 +727,48 @@ class _ContentPreviewCardState extends State<ContentPreviewCard> {
     if (loaderChanged ||
         (oldWidget.program.posterArtUri, oldWidget.program.thumbnailUri) !=
             _source) {
+      _retryAttempt = 0;
+      _decodeFailed = false;
       _loadPoster();
     }
   }
 
   Future<void> _loadPoster() async {
+    _cancelRetry();
+    if (!_foreground || !_enabled) {
+      _needsRetry = true;
+      return;
+    }
     final request = ++_posterRequest;
+    _loadingPoster = true;
     final source = _source;
-    final bytes = await widget.loadPoster?.call();
+    Uint8List? bytes;
+    try {
+      bytes = await widget.loadPoster?.call();
+    } catch (_) {
+      // Service loaders report transport errors; custom loaders may throw.
+    }
     if (!mounted || request != _posterRequest) return;
+    _loadingPoster = false;
+    if (bytes == null || bytes.isEmpty) {
+      _scheduleRetry();
+    } else {
+      _needsRetry = false;
+      if (!_decodeFailed) _retryAttempt = 0;
+    }
     // Only materialized cards contribute to automatic format detection.
     await widget.observePoster?.call(bytes);
     if (!mounted || request != _posterRequest) return;
     // A failed revalidation keeps the existing image at this URI. A genuinely
     // different, unavailable image still gets the normal placeholder.
     if (bytes == null && _posterSource == source) return;
-    if (listEquals(bytes, _posterBytes)) {
+    if (!_decodeFailed && listEquals(bytes, _posterBytes)) {
       _posterSource = source;
       return;
     }
     setState(() {
+      if (_decodeFailed) _posterRevision++;
+      _decodeFailed = false;
       _posterBytes = bytes;
       _posterSource = source;
     });
@@ -684,6 +776,8 @@ class _ContentPreviewCardState extends State<ContentPreviewCard> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _cancelRetry();
     ++_posterRequest;
     widget.posterRefreshes?.removeListener(_loadPoster);
     _focus?.unregister(widget.program.id.toString(), _node);
@@ -754,18 +848,20 @@ class _ContentPreviewCardState extends State<ContentPreviewCard> {
       if (bytes == null || bytes.isEmpty) return fallback();
       if (appTiles) {
         return TileArtwork(
+          key: ValueKey(_posterRevision),
           image: MemoryImage(bytes),
           mode: style.bannerImageMode == TileImageMode.icon
               ? TileImageMode.edgeColor
               : style.bannerImageMode,
           borderRadius: corners,
           decodeScale: decodeScale,
-          errorBuilder: (_, _, _) => fallback(),
+          errorBuilder: (_, _, _) { _posterDecodeFailed(); return fallback(); },
         );
       }
       return ColoredBox(
         color: Theme.of(context).colorScheme.surfaceContainerHighest,
         child: Image(
+          key: ValueKey(_posterRevision),
           image: CoverMemoryImage(
             bytes,
             logicalSize: widget.size,
@@ -774,7 +870,7 @@ class _ContentPreviewCardState extends State<ContentPreviewCard> {
           ),
           fit: BoxFit.cover,
           gaplessPlayback: true,
-          errorBuilder: (_, _, _) => fallback(),
+          errorBuilder: (_, _, _) { _posterDecodeFailed(); return fallback(); },
         ),
       );
     }

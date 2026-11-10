@@ -119,7 +119,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get fileStorageSettingsUnavailable =>
-      'На этой прошивке недоступен экран доступа ко всем файлам. Используйте системный проводник или установите совместимый файловый менеджер.';
+      'На этой прошивке недоступен экран доступа ко всем файлам. Используйте внешний проводник или установите совместимый файловый менеджер.';
 
   @override
   String get tileImageMode => 'Изображение плитки';
@@ -4854,7 +4854,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get slideshowEnterFolderPath => 'Ввести путь к папке';
 
   @override
-  String get slideshowSystemPicker => 'Выбрать в системном проводнике';
+  String get slideshowSystemPicker => 'Выбрать в внешнем проводнике';
 
   @override
   String get slideshowFolderPath => 'Путь к папке';
@@ -4888,7 +4888,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get filePickerChoose => 'Выбор проводника';
 
   @override
-  String get filePickerSystem => 'Системный проводник';
+  String get filePickerSystem => 'Внешний проводник';
 
   @override
   String get filePickerBuiltIn => 'Встроенный проводник';
@@ -5008,6 +5008,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get backupLastSuccess => 'Последнее успешное действие:';
+
+  @override
+  String get informationObjectPlacement => 'Размещение';
 
   @override
   String get informationPlacement => 'Размещение блока';
@@ -5610,7 +5613,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get settingsGroupIndicators => 'Индикация и сообщения';
 
   @override
-  String get nightModePanelFill => 'Заливка кнопки в верхней панели';
+  String get nightModePanelFill => 'Акцентная заливка луны';
 
   @override
   String get settingsGroupFocusShape => 'Форма выделения';
@@ -5720,4 +5723,29 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get sectionTitleSize => 'Размер заголовка раздела';
+
+  @override
+  String get backupSyncResume => 'Как возобновить синхронизацию?';
+
+  @override
+  String get backupSyncUseLocal => 'Использовать настройки этого ТВ';
+
+  @override
+  String get backupSyncUseRemote => 'Использовать настройки из хранилища';
+
+  @override
+  String get backupSyncMergeLocal => 'Объединить с приоритетом этого ТВ';
+
+  @override
+  String get backupSyncMergeRemote => 'Объединить с приоритетом хранилища';
+
+  @override
+  String backupSyncPreviousDate(String date) {
+    return 'Последняя синхронизация этого ТВ: $date';
+  }
+
+  @override
+  String backupSyncRemoteDate(String date) {
+    return 'Копия в хранилище: $date';
+  }
 }

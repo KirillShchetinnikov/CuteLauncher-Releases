@@ -36,20 +36,10 @@ void main() {
     final settings = SettingsService(await SharedPreferences.getInstance());
     addTearDown(settings.dispose);
     await settings.setShowWeatherInStatusBar(true);
-    for (final background in [false, true]) {
-      when(
-        fixture.settings.noSuchMethod(
-          Invocation.method(#informationDateTime, [], {
-            #background: background,
-          }),
-        ),
-      ).thenAnswer((_) => settings.informationDateTime(background: background));
-      when(
-        fixture.settings.noSuchMethod(
-          Invocation.method(#informationWeather, [], {#background: background}),
-        ),
-      ).thenAnswer((_) => settings.informationWeather(background: background));
-    }
+    when(fixture.settings.informationDateTime())
+        .thenAnswer((_) => settings.informationDateTime());
+    when(fixture.settings.informationWeather())
+        .thenAnswer((_) => settings.informationWeather());
     final context = tester.element(find.byIcon(Icons.settings_outlined));
     showLauncherDialog<void>(
       context: context,
@@ -124,7 +114,12 @@ void main() {
       }
     }
 
-    expectVisibleRows(6);
+    expect(find.text(l.informationObjectPlacement).hitTestable(), findsOneWidget);
+    for (final title in [l.informationTime, l.informationDate, l.weather]) {
+      final row = find.widgetWithText(FocusableSettingsTile, title).hitTestable();
+      expect(row, findsOneWidget);
+      expect(tester.getSize(row).height, greaterThanOrEqualTo(48));
+    }
     for (final value in find.text(l.topPanel).evaluate()) {
       final paragraph = value.findRenderObject()! as RenderParagraph;
       final painter = TextPainter(
@@ -141,16 +136,22 @@ void main() {
     }
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
-    expect(find.byType(PanelInformationSettingsPage), findsOneWidget);
-    expectVisibleRows(4);
-    await capture('02-panel');
-    await open(l.informationComposition);
+    expect(find.byType(InformationDataSettingsPage), findsOneWidget);
     await capture('03-formats');
     await open(l.weatherTextFormat);
     expect(find.byType(WeatherTextFormatDialog), findsOneWidget);
     await capture('04-weather');
+    final editor = find.byType(WeatherTextFormatDialog);
+    final cancel = MaterialLocalizations.of(tester.element(editor)).cancelButtonLabel;
+    await tester.tap(find.widgetWithText(LauncherDialogButton, cancel));
+    await tester.pumpAndSettle();
+    expect(find.byType(InformationDataSettingsPage), findsOneWidget);
     await back();
-    await back();
+    expect(find.byType(InformationSettingsPage), findsOneWidget);
+    expect(Focus.of(tester.element(find.text(l.informationComposition))).hasFocus, isTrue);
+    await open(l.informationPanelAppearance);
+    expectVisibleRows(3);
+    await capture('02-panel');
     await open(l.informationTypography);
     await capture('05-typography');
     await tester.tap(find.text(l.informationInheritPanelTypography));
@@ -170,11 +171,8 @@ void main() {
       isTrue,
     );
     await open(l.backgroundInformationAppearance);
-    expectVisibleRows(4);
+    expectVisibleRows(3);
     await capture('07-background');
-    await open(l.informationComposition);
-    await capture('07a-background-formats');
-    await back();
     await open(l.informationPositionSize);
     await capture('08-position');
     await tester.scrollUntilVisible(find.text(l.informationSize), 120,

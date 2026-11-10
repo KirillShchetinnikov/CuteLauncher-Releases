@@ -12,6 +12,7 @@ class RoundedSwitchListTile extends StatelessWidget {
   final Widget title;
   final Widget? secondary;
 
+  final bool busy;
   const RoundedSwitchListTile({
     super.key,
     required this.value,
@@ -20,6 +21,7 @@ class RoundedSwitchListTile extends StatelessWidget {
     this.secondary,
     this.autofocus = false,
     this.enabled = true,
+    this.busy = false,
     this.focusNode,
   });
 
@@ -31,16 +33,22 @@ class RoundedSwitchListTile extends StatelessWidget {
       focusNode: focusNode,
       autofocus: autofocus,
       enabled: enabled,
-      onPressed: enabled ? () => onChanged(!value) : null,
+      busy: busy,
+      onPressed: enabled && !busy ? () => onChanged(!value) : null,
       leading: secondary,
       title: title,
       trailing: Container(
         constraints: BoxConstraints(maxHeight: skin.standard ? 16 : 26),
         child: ExcludeFocus(
           child: ExcludeSemantics(
-            child: skin.standard
-                ? Switch(value: value, onChanged: enabled ? onChanged : null)
-                : SkinSwitch(value: value, enabled: enabled),
+            child: IgnorePointer(
+              child: skin.standard
+                  ? Switch(
+                      value: value,
+                      onChanged: enabled && !busy ? onChanged : null,
+                    )
+                  : SkinSwitch(value: value, enabled: enabled && !busy),
+            ),
           ),
         ),
       ),

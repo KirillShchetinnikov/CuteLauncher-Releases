@@ -612,7 +612,7 @@ public class LauncherActivity extends FlutterActivity {
     private boolean launchActivityFromAction(String action) {
         // Prevent Intent Action Injection by only allowing known actions
         if (Settings.ACTION_SETTINGS.equals(action)) {
-            return tryStartActivity(new Intent(action));
+            return RemoteTvActions.openSettings(this);
         }
         return false;
     }

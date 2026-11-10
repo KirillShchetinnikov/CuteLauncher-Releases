@@ -17,6 +17,9 @@ const unknownAudioStatus = (
 
 /// A bounded refresh for a visible panel; never intercepts volume buttons.
 class AudioStatusService extends ChangeNotifier with WidgetsBindingObserver {
+  static const _captureRoute = bool.fromEnvironment(
+    'CUTE_AUDIO_ROUTE_DIAGNOSTICS',
+  );
   final MethodChannel channel;
   final SettingsService? settings;
   Duration _interval;
@@ -120,7 +123,10 @@ class AudioStatusService extends ChangeNotifier with WidgetsBindingObserver {
     final generation = _generation;
     try {
       final data = await channel
-          .invokeMapMethod<String, dynamic>('snapshot')
+          .invokeMapMethod<String, dynamic>(
+            'snapshot',
+            _captureRoute ? true : null,
+          )
           .timeout(const Duration(seconds: 3));
       if (_disposed || generation != _generation || !_enabled) return;
       _screenOn = data?['screenOn'] != false;
@@ -134,6 +140,10 @@ class AudioStatusService extends ChangeNotifier with WidgetsBindingObserver {
           : outputs is List && outputs.length > 1
           ? 'multiple'
           : 'unknown';
+      final routeDiagnostics = data?['routeDiagnostics'];
+      if (_captureRoute && routeDiagnostics is Map) {
+        DiagnosticsStore.instance.recordAudioRouting(routeDiagnostics, output);
+      }
       final next = (
         percent: data?['fixed'] == true ? null : percent,
         muted: data?['muted'] is bool ? data!['muted'] as bool : null,

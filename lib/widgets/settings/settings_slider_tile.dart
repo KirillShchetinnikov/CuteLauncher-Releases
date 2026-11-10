@@ -14,6 +14,7 @@ class SettingsSliderTile extends StatefulWidget {
   final ValueChanged<num> onChanged;
   final bool enabled, autofocus;
   final TextDirection? sliderTextDirection;
+  final bool busy;
   const SettingsSliderTile({
     super.key,
     required this.title,
@@ -22,6 +23,7 @@ class SettingsSliderTile extends StatefulWidget {
     required this.label,
     required this.onChanged,
     this.enabled = true,
+    this.busy = false,
     this.autofocus = false,
     this.sliderTextDirection,
   });
@@ -53,6 +55,7 @@ class _SettingsSliderTileState extends State<SettingsSliderTile> {
   }
 
   void _change(int direction) {
+    if (!widget.enabled || widget.busy) return;
     final next = (_index + direction).clamp(0, widget.options.length - 1);
     if (next != _index) widget.onChanged(widget.options[next]);
   }
@@ -62,23 +65,28 @@ class _SettingsSliderTileState extends State<SettingsSliderTile> {
     final index = _draft?.round() ?? _index;
     final displayed = _draft == null ? widget.value : widget.options[index];
     return SettingsAdjustmentSemantics(
-      enabled: widget.enabled,
+      enabled: widget.enabled && !widget.busy,
       label: widget.title,
       value: widget.label(displayed),
-      increasedValue: widget.enabled && _index < widget.options.length - 1
+      increasedValue:
+          widget.enabled && !widget.busy && _index < widget.options.length - 1
           ? widget.label(widget.options[_index + 1])
           : null,
-      decreasedValue: widget.enabled && _index > 0
+      decreasedValue: widget.enabled && !widget.busy && _index > 0
           ? widget.label(widget.options[_index - 1])
           : null,
-      onIncrease: widget.enabled && _index < widget.options.length - 1
+      onIncrease:
+          widget.enabled && !widget.busy && _index < widget.options.length - 1
           ? () => _change(1)
           : null,
-      onDecrease: widget.enabled && _index > 0 ? () => _change(-1) : null,
+      onDecrease: widget.enabled && !widget.busy && _index > 0
+          ? () => _change(-1)
+          : null,
       child: FocusableSettingsTile(
         semanticContainer: false,
         autofocus: widget.autofocus,
         enabled: widget.enabled,
+        busy: widget.busy,
         onKeyEvent: (_, event) {
           if (event is KeyDownEvent || event is KeyRepeatEvent) {
             if (event.logicalKey == LogicalKeyboardKey.arrowLeft ||
@@ -123,12 +131,14 @@ class _SettingsSliderTileState extends State<SettingsSliderTile> {
                           .clamp(0, widget.options.length - 1)
                           .toDouble(),
                       max: (widget.options.length - 1).toDouble(),
-                      divisions: widget.options.length > 1 ? widget.options.length - 1 : null,
+                      divisions: widget.options.length > 1
+                          ? widget.options.length - 1
+                          : null,
                       label: widget.label(displayed),
-                      onChanged: widget.enabled
+                      onChanged: widget.enabled && !widget.busy
                           ? (value) => setState(() => _draft = value)
                           : null,
-                      onChangeEnd: widget.enabled
+                      onChangeEnd: widget.enabled && !widget.busy
                           ? (value) {
                               widget.onChanged(widget.options[value.round()]);
                               setState(() => _draft = null);

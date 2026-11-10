@@ -6,6 +6,7 @@ import 'file_browser_options.dart';
 /// An explicit portable surface. New preferences remain local until reviewed.
 const syncSettingsKeys = <String>{
   ...informationFormatKeys,
+  ...legacyInformationFormatKeys,
   'app_language',
   'file_manager_preference',
   fileBrowserOptionsKey,

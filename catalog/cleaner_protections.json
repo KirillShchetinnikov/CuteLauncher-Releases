@@ -2,6 +2,37 @@
   "schemaVersion": 1,
   "rules": [
     {
+      "id": "tcl-g08-as34-source-dependencies",
+      "identity": {
+        "manufacturer": "TCL",
+        "model": "Smart TV Pro",
+        "device": "G08",
+        "fingerprint": "TCL/G08_4K_GB/G08:12/STT2.221228.001/AS34:user/release-keys"
+      },
+      "protectedPackages": [
+        "com.tcl.guard",
+        "com.tcl.interactive",
+        "com.tcl.suspension",
+        "com.tcl.ttvs"
+      ],
+      "verification": "upstreamObservedBreakage",
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/tcl-g08-eu-android12/debloat.txt",
+      "notesRu": "На EU G08 AS34 отключение ломает меню источников или цепочку TIAS, а при отключении TGuard прошивка многократно пытается запустить его службу. На AU с тем же fingerprint TGuard отключали, поэтому защита консервативно учитывает отказ на EU."
+    },
+    {
+      "id": "tcl-g03-ar09-tv-input-dependencies",
+      "identity": {
+        "manufacturer": "TCL",
+        "model": "Smart TV Pro",
+        "device": "BeyondTV4",
+        "fingerprint": "TCL/G03_4K_GB/BeyondTV4:11/RP1A.200622.001/AR09:user/release-keys"
+      },
+      "protectedPackages": ["com.tcl.tv", "com.tcl.tvinput", "com.tcl.suspension", "com.tcl.t_solo"],
+      "verification": "upstreamVerifiedDependency",
+      "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/tcl-g03-google-tv/debloat.txt",
+      "notesRu": "Штатный проигрыватель, провайдер входов и меню источников оставлены включёнными. На AR09 T-Solo заявляет TV_INPUT_HARDWARE; успешное отключение на AR11 не переносится на AR09."
+    },
+    {
       "id": "tcl-g08-au02-input-dependencies",
       "identity": {
         "manufacturer": "TCL",
@@ -19,6 +50,32 @@
       "verification": "upstreamObservedBreakage",
       "source": "https://github.com/Gathin23/cleanyourtv/pull/2990",
       "notesRu": "Наблюдение на 75T8C в Швеции. Android identity совпадает с другими G08 AU02; правило консервативно сохраняет зависимости на всех точно совпавших identity. Это не проверка других физических ТВ."
+    },
+    {
+      "id": "tcl-g08-nf-as19-art-mode",
+      "identity": {
+        "manufacturer": "TCL",
+        "model": "Smart TV",
+        "device": "G08",
+        "fingerprint": "TCL/G08_4K_GB_NF/G08:12/STT2.221228.001/AS19:user/release-keys"
+      },
+      "protectedPackages": ["com.tcl.exhibit"],
+      "verification": "upstreamObservedBreakage",
+      "source": "https://github.com/Gathin23/cleanyourtv/pull/3182",
+      "notesRu": "На 65-дюймовом A300 Pro с этим продуктом и сборкой отключение пакета лишало кнопку Art действия. После включения режим вернулся. Защита ограничена Android-идентичностью AS19 из списка A300 Pro."
+    },
+    {
+      "id": "philips-ph1m-21029-jointspace",
+      "identity": {
+        "manufacturer": "Philips",
+        "model": "2021/22 Philips UHD Android TV",
+        "device": "PH1M_EA_9970A",
+        "fingerprint": "Philips/PH1M_EA_9970A/PH1M_EA_9970A:11/RTT2.211108.001/21029:user/release-keys"
+      },
+      "protectedPackages": ["org.droidtv.xtv"],
+      "verification": "upstreamVerifiedDependency",
+      "source": "https://github.com/Gathin23/cleanyourtv/pull/2688",
+      "notesRu": "Пакет обслуживает JointSpace для Home Assistant и телевизионные функции. Upstream проверил доступность API на 77OLED806/12; идентичность и зависимость также указаны в списке philips-50pus8517 для PH1M_EA_9970A / 21029."
     },
     {
       "id": "sony-ur2-s97-airplay-dependency",

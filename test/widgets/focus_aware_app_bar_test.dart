@@ -313,7 +313,7 @@ void main() {
     expect(find.byKey(const Key('statusbar_clock')), findsOneWidget);
   });
 
-  testWidgets('night button fill follows the saved option and active state', (
+  testWidgets('moon accent follows the saved option and active state', (
     tester,
   ) async {
     SharedPreferences.setMockInitialValues({});
@@ -371,23 +371,29 @@ void main() {
     await show();
     await night.configure(night.configuration.copyWith(enabled: true));
     await tester.pumpAndSettle();
+    final colors = Theme.of(tester.element(button)).colorScheme;
     expect((item().child as Icon).icon, Icons.nightlight_round);
+    expect((item().child as Icon).color, colors.primary);
     expect(item().backgroundColor, isNull);
     final size = tester.getSize(button);
 
-    await night.setPanelFill(true);
+    await night.setPanelFill(false);
     await tester.pumpAndSettle();
-    final colors = Theme.of(tester.element(button)).colorScheme;
-    expect(item().backgroundColor, colors.primaryContainer);
-    expect((item().child as Icon).color, colors.onPrimaryContainer);
+    expect(item().backgroundColor, isNull);
+    expect((item().child as Icon).color, isNull);
     expect(tester.getSize(button), size);
-    expect(prefs.getBool(nightModePanelFillKey), isTrue);
+    expect(prefs.getBool(nightModePanelFillKey), isFalse);
 
     await show(panel: remote);
-    expect(item().backgroundColor, colors.primaryContainer);
+    expect(item().backgroundColor, isNull);
+    expect((item().child as Icon).color, isNull);
+    await night.setPanelFill(true);
+    await tester.pumpAndSettle();
+    expect((item().child as Icon).color, colors.primary);
     await night.configure(night.configuration.copyWith(enabled: false));
     await tester.pumpAndSettle();
     expect((item().child as Icon).icon, Icons.nightlight_outlined);
+    expect((item().child as Icon).color, isNull);
     expect(item().backgroundColor, isNull);
     expect(night.panelFill, isTrue);
     await tester.pumpWidget(const SizedBox.shrink());

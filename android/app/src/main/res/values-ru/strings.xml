@@ -22,4 +22,14 @@
     <string name="file_card_title">Доступ к файлам</string>
     <string name="file_card_steps">В карточке CuteLauncher откройте «Разрешения» → «Файлы и медиаконтент» → «Разрешить управление всеми файлами». Затем нажимайте «Назад», пока не вернётесь в лаунчер.</string>
     <string name="file_card_open">Открыть настройки</string>
+    <string name="remap_error_black_screen">Black Screen не установлен или недоступен.</string>
+    <string name="remap_error_app">Назначенное приложение отсутствует или не открывается.</string>
+    <string name="remap_error_hdmi">Назначенный вход HDMI недоступен.</string>
+    <string name="remap_error_power">Команда питания не выполнена. Проверьте локальный ADB.</string>
+    <string name="remap_error_permission">Телевизор запретил выполнение действия пульта.</string>
+    <string name="remap_error_busy">Действие пульта уже выполняется.</string>
+    <string name="remap_error_unavailable">Это действие пульта недоступно на телевизоре.</string>
+    <string name="remap_error_webhook_http">Webhook отклонил запрос (HTTP %1$d).</string>
+    <string name="remap_error_webhook_timeout">Истекло время ожидания ответа webhook.</string>
+    <string name="remap_error_webhook">Не удалось подключиться к webhook.</string>
 </resources>

@@ -119,7 +119,7 @@
         960,
         540
       ],
-      "sha256": "afc6de00bb246837926e080f52ff765b20822e67435e9fded1b74e338dc6bb46"
+      "sha256": "585d8fe3d555b5c222d8801671d13ef2e5f943d5b0c24d20dbe907a8957d85a1"
     },
     {
       "name": "settings-information-panel",
@@ -135,7 +135,7 @@
         960,
         540
       ],
-      "sha256": "5e6dda345749a69a333f1534bd54c6e44fd98e6ee7112db7085ed537c651d2ef"
+      "sha256": "a3a9e9aa447b7f0b55cd496a25634e5cedb4ed92fe86987e2fe6c79fb39d83e2"
     },
     {
       "name": "settings-information-background",
@@ -151,7 +151,7 @@
         960,
         540
       ],
-      "sha256": "07a67512e861d38cb82517a721ec60e9fb458a9324e6463a80f0eed000e35ef1"
+      "sha256": "263d2c9ca8a5c53e8267785e9239c29b25b261e5f593c6f09d456cf2db943ecf"
     },
     {
       "name": "home-720p-large",
@@ -615,7 +615,7 @@
         960,
         540
       ],
-      "sha256": "3c65fd4f79004e9dd972d4e8a05b5de9b1114b20b0645332300277a0e25b6745"
+      "sha256": "7afe3b3f27f5115824dc3b2415f3612ea0f0198d443566f6a4c23f6fa15c9b62"
     },
     {
       "name": "home-top-custom",
@@ -711,7 +711,7 @@
         960,
         540
       ],
-      "sha256": "442961ff9247e41c5473685136ee53bfc6851e5da964ba0f57f5223fee119e83"
+      "sha256": "f4f0d9b1f0c5f7046dce21144badd1360a9a3ac58ba0a1636a70232363d29c41"
     },
     {
       "name": "dialog-editor-right",
@@ -727,7 +727,7 @@
         960,
         540
       ],
-      "sha256": "5f664b047e211550aade04a88a27b97892d10f3fbc322841689a60dca38b2d6c"
+      "sha256": "3017b2606fd708e199617ee29a1b7996f65a51715a1e223c6546a8b974ecfa8d"
     },
     {
       "name": "dialog-adb-left",
@@ -743,7 +743,7 @@
         960,
         540
       ],
-      "sha256": "bfecf42eb648504712696481c5f58a09e20895a6293242a167ae214bbc6edfe6"
+      "sha256": "80da7b339c4b132ceaee3ba9aa52073d7bd8d6efa66c63bb07173bf95a5bc30f"
     },
     {
       "name": "dialog-adb-right",
@@ -759,7 +759,7 @@
         960,
         540
       ],
-      "sha256": "972a59a1d3398d1ef769677be206916932c9da1153607357af81b58e4dca7abd"
+      "sha256": "e27dae5fb43876e7dcfe70bc17ad8a65e56624083db6f7fbaba8b95fffe513f0"
     },
     {
       "name": "settings-style",
@@ -871,7 +871,7 @@
         960,
         540
       ],
-      "sha256": "1060db3fbf4c7f5fc335e03d7a142c22b93e0143a61e3b6e2ab9098ca8572057"
+      "sha256": "56ead3689657a0ca90d0ec5c6a3fbf2d98b1dcde8b3866b5737e65e9be2c7cce"
     },
     {
       "name": "home-clock-digital",
@@ -903,7 +903,7 @@
         960,
         540
       ],
-      "sha256": "e07c2a1a7f6bcab923e742374292e53eb1e7d04921a7794f41e17651d7d22fea"
+      "sha256": "3a55664e26c01c00c97be5ffdcb68f5eb4b058a322f35c55510133785a0aed53"
     },
     {
       "name": "calendar-rtl-large",
@@ -919,7 +919,7 @@
         960,
         540
       ],
-      "sha256": "8316ca9b74d884a734d3e94bffccc015e914223614c82ebc253048f583d58149"
+      "sha256": "1c511067839607eacf0c9386fa97ba76275e8fcd5e0919ee3327d18828397278"
     },
     {
       "name": "settings-date",
@@ -935,7 +935,7 @@
         960,
         540
       ],
-      "sha256": "0683c5c0b314e7f813de9f78115e532ac5a88d177d05d6ae4092870d05d87975"
+      "sha256": "f3b91c46697daeb2447fbd4d5a69a8673acbe69c2049dcef6520c2ba1f402bb2"
     },
     {
       "name": "settings-style-glass",

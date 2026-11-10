@@ -9,4 +9,14 @@
     <string name="file_card_title">Accès aux fichiers</string>
     <string name="file_card_steps">Ouvrez Autorisations → Fichiers et contenus multimédias → Autoriser la gestion de tous les fichiers. Appuyez ensuite sur Retour pour revenir à CuteLauncher.</string>
     <string name="file_card_open">Ouvrir les paramètres</string>
+    <string name="remap_error_black_screen">Black Screen est absent ou indisponible.</string>
+    <string name="remap_error_app">L’application assignée est absente ou ne s’ouvre pas.</string>
+    <string name="remap_error_hdmi">L’entrée HDMI assignée est indisponible.</string>
+    <string name="remap_error_power">Échec de la commande d’alimentation. Vérifiez ADB local.</string>
+    <string name="remap_error_permission">Le téléviseur a refusé cette action.</string>
+    <string name="remap_error_busy">Une action de la télécommande est déjà en cours.</string>
+    <string name="remap_error_unavailable">Cette action est indisponible sur ce téléviseur.</string>
+    <string name="remap_error_webhook_http">Le webhook a refusé la requête (HTTP %1$d).</string>
+    <string name="remap_error_webhook_timeout">Délai d’attente du webhook dépassé.</string>
+    <string name="remap_error_webhook">Connexion au webhook impossible.</string>
 </resources>

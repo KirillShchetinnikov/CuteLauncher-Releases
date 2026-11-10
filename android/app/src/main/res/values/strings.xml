@@ -22,4 +22,14 @@
     <string name="file_card_title">File access</string>
     <string name="file_card_steps">Open Permissions → Files and media → Allow management of all files. Then press Back to return to CuteLauncher.</string>
     <string name="file_card_open">Open settings</string>
+    <string name="remap_error_black_screen">Black Screen is missing or unavailable.</string>
+    <string name="remap_error_app">The assigned app is missing or cannot open.</string>
+    <string name="remap_error_hdmi">The assigned HDMI input is unavailable.</string>
+    <string name="remap_error_power">Power command failed. Check local ADB.</string>
+    <string name="remap_error_permission">The TV denied access to this remote action.</string>
+    <string name="remap_error_busy">A remote action is already in progress.</string>
+    <string name="remap_error_unavailable">This remote action is unavailable on this TV.</string>
+    <string name="remap_error_webhook_http">Webhook rejected the request (HTTP %1$d).</string>
+    <string name="remap_error_webhook_timeout">Webhook request timed out.</string>
+    <string name="remap_error_webhook">Could not connect to the webhook.</string>
 </resources>

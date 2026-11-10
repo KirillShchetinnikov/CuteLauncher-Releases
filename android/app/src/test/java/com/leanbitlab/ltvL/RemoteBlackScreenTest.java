@@ -8,6 +8,7 @@ import android.content.pm.ServiceInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.view.KeyEvent;
 import android.view.WindowManager;
 import java.util.List;
@@ -21,7 +22,9 @@ import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadow.api.Shadow;
 import org.robolectric.shadows.ShadowBuild;
+import org.robolectric.shadows.ShadowToast;
 import org.robolectric.shadows.ShadowWindowManagerImpl;
+import org.robolectric.util.ReflectionHelpers;
 import static org.junit.Assert.*;
 
 @RunWith(RobolectricTestRunner.class)
@@ -44,17 +47,59 @@ public class RemoteBlackScreenTest {
                 assertNull(intent.getAction());
                 assertNull(activities.getNextStartedActivity());
                 assertEquals("success", RemoteButtonRemapper.status);
+                assertNull(ShadowToast.getTextOfLatestToast());
             }
         }
     }
 
-    @Test public void missingActivityReportsUnavailable() {
+    @Test public void missingActivityShowsAnErrorNotice() {
         var service = Robolectric.buildService(LauncherAccessibilityService.class).get();
         Shadows.shadowOf(RuntimeEnvironment.getApplication()).checkActivities(true);
         try (var remapper = new RemoteButtonRemapper(service)) {
             configure();
             press(remapper, 100);
             assertEquals("unavailable", RemoteButtonRemapper.status);
+            assertEquals(service.getString(R.string.remap_error_black_screen),
+                ShadowToast.getTextOfLatestToast());
+        }
+    }
+
+    @Test public void missingAssignedAppShowsAnErrorNotice() {
+        var service = Robolectric.buildService(LauncherAccessibilityService.class).get();
+        try (var remapper = new RemoteButtonRemapper(service)) {
+            var binding = new RemoteMappingConfiguration.Binding(KEY, true, "app", "com.example.missing");
+            RemoteButtonRemapper.editing = false;
+            RemoteButtonRemapper.updated(new RemoteMappingConfiguration(true, Map.of(binding.slot(), binding)));
+            press(remapper, 100);
+            assertEquals("unavailable", RemoteButtonRemapper.status);
+            assertEquals(service.getString(R.string.remap_error_app), ShadowToast.getTextOfLatestToast());
+        }
+    }
+
+    @Test public void activeButtonDiagnosticsPausesAssignedActionsUntilStopped() {
+        var service = Robolectric.buildService(LauncherAccessibilityService.class).get();
+        var activities = Shadows.shadowOf(RuntimeEnvironment.getApplication());
+        RemoteButtonCapture capture = ReflectionHelpers.getStaticField(RemoteButtonsBridge.class, "capture");
+        try (var remapper = new RemoteButtonRemapper(service)) {
+            configure();
+            press(remapper, 100);
+            assertNotNull(activities.getNextStartedActivity());
+
+            capture.start(SystemClock.elapsedRealtime());
+            var down = new KeyEvent(200, 200, KeyEvent.ACTION_DOWN, KEY, 0);
+            var up = new KeyEvent(200, 210, KeyEvent.ACTION_UP, KEY, 0);
+            RemoteButtonsBridge.observe(down);
+            assertFalse(remapper.event(down));
+            RemoteButtonsBridge.observe(up);
+            assertFalse(remapper.event(up));
+            assertEquals(2, capture.snapshot().size());
+            assertNull(activities.getNextStartedActivity());
+
+            capture.stop();
+            press(remapper, 300);
+            assertNotNull(activities.getNextStartedActivity());
+        } finally {
+            capture.stop();
         }
     }
 

@@ -73,6 +73,7 @@ class _BrightnessPageState extends State<BrightnessPage>
             title: Text(l.brightnessScheduler),
           ),
           SettingsSection(
+            key: const ValueKey('nightPermissions'),
             title: l.nightPermissions,
             children: [
               FocusableSettingsTile(
@@ -91,6 +92,7 @@ class _BrightnessPageState extends State<BrightnessPage>
             ],
           ),
           SettingsSection(
+            key: const ValueKey('nightScheduleMenu'),
             title: l.nightScheduleMenu,
             children: [
               RoundedSwitchListTile(
@@ -108,6 +110,7 @@ class _BrightnessPageState extends State<BrightnessPage>
             ],
           ),
           SettingsSection(
+            key: const ValueKey('settingsGroupBrightness'),
             title: l.settingsGroupBrightness,
             children: [
               if (service.solarEnabled) ...[

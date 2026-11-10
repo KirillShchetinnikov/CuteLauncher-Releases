@@ -136,7 +136,7 @@ class RemotePanelService extends ChangeNotifier {
     'panelCombinedInformation': combinedInformation(home.combinedInformation),
     'panelInformationStyle': home.informationStyle.values,
     'blurPanel': false, 'panelWrapNavigation': home.panelWrapNavigation,
-  });
+  }, home.informationClockBehavior);
   Future<void> setAppearance(String key, dynamic value) async {
     if (!appearanceKeys.contains(key)) return;
     await _change(() => {..._data, 'appearance': {...ownAppearance.values, ...TileAppearance.validValues({key: value})}});

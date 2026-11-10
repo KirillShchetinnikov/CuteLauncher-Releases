@@ -29,14 +29,18 @@ class UpdatesPage extends StatelessWidget {
                 '${l.updateInstalled}: ${displayAppVersion(service.installedVersion)}',
               ),
             ),
-            if (!service.initialized) const LinearProgressIndicator(),
+            SizedBox(
+              child: !service.initialized
+                  ? const LinearProgressIndicator()
+                  : null,
+            ),
             if (service.fromPlay)
               Text(l.updatePlayOnly)
             else ...[
               RoundedSwitchListTile(
                 title: Text(l.updatePrereleases),
                 value: service.prereleases,
-                enabled: !service.busy,
+                busy: service.busy,
                 onChanged: service.setPrereleases,
               ),
               RoundedSwitchListTile(

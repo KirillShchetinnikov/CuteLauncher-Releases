@@ -90,7 +90,11 @@ class _SettingsPageLayoutState extends State<SettingsPageLayout> {
         : viewport.center.dy;
     // Let normal traversal reach visible controls. Across a text-only gap,
     // move the viewport first so long explanations can be read in steps.
-    for (final candidate in page.traversalDescendants) {
+    final candidates = page.traversalDescendants.toList()
+      ..sort((a, b) => down
+          ? a.rect.center.dy.compareTo(b.rect.center.dy)
+          : b.rect.center.dy.compareTo(a.rect.center.dy));
+    for (final candidate in candidates) {
       if (candidate == current) continue;
       final rect = candidate.rect;
       if (!rect.center.dy.isFinite) continue;

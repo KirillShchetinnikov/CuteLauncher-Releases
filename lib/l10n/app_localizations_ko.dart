@@ -117,7 +117,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get fileStorageSettingsUnavailable =>
-      '이 펌웨어에서는 모든 파일 접근 권한 화면을 열 수 없습니다. 시스템 파일 선택기를 사용하거나 호환되는 파일 관리자를 설치하세요.';
+      '이 펌웨어에서는 모든 파일 접근 권한 화면을 열 수 없습니다. 외부 파일 탐색기를 사용하거나 호환되는 파일 관리자를 설치하세요.';
 
   @override
   String get tileImageMode => '타일 이미지';
@@ -4713,7 +4713,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get slideshowEnterFolderPath => '폴더 경로 입력';
 
   @override
-  String get slideshowSystemPicker => '시스템 파일 관리자에서 선택';
+  String get slideshowSystemPicker => '외부 파일 탐색기에서 선택';
 
   @override
   String get slideshowFolderPath => '폴더 경로';
@@ -4747,7 +4747,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get filePickerChoose => '파일 탐색기 선택';
 
   @override
-  String get filePickerSystem => '시스템 파일 선택기';
+  String get filePickerSystem => '외부 파일 탐색기';
 
   @override
   String get filePickerBuiltIn => '내장 파일 탐색기';
@@ -4861,6 +4861,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get backupLastSuccess => '마지막으로 성공한 작업:';
+
+  @override
+  String get informationObjectPlacement => '배치';
 
   @override
   String get informationPlacement => '블록 배치';
@@ -5447,7 +5450,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settingsGroupIndicators => '표시 및 메시지';
 
   @override
-  String get nightModePanelFill => '상단 패널 버튼에 색 채우기';
+  String get nightModePanelFill => '달 아이콘에 강조 색상 적용';
 
   @override
   String get settingsGroupFocusShape => '포커스 모양';
@@ -5554,4 +5557,29 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get sectionTitleSize => '섹션 제목 크기';
+
+  @override
+  String get backupSyncResume => '동기화 다시 시작';
+
+  @override
+  String get backupSyncUseLocal => '이 TV의 설정 사용';
+
+  @override
+  String get backupSyncUseRemote => '저장소의 설정 사용';
+
+  @override
+  String get backupSyncMergeLocal => '이 TV의 설정을 우선하여 병합';
+
+  @override
+  String get backupSyncMergeRemote => '저장소의 설정을 우선하여 병합';
+
+  @override
+  String backupSyncPreviousDate(String date) {
+    return '이 TV의 마지막 동기화: $date';
+  }
+
+  @override
+  String backupSyncRemoteDate(String date) {
+    return '저장소의 복사본: $date';
+  }
 }

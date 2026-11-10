@@ -49,7 +49,7 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
   final bool fastInitialCatalog;
   Future<void>? _refreshOperation;
   bool _refreshAgain = false;
-  int _appNameRevision = 0;
+  int _appDataRevision = 0;
   final _imageVersions = <String, int>{};
   final _catalogEvents = Object();
   int contentRevision = 0;
@@ -282,6 +282,9 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
 
           if (isDisposed) return;
           App newApp = App.fromSystem(applicationInfo);
+          final savedApp = savedApps.firstOrNull;
+          newApp.launchCount = savedApp?.launchCount ?? 0;
+          newApp.lastLaunchedAt = savedApp?.lastLaunchedAt;
           App? existingApp = _applications[newApp.packageName];
 
           if (existingApp != null) {
@@ -301,7 +304,7 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
             }
             _applications[newApp.packageName] = newApp;
           } else {
-            newApp.customName = savedApps.firstOrNull?.customName;
+            newApp.customName = savedApp?.customName;
             _applications[newApp.packageName] = newApp;
             final targetCategory =
                 newApp.isLaunchable ? _findTargetCategoryForNewApp(newApp.sideloaded) : null;
@@ -318,11 +321,14 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
           final savedApps = await _database.getApplications(
             packages: applicationsInfo.map((info) => info['packageName'] as String),
           );
-          final savedNames = {for (final app in savedApps) app.packageName: app.customName};
+          final savedByPackage = {for (final app in savedApps) app.packageName: app};
 
           if (isDisposed) return;
           for (Map<dynamic, dynamic> applicationInfo in applicationsInfo) {
             App newApp = App.fromSystem(applicationInfo);
+            final savedApp = savedByPackage[newApp.packageName];
+            newApp.launchCount = savedApp?.launchCount ?? 0;
+            newApp.lastLaunchedAt = savedApp?.lastLaunchedAt;
             App? existingApp = _applications[newApp.packageName];
 
             if (existingApp != null) {
@@ -342,7 +348,7 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
               }
               _applications[newApp.packageName] = newApp;
             } else {
-              newApp.customName = savedNames[newApp.packageName];
+              newApp.customName = savedApp?.customName;
               _applications[newApp.packageName] = newApp;
             }
             _iconCache.remove(newApp.packageName);
@@ -538,7 +544,7 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
 
   Future<void> _refreshState({bool shouldNotifyListeners = true, List<Map<dynamic, dynamic>>? catalog, bool persistCatalog = false}) async {
     if (isDisposed) return;
-    var nameRevision = _appNameRevision;
+    var appDataRevision = _appDataRevision;
     Future<List<App>> appsFromDatabaseFuture = _database.getApplications();
     Future<List<AppCategory>> appsCategoriesFuture =
         _database.getAppsCategories();
@@ -592,9 +598,9 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
     List<Category> categories = await categoriesFuture;
     List<LauncherSpacer> spacers = await spacersFuture;
 
-    // The database snapshot can predate a rename while Android loads its catalog.
-    while (nameRevision != _appNameRevision && !isDisposed) {
-      nameRevision = _appNameRevision;
+    // The database snapshot can predate a rename or launch during a catalog read.
+    while (appDataRevision != _appDataRevision && !isDisposed) {
+      appDataRevision = _appDataRevision;
       appsFromDatabase = await _database.getApplications();
     }
 
@@ -864,7 +870,7 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
     );
     if (updated == 0) throw StateError('Application is unavailable');
     if (isDisposed) return;
-    _appNameRevision++;
+    _appDataRevision++;
 
     final current = _applications[packageName];
     if (current != null) {
@@ -918,15 +924,16 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
   Future<void> recordAppLaunch(String packageName, {App? fallback}) {
     final write = _launchStatisticsWrite.then((_) async {
       if (isDisposed) return;
-      final app = _applications[packageName] ?? fallback;
-      if (app == null) return;
+      if (!_applications.containsKey(packageName) && fallback == null) return;
       final time = DateTime.now();
-      final count = app.launchCount + 1;
-      await _database.updateApp(packageName, AppsCompanion(
-        lastLaunchedAt: Value(time), launchCount: Value(count)));
+      final count = await _database.incrementAppLaunchCount(packageName, time);
       if (isDisposed) return;
-      app.lastLaunchedAt = time;
-      app.launchCount = count;
+      _appDataRevision++;
+      final app = _applications[packageName];
+      if (app != null) {
+        app.lastLaunchedAt = time;
+        app.launchCount = count;
+      }
       if (fallback != null) {
         fallback.lastLaunchedAt = time;
         fallback.launchCount = count;

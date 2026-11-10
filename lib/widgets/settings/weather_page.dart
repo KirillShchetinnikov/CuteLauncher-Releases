@@ -71,7 +71,8 @@ class _WeatherPageState extends State<WeatherPage> {
     Widget refreshControl() => FocusableSettingsTile(
       leading: const Icon(Icons.refresh),
       title: Text(custom ? l.weatherCheckConnection : l.weatherRefresh),
-      enabled: !service.loading && !service.locating && service.canRefresh,
+      enabled: service.canRefresh,
+      busy: service.loading || service.locating,
       onPressed: service.loading || service.locating || !service.canRefresh
           ? null
           : () async {
@@ -105,14 +106,14 @@ class _WeatherPageState extends State<WeatherPage> {
         padding: EdgeInsets.zero,
         children: [
           SettingsSection(
+            key: const ValueKey('settingsGroupSourceAccess'),
             title: l.settingsGroupSourceAccess,
             children: [
               SettingsChoiceTile<WeatherSource>(
                 autofocus: true,
                 title: l.weatherSource,
                 value: config.source,
-                enabled:
-                    !service.loading && !service.locating && _importing == null,
+                busy: service.loading || service.locating || _importing != null,
                 options: const [
                   WeatherSource.openMeteo,
                   WeatherSource.customOpenMeteo,
@@ -188,6 +189,7 @@ class _WeatherPageState extends State<WeatherPage> {
           ),
           if (!custom && config.source != WeatherSource.breezy)
             SettingsSection(
+              key: const ValueKey('weatherLocation'),
               title: l.weatherLocation,
               children: [
                 if (!custom) ...[
@@ -195,7 +197,7 @@ class _WeatherPageState extends State<WeatherPage> {
                     title: l.weatherLocation,
                     value: config.locationMode,
                     options: WeatherLocationMode.values,
-                    enabled: !service.loading && !service.locating,
+                    busy: service.loading || service.locating,
                     label: (mode) => mode == WeatherLocationMode.automatic
                         ? l.weatherLocationAutomatic
                         : l.weatherLocationManual,
@@ -210,7 +212,7 @@ class _WeatherPageState extends State<WeatherPage> {
                             ? '${config.latitude!.toStringAsFixed(3)}, ${config.longitude!.toStringAsFixed(3)}'
                             : l.settingsValueNotSet,
                       ),
-                      enabled: !service.loading && !service.locating,
+                      busy: service.loading || service.locating,
                       onPressed: () => _automaticLocation(context, service),
                     )
                   else
@@ -235,25 +237,34 @@ class _WeatherPageState extends State<WeatherPage> {
                         ? null
                         : () => _coordinates(context, service),
                   ),
-                if (service.locating) const LinearProgressIndicator(),
+                SizedBox(
+                  child: service.locating
+                      ? const LinearProgressIndicator()
+                      : null,
+                ),
               ],
             ),
           if (config.source != WeatherSource.breezy)
             SettingsSection(
+              key: const ValueKey('settingsGroupUpdate'),
               title: l.settingsGroupUpdate,
               children: [
                 SettingsValueStepper(
                   title: l.weatherInterval,
                   options: const [30, 60, 120, 180],
                   value: config.intervalMinutes,
-                  enabled: !service.loading,
+                  busy: service.loading,
                   label: (v) => '$v ${l.weatherMinutes}',
                   onChanged: (v) => service.configure(
                     config.copyWith(intervalMinutes: v as int),
                   ),
                 ),
                 if (!custom) refreshControl(),
-                if (service.loading) const LinearProgressIndicator(),
+                SizedBox(
+                  child: service.loading
+                      ? const LinearProgressIndicator()
+                      : null,
+                ),
                 if (service.failure != null &&
                     !(custom &&
                         server == null &&
@@ -292,6 +303,7 @@ class _WeatherPageState extends State<WeatherPage> {
               ].join('\n\n'),
             ),
           SettingsSection(
+            key: const ValueKey('widgetSettings'),
             title: l.widgetSettings,
             children: [
               SettingsValueStepper(

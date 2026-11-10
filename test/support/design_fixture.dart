@@ -169,18 +169,16 @@ Future<DesignFixture> pumpDesignFixture(
   when(settings.showDataWidgetInStatusBar).thenReturn(false);
   when(settings.timeFormat).thenReturn("'20:30'");
   when(settings.dateFormat).thenReturn("'4 октября'");
-  for (final background in [false, true]) {
-    when(settings.noSuchMethod(Invocation.method(#informationDateTime, [], {#background: background}))).thenReturn(
-      const InformationDateTimeFormat(time: "'20:30'", date: "'4 октября'"),
-    );
-    when(settings.noSuchMethod(Invocation.method(#informationWeather, [], {#background: background}))).thenReturn(
-      const WeatherDisplayOptions(
-        format: WeatherTextFormat.standard,
-        fahrenheit: false,
-        warnings: false,
-      ),
-    );
-  }
+  when(settings.informationDateTime()).thenReturn(
+    const InformationDateTimeFormat(time: "'20:30'", date: "'4 октября'"),
+  );
+  when(settings.informationWeather()).thenReturn(
+    const WeatherDisplayOptions(
+      format: WeatherTextFormat.standard,
+      fahrenheit: false,
+      warnings: false,
+    ),
+  );
   final wallpaper = fixtures.mkWallpaperService(false);
   when(wallpaper.gradient)
       .thenReturn(gradient ?? FLauncherGradients.viciousStance);

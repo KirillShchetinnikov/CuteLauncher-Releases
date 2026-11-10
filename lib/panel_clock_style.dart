@@ -2,6 +2,16 @@ import 'package:flutter/material.dart';
 
 import 'app_fonts.dart';
 
+class InformationClockBehavior {
+  final bool showColon, animate;
+  const InformationClockBehavior({required this.showColon, required this.animate});
+
+  factory InformationClockBehavior.fromStyle(PanelClockStyle style) =>
+      InformationClockBehavior(showColon: style.showColon, animate: style.animate);
+
+  Map<String, bool> toMap() => {'showColon': showColon, 'animate': animate};
+}
+
 /// Validated overrides for the shared panel clock; omitted fields inherit the panel.
 class PanelClockStyle {
   final Map<String, dynamic> values;
