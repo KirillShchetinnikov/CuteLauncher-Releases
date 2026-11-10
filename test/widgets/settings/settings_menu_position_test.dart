@@ -34,8 +34,10 @@ void main() {
       home: const SettingsPanel(initialRoute: InformationSettingsPage.routeName))));
     await tester.pumpAndSettle();
     final l = AppLocalizations.of(tester.element(find.byType(InformationSettingsPage)))!;
-    await tester.ensureVisible(find.text(l.backgroundInformationAppearance));
-    await tester.tap(find.text(l.backgroundInformationAppearance));
+    final background = find.text(l.backgroundInformationAppearance);
+    await tester.scrollUntilVisible(background, 160);
+    await tester.pumpAndSettle();
+    await tester.tap(background.hitTestable());
     await tester.pumpAndSettle();
     await tester.tap(find.text(l.informationPositionSize));
     await tester.pumpAndSettle();

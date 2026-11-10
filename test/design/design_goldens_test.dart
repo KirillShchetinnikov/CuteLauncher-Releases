@@ -448,6 +448,11 @@ void main() {
               : null,
         );
         if (state.route == MemoryPage.routeName) {
+          // Keep the displayed cache counters independent of image decoding.
+          final imageCache = PaintingBinding.instance.imageCache;
+          final previousLimit = imageCache.maximumSizeBytes;
+          imageCache.maximumSizeBytes = 0;
+          addTearDown(() => imageCache.maximumSizeBytes = previousLimit);
           const channel = MethodChannel('me.efesser.flauncher/method');
           tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
             channel,

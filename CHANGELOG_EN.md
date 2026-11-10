@@ -2,7 +2,7 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
-## v1.7.3 — 2026-11-10
+## v1.7.4 — 2026-11-10
 
 - Clock, date, and weather settings are grouped in one section. The top bar and wallpaper share formats and can be styled separately. Date format previews use the current date. New installations default to a short date format with the weekday.
 - Pressing Back in the date and weather format editors now asks for confirmation. Fixed Gboard language switching in the weather editor.

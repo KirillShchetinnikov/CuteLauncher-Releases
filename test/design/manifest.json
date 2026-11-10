@@ -647,7 +647,7 @@
         960,
         540
       ],
-      "sha256": "2d774796860daf0606ae0223613118c0fe83de077f219ee9b109529efe37126f"
+      "sha256": "235e0b0f092668960ed37cd0535b261f8a834d7d4b0c3a4f03a1ffc447d5aabe"
     },
     {
       "name": "settings-memory-bottom",
@@ -663,7 +663,7 @@
         960,
         540
       ],
-      "sha256": "adc94f3cc6252e7d47281563d5dd2f9240a3ba47e759760e91668d883952c05a"
+      "sha256": "d75b0dc26407192cfccb97561a91614d9f4e5062f5fce2ec535975fdedd673ce"
     },
     {
       "name": "settings-memory-saver",
