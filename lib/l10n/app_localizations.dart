@@ -10573,6 +10573,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Copy in storage: {date}'**
   String backupSyncRemoteDate(String date);
+
+  /// No description provided for @appPermissionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'App permissions'**
+  String get appPermissionsTitle;
+
+  /// No description provided for @appPermissionsGrant.
+  ///
+  /// In en, this message translates to:
+  /// **'Grant permissions and enable'**
+  String get appPermissionsGrant;
+
+  /// No description provided for @appPermissionsRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore when disabled'**
+  String get appPermissionsRestore;
+
+  /// No description provided for @appPermissionsReconnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Reconnect service'**
+  String get appPermissionsReconnect;
+
+  /// No description provided for @appPermissionsDisable.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable service and recovery'**
+  String get appPermissionsDisable;
+
+  /// No description provided for @appPermissionsAutoStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Autostart'**
+  String get appPermissionsAutoStart;
+
+  /// No description provided for @appPermissionsBackground.
+  ///
+  /// In en, this message translates to:
+  /// **'Background activity'**
+  String get appPermissionsBackground;
+
+  /// No description provided for @appPermissionsPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Recovery starts after granting access here.'**
+  String get appPermissionsPending;
+
+  /// No description provided for @appPermissionsRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Recovery is pending. Check ADB; retries are automatic.'**
+  String get appPermissionsRetry;
+
+  /// No description provided for @appPermissionsIdentity.
+  ///
+  /// In en, this message translates to:
+  /// **'App identity changed. Grant access again.'**
+  String get appPermissionsIdentity;
+
+  /// No description provided for @appPermissionsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No other apps with accessibility services.'**
+  String get appPermissionsEmpty;
+
+  /// No description provided for @appPermissionsError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not complete the operation. Check ADB and refresh the status. Some changes may have been applied.'**
+  String get appPermissionsError;
+
+  /// No description provided for @appPermissionsConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow this app to use accessibility, autostart and background activity, then enable its service? Only operations supported by the firmware are applied. Accessibility can read interface events and act on your behalf.'**
+  String get appPermissionsConfirm;
+
+  /// No description provided for @appPermissionsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Recovery is on by default for services you authorize here. It restores permissions and service activation, including after disabling them in Android settings. Turning recovery off keeps current access. Disabling the service also stops recovery; autostart and background permissions remain. Reconnecting only restarts this service, without fixing app bugs. ADB is required and Android may delay checks. Autostart does not open the app screen. Statuses reflect the latest check; unsupported operations are not granted.'**
+  String get appPermissionsHelp;
 }
 
 class _AppLocalizationsDelegate

@@ -5741,4 +5741,53 @@ class AppLocalizationsTr extends AppLocalizations {
   String backupSyncRemoteDate(String date) {
     return 'Depolamadaki kopya: $date';
   }
+
+  @override
+  String get appPermissionsTitle => 'Uygulama izinleri';
+
+  @override
+  String get appPermissionsGrant => 'İzin ver ve etkinleştir';
+
+  @override
+  String get appPermissionsRestore => 'Devre dışı kalınca geri yükle';
+
+  @override
+  String get appPermissionsReconnect => 'Hizmeti yeniden bağla';
+
+  @override
+  String get appPermissionsDisable => 'Hizmeti ve geri yüklemeyi kapat';
+
+  @override
+  String get appPermissionsAutoStart => 'Otomatik başlatma';
+
+  @override
+  String get appPermissionsBackground => 'Arka plan etkinliği';
+
+  @override
+  String get appPermissionsPending =>
+      'Geri yükleme burada izin verildikten sonra başlar.';
+
+  @override
+  String get appPermissionsRetry =>
+      'Geri yükleme bekliyor. ADB bağlantısını kontrol edin; denemeler otomatiktir.';
+
+  @override
+  String get appPermissionsIdentity =>
+      'Uygulama imzası değişti. Yeniden izin verin.';
+
+  @override
+  String get appPermissionsEmpty =>
+      'Erişilebilirlik hizmeti olan başka uygulama yok.';
+
+  @override
+  String get appPermissionsError =>
+      'İşlem tamamlanamadı. ADB bağlantısını kontrol edip durumu yenileyin. Bazı değişiklikler uygulanmış olabilir.';
+
+  @override
+  String get appPermissionsConfirm =>
+      'Erişilebilirlik, otomatik başlatma ve arka plan etkinliğine izin verilip hizmet etkinleştirilsin mi? Yalnızca donanım yazılımının desteklediği işlemler uygulanır. Erişilebilirlik, arayüz olaylarını okuyabilir ve adınıza işlem yapabilir.';
+
+  @override
+  String get appPermissionsHelp =>
+      'Burada izin verdiğiniz hizmetler için geri yükleme varsayılan olarak açıktır. Android ayarlarında kapatılsa bile izinleri ve hizmeti geri yükler. Geri yüklemeyi kapatmak mevcut erişimleri korur. Hizmeti kapatmak geri yüklemeyi de durdurur; otomatik başlatma ve arka plan izinleri kalır. Yeniden bağlama yalnızca bu hizmeti yeniden başlatır, uygulama hatalarını düzeltmez. ADB gereklidir; Android kontrolleri geciktirebilir. Otomatik başlatma uygulama ekranını açmaz. Durumlar son kontrolü gösterir; desteklenmeyen işlemlere izin verilmez.';
 }

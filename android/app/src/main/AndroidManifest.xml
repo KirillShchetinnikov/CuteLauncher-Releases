@@ -137,6 +137,14 @@
             android:authorities="${applicationId}.androidx-startup" android:exported="false" tools:node="merge">
             <meta-data android:name="androidx.work.WorkManagerInitializer" android:value="androidx.startup" tools:node="remove" />
         </provider>
+        <receiver android:name="com.leanbitlab.ltvL.AppPermissionsReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+                <action android:name="android.intent.action.PACKAGE_FULLY_REMOVED" />
+                <action android:name="android.intent.action.PACKAGE_REPLACED" />
+                <data android:scheme="package" />
+            </intent-filter>
+        </receiver>
         <receiver android:name="com.leanbitlab.ltvL.PermissionRecoveryReceiver" android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />

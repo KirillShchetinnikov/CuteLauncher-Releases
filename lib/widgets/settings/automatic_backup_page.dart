@@ -168,8 +168,18 @@ class AutomaticBackupPage extends StatelessWidget {
                 button(
                   l.backupSyncRefresh,
                   () async {
-                    final success = await service.run(manual: true);
+                    final alreadyEnabled = service.enabled;
+                    final success = alreadyEnabled
+                        ? await service.run(manual: true)
+                        : await _confirmSynchronization(
+                            context,
+                            service,
+                            enable: false,
+                          );
                     if (!context.mounted) return;
+                    if (!alreadyEnabled && !success && !service.failed) {
+                      return;
+                    }
                     showActionNotice(
                       context,
                       success ? l.cloudSuccess : l.backupSyncRefreshFailed,
@@ -196,6 +206,61 @@ class AutomaticBackupPage extends StatelessWidget {
   }
 }
 
+Future<bool> _confirmSynchronization(
+  BuildContext context,
+  BackupAutomationService automation, {
+  required bool enable,
+}) {
+  final l = AppLocalizations.of(context)!;
+  return automation.resumeSynchronization((previous, remote) {
+    if (!context.mounted || ModalRoute.of(context)?.isCurrent == false) {
+      return Future.value(null);
+    }
+    final material = MaterialLocalizations.of(context);
+    String date(DateTime value) =>
+        '${material.formatMediumDate(value)} ${material.formatTimeOfDay(TimeOfDay.fromDateTime(value))}';
+    final labels = {
+      BackupSyncResumeChoice.local: l.backupSyncUseLocal,
+      BackupSyncResumeChoice.remote: l.backupSyncUseRemote,
+      BackupSyncResumeChoice.mergeLocal: l.backupSyncMergeLocal,
+      BackupSyncResumeChoice.mergeRemote: l.backupSyncMergeRemote,
+    };
+    return showLauncherDialog<BackupSyncResumeChoice>(
+      context: context,
+      builder: (dialog) => LauncherAlertDialog(
+        title: Text(l.backupSyncResume),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              l.backupSyncPreviousDate(
+                previous == null ? l.backupNever : date(previous),
+              ),
+            ),
+            Text(l.backupSyncRemoteDate(date(remote))),
+            const SizedBox(height: 8),
+            for (final choice in labels.entries)
+              SettingsOptionTile(
+                selected: false,
+                title: Text(choice.value),
+                onPressed: () => Navigator.pop(dialog, choice.key),
+              ),
+          ],
+        ),
+        actions: [
+          LauncherDialogButton(
+            autofocus: true,
+            isCancel: true,
+            onPressed: () => Navigator.pop(dialog),
+            child: Text(l.cancel),
+          ),
+        ],
+      ),
+    );
+  }, enable: enable);
+}
+
 class BackupOptionsPage extends StatelessWidget {
   final bool sync, localOnly;
   const BackupOptionsPage({
@@ -213,55 +278,13 @@ class BackupOptionsPage extends StatelessWidget {
       await automation.configure(enabled: enabled);
       return;
     }
-    final l = AppLocalizations.of(context)!;
-    final result = await automation.resumeSynchronization((previous, remote) {
-      if (!context.mounted || ModalRoute.of(context)?.isCurrent == false) {
-        return Future.value(null);
-      }
-      final material = MaterialLocalizations.of(context);
-      String date(DateTime value) =>
-          '${material.formatMediumDate(value)} ${material.formatTimeOfDay(TimeOfDay.fromDateTime(value))}';
-      final labels = {
-        BackupSyncResumeChoice.local: l.backupSyncUseLocal,
-        BackupSyncResumeChoice.remote: l.backupSyncUseRemote,
-        BackupSyncResumeChoice.mergeLocal: l.backupSyncMergeLocal,
-        BackupSyncResumeChoice.mergeRemote: l.backupSyncMergeRemote,
-      };
-      return showLauncherDialog<BackupSyncResumeChoice>(
-        context: context,
-        builder: (dialog) => LauncherAlertDialog(
-          title: Text(l.backupSyncResume),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                l.backupSyncPreviousDate(
-                  previous == null ? l.backupNever : date(previous),
-                ),
-              ),
-              Text(l.backupSyncRemoteDate(date(remote))),
-              const SizedBox(height: 8),
-              for (final choice in labels.entries)
-                SettingsOptionTile(
-                  selected: false,
-                  title: Text(choice.value),
-                  onPressed: () => Navigator.pop(dialog, choice.key),
-                ),
-            ],
-          ),
-          actions: [
-            LauncherDialogButton(
-              autofocus: true,
-              isCancel: true,
-              onPressed: () => Navigator.pop(dialog),
-              child: Text(l.cancel),
-            ),
-          ],
-        ),
-      );
-    });
+    final result = await _confirmSynchronization(
+      context,
+      automation,
+      enable: true,
+    );
     if (!result && automation.failed && context.mounted) {
+      final l = AppLocalizations.of(context)!;
       showActionNotice(context, l.backupSyncRefreshFailed, error: true);
     }
   }

@@ -1953,4 +1953,19 @@
   "backupSyncMergeRemote": "Depolamaya öncelik vererek birleştir",
   "backupSyncPreviousDate": "Bu TV’nin son senkronizasyonu: {date}",
   "backupSyncRemoteDate": "Depolamadaki kopya: {date}"
+,
+  "appPermissionsTitle": "Uygulama izinleri",
+  "appPermissionsGrant": "İzin ver ve etkinleştir",
+  "appPermissionsRestore": "Devre dışı kalınca geri yükle",
+  "appPermissionsReconnect": "Hizmeti yeniden bağla",
+  "appPermissionsDisable": "Hizmeti ve geri yüklemeyi kapat",
+  "appPermissionsAutoStart": "Otomatik başlatma",
+  "appPermissionsBackground": "Arka plan etkinliği",
+  "appPermissionsPending": "Geri yükleme burada izin verildikten sonra başlar.",
+  "appPermissionsRetry": "Geri yükleme bekliyor. ADB bağlantısını kontrol edin; denemeler otomatiktir.",
+  "appPermissionsIdentity": "Uygulama imzası değişti. Yeniden izin verin.",
+  "appPermissionsEmpty": "Erişilebilirlik hizmeti olan başka uygulama yok.",
+  "appPermissionsError": "İşlem tamamlanamadı. ADB bağlantısını kontrol edip durumu yenileyin. Bazı değişiklikler uygulanmış olabilir.",
+  "appPermissionsConfirm": "Erişilebilirlik, otomatik başlatma ve arka plan etkinliğine izin verilip hizmet etkinleştirilsin mi? Yalnızca donanım yazılımının desteklediği işlemler uygulanır. Erişilebilirlik, arayüz olaylarını okuyabilir ve adınıza işlem yapabilir.",
+  "appPermissionsHelp": "Burada izin verdiğiniz hizmetler için geri yükleme varsayılan olarak açıktır. Android ayarlarında kapatılsa bile izinleri ve hizmeti geri yükler. Geri yüklemeyi kapatmak mevcut erişimleri korur. Hizmeti kapatmak geri yüklemeyi de durdurur; otomatik başlatma ve arka plan izinleri kalır. Yeniden bağlama yalnızca bu hizmeti yeniden başlatır, uygulama hatalarını düzeltmez. ADB gereklidir; Android kontrolleri geciktirebilir. Otomatik başlatma uygulama ekranını açmaz. Durumlar son kontrolü gösterir; desteklenmeyen işlemlere izin verilmez."
 }

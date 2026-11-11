@@ -1953,4 +1953,19 @@
   "backupSyncMergeRemote": "ストレージを優先して統合",
   "backupSyncPreviousDate": "このテレビの最終同期：{date}",
   "backupSyncRemoteDate": "ストレージ内のコピー：{date}"
+,
+  "appPermissionsTitle": "アプリの権限",
+  "appPermissionsGrant": "権限を付与して有効化",
+  "appPermissionsRestore": "無効になったら復元",
+  "appPermissionsReconnect": "サービスを再接続",
+  "appPermissionsDisable": "サービスと復元を無効化",
+  "appPermissionsAutoStart": "自動起動",
+  "appPermissionsBackground": "バックグラウンド動作",
+  "appPermissionsPending": "ここで権限を付与すると復元が開始されます。",
+  "appPermissionsRetry": "復元待ちです。ADB を確認してください。自動的に再試行します。",
+  "appPermissionsIdentity": "アプリの署名が変わりました。再度権限を付与してください。",
+  "appPermissionsEmpty": "ユーザー補助サービスを持つ他のアプリはありません。",
+  "appPermissionsError": "操作を完了できませんでした。ADB を確認して状態を更新してください。一部の変更は適用済みの可能性があります。",
+  "appPermissionsConfirm": "ユーザー補助、自動起動、バックグラウンド動作を許可し、サービスを有効にしますか？ファームウェアが対応する操作のみ適用します。ユーザー補助は画面のイベントを読み取り、ユーザーの代わりに操作できます。",
+  "appPermissionsHelp": "ここで許可したサービスは、既定で復元が有効です。Android 設定で無効にした場合も権限とサービスを復元します。復元をオフにしても現在の権限は保持されます。サービスを無効にすると復元も停止しますが、自動起動とバックグラウンドの権限は残ります。再接続はこのサービスのみ再起動し、アプリの不具合は修正しません。ADB が必要です。Android が確認を遅らせる場合があります。自動起動でアプリ画面は開きません。状態は前回の確認結果であり、未対応の操作は許可されません。"
 }

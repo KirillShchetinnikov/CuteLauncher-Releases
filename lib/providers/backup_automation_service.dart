@@ -138,6 +138,12 @@ class BackupAutomationService extends ChangeNotifier
   Future<void> setLocalFolder(String? value) async {
     await initialized;
     if (busy) throw StateError('Operation busy');
+    if (destination == BackupDestination.local &&
+        mode == BackupMode.synchronization &&
+        enabled &&
+        value != localFolder) {
+      await _set('backup_transport_enabled', false);
+    }
     if (value == null) {
       if (!await preferences.remove('backup_transport_local_folder')) {
         throw StateError('Preference write failed');
@@ -397,12 +403,22 @@ class BackupAutomationService extends ChangeNotifier
   }) async {
     await initialized;
     if (busy) return;
+    final needsSyncSetup =
+        (mode ?? this.mode) == BackupMode.synchronization &&
+        ((mode != null && mode != this.mode) ||
+            (destination != null && destination != this.destination) ||
+            (shared != null && shared != this.shared));
+    if (needsSyncSetup && this.enabled) {
+      await _set('backup_transport_enabled', false);
+    }
     if (destination != null) {
       await _set('backup_transport_destination', destination.index);
     }
     if (mode != null) await _set('backup_transport_mode', mode.index);
     if (shared != null) await _set('backup_transport_shared', shared);
-    if (enabled != null) await _set('backup_transport_enabled', enabled);
+    if (enabled != null && !needsSyncSetup) {
+      await _set('backup_transport_enabled', enabled);
+    }
     if (syncMinutes != null) {
       await _set('backup_transport_sync_minutes', syncMinutes.clamp(1, 1440));
     }
@@ -564,8 +580,10 @@ class BackupAutomationService extends ChangeNotifier
     );
   }
 
-  Future<bool> resumeSynchronization(ChooseBackupSyncResume choose) =>
-      _run(manual: true, choose: choose);
+  Future<bool> resumeSynchronization(
+    ChooseBackupSyncResume choose, {
+    bool enable = true,
+  }) => _run(manual: true, choose: choose, enableAfterSync: enable);
 
   Future<bool> run({bool manual = false, bool exportOnly = false}) =>
       _run(manual: manual, exportOnly: exportOnly);
@@ -574,6 +592,7 @@ class BackupAutomationService extends ChangeNotifier
     required bool manual,
     bool exportOnly = false,
     ChooseBackupSyncResume? choose,
+    bool enableAfterSync = false,
   }) async {
     await initialized;
     if (_disposed || !_foreground || busy || !manual && !enabled) return false;
@@ -725,7 +744,7 @@ class BackupAutomationService extends ChangeNotifier
         if (_disposed || !_foreground) break;
         await storage.delete(old);
       }
-      if (choose != null) await _set('backup_transport_enabled', true);
+      if (enableAfterSync) await _set('backup_transport_enabled', true);
       return true;
     } catch (diagnosticError, diagnosticStack) {
       DiagnosticsStore.instance.recordException(

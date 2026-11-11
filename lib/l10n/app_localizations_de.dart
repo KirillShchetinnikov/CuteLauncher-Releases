@@ -5801,4 +5801,54 @@ class AppLocalizationsDe extends AppLocalizations {
   String backupSyncRemoteDate(String date) {
     return 'Kopie im Speicher: $date';
   }
+
+  @override
+  String get appPermissionsTitle => 'App-Berechtigungen';
+
+  @override
+  String get appPermissionsGrant => 'Berechtigungen erteilen und aktivieren';
+
+  @override
+  String get appPermissionsRestore => 'Nach Deaktivierung wiederherstellen';
+
+  @override
+  String get appPermissionsReconnect => 'Dienst neu verbinden';
+
+  @override
+  String get appPermissionsDisable =>
+      'Dienst und Wiederherstellung deaktivieren';
+
+  @override
+  String get appPermissionsAutoStart => 'Autostart';
+
+  @override
+  String get appPermissionsBackground => 'Hintergrundaktivität';
+
+  @override
+  String get appPermissionsPending =>
+      'Die Wiederherstellung beginnt nach der Freigabe hier.';
+
+  @override
+  String get appPermissionsRetry =>
+      'Wiederherstellung ausstehend. ADB prüfen; Versuche werden automatisch wiederholt.';
+
+  @override
+  String get appPermissionsIdentity =>
+      'App-Signatur geändert. Zugriff erneut erteilen.';
+
+  @override
+  String get appPermissionsEmpty =>
+      'Keine weiteren Apps mit Bedienungshilfediensten.';
+
+  @override
+  String get appPermissionsError =>
+      'Vorgang fehlgeschlagen. ADB prüfen und Status aktualisieren. Änderungen können teilweise erfolgt sein.';
+
+  @override
+  String get appPermissionsConfirm =>
+      'Bedienungshilfen, Autostart und Hintergrundaktivität erlauben und den Dienst aktivieren? Nur von der Firmware unterstützte Aktionen werden ausgeführt. Bedienungshilfen können Oberflächenereignisse lesen und in Ihrem Namen handeln.';
+
+  @override
+  String get appPermissionsHelp =>
+      'Für hier autorisierte Dienste ist die Wiederherstellung standardmäßig aktiv. Sie stellt Berechtigungen und die Aktivierung auch nach einer Deaktivierung in Android wieder her. Das Ausschalten der Wiederherstellung erhält aktuelle Zugriffe. Das Deaktivieren des Dienstes beendet auch die Wiederherstellung; Autostart- und Hintergrundrechte bleiben. Neuverbinden startet nur diesen Dienst neu und behebt keine App-Fehler. ADB ist erforderlich; Android kann Prüfungen verzögern. Autostart öffnet nicht den App-Bildschirm. Statuswerte stammen aus der letzten Prüfung; nicht unterstützte Vorgänge werden nicht freigegeben.';
 }

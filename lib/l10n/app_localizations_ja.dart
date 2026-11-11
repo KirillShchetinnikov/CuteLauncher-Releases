@@ -5580,4 +5580,49 @@ class AppLocalizationsJa extends AppLocalizations {
   String backupSyncRemoteDate(String date) {
     return 'ストレージ内のコピー：$date';
   }
+
+  @override
+  String get appPermissionsTitle => 'アプリの権限';
+
+  @override
+  String get appPermissionsGrant => '権限を付与して有効化';
+
+  @override
+  String get appPermissionsRestore => '無効になったら復元';
+
+  @override
+  String get appPermissionsReconnect => 'サービスを再接続';
+
+  @override
+  String get appPermissionsDisable => 'サービスと復元を無効化';
+
+  @override
+  String get appPermissionsAutoStart => '自動起動';
+
+  @override
+  String get appPermissionsBackground => 'バックグラウンド動作';
+
+  @override
+  String get appPermissionsPending => 'ここで権限を付与すると復元が開始されます。';
+
+  @override
+  String get appPermissionsRetry => '復元待ちです。ADB を確認してください。自動的に再試行します。';
+
+  @override
+  String get appPermissionsIdentity => 'アプリの署名が変わりました。再度権限を付与してください。';
+
+  @override
+  String get appPermissionsEmpty => 'ユーザー補助サービスを持つ他のアプリはありません。';
+
+  @override
+  String get appPermissionsError =>
+      '操作を完了できませんでした。ADB を確認して状態を更新してください。一部の変更は適用済みの可能性があります。';
+
+  @override
+  String get appPermissionsConfirm =>
+      'ユーザー補助、自動起動、バックグラウンド動作を許可し、サービスを有効にしますか？ファームウェアが対応する操作のみ適用します。ユーザー補助は画面のイベントを読み取り、ユーザーの代わりに操作できます。';
+
+  @override
+  String get appPermissionsHelp =>
+      'ここで許可したサービスは、既定で復元が有効です。Android 設定で無効にした場合も権限とサービスを復元します。復元をオフにしても現在の権限は保持されます。サービスを無効にすると復元も停止しますが、自動起動とバックグラウンドの権限は残ります。再接続はこのサービスのみ再起動し、アプリの不具合は修正しません。ADB が必要です。Android が確認を遅らせる場合があります。自動起動でアプリ画面は開きません。状態は前回の確認結果であり、未対応の操作は許可されません。';
 }

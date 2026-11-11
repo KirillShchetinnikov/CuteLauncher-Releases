@@ -278,6 +278,36 @@ void main() {
   });
 
   test(
+    'switching from active backup to sync waits for a choice',
+    () async {
+      await b.settings.setAppLanguage('de');
+      expect(await b.automation.run(manual: true), true);
+      await a.settings.setAppLanguage('ru');
+      await a.automation.configure(mode: BackupMode.backup, enabled: true);
+      expect(a.automation.enabled, true);
+      final before = Map.of(files);
+
+      await a.automation.configure(mode: BackupMode.synchronization);
+      expect(a.automation.enabled, false);
+      expect(await a.automation.checkDue(), false);
+      expect(files, before);
+
+      expect(
+        await a.automation.resumeSynchronization((previous, remote) async {
+          expect(previous, isNull);
+          expect(a.settings.appLanguage, 'ru');
+          expect(files, before);
+          return BackupSyncResumeChoice.remote;
+        }, enable: false),
+        true,
+      );
+      expect(a.settings.appLanguage, 'de');
+      expect(a.automation.enabled, false);
+      expect(await a.automation.checkDue(), false);
+    },
+  );
+
+  test(
     'resume with empty storage and identical copies skips the prompt',
     () async {
       await a.settings.setAppLanguage('ru');

@@ -12,6 +12,9 @@ public final class PermissionRecoveryWorker extends Worker {
             UpdatePermissionRecovery.afterUpdate(context);
             long now = System.currentTimeMillis();
             UpdatePermissionRecovery.health(context, now, new PermissionRecoveryAccess(context));
+            AppPermissions.health(context);
+            long appsDue = AppPermissions.nextCheck(context);
+            if (appsDue > 0 && appsDue <= now + 300_000L && getRunAttemptCount() < 20) return Result.retry();
             long due = UpdatePermissionRecovery.nextCheck(context);
             // WorkManager owns retries and may defer them while the TV sleeps.
             if (due > 0 && due <= now + 300_000L && getRunAttemptCount() < 20) return Result.retry();

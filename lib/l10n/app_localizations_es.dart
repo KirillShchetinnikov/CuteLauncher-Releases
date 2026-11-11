@@ -5793,4 +5793,53 @@ class AppLocalizationsEs extends AppLocalizations {
   String backupSyncRemoteDate(String date) {
     return 'Copia en el almacenamiento: $date';
   }
+
+  @override
+  String get appPermissionsTitle => 'Permisos de aplicaciones';
+
+  @override
+  String get appPermissionsGrant => 'Conceder permisos y activar';
+
+  @override
+  String get appPermissionsRestore => 'Restaurar al desactivarse';
+
+  @override
+  String get appPermissionsReconnect => 'Reconectar servicio';
+
+  @override
+  String get appPermissionsDisable => 'Desactivar servicio y restauración';
+
+  @override
+  String get appPermissionsAutoStart => 'Inicio automático';
+
+  @override
+  String get appPermissionsBackground => 'Actividad en segundo plano';
+
+  @override
+  String get appPermissionsPending =>
+      'La restauración comenzará tras conceder acceso aquí.';
+
+  @override
+  String get appPermissionsRetry =>
+      'Restauración pendiente. Comprueba ADB; los intentos son automáticos.';
+
+  @override
+  String get appPermissionsIdentity =>
+      'La firma de la aplicación cambió. Concede acceso de nuevo.';
+
+  @override
+  String get appPermissionsEmpty =>
+      'No hay otras aplicaciones con servicios de accesibilidad.';
+
+  @override
+  String get appPermissionsError =>
+      'No se pudo completar. Comprueba ADB y actualiza el estado. Algunos cambios pueden haberse aplicado.';
+
+  @override
+  String get appPermissionsConfirm =>
+      '¿Permitir accesibilidad, inicio automático y actividad en segundo plano y activar el servicio? Solo se aplican acciones compatibles con el firmware. La accesibilidad puede leer eventos de la interfaz y actuar en tu nombre.';
+
+  @override
+  String get appPermissionsHelp =>
+      'La restauración está activada por defecto para los servicios autorizados aquí. Restablece permisos y activación, incluso tras desactivarlos en Android. Desactivar la restauración conserva los accesos actuales. Desactivar el servicio también detiene la restauración; los permisos de inicio y segundo plano permanecen. Reconectar solo reinicia este servicio y no corrige errores de la aplicación. Se requiere ADB; Android puede retrasar las comprobaciones. El inicio automático no abre la pantalla de la aplicación. Los estados reflejan la última comprobación; no se conceden operaciones incompatibles.';
 }

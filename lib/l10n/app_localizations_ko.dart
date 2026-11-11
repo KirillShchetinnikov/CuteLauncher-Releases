@@ -5582,4 +5582,49 @@ class AppLocalizationsKo extends AppLocalizations {
   String backupSyncRemoteDate(String date) {
     return '저장소의 복사본: $date';
   }
+
+  @override
+  String get appPermissionsTitle => '앱 권한';
+
+  @override
+  String get appPermissionsGrant => '권한 부여 및 활성화';
+
+  @override
+  String get appPermissionsRestore => '비활성화되면 복원';
+
+  @override
+  String get appPermissionsReconnect => '서비스 다시 연결';
+
+  @override
+  String get appPermissionsDisable => '서비스 및 복원 끄기';
+
+  @override
+  String get appPermissionsAutoStart => '자동 시작';
+
+  @override
+  String get appPermissionsBackground => '백그라운드 활동';
+
+  @override
+  String get appPermissionsPending => '여기서 권한을 부여하면 복원이 시작됩니다.';
+
+  @override
+  String get appPermissionsRetry => '복원 대기 중입니다. ADB를 확인하세요. 자동으로 다시 시도합니다.';
+
+  @override
+  String get appPermissionsIdentity => '앱 서명이 변경되었습니다. 권한을 다시 부여하세요.';
+
+  @override
+  String get appPermissionsEmpty => '접근성 서비스가 있는 다른 앱이 없습니다.';
+
+  @override
+  String get appPermissionsError =>
+      '작업을 완료하지 못했습니다. ADB를 확인하고 상태를 새로 고치세요. 일부 변경 사항은 적용되었을 수 있습니다.';
+
+  @override
+  String get appPermissionsConfirm =>
+      '접근성, 자동 시작 및 백그라운드 활동을 허용하고 서비스를 활성화할까요? 펌웨어에서 지원하는 작업만 적용됩니다. 접근성은 인터페이스 이벤트를 읽고 사용자를 대신해 동작할 수 있습니다.';
+
+  @override
+  String get appPermissionsHelp =>
+      '여기서 허용한 서비스는 기본적으로 복원이 켜집니다. Android 설정에서 꺼도 권한과 서비스 활성화를 복원합니다. 복원을 끄면 현재 권한은 유지됩니다. 서비스를 끄면 복원도 중지되지만 자동 시작 및 백그라운드 권한은 남습니다. 다시 연결은 이 서비스만 재시작하며 앱 오류를 수정하지 않습니다. ADB가 필요하며 Android가 확인을 지연할 수 있습니다. 자동 시작은 앱 화면을 열지 않습니다. 상태는 마지막 확인 결과이며 지원하지 않는 작업은 허용되지 않습니다.';
 }

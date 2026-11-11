@@ -5791,4 +5791,53 @@ class AppLocalizationsIt extends AppLocalizations {
   String backupSyncRemoteDate(String date) {
     return 'Copia nell’archivio: $date';
   }
+
+  @override
+  String get appPermissionsTitle => 'Autorizzazioni delle app';
+
+  @override
+  String get appPermissionsGrant => 'Autorizza e attiva';
+
+  @override
+  String get appPermissionsRestore => 'Ripristina dopo la disattivazione';
+
+  @override
+  String get appPermissionsReconnect => 'Riconnetti servizio';
+
+  @override
+  String get appPermissionsDisable => 'Disattiva servizio e ripristino';
+
+  @override
+  String get appPermissionsAutoStart => 'Avvio automatico';
+
+  @override
+  String get appPermissionsBackground => 'Attività in background';
+
+  @override
+  String get appPermissionsPending =>
+      'Il ripristino inizierà dopo aver concesso accesso qui.';
+
+  @override
+  String get appPermissionsRetry =>
+      'Ripristino in attesa. Controlla ADB; i tentativi sono automatici.';
+
+  @override
+  String get appPermissionsIdentity =>
+      'La firma dell’app è cambiata. Concedi nuovamente l’accesso.';
+
+  @override
+  String get appPermissionsEmpty =>
+      'Nessun’altra app con servizi di accessibilità.';
+
+  @override
+  String get appPermissionsError =>
+      'Impossibile completare. Controlla ADB e aggiorna lo stato. Alcune modifiche potrebbero essere state applicate.';
+
+  @override
+  String get appPermissionsConfirm =>
+      'Consentire accessibilità, avvio automatico e attività in background e attivare il servizio? Si applicano solo azioni supportate dal firmware. L’accessibilità può leggere eventi dell’interfaccia e agire per tuo conto.';
+
+  @override
+  String get appPermissionsHelp =>
+      'Il ripristino è attivo per impostazione predefinita per i servizi autorizzati qui. Ripristina autorizzazioni e attivazione anche dopo la disattivazione in Android. Disattivare il ripristino conserva gli accessi correnti. Disattivare il servizio interrompe anche il ripristino; i permessi di avvio e background restano. La riconnessione riavvia solo questo servizio, senza correggere errori dell’app. Serve ADB; Android può ritardare i controlli. L’avvio automatico non apre la schermata dell’app. Gli stati riflettono l’ultimo controllo; le operazioni non supportate non vengono autorizzate.';
 }

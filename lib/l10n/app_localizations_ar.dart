@@ -5696,4 +5696,52 @@ class AppLocalizationsAr extends AppLocalizations {
   String backupSyncRemoteDate(String date) {
     return 'نسخة التخزين: $date';
   }
+
+  @override
+  String get appPermissionsTitle => 'أذونات التطبيقات';
+
+  @override
+  String get appPermissionsGrant => 'منح الأذونات والتفعيل';
+
+  @override
+  String get appPermissionsRestore => 'الاستعادة عند التعطيل';
+
+  @override
+  String get appPermissionsReconnect => 'إعادة توصيل الخدمة';
+
+  @override
+  String get appPermissionsDisable => 'إيقاف الخدمة والاستعادة';
+
+  @override
+  String get appPermissionsAutoStart => 'التشغيل التلقائي';
+
+  @override
+  String get appPermissionsBackground => 'النشاط في الخلفية';
+
+  @override
+  String get appPermissionsPending => 'تبدأ الاستعادة بعد منح الوصول هنا.';
+
+  @override
+  String get appPermissionsRetry =>
+      'الاستعادة قيد الانتظار. تحقق من ADB؛ تتم إعادة المحاولة تلقائيًا.';
+
+  @override
+  String get appPermissionsIdentity =>
+      'تغير توقيع التطبيق. امنح الوصول مجددًا.';
+
+  @override
+  String get appPermissionsEmpty =>
+      'لا توجد تطبيقات أخرى بخدمات تسهيل الاستخدام.';
+
+  @override
+  String get appPermissionsError =>
+      'تعذر إكمال العملية. تحقق من ADB وحدّث الحالة. ربما طُبقت بعض التغييرات.';
+
+  @override
+  String get appPermissionsConfirm =>
+      'السماح بتسهيل الاستخدام والتشغيل التلقائي والنشاط في الخلفية ثم تفعيل الخدمة؟ تُطبق فقط العمليات التي يدعمها البرنامج الثابت. يمكن لتسهيل الاستخدام قراءة أحداث الواجهة وتنفيذ إجراءات نيابةً عنك.';
+
+  @override
+  String get appPermissionsHelp =>
+      'الاستعادة مفعلة افتراضيًا للخدمات التي تمنحها الوصول هنا. تعيد الأذونات وتفعيل الخدمة حتى بعد تعطيلها في إعدادات Android. إيقاف الاستعادة يحتفظ بالوصول الحالي. إيقاف الخدمة يوقف الاستعادة أيضًا، مع إبقاء أذونات التشغيل التلقائي والخلفية. إعادة التوصيل تعيد تشغيل هذه الخدمة فقط ولا تصلح أخطاء التطبيق. يلزم ADB وقد يؤخر Android الفحوصات. التشغيل التلقائي لا يفتح شاشة التطبيق. الحالات تعكس آخر فحص؛ لا تُمنح العمليات غير المدعومة.';
 }

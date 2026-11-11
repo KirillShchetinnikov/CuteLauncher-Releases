@@ -1953,4 +1953,19 @@
   "backupSyncMergeRemote": "Zusammenführen mit Vorrang für den Speicher",
   "backupSyncPreviousDate": "Letzte Synchronisierung dieses Fernsehers: {date}",
   "backupSyncRemoteDate": "Kopie im Speicher: {date}"
+,
+  "appPermissionsTitle": "App-Berechtigungen",
+  "appPermissionsGrant": "Berechtigungen erteilen und aktivieren",
+  "appPermissionsRestore": "Nach Deaktivierung wiederherstellen",
+  "appPermissionsReconnect": "Dienst neu verbinden",
+  "appPermissionsDisable": "Dienst und Wiederherstellung deaktivieren",
+  "appPermissionsAutoStart": "Autostart",
+  "appPermissionsBackground": "Hintergrundaktivität",
+  "appPermissionsPending": "Die Wiederherstellung beginnt nach der Freigabe hier.",
+  "appPermissionsRetry": "Wiederherstellung ausstehend. ADB prüfen; Versuche werden automatisch wiederholt.",
+  "appPermissionsIdentity": "App-Signatur geändert. Zugriff erneut erteilen.",
+  "appPermissionsEmpty": "Keine weiteren Apps mit Bedienungshilfediensten.",
+  "appPermissionsError": "Vorgang fehlgeschlagen. ADB prüfen und Status aktualisieren. Änderungen können teilweise erfolgt sein.",
+  "appPermissionsConfirm": "Bedienungshilfen, Autostart und Hintergrundaktivität erlauben und den Dienst aktivieren? Nur von der Firmware unterstützte Aktionen werden ausgeführt. Bedienungshilfen können Oberflächenereignisse lesen und in Ihrem Namen handeln.",
+  "appPermissionsHelp": "Für hier autorisierte Dienste ist die Wiederherstellung standardmäßig aktiv. Sie stellt Berechtigungen und die Aktivierung auch nach einer Deaktivierung in Android wieder her. Das Ausschalten der Wiederherstellung erhält aktuelle Zugriffe. Das Deaktivieren des Dienstes beendet auch die Wiederherstellung; Autostart- und Hintergrundrechte bleiben. Neuverbinden startet nur diesen Dienst neu und behebt keine App-Fehler. ADB ist erforderlich; Android kann Prüfungen verzögern. Autostart öffnet nicht den App-Bildschirm. Statuswerte stammen aus der letzten Prüfung; nicht unterstützte Vorgänge werden nicht freigegeben."
 }

@@ -5484,4 +5484,48 @@ class AppLocalizationsZh extends AppLocalizations {
   String backupSyncRemoteDate(String date) {
     return '存储中的副本：$date';
   }
+
+  @override
+  String get appPermissionsTitle => '应用权限';
+
+  @override
+  String get appPermissionsGrant => '授予权限并启用';
+
+  @override
+  String get appPermissionsRestore => '禁用后自动恢复';
+
+  @override
+  String get appPermissionsReconnect => '重新连接服务';
+
+  @override
+  String get appPermissionsDisable => '关闭服务和恢复';
+
+  @override
+  String get appPermissionsAutoStart => '自动启动';
+
+  @override
+  String get appPermissionsBackground => '后台活动';
+
+  @override
+  String get appPermissionsPending => '在此授予访问权限后开始恢复。';
+
+  @override
+  String get appPermissionsRetry => '等待恢复。请检查 ADB；系统将自动重试。';
+
+  @override
+  String get appPermissionsIdentity => '应用签名已更改，请重新授权。';
+
+  @override
+  String get appPermissionsEmpty => '没有其他带无障碍服务的应用。';
+
+  @override
+  String get appPermissionsError => '操作未完成。请检查 ADB 并刷新状态。部分更改可能已生效。';
+
+  @override
+  String get appPermissionsConfirm =>
+      '允许无障碍、自动启动和后台活动，然后启用服务？仅执行固件支持的操作。无障碍服务可以读取界面事件并代表您执行操作。';
+
+  @override
+  String get appPermissionsHelp =>
+      '在此授权的服务默认开启恢复。它会恢复权限并启用服务，包括在 Android 设置中被关闭的情况。关闭恢复会保留当前访问权限。关闭服务也会停止恢复，但保留自动启动和后台权限。重新连接仅重启此服务，不能修复应用错误。需要 ADB，Android 可能推迟检查。自动启动不会打开应用界面。状态来自最近一次检查，不会授予不支持的操作。';
 }

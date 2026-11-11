@@ -1953,4 +1953,19 @@
   "backupSyncMergeRemote": "合并并优先采用存储中的设置",
   "backupSyncPreviousDate": "此电视上次同步：{date}",
   "backupSyncRemoteDate": "存储中的副本：{date}"
+,
+  "appPermissionsTitle": "应用权限",
+  "appPermissionsGrant": "授予权限并启用",
+  "appPermissionsRestore": "禁用后自动恢复",
+  "appPermissionsReconnect": "重新连接服务",
+  "appPermissionsDisable": "关闭服务和恢复",
+  "appPermissionsAutoStart": "自动启动",
+  "appPermissionsBackground": "后台活动",
+  "appPermissionsPending": "在此授予访问权限后开始恢复。",
+  "appPermissionsRetry": "等待恢复。请检查 ADB；系统将自动重试。",
+  "appPermissionsIdentity": "应用签名已更改，请重新授权。",
+  "appPermissionsEmpty": "没有其他带无障碍服务的应用。",
+  "appPermissionsError": "操作未完成。请检查 ADB 并刷新状态。部分更改可能已生效。",
+  "appPermissionsConfirm": "允许无障碍、自动启动和后台活动，然后启用服务？仅执行固件支持的操作。无障碍服务可以读取界面事件并代表您执行操作。",
+  "appPermissionsHelp": "在此授权的服务默认开启恢复。它会恢复权限并启用服务，包括在 Android 设置中被关闭的情况。关闭恢复会保留当前访问权限。关闭服务也会停止恢复，但保留自动启动和后台权限。重新连接仅重启此服务，不能修复应用错误。需要 ADB，Android 可能推迟检查。自动启动不会打开应用界面。状态来自最近一次检查，不会授予不支持的操作。"
 }

@@ -1050,6 +1050,25 @@ After three crashes within five minutes, CuteLauncher opens a recovery screen wi
 
 Path: **Launcher and TV controls**.
 
+- **App permissions**: select a user-installed app and its accessibility service.
+  System apps, including updated system apps, are excluded from the list,
+  permission granting and automatic recovery. Previously saved recovery for
+  them is removed without revoking their permissions.
+  “Grant permissions and enable” checks accessibility access, autostart and
+  background activity through local ADB, grants permissions supported by the
+  firmware and enables the selected service after confirmation.
+  “Restore when disabled” is on by default but starts only after granting access
+  in this section. Recovery restores permissions and service activation, including
+  after disabling them in Android settings. To keep it disabled, turn recovery off
+  or choose “Disable service and recovery”. The latter keeps the granted autostart
+  and background permissions. “Reconnect service” disables and re-enables only the
+  selected service; it does not guarantee fixing app bugs. Autostart here does not
+  open the app screen when the TV starts. Configured local ADB and the primary
+  Android user are required. Android may delay checks; force-stopping CuteLauncher
+  pauses recovery until the next launch. Grant access again after reinstalling
+  the app or changing its signing identity. Permission statuses reflect the latest
+  check; unsupported operations are marked separately. Errors may leave partial
+  changes: check the connection and refresh the status.
 - **Power management**: put the TV in standby or restart it, with confirmation
   before sending the command. Standby requires the CuteLauncher accessibility
   service or local ADB; restart requires ADB. On a TV box, the command controls
@@ -1460,13 +1479,16 @@ Synchronize selected settings groups between TVs while leaving other groups loca
 Multiple TVs need a shared accessible folder or cloud storage; their internal
 folders are not shared storage.
 
-When you turn on synchronization, CuteLauncher checks the settings in the chosen
-storage. If they differ from this TV's settings, you can use this TV's settings,
+When you switch from backups to synchronization or change the storage type,
+local folder, or sync scope, turn synchronization on again in its settings.
+CuteLauncher checks the settings in the chosen storage when you turn on
+synchronization or select **Refresh** while it is off. If they differ, you can use this TV's settings,
 use the settings in storage, or merge the two and give either side priority.
 Merging keeps changes from both sides and uses the selected priority to resolve
 conflicts. A local restore point is created before the choice is applied.
-Cancel and Back leave synchronization off. If there is no synchronization copy
-or the settings match, synchronization starts without a prompt.
+Cancel and Back cancel the exchange. If there is no synchronization copy in the
+selected scope or the settings match, synchronization starts without a prompt.
+**Refresh** runs a one-time exchange and preserves the switch state.
 
 ADB keys, Android permissions, and private service data are not transferred as
 ordinary settings. A settings backup does not grant permissions or transfer ADB

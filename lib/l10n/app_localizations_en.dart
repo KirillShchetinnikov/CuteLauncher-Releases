@@ -5716,4 +5716,53 @@ class AppLocalizationsEn extends AppLocalizations {
   String backupSyncRemoteDate(String date) {
     return 'Copy in storage: $date';
   }
+
+  @override
+  String get appPermissionsTitle => 'App permissions';
+
+  @override
+  String get appPermissionsGrant => 'Grant permissions and enable';
+
+  @override
+  String get appPermissionsRestore => 'Restore when disabled';
+
+  @override
+  String get appPermissionsReconnect => 'Reconnect service';
+
+  @override
+  String get appPermissionsDisable => 'Disable service and recovery';
+
+  @override
+  String get appPermissionsAutoStart => 'Autostart';
+
+  @override
+  String get appPermissionsBackground => 'Background activity';
+
+  @override
+  String get appPermissionsPending =>
+      'Recovery starts after granting access here.';
+
+  @override
+  String get appPermissionsRetry =>
+      'Recovery is pending. Check ADB; retries are automatic.';
+
+  @override
+  String get appPermissionsIdentity =>
+      'App identity changed. Grant access again.';
+
+  @override
+  String get appPermissionsEmpty =>
+      'No other apps with accessibility services.';
+
+  @override
+  String get appPermissionsError =>
+      'Could not complete the operation. Check ADB and refresh the status. Some changes may have been applied.';
+
+  @override
+  String get appPermissionsConfirm =>
+      'Allow this app to use accessibility, autostart and background activity, then enable its service? Only operations supported by the firmware are applied. Accessibility can read interface events and act on your behalf.';
+
+  @override
+  String get appPermissionsHelp =>
+      'Recovery is on by default for services you authorize here. It restores permissions and service activation, including after disabling them in Android settings. Turning recovery off keeps current access. Disabling the service also stops recovery; autostart and background permissions remain. Reconnecting only restarts this service, without fixing app bugs. ADB is required and Android may delay checks. Autostart does not open the app screen. Statuses reflect the latest check; unsupported operations are not granted.';
 }

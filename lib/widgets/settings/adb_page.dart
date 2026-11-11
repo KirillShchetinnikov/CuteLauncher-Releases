@@ -6,6 +6,7 @@ import 'package:flauncher/widgets/launcher_dialog.dart';
 import 'dart:convert';
 
 import 'auto_launch_page.dart';
+import 'app_permissions_page.dart';
 import 'remote_buttons_page.dart';
 import 'recent_apps_page.dart';
 import 'tv_cleaner_page.dart';
@@ -757,6 +758,9 @@ class _AdbPageState extends State<AdbPage> with WidgetsBindingObserver {
                   ),
                   _menuTile(l.recentAppsTitle, Icons.recent_actors_outlined, null,
                     () => _openPage(RecentAppsPage.routeName), showStatus: false),
+                  _menuTile(l.appPermissionsTitle, Icons.verified_user_outlined, null,
+                    () => Navigator.of(context).push(SettingsRoute(
+                      builder: (_) => const AppPermissionsPage())), showStatus: false),
                   _menuTile(
                     l.cleanerTitle,
                     Icons.cleaning_services_outlined,

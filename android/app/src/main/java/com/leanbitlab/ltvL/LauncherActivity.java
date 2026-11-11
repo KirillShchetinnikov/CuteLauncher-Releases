@@ -279,6 +279,7 @@ public class LauncherActivity extends FlutterActivity {
         ImeVisibilityBridge.register(this, messenger);
         tvImeEditorBridge = new TvImeEditorBridge(this, messenger);
         AdbBridge.register(this, messenger, sIoExecutor);
+        AppPermissions.register(this, messenger, sIoExecutor);
         SleepTimerBridge.register(this, messenger, sIoExecutor);
         TvPowerBridge.register(this, messenger, sIoExecutor);
         CloudAccountBridge.register(this, messenger, sIoExecutor);

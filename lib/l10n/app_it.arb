@@ -1953,4 +1953,19 @@
   "backupSyncMergeRemote": "Unisci dando priorità all’archivio",
   "backupSyncPreviousDate": "Ultima sincronizzazione di questa TV: {date}",
   "backupSyncRemoteDate": "Copia nell’archivio: {date}"
+,
+  "appPermissionsTitle": "Autorizzazioni delle app",
+  "appPermissionsGrant": "Autorizza e attiva",
+  "appPermissionsRestore": "Ripristina dopo la disattivazione",
+  "appPermissionsReconnect": "Riconnetti servizio",
+  "appPermissionsDisable": "Disattiva servizio e ripristino",
+  "appPermissionsAutoStart": "Avvio automatico",
+  "appPermissionsBackground": "Attività in background",
+  "appPermissionsPending": "Il ripristino inizierà dopo aver concesso accesso qui.",
+  "appPermissionsRetry": "Ripristino in attesa. Controlla ADB; i tentativi sono automatici.",
+  "appPermissionsIdentity": "La firma dell’app è cambiata. Concedi nuovamente l’accesso.",
+  "appPermissionsEmpty": "Nessun’altra app con servizi di accessibilità.",
+  "appPermissionsError": "Impossibile completare. Controlla ADB e aggiorna lo stato. Alcune modifiche potrebbero essere state applicate.",
+  "appPermissionsConfirm": "Consentire accessibilità, avvio automatico e attività in background e attivare il servizio? Si applicano solo azioni supportate dal firmware. L’accessibilità può leggere eventi dell’interfaccia e agire per tuo conto.",
+  "appPermissionsHelp": "Il ripristino è attivo per impostazione predefinita per i servizi autorizzati qui. Ripristina autorizzazioni e attivazione anche dopo la disattivazione in Android. Disattivare il ripristino conserva gli accessi correnti. Disattivare il servizio interrompe anche il ripristino; i permessi di avvio e background restano. La riconnessione riavvia solo questo servizio, senza correggere errori dell’app. Serve ADB; Android può ritardare i controlli. L’avvio automatico non apre la schermata dell’app. Gli stati riflettono l’ultimo controllo; le operazioni non supportate non vengono autorizzate."
 }

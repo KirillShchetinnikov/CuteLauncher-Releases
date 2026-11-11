@@ -141,11 +141,14 @@ class _Automation extends ChangeNotifier implements BackupAutomationService {
   }
 
   @override
-  Future<bool> resumeSynchronization(ChooseBackupSyncResume choose) async {
+  Future<bool> resumeSynchronization(
+    ChooseBackupSyncResume choose, {
+    bool enable = true,
+  }) async {
     resumeChoice = await choose(DateTime(2026, 11, 9), DateTime(2026, 11, 10));
-    enabled = resumeChoice != null;
+    if (enable && resumeChoice != null) enabled = true;
     notifyListeners();
-    return enabled;
+    return resumeChoice != null;
   }
 
   @override
@@ -442,6 +445,19 @@ void main() {
         await tester.tap(
           find.widgetWithText(FocusableSettingsTile, l.backupSyncMode),
         );
+        await tester.pumpAndSettle();
+        await activate(l.backupSyncRefresh);
+        expect(find.text(l.backupSyncResume), findsOneWidget);
+        expect(automation.manualRuns, isEmpty);
+        await tester.tap(find.text(l.cancel));
+        await tester.pumpAndSettle();
+        expect(automation.enabled, false);
+        await activate(l.backupSyncRefresh);
+        await tester.tap(find.text(l.backupSyncUseLocal));
+        await tester.pumpAndSettle();
+        expect(automation.resumeChoice, BackupSyncResumeChoice.local);
+        expect(automation.enabled, false);
+        await automation.configure(enabled: true);
         await tester.pumpAndSettle();
         await activate(l.backupSyncRefresh);
         expect(automation.manualRuns, [false]);

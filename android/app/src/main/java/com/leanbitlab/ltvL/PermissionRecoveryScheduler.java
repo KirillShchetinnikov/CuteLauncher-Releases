@@ -29,8 +29,9 @@ final class PermissionRecoveryScheduler {
         try {
             UpdatePermissionRecovery.afterUpdate(context);
             UpdatePermissionRecovery.health(context, System.currentTimeMillis(), new PermissionRecoveryAccess(context));
+            AppPermissions.health(context);
             ensure(context);
-            if (UpdatePermissionRecovery.nextCheck(context) > 0) enqueue(context, 15);
+            if (UpdatePermissionRecovery.nextCheck(context) > 0 || AppPermissions.nextCheck(context) > 0) enqueue(context, 15);
         } catch (RuntimeException | LinkageError error) { android.util.Log.w("CuteLauncherUpdate", "Foreground recovery check unavailable"); }
     }
     static void serviceConnected(Context context) {

@@ -5754,4 +5754,53 @@ class AppLocalizationsUk extends AppLocalizations {
   String backupSyncRemoteDate(String date) {
     return 'Копія у сховищі: $date';
   }
+
+  @override
+  String get appPermissionsTitle => 'Дозволи застосункам';
+
+  @override
+  String get appPermissionsGrant => 'Надати дозволи й увімкнути';
+
+  @override
+  String get appPermissionsRestore => 'Відновлювати після вимкнення';
+
+  @override
+  String get appPermissionsReconnect => 'Перепідключити службу';
+
+  @override
+  String get appPermissionsDisable => 'Вимкнути службу й відновлення';
+
+  @override
+  String get appPermissionsAutoStart => 'Автозапуск';
+
+  @override
+  String get appPermissionsBackground => 'Фонова робота';
+
+  @override
+  String get appPermissionsPending =>
+      'Відновлення почнеться після надання доступу тут.';
+
+  @override
+  String get appPermissionsRetry =>
+      'Відновлення очікує виконання. Перевірте ADB; спроби повторюються автоматично.';
+
+  @override
+  String get appPermissionsIdentity =>
+      'Підпис застосунку змінився. Надайте доступ знову.';
+
+  @override
+  String get appPermissionsEmpty =>
+      'Інших застосунків зі службами спеціальних можливостей немає.';
+
+  @override
+  String get appPermissionsError =>
+      'Не вдалося завершити дію. Перевірте ADB та оновіть стан. Частину змін могло бути застосовано.';
+
+  @override
+  String get appPermissionsConfirm =>
+      'Дозволити спеціальні можливості, автозапуск і фонову роботу та ввімкнути службу? Застосовуються лише дії, підтримувані прошивкою. Спеціальні можливості дозволяють читати події інтерфейсу й діяти від вашого імені.';
+
+  @override
+  String get appPermissionsHelp =>
+      'Відновлення типово ввімкнено для служб, яким ви надаєте доступ тут. Воно повертає дозволи й увімкнення служби, зокрема після вимкнення в Android. Вимкнення відновлення зберігає поточні доступи. Вимкнення служби також припиняє відновлення; дозволи автозапуску й фонової роботи залишаються. Перепідключення перезапускає лише цю службу, не виправляючи помилок застосунку. Потрібен ADB; Android може відкладати перевірки. Автозапуск не відкриває екран застосунку. Стани відображають останню перевірку; непідтримувані операції не надаються.';
 }

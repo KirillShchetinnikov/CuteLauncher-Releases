@@ -1953,4 +1953,19 @@
   "backupSyncMergeRemote": "Combinar com prioridade para o armazenamento",
   "backupSyncPreviousDate": "Última sincronização desta TV: {date}",
   "backupSyncRemoteDate": "Cópia no armazenamento: {date}"
+,
+  "appPermissionsTitle": "Permissões de aplicações",
+  "appPermissionsGrant": "Conceder permissões e ativar",
+  "appPermissionsRestore": "Restaurar após desativação",
+  "appPermissionsReconnect": "Reconectar serviço",
+  "appPermissionsDisable": "Desativar serviço e restauração",
+  "appPermissionsAutoStart": "Início automático",
+  "appPermissionsBackground": "Atividade em segundo plano",
+  "appPermissionsPending": "A restauração começa após conceder acesso aqui.",
+  "appPermissionsRetry": "Restauração pendente. Verifique o ADB; as tentativas são automáticas.",
+  "appPermissionsIdentity": "A assinatura da aplicação mudou. Conceda acesso novamente.",
+  "appPermissionsEmpty": "Não há outras aplicações com serviços de acessibilidade.",
+  "appPermissionsError": "Não foi possível concluir. Verifique o ADB e atualize o estado. Algumas alterações podem ter sido aplicadas.",
+  "appPermissionsConfirm": "Permitir acessibilidade, início automático e atividade em segundo plano e ativar o serviço? Apenas ações suportadas pelo firmware são aplicadas. A acessibilidade pode ler eventos da interface e agir em seu nome.",
+  "appPermissionsHelp": "A restauração está ativa por padrão para serviços autorizados aqui. Restaura permissões e ativação, mesmo após desativação no Android. Desativar a restauração mantém os acessos atuais. Desativar o serviço também interrompe a restauração; as permissões de início e segundo plano permanecem. Reconectar reinicia apenas este serviço, sem corrigir erros da aplicação. É necessário ADB; o Android pode adiar verificações. O início automático não abre a tela da aplicação. Os estados refletem a última verificação; operações não suportadas não são autorizadas."
 }

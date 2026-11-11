@@ -2,6 +2,12 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
+## v1.7.5 — 2026-11-11
+
+- Added “App permissions” under “Launcher and TV control”. With local ADB configured, you can grant a user-installed app supported permissions for autostart and background activity, and enable or reconnect its accessibility service. System apps are excluded.
+- Added automatic recovery of granted access and the accessibility service when disabled. To disable it permanently, turn off “Restore when disabled” or select “Disable service and recovery”. The app card refreshes after actions; available permissions depend on the firmware.
+- Fixed the initial sync when settings differ: you are asked which settings to keep both when enabling sync and when refreshing once with sync disabled. After changing the mode, storage, folder, or sync scope, enable sync again. Cancel and Back cancel the exchange.
+
 ## v1.7.4 — 2026-11-10
 
 - Clock, date, and weather settings are grouped in one section. The top bar and wallpaper share formats and can be styled separately. Date format previews use the current date. New installations default to a short date format with the weekday.

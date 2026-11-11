@@ -5721,4 +5721,52 @@ class AppLocalizationsHi extends AppLocalizations {
   String backupSyncRemoteDate(String date) {
     return 'स्टोरेज में मौजूद कॉपी: $date';
   }
+
+  @override
+  String get appPermissionsTitle => 'ऐप की अनुमतियाँ';
+
+  @override
+  String get appPermissionsGrant => 'अनुमतियाँ दें और चालू करें';
+
+  @override
+  String get appPermissionsRestore => 'बंद होने पर बहाल करें';
+
+  @override
+  String get appPermissionsReconnect => 'सेवा फिर से जोड़ें';
+
+  @override
+  String get appPermissionsDisable => 'सेवा और बहाली बंद करें';
+
+  @override
+  String get appPermissionsAutoStart => 'अपने आप शुरू होना';
+
+  @override
+  String get appPermissionsBackground => 'बैकग्राउंड गतिविधि';
+
+  @override
+  String get appPermissionsPending =>
+      'यहाँ अनुमति देने के बाद बहाली शुरू होगी।';
+
+  @override
+  String get appPermissionsRetry =>
+      'बहाली लंबित है। ADB जाँचें; दोबारा कोशिश अपने आप होगी।';
+
+  @override
+  String get appPermissionsIdentity =>
+      'ऐप का हस्ताक्षर बदल गया है। फिर से अनुमति दें।';
+
+  @override
+  String get appPermissionsEmpty => 'सुलभता सेवा वाले अन्य ऐप नहीं हैं।';
+
+  @override
+  String get appPermissionsError =>
+      'कार्रवाई पूरी नहीं हुई। ADB जाँचें और स्थिति रीफ़्रेश करें। कुछ बदलाव लागू हो सकते हैं।';
+
+  @override
+  String get appPermissionsConfirm =>
+      'सुलभता, अपने आप शुरू होने और बैकग्राउंड गतिविधि की अनुमति देकर सेवा चालू करें? केवल फ़र्मवेयर द्वारा समर्थित कार्रवाइयाँ लागू होंगी। सुलभता इंटरफ़ेस की घटनाएँ पढ़ सकती है और आपकी ओर से कार्रवाई कर सकती है।';
+
+  @override
+  String get appPermissionsHelp =>
+      'यहाँ अधिकृत सेवाओं के लिए बहाली डिफ़ॉल्ट रूप से चालू है। Android सेटिंग में बंद करने के बाद भी यह अनुमतियाँ और सेवा बहाल करती है। बहाली बंद करने पर मौजूदा पहुँच बनी रहती है। सेवा बंद करने से बहाली भी रुकती है; ऑटोस्टार्ट और बैकग्राउंड अनुमतियाँ बनी रहती हैं। फिर से जोड़ना केवल इस सेवा को पुनः शुरू करता है, ऐप की त्रुटियाँ ठीक नहीं करता। ADB आवश्यक है; Android जाँच में देरी कर सकता है। ऑटोस्टार्ट ऐप की स्क्रीन नहीं खोलता। स्थिति पिछली जाँच की है; असमर्थित कार्रवाइयों की अनुमति नहीं दी जाती।';
 }

@@ -5782,4 +5782,53 @@ class AppLocalizationsPt extends AppLocalizations {
   String backupSyncRemoteDate(String date) {
     return 'Cópia no armazenamento: $date';
   }
+
+  @override
+  String get appPermissionsTitle => 'Permissões de aplicações';
+
+  @override
+  String get appPermissionsGrant => 'Conceder permissões e ativar';
+
+  @override
+  String get appPermissionsRestore => 'Restaurar após desativação';
+
+  @override
+  String get appPermissionsReconnect => 'Reconectar serviço';
+
+  @override
+  String get appPermissionsDisable => 'Desativar serviço e restauração';
+
+  @override
+  String get appPermissionsAutoStart => 'Início automático';
+
+  @override
+  String get appPermissionsBackground => 'Atividade em segundo plano';
+
+  @override
+  String get appPermissionsPending =>
+      'A restauração começa após conceder acesso aqui.';
+
+  @override
+  String get appPermissionsRetry =>
+      'Restauração pendente. Verifique o ADB; as tentativas são automáticas.';
+
+  @override
+  String get appPermissionsIdentity =>
+      'A assinatura da aplicação mudou. Conceda acesso novamente.';
+
+  @override
+  String get appPermissionsEmpty =>
+      'Não há outras aplicações com serviços de acessibilidade.';
+
+  @override
+  String get appPermissionsError =>
+      'Não foi possível concluir. Verifique o ADB e atualize o estado. Algumas alterações podem ter sido aplicadas.';
+
+  @override
+  String get appPermissionsConfirm =>
+      'Permitir acessibilidade, início automático e atividade em segundo plano e ativar o serviço? Apenas ações suportadas pelo firmware são aplicadas. A acessibilidade pode ler eventos da interface e agir em seu nome.';
+
+  @override
+  String get appPermissionsHelp =>
+      'A restauração está ativa por padrão para serviços autorizados aqui. Restaura permissões e ativação, mesmo após desativação no Android. Desativar a restauração mantém os acessos atuais. Desativar o serviço também interrompe a restauração; as permissões de início e segundo plano permanecem. Reconectar reinicia apenas este serviço, sem corrigir erros da aplicação. É necessário ADB; o Android pode adiar verificações. O início automático não abre a tela da aplicação. Os estados refletem a última verificação; operações não suportadas não são autorizadas.';
 }

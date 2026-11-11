@@ -1953,4 +1953,19 @@
   "backupSyncMergeRemote": "Fusionner en privilégiant le stockage",
   "backupSyncPreviousDate": "Dernière synchronisation de ce téléviseur : {date}",
   "backupSyncRemoteDate": "Copie dans le stockage : {date}"
+,
+  "appPermissionsTitle": "Autorisations des applications",
+  "appPermissionsGrant": "Autoriser et activer",
+  "appPermissionsRestore": "Rétablir après désactivation",
+  "appPermissionsReconnect": "Reconnecter le service",
+  "appPermissionsDisable": "Désactiver le service et le rétablissement",
+  "appPermissionsAutoStart": "Démarrage automatique",
+  "appPermissionsBackground": "Activité en arrière-plan",
+  "appPermissionsPending": "Le rétablissement commencera après votre autorisation ici.",
+  "appPermissionsRetry": "Rétablissement en attente. Vérifiez ADB ; les tentatives sont automatiques.",
+  "appPermissionsIdentity": "La signature de l’application a changé. Autorisez à nouveau l’accès.",
+  "appPermissionsEmpty": "Aucune autre application avec un service d’accessibilité.",
+  "appPermissionsError": "Impossible de terminer. Vérifiez ADB et actualisez l’état. Certaines modifications peuvent avoir été appliquées.",
+  "appPermissionsConfirm": "Autoriser l’accessibilité, le démarrage automatique et l’activité en arrière-plan, puis activer le service ? Seules les actions prises en charge par le micrologiciel sont appliquées. L’accessibilité peut lire les événements de l’interface et agir en votre nom.",
+  "appPermissionsHelp": "Le rétablissement est activé par défaut pour les services autorisés ici. Il restaure les autorisations et l’activation, même après une désactivation dans Android. Désactiver le rétablissement conserve les accès actuels. Désactiver le service arrête aussi le rétablissement ; les droits de démarrage et d’arrière-plan restent. La reconnexion redémarre uniquement ce service sans corriger les bugs. ADB est requis ; Android peut retarder les vérifications. Le démarrage automatique n’ouvre pas l’écran de l’application. Les états reflètent la dernière vérification ; les opérations non prises en charge ne sont pas autorisées."
 }

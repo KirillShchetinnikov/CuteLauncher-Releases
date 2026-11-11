@@ -5748,4 +5748,53 @@ class AppLocalizationsRu extends AppLocalizations {
   String backupSyncRemoteDate(String date) {
     return 'Копия в хранилище: $date';
   }
+
+  @override
+  String get appPermissionsTitle => 'Разрешения приложениям';
+
+  @override
+  String get appPermissionsGrant => 'Выдать разрешения и включить';
+
+  @override
+  String get appPermissionsRestore => 'Восстанавливать при отключении';
+
+  @override
+  String get appPermissionsReconnect => 'Переподключить службу';
+
+  @override
+  String get appPermissionsDisable => 'Выключить службу и восстановление';
+
+  @override
+  String get appPermissionsAutoStart => 'Автозапуск';
+
+  @override
+  String get appPermissionsBackground => 'Фоновая работа';
+
+  @override
+  String get appPermissionsPending =>
+      'Восстановление начнётся после выдачи доступов здесь.';
+
+  @override
+  String get appPermissionsRetry =>
+      'Восстановление ожидает выполнения. Проверьте ADB; попытки повторяются автоматически.';
+
+  @override
+  String get appPermissionsIdentity =>
+      'Подпись приложения изменилась. Выдайте доступ заново.';
+
+  @override
+  String get appPermissionsEmpty =>
+      'Других приложений со службами спецвозможностей нет.';
+
+  @override
+  String get appPermissionsError =>
+      'Не удалось завершить действие. Проверьте ADB и обновите состояние. Часть изменений могла примениться.';
+
+  @override
+  String get appPermissionsConfirm =>
+      'Разрешить приложению спецвозможности, автозапуск и фоновую работу, затем включить службу? Применяются только поддерживаемые прошивкой действия. Спецвозможности позволяют читать события интерфейса и выполнять действия от вашего имени.';
+
+  @override
+  String get appPermissionsHelp =>
+      'Восстановление включено по умолчанию для служб, которым вы выдаёте доступ здесь. Оно возвращает разрешения и включение службы, в том числе после отключения в настройках Android. Снятие переключателя сохраняет текущие доступы. Выключение службы также прекращает восстановление; разрешения автозапуска и фоновой работы остаются. Переподключение перезапускает только эту службу и не исправляет ошибки приложения. Нужен ADB; Android может откладывать проверки. Автозапуск не открывает экран приложения. Статусы отражают последнюю проверку; неподдерживаемые операции не выдаются.';
 }

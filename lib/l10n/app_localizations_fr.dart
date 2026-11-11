@@ -5797,4 +5797,54 @@ class AppLocalizationsFr extends AppLocalizations {
   String backupSyncRemoteDate(String date) {
     return 'Copie dans le stockage : $date';
   }
+
+  @override
+  String get appPermissionsTitle => 'Autorisations des applications';
+
+  @override
+  String get appPermissionsGrant => 'Autoriser et activer';
+
+  @override
+  String get appPermissionsRestore => 'Rétablir après désactivation';
+
+  @override
+  String get appPermissionsReconnect => 'Reconnecter le service';
+
+  @override
+  String get appPermissionsDisable =>
+      'Désactiver le service et le rétablissement';
+
+  @override
+  String get appPermissionsAutoStart => 'Démarrage automatique';
+
+  @override
+  String get appPermissionsBackground => 'Activité en arrière-plan';
+
+  @override
+  String get appPermissionsPending =>
+      'Le rétablissement commencera après votre autorisation ici.';
+
+  @override
+  String get appPermissionsRetry =>
+      'Rétablissement en attente. Vérifiez ADB ; les tentatives sont automatiques.';
+
+  @override
+  String get appPermissionsIdentity =>
+      'La signature de l’application a changé. Autorisez à nouveau l’accès.';
+
+  @override
+  String get appPermissionsEmpty =>
+      'Aucune autre application avec un service d’accessibilité.';
+
+  @override
+  String get appPermissionsError =>
+      'Impossible de terminer. Vérifiez ADB et actualisez l’état. Certaines modifications peuvent avoir été appliquées.';
+
+  @override
+  String get appPermissionsConfirm =>
+      'Autoriser l’accessibilité, le démarrage automatique et l’activité en arrière-plan, puis activer le service ? Seules les actions prises en charge par le micrologiciel sont appliquées. L’accessibilité peut lire les événements de l’interface et agir en votre nom.';
+
+  @override
+  String get appPermissionsHelp =>
+      'Le rétablissement est activé par défaut pour les services autorisés ici. Il restaure les autorisations et l’activation, même après une désactivation dans Android. Désactiver le rétablissement conserve les accès actuels. Désactiver le service arrête aussi le rétablissement ; les droits de démarrage et d’arrière-plan restent. La reconnexion redémarre uniquement ce service sans corriger les bugs. ADB est requis ; Android peut retarder les vérifications. Le démarrage automatique n’ouvre pas l’écran de l’application. Les états reflètent la dernière vérification ; les opérations non prises en charge ne sont pas autorisées.';
 }
