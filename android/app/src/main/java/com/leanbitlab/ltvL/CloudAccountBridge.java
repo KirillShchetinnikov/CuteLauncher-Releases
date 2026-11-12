@@ -9,17 +9,21 @@ import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodChannel;
 
 final class CloudAccountBridge {
-    private static final java.util.concurrent.atomic.AtomicLong revision = new java.util.concurrent.atomic.AtomicLong();
     private static final Object mutationLock = new Object();
     static void register(Context context,BinaryMessenger messenger,Executor executor) {
-        CloudAccountStore store=new CloudAccountStore(context.getApplicationContext());
+        java.util.concurrent.ConcurrentHashMap<String, java.util.concurrent.atomic.AtomicLong> revisions = new java.util.concurrent.ConcurrentHashMap<>();
         Handler main=new Handler(Looper.getMainLooper());
         new MethodChannel(messenger,"cutelauncher/cloud_account").setMethodCallHandler((call,result) -> {
             if(!java.util.Set.of("info","authorization","save","disconnect").contains(call.method)) { result.notImplemented(); return; }
+            final String profile;
+            try { profile = BackupAccountProfile.id(call.argument("profile")); }
+            catch (Exception invalid) { result.error("invalid_argument", "Invalid profile", null); return; }
+            final var revision = revisions.computeIfAbsent(profile, ignored -> new java.util.concurrent.atomic.AtomicLong());
             final boolean mutation = call.method.equals("save") || call.method.equals("disconnect");
             final long expected = mutation ? revision.incrementAndGet() : 0;
             executor.execute(() -> {
                 try {
+                    CloudAccountStore store = BackupAccountProfile.store(context, false, profile);
                     Object value;
                     switch(call.method) {
                         case "info" -> value=store.info();

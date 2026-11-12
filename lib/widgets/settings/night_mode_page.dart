@@ -8,9 +8,11 @@ import '../../models/tv_input.dart';
 import '../tv_input_icon.dart';
 import '../application_list_icon.dart';
 import 'city_search_dialog.dart';
+import 'manual_location_input.dart';
 import '../action_notice.dart';
 
 import 'package:flauncher/widgets/launcher_dialog.dart';
+import 'package:flauncher/flauncher_channel.dart';
 
 import 'settings_slider_tile.dart';
 import 'settings_choice_tile.dart';
@@ -22,6 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../../location_coordinates.dart';
 import '../../providers/night_mode_service.dart';
 import '../../providers/apps_service.dart';
 import 'settings_route.dart';
@@ -522,7 +525,10 @@ class _NightModePageState extends State<NightModePage> {
                     options: const [true, false],
                     label: (v) =>
                         v ? l.nightLocationAutomatic : l.nightLocationManual,
-                    onChanged: (v) => update(c.copyWith(automaticLocation: v)),
+                    onChanged: (v) => update(service.configuration.copyWith(
+                      automaticLocation: v,
+                      clearOverrides: v != service.configuration.automaticLocation,
+                    )),
                   ),
                   if (c.automaticLocation)
                     FocusableSettingsTile(
@@ -540,7 +546,7 @@ class _NightModePageState extends State<NightModePage> {
                           if (!mounted) return;
                           await update(
                             service.configuration.copyWith(
-                              city: '',
+                              automaticLocation: true,
                               latitude: (point['latitude'] as num).toDouble(),
                               longitude: (point['longitude'] as num).toDouble(),
                               clearOverrides: true,
@@ -561,35 +567,68 @@ class _NightModePageState extends State<NightModePage> {
                         }
                       },
                     )
-                  else
-                    FocusableSettingsTile(
-                      valueIcon: Icons.edit_outlined,
-                      title: Text(l.nightCityName),
-                      trailing: Text(
-                        c.city.isEmpty ? l.settingsValueNotSet : c.city,
-                      ),
-                      onPressed: () async {
-                        final city =
-                            await showLauncherDialog<Map<String, dynamic>>(
-                              context: context,
-                              builder: (_) => CitySearchDialog(
-                                searchCities: (query) =>
-                                    service.searchCities(query, 'en'),
+                  else ...[
+                    ManualLocationInputTile(
+                      value: c.manualLocationInput,
+                      busy: _locating,
+                      onChanged: (input) => update(service.configuration.copyWith(
+                        manualLocationInput: input,
+                        clearOverrides: input != service.configuration.manualLocationInput,
+                      )),
+                    ),
+                    if (c.manualLocationInput == ManualLocationInput.coordinates)
+                      FocusableSettingsTile(
+                        valueIcon: Icons.edit_outlined,
+                        title: Text(l.weatherServerCoordinates),
+                        trailing: Text(locationCoordinatesLabel(
+                          l, coordinatesFrom(c.latitude, c.longitude),
+                        )),
+                        onPressed: () async {
+                          final point = await showLocationCoordinatesDialog(
+                            context, coordinatesFrom(c.latitude, c.longitude),
+                          );
+                          if (point == null || !context.mounted) return;
+                          await update(service.configuration.copyWith(
+                            automaticLocation: false,
+                            manualLocationInput: ManualLocationInput.coordinates,
+                            latitude: point.latitude,
+                            longitude: point.longitude,
+                            clearOverrides: true,
+                          ));
+                          await service.refreshSolar();
+                        },
+                      )
+                    else
+                      FocusableSettingsTile(
+                        valueIcon: Icons.edit_outlined,
+                        title: Text(l.nightCityName),
+                        trailing: Text(
+                          c.city.isEmpty ? l.settingsValueNotSet : c.city,
+                        ),
+                        onPressed: () async {
+                          final city =
+                              await showLauncherDialog<Map<String, dynamic>>(
+                                context: context,
+                                builder: (_) => CitySearchDialog(
+                                  searchCities: service.searchCities,
+                                ),
+                              );
+                          if (city != null && context.mounted) {
+                            await update(
+                              service.configuration.copyWith(
+                                automaticLocation: false,
+                                manualLocationInput: ManualLocationInput.city,
+                                city: city['city'] as String,
+                                latitude: (city['latitude'] as num).toDouble(),
+                                longitude: (city['longitude'] as num).toDouble(),
+                                clearOverrides: true,
                               ),
                             );
-                        if (city != null && context.mounted) {
-                          await update(
-                            service.configuration.copyWith(
-                              city: city['city'] as String,
-                              latitude: (city['latitude'] as num).toDouble(),
-                              longitude: (city['longitude'] as num).toDouble(),
-                              clearOverrides: true,
-                            ),
-                          );
-                          await service.refreshSolar();
-                        }
-                      },
-                    ),
+                            await service.refreshSolar();
+                          }
+                        },
+                      ),
+                  ],
                   SizedBox(
                     child: _locating ? const LinearProgressIndicator() : null,
                   ),
@@ -609,14 +648,22 @@ class _NightModePageState extends State<NightModePage> {
                               service.solarUpdated >
                           86400000)
                     SettingsMessage(text: l.nightSolarCached),
-                  if (c.solar)
-                    FocusableSettingsTile(
-                      leading: const Icon(Icons.refresh),
-                      title: Text(l.nightRefreshSun),
-                      onPressed: service.solarLoading
-                          ? null
-                          : service.refreshSolar,
+                  FocusableSettingsTile(
+                    leading: const Icon(Icons.refresh),
+                    title: Text(l.nightRefreshSun),
+                    onPressed: service.solarLoading
+                        ? null
+                        : service.refreshSolar,
+                  ),
+                  SettingsHelp(text: l.nightSolarAttribution),
+                  FocusableSettingsTile(
+                    subtle: true,
+                    leading: const Icon(Icons.open_in_new),
+                    title: const Text('Sunrise-Sunset.org'),
+                    onPressed: () => FLauncherChannel().openUrl(
+                      'https://sunrise-sunset.org/',
                     ),
+                  ),
                 ],
               ),
           ],

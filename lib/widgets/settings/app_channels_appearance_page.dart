@@ -169,6 +169,11 @@ class AppChannelsAppearancePage extends StatelessWidget {
               ),
             ),
           ],
+          RoundedSwitchListTile(
+            title: Text(l.scrollContentLabels),
+            value: service.appearance.scrollContentLabels,
+            onChanged: (value) => service.set('scrollContentLabels', value),
+          ),
           ...SectionStylePage.controls(
             context,
             categoryId: categoryId,

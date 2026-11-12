@@ -32,38 +32,6 @@ import static org.junit.Assert.*;
 public class RemoteBlackScreenTest {
     private static final int KEY = 4137;
 
-    @Test public void eachPressLaunchesTheSameToggle() {
-        var service = Robolectric.buildService(LauncherAccessibilityService.class).get();
-        var activities = Shadows.shadowOf(RuntimeEnvironment.getApplication());
-        try (var remapper = new RemoteButtonRemapper(service)) {
-            configure();
-            for (long time : new long[] {100, 200}) {
-                press(remapper, time);
-                Intent intent = activities.getNextStartedActivity();
-                assertNotNull(intent);
-                assertEquals(new ComponentName("io.japp.blackscreen",
-                    "io.japp.blackscreen.ui.ToggleBlackScreenActivity"), intent.getComponent());
-                assertEquals(Intent.FLAG_ACTIVITY_NEW_TASK, intent.getFlags());
-                assertNull(intent.getAction());
-                assertNull(activities.getNextStartedActivity());
-                assertEquals("success", RemoteButtonRemapper.status);
-                assertNull(ShadowToast.getTextOfLatestToast());
-            }
-        }
-    }
-
-    @Test public void missingActivityShowsAnErrorNotice() {
-        var service = Robolectric.buildService(LauncherAccessibilityService.class).get();
-        Shadows.shadowOf(RuntimeEnvironment.getApplication()).checkActivities(true);
-        try (var remapper = new RemoteButtonRemapper(service)) {
-            configure();
-            press(remapper, 100);
-            assertEquals("unavailable", RemoteButtonRemapper.status);
-            assertEquals(service.getString(R.string.remap_error_black_screen),
-                ShadowToast.getTextOfLatestToast());
-        }
-    }
-
     @Test public void missingAssignedAppShowsAnErrorNotice() {
         var service = Robolectric.buildService(LauncherAccessibilityService.class).get();
         try (var remapper = new RemoteButtonRemapper(service)) {
@@ -81,7 +49,7 @@ public class RemoteBlackScreenTest {
         var activities = Shadows.shadowOf(RuntimeEnvironment.getApplication());
         RemoteButtonCapture capture = ReflectionHelpers.getStaticField(RemoteButtonsBridge.class, "capture");
         try (var remapper = new RemoteButtonRemapper(service)) {
-            configure();
+            configure("home");
             press(remapper, 100);
             assertNotNull(activities.getNextStartedActivity());
 
@@ -104,7 +72,7 @@ public class RemoteBlackScreenTest {
     }
 
     @Test public void onlyEmptyTargetIsAccepted() {
-        for (String action : List.of("black_screen", "black_overlay", "tcl_screen_off")) {
+        for (String action : List.of("black_overlay", "tcl_screen_off")) {
             var row = Map.of("keyCode", KEY, "enabled", true, "action", action, "target", "");
             var config = RemoteMappingConfiguration.fromMap(Map.of("enabled", true, "bindings", List.of(row)));
             assertEquals(action, RemoteMappingConfiguration.fromMap(config.toMap()).binding(KEY).action());
@@ -192,10 +160,6 @@ public class RemoteBlackScreenTest {
             press(remapper, 300);
         }
         assertTrue(windows.getViews().isEmpty());
-    }
-
-    private static void configure() {
-        configure("black_screen");
     }
 
     private static void configure(String action) {

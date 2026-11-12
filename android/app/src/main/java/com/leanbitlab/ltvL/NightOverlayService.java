@@ -129,16 +129,6 @@ public class NightOverlayService extends Service {
                     });
                     return;
                 }
-                if (call.method.equals("cities")) {
-                    String query = call.argument("query"), language = call.argument("language");
-                    new Thread(() -> {
-                        try {
-                            var cities = NightSolarTimes.cities(query, language);
-                            new Handler(Looper.getMainLooper()).post(() -> result.success(cities));
-                        } catch (Exception e) { new Handler(Looper.getMainLooper()).post(() -> result.error("unavailable", "City search unavailable", DiagnosticErrorDetails.from(e))); }
-                    }, "NightCitySearch").start();
-                    return;
-                }
                 if (call.method.equals("batterySettings")) {
                     if (activity instanceof Activity foreground) result.success(openBatterySettings(foreground, call.argument("guide"), Boolean.TRUE.equals(call.argument("withoutOverlay"))));
                     else { activity.startActivity(new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)); result.success("opened"); }

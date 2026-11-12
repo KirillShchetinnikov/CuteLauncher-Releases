@@ -7,7 +7,8 @@ class CloudBackupException implements Exception {
   final int? httpStatus;
   const CloudBackupException(this.code, {this.httpStatus});
   @override
-  String toString() => 'Cloud backup operation failed ($code)${httpStatus == null ? '' : ' HTTP $httpStatus'}';
+  String toString() =>
+      'Cloud backup operation failed ($code)${httpStatus == null ? '' : ' HTTP $httpStatus'}';
 }
 
 Uri cloudDirectory(String input) {
@@ -81,14 +82,13 @@ abstract class CloudAccountRepository {
 }
 
 class NativeCloudAccountRepository implements CloudAccountRepository {
+  final String profile;
+  NativeCloudAccountRepository({this.profile = 'default'});
   static const _channel = BridgeChannel('cutelauncher/cloud_account');
-  static Future<T?> _invoke<T>(
-    String method, [
-    Map<String, Object>? arguments,
-  ]) async {
+  Future<T?> _invoke<T>(String method, [Map<String, Object>? arguments]) async {
     try {
       return await _channel
-          .invokeMethod<T>(method, arguments)
+          .invokeMethod<T>(method, {...?arguments, 'profile': profile})
           .timeout(const Duration(seconds: 10));
     } catch (_) {
       throw const CloudBackupException('storage');

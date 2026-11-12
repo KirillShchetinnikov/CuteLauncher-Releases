@@ -20,7 +20,11 @@ void main() {
       tester.view.devicePixelRatio = 2;
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
-      SharedPreferences.setMockInitialValues({nightModeKey: '{"enabled":false,"scheduled":false,"solar":true}'});
+      SharedPreferences.setMockInitialValues({
+        nightModeKey: '{"enabled":false,"scheduled":false,"solar":true}',
+        'brightness_morning': 10,
+        'brightness_sunrise': 85,
+      });
       const native = MethodChannel('me.efesser.flauncher/method');
       const nightChannel = MethodChannel('cutelauncher/night');
       tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
@@ -54,20 +58,31 @@ void main() {
       final l = AppLocalizations.of(
         tester.element(find.byType(BrightnessPage)),
       )!;
-      expect(find.text('06:00–09:00'), findsOneWidget);
+      const levels = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+      SettingsSliderTile sliderFor(String title) =>
+          tester.widget<SettingsSliderTile>(
+            find.byWidgetPredicate(
+              (widget) => widget is SettingsSliderTile && widget.title == title,
+            ),
+          );
+
+      const morning = '06:00–09:00';
+      expect(sliderFor(morning).options, levels);
+      Focus.of(tester.element(find.text(morning))).requestFocus();
+      await tester.pump();
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+      await tester.pumpAndSettle();
+      expect(sliderFor(morning).value, 0);
+      expect(prefs.getInt('brightness_morning'), 0);
+
       await tester.tap(find.text(l.brightnessSolar));
       await tester.pumpAndSettle();
-      expect(find.text(l.brightnessAfterNightEnd), findsOneWidget);
-      expect(find.text(l.brightnessAfterNightStart), findsOneWidget);
-      expect(find.text('06:00–09:00'), findsNothing);
+      expect(sliderFor(l.brightnessAfterNightEnd).options, levels);
+      expect(sliderFor(l.brightnessAfterNightStart).options, levels);
+      expect(sliderFor(l.brightnessAfterNightEnd).value, 85);
+      expect(find.text(morning), findsNothing);
       expect(find.text(l.brightnessSolarUnavailable), findsOneWidget);
-      final slider = tester.widget<SettingsSliderTile>(
-        find.byWidgetPredicate(
-          (widget) =>
-              widget is SettingsSliderTile &&
-              widget.title == l.brightnessTransitionTime,
-        ),
-      );
+      final slider = sliderFor(l.brightnessTransitionTime);
       expect(slider.options.first, 1);
       expect(slider.options.last, 60);
       expect(slider.options.length, 60);
@@ -80,7 +95,7 @@ void main() {
       expect(service.isEnabled, isFalse);
       await tester.tap(find.text(l.brightnessSolar));
       await tester.pumpAndSettle();
-      expect(find.text('06:00–09:00'), findsOneWidget);
+      expect(sliderFor(morning).value, 0);
       await tester.pumpWidget(const SizedBox());
       service.dispose();
       night.dispose();

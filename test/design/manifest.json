@@ -647,7 +647,7 @@
         960,
         540
       ],
-      "sha256": "235e0b0f092668960ed37cd0535b261f8a834d7d4b0c3a4f03a1ffc447d5aabe"
+      "sha256": "8ab21ea30f669cb7994d1aac12e2f2bf3d52638d55ac14279e72f384dc0e2fd9"
     },
     {
       "name": "settings-memory-bottom",
@@ -663,7 +663,7 @@
         960,
         540
       ],
-      "sha256": "d75b0dc26407192cfccb97561a91614d9f4e5062f5fce2ec535975fdedd673ce"
+      "sha256": "c9b11f95514548965a26b57894a6e45252c3b09d20b907a5889e3e14b78409c2"
     },
     {
       "name": "settings-memory-saver",
@@ -935,7 +935,7 @@
         960,
         540
       ],
-      "sha256": "f3b91c46697daeb2447fbd4d5a69a8673acbe69c2049dcef6520c2ba1f402bb2"
+      "sha256": "9806d6c63438827030db3a8feb6622917a9d03675090a4cf5ca4f23fb14b2e09"
     },
     {
       "name": "settings-style-glass",

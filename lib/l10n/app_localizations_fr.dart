@@ -10,6 +10,10 @@ class AppLocalizationsFr extends AppLocalizations {
   AppLocalizationsFr([String locale = 'fr']) : super(locale);
 
   @override
+  String get scrollContentLabels =>
+      'Faire défiler les libellés longs des rangées';
+
+  @override
   String get contentAppTileStyle => 'Source de l’apparence';
 
   @override
@@ -932,6 +936,73 @@ class AppLocalizationsFr extends AppLocalizations {
       'Cette image est endommagée ou trop grande (maximum 8 MiB et 48 mégapixels). Choisissez une autre image.';
 
   @override
+  String get memoryAdvanced => 'Diagnostic avancé';
+
+  @override
+  String get memoryLauncherTitle => 'Mémoire de CuteLauncher';
+
+  @override
+  String get memoryUsage => 'Utilisation de la mémoire';
+
+  @override
+  String memoryChange(String delta) {
+    return '$delta depuis la mesure précédente';
+  }
+
+  @override
+  String get memoryCacheFiles => 'Fichiers image en mémoire';
+
+  @override
+  String memoryCacheEntries(int count) {
+    return 'Éléments : $count';
+  }
+
+  @override
+  String memoryCacheResult(String before, String after) {
+    return 'Caches d’images : $before → $after';
+  }
+
+  @override
+  String get memoryStale =>
+      'Mise à jour impossible. La mesure précédente est affichée.';
+
+  @override
+  String get memoryTechnical => 'Détails techniques';
+
+  @override
+  String get memoryObserve => 'Suivi de la mémoire';
+
+  @override
+  String get memoryObserveStart => 'Observer pendant 1 minute';
+
+  @override
+  String get memoryObserveStop => 'Arrêter le suivi';
+
+  @override
+  String get memoryObserveRunning => 'Enregistrement · jusqu’à 1 minute';
+
+  @override
+  String get memoryObserveFinished => 'Enregistrement arrêté';
+
+  @override
+  String get memoryObserveEmpty => 'Aucune mesure enregistrée';
+
+  @override
+  String memorySeconds(int seconds) {
+    return '$seconds s';
+  }
+
+  @override
+  String get memoryReadingHelp => 'Comprendre les mesures';
+
+  @override
+  String get memorySaverHelp => 'Effets du mode économie';
+
+  @override
+  String get memorySaveFailed =>
+      'Impossible d’enregistrer le mode économie. Réessayez.';
+
+  @override
   String get memoryTitle => 'Mémoire';
 
   @override
@@ -1676,7 +1747,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get weatherCoordinatesError =>
-      'Entrez une ville manuellement ou obtenez automatiquement les coordonnées.';
+      'Choisissez une ville, saisissez les coordonnées ou détectez la position automatiquement.';
 
   @override
   String get weatherRefresh => 'Actualiser la météo';
@@ -2001,7 +2072,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get nightCityHint =>
-      'Choisissez votre ville au lieu d\'accorder l\'accès à la localisation. Les coordonnées sélectionnées sont envoyées à Sunrise-Sunset.org, ou Open-Meteo comme solution de secours, pour récupérer les heures d\'ensoleillement.';
+      'Choisissez votre ville au lieu d\'accorder l\'accès à la localisation. Les coordonnées sélectionnées sont envoyées à Sunrise-Sunset.org, ou GeoNames comme solution de secours, pour récupérer les heures d\'ensoleillement.';
 
   @override
   String get nightResumeSchedule => 'Retour au planning';
@@ -2049,7 +2120,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get nightSolarAttribution =>
-      'Horaires d\'ensoleillement quotidiens : Sunrise-Sunset.org ; solution de secours : Open-Meteo. Recherche de ville : GeoNames. Plusieurs jours sont mis en cache pour une utilisation hors ligne.';
+      'Les heures de lever et de coucher du soleil proviennent de Sunrise-Sunset.org, ou de GeoNames en cas d’échec. Hors ligne, le téléviseur calcule les heures manquantes.';
 
   @override
   String get nightTemporaryOn => 'Allumage temporaire jusqu\'à ce que';
@@ -2995,7 +3066,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get weatherCityNotFound =>
-      'Ville introuvable. Vérifiez le nom de la ville en anglais.';
+      'Impossible d’identifier la ville. Sélectionnez-la dans les paramètres de localisation.';
 
   @override
   String get weatherLocationAutomatic => 'Obtenez automatiquement';
@@ -3006,6 +3077,15 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get weatherLocationManual => 'Entrez manuellement';
+
+  @override
+  String get manualLocationInput => 'Mode de saisie';
+
+  @override
+  String get manualLocationCity => 'Ville';
+
+  @override
+  String get manualLocationCoordinates => 'Coordonnées';
 
   @override
   String get weatherLocationPermissionDenied =>
@@ -3038,7 +3118,8 @@ class AppLocalizationsFr extends AppLocalizations {
       'Emplacement indisponible. Vérifiez les paramètres d’autorisation et d’emplacement du système.';
 
   @override
-  String get nightCityEnglish => 'Entrez le nom de la ville en anglais';
+  String get nightCitySearchHint =>
+      'Saisissez le nom de la ville. Vous pouvez ajouter la région ou le pays après une virgule.';
 
   @override
   String get nightOverlayBrief =>
@@ -3192,7 +3273,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get backupSyncGroupsHelp =>
-      'Les blocs désactivés restent locaux sur ce téléviseur. La sélection de bloc est synchronisée entre les appareils.';
+      'Les blocs désactivés restent sur ce téléviseur. Choisissez les blocs séparément sur chaque appareil.';
 
   @override
   String get backupSyncGroupsFailed =>
@@ -4173,17 +4254,27 @@ class AppLocalizationsFr extends AppLocalizations {
   String get tvPowerTitle => 'Gestion de l’alimentation';
 
   @override
-  String get tvPowerOff => 'Éteindre le téléviseur';
+  String remotePowerWithConfirmation(String action) {
+    return '$action (avec confirmation)';
+  }
 
   @override
-  String get tvPowerReboot => 'Redémarrer le téléviseur';
+  String remotePowerWithoutConfirmation(String action) {
+    return '$action (sans confirmation)';
+  }
 
   @override
-  String get tvPowerOffConfirm => 'Mettre le téléviseur en veille ?';
+  String get tvPowerOff => 'Éteindre l’appareil';
+
+  @override
+  String get tvPowerReboot => 'Redémarrer l’appareil';
+
+  @override
+  String get tvPowerOffConfirm => 'Mettre l’appareil en veille ?';
 
   @override
   String get tvPowerRebootConfirm =>
-      'Redémarrer le téléviseur ? Les applications ouvertes seront fermées.';
+      'Redémarrer l’appareil ? Les applications ouvertes seront fermées.';
 
   @override
   String get tvPowerSent => 'Commande envoyée';
@@ -4328,6 +4419,14 @@ class AppLocalizationsFr extends AppLocalizations {
   String get sleepTimerShowSeconds => 'Afficher les secondes';
 
   @override
+  String get sleepTimerShowOverApps =>
+      'Afficher le minuteur par-dessus les applis';
+
+  @override
+  String get sleepTimerOverlayHelp =>
+      'Activez le service d’accessibilité de CuteLauncher pour l’afficher par-dessus les applis.';
+
+  @override
   String get sleepTimerCloseAfterSelection => 'Fermer le widget après le choix';
 
   @override
@@ -4443,6 +4542,22 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get noticeTopLeft => 'En haut à gauche';
+
+  @override
+  String get overlayAppearance => 'Apparence au-dessus des applications';
+
+  @override
+  String get overlayAppearanceTopPanel => 'Comme dans le panneau supérieur';
+
+  @override
+  String get overlayAppearanceDark => 'Sombre';
+
+  @override
+  String get overlayWhereToShow => 'Emplacement d’affichage';
+
+  @override
+  String get overlayAtPanelWidget =>
+      'À l’emplacement du widget dans le panneau supérieur';
 
   @override
   String get notificationOpenFailed =>
@@ -4751,7 +4866,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get weatherTextHelp =>
-      'Saisissez du texte et des codes entre accolades, ou insérez-les au curseur avec les boutons. La casse est ignorée. Les parenthèses autour d’une valeur disparaissent si les données manquent. Doublez les accolades littérales. Un saut de ligne est autorisé.';
+      'Saisissez du texte et des codes entre accolades, ou insérez-les au curseur avec les boutons. La casse est ignorée. Les parenthèses autour d’une valeur disparaissent si les données manquent. Doublez les accolades littérales. Un saut de ligne est autorisé. Vous pouvez saisir des lettres, chiffres, espaces et tout symbole imprimable, par exemple : () [] / : ; + − ° % ·.';
 
   @override
   String get weatherTextSaveError =>
@@ -5033,10 +5148,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get fileBrowserPartial => 'Une partie du dossier est affichée';
 
   @override
-  String get fileBrowserRemoteHint => '← Nom complet · → Confirmer';
-
-  @override
-  String get fileBrowserReadNameHint => '← Afficher le nom complet';
+  String get fileBrowserReadNameHint => '← Dossier parent · → Nom complet';
 
   @override
   String fileBrowserSavedTo(String path) {
@@ -5371,6 +5483,13 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get volumeUpdateInterval => 'Intervalle d’actualisation';
+
+  @override
+  String get showVolumeOverlay => 'Afficher le volume par-dessus les applis';
+
+  @override
+  String get volumeOverlayHelp =>
+      'Le service d’accessibilité de CuteLauncher doit être activé.';
 
   @override
   String get clockHoursColor => 'Couleur des heures';
@@ -5847,4 +5966,179 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get appPermissionsHelp =>
       'Le rétablissement est activé par défaut pour les services autorisés ici. Il restaure les autorisations et l’activation, même après une désactivation dans Android. Désactiver le rétablissement conserve les accès actuels. Désactiver le service arrête aussi le rétablissement ; les droits de démarrage et d’arrière-plan restent. La reconnexion redémarre uniquement ce service sans corriger les bugs. ADB est requis ; Android peut retarder les vérifications. Le démarrage automatique n’ouvre pas l’écran de l’application. Les états reflètent la dernière vérification ; les opérations non prises en charge ne sont pas autorisées.';
+
+  @override
+  String get weatherFieldUnsupported => 'Non pris en charge par cette source';
+
+  @override
+  String get weatherFieldMissing => 'Aucune donnée dans la réponse actuelle';
+
+  @override
+  String get weatherMissingAsDash => 'Tirets pour les données manquantes';
+
+  @override
+  String get weatherPanelAlignment => 'Alignement météo du panneau supérieur';
+
+  @override
+  String get syncProtection => 'Jetons et protection';
+
+  @override
+  String get syncKey => 'Clé de synchronisation partagée';
+
+  @override
+  String get syncKeyShow => 'Afficher la clé';
+
+  @override
+  String get syncKeyCreate => 'Créer une clé';
+
+  @override
+  String get syncKeyInvalid =>
+      'Saisissez une clé hexadécimale de 64 caractères.';
+
+  @override
+  String get syncKeyHelp =>
+      'Utilisez la même clé sur tous les téléviseurs pour les jetons et comptes. Créez-la sur un téléviseur et transférez-la aux autres. Conservez-la : sans elle, les données protégées sont illisibles. En cas de changement, mettez à jour tous les téléviseurs. Les autorisations Android et clés matérielles restent locales.';
+
+  @override
+  String get syncFiles => 'Fichiers de synchronisation';
+
+  @override
+  String get syncCleanup => 'Nettoyer les anciens fichiers';
+
+  @override
+  String get syncCleanupFailed =>
+      'Certains anciens fichiers n’ont pas pu être supprimés. Réessayez le nettoyage.';
+
+  @override
+  String get syncRetire => 'Exclure l’appareil';
+
+  @override
+  String get syncRetireConfirm =>
+      'Exclure cet appareil du groupe ? Ses anciens états ne seront plus appliqués. Le retour nécessite un nouveau groupe de synchronisation.';
+
+  @override
+  String get backupAccount => 'Compte';
+
+  @override
+  String get backupNewAccount => 'Connecter un autre compte';
+
+  @override
+  String get backupSetupWizard => 'Assistant de configuration';
+
+  @override
+  String get backupSetupSummary => 'Résumé';
+
+  @override
+  String get backupSetupNext => 'Suivant';
+
+  @override
+  String get backupSetupBack => 'Retour';
+
+  @override
+  String get backupFirstCopy => 'Créer la première sauvegarde maintenant';
+
+  @override
+  String get backupSyncAll => 'Tout synchroniser';
+
+  @override
+  String get backupFirstExchange => 'Premier échange';
+
+  @override
+  String get backupNoRemote =>
+      'Aucun réglage dans le stockage. Ce téléviseur enverra ses réglages.';
+
+  @override
+  String get backupSetupStart => 'Activer';
+
+  @override
+  String get backupPassword => 'Mot de passe de chiffrement des données';
+
+  @override
+  String get backupPasswordRepeat => 'Répéter le mot de passe';
+
+  @override
+  String get backupPasswordMismatch => 'Les mots de passe ne correspondent pas';
+
+  @override
+  String get backupAccountLocalHelp =>
+      'Utilisez un compte connecté ou un autre du même type. Les identifiants restent sur ce téléviseur. Sauvegarde et synchronisation gèrent leurs fichiers séparément.';
+
+  @override
+  String get backupPasswordOptionalHelp =>
+      'Facultatif. Chiffre le fichier entier, y compris les jetons transférables. Sans mot de passe, le fichier reste non chiffré. Une valeur vide désactive le chiffrement. Les autres téléviseurs doivent utiliser le même mot de passe.';
+
+  @override
+  String get backupYandexDisk => 'Yandex Disk';
+
+  @override
+  String get backupYandexHelp =>
+      'Saisissez le Client ID et le Client Secret d’une application Yandex OAuth ayant accès à son dossier sur Disk. Connectez-vous et confirmez le code sur votre téléphone. Utilisez le même client OAuth et le même compte sur tous les téléviseurs.';
+
+  @override
+  String get backupYandexConnect => 'Connecter Yandex Disk';
+
+  @override
+  String get backupYandexReconnect => 'Reconnecter Yandex Disk';
+
+  @override
+  String get backupYandexConnectionStatus => 'État de connexion à Yandex Disk';
+
+  @override
+  String get yandexCodeExpired =>
+      'Le délai de connexion à Yandex Disk a expiré. Sélectionnez Vérifier et enregistrer le compte pour obtenir un nouveau code.';
+
+  @override
+  String get yandexConfigurationError =>
+      'Identifiant client / Secret client — Yandex OAuth';
+
+  @override
+  String get backupSmb => 'Samba / SMB 2–3';
+
+  @override
+  String get smbUrl => 'Adresse du dossier SMB';
+
+  @override
+  String get smbPassword => 'Mot de passe';
+
+  @override
+  String get smbHelp =>
+      'Indiquez un dossier réseau existant : smb://server/share/CuteLauncher. Saisissez un identifiant et un mot de passe autorisés ; utilisez DOMAIN\\user pour un compte de domaine. SMB 2 ou 3 est choisi automatiquement. Sauvegarde et synchronisation nécessitent les droits de lecture, écriture et suppression.';
+
+  @override
+  String get recentRamTitle => 'Mémoire vive';
+
+  @override
+  String recentRamUsed(String used, String total, String percent) {
+    return 'Utilisée : $used sur $total · $percent %';
+  }
+
+  @override
+  String recentRamAvailable(String value) {
+    return 'Disponible : $value';
+  }
+
+  @override
+  String get recentRamUnloaded => 'Déchargée de la mémoire';
+
+  @override
+  String get recentRamUnavailable => 'Aucune donnée';
+
+  @override
+  String recentRamMiB(String value) {
+    return '$value Mio';
+  }
+
+  @override
+  String recentRamGiB(String value) {
+    return '$value Gio';
+  }
+
+  @override
+  String recentRamApp(String value) {
+    return '≈ $value';
+  }
+
+  @override
+  String get backupExistingSettingsHelp =>
+      'Le stockage sélectionné contient déjà des paramètres de synchronisation. Choisissez de les appliquer à ce téléviseur, de les remplacer par ses paramètres ou de les fusionner. En cas de différences lors de la fusion, la priorité choisie sera utilisée. L’échange commencera après confirmation à la dernière étape de l’assistant.';
 }

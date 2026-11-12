@@ -1,5 +1,6 @@
 import 'settings_section.dart';
 import 'settings_help.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -10,6 +11,39 @@ import '../action_notice.dart';
 import '../rounded_switch_list_tile.dart';
 import 'settings_page_layout.dart';
 
+Map<BackupSyncGroup, String> backupSyncGroupLabels(AppLocalizations l) => {
+  BackupSyncGroup.sections: l.sectionsAndOrder,
+  BackupSyncGroup.homeOptions: l.backupSyncHomeOptions,
+  BackupSyncGroup.continueWatching: l.continueWatching,
+  BackupSyncGroup.topPanel: l.topPanel,
+  BackupSyncGroup.background: l.backupSyncBackground,
+  BackupSyncGroup.tiles: l.backupSyncTiles,
+  BackupSyncGroup.accent: l.accentColor,
+  BackupSyncGroup.animations: l.highlightAndAnimation,
+  BackupSyncGroup.menuLayout: l.settingsMenuPosition,
+  BackupSyncGroup.clockStyle: l.screensaverClockStyle,
+  BackupSyncGroup.weatherSource: l.backupSyncWeatherSource,
+  BackupSyncGroup.weatherDisplay: l.backupSyncWeatherDisplay,
+  BackupSyncGroup.nightMode: l.nightModeTitle,
+  BackupSyncGroup.brightness: l.brightnessScheduler,
+  BackupSyncGroup.notificationSettings: l.backupSyncNotificationSettings,
+  BackupSyncGroup.startup: l.startOnBoot,
+  BackupSyncGroup.language: l.appLanguage,
+  BackupSyncGroup.updates: l.appUpdates,
+  BackupSyncGroup.memory: l.memorySaver,
+  BackupSyncGroup.other: l.backupSyncOther,
+};
+
+Map<BackupSyncSection, String> backupSyncSectionLabels(AppLocalizations l) => {
+  BackupSyncSection.home: l.homeScreen,
+  BackupSyncSection.appearance: l.appearanceSettings,
+  BackupSyncSection.weather: l.weather,
+  BackupSyncSection.display: l.displayAndScreensaver,
+  BackupSyncSection.notifications: l.notifications,
+  BackupSyncSection.controls: l.controlAndStartup,
+  BackupSyncSection.general: l.generalSettings,
+};
+
 class BackupSyncGroupsPage extends StatelessWidget {
   const BackupSyncGroupsPage({super.key});
 
@@ -17,67 +51,44 @@ class BackupSyncGroupsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
     final service = context.watch<BackupAutomationService>();
-    final labels = {
-      BackupSyncGroup.sections: l.sectionsAndOrder,
-      BackupSyncGroup.homeOptions: l.backupSyncHomeOptions,
-      BackupSyncGroup.continueWatching: l.continueWatching,
-      BackupSyncGroup.topPanel: l.topPanel,
-      BackupSyncGroup.background: l.backupSyncBackground,
-      BackupSyncGroup.tiles: l.backupSyncTiles,
-      BackupSyncGroup.accent: l.accentColor,
-      BackupSyncGroup.animations: l.highlightAndAnimation,
-      BackupSyncGroup.menuLayout: l.settingsMenuPosition,
-      BackupSyncGroup.clockStyle: l.screensaverClockStyle,
-      BackupSyncGroup.weatherSource: l.backupSyncWeatherSource,
-      BackupSyncGroup.weatherDisplay: l.backupSyncWeatherDisplay,
-      BackupSyncGroup.nightMode: l.nightModeTitle,
-      BackupSyncGroup.brightness: l.brightnessScheduler,
-      BackupSyncGroup.notificationSettings: l.backupSyncNotificationSettings,
-      BackupSyncGroup.startup: l.startOnBoot,
-      BackupSyncGroup.language: l.appLanguage,
-      BackupSyncGroup.updates: l.appUpdates,
-      BackupSyncGroup.memory: l.memorySaver,
-      BackupSyncGroup.other: l.backupSyncOther,
-    };
-    final headings = {
-      BackupSyncSection.home: l.homeScreen,
-      BackupSyncSection.appearance: l.appearanceSettings,
-      BackupSyncSection.weather: l.weather,
-      BackupSyncSection.display: l.displayAndScreensaver,
-      BackupSyncSection.notifications: l.notifications,
-      BackupSyncSection.controls: l.controlAndStartup,
-      BackupSyncSection.general: l.generalSettings,
-    };
+    final labels = backupSyncGroupLabels(l);
+    final headings = backupSyncSectionLabels(l);
     return SettingsPageLayout(
       title: Text(l.backupSyncSettings),
       child: ListView(
         children: [
-          SettingsHelp(title: l.backupSyncSettings, text: l.backupSyncGroupsHelp),
+          SettingsHelp(
+            title: l.backupSyncSettings,
+            text: l.backupSyncGroupsHelp,
+          ),
           for (final section in backupSyncSections.entries)
-            SettingsSection(key: ValueKey(section.key),
-              title: headings[section.key]!, children: [
-            for (final group in section.value)
-              RoundedSwitchListTile(
-                key: ValueKey(group),
-                autofocus: group == BackupSyncGroup.sections,
-                title: Text(labels[group]!),
-                value: service.syncGroupEnabled(group),
-                busy: service.busy,
-                onChanged: (value) async {
-                  try {
-                    await service.setSyncGroupEnabled(group, value);
-                  } catch (_) {
-                    if (context.mounted) {
-                      showActionNotice(
-                        context,
-                        l.backupSyncGroupsFailed,
-                        error: true,
-                      );
-                    }
-                  }
-                },
-              ),
-          ]),
+            SettingsSection(
+              key: ValueKey(section.key),
+              title: headings[section.key]!,
+              children: [
+                for (final group in section.value)
+                  RoundedSwitchListTile(
+                    key: ValueKey(group),
+                    autofocus: group == BackupSyncGroup.sections,
+                    title: Text(labels[group]!),
+                    value: service.syncGroupEnabled(group),
+                    busy: service.busy,
+                    onChanged: (value) async {
+                      try {
+                        await service.setSyncGroupEnabled(group, value);
+                      } catch (_) {
+                        if (context.mounted) {
+                          showActionNotice(
+                            context,
+                            l.backupSyncGroupsFailed,
+                            error: true,
+                          );
+                        }
+                      }
+                    },
+                  ),
+              ],
+            ),
         ],
       ),
     );

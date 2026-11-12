@@ -117,8 +117,8 @@ void main() {
         'wind_speed_unit': 'ms',
         'timeformat': 'iso8601',
         'forecast_days': '7',
-        'current': 'temperature_2m,apparent_temperature,weather_code,is_day,wind_speed_10m',
-        'daily': 'temperature_2m_max,temperature_2m_min,weather_code,precipitation_probability_max',
+        'current': 'temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,is_day,wind_speed_10m',
+        'daily': 'temperature_2m_max,temperature_2m_min,weather_code,precipitation_probability_max,relative_humidity_2m_mean',
       });
       expect(token, 'fixture-token');
       expect(data.latitude, 50);

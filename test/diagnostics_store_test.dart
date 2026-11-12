@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flauncher/bridge_result.dart';
 import 'package:flauncher/diagnostics_report.dart';
 import 'package:flauncher/diagnostics_store.dart';
+import 'package:flauncher/diagnostics/poster_loads.dart';
 import 'package:flauncher/tv_compatibility_report.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -53,12 +54,18 @@ void main() {
       'error',
       'operation_failed',
     );
+    DiagnosticsStore.instance.posterLoads.start(PosterSource.appChannels,
+        'https://private.example/image?token=secret', packageName: 'example.tv');
     final report = await collectDiagnostics();
     expect(report['schemaVersion'], 3);
     expect(report['reportType'], 'diagnostics');
     expect(((report['installedApplications'] as Map)['applications'] as List).single['packageName'], 'example.tv');
     expect((report['launcherSections'] as Map)['status'], 'unavailable');
     expect(jsonEncode(publicTvCompatibilityReport(report)), isNot(contains('example.tv')));
+    expect((report['posterLoads'] as Map)['active'], hasLength(1));
+    expect(publicTvCompatibilityReport(report).containsKey('posterLoads'), false);
+    expect(jsonEncode(report), isNot(contains('private.example')));
+    expect(jsonEncode(report), isNot(contains('token=secret')));
     expect(report['app'], {'version': '1.2.1', 'build': '99'});
     expect((report['device'] as Map)['model'], '55MCG');
     expect((report['compatibility'] as Map)['status'], 'complete');

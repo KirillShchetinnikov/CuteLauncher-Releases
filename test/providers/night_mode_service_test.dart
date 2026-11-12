@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flauncher/location_coordinates.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -8,6 +9,45 @@ import 'package:flauncher/providers/night_mode_service.dart';
 import 'package:flauncher/settings_import.dart';
 
 void main() {
+  test('night location restores independently saved points and preserves legacy locations', () {
+    const city = NightModeConfiguration(city: 'Москва', latitude: 55.75, longitude: 37.62);
+    final old = city.toJson()..remove('manualLocationInput');
+    final restored = NightModeConfiguration.decode(jsonEncode(old));
+    expect(restored.manualLocationInput, ManualLocationInput.city);
+    final manual = restored.copyWith(manualLocationInput: ManualLocationInput.coordinates);
+    expect(manual.latitude, isNull);
+    final automatic = manual.copyWith(latitude: -33.8, longitude: 151.2)
+        .copyWith(automaticLocation: true, latitude: 48, longitude: 2);
+    final saved = compatibleSettings({nightModeKey: jsonEncode(automatic.toJson())}, {});
+    final fromBackup = NightModeConfiguration.decode(saved[nightModeKey] as String);
+    expect(fromBackup.latitude, 48);
+    expect(fromBackup.longitude, 2);
+    final manualAgain = fromBackup.copyWith(automaticLocation: false);
+    expect(manualAgain.manualLocationInput, ManualLocationInput.coordinates);
+    expect(manualAgain.latitude, -33.8);
+    expect(manualAgain.longitude, 151.2);
+    final cityAgain = manualAgain.copyWith(manualLocationInput: ManualLocationInput.city);
+    expect(cityAgain.latitude, 55.75);
+    expect(cityAgain.longitude, 37.62);
+    expect(cityAgain.city, 'Москва');
+    expect(cityAgain.copyWith(automaticLocation: true).latitude, 48);
+
+    final oldPoint = old..['city'] = '';
+    final point = NightModeConfiguration.decode(jsonEncode(oldPoint));
+    expect(point.manualLocationInput, ManualLocationInput.coordinates);
+    expect(point.latitude, 55.75);
+  });
+  test('a sunset after midnight pairs with the same civil day sunrise', () {
+    final sunset = DateTime(2026, 11, 12, 0, 10);
+    final sunrise = DateTime(2026, 11, 12, 2, 40);
+    const configuration = NightModeConfiguration(solar: true);
+    final days = [
+      {'sunset': sunset.millisecondsSinceEpoch, 'sunrise': sunrise.millisecondsSinceEpoch},
+      {'sunset': 0, 'sunrise': DateTime(2026, 11, 13, 7).millisecondsSinceEpoch},
+    ];
+    expect(configuration.intervals(sunset, solarDays: days), [(sunset, sunrise)]);
+  });
+
   for (final running in [true, false]) {
     testWidgets('unchanged configuration reads status and recovers only a stopped service: running=$running', (tester) async {
       SharedPreferences.setMockInitialValues({nightModeKey: jsonEncode(const NightModeConfiguration(enabled: true).toJson())});

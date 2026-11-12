@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import '../recent_apps_client.dart';
 import '../theme/launcher_style.dart';
 import 'remote_panel.dart';
 import 'recent_apps_access.dart';
+import 'recent_apps_memory.dart';
 import 'settings/settings_panel_style.dart';
 import 'settings/focusable_settings_tile.dart';
 import 'panel_tooltip.dart';
@@ -20,28 +22,114 @@ class RecentAppsPanel extends StatefulWidget {
   State<RecentAppsPanel> createState() => _RecentAppsPanelState();
 }
 
-class _RecentAppsPanelState extends State<RecentAppsPanel> {
+class _RecentAppsPanelState extends State<RecentAppsPanel>
+    with WidgetsBindingObserver {
   final _client = RecentAppsClient();
   final _icons = <String, Future<Uint8List?>>{};
   List<RecentApp> _apps = [];
   bool _busy = true, _failed = false;
   bool _readySent = false;
   int _accessRevision = 0;
+  int _memoryRevision = 0;
+  int? _ramTotal, _ramAvailable;
+  bool _ramLoading = true, _foreground = true;
+  final _memory = <String, RecentAppMemory>{};
+  final _memoryPending = <String>{};
   final _refresh = FocusNode();
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _run('list');
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _memoryRevision++;
+    unawaited(_client.cancelMemory());
     _refresh.dispose();
     super.dispose();
   }
 
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      if (!_foreground) {
+        _foreground = true;
+        if (!_busy) unawaited(_run('list'));
+      }
+    } else if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.hidden ||
+        state == AppLifecycleState.detached) {
+      _foreground = false;
+      _memoryRevision++;
+      unawaited(_client.cancelMemory());
+    }
+  }
+
+  Future<void> _loadMemory() async {
+    if (!_foreground) return;
+    final revision = ++_memoryRevision;
+    bool current() => mounted && _foreground && revision == _memoryRevision;
+    final packages = _apps.map((app) => app.packageName).toList();
+    setState(() {
+      _ramLoading = true;
+      _ramTotal = _ramAvailable = null;
+      _memory.clear();
+      _memoryPending
+        ..clear()
+        ..addAll(packages);
+    });
+    try {
+      final ram = await _client.ram();
+      if (!current()) return;
+      setState(() {
+        _ramTotal = ram['ramTotalBytes'] as int?;
+        _ramAvailable = ram['ramAvailableBytes'] as int?;
+      });
+    } catch (_) {
+      // RAM and task access are independent.
+    } finally {
+      if (current()) setState(() => _ramLoading = false);
+    }
+    final budget = Stopwatch()..start();
+    for (final pkg in packages) {
+      if (!current()) return;
+      if (budget.elapsed >= const Duration(seconds: 10)) break;
+      var memory = const RecentAppMemory.unavailable();
+      try {
+        memory = await _client.memory(pkg);
+      } catch (_) {
+        // Keep other measurements and every task action available.
+      }
+      if (!current()) return;
+      setState(() {
+        _memory[pkg] = memory;
+        _memoryPending.remove(pkg);
+      });
+    }
+    if (current() && _memoryPending.isNotEmpty) {
+      setState(_memoryPending.clear);
+    }
+  }
+
+  String _memoryLabel(BuildContext context, String pkg) {
+    final l = AppLocalizations.of(context)!;
+    if (_memoryPending.contains(pkg)) return l.loading;
+    final memory = _memory[pkg] ?? const RecentAppMemory.unavailable();
+    return switch (memory.status) {
+      RecentAppMemoryStatus.running => l.recentRamApp(
+        recentMemoryBytes(context, memory.bytes!),
+      ),
+      RecentAppMemoryStatus.unloaded => l.recentRamUnloaded,
+      RecentAppMemoryStatus.unavailable => l.recentRamUnavailable,
+    };
+  }
+
   Future<void> _run(String action, [String? pkg]) async {
     if (_busy && _accessRevision > 0) return;
+    _memoryRevision++;
     final previousFocus = FocusManager.instance.primaryFocus;
     setState(() {
       _busy = true;
@@ -67,6 +155,7 @@ class _RecentAppsPanelState extends State<RecentAppsPanel> {
     } finally {
       if (mounted) {
         setState(() => _busy = false);
+        if (action != 'switch' || _failed) unawaited(_loadMemory());
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (!mounted) return;
           if (previousFocus?.context != null &&
@@ -83,6 +172,15 @@ class _RecentAppsPanelState extends State<RecentAppsPanel> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
+    final scrollMemory =
+        MediaQuery.textScalerOf(context).scale(16) > 22 ||
+        MediaQuery.sizeOf(context).height < 480;
+    final memoryHeader = RecentAppsMemory(
+      key: const ValueKey('recent_memory_header'),
+      total: _ramTotal,
+      available: _ramAvailable,
+      loading: _ramLoading,
+    );
     final ready = context.select<NightModeService?, bool>(
       (night) => night == null || night.panelPresentationReady,
     );
@@ -128,6 +226,7 @@ class _RecentAppsPanelState extends State<RecentAppsPanel> {
                               key: const ValueKey('recent_access_header'),
                               revision: _accessRevision,
                             ),
+                            if (!scrollMemory) memoryHeader,
                             if (_busy) const LinearProgressIndicator(),
                             Row(
                               key: const ValueKey('recent_actions'),
@@ -169,6 +268,7 @@ class _RecentAppsPanelState extends State<RecentAppsPanel> {
                                   if (index == 0) {
                                     return Column(
                                       children: [
+                                        if (scrollMemory) memoryHeader,
                                         if (_failed)
                                           Text(
                                             l.recentAppsUnavailable,
@@ -212,6 +312,18 @@ class _RecentAppsPanelState extends State<RecentAppsPanel> {
                                             ),
                                           ),
                                           title: Text(app.name),
+                                          trailing: Text(
+                                            _memoryLabel(
+                                              context,
+                                              app.packageName,
+                                            ),
+                                            key: ValueKey(
+                                              'recent_memory_${app.packageName}',
+                                            ),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyMedium,
+                                          ),
                                           onPressed: () =>
                                               _run('switch', app.packageName),
                                         ),

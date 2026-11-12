@@ -196,6 +196,7 @@ class _BackgroundWeather extends StatelessWidget {
     final showWarnings = context.select<SettingsService, bool>(
       (s) => s.showWeatherWarnings,
     );
+    final missingAsDash = context.select<SettingsService, bool>((s) => s.informationWeather().missingAsDash);
     final l = AppLocalizations.of(context)!;
     final textStyle = appearance.weatherTextStyle(style);
     final warning =
@@ -219,11 +220,12 @@ class _BackgroundWeather extends StatelessWidget {
           if (!format.explicitLayout) ...[icon, const SizedBox(width: 8)],
           WeatherDisplayText(
             [
-              format.format(weather, l, fahrenheit: fahrenheit, warningsAvailable: !stale),
+              format.format(weather, l, fahrenheit: fahrenheit, missingAsDash: missingAsDash, warningsAvailable: !stale),
               ?warning,
             ].join(' • '),
             style: textStyle,
             inlineIcon: icon,
+            alignment: appearance.backgroundInformationAlignment,
             maxWidth: weatherTextMaxWidth(format,
               backgroundScreenWidth: MediaQuery.sizeOf(context).width),
           ),

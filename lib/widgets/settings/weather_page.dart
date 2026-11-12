@@ -2,8 +2,9 @@ import 'settings_information.dart';
 import 'settings_read_only_value.dart';
 import 'settings_section.dart';
 import 'settings_help.dart';
-import '../remote_text_input.dart';
 import 'city_search_dialog.dart';
+import 'manual_location_input.dart';
+import 'settings_text_input_dialog.dart';
 
 import 'package:flauncher/widgets/launcher_dialog.dart';
 
@@ -22,6 +23,7 @@ import '../../l10n/app_localizations.dart';
 import '../../providers/weather_service.dart';
 import '../../document_files.dart';
 import '../../diagnostics_store.dart';
+import '../../location_coordinates.dart';
 import '../../weather_sources.dart';
 import 'focusable_settings_tile.dart';
 import '../../providers/appearance_service.dart';
@@ -58,6 +60,7 @@ class _WeatherPageState extends State<WeatherPage> {
     final appearanceService = context.watch<AppearanceService>();
     final appearance = appearanceService.appearance;
     final names = {
+      WeatherSource.auto: l.homeAuto,
       WeatherSource.breezy: 'Breezy Weather',
       WeatherSource.openMeteo: 'Open-Meteo',
       WeatherSource.customOpenMeteo: l.weatherCustomServer,
@@ -113,8 +116,10 @@ class _WeatherPageState extends State<WeatherPage> {
                 autofocus: true,
                 title: l.weatherSource,
                 value: config.source,
-                busy: service.loading || service.locating || _importing != null,
+                busy: (config.source != WeatherSource.auto && service.loading) ||
+                    service.locating || _importing != null,
                 options: const [
+                  WeatherSource.auto,
                   WeatherSource.openMeteo,
                   WeatherSource.customOpenMeteo,
                   WeatherSource.metNorway,
@@ -124,7 +129,7 @@ class _WeatherPageState extends State<WeatherPage> {
                   WeatherSource.breezy,
                 ],
                 label: (v) => names[v]!,
-                onChanged: (v) => service.configure(config.copyWith(source: v)),
+                onChanged: (v) => service.selectSource(v),
               ),
               if (config.source != WeatherSource.breezy) ...[
                 if (custom) ...[
@@ -215,28 +220,36 @@ class _WeatherPageState extends State<WeatherPage> {
                       busy: service.loading || service.locating,
                       onPressed: () => _automaticLocation(context, service),
                     )
-                  else
-                    FocusableSettingsTile(
-                      valueIcon: Icons.edit_outlined,
-                      trailing: Text(
-                        config.location.isNotEmpty
-                            ? config.location
-                            : l.settingsValueNotSet,
+                  else ...[
+                    ManualLocationInputTile(
+                      value: config.manualLocationInput,
+                      busy: service.loading || service.locating,
+                      onChanged: (input) => service.configure(
+                        service.configuration.copyWith(manualLocationInput: input),
                       ),
-                      title: Text(l.nightCityName),
-                      onPressed: service.loading || service.locating
-                          ? null
-                          : () => _location(context, service),
                     ),
+                    if (config.usesManualCoordinates)
+                      FocusableSettingsTile(
+                        title: Text(l.weatherServerCoordinates),
+                        trailing: Text(locationCoordinatesLabel(l, config.manualCoordinates)),
+                        valueIcon: Icons.edit_outlined,
+                        onPressed: service.loading || service.locating
+                            ? null
+                            : () => _coordinates(context, service),
+                      )
+                    else
+                      FocusableSettingsTile(
+                        valueIcon: Icons.edit_outlined,
+                        trailing: Text(
+                          config.location.isNotEmpty ? config.location : l.settingsValueNotSet,
+                        ),
+                        title: Text(l.nightCityName),
+                        onPressed: service.loading || service.locating
+                            ? null
+                            : () => _location(context, service),
+                      ),
+                  ],
                 ],
-                if (config.source == WeatherSource.gismeteo)
-                  FocusableSettingsTile(
-                    title: Text(l.weatherServerCoordinates),
-                    valueIcon: Icons.edit_outlined,
-                    onPressed: service.loading || service.locating
-                        ? null
-                        : () => _coordinates(context, service),
-                  ),
                 SizedBox(
                   child: service.locating
                       ? const LinearProgressIndicator()
@@ -293,6 +306,12 @@ class _WeatherPageState extends State<WeatherPage> {
                   l.weatherOpenWeatherHint,
                 if (config.source == WeatherSource.yandex) l.weatherYandexHint,
                 switch (config.source) {
+                  WeatherSource.auto => [
+                    automaticWeatherSources.map((source) => names[source]!).join(' → '),
+                    l.weatherMetNorwayCredit,
+                    l.weatherOpenMeteoCredit,
+                    '© Gismeteo',
+                  ].join('\n\n'),
                   WeatherSource.metNorway => l.weatherMetNorwayCredit,
                   WeatherSource.openMeteo => l.weatherOpenMeteoCredit,
                   WeatherSource.customOpenMeteo => l.weatherServerUrlHint,
@@ -337,13 +356,12 @@ class _WeatherPageState extends State<WeatherPage> {
     final l = AppLocalizations.of(context)!;
     final result = await showLauncherDialog<String>(
       context: context,
-      builder: (_) => _WeatherInputDialog(
+      builder: (_) => SettingsTextInputDialog(
         title: l.weatherServerUrl,
         helper: l.weatherServerUrlHint,
         initialValue: service.configuration.server?.toString() ?? '',
         validator: (value) =>
             parseWeatherServer(value) == null ? l.weatherServerUrlHint : null,
-        input: _remoteInput,
         maxLength: 2048,
         keyboardType: TextInputType.url,
       ),
@@ -470,43 +488,16 @@ class _WeatherPageState extends State<WeatherPage> {
     BuildContext context,
     WeatherService service,
   ) async {
-    final l = AppLocalizations.of(context)!;
-    (double, double)? parse(String value) {
-      final parts = value.split(',');
-      if (parts.length != 2) return null;
-      final lat = double.tryParse(parts[0].trim());
-      final lon = double.tryParse(parts[1].trim());
-      if (!WeatherConfiguration(
-        latitude: lat,
-        longitude: lon,
-      ).validCoordinates) {
-        return null;
-      }
-      return (lat!, lon!);
-    }
-
-    final config = service.configuration;
-    final result = await showLauncherDialog<String>(
-      context: context,
-      builder: (_) => _WeatherInputDialog(
-        title: l.weatherServerCoordinates,
-        helper: l.weatherServerCoordinatesHint,
-        initialValue: config.validCoordinates
-            ? '${config.latitude}, ${config.longitude}'
-            : '',
-        validator: (value) =>
-            parse(value) == null ? l.weatherServerCoordinatesHint : null,
-        input: _remoteInput,
-        maxLength: 64,
-      ),
+    final point = await showLocationCoordinatesDialog(
+      context,
+      service.configuration.manualCoordinates,
     );
-    if (result != null && context.mounted) {
-      final (lat, lon) = parse(result)!;
+    if (point != null && context.mounted) {
       await service.configure(
         service.configuration.copyWith(
-          latitude: lat,
-          longitude: lon,
-          locationMode: WeatherLocationMode.automatic,
+          locationMode: WeatherLocationMode.manual,
+          manualLocationInput: ManualLocationInput.coordinates,
+          manualCoordinates: point,
         ),
       );
     }
@@ -520,10 +511,9 @@ class _WeatherPageState extends State<WeatherPage> {
     final l = AppLocalizations.of(context)!;
     final result = await showLauncherDialog<String>(
       context: context,
-      builder: (_) => _WeatherInputDialog(
+      builder: (_) => SettingsTextInputDialog(
         title: l.weatherServerToken,
         helper: l.weatherKeyPrivate,
-        input: _remoteInput,
         secret: true,
         validator: (value) =>
             value.trim().isEmpty || isWeatherBearerToken(value.trim())
@@ -580,6 +570,7 @@ class _WeatherPageState extends State<WeatherPage> {
     if (result != null) {
       final config = service.configuration.copyWith(
         locationMode: WeatherLocationMode.manual,
+        manualLocationInput: ManualLocationInput.city,
         location: result['city'] as String?,
         cityLatitude: (result['latitude'] as num?)?.toDouble(),
         cityLongitude: (result['longitude'] as num?)?.toDouble(),
@@ -602,12 +593,11 @@ class _WeatherPageState extends State<WeatherPage> {
     final l = AppLocalizations.of(context)!;
     final result = await showLauncherDialog<String>(
       context: context,
-      builder: (_) => _WeatherInputDialog(
+      builder: (_) => SettingsTextInputDialog(
         title: source == WeatherSource.openWeather
             ? l.weatherOpenWeatherKey
             : l.weatherApiKey,
         helper: l.weatherKeyPrivate,
-        input: _remoteInput,
         secret: true,
       ),
     );
@@ -621,94 +611,6 @@ class _WeatherPageState extends State<WeatherPage> {
       }
     }
   }
-
-  Widget _remoteInput(TextField field) => RemoteTextInput(child: field);
-}
-
-class _WeatherInputDialog extends StatefulWidget {
-  final String title, helper;
-  final Widget Function(TextField) input;
-  final String initialValue;
-  final String? Function(String)? validator;
-  final bool secret;
-  final int maxLength;
-  final TextInputType? keyboardType;
-  const _WeatherInputDialog({
-    required this.title,
-    required this.helper,
-    required this.input,
-    this.initialValue = '',
-    this.validator,
-    this.secret = false,
-    this.maxLength = 1024,
-    this.keyboardType,
-  });
-  @override
-  State<_WeatherInputDialog> createState() => _WeatherInputDialogState();
-}
-
-class _WeatherInputDialogState extends State<_WeatherInputDialog> {
-  late final controller = TextEditingController(text: widget.initialValue);
-  final okFocus = FocusNode();
-  String? error;
-  @override
-  void dispose() {
-    controller.dispose();
-    okFocus.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) => LauncherAlertDialog(
-    title: Text(widget.title),
-    content: Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        widget.input(
-          TextField(
-            autofocus: true,
-            obscureText: widget.secret,
-            maxLength: widget.maxLength,
-            keyboardType: widget.keyboardType,
-            textDirection: TextDirection.ltr,
-            enableSuggestions: false,
-            autocorrect: false,
-            controller: controller,
-            textInputAction: TextInputAction.done,
-            onEditingComplete: () {
-              SystemChannels.textInput.invokeMethod<void>('TextInput.hide');
-              okFocus.requestFocus();
-            },
-            decoration: InputDecoration(errorText: error, errorMaxLines: 3),
-            onChanged: (_) {
-              if (error != null) setState(() => error = null);
-            },
-          ),
-        ),
-        SettingsHelp(title: widget.title, text: widget.helper),
-      ],
-    ),
-    actions: [
-      LauncherDialogButton(
-        onPressed: () => Navigator.pop(context),
-        child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-      ),
-      LauncherDialogButton(
-        primary: true,
-        focusNode: okFocus,
-        onPressed: () {
-          final message = widget.validator?.call(controller.text);
-          if (message != null) {
-            setState(() => error = message);
-          } else {
-            Navigator.pop(context, controller.text);
-          }
-        },
-        child: Text(MaterialLocalizations.of(context).okButtonLabel),
-      ),
-    ],
-  );
 }
 
 String weatherFailureMessage(

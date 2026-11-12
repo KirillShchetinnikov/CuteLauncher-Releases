@@ -14,18 +14,25 @@ import org.json.JSONObject;
 /** Separate encrypted account/key from WebDAV. Never part of portable backups. */
 final class DriveAccountBridge {
     static void register(Context context, BinaryMessenger messenger, Executor executor) {
-        CloudAccountStore store = new CloudAccountStore(
-            new File(context.getNoBackupFilesDir(), "cloud/drive"), "cutelauncher_drive_account");
-        AtomicLong revision = new AtomicLong();
+        register(context, messenger, executor, false);
+        register(context, messenger, executor, true);
+    }
+    private static void register(Context context, BinaryMessenger messenger, Executor executor, boolean yandex) {
+        java.util.concurrent.ConcurrentHashMap<String, AtomicLong> revisions = new java.util.concurrent.ConcurrentHashMap<>();
         Object lock = new Object();
         Handler main = new Handler(Looper.getMainLooper());
-        new MethodChannel(messenger, "cutelauncher/drive_account").setMethodCallHandler((call, result) -> {
+        new MethodChannel(messenger, (yandex ? "cutelauncher/yandex_account" : "cutelauncher/drive_account")).setMethodCallHandler((call, result) -> {
+            final String profile;
+            try { profile = BackupAccountProfile.id(call.argument("profile")); }
+            catch (Exception invalid) { result.error("invalid_argument", "Invalid profile", null); return; }
+            AtomicLong revision = revisions.computeIfAbsent(profile, ignored -> new AtomicLong());
             if (call.method.equals("invalidate")) { revision.incrementAndGet(); result.success(true); return; }
             if (!java.util.Set.of("read", "save", "disconnect").contains(call.method)) { result.notImplemented(); return; }
             boolean mutation = !call.method.equals("read");
             long expected = mutation ? revision.incrementAndGet() : 0;
             executor.execute(() -> {
                 try {
+                    CloudAccountStore store = BackupAccountProfile.store(context, yandex ? "yandex" : "drive", profile);
                     Object value;
                     synchronized (lock) {
                         if (mutation && expected != revision.get()) throw new IllegalStateException();
@@ -33,10 +40,11 @@ final class DriveAccountBridge {
                             case "save" -> {
                                 String id = call.argument("clientId"), payload = call.argument("payload");
                                 JSONObject data = new JSONObject(payload);
-                                if (data.length() != 3 || data.getString("refreshToken").isEmpty()
-                                    || !data.getString("scope").equals("https://www.googleapis.com/auth/drive.file")) throw new IllegalArgumentException();
+                                if (data.length() != (yandex ? 4 : 3) || data.getString("refreshToken").isEmpty()
+                                    || !data.getString("scope").equals(yandex ? "cloud_api:disk.app_folder" : "https://www.googleapis.com/auth/drive.file")) throw new IllegalArgumentException();
                                 data.getString("clientSecret");
-                                store.save("https://drive.google.com/", id, payload);
+                                if (yandex && !data.getString("connectionId").matches("[a-f0-9]{32}")) throw new IllegalArgumentException();
+                                store.save(yandex ? "https://disk.yandex.ru/" : "https://drive.google.com/", id, payload);
                                 value = true;
                             }
                             case "read" -> {

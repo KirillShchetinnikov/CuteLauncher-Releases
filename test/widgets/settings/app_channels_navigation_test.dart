@@ -2,18 +2,21 @@ import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/models/category.dart';
 import 'package:flauncher/providers/appearance_service.dart';
 import 'package:flauncher/providers/apps_service.dart';
+import 'package:flauncher/providers/launcher_state.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/watch_next_service.dart';
 import 'package:flauncher/widgets/settings/app_channels_appearance_page.dart';
 import 'package:flauncher/widgets/rounded_switch_list_tile.dart';
 import 'package:flauncher/widgets/settings/continue_watching_settings_page.dart';
 import 'package:flauncher/widgets/settings/launcher_section_panel_page.dart';
+import 'package:flauncher/widgets/settings/launcher_sections_panel_page.dart';
 import 'package:flauncher/widgets/settings/settings_panel.dart';
 import 'package:flauncher/widgets/settings/settings_page_layout.dart';
 import 'package:flauncher/widgets/settings/settings_slider_tile.dart';
 import 'package:flauncher/widgets/settings/settings_read_only_value.dart';
 import 'package:flauncher/widgets/settings/settings_choice_tile.dart';
 import 'package:flauncher/widgets/settings/settings_text_tile.dart';
+import 'package:flauncher/widgets/side_panel_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -26,6 +29,138 @@ import '../../mocks.mocks.dart';
 import '../../support/app_channels.dart';
 
 void main() {
+  for (final visible in [false, true]) {
+    testWidgets(
+      'section editor uses Home preview only when visible ($visible)',
+      (tester) async {
+        SharedPreferences.setMockInitialValues({});
+        final prefs = await SharedPreferences.getInstance();
+        final settings = SettingsService(prefs);
+        final appearance = AppearanceService(prefs);
+        final launcher = LauncherState();
+        final group = appChannelsGroup(visible: visible);
+        final apps = _SectionVisibilityApps([fakeCategory(), group]);
+        final watch = MockWatchNextService();
+        when(watch.hasPermission).thenReturn(true);
+        await settings.setShowContinueWatching(visible);
+        addTearDown(settings.dispose);
+        addTearDown(appearance.dispose);
+        addTearDown(launcher.dispose);
+        addTearDown(apps.dispose);
+
+        await tester.pumpWidget(
+          MultiProvider(
+            providers: [
+              ChangeNotifierProvider.value(value: settings),
+              ChangeNotifierProvider.value(value: appearance),
+              ChangeNotifierProvider.value(value: launcher),
+              ChangeNotifierProvider<AppsService>.value(value: apps),
+              ChangeNotifierProvider<WatchNextService>.value(value: watch),
+            ],
+            child: const MaterialApp(
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              home: SettingsPanel(
+                initialRoute: LauncherSectionsPanelPage.routeName,
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        final l = AppLocalizations.of(
+          tester.element(find.byType(LauncherSectionsPanelPage)),
+        )!;
+        final navigator = tester.state<NavigatorState>(
+          find.byType(Navigator).last,
+        );
+        bool? panelOnRight() => tester
+            .widget<SidePanelDialog>(find.byType(SidePanelDialog))
+            .isRightSide;
+
+        for (final (name, id) in [
+          (l.appChannelsTitle, group.id),
+          (l.continueWatching, ContinueWatchingSection.sectionId),
+        ]) {
+          final row = find.text(name);
+          await tester.ensureVisible(row);
+          Focus.of(tester.element(row)).requestFocus();
+          await tester.pumpAndSettle();
+          await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+          await tester.pumpAndSettle();
+          expect(panelOnRight(), visible);
+          expect(launcher.sectionPreviewId, visible ? id : null);
+
+          final appearanceRow = find.text(l.categoryAppearance);
+          await tester.scrollUntilVisible(appearanceRow, 100);
+          await tester.ensureVisible(appearanceRow);
+          await tester.pumpAndSettle();
+          await tester.tap(appearanceRow);
+          await tester.pumpAndSettle();
+          expect(find.byType(AppChannelsAppearancePage), findsOneWidget);
+          expect(panelOnRight(), visible);
+          expect(launcher.sectionPreviewId, visible ? id : null);
+
+          final scrollLabels = find.widgetWithText(
+            RoundedSwitchListTile,
+            l.scrollContentLabels,
+          );
+          await tester.scrollUntilVisible(scrollLabels, 100);
+          await tester.ensureVisible(scrollLabels);
+          Focus.of(tester.element(find.text(l.scrollContentLabels)))
+              .requestFocus();
+          await tester.pumpAndSettle();
+          final enableScrolling = id == group.id;
+          expect(
+            tester.widget<RoundedSwitchListTile>(scrollLabels).value,
+            !enableScrolling,
+          );
+          await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+          await tester.pumpAndSettle();
+          final reloaded = AppearanceService(prefs);
+          addTearDown(reloaded.dispose);
+          expect(
+            reloaded.tilesFor(group.id).scrollContentLabels,
+            enableScrolling,
+          );
+          expect(
+            reloaded
+                .tilesFor(ContinueWatchingSection.sectionId)
+                .scrollContentLabels,
+            enableScrolling,
+          );
+
+          await navigator.maybePop();
+          await tester.pumpAndSettle();
+          if (id == group.id) {
+            final toggle = find.widgetWithText(
+              RoundedSwitchListTile,
+              l.categoryVisible,
+            );
+            await tester.ensureVisible(toggle);
+            Focus.of(tester.element(find.text(l.categoryVisible)))
+                .requestFocus();
+            await tester.pumpAndSettle();
+            final focus = FocusManager.instance.primaryFocus;
+            for (final show in [!visible, visible]) {
+              await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+              await tester.pumpAndSettle();
+              expect(tester.widget<RoundedSwitchListTile>(toggle).value, show);
+              expect(panelOnRight(), show);
+              expect(launcher.sectionPreviewId, show ? id : null);
+              expect(FocusManager.instance.primaryFocus, same(focus));
+            }
+          }
+          await navigator.maybePop();
+          await tester.pumpAndSettle();
+          expect(panelOnRight(), isFalse);
+          expect(launcher.sectionPreviewId, isNull);
+          expect(Focus.of(tester.element(row)).hasFocus, isTrue);
+        }
+        await tester.pumpWidget(const SizedBox());
+      },
+    );
+  }
+
   testWidgets(
     'Watch Next opens the shared feed appearance page from its settings',
     (tester) async {
@@ -223,4 +358,27 @@ void main() {
       },
     );
   }
+}
+
+class _SectionVisibilityApps extends ChangeNotifier implements AppsService {
+  _SectionVisibilityApps(this.categories);
+
+  @override
+  final List<Category> categories;
+
+  @override
+  List<LauncherSection> get launcherSections => List.of(categories);
+
+  @override
+  Future<bool> setCategoryVisible(int id, bool visible) async {
+    categories.singleWhere((category) => category.id == id).visible = visible;
+    notifyListeners();
+    return true;
+  }
+
+  @override
+  Future<void> persistSectionsOrder() async {}
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

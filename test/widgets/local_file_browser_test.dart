@@ -89,7 +89,7 @@ void main() {
         await tester.pumpAndSettle();
         final row = find.widgetWithText(FocusableSettingsTile, 'created.json');
         final height = tester.getSize(row).height;
-        await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+        await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
         await tester.pumpAndSettle();
         expect(tester.getSize(row).height, height);
         expect(find.byType(SingleChildScrollView), findsNothing);
@@ -123,7 +123,7 @@ void main() {
   }
 
   for (final locale in ['ru', 'ar']) {
-    testWidgets('Left only expands clipped names and rechecks width $locale', (
+    testWidgets('Right only expands clipped names and rechecks width $locale', (
       tester,
     ) async {
       const short = 'Фото';
@@ -166,7 +166,7 @@ void main() {
       Focus.of(tester.element(find.text(short))).requestFocus();
       await tester.pumpAndSettle();
       final height = tester.getSize(shortRow).height;
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
       await tester.pumpAndSettle();
       expect(tester.getSize(shortRow).height, height);
       expect(find.byType(SingleChildScrollView), findsNothing);
@@ -174,15 +174,20 @@ void main() {
 
       Focus.of(tester.element(find.text(long))).requestFocus();
       await tester.pumpAndSettle();
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
       await tester.pumpAndSettle();
       expect(find.byType(SingleChildScrollView), findsOneWidget);
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+      await tester.pumpAndSettle();
+      expect(find.byType(SingleChildScrollView), findsNothing);
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+      await tester.pumpAndSettle();
       await tester.pumpWidget(browser(760));
       await tester.pumpAndSettle();
       expect(find.byType(SingleChildScrollView), findsNothing);
       final longRow = find.widgetWithText(FocusableSettingsTile, long);
       final fittedHeight = tester.getSize(longRow).height;
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
       await tester.pumpAndSettle();
       expect(tester.getSize(longRow).height, fittedHeight);
       expect(find.byType(SingleChildScrollView), findsNothing);
@@ -287,7 +292,7 @@ void main() {
     expect(tester.takeException(), isNull);
   });
   testWidgets(
-    'large directory uses lazy focus and confirmation shortcut returns to row',
+    'large directory uses lazy focus and Left at the root stays on the row',
     (tester) async {
       tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
         channel,
@@ -320,24 +325,84 @@ void main() {
             .onPressed,
         isNull,
       );
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
-      await tester.pumpAndSettle();
-      expect(
-        Focus.of(tester.element(find.text('Сохранить').last)).hasFocus,
-        isTrue,
-      );
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
       await tester.pumpAndSettle();
       expect(Focus.of(tester.element(find.text('Folder 0'))).hasFocus, isTrue);
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
-      await tester.pumpAndSettle();
-      expect(find.byType(SingleChildScrollView), findsNothing);
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
-      await tester.pumpAndSettle();
       expect(find.byType(SingleChildScrollView), findsNothing);
       expect(tester.takeException(), isNull);
     },
   );
+  testWidgets('Left restores parent focus and Down reaches confirmation', (
+    tester,
+  ) async {
+    const parent = '/storage';
+    const child = '$parent/Child';
+    const nested = '$child/Nested';
+    const parents = {parent: '', child: parent, nested: child};
+    const folders = {
+      parent: [{'name': 'Child', 'path': child}],
+      child: [{'name': 'Nested', 'path': nested}],
+    };
+    final paths = <String>[];
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, (
+      call,
+    ) async {
+      final path = (call.arguments as Map)['path'] as String;
+      paths.add(path);
+      return {
+        'path': path,
+        'parent': parents[path],
+        'uri': 'file://$path',
+        'folders': folders[path] ?? [],
+        'files': [],
+      };
+    });
+    final navigator = GlobalKey<NavigatorState>();
+    await tester.pumpWidget(
+      MaterialApp(
+        navigatorKey: navigator,
+        locale: const Locale('ru'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: const Scaffold(),
+      ),
+    );
+    final selection = navigator.currentState!.push<String>(
+      MaterialPageRoute(
+        builder: (_) => const Scaffold(
+          body: LocalFileBrowser(initialPath: parent, saveName: 'report.json'),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(Focus.of(tester.element(find.text('Nested'))).hasFocus, isTrue);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+    await tester.pumpAndSettle();
+    expect(Focus.of(tester.element(find.text('Nested'))).hasFocus, isTrue);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+    await tester.pumpAndSettle();
+    expect(paths, [parent, child, nested, child, parent]);
+    expect(Focus.of(tester.element(find.text('Child'))).hasFocus, isTrue);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.pumpAndSettle();
+    final save = find.widgetWithText(FocusableSettingsTile, 'Сохранить');
+    expect(
+      Focus.of(
+        tester.element(
+          find.descendant(of: save, matching: find.text('Сохранить')),
+        ),
+      ).hasFocus,
+      isTrue,
+    );
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(find.byType(LocalFileBrowser), findsNothing);
+    expect(await selection, 'file://$parent');
+  });
   testWidgets(
     'failed folder identifies attempted path and disables confirmation',
     (tester) async {

@@ -38,6 +38,42 @@ class _Cloud extends CloudBackupService {
 }
 
 void main() {
+  testWidgets('SMB page keeps credentials masked and has collapsed SMB help', (
+    tester,
+  ) async {
+    final service = _Cloud();
+    service.account = const CloudAccountInfo(
+      configured: true,
+      url: 'smb://nas/share/backups',
+      user: r'DOMAIN\user',
+    );
+    addTearDown(service.dispose);
+    await tester.pumpWidget(
+      ChangeNotifierProvider<CloudBackupService>.value(
+        value: service,
+        child: const MaterialApp(
+          locale: Locale('ru'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(body: CloudBackupPage(smb: true)),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    final l = AppLocalizations.of(
+      tester.element(find.byType(CloudBackupPage)),
+    )!;
+    expect(find.text('WebDAV / Nextcloud'), findsNothing);
+    expect(find.text(l.smbHelp), findsNothing);
+    expect(find.text(l.cloudUrl), findsNothing);
+    await tester.tap(find.byKey(const ValueKey('cloud-password-button')));
+    await tester.pumpAndSettle();
+    final field = tester.widget<TextField>(
+      find.byKey(const ValueKey('cloud-password')),
+    );
+    expect(field.obscureText, true);
+    expect(tester.takeException(), isNull);
+  });
   for (final language in ['ru', 'en']) {
     testWidgets(
       'WebDAV fields open editors, hide passwords and preserve account after failure $language',

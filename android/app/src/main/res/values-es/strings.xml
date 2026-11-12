@@ -19,4 +19,22 @@
     <string name="remap_error_webhook_http">El webhook rechazó la solicitud (HTTP %1$d).</string>
     <string name="remap_error_webhook_timeout">Se agotó el tiempo de espera del webhook.</string>
     <string name="remap_error_webhook">No se pudo conectar con el webhook.</string>
+    <string name="power_off">Apagar dispositivo</string>
+    <string name="power_reboot">Reiniciar dispositivo</string>
+    <string name="power_off_confirm">¿Poner el dispositivo en modo de espera?</string>
+    <string name="power_reboot_confirm">¿Reiniciar el dispositivo? Se cerrarán las apps abiertas.</string>
+    <string name="screensaver_label">Reloj de CuteLauncher</string>
+    <string name="notification_service_label">Servicio de notificaciones de CuteLauncher</string>
+    <string name="night_mode_title">Modo nocturno</string>
+    <string name="night_mode_notice">Filtro de pantalla activado según la programación</string>
+    <string name="night_mode_stop">Desactivar</string>
+    <string name="recovery_checking">Comprobando el iniciador…</string>
+    <string name="recovery_title">Recuperación del iniciador</string>
+    <string name="recovery_description">CuteLauncher se ha cerrado varias veces. Se conservan los ajustes. Puedes volver a intentarlo, abrir otra aplicación o elegir otra pantalla de inicio. Si el iniciador de fábrica está desactivado, actívalo primero en los ajustes de aplicaciones de Android.</string>
+    <string name="recovery_retry">Volver a iniciar CuteLauncher</string>
+    <string name="recovery_settings">Ajustes de Android</string>
+    <string name="recovery_home">Elegir pantalla de inicio</string>
+    <string name="recovery_unavailable">Esta acción no está disponible en este televisor.</string>
+    <string name="recovery_restore">Restaurar la pantalla de inicio anterior</string>
+    <string name="recovery_restore_confirm">¿Restaurar la pantalla de inicio anterior con la conexión ADB local existente?</string>
 </resources>

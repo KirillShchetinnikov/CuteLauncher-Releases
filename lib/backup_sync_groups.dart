@@ -1,6 +1,8 @@
 import 'information_formats.dart';
+import 'overlay_appearance.dart';
+import 'overlay_position.dart';
 
-/// Portable policy: even when every block is local, this choice is synchronized.
+/// Local subscription; included in packets only to describe their contents.
 const backupSyncGroupsKey = 'backup_sync_disabled_groups';
 
 enum BackupSyncGroup {
@@ -127,9 +129,41 @@ Set<BackupSyncGroup> disabledBackupSyncGroups(Object? value) {
 BackupSyncGroup? backupSyncPartGroup(String part) {
   if (part == 'database') return BackupSyncGroup.sections;
   if (part == 'resources') return BackupSyncGroup.background;
+  if (part.startsWith('appearance:')) {
+    final field = part.substring('appearance:'.length);
+    if (field.startsWith('panelBackground') ||
+        field == 'backgroundInformationAppearance') {
+      return BackupSyncGroup.background;
+    }
+    if (field.startsWith('panel') || field == 'weatherIconPack') {
+      return BackupSyncGroup.topPanel;
+    }
+    if (field.startsWith('settings')) return BackupSyncGroup.menuLayout;
+    if (field.startsWith('notification')) {
+      return BackupSyncGroup.notificationSettings;
+    }
+    if (field.startsWith('section')) return BackupSyncGroup.sections;
+    return BackupSyncGroup.tiles;
+  }
   final key = part.substring('setting:'.length);
+  if (key.startsWith('sync_member_')) return null;
+  if (key.startsWith('native_secret_weather_')) {
+    return BackupSyncGroup.weatherSource;
+  }
+  if (key == 'native_config_vpn_widget') return BackupSyncGroup.topPanel;
+  if (key == 'remote_panel_configuration') return BackupSyncGroup.topPanel;
+  if (key == 'native_config_auto_launch' ||
+      key == 'native_config_background_startup') {
+    return BackupSyncGroup.startup;
+  }
+  if (key == 'native_config_launcher_control' ||
+      key == 'native_config_recent_apps' ||
+      key == 'native_secret_remote_mappings') {
+    return BackupSyncGroup.homeOptions;
+  }
   if (key == backupSyncGroupsKey) return null;
   if (key == sharedInformationDateTimeKey ||
+      key == sharedInformationClockBehaviorKey ||
       key == 'information_panel_datetime' ||
       key == 'information_background_datetime') {
     return BackupSyncGroup.topPanel;
@@ -156,12 +190,15 @@ BackupSyncGroup? backupSyncPartGroup(String part) {
   if (key == 'app_language') return BackupSyncGroup.language;
   if (key == 'memory_saver_enabled') return BackupSyncGroup.memory;
   if (key == 'start_on_boot') return BackupSyncGroup.startup;
-  if (key == 'tile_appearance' || key == 'app_banner_shape' ||
-      key == sharedInformationClockBehaviorKey) {
+  if (key == 'tile_appearance' || key == 'app_banner_shape') {
     return BackupSyncGroup.tiles;
   }
   if (key == 'accent_color') return BackupSyncGroup.accent;
-  if (key == 'settings_menu_on_right' || key == 'app_key_click_enabled' || key == 'panel_tooltips_enabled') return BackupSyncGroup.menuLayout;
+  if (key == 'settings_menu_on_right' ||
+      key == 'app_key_click_enabled' ||
+      key == 'panel_tooltips_enabled') {
+    return BackupSyncGroup.menuLayout;
+  }
   if (const {
     'app_highlight_animation_enabled',
     'hide_highlight_outline_on_homescreen',
@@ -180,7 +217,9 @@ BackupSyncGroup? backupSyncPartGroup(String part) {
       }.contains(key)) {
     return BackupSyncGroup.background;
   }
-  if (key == 'category_appearance' || key.startsWith('tv_apps_section_')) {
+  if (key == 'category_appearance' ||
+      key == 'app_channel_card_limit' ||
+      key.startsWith('tv_apps_section_')) {
     return BackupSyncGroup.sections;
   }
   if (key.startsWith('continue_watching_') ||
@@ -200,6 +239,9 @@ BackupSyncGroup? backupSyncPartGroup(String part) {
     'show_network_indicator_in_status_bar',
     'show_vpn_in_status_bar',
     'show_volume_in_status_bar',
+    'show_volume_overlay',
+    volumeOverlayPositionKey,
+    volumeOverlayAppearanceKey,
     'volume_update_interval',
     'show_nas_in_status_bar',
     'show_usb_in_status_bar',

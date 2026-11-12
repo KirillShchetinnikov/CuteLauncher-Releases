@@ -43,6 +43,7 @@ class _TvPowerPageState extends State<TvPowerPage> {
             ),
             LauncherDialogButton(
               primary: true,
+              danger: true,
               onPressed: () => Navigator.pop(dialog, true),
               child: Text(reboot ? l.tvPowerReboot : l.tvPowerOff),
             ),

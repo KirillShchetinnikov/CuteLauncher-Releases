@@ -2,7 +2,6 @@
 <resources>
     <string name="screensaver_label">Часы CuteLauncher</string>
     <string name="notification_service_label">CuteLauncher: доступ к уведомлениям</string>
-    <string name="accessibility_service_label">CuteLauncher</string>
 <string name="night_mode_title">Ночной режим</string><string name="night_mode_notice">Фильтр экрана включён; учитывается расписание</string><string name="night_mode_stop">Выключить</string>
     <string name="recovery_checking">Проверка лаунчера…</string>
     <string name="recovery_title">Восстановление лаунчера</string>
@@ -32,4 +31,8 @@
     <string name="remap_error_webhook_http">Webhook отклонил запрос (HTTP %1$d).</string>
     <string name="remap_error_webhook_timeout">Истекло время ожидания ответа webhook.</string>
     <string name="remap_error_webhook">Не удалось подключиться к webhook.</string>
+    <string name="power_off">Выключить устройство</string>
+    <string name="power_reboot">Перезагрузить устройство</string>
+    <string name="power_off_confirm">Перевести устройство в режим ожидания?</string>
+    <string name="power_reboot_confirm">Перезагрузить устройство? Открытые приложения будут закрыты.</string>
 </resources>

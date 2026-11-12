@@ -2,10 +2,15 @@ package com.leanbitlab.ltvL;
 
 import android.accessibilityservice.AccessibilityService;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.view.KeyEvent;
+import androidx.annotation.NonNull;
 
 public class LauncherAccessibilityService extends AccessibilityService {
     private RemoteButtonRemapper remapper;
+    private VolumeOverlay volumeOverlay;
+    private SleepTimerOverlay sleepTimerOverlay;
+    private OverlayReadoutLayout readoutLayout;
     private VolumeKeyFilterPause volumePause;
     private VolumeKeyRepeater volumeRepeater;
     private int volumeWindowId = -1;
@@ -92,12 +97,70 @@ public class LauncherAccessibilityService extends AccessibilityService {
             if (audio != null) audio.adjustSuggestedStreamVolume(direction, android.media.AudioManager.USE_DEFAULT_STREAM_TYPE,
                 android.media.AudioManager.FLAG_SHOW_UI);
         });
+        closeOverlays();
         if (remapper != null) remapper.close();
         remapper = new RemoteButtonRemapper(this);
+        readoutLayout = new OverlayReadoutLayout(this);
+        volumeOverlay = new VolumeOverlay(this, this::readoutsBlocked, readoutLayout.volume);
+        sleepTimerOverlay = new SleepTimerOverlay(this, this::readoutsBlocked, readoutLayout.timer);
         RemoteButtonsBridge.serviceChanged();
     }
+
+    static void launcherVisibilityChanged(boolean visible) {
+        var service = active.get();
+        if (service == null) return;
+        if (visible) service.hideVolumeOverlay();
+        service.refreshSleepTimerOverlay();
+    }
+
+    static void overlayAnchorsChanged() {
+        var service = active.get();
+        if (service != null && service.readoutLayout != null) service.readoutLayout.refresh();
+    }
+
+    static void overlayPanelStyleChanged(@NonNull OverlayPanelStyle style) {
+        var service = active.get();
+        if (service != null && service.readoutLayout != null) service.readoutLayout.setPanelStyle(style);
+    }
+
+    @Override public void onConfigurationChanged(@NonNull Configuration configuration) {
+        super.onConfigurationChanged(configuration);
+        if (readoutLayout != null) readoutLayout.configurationChanged();
+    }
+
+    void hideVolumeOverlay() {
+        if (volumeOverlay != null) volumeOverlay.hide();
+    }
+
+    private boolean blackScreenVisible() { return remapper != null && remapper.blackScreenVisible(); }
+
+    private boolean readoutsBlocked() {
+        return MainActivity.remotePanelPolicy.launcherVisible() || blackScreenVisible();
+    }
+
+    void blackScreenVisibilityChanged() {
+        refreshSleepTimerOverlay();
+    }
+
+    private void refreshSleepTimerOverlay() {
+        if (sleepTimerOverlay != null) sleepTimerOverlay.refresh();
+    }
+
+    private void closeOverlays() {
+        if (readoutLayout != null) { readoutLayout.close(); readoutLayout = null; }
+        if (volumeOverlay != null) { volumeOverlay.close(); volumeOverlay = null; }
+        if (sleepTimerOverlay != null) { sleepTimerOverlay.close(); sleepTimerOverlay = null; }
+    }
+
+    @Override public boolean onUnbind(@NonNull Intent intent) {
+        closeOverlays();
+        if (remapper != null) remapper.cancelPowerConfirmation();
+        return super.onUnbind(intent);
+    }
+
     static boolean connected() { return active.get() != null; }
     @Override public void onDestroy() {
+        closeOverlays();
         if (volumePause != null) { volumePause.close(); volumePause = null; }
         if (volumeRepeater != null) { volumeRepeater.close(); volumeRepeater = null; }
         systemPackages.clear();
@@ -140,11 +203,18 @@ public class LauncherAccessibilityService extends AccessibilityService {
         if (volumeRepeater != null && volumeRepeater.event(event)) return true;
         if (volumePause != null && volumePause.paused()) return false;
         RemoteButtonsBridge.observe(event);
-        if (remapper != null && remapper.dismissBlackScreenOnBack(event)) return true;
-        if (recents != null && recents.event(event)) return true;
-        if (panel != null && panel.event(event)) return true;
-        if (remapper != null && remapper.event(event)) return true;
-        if (RemoteButtonLearning.event(event)) return true;
+        if (remapper != null && remapper.confirmingPower()) {
+            if (remapper.event(event)) return true;
+            // Let the dialog receive Back and D-pad, even over an open launcher panel.
+            if (event.getKeyCode() != KeyEvent.KEYCODE_HOME) return false;
+            remapper.cancelPowerConfirmation();
+        } else {
+            if (remapper != null && remapper.dismissBlackScreenOnBack(event)) return true;
+            if (recents != null && recents.event(event)) return true;
+            if (panel != null && panel.event(event)) return true;
+            if (remapper != null && remapper.event(event)) return true;
+            if (RemoteButtonLearning.event(event)) return true;
+        }
         if (getSharedPreferences("launcher_control", MODE_PRIVATE).getBoolean("override_home", true)
                 && event.getKeyCode() == KeyEvent.KEYCODE_HOME) {
             if (event.getAction() == KeyEvent.ACTION_DOWN) {

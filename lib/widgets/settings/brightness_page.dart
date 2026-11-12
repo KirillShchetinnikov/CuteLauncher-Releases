@@ -1,6 +1,5 @@
 import 'settings_information.dart';
 import 'settings_section.dart';
-import 'settings_value_stepper.dart';
 import 'settings_slider_tile.dart';
 import 'adb_permission_tile.dart';
 import 'settings_page_layout.dart';
@@ -12,6 +11,8 @@ import 'package:flauncher/providers/brightness_service.dart';
 import 'package:flauncher/widgets/rounded_switch_list_tile.dart';
 
 import 'focusable_settings_tile.dart';
+
+const _brightnessLevels = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
 
 class BrightnessPage extends StatefulWidget {
   static const routeName = 'brightness_panel';
@@ -115,17 +116,17 @@ class _BrightnessPageState extends State<BrightnessPage>
             children: [
               if (service.solarEnabled) ...[
                 for (final sunrise in [true, false])
-                  SettingsValueStepper(
+                  SettingsSliderTile(
                     title: sunrise
                         ? l.brightnessAfterNightEnd
                         : l.brightnessAfterNightStart,
                     value: sunrise
                         ? service.sunriseBrightness
                         : service.sunsetBrightness,
-                    options: [for (var i = 0; i <= 100; i += 5) i],
+                    options: _brightnessLevels,
                     label: (v) => '$v%',
                     onChanged: (v) =>
-                        service.setSolarBrightness(sunrise, v as int),
+                        service.setSolarBrightness(sunrise, v.toInt()),
                   ),
                 if (!service.solarAvailable)
                   SettingsMessage(
@@ -134,13 +135,13 @@ class _BrightnessPageState extends State<BrightnessPage>
                   ),
               ] else
                 for (final slot in TimeSlot.values)
-                  SettingsValueStepper(
+                  SettingsSliderTile(
                     title: _hours(slot),
                     value: service.getBrightnessForSlot(slot),
-                    options: const [10, 20, 40, 50, 60, 80, 100],
+                    options: _brightnessLevels,
                     label: (v) => '$v%',
                     onChanged: (v) =>
-                        service.setBrightnessForSlot(slot, v as int),
+                        service.setBrightnessForSlot(slot, v.toInt()),
                   ),
             ],
           ),

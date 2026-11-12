@@ -127,7 +127,7 @@ void main() {
     expect(event['errorDetails'], contains('Permission denied'));
   });
 
-  test('production method channels are journaled except the secret store and crash bootstrap', () {
+  test('production method channels are journaled except private data and crash bootstrap', () {
     final pattern = RegExp(r'''(BridgeChannel|MethodChannel)\(\s*['"]([^'"]+)['"]''');
     final store = DiagnosticsStore();
     for (final file in Directory('lib').listSync(recursive: true).whereType<File>().where((f) => f.path.endsWith('.dart'))) {
@@ -135,9 +135,12 @@ void main() {
       for (final match in pattern.allMatches(file.readAsStringSync())) {
         final name = match[2]!;
         if (name == 'cutelauncher/crash_guard') continue; // Crash-safe bootstrap, before Flutter.
-        if (name == 'cutelauncher/weather_token') {
-          // Raw secret-store payloads deliberately bypass bridge diagnostics.
+        if (name == 'cutelauncher/weather_token' || name == 'cutelauncher/native_sync') {
+          // Secret-store and backup-encryption arguments bypass bridge diagnostics.
           expect(match[1], 'MethodChannel', reason: '${file.path}: $name');
+          store.clear();
+          store.record(name, 'snapshot', 'error', 'unavailable');
+          expect(store.snapshot()['failures'], isEmpty, reason: '${file.path}: $name');
           continue;
         }
         store.clear();
@@ -149,7 +152,7 @@ void main() {
 
   test('weather secret store cannot record payloads or failures in diagnostics', () {
     final store = DiagnosticsStore();
-    final before = jsonEncode(store.snapshot());
+    final before = store.snapshot()..remove('sessionElapsedMs');
     for (final method in ['has', 'save', 'read']) {
       for (final status in ['success', 'error']) {
         store.record('cutelauncher/weather_token', method, status, 'unavailable', context: {
@@ -160,6 +163,6 @@ void main() {
         });
       }
     }
-    expect(jsonEncode(store.snapshot()), before);
+    expect(store.snapshot()..remove('sessionElapsedMs'), before);
   });
 }

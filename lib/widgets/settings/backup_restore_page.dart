@@ -1,7 +1,8 @@
 import 'package:flauncher/widgets/launcher_dialog.dart';
 import 'package:flauncher/widgets/action_notice.dart';
 
-import 'automatic_backup_page.dart';
+import 'backup_feature_page.dart';
+import '../../providers/backup_automation_service.dart';
 
 import 'backup_restore_actions.dart';
 import 'settings_page_layout.dart';
@@ -55,10 +56,18 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
           children: [
             FocusableSettingsTile(
               leading: const Icon(Icons.backup_outlined),
-              title: Text(localizations.automaticBackups),
+              title: Text(localizations.backupSaveMode),
+              busy: _busy,
               onPressed: () =>
-                  Navigator.of(context)
-                      .pushNamed(AutomaticBackupPage.routeName),
+                  _run(() => openBackupFeature(context, BackupMode.backup)),
+            ),
+            FocusableSettingsTile(
+              leading: const Icon(Icons.sync),
+              title: Text(localizations.backupSyncMode),
+              busy: _busy,
+              onPressed: () => _run(
+                () => openBackupFeature(context, BackupMode.synchronization),
+              ),
             ),
             FocusableSettingsTile(
               autofocus: true,

@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flauncher/city_search.dart';
 import 'package:flauncher/widgets/settings/city_search_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -198,16 +199,25 @@ void main() {
     const night = MethodChannel('cutelauncher/night');
     tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(night,
         (call) async {
-      if (call.method == 'cities') {
-        return [
-          {'city': 'Москва, Россия', 'latitude': 55.75, 'longitude': 37.61}
-        ];
-      }
       return {'permission': false, 'solarLoading': false};
     });
     addTearDown(() => tester.binding.defaultBinaryMessenger
         .setMockMethodCallHandler(night, null));
-    final service = NightModeService(await SharedPreferences.getInstance());
+    final cityRequests = <Uri>[];
+    final service = NightModeService(
+      await SharedPreferences.getInstance(),
+      citySearch: CitySearch(
+        loadCatalog: () async => 'Moscow\tМосква\tMoscow\tRussia\tRU\t55.75\t37.61\tMoskva',
+        request: (uri) async {
+          cityRequests.add(uri);
+          return {'geonames': [
+            {'name': 'Териберка', 'adminName1': 'Мурманская область',
+              'countryName': 'Россия', 'lat': '69.16088', 'lng': '35.14527'},
+          ]};
+        },
+        username: 'test',
+      ),
+    );
     await tester.pumpWidget(ChangeNotifierProvider.value(
         value: service,
         child: const MaterialApp(
@@ -258,9 +268,9 @@ void main() {
     await tester.tap(find.text('Название города'));
     await tester.pumpAndSettle();
     expect(tester.widget<TextField>(find.byType(TextField)).decoration!.hintText, isNull);
-    expect(find.text('Введите название города по-английски'), findsNothing);
+    expect(find.text(AppLocalizations.of(tester.element(find.byType(CitySearchDialog)))!.nightCitySearchHint), findsNothing);
     expect(find.descendant(of: find.byType(CitySearchDialog), matching: find.text('Местоположение')), findsOneWidget);
-    await tester.enterText(find.byType(TextField), 'Moscow');
+    await tester.enterText(find.byType(TextField), 'Москва');
     tester.testTextInput.hide();
     await tester.sendKeyEvent(LogicalKeyboardKey.select);
     await tester.pump();
@@ -272,6 +282,52 @@ void main() {
     expect(service.configuration.latitude, 55.75);
     expect(service.configuration.longitude, 37.61);
     expect(service.configuration.city, 'Москва, Россия');
+    expect(cityRequests, isEmpty);
+
+    await tester.tap(find.text('Название города'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField), 'Териберка');
+    await tester.testTextInput.receiveAction(TextInputAction.search);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Териберка, Мурманская область, Россия'));
+    await tester.pumpAndSettle();
+    expect(cityRequests.single.queryParameters['name'], 'Териберка');
+    expect(service.configuration.latitude, 69.16088);
+    expect(service.configuration.longitude, 35.14527);
+    await reveal(tester, 'Способ ввода');
+    await tester.tap(find.text('Способ ввода'));
+    await tester.pumpAndSettle();
+    final dialog = find.byType(AlertDialog);
+    await tester.tap(find.descendant(of: dialog, matching: find.text('Координаты')));
+    await tester.pumpAndSettle();
+    expect(find.text('Название города'), findsNothing);
+    await reveal(tester, 'Ввести координаты');
+    await tester.tap(find.text('Ввести координаты'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField), '48.1, 2.3');
+    await tester.tap(find.descendant(of: dialog, matching: find.text('ОК')));
+    await tester.pumpAndSettle();
+    expect(service.configuration.latitude, 48.1);
+    expect(service.configuration.longitude, 2.3);
+    await reveal(tester, 'Способ ввода');
+    await tester.tap(find.text('Способ ввода'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.descendant(of: dialog, matching: find.text('Город')));
+    await tester.pumpAndSettle();
+    expect(find.text('Ввести координаты'), findsNothing);
+    expect(service.configuration.latitude, 69.16088);
+    expect(service.configuration.longitude, 35.14527);
+    const launcher = MethodChannel('me.efesser.flauncher/method');
+    final openedUrls = <String>[];
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(launcher, (call) async {
+      if (call.method == 'openUrl') openedUrls.add(call.arguments as String);
+      return true;
+    });
+    addTearDown(() => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(launcher, null));
+    await reveal(tester, 'Sunrise-Sunset.org');
+    await tester.tap(find.text('Sunrise-Sunset.org'));
+    await tester.pumpAndSettle();
+    expect(openedUrls, ['https://sunrise-sunset.org/']);
     service.dispose();
   });
   testWidgets('one TCL switch links the filter without enabling night mode',

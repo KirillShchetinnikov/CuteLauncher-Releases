@@ -18,6 +18,15 @@ void main() {
     currentConditionCode: 803,
   );
 
+  test('keyboard punctuation survives parsing, storage and rendering', () {
+    const symbols = '() [] / : ; + − ° % · ! ? = _ & @ # \$ " \' \\ 🌤';
+    final parsed = parseWeatherTemplate('{TEMP} $symbols {{x}}');
+    expect(parsed.issues, isEmpty);
+    final saved = WeatherTextFormat.tryDecode(parsed.format!.encode())!;
+    expect(saved.format(weather, l, fahrenheit: false), '30°C $symbols {x}');
+    expect(parseWeatherTemplate(weatherFormatTemplate(saved, russian: true)).format!.encode(), saved.encode());
+  });
+
   test(
     'renders free text, temperatures, one break and an inline condition icon',
     () {

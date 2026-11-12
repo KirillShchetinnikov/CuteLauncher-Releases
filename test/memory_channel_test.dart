@@ -4,12 +4,31 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  test('process memory preserves unavailable metrics and Android byte values', () async {
-    const channel = MethodChannel('me.efesser.flauncher/method');
-    final messenger = TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
-    messenger.setMockMethodCallHandler(channel, (_) async => {'pssBytes': 1024, 'rssBytes': null});
-    try {
-      expect(await FLauncherChannel().getProcessMemoryUsage(), {'pssBytes': 1024, 'rssBytes': null});
-    } finally { messenger.setMockMethodCallHandler(channel, null); }
-  });
+  test(
+    'process memory preserves unavailable metrics and Android byte values',
+    () async {
+      const channel = MethodChannel('me.efesser.flauncher/method');
+      final messenger =
+          TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+      final methods = <String>[];
+      messenger.setMockMethodCallHandler(channel, (call) async {
+        methods.add(call.method);
+        if (call.method != 'getProcessMemoryUsage') {
+          throw StateError(
+            'Unexpected external or ADB request: ${call.method}',
+          );
+        }
+        return {'pssBytes': 1024, 'rssBytes': null};
+      });
+      try {
+        expect(await FLauncherChannel().getProcessMemoryUsage(), {
+          'pssBytes': 1024,
+          'rssBytes': null,
+        });
+        expect(methods, ['getProcessMemoryUsage']);
+      } finally {
+        messenger.setMockMethodCallHandler(channel, null);
+      }
+    },
+  );
 }

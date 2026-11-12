@@ -83,7 +83,15 @@ final class RemotePanelChannels implements AutoCloseable {
                     case "openAppNotificationSettings" -> result.success(notifications.openAppNotificationSettings());
                     case "dismissNotification" -> result.success(notifications.dismissNotification(call.argument("key")));
                     case "dismissAllNotifications" -> result.success(notifications.dismissAllNotifications());
-                    case "setNotificationPopupPresentation" -> { LauncherNotificationListenerService.setPresentation(context, call.arguments()); result.success(null); }
+                    case "setNotificationPopupPresentation" -> main.post(() -> {
+                        if (closed) return;
+                        try {
+                            LauncherNotificationListenerService.setPresentation(context, call.arguments());
+                            result.success(null);
+                        } catch (RuntimeException error) {
+                            result.error("unavailable", "Operation unavailable", DiagnosticErrorDetails.from(error));
+                        }
+                    });
                     case "getLatestWeatherData" -> result.success(weather.getString(WeatherReceiver.KEY_WEATHER_JSON, null));
                     case "getPackageName" -> result.success(context.getPackageName());
                     case "checkOverlayPermission" -> result.success(OverlayPermission.granted(context));

@@ -10,6 +10,9 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
+  String get scrollContentLabels => 'تمرير التسميات الطويلة في الصفوف';
+
+  @override
   String get contentAppTileStyle => 'مصدر المظهر';
 
   @override
@@ -911,6 +914,71 @@ class AppLocalizationsAr extends AppLocalizations {
       'هذه الصورة تالفة أو كبيرة جدًا (بحد أقصى 8 MiB و48 ميجابكسل). اختر صورة أخرى.';
 
   @override
+  String get memoryAdvanced => 'التشخيص المتقدم';
+
+  @override
+  String get memoryLauncherTitle => 'ذاكرة CuteLauncher';
+
+  @override
+  String get memoryUsage => 'استخدام الذاكرة';
+
+  @override
+  String memoryChange(String delta) {
+    return '$delta مقارنة بالقياس السابق';
+  }
+
+  @override
+  String get memoryCacheFiles => 'ملفات الصور في الذاكرة';
+
+  @override
+  String memoryCacheEntries(int count) {
+    return 'العناصر: $count';
+  }
+
+  @override
+  String memoryCacheResult(String before, String after) {
+    return 'ذاكرة الصور المؤقتة: $before → $after';
+  }
+
+  @override
+  String get memoryStale => 'تعذّر التحديث. يتم عرض القياس السابق.';
+
+  @override
+  String get memoryTechnical => 'التفاصيل التقنية';
+
+  @override
+  String get memoryObserve => 'مراقبة الذاكرة';
+
+  @override
+  String get memoryObserveStart => 'المراقبة لمدة دقيقة';
+
+  @override
+  String get memoryObserveStop => 'إيقاف المراقبة';
+
+  @override
+  String get memoryObserveRunning => 'جارٍ التسجيل · حتى دقيقة واحدة';
+
+  @override
+  String get memoryObserveFinished => 'توقف التسجيل';
+
+  @override
+  String get memoryObserveEmpty => 'لا توجد قياسات مسجلة';
+
+  @override
+  String memorySeconds(int seconds) {
+    return '$seconds ث';
+  }
+
+  @override
+  String get memoryReadingHelp => 'فهم القياسات';
+
+  @override
+  String get memorySaverHelp => 'تأثير توفير الذاكرة';
+
+  @override
+  String get memorySaveFailed => 'تعذّر حفظ وضع توفير الذاكرة. حاول مرة أخرى.';
+
+  @override
   String get memoryTitle => 'الذاكرة';
 
   @override
@@ -1649,7 +1717,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get weatherCoordinatesError =>
-      'أدخل المدينة يدويًا أو احصل على الإحداثيات تلقائيًا.';
+      'اختر مدينة أو أدخل الإحداثيات أو حدّد الموقع تلقائيًا.';
 
   @override
   String get weatherRefresh => 'تحديث الطقس';
@@ -1967,7 +2035,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get nightCityHint =>
-      'اختر مدينتك بدلاً من منح الوصول إلى الموقع. يتم إرسال الإحداثيات المحددة إلى Sunrise-Sunset.org، أو Open-Meteo كبديل، لاسترداد أوقات الشمس.';
+      'اختر مدينتك بدلاً من منح الوصول إلى الموقع. يتم إرسال الإحداثيات المحددة إلى Sunrise-Sunset.org، أو GeoNames كبديل، لاسترداد أوقات الشمس.';
 
   @override
   String get nightResumeSchedule => 'العودة إلى الجدول الزمني';
@@ -2013,7 +2081,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get nightSolarAttribution =>
-      'أوقات الشمس اليومية: Sunrise-Sunset.org؛ الاحتياطي: Open-Meteo. البحث عن المدينة: الأسماء الجغرافية. يتم تخزين عدة أيام مؤقتًا للاستخدام دون اتصال.';
+      'تُجلب أوقات الشروق والغروب من Sunrise-Sunset.org، ويُستخدم GeoNames عند تعذر ذلك. عند انقطاع الإنترنت تُحسب الأوقات الناقصة على التلفزيون.';
 
   @override
   String get nightTemporaryOn => 'يتم التعتيم مؤقتًا حتى';
@@ -2942,7 +3010,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get weatherCityNotFound =>
-      'لم يتم العثور على المدينة. التحقق من اسم المدينة باللغة الإنجليزية.';
+      'تعذر تحديد المدينة. اختر مدينة في إعدادات الموقع.';
 
   @override
   String get weatherLocationAutomatic => 'احصل تلقائيا';
@@ -2953,6 +3021,15 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get weatherLocationManual => 'أدخل يدويا';
+
+  @override
+  String get manualLocationInput => 'طريقة الإدخال';
+
+  @override
+  String get manualLocationCity => 'المدينة';
+
+  @override
+  String get manualLocationCoordinates => 'الإحداثيات';
 
   @override
   String get weatherLocationPermissionDenied =>
@@ -2985,7 +3062,8 @@ class AppLocalizationsAr extends AppLocalizations {
       'الموقع غير متاح. تحقق من إعدادات الأذونات وموقع النظام.';
 
   @override
-  String get nightCityEnglish => 'أدخل اسم المدينة باللغة الإنجليزية';
+  String get nightCitySearchHint =>
+      'أدخل اسم المدينة. يمكنك إضافة المنطقة أو البلد بعد فاصلة.';
 
   @override
   String get nightOverlayBrief => 'السماح للمرشح بالظهور فوق التطبيقات الأخرى.';
@@ -3133,7 +3211,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get backupSyncGroupsHelp =>
-      'تبقى الكتل المعطلة محلية على هذا التلفزيون. تتم مزامنة اختيار الكتلة بين الأجهزة.';
+      'تبقى الكتل المعطلة على هذا التلفاز. اختر كتل المزامنة لكل جهاز على حدة.';
 
   @override
   String get backupSyncGroupsFailed =>
@@ -4104,17 +4182,27 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tvPowerTitle => 'إدارة الطاقة';
 
   @override
-  String get tvPowerOff => 'إيقاف التلفاز';
+  String remotePowerWithConfirmation(String action) {
+    return '$action (مع التأكيد)';
+  }
 
   @override
-  String get tvPowerReboot => 'إعادة تشغيل التلفاز';
+  String remotePowerWithoutConfirmation(String action) {
+    return '$action (دون تأكيد)';
+  }
 
   @override
-  String get tvPowerOffConfirm => 'وضع التلفاز في الاستعداد؟';
+  String get tvPowerOff => 'إيقاف الجهاز';
+
+  @override
+  String get tvPowerReboot => 'إعادة تشغيل الجهاز';
+
+  @override
+  String get tvPowerOffConfirm => 'وضع الجهاز في وضع الاستعداد؟';
 
   @override
   String get tvPowerRebootConfirm =>
-      'إعادة التشغيل؟ سيتم إغلاق التطبيقات المفتوحة.';
+      'إعادة تشغيل الجهاز؟ سيتم إغلاق التطبيقات المفتوحة.';
 
   @override
   String get tvPowerSent => 'تم إرسال الأمر';
@@ -4253,6 +4341,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get sleepTimerShowSeconds => 'إظهار الثواني';
 
   @override
+  String get sleepTimerShowOverApps => 'إظهار المؤقت فوق التطبيقات';
+
+  @override
+  String get sleepTimerOverlayHelp =>
+      'فعّل خدمة تسهيل الاستخدام في CuteLauncher لإظهاره فوق التطبيقات.';
+
+  @override
   String get sleepTimerCloseAfterSelection => 'إغلاق الأداة بعد اختيار المؤقت';
 
   @override
@@ -4366,6 +4461,21 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get noticeTopLeft => 'أعلى اليسار';
+
+  @override
+  String get overlayAppearance => 'المظهر فوق التطبيقات';
+
+  @override
+  String get overlayAppearanceTopPanel => 'مثل الشريط العلوي';
+
+  @override
+  String get overlayAppearanceDark => 'داكن';
+
+  @override
+  String get overlayWhereToShow => 'مكان العرض';
+
+  @override
+  String get overlayAtPanelWidget => 'في موضع الأداة في الشريط العلوي';
 
   @override
   String get notificationOpenFailed =>
@@ -4667,7 +4777,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get weatherTextHelp =>
-      'أدخل النص والاختصارات بين أقواس معقوفة أو أدرجها عند المؤشر بالأزرار. لا فرق بين الأحرف الكبيرة والصغيرة. تختفي الأقواس العادية حول قيمة عند غياب بياناتها. كرر الأقواس المعقوفة لعرضها كنص. يسمح بفاصل سطر واحد.';
+      'أدخل النص والاختصارات بين أقواس معقوفة أو أدرجها عند المؤشر بالأزرار. لا فرق بين الأحرف الكبيرة والصغيرة. تختفي الأقواس العادية حول قيمة عند غياب بياناتها. كرر الأقواس المعقوفة لعرضها كنص. يسمح بفاصل سطر واحد. يمكن إدخال الحروف والأرقام والمسافات وأي رموز قابلة للطباعة، مثل: () [] / : ; + − ° % ·.';
 
   @override
   String get weatherTextSaveError => 'تعذّر حفظ تنسيق نص الطقس.';
@@ -4943,10 +5053,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get fileBrowserPartial => 'يُعرض جزء من محتويات المجلد فقط';
 
   @override
-  String get fileBrowserRemoteHint => '← الاسم الكامل · → تأكيد';
-
-  @override
-  String get fileBrowserReadNameHint => '← عرض الاسم الكامل';
+  String get fileBrowserReadNameHint => '← المجلد الأصل · → الاسم الكامل';
 
   @override
   String fileBrowserSavedTo(String path) {
@@ -5273,6 +5380,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get volumeUpdateInterval => 'فاصل التحديث';
+
+  @override
+  String get showVolumeOverlay => 'إظهار مستوى الصوت فوق التطبيقات';
+
+  @override
+  String get volumeOverlayHelp =>
+      'يتطلّب ذلك تفعيل خدمة تسهيل الاستخدام في CuteLauncher.';
 
   @override
   String get clockHoursColor => 'لون الساعات';
@@ -5744,4 +5858,178 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get appPermissionsHelp =>
       'الاستعادة مفعلة افتراضيًا للخدمات التي تمنحها الوصول هنا. تعيد الأذونات وتفعيل الخدمة حتى بعد تعطيلها في إعدادات Android. إيقاف الاستعادة يحتفظ بالوصول الحالي. إيقاف الخدمة يوقف الاستعادة أيضًا، مع إبقاء أذونات التشغيل التلقائي والخلفية. إعادة التوصيل تعيد تشغيل هذه الخدمة فقط ولا تصلح أخطاء التطبيق. يلزم ADB وقد يؤخر Android الفحوصات. التشغيل التلقائي لا يفتح شاشة التطبيق. الحالات تعكس آخر فحص؛ لا تُمنح العمليات غير المدعومة.';
+
+  @override
+  String get weatherFieldUnsupported => 'هذا المصدر لا يدعم المعلمة';
+
+  @override
+  String get weatherFieldMissing => 'لا توجد بيانات في الاستجابة الحالية';
+
+  @override
+  String get weatherMissingAsDash => 'شرطات بدلًا من البيانات المفقودة';
+
+  @override
+  String get weatherPanelAlignment => 'محاذاة أسطر الطقس في اللوحة العلوية';
+
+  @override
+  String get syncProtection => 'الرموز والحماية';
+
+  @override
+  String get syncKey => 'مفتاح المزامنة المشترك';
+
+  @override
+  String get syncKeyShow => 'عرض المفتاح';
+
+  @override
+  String get syncKeyCreate => 'إنشاء مفتاح';
+
+  @override
+  String get syncKeyInvalid => 'أدخل مفتاحًا سداسيًا عشريًا من 64 محرفًا.';
+
+  @override
+  String get syncKeyHelp =>
+      'استخدم المفتاح نفسه على جميع أجهزة التلفاز لمزامنة الرموز والحسابات. أنشئه على جهاز وانقله إلى البقية. احتفظ به: لا يمكن قراءة البيانات المحمية بدونه. عند تغييره حدّث جميع الأجهزة. تبقى أذونات Android ومفاتيح العتاد محلية.';
+
+  @override
+  String get syncFiles => 'ملفات المزامنة';
+
+  @override
+  String get syncCleanup => 'تنظيف الملفات القديمة';
+
+  @override
+  String get syncCleanupFailed =>
+      'تعذّر حذف بعض الملفات القديمة. أعد محاولة التنظيف.';
+
+  @override
+  String get syncRetire => 'استبعاد الجهاز';
+
+  @override
+  String get syncRetireConfirm =>
+      'هل تريد استبعاد هذا الجهاز من المجموعة؟ لن تُطبّق حالاته القديمة. تتطلب العودة مجموعة مزامنة جديدة.';
+
+  @override
+  String get backupAccount => 'الحساب';
+
+  @override
+  String get backupNewAccount => 'ربط حساب آخر';
+
+  @override
+  String get backupSetupWizard => 'معالج الإعداد';
+
+  @override
+  String get backupSetupSummary => 'الملخص';
+
+  @override
+  String get backupSetupNext => 'التالي';
+
+  @override
+  String get backupSetupBack => 'رجوع';
+
+  @override
+  String get backupFirstCopy => 'إنشاء أول نسخة احتياطية الآن';
+
+  @override
+  String get backupSyncAll => 'مزامنة الكل';
+
+  @override
+  String get backupFirstExchange => 'التبادل الأول';
+
+  @override
+  String get backupNoRemote =>
+      'لا توجد إعدادات في التخزين. سيرفع هذا التلفاز إعداداته.';
+
+  @override
+  String get backupSetupStart => 'تفعيل';
+
+  @override
+  String get backupPassword => 'كلمة مرور تشفير البيانات';
+
+  @override
+  String get backupPasswordRepeat => 'تأكيد كلمة المرور';
+
+  @override
+  String get backupPasswordMismatch => 'كلمتا المرور غير متطابقتين';
+
+  @override
+  String get backupAccountLocalHelp =>
+      'استخدم حسابًا متصلًا أو حسابًا آخر من النوع نفسه. تبقى بيانات الدخول على هذا التلفاز. تُدار ملفات النسخ والمزامنة بشكل منفصل.';
+
+  @override
+  String get backupPasswordOptionalHelp =>
+      'اختياري. يُشفّر الملف كله بما فيه الرموز القابلة للنقل. دون كلمة مرور يبقى الملف غير مشفّر. القيمة الفارغة توقف التشفير. تحتاج التلفازات الأخرى إلى كلمة المرور نفسها.';
+
+  @override
+  String get backupYandexDisk => 'Yandex Disk';
+
+  @override
+  String get backupYandexHelp =>
+      'أدخل Client ID وClient Secret لتطبيق Yandex OAuth لديه حق الوصول إلى مجلد التطبيق على Disk. اتصل وأكد الرمز على هاتفك. استخدم عميل OAuth والحساب نفسيهما على جميع أجهزة التلفاز للمشاركة.';
+
+  @override
+  String get backupYandexConnect => 'ربط Yandex Disk';
+
+  @override
+  String get backupYandexReconnect => 'إعادة الاتصال بـ Yandex Disk';
+
+  @override
+  String get backupYandexConnectionStatus => 'حالة اتصال Yandex Disk';
+
+  @override
+  String get yandexCodeExpired =>
+      'انتهت مهلة تسجيل الدخول Yandex Disk. حدد التحقق من الحساب وحفظه للحصول على رمز جديد.';
+
+  @override
+  String get yandexConfigurationError =>
+      'معرف العميل / سر العميل — Yandex OAuth';
+
+  @override
+  String get backupSmb => 'Samba / SMB 2–3';
+
+  @override
+  String get smbUrl => 'عنوان المجلد SMB';
+
+  @override
+  String get smbPassword => 'كلمة المرور';
+
+  @override
+  String get smbHelp =>
+      'أدخل مجلد شبكة موجودًا: smb://server/share/CuteLauncher. أدخل اسم المستخدم وكلمة المرور المصرح لهما؛ لحساب المجال استخدم DOMAIN\\user. يُختار SMB 2 أو 3 تلقائيًا. يتطلب النسخ الاحتياطي والمزامنة أذونات القراءة والكتابة والحذف.';
+
+  @override
+  String get recentRamTitle => 'ذاكرة RAM';
+
+  @override
+  String recentRamUsed(String used, String total, String percent) {
+    return 'المستخدم $used من $total · $percent٪';
+  }
+
+  @override
+  String recentRamAvailable(String value) {
+    return 'المتاح $value';
+  }
+
+  @override
+  String get recentRamUnloaded => 'أُزيل من الذاكرة';
+
+  @override
+  String get recentRamUnavailable => 'لا توجد بيانات';
+
+  @override
+  String recentRamMiB(String value) {
+    return '$value ميبيبايت';
+  }
+
+  @override
+  String recentRamGiB(String value) {
+    return '$value جيبيبايت';
+  }
+
+  @override
+  String recentRamApp(String value) {
+    return '≈ $value';
+  }
+
+  @override
+  String get backupExistingSettingsHelp =>
+      'تحتوي وحدة التخزين المحددة بالفعل على إعدادات مزامنة. اختر تطبيقها على هذا التلفزيون أو استبدالها بإعداداته أو دمجها. إذا اختلفت الإعدادات عند الدمج، فستُستخدم الأولوية التي تختارها. يبدأ التبادل بعد التأكيد في الخطوة الأخيرة من المعالج.';
 }

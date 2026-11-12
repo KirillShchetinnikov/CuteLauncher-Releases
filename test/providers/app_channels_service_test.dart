@@ -10,6 +10,7 @@ import 'package:flauncher/providers/foreground_work.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/settings_import.dart';
 import 'package:flauncher/models/content_load_state.dart';
+import 'package:flauncher/diagnostics_store.dart';
 
 import '../support/app_channels.dart';
 
@@ -19,6 +20,7 @@ void main() {
   late SettingsService settings;
   late SharedPreferences preferences;
   setUp(() async {
+    DiagnosticsStore.instance.clear();
     SharedPreferences.setMockInitialValues({});
     preferences = await SharedPreferences.getInstance();
     settings = SettingsService(preferences);
@@ -257,12 +259,18 @@ void main() {
       ];
       await Future<void>.delayed(Duration.zero);
       expect(channel.posters, hasLength(2));
+      final queued = DiagnosticsStore.instance.posterLoads.snapshot()['active'] as List;
+      expect(queued.map((row) => row['stage']), ['platform', 'platform', 'queue']);
+      service.poster('content://poster/0');
+      expect((DiagnosticsStore.instance.posterLoads.snapshot()['counts'] as Map)
+          ['appChannels.deduplicated'], 1);
       channel.events.add(true);
       await service.refresh(reloadPosters: true);
       final image = Uint8List.fromList([1]);
       response.complete(image);
       expect(await Future.wait(posters), [image, image, image]);
       expect(channel.posters, hasLength(3));
+      expect(DiagnosticsStore.instance.posterLoads.snapshot()['active'], isEmpty);
     },
   );
 
@@ -279,6 +287,17 @@ void main() {
         channel.posters.last == program.thumbnailUri ? image : null;
     expect(await service.programPoster(program), image);
     expect(channel.posters, [program.posterArtUri, program.thumbnailUri]);
+    final loads = DiagnosticsStore.instance.posterLoads.snapshot()['recent'] as List;
+    expect(loads.map((load) => load['variant']), ['primary', 'thumbnail']);
+    expect(loads.map((load) => load['outcome']), ['failed', 'loaded']);
+    expect(loads.first['packageName'], 'video.app');
+    expect(loads.first['stage'], 'platform');
+    service.evictPoster(program);
+    final decode = (DiagnosticsStore.instance.posterLoads.snapshot()['failures'] as List).last;
+    expect(decode['stage'], 'decode');
+    expect(decode['reason'], 'decode');
+    expect(decode['variant'], 'displayed');
+    expect(decode['alternateImageId'], loads.last['imageId']);
   });
 
   test('a valid poster larger than the cache still reaches the card', () async {

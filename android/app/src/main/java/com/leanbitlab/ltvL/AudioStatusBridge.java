@@ -146,7 +146,11 @@ final class AudioStatusBridge implements AutoCloseable {
                 diagnostics.put("routeNameMentionsHdmi", name.contains("hdmi"));
                 diagnostics.put("routeNameMentionsArc", name.matches(".*\\b(?:e?arc)\\b.*"));
                 diagnostics.put("frameworkHdmiLabelAvailable", AudioStatusController.hdmiLabel(resources) != 0);
-                diagnostics.put("selectedRouteType", route.getType());
+                if (Build.VERSION.SDK_INT >= 34) {
+                    diagnostics.put("selectedRouteType", route.getType());
+                } else {
+                    diagnostics.put("routeTypeUnavailable", true);
+                }
             } catch (LinkageError unavailable) {
                 diagnostics.put("routeTypeUnavailable", true);
             } catch (RuntimeException unavailable) {
@@ -155,11 +159,11 @@ final class AudioStatusBridge implements AutoCloseable {
         }
 
         static boolean isHdmiRoute(MediaRoute2Info route, Resources resources) {
-            if (Build.VERSION.SDK_INT >= 31) {
+            if (Build.VERSION.SDK_INT >= 34) {
                 try { return route.getType() == MediaRoute2Info.TYPE_HDMI; }
                 catch (NoSuchMethodError unavailable) { /* Some TV frameworks omit the method. */ }
             }
-            // Android 11's system provider uses the framework's localized HDMI label.
+            // Older releases expose the localized HDMI label but lack a public route type.
             return AudioStatusController.matchesHdmiLabel(route.getName(), resources);
         }
 

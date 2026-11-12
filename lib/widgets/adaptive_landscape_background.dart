@@ -245,9 +245,7 @@ class _LandscapeState extends State<AdaptiveLandscapeBackground>
     final coordinates = weather?.configuration;
     final latitude = coordinates?.source == WeatherSource.customOpenMeteo
         ? weather?.weatherData?.latitude
-        : coordinates?.locationMode.name == 'manual'
-        ? coordinates?.cityLatitude
-        : coordinates?.latitude;
+        : coordinates?.selectedCoordinates?.latitude;
     final season =
         demo?.season ??
         landscapeSeason(

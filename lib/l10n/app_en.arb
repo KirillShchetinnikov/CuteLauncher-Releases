@@ -1,4 +1,5 @@
 {
+  "scrollContentLabels": "Scroll long labels in content rows",
   "contentAppTileStyle": "Appearance source",
   "contentTileOwnAppearance": "Custom appearance",
   "contentTileCommonAppearance": "Shared appearance",
@@ -341,6 +342,56 @@
     "hideAndroidSettingsTile": "Hide Android settings in app tiles",
     "animateTileReordering": "Animate tile reordering",
     "imageInputRejected": "This image is damaged or too large (maximum 8 MiB and 48 megapixels). Choose another image.",
+  "memoryAdvanced": "Advanced diagnostics",
+  "memoryLauncherTitle": "CuteLauncher memory",
+  "memoryUsage": "Memory usage",
+  "memoryChange": "{delta} since the previous measurement",
+  "memoryCacheFiles": "Image files in memory",
+  "memoryCacheEntries": "Items: {count}",
+  "memoryCacheResult": "Image caches: {before} → {after}",
+  "memoryStale": "Could not update memory. The previous measurement is shown.",
+  "memoryTechnical": "Technical details",
+  "memoryObserve": "Memory observation",
+  "memoryObserveStart": "Observe for 1 minute",
+  "memoryObserveStop": "Stop observation",
+  "memoryObserveRunning": "Recording · up to 1 minute",
+  "memoryObserveFinished": "Recording stopped",
+  "memoryObserveEmpty": "No measurements recorded",
+  "memorySeconds": "{seconds} s",
+  "memoryReadingHelp": "Understanding the measurements",
+  "memorySaverHelp": "What memory saving changes",
+  "memorySaveFailed": "Could not save memory saving mode. Try again.",
+  "@memoryChange": {
+    "placeholders": {
+      "delta": {
+        "type": "String"
+      }
+    }
+  },
+  "@memoryCacheEntries": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@memoryCacheResult": {
+    "placeholders": {
+      "before": {
+        "type": "String"
+      },
+      "after": {
+        "type": "String"
+      }
+    }
+  },
+  "@memorySeconds": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
     "memoryTitle": "Memory",
     "memoryRefresh": "Measure memory",
     "memoryMeasuring": "Measuring…",
@@ -608,7 +659,7 @@
     "memoryOtherCaches": "Other encoded image caches",
     "memoryFeaturesExplanation": "These are retained image bytes, already included in the encoded cache total. Zero means no retained bytes in that cache, not that the feature uses no memory. Wallpapers and displayed images share the decoded cache above; active images may be outside it. Weather, notifications, Dart objects and the engine cannot be split by feature here. Shared interface graphics are reported above by Android and already included in PSS. Their memory is part of the process total. Do not add these overlapping values.",
     "memoryGraphics": "Interface graphics (included in PSS)"
-,"categoryVisible":"Show category","hiddenCategories":"Hidden categories","visibleCategories":"Visible categories","backupSavedToSelectedLocation":"Backup saved to the selected location","tileHorizontalGap":"Horizontal spacing","tileVerticalGap":"Vertical spacing","tileOpacity":"Background opacity","tileShadow":"Shadow","tileCornerRadius":"Corner rounding","tileIconScale":"Icon size","tileBackgroundColor":"Tile background","tileLabelSize":"Label size","resetAppearance":"Reset appearance","tileAppearance":"Tile appearance","tileLabelColor":"Label color","tilePreviewName":"Sample application","tileProportions":"Tile proportions","tileLarge":"Large","tileLabelBelow":"Below the tile","tileLabelInside":"Inside the tile","tileFocusScale":"Enlarge","tileMedium":"Medium","tileFocusBorder":"No movement","tileSize":"Tile size","tileCompact":"Compact","tileLabelPosition":"Label position","tileFocusEffect":"Focus effect","tileFocusStrength":"Highlight intensity","panelIndependent":"Custom settings","panelAppearance":"Top panel style","panelBackground":"Panel background","blurPerformanceHint":"Blur may reduce smoothness. It is disabled while memory saving is on.","panelOpacity":"Panel opacity","tileBlur":"Blur behind tiles","panelBlur":"Blur behind top panel","panelShared":"Like panels","weatherMinutes":"min","weatherOpenMeteoCredit":"Weather: Open-Meteo (open-meteo.com), CC BY 4.0. Free API for non-commercial use.","weatherRateLimit":"Request limit reached. Try later.","weatherYandexCredit":"Weather: Yandex Weather (yandex.ru/pogoda). Access depends on your API plan.","yandexWeather":"Yandex Weather (REST)","weatherAuthorizationError": "The weather provider rejected the request. Check the API key and access to the selected service.","weatherYandexHint":"Requires a key with REST forecast access. A key for another Yandex plan may not work.","weatherSource":"Weather source","weatherInterval":"Update interval","weatherLongitude":"Longitude (-180 to 180)","weatherKeyRequired":"Add a Yandex API key.","weatherLocationName":"City name (optional)","weatherLocation":"Location","weatherApiKey":"Yandex API key","weatherInvalidResponse":"The weather source returned invalid data.","weatherUnavailable":"Weather is unavailable. Previously received data is retained if available. Retries are limited to once every 5 minutes.","weatherStale":"Previous weather","weatherLatitude":"Latitude (-90 to 90)","weatherCoordinatesError":"Enter a city manually or get coordinates automatically.","weatherRefresh":"Refresh weather","weatherKeyPrivate":"Stored only on this device, excluded from backups. Empty input removes the key.","weatherUpdated":"Updated","onlineWallpaperError":"Unable to load this image. Previous wallpaper is retained. Select “Refresh wallpaper” to retry the download.","onlineWallpaperHint":"The last image is kept offline (up to 8 MiB).","onlineWallpaperHours":"h","onlineWallpaperInterval":"Download interval","onlineWallpaper":"Online wallpaper","onlineWallpaperUrlError":"Enter a direct HTTPS image URL without login details.","onlineWallpaperEnabled":"Use online wallpaper","onlineWallpaperSource":"Image source","bingWallpaper":"Bing image of the day","onlineWallpaperUrlSource":"Direct HTTPS URL","updatePlayOnly":"This installation receives updates through Google Play.","updateCheck":"Check now","updateInstalled":"Installed","updateDownloadInstall":"Download and install","updateNoRelease":"No newer compatible release is available.","updateIncompatible":"The APK does not match this application, certificate or a newer version. Installation was blocked.","updateError":"Unable to check, download or open the installer. Try again later.","updateAvailable":"Update available","appUpdates":"Application updates","updatePermission":"Allow installation from this application in Android settings, return here and press Install again.","updateInstall":"Install downloaded update","updateHint":"Source: GitHub / KirillShchetinnikov/CuteLauncher-Releases. Automatic checks run while the launcher is open. Download starts when you choose it; Android asks you to confirm installation. Your data is kept.","updateAutomatic":"Check automatically once a day",
+,"categoryVisible":"Show category","hiddenCategories":"Hidden categories","visibleCategories":"Visible categories","backupSavedToSelectedLocation":"Backup saved to the selected location","tileHorizontalGap":"Horizontal spacing","tileVerticalGap":"Vertical spacing","tileOpacity":"Background opacity","tileShadow":"Shadow","tileCornerRadius":"Corner rounding","tileIconScale":"Icon size","tileBackgroundColor":"Tile background","tileLabelSize":"Label size","resetAppearance":"Reset appearance","tileAppearance":"Tile appearance","tileLabelColor":"Label color","tilePreviewName":"Sample application","tileProportions":"Tile proportions","tileLarge":"Large","tileLabelBelow":"Below the tile","tileLabelInside":"Inside the tile","tileFocusScale":"Enlarge","tileMedium":"Medium","tileFocusBorder":"No movement","tileSize":"Tile size","tileCompact":"Compact","tileLabelPosition":"Label position","tileFocusEffect":"Focus effect","tileFocusStrength":"Highlight intensity","panelIndependent":"Custom settings","panelAppearance":"Top panel style","panelBackground":"Panel background","blurPerformanceHint":"Blur may reduce smoothness. It is disabled while memory saving is on.","panelOpacity":"Panel opacity","tileBlur":"Blur behind tiles","panelBlur":"Blur behind top panel","panelShared":"Like panels","weatherMinutes":"min","weatherOpenMeteoCredit":"Weather: Open-Meteo (open-meteo.com), CC BY 4.0. Free API for non-commercial use.","weatherRateLimit":"Request limit reached. Try later.","weatherYandexCredit":"Weather: Yandex Weather (yandex.ru/pogoda). Access depends on your API plan.","yandexWeather":"Yandex Weather (REST)","weatherAuthorizationError": "The weather provider rejected the request. Check the API key and access to the selected service.","weatherYandexHint":"Requires a key with REST forecast access. A key for another Yandex plan may not work.","weatherSource":"Weather source","weatherInterval":"Update interval","weatherLongitude":"Longitude (-180 to 180)","weatherKeyRequired":"Add a Yandex API key.","weatherLocationName":"City name (optional)","weatherLocation":"Location","weatherApiKey":"Yandex API key","weatherInvalidResponse":"The weather source returned invalid data.","weatherUnavailable":"Weather is unavailable. Previously received data is retained if available. Retries are limited to once every 5 minutes.","weatherStale":"Previous weather","weatherLatitude":"Latitude (-90 to 90)","weatherCoordinatesError":"Choose a city, enter coordinates, or detect the location automatically.","weatherRefresh":"Refresh weather","weatherKeyPrivate":"Stored only on this device, excluded from backups. Empty input removes the key.","weatherUpdated":"Updated","onlineWallpaperError":"Unable to load this image. Previous wallpaper is retained. Select “Refresh wallpaper” to retry the download.","onlineWallpaperHint":"The last image is kept offline (up to 8 MiB).","onlineWallpaperHours":"h","onlineWallpaperInterval":"Download interval","onlineWallpaper":"Online wallpaper","onlineWallpaperUrlError":"Enter a direct HTTPS image URL without login details.","onlineWallpaperEnabled":"Use online wallpaper","onlineWallpaperSource":"Image source","bingWallpaper":"Bing image of the day","onlineWallpaperUrlSource":"Direct HTTPS URL","updatePlayOnly":"This installation receives updates through Google Play.","updateCheck":"Check now","updateInstalled":"Installed","updateDownloadInstall":"Download and install","updateNoRelease":"No newer compatible release is available.","updateIncompatible":"The APK does not match this application, certificate or a newer version. Installation was blocked.","updateError":"Unable to check, download or open the installer. Try again later.","updateAvailable":"Update available","appUpdates":"Application updates","updatePermission":"Allow installation from this application in Android settings, return here and press Install again.","updateInstall":"Install downloaded update","updateHint":"Source: GitHub / KirillShchetinnikov/CuteLauncher-Releases. Automatic checks run while the launcher is open. Download starts when you choose it; Android asks you to confirm installation. Your data is kept.","updateAutomatic":"Check automatically once a day",
   "allApplications": "All applications"
 ,
   "adbAccessibility": "Enable Home Button Fix",
@@ -682,7 +733,7 @@
   "nightRefreshSun": "Refresh sunrise and sunset",
   "nightSolarUnavailable": "Choose a city and refresh sun times. If sunrise or sunset is unavailable, the solar schedule pauses.",
   "nightSunsetOffset": "Start relative to sunset",
-  "nightCityHint": "Choose your city instead of granting location access. The selected coordinates are sent to Sunrise-Sunset.org, or Open-Meteo as a fallback, to retrieve sun times.",
+  "nightCityHint": "Choose your city instead of granting location access. The selected coordinates are sent to Sunrise-Sunset.org, or GeoNames as a fallback, to retrieve sun times.",
   "nightResumeSchedule": "Return to schedule",
   "nightScheduleSource": "Schedule type",
   "nightSolarCached": "Using cached sun times; internet refresh will retry automatically.",
@@ -696,7 +747,7 @@
   "nightNextEnd": "Next end",
   "nightTemporaryOff": "Dimming temporarily off until",
   "nightCitySearchFailed": "Could not search for cities. Check your internet connection.",
-  "nightSolarAttribution": "Daily sun times: Sunrise-Sunset.org; fallback: Open-Meteo. City search: GeoNames. Several days are cached for offline use.",
+  "nightSolarAttribution": "Sunrise and sunset times come from Sunrise-Sunset.org, with GeoNames as a fallback. When offline, the TV calculates missing times.",
   "nightTemporaryOn": "Dimming temporarily on until",
   "homeScreen": "Home screen",
   "appearanceSettings": "Appearance",
@@ -958,10 +1009,13 @@
   "panelOrderHint": "◄ / ► selects or finishes moving; ▲ / ▼ reorders objects and moves them between sides at group boundaries; OK / Back finishes moving.",
   "panelTextBackgroundTransparency": "Text and button background transparency",
   "weatherCityHint": "Enter the city name in English, for example Moscow.",
-  "weatherCityNotFound": "City not found. Check the city name in English.",
+  "weatherCityNotFound": "Could not identify the city. Select it in location settings.",
   "weatherLocationAutomatic": "Get automatically",
   "weatherLocationAutomaticHint": "Get device coordinates. Location permission is required.",
   "weatherLocationManual": "Enter manually",
+  "manualLocationInput": "Input method",
+  "manualLocationCity": "City",
+  "manualLocationCoordinates": "Coordinates",
   "weatherLocationPermissionDenied": "Allow location access in Android settings and try again.",
   "weatherLocationUnavailable": "Could not obtain coordinates. Check Android location settings or enter a city manually.",
   "nightFilterSettings": "Filter settings",
@@ -971,7 +1025,7 @@
   "nightLocationAutomatic": "Get automatically",
   "nightLocationManual": "Enter manually",
   "nightLocationFailed": "Location unavailable. Check permission and system location settings.",
-  "nightCityEnglish": "Enter the city name in English",
+  "nightCitySearchHint": "Enter the city name. You can add a region or country after a comma.",
   "nightOverlayBrief": "Allows the filter to appear over other apps.",
   "weatherGetLocation": "Get location",
   "backupLastCreated": "Last backup was created:",
@@ -1015,7 +1069,7 @@
   "backupSyncDisplayGroup": "Night mode, brightness and screensaver",
   "backupSyncControlsGroup": "Launcher and TV controls",
   "backupSyncGeneralGroup": "Language, updates and other settings",
-  "backupSyncGroupsHelp": "Disabled blocks stay local to this TV. The block selection is synchronized between devices.",
+  "backupSyncGroupsHelp": "Disabled blocks stay on this TV. Choose synchronization blocks separately on each device.",
   "backupSyncGroupsFailed": "Could not save the settings selection for synchronization. Try again.",
   "tileLayoutMode": "Tile layout",
   "tileLayoutAuto": "Automatic by tile size",
@@ -1344,13 +1398,29 @@
   "landscapeCelestialBodies": "Sun and moon",
   "landscapeStarRotation": "Star rotation",
   "tvPowerTitle": "Power management",
-  "tvPowerOff": "Turn off TV",
-  "tvPowerReboot": "Restart TV",
-  "tvPowerOffConfirm": "Put the TV in standby?",
-  "tvPowerRebootConfirm": "Restart the TV? Open apps will close.",
+  "remotePowerWithConfirmation": "{action} (with confirmation)",
+  "@remotePowerWithConfirmation": {
+    "placeholders": {
+      "action": {
+        "type": "String"
+      }
+    }
+  },
+  "remotePowerWithoutConfirmation": "{action} (without confirmation)",
+  "@remotePowerWithoutConfirmation": {
+    "placeholders": {
+      "action": {
+        "type": "String"
+      }
+    }
+  },
+  "tvPowerOff": "Turn off device",
+  "tvPowerReboot": "Restart device",
+  "tvPowerOffConfirm": "Put the device in standby?",
+  "tvPowerRebootConfirm": "Restart the device? Open apps will close.",
   "tvPowerSent": "Command sent",
   "tvPowerFailed": "Could not send the command. Check ADB or accessibility access.",
-  "tvPowerHelp": "Turning off puts the TV in standby through the CuteLauncher accessibility service or local ADB. Restart requires ADB. On a TV box, the command controls the box; TV behavior depends on HDMI-CEC and firmware.",
+  "tvPowerHelp": "Turning off puts the device in standby through the CuteLauncher accessibility service or local ADB. Restart requires ADB. On a TV box, the command controls the box; TV behavior depends on HDMI-CEC and firmware.",
   "cleanerLists": "Disable lists",
   "cleanerRecovery": "Backup and recovery",
   "cleanerExports": "Reports",
@@ -1391,6 +1461,8 @@
   "sleepTimerEndTime": "Shutdown time",
   "sleepTimerBoth": "Remaining and shutdown time",
   "sleepTimerShowSeconds": "Show seconds",
+  "sleepTimerShowOverApps": "Show timer over apps",
+  "sleepTimerOverlayHelp": "Enable the CuteLauncher accessibility service to display it over apps.",
   "sleepTimerCloseAfterSelection": "Close widget after selecting a timer",
   "sleepTimerAdd": "Add timer",
   "sleepTimerEdit": "Edit timer",
@@ -1432,6 +1504,11 @@
   "noticeBottomLeft": "Bottom left",
   "noticeTopRight": "Top right",
   "noticeTopLeft": "Top left",
+  "overlayAppearance": "Appearance over apps",
+  "overlayAppearanceTopPanel": "Same as the top panel",
+  "overlayAppearanceDark": "Dark",
+  "overlayWhereToShow": "Where to show",
+  "overlayAtPanelWidget": "At the widget’s position in the top panel",
   "notificationOpenFailed": "Could not open the notification action. It may no longer be available.",
   "adbWifiOverride": "Disable anyway…",
   "adbWifiRiskTitle": "Disable despite the risk?",
@@ -1530,7 +1607,7 @@
     "weatherTextAdd": "Add a block",
     "weatherTextMoveEarlier": "Move earlier",
     "weatherTextMoveLater": "Move later",
-    "weatherTextHelp": "Enter text and tokens in curly braces, or insert them at the cursor with the buttons. Tokens are case-insensitive. Parentheses around a single value disappear when its data is unavailable. Double literal curly braces. One line break is allowed.",
+    "weatherTextHelp": "Enter text and tokens in curly braces, or insert them at the cursor with the buttons. Tokens are case-insensitive. Parentheses around a single value disappear when its data is unavailable. Double literal curly braces. One line break is allowed. You can type letters, numbers, spaces and any printable symbols, for example: () [] / : ; + − ° % ·.",
     "weatherTextSaveError": "Could not save the weather text format.",
     "weatherTextSampleCity": "London",
     "weatherTextMetersPerSecond": "{speed} m/s",
@@ -1637,8 +1714,7 @@
   "fileBrowserNoFolders": "No subfolders",
   "fileBrowserNoFiles": "No matching files",
   "fileBrowserPartial": "Only part of this folder is shown",
-  "fileBrowserRemoteHint": "← Full name · → Confirm",
-  "fileBrowserReadNameHint": "← Show full name",
+  "fileBrowserReadNameHint": "← Parent folder · → Full name",
   "fileBrowserSavedTo": "Saved: {path}",
   "@fileBrowserSavedTo": {
     "placeholders": {
@@ -1745,6 +1821,8 @@
   "noAppSections": "This app is not in any section.",
   "volumeWidgetSettings": "Volume settings",
   "volumeUpdateInterval": "Update interval",
+  "showVolumeOverlay": "Show volume over apps",
+  "volumeOverlayHelp": "The CuteLauncher accessibility service must be enabled.",
   "clockHoursColor": "Hours color",
   "clockMinutesColor": "Minutes color",
   "clockColorMode": "Clock color mode",
@@ -1895,5 +1973,97 @@
   "appPermissionsEmpty": "No other apps with accessibility services.",
   "appPermissionsError": "Could not complete the operation. Check ADB and refresh the status. Some changes may have been applied.",
   "appPermissionsConfirm": "Allow this app to use accessibility, autostart and background activity, then enable its service? Only operations supported by the firmware are applied. Accessibility can read interface events and act on your behalf.",
-  "appPermissionsHelp": "Recovery is on by default for services you authorize here. It restores permissions and service activation, including after disabling them in Android settings. Turning recovery off keeps current access. Disabling the service also stops recovery; autostart and background permissions remain. Reconnecting only restarts this service, without fixing app bugs. ADB is required and Android may delay checks. Autostart does not open the app screen. Statuses reflect the latest check; unsupported operations are not granted."
+  "appPermissionsHelp": "Recovery is on by default for services you authorize here. It restores permissions and service activation, including after disabling them in Android settings. Turning recovery off keeps current access. Disabling the service also stops recovery; autostart and background permissions remain. Reconnecting only restarts this service, without fixing app bugs. ADB is required and Android may delay checks. Autostart does not open the app screen. Statuses reflect the latest check; unsupported operations are not granted.",
+    "weatherFieldUnsupported": "Not supported by this source",
+    "weatherFieldMissing": "No data in the current response",
+    "weatherMissingAsDash": "Dashes for missing data",
+    "weatherPanelAlignment": "Top panel weather line alignment",
+  "syncProtection": "Tokens and protection",
+  "syncKey": "Shared synchronization key",
+  "syncKeyShow": "Show key",
+  "syncKeyCreate": "Create key",
+  "syncKeyInvalid": "Enter a 64-character hexadecimal key.",
+  "syncKeyHelp": "Use the same key on all TVs to synchronize tokens and accounts. Create it on one TV and transfer it to the others. Keep it safe: protected data cannot be read without it. When changing the key, update every TV. Android permissions and hardware keys remain local.",
+  "syncFiles": "Synchronization files",
+  "syncCleanup": "Clean up old files",
+  "syncCleanupFailed": "Some old files could not be removed. Try cleaning up again.",
+  "syncRetire": "Exclude device",
+  "syncRetireConfirm": "Exclude this device from the group? Its old states will no longer be applied. Returning requires a new synchronization group.",
+  "backupAccount": "Account",
+  "backupNewAccount": "Connect another account",
+  "backupSetupWizard": "Setup wizard",
+  "backupSetupSummary": "Summary",
+  "backupSetupNext": "Next",
+  "backupSetupBack": "Back",
+  "backupFirstCopy": "Create the first backup now",
+  "backupSyncAll": "Synchronize everything",
+  "backupFirstExchange": "First exchange",
+  "backupNoRemote": "No settings in storage. This TV will upload its settings.",
+  "backupSetupStart": "Enable",
+  "backupPassword": "Data encryption password",
+  "backupPasswordRepeat": "Repeat password",
+  "backupPasswordMismatch": "Passwords do not match",
+  "backupAccountLocalHelp": "Use a connected account or another account of the same type. Storage credentials stay on this TV. Backup and synchronization manage their files separately.",
+  "backupPasswordOptionalHelp": "Optional. Encrypts the entire file, including transferable tokens. Without a password, the file is unencrypted. An empty value disables encryption. Other TVs need the same password to read encrypted files.",
+  "backupYandexDisk": "Yandex Disk",
+  "backupYandexHelp": "Enter the Client ID and Client Secret of a Yandex OAuth app with access to its Disk app folder. Connect and confirm the code on your phone. Use the same OAuth client and account on all TVs to share backups.",
+  "backupYandexConnect": "Connect Yandex Disk",
+  "backupYandexReconnect": "Reconnect Yandex Disk",
+  "backupYandexConnectionStatus": "Yandex Disk connection status",
+  "yandexCodeExpired": "Yandex Disk sign-in timed out. Select Connect Yandex Disk to get a new code.",
+  "yandexConfigurationError": "Client ID / Client Secret — Yandex OAuth",
+  "backupSmb": "Samba / SMB 2–3",
+  "smbUrl": "Folder SMB address",
+  "smbPassword": "Password",
+  "smbHelp": "Enter an existing network folder: smb://server/share/CuteLauncher. Enter a username and password with access to the folder; use DOMAIN\\user for a domain account. SMB 2 and 3 are negotiated automatically. Backups and synchronization require read, write and delete permissions.",
+  "recentRamTitle": "RAM",
+  "recentRamUsed": "Used {used} of {total} · {percent}%",
+  "recentRamAvailable": "Available {value}",
+  "recentRamUnloaded": "Unloaded",
+  "recentRamUnavailable": "No data",
+  "recentRamMiB": "{value} MiB",
+  "recentRamGiB": "{value} GiB",
+  "recentRamApp": "≈ {value}",
+  "@recentRamUsed": {
+    "placeholders": {
+      "used": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "@recentRamAvailable": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "@recentRamMiB": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "@recentRamGiB": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "@recentRamApp": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "backupExistingSettingsHelp": "The selected storage already contains synchronization settings. Choose what to do with them: apply them to this TV, replace them with this TV’s settings, or merge them. If settings differ during merging, your selected priority will be used. The exchange starts after confirmation on the final wizard step."
 }

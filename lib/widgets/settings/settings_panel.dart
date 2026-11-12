@@ -109,7 +109,9 @@ class _SettingsPanelState extends State<SettingsPanel> {
   late final _observer = _SettingsRouteObserver(_routeChanged);
   bool _topPanel = false;
   bool _backgroundEditing = false;
-  bool _sectionEditing = false;
+  int? _editedSectionId;
+  bool _editingSpacer = false;
+  int? _previewSectionId;
   bool? _informationSide;
   RemotePanelService? _previewService;
   LauncherState? _launcherState;
@@ -119,7 +121,9 @@ class _SettingsPanelState extends State<SettingsPanel> {
     super.initState();
     _topPanel = _isTopPanelRoute(widget.initialRoute);
     _backgroundEditing = widget.initialRoute == BackgroundInformationSettingsPage.routeName;
-    _sectionEditing = widget.initialRoute == ContinueWatchingSettingsPage.routeName;
+    if (widget.initialRoute == ContinueWatchingSettingsPage.routeName) {
+      _editedSectionId = ContinueWatchingSection.sectionId;
+    }
   }
 
   @override
@@ -174,23 +178,34 @@ class _SettingsPanelState extends State<SettingsPanel> {
   ) {
     final topPanel = remotePreview || _isTopPanelRoute(name);
     final sectionId = sectionRoute?.sectionId;
-    final sectionEditing = sectionRoute?.editing == true;
+    final editingSpacer = sectionRoute?.editingSpacer == true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       if (remotePreview) {
         _previewService ??= context.read<RemotePanelService?>();
       }
       _previewService?.setSettingsPreview(this, remotePreview);
-      if (sectionId != null) _launcherState ??= context.read<LauncherState?>();
-      _launcherState?.setSectionPreview(this, sectionId);
       if (_topPanel != topPanel ||
           _backgroundEditing != backgroundEditing ||
-          _sectionEditing != sectionEditing) {
+          _editedSectionId != sectionId ||
+          _editingSpacer != editingSpacer) {
         setState(() {
           _topPanel = topPanel;
           _backgroundEditing = backgroundEditing;
-          _sectionEditing = sectionEditing;
+          _editedSectionId = sectionId;
+          _editingSpacer = editingSpacer;
         });
+      }
+    });
+  }
+
+  void _updateSectionPreview(int? sectionId) {
+    if (_previewSectionId == sectionId) return;
+    _previewSectionId = sectionId;
+    _launcherState ??= context.read<LauncherState?>();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && _previewSectionId == sectionId) {
+        _launcherState?.setSectionPreview(this, sectionId);
       }
     });
   }
@@ -200,14 +215,30 @@ class _SettingsPanelState extends State<SettingsPanel> {
     final preferredRight = context.select<SettingsService, bool>(
       (settings) => settings.settingsMenuOnRight,
     );
-    final onRight = _sectionEditing || preferredRight;
+    final sectionId = _editedSectionId;
+    final sectionVisible = switch (sectionId) {
+      null => false,
+      ContinueWatchingSection.sectionId =>
+        context.select<SettingsService, bool>(
+          (settings) => settings.showContinueWatching,
+        ),
+      _ => context.select<AppsService, bool>(
+        (apps) => apps.launcherSections.any(
+          (section) =>
+              section is Category && section.id == sectionId && section.visible,
+        ),
+      ),
+    };
+    _updateSectionPreview(sectionVisible ? sectionId : null);
+    final sectionOnRight = _editingSpacer || sectionVisible;
+    final onRight = sectionOnRight || preferredRight;
     final service = context.watch<AppearanceService?>();
     if (service == null) {
       return _layout(context, onRight, false);
     }
     return ValueListenableBuilder<Rect?>(valueListenable: service.informationBounds,
       builder: (context, bounds, _) {
-        if (!_backgroundEditing || _sectionEditing) {
+        if (!_backgroundEditing || sectionOnRight) {
           _informationSide = null;
           return _layout(context, onRight, false);
         }
@@ -310,6 +341,11 @@ class _SettingsPanelState extends State<SettingsPanel> {
                       return SettingsRoute(
                         settings: settings,
                         builder: (_) => const MemorySaverPage(),
+                      );
+                    case MemoryAdvancedPage.routeName:
+                      return SettingsRoute(
+                        settings: settings,
+                        builder: (_) => const MemoryAdvancedPage(),
                       );
                     case DiagnosticsPage.routeName:
                       return SettingsRoute(
@@ -427,7 +463,7 @@ class _SettingsPanelState extends State<SettingsPanel> {
                       return _SectionSettingsRoute(
                         settings: settings,
                         sectionId: section is Category ? section.id : null,
-                        editing: section != null,
+                        editingSpacer: section is LauncherSpacer,
                         builder: (_) => LauncherSectionPanelPage(
                           sectionIndex: index,
                         ),
@@ -557,13 +593,13 @@ class _SettingsPanelState extends State<SettingsPanel> {
 
 class _SectionSettingsRoute extends SettingsRoute<dynamic> {
   final int? sectionId;
-  final bool editing;
+  final bool editingSpacer;
 
   _SectionSettingsRoute({
     required super.settings,
     required super.builder,
     required this.sectionId,
-    this.editing = true,
+    this.editingSpacer = false,
   });
 }
 

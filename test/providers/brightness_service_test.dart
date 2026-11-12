@@ -20,14 +20,14 @@ void main() {
     messenger.setMockMethodCallHandler(windowChannel, null);
   });
 
-  test('persisted scheduler applies the current slot immediately at startup', () async {
+  test('persisted scheduler applies a zero level immediately at startup', () async {
     SharedPreferences.setMockInitialValues({'brightness_scheduler_enabled': true,
-      for (final slot in TimeSlot.values) 'brightness_${slot.name}': 50});
+      for (final slot in TimeSlot.values) 'brightness_${slot.name}': 0});
     final applied = Completer<void>();
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(channel, (call) async {
       if (call.method == 'checkWriteSettingsPermission') return true;
       if (call.method == 'setSystemBrightness') {
-        expect(call.arguments, {'brightness': 128}); applied.complete(); return true;
+        expect(call.arguments, {'brightness': 0}); applied.complete(); return true;
       }
       return null;
     });

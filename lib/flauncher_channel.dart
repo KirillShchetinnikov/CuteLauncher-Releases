@@ -31,6 +31,16 @@ class FLauncherChannel {
 
   Future<String?> getPackageName() => _methodChannel.invokeMethod<String>('getPackageName');
 
+  Future<void> setOverlayWidgetCenter(String id, int x, int y) =>
+      _methodChannel.invokeMethod<void>('setOverlayWidgetCenter', {
+        'id': id,
+        'x': x,
+        'y': y,
+      });
+
+  Future<void> setOverlayPanelAppearance(String appearance) =>
+      _methodChannel.invokeMethod<void>('setOverlayPanelAppearance', appearance);
+
   /// Requests Android's complete app data reset; acceptance ends this process.
   Future<bool> resetApplicationData() async =>
       await _methodChannel.invokeMethod<bool>('resetApplicationData') == true;

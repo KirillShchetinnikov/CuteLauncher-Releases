@@ -64,6 +64,7 @@ class _Automation extends ChangeNotifier implements BackupAutomationService {
   @override
   bool busy = false,
       failed = false,
+      cleanupFailed = false,
       shared = false,
       enabled = false,
       configured = true;
@@ -472,7 +473,8 @@ void main() {
         final firstHeading = find.descendant(
           of: find.byKey(const ValueKey(BackupSyncSection.home)),
           matching: find.byWidgetPredicate(
-            (widget) => widget is Semantics && widget.properties.header == true),
+            (widget) => widget is Semantics && widget.properties.header == true,
+          ),
         );
         expect(firstHeading, findsOneWidget);
         expect(
@@ -520,7 +522,10 @@ void main() {
         await tester.tap(weather);
         await tester.pump();
         expect(tester.widget<RoundedSwitchListTile>(weather).value, false);
-        expect(FocusManager.instance.primaryFocus, same(focusBeforeBusyActivation));
+        expect(
+          FocusManager.instance.primaryFocus,
+          same(focusBeforeBusyActivation),
+        );
         automation.busy = false;
         automation.notifyListeners();
         Navigator.of(tester.element(find.byType(BackupSyncGroupsPage))).pop();

@@ -15,6 +15,8 @@ import android.service.notification.StatusBarNotification;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import org.json.JSONArray;
 import android.widget.LinearLayout;
 import android.view.View;
@@ -31,6 +33,7 @@ public class LauncherNotificationListenerService extends NotificationListenerSer
             borderColor = 0x1FF4F5F8;
     private static float radius = 24, textSize = 16, popupWidth = 360;
     private final Handler popupHandler = new Handler(Looper.getMainLooper());
+    private final ExecutorService popupImages = Executors.newSingleThreadExecutor();
     private LinearLayout popupStack;
     private WindowManager popupWindow;
     private WindowManager.LayoutParams popupParams;
@@ -284,6 +287,7 @@ public class LauncherNotificationListenerService extends NotificationListenerSer
 
     @Override
     public void onDestroy() {
+        popupImages.shutdownNow();
         popupHandler.removeCallbacksAndMessages(null);
         clearPopups();
         super.onDestroy();
@@ -390,26 +394,32 @@ public class LauncherNotificationListenerService extends NotificationListenerSer
         final String finalAppLabel = appLabel;
         final Drawable finalAppIcon = appIcon;
 
-        popupHandler.post(new Runnable() {
-            @Override
-            public void run() {
+        popupImages.execute(() -> {
+            Map<String, Object> payload = new java.util.HashMap<>();
+            payload.put("key", sbn.getKey());
+            payload.put("title", title);
+            payload.put("text", text);
+            payload.put("appLabel", finalAppLabel);
+            payload.put("durationMs", 5000);
+            if (finalAppIcon != null) {
+                int size = dpToPx(24);
+                var bitmap = android.graphics.Bitmap.createBitmap(size, size, android.graphics.Bitmap.Config.ARGB_8888);
                 try {
-                    Map<String, Object> payload = new java.util.HashMap<>();
-                    payload.put("key", sbn.getKey());
-                    payload.put("title", title);
-                    payload.put("text", text);
-                    payload.put("appLabel", finalAppLabel);
-                    payload.put("durationMs", 5000);
-                    if (finalAppIcon != null) {
-                        int size = dpToPx(24);
-                        android.graphics.Bitmap bitmap = android.graphics.Bitmap.createBitmap(size, size, android.graphics.Bitmap.Config.ARGB_8888);
-                        finalAppIcon.setBounds(0, 0, size, size);
-                        finalAppIcon.draw(new android.graphics.Canvas(bitmap));
-                        java.io.ByteArrayOutputStream bytes = new java.io.ByteArrayOutputStream();
-                        bitmap.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, bytes);
-                        bitmap.recycle();
+                    finalAppIcon.setBounds(0, 0, size, size);
+                    finalAppIcon.draw(new android.graphics.Canvas(bitmap));
+                    var bytes = new java.io.ByteArrayOutputStream();
+                    if (bitmap.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, bytes)) {
                         payload.put("icon", bytes.toByteArray());
                     }
+                } catch (RuntimeException ignored) {
+                    // The notification can still be shown without its encoded icon.
+                } finally {
+                    bitmap.recycle();
+                }
+            }
+            popupHandler.post(() -> {
+                if (instance != this) return;
+                try {
                     if (NotificationPopupBridge.deliver(payload)) return;
                     if (!canShowPopup()) return;
                     android.widget.LinearLayout container = new android.widget.LinearLayout(LauncherNotificationListenerService.this);
@@ -471,7 +481,7 @@ public class LauncherNotificationListenerService extends NotificationListenerSer
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
+            });
         });
     }
 }

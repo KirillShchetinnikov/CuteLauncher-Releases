@@ -1,4 +1,6 @@
 import 'sleep_timer_configuration.dart';
+import 'overlay_appearance.dart';
+import 'overlay_position.dart';
 import 'tv_inputs_configuration.dart';
 import 'adaptive_landscape.dart';
 import 'tile_appearance.dart';
@@ -72,7 +74,7 @@ Map<String, dynamic> compatibleSettings(dynamic source, Map<String, dynamic> exp
       if (value is String && parseWatchNextAppLimits(value) != null) result[key] = value;
       continue;
     }
-    if (isDeviceLocalBackupKey(key)) continue;
+    if (isDeviceLocalBackupKey(key) || key.startsWith('native_config_') || key.startsWith('native_secret_')) continue;
     if (key == fileBrowserOptionsKey) {
       final options = FileBrowserOptions.tryDecode(value);
       if (options != null) result[key] = options.encode();
@@ -116,7 +118,9 @@ Map<String, dynamic> compatibleSettings(dynamic source, Map<String, dynamic> exp
       if (value is! String || !validWeatherConfiguration(value)) continue;
       final configuration = WeatherConfiguration.decode(value);
       if (configuration.source != WeatherSource.breezy && configuration.source != WeatherSource.customOpenMeteo &&
-          configuration.source != WeatherSource.gismeteo && !configuration.validCoordinates) {
+          configuration.source != WeatherSource.gismeteo && configuration.source != WeatherSource.auto &&
+          !configuration.validCoordinates && !configuration.hasLocation &&
+          !configuration.usesManualCoordinates && configuration.manualCoordinates == null) {
         continue;
       }
       try { if (jsonDecode(value) is! Map) continue; } catch (_) { continue; }
@@ -168,6 +172,8 @@ Map<String, dynamic> compatibleSettings(dynamic source, Map<String, dynamic> exp
 }
 
 bool _validValue(String key, dynamic value) {
+  if (key == volumeOverlayPositionKey) return OverlayPosition.parse(value) != null;
+  if (key == volumeOverlayAppearanceKey) return OverlayAppearance.parse(value) != null;
   if (key == 'volume_update_interval') return value is int && value >= 1 && value <= 10;
   if (key == backupSyncGroupsKey) {
     try {
@@ -225,10 +231,10 @@ bool _validValue(String key, dynamic value) {
 }
 
 /// Runtime state and credentials must never travel with a portable settings copy.
-bool isDeviceLocalBackupKey(String key) => key.startsWith('initial_profile_') || key.startsWith('adb_') ||
+bool isDeviceLocalBackupKey(String key) => key == 'native_secret_drive' || key == 'native_secret_webdav' || key.startsWith('initial_profile_') || key.startsWith('adb_') ||
     key == fileBrowserLocationsKey ||
     key == 'selected_app_channels' ||
-    key.startsWith('app_channel_') ||
+    (key == 'app_channel_formats' || key == 'app_channel_detected_formats') ||
     key.startsWith('settings_sync_') ||
     key.startsWith('cloud_') ||
     key.startsWith('backup_transport_') ||

@@ -58,11 +58,26 @@ class _SettingsTextEditor extends StatefulWidget {
   State<_SettingsTextEditor> createState() => _SettingsTextEditorState();
 }
 
-class _SettingsTextEditorState extends State<_SettingsTextEditor> {
+class _SettingsTextEditorState extends State<_SettingsTextEditor>
+    with WidgetsBindingObserver {
   late final _editor = TextEditingController(text: widget.tile.value);
   final _saveFocus = FocusNode();
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (widget.tile.obscureText && state != AppLifecycleState.resumed) {
+      _editor.clear();
+    }
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _editor.dispose();
     _saveFocus.dispose();
     super.dispose();

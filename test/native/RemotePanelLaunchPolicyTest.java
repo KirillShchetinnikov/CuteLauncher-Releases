@@ -1,5 +1,7 @@
 package com.leanbitlab.ltvL;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BooleanSupplier;
 
@@ -8,7 +10,8 @@ public class RemotePanelLaunchPolicyTest {
         if (!condition) throw new AssertionError(message);
     }
     public static void main(String[] args) {
-        RemotePanelLaunchPolicy policy = new RemotePanelLaunchPolicy();
+        var visibility = new ArrayList<Boolean>();
+        RemotePanelLaunchPolicy policy = new RemotePanelLaunchPolicy(visibility::add);
         AtomicInteger toggles = new AtomicInteger(), notices = new AtomicInteger();
         BooleanSupplier toggle = () -> { toggles.incrementAndGet(); return true; };
         Runnable notice = notices::incrementAndGet;
@@ -31,6 +34,8 @@ public class RemotePanelLaunchPolicyTest {
         policy.stopped(first);
         policy.stopped(first);
         require(policy.toggle(false, toggle, notice), "Duplicate stop is harmless");
+        require(visibility.equals(List.of(true, false, true, false)),
+            "Only visibility changes notify, including across Activity replacement");
         System.out.println("RemotePanelLaunchPolicy: all checks passed");
     }
 }

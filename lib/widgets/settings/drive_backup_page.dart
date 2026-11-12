@@ -128,19 +128,20 @@ class _DriveBackupPageState extends State<DriveBackupPage>
         _secret.trim().isNotEmpty;
     final canDisconnect = !service.busy && !_importing && service.configured;
     return SettingsPageLayout(
-      title: Text(l.backupGoogleDrive),
+      title: Text(service.yandex ? l.backupYandexDisk : l.backupGoogleDrive),
       child: ListView(
         children: [
           SettingsSection(
             key: const ValueKey('settingsGroupClient'),
             title: l.settingsGroupClient,
             children: [
-              FocusableSettingsTile(
-                title: Text(l.backupDriveClientImport),
-                leading: const Icon(Icons.file_open_outlined),
-                busy: service.busy || _importing,
-                onPressed: service.busy || _importing ? null : _importClient,
-              ),
+              if (!service.yandex)
+                FocusableSettingsTile(
+                  title: Text(l.backupDriveClientImport),
+                  leading: const Icon(Icons.file_open_outlined),
+                  busy: service.busy || _importing,
+                  onPressed: service.busy || _importing ? null : _importClient,
+                ),
               SizedBox(
                 height: 4,
                 child: _importing ? const LinearProgressIndicator() : null,
@@ -195,7 +196,9 @@ class _DriveBackupPageState extends State<DriveBackupPage>
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              l.backupDriveConnectionStatus,
+                              service.yandex
+                                  ? l.backupYandexConnectionStatus
+                                  : l.backupDriveConnectionStatus,
                               style: Theme.of(context).textTheme.labelLarge,
                             ),
                             const SizedBox(height: 4),
@@ -238,8 +241,12 @@ class _DriveBackupPageState extends State<DriveBackupPage>
                 leading: const Icon(Icons.link),
                 title: Text(
                   service.configured
-                      ? l.backupDriveReconnect
-                      : l.backupDriveConnect,
+                      ? (service.yandex
+                            ? l.backupYandexReconnect
+                            : l.backupDriveReconnect)
+                      : (service.yandex
+                            ? l.backupYandexConnect
+                            : l.backupDriveConnect),
                 ),
                 enabled: canConnect,
                 onPressed: !canConnect
@@ -253,6 +260,7 @@ class _DriveBackupPageState extends State<DriveBackupPage>
                               l,
                               error,
                               drive: true,
+                              yandex: service.yandex,
                             );
                             if (message == null) return;
                             showActionNotice(context, message, error: true);
@@ -273,6 +281,7 @@ class _DriveBackupPageState extends State<DriveBackupPage>
                             service.failureCode ?? 'unknown',
                           ),
                           drive: true,
+                          yandex: service.yandex,
                         ) ??
                         l.cloudFailed,
                   ),
@@ -333,7 +342,10 @@ class _DriveBackupPageState extends State<DriveBackupPage>
               ),
             ],
           ),
-          SettingsHelp(title: l.backupManagement, text: l.backupDriveHelp),
+          SettingsHelp(
+            title: l.backupManagement,
+            text: service.yandex ? l.backupYandexHelp : l.backupDriveHelp,
+          ),
         ],
       ),
     );

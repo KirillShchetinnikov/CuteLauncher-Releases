@@ -1,6 +1,8 @@
 import 'package:flauncher/widgets/settings/settings_list_heading.dart';
 import 'package:flauncher/widgets/settings/settings_information.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
+import 'package:flauncher/overlay_appearance.dart';
+import 'package:flauncher/overlay_position.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/sleep_timer_service.dart';
 import 'package:flauncher/sleep_timer_configuration.dart';
@@ -102,19 +104,30 @@ void main() {
     });
   }
 
-  testWidgets('three options save, display selector and large text fit', (
+  testWidgets('timer options save, display selector and large text fit', (
     tester,
   ) async {
     await pump(tester, const SleepTimerSettingsPage(), scale: 1.6);
     expect(find.text('Настройки'), findsNothing);
+    expect(settings.sleepTimerConfiguration.showOverApps, isFalse);
     await tapText(tester, 'Показывать секунды');
     await tapText(tester, 'Закрывать виджет после выбора таймера');
     await tapText(tester, 'Показывать при активном таймере');
     await tapText(tester, 'Оставшееся время и время отключения');
+    await tapText(tester, 'Показывать таймер поверх приложений');
+    await tapText(tester, 'Где показывать');
+    await tapText(tester, 'На месте виджета в верхней панели');
+    await tapText(tester, 'Оформление поверх приложений');
+    await tapText(tester, 'Тёмное');
     final config = settings.sleepTimerConfiguration;
+    expect(config.overlayAppearance, OverlayAppearance.dark);
+    expect(settings.volumeOverlayAppearance, OverlayAppearance.topPanel);
     expect(config.showSeconds, false);
     expect(config.closeAfterSelection, false);
     expect(config.display, 'both');
+    expect(config.showOverApps, isTrue);
+    expect(config.overlayPosition, OverlayPosition.widget);
+    expect(find.text('Настройка доступа'), findsOneWidget);
     expect(calls, isEmpty);
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox());

@@ -18,15 +18,28 @@ class ImageInputException implements Exception {
 Future<Uint8List> readBoundedImage(
   Stream<List<int>> input, {
   int limit = maximumImageInputBytes,
+  Duration? timeout,
 }) async {
-  final bytes = BytesBuilder(copy: false);
-  await for (final chunk in input) {
-    if (bytes.length + chunk.length > limit) {
-      throw const ImageInputException(ImageInputFailure.bytes);
+  final chunks = StreamIterator<List<int>>(input);
+  Future<Uint8List> read() async {
+    final bytes = BytesBuilder(copy: false);
+    while (await chunks.moveNext()) {
+      final chunk = chunks.current;
+      if (bytes.length + chunk.length > limit) {
+        throw const ImageInputException(ImageInputFailure.bytes);
+      }
+      bytes.add(chunk);
     }
-    bytes.add(chunk);
+    return bytes.takeBytes();
   }
-  return bytes.takeBytes();
+
+  try {
+    final result = read();
+    return await (timeout == null ? result : result.timeout(timeout));
+  } finally {
+    // Timing out a Future alone leaves its stream (and HTTP connection) alive.
+    await chunks.cancel();
+  }
 }
 
 Future<void> validateImageBytes(Uint8List bytes) async {

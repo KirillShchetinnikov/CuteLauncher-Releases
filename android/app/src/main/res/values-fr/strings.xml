@@ -19,4 +19,22 @@
     <string name="remap_error_webhook_http">Le webhook a refusé la requête (HTTP %1$d).</string>
     <string name="remap_error_webhook_timeout">Délai d’attente du webhook dépassé.</string>
     <string name="remap_error_webhook">Connexion au webhook impossible.</string>
+    <string name="power_off">Éteindre l’appareil</string>
+    <string name="power_reboot">Redémarrer l’appareil</string>
+    <string name="power_off_confirm">Mettre l’appareil en veille ?</string>
+    <string name="power_reboot_confirm">Redémarrer l’appareil ? Les applications ouvertes seront fermées.</string>
+    <string name="screensaver_label">Horloge CuteLauncher</string>
+    <string name="notification_service_label">Service de notifications CuteLauncher</string>
+    <string name="night_mode_title">Mode nuit</string>
+    <string name="night_mode_notice">Filtre d’écran activé selon la programmation</string>
+    <string name="night_mode_stop">Désactiver</string>
+    <string name="recovery_checking">Vérification du lanceur…</string>
+    <string name="recovery_title">Récupération du lanceur</string>
+    <string name="recovery_description">CuteLauncher s’est arrêté à plusieurs reprises. Les paramètres sont conservés. Vous pouvez réessayer, ouvrir une autre application ou choisir un autre écran d’accueil. Si le lanceur d’origine est désactivé, réactivez-le d’abord dans les paramètres des applications Android.</string>
+    <string name="recovery_retry">Relancer CuteLauncher</string>
+    <string name="recovery_settings">Paramètres Android</string>
+    <string name="recovery_home">Choisir l’écran d’accueil</string>
+    <string name="recovery_unavailable">Cette action est indisponible sur ce téléviseur.</string>
+    <string name="recovery_restore">Restaurer l’écran d’accueil précédent</string>
+    <string name="recovery_restore_confirm">Restaurer l’écran d’accueil précédent via la connexion ADB locale existante ?</string>
 </resources>

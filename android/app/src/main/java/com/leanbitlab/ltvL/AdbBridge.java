@@ -68,7 +68,9 @@ final class AdbBridge {
             if (call.method.equals("homeOverride")) {
                 Boolean enabled = call.argument("enabled");
                 if (enabled == null) { result.success(false); return; }
-                result.success(activity.getSharedPreferences("launcher_control",0).edit().putBoolean("override_home",enabled).commit());
+                boolean saved = activity.getSharedPreferences("launcher_control",0).edit().putBoolean("override_home",enabled).commit();
+                if (saved) NativeSyncBridge.changed("native_config_launcher_control");
+                result.success(saved);
                 return;
             }
             if (call.method.equals("info")) {

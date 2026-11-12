@@ -1,4 +1,5 @@
 import 'package:flauncher/weather_sources.dart';
+import 'package:flauncher/information_formats.dart';
 import 'package:flauncher/weather_text_format.dart';
 import 'dart:async';
 import 'dart:ui' as ui;
@@ -511,6 +512,11 @@ void main() {
     when(settings.showTimeInStatusBar).thenReturn(true);
     when(settings.showDateInStatusBar).thenReturn(true);
     when(settings.showWeatherInStatusBar).thenReturn(false);
+    when(settings.informationWeather()).thenReturn(const WeatherDisplayOptions(
+      format: WeatherTextFormat.standard,
+      fahrenheit: false,
+      warnings: false,
+    ));
     await _pumpWidgetWithProviders(tester, mkWallpaperService(), apps, settings, appearance: appearance, remotePanel: remote);
     getFocusNodeForApp(tester, 'background.app')!.requestFocus();
     await tester.pumpAndSettle();
@@ -2295,7 +2301,7 @@ void main() {
     expect(tester.getTopLeft(card).dy, greaterThan(1080));
     await tester.tap(find.descendant(of: list, matching: find.text('Hidden')));
     await tester.pumpAndSettle();
-    expect(panelOnRight(), isTrue);
+    expect(panelOnRight(), isFalse);
     expect(tester.getTopLeft(topCard), original);
     await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();

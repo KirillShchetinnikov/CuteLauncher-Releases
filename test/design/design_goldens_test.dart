@@ -462,6 +462,14 @@ void main() {
                   'pssBytes': 48 * 1024 * 1024,
                   'rssBytes': 72 * 1024 * 1024,
                   'graphicsBytes': 12 * 1024 * 1024,
+                  'measuredAtMillis': DateTime(
+                    2026,
+                    11,
+                    12,
+                    14,
+                    32,
+                    8,
+                  ).millisecondsSinceEpoch,
                 };
               }
               return null;

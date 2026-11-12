@@ -11,14 +11,21 @@ CuteLauncher использует перечисленные ниже проек
 - [dadb](https://github.com/mobile-dev-inc/dadb) — mobile.dev inc.: [Apache 2.0](DADB_LICENSE.txt).
 - [apksig](https://android.googlesource.com/platform/tools/apksig/) — Android Open Source Project, проверка подписи APK: [Apache 2.0](../assets/licenses/android_runtime.txt).
 - AndroidX / AOSP, Media3 / ExoPlayer, Kotlin / JetBrains, Kotlinx Coroutines, Okio / Square, ReLinker / KeepSafe, Guava, JSpecify: [Android runtime notices](../assets/licenses/android_runtime.txt).
+- SMBJ 0.15.0 и asn-one 0.6.0 (Apache-2.0), MBassador 1.3.2, SLF4J 2.0.18 и Bouncy Castle 1.85.2 (MIT): [лицензии SMB-клиента](../assets/licenses/android_runtime.txt).
 - [TLS notices for earlier builds](../assets/licenses/adb_tls.txt).
+- [GeoNames](https://www.geonames.org/) — данные встроенного каталога городов,
+  онлайн-поиск и резервный источник времени рассвета и заката.
+  Каталог содержит отобранные и сокращённые записи.
+  [Уведомление CC BY 4.0](../assets/licenses/geonames.txt).
+- [Sunrise-Sunset.org](https://sunrise-sunset.org/) — основной источник времени
+  рассвета и заката для солнечного расписания.
 
 ## Шрифты
 
 Medeo создан Timur Akhimov и DNF для prtner.ai на основе Geist и Inter. Авторы исходных семейств: Andrés Briganti, Mateo Zaragoza, basement.studio, Vercel, Rasmus Andersson и The Inter Project Authors. Сохранён полный [список авторов](../assets/fonts/AUTHORS_medeo.txt).
 Medeo Serif также использует Geist Serif, PT Serif (ParaType) и Noto Serif Display (Google).
 
-[Medeo: исходники](https://github.com/DNFDEVS/medeo-font/tree/72c9ca7cbd091f8b85ff2cee26e3dcc4e762f1a7), [сайт](https://prtner.ai/font). Medeo Sans, Mono и Serif 1.0 (`v1.0.0`): неизменённые variable TTF Sans/Mono и статический Serif Regular из [официального выпуска](https://github.com/DNFDEVS/medeo-font/releases/tag/v1.0.0), commit `72c9ca7cbd091f8b85ff2cee26e3dcc4e762f1a7`, SIL OFL 1.1. Лицензия и список авторов сохранены из того же выпуска целиком.
+[Medeo: исходники](https://github.com/DNFDEVS/medeo-font/tree/99100fec4a63928150584de918ba2953c2cff4e8), [сайт](https://prtner.ai/font). Medeo Sans, Mono и Serif 1.1.0 (`v1.1.0`): неизменённые variable TTF Sans/Mono и статический Serif Regular из [официального выпуска](https://github.com/DNFDEVS/medeo-font/releases/tag/v1.1.0), commit `99100fec4a63928150584de918ba2953c2cff4e8`, SIL OFL 1.1. Лицензия и список авторов сохранены из того же выпуска целиком.
 
 | Семейство | Правообладатели | Условия |
 |---|---|---|

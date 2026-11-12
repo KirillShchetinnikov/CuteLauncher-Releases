@@ -87,11 +87,12 @@ class InformationPreview extends StatelessWidget {
         if (!options.format.explicitLayout) ...[icon, const SizedBox(width: 4)],
         WeatherDisplayText(
           [
-            options.format.format(weather, l, fahrenheit: options.fahrenheit, warningsAvailable: weatherService?.stale != true, now: now),
+            options.format.format(weather, l, fahrenheit: options.fahrenheit, missingAsDash: options.missingAsDash, warningsAvailable: weatherService?.stale != true, now: now),
             ?warning,
           ].join(' · '),
           style: appearance.weatherTextStyle(text),
           inlineIcon: icon,
+          alignment: background ? appearance.backgroundInformationAlignment : options.panelAlignment,
           maxWidth: weatherTextMaxWidth(options.format,
             backgroundScreenWidth: background ? MediaQuery.sizeOf(context).width : null),
         ),
@@ -142,6 +143,8 @@ class InformationPreview extends StatelessWidget {
             dateFormat: formats.date,
             weather: weather,
             weatherTextFormat: options.format,
+            weatherMissingAsDash: options.missingAsDash,
+            weatherAlignment: options.panelAlignment,
             useFahrenheit: options.fahrenheit,
             showWarnings: options.warnings && weatherService?.stale != true,
             weatherStale: weatherService?.stale == true,

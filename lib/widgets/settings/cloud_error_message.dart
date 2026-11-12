@@ -8,12 +8,22 @@ String? cloudErrorMessage(
   AppLocalizations l,
   Object error, {
   bool drive = false,
+  bool yandex = false,
+  bool smb = false,
 }) => switch (error) {
   CloudBackupException(code: 'cancelled') => null,
+  CloudBackupException(code: 'configuration') when smb => l.smbHelp,
+  CloudBackupException(code: 'unsupported' || 'redirect') when smb =>
+    l.cloudFailed,
   CloudBackupException(code: 'configuration') =>
-    drive ? l.driveConfigurationError : l.cloudConfigurationError,
+    yandex
+        ? l.yandexConfigurationError
+        : drive
+        ? l.driveConfigurationError
+        : l.cloudConfigurationError,
   CloudBackupException(code: 'authorization') => l.cloudAuthorizationError,
-  CloudBackupException(code: 'expired') when drive => l.driveCodeExpired,
+  CloudBackupException(code: 'expired') when drive =>
+    yandex ? l.yandexCodeExpired : l.driveCodeExpired,
   CloudBackupException(code: 'missing') => l.cloudMissingError,
   CloudBackupException(code: 'unsupported' || 'redirect') when drive =>
     l.cloudFailed,

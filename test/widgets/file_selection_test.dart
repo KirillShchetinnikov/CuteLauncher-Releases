@@ -596,9 +596,9 @@ void main() {
           (value) => result = value,
           onSaved: (path) => destination = path,
         );
-        await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
-        await tester.pumpAndSettle();
-        await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+        await tester.tap(
+          find.widgetWithText(FocusableSettingsTile, 'Сохранить'),
+        );
         await tester.pumpAndSettle();
         expect(result, expected);
         expect(destination, '/storage/main/report-1.json');

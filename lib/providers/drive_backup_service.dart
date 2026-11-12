@@ -1,7 +1,9 @@
 import '../diagnostics_store.dart';
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/widgets.dart';
 
@@ -10,10 +12,19 @@ import '../cloud_account.dart';
 
 class DriveBackupService extends ChangeNotifier with WidgetsBindingObserver {
   static const scope = 'https://www.googleapis.com/auth/drive.file';
-  static const _channel = BridgeChannel('cutelauncher/drive_account');
+  static const yandexScope = 'cloud_api:disk.app_folder';
+  final bool yandex;
+  String get accountScope => yandex ? yandexScope : scope;
+  BridgeChannel get _channel => BridgeChannel(
+    yandex ? 'cutelauncher/yandex_account' : 'cutelauncher/drive_account',
+  );
+  final String profile;
+  Future<T?> _invoke<T>(String method, [Map<String, Object?>? arguments]) =>
+      _channel.invokeMethod<T>(method, {...?arguments, 'profile': profile});
   final HttpClient Function() clientFactory;
   String clientId = '', clientSecret = '', code = '', verificationUrl = '';
   String? _refreshToken, _accessToken;
+  String? _connectionId;
   DateTime _expires = DateTime(1970);
   bool busy = false, configured = false, failed = false;
   String? failureCode;
@@ -21,8 +32,11 @@ class DriveBackupService extends ChangeNotifier with WidgetsBindingObserver {
   bool _disposed = false;
   Timer? _pollTimer;
   HttpClient? _client;
-  DriveBackupService({HttpClient Function()? clientFactory})
-    : clientFactory = clientFactory ?? HttpClient.new {
+  DriveBackupService({
+    HttpClient Function()? clientFactory,
+    this.profile = 'default',
+    this.yandex = false,
+  }) : clientFactory = clientFactory ?? HttpClient.new {
     WidgetsBinding.instance.addObserver(this);
   }
   void _notify() {
@@ -31,8 +45,7 @@ class DriveBackupService extends ChangeNotifier with WidgetsBindingObserver {
 
   Future<void> refreshAccount() async {
     final generation = _generation;
-    final data = await _channel
-        .invokeMethod<Map>('read')
+    final data = await _invoke<Map>('read')
         .timeout(const Duration(seconds: 10));
     if (_disposed || generation != _generation) return;
     var nextId = '', nextSecret = '';
@@ -41,11 +54,14 @@ class DriveBackupService extends ChangeNotifier with WidgetsBindingObserver {
       nextId = data['clientId'] as String;
       final payload = jsonDecode(data['payload'] as String) as Map;
       nextSecret = payload['clientSecret'] as String;
-      if (payload['scope'] == scope) {
+      if (yandex) _connectionId = payload['connectionId'] as String;
+      if (payload['scope'] == accountScope) {
         nextRefreshToken = payload['refreshToken'] as String;
       }
     }
-    if (clientId != nextId || clientSecret != nextSecret || _refreshToken != nextRefreshToken) {
+    if (clientId != nextId ||
+        clientSecret != nextSecret ||
+        _refreshToken != nextRefreshToken) {
       _accessToken = null;
       _expires = DateTime(1970);
     }
@@ -66,7 +82,10 @@ class DriveBackupService extends ChangeNotifier with WidgetsBindingObserver {
     try {
       return await (() async {
         final request = await client.postUrl(
-          Uri.https('oauth2.googleapis.com', endpoint),
+          Uri.https(
+            yandex ? 'oauth.yandex.ru' : 'oauth2.googleapis.com',
+            endpoint,
+          ),
         );
         request.followRedirects = false;
         request.headers.contentType = ContentType(
@@ -88,7 +107,10 @@ class DriveBackupService extends ChangeNotifier with WidgetsBindingObserver {
           if (bytes.length > 65536) throw const CloudBackupException('size');
         }
         if (response.statusCode >= 300 && response.statusCode < 400) {
-          throw CloudBackupException('redirect', httpStatus: response.statusCode);
+          throw CloudBackupException(
+            'redirect',
+            httpStatus: response.statusCode,
+          );
         }
         final result = Map<String, dynamic>.from(
           jsonDecode(utf8.decode(bytes)) as Map,
@@ -136,7 +158,7 @@ class DriveBackupService extends ChangeNotifier with WidgetsBindingObserver {
     try {
       final result = await _oauth('/device/code', {
         'client_id': id,
-        'scope': scope,
+        'scope': accountScope,
       });
       if (_disposed || generation != _generation) return;
       if (result['device_code'] is! String ||
@@ -147,6 +169,9 @@ class DriveBackupService extends ChangeNotifier with WidgetsBindingObserver {
       }
       code = result['user_code'] as String;
       verificationUrl = result['verification_url'] as String;
+      if (yandex && verificationUrl != 'https://oauth.yandex.ru/device') {
+        throw const CloudBackupException('response');
+      }
       final deadline = DateTime.now().add(
         Duration(seconds: (result['expires_in'] as int).clamp(1, 3600)),
       );
@@ -163,6 +188,8 @@ class DriveBackupService extends ChangeNotifier with WidgetsBindingObserver {
       DiagnosticsStore.instance.recordException('driveConnect', error, stack);
       if (!_disposed && generation == _generation) {
         busy = false;
+        code = '';
+        verificationUrl = '';
         failed = true;
         failureCode = _failureCode(error);
         _notify();
@@ -188,8 +215,10 @@ class DriveBackupService extends ChangeNotifier with WidgetsBindingObserver {
         final result = await _oauth('/token', {
           'client_id': id,
           'client_secret': secret,
-          'device_code': deviceCode,
-          'grant_type': 'urn:ietf:params:oauth:grant-type:device_code',
+          (yandex ? 'code' : 'device_code'): deviceCode,
+          'grant_type': yandex
+              ? 'device_code'
+              : 'urn:ietf:params:oauth:grant-type:device_code',
         });
         if (_disposed || generation != _generation) return;
         if (result['error'] == 'authorization_pending' ||
@@ -206,20 +235,36 @@ class DriveBackupService extends ChangeNotifier with WidgetsBindingObserver {
           );
           return;
         }
+        if (yandex &&
+            result['scope'] is String &&
+            !(result['scope'] as String).split(' ').contains(accountScope)) {
+          throw const CloudBackupException('authorization');
+        }
         if (result['refresh_token'] is! String ||
             result['access_token'] is! String) {
           throw const CloudBackupException('response');
         }
-        final saved = await _channel.invokeMethod<bool>('save', {
+        final connectionId = yandex
+            ? List.generate(
+                16,
+                (_) => Random.secure()
+                    .nextInt(256)
+                    .toRadixString(16)
+                    .padLeft(2, '0'),
+              ).join()
+            : null;
+        final saved = await _invoke<bool>('save', {
           'clientId': id,
           'payload': jsonEncode({
             'clientSecret': secret,
             'refreshToken': result['refresh_token'],
-            'scope': scope,
+            'scope': accountScope,
+            if (yandex) 'connectionId': connectionId,
           }),
         });
         if (saved != true) throw const CloudBackupException('storage');
         if (_disposed || generation != _generation) return;
+        _connectionId = connectionId;
         clientId = id;
         clientSecret = secret;
         _refreshToken = result['refresh_token'] as String;
@@ -253,7 +298,7 @@ class DriveBackupService extends ChangeNotifier with WidgetsBindingObserver {
         DateTime.now().isBefore(
           _expires.subtract(const Duration(minutes: 1)),
         )) {
-      return 'Bearer $_accessToken';
+      return '${yandex ? 'OAuth' : 'Bearer'} $_accessToken';
     }
     if (_refreshToken == null) await refreshAccount();
     if (!configured) throw const CloudBackupException('configuration');
@@ -265,18 +310,38 @@ class DriveBackupService extends ChangeNotifier with WidgetsBindingObserver {
       'refresh_token': refreshToken!,
       'grant_type': 'refresh_token',
     });
-    if (_disposed || generation != _generation || id != clientId ||
-        secret != clientSecret || refreshToken != _refreshToken) {
+    if (_disposed ||
+        generation != _generation ||
+        id != clientId ||
+        secret != clientSecret ||
+        refreshToken != _refreshToken) {
       throw const CloudBackupException('cancelled');
     }
     if (result['access_token'] is! String) {
       throw const CloudBackupException('authorization');
     }
+    if (yandex && result['refresh_token'] is String) {
+      final next = result['refresh_token'] as String;
+      final saved = await _invoke<bool>('save', {
+        'clientId': id,
+        'payload': jsonEncode({
+          'clientSecret': secret,
+          'refreshToken': next,
+          'scope': accountScope,
+          'connectionId': _connectionId,
+        }),
+      });
+      if (saved != true) throw const CloudBackupException('storage');
+      if (_disposed || generation != _generation) {
+        throw const CloudBackupException('cancelled');
+      }
+      _refreshToken = next;
+    }
     _accessToken = result['access_token'] as String;
     _expires = DateTime.now().add(
       Duration(seconds: (result['expires_in'] as int?) ?? 3600),
     );
-    return 'Bearer $_accessToken';
+    return '${yandex ? 'OAuth' : 'Bearer'} $_accessToken';
   }
 
   static String _failureCode(Object error) => switch (error) {
@@ -288,9 +353,7 @@ class DriveBackupService extends ChangeNotifier with WidgetsBindingObserver {
 
   void cancel() {
     _generation++;
-    unawaited(
-      _channel.invokeMethod<bool>('invalidate').catchError((_) => false),
-    );
+    unawaited(_invoke<bool>('invalidate').catchError((_) => false));
     _pollTimer?.cancel();
     _client?.close(force: true);
     busy = false;
@@ -301,7 +364,7 @@ class DriveBackupService extends ChangeNotifier with WidgetsBindingObserver {
 
   Future<void> disconnect() async {
     cancel();
-    if (await _channel.invokeMethod<bool>('disconnect') != true) {
+    if (await _invoke<bool>('disconnect') != true) {
       throw const CloudBackupException('storage');
     }
     configured = false;

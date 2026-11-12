@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'adaptive_landscape.dart';
 import 'date_time_format.dart';
 import 'sleep_timer_configuration.dart';
+import 'overlay_appearance.dart';
+import 'overlay_position.dart';
 import 'tile_appearance.dart';
 import 'weather_sources.dart';
 
@@ -109,15 +111,13 @@ abstract final class LauncherDefaults {
     'show_weather_in_status_bar': true,
     'show_night_mode_in_status_bar': false,
     'show_volume_in_status_bar': true,
+    'show_volume_overlay': false,
+    volumeOverlayPositionKey: 'topRight',
+    volumeOverlayAppearanceKey: OverlayAppearance.topPanel.name,
     'show_nas_in_status_bar': true,
     'show_usb_in_status_bar': true,
     'date_format': shortWeekdayDateFormat,
-    weatherConfigurationKey: jsonEncode(
-      const WeatherConfiguration(
-        source: WeatherSource.openMeteo,
-        locationMode: WeatherLocationMode.manual,
-      ).toJson(),
-    ),
+    weatherConfigurationKey: jsonEncode(WeatherConfiguration.defaults.toJson()),
     sleepTimerConfigurationKey: SleepTimerConfiguration(
       showSeconds: false,
       presets: timerPresets,

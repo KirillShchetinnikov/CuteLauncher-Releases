@@ -8,6 +8,7 @@ import java.util.*;
 final class LegacyBackupFiles {
     static final long LIMIT = 64L * 1024 * 1024;
     static final String NAME = "^cute-(backup|sync)-(shared|[a-f0-9]{32})-[a-f0-9]{32}-[0-9]+-[a-f0-9]{16}(?:-[A-Za-z0-9_]{1,64})?\\.json$";
+    private static boolean temporaryName(String name) { return name != null && name.endsWith(".partial") && name.substring(0, name.length() - 8).matches(NAME); }
     private final File directory;
 
     LegacyBackupFiles(File directory) throws IOException {
@@ -37,7 +38,8 @@ final class LegacyBackupFiles {
         File target = child(name);
         if (target.exists()) throw new IOException("Backup already exists");
         if (source != null && (!source.isFile() || source.length() > LIMIT)) throw new IOException("Invalid source");
-        File partial = File.createTempFile("cute-", ".partial", directory);
+        File partial = child(name + ".partial");
+        if (!partial.createNewFile()) throw new IOException("Temporary file exists");
         try {
             try (OutputStream output = new FileOutputStream(partial)) {
                 if (source == null) output.write(new byte[]{123, 125});
@@ -54,7 +56,7 @@ final class LegacyBackupFiles {
             Files.delete(child(probe).toPath());
             return true;
         }
-        if ("list".equals(operation)) {
+        if ("list".equals(operation) || "listTemporary".equals(operation)) {
             List<Map<String, String>> entries = new ArrayList<>();
             // Stream the directory: do not allocate an unbounded File[] on a shared volume.
             try (var files = Files.newDirectoryStream(directory.toPath())) {
@@ -62,13 +64,13 @@ final class LegacyBackupFiles {
                 for (var path : files) {
                     if (++count > 4096) throw new IOException("Too many files");
                     String filename = path.getFileName().toString();
-                    if (filename.matches(NAME) && child(filename).isFile())
+                    if (("listTemporary".equals(operation) ? temporaryName(filename) : filename.matches(NAME)) && child(filename).isFile())
                         entries.add(Map.of("name", filename, "id", child(filename).toURI().toString()));
                 }
             }
             return entries;
         }
-        if (name == null || !name.matches(NAME)) throw new IOException("Invalid backup name");
+        if (name == null || !("deleteTemporary".equals(operation) ? temporaryName(name) : name.matches(NAME))) throw new IOException("Invalid backup name");
         File file = child(name);
         switch (operation) {
             case "upload" -> {
@@ -82,7 +84,7 @@ final class LegacyBackupFiles {
                     copy(input, output);
                 }
             }
-            case "delete" -> Files.deleteIfExists(file.toPath());
+            case "delete", "deleteTemporary" -> Files.deleteIfExists(file.toPath());
             default -> throw new IOException("Unknown operation");
         }
         return true;

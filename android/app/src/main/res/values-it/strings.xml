@@ -19,4 +19,22 @@
     <string name="remap_error_webhook_http">Il webhook ha rifiutato la richiesta (HTTP %1$d).</string>
     <string name="remap_error_webhook_timeout">Tempo di attesa del webhook scaduto.</string>
     <string name="remap_error_webhook">Impossibile connettersi al webhook.</string>
+    <string name="power_off">Spegni dispositivo</string>
+    <string name="power_reboot">Riavvia dispositivo</string>
+    <string name="power_off_confirm">Mettere il dispositivo in standby?</string>
+    <string name="power_reboot_confirm">Riavviare il dispositivo? Le app aperte verranno chiuse.</string>
+    <string name="screensaver_label">Orologio CuteLauncher</string>
+    <string name="notification_service_label">Servizio notifiche CuteLauncher</string>
+    <string name="night_mode_title">Modalità notturna</string>
+    <string name="night_mode_notice">Filtro schermo attivo secondo la programmazione</string>
+    <string name="night_mode_stop">Disattiva</string>
+    <string name="recovery_checking">Verifica del launcher…</string>
+    <string name="recovery_title">Ripristino del launcher</string>
+    <string name="recovery_description">CuteLauncher si è arrestato più volte. Le impostazioni sono conservate. Puoi riprovare, aprire un’altra app o scegliere un’altra schermata Home. Se il launcher di sistema è disattivato, attivalo prima nelle impostazioni delle app di Android.</string>
+    <string name="recovery_retry">Riavvia CuteLauncher</string>
+    <string name="recovery_settings">Impostazioni Android</string>
+    <string name="recovery_home">Scegli la schermata Home</string>
+    <string name="recovery_unavailable">Questa azione non è disponibile su questo televisore.</string>
+    <string name="recovery_restore">Ripristina la schermata Home precedente</string>
+    <string name="recovery_restore_confirm">Ripristinare la schermata Home precedente tramite la connessione ADB locale esistente?</string>
 </resources>

@@ -31,7 +31,8 @@ class LocalBackupStorage extends BackupStorage {
     _check();
     final parent = await directory();
     _check();
-    final root = await Directory('${parent.path}/backup_storage').create(recursive: true);
+    final root = await Directory('${parent.path}/backup_storage')
+        .create(recursive: true);
     _check();
     return root;
   }
@@ -71,6 +72,46 @@ class LocalBackupStorage extends BackupStorage {
       }
     }
     return result;
+  }
+
+  @override
+  Future<List<RemoteBackupFile>> temporaryFiles() async {
+    if (tree != null) {
+      final values = await _call<List<dynamic>>('listTemporary');
+      return [
+        for (final v in values!)
+          if (BackupStorage.temporaryName(v['name'] as String))
+            RemoteBackupFile(v['name'] as String, v['id'] as String),
+      ];
+    }
+    final entries = <RemoteBackupFile>[];
+    var count = 0;
+    await for (final entity in (await _root()).list(followLinks: false)) {
+      _check();
+      if (++count > 4096) throw StateError('Too many local files');
+      final name = entity.uri.pathSegments.last;
+      if (entity is File && BackupStorage.temporaryName(name)) {
+        entries.add(RemoteBackupFile(name, name));
+      }
+    }
+    return entries;
+  }
+
+  @override
+  Future<void> deleteTemporary(RemoteBackupFile file) async {
+    _check();
+    if (!BackupStorage.temporaryName(file.name)) {
+      throw ArgumentError('Invalid temporary name');
+    }
+    if (tree != null) {
+      await _call<bool>('deleteTemporary', name: file.name);
+      return;
+    }
+    final target = File('${(await _root()).path}/${file.name}');
+    if (await FileSystemEntity.type(target.path, followLinks: false) ==
+        FileSystemEntityType.file) {
+      await target.delete();
+    }
   }
 
   void _name(String name) {

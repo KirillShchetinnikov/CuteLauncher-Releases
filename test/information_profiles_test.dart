@@ -164,7 +164,7 @@ void main() {
       );
       expect(
         backupSyncPartGroup('setting:$sharedInformationClockBehaviorKey'),
-        BackupSyncGroup.tiles,
+        BackupSyncGroup.topPanel,
       );
     },
   );

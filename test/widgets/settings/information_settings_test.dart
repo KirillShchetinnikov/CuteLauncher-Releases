@@ -1,6 +1,7 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
+
+import 'package:flauncher/widgets/settings/information_weather_format_tile.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
@@ -79,6 +80,24 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+
+  testWidgets('weather display controls save independently outside the editor', (tester) async {
+    await pump(tester, const WeatherFormatOptionsTiles());
+    await tester.tap(find.byKey(const Key('weather_missing_as_dash')));
+    await tester.pumpAndSettle();
+    expect(settings.informationWeather().missingAsDash, isTrue);
+    await tester.tap(find.byKey(const Key('weather_panel_alignment')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Справа').last);
+    await tester.pumpAndSettle();
+    expect(settings.informationWeather().panelAlignment, 'right');
+    expect(settings.informationWeather().missingAsDash, isTrue);
+    final restored = SettingsService(await SharedPreferences.getInstance());
+    addTearDown(restored.dispose);
+    expect(restored.informationWeather().panelAlignment, 'right');
+    expect(restored.informationWeather().missingAsDash, isTrue);
+    expect(tester.takeException(), isNull);
+  });
 
   test('every placement combination groups only visible panel members', () {
     for (final time in InformationPlacement.destinations) {

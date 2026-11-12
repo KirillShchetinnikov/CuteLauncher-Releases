@@ -1123,10 +1123,12 @@ void main() {
       expect(tester.getRect(navigator), initialRect);
       expect(tester.takeException(), isNull);
     }
-    Future<void> open(String label) async {
-      await tester.ensureVisible(find.text(label).last);
-      await tester.tap(find.text(label).last);
+    Future<void> open(String label, Type page) async {
+      final tile = find.widgetWithText(FocusableSettingsTile, label);
+      await tester.scrollUntilVisible(tile, 160, scrollable: find.byType(Scrollable).last);
+      tester.widget<FocusableSettingsTile>(tile).onPressed!();
       await tester.pumpAndSettle();
+      expect(find.byType(page), findsOneWidget);
       expectToolbarSpace();
     }
     Future<void> back() async {
@@ -1146,8 +1148,8 @@ void main() {
     await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
     expectToolbarSpace();
-    await open('Таймеры');
-    await open('Добавить таймер');
+    await open('Таймеры', SleepTimerPresetsPage);
+    await open('Добавить таймер', SleepTimerEditorPage);
     await back();
     await back();
     await tester.pumpWidget(const SizedBox());

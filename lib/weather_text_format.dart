@@ -136,12 +136,14 @@ class WeatherTextFormat {
     AppLocalizations? l, {
     required bool fahrenheit,
     bool warningsAvailable = true,
+    bool missingAsDash = false,
     DateTime? now,
   }) {
     if (isStandard) {
       return weather?.formatTemperature(useFahrenheit: fahrenheit) ?? '—';
     }
-    if (weather == null) return '—';
+    if (weather == null && !missingAsDash) return '—';
+    weather ??= const WeatherData();
     String? temperature(int? value) => value == null
         ? null
         : WeatherData.formatDegrees(value, useFahrenheit: fahrenheit);
@@ -153,12 +155,13 @@ class WeatherTextFormat {
         WeatherTextField.conditions =>
           localizedWeatherCondition(weather.currentConditionCode, l) ??
               weather.currentCondition,
-        WeatherTextField.conditionsIcon => [
+        WeatherTextField.conditionsIcon => weather.currentConditionCode == null &&
+          (weather.currentCondition == null || weather.currentCondition!.trim().isEmpty) ? null : [
           localizedWeatherCondition(weather.currentConditionCode, l) ??
               weather.currentCondition,
-          weatherInlineIcon,
+          if (weather.currentConditionCode != null) weatherInlineIcon,
         ].whereType<String>().where((s) => s.trim().isNotEmpty).join(' '),
-        WeatherTextField.icon => weatherInlineIcon,
+        WeatherTextField.icon => weather.currentConditionCode == null ? null : weatherInlineIcon,
         WeatherTextField.warning =>
           warningsAvailable && weather.hasWarning
               ? (l == null
@@ -187,6 +190,8 @@ class WeatherTextFormat {
           ..write(block.before)
           ..write(_singleLine(value))
           ..write(block.after);
+      } else if (missingAsDash && block.field != WeatherTextField.warning) {
+        text..write(block.before)..write('—')..write(block.after);
       }
     }
     final lines = text

@@ -35,12 +35,13 @@ void main() {
       },
     );
     await open(tester);
-    await tester.tap(find.text('Выключить ТВ'));
+    await tester.tap(find.text('Выключить устройство'));
     await tester.pumpAndSettle();
     expect(find.byType(LauncherAlertDialog), findsOneWidget);
+    expect(Focus.of(tester.element(find.text('Отмена'))).hasFocus, isTrue);
     await tester.tap(find.text('Отмена'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Перезагрузить ТВ'));
+    await tester.tap(find.text('Перезагрузить устройство'));
     await tester.pumpAndSettle();
     await tester.sendKeyEvent(LogicalKeyboardKey.escape);
     await tester.pumpAndSettle();
@@ -60,12 +61,12 @@ void main() {
         },
       );
       await open(tester);
-      await tester.tap(find.text('Выключить ТВ'));
+      await tester.tap(find.text('Выключить устройство'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Выключить ТВ').last);
+      await tester.tap(find.text('Выключить устройство').last);
       await tester.pump(const Duration(milliseconds: 400));
       expect(calls, ['sleep']);
-      await tester.tap(find.text('Перезагрузить ТВ'));
+      await tester.tap(find.text('Перезагрузить устройство'));
       await tester.pump();
       expect(find.byType(LauncherAlertDialog), findsNothing);
       pending.complete(true);
@@ -77,9 +78,9 @@ void main() {
           throw PlatformException(code: 'unavailable');
         },
       );
-      await tester.tap(find.text('Перезагрузить ТВ'));
+      await tester.tap(find.text('Перезагрузить устройство'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Перезагрузить ТВ').last);
+      await tester.tap(find.text('Перезагрузить устройство').last);
       await tester.pumpAndSettle();
       expect(calls, ['sleep', 'reboot']);
       expect(

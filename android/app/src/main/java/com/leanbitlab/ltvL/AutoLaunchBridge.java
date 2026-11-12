@@ -85,6 +85,7 @@ final class AutoLaunchBridge {
                     .putBoolean("boot",(Boolean)config.get("boot")).putBoolean("wake",(Boolean)config.get("wake"))
                     .putInt("delay",(Integer)config.get("delay"))
                     .putBoolean("waitForInternet", Boolean.TRUE.equals(config.get("waitForInternet"))).remove("boot_at").commit();
+                if (saved) NativeSyncBridge.changed("native_config_auto_launch");
                 wakeAt=0; reload(); result.success(Map.of("status",saved?"success":"unavailable"));
             } else if(call.method.equals("cancel")) { cancel(); result.success(Map.of("status","success")); }
             else result.notImplemented();
@@ -117,6 +118,10 @@ final class AutoLaunchBridge {
             else activity.registerReceiver(screen,filter);
             listening=true;
         } else if(!needed && listening) { activity.unregisterReceiver(screen); listening=false; screenOff=false; }
+    }
+    static void syncReload() {
+        AutoLaunchBridge bridge = active.get();
+        if (bridge != null) { bridge.wakeAt = 0; bridge.reload(); }
     }
     static void boot(Context context) {
         SharedPreferences prefs=context.getSharedPreferences("auto_launch",Context.MODE_PRIVATE);

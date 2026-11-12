@@ -101,9 +101,8 @@ public final class NightModeScheduleProbe extends Instrumentation {
             if(NightSolarTimes.cache(context,location).optLong("updated")<refreshRequested)
                 throw new AssertionError("Live sunrise/sunset refresh failed; existing cache does not count as a network result");
             if(NightSolarTimes.days(context,location).length()<2) throw new AssertionError("Live sunrise/sunset data missing");
-            if(NightSolarTimes.cities("Москва","ru").isEmpty()) throw new AssertionError("Live city search failed");
             passed=true;
-            report.putString("stream",report.getString("stream")+"\nPASS: fresh sunrise/sunset and live city search.\n");
+            report.putString("stream",report.getString("stream")+"\nPASS: fresh sunrise/sunset.\n");
         } catch(Throwable e) {
             report.putString("stream",report.getString("stream","")+"\nFAIL: "+e+"\n");
             try {

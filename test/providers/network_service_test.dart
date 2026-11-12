@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flauncher/diagnostics_store.dart';
 import 'package:flauncher/providers/network_service.dart';
 import 'package:flauncher/providers/foreground_work.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -49,6 +50,9 @@ void main() {
     expect(service.hasInternetAccess, isFalse);
     expect(service.networkType, NetworkType.Unknown);
     expect(service.vpnActive, isFalse);
+    final network = DiagnosticsStore.instance.posterLoads.snapshot()['network'] as Map;
+    expect(network['internetAccess'], false);
+    expect(network['transport'], 'Unknown');
   });
 
   test('unknown cellular types stay unknown without throwing', () async {

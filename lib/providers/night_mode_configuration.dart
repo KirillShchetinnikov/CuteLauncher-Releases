@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:math' as math;
 import 'package:flutter/painting.dart';
 
+import '../location_coordinates.dart';
+
 class NightModeConfiguration {
   final bool enabled, scheduled, solar, tclScheduled, automaticLocation;
   final bool ignoreHdmiInputs, selectHdmiInputs;
@@ -18,6 +20,10 @@ class NightModeConfiguration {
   final int sunsetOffset, sunriseOffset, overrideUntil, tclOverrideUntil;
   final String city, overrideMode, tclOverrideMode;
   final double? latitude, longitude;
+  final ManualLocationInput manualLocationInput;
+  final LocationCoordinates? _savedAutomaticCoordinates;
+  final LocationCoordinates? _savedCityCoordinates;
+  final LocationCoordinates? _savedManualCoordinates;
   final List<String> excludedPackages;
   const NightModeConfiguration(
       {this.excludedPackages = const [],
@@ -41,12 +47,20 @@ class NightModeConfiguration {
       this.city = '',
       this.latitude,
       this.longitude,
+      ManualLocationInput? manualLocationInput,
+      this._savedAutomaticCoordinates,
+      this._savedCityCoordinates,
+      this._savedManualCoordinates,
       this.sunsetOffset = 0,
       this.sunriseOffset = 0,
       this.overrideMode = 'none',
       this.overrideUntil = 0,
       this.tclOverrideMode = 'none',
-      this.tclOverrideUntil = 0});
+      this.tclOverrideUntil = 0})
+      : manualLocationInput = manualLocationInput ??
+            (!automaticLocation && city == '' && latitude != null && longitude != null
+                ? ManualLocationInput.coordinates
+                : ManualLocationInput.city);
 
   NightModeConfiguration copyWith(
           {List<String>? excludedPackages,
@@ -59,6 +73,7 @@ class NightModeConfiguration {
           bool? solar,
           bool? tclScheduled,
           bool? automaticLocation,
+          ManualLocationInput? manualLocationInput,
           int? transitionMinutes,
           int? startHour,
           int? endHour,
@@ -76,8 +91,22 @@ class NightModeConfiguration {
           int? overrideUntil,
           String? tclOverrideMode,
           int? tclOverrideUntil,
-          bool clearOverrides = false}) =>
-      NightModeConfiguration(
+          bool clearOverrides = false}) {
+    final nextAutomatic = automaticLocation ?? this.automaticLocation;
+    final nextInput = manualLocationInput ?? this.manualLocationInput;
+    final useCity = !nextAutomatic && nextInput == ManualLocationInput.city;
+    final inputChanged = nextAutomatic != this.automaticLocation ||
+        (!nextAutomatic && nextInput != this.manualLocationInput);
+    final active = coordinatesFrom(this.latitude, this.longitude);
+    // The native scheduler reads latitude/longitude. The other points are
+    // kept separately so an input switch can restore the selected point.
+    final automatic = this.automaticLocation ? active : _savedAutomaticCoordinates;
+    final cityPoint = !this.automaticLocation && this.manualLocationInput == ManualLocationInput.city
+        ? active : _savedCityCoordinates;
+    final manual = !this.automaticLocation && this.manualLocationInput == ManualLocationInput.coordinates
+        ? active : _savedManualCoordinates;
+    final selected = nextAutomatic ? automatic : (useCity ? cityPoint : manual);
+    return NightModeConfiguration(
           excludedPackages: excludedPackages ?? this.excludedPackages,
           ignoreHdmiInputs: ignoreHdmiInputs ?? this.ignoreHdmiInputs,
           selectHdmiInputs: selectHdmiInputs ?? this.selectHdmiInputs,
@@ -87,7 +116,8 @@ class NightModeConfiguration {
           scheduled: scheduled ?? this.scheduled,
           solar: solar ?? this.solar,
           tclScheduled: tclScheduled ?? this.tclScheduled,
-          automaticLocation: automaticLocation ?? this.automaticLocation,
+          automaticLocation: nextAutomatic,
+          manualLocationInput: nextInput,
           transitionMinutes: transitionMinutes ?? this.transitionMinutes,
           startHour: startHour ?? this.startHour,
           endHour: endHour ?? this.endHour,
@@ -99,8 +129,11 @@ class NightModeConfiguration {
           sunsetOffset: sunsetOffset ?? this.sunsetOffset,
           sunriseOffset: sunriseOffset ?? this.sunriseOffset,
           city: city ?? this.city,
-          latitude: latitude ?? this.latitude,
-          longitude: longitude ?? this.longitude,
+          latitude: latitude ?? (inputChanged ? selected?.latitude : this.latitude),
+          longitude: longitude ?? (inputChanged ? selected?.longitude : this.longitude),
+          savedAutomaticCoordinates: nextAutomatic ? null : automatic,
+          savedCityCoordinates: useCity ? null : cityPoint,
+          savedManualCoordinates: !nextAutomatic && !useCity ? null : manual,
           overrideMode:
               clearOverrides ? 'none' : overrideMode ?? this.overrideMode,
           overrideUntil:
@@ -109,6 +142,7 @@ class NightModeConfiguration {
               clearOverrides ? 'none' : tclOverrideMode ?? this.tclOverrideMode,
           tclOverrideUntil:
               clearOverrides ? 0 : tclOverrideUntil ?? this.tclOverrideUntil);
+  }
 
   Map<String, dynamic> toJson() => {
         'excludedPackages': excludedPackages,
@@ -128,10 +162,17 @@ class NightModeConfiguration {
         'solar': solar,
         'tclScheduled': tclScheduled,
         'automaticLocation': automaticLocation,
+        'manualLocationInput': manualLocationInput.name,
         'transitionMinutes': transitionMinutes,
         'city': city,
         'latitude': latitude,
         'longitude': longitude,
+        if (_savedAutomaticCoordinates case final point?)
+          'savedAutomaticCoordinates': encodeLocationCoordinates(point),
+        if (_savedCityCoordinates case final point?)
+          'savedCityCoordinates': encodeLocationCoordinates(point),
+        if (_savedManualCoordinates case final point?)
+          'savedManualCoordinates': encodeLocationCoordinates(point),
         'sunsetOffset': sunsetOffset,
         'sunriseOffset': sunriseOffset,
         'overrideMode': overrideMode,
@@ -193,6 +234,8 @@ class NightModeConfiguration {
     final city = map['city'] ?? '';
     if (city is! String || city.length > 200) throw const FormatException();
     final lat = coordinate('latitude', 90), lon = coordinate('longitude', 180);
+    final automatic = boolean('automaticLocation', false);
+    final manualInput = decodeManualLocationInput(map['manualLocationInput']);
     final transition = integer('transitionMinutes', 60, 15, 120);
     if (transition % 15 != 0) throw const FormatException();
     if ((lat == null) != (lon == null)) throw const FormatException();
@@ -216,11 +259,17 @@ class NightModeConfiguration {
         temperature: integer('temperature', 2700, 1000, 6500),
         solar: boolean('solar', false),
         tclScheduled: boolean('tclScheduled', true),
-        automaticLocation: boolean('automaticLocation', false),
+        automaticLocation: automatic,
+        manualLocationInput: manualInput,
         transitionMinutes: transition,
         city: city,
         latitude: lat,
         longitude: lon,
+        savedAutomaticCoordinates: decodeLocationCoordinates(map['savedAutomaticCoordinates']),
+        savedCityCoordinates: decodeLocationCoordinates(map['savedCityCoordinates']) ??
+            (manualInput == null && automatic && city.isNotEmpty
+                ? coordinatesFrom(lat, lon) : null),
+        savedManualCoordinates: decodeLocationCoordinates(map['savedManualCoordinates']),
         // Preserve legacy configurations, limiting their offsets to the new range.
         sunsetOffset: integer('sunsetOffset', 0, -360, 360).clamp(-180, 180),
         sunriseOffset: integer('sunriseOffset', 0, -360, 360).clamp(-180, 180),
@@ -242,12 +291,15 @@ class NightModeConfiguration {
       {List<Map<String, dynamic>> solarDays = const []}) {
     if (solar) {
       final result = <(DateTime, DateTime)>[];
-      for (var i = 0; i + 1 < solarDays.length; i++) {
-        final sunset = solarDays[i]['sunset'],
-            sunrise = solarDays[i + 1]['sunrise'];
-        if (sunset is! int || sunrise is! int || sunset <= 0 || sunrise <= 0) {
-          continue;
+      for (var i = 0; i < solarDays.length; i++) {
+        final sunset = solarDays[i]['sunset'];
+        if (sunset is! int || sunset <= 0) continue;
+        var sunrise = solarDays[i]['sunrise'];
+        // A sunset after midnight may be followed by a sunrise on the same date.
+        if (sunrise is! int || sunrise <= sunset) {
+          sunrise = i + 1 < solarDays.length ? solarDays[i + 1]['sunrise'] : null;
         }
+        if (sunrise is! int || sunrise <= sunset) continue;
         final start = DateTime.fromMillisecondsSinceEpoch(sunset)
             .add(Duration(minutes: sunsetOffset));
         final end = DateTime.fromMillisecondsSinceEpoch(sunrise)

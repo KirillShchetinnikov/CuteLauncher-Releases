@@ -1,4 +1,5 @@
 import '../diagnostics_store.dart';
+import '../diagnostics/poster_loads.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -166,6 +167,8 @@ class AppChannelsService extends ChangeNotifier
     _foreground =
         WidgetsBinding.instance.lifecycleState == null ||
         WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed;
+    DiagnosticsStore.instance.posterLoads.lifecycle(PosterSource.appChannels,
+        WidgetsBinding.instance.lifecycleState?.name ?? 'resumed');
     WidgetsBinding.instance.addObserver(this);
     settings.addListener(_settingsChanged);
     _wasGroupVisible = _groupVisible;
@@ -335,31 +338,40 @@ class AppChannelsService extends ChangeNotifier
   Uint8List? cachedPoster(String uri) => _posters[uri];
 
   void evictPoster(WatchNextProgram program) {
+    DiagnosticsStore.instance.posterLoads.decodeFailed(
+        PosterSource.appChannels, program.posterArtUri, program.thumbnailUri, program.packageName);
     _posters.remove(program.posterArtUri);
     _posters.remove(program.thumbnailUri);
   }
 
   Future<Uint8List?> programPoster(WatchNextProgram program) async {
     final generation = _generation;
-    final primary = await poster(program.posterArtUri);
+    final primary = await poster(program.posterArtUri, packageName: program.packageName);
     if (primary != null ||
         generation != _generation ||
         program.posterArtUri == program.thumbnailUri) {
       return primary;
     }
-    return poster(program.thumbnailUri);
+    return poster(program.thumbnailUri, packageName: program.packageName, thumbnail: true);
   }
 
-  Future<Uint8List?> poster(String uri) {
+  Future<Uint8List?> poster(String uri, {String? packageName, bool thumbnail = false}) {
     if (uri.isEmpty || !_foreground || isDisposed || !_groupVisible) {
       return Future.value(null);
     }
     final cached = _posters[uri];
+    final diagnostics = DiagnosticsStore.instance.posterLoads;
     if (cached != null && _posterVersions[uri] == _posterEpoch) {
+      diagnostics.count(PosterSource.appChannels, 'cacheHit');
       return Future.value(cached);
     }
     final pendingKey = '$_generation:$uri';
+    if (_pendingPosters.containsKey(pendingKey)) {
+      diagnostics.count(PosterSource.appChannels, 'deduplicated');
+    }
     return _pendingPosters.putIfAbsent(pendingKey, () {
+      final trace = diagnostics.start(PosterSource.appChannels, uri,
+          packageName: packageName, thumbnail: thumbnail, cached: cached != null);
       final generation = _generation;
       final epoch = _posterEpoch;
       return _pool
@@ -372,11 +384,14 @@ class AppChannelsService extends ChangeNotifier
               final parsed = Uri.tryParse(uri);
               if (parsed != null &&
                   (parsed.scheme == 'https' || parsed.scheme == 'http')) {
-                bytes = await readNetworkPoster(_http, parsed);
+                bytes = await readNetworkPoster(_http, parsed, trace: trace);
               } else {
+                trace.stage(PosterStage.platform);
                 bytes = await channel.getWatchNextPoster(uri);
+                trace.receivedBytes = bytes?.length ?? 0;
               }
             } catch (diagnosticError, diagnosticStack) {
+              trace.error(diagnosticError);
               DiagnosticsStore.instance.recordException(
                 'appChannelsService', diagnosticError, diagnosticStack,
               );
@@ -389,11 +404,14 @@ class AppChannelsService extends ChangeNotifier
             if (bytes != null && bytes.isNotEmpty) {
               if (!listEquals(bytes, previous)) _posters[uri] = bytes;
               if (_posters.containsKey(uri)) _posterVersions[uri] = epoch;
+              trace.finish(PosterOutcome.loaded);
               return _posters[uri] ?? bytes;
             }
+            trace.finish(previous == null ? PosterOutcome.failed : PosterOutcome.cachedFallback);
             return previous;
           })
           .whenComplete(() {
+            trace.finish(PosterOutcome.discarded);
             _pendingPosters.remove(pendingKey);
           });
     });
@@ -426,6 +444,7 @@ class AppChannelsService extends ChangeNotifier
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    DiagnosticsStore.instance.posterLoads.lifecycle(PosterSource.appChannels, state.name);
     _foreground = state == AppLifecycleState.resumed;
     if (!_foreground) {
       ++_generation;
@@ -440,6 +459,7 @@ class AppChannelsService extends ChangeNotifier
 
   @override
   void dispose() {
+    DiagnosticsStore.instance.posterLoads.lifecycle(PosterSource.appChannels, 'disposed');
     work?.cancel(this);
     ++_generation;
     settings.removeListener(_settingsChanged);

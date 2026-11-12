@@ -10,9 +10,16 @@ public final class NightSchedule {
     public static List<long[]> intervals(JSONObject c, JSONArray days, long now) {
         List<long[]> result = new ArrayList<>();
         if (c.optBoolean("solar")) {
-            for (int i = 0; i + 1 < days.length(); i++) {
-                long sunset = days.optJSONObject(i).optLong("sunset"), sunrise = days.optJSONObject(i+1).optLong("sunrise");
-                if (sunset <= 0 || sunrise <= 0) continue;
+            for (int i = 0; i < days.length(); i++) {
+                JSONObject day = days.optJSONObject(i);
+                if (day == null) continue;
+                long sunset = day.optLong("sunset"), sunrise = day.optLong("sunrise");
+                // Some civil days start before the previous solar day's sunset.
+                if (sunrise <= sunset) {
+                    JSONObject nextDay = days.optJSONObject(i + 1);
+                    sunrise = nextDay == null ? 0 : nextDay.optLong("sunrise");
+                }
+                if (sunset <= 0 || sunrise <= sunset) continue;
                 long start = sunset + Math.max(-180, Math.min(180, c.optInt("sunsetOffset"))) * 60000L;
                 long end = sunrise + Math.max(-180, Math.min(180, c.optInt("sunriseOffset"))) * 60000L;
                 if (start < end) result.add(new long[]{start, end});

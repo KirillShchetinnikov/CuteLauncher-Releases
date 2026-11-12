@@ -2,7 +2,7 @@
 <resources>
     <string name="screensaver_label">CuteLauncher Clock</string>
     <string name="notification_service_label">CuteLauncher Notification Service</string>
-    <string name="accessibility_service_label">CuteLauncher</string>
+    <string name="accessibility_service_label" translatable="false">CuteLauncher</string>
 <string name="night_mode_title">Night mode</string><string name="night_mode_notice">Screen filter enabled; schedule applies</string><string name="night_mode_stop">Turn off</string>
     <string name="recovery_checking">Checking launcher…</string>
     <string name="recovery_title">Launcher recovery</string>
@@ -32,4 +32,8 @@
     <string name="remap_error_webhook_http">Webhook rejected the request (HTTP %1$d).</string>
     <string name="remap_error_webhook_timeout">Webhook request timed out.</string>
     <string name="remap_error_webhook">Could not connect to the webhook.</string>
+    <string name="power_off">Turn off device</string>
+    <string name="power_reboot">Restart device</string>
+    <string name="power_off_confirm">Put the device in standby?</string>
+    <string name="power_reboot_confirm">Restart the device? Open apps will close.</string>
 </resources>

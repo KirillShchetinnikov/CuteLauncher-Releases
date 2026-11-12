@@ -18,6 +18,51 @@ TileAppearance topPanelAppearance(BuildContext context) =>
     context.watch<AppearanceService?>()?.appearance ??
     const TileAppearance();
 
+const topPanelItemPadding = EdgeInsets.symmetric(horizontal: 8, vertical: 4);
+
+double topPanelItemHeight(double textSize, double borderWidth) =>
+    textSize * 1.5 + topPanelItemPadding.vertical + borderWidth * 2;
+
+BoxDecoration topPanelItemDecoration(
+  BuildContext context, {
+  required Color background,
+  required Color? foreground,
+  required double radius,
+  bool highlighted = false,
+}) {
+  final skin = InterfaceSkin.of(context);
+  final borderWidth = LauncherStyle.of(context).topButtonFocusWidth;
+  final outline = Theme.of(context).colorScheme.primary;
+  return skin.standard
+      ? BoxDecoration(
+          color: highlighted
+              ? Color.alphaBlend(outline.withValues(alpha: .18), background)
+              : background,
+          borderRadius: BorderRadius.circular(radius),
+          border: Border.all(
+            color: highlighted ? outline : Colors.transparent,
+            width: borderWidth,
+          ),
+          boxShadow: highlighted
+              ? const [
+                  BoxShadow(
+                    color: Colors.black54,
+                    blurRadius: 8,
+                    spreadRadius: 1,
+                  ),
+                ]
+              : null,
+        )
+      : skin.surface(
+          background,
+          foreground ?? Colors.white,
+          focused: highlighted,
+          accent: outline,
+          cornerRadius: radius,
+          borderWidth: borderWidth,
+        );
+}
+
 /// Limits a panel's own style to its objects, without changing settings or clocks.
 class PanelAppearanceScope extends InheritedWidget {
   final TileAppearance appearance;
@@ -87,7 +132,6 @@ class _TopPanelItemState extends State<TopPanelItem> {
   Widget build(BuildContext context) {
     final appearance = widget.appearance ?? topPanelAppearance(context);
     final style = LauncherStyle.of(context);
-    final skin = InterfaceSkin.of(context);
     final highlighted = _focused || _hovered;
     final textStyle =
         widget.textStyle ??
@@ -106,11 +150,10 @@ class _TopPanelItemState extends State<TopPanelItem> {
     );
     final radius = widget.borderRadius ?? style.topButtonRadius;
     final foreground = textStyle.color;
-    final height =
-        MediaQuery.textScalerOf(context).scale(textStyle.fontSize ?? 18) * 1.5 +
-        8 +
-        style.topButtonFocusWidth * 2;
-    final outline = Theme.of(context).colorScheme.primary;
+    final height = topPanelItemHeight(
+      MediaQuery.textScalerOf(context).scale(textStyle.fontSize ?? 18),
+      style.topButtonFocusWidth,
+    );
     final glyphs = widget.textStyle == null
         ? widget.child
         : FittedBox(fit: BoxFit.scaleDown, child: widget.child);
@@ -121,35 +164,14 @@ class _TopPanelItemState extends State<TopPanelItem> {
       height: widget.textStyle == null
           ? height
           : math.min(kToolbarHeight - 4, height),
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: skin.standard
-          ? BoxDecoration(
-              color: highlighted
-                  ? Color.alphaBlend(outline.withValues(alpha: .18), background)
-                  : background,
-              borderRadius: BorderRadius.circular(radius),
-              border: Border.all(
-                color: highlighted ? outline : Colors.transparent,
-                width: style.topButtonFocusWidth,
-              ),
-              boxShadow: highlighted
-                  ? const [
-                      BoxShadow(
-                        color: Colors.black54,
-                        blurRadius: 8,
-                        spreadRadius: 1,
-                      ),
-                    ]
-                  : null,
-            )
-          : skin.surface(
-              background,
-              foreground ?? Colors.white,
-              focused: highlighted,
-              accent: outline,
-              cornerRadius: radius,
-              borderWidth: style.topButtonFocusWidth,
-            ),
+      padding: topPanelItemPadding,
+      decoration: topPanelItemDecoration(
+        context,
+        background: background,
+        foreground: foreground,
+        radius: radius,
+        highlighted: highlighted,
+      ),
       child: DefaultTextStyle(
         style: textStyle,
         child: IconTheme(

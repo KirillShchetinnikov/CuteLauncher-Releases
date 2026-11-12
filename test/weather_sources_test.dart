@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flauncher/city_search.dart';
+import 'package:flauncher/location_coordinates.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -29,6 +31,19 @@ const config = WeatherConfiguration(source: WeatherSource.openMeteo, latitude: 5
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  test('all supported Open-Meteo fields are requested and parsed regardless of display', () async {
+    final response = payload();
+    (response['current'] as Map)['is_day'] = 0;
+    (response['daily'] as Map)['relative_humidity_2m_mean'] = [61, 70];
+    final transport = FakeTransport(() async => response);
+    final data = WeatherData.fromJson(await DirectWeatherProvider(transport).fetch(config));
+    expect(transport.uri!.queryParameters['current']!.split(','), containsAll([
+      'temperature_2m', 'apparent_temperature', 'relative_humidity_2m', 'weather_code', 'is_day', 'wind_speed_10m',
+    ]));
+    expect(transport.uri!.queryParameters['daily'], contains('relative_humidity_2m_mean'));
+    expect(data.isDay, isFalse); expect(data.forecasts.first.humidity, 61);
+    expect(data.todayMinTemp, -5); expect(data.todayMaxTemp, 0);
+  });
   test('selected city coordinates survive backup and avoid ambiguous geocoding', () async {
     const city = WeatherConfiguration(source: WeatherSource.openMeteo,
       locationMode: WeatherLocationMode.manual, location: 'Moscow, Idaho, United States',
@@ -49,33 +64,73 @@ void main() {
     expect(validWeatherConfiguration(jsonEncode({...city.toJson(), 'cityLatitude': 91})), isFalse);
     expect(validWeatherConfiguration(jsonEncode({...city.toJson(), 'cityLongitude': null})), isFalse);
   });
+  test('manual coordinates work without a city and survive backup separately', () async {
+    const coordinates = WeatherConfiguration(
+      source: WeatherSource.openMeteo,
+      locationMode: WeatherLocationMode.manual,
+      manualLocationInput: ManualLocationInput.coordinates,
+      manualCoordinates: (latitude: -33.8, longitude: 151.2),
+    );
+    final encoded = jsonEncode(coordinates.toJson());
+    expect(validWeatherConfiguration(encoded), isTrue);
+    expect(compatibleSettings({weatherConfigurationKey: encoded}, {})[weatherConfigurationKey], encoded);
+    final saved = WeatherConfiguration.decode(encoded).copyWith(
+      location: 'Москва', cityLatitude: 55.75, cityLongitude: 37.62,
+      latitude: 48, longitude: 2,
+    );
+    final transport = FakeTransport(() async => payload());
+    final data = await DirectWeatherProvider(transport).fetch(saved);
+    expect(transport.calls, 1);
+    expect(transport.uri!.queryParameters['latitude'], '-33.8');
+    expect(transport.uri!.queryParameters['longitude'], '151.2');
+    expect(data['location'], isEmpty);
+    expect(saved.copyWith(manualLocationInput: ManualLocationInput.city).selectedCoordinates,
+      (latitude: 55.75, longitude: 37.62));
+    expect(saved.copyWith(locationMode: WeatherLocationMode.automatic).selectedCoordinates,
+      (latitude: 48.0, longitude: 2.0));
+    expect(validWeatherConfiguration(jsonEncode({
+      ...coordinates.toJson(),
+      'manualCoordinates': {'latitude': 91, 'longitude': 0},
+    })), isFalse);
+  });
   test('manual city resolves coordinates before requesting weather and sends no key to geocoding', () async {
-    final transport = FakeTransport(() async => {'results': [{'latitude': 55.75, 'longitude': 37.62}]});
     final requests = <Uri>[];
-    transport.response = () async {
-      requests.add(transport.uri!);
-      if (requests.length == 1) {
-        expect(transport.key, isNull);
-        return {'results': [{'latitude': 55.75, 'longitude': 37.62}]};
-      }
-      return {'fact': {'temp': 7, 'condition': 'clear'}, 'forecasts': []};
-    };
-    final data = await DirectWeatherProvider(transport).fetch(const WeatherConfiguration(
+    final transport = FakeTransport(() async =>
+        {'fact': {'temp': 7, 'condition': 'clear'}, 'forecasts': []});
+    final search = CitySearch(
+      loadCatalog: () async => '',
+      request: (uri) async {
+        expect(transport.calls, 0);
+        requests.add(uri);
+        return {'geonames': [{'name': 'Moscow', 'lat': '55.75', 'lng': '37.62'}]};
+      },
+      username: 'test',
+    );
+    final data = await DirectWeatherProvider(transport, citySearch: search).fetch(const WeatherConfiguration(
       source: WeatherSource.yandex, locationMode: WeatherLocationMode.manual, location: 'Moscow'), key: 'test-key');
-    expect(requests.first.queryParameters['name'], 'Moscow');
-    expect(requests.last.queryParameters['lat'], '55.75');
+    expect(requests.single.queryParameters['name_equals'], 'Moscow');
+    expect(requests.single.toString(), isNot(contains('test-key')));
+    expect(transport.uri!.queryParameters['lat'], '55.75');
     expect(transport.key, 'test-key');
     expect(data['location'], 'Moscow');
   });
   test('unknown city reports cityNotFound and malformed coordinates report invalidResponse', () async {
     const city = WeatherConfiguration(source: WeatherSource.openMeteo,
       locationMode: WeatherLocationMode.manual, location: 'WrongCityDefinitely');
-    for (final response in <Map<String, dynamic>>[{}, {'results': []}, {'results': [{'latitude': 91, 'longitude': 1}]}]) {
+    for (final (response, failure) in <(Map<String, dynamic>, WeatherFailure)>[
+      ({'geonames': []}, WeatherFailure.cityNotFound),
+      ({}, WeatherFailure.invalidResponse),
+      ({'geonames': [{'name': 'Bad', 'lat': 91, 'lng': 1}]}, WeatherFailure.invalidResponse),
+      ({'geonames': [
+        {'name': 'One', 'lat': 42, 'lng': 40},
+        {'name': 'Two', 'lat': 53, 'lng': 50},
+      ]}, WeatherFailure.cityNotFound),
+    ]) {
       final transport = FakeTransport(() async => response);
-      await expectLater(DirectWeatherProvider(transport).fetch(city), throwsA(isA<WeatherException>().having(
-        (e) => e.failure, 'failure', response['results'] is List && (response['results'] as List).isNotEmpty
-          ? WeatherFailure.invalidResponse : WeatherFailure.cityNotFound)));
-      expect(transport.calls, 1);
+      final search = CitySearch(loadCatalog: () async => '', request: (_) async => response, username: 'test');
+      await expectLater(DirectWeatherProvider(transport, citySearch: search).fetch(city), throwsA(
+        isA<WeatherException>().having((e) => e.failure, 'failure', failure)));
+      expect(transport.calls, 0);
     }
   });
   test('partial weather configuration roundtrips through backup without enabling requests', () {

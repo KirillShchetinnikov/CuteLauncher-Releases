@@ -19,4 +19,22 @@
     <string name="remap_error_webhook_http">웹훅이 요청을 거부했습니다(HTTP %1$d).</string>
     <string name="remap_error_webhook_timeout">웹훅 요청 시간이 초과되었습니다.</string>
     <string name="remap_error_webhook">웹훅에 연결할 수 없습니다.</string>
+    <string name="power_off">기기 끄기</string>
+    <string name="power_reboot">기기 다시 시작</string>
+    <string name="power_off_confirm">기기를 대기 모드로 전환할까요?</string>
+    <string name="power_reboot_confirm">기기를 다시 시작할까요? 열려 있는 앱이 종료됩니다.</string>
+    <string name="screensaver_label">CuteLauncher 시계</string>
+    <string name="notification_service_label">CuteLauncher 알림 서비스</string>
+    <string name="night_mode_title">야간 모드</string>
+    <string name="night_mode_notice">일정에 따라 화면 필터가 켜져 있습니다.</string>
+    <string name="night_mode_stop">끄기</string>
+    <string name="recovery_checking">런처 확인 중…</string>
+    <string name="recovery_title">런처 복구</string>
+    <string name="recovery_description">CuteLauncher가 반복해서 중지되었습니다. 설정은 유지됩니다. 다시 시도하거나 다른 앱을 열거나 다른 홈 화면을 선택할 수 있습니다. 기본 런처가 비활성화되어 있으면 먼저 Android 앱 설정에서 활성화하세요.</string>
+    <string name="recovery_retry">CuteLauncher 다시 실행</string>
+    <string name="recovery_settings">Android 설정</string>
+    <string name="recovery_home">홈 화면 선택</string>
+    <string name="recovery_unavailable">이 TV에서는 이 작업을 사용할 수 없습니다.</string>
+    <string name="recovery_restore">이전 홈 화면 복원</string>
+    <string name="recovery_restore_confirm">기존 로컬 ADB 연결로 이전 홈 화면을 복원하시겠습니까?</string>
 </resources>

@@ -1,0 +1,10 @@
+GeoNames geographical database
+https://www.geonames.org/
+
+The bundled city catalog is a subset of GeoNames data under the Creative
+Commons Attribution 4.0 International license.
+https://creativecommons.org/licenses/by/4.0/
+
+CuteLauncher selected populated places and administrative seats, combined
+city, region and country data, and reduced the fields and alternate names.
+The online fallback also uses the GeoNames web service.

@@ -1,5 +1,7 @@
 import '../category_appearance.dart';
 import '../sleep_timer_configuration.dart';
+import '../overlay_appearance.dart';
+import '../overlay_position.dart';
 import '../launcher_defaults.dart';
 import '../tv_inputs_configuration.dart';
 import 'online_wallpaper_service.dart';
@@ -329,6 +331,25 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
   Future<void> setSystemShowCpu(bool value) => _setSystemOption('system_show_cpu', value);
   Future<void> setSystemShowRam(bool value) => _setSystemOption('system_show_ram', value);
   bool get showVolumeInStatusBar => _sharedPreferences.getBool('show_volume_in_status_bar') ?? true;
+  bool get showVolumeOverlay => _sharedPreferences.getBool('show_volume_overlay') ?? false;
+  Future<void> setShowVolumeOverlay(bool value) => _setSystemOption('show_volume_overlay', value);
+  OverlayPosition get volumeOverlayPosition =>
+      OverlayPosition.parse(_sharedPreferences.getString(volumeOverlayPositionKey)) ?? OverlayPosition.topRight;
+  Future<void> setVolumeOverlayPosition(OverlayPosition value) async {
+    if (!await _sharedPreferences.setString(volumeOverlayPositionKey, value.name)) {
+      throw StateError('Panel settings unavailable');
+    }
+    notifyListeners();
+  }
+  OverlayAppearance get volumeOverlayAppearance =>
+      OverlayAppearance.parse(_sharedPreferences.getString(volumeOverlayAppearanceKey)) ??
+      OverlayAppearance.topPanel;
+  Future<void> setVolumeOverlayAppearance(OverlayAppearance value) async {
+    if (!await _sharedPreferences.setString(volumeOverlayAppearanceKey, value.name)) {
+      throw StateError('Panel settings unavailable');
+    }
+    notifyListeners();
+  }
   int get volumeUpdateInterval => (_sharedPreferences.getInt('volume_update_interval') ?? 3).clamp(1, 10);
   Future<void> setVolumeUpdateInterval(int value) async {
     if (!await _sharedPreferences.setInt('volume_update_interval', value.clamp(1, 10))) {
@@ -683,8 +704,15 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
     notifyListeners();
   }
 
-  SleepTimerConfiguration get sleepTimerConfiguration =>
-      SleepTimerConfiguration.decode(_sharedPreferences.getString(sleepTimerConfigurationKey));
+  (String?, SleepTimerConfiguration)? _sleepTimerCache;
+  SleepTimerConfiguration get sleepTimerConfiguration {
+    final source = _sharedPreferences.getString(sleepTimerConfigurationKey);
+    final cached = _sleepTimerCache;
+    if (cached != null && cached.$1 == source) return cached.$2;
+    final configuration = SleepTimerConfiguration.decode(source);
+    _sleepTimerCache = (source, configuration);
+    return configuration;
+  }
 
   Future<void> setSleepTimerConfiguration(SleepTimerConfiguration value) async {
     if (!await _sharedPreferences.setString(sleepTimerConfigurationKey, value.encode())) {
@@ -731,6 +759,9 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
       _showNetworkIndicatorInStatusBarKey: _showNetworkIndicatorInStatusBar,
       'show_vpn_in_status_bar': showVpnInStatusBar,
       'show_volume_in_status_bar': showVolumeInStatusBar,
+      'show_volume_overlay': showVolumeOverlay,
+      volumeOverlayPositionKey: volumeOverlayPosition.name,
+      volumeOverlayAppearanceKey: volumeOverlayAppearance.name,
       'show_nas_in_status_bar': showNasInStatusBar,
       'show_usb_in_status_bar': showUsbInStatusBar,
       'show_system_in_status_bar': showSystemInStatusBar,

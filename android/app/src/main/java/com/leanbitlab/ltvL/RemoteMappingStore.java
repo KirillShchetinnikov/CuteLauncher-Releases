@@ -58,8 +58,11 @@ final class RemoteMappingStore {
         List<Map<String, Object>> bindings = new ArrayList<>();
         for (int i = 0; i < rows.length(); i++) {
             JSONObject row = rows.getJSONObject(i);
+            String action = row.getString("action");
+            // Retire old Black Screen assignments without discarding other bindings.
+            if ("black_screen".equals(action)) continue;
             bindings.add(Map.of("keyCode", row.getInt("keyCode"), "enabled", row.getBoolean("enabled"),
-                "action", row.getString("action"), "target", row.getString("target"), "trigger", row.optString("trigger", "press"),
+                "action", action, "target", row.getString("target"), "trigger", row.optString("trigger", "press"),
                 "name", row.optString("name", "")));
         }
         return RemoteMappingConfiguration.fromMap(Map.of("enabled", root.getBoolean("enabled"), "bindings", bindings,
@@ -78,6 +81,7 @@ final class RemoteMappingStore {
                 DataOutputStream output = new DataOutputStream(stream);
                 output.writeInt(1); output.write(cipher.getIV()); output.writeInt(encrypted.length); output.write(encrypted);
                 output.flush(); file.finishWrite(stream);
+                NativeSyncBridge.changed("native_secret_remote_mappings");
             } catch (Exception error) { file.failWrite(stream); throw error; }
         }
     }

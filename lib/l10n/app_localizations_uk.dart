@@ -10,6 +10,9 @@ class AppLocalizationsUk extends AppLocalizations {
   AppLocalizationsUk([String locale = 'uk']) : super(locale);
 
   @override
+  String get scrollContentLabels => 'Прокручування довгих підписів у стрічках';
+
+  @override
   String get contentAppTileStyle => 'Джерело оформлення';
 
   @override
@@ -921,6 +924,73 @@ class AppLocalizationsUk extends AppLocalizations {
       'Це зображення пошкоджене або завелике (максимум 8 MiB і 48 мегапікселів). Виберіть інше зображення.';
 
   @override
+  String get memoryAdvanced => 'Розширена діагностика';
+
+  @override
+  String get memoryLauncherTitle => 'Пам’ять CuteLauncher';
+
+  @override
+  String get memoryUsage => 'Використання пам’яті';
+
+  @override
+  String memoryChange(String delta) {
+    return '$delta від попереднього вимірювання';
+  }
+
+  @override
+  String get memoryCacheFiles => 'Файли зображень у пам’яті';
+
+  @override
+  String memoryCacheEntries(int count) {
+    return 'Елементів: $count';
+  }
+
+  @override
+  String memoryCacheResult(String before, String after) {
+    return 'Кеші зображень: $before → $after';
+  }
+
+  @override
+  String get memoryStale =>
+      'Не вдалося оновити дані. Показано попереднє вимірювання.';
+
+  @override
+  String get memoryTechnical => 'Технічні показники';
+
+  @override
+  String get memoryObserve => 'Спостереження за пам’яттю';
+
+  @override
+  String get memoryObserveStart => 'Спостерігати 1 хвилину';
+
+  @override
+  String get memoryObserveStop => 'Зупинити спостереження';
+
+  @override
+  String get memoryObserveRunning => 'Триває запис · до 1 хвилини';
+
+  @override
+  String get memoryObserveFinished => 'Запис зупинено';
+
+  @override
+  String get memoryObserveEmpty => 'Вимірювань ще немає';
+
+  @override
+  String memorySeconds(int seconds) {
+    return '$seconds с';
+  }
+
+  @override
+  String get memoryReadingHelp => 'Як читати показники';
+
+  @override
+  String get memorySaverHelp => 'Що змінює економія';
+
+  @override
+  String get memorySaveFailed =>
+      'Не вдалося зберегти режим економії. Спробуйте ще раз.';
+
+  @override
   String get memoryTitle => 'Пам\'ять';
 
   @override
@@ -1663,7 +1733,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get weatherCoordinatesError =>
-      'Введіть місто вручну або отримайте координати автоматично.';
+      'Виберіть місто, введіть координати або визначте місцезнаходження автоматично.';
 
   @override
   String get weatherRefresh => 'Оновити погоду';
@@ -1986,7 +2056,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get nightCityHint =>
-      'Виберіть своє місто замість надання доступу до місцезнаходження. Вибрані координати надсилаються на Sunrise-Sunset.org або Open-Meteo як запасний варіант для отримання сонячного часу.';
+      'Виберіть своє місто замість надання доступу до місцезнаходження. Вибрані координати надсилаються на Sunrise-Sunset.org або GeoNames як запасний варіант для отримання сонячного часу.';
 
   @override
   String get nightResumeSchedule => 'Повернутися до розкладу';
@@ -2032,7 +2102,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get nightSolarAttribution =>
-      'Щоденний час сонця: Sunrise-Sunset.org; запасний: Open-Meteo. Пошук міста: GeoNames. Кілька днів зберігаються в кеші для використання в автономному режимі.';
+      'Час сходу й заходу сонця надходить із Sunrise-Sunset.org, а в разі збою — з GeoNames. Без інтернету телевізор обчислює відсутні події.';
 
   @override
   String get nightTemporaryOn => 'Затемнення тимчасово ввімкнено до';
@@ -2973,7 +3043,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get weatherCityNotFound =>
-      'Місто не знайдено. Перевірте назву міста англійською.';
+      'Не вдалося визначити місто. Виберіть його в налаштуваннях місцеположення.';
 
   @override
   String get weatherLocationAutomatic => 'Отримати автоматично';
@@ -2984,6 +3054,15 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get weatherLocationManual => 'Введіть вручну';
+
+  @override
+  String get manualLocationInput => 'Спосіб введення';
+
+  @override
+  String get manualLocationCity => 'Місто';
+
+  @override
+  String get manualLocationCoordinates => 'Координати';
 
   @override
   String get weatherLocationPermissionDenied =>
@@ -3016,7 +3095,8 @@ class AppLocalizationsUk extends AppLocalizations {
       'Місцезнаходження недоступне. Перевірте налаштування дозволу та розташування системи.';
 
   @override
-  String get nightCityEnglish => 'Введіть назву міста англійською мовою';
+  String get nightCitySearchHint =>
+      'Введіть назву міста. Через кому можна додати регіон або країну.';
 
   @override
   String get nightOverlayBrief =>
@@ -3166,7 +3246,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get backupSyncGroupsHelp =>
-      'Вимкнені блоки залишаються локальними для цього телевізора. Вибір блоку синхронізується між пристроями.';
+      'Вимкнені блоки залишаються на цьому ТВ. Склад синхронізації налаштовується окремо на кожному пристрої.';
 
   @override
   String get backupSyncGroupsFailed =>
@@ -4139,17 +4219,27 @@ class AppLocalizationsUk extends AppLocalizations {
   String get tvPowerTitle => 'Керування живленням';
 
   @override
-  String get tvPowerOff => 'Вимкнути ТВ';
+  String remotePowerWithConfirmation(String action) {
+    return '$action (з підтвердженням)';
+  }
 
   @override
-  String get tvPowerReboot => 'Перезавантажити ТВ';
+  String remotePowerWithoutConfirmation(String action) {
+    return '$action (без підтвердження)';
+  }
 
   @override
-  String get tvPowerOffConfirm => 'Перевести ТВ у режим очікування?';
+  String get tvPowerOff => 'Вимкнути пристрій';
+
+  @override
+  String get tvPowerReboot => 'Перезавантажити пристрій';
+
+  @override
+  String get tvPowerOffConfirm => 'Перевести пристрій у режим очікування?';
 
   @override
   String get tvPowerRebootConfirm =>
-      'Перезавантажити ТВ? Відкриті застосунки буде закрито.';
+      'Перезавантажити пристрій? Відкриті застосунки буде закрито.';
 
   @override
   String get tvPowerSent => 'Команду надіслано';
@@ -4160,7 +4250,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get tvPowerHelp =>
-      'Вимкнення переводить ТВ в очікування через службу спеціальних можливостей CuteLauncher або локальний ADB. Перезавантаження потребує ADB. На приставці команда керує приставкою; поведінка ТВ залежить від HDMI-CEC і прошивки.';
+      'Вимкнення переводить пристрій в очікування через службу спеціальних можливостей CuteLauncher або локальний ADB. Перезавантаження потребує ADB. На приставці команда керує приставкою; поведінка ТВ залежить від HDMI-CEC і прошивки.';
 
   @override
   String get cleanerLists => 'Списки вимкнення';
@@ -4294,6 +4384,13 @@ class AppLocalizationsUk extends AppLocalizations {
   String get sleepTimerShowSeconds => 'Показувати секунди';
 
   @override
+  String get sleepTimerShowOverApps => 'Показувати таймер поверх застосунків';
+
+  @override
+  String get sleepTimerOverlayHelp =>
+      'Для показу поверх застосунків увімкніть службу спеціальних можливостей CuteLauncher.';
+
+  @override
   String get sleepTimerCloseAfterSelection =>
       'Закривати віджет після вибору таймера';
 
@@ -4409,6 +4506,21 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get noticeTopLeft => 'Угорі ліворуч';
+
+  @override
+  String get overlayAppearance => 'Оформлення поверх застосунків';
+
+  @override
+  String get overlayAppearanceTopPanel => 'Як у верхній панелі';
+
+  @override
+  String get overlayAppearanceDark => 'Темне';
+
+  @override
+  String get overlayWhereToShow => 'Де показувати';
+
+  @override
+  String get overlayAtPanelWidget => 'На місці віджета у верхній панелі';
 
   @override
   String get notificationOpenFailed =>
@@ -4715,7 +4827,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get weatherTextHelp =>
-      'Введіть текст і позначення у фігурних дужках або вставляйте їх кнопками в позицію курсора. Регістр не важливий. Круглі дужки навколо одного значення приховуються разом із ним, якщо даних немає. Звичайні фігурні дужки подвоюйте. Дозволено один перенос рядка.';
+      'Введіть текст і позначення у фігурних дужках або вставляйте їх кнопками в позицію курсора. Регістр не важливий. Круглі дужки навколо одного значення приховуються разом із ним, якщо даних немає. Звичайні фігурні дужки подвоюйте. Дозволено один перенос рядка. З клавіатури можна вводити літери, цифри, пробіли та будь-які друковані символи, наприклад: () [] / : ; + − ° % ·.';
 
   @override
   String get weatherTextSaveError =>
@@ -4995,10 +5107,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get fileBrowserPartial => 'Показано лише частину вмісту папки';
 
   @override
-  String get fileBrowserRemoteHint => '← Повне ім’я · → Підтвердження';
-
-  @override
-  String get fileBrowserReadNameHint => '← Показати повне ім’я';
+  String get fileBrowserReadNameHint => '← На рівень вище · → Повне ім’я';
 
   @override
   String fileBrowserSavedTo(String path) {
@@ -5329,6 +5438,13 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get volumeUpdateInterval => 'Інтервал оновлення';
+
+  @override
+  String get showVolumeOverlay => 'Показувати гучність поверх застосунків';
+
+  @override
+  String get volumeOverlayHelp =>
+      'Потрібно ввімкнути службу спеціальних можливостей CuteLauncher.';
 
   @override
   String get clockHoursColor => 'Колір годин';
@@ -5803,4 +5919,179 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String get appPermissionsHelp =>
       'Відновлення типово ввімкнено для служб, яким ви надаєте доступ тут. Воно повертає дозволи й увімкнення служби, зокрема після вимкнення в Android. Вимкнення відновлення зберігає поточні доступи. Вимкнення служби також припиняє відновлення; дозволи автозапуску й фонової роботи залишаються. Перепідключення перезапускає лише цю службу, не виправляючи помилок застосунку. Потрібен ADB; Android може відкладати перевірки. Автозапуск не відкриває екран застосунку. Стани відображають останню перевірку; непідтримувані операції не надаються.';
+
+  @override
+  String get weatherFieldUnsupported => 'Джерело не підтримує параметр';
+
+  @override
+  String get weatherFieldMissing => 'У поточній відповіді немає даних';
+
+  @override
+  String get weatherMissingAsDash => 'Риски замість відсутніх даних';
+
+  @override
+  String get weatherPanelAlignment =>
+      'Вирівнювання рядків погоди верхньої панелі';
+
+  @override
+  String get syncProtection => 'Токени та захист';
+
+  @override
+  String get syncKey => 'Спільний ключ синхронізації';
+
+  @override
+  String get syncKeyShow => 'Показати ключ';
+
+  @override
+  String get syncKeyCreate => 'Створити ключ';
+
+  @override
+  String get syncKeyInvalid => 'Потрібен ключ із 64 шістнадцяткових символів.';
+
+  @override
+  String get syncKeyHelp =>
+      'Для обміну токенами й обліковими записами задайте однаковий ключ на всіх ТВ. Створіть його на одному ТВ і перенесіть на інші. Збережіть ключ: без нього захищені дані не прочитати. У разі зміни оновіть ключ на всіх ТВ. Дозволи Android та апаратні ключі залишаються локальними.';
+
+  @override
+  String get syncFiles => 'Файли синхронізації';
+
+  @override
+  String get syncCleanup => 'Очистити застарілі файли';
+
+  @override
+  String get syncCleanupFailed =>
+      'Не вдалося видалити частину старих файлів. Повторіть очищення.';
+
+  @override
+  String get syncRetire => 'Виключити пристрій';
+
+  @override
+  String get syncRetireConfirm =>
+      'Виключити цей пристрій із групи? Його старі стани більше не застосовуватимуться. Для повернення потрібна нова група синхронізації.';
+
+  @override
+  String get backupAccount => 'Обліковий запис';
+
+  @override
+  String get backupNewAccount => 'Підключити інший обліковий запис';
+
+  @override
+  String get backupSetupWizard => 'Майстер налаштування';
+
+  @override
+  String get backupSetupSummary => 'Підсумок';
+
+  @override
+  String get backupSetupNext => 'Далі';
+
+  @override
+  String get backupSetupBack => 'Назад';
+
+  @override
+  String get backupFirstCopy => 'Створити першу копію зараз';
+
+  @override
+  String get backupSyncAll => 'Синхронізувати все';
+
+  @override
+  String get backupFirstExchange => 'Перший обмін';
+
+  @override
+  String get backupNoRemote =>
+      'У сховищі немає налаштувань. Цей ТВ надішле свої.';
+
+  @override
+  String get backupSetupStart => 'Увімкнути';
+
+  @override
+  String get backupPassword => 'Пароль шифрування даних';
+
+  @override
+  String get backupPasswordRepeat => 'Повторіть пароль';
+
+  @override
+  String get backupPasswordMismatch => 'Паролі не збігаються';
+
+  @override
+  String get backupAccountLocalHelp =>
+      'Використовуйте підключений або інший обліковий запис того ж типу. Реквізити залишаються на цьому ТВ. Копії та синхронізація керують файлами окремо.';
+
+  @override
+  String get backupPasswordOptionalHelp =>
+      'Необов’язково. Шифрує весь файл разом із переносними токенами. Без пароля файл не зашифрований. Порожнє значення вимикає шифрування. Іншим ТВ потрібен той самий пароль.';
+
+  @override
+  String get backupYandexDisk => 'Яндекс Диск';
+
+  @override
+  String get backupYandexHelp =>
+      'Введіть Client ID і Client Secret застосунку Яндекс OAuth із доступом до папки застосунку на Диску. Підключіться та підтвердьте код на телефоні. Для обміну між ТВ використовуйте один OAuth-клієнт і обліковий запис.';
+
+  @override
+  String get backupYandexConnect => 'Підключити Яндекс Диск';
+
+  @override
+  String get backupYandexReconnect => 'Перепідключити Яндекс Диск';
+
+  @override
+  String get backupYandexConnectionStatus => 'Стан підключення Яндекс Диска';
+
+  @override
+  String get yandexCodeExpired =>
+      'Час очікування входу Яндекс Диск минув. Виберіть Перевірити та зберегти обліковий запис, щоб отримати новий код.';
+
+  @override
+  String get yandexConfigurationError =>
+      'ID клієнта / Секрет клієнта — Yandex OAuth';
+
+  @override
+  String get backupSmb => 'Samba / SMB 2–3';
+
+  @override
+  String get smbUrl => 'Адреса папки SMB';
+
+  @override
+  String get smbPassword => 'Пароль';
+
+  @override
+  String get smbHelp =>
+      'Укажіть наявну мережеву папку: smb://server/share/CuteLauncher. Потрібні ім’я користувача та пароль із доступом до папки; для домену використовуйте DOMAIN\\user. SMB 2 або 3 вибирається автоматично. Копії та синхронізація потребують прав читання, запису й видалення.';
+
+  @override
+  String get recentRamTitle => 'Оперативна пам’ять';
+
+  @override
+  String recentRamUsed(String used, String total, String percent) {
+    return 'Зайнято $used із $total · $percent%';
+  }
+
+  @override
+  String recentRamAvailable(String value) {
+    return 'Доступно $value';
+  }
+
+  @override
+  String get recentRamUnloaded => 'Вивантажено';
+
+  @override
+  String get recentRamUnavailable => 'Немає даних';
+
+  @override
+  String recentRamMiB(String value) {
+    return '$value МБ';
+  }
+
+  @override
+  String recentRamGiB(String value) {
+    return '$value ГБ';
+  }
+
+  @override
+  String recentRamApp(String value) {
+    return '≈ $value';
+  }
+
+  @override
+  String get backupExistingSettingsHelp =>
+      'У вибраному сховищі вже є налаштування синхронізації. Виберіть, що з ними зробити: застосувати на цьому ТВ, замінити налаштуваннями цього ТВ або об’єднати. Якщо під час об’єднання налаштування відрізняються, буде використано вибраний пріоритет. Обмін почнеться після підтвердження на останньому кроці майстра.';
 }

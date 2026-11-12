@@ -19,4 +19,22 @@
     <string name="remap_error_webhook_http">Webhook відхилив запит (HTTP %1$d).</string>
     <string name="remap_error_webhook_timeout">Час очікування відповіді webhook минув.</string>
     <string name="remap_error_webhook">Не вдалося підключитися до webhook.</string>
+    <string name="power_off">Вимкнути пристрій</string>
+    <string name="power_reboot">Перезавантажити пристрій</string>
+    <string name="power_off_confirm">Перевести пристрій у режим очікування?</string>
+    <string name="power_reboot_confirm">Перезавантажити пристрій? Відкриті застосунки буде закрито.</string>
+    <string name="screensaver_label">Годинник CuteLauncher</string>
+    <string name="notification_service_label">Служба сповіщень CuteLauncher</string>
+    <string name="night_mode_title">Нічний режим</string>
+    <string name="night_mode_notice">Фільтр екрана ввімкнено за розкладом</string>
+    <string name="night_mode_stop">Вимкнути</string>
+    <string name="recovery_checking">Перевірка лаунчера…</string>
+    <string name="recovery_title">Відновлення лаунчера</string>
+    <string name="recovery_description">CuteLauncher кілька разів припинив роботу. Налаштування збережено. Можна повторити запуск, відкрити інший застосунок або вибрати інший головний екран. Якщо штатний лаунчер вимкнено, спочатку ввімкніть його в налаштуваннях застосунків Android.</string>
+    <string name="recovery_retry">Запустити CuteLauncher знову</string>
+    <string name="recovery_settings">Налаштування Android</string>
+    <string name="recovery_home">Вибрати головний екран</string>
+    <string name="recovery_unavailable">Ця дія недоступна на цьому телевізорі.</string>
+    <string name="recovery_restore">Відновити попередній головний екран</string>
+    <string name="recovery_restore_confirm">Відновити попередній головний екран через наявне локальне з’єднання ADB?</string>
 </resources>

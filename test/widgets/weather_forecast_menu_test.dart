@@ -140,6 +140,18 @@ void main() {
     },
   );
 
+  testWidgets('Auto shows the provider that supplied the displayed forecast', (tester) async {
+    when(weather.configuration).thenReturn(WeatherConfiguration.defaults);
+    when(weather.weatherData).thenReturn(const WeatherData(
+      location: 'Moscow',
+      source: 'gismeteo',
+    ));
+    await mount(tester);
+    expect(find.text('Источник погоды: Gismeteo'), findsOneWidget);
+    verifyNever(weather.refresh());
+    await tester.pumpWidget(const SizedBox());
+  });
+
   testWidgets('custom server displays response coordinates, timezone and provider', (tester) async {
     when(weather.configuration).thenReturn(const WeatherConfiguration(
       source: WeatherSource.customOpenMeteo,

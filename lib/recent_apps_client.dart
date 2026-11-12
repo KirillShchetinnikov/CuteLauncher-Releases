@@ -18,7 +18,46 @@ class RecentApp {
   );
 }
 
+enum RecentAppMemoryStatus { running, unloaded, unavailable }
+
+class RecentAppMemory {
+  final RecentAppMemoryStatus status;
+  final int? bytes;
+  const RecentAppMemory.unavailable()
+    : status = RecentAppMemoryStatus.unavailable,
+      bytes = null;
+  const RecentAppMemory._(this.status, this.bytes);
+
+  factory RecentAppMemory.fromMap(Map value) {
+    if (value['status'] == 'unloaded') {
+      return const RecentAppMemory._(RecentAppMemoryStatus.unloaded, null);
+    }
+    final bytes = value['pssBytes'];
+    if (value['status'] == 'running' && bytes is int && bytes >= 0) {
+      return RecentAppMemory._(RecentAppMemoryStatus.running, bytes);
+    }
+    return const RecentAppMemory.unavailable();
+  }
+}
+
 class RecentAppsClient {
+  Future<Map<String, dynamic>> ram() async =>
+      await recentAppsChannel.invokeMapMethod<String, dynamic>('ram') ?? {};
+  Future<RecentAppMemory> memory(String packageName) async =>
+      RecentAppMemory.fromMap(
+        await recentAppsChannel.invokeMapMethod<String, dynamic>('memory', {
+              'packageName': packageName,
+            }) ??
+            {},
+      );
+  Future<void> cancelMemory() async {
+    try {
+      await recentAppsChannel.invokeMethod<void>('cancelMemory');
+    } catch (_) {
+      // The service window may already have disposed its channel.
+    }
+  }
+
   Future<Map<String, dynamic>> access() async =>
       await recentAppsChannel.invokeMapMethod<String, dynamic>('access') ?? {};
   Future<bool> setup(String destination) async =>

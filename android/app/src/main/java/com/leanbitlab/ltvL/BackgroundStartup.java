@@ -88,6 +88,7 @@ final class BackgroundStartup {
                 }
                 if (enabled) selected.add(app); else selected.remove(app);
                 boolean saved = prefs.edit().putStringSet("apps", selected).commit();
+                if (saved) NativeSyncBridge.changed("native_config_background_startup");
                 main.post(() -> result.success(Map.of("status", saved ? "success" : "unavailable", "selected", new ArrayList<>(selected))));
             });
         } else if (method.equals("backgroundSave")) {
@@ -106,6 +107,7 @@ final class BackgroundStartup {
                 var old = prefs.getStringSet("apps", Set.of());
                 boolean valid = selected.stream().allMatch(app -> old.contains(app) || target(app) != null);
                 boolean saved = valid && prefs.edit().putStringSet("apps", selected).commit();
+                if (saved) NativeSyncBridge.changed("native_config_background_startup");
                 main.post(() -> result.success(Map.of("status", saved ? "success" : "unavailable")));
             });
         } else {

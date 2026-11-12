@@ -269,6 +269,8 @@ class NetworkService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
       if (_networkType == NetworkType.Cellular || _networkType == NetworkType.Wifi) {
         _wirelessNetworkSignalLevel = map["wirelessSignalLevel"] as int;
       }
+      DiagnosticsStore.instance.posterLoads.network(transport: _networkType.name,
+          internetAccess: _hasInternetAccess, vpnActive: _vpnActive);
       log("NetworkService: parsed type $_networkType, signal $_wirelessNetworkSignalLevel, vpn $_vpnActive");
     } catch (e, diagnosticStack) {
       DiagnosticsStore.instance.recordException(
@@ -293,6 +295,8 @@ class NetworkService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
         _hasInternetAccess = false;
         _networkType = NetworkType.Unknown;
         _vpnActive = false;
+        DiagnosticsStore.instance.posterLoads.network(transport: _networkType.name,
+            internetAccess: false, vpnActive: false);
         break;
       case "CAPABILITIES_CHANGED":
         ++_networkRevision;

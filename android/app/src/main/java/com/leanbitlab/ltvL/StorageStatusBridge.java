@@ -4,9 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import androidx.core.content.ContextCompat;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodChannel;
 import java.util.concurrent.ExecutorService;
@@ -62,8 +62,7 @@ final class StorageStatusBridge implements AutoCloseable {
             // OEM broadcasts may come from a different process. They only request
             // a bounded fresh snapshot and cannot supply a path or launch anything.
             try {
-                if (Build.VERSION.SDK_INT >= 33) context.registerReceiver(changes, filter, Context.RECEIVER_EXPORTED);
-                else context.registerReceiver(changes, filter);
+                ContextCompat.registerReceiver(context, changes, filter, ContextCompat.RECEIVER_EXPORTED);
                 watching = true;
                 var mounted = new IntentFilter();
                 mounted.addAction(Intent.ACTION_MEDIA_MOUNTED);
@@ -73,8 +72,7 @@ final class StorageStatusBridge implements AutoCloseable {
                 mounted.addAction(Intent.ACTION_MEDIA_EJECT);
                 mounted.addDataScheme("file");
                 try {
-                    if (Build.VERSION.SDK_INT >= 33) context.registerReceiver(media, mounted, Context.RECEIVER_EXPORTED);
-                    else context.registerReceiver(media, mounted);
+                    ContextCompat.registerReceiver(context, media, mounted, ContextCompat.RECEIVER_EXPORTED);
                     mediaWatching = true;
                 } catch (RuntimeException unavailable) { /* Polling remains available. */ }
             } catch (RuntimeException unavailable) { /* Bounded polling remains available. */ }

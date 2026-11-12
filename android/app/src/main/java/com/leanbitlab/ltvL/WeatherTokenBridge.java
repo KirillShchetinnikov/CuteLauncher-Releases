@@ -27,7 +27,7 @@ final class WeatherTokenBridge {
     private static final Object LOCK = new Object();
     private final AtomicFile file;
 
-    private WeatherTokenBridge(Context context) {
+    WeatherTokenBridge(Context context) {
         file = new AtomicFile(new File(context.getNoBackupFilesDir(), "weather-token"));
     }
 
@@ -71,6 +71,15 @@ final class WeatherTokenBridge {
     }
 
     private String read(String server) throws Exception {
+        JSONObject data = snapshot();
+        return data != null && server.equals(data.getString("server")) ? data.getString("token") : null;
+    }
+
+    JSONObject snapshot() throws Exception {
+        synchronized (LOCK) { return snapshotLocked(); }
+    }
+
+    private JSONObject snapshotLocked() throws Exception {
         try (DataInputStream input = new DataInputStream(file.openRead())) {
             if (input.readInt() != 1) throw new IOException();
             byte[] nonce = new byte[12];
@@ -85,7 +94,7 @@ final class WeatherTokenBridge {
             byte[] clear = cipher.doFinal(encrypted);
             try {
                 JSONObject data = new JSONObject(new String(clear, StandardCharsets.UTF_8));
-                return server.equals(data.getString("server")) ? data.getString("token") : null;
+                return data;
             } finally {
                 Arrays.fill(clear, (byte) 0);
             }
@@ -95,12 +104,17 @@ final class WeatherTokenBridge {
         }
     }
 
-    private void save(String server, String token) throws Exception {
+    void save(String server, String token) throws Exception {
+        synchronized (LOCK) { saveLocked(server, token); }
+    }
+
+    private void saveLocked(String server, String token) throws Exception {
         if (token == null || token.length() > 1024) throw new IllegalArgumentException();
         if (token.isEmpty()) {
             file.delete();
             if (file.getBaseFile().exists() || new File(file.getBaseFile() + ".bak").exists()
                 || new File(file.getBaseFile() + ".new").exists()) throw new IOException();
+            NativeSyncBridge.changed("native_secret_weather_token");
             return;
         }
         byte[] clear = new JSONObject().put("server", server).put("token", token).toString().getBytes(StandardCharsets.UTF_8);
@@ -121,6 +135,7 @@ final class WeatherTokenBridge {
             output.write(encrypted);
             output.flush();
             file.finishWrite(stream);
+            NativeSyncBridge.changed("native_secret_weather_token");
         } catch (Exception error) {
             file.failWrite(stream);
             throw error;

@@ -6,6 +6,7 @@ import 'package:flauncher/models/tv_input.dart';
 import 'package:flauncher/providers/tv_inputs_service.dart';
 import 'package:flauncher/remote_mapping_configuration.dart';
 import 'package:flauncher/widgets/launcher_dialog.dart';
+import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
 import 'package:flauncher/widgets/rounded_switch_list_tile.dart';
 import 'package:flauncher/widgets/settings/remote_action_picker.dart';
 import 'package:flauncher/widgets/settings/remote_mappings_page.dart';
@@ -89,10 +90,14 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  const powerActions = {
+    'sleep': 'Выключить устройство (с подтверждением)',
+    'sleep_immediate': 'Выключить устройство (без подтверждения)',
+    'reboot': 'Перезагрузить устройство (с подтверждением)',
+    'reboot_immediate': 'Перезагрузить устройство (без подтверждения)',
+  };
   for (final action in {
-    'sleep': 'Выключить ТВ',
-    'reboot': 'Перезагрузить ТВ',
-    'black_screen': 'Переключить Black Screen',
+    ...powerActions,
     'black_overlay': 'Чёрный экран',
     'tcl_screen_off': 'Отключить экран TCL',
   }.entries) {
@@ -117,12 +122,13 @@ void main() {
         await tester.pumpAndSettle();
         await tester.tap(
           find.text(
-            action.key == 'sleep' || action.key == 'reboot'
+            powerActions.containsKey(action.key)
                 ? 'Управление питанием'
                 : 'Экран и звук',
           ),
         );
         await tester.pumpAndSettle();
+        expect(find.text('Переключить Black Screen'), findsNothing);
         await tester.ensureVisible(find.text(action.value));
         await tester.tap(find.text(action.value));
         await tester.pumpAndSettle();
@@ -292,7 +298,7 @@ void main() {
     await tester.ensureVisible(find.text('Действие').last);
     await tester.tap(find.text('Действие').last);
     await tester.pumpAndSettle();
-    expect(find.text('Нужен ADB'), findsOneWidget);
+    expect(find.text('Нужен ADB'), findsNWidgets(2));
     final dialog = find.byType(AlertDialog);
     final scrollbars = find.descendant(
       of: dialog,
@@ -324,7 +330,7 @@ void main() {
     await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
     expect(find.text('Выбрать действие'), findsNothing);
-    expect(find.text('Перезагрузить ТВ'), findsOneWidget);
+    expect(find.text(powerActions['reboot']!), findsOneWidget);
     expect(calls.where((call) => call.method == 'save'), isEmpty);
     expect(tester.takeException(), isNull);
   });
@@ -946,15 +952,19 @@ void main() {
       await tester.tap(find.text('YouTube'));
       await tester.pumpAndSettle();
       Future<void> import() async {
-        await tester.runAsync(() async {
-          await tester.tap(find.text('Импортировать URL из файла'));
-          await Future<void>.delayed(const Duration(milliseconds: 100));
-        });
+        final importTile = find.widgetWithText(FocusableSettingsTile, 'Импортировать URL из файла');
+        await tester.tap(importTile);
         await tester.pumpAndSettle();
-        await tester.runAsync(() async {
-          await tester.tap(find.text('Внешний проводник'));
-          await Future<void>.delayed(const Duration(milliseconds: 100));
-        });
+        await tester.runAsync(() => tester.tap(find.text('Внешний проводник')));
+        final timeout = Stopwatch()..start();
+        await tester.pump();
+        while (tester.widget<FocusableSettingsTile>(importTile).busy) {
+          if (timeout.elapsed > const Duration(seconds: 5)) {
+            fail('Webhook import did not finish');
+          }
+          await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 10)));
+          await tester.pump();
+        }
         await tester.pumpAndSettle();
       }
 

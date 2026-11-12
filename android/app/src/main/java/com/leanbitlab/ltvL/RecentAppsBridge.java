@@ -17,6 +17,7 @@ final class RecentAppsBridge implements AutoCloseable {
     private static final ComponentName OEM = new ComponentName("com.nes.recents", "com.nes.recents.RecentsActivity");
     private final MethodChannel channel;
     private volatile boolean closed;
+    private volatile long memoryGeneration;
     static Intent systemIntent() {
         return new Intent("com.android.systemui.recents.TOGGLE_RECENTS").setComponent(OEM).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     }
@@ -58,6 +59,25 @@ final class RecentAppsBridge implements AutoCloseable {
         Handler main = new Handler(Looper.getMainLooper());
         channel.setMethodCallHandler((call, result) -> {
             switch (call.method) {
+                case "cancelMemory" -> { memoryGeneration++; result.success(null); }
+                case "ram" -> worker.execute(() -> {
+                    var response = SystemStatusController.ramSnapshot(context);
+                    main.post(() -> { if (!closed) result.success(response); });
+                });
+                case "memory" -> {
+                    String pkg = call.argument("packageName");
+                    long generation = memoryGeneration;
+                    worker.execute(() -> {
+                        Map<String, Object> memory = RecentAppsMemory.UNAVAILABLE;
+                        try {
+                            if (!closed && generation == memoryGeneration)
+                                memory = AdbBridge.recentSession(context, shell -> RecentAppsMemory.read(shell, pkg,
+                                    () -> closed || generation != memoryGeneration || Thread.currentThread().isInterrupted()));
+                        } catch (Exception unavailable) { /* Optional measurement; keep the task usable. */ }
+                        Map<String, Object> response = memory;
+                        main.post(() -> { if (!closed) result.success(generation == memoryGeneration ? response : RecentAppsMemory.UNAVAILABLE); });
+                    });
+                }
                 case "info" -> result.success(Map.of("mode", mode(context), "systemAvailable", systemAvailable(context),
                     "accessibility", LauncherAccessibilityService.connected()));
                 case "access" -> worker.execute(() -> {
@@ -75,11 +95,13 @@ final class RecentAppsBridge implements AutoCloseable {
                     }
                     worker.execute(() -> {
                         boolean ok = context.getSharedPreferences(PREFS, 0).edit().putString("mode", mode).commit();
+                        if (ok) NativeSyncBridge.changed("native_config_recent_apps");
                         main.post(() -> { if (!closed) result.success(ok); });
                     });
                 }
                 case "open" -> result.success(open(context));
                 case "list", "switch", "close", "closeAll", "icon" -> {
+                    if (!call.method.equals("icon")) memoryGeneration++;
                     String pkg = call.argument("packageName");
                     worker.execute(() -> {
                         try {
@@ -100,5 +122,5 @@ final class RecentAppsBridge implements AutoCloseable {
             }
         });
     }
-    @Override public void close() { closed = true; channel.setMethodCallHandler(null); }
+    @Override public void close() { closed = true; memoryGeneration++; channel.setMethodCallHandler(null); }
 }

@@ -15,6 +15,10 @@ import '../launcher_dialog.dart';
 import '../rounded_switch_list_tile.dart';
 import '../sleep_timer_label.dart';
 import 'focusable_settings_tile.dart';
+import 'overlay_appearance_tile.dart';
+import 'overlay_position_tile.dart';
+import 'remote_buttons_page.dart';
+import 'settings_help.dart';
 import 'settings_page_layout.dart';
 import 'settings_route.dart';
 import 'settings_text_tile.dart';
@@ -128,6 +132,37 @@ class SleepTimerOptionsPage extends StatelessWidget {
         onChanged: (value) =>
             _save(context, config.copyWith(closeAfterSelection: value)),
       ),
+      RoundedSwitchListTile(
+        title: Text(l.sleepTimerShowOverApps),
+        value: config.showOverApps,
+        onChanged: (value) =>
+            _save(context, config.copyWith(showOverApps: value)),
+      ),
+      OverlayPositionTile(
+        value: config.overlayPosition,
+        onChanged: (value) =>
+            _save(context, config.copyWith(overlayPosition: value)),
+      ),
+      OverlayAppearanceTile(
+        value: config.overlayAppearance,
+        onChanged: (value) => _save(
+          context,
+          context.read<SettingsService>().sleepTimerConfiguration.copyWith(
+            overlayAppearance: value,
+          ),
+        ),
+      ),
+      if (config.showOverApps)
+        FocusableSettingsTile(
+          title: Text(l.remoteAccessSettings),
+          leading: const Icon(Icons.accessibility),
+          onPressed: () => Navigator.of(context).push(
+            SettingsRoute(
+              builder: (_) => const RemoteButtonsPage(section: 'access'),
+            ),
+          ),
+        ),
+      SettingsHelp(text: l.sleepTimerOverlayHelp),
     ];
   }
 

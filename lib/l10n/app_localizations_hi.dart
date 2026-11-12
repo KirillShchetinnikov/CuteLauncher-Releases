@@ -10,6 +10,9 @@ class AppLocalizationsHi extends AppLocalizations {
   AppLocalizationsHi([String locale = 'hi']) : super(locale);
 
   @override
+  String get scrollContentLabels => 'पंक्तियों में लंबे लेबल स्क्रॉल करें';
+
+  @override
   String get contentAppTileStyle => 'दिखावट का स्रोत';
 
   @override
@@ -912,6 +915,72 @@ class AppLocalizationsHi extends AppLocalizations {
       'यह छवि क्षतिग्रस्त है या बहुत बड़ी है (अधिकतम 8 MiB और 48 मेगापिक्सेल)। कोई अन्य छवि चुनें.';
 
   @override
+  String get memoryAdvanced => 'उन्नत निदान';
+
+  @override
+  String get memoryLauncherTitle => 'CuteLauncher की मेमोरी';
+
+  @override
+  String get memoryUsage => 'मेमोरी का उपयोग';
+
+  @override
+  String memoryChange(String delta) {
+    return 'पिछले माप से $delta';
+  }
+
+  @override
+  String get memoryCacheFiles => 'मेमोरी में चित्र फ़ाइलें';
+
+  @override
+  String memoryCacheEntries(int count) {
+    return 'आइटम: $count';
+  }
+
+  @override
+  String memoryCacheResult(String before, String after) {
+    return 'चित्र कैश: $before → $after';
+  }
+
+  @override
+  String get memoryStale => 'अपडेट नहीं हो सका। पिछला माप दिखाया जा रहा है।';
+
+  @override
+  String get memoryTechnical => 'तकनीकी विवरण';
+
+  @override
+  String get memoryObserve => 'मेमोरी की निगरानी';
+
+  @override
+  String get memoryObserveStart => '1 मिनट निगरानी करें';
+
+  @override
+  String get memoryObserveStop => 'निगरानी रोकें';
+
+  @override
+  String get memoryObserveRunning => 'रिकॉर्डिंग जारी · अधिकतम 1 मिनट';
+
+  @override
+  String get memoryObserveFinished => 'रिकॉर्डिंग रुक गई';
+
+  @override
+  String get memoryObserveEmpty => 'अभी कोई माप नहीं है';
+
+  @override
+  String memorySeconds(int seconds) {
+    return '$seconds सेकंड';
+  }
+
+  @override
+  String get memoryReadingHelp => 'माप कैसे समझें';
+
+  @override
+  String get memorySaverHelp => 'मेमोरी बचत का प्रभाव';
+
+  @override
+  String get memorySaveFailed =>
+      'मेमोरी बचत मोड सहेजा नहीं जा सका। फिर प्रयास करें।';
+
+  @override
   String get memoryTitle => 'स्मृति';
 
   @override
@@ -1649,7 +1718,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get weatherCoordinatesError =>
-      'किसी शहर को मैन्युअल रूप से दर्ज करें या स्वचालित रूप से निर्देशांक प्राप्त करें।';
+      'शहर चुनें, निर्देशांक दर्ज करें या स्थान अपने आप पता करें।';
 
   @override
   String get weatherRefresh => 'मौसम अपडेट करें';
@@ -1967,7 +2036,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get nightCityHint =>
-      'स्थान पहुंच प्रदान करने के बजाय अपना शहर चुनें। सूर्य के समय को पुनः प्राप्त करने के लिए चयनित निर्देशांक को फ़ॉलबैक के रूप में Sunrise-Sunset.org, या Open-Meteo पर भेजा जाता है।';
+      'स्थान पहुंच प्रदान करने के बजाय अपना शहर चुनें। सूर्य के समय को पुनः प्राप्त करने के लिए चयनित निर्देशांक को फ़ॉलबैक के रूप में Sunrise-Sunset.org, या GeoNames पर भेजा जाता है।';
 
   @override
   String get nightResumeSchedule => 'शेड्यूल पर लौटें';
@@ -2014,7 +2083,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get nightSolarAttribution =>
-      'दैनिक सूर्य समय: Sunrise-Sunset.org; फ़ॉलबैक: Open-Meteo। शहर खोज: जियोनाम। ऑफ़लाइन उपयोग के लिए कई दिन कैश किए गए हैं।';
+      'सूर्योदय और सूर्यास्त के समय Sunrise-Sunset.org से मिलते हैं। उसके उपलब्ध न होने पर GeoNames का उपयोग होता है। इंटरनेट न होने पर टीवी बाकी समय की गणना करता है।';
 
   @override
   String get nightTemporaryOn => 'जब तक अस्थायी रूप से मंदता जारी रहेगी';
@@ -2952,7 +3021,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get weatherCityNotFound =>
-      'शहर नहीं मिला. अंग्रेजी में शहर का नाम जांचें।';
+      'शहर की पहचान नहीं हो सकी। स्थान सेटिंग में शहर चुनें।';
 
   @override
   String get weatherLocationAutomatic => 'स्वचालित रूप से प्राप्त करें';
@@ -2963,6 +3032,15 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get weatherLocationManual => 'मैन्युअल रूप से दर्ज करें';
+
+  @override
+  String get manualLocationInput => 'इनपुट का तरीका';
+
+  @override
+  String get manualLocationCity => 'शहर';
+
+  @override
+  String get manualLocationCoordinates => 'निर्देशांक';
 
   @override
   String get weatherLocationPermissionDenied =>
@@ -2995,7 +3073,8 @@ class AppLocalizationsHi extends AppLocalizations {
       'स्थान अनुपलब्ध. अनुमति और सिस्टम स्थान सेटिंग जांचें.';
 
   @override
-  String get nightCityEnglish => 'शहर का नाम अंग्रेजी में दर्ज करें';
+  String get nightCitySearchHint =>
+      'शहर का नाम डालें। अल्पविराम के बाद आप क्षेत्र या देश जोड़ सकते हैं।';
 
   @override
   String get nightOverlayBrief =>
@@ -3144,7 +3223,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get backupSyncGroupsHelp =>
-      'अक्षम ब्लॉक इस टीवी पर स्थानीय रहते हैं। ब्लॉक चयन उपकरणों के बीच सिंक्रनाइज़ है।';
+      'बंद किए गए भाग इस टीवी पर रहते हैं। हर डिवाइस पर सिंक के भाग अलग से चुनें।';
 
   @override
   String get backupSyncGroupsFailed =>
@@ -4116,16 +4195,27 @@ class AppLocalizationsHi extends AppLocalizations {
   String get tvPowerTitle => 'पावर प्रबंधन';
 
   @override
-  String get tvPowerOff => 'टीवी बंद करें';
+  String remotePowerWithConfirmation(String action) {
+    return '$action (पुष्टि के साथ)';
+  }
 
   @override
-  String get tvPowerReboot => 'टीवी रीस्टार्ट करें';
+  String remotePowerWithoutConfirmation(String action) {
+    return '$action (बिना पुष्टि के)';
+  }
 
   @override
-  String get tvPowerOffConfirm => 'टीवी को स्टैंडबाय में रखें?';
+  String get tvPowerOff => 'डिवाइस बंद करें';
 
   @override
-  String get tvPowerRebootConfirm => 'रीस्टार्ट करें? खुले ऐप बंद हो जाएंगे।';
+  String get tvPowerReboot => 'डिवाइस रीस्टार्ट करें';
+
+  @override
+  String get tvPowerOffConfirm => 'डिवाइस को स्टैंडबाय में रखें?';
+
+  @override
+  String get tvPowerRebootConfirm =>
+      'डिवाइस रीस्टार्ट करें? खुले ऐप बंद हो जाएंगे।';
 
   @override
   String get tvPowerSent => 'कमांड भेजी गई';
@@ -4266,6 +4356,13 @@ class AppLocalizationsHi extends AppLocalizations {
   String get sleepTimerShowSeconds => 'सेकंड दिखाएँ';
 
   @override
+  String get sleepTimerShowOverApps => 'ऐप्लिकेशन के ऊपर टाइमर दिखाएँ';
+
+  @override
+  String get sleepTimerOverlayHelp =>
+      'इसे ऐप्लिकेशन के ऊपर दिखाने के लिए CuteLauncher की सुलभता सेवा चालू करें।';
+
+  @override
   String get sleepTimerCloseAfterSelection =>
       'टाइमर चुनने के बाद विजेट बंद करें';
 
@@ -4380,6 +4477,21 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get noticeTopLeft => 'ऊपर बाईं ओर';
+
+  @override
+  String get overlayAppearance => 'ऐप्स के ऊपर का रूप';
+
+  @override
+  String get overlayAppearanceTopPanel => 'ऊपरी पैनल जैसा';
+
+  @override
+  String get overlayAppearanceDark => 'गहरा';
+
+  @override
+  String get overlayWhereToShow => 'कहाँ दिखाएँ';
+
+  @override
+  String get overlayAtPanelWidget => 'ऊपरी पैनल में विजेट की जगह पर';
 
   @override
   String get notificationOpenFailed =>
@@ -4686,7 +4798,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get weatherTextHelp =>
-      'पाठ और घुंघराले कोष्ठकों में संकेत लिखें या बटनों से कर्सर पर जोड़ें। बड़े और छोटे अक्षर समान हैं। डेटा न होने पर मान के आसपास के साधारण कोष्ठक भी छिप जाते हैं। साधारण घुंघराले कोष्ठक दो बार लिखें। एक पंक्ति विराम की अनुमति है।';
+      'पाठ और घुंघराले कोष्ठकों में संकेत लिखें या बटनों से कर्सर पर जोड़ें। बड़े और छोटे अक्षर समान हैं। डेटा न होने पर मान के आसपास के साधारण कोष्ठक भी छिप जाते हैं। साधारण घुंघराले कोष्ठक दो बार लिखें। एक पंक्ति विराम की अनुमति है। आप अक्षर, अंक, स्पेस और कोई भी मुद्रण योग्य चिह्न लिख सकते हैं, जैसे: () [] / : ; + − ° % ·.';
 
   @override
   String get weatherTextSaveError =>
@@ -4967,10 +5079,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get fileBrowserPartial => 'फ़ोल्डर का केवल कुछ हिस्सा दिखाया गया है';
 
   @override
-  String get fileBrowserRemoteHint => '← पूरा नाम · → पुष्टि';
-
-  @override
-  String get fileBrowserReadNameHint => '← पूरा नाम दिखाएँ';
+  String get fileBrowserReadNameHint => '← ऊपर का फ़ोल्डर · → पूरा नाम';
 
   @override
   String fileBrowserSavedTo(String path) {
@@ -5298,6 +5407,13 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get volumeUpdateInterval => 'अपडेट अंतराल';
+
+  @override
+  String get showVolumeOverlay => 'ऐप्लिकेशन के ऊपर वॉल्यूम दिखाएँ';
+
+  @override
+  String get volumeOverlayHelp =>
+      'इसके लिए CuteLauncher की सुलभता सेवा चालू होनी चाहिए।';
 
   @override
   String get clockHoursColor => 'घंटों का रंग';
@@ -5769,4 +5885,179 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get appPermissionsHelp =>
       'यहाँ अधिकृत सेवाओं के लिए बहाली डिफ़ॉल्ट रूप से चालू है। Android सेटिंग में बंद करने के बाद भी यह अनुमतियाँ और सेवा बहाल करती है। बहाली बंद करने पर मौजूदा पहुँच बनी रहती है। सेवा बंद करने से बहाली भी रुकती है; ऑटोस्टार्ट और बैकग्राउंड अनुमतियाँ बनी रहती हैं। फिर से जोड़ना केवल इस सेवा को पुनः शुरू करता है, ऐप की त्रुटियाँ ठीक नहीं करता। ADB आवश्यक है; Android जाँच में देरी कर सकता है। ऑटोस्टार्ट ऐप की स्क्रीन नहीं खोलता। स्थिति पिछली जाँच की है; असमर्थित कार्रवाइयों की अनुमति नहीं दी जाती।';
+
+  @override
+  String get weatherFieldUnsupported =>
+      'यह स्रोत इस पैरामीटर का समर्थन नहीं करता';
+
+  @override
+  String get weatherFieldMissing => 'वर्तमान उत्तर में डेटा नहीं है';
+
+  @override
+  String get weatherMissingAsDash => 'अनुपलब्ध डेटा की जगह डैश';
+
+  @override
+  String get weatherPanelAlignment => 'ऊपरी पैनल की मौसम पंक्तियों का संरेखण';
+
+  @override
+  String get syncProtection => 'टोकन और सुरक्षा';
+
+  @override
+  String get syncKey => 'साझा सिंक्रोनाइज़ेशन कुंजी';
+
+  @override
+  String get syncKeyShow => 'कुंजी दिखाएँ';
+
+  @override
+  String get syncKeyCreate => 'कुंजी बनाएँ';
+
+  @override
+  String get syncKeyInvalid => '64 अक्षरों की हेक्साडेसिमल कुंजी दर्ज करें।';
+
+  @override
+  String get syncKeyHelp =>
+      'टोकन और खाते सिंक करने के लिए सभी टीवी पर समान कुंजी रखें। एक टीवी पर बनाकर दूसरे टीवी पर भेजें। इसे सुरक्षित रखें: इसके बिना सुरक्षित डेटा नहीं पढ़ा जा सकता। कुंजी बदलने पर सभी टीवी अपडेट करें। Android अनुमतियाँ और हार्डवेयर कुंजियाँ स्थानीय रहती हैं।';
+
+  @override
+  String get syncFiles => 'सिंक्रोनाइज़ेशन फ़ाइलें';
+
+  @override
+  String get syncCleanup => 'पुरानी फ़ाइलें साफ़ करें';
+
+  @override
+  String get syncCleanupFailed =>
+      'कुछ पुरानी फ़ाइलें नहीं हट सकीं। फिर से साफ़ करने की कोशिश करें।';
+
+  @override
+  String get syncRetire => 'डिवाइस बाहर करें';
+
+  @override
+  String get syncRetireConfirm =>
+      'इस डिवाइस को समूह से बाहर करें? इसकी पुरानी स्थितियाँ लागू नहीं होंगी। वापस आने के लिए नया सिंक्रोनाइज़ेशन समूह चाहिए।';
+
+  @override
+  String get backupAccount => 'खाता';
+
+  @override
+  String get backupNewAccount => 'दूसरा खाता जोड़ें';
+
+  @override
+  String get backupSetupWizard => 'सेटअप विज़ार्ड';
+
+  @override
+  String get backupSetupSummary => 'सारांश';
+
+  @override
+  String get backupSetupNext => 'अगला';
+
+  @override
+  String get backupSetupBack => 'वापस';
+
+  @override
+  String get backupFirstCopy => 'पहला बैकअप अभी बनाएँ';
+
+  @override
+  String get backupSyncAll => 'सब कुछ सिंक करें';
+
+  @override
+  String get backupFirstExchange => 'पहला आदान-प्रदान';
+
+  @override
+  String get backupNoRemote =>
+      'स्टोरेज में सेटिंग नहीं हैं। यह टीवी अपनी सेटिंग अपलोड करेगा।';
+
+  @override
+  String get backupSetupStart => 'चालू करें';
+
+  @override
+  String get backupPassword => 'डेटा एन्क्रिप्शन पासवर्ड';
+
+  @override
+  String get backupPasswordRepeat => 'पासवर्ड दोहराएँ';
+
+  @override
+  String get backupPasswordMismatch => 'पासवर्ड मेल नहीं खाते';
+
+  @override
+  String get backupAccountLocalHelp =>
+      'जुड़ा हुआ खाता या उसी प्रकार का दूसरा खाता चुनें। लॉगिन विवरण इसी टीवी पर रहते हैं। बैकअप और सिंक अपनी फ़ाइलें अलग संभालते हैं।';
+
+  @override
+  String get backupPasswordOptionalHelp =>
+      'वैकल्पिक। ट्रांसफ़र होने वाले टोकन सहित पूरी फ़ाइल एन्क्रिप्ट करता है। बिना पासवर्ड फ़ाइल एन्क्रिप्ट नहीं होती। खाली मान एन्क्रिप्शन बंद करता है। दूसरे टीवी पर यही पासवर्ड चाहिए।';
+
+  @override
+  String get backupYandexDisk => 'Yandex Disk';
+
+  @override
+  String get backupYandexHelp =>
+      'Disk पर अपने ऐप फ़ोल्डर तक पहुँच वाले Yandex OAuth ऐप का Client ID और Client Secret दर्ज करें। कनेक्ट करें और फ़ोन पर कोड की पुष्टि करें। साझा करने के लिए सभी टीवी पर एक ही OAuth क्लाइंट और खाता इस्तेमाल करें।';
+
+  @override
+  String get backupYandexConnect => 'Yandex Disk कनेक्ट करें';
+
+  @override
+  String get backupYandexReconnect => 'Yandex Disk फिर से कनेक्ट करें';
+
+  @override
+  String get backupYandexConnectionStatus => 'Yandex Disk कनेक्शन की स्थिति';
+
+  @override
+  String get yandexCodeExpired =>
+      'Yandex Disk साइन-इन का समय समाप्त हो गया। नया कोड प्राप्त करने के लिए Yandex Disk कनेक्ट करें का चयन करें.';
+
+  @override
+  String get yandexConfigurationError =>
+      'ग्राहक आईडी / ग्राहक रहस्य — Yandex OAuth';
+
+  @override
+  String get backupSmb => 'Samba / SMB 2–3';
+
+  @override
+  String get smbUrl => 'फ़ोल्डर SMB पता';
+
+  @override
+  String get smbPassword => 'पासवर्ड';
+
+  @override
+  String get smbHelp =>
+      'मौजूदा नेटवर्क फ़ोल्डर दर्ज करें: smb://server/share/CuteLauncher। पहुँच वाला उपयोगकर्ता नाम और पासवर्ड दें; डोमेन खाते के लिए DOMAIN\\user इस्तेमाल करें। SMB 2 या 3 अपने आप चुना जाता है। बैकअप और सिंक के लिए पढ़ने, लिखने और हटाने की अनुमति चाहिए।';
+
+  @override
+  String get recentRamTitle => 'रैम';
+
+  @override
+  String recentRamUsed(String used, String total, String percent) {
+    return '$total में से $used उपयोग में · $percent%';
+  }
+
+  @override
+  String recentRamAvailable(String value) {
+    return '$value उपलब्ध';
+  }
+
+  @override
+  String get recentRamUnloaded => 'मेमोरी से हटा दिया गया';
+
+  @override
+  String get recentRamUnavailable => 'डेटा उपलब्ध नहीं';
+
+  @override
+  String recentRamMiB(String value) {
+    return '$value MiB';
+  }
+
+  @override
+  String recentRamGiB(String value) {
+    return '$value GiB';
+  }
+
+  @override
+  String recentRamApp(String value) {
+    return '≈ $value';
+  }
+
+  @override
+  String get backupExistingSettingsHelp =>
+      'चुने गए स्टोरेज में सिंक्रोनाइज़ेशन की सेटिंग्स पहले से मौजूद हैं। चुनें कि उन्हें इस टीवी पर लागू करना है, इस टीवी की सेटिंग्स से बदलना है या मिलाना है। मिलाते समय अंतर होने पर आपकी चुनी हुई प्राथमिकता लागू होगी। विज़ार्ड के अंतिम चरण में पुष्टि के बाद आदान-प्रदान शुरू होगा।';
 }

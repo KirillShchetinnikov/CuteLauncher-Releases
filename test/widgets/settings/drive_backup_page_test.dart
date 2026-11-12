@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 class _Drive extends DriveBackupService {
   int disconnects = 0;
   final connections = <(String, String)>[];
-  _Drive() {
+  _Drive({super.yandex}) {
     configured = true;
     clientId = 'test-client';
     clientSecret = 'test-secret';
@@ -28,6 +28,39 @@ class _Drive extends DriveBackupService {
 }
 
 void main() {
+  testWidgets(
+    'Yandex connection page uses Yandex labels and has no Google JSON import',
+    (tester) async {
+      final service = _Drive(yandex: true);
+      addTearDown(service.dispose);
+      await tester.pumpWidget(
+        ChangeNotifierProvider<DriveBackupService>.value(
+          value: service,
+          child: const MaterialApp(
+            locale: Locale('ru'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(body: DriveBackupPage()),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Яндекс Диск'), findsOneWidget);
+      expect(find.text('Состояние подключения Яндекс Диска'), findsOneWidget);
+      expect(
+        find.text('Импортировать Client ID и Secret из JSON'),
+        findsNothing,
+      );
+      await tester.scrollUntilVisible(
+        find.text('Переподключить Яндекс Диск'),
+        100,
+      );
+      await tester.tap(find.text('Переподключить Яндекс Диск'));
+      await tester.pumpAndSettle();
+      expect(service.connections, [('test-client', 'test-secret')]);
+      expect(tester.takeException(), isNull);
+    },
+  );
   for (final configured in [false, true]) {
     for (final locale in ['ru', 'en', 'ar']) {
       testWidgets(

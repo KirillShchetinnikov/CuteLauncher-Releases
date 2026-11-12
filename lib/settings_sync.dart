@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'weather_text_format.dart';
 import 'information_formats.dart';
 import 'file_browser_options.dart';
+import 'overlay_appearance.dart';
+import 'overlay_position.dart';
 
 /// An explicit portable surface. New preferences remain local until reviewed.
 const syncSettingsKeys = <String>{
@@ -29,6 +31,9 @@ const syncSettingsKeys = <String>{
   'show_network_indicator_in_status_bar',
   'show_vpn_in_status_bar',
   'show_volume_in_status_bar',
+  'show_volume_overlay',
+  volumeOverlayPositionKey,
+  volumeOverlayAppearanceKey,
   'volume_update_interval',
   'show_nas_in_status_bar',
   'show_usb_in_status_bar',

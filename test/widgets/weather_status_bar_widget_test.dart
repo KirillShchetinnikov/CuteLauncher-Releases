@@ -1,4 +1,5 @@
 import 'package:flauncher/models/weather_data.dart';
+import 'package:flauncher/information_formats.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/weather_service.dart';
 import 'package:flauncher/widgets/weather_status_bar_widget.dart';
@@ -39,6 +40,8 @@ void main() {
     mockSettingsService = MockSettingsService();
     mockWeatherService = MockWeatherService();
 
+    when(mockSettingsService.informationWeather()).thenReturn(const WeatherDisplayOptions(
+      format: WeatherTextFormat.standard, fahrenheit: false, warnings: false));
     when(mockSettingsService.showWeatherInStatusBar).thenReturn(true);
     when(mockSettingsService.useFahrenheit).thenReturn(false);
     when(mockSettingsService.weatherTextFormat).thenReturn(WeatherTextFormat.standard);

@@ -19,4 +19,22 @@
     <string name="remap_error_webhook_http">Webhook が要求を拒否しました（HTTP %1$d）。</string>
     <string name="remap_error_webhook_timeout">Webhook の応答がタイムアウトしました。</string>
     <string name="remap_error_webhook">Webhook に接続できませんでした。</string>
+    <string name="power_off">デバイスをオフ</string>
+    <string name="power_reboot">デバイスを再起動</string>
+    <string name="power_off_confirm">デバイスをスタンバイにしますか？</string>
+    <string name="power_reboot_confirm">デバイスを再起動しますか？開いているアプリは終了します。</string>
+    <string name="screensaver_label">CuteLauncher 時計</string>
+    <string name="notification_service_label">CuteLauncher 通知サービス</string>
+    <string name="night_mode_title">ナイトモード</string>
+    <string name="night_mode_notice">画面フィルターはスケジュールに従って有効です</string>
+    <string name="night_mode_stop">オフにする</string>
+    <string name="recovery_checking">ランチャーを確認中…</string>
+    <string name="recovery_title">ランチャーの復旧</string>
+    <string name="recovery_description">CuteLauncher が繰り返し停止しました。設定は保持されています。再試行するか、別のアプリを開くか、別のホーム画面を選択できます。標準ランチャーが無効の場合は、まず Android のアプリ設定で有効にしてください。</string>
+    <string name="recovery_retry">CuteLauncher を再起動</string>
+    <string name="recovery_settings">Android の設定</string>
+    <string name="recovery_home">ホーム画面を選択</string>
+    <string name="recovery_unavailable">このテレビではこの操作を利用できません。</string>
+    <string name="recovery_restore">以前のホーム画面を復元</string>
+    <string name="recovery_restore_confirm">現在のローカル ADB 接続を使用して以前のホーム画面を復元しますか？</string>
 </resources>

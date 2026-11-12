@@ -1,5 +1,8 @@
 import 'dart:convert';
 
+import 'overlay_appearance.dart';
+import 'overlay_position.dart';
+
 const sleepTimerConfigurationKey = 'sleep_timer_configuration';
 const defaultSleepTimerMinutes = [
   10,
@@ -35,13 +38,18 @@ class SleepTimerPreset {
 
 class SleepTimerConfiguration {
   final String display;
-  final bool showSeconds, closeAfterSelection;
+  final bool showSeconds, closeAfterSelection, showOverApps;
+  final OverlayPosition overlayPosition;
+  final OverlayAppearance overlayAppearance;
   final List<SleepTimerPreset> presets;
 
   SleepTimerConfiguration({
     this.display = 'remaining',
     this.showSeconds = true,
     this.closeAfterSelection = true,
+    this.showOverApps = false,
+    this.overlayPosition = OverlayPosition.topLeft,
+    this.overlayAppearance = OverlayAppearance.topPanel,
     List<SleepTimerPreset>? presets,
   }) : presets = List.unmodifiable(presets ?? defaults);
 
@@ -55,11 +63,17 @@ class SleepTimerConfiguration {
     String? display,
     bool? showSeconds,
     bool? closeAfterSelection,
+    bool? showOverApps,
+    OverlayPosition? overlayPosition,
+    OverlayAppearance? overlayAppearance,
     List<SleepTimerPreset>? presets,
   }) => SleepTimerConfiguration(
     display: display ?? this.display,
     showSeconds: showSeconds ?? this.showSeconds,
     closeAfterSelection: closeAfterSelection ?? this.closeAfterSelection,
+    showOverApps: showOverApps ?? this.showOverApps,
+    overlayPosition: overlayPosition ?? this.overlayPosition,
+    overlayAppearance: overlayAppearance ?? this.overlayAppearance,
     presets: presets ?? this.presets,
   );
 
@@ -69,6 +83,11 @@ class SleepTimerConfiguration {
         !['remaining', 'end', 'both'].contains(value['display']) ||
         value['showSeconds'] is! bool ||
         value['closeAfterSelection'] is! bool ||
+        (value.containsKey('showOverApps') && value['showOverApps'] is! bool) ||
+        (value.containsKey('overlayPosition') &&
+            OverlayPosition.parse(value['overlayPosition']) == null) ||
+        (value.containsKey('overlayAppearance') &&
+            OverlayAppearance.parse(value['overlayAppearance']) == null) ||
         value['presets'] is! List) {
       throw const FormatException('Invalid timer configuration');
     }
@@ -92,6 +111,13 @@ class SleepTimerConfiguration {
       display: value['display'],
       showSeconds: value['showSeconds'],
       closeAfterSelection: value['closeAfterSelection'],
+      showOverApps: value['showOverApps'] == true,
+      overlayPosition:
+          OverlayPosition.parse(value['overlayPosition']) ??
+          OverlayPosition.topLeft,
+      overlayAppearance:
+          OverlayAppearance.parse(value['overlayAppearance']) ??
+          OverlayAppearance.topPanel,
       presets: [
         ...presets.where((p) => p.visible),
         ...presets.where((p) => !p.visible),
@@ -111,6 +137,9 @@ class SleepTimerConfiguration {
     'display': display,
     'showSeconds': showSeconds,
     'closeAfterSelection': closeAfterSelection,
+    'showOverApps': showOverApps,
+    'overlayPosition': overlayPosition.name,
+    'overlayAppearance': overlayAppearance.name,
     'presets': presets.map((p) => p.toJson()).toList(),
   });
 

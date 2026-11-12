@@ -64,9 +64,20 @@ void main() {
     final payload = forecast();
     (payload['list'] as List).removeAt(0);
     final data = WeatherData.fromJson(normalizeOpenWeather(current(), payload));
-    expect(data.forecasts[0].conditionCode, isNull);
+    expect(data.forecasts[0].conditionCode, 800);
     expect(data.forecasts[1].conditionCode, 211);
-    expect(data.todayMinTemp, isNull);
+    expect(data.todayMinTemp, 8);
+    expect(data.todayMaxTemp, 8);
+  });
+  test('optional extrema and precipitation do not reject usable forecasts', () {
+    final payload = forecast();
+    for (final item in payload['list'] as List) {
+      item['main'] = {'temp': -4}; item.remove('pop');
+    }
+    final data = WeatherData.fromJson(normalizeOpenWeather(current(), payload));
+    expect(data.todayMinTemp, -4); expect(data.todayMaxTemp, 8);
+    expect(data.forecasts[1].minTemp, -4);
+    expect(data.forecasts[1].precipProbability, isNull);
   });
   for (final code in [401, 403, 429]) {
     test('OpenWeather JSON error $code becomes a sanitized failure', () async {
@@ -110,6 +121,34 @@ void main() {
     tearDown(() async {
       await events.close(); PathProviderPlatform.instance = originalPaths;
       await directory.delete(recursive: true);
+    });
+    test('shared settings, server address and both keys survive switching and restart', () async {
+      final prefs = await SharedPreferences.getInstance();
+      final service = WeatherService(channel, preferences: prefs);
+      while (!service.initialized) { await Future<void>.delayed(Duration.zero); }
+      await service.setApiKey('yandex-fixture', source: WeatherSource.yandex);
+      await service.setApiKey('open-fixture', source: WeatherSource.openWeather);
+      await service.selectSource(WeatherSource.yandex);
+      await service.configure(service.configuration.copyWith(intervalMinutes: 120, location: 'Shared city', server: Uri.parse('https://weather.example.test/home')));
+      await service.selectSource(WeatherSource.openWeather);
+      await service.configure(service.configuration.copyWith(intervalMinutes: 30));
+      await service.selectSource(WeatherSource.yandex);
+      expect(service.configuration.intervalMinutes, 30);
+      expect(service.configuration.location, 'Shared city');
+      expect(await service.hasApiKey(source: WeatherSource.openWeather), isTrue);
+      service.dispose();
+      final restored = WeatherService(channel, preferences: prefs);
+      addTearDown(restored.dispose);
+      while (!restored.initialized) { await Future<void>.delayed(Duration.zero); }
+      await restored.selectSource(WeatherSource.openWeather);
+      expect(restored.configuration.intervalMinutes, 30);
+      expect(restored.configuration.location, 'Shared city');
+      expect(restored.configuration.server.toString(), 'https://weather.example.test/home');
+      expect(await restored.hasApiKey(source: WeatherSource.yandex), isTrue);
+      expect(await restored.hasApiKey(source: WeatherSource.openWeather), isTrue);
+      final raw = prefs.getString(weatherConfigurationKey)!;
+      expect(raw, isNot(contains('fixture')));
+      expect(validWeatherConfiguration(raw), isTrue);
     });
     test('replace and delete one key preserves the other and secrets stay out of preferences', () async {
       final prefs = await SharedPreferences.getInstance();

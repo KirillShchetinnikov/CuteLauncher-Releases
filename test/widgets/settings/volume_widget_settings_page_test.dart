@@ -1,5 +1,7 @@
 import 'package:flauncher/backup_sync_groups.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
+import 'package:flauncher/overlay_appearance.dart';
+import 'package:flauncher/overlay_position.dart';
 import 'package:flauncher/providers/appearance_service.dart';
 import 'package:flauncher/providers/network_service.dart';
 import 'package:flauncher/providers/notifications_service.dart';
@@ -7,6 +9,7 @@ import 'package:flauncher/providers/remote_panel_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/tv_inputs_service.dart';
 import 'package:flauncher/settings_sync.dart';
+import 'package:flauncher/widgets/rounded_switch_list_tile.dart';
 import 'package:flauncher/widgets/settings/remote_panel_page.dart';
 import 'package:flauncher/widgets/settings/settings_panel.dart';
 import 'package:flauncher/widgets/settings/settings_value_stepper.dart';
@@ -23,6 +26,48 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../mocks.mocks.dart';
 
 void main() {
+  test('volume overlay is opt-in and included in top-panel backups', () async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    final settings = SettingsService(prefs);
+    expect(settings.showVolumeOverlay, isFalse);
+    expect(settings.volumeOverlayPosition, OverlayPosition.topRight);
+    expect(settings.volumeOverlayAppearance, OverlayAppearance.topPanel);
+    await settings.setShowVolumeOverlay(true);
+    await settings.setVolumeOverlayPosition(OverlayPosition.bottomRight);
+    await settings.setVolumeOverlayAppearance(OverlayAppearance.dark);
+    final restored = SettingsService(prefs);
+    expect(restored.showVolumeOverlay, isTrue);
+    expect(restored.volumeOverlayPosition, OverlayPosition.bottomRight);
+    expect(restored.volumeOverlayAppearance, OverlayAppearance.dark);
+    expect(settings.exportSettingsMap()[volumeOverlayAppearanceKey], 'dark');
+    await settings.importSettingsMap({volumeOverlayAppearanceKey: 'invalid'});
+    expect(settings.volumeOverlayAppearance, OverlayAppearance.dark);
+    await settings.importSettingsMap({volumeOverlayAppearanceKey: 'topPanel'});
+    expect(settings.volumeOverlayAppearance, OverlayAppearance.topPanel);
+    expect(syncSettingsKeys, contains(volumeOverlayAppearanceKey));
+    expect(
+      backupSyncPartGroup('setting:$volumeOverlayAppearanceKey'),
+      BackupSyncGroup.topPanel,
+    );
+    expect(settings.exportSettingsMap()['show_volume_overlay'], isTrue);
+    await settings.importSettingsMap({'show_volume_overlay': 'false'});
+    expect(settings.showVolumeOverlay, isTrue);
+    await settings.importSettingsMap({'show_volume_overlay': false});
+    expect(settings.showVolumeOverlay, isFalse);
+    await settings.importSettingsMap({volumeOverlayPositionKey: 'center'});
+    expect(settings.volumeOverlayPosition, OverlayPosition.bottomRight);
+    await settings.importSettingsMap({volumeOverlayPositionKey: 'widget'});
+    expect(settings.volumeOverlayPosition, OverlayPosition.widget);
+    expect(syncSettingsKeys, contains('show_volume_overlay'));
+    expect(
+      backupSyncPartGroup('setting:show_volume_overlay'),
+      BackupSyncGroup.topPanel,
+    );
+    settings.dispose();
+    restored.dispose();
+  });
+
   test(
     'volume interval defaults, bounds, backup validation and sync group',
     () async {
@@ -142,6 +187,31 @@ void main() {
           await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
           await tester.pumpAndSettle();
           expect(settings.volumeUpdateInterval, 4);
+          final overlay = find.widgetWithText(
+            RoundedSwitchListTile,
+            l.showVolumeOverlay,
+          );
+          expect(tester.widget<RoundedSwitchListTile>(overlay).value, isFalse);
+          await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+          await tester.sendKeyEvent(LogicalKeyboardKey.select);
+          await tester.pumpAndSettle();
+          expect(settings.showVolumeOverlay, isTrue);
+          expect(tester.widget<RoundedSwitchListTile>(overlay).value, isTrue);
+          expect(find.text(l.remoteAccessSettings), findsOneWidget);
+          final where = find.text(l.overlayWhereToShow);
+          await tester.ensureVisible(where);
+          await tester.tap(where);
+          await tester.pumpAndSettle();
+          await tester.tap(find.text(l.noticeBottomLeft));
+          await tester.pumpAndSettle();
+          expect(settings.volumeOverlayPosition, OverlayPosition.bottomLeft);
+          final appearanceChoice = find.text(l.overlayAppearance);
+          await tester.ensureVisible(appearanceChoice);
+          await tester.tap(appearanceChoice);
+          await tester.pumpAndSettle();
+          await tester.tap(find.text(l.overlayAppearanceDark));
+          await tester.pumpAndSettle();
+          expect(settings.volumeOverlayAppearance, OverlayAppearance.dark);
           await tester.binding.handlePopRoute();
           await tester.pumpAndSettle();
           expect(find.byType(VolumeWidgetSettingsPage), findsNothing);

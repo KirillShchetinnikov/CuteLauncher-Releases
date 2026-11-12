@@ -27,8 +27,14 @@ Map<String, dynamic> archive(
 };
 void main() {
   test('Home and settings sounds belong to independent sync groups', () {
-    expect(backupSyncPartGroup('setting:home_key_click_enabled'), BackupSyncGroup.homeOptions);
-    expect(backupSyncPartGroup('setting:app_key_click_enabled'), BackupSyncGroup.menuLayout);
+    expect(
+      backupSyncPartGroup('setting:home_key_click_enabled'),
+      BackupSyncGroup.homeOptions,
+    );
+    expect(
+      backupSyncPartGroup('setting:app_key_click_enabled'),
+      BackupSyncGroup.menuLayout,
+    );
   });
   final zero = DateTime.fromMillisecondsSinceEpoch(0);
   test('independent changes merge and later conflicting setting wins', () {
@@ -262,61 +268,65 @@ void main() {
     final data = wire['backup'] as Map;
     expect(data.keys, unorderedEquals(['version', 'settings']));
     expect((data['settings'] as Map).keys, [backupSyncGroupsKey]);
-    expect((wire['revisions'] as Map).keys, ['setting:$backupSyncGroupsKey']);
+    expect((wire['revisions'] as Map), isEmpty);
     expect(BackupSyncDocument.parse(wire).backup, data);
     expect(document.backup['resources'], full['resources']);
     expect((document.backup['settings'] as Map)['accent_color'], 'FFFFFF');
   });
 
-  test('winning policy preserves local values, local absences, database and images', () {
-    final localData = archive({
-      'accent_color': '000000',
-      'app_language': 'ru',
-    }, name: 'Local');
-    localData['resources'] = {'wallpaper': 'local-image'};
-    final local = BackupSyncDocument.capture(localData, null, 'A', zero);
-    final oldRemote = BackupSyncDocument.capture(
-      archive({
-        'accent_color': 'FFFFFF',
-        'gradient_uuid': 'remote-only',
-        'app_language': 'en',
-      }, name: 'Remote'),
-      null,
-      'B',
-      DateTime(2026, 10, 8),
-    );
-    final policy = BackupSyncDocument.capture(
-      archive({
+  test(
+    'local policy preserves local values, local absences, database and images',
+    () {
+      final localData = archive({
+        'accent_color': '000000',
+        'app_language': 'ru',
         backupSyncGroupsKey: ['home', 'appearance'],
-        'app_language': 'de',
-      }),
-      null,
-      'C',
-      DateTime(2026, 10, 9),
-    );
-    final remotePolicy = BackupSyncDocument.parse(policy.toJson());
-    final first = local
-        .merge(oldRemote)
-        .merge(remotePolicy)
-        .preserveLocalGroups(local);
-    final second = local
-        .merge(remotePolicy)
-        .merge(oldRemote)
-        .preserveLocalGroups(local);
-    expect(backupFingerprint(first.backup), backupFingerprint(second.backup));
-    final values = first.backup['settings'] as Map;
-    expect(values['accent_color'], '000000');
-    expect(values.containsKey('gradient_uuid'), false);
-    expect(values['app_language'], 'de');
-    expect(values[backupSyncGroupsKey], ['home', 'appearance']);
-    expect((first.backup['categories'] as List).single['name'], 'Local');
-    expect(first.backup['resources'], localData['resources']);
-    final restored = remotePolicy.restoreOver(local);
-    expect((restored['settings'] as Map)['accent_color'], '000000');
-    expect(restored['categories'], localData['categories']);
-    expect(restored['resources'], localData['resources']);
-    expect((restored['settings'] as Map)['app_language'], 'de');
-  });
+      }, name: 'Local');
+      localData['resources'] = {'wallpaper': 'local-image'};
+      final local = BackupSyncDocument.capture(localData, null, 'A', zero);
+      final oldRemote = BackupSyncDocument.capture(
+        archive({
+          'accent_color': 'FFFFFF',
+          'gradient_uuid': 'remote-only',
+          'app_language': 'en',
+        }, name: 'Remote'),
+        null,
+        'B',
+        DateTime(2026, 10, 8),
+      );
+      final policy = BackupSyncDocument.capture(
+        archive({
+          backupSyncGroupsKey: ['home', 'appearance'],
+          'app_language': 'de',
+        }),
+        null,
+        'C',
+        DateTime(2026, 10, 9),
+      );
+      final remotePolicy = BackupSyncDocument.parse(policy.toJson());
+      final first = local
+          .merge(oldRemote)
+          .merge(remotePolicy)
+          .preserveLocalGroups(local);
+      final second = local
+          .merge(remotePolicy)
+          .merge(oldRemote)
+          .preserveLocalGroups(local);
+      expect(backupFingerprint(first.backup), backupFingerprint(second.backup));
+      final values = first.backup['settings'] as Map;
+      expect(values['accent_color'], '000000');
+      expect(values.containsKey('gradient_uuid'), false);
+      expect(values['app_language'], 'de');
+      expect(values[backupSyncGroupsKey], ['home', 'appearance']);
+      expect((first.backup['categories'] as List).single['name'], 'Local');
+      expect(first.backup['resources'], localData['resources']);
+      final restored = remotePolicy.restoreOver(local);
+      expect((restored['settings'] as Map)['accent_color'], '000000');
+      expect(restored['categories'], localData['categories']);
+      expect(restored['resources'], localData['resources']);
+      expect((restored['settings'] as Map)['app_language'], 'de');
+    },
+  );
 
   test(
     'reenabling a block exchanges it again with its original change clocks',
@@ -339,8 +349,16 @@ void main() {
       final merged = local
           .merge(BackupSyncDocument.parse(remote.toJson()))
           .preserveLocalGroups(local);
-      expect((merged.backup['settings'] as Map)['accent_color'], 'FFFFFF');
-      expect((merged.toJson()['backup'] as Map)['resources'], isNotNull);
+      expect((merged.backup['settings'] as Map)['accent_color'], '000000');
+      final enabled = BackupSyncDocument.capture(
+        archive({'accent_color': '000000', backupSyncGroupsKey: []}),
+        merged,
+        'A',
+        DateTime(2026, 10, 10),
+      );
+      final updated = enabled.merge(remote).preserveLocalGroups(enabled);
+      expect((updated.backup['settings'] as Map)['accent_color'], 'FFFFFF');
+      expect((updated.toJson()['backup'] as Map)['resources'], isNotNull);
     },
   );
 
@@ -466,7 +484,14 @@ void main() {
         BackupSyncDocument.parse({
           'syncVersion': 2,
           'backup': old.backup,
-          'revisions': old.revisions,
+          'revisions': {
+            ...old.revisions,
+            'setting:$backupSyncGroupsKey': {
+              'time': 0,
+              'device': 'A',
+              'hash': backupFingerprint(['general']),
+            },
+          },
         }).backup,
         old.backup,
       );

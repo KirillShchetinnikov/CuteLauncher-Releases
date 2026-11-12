@@ -19,4 +19,22 @@
     <string name="remap_error_webhook_http">رفض خطّاف الويب الطلب (HTTP %1$d).</string>
     <string name="remap_error_webhook_timeout">انتهت مهلة طلب خطّاف الويب.</string>
     <string name="remap_error_webhook">تعذّر الاتصال بخطّاف الويب.</string>
+    <string name="power_off">إيقاف الجهاز</string>
+    <string name="power_reboot">إعادة تشغيل الجهاز</string>
+    <string name="power_off_confirm">وضع الجهاز في وضع الاستعداد؟</string>
+    <string name="power_reboot_confirm">إعادة تشغيل الجهاز؟ سيتم إغلاق التطبيقات المفتوحة.</string>
+    <string name="screensaver_label">ساعة CuteLauncher</string>
+    <string name="notification_service_label">خدمة إشعارات CuteLauncher</string>
+    <string name="night_mode_title">الوضع الليلي</string>
+    <string name="night_mode_notice">فلتر الشاشة مفعّل حسب الجدول</string>
+    <string name="night_mode_stop">إيقاف</string>
+    <string name="recovery_checking">جارٍ فحص المشغّل…</string>
+    <string name="recovery_title">استعادة المشغّل</string>
+    <string name="recovery_description">توقف CuteLauncher عدة مرات. تم الاحتفاظ بالإعدادات. يمكنك إعادة المحاولة أو فتح تطبيق آخر أو اختيار شاشة رئيسية أخرى. إذا كان المشغّل الأصلي معطلاً، فعّله أولاً من إعدادات تطبيقات Android.</string>
+    <string name="recovery_retry">إعادة محاولة تشغيل CuteLauncher</string>
+    <string name="recovery_settings">إعدادات Android</string>
+    <string name="recovery_home">اختيار الشاشة الرئيسية</string>
+    <string name="recovery_unavailable">هذا الإجراء غير متاح على هذا التلفاز.</string>
+    <string name="recovery_restore">استعادة الشاشة الرئيسية السابقة</string>
+    <string name="recovery_restore_confirm">هل تريد استعادة الشاشة الرئيسية السابقة باستخدام اتصال ADB المحلي الحالي؟</string>
 </resources>

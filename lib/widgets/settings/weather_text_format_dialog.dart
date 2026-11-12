@@ -8,6 +8,8 @@ import '../../key_sounds.dart';
 import '../../tile_appearance.dart';
 import '../../weather_format_template.dart';
 import '../../weather_text_format.dart';
+import '../../weather_field_availability.dart';
+import '../../weather_sources.dart';
 import '../launcher_dialog.dart';
 import '../panel_tooltip.dart';
 import '../remote_text_input.dart';
@@ -68,6 +70,9 @@ class WeatherTextFormatDialog extends StatefulWidget {
     required this.format,
     required this.fahrenheit,
     this.weather,
+    this.source,
+    this.missingAsDash = false,
+    this.panelAlignment = 'left',
     this.warnings = false,
     this.singleLine = false,
     this.background = false,
@@ -77,6 +82,9 @@ class WeatherTextFormatDialog extends StatefulWidget {
   final WeatherTextFormat format;
   final bool fahrenheit;
   final WeatherData? weather;
+  final WeatherSource? source;
+  final bool missingAsDash;
+  final String panelAlignment;
   final bool warnings, singleLine, background;
   final Widget Function(WeatherDisplayOptions, bool compact)? previewBuilder;
   final Stream<bool>? imeVisibility;
@@ -397,6 +405,12 @@ class _WeatherTextFormatDialogState extends State<WeatherTextFormatDialog> {
     bool russian,
     bool hasBreak,
   ) {
+    String? unavailable(WeatherTextField field) => widget.source == null ? null :
+      switch (weatherFieldUnavailable(field, widget.source!, widget.weather)) {
+        WeatherFieldUnavailable.unsupported => l.weatherFieldUnsupported,
+        WeatherFieldUnavailable.missing => l.weatherFieldMissing,
+        null => null,
+      };
     final legend = {
       for (final field in weatherTemplateNames.keys)
         field:
@@ -414,7 +428,7 @@ class _WeatherTextFormatDialogState extends State<WeatherTextFormatDialog> {
             for (final field in weatherTemplateNames.keys)
               Expanded(
                 child: PanelTooltip(
-                  message: _label(l, field),
+                  message: '${legend[field]}${unavailable(field) == null ? '' : ' · ${unavailable(field)}'}',
                   excludeFromSemantics: true,
                   child: LauncherDialogButton(
                     key: ValueKey('weather_format_add_${field.name}'),
@@ -468,7 +482,9 @@ class _WeatherTextFormatDialogState extends State<WeatherTextFormatDialog> {
                             key: ValueKey(
                               'weather_format_legend_${field.name}',
                             ),
-                            style: theme.textTheme.bodySmall,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: unavailable(field) == null ? null : theme.colorScheme.error,
+                            ),
                           ),
                         ),
                       ),
@@ -477,6 +493,9 @@ class _WeatherTextFormatDialogState extends State<WeatherTextFormatDialog> {
               ),
           ],
         ),
+        for (final status in [l.weatherFieldUnsupported, l.weatherFieldMissing])
+          if (fields.any((field) => unavailable(field) == status))
+            SettingsMessage(text: '$status: ${fields.where((field) => unavailable(field) == status).map((field) => weatherTemplateToken(field, russian: russian)).join(', ')}'),
       ],
     );
   }
@@ -508,6 +527,8 @@ class _WeatherTextFormatDialogState extends State<WeatherTextFormatDialog> {
       format: format ?? widget.format,
       fahrenheit: widget.fahrenheit,
       warnings: false,
+      missingAsDash: widget.missingAsDash,
+      panelAlignment: widget.panelAlignment,
     );
     final hasBreak =
         format?.blocks.any((b) => b.field == WeatherTextField.lineBreak) ==
@@ -560,11 +581,13 @@ class _WeatherTextFormatDialogState extends State<WeatherTextFormatDialog> {
                                           sample,
                                           l,
                                           fahrenheit: widget.fahrenheit,
+                                          missingAsDash: widget.missingAsDash,
                                         ) ??
                                         '—',
                                     key: const Key('weather_format_preview'),
                                     style: theme.textTheme.bodyLarge,
                                     singleLine: widget.singleLine,
+                                    alignment: widget.panelAlignment,
                                     maxWidth: weatherTextMaxWidth(
                                       format ?? widget.format,
                                       backgroundScreenWidth: widget.background

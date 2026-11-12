@@ -158,16 +158,26 @@ class InformationDateTimeFormat {
 /// Shared weather format and units, plus the legacy warning flag.
 class WeatherDisplayOptions {
   final WeatherTextFormat format;
-  final bool fahrenheit, warnings;
+  final bool fahrenheit, warnings, missingAsDash;
+  final String panelAlignment;
   const WeatherDisplayOptions({
     required this.format,
     required this.fahrenheit,
     required this.warnings,
+    this.missingAsDash = false,
+    this.panelAlignment = 'left',
   });
+  WeatherDisplayOptions copyWith({WeatherTextFormat? format, bool? fahrenheit,
+    bool? warnings, bool? missingAsDash, String? panelAlignment}) => WeatherDisplayOptions(
+      format: format ?? this.format, fahrenheit: fahrenheit ?? this.fahrenheit,
+      warnings: warnings ?? this.warnings, missingAsDash: missingAsDash ?? this.missingAsDash,
+      panelAlignment: panelAlignment ?? this.panelAlignment);
   String encode() => jsonEncode({
     'format': format.encode(),
     'fahrenheit': fahrenheit,
     'warnings': warnings,
+    'missingAsDash': missingAsDash,
+    'panelAlignment': panelAlignment,
   });
   static WeatherDisplayOptions? decode(Object? raw) {
     if (raw is! String || raw.length > 20000) return null;
@@ -175,7 +185,9 @@ class WeatherDisplayOptions {
       final value = jsonDecode(raw);
       if (value is! Map ||
           value['fahrenheit'] is! bool ||
-          value['warnings'] is! bool) {
+          value['warnings'] is! bool ||
+          (value.containsKey('missingAsDash') && value['missingAsDash'] is! bool) ||
+          (value.containsKey('panelAlignment') && !const ['left', 'center', 'right'].contains(value['panelAlignment']))) {
         return null;
       }
       final format = WeatherTextFormat.tryDecode(value['format']);
@@ -184,6 +196,8 @@ class WeatherDisplayOptions {
         format: format,
         fahrenheit: value['fahrenheit'] as bool,
         warnings: value['warnings'] as bool,
+        missingAsDash: value['missingAsDash'] == true,
+        panelAlignment: value['panelAlignment'] as String? ?? 'left',
       );
     } on FormatException {
       return null;

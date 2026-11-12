@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:flauncher/cloud_account.dart';
 import 'package:flauncher/backup_sync.dart';
 import 'package:flauncher/backup_sync_groups.dart';
+import 'package:flauncher/native_sync.dart';
 import 'package:drift/drift.dart' show Value;
 import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/automatic_backup_service.dart';
@@ -44,11 +45,13 @@ class _Drive extends DriveBackupService {
 class _Storage extends BackupStorage {
   final Map<String, List<int>> files;
   bool failUpload = false;
+  bool failDelete = false;
   Future<void> Function()? beforeDownload;
   _Storage(this.files, super.webdav, super.drive) : super(google: false);
   @override
   Future<List<RemoteBackupFile>> list() async => [
-    for (final name in files.keys) RemoteBackupFile(name, name),
+    for (final name in files.keys)
+      if (BackupStorage.validName.hasMatch(name)) RemoteBackupFile(name, name),
   ];
   @override
   Future<void> upload(File file, String name) async {
@@ -64,7 +67,54 @@ class _Storage extends BackupStorage {
 
   @override
   Future<void> delete(RemoteBackupFile file) async {
+    if (failDelete) throw const CloudBackupException('network');
     files.remove(file.id);
+  }
+
+  @override
+  Future<List<RemoteBackupFile>> temporaryFiles() async => [
+    for (final name in files.keys)
+      if (BackupStorage.temporaryName(name)) RemoteBackupFile(name, name),
+  ];
+  @override
+  Future<void> deleteTemporary(RemoteBackupFile file) => delete(file);
+}
+
+class _Native extends NativeSync {
+  Map<String, String> values = {};
+  Map<String, String>? undo;
+  bool invalid = false;
+  bool failCommit = false;
+  String contextId = 'account-one';
+  @override
+  Future<Map<String, String>> capture() async => Map.of(values);
+  @override
+  Future<String?> identity(String account, {String profile = 'default'}) async => contextId;
+  @override
+  Future<void> validate(Map<String, String> next) async {
+    if (invalid) throw StateError('Invalid encrypted data');
+  }
+
+  @override
+  Future<void> begin(Map<String, String> next) async {
+    await validate(next);
+    undo = Map.of(values);
+    values = Map.of(next);
+  }
+
+  @override
+  Future<void> rollback() async {
+    if (undo != null) values = undo!;
+    undo = null;
+  }
+
+  @override
+  Future<void> commit() async {
+    if (failCommit && undo != null) {
+      failCommit = false;
+      throw StateError('Journal unavailable');
+    }
+    undo = null;
   }
 }
 
@@ -81,10 +131,13 @@ class _TV {
   late Directory root;
   DateTime clock = DateTime(2026, 10, 9, 12);
   int applies = 0;
+  bool failApply = false;
+  final native = _Native();
   Future<void> start(
     Directory parent,
     Map<String, List<int>> files, {
     bool legacy = false,
+    bool independent = false,
     Map? identity,
   }) async {
     root = await parent.createTemp('tv-');
@@ -113,20 +166,28 @@ class _TV {
       local,
       webdav,
       drive,
+      fixedMode: independent ? BackupMode.backup : null,
+      createSynchronization: independent,
       sources: [settings],
+      nativeSync: native,
       identityLoader: () async => identity,
       directory: () async => root,
       now: () => clock,
       storageFactory: (_) => storage,
       apply: (file) async {
+        if (failApply) {
+          failApply = false;
+          throw StateError('Import failed');
+        }
         await backup.replaceBackup(file, settings);
         applies++;
       },
     );
     await automation.initialized;
+    if(independent) await automation.synchronization!.initialized;
     await automation.configure(
       destination: BackupDestination.webdav,
-      mode: BackupMode.synchronization,
+      mode: independent ? BackupMode.backup : BackupMode.synchronization,
       shared: true,
     );
   }
@@ -142,6 +203,7 @@ class _TV {
 }
 
 void main() {
+  // Integration cases below use two independent preference stores and one server.
   test('backup ownership uses exact device ID, not model or short ID', () {
     final own = 'a' * 32;
     final other = '${'a' * 31}b';
@@ -201,6 +263,211 @@ void main() {
         );
   });
 
+  test('independent schedules, histories and cancel preserve each feature', () async {
+    final tv=_TV();await tv.start(root,files,independent:true);
+    try {
+      final backup=tv.automation,sync=backup.synchronization!;
+      await backup.configure(shared:false,enabled:true);
+      await sync.configure(destination:BackupDestination.webdav,shared:true);
+      expect(backup.mode,BackupMode.backup);expect(sync.mode,BackupMode.synchronization);
+      expect(backup.enabled,true);expect(sync.enabled,false);
+      final snapshot=await sync.beginSetup();
+      await sync.configure(destination:BackupDestination.googleDrive,syncMinutes:60);
+      await sync.setSyncGroupEnabled(BackupSyncGroup.topPanel,false);
+      expect(backup.destination,BackupDestination.webdav);
+      expect(await sync.checkDue(),false);
+      await sync.endSetup(snapshot,keep:false);
+      expect(sync.destination,BackupDestination.webdav);expect(sync.syncMinutes,15);
+      expect(sync.syncGroupEnabled(BackupSyncGroup.topPanel),true);
+      backup.busy = true;
+      expect(sync.busy, isTrue);
+      expect(await sync.run(manual: true), isFalse);
+      backup.busy = false;
+      expect(sync.busy, isFalse);
+      expect(await backup.run(manual:true),true);
+      expect(await sync.resumeSynchronization((_,_)async=>BackupSyncResumeChoice.local),true);
+      expect(backup.enabled,true);expect(sync.enabled,true);
+      expect(files.keys.any((n)=>n.startsWith('cute-backup-${backup.device}-')),true);
+      expect(files.keys.any((n)=>n.startsWith('cute-sync-shared-')),true);
+      expect(await File('${tv.root.path}/backup_sync_state_backup.json').exists(),true);
+      expect(await File('${tv.root.path}/backup_sync_state_synchronization.json').exists(),true);
+      expect(backup.accounts, same(sync.accounts));
+      final id=await backup.accounts!.create(false);
+      // A profile id changes independently of authentication fixtures.
+      await sync.preferences.setString('backup_transport_account_webdav',id);
+      expect(backup.accountId(BackupDestination.webdav),'default');
+      expect(sync.accountId(BackupDestination.webdav),id);
+    }finally{await tv.close();}
+  });
+
+  test('complete top panel applies through real backup importer with tiles disabled', () async {
+    final appearance = {
+      'panelTextSize': 22,
+      'panelFont': 'system',
+      'panelCombinedInformation': true,
+      'panelButtonsOrder': ['network', 'settings'],
+      'panelInformationPlacements': {'weather': 'panel'},
+      'panelTextColor': '#FFFFFFFF',
+    };
+    await a.prefs.setString('tile_appearance', jsonEncode(appearance));
+    await a.automation.setSyncGroupEnabled(BackupSyncGroup.tiles, false);
+    await b.automation.setSyncGroupEnabled(BackupSyncGroup.tiles, false);
+    expect(await a.automation.run(manual: true), true);
+    expect(await b.automation.run(manual: true), true);
+    final restored = jsonDecode(b.prefs.getString('tile_appearance')!) as Map;
+    expect(restored['panelTextSize'], 22);
+    expect(restored['panelCombinedInformation'], true);
+    expect(restored['panelButtonsOrder'], appearance['panelButtonsOrder']);
+    expect(
+      restored['panelInformationPlacements'],
+      appearance['panelInformationPlacements'],
+    );
+  });
+  test('native settings and encrypted records converge, including credential deletion', () async {
+    a.native.values = {
+      'native_config_vpn_widget': '{"showName":true}',
+      'native_secret_weather_yandex': 'encrypted-test-A',
+    };
+    expect(await a.automation.run(manual: true), true);
+    expect(await b.automation.run(manual: true), true);
+    expect(b.native.values, a.native.values);
+    b.clock = b.clock.add(const Duration(hours: 1));
+    b.native.values['native_secret_weather_yandex'] = 'encrypted-null';
+    expect(await b.automation.run(manual: true), true);
+    expect(await a.automation.run(manual: true), true);
+    expect(a.native.values['native_secret_weather_yandex'], 'encrypted-null');
+    expect(a.prefs.containsKey('native_secret_weather_yandex'), false);
+  });
+  test('invalid secret aborts before publication; failed Flutter import rolls native values back', () async {
+    a.native.values = {'native_secret_weather_yandex': 'encrypted-test-A'};
+    expect(await a.automation.run(manual: true), true);
+    final count = files.length;
+    b.native.invalid = true;
+    expect(await b.automation.run(manual: true), false);
+    expect(files.length, count);
+    expect(b.native.values, isEmpty);
+    b.native.invalid = false;
+    b.failApply = true;
+    expect(await b.automation.run(manual: true), false);
+    expect(b.native.values, isEmpty);
+    expect(await File('${b.root.path}/sync-rollback.json').exists(), false);
+    expect(await b.automation.run(manual: true), true);
+    expect(b.native.values, a.native.values);
+  });
+  test(
+    'cleanup failure does not turn a successful exchange into failure',
+    () async {
+      expect(await a.automation.run(manual: true), true);
+      a.storage.failDelete = true;
+      await a.settings.setAppLanguage('de');
+      expect(await a.automation.run(manual: true), true);
+      expect(a.automation.failed, false);
+      expect(a.automation.cleanupFailed, true);
+      a.storage.failDelete = false;
+      await a.automation.cleanSynchronizationFiles();
+      expect(files.length, 1);
+      expect(a.automation.cleanupFailed, false);
+    },
+  );
+  test(
+    'a failed journal cleanup is recovered before the next exchange',
+    () async {
+      a.native.values = {'native_config_recent_apps': '{"mode":"system"}'};
+      a.clock = a.clock.add(const Duration(hours: 1));
+      expect(await a.automation.run(manual: true), true);
+      b.native.failCommit = true;
+      expect(await b.automation.run(manual: true), false);
+      expect(
+        await File('${b.root.path}/sync-rollback.json.committed').exists(),
+        true,
+      );
+      expect(await b.automation.run(manual: true), true);
+      expect(
+        await File('${b.root.path}/sync-rollback.json.committed').exists(),
+        false,
+      );
+      expect(b.native.undo, isNull);
+      expect(b.native.values, a.native.values);
+    },
+  );
+
+  test('changing storage identity starts a separate sync history', () async {
+    expect(await a.automation.run(manual: true), true);
+    final first = jsonDecode(
+      await File('${a.root.path}/backup_sync_state.json').readAsString(),
+    ) as Map;
+    await a.prefs.setBool('sync_member_${'b' * 32}', true);
+    files.clear();
+    a.native.contextId = 'account-two';
+    expect(await a.automation.run(manual: true, exportOnly: true), true);
+    expect(a.prefs.containsKey('sync_member_${'b' * 32}'), true);
+    final afterExport = jsonDecode(await File('${a.root.path}/backup_sync_state.json').readAsString()) as Map;
+    expect(afterExport['context'], first['context']);
+    expect(await a.automation.run(manual: true), true);
+    final second = jsonDecode(
+      await File('${a.root.path}/backup_sync_state.json').readAsString(),
+    ) as Map;
+    expect(first['context'], isNot(second['context']));
+    expect(a.prefs.containsKey('sync_member_${'b' * 32}'), false);
+  });
+  test('excluding a device quarantines its corrupted state without deleting it', () async {
+    expect(await a.automation.run(manual: true), true);
+    expect(await b.automation.run(manual: true), true);
+    final name = files.keys.singleWhere((name) => name.contains(b.automation.device));
+    files[name] = utf8.encode('invalid data');
+    expect(await a.automation.run(manual: true), false);
+    expect(await a.automation.excludeSyncDevice(RemoteBackupFile(name, name)), true);
+    expect(files.containsKey(name), true);
+    expect(await a.automation.run(manual: true), true);
+  });
+  test('manual cleanup deletes only old owned partials, keeps recent and foreign files', () async {
+    expect(await a.automation.run(manual: true), true);
+    expect(await b.automation.run(manual: true), true);
+    final own = files.keys.firstWhere(
+      (name) => name.contains(a.automation.device),
+    );
+    final foreign = files.keys.firstWhere(
+      (name) => name.contains(b.automation.device),
+    );
+    String partial(String name, int stamp) {
+      final parts = name.split('-');
+      parts[4] = '$stamp';
+      return '${parts.join('-')}.partial';
+    }
+
+    final oldStamp = a.clock
+        .subtract(const Duration(days: 2))
+        .millisecondsSinceEpoch;
+    final old = partial(own, oldStamp),
+        recent = '$own.partial',
+        other = partial(foreign, oldStamp);
+    for (final name in [old, recent, other]) {
+      files[name] = [1];
+    }
+    await a.automation.cleanSynchronizationFiles();
+    expect(files.containsKey(old), false);
+    expect(files.containsKey(recent), true);
+    expect(files.containsKey(other), true);
+  });
+  test(
+    'excluded participant cannot republish stale settings after returning',
+    () async {
+      expect(await a.automation.run(manual: true), true);
+      expect(await b.automation.run(manual: true), true);
+      final other = files.keys.firstWhere(
+        (name) => name.contains(b.automation.device),
+      );
+      expect(
+        await a.automation.excludeSyncDevice(RemoteBackupFile(other, other)),
+        true,
+      );
+      await b.settings.setAppLanguage('de');
+      expect(await b.automation.run(manual: true), false);
+      expect(b.automation.enabled, false);
+      expect(await a.automation.run(manual: true), true);
+      expect(a.settings.appLanguage, isNot('de'));
+    },
+  );
   for (final choice in BackupSyncResumeChoice.values) {
     test('resume applies $choice once and other TVs converge', () async {
       await a.settings.setAppLanguage('en');
@@ -277,35 +544,32 @@ void main() {
     expect(files, before);
   });
 
-  test(
-    'switching from active backup to sync waits for a choice',
-    () async {
-      await b.settings.setAppLanguage('de');
-      expect(await b.automation.run(manual: true), true);
-      await a.settings.setAppLanguage('ru');
-      await a.automation.configure(mode: BackupMode.backup, enabled: true);
-      expect(a.automation.enabled, true);
-      final before = Map.of(files);
+  test('switching from active backup to sync waits for a choice', () async {
+    await b.settings.setAppLanguage('de');
+    expect(await b.automation.run(manual: true), true);
+    await a.settings.setAppLanguage('ru');
+    await a.automation.configure(mode: BackupMode.backup, enabled: true);
+    expect(a.automation.enabled, true);
+    final before = Map.of(files);
 
-      await a.automation.configure(mode: BackupMode.synchronization);
-      expect(a.automation.enabled, false);
-      expect(await a.automation.checkDue(), false);
-      expect(files, before);
+    await a.automation.configure(mode: BackupMode.synchronization);
+    expect(a.automation.enabled, false);
+    expect(await a.automation.checkDue(), false);
+    expect(files, before);
 
-      expect(
-        await a.automation.resumeSynchronization((previous, remote) async {
-          expect(previous, isNull);
-          expect(a.settings.appLanguage, 'ru');
-          expect(files, before);
-          return BackupSyncResumeChoice.remote;
-        }, enable: false),
-        true,
-      );
-      expect(a.settings.appLanguage, 'de');
-      expect(a.automation.enabled, false);
-      expect(await a.automation.checkDue(), false);
-    },
-  );
+    expect(
+      await a.automation.resumeSynchronization((previous, remote) async {
+        expect(previous, isNull);
+        expect(a.settings.appLanguage, 'ru');
+        expect(files, before);
+        return BackupSyncResumeChoice.remote;
+      }, enable: false),
+      true,
+    );
+    expect(a.settings.appLanguage, 'de');
+    expect(a.automation.enabled, false);
+    expect(await a.automation.checkDue(), false);
+  });
 
   test(
     'resume with empty storage and identical copies skips the prompt',
@@ -762,7 +1026,7 @@ void main() {
     expect(await b.automation.run(manual: true), true);
     expect(
       BackupSyncGroup.values.every(
-        (group) => !b.automation.syncGroupEnabled(group),
+        (group) => b.automation.syncGroupEnabled(group),
       ),
       true,
     );
@@ -789,7 +1053,7 @@ void main() {
       expect(state['revisions'], isNotEmpty);
     },
   );
-  test('group choice synchronizes while disabled settings remain different on each TV', () async {
+  test('group choice stays local while disabled settings remain different on each TV', () async {
     expect(await a.automation.run(manual: true), true);
     expect(await b.automation.run(manual: true), true);
     a.clock = a.clock.add(const Duration(hours: 1));
@@ -811,7 +1075,7 @@ void main() {
     expect(values.containsKey('app_language'), false);
     expect(values[backupSyncGroupsKey], ['accent', 'language']);
     expect(await b.automation.run(manual: true), true);
-    expect(b.automation.syncGroupEnabled(BackupSyncGroup.accent), false);
+    expect(b.automation.syncGroupEnabled(BackupSyncGroup.accent), true);
     expect(b.prefs.getString('accent_color'), '000000');
     expect(b.prefs.getString('app_language'), 'en');
     expect(await a.automation.run(manual: true), true);
@@ -825,7 +1089,7 @@ void main() {
     await b.automation.importLatest(selected: selected);
     expect(b.prefs.getString('accent_color'), '000000');
     expect(b.prefs.getString('app_language'), 'en');
-    expect(b.prefs.getStringList(backupSyncGroupsKey), ['accent', 'language']);
+    expect(b.prefs.getStringList(backupSyncGroupsKey) ?? [], isEmpty);
     expect(await a.automation.run(manual: true, exportOnly: true), true);
     final complete = files.entries.firstWhere(
       (e) => e.key.startsWith('cute-backup-'),
@@ -835,7 +1099,7 @@ void main() {
     expect(full['settings']['app_language'], 'ru');
     expect(full.containsKey('resources'), true);
     b.clock = b.clock.add(const Duration(hours: 1));
-    await b.automation.setSyncGroupEnabled(BackupSyncGroup.accent, true);
+    await a.automation.setSyncGroupEnabled(BackupSyncGroup.accent, true);
     expect(await b.automation.run(manual: true), true);
     expect(await a.automation.run(manual: true), true);
     expect(a.automation.syncGroupEnabled(BackupSyncGroup.accent), true);

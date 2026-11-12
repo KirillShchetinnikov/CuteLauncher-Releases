@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<lint>
+    <!-- Flutter generates these Windows paths. Java Properties accepts the colon after '='. -->
+    <issue id="PropertyEscape">
+        <ignore regexp="(^|[/\\])local\.properties$" />
+    </issue>
+</lint>

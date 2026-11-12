@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/models/weather_data.dart';
 import 'package:flauncher/weather_text_format.dart';
+import 'package:flauncher/weather_sources.dart';
 import 'package:flauncher/weather_format_template.dart';
 import 'package:flauncher/widgets/launcher_dialog.dart';
 import 'package:flauncher/widgets/settings/weather_text_format_dialog.dart';
@@ -20,6 +21,7 @@ import 'package:flauncher/theme/interface_style.dart';
 void main() {
   Future<void> mount(
     WidgetTester tester, {
+    WeatherSource? source,
     bool singleLine = false,
     double scale = 1,
     Locale locale = const Locale('ru'),
@@ -49,6 +51,7 @@ void main() {
                 builder: (_) => WeatherTextFormatDialog(
                   format: format ?? WeatherTextFormat.standard,
                   fahrenheit: false,
+                  source: source,
                   singleLine: singleLine,
                   imeVisibility: imeVisibility,
                   weather: const WeatherData(
@@ -66,6 +69,32 @@ void main() {
     await tester.tap(find.text('open'));
     await tester.pumpAndSettle();
   }
+
+  testWidgets('source capability labels do not block token insertion', (tester) async {
+    await mount(tester, source: WeatherSource.metNorway);
+    final feels = tester.widget<Text>(find.byKey(const ValueKey('weather_format_legend_feelsLike')));
+    final minimum = tester.widget<Text>(find.byKey(const ValueKey('weather_format_legend_low')));
+    expect(feels.style?.color, isNotNull);
+    expect(minimum.style?.color, feels.style?.color);
+    expect(find.textContaining('Источник не поддерживает параметр:'), findsOneWidget);
+    expect(find.textContaining('В текущем ответе нет данных:'), findsOneWidget);
+    final button = tester.widget<LauncherDialogButton>(find.byKey(const ValueKey('weather_format_add_feelsLike')));
+    expect(button.onPressed, isNotNull);
+    await tester.tap(find.byKey(const ValueKey('weather_format_add_feelsLike')));
+    await tester.pumpAndSettle();
+    expect(tester.widget<TextField>(find.byKey(const Key('weather_format_input'))).controller!.text, contains('{ОЩУЩ}'));
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('keyboard accepts parentheses and punctuation without extra controls', (tester) async {
+    await mount(tester);
+    final input = find.byKey(const Key('weather_format_input'));
+    await tester.tap(input); await tester.pumpAndSettle();
+    await tester.enterText(input, '({ТЕМП}) [] / : ; + − ° % ·');
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('weather_format_error')), findsNothing);
+    expect(tester.widget<LauncherDialogButton>(find.byKey(const Key('weather_format_save'))).onPressed, isNotNull);
+  });
 
   final input = find.byKey(const Key('weather_format_input'));
   for (final skin in InterfaceStyle.values) {

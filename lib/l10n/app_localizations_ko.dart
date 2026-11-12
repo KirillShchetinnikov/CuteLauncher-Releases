@@ -10,6 +10,9 @@ class AppLocalizationsKo extends AppLocalizations {
   AppLocalizationsKo([String locale = 'ko']) : super(locale);
 
   @override
+  String get scrollContentLabels => '콘텐츠 행의 긴 라벨 스크롤';
+
+  @override
   String get contentAppTileStyle => '모양 기준';
 
   @override
@@ -894,6 +897,71 @@ class AppLocalizationsKo extends AppLocalizations {
       '이미지가 손상되었거나 너무 큽니다(최대 8 MiB 및 48 메가픽셀). 다른 이미지를 선택하세요.';
 
   @override
+  String get memoryAdvanced => '고급 진단';
+
+  @override
+  String get memoryLauncherTitle => 'CuteLauncher 메모리';
+
+  @override
+  String get memoryUsage => '메모리 사용량';
+
+  @override
+  String memoryChange(String delta) {
+    return '이전 측정 대비 $delta';
+  }
+
+  @override
+  String get memoryCacheFiles => '메모리의 이미지 파일';
+
+  @override
+  String memoryCacheEntries(int count) {
+    return '항목: $count';
+  }
+
+  @override
+  String memoryCacheResult(String before, String after) {
+    return '이미지 캐시: $before → $after';
+  }
+
+  @override
+  String get memoryStale => '업데이트하지 못했습니다. 이전 측정값을 표시합니다.';
+
+  @override
+  String get memoryTechnical => '기술 정보';
+
+  @override
+  String get memoryObserve => '메모리 모니터링';
+
+  @override
+  String get memoryObserveStart => '1분간 모니터링';
+
+  @override
+  String get memoryObserveStop => '모니터링 중지';
+
+  @override
+  String get memoryObserveRunning => '기록 중 · 최대 1분';
+
+  @override
+  String get memoryObserveFinished => '기록 중지됨';
+
+  @override
+  String get memoryObserveEmpty => '아직 측정 기록이 없습니다';
+
+  @override
+  String memorySeconds(int seconds) {
+    return '$seconds초';
+  }
+
+  @override
+  String get memoryReadingHelp => '측정값 이해하기';
+
+  @override
+  String get memorySaverHelp => '메모리 절약의 효과';
+
+  @override
+  String get memorySaveFailed => '메모리 절약 모드를 저장하지 못했습니다. 다시 시도하세요.';
+
+  @override
   String get memoryTitle => '메모리';
 
   @override
@@ -1624,7 +1692,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get weatherLatitude => '위도(-90~90)';
 
   @override
-  String get weatherCoordinatesError => '도시를 수동으로 입력하거나 자동으로 좌표를 받으세요.';
+  String get weatherCoordinatesError => '도시를 선택하거나 좌표를 입력하거나 위치를 자동으로 가져오세요.';
 
   @override
   String get weatherRefresh => '날씨 새로고침';
@@ -1932,7 +2000,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get nightCityHint =>
-      '위치 액세스 권한을 부여하는 대신 도시를 선택하세요. 선택한 좌표는 대체적으로 Sunrise-Sunset.org 또는 Open-Meteo로 전송되어 태양 시간을 검색합니다.';
+      '위치 액세스 권한을 부여하는 대신 도시를 선택하세요. 선택한 좌표는 대체적으로 Sunrise-Sunset.org 또는 GeoNames로 전송되어 태양 시간을 검색합니다.';
 
   @override
   String get nightResumeSchedule => '일정으로 돌아가기';
@@ -1976,7 +2044,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get nightSolarAttribution =>
-      '일일 태양 시간: Sunrise-Sunset.org; 대체: Open-Meteo. 도시 검색: GeoNames. 오프라인 사용을 위해 며칠 동안 캐시됩니다.';
+      '일출과 일몰 시각은 Sunrise-Sunset.org에서 가져오며, 사용할 수 없으면 GeoNames를 이용합니다. 오프라인에서는 TV가 누락된 시각을 계산합니다.';
 
   @override
   String get nightTemporaryOn => '다음까지 일시적으로 밝기가 어두워집니다.';
@@ -2878,7 +2946,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get weatherCityHint => '도시 이름을 영어로 입력하세요(예: Moscow).';
 
   @override
-  String get weatherCityNotFound => '도시를 찾을 수 없습니다. 도시 이름을 영어로 확인하세요.';
+  String get weatherCityNotFound => '도시를 확인할 수 없습니다. 위치 설정에서 도시를 선택하세요.';
 
   @override
   String get weatherLocationAutomatic => '자동으로 받기';
@@ -2888,6 +2956,15 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get weatherLocationManual => '수동으로 입력';
+
+  @override
+  String get manualLocationInput => '입력 방법';
+
+  @override
+  String get manualLocationCity => '도시';
+
+  @override
+  String get manualLocationCoordinates => '좌표';
 
   @override
   String get weatherLocationPermissionDenied =>
@@ -2919,7 +2996,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get nightLocationFailed => '위치를 확인할 수 없습니다. 권한 및 시스템 위치 설정을 확인하세요.';
 
   @override
-  String get nightCityEnglish => '도시 이름을 영어로 입력하세요';
+  String get nightCitySearchHint => '도시 이름을 입력하세요. 쉼표 뒤에 지역이나 국가를 추가할 수 있습니다.';
 
   @override
   String get nightOverlayBrief => '필터가 다른 앱 위에 표시되도록 허용합니다.';
@@ -3062,7 +3139,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get backupSyncGroupsHelp =>
-      '비활성화된 블록은 이 TV에 로컬로 유지됩니다. 블록 선택은 장치 간에 동기화됩니다.';
+      '비활성화한 항목은 이 TV에 유지됩니다. 기기마다 동기화 항목을 따로 선택하세요.';
 
   @override
   String get backupSyncGroupsFailed => '동기화를 위한 설정 선택을 저장할 수 없습니다. 다시 시도해 보세요.';
@@ -4015,16 +4092,26 @@ class AppLocalizationsKo extends AppLocalizations {
   String get tvPowerTitle => '전원 관리';
 
   @override
-  String get tvPowerOff => 'TV 끄기';
+  String remotePowerWithConfirmation(String action) {
+    return '$action (확인 후)';
+  }
 
   @override
-  String get tvPowerReboot => 'TV 다시 시작';
+  String remotePowerWithoutConfirmation(String action) {
+    return '$action (확인 없이)';
+  }
 
   @override
-  String get tvPowerOffConfirm => 'TV를 대기 모드로 전환할까요?';
+  String get tvPowerOff => '기기 끄기';
 
   @override
-  String get tvPowerRebootConfirm => '다시 시작할까요? 열려 있는 앱이 종료됩니다.';
+  String get tvPowerReboot => '기기 다시 시작';
+
+  @override
+  String get tvPowerOffConfirm => '기기를 대기 모드로 전환할까요?';
+
+  @override
+  String get tvPowerRebootConfirm => '기기를 다시 시작할까요? 열려 있는 앱이 종료됩니다.';
 
   @override
   String get tvPowerSent => '명령 전송됨';
@@ -4158,6 +4245,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String get sleepTimerShowSeconds => '초 표시';
 
   @override
+  String get sleepTimerShowOverApps => '앱 위에 타이머 표시';
+
+  @override
+  String get sleepTimerOverlayHelp =>
+      '앱 위에 표시하려면 CuteLauncher 접근성 서비스를 사용 설정하세요.';
+
+  @override
   String get sleepTimerCloseAfterSelection => '타이머 선택 후 위젯 닫기';
 
   @override
@@ -4271,6 +4365,21 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get noticeTopLeft => '왼쪽 위';
+
+  @override
+  String get overlayAppearance => '앱 위에 표시할 스타일';
+
+  @override
+  String get overlayAppearanceTopPanel => '상단 패널과 동일';
+
+  @override
+  String get overlayAppearanceDark => '어둡게';
+
+  @override
+  String get overlayWhereToShow => '표시 위치';
+
+  @override
+  String get overlayAtPanelWidget => '상단 패널의 위젯 위치';
 
   @override
   String get notificationOpenFailed => '알림 동작을 열 수 없습니다. 더 이상 사용할 수 없을 수 있습니다.';
@@ -4565,7 +4674,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get weatherTextHelp =>
-      '텍스트와 중괄호로 감싼 코드를 입력하거나 버튼으로 커서 위치에 삽입하세요. 대소문자를 구분하지 않습니다. 값을 둘러싼 소괄호는 데이터가 없으면 함께 숨겨집니다. 일반 중괄호는 두 번 입력하세요. 줄바꿈은 하나만 허용됩니다.';
+      '텍스트와 중괄호로 감싼 코드를 입력하거나 버튼으로 커서 위치에 삽입하세요. 대소문자를 구분하지 않습니다. 값을 둘러싼 소괄호는 데이터가 없으면 함께 숨겨집니다. 일반 중괄호는 두 번 입력하세요. 줄바꿈은 하나만 허용됩니다. 문자, 숫자, 공백 및 인쇄 가능한 모든 기호를 입력할 수 있습니다. 예: () [] / : ; + − ° % ·.';
 
   @override
   String get weatherTextSaveError => '날씨 텍스트 형식을 저장할 수 없습니다.';
@@ -4837,10 +4946,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get fileBrowserPartial => '폴더의 일부만 표시됩니다';
 
   @override
-  String get fileBrowserRemoteHint => '← 전체 이름 · → 확인';
-
-  @override
-  String get fileBrowserReadNameHint => '← 전체 이름 보기';
+  String get fileBrowserReadNameHint => '← 상위 폴더 · → 전체 이름';
 
   @override
   String fileBrowserSavedTo(String path) {
@@ -5166,6 +5272,12 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get volumeUpdateInterval => '갱신 간격';
+
+  @override
+  String get showVolumeOverlay => '앱 위에 볼륨 표시';
+
+  @override
+  String get volumeOverlayHelp => 'CuteLauncher 접근성 서비스를 사용 설정해야 합니다.';
 
   @override
   String get clockHoursColor => '시 색상';
@@ -5627,4 +5739,175 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get appPermissionsHelp =>
       '여기서 허용한 서비스는 기본적으로 복원이 켜집니다. Android 설정에서 꺼도 권한과 서비스 활성화를 복원합니다. 복원을 끄면 현재 권한은 유지됩니다. 서비스를 끄면 복원도 중지되지만 자동 시작 및 백그라운드 권한은 남습니다. 다시 연결은 이 서비스만 재시작하며 앱 오류를 수정하지 않습니다. ADB가 필요하며 Android가 확인을 지연할 수 있습니다. 자동 시작은 앱 화면을 열지 않습니다. 상태는 마지막 확인 결과이며 지원하지 않는 작업은 허용되지 않습니다.';
+
+  @override
+  String get weatherFieldUnsupported => '이 소스에서 지원하지 않음';
+
+  @override
+  String get weatherFieldMissing => '현재 응답에 데이터가 없음';
+
+  @override
+  String get weatherMissingAsDash => '누락된 데이터를 대시로 표시';
+
+  @override
+  String get weatherPanelAlignment => '상단 패널 날씨 줄 정렬';
+
+  @override
+  String get syncProtection => '토큰 및 보호';
+
+  @override
+  String get syncKey => '공유 동기화 키';
+
+  @override
+  String get syncKeyShow => '키 표시';
+
+  @override
+  String get syncKeyCreate => '키 만들기';
+
+  @override
+  String get syncKeyInvalid => '64자리 16진수 키를 입력하세요.';
+
+  @override
+  String get syncKeyHelp =>
+      '토큰과 계정을 동기화하려면 모든 TV에서 같은 키를 사용하세요. 한 TV에서 만들어 다른 TV로 옮기세요. 키가 없으면 보호된 데이터를 읽을 수 없으므로 안전하게 보관하세요. 변경 시 모든 TV를 업데이트하세요. Android 권한과 하드웨어 키는 로컬에 유지됩니다.';
+
+  @override
+  String get syncFiles => '동기화 파일';
+
+  @override
+  String get syncCleanup => '이전 파일 정리';
+
+  @override
+  String get syncCleanupFailed => '일부 이전 파일을 삭제하지 못했습니다. 정리를 다시 시도하세요.';
+
+  @override
+  String get syncRetire => '기기 제외';
+
+  @override
+  String get syncRetireConfirm =>
+      '이 기기를 그룹에서 제외할까요? 이전 상태가 더 이상 적용되지 않습니다. 다시 참여하려면 새 동기화 그룹이 필요합니다.';
+
+  @override
+  String get backupAccount => '계정';
+
+  @override
+  String get backupNewAccount => '다른 계정 연결';
+
+  @override
+  String get backupSetupWizard => '설정 마법사';
+
+  @override
+  String get backupSetupSummary => '요약';
+
+  @override
+  String get backupSetupNext => '다음';
+
+  @override
+  String get backupSetupBack => '뒤로';
+
+  @override
+  String get backupFirstCopy => '지금 첫 백업 만들기';
+
+  @override
+  String get backupSyncAll => '모두 동기화';
+
+  @override
+  String get backupFirstExchange => '첫 교환';
+
+  @override
+  String get backupNoRemote => '저장소에 설정이 없습니다. 이 TV의 설정을 업로드합니다.';
+
+  @override
+  String get backupSetupStart => '사용';
+
+  @override
+  String get backupPassword => '데이터 암호화 비밀번호';
+
+  @override
+  String get backupPasswordRepeat => '비밀번호 확인';
+
+  @override
+  String get backupPasswordMismatch => '비밀번호가 일치하지 않습니다';
+
+  @override
+  String get backupAccountLocalHelp =>
+      '연결된 계정이나 같은 유형의 다른 계정을 사용하세요. 로그인 정보는 이 TV에 남습니다. 백업과 동기화는 파일을 따로 관리합니다.';
+
+  @override
+  String get backupPasswordOptionalHelp =>
+      '선택 사항입니다. 전송 가능한 토큰을 포함한 전체 파일을 암호화합니다. 비밀번호가 없으면 암호화하지 않습니다. 빈 값은 암호화를 끕니다. 다른 TV에서도 같은 비밀번호가 필요합니다.';
+
+  @override
+  String get backupYandexDisk => 'Yandex Disk';
+
+  @override
+  String get backupYandexHelp =>
+      'Disk 앱 폴더에 접근할 수 있는 Yandex OAuth 앱의 Client ID와 Client Secret을 입력하세요. 연결 후 휴대전화에서 코드를 확인하세요. 모든 TV에서 같은 OAuth 클라이언트와 계정을 사용하세요.';
+
+  @override
+  String get backupYandexConnect => 'Yandex Disk 연결';
+
+  @override
+  String get backupYandexReconnect => 'Yandex Disk 다시 연결';
+
+  @override
+  String get backupYandexConnectionStatus => 'Yandex Disk 연결 상태';
+
+  @override
+  String get yandexCodeExpired =>
+      'Yandex Disk 로그인 시간이 초과되었습니다. 새 코드를 받으려면 Yandex Disk 연결을 선택하세요.';
+
+  @override
+  String get yandexConfigurationError => '클라이언트 ID / 클라이언트 비밀번호 — Yandex OAuth';
+
+  @override
+  String get backupSmb => 'Samba / SMB 2–3';
+
+  @override
+  String get smbUrl => '폴더 SMB 주소';
+
+  @override
+  String get smbPassword => '비밀번호';
+
+  @override
+  String get smbHelp =>
+      '기존 네트워크 폴더를 입력하세요: smb://server/share/CuteLauncher. 접근 권한이 있는 사용자 이름과 비밀번호를 입력하고 도메인 계정은 DOMAIN\\user 형식을 사용하세요. SMB 2 또는 3을 자동 선택합니다. 백업과 동기화에는 읽기, 쓰기, 삭제 권한이 필요합니다.';
+
+  @override
+  String get recentRamTitle => '메모리';
+
+  @override
+  String recentRamUsed(String used, String total, String percent) {
+    return '$total 중 $used 사용 · $percent%';
+  }
+
+  @override
+  String recentRamAvailable(String value) {
+    return '사용 가능 $value';
+  }
+
+  @override
+  String get recentRamUnloaded => '메모리에서 해제됨';
+
+  @override
+  String get recentRamUnavailable => '데이터 없음';
+
+  @override
+  String recentRamMiB(String value) {
+    return '$value MiB';
+  }
+
+  @override
+  String recentRamGiB(String value) {
+    return '$value GiB';
+  }
+
+  @override
+  String recentRamApp(String value) {
+    return '≈ $value';
+  }
+
+  @override
+  String get backupExistingSettingsHelp =>
+      '선택한 저장소에 동기화 설정이 이미 있습니다. 이 TV에 적용하거나, 이 TV의 설정으로 교체하거나, 병합할지 선택하세요. 병합 시 설정이 다르면 선택한 우선순위가 적용됩니다. 마법사의 마지막 단계에서 확인한 후 교환이 시작됩니다.';
 }

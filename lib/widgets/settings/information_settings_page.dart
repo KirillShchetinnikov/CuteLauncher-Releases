@@ -1,6 +1,5 @@
 import 'settings_section.dart';
 import '../../information_placement.dart';
-import '../../information_formats.dart';
 import '../../panel_clock_style.dart';
 import '../../theme/launcher_style.dart';
 
@@ -358,9 +357,7 @@ class InformationDataSettingsPage extends StatelessWidget {
                   final settings = context.read<SettingsService>();
                   final current = settings.informationWeather();
                   try {
-                    await settings.setInformationWeather(WeatherDisplayOptions(
-                      format: current.format, fahrenheit: value, warnings: current.warnings,
-                    ));
+                    await settings.setInformationWeather(current.copyWith(fahrenheit: value));
                   } catch (_) {
                     if (context.mounted) {
                       showActionNotice(context, l.weatherTextSaveError, error: true);
@@ -369,6 +366,7 @@ class InformationDataSettingsPage extends StatelessWidget {
                 },
               ),
               const InformationWeatherFormatTile(),
+              const WeatherFormatOptionsTiles(),
             ],
           ),
         ],

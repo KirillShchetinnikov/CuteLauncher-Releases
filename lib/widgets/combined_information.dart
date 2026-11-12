@@ -22,6 +22,8 @@ class CombinedInformation extends StatelessWidget {
   final bool selected;
   final DateTime? fixedTime;
   final bool weatherStale;
+  final bool weatherMissingAsDash;
+  final String weatherAlignment;
   const CombinedInformation({
     super.key,
     required this.appearance,
@@ -39,6 +41,8 @@ class CombinedInformation extends StatelessWidget {
     this.selected = false,
     this.fixedTime,
     this.weatherStale = false,
+    this.weatherMissingAsDash = false,
+    this.weatherAlignment = 'left',
   });
 
   @override
@@ -112,13 +116,14 @@ class CombinedInformation extends StatelessWidget {
                         if (!weatherTextFormat.explicitLayout) ...[icon, const SizedBox(width: 4)],
                         WeatherDisplayText(
                           [
-                            weatherTextFormat.format(current, l, fahrenheit: useFahrenheit, warningsAvailable: !weatherStale, now: fixedTime),
+                            weatherTextFormat.format(current, l, fahrenheit: useFahrenheit, missingAsDash: weatherMissingAsDash, warningsAvailable: !weatherStale, now: fixedTime),
                             ?warning,
                           ].join(' · '),
                           style: weatherStyle,
                           inlineIcon: icon,
                           singleLine: showDate,
                           maxWidth: weatherTextMaxWidth(weatherTextFormat),
+                          alignment: weatherAlignment,
                         ),
                       ],
                     ),

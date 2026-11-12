@@ -7,7 +7,7 @@ import 'focusable_settings_tile.dart';
 import 'settings_help.dart';
 
 class CitySearchDialog extends StatefulWidget {
-  final Future<List<Map<String, dynamic>>> Function(String) searchCities;
+  final Future<List<Map<String, dynamic>>> Function(String, String) searchCities;
   const CitySearchDialog({super.key, required this.searchCities});
   @override
   State<CitySearchDialog> createState() => _CitySearchDialogState();
@@ -26,7 +26,8 @@ class _CitySearchDialogState extends State<CitySearchDialog> {
       cities = [];
     });
     try {
-      final results = await widget.searchCities(query.text);
+      final language = Localizations.localeOf(context).languageCode;
+      final results = await widget.searchCities(query.text, language);
       if (mounted) setState(() => cities = results);
     } catch (_) {
       if (mounted) setState(() => failed = true);
@@ -62,7 +63,7 @@ class _CitySearchDialogState extends State<CitySearchDialog> {
                 onSubmitted: (_) => search(),
               ),
             ),
-            SettingsHelp(title: l.weatherLocation, text: l.nightCityEnglish),
+            SettingsHelp(title: l.weatherLocation, text: l.nightCitySearchHint),
             SizedBox(child: busy ? const LinearProgressIndicator() : null),
             if (failed) Text(l.nightCitySearchFailed),
             if (searched && !busy && !failed && cities.isEmpty)

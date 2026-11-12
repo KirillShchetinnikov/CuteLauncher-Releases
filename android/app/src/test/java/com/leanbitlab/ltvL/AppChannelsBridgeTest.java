@@ -66,13 +66,16 @@ public class AppChannelsBridgeTest {
             } else {
                 assertEquals(TvContract.buildPreviewProgramsUriForChannel(2), uri);
                 programQueries++;
-                c.addRow(new Object[]{1L, "other.app", "Wrong owner", "", "video://wrong", "", "", null, null});
-                c.addRow(new Object[]{2L, "video.app", "No intent", "", "", "", "", null, null});
-                for (int i = 0; i < 30; i++) {
+                c.addRow(new Object[]{1L, "other.app", "Wrong owner", "", "video://wrong", "", "", null, null,
+                        null, null, null, null, null, null});
+                c.addRow(new Object[]{2L, "video.app", "No intent", "", "", "", "", null, null,
+                        null, null, null, null, null, null});
+                for (int i = 0; i < 60; i++) {
                     c.addRow(new Object[]{10L + i, "video.app", "Item " + i, "Description",
                             "video://watch/" + i, missingPosterProvider ? "content://missing.poster/" + i
                                     : posterArt ? "https://images.test/poster/" + i : "",
-                            "https://images.test/thumbnail/" + i, unknownAspect ? 99 : 0, unknownAspect ? 99 : 4});
+                            "https://images.test/thumbnail/" + i, unknownAspect ? 99 : 0, unknownAspect ? 99 : 4,
+                            null, null, null, null, null, null});
                 }
             }
             return c;
@@ -125,7 +128,7 @@ public class AppChannelsBridgeTest {
             assertEquals(0, provider.programQueries);
             catalogue = bridge.channels(List.of("video.app:1", "video.app:2"));
             assertTrue(((List<?>) catalogue.get(0).get("programs")).isEmpty());
-            assertEquals(20, ((List<?>) catalogue.get(1).get("programs")).size());
+            assertEquals(50, ((List<?>) catalogue.get(1).get("programs")).size());
             assertEquals(1, provider.programQueries);
             provider.brokenFeed = false;
             assertFalse(bridge.channels(List.of()).get(0).containsKey("hidden"));
@@ -148,7 +151,7 @@ public class AppChannelsBridgeTest {
             assertEquals(1, provider.programQueries);
             assertTrue(((List<?>) selected.get(0).get("programs")).isEmpty());
             var programs = (List<Map<String, Object>>) selected.get(1).get("programs");
-            assertEquals(20, programs.size());
+            assertEquals(50, programs.size());
             assertEquals("https://images.test/thumbnail/0", programs.get(0).get("posterArtUri"));
             assertEquals("video://watch/0", programs.get(0).get("intentUri"));
             assertEquals(2.0 / 3, (Double) programs.get(0).get("posterAspectRatio"), 0.0001);

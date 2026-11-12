@@ -1,10 +1,12 @@
 import '../information_placement.dart';
+import '../overlay_position.dart';
 import '../key_sounds.dart';
 import 'dart:async';
 import 'audio_status_widget.dart';
 import '../providers/storage_status_service.dart';
 import 'storage_status_watch.dart';
 import 'panel_tooltip.dart';
+import 'panel_overlay_anchors.dart';
 import 'system_status_widget.dart';
 import 'system_status_menu.dart';
 import 'traffic_usage_menu.dart';
@@ -550,6 +552,8 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
           showTime: objects.containsKey('time'), showDate: objects.containsKey('date'),
           showWeather: objects.containsKey('weather'), weather: weather.weatherData,
           weatherTextFormat: settings.weatherTextFormat,
+          weatherMissingAsDash: settings.informationWeather().missingAsDash,
+          weatherAlignment: settings.informationWeather().panelAlignment,
           showWarnings: settings.showWeatherWarnings && !weather.stale,
           weatherStale: weather.stale,
           useFahrenheit: settings.useFahrenheit,
@@ -581,6 +585,18 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
 
     final left = group('panelButtonsOrder');
     final right = group('panelInfoOrder');
+    final showHomePanel = widget.remotePanel == null &&
+        (!settings.autoHideAppBarEnabled || focused || _settingsOpen);
+    final audioKey = _objectKeys['audio'];
+    final sleepTimerKey = _objectKeys['sleepTimer'];
+    final overlayWidgets = <String, GlobalKey>{
+      if (showHomePanel && objects.containsKey('audio') && audioKey != null &&
+          settings.volumeOverlayPosition == OverlayPosition.widget)
+        'volume': audioKey,
+      if (showHomePanel && objects.containsKey('sleepTimer') && sleepTimerKey != null &&
+          settings.sleepTimerConfiguration.overlayPosition == OverlayPosition.widget)
+        'sleepTimer': sleepTimerKey,
+    };
     final panel = PanelAppearanceScope(appearance: appearance, child: RepaintBoundary(
       child: AppBar(
         flexibleSpace: widget.remotePanel != null ? ColoredBox(
@@ -593,7 +609,9 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
         elevation: 0,
         scrolledUnderElevation: 0,
         backgroundColor: Colors.transparent,
-        title: LayoutBuilder(
+        title: PanelOverlayAnchors(widgets: overlayWidgets,
+          publishAppearance: widget.remotePanel == null,
+          child: LayoutBuilder(
           builder: (context, constraints) => FittedBox(
             fit: BoxFit.scaleDown,
             alignment: Alignment.centerLeft,
@@ -607,7 +625,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
               ),
             ),
           ),
-        ),
+        )),
       ),
     ));
     return StorageStatusWatch(

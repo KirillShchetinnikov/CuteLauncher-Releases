@@ -2,6 +2,21 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
+## v1.8.0-test.1 — 2026-11-12
+
+**Prerelease.** This version includes new features, some of which have not yet been fully tested. Based on current checks, we do not expect critical issues. If you are unsure, skip this release and wait for the stable version.
+
+- Backup and synchronization now have separate setup wizards, accounts, and settings. Added Yandex Disk with code-based sign-in and Samba network folders (SMB 2/3). Backup and sync files can use separate encryption passwords.
+- Fixed settings transfer in full synchronization. The wizard lets you enable entire subgroups or individual settings. On the first exchange it explains how to apply, replace, or merge settings from storage. Added sync file management. Pressing Back on the remote returns from storage settings to the wizard.
+- Weather defaults to Auto mode and switches between MET Norway, Open-Meteo, and Gismeteo. City search checks the built-in catalog first and then GeoNames. Weather and night mode accept manually entered coordinates. The format editor adds line alignment, dashes for missing values, and explanations of data availability.
+- Night mode calculates sunrise and sunset offline after a location is set. Scheduled backlight levels range from 0% to 100% in 10% increments.
+- Media volume and the active sleep timer can appear over other apps. Each indicator has independent position and appearance settings. The timer hides in CuteLauncher and widens its single-line overlay to fit the full text and icon.
+- Standby and restart can be mapped to the remote with confirmation or immediate execution. Restart requires configured ADB. Mappings for the third-party Black Screen app have been removed. The built-in Black Screen action is available.
+- Long captions in app feeds and Watch Next scroll while focused. When needed, both lines scroll together. The switch is in the section appearance settings. Section previews react immediately to visibility changes. Medeo fonts were updated to 1.1.0.
+- Fixed the cover loading queue getting stuck after HTTP errors and timeouts. Diagnostic reports now include loading stages, HTTP status, bytes received, and network events without storing full image URLs.
+- Recents now shows overall RAM usage, per-app memory estimates, and a separate “Unloaded” status. The CuteLauncher Memory page works without ADB and shows measurements and caches. The chart and technical figures are available under Advanced diagnostics.
+- In the built-in file browser, Left opens the parent folder and Right expands a long name. Improved HDMI audio output detection compatibility on Android 11–12 and added missing translations for system screens.
+
 ## v1.7.5 — 2026-11-11
 
 - Added “App permissions” under “Launcher and TV control”. With local ADB configured, you can grant a user-installed app supported permissions for autostart and background activity, and enable or reconnect its accessibility service. System apps are excluded.

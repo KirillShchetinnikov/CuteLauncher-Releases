@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 
 import 'diagnostic_redactor.dart';
 import 'diagnostic_settings.dart';
+import 'diagnostics/poster_loads.dart';
 
 /// Bounded diagnostics with structured causes and redacted technical excerpts.
 class DiagnosticsStore {
@@ -19,6 +20,9 @@ class DiagnosticsStore {
     'cutelauncher/auto_launch': 'autoLaunch',
     'cutelauncher/cloud_account': 'cloudAccount',
     'cutelauncher/drive_account': 'driveAccount',
+    'cutelauncher/yandex_account': 'yandexAccount',
+    'cutelauncher/smb_backup': 'smbBackup',
+    'cutelauncher/app_permissions': 'appPermissions',
     'cutelauncher/weather_location': 'weatherLocation',
     'cutelauncher/tcl_blue_light': 'tclBlueLight',
     'cutelauncher/remote_buttons': 'remoteButtons',
@@ -83,6 +87,7 @@ class DiagnosticsStore {
     'tvInputsService',
     'vpnService',
     'watchNextService',
+    'watchNextPoster',
 
     'pickCleanerDocument',
     'getDiagnosticEnvironment',
@@ -400,6 +405,7 @@ class DiagnosticsStore {
     'cancelled',
   };
   final Stopwatch _clock = Stopwatch()..start();
+  late final posterLoads = PosterLoads(() => _clock.elapsedMilliseconds);
   int _generation = 0;
   int get generation => _generation;
   final List<Map<String, Object>> _events = [];
@@ -696,6 +702,7 @@ class DiagnosticsStore {
 
   void clear() {
     _generation++;
+    posterLoads.clear();
     _events.clear();
     _failures.clear();
     _audioRouting.clear();
@@ -779,6 +786,7 @@ class DiagnosticsStore {
       'operationCounts': Map<String, int>.from(_counts),
       'recentOperations': jsonDecode(jsonEncode(_events)),
       'failures': jsonDecode(jsonEncode(_failures)),
+      'posterLoads': posterLoads.snapshot(),
       if (_audioRouting.isNotEmpty)
         'audioRouting': jsonDecode(jsonEncode(_audioRouting)),
       'nativeShell': {

@@ -149,7 +149,9 @@ final class VpnController {
         else if (key.startsWith("profile_") && VpnPolicy.packageName(key.substring(8)) && value instanceof String profile
                 && (profile.isEmpty() || VpnPolicy.profileName(profile))) edit.putString(key, profile);
         else return false;
-        return edit.commit();
+        boolean saved = edit.commit();
+        if (saved) NativeSyncBridge.changed("native_config_vpn_widget");
+        return saved;
     }
     private boolean saveStartup(String key, Object value) {
         if (key.equals("bootEnabled") ? !(value instanceof Boolean) : !(value instanceof String)) return false;
@@ -170,6 +172,7 @@ final class VpnController {
                 }
             } catch (Exception unavailable) { return false; }
             boolean saved = prefs.edit().putBoolean("bootEnabled", enabled).putString("bootApp", app).putString("bootMode", mode).putString("startupStatus", "idle").commit();
+            if (saved) NativeSyncBridge.changed("native_config_vpn_widget");
             if (saved) VpnStartupJob.cancel(context);
             return saved;
         }

@@ -65,14 +65,18 @@ void main() {
       expect(AppLocalizations.supportedLocales, contains(Locale(locale.languageCode)));
     }
   });
-  test('Android Russian resources cover all native labels', () {
-    Set<String> names(String folder) => RegExp(r'<string name="([^"]+)"')
+  test('Android resources cover all translatable native labels', () {
+    Set<String> names(String folder) => RegExp(r'<string name="([^"]+)"([^>]*)>')
         .allMatches(
           File('android/app/src/main/res/$folder/strings.xml')
               .readAsStringSync(),
         )
-        .map((m) => m[1]!)
+        .where((match) => !match[2]!.contains('translatable="false"'))
+        .map((match) => match[1]!)
         .toSet();
-    expect(names('values-ru'), names('values'));
+    final expected = names('values');
+    for (final locale in AppLocalizations.supportedLocales) {
+      expect(names('values-${locale.languageCode}'), expected, reason: '$locale');
+    }
   });
 }

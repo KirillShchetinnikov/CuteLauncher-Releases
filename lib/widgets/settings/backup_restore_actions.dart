@@ -15,6 +15,9 @@ import '../../providers/night_mode_service.dart';
 import '../../providers/wallpaper_service.dart';
 import '../../providers/brightness_service.dart';
 import '../../providers/automatic_backup_service.dart';
+import '../../providers/remote_panel_service.dart';
+import '../../providers/vpn_service.dart';
+import '../../providers/background_startup_service.dart';
 
 /// Refresh the same live services after either a public or automatic restore.
 Future<void> restoreBackupAndRefresh(
@@ -34,11 +37,17 @@ Future<void> restoreBackupAndRefresh(
   final wallpaper = context.read<WallpaperService>();
   final brightness = context.read<BrightnessService>();
   final automatic = context.read<AutomaticBackupService?>();
+  final remotePanel = context.read<RemotePanelService?>();
+  final vpn = context.read<VpnService?>();
+  final background = context.read<BackgroundStartupService?>();
   await (restoreAction?.call() ?? backup.replaceBackup(file, settings));
   // Restored custom artwork can change bytes at the same saved file path.
   apps.clearImageCaches();
   await apps.refreshState();
   appearance?.reload();
+  remotePanel?.reload();
+  await vpn?.refresh();
+  await background?.refresh();
   await weather?.reloadConfiguration();
   await online?.reload();
   await slideshow?.reload();

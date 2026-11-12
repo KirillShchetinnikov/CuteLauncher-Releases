@@ -116,13 +116,15 @@ public class LauncherActivity extends FlutterActivity {
         LauncherActivity host = panelHost.get();
         if (host != null && host.homeSink != null) host.homeSink.success("remote_panel_blocked");
     }
-    static final RemotePanelLaunchPolicy remotePanelPolicy = new RemotePanelLaunchPolicy();
+    static final RemotePanelLaunchPolicy remotePanelPolicy =
+        new RemotePanelLaunchPolicy(LauncherAccessibilityService::launcherVisibilityChanged);
     @Override protected void onStart() {
         super.onStart();
         remotePanelPolicy.started(this);
     }
     @Override protected void onStop() {
         remotePanelPolicy.stopped(this);
+        OverlayWidgetAnchors.persist(this);
         super.onStop();
     }
     private boolean pendingHome;
@@ -285,6 +287,8 @@ public class LauncherActivity extends FlutterActivity {
         CloudAccountBridge.register(this, messenger, sIoExecutor);
         WeatherTokenBridge.register(this, messenger);
         DriveAccountBridge.register(this, messenger, sIoExecutor);
+        SmbBackupBridge.register(this, messenger);
+        NativeSyncBridge.register(this, messenger);
         NightOverlayService.register(this, messenger, sIoExecutor);
         TclBlueLight.register(this, messenger, sIoExecutor);
         applicationCatalog = new ApplicationCatalog(this);
@@ -499,6 +503,16 @@ public class LauncherActivity extends FlutterActivity {
                 case "checkOverlayPermission" -> result.success(checkOverlayPermission());
                 case "requestOverlayPermission" -> result.success(requestOverlayPermission());
                 case "checkAccessibilityPermission" -> result.success(isAccessibilityServiceEnabled());
+                case "setOverlayWidgetCenter" -> {
+                    String id = call.argument("id");
+                    Integer x = call.argument("x"), y = call.argument("y");
+                    if (x != null && y != null) OverlayWidgetAnchors.record(this, id, x, y);
+                    result.success(null);
+                }
+                case "setOverlayPanelAppearance" -> {
+                    OverlayPanelStyle.record(this, call.arguments());
+                    result.success(null);
+                }
                 case "requestAccessibilityPermission" -> result.success(openAccessibilitySettings());
                 case "checkWatchNextPermission" -> result.success(watchNextBridge.checkWatchNextPermission());
                 case "checkAppChannelsPermission" -> result.success(checkSelfPermission("android.permission.READ_TV_LISTINGS") == android.content.pm.PackageManager.PERMISSION_GRANTED);

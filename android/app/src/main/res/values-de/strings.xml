@@ -19,4 +19,22 @@
     <string name="remap_error_webhook_http">Webhook hat die Anfrage abgelehnt (HTTP %1$d).</string>
     <string name="remap_error_webhook_timeout">Zeitüberschreitung beim Webhook.</string>
     <string name="remap_error_webhook">Verbindung zum Webhook fehlgeschlagen.</string>
+    <string name="power_off">Gerät ausschalten</string>
+    <string name="power_reboot">Gerät neu starten</string>
+    <string name="power_off_confirm">Gerät in den Standby versetzen?</string>
+    <string name="power_reboot_confirm">Gerät neu starten? Offene Apps werden geschlossen.</string>
+    <string name="screensaver_label">CuteLauncher-Uhr</string>
+    <string name="notification_service_label">CuteLauncher-Benachrichtigungsdienst</string>
+    <string name="night_mode_title">Nachtmodus</string>
+    <string name="night_mode_notice">Bildschirmfilter aktiv. Der Zeitplan gilt.</string>
+    <string name="night_mode_stop">Ausschalten</string>
+    <string name="recovery_checking">Launcher wird geprüft…</string>
+    <string name="recovery_title">Launcher-Wiederherstellung</string>
+    <string name="recovery_description">CuteLauncher wurde mehrmals beendet. Die Einstellungen bleiben erhalten. Du kannst es erneut versuchen, eine andere App öffnen oder einen anderen Startbildschirm wählen. Ist der vorinstallierte Launcher deaktiviert, aktiviere ihn zuerst in den Android-App-Einstellungen.</string>
+    <string name="recovery_retry">CuteLauncher erneut starten</string>
+    <string name="recovery_settings">Android-Einstellungen</string>
+    <string name="recovery_home">Startbildschirm wählen</string>
+    <string name="recovery_unavailable">Diese Aktion ist auf diesem Fernseher nicht verfügbar.</string>
+    <string name="recovery_restore">Vorherigen Startbildschirm wiederherstellen</string>
+    <string name="recovery_restore_confirm">Den vorherigen Startbildschirm über die bestehende lokale ADB-Verbindung wiederherstellen?</string>
 </resources>

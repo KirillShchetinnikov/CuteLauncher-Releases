@@ -1,3 +1,5 @@
+import '../../providers/cloud_backup_service.dart';
+import '../../providers/drive_backup_service.dart';
 import 'settings_section.dart';
 import 'settings_choice_dialog.dart';
 
@@ -18,6 +20,8 @@ import '../../providers/automatic_backup_service.dart';
 import '../../providers/backup_automation_service.dart';
 import 'backup_management_block.dart';
 import 'backup_sync_groups_page.dart';
+import 'sync_protection_page.dart';
+import 'sync_files_page.dart';
 import '../rounded_switch_list_tile.dart';
 import '../action_notice.dart';
 import 'cloud_backup_page.dart';
@@ -55,6 +59,8 @@ class AutomaticBackupPage extends StatelessWidget {
     final destinations = {
       BackupDestination.webdav: 'WebDAV / Nextcloud',
       BackupDestination.googleDrive: l.backupGoogleDrive,
+      BackupDestination.yandexDisk: l.backupYandexDisk,
+      BackupDestination.smb: l.backupSmb,
       BackupDestination.local: l.backupLocal,
     };
     final modes = {
@@ -95,6 +101,7 @@ class AutomaticBackupPage extends StatelessWidget {
                     '${l.backupAutoEnabled}: ${service.enabled ? l.enabled : l.disabled}',
                   ),
                   Text(l.backupLastSuccess),
+                  if (service.cleanupFailed) Text(l.syncCleanupFailed),
                   Text(
                     last == null
                         ? l.backupNever
@@ -133,7 +140,17 @@ class AutomaticBackupPage extends StatelessWidget {
                     : l.backupConnection,
                 () => open(switch (service.destination) {
                   BackupDestination.webdav => const CloudBackupPage(),
+                  BackupDestination.smb =>
+                    ChangeNotifierProvider<CloudBackupService>.value(
+                      value: service.smb,
+                      child: const CloudBackupPage(smb: true),
+                    ),
                   BackupDestination.googleDrive => const DriveBackupPage(),
+                  BackupDestination.yandexDisk =>
+                    ChangeNotifierProvider<DriveBackupService>.value(
+                      value: service.yandex,
+                      child: const DriveBackupPage(),
+                    ),
                   BackupDestination.local => const LocalBackupPage(),
                 }),
                 icon: Icons.settings_backup_restore,
@@ -171,7 +188,7 @@ class AutomaticBackupPage extends StatelessWidget {
                     final alreadyEnabled = service.enabled;
                     final success = alreadyEnabled
                         ? await service.run(manual: true)
-                        : await _confirmSynchronization(
+                        : await confirmBackupSynchronization(
                             context,
                             service,
                             enable: false,
@@ -206,7 +223,7 @@ class AutomaticBackupPage extends StatelessWidget {
   }
 }
 
-Future<bool> _confirmSynchronization(
+Future<bool> confirmBackupSynchronization(
   BuildContext context,
   BackupAutomationService automation, {
   required bool enable,
@@ -278,7 +295,7 @@ class BackupOptionsPage extends StatelessWidget {
       await automation.configure(enabled: enabled);
       return;
     }
-    final result = await _confirmSynchronization(
+    final result = await confirmBackupSynchronization(
       context,
       automation,
       enable: true,
@@ -412,6 +429,24 @@ class BackupOptionsPage extends StatelessWidget {
               ],
             ),
           if (sync) ...[
+            FocusableSettingsTile(
+              title: Text(l.syncFiles),
+              busy: automation.busy,
+              onPressed: automation.busy
+                  ? null
+                  : () => Navigator.of(context).push(
+                      SettingsRoute(builder: (_) => const SyncFilesPage()),
+                    ),
+            ),
+            FocusableSettingsTile(
+              title: Text(l.backupPassword),
+              busy: automation.busy,
+              onPressed: automation.busy
+                  ? null
+                  : () => Navigator.of(context).push(
+                      SettingsRoute(builder: (_) => const SyncProtectionPage()),
+                    ),
+            ),
             if (!localOnly)
               FocusableSettingsTile(
                 title: Text(sync ? l.backupSyncScope : l.backupScope),

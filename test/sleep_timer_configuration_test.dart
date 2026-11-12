@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:flauncher/backup_sync_groups.dart';
+import 'package:flauncher/overlay_appearance.dart';
+import 'package:flauncher/overlay_position.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/settings_import.dart';
 import 'package:flauncher/sleep_timer_configuration.dart';
@@ -51,6 +53,41 @@ void main() {
   });
 
   test(
+    'old timer settings default to no overlay and invalid types are rejected',
+    () {
+      final encoded = jsonDecode(SleepTimerConfiguration().encode()) as Map;
+      encoded.remove('showOverApps');
+      encoded.remove('overlayPosition');
+      encoded.remove('overlayAppearance');
+      expect(
+        SleepTimerConfiguration.parse(jsonEncode(encoded)).showOverApps,
+        isFalse,
+      );
+      expect(
+        SleepTimerConfiguration.parse(jsonEncode(encoded)).overlayPosition,
+        OverlayPosition.topLeft,
+      );
+      expect(
+        SleepTimerConfiguration.parse(jsonEncode(encoded)).overlayAppearance,
+        OverlayAppearance.topPanel,
+      );
+      encoded['overlayAppearance'] = 'invalid';
+      expect(
+        () => SleepTimerConfiguration.parse(jsonEncode(encoded)),
+        throwsFormatException,
+      );
+      encoded.remove('overlayAppearance');
+      encoded['showOverApps'] = 'true';
+      expect(
+        compatibleSettings({
+          sleepTimerConfigurationKey: jsonEncode(encoded),
+        }, {}),
+        isEmpty,
+      );
+    },
+  );
+
+  test(
     'settings and arbitrary presets survive restart, export and import',
     () async {
       SharedPreferences.setMockInitialValues({});
@@ -60,6 +97,9 @@ void main() {
         display: 'both',
         showSeconds: false,
         closeAfterSelection: false,
+        showOverApps: true,
+        overlayPosition: OverlayPosition.widget,
+        overlayAppearance: OverlayAppearance.dark,
         presets: [
           const SleepTimerPreset('custom', 90061),
           const SleepTimerPreset('hidden', 7, visible: false),

@@ -21,6 +21,7 @@ class WeatherDisplayText extends StatelessWidget {
     this.maxWidth,
     this.singleLine = false,
     this.inlineIcon,
+    this.alignment = 'left',
   });
 
   final String text;
@@ -28,6 +29,7 @@ class WeatherDisplayText extends StatelessWidget {
   final double? maxWidth;
   final bool singleLine;
   final Widget? inlineIcon;
+  final String alignment;
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +69,11 @@ class WeatherDisplayText extends StatelessWidget {
       constraints: BoxConstraints(maxWidth: width),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        textDirection: TextDirection.ltr,
+        crossAxisAlignment: switch (alignment) {
+          'right' => CrossAxisAlignment.end, 'center' => CrossAxisAlignment.center,
+          _ => CrossAxisAlignment.start,
+        },
         children: [
           for (final value in display.split('\n'))
             // Custom output has at most two explicitly separated lines.

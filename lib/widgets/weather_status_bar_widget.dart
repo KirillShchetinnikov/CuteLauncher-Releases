@@ -28,15 +28,17 @@ class WeatherStatusBarWidget extends StatefulWidget {
 class _WeatherStatusBarWidgetState extends State<WeatherStatusBarWidget> {
   @override
   Widget build(BuildContext context) {
-    return Selector<SettingsService, (bool, bool, bool, WeatherTextFormat)>(
+    return Selector<SettingsService, (bool, bool, bool, WeatherTextFormat, bool, String)>(
       selector: (_, settings) => (
         settings.showWeatherInStatusBar,
         settings.showWeatherWarnings,
         settings.useFahrenheit,
         settings.weatherTextFormat,
+        settings.informationWeather().missingAsDash,
+        settings.informationWeather().panelAlignment,
       ),
       builder: (context, settingsTuple, _) {
-        final (showWeather, showWarnings, useFahrenheit, format) = settingsTuple;
+        final (showWeather, showWarnings, useFahrenheit, format, missingAsDash, alignment) = settingsTuple;
         if (!(widget.showWeather ?? showWeather)) return const SizedBox.shrink();
 
         return Consumer<WeatherService>(
@@ -69,7 +71,7 @@ class _WeatherStatusBarWidgetState extends State<WeatherStatusBarWidget> {
                 ? (l10n == null ? weather.warningText : localizedWeatherWarning(weather, l10n, DateTime.now()))
                 : null;
             final displayText = [
-              format.format(weather, l10n, fahrenheit: useFahrenheit, warningsAvailable: !weatherService.stale),
+              format.format(weather, l10n, fahrenheit: useFahrenheit, missingAsDash: missingAsDash, warningsAvailable: !weatherService.stale),
               ?warning,
             ].join(' • ');
 
@@ -85,9 +87,9 @@ class _WeatherStatusBarWidgetState extends State<WeatherStatusBarWidget> {
                   if (!format.explicitLayout) ...[icon, const SizedBox(width: 8)],
                   if (format.isStandard)
                     HomeSkeletonValue(sample: '−99°', style: textStyle,
-                      child: WeatherDisplayText(displayText, style: textStyle, inlineIcon: icon, maxWidth: weatherTextMaxWidth(format)))
+                      child: WeatherDisplayText(displayText, alignment: alignment, style: textStyle, inlineIcon: icon, maxWidth: weatherTextMaxWidth(format)))
                   else
-                    WeatherDisplayText(displayText, style: textStyle, inlineIcon: icon, maxWidth: weatherTextMaxWidth(format)),
+                    WeatherDisplayText(displayText, alignment: alignment, style: textStyle, inlineIcon: icon, maxWidth: weatherTextMaxWidth(format)),
                 ],
               ),
             );

@@ -14,6 +14,7 @@ final class RemoteButtonRemapper implements AutoCloseable {
     static volatile String status = "idle";
     private final LauncherAccessibilityService service;
     private final BlackScreenWindow blackScreen;
+    private final TvPowerConfirmation powerConfirmation;
     private Toast errorToast;
     private final Handler main = new Handler(Looper.getMainLooper());
     private final ExecutorService storage = Executors.newSingleThreadExecutor();
@@ -30,7 +31,8 @@ final class RemoteButtonRemapper implements AutoCloseable {
 
     RemoteButtonRemapper(LauncherAccessibilityService service) {
         this.service = service; current = this;
-        blackScreen = new BlackScreenWindow(service);
+        blackScreen = new BlackScreenWindow(service, service::blackScreenVisibilityChanged);
+        powerConfirmation = new TvPowerConfirmation(service);
         network.allowCoreThreadTimeOut(true);
         power.allowCoreThreadTimeOut(true);
         int expected = ++generation;
@@ -46,6 +48,7 @@ final class RemoteButtonRemapper implements AutoCloseable {
         if (current != null) {
             current.generation++;
             current.configuration = configuration;
+            current.cancelPowerConfirmation();
             if (!configuration.enabled || configuration.bindings.values().stream()
                     .noneMatch(binding -> binding.enabled() && binding.action().equals("black_overlay"))) {
                 current.blackScreen.close();
@@ -55,12 +58,15 @@ final class RemoteButtonRemapper implements AutoCloseable {
         status = "idle";
     }
     boolean dismissBlackScreenOnBack(KeyEvent event) { return blackScreen.back(event); }
+    boolean confirmingPower() { return powerConfirmation.isOpen(); }
+    void cancelPowerConfirmation() { powerConfirmation.close(); }
+    boolean blackScreenVisible() { return blackScreen.isVisible(); }
     private RemoteMappingConfiguration.Binding shortBinding(int code, boolean suspended) {
         if (suspended) return null;
         return configuration.pressBinding(code);
     }
-    private static boolean assignmentsPaused() {
-        return editing || RemoteButtonsBridge.capturing() || RemoteButtonLearning.active();
+    private boolean assignmentsPaused() {
+        return confirmingPower() || editing || RemoteButtonsBridge.capturing() || RemoteButtonLearning.active();
     }
     boolean event(KeyEvent event) {
         boolean suspended = assignmentsPaused();
@@ -119,14 +125,8 @@ final class RemoteButtonRemapper implements AutoCloseable {
             }
             case "back" -> availability(service.performGlobalAction(
                 android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BACK));
-            case "black_screen" -> {
-                Intent toggle = new Intent().setClassName("io.japp.blackscreen",
-                    "io.japp.blackscreen.ui.ToggleBlackScreenActivity");
-                toggle.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                service.startActivity(toggle);
-                yield "success";
-            }
             case "black_overlay" -> {
+                service.hideVolumeOverlay();
                 blackScreen.toggle();
                 yield "success";
             }
@@ -159,9 +159,16 @@ final class RemoteButtonRemapper implements AutoCloseable {
             }
             case "mute" -> availability(RemoteTvActions.toggleMute(service));
             case "sleep", "reboot" -> {
-                status = "busy";
-                TvPowerBridge.request(service, binding.action().equals("reboot"), power,
-                    result -> complete(binding, result));
+                boolean reboot = binding.action().equals("reboot");
+                if (powerConfirmation.show(reboot, () -> {
+                    if (closed || assignmentsPaused()
+                            || !binding.equals(configuration.binding(binding.keyCode(), binding.trigger()))) return;
+                    requestPower(binding, reboot);
+                })) cancelPendingActions();
+                yield null;
+            }
+            case "sleep_immediate", "reboot_immediate" -> {
+                requestPower(binding, binding.action().equals("reboot_immediate"));
                 yield null;
             }
             case "webhook" -> {
@@ -173,6 +180,11 @@ final class RemoteButtonRemapper implements AutoCloseable {
         };
     }
 
+    private void requestPower(RemoteMappingConfiguration.Binding binding, boolean reboot) {
+        status = "busy";
+        TvPowerBridge.request(service, reboot, power, result -> complete(binding, result));
+    }
+
     private static String availability(boolean available) {
         return available ? "success" : "unavailable";
     }
@@ -182,10 +194,9 @@ final class RemoteButtonRemapper implements AutoCloseable {
             case "success" -> 0;
             case "busy" -> R.string.remap_error_busy;
             default -> switch (binding.action()) {
-                case "black_screen" -> R.string.remap_error_black_screen;
                 case "app" -> R.string.remap_error_app;
                 case "hdmi" -> R.string.remap_error_hdmi;
-                case "sleep", "reboot" -> R.string.remap_error_power;
+                case "sleep", "sleep_immediate", "reboot", "reboot_immediate" -> R.string.remap_error_power;
                 default -> R.string.remap_error_unavailable;
             };
         };
@@ -218,6 +229,10 @@ final class RemoteButtonRemapper implements AutoCloseable {
     }
     void interrupt() {
         blackScreen.close();
+        cancelPowerConfirmation();
+        cancelPendingActions();
+    }
+    private void cancelPendingActions() {
         policy.cancelActions(); holdTimers.values().forEach(main::removeCallbacks); holdTimers.clear();
     }
     void filterPaused() {
@@ -227,6 +242,7 @@ final class RemoteButtonRemapper implements AutoCloseable {
     @Override public void close() {
         if (errorToast != null) errorToast.cancel();
         blackScreen.close();
+        cancelPowerConfirmation();
         // Allow an accepted bounded power request to finish and release the shared busy guard.
         power.shutdown();
         closed = true; policy.clear(); holdTimers.values().forEach(main::removeCallbacks); holdTimers.clear(); storage.shutdownNow(); network.shutdownNow();

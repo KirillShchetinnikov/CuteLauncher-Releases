@@ -376,9 +376,7 @@ class _LocalFileBrowserState extends State<LocalFileBrowser> {
                   textDirection: TextDirection.ltr,
                 ),
               Text(
-                _foldersOnly
-                    ? l.fileBrowserRemoteHint
-                    : l.fileBrowserReadNameHint,
+                l.fileBrowserReadNameHint,
                 style: Theme.of(context).textTheme.bodySmall,
               ),
               if (_foldersOnly)
@@ -388,13 +386,11 @@ class _LocalFileBrowserState extends State<LocalFileBrowser> {
                   enabled: !busy && error == null && folder != null,
                   showActionChevron: false,
                   onKeyEvent: (_, event) {
-                    if (event is KeyDownEvent &&
-                        event.logicalKey == LogicalKeyboardKey.arrowLeft) {
-                      final node = _nodes[_selections[_path]];
-                      if (node?.context != null) node!.requestFocus();
-                      return KeyEventResult.handled;
+                    if (event.logicalKey != LogicalKeyboardKey.arrowLeft) {
+                      return KeyEventResult.ignored;
                     }
-                    return KeyEventResult.ignored;
+                    if (event is KeyDownEvent) _up();
+                    return KeyEventResult.handled;
                   },
                   leading: Icon(
                     widget.saveName == null
@@ -459,16 +455,7 @@ class _LocalFileBrowserState extends State<LocalFileBrowser> {
                     focusNode: _node(path),
                     enabled: !busy,
                     showActionChevron: directory,
-                    onKeyEvent: (_, event) {
-                      if (event is KeyDownEvent &&
-                          event.logicalKey == LogicalKeyboardKey.arrowRight &&
-                          _foldersOnly) {
-                        _selections[_path] = path;
-                        _selectFocus.requestFocus();
-                        return KeyEventResult.handled;
-                      }
-                      return KeyEventResult.ignored;
-                    },
+                    onParentFolder: _up,
                     name: entry['name'] as String,
                     details: directory || !widget.options.showDetails ? null : _fileDetails(entry),
                     leading: Icon(
@@ -520,7 +507,7 @@ class _LocalFileBrowserState extends State<LocalFileBrowser> {
 class _FileBrowserRow extends StatefulWidget {
   final FocusNode focusNode;
   final bool enabled, showActionChevron;
-  final FocusOnKeyEventCallback onKeyEvent;
+  final VoidCallback onParentFolder;
   final String name;
   final String? details;
   final Widget leading;
@@ -530,7 +517,7 @@ class _FileBrowserRow extends StatefulWidget {
     required this.focusNode,
     required this.enabled,
     required this.showActionChevron,
-    required this.onKeyEvent,
+    required this.onParentFolder,
     required this.name,
     this.details,
     required this.leading,
@@ -601,10 +588,13 @@ class _FileBrowserRowState extends State<_FileBrowserRow> {
         );
       },
     ),
-    onKeyEvent: (node, event) {
-      if (event is KeyDownEvent &&
-          event.logicalKey == LogicalKeyboardKey.arrowLeft) {
-        if (_nameOverflows || _expanded) {
+    onKeyEvent: (_, event) {
+      if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+        if (event is KeyDownEvent) widget.onParentFolder();
+        return KeyEventResult.handled;
+      }
+      if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+        if (event is KeyDownEvent && (_nameOverflows || _expanded)) {
           setState(() => _expanded = !_expanded);
         }
         return KeyEventResult.handled;
@@ -625,7 +615,7 @@ class _FileBrowserRowState extends State<_FileBrowserRow> {
           return KeyEventResult.handled;
         }
       }
-      return widget.onKeyEvent(node, event);
+      return KeyEventResult.ignored;
     },
     onPressed: widget.onPressed,
   );

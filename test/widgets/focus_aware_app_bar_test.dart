@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:flauncher/adaptive_landscape.dart';
+import 'package:flauncher/information_formats.dart';
+import 'package:flauncher/overlay_position.dart';
 import 'package:flauncher/providers/weather_service.dart';
 import 'package:flauncher/providers/sleep_timer_service.dart';
 import 'package:flauncher/sleep_timer_configuration.dart';
@@ -23,6 +25,7 @@ import 'package:flauncher/widgets/weather_glyph.dart';
 import 'package:flutter/services.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/widgets/focus_aware_app_bar.dart';
+import 'package:flauncher/widgets/audio_status_widget.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/tv_inputs_service.dart';
 import 'package:flauncher/providers/notifications_service.dart';
@@ -67,6 +70,9 @@ void main() {
     when(service.showWeatherWarnings).thenReturn(false);
     when(service.useFahrenheit).thenReturn(false);
     when(service.weatherTextFormat).thenReturn(WeatherTextFormat.standard);
+    when(service.informationWeather()).thenReturn(const WeatherDisplayOptions(
+      format: WeatherTextFormat.standard, fahrenheit: false, warnings: false,
+    ));
   }
 
   setUp(() {
@@ -98,6 +104,49 @@ void main() {
       ),
     );
   }
+
+  testWidgets('Home reports the centers of both widgets in widget-position mode', (tester) async {
+    SharedPreferences.setMockInitialValues({
+      'show_volume_in_status_bar': true,
+      'show_sleep_timer_in_status_bar': true,
+      'show_network_indicator_in_status_bar': false,
+      volumeOverlayPositionKey: OverlayPosition.widget.name,
+      sleepTimerConfigurationKey: SleepTimerConfiguration(overlayPosition: OverlayPosition.widget).encode(),
+    });
+    final settings = SettingsService(await SharedPreferences.getInstance());
+    addTearDown(settings.dispose);
+    final anchors = <String, Map<dynamic, dynamic>>{};
+    const channel = MethodChannel('me.efesser.flauncher/method');
+    final messenger = tester.binding.defaultBinaryMessenger;
+    messenger.setMockMethodCallHandler(channel, (call) async {
+      if (call.method == 'setOverlayWidgetCenter') {
+        final args = call.arguments as Map<dynamic, dynamic>;
+        anchors[args['id'] as String] = args;
+      }
+      return null;
+    });
+    addTearDown(() => messenger.setMockMethodCallHandler(channel, null));
+
+    await tester.pumpWidget(MultiProvider(providers: [
+      ChangeNotifierProvider<SettingsService>.value(value: settings),
+      ChangeNotifierProvider<TvInputsService>.value(value: mockTvInputsService),
+      ChangeNotifierProvider<NotificationsService>.value(value: mockNotificationsService),
+      ChangeNotifierProvider<WeatherService>.value(value: mockWeatherService),
+    ], child: createWidgetUnderTest()));
+    await tester.pumpAndSettle();
+    final timer = find.ancestor(
+      of: find.byIcon(Icons.timer_outlined),
+      matching: find.byType(TopPanelItem),
+    );
+    for (final (id, finder) in [
+      ('volume', find.byType(AudioStatusWidget)),
+      ('sleepTimer', timer),
+    ]) {
+      final center = tester.getCenter(finder) * tester.view.devicePixelRatio;
+      expect(anchors[id], {'id': id, 'x': center.dx.round(), 'y': center.dy.round()});
+    }
+    await tester.pumpWidget(const SizedBox());
+  });
 
   for (final popup in [false, true]) {
     for (final action in ['weather', 'calendar', 'both', 'none']) {

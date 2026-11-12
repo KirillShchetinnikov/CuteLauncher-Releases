@@ -66,19 +66,11 @@ class _LandscapeInformationGeometryState
   @override
   Widget build(BuildContext context) {
     final settings = context.watch<SettingsService>();
-    final coordinates = context
-        .select<
-          WeatherService?,
-          ({double? latitude, double? cityLatitude, String? mode})
-        >(
-          (s) => (
-            latitude: s?.configuration.source == WeatherSource.customOpenMeteo
-                ? s?.weatherData?.latitude : s?.configuration.latitude,
-            cityLatitude: s?.configuration.cityLatitude,
-            mode: s?.configuration.source == WeatherSource.customOpenMeteo
-                ? 'automatic' : s?.configuration.locationMode.name,
-          ),
-        );
+    final latitude = context.select<WeatherService?, double?>(
+      (s) => s?.configuration.source == WeatherSource.customOpenMeteo
+          ? s?.weatherData?.latitude
+          : s?.configuration.selectedCoordinates?.latitude,
+    );
     final nightLatitude = context.select<NightModeService?, double?>(
       (s) => s?.configuration.latitude,
     );
@@ -93,11 +85,7 @@ class _LandscapeInformationGeometryState
             landscapeSeason(
               settings.screenshotScene?.now ?? DateTime.now(),
               config,
-              latitude:
-                  (coordinates.mode == 'manual'
-                      ? coordinates.cityLatitude
-                      : coordinates.latitude) ??
-                  nightLatitude,
+              latitude: latitude ?? nightLatitude,
             );
         return widget.builder(
           context,

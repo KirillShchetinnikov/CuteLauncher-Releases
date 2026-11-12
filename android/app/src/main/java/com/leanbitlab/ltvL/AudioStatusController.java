@@ -54,6 +54,12 @@ final class AudioStatusController {
         return label != 0 && TextUtils.equals(name, resources.getText(label));
     }
 
+    @Nullable static Integer mediaVolumePercent(@NonNull AudioManager audio) {
+        int max = audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        int level = audio.getStreamVolume(AudioManager.STREAM_MUSIC);
+        return max > 0 && level >= 0 && level <= max ? Math.round(100f * level / max) : null;
+    }
+
     @NonNull Map<String, Object> snapshot(@Nullable String legacyRoute, boolean router2HdmiSelected,
                                          @Nullable Map<String, Object> routeDiagnostics) {
         var state = new HashMap<String, Object>();
@@ -75,11 +81,8 @@ final class AudioStatusController {
             boolean fixed = audio.isVolumeFixed();
             state.put("fixed", fixed);
             if (!fixed) {
-                int max = audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-                int level = audio.getStreamVolume(AudioManager.STREAM_MUSIC);
-                if (max > 0 && level >= 0 && level <= max) {
-                    state.put("percent", Math.round(100f * level / max));
-                }
+                var percent = mediaVolumePercent(audio);
+                if (percent != null) state.put("percent", percent);
             }
         } catch (RuntimeException unavailable) { /* Keep level unknown. */ }
         String legacyArc = null;

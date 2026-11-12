@@ -19,4 +19,22 @@
     <string name="remap_error_webhook_http">Webhook 拒绝了请求（HTTP %1$d）。</string>
     <string name="remap_error_webhook_timeout">Webhook 请求超时。</string>
     <string name="remap_error_webhook">无法连接到 Webhook。</string>
+    <string name="power_off">关闭设备</string>
+    <string name="power_reboot">重启设备</string>
+    <string name="power_off_confirm">将设备置于待机模式？</string>
+    <string name="power_reboot_confirm">重启设备？打开的应用将关闭。</string>
+    <string name="screensaver_label">CuteLauncher 时钟</string>
+    <string name="notification_service_label">CuteLauncher 通知服务</string>
+    <string name="night_mode_title">夜间模式</string>
+    <string name="night_mode_notice">屏幕滤镜已启用，将按计划运行</string>
+    <string name="night_mode_stop">关闭</string>
+    <string name="recovery_checking">正在检查启动器…</string>
+    <string name="recovery_title">启动器恢复</string>
+    <string name="recovery_description">CuteLauncher 已多次停止运行，设置已保留。你可以重试、打开其他应用或选择其他主屏幕。如果系统自带的启动器已停用，请先在 Android 应用设置中启用它。</string>
+    <string name="recovery_retry">重试启动 CuteLauncher</string>
+    <string name="recovery_settings">Android 设置</string>
+    <string name="recovery_home">选择主屏幕</string>
+    <string name="recovery_unavailable">此电视不支持此操作。</string>
+    <string name="recovery_restore">恢复之前的主屏幕</string>
+    <string name="recovery_restore_confirm">要使用现有的本地 ADB 连接恢复之前的主屏幕吗？</string>
 </resources>

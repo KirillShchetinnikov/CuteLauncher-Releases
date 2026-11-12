@@ -193,7 +193,8 @@ class WeatherForecastContent extends StatelessWidget {
             )
             .toList() ??
         [];
-    final source = switch (service.configuration.source) {
+    final source = switch (weatherDataSource(service.configuration.source, weather)) {
+      WeatherSource.auto => l.homeAuto,
       WeatherSource.breezy => 'Breezy Weather',
       WeatherSource.openMeteo => 'Open-Meteo',
       WeatherSource.customOpenMeteo => weather?.source ?? l.weatherCustomServer,

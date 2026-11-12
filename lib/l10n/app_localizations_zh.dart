@@ -10,6 +10,9 @@ class AppLocalizationsZh extends AppLocalizations {
   AppLocalizationsZh([String locale = 'zh']) : super(locale);
 
   @override
+  String get scrollContentLabels => '滚动内容行中的长标签';
+
+  @override
   String get contentAppTileStyle => '外观来源';
 
   @override
@@ -890,6 +893,71 @@ class AppLocalizationsZh extends AppLocalizations {
   String get imageInputRejected => '该图像已损坏或太大（最大 8 MiB 和 48 兆像素）。选择另一张图像。';
 
   @override
+  String get memoryAdvanced => '高级诊断';
+
+  @override
+  String get memoryLauncherTitle => 'CuteLauncher 内存';
+
+  @override
+  String get memoryUsage => '内存使用量';
+
+  @override
+  String memoryChange(String delta) {
+    return '较上次测量 $delta';
+  }
+
+  @override
+  String get memoryCacheFiles => '内存中的图片文件';
+
+  @override
+  String memoryCacheEntries(int count) {
+    return '项目数：$count';
+  }
+
+  @override
+  String memoryCacheResult(String before, String after) {
+    return '图片缓存：$before → $after';
+  }
+
+  @override
+  String get memoryStale => '无法更新，正在显示上次测量结果。';
+
+  @override
+  String get memoryTechnical => '技术详情';
+
+  @override
+  String get memoryObserve => '内存监测';
+
+  @override
+  String get memoryObserveStart => '监测 1 分钟';
+
+  @override
+  String get memoryObserveStop => '停止监测';
+
+  @override
+  String get memoryObserveRunning => '记录中 · 最长 1 分钟';
+
+  @override
+  String get memoryObserveFinished => '记录已停止';
+
+  @override
+  String get memoryObserveEmpty => '暂无测量记录';
+
+  @override
+  String memorySeconds(int seconds) {
+    return '$seconds 秒';
+  }
+
+  @override
+  String get memoryReadingHelp => '如何理解测量值';
+
+  @override
+  String get memorySaverHelp => '内存节省的效果';
+
+  @override
+  String get memorySaveFailed => '无法保存内存节省模式，请重试。';
+
+  @override
   String get memoryTitle => '内存';
 
   @override
@@ -1614,7 +1682,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get weatherLatitude => '纬度（-90 至 90）';
 
   @override
-  String get weatherCoordinatesError => '手动输入城市或自动获取坐标。';
+  String get weatherCoordinatesError => '请选择城市、输入坐标或自动获取位置。';
 
   @override
   String get weatherRefresh => '刷新天气';
@@ -1912,7 +1980,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get nightCityHint =>
-      '选择您的城市而不是授予位置访问权限。选定的坐标将发送到 Sunrise-Sunset.org 或 Open-Meteo 作为后备，以检索太阳时间。';
+      '选择您的城市而不是授予位置访问权限。选定的坐标将发送到 Sunrise-Sunset.org 或 GeoNames 作为后备，以检索太阳时间。';
 
   @override
   String get nightResumeSchedule => '返回日程';
@@ -1956,7 +2024,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get nightSolarAttribution =>
-      '每日太阳时间：Sunrise-Sunset.org；后备：Open-Meteo。城市搜索：GeoNames。缓存几天以供离线使用。';
+      '日出和日落时间来自 Sunrise-Sunset.org，服务不可用时改用 GeoNames。离线时，电视会计算缺少的时间。';
 
   @override
   String get nightTemporaryOn => '暂时调暗直到';
@@ -2833,7 +2901,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get weatherCityHint => '输入英文城市名称，例如莫斯科。';
 
   @override
-  String get weatherCityNotFound => '未找到城市。检查城市的英文名称。';
+  String get weatherCityNotFound => '无法确定城市。请在位置设置中选择城市。';
 
   @override
   String get weatherLocationAutomatic => '自动获取';
@@ -2843,6 +2911,15 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get weatherLocationManual => '手动输入';
+
+  @override
+  String get manualLocationInput => '输入方式';
+
+  @override
+  String get manualLocationCity => '城市';
+
+  @override
+  String get manualLocationCoordinates => '坐标';
 
   @override
   String get weatherLocationPermissionDenied => '在 Android 设置中允许位置访问，然后重试。';
@@ -2872,7 +2949,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get nightLocationFailed => '位置不可用。检查权限和系统位置设置。';
 
   @override
-  String get nightCityEnglish => '输入城市英文名称';
+  String get nightCitySearchHint => '输入城市名称。可在逗号后添加地区或国家。';
 
   @override
   String get nightOverlayBrief => '允许过滤器显示在其他应用程序之上。';
@@ -3006,7 +3083,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get backupSyncGeneralGroup => '语言、更新和其他设置';
 
   @override
-  String get backupSyncGroupsHelp => '禁用的块保留在该电视的本地。块选择在设备之间同步。';
+  String get backupSyncGroupsHelp => '已关闭的项目保留在此电视上。请在各设备上分别选择同步项目。';
 
   @override
   String get backupSyncGroupsFailed => '无法保存同步设置选择。再试一次。';
@@ -3940,16 +4017,26 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tvPowerTitle => '电源管理';
 
   @override
-  String get tvPowerOff => '关闭电视';
+  String remotePowerWithConfirmation(String action) {
+    return '$action（需确认）';
+  }
 
   @override
-  String get tvPowerReboot => '重启电视';
+  String remotePowerWithoutConfirmation(String action) {
+    return '$action（无需确认）';
+  }
 
   @override
-  String get tvPowerOffConfirm => '将电视置于待机模式？';
+  String get tvPowerOff => '关闭设备';
 
   @override
-  String get tvPowerRebootConfirm => '重启电视？打开的应用将关闭。';
+  String get tvPowerReboot => '重启设备';
+
+  @override
+  String get tvPowerOffConfirm => '将设备置于待机模式？';
+
+  @override
+  String get tvPowerRebootConfirm => '重启设备？打开的应用将关闭。';
 
   @override
   String get tvPowerSent => '命令已发送';
@@ -4083,6 +4170,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get sleepTimerShowSeconds => '显示秒数';
 
   @override
+  String get sleepTimerShowOverApps => '在应用上方显示定时器';
+
+  @override
+  String get sleepTimerOverlayHelp => '若要在应用上方显示，请启用 CuteLauncher 无障碍服务。';
+
+  @override
   String get sleepTimerCloseAfterSelection => '选择定时器后关闭小组件';
 
   @override
@@ -4192,6 +4285,21 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get noticeTopLeft => '左上角';
+
+  @override
+  String get overlayAppearance => '应用上层显示样式';
+
+  @override
+  String get overlayAppearanceTopPanel => '与顶部面板相同';
+
+  @override
+  String get overlayAppearanceDark => '深色';
+
+  @override
+  String get overlayWhereToShow => '显示位置';
+
+  @override
+  String get overlayAtPanelWidget => '顶部面板中小组件的位置';
 
   @override
   String get notificationOpenFailed => '无法打开通知操作。该操作可能已不可用。';
@@ -4481,7 +4589,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get weatherTextHelp =>
-      '输入文本及大括号内的代码，或用按钮在光标处插入代码。不区分大小写。值外的圆括号会在数据缺失时一同隐藏。普通大括号需输入两次。允许一个换行。';
+      '输入文本及大括号内的代码，或用按钮在光标处插入代码。不区分大小写。值外的圆括号会在数据缺失时一同隐藏。普通大括号需输入两次。允许一个换行。 可以输入文字、数字、空格和任何可打印符号，例如：() [] / : ; + − ° % ·.';
 
   @override
   String get weatherTextSaveError => '无法保存天气文本格式。';
@@ -4749,10 +4857,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get fileBrowserPartial => '仅显示文件夹的部分内容';
 
   @override
-  String get fileBrowserRemoteHint => '← 完整名称 · → 确认';
-
-  @override
-  String get fileBrowserReadNameHint => '← 显示完整名称';
+  String get fileBrowserReadNameHint => '← 上级文件夹 · → 完整名称';
 
   @override
   String fileBrowserSavedTo(String path) {
@@ -5071,6 +5176,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get volumeUpdateInterval => '更新间隔';
+
+  @override
+  String get showVolumeOverlay => '在应用上方显示音量';
+
+  @override
+  String get volumeOverlayHelp => '需要启用 CuteLauncher 无障碍服务。';
 
   @override
   String get clockHoursColor => '小时颜色';
@@ -5528,4 +5639,173 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get appPermissionsHelp =>
       '在此授权的服务默认开启恢复。它会恢复权限并启用服务，包括在 Android 设置中被关闭的情况。关闭恢复会保留当前访问权限。关闭服务也会停止恢复，但保留自动启动和后台权限。重新连接仅重启此服务，不能修复应用错误。需要 ADB，Android 可能推迟检查。自动启动不会打开应用界面。状态来自最近一次检查，不会授予不支持的操作。';
+
+  @override
+  String get weatherFieldUnsupported => '此来源不支持该参数';
+
+  @override
+  String get weatherFieldMissing => '当前响应中没有数据';
+
+  @override
+  String get weatherMissingAsDash => '用破折号表示缺失数据';
+
+  @override
+  String get weatherPanelAlignment => '顶部面板天气行对齐';
+
+  @override
+  String get syncProtection => '令牌与保护';
+
+  @override
+  String get syncKey => '共享同步密钥';
+
+  @override
+  String get syncKeyShow => '显示密钥';
+
+  @override
+  String get syncKeyCreate => '创建密钥';
+
+  @override
+  String get syncKeyInvalid => '请输入64位十六进制密钥。';
+
+  @override
+  String get syncKeyHelp =>
+      '同步令牌和账户时，所有电视须使用相同密钥。在一台电视上创建后传到其他电视。请妥善保存：没有密钥就无法读取受保护的数据。更换时请更新所有电视。Android权限和硬件密钥保留在本机。';
+
+  @override
+  String get syncFiles => '同步文件';
+
+  @override
+  String get syncCleanup => '清理旧文件';
+
+  @override
+  String get syncCleanupFailed => '部分旧文件未能删除。请重试清理。';
+
+  @override
+  String get syncRetire => '排除设备';
+
+  @override
+  String get syncRetireConfirm => '将此设备从组中排除？其旧状态将不再应用。重新加入需要新的同步组。';
+
+  @override
+  String get backupAccount => '账号';
+
+  @override
+  String get backupNewAccount => '连接其他账号';
+
+  @override
+  String get backupSetupWizard => '设置向导';
+
+  @override
+  String get backupSetupSummary => '摘要';
+
+  @override
+  String get backupSetupNext => '下一步';
+
+  @override
+  String get backupSetupBack => '返回';
+
+  @override
+  String get backupFirstCopy => '立即创建首次备份';
+
+  @override
+  String get backupSyncAll => '同步全部';
+
+  @override
+  String get backupFirstExchange => '首次交换';
+
+  @override
+  String get backupNoRemote => '存储中没有设置。此电视将上传自己的设置。';
+
+  @override
+  String get backupSetupStart => '启用';
+
+  @override
+  String get backupPassword => '数据加密密码';
+
+  @override
+  String get backupPasswordRepeat => '再次输入密码';
+
+  @override
+  String get backupPasswordMismatch => '密码不一致';
+
+  @override
+  String get backupAccountLocalHelp =>
+      '使用已连接的账号或同类型的其他账号。存储凭据保留在此电视上。备份与同步分别管理各自的文件。';
+
+  @override
+  String get backupPasswordOptionalHelp =>
+      '可选。加密整个文件，包括可转移的令牌。不设密码则不加密。留空可关闭加密。其他电视需使用相同密码读取加密文件。';
+
+  @override
+  String get backupYandexDisk => 'Yandex Disk';
+
+  @override
+  String get backupYandexHelp =>
+      '输入可访问 Disk 应用文件夹的 Yandex OAuth 应用的 Client ID 和 Client Secret。连接后在手机上确认代码。所有电视使用同一个 OAuth 客户端和账号才能共享备份。';
+
+  @override
+  String get backupYandexConnect => '连接 Yandex 云端硬盘';
+
+  @override
+  String get backupYandexReconnect => '重新连接Yandex Disk';
+
+  @override
+  String get backupYandexConnectionStatus => 'Yandex Disk连接状态';
+
+  @override
+  String get yandexCodeExpired => 'Yandex Disk 登录超时。选择连接 Yandex 云端硬盘以获取新代码。';
+
+  @override
+  String get yandexConfigurationError => '客户ID / 客户秘密 — Yandex OAuth';
+
+  @override
+  String get backupSmb => 'Samba / SMB 2–3';
+
+  @override
+  String get smbUrl => '文件夹SMB地址';
+
+  @override
+  String get smbPassword => '密码';
+
+  @override
+  String get smbHelp =>
+      '输入现有网络文件夹：smb://server/share/CuteLauncher。输入有权访问该文件夹的用户名和密码；域账号使用 DOMAIN\\user。自动协商 SMB 2 或 3。备份和同步需要读取、写入和删除权限。';
+
+  @override
+  String get recentRamTitle => '运行内存';
+
+  @override
+  String recentRamUsed(String used, String total, String percent) {
+    return '已用 $used / $total · $percent%';
+  }
+
+  @override
+  String recentRamAvailable(String value) {
+    return '可用 $value';
+  }
+
+  @override
+  String get recentRamUnloaded => '已移出内存';
+
+  @override
+  String get recentRamUnavailable => '无数据';
+
+  @override
+  String recentRamMiB(String value) {
+    return '$value MiB';
+  }
+
+  @override
+  String recentRamGiB(String value) {
+    return '$value GiB';
+  }
+
+  @override
+  String recentRamApp(String value) {
+    return '≈ $value';
+  }
+
+  @override
+  String get backupExistingSettingsHelp =>
+      '所选存储空间中已有同步设置。请选择如何处理：应用到此电视、用此电视的设置替换，或合并。合并时若设置不同，将采用您选择的优先级。在向导的最后一步确认后才会开始交换。';
 }

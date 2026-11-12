@@ -105,8 +105,11 @@ Future<void> _runLauncher({bool remotePanel = false, bool recentApps = false}) a
     yield LicenseEntryWithLineBreaks(['dadb'],
         await rootBundle.loadString('docs/DADB_LICENSE.txt'));
     yield LicenseEntryWithLineBreaks(['dadb', 'Okio', 'Kotlin', 'Kotlinx Coroutines',
-        'JetBrains annotations', 'AndroidX', 'ReLinker', 'Guava ListenableFuture', 'JSpecify'],
+        'JetBrains annotations', 'AndroidX', 'ReLinker', 'Guava ListenableFuture', 'JSpecify',
+        'SMBJ', 'ASN.1', 'MBassador', 'SLF4J', 'Bouncy Castle'],
         await rootBundle.loadString('assets/licenses/android_runtime.txt'));
+    yield LicenseEntryWithLineBreaks(['GeoNames'],
+        await rootBundle.loadString('assets/licenses/geonames.txt'));
     for (final family in ['medeo', 'roboto', 'notoserif', 'robotomono', 'robotocondensed', 'outfit', 'manrope', 'onest', 'googlesans']) {
       yield LicenseEntryWithLineBreaks([family],
           await rootBundle.loadString('assets/fonts/LICENSE_$family.txt'));
@@ -263,7 +266,9 @@ Future<void> _runLauncher({bool remotePanel = false, bool recentApps = false}) a
         ChangeNotifierProvider(create: (context) => BackupAutomationService(
           sharedPreferences, context.read<BackupService>(), context.read<SettingsService>(),
           context.read<AutomaticBackupService>(), context.read<CloudBackupService>(), context.read<DriveBackupService>(),
+          fixedMode: BackupMode.backup, createSynchronization: true,
           sources: [context.read<TvInputsService>(), context.read<SettingsService>(), context.read<AppearanceService>(), context.read<AppsService>(),
+              context.read<RemotePanelService>(), context.read<VpnService>(), context.read<BackgroundStartupService>(),
             context.read<WallpaperService>(), context.read<BrightnessService>(), context.read<NightModeService>(),
             context.read<WeatherService>(), context.read<SlideshowService>(), context.read<OnlineWallpaperService>(),
             context.read<NotificationsService>(), context.read<WatchNextService>(), context.read<UpdateService>()],

@@ -15,11 +15,19 @@ void main() {
   late String mode;
   bool fail = false;
   Completer<Map<String, Object>>? pending;
+  Completer<Map<String, Object>>? pendingMemory;
+  bool memoryFails = false;
+  bool ramFails = false;
+  String appMemoryStatus = 'running';
   setUp(() {
     calls = [];
     mode = 'auto';
     fail = false;
     pending = null;
+    pendingMemory = null;
+    memoryFails = false;
+    ramFails = false;
+    appMemoryStatus = 'running';
     apps = [
       {'packageName': 'tv.user', 'name': 'Player', 'userApp': true},
       {'packageName': 'tv.system', 'name': 'System TV', 'userApp': false},
@@ -27,6 +35,24 @@ void main() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(recentAppsChannel, (call) async {
           calls.add(call);
+          if (call.method == 'ram') {
+            if (ramFails) return {'ramTotalBytes': 0, 'ramAvailableBytes': -1};
+            return {
+              'ramTotalBytes': 2147483648,
+              'ramAvailableBytes': 536870912,
+            };
+          }
+          if (call.method == 'memory') {
+            if (memoryFails) throw PlatformException(code: 'unavailable');
+            if (pendingMemory != null) return pendingMemory!.future;
+            return call.arguments['packageName'] == 'tv.user'
+                ? {
+                    'status': appMemoryStatus,
+                    if (appMemoryStatus == 'running') 'pssBytes': 299892736,
+                  }
+                : {'status': 'unavailable'};
+          }
+          if (call.method == 'cancelMemory') return null;
           if (fail) throw PlatformException(code: 'unavailable');
           if (call.method == 'access') {
             return {'adb': true, 'accessibility': true};
@@ -105,7 +131,12 @@ void main() {
     await tester.tap(find.text('Close all'));
     await tester.pump();
     expect(calls.where((call) => call.method == 'closeAll'), hasLength(1));
-    expect(find.byType(LinearProgressIndicator), findsOneWidget);
+    expect(
+      find.byWidgetPredicate(
+        (widget) => widget is LinearProgressIndicator && widget.value == null,
+      ),
+      findsOneWidget,
+    );
     pending!.complete({
       'status': 'success',
       'apps': [apps.last],
@@ -165,6 +196,131 @@ void main() {
     await tester.pumpWidget(const SizedBox.shrink());
     pending!.complete({'status': 'success', 'apps': <Object>[]});
     await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+  });
+  testWidgets('RAM uses available memory and app values stay right of names', (
+    tester,
+  ) async {
+    await open(tester);
+    expect(find.text('Used 1.50 GiB of 2.00 GiB · 75%'), findsOneWidget);
+    expect(find.text('Available 512 MiB'), findsOneWidget);
+    expect(find.text('≈ 286 MiB'), findsOneWidget);
+    expect(find.text('No data'), findsOneWidget);
+    final memory = find.text('≈ 286 MiB');
+    expect(
+      tester.getRect(memory).left,
+      greaterThan(tester.getRect(find.text('Player')).right),
+    );
+    final count = calls.where((call) => call.method == 'memory').length;
+    await tester.pump(const Duration(minutes: 1));
+    expect(calls.where((call) => call.method == 'memory'), hasLength(count));
+    await tester.tap(find.text('Refresh'));
+    await tester.pumpAndSettle();
+    expect(
+      calls.where((call) => call.method == 'memory'),
+      hasLength(count * 2),
+    );
+  });
+  testWidgets(
+    'slow RAM does not block closing apps and old values cannot return',
+    (tester) async {
+      pendingMemory = Completer<Map<String, Object>>();
+      final old = pendingMemory!;
+      await open(tester);
+      expect(find.text('Player'), findsOneWidget);
+      expect(find.text('Loading'), findsNWidgets(2));
+      pendingMemory = null;
+      await tester.tap(find.text('Close all'));
+      await tester.pumpAndSettle();
+      old.complete({'status': 'running', 'pssBytes': 777 * 1048576});
+      await tester.pumpAndSettle();
+      expect(find.text('Player'), findsNothing);
+      expect(find.text('≈ 777 MiB'), findsNothing);
+      expect(find.text('System TV'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+  testWidgets('unavailable app memory preserves RAM and task actions', (
+    tester,
+  ) async {
+    memoryFails = true;
+    await open(tester);
+    expect(find.text('No data'), findsNWidgets(2));
+    expect(find.text('Available 512 MiB'), findsOneWidget);
+    expect(find.textContaining('Open apps unavailable'), findsNothing);
+    await tester.tap(find.text('Close all'));
+    await tester.pumpAndSettle();
+    expect(find.text('Player'), findsNothing);
+  });
+  for (final locale in ['en', 'ru']) {
+    testWidgets(
+      'unloaded app stays actionable and refresh restores RAM: $locale',
+      (tester) async {
+        appMemoryStatus = 'unloaded';
+        await open(tester, locale: Locale(locale));
+        final l = AppLocalizations.of(
+          tester.element(find.byType(RecentAppsPanel)),
+        )!;
+        expect(find.text(l.recentRamUnloaded), findsOneWidget);
+        expect(find.text(l.recentRamUnavailable), findsOneWidget);
+        expect(find.text('Player'), findsOneWidget);
+        appMemoryStatus = 'running';
+        await tester.tap(find.text(l.recentAppsRefresh));
+        await tester.pumpAndSettle();
+        expect(find.text(l.recentRamUnloaded), findsNothing);
+        expect(
+          find.text(l.recentRamApp(l.recentRamMiB('286'))),
+          findsOneWidget,
+        );
+        appMemoryStatus = 'unloaded';
+        await tester.tap(find.text(l.recentAppsRefresh));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Player'));
+        await tester.pumpAndSettle();
+        expect(calls.lastWhere((call) => call.method == 'switch').arguments, {
+          'packageName': 'tv.user',
+        });
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+  testWidgets('disposing cancels memory and does not query remaining apps', (
+    tester,
+  ) async {
+    pendingMemory = Completer<Map<String, Object>>();
+    await open(tester);
+    await tester.pumpWidget(const SizedBox.shrink());
+    pendingMemory!.complete({'status': 'running', 'pssBytes': 123});
+    await tester.pumpAndSettle();
+    expect(calls.where((call) => call.method == 'memory'), hasLength(1));
+    expect(calls.where((call) => call.method == 'cancelMemory'), hasLength(1));
+    expect(tester.takeException(), isNull);
+  });
+  testWidgets('invalid RAM has no fabricated percent and preserves app data', (
+    tester,
+  ) async {
+    ramFails = true;
+    await open(tester);
+    expect(find.text('No data'), findsNWidgets(2));
+    expect(find.text('≈ 286 MiB'), findsOneWidget);
+    expect(find.byType(LinearProgressIndicator), findsNothing);
+  });
+  testWidgets('background stops collection and resume refreshes once', (
+    tester,
+  ) async {
+    pendingMemory = Completer<Map<String, Object>>();
+    final old = pendingMemory!;
+    await open(tester);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+    old.complete({'status': 'running', 'pssBytes': 777 * 1048576});
+    await tester.pumpAndSettle();
+    expect(calls.where((call) => call.method == 'memory'), hasLength(1));
+    expect(find.text('≈ 777 MiB'), findsNothing);
+    pendingMemory = null;
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    await tester.pumpAndSettle();
+    expect(calls.where((call) => call.method == 'list'), hasLength(2));
+    expect(find.text('≈ 286 MiB'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
   for (final locale in ['en', 'ru']) {

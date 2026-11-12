@@ -56,9 +56,10 @@ String _actionLabel(AppLocalizations l, String value) => switch (value) {
   'webhook' => 'Webhook (POST)',
   'panel' => l.remotePanel,
   'recents' => l.remoteMappingRecents,
-  'sleep' => l.tvPowerOff,
-  'reboot' => l.tvPowerReboot,
-  'black_screen' => l.remoteMappingBlackScreen,
+  'sleep' => l.remotePowerWithConfirmation(l.tvPowerOff),
+  'sleep_immediate' => l.remotePowerWithoutConfirmation(l.tvPowerOff),
+  'reboot' => l.remotePowerWithConfirmation(l.tvPowerReboot),
+  'reboot_immediate' => l.remotePowerWithoutConfirmation(l.tvPowerReboot),
   'black_overlay' => l.remoteMappingBlackOverlay,
   'tcl_screen_off' => l.remoteMappingTclScreenOff,
   'hdmi' => l.autoLaunchHdmi,
@@ -516,7 +517,6 @@ class _MappingEditorState extends State<_MappingEditor>
                   enabled: widget.tclScreenOff,
                   detail: widget.tclScreenOff ? null : l.networkUnavailable,
                 ),
-              choice('black_screen'),
               if (visible('mute')) systemChoice('mute'),
             ],
           ),
@@ -524,7 +524,9 @@ class _MappingEditorState extends State<_MappingEditor>
             label: l.tvPowerTitle,
             choices: [
               choice('sleep'),
+              choice('sleep_immediate'),
               choice('reboot', detail: l.remoteMappingNeedsAdb),
+              choice('reboot_immediate', detail: l.remoteMappingNeedsAdb),
             ],
           ),
           if (systemChoices.isNotEmpty)
@@ -672,10 +674,13 @@ class _MappingEditorState extends State<_MappingEditor>
                     busy: _importing || _saving,
                     onPressed: _chooseAction,
                   ),
-                  if (_action == 'sleep' || _action == 'reboot')
+                  if (const {
+                    'sleep',
+                    'sleep_immediate',
+                    'reboot',
+                    'reboot_immediate',
+                  }.contains(_action))
                     SettingsHelp(text: l.tvPowerHelp),
-                  if (_action == 'black_screen')
-                    SettingsHelp(text: l.remoteMappingBlackScreenHelp),
                   if (_action == 'black_overlay')
                     SettingsHelp(text: l.remoteMappingBlackOverlayHelp),
                   if (_action == 'tcl_screen_off')

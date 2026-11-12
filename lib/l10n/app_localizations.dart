@@ -122,6 +122,12 @@ abstract class AppLocalizations {
     Locale('zh'),
   ];
 
+  /// No description provided for @scrollContentLabels.
+  ///
+  /// In en, this message translates to:
+  /// **'Scroll long labels in content rows'**
+  String get scrollContentLabels;
+
   /// No description provided for @contentAppTileStyle.
   ///
   /// In en, this message translates to:
@@ -1820,6 +1826,120 @@ abstract class AppLocalizations {
   /// **'This image is damaged or too large (maximum 8 MiB and 48 megapixels). Choose another image.'**
   String get imageInputRejected;
 
+  /// No description provided for @memoryAdvanced.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced diagnostics'**
+  String get memoryAdvanced;
+
+  /// No description provided for @memoryLauncherTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'CuteLauncher memory'**
+  String get memoryLauncherTitle;
+
+  /// No description provided for @memoryUsage.
+  ///
+  /// In en, this message translates to:
+  /// **'Memory usage'**
+  String get memoryUsage;
+
+  /// No description provided for @memoryChange.
+  ///
+  /// In en, this message translates to:
+  /// **'{delta} since the previous measurement'**
+  String memoryChange(String delta);
+
+  /// No description provided for @memoryCacheFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Image files in memory'**
+  String get memoryCacheFiles;
+
+  /// No description provided for @memoryCacheEntries.
+  ///
+  /// In en, this message translates to:
+  /// **'Items: {count}'**
+  String memoryCacheEntries(int count);
+
+  /// No description provided for @memoryCacheResult.
+  ///
+  /// In en, this message translates to:
+  /// **'Image caches: {before} → {after}'**
+  String memoryCacheResult(String before, String after);
+
+  /// No description provided for @memoryStale.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not update memory. The previous measurement is shown.'**
+  String get memoryStale;
+
+  /// No description provided for @memoryTechnical.
+  ///
+  /// In en, this message translates to:
+  /// **'Technical details'**
+  String get memoryTechnical;
+
+  /// No description provided for @memoryObserve.
+  ///
+  /// In en, this message translates to:
+  /// **'Memory observation'**
+  String get memoryObserve;
+
+  /// No description provided for @memoryObserveStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Observe for 1 minute'**
+  String get memoryObserveStart;
+
+  /// No description provided for @memoryObserveStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop observation'**
+  String get memoryObserveStop;
+
+  /// No description provided for @memoryObserveRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'Recording · up to 1 minute'**
+  String get memoryObserveRunning;
+
+  /// No description provided for @memoryObserveFinished.
+  ///
+  /// In en, this message translates to:
+  /// **'Recording stopped'**
+  String get memoryObserveFinished;
+
+  /// No description provided for @memoryObserveEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No measurements recorded'**
+  String get memoryObserveEmpty;
+
+  /// No description provided for @memorySeconds.
+  ///
+  /// In en, this message translates to:
+  /// **'{seconds} s'**
+  String memorySeconds(int seconds);
+
+  /// No description provided for @memoryReadingHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Understanding the measurements'**
+  String get memoryReadingHelp;
+
+  /// No description provided for @memorySaverHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'What memory saving changes'**
+  String get memorySaverHelp;
+
+  /// No description provided for @memorySaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save memory saving mode. Try again.'**
+  String get memorySaveFailed;
+
   /// No description provided for @memoryTitle.
   ///
   /// In en, this message translates to:
@@ -3197,7 +3317,7 @@ abstract class AppLocalizations {
   /// No description provided for @weatherCoordinatesError.
   ///
   /// In en, this message translates to:
-  /// **'Enter a city manually or get coordinates automatically.'**
+  /// **'Choose a city, enter coordinates, or detect the location automatically.'**
   String get weatherCoordinatesError;
 
   /// No description provided for @weatherRefresh.
@@ -3773,7 +3893,7 @@ abstract class AppLocalizations {
   /// No description provided for @nightCityHint.
   ///
   /// In en, this message translates to:
-  /// **'Choose your city instead of granting location access. The selected coordinates are sent to Sunrise-Sunset.org, or Open-Meteo as a fallback, to retrieve sun times.'**
+  /// **'Choose your city instead of granting location access. The selected coordinates are sent to Sunrise-Sunset.org, or GeoNames as a fallback, to retrieve sun times.'**
   String get nightCityHint;
 
   /// No description provided for @nightResumeSchedule.
@@ -3857,7 +3977,7 @@ abstract class AppLocalizations {
   /// No description provided for @nightSolarAttribution.
   ///
   /// In en, this message translates to:
-  /// **'Daily sun times: Sunrise-Sunset.org; fallback: Open-Meteo. City search: GeoNames. Several days are cached for offline use.'**
+  /// **'Sunrise and sunset times come from Sunrise-Sunset.org, with GeoNames as a fallback. When offline, the TV calculates missing times.'**
   String get nightSolarAttribution;
 
   /// No description provided for @nightTemporaryOn.
@@ -5543,7 +5663,7 @@ abstract class AppLocalizations {
   /// No description provided for @weatherCityNotFound.
   ///
   /// In en, this message translates to:
-  /// **'City not found. Check the city name in English.'**
+  /// **'Could not identify the city. Select it in location settings.'**
   String get weatherCityNotFound;
 
   /// No description provided for @weatherLocationAutomatic.
@@ -5563,6 +5683,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter manually'**
   String get weatherLocationManual;
+
+  /// No description provided for @manualLocationInput.
+  ///
+  /// In en, this message translates to:
+  /// **'Input method'**
+  String get manualLocationInput;
+
+  /// No description provided for @manualLocationCity.
+  ///
+  /// In en, this message translates to:
+  /// **'City'**
+  String get manualLocationCity;
+
+  /// No description provided for @manualLocationCoordinates.
+  ///
+  /// In en, this message translates to:
+  /// **'Coordinates'**
+  String get manualLocationCoordinates;
 
   /// No description provided for @weatherLocationPermissionDenied.
   ///
@@ -5618,11 +5756,11 @@ abstract class AppLocalizations {
   /// **'Location unavailable. Check permission and system location settings.'**
   String get nightLocationFailed;
 
-  /// No description provided for @nightCityEnglish.
+  /// No description provided for @nightCitySearchHint.
   ///
   /// In en, this message translates to:
-  /// **'Enter the city name in English'**
-  String get nightCityEnglish;
+  /// **'Enter the city name. You can add a region or country after a comma.'**
+  String get nightCitySearchHint;
 
   /// No description provided for @nightOverlayBrief.
   ///
@@ -5885,7 +6023,7 @@ abstract class AppLocalizations {
   /// No description provided for @backupSyncGroupsHelp.
   ///
   /// In en, this message translates to:
-  /// **'Disabled blocks stay local to this TV. The block selection is synchronized between devices.'**
+  /// **'Disabled blocks stay on this TV. Choose synchronization blocks separately on each device.'**
   String get backupSyncGroupsHelp;
 
   /// No description provided for @backupSyncGroupsFailed.
@@ -7682,28 +7820,40 @@ abstract class AppLocalizations {
   /// **'Power management'**
   String get tvPowerTitle;
 
+  /// No description provided for @remotePowerWithConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'{action} (with confirmation)'**
+  String remotePowerWithConfirmation(String action);
+
+  /// No description provided for @remotePowerWithoutConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'{action} (without confirmation)'**
+  String remotePowerWithoutConfirmation(String action);
+
   /// No description provided for @tvPowerOff.
   ///
   /// In en, this message translates to:
-  /// **'Turn off TV'**
+  /// **'Turn off device'**
   String get tvPowerOff;
 
   /// No description provided for @tvPowerReboot.
   ///
   /// In en, this message translates to:
-  /// **'Restart TV'**
+  /// **'Restart device'**
   String get tvPowerReboot;
 
   /// No description provided for @tvPowerOffConfirm.
   ///
   /// In en, this message translates to:
-  /// **'Put the TV in standby?'**
+  /// **'Put the device in standby?'**
   String get tvPowerOffConfirm;
 
   /// No description provided for @tvPowerRebootConfirm.
   ///
   /// In en, this message translates to:
-  /// **'Restart the TV? Open apps will close.'**
+  /// **'Restart the device? Open apps will close.'**
   String get tvPowerRebootConfirm;
 
   /// No description provided for @tvPowerSent.
@@ -7721,7 +7871,7 @@ abstract class AppLocalizations {
   /// No description provided for @tvPowerHelp.
   ///
   /// In en, this message translates to:
-  /// **'Turning off puts the TV in standby through the CuteLauncher accessibility service or local ADB. Restart requires ADB. On a TV box, the command controls the box; TV behavior depends on HDMI-CEC and firmware.'**
+  /// **'Turning off puts the device in standby through the CuteLauncher accessibility service or local ADB. Restart requires ADB. On a TV box, the command controls the box; TV behavior depends on HDMI-CEC and firmware.'**
   String get tvPowerHelp;
 
   /// No description provided for @cleanerLists.
@@ -7958,6 +8108,18 @@ abstract class AppLocalizations {
   /// **'Show seconds'**
   String get sleepTimerShowSeconds;
 
+  /// No description provided for @sleepTimerShowOverApps.
+  ///
+  /// In en, this message translates to:
+  /// **'Show timer over apps'**
+  String get sleepTimerShowOverApps;
+
+  /// No description provided for @sleepTimerOverlayHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable the CuteLauncher accessibility service to display it over apps.'**
+  String get sleepTimerOverlayHelp;
+
   /// No description provided for @sleepTimerCloseAfterSelection.
   ///
   /// In en, this message translates to:
@@ -8161,6 +8323,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Top left'**
   String get noticeTopLeft;
+
+  /// No description provided for @overlayAppearance.
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance over apps'**
+  String get overlayAppearance;
+
+  /// No description provided for @overlayAppearanceTopPanel.
+  ///
+  /// In en, this message translates to:
+  /// **'Same as the top panel'**
+  String get overlayAppearanceTopPanel;
+
+  /// No description provided for @overlayAppearanceDark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get overlayAppearanceDark;
+
+  /// No description provided for @overlayWhereToShow.
+  ///
+  /// In en, this message translates to:
+  /// **'Where to show'**
+  String get overlayWhereToShow;
+
+  /// No description provided for @overlayAtPanelWidget.
+  ///
+  /// In en, this message translates to:
+  /// **'At the widget’s position in the top panel'**
+  String get overlayAtPanelWidget;
 
   /// No description provided for @notificationOpenFailed.
   ///
@@ -8711,7 +8903,7 @@ abstract class AppLocalizations {
   /// No description provided for @weatherTextHelp.
   ///
   /// In en, this message translates to:
-  /// **'Enter text and tokens in curly braces, or insert them at the cursor with the buttons. Tokens are case-insensitive. Parentheses around a single value disappear when its data is unavailable. Double literal curly braces. One line break is allowed.'**
+  /// **'Enter text and tokens in curly braces, or insert them at the cursor with the buttons. Tokens are case-insensitive. Parentheses around a single value disappear when its data is unavailable. Double literal curly braces. One line break is allowed. You can type letters, numbers, spaces and any printable symbols, for example: () [] / : ; + − ° % ·.'**
   String get weatherTextHelp;
 
   /// No description provided for @weatherTextSaveError.
@@ -9218,16 +9410,10 @@ abstract class AppLocalizations {
   /// **'Only part of this folder is shown'**
   String get fileBrowserPartial;
 
-  /// No description provided for @fileBrowserRemoteHint.
-  ///
-  /// In en, this message translates to:
-  /// **'← Full name · → Confirm'**
-  String get fileBrowserRemoteHint;
-
   /// No description provided for @fileBrowserReadNameHint.
   ///
   /// In en, this message translates to:
-  /// **'← Show full name'**
+  /// **'← Parent folder · → Full name'**
   String get fileBrowserReadNameHint;
 
   /// No description provided for @fileBrowserSavedTo.
@@ -9769,6 +9955,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Update interval'**
   String get volumeUpdateInterval;
+
+  /// No description provided for @showVolumeOverlay.
+  ///
+  /// In en, this message translates to:
+  /// **'Show volume over apps'**
+  String get showVolumeOverlay;
+
+  /// No description provided for @volumeOverlayHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The CuteLauncher accessibility service must be enabled.'**
+  String get volumeOverlayHelp;
 
   /// No description provided for @clockHoursColor.
   ///
@@ -10657,6 +10855,312 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Recovery is on by default for services you authorize here. It restores permissions and service activation, including after disabling them in Android settings. Turning recovery off keeps current access. Disabling the service also stops recovery; autostart and background permissions remain. Reconnecting only restarts this service, without fixing app bugs. ADB is required and Android may delay checks. Autostart does not open the app screen. Statuses reflect the latest check; unsupported operations are not granted.'**
   String get appPermissionsHelp;
+
+  /// No description provided for @weatherFieldUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Not supported by this source'**
+  String get weatherFieldUnsupported;
+
+  /// No description provided for @weatherFieldMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'No data in the current response'**
+  String get weatherFieldMissing;
+
+  /// No description provided for @weatherMissingAsDash.
+  ///
+  /// In en, this message translates to:
+  /// **'Dashes for missing data'**
+  String get weatherMissingAsDash;
+
+  /// No description provided for @weatherPanelAlignment.
+  ///
+  /// In en, this message translates to:
+  /// **'Top panel weather line alignment'**
+  String get weatherPanelAlignment;
+
+  /// No description provided for @syncProtection.
+  ///
+  /// In en, this message translates to:
+  /// **'Tokens and protection'**
+  String get syncProtection;
+
+  /// No description provided for @syncKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared synchronization key'**
+  String get syncKey;
+
+  /// No description provided for @syncKeyShow.
+  ///
+  /// In en, this message translates to:
+  /// **'Show key'**
+  String get syncKeyShow;
+
+  /// No description provided for @syncKeyCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create key'**
+  String get syncKeyCreate;
+
+  /// No description provided for @syncKeyInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a 64-character hexadecimal key.'**
+  String get syncKeyInvalid;
+
+  /// No description provided for @syncKeyHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the same key on all TVs to synchronize tokens and accounts. Create it on one TV and transfer it to the others. Keep it safe: protected data cannot be read without it. When changing the key, update every TV. Android permissions and hardware keys remain local.'**
+  String get syncKeyHelp;
+
+  /// No description provided for @syncFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Synchronization files'**
+  String get syncFiles;
+
+  /// No description provided for @syncCleanup.
+  ///
+  /// In en, this message translates to:
+  /// **'Clean up old files'**
+  String get syncCleanup;
+
+  /// No description provided for @syncCleanupFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Some old files could not be removed. Try cleaning up again.'**
+  String get syncCleanupFailed;
+
+  /// No description provided for @syncRetire.
+  ///
+  /// In en, this message translates to:
+  /// **'Exclude device'**
+  String get syncRetire;
+
+  /// No description provided for @syncRetireConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Exclude this device from the group? Its old states will no longer be applied. Returning requires a new synchronization group.'**
+  String get syncRetireConfirm;
+
+  /// No description provided for @backupAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get backupAccount;
+
+  /// No description provided for @backupNewAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect another account'**
+  String get backupNewAccount;
+
+  /// No description provided for @backupSetupWizard.
+  ///
+  /// In en, this message translates to:
+  /// **'Setup wizard'**
+  String get backupSetupWizard;
+
+  /// No description provided for @backupSetupSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Summary'**
+  String get backupSetupSummary;
+
+  /// No description provided for @backupSetupNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get backupSetupNext;
+
+  /// No description provided for @backupSetupBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get backupSetupBack;
+
+  /// No description provided for @backupFirstCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Create the first backup now'**
+  String get backupFirstCopy;
+
+  /// No description provided for @backupSyncAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Synchronize everything'**
+  String get backupSyncAll;
+
+  /// No description provided for @backupFirstExchange.
+  ///
+  /// In en, this message translates to:
+  /// **'First exchange'**
+  String get backupFirstExchange;
+
+  /// No description provided for @backupNoRemote.
+  ///
+  /// In en, this message translates to:
+  /// **'No settings in storage. This TV will upload its settings.'**
+  String get backupNoRemote;
+
+  /// No description provided for @backupSetupStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable'**
+  String get backupSetupStart;
+
+  /// No description provided for @backupPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Data encryption password'**
+  String get backupPassword;
+
+  /// No description provided for @backupPasswordRepeat.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeat password'**
+  String get backupPasswordRepeat;
+
+  /// No description provided for @backupPasswordMismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match'**
+  String get backupPasswordMismatch;
+
+  /// No description provided for @backupAccountLocalHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Use a connected account or another account of the same type. Storage credentials stay on this TV. Backup and synchronization manage their files separately.'**
+  String get backupAccountLocalHelp;
+
+  /// No description provided for @backupPasswordOptionalHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional. Encrypts the entire file, including transferable tokens. Without a password, the file is unencrypted. An empty value disables encryption. Other TVs need the same password to read encrypted files.'**
+  String get backupPasswordOptionalHelp;
+
+  /// No description provided for @backupYandexDisk.
+  ///
+  /// In en, this message translates to:
+  /// **'Yandex Disk'**
+  String get backupYandexDisk;
+
+  /// No description provided for @backupYandexHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the Client ID and Client Secret of a Yandex OAuth app with access to its Disk app folder. Connect and confirm the code on your phone. Use the same OAuth client and account on all TVs to share backups.'**
+  String get backupYandexHelp;
+
+  /// No description provided for @backupYandexConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect Yandex Disk'**
+  String get backupYandexConnect;
+
+  /// No description provided for @backupYandexReconnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Reconnect Yandex Disk'**
+  String get backupYandexReconnect;
+
+  /// No description provided for @backupYandexConnectionStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Yandex Disk connection status'**
+  String get backupYandexConnectionStatus;
+
+  /// No description provided for @yandexCodeExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Yandex Disk sign-in timed out. Select Connect Yandex Disk to get a new code.'**
+  String get yandexCodeExpired;
+
+  /// No description provided for @yandexConfigurationError.
+  ///
+  /// In en, this message translates to:
+  /// **'Client ID / Client Secret — Yandex OAuth'**
+  String get yandexConfigurationError;
+
+  /// No description provided for @backupSmb.
+  ///
+  /// In en, this message translates to:
+  /// **'Samba / SMB 2–3'**
+  String get backupSmb;
+
+  /// No description provided for @smbUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Folder SMB address'**
+  String get smbUrl;
+
+  /// No description provided for @smbPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get smbPassword;
+
+  /// No description provided for @smbHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter an existing network folder: smb://server/share/CuteLauncher. Enter a username and password with access to the folder; use DOMAIN\\user for a domain account. SMB 2 and 3 are negotiated automatically. Backups and synchronization require read, write and delete permissions.'**
+  String get smbHelp;
+
+  /// No description provided for @recentRamTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'RAM'**
+  String get recentRamTitle;
+
+  /// No description provided for @recentRamUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Used {used} of {total} · {percent}%'**
+  String recentRamUsed(String used, String total, String percent);
+
+  /// No description provided for @recentRamAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Available {value}'**
+  String recentRamAvailable(String value);
+
+  /// No description provided for @recentRamUnloaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Unloaded'**
+  String get recentRamUnloaded;
+
+  /// No description provided for @recentRamUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No data'**
+  String get recentRamUnavailable;
+
+  /// No description provided for @recentRamMiB.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} MiB'**
+  String recentRamMiB(String value);
+
+  /// No description provided for @recentRamGiB.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} GiB'**
+  String recentRamGiB(String value);
+
+  /// No description provided for @recentRamApp.
+  ///
+  /// In en, this message translates to:
+  /// **'≈ {value}'**
+  String recentRamApp(String value);
+
+  /// No description provided for @backupExistingSettingsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The selected storage already contains synchronization settings. Choose what to do with them: apply them to this TV, replace them with this TV’s settings, or merge them. If settings differ during merging, your selected priority will be used. The exchange starts after confirmation on the final wizard step.'**
+  String get backupExistingSettingsHelp;
 }
 
 class _AppLocalizationsDelegate

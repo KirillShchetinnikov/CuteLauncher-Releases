@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:fake_async/fake_async.dart';
 import 'package:flauncher/image_limits.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -5,6 +8,39 @@ import 'package:transparent_image/transparent_image.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  test(
+    'total read timeout cancels the stream even while chunks keep arriving',
+    () {
+      fakeAsync((time) {
+        var cancelled = false;
+        final input = StreamController<List<int>>(
+          onCancel: () async {
+            cancelled = true;
+          },
+        );
+        Object? failure;
+        readBoundedImage(
+          input.stream,
+          timeout: const Duration(seconds: 8),
+        ).then<void>(
+          (_) => fail('incomplete image accepted'),
+          onError: (Object error) {
+            failure = error;
+          },
+        );
+        time.flushMicrotasks();
+        for (var i = 0; i < 8; i++) {
+          input.add([i]);
+          time.elapse(const Duration(seconds: 1));
+        }
+        time.flushMicrotasks();
+        expect(failure, isA<TimeoutException>());
+        expect(cancelled, isTrue);
+        input.close();
+        time.flushMicrotasks();
+      });
+    },
+  );
   test('bounded stream accepts exact limit and rejects excess', () async {
     expect(
         await readBoundedImage(

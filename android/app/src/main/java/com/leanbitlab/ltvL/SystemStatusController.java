@@ -72,15 +72,7 @@ final class SystemStatusController {
                 return reader.readLine();
             }
         }, () -> adbCpu.read(context)));
-        try {
-            ActivityManager manager = context.getSystemService(ActivityManager.class);
-            if (manager != null) {
-                ActivityManager.MemoryInfo memory = new ActivityManager.MemoryInfo();
-                manager.getMemoryInfo(memory);
-                data.put("ramTotalBytes", memory.totalMem);
-                data.put("ramAvailableBytes", memory.availMem);
-            }
-        } catch (RuntimeException unavailable) { /* Independent metrics still work. */ }
+        data.putAll(ramSnapshot(context));
         try {
             StatFs disk = new StatFs(Environment.getDataDirectory().getPath());
             data.put("storageTotalBytes", disk.getTotalBytes());
@@ -102,6 +94,22 @@ final class SystemStatusController {
                 data.put("temperatureCelsius", hottest);
             }
         } catch (RuntimeException unavailable) { /* Common on consumer TVs; omit temperature. */ }
+        return data;
+    }
+
+    static Map<String, Object> ramSnapshot(Context context) {
+        Map<String, Object> data = new HashMap<>();
+        try {
+            ActivityManager manager = context.getSystemService(ActivityManager.class);
+            if (manager != null) {
+                ActivityManager.MemoryInfo memory = new ActivityManager.MemoryInfo();
+                manager.getMemoryInfo(memory);
+                if (memory.totalMem > 0 && memory.availMem >= 0 && memory.availMem <= memory.totalMem) {
+                    data.put("ramTotalBytes", memory.totalMem);
+                    data.put("ramAvailableBytes", memory.availMem);
+                }
+            }
+        } catch (RuntimeException unavailable) { /* Independent metrics still work. */ }
         return data;
     }
 

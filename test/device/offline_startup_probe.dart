@@ -276,15 +276,11 @@ Future<void> main() async {
       },
     );
     await check(
-      'city search reports unavailable without freezing Home',
+      'bundled city search returns coordinates offline',
       () async {
-        var failed = false;
-        try {
-          failed = (await night.searchCities('Москва', 'ru')).isEmpty;
-        } catch (_) {
-          failed = true;
-        }
-        require(failed, 'City search unexpectedly succeeded');
+        final cities = await night.searchCities('Москва', 'ru');
+        require(cities.isNotEmpty && (cities.first['latitude'] as num) > 55,
+          'Bundled city search did not return Moscow');
       },
     );
     await check('solar refresh retains working schedule offline', () async {

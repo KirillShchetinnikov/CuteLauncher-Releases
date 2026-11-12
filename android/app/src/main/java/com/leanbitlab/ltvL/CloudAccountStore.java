@@ -51,6 +51,7 @@ final class CloudAccountStore {
         }
         return (SecretKey)store.getKey(alias,null);
     }
+    JSONObject snapshot() throws Exception { synchronized (LOCK) { return load(); } }
     private JSONObject load() throws Exception {
         if(!path.exists() && !new File(path+".bak").exists()) return null;
         AtomicFile file=new AtomicFile(path);
@@ -102,6 +103,7 @@ final class CloudAccountStore {
                 DataOutputStream output=new DataOutputStream(stream); output.writeInt(1);
                 output.writeInt(cipher.getIV().length); output.write(cipher.getIV());
                 output.writeInt(encrypted.length); output.write(encrypted); output.flush(); file.finishWrite(stream);
+                NativeSyncBridge.changed(alias.equals(ALIAS) ? "native_secret_webdav" : "native_secret_drive");
             } catch(Exception error) { file.failWrite(stream); throw error; }
         }
     }
@@ -110,6 +112,7 @@ final class CloudAccountStore {
             new AtomicFile(path).delete();
             if(path.exists() || new File(path+".bak").exists() || new File(path+".new").exists()) throw new IOException("Unable to remove account");
             KeyStore store=KeyStore.getInstance("AndroidKeyStore"); store.load(null); store.deleteEntry(alias);
+            NativeSyncBridge.changed(alias.equals(ALIAS) ? "native_secret_webdav" : "native_secret_drive");
         }
     }
 }

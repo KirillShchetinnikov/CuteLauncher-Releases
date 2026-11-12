@@ -1,4 +1,5 @@
 import '../diagnostics_store.dart';
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -21,6 +22,7 @@ class BackupStorage {
   final bool google;
   final HttpClient Function() clientFactory;
   HttpClient? _active;
+  Future<CloudAuthorization>? _authorization;
   BackupStorage(
     this.webdav,
     this.drive, {
@@ -37,25 +39,25 @@ class BackupStorage {
     _active = client;
     try {
       return await (() async {
-        final auth = google
+        final auth = await (_authorization ??= (() async => google
             ? CloudAuthorization(
                 Uri.https('www.googleapis.com', '/'),
                 await drive.authorization(),
               )
-            : await webdav.authorization();
+            : await webdav.authorization())());
         return action(client, auth);
       })().timeout(const Duration(seconds: 90));
     } on CloudBackupException {
       rethrow;
     } on TimeoutException catch (diagnosticError, diagnosticStack) {
       DiagnosticsStore.instance.recordException(
-        'backupStorage', diagnosticError, diagnosticStack,
+        'backupStorage',
+        diagnosticError,
+        diagnosticStack,
       );
       throw const CloudBackupException('timeout');
     } catch (error, stack) {
-      DiagnosticsStore.instance.recordException(
-        'cloudTransfer', error, stack,
-      );
+      DiagnosticsStore.instance.recordException('cloudTransfer', error, stack);
       throw const CloudBackupException('network');
     } finally {
       client.close(force: true);
@@ -155,7 +157,17 @@ class BackupStorage {
         as String;
   }
 
-  Future<List<RemoteBackupFile>> list() => _use((client, auth) async {
+  Future<List<RemoteBackupFile>> list() => _list(false);
+  Future<List<RemoteBackupFile>> temporaryFiles() => _list(true);
+  static bool temporaryName(String name) =>
+      name.endsWith('.partial') &&
+      validName.hasMatch(name.substring(0, name.length - 8));
+  Future<List<RemoteBackupFile>> _list(bool temporary) => _use((
+    client,
+    auth,
+  ) async {
+    bool accepted(String name) =>
+        temporary ? temporaryName(name) : validName.hasMatch(name);
     final result = <RemoteBackupFile>[];
     if (google) {
       String? page;
@@ -177,7 +189,7 @@ class BackupStorage {
         final data =
             jsonDecode(utf8.decode(await _bytes(response, 1024 * 1024))) as Map;
         for (final file in data['files'] as List) {
-          if (validName.hasMatch(file['name'] as String)) {
+          if (accepted(file['name'] as String)) {
             result.add(
               RemoteBackupFile(file['name'] as String, file['id'] as String),
             );
@@ -221,8 +233,7 @@ class BackupStorage {
           continue;
         }
         final name = url.pathSegments.last;
-        if (validName.hasMatch(name) &&
-            url.path == auth.directory.resolve(name).path) {
+        if (accepted(name) && url.path == auth.directory.resolve(name).path) {
           result.add(RemoteBackupFile(name, url.toString()));
         }
       }
@@ -334,23 +345,28 @@ class BackupStorage {
     await writer.close();
     return pending.rename('${target.path}/${file.name}');
   });
-  Future<void> delete(RemoteBackupFile file) => _use((client, auth) async {
-    if (!validName.hasMatch(file.name)) {
-      throw const CloudBackupException('configuration');
-    }
-    final request = await _request(
-      client,
-      auth,
-      'DELETE',
-      google
-          ? Uri.https(
-              'www.googleapis.com',
-              '/drive/v3/files/${Uri.encodeComponent(file.id)}',
-            )
-          : Uri.parse(file.id),
-    );
-    final response = await request.close();
-    _status(response, {200, 204, 404});
-    await _bytes(response, 65536);
-  });
+  Future<void> delete(RemoteBackupFile file) => _delete(file, false);
+  Future<void> deleteTemporary(RemoteBackupFile file) => _delete(file, true);
+  Future<void> _delete(RemoteBackupFile file, bool temporary) =>
+      _use((client, auth) async {
+        if (!(temporary
+            ? temporaryName(file.name)
+            : validName.hasMatch(file.name))) {
+          throw const CloudBackupException('configuration');
+        }
+        final request = await _request(
+          client,
+          auth,
+          'DELETE',
+          google
+              ? Uri.https(
+                  'www.googleapis.com',
+                  '/drive/v3/files/${Uri.encodeComponent(file.id)}',
+                )
+              : Uri.parse(file.id),
+        );
+        final response = await request.close();
+        _status(response, {200, 204, 404});
+        await _bytes(response, 65536);
+      });
 }

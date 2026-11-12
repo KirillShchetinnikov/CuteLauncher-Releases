@@ -1,5 +1,6 @@
 package com.leanbitlab.ltvL;
 
+import java.util.List;
 import java.util.Map;
 import org.json.JSONObject;
 import org.junit.Test;
@@ -27,5 +28,20 @@ public class RemoteMappingStoreTest {
         assertEquals("", saved.binding(83).name());
         assertEquals("press", saved.binding(83).trigger());
         assertEquals("home", saved.binding(83).action());
+    }
+
+    @Test public void retiredBlackScreenAssignmentIsSkippedOnlyOnLoad() throws Exception {
+        var retired = new RemoteMappingConfiguration.Binding(83, true, "black_screen", "", "hold");
+        var press = new RemoteMappingConfiguration.Binding(83, true, "black_overlay", "", "press", "Чёрный экран");
+        var raw = Map.of("enabled", true, "bindings", List.of(retired.toMap(), press.toMap()),
+            "volumeMode", "timed", "volumePauseSeconds", 10);
+
+        var loaded = RemoteMappingStore.decode(new JSONObject(new JSONObject(raw).toString()));
+        assertTrue(loaded.enabled);
+        assertEquals(press, loaded.binding(83));
+        assertNull(loaded.binding(83, "hold"));
+        assertEquals("timed", loaded.volumeMode);
+        assertEquals(10, loaded.volumePauseSeconds);
+        assertThrows(IllegalArgumentException.class, () -> RemoteMappingConfiguration.fromMap(raw));
     }
 }

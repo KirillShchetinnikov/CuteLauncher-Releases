@@ -23,6 +23,7 @@ import 'action_notice.dart';
 import 'appearance_surface.dart';
 import 'app_card_keys.dart';
 import 'category_focus.dart';
+import 'content_card_label.dart';
 import 'focus_keyboard_listener.dart';
 import 'home_scroll_motion.dart';
 import 'tile_paint_layer.dart';
@@ -455,6 +456,32 @@ class _ContentPreviewRowState extends State<ContentPreviewRow> {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           );
+          Widget selectedLabel(String? selectedId) {
+            final text = widget.programs
+                    .where((program) => program.id.toString() == selectedId)
+                    .firstOrNull
+                    ?.displayTitle ??
+                '';
+            final node = style.scrollContentLabels
+                ? _focus?.nodeFor(selectedId)
+                : null;
+            if (node == null) {
+              return ContentCardLabel(
+                text,
+                style: style.labelStyle,
+                scroll: false,
+              );
+            }
+            return ListenableBuilder(
+              listenable: node,
+              builder: (_, _) => ContentCardLabel(
+                text,
+                style: style.labelStyle,
+                scroll: node.hasPrimaryFocus,
+              ),
+            );
+          }
+
           Widget heading(String? selectedId) => Padding(
             padding: EdgeInsetsDirectional.only(
               start: style.sectionTitleAligned ? _horizontalInset : 16,
@@ -472,18 +499,7 @@ class _ContentPreviewRowState extends State<ContentPreviewRow> {
                           child: Text('·', style: style.labelStyle),
                         ),
                       ],
-                      Expanded(
-                        child: Text(
-                          widget.programs
-                                  .where((p) => p.id.toString() == selectedId)
-                                  .firstOrNull
-                                  ?.displayTitle ??
-                              '',
-                          style: style.labelStyle,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
+                      Expanded(child: selectedLabel(selectedId)),
                     ],
                   ),
           );
@@ -805,6 +821,7 @@ class _ContentPreviewCardState extends State<ContentPreviewCard>
     final showInside =
         appTiles && showLabels && style.labelPosition == 'inside';
     final showBelow = showLabels && !showInside;
+    final scrollLabel = style.scrollContentLabels && _node.hasPrimaryFocus;
     final corners = launcherStyle.tileCorners(
       settings.themes,
       radius: style.number('radius'),
@@ -911,11 +928,10 @@ class _ContentPreviewCardState extends State<ContentPreviewCard>
                         horizontal: 8,
                         vertical: 4,
                       ),
-                      child: Text(
+                      child: ContentCardLabel(
                         widget.title,
                         style: style.labelStyle,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                        scroll: scrollLabel,
                       ),
                     ),
                   ),
@@ -1077,23 +1093,17 @@ class _ContentPreviewCardState extends State<ContentPreviewCard>
               ),
               if (showBelow) ...[
                 const SizedBox(height: 8),
-                Text(
+                ContentCardLabel(
                   widget.title,
                   style: _previewTitleStyle(context, style, focused: _node.hasFocus),
                   textAlign: appTiles ? TextAlign.center : null,
                   maxLines: !appTiles && widget.subtitle == null ? 2 : 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                if (widget.subtitle case final subtitle?)
-                  Text(
-                    subtitle,
-                    style: style.labelStyle.copyWith(
-                      color: style.labelStyle.color?.withValues(alpha: .85),
-                    ),
-                    textAlign: appTiles ? TextAlign.center : null,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                  scroll: scrollLabel,
+                  subtitle: widget.subtitle,
+                  subtitleStyle: style.labelStyle.copyWith(
+                    color: style.labelStyle.color?.withValues(alpha: .85),
                   ),
+                ),
               ],
             ],
           ),

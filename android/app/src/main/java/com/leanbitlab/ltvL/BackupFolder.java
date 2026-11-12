@@ -23,6 +23,7 @@ final class BackupFolder {
     private static final long LIMIT = 64L * 1024 * 1024;
     private static final String DOWNLOADS = "cutelauncher://downloads/CuteLauncher";
     private static final String NAME = "^cute-(backup|sync)-(shared|[a-f0-9]{32})-[a-f0-9]{32}-[0-9]+-[a-f0-9]{16}(?:-[A-Za-z0-9_]{1,64})?\\.json$";
+    private static boolean temporaryName(String name) { return name != null && name.endsWith(".partial") && name.substring(0, name.length() - 8).matches(NAME); }
     private final Activity activity;
     private final ExecutorService executor;
     private final LegacyStorageAccess storageAccess;
@@ -62,7 +63,7 @@ final class BackupFolder {
             while (cursor.moveToNext()) {
                 if (++count > 4096) throw new IOException("Too many files");
                 String name = cursor.getString(1);
-                if (name != null && name.matches(NAME) && !DocumentsContract.Document.MIME_TYPE_DIR.equals(cursor.getString(2))) {
+                if (name != null && (name.matches(NAME) || temporaryName(name)) && !DocumentsContract.Document.MIME_TYPE_DIR.equals(cursor.getString(2))) {
                     Map<String, String> item = new HashMap<>(); item.put("name", name);
                     item.put("id", DocumentsContract.buildDocumentUriUsingTree(tree, cursor.getString(0)).toString()); files.add(item);
                 }
@@ -102,31 +103,32 @@ final class BackupFolder {
                 return value;
             } finally { probe.delete(); renamed.delete(); }
         }
-        if ("list".equals(operation)) {
+        if ("list".equals(operation) || "listTemporary".equals(operation)) {
             File[] children = folder.listFiles();
             if (children == null || children.length > 4096) throw new IOException("Folder unavailable or too large");
             List<Map<String, String>> entries = new ArrayList<>();
             for (File child : children) {
-                if (!child.getName().matches(NAME)) continue;
+                if (!("listTemporary".equals(operation) ? temporaryName(child.getName()) : child.getName().matches(NAME))) continue;
                 File safe = LocalWallpaperFiles.sharedFile(child.getPath());
                 if (folder.equals(safe.getParentFile()) && safe.isFile())
                     entries.add(Map.of("name", child.getName(), "id", safe.toURI().toASCIIString()));
             }
             return entries;
         }
-        if (name == null || !name.matches(NAME)) throw new SecurityException("Invalid backup name");
+        if (name == null || !("deleteTemporary".equals(operation) ? temporaryName(name) : name.matches(NAME))) throw new SecurityException("Invalid backup name");
         File target = LocalWallpaperFiles.sharedFile(new File(folder, name).getPath());
         if (!folder.equals(target.getParentFile())) throw new SecurityException("Direct child required");
         if ("upload".equals(operation)) {
             if (target.exists()) throw new IOException("Backup already exists");
-            File temporary = File.createTempFile(".cute-backup-", ".partial", folder);
+            File temporary = new File(folder, name + ".partial");
+            if (!temporary.createNewFile()) throw new IOException("Temporary file exists");
             try {
                 LocalDocumentFiles.copy(privateFile(path), temporary, LIMIT);
                 java.nio.file.Files.move(temporary.toPath(), target.toPath());
             } finally { temporary.delete(); }
         } else if ("download".equals(operation)) {
             LocalDocumentFiles.copy(target, privateFile(path), LIMIT);
-        } else if ("delete".equals(operation)) {
+        } else if (("delete".equals(operation) || "deleteTemporary".equals(operation))) {
             java.nio.file.Files.deleteIfExists(target.toPath());
         } else throw new IllegalArgumentException("Unknown operation");
         return true;
@@ -136,7 +138,7 @@ final class BackupFolder {
         executor.execute(() -> {
             if (value != null && value.startsWith("file:")) {
                 try {
-                    if (!new LocalWallpaperFiles(activity, executor).granted(!"list".equals(operation) && !"download".equals(operation)))
+                    if (!new LocalWallpaperFiles(activity, executor).granted(!"list".equals(operation) && !"listTemporary".equals(operation) && !"download".equals(operation)))
                         throw new SecurityException("Storage access required");
                     Object reply = local(operation, value, name, path);
                     new Handler(Looper.getMainLooper()).post(() -> result.success(reply));
@@ -160,7 +162,7 @@ final class BackupFolder {
                 if (!"content".equals(tree.getScheme()) || !DocumentsContract.isTreeUri(tree)) throw new SecurityException("Invalid tree");
                 Uri parent = DocumentsContract.buildDocumentUriUsingTree(tree, DocumentsContract.getTreeDocumentId(tree));
                 Object response = true;
-                if ("list".equals(operation)) response = children(tree);
+                if ("list".equals(operation) || "listTemporary".equals(operation)) response = children(tree);
                 else if ("verify".equals(operation)) {
                     children(tree);
                     temporary = DocumentsContract.createDocument(activity.getContentResolver(), parent, "application/json", "cute-probe-" + UUID.randomUUID() + ".partial");
@@ -174,7 +176,7 @@ final class BackupFolder {
                     if (!DocumentsContract.deleteDocument(activity.getContentResolver(), temporary)) throw new IOException("Delete unavailable");
                     temporary = null; response = value;
                 } else {
-                    if (name == null || !name.matches(NAME)) throw new SecurityException("Invalid backup name");
+                    if (name == null || !("deleteTemporary".equals(operation) ? temporaryName(name) : name.matches(NAME))) throw new SecurityException("Invalid backup name");
                     List<Map<String, String>> files = children(tree);
                     Uri existing = null;
                     for (Map<String, String> item : files) if (name.equals(item.get("name"))) {
@@ -194,7 +196,7 @@ final class BackupFolder {
                         if (existing == null) throw new IOException("Backup missing");
                         File target = privateFile(path);
                         try (InputStream input = activity.getContentResolver().openInputStream(existing); OutputStream output = new FileOutputStream(target)) { copy(input, output); }
-                    } else if ("delete".equals(operation)) {
+                    } else if (("delete".equals(operation) || "deleteTemporary".equals(operation))) {
                         if (existing != null && !DocumentsContract.deleteDocument(activity.getContentResolver(), existing)) throw new IOException("Delete failed");
                     } else throw new IllegalArgumentException("Unknown operation");
                 }
@@ -216,15 +218,16 @@ final class BackupFolder {
             Object reply = new LegacyBackupFiles(directory).operate(operation, name, path == null ? null : privateFile(path));
             return "verify".equals(operation) ? DOWNLOADS : reply;
         }
+        boolean temporaryOnly = "listTemporary".equals(operation) || "deleteTemporary".equals(operation);
         final String folder = Environment.DIRECTORY_DOWNLOADS + "/CuteLauncher/";
         final Uri collection = MediaStore.Downloads.EXTERNAL_CONTENT_URI;
         final android.content.ContentResolver resolver = activity.getContentResolver();
-        if (!"list".equals(operation) && !"verify".equals(operation)
-            && (name == null || !name.matches(NAME))) throw new SecurityException("Invalid backup name");
+        if (!"list".equals(operation) && !"listTemporary".equals(operation) && !"verify".equals(operation)
+            && (name == null || !(temporaryOnly ? temporaryName(name) : name.matches(NAME)))) throw new SecurityException("Invalid backup name");
         List<Map<String, String>> files = new ArrayList<>();
         try (Cursor cursor = resolver.query(collection,
                 new String[]{MediaStore.MediaColumns._ID, MediaStore.MediaColumns.DISPLAY_NAME},
-                MediaStore.MediaColumns.RELATIVE_PATH + "=? AND " + MediaStore.MediaColumns.IS_PENDING + "=0 AND "
+                MediaStore.MediaColumns.RELATIVE_PATH + "=? AND " + MediaStore.MediaColumns.IS_PENDING + (temporaryOnly ? "=1 AND " : "=0 AND ")
                     + MediaStore.MediaColumns.OWNER_PACKAGE_NAME + "=?",
                 new String[]{folder, activity.getPackageName()}, null)) {
             if (cursor == null) throw new IOException("Downloads unavailable");
@@ -234,12 +237,12 @@ final class BackupFolder {
                 String filename = cursor.getString(1);
                 if (filename == null || !filename.matches(NAME)) continue;
                 Map<String, String> file = new HashMap<>();
-                file.put("name", filename);
+                file.put("name", temporaryOnly ? filename + ".partial" : filename);
                 file.put("id", ContentUris.withAppendedId(collection, cursor.getLong(0)).toString());
                 files.add(file);
             }
         }
-        if ("list".equals(operation)) return files;
+        if ("list".equals(operation) || "listTemporary".equals(operation)) return files;
         Uri existing = null;
         for (Map<String, String> file : files) if (file.get("name").equals(name)) {
             if (existing != null) throw new IOException("Ambiguous backup name");
@@ -281,7 +284,7 @@ final class BackupFolder {
             }
             return true;
         }
-        if ("delete".equals(operation)) {
+        if (("delete".equals(operation) || "deleteTemporary".equals(operation))) {
             if (existing != null && resolver.delete(existing, null, null) != 1) throw new IOException("Delete failed");
             return true;
         }

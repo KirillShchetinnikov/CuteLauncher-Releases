@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "reportType": "tvInventoryMetadata",
+  "scope": "deviceMetadata",
+  "verification": "observedOnly",
+  "capturedAt": "2026-11-12T00:00:00Z",
+  "sourceReport": "cutelauncher_diagnostics_1794485082756.json",
+  "identity": {
+    "manufacturer": "TCL",
+    "model": "Smart TV Pro",
+    "device": "G10",
+    "fingerprint": "TCL/G10_4K_GB/G10:12/STT2.230203.001/AS16:user/release-keys",
+    "firmware": "STT2.230203.001 release-keys",
+    "android": "12",
+    "abis": "armeabi-v7a,armeabi",
+    "sdk": "31"
+  },
+  "diagnostics": {
+    "packageCount": 158,
+    "launcher": {
+      "versionName": "1.7.5",
+      "versionCode": "243"
+    }
+  },
+  "completeness": {
+    "status": "complete",
+    "sourceCount": 158,
+    "skippedCount": 0,
+    "truncated": false
+  },
+  "limits": [
+    "User-provided diagnostic metadata, not an independent device test",
+    "Labels, personal settings, permissions, commands and shell logs excluded",
+    "Redacted identifiers are not reconstructed; package presence does not validate disabling"
+  ],
+  "sourceReportType": "diagnostics",
+  "sourceScope": "userProvidedDiagnosticInventory",
+  "packageListStorage": "catalog/app_descriptions.json",
+  "observedPackageCount": 158,
+  "redactedPackageCount": 0
+}

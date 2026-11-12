@@ -6,6 +6,7 @@ import 'package:flauncher/tile_appearance.dart';
 import 'package:flauncher/widgets/app_content_row.dart';
 import 'package:flauncher/widgets/application_list_icon.dart';
 import 'package:flauncher/widgets/continue_watching_row.dart';
+import 'package:flauncher/widgets/content_card_label.dart';
 import 'package:flauncher/widgets/tile_artwork.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -41,11 +42,14 @@ void main() {
           'labelColor': 0xffe3b9ff,
           'labels': 'all',
           'contentAppTileStyle': appTiles,
+          'scrollContentLabels': true,
         });
+        const movieTitle =
+            'A very long movie title that extends far beyond the cover';
         final program = WatchNextProgram.fromMap({
           'id': 7,
           'packageName': package,
-          'title': 'Movie',
+          'title': movieTitle,
           'description': 'Episode 2',
           'posterArtUri': 'content://cover',
           'duration': 100,
@@ -82,13 +86,17 @@ void main() {
                 (widget) => widget is Image && widget.image is CoverMemoryImage,
               );
         expect(cover, findsOneWidget);
-        final title = find.text('Movie');
+        final title = find.text(movieTitle);
         expect(tester.widget<Text>(title).style, style.labelStyle);
         expect(
           tester.getBottomLeft(cover).dy,
           lessThan(tester.getTopLeft(title).dy),
         );
         expect(find.text('Episode 2'), findsOneWidget);
+        expect(
+          tester.widget<ContentCardLabel>(find.byType(ContentCardLabel)).subtitle,
+          'Episode 2',
+        );
         final badgeIcon = find.byType(ApplicationListIcon);
         final badgeName = find.text('Cinema');
         expect(badgeIcon, findsOneWidget);
@@ -127,6 +135,26 @@ void main() {
         expect(badgeName, findsOneWidget);
         expect(find.byType(LinearProgressIndicator), findsNothing);
         expect(tester.widget<Text>(title).maxLines, appTiles ? 1 : 2);
+        final titleLeft = tester.getTopLeft(title).dx;
+        final focus = tester.widget<InkWell>(find.byType(InkWell)).focusNode!;
+        focus.requestFocus();
+        await tester.pump();
+        await tester.pump();
+        expect(focus.hasPrimaryFocus, isTrue);
+        final label = find.ancestor(
+          of: title,
+          matching: find.byType(ContentCardLabel),
+        );
+        expect(tester.widget<ContentCardLabel>(label).scroll, isTrue);
+        await tester.pump(const Duration(milliseconds: 850));
+        expect(tester.widget<Text>(title).softWrap, isFalse);
+        await tester.pump(const Duration(seconds: 1));
+        expect(tester.getTopLeft(title).dx, lessThan(titleLeft));
+        focus.unfocus();
+        await tester.pump();
+        await tester.pump();
+        expect(tester.getTopLeft(title).dx, titleLeft);
+        expect(tester.widget<Text>(title).overflow, TextOverflow.ellipsis);
         expect(tester.takeException(), isNull);
         await tester.pumpWidget(const SizedBox());
       },

@@ -56,6 +56,7 @@ void main() {
       await tester.pumpAndSettle();
       final current = categoryId == null ? appearance.appearance : appearance.tilesFor(categoryId);
       expect(current.iconImageMode.name, 'edgeColor');
+      expect(find.text(l.scrollContentLabels), findsNothing);
       expect(current.bannerImageMode.name, 'contain');
       // Reset includes both image fields, while preserving other scopes.
       await tester.scrollUntilVisible(find.byType(ResetStyleTile), 400);

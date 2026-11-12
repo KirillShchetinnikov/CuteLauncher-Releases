@@ -10,6 +10,9 @@ class AppLocalizationsTr extends AppLocalizations {
   AppLocalizationsTr([String locale = 'tr']) : super(locale);
 
   @override
+  String get scrollContentLabels => 'Satırlardaki uzun etiketleri kaydır';
+
+  @override
   String get contentAppTileStyle => 'Görünüm kaynağı';
 
   @override
@@ -917,6 +920,71 @@ class AppLocalizationsTr extends AppLocalizations {
       'Bu resim hasarlı veya çok büyük (maksimum 8 MiB ve 48 megapiksel). Başka bir resim seçin.';
 
   @override
+  String get memoryAdvanced => 'Gelişmiş tanılama';
+
+  @override
+  String get memoryLauncherTitle => 'CuteLauncher belleği';
+
+  @override
+  String get memoryUsage => 'Bellek kullanımı';
+
+  @override
+  String memoryChange(String delta) {
+    return 'Önceki ölçüme göre $delta';
+  }
+
+  @override
+  String get memoryCacheFiles => 'Bellekteki görüntü dosyaları';
+
+  @override
+  String memoryCacheEntries(int count) {
+    return 'Öğe: $count';
+  }
+
+  @override
+  String memoryCacheResult(String before, String after) {
+    return 'Görüntü önbellekleri: $before → $after';
+  }
+
+  @override
+  String get memoryStale => 'Güncellenemedi. Önceki ölçüm gösteriliyor.';
+
+  @override
+  String get memoryTechnical => 'Teknik ayrıntılar';
+
+  @override
+  String get memoryObserve => 'Bellek izleme';
+
+  @override
+  String get memoryObserveStart => '1 dakika izle';
+
+  @override
+  String get memoryObserveStop => 'İzlemeyi durdur';
+
+  @override
+  String get memoryObserveRunning => 'Kaydediliyor · en fazla 1 dakika';
+
+  @override
+  String get memoryObserveFinished => 'Kayıt durduruldu';
+
+  @override
+  String get memoryObserveEmpty => 'Henüz ölçüm yok';
+
+  @override
+  String memorySeconds(int seconds) {
+    return '$seconds sn';
+  }
+
+  @override
+  String get memoryReadingHelp => 'Ölçümleri anlama';
+
+  @override
+  String get memorySaverHelp => 'Bellek tasarrufunun etkileri';
+
+  @override
+  String get memorySaveFailed => 'Tasarruf modu kaydedilemedi. Tekrar deneyin.';
+
+  @override
   String get memoryTitle => 'Bellek';
 
   @override
@@ -1657,7 +1725,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get weatherCoordinatesError =>
-      'Bir şehri manuel olarak girin veya koordinatları otomatik olarak alın.';
+      'Bir şehir seçin, koordinatları girin veya konumu otomatik olarak alın.';
 
   @override
   String get weatherRefresh => 'Hava durumunu yenile';
@@ -1981,7 +2049,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get nightCityHint =>
-      'Konum erişimine izin vermek yerine şehrinizi seçin. Seçilen koordinatlar, güneş zamanlarını almak için Sunrise-Sunset.org\'a veya yedek olarak Open-Meteo\'ye gönderilir.';
+      'Konum erişimine izin vermek yerine şehrinizi seçin. Seçilen koordinatlar, güneş zamanlarını almak için Sunrise-Sunset.org\'a veya yedek olarak GeoNames\'ye gönderilir.';
 
   @override
   String get nightResumeSchedule => 'Programa dön';
@@ -2028,7 +2096,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get nightSolarAttribution =>
-      'Günlük güneşlenme saatleri: Sunrise-Sunset.org; geri dönüş: Open-Meteo. Şehir araması: GeoNames. Çevrimdışı kullanım için birkaç gün önbelleğe alınır.';
+      'Gün doğumu ve gün batımı saatleri Sunrise-Sunset.org üzerinden alınır, gerekirse GeoNames kullanılır. İnternet yoksa TV eksik saatleri hesaplar.';
 
   @override
   String get nightTemporaryOn => 'Karartma geçici olarak açık';
@@ -2968,7 +3036,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get weatherCityNotFound =>
-      'Şehir bulunamadı. Şehir adını İngilizce olarak kontrol edin.';
+      'Şehir belirlenemedi. Konum ayarlarından şehri seçin.';
 
   @override
   String get weatherLocationAutomatic => 'Otomatik olarak al';
@@ -2979,6 +3047,15 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get weatherLocationManual => 'Manuel olarak girin';
+
+  @override
+  String get manualLocationInput => 'Giriş yöntemi';
+
+  @override
+  String get manualLocationCity => 'Şehir';
+
+  @override
+  String get manualLocationCoordinates => 'Koordinatlar';
 
   @override
   String get weatherLocationPermissionDenied =>
@@ -3011,7 +3088,8 @@ class AppLocalizationsTr extends AppLocalizations {
       'Konum kullanılamıyor. İzin ve sistem konumu ayarlarını kontrol edin.';
 
   @override
-  String get nightCityEnglish => 'Şehir adını İngilizce olarak girin';
+  String get nightCitySearchHint =>
+      'Şehir adını girin. Virgülden sonra bölge veya ülke ekleyebilirsiniz.';
 
   @override
   String get nightOverlayBrief =>
@@ -3160,7 +3238,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get backupSyncGroupsHelp =>
-      'Devre dışı bırakılan bloklar bu TV\'ye yerel kalır. Blok seçimi cihazlar arasında senkronize edilir.';
+      'Devre dışı bloklar bu TV’de kalır. Eşitlenecek blokları her cihazda ayrı seçin.';
 
   @override
   String get backupSyncGroupsFailed =>
@@ -4133,17 +4211,27 @@ class AppLocalizationsTr extends AppLocalizations {
   String get tvPowerTitle => 'Güç yönetimi';
 
   @override
-  String get tvPowerOff => 'TV’yi kapat';
+  String remotePowerWithConfirmation(String action) {
+    return '$action (onaylı)';
+  }
 
   @override
-  String get tvPowerReboot => 'TV’yi yeniden başlat';
+  String remotePowerWithoutConfirmation(String action) {
+    return '$action (onaysız)';
+  }
 
   @override
-  String get tvPowerOffConfirm => 'TV beklemeye alınsın mı?';
+  String get tvPowerOff => 'Cihazı kapat';
+
+  @override
+  String get tvPowerReboot => 'Cihazı yeniden başlat';
+
+  @override
+  String get tvPowerOffConfirm => 'Cihaz beklemeye alınsın mı?';
 
   @override
   String get tvPowerRebootConfirm =>
-      'TV yeniden başlatılsın mı? Açık uygulamalar kapanacak.';
+      'Cihaz yeniden başlatılsın mı? Açık uygulamalar kapanacak.';
 
   @override
   String get tvPowerSent => 'Komut gönderildi';
@@ -4286,6 +4374,14 @@ class AppLocalizationsTr extends AppLocalizations {
   String get sleepTimerShowSeconds => 'Saniyeleri göster';
 
   @override
+  String get sleepTimerShowOverApps =>
+      'Zamanlayıcıyı uygulamaların üzerinde göster';
+
+  @override
+  String get sleepTimerOverlayHelp =>
+      'Uygulamaların üzerinde göstermek için CuteLauncher erişilebilirlik hizmetini etkinleştirin.';
+
+  @override
   String get sleepTimerCloseAfterSelection => 'Seçimden sonra bileşeni kapat';
 
   @override
@@ -4399,6 +4495,21 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get noticeTopLeft => 'Sol üst';
+
+  @override
+  String get overlayAppearance => 'Uygulamaların üzerinde görünüm';
+
+  @override
+  String get overlayAppearanceTopPanel => 'Üst panel ile aynı';
+
+  @override
+  String get overlayAppearanceDark => 'Koyu';
+
+  @override
+  String get overlayWhereToShow => 'Gösterim konumu';
+
+  @override
+  String get overlayAtPanelWidget => 'Üst paneldeki bileşenin konumunda';
 
   @override
   String get notificationOpenFailed =>
@@ -4705,7 +4816,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get weatherTextHelp =>
-      'Metninizi ve kodları süslü parantezler içinde yazın veya düğmelerle imlece ekleyin. Büyük ve küçük harf ayrımı yoktur. Bir değeri çevreleyen normal parantezler veri yoksa gizlenir. Düz metin süslü parantezlerini çift yazın. Bir satır sonuna izin verilir.';
+      'Metninizi ve kodları süslü parantezler içinde yazın veya düğmelerle imlece ekleyin. Büyük ve küçük harf ayrımı yoktur. Bir değeri çevreleyen normal parantezler veri yoksa gizlenir. Düz metin süslü parantezlerini çift yazın. Bir satır sonuna izin verilir. Harf, rakam, boşluk ve yazdırılabilir tüm simgeleri yazabilirsiniz, örneğin: () [] / : ; + − ° % ·.';
 
   @override
   String get weatherTextSaveError => 'Hava durumu metin biçimi kaydedilemedi.';
@@ -4984,10 +5095,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get fileBrowserPartial => 'Klasörün yalnızca bir kısmı gösteriliyor';
 
   @override
-  String get fileBrowserRemoteHint => '← Tam ad · → Onayla';
-
-  @override
-  String get fileBrowserReadNameHint => '← Tam adı göster';
+  String get fileBrowserReadNameHint => '← Üst klasör · → Tam ad';
 
   @override
   String fileBrowserSavedTo(String path) {
@@ -5316,6 +5424,13 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get volumeUpdateInterval => 'Güncelleme aralığı';
+
+  @override
+  String get showVolumeOverlay => 'Ses düzeyini uygulamaların üzerinde göster';
+
+  @override
+  String get volumeOverlayHelp =>
+      'CuteLauncher erişilebilirlik hizmeti etkin olmalıdır.';
 
   @override
   String get clockHoursColor => 'Saat rengi';
@@ -5790,4 +5905,178 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get appPermissionsHelp =>
       'Burada izin verdiğiniz hizmetler için geri yükleme varsayılan olarak açıktır. Android ayarlarında kapatılsa bile izinleri ve hizmeti geri yükler. Geri yüklemeyi kapatmak mevcut erişimleri korur. Hizmeti kapatmak geri yüklemeyi de durdurur; otomatik başlatma ve arka plan izinleri kalır. Yeniden bağlama yalnızca bu hizmeti yeniden başlatır, uygulama hatalarını düzeltmez. ADB gereklidir; Android kontrolleri geciktirebilir. Otomatik başlatma uygulama ekranını açmaz. Durumlar son kontrolü gösterir; desteklenmeyen işlemlere izin verilmez.';
+
+  @override
+  String get weatherFieldUnsupported => 'Bu kaynak tarafından desteklenmiyor';
+
+  @override
+  String get weatherFieldMissing => 'Geçerli yanıtta veri yok';
+
+  @override
+  String get weatherMissingAsDash => 'Eksik veriler için çizgi göster';
+
+  @override
+  String get weatherPanelAlignment => 'Üst panel hava durumu satır hizalaması';
+
+  @override
+  String get syncProtection => 'Belirteçler ve koruma';
+
+  @override
+  String get syncKey => 'Ortak eşitleme anahtarı';
+
+  @override
+  String get syncKeyShow => 'Anahtarı göster';
+
+  @override
+  String get syncKeyCreate => 'Anahtar oluştur';
+
+  @override
+  String get syncKeyInvalid => '64 karakterli onaltılık bir anahtar girin.';
+
+  @override
+  String get syncKeyHelp =>
+      'Belirteçler ve hesaplar için tüm TV’lerde aynı anahtarı kullanın. Bir TV’de oluşturup diğerlerine aktarın. Anahtarı saklayın: korunan veriler onsuz okunamaz. Değiştirirken tüm TV’leri güncelleyin. Android izinleri ve donanım anahtarları yerel kalır.';
+
+  @override
+  String get syncFiles => 'Eşitleme dosyaları';
+
+  @override
+  String get syncCleanup => 'Eski dosyaları temizle';
+
+  @override
+  String get syncCleanupFailed =>
+      'Bazı eski dosyalar silinemedi. Temizlemeyi yeniden deneyin.';
+
+  @override
+  String get syncRetire => 'Cihazı hariç tut';
+
+  @override
+  String get syncRetireConfirm =>
+      'Bu cihaz gruptan çıkarılsın mı? Eski durumları artık uygulanmaz. Dönüş için yeni bir eşitleme grubu gerekir.';
+
+  @override
+  String get backupAccount => 'Hesap';
+
+  @override
+  String get backupNewAccount => 'Başka hesap bağla';
+
+  @override
+  String get backupSetupWizard => 'Kurulum sihirbazı';
+
+  @override
+  String get backupSetupSummary => 'Özet';
+
+  @override
+  String get backupSetupNext => 'İleri';
+
+  @override
+  String get backupSetupBack => 'Geri';
+
+  @override
+  String get backupFirstCopy => 'İlk yedeği şimdi oluştur';
+
+  @override
+  String get backupSyncAll => 'Her şeyi eşitle';
+
+  @override
+  String get backupFirstExchange => 'İlk aktarım';
+
+  @override
+  String get backupNoRemote =>
+      'Depolamada ayar yok. Bu TV kendi ayarlarını yükleyecek.';
+
+  @override
+  String get backupSetupStart => 'Etkinleştir';
+
+  @override
+  String get backupPassword => 'Veri şifreleme parolası';
+
+  @override
+  String get backupPasswordRepeat => 'Parolayı tekrarla';
+
+  @override
+  String get backupPasswordMismatch => 'Parolalar eşleşmiyor';
+
+  @override
+  String get backupAccountLocalHelp =>
+      'Bağlı bir hesap veya aynı türden başka bir hesap kullanın. Kimlik bilgileri bu TV’de kalır. Yedekleme ve eşitleme dosyalarını ayrı yönetir.';
+
+  @override
+  String get backupPasswordOptionalHelp =>
+      'İsteğe bağlı. Aktarılabilir belirteçler dahil tüm dosyayı şifreler. Parola yoksa şifreleme yapılmaz. Boş değer şifrelemeyi kapatır. Diğer TV’ler aynı parolayı kullanmalıdır.';
+
+  @override
+  String get backupYandexDisk => 'Yandex Disk';
+
+  @override
+  String get backupYandexHelp =>
+      'Disk uygulama klasörüne erişimi olan bir Yandex OAuth uygulamasının Client ID ve Client Secret bilgilerini girin. Bağlanın ve kodu telefonunuzda onaylayın. Tüm TV’lerde aynı OAuth istemcisini ve hesabı kullanın.';
+
+  @override
+  String get backupYandexConnect => 'Yandex Disk bağla';
+
+  @override
+  String get backupYandexReconnect => 'Yandex Disk’a yeniden bağlan';
+
+  @override
+  String get backupYandexConnectionStatus => 'Yandex Disk bağlantı durumu';
+
+  @override
+  String get yandexCodeExpired =>
+      'Yandex Disk oturum açma işlemi zaman aşımına uğradı. Yeni bir kod almak için Hesabı kontrol et ve kaydet\'i seçin.';
+
+  @override
+  String get yandexConfigurationError =>
+      'Müşteri Kimliği / Müşteri Sırrı — Yandex OAuth';
+
+  @override
+  String get backupSmb => 'Samba / SMB 2–3';
+
+  @override
+  String get smbUrl => 'Klasör SMB adresi';
+
+  @override
+  String get smbPassword => 'Parola';
+
+  @override
+  String get smbHelp =>
+      'Mevcut bir ağ klasörü girin: smb://server/share/CuteLauncher. Klasöre erişimi olan kullanıcı adı ve parola girin; etki alanı hesabı için DOMAIN\\user kullanın. SMB 2 veya 3 otomatik seçilir. Yedekleme ve eşitleme için okuma, yazma ve silme izinleri gerekir.';
+
+  @override
+  String get recentRamTitle => 'RAM';
+
+  @override
+  String recentRamUsed(String used, String total, String percent) {
+    return 'Kullanılan: $used / $total · %$percent';
+  }
+
+  @override
+  String recentRamAvailable(String value) {
+    return 'Kullanılabilir: $value';
+  }
+
+  @override
+  String get recentRamUnloaded => 'Bellekten kaldırıldı';
+
+  @override
+  String get recentRamUnavailable => 'Veri yok';
+
+  @override
+  String recentRamMiB(String value) {
+    return '$value MiB';
+  }
+
+  @override
+  String recentRamGiB(String value) {
+    return '$value GiB';
+  }
+
+  @override
+  String recentRamApp(String value) {
+    return '≈ $value';
+  }
+
+  @override
+  String get backupExistingSettingsHelp =>
+      'Seçilen depolamada zaten eşitleme ayarları var. Bunları bu TV’ye uygulamayı, bu TV’nin ayarlarıyla değiştirmeyi veya birleştirmeyi seçin. Birleştirme sırasında farklılık varsa seçtiğiniz öncelik kullanılır. Aktarım, sihirbazın son adımındaki onaydan sonra başlar.';
 }

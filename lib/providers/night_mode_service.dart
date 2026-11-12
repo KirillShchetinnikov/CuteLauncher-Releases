@@ -1,3 +1,4 @@
+import '../city_search.dart';
 import '../diagnostics_store.dart';
 import 'night_mode_configuration.dart';
 export 'night_mode_configuration.dart';
@@ -14,6 +15,7 @@ const nightModePanelFillKey = 'night_mode_panel_fill';
 class NightModeService extends ChangeNotifier with WidgetsBindingObserver {
   final SharedPreferences preferences;
   final bool remotePanel;
+  final CitySearch _citySearch;
   bool _presentationReady = false;
   bool _panelInitialReadComplete = false;
   bool _foregroundExcluded = false;
@@ -87,14 +89,9 @@ class NightModeService extends ChangeNotifier with WidgetsBindingObserver {
       configuration.nextBoundary(DateTime.now(), false, solarDays: solarDays);
 
   Future<List<Map<String, dynamic>>> searchCities(
-      String query, String language) async {
-    final result = await _channel.invokeListMethod<dynamic>(
-        'cities', {'query': query, 'language': language});
-    return (result ?? [])
-        .whereType<Map>()
-        .map((e) => Map<String, dynamic>.from(e))
-        .toList();
-  }
+      String query, String language) async =>
+      (await _citySearch.search(query, language: language))
+          .map((city) => city.toMap()).toList();
 
   Future<void> refreshSolar() async {
     await _readNativeStatus('solarRefresh');
@@ -180,8 +177,9 @@ class NightModeService extends ChangeNotifier with WidgetsBindingObserver {
 
   bool get active => _active &&
       !(remotePanel ? _foregroundExcluded : localExcluded) && !pictureModeExcluded;
-  NightModeService(this.preferences, {this.remotePanel = false})
-    : configuration = NightModeConfiguration.decode(
+  NightModeService(this.preferences, {this.remotePanel = false, CitySearch? citySearch})
+    : _citySearch = citySearch ?? CitySearch.shared,
+      configuration = NightModeConfiguration.decode(
         preferences.getString(nightModeKey),
       ) {
     WidgetsBinding.instance.addObserver(this);

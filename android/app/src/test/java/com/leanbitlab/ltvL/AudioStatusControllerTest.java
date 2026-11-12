@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = {28, 36})
 public class AudioStatusControllerTest {
-    @Test @Config(sdk = 30) public void android11UsesFrameworkHdmiLabelInsteadOfRouteType() {
+    @Test @Config(sdk = {30, 31, 32}) public void legacyRoutesUseFrameworkHdmiLabel() {
         try (var lifecycle = Robolectric.buildActivity(Activity.class).setup()) {
             var resources = lifecycle.get().getResources();
             int label = resources.getIdentifier("default_audio_route_name_hdmi", "string", "android");

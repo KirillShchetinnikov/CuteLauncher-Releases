@@ -19,4 +19,22 @@
     <string name="remap_error_webhook_http">वेबहुक ने अनुरोध अस्वीकार किया (HTTP %1$d)।</string>
     <string name="remap_error_webhook_timeout">वेबहुक अनुरोध का समय समाप्त हो गया।</string>
     <string name="remap_error_webhook">वेबहुक से कनेक्ट नहीं हो सका।</string>
+    <string name="power_off">डिवाइस बंद करें</string>
+    <string name="power_reboot">डिवाइस रीस्टार्ट करें</string>
+    <string name="power_off_confirm">डिवाइस को स्टैंडबाय में रखें?</string>
+    <string name="power_reboot_confirm">डिवाइस रीस्टार्ट करें? खुले ऐप बंद हो जाएंगे।</string>
+    <string name="screensaver_label">CuteLauncher घड़ी</string>
+    <string name="notification_service_label">CuteLauncher सूचना सेवा</string>
+    <string name="night_mode_title">रात्रि मोड</string>
+    <string name="night_mode_notice">स्क्रीन फ़िल्टर चालू है। शेड्यूल लागू है।</string>
+    <string name="night_mode_stop">बंद करें</string>
+    <string name="recovery_checking">लॉन्चर की जाँच हो रही है…</string>
+    <string name="recovery_title">लॉन्चर पुनर्प्राप्ति</string>
+    <string name="recovery_description">CuteLauncher कई बार बंद हो गया। सेटिंग सुरक्षित हैं। आप फिर से कोशिश कर सकते हैं, कोई दूसरा ऐप खोल सकते हैं या दूसरी होम स्क्रीन चुन सकते हैं। अगर मूल लॉन्चर बंद है, तो पहले उसे Android की ऐप सेटिंग में चालू करें।</string>
+    <string name="recovery_retry">CuteLauncher फिर से शुरू करें</string>
+    <string name="recovery_settings">Android सेटिंग</string>
+    <string name="recovery_home">होम स्क्रीन चुनें</string>
+    <string name="recovery_unavailable">यह कार्रवाई इस टीवी पर उपलब्ध नहीं है।</string>
+    <string name="recovery_restore">पिछली होम स्क्रीन बहाल करें</string>
+    <string name="recovery_restore_confirm">मौजूदा स्थानीय ADB कनेक्शन से पिछली होम स्क्रीन बहाल करें?</string>
 </resources>

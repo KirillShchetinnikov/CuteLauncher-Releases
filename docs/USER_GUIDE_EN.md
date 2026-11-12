@@ -124,11 +124,13 @@ Path: **Home screen → Categories and order**.
 
 The button instructions for moving sections stay pinned to the bottom of the panel.
 General information about sections opens separately in collapsed help.
-While editing a section, the settings panel temporarily moves to the right.
-For a visible section, Home scrolls to its cards. Appearance changes are visible
-beside the panel as you make them, while the arrow buttons and OK continue to
-control settings. Leaving the editor restores the panel's chosen side and the
-previous section on Home, and returns focus to the item that opened the editor.
+When you edit a visible section, the settings panel temporarily moves to the right
+and Home scrolls to its cards. Appearance changes are visible beside the panel as
+you make them, while the arrow buttons and OK continue to control settings. For a
+hidden section, the panel opens on your chosen side. The visibility switch shows
+or hides the section on Home immediately and updates the preview. Leaving the
+editor restores the panel's chosen side and the previous position on Home, and
+returns focus to the item that opened the editor.
 
 Create, rename, and delete categories; add apps; reorder apps and categories;
 deleting a category requires confirmation and keeps installed apps;
@@ -181,6 +183,15 @@ Vertical scrolling remains available with multiple categories, multiple rows,
 a grid, or additional content cards.
 
 ## App feeds
+
+To read a long card label, turn on **Scroll long labels in content rows** under
+**Home screen → Categories and order → App feeds → Category appearance**.
+The same switch is available under Continue Watching's category appearance
+and applies to both sections. A long line scrolls while its card is focused.
+If both lines are truncated, they start scrolling
+together. The first line to reach its end waits for the other. After a two-second
+pause, both lines scroll back to the start together. The cycle repeats while the
+card is focused. The setting is off by default.
 
 At startup, static card placeholders reserve space for each selected feed and
 Continue Watching. Content fills those positions; you can immediately use the
@@ -561,6 +572,21 @@ replaces the percentage. No remote action is needed: the block cannot receive
 focus and refreshes at the selected interval while the panel is visible.
 Its visibility on the quick settings panel is configured separately.
 
+In **Volume settings**, turn on **Show volume over apps** to display just the
+percentage when media volume changes in another app. It
+disappears two seconds after the last change. The switch is off by default.
+Enable the CuteLauncher accessibility service in **Access settings** to use it.
+The readout depends on the device firmware reporting Android media volume changes.
+
+Under **Where to show**, choose the widget’s position in the top panel or any
+of the four TV corners. Volume appears in the top-right corner by default.
+When the widget is hidden, the readout uses its last visible position. It
+uses the top-right corner until that position is saved. If volume and the
+sleep timer overlap, the timer moves aside until the volume readout disappears.
+
+Under **Appearance over apps**, the default **Same as the top panel** uses the
+panel’s item colors, font and shape. Select **Dark** to use the original dark badge.
+
 The percentage represents Android media volume. The level of an external audio
 system over ARC/CEC may differ or be unavailable, depending on firmware.
 Fixed or unavailable volume is shown as “—”. On Android 9–12, the widget identifies
@@ -800,13 +826,28 @@ traffic needs usage access, and inputs need support for the relevant TV API.
 
 Path: **Top panel → Objects → Clock, date and weather → Settings → Weather settings**.
 
-Sources include Breezy Weather, Open-Meteo, MET Norway, OpenWeather, Yandex, Gismeteo, and Custom server (Open-Meteo). Choose a city
+**Auto** is the default source. Choose a city or get the coordinates.
+The launcher requests the forecast from MET Norway, falling back to Open-Meteo
+and then Gismeteo. This mode needs no API key or server address. The forecast
+shows which provider supplied the displayed data.
+
+Manual sources include Breezy Weather, Open-Meteo, MET Norway, OpenWeather, Yandex, Gismeteo, and Custom server (Open-Meteo). Choose a city
 or coordinates, detect location with the required permission, refresh data, and
 configure the forecast. Units are in the shared **Object formats** page.
 Warnings are inserted as a token in the weather editor.
 
-**Gismeteo is a test source. Do not use it in production.** It retrieves
-current weather and a forecast of up to seven days from the Gismeteo XML service without a key.
+Under **Location → Enter manually**, choose **City** or **Coordinates**
+as the input method. Enter latitude and longitude separated by a comma,
+using decimal points, for example 55.75, 37.62. The city, manually entered
+coordinates, and automatically detected coordinates are saved separately.
+
+City search checks the bundled offline catalog first. If there are no matches,
+the app sends the name to GeoNames. Use the region and country to tell cities
+with the same name apart. Results in Crimea, Sevastopol, and the Donetsk,
+Luhansk, Zaporizhzhia, and Kherson regions show the city and region only.
+
+Gismeteo retrieves current weather and up to seven days of forecasts from
+its experimental XML feed without a key.
 
 For a custom server, enter a base HTTPS address such as
 `https://weather.example.test/home`. The launcher adds `/v1/forecast`.
@@ -829,8 +870,9 @@ Saving or importing a token/key does not check the connection. After changing it
 select **Check connection** for a custom server or **Refresh weather** for another
 source. File reading, UTF-8 encoding, size, format, and value-saving errors are
 reported separately from weather server access errors.
-The token is stored on this TV and is tied to the address you entered. Enter it
-again after moving to another TV. During a temporary outage, the launcher shows
+The token is tied to the address you entered. Transfer it through protected
+synchronization with a data encryption password or enter it on another TV manually.
+During a temporary outage, the launcher shows
 the last available data from that server and when it was updated.
 
 Press OK or click the weather to open **Weather forecast**. **Widget settings** offer
@@ -894,8 +936,23 @@ A regular keyboard line break also works. Russian token aliases are supported to
 My weather: {TEMP} / {MAX} / {MIN} ({WARN}){BR}{CITY} {COND}
 ```
 
+You can type letters, numbers, spaces and any printable symbols, including
+`() [] / : ; + − ° % ·`. Use `{{` and `}}` for literal curly braces.
 Parentheses around a single value, such as `({WARN})`, disappear with that value
-when its data is unavailable. Use `{{` and `}}` for literal curly braces.
+when its data is unavailable and dashes are disabled.
+**Object format** provides **Dashes for missing data** and **Top panel weather line
+alignment** (left, center, right) outside the editor. Dashes retain the labels and
+parentheses of missing values; the absence of a precipitation warning is not replaced
+with a dash. Background weather lines inherit the background information block's
+alignment. These options survive template edits and temperature unit changes.
+The editor highlights unavailable fields and lists the reason below:
+**Not supported by this source** or **No data in the current response**.
+You can still insert these fields. Missing data is not diagnosed before a response
+arrives, and switching sources does not remove tokens from the template.
+Every update requests all source measurements supported by the app, regardless of
+the template. Newly added fields immediately use the downloaded data.
+City, location and update interval are shared by sources. Switching sources retains
+API keys, the custom server token and its address.
 An unknown token or extra line break is highlighted in red, with the reason below
 the field. Saving becomes available after fixing the error.
 Templates allow up to 2048 characters and 64 elements,
@@ -913,6 +970,9 @@ calendar enable/disable choice is respected until a new block action is selected
 Breezy Weather requires a compatible installed app with a configured provider.
 MET Norway needs no key: data by MET Norway under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/), adapted from https://api.met.no/. Forecast days use the TV time zone; min/max cover available periods and precipitation probability is unavailable. OpenWeather and Yandex require their respective personal keys. Cached data helps during temporary
 outages, but does not make an old forecast current.
+OpenWeather's minimum and maximum for today cover the current observation and
+available three-hour forecasts, not a full day's history. Late in the day, when no
+forecast periods remain for today, both bounds may equal the current temperature.
 
 ## Notifications and playback
 
@@ -985,10 +1045,12 @@ accent color to the moon icon while night mode is active. It is on by default.
 
 The night filter controls dimming, warmth, and color strength. Enable it manually,
 at scheduled times, or from sunset to sunrise for a chosen location, with offsets
-and smooth transitions. When starting without internet, saved solar events are
-used. If events for the required day are missing, yesterday's sunrise and sunset
-times for the same location are reused; without that history, the defaults are
-08:00 and 20:00. The schedule works immediately while times refresh in the background.
+and smooth transitions. In manual location mode, choose a city or enter
+coordinates [as you would for weather](#weather).
+Sunrise and sunset times refresh in the background through [Sunrise-Sunset.org](https://sunrise-sunset.org/),
+with GeoNames as a fallback. The TV uses saved events immediately and calculates
+missing times from the coordinates and date. The solar schedule works offline
+as soon as you set a location.
 Skip the current night, enable until morning, or resume
 the schedule. The temporary mode ends automatically at the next applicable
 schedule boundary: manual activation ends when the night starts, and skipping
@@ -1001,10 +1063,11 @@ launcher filter is available. Exceptions cover apps, HDMI inputs, and supported
 picture modes. Detecting the active app requires usage access. Picture-mode
 detection depends on the manufacturer.
 
-A separate brightness scheduler controls supported system backlights, with time
-intervals or night boundaries, target levels, and smooth transitions. Disabling
-it restores the saved level. Backlight control and the color filter are different
-features; backlight writes depend on firmware and system-settings permission.
+A separate brightness scheduler controls supported system backlights. For time
+intervals or night boundaries, you can set levels from 0 to 100% in 10% steps
+and adjust the transition duration. Disabling it restores the saved level.
+Backlight control and the color filter are different features; backlight writes
+depend on firmware and system-settings permission.
 
 Automatic sound-profile and picture-mode changes on the night schedule are
 planned and are not currently available features.
@@ -1028,9 +1091,24 @@ Settings are available through the widget gear and
 The menu opens immediately with the timer's last known state and refreshes it
 in the background.
 
-In **Settings**, choose time remaining, shutdown time or both, whether to show
+In the timer settings, choose time remaining, shutdown time or both, whether to show
 seconds, and whether to close the widget after selecting a timer. By default,
 it shows time remaining with seconds and closes after a successful selection.
+
+Turn on **Show timer over apps** to see the active timer in other apps. When
+you return to CuteLauncher, the countdown continues and appears in the top
+panel widget if it is enabled. The overlay uses the timer's display and
+seconds settings.
+Under **Where to show**, choose the widget’s position in the top panel or any
+TV corner. A hidden widget uses its last visible position. The timer uses the
+top-left corner by default and until the widget’s position is saved.
+The switch is off by default. Enable the CuteLauncher accessibility service
+in **Access settings** to use it.
+
+Under **Appearance over apps**, the timer offers **Same as the top panel** (the
+default) and **Dark**. Its appearance is saved separately from the volume readout.
+The top panel style expands the badge to fit the timer label and icon
+on one line.
 
 **Timers** contains **Visible** and **Hidden** intervals. Press Left/Right or
 hold OK to start moving; Up/Down changes the order and moves a timer across the
@@ -1069,7 +1147,7 @@ Path: **Launcher and TV controls**.
   the app or changing its signing identity. Permission statuses reflect the latest
   check; unsupported operations are marked separately. Errors may leave partial
   changes: check the connection and refresh the status.
-- **Power management**: put the TV in standby or restart it, with confirmation
+- **Power management**: put the device in standby or restart it, with confirmation
   before sending the command. Standby requires the CuteLauncher accessibility
   service or local ADB; restart requires ADB. On a TV box, the command controls
   the box itself; TV behavior depends on HDMI-CEC and firmware. This does not
@@ -1132,7 +1210,7 @@ Apps incompatible with this mode are marked unavailable; a previously selected
 unavailable app can still be unchecked. Launching does not enable features inside
 an app or guarantee continuous operation: configure permissions and background
 operation in the app itself. Android and the TV firmware may stop it.
-Selections stay on this TV and are not transferred through backups.
+Selections can be transferred through synchronization; ordinary backups do not include them.
 The subsection includes collapsed help explaining how it works.
 The same choice is available in each app's context menu as **Background autostart**.
 It shares its state with the list: switching it in either place immediately updates
@@ -1181,10 +1259,12 @@ display actions and the media mute toggle. “System” opens network or
 Bluetooth settings. System screens appear when the firmware provides an
 accessible handler.
 
-“Turn off TV” puts the device in standby; “Reboot TV” requires configured ADB.
-An assigned power action runs immediately without an additional confirmation.
-On a TV box, the command controls the box; the TV's response depends on HDMI-CEC
-and firmware. There are global and per-mapping switches and reset.
+“Turn off device” puts the device in standby. “Restart device” requires configured
+ADB. Both commands have variants with and without confirmation. The confirmation
+variant opens a dialog over the current app. Cancel or Back closes it without
+sending the command. The variant without confirmation sends the command immediately.
+On a TV box, the command controls the box, and the TV’s response depends on
+HDMI-CEC and firmware. There are global and per-mapping switches and reset.
 
 “Black screen” covers the current app with a black layer. Repeat the same press
 or press Back to show the picture. This action uses CuteLauncher’s enabled
@@ -1195,12 +1275,11 @@ After the countdown, the TV turns off the picture and keeps the sound playing.
 If Android blocks the background service start, set up local ADB. Use the
 remote to restore the picture as supported by the TCL firmware.
 
-“Toggle Black Screen” shows a black overlay over the current app. Press or hold
-the same button again to hide it. This action requires the paid version of Black
-Screen by jApp and permission to display over other apps. [Black Screen on Google Play](https://play.google.com/store/apps/details?id=io.japp.blackscreen).
+After updating, previous “Toggle Black Screen” assignments free up their buttons.
+You can assign the built-in “Black screen” action to display the overlay.
 
 If an assigned action fails, a short message explains why. For example,
-Black Screen is missing, the HDMI input is unavailable, or a webhook times out.
+the assigned app or HDMI input is unavailable, or a webhook times out.
 
 An empty name field shows “Button name”. Below it, select “Assign button”,
 then “Capture” in the separate dialog and press the remote button. The dialog
@@ -1254,7 +1333,18 @@ If access is missing, select its row: ADB opens CuteLauncher's connection setup,
 and Accessibility opens the system service settings. Statuses refresh on return.
 The panel shows icons and names of TV apps with existing tasks, including
 windows in the background. Apps without a TV launch entry, background services
-without tasks, and launchers are excluded. OK or clicking an app brings its task
+without tasks, and launchers are excluded.
+Above the list, the panel shows used and total RAM, the usage percentage, and
+available memory. An estimate of each app's RAM use appears to the right of its
+name, for example “≈ 286 MiB”. Measurements update when the panel opens, on
+Refresh, after closing apps, and on returning from the background. If Android
+keeps the task but has unloaded its process from memory, “Unloaded” appears.
+You can open the app as usual; after it starts and the panel refreshes, its RAM
+usage appears. Errors or unavailable measurements show “No data”. Overall usage includes the system
+and background processes; it is not the sum of the rows or the amount that closing
+apps will free. With large text, the memory summary scrolls with the list.
+These indicators are available in CuteLauncher's own panel.
+OK or clicking an app brings its task
 to the foreground; the close button beside it removes all its tasks but does not
 guarantee that its background services stop. Close all force-stops user apps
 in the list, including playback and background work. System apps and launchers
@@ -1409,10 +1499,9 @@ Cancellation preserves your previous selection.
 
 The path is labelled “Current folder”; the export “File name” stays visible while
 scrolling. Press OK on a long path or export name to expand it, use the arrows to
-read it, and press OK again or move focus away to collapse it. In the list, Left
-expands an item's full name only if it is clipped; another Left collapses it.
-If the full name fits, Left keeps the row height unchanged. Right moves to folder confirmation, and
-Left from confirmation returns to the list. Re-entering a folder restores its
+read it, and press OK again or move focus away to collapse it. Left moves to the
+parent folder from the list or the confirmation button. In the list, Right
+expands a clipped item name, and pressing Right again collapses it. Re-entering a folder restores its
 scroll position and focus. The browser indicates when only part of a folder's
 contents is shown.
 
@@ -1440,13 +1529,19 @@ do not back up installed apps or the entire TV system.
 App launch counts stay on each TV and survive sync, backup restoration and app
 reinstallation. A full launcher reset clears them.
 
-Backups and synchronization shows the current mode, enabled state, storage,
-and the time of the last successful action. Disconnecting WebDAV or Google Drive
+Backup and Synchronization are independent submenus. First entry opens a
+full-screen Setup wizard; later visits show normal settings. The wizard can be
+reopened. Automation starts after final confirmation; cancelling before starting
+keeps previous settings. Each section can reuse a connected account or connect
+another account of the same type, such as two Google Drive accounts. Both may
+share one account while managing their files and cleanup separately.
+The submenu shows enabled state, storage, account and the last successful action.
+Disconnecting WebDAV, Google Drive, Yandex Disk or Samba
 requires confirmation; cancelling keeps the connection.
 
 Automatic backups support schedules, frequency, and retention. Storage includes
 the internal folder, Downloads / CuteLauncher, a selected folder, WebDAV, and
-Google Drive with configured access. Internal storage is removed when app data
+Google Drive, Yandex Disk and Samba / SMB 2–3 with configured access. Internal storage is removed when app data
 is deleted. Choose an external folder using the external file browser or built-in browser. On Android 9,
 saving to Downloads requires storage permission; internal storage and the system
 document picker do not require it.
@@ -1454,6 +1549,29 @@ document picker do not require it.
 A separate card at the top of the Google Drive connection page shows the connection
 status. For a configured account, the button reads “Reconnect Google Drive”.
 Help is at the bottom of the page.
+
+For a NAS or computer network folder, select “Samba / SMB 2–3”. Enter an
+existing directory, such as `smb://192.168.1.10/share/CuteLauncher`, a username
+and a password. Use `DOMAIN\user` for a domain account. An optional port can
+be specified in the address: `smb://server:445/share/folder`. SMB 2.0.2/2.1 and
+SMB 3.0/3.0.2/3.1.1 are negotiated automatically; SMB1 and guest login are not
+used. The server must support SMB message signing. Checking the connection
+confirms login and folder access; creating, restoring and cleaning backups
+also requires write, read and delete permissions. The launcher works only
+with its backup and synchronization files. The password is stored securely
+on the TV and is excluded from backups. Disconnecting keeps server files.
+Both TVs must have access to the same network folder for synchronization.
+
+For Yandex Disk, select the separate “Yandex Disk” storage option. Enter the
+Client ID and Client Secret of your [Yandex OAuth](https://oauth.yandex.ru/) app
+with access to its application folder (`cloud_api:disk.app_folder`). Select
+“Connect Yandex Disk” and confirm the displayed code on your phone at the address
+shown on the connection screen, also available as a QR code. You do not enter
+your Yandex account password in the launcher. Backup and synchronization files
+are stored in the app folder on Disk. Use the same OAuth client and Yandex account
+on all TVs that exchange settings: a different client has a different folder.
+Disconnecting removes the connection from this TV while keeping files on Disk.
+Google JSON import is not used for Yandex.
 
 In Google Drive connection settings, import Client ID and Client Secret from the
 JSON downloaded from Google Cloud for a “TVs and Limited Input devices” client.
@@ -1463,8 +1581,8 @@ and confirm the code in your browser. Import fills the fields without connecting
 automatically. Errors and cancellation preserve the fields; Client Secret stays masked.
 
 In Synchronization mode, “Refresh” starts a manual settings exchange.
-“Backup management” always creates, lists, restores and deletes full backups,
-regardless of the selected mode. Sync files are excluded; creating a backup does
+“Backup management” in the Backup section creates, lists, restores and deletes
+full backups. Sync files are excluded; creating a backup does
 not apply settings from other TVs.
 New file names and backup labels include the TV manufacturer/model and device ID.
 The ID survives a normal reinstall with the same signing key; a factory reset,
@@ -1479,7 +1597,7 @@ Synchronize selected settings groups between TVs while leaving other groups loca
 Multiple TVs need a shared accessible folder or cloud storage; their internal
 folders are not shared storage.
 
-When you switch from backups to synchronization or change the storage type,
+When you change the account, storage type,
 local folder, or sync scope, turn synchronization on again in its settings.
 CuteLauncher checks the settings in the chosen storage when you turn on
 synchronization or select **Refresh** while it is off. If they differ, you can use this TV's settings,
@@ -1490,7 +1608,37 @@ Cancel and Back cancel the exchange. If there is no synchronization copy in the
 selected scope or the settings match, synchronization starts without a prompt.
 **Refresh** runs a one-time exchange and preserves the switch state.
 
-ADB keys, Android permissions, and private service data are not transferred as
+In the wizard, Synchronize everything is selected initially. Clear it to reveal
+group selection. The ordinary group submenu always displays the list. The final
+step shows general information without listing individual differences.
+Choose synchronization blocks separately on each TV. The Top panel block also
+transfers its order, sizes, fonts, colors and combined information layout.
+Tile settings can stay local. Startup, background apps, KVN, recent apps and
+Home interception preferences are transferred as well.
+
+The optional **Data encryption password** is configured separately for backups
+and synchronization. It encrypts the entire file, including transferable weather
+keys, the Bearer token and remote mappings with webhooks. Without a password,
+these data are unencrypted. An empty value disables encryption for new files.
+Other TVs need the same password to read encrypted files. Previous passwords
+are retained locally to read older backups.
+WebDAV credentials, OAuth tokens and Google Drive and Yandex Disk client settings always stay
+local: synchronization and restoration never replace them. Configure storage
+access on each TV separately. Use an updated CuteLauncher on all participants.
+
+**Synchronization files** lists TV states in the selected scope. You can delete
+your own file after confirmation or exclude another TV: its old states are no
+longer applied and it stops synchronization on its next exchange. To let it return,
+create a new shared folder. **Clean up old files** verifies the latest own state,
+then removes its predecessors and own incomplete uploads older than a day.
+Other devices' files and recent uploads are kept. Cleanup errors are shown
+separately and do not mean the settings were not transferred.
+
+App channel IDs, local paths and folder grants, active connections, caches and
+hardware workarounds stay on each TV. Synchronization does not install apps or
+copy video wallpapers or the contents of an external slideshow folder.
+
+ADB keys and Android permissions are not transferred as
 ordinary settings. A settings backup does not grant permissions or transfer ADB
 authorization to another TV.
 
@@ -1544,11 +1692,29 @@ build counter for installing updates.
 
 ## Memory and resource saving
 
-Path: **Advanced → Memory and resource saving**.
+Path: **Advanced → Memory**.
 
-Inspect memory and cache information, free supported caches, and choose a
-resource-saving mode. Clearing caches does not reset settings or disable system
-apps. Cache sizes are not independent RAM measurements for each feature.
+“CuteLauncher memory” shows only the launcher's own memory and works without
+ADB, a computer, or network debugging. The summary shows PSS, measurement time,
+and the change since the previous successful measurement. If an update fails,
+the previous result remains visible with a warning.
+
+The cache section shows sizes, cached image counts by type, and decoded image
+cache usage relative to its limit. Clearing shows cache sizes and process memory
+before and after the action; settings and files are preserved. Android may release
+memory later, so a cache reduction does not imply an equal drop in process memory.
+
+The **Advanced diagnostics** submenu contains memory observation, technical
+details, and help on interpreting the values. “Memory observation” records a
+PSS graph for one minute, sampling every five
+seconds. You can stop recording; it also stops when you collapse the section,
+leave the page, or put the app in the background. Returning does not restart it.
+RSS and graphics are available under “Technical details”, with explanations in
+expandable help. Do not add PSS, RSS, graphics, and caches together: they overlap.
+Cache sizes are not the complete memory usage of individual features.
+
+Memory saving reduces caches and limits demanding visual effects; your saved
+appearance preferences return when the mode is switched off.
 
 <a id="диагностика"></a>
 ## Compatible graphics output
@@ -1583,6 +1749,13 @@ to a snapshot of the settings applied at that moment; later changes before expor
 do not replace earlier values. Settings at export are listed separately.
 Snapshots exclude passwords, keys, accounts, coordinates, addresses, paths,
 app lists and personal content.
+
+For app-feed and Continue Watching artwork, the report separately shows the source,
+loading stage and duration, HTTP status, received bytes, queue wait, cache use,
+and recent network and app-resume events. Repeated requests for the same image
+can be matched by an anonymized identifier; full image addresses and query
+parameters are not stored. If artwork disappears, create the report **before
+force-stopping the launcher**: restarting clears the current session history.
 
 Creating a report also adds installed apps with package identifiers, names,
 versions, system flags and enabled states, plus section names, contents, order,

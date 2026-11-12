@@ -12,6 +12,8 @@ import 'package:provider/provider.dart';
 
 class _Drive extends ChangeNotifier implements DriveBackupService {
   @override
+  bool get yandex => false;
+  @override
   String clientId = '', clientSecret = '', code = '', verificationUrl = '';
   @override
   bool configured = false, busy = false, failed = false;

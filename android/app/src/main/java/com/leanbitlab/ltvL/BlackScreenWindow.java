@@ -14,6 +14,7 @@ import android.view.WindowManager;
 /** A temporary black layer that leaves the current activity focused. */
 final class BlackScreenWindow implements AutoCloseable {
     private final Context service;
+    private final Runnable visibilityChanged;
     private View window;
     private boolean watchingScreen;
     private record BackPress(int device, long downTime) {}
@@ -22,7 +23,12 @@ final class BlackScreenWindow implements AutoCloseable {
         @Override public void onReceive(Context context, Intent intent) { close(); }
     };
 
-    BlackScreenWindow(Context service) { this.service = service; }
+    BlackScreenWindow(Context service, Runnable visibilityChanged) {
+        this.service = service;
+        this.visibilityChanged = visibilityChanged;
+    }
+
+    boolean isVisible() { return window != null; }
 
     void toggle() {
         if (window != null) { close(); return; }
@@ -50,6 +56,7 @@ final class BlackScreenWindow implements AutoCloseable {
             close();
             throw failure;
         }
+        visibilityChanged.run();
     }
 
     boolean back(KeyEvent event) {
@@ -76,6 +83,7 @@ final class BlackScreenWindow implements AutoCloseable {
             window = null;
             try { service.getSystemService(WindowManager.class).removeViewImmediate(view); }
             catch (IllegalArgumentException alreadyRemoved) { }
+            visibilityChanged.run();
         }
     }
 }

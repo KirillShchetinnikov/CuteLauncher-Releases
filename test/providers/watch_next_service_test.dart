@@ -10,6 +10,7 @@ import 'package:mockito/mockito.dart';
 import 'package:flauncher/providers/watch_next_service.dart';
 import 'package:flauncher/models/watch_next_program.dart';
 import 'package:flauncher/models/content_load_state.dart';
+import 'package:flauncher/diagnostics_store.dart';
 import '../mocks.mocks.dart';
 
 class _LocalHttpOverrides extends HttpOverrides {}
@@ -21,6 +22,7 @@ void main() {
   late WatchNextService watchNextService;
 
   setUp(() {
+    DiagnosticsStore.instance.clear();
     mockChannel = MockFLauncherChannel();
     watchNextStreamController = StreamController<dynamic>.broadcast();
     // Default stubs
@@ -418,6 +420,11 @@ void main() {
       expect(await service.poster(fallback), image);
       expect(requests, 2);
       verify(mockChannel.getWatchNextPoster('content://thumbnail')).called(1);
+      final traces = DiagnosticsStore.instance.posterLoads.snapshot()['recent'] as List;
+      expect(traces.last['source'], 'watchNext');
+      expect(traces.last['variant'], 'thumbnail');
+      expect(traces.last['stage'], 'platform');
+      expect(traces.last['outcome'], 'loaded');
     });
 
     test('explicit and event refresh reload poster contents under the same URI', () async {

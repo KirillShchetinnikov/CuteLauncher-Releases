@@ -16,6 +16,7 @@ import 'package:path_provider_platform_interface/path_provider_platform_interfac
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/diagnostics_store.dart';
+import 'package:flauncher/city_search.dart';
 import 'package:flauncher/models/weather_data.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/appearance_service.dart';
@@ -69,6 +70,7 @@ void main() {
   late Directory directory;
   late PathProviderPlatform originalPaths;
   late _Transport transport;
+  late List<Uri> cityRequests;
   setUp(() async {
     DiagnosticsStore.instance.clear();
     directory = await Directory.systemTemp.createTemp('weather-ui-');
@@ -84,7 +86,20 @@ void main() {
       channel.addWeatherChangedListener(any),
     ).thenAnswer((call) => events.stream.listen(call.positionalArguments[0]));
     transport = _Transport();
-    service = WeatherService(channel, preferences: prefs, transport: transport);
+    cityRequests = [];
+    service = WeatherService(
+      channel, preferences: prefs, transport: transport,
+      citySearch: CitySearch(
+        loadCatalog: () async =>
+            'Moscow\tМосква\tMoscow\tRussia\tRU\t55.75583\t37.61778\tMoskva\n'
+            'Moscow\t\tIdaho\tUnited States\tUS\t46.73239\t-117.00017\t',
+        request: (uri) async {
+          cityRequests.add(uri);
+          return {'geonames': []};
+        },
+        username: 'test',
+      ),
+    );
     settings = SettingsService(prefs);
     appearance = AppearanceService(prefs);
     while (!service.initialized) {
@@ -150,7 +165,10 @@ void main() {
         addTearDown(tester.view.resetDevicePixelRatio);
         await tester.runAsync(
           () =>
-              service.configure(service.configuration.copyWith(source: source)),
+              service.configure(service.configuration.copyWith(
+                source: source,
+                locationMode: WeatherLocationMode.automatic,
+              )),
         );
         await mount(tester);
         final l = AppLocalizations.of(
@@ -524,19 +542,21 @@ void main() {
   for (final template in [false, true]) {
   testWidgets('standalone panel, combined panel and background use the saved format: template=$template', (tester) async {
     final snapshot = MockWeatherService();
-    const current = WeatherData(currentTemp: 6, feelsLikeTemp: 2);
+    const current = WeatherData(currentTemp: 6, feelsLikeTemp: 2, currentConditionCode: 803);
     when(snapshot.weatherData).thenReturn(current);
     when(snapshot.stale).thenReturn(false);
     await appearance.set('panelInformationPlacements', {
       'time': 'hidden', 'date': 'hidden', 'weather': 'background',
     });
     await appearance.set('weatherIconPack', 'pixel');
+    await appearance.set('panelBackgroundInformationContentAlignment', 'center');
     await appearance.set('weatherTextColor', 0xffaadebb);
     await settings.setWeatherTextFormat(template ? parseWeatherTemplate('{TEMP}{BR}({FEELS}){ICON}').format! : WeatherTextFormat.fromBlocks(const [
       WeatherTextBlock(WeatherTextField.temperature),
       WeatherTextBlock(WeatherTextField.lineBreak),
       WeatherTextBlock(WeatherTextField.feelsLike, before: '(', after: ')'),
     ])!);
+    await settings.setInformationWeather(settings.informationWeather().copyWith(missingAsDash: true, panelAlignment: 'right'));
     await tester.pumpWidget(
       MultiProvider(
         providers: [
@@ -556,6 +576,8 @@ void main() {
                   showTime: false, showDate: false, showWeather: true,
                   timeFormat: settings.timeFormat, dateFormat: settings.dateFormat,
                   weather: current, weatherTextFormat: settings.weatherTextFormat,
+                  weatherMissingAsDash: settings.informationWeather().missingAsDash,
+                  weatherAlignment: settings.informationWeather().panelAlignment,
                 )),
                 const Expanded(child: BackgroundInformation()),
               ],
@@ -566,6 +588,7 @@ void main() {
     );
     await tester.pumpAndSettle();
     expect(find.text('6°C'), findsNWidgets(3));
+    expect(tester.widgetList<WeatherDisplayText>(find.byType(WeatherDisplayText)).map((w) => w.alignment), ['right', 'right', 'center']);
     if (!template) expect(find.text('(2°C)'), findsNWidgets(3));
     expect(tester.widgetList<WeatherDisplayText>(find.byType(WeatherDisplayText)).map((text) => text.text), everyElement(contains('(2°C)')));
     expect(tester.widgetList<Text>(find.text('6°C')).map((text) => text.style?.color),
@@ -683,7 +706,11 @@ void main() {
 
   testWidgets('forecast period and view can be changed with the remote and persist', (tester) async {
     await mount(tester);
-    await tester.ensureVisible(find.text('Период прогноза'));
+    await tester.scrollUntilVisible(
+      find.text('Период прогноза'),
+      160,
+      scrollable: find.byType(Scrollable).first,
+    );
     Focus.of(tester.element(find.text('Период прогноза'))).requestFocus();
     await tester.pumpAndSettle();
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
@@ -1251,10 +1278,14 @@ void main() {
     });
   }
 
-  for (final source in ['Open-Meteo', 'MET Norway', 'OpenWeather', 'Яндекс Погода (REST)', 'Gismeteo']) {
+  for (final source in ['Авто', 'Open-Meteo', 'MET Norway', 'OpenWeather', 'Яндекс Погода (REST)', 'Gismeteo']) {
     testWidgets(
       '$source selection only chooses the source; parameters stay separate',
       (tester) async {
+        await tester.runAsync(() => service.configure(service.configuration.copyWith(
+          source: source == 'Авто' ? WeatherSource.openMeteo : null,
+          locationMode: WeatherLocationMode.automatic,
+        )));
         await mount(tester);
         await tester.sendKeyEvent(LogicalKeyboardKey.enter);
         await tester.pumpAndSettle();
@@ -1269,6 +1300,7 @@ void main() {
               .map((button) => (button.title as Text).data)
               .toList(),
           [
+            'Авто',
             'Open-Meteo',
             'Свой сервер (Open-Meteo)',
             'MET Norway',
@@ -1278,7 +1310,10 @@ void main() {
             'Breezy Weather',
           ],
         );
-        await tester.tap(find.text(source));
+        await tester.tap(find.descendant(
+          of: find.byType(AlertDialog),
+          matching: find.text(source),
+        ));
         await tester.runAsync(
           () => Future<void>.delayed(const Duration(milliseconds: 30)),
         );
@@ -1287,12 +1322,18 @@ void main() {
         expect(tile('Местоположение'), findsOneWidget);
         expect(tile('Получить местоположение'), findsOneWidget);
         expect(tile('Название города'), findsNothing);
-        if (source == 'Gismeteo') {
-          expect(service.configuration.source, WeatherSource.gismeteo);
-          expect(tile('Ввести координаты'), findsOneWidget);
+        if (source == 'Авто' || source == 'Gismeteo') {
           expect(tile('Ключ API Яндекса'), findsNothing);
           expect(tile('API-ключ OpenWeather'), findsNothing);
         }
+        if (source == 'Авто') {
+          expect(service.configuration.source, WeatherSource.auto);
+        }
+        if (source == 'Gismeteo') {
+          expect(service.configuration.source, WeatherSource.gismeteo);
+        }
+        expect(tile('Ввести координаты'), findsNothing);
+        expect(tile('Способ ввода'), findsNothing);
         expect(service.canRefresh, isFalse);
         await tester.ensureVisible(tile('Обновить погоду'));
         expect(
@@ -1308,32 +1349,6 @@ void main() {
   testWidgets(
     'location mode is separate and city search matches solar settings',
     (tester) async {
-      const citiesChannel = MethodChannel('cutelauncher/night');
-      final messenger =
-          TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
-      var searches = 0;
-      messenger.setMockMethodCallHandler(citiesChannel, (call) async {
-        expect(call.method, 'cities');
-        expect(call.arguments['language'], 'en');
-        searches++;
-        return searches == 1
-            ? []
-            : [
-                {
-                  'city': 'Moscow, Russia',
-                  'latitude': 55.75583,
-                  'longitude': 37.61778,
-                },
-                {
-                  'city': 'Moscow, Idaho, United States',
-                  'latitude': 46.73239,
-                  'longitude': -117.00017,
-                },
-              ];
-      });
-      addTearDown(
-        () => messenger.setMockMethodCallHandler(citiesChannel, null),
-      );
       await tester.runAsync(
         () => service.configure(
           const WeatherConfiguration(source: WeatherSource.yandex),
@@ -1360,7 +1375,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(tile('Получить местоположение'), findsNothing);
       expect(tile('Название города'), findsOneWidget);
-      expect(searches, 0);
+      expect(cityRequests, isEmpty);
       expect(service.canRefresh, isFalse);
       await tester.tap(tile('Название города'));
       await tester.pumpAndSettle();
@@ -1396,7 +1411,36 @@ void main() {
       );
       expect(service.configuration.cityLatitude, 46.73239);
       expect(service.configuration.cityLongitude, -117.00017);
+      expect(cityRequests.single.queryParameters['name'], 'WrongCityDefinitely');
+      expect(cityRequests.single.queryParameters['lang'], 'ru');
       expect(transport.requests, isEmpty); // Yandex still requires a key.
+      await tester.tap(tile('Способ ввода'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.descendant(of: dialog, matching: find.text('Координаты')));
+      await waitFor(tester, () => tile('Ввести координаты').evaluate().isNotEmpty);
+      await tester.pumpAndSettle();
+      expect(tile('Название города'), findsNothing);
+      await tester.tap(tile('Ввести координаты'));
+      await tester.pumpAndSettle();
+      final field = find.byType(TextField);
+      final ok = find.descendant(of: dialog, matching: find.byType(LauncherDialogButton)).last;
+      await tester.enterText(field, '91, 0');
+      await tester.tap(ok);
+      await tester.pumpAndSettle();
+      expect(tester.widget<TextField>(field).decoration?.errorText, isNotNull);
+      await tester.enterText(field, '-33.8, 151.2');
+      await tester.tap(ok);
+      await waitFor(tester, () => service.configuration.manualCoordinates != null);
+      await tester.pumpAndSettle();
+      expect(service.configuration.locationMode, WeatherLocationMode.manual);
+      expect(service.configuration.selectedCoordinates, (latitude: -33.8, longitude: 151.2));
+      await tester.tap(tile('Способ ввода'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.descendant(of: dialog, matching: find.text('Город')));
+      await waitFor(tester, () => tile('Название города').evaluate().isNotEmpty);
+      await tester.pumpAndSettle();
+      expect(service.configuration.selectedCoordinates, (latitude: 46.73239, longitude: -117.00017));
+      expect(service.configuration.manualCoordinates, (latitude: -33.8, longitude: 151.2));
       await tester.tap(tile('Местоположение'));
       await tester.pumpAndSettle();
       await tester.tap(
@@ -1411,6 +1455,7 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(tile('Название города'), findsNothing);
+      expect(tile('Способ ввода'), findsNothing);
       expect(tile('Получить местоположение'), findsOneWidget);
       expect(service.configuration.cityLatitude, 46.73239);
       expect(service.configuration.location, 'Moscow, Idaho, United States');

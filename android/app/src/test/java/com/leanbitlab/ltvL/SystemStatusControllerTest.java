@@ -14,6 +14,24 @@ import static org.robolectric.Shadows.shadowOf;
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = {28, 36})
 public class SystemStatusControllerTest {
+    @Test public void ramSnapshotRejectsImpossibleReadingsWithoutAdb() {
+        try (var lifecycle = Robolectric.buildActivity(Activity.class).setup()) {
+            var context = lifecycle.get();
+            var info = new ActivityManager.MemoryInfo();
+            info.totalMem = 2048L * 1024 * 1024;
+            info.availMem = 512L * 1024 * 1024;
+            var manager = shadowOf(context.getSystemService(ActivityManager.class));
+            manager.setMemoryInfo(info);
+            assertEquals(info.totalMem, SystemStatusController.ramSnapshot(context).get("ramTotalBytes"));
+            assertEquals(info.availMem, SystemStatusController.ramSnapshot(context).get("ramAvailableBytes"));
+            info.availMem = info.totalMem + 1;
+            manager.setMemoryInfo(info);
+            assertTrue(SystemStatusController.ramSnapshot(context).isEmpty());
+            info.totalMem = 0; info.availMem = 0;
+            manager.setMemoryInfo(info);
+            assertTrue(SystemStatusController.ramSnapshot(context).isEmpty());
+        }
+    }
     @Test public void deniedDirectReadUsesFreshAdbCountersAndResetsAcrossSourcesAndFailures() {
         var controller = new SystemStatusController();
         var denied = (SystemStatusController.CpuReader) () -> { throw new SecurityException("denied"); };

@@ -1,6 +1,7 @@
 import 'settings_information.dart';
 import 'settings_read_only_value.dart';
 import 'settings_section.dart';
+import 'settings_help.dart';
 import '../remote_text_input.dart';
 
 import 'package:flauncher/widgets/launcher_dialog.dart';
@@ -19,7 +20,8 @@ import 'settings_page_layout.dart';
 
 class CloudBackupPage extends StatefulWidget {
   static const routeName = 'cloud_backup';
-  const CloudBackupPage({super.key});
+  const CloudBackupPage({super.key, this.smb = false});
+  final bool smb;
   @override
   State<CloudBackupPage> createState() => _CloudBackupPageState();
 }
@@ -77,7 +79,7 @@ class _CloudBackupPageState extends State<CloudBackupPage>
     } catch (error) {
       if (mounted && _current(generation)) {
         final l = AppLocalizations.of(context)!;
-        _message = cloudErrorMessage(l, error);
+        _message = cloudErrorMessage(l, error, smb: widget.smb);
         _messageFailed = true;
       }
     } finally {
@@ -222,17 +224,18 @@ class _CloudBackupPageState extends State<CloudBackupPage>
       onPressed: enabled && available ? onPressed : null,
     );
     return SettingsPageLayout(
-      title: const Text('WebDAV / Nextcloud'),
+      title: Text(widget.smb ? l.backupSmb : 'WebDAV / Nextcloud'),
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            if (widget.smb) SettingsHelp(title: l.backupSmb, text: l.smbHelp),
             SettingsSection(
               key: const ValueKey('settingsGroupCredentials'),
               title: l.settingsGroupCredentials,
               children: [
                 _labelledInput(
-                  l.cloudUrl,
+                  widget.smb ? l.smbUrl : l.cloudUrl,
                   TextField(
                     key: const ValueKey('cloud-url'),
                     controller: _url,
@@ -255,7 +258,7 @@ class _CloudBackupPageState extends State<CloudBackupPage>
                   ),
                 ),
                 _labelledInput(
-                  l.cloudPassword,
+                  widget.smb ? l.smbPassword : l.cloudPassword,
                   TextField(
                     key: const ValueKey('cloud-password'),
                     controller: _password,
@@ -281,7 +284,7 @@ class _CloudBackupPageState extends State<CloudBackupPage>
                 if (service.account.configured) ...[
                   const SizedBox(height: 12),
                   SettingsReadOnlyValue(
-                    label: l.cloudUrl,
+                    label: widget.smb ? l.smbUrl : l.cloudUrl,
                     value: service.account.url,
                     textDirection: TextDirection.ltr,
                   ),

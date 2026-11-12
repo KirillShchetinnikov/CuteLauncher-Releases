@@ -23,7 +23,7 @@ import io.flutter.plugin.common.MethodChannel;
 
 /** One-shot elapsed-time alarm, independent of Flutter and the foreground app. */
 final class SleepTimerBridge {
-    private static SharedPreferences prefs(Context c) { return c.getSharedPreferences("sleep_timer", 0); }
+    static SharedPreferences prefs(Context c) { return c.getSharedPreferences("sleep_timer", 0); }
     private static AlarmManager alarms(Context c) { return c.getSystemService(AlarmManager.class); }
     private static int boot(Context c) { return Settings.Global.getInt(c.getContentResolver(), Settings.Global.BOOT_COUNT, -1); }
     private static PendingIntent alarm(Context c, long deadline) {
@@ -33,10 +33,16 @@ final class SleepTimerBridge {
     }
     static synchronized void cancel(Context c) {
         alarms(c).cancel(alarm(c, 0));
-        prefs(c).edit().clear().commit();
+        // Explicit removal delivers the deadline change to listeners on Android 9 and 10.
+        prefs(c).edit().remove("deadline").remove("boot").remove("error").remove("firing").commit();
     }
     private static boolean exact(Context c) {
         return Build.VERSION.SDK_INT < 31 || alarms(c).canScheduleExactAlarms();
+    }
+    static synchronized long activeDeadline(Context c) {
+        var p = prefs(c);
+        long deadline = p.getLong("deadline", 0);
+        return deadline > 0 && p.getInt("boot", -2) == boot(c) ? deadline : 0;
     }
     static synchronized Map<String, Object> state(Context c) {
         SharedPreferences p = prefs(c);
