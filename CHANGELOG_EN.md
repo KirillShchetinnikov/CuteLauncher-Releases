@@ -2,7 +2,9 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
-## v1.8.0 — 2026-11-13
+## v1.8.0-test.3 — 2026-11-13
+
+**Prerelease.** Video playback from a folder still needs testing on a TV.
 
 - Added video wallpapers from a folder on the TV or a USB drive. Videos loop without sound. You can play them by name, by modification date, or in a random order without repeats within each cycle, and skip to the next video manually.
 - Appearance settings now use a consistent transparency scale. At 0% an element is fully visible, and at 100% it is fully transparent.
