@@ -110,21 +110,24 @@ void main() {
   );
 
   testWidgets(
-    'Back can be assigned to the first feed card and restored from settings',
+    'Both section navigation actions can be saved and imported',
     (tester) async {
       await pump(tester, const HomeParametersPage());
-      await tester.tap(find.text('Back button action'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('First card in current feed'));
-      await tester.pumpAndSettle();
       final prefs = await SharedPreferences.getInstance();
-      expect(prefs.getString('back_button_action'), BACK_BUTTON_ACTION_FIRST_FEED_CARD);
-      expect(compatibleSettings({
-        'back_button_action': BACK_BUTTON_ACTION_FIRST_FEED_CARD,
-      }, {'back_button_action': ''}), {
-        'back_button_action': BACK_BUTTON_ACTION_FIRST_FEED_CARD,
-      });
-      expect(find.text('First card in current feed'), findsOneWidget);
+      for (final (value, label) in [
+        (BACK_BUTTON_ACTION_FIRST_FEED_CARD, 'First card in current section'),
+        (BACK_BUTTON_ACTION_SECTION_START_THEN_UP, 'First card, then up one section at a time'),
+      ]) {
+        await tester.tap(find.text('Back button action'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text(label));
+        await tester.pumpAndSettle();
+        expect(prefs.getString('back_button_action'), value);
+        expect(compatibleSettings({
+          'back_button_action': value,
+        }, {'back_button_action': ''}), {'back_button_action': value});
+        expect(find.text(label), findsOneWidget);
+      }
     },
   );
 

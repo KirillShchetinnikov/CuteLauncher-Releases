@@ -6,6 +6,18 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  test('secondary engine keeps its small image budget after profile changes', () async {
+    SharedPreferences.setMockInitialValues({});
+    final settings = SettingsService(await SharedPreferences.getInstance());
+    final resources = MemoryResources(settings: settings, secondaryEngine: true);
+    for (final economy in [false, true, false]) {
+      await settings.setMemorySaverEnabled(economy);
+      expect(PaintingBinding.instance.imageCache.maximumSizeBytes, 8 * 1024 * 1024);
+      expect(PaintingBinding.instance.imageCache.maximumSize, 20);
+    }
+    resources.dispose();
+    settings.dispose();
+  });
   test('feature snapshots aggregate providers without double counting and retain old snapshots', () {
     final resources = MemoryResources();
     final owner = Object();

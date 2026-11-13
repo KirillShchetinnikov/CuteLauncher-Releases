@@ -406,7 +406,11 @@ class AppLocalizationsJa extends AppLocalizations {
   String get delete => '削除';
 
   @override
-  String get dialogOptionBackButtonActionFirstFeedCard => '現在のフィードの先頭カードへ';
+  String get dialogOptionBackButtonActionFirstFeedCard => '現在のセクションの先頭カードへ';
+
+  @override
+  String get dialogOptionBackButtonActionSectionStartThenUp =>
+      '先頭カードへ移動後、セクションごとに上へ';
 
   @override
   String get dialogOptionBackButtonActionDoNothing => '何もしない';
@@ -2666,7 +2670,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get adbBuiltinHint =>
-      '内蔵ランチャーを無効にすると、システムは代わりに CuteLauncher を開くことができます。テレビのメニューとボタンが影響を受ける可能性があります。これを元に戻すには、組み込みのランチャーを有効にします。';
+      '内蔵ランチャーを無効にすると、リモコンの一部のボタンやメーカー独自のテレビメニューが使えなくなることがあります。元に戻すには、内蔵ランチャーを再度有効にしてください。';
 
   @override
   String get adbHomeBlock => 'ホームボタンと起動';
@@ -2695,7 +2699,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get adbEffectHome =>
-      'CuteLauncher がシステムのデフォルトのランチャーになります。現在のランチャーは復元のために保存されます。';
+      'CuteLauncher は Android に既定のランチャーとして設定するよう要求し、結果を確認します。現在のランチャーは復元のために保存されます。';
 
   @override
   String get adbEffectRestore =>
@@ -2754,8 +2758,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get adbUnsupported => 'このデバイスでは使用できません: サポートされている ADB コマンドはありません。';
 
   @override
-  String get adbHomeUnavailable =>
-      '内蔵ランチャーはシステム優先です。 ADB を介した直接割り当ては利用できません。アクセシビリティを使用するか、内蔵ランチャーを無効にしてください。';
+  String get adbHomeUnchanged =>
+      'Android は現在のランチャーを維持しました。ホームボタンで CuteLauncher を開くには、Home Button Fix を設定してください。';
 
   @override
   String get nightBatteryExempt => 'CuteLauncherは最適化の対象外です';
@@ -4789,6 +4793,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get systemUptime => '稼働時間（時間:分）';
 
   @override
+  String get systemShowTemperature => 'パネルにCPU温度を表示';
+
+  @override
   String get systemTemperature => 'CPU温度';
 
   @override
@@ -4808,7 +4815,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get systemWidgetHelp =>
-      'パネルの表示中は、選択した1～10秒の間隔（既定は5秒）で更新されます。グラフには1分ごとの平均とピークが表示されます。他のアプリの使用中、スリープ中、読み取り失敗時は空白になります。履歴はメモリに保存され、ランチャーのプロセスを再起動すると消去されます。CPUと温度の取得可否はファームウェアに依存します。パネルの両方の値をオフにすると、アイコンのみ表示されます。';
+      'パネルの表示中は、選択した1～10秒の間隔（既定は5秒）で更新されます。グラフには1分ごとの平均とピークが表示されます。他のアプリの使用中、スリープ中、読み取り失敗時は空白になります。履歴はメモリに保存され、ランチャーのプロセスを再起動すると消去されます。CPUと温度の取得可否はファームウェアに依存します。パネルのすべての値をオフにすると、アイコンのみ表示されます。';
 
   @override
   String get slideshowBrowseFolders => 'フォルダを参照';

@@ -34,7 +34,8 @@ enum NetworkType
   Wifi,
   Vpn,
   Wired,
-  Unknown
+  Unknown,
+  Pending,
 }
 
 // https://developer.android.com/reference/android/telephony/TelephonyManager#NETWORK_TYPE_CDMA
@@ -91,7 +92,7 @@ class NetworkService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
   NetworkService(this._channel, {this.work}) :
         _hasInternetAccess = false,
         _cellularNetworkType = CellularNetworkType.Unknown,
-        _networkType = NetworkType.Unknown,
+        _networkType = NetworkType.Pending,
         _wirelessNetworkSignalLevel = 0,
         _dailyDataUsage = -1,
         _hasUsageStatsPermission = false,
@@ -102,20 +103,24 @@ class NetworkService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
     final initialRevision = _networkRevision;
     _networkSubscription = _channel.addNetworkChangedListener(_onNetworkChanged);
 
-    initialNetworkLoad = _channel
-        .getActiveNetworkInformation()
-        .then((map) {
-          if (!isDisposed && initialRevision == _networkRevision && map.isNotEmpty) {
-            final before = _networkState;
-            _getNetworkInformation(map.cast<String, dynamic>());
-            if (before != _networkState) notifyListeners();
-          }
-        }).catchError((e) {
-          log("Error getting active network info: $e");
-        });
+    initialNetworkLoad = _readInitialNetwork(initialRevision);
 
     initialLoad = Future.wait([initialNetworkLoad, refreshPermissionAndUsage()]);
     WidgetsBinding.instance.addObserver(this);
+  }
+
+  Future<void> _readInitialNetwork(int revision) async {
+    Map<String, dynamic> data;
+    try {
+      data = await _channel.getActiveNetworkInformation();
+    } catch (error) {
+      log('Error getting active network info: $error');
+      return;
+    }
+    if (isDisposed || revision != _networkRevision || data.isEmpty) return;
+    final before = _networkState;
+    _getNetworkInformation(data);
+    if (before != _networkState) notifyListeners();
   }
 
   @override
@@ -263,7 +268,8 @@ class NetworkService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
     try {
       int networkTypeInt = map["networkType"] as int;
       _hasInternetAccess = map["internetAccess"] as bool;
-      _networkType = NetworkType.values[networkTypeInt];
+      _networkType = networkTypeInt >= 0 && networkTypeInt <= NetworkType.Unknown.index
+          ? NetworkType.values[networkTypeInt] : NetworkType.Unknown;
       _vpnActive = map["vpnActive"] as bool? ?? false;
 
       if (_networkType == NetworkType.Cellular || _networkType == NetworkType.Wifi) {

@@ -206,6 +206,7 @@ bool _validValue(String key, dynamic value) {
       BACK_BUTTON_ACTION_CLOCK,
       BACK_BUTTON_ACTION_SCREENSAVER,
       BACK_BUTTON_ACTION_FIRST_FEED_CARD,
+      BACK_BUTTON_ACTION_SECTION_START_THEN_UP,
     ],
     'wifi_usage_period': ['daily', 'weekly', 'monthly'],
     'temperature_unit': ['celsius', 'fahrenheit'],

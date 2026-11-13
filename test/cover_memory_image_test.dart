@@ -97,6 +97,36 @@ void main() {
   );
 
   test(
+    'reloaded identical poster bytes share a decoded cache entry',
+    () async {
+      final bytes = await source(160, 240);
+      CoverMemoryImage provider(Uint8List data) => CoverMemoryImage(
+        data,
+        logicalSize: const ui.Size(80, 120),
+        pixelRatio: 1,
+        focusScale: 1,
+      );
+      final first = provider(bytes);
+      final reread = provider(Uint8List.fromList(bytes));
+      expect(await first.obtainKey(ImageConfiguration.empty),
+          await reread.obtainKey(ImageConfiguration.empty));
+      await decodedSize(first);
+      final cache = PaintingBinding.instance.imageCache;
+      final entries = cache.currentSize;
+      final decodedBytes = cache.currentSizeBytes;
+      for (var read = 0; read < 20; read++) {
+        await decodedSize(provider(Uint8List.fromList(bytes)));
+        expect(cache.currentSize, entries);
+        expect(cache.currentSizeBytes, decodedBytes);
+        expect(cache.pendingImageCount, 0);
+      }
+      final changed = provider(await source(160, 241));
+      expect(await first.obtainKey(ImageConfiguration.empty),
+          isNot(await changed.obtainKey(ImageConfiguration.empty)));
+    },
+  );
+
+  test(
     'cache identity includes decode geometry and reuses identical requests',
     () async {
       final bytes = await source(80, 120);
@@ -112,6 +142,16 @@ void main() {
       expect(provider(1.2), isNot(provider(1)));
       expect(provider(1.2), isNot(provider(1.2, ratio: 1)));
       expect(provider(1.2), isNot(MemoryImage(bytes)));
+      final key = await provider(1.2).obtainKey(ImageConfiguration.empty);
+      expect(key, await provider(1.2).obtainKey(ImageConfiguration.empty));
+      expect(key.hashCode,
+          (await provider(1.2).obtainKey(ImageConfiguration.empty)).hashCode);
+      expect(key, isNot(await provider(1).obtainKey(ImageConfiguration.empty)));
+      expect(key, isNot(await provider(1.2, ratio: 1).obtainKey(ImageConfiguration.empty)));
+      expect(key, isNot(await CoverMemoryImage(bytes,
+        logicalSize: const ui.Size(320, 180), pixelRatio: 2,
+        focusScale: 1.2, maximumEdge: 1024,
+      ).obtainKey(ImageConfiguration.empty)));
     },
   );
 }

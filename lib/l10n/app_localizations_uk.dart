@@ -413,7 +413,11 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get dialogOptionBackButtonActionFirstFeedCard =>
-      'На першу картку поточної стрічки';
+      'На першу картку поточного розділу';
+
+  @override
+  String get dialogOptionBackButtonActionSectionStartThenUp =>
+      'На першу картку, потім по розділах угору';
 
   @override
   String get dialogOptionBackButtonActionDoNothing => 'Нічого не робити';
@@ -2748,7 +2752,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get adbBuiltinHint =>
-      'Якщо вимкнути вбудований засіб запуску, система натомість відкриватиме CuteLauncher. Це може вплинути на меню та кнопки телевізора. Увімкніть вбудовану панель запуску, щоб скасувати це.';
+      'Після вимкнення вбудованого лаунчера деякі кнопки на пульті та фірмові меню телевізора можуть перестати працювати. Щоб скасувати цю зміну, знову ввімкніть вбудований лаунчер.';
 
   @override
   String get adbHomeBlock => 'Кнопка «Додому» та запуск';
@@ -2782,7 +2786,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get adbEffectHome =>
-      'CuteLauncher стане програмою запуску системи за замовчуванням. Поточну панель запуску буде збережено для відновлення.';
+      'CuteLauncher попросить Android призначити його засобом запуску за замовчуванням і перевірить результат. Поточний засіб запуску буде збережено для відновлення.';
 
   @override
   String get adbEffectRestore =>
@@ -2845,8 +2849,8 @@ class AppLocalizationsUk extends AppLocalizations {
       'Недоступно на цьому пристрої: не підтримується команда ADB.';
 
   @override
-  String get adbHomeUnavailable =>
-      'Вбудований засіб запуску має системний пріоритет. Пряме призначення через ADB недоступне; скористайтеся доступністю або вимкніть вбудовану панель запуску.';
+  String get adbHomeUnchanged =>
+      'Android залишив поточний засіб запуску. Щоб кнопка Home відкривала CuteLauncher, налаштуйте Home Button Fix.';
 
   @override
   String get nightBatteryExempt => 'CuteLauncher не підлягає оптимізації';
@@ -4949,6 +4953,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get systemUptime => 'Час роботи (години:хвилини)';
 
   @override
+  String get systemShowTemperature => 'Показувати температуру CPU на панелі';
+
+  @override
   String get systemTemperature => 'Температура CPU';
 
   @override
@@ -4968,7 +4975,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get systemWidgetHelp =>
-      'Показники оновлюються з вибраним інтервалом від 1 до 10 секунд (типово 5), поки панель видима. Графіки показують середні значення та піки за хвилину. Інші програми, сон і помилки читання залишають розриви. Історія зберігається в пам’яті та скидається після перезапуску процесу лаунчера. CPU і температура залежать від прошивки. Вимкніть обидва показники панелі, щоб залишити лише значок.';
+      'Показники оновлюються з вибраним інтервалом від 1 до 10 секунд (типово 5), поки панель видима. Графіки показують середні значення та піки за хвилину. Інші програми, сон і помилки читання залишають розриви. Історія зберігається в пам’яті та скидається після перезапуску процесу лаунчера. CPU і температура залежать від прошивки. Вимкніть усі показники панелі, щоб залишити лише значок.';
 
   @override
   String get slideshowBrowseFolders => 'Перегляд папок';

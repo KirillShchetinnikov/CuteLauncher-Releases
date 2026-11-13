@@ -48,7 +48,6 @@ class _TileArtworkState extends State<TileArtwork> {
   void didUpdateWidget(TileArtwork oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.image != widget.image) {
-      _source = null;
       _icon = null;
       _iconFailed = false;
     }
@@ -213,6 +212,7 @@ class _TileArtworkState extends State<TileArtwork> {
                 : const SizedBox.shrink(),
           ),
         Positioned.fromRect(
+          key: const ValueKey('artwork-image'),
           rect: rect,
           child: Image(
             image: image,

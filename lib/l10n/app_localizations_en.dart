@@ -412,7 +412,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dialogOptionBackButtonActionFirstFeedCard =>
-      'First card in current feed';
+      'First card in current section';
+
+  @override
+  String get dialogOptionBackButtonActionSectionStartThenUp =>
+      'First card, then up one section at a time';
 
   @override
   String get dialogOptionBackButtonActionDoNothing => 'Do nothing';
@@ -2727,7 +2731,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get adbBuiltinHint =>
-      'Disabling the built-in launcher lets the system open CuteLauncher instead. TV menus and buttons may be affected. Enable the built-in launcher to undo this.';
+      'Disabling the built-in launcher may cause some remote buttons and manufacturer-specific TV menus to stop working. Re-enable the built-in launcher to undo this.';
 
   @override
   String get adbHomeBlock => 'Home button and startup';
@@ -2759,7 +2763,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get adbEffectHome =>
-      'CuteLauncher will become the system default launcher. The current launcher will be saved for restoration.';
+      'CuteLauncher will ask Android to make it the default launcher and then verify the result. The current launcher will be saved for restoration.';
 
   @override
   String get adbEffectRestore =>
@@ -2822,8 +2826,8 @@ class AppLocalizationsEn extends AppLocalizations {
       'Unavailable on this device: no supported ADB command.';
 
   @override
-  String get adbHomeUnavailable =>
-      'The built-in launcher has system priority. Direct assignment through ADB is unavailable; use accessibility or disable the built-in launcher.';
+  String get adbHomeUnchanged =>
+      'Android kept the current launcher. To open CuteLauncher with the Home button, set up Home Button Fix.';
 
   @override
   String get nightBatteryExempt => 'CuteLauncher is exempt from optimization';
@@ -4918,6 +4922,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get systemUptime => 'Uptime (hours:minutes)';
 
   @override
+  String get systemShowTemperature => 'Show CPU temperature in panel';
+
+  @override
   String get systemTemperature => 'CPU temperature';
 
   @override
@@ -4937,7 +4944,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get systemWidgetHelp =>
-      'Readings update at the selected interval of 1–10 seconds (5 by default) while the panel is visible. Graphs show minute averages and peaks. Other apps, sleep and read failures leave gaps. History stays in memory and resets when the launcher process restarts. CPU and temperature depend on the firmware. Turn off both panel values to show only the icon.';
+      'Readings update at the selected interval of 1–10 seconds (5 by default) while the panel is visible. Graphs show minute averages and peaks. Other apps, sleep and read failures leave gaps. History stays in memory and resets when the launcher process restarts. CPU and temperature depend on the firmware. Turn off all panel readings to show only the icon.';
 
   @override
   String get slideshowBrowseFolders => 'Browse folders';

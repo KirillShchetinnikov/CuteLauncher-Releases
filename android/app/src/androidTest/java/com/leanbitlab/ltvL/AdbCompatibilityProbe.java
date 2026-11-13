@@ -76,14 +76,17 @@ public final class AdbCompatibilityProbe extends Instrumentation {
                 Map<String, ?> originalRecovery = new java.util.HashMap<>(recovery.getAll());
                 try {
                     apply(activity, shell, "enableSystem", stock);
-                    if (AdbCapabilities.canHome(activity)) throw new AssertionError("Pinned HOME must block direct selection");
-                    apply(activity, shell, "disableSystem", stock);
+                    if (AdbCapabilities.homePriorityAllowsSelection(activity))
+                        throw new AssertionError("Pinned HOME was not detected");
+                    if (!"ready".equals(AdbLauncherControl.plan(activity, shell, "home", null).get("status")))
+                        throw new AssertionError("Pinned HOME blocked an assignment attempt");
+                    apply(activity, shell, "home", null);
                     if (!shell.execute("cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.HOME")
                         .contains(activity.getPackageName() + "/")) throw new AssertionError("Replacement HOME not selected");
                     apply(activity, shell, "restore", null);
                     if (!shell.execute("cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.HOME")
                         .contains(stock + "/")) throw new AssertionError("Stock HOME not restored");
-                    data.put("homeCycle", "PASS: enable, blocked direct HOME, disable, actual resolve, restore");
+                    data.put("homeCycle", "PASS: enable, assign with stock disable, actual resolve, restore");
                 } finally {
                     shell.execute((originallyDisabled ? "pm disable-user" : "pm enable") + " --user 0 '" + stock + "'");
                     String restoredHome = shell.execute("cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.HOME")

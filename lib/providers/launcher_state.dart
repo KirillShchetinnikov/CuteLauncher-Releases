@@ -76,7 +76,7 @@ class LauncherState extends ChangeNotifier with ServiceLifecycle
     notifyListeners();
   }
 
-  void handleBackNavigation(BuildContext context, {VoidCallback? onFirstFeedCard}) {
+  void handleBackNavigation(BuildContext context, {ValueChanged<bool>? onFirstSectionCard}) {
     if (_suppressBackUntil != null && DateTime.now().isBefore(_suppressBackUntil!)) {
       _suppressBackUntil = null;
       return;
@@ -97,7 +97,10 @@ class LauncherState extends ChangeNotifier with ServiceLifecycle
           context.read<ScreensaverService?>()?.startAmbientMode();
           break;
         case BACK_BUTTON_ACTION_FIRST_FEED_CARD:
-          if (launcherState.launcherVisible) onFirstFeedCard?.call();
+        case BACK_BUTTON_ACTION_SECTION_START_THEN_UP:
+          if (launcherState.launcherVisible) {
+            onFirstSectionCard?.call(action == BACK_BUTTON_ACTION_SECTION_START_THEN_UP);
+          }
           break;
       }
     }

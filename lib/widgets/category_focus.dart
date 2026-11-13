@@ -16,10 +16,11 @@ class CategoryFocusController {
   Future<bool> Function(AxisDirection, double)? enter;
   bool get hasItems => _packages.isNotEmpty;
   bool get hasFocus => _nodes.values.any((node) => node.hasFocus);
+  String? get firstPackage => _packages.firstOrNull;
   String? get lastPackage => _lastPackage;
   Future<bool> focusPackage(String package) => _materialize(package);
   Future<bool> focusFirst() {
-    final first = _packages.firstOrNull;
+    final first = firstPackage;
     return first == null ? Future.value(false) : _materialize(first);
   }
   bool hasMountedPackage(String package) => _nodes[package]?.context != null;

@@ -44,9 +44,15 @@ Hold an app tile to open its actions. Back returns from a nested screen;
 its home-screen behavior is configurable. Home returns to the launcher when
 the default home app or Home interception is configured correctly.
 Under **Home screen → Home screen behavior → Back button action**, choose
-**First card in current feed** to return focus and scrolling to the start of the
-app feed or Continue Watching row that contains the selected card. On the home
-screen outside those feeds, the action leaves focus where it is.
+**First card in current section** to return focus and scrolling to the first
+card in the section you are in. This works for app sections in row and grid
+layouts, recommendation feeds, and Continue Watching.
+
+**First card, then up one section at a time** also returns to the start of the
+current section. When the first card already has focus, each Back press moves
+to the first card of the nearest section above. Each recommendation feed counts
+as a separate step. Focus stays on the first card of the topmost section.
+
 You can choose the focus target after Home. Key sounds have separate switches: for Home,
 go to **Home screen → Home screen behavior**; for settings, go to
 **Interface style → Settings style**. Both switches are off by default.
@@ -505,9 +511,14 @@ source app and Android's Watch Next data.
 
 ## Top panel and widgets
 
+Top panel objects set to display continuously appear alongside the clock and date.
+While data loads, they show a neutral icon or “—” and update in place. Objects
+that depend on a connection, permission, or active-only mode appear once their
+condition is confirmed. Disabled objects stay hidden from the first frame.
+
 **Network storage and USB.** Under **Top panel → Objects**, you can turn
-**Network storage** and **USB drives** off independently. Icons appear only
-when a mounted volume is detected; the USB icon does not represent a keyboard,
+**Network storage** and **USB drives** off independently. An icon appears once
+the launcher detects a mounted volume. The USB icon does not represent a keyboard,
 remote or other USB peripheral. NAS appears only on compatible firmware with
 an accessible Formuler network storage screen. Selecting NAS opens that screen;
 USB opens the system storage settings. If the firmware does not provide these
@@ -540,17 +551,21 @@ Visibility on the quick settings panel is separate; the interval is shared.
 Use **Object order** to change its position.
 
 Enable the **System** widget in **Top panel → Objects**; it is off by default.
-The panel displays CPU and RAM. **System widget settings** lets you keep either
-value or only the icon and choose an **Update interval** from 1 to 10 seconds
+In **System widget settings**, you can choose which readings appear on the panel
+(CPU load, RAM, and CPU temperature), keep just the icon, and set an **Update interval** from 1 to 10 seconds
 (5 by default). The interval applies to CPU, RAM and the other widget readings
 on both panels. Select the widget to see overall CPU load, used and
 available RAM, free/total internal storage, device uptime since boot
-(hours:minutes), and one-hour CPU/RAM charts. CPU temperature appears only when
-the system source is available; GPU is not displayed. CPU availability depends
-on firmware: when direct access is blocked, the widget uses the built-in ADB's
-previously configured and verified local connection. Without that connection,
-missing readings appear as “—” or **Unavailable**. After a pause, CPU first appears
-on the second successful sample, after the selected interval.
+(hours:minutes), and one-hour CPU/RAM charts. If the device reports CPU
+temperature, the menu shows the hottest reading in °C. Turn on **Show CPU
+temperature in panel** to display it on the panel. The switch defaults to off.
+When there is no temperature reading, it appears off and is disabled until
+a reading becomes available. When direct access is
+unavailable, the widget can use a previously configured and verified built-in
+local ADB connection for both CPU temperature and load. Missing temperatures
+are hidden, while missing load readings appear as “—” or **Unavailable**.
+After a pause, CPU load appears on the second successful sample, after the
+selected interval.
 
 Readings refresh at the selected interval while the widget or its menu is visible.
 Charts show minute averages and peak markers on a 0–100% scale. Other apps,
@@ -1153,9 +1168,14 @@ Path: **Launcher and TV controls**.
   the box itself; TV behavior depends on HDMI-CEC and firmware. This does not
   disconnect electrical power.
 - Configure local TCP/RSA ADB: port, connection check, and authorization on the TV.
-- Inspect the current home app, open system launcher selection, assign CuteLauncher
-  through supported ADB actions, or restore the previous HOME handler.
-- Manage built-in Google TV / Android TV launchers and Home Button Fix separately.
+- **Default launcher** shows the current home app and two buttons. The first
+  sets CuteLauncher as default through ADB and disables the built-in launcher
+  if it is enabled. The same button then restores the previous home app and
+  brings back the built-in launcher. CuteLauncher checks Android's actual
+  selection. The second button opens Android's default launcher setting.
+  Disabling the built-in launcher may cause some remote buttons and
+  manufacturer-specific TV menus to stop working. Use the ADB restore action
+  to undo this.
   On TCL Smart TV Pro G10 with Android 14, the system app menu has no Disable
   button after Google TV is re-enabled. Returning to CuteLauncher by disabling
   Google TV requires a working ADB connection.
@@ -1166,6 +1186,8 @@ Path: **Launcher and TV controls**.
   does not block disabling the launcher. A dependency or unavailable
   check blocks disabling; diagnostics include the reason. No profiles are removed.
 - Enable the launcher's accessibility service and configure Home interception.
+  Home Button Fix can open CuteLauncher with the Home button while the built-in
+  launcher is enabled.
 - Grant supported special access to the launcher through ADB.
 - Launch an app or switch once to HDMI after TV boot or wake, with event and delay settings.
   For apps, **Wait for internet** waits up to 60 seconds after the delay, then makes
@@ -1838,7 +1860,7 @@ and a disabled-app list is not a recommendation for a different TV.
 | Location | Automatic weather coordinates and solar scheduling |
 | Exact alarms | System sleep-timer deadline event |
 | Install unknown apps | APK updates through Android's installer |
-| Authorized local ADB | Cleanup manager, relevant TV-control operations, and the CPU load fallback |
+| Authorized local ADB | Cleanup manager, relevant TV-control operations, and fallback readings for CPU load and temperature |
 | Compatible file manager | Additional file sources and system folder selection; a built-in browser is also available |
 
 Permissions are granted by the user and may be revoked by Android. A visible

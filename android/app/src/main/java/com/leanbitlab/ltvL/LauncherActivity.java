@@ -413,11 +413,11 @@ public class LauncherActivity extends FlutterActivity {
                         error -> result.error("applications_unavailable", "Unable to query launcher applications", DiagnosticErrorDetails.from(error)));
                 case "getApplicationBanner" -> ApplicationLoader.load(sImageExecutor,
                         task -> new Handler(Looper.getMainLooper()).post(task),
-                        () -> applicationCatalog.getApplicationBanner(call.arguments()), result::success,
+                        () -> applicationCatalog.getCachedArtwork(call.arguments(), true), result::success,
                         error -> result.success(new byte[0]));
                 case "getApplicationIcon" -> ApplicationLoader.load(sImageExecutor,
                         task -> new Handler(Looper.getMainLooper()).post(task),
-                        () -> applicationCatalog.getApplicationIcon(call.arguments()), result::success,
+                        () -> applicationCatalog.getCachedArtwork(call.arguments(), false), result::success,
                         error -> result.success(new byte[0]));
                 case "launchActivityFromAction" -> { if(autoLaunch!=null) autoLaunch.cancel(); result.success(launchActivityFromAction(call.arguments())); }
                 case "launchApp" -> { if(autoLaunch!=null) autoLaunch.cancel(); result.success(launchApp(call.arguments())); }

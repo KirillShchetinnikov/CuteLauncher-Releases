@@ -416,7 +416,11 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get dialogOptionBackButtonActionFirstFeedCard =>
-      'Prima scheda del feed corrente';
+      'Prima scheda della sezione corrente';
+
+  @override
+  String get dialogOptionBackButtonActionSectionStartThenUp =>
+      'Prima scheda, poi risali di una sezione alla volta';
 
   @override
   String get dialogOptionBackButtonActionDoNothing => 'Non fare nulla';
@@ -2770,7 +2774,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get adbBuiltinHint =>
-      'La disabilitazione del launcher integrato consente invece al sistema di aprire CuteLauncher. I menu e i pulsanti del televisore potrebbero risentirne. Abilita il launcher integrato per annullare questa operazione.';
+      'Se disattivi il launcher integrato, alcuni tasti del telecomando e alcuni menu TV del produttore potrebbero smettere di funzionare. Riattiva il launcher integrato per annullare la modifica.';
 
   @override
   String get adbHomeBlock => 'Tasto Home e avvio';
@@ -2803,7 +2807,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get adbEffectHome =>
-      'CuteLauncher diventerà il launcher predefinito del sistema. Il launcher corrente verrà salvato per il ripristino.';
+      'CuteLauncher chiederà ad Android di impostarlo come launcher predefinito e verificherà il risultato. Il launcher attuale verrà salvato per il ripristino.';
 
   @override
   String get adbEffectRestore =>
@@ -2866,8 +2870,8 @@ class AppLocalizationsIt extends AppLocalizations {
       'Non disponibile su questo dispositivo: nessun comando ADB supportato.';
 
   @override
-  String get adbHomeUnavailable =>
-      'Il launcher integrato ha la priorità di sistema. L\'assegnazione diretta tramite ADB non è disponibile; utilizzare l\'accessibilità o disabilitare il launcher integrato.';
+  String get adbHomeUnchanged =>
+      'Android ha mantenuto il launcher attuale. Per aprire CuteLauncher con il tasto Home, configura Home Button Fix.';
 
   @override
   String get nightBatteryExempt => 'CuteLauncher è esente da ottimizzazione';
@@ -4984,6 +4988,10 @@ class AppLocalizationsIt extends AppLocalizations {
   String get systemUptime => 'Tempo di attività (ore:minuti)';
 
   @override
+  String get systemShowTemperature =>
+      'Mostra la temperatura della CPU nel pannello';
+
+  @override
   String get systemTemperature => 'Temperatura CPU';
 
   @override
@@ -5003,7 +5011,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get systemWidgetHelp =>
-      'I valori si aggiornano con l’intervallo scelto da 1 a 10 secondi (5 predefinito) mentre il pannello è visibile. I grafici mostrano medie e picchi al minuto. Altre app, sospensione ed errori di lettura lasciano interruzioni. La cronologia resta in memoria e si azzera al riavvio del processo del launcher. CPU e temperatura dipendono dal firmware. Disattiva entrambi i valori del pannello per mostrare solo l’icona.';
+      'I valori si aggiornano con l’intervallo scelto da 1 a 10 secondi (5 predefinito) mentre il pannello è visibile. I grafici mostrano medie e picchi al minuto. Altre app, sospensione ed errori di lettura lasciano interruzioni. La cronologia resta in memoria e si azzera al riavvio del processo del launcher. CPU e temperatura dipendono dal firmware. Disattiva tutti i valori del pannello per mostrare solo l’icona.';
 
   @override
   String get slideshowBrowseFolders => 'Sfoglia cartelle';

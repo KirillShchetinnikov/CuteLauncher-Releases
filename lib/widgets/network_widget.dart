@@ -118,7 +118,9 @@ class _NetworkWidgetState extends State<NetworkWidget> {
             break;
           case NetworkType.Unknown:
             physicalIcon = Icons.link_off;
-
+            break;
+          case NetworkType.Pending:
+            physicalIcon = Icons.device_hub;
             break;
         }
 

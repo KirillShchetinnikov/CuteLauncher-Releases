@@ -416,7 +416,11 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get dialogOptionBackButtonActionFirstFeedCard =>
-      'Primeiro cartão do feed atual';
+      'Primeiro cartão da seção atual';
+
+  @override
+  String get dialogOptionBackButtonActionSectionStartThenUp =>
+      'Primeiro cartão, depois subir uma seção por vez';
 
   @override
   String get dialogOptionBackButtonActionDoNothing => 'Não fazer nada';
@@ -2760,7 +2764,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get adbBuiltinHint =>
-      'Desativar o inicializador integrado permite que o sistema abra o CuteLauncher. Os menus e botões da TV podem ser afetados. Ative o iniciador integrado para desfazer isso.';
+      'Ao desativar o inicializador integrado, alguns botões do controle remoto e menus da TV específicos do fabricante podem parar de funcionar. Reative o inicializador integrado para desfazer a alteração.';
 
   @override
   String get adbHomeBlock => 'Botão home e inicialização';
@@ -2792,7 +2796,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get adbEffectHome =>
-      'CuteLauncher se tornará o inicializador padrão do sistema. O inicializador atual será salvo para restauração.';
+      'O CuteLauncher solicitará ao Android que o defina como iniciador padrão e verificará o resultado. O iniciador atual será salvo para restauração.';
 
   @override
   String get adbEffectRestore =>
@@ -2855,8 +2859,8 @@ class AppLocalizationsPt extends AppLocalizations {
       'Indisponível neste dispositivo: nenhum comando ADB compatível.';
 
   @override
-  String get adbHomeUnavailable =>
-      'O iniciador integrado tem prioridade de sistema. A atribuição direta por meio de ADB não está disponível; use a acessibilidade ou desative o iniciador integrado.';
+  String get adbHomeUnchanged =>
+      'O Android manteve o iniciador atual. Para abrir o CuteLauncher com o botão Início, configure o Home Button Fix.';
 
   @override
   String get nightBatteryExempt => 'CuteLauncher está isento de otimização';
@@ -4969,6 +4973,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get systemUptime => 'Tempo de atividade (horas:minutos)';
 
   @override
+  String get systemShowTemperature => 'Mostrar a temperatura da CPU no painel';
+
+  @override
   String get systemTemperature => 'Temperatura da CPU';
 
   @override
@@ -4988,7 +4995,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get systemWidgetHelp =>
-      'Os valores são atualizados no intervalo escolhido de 1 a 10 segundos (5 por predefinição) enquanto o painel está visível. Os gráficos mostram médias e picos por minuto. Outras aplicações, suspensão e erros de leitura deixam intervalos. O histórico fica na memória e é apagado ao reiniciar o processo do iniciador. CPU e temperatura dependem do firmware. Desative ambos os valores do painel para mostrar apenas o ícone.';
+      'Os valores são atualizados no intervalo escolhido de 1 a 10 segundos (5 por predefinição) enquanto o painel está visível. Os gráficos mostram médias e picos por minuto. Outras aplicações, suspensão e erros de leitura deixam intervalos. O histórico fica na memória e é apagado ao reiniciar o processo do iniciador. CPU e temperatura dependem do firmware. Desative todos os valores do painel para mostrar apenas o ícone.';
 
   @override
   String get slideshowBrowseFolders => 'Explorar pastas';

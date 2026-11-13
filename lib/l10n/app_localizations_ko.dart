@@ -406,7 +406,11 @@ class AppLocalizationsKo extends AppLocalizations {
   String get delete => '삭제';
 
   @override
-  String get dialogOptionBackButtonActionFirstFeedCard => '현재 피드의 첫 카드로 이동';
+  String get dialogOptionBackButtonActionFirstFeedCard => '현재 섹션의 첫 카드로 이동';
+
+  @override
+  String get dialogOptionBackButtonActionSectionStartThenUp =>
+      '첫 카드로 이동한 뒤 섹션별로 위로';
 
   @override
   String get dialogOptionBackButtonActionDoNothing => '아무 작업 안 함';
@@ -2668,7 +2672,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get adbBuiltinHint =>
-      '내장 실행기를 비활성화하면 시스템이 대신 CuteLauncher를 열 수 있습니다. TV 메뉴 및 버튼이 영향을 받을 수 있습니다. 이 작업을 취소하려면 내장 실행기를 활성화하세요.';
+      '내장 런처를 비활성화하면 리모컨의 일부 버튼과 제조사 전용 TV 메뉴가 작동하지 않을 수 있습니다. 이 변경을 취소하려면 내장 런처를 다시 활성화하세요.';
 
   @override
   String get adbHomeBlock => '홈 버튼 및 시작';
@@ -2697,7 +2701,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get adbEffectHome =>
-      'CuteLauncher가 시스템 기본 실행 프로그램이 됩니다. 복원을 위해 현재 실행 프로그램이 저장됩니다.';
+      'CuteLauncher가 Android에 기본 런처로 설정해 달라고 요청한 뒤 결과를 확인합니다. 현재 런처는 복원할 수 있도록 저장됩니다.';
 
   @override
   String get adbEffectRestore =>
@@ -2755,8 +2759,8 @@ class AppLocalizationsKo extends AppLocalizations {
   String get adbUnsupported => '이 장치에서는 사용할 수 없습니다. 지원되는 ADB 명령이 없습니다.';
 
   @override
-  String get adbHomeUnavailable =>
-      '내장된 실행 프로그램은 시스템 우선순위를 가집니다. ADB를 통한 직접 할당은 불가능합니다. 접근성을 사용하거나 내장 실행기를 비활성화하세요.';
+  String get adbHomeUnchanged =>
+      'Android가 현재 런처를 유지했습니다. 홈 버튼으로 CuteLauncher를 열려면 Home Button Fix를 설정하세요.';
 
   @override
   String get nightBatteryExempt => 'CuteLauncher는 최적화에서 제외됩니다.';
@@ -4794,6 +4798,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get systemUptime => '가동 시간 (시간:분)';
 
   @override
+  String get systemShowTemperature => '패널에 CPU 온도 표시';
+
+  @override
   String get systemTemperature => 'CPU 온도';
 
   @override
@@ -4813,7 +4820,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get systemWidgetHelp =>
-      '패널이 보이는 동안 선택한 1~10초 간격으로 갱신됩니다(기본값 5초). 그래프는 분 단위 평균과 최고값을 표시합니다. 다른 앱 사용, 절전 및 읽기 오류 구간은 비워 둡니다. 기록은 메모리에 저장되며 런처 프로세스를 다시 시작하면 초기화됩니다. CPU와 온도는 펌웨어에 따라 제공됩니다. 패널의 두 값을 모두 끄면 아이콘만 표시됩니다.';
+      '패널이 보이는 동안 선택한 1~10초 간격으로 갱신됩니다(기본값 5초). 그래프는 분 단위 평균과 최고값을 표시합니다. 다른 앱 사용, 절전 및 읽기 오류 구간은 비워 둡니다. 기록은 메모리에 저장되며 런처 프로세스를 다시 시작하면 초기화됩니다. CPU와 온도는 펌웨어에 따라 제공됩니다. 패널의 모든 값을 끄면 아이콘만 표시됩니다.';
 
   @override
   String get slideshowBrowseFolders => '폴더 찾아보기';

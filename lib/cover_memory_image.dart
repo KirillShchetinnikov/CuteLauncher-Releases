@@ -3,6 +3,8 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/painting.dart';
 
+import 'content_image.dart';
+
 /// Keeps enough source pixels for cover cropping, including focus growth.
 /// Dimensions participate in the cache key; focus itself does not.
 class CoverMemoryImage extends MemoryImage {
@@ -26,8 +28,14 @@ class CoverMemoryImage extends MemoryImage {
        );
 
   @override
+  Future<MemoryImage> obtainKey(ImageConfiguration configuration) =>
+      contentImage(bytes).then(
+        (content) => _CoverImageKey(content, width, height, maximumEdge),
+      );
+
+  @override
   ImageStreamCompleter loadImage(MemoryImage key, ImageDecoderCallback decode) {
-    return super.loadImage(key, (buffer, {getTargetSize}) {
+    return key.loadImage(key, (buffer, {getTargetSize}) {
       return decode(
         buffer,
         getTargetSize: (sourceWidth, sourceHeight) {
@@ -55,4 +63,24 @@ class CoverMemoryImage extends MemoryImage {
 
   @override
   int get hashCode => Object.hash(bytes, width, height, maximumEdge);
+}
+
+/// Encoded LRU eviction can return a new byte buffer for the same poster.
+/// Share its decoded texture while keeping every decode dimension in the key.
+class _CoverImageKey extends MemoryImage {
+  final ContentImage content;
+  final int width, height, maximumEdge;
+  _CoverImageKey(this.content, this.width, this.height, this.maximumEdge)
+      : super(content.bytes);
+
+  @override
+  bool operator ==(Object other) =>
+      other is _CoverImageKey &&
+      other.content == content &&
+      other.width == width &&
+      other.height == height &&
+      other.maximumEdge == maximumEdge;
+
+  @override
+  int get hashCode => Object.hash(content, width, height, maximumEdge);
 }

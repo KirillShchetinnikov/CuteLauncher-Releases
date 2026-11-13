@@ -26,7 +26,7 @@ void main() {
         .setMockMethodCallHandler(autoLaunch, null);
   });
   testWidgets(
-    'built-in launcher state, service grant and independent Home switch',
+    'unavailable HOME restore, service grant and independent Home switch',
     (tester) async {
       tester.view.physicalSize = const Size(1280, 900);
       tester.view.devicePixelRatio = 1;
@@ -65,26 +65,7 @@ void main() {
             'accessibility': accessibility,
             'accessibilitySaved': accessibility,
             'restoreTarget': '',
-            'launchers': [
-              {
-                'package': 'com.google.android.apps.tv.launcherx',
-                'name': 'Google TV',
-                'enabled': true,
-                'builtin': true,
-              },
-              {
-                'package': 'com.google.android.apps.tv.launcherx',
-                'name': 'Google TV',
-                'enabled': true,
-                'builtin': true,
-              },
-              {
-                'package': 'com.google.android.tvlauncher',
-                'name': 'Android TV',
-                'enabled': false,
-                'builtin': true,
-              },
-            ],
+            'launchers': [],
           };
           return snapshot;
         }
@@ -143,25 +124,20 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('Лаунчер по умолчанию'));
       await tester.pumpAndSettle();
-      expect(
-        find.text('Отключить встроенный лаунчер через ADB: Google TV'),
-        findsOneWidget,
-      );
-      expect(
-        find.text('Включить встроенный лаунчер через ADB: Android TV'),
-        findsOneWidget,
-      );
+      final page = find.byType(AdbPage);
+      final l = AppLocalizations.of(tester.element(page))!;
+      expect(find.descendant(of: page, matching: find.byType(FocusableSettingsTile)), findsNWidgets(2));
+      expect(find.text(l.adbAssignDefault), findsNothing);
+      expect(find.text(l.adbNoAvailableLauncher), findsOneWidget);
       expect(find.text('Доступ к специальным возможностям'), findsNothing);
       expect(find.text('Ещё не применено'), findsNothing);
-      final restore = find.text(
-        'Восстановить предыдущий лаунчер по умолчанию по ADB',
+      final restore = find.text(l.adbRestoreDefault);
+      FocusableSettingsTile actionTile(Finder title) => tester.widget(
+        find.ancestor(of: title, matching: find.byType(FocusableSettingsTile)),
       );
-      final tile = tester.widget<FocusableSettingsTile>(
-        find
-            .ancestor(of: restore, matching: find.byType(FocusableSettingsTile))
-            .first,
-      );
-      expect(tile.onPressed, isNull);
+      expect(actionTile(restore).onPressed, isNull);
+      expect(actionTile(find.text(l.adbSystemDefault)).onPressed, isNotNull);
+      expect(operations, isEmpty);
       Navigator.of(tester.element(restore)).pop();
       await tester.pumpAndSettle();
       await tester.ensureVisible(find.text('Кнопка Home и запуск'));

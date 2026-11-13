@@ -75,7 +75,7 @@ void main() {
   }
   for (final system in ['Android TV', 'Google TV']) {
     testWidgets(
-      '$system blocks pinned HOME but offers safe built-in replacement',
+      '$system has two controls and the ADB button changes to restore',
       (tester) async {
         tester.view.physicalSize = const Size(1280, 900);
         tester.view.devicePixelRatio = 1;
@@ -87,16 +87,22 @@ void main() {
         final compatibility = {
           ...supportedAdbCompatibility,
           'system': system,
-          'actions': {
-            ...supportedAdbCompatibility['actions'] as Map,
-            'home': false,
-          },
         };
         final actions = <String>[];
+        final commands = [
+          "pm disable-user --user 0 '$pkg'",
+          "cmd package set-home-activity 'own/MainActivity'",
+        ];
+        final restoreCommands = ["pm default-state --user 0 '$pkg'"];
+        var isHome = false;
+        final systemCalls = <String>[];
         Map<String, dynamic> snapshot = {};
         tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
           platform,
-          (_) async => false,
+          (call) async {
+            systemCalls.add(call.method);
+            return false;
+          },
         );
         tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(adb, (
           call,
@@ -108,18 +114,41 @@ void main() {
               'connectionSnapshot': jsonEncode(snapshot),
             };
           }
-          actions.add(call.arguments['action']);
+          final action = call.arguments['action'] as String;
+          actions.add(action);
+          if (action == 'preview') {
+            expect(call.arguments['operation'], isHome ? 'restore' : 'home');
+            return {
+              'status': 'ready',
+              'commands': isHome ? restoreCommands : commands,
+              'target': isHome ? '$pkg/Home' : pkg,
+              'targetName': system,
+            };
+          }
+          if (action == 'home') {
+            expect(call.arguments['commands'], commands);
+            isHome = true;
+            return {'status': 'success'};
+          }
+          if (action == 'restore') {
+            expect(call.arguments['commands'], restoreCommands);
+            isHome = false;
+            return {'status': 'success'};
+          }
+          expect(action, 'check');
           snapshot = {
             'status': 'ready',
             'compatibility': compatibility,
-            'isHome': false,
+            'isHome': isHome,
+            'homeRecoverySaved': isHome,
             'accessibility': false,
             'restoreTarget': '$pkg/Home',
             'launchers': [
               {
                 'package': pkg,
                 'name': system,
-                'enabled': true,
+                'enabled': !isHome,
+                'priority': 2,
                 'builtin': true,
               },
             ],
@@ -164,10 +193,35 @@ void main() {
         await tester.pumpAndSettle();
         await tester.tap(find.text(l.adbDefaultBlock));
         await tester.pumpAndSettle();
-        expect(find.text(l.adbHomeUnavailable), findsOneWidget);
-        expect(tile(l.adbAssignDefault).onPressed, isNull);
-        expect(tile('${l.adbDisableBuiltin}: $system').onPressed, isNotNull);
         expect(actions, ['check']);
+        expect(find.byType(FocusableSettingsTile), findsNWidgets(2));
+        expect(tester.getTopLeft(find.text(l.adbAssignDefault)).dy,
+            lessThan(tester.getTopLeft(find.text(l.adbSystemDefault)).dy));
+        expect(tile(l.adbAssignDefault).onPressed, isNotNull);
+        await tester.ensureVisible(find.text(l.adbAssignDefault));
+        await tester.tap(find.text(l.adbAssignDefault));
+        await tester.pumpAndSettle();
+        expect(find.text(l.adbEffectHome), findsOneWidget);
+        expect(find.text(l.adbEffectDisable), findsOneWidget);
+        await tester.tap(find.text(l.dialogAssign));
+        await tester.pumpAndSettle();
+        expect(find.byType(FocusableSettingsTile), findsNWidgets(2));
+        expect(find.text(l.adbAssignDefault), findsNothing);
+        expect(
+          Focus.of(tester.element(find.text(l.adbRestoreDefault))).hasFocus,
+          isTrue,
+        );
+        await tester.tap(find.text(l.adbRestoreDefault));
+        await tester.pumpAndSettle();
+        expect(find.text(l.adbEffectRestore), findsOneWidget);
+        await tester.tap(find.text(l.dialogApply));
+        await tester.pumpAndSettle();
+        expect(actions, ['check', 'preview', 'home', 'check', 'preview', 'restore', 'check']);
+        expect(find.text(l.adbAssignDefault), findsOneWidget);
+        expect(find.text(l.adbRestoreDefault), findsNothing);
+        await tester.tap(find.text(l.adbSystemDefault));
+        await tester.pumpAndSettle();
+        expect(systemCalls, contains('openDefaultLauncherSettings'));
       },
     );
   }

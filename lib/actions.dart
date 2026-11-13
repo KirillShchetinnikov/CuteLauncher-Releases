@@ -44,9 +44,9 @@ class SoundFeedbackDirectionalFocusAction extends DirectionalFocusAction {
 
 class BackAction extends Action<BackIntent> {
   final BuildContext context;
-  final VoidCallback? onFirstFeedCard;
+  final ValueChanged<bool>? onFirstSectionCard;
 
-  BackAction(this.context, {this.onFirstFeedCard});
+  BackAction(this.context, {this.onFirstSectionCard});
 
   @override
   Future<void> invoke(BackIntent intent) async {
@@ -57,7 +57,7 @@ class BackAction extends Action<BackIntent> {
     }
     else {
       LauncherState state = context.read<LauncherState>();
-      state.handleBackNavigation(context, onFirstFeedCard: onFirstFeedCard);
+      state.handleBackNavigation(context, onFirstSectionCard: onFirstSectionCard);
     }
   }
 }

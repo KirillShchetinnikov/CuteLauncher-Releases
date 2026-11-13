@@ -410,7 +410,11 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get dialogOptionBackButtonActionFirstFeedCard =>
-      'मौजूदा फ़ीड के पहले कार्ड पर जाएँ';
+      'मौजूदा सेक्शन के पहले कार्ड पर जाएँ';
+
+  @override
+  String get dialogOptionBackButtonActionSectionStartThenUp =>
+      'पहला कार्ड, फिर एक-एक सेक्शन ऊपर जाएँ';
 
   @override
   String get dialogOptionBackButtonActionDoNothing => 'कुछ न करें';
@@ -2727,7 +2731,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get adbBuiltinHint =>
-      'अंतर्निहित लॉन्चर को अक्षम करने से सिस्टम को इसके बजाय CuteLauncher खोलने की सुविधा मिलती है। टीवी मेनू और बटन प्रभावित हो सकते हैं. इसे पूर्ववत करने के लिए अंतर्निहित लॉन्चर को सक्षम करें।';
+      'बिल्ट-इन लॉन्चर बंद करने पर रिमोट के कुछ बटन और निर्माता के टीवी मेनू काम करना बंद कर सकते हैं। इस बदलाव को वापस लेने के लिए बिल्ट-इन लॉन्चर फिर से चालू करें।';
 
   @override
   String get adbHomeBlock => 'होम बटन और स्टार्टअप';
@@ -2761,7 +2765,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get adbEffectHome =>
-      'CuteLauncher सिस्टम डिफॉल्ट लॉन्चर बन जाएगा। वर्तमान लॉन्चर को पुनर्स्थापना के लिए सहेजा जाएगा।';
+      'CuteLauncher, Android से उसे डिफ़ॉल्ट लॉन्चर बनाने के लिए कहेगा और फिर नतीजे की जाँच करेगा। मौजूदा लॉन्चर को वापस लाने के लिए सहेजा जाएगा।';
 
   @override
   String get adbEffectRestore =>
@@ -2824,8 +2828,8 @@ class AppLocalizationsHi extends AppLocalizations {
       'इस डिवाइस पर अनुपलब्ध: कोई समर्थित ADB कमांड नहीं।';
 
   @override
-  String get adbHomeUnavailable =>
-      'अंतर्निर्मित लॉन्चर में सिस्टम प्राथमिकता है। ADB के माध्यम से सीधा असाइनमेंट उपलब्ध नहीं है; एक्सेसिबिलिटी का उपयोग करें या अंतर्निहित लॉन्चर को अक्षम करें।';
+  String get adbHomeUnchanged =>
+      'Android ने मौजूदा लॉन्चर को बनाए रखा। होम बटन से CuteLauncher खोलने के लिए Home Button Fix सेट करें।';
 
   @override
   String get nightBatteryExempt => 'CuteLauncher अनुकूलन से मुक्त है';
@@ -4921,6 +4925,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get systemUptime => 'चालू रहने का समय (घंटे:मिनट)';
 
   @override
+  String get systemShowTemperature => 'पैनल में CPU का तापमान दिखाएँ';
+
+  @override
   String get systemTemperature => 'CPU का तापमान';
 
   @override
@@ -4940,7 +4947,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get systemWidgetHelp =>
-      'पैनल दिखाई देने पर रीडिंग चुने गए 1–10 सेकंड के अंतराल पर अपडेट होती हैं (डिफ़ॉल्ट 5)। ग्राफ़ हर मिनट का औसत और अधिकतम दिखाते हैं। अन्य ऐप, स्लीप और रीडिंग की त्रुटियों के समय अंतराल रहता है। इतिहास मेमोरी में रहता है और लॉन्चर प्रक्रिया फिर शुरू होने पर मिट जाता है। CPU और तापमान फ़र्मवेयर पर निर्भर हैं। केवल आइकन दिखाने के लिए पैनल के दोनों मान बंद करें।';
+      'पैनल दिखाई देने पर रीडिंग चुने गए 1–10 सेकंड के अंतराल पर अपडेट होती हैं (डिफ़ॉल्ट 5)। ग्राफ़ हर मिनट का औसत और अधिकतम दिखाते हैं। अन्य ऐप, स्लीप और रीडिंग की त्रुटियों के समय अंतराल रहता है। इतिहास मेमोरी में रहता है और लॉन्चर प्रक्रिया फिर शुरू होने पर मिट जाता है। CPU और तापमान फ़र्मवेयर पर निर्भर हैं। केवल आइकन दिखाने के लिए पैनल के सभी मान बंद करें।';
 
   @override
   String get slideshowBrowseFolders => 'फ़ोल्डर ब्राउज़ करें';

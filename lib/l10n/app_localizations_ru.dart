@@ -411,7 +411,11 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get dialogOptionBackButtonActionFirstFeedCard =>
-      'На первую карточку текущей ленты';
+      'На первую карточку текущего раздела';
+
+  @override
+  String get dialogOptionBackButtonActionSectionStartThenUp =>
+      'На первую карточку, затем по разделам вверх';
 
   @override
   String get dialogOptionBackButtonActionDoNothing => 'Ничего не делать';
@@ -2728,7 +2732,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get adbSystemDefault =>
-      'Установить системную настройку лаунчера по умолчанию';
+      'Открыть системную настройку лаунчера по умолчанию';
 
   @override
   String get adbAssignDefault =>
@@ -2744,7 +2748,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get adbBuiltinHint =>
-      'Отключение встроенного лаунчера позволяет системе открывать CuteLauncher вместо него. Возможны ограничения фирменных меню и кнопок ТВ. Обратное действие — включить встроенный лаунчер.';
+      'После отключения встроенного лаунчера некоторые кнопки на пульте и фирменные меню ТВ могут перестать работать. Чтобы отменить отключение, снова включите встроенный лаунчер.';
 
   @override
   String get adbHomeBlock => 'Кнопка Home и запуск';
@@ -2776,7 +2780,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get adbEffectHome =>
-      'CuteLauncher станет системным лаунчером по умолчанию. Текущий лаунчер будет сохранён для восстановления.';
+      'CuteLauncher запросит у Android назначение лаунчером по умолчанию и проверит результат. Текущий лаунчер будет сохранён для восстановления.';
 
   @override
   String get adbEffectRestore =>
@@ -2839,8 +2843,8 @@ class AppLocalizationsRu extends AppLocalizations {
       'Недоступно на этом устройстве: нет поддерживаемой команды ADB.';
 
   @override
-  String get adbHomeUnavailable =>
-      'Встроенный лаунчер имеет системный приоритет. Прямое назначение через ADB недоступно; используйте специальные возможности или отключение встроенного лаунчера.';
+  String get adbHomeUnchanged =>
+      'Android оставил текущий лаунчер. Чтобы кнопка Home открывала CuteLauncher, настройте Home Button Fix.';
 
   @override
   String get nightBatteryExempt => 'CuteLauncher исключён из оптимизации';
@@ -4938,6 +4942,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get systemUptime => 'Время работы (часы:минуты)';
 
   @override
+  String get systemShowTemperature => 'Показывать температуру CPU в панели';
+
+  @override
   String get systemTemperature => 'Температура CPU';
 
   @override
@@ -4957,7 +4964,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get systemWidgetHelp =>
-      'Показания обновляются с выбранным интервалом от 1 до 10 секунд (по умолчанию 5), пока панель видна. Графики показывают средние значения и пики за минуту. Другие приложения, сон и ошибки чтения оставляют разрывы. История хранится в памяти и сбрасывается при перезапуске процесса лаунчера. CPU и температура зависят от прошивки. Выключите оба показателя панели, чтобы оставить только значок.';
+      'Показания обновляются с выбранным интервалом от 1 до 10 секунд (по умолчанию 5), пока панель видна. Графики показывают средние значения и пики за минуту. Другие приложения, сон и ошибки чтения оставляют разрывы. История хранится в памяти и сбрасывается при перезапуске процесса лаунчера. CPU и температура зависят от прошивки. Выключите все показатели панели, чтобы оставить только значок.';
 
   @override
   String get slideshowBrowseFolders => 'Просмотр папок';

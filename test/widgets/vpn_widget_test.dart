@@ -99,6 +99,36 @@ void main() {
         .setMockMethodCallHandler(channel, null);
   });
 
+  testWidgets('VPN waits for its visibility mode and connection status', (tester) async {
+    final snapshot = Completer<Map<String, Object>>();
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+      channel, (_) => snapshot.future,
+    );
+    vpn.dispose();
+    vpn = VpnService(network);
+    await tester.pumpWidget(app(const VpnWidget()));
+    expect(find.byType(TopPanelItem), findsNothing);
+
+    snapshot.complete(state);
+    await tester.pumpAndSettle();
+    expect(find.byIcon(Icons.vpn_key_outlined), findsNothing);
+    expect(find.byIcon(Icons.vpn_key), findsOneWidget);
+
+    state['active'] = false;
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+      channel, (_) async => state,
+    );
+    await vpn.refresh();
+    await tester.pumpAndSettle();
+    expect(find.byType(TopPanelItem), findsNothing);
+
+    state['onlyActive'] = false;
+    await vpn.refresh();
+    await tester.pumpAndSettle();
+    expect(find.byIcon(Icons.vpn_key_off_outlined), findsOneWidget);
+    await tester.pump(const Duration(milliseconds: 300));
+  });
+
   for (final enabled in [false, true]) {
     testWidgets('restart notice follows enabled system startup: $enabled', (
       tester,

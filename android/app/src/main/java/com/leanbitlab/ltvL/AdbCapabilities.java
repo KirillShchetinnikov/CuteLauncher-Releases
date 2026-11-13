@@ -33,7 +33,7 @@ final class AdbCapabilities {
         return homes(activity).stream().filter(item -> enabled(activity, item) && item.activityInfo.packageName.equals(activity.getPackageName()))
             .mapToInt(item -> item.priority).max().orElse(Integer.MIN_VALUE);
     }
-    static boolean canHome(Activity activity) {
+    static boolean homePriorityAllowsSelection(Activity activity) {
         int own = ownPriority(activity);
         return AdbCompatibilityPolicy.canSelectHome(own, homes(activity).stream()
             .filter(item -> enabled(activity, item)).mapToInt(item -> item.priority).max().orElse(Integer.MIN_VALUE));
@@ -79,7 +79,10 @@ final class AdbCapabilities {
             && activity.getPackageManager().hasSystemFeature(PackageManager.FEATURE_LEANBACK);
         Map<String, Boolean> actions = new LinkedHashMap<>();
         for (String action : List.of("overlay", "usage", "writeSettings", "notifications", "accessibility", "disableAccessibility", "restoreAccessibility", "enableSystem")) actions.put(action, tv);
-        actions.put("home", tv && canHome(activity));
+        actions.put("home", tv && homes.stream().anyMatch(item ->
+            item.activityInfo.packageName.equals(activity.getPackageName())
+                && item.activityInfo.name.equals(MainActivity.class.getName())
+                && enabled(activity, item)));
         actions.put("restore", tv && homes.stream().anyMatch(item -> !item.activityInfo.packageName.equals(activity.getPackageName())
             && canRestore(activity, item.activityInfo.packageName+"/"+item.activityInfo.name)));
         actions.put("disableSystem", tv && ownPriority(activity) != Integer.MIN_VALUE);

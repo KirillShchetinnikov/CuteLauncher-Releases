@@ -51,6 +51,7 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
   bool _refreshAgain = false;
   int _appDataRevision = 0;
   final _imageVersions = <String, int>{};
+  Map<String, String> _artworkRevisions = {};
   final _catalogEvents = Object();
   int contentRevision = 0;
   (int, int) imageRevisionFor(String package) => (_imageGeneration, _imageVersions[package] ?? 0);
@@ -230,9 +231,14 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
 
   Future<void> _init() async {
     StartupTrace.mark('appsStart');
-    var cached = await catalogCache?.read();
+    List<App>? persisted;
+    List<Map<dynamic, dynamic>>? cached;
+    final cache = catalogCache;
+    if (cache != null) {
+      (cached, persisted) = await (cache.read(), _database.getApplications()).wait;
+      if (persisted.isEmpty) cached = null;
+    }
     if (isDisposed) return;
-    if (cached != null && (await _database.getApplications()).isEmpty) cached = null;
     var initialCatalog = cached;
     if (initialCatalog == null && fastInitialCatalog) {
       try { initialCatalog = await _fLauncherChannel.getLauncherApplications(); }
@@ -242,7 +248,8 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
         ); /* A failed fast query falls back to the complete catalog. */ }
     }
     await _refreshState(shouldNotifyListeners: false, catalog: initialCatalog,
-        persistCatalog: cached == null && initialCatalog != null);
+        persistCatalog: cached == null && initialCatalog != null,
+        initialApps: persisted);
     if (isDisposed) return;
     if (_database.wasCreated && _categoriesById.isEmpty) {
       await _initDefaultCategories();
@@ -542,10 +549,12 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
     } while (_refreshAgain && !isDisposed);
   }
 
-  Future<void> _refreshState({bool shouldNotifyListeners = true, List<Map<dynamic, dynamic>>? catalog, bool persistCatalog = false}) async {
+  Future<void> _refreshState({bool shouldNotifyListeners = true, List<Map<dynamic, dynamic>>? catalog,
+      bool persistCatalog = false, List<App>? initialApps}) async {
     if (isDisposed) return;
     var appDataRevision = _appDataRevision;
-    Future<List<App>> appsFromDatabaseFuture = _database.getApplications();
+    Future<List<App>> appsFromDatabaseFuture = initialApps == null
+        ? _database.getApplications() : Future.value(initialApps);
     Future<List<AppCategory>> appsCategoriesFuture =
         _database.getAppsCategories();
     Future<List<Category>> categoriesFuture = _database.getCategories();
@@ -576,9 +585,16 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
 
     if (catalog == null) {
       for (final entry in appsFromSystemByPackageName.entries) {
-        final old = _applications[entry.key];
-        if (old != null && (old.version != entry.value.$1['version'] || old.name != entry.value.$1['name'])) {
-          _imageChanged(entry.key);
+        final package = entry.key;
+        final previous = _artworkRevisions[package];
+        final metadata = entry.value.$1;
+        final next = metadata['artworkRevision'];
+        final old = _applications[package];
+        final changed = previous != null && next is String
+            ? previous != next
+            : old != null && (old.version != metadata['version'] || old.name != metadata['name']);
+        if (changed) {
+          _imageChanged(package);
         }
       }
       unawaited(catalogCache?.save(appsFromSystem) ?? Future.value());
@@ -605,6 +621,11 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
     }
 
     if (isDisposed) return;
+    _artworkRevisions = {
+      for (final entry in appsFromSystemByPackageName.entries)
+        if (entry.value.$1['artworkRevision'] case final String revision)
+          entry.key: revision,
+    };
     _categoriesById = Map.fromEntries(
         categories.map((category) => MapEntry(category.id, category)));
     _applications = Map.fromEntries(appsFromDatabase

@@ -41,17 +41,65 @@ final class AdbLauncherControl {
         String component = activity.getPackageName() + "/com.leanbitlab.ltvL.LauncherAccessibilityService";
         var recovery = activity.getSharedPreferences("adb_recovery", 0);
         var launchers = launchers(activity, adb);
-        return Map.of("compatibility", AdbCapabilities.info(activity), "status", "ready", "isHome", home(adb).startsWith(activity.getPackageName()+"/"),
+        String current = home(adb);
+        var restore = restoreTarget(activity, launchers);
+        return Map.of("compatibility", AdbCapabilities.info(activity), "status", "ready", "isHome", current.startsWith(activity.getPackageName()+"/"),
             "accessibility", adb.execute("settings get secure accessibility_enabled").equals("1")
                 && Arrays.asList(services(adb).split(":")).contains(component),
             "accessibilitySaved", recovery.getBoolean("accessibility_saved", false),
             "homeRecoverySaved", BUILT_INS.stream().anyMatch(target -> recovery.contains("home_states_" + target)),
-            "currentHome", home(adb), "launchers", launchers, "restoreTarget", restoreTarget(activity, launchers),
-            "restoreSupported", AdbCapabilities.canRestore(activity, restoreTarget(activity, launchers)));
+            "currentHome", current, "launchers", launchers, "restoreTarget", restore.component(),
+            "restoreSupported", AdbCapabilities.canRestore(activity, restore.component()));
     }
-    static String restoreTarget(Activity activity, List<Map<String,Object>> launchers) {
-        String previous = activity.getSharedPreferences("adb_recovery",0).getString("previous_home", "");
-        return AdbLauncherPolicy.restoreTarget(previous, launchers);
+
+    private record HomeRestore(String component, String name, String stockPackage, int priority) {
+        String selectedHome(int ownPriority) {
+            return component.startsWith(stockPackage + "/") && priority > ownPriority ? "" : component;
+        }
+    }
+
+    private static HomeRestore restoreTarget(Activity activity, List<Map<String,Object>> launchers) {
+        var recovery = activity.getSharedPreferences("adb_recovery", 0);
+        String previous = AdbLauncherPolicy.normalizeComponent(recovery.getString("previous_home", ""));
+        String component = AdbLauncherPolicy.restoreTarget(previous, launchers);
+        var candidate = launchers.stream().filter(item -> component.equals(item.get("component"))).findFirst().orElse(null);
+        var stock = launchers.stream()
+            .filter(item -> Boolean.TRUE.equals(item.get("builtin")))
+            .max(Comparator.comparing((Map<String, Object> item) -> recovery.contains("home_states_" + item.get("package")))
+                .thenComparing(item -> previous.equals(item.get("component")))
+                .thenComparingInt(AdbLauncherControl::priority))
+            .orElse(null);
+        // A higher-priority stock HOME would win once re-enabled.
+        if (stock != null && (candidate == null || !previous.equals(component)
+                || !Boolean.TRUE.equals(candidate.get("enabled")) || priority(candidate) < priority(stock)))
+            candidate = stock;
+        if (candidate == null) return new HomeRestore("", "", "", Integer.MIN_VALUE);
+        String packageName = (String)candidate.get("package");
+        String stockPackage = stock == null ? "" : (String)stock.get("package");
+        if (BUILT_INS.contains(packageName) && !recovery.contains("home_states_" + stockPackage)) {
+            stockPackage = packageName;
+        }
+        return new HomeRestore((String)candidate.get("component"), (String)candidate.get("name"), stockPackage,
+            priority(candidate));
+    }
+
+    private static int priority(Map<String, Object> launcher) {
+        return ((Number)launcher.get("priority")).intValue();
+    }
+
+    private static String enabledBuiltin(List<Map<String, Object>> launchers, String current) {
+        return launchers.stream()
+            .filter(item -> Boolean.TRUE.equals(item.get("builtin")) && Boolean.TRUE.equals(item.get("enabled")))
+            .max(Comparator.comparing((Map<String, Object> item) -> current.equals(item.get("component")))
+                .thenComparingInt(AdbLauncherControl::priority))
+            .map(item -> (String)item.get("package")).orElse("");
+    }
+
+    private static LinkedHashMap<String, Integer> restoreStates(Activity activity, String stockPackage) throws Exception {
+        var states = savedStates(activity, stockPackage);
+        int saved = states.getOrDefault(stockPackage, 1);
+        states.put(stockPackage, saved == 0 ? 0 : 1);
+        return states;
     }
     private static LinkedHashMap<String, Integer> savedStates(Activity activity, String target) throws Exception {
         String saved = activity.getSharedPreferences("adb_recovery", 0).getString("home_states_" + target, "{}");
@@ -93,47 +141,34 @@ final class AdbLauncherControl {
         String own = activity.getPackageName();
         if (!AdbCapabilities.supported(activity, action)) return Map.of("status", "unsupported");
         List<String> commands = new ArrayList<>();
-        String resolved = "", targetName = "";
         switch (action) {
-            case "home": commands.add("cmd package set-home-activity '"+own+"/com.leanbitlab.ltvL.MainActivity'"); break;
-            case "restore":
+            case "home":
                 var candidates = launchers(activity, adb);
-                resolved = restoreTarget(activity, candidates);
-                int targetPriority = Integer.MIN_VALUE;
-                for (var item : candidates) if (item.get("component").equals(resolved)) {
-                    targetName = (String)item.get("name");
-                    targetPriority = ((Number)item.get("priority")).intValue();
+                String stock = enabledBuiltin(candidates, home(adb));
+                if (target != null && !target.equals(stock)) return Map.of("status", "changed");
+                if (stock.isEmpty()) {
+                    commands.add(AdbSystemHomeOps.selectHome(own + "/" + MainActivity.class.getName()));
+                    break;
                 }
+                return stockPlan(activity, adb, stock, candidates, true, target != null && allowOwnedWifi);
+            case "restore":
+                var restore = restoreTarget(activity, launchers(activity, adb));
+                String resolved = restore.component();
                 if (resolved.isEmpty()) return Map.of("status", "noRecovery");
                 if (!AdbCapabilities.canRestore(activity, resolved)) return Map.of("status", "unsupported");
-                String restorePackage = resolved.split("/")[0];
-                var restoreStates = BUILT_INS.contains(restorePackage) ? savedStates(activity, restorePackage) : new LinkedHashMap<String, Integer>();
-                if (restoreStates.isEmpty()) commands.add("pm enable --user 0 '"+restorePackage+"'");
-                else commands.addAll(AdbSystemHomeOps.commands(restoreStates, ""));
-                // A higher-priority system HOME wins automatically once enabled; set-home would be ineffective.
-                boolean priorityHome = targetPriority > AdbCapabilities.ownPriority(activity);
-                if (!priorityHome) commands.add("cmd package set-home-activity '"+resolved+"'"); break;
+                if (!restore.stockPackage().isEmpty()) {
+                    commands.addAll(AdbSystemHomeOps.commands(restoreStates(activity, restore.stockPackage()),
+                        restore.selectedHome(AdbCapabilities.ownPriority(activity))));
+                } else {
+                    commands.add("pm enable --user 0 '" + resolved.split("/")[0] + "'");
+                    if (restore.priority() <= AdbCapabilities.ownPriority(activity))
+                        commands.add(AdbSystemHomeOps.selectHome(resolved));
+                }
+                return Map.of("status", "ready", "commands", commands, "target", resolved,
+                    "targetName", restore.name(), "stockPackage", restore.stockPackage());
             case "disableSystem": case "enableSystem":
                 if (target == null || !BUILT_INS.contains(target)) return Map.of("status", "invalid");
-                boolean found = launchers(activity, adb).stream().anyMatch(item -> item.get("package").equals(target));
-                if (!found) return Map.of("status", "invalid");
-                if (action.equals("disableSystem") && !AdbCapabilities.canDisable(activity, target)) return Map.of("status", "unsupported");
-                resolved = target;
-                var states = action.equals("disableSystem")
-                    ? AdbSystemHomeOps.disableStates(AdbCapabilities.ownPriority(activity), target, AdbCapabilities.homeStates(activity))
-                    : savedStates(activity, target);
-                if (states.isEmpty()) states.put(target, 1);
-                if (action.equals("disableSystem")) {
-                    String dependency = AdbHomeDependencies.blocked(activity, states, adb);
-                    if (!dependency.isEmpty()) return Map.of("status", "dependencyProtected", "reason", dependency);
-                    AdbOperationDiagnostics.stage("wifiSafety");
-                    var safety = AdbWifiSafety.checkDetailed(states, adb::execute, allowOwnedWifi);
-                    AdbOperationDiagnostics.wifi(safety);
-                    if (!safety.status().equals("ready")) return Map.of("status", safety.status());
-                    AdbOperationDiagnostics.stage("plan");
-                }
-                commands.addAll(AdbSystemHomeOps.commands(states, action.equals("disableSystem")
-                    ? own + "/com.leanbitlab.ltvL.MainActivity" : "")); break;
+                return stockPlan(activity, adb, target, launchers(activity, adb), action.equals("disableSystem"), allowOwnedWifi);
             case "accessibility": case "disableAccessibility": case "restoreAccessibility":
                 String component = own+"/com.leanbitlab.ltvL.LauncherAccessibilityService";
                 var recovery = activity.getSharedPreferences("adb_recovery",0);
@@ -156,7 +191,32 @@ final class AdbLauncherControl {
             case "usage": case "writeSettings": commands.add("appops set --user 0 '"+own+"' "+(action.equals("usage") ? "GET_USAGE_STATS" : "WRITE_SETTINGS")+" allow"); break;
             default: return Map.of("status", "invalid");
         }
-        return Map.of("status", "ready", "commands", commands, "target", resolved, "targetName", targetName);
+        return Map.of("status", "ready", "commands", commands, "target", "", "targetName", "");
+    }
+
+    private static Map<String, Object> stockPlan(Activity activity, AdbBridge.Shell adb, String target,
+                                                 List<Map<String, Object>> launchers, boolean disable,
+                                                 boolean allowOwnedWifi) throws Exception {
+        var builtin = launchers.stream().filter(item -> target.equals(item.get("package"))).findFirst();
+        if (builtin.isEmpty()) return Map.of("status", "invalid");
+        LinkedHashMap<String, Integer> states;
+        String selectedHome = "";
+        if (disable) {
+            int ownPriority = AdbCapabilities.ownPriority(activity);
+            var homeStates = AdbCapabilities.homeStates(activity);
+            if (!AdbSystemHomeOps.canDisable(ownPriority, target, homeStates)) return Map.of("status", "unsupported");
+            states = AdbSystemHomeOps.disableStates(ownPriority, target, homeStates);
+            String dependency = AdbHomeDependencies.blocked(activity, states, adb);
+            if (!dependency.isEmpty()) return Map.of("status", "dependencyProtected", "reason", dependency);
+            AdbOperationDiagnostics.stage("wifiSafety");
+            var safety = AdbWifiSafety.checkDetailed(states, adb::execute, allowOwnedWifi);
+            AdbOperationDiagnostics.wifi(safety);
+            if (!safety.status().equals("ready")) return Map.of("status", safety.status(), "target", target);
+            AdbOperationDiagnostics.stage("plan");
+            selectedHome = activity.getPackageName() + "/" + MainActivity.class.getName();
+        } else states = restoreStates(activity, target);
+        return Map.of("status", "ready", "commands", AdbSystemHomeOps.commands(states, selectedHome),
+            "target", target, "targetName", builtin.get().get("name"));
     }
     static String apply(Activity activity, AdbBridge.Shell adb, String action, String target, List<?> expected) throws Exception {
         return apply(activity, adb, action, target, expected, false);
@@ -164,10 +224,15 @@ final class AdbLauncherControl {
     static String apply(Activity activity, AdbBridge.Shell adb, String action, String target, List<?> expected, boolean allowOwnedWifi) throws Exception {
         AdbOperationDiagnostics.stage("apply");
         if (!adb.execute("am get-current-user").equals("0") || !adb.execute("id -u").equals("2000")) return "denied";
-        Map<String,Object> plan = plan(activity, adb, action, target, action.equals("disableSystem") && allowOwnedWifi);
+        Map<String,Object> plan = plan(activity, adb, action, target, allowOwnedWifi);
         if (!plan.get("status").equals("ready")) return (String)plan.get("status");
         AdbOperationDiagnostics.stage("apply");
         if (!AdbLauncherPolicy.confirmed(expected, plan.get("commands"))) return "changed";
+        String resolved = (String)plan.get("target");
+        if (action.equals("home") && BUILT_INS.contains(resolved)) {
+            action = "disableSystem";
+            target = resolved;
+        }
         if (action.equals("disableAccessibility") || action.equals("restoreAccessibility")) UpdatePermissionRecovery.cancelAccessibility(activity);
         if ((action.equals("accessibility") || action.equals("restoreAccessibility"))
             && !AdbAccessibilityOps.apply(activity.getPackageName(), adb::execute, (List<?>)plan.get("commands"))) return "denied";
@@ -177,15 +242,13 @@ final class AdbLauncherControl {
                 if (savedStates(activity, target).isEmpty() && !previous.startsWith(activity.getPackageName()+"/") && !activity.getSharedPreferences("adb_recovery",0)
                     .edit().putString("previous_home", previous).commit()) return "denied";
             }
-            String resolved = (String)plan.get("target");
-            String stockPackage = action.equals("restore") ? resolved.split("/")[0] : resolved;
+            String stockPackage = action.equals("restore") ? (String)plan.get("stockPackage") : resolved;
             if (BUILT_INS.contains(stockPackage)) {
                 var desired = action.equals("disableSystem")
                     ? AdbSystemHomeOps.disableStates(AdbCapabilities.ownPriority(activity), stockPackage, AdbCapabilities.homeStates(activity))
-                    : savedStates(activity, stockPackage);
-                if (desired.isEmpty()) desired.put(stockPackage, 1);
+                    : restoreStates(activity, stockPackage);
                 List<?> commands = (List<?>)plan.get("commands");
-                String expectedHome = action.equals("disableSystem") ? activity.getPackageName()+"/com.leanbitlab.ltvL.MainActivity"
+                String expectedHome = action.equals("disableSystem") ? activity.getPackageName()+"/"+MainActivity.class.getName()
                     : action.equals("restore") ? resolved : "";
                 String selected = commands.stream().anyMatch(command -> ((String)command).startsWith("cmd package set-home-activity"))
                     ? expectedHome : "";

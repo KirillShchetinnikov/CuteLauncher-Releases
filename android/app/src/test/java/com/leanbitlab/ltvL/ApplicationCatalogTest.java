@@ -67,4 +67,27 @@ public class ApplicationCatalogTest {
             assertTrue(row.containsKey("versionCode"));
         }
     }
+
+    @Test public void missingBannerIsCachedButPackageUpdatesInvalidateIt() throws Exception {
+        try (var controller = Robolectric.buildActivity(Activity.class).setup()) {
+            var activity = controller.get();
+            String name = "example.artwork";
+            install(activity, name);
+            var catalog = new ApplicationCatalog(activity);
+            assertArrayEquals(new byte[0], catalog.getCachedArtwork(name, true));
+
+            var path = activity.getCacheDir().toPath().resolve("app-artwork-v1/" + name + ".banner");
+            byte[] entry = java.nio.file.Files.readAllBytes(path);
+            var newCatalog = new ApplicationCatalog(activity);
+            assertArrayEquals(new byte[0], newCatalog.getCachedArtwork(name, true));
+            assertArrayEquals(entry, java.nio.file.Files.readAllBytes(path));
+
+            var manager = activity.getPackageManager();
+            var updated = manager.getPackageInfo(name, 0);
+            updated.lastUpdateTime += 10_000;
+            Shadows.shadowOf(manager).installPackage(updated);
+            assertArrayEquals(new byte[0], newCatalog.getCachedArtwork(name, true));
+            assertFalse(java.util.Arrays.equals(entry, java.nio.file.Files.readAllBytes(path)));
+        }
+    }
 }

@@ -51,6 +51,7 @@ class AppCatalogCache {
       'packageName': app['packageName'], 'name': app['name'],
       'version': app['version'] ?? '', 'sideloaded': app['sideloaded'] == true,
       'system': app['system'] == true, 'launchable': app['launchable'] != false,
+      if (app['artworkRevision'] is String) 'artworkRevision': app['artworkRevision'],
       if (app['action'] != null) 'action': app['action'],
     }];
     return _write = _write.then((_) async {

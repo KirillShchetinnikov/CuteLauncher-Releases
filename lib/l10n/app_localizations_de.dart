@@ -414,7 +414,11 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get dialogOptionBackButtonActionFirstFeedCard =>
-      'Erste Karte im aktuellen Feed';
+      'Erste Karte im aktuellen Abschnitt';
+
+  @override
+  String get dialogOptionBackButtonActionSectionStartThenUp =>
+      'Erste Karte, dann abschnittsweise nach oben';
 
   @override
   String get dialogOptionBackButtonActionDoNothing => 'Nichts tun';
@@ -2766,7 +2770,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get adbBuiltinHint =>
-      'Durch Deaktivieren des integrierten Launchers kann das System stattdessen CuteLauncher öffnen. TV-Menüs und Tasten können davon betroffen sein. Aktivieren Sie den integrierten Launcher, um dies rückgängig zu machen.';
+      'Wenn Sie den integrierten Launcher deaktivieren, funktionieren möglicherweise einige Tasten der Fernbedienung und herstellerspezifische TV-Menüs nicht mehr. Aktivieren Sie den integrierten Launcher erneut, um dies rückgängig zu machen.';
 
   @override
   String get adbHomeBlock => 'Home-Taste und Start';
@@ -2800,7 +2804,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get adbEffectHome =>
-      'CuteLauncher wird zum Standard-Launcher des Systems. Der aktuelle Launcher wird zur Wiederherstellung gespeichert.';
+      'CuteLauncher fordert Android auf, es als Standard-Launcher festzulegen, und prüft anschließend das Ergebnis. Der aktuelle Launcher wird zur Wiederherstellung gespeichert.';
 
   @override
   String get adbEffectRestore =>
@@ -2863,8 +2867,8 @@ class AppLocalizationsDe extends AppLocalizations {
       'Auf diesem Gerät nicht verfügbar: Kein unterstützter ADB-Befehl.';
 
   @override
-  String get adbHomeUnavailable =>
-      'Der eingebaute Launcher hat Systempriorität. Eine direkte Zuweisung über ADB ist nicht verfügbar; Verwenden Sie die Barrierefreiheit oder deaktivieren Sie den integrierten Launcher.';
+  String get adbHomeUnchanged =>
+      'Android hat den aktuellen Launcher beibehalten. Um die Home-Taste zu CuteLauncher umzuleiten, richte Home Button Fix ein.';
 
   @override
   String get nightBatteryExempt =>
@@ -4987,6 +4991,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get systemUptime => 'Betriebszeit (Stunden:Minuten)';
 
   @override
+  String get systemShowTemperature => 'CPU-Temperatur in der Leiste anzeigen';
+
+  @override
   String get systemTemperature => 'CPU-Temperatur';
 
   @override
@@ -5006,7 +5013,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get systemWidgetHelp =>
-      'Die Werte werden im gewählten Abstand von 1–10 Sekunden (standardmäßig 5) aktualisiert, solange die Leiste sichtbar ist. Diagramme zeigen Minutenmittelwerte und Spitzen. Andere Apps, Ruhemodus und Lesefehler hinterlassen Lücken. Der Verlauf bleibt im Arbeitsspeicher und wird beim Neustart des Launcher-Prozesses zurückgesetzt. CPU und Temperatur hängen von der Firmware ab. Beide Leistenwerte ausschalten, um nur das Symbol anzuzeigen.';
+      'Die Werte werden im gewählten Abstand von 1–10 Sekunden (standardmäßig 5) aktualisiert, solange die Leiste sichtbar ist. Diagramme zeigen Minutenmittelwerte und Spitzen. Andere Apps, Ruhemodus und Lesefehler hinterlassen Lücken. Der Verlauf bleibt im Arbeitsspeicher und wird beim Neustart des Launcher-Prozesses zurückgesetzt. CPU und Temperatur hängen von der Firmware ab. Alle Leistenwerte ausschalten, um nur das Symbol anzuzeigen.';
 
   @override
   String get slideshowBrowseFolders => 'Ordner durchsuchen';

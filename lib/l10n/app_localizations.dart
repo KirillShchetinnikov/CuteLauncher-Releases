@@ -893,8 +893,14 @@ abstract class AppLocalizations {
   /// No description provided for @dialogOptionBackButtonActionFirstFeedCard.
   ///
   /// In en, this message translates to:
-  /// **'First card in current feed'**
+  /// **'First card in current section'**
   String get dialogOptionBackButtonActionFirstFeedCard;
+
+  /// No description provided for @dialogOptionBackButtonActionSectionStartThenUp.
+  ///
+  /// In en, this message translates to:
+  /// **'First card, then up one section at a time'**
+  String get dialogOptionBackButtonActionSectionStartThenUp;
 
   /// No description provided for @dialogOptionBackButtonActionDoNothing.
   ///
@@ -5153,7 +5159,7 @@ abstract class AppLocalizations {
   /// No description provided for @adbBuiltinHint.
   ///
   /// In en, this message translates to:
-  /// **'Disabling the built-in launcher lets the system open CuteLauncher instead. TV menus and buttons may be affected. Enable the built-in launcher to undo this.'**
+  /// **'Disabling the built-in launcher may cause some remote buttons and manufacturer-specific TV menus to stop working. Re-enable the built-in launcher to undo this.'**
   String get adbBuiltinHint;
 
   /// No description provided for @adbHomeBlock.
@@ -5207,7 +5213,7 @@ abstract class AppLocalizations {
   /// No description provided for @adbEffectHome.
   ///
   /// In en, this message translates to:
-  /// **'CuteLauncher will become the system default launcher. The current launcher will be saved for restoration.'**
+  /// **'CuteLauncher will ask Android to make it the default launcher and then verify the result. The current launcher will be saved for restoration.'**
   String get adbEffectHome;
 
   /// No description provided for @adbEffectRestore.
@@ -5300,11 +5306,11 @@ abstract class AppLocalizations {
   /// **'Unavailable on this device: no supported ADB command.'**
   String get adbUnsupported;
 
-  /// No description provided for @adbHomeUnavailable.
+  /// No description provided for @adbHomeUnchanged.
   ///
   /// In en, this message translates to:
-  /// **'The built-in launcher has system priority. Direct assignment through ADB is unavailable; use accessibility or disable the built-in launcher.'**
-  String get adbHomeUnavailable;
+  /// **'Android kept the current launcher. To open CuteLauncher with the Home button, set up Home Button Fix.'**
+  String get adbHomeUnchanged;
 
   /// No description provided for @nightBatteryExempt.
   ///
@@ -9122,6 +9128,12 @@ abstract class AppLocalizations {
   /// **'Uptime (hours:minutes)'**
   String get systemUptime;
 
+  /// No description provided for @systemShowTemperature.
+  ///
+  /// In en, this message translates to:
+  /// **'Show CPU temperature in panel'**
+  String get systemShowTemperature;
+
   /// No description provided for @systemTemperature.
   ///
   /// In en, this message translates to:
@@ -9161,7 +9173,7 @@ abstract class AppLocalizations {
   /// No description provided for @systemWidgetHelp.
   ///
   /// In en, this message translates to:
-  /// **'Readings update at the selected interval of 1–10 seconds (5 by default) while the panel is visible. Graphs show minute averages and peaks. Other apps, sleep and read failures leave gaps. History stays in memory and resets when the launcher process restarts. CPU and temperature depend on the firmware. Turn off both panel values to show only the icon.'**
+  /// **'Readings update at the selected interval of 1–10 seconds (5 by default) while the panel is visible. Graphs show minute averages and peaks. Other apps, sleep and read failures leave gaps. History stays in memory and resets when the launcher process restarts. CPU and temperature depend on the firmware. Turn off all panel readings to show only the icon.'**
   String get systemWidgetHelp;
 
   /// No description provided for @slideshowBrowseFolders.

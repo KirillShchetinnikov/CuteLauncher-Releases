@@ -7,13 +7,15 @@ import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 class DailyDataUsageWidget extends StatelessWidget {
-  const DailyDataUsageWidget({super.key});
+  final bool showUnavailable;
+  const DailyDataUsageWidget({super.key, this.showUnavailable = false});
 
   @override
   Widget build(BuildContext context) {
     return Consumer2<NetworkService, SettingsService>(
       builder: (context, networkService, settingsService, _) {
-        if (!networkService.hasUsageStatsPermission) {
+        final allowed = networkService.hasUsageStatsPermission;
+        if (!allowed && !showUnavailable) {
           return const SizedBox.shrink();
         }
 
@@ -34,9 +36,9 @@ class DailyDataUsageWidget extends StatelessWidget {
 
         return FutureBuilder<int>(
           key: ValueKey(period),
-          future: networkService.getDataUsageForPeriod(period),
+          future: allowed ? networkService.getDataUsageForPeriod(period) : null,
           builder: (context, snapshot) {
-            final usage = snapshot.hasError
+            final usage = !allowed || snapshot.hasError
                 ? null
                 : snapshot.data ??
                     (period == 'daily' && snapshot.connectionState == ConnectionState.waiting

@@ -50,9 +50,12 @@ class AnimatedCharacter extends StatelessWidget {
             : Tween<Offset>(begin: Offset.zero, end: const Offset(0, -0.5));
 
         return SlideTransition(
-          position: slideOffset.animate(
-            CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
-          ),
+          // Switcher can rebuild this transition while the character stays the
+          // same. CurveTween does not leave a status listener on that long-lived
+          // animation (unlike a new, undisposed CurvedAnimation on every build).
+          position: slideOffset
+              .chain(CurveTween(curve: Curves.easeOutCubic))
+              .animate(animation),
           child: FadeTransition(opacity: animation, child: child),
         );
       },

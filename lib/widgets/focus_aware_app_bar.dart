@@ -123,28 +123,50 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
         debugPrint('Unable to refresh TV inputs: $e');
       }));
     }
-    await showLauncherDialog<void>(
-      context: context,
-      highlightRect: anchor,
-      highlightRectResolver: () => launcherControlBounds(node),
-      useSafeArea: false,
-      styleDialog: false,
-      barrierColor: Colors.transparent,
-      builder: (_) => inputs
-          ? InputsPanel(isRightSide: onRight, topInset: kToolbarHeight, anchor: anchor)
-          : NotificationsPanel(isRightSide: onRight, topInset: kToolbarHeight, anchor: anchor),
-    );
-    if (mounted) {
-      _setOpenWidget(null);
-      if (node.context != null) {
-        node.requestFocus();
-      } else {
-        _settingsFocusNode.requestFocus();
+    try {
+      await showLauncherDialog<void>(
+        context: context,
+        highlightRect: anchor,
+        highlightRectResolver: () => launcherControlBounds(node),
+        useSafeArea: false,
+        styleDialog: false,
+        barrierColor: Colors.transparent,
+        builder: (_) => inputs
+            ? InputsPanel(isRightSide: onRight, topInset: kToolbarHeight, anchor: anchor)
+            : NotificationsPanel(isRightSide: onRight, topInset: kToolbarHeight, anchor: anchor),
+      );
+    } finally {
+      if (mounted) {
+        _setOpenWidget(null);
+        _returnToObject(node);
       }
     }
   }
 
   final _objectKeys = <String, GlobalKey>{};
+
+  void _returnToObject(FocusNode node) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || _activeWidget != null) return;
+      if (node.context != null) {
+        node.requestFocus();
+      } else {
+        focusFirst();
+      }
+    });
+  }
+
+  void _restoreFocusWhenHidden(List<(bool, FocusNode)> objects) {
+    for (final (visible, node) in objects) {
+      if (!visible && node.hasFocus) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted && _activeWidget == null) focusFirst();
+        });
+        return;
+      }
+    }
+  }
+
   KeyEventResult _cyclePanelFocus(FocusNode panel, KeyEvent event, bool enabled) {
     if (!enabled || _settingsOpen ||
         (event is! KeyDownEvent && event is! KeyRepeatEvent)) {
@@ -327,8 +349,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
     } finally {
       if (mounted) {
         _setOpenWidget(null);
-        if (_trafficFocusNode.context != null) { _trafficFocusNode.requestFocus(); }
-        else { _settingsFocusNode.requestFocus(); }
+        _returnToObject(_trafficFocusNode);
       }
     }
   }
@@ -371,30 +392,47 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
     final homeAppearance = context.watch<AppearanceService?>()?.appearance ?? const TileAppearance();
     final appearance = widget.remotePanel?.appearanceFor(homeAppearance) ?? homeAppearance;
     final settings = context.watch<SettingsService>();
-    final placement = widget.remotePanel == null ? InformationPlacement(homeAppearance, settings) : null;
     final composition = InformationPanelComposition(homeAppearance, settings, remote: widget.remotePanel);
     final informationText = homeAppearance.informationStyle.textStyle(appearance.panelTextStyleFor(Localizations.localeOf(context)), locale: Localizations.localeOf(context));
-    final hasInputs = (widget.remotePanel?.visible('inputs') ?? settings.showInputsWidgetInStatusBar) &&
-        context.select<TvInputsService, bool>((service) => service.hasInputs);
-    final notifications = context.watch<NotificationsService>();
-    final weather = context.watch<WeatherService>();
+    final showInputs = widget.remotePanel?.visible('inputs') ?? settings.showInputsWidgetInStatusBar;
+    final inputsVisible = showInputs && (_activeWidget == 'inputs' ||
+        context.select<TvInputsService, bool>((service) => service.hasInputs));
+    final showNotifications = widget.remotePanel?.visible('notifications') ?? settings.showNotificationsWidgetInStatusBar;
+    final (notificationsVisible, notificationCount) = showNotifications
+        ? context.select<NotificationsService, (bool, int)>((service) {
+            final count = service.hasPermission ? service.notifications.length : 0;
+            return (
+              _activeWidget == 'notifications' ||
+                  (service.hasPermission && (!settings.autoHideNotificationsWidget || count > 0)),
+              count,
+            );
+          })
+        : (false, 0);
+    final showWeather = composition.members.contains('weather');
     final night = context.read<NightModeService?>();
     final (nightEnabled, nightPanelFill) = context.select<NightModeService?, (bool, bool)>(
       (service) => ((service?.intensity ?? 0) > 0, service?.panelFill ?? false),
     );
     final accentMoon = nightEnabled && nightPanelFill;
-    final vpnVisible = context.select<VpnService?, bool>((vpn) =>
-      vpn != null && (vpn.active || !vpn.onlyActive || vpn.failed));
-    final storage = context.select<StorageStatusService?, StorageStatus>(
-      (service) => service?.state ?? noStorageStatus);
-    final hasStorageService = context.read<StorageStatusService?>() != null;
-    final nasEnabled = hasStorageService && (widget.remotePanel?.visible('nas') ?? settings.showNasInStatusBar);
-    final usbEnabled = hasStorageService && (widget.remotePanel?.visible('usb') ?? settings.showUsbInStatusBar);
-    final nasVisible = nasEnabled && storage.nasSupported && storage.nas;
-    final usbVisible = usbEnabled && storage.usb;
-    if ((!nasVisible && _nasFocusNode.hasFocus) || (!usbVisible && _usbFocusNode.hasFocus)) {
-      WidgetsBinding.instance.addPostFrameCallback((_) { if (mounted) focusFirst(); });
-    }
+    final showVpn = widget.remotePanel?.visible('vpn') ?? settings.showVpnInStatusBar;
+    final vpnVisible = showVpn && (_activeWidget == 'vpn' ||
+        context.select<VpnService?, bool>((vpn) => vpn?.indicatorVisible ?? false));
+    final hasStorage = context.read<StorageStatusService?>() != null;
+    final showNas = hasStorage && (widget.remotePanel?.visible('nas') ?? settings.showNasInStatusBar);
+    final showUsb = hasStorage && (widget.remotePanel?.visible('usb') ?? settings.showUsbInStatusBar);
+    final storage = showNas || showUsb
+        ? context.select<StorageStatusService?, StorageStatus>((service) => service?.state ?? noStorageStatus)
+        : noStorageStatus;
+    final nasVisible = showNas && storage.nasSupported && storage.nas;
+    final usbVisible = showUsb && storage.usb;
+    final showTraffic = widget.remotePanel?.visible('traffic') ?? settings.showDataWidgetInStatusBar;
+    final trafficVisible = showTraffic && (_activeWidget == 'traffic' ||
+        context.select<NetworkService, bool>((service) => service.hasUsageStatsPermission));
+    _restoreFocusWhenHidden([
+      (nasVisible, _nasFocusNode), (usbVisible, _usbFocusNode),
+      (inputsVisible, _inputsFocusNode), (notificationsVisible, _notificationsFocusNode),
+      (trafficVisible, _trafficFocusNode), (vpnVisible, _vpnFocusNode),
+    ]);
     final direction = TextDirection.ltr;
     final objects = <String, Widget>{
       if (nasVisible) 'nas': PanelTooltip(message: AppLocalizations.of(context)!.networkStorageTitle,
@@ -428,17 +466,14 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
             color: appearance.panelTextColor,
           ),
         ),
-      if ((widget.remotePanel?.visible('inputs') ?? settings.showInputsWidgetInStatusBar) && hasInputs)
+      if (inputsVisible)
         'inputs': TopPanelItem(
           focusNode: _inputsFocusNode,
           selected: _activeWidget == 'inputs',
           onPressed: () => _openButtonPanel(_inputsFocusNode, true),
           child: const Icon(Icons.tv_outlined),
         ),
-      if ((widget.remotePanel?.visible('notifications') ?? settings.showNotificationsWidgetInStatusBar) &&
-          notifications.hasPermission &&
-          (!settings.autoHideNotificationsWidget ||
-              notifications.notifications.isNotEmpty))
+      if (notificationsVisible)
         'notifications': TopPanelItem(
           focusNode: _notificationsFocusNode,
           selected: _activeWidget == 'notifications',
@@ -448,13 +483,13 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
             textDirection: direction,
             children: [
               Icon(
-                notifications.notifications.isNotEmpty
+                notificationCount > 0
                     ? Icons.notifications_active_outlined
                     : Icons.notifications_outlined,
               ),
-              if (notifications.notifications.isNotEmpty) ...[
+              if (notificationCount > 0) ...[
                 const SizedBox(width: 4),
-                Text('${notifications.notifications.length}'),
+                Text('$notificationCount'),
               ],
             ],
           ),
@@ -502,18 +537,15 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
         ),
       if ((widget.remotePanel?.visible('network') ?? settings.showNetworkIndicatorInStatusBar))
         'network': NetworkWidget(onMenuChanged: (open) => _setOpenWidget(open ? 'network' : null)),
-      if ((vpnVisible || _activeWidget == 'vpn') && (widget.remotePanel?.visible('vpn') ?? settings.showVpnInStatusBar))
+      if (vpnVisible)
         'vpn': VpnWidget(focusNode: _vpnFocusNode, onMenuChanged: (open) {
           _setOpenWidget(open ? 'vpn' : null);
-          if (!open && !vpnVisible) {
-            WidgetsBinding.instance.addPostFrameCallback((_) { if (mounted) focusFirst(); });
-          }
+          if (!open) _returnToObject(_vpnFocusNode);
         }),
-      if ((widget.remotePanel?.visible('traffic') ?? settings.showDataWidgetInStatusBar) &&
-          context.select<NetworkService, bool>((service) => service.hasUsageStatsPermission))
+      if (trafficVisible)
         'traffic': TopPanelItem(key: const ValueKey('traffic_button'), focusNode: _trafficFocusNode, selected: _activeWidget == 'traffic',
-          onPressed: _openTraffic, child: const DailyDataUsageWidget()),
-      if ((widget.remotePanel?.visible('weather') ?? placement!.onPanel('weather')))
+          onPressed: _openTraffic, child: const DailyDataUsageWidget(showUnavailable: true)),
+      if (showWeather)
         'weather': Semantics(label: AppLocalizations.of(context)?.weather, child: WeatherStatusBarWidget(
           showWeather: true,
           textStyle: informationText,
@@ -521,7 +553,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
           selected: _activeWidget == 'weather',
           onPressed: () => _openInformation('weather', _weatherFocusNode),
         )),
-      if ((widget.remotePanel?.visible('date') ?? placement!.onPanel('date')))
+      if (composition.members.contains('date'))
         'date': TopPanelItem(
           focusNode: _dateFocusNode,
           selected: _activeWidget == 'date',
@@ -533,7 +565,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
             textStyle: appearance.dateTextStyle(informationText),
           ),
         ),
-      if ((widget.remotePanel?.visible('time') ?? placement!.onPanel('time')))
+      if (composition.members.contains('time'))
         'time': PanelClock(
           style: homeAppearance.renderedInformationStyle(),
           focusNode: _clockFocusNode,
@@ -547,15 +579,16 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
       final ids = [...layout.left, ...layout.right]
           .where((id) => const ['time', 'date', 'weather'].contains(id) && objects.containsKey(id)).toList();
       if (ids.isNotEmpty) {
+        final weather = showWeather ? context.watch<WeatherService>() : null;
         final combined = CombinedInformation(
           appearance: appearance,
           showTime: objects.containsKey('time'), showDate: objects.containsKey('date'),
-          showWeather: objects.containsKey('weather'), weather: weather.weatherData,
+          showWeather: objects.containsKey('weather'), weather: weather?.weatherData,
           weatherTextFormat: settings.weatherTextFormat,
           weatherMissingAsDash: settings.informationWeather().missingAsDash,
           weatherAlignment: settings.informationWeather().panelAlignment,
-          showWarnings: settings.showWeatherWarnings && !weather.stale,
-          weatherStale: weather.stale,
+          showWarnings: settings.showWeatherWarnings && weather?.stale == false,
+          weatherStale: weather?.stale ?? false,
           useFahrenheit: settings.useFahrenheit,
           timeFormat: settings.timeFormat, dateFormat: settings.dateFormat,
           focusNode: _dateFocusNode, selected: _activeWidget == 'date',
@@ -629,7 +662,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
       ),
     ));
     return StorageStatusWatch(
-      visible: (nasEnabled || usbEnabled) && (widget.remotePanel != null ||
+      visible: (showNas || showUsb) && (widget.remotePanel != null ||
           !settings.autoHideAppBarEnabled || focused || _settingsOpen),
       child: Focus(
       canRequestFocus: false,

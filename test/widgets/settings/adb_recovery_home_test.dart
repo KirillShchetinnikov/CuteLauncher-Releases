@@ -13,7 +13,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   const recovery =
       'com.google.android.tungsten.setupwraith';
-  testWidgets('pending recovery is accessible when CuteLauncher is not HOME', (
+  testWidgets('pending recovery stays accessible when another launcher is HOME', (
     tester,
   ) async {
     const adb = MethodChannel('cutelauncher/adb');
@@ -56,13 +56,15 @@ void main() {
     );
     await tester.pumpAndSettle();
     final l = AppLocalizations.of(tester.element(find.byType(AdbPage)))!;
-    final tile = tester.widget<FocusableSettingsTile>(
-      find.ancestor(
-        of: find.text(l.adbRestoreDefault),
-        matching: find.byType(FocusableSettingsTile),
-      ),
-    );
-    expect(tile.onPressed, isNotNull);
+    for (final action in [l.adbRestoreDefault, l.adbSystemDefault]) {
+      final tile = tester.widget<FocusableSettingsTile>(
+        find.ancestor(
+          of: find.text(action),
+          matching: find.byType(FocusableSettingsTile),
+        ),
+      );
+      expect(tile.onPressed, isNotNull);
+    }
     expect(find.text(l.adbAssignDefault), findsNothing);
   });
   for (final action in ['disableSystem', 'enableSystem', 'restore']) {

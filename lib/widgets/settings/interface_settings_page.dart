@@ -63,6 +63,7 @@ class HomeParametersPage extends StatelessWidget {
                 BACK_BUTTON_ACTION_CLOCK,
                 if (canStartScreensaver) BACK_BUTTON_ACTION_SCREENSAVER,
                 BACK_BUTTON_ACTION_FIRST_FEED_CARD,
+                BACK_BUTTON_ACTION_SECTION_START_THEN_UP,
               ],
               label: (value) => switch (value) {
                 BACK_BUTTON_ACTION_CLOCK =>
@@ -71,6 +72,8 @@ class HomeParametersPage extends StatelessWidget {
                   l.dialogOptionBackButtonActionShowScreensaver,
                 BACK_BUTTON_ACTION_FIRST_FEED_CARD =>
                   l.dialogOptionBackButtonActionFirstFeedCard,
+                BACK_BUTTON_ACTION_SECTION_START_THEN_UP =>
+                  l.dialogOptionBackButtonActionSectionStartThenUp,
                 _ => l.dialogOptionBackButtonActionDoNothing,
               },
               onChanged: s.setBackButtonAction,

@@ -21,7 +21,7 @@ void main() {
               'port': 5555,
               'compatibility': supportedAdbCompatibility,
               'connectionSnapshot': jsonEncode({
-                'status': 'ready', 'isHome': true, 'accessibility': false,
+                'status': 'ready', 'isHome': false, 'accessibility': false,
                 'launchers': [{
                   'package': 'com.google.android.apps.tv.launcherx',
                   'component': 'com.google.android.apps.tv.launcherx/home.HomeActivity',
@@ -43,7 +43,7 @@ void main() {
         await tester.pumpAndSettle();
         final l = AppLocalizations.of(tester.element(find.byType(AdbPage)))!;
         final disable = tester.widget<FocusableSettingsTile>(find.ancestor(
-          of: find.text('${l.adbDisableBuiltin}: Google TV'),
+          of: find.text(l.adbAssignDefault),
           matching: find.byType(FocusableSettingsTile),
         ));
         disable.onPressed!();

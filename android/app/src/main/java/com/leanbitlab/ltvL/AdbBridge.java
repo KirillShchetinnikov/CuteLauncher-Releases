@@ -129,9 +129,9 @@ final class AdbBridge {
                                 String status = perform(activity, shell, "check");
                                 response = status.equals("ready") ? AdbLauncherControl.snapshot(activity, shell) : Map.of("status",status);
                             } else if (action.equals("preview")) {
-                                response = operation == null ? Map.of("status","invalid") : AdbLauncherControl.plan(activity,shell,operation,call.argument("target"), operation.equals("disableSystem") && Boolean.TRUE.equals(call.argument("allowOwnedWifi")));
+                                response = operation == null ? Map.of("status","invalid") : AdbLauncherControl.plan(activity,shell,operation,call.argument("target"), Boolean.TRUE.equals(call.argument("allowOwnedWifi")));
                             } else {
-                                response = Map.of("status", AdbLauncherControl.apply(activity,shell,action,call.argument("target"),call.argument("commands"), action.equals("disableSystem") && Boolean.TRUE.equals(call.argument("allowOwnedWifi"))));
+                                response = Map.of("status", AdbLauncherControl.apply(activity,shell,action,call.argument("target"),call.argument("commands"), Boolean.TRUE.equals(call.argument("allowOwnedWifi"))));
                             }
                         }
                         if (response.get("status").equals("ready") || response.get("status").equals("success"))
@@ -227,7 +227,7 @@ final class AdbBridge {
 
     static String perform(android.content.Context activity, Shell adb, String action) throws Exception {
         if (!shell(adb, "am get-current-user").equals("0")) return "denied";
-        String own = activity.getPackageName() + "/com.leanbitlab.ltvL.MainActivity";
+        String own = activity.getPackageName() + "/" + MainActivity.class.getName();
         SharedPreferences recovery = activity.getSharedPreferences("adb_recovery", Activity.MODE_PRIVATE);
         if (action.equals("check")) return shell(adb, "id -u").equals("2000") ? "ready" : "denied";
         if (action.equals("overlay")) {
@@ -294,8 +294,8 @@ final class AdbBridge {
             if (!previous.equals(own) && !previous.startsWith(activity.getPackageName() + "/")) {
                 if (!recovery.edit().putString("previous_home", previous).commit()) return "denied";
             }
-            shell(adb, "cmd package set-home-activity '" + own + "'");
-            return home(adb).startsWith(activity.getPackageName() + "/") ? "success" : "denied";
+            shell(adb, AdbSystemHomeOps.selectHome(own));
+            return home(adb).equals(own) ? "success" : "homeUnchanged";
         }
         return "invalid";
     }

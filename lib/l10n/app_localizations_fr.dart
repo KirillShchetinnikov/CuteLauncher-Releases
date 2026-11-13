@@ -418,7 +418,11 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get dialogOptionBackButtonActionFirstFeedCard =>
-      'Première carte du flux actuel';
+      'Première carte de la section actuelle';
+
+  @override
+  String get dialogOptionBackButtonActionSectionStartThenUp =>
+      'Première carte, puis remonter section par section';
 
   @override
   String get dialogOptionBackButtonActionDoNothing => 'Ne rien faire';
@@ -2773,7 +2777,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get adbBuiltinHint =>
-      'La désactivation du lanceur intégré permet au système d\'ouvrir CuteLauncher à la place. Les menus et les boutons du téléviseur peuvent être affectés. Activez le lanceur intégré pour annuler cette opération.';
+      'Si vous désactivez le lanceur intégré, certaines touches de la télécommande et certains menus du téléviseur propres au fabricant peuvent cesser de fonctionner. Réactivez le lanceur intégré pour annuler cette modification.';
 
   @override
   String get adbHomeBlock => 'Bouton d\'accueil et démarrage';
@@ -2805,7 +2809,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get adbEffectHome =>
-      'CuteLauncher deviendra le lanceur par défaut du système. Le lanceur actuel sera enregistré pour la restauration.';
+      'CuteLauncher demandera à Android de le définir comme lanceur par défaut, puis vérifiera le résultat. Le lanceur actuel sera enregistré pour pouvoir le restaurer.';
 
   @override
   String get adbEffectRestore =>
@@ -2868,8 +2872,8 @@ class AppLocalizationsFr extends AppLocalizations {
       'Indisponible sur cet appareil : aucune commande ADB prise en charge.';
 
   @override
-  String get adbHomeUnavailable =>
-      'Le lanceur intégré a la priorité système. L\'affectation directe via ADB n\'est pas disponible ; utilisez l\'accessibilité ou désactivez le lanceur intégré.';
+  String get adbHomeUnchanged =>
+      'Android a conservé le lanceur actuel. Pour ouvrir CuteLauncher avec le bouton Accueil, configurez Home Button Fix.';
 
   @override
   String get nightBatteryExempt => 'CuteLauncher est exempté d\'optimisation';
@@ -4989,6 +4993,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get systemUptime => 'Durée de fonctionnement (heures:minutes)';
 
   @override
+  String get systemShowTemperature =>
+      'Afficher la température du CPU dans le panneau';
+
+  @override
   String get systemTemperature => 'Température du CPU';
 
   @override
@@ -5008,7 +5016,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get systemWidgetHelp =>
-      'Les valeurs sont actualisées selon l’intervalle choisi de 1 à 10 secondes (5 par défaut) lorsque le panneau est visible. Les graphiques montrent les moyennes et pics par minute. Les autres applications, la veille et les erreurs de lecture créent des interruptions. L’historique reste en mémoire et est effacé au redémarrage du processus du lanceur. Le CPU et la température dépendent du micrologiciel. Désactivez les deux valeurs du panneau pour afficher uniquement l’icône.';
+      'Les valeurs sont actualisées selon l’intervalle choisi de 1 à 10 secondes (5 par défaut) lorsque le panneau est visible. Les graphiques montrent les moyennes et pics par minute. Les autres applications, la veille et les erreurs de lecture créent des interruptions. L’historique reste en mémoire et est effacé au redémarrage du processus du lanceur. Le CPU et la température dépendent du micrologiciel. Désactivez toutes les valeurs du panneau pour afficher uniquement l’icône.';
 
   @override
   String get slideshowBrowseFolders => 'Parcourir les dossiers';

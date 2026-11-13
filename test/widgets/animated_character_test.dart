@@ -2,7 +2,53 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flauncher/widgets/animated_character.dart';
 
+class _ObservedAnimation extends Animation<double> {
+  final statusListeners = <AnimationStatusListener>{};
+  @override
+  double value = .5;
+  @override
+  AnimationStatus status = AnimationStatus.forward;
+  @override
+  void addListener(VoidCallback listener) {}
+  @override
+  void removeListener(VoidCallback listener) {}
+  @override
+  void addStatusListener(AnimationStatusListener listener) => statusListeners.add(listener);
+  @override
+  void removeStatusListener(AnimationStatusListener listener) => statusListeners.remove(listener);
+}
+
 void main() {
+  testWidgets('rebuilding character transitions does not retain status listeners', (tester) async {
+    await tester.pumpWidget(const MaterialApp(home: AnimatedCharacter(character: '7')));
+    final builder = tester.widget<AnimatedSwitcher>(find.byType(AnimatedSwitcher)).transitionBuilder;
+    final animation = _ObservedAnimation();
+    for (var rebuild = 0; rebuild < 100; rebuild++) {
+      builder(const Text('7', key: ValueKey('7')), animation);
+    }
+    expect(animation.statusListeners, isEmpty);
+  });
+
+  testWidgets('incoming and outgoing motion keeps the same curve and opacity', (tester) async {
+    await tester.pumpWidget(const MaterialApp(home: AnimatedCharacter(character: '7')));
+    final builder = tester.widget<AnimatedSwitcher>(find.byType(AnimatedSwitcher)).transitionBuilder;
+    final animation = _ObservedAnimation();
+    for (final status in [AnimationStatus.forward, AnimationStatus.reverse]) {
+      animation.status = status;
+      for (final value in [0.0, .25, .5, .75, 1.0]) {
+        animation.value = value;
+        for (final incoming in [true, false]) {
+          final transition = builder(Text(incoming ? '7' : '6', key: ValueKey(incoming ? '7' : '6')), animation) as SlideTransition;
+          final curve = Curves.easeOutCubic.transform(value);
+          expect(transition.position.value, Offset.lerp(
+            incoming ? const Offset(0, .5) : Offset.zero,
+            incoming ? Offset.zero : const Offset(0, -.5), curve));
+          expect((transition.child as FadeTransition).opacity.value, value);
+        }
+      }
+    }
+  });
+
   group('AnimatedCharacter', () {
     Widget buildTestWidget(String character, {TextStyle? textStyle, Duration duration = const Duration(milliseconds: 300)}) {
       return MaterialApp(

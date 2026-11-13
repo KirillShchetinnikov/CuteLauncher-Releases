@@ -21,6 +21,8 @@ package com.leanbitlab.ltvL;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.*;
+import android.content.res.Configuration;
+import android.os.Build;
 import android.provider.Settings;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -108,6 +110,10 @@ final class ApplicationCatalog {
         return applications;
     }
 
+    private static String artworkRevision(PackageInfo info) {
+        return info.getLongVersionCode() + ":" + info.firstInstallTime + ":" + info.lastUpdateTime;
+    }
+
     Map<String, Serializable> getApplication(String packageName) {
         Map<String, Serializable> map = new java.util.HashMap<>();
         PackageManager packageManager = context.getPackageManager();
@@ -136,20 +142,13 @@ final class ApplicationCatalog {
     }
 
     byte[] getApplicationBanner(String packageName) {
-        byte[] imageBytes = new byte[0];
-
         PackageManager packageManager = context.getPackageManager();
         try {
             ApplicationInfo info = packageManager.getApplicationInfo(packageName, 0);
-            Drawable drawable = info.loadBanner(packageManager);
-
-            if (drawable != null) {
-                imageBytes = drawableToByteArray(drawable);
-            }
+            return loadArtwork(info, packageManager, true, 960);
         } catch (PackageManager.NameNotFoundException ignored) {
+            return new byte[0];
         }
-
-        return imageBytes;
     }
 
     byte[] getApplicationIcon(String packageName) {
@@ -157,20 +156,41 @@ final class ApplicationCatalog {
     }
 
     byte[] getApplicationIcon(String packageName, int maxDimension) {
-        byte[] imageBytes = new byte[0];
-
         PackageManager packageManager = context.getPackageManager();
         try {
             ApplicationInfo info = packageManager.getApplicationInfo(packageName, 0);
-            Drawable drawable = info.loadIcon(packageManager);
-
-            if (drawable != null) {
-                imageBytes = drawableToByteArray(drawable, maxDimension);
-            }
+            return loadArtwork(info, packageManager, false, maxDimension);
         } catch (PackageManager.NameNotFoundException ignored) {
+            return new byte[0];
         }
+    }
 
-        return imageBytes;
+    byte[] getCachedArtwork(String packageName, boolean banner) {
+        PackageManager manager = context.getPackageManager();
+        try {
+            PackageInfo info = manager.getPackageInfo(packageName, 0);
+            Configuration config = context.getResources().getConfiguration();
+            String revision = Build.FINGERPRINT + ":" + artworkRevision(info) + ":"
+                    + config.getLocales().toLanguageTags() + ":"
+                    + config.densityDpi + ":" + config.uiMode + ":" + config.orientation + ":"
+                    + config.screenLayout + ":" + config.smallestScreenWidthDp + ":"
+                    + config.screenWidthDp + ":" + config.screenHeightDp + ":" + config.colorMode;
+            AppArtworkCache cache = new AppArtworkCache(context.getCacheDir());
+            byte[] cached = cache.read(packageName, banner, revision);
+            if (cached != null) return cached;
+
+            byte[] bytes = loadArtwork(info.applicationInfo, manager, banner, 960);
+            if (banner || bytes.length != 0) cache.save(packageName, banner, revision, bytes);
+            return bytes;
+        } catch (PackageManager.NameNotFoundException ignored) {
+            return new byte[0];
+        }
+    }
+
+    private byte[] loadArtwork(ApplicationInfo info, PackageManager manager, boolean banner, int maxDimension) {
+        if (info == null) return new byte[0];
+        Drawable drawable = banner ? info.loadBanner(manager) : info.loadIcon(manager);
+        return drawable == null ? new byte[0] : drawableToByteArray(drawable, maxDimension);
     }
 
     private List<ResolveInfo> queryIntentActivities(boolean sideloaded) {
@@ -198,15 +218,19 @@ final class ApplicationCatalog {
 
         String applicationName = activityInfo.loadLabel(packageManager).toString(),
                 applicationVersionName = "";
+        String revision = null;
         try {
-            applicationVersionName = packageManager.getPackageInfo(activityInfo.packageName, 0).versionName;
+            PackageInfo info = packageManager.getPackageInfo(activityInfo.packageName, 0);
+            applicationVersionName = info.versionName;
+            revision = artworkRevision(info);
         } catch (PackageManager.NameNotFoundException ignored) {
         }
 
         Map<String, Serializable> appMap = new HashMap<>();
         appMap.put("name", applicationName);
         appMap.put("packageName", activityInfo.packageName);
-        appMap.put("version", applicationVersionName);
+        appMap.put("version", applicationVersionName == null ? "" : applicationVersionName);
+        if (revision != null) appMap.put("artworkRevision", revision);
         appMap.put("sideloaded", sideloaded);
         appMap.put("launchable", true);
         appMap.put("system", (activityInfo.applicationInfo.flags
@@ -224,15 +248,12 @@ final class ApplicationCatalog {
         app.put("packageName", info.packageName);
         app.put("name", applicationInfo.loadLabel(context.getPackageManager()).toString());
         app.put("version", info.versionName == null ? "" : info.versionName);
+        app.put("artworkRevision", artworkRevision(info));
         app.put("system", (applicationInfo.flags
                 & (ApplicationInfo.FLAG_SYSTEM | ApplicationInfo.FLAG_UPDATED_SYSTEM_APP)) != 0);
         app.put("launchable", false);
         app.put("sideloaded", true);
         return app;
-    }
-
-    private byte[] drawableToByteArray(Drawable drawable) {
-        return drawableToByteArray(drawable, 960);
     }
 
     private byte[] drawableToByteArray(Drawable drawable, int maxDimension) {

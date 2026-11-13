@@ -18,6 +18,7 @@ void main() {
     final prefs = await SharedPreferences.getInstance();
     final settings = SettingsService(prefs), panel = RemotePanelService(prefs);
     expect(settings.showSystemInStatusBar, isFalse);
+    expect(settings.systemShowTemperature, isFalse);
     expect(settings.systemUpdateInterval, 5);
     await settings.setSystemUpdateInterval(0);
     expect(settings.systemUpdateInterval, 1);
@@ -37,12 +38,17 @@ void main() {
     await settings.setShowSystemInStatusBar(true);
     await settings.setSystemShowCpu(false);
     await settings.setSystemShowRam(false);
+    await settings.setSystemShowTemperature(true);
+    final restoredTemperature = SettingsService(prefs);
+    expect(restoredTemperature.systemShowTemperature, isTrue);
+    restoredTemperature.dispose();
     final exported = settings.exportSettingsMap();
     final valid = compatibleSettings(exported, exported);
     for (final key in [
       'show_system_in_status_bar',
       'system_show_cpu',
       'system_show_ram',
+      'system_show_temperature',
       'system_update_interval',
     ]) {
       expect(valid[key], exported[key]);
@@ -58,13 +64,14 @@ void main() {
   });
 
   testWidgets(
-    'hidden and ticker-disabled widget stops sampling; enabling resumes',
+    'CPU temperature is independent of load and sampling follows visibility',
     (tester) async {
       SharedPreferences.setMockInitialValues({});
       final prefs = await SharedPreferences.getInstance();
       final settings = SettingsService(prefs);
       const channel = MethodChannel('cutelauncher/system_status');
       var reads = 0;
+      double? temperature = 62.875;
       tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, (
         call,
       ) async {
@@ -74,6 +81,7 @@ void main() {
           'cpuPercent': 24,
           'ramTotalBytes': 1000,
           'ramAvailableBytes': 400,
+          'temperatureCelsius': temperature,
         };
       });
       final service = SystemStatusService(), focus = FocusNode();
@@ -107,6 +115,21 @@ void main() {
 
       await pump();
       expect(reads, 1);
+      expect(find.text('63 °C'), findsNothing);
+      await settings.setSystemShowTemperature(true);
+      await tester.pump();
+      expect(find.text('63 °C'), findsOneWidget);
+      await settings.setSystemShowCpu(false);
+      await tester.pump();
+      expect(find.text('CPU 24%'), findsNothing);
+      expect(find.text('63 °C'), findsOneWidget);
+      await settings.setSystemShowTemperature(false);
+      await tester.pump();
+      expect(find.text('63 °C'), findsNothing);
+      await settings.setSystemShowCpu(true);
+      await settings.setSystemShowTemperature(true);
+      await tester.pump();
+      expect(find.text('63 °C'), findsOneWidget);
       await pump(visible: false);
       await tester.pump(const Duration(seconds: 10));
       expect(reads, 1);
@@ -115,8 +138,11 @@ void main() {
       await pump(ticker: false);
       await tester.pump(const Duration(seconds: 10));
       expect(reads, 2);
+      temperature = null;
       await pump();
       expect(reads, 3);
+      expect(find.text('63 °C'), findsNothing);
+      expect(find.text('CPU 24%'), findsOneWidget);
       await tester.pumpWidget(const SizedBox());
       service.dispose();
       settings.dispose();

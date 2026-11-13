@@ -285,13 +285,30 @@ class FLauncherState extends State<FLauncher> {
     WidgetsBinding.instance.ensureVisualUpdate();
   }
 
-  void focusFirstFeedCard() {
+  /// Reveals the first card, optionally moving up if it already has focus.
+  void focusFirstSectionCard({bool moveUp = false}) {
     if (ModalRoute.of(context)?.isCurrent != true) return;
-    final focus = FocusManager.instance.primaryFocus?.context
+    final node = FocusManager.instance.primaryFocus;
+    final focus = node?.context
         ?.getInheritedWidgetOfExactType<CategoryFocus>()?.controller;
-    if (focus != null && (focus == _watchFocus || _feedFocus.containsValue(focus))) {
-      focus.focusFirst();
+    if (focus == null) return;
+    final index = _orderedFocus.indexOf(focus);
+    if (index < 0) return;
+
+    if (moveUp && focus.nodeFor(focus.firstPackage) == node) {
+      for (var previous = index - 1; previous >= 0; previous--) {
+        final target = _orderedFocus[previous];
+        final first = target.firstPackage;
+        if (first == null ||
+            first == HomeSection.emptyTileKey ||
+            first == ContentPreviewRow.loadingFocusKey) {
+          continue;
+        }
+        target.focusFirst();
+        return;
+      }
     }
+    focus.focusFirst();
   }
 
   @override

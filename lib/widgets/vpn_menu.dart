@@ -138,7 +138,7 @@ class _VpnMenuState extends State<VpnMenu> with WidgetsBindingObserver {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              vpn.failed || !vpn.initialized
+                              vpn.statusUnknown
                                   ? l.vpnUnknown
                                   : vpn.active
                                   ? l.vpnConnected

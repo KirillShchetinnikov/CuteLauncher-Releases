@@ -2,6 +2,16 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
+## v1.8.0-test.2 — 2026-11-13
+
+**Prerelease.** Some new features are still being tested. If you are unsure, wait for the stable release.
+
+- The Back button can return to the first card in the current section or move up through sections with repeated presses. This also works in recommendation feeds and Continue Watching.
+- The System widget shows CPU temperature on compatible devices. A separate switch displays it in the top bar. If direct readings are unavailable, the widget can use an existing local ADB connection.
+- Always-visible top bar widgets appear alongside the clock at startup. Icons that depend on connectivity or another condition appear once that condition is confirmed.
+- Improved cold startup. App card artwork is cached. Fixed duplicate images in memory and a memory leak in the clock animation.
+- One button in ADB settings sets CuteLauncher as the home screen and lets you restore the previous launcher. The app checks which launcher Android selected. A separate button opens Android's default launcher settings.
+
 ## v1.8.0-test.1 — 2026-11-12
 
 **Prerelease.** This version includes new features, some of which have not yet been fully tested. Based on current checks, we do not expect critical issues. If you are unsure, skip this release and wait for the stable version.

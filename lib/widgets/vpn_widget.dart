@@ -54,12 +54,11 @@ class _VpnWidgetState extends State<VpnWidget> {
   @override
   Widget build(BuildContext context) {
     final vpn = context.watch<VpnService?>();
-    if (vpn == null ||
-        (!vpn.active && vpn.onlyActive && !_open && !vpn.failed)) {
+    if (vpn == null || (!vpn.indicatorVisible && !_open)) {
       return const SizedBox.shrink();
     }
     final l = AppLocalizations.of(context)!;
-    final status = vpn.failed
+    final status = vpn.statusUnknown
         ? l.vpnUnknown
         : vpn.active
         ? l.vpnConnected
@@ -75,7 +74,9 @@ class _VpnWidgetState extends State<VpnWidget> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              vpn.active ? Icons.vpn_key : Icons.vpn_key_off_outlined,
+              vpn.statusUnknown
+                  ? Icons.vpn_key_outlined
+                  : vpn.active ? Icons.vpn_key : Icons.vpn_key_off_outlined,
               color: vpn.color && vpn.active && !vpn.failed
                   ? Theme.of(context).colorScheme.primary
                   : null,

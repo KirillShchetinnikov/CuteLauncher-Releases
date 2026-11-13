@@ -546,7 +546,7 @@ void main() {
               builder: (_) => PanelCalendarDialog(today: DateTime(2026, 10, 4)),
             );
           } else if (state.dialog == 'adb') {
-            confirmAdbAction(context, l.adbHome, 'home', [
+            confirmAdbAction(context, l.adbAssignDefault, 'home', [
               "cmd package set-home-activity 'example.launcher/MainActivity'",
             ]);
           } else {

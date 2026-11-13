@@ -25,14 +25,15 @@ class _TrafficUsageMenuState extends State<TrafficUsageMenu>
   final _settingsNode = FocusNode();
   final _scrollController = ScrollController();
   bool _settingsOpen = false;
+  bool _allowed = false;
   NetworkService? _network;
   static const _periods = ['daily', 'weekly', 'monthly'];
   Map<String, Future<Map<String, dynamic>>> _snapshots = {};
 
   void _reload() {
-    _snapshots = {
+    _snapshots = _allowed ? {
       for (final period in _periods) period: _network!.getTrafficUsage(period),
-    };
+    } : {};
   }
 
   @override
@@ -45,8 +46,9 @@ class _TrafficUsageMenuState extends State<TrafficUsageMenu>
   void didChangeDependencies() {
     super.didChangeDependencies();
     final network = context.watch<NetworkService>();
-    if (_network != network) {
+    if (_network != network || _allowed != network.hasUsageStatsPermission) {
       _network = network;
+      _allowed = network.hasUsageStatsPermission;
       _reload();
     }
   }
@@ -128,7 +130,7 @@ class _TrafficUsageMenuState extends State<TrafficUsageMenu>
                     trafficPeriodLabel(l, period),
                     style: theme.textTheme.titleMedium,
                   ),
-                  if (snapshot.connectionState == ConnectionState.done &&
+                  if (_allowed && snapshot.connectionState == ConnectionState.done &&
                       !snapshot.hasError)
                     Wrap(
                       spacing: 6,
@@ -144,7 +146,9 @@ class _TrafficUsageMenuState extends State<TrafficUsageMenu>
                 ],
               ),
               const SizedBox(height: 8),
-              if (snapshot.connectionState == ConnectionState.waiting)
+              if (!_allowed)
+                const Text('—')
+              else if (snapshot.connectionState == ConnectionState.waiting)
                 const LinearProgressIndicator()
               else if (snapshot.hasError)
                 Text(l.networkReadFailed)

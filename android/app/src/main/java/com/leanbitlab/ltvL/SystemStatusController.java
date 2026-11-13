@@ -3,11 +3,11 @@ package com.leanbitlab.ltvL;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.os.Environment;
-import android.os.HardwarePropertiesManager;
 import android.os.PowerManager;
 import android.os.StatFs;
 import android.os.SystemClock;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +16,7 @@ import java.util.Map;
 final class SystemStatusController {
     interface CpuReader { String read() throws Exception; }
     private final SystemCpuAdb adbCpu = new SystemCpuAdb();
+    private final SystemCpuTemperature cpuTemperature = new SystemCpuTemperature(new File("/sys/class/thermal"));
     private long[] previousCpu;
     private long previousAt;
     private boolean previousAdb;
@@ -42,15 +43,15 @@ final class SystemStatusController {
         return 100.0 * (total - idle) / total;
     }
 
-    private static long[] readCpu(CpuReader reader) {
+    static long[] readCpu(CpuReader reader) {
         try { return parseCpu(reader.read()); }
         catch (Exception unavailable) { return null; }
     }
 
-    Double sampleCpu(long now, CpuReader direct, CpuReader fallback) {
-        long[] current = readCpu(direct);
+    Double sampleCpu(long now, long[] direct, long[] fallback) {
+        long[] current = direct;
         boolean usingAdb = current == null;
-        if (usingAdb) current = readCpu(fallback);
+        if (usingAdb) current = fallback;
         Double percent = now > previousAt && now - previousAt <= 15000 && usingAdb == previousAdb
                 ? cpuPercent(previousCpu, current) : null;
         previousCpu = current;
@@ -67,33 +68,22 @@ final class SystemStatusController {
         if (!screenOn) { previousCpu = null; return data; }
         long now = SystemClock.elapsedRealtime();
         data.put("uptimeMinutes", now / 60000);
-        data.put("cpuPercent", sampleCpu(now, () -> {
+        long[] counters = readCpu(() -> {
             try (BufferedReader reader = new BufferedReader(new FileReader("/proc/stat"))) {
                 return reader.readLine();
             }
-        }, () -> adbCpu.read(context)));
+        });
+        Double temperature = cpuTemperature.sample(context, now);
+        var adb = adbCpu.read(context, now, counters == null, temperature == null);
+        data.put("cpuPercent", sampleCpu(now, counters, adb.counters()));
+        if (temperature == null) temperature = adb.temperature();
+        if (temperature != null) data.put("temperatureCelsius", temperature);
         data.putAll(ramSnapshot(context));
         try {
             StatFs disk = new StatFs(Environment.getDataDirectory().getPath());
             data.put("storageTotalBytes", disk.getTotalBytes());
             data.put("storageAvailableBytes", disk.getAvailableBytes());
         } catch (RuntimeException unavailable) { /* No fabricated free space. */ }
-        try {
-            HardwarePropertiesManager hardware = context.getSystemService(HardwarePropertiesManager.class);
-            if (hardware != null) {
-                float[] temperatures = hardware.getDeviceTemperatures(
-                    HardwarePropertiesManager.DEVICE_TEMPERATURE_CPU,
-                    HardwarePropertiesManager.TEMPERATURE_CURRENT);
-                Float hottest = null;
-                for (float value : temperatures) {
-                    if (Float.isFinite(value) && value != HardwarePropertiesManager.UNDEFINED_TEMPERATURE
-                            && value > -50 && value < 200) {
-                        hottest = hottest == null ? value : Math.max(hottest, value);
-                    }
-                }
-                data.put("temperatureCelsius", hottest);
-            }
-        } catch (RuntimeException unavailable) { /* Common on consumer TVs; omit temperature. */ }
         return data;
     }
 

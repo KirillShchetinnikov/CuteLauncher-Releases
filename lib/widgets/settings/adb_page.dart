@@ -27,6 +27,7 @@ import 'adb_action_confirmation.dart';
 import 'focusable_settings_tile.dart';
 import 'settings_page_layout.dart';
 import 'settings_help.dart';
+import 'settings_information.dart';
 import 'settings_route.dart';
 import '../panel_tooltip.dart';
 
@@ -246,23 +247,29 @@ class _AdbPageState extends State<AdbPage> with WidgetsBindingObserver {
     }
   }
 
-  Future<void> _run(String action, String title, {String? target}) async {
+  Future<void> _run(String action, String title) async {
     if (_busy || !_verified) return;
     var report = false;
     setState(() => _busy = true);
     try {
       var plan = await _call('preview', {
         'operation': action,
-        'target': ?target,
       });
       if (!mounted) return;
       var allowOwnedWifi = false;
-      if (action == 'disableSystem' && plan['status'] == 'wifiOwned') {
+      String? target;
+      if (action == 'home' && plan['status'] == 'wifiOwned') {
         if (!await confirmAdbWifiRisk(context) || !mounted) return;
         allowOwnedWifi = true;
+        target = plan['target'] as String?;
+        if (target == null || target.isEmpty) {
+          report = true;
+          setState(() => _status = 'changed');
+          return;
+        }
         plan = await _call('preview', {
           'operation': action,
-          'target': ?target,
+          'target': target,
           'allowOwnedWifi': true,
         });
         if (!mounted) return;
@@ -271,8 +278,7 @@ class _AdbPageState extends State<AdbPage> with WidgetsBindingObserver {
         report = true;
         setState(() {
           _status = plan['status'] as String? ?? 'unavailable';
-          _verified = false;
-          _snapshot = {};
+          if (!_keepsConnection(_status)) _verified = false;
         });
         return;
       }
@@ -285,6 +291,8 @@ class _AdbPageState extends State<AdbPage> with WidgetsBindingObserver {
                 : title,
             action,
             commands,
+            disablesBuiltin: action == 'home' &&
+                plan['target'] is String && (plan['target'] as String).isNotEmpty,
           ) ||
           !mounted)) {
         return;
@@ -293,13 +301,14 @@ class _AdbPageState extends State<AdbPage> with WidgetsBindingObserver {
       report = true;
       final result = await _call(action, {
         if (allowOwnedWifi) 'allowOwnedWifi': true,
-        'commands': commands,
         'target': ?target,
+        'commands': commands,
       });
       if (!mounted) return;
-      final value = result['status'] == 'success'
-          ? await _call('check')
-          : result;
+      final refresh = result['status'] == 'success' ||
+          ((action == 'home' || action == 'restore') &&
+              _keepsConnection(result['status']));
+      final value = refresh ? await _call('check') : result;
       await _refreshLauncherState();
       if (!mounted) return;
       setState(() {
@@ -308,7 +317,7 @@ class _AdbPageState extends State<AdbPage> with WidgetsBindingObserver {
                 as String? ??
             'unavailable';
         _verified =
-            result['status'] == 'success' &&
+            refresh &&
             value['status'] == 'ready' &&
             value['isHome'] is bool &&
             value['accessibility'] is bool &&
@@ -318,8 +327,6 @@ class _AdbPageState extends State<AdbPage> with WidgetsBindingObserver {
           _compatibility = value['compatibility'] as Map? ?? _compatibility;
           _isHome = value['isHome'];
           _accessibility = value['accessibility'];
-        } else {
-          _snapshot = {};
         }
       });
     } catch (_) {
@@ -327,14 +334,15 @@ class _AdbPageState extends State<AdbPage> with WidgetsBindingObserver {
       if (mounted) {
         setState(() {
           _verified = false;
-          _snapshot = {};
           _status = 'unavailable';
         });
       }
     } finally {
       if (mounted) {
         setState(() => _busy = false);
-        if (report) showAdbNotice(context, _status, title: title);
+        if (report && _status != 'homeUnchanged') {
+          showAdbNotice(context, _status, title: title);
+        }
       }
     }
   }
@@ -357,11 +365,15 @@ class _AdbPageState extends State<AdbPage> with WidgetsBindingObserver {
           'wifiUnknown' => l.adbWifiUnknown,
           _ => l.adbNotChecked,
         };
-  bool _supported(String action, [String? target]) =>
+  bool _keepsConnection(Object? status) => switch (status) {
+    'homeUnchanged' || 'denied' || 'changed' || 'unsupported' ||
+    'noRecovery' || 'dependencyProtected' || 'wifiOwned' || 'wifiUnknown' => true,
+    _ => false,
+  };
+
+  bool _supported(String action) =>
       (_compatibility['actions'] as Map?)?[action] == true &&
-      (action != 'restore' || _snapshot['restoreSupported'] != false) &&
-      (action != 'disableSystem' ||
-          (_compatibility['disableTargets'] as Map?)?[target] == true);
+      (action != 'restore' || _snapshot['restoreSupported'] != false);
   Future<void> _openSection(String section) async {
     await Navigator.of(context).push(
       SettingsRoute<void>(
@@ -487,48 +499,46 @@ class _AdbPageState extends State<AdbPage> with WidgetsBindingObserver {
     String title,
     String action,
     bool applied, {
-    String? target,
     bool available = true,
     bool showAppliedState = false,
+    bool autofocus = false,
+    Key? key,
   }) {
     final l = AppLocalizations.of(context)!;
-    final supported = _supported(action, target);
-    final homeBlocked =
-        action == 'disableSystem' &&
-        (_compatibility['actions'] as Map?)?['disableSystem'] == true;
+    final supported = _supported(action);
+    final enabled = _verified && available && supported;
     return Column(
+      key: key ?? ValueKey(action),
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [Opacity(
-      opacity: _verified && available && supported ? 1 : 0.45,
-      child: FocusableSettingsTile(
-        leading: const Icon(Icons.terminal),
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(title),
-            if (!supported || !_verified || showAppliedState)
-              Text(
-                !supported
-                    ? l.memoryUnavailable
-                    : !_verified
-                    ? l.adbNotChecked
-                    : applied
-                    ? l.adbApplied
-                    : l.adbNotApplied,
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-          ],
+      children: [
+        Opacity(
+          opacity: enabled ? 1 : 0.45,
+          child: FocusableSettingsTile(
+            autofocus: autofocus,
+            leading: const Icon(Icons.terminal),
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title),
+                if (!supported || !_verified || showAppliedState)
+                  Text(
+                    !supported
+                        ? l.memoryUnavailable
+                        : !_verified
+                        ? l.adbNotChecked
+                        : applied
+                        ? l.adbApplied
+                        : l.adbNotApplied,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+              ],
+            ),
+            busy: _busy,
+            onPressed: enabled ? () => _run(action, title) : null,
+          ),
         ),
-        onPressed: _verified && !_busy && available && supported
-            ? () => _run(action, title, target: target)
-            : null,
-      ),
-    ),
-    if (!supported)
-      Text(action == 'home'
-          ? l.adbHomeUnavailable
-          : homeBlocked ? l.adbDisableHomeUnavailable : l.adbUnsupported),
-    ],
+        if (!supported) Text(l.adbUnsupported),
+      ],
     );
   }
 
@@ -536,12 +546,13 @@ class _AdbPageState extends State<AdbPage> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
     final settings = context.watch<SettingsService?>();
-    final builtins = <String, Map>{
-      for (final item
-          in (_snapshot['launchers'] as List? ?? []).whereType<Map>())
-        if (item['builtin'] == true && item['package'] is String)
-          item['package'] as String: item,
-    }.values.toList();
+    final restoring = _isHome == true || _snapshot['homeRecoverySaved'] == true;
+    final restoreAvailable =
+        (_snapshot['restoreTarget'] as String? ?? '').isNotEmpty;
+    final adbAction = restoring ? 'restore' : 'home';
+    final adbActionAvailable = !restoring || restoreAvailable;
+    final adbActionReady =
+        _verified && adbActionAvailable && _supported(adbAction);
     return SettingsPageLayout(
       title: Text(
         widget.section == 'launcher'
@@ -558,41 +569,33 @@ class _AdbPageState extends State<AdbPage> with WidgetsBindingObserver {
           children: widget.section == 'launcher'
               ? [
                   _launcherStatus(l),
-                  if (!_verified && _status != null) Text(_stateText(l)),
+                  if (_status != null &&
+                      _status != 'ready' &&
+                      _status != 'success' &&
+                      _status != 'homeUnchanged')
+                    Text(_stateText(l)),
+                  _action(
+                    restoring ? l.adbRestoreDefault : l.adbAssignDefault,
+                    adbAction,
+                    false,
+                    available: adbActionAvailable,
+                    autofocus: adbActionReady,
+                    key: const ValueKey('default-launcher-adb'),
+                  ),
+                  if (_status == 'homeUnchanged')
+                    SettingsMessage(
+                      text: l.adbHomeUnchanged,
+                      kind: SettingsMessageKind.error,
+                    ),
+                  if (_verified && restoring && !restoreAvailable)
+                    Text(l.adbNoAvailableLauncher),
                   FocusableSettingsTile(
-                    autofocus: true,
+                    autofocus: !adbActionReady,
                     title: Text(l.adbSystemDefault),
                     leading: const Icon(Icons.home),
                     onPressed: () =>
                         FLauncherChannel().openDefaultLauncherSettings(),
                   ),
-                  if (_isHome == true || _snapshot['homeRecoverySaved'] == true)
-                    _action(
-                      l.adbRestoreDefault,
-                      'restore',
-                      false,
-                      available: (_snapshot['restoreTarget'] as String? ?? '')
-                          .isNotEmpty,
-                    )
-                  else
-                    _action(l.adbAssignDefault, 'home', _isHome == true),
-                  if (_verified &&
-                      (_isHome == true ||
-                          _snapshot['homeRecoverySaved'] == true) &&
-                      (_snapshot['restoreTarget'] as String? ?? '').isEmpty)
-                    Text(l.adbNoAvailableLauncher),
-
-                  for (final item in builtins)
-                    _action(
-                      '${item['enabled'] == true ? l.adbDisableBuiltin : l.adbEnableBuiltin}: ${item['name']}',
-                      item['enabled'] == true
-                          ? 'disableSystem'
-                          : 'enableSystem',
-                      false,
-                      target: item['package'] as String,
-                      available: true,
-                    ),
-                  if (_verified && builtins.isEmpty) Text(l.adbNoBuiltin),
                 ]
               : widget.section == 'home'
               ? [

@@ -30,6 +30,9 @@ import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/tv_inputs_service.dart';
 import 'package:flauncher/providers/notifications_service.dart';
 import 'package:flauncher/providers/night_mode_service.dart';
+import 'package:flauncher/providers/network_service.dart';
+import 'package:flauncher/models/weather_data.dart';
+import 'package:flauncher/widgets/home_skeleton.dart';
 import 'package:provider/provider.dart';
 import 'package:mockito/mockito.dart';
 import '../mocks.mocks.dart';
@@ -51,6 +54,7 @@ void main() {
     when(service.settingsMenuOnRight).thenReturn(false);
     when(service.autoHideAppBarEnabled).thenReturn(false);
     when(service.showNetworkIndicatorInStatusBar).thenReturn(false);
+    when(service.showVpnInStatusBar).thenReturn(false);
     when(service.showVolumeInStatusBar).thenReturn(false);
     when(service.showSystemInStatusBar).thenReturn(false);
     when(service.showNetworkSpeedInStatusBar).thenReturn(false);
@@ -86,7 +90,9 @@ void main() {
     setupSettingsDefaults(mockSettingsService);
 
     when(mockTvInputsService.hasInputs).thenReturn(false);
+    when(mockTvInputsService.initialized).thenReturn(true);
     when(mockNotificationsService.hasPermission).thenReturn(false);
+    when(mockNotificationsService.initialized).thenReturn(true);
     when(mockNotificationsService.notifications).thenReturn([]);
     when(mockWeatherService.hasWeather).thenReturn(false);
     when(mockWeatherService.weatherData).thenReturn(null);
@@ -103,6 +109,80 @@ void main() {
         body: Container(),
       ),
     );
+  }
+
+  for (final enabled in [true, false]) {
+    testWidgets('Home renders weather early and waits for conditional objects: $enabled', (tester) async {
+      when(mockSettingsService.showInputsWidgetInStatusBar).thenReturn(enabled);
+      when(mockSettingsService.showNotificationsWidgetInStatusBar).thenReturn(enabled);
+      when(mockSettingsService.showDataWidgetInStatusBar).thenReturn(enabled);
+      when(mockSettingsService.showWeatherInStatusBar).thenReturn(enabled);
+      when(mockSettingsService.dataUsagePeriod).thenReturn('daily');
+      when(mockTvInputsService.initialized).thenReturn(false);
+      when(mockNotificationsService.initialized).thenReturn(false);
+      final network = MockNetworkService();
+      when(network.hasUsageStatsPermission).thenReturn(false);
+      final listeners = <VoidCallback>{};
+      when(mockTvInputsService.addListener(any)).thenAnswer((call) {
+        listeners.add(call.positionalArguments.single as VoidCallback);
+      });
+      when(mockNotificationsService.addListener(any)).thenAnswer((call) {
+        listeners.add(call.positionalArguments.single as VoidCallback);
+      });
+      when(mockWeatherService.addListener(any)).thenAnswer((call) {
+        listeners.add(call.positionalArguments.single as VoidCallback);
+      });
+      when(network.addListener(any)).thenAnswer((call) {
+        listeners.add(call.positionalArguments.single as VoidCallback);
+      });
+
+      final app = MultiProvider(
+        providers: [
+          ChangeNotifierProvider<SettingsService>.value(value: mockSettingsService),
+          ChangeNotifierProvider<TvInputsService>.value(value: mockTvInputsService),
+          ChangeNotifierProvider<NotificationsService>.value(value: mockNotificationsService),
+          ChangeNotifierProvider<WeatherService>.value(value: mockWeatherService),
+          ChangeNotifierProvider<NetworkService>.value(value: network),
+        ],
+        child: createWidgetUnderTest(),
+      );
+      await tester.pumpWidget(app);
+      expect(find.byKey(const Key('statusbar_clock')), findsOneWidget);
+      expect(find.byKey(const Key('statusbar_date')), findsOneWidget);
+      expect(find.byIcon(Icons.settings_outlined), findsOneWidget);
+      final bell = find.byIcon(Icons.notifications_outlined);
+      final inputs = find.byIcon(Icons.tv_outlined);
+      final traffic = find.byKey(const ValueKey('traffic_button'));
+      for (final object in [bell, inputs, traffic]) {
+        expect(object, findsNothing);
+      }
+      expect(find.byType(WeatherGlyph), enabled ? findsOneWidget : findsNothing);
+      verifyNever(network.getDataUsageForPeriod(any));
+      expect(find.byType(HomeSkeletonBlock), findsNothing);
+      expect(find.text('—'), enabled ? findsOneWidget : findsNothing);
+
+      final bar = tester.state<FocusAwareAppBarState>(find.byType(FocusAwareAppBar));
+      bar.dateFocusNode.requestFocus();
+      await tester.pump();
+      when(mockTvInputsService.hasInputs).thenReturn(true);
+      when(mockNotificationsService.initialized).thenReturn(true);
+      when(mockNotificationsService.hasPermission).thenReturn(true);
+      when(mockNotificationsService.notifications).thenReturn([
+        NotificationItem(key: 'one', packageName: 'app', title: 'Title', text: 'Text', isClearable: true),
+      ]);
+      when(network.hasUsageStatsPermission).thenReturn(true);
+      when(network.dailyDataUsage).thenReturn(-1);
+      when(network.getDataUsageForPeriod('daily')).thenAnswer((_) async => 1024);
+      when(mockWeatherService.weatherData).thenReturn(const WeatherData(currentTemp: 17));
+      for (final listener in listeners.toList()) { listener(); }
+      await tester.pumpAndSettle();
+      final expected = enabled ? findsOneWidget : findsNothing;
+      expect(inputs, expected);
+      expect(find.byIcon(Icons.notifications_active_outlined), expected);
+      expect(find.text('17°C'), expected);
+      expect(find.text('Daily: 1.00 KB', findRichText: true), expected);
+      expect(bar.dateFocusNode.hasPrimaryFocus, isTrue);
+    });
   }
 
   testWidgets('Home reports the centers of both widgets in widget-position mode', (tester) async {

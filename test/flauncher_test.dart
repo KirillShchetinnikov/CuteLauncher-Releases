@@ -1300,12 +1300,212 @@ void main() {
     expect(focus.scrollController.offset, 0);
     expect(otherFocus.lastPackage, otherSelection);
 
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(focus.hasFocus, isTrue);
+    expect(focus.lastPackage, '200');
+
     await scrollFeed();
     await tester.sendKeyEvent(LogicalKeyboardKey.escape);
     await tester.pumpAndSettle();
     expect(focus.hasFocus, isTrue);
     expect(focus.lastPackage, '200');
     expect(focus.scrollController.offset, 0);
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  for (final (layout, rows) in [
+    (CategoryType.row, 1),
+    (CategoryType.row, 2),
+    (CategoryType.grid, 2),
+    (CategoryType.grid, 0),
+  ]) {
+    testWidgets('Back returns to the first app in the current section: $layout, $rows rows', (tester) async {
+      const homeEvents = MethodChannel('me.efesser.flauncher/event_home');
+      final messenger = tester.binding.defaultBinaryMessenger;
+      messenger.setMockMethodCallHandler(homeEvents, (_) async => null);
+      addTearDown(() => messenger.setMockMethodCallHandler(homeEvents, null));
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      final appearance = AppearanceService(prefs);
+      final settings = SettingsService(prefs);
+      addTearDown(appearance.dispose);
+      addTearDown(settings.dispose);
+      await appearance.set('focusPulse', false);
+      await settings.setBackButtonAction(BACK_BUTTON_ACTION_FIRST_FEED_CARD);
+      final other = Category(id: 76, name: 'Other apps', type: CategoryType.row)
+        ..applications.add(fakeApp(packageName: 'back.other'));
+      final section = Category(
+        id: 77, name: 'Current apps', type: layout, columnsCount: 4,
+      )..applications.addAll(List.generate(40, (i) => fakeApp(packageName: 'back.$i')));
+      final isGrid = layout == CategoryType.grid;
+      if (isGrid) {
+        await appearance.setCategory(section.id, 'maxRows', rows);
+      } else {
+        await appearance.setTapeRows(section.id, rows);
+      }
+      final apps = mkAppService();
+      when(apps.isDefaultLauncher()).thenAnswer((_) async => true);
+      when(apps.launcherSections).thenReturn([other, section]);
+      await _pumpWidgetWithProviders(tester, mkWallpaperService(), apps, settings,
+        appearance: appearance, pixelRatio: 2, useLauncherApp: true);
+
+      final viewport = find.descendant(
+        of: find.byKey(ValueKey(section.id.toString())),
+        matching: find.byType(ReorderingTileViewport),
+      );
+      final inner = tester.state<ScrollableState>(find.descendant(
+        of: viewport, matching: find.byType(Scrollable),
+      ).first).position;
+      final outer = tester.getRect(find.byType(SingleChildScrollView).first);
+      getFocusNodeForApp(tester, 'back.0')!.requestFocus();
+      await tester.pumpAndSettle();
+
+      for (final back in <Future<void> Function()>[
+        () async { await tester.binding.handlePopRoute(); },
+        () async { await tester.sendKeyEvent(LogicalKeyboardKey.escape); },
+      ]) {
+        for (var i = 0; i < (isGrid ? 6 : 12); i++) {
+          await tester.sendKeyEvent(isGrid
+              ? LogicalKeyboardKey.arrowDown : LogicalKeyboardKey.arrowRight);
+          await tester.pumpAndSettle();
+        }
+        if (!isGrid && rows > 1) {
+          await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+          await tester.pumpAndSettle();
+        }
+        final selected = isGrid ? 24 : (rows > 1 ? 32 : 12);
+        expect(isAppCardFocused(tester, 'back.$selected'), isTrue);
+        if (rows != 0) expect(inner.pixels, greaterThan(0));
+
+        await back();
+        await tester.pumpAndSettle();
+        expect(isAppCardFocused(tester, 'back.0'), isTrue);
+        expect(inner.pixels, 0);
+        final first = getFocusNodeForApp(tester, 'back.0')!.rect;
+        expect(first.top, greaterThanOrEqualTo(outer.top - .1));
+        expect(first.bottom, lessThanOrEqualTo(outer.bottom + .1));
+      }
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+    });
+  }
+
+  testWidgets('Back resets the current card and walks up through each section and feed', (tester) async {
+    const homeEvents = MethodChannel('me.efesser.flauncher/event_home');
+    final messenger = tester.binding.defaultBinaryMessenger;
+    messenger.setMockMethodCallHandler(homeEvents, (_) async => null);
+    addTearDown(() => messenger.setMockMethodCallHandler(homeEvents, null));
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    final appearance = AppearanceService(prefs);
+    final settings = SettingsService(prefs);
+    final channel = FeedChannel()..data = [feed(1), feed(2, count: 20), feed(3, count: 0)];
+    final feeds = AppChannelsService(channel, settings);
+    addTearDown(() async {
+      feeds.dispose();
+      settings.dispose();
+      appearance.dispose();
+      await channel.events.close();
+    });
+    await appearance.set('focusPulse', false);
+    await appearance.setCategory(75, 'maxRows', 2);
+    await settings.setBackButtonAction(BACK_BUTTON_ACTION_SECTION_START_THEN_UP);
+    await settings.setSelectedAppChannels(['video.app:2', 'video.app:3', 'video.app:1']);
+    await settings.setShowContinueWatching(true);
+    await settings.setContinueWatchingOrder(2);
+    await tester.runAsync(feeds.refresh);
+
+    final top = Category(id: 71, name: 'Top', type: CategoryType.row)
+      ..applications.add(fakeApp(packageName: 'back.top'));
+    final hidden = Category(id: 72, name: 'Hidden', visible: false)
+      ..applications.add(fakeApp(packageName: 'back.hidden'));
+    final empty = Category(id: 73, name: 'Empty');
+    final grid = Category(id: 75, name: 'Grid', type: CategoryType.grid, columnsCount: 4)
+      ..applications.addAll(List.generate(20, (i) => fakeApp(packageName: 'back.grid.$i')));
+    final apps = mkAppService();
+    when(apps.isDefaultLauncher()).thenAnswer((_) async => true);
+    when(apps.applications).thenReturn([...top.applications, ...grid.applications]);
+    when(apps.launcherSections).thenReturn([
+      top, appChannelsGroup(), hidden, empty, LauncherSpacer(id: 74, height: 80), grid,
+    ]);
+    final watch = mkWatchNextService();
+    when(watch.hasPermission).thenReturn(true);
+    when(watch.programs).thenReturn([
+      WatchNextProgram.fromMap({'id': 1, 'packageName': 'video.app', 'title': 'Continue'}),
+    ]);
+    await _pumpWidgetWithProviders(tester, mkWallpaperService(), apps, settings,
+      feeds: feeds, watchNext: watch, appearance: appearance, pixelRatio: 2, useLauncherApp: true);
+
+    CategoryFocusController focusOf(Finder finder) =>
+        CategoryFocus.maybeOf(tester.element(finder))!;
+    Finder feedRow(int id) =>
+        find.byWidgetPredicate((w) => w is AppContentRow && w.channel?.id == id);
+    final upperFeed = focusOf(feedRow(2));
+    final lowerFeed = focusOf(feedRow(1));
+    final watchFocus = focusOf(find.byType(ContinueWatchingRow));
+    final gridFocus = focusOf(find.byKey(const ValueKey('75')));
+
+    Future<void> press(LogicalKeyboardKey key) async {
+      await tester.sendKeyEvent(key);
+      await tester.pumpAndSettle();
+    }
+
+    Future<void> back() async {
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+    }
+
+    await press(LogicalKeyboardKey.arrowDown);
+    expect(upperFeed.hasFocus, isTrue);
+    for (var i = 0; i < 12; i++) {
+      await press(LogicalKeyboardKey.arrowRight);
+    }
+    expect(upperFeed.lastPackage, '212');
+    expect(upperFeed.scrollController.offset, greaterThan(0));
+    for (var i = 0; i < 4; i++) {
+      await press(LogicalKeyboardKey.arrowDown);
+    }
+    for (var i = 0; i < 3; i++) {
+      await press(LogicalKeyboardKey.arrowLeft);
+    }
+    expect(isAppCardFocused(tester, 'back.grid.0'), isTrue);
+    for (var i = 0; i < 4; i++) {
+      await press(LogicalKeyboardKey.arrowDown);
+    }
+    expect(isAppCardFocused(tester, 'back.grid.16'), isTrue);
+    final gridViewport = find.descendant(
+      of: find.byKey(const ValueKey('75')),
+      matching: find.byType(ReorderingTileViewport),
+    );
+    final gridScroll = tester.state<ScrollableState>(find.descendant(
+      of: gridViewport, matching: find.byType(Scrollable),
+    ).first).position;
+    expect(gridScroll.pixels, greaterThan(0));
+
+    await back();
+    expect(gridFocus.hasFocus, isTrue);
+    expect(isAppCardFocused(tester, 'back.grid.0'), isTrue);
+    expect(gridScroll.pixels, 0);
+    await press(LogicalKeyboardKey.escape);
+    expect(watchFocus.hasFocus, isTrue);
+    expect(watchFocus.lastPackage, '1');
+    await back();
+    expect(lowerFeed.hasFocus, isTrue);
+    expect(lowerFeed.lastPackage, '100');
+    await back();
+    expect(upperFeed.hasFocus, isTrue);
+    expect(upperFeed.lastPackage, '200');
+    expect(upperFeed.scrollController.offset, 0);
+    await back();
+    expect(isAppCardFocused(tester, 'back.top'), isTrue);
+    await back();
+    expect(isAppCardFocused(tester, 'back.top'), isTrue);
+    await press(LogicalKeyboardKey.arrowUp);
+    expect(isSettingsIconFocused(tester), isTrue);
+    await back();
+    expect(isSettingsIconFocused(tester), isTrue);
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox());
   });
@@ -3769,6 +3969,7 @@ SettingsService mkSettingsService() {
   when(settingsService.continueWatchingOrder).thenReturn(0);
   when(settingsService.showNotificationsWidgetInStatusBar).thenReturn(true);
   when(settingsService.autoHideNotificationsWidget).thenReturn(false);
+  when(settingsService.showVpnInStatusBar).thenReturn(false);
   when(settingsService.showWeatherInStatusBar).thenReturn(false);
   when(settingsService.showWeatherWarnings).thenReturn(false);
   when(settingsService.useFahrenheit).thenReturn(false);
@@ -3788,7 +3989,7 @@ WallpaperService mkWallpaperService([bool wallpaper = true]) {
 TvInputsService mkTvInputsService() {
   final tvInputsService = MockTvInputsService();
   when(tvInputsService.hasInputs).thenReturn(false);
-  when(tvInputsService.initialized).thenReturn(false);
+  when(tvInputsService.initialized).thenReturn(true);
   return tvInputsService;
 }
 
@@ -3796,6 +3997,7 @@ NotificationsService mkNotificationsService() {
   final notificationsService = MockNotificationsService();
   when(notificationsService.getNotificationCount(any)).thenReturn(0);
   when(notificationsService.hasPermission).thenReturn(false);
+  when(notificationsService.initialized).thenReturn(true);
   when(notificationsService.notifications).thenReturn([]);
   return notificationsService;
 }

@@ -18,7 +18,9 @@ public final class AdbCapabilitiesProbe {
         var info = AdbCapabilities.info(activity);
         System.out.println(new org.json.JSONObject(info));
         for (var item : AdbCapabilities.homes(activity)) System.out.println(item.activityInfo.packageName+" "+item.activityInfo.name+" priority="+item.priority+" enabled="+item.activityInfo.enabled+" appEnabled="+item.activityInfo.applicationInfo.enabled);
-        if (AdbCapabilities.canHome(activity)) throw new AssertionError("Pinned system HOME was not detected");
+        if (AdbCapabilities.homePriorityAllowsSelection(activity)) throw new AssertionError("Pinned system HOME was not detected");
+        if (!Boolean.TRUE.equals(((java.util.Map<?, ?>) info.get("actions")).get("home")))
+            throw new AssertionError("Pinned system HOME blocked an assignment attempt");
         if (!AdbCapabilities.watchNextPermission(activity).equals(AdbCapabilities.TV_LISTINGS)) throw new AssertionError("Wrong TV permission");
         String stock = info.get("system").equals("Google TV") ? "com.google.android.apps.tv.launcherx" : "com.google.android.tvlauncher";
         if (!AdbCapabilities.canDisable(activity, stock)) throw new AssertionError("Safe HOME replacement was blocked");

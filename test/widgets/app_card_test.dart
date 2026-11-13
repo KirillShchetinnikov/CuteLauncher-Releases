@@ -547,6 +547,40 @@ void main() {
     expect((tester.widget<Image>(find.byType(Image).first).image as ResizeImage).imageProvider, provider);
   });
 
+  testWidgets('replacing artwork keeps the mounted image while the new frame decodes', (tester) async {
+    Future<Uint8List> artwork(Color color) async {
+      final recorder = ui.PictureRecorder();
+      Canvas(recorder).drawColor(color, BlendMode.src);
+      final picture = recorder.endRecording();
+      final image = await picture.toImage(64, 36);
+      final bytes = (await image.toByteData(format: ui.ImageByteFormat.png))!
+          .buffer.asUint8List();
+      image.dispose();
+      picture.dispose();
+      return bytes;
+    }
+
+    final (red, blue) = (await tester.runAsync(() async => (
+      await artwork(Colors.red), await artwork(Colors.blue),
+    )))!;
+    when(mockAppsService.getAppBanner(any)).thenAnswer((_) async => red);
+    await tester.pumpWidget(createWidgetUnderTest());
+    await tester.pumpAndSettle();
+    final image = find.byType(Image).first;
+    final initialElement = tester.element(image);
+    final initialProvider = tester.widget<Image>(image).image;
+    final listeners = verify(mockAppsService.addListener(captureAny)).captured.cast<VoidCallback>();
+
+    when(mockAppsService.imageRevisionFor(any)).thenReturn((0, 1));
+    when(mockAppsService.getAppBanner(any)).thenAnswer((_) async => blue);
+    for (final listener in listeners) { listener(); }
+    await tester.pumpAndSettle();
+
+    expect(tester.element(image), same(initialElement));
+    expect(tester.widget<Image>(image).image, isNot(initialProvider));
+    expect(tester.widget<Image>(image).gaplessPlayback, isTrue);
+  });
+
   testWidgets('AppCard hides labels by default and handles focus', (WidgetTester tester) async {
     await tester.pumpWidget(createWidgetUnderTest());
     await tester.pumpAndSettle();

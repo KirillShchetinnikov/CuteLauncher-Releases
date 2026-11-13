@@ -180,7 +180,10 @@ void main() {
         final notifications = MockNotificationsService();
         final weather = MockWeatherService();
         when(inputs.hasInputs).thenReturn(false);
+        when(inputs.initialized).thenReturn(true);
         when(notifications.hasPermission).thenReturn(false);
+        when(notifications.initialized).thenReturn(true);
+        when(notifications.notifications).thenReturn([]);
         when(weather.weatherData).thenReturn(null);
         if (remoteMode) {
           for (final id in RemotePanelService.ids) {
@@ -242,6 +245,8 @@ void main() {
             ),
           ),
         );
+        expect(find.byKey(const ValueKey('nas_button')), findsNothing);
+        expect(find.byKey(const ValueKey('usb_button')), findsNothing);
         await tester.pump(const Duration(milliseconds: 100));
         expect(find.byKey(const ValueKey('nas_button')), findsNothing);
         expect(find.byKey(const ValueKey('usb_button')), findsNothing);

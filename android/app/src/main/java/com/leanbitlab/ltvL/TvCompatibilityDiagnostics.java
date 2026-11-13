@@ -38,7 +38,7 @@ final class TvCompatibilityDiagnostics {
             if (home == null || home.activityInfo == null) return "unknown";
             return home.activityInfo.packageName.equals(activity.getPackageName()) ? "available" : "notConfigured";
         });
-        checks.add("homeSelection", () -> AdbCapabilities.canHome(activity) ? "available" : "restricted");
+        checks.add("homeSelection", () -> AdbCapabilities.homePriorityAllowsSelection(activity) ? "available" : "restricted");
         checks.add("overlay", () -> permitted(OverlayPermission.granted(activity)));
         checks.add("notifications", () -> permitted(activity.getSystemService(NotificationManager.class).areNotificationsEnabled()));
         checks.add("notificationListener", () -> permitted(activity.getSystemService(NotificationManager.class)

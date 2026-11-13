@@ -410,7 +410,11 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get dialogOptionBackButtonActionFirstFeedCard =>
-      'Geçerli akışın ilk kartına git';
+      'Geçerli bölümün ilk kartına git';
+
+  @override
+  String get dialogOptionBackButtonActionSectionStartThenUp =>
+      'İlk karta git, ardından bölüm bölüm yukarı çık';
 
   @override
   String get dialogOptionBackButtonActionDoNothing => 'Hiçbir şey yapma';
@@ -2742,7 +2746,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get adbBuiltinHint =>
-      'Yerleşik başlatıcıyı devre dışı bırakmak sistemin bunun yerine CuteLauncher\'yi açmasına olanak tanır. TV menüleri ve düğmeleri etkilenebilir. Bunu geri almak için yerleşik başlatıcıyı etkinleştirin.';
+      'Yerleşik başlatıcıyı devre dışı bırakırsanız uzaktan kumandadaki bazı düğmeler ve üreticiye özgü TV menüleri çalışmayabilir. Bu değişikliği geri almak için yerleşik başlatıcıyı yeniden etkinleştirin.';
 
   @override
   String get adbHomeBlock => 'Ana sayfa düğmesi ve başlatma';
@@ -2776,7 +2780,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get adbEffectHome =>
-      'CuteLauncher sistemin varsayılan başlatıcısı olacaktır. Mevcut başlatıcı geri yükleme için kaydedilecek.';
+      'CuteLauncher, Android\'den kendisini varsayılan başlatıcı olarak ayarlamasını isteyecek ve sonucu kontrol edecek. Mevcut başlatıcı geri yükleme için kaydedilecek.';
 
   @override
   String get adbEffectRestore =>
@@ -2839,8 +2843,8 @@ class AppLocalizationsTr extends AppLocalizations {
       'Bu cihazda kullanılamıyor: desteklenen ADB komutu yok.';
 
   @override
-  String get adbHomeUnavailable =>
-      'Yerleşik başlatıcının sistem önceliği vardır. ADB aracılığıyla doğrudan atama mevcut değildir; erişilebilirliği kullanın veya yerleşik başlatıcıyı devre dışı bırakın.';
+  String get adbHomeUnchanged =>
+      'Android mevcut başlatıcıyı korudu. Ana ekran düğmesiyle CuteLauncher\'ı açmak için Home Button Fix\'i ayarlayın.';
 
   @override
   String get nightBatteryExempt => 'CuteLauncher optimizasyondan muaftır';
@@ -4938,6 +4942,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get systemUptime => 'Çalışma süresi (saat:dakika)';
 
   @override
+  String get systemShowTemperature => 'Panelde CPU sıcaklığını göster';
+
+  @override
   String get systemTemperature => 'CPU sıcaklığı';
 
   @override
@@ -4957,7 +4964,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get systemWidgetHelp =>
-      'Panel görünürken değerler seçilen 1–10 saniyelik aralıkla güncellenir (varsayılan 5). Grafikler dakika ortalamalarını ve zirvelerini gösterir. Diğer uygulamalar, uyku ve okuma hataları boşluk bırakır. Geçmiş bellekte tutulur ve başlatıcı işlemi yeniden başladığında sıfırlanır. CPU ve sıcaklık aygıt yazılımına bağlıdır. Yalnızca simgeyi göstermek için iki panel değerini de kapatın.';
+      'Panel görünürken değerler seçilen 1–10 saniyelik aralıkla güncellenir (varsayılan 5). Grafikler dakika ortalamalarını ve zirvelerini gösterir. Diğer uygulamalar, uyku ve okuma hataları boşluk bırakır. Geçmiş bellekte tutulur ve başlatıcı işlemi yeniden başladığında sıfırlanır. CPU ve sıcaklık aygıt yazılımına bağlıdır. Yalnızca simgeyi göstermek için tüm panel değerlerini kapatın.';
 
   @override
   String get slideshowBrowseFolders => 'Klasörlere göz at';

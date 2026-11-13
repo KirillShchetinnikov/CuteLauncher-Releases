@@ -69,6 +69,7 @@ void main() {
     await db.persistApps([AppsCompanion.insert(packageName: 'cached.app', name: 'Saved', version: '1')]);
     await db.updateApp('cached.app', const AppsCompanion(launchCount: Value(17)));
     await cache.save([{'packageName': 'cached.app', 'name': 'Saved', 'version': '1',
+      'artworkRevision': '1:100:100',
       'sideloaded': true, 'system': false, 'launchable': true}]);
     final channel = MockFLauncherChannel();
     when(channel.addAppsChangedListener(any)).thenReturn(null);
@@ -87,9 +88,19 @@ void main() {
       await Future<void>.delayed(const Duration(milliseconds: 400));
       verify(channel.getApplications()).called(1);
       final refreshed = Completer<void>();
-      service.addListener(() { if (!refreshed.isCompleted) refreshed.complete(); });
-      system.complete([]);
+      void onRefresh() { if (!refreshed.isCompleted) refreshed.complete(); }
+      service.addListener(onRefresh);
+      final previousImageRevision = service.imageRevisionFor('cached.app');
+      // A reinstall can change artwork without changing the public version name.
+      system.complete([{'packageName': 'cached.app', 'name': 'Saved', 'version': '1',
+        'artworkRevision': '1:100:200',
+        'sideloaded': true, 'system': false, 'launchable': true}]);
       await refreshed.future.timeout(const Duration(seconds: 2));
+      service.removeListener(onRefresh);
+      expect(service.imageRevisionFor('cached.app'), isNot(previousImageRevision));
+      expect(service.applications.single.launchCount, 17);
+      when(channel.getApplications()).thenAnswer((_) async => []);
+      await service.refreshState();
       expect(service.applications, isEmpty);
       expect((await db.getApplications()).single.launchCount, 17);
       await cache.save([]);

@@ -57,12 +57,18 @@ class _SystemStatusWidgetState extends State<SystemStatusWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final state = context.select<SystemStatusService, SystemStatus>(
-      (s) => s.state,
-    );
     final settings = context.watch<SettingsService>();
+    final showCpu = settings.systemShowCpu;
+    final showTemperature = settings.systemShowTemperature;
+    final showRam = settings.systemShowRam;
+    final (cpu, temperature, ram, temperaturePending) = context.select<SystemStatusService,
+        (int?, int?, int?, bool)>((s) => (
+      showCpu ? s.state.cpu : null,
+      showTemperature ? s.state.temperature : null,
+      showRam ? ramPercent(s.state)?.round() : null,
+      showTemperature && !s.initialized,
+    ));
     final l = AppLocalizations.of(context)!;
-    final ram = ramPercent(state)?.round();
     return Semantics(
       label: l.system,
       child: TopPanelItem(
@@ -73,12 +79,22 @@ class _SystemStatusWidgetState extends State<SystemStatusWidget> {
           mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(Icons.monitor_heart_outlined),
-            if (settings.systemShowCpu) ...[
+            if (showCpu) ...[
               const SizedBox(width: 4),
               HomeSkeletonValue(sample: 'CPU 100%',
-                child: Text('CPU ${state.cpu == null ? '—' : '${state.cpu}%'}')),
+                child: Text('CPU ${cpu == null ? '—' : '$cpu%'}')),
             ],
-            if (settings.systemShowRam) ...[
+            if (temperature != null || temperaturePending) ...[
+              const SizedBox(width: 4),
+              Semantics(
+                label: l.systemTemperature,
+                child: HomeSkeletonValue(
+                  sample: '100 °C',
+                  child: Text(temperature == null ? '—' : '$temperature °C'),
+                ),
+              ),
+            ],
+            if (showRam) ...[
               const SizedBox(width: 8),
               HomeSkeletonValue(sample: 'RAM 100%',
                 child: Text('RAM ${ram == null ? '—' : '$ram%'}')),

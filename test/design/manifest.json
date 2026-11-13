@@ -743,7 +743,7 @@
         960,
         540
       ],
-      "sha256": "80da7b339c4b132ceaee3ba9aa52073d7bd8d6efa66c63bb07173bf95a5bc30f"
+      "sha256": "b08f2c2603a1fcc8d606da27df93ec06451f9e06230c88f6f9e6cfd59f22a358"
     },
     {
       "name": "dialog-adb-right",
@@ -759,7 +759,7 @@
         960,
         540
       ],
-      "sha256": "e27dae5fb43876e7dcfe70bc17ad8a65e56624083db6f7fbaba8b95fffe513f0"
+      "sha256": "580f22fd314e749bde57c7f962e461811666b84a204e74f7af54a8f037804c1b"
     },
     {
       "name": "settings-style",
@@ -1113,6 +1113,38 @@
       ],
       "sha256": "28b6666bf3d9fc951413e26f99427fca97c8fc1fa5f29f18870cd69d66a9f515",
       "bottom": true
+    },
+    {
+      "name": "home-skeleton-ltr",
+      "theme": "dark",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1280,
+        720
+      ],
+      "dpr": 1,
+      "pngSize": [
+        1280,
+        720
+      ],
+      "sha256": "5b2d0aff4717f83fa4172378776695873e9163ad33c9ad907aee08342af50037"
+    },
+    {
+      "name": "home-skeleton-rtl",
+      "theme": "dark",
+      "language": "ru",
+      "textScale": 1,
+      "physicalSize": [
+        1280,
+        720
+      ],
+      "dpr": 1,
+      "pngSize": [
+        1280,
+        720
+      ],
+      "sha256": "ed5306297361e4c724157220b645cc6dcb4f705c546436e00256bfecc1c4b33f"
     }
   ]
 }

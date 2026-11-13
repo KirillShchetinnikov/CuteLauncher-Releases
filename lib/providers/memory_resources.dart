@@ -24,13 +24,14 @@ class _Resource {
 class MemoryResources extends ChangeNotifier
     with ServiceLifecycle, WidgetsBindingObserver {
   final SettingsService? _settings;
+  final bool secondaryEngine;
   bool _economy = false;
   bool _profileInitialized = false;
   final _resources = <Object, _Resource>{};
   bool _foreground = true;
   bool get isForeground => _foreground;
   bool get economyEnabled => _economy;
-  MemoryResources({this._settings}) {
+  MemoryResources({this._settings, this.secondaryEngine = false}) {
     WidgetsBinding.instance.addObserver(this);
     _settings?.addListener(_updateProfile);
     _updateProfile();
@@ -41,8 +42,9 @@ class MemoryResources extends ChangeNotifier
     _profileInitialized = true;
     _economy = enabled;
     PaintingBinding.instance.imageCache.maximumSizeBytes =
-        enabled ? 16 * 1024 * 1024 : 50 * 1024 * 1024;
-    PaintingBinding.instance.imageCache.maximumSize = enabled ? 64 : 100;
+        (secondaryEngine ? 8 : enabled ? 16 : 50) * 1024 * 1024;
+    PaintingBinding.instance.imageCache.maximumSize =
+        secondaryEngine ? 20 : enabled ? 64 : 100;
     for (final resource in _resources.values.toList()) {
       resource.configure?.call(enabled);
     }

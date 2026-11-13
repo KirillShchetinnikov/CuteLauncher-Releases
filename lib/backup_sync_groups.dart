@@ -251,6 +251,7 @@ BackupSyncGroup? backupSyncPartGroup(String part) {
     'system_show_cpu',
     'system_update_interval',
     'system_show_ram',
+    'system_show_temperature',
     'show_inputs_widget_in_status_bar',
     'tv_inputs_configuration',
     'show_system_settings_in_status_bar',

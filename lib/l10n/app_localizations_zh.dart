@@ -405,7 +405,11 @@ class AppLocalizationsZh extends AppLocalizations {
   String get delete => '删除';
 
   @override
-  String get dialogOptionBackButtonActionFirstFeedCard => '转到当前内容栏的第一张卡片';
+  String get dialogOptionBackButtonActionFirstFeedCard => '转到当前分区的第一张卡片';
+
+  @override
+  String get dialogOptionBackButtonActionSectionStartThenUp =>
+      '转到第一张卡片，再逐个分区向上';
 
   @override
   String get dialogOptionBackButtonActionDoNothing => '无操作';
@@ -2637,7 +2641,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get adbBuiltinHint =>
-      '禁用内置启动器可以让系统打开 CuteLauncher。电视菜单和按钮可能会受到影响。启用内置启动器可以撤消此操作。';
+      '停用内置启动器后，遥控器上的部分按键和电视厂商专有的菜单可能无法使用。要撤销此更改，请重新启用内置启动器。';
 
   @override
   String get adbHomeBlock => 'Home按钮和启动';
@@ -2664,7 +2668,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get adbChanged => '状态改变了。检查连接并再次确认操作。';
 
   @override
-  String get adbEffectHome => 'CuteLauncher 将成为系统默认启动器。当前的启动器将被保存以供恢复。';
+  String get adbEffectHome =>
+      'CuteLauncher 将请求 Android 将其设为默认启动器，然后检查结果。当前启动器会被保存，以便恢复。';
 
   @override
   String get adbEffectRestore =>
@@ -2717,7 +2722,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get adbUnsupported => '在此设备上不可用：不支持 ADB 命令。';
 
   @override
-  String get adbHomeUnavailable => '内置启动器具有系统优先级。无法通过ADB直接赋值；使用辅助功能或禁用内置启动器。';
+  String get adbHomeUnchanged =>
+      'Android 保留了当前启动器。如需用主屏幕按钮打开 CuteLauncher，请设置 Home Button Fix。';
 
   @override
   String get nightBatteryExempt => 'CuteLauncher 免于优化';
@@ -4709,6 +4715,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get systemUptime => '运行时间（小时:分钟）';
 
   @override
+  String get systemShowTemperature => '在面板中显示 CPU 温度';
+
+  @override
   String get systemTemperature => 'CPU 温度';
 
   @override
@@ -4728,7 +4737,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get systemWidgetHelp =>
-      '面板可见时按所选的1至10秒间隔更新（默认为5秒）。图表显示每分钟的平均值和峰值。使用其他应用、休眠和读取失败的时段显示为空白。历史记录保存在内存中，启动器进程重启后会清除。CPU 和温度数据取决于固件。关闭两个面板数值后将只显示图标。';
+      '面板可见时按所选的1至10秒间隔更新（默认为5秒）。图表显示每分钟的平均值和峰值。使用其他应用、休眠和读取失败的时段显示为空白。历史记录保存在内存中，启动器进程重启后会清除。CPU 和温度数据取决于固件。关闭所有面板读数后将只显示图标。';
 
   @override
   String get slideshowBrowseFolders => '浏览文件夹';

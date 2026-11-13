@@ -22,9 +22,11 @@ Future<bool> confirmAdbAction(
   BuildContext context,
   String title,
   String action,
-  List<String> commands,
-) async {
+  List<String> commands, {
+  bool disablesBuiltin = false,
+}) async {
   final l = AppLocalizations.of(context)!;
+  final disablesHome = action == 'disableSystem' || disablesBuiltin;
   final recoveryChanged = commands.any(
     (command) => command.contains(
       'com.google.android.tungsten.setupwraith',
@@ -40,9 +42,10 @@ Future<bool> confirmAdbAction(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(adbActionEffect(l, action)),
+                if (disablesBuiltin) Text(l.adbEffectDisable),
                 if (recoveryChanged)
                   Text(
-                    action == 'disableSystem'
+                    disablesHome
                         ? l.adbRecoveryHomeDisable
                         : l.adbRecoveryHomeRestore,
                   ),
@@ -73,7 +76,7 @@ Future<bool> confirmAdbAction(
             ),
             LauncherDialogButton(
               primary: true,
-              danger: action == 'disableSystem',
+              danger: disablesHome,
               onPressed: () => Navigator.pop(ctx, true),
               child: Text(action == 'home' ? l.dialogAssign : l.dialogApply),
             ),

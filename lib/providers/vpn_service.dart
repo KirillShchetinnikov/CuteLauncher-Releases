@@ -52,6 +52,8 @@ class VpnService extends ChangeNotifier with WidgetsBindingObserver {
   }
   bool get active => _state['active'] == true;
   bool get initialized => _state.isNotEmpty;
+  bool get statusUnknown => !initialized || failed;
+  bool get indicatorVisible => !onlyActive || (active && !statusUnknown);
   String get selected => _state['selected'] as String? ?? '';
   String get target => _state['target'] as String? ?? '';
   String get owner => _state['owner'] as String? ?? '';

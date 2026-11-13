@@ -92,6 +92,7 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
   VoidCallback? _imageReady;
   int _imageRequest = 0;
   bool _imageNeedsRetry = false;
+  bool _hasImageFrame = false;
   double _bumpDirection = 0;
   late final AnimationController _bumpController = AnimationController(
     vsync: this,
@@ -164,6 +165,7 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
       _categoryFocus?.unregister(oldWidget.application.packageName, _focusNode);
       _categoryFocus?.register(widget.application.packageName, _focusNode);
       _lastAppImage = null;
+      _hasImageFrame = false;
       _imageFocusColor = null;
       _appImageLoadFuture = _loadAppBannerOrIcon(_appsService!);
     }
@@ -448,8 +450,12 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
   }
 
   Widget _imageFrame(BuildContext context, Widget child, int? frame, bool synchronous) {
-    if (frame != null || synchronous) _imageReady?.call();
-    return frame != null || synchronous ? child : const HomeSkeletonBlock();
+    if (frame != null || synchronous) {
+      _hasImageFrame = true;
+      _imageReady?.call();
+    }
+    // Image retains its previous frame during a gapless source change.
+    return _hasImageFrame ? child : const HomeSkeletonBlock();
   }
 
   Widget _imageError(BuildContext context, Object error, StackTrace? stack) {
@@ -473,7 +479,7 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
           final style = LauncherStyle.of(context);
           final theme = context.read<SettingsService>().themes;
           return TileArtwork(
-            key: ValueKey((app.packageName, _imageRevision)),
+            key: ValueKey(('artwork', app.packageName)),
             image: record.$2,
             mode: isIcon ? appearance.iconImageMode : appearance.bannerImageMode,
             borderRadius: style.tileCorners(theme, radius: appearance.number('radius')),

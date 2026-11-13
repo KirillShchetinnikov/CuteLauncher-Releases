@@ -127,6 +127,7 @@ void main() {
           },
         );
         when(network.getTrafficUsage(any)).thenAnswer((_) async => {'rxBytes': 1024, 'txBytes': 2048, 'totalBytes': 3072});
+        when(network.hasUsageStatsPermission).thenReturn(true);
         when(inputs.inputs).thenReturn([]);
         when(notifications.notifications).thenReturn([]);
         when(notifications.hidePersistentNotifications).thenReturn(false);

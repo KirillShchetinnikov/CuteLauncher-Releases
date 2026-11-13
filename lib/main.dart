@@ -166,7 +166,9 @@ Future<void> _runLauncher({bool remotePanel = false, bool recentApps = false}) a
   FLauncherDatabase? database;
   FLauncherDatabase launcherDatabase() => database ??= FLauncherDatabase(connect());
   // A secondary engine neither creates the profile nor opens the database.
-  if (!remotePanel || sharedPreferences.getString(initialProfileStateKey) == 'pending') {
+  final profileState = sharedPreferences.getString(initialProfileStateKey);
+  if (profileState == 'pending' ||
+      (!remotePanel && profileState != 'complete' && profileState != 'legacy')) {
     await initializeSettingsProfile(sharedPreferences,
       await getApplicationDocumentsDirectory(), launcherDatabase,
       primaryEngine: !remotePanel);
@@ -226,7 +228,7 @@ Future<void> _runLauncher({bool remotePanel = false, bool recentApps = false}) a
             lazy: false),
         ChangeNotifierProvider(create: (context) => AutomaticBackupService(
             context.read<BackupService>(), context.read<SettingsService>(), sharedPreferences)),
-        ChangeNotifierProvider(create: (context) => MemoryResources(settings: context.read<SettingsService>()), lazy: remotePanel),
+        ChangeNotifierProvider(create: (context) => MemoryResources(settings: context.read<SettingsService>(), secondaryEngine: remotePanel), lazy: remotePanel),
         ChangeNotifierProvider(create: (context) => AppsService(fLauncherChannel, launcherDatabase(),
           settingsService: context.read<SettingsService>(), ownPackageName: ownPackageName, memoryResources: context.read<MemoryResources>(),
           catalogCache: remotePanel ? null : AppCatalogCache(), work: work, fastInitialCatalog: !remotePanel)),

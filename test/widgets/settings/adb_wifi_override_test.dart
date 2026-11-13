@@ -44,12 +44,13 @@ void main() {
             case 'check': return snapshot;
             case 'preview':
               if (args['allowOwnedWifi'] == true) {
+                expect(args['target'], target);
                 return outcome == 'unknown'
                     ? {'status': 'wifiUnknown'}
                     : {'status': 'ready', 'commands': commands, 'target': target};
               }
-              return {'status': 'wifiOwned'};
-            case 'disableSystem': return {'status': 'success'};
+              return {'status': 'wifiOwned', 'target': target};
+            case 'home': return {'status': 'success'};
             default: return {'status': 'unavailable'};
           }
         });
@@ -66,12 +67,12 @@ void main() {
         ));
         await tester.pumpAndSettle();
         final l = AppLocalizations.of(tester.element(find.byType(AdbPage)))!;
-        final action = find.text('${l.adbDisableBuiltin}: Stock TV');
+        final action = find.text(l.adbAssignDefault);
         await tester.ensureVisible(action);
         await tester.tap(action);
         await tester.pumpAndSettle();
         expect(find.text(l.adbWifiOwned), findsOneWidget);
-        expect(calls.where((c) => c['action'] == 'disableSystem'), isEmpty);
+        expect(calls.where((c) => c['action'] == 'home'), isEmpty);
         if (outcome == 'ok') {
           await tester.tap(find.text(l.ok));
         } else {
@@ -90,7 +91,7 @@ void main() {
           }
         }
         await tester.pumpAndSettle();
-        final applied = calls.where((c) => c['action'] == 'disableSystem').toList();
+        final applied = calls.where((c) => c['action'] == 'home').toList();
         if (outcome == 'confirm') {
           expect(applied, hasLength(1));
           expect(applied.single['allowOwnedWifi'], isTrue);

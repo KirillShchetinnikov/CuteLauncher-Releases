@@ -44,6 +44,7 @@ class _WeatherStatusBarWidgetState extends State<WeatherStatusBarWidget> {
         return Consumer<WeatherService>(
           builder: (context, weatherService, _) {
             final weather = weatherService.weatherData;
+            final stale = weather != null && weatherService.stale;
             final appearance = topPanelAppearance(context);
             final base = widget.textStyle ?? appearance.panelTextStyleFor(Localizations.localeOf(context));
             final textStyle = appearance.weatherTextStyle(base);
@@ -54,24 +55,15 @@ class _WeatherStatusBarWidgetState extends State<WeatherStatusBarWidget> {
               color: appearance.weatherIconColor ?? textStyle.color,
               shadows: base.shadows,
             );
-            if (weather == null && format.isStandard) {
-              return TopPanelItem(textStyle: widget.textStyle, focusNode: widget.focusNode, selected: widget.selected,
-                onPressed: widget.onPressed, child: Row(mainAxisSize: MainAxisSize.min,
-                  children: [icon, const SizedBox(width: 8),
-                    HomeSkeletonValue(sample: '−99°', style: textStyle,
-                      loading: !weatherService.initialized || weatherService.loading,
-                      child: Text('—', style: textStyle))]));
-            }
-
             final bool isWarning =
-                !format.explicitLayout && showWarnings && weather?.hasWarning == true && !weatherService.stale;
+                !format.explicitLayout && showWarnings && weather?.hasWarning == true && !stale;
 
             final l10n = AppLocalizations.of(context);
             final warning = isWarning && weather != null
                 ? (l10n == null ? weather.warningText : localizedWeatherWarning(weather, l10n, DateTime.now()))
                 : null;
             final displayText = [
-              format.format(weather, l10n, fahrenheit: useFahrenheit, missingAsDash: missingAsDash, warningsAvailable: !weatherService.stale),
+              format.format(weather, l10n, fahrenheit: useFahrenheit, missingAsDash: missingAsDash, warningsAvailable: !stale),
               ?warning,
             ].join(' • ');
 

@@ -323,6 +323,7 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
     notifyListeners();
   }
   bool get systemShowRam => _sharedPreferences.getBool('system_show_ram') ?? true;
+  bool get systemShowTemperature => _sharedPreferences.getBool('system_show_temperature') ?? false;
   Future<void> _setSystemOption(String key, bool value) async {
     if (!await _sharedPreferences.setBool(key, value)) throw StateError('Panel settings unavailable');
     notifyListeners();
@@ -330,6 +331,7 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
   Future<void> setShowSystemInStatusBar(bool value) => _setSystemOption('show_system_in_status_bar', value);
   Future<void> setSystemShowCpu(bool value) => _setSystemOption('system_show_cpu', value);
   Future<void> setSystemShowRam(bool value) => _setSystemOption('system_show_ram', value);
+  Future<void> setSystemShowTemperature(bool value) => _setSystemOption('system_show_temperature', value);
   bool get showVolumeInStatusBar => _sharedPreferences.getBool('show_volume_in_status_bar') ?? true;
   bool get showVolumeOverlay => _sharedPreferences.getBool('show_volume_overlay') ?? false;
   Future<void> setShowVolumeOverlay(bool value) => _setSystemOption('show_volume_overlay', value);
@@ -771,6 +773,7 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
       'system_show_cpu': systemShowCpu,
       'system_update_interval': systemUpdateInterval,
       'system_show_ram': systemShowRam,
+      'system_show_temperature': systemShowTemperature,
       _accentColorKey: _accentColorHex,
       _screensaverClockStyleKey: _screensaverClockStyle,
       _timeBasedWallpaperEnabledKey: _timeBasedWallpaperEnabled,

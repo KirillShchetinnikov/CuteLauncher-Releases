@@ -120,6 +120,7 @@ void main() {
     when(weather.initialized).thenReturn(true);
     when(weather.loading).thenReturn(false);
     when(notifications.hasPermission).thenReturn(false);
+    when(notifications.initialized).thenReturn(true);
     when(notifications.notifications).thenReturn([]);
     when(inputs.hasInputs).thenReturn(false);
     when(inputs.initialized).thenReturn(true);
@@ -227,6 +228,12 @@ void main() {
     final gearNode = tester.widget<IconButton>(gear).focusNode!;
     await tester.tap(gear); await tester.pumpAndSettle();
     expect(find.byType(SystemWidgetSettingsPage), findsOneWidget);
+    await tester.tap(find.text('Показывать температуру CPU в панели'));
+    await tester.pumpAndSettle();
+    expect(find.descendant(of: widget, matching: find.text('56 °C')), findsOneWidget);
+    await tester.tap(find.text('Показывать температуру CPU в панели'));
+    await tester.pumpAndSettle();
+    expect(find.descendant(of: widget, matching: find.text('56 °C')), findsNothing);
     await tester.tap(find.text('Показывать CPU в панели')); await tester.pumpAndSettle();
     await tester.tap(find.text('Показывать RAM в панели')); await tester.pumpAndSettle();
     expect(find.text('CPU 24%'), findsNothing);
@@ -243,7 +250,58 @@ void main() {
     await tester.pumpWidget(const SizedBox()); await tester.pump();
   });
 
+  testWidgets('temperature switch follows available readings with the widget hidden', (tester) async {
+    const channel = MethodChannel('cutelauncher/system_status');
+    final messenger = tester.binding.defaultBinaryMessenger;
+    var reads = 0;
+    int? temperature;
+    messenger.setMockMethodCallHandler(channel, (call) async {
+      if (call.method != 'snapshot') return null;
+      reads++;
+      return {'temperatureCelsius': temperature};
+    });
+    addTearDown(() => messenger.setMockMethodCallHandler(channel, null));
+    await settings.setSystemShowTemperature(true);
+    await pump(tester, const Scaffold(body: SystemWidgetSettingsPage()));
+    expect(settings.showSystemInStatusBar, isFalse);
+    final title = find.text('Показывать температуру CPU в панели');
+    final tile = find.ancestor(of: title, matching: find.byType(RoundedSwitchListTile));
+    RoundedSwitchListTile control() => tester.widget<RoundedSwitchListTile>(tile);
+
+    expect(reads, 1);
+    expect(control().enabled, isFalse);
+    expect(control().value, isFalse);
+    await tester.tap(title);
+    await tester.pumpAndSettle();
+    expect(settings.systemShowTemperature, isTrue);
+
+    temperature = 57;
+    await tester.pump(const Duration(seconds: 5));
+    await tester.pumpAndSettle();
+    expect(control().enabled, isTrue);
+    expect(control().value, isTrue);
+    await tester.tap(title);
+    await tester.pumpAndSettle();
+    expect(control().value, isFalse);
+    expect(settings.systemShowTemperature, isFalse);
+
+    temperature = null;
+    await tester.pump(const Duration(seconds: 5));
+    await tester.pumpAndSettle();
+    expect(control().enabled, isFalse);
+    expect(control().value, isFalse);
+    await pump(tester, const Scaffold());
+    final readsAtClose = reads;
+    await tester.pump(const Duration(seconds: 10));
+    expect(reads, readsAtClose);
+    await tester.pumpWidget(const SizedBox());
+  });
+
   testWidgets('system interval supports remote keys, large text and storage', (tester) async {
+    const channel = MethodChannel('cutelauncher/system_status');
+    final messenger = tester.binding.defaultBinaryMessenger;
+    messenger.setMockMethodCallHandler(channel, (_) async => null);
+    addTearDown(() => messenger.setMockMethodCallHandler(channel, null));
     await pump(tester, const Scaffold(body: SystemWidgetSettingsPage()), largeText: true);
     expect(find.textContaining('Показания обновляются'), findsNothing);
     final stepper = find.byType(SettingsValueStepper);

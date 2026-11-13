@@ -409,7 +409,11 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get dialogOptionBackButtonActionFirstFeedCard =>
-      'أول بطاقة في الخلاصة الحالية';
+      'أول بطاقة في القسم الحالي';
+
+  @override
+  String get dialogOptionBackButtonActionSectionStartThenUp =>
+      'أول بطاقة، ثم الانتقال إلى الأقسام الأعلى';
 
   @override
   String get dialogOptionBackButtonActionDoNothing => 'عدم القيام بشيء';
@@ -2720,7 +2724,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get adbBuiltinHint =>
-      'يتيح تعطيل المشغل المدمج للنظام فتح CuteLauncher بدلاً من ذلك. قد تتأثر قوائم وأزرار التلفزيون. قم بتمكين المشغل المدمج للتراجع عن هذا.';
+      'قد يؤدي تعطيل المشغّل المدمج إلى توقف بعض أزرار جهاز التحكم عن بُعد وقوائم التلفزيون الخاصة بالشركة المصنّعة عن العمل. للتراجع عن ذلك، أعد تفعيل المشغّل المدمج.';
 
   @override
   String get adbHomeBlock => 'زر الصفحة الرئيسية وبدء التشغيل';
@@ -2751,7 +2755,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get adbEffectHome =>
-      'سوف يصبح CuteLauncher هو المشغل الافتراضي للنظام. سيتم حفظ المشغل الحالي لاستعادته.';
+      'سيطلب CuteLauncher من Android تعيينه كمشغّل النظام الافتراضي، ثم يتحقق من النتيجة. سيُحفظ المشغّل الحالي للاستعادة.';
 
   @override
   String get adbEffectRestore =>
@@ -2814,8 +2818,8 @@ class AppLocalizationsAr extends AppLocalizations {
       'غير متوفر على هذا الجهاز: لا يوجد أمر ADB مدعوم.';
 
   @override
-  String get adbHomeUnavailable =>
-      'المشغل المدمج له أولوية النظام. التعيين المباشر من خلال ADB غير متاح؛ استخدم إمكانية الوصول أو قم بتعطيل المشغل المدمج.';
+  String get adbHomeUnchanged =>
+      'أبقى Android المشغّل الحالي. لتوجيه زر الشاشة الرئيسية إلى CuteLauncher، اضبط Home Button Fix.';
 
   @override
   String get nightBatteryExempt => 'CuteLauncher معفى من التحسين';
@@ -4897,6 +4901,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get systemUptime => 'مدة التشغيل (ساعات:دقائق)';
 
   @override
+  String get systemShowTemperature => 'إظهار درجة حرارة CPU في اللوحة';
+
+  @override
   String get systemTemperature => 'درجة حرارة CPU';
 
   @override
@@ -4916,7 +4923,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get systemWidgetHelp =>
-      'تتحدث القراءات بالفاصل المحدد من ثانية إلى 10 ثوانٍ (5 افتراضيًا) عندما تكون اللوحة مرئية. تعرض الرسوم متوسطات كل دقيقة وقممها. تترك التطبيقات الأخرى والسكون وأخطاء القراءة فجوات. يُحفظ السجل في الذاكرة ويُمسح عند إعادة تشغيل عملية المشغّل. يعتمد توفر CPU ودرجة الحرارة على البرنامج الثابت. أوقف قيمتي اللوحة لعرض الأيقونة فقط.';
+      'تتحدث القراءات بالفاصل المحدد من ثانية إلى 10 ثوانٍ (5 افتراضيًا) عندما تكون اللوحة مرئية. تعرض الرسوم متوسطات كل دقيقة وقممها. تترك التطبيقات الأخرى والسكون وأخطاء القراءة فجوات. يُحفظ السجل في الذاكرة ويُمسح عند إعادة تشغيل عملية المشغّل. يعتمد توفر CPU ودرجة الحرارة على البرنامج الثابت. أوقف جميع قراءات اللوحة لعرض الأيقونة فقط.';
 
   @override
   String get slideshowBrowseFolders => 'تصفح المجلدات';

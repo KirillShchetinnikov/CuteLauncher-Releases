@@ -67,6 +67,8 @@ class SystemStatusService extends ChangeNotifier with WidgetsBindingObserver {
   final _owners = <Object>{};
   final _history = <SystemHistoryMinute>[];
   SystemStatus state = unknownSystemStatus;
+  bool _initialized = false;
+  bool get initialized => _initialized;
   List<SystemHistoryMinute> get history => List.unmodifiable(_history);
   Timer? _timer;
   bool _disposed = false,
@@ -227,10 +229,12 @@ class SystemStatusService extends ChangeNotifier with WidgetsBindingObserver {
       final before = (point.cpu, point.ram, point.cpuPeak, point.ramPeak);
       point.add(next);
       final changed =
+          !_initialized ||
           state != next ||
           newMinute ||
           before != (point.cpu, point.ram, point.cpuPeak, point.ramPeak);
       state = next;
+      _initialized = true;
       if (changed) notifyListeners();
     } on Object catch (diagnosticError, diagnosticStack) {
       DiagnosticsStore.instance.recordException(
@@ -240,7 +244,8 @@ class SystemStatusService extends ChangeNotifier with WidgetsBindingObserver {
       if (!_disposed && generation == _generation && _enabled) {
         _generation++;
         _resetCpu = true;
-        if (state != unknownSystemStatus) {
+        if (!_initialized || state != unknownSystemStatus) {
+          _initialized = true;
           state = unknownSystemStatus;
           notifyListeners();
         }
