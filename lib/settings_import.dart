@@ -187,7 +187,8 @@ bool _validValue(String key, dynamic value) {
   if (['wallpaper_brightness', 'wallpaper_saturation', 'wallpaper_dimming'].contains(key)) {
     return value is num && value.isFinite && value >= 0 && value <= 2;
   }
-  if (key == 'background_source') return ['gradient', 'picture', 'scheduled', 'online', 'slideshow', 'app', 'landscape'].contains(value);
+  if (key == 'background_source') return ['gradient', 'picture', 'scheduled', 'online', 'slideshow', 'app', 'landscape', 'videoFolder'].contains(value);
+  if (key == 'wallpaper_video_order') return ['name', 'date', 'random'].contains(value);
   if (key == landscapeSettingsKey) {
     if (value is! String) return false;
     try { LandscapeConfiguration.parse(jsonDecode(value) as Map); return true; }
@@ -240,7 +241,7 @@ bool isDeviceLocalBackupKey(String key) => key == 'native_secret_drive' || key =
     key.startsWith('cloud_') ||
     key.startsWith('backup_transport_') ||
     key.startsWith('automatic_backup_') ||
-    key == 'slideshow_folder' ||
+    key == 'slideshow_folder' || key == 'wallpaper_video_folder' ||
     key == 'weather_api_key' || key.startsWith('weather_api_key_') ||
     const {'weather_cache', 'online_wallpaper_cache', 'update_last_check',
       'update_pending_notification', 'update_shown_notification',

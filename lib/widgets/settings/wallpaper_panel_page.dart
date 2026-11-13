@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'reset_style_tile.dart';
 import '../../providers/slideshow_service.dart';
+import '../../providers/video_folder_service.dart';
 
 import 'package:flauncher/widgets/action_notice.dart';
 
@@ -46,6 +47,7 @@ import '../../providers/online_wallpaper_service.dart';
 import 'online_wallpaper_page.dart';
 import 'wallpaper_display_page.dart';
 import 'slideshow_page.dart';
+import 'video_folder_page.dart';
 import 'landscape_page.dart';
 
 class WallpaperPanelPage extends StatefulWidget {
@@ -107,6 +109,7 @@ class _WallpaperPanelPageState extends State<WallpaperPanelPage> {
       'scheduled': l.timeBasedWallpaper,
       'online': l.onlineWallpaper,
       'slideshow': l.wallpaperSlideshow,
+      videoFolderSource: l.videoFolderSource,
       'app': l.appArtworkBackground,
       'landscape': l.adaptiveLandscape,
     };
@@ -149,6 +152,8 @@ class _WallpaperPanelPageState extends State<WallpaperPanelPage> {
                       ? const OnlineWallpaperPage()
                       : source == 'slideshow'
                       ? const SlideshowPage()
+                      : source == videoFolderSource
+                      ? const VideoFolderPage()
                       : source == 'gradient'
                       ? const GradientPanelPage()
                       : const WallpaperPanelPage(parameters: true),
@@ -252,10 +257,12 @@ class _WallpaperPanelPageState extends State<WallpaperPanelPage> {
               }
               final online = context.read<OnlineWallpaperService>();
               final slideshow = context.read<SlideshowService?>();
+              final videos = context.read<VideoFolderService?>();
               await settings.resetAppearanceSection('background');
               await settings.setBackgroundSource('gradient');
               await online.configure(const OnlineWallpaperConfiguration());
               await slideshow?.reset();
+              await videos?.reset();
               await wallpaper?.reset();
             },
           ),

@@ -10,6 +10,23 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
+  String get videoFolderSource => 'مقاطع الفيديو من مجلد';
+
+  @override
+  String get videoFolderPlayback => 'التشغيل';
+
+  @override
+  String get videoFolderNext => 'الفيديو التالي';
+
+  @override
+  String get videoFolderError =>
+      'لا توجد مقاطع قابلة للتشغيل. تحقق من المجلد والوصول إلى الملفات وتنسيقات الفيديو.';
+
+  @override
+  String get videoFolderHelp =>
+      'تتكرر المقاطع بلا صوت. يبدأ الترتيب حسب التاريخ بآخر ملف عُدّل. لا تُدرج المجلدات الفرعية. التنسيقات: MP4/M4V وWebM وMKV. الحد 256 MiB إذا كان الحجم معروفًا، والدقة القصوى 3840×2160.';
+
+  @override
   String get scrollContentLabels => 'تمرير التسميات الطويلة في الصفوف';
 
   @override
@@ -1569,9 +1586,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tileVerticalGap => 'تباعد عمودي';
 
   @override
-  String get tileOpacity => 'عتامة الخلفية';
-
-  @override
   String get tileShadow => 'الظل';
 
   @override
@@ -1646,9 +1660,6 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get blurPerformanceHint =>
       'التمويه قد يقلل من النعومة. يتم تعطيله أثناء تشغيل حفظ الذاكرة.';
-
-  @override
-  String get panelOpacity => 'عتامة اللوحة';
 
   @override
   String get tileBlur => 'طمس وراء البلاط';
@@ -2263,9 +2274,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get topPanelObjects => 'العناصر';
-
-  @override
-  String get panelTransparency => 'شفافية اللوحة';
 
   @override
   String get panelTextBackground => 'خلفية النص والزر';
@@ -3414,7 +3422,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get homeSectionIcons => 'ايقونات القسم';
 
   @override
-  String get homeInactiveOpacity => 'عتامة القسم غير النشط';
+  String get homeInactiveTransparency => 'شفافية الأقسام غير النشطة';
+
+  @override
+  String get homeFadeInactiveFeeds =>
+      'تطبيق الشفافية على الخلاصات غير النشطة أيضًا';
 
   @override
   String get homeResetSection => 'استعادة مظهر القسم الموروث';
@@ -3472,7 +3484,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'تم تعطيله عن طريق توفير الذاكرة. يتم الاحتفاظ بالقيمة المحفوظة.';
 
   @override
-  String get homeStyleOpaque => 'قم بتقليل عتامة خلفية البلاط لرؤية التمويه.';
+  String get homeStyleOpaque => 'زِد شفافية خلفية البلاطات لرؤية التمويه.';
 
   @override
   String get homeStyleOverridden =>
@@ -3488,7 +3500,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get homeStyleTransparent =>
-      'لون الخلفية غير مرئي عند مستوى العتامة الصفري. زيادة عتامة خلفية البلاط.';
+      'يختفي لون خلفية البلاطة عند شفافية 100%. قلّل شفافية الخلفية لإظهاره.';
 
   @override
   String get homeStyleSingleColumn =>

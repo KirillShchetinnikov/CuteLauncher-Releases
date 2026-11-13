@@ -10,6 +10,23 @@ class AppLocalizationsFr extends AppLocalizations {
   AppLocalizationsFr([String locale = 'fr']) : super(locale);
 
   @override
+  String get videoFolderSource => 'Vidéos d’un dossier';
+
+  @override
+  String get videoFolderPlayback => 'Lecture';
+
+  @override
+  String get videoFolderNext => 'Vidéo suivante';
+
+  @override
+  String get videoFolderError =>
+      'Aucune vidéo lisible. Vérifiez le dossier, l’accès aux fichiers et les formats vidéo.';
+
+  @override
+  String get videoFolderHelp =>
+      'Les vidéos sont lues en boucle sans son. Le tri par date commence par le dernier fichier modifié. Les sous-dossiers sont exclus. Formats : MP4/M4V, WebM et MKV. Limites : 256 Mio si la taille est connue et 3840×2160.';
+
+  @override
   String get scrollContentLabels =>
       'Faire défiler les libellés longs des rangées';
 
@@ -1598,9 +1615,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get tileVerticalGap => 'Espacement vertical';
 
   @override
-  String get tileOpacity => 'Opacité de l\'arrière-plan';
-
-  @override
   String get tileShadow => 'Ombre';
 
   @override
@@ -1675,9 +1689,6 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get blurPerformanceHint =>
       'Le flou peut réduire la fluidité. Il est désactivé lorsque la sauvegarde de la mémoire est activée.';
-
-  @override
-  String get panelOpacity => 'Opacité du panneau';
 
   @override
   String get tileBlur => 'Flou derrière les carreaux';
@@ -2305,9 +2316,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get topPanelObjects => 'Objets';
-
-  @override
-  String get panelTransparency => 'Transparence du panneau';
 
   @override
   String get panelTextBackground => 'Fond de texte et de bouton';
@@ -3479,7 +3487,11 @@ class AppLocalizationsFr extends AppLocalizations {
   String get homeSectionIcons => 'Icônes de section';
 
   @override
-  String get homeInactiveOpacity => 'Opacité de la section inactive';
+  String get homeInactiveTransparency => 'Transparence des sections inactives';
+
+  @override
+  String get homeFadeInactiveFeeds =>
+      'Appliquer aussi la transparence aux flux inactifs';
 
   @override
   String get homeResetSection => 'Restaurer l\'apparence de la section héritée';
@@ -3543,7 +3555,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get homeStyleOpaque =>
-      'Réduisez l’opacité de l’arrière-plan des vignettes pour voir le flou.';
+      'Augmentez la transparence de l’arrière-plan des vignettes pour voir le flou.';
 
   @override
   String get homeStyleOverridden =>
@@ -3559,7 +3571,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get homeStyleTransparent =>
-      'La couleur d\'arrière-plan est invisible à opacité nulle. Augmentez l\'opacité de l\'arrière-plan des vignettes.';
+      'À 100 % de transparence, la couleur de fond de la vignette est invisible. Réduisez la transparence du fond pour la voir.';
 
   @override
   String get homeStyleSingleColumn =>

@@ -2,6 +2,13 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
+## v1.8.0 — 2026-11-13
+
+- Added video wallpapers from a folder on the TV or a USB drive. Videos loop without sound. You can play them by name, by modification date, or in a random order without repeats within each cycle, and skip to the next video manually.
+- Appearance settings now use a consistent transparency scale. At 0% an element is fully visible, and at 100% it is fully transparent.
+- General section settings now let you apply transparency to inactive feeds within the selected group. The current feed stays fully visible.
+- Fixed update detection between prereleases. The launcher now offers the next test version when the prerelease channel is enabled.
+
 ## v1.8.0-test.2 — 2026-11-13
 
 **Prerelease.** Some new features are still being tested. If you are unsure, wait for the stable release.

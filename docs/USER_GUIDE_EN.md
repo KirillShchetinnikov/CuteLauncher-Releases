@@ -170,9 +170,10 @@ from 12 to 40 (default 24), shared across sections or overridden for an individu
 section, including App feeds and Continue Watching. When
 titles are hidden, the control is disabled and the saved size is kept.
 Colored category backgrounds
-have Background opacity (0–100%) and Corner radius (0–64) sliders. Adjust them
+have Background transparency (0–100%) and Corner radius (0–64) sliders. Adjust them
 for all categories in the home appearance settings or for one category, including
-App feeds. Opacity affects only the background; icons and text keep their brightness.
+App feeds. At 0% the background is fully visible. At 100% it is transparent.
+Icons and text keep their brightness.
 Choosing a transparent background preserves the slider values. Reset category layout also
 restores its shared appearance and clears padding, keeping apps and their order.
 CuteLauncher and system settings tiles can be hidden.
@@ -329,9 +330,12 @@ outlines, zoom and animations, accent color, categories, and the top panel.
 Menus and notifications have background, transparency, color, and text-scale
 settings. Menus can open on either side. Reset individual groups or all appearance.
 
-**Inactive section opacity** applies to app categories, the app feeds group,
+**Inactive section transparency** applies to app categories, the app feeds group,
 and Continue watching. The last selected section stays fully opaque when
 you move to the top panel or settings.
+Under **Home screen → Appearance → Sections**, turn on **Also fade inactive feeds**
+to apply the same percentage to the other app feeds in the group while one feed
+is selected. The selected feed stays fully visible.
 
 In **Tiles and labels**, **Apps with a banner** and **Apps without a banner**
 are independent choices next to tile proportions. Apps with a banner have four modes:
@@ -417,6 +421,8 @@ unsupported formats, size/resolution limits, codec errors and inaccessible files
 a successful selection is confirmed separately.
 
 If video initialization or playback fails, the launcher automatically tries a compatible output mode when available on the TV. It retries once; if that also fails, an error message appears. This does not add support for a missing codec.
+
+For multiple clips, choose **Videos from folder → Source settings** and select a folder on the TV or a USB drive. Clips advance when they end, play silently on repeat, and pause when you leave the home screen. Choose name order, date modified (newest first), or random order without repeats within a cycle. **Next video** skips the current clip. Subfolders are excluded. MP4/M4V, WebM, and MKV are supported up to 3840×2160 and 256 MiB when the size is known. Unplayable clips are skipped. Select the folder again when transferring settings to another TV.
 
 The **Day/Night image** source accepts images only: the day image is used from
 06:00 to 18:00, and the night image at other times.

@@ -10,6 +10,7 @@ import 'providers/remote_panel_service.dart';
 import 'providers/foreground_work.dart';
 import 'providers/now_playing_service.dart';
 import 'providers/slideshow_service.dart';
+import 'providers/video_folder_service.dart';
 /*
  * FLauncher
  * Copyright (C) 2021  Étienne Fesser
@@ -79,7 +80,7 @@ class FLauncherState extends State<FLauncher> {
   final _watchSectionKey = GlobalKey();
   final _feedFocus = <String, CategoryFocusController>{};
   final _feedKeys = <String, GlobalKey>{};
-  String? _lastFeedKey;
+  final _lastFeed = ValueNotifier<String?>(null);
   final _orderedFocus = <CategoryFocusController>[];
   int _focusRequest = 0;
   final _activeSectionId = ValueNotifier<int?>(null);
@@ -97,8 +98,8 @@ class FLauncherState extends State<FLauncher> {
     final mode = settings.cardFocusMode;
     final sections = context.read<AppsService>().launcherSections;
     if (mode != CardFocusMode.settings) {
-      if (returningHome && mode == CardFocusMode.remember && _lastFeedKey != null) {
-        final focus = _feedFocus[_lastFeedKey];
+      if (returningHome && mode == CardFocusMode.remember && _lastFeed.value != null) {
+        final focus = _feedFocus[_lastFeed.value];
         if (focus != null && _orderedFocus.contains(focus) && focus.hasItems) {
           focus.rememberLast = true;
           final focused = await focus.focusEntry(isCurrent: isCurrent);
@@ -242,7 +243,7 @@ class FLauncherState extends State<FLauncher> {
   ) {
     final anchor = _lastWasWatchNext
         ? _watchSectionKey
-        : (_feedKeys[_lastFeedKey] ?? _sectionKeys[_lastCategoryId]);
+        : (_feedKeys[_lastFeed.value] ?? _sectionKeys[_lastCategoryId]);
     final geometry = _sectionGeometry(anchor);
     final offset = position.pixels;
     final visible = geometry != null &&
@@ -316,6 +317,7 @@ class FLauncherState extends State<FLauncher> {
     ++_focusRequest;
     _watchFocus.dispose();
     _activeSectionId.dispose();
+    _lastFeed.dispose();
     for (final controller in _categoryFocus.values) { controller.dispose(); }
     for (final controller in _feedFocus.values) { controller.dispose(); }
     _scrollController.dispose();
@@ -338,7 +340,7 @@ class FLauncherState extends State<FLauncher> {
         children: [
           RepaintBoundary(
             child: Consumer<WallpaperService>(
-              builder: (_, wallpaperService, _) => _wallpaper(context, wallpaperService)
+              builder: (context, wallpaperService, _) => _wallpaper(context, wallpaperService)
             ),
           ),
           Positioned.fill(child: Builder(builder: (context) =>
@@ -460,13 +462,14 @@ class FLauncherState extends State<FLauncher> {
       }
     }
     Offset previewOffset(int id) => previewId == id ? previewShift : Offset.zero;
+    final inactiveOpacity = appearance.number('inactiveOpacity') ?? 1;
     Widget contentSectionOpacity(int id, bool first, Widget child) =>
         HomeSectionOpacity(
           sectionId: id,
           activeSectionId: _activeSectionId,
           first: first,
           forceOpaque: previewId == id,
-          inactiveOpacity: appearance.number('inactiveOpacity') ?? 1,
+          inactiveOpacity: inactiveOpacity,
           child: child,
         );
     late final commonTileSize = () {
@@ -512,7 +515,7 @@ class FLauncherState extends State<FLauncher> {
     _watchFocus.reveal = _revealWatch;
     _watchFocus.leave = (direction, x) => _leaveSection(_watchFocus, direction, x);
     _watchFocus.onSelected = () {
-      _lastFeedKey = null;
+      _lastFeed.value = null;
       _lastWasWatchNext = true;
       _activeSectionId.value = ContinueWatchingSection.sectionId;
       _scrollController.anchorTo(_watchSectionKey);
@@ -530,12 +533,12 @@ class FLauncherState extends State<FLauncher> {
     final selectedFeeds = feeds == null ? <String>[] : context.watch<SettingsService>().selectedAppChannels;
     final activeFeedKeys = <String>{};
 
-    Widget? appFeeds(Category category) {
+    Widget? appFeeds(Category category, {required bool first}) {
       late final tiles = contentTiles(category.id);
       late final style = tiles.style;
       late final matchedSize = tiles.size;
       final hiddenPackages = selectedFeeds.isEmpty ? <String>{} : context.read<AppsService>().applications.where((a) => a.hidden).map((a) => a.packageName).toSet();
-      final rows = <Widget>[];
+      final rows = <String, Widget>{};
       for (final key in selectedFeeds) {
         if (hiddenPackages.contains(key.split(':').first)) continue;
         final channel = feeds?.channels.where((c) => c.key == key && c.programs.isNotEmpty && !hiddenPackages.contains(c.packageName)).firstOrNull;
@@ -553,14 +556,14 @@ class FLauncherState extends State<FLauncher> {
         focus.leave = (direction, x) => _leaveSection(focus, direction, x);
         focus.reveal = () => _revealContent(sectionKey, focus);
         focus.onSelected = () {
-          _lastFeedKey = key;
+          _lastFeed.value = key;
           _lastWasWatchNext = false;
           _activeSectionId.value = category.id;
           _scrollController.anchorTo(sectionKey);
         };
         _orderedFocus.add(focus);
         final format = feeds.settings.appChannelFormat(key);
-        rows.add(CategoryFocus(key: sectionKey, controller: focus,
+        rows[key] = CategoryFocus(key: sectionKey, controller: focus,
           child: channel == null ? AppContentRow.loading(
             title: AppLocalizations.of(context)!.appChannelsTitle,
             appearance: style, appTileSize: matchedSize,
@@ -570,15 +573,49 @@ class FLauncherState extends State<FLauncher> {
           ) : AppContentRow(
             channel: channel, programs: programs, appearance: style,
             appTileSize: matchedSize,
-          )));
+          ));
       }
       if (rows.isEmpty) return null;
+      final fadeFeeds = appearance.sectionFadeInactiveFeeds &&
+          inactiveOpacity < 1 && rows.length > 1 && previewId != category.id;
+      // Keep row paint separate from opacity so switching feeds reuses it.
+      final rowContent = {
+        for (final entry in rows.entries)
+          entry.key: fadeFeeds ? RepaintBoundary(child: entry.value) : entry.value,
+      };
+      Widget feedRows(String? activeFeed) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          for (final entry in rowContent.entries)
+            if (fadeFeeds)
+              Opacity(
+                key: ValueKey(entry.key),
+                opacity: activeFeed == null || activeFeed == entry.key
+                    ? 1 : inactiveOpacity,
+                child: entry.value,
+              )
+            else
+              entry.value,
+        ],
+      );
       return Container(key: const ValueKey('app-channels-group'),
         decoration: style.sectionDecoration(),
         padding: EdgeInsets.all(style.number('sectionPadding') ?? 0),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          ...rows,
-        ]));
+        child: fadeFeeds
+            ? ListenableBuilder(
+                listenable: Listenable.merge([_activeSectionId, _lastFeed]),
+                builder: (_, _) {
+                  final section = _activeSectionId.value;
+                  final selected = _lastFeed.value;
+                  final groupActive = section == category.id ||
+                      (section == null && first);
+                  return feedRows(groupActive
+                      ? (rows.containsKey(selected) ? selected : rows.keys.first)
+                      : null);
+                },
+              )
+            : feedRows(null),
+      );
     }
 
     void addWatchNext() {
@@ -625,7 +662,7 @@ class FLauncherState extends State<FLauncher> {
       }
 
       if (section is Category && section.isAppChannels) {
-        final group = appFeeds(section);
+        final group = appFeeds(section, first: !firstCategoryFound);
         if (group != null) {
           children.add(Transform.translate(
             key: _sectionKeys.putIfAbsent(section.id, GlobalKey.new),
@@ -647,7 +684,7 @@ class FLauncherState extends State<FLauncher> {
       final focus = _categoryFocus.putIfAbsent(category.id, CategoryFocusController.new)
         ..rememberLast = false
         ..onSelected = () {
-          _lastFeedKey = null;
+          _lastFeed.value = null;
           _activeSectionId.value = category.id;
           _lastCategoryId = category.id;
           _lastWasWatchNext = false;
@@ -767,18 +804,34 @@ class FLauncherState extends State<FLauncher> {
         memorySaver: settings.memorySaverEnabled,
       );
     }
+    final folder = source == videoFolderSource
+        ? context.watch<VideoFolderService?>()
+        : null;
+    final clip = folder?.clip;
+    final localVideo = source == 'picture' ? wallpaperService.video : null;
     return WallpaperBackground(
-      key: Key('background_${source}_${source == 'online' ? online?.version : wallpaperService.version}'),
-      image: source == 'picture' && wallpaperService.video != null ? null : image,
-      cacheStaticLayers: source == 'picture' && wallpaperService.video != null,
+      key: Key('background_${source}_${source == 'online' ? online?.version : source == videoFolderSource ? 0 : wallpaperService.version}'),
+      image: localVideo != null || source == videoFolderSource ? null : image,
+      cacheStaticLayers: localVideo != null || folder != null,
       gradient: wallpaperService.gradient.gradient,
       mode: settings.wallpaperFit,
       brightness: settings.wallpaperBrightness,
       saturation: settings.wallpaperSaturation,
       dimming: settings.wallpaperDimming,
       memorySaver: settings.memorySaverEnabled,
-      artworkBuilder: source == 'picture' && wallpaperService.video != null
-          ? (background) => VideoWallpaperBackground(file: wallpaperService.video!, background: background,
+      artworkBuilder: folder != null
+          ? (background) => VideoWallpaperBackground.folder(
+              clip: clip, background: background,
+              queueFailed: folder.failed,
+              enabled: context.watch<LauncherState>().launcherVisible,
+              mode: settings.wallpaperFit, memorySaver: settings.memorySaverEnabled,
+              onCompleted: () { if (clip != null) folder.completed(clip); },
+              onFailure: (released) {
+                if (clip != null) folder.playbackFailed(clip, released);
+              },
+            )
+          : localVideo != null
+          ? (background) => VideoWallpaperBackground(file: localVideo, background: background,
               enabled: context.watch<LauncherState>().launcherVisible,
               mode: settings.wallpaperFit, memorySaver: settings.memorySaverEnabled)
           : null,

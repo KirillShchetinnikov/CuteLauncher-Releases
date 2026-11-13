@@ -122,6 +122,36 @@ abstract class AppLocalizations {
     Locale('zh'),
   ];
 
+  /// No description provided for @videoFolderSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Videos from folder'**
+  String get videoFolderSource;
+
+  /// No description provided for @videoFolderPlayback.
+  ///
+  /// In en, this message translates to:
+  /// **'Playback'**
+  String get videoFolderPlayback;
+
+  /// No description provided for @videoFolderNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next video'**
+  String get videoFolderNext;
+
+  /// No description provided for @videoFolderError.
+  ///
+  /// In en, this message translates to:
+  /// **'No playable videos. Check the folder, file access and video formats.'**
+  String get videoFolderError;
+
+  /// No description provided for @videoFolderHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Videos play silently in a loop. Date order starts with the most recently modified file. Subfolders are excluded. Formats: MP4/M4V, WebM and MKV. The size limit is 256 MiB when known, and the resolution limit is 3840×2160.'**
+  String get videoFolderHelp;
+
   /// No description provided for @scrollContentLabels.
   ///
   /// In en, this message translates to:
@@ -3032,12 +3062,6 @@ abstract class AppLocalizations {
   /// **'Vertical spacing'**
   String get tileVerticalGap;
 
-  /// No description provided for @tileOpacity.
-  ///
-  /// In en, this message translates to:
-  /// **'Background opacity'**
-  String get tileOpacity;
-
   /// No description provided for @tileShadow.
   ///
   /// In en, this message translates to:
@@ -3187,12 +3211,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Blur may reduce smoothness. It is disabled while memory saving is on.'**
   String get blurPerformanceHint;
-
-  /// No description provided for @panelOpacity.
-  ///
-  /// In en, this message translates to:
-  /// **'Panel opacity'**
-  String get panelOpacity;
 
   /// No description provided for @tileBlur.
   ///
@@ -4327,12 +4345,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Objects'**
   String get topPanelObjects;
-
-  /// No description provided for @panelTransparency.
-  ///
-  /// In en, this message translates to:
-  /// **'Panel transparency'**
-  String get panelTransparency;
 
   /// No description provided for @panelTextBackground.
   ///
@@ -6416,11 +6428,17 @@ abstract class AppLocalizations {
   /// **'Section icons'**
   String get homeSectionIcons;
 
-  /// No description provided for @homeInactiveOpacity.
+  /// No description provided for @homeInactiveTransparency.
   ///
   /// In en, this message translates to:
-  /// **'Inactive section opacity'**
-  String get homeInactiveOpacity;
+  /// **'Inactive section transparency'**
+  String get homeInactiveTransparency;
+
+  /// No description provided for @homeFadeInactiveFeeds.
+  ///
+  /// In en, this message translates to:
+  /// **'Also fade inactive feeds'**
+  String get homeFadeInactiveFeeds;
 
   /// No description provided for @homeResetSection.
   ///
@@ -6515,7 +6533,7 @@ abstract class AppLocalizations {
   /// No description provided for @homeStyleOpaque.
   ///
   /// In en, this message translates to:
-  /// **'Reduce the tile background opacity to see blur.'**
+  /// **'Increase the tile background transparency to see blur.'**
   String get homeStyleOpaque;
 
   /// No description provided for @homeStyleOverridden.
@@ -6539,7 +6557,7 @@ abstract class AppLocalizations {
   /// No description provided for @homeStyleTransparent.
   ///
   /// In en, this message translates to:
-  /// **'The background color is invisible at zero opacity. Increase the tile background opacity.'**
+  /// **'The tile background color is invisible at 100% transparency. Lower the background transparency to see the color.'**
   String get homeStyleTransparent;
 
   /// No description provided for @homeStyleSingleColumn.

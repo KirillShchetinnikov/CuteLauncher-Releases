@@ -10,6 +10,23 @@ class AppLocalizationsKo extends AppLocalizations {
   AppLocalizationsKo([String locale = 'ko']) : super(locale);
 
   @override
+  String get videoFolderSource => '폴더의 동영상';
+
+  @override
+  String get videoFolderPlayback => '재생';
+
+  @override
+  String get videoFolderNext => '다음 동영상';
+
+  @override
+  String get videoFolderError =>
+      '재생할 수 있는 동영상이 없습니다. 폴더, 파일 접근 권한, 동영상 형식을 확인하세요.';
+
+  @override
+  String get videoFolderHelp =>
+      '동영상은 소리 없이 반복 재생됩니다. 날짜순으로는 최근에 수정된 파일이 먼저 재생됩니다. 하위 폴더는 제외됩니다. 형식: MP4/M4V, WebM, MKV. 제한: 크기를 알 수 있는 경우 256 MiB, 해상도 3840×2160.';
+
+  @override
   String get scrollContentLabels => '콘텐츠 행의 긴 라벨 스크롤';
 
   @override
@@ -1546,9 +1563,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get tileVerticalGap => '수직 간격';
 
   @override
-  String get tileOpacity => '배경 불투명도';
-
-  @override
   String get tileShadow => '그림자';
 
   @override
@@ -1623,9 +1637,6 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get blurPerformanceHint =>
       '흐림 효과는 부드러움을 감소시킬 수 있습니다. 메모리 절약이 켜져 있는 동안에는 비활성화됩니다.';
-
-  @override
-  String get panelOpacity => '패널 불투명도';
 
   @override
   String get tileBlur => '타일 뒤 흐림';
@@ -2225,9 +2236,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get topPanelObjects => '객체';
-
-  @override
-  String get panelTransparency => '패널 투명성';
 
   @override
   String get panelTextBackground => '텍스트 및 버튼 배경';
@@ -3339,7 +3347,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get homeSectionIcons => '섹션 아이콘';
 
   @override
-  String get homeInactiveOpacity => '비활성 섹션 불투명도';
+  String get homeInactiveTransparency => '비활성 섹션 투명도';
+
+  @override
+  String get homeFadeInactiveFeeds => '비활성 피드에도 투명도 적용';
 
   @override
   String get homeResetSection => '상속된 섹션 모양 복원';
@@ -3393,7 +3404,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get homeStyleEconomy => '메모리 절약으로 인해 비활성화되었습니다. 저장된 값은 유지됩니다.';
 
   @override
-  String get homeStyleOpaque => '흐리게 보려면 타일 배경 불투명도를 줄이세요.';
+  String get homeStyleOpaque => '흐림 효과를 보려면 타일 배경의 투명도를 높이세요.';
 
   @override
   String get homeStyleOverridden =>
@@ -3409,7 +3420,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get homeStyleTransparent =>
-      '불투명도가 0이면 배경색이 보이지 않습니다. 타일 ​​배경 불투명도를 높입니다.';
+      '투명도가 100%이면 타일의 배경색이 보이지 않습니다. 색을 보려면 배경 투명도를 낮추세요.';
 
   @override
   String get homeStyleSingleColumn => '단일 열 그리드에는 수평 간격이 없습니다.';

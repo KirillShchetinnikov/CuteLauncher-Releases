@@ -132,6 +132,34 @@ public class LocalWallpaperFilesTest {
         assertArrayEquals(new byte[]{1, 2}, Files.readAllBytes(first.toPath()));
     }
 
+    @Test public void videoQueueListsOnlyDirectVideosWithMetadata() throws Exception {
+        try (var controller = Robolectric.buildActivity(Activity.class).setup()) {
+            var activity = controller.get();
+            if (android.os.Build.VERSION.SDK_INT >= 30) StorageEnvironment.manager = true;
+            else Shadows.shadowOf(activity.getApplication()).grantPermissions(Manifest.permission.READ_EXTERNAL_STORAGE);
+            var executor = Executors.newSingleThreadExecutor();
+            try {
+                File root = folder();
+                File nested = new File(root, "nested.mp4");
+                assertTrue(nested.mkdir());
+                File video = new File(root, "полёт #1.MP4");
+                Files.write(video.toPath(), new byte[]{1, 2, 3});
+                Files.write(new File(nested, "second.mp4").toPath(), new byte[]{1});
+                Files.write(new File(root, "photo.jpg").toPath(), new byte[]{1});
+
+                var reply = new Reply();
+                new WallpaperFolder(activity, executor).listVideos(root.toURI().toString(), reply);
+                executor.shutdown();
+                assertTrue(executor.awaitTermination(10, TimeUnit.SECONDS));
+                Shadows.shadowOf(Looper.getMainLooper()).idle();
+                assertNull(reply.error);
+                assertEquals(List.of(java.util.Map.of(
+                    "uri", video.toURI().toASCIIString(), "name", video.getName(),
+                    "modified", video.lastModified(), "size", 3L)), reply.value);
+            } finally { executor.shutdownNow(); }
+        }
+    }
+
     @Test public void pathsMustBeAbsoluteAccessibleSharedDirectories() throws Exception {
         assertThrows(java.io.IOException.class, () -> LocalWallpaperFiles.directory("Pictures"));
         assertThrows(Exception.class, () -> LocalWallpaperFiles.sharedFile("/data/user/0/private"));

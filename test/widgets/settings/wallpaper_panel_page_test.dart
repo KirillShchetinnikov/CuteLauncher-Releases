@@ -22,9 +22,12 @@ import 'package:flauncher/providers/online_wallpaper_service.dart';
  */
 
 import 'package:flauncher/providers/settings_service.dart';
+import 'package:flauncher/providers/launcher_state.dart';
+import 'package:flauncher/providers/video_folder_service.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/gradients.dart';
 import 'package:flauncher/widgets/settings/gradient_panel_page.dart';
+import 'package:flauncher/widgets/settings/video_folder_page.dart';
 import 'package:flauncher/widgets/settings/wallpaper_panel_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -37,6 +40,54 @@ import 'package:provider/provider.dart';
 import '../../mocks.mocks.dart';
 
 void main() {
+  testWidgets('video folder source opens its settings and can skip to the next file', (tester) async {
+    SharedPreferences.setMockInitialValues({
+      'background_source': videoFolderSource,
+      videoFolderKey: 'file:///storage/videos',
+    });
+    final preferences = await SharedPreferences.getInstance();
+    final settings = SettingsService(preferences);
+    final launcher = LauncherState();
+    const channel = MethodChannel('me.efesser.flauncher/method');
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, (call) async {
+      if (call.method != 'listWallpaperVideos') return null;
+      return [
+        for (final name in ['01.mp4', '02.mp4'])
+          {'uri': 'file:///storage/videos/$name', 'name': name, 'modified': 0, 'size': 512},
+      ];
+    });
+    final videos = VideoFolderService(preferences, settings, launcher);
+    addTearDown(() async {
+      await tester.pumpWidget(const SizedBox.shrink());
+      videos.dispose();
+      launcher.dispose();
+      settings.dispose();
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, null);
+    });
+    await tester.pumpWidget(MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: settings),
+        ChangeNotifierProvider.value(value: videos),
+      ],
+      child: const MaterialApp(
+        locale: Locale('en'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(body: WallpaperPanelPage()),
+      ),
+    ));
+    await tester.pumpAndSettle();
+    expect(find.text('Videos from folder'), findsOneWidget);
+    final l = AppLocalizations.of(tester.element(find.byType(WallpaperPanelPage)))!;
+    await tester.tap(find.text(l.backgroundParameters));
+    await tester.pumpAndSettle();
+    expect(find.byType(VideoFolderPage), findsOneWidget);
+    expect(videos.clip?.name, '01.mp4');
+    await tester.tap(find.text(l.videoFolderNext));
+    await tester.pumpAndSettle();
+    expect(videos.clip?.name, '02.mp4');
+  });
+
   testWidgets(
     'scheduled wallpaper distinguishes empty and unavailable slots without polling',
     (tester) async {

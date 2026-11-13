@@ -10,6 +10,23 @@ class AppLocalizationsHi extends AppLocalizations {
   AppLocalizationsHi([String locale = 'hi']) : super(locale);
 
   @override
+  String get videoFolderSource => 'फ़ोल्डर से वीडियो';
+
+  @override
+  String get videoFolderPlayback => 'प्लेबैक';
+
+  @override
+  String get videoFolderNext => 'अगला वीडियो';
+
+  @override
+  String get videoFolderError =>
+      'चलाने योग्य वीडियो नहीं हैं। फ़ोल्डर, फ़ाइल की अनुमति और वीडियो फ़ॉर्मैट जाँचें।';
+
+  @override
+  String get videoFolderHelp =>
+      'वीडियो बिना आवाज़ के बार-बार चलते हैं। तारीख के क्रम में सबसे हाल में बदली गई फ़ाइल पहले चलती है। सबफ़ोल्डर शामिल नहीं हैं। फ़ॉर्मैट: MP4/M4V, WebM और MKV। सीमाएँ: ज्ञात आकार के लिए 256 MiB और 3840×2160।';
+
+  @override
   String get scrollContentLabels => 'पंक्तियों में लंबे लेबल स्क्रॉल करें';
 
   @override
@@ -1571,9 +1588,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String get tileVerticalGap => 'लंबवत रिक्ति';
 
   @override
-  String get tileOpacity => 'पृष्ठभूमि अस्पष्टता';
-
-  @override
   String get tileShadow => 'छाया';
 
   @override
@@ -1648,9 +1662,6 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get blurPerformanceHint =>
       'धुंधलापन चिकनाई को कम कर सकता है। मेमोरी सेविंग चालू होने पर यह अक्षम है।';
-
-  @override
-  String get panelOpacity => 'पैनल अपारदर्शिता';
 
   @override
   String get tileBlur => 'टाइल्स के पीछे धुंधलापन';
@@ -2265,9 +2276,6 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get topPanelObjects => 'वस्तुएँ';
-
-  @override
-  String get panelTransparency => 'पैनल पारदर्शिता';
 
   @override
   String get panelTextBackground => 'पाठ और बटन पृष्ठभूमि';
@@ -3426,7 +3434,11 @@ class AppLocalizationsHi extends AppLocalizations {
   String get homeSectionIcons => 'अनुभाग चिह्न';
 
   @override
-  String get homeInactiveOpacity => 'निष्क्रिय अनुभाग अपारदर्शिता';
+  String get homeInactiveTransparency => 'निष्क्रिय अनुभागों की पारदर्शिता';
+
+  @override
+  String get homeFadeInactiveFeeds =>
+      'निष्क्रिय फ़ीड पर भी पारदर्शिता लागू करें';
 
   @override
   String get homeResetSection =>
@@ -3487,7 +3499,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get homeStyleOpaque =>
-      'धुंधलापन देखने के लिए टाइल पृष्ठभूमि की अपारदर्शिता कम करें।';
+      'धुंधलापन देखने के लिए टाइल की पृष्ठभूमि की पारदर्शिता बढ़ाएँ।';
 
   @override
   String get homeStyleOverridden =>
@@ -3503,7 +3515,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get homeStyleTransparent =>
-      'पृष्ठभूमि का रंग शून्य अपारदर्शिता पर अदृश्य है। टाइल पृष्ठभूमि अपारदर्शिता बढ़ाएँ.';
+      '100% पारदर्शिता पर टाइल की पृष्ठभूमि का रंग दिखाई नहीं देता। रंग देखने के लिए पृष्ठभूमि की पारदर्शिता कम करें।';
 
   @override
   String get homeStyleSingleColumn =>

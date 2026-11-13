@@ -10,6 +10,7 @@ import '../../providers/appearance_service.dart';
 import '../../providers/weather_service.dart';
 import '../../providers/online_wallpaper_service.dart';
 import '../../providers/slideshow_service.dart';
+import '../../providers/video_folder_service.dart';
 import '../../providers/update_service.dart';
 import '../../providers/night_mode_service.dart';
 import '../../providers/wallpaper_service.dart';
@@ -32,6 +33,7 @@ Future<void> restoreBackupAndRefresh(
   final weather = context.read<WeatherService?>();
   final online = context.read<OnlineWallpaperService?>();
   final slideshow = context.read<SlideshowService?>();
+  final videos = context.read<VideoFolderService?>();
   final updates = context.read<UpdateService?>();
   final night = context.read<NightModeService?>();
   final wallpaper = context.read<WallpaperService>();
@@ -51,6 +53,7 @@ Future<void> restoreBackupAndRefresh(
   await weather?.reloadConfiguration();
   await online?.reload();
   await slideshow?.reload();
+  videos?.reload();
   updates?.reloadPreferences();
   night?.reload();
   await wallpaper.refresh();

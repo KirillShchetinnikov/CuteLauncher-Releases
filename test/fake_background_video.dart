@@ -72,6 +72,8 @@ class FakeBackgroundVideo extends VideoPlayerPlatform {
   @override
   Future<void> setPlaybackSpeed(int playerId, double speed) async {}
   @override
+  Future<void> seekTo(int playerId, Duration position) async {}
+  @override
   Future<void> setMixWithOthers(bool mixWithOthers) async {}
   @override
   Future<void> setPreventsDisplaySleepDuringVideoPlayback(

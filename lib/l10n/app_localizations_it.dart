@@ -10,6 +10,23 @@ class AppLocalizationsIt extends AppLocalizations {
   AppLocalizationsIt([String locale = 'it']) : super(locale);
 
   @override
+  String get videoFolderSource => 'Video da una cartella';
+
+  @override
+  String get videoFolderPlayback => 'Riproduzione';
+
+  @override
+  String get videoFolderNext => 'Video successivo';
+
+  @override
+  String get videoFolderError =>
+      'Nessun video riproducibile. Controlla la cartella, l’accesso ai file e i formati video.';
+
+  @override
+  String get videoFolderHelp =>
+      'I video vengono riprodotti in ciclo senza audio. L’ordine per data parte dal file modificato più di recente. Le sottocartelle sono escluse. Formati: MP4/M4V, WebM e MKV. Limiti: 256 MiB se la dimensione è nota e 3840×2160.';
+
+  @override
   String get scrollContentLabels => 'Scorri le etichette lunghe nelle righe';
 
   @override
@@ -1595,9 +1612,6 @@ class AppLocalizationsIt extends AppLocalizations {
   String get tileVerticalGap => 'Spaziatura verticale';
 
   @override
-  String get tileOpacity => 'Opacità dello sfondo';
-
-  @override
   String get tileShadow => 'Ombra';
 
   @override
@@ -1672,9 +1686,6 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get blurPerformanceHint =>
       'La sfocatura può ridurre l\'uniformità. È disabilitato mentre è attivo il salvataggio della memoria.';
-
-  @override
-  String get panelOpacity => 'Opacità del pannello';
 
   @override
   String get tileBlur => 'Sfocatura dietro le piastrelle';
@@ -2302,9 +2313,6 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get topPanelObjects => 'Oggetti';
-
-  @override
-  String get panelTransparency => 'Trasparenza del pannello';
 
   @override
   String get panelTextBackground => 'Sfondo del testo e del pulsante';
@@ -3479,7 +3487,11 @@ class AppLocalizationsIt extends AppLocalizations {
   String get homeSectionIcons => 'Icone di sezione';
 
   @override
-  String get homeInactiveOpacity => 'Opacità della sezione inattiva';
+  String get homeInactiveTransparency => 'Trasparenza delle sezioni inattive';
+
+  @override
+  String get homeFadeInactiveFeeds =>
+      'Applica la trasparenza anche ai feed inattivi';
 
   @override
   String get homeResetSection =>
@@ -3541,7 +3553,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get homeStyleOpaque =>
-      'Riduci l\'opacità dello sfondo del riquadro per vedere la sfocatura.';
+      'Aumenta la trasparenza dello sfondo delle tessere per vedere la sfocatura.';
 
   @override
   String get homeStyleOverridden =>
@@ -3557,7 +3569,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get homeStyleTransparent =>
-      'Il colore di sfondo è invisibile con opacità zero. Aumenta l\'opacità dello sfondo del riquadro.';
+      'Con la trasparenza al 100%, il colore di sfondo della tessera è invisibile. Riduci la trasparenza dello sfondo per vederlo.';
 
   @override
   String get homeStyleSingleColumn =>

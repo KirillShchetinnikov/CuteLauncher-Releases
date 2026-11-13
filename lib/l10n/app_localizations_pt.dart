@@ -10,6 +10,23 @@ class AppLocalizationsPt extends AppLocalizations {
   AppLocalizationsPt([String locale = 'pt']) : super(locale);
 
   @override
+  String get videoFolderSource => 'Vídeos de uma pasta';
+
+  @override
+  String get videoFolderPlayback => 'Reprodução';
+
+  @override
+  String get videoFolderNext => 'Próximo vídeo';
+
+  @override
+  String get videoFolderError =>
+      'Não há vídeos reproduzíveis. Verifique a pasta, o acesso aos arquivos e os formatos de vídeo.';
+
+  @override
+  String get videoFolderHelp =>
+      'Os vídeos são reproduzidos em sequência, sem som. Por data, o arquivo modificado mais recentemente vem primeiro. As subpastas são excluídas. Formatos: MP4/M4V, WebM e MKV. Limites: 256 MiB se o tamanho for conhecido e 3840×2160.';
+
+  @override
   String get scrollContentLabels => 'Rolar rótulos longos nas linhas';
 
   @override
@@ -1590,9 +1607,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get tileVerticalGap => 'Espaçamento vertical';
 
   @override
-  String get tileOpacity => 'Opacidade de fundo';
-
-  @override
   String get tileShadow => 'Sombra';
 
   @override
@@ -1667,9 +1681,6 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get blurPerformanceHint =>
       'O desfoque pode reduzir a suavidade. Ele fica desativado enquanto a economia de memória está ativada.';
-
-  @override
-  String get panelOpacity => 'Opacidade do painel';
 
   @override
   String get tileBlur => 'Desfocar atrás dos azulejos';
@@ -2294,9 +2305,6 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get topPanelObjects => 'Objetos';
-
-  @override
-  String get panelTransparency => 'Transparência do painel';
 
   @override
   String get panelTextBackground => 'Fundo de texto e botão';
@@ -3465,7 +3473,11 @@ class AppLocalizationsPt extends AppLocalizations {
   String get homeSectionIcons => 'Ícones de seção';
 
   @override
-  String get homeInactiveOpacity => 'Opacidade da seção inativa';
+  String get homeInactiveTransparency => 'Transparência das seções inativas';
+
+  @override
+  String get homeFadeInactiveFeeds =>
+      'Aplicar a transparência também aos feeds inativos';
 
   @override
   String get homeResetSection => 'Restaurar a aparência da seção herdada';
@@ -3525,7 +3537,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get homeStyleOpaque =>
-      'Reduza a opacidade do fundo do bloco para ver o desfoque.';
+      'Aumente a transparência do fundo dos blocos para ver o desfoque.';
 
   @override
   String get homeStyleOverridden =>
@@ -3541,7 +3553,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get homeStyleTransparent =>
-      'A cor de fundo é invisível com opacidade zero. Aumente a opacidade do fundo do bloco.';
+      'Com 100% de transparência, a cor de fundo do bloco fica invisível. Reduza a transparência do fundo para ver a cor.';
 
   @override
   String get homeStyleSingleColumn =>

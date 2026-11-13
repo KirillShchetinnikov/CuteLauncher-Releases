@@ -94,7 +94,7 @@ void main() {
         await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
         await tester.pumpAndSettle();
         expect(
-          Focus.of(tester.element(find.text(l.panelTransparency))).hasFocus,
+          Focus.of(tester.element(find.text(l.styleTransparency))).hasFocus,
           isTrue,
         );
         // All later groups remain reachable through the one page scroll view.

@@ -10,6 +10,23 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
+  String get videoFolderSource => 'Vídeos de una carpeta';
+
+  @override
+  String get videoFolderPlayback => 'Reproducción';
+
+  @override
+  String get videoFolderNext => 'Siguiente vídeo';
+
+  @override
+  String get videoFolderError =>
+      'No hay vídeos reproducibles. Comprueba la carpeta, el acceso a los archivos y los formatos de vídeo.';
+
+  @override
+  String get videoFolderHelp =>
+      'Los vídeos se repiten sin sonido. El orden por fecha comienza con el archivo modificado más recientemente. Se excluyen las subcarpetas. Formatos: MP4/M4V, WebM y MKV. Límites: 256 MiB si se conoce el tamaño y 3840×2160.';
+
+  @override
   String get scrollContentLabels => 'Desplazar etiquetas largas en las filas';
 
   @override
@@ -1589,9 +1606,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get tileVerticalGap => 'Espaciado vertical';
 
   @override
-  String get tileOpacity => 'Opacidad del fondo';
-
-  @override
   String get tileShadow => 'sombra';
 
   @override
@@ -1666,9 +1680,6 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get blurPerformanceHint =>
       'El desenfoque puede reducir la suavidad. Está deshabilitado mientras el ahorro de memoria está activado.';
-
-  @override
-  String get panelOpacity => 'Opacidad del panel';
 
   @override
   String get tileBlur => 'Desenfoque detrás de los azulejos';
@@ -2293,9 +2304,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get topPanelObjects => 'Objetos';
-
-  @override
-  String get panelTransparency => 'Transparencia del panel';
 
   @override
   String get panelTextBackground => 'Fondo de texto y botón';
@@ -3469,7 +3477,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get homeSectionIcons => 'Iconos de sección';
 
   @override
-  String get homeInactiveOpacity => 'Opacidad de la sección inactiva';
+  String get homeInactiveTransparency =>
+      'Transparencia de las secciones inactivas';
+
+  @override
+  String get homeFadeInactiveFeeds =>
+      'Aplicar la transparencia también a las fuentes inactivas';
 
   @override
   String get homeResetSection =>
@@ -3533,7 +3546,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get homeStyleOpaque =>
-      'Reduzca la opacidad del fondo del mosaico para ver el desenfoque.';
+      'Aumenta la transparencia del fondo de las tarjetas para ver el desenfoque.';
 
   @override
   String get homeStyleOverridden =>
@@ -3549,7 +3562,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get homeStyleTransparent =>
-      'El color de fondo es invisible con opacidad cero. Aumente la opacidad del fondo del mosaico.';
+      'Con una transparencia del 100 %, el color de fondo de la tarjeta es invisible. Reduce la transparencia del fondo para verlo.';
 
   @override
   String get homeStyleSingleColumn =>

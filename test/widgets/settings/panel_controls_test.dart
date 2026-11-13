@@ -144,7 +144,7 @@ void main() {
     'sliders change transparency by one percent, vertical keys preserve values',
     (tester) async {
       await pump(tester, const AppearancePage(section: 'panel'));
-      Focus.of(tester.element(find.text('Прозрачность панели'))).requestFocus();
+      Focus.of(tester.element(find.text('Прозрачность фона'))).requestFocus();
       await tester.pumpAndSettle();
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
       await tester.pumpAndSettle();

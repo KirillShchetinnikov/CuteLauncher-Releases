@@ -12,6 +12,8 @@ import java.io.InputStream;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import io.flutter.plugin.common.MethodChannel;
 
@@ -98,6 +100,71 @@ final class WallpaperFolder {
             }
         });
     }
+    void listVideos(String value, MethodChannel.Result result) {
+        executor.execute(() -> {
+            try {
+                Uri tree = Uri.parse(value);
+                List<Map<String, Object>> files = new ArrayList<>();
+                if ("file".equals(tree.getScheme())) {
+                    if (!local.granted()) throw new SecurityException("Storage access required");
+                    java.io.File folder = LocalWallpaperFiles.directory(value);
+                    java.io.File[] children = folder.listFiles();
+                    if (children == null) throw new IllegalStateException("Folder unavailable");
+                    int entries = 0;
+                    for (java.io.File child : children) {
+                        if (entries++ >= 4000 || files.size() >= 1000) break;
+                        if (!isVideoName(child.getName())) continue;
+                        try {
+                            java.io.File file = LocalWallpaperFiles.sharedFile(child.getPath());
+                            if (folder.equals(file.getParentFile()) && file.isFile() && file.canRead()) {
+                                files.add(video(file.toURI().toASCIIString(), child.getName(),
+                                    file.lastModified(), file.length()));
+                            }
+                        } catch (SecurityException | java.io.IOException ignored) {
+                            // A single inaccessible file must not hide the rest of the folder.
+                        }
+                    }
+                } else {
+                    listDocumentVideos(tree, files);
+                }
+                new Handler(Looper.getMainLooper()).post(() -> result.success(files));
+            } catch (Exception error) {
+                new Handler(Looper.getMainLooper()).post(() -> result.error(
+                    "document_failed", "Unable to enumerate folder videos", DiagnosticErrorDetails.from(error)));
+            }
+        });
+    }
+
+    private void listDocumentVideos(Uri tree, List<Map<String, Object>> files) {
+        String id = DocumentsContract.getTreeDocumentId(tree);
+        try (Cursor cursor = activity.getContentResolver().query(
+                DocumentsContract.buildChildDocumentsUriUsingTree(tree, id),
+                new String[]{DocumentsContract.Document.COLUMN_DOCUMENT_ID,
+                    DocumentsContract.Document.COLUMN_MIME_TYPE,
+                    DocumentsContract.Document.COLUMN_DISPLAY_NAME,
+                    DocumentsContract.Document.COLUMN_LAST_MODIFIED,
+                    DocumentsContract.Document.COLUMN_SIZE}, null, null, null)) {
+            if (cursor == null) throw new IllegalStateException("Folder unavailable");
+            int entries = 0;
+            while (entries++ < 4000 && files.size() < 1000 && cursor.moveToNext()) {
+                String name = cursor.getString(2);
+                if (DocumentsContract.Document.MIME_TYPE_DIR.equals(cursor.getString(1))
+                        || !isVideoName(name)) continue;
+                Uri uri = DocumentsContract.buildDocumentUriUsingTree(tree, cursor.getString(0));
+                files.add(video(uri.toString(), name, cursor.getLong(3),
+                    cursor.isNull(4) ? -1 : cursor.getLong(4)));
+            }
+        }
+    }
+
+    private static boolean isVideoName(String name) {
+        return name != null && name.toLowerCase(java.util.Locale.ROOT).matches(".*\\.(mp4|m4v|webm|mkv)$");
+    }
+
+    private static Map<String, Object> video(String uri, String name, long modified, long size) {
+        return Map.of("uri", uri, "name", name, "modified", Math.max(0, modified), "size", size);
+    }
+
     void read(String value, MethodChannel.Result result) {
         executor.execute(() -> {
             try (InputStream input = openImage(value);

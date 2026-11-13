@@ -201,6 +201,7 @@ class DiagnosticsStore {
     'invalidate',
     'learn',
     'listWallpaperFolder',
+    'listWallpaperVideos',
     'locate',
     'next',
     'pause',

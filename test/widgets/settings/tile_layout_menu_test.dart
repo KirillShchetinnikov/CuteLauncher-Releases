@@ -217,7 +217,7 @@ void main() {
       final l = AppLocalizations.of(tester.element(find.byType(SectionStylePage)))!;
       Finder slider(String title) => find.byWidgetPredicate(
         (w) => w is SettingsSliderTile && w.title == title);
-      expect(tester.widget<SettingsSliderTile>(slider(l.tileOpacity)).enabled, isFalse);
+      expect(tester.widget<SettingsSliderTile>(slider(l.styleTransparency)).enabled, isFalse);
       expect(tester.widget<SettingsSliderTile>(slider(l.tileCornerRadius)).enabled, isFalse);
       if (id == null) {
         await appearance.set('sectionBackground', 0xff123456);
@@ -225,14 +225,13 @@ void main() {
         await appearance.setCategoryTile(id, 'sectionBackground', 0xff123456);
       }
       await tester.pumpAndSettle();
-      for (final title in [l.tileOpacity, l.tileCornerRadius]) {
+      for (final title in [l.styleTransparency, l.tileCornerRadius]) {
         final control = slider(title);
         expect(tester.widget<SettingsSliderTile>(control).enabled, isTrue);
         await tester.ensureVisible(control);
         Focus.of(tester.element(find.descendant(of: control, matching: find.byType(Text)).first)).requestFocus();
         await tester.pumpAndSettle();
-        await tester.sendKeyEvent(title == l.tileOpacity
-            ? LogicalKeyboardKey.arrowLeft : LogicalKeyboardKey.arrowRight);
+        await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
         await tester.pumpAndSettle();
         final focus = FocusManager.instance.primaryFocus;
         await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
@@ -249,7 +248,7 @@ void main() {
       }
       await appearance.resetFields(['sectionBackground'], categoryId: id);
       await tester.pumpAndSettle();
-      expect(tester.widget<SettingsSliderTile>(slider(l.tileOpacity)).enabled, isFalse);
+      expect(tester.widget<SettingsSliderTile>(slider(l.styleTransparency)).enabled, isFalse);
       expect((id == null ? appearance.appearance : appearance.tilesFor(id)).sectionOpacity, .99);
       await appearance.resetFields(['sectionOpacity', 'sectionRadius'], categoryId: id);
       expect((id == null ? appearance.appearance : appearance.tilesFor(id)).sectionOpacity, 1);
@@ -257,6 +256,57 @@ void main() {
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox());
     }
+  });
+
+  testWidgets('tile and inactive section transparency increases to 100%', (tester) async {
+    await appearance.set('opacity', .25);
+    await appearance.set('inactiveOpacity', .1);
+
+    Future<void> makeTransparent(String title, String previousValue) async {
+      final row = find.widgetWithText(FocusableSettingsTile, title);
+      await tester.scrollUntilVisible(row, 300);
+      expect(find.descendant(of: row, matching: find.text(previousValue)), findsOneWidget);
+      Focus.of(tester.element(find.text(title))).requestFocus();
+      await tester.pumpAndSettle();
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+      await tester.pumpAndSettle();
+      expect(find.descendant(of: row, matching: find.text('100%')), findsOneWidget);
+    }
+
+    await pump(tester, const AppearancePage());
+    await makeTransparent('Прозрачность фона', '75%');
+    expect(appearance.appearance.opacity, 0);
+
+    await tester.pumpWidget(const SizedBox());
+    await pump(tester, const SectionStylePage());
+    await makeTransparent('Прозрачность неактивных разделов', '90%');
+    expect(appearance.appearance.number('inactiveOpacity'), 0);
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('inactive feed transparency is global, persists and resets', (
+    tester,
+  ) async {
+    const title = 'Применять прозрачность и к неактивным лентам';
+    final toggle = find.widgetWithText(RoundedSwitchListTile, title);
+    await pump(tester, const SectionStylePage());
+    await tester.ensureVisible(toggle);
+    await tester.pumpAndSettle();
+    expect(tester.widget<RoundedSwitchListTile>(toggle).value, isFalse);
+    await tester.tap(find.text(title));
+    await tester.pumpAndSettle();
+    final reloaded = AppearanceService(await SharedPreferences.getInstance());
+    addTearDown(reloaded.dispose);
+    expect(reloaded.appearance.sectionFadeInactiveFeeds, isTrue);
+
+    await tester.widget<ResetStyleTile>(find.byType(ResetStyleTile)).onReset();
+    await tester.pumpAndSettle();
+    expect(tester.widget<RoundedSwitchListTile>(toggle).value, isFalse);
+    expect(reloaded.appearance.sectionFadeInactiveFeeds, isFalse);
+    await tester.pumpWidget(const SizedBox());
+    await pump(tester, const SectionStylePage(categoryId: 1));
+    expect(toggle, findsNothing);
+    await tester.pumpWidget(const SizedBox());
   });
 
   testWidgets('section controls share one layout and appearance reset', (tester) async {

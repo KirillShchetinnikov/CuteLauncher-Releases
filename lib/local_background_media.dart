@@ -37,6 +37,18 @@ BackgroundMediaKind backgroundMediaKind(List<int> bytes) {
   throw const BackgroundMediaException(BackgroundMediaFailure.format);
 }
 
+void validateBackgroundVideoMetadata(VideoPlayerValue value) {
+  final size = value.size;
+  if (size.isEmpty || value.duration <= Duration.zero) {
+    throw const BackgroundMediaException(BackgroundMediaFailure.videoCodec);
+  }
+  if (size.longestSide > 3840 || size.shortestSide > 2160) {
+    throw const BackgroundMediaException(
+      BackgroundMediaFailure.videoResolution,
+    );
+  }
+}
+
 Future<void> validateBackgroundVideo(File file) async {
   if (await file.length() > maximumBackgroundVideoBytes) {
     throw const BackgroundMediaException(BackgroundMediaFailure.videoSize);
@@ -57,15 +69,7 @@ Future<void> validateBackgroundVideo(File file) async {
     try {
       await controller.initialize().timeout(const Duration(seconds: 20));
       stage = 'videoMetadata';
-      final size = controller.value.size;
-      if (size.isEmpty || controller.value.duration <= Duration.zero) {
-        throw const BackgroundMediaException(BackgroundMediaFailure.videoCodec);
-      }
-      if (size.longestSide > 3840 || size.shortestSide > 2160) {
-        throw const BackgroundMediaException(
-          BackgroundMediaFailure.videoResolution,
-        );
-      }
+      validateBackgroundVideoMetadata(controller.value);
       if (attempt == 1) {
         recordBackgroundVideoRecovery(diagnostics.attempt, 'succeeded');
       }

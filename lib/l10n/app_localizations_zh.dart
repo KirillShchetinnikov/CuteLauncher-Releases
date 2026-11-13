@@ -10,6 +10,22 @@ class AppLocalizationsZh extends AppLocalizations {
   AppLocalizationsZh([String locale = 'zh']) : super(locale);
 
   @override
+  String get videoFolderSource => '文件夹中的视频';
+
+  @override
+  String get videoFolderPlayback => '播放';
+
+  @override
+  String get videoFolderNext => '下一个视频';
+
+  @override
+  String get videoFolderError => '没有可播放的视频。请检查文件夹、文件访问权限和视频格式。';
+
+  @override
+  String get videoFolderHelp =>
+      '视频静音循环播放。按日期排序时，最近修改的文件先播放。不包含子文件夹。格式：MP4/M4V、WebM 和 MKV。已知文件大小时上限为 256 MiB，分辨率上限为 3840×2160。';
+
+  @override
   String get scrollContentLabels => '滚动内容行中的长标签';
 
   @override
@@ -1540,9 +1556,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tileVerticalGap => '垂直间距';
 
   @override
-  String get tileOpacity => '背景不透明度';
-
-  @override
   String get tileShadow => '影子';
 
   @override
@@ -1616,9 +1629,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get blurPerformanceHint => '模糊可能会降低平滑度。当内存节省打开时，它被禁用。';
-
-  @override
-  String get panelOpacity => '面板不透明度';
 
   @override
   String get tileBlur => '瓷砖后面模糊';
@@ -2203,9 +2213,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get topPanelObjects => '对象';
-
-  @override
-  String get panelTransparency => '面板透明度';
 
   @override
   String get panelTextBackground => '文本和按钮背景';
@@ -3284,7 +3291,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get homeSectionIcons => '部分图标';
 
   @override
-  String get homeInactiveOpacity => '非活动部分不透明度';
+  String get homeInactiveTransparency => '非活动分区透明度';
+
+  @override
+  String get homeFadeInactiveFeeds => '也对非活动信息流应用透明度';
 
   @override
   String get homeResetSection => '恢复继承的部分外观';
@@ -3336,7 +3346,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get homeStyleEconomy => '通过内存节省禁用。保存的值将被保留。';
 
   @override
-  String get homeStyleOpaque => '降低图块背景不透明度以看到模糊。';
+  String get homeStyleOpaque => '提高磁贴背景的透明度以查看模糊效果。';
 
   @override
   String get homeStyleOverridden => '可见部分使用自己的值。在部分中选择“使用全局”以应用此设置。';
@@ -3348,7 +3358,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get homeStyleShadowHint => '节省内存将非活动卡的阴影限制为 4 个。焦点阴影单独配置。';
 
   @override
-  String get homeStyleTransparent => '背景颜色在不透明度为零时不可见。增加图块背景的不透明度。';
+  String get homeStyleTransparent => '透明度为 100% 时，磁贴背景颜色不可见。降低背景透明度即可看到颜色。';
 
   @override
   String get homeStyleSingleColumn => '单列网格没有水平间隙。';

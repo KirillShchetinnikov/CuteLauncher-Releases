@@ -224,7 +224,7 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
       (OnlineWallpaperConfiguration.decode(_sharedPreferences.getString(onlineWallpaperKey)).enabled
           ? 'online' : timeBasedWallpaperEnabled ? 'scheduled' : 'picture');
   Future<void> setBackgroundSource(String source) async {
-    if (!['gradient', 'picture', 'scheduled', 'online', 'slideshow', 'app', 'landscape'].contains(source)) return;
+    if (!['gradient', 'picture', 'scheduled', 'online', 'slideshow', 'app', 'landscape', 'videoFolder'].contains(source)) return;
     await _sharedPreferences.setString('background_source', source);
     await setTimeBasedWallpaperEnabled(source == 'scheduled');
     notifyListeners();

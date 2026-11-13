@@ -42,12 +42,18 @@ class SlideshowPage extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
                 leading: const Icon(Icons.folder_open),
-                onPressed: () => _localFolder(context, s),
+                onPressed: () =>
+                    selectWallpaperFolder(context, s.folder, s.setFolder),
               ),
               FocusableSettingsTile(
                 title: Text(l.slideshowEnterFolderPath),
                 leading: const Icon(Icons.edit),
-                onPressed: () => _localFolder(context, s, manual: true),
+                onPressed: () => selectWallpaperFolder(
+                  context,
+                  s.folder,
+                  s.setFolder,
+                  manual: true,
+                ),
               ),
               if (s.folder.isEmpty)
                 SettingsMessage(text: l.slideshowFolderRequired),
@@ -79,7 +85,9 @@ class SlideshowPage extends StatelessWidget {
                 title: Text(l.slideshowNext),
                 onPressed: s.loading ? null : s.advance,
               ),
-              SizedBox(child: s.loading ? const LinearProgressIndicator() : null),
+              SizedBox(
+                child: s.loading ? const LinearProgressIndicator() : null,
+              ),
               if (s.failed)
                 SettingsMessage(
                   text: l.slideshowError,
@@ -96,60 +104,56 @@ class SlideshowPage extends StatelessWidget {
       ),
     );
   }
+}
 
-  Future<void> _localFolder(
-    BuildContext context,
-    SlideshowService service, {
-    bool manual = false,
-  }) async {
-    final l = AppLocalizations.of(context)!;
-    try {
-      String? path;
-      if (service.folder.startsWith('file:')) {
-        path = Uri.parse(service.folder).toFilePath(windows: false);
+Future<void> selectWallpaperFolder(
+  BuildContext context,
+  String currentFolder,
+  Future<void> Function(String) setFolder, {
+  bool manual = false,
+  String defaultPath = '/storage/emulated/0/Pictures',
+}) async {
+  final l = AppLocalizations.of(context)!;
+  try {
+    String? path;
+    if (currentFolder.startsWith('file:')) {
+      path = Uri.parse(currentFolder).toFilePath(windows: false);
+    }
+    if (manual) {
+      path = await enterWallpaperFolderPath(context, path ?? defaultPath);
+      if (path == null || !context.mounted) return;
+    }
+    if (manual) {
+      final granted = await FileSelection.requestStorage(context, write: false);
+      if (!context.mounted) return;
+      if (!granted) return;
+    }
+    if (manual) {
+      final folder = await wallpaperFolderChannel
+          .invokeMapMethod<String, dynamic>('browseLocalFiles', {
+            'path': path,
+            'kind': 'folder',
+          });
+      if (folder != null && context.mounted) {
+        await setFolder(folder['uri'] as String);
       }
-      if (manual) {
-        path = await enterWallpaperFolderPath(
-          context,
-          path ?? '/storage/emulated/0/Pictures',
-        );
-        if (path == null || !context.mounted) return;
-      }
-      if (manual) {
-        final granted = await FileSelection.requestStorage(
-          context,
-          write: false,
-        );
-        if (!context.mounted) return;
-        if (!granted) return;
-      }
-      if (manual) {
-        final folder = await wallpaperFolderChannel
-            .invokeMapMethod<String, dynamic>('browseLocalFiles', {
-              'path': path,
-              'kind': 'folder',
-            });
-        if (folder != null && context.mounted) {
-          await service.setFolder(folder['uri'] as String);
-        }
-      } else {
-        final folder = await FileSelection.select<String>(
-          context,
-          'pickWallpaperFolder',
-          initialPath: path ?? (service.folder.isEmpty ? null : service.folder),
-        );
-        if (folder != null && context.mounted) await service.setFolder(folder);
-      }
-    } catch (error) {
-      if (context.mounted) {
-        showActionNotice(
-          context,
-          error is BridgeException && error.status == BridgeStatus.denied
-              ? l.slideshowStoragePermission
-              : l.slideshowFolderUnavailable,
-          error: true,
-        );
-      }
+    } else {
+      final folder = await FileSelection.select<String>(
+        context,
+        'pickWallpaperFolder',
+        initialPath: path ?? (currentFolder.isEmpty ? null : currentFolder),
+      );
+      if (folder != null && context.mounted) await setFolder(folder);
+    }
+  } catch (error) {
+    if (context.mounted) {
+      showActionNotice(
+        context,
+        error is BridgeException && error.status == BridgeStatus.denied
+            ? l.slideshowStoragePermission
+            : l.slideshowFolderUnavailable,
+        error: true,
+      );
     }
   }
 }

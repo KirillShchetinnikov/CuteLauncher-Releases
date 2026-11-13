@@ -85,9 +85,7 @@ class SlideshowService extends ChangeNotifier
     if (isDisposed) return;
     final old = folder;
     await _save({'slideshow_folder': selected});
-    if (old.isNotEmpty && old != selected) {
-      await _channel.invokeMethod<void>('releaseWallpaperFolder', {'uri': old});
-    }
+    if (old != selected) await _releaseFolder(old);
     await reload();
   }
 
@@ -101,9 +99,18 @@ class SlideshowService extends ChangeNotifier
     _timer?.cancel();
     _nextChangeAt = null;
     _remaining = []; _files = []; _last = null; image = null;
-    if (old.isNotEmpty) await _channel.invokeMethod<void>('releaseWallpaperFolder', {'uri': old});
+    await _releaseFolder(old);
     failed = false;
     notifyListeners();
+  }
+
+  Future<void> _releaseFolder(String uri) async {
+    if (uri.isEmpty ||
+        uri == preferences.getString('wallpaper_video_folder') ||
+        uri == preferences.getString('backup_transport_local_folder')) {
+      return;
+    }
+    await _channel.invokeMethod<void>('releaseWallpaperFolder', {'uri': uri});
   }
 
   Future<void> configure({

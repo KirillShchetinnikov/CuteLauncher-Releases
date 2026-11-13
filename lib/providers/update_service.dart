@@ -30,15 +30,54 @@ class AppRelease {
   final int size;
   final String? digest;
   const AppRelease(this.version, this.uri, this.size, this.digest);
-  static List<int>? _version(String value) {
+  static ({List<int> core, String? prerelease, int build})? _version(
+    String value,
+  ) {
     final match = RegExp(
-      r'^v?(\d+)\.(\d+)\.(\d+)(?:-[0-9A-Za-z.-]+)?(?:\+(\d+))?$',
+      r'^v?(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z.-]+))?(?:\+(\d+))?$',
     ).firstMatch(value);
     if (match == null) return null;
-    return [
-      for (var index = 1; index <= 4; index++)
-        int.tryParse(match.group(index) ?? '0') ?? 0,
-    ];
+    return (
+      core: [
+        for (var index = 1; index <= 3; index++)
+          int.tryParse(match.group(index)!) ?? 0,
+      ],
+      prerelease: match.group(4),
+      build: int.tryParse(match.group(5) ?? '') ?? 0,
+    );
+  }
+
+  static int _compareVersions(
+    ({List<int> core, String? prerelease, int build}) a,
+    ({List<int> core, String? prerelease, int build}) b,
+  ) {
+    for (var index = 0; index < a.core.length; index++) {
+      final order = a.core[index].compareTo(b.core[index]);
+      if (order != 0) return order;
+    }
+    final left = a.prerelease, right = b.prerelease;
+    if (left == right) return 0;
+    if (left == null) return 1;
+    if (right == null) return -1;
+    final leftParts = left.split('.'), rightParts = right.split('.');
+    for (
+      var index = 0;
+      index < leftParts.length && index < rightParts.length;
+      index++
+    ) {
+      final l = leftParts[index], r = rightParts[index];
+      if (l == r) continue;
+      final ln = int.tryParse(l), rn = int.tryParse(r);
+      if (ln != null && rn != null) {
+        final order = ln.compareTo(rn);
+        if (order != 0) return order;
+      } else if (ln != null || rn != null) {
+        return ln != null ? -1 : 1;
+      } else {
+        return l.compareTo(r);
+      }
+    }
+    return leftParts.length.compareTo(rightParts.length);
   }
 
   static AppRelease? parse(
@@ -52,18 +91,18 @@ class AppRelease {
       final releases =
           (data['releases'] as List).whereType<Map<String, dynamic>>().toList()
             ..sort((a, b) {
-              final av =
-                  _version(a['tag_name'] as String? ?? '') ?? [0, 0, 0, 0];
-              final bv =
-                  _version(b['tag_name'] as String? ?? '') ?? [0, 0, 0, 0];
+              final av = _version(a['tag_name'] as String? ?? '');
+              final bv = _version(b['tag_name'] as String? ?? '');
+              if (av == null) return bv == null ? 0 : 1;
+              if (bv == null) return -1;
               // Historical tags carry a global build; new tags carry SemVer only.
-              final withBuilds = (a['tag_name'] as String? ?? '').contains('+') &&
+              final withBuilds =
+                  (a['tag_name'] as String? ?? '').contains('+') &&
                   (b['tag_name'] as String? ?? '').contains('+');
-              for (final index in withBuilds ? [3, 0, 1, 2] : [0, 1, 2, 3]) {
-                final order = bv[index].compareTo(av[index]);
-                if (order != 0) return order;
-              }
-              return 0;
+              final buildOrder = bv.build.compareTo(av.build);
+              if (withBuilds && buildOrder != 0) return buildOrder;
+              final versionOrder = _compareVersions(bv, av);
+              return versionOrder == 0 ? buildOrder : versionOrder;
             });
       for (final release in releases) {
         final candidate = parse(
@@ -85,15 +124,11 @@ class AppRelease {
     }
     final next = _version(tag), current = _version(installed);
     if (next == null || current == null) return null;
-    if (tag.contains('+') && next[3] <= build) return null;
-    current[3] = build;
-    var newer = false;
-    for (var index = 0; index < 4; index++) {
-      if (next[index] == current[index]) continue;
-      newer = next[index] > current[index];
-      break;
+    if (tag.contains('+')
+        ? next.build <= build
+        : _compareVersions(next, current) <= 0) {
+      return null;
     }
-    if (!newer && !tag.contains('+')) return null;
     final candidates = <Map>[];
     for (final item in (data['assets'] as List? ?? [])) {
       if (item is! Map || item['name'] is! String || item['size'] is! int) {
@@ -165,7 +200,9 @@ Future<Map<String, dynamic>?> fetchAppRelease() async {
       final response = await request.close();
       if (response.statusCode == 404) return null;
       if (response.statusCode != 200) {
-        throw FormatException('Release unavailable (HTTP ${response.statusCode})');
+        throw FormatException(
+          'Release unavailable (HTTP ${response.statusCode})',
+        );
       }
       final bytes = await readBoundedImage(response, limit: 2 * 1024 * 1024);
       return {'releases': jsonDecode(utf8.decode(bytes)) as List};
@@ -206,10 +243,14 @@ Future<File> downloadAppRelease(
           continue;
         }
         if (response.statusCode != 200) {
-          throw FormatException('Invalid APK download (HTTP ${response.statusCode})');
+          throw FormatException(
+            'Invalid APK download (HTTP ${response.statusCode})',
+          );
         }
         if (response.contentLength > maximumUpdateBytes) {
-          throw FormatException('APK Content-Length ${response.contentLength} exceeds $maximumUpdateBytes');
+          throw FormatException(
+            'APK Content-Length ${response.contentLength} exceeds $maximumUpdateBytes',
+          );
         }
         sink = temporary.openWrite();
         var received = 0;
@@ -226,7 +267,9 @@ Future<File> downloadAppRelease(
         await sink!.close();
         sink = null;
         if (received != release.size) {
-          throw FormatException('Incomplete APK: received $received of ${release.size} bytes');
+          throw FormatException(
+            'Incomplete APK: received $received of ${release.size} bytes',
+          );
         }
         if (release.digest != null &&
             (await sha256.bind(temporary.openRead()).first).toString() !=
@@ -305,23 +348,15 @@ class UpdateService extends ChangeNotifier
         (!prereleases && version.split('+').first.contains('-'))) {
       return null;
     }
-    current[3] = build;
     final newer = version.contains('+')
-        ? next[3] > build
-        : _newerVersion(next, current);
+        ? next.build > build
+        : AppRelease._compareVersions(next, current) > 0;
     unawaited(preferences.remove(_pendingNotificationKey));
     if (!newer || preferences.getString(_shownNotificationKey) == version) {
       return null;
     }
     unawaited(preferences.setString(_shownNotificationKey, version));
     return version;
-  }
-
-  static bool _newerVersion(List<int> next, List<int> current) {
-    for (var i = 0; i < next.length; i++) {
-      if (next[i] != current[i]) return next[i] > current[i];
-    }
-    return false;
   }
 
   String get installedVersion => _environment?['version'] as String? ?? '';
@@ -347,7 +382,11 @@ class UpdateService extends ChangeNotifier
     try {
       _environment = await environment();
     } catch (error, stack) {
-      DiagnosticsStore.instance.recordException('updateInitialize', error, stack);
+      DiagnosticsStore.instance.recordException(
+        'updateInitialize',
+        error,
+        stack,
+      );
       failed = true;
     }
     if (isDisposed) return;
@@ -526,7 +565,11 @@ class UpdateService extends ChangeNotifier
       failed =
           installStatus == null || rejected || installStatus == 'unavailable';
     } catch (error, stack) {
-      DiagnosticsStore.instance.recordException('updateDownloadInstall', error, stack);
+      DiagnosticsStore.instance.recordException(
+        'updateDownloadInstall',
+        error,
+        stack,
+      );
       if (current()) failed = true;
     } finally {
       progress = null;

@@ -24,6 +24,37 @@ Future<void> initialized(UpdateService service) async {
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  test(
+    'orders buildless prereleases and stable releases of the same version',
+    () {
+      final data = {
+        'releases': [
+          release(tag: 'v1.8.0-test.2'),
+          release(tag: 'v1.8.0-test.10'),
+          release(tag: 'v1.8.0-test.1'),
+        ],
+      };
+      AppRelease? select(
+        Map<String, dynamic> releases,
+        String installed, {
+        bool enabled = true,
+      }) => AppRelease.parse(releases, installed, 253, [
+        'armeabi-v7a',
+      ], includePrereleases: enabled);
+      expect(
+        select(release(tag: 'v1.8.0-test.2'), '1.8.0-test.1')?.version,
+        'v1.8.0-test.2',
+      );
+      expect(select(data, '1.8.0-test.1')?.version, 'v1.8.0-test.10');
+      expect(select(data, '1.8.0-test.10'), isNull);
+      expect(select(data, '1.8.0'), isNull);
+      expect(select(data, '1.8.0-test.1', enabled: false), isNull);
+      expect(
+        select(release(tag: 'v1.8.0'), '1.8.0-test.10')?.version,
+        'v1.8.0',
+      );
+    },
+  );
   for (final status in [
     'invalid',
     'invalid_package',
@@ -209,16 +240,16 @@ void main() {
     for (final abi in ['arm64-v8a', 'armeabi-v7a']) {
       expect(AppRelease.parse(data, '1.1.0', 75, [abi])!.uri.query, abi);
     }
-    expect(
-      AppRelease.parse(data, '1.1.0', 75, ['x86_64']),
-      isNull,
-    );
+    expect(AppRelease.parse(data, '1.1.0', 75, ['x86_64']), isNull);
     (data['assets'] as List).add({
       ...asset,
       'name': 'CuteLauncher-1.1.1-x86_64-release.apk',
       'browser_download_url': '${asset['browser_download_url']}?x86_64',
     });
-    expect(AppRelease.parse(data, '1.1.0', 75, ['x86_64'])!.uri.query, 'x86_64');
+    expect(
+      AppRelease.parse(data, '1.1.0', 75, ['x86_64'])!.uri.query,
+      'x86_64',
+    );
   });
   test('New version tags win over older tags with a build suffix', () {
     final data = {
@@ -481,10 +512,8 @@ void main() {
       'arm',
     );
     expect(
-      AppRelease.parse(data, '1.0.0', 14, [
-        'x86_64',
-        ], includePrereleases: true),
-        isNull,
+      AppRelease.parse(data, '1.0.0', 14, ['x86_64'], includePrereleases: true),
+      isNull,
     );
     expect(AppRelease.parse(data, '1.0.0', 15, ['arm64-v8a']), isNull);
     expect(

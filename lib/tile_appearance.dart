@@ -89,6 +89,7 @@ class TileAppearance {
   double get sectionPosition => (number('sectionPosition') ?? 0.5).clamp(0, 0.70).toDouble();
   double get sectionGap => number('sectionGap') ?? 24;
   double get sectionOpacity => number('sectionOpacity') ?? 1;
+  bool get sectionFadeInactiveFeeds => values['sectionFadeInactiveFeeds'] == true;
   double get sectionRadius => number('sectionRadius') ?? 0;
   BoxDecoration sectionDecoration({Color? fallbackColor}) {
     final background = color('sectionBackground') ?? fallbackColor;
@@ -412,6 +413,7 @@ class TileAppearance {
       }
       if ([
             'sectionTitles', 'sectionTitleAligned', 'sectionIcons', 'hideAbove',
+            'sectionFadeInactiveFeeds',
             'focusPulse', 'focusTransition', 'animateReordering',
             'focusShadow',
             'blurTiles', 'contentAppTileStyle', 'contentUseSourceLabels',

@@ -10,6 +10,23 @@ class AppLocalizationsTr extends AppLocalizations {
   AppLocalizationsTr([String locale = 'tr']) : super(locale);
 
   @override
+  String get videoFolderSource => 'Klasördeki videolar';
+
+  @override
+  String get videoFolderPlayback => 'Oynatma';
+
+  @override
+  String get videoFolderNext => 'Sonraki video';
+
+  @override
+  String get videoFolderError =>
+      'Oynatılabilir video yok. Klasörü, dosya erişimini ve video biçimlerini kontrol edin.';
+
+  @override
+  String get videoFolderHelp =>
+      'Videolar sessiz ve döngü halinde oynatılır. Tarihe göre sıralamada en son değiştirilen dosya önce gelir. Alt klasörler dahil edilmez. Biçimler: MP4/M4V, WebM ve MKV. Sınırlar: boyut biliniyorsa 256 MiB ve 3840×2160.';
+
+  @override
   String get scrollContentLabels => 'Satırlardaki uzun etiketleri kaydır';
 
   @override
@@ -1577,9 +1594,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get tileVerticalGap => 'Dikey aralık';
 
   @override
-  String get tileOpacity => 'Arka plan opaklığı';
-
-  @override
   String get tileShadow => 'Gölge';
 
   @override
@@ -1654,9 +1668,6 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get blurPerformanceHint =>
       'Bulanıklaştırma düzgünlüğü azaltabilir. Bellek tasarrufu açıkken devre dışı bırakılır.';
-
-  @override
-  String get panelOpacity => 'Panel opaklığı';
 
   @override
   String get tileBlur => 'Fayansların arkasını bulanıklaştırın';
@@ -2279,9 +2290,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get topPanelObjects => 'Nesneler';
-
-  @override
-  String get panelTransparency => 'Panel şeffaflığı';
 
   @override
   String get panelTextBackground => 'Metin ve düğme arka planı';
@@ -3442,7 +3450,11 @@ class AppLocalizationsTr extends AppLocalizations {
   String get homeSectionIcons => 'Bölüm simgeleri';
 
   @override
-  String get homeInactiveOpacity => 'Etkin olmayan bölüm opaklığı';
+  String get homeInactiveTransparency => 'Etkin olmayan bölümlerin şeffaflığı';
+
+  @override
+  String get homeFadeInactiveFeeds =>
+      'Şeffaflığı etkin olmayan akışlara da uygula';
 
   @override
   String get homeResetSection => 'Devralınan bölümün görünümünü geri yükleme';
@@ -3503,7 +3515,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get homeStyleOpaque =>
-      'Bulanıklığı görmek için döşeme arka planının opaklığını azaltın.';
+      'Bulanıklığı görmek için döşeme arka planının şeffaflığını artırın.';
 
   @override
   String get homeStyleOverridden =>
@@ -3519,7 +3531,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get homeStyleTransparent =>
-      'Arka plan rengi sıfır opaklıkta görünmez. Döşeme arka planının opaklığını artırın.';
+      'Şeffaflık %100 olduğunda döşemenin arka plan rengi görünmez. Rengi görmek için arka planın şeffaflığını azaltın.';
 
   @override
   String get homeStyleSingleColumn =>

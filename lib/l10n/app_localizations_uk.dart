@@ -10,6 +10,23 @@ class AppLocalizationsUk extends AppLocalizations {
   AppLocalizationsUk([String locale = 'uk']) : super(locale);
 
   @override
+  String get videoFolderSource => 'Відео з папки';
+
+  @override
+  String get videoFolderPlayback => 'Відтворення';
+
+  @override
+  String get videoFolderNext => 'Наступний ролик';
+
+  @override
+  String get videoFolderError =>
+      'Немає доступних для відтворення роликів. Перевірте папку, доступ до файлів і формати відео.';
+
+  @override
+  String get videoFolderHelp =>
+      'Ролики відтворюються по колу без звуку. За датою першими йдуть нещодавно змінені файли. Вкладені папки не використовуються. Формати: MP4/M4V, WebM і MKV. Обмеження: 256 МіБ, якщо розмір відомий, і 3840×2160.';
+
+  @override
   String get scrollContentLabels => 'Прокручування довгих підписів у стрічках';
 
   @override
@@ -1585,9 +1602,6 @@ class AppLocalizationsUk extends AppLocalizations {
   String get tileVerticalGap => 'Вертикальний інтервал';
 
   @override
-  String get tileOpacity => 'Непрозорість фону';
-
-  @override
   String get tileShadow => 'Тінь';
 
   @override
@@ -1662,9 +1676,6 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String get blurPerformanceHint =>
       'Розмиття може зменшити гладкість. Він вимкнений, коли ввімкнено збереження пам’яті.';
-
-  @override
-  String get panelOpacity => 'Непрозорість панелі';
 
   @override
   String get tileBlur => 'Розмиття за плитками';
@@ -2287,9 +2298,6 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get topPanelObjects => 'Об\'єкти';
-
-  @override
-  String get panelTransparency => 'Прозорість панелі';
 
   @override
   String get panelTextBackground => 'Текст і фон кнопки';
@@ -3451,7 +3459,11 @@ class AppLocalizationsUk extends AppLocalizations {
   String get homeSectionIcons => 'Значки розділів';
 
   @override
-  String get homeInactiveOpacity => 'Непрозорість неактивного розділу';
+  String get homeInactiveTransparency => 'Прозорість неактивних розділів';
+
+  @override
+  String get homeFadeInactiveFeeds =>
+      'Застосовувати прозорість і до неактивних стрічок';
 
   @override
   String get homeResetSection => 'Відновити вигляд успадкованого розділу';
@@ -3510,7 +3522,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get homeStyleOpaque =>
-      'Зменшіть непрозорість фону плитки, щоб побачити розмиття.';
+      'Збільште прозорість фону плитки, щоб побачити розмиття.';
 
   @override
   String get homeStyleOverridden =>
@@ -3526,7 +3538,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get homeStyleTransparent =>
-      'Колір фону невидимий за нульової прозорості. Збільште непрозорість фону плитки.';
+      'За прозорості 100% колір фону плитки не видно. Зменште прозорість фону, щоб побачити колір.';
 
   @override
   String get homeStyleSingleColumn =>

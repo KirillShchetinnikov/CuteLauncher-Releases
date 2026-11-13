@@ -10,6 +10,23 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get videoFolderSource => 'Videos from folder';
+
+  @override
+  String get videoFolderPlayback => 'Playback';
+
+  @override
+  String get videoFolderNext => 'Next video';
+
+  @override
+  String get videoFolderError =>
+      'No playable videos. Check the folder, file access and video formats.';
+
+  @override
+  String get videoFolderHelp =>
+      'Videos play silently in a loop. Date order starts with the most recently modified file. Subfolders are excluded. Formats: MP4/M4V, WebM and MKV. The size limit is 256 MiB when known, and the resolution limit is 3840×2160.';
+
+  @override
   String get scrollContentLabels => 'Scroll long labels in content rows';
 
   @override
@@ -1575,9 +1592,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tileVerticalGap => 'Vertical spacing';
 
   @override
-  String get tileOpacity => 'Background opacity';
-
-  @override
   String get tileShadow => 'Shadow';
 
   @override
@@ -1652,9 +1666,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get blurPerformanceHint =>
       'Blur may reduce smoothness. It is disabled while memory saving is on.';
-
-  @override
-  String get panelOpacity => 'Panel opacity';
 
   @override
   String get tileBlur => 'Blur behind tiles';
@@ -2268,9 +2279,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get topPanelObjects => 'Objects';
-
-  @override
-  String get panelTransparency => 'Panel transparency';
 
   @override
   String get panelTextBackground => 'Text and button background';
@@ -3425,7 +3433,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeSectionIcons => 'Section icons';
 
   @override
-  String get homeInactiveOpacity => 'Inactive section opacity';
+  String get homeInactiveTransparency => 'Inactive section transparency';
+
+  @override
+  String get homeFadeInactiveFeeds => 'Also fade inactive feeds';
 
   @override
   String get homeResetSection => 'Restore inherited section appearance';
@@ -3484,7 +3495,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeStyleOpaque =>
-      'Reduce the tile background opacity to see blur.';
+      'Increase the tile background transparency to see blur.';
 
   @override
   String get homeStyleOverridden =>
@@ -3500,7 +3511,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeStyleTransparent =>
-      'The background color is invisible at zero opacity. Increase the tile background opacity.';
+      'The tile background color is invisible at 100% transparency. Lower the background transparency to see the color.';
 
   @override
   String get homeStyleSingleColumn =>

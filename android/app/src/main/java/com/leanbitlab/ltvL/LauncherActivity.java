@@ -383,6 +383,7 @@ public class LauncherActivity extends FlutterActivity {
                 case "requestWallpaperStorage" -> wallpaperFolder.local.request(result);
                 case "browseWallpaperFolders" -> wallpaperFolder.local.browse(call.argument("path"), result);
                 case "listWallpaperFolder" -> wallpaperFolder.list(call.argument("uri"), Boolean.TRUE.equals(call.argument("recursive")), result);
+                case "listWallpaperVideos" -> wallpaperFolder.listVideos(call.argument("uri"), result);
                 case "readWallpaperFolderImage" -> wallpaperFolder.read(call.argument("uri"), result);
                 case "releaseWallpaperFolder" -> wallpaperFolder.release(call.argument("uri"), result);
                 case "pickBackupFolder" -> backupFolder.pick(result);

@@ -7,6 +7,7 @@ import 'screensaver_clock_style_page.dart';
 import '../../providers/wallpaper_service.dart';
 import 'settings_page_layout.dart';
 import '../../providers/slideshow_service.dart';
+import '../../providers/video_folder_service.dart';
 import '../../providers/settings_service.dart';
 
 import 'package:flutter/material.dart';
@@ -117,9 +118,11 @@ class AppearanceSettingsPage extends StatelessWidget {
                 final online = context.read<OnlineWallpaperService>();
                 final wallpaper = context.read<WallpaperService?>();
                 final slideshow = context.read<SlideshowService?>();
+                final videos = context.read<VideoFolderService?>();
                 await service.reset();
                 await settings.resetAppearanceSettings();
                 await slideshow?.reset();
+                await videos?.reset();
                 await online.configure(const OnlineWallpaperConfiguration());
                 await wallpaper?.reset();
               }

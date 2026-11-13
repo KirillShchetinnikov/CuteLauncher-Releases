@@ -8,11 +8,17 @@ import 'package:video_player/video_player.dart';
 import '../l10n/app_localizations.dart';
 import '../background_video_diagnostics.dart';
 import '../background_video_recovery.dart';
+import '../local_background_media.dart';
+import '../providers/video_folder_service.dart';
 import 'action_notice.dart';
 
 /// One silent decoder, released with the background and paused outside Home.
 class VideoWallpaperBackground extends StatefulWidget {
-  final File file;
+  final File? file;
+  final VideoFolderClip? clip;
+  final VoidCallback? onCompleted;
+  final ValueChanged<bool>? onFailure;
+  final bool queueFailed;
   final bool enabled;
   final String mode;
   final bool memorySaver;
@@ -24,7 +30,22 @@ class VideoWallpaperBackground extends StatefulWidget {
     required this.mode,
     required this.memorySaver,
     this.background = const SizedBox.shrink(),
-  });
+  }) : clip = null,
+       onCompleted = null,
+       onFailure = null,
+       queueFailed = false;
+
+  const VideoWallpaperBackground.folder({
+    super.key,
+    required this.clip,
+    required this.enabled,
+    required this.mode,
+    required this.memorySaver,
+    required this.background,
+    required this.onCompleted,
+    required this.onFailure,
+    this.queueFailed = false,
+  }) : file = null;
 
   @override
   State<VideoWallpaperBackground> createState() =>
@@ -33,15 +54,17 @@ class VideoWallpaperBackground extends StatefulWidget {
 
 class _VideoWallpaperBackgroundState extends State<VideoWallpaperBackground>
     with WidgetsBindingObserver {
-  late VideoPlayerController _controller;
+  VideoPlayerController? _controller;
   bool _ready = false;
   bool _failed = false;
   bool _resumed = true;
   Timer? _initializationTimer;
-  late BackgroundVideoDiagnostics _diagnostics;
+  BackgroundVideoDiagnostics? _diagnostics;
   bool _recovering = false;
   bool _retried = false;
-  final _disposals = <VideoPlayerController, Future<bool>>{};
+  Future<bool>? _disposal;
+  bool _switching = false;
+  bool _completed = false;
   String _stage = 'videoInitialize';
 
   @override
@@ -51,24 +74,30 @@ class _VideoWallpaperBackgroundState extends State<VideoWallpaperBackground>
     _resumed =
         WidgetsBinding.instance.lifecycleState == null ||
         WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed;
-    _startPlayer();
+    if (widget.file != null || (widget.enabled && _resumed)) _startPlayer();
   }
 
   void _startPlayer() {
-    _diagnostics = BackgroundVideoDiagnostics('backgroundVideoPlayback');
-    _stage = 'videoInitialize';
-    _controller = VideoPlayerController.file(
-      widget.file,
-      videoPlayerOptions: VideoPlayerOptions(
-        mixWithOthers: true,
-        // Lifecycle is owned here so plugin auto-resume cannot restart a hidden Home.
-        allowBackgroundPlayback: true,
-        preventsDisplaySleepDuringVideoPlayback: false,
-      ),
+    final uri = widget.clip?.uri;
+    final file =
+        widget.file ?? (uri?.scheme == 'file' ? File.fromUri(uri!) : null);
+    if (uri == null && file == null) return;
+    final diagnostics = _diagnostics = BackgroundVideoDiagnostics(
+      'backgroundVideoPlayback',
     );
-    final controller = _controller;
+    _stage = 'videoInitialize';
+    final options = VideoPlayerOptions(
+      mixWithOthers: true,
+      // Lifecycle is owned here so plugin auto-resume cannot restart a hidden Home.
+      allowBackgroundPlayback: true,
+      preventsDisplaySleepDuringVideoPlayback: false,
+    );
+    final controller = _controller = file == null
+        ? VideoPlayerController.contentUri(uri!, videoPlayerOptions: options)
+        : VideoPlayerController.file(file, videoPlayerOptions: options);
+    _disposal = null;
     controller.addListener(_onValue);
-    unawaited(_diagnostics.inspect(widget.file));
+    if (file != null) unawaited(diagnostics.inspect(file));
     _initializationTimer = Timer(
       const Duration(seconds: 20),
       () => _fail(
@@ -81,22 +110,30 @@ class _VideoWallpaperBackgroundState extends State<VideoWallpaperBackground>
   }
 
   bool _active(VideoPlayerController controller) =>
-      mounted && !_failed && !_recovering && identical(controller, _controller);
+      mounted &&
+      !_failed &&
+      !_switching &&
+      !_recovering &&
+      identical(controller, _controller);
 
   Future<void> _initialize(VideoPlayerController controller) async {
     try {
       await controller.initialize();
       if (!_active(controller)) return;
       _initializationTimer?.cancel();
+      if (widget.clip != null) {
+        _stage = 'videoMetadata';
+        validateBackgroundVideoMetadata(controller.value);
+      }
       _stage = 'videoConfigure';
       await controller.setVolume(0);
       if (!_active(controller)) return;
-      await controller.setLooping(true);
+      await controller.setLooping(widget.onCompleted == null);
       if (!_active(controller)) return;
       setState(() => _ready = true);
       await _syncPlayback();
       if (_retried && _active(controller)) {
-        recordBackgroundVideoRecovery(_diagnostics.attempt, 'succeeded');
+        recordBackgroundVideoRecovery(_diagnostics!.attempt, 'succeeded');
       }
     } catch (error, stack) {
       if (_active(controller)) {
@@ -107,20 +144,28 @@ class _VideoWallpaperBackgroundState extends State<VideoWallpaperBackground>
   }
 
   void _onValue() {
-    if ((_ready || _stage != 'videoInitialize') && _controller.value.hasError) {
+    final controller = _controller;
+    if (controller == null || !_active(controller)) return;
+    if ((_ready || _stage != 'videoInitialize') && controller.value.hasError) {
       _fail(
         StateError(
-          _controller.value.errorDescription ?? 'Video playback failed',
+          controller.value.errorDescription ?? 'Video playback failed',
         ),
         StackTrace.current,
-        _controller,
+        controller,
       );
+    } else if (_ready &&
+        !_completed &&
+        controller.value.isCompleted &&
+        widget.onCompleted != null) {
+      _completed = true;
+      widget.onCompleted!();
     }
   }
 
   void _fail(Object error, StackTrace stack, VideoPlayerController controller) {
     if (!_active(controller)) return;
-    _diagnostics.failure(
+    _diagnostics!.failure(
       _stage,
       error,
       stack,
@@ -139,23 +184,29 @@ class _VideoWallpaperBackgroundState extends State<VideoWallpaperBackground>
   }
 
   Future<void> _recover(VideoPlayerController controller, bool mayRetry) async {
+    final diagnostics = _diagnostics!;
     final released = await _disposePlayer(controller);
-    if (!mounted) return;
+    if (!mounted || _switching || !identical(_controller, controller)) return;
     if (mayRetry &&
         released &&
-        await enableBackgroundVideoRecovery(_diagnostics.attempt)) {
-      if (!mounted) return;
+        await enableBackgroundVideoRecovery(diagnostics.attempt)) {
+      if (!mounted || _switching || !identical(_controller, controller)) return;
       _retried = true;
       _recovering = false;
       _startPlayer();
       return;
     }
-    if (!mounted) return;
-    if (_retried) recordBackgroundVideoRecovery(_diagnostics.attempt, 'failed');
+    if (!mounted || _switching || !identical(_controller, controller)) return;
+    if (_retried) recordBackgroundVideoRecovery(diagnostics.attempt, 'failed');
     setState(() {
       _failed = true;
       _recovering = false;
     });
+    final onFailure = widget.onFailure;
+    if (onFailure != null) {
+      onFailure(released);
+      return;
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         showActionNotice(
@@ -168,8 +219,15 @@ class _VideoWallpaperBackgroundState extends State<VideoWallpaperBackground>
   }
 
   Future<void> _syncPlayback() async {
+    if (_switching) return;
+    if (_controller == null && !_failed && widget.enabled && _resumed) {
+      _startPlayer();
+      return;
+    }
     final controller = _controller;
-    if (!_ready || !_active(controller)) return;
+    if (controller == null || !_ready || _completed || !_active(controller)) {
+      return;
+    }
     try {
       if (widget.enabled && _resumed) {
         _stage = 'videoPlay';
@@ -186,7 +244,48 @@ class _VideoWallpaperBackgroundState extends State<VideoWallpaperBackground>
   @override
   void didUpdateWidget(covariant VideoWallpaperBackground oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.enabled != widget.enabled) unawaited(_syncPlayback());
+    if (!oldWidget.queueFailed && widget.queueFailed) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && widget.queueFailed) {
+          showActionNotice(
+            context,
+            AppLocalizations.of(context)!.videoFolderError,
+            error: true,
+          );
+        }
+      });
+    }
+    if (!identical(oldWidget.clip, widget.clip)) {
+      unawaited(_switchClip());
+    } else if (oldWidget.enabled != widget.enabled) {
+      unawaited(_syncPlayback());
+    }
+  }
+
+  Future<void> _switchClip() async {
+    if (_switching) return;
+    _switching = true;
+    _ready = false;
+    _initializationTimer?.cancel();
+    final controller = _controller;
+    if (controller != null) {
+      controller.removeListener(_onValue);
+      final released = await _disposePlayer(controller);
+      if (!mounted) return;
+      if (!released) {
+        _switching = false;
+        _failed = true;
+        widget.onFailure?.call(false);
+        return;
+      }
+    }
+    _controller = null;
+    _switching = false;
+    _failed = false;
+    _recovering = false;
+    _retried = false;
+    _completed = false;
+    if (widget.enabled && _resumed) _startPlayer();
   }
 
   @override
@@ -199,33 +298,38 @@ class _VideoWallpaperBackgroundState extends State<VideoWallpaperBackground>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _initializationTimer?.cancel();
-    _controller.removeListener(_onValue);
-    unawaited(_disposePlayer(_controller));
+    final controller = _controller;
+    if (controller != null) {
+      controller.removeListener(_onValue);
+      unawaited(_disposePlayer(controller));
+    }
     super.dispose();
   }
 
   Future<bool> _disposePlayer(VideoPlayerController controller) =>
-      _disposals.putIfAbsent(controller, () async {
+      _disposal ??= () async {
+        final diagnostics = _diagnostics!;
         try {
           await controller.dispose().timeout(const Duration(seconds: 3));
           return true;
         } catch (error, stack) {
-          _diagnostics.failure('videoDispose', error, stack, controller.value);
+          diagnostics.failure('videoDispose', error, stack, controller.value);
           return false;
         }
-      });
+      }();
 
   @override
   Widget build(BuildContext context) {
-    if (!_ready || _failed) return widget.background;
+    final controller = _controller;
+    if (controller == null || !_ready || _failed) return widget.background;
     Widget video(BoxFit fit) => SizedBox.expand(
       child: FittedBox(
         fit: fit,
         clipBehavior: Clip.hardEdge,
         child: SizedBox(
-          width: _controller.value.size.width,
-          height: _controller.value.size.height,
-          child: VideoPlayer(_controller),
+          width: controller.value.size.width,
+          height: controller.value.size.height,
+          child: VideoPlayer(controller),
         ),
       ),
     );
@@ -236,7 +340,7 @@ class _VideoWallpaperBackgroundState extends State<VideoWallpaperBackground>
           final coversViewport =
               viewport.isFinite &&
               viewport.height > 0 &&
-              (viewport.aspectRatio - _controller.value.aspectRatio).abs() <
+              (viewport.aspectRatio - controller.value.aspectRatio).abs() <
                   1e-9;
           return Stack(
             fit: StackFit.expand,

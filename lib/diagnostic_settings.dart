@@ -52,6 +52,7 @@ class DiagnosticSettings {
     'scheduled',
     'online',
     'slideshow',
+    'videoFolder',
     'app',
     'landscape',
     'cover',

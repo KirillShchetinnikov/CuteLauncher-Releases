@@ -262,13 +262,17 @@ class _AppearancePageState extends State<AppearancePage> {
                   ],
                   color: true,
                 ),
-                _choice(context, service, l.tileOpacity, 'opacity', [
-                  0,
-                  0.25,
-                  0.5,
-                  0.75,
-                  1,
-                ], percentage: true),
+                _scoped(
+                  'opacity',
+                  (enabled) => SettingsValueStepper(
+                    title: l.styleTransparency,
+                    value: appearance.opacity,
+                    options: const [1, 0.75, 0.5, 0.25, 0],
+                    label: (v) => '${((1 - (v as num)) * 100).round()}%',
+                    enabled: enabled,
+                    onChanged: (v) => _set(service, 'opacity', v),
+                  ),
+                ),
                 _choice(context, service, l.tileShadow, 'shadow', [
                   0,
                   2,
@@ -437,7 +441,7 @@ class _AppearancePageState extends State<AppearancePage> {
                 ),
                 SettingsPercentageSlider(
                   key: const Key('panel-transparency'),
-                  title: l.panelTransparency,
+                  title: l.styleTransparency,
                   value: 1 - (appearance.number('panelOpacity') ?? 0),
                   onChanged: (v) => _set(service, 'panelOpacity', 1 - v),
                 ),
@@ -624,7 +628,6 @@ class _AppearancePageState extends State<AppearancePage> {
         _appearance(service).values[key] ??
         {
           'shadow': 0,
-          'opacity': 1,
           'horizontalGap': 16,
           'verticalGap': 16,
           'labelSize': 12,

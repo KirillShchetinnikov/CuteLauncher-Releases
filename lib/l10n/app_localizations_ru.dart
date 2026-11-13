@@ -10,6 +10,23 @@ class AppLocalizationsRu extends AppLocalizations {
   AppLocalizationsRu([String locale = 'ru']) : super(locale);
 
   @override
+  String get videoFolderSource => 'Видео из папки';
+
+  @override
+  String get videoFolderPlayback => 'Воспроизведение';
+
+  @override
+  String get videoFolderNext => 'Следующий ролик';
+
+  @override
+  String get videoFolderError =>
+      'Нет доступных для воспроизведения роликов. Проверьте папку, доступ к файлам и форматы видео.';
+
+  @override
+  String get videoFolderHelp =>
+      'Ролики воспроизводятся по кругу без звука. При сортировке по дате первыми идут недавно изменённые файлы. Подпапки не используются. Форматы: MP4/M4V, WebM и MKV. Лимиты: 256 МиБ, если размер известен, и 3840×2160.';
+
+  @override
   String get scrollContentLabels => 'Прокрутка длинных подписей в лентах';
 
   @override
@@ -1583,9 +1600,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get tileVerticalGap => 'Интервал по вертикали';
 
   @override
-  String get tileOpacity => 'Непрозрачность фона';
-
-  @override
   String get tileShadow => 'Тень';
 
   @override
@@ -1660,9 +1674,6 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get blurPerformanceHint =>
       'Размытие может снизить плавность. В режиме экономии памяти оно отключается.';
-
-  @override
-  String get panelOpacity => 'Непрозрачность панели';
 
   @override
   String get tileBlur => 'Размытие за плитками';
@@ -2283,9 +2294,6 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get topPanelObjects => 'Объекты';
-
-  @override
-  String get panelTransparency => 'Прозрачность панели';
 
   @override
   String get panelTextBackground => 'Фон текста и кнопок';
@@ -3441,7 +3449,11 @@ class AppLocalizationsRu extends AppLocalizations {
   String get homeSectionIcons => 'Значки разделов';
 
   @override
-  String get homeInactiveOpacity => 'Непрозрачность неактивных разделов';
+  String get homeInactiveTransparency => 'Прозрачность неактивных разделов';
+
+  @override
+  String get homeFadeInactiveFeeds =>
+      'Применять прозрачность и к неактивным лентам';
 
   @override
   String get homeResetSection => 'Вернуть общее оформление раздела';
@@ -3500,7 +3512,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get homeStyleOpaque =>
-      'Уменьшите непрозрачность фона плитки, чтобы было видно размытие.';
+      'Увеличьте прозрачность фона плитки, чтобы увидеть размытие.';
 
   @override
   String get homeStyleOverridden =>
@@ -3516,7 +3528,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get homeStyleTransparent =>
-      'При полностью прозрачном фоне его цвет не виден. Увеличьте непрозрачность фона плитки.';
+      'При прозрачности 100% цвет фона плитки не виден. Уменьшите прозрачность фона, чтобы увидеть цвет.';
 
   @override
   String get homeStyleSingleColumn =>

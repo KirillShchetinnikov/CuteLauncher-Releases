@@ -10,6 +10,23 @@ class AppLocalizationsDe extends AppLocalizations {
   AppLocalizationsDe([String locale = 'de']) : super(locale);
 
   @override
+  String get videoFolderSource => 'Videos aus Ordner';
+
+  @override
+  String get videoFolderPlayback => 'Wiedergabe';
+
+  @override
+  String get videoFolderNext => 'Nächstes Video';
+
+  @override
+  String get videoFolderError =>
+      'Keine abspielbaren Videos. Prüfen Sie Ordner, Dateizugriff und Videoformate.';
+
+  @override
+  String get videoFolderHelp =>
+      'Videos werden ohne Ton in einer Schleife abgespielt. Nach Datum beginnt die Wiedergabe mit der zuletzt geänderten Datei. Unterordner bleiben unberücksichtigt. Formate: MP4/M4V, WebM und MKV. Grenzen: 256 MiB bei bekannter Größe und 3840×2160.';
+
+  @override
   String get scrollContentLabels => 'Lange Beschriftungen in Reihen scrollen';
 
   @override
@@ -1588,9 +1605,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get tileVerticalGap => 'Vertikaler Abstand';
 
   @override
-  String get tileOpacity => 'Hintergrundopazität';
-
-  @override
   String get tileShadow => 'Schatten';
 
   @override
@@ -1665,9 +1679,6 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get blurPerformanceHint =>
       'Unschärfe kann die Glätte beeinträchtigen. Es ist deaktiviert, während die Speicherspeicherung aktiviert ist.';
-
-  @override
-  String get panelOpacity => 'Deckkraft des Panels';
 
   @override
   String get tileBlur => 'Unschärfe hinter Fliesen';
@@ -2297,9 +2308,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get topPanelObjects => 'Objekte';
-
-  @override
-  String get panelTransparency => 'Panel-Transparenz';
 
   @override
   String get panelTextBackground => 'Text- und Schaltflächenhintergrund';
@@ -3477,7 +3485,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String get homeSectionIcons => 'Abschnittssymbole';
 
   @override
-  String get homeInactiveOpacity => 'Deckkraft inaktiver Abschnitte';
+  String get homeInactiveTransparency => 'Transparenz inaktiver Abschnitte';
+
+  @override
+  String get homeFadeInactiveFeeds =>
+      'Transparenz auch auf inaktive Feeds anwenden';
 
   @override
   String get homeResetSection =>
@@ -3540,7 +3552,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get homeStyleOpaque =>
-      'Reduzieren Sie die Deckkraft des Kachelhintergrunds, um Unschärfe zu erkennen.';
+      'Erhöhen Sie die Transparenz des Kachelhintergrunds, um die Unschärfe sichtbar zu machen.';
 
   @override
   String get homeStyleOverridden =>
@@ -3556,7 +3568,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get homeStyleTransparent =>
-      'Bei einer Deckkraft von Null ist die Hintergrundfarbe unsichtbar. Erhöhen Sie die Deckkraft des Kachelhintergrunds.';
+      'Bei 100 % Transparenz ist die Hintergrundfarbe der Kachel unsichtbar. Verringern Sie die Hintergrundtransparenz.';
 
   @override
   String get homeStyleSingleColumn =>

@@ -57,6 +57,7 @@ import 'package:flauncher/providers/online_wallpaper_service.dart';
 import 'package:flauncher/providers/backup_service.dart';
 import 'package:flutter/material.dart';
 import 'providers/slideshow_service.dart';
+import 'providers/video_folder_service.dart';
 import 'providers/now_playing_service.dart';
 import 'providers/background_startup_service.dart';
 import 'package:flutter/foundation.dart';
@@ -265,6 +266,8 @@ Future<void> _runLauncher({bool remotePanel = false, bool recentApps = false}) a
         ChangeNotifierProvider(create: (_) => WeatherService(fLauncherChannel, preferences: sharedPreferences, work: work)),
         ChangeNotifierProvider(create: (_) => OnlineWallpaperService(sharedPreferences, work: work)),
         ChangeNotifierProvider(create: (context) => SlideshowService(sharedPreferences, context.read<SettingsService>())),
+        ChangeNotifierProvider(create: (context) => VideoFolderService(
+            sharedPreferences, context.read<SettingsService>(), context.read<LauncherState>())),
         ChangeNotifierProvider(create: (context) => BackupAutomationService(
           sharedPreferences, context.read<BackupService>(), context.read<SettingsService>(),
           context.read<AutomaticBackupService>(), context.read<CloudBackupService>(), context.read<DriveBackupService>(),
@@ -272,7 +275,7 @@ Future<void> _runLauncher({bool remotePanel = false, bool recentApps = false}) a
           sources: [context.read<TvInputsService>(), context.read<SettingsService>(), context.read<AppearanceService>(), context.read<AppsService>(),
               context.read<RemotePanelService>(), context.read<VpnService>(), context.read<BackgroundStartupService>(),
             context.read<WallpaperService>(), context.read<BrightnessService>(), context.read<NightModeService>(),
-            context.read<WeatherService>(), context.read<SlideshowService>(), context.read<OnlineWallpaperService>(),
+            context.read<WeatherService>(), context.read<SlideshowService>(), context.read<VideoFolderService>(), context.read<OnlineWallpaperService>(),
             context.read<NotificationsService>(), context.read<WatchNextService>(), context.read<UpdateService>()],
           databaseSources: [context.read<AppsService>()],
           resourceSources: [context.read<WallpaperService>(), context.read<AppsService>()],

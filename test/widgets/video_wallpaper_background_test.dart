@@ -7,6 +7,7 @@ import 'package:flauncher/diagnostics_store.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:video_player_platform_interface/video_player_platform_interface.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
+import 'package:flauncher/providers/video_folder_service.dart';
 import 'package:flauncher/widgets/video_wallpaper_background.dart';
 
 import '../fake_background_video.dart';
@@ -83,6 +84,55 @@ void main() {
         () async => Future<void>.delayed(const Duration(milliseconds: 30)),
       );
       expect(fake.calls, contains('dispose'));
+    },
+  );
+
+  testWidgets(
+    'folder completion is emitted once and disposes before replacing',
+    (tester) async {
+      final clip = VideoFolderClip.fromMap({
+        'uri': Uri.file(File('test.mp4').absolute.path).toString(),
+        'name': 'test.mp4',
+        'modified': 1,
+        'size': 512,
+      });
+      var completions = 0;
+      Widget folder(VideoFolderClip selected) => MaterialApp(
+        home: VideoWallpaperBackground.folder(
+          clip: selected,
+          enabled: true,
+          mode: 'cover',
+          memorySaver: false,
+          background: const SizedBox(),
+          onCompleted: () => completions++,
+          onFailure: (_) => fail('Expected playable video'),
+        ),
+      );
+      await tester.pumpWidget(folder(clip));
+      await settleVideo(tester);
+      expect(fake.calls, contains('loop:false'));
+      fake.streams[0]!.add(VideoEvent(eventType: VideoEventType.completed));
+      fake.streams[0]!.add(VideoEvent(eventType: VideoEventType.completed));
+      await settleVideo(tester);
+      expect(completions, 1);
+      await tester.pumpWidget(
+        folder(
+          VideoFolderClip.fromMap({
+            'uri': clip.uri.toString(),
+            'name': clip.name,
+            'modified': 1,
+            'size': 512,
+          }),
+        ),
+      );
+      await settleVideo(tester);
+      expect(
+        fake.calls.indexOf('dispose'),
+        lessThan(fake.calls.lastIndexOf('play')),
+      );
+      expect(fake.streams, hasLength(2));
+      await tester.pumpWidget(const SizedBox());
+      await settleVideo(tester);
     },
   );
 

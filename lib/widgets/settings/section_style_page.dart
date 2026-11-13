@@ -57,7 +57,7 @@ class SectionStylePage extends StatelessWidget {
             value: value,
             options: options,
             label: (v) => k == 'inactiveOpacity' || k == 'sectionOpacity'
-                ? '${((v as num) * 100).round()}%'
+                ? '${((1 - (v as num)) * 100).round()}%'
                 : '$v',
             onChanged: (v) => set(k, v),
           ),
@@ -159,19 +159,25 @@ class SectionStylePage extends StatelessWidget {
               },
             ),
           ),
-          number('sectionOpacity', l.tileOpacity, a.sectionOpacity, [
-            for (var n = 0; n <= 100; n++) n / 100,
+          number('sectionOpacity', l.styleTransparency, a.sectionOpacity, [
+            for (var n = 100; n >= 0; n--) n / 100,
           ]),
           number('sectionRadius', l.tileCornerRadius, a.sectionRadius, [
             for (var n = 0; n <= 64; n++) n,
           ]),
-          if (categoryId == null)
+          if (categoryId == null) ...[
             number(
               'inactiveOpacity',
-              l.homeInactiveOpacity,
+              l.homeInactiveTransparency,
               a.number('inactiveOpacity') ?? 1,
-              [for (var n = 0; n <= 10; n++) n / 10],
+              [for (var n = 10; n >= 0; n--) n / 10],
             ),
+            RoundedSwitchListTile(
+              title: Text(l.homeFadeInactiveFeeds),
+              value: a.sectionFadeInactiveFeeds,
+              onChanged: (value) => set('sectionFadeInactiveFeeds', value),
+            ),
+          ],
         ],
       ),
       if (includeReset)
@@ -187,8 +193,9 @@ class SectionStylePage extends StatelessWidget {
             'sectionBackground',
             'sectionOpacity',
             'sectionRadius',
-            if (categoryId == null) 'inactiveOpacity',
             if (categoryId == null) ...[
+              'inactiveOpacity',
+              'sectionFadeInactiveFeeds',
               'sectionGap',
               'sectionScroll',
               'sectionPosition',

@@ -2346,7 +2346,7 @@ void main() {
     appearance.dispose();
   });
 
-  testWidgets('inactive opacity follows focus across apps, feeds and Watch Next', (tester) async {
+  testWidgets('inactive opacity follows sections and optionally individual feeds', (tester) async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
     final appearance = AppearanceService(prefs);
@@ -2389,12 +2389,24 @@ void main() {
 
     final group = find.byKey(const ValueKey('app-channels-group'));
     final watchRow = find.byType(ContinueWatchingRow);
-    double opacity(Finder finder) => tester.widget<AnimatedOpacity>(
-      find.ancestor(of: finder, matching: find.byType(AnimatedOpacity)),
-    ).opacity;
+    List<double> opacities(Finder finder) => tester.widgetList<Widget>(
+      find.ancestor(of: finder, matching: find.byWidgetPredicate(
+        (widget) => widget is AnimatedOpacity ||
+            widget is Opacity && widget.child is RepaintBoundary &&
+                (widget.child as RepaintBoundary).child is CategoryFocus,
+      )),
+    ).map((widget) => widget is Opacity
+        ? widget.opacity : (widget as AnimatedOpacity).opacity).toList();
     void expectOpacities(double feeds, double watch) {
-      expect(opacity(group), feeds);
-      expect(opacity(watchRow), watch);
+      expect(opacities(group), [feeds]);
+      expect(opacities(watchRow), [watch]);
+    }
+    Finder row(int index) => find.byType(AppContentRow).at(index);
+    void expectRowOpacities(double first, double second) {
+      expect(opacities(row(0)).first, first);
+      expect(opacities(row(1)).first, second);
+      expect(opacities(row(0)), hasLength(2));
+      expect(opacities(row(1)), hasLength(2));
     }
 
     expect(isAppCardFocused(tester, 'opacity.app'), isTrue);
@@ -2402,14 +2414,49 @@ void main() {
     for (var index = 0; index < 2; index++) {
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
       await tester.pumpAndSettle();
-      final row = find.byType(AppContentRow).at(index);
-      expect(CategoryFocus.maybeOf(tester.element(row))!.hasFocus, isTrue);
+      expect(CategoryFocus.maybeOf(tester.element(row(index)))!.hasFocus, isTrue);
       expectOpacities(1, .2);
+      expect(opacities(row(index)), [1]);
     }
+    await appearance.set('sectionFadeInactiveFeeds', true);
+    await tester.pumpAndSettle();
+    expect(CategoryFocus.maybeOf(tester.element(row(1)))!.hasFocus, isTrue);
+    expectRowOpacities(.2, 1);
+    getSettingsFocusNode(tester)!.requestFocus();
+    await tester.pumpAndSettle();
+    expectRowOpacities(.2, 1);
+
+    final groupId = appChannelsGroup().id;
+    final state = tester.element(find.byType(FLauncher)).read<LauncherState>();
+    final previewOwner = Object();
+    state.setSectionPreview(previewOwner, groupId);
+    await tester.pumpAndSettle();
+    expect(opacities(row(0)), [1]);
+    expect(opacities(row(1)), [1]);
+    state.setSectionPreview(previewOwner, null);
+    await tester.pumpAndSettle();
+    expectRowOpacities(.2, 1);
+
+    await CategoryFocus.maybeOf(tester.element(row(1)))!.focusFirst();
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+    await tester.pumpAndSettle();
+    expect(CategoryFocus.maybeOf(tester.element(row(0)))!.hasFocus, isTrue);
+    expectRowOpacities(1, .2);
+    await appearance.set('inactiveOpacity', 0);
+    await tester.pumpAndSettle();
+    expectRowOpacities(1, 0);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.pumpAndSettle();
+    expect(CategoryFocus.maybeOf(tester.element(row(1)))!.hasFocus, isTrue);
+    expectRowOpacities(0, 1);
+    await appearance.set('inactiveOpacity', .2);
+    await tester.pumpAndSettle();
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.pumpAndSettle();
     expect(CategoryFocus.maybeOf(tester.element(watchRow))!.hasFocus, isTrue);
     expectOpacities(.2, 1);
+    expectRowOpacities(1, 1);
 
     getSettingsFocusNode(tester)!.requestFocus();
     await tester.pumpAndSettle();

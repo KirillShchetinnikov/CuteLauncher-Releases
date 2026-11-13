@@ -10,6 +10,23 @@ class AppLocalizationsJa extends AppLocalizations {
   AppLocalizationsJa([String locale = 'ja']) : super(locale);
 
   @override
+  String get videoFolderSource => 'フォルダ内の動画';
+
+  @override
+  String get videoFolderPlayback => '再生';
+
+  @override
+  String get videoFolderNext => '次の動画';
+
+  @override
+  String get videoFolderError =>
+      '再生できる動画がありません。フォルダ、ファイルへのアクセス権、動画形式を確認してください。';
+
+  @override
+  String get videoFolderHelp =>
+      '動画は無音で繰り返し再生されます。日付順では更新日時が新しいファイルから再生します。サブフォルダは対象外です。形式は MP4/M4V、WebM、MKV。上限はサイズが分かる場合は 256 MiB、解像度は 3840×2160 です。';
+
+  @override
   String get scrollContentLabels => '列の長いラベルをスクロール';
 
   @override
@@ -1545,9 +1562,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get tileVerticalGap => '垂直方向の間隔';
 
   @override
-  String get tileOpacity => '背景の不透明度';
-
-  @override
   String get tileShadow => 'シャドウ';
 
   @override
@@ -1622,9 +1636,6 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get blurPerformanceHint =>
       'ぼかしを行うと滑らかさが低下する場合があります。メモリ保存がオンの場合は無効になります。';
-
-  @override
-  String get panelOpacity => 'パネルの不透明度';
 
   @override
   String get tileBlur => 'タイルの後ろをぼかします';
@@ -2224,9 +2235,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get topPanelObjects => 'オブジェクト';
-
-  @override
-  String get panelTransparency => 'パネルの透明度';
 
   @override
   String get panelTextBackground => 'テキストとボタンの背景';
@@ -3337,7 +3345,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get homeSectionIcons => 'セクションアイコン';
 
   @override
-  String get homeInactiveOpacity => '非アクティブセクションの不透明度';
+  String get homeInactiveTransparency => '非アクティブなセクションの透明度';
+
+  @override
+  String get homeFadeInactiveFeeds => '非アクティブなフィードにも透明度を適用';
 
   @override
   String get homeResetSection => '継承されたセクションの外観を復元する';
@@ -3391,7 +3402,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get homeStyleEconomy => 'メモリ節約により無効化されました。保存された値は保持されます。';
 
   @override
-  String get homeStyleOpaque => 'ぼやけを確認するには、タイルの背景の不透明度を下げます。';
+  String get homeStyleOpaque => 'ぼかしが見えるように、タイルの背景の透明度を上げてください。';
 
   @override
   String get homeStyleOverridden =>
@@ -3406,7 +3417,8 @@ class AppLocalizationsJa extends AppLocalizations {
       'メモリ節約により、非アクティブなカードのシャドウが 4 に制限されます。フォーカス シャドウは個別に設定されます。';
 
   @override
-  String get homeStyleTransparent => '不透明度がゼロの場合、背景色は見えません。タイルの背景の不透明度を上げます。';
+  String get homeStyleTransparent =>
+      '透明度が100%の場合、タイルの背景色は見えません。背景の透明度を下げてください。';
 
   @override
   String get homeStyleSingleColumn => '単列グリッドには水平方向のギャップがありません。';
