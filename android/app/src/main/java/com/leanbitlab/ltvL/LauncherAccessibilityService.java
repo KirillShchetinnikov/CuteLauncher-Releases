@@ -64,14 +64,17 @@ public class LauncherAccessibilityService extends AccessibilityService {
         if (service.recents == null) service.recents = new RemotePanelWindow(service, true);
         return service.recents.toggle();
     }
-    boolean togglePanel() {
+    RemotePanelLaunchPolicy.ToggleResult togglePanel() {
         if (recents != null) recents.close();
         return MainActivity.remotePanelPolicy.toggle(panel != null && panel.isOpen(), () -> {
             if (panel == null) panel = new RemotePanelWindow(this);
             return panel.toggle();
         }, MainActivity::panelBlocked);
     }
-    static boolean showPanel() { var service = active.get(); return service != null && service.togglePanel(); }
+    static boolean showPanel() {
+        var service = active.get();
+        return service != null && service.togglePanel() == RemotePanelLaunchPolicy.ToggleResult.TOGGLED;
+    }
     void dismissPanel() { if (panel != null) panel.requestClose(); if (recents != null) recents.requestClose(); }
     private static volatile java.lang.ref.WeakReference<LauncherAccessibilityService> active = new java.lang.ref.WeakReference<>(null);
     @Override protected void onServiceConnected() {

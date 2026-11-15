@@ -184,13 +184,13 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get renderCompatibilityHelp =>
-      'Gece karartması sırasında arayüz titriyorsa bu modu deneyin. Doğrulanmış modellerde otomatik olarak etkinleştirilir. Diğer TV’lerde seçim yalnızca bu cihaza kaydedilir ve başlatıcı yeniden başlatıldıktan sonra uygulanır. Grafik yükünü artırabilir.';
+      'Gece karartması sırasında arayüz titriyorsa bu modu deneyin. Doğrulanmış modellerde otomatik olarak etkinleştirilir. Diğer cihazlarda seçim yalnızca bu cihaza kaydedilir ve başlatıcı yeniden başlatıldıktan sonra uygulanır. Grafik yükünü artırabilir.';
 
   @override
   String get diagnosticsHubTitle => 'Diagnostics';
 
   @override
-  String get tvCompatibilityTitle => 'TV compatibility check';
+  String get tvCompatibilityTitle => 'Cihaz uyumluluğunu denetle';
 
   @override
   String get tvCompatibilityRun => 'Run check';
@@ -293,7 +293,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get adbWifiOwned =>
-      'Değişiklik yapılmadı: kayıtlı bir Wi-Fi ağı Google kurulum sihirbazı tarafından oluşturulmuş. Sihirbazı kapatmak ağı silebilir ve TV’nin bağlantısını kesebilir.\n\n1. Wi-Fi parolasını bildiğinizden emin olun.\n2. Android ağ ayarlarını açın, ağı seçin ve Ağı unut seçeneğini kullanın.\n3. Normal Android ağ ayarlarından yeniden bağlanın.\n4. CuteLauncher’a dönün, ADB’yi kontrol edin ve yerleşik başlatıcıyı kapatmayı yeniden deneyin.\n\nMesaj tekrarlanırsa yerleşik başlatıcıyı açık bırakın: yazılım ağı tekrar sihirbaza atayabilir.';
+      'Değişiklik yapılmadı: kayıtlı bir Wi-Fi ağı Google kurulum sihirbazı tarafından oluşturulmuş. Sihirbazı kapatmak ağı silebilir ve cihazın bağlantısını kesebilir.\n\n1. Wi-Fi parolasını bildiğinizden emin olun.\n2. Android ağ ayarlarını açın, ağı seçin ve Ağı unut seçeneğini kullanın.\n3. Normal Android ağ ayarlarından yeniden bağlanın.\n4. CuteLauncher’a dönün, ADB’yi kontrol edin ve yerleşik başlatıcıyı kapatmayı yeniden deneyin.\n\nMesaj tekrarlanırsa yerleşik başlatıcıyı açık bırakın: yazılım ağı tekrar sihirbaza atayabilir.';
 
   @override
   String get adbWifiUnknown =>
@@ -644,7 +644,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get defaultLauncherDescription =>
-      'Varsayılan başlatıcı olarak ayarlandığında, Ana Sayfa düğmesi her zaman CuteLauncher\'a döner. TV de doğrudan CuteLauncher\'da başlar.';
+      'Varsayılan başlatıcı olarak ayarlandığında, Ana Sayfa düğmesi her zaman CuteLauncher\'a döner. Cihaz da doğrudan CuteLauncher\'da başlar.';
 
   @override
   String get inputs => 'Girişler';
@@ -705,7 +705,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get localNetworkSharingDetails =>
-      'Buradan TV ayarlarınızı/düzeninizi indirebilir veya bir yedek dosyasını bu TV\'ye geri yükleyebilirsiniz.';
+      'Buradan cihaz ayarlarınızı/düzeninizi indirebilir veya bir yedek dosyasını bu cihaza geri yükleyebilirsiniz.';
 
   @override
   String failedToStartServer(String error) {
@@ -788,7 +788,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get homeButtonFix => 'Ana Sayfa Düğmesi Düzeltmesi (Google TV)';
 
   @override
-  String get startOnBoot => 'Açılışta başlat (Google TV / Fire TV)';
+  String get startOnBoot => 'Cihaz açıldığında başlat';
 
   @override
   String get appLanguage => 'Dil';
@@ -1324,19 +1324,19 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get accessibilityGuide =>
-      'TV ayarlarını manuel olarak açın, ardından Erişilebilirlik → CuteLauncher Ana Sayfa Düğmesini Düzeltme seçeneğini açın ve hizmeti etkinleştirin. Bu menünün konumu ve adı TV üreticinize bağlıdır.';
+      'Cihaz ayarlarını manuel olarak açın, ardından Erişilebilirlik → CuteLauncher Ana Sayfa Düğmesini Düzeltme seçeneğini açın ve hizmeti etkinleştirin. Bu menünün konumu ve adı cihaz üreticinize bağlıdır.';
 
   @override
   String get notificationPermissionGuide =>
-      'Bu TV\'de bildirim erişim ayarları açılamadı. Uygulama Bilgisi\'nde giden bildirimlere izin verilmesi, diğer uygulamalardan gelen bildirimlere erişim izni vermez.\n\nTV\'nizi ADB aracılığıyla bağlayın ve çalıştırın:';
+      'Bu cihazda bildirim erişim ayarları açılamadı. Uygulama Bilgisi\'nde giden bildirimlere izin verilmesi, diğer uygulamalardan gelen bildirimlere erişim izni vermez.\n\nCihazınızı ADB aracılığıyla bağlayın ve çalıştırın:';
 
   @override
   String get overlayPermissionGuide =>
-      'Yer paylaşımı izin ayarları otomatik olarak açılamadı.\n\nDiğer uygulamaların üzerinden açılır pencereleri etkinleştirmek için TV\'nizi ADB aracılığıyla bağlayın ve şunu çalıştırın:';
+      'Yer paylaşımı izin ayarları otomatik olarak açılamadı.\n\nDiğer uygulamaların üzerinden açılır pencereleri etkinleştirmek için cihazınızı ADB aracılığıyla bağlayın ve şunu çalıştırın:';
 
   @override
   String get watchNextPermissionGuide =>
-      'Diğer uygulamalardan İzlemeye Devam Et kartlarını okumak için Android TV, READ_WRITE_WATCH_NEXT_PROGRAMS gerektirir.\n\nTV\'nizi ADB aracılığıyla bağlayın ve çalıştırın:';
+      'Diğer uygulamalardan İzlemeye Devam Et kartlarını okumak için Android TV, READ_WRITE_WATCH_NEXT_PROGRAMS gerektirir.\n\nCihazınızı ADB aracılığıyla bağlayın ve çalıştırın:';
 
   @override
   String get watchNextAccess => 'İzlemeye Devam Et erişimi';
@@ -1837,7 +1837,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get adbAuthorization =>
-      'TV\'de ADB yetkilendirmesini onaylayın ve tekrar deneyin.';
+      'Cihazda ADB yetkilendirmesini onaylayın ve tekrar deneyin.';
 
   @override
   String get adbChangeConfirm =>
@@ -1858,7 +1858,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get adbHint =>
-      'Yalnızca bu TV için prototip (127.0.0.1). Geliştirici seçeneklerinde TCP ADB\'yi etkinleştirin, bağlantı noktasını girin ve TV\'deki yetkilendirme istemini onaylayın. Eşleştirme koduyla kablosuz hata ayıklama henüz desteklenmiyor. Özel anahtar, yedeklemelerin dışında bu cihazda kalır.';
+      'Yalnızca bu cihaz için prototip (127.0.0.1). Geliştirici seçeneklerinde TCP ADB\'yi etkinleştirin, bağlantı noktasını girin ve cihazdaki yetkilendirme istemini onaylayın. Eşleştirme koduyla kablosuz hata ayıklama henüz desteklenmiyor. Özel anahtar, yedeklemelerin dışında bu cihazda kalır.';
 
   @override
   String get adbHome => 'CuteLauncher\'yi Ev uygulaması yapın';
@@ -1898,7 +1898,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get nightModeScope =>
-      'Diğer uygulamaları karartmak için yer paylaşımı izni gereklidir. Bu olmadan, karartma CuteLauncher\'nin içinde çalışır. TCL filtresinin yer paylaşımı iznine ihtiyacı yoktur. %80\'in üzerinde opaklık Android diğer uygulamalardaki dokunma girişini engelleyebilir; TV\'nin uzaktan kumanda tuşları hâlâ çalışıyor.';
+      'Diğer uygulamaları karartmak için yer paylaşımı izni gereklidir. Bu olmadan, karartma CuteLauncher\'nin içinde çalışır. TCL filtresinin yer paylaşımı iznine ihtiyacı yoktur. %80\'in üzerinde opaklık Android diğer uygulamalardaki dokunma girişini engelleyebilir; cihazın uzaktan kumanda tuşları hâlâ çalışıyor.';
 
   @override
   String get nightModeEnd => 'Bitiş';
@@ -1914,7 +1914,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get nightModeScheduleHint =>
-      'Yerel TV saatini kullanır. Gecelik dönemler desteklenmektedir. Eşit başlangıç ​​ve bitiş saatleri, zamanlanmış filtreyi devre dışı bırakır.';
+      'Yerel cihaz saatini kullanır. Gecelik dönemler desteklenmektedir. Eşit başlangıç ​​ve bitiş saatleri, zamanlanmış filtreyi devre dışı bırakır.';
 
   @override
   String get nightModeEnabled => 'Gece modunu etkinleştir';
@@ -1977,11 +1977,11 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get diagnosticsSharingNotice =>
-      'Dosyayı yazara özel mesajla gönderin, herkese açık paylaşmayın: otomatik temizleme kişisel verileri kaçırabilir. Göndererek anonim TV uyumluluk raporunun CuteLauncher Git deposunda yayımlanmasını kabul edersiniz. Yalnızca cihaz bilgileri ve özellik kullanılabilirliği kişisel veriler olmadan yayımlanır; hata günlükleri, komutlar ve ayarlarınız yayımlanmaz.\n\nRapor ayrıca yüklü paketleri, adlarını, sürümlerini ve etkinlik durumlarını, bölümlerin adlarını, içeriklerini, sıralarını ve görünürlüklerini içerir. Tanılama için kimlikler ve adlar korunur; uygulama ve bölüm listeleri yayımlanmaz.';
+      'Dosyayı yazara özel mesajla gönderin, herkese açık paylaşmayın: otomatik temizleme kişisel verileri kaçırabilir. Göndererek anonim cihaz uyumluluk raporunun CuteLauncher Git deposunda yayımlanmasını kabul edersiniz. Yalnızca cihaz bilgileri ve özellik kullanılabilirliği kişisel veriler olmadan yayımlanır; hata günlükleri, komutlar ve ayarlarınız yayımlanmaz.\n\nRapor ayrıca yüklü paketleri, adlarını, sürümlerini ve etkinlik durumlarını, bölümlerin adlarını, içeriklerini, sıralarını ve görünürlüklerini içerir. Tanılama için kimlikler ve adlar korunur; uygulama ve bölüm listeleri yayımlanmaz.';
 
   @override
   String get diagnosticsHint =>
-      'Tek rapor TV özellik uyumluluğunu ve hata tanılamasını birleştirir. Rapor TV modeli ve yazılımını, uygulama sürümünü, izinleri, belleği, hata aşamaları ve nedenlerini, kişisel verileri otomatik temizlenen komutları ve yanıtları içerir. Oturumda son 50 işlem, ayrıca en fazla 100 hata ve sınırlı ADB kaydı tutulur. Yeniden başlatma kaydı siler. Temizleme bazı kişisel verileri kaçırabilir: dosyayı herkese açık paylaşmak yerine özel mesajla gönderin. Otomatik gönderim yoktur. Her hata, uygulanan ayarların anlık görüntüsünü saklar; sonraki değişiklikler bunu değiştirmez.\n\nRapor ayrıca yüklü paketleri, adlarını, sürümlerini ve etkinlik durumlarını, bölümlerin adlarını, içeriklerini, sıralarını ve görünürlüklerini içerir. Tanılama için kimlikler ve adlar korunur; uygulama ve bölüm listeleri yayımlanmaz.';
+      'Tek rapor cihaz özellik uyumluluğunu ve hata tanılamasını birleştirir. Rapor cihaz modeli ve yazılımını, uygulama sürümünü, izinleri, belleği, hata aşamaları ve nedenlerini, kişisel verileri otomatik temizlenen komutları ve yanıtları içerir. Oturumda son 50 işlem, ayrıca en fazla 100 hata ve sınırlı ADB kaydı tutulur. Yeniden başlatma kaydı siler. Temizleme bazı kişisel verileri kaçırabilir: dosyayı herkese açık paylaşmak yerine özel mesajla gönderin. Otomatik gönderim yoktur. Her hata, uygulanan ayarların anlık görüntüsünü saklar; sonraki değişiklikler bunu değiştirmez.\n\nRapor ayrıca yüklü paketleri, adlarını, sürümlerini ve etkinlik durumlarını, bölümlerin adlarını, içeriklerini, sıralarını ve görünürlüklerini içerir. Tanılama için kimlikler ve adlar korunur; uygulama ve bölüm listeleri yayımlanmaz.';
 
   @override
   String get diagnosticsTitle => 'Hata teşhisi';
@@ -2004,7 +2004,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get tclBlueLightUnsupported =>
-      'TCL filtre arayüzü bu TV\'de mevcut değil.';
+      'TCL filtre arayüzü bu cihazda mevcut değil.';
 
   @override
   String get tclBlueLightRefresh => 'TCL filtre durumunu yenile';
@@ -2021,7 +2021,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get nightScheduleTimeHint =>
-      'Saatler TV saat dilimini kullanır. Negatif dengelemeler daha erkendir; pozitif ofsetler daha sonradır.';
+      'Saatler cihaz saat dilimini kullanır. Negatif dengelemeler daha erkendir; pozitif ofsetler daha sonradır.';
 
   @override
   String get nightTemperature => 'Filtre renk sıcaklığı';
@@ -2111,7 +2111,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get nightSolarAttribution =>
-      'Gün doğumu ve gün batımı saatleri Sunrise-Sunset.org üzerinden alınır, gerekirse GeoNames kullanılır. İnternet yoksa TV eksik saatleri hesaplar.';
+      'Gün doğumu ve gün batımı saatleri Sunrise-Sunset.org üzerinden alınır, gerekirse GeoNames kullanılır. İnternet yoksa cihaz eksik saatleri hesaplar.';
 
   @override
   String get nightTemporaryOn => 'Karartma geçici olarak açık';
@@ -2129,7 +2129,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get advancedSettings => 'Gelişmiş';
 
   @override
-  String get controlAndStartup => 'Başlatıcı ve TV kontrolleri';
+  String get controlAndStartup => 'Başlatıcı ve cihaz denetimleri';
 
   @override
   String get sectionsAndOrder => 'Bölümler ve sipariş';
@@ -2228,7 +2228,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get followTileStyle => 'Stili takip et';
 
   @override
-  String get androidTvSettingsHint => 'TV sistem ayarlarını açın';
+  String get androidTvSettingsHint => 'Cihazın sistem ayarlarını açın';
 
   @override
   String get autoHideTopPanel => 'Paneli otomatik olarak gizle';
@@ -2486,7 +2486,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get adbTlsHint =>
-      'Geliştirici seçeneklerinde Kablosuz hata ayıklamayı kullanın. Eşleştirme ve bağlantının farklı bağlantı noktaları vardır. Ürün yazılımınızda eşleştirme kodu ekranı yoksa veya yer paylaşımlı pencereleri engelliyorsa, bunun yerine TCP / RSA\'yı kullanın. Tüm bağlantılar bu TV\'de yerel kalır.';
+      'Geliştirici seçeneklerinde Kablosuz hata ayıklamayı kullanın. Eşleştirme ve bağlantının farklı bağlantı noktaları vardır. Ürün yazılımınızda eşleştirme kodu ekranı yoksa veya yer paylaşımlı pencereleri engelliyorsa, bunun yerine TCP / RSA\'yı kullanın. Tüm bağlantılar bu cihazda yerel kalır.';
 
   @override
   String get adbPaired =>
@@ -2544,7 +2544,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get adbTwoWindows => 'Ayarları ikinci bir pencerede açın';
 
   @override
-  String get autoLaunchBoot => 'TV açılışından sonra';
+  String get autoLaunchBoot => 'Cihaz açıldıktan sonra';
 
   @override
   String get autoLaunchOff => 'Devre dışı';
@@ -2563,7 +2563,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get autoLaunchHint =>
-      'TV başlatıldıktan veya uyandırıldıktan sonra açılacak bir uygulamayı veya HDMI girişini seçin. Olayı ve gecikmeyi aşağıda ayarlayın. Android, CuteLauncher\'yi gösterdiğinde eylem bir kez çalıştırılır. Herhangi bir uzaktan giriş veya ana ekrandan ayrılma, beklemeyi iptal eder. HDMI girişlerini daha sonra serbestçe değiştirebilirsiniz. CuteLauncher\'yi varsayılan başlatıcı olarak ayarlayın veya gerekirse Başlatma sırasında başlat seçeneğini etkinleştirin. Uyanıklık tespiti CuteLauncher\'nin çalışmaya devam etmesini gerektirir.';
+      'cihaz başlatıldıktan veya uyandırıldıktan sonra açılacak bir uygulamayı veya HDMI girişini seçin. Olayı ve gecikmeyi aşağıda ayarlayın. Android, CuteLauncher\'yi gösterdiğinde eylem bir kez çalıştırılır. Herhangi bir uzaktan giriş veya ana ekrandan ayrılma, beklemeyi iptal eder. HDMI girişlerini daha sonra serbestçe değiştirebilirsiniz. CuteLauncher\'yi varsayılan başlatıcı olarak ayarlayın veya gerekirse Başlatma sırasında başlat seçeneğini etkinleştirin. Uyanıklık tespiti CuteLauncher\'nin çalışmaya devam etmesini gerektirir.';
 
   @override
   String autoLaunchSeconds(int seconds) {
@@ -2666,7 +2666,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get cloudDisconnectConfirm =>
-      'Bu hesap TV\'den kaldırılsın mı? Buluttaki kopyalar kalacaktır.';
+      'Bu hesap cihazdan kaldırılsın mı? Buluttaki kopyalar kalacaktır.';
 
   @override
   String get cloudUpload => 'Bir kopyasını buluta kaydet';
@@ -2720,7 +2720,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get adbSetupIntro =>
-      'TV geliştirici ayarlarında hata ayıklamayı ve ağ ADB\'yi etkinleştirin, ardından CuteLauncher\'ye güvenin. Tüm ADB eylemlerinin riski size aittir.';
+      'Cihazın geliştirici ayarlarında hata ayıklamayı ve ağ ADB\'yi etkinleştirin, ardından CuteLauncher\'ye güvenin. Tüm ADB eylemlerinin riski size aittir.';
 
   @override
   String get adbConnectionBlock => 'ADB bağlantısı';
@@ -2754,7 +2754,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get adbBuiltinHint =>
-      'Yerleşik başlatıcıyı devre dışı bırakırsanız uzaktan kumandadaki bazı düğmeler ve üreticiye özgü TV menüleri çalışmayabilir. Bu değişikliği geri almak için yerleşik başlatıcıyı yeniden etkinleştirin.';
+      'Yerleşik başlatıcıyı devre dışı bırakırsanız uzaktan kumandadaki bazı düğmeler ve üreticiye özgü cihaz menüleri çalışmayabilir. Bu değişikliği geri almak için yerleşik başlatıcıyı yeniden etkinleştirin.';
 
   @override
   String get adbHomeBlock => 'Ana sayfa düğmesi ve başlatma';
@@ -2768,7 +2768,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get adbHomeOptional =>
-      'Yerleşik başlatıcı devre dışı bırakılırsa Ana Sayfa\'nın geçersiz kılınması ve TV başlatıldığında başlatılması isteğe bağlıdır.';
+      'Yerleşik başlatıcı devre dışı bırakılırsa Ana Sayfa\'nın geçersiz kılınması ve cihaz başlatıldığında başlatılması isteğe bağlıdır.';
 
   @override
   String get adbEnableBuiltin =>
@@ -2796,7 +2796,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get adbEffectDisable =>
-      'Yerleşik başlatıcı uygulaması TV kullanıcısı için devre dışı bırakılacaktır. TV menüleri ve düğmeleri çalışmayı durdurabilir. Uygulama kaldırılmıyor.';
+      'Yerleşik başlatıcı uygulaması Android kullanıcısı için devre dışı bırakılacaktır. Üreticiye özgü menüler ve düğmeleri çalışmayı durdurabilir. Uygulama kaldırılmıyor.';
 
   @override
   String get adbRecoveryHomeDisable =>
@@ -2879,7 +2879,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get nightBatteryGuide =>
-      '1. Uygulama ayarlarında Özel uygulama erişimini açın.\n2. Pil optimizasyonunu (bazen Enerji tasarrufu) seçin.\n3. CuteLauncher\'yi bulun; gerekiyorsa Tüm uygulamalar\'ı seçin.\n4. Optimizasyonu devre dışı bırakın veya Sınırsız\'ı seçin.\nMenü adları ve kullanılabilirliği TV donanım yazılımına bağlıdır.';
+      '1. Uygulama ayarlarında Özel uygulama erişimini açın.\n2. Pil optimizasyonunu (bazen Enerji tasarrufu) seçin.\n3. CuteLauncher\'yi bulun; gerekiyorsa Tüm uygulamalar\'ı seçin.\n4. Optimizasyonu devre dışı bırakın veya Sınırsız\'ı seçin.\nMenü adları ve kullanılabilirliği cihaz donanım yazılımına bağlıdır.';
 
   @override
   String get updateNotifications => 'Güncelleme bildirimlerini göster';
@@ -2985,23 +2985,23 @@ class AppLocalizationsTr extends AppLocalizations {
   String get backupSaveMode => 'Yedekleme';
 
   @override
-  String get backupScope => 'TV\'ler arasında yedekleme';
+  String get backupScope => 'Cihazlar arasında yedekleme';
 
   @override
-  String get backupSyncScope => 'TV\'ler arasında senkronizasyon';
+  String get backupSyncScope => 'Cihazlar arasında senkronizasyon';
 
   @override
-  String get backupSeparate => 'Her TV için ayrı';
+  String get backupSeparate => 'Her cihaz için ayrı';
 
   @override
-  String get backupShared => 'Tüm TV\'ler için aynı ayarlar';
+  String get backupShared => 'Tüm cihazlar için aynı ayarlar';
 
   @override
   String get backupStorage => 'Depolama';
 
   @override
   String get backupSyncHelp =>
-      'Verileri indirin ve değişiklikleri yükleyin. Son değişiklik çatışmaları kazanır. TV saatleri doğru olmalıdır. Başlatıcı açıkken senkronizasyon çalışır.';
+      'Verileri indirin ve değişiklikleri yükleyin. Son değişiklik çatışmaları kazanır. Cihazların saatleri doğru olmalıdır. Başlatıcı açıkken senkronizasyon çalışır.';
 
   @override
   String get backupSyncLimit => 'Şundan daha sık kontrol etmeyin:';
@@ -3026,7 +3026,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get backupLocalHelp =>
-      'Yerel kopyalar uygulama veya verileriyle birlikte silinir. Bir kopyasını da TV\'nin dışında saklayın.';
+      'Yerel kopyalar uygulama veya verileriyle birlikte silinir. Bir kopyasını da cihazın dışında saklayın.';
 
   @override
   String get panelObjectOrder => 'Nesne sırası';
@@ -3214,7 +3214,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get backupFolderPickerUnavailable =>
-      'Bu TV\'de klasör seçici mevcut değil. İndirilenler / CuteLauncher\'yi veya dahili uygulama klasörünü seçin.';
+      'Bu cihazda klasör seçici mevcut değil. İndirilenler / CuteLauncher\'yi veya dahili uygulama klasörünü seçin.';
 
   @override
   String get driveConfigurationError =>
@@ -3243,14 +3243,14 @@ class AppLocalizationsTr extends AppLocalizations {
   String get backupSyncDisplayGroup => 'Gece modu, parlaklık ve ekran koruyucu';
 
   @override
-  String get backupSyncControlsGroup => 'Başlatıcı ve TV kontrolleri';
+  String get backupSyncControlsGroup => 'Başlatıcı ve cihaz denetimleri';
 
   @override
   String get backupSyncGeneralGroup => 'Dil, güncellemeler ve diğer ayarlar';
 
   @override
   String get backupSyncGroupsHelp =>
-      'Devre dışı bloklar bu TV’de kalır. Eşitlenecek blokları her cihazda ayrı seçin.';
+      'Devre dışı bloklar bu cihazda kalır. Eşitlenecek blokları her cihazda ayrı seçin.';
 
   @override
   String get backupSyncGroupsFailed =>
@@ -3450,6 +3450,15 @@ class AppLocalizationsTr extends AppLocalizations {
   String get homeSectionIcons => 'Bölüm simgeleri';
 
   @override
+  String get sectionTitleIcon => 'Bölüm başlığı simgesi';
+
+  @override
+  String get sectionIconPhotos => 'Fotoğraflar';
+
+  @override
+  String get sectionIconFolder => 'Klasör';
+
+  @override
   String get homeInactiveTransparency => 'Etkin olmayan bölümlerin şeffaflığı';
 
   @override
@@ -3586,7 +3595,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get nightIgnoreHdmiInputsHint =>
-      'HDMI izlerken gece filtresini duraklatın. Kullanım erişimi gereklidir; giriş tespiti TV donanım yazılımına bağlıdır.';
+      'HDMI izlerken gece filtresini duraklatın. Kullanım erişimi gereklidir; giriş tespiti cihaz donanım yazılımına bağlıdır.';
 
   @override
   String get inputsSettings => 'Giriş ayarları';
@@ -3884,7 +3893,7 @@ class AppLocalizationsTr extends AppLocalizations {
       'Bu düğme ve basma türü zaten atanmış. Başka bir düğme veya basma türü seçin.';
 
   @override
-  String get cleanerTitle => 'TV cleanup manager';
+  String get cleanerTitle => 'Cihaz temizleme yöneticisi';
 
   @override
   String get cleanerRefresh => 'Refresh applications';
@@ -4102,8 +4111,17 @@ class AppLocalizationsTr extends AppLocalizations {
   String get landscapeMotion => 'Animate weather';
 
   @override
+  String get landscapeSunrise => 'Gün doğumu';
+
+  @override
+  String get landscapeSunset => 'Gün batımı';
+
+  @override
+  String get landscapeScheduleCurrent => 'Geçerli zamanlama';
+
+  @override
   String get landscapeHelp =>
-      'Time follows cached sunrise and sunset from Night mode; without them, dawn is at 06:00 and dusk at 18:00, with 40-minute transitions around each. Seasons follow the local month and hemisphere; automatic hemisphere uses weather coordinates, then Night mode coordinates, then the Northern Hemisphere. With time of day off, the scene stays in daylight; with seasons off, it stays in summer. Weather uses current data from the selected weather source, without extra requests. Missing or stale weather shows clear skies. Clouds, precipitation and fog can be disabled independently. Motion is off by default, stops when Home is hidden, and is disabled in memory saving mode or when reduced motion is requested.';
+      'Otomatik mod kayıtlı konuma göre gün doğumu ve gün batımını cihazda hesaplar. Bu saatler kullanılamıyorsa özel zamanlama uygulanır. Seasons follow the local month and hemisphere; automatic hemisphere uses weather coordinates, then Night mode coordinates, then the Northern Hemisphere. With time of day off, the scene stays in daylight; with seasons off, it stays in summer. Weather uses current data from the selected weather source, without extra requests. Missing or stale weather shows clear skies. Clouds, precipitation and fog can be disabled independently. Motion is off by default, stops when Home is hidden, and is disabled in memory saving mode or when reduced motion is requested.';
 
   @override
   String get inputConnected => 'Connected';
@@ -4119,7 +4137,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get weatherMetNorwayCredit =>
-      'Data: MET Norway, CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Forecast adapted from https://api.met.no/. No API key; days use the TV time zone, min/max cover available periods. Precipitation probability is unavailable.';
+      'Data: MET Norway, CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Forecast adapted from https://api.met.no/. No API key; days use the device time zone, min/max cover available periods. Precipitation probability is unavailable.';
 
   @override
   String get informationGroup => 'Saat, tarih ve hava durumu';
@@ -4258,7 +4276,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get tvPowerHelp =>
-      'Kapatma, CuteLauncher erişilebilirlik hizmeti veya yerel ADB ile beklemeyi açar. Yeniden başlatma ADB gerektirir. TV kutusunda kutu kontrol edilir; TV davranışı HDMI-CEC ve yazılıma bağlıdır.';
+      'Uyku, CuteLauncher erişilebilirlik hizmeti veya yerel ADB ile beklemeyi açar. Kapatma ve yeniden başlatma için yerel ADB gerekir. TV kutusunda kutu kontrol edilir; TV davranışı HDMI-CEC ve yazılıma bağlıdır.';
 
   @override
   String get cleanerLists => 'Devre dışı bırakma listeleri';
@@ -4334,15 +4352,15 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get cleanerAlreadyDisabled =>
-      'Bu listedeki TV’de bulunan tüm uygulamalar zaten devre dışı.';
+      'Bu listedeki cihazda bulunan tüm uygulamalar zaten devre dışı.';
 
   @override
   String get cleanerAlreadyEnabled =>
-      'Bu listedeki TV’de bulunan tüm uygulamalar zaten etkin.';
+      'Bu listedeki cihazda bulunan tüm uygulamalar zaten etkin.';
 
   @override
   String get cleanerNoInstalled =>
-      'Bu listeden eşleşen bir uygulama bu TV’de yüklü değil.';
+      'Bu listeden eşleşen bir uygulama bu cihazda yüklü değil.';
 
   @override
   String get cleanerListProtected =>
@@ -4471,7 +4489,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get backgroundMediaFormats =>
-      'Resimler: JPEG, PNG, WebP, GIF, BMP — en fazla 8 MiB, 48 megapiksel ve her kenarda 16.384 piksel.\nVideo: MP4/M4V, WebM, MKV — en fazla 256 MiB ve 3840×2160. Kodek desteği TV’ye bağlıdır; H.264 içeren MP4 önerilir. Sessiz tekrarlanır, Ana Ekran dışında duraklatılır. Videolar yedeklere dahil edilmez.';
+      'Resimler: JPEG, PNG, WebP, GIF, BMP — en fazla 8 MiB, 48 megapiksel ve her kenarda 16.384 piksel.\nVideo: MP4/M4V, WebM, MKV — en fazla 256 MiB ve 3840×2160. Kodek desteği cihaza bağlıdır; H.264 içeren MP4 önerilir. Sessiz tekrarlanır, Ana Ekran dışında duraklatılır. Videolar yedeklere dahil edilmez.';
 
   @override
   String get backgroundFormatError =>
@@ -4492,7 +4510,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get backgroundVideoCodecError =>
-      'TV videoyu oynatamadı: kodek desteklenmiyor veya dosya bozuk. H.264 içeren MP4 deneyin.';
+      'Cihaz videoyu oynatamadı: kodek desteklenmiyor veya dosya bozuk. H.264 içeren MP4 deneyin.';
 
   @override
   String get backgroundFileApplied => 'Dosya seçildi. Arka plan güncellendi.';
@@ -4738,7 +4756,7 @@ class AppLocalizationsTr extends AppLocalizations {
       'Başka veya tanımlanamayan bir VPN bağlı. Kontrol kullanılamıyor.';
 
   @override
-  String get vpnStartup => 'TV başlangıcında VPN';
+  String get vpnStartup => 'Cihaz başlangıcında VPN';
 
   @override
   String get vpnPending => 'VPN bağlantısı bekleniyor';
@@ -4770,11 +4788,11 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get vpnRestartRequired =>
-      'Sistem modunu uygulamak için TV’yi yeniden başlatın.';
+      'Sistem modunu uygulamak için cihazı yeniden başlatın.';
 
   @override
   String get vpnAlwaysOnHelp =>
-      'Yapılandırılmış istemciyi yerel TCP ADB üzerinden her zaman açık VPN olarak ayarlar. Android seçimi TV yeniden başlatılınca uygular. VPN dışındaki bağlantıların engellenmesi açılmaz veya değiştirilmez. Moddan çıkıldığında önceki sistem seçimi geri yüklenir.';
+      'Yapılandırılmış istemciyi yerel TCP ADB üzerinden her zaman açık VPN olarak ayarlar. Android seçimi cihaz yeniden başlatılınca uygular. VPN dışındaki bağlantıların engellenmesi açılmaz veya değiştirilmez. Moddan çıkıldığında önceki sistem seçimi geri yüklenir.';
 
   @override
   String get vpnClientConfirmation => 'MantaRay penceresinde komutu onaylayın.';
@@ -4876,7 +4894,7 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get weatherForecastTvTime => 'Tahmin tarihleri TV saatine göre';
+  String get weatherForecastTvTime => 'Tahmin tarihleri cihaz saatine göre';
 
   @override
   String get weatherClear => 'Açık';
@@ -4900,7 +4918,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get audioStatusTitle => 'Ses düzeyi ve ses çıkışı';
 
   @override
-  String get audioOutputTv => 'TV';
+  String get audioOutputTv => 'Hoparlörler';
 
   @override
   String get audioOutputHeadphones => 'Kulaklık';
@@ -4933,7 +4951,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get backgroundStartupHelp =>
-      'TV açıldıktan sonra arka planda bir kez başlatılacak uygulamaları seçin. CuteLauncher bir dakika içinde açılmalıdır: ana ekran yapın veya açılışta başlatmayı etkinleştirin. Uygulamalar ana ekranın arkasında sırayla başlar; seçim anında başlatmaz. Kumanda girişi veya başlatıcıdan çıkmak kalan başlatmaları iptal eder. Uykudan uyanma yeniden başlatmaz. Uyumsuz uygulamalar seçilemez. Başlatma uygulama içi özellikleri etkinleştirmez ve sürekli çalışmayı garanti etmez. İzinleri verin ve arka plan çalışmasını uygulamada ayarlayın. Android veya TV yazılımı uygulamayı durdurabilir. Seçimler yalnızca bu TV’de saklanır.';
+      'cihaz açıldıktan sonra arka planda bir kez başlatılacak uygulamaları seçin. CuteLauncher bir dakika içinde açılmalıdır: ana ekran yapın veya açılışta başlatmayı etkinleştirin. Uygulamalar ana ekranın arkasında sırayla başlar; seçim anında başlatmaz. Kumanda girişi veya başlatıcıdan çıkmak kalan başlatmaları iptal eder. Uykudan uyanma yeniden başlatmaz. Uyumsuz uygulamalar seçilemez. Başlatma uygulama içi özellikleri etkinleştirmez ve sürekli çalışmayı garanti etmez. İzinleri verin ve arka plan çalışmasını uygulamada ayarlayın. Android veya cihaz yazılımı uygulamayı durdurabilir. Seçimler yalnızca bu cihazda saklanır.';
 
   @override
   String get backgroundStartupToggle => 'Arka planda otomatik başlatma';
@@ -5002,7 +5020,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get slideshowPickerUnavailable =>
-      'Bu TV’de klasör seçici yok. Yerleşik tarayıcıyı kullanın veya bir yol girin.';
+      'Bu cihazda klasör seçici yok. Yerleşik tarayıcıyı kullanın veya bir yol girin.';
 
   @override
   String get slideshowFolderUnavailable =>
@@ -5010,7 +5028,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get slideshowStorageHelp =>
-      'Yerleşik tarayıcı TV ve bağlı depolamadaki klasörleri okur. Android 11 ve sonrasında tüm dosyalara, Android 9–10’da depolamaya erişim izni verin. /storage/emulated/0/Pictures gibi bir yolu elle girebilirsiniz. Dosyalar değiştirilmez.';
+      'Yerleşik tarayıcı cihaz ve bağlı depolamadaki klasörleri okur. Android 11 ve sonrasında tüm dosyalara, Android 9–10’da depolamaya erişim izni verin. /storage/emulated/0/Pictures gibi bir yolu elle girebilirsiniz. Dosyalar değiştirilmez.';
 
   @override
   String get fileBrowserTitle => 'Dosya seç';
@@ -5048,7 +5066,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get appChannelsHelp =>
-      'En fazla 16 akış seçin. Kullanılabilirlik, uygulamaların yayımladığı kanallara ve TV aygıt yazılımına bağlıdır. Boş akışlar gizlenir. Seçim bu TV’de saklanır.';
+      'En fazla 16 akış seçin. Kullanılabilirlik, uygulamaların yayımladığı kanallara ve cihaz yazılımına bağlıdır. Boş akışlar gizlenir. Seçim bu cihazda saklanır.';
 
   @override
   String get appChannelsUnavailable =>
@@ -5082,6 +5100,36 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get wallpaperRefresh => 'Duvar kâğıdını yenile';
+
+  @override
+  String get quickActionsTitle => 'Hızlı işlemler';
+
+  @override
+  String get quickActionsSettings => 'Hızlı işlem ayarları';
+
+  @override
+  String get quickActionsEmpty => 'Menü ayarlarında komutları seçin.';
+
+  @override
+  String get quickActionsWallpaperUnavailable =>
+      'Bu arka plan elle değiştirilemez.';
+
+  @override
+  String get quickActionsWallpaperFailed => 'Duvar kâğıdı yenilenemedi.';
+
+  @override
+  String get quickActionsSleep => 'Uyku';
+
+  @override
+  String get quickActionsShutdownConfirm => 'Cihaz tamamen kapatılsın mı?';
+
+  @override
+  String get quickActionsScreensaverUnavailable =>
+      'Ekran koruyucu başlatılamıyor.';
+
+  @override
+  String get quickActionsPowerHelp =>
+      'Uyku için CuteLauncher erişilebilirlik hizmeti veya yerel ADB gerekir. Kapatma ve yeniden başlatma için yerel ADB gerekir.';
 
   @override
   String get wallpaperDimmingHelp =>
@@ -5247,11 +5295,14 @@ class AppLocalizationsTr extends AppLocalizations {
   String get remoteMappingBlackScreen => 'Black Screen’i aç/kapat';
 
   @override
+  String get remoteMappingToggleNightMode => 'Gece modunu aç veya kapat';
+
+  @override
   String get remoteMappingBlackOverlay => 'Siyah ekran';
 
   @override
   String get remoteMappingBlackOverlayHelp =>
-      'Görüntüyü gizlemek için bir kez basın. Geri getirmek için tekrar basın veya Geri tuşunu kullanın. TV açık kalır.';
+      'Görüntüyü gizlemek için bir kez basın. Geri getirmek için tekrar basın veya Geri tuşunu kullanın. Cihaz açık kalır.';
 
   @override
   String get remoteMappingTclScreenOff => 'TCL ekranını kapat';
@@ -5345,7 +5396,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get feedFormatHelp =>
-      'Otomatik, uygulama verilerinden veya yüklenen ilk üç kapaktan her akış için tek bir biçim seçer ve bu TV’de hatırlar. Eşitlikte yatay kullanılır. Diğer oranlar arka plan üzerinde tam gösterilir. Biçimi elle seçebilirsiniz.';
+      'Otomatik, uygulama verilerinden veya yüklenen ilk üç kapaktan her akış için tek bir biçim seçer ve bu cihazda hatırlar. Eşitlikte yatay kullanılır. Diğer oranlar arka plan üzerinde tam gösterilir. Biçimi elle seçebilirsiniz.';
 
   @override
   String get networkSpeedTitle => 'Ağ hızı';
@@ -5412,13 +5463,13 @@ class AppLocalizationsTr extends AppLocalizations {
       'Ayarlar eşitlenemedi. Depolama erişimini kontrol edip tekrar deneyin.';
 
   @override
-  String get backupThisTv => 'Bu TV';
+  String get backupThisTv => 'Bu cihaz';
 
   @override
-  String get backupOtherTv => 'Başka TV';
+  String get backupOtherTv => 'Başka cihaz';
 
   @override
-  String get backupTvUnknown => 'TV bilinmiyor';
+  String get backupTvUnknown => 'Bilinmeyen cihaz';
 
   @override
   String get panelTooltips => 'Tüm panellerde araç ipuçlarını göster';
@@ -5649,7 +5700,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get fileBrowserStartFolder => 'Başlangıç klasörü';
 
   @override
-  String get fileBrowserStorage => 'TV depolaması';
+  String get fileBrowserStorage => 'Cihaz depolaması';
 
   @override
   String get fileBrowserDownloads => 'İndirilenler';
@@ -5689,7 +5740,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get fileBrowserOptionsHelp =>
-      'Önce seçili klasör veya seçilen resmin kaynak klasörü açılır. Son açılan klasör, iptalden sonra da her işlem için ayrı hatırlanır. Klasör kullanılamıyorsa TV depolaması veya İndirilenler açılır. Klasör geçmişi yalnızca bu TV’de tutulur.';
+      'Önce seçili klasör veya seçilen resmin kaynak klasörü açılır. Son açılan klasör, iptalden sonra da her işlem için ayrı hatırlanır. Klasör kullanılamıyorsa cihaz depolaması veya İndirilenler açılır. Klasör geçmişi yalnızca bu cihazda tutulur.';
 
   @override
   String get fileBrowserSaveFailed =>
@@ -5855,20 +5906,20 @@ class AppLocalizationsTr extends AppLocalizations {
   String get backupSyncResume => 'Senkronizasyona devam et';
 
   @override
-  String get backupSyncUseLocal => 'Bu TV’nin ayarlarını kullan';
+  String get backupSyncUseLocal => 'Bu cihazın ayarlarını kullan';
 
   @override
   String get backupSyncUseRemote => 'Depolamadaki ayarları kullan';
 
   @override
-  String get backupSyncMergeLocal => 'Bu TV’ye öncelik vererek birleştir';
+  String get backupSyncMergeLocal => 'Bu cihaza öncelik vererek birleştir';
 
   @override
   String get backupSyncMergeRemote => 'Depolamaya öncelik vererek birleştir';
 
   @override
   String backupSyncPreviousDate(String date) {
-    return 'Bu TV’nin son senkronizasyonu: $date';
+    return 'Bu cihazın son senkronizasyonu: $date';
   }
 
   @override
@@ -5954,7 +6005,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get syncKeyHelp =>
-      'Belirteçler ve hesaplar için tüm TV’lerde aynı anahtarı kullanın. Bir TV’de oluşturup diğerlerine aktarın. Anahtarı saklayın: korunan veriler onsuz okunamaz. Değiştirirken tüm TV’leri güncelleyin. Android izinleri ve donanım anahtarları yerel kalır.';
+      'Belirteçler ve hesaplar için tüm cihazlarda aynı anahtarı kullanın. Bir cihazda oluşturup diğerlerine aktarın. Anahtarı saklayın: korunan veriler onsuz okunamaz. Değiştirirken tüm cihazları güncelleyin. Android izinleri ve donanım anahtarları yerel kalır.';
 
   @override
   String get syncFiles => 'Eşitleme dosyaları';
@@ -6002,7 +6053,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get backupNoRemote =>
-      'Depolamada ayar yok. Bu TV kendi ayarlarını yükleyecek.';
+      'Depolamada ayar yok. Bu cihaz kendi ayarlarını yükleyecek.';
 
   @override
   String get backupSetupStart => 'Etkinleştir';
@@ -6018,18 +6069,18 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get backupAccountLocalHelp =>
-      'Bağlı bir hesap veya aynı türden başka bir hesap kullanın. Kimlik bilgileri bu TV’de kalır. Yedekleme ve eşitleme dosyalarını ayrı yönetir.';
+      'Bağlı bir hesap veya aynı türden başka bir hesap kullanın. Kimlik bilgileri bu cihazda kalır. Yedekleme ve eşitleme dosyalarını ayrı yönetir.';
 
   @override
   String get backupPasswordOptionalHelp =>
-      'İsteğe bağlı. Aktarılabilir belirteçler dahil tüm dosyayı şifreler. Parola yoksa şifreleme yapılmaz. Boş değer şifrelemeyi kapatır. Diğer TV’ler aynı parolayı kullanmalıdır.';
+      'İsteğe bağlı. Aktarılabilir belirteçler dahil tüm dosyayı şifreler. Parola yoksa şifreleme yapılmaz. Boş değer şifrelemeyi kapatır. Diğer cihazlar aynı parolayı kullanmalıdır.';
 
   @override
   String get backupYandexDisk => 'Yandex Disk';
 
   @override
   String get backupYandexHelp =>
-      'Disk uygulama klasörüne erişimi olan bir Yandex OAuth uygulamasının Client ID ve Client Secret bilgilerini girin. Bağlanın ve kodu telefonunuzda onaylayın. Tüm TV’lerde aynı OAuth istemcisini ve hesabı kullanın.';
+      'Disk uygulama klasörüne erişimi olan bir Yandex OAuth uygulamasının Client ID ve Client Secret bilgilerini girin. Bağlanın ve kodu telefonunuzda onaylayın. Tüm cihazlarda aynı OAuth istemcisini ve hesabı kullanın.';
 
   @override
   String get backupYandexConnect => 'Yandex Disk bağla';
@@ -6097,5 +6148,5 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get backupExistingSettingsHelp =>
-      'Seçilen depolamada zaten eşitleme ayarları var. Bunları bu TV’ye uygulamayı, bu TV’nin ayarlarıyla değiştirmeyi veya birleştirmeyi seçin. Birleştirme sırasında farklılık varsa seçtiğiniz öncelik kullanılır. Aktarım, sihirbazın son adımındaki onaydan sonra başlar.';
+      'Seçilen depolamada zaten eşitleme ayarları var. Bunları bu cihaza uygulamayı, bu cihazın ayarlarıyla değiştirmeyi veya birleştirmeyi seçin. Birleştirme sırasında farklılık varsa seçtiğiniz öncelik kullanılır. Aktarım, sihirbazın son adımındaki onaydan sonra başlar.';
 }

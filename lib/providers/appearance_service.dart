@@ -6,6 +6,7 @@ import '../tile_appearance.dart';
 import '../information_formats.dart';
 import 'remote_panel_service.dart';
 import '../category_appearance.dart';
+import '../section_icons.dart';
 import '../models/category.dart';
 import '../launcher_defaults.dart';
 import '../panel_clock_style.dart';
@@ -167,8 +168,10 @@ class AppearanceService extends ChangeNotifier {
   }
   Future<void> resetCategoryLayout(int id, {required bool grid}) async {
     final all = CategoryAppearance.decode(preferences.getString(categoryAppearanceKey));
+    final titleIcon = category(id).values['titleIcon'];
     all['$id'] = {'layout': grid ? 'grid' : 'row',
-      'columns': grid ? 6 : 0, 'rows': 2, 'maxRows': grid ? 3 : 0};
+      'columns': grid ? 6 : 0, 'rows': 2, 'maxRows': grid ? 3 : 0,
+      'titleIcon': ?titleIcon};
     if (!await preferences.setString(categoryAppearanceKey, jsonEncode(all))) throw StateError('Unable to reset layout');
     notifyListeners();
   }
@@ -212,12 +215,14 @@ class AppearanceService extends ChangeNotifier {
     notifyListeners();
   }
   Future<void> setCategory(int id, String key, dynamic value) async {
-    if (id <= 0) return;
+    if (id <= 0 && id != ContinueWatchingSection.sectionId) return;
     final values = CategoryAppearance.decode(preferences.getString(categoryAppearanceKey));
     values['$id'] = {...category(id).values, ...CategoryAppearance.validValues({key: value})};
     if (!await preferences.setString(categoryAppearanceKey, jsonEncode(values))) throw StateError('Unable to save category appearance');
     notifyListeners();
   }
+  Future<void> setCategoryTitleIcon(int id, SectionIcon? icon) =>
+      setCategory(id, 'titleIcon', icon?.name ?? defaultSectionIconName);
   Future<void> set(String key, dynamic value) async {
     final previous = appearance;
     if (key == 'panelCombinedInformation' && value is bool) {

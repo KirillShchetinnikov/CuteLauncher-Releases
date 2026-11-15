@@ -144,7 +144,7 @@ void main() {
       await tester.tap(find.byIcon(Icons.vpn_key));
       await tester.pumpAndSettle();
       expect(
-        find.text('Для применения системного режима перезапустите ТВ.'),
+        find.text('Для применения системного режима перезапустите устройство.'),
         enabled ? findsOneWidget : findsNothing,
       );
       await tester.pumpWidget(const SizedBox());
@@ -317,7 +317,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.descendant(of: find.byType(SettingsReadOnlyValue), matching: find.text('Постоянный VPN Android')), findsOneWidget);
       expect(
-        find.text('Для применения системного режима перезапустите ТВ.'),
+        find.text('Для применения системного режима перезапустите устройство.'),
         findsOneWidget,
       );
       expect(find.text('После пробуждения'), findsNothing);
@@ -347,7 +347,7 @@ void main() {
     );
     await tester.pumpAndSettle();
     expect(
-      find.text('Для применения системного режима перезапустите ТВ.'),
+      find.text('Для применения системного режима перезапустите устройство.'),
       findsOneWidget,
     );
     expect(find.byKey(const ValueKey('vpn_boot_mode')), findsNothing);

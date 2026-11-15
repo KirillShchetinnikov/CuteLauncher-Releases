@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../adaptive_landscape.dart';
+import '../landscape_schedule.dart';
 import '../landscape_clouds.dart';
 import '../landscape_cloud_cache.dart';
 import '../providers/memory_resources.dart';
@@ -85,7 +86,7 @@ class _LandscapeState extends State<AdaptiveLandscapeBackground>
     if (mounted) setState(() => _cloudCachePressure = true);
   }
 
-  void _configure() {
+  List<Map<String, dynamic>> _configure() {
     final settings = context.watch<SettingsService>();
     final visible = context.watch<LauncherState?>()?.launcherVisible ?? true;
     final demo = settings.landscapeDemo.value;
@@ -110,6 +111,13 @@ class _LandscapeState extends State<AdaptiveLandscapeBackground>
         ? settings.landscape
         : settings.landscape.forDemo();
     final source = context.watch<WeatherService?>();
+    final night = context.watch<NightModeService?>();
+    final sceneNow = demo?.now ?? settings.screenshotScene?.now ?? _now;
+    final solarDays = demo?.timeline.solarDays ??
+        resolveLandscapeSchedule(
+          sceneNow, config, night, source,
+          request: active && config.timeOfDay,
+        ).days;
     final condition =
         demo?.weather ??
         settings.screenshotScene?.weather ??
@@ -140,12 +148,9 @@ class _LandscapeState extends State<AdaptiveLandscapeBackground>
     final seconds =
         _animationClock.elapsedMicroseconds / Duration.microsecondsPerSecond;
     final lighting = landscapeLight(
-      demo?.now ?? settings.screenshotScene?.now ?? _now,
+      sceneNow,
       config,
-      solarDays:
-          demo?.timeline.solarDays ??
-          context.watch<NightModeService?>()?.solarDays ??
-          const [],
+      solarDays: solarDays,
     );
     final skyMoving = animated && landscapeNightOpacity(lighting) > 0;
     final meteorMoving =
@@ -187,6 +192,7 @@ class _LandscapeState extends State<AdaptiveLandscapeBackground>
       _motion?.cancel();
       _motion = null;
     }
+    return solarDays;
   }
 
   @override
@@ -235,7 +241,7 @@ class _LandscapeState extends State<AdaptiveLandscapeBackground>
     SettingsService settings,
     LandscapeDemoFrame? demo,
   ) {
-    _configure();
+    final solarDays = _configure();
     final config = demo == null && settings.screenshotScene == null
         ? settings.landscape
         : settings.landscape.forDemo();
@@ -256,24 +262,24 @@ class _LandscapeState extends State<AdaptiveLandscapeBackground>
     final phase = landscapePhase(
       now,
       config,
-      solarDays: demo?.timeline.solarDays ?? night?.solarDays ?? const [],
+      solarDays: solarDays,
     );
     final lighting = landscapeLight(
       now,
       config,
-      solarDays: demo?.timeline.solarDays ?? night?.solarDays ?? const [],
+      solarDays: solarDays,
     );
     final glow = LandscapeGlow.at(
       now,
       config,
-      solarDays: demo?.timeline.solarDays ?? night?.solarDays ?? const [],
+      solarDays: solarDays,
     );
     final starAngle = landscapeStarAngle(now, config);
     final bodies = config.celestialBodies
         ? LandscapeCelestialState.at(
             now,
             config,
-            solarDays: demo?.timeline.solarDays ?? night?.solarDays ?? const [],
+            solarDays: solarDays,
           )
         : null;
     final condition =

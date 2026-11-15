@@ -13,15 +13,17 @@
     <string name="remap_error_app">Atanan uygulama yüklü değil veya açılamıyor.</string>
     <string name="remap_error_hdmi">Atanan HDMI girişi kullanılamıyor.</string>
     <string name="remap_error_power">Güç komutu başarısız. Yerel ADB bağlantısını kontrol edin.</string>
-    <string name="remap_error_permission">TV bu kumanda işlemine izin vermedi.</string>
+    <string name="remap_error_permission">Cihaz bu kumanda işlemine izin vermedi.</string>
     <string name="remap_error_busy">Bir kumanda işlemi zaten sürüyor.</string>
-    <string name="remap_error_unavailable">Bu kumanda işlemi TV’de kullanılamıyor.</string>
+    <string name="remap_error_unavailable">Bu kumanda işlemi bu cihazda kullanılamıyor.</string>
     <string name="remap_error_webhook_http">Webhook isteği reddetti (HTTP %1$d).</string>
     <string name="remap_error_webhook_timeout">Webhook isteği zaman aşımına uğradı.</string>
     <string name="remap_error_webhook">Webhook bağlantısı kurulamadı.</string>
-    <string name="power_off">Cihazı kapat</string>
+    <string name="power_sleep">Uyku</string>
     <string name="power_reboot">Cihazı yeniden başlat</string>
-    <string name="power_off_confirm">Cihaz beklemeye alınsın mı?</string>
+    <string name="power_sleep_confirm">Cihaz beklemeye alınsın mı?</string>
+    <string name="power_shutdown">Cihazı kapat</string>
+    <string name="power_shutdown_confirm">Cihaz tamamen kapatılsın mı?</string>
     <string name="power_reboot_confirm">Cihaz yeniden başlatılsın mı? Açık uygulamalar kapanacak.</string>
     <string name="screensaver_label">CuteLauncher Saati</string>
     <string name="notification_service_label">CuteLauncher Bildirim Hizmeti</string>
@@ -34,7 +36,7 @@
     <string name="recovery_retry">CuteLauncher’ı yeniden başlat</string>
     <string name="recovery_settings">Android ayarları</string>
     <string name="recovery_home">Ana ekranı seç</string>
-    <string name="recovery_unavailable">Bu işlem bu televizyonda kullanılamıyor.</string>
+    <string name="recovery_unavailable">Bu işlem bu cihazda kullanılamıyor.</string>
     <string name="recovery_restore">Önceki ana ekranı geri yükle</string>
     <string name="recovery_restore_confirm">Mevcut yerel ADB bağlantısı üzerinden önceki ana ekran geri yüklensin mi?</string>
 </resources>

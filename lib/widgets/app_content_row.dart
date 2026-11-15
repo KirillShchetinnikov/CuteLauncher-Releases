@@ -14,6 +14,7 @@ import '../providers/app_channels_service.dart';
 import '../providers/appearance_service.dart';
 import '../providers/settings_service.dart';
 import '../providers/foreground_work.dart';
+import '../section_icons.dart';
 import '../tile_appearance.dart';
 import '../tile_image_geometry.dart';
 import '../home_layout.dart';
@@ -30,6 +31,7 @@ import 'tile_paint_layer.dart';
 import 'tile_artwork.dart';
 import 'tile_theme_outline.dart';
 import 'reordering_tile_viewport.dart';
+import 'section_heading_icon.dart';
 import 'home_skeleton.dart';
 
 TextStyle? _previewTitleStyle(
@@ -47,15 +49,18 @@ class AppContentRow extends StatelessWidget {
   final List<WatchNextProgram> programs;
   final TileAppearance? appearance;
   final Size? appTileSize;
+  final SectionIcon titleIcon;
   const AppContentRow({
     super.key,
     required this.channel,
     required this.programs,
     this.appearance,
     this.appTileSize,
+    this.titleIcon = SectionIcon.appFeeds,
   }) : loadingTitle = null, loadingRatio = null;
   const AppContentRow.loading({super.key, required String title,
-    required double aspectRatio, this.appearance, this.appTileSize})
+    required double aspectRatio, this.appearance, this.appTileSize,
+    this.titleIcon = SectionIcon.appFeeds})
       : channel = null, programs = const [], loadingTitle = title,
         loadingRatio = aspectRatio;
   @override
@@ -68,6 +73,7 @@ class AppContentRow extends StatelessWidget {
     final channel = this.channel;
     if (channel == null) {
       return ContentPreviewRow.loading(title: loadingTitle!, style: style,
+        titleIcon: titleIcon,
         aspectRatio: loadingRatio!, appTileSize: appTileSize,
         reserveDescription: true, focusLoading: true);
     }
@@ -77,6 +83,7 @@ class AppContentRow extends StatelessWidget {
     return ContentPreviewRow(
       programs: programs,
       title: '${channel.name} · ${channel.appName}',
+      titleIcon: titleIcon,
       style: style,
       appTileSize: appTileSize,
       aspectRatio: aspectRatio,
@@ -117,6 +124,7 @@ class ContentPreviewRow extends StatefulWidget {
     super.key,
     required this.programs,
     required this.title,
+    this.titleIcon,
     required this.style,
     required this.aspectRatio,
     required Widget Function(WatchNextProgram, Size) this.card,
@@ -128,6 +136,7 @@ class ContentPreviewRow extends StatefulWidget {
   const ContentPreviewRow.loading({
     super.key,
     required this.title,
+    this.titleIcon,
     required this.style,
     required this.aspectRatio,
     this.reserveDescription = false,
@@ -139,6 +148,7 @@ class ContentPreviewRow extends StatefulWidget {
 
   final List<WatchNextProgram> programs;
   final String title;
+  final SectionIcon? titleIcon;
   final TileAppearance style;
   final double aspectRatio;
   final Widget Function(WatchNextProgram, Size)? card;
@@ -488,20 +498,25 @@ class _ContentPreviewRowState extends State<ContentPreviewRow> {
               end: style.sectionTitleAligned ? _horizontalInset : 0,
               bottom: 8,
             ),
-            child: !showSelected
-                ? title
-                : Row(
-                    children: [
-                      if (style.sectionTitles) ...[
-                        Flexible(child: title),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          child: Text('·', style: style.labelStyle),
-                        ),
-                      ],
-                      Expanded(child: selectedLabel(selectedId)),
-                    ],
-                  ),
+            child: Row(
+              children: [
+                if (style.sectionTitles) ...[
+                  if (widget.titleIcon case final icon? when style.sectionIcons) ...[
+                    SectionHeadingIcon(icon),
+                    const SizedBox(width: 8),
+                  ],
+                  Flexible(child: title),
+                ],
+                if (showSelected) ...[
+                  if (style.sectionTitles)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: Text('·', style: style.labelStyle),
+                    ),
+                  Expanded(child: selectedLabel(selectedId)),
+                ],
+              ],
+            ),
           );
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,

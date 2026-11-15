@@ -1,6 +1,7 @@
 import 'information_formats.dart';
 import 'overlay_appearance.dart';
 import 'overlay_position.dart';
+import 'quick_actions.dart';
 
 /// Local subscription; included in packets only to describe their contents.
 const backupSyncGroupsKey = 'backup_sync_disabled_groups';
@@ -256,6 +257,9 @@ BackupSyncGroup? backupSyncPartGroup(String part) {
     'tv_inputs_configuration',
     'show_system_settings_in_status_bar',
     'show_sleep_timer_in_status_bar',
+    quickActionsVisibleKey,
+    quickActionsItemsKey,
+    quickActionsOrderKey,
     'show_night_mode_in_status_bar',
     'show_now_playing',
   }.contains(key)) {

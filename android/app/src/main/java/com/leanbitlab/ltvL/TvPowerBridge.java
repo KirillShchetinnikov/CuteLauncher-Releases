@@ -17,31 +17,39 @@ import io.flutter.plugin.common.MethodChannel;
 /** Explicit power requests; only fixed commands over the existing local ADB trust. */
 final class TvPowerBridge {
     private static final AtomicBoolean busy = new AtomicBoolean();
-    private enum Operation { SLEEP, REBOOT, TCL_SCREEN_OFF }
+    enum Operation {
+        SLEEP, REBOOT, SHUTDOWN, TCL_SCREEN_OFF;
+
+        static Operation fromMethod(String method) {
+            return switch (method) {
+                case "sleep" -> SLEEP;
+                case "reboot" -> REBOOT;
+                case "shutdown" -> SHUTDOWN;
+                default -> null;
+            };
+        }
+    }
 
     static void register(Context activity, BinaryMessenger messenger, ExecutorService worker) {
         Context c = activity.getApplicationContext();
         new MethodChannel(messenger, "cutelauncher/tv_power").setMethodCallHandler((call, result) -> {
-            if (!call.method.equals("sleep") && !call.method.equals("reboot")) {
+            Operation operation = Operation.fromMethod(call.method);
+            if (operation == null) {
                 result.notImplemented(); return;
             }
-            request(c, call.method.equals("reboot"), worker, status -> {
+            request(c, operation, worker, status -> {
                 if (status.equals("success")) result.success(true);
                 else result.error(status, "Power request " + status, null);
             });
         });
     }
 
-    /** Shared by settings and service-owned mappings. Callback runs on main. */
-    static void request(Context context, boolean reboot, ExecutorService worker, Consumer<String> result) {
-        request(context, reboot ? Operation.REBOOT : Operation.SLEEP, worker, result);
-    }
-
     static void requestTclScreenOff(Context context, ExecutorService worker, Consumer<String> result) {
         request(context, Operation.TCL_SCREEN_OFF, worker, result);
     }
 
-    private static void request(Context context, Operation operation, ExecutorService worker, Consumer<String> result) {
+    /** Shared by settings and service-owned mappings. Callback runs on main. */
+    static void request(Context context, Operation operation, ExecutorService worker, Consumer<String> result) {
         Context c = context.getApplicationContext();
         Handler main = new Handler(Looper.getMainLooper());
         if (!busy.compareAndSet(false, true)) { result.accept("busy"); return; }
@@ -75,9 +83,11 @@ final class TvPowerBridge {
         try (Dadb adb = Dadb.create("127.0.0.1", port, AdbKeyPair.read(privateKey, publicKey), 2000, 3000)) {
             var user = NativeShellDiagnostics.execute(adb, "id -u", "tvPower");
             if (user.getExitCode() != 0 || !user.getOutput().trim().equals("2000")) return false;
-            // Detach the delayed reboot so the shell can acknowledge before ADB disconnects.
+            // svc waits for power-off. Detach destructive requests so the shell can
+            // acknowledge their dispatch before ADB disconnects.
             String command = switch (operation) {
                 case REBOOT -> "sh -c 'sleep 1; svc power reboot' >/dev/null 2>&1 </dev/null &";
+                case SHUTDOWN -> "sh -c 'sleep 1; svc power shutdown' >/dev/null 2>&1 </dev/null &";
                 case SLEEP -> "input keyevent KEYCODE_SLEEP";
                 case TCL_SCREEN_OFF -> TclScreenOff.SHELL_COMMAND;
             };

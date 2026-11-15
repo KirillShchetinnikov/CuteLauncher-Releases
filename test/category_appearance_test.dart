@@ -6,13 +6,86 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flauncher/category_appearance.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
+import 'package:flauncher/models/category.dart';
 import 'package:flauncher/providers/appearance_service.dart';
+import 'package:flauncher/section_icons.dart';
 import 'package:flauncher/settings_import.dart';
 import 'package:flauncher/tile_appearance.dart';
 import 'package:flauncher/widgets/settings/section_style_page.dart';
+import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
+import 'package:flauncher/widgets/settings/settings_choice_dialog.dart';
 import 'package:flauncher/widgets/settings/settings_value_stepper.dart';
+import 'package:flauncher/widgets/section_heading_icon.dart';
 
 void main() {
+  test('heading icons have distinct defaults and round-trip through appearance import', () async {
+    expect({
+      for (final key in Category.systemKeys)
+        SectionIcon.forCategory(Category(name: 'Renamed', systemKey: key)),
+      SectionIcon.continueWatching,
+    }, SectionIcon.values.take(6).toSet());
+    expect(SectionIcon.values.skip(6), hasLength(10));
+    expect(SectionIcon.forCategory(Category(name: 'Music')), SectionIcon.music);
+    expect(SectionIcon.forCategory(Category(name: 'My apps')), SectionIcon.folder);
+
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    final service = AppearanceService(prefs);
+    addTearDown(service.dispose);
+    const watchNext = ContinueWatchingSection.sectionId;
+    await service.setCategoryTitleIcon(1, SectionIcon.photos);
+    await service.setCategoryTitleIcon(watchNext, SectionIcon.news);
+    await service.setCategoryTile(1, 'sectionIcons', false);
+    await service.resetCategoryLayout(1, grid: false);
+    expect(service.category(1).titleIcon, SectionIcon.photos);
+    expect(service.category(2).titleIcon, isNull);
+    final firstChoice = prefs.getString(categoryAppearanceKey);
+    await service.setCategoryTitleIcon(1, null);
+    final result = compatibleSettings({
+      categoryAppearanceKey: prefs.getString(categoryAppearanceKey),
+    }, {categoryAppearanceKey: firstChoice});
+    final decoded = CategoryAppearance.decode(result[categoryAppearanceKey]);
+    expect(CategoryAppearance(decoded['1']).titleIcon, isNull);
+    expect(CategoryAppearance(decoded['$watchNext']).titleIcon, SectionIcon.news);
+    expect(CategoryAppearance.validValues({'titleIcon': 'unknown'}), isEmpty);
+    expect(CategoryAppearance.validValues({'titleIcon': 12}), isEmpty);
+  });
+
+  testWidgets('heading icon picker shows 16 glyphs and saves with the remote', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final service = AppearanceService(await SharedPreferences.getInstance());
+    addTearDown(service.dispose);
+    await tester.pumpWidget(ChangeNotifierProvider.value(
+      value: service,
+      child: MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: const Scaffold(body: SectionStylePage(categoryId: 1)),
+      ),
+    ));
+    final title = find.widgetWithText(FocusableSettingsTile, 'Section heading icon');
+    await tester.scrollUntilVisible(title, 160);
+    await tester.tap(title);
+    await tester.pumpAndSettle();
+    final dialog = find.byType(SettingsChoiceDialog<SectionIcon?>);
+    expect(find.descendant(of: dialog, matching: find.byType(SectionHeadingIcon)), findsNWidgets(17));
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(service.category(1).titleIcon, SectionIcon.allApps);
+    expect(dialog, findsNothing);
+    expect(Focus.of(tester.element(find.text('Section heading icon'))).hasFocus, isTrue);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(service.category(1).titleIcon, isNull);
+    await service.set('sectionTitles', false);
+    await tester.pumpAndSettle();
+    expect(tester.widget<FocusableSettingsTile>(title).enabled, isFalse);
+  });
+
   test('section title size validates, inherits, persists and imports', () async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();

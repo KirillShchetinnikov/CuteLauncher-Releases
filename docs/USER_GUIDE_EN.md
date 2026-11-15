@@ -25,10 +25,10 @@ update to get new features. Requirements and limitations appear beside each feat
 - [Night mode and brightness](#night-mode-and-brightness)
 - [Clock and screensaver](#clock-and-screensaver)
 - [Sleep timer](#sleep-timer)
-- [Launcher and TV controls](#launcher-and-tv-controls)
+- [Launcher and device controls](#launcher-and-device-controls)
 - [Remote remapper and quick settings panel](#remote-remapper-and-quick-settings-panel)
 - [Open apps](#open-apps)
-- [TV cleanup manager](#tv-cleanup-manager)
+- [Device cleanup manager](#device-cleanup-manager)
 - [Backups and synchronization](#backups-and-synchronization)
 - [Updates and app information](#updates-and-app-information)
 - [Memory and resource saving](#memory-and-resource-saving)
@@ -67,7 +67,7 @@ When settings move, appear, or disappear on a page, the directional pad follows
 their new order.
 
 Settings are grouped into Home screen, Top panel, Interface style, Apps, Night mode
-and brightness, Launcher and TV controls, and Advanced. Android TV system
+and brightness, Launcher and device controls, and Advanced. Android TV system
 settings open separately. Help is collapsed under a topic title with an information
 icon. Current errors and unavailable-state reasons remain visible. Choose an
 app language in Advanced independently of Android, or follow the system language.
@@ -149,6 +149,12 @@ Automatic app lists are built from installed apps. Enable and move Continue
 Watching in the same editor.
 Moving a category across the list boundary places it first among hidden categories;
 restoring it places it last among visible ones. Other categories keep their order.
+
+Each standard category has its own icon. To change it for a standard or custom
+category, open **Category appearance → Headings → Section heading icon**.
+The picker includes the standard icons and ten additional ones. “Default” restores
+the original icon. Hiding headings or icons keeps your selection. For App feeds,
+one selection applies to all feed headings.
 
 Choose rows or grids, sorting, column and visible-row counts, scrolling, active
 category pinning, sizes, spacing, headings, backgrounds, and margins. Some
@@ -319,7 +325,7 @@ same editor to switch back.
 Hiding an app removes it from automatic launcher lists; it does not disable
 the app in Android. The normal system-app list belongs to the launcher catalog.
 For the complete installed-package list, including background system components,
-use the [cleanup manager](#tv-cleanup-manager).
+use the [cleanup manager](#device-cleanup-manager).
 
 ## Appearance and backgrounds
 
@@ -439,8 +445,12 @@ and disappears completely behind the horizon; the moon appears at night.
 Stars are scattered irregularly across the sky, with occasional tailed meteors that move and fade away.
 The separate **Star rotation** switch enables slow rotation of the night sky,
 and is off by default. The preview always shows rotation according to its simulated time.
-Sun times come from the Night mode cache; without them, sunrise is at 06:00 and
-sunset at 18:00. The first visible solar pixels emerge above the mountains at local sunrise, and the last disappear at local sunset. Ambient lighting transitions from 40 minutes before sunrise to 40 minutes after it; evenings pass through sunset and a separate violet twilight before night, 80 minutes after sunset. Transitions shorten on days with little daylight.
+Choose **Schedule type** below **Time of day**. By default, **Auto** calculates
+sunrise and sunset on the device using saved weather or Night mode coordinates.
+When sun times are unavailable, the settings show that the landscape is using
+your custom times, initially 08:00 and 20:00. **Night mode** follows that
+feature’s saved schedule. **Custom schedule** always uses the hours you set.
+The first visible solar pixels emerge above the mountains at sunrise, and the last disappear at sunset. Ambient lighting transitions from 40 minutes before sunrise to 40 minutes after it. Evenings pass through sunset and a separate violet twilight before night, 80 minutes after sunset. Transitions shorten on days with little daylight.
 The **Demonstrate changes** button in landscape settings starts at the current time and previews a full day at variable speed: a steady hour passes in about a third of a second, while an hour within the glow takes four seconds. Fast time resumes as soon as the glow ends. Dawn and sunset slow down so the color changes remain visible. The glow spreads across the sky in soft waves from the sunrise or sunset point, strongest near the sun and much weaker on mountains and forest. It starts 10 minutes before sunrise or an hour before sunset and fades out an hour after sunrise or 10 minutes after sunset; the sun already emerges from behind the mountains red-orange and becomes lighter after sunrise. In the evening, it starts turning red 40 minutes before the local sunset and stays red as it disappears behind the mountains. Moderately dense rain falls down and slightly left, parallel to its streaks, and remains visible in both the regular weather effect and the preview. Four pairs follow: summer with clouds, autumn with rain, winter with snow, and spring with fog. Each season appears clear for 2 seconds, followed by its weather effect for 3 seconds. Seasonal images crossfade smoothly in 0.5 seconds. The preview ends automatically after one full run. You can also stop it by pressing **Stop**, leaving the screen, or moving the app to the background. The preview enables weather movement and star rotation even when the normal switches are off, without changing saved settings; sun and moon visibility follows their switch. During the preview, settings are completely hidden. At the top center of the screen, a progress bar without numbers shows the full run, followed by the current effect and simulated time, and a **Stop** button to the right of the caption. Stop or Back cancels the preview and restores the same settings page; Home cancels it and returns to the home screen.
 
 Sky colors and landscape lighting change gradually throughout sunrise and sunset. Seasons follow the month and hemisphere: automatic
@@ -538,6 +548,19 @@ On compatible firmware, you can turn it on before mounting a network share.
 
 
 Path: **Top panel → Objects / Object order**.
+
+**Quick actions.** Turn on the lightning button under **Top panel → Objects**.
+It is hidden by default. Use **Quick action settings** or the gear in the menu to
+choose and reorder the visible commands. In the order editor, press OK to select
+a command, move it with ↑/↓, then press OK again. Hidden commands keep their place.
+
+**Sleep** puts the device on standby using CuteLauncher's accessibility service
+or local ADB. **Turn off device** requests a full shutdown. Shutdown and restart
+require local ADB. All three power commands ask for confirmation. **Show screensaver**
+starts the screensaver selected in Android if it is enabled and the firmware
+supports manual launch. **Refresh wallpaper** advances the slideshow or video
+folder, or fetches the online wallpaper immediately. An online source may return
+the same image. Other background types do not support manual changes.
 
 Nested settings windows, including value and color selection, open below
 the top panel. Long lists scroll within the window bounds.
@@ -1143,11 +1166,11 @@ the result. Android stores the deadline; exact firing needs exact-alarm access,
 and standby requires a supported system action or configured ADB. Behavior
 depends on the TV. The app does not disconnect electrical power.
 
-## Launcher and TV controls
+## Launcher and device controls
 
 After three crashes within five minutes, CuteLauncher opens a recovery screen without loading the main interface. On Android 9–10, this counts failures reported by Flutter itself; system crash history is available from Android 11. Settings are preserved. Use the remote to retry, open another TV app or Android settings, and choose a home screen. If local ADB was configured, the restore button returns the previous HOME after confirmation. Without ADB, enable a disabled stock launcher in Android app settings first.
 
-Path: **Launcher and TV controls**.
+Path: **Launcher and device controls**.
 
 - **App permissions**: select a user-installed app and its accessibility service.
   System apps, including updated system apps, are excluded from the list,
@@ -1168,11 +1191,11 @@ Path: **Launcher and TV controls**.
   the app or changing its signing identity. Permission statuses reflect the latest
   check; unsupported operations are marked separately. Errors may leave partial
   changes: check the connection and refresh the status.
-- **Power management**: put the device in standby or restart it, with confirmation
-  before sending the command. Standby requires the CuteLauncher accessibility
-  service or local ADB; restart requires ADB. On a TV box, the command controls
-  the box itself; TV behavior depends on HDMI-CEC and firmware. This does not
-  disconnect electrical power.
+- **Power management** offers **Sleep**, **Turn off device**, and **Restart
+  device**. Each command requires confirmation. Sleep requires CuteLauncher's
+  accessibility service or local ADB. Full shutdown and restart require local
+  ADB. On a TV box, the command controls the box itself. The TV's response
+  depends on HDMI-CEC and firmware.
 - Configure local TCP/RSA ADB: port, connection check, and authorization on the TV.
 - **Default launcher** shows the current home app and two buttons. The first
   sets CuteLauncher as default through ADB and disables the built-in launcher
@@ -1267,7 +1290,7 @@ Restoring the original state requires working ADB and saved recovery data.
 a command. It is available for assignable remapper buttons; essential controls
 remain protected. Disabling the assignment restores the button's normal action.
 
-Path: **Launcher and TV controls → Remote button remapper**.
+Path: **Launcher and device controls → Remote button remapper**.
 
 In button diagnostics, the start/stop instructions and the report path, when known,
 are visible without expanding help. Help explains copying the report and limitations.
@@ -1287,12 +1310,20 @@ display actions and the media mute toggle. “System” opens network or
 Bluetooth settings. System screens appear when the firmware provides an
 accessible handler.
 
-“Turn off device” puts the device in standby. “Restart device” requires configured
-ADB. Both commands have variants with and without confirmation. The confirmation
+**Sleep** puts the device in standby. Existing “Turn off device” mappings are
+shown as **Sleep** and still put the device in standby. The **Turn off device**
+option in the action picker requests a full shutdown through local ADB and always
+requires confirmation. **Restart device** also requires ADB.
+Sleep and restart have variants with and without confirmation. The confirmation
 variant opens a dialog over the current app. Cancel or Back closes it without
 sending the command. The variant without confirmation sends the command immediately.
 On a TV box, the command controls the box, and the TV’s response depends on
 HDMI-CEC and firmware. There are global and per-mapping switches and reset.
+
+Under “Screen and sound”, choose “Toggle night mode”. Press the assigned button
+to flip the main night mode switch, and press it again to flip it back. The
+schedule and filter settings are kept. If scheduling is enabled, the filter
+still follows the schedule.
 
 “Black screen” covers the current app with a black layer. Repeat the same press
 or press Back to show the picture. This action uses CuteLauncher’s enabled
@@ -1327,8 +1358,10 @@ is used when an app icon is unavailable.
 Assignments also work over other apps when the firmware delivers the button to the service.
 
 The quick settings panel has its own object selection and order. It appears over the
-current app and closes with Back. Accessibility and the relevant special access
-are required to operate over apps. Not every physical button reaches the service:
+current app and closes with Back. While CuteLauncher is visible, pressing the
+assigned button only shows a notice that opening the panel is disabled.
+Accessibility and the relevant special access are required to operate over apps.
+Not every physical button reaches the service:
 Power is excluded; voice and some branded buttons may be handled by Android.
 Double press is not supported.
 
@@ -1346,7 +1379,7 @@ for the initial single step and choosing another mode.
 
 ## Open apps
 
-Path: **Launcher and TV controls → Open apps**. Assign the “Open apps panel” action
+Path: **Launcher and device controls → Open apps**. Assign the “Open apps panel” action
 in the remapper, just like the quick settings panel. This settings page also opens
 the panel directly and selects its type: Automatic, CuteLauncher panel, or
 Built-in panel. Automatic mode uses the available manufacturer's `com.nes.recents`
@@ -1382,14 +1415,14 @@ returns to the previous available button; if it disappears or becomes disabled,
 focus moves to Refresh. The panel type is stored
 only on this device.
 
-## TV cleanup manager
+## Device cleanup manager
 
 Bundled restrictions for specific models and firmware preserve known system
 dependencies. They apply only when the specified device metadata matches exactly
 and also protect restoration. Observations from another TV do not authorize
 disabling packages on yours.
 
-Path: **Launcher and TV controls → TV cleanup manager**.
+Path: **Launcher and device controls → Device cleanup manager**.
 
 After a change or restoration, Last operation result shows each package as
 changed, unchanged, skipped, failed, or not attempted. Failures identify the
@@ -1491,7 +1524,7 @@ The preference persists between launches and is included in backups and synchron
 
 **Advanced → Built-in file browser** provides:
 
-- a starting folder: TV storage, Downloads, or the last opened folder;
+- a starting folder: device storage, Downloads, or the last opened folder;
 - sorting by name, modification date, or size, in ascending or descending order;
 - keeping folders at the top;
 - showing hidden files and folders;
@@ -1504,8 +1537,8 @@ folder is remembered separately for the wallpaper, day and night images, and eac
 application's banner when selected in the built-in browser. Select an older image
 again if its original folder was not saved. Cancelling keeps the selected file or
 folder unchanged but remembers the last visited folder. If a folder was removed
-or a drive disconnected, TV storage or the selected Downloads folder opens;
-unavailable Downloads falls back to TV storage. Folder history stays on this TV,
+or a drive disconnected, device storage or the selected Downloads folder opens;
+unavailable Downloads falls back to device storage. Folder history stays on this device,
 while browser options are included in backups and synchronization.
 
 The built-in browser shows folders and matching files only: JSON for settings
@@ -1534,7 +1567,7 @@ scroll position and focus. The browser indicates when only part of a folder's
 contents is shown.
 
 The built-in browser needs storage access on Android 9–10 (including write access
-when saving) or all files access on Android 11 and newer. It works with TV storage
+when saving) or all files access on Android 11 and newer. It works with device storage
 and attached drives. The external file browser may offer other sources and does not require
 broad file access. Manual path entry is available only in slideshow settings.
 
@@ -1616,9 +1649,9 @@ New file names and backup labels include the TV manufacturer/model and device ID
 The ID survives a normal reinstall with the same signing key; a factory reset,
 a different Android user or signing key may change it. If the firmware provides
 no ID, an installation-local ID is used. Older backups remain accessible.
-Each backup is marked “This TV” or “Another TV” using the full device ID rather
+Each backup is marked “This device” or “Another device” using the full device ID rather
 than the model name. An older backup with a different installation ID is marked
-“TV unknown”: after a reinstall, its origin cannot reliably be determined.
+“Unknown device”: after a reinstall, its origin cannot reliably be determined.
 Use an updated CuteLauncher version on other TVs to read the new file names.
 
 Synchronize selected settings groups between TVs while leaving other groups local.

@@ -1,4 +1,6 @@
 import '../diagnostics_store.dart';
+import '../app_image_type.dart';
+import '../home_tile_diagnostics.dart';
 /*
  * FLauncher
  * Copyright (C) 2021  Étienne Fesser
@@ -56,10 +58,13 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
   int contentRevision = 0;
   (int, int) imageRevisionFor(String package) => (_imageGeneration, _imageVersions[package] ?? 0);
 
-  void _imageChanged(String package) {
+  void _imageChanged(String package, HomeTileRevision reason) {
     _iconCache.remove(package);
     _bannerCache.remove(package);
-    _imageVersions.update(package, (version) => version + 1, ifAbsent: () => 1);
+    final revision = _imageVersions.update(package, (version) => version + 1, ifAbsent: () => 1);
+    if (HomeTileDiagnostics.enabled) {
+      DiagnosticsStore.instance.homeTiles.revision(package, reason, revision);
+    }
   }
 
   void _notifyImages() => super.notifyListeners();
@@ -102,19 +107,50 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
   }
 
   Future<Uint8List> _loadImage(String key, ImageByteCache cache, Future<Uint8List> Function() loader) {
-    if (isDisposed || _memoryResources?.isForeground == false) return Future.value(Uint8List(0));
+    if (isDisposed || _memoryResources?.isForeground == false) {
+      if (HomeTileDiagnostics.enabled && !isDisposed) {
+        _traceImageRead(key, HomeTileRead.background);
+      }
+      return Future.value(Uint8List(0));
+    }
     final generation = _imageGeneration;
     final package = key.substring(key.indexOf(':') + 1);
     // Cache hits must not queue behind slow disk or platform-channel reads.
     final cached = cache[package];
-    if (cached != null) return Future.value(cached);
+    if (cached != null) {
+      if (HomeTileDiagnostics.enabled) {
+        _traceImageRead(key, cached.isEmpty ? HomeTileRead.cacheEmpty : HomeTileRead.cacheHit);
+      }
+      return Future.value(cached);
+    }
     final scopedKey = '${imageRevisionFor(package)}:$key';
     return _imageLoads.putIfAbsent(scopedKey, () async {
       try {
-        return await _imagePool.withResource(() => isDisposed || generation != _imageGeneration || _memoryResources?.isForeground == false
-            ? Future.value(Uint8List(0)) : loader());
+        return await _imagePool.withResource(() {
+          final obsolete = generation != _imageGeneration;
+          if (isDisposed || obsolete || _memoryResources?.isForeground == false) {
+            if (HomeTileDiagnostics.enabled && !isDisposed) {
+              _traceImageRead(key, obsolete ? HomeTileRead.obsolete : HomeTileRead.background);
+            }
+            return Future.value(Uint8List(0));
+          }
+          if (!HomeTileDiagnostics.enabled) return loader();
+          final traceGeneration = DiagnosticsStore.instance.homeTiles.generation;
+          return loader().then((bytes) {
+            if (!isDisposed && traceGeneration == DiagnosticsStore.instance.homeTiles.generation) {
+              _traceImageRead(key, bytes.isEmpty ? HomeTileRead.readEmpty : HomeTileRead.read);
+            }
+            return bytes;
+          });
+        });
       } finally { _imageLoads.remove(scopedKey); }
     });
+  }
+
+  void _traceImageRead(String key, HomeTileRead result) {
+    final separator = key.indexOf(':');
+    final type = key.startsWith('banner:') ? AppImageType.Banner : AppImageType.Icon;
+    DiagnosticsStore.instance.homeTiles.read(key.substring(separator + 1), type, result);
   }
 
   Map<int, Category> _categoriesById = {};
@@ -268,14 +304,16 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
       }
 
       if (changedPackageName != null) {
-        _imageChanged(changedPackageName);
+        _imageChanged(changedPackageName, HomeTileRevision.catalogEvent);
       }
 
       switch (event["action"]) {
         case "CATALOG_CHANGED":
           final packages = event['packages'];
           if (packages is List) {
-            for (final package in packages.whereType<String>()) { _imageChanged(package); }
+            for (final package in packages.whereType<String>()) {
+              _imageChanged(package, HomeTileRevision.catalogEvent);
+            }
           }
           await (work?.schedule(_catalogEvents, refreshState,
               delay: const Duration(milliseconds: 100), priority: 3) ?? refreshState());
@@ -594,7 +632,7 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
             ? previous != next
             : old != null && (old.version != metadata['version'] || old.name != metadata['name']);
         if (changed) {
-          _imageChanged(package);
+          _imageChanged(package, HomeTileRevision.catalogMetadata);
         }
       }
       unawaited(catalogCache?.save(appsFromSystem) ?? Future.value());
@@ -846,7 +884,7 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
     final prefs = await _prefsAsync;
     await prefs.setString('custom_banner_$packageName', imagePath);
     _bannerCache.remove(packageName);
-    _imageChanged(packageName);
+    _imageChanged(packageName, HomeTileRevision.customBannerSet);
     notifyListeners();
   }
 
@@ -865,7 +903,7 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
     }
     await prefs.remove('custom_banner_$packageName');
     _bannerCache.remove(packageName);
-    _imageChanged(packageName);
+    _imageChanged(packageName, HomeTileRevision.customBannerRemoved);
     notifyListeners();
   }
 

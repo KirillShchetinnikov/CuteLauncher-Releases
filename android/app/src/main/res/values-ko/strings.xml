@@ -13,15 +13,17 @@
     <string name="remap_error_app">지정한 앱이 없거나 열 수 없습니다.</string>
     <string name="remap_error_hdmi">지정한 HDMI 입력을 사용할 수 없습니다.</string>
     <string name="remap_error_power">전원 명령이 실패했습니다. 로컬 ADB를 확인하세요.</string>
-    <string name="remap_error_permission">TV가 이 리모컨 동작을 차단했습니다.</string>
+    <string name="remap_error_permission">기기가 이 리모컨 동작을 차단했습니다.</string>
     <string name="remap_error_busy">리모컨 동작이 이미 진행 중입니다.</string>
-    <string name="remap_error_unavailable">이 TV에서는 해당 리모컨 동작을 사용할 수 없습니다.</string>
+    <string name="remap_error_unavailable">이 기기에서는 해당 리모컨 동작을 사용할 수 없습니다.</string>
     <string name="remap_error_webhook_http">웹훅이 요청을 거부했습니다(HTTP %1$d).</string>
     <string name="remap_error_webhook_timeout">웹훅 요청 시간이 초과되었습니다.</string>
     <string name="remap_error_webhook">웹훅에 연결할 수 없습니다.</string>
-    <string name="power_off">기기 끄기</string>
+    <string name="power_sleep">절전 모드</string>
     <string name="power_reboot">기기 다시 시작</string>
-    <string name="power_off_confirm">기기를 대기 모드로 전환할까요?</string>
+    <string name="power_sleep_confirm">기기를 대기 모드로 전환할까요?</string>
+    <string name="power_shutdown">기기 끄기</string>
+    <string name="power_shutdown_confirm">기기의 전원을 완전히 끌까요?</string>
     <string name="power_reboot_confirm">기기를 다시 시작할까요? 열려 있는 앱이 종료됩니다.</string>
     <string name="screensaver_label">CuteLauncher 시계</string>
     <string name="notification_service_label">CuteLauncher 알림 서비스</string>
@@ -34,7 +36,7 @@
     <string name="recovery_retry">CuteLauncher 다시 실행</string>
     <string name="recovery_settings">Android 설정</string>
     <string name="recovery_home">홈 화면 선택</string>
-    <string name="recovery_unavailable">이 TV에서는 이 작업을 사용할 수 없습니다.</string>
+    <string name="recovery_unavailable">이 기기에서는 이 작업을 사용할 수 없습니다.</string>
     <string name="recovery_restore">이전 홈 화면 복원</string>
     <string name="recovery_restore_confirm">기존 로컬 ADB 연결로 이전 홈 화면을 복원하시겠습니까?</string>
 </resources>

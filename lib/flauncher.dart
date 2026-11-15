@@ -1,12 +1,15 @@
 import 'dart:math' as math;
 
 import 'information_placement.dart';
+import 'diagnostics_store.dart';
+import 'home_tile_diagnostics.dart';
 import 'key_sounds.dart';
 import 'widgets/wallpaper_background.dart';
 import 'widgets/landscape_wallpaper.dart';
 import 'widgets/video_wallpaper_background.dart';
 import 'widgets/app_artwork_background.dart';
 import 'providers/remote_panel_service.dart';
+import 'section_icons.dart';
 import 'providers/foreground_work.dart';
 import 'providers/now_playing_service.dart';
 import 'providers/slideshow_service.dart';
@@ -276,6 +279,9 @@ class FLauncherState extends State<FLauncher> {
   }
 
   void returnHome() {
+    if (HomeTileDiagnostics.enabled) {
+      DiagnosticsStore.instance.homeTiles.returnHome();
+    }
     _sectionPreviewOrigin = null;
     context.read<LauncherState>().showLauncher();
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -537,6 +543,8 @@ class FLauncherState extends State<FLauncher> {
       late final tiles = contentTiles(category.id);
       late final style = tiles.style;
       late final matchedSize = tiles.size;
+      late final titleIcon = appearanceService?.category(category.id).titleIcon ??
+          SectionIcon.appFeeds;
       final hiddenPackages = selectedFeeds.isEmpty ? <String>{} : context.read<AppsService>().applications.where((a) => a.hidden).map((a) => a.packageName).toSet();
       final rows = <String, Widget>{};
       for (final key in selectedFeeds) {
@@ -566,13 +574,14 @@ class FLauncherState extends State<FLauncher> {
         rows[key] = CategoryFocus(key: sectionKey, controller: focus,
           child: channel == null ? AppContentRow.loading(
             title: AppLocalizations.of(context)!.appChannelsTitle,
+            titleIcon: titleIcon,
             appearance: style, appTileSize: matchedSize,
             aspectRatio: (format == FeedFormat.auto
                 ? feeds.settings.appChannelFormat(key, detected: true)
                 : format).aspectRatio,
           ) : AppContentRow(
             channel: channel, programs: programs, appearance: style,
-            appTileSize: matchedSize,
+            appTileSize: matchedSize, titleIcon: titleIcon,
           ));
       }
       if (rows.isEmpty) return null;

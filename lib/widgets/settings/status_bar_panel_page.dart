@@ -5,6 +5,7 @@ import 'network_speed_settings_page.dart';
 import 'system_widget_settings_page.dart';
 import 'vpn_settings_page.dart';
 import 'sleep_timer_settings_page.dart';
+import 'quick_actions_settings_page.dart';
 import 'information_settings_page.dart';
 import 'settings_route.dart';
 import 'remote_panel_page.dart';
@@ -161,6 +162,16 @@ class StatusBarObjectsPage extends StatelessWidget {
             value: s.showSystemSettingsInStatusBar,
             onChanged: s.setShowSystemSettingsInStatusBar,
             title: Text(l.androidTvSettings),
+          ),
+          RoundedSwitchListTile(
+            title: Text(l.quickActionsTitle),
+            value: s.showQuickActionsInStatusBar,
+            onChanged: s.setShowQuickActionsInStatusBar,
+          ),
+          FocusableSettingsTile(
+            title: Text(l.quickActionsSettings),
+            leading: const Icon(Icons.bolt_outlined),
+            onPressed: () => Navigator.of(context).pushNamed(QuickActionsSettingsPage.routeName),
           ),
         ],
       ),

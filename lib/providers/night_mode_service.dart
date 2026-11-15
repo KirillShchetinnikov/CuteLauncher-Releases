@@ -1,5 +1,6 @@
 import '../city_search.dart';
 import '../diagnostics_store.dart';
+import '../location_coordinates.dart';
 import 'night_mode_configuration.dart';
 export 'night_mode_configuration.dart';
 import 'package:flauncher/bridge_result.dart';
@@ -82,6 +83,58 @@ class NightModeService extends ChangeNotifier with WidgetsBindingObserver {
   List<Map<String, dynamic>> solarDays = [];
   bool solarLoading = false;
   int solarUpdated = 0;
+  (LocationCoordinates, int, int, int, String, Duration)? _landscapeSolarKey;
+  List<Map<String, dynamic>> _landscapeSolarDays = const [];
+  DateTime? _landscapeRetryAfter;
+
+  /// One location/day snapshot, calculated by Android without network I/O.
+  List<Map<String, dynamic>> landscapeSolarDays(
+    DateTime now,
+    LocationCoordinates point, {
+    bool request = false,
+  }) {
+    final key = (point, now.year, now.month, now.day, now.timeZoneName, now.timeZoneOffset);
+    final current = key == _landscapeSolarKey;
+    final retry = _landscapeRetryAfter;
+    if (request && !_disposed && _foreground &&
+        (!current || retry != null && !now.isBefore(retry))) {
+      _landscapeSolarKey = key;
+      _landscapeSolarDays = const [];
+      _landscapeRetryAfter = null;
+      unawaited(_loadLandscapeSolar(key, now));
+    }
+    return current ? _landscapeSolarDays : const [];
+  }
+
+  Future<void> _loadLandscapeSolar(
+    (LocationCoordinates, int, int, int, String, Duration) key,
+    DateTime now,
+  ) async {
+    try {
+      final result = await _channel.invokeListMethod<dynamic>(
+        'landscapeSolarDays',
+        {
+          'latitude': key.$1.latitude,
+          'longitude': key.$1.longitude,
+          'now': now.millisecondsSinceEpoch,
+        },
+      );
+      if (_disposed || _landscapeSolarKey != key) return;
+      _landscapeSolarDays = (result ?? const [])
+          .whereType<Map>()
+          .map((day) => Map<String, dynamic>.from(day))
+          .toList(growable: false);
+      if (_landscapeSolarDays.isEmpty) {
+        _landscapeRetryAfter = now.add(const Duration(minutes: 5));
+      } else {
+        notifyListeners();
+      }
+    } catch (_) {
+      if (_landscapeSolarKey == key) {
+        _landscapeRetryAfter = now.add(const Duration(minutes: 5));
+      }
+    }
+  }
   DateTime? get nextStart =>
       configuration.nextBoundary(DateTime.now(), true,
           solarDays: solarDays, skipStartedTransition: true);
@@ -188,6 +241,10 @@ class NightModeService extends ChangeNotifier with WidgetsBindingObserver {
         .receiveBroadcastStream()
         .listen((visible) {
           if (_disposed) return;
+          if (visible is Map && visible['configurationChanged'] == true) {
+            unawaited(_refreshAfterNativeChange());
+            return;
+          }
           final previous = (systemFilter, _presentationReady, _foregroundExcluded, _configuring);
           if (remotePanel && visible is Map) {
             _presentationReady = visible['presentationReady'] == true;
@@ -336,7 +393,17 @@ class NightModeService extends ChangeNotifier with WidgetsBindingObserver {
     }
   }
 
-  Future<void> refreshSystem() async {
+  Future<void> _refreshAfterNativeChange() async {
+    try {
+      await _refreshSystem(nativeConfigurationChanged: true);
+    } catch (error, stack) {
+      DiagnosticsStore.instance.recordException('nightModeService', error, stack);
+    }
+  }
+
+  Future<void> refreshSystem() => _refreshSystem();
+
+  Future<void> _refreshSystem({bool nativeConfigurationChanged = false}) async {
     final previous = jsonEncode(configuration.toJson());
     final previousPanelFill = panelFill;
     await preferences.reload();
@@ -344,21 +411,24 @@ class NightModeService extends ChangeNotifier with WidgetsBindingObserver {
     configuration =
         NightModeConfiguration.decode(preferences.getString(nightModeKey));
     _tick();
-    if (panelFill != previousPanelFill) notifyListeners();
+    if (panelFill != previousPanelFill || nativeConfigurationChanged) {
+      notifyListeners();
+    }
     if (remotePanel) {
       await _readNativeStatus('status');
       if (_disposed) return;
       _panelInitialReadComplete = true;
       notifyListeners();
       _schedulePictureCheck();
-    } else if (jsonEncode(configuration.toJson()) != previous) {
+    } else if (!nativeConfigurationChanged &&
+        jsonEncode(configuration.toJson()) != previous) {
       await syncSystem();
     } else {
       await _readNativeStatus('status');
       if (_disposed) return;
       // Recover a service stopped by Android, without reapplying a healthy one
       // on every short return to Home.
-      if (configuration.enabled && !_nativeRunning &&
+      if (!nativeConfigurationChanged && configuration.enabled && !_nativeRunning &&
           (overlayPermission || configuration.tclScheduled || !overlayPermissionKnown)) {
         await syncSystem();
       }

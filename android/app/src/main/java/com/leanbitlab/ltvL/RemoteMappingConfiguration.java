@@ -18,8 +18,8 @@ final class RemoteMappingConfiguration {
         }
     }
     static final Set<String> ACTIONS = Set.of("app", "home", "back", "webhook", "panel", "recents", "ignore",
-        "sleep", "sleep_immediate", "reboot", "reboot_immediate", "black_overlay", "tcl_screen_off", "hdmi", "live_tv",
-        "display_settings", "wifi_settings", "bluetooth_settings", "mute");
+        "sleep", "sleep_immediate", "reboot", "reboot_immediate", "shutdown", "black_overlay", "tcl_screen_off", "hdmi", "live_tv",
+        "display_settings", "wifi_settings", "bluetooth_settings", "mute", "toggle_night_mode");
     static boolean hdmiTarget(String target) {
         return !target.trim().isEmpty() && target.length() <= 512
             && target.chars().noneMatch(Character::isISOControl);

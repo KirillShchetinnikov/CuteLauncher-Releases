@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "reviewedAt": "2026-11-12",
+  "reviewedAt": "2026-11-15",
   "sources": [
     "https://developer.android.com/reference/android/content/pm/PackageManager",
     "https://source.android.com/docs/core/runtime/rros",
@@ -12,7 +12,12 @@
     "catalog/inventories/tcl-g08-au04-20261107-weather-import.json",
     "catalog/inventories/tcl-g08-au04-20261107-weather-read-error.json",
     "catalog/inventories/tcl-beyondtv4-ar10-20261110.json",
-    "catalog/inventories/tcl-g10-as16-20261112-feed-timeout.json"
+    "catalog/inventories/tcl-g10-as16-20261112-feed-timeout.json",
+    "catalog/inventories/formuler-z11-pro-max-rvc-20261113-video-folder.json",
+    "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+    "catalog/inventories/tcl-g10-as16-20261115-home-tile-images.json",
+    "catalog/inventories/google-tv-streamer-uttk-20261115-quick-settings-toast.json",
+    "catalog/inventories/google-tv-streamer-uttk-20261115-landscape-263.json"
   ],
   "packages": {
     "android": {
@@ -36,7 +41,12 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "android.auto_generated_rro__": {
@@ -66,7 +76,11 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "android.auto_generated_rro_vendor__": {
@@ -82,7 +96,10 @@
         "tcl-g10",
         "tcl-g08-au04-20261104",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "android.autoinstalls.config.BRAND_NAME": {
@@ -95,7 +112,8 @@
       "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
       ]
     },
     "android.autoinstalls.config.google.gtvpai": {
@@ -113,7 +131,22 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
+      ]
+    },
+    "android.autoinstalls.config.google.sabrina": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "android.autoinstalls.config.sei": {
@@ -126,6 +159,20 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "kp1-yyz"
+      ]
+    },
+    "android.chromecast": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "android.ext.services": {
@@ -141,6 +188,15 @@
         "google-tanix-w2-android11-20261101"
       ]
     },
+    "app.flux.tv": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-quick-settings-toast.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-quick-settings-toast"
+      ],
+      "category": "user"
+    },
     "app.smarttube.fdroid": {
       "ru": "Приложение не опознано.",
       "en": "Application not identified.",
@@ -153,13 +209,26 @@
         "droidlogic-x98q-android11-20261026"
       ]
     },
+    "app.viy": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-quick-settings-toast.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-quick-settings-toast"
+      ],
+      "category": "user"
+    },
     "ar.tvplayer.tv": {
       "confidence": "unknown",
       "safeToDisable": false,
       "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ],
       "category": "user"
     },
@@ -169,9 +238,22 @@
       "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
       ],
       "category": "user"
+    },
+    "ca.dstudio.marquee": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z11-pro-max-rvc-20261113-video-folder.json",
+      "observedOn": [
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
+      ]
     },
     "cm.aptoidetv.pt": {
       "confidence": "unknown",
@@ -181,6 +263,747 @@
         "google-tanix-w2-android11-20261101"
       ],
       "category": "user"
+    },
+    "com.android.bluetooth.chromecast": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.android.networkstack.chromecast": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.android.networkstack.tethering.chromecast": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.android.systemui.auto_generated_rro_product__": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.android.tv.overlay.framework.kirkwood": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.android.tv.settings.kirkwood.resoverlay": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.android.tv.settings.kirkwood.securesettingsoverlay": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.android.wallpaperpicker": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.filin4ik.appsserver": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-quick-settings-toast.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-quick-settings-toast"
+      ],
+      "category": "user"
+    },
+    "com.filmix.tv": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-quick-settings-toast.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-quick-settings-toast"
+      ],
+      "category": "user"
+    },
+    "com.finalwire.aida64": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z11-pro-max-rvc-20261113-video-folder.json",
+      "observedOn": [
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
+      ]
+    },
+    "com.ghisler.android.TotalCommander": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z11-pro-max-rvc-20261113-video-folder.json",
+      "observedOn": [
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
+      ]
+    },
+    "com.google.android.adservices.api": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.google.android.audioproxy": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.google.android.audioproxy.overlay": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.google.android.bluetooth": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.google.android.bluetooth.kirkwood": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.google.android.captiveportallogin": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.google.android.chromecast.appstate": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.google.android.chromecast.chromecastservice": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.google.android.chromecast.chromecastservice.kirkwood": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.google.android.chromecast.chromecastservice.kirkwoodaudio": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.google.android.chromecast.chromecastserviceoverlay": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.google.android.chromecast.setupcustomization": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.google.android.connectivity.resources": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.google.android.connectivity.resources.kirkwood": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.google.android.devicelockcontroller": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.google.android.ext.adservices.api": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.google.android.federatedcompute": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.google.android.health.connect.backuprestore": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.google.android.healthconnect.controller": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.google.android.hotspot2.osulogin": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.google.android.networkstack": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.google.android.networkstack.tethering": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.google.android.networkstack.tethering.kirkwood": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.google.android.ondevicepersonalization.services": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.google.android.overlay.tvconfigx": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.google.android.providers.media.module": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.google.android.rkpdapp": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.google.android.sdksandbox": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.google.android.systemui.gtvoverlayx": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.google.android.tv.axel.overlay.kirkwood": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.google.android.tv.overlay.dfuservice": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.google.android.tv.overlay.networkstack": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.google.android.tv.overlay.settingsprovider": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.google.android.tv.remotecontrol.logging": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.google.android.uwb.resources": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.google.android.wifi.dialog": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.google.android.wifi.resources": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.google.android.wifi.resources.kirkwood": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.google.tv.settings.chromecast": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.mediatek.hdmicecframeworkresoverlay": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.mediatek.nfxservice": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.snapwood.skyfolio": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
     },
     "com.TV": {
       "confidence": "unknown",
@@ -206,7 +1029,12 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ],
       "category": "user"
     },
@@ -222,7 +1050,9 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast"
       ],
       "category": "preinstalled"
     },
@@ -275,7 +1105,12 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.bluetooth": {
@@ -299,7 +1134,9 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.android.bluetoothmidiservice": {
@@ -342,7 +1179,10 @@
         "tcl-g10",
         "tcl-g08-au04-20261104",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.captiveportallogin": {
@@ -366,7 +1206,9 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.android.certinstaller": {
@@ -390,7 +1232,12 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.companiondevicemanager": {
@@ -414,7 +1261,12 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.connectivity.resources": {
@@ -433,7 +1285,8 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.android.cts.ctsshim": {
@@ -457,7 +1310,12 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.cts.priv.ctsshim": {
@@ -481,7 +1339,12 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.deskclock": {
@@ -494,7 +1357,8 @@
       "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
       ]
     },
     "com.android.devicelockcontroller": {
@@ -548,7 +1412,12 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.dynsystem": {
@@ -571,7 +1440,12 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.externalstorage": {
@@ -595,7 +1469,12 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.federatedcompute.services": {
@@ -627,7 +1506,11 @@
         "droidlogic-x98q-android11-20261026",
         "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.health.connect.backuprestore": {
@@ -683,7 +1566,9 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.android.htmlviewer": {
@@ -707,7 +1592,12 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.inputdevices": {
@@ -731,7 +1621,12 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.inputmethod.latin": {
@@ -761,7 +1656,10 @@
         "tcl-g10",
         "tcl-g08-au04-20261104",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.keychain": {
@@ -785,7 +1683,12 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.launcher3": {
@@ -799,7 +1702,8 @@
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
         "formuler-z10-pro-max-android10-20261102",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
       ]
     },
     "com.android.localtransport": {
@@ -823,7 +1727,12 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.location.fused": {
@@ -847,7 +1756,12 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.managedprovisioning": {
@@ -866,7 +1780,11 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.modulemetadata": {
@@ -895,7 +1813,10 @@
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
         "google-tanix-w2-android11-20261101",
-        "kp1-yyz"
+        "kp1-yyz",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.music": {
@@ -908,7 +1829,8 @@
       "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
       ]
     },
     "com.android.musicfx": {
@@ -972,7 +1894,9 @@
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.android.networkstack.permissionconfig": {
@@ -990,7 +1914,9 @@
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.android.networkstack.tethering": {
@@ -1102,7 +2028,12 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.permissioncontroller": {
@@ -1138,7 +2069,9 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.android.providers.calendar": {
@@ -1161,7 +2094,12 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.providers.contacts": {
@@ -1184,7 +2122,12 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.providers.contacts.auto_generated_rro_product__": {
@@ -1221,7 +2164,12 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.providers.downloads.ui": {
@@ -1236,7 +2184,8 @@
         "droidlogic-x98q-android11-20261026",
         "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
       ]
     },
     "com.android.providers.media": {
@@ -1260,7 +2209,12 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.providers.media.module": {
@@ -1282,7 +2236,9 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.android.providers.settings": {
@@ -1306,7 +2262,12 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.providers.settings.auto_generated_rro_product__": {
@@ -1321,7 +2282,10 @@
         "tcl-g08",
         "tcl-g08-au04-20261104",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.providers.settings.auto_generated_rro_vendor__": {
@@ -1361,7 +2325,12 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.providers.userdictionary": {
@@ -1384,7 +2353,12 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.proxyhandler": {
@@ -1408,7 +2382,12 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.rkpdapp": {
@@ -1466,7 +2445,12 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.settings": {
@@ -1503,7 +2487,12 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.sharedstoragebackup": {
@@ -1527,7 +2516,12 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.shell": {
@@ -1551,7 +2545,12 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.soundpicker": {
@@ -1568,7 +2567,9 @@
         "kp1-yyz",
         "tcl-g10-as16-20261104-update-http",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.android.statementservice": {
@@ -1592,7 +2593,9 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.android.systemui": {
@@ -1616,7 +2619,12 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.systemui.auto_generated_rro_vendor__": {
@@ -1650,7 +2658,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.android.tethering.overlay.gsi": {
@@ -1669,7 +2678,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.android.tv.feedbackconsent": {
@@ -1686,7 +2696,10 @@
         "tcl-g10",
         "tcl-g08-au04-20261104",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.tv.frameworkpackagestubs": {
@@ -1705,7 +2718,11 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.tv.globalkeyhandler.overlay": {
@@ -1745,7 +2762,10 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "kp1-yyz"
+        "kp1-yyz",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.tv.overlay.lowram": {
@@ -1759,7 +2779,8 @@
       "observedOn": [
         "tcl-g10",
         "tcl-g10-as16-20261104-update-http",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.android.tv.overlay.lps.disabled": {
@@ -1771,7 +2792,10 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "kp1-yyz"
+        "kp1-yyz",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.tv.overlay.networkstack": {
@@ -1802,7 +2826,11 @@
       "observedOn": [
         "kp1-yyz",
         "tcl-g10-as16-20261104-update-http",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.tv.overlay.wifi.resources": {
@@ -1820,7 +2848,11 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.tv.sei.overlay.framework": {
@@ -1856,7 +2888,12 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.tv.settings.gms.resoverlay": {
@@ -1876,7 +2913,11 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.tv.settings.google.resoverlay": {
@@ -1894,7 +2935,11 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.tv.settings.mediatek.resoverlay.subatomic": {
@@ -1927,7 +2972,8 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.android.uwb.resources": {
@@ -1967,7 +3013,12 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.virtualmachine.res": {
@@ -1984,7 +3035,10 @@
         "tcl-g10",
         "tcl-g08-au04-20261104",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.vpndialogs": {
@@ -2008,7 +3062,12 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.wallpaper.livepicker": {
@@ -2023,7 +3082,8 @@
         "droidlogic-x98q-android11-20261026",
         "google-tanix-w2-android11-20261101",
         "tcl-g10-as16-20261104-update-http",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.android.wallpaperbackup": {
@@ -2046,7 +3106,12 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.android.wallpapercropper": {
@@ -2110,7 +3175,9 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.android.zdtd.service": {
@@ -2141,7 +3208,8 @@
       "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
       ],
       "category": "user"
     },
@@ -2155,7 +3223,8 @@
       "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
       ]
     },
     "com.cxinventor.file.explorer": {
@@ -2178,7 +3247,8 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
       ],
       "category": "user"
     },
@@ -2190,7 +3260,18 @@
         "kp1-yyz",
         "tcl-g08",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ],
+      "category": "user"
+    },
+    "com.disney.disneyplus": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-quick-settings-toast.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-quick-settings-toast"
       ],
       "category": "user"
     },
@@ -2223,7 +3304,10 @@
         "tcl-g10",
         "tcl-g08-au04-20261104",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.droid27.transparentclockweather": {
@@ -2385,6 +3469,15 @@
         "kp1-yyz"
       ]
     },
+    "com.falcofemoralis.lumen": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-quick-settings-toast.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-quick-settings-toast"
+      ],
+      "category": "user"
+    },
     "com.fgl27.twitch": {
       "ru": "Приложение не опознано.",
       "en": "Application not identified.",
@@ -2414,7 +3507,11 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.google.android.apps.tv.dreamx": {
@@ -2432,7 +3529,11 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.google.android.apps.tv.launcherx": {
@@ -2451,7 +3552,11 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.google.android.appsearch.apk": {
@@ -2494,7 +3599,10 @@
         "droidlogic-x98q-android11-20261026",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
-        "tcl-beyondtv4-ar10-20261110"
+        "tcl-beyondtv4-ar10-20261110",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.google.android.backuptransport": {
@@ -2518,7 +3626,10 @@
       "safeToDisable": false,
       "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
       "observedOn": [
-        "google-tanix-w2-android11-20261101"
+        "google-tanix-w2-android11-20261101",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.google.android.deskclock": {
@@ -2555,7 +3666,12 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.google.android.ext.shared": {
@@ -2579,7 +3695,12 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.google.android.feedback": {
@@ -2600,7 +3721,12 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.google.android.gms": {
@@ -2623,7 +3749,12 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.google.android.gsf": {
@@ -2646,7 +3777,12 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.google.android.inputmethod.latin": {
@@ -2668,7 +3804,12 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.google.android.katniss": {
@@ -2691,7 +3832,12 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.google.android.landscape": {
@@ -2750,7 +3896,12 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.google.android.modulemetadata": {
@@ -2770,7 +3921,12 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.google.android.networkstack.tethering.google": {
@@ -2798,7 +3954,9 @@
         "google-tanix-w2-android11-20261101",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g10-as16-20261104-update-http",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.google.android.overlay.googlewebview": {
@@ -2817,7 +3975,11 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.google.android.overlay.gtvsconfig": {
@@ -2847,7 +4009,8 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.google.android.overlay.gtvssettingsprovider": {
@@ -2865,7 +4028,11 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.google.android.overlay.modules.ext.services": {
@@ -2886,7 +4053,9 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.google.android.overlay.modules.modulemetadata.forframework": {
@@ -2906,7 +4075,9 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.google.android.overlay.modules.permissioncontroller": {
@@ -2927,7 +4098,9 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.google.android.overlay.modules.permissioncontroller.forframework": {
@@ -2948,7 +4121,9 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.google.android.packageinstaller": {
@@ -2970,7 +4145,12 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.google.android.partnersetup": {
@@ -2992,7 +4172,12 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.google.android.permissioncontroller": {
@@ -3014,7 +4199,12 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.google.android.play.games": {
@@ -3029,7 +4219,9 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast"
       ],
       "category": "preinstalled"
     },
@@ -3047,7 +4239,10 @@
         "tcl-g10",
         "tcl-g08-au04-20261104",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.google.android.sss.authbridge": {
@@ -3062,7 +4257,8 @@
         "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "formuler-z11-pro-max-user-adb-20261104",
-        "tcl-beyondtv4-ar10-20261110"
+        "tcl-beyondtv4-ar10-20261110",
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
       ]
     },
     "com.google.android.syncadapters.calendar": {
@@ -3084,7 +4280,12 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.google.android.syncadapters.contacts": {
@@ -3131,7 +4332,12 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.google.android.tungsten.setupwraith": {
@@ -3154,7 +4360,11 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.google.android.tv.axel": {
@@ -3166,7 +4376,10 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "kp1-yyz"
+        "kp1-yyz",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.google.android.tv.dfuservice": {
@@ -3178,7 +4391,10 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "kp1-yyz"
+        "kp1-yyz",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.google.android.tv.frameworkpackagestubs": {
@@ -3192,7 +4408,8 @@
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
         "formuler-z11-pro-max-user-adb-20261104",
-        "tcl-beyondtv4-ar10-20261110"
+        "tcl-beyondtv4-ar10-20261110",
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
       ]
     },
     "com.google.android.tv.googletvremotepairer": {
@@ -3240,7 +4457,12 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.google.android.tv.settings.energymodes.resoverlay": {
@@ -3257,7 +4479,10 @@
         "tcl-g10",
         "tcl-g08-au04-20261104",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.google.android.tvlauncher": {
@@ -3272,7 +4497,10 @@
         "droidlogic-x98q-android11-20261026",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
-        "tcl-beyondtv4-ar10-20261110"
+        "tcl-beyondtv4-ar10-20261110",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.google.android.tvrecommendations": {
@@ -3286,7 +4514,11 @@
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
         "google-tanix-w2-android11-20261101",
-        "kp1-yyz"
+        "kp1-yyz",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.google.android.tvsetup.partnercustomizer": {
@@ -3311,7 +4543,9 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast"
       ],
       "category": "preinstalled"
     },
@@ -3335,7 +4569,12 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.google.android.youtube.tv": {
@@ -3352,7 +4591,12 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ],
       "category": "preinstalled"
     },
@@ -3368,7 +4612,9 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast"
       ],
       "category": "preinstalled"
     },
@@ -3379,7 +4625,8 @@
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
         "kp1-yyz",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
       ],
       "category": "user"
     },
@@ -3389,7 +4636,8 @@
       "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
       ],
       "category": "user"
     },
@@ -3409,7 +4657,17 @@
       "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
+      ],
+      "category": "user"
+    },
+    "com.irishin.buttonsremapper": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-quick-settings-toast.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-quick-settings-toast"
       ],
       "category": "user"
     },
@@ -3443,7 +4701,8 @@
       "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
       ],
       "category": "user"
     },
@@ -3478,7 +4737,8 @@
       "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
       ]
     },
     "com.mediatek.AirplayAPK": {
@@ -3625,7 +4885,8 @@
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
         "google-tanix-w2-android11-20261101",
-        "tcl-beyondtv4-ar10-20261110"
+        "tcl-beyondtv4-ar10-20261110",
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
       ]
     },
     "com.nes.blerc": {
@@ -3737,7 +4998,9 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast"
       ],
       "category": "preinstalled"
     },
@@ -3757,7 +5020,11 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.opengapps.atvoverlay": {
@@ -3845,6 +5112,15 @@
         "droidlogic-x98q-android11-20261026"
       ]
     },
+    "com.pult.tv": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-quick-settings-toast.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-quick-settings-toast"
+      ],
+      "category": "user"
+    },
     "com.qstar.powerui": {
       "ru": "Приложение не опознано.",
       "en": "Application not identified.",
@@ -3880,7 +5156,8 @@
       "observedOn": [
         "tcl-g10",
         "tcl-g10-as16-20261104-update-http",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.realtek.android.tv.globalkeyoverlay": {
@@ -3978,7 +5255,8 @@
       "observedOn": [
         "tcl-g10",
         "tcl-g10-as16-20261104-update-http",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.realtek.secserviceoverlay": {
@@ -4053,7 +5331,8 @@
       "observedOn": [
         "tcl-g10",
         "tcl-g10-as16-20261104-update-http",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.rtk.mediabrowser": {
@@ -4066,7 +5345,8 @@
       "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
       ]
     },
     "com.rtk.mediabrowser.installer": {
@@ -4079,7 +5359,8 @@
       "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
       ]
     },
     "com.rtk.partnerconfig": {
@@ -4092,7 +5373,8 @@
       "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
       ]
     },
     "com.rtk.partnerinterface": {
@@ -4105,7 +5387,8 @@
       "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
       ]
     },
     "com.rtk.prplmesh": {
@@ -4135,7 +5418,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
       "observedOn": [
-        "google-tanix-w2-android11-20261101"
+        "google-tanix-w2-android11-20261101",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast"
       ],
       "category": "user"
     },
@@ -4183,6 +5467,15 @@
       "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "google-tanix-w2-android11-20261101"
+      ],
+      "category": "user"
+    },
+    "com.softmedia.receiver.lite": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-quick-settings-toast.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-quick-settings-toast"
       ],
       "category": "user"
     },
@@ -4238,7 +5531,8 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.tcl.airplay2": {
@@ -4256,7 +5550,8 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.tcl.android.webview": {
@@ -4271,7 +5566,8 @@
         "tcl-g10",
         "tcl-g10-as16-20261104-update-http",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.tcl.autopair": {
@@ -4290,7 +5586,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.tcl.channelplus": {
@@ -4308,7 +5605,8 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.tcl.dashboard": {
@@ -4323,7 +5621,8 @@
         "tcl-g10",
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.tcl.esticker": {
@@ -4341,7 +5640,8 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.tcl.eva": {
@@ -4374,7 +5674,8 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.tcl.factory.view": {
@@ -4393,7 +5694,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.tcl.gamebar": {
@@ -4411,7 +5713,8 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.tcl.globalkeyoverlay": {
@@ -4429,7 +5732,8 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.tcl.guard": {
@@ -4448,7 +5752,8 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.tcl.hearaid": {
@@ -4466,7 +5771,8 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.tcl.hotelmenu": {
@@ -4484,7 +5790,8 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.tcl.initsetup": {
@@ -4503,7 +5810,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.tcl.inputmethod.international": {
@@ -4522,7 +5830,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.tcl.interactive": {
@@ -4540,7 +5849,8 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.tcl.logkit": {
@@ -4558,7 +5868,8 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.tcl.magiconnectfree": {
@@ -4573,7 +5884,8 @@
         "tcl-g10",
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.tcl.messagebox": {
@@ -4591,7 +5903,8 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.tcl.miracast": {
@@ -4607,7 +5920,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.tcl.ocean.instructions": {
@@ -4625,7 +5939,8 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.tcl.overlay.frameworkres": {
@@ -4659,7 +5974,8 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.tcl.providers.config": {
@@ -4678,7 +5994,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.tcl.repairguide": {
@@ -4696,7 +6013,8 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.tcl.smartalexa": {
@@ -4711,7 +6029,8 @@
         "tcl-g10",
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.tcl.smartlink.core": {
@@ -4745,7 +6064,8 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.tcl.systemserver": {
@@ -4763,7 +6083,8 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.tcl.systemui.plugin": {
@@ -4797,7 +6118,8 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.tcl.ttvs": {
@@ -4815,7 +6137,8 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.tcl.tv": {
@@ -4834,7 +6157,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.tcl.tv.overlay": {
@@ -4868,7 +6192,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.tcl.tvinput": {
@@ -4887,7 +6212,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.tcl.ui_mediaCenter": {
@@ -4906,7 +6232,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.tcl.useragreement": {
@@ -4924,7 +6251,8 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.tcl.usercenter": {
@@ -4942,7 +6270,8 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.tcl.waterfall.overseas": {
@@ -4960,7 +6289,8 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.tcl.webview": {
@@ -5024,7 +6354,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.ugoos.suggestions": {
@@ -5079,6 +6410,24 @@
         "droidlogic-x98q-android11-20261026"
       ]
     },
+    "com.waxrain.telnetd": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-quick-settings-toast.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-quick-settings-toast"
+      ],
+      "category": "user"
+    },
+    "com.wbd.stream": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-quick-settings-toast.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-quick-settings-toast"
+      ],
+      "category": "user"
+    },
     "com.wireguard.android": {
       "confidence": "identified",
       "safeToDisable": false,
@@ -5088,6 +6437,19 @@
       ],
       "category": "user"
     },
+    "com.wolf.google.lm": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
     "com.yandex.browser.tv": {
       "confidence": "unknown",
       "safeToDisable": false,
@@ -5095,7 +6457,8 @@
       "observedOn": [
         "google-tanix-w2-android11-20261101",
         "tcl-g10-as16-20261104-update-http",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ],
       "category": "user"
     },
@@ -5136,6 +6499,18 @@
         "droidlogic-x98q-android11-20261026"
       ]
     },
+    "dev.cybercat.adbappcontrol": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z11-pro-max-rvc-20261113-video-folder.json",
+      "observedOn": [
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
+      ]
+    },
     "dev.imranr.obtainium.fdroid": {
       "ru": "Приложение не опознано.",
       "en": "Application not identified.",
@@ -5147,6 +6522,15 @@
       "observedOn": [
         "droidlogic-x98q-android11-20261026"
       ]
+    },
+    "io.gh.reisxd.tizentube.cobalt": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-quick-settings-toast.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-quick-settings-toast"
+      ],
+      "category": "user"
     },
     "io.github.kirillshchetinnikov.cutelauncher": {
       "confidence": "identified",
@@ -5168,7 +6552,12 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ],
       "category": "user"
     },
@@ -5181,7 +6570,9 @@
         "google-tanix-w2-android11-20261101",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g10-as16-20261104-update-http",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "tcl-g10-as16-20261115-home-tile-images"
       ],
       "category": "user"
     },
@@ -5190,7 +6581,17 @@
       "safeToDisable": false,
       "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
       "observedOn": [
-        "google-tanix-w2-android11-20261101"
+        "google-tanix-w2-android11-20261101",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast"
+      ],
+      "category": "user"
+    },
+    "io.tivimini": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-quick-settings-toast.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-quick-settings-toast"
       ],
       "category": "user"
     },
@@ -5237,6 +6638,15 @@
       ],
       "category": "user"
     },
+    "local.rvxtv.youtube": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-quick-settings-toast.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-quick-settings-toast"
+      ],
+      "category": "user"
+    },
     "me.zhanghai.android.files": {
       "ru": "Приложение не опознано.",
       "en": "Application not identified.",
@@ -5270,6 +6680,15 @@
         "droidlogic-x98q-android11-20261026"
       ]
     },
+    "my.torrstream.app": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-quick-settings-toast.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-quick-settings-toast"
+      ],
+      "category": "user"
+    },
     "name.boyle.chris.keytest": {
       "ru": "Приложение не опознано.",
       "en": "Application not identified.",
@@ -5281,6 +6700,19 @@
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
         "google-tanix-w2-android11-20261101"
+      ]
+    },
+    "net.filmix.filmix": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "net.gtvbox.installer": {
@@ -5305,7 +6737,10 @@
         "tcl-g08",
         "tcl-g08-au04-20261104",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ],
       "category": "preinstalled"
     },
@@ -5316,7 +6751,8 @@
       "observedOn": [
         "kp1-yyz",
         "tcl-g10-as16-20261104-update-http",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ],
       "category": "preinstalled"
     },
@@ -5382,7 +6818,8 @@
       "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
       ],
       "category": "user"
     },
@@ -5411,7 +6848,9 @@
         "google-tanix-w2-android11-20261101",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g10-as16-20261104-update-http",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "org.myklos.adbhelper": {
@@ -5420,7 +6859,8 @@
       "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
       ],
       "category": "user"
     },
@@ -5449,7 +6889,9 @@
         "tcl-g10",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast"
       ],
       "category": "preinstalled"
     },
@@ -5464,7 +6906,8 @@
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
         "tcl-g10-as16-20261104-update-http",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "org.xbmc.kodi": {
@@ -5473,7 +6916,8 @@
       "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
       ],
       "category": "user"
     },
@@ -5499,7 +6943,17 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
+      ],
+      "category": "user"
+    },
+    "ru.astroapps.hdrezka": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-quick-settings-toast.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-quick-settings-toast"
       ],
       "category": "user"
     },
@@ -5558,7 +7012,9 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "tcl-g10-as16-20261115-home-tile-images"
       ],
       "category": "preinstalled"
     },
@@ -5618,12 +7074,31 @@
       ],
       "category": "preinstalled"
     },
+    "ru.seasonvar.tv": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-quick-settings-toast.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-quick-settings-toast"
+      ],
+      "category": "user"
+    },
     "ru.tiardev.kinotrend": {
       "confidence": "unknown",
       "safeToDisable": false,
       "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
       "observedOn": [
-        "google-tanix-w2-android11-20261101"
+        "google-tanix-w2-android11-20261101",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast"
+      ],
+      "category": "user"
+    },
+    "ru.videos.vtube": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-quick-settings-toast.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-quick-settings-toast"
       ],
       "category": "user"
     },
@@ -5633,7 +7108,8 @@
       "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
       ],
       "category": "user"
     },
@@ -5643,7 +7119,8 @@
       "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "google-tanix-w2-android11-20261101",
-        "tcl-beyondtv4-ar10-20261110"
+        "tcl-beyondtv4-ar10-20261110",
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
       ],
       "category": "user"
     },
@@ -5672,7 +7149,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
       "observedOn": [
-        "google-tanix-w2-android11-20261101"
+        "google-tanix-w2-android11-20261101",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast"
       ],
       "category": "user"
     },
@@ -5682,7 +7160,8 @@
       "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "google-tanix-w2-android11-20261101",
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast"
       ],
       "category": "user"
     },
@@ -5712,6 +7191,18 @@
         "google-tanix-w2-android11-20261101"
       ]
     },
+    "su.happ.proxyutility": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z11-pro-max-rvc-20261113-video-folder.json",
+      "observedOn": [
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
+      ]
+    },
     "tv.autostart": {
       "ru": "Приложение не опознано.",
       "en": "Application not identified.",
@@ -5734,7 +7225,20 @@
       "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
+      ]
+    },
+    "tv.formuler.mol3.real": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z11-pro-max-rvc-20261113-video-folder.json",
+      "observedOn": [
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
       ]
     },
     "tv.formuler.mytvonline.real": {
@@ -5757,7 +7261,8 @@
       "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
       ]
     },
     "tv.formuler.productservice": {
@@ -5770,7 +7275,8 @@
       "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
       ]
     },
     "tv.formuler.real.upgrade": {
@@ -5783,7 +7289,8 @@
       "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
       ]
     },
     "tv.formuler.remoteupgrade.z": {
@@ -5796,7 +7303,8 @@
       "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
       ]
     },
     "tv.formuler.service.networkstorage.real": {
@@ -5809,7 +7317,8 @@
       "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (presence only); docs/TESTING_RU.md (Formuler Z11 Pro Max NAS/USB, 2026-11-04: package resolver and user-confirmed ADB activity launch)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
       ]
     },
     "tv.formuler.service.real": {
@@ -5822,7 +7331,8 @@
       "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
       ]
     },
     "tv.formuler.siptv.leanbacklauncher.real": {
@@ -5835,7 +7345,20 @@
       "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
+      ]
+    },
+    "tv.formuler.tvprovider": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/formuler-z11-pro-max-rvc-20261113-video-folder.json",
+      "observedOn": [
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
       ]
     },
     "tv.mopa.ginga": {
@@ -5864,7 +7387,8 @@
       "observedOn": [
         "tcl-g10",
         "tcl-g10-as16-20261104-update-http",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "tv.twitch.android.app": {
@@ -5884,9 +7408,23 @@
       "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
       ],
       "category": "user"
+    },
+    "watch.kino": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
+      "observedOn": [
+        "google-tv-streamer-uttk-20261115-landscape",
+        "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
     },
     "yo.app.tv.free": {
       "confidence": "unknown",
@@ -5894,7 +7432,8 @@
       "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z11-pro-max-rvc-20261113-video-folder"
       ],
       "category": "user"
     },
@@ -5903,7 +7442,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories/tcl-g08-au04-20261104.json (user diagnostic metadata; presence only)",
       "observedOn": [
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast"
       ],
       "category": "user"
     },
@@ -5970,7 +7510,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories/tcl-g08-au04-20261104.json (user diagnostic metadata; presence only)",
       "observedOn": [
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "google-tv-streamer-uttk-20261115-quick-settings-toast"
       ],
       "category": "user"
     },
@@ -5993,7 +7534,8 @@
       "source": "catalog/inventories/tcl-g10-as16-20261104-update-http.json (presence only)",
       "observedOn": [
         "tcl-g10-as16-20261104-update-http",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.android.networkstack.tethering.inprocess": {
@@ -6007,7 +7549,9 @@
       "observedOn": [
         "tcl-g10-as16-20261104-update-http",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.android.tv.overlay.networkstack.inprocess": {
@@ -6020,7 +7564,8 @@
       "source": "catalog/inventories/tcl-g10-as16-20261104-update-http.json (presence only)",
       "observedOn": [
         "tcl-g10-as16-20261104-update-http",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.cyberportal.wgt": {
@@ -6033,7 +7578,8 @@
       "source": "catalog/inventories/tcl-g10-as16-20261104-update-http.json (presence only)",
       "observedOn": [
         "tcl-g10-as16-20261104-update-http",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.example.getstvwebview": {
@@ -6046,7 +7592,8 @@
       "source": "catalog/inventories/tcl-g10-as16-20261104-update-http.json (presence only)",
       "observedOn": [
         "tcl-g10-as16-20261104-update-http",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.internet.tvbrowser": {
@@ -6059,7 +7606,8 @@
       "source": "catalog/inventories/tcl-g10-as16-20261104-update-http.json (presence only)",
       "observedOn": [
         "tcl-g10-as16-20261104-update-http",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.mxtech.videoplayer.pro": {
@@ -6072,7 +7620,8 @@
       "source": "catalog/inventories/tcl-g10-as16-20261104-update-http.json (presence only)",
       "observedOn": [
         "tcl-g10-as16-20261104-update-http",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.realtek.dongledetect": {
@@ -6085,7 +7634,8 @@
       "source": "catalog/inventories/tcl-g10-as16-20261104-update-http.json (presence only)",
       "observedOn": [
         "tcl-g10-as16-20261104-update-http",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.realtek.tv.overlay.framework": {
@@ -6098,7 +7648,8 @@
       "source": "catalog/inventories/tcl-g10-as16-20261104-update-http.json (presence only)",
       "observedOn": [
         "tcl-g10-as16-20261104-update-http",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.rma.speedtesttv": {
@@ -6111,7 +7662,10 @@
       "source": "catalog/inventories/tcl-g10-as16-20261104-update-http.json (presence only)",
       "observedOn": [
         "tcl-g10-as16-20261104-update-http",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "google-tv-streamer-uttk-20261115-landscape",
+        "tcl-g10-as16-20261115-home-tile-images",
+        "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
     "com.tcl.browser": {
@@ -6124,7 +7678,8 @@
       "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/tcl-g03-google-tv/debloat.txt; catalog/inventories/tcl-g10-as16-20261104-update-http.json (presence only)",
       "observedOn": [
         "tcl-g10-as16-20261104-update-http",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.zzzmode.appopsx": {
@@ -6137,7 +7692,8 @@
       "source": "catalog/inventories/tcl-g10-as16-20261104-update-http.json (presence only)",
       "observedOn": [
         "tcl-g10-as16-20261104-update-http",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "org.localsend.localsend_app": {
@@ -6151,7 +7707,8 @@
       "observedOn": [
         "tcl-g10-as16-20261104-update-http",
         "tcl-beyondtv4-ar10-20261110",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "org.telegram.messenger.web": {
@@ -6164,7 +7721,8 @@
       "source": "catalog/inventories/tcl-g10-as16-20261104-update-http.json (presence only)",
       "observedOn": [
         "tcl-g10-as16-20261104-update-http",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "ru.full.khd.app": {
@@ -6177,7 +7735,8 @@
       "source": "catalog/inventories/tcl-g10-as16-20261104-update-http.json (presence only)",
       "observedOn": [
         "tcl-g10-as16-20261104-update-http",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "video.player.videoplayer": {
@@ -6190,7 +7749,8 @@
       "source": "catalog/inventories/tcl-g10-as16-20261104-update-http.json (presence only)",
       "observedOn": [
         "tcl-g10-as16-20261104-update-http",
-        "tcl-g10-as16-20261112-feed-timeout"
+        "tcl-g10-as16-20261112-feed-timeout",
+        "tcl-g10-as16-20261115-home-tile-images"
       ]
     },
     "com.github.dimzon.smartrutube.beta": {

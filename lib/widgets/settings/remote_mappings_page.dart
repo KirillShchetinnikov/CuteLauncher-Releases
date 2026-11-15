@@ -56,11 +56,13 @@ String _actionLabel(AppLocalizations l, String value) => switch (value) {
   'webhook' => 'Webhook (POST)',
   'panel' => l.remotePanel,
   'recents' => l.remoteMappingRecents,
-  'sleep' => l.remotePowerWithConfirmation(l.tvPowerOff),
-  'sleep_immediate' => l.remotePowerWithoutConfirmation(l.tvPowerOff),
+  'sleep' => l.remotePowerWithConfirmation(l.quickActionsSleep),
+  'sleep_immediate' => l.remotePowerWithoutConfirmation(l.quickActionsSleep),
+  'shutdown' => l.remotePowerWithConfirmation(l.tvPowerOff),
   'reboot' => l.remotePowerWithConfirmation(l.tvPowerReboot),
   'reboot_immediate' => l.remotePowerWithoutConfirmation(l.tvPowerReboot),
   'black_overlay' => l.remoteMappingBlackOverlay,
+  'toggle_night_mode' => l.remoteMappingToggleNightMode,
   'tcl_screen_off' => l.remoteMappingTclScreenOff,
   'hdmi' => l.autoLaunchHdmi,
   'live_tv' => l.remoteMappingLiveTv,
@@ -510,6 +512,7 @@ class _MappingEditorState extends State<_MappingEditor>
             label: l.remoteMappingScreenSoundGroup,
             choices: [
               if (visible('display_settings')) systemChoice('display_settings'),
+              choice('toggle_night_mode'),
               choice('black_overlay'),
               if (widget.tclScreenOff || _action == 'tcl_screen_off')
                 choice(
@@ -525,6 +528,7 @@ class _MappingEditorState extends State<_MappingEditor>
             choices: [
               choice('sleep'),
               choice('sleep_immediate'),
+              choice('shutdown', detail: l.remoteMappingNeedsAdb),
               choice('reboot', detail: l.remoteMappingNeedsAdb),
               choice('reboot_immediate', detail: l.remoteMappingNeedsAdb),
             ],
@@ -677,6 +681,7 @@ class _MappingEditorState extends State<_MappingEditor>
                   if (const {
                     'sleep',
                     'sleep_immediate',
+                    'shutdown',
                     'reboot',
                     'reboot_immediate',
                   }.contains(_action))

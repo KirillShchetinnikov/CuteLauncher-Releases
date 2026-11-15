@@ -4,11 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/appearance_service.dart';
+import '../../providers/apps_service.dart';
 import '../../l10n/app_localizations.dart';
+import '../../models/category.dart';
+import '../../section_icons.dart';
 import '../rounded_switch_list_tile.dart';
+import '../section_heading_icon.dart';
 import 'settings_page_layout.dart';
 import 'settings_value_stepper.dart';
 import 'settings_choice_tile.dart';
+import 'settings_choice_dialog.dart';
 import 'home_style_setting.dart';
 import 'settings_help.dart';
 import 'reset_style_tile.dart';
@@ -23,7 +28,6 @@ class SectionStylePage extends StatelessWidget {
     BuildContext context, {
     int? categoryId,
     bool includeReset = true,
-    bool includeIcons = true,
     List<Widget> layoutControls = const [],
   }) {
     final l = AppLocalizations.of(context)!;
@@ -118,8 +122,12 @@ class SectionStylePage extends StatelessWidget {
           number('sectionTitleSize', l.sectionTitleSize, a.sectionTitleSize, [
             for (var n = 12; n <= 40; n++) n,
           ]),
-          if (includeIcons)
-            toggle('sectionIcons', l.homeSectionIcons, a.sectionIcons),
+          toggle('sectionIcons', l.homeSectionIcons, a.sectionIcons),
+          if (categoryId != null)
+            _SectionIconChoice(
+              categoryId: categoryId,
+              titleVisible: a.sectionTitles,
+            ),
           toggle(
             'sectionTitleAligned',
             l.alignSectionTitles,
@@ -211,6 +219,72 @@ class SectionStylePage extends StatelessWidget {
     return SettingsPageLayout(
       title: Text(categoryId == null ? l.launcherSections : l.homeSectionStyle),
       child: ListView(children: controls(context, categoryId: categoryId)),
+    );
+  }
+}
+
+class _SectionIconChoice extends StatelessWidget {
+  const _SectionIconChoice({
+    required this.categoryId,
+    required this.titleVisible,
+  });
+
+  final int categoryId;
+  final bool titleVisible;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+    final service = context.watch<AppearanceService>();
+    final current = service.category(categoryId).titleIcon;
+    final category = context
+        .watch<AppsService?>()
+        ?.categories
+        .where((category) => category.id == categoryId)
+        .firstOrNull;
+    final defaultIcon = categoryId == ContinueWatchingSection.sectionId
+        ? SectionIcon.continueWatching
+        : SectionIcon.forCategory(category);
+    String label(SectionIcon? icon) => switch (icon) {
+      null => l.defaultOption,
+      SectionIcon.allApps => l.allApplications,
+      SectionIcon.tvApps => l.tvApps,
+      SectionIcon.otherApps => l.nonTvApps,
+      SectionIcon.favorites => l.favorites,
+      SectionIcon.appFeeds => l.appChannelsTitle,
+      SectionIcon.continueWatching => l.continueWatching,
+      SectionIcon.movies => l.moviesShows,
+      SectionIcon.music => l.music,
+      SectionIcon.games => l.games,
+      SectionIcon.entertainment => l.entertainment,
+      SectionIcon.liveTv => l.liveTv,
+      SectionIcon.sports => l.sports,
+      SectionIcon.news => l.news,
+      SectionIcon.tools => l.tools,
+      SectionIcon.photos => l.sectionIconPhotos,
+      SectionIcon.folder => l.sectionIconFolder,
+    };
+    return FocusableSettingsTile(
+      title: Text(l.sectionTitleIcon),
+      enabled: titleVisible,
+      leading: SectionHeadingIcon(current ?? defaultIcon),
+      trailing: Text(titleVisible ? label(current) : l.homeStyleNeedsTitle),
+      onPressed: () async {
+        final result = await showLauncherDialog<(SectionIcon?,)>(
+          context: context,
+          builder: (dialog) => SettingsChoiceDialog<SectionIcon?>(
+            title: Text(l.sectionTitleIcon),
+            value: current,
+            options: const [null, ...SectionIcon.values],
+            optionBuilder: (icon) => Text(label(icon)),
+            leadingBuilder: (icon) => SectionHeadingIcon(icon ?? defaultIcon),
+            onSelected: (icon) => Navigator.pop(dialog, (icon,)),
+          ),
+        );
+        if (context.mounted && result != null) {
+          await service.setCategoryTitleIcon(categoryId, result.$1);
+        }
+      },
     );
   }
 }

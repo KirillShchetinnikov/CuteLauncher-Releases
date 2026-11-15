@@ -182,13 +182,13 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get renderCompatibilityHelp =>
-      '야간 화면 어둡게 사용 시 인터페이스가 깜박이면 이 모드를 사용해 보세요. 검증된 모델에서는 자동으로 활성화됩니다. 다른 TV에서는 선택이 이 기기에만 저장되며 런처를 다시 시작하면 적용됩니다. 그래픽 부하가 증가할 수 있습니다.';
+      '야간 화면 어둡게 사용 시 인터페이스가 깜박이면 이 모드를 사용해 보세요. 검증된 모델에서는 자동으로 활성화됩니다. 다른 기기에서는 선택이 이 기기에만 저장되며 런처를 다시 시작하면 적용됩니다. 그래픽 부하가 증가할 수 있습니다.';
 
   @override
   String get diagnosticsHubTitle => 'Diagnostics';
 
   @override
-  String get tvCompatibilityTitle => 'TV compatibility check';
+  String get tvCompatibilityTitle => '기기 호환성 확인';
 
   @override
   String get tvCompatibilityRun => 'Run check';
@@ -291,7 +291,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get adbWifiOwned =>
-      '변경하지 않았습니다. 저장된 Wi-Fi 네트워크를 Google 설정 마법사가 만들었습니다. 마법사를 사용 중지하면 네트워크가 삭제되어 TV 연결이 끊길 수 있습니다.\n\n1. Wi-Fi 비밀번호를 알고 있는지 확인하세요.\n2. Android 네트워크 설정에서 해당 네트워크를 선택하고 네트워크 삭제를 누르세요.\n3. 일반 Android 네트워크 설정에서 다시 연결하세요.\n4. CuteLauncher로 돌아와 ADB를 확인하고 기본 런처 사용 중지를 다시 시도하세요.\n\n메시지가 다시 나타나면 기본 런처를 켜 두세요. 펌웨어가 네트워크 소유자를 다시 마법사로 지정할 수 있습니다.';
+      '변경하지 않았습니다. 저장된 Wi-Fi 네트워크를 Google 설정 마법사가 만들었습니다. 마법사를 사용 중지하면 네트워크가 삭제되어 기기 연결이 끊길 수 있습니다.\n\n1. Wi-Fi 비밀번호를 알고 있는지 확인하세요.\n2. Android 네트워크 설정에서 해당 네트워크를 선택하고 네트워크 삭제를 누르세요.\n3. 일반 Android 네트워크 설정에서 다시 연결하세요.\n4. CuteLauncher로 돌아와 ADB를 확인하고 기본 런처 사용 중지를 다시 시도하세요.\n\n메시지가 다시 나타나면 기본 런처를 켜 두세요. 펌웨어가 네트워크 소유자를 다시 마법사로 지정할 수 있습니다.';
 
   @override
   String get adbWifiUnknown =>
@@ -633,7 +633,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get defaultLauncherDescription =>
-      '기본 런처로 설정하면 홈 버튼은 항상 CuteLauncher로 돌아갑니다. TV도 직접 CuteLauncher로 부팅됩니다.';
+      '기본 런처로 설정하면 홈 버튼은 항상 CuteLauncher로 돌아갑니다. 기기도 직접 CuteLauncher로 부팅됩니다.';
 
   @override
   String get inputs => '입력';
@@ -691,7 +691,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get localNetworkSharingDetails =>
-      '여기에서 TV 설정/레이아웃을 다운로드하거나 이 TV로 백업 파일을 업로드할 수 있습니다.';
+      '여기에서 기기 설정/레이아웃을 다운로드하거나 이 기기로 백업 파일을 업로드할 수 있습니다.';
 
   @override
   String failedToStartServer(String error) {
@@ -771,7 +771,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get homeButtonFix => '홈 버튼 수정 (Google TV)';
 
   @override
-  String get startOnBoot => '부팅 시 시작 (Google TV / Fire TV)';
+  String get startOnBoot => '기기를 켤 때 시작';
 
   @override
   String get appLanguage => '언어';
@@ -1294,19 +1294,19 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get accessibilityGuide =>
-      'TV 설정을 수동으로 연 다음 접근성 → CuteLauncher 홈 버튼 수정을 실행하고 서비스를 활성화하세요. 이 메뉴의 위치와 이름은 TV 제조업체에 따라 다릅니다.';
+      '기기 설정을 수동으로 연 다음 접근성 → CuteLauncher 홈 버튼 수정을 실행하고 서비스를 활성화하세요. 이 메뉴의 위치와 이름은 기기 제조업체에 따라 다릅니다.';
 
   @override
   String get notificationPermissionGuide =>
-      '이 TV에서는 알림 액세스 설정을 열 수 없습니다. 앱 정보에서 발신 알림을 허용해도 다른 앱의 알림에 대한 액세스 권한은 부여되지 않습니다.\n\nADB를 통해 TV를 연결하고 다음을 실행하세요.';
+      '이 기기에서는 알림 액세스 설정을 열 수 없습니다. 앱 정보에서 발신 알림을 허용해도 다른 앱의 알림에 대한 액세스 권한은 부여되지 않습니다.\n\nADB를 통해 기기를 연결하고 다음을 실행하세요.';
 
   @override
   String get overlayPermissionGuide =>
-      '오버레이 권한 설정을 자동으로 열 수 없습니다.\n\n다른 앱 위에 팝업을 활성화하려면 ADB를 통해 TV를 연결하고 다음을 실행하세요.';
+      '오버레이 권한 설정을 자동으로 열 수 없습니다.\n\n다른 앱 위에 팝업을 활성화하려면 ADB를 통해 기기를 연결하고 다음을 실행하세요.';
 
   @override
   String get watchNextPermissionGuide =>
-      '다른 앱에서 계속 시청 카드를 읽으려면 Android TV에 READ_WRITE_WATCH_NEXT_PROGRAMS가 필요합니다.\n\nADB를 통해 TV를 연결하고 다음을 실행하세요.';
+      '다른 앱에서 계속 시청 카드를 읽으려면 Android TV에 READ_WRITE_WATCH_NEXT_PROGRAMS가 필요합니다.\n\nADB를 통해 기기를 연결하고 다음을 실행하세요.';
 
   @override
   String get watchNextAccess => '계속 시청 액세스';
@@ -1799,7 +1799,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get adbAccessibility => '홈 버튼 수정 활성화';
 
   @override
-  String get adbAuthorization => 'TV에서 ADB 인증을 승인한 후 다시 시도하세요.';
+  String get adbAuthorization => '기기에서 ADB 인증을 승인한 후 다시 시도하세요.';
 
   @override
   String get adbChangeConfirm =>
@@ -1820,7 +1820,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get adbHint =>
-      '이 TV 전용 프로토타입입니다(127.0.0.1). 개발자 옵션에서 TCP ADB를 활성화하고 해당 포트를 입력한 후 TV에서 인증 메시지를 승인하세요. 페어링 코드를 사용한 무선 디버깅은 아직 지원되지 않습니다. 개인 키는 백업 외부에서 이 장치에 유지됩니다.';
+      '이 기기 전용 프로토타입입니다(127.0.0.1). 개발자 옵션에서 TCP ADB를 활성화하고 해당 포트를 입력한 후 기기에서 인증 메시지를 승인하세요. 페어링 코드를 사용한 무선 디버깅은 아직 지원되지 않습니다. 개인 키는 백업 외부에서 이 장치에 유지됩니다.';
 
   @override
   String get adbHome => 'CuteLauncher를 홈 앱으로 만들기';
@@ -1858,7 +1858,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get nightModeScope =>
-      '다른 앱을 흐리게 하려면 오버레이 권한이 필요합니다. 그것이 없으면 CuteLauncher 내부에서 디밍이 작동합니다. TCL 필터에는 오버레이 권한이 필요하지 않습니다. 80% 이상의 불투명도 Android는 다른 앱의 터치 입력을 차단할 수 있습니다. TV 리모컨 키는 여전히 작동합니다.';
+      '다른 앱을 흐리게 하려면 오버레이 권한이 필요합니다. 그것이 없으면 CuteLauncher 내부에서 디밍이 작동합니다. TCL 필터에는 오버레이 권한이 필요하지 않습니다. 80% 이상의 불투명도 Android는 다른 앱의 터치 입력을 차단할 수 있습니다. 리모컨 키는 여전히 작동합니다.';
 
   @override
   String get nightModeEnd => '끝';
@@ -1874,7 +1874,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get nightModeScheduleHint =>
-      '지역 TV 시간을 사용합니다. 야간 기간이 지원됩니다. 시작 시간과 종료 시간이 동일하면 예약된 필터가 비활성화됩니다.';
+      '지역 기기 시간을 사용합니다. 야간 기간이 지원됩니다. 시작 시간과 종료 시간이 동일하면 예약된 필터가 비활성화됩니다.';
 
   @override
   String get nightModeEnabled => '야간 모드 활성화';
@@ -1931,11 +1931,11 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get diagnosticsSharingNotice =>
-      '파일을 공개하지 말고 작성자에게 개인 메시지로 보내세요. 자동 정리 후에도 개인정보가 남을 수 있습니다. 보고서를 보내면 익명화된 TV 호환성 보고서를 CuteLauncher Git 저장소에 게시하는 데 동의하는 것으로 간주합니다. 개인정보 없이 기기 정보와 기능 사용 가능 여부만 공개하며 오류 로그, 명령 및 개인 설정은 공개하지 않습니다.\n\n보고서에는 설치된 패키지의 이름, 버전, 활성화 상태와 섹션 이름, 구성, 순서, 표시 여부도 포함됩니다. 진단을 위해 식별자와 이름은 유지되지만 앱 및 섹션 목록은 공개되지 않습니다.';
+      '파일을 공개하지 말고 작성자에게 개인 메시지로 보내세요. 자동 정리 후에도 개인정보가 남을 수 있습니다. 보고서를 보내면 익명화된 기기 호환성 보고서를 CuteLauncher Git 저장소에 게시하는 데 동의하는 것으로 간주합니다. 개인정보 없이 기기 정보와 기능 사용 가능 여부만 공개하며 오류 로그, 명령 및 개인 설정은 공개하지 않습니다.\n\n보고서에는 설치된 패키지의 이름, 버전, 활성화 상태와 섹션 이름, 구성, 순서, 표시 여부도 포함됩니다. 진단을 위해 식별자와 이름은 유지되지만 앱 및 섹션 목록은 공개되지 않습니다.';
 
   @override
   String get diagnosticsHint =>
-      '하나의 보고서에 TV 기능 호환성과 오류 진단을 함께 담습니다. 보고서에는 TV 모델과 펌웨어, 앱 버전, 권한, 메모리, 오류 단계와 원인, 개인정보를 자동 정리한 명령과 응답이 포함됩니다. 현재 세션의 최근 작업 50개, 별도로 오류 최대 100개와 제한된 ADB 로그를 보관합니다. 다시 시작하면 로그가 삭제됩니다. 개인정보가 남을 수 있으므로 공개하지 말고 개인 메시지로 보내세요. 자동 전송하지 않습니다.각 오류에는 당시 적용된 설정의 스냅샷이 저장되며 이후 변경으로 대체되지 않습니다.\n\n보고서에는 설치된 패키지의 이름, 버전, 활성화 상태와 섹션 이름, 구성, 순서, 표시 여부도 포함됩니다. 진단을 위해 식별자와 이름은 유지되지만 앱 및 섹션 목록은 공개되지 않습니다.';
+      '하나의 보고서에 기기 기능 호환성과 오류 진단을 함께 담습니다. 보고서에는 기기 모델과 펌웨어, 앱 버전, 권한, 메모리, 오류 단계와 원인, 개인정보를 자동 정리한 명령과 응답이 포함됩니다. 현재 세션의 최근 작업 50개, 별도로 오류 최대 100개와 제한된 ADB 로그를 보관합니다. 다시 시작하면 로그가 삭제됩니다. 개인정보가 남을 수 있으므로 공개하지 말고 개인 메시지로 보내세요. 자동 전송하지 않습니다.각 오류에는 당시 적용된 설정의 스냅샷이 저장되며 이후 변경으로 대체되지 않습니다.\n\n보고서에는 설치된 패키지의 이름, 버전, 활성화 상태와 섹션 이름, 구성, 순서, 표시 여부도 포함됩니다. 진단을 위해 식별자와 이름은 유지되지만 앱 및 섹션 목록은 공개되지 않습니다.';
 
   @override
   String get diagnosticsTitle => '오류 진단';
@@ -1957,7 +1957,7 @@ class AppLocalizationsKo extends AppLocalizations {
       'TCL 필터 설정을 읽거나 확인할 수 없습니다. 상태를 새로 고치고 다시 시도하세요.';
 
   @override
-  String get tclBlueLightUnsupported => '이 TV에서는 TCL 필터 인터페이스를 사용할 수 없습니다.';
+  String get tclBlueLightUnsupported => '이 기기에서는 TCL 필터 인터페이스를 사용할 수 없습니다.';
 
   @override
   String get tclBlueLightRefresh => 'TCL 필터 상태 새로 고침';
@@ -1974,7 +1974,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get nightScheduleTimeHint =>
-      '시간은 TV 시간대를 사용합니다. 음수 오프셋이 더 빠릅니다. 양수 오프셋은 나중에 나옵니다.';
+      '시간은 기기 시간대를 사용합니다. 음수 오프셋이 더 빠릅니다. 양수 오프셋은 나중에 나옵니다.';
 
   @override
   String get nightTemperature => '필터 색온도';
@@ -2059,7 +2059,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get nightSolarAttribution =>
-      '일출과 일몰 시각은 Sunrise-Sunset.org에서 가져오며, 사용할 수 없으면 GeoNames를 이용합니다. 오프라인에서는 TV가 누락된 시각을 계산합니다.';
+      '일출과 일몰 시각은 Sunrise-Sunset.org에서 가져오며, 사용할 수 없으면 GeoNames를 이용합니다. 오프라인에서는 기기가 누락된 시각을 계산합니다.';
 
   @override
   String get nightTemporaryOn => '다음까지 일시적으로 밝기가 어두워집니다.';
@@ -2077,7 +2077,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get advancedSettings => '고급';
 
   @override
-  String get controlAndStartup => '런처 및 TV 컨트롤';
+  String get controlAndStartup => '런처 및 기기 제어';
 
   @override
   String get sectionsAndOrder => '섹션 및 순서';
@@ -2176,7 +2176,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get followTileStyle => '스타일을 따르세요';
 
   @override
-  String get androidTvSettingsHint => 'TV 시스템 설정을 엽니다';
+  String get androidTvSettingsHint => '기기 시스템 설정을 엽니다';
 
   @override
   String get autoHideTopPanel => '패널을 자동으로 숨깁니다.';
@@ -2426,7 +2426,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get adbTlsHint =>
-      '개발자 옵션에서 무선 디버깅을 사용하세요. 페어링과 연결 포트는 다릅니다. 펌웨어에 페어링 코드 화면이 없거나 오버레이 창을 차단하는 경우 대신 TCP/RSA를 사용하세요. 모든 연결은 이 TV에 대한 로컬로 유지됩니다.';
+      '개발자 옵션에서 무선 디버깅을 사용하세요. 페어링과 연결 포트는 다릅니다. 펌웨어에 페어링 코드 화면이 없거나 오버레이 창을 차단하는 경우 대신 TCP/RSA를 사용하세요. 모든 연결은 이 기기에 대한 로컬로 유지됩니다.';
 
   @override
   String get adbPaired => '페어링되었습니다. 무선 디버깅 연결 포트를 이용하여 연결을 확인하세요.';
@@ -2481,7 +2481,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get adbTwoWindows => '두 번째 창에서 설정 열기';
 
   @override
-  String get autoLaunchBoot => 'TV 부팅 후';
+  String get autoLaunchBoot => '기기 부팅 후';
 
   @override
   String get autoLaunchOff => '장애인';
@@ -2500,7 +2500,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get autoLaunchHint =>
-      'TV 시작 또는 절전 모드 해제 후 열 앱 또는 HDMI 입력을 선택하세요. 아래에서 이벤트와 지연을 설정하세요. Android가 CuteLauncher를 표시하면 작업이 한 번 실행됩니다. 원격 입력을 하거나 홈 화면을 나가면 대기가 취소됩니다. 나중에 HDMI 입력을 자유롭게 변경할 수 있습니다. CuteLauncher를 기본 실행기로 설정하거나 필요한 경우 부팅 시 시작을 활성화합니다. 깨우기 감지를 계속 실행하려면 CuteLauncher가 필요합니다.';
+      '기기 시작 또는 절전 모드 해제 후 열 앱 또는 HDMI 입력을 선택하세요. 아래에서 이벤트와 지연을 설정하세요. Android가 CuteLauncher를 표시하면 작업이 한 번 실행됩니다. 원격 입력을 하거나 홈 화면을 나가면 대기가 취소됩니다. 나중에 HDMI 입력을 자유롭게 변경할 수 있습니다. CuteLauncher를 기본 실행기로 설정하거나 필요한 경우 부팅 시 시작을 활성화합니다. 깨우기 감지를 계속 실행하려면 CuteLauncher가 필요합니다.';
 
   @override
   String autoLaunchSeconds(int seconds) {
@@ -2600,7 +2600,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get cloudDisconnectConfirm =>
-      'TV에서 이 계정을 삭제하시겠습니까? 클라우드의 사본은 그대로 유지됩니다.';
+      '기기에서 이 계정을 삭제하시겠습니까? 클라우드의 사본은 그대로 유지됩니다.';
 
   @override
   String get cloudUpload => '클라우드에 복사본 저장';
@@ -2649,7 +2649,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get adbSetupIntro =>
-      'TV 개발자 설정에서 디버깅 및 네트워크 ADB를 활성화한 다음 CuteLauncher를 신뢰하세요. 모든 ADB 작업에 따른 위험은 귀하의 책임입니다.';
+      '기기 개발자 설정에서 디버깅 및 네트워크 ADB를 활성화한 다음 CuteLauncher를 신뢰하세요. 모든 ADB 작업에 따른 위험은 귀하의 책임입니다.';
 
   @override
   String get adbConnectionBlock => 'ADB 연결';
@@ -2680,7 +2680,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get adbBuiltinHint =>
-      '내장 런처를 비활성화하면 리모컨의 일부 버튼과 제조사 전용 TV 메뉴가 작동하지 않을 수 있습니다. 이 변경을 취소하려면 내장 런처를 다시 활성화하세요.';
+      '내장 런처를 비활성화하면 리모컨의 일부 버튼과 제조사 전용 기기 메뉴가 작동하지 않을 수 있습니다. 이 변경을 취소하려면 내장 런처를 다시 활성화하세요.';
 
   @override
   String get adbHomeBlock => '홈 버튼 및 시작';
@@ -2693,7 +2693,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get adbHomeOptional =>
-      '내장 실행기가 비활성화된 경우 홈을 재정의하고 TV 시작 시 실행하는 것은 선택 사항입니다.';
+      '내장 실행기가 비활성화된 경우 홈을 재정의하고 기기 시작 시 실행하는 것은 선택 사항입니다.';
 
   @override
   String get adbEnableBuiltin => 'ADB를 통해 내장 실행 프로그램 활성화';
@@ -2717,7 +2717,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get adbEffectDisable =>
-      'TV 사용자의 경우 내장된 런처 앱이 비활성화됩니다. TV 메뉴 및 버튼이 작동하지 않을 수 있습니다. 앱이 제거되지 않았습니다.';
+      '기기 사용자의 경우 내장된 런처 앱이 비활성화됩니다. 기기 메뉴 및 버튼이 작동하지 않을 수 있습니다. 앱이 제거되지 않았습니다.';
 
   @override
   String get adbRecoveryHomeDisable =>
@@ -2795,7 +2795,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get nightBatteryGuide =>
-      '1. 앱 설정에서 특수 앱 액세스를 엽니다.\n2. 배터리 최적화(경우에 따라 에너지 절약)를 선택합니다.\n3. CuteLauncher를 찾으세요. 필요한 경우 모든 앱을 선택합니다.\n4. 최적화를 비활성화하거나 제한 없음을 선택합니다.\n메뉴 이름과 사용 가능 여부는 TV 펌웨어에 따라 다릅니다.';
+      '1. 앱 설정에서 특수 앱 액세스를 엽니다.\n2. 배터리 최적화(경우에 따라 에너지 절약)를 선택합니다.\n3. CuteLauncher를 찾으세요. 필요한 경우 모든 앱을 선택합니다.\n4. 최적화를 비활성화하거나 제한 없음을 선택합니다.\n메뉴 이름과 사용 가능 여부는 기기 펌웨어에 따라 다릅니다.';
 
   @override
   String get updateNotifications => '업데이트 알림 표시';
@@ -2898,23 +2898,23 @@ class AppLocalizationsKo extends AppLocalizations {
   String get backupSaveMode => '백업';
 
   @override
-  String get backupScope => 'TV 간 백업';
+  String get backupScope => '기기 간 백업';
 
   @override
-  String get backupSyncScope => 'TV 간 동기화';
+  String get backupSyncScope => '기기 간 동기화';
 
   @override
-  String get backupSeparate => 'TV마다 별도';
+  String get backupSeparate => '기기마다 별도';
 
   @override
-  String get backupShared => '모든 TV에 동일한 설정';
+  String get backupShared => '모든 기기에 동일한 설정';
 
   @override
   String get backupStorage => '저장';
 
   @override
   String get backupSyncHelp =>
-      '데이터를 다운로드하고 변경 사항을 업로드합니다. 최신 변경 사항이 충돌을 이기게 됩니다. TV 시계가 정확해야 합니다. 실행기가 열려 있는 동안 동기화가 실행됩니다.';
+      '데이터를 다운로드하고 변경 사항을 업로드합니다. 최신 변경 사항이 충돌을 이기게 됩니다. 기기 시계가 정확해야 합니다. 실행기가 열려 있는 동안 동기화가 실행됩니다.';
 
   @override
   String get backupSyncLimit => '다음보다 자주 확인하지 마세요.';
@@ -2939,7 +2939,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get backupLocalHelp =>
-      '로컬 복사본은 앱 또는 해당 데이터와 함께 삭제됩니다. TV 외부에도 사본을 보관하세요.';
+      '로컬 복사본은 앱 또는 해당 데이터와 함께 삭제됩니다. 기기 외부에도 사본을 보관하세요.';
 
   @override
   String get panelObjectOrder => '개체 순서';
@@ -3115,7 +3115,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get backupFolderPickerUnavailable =>
-      '이 TV에서는 폴더 선택기를 사용할 수 없습니다. 다운로드 / CuteLauncher 또는 내부 앱 폴더를 선택합니다.';
+      '이 기기에서는 폴더 선택기를 사용할 수 없습니다. 다운로드 / CuteLauncher 또는 내부 앱 폴더를 선택합니다.';
 
   @override
   String get driveConfigurationError =>
@@ -3144,14 +3144,14 @@ class AppLocalizationsKo extends AppLocalizations {
   String get backupSyncDisplayGroup => '야간 모드, 밝기 및 화면 보호기';
 
   @override
-  String get backupSyncControlsGroup => '런처 및 TV 컨트롤';
+  String get backupSyncControlsGroup => '런처 및 기기 제어';
 
   @override
   String get backupSyncGeneralGroup => '언어, 업데이트 및 기타 설정';
 
   @override
   String get backupSyncGroupsHelp =>
-      '비활성화한 항목은 이 TV에 유지됩니다. 기기마다 동기화 항목을 따로 선택하세요.';
+      '비활성화한 항목은 이 기기에 유지됩니다. 기기마다 동기화 항목을 따로 선택하세요.';
 
   @override
   String get backupSyncGroupsFailed => '동기화를 위한 설정 선택을 저장할 수 없습니다. 다시 시도해 보세요.';
@@ -3347,6 +3347,15 @@ class AppLocalizationsKo extends AppLocalizations {
   String get homeSectionIcons => '섹션 아이콘';
 
   @override
+  String get sectionTitleIcon => '섹션 제목 아이콘';
+
+  @override
+  String get sectionIconPhotos => '사진';
+
+  @override
+  String get sectionIconFolder => '폴더';
+
+  @override
   String get homeInactiveTransparency => '비활성 섹션 투명도';
 
   @override
@@ -3472,7 +3481,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get nightIgnoreHdmiInputsHint =>
-      'HDMI를 시청하는 동안 야간 필터를 일시 중지하세요. 사용 권한이 필요합니다. 입력 감지는 TV 펌웨어에 따라 다릅니다.';
+      'HDMI를 시청하는 동안 야간 필터를 일시 중지하세요. 사용 권한이 필요합니다. 입력 감지는 기기 펌웨어에 따라 다릅니다.';
 
   @override
   String get inputsSettings => '입력 설정';
@@ -3767,7 +3776,7 @@ class AppLocalizationsKo extends AppLocalizations {
       '이 버튼과 누르기 유형은 이미 할당되었습니다. 다른 버튼이나 누르기 유형을 선택하세요.';
 
   @override
-  String get cleanerTitle => 'TV cleanup manager';
+  String get cleanerTitle => '기기 정리 관리자';
 
   @override
   String get cleanerRefresh => 'Refresh applications';
@@ -3983,8 +3992,17 @@ class AppLocalizationsKo extends AppLocalizations {
   String get landscapeMotion => 'Animate weather';
 
   @override
+  String get landscapeSunrise => '일출';
+
+  @override
+  String get landscapeSunset => '일몰';
+
+  @override
+  String get landscapeScheduleCurrent => '현재 일정';
+
+  @override
   String get landscapeHelp =>
-      'Time follows cached sunrise and sunset from Night mode; without them, dawn is at 06:00 and dusk at 18:00, with 40-minute transitions around each. Seasons follow the local month and hemisphere; automatic hemisphere uses weather coordinates, then Night mode coordinates, then the Northern Hemisphere. With time of day off, the scene stays in daylight; with seasons off, it stays in summer. Weather uses current data from the selected weather source, without extra requests. Missing or stale weather shows clear skies. Clouds, precipitation and fog can be disabled independently. Motion is off by default, stops when Home is hidden, and is disabled in memory saving mode or when reduced motion is requested.';
+      '자동 모드는 저장된 위치에 따라 기기에서 일출과 일몰을 계산합니다. 시간을 확인할 수 없으면 사용자 지정 일정을 사용합니다. Seasons follow the local month and hemisphere; automatic hemisphere uses weather coordinates, then Night mode coordinates, then the Northern Hemisphere. With time of day off, the scene stays in daylight; with seasons off, it stays in summer. Weather uses current data from the selected weather source, without extra requests. Missing or stale weather shows clear skies. Clouds, precipitation and fog can be disabled independently. Motion is off by default, stops when Home is hidden, and is disabled in memory saving mode or when reduced motion is requested.';
 
   @override
   String get inputConnected => 'Connected';
@@ -4000,7 +4018,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get weatherMetNorwayCredit =>
-      'Data: MET Norway, CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Forecast adapted from https://api.met.no/. No API key; days use the TV time zone, min/max cover available periods. Precipitation probability is unavailable.';
+      'Data: MET Norway, CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Forecast adapted from https://api.met.no/. No API key; days use the device time zone, min/max cover available periods. Precipitation probability is unavailable.';
 
   @override
   String get informationGroup => '시계, 날짜 및 날씨';
@@ -4136,7 +4154,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get tvPowerHelp =>
-      '끄기는 CuteLauncher 접근성 서비스 또는 로컬 ADB로 대기 모드를 켭니다. 다시 시작하려면 ADB가 필요합니다. TV 박스에서는 박스를 제어하며 TV 동작은 HDMI-CEC와 펌웨어에 따라 다릅니다.';
+      '절전 모드는 CuteLauncher 접근성 서비스 또는 로컬 ADB로 대기 모드를 켭니다. 전원 끄기와 다시 시작에는 로컬 ADB가 필요합니다. TV 박스에서는 박스를 제어하며 TV 동작은 HDMI-CEC와 펌웨어에 따라 다릅니다.';
 
   @override
   String get cleanerLists => '사용 중지 목록';
@@ -4210,13 +4228,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String get cleanerNoSearchResults => '일치하는 항목이 없습니다.';
 
   @override
-  String get cleanerAlreadyDisabled => '이 목록 중 이 TV에 있는 모든 앱은 이미 사용 중지 상태입니다.';
+  String get cleanerAlreadyDisabled => '이 목록 중 이 기기에 있는 모든 앱은 이미 사용 중지 상태입니다.';
 
   @override
-  String get cleanerAlreadyEnabled => '이 목록 중 이 TV에 있는 모든 앱은 이미 사용 상태입니다.';
+  String get cleanerAlreadyEnabled => '이 목록 중 이 기기에 있는 모든 앱은 이미 사용 상태입니다.';
 
   @override
-  String get cleanerNoInstalled => '이 목록에 일치하는 앱이 이 TV에 설치되어 있지 않습니다.';
+  String get cleanerNoInstalled => '이 목록에 일치하는 앱이 이 기기에 설치되어 있지 않습니다.';
 
   @override
   String get cleanerListProtected => '나머지 앱은 사용 중지로부터 보호됩니다.';
@@ -4340,7 +4358,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get backgroundMediaFormats =>
-      '이미지: JPEG, PNG, WebP, GIF, BMP — 최대 8 MiB, 4,800만 화소, 각 변 16,384픽셀.\n동영상: MP4/M4V, WebM, MKV — 최대 256 MiB, 3840×2160. 코덱 지원은 TV에 따라 다릅니다. H.264 MP4를 권장합니다. 소리 없이 반복하며 홈 밖에서는 일시 정지합니다. 동영상은 백업에 포함되지 않습니다.';
+      '이미지: JPEG, PNG, WebP, GIF, BMP — 최대 8 MiB, 4,800만 화소, 각 변 16,384픽셀.\n동영상: MP4/M4V, WebM, MKV — 최대 256 MiB, 3840×2160. 코덱 지원은 기기에 따라 다릅니다. H.264 MP4를 권장합니다. 소리 없이 반복하며 홈 밖에서는 일시 정지합니다. 동영상은 백업에 포함되지 않습니다.';
 
   @override
   String get backgroundFormatError =>
@@ -4361,7 +4379,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get backgroundVideoCodecError =>
-      'TV에서 동영상을 재생할 수 없습니다. 코덱이 지원되지 않거나 파일이 손상되었습니다. H.264 MP4를 시도하세요.';
+      '기기에서 동영상을 재생할 수 없습니다. 코덱이 지원되지 않거나 파일이 손상되었습니다. H.264 MP4를 시도하세요.';
 
   @override
   String get backgroundFileApplied => '파일을 선택했습니다. 배경이 변경되었습니다.';
@@ -4596,7 +4614,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get vpnOther => '다른 VPN 또는 확인되지 않은 VPN이 연결되어 제어할 수 없습니다.';
 
   @override
-  String get vpnStartup => 'TV 시작 시 VPN';
+  String get vpnStartup => '기기 시작 시 VPN';
 
   @override
   String get vpnPending => 'VPN 연결 대기 중';
@@ -4627,11 +4645,11 @@ class AppLocalizationsKo extends AppLocalizations {
       '이 VPN은 Android 상시 연결 모드로 관리됩니다. 시작 설정 또는 Android 설정에서 모드를 해제하세요.';
 
   @override
-  String get vpnRestartRequired => '시스템 모드를 적용하려면 TV를 다시 시작하세요.';
+  String get vpnRestartRequired => '시스템 모드를 적용하려면 기기를 다시 시작하세요.';
 
   @override
   String get vpnAlwaysOnHelp =>
-      '로컬 TCP ADB로 설정된 클라이언트를 상시 연결 VPN으로 지정합니다. TV를 다시 시작하면 Android가 선택을 적용합니다. VPN 없는 연결 차단은 켜거나 변경하지 않습니다. 모드를 해제하면 이전 시스템 선택이 복원됩니다.';
+      '로컬 TCP ADB로 설정된 클라이언트를 상시 연결 VPN으로 지정합니다. 기기를 다시 시작하면 Android가 선택을 적용합니다. VPN 없는 연결 차단은 켜거나 변경하지 않습니다. 모드를 해제하면 이전 시스템 선택이 복원됩니다.';
 
   @override
   String get vpnClientConfirmation => 'MantaRay 창에서 명령을 확인하세요.';
@@ -4733,7 +4751,7 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get weatherForecastTvTime => '예보 날짜는 TV 시간을 기준으로 합니다';
+  String get weatherForecastTvTime => '예보 날짜는 기기 시간을 기준으로 합니다';
 
   @override
   String get weatherClear => '맑음';
@@ -4757,7 +4775,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get audioStatusTitle => '볼륨 및 오디오 출력';
 
   @override
-  String get audioOutputTv => 'TV';
+  String get audioOutputTv => '스피커';
 
   @override
   String get audioOutputHeadphones => '헤드폰';
@@ -4788,7 +4806,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get backgroundStartupHelp =>
-      'TV 부팅 후 백그라운드에서 한 번 실행할 앱을 선택하세요. CuteLauncher가 1분 안에 열려야 합니다. 홈 화면으로 지정하거나 부팅 시 실행을 켜세요. 앱은 홈 뒤에서 순서대로 실행되며 선택 즉시 실행되지는 않습니다. 리모컨 입력이나 런처에서 나가면 나머지 실행은 취소됩니다. 절전 해제 시 다시 실행하지 않습니다. 지원하지 않는 앱은 선택할 수 없습니다. 앱 실행은 내부 기능 활성화나 지속 작동을 보장하지 않습니다. 각 앱에서 권한과 백그라운드 작동을 설정하세요. Android나 TV 펌웨어가 앱을 중지할 수 있습니다. 선택은 이 TV에만 저장됩니다.';
+      '기기 부팅 후 백그라운드에서 한 번 실행할 앱을 선택하세요. CuteLauncher가 1분 안에 열려야 합니다. 홈 화면으로 지정하거나 부팅 시 실행을 켜세요. 앱은 홈 뒤에서 순서대로 실행되며 선택 즉시 실행되지는 않습니다. 리모컨 입력이나 런처에서 나가면 나머지 실행은 취소됩니다. 절전 해제 시 다시 실행하지 않습니다. 지원하지 않는 앱은 선택할 수 없습니다. 앱 실행은 내부 기능 활성화나 지속 작동을 보장하지 않습니다. 각 앱에서 권한과 백그라운드 작동을 설정하세요. Android나 기기 펌웨어가 앱을 중지할 수 있습니다. 선택은 이 기기에만 저장됩니다.';
 
   @override
   String get backgroundStartupToggle => '백그라운드 자동 실행';
@@ -4857,7 +4875,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get slideshowPickerUnavailable =>
-      '이 TV에는 폴더 선택기가 없습니다. 내장 탐색기를 사용하거나 경로를 입력하세요.';
+      '이 기기에는 폴더 선택기가 없습니다. 내장 탐색기를 사용하거나 경로를 입력하세요.';
 
   @override
   String get slideshowFolderUnavailable =>
@@ -4865,7 +4883,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get slideshowStorageHelp =>
-      '내장 탐색기는 TV와 연결된 저장 장치의 폴더를 읽습니다. Android 11 이상에서는 모든 파일 접근을, Android 9–10에서는 저장소 접근을 허용하세요. /storage/emulated/0/Pictures 같은 경로를 직접 입력할 수도 있습니다. 파일은 변경되지 않습니다.';
+      '내장 탐색기는 기기와 연결된 저장 장치의 폴더를 읽습니다. Android 11 이상에서는 모든 파일 접근을, Android 9–10에서는 저장소 접근을 허용하세요. /storage/emulated/0/Pictures 같은 경로를 직접 입력할 수도 있습니다. 파일은 변경되지 않습니다.';
 
   @override
   String get fileBrowserTitle => '파일 선택';
@@ -4902,7 +4920,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get appChannelsHelp =>
-      '최대 16개의 피드를 선택하세요. 사용 가능 여부는 앱이 게시한 채널과 TV 펌웨어에 따라 달라집니다. 빈 피드는 숨겨집니다. 선택은 이 TV에 저장됩니다.';
+      '최대 16개의 피드를 선택하세요. 사용 가능 여부는 앱이 게시한 채널과 기기 펌웨어에 따라 달라집니다. 빈 피드는 숨겨집니다. 선택은 이 기기에 저장됩니다.';
 
   @override
   String get appChannelsUnavailable => '피드를 읽을 수 없습니다. TV 프로그램 접근 권한을 확인하세요.';
@@ -4933,6 +4951,34 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get wallpaperRefresh => '배경화면 새로고침';
+
+  @override
+  String get quickActionsTitle => '빠른 작업';
+
+  @override
+  String get quickActionsSettings => '빠른 작업 설정';
+
+  @override
+  String get quickActionsEmpty => '메뉴 설정에서 명령을 선택하세요.';
+
+  @override
+  String get quickActionsWallpaperUnavailable => '이 배경은 수동으로 변경할 수 없습니다.';
+
+  @override
+  String get quickActionsWallpaperFailed => '배경화면을 새로고침하지 못했습니다.';
+
+  @override
+  String get quickActionsSleep => '절전 모드';
+
+  @override
+  String get quickActionsShutdownConfirm => '기기의 전원을 완전히 끌까요?';
+
+  @override
+  String get quickActionsScreensaverUnavailable => '화면 보호기를 시작할 수 없습니다.';
+
+  @override
+  String get quickActionsPowerHelp =>
+      '절전 모드에는 CuteLauncher 접근성 서비스 또는 로컬 ADB가 필요합니다. 전원 끄기와 다시 시작에는 로컬 ADB가 필요합니다.';
 
   @override
   String get wallpaperDimmingHelp =>
@@ -5097,11 +5143,14 @@ class AppLocalizationsKo extends AppLocalizations {
   String get remoteMappingBlackScreen => 'Black Screen 전환';
 
   @override
+  String get remoteMappingToggleNightMode => '야간 모드 전환';
+
+  @override
   String get remoteMappingBlackOverlay => '검은 화면';
 
   @override
   String get remoteMappingBlackOverlayHelp =>
-      '한 번 누르면 화면이 가려집니다. 다시 누르거나 뒤로 버튼을 누르면 화면이 돌아옵니다. TV는 켜진 상태를 유지합니다.';
+      '한 번 누르면 화면이 가려집니다. 다시 누르거나 뒤로 버튼을 누르면 화면이 돌아옵니다. 기기는 켜진 상태를 유지합니다.';
 
   @override
   String get remoteMappingTclScreenOff => 'TCL 화면 끄기';
@@ -5193,7 +5242,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get feedFormatHelp =>
-      '자동은 앱 정보 또는 처음 불러온 표지 3개로 피드별 형식을 선택하여 이 TV에 저장합니다. 동률이면 가로를 사용합니다. 다른 비율은 배경 위에 전체가 표시됩니다. 형식을 직접 선택할 수도 있습니다.';
+      '자동은 앱 정보 또는 처음 불러온 표지 3개로 피드별 형식을 선택하여 이 기기에 저장합니다. 동률이면 가로를 사용합니다. 다른 비율은 배경 위에 전체가 표시됩니다. 형식을 직접 선택할 수도 있습니다.';
 
   @override
   String get networkSpeedTitle => '네트워크 속도';
@@ -5259,13 +5308,13 @@ class AppLocalizationsKo extends AppLocalizations {
       '설정을 동기화할 수 없습니다. 저장소 접근 권한을 확인하고 다시 시도하세요.';
 
   @override
-  String get backupThisTv => '이 TV';
+  String get backupThisTv => '이 기기';
 
   @override
-  String get backupOtherTv => '다른 TV';
+  String get backupOtherTv => '다른 기기';
 
   @override
-  String get backupTvUnknown => 'TV 알 수 없음';
+  String get backupTvUnknown => '알 수 없는 기기';
 
   @override
   String get panelTooltips => '모든 패널에 도구 설명 표시';
@@ -5489,7 +5538,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get fileBrowserStartFolder => '시작 폴더';
 
   @override
-  String get fileBrowserStorage => 'TV 저장소';
+  String get fileBrowserStorage => '기기 저장소';
 
   @override
   String get fileBrowserDownloads => '다운로드';
@@ -5529,7 +5578,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get fileBrowserOptionsHelp =>
-      '선택한 폴더 또는 선택한 이미지의 원래 폴더를 먼저 엽니다. 마지막으로 연 폴더는 작업마다 별도로 기억되며 취소 후에도 유지됩니다. 폴더를 사용할 수 없으면 TV 저장소 또는 다운로드를 엽니다. 폴더 기록은 이 TV에만 저장됩니다.';
+      '선택한 폴더 또는 선택한 이미지의 원래 폴더를 먼저 엽니다. 마지막으로 연 폴더는 작업마다 별도로 기억되며 취소 후에도 유지됩니다. 폴더를 사용할 수 없으면 기기 저장소 또는 다운로드를 엽니다. 폴더 기록은 이 기기에만 저장됩니다.';
 
   @override
   String get fileBrowserSaveFailed => '파일 탐색기 설정을 저장하지 못했습니다.';
@@ -5692,20 +5741,20 @@ class AppLocalizationsKo extends AppLocalizations {
   String get backupSyncResume => '동기화 다시 시작';
 
   @override
-  String get backupSyncUseLocal => '이 TV의 설정 사용';
+  String get backupSyncUseLocal => '이 기기의 설정 사용';
 
   @override
   String get backupSyncUseRemote => '저장소의 설정 사용';
 
   @override
-  String get backupSyncMergeLocal => '이 TV의 설정을 우선하여 병합';
+  String get backupSyncMergeLocal => '이 기기의 설정을 우선하여 병합';
 
   @override
   String get backupSyncMergeRemote => '저장소의 설정을 우선하여 병합';
 
   @override
   String backupSyncPreviousDate(String date) {
-    return '이 TV의 마지막 동기화: $date';
+    return '이 기기의 마지막 동기화: $date';
   }
 
   @override
@@ -5787,7 +5836,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get syncKeyHelp =>
-      '토큰과 계정을 동기화하려면 모든 TV에서 같은 키를 사용하세요. 한 TV에서 만들어 다른 TV로 옮기세요. 키가 없으면 보호된 데이터를 읽을 수 없으므로 안전하게 보관하세요. 변경 시 모든 TV를 업데이트하세요. Android 권한과 하드웨어 키는 로컬에 유지됩니다.';
+      '토큰과 계정을 동기화하려면 모든 기기에서 같은 키를 사용하세요. 한 기기에서 만들어 다른 기기로 옮기세요. 키가 없으면 보호된 데이터를 읽을 수 없으므로 안전하게 보관하세요. 변경 시 모든 기기를 업데이트하세요. Android 권한과 하드웨어 키는 로컬에 유지됩니다.';
 
   @override
   String get syncFiles => '동기화 파일';
@@ -5833,7 +5882,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get backupFirstExchange => '첫 교환';
 
   @override
-  String get backupNoRemote => '저장소에 설정이 없습니다. 이 TV의 설정을 업로드합니다.';
+  String get backupNoRemote => '저장소에 설정이 없습니다. 이 기기의 설정을 업로드합니다.';
 
   @override
   String get backupSetupStart => '사용';
@@ -5849,18 +5898,18 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get backupAccountLocalHelp =>
-      '연결된 계정이나 같은 유형의 다른 계정을 사용하세요. 로그인 정보는 이 TV에 남습니다. 백업과 동기화는 파일을 따로 관리합니다.';
+      '연결된 계정이나 같은 유형의 다른 계정을 사용하세요. 로그인 정보는 이 기기에 남습니다. 백업과 동기화는 파일을 따로 관리합니다.';
 
   @override
   String get backupPasswordOptionalHelp =>
-      '선택 사항입니다. 전송 가능한 토큰을 포함한 전체 파일을 암호화합니다. 비밀번호가 없으면 암호화하지 않습니다. 빈 값은 암호화를 끕니다. 다른 TV에서도 같은 비밀번호가 필요합니다.';
+      '선택 사항입니다. 전송 가능한 토큰을 포함한 전체 파일을 암호화합니다. 비밀번호가 없으면 암호화하지 않습니다. 빈 값은 암호화를 끕니다. 다른 기기에서도 같은 비밀번호가 필요합니다.';
 
   @override
   String get backupYandexDisk => 'Yandex Disk';
 
   @override
   String get backupYandexHelp =>
-      'Disk 앱 폴더에 접근할 수 있는 Yandex OAuth 앱의 Client ID와 Client Secret을 입력하세요. 연결 후 휴대전화에서 코드를 확인하세요. 모든 TV에서 같은 OAuth 클라이언트와 계정을 사용하세요.';
+      'Disk 앱 폴더에 접근할 수 있는 Yandex OAuth 앱의 Client ID와 Client Secret을 입력하세요. 연결 후 휴대전화에서 코드를 확인하세요. 모든 기기에서 같은 OAuth 클라이언트와 계정을 사용하세요.';
 
   @override
   String get backupYandexConnect => 'Yandex Disk 연결';
@@ -5927,5 +5976,5 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get backupExistingSettingsHelp =>
-      '선택한 저장소에 동기화 설정이 이미 있습니다. 이 TV에 적용하거나, 이 TV의 설정으로 교체하거나, 병합할지 선택하세요. 병합 시 설정이 다르면 선택한 우선순위가 적용됩니다. 마법사의 마지막 단계에서 확인한 후 교환이 시작됩니다.';
+      '선택한 저장소에 동기화 설정이 이미 있습니다. 이 기기에 적용하거나, 이 기기의 설정으로 교체하거나, 병합할지 선택하세요. 병합 시 설정이 다르면 선택한 우선순위가 적용됩니다. 마법사의 마지막 단계에서 확인한 후 교환이 시작됩니다.';
 }

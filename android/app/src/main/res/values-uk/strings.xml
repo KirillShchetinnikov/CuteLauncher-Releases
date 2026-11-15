@@ -13,15 +13,17 @@
     <string name="remap_error_app">Призначений застосунок відсутній або не відкривається.</string>
     <string name="remap_error_hdmi">Призначений вхід HDMI недоступний.</string>
     <string name="remap_error_power">Команду живлення не виконано. Перевірте локальний ADB.</string>
-    <string name="remap_error_permission">Телевізор заборонив виконання дії пульта.</string>
+    <string name="remap_error_permission">Пристрій заборонив виконання дії пульта.</string>
     <string name="remap_error_busy">Дія пульта вже виконується.</string>
-    <string name="remap_error_unavailable">Ця дія пульта недоступна на телевізорі.</string>
+    <string name="remap_error_unavailable">Ця дія пульта недоступна на цьому пристрої.</string>
     <string name="remap_error_webhook_http">Webhook відхилив запит (HTTP %1$d).</string>
     <string name="remap_error_webhook_timeout">Час очікування відповіді webhook минув.</string>
     <string name="remap_error_webhook">Не вдалося підключитися до webhook.</string>
-    <string name="power_off">Вимкнути пристрій</string>
+    <string name="power_sleep">Сон</string>
     <string name="power_reboot">Перезавантажити пристрій</string>
-    <string name="power_off_confirm">Перевести пристрій у режим очікування?</string>
+    <string name="power_sleep_confirm">Перевести пристрій у режим очікування?</string>
+    <string name="power_shutdown">Вимкнути пристрій</string>
+    <string name="power_shutdown_confirm">Повністю вимкнути пристрій?</string>
     <string name="power_reboot_confirm">Перезавантажити пристрій? Відкриті застосунки буде закрито.</string>
     <string name="screensaver_label">Годинник CuteLauncher</string>
     <string name="notification_service_label">Служба сповіщень CuteLauncher</string>
@@ -34,7 +36,7 @@
     <string name="recovery_retry">Запустити CuteLauncher знову</string>
     <string name="recovery_settings">Налаштування Android</string>
     <string name="recovery_home">Вибрати головний екран</string>
-    <string name="recovery_unavailable">Ця дія недоступна на цьому телевізорі.</string>
+    <string name="recovery_unavailable">Ця дія недоступна на цьому пристрої.</string>
     <string name="recovery_restore">Відновити попередній головний екран</string>
     <string name="recovery_restore_confirm">Відновити попередній головний екран через наявне локальне з’єднання ADB?</string>
 </resources>

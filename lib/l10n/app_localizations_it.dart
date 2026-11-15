@@ -188,13 +188,13 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get renderCompatibilityHelp =>
-      'Prova questa modalità se l’interfaccia sfarfalla con l’oscuramento notturno. Si attiva automaticamente sui modelli verificati. Sugli altri TV, la scelta viene salvata solo su questo dispositivo e applicata dopo il riavvio del launcher. Potrebbe aumentare il carico grafico.';
+      'Prova questa modalità se l’interfaccia sfarfalla con l’oscuramento notturno. Si attiva automaticamente sui modelli verificati. Sugli altri dispositivi, la scelta viene salvata solo su questo dispositivo e applicata dopo il riavvio del launcher. Potrebbe aumentare il carico grafico.';
 
   @override
   String get diagnosticsHubTitle => 'Diagnostics';
 
   @override
-  String get tvCompatibilityTitle => 'TV compatibility check';
+  String get tvCompatibilityTitle => 'Verifica compatibilità del dispositivo';
 
   @override
   String get tvCompatibilityRun => 'Run check';
@@ -298,7 +298,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get adbWifiOwned =>
-      'Nessuna modifica: una rete Wi-Fi salvata è stata creata dalla configurazione guidata di Google. Disattivarla può eliminare la rete e disconnettere la TV.\n\n1. Assicurati di conoscere la password Wi-Fi.\n2. Apri le impostazioni di rete Android, seleziona la rete e scegli Dimentica rete.\n3. Riconnettiti dalle stesse impostazioni.\n4. Torna a CuteLauncher, verifica ADB e riprova a disattivare il launcher integrato.\n\nSe il messaggio ricompare, lascia attivo il launcher integrato: il firmware potrebbe assegnare di nuovo la rete alla configurazione guidata.';
+      'Nessuna modifica: una rete Wi-Fi salvata è stata creata dalla configurazione guidata di Google. Disattivarla può eliminare la rete e disconnettere il dispositivo.\n\n1. Assicurati di conoscere la password Wi-Fi.\n2. Apri le impostazioni di rete Android, seleziona la rete e scegli Dimentica rete.\n3. Riconnettiti dalle stesse impostazioni.\n4. Torna a CuteLauncher, verifica ADB e riprova a disattivare il launcher integrato.\n\nSe il messaggio ricompare, lascia attivo il launcher integrato: il firmware potrebbe assegnare di nuovo la rete alla configurazione guidata.';
 
   @override
   String get adbWifiUnknown =>
@@ -653,7 +653,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get defaultLauncherDescription =>
-      'Quando impostato come launcher predefinito, il pulsante Home tornerà sempre a CuteLauncher. La TV si avvierà direttamente su CuteLauncher.';
+      'Quando impostato come launcher predefinito, il pulsante Home tornerà sempre a CuteLauncher. Il dispositivo si avvierà direttamente su CuteLauncher.';
 
   @override
   String get inputs => 'Ingressi';
@@ -715,7 +715,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get localNetworkSharingDetails =>
-      'Qui puoi scaricare le impostazioni/layout della tua TV o caricare un file di backup su questa TV.';
+      'Qui puoi scaricare le impostazioni/layout del tuo dispositivo o caricare un file di backup su questo dispositivo.';
 
   @override
   String failedToStartServer(String error) {
@@ -799,7 +799,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get homeButtonFix => 'Fix pulsante Home (Google TV)';
 
   @override
-  String get startOnBoot => 'Avvia all\'accensione (Google TV / Fire TV)';
+  String get startOnBoot => 'Avvia all’accensione del dispositivo';
 
   @override
   String get appLanguage => 'Lingua';
@@ -1342,19 +1342,19 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get accessibilityGuide =>
-      'Aprire manualmente le impostazioni della TV, quindi Accessibilità → CuteLauncher Correzione pulsante Home e abilitare il servizio. La posizione e il nome di questo menu dipendono dal produttore del televisore.';
+      'Aprire manualmente le impostazioni del dispositivo, quindi Accessibilità → CuteLauncher Correzione pulsante Home e abilitare il servizio. La posizione e il nome di questo menu dipendono dal produttore del dispositivo.';
 
   @override
   String get notificationPermissionGuide =>
-      'Impossibile aprire le impostazioni di accesso alle notifiche su questo televisore. Consentire le notifiche in uscita in Informazioni app non garantisce l\'accesso alle notifiche di altre app.\n\nCollega la tua TV tramite ADB ed esegui:';
+      'Impossibile aprire le impostazioni di accesso alle notifiche su questo dispositivo. Consentire le notifiche in uscita in Informazioni app non garantisce l\'accesso alle notifiche di altre app.\n\nCollega il tuo dispositivo tramite ADB ed esegui:';
 
   @override
   String get overlayPermissionGuide =>
-      'Non è stato possibile aprire automaticamente le impostazioni delle autorizzazioni di sovrapposizione.\n\nPer abilitare i popup su altre app, collega la TV tramite ADB ed esegui:';
+      'Non è stato possibile aprire automaticamente le impostazioni delle autorizzazioni di sovrapposizione.\n\nPer abilitare i popup su altre app, collega il dispositivo tramite ADB ed esegui:';
 
   @override
   String get watchNextPermissionGuide =>
-      'Per leggere le schede Continua a guardare da altre app, Android TV richiede READ_WRITE_WATCH_NEXT_PROGRAMS.\n\nCollega la tua TV tramite ADB ed esegui:';
+      'Per leggere le schede Continua a guardare da altre app, Android TV richiede READ_WRITE_WATCH_NEXT_PROGRAMS.\n\nCollega il tuo dispositivo tramite ADB ed esegui:';
 
   @override
   String get watchNextAccess => 'Continua a guardare l\'accesso';
@@ -1857,7 +1857,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get adbAuthorization =>
-      'Approvare l\'autorizzazione ADB sul televisore, quindi riprovare.';
+      'Approvare l\'autorizzazione ADB sul dispositivo, quindi riprovare.';
 
   @override
   String get adbChangeConfirm =>
@@ -1879,7 +1879,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get adbHint =>
-      'Prototipo solo per questo televisore (127.0.0.1). Abilita TCP ADB nelle opzioni sviluppatore, inserisci la sua porta e approva la richiesta di autorizzazione sulla TV. Il debug wireless con un codice di accoppiamento non è ancora supportato. La chiave privata rimane su questo dispositivo, al di fuori dei backup.';
+      'Prototipo solo per questo dispositivo (127.0.0.1). Abilita TCP ADB nelle opzioni sviluppatore, inserisci la sua porta e approva la richiesta di autorizzazione sul dispositivo. Il debug wireless con un codice di accoppiamento non è ancora supportato. La chiave privata rimane su questo dispositivo, al di fuori dei backup.';
 
   @override
   String get adbHome => 'Rendi CuteLauncher l\'app Casa';
@@ -1918,7 +1918,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get nightModeScope =>
-      'È necessaria l\'autorizzazione di sovrapposizione per oscurare altre app. Senza di esso, l\'attenuazione funziona all\'interno di CuteLauncher. Il filtro TCL non necessita di autorizzazioni di sovrapposizione. Un\'opacità superiore all\'80% Android potrebbe bloccare l\'input touch in altre app; I tasti del telecomando della TV funzionano ancora.';
+      'È necessaria l\'autorizzazione di sovrapposizione per oscurare altre app. Senza di esso, l\'attenuazione funziona all\'interno di CuteLauncher. Il filtro TCL non necessita di autorizzazioni di sovrapposizione. Un\'opacità superiore all\'80% Android potrebbe bloccare l\'input touch in altre app; I tasti del telecomando del dispositivo funzionano ancora.';
 
   @override
   String get nightModeEnd => 'Fine';
@@ -1934,7 +1934,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get nightModeScheduleHint =>
-      'Utilizza l\'ora della TV locale. Sono supportati i periodi notturni. Orari di inizio e di fine uguali disabilitano il filtro pianificato.';
+      'Utilizza l’ora locale del dispositivo. Sono supportati i periodi notturni. Orari di inizio e di fine uguali disabilitano il filtro pianificato.';
 
   @override
   String get nightModeEnabled => 'Abilita la modalità notturna';
@@ -1998,11 +1998,11 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get diagnosticsSharingNotice =>
-      'Invia il file all’autore in privato, senza pubblicarlo: la pulizia automatica può lasciare dati personali. Inviandolo, acconsenti alla pubblicazione di un rapporto anonimo di compatibilità TV nel repository Git di CuteLauncher. Verranno pubblicati solo metadati del dispositivo e disponibilità delle funzioni, senza dati personali; registri degli errori, comandi e impostazioni personali non verranno pubblicati.\n\nIl rapporto include anche pacchetti installati, nomi, versioni e stato di attivazione, oltre a nomi, contenuto, ordine e visibilità delle sezioni. Identificatori e nomi vengono conservati per la diagnosi; questi elenchi non vengono pubblicati.';
+      'Invia il file all’autore in privato, senza pubblicarlo: la pulizia automatica può lasciare dati personali. Inviandolo, acconsenti alla pubblicazione di un rapporto anonimo di compatibilità del dispositivo nel repository Git di CuteLauncher. Verranno pubblicati solo metadati del dispositivo e disponibilità delle funzioni, senza dati personali; registri degli errori, comandi e impostazioni personali non verranno pubblicati.\n\nIl rapporto include anche pacchetti installati, nomi, versioni e stato di attivazione, oltre a nomi, contenuto, ordine e visibilità delle sezioni. Identificatori e nomi vengono conservati per la diagnosi; questi elenchi non vengono pubblicati.';
 
   @override
   String get diagnosticsHint =>
-      'Un unico rapporto unisce compatibilità delle funzioni TV e diagnostica degli errori. Il rapporto include modello e firmware della TV, versione dell’app, permessi, memoria, fasi e cause degli errori, comandi e risposte con rimozione automatica dei dati personali. Conserva le ultime 50 operazioni, fino a 100 errori separati e un registro ADB limitato della sessione. Il riavvio cancella il registro. La pulizia può lasciare dati personali: invia il file in privato, senza pubblicarlo. Nessun invio automatico. Ogni errore conserva una copia delle impostazioni applicate; le modifiche successive non la sostituiscono.\n\nIl rapporto include anche pacchetti installati, nomi, versioni e stato di attivazione, oltre a nomi, contenuto, ordine e visibilità delle sezioni. Identificatori e nomi vengono conservati per la diagnosi; questi elenchi non vengono pubblicati.';
+      'Un unico rapporto unisce compatibilità delle funzioni del dispositivo e diagnostica degli errori. Il rapporto include modello e firmware del dispositivo, versione dell’app, permessi, memoria, fasi e cause degli errori, comandi e risposte con rimozione automatica dei dati personali. Conserva le ultime 50 operazioni, fino a 100 errori separati e un registro ADB limitato della sessione. Il riavvio cancella il registro. La pulizia può lasciare dati personali: invia il file in privato, senza pubblicarlo. Nessun invio automatico. Ogni errore conserva una copia delle impostazioni applicate; le modifiche successive non la sostituiscono.\n\nIl rapporto include anche pacchetti installati, nomi, versioni e stato di attivazione, oltre a nomi, contenuto, ordine e visibilità delle sezioni. Identificatori e nomi vengono conservati per la diagnosi; questi elenchi non vengono pubblicati.';
 
   @override
   String get diagnosticsTitle => 'Diagnostica degli errori';
@@ -2025,7 +2025,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get tclBlueLightUnsupported =>
-      'L\'interfaccia del filtro TCL non è disponibile su questo televisore.';
+      'L\'interfaccia del filtro TCL non è disponibile su questo dispositivo.';
 
   @override
   String get tclBlueLightRefresh => 'Aggiorna lo stato del filtro TCL';
@@ -2042,7 +2042,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get nightScheduleTimeHint =>
-      'Gli orari utilizzano il fuso orario della TV. Gli offset negativi sono precedenti; gli offset positivi sono successivi.';
+      'Gli orari utilizzano il fuso orario del dispositivo. Gli offset negativi sono precedenti; gli offset positivi sono successivi.';
 
   @override
   String get nightTemperature => 'Filtro temperatura colore';
@@ -2133,7 +2133,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get nightSolarAttribution =>
-      'Gli orari di alba e tramonto provengono da Sunrise-Sunset.org e, in caso di errore, da GeoNames. Senza Internet, il televisore calcola gli orari mancanti.';
+      'Gli orari di alba e tramonto provengono da Sunrise-Sunset.org e, in caso di errore, da GeoNames. Senza Internet, il dispositivo calcola gli orari mancanti.';
 
   @override
   String get nightTemporaryOn => 'Dimmerazione temporanea fino al';
@@ -2151,7 +2151,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get advancedSettings => 'Avanzato';
 
   @override
-  String get controlAndStartup => 'Launcher e controlli TV';
+  String get controlAndStartup => 'Launcher e controlli del dispositivo';
 
   @override
   String get sectionsAndOrder => 'Sezioni e ordine';
@@ -2252,7 +2252,8 @@ class AppLocalizationsIt extends AppLocalizations {
   String get followTileStyle => 'Segui lo stile';
 
   @override
-  String get androidTvSettingsHint => 'Apri le impostazioni del sistema TV';
+  String get androidTvSettingsHint =>
+      'Apri le impostazioni del sistema del dispositivo';
 
   @override
   String get autoHideTopPanel => 'Nascondi automaticamente il pannello';
@@ -2511,7 +2512,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get adbTlsHint =>
-      'Utilizza il debug wireless nelle opzioni sviluppatore. L\'accoppiamento e la connessione hanno porte diverse. Se il firmware non dispone di una schermata del codice di accoppiamento o blocca le finestre in sovrapposizione, utilizzare invece TCP/RSA. Tutte le connessioni rimangono locali su questo televisore.';
+      'Utilizza il debug wireless nelle opzioni sviluppatore. L\'accoppiamento e la connessione hanno porte diverse. Se il firmware non dispone di una schermata del codice di accoppiamento o blocca le finestre in sovrapposizione, utilizzare invece TCP/RSA. Tutte le connessioni rimangono locali su questo dispositivo.';
 
   @override
   String get adbPaired =>
@@ -2569,7 +2570,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get adbTwoWindows => 'Apri Impostazioni in una seconda finestra';
 
   @override
-  String get autoLaunchBoot => 'Dopo l\'avvio della TV';
+  String get autoLaunchBoot => 'Dopo l\'avvio del dispositivo';
 
   @override
   String get autoLaunchOff => 'Disabilitato';
@@ -2588,7 +2589,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get autoLaunchHint =>
-      'Scegli un\'app o un ingresso HDMI da aprire dopo l\'avvio o la riattivazione del TV. Imposta l\'evento e il ritardo di seguito. L\'azione viene eseguita una volta quando Android mostra CuteLauncher. Qualsiasi input remoto o l\'uscita dalla schermata iniziale annullano l\'attesa. Successivamente è possibile modificare liberamente gli ingressi HDMI. Imposta CuteLauncher come launcher predefinito o abilita Avvia all\'avvio, se necessario. Il rilevamento della scia richiede che CuteLauncher rimanga in esecuzione.';
+      'Scegli un\'app o un ingresso HDMI da aprire dopo l\'avvio o la riattivazione del dispositivo. Imposta l\'evento e il ritardo di seguito. L\'azione viene eseguita una volta quando Android mostra CuteLauncher. Qualsiasi input remoto o l\'uscita dalla schermata iniziale annullano l\'attesa. Successivamente è possibile modificare liberamente gli ingressi HDMI. Imposta CuteLauncher come launcher predefinito o abilita Avvia all\'avvio, se necessario. Il rilevamento della scia richiede che CuteLauncher rimanga in esecuzione.';
 
   @override
   String autoLaunchSeconds(int seconds) {
@@ -2691,7 +2692,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get cloudDisconnectConfirm =>
-      'Rimuovere questo account dalla TV? Le copie nel cloud rimarranno.';
+      'Rimuovere questo account dal dispositivo? Le copie nel cloud rimarranno.';
 
   @override
   String get cloudUpload => 'Salva una copia sul cloud';
@@ -2747,7 +2748,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get adbSetupIntro =>
-      'Abilita il debug e la rete ADB nelle impostazioni sviluppatore della TV, quindi fidati di CuteLauncher. Tutte le azioni ADB sono a tuo rischio e pericolo.';
+      'Abilita il debug e la rete ADB nelle impostazioni sviluppatore del dispositivo, quindi fidati di CuteLauncher. Tutte le azioni ADB sono a tuo rischio e pericolo.';
 
   @override
   String get adbConnectionBlock => 'Collegamento ADB';
@@ -2782,7 +2783,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get adbBuiltinHint =>
-      'Se disattivi il launcher integrato, alcuni tasti del telecomando e alcuni menu TV del produttore potrebbero smettere di funzionare. Riattiva il launcher integrato per annullare la modifica.';
+      'Se disattivi il launcher integrato, alcuni tasti del telecomando e alcuni menu specifici del produttore potrebbero smettere di funzionare. Riattiva il launcher integrato per annullare la modifica.';
 
   @override
   String get adbHomeBlock => 'Tasto Home e avvio';
@@ -2796,7 +2797,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get adbHomeOptional =>
-      'Se il launcher integrato è disabilitato, l\'override della Home e l\'avvio all\'avvio della TV sono facoltativi.';
+      'Se il launcher integrato è disabilitato, l\'override della Home e l\'avvio all\'avvio del dispositivo sono facoltativi.';
 
   @override
   String get adbEnableBuiltin => 'Abilita il launcher integrato tramite ADB';
@@ -2823,7 +2824,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get adbEffectDisable =>
-      'L\'app di avvio integrata verrà disabilitata per l\'utente TV. I menu e i pulsanti del televisore potrebbero smettere di funzionare. L\'app non viene disinstallata.';
+      'L\'app di avvio integrata verrà disabilitata per l’utente Android. I menu e i pulsanti del dispositivo potrebbero smettere di funzionare. L\'app non viene disinstallata.';
 
   @override
   String get adbRecoveryHomeDisable =>
@@ -2907,7 +2908,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get nightBatteryGuide =>
-      '1. Nelle Impostazioni app, apri Accesso app speciale.\n2. Selezionare Ottimizzazione batteria (a volte Risparmio energetico).\n3. Trova CuteLauncher; seleziona Tutte le app se necessario.\n4. Disattiva l\'ottimizzazione o seleziona Senza restrizioni.\nI nomi dei menu e la disponibilità dipendono dal firmware del televisore.';
+      '1. Nelle Impostazioni app, apri Accesso app speciale.\n2. Selezionare Ottimizzazione batteria (a volte Risparmio energetico).\n3. Trova CuteLauncher; seleziona Tutte le app se necessario.\n4. Disattiva l\'ottimizzazione o seleziona Senza restrizioni.\nI nomi dei menu e la disponibilità dipendono dal firmware del dispositivo.';
 
   @override
   String get updateNotifications => 'Mostra notifiche di aggiornamento';
@@ -3014,23 +3015,23 @@ class AppLocalizationsIt extends AppLocalizations {
   String get backupSaveMode => 'Backup';
 
   @override
-  String get backupScope => 'Backup su tutti i televisori';
+  String get backupScope => 'Backup su tutti i dispositivi';
 
   @override
-  String get backupSyncScope => 'Sincronizzazione tra televisori';
+  String get backupSyncScope => 'Sincronizzazione tra dispositivi';
 
   @override
-  String get backupSeparate => 'Separato per ogni TV';
+  String get backupSeparate => 'Separato per ogni dispositivo';
 
   @override
-  String get backupShared => 'Stesse impostazioni per tutti i televisori';
+  String get backupShared => 'Stesse impostazioni per tutti i dispositivi';
 
   @override
   String get backupStorage => 'Stoccaggio';
 
   @override
   String get backupSyncHelp =>
-      'Scarica i dati e carica le modifiche. L’ultimo cambiamento vince i conflitti. Gli orologi della TV devono essere corretti. La sincronizzazione viene eseguita mentre il launcher è aperto.';
+      'Scarica i dati e carica le modifiche. L’ultimo cambiamento vince i conflitti. Gli orologi dei dispositivi devono essere corretti. La sincronizzazione viene eseguita mentre il launcher è aperto.';
 
   @override
   String get backupSyncLimit => 'Controlla non più spesso di';
@@ -3055,7 +3056,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get backupLocalHelp =>
-      'Le copie locali vengono eliminate con l\'app o i suoi dati. Conservane una copia anche fuori dalla TV.';
+      'Le copie locali vengono eliminate con l\'app o i suoi dati. Conservane una copia anche fuori dal dispositivo.';
 
   @override
   String get panelObjectOrder => 'Ordine degli oggetti';
@@ -3245,7 +3246,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get backupFolderPickerUnavailable =>
-      'Su questo televisore non è disponibile il selettore di cartelle. Scegli Download / CuteLauncher o la cartella interna dell\'app.';
+      'Su questo dispositivo non è disponibile il selettore di cartelle. Scegli Download / CuteLauncher o la cartella interna dell\'app.';
 
   @override
   String get driveConfigurationError =>
@@ -3275,7 +3276,7 @@ class AppLocalizationsIt extends AppLocalizations {
       'Modalità notturna, luminosità e salvaschermo';
 
   @override
-  String get backupSyncControlsGroup => 'Launcher e controlli TV';
+  String get backupSyncControlsGroup => 'Launcher e controlli del dispositivo';
 
   @override
   String get backupSyncGeneralGroup =>
@@ -3283,7 +3284,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get backupSyncGroupsHelp =>
-      'I blocchi disattivati restano su questa TV. Scegli i blocchi separatamente su ogni dispositivo.';
+      'I blocchi disattivati restano su questo dispositivo. Scegli i blocchi separatamente su ogni dispositivo.';
 
   @override
   String get backupSyncGroupsFailed =>
@@ -3487,6 +3488,15 @@ class AppLocalizationsIt extends AppLocalizations {
   String get homeSectionIcons => 'Icone di sezione';
 
   @override
+  String get sectionTitleIcon => 'Icona del titolo della sezione';
+
+  @override
+  String get sectionIconPhotos => 'Foto';
+
+  @override
+  String get sectionIconFolder => 'Cartella';
+
+  @override
   String get homeInactiveTransparency => 'Trasparenza delle sezioni inattive';
 
   @override
@@ -3624,7 +3634,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get nightIgnoreHdmiInputsHint =>
-      'Metti in pausa il filtro notturno mentre guardi HDMI. È richiesto l\'accesso all\'utilizzo; il rilevamento dell\'ingresso dipende dal firmware del televisore.';
+      'Metti in pausa il filtro notturno mentre guardi HDMI. È richiesto l\'accesso all\'utilizzo; il rilevamento dell\'ingresso dipende dal firmware del dispositivo.';
 
   @override
   String get inputsSettings => 'Impostazioni di ingresso';
@@ -3923,7 +3933,7 @@ class AppLocalizationsIt extends AppLocalizations {
       'Questo pulsante e tipo di pressione sono già assegnati. Scegli un altro pulsante o tipo di pressione.';
 
   @override
-  String get cleanerTitle => 'TV cleanup manager';
+  String get cleanerTitle => 'Gestione pulizia del dispositivo';
 
   @override
   String get cleanerRefresh => 'Refresh applications';
@@ -4141,8 +4151,17 @@ class AppLocalizationsIt extends AppLocalizations {
   String get landscapeMotion => 'Animate weather';
 
   @override
+  String get landscapeSunrise => 'Alba';
+
+  @override
+  String get landscapeSunset => 'Tramonto';
+
+  @override
+  String get landscapeScheduleCurrent => 'Orario in uso';
+
+  @override
   String get landscapeHelp =>
-      'Time follows cached sunrise and sunset from Night mode; without them, dawn is at 06:00 and dusk at 18:00, with 40-minute transitions around each. Seasons follow the local month and hemisphere; automatic hemisphere uses weather coordinates, then Night mode coordinates, then the Northern Hemisphere. With time of day off, the scene stays in daylight; with seasons off, it stays in summer. Weather uses current data from the selected weather source, without extra requests. Missing or stale weather shows clear skies. Clouds, precipitation and fog can be disabled independently. Motion is off by default, stops when Home is hidden, and is disabled in memory saving mode or when reduced motion is requested.';
+      'La modalità automatica calcola alba e tramonto sul dispositivo in base alla posizione salvata. Se gli orari solari non sono disponibili, usa la programmazione personalizzata. Seasons follow the local month and hemisphere; automatic hemisphere uses weather coordinates, then Night mode coordinates, then the Northern Hemisphere. With time of day off, the scene stays in daylight; with seasons off, it stays in summer. Weather uses current data from the selected weather source, without extra requests. Missing or stale weather shows clear skies. Clouds, precipitation and fog can be disabled independently. Motion is off by default, stops when Home is hidden, and is disabled in memory saving mode or when reduced motion is requested.';
 
   @override
   String get inputConnected => 'Connected';
@@ -4158,7 +4177,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get weatherMetNorwayCredit =>
-      'Data: MET Norway, CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Forecast adapted from https://api.met.no/. No API key; days use the TV time zone, min/max cover available periods. Precipitation probability is unavailable.';
+      'Data: MET Norway, CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Forecast adapted from https://api.met.no/. No API key; days use the device time zone, min/max cover available periods. Precipitation probability is unavailable.';
 
   @override
   String get informationGroup => 'Orologio, data e meteo';
@@ -4298,7 +4317,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get tvPowerHelp =>
-      'Lo spegnimento attiva lo standby tramite accessibilità CuteLauncher o ADB locale. Il riavvio richiede ADB. Su un TV box si controlla il box; il TV dipende da HDMI-CEC e firmware.';
+      'La sospensione attiva lo standby tramite accessibilità CuteLauncher o ADB locale. Lo spegnimento e il riavvio richiedono ADB locale. Su un TV box si controlla il box; il TV dipende da HDMI-CEC e firmware.';
 
   @override
   String get cleanerLists => 'Elenchi di disattivazione';
@@ -4376,15 +4395,15 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get cleanerAlreadyDisabled =>
-      'Tutte le app dell’elenco presenti su questa TV sono già disattivate.';
+      'Tutte le app dell’elenco presenti su questo dispositivo sono già disattivate.';
 
   @override
   String get cleanerAlreadyEnabled =>
-      'Tutte le app dell’elenco presenti su questa TV sono già attivate.';
+      'Tutte le app dell’elenco presenti su questo dispositivo sono già attivate.';
 
   @override
   String get cleanerNoInstalled =>
-      'Nessuna app corrispondente dell’elenco è installata su questa TV.';
+      'Nessuna app corrispondente dell’elenco è installata su questo dispositivo.';
 
   @override
   String get cleanerListProtected =>
@@ -4514,7 +4533,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get backgroundMediaFormats =>
-      'Immagini: JPEG, PNG, WebP, GIF, BMP — fino a 8 MiB, 48 megapixel e 16.384 pixel per lato.\nVideo: MP4/M4V, WebM, MKV — fino a 256 MiB e 3840×2160. I codec dipendono dalla TV; preferibile MP4 con H.264. Riproduzione continua senza audio, in pausa fuori dalla Home. Video esclusi dai backup.';
+      'Immagini: JPEG, PNG, WebP, GIF, BMP — fino a 8 MiB, 48 megapixel e 16.384 pixel per lato.\nVideo: MP4/M4V, WebM, MKV — fino a 256 MiB e 3840×2160. I codec dipendono dal dispositivo; preferibile MP4 con H.264. Riproduzione continua senza audio, in pausa fuori dalla Home. Video esclusi dai backup.';
 
   @override
   String get backgroundFormatError =>
@@ -4535,7 +4554,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get backgroundVideoCodecError =>
-      'La TV non può riprodurre il video: codec non supportato o file danneggiato. Prova MP4 con H.264.';
+      'Il dispositivo non può riprodurre il video: codec non supportato o file danneggiato. Prova MP4 con H.264.';
 
   @override
   String get backgroundFileApplied => 'File selezionato. Sfondo aggiornato.';
@@ -4782,7 +4801,7 @@ class AppLocalizationsIt extends AppLocalizations {
       'È connessa un’altra VPN o una VPN non identificata. Controllo non disponibile.';
 
   @override
-  String get vpnStartup => 'VPN all’avvio della TV';
+  String get vpnStartup => 'VPN all’avvio del dispositivo';
 
   @override
   String get vpnPending => 'In attesa della connessione VPN';
@@ -4814,11 +4833,11 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get vpnRestartRequired =>
-      'Riavvia la TV per applicare la modalità di sistema.';
+      'Riavvia il dispositivo per applicare la modalità di sistema.';
 
   @override
   String get vpnAlwaysOnHelp =>
-      'Imposta un client configurato come VPN sempre attiva tramite ADB TCP locale. Android applica la scelta dopo il riavvio della TV. Il blocco delle connessioni senza VPN non viene attivato né modificato. Uscendo dalla modalità si ripristina la scelta di sistema precedente.';
+      'Imposta un client configurato come VPN sempre attiva tramite ADB TCP locale. Android applica la scelta dopo il riavvio del dispositivo. Il blocco delle connessioni senza VPN non viene attivato né modificato. Uscendo dalla modalità si ripristina la scelta di sistema precedente.';
 
   @override
   String get vpnClientConfirmation =>
@@ -4922,7 +4941,7 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get weatherForecastTvTime => 'Date secondo l’ora del televisore';
+  String get weatherForecastTvTime => 'Date secondo l’ora del dispositivo';
 
   @override
   String get weatherClear => 'Sereno';
@@ -4946,7 +4965,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get audioStatusTitle => 'Volume e uscita audio';
 
   @override
-  String get audioOutputTv => 'TV';
+  String get audioOutputTv => 'Altoparlanti';
 
   @override
   String get audioOutputHeadphones => 'Cuffie';
@@ -4979,7 +4998,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get backgroundStartupHelp =>
-      'Seleziona le app da avviare una volta in background dopo l’accensione della TV. CuteLauncher deve aprirsi entro un minuto: impostalo come Home o attiva l’avvio all’accensione. Le app partono una alla volta dietro Home; la selezione non le avvia subito. Usare il telecomando o uscire dal launcher annulla gli avvii restanti. Il risveglio non le riavvia. Le app incompatibili non sono selezionabili. L’avvio non attiva funzioni interne e non garantisce il funzionamento continuo. Concedi i permessi e configura il background nell’app. Android o il firmware può interromperla. La selezione resta solo su questa TV.';
+      'Seleziona le app da avviare una volta in background dopo l’accensione del dispositivo. CuteLauncher deve aprirsi entro un minuto: impostalo come Home o attiva l’avvio all’accensione. Le app partono una alla volta dietro Home; la selezione non le avvia subito. Usare il telecomando o uscire dal launcher annulla gli avvii restanti. Il risveglio non le riavvia. Le app incompatibili non sono selezionabili. L’avvio non attiva funzioni interne e non garantisce il funzionamento continuo. Concedi i permessi e configura il background nell’app. Android o il firmware può interromperla. La selezione resta solo su questo dispositivo.';
 
   @override
   String get backgroundStartupToggle => 'Avvio automatico in background';
@@ -5049,7 +5068,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get slideshowPickerUnavailable =>
-      'Questa TV non ha un selettore di cartelle. Usa il browser integrato o inserisci un percorso.';
+      'Questo dispositivo non ha un selettore di cartelle. Usa il browser integrato o inserisci un percorso.';
 
   @override
   String get slideshowFolderUnavailable =>
@@ -5057,7 +5076,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get slideshowStorageHelp =>
-      'Il browser integrato legge le cartelle della TV e delle unità collegate. Su Android 11 o successivo, consenti l’accesso a tutti i file; su Android 9–10, alla memoria. Puoi inserire un percorso come /storage/emulated/0/Pictures. I file non vengono modificati.';
+      'Il browser integrato legge le cartelle del dispositivo e delle unità collegate. Su Android 11 o successivo, consenti l’accesso a tutti i file; su Android 9–10, alla memoria. Puoi inserire un percorso come /storage/emulated/0/Pictures. I file non vengono modificati.';
 
   @override
   String get fileBrowserTitle => 'Scegli un file';
@@ -5095,7 +5114,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get appChannelsHelp =>
-      'Scegli fino a 16 feed. La disponibilità dipende dai canali pubblicati dalle app e dal firmware della TV. I feed vuoti sono nascosti. La selezione resta su questa TV.';
+      'Scegli fino a 16 feed. La disponibilità dipende dai canali pubblicati dalle app e dal firmware del dispositivo. I feed vuoti sono nascosti. La selezione resta su questo dispositivo.';
 
   @override
   String get appChannelsUnavailable =>
@@ -5130,6 +5149,38 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get wallpaperRefresh => 'Aggiorna sfondo';
+
+  @override
+  String get quickActionsTitle => 'Azioni rapide';
+
+  @override
+  String get quickActionsSettings => 'Impostazioni delle azioni rapide';
+
+  @override
+  String get quickActionsEmpty =>
+      'Scegli i comandi nelle impostazioni del menu.';
+
+  @override
+  String get quickActionsWallpaperUnavailable =>
+      'Questo sfondo non può essere cambiato manualmente.';
+
+  @override
+  String get quickActionsWallpaperFailed => 'Impossibile aggiornare lo sfondo.';
+
+  @override
+  String get quickActionsSleep => 'Sospendi';
+
+  @override
+  String get quickActionsShutdownConfirm =>
+      'Spegnere completamente il dispositivo?';
+
+  @override
+  String get quickActionsScreensaverUnavailable =>
+      'Impossibile avviare il salvaschermo.';
+
+  @override
+  String get quickActionsPowerHelp =>
+      'La sospensione richiede il servizio di accessibilità di CuteLauncher o ADB locale. Lo spegnimento e il riavvio richiedono ADB locale.';
 
   @override
   String get wallpaperDimmingHelp =>
@@ -5298,11 +5349,15 @@ class AppLocalizationsIt extends AppLocalizations {
   String get remoteMappingBlackScreen => 'Attiva o disattiva Black Screen';
 
   @override
+  String get remoteMappingToggleNightMode =>
+      'Attiva o disattiva la modalità notturna';
+
+  @override
   String get remoteMappingBlackOverlay => 'Schermo nero';
 
   @override
   String get remoteMappingBlackOverlayHelp =>
-      'Premi una volta per nascondere l’immagine. Premi di nuovo o premi Indietro per ripristinarla. Il televisore resta acceso.';
+      'Premi una volta per nascondere l’immagine. Premi di nuovo o premi Indietro per ripristinarla. Il dispositivo resta acceso.';
 
   @override
   String get remoteMappingTclScreenOff => 'Spegni lo schermo TCL';
@@ -5397,7 +5452,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get feedFormatHelp =>
-      'Automatico sceglie un formato per feed dai dati dell’app o dalle prime tre copertine caricate e lo memorizza su questa TV. In caso di parità usa orizzontale. Le altre proporzioni vengono mostrate interamente su uno sfondo. Puoi scegliere il formato manualmente.';
+      'Automatico sceglie un formato per feed dai dati dell’app o dalle prime tre copertine caricate e lo memorizza su questo dispositivo. In caso di parità usa orizzontale. Le altre proporzioni vengono mostrate interamente su uno sfondo. Puoi scegliere il formato manualmente.';
 
   @override
   String get networkSpeedTitle => 'Velocità di rete';
@@ -5464,13 +5519,13 @@ class AppLocalizationsIt extends AppLocalizations {
       'Impossibile sincronizzare le impostazioni. Controlla l’accesso allo spazio di archiviazione e riprova.';
 
   @override
-  String get backupThisTv => 'Questa TV';
+  String get backupThisTv => 'Questo dispositivo';
 
   @override
-  String get backupOtherTv => 'Altra TV';
+  String get backupOtherTv => 'Altro dispositivo';
 
   @override
-  String get backupTvUnknown => 'TV sconosciuta';
+  String get backupTvUnknown => 'Dispositivo sconosciuto';
 
   @override
   String get panelTooltips => 'Mostra suggerimenti in tutti i pannelli';
@@ -5703,7 +5758,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get fileBrowserStartFolder => 'Cartella iniziale';
 
   @override
-  String get fileBrowserStorage => 'Memoria TV';
+  String get fileBrowserStorage => 'Memoria del dispositivo';
 
   @override
   String get fileBrowserDownloads => 'Download';
@@ -5743,7 +5798,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get fileBrowserOptionsHelp =>
-      'Si apre prima la cartella selezionata o la cartella originale dell’immagine scelta. L’ultima cartella aperta viene ricordata separatamente per ogni azione, anche dopo l’annullamento. Se una cartella non è disponibile, si apre la memoria TV o Download. La cronologia delle cartelle rimane su questa TV.';
+      'Si apre prima la cartella selezionata o la cartella originale dell’immagine scelta. L’ultima cartella aperta viene ricordata separatamente per ogni azione, anche dopo l’annullamento. Se una cartella non è disponibile, si apre la memoria del dispositivo o Download. La cronologia delle cartelle rimane su questo dispositivo.';
 
   @override
   String get fileBrowserSaveFailed =>
@@ -5909,20 +5964,21 @@ class AppLocalizationsIt extends AppLocalizations {
   String get backupSyncResume => 'Riprendi la sincronizzazione';
 
   @override
-  String get backupSyncUseLocal => 'Usa le impostazioni di questa TV';
+  String get backupSyncUseLocal => 'Usa le impostazioni di questo dispositivo';
 
   @override
   String get backupSyncUseRemote => 'Usa le impostazioni dall’archivio';
 
   @override
-  String get backupSyncMergeLocal => 'Unisci dando priorità a questa TV';
+  String get backupSyncMergeLocal =>
+      'Unisci dando priorità a questo dispositivo';
 
   @override
   String get backupSyncMergeRemote => 'Unisci dando priorità all’archivio';
 
   @override
   String backupSyncPreviousDate(String date) {
-    return 'Ultima sincronizzazione di questa TV: $date';
+    return 'Ultima sincronizzazione di questo dispositivo: $date';
   }
 
   @override
@@ -6010,7 +6066,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get syncKeyHelp =>
-      'Usa la stessa chiave su tutte le TV per sincronizzare token e account. Creala su una TV e trasferiscila alle altre. Conservala: senza chiave i dati protetti non sono leggibili. Se la cambi, aggiorna tutte le TV. Autorizzazioni Android e chiavi hardware restano locali.';
+      'Usa la stessa chiave su tutti i dispositivi per sincronizzare token e account. Creala su un dispositivo e trasferiscila agli altri. Conservala: senza chiave i dati protetti non sono leggibili. Se la cambi, aggiorna tutti i dispositivi. Autorizzazioni Android e chiavi hardware restano locali.';
 
   @override
   String get syncFiles => 'File di sincronizzazione';
@@ -6058,7 +6114,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get backupNoRemote =>
-      'Nessuna impostazione nello spazio di archiviazione. Questa TV invierà le proprie.';
+      'Nessuna impostazione nello spazio di archiviazione. Questo dispositivo invierà le proprie.';
 
   @override
   String get backupSetupStart => 'Attiva';
@@ -6074,18 +6130,18 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get backupAccountLocalHelp =>
-      'Usa un account collegato o un altro dello stesso tipo. Le credenziali restano su questa TV. Backup e sincronizzazione gestiscono i file separatamente.';
+      'Usa un account collegato o un altro dello stesso tipo. Le credenziali restano su questo dispositivo. Backup e sincronizzazione gestiscono i file separatamente.';
 
   @override
   String get backupPasswordOptionalHelp =>
-      'Facoltativa. Cifra tutto il file, inclusi i token trasferibili. Senza password il file non è cifrato. Un valore vuoto disattiva la crittografia. Le altre TV devono usare la stessa password.';
+      'Facoltativa. Cifra tutto il file, inclusi i token trasferibili. Senza password il file non è cifrato. Un valore vuoto disattiva la crittografia. Gli altri dispositivi devono usare la stessa password.';
 
   @override
   String get backupYandexDisk => 'Yandex Disk';
 
   @override
   String get backupYandexHelp =>
-      'Inserisci Client ID e Client Secret di un’app Yandex OAuth con accesso alla propria cartella su Disk. Connettiti e conferma il codice sul telefono. Usa lo stesso client OAuth e account su tutti i televisori.';
+      'Inserisci Client ID e Client Secret di un’app Yandex OAuth con accesso alla propria cartella su Disk. Connettiti e conferma il codice sul telefono. Usa lo stesso client OAuth e account su tutti i dispositivi.';
 
   @override
   String get backupYandexConnect => 'Collega Yandex Disk';
@@ -6154,5 +6210,5 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get backupExistingSettingsHelp =>
-      'Lo spazio selezionato contiene già impostazioni di sincronizzazione. Scegli se applicarle a questa TV, sostituirle con quelle di questa TV o unirle. In caso di differenze durante l’unione, verrà usata la priorità scelta. Lo scambio inizierà dopo la conferma nell’ultimo passaggio della procedura guidata.';
+      'Lo spazio selezionato contiene già impostazioni di sincronizzazione. Scegli se applicarle a questo dispositivo, sostituirle con quelle di questo dispositivo o unirle. In caso di differenze durante l’unione, verrà usata la priorità scelta. Lo scambio inizierà dopo la conferma nell’ultimo passaggio della procedura guidata.';
 }

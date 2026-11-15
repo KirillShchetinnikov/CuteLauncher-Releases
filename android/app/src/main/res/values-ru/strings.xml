@@ -9,7 +9,7 @@
     <string name="recovery_retry">Повторить запуск CuteLauncher</string>
     <string name="recovery_settings">Настройки Android</string>
     <string name="recovery_home">Выбрать домашний экран</string>
-    <string name="recovery_unavailable">Действие недоступно на этом телевизоре.</string>
+    <string name="recovery_unavailable">Действие недоступно на этом устройстве.</string>
     <string name="recovery_restore">Восстановить прежний домашний экран</string>
     <string name="recovery_restore_confirm">Восстановить прежний домашний экран через ранее настроенное локальное ADB-подключение?</string>
     <string name="recovery_cleaner_retry">Повторить восстановление приложений</string>
@@ -25,14 +25,16 @@
     <string name="remap_error_app">Назначенное приложение отсутствует или не открывается.</string>
     <string name="remap_error_hdmi">Назначенный вход HDMI недоступен.</string>
     <string name="remap_error_power">Команда питания не выполнена. Проверьте локальный ADB.</string>
-    <string name="remap_error_permission">Телевизор запретил выполнение действия пульта.</string>
+    <string name="remap_error_permission">Устройство запретило выполнение действия пульта.</string>
     <string name="remap_error_busy">Действие пульта уже выполняется.</string>
-    <string name="remap_error_unavailable">Это действие пульта недоступно на телевизоре.</string>
+    <string name="remap_error_unavailable">Это действие пульта недоступно на этом устройстве.</string>
     <string name="remap_error_webhook_http">Webhook отклонил запрос (HTTP %1$d).</string>
     <string name="remap_error_webhook_timeout">Истекло время ожидания ответа webhook.</string>
     <string name="remap_error_webhook">Не удалось подключиться к webhook.</string>
-    <string name="power_off">Выключить устройство</string>
+    <string name="power_sleep">Сон</string>
     <string name="power_reboot">Перезагрузить устройство</string>
-    <string name="power_off_confirm">Перевести устройство в режим ожидания?</string>
+    <string name="power_sleep_confirm">Перевести устройство в режим ожидания?</string>
+    <string name="power_shutdown">Выключить устройство</string>
+    <string name="power_shutdown_confirm">Полностью выключить устройство?</string>
     <string name="power_reboot_confirm">Перезагрузить устройство? Открытые приложения будут закрыты.</string>
 </resources>

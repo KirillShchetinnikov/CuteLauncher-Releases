@@ -1,4 +1,5 @@
 import 'sleep_timer_configuration.dart';
+import 'quick_actions.dart';
 import 'overlay_appearance.dart';
 import 'overlay_position.dart';
 import 'tv_inputs_configuration.dart';
@@ -130,6 +131,19 @@ Map<String, dynamic> compatibleSettings(dynamic source, Map<String, dynamic> exp
     if (key == sleepTimerConfigurationKey) {
       if (value is String) {
         try { result[key] = SleepTimerConfiguration.parse(value).encode(); } catch (_) {}
+      }
+      continue;
+    }
+    if (key == quickActionsVisibleKey) {
+      if (value is bool) result[key] = value;
+      continue;
+    }
+    if (key == quickActionsItemsKey || key == quickActionsOrderKey) {
+      if (value is List && value.every((id) => QuickAction.values.any((action) => action.name == id))) {
+        final actions = key == quickActionsOrderKey
+            ? QuickAction.orderFromSettings(value)
+            : QuickAction.fromSettings(value);
+        result[key] = actions.map((action) => action.name).toList();
       }
       continue;
     }

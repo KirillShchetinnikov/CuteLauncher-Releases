@@ -133,7 +133,7 @@ void main() {
 
     await _pumpWidgetWithProviders(tester, settingsService, appsService);
 
-    await tester.tap(find.text("Launcher and TV controls"));
+    await tester.tap(find.text("Launcher and device controls"));
     await tester.pumpAndSettle();
     expect(find.byKey(Key("AccessibilityPage")), findsOneWidget);
   });
@@ -158,7 +158,7 @@ void main() {
     when(settings.appKeyClickEnabled).thenReturn(false);
     final apps = MockAppsService();
     await _pumpWidgetWithProviders(tester, settings, apps);
-    final titles = ['Home screen', 'Interface style', 'Applications', 'Night mode and brightness', 'Launcher and TV controls', 'Advanced', 'Android TV settings'];
+    final titles = ['Home screen', 'Interface style', 'Applications', 'Night mode and brightness', 'Launcher and device controls', 'Advanced', 'Android TV settings'];
     var previous = -1.0;
     for (final title in titles) {
       final y = tester.getTopLeft(find.text(title)).dy;

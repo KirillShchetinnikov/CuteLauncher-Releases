@@ -455,7 +455,7 @@ abstract class AppLocalizations {
   /// No description provided for @renderCompatibilityHelp.
   ///
   /// In en, this message translates to:
-  /// **'Try this mode if the interface flickers with night dimming. It is enabled automatically on verified models. On other TVs, the choice is saved only on this device and applies after restarting the launcher. It may increase graphics load.'**
+  /// **'Try this mode if the interface flickers with night dimming. It is enabled automatically on verified models. On other devices, the choice is saved only on this device and applies after restarting the launcher. It may increase graphics load.'**
   String get renderCompatibilityHelp;
 
   /// No description provided for @diagnosticsHubTitle.
@@ -467,7 +467,7 @@ abstract class AppLocalizations {
   /// No description provided for @tvCompatibilityTitle.
   ///
   /// In en, this message translates to:
-  /// **'TV compatibility check'**
+  /// **'Device compatibility check'**
   String get tvCompatibilityTitle;
 
   /// No description provided for @tvCompatibilityRun.
@@ -665,7 +665,7 @@ abstract class AppLocalizations {
   /// No description provided for @adbWifiOwned.
   ///
   /// In en, this message translates to:
-  /// **'No changes made: a saved Wi-Fi network was created by the Google setup wizard. Disabling it may delete the network and disconnect the TV.\n\n1. Make sure you know the Wi-Fi password.\n2. Open Android network settings, select that network and choose Forget network.\n3. Reconnect through the regular Android network settings.\n4. Return to CuteLauncher, check ADB and try disabling the built-in launcher again.\n\nIf this message returns, keep the built-in launcher enabled: the firmware may assign the network to the setup wizard again.'**
+  /// **'No changes made: a saved Wi-Fi network was created by the Google setup wizard. Disabling it may delete the network and disconnect the device.\n\n1. Make sure you know the Wi-Fi password.\n2. Open Android network settings, select that network and choose Forget network.\n3. Reconnect through the regular Android network settings.\n4. Return to CuteLauncher, check ADB and try disabling the built-in launcher again.\n\nIf this message returns, keep the built-in launcher enabled: the firmware may assign the network to the setup wizard again.'**
   String get adbWifiOwned;
 
   /// No description provided for @adbWifiUnknown.
@@ -1319,7 +1319,7 @@ abstract class AppLocalizations {
   /// No description provided for @defaultLauncherDescription.
   ///
   /// In en, this message translates to:
-  /// **'When set as the default launcher, the Home button will always return to CuteLauncher. The TV will also boot directly into CuteLauncher.'**
+  /// **'When set as the default launcher, the Home button will always return to CuteLauncher. The device will also boot directly into CuteLauncher.'**
   String get defaultLauncherDescription;
 
   /// No description provided for @inputs.
@@ -1421,7 +1421,7 @@ abstract class AppLocalizations {
   /// No description provided for @localNetworkSharingDetails.
   ///
   /// In en, this message translates to:
-  /// **'Here you can download your TV settings/layout or upload a backup file back to this TV.'**
+  /// **'Here you can download your device’s settings and layout or upload a backup file back to this device.'**
   String get localNetworkSharingDetails;
 
   /// No description provided for @failedToStartServer.
@@ -1577,7 +1577,7 @@ abstract class AppLocalizations {
   /// No description provided for @startOnBoot.
   ///
   /// In en, this message translates to:
-  /// **'Start when the TV turns on'**
+  /// **'Start when the device turns on'**
   String get startOnBoot;
 
   /// No description provided for @appLanguage.
@@ -2567,25 +2567,25 @@ abstract class AppLocalizations {
   /// No description provided for @accessibilityGuide.
   ///
   /// In en, this message translates to:
-  /// **'Open the TV settings manually, then Accessibility → CuteLauncher Home Button Fix, and enable the service. The location and name of this menu depend on your TV manufacturer.'**
+  /// **'Open the device settings manually, then Accessibility → CuteLauncher Home Button Fix, and enable the service. The location and name of this menu depend on your device manufacturer.'**
   String get accessibilityGuide;
 
   /// No description provided for @notificationPermissionGuide.
   ///
   /// In en, this message translates to:
-  /// **'The notification access settings could not be opened on this TV. Allowing outgoing notifications in App Info does not grant access to notifications from other apps.\n\nConnect your TV via ADB and run:'**
+  /// **'The notification access settings could not be opened on this device. Allowing outgoing notifications in App Info does not grant access to notifications from other apps.\n\nConnect your device via ADB and run:'**
   String get notificationPermissionGuide;
 
   /// No description provided for @overlayPermissionGuide.
   ///
   /// In en, this message translates to:
-  /// **'The overlay permission settings could not be opened automatically.\n\nTo enable popups over other apps, connect your TV via ADB and run:'**
+  /// **'The overlay permission settings could not be opened automatically.\n\nTo enable popups over other apps, connect your device via ADB and run:'**
   String get overlayPermissionGuide;
 
   /// No description provided for @watchNextPermissionGuide.
   ///
   /// In en, this message translates to:
-  /// **'To read Continue Watching cards from other apps, Android TV requires READ_WRITE_WATCH_NEXT_PROGRAMS.\n\nConnect your TV via ADB and run:'**
+  /// **'To read Continue Watching cards from other apps, Android TV requires READ_WRITE_WATCH_NEXT_PROGRAMS.\n\nConnect your device via ADB and run:'**
   String get watchNextPermissionGuide;
 
   /// No description provided for @watchNextAccess.
@@ -3515,7 +3515,7 @@ abstract class AppLocalizations {
   /// No description provided for @adbAuthorization.
   ///
   /// In en, this message translates to:
-  /// **'Approve ADB authorization on the TV, then try again.'**
+  /// **'Approve ADB authorization on the device, then try again.'**
   String get adbAuthorization;
 
   /// No description provided for @adbChangeConfirm.
@@ -3551,7 +3551,7 @@ abstract class AppLocalizations {
   /// No description provided for @adbHint.
   ///
   /// In en, this message translates to:
-  /// **'Prototype for this TV only (127.0.0.1). Enable TCP ADB in developer options, enter its port and approve the authorization prompt on the TV. Wireless debugging with a pairing code is not supported yet. The private key stays on this device, outside backups.'**
+  /// **'Prototype for this device only (127.0.0.1). Enable TCP ADB in developer options, enter its port and approve the authorization prompt on the device. Wireless debugging with a pairing code is not supported yet. The private key stays on this device, outside backups.'**
   String get adbHint;
 
   /// No description provided for @adbHome.
@@ -3623,7 +3623,7 @@ abstract class AppLocalizations {
   /// No description provided for @nightModeScope.
   ///
   /// In en, this message translates to:
-  /// **'Overlay permission is needed to dim other apps. Without it, dimming works inside CuteLauncher. The TCL filter needs no overlay permission. Above 80% opacity Android may block touch input in other apps; TV remote keys still work.'**
+  /// **'Overlay permission is needed to dim other apps. Without it, dimming works inside CuteLauncher. The TCL filter needs no overlay permission. Above 80% opacity Android may block touch input in other apps; remote buttons still work.'**
   String get nightModeScope;
 
   /// No description provided for @nightModeEnd.
@@ -3653,7 +3653,7 @@ abstract class AppLocalizations {
   /// No description provided for @nightModeScheduleHint.
   ///
   /// In en, this message translates to:
-  /// **'Uses local TV time. Overnight periods are supported. Equal start and end times disable the scheduled filter.'**
+  /// **'Uses the device’s local time. Overnight periods are supported. Equal start and end times disable the scheduled filter.'**
   String get nightModeScheduleHint;
 
   /// No description provided for @nightModeEnabled.
@@ -3761,13 +3761,13 @@ abstract class AppLocalizations {
   /// No description provided for @diagnosticsSharingNotice.
   ///
   /// In en, this message translates to:
-  /// **'Send the file to the author privately, not publicly: automatic redaction may miss personal data. By sending the report to the author, you agree to publication of an anonymized TV compatibility report in the CuteLauncher Git repository. Only device metadata and feature availability are published, without personal data; error logs, commands and your settings are not published.\n\nThe report also includes installed packages, their names, versions and enabled state, plus section names, contents, order and visibility. Package identifiers and names are retained for diagnosis; app and section lists are not published.'**
+  /// **'Send the file to the author privately, not publicly: automatic redaction may miss personal data. By sending the report to the author, you agree to publication of an anonymized device compatibility report in the CuteLauncher Git repository. Only device metadata and feature availability are published, without personal data; error logs, commands and your settings are not published.\n\nThe report also includes installed packages, their names, versions and enabled state, plus section names, contents, order and visibility. Package identifiers and names are retained for diagnosis; app and section lists are not published.'**
   String get diagnosticsSharingNotice;
 
   /// No description provided for @diagnosticsHint.
   ///
   /// In en, this message translates to:
-  /// **'One report combines TV feature compatibility and error diagnostics. The report includes the TV model and firmware, app version, permissions, memory, error stages and causes, and system commands and responses with automatic personal-data redaction. Memory retains the last 50 operations, up to 100 failures separately, and a bounded ADB log for the current session. Restarting clears the log. Redaction may miss personal data: send the file in a private message instead of posting it publicly. Nothing is sent automatically. Each error retains a snapshot of the applied settings; later changes do not replace it.\n\nThe report also includes installed packages, their names, versions and enabled state, plus section names, contents, order and visibility. Package identifiers and names are retained for diagnosis; app and section lists are not published.'**
+  /// **'One report combines device feature compatibility and error diagnostics. The report includes the device model and firmware, app version, permissions, memory, error stages and causes, and system commands and responses with automatic personal-data redaction. Memory retains the last 50 operations, up to 100 failures separately, and a bounded ADB log for the current session. Restarting clears the log. Redaction may miss personal data: send the file in a private message instead of posting it publicly. Nothing is sent automatically. Each error retains a snapshot of the applied settings; later changes do not replace it.\n\nThe report also includes installed packages, their names, versions and enabled state, plus section names, contents, order and visibility. Package identifiers and names are retained for diagnosis; app and section lists are not published.'**
   String get diagnosticsHint;
 
   /// No description provided for @diagnosticsTitle.
@@ -3809,7 +3809,7 @@ abstract class AppLocalizations {
   /// No description provided for @tclBlueLightUnsupported.
   ///
   /// In en, this message translates to:
-  /// **'The TCL filter interface is unavailable on this TV.'**
+  /// **'The TCL filter interface is unavailable on this device.'**
   String get tclBlueLightUnsupported;
 
   /// No description provided for @tclBlueLightRefresh.
@@ -3839,7 +3839,7 @@ abstract class AppLocalizations {
   /// No description provided for @nightScheduleTimeHint.
   ///
   /// In en, this message translates to:
-  /// **'Times use the TV time zone. Negative offsets are earlier; positive offsets are later.'**
+  /// **'Times use the device time zone. Negative offsets are earlier; positive offsets are later.'**
   String get nightScheduleTimeHint;
 
   /// No description provided for @nightTemperature.
@@ -4001,7 +4001,7 @@ abstract class AppLocalizations {
   /// No description provided for @nightSolarAttribution.
   ///
   /// In en, this message translates to:
-  /// **'Sunrise and sunset times come from Sunrise-Sunset.org, with GeoNames as a fallback. When offline, the TV calculates missing times.'**
+  /// **'Sunrise and sunset times come from Sunrise-Sunset.org, with GeoNames as a fallback. When offline, the device calculates missing times.'**
   String get nightSolarAttribution;
 
   /// No description provided for @nightTemporaryOn.
@@ -4037,7 +4037,7 @@ abstract class AppLocalizations {
   /// No description provided for @controlAndStartup.
   ///
   /// In en, this message translates to:
-  /// **'Launcher and TV controls'**
+  /// **'Launcher and device controls'**
   String get controlAndStartup;
 
   /// No description provided for @sectionsAndOrder.
@@ -4229,7 +4229,7 @@ abstract class AppLocalizations {
   /// No description provided for @androidTvSettingsHint.
   ///
   /// In en, this message translates to:
-  /// **'Open the TV system settings'**
+  /// **'Open the device system settings'**
   String get androidTvSettingsHint;
 
   /// No description provided for @autoHideTopPanel.
@@ -4709,7 +4709,7 @@ abstract class AppLocalizations {
   /// No description provided for @adbTlsHint.
   ///
   /// In en, this message translates to:
-  /// **'Use Wireless debugging in Developer options. Pairing and connection have different ports. If your firmware has no pairing-code screen or blocks overlay windows, use TCP / RSA instead. All connections remain local to this TV.'**
+  /// **'Use Wireless debugging in Developer options. Pairing and connection have different ports. If your firmware has no pairing-code screen or blocks overlay windows, use TCP / RSA instead. All connections remain local to this device.'**
   String get adbTlsHint;
 
   /// No description provided for @adbPaired.
@@ -4811,7 +4811,7 @@ abstract class AppLocalizations {
   /// No description provided for @autoLaunchBoot.
   ///
   /// In en, this message translates to:
-  /// **'After TV boot'**
+  /// **'After device boot'**
   String get autoLaunchBoot;
 
   /// No description provided for @autoLaunchOff.
@@ -4847,7 +4847,7 @@ abstract class AppLocalizations {
   /// No description provided for @autoLaunchHint.
   ///
   /// In en, this message translates to:
-  /// **'Choose an app or HDMI input to open after TV startup or wake. Set the event and delay below. The action runs once when Android shows CuteLauncher. Any remote input or leaving the home screen cancels the wait. You can freely change HDMI inputs afterward. Set CuteLauncher as the default launcher or enable Start on boot if needed. Wake detection requires CuteLauncher to remain running.'**
+  /// **'Choose an app or HDMI input to open after device startup or wake. Set the event and delay below. The action runs once when Android shows CuteLauncher. Any remote input or leaving the home screen cancels the wait. You can freely change HDMI inputs afterward. Set CuteLauncher as the default launcher or enable Start on boot if needed. Wake detection requires CuteLauncher to remain running.'**
   String get autoLaunchHint;
 
   /// No description provided for @autoLaunchSeconds.
@@ -5021,7 +5021,7 @@ abstract class AppLocalizations {
   /// No description provided for @cloudDisconnectConfirm.
   ///
   /// In en, this message translates to:
-  /// **'Remove this account from the TV? Copies in the cloud will remain.'**
+  /// **'Remove this account from the device? Copies in the cloud will remain.'**
   String get cloudDisconnectConfirm;
 
   /// No description provided for @cloudUpload.
@@ -5111,7 +5111,7 @@ abstract class AppLocalizations {
   /// No description provided for @adbSetupIntro.
   ///
   /// In en, this message translates to:
-  /// **'Enable debugging and network ADB in the TV developer settings, then trust CuteLauncher. All ADB actions are at your own risk.'**
+  /// **'Enable debugging and network ADB in the device developer settings, then trust CuteLauncher. All ADB actions are at your own risk.'**
   String get adbSetupIntro;
 
   /// No description provided for @adbConnectionBlock.
@@ -5171,7 +5171,7 @@ abstract class AppLocalizations {
   /// No description provided for @adbBuiltinHint.
   ///
   /// In en, this message translates to:
-  /// **'Disabling the built-in launcher may cause some remote buttons and manufacturer-specific TV menus to stop working. Re-enable the built-in launcher to undo this.'**
+  /// **'Disabling the built-in launcher may cause some remote buttons and manufacturer-specific menus to stop working. Re-enable the built-in launcher to undo this.'**
   String get adbBuiltinHint;
 
   /// No description provided for @adbHomeBlock.
@@ -5195,7 +5195,7 @@ abstract class AppLocalizations {
   /// No description provided for @adbHomeOptional.
   ///
   /// In en, this message translates to:
-  /// **'If the built-in launcher is disabled, overriding Home and launching at TV startup are optional.'**
+  /// **'If the built-in launcher is disabled, overriding Home and launching at device startup are optional.'**
   String get adbHomeOptional;
 
   /// No description provided for @adbEnableBuiltin.
@@ -5237,7 +5237,7 @@ abstract class AppLocalizations {
   /// No description provided for @adbEffectDisable.
   ///
   /// In en, this message translates to:
-  /// **'The built-in launcher app will be disabled for the TV user. TV menus and buttons may stop working. The app is not uninstalled.'**
+  /// **'The built-in launcher app will be disabled for the Android user. Manufacturer-specific menus and buttons may stop working. The app is not uninstalled.'**
   String get adbEffectDisable;
 
   /// No description provided for @adbRecoveryHomeDisable.
@@ -5369,7 +5369,7 @@ abstract class AppLocalizations {
   /// No description provided for @nightBatteryGuide.
   ///
   /// In en, this message translates to:
-  /// **'1. In Apps settings, open Special app access.\n2. Select Battery optimization (sometimes Energy saver).\n3. Find CuteLauncher; select All apps if needed.\n4. Disable optimization or select Unrestricted.\nMenu names and availability depend on the TV firmware.'**
+  /// **'1. In Apps settings, open Special app access.\n2. Select Battery optimization (sometimes Energy saver).\n3. Find CuteLauncher; select All apps if needed.\n4. Disable optimization or select Unrestricted.\nMenu names and availability depend on the device firmware.'**
   String get nightBatteryGuide;
 
   /// No description provided for @updateNotifications.
@@ -5567,25 +5567,25 @@ abstract class AppLocalizations {
   /// No description provided for @backupScope.
   ///
   /// In en, this message translates to:
-  /// **'Backup across TVs'**
+  /// **'Backup across devices'**
   String get backupScope;
 
   /// No description provided for @backupSyncScope.
   ///
   /// In en, this message translates to:
-  /// **'Synchronization across TVs'**
+  /// **'Synchronization across devices'**
   String get backupSyncScope;
 
   /// No description provided for @backupSeparate.
   ///
   /// In en, this message translates to:
-  /// **'Separate for each TV'**
+  /// **'Separate for each device'**
   String get backupSeparate;
 
   /// No description provided for @backupShared.
   ///
   /// In en, this message translates to:
-  /// **'Same settings for all TVs'**
+  /// **'Same settings for all devices'**
   String get backupShared;
 
   /// No description provided for @backupStorage.
@@ -5597,7 +5597,7 @@ abstract class AppLocalizations {
   /// No description provided for @backupSyncHelp.
   ///
   /// In en, this message translates to:
-  /// **'Download data and upload changes. The latest change wins conflicts. TV clocks must be correct. Synchronization runs while the launcher is open.'**
+  /// **'Download data and upload changes. The latest change wins conflicts. Device clocks must be correct. Synchronization runs while the launcher is open.'**
   String get backupSyncHelp;
 
   /// No description provided for @backupSyncLimit.
@@ -5645,7 +5645,7 @@ abstract class AppLocalizations {
   /// No description provided for @backupLocalHelp.
   ///
   /// In en, this message translates to:
-  /// **'Local copies are deleted with the app or its data. Keep a copy outside the TV too.'**
+  /// **'Local copies are deleted with the app or its data. Keep a copy outside the device too.'**
   String get backupLocalHelp;
 
   /// No description provided for @panelObjectOrder.
@@ -5975,7 +5975,7 @@ abstract class AppLocalizations {
   /// No description provided for @backupFolderPickerUnavailable.
   ///
   /// In en, this message translates to:
-  /// **'No folder picker is available on this TV. Choose Downloads / CuteLauncher or the internal app folder.'**
+  /// **'No folder picker is available on this device. Choose Downloads / CuteLauncher or the internal app folder.'**
   String get backupFolderPickerUnavailable;
 
   /// No description provided for @driveConfigurationError.
@@ -6029,7 +6029,7 @@ abstract class AppLocalizations {
   /// No description provided for @backupSyncControlsGroup.
   ///
   /// In en, this message translates to:
-  /// **'Launcher and TV controls'**
+  /// **'Launcher and device controls'**
   String get backupSyncControlsGroup;
 
   /// No description provided for @backupSyncGeneralGroup.
@@ -6041,7 +6041,7 @@ abstract class AppLocalizations {
   /// No description provided for @backupSyncGroupsHelp.
   ///
   /// In en, this message translates to:
-  /// **'Disabled blocks stay on this TV. Choose synchronization blocks separately on each device.'**
+  /// **'Disabled blocks stay on this device. Choose synchronization blocks separately on each device.'**
   String get backupSyncGroupsHelp;
 
   /// No description provided for @backupSyncGroupsFailed.
@@ -6428,6 +6428,24 @@ abstract class AppLocalizations {
   /// **'Section icons'**
   String get homeSectionIcons;
 
+  /// No description provided for @sectionTitleIcon.
+  ///
+  /// In en, this message translates to:
+  /// **'Section heading icon'**
+  String get sectionTitleIcon;
+
+  /// No description provided for @sectionIconPhotos.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos'**
+  String get sectionIconPhotos;
+
+  /// No description provided for @sectionIconFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Folder'**
+  String get sectionIconFolder;
+
   /// No description provided for @homeInactiveTransparency.
   ///
   /// In en, this message translates to:
@@ -6635,7 +6653,7 @@ abstract class AppLocalizations {
   /// No description provided for @nightIgnoreHdmiInputsHint.
   ///
   /// In en, this message translates to:
-  /// **'Pause the night filter while watching HDMI. Usage access is required; input detection depends on the TV firmware.'**
+  /// **'Pause the night filter while watching HDMI. Usage access is required; input detection depends on the device firmware.'**
   String get nightIgnoreHdmiInputsHint;
 
   /// No description provided for @inputsSettings.
@@ -7193,7 +7211,7 @@ abstract class AppLocalizations {
   /// No description provided for @cleanerTitle.
   ///
   /// In en, this message translates to:
-  /// **'TV cleanup manager'**
+  /// **'Device cleanup manager'**
   String get cleanerTitle;
 
   /// No description provided for @cleanerRefresh.
@@ -7604,10 +7622,28 @@ abstract class AppLocalizations {
   /// **'Animate weather'**
   String get landscapeMotion;
 
+  /// No description provided for @landscapeSunrise.
+  ///
+  /// In en, this message translates to:
+  /// **'Sunrise'**
+  String get landscapeSunrise;
+
+  /// No description provided for @landscapeSunset.
+  ///
+  /// In en, this message translates to:
+  /// **'Sunset'**
+  String get landscapeSunset;
+
+  /// No description provided for @landscapeScheduleCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'Current schedule'**
+  String get landscapeScheduleCurrent;
+
   /// No description provided for @landscapeHelp.
   ///
   /// In en, this message translates to:
-  /// **'Time follows cached sunrise and sunset from Night mode; without them, dawn is at 06:00 and dusk at 18:00, with 40-minute transitions around each. Seasons follow the local month and hemisphere; automatic hemisphere uses weather coordinates, then Night mode coordinates, then the Northern Hemisphere. With time of day off, the scene stays in daylight; with seasons off, it stays in summer. Weather uses current data from the selected weather source, without extra requests. Missing or stale weather shows clear skies. Clouds, precipitation and fog can be disabled independently. Motion is off by default, stops when Home is hidden, and is disabled in memory saving mode or when reduced motion is requested.'**
+  /// **'Auto calculates sunrise and sunset on the device using the saved location. When sun times are unavailable, it uses the custom schedule. Seasons follow the local month and hemisphere; automatic hemisphere uses weather coordinates, then Night mode coordinates, then the Northern Hemisphere. With time of day off, the scene stays in daylight; with seasons off, it stays in summer. Weather uses current data from the selected weather source, without extra requests. Missing or stale weather shows clear skies. Clouds, precipitation and fog can be disabled independently. Motion is off by default, stops when Home is hidden, and is disabled in memory saving mode or when reduced motion is requested.'**
   String get landscapeHelp;
 
   /// No description provided for @inputConnected.
@@ -7637,7 +7673,7 @@ abstract class AppLocalizations {
   /// No description provided for @weatherMetNorwayCredit.
   ///
   /// In en, this message translates to:
-  /// **'Data: MET Norway, CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Forecast adapted from https://api.met.no/. No API key; days use the TV time zone, min/max cover available periods. Precipitation probability is unavailable.'**
+  /// **'Data: MET Norway, CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Forecast adapted from https://api.met.no/. No API key; days use the device time zone, min/max cover available periods. Precipitation probability is unavailable.'**
   String get weatherMetNorwayCredit;
 
   /// No description provided for @informationGroup.
@@ -7895,7 +7931,7 @@ abstract class AppLocalizations {
   /// No description provided for @tvPowerHelp.
   ///
   /// In en, this message translates to:
-  /// **'Turning off puts the device in standby through the CuteLauncher accessibility service or local ADB. Restart requires ADB. On a TV box, the command controls the box; TV behavior depends on HDMI-CEC and firmware.'**
+  /// **'Sleep puts the device in standby through the CuteLauncher accessibility service or local ADB. Shutdown and restart require local ADB. On a TV box, the command controls the box; TV behavior depends on HDMI-CEC and firmware.'**
   String get tvPowerHelp;
 
   /// No description provided for @cleanerLists.
@@ -8039,19 +8075,19 @@ abstract class AppLocalizations {
   /// No description provided for @cleanerAlreadyDisabled.
   ///
   /// In en, this message translates to:
-  /// **'All applications from this list present on this TV are already disabled.'**
+  /// **'All applications from this list present on this device are already disabled.'**
   String get cleanerAlreadyDisabled;
 
   /// No description provided for @cleanerAlreadyEnabled.
   ///
   /// In en, this message translates to:
-  /// **'All applications from this list present on this TV are already enabled.'**
+  /// **'All applications from this list present on this device are already enabled.'**
   String get cleanerAlreadyEnabled;
 
   /// No description provided for @cleanerNoInstalled.
   ///
   /// In en, this message translates to:
-  /// **'No matching applications from this list are installed on this TV.'**
+  /// **'No matching applications from this list are installed on this device.'**
   String get cleanerNoInstalled;
 
   /// No description provided for @cleanerListProtected.
@@ -8279,7 +8315,7 @@ abstract class AppLocalizations {
   /// No description provided for @backgroundMediaFormats.
   ///
   /// In en, this message translates to:
-  /// **'Images: JPEG, PNG, WebP, GIF, BMP — up to 8 MiB, 48 megapixels and 16,384 pixels per side.\nVideo: MP4/M4V, WebM, MKV — up to 256 MiB and 3840×2160. Codec support depends on the TV; MP4 with H.264 is preferred. Video loops silently and pauses outside Home. Videos are excluded from backups.'**
+  /// **'Images: JPEG, PNG, WebP, GIF, BMP — up to 8 MiB, 48 megapixels and 16,384 pixels per side.\nVideo: MP4/M4V, WebM, MKV — up to 256 MiB and 3840×2160. Codec support depends on the device; MP4 with H.264 is preferred. Video loops silently and pauses outside Home. Videos are excluded from backups.'**
   String get backgroundMediaFormats;
 
   /// No description provided for @backgroundFormatError.
@@ -8309,7 +8345,7 @@ abstract class AppLocalizations {
   /// No description provided for @backgroundVideoCodecError.
   ///
   /// In en, this message translates to:
-  /// **'The TV could not play this video: the codec is unsupported or the file is damaged. Try MP4 with H.264.'**
+  /// **'The device could not play this video: the codec is unsupported or the file is damaged. Try MP4 with H.264.'**
   String get backgroundVideoCodecError;
 
   /// No description provided for @backgroundFileApplied.
@@ -8753,7 +8789,7 @@ abstract class AppLocalizations {
   /// No description provided for @vpnStartup.
   ///
   /// In en, this message translates to:
-  /// **'VPN on TV startup'**
+  /// **'VPN on device startup'**
   String get vpnStartup;
 
   /// No description provided for @vpnPending.
@@ -8807,13 +8843,13 @@ abstract class AppLocalizations {
   /// No description provided for @vpnRestartRequired.
   ///
   /// In en, this message translates to:
-  /// **'Restart the TV to apply the system mode.'**
+  /// **'Restart the device to apply the system mode.'**
   String get vpnRestartRequired;
 
   /// No description provided for @vpnAlwaysOnHelp.
   ///
   /// In en, this message translates to:
-  /// **'Assigns a configured client as always-on VPN through local TCP ADB. Android applies the selection after restarting the TV. Blocking connections without VPN is neither enabled nor changed. Leaving this mode restores the previous system selection.'**
+  /// **'Assigns a configured client as always-on VPN through local TCP ADB. Android applies the selection after restarting the device. Blocking connections without VPN is neither enabled nor changed. Leaving this mode restores the previous system selection.'**
   String get vpnAlwaysOnHelp;
 
   /// No description provided for @vpnClientConfirmation.
@@ -8999,7 +9035,7 @@ abstract class AppLocalizations {
   /// No description provided for @weatherForecastTvTime.
   ///
   /// In en, this message translates to:
-  /// **'Forecast dates use TV time'**
+  /// **'Forecast dates use device time'**
   String get weatherForecastTvTime;
 
   /// No description provided for @weatherClear.
@@ -9047,7 +9083,7 @@ abstract class AppLocalizations {
   /// No description provided for @audioOutputTv.
   ///
   /// In en, this message translates to:
-  /// **'TV'**
+  /// **'Speakers'**
   String get audioOutputTv;
 
   /// No description provided for @audioOutputHeadphones.
@@ -9107,7 +9143,7 @@ abstract class AppLocalizations {
   /// No description provided for @backgroundStartupHelp.
   ///
   /// In en, this message translates to:
-  /// **'Select apps to launch once in the background after TV boot. CuteLauncher must open within one minute of boot: set it as Home or enable launcher startup on boot. Apps start one by one behind Home; selecting a checkbox does not start them immediately. Remote input or leaving the launcher cancels remaining launches. Waking from sleep does not launch them again. Some apps do not support this mode and cannot be selected. Launching does not enable features inside an app or guarantee continuous operation: grant permissions and configure background operation in the app itself. Android and the TV firmware may stop it. Selections stay on this TV only.'**
+  /// **'Select apps to launch once in the background after device boot. CuteLauncher must open within one minute of boot: set it as Home or enable launcher startup on boot. Apps start one by one behind Home; selecting a checkbox does not start them immediately. Remote input or leaving the launcher cancels remaining launches. Waking from sleep does not launch them again. Some apps do not support this mode and cannot be selected. Launching does not enable features inside an app or guarantee continuous operation: grant permissions and configure background operation in the app itself. Android and the device firmware may stop it. Selections stay on this device only.'**
   String get backgroundStartupHelp;
 
   /// No description provided for @backgroundStartupToggle.
@@ -9239,7 +9275,7 @@ abstract class AppLocalizations {
   /// No description provided for @slideshowPickerUnavailable.
   ///
   /// In en, this message translates to:
-  /// **'This TV has no folder picker. Use the built-in browser or enter a path manually.'**
+  /// **'This device has no folder picker. Use the built-in browser or enter a path manually.'**
   String get slideshowPickerUnavailable;
 
   /// No description provided for @slideshowFolderUnavailable.
@@ -9251,7 +9287,7 @@ abstract class AppLocalizations {
   /// No description provided for @slideshowStorageHelp.
   ///
   /// In en, this message translates to:
-  /// **'The built-in browser reads folders on the TV and connected storage. On Android 11 or newer, allow all files access; on Android 9–10, allow storage access. You can enter a path manually, such as /storage/emulated/0/Pictures. Files are not modified.'**
+  /// **'The built-in browser reads folders on the device and connected storage. On Android 11 or newer, allow all files access; on Android 9–10, allow storage access. You can enter a path manually, such as /storage/emulated/0/Pictures. Files are not modified.'**
   String get slideshowStorageHelp;
 
   /// No description provided for @fileBrowserTitle.
@@ -9323,7 +9359,7 @@ abstract class AppLocalizations {
   /// No description provided for @appChannelsHelp.
   ///
   /// In en, this message translates to:
-  /// **'Choose up to 16 feeds. Availability depends on channels published by apps and the TV firmware. Empty feeds are hidden. Selection stays on this TV.'**
+  /// **'Choose up to 16 feeds. Availability depends on channels published by apps and the device firmware. Empty feeds are hidden. Selection stays on this device.'**
   String get appChannelsHelp;
 
   /// No description provided for @appChannelsUnavailable.
@@ -9385,6 +9421,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Refresh wallpaper'**
   String get wallpaperRefresh;
+
+  /// No description provided for @quickActionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick actions'**
+  String get quickActionsTitle;
+
+  /// No description provided for @quickActionsSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick action settings'**
+  String get quickActionsSettings;
+
+  /// No description provided for @quickActionsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose commands in the menu settings.'**
+  String get quickActionsEmpty;
+
+  /// No description provided for @quickActionsWallpaperUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'This background does not support manual changes.'**
+  String get quickActionsWallpaperUnavailable;
+
+  /// No description provided for @quickActionsWallpaperFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not refresh the wallpaper.'**
+  String get quickActionsWallpaperFailed;
+
+  /// No description provided for @quickActionsSleep.
+  ///
+  /// In en, this message translates to:
+  /// **'Sleep'**
+  String get quickActionsSleep;
+
+  /// No description provided for @quickActionsShutdownConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Shut down the device completely?'**
+  String get quickActionsShutdownConfirm;
+
+  /// No description provided for @quickActionsScreensaverUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'The screensaver cannot be started.'**
+  String get quickActionsScreensaverUnavailable;
+
+  /// No description provided for @quickActionsPowerHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Sleep requires CuteLauncher’s accessibility service or local ADB. Shutdown and restart require local ADB.'**
+  String get quickActionsPowerHelp;
 
   /// No description provided for @wallpaperDimmingHelp.
   ///
@@ -9638,6 +9728,12 @@ abstract class AppLocalizations {
   /// **'Toggle Black Screen'**
   String get remoteMappingBlackScreen;
 
+  /// No description provided for @remoteMappingToggleNightMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle night mode'**
+  String get remoteMappingToggleNightMode;
+
   /// No description provided for @remoteMappingBlackOverlay.
   ///
   /// In en, this message translates to:
@@ -9647,7 +9743,7 @@ abstract class AppLocalizations {
   /// No description provided for @remoteMappingBlackOverlayHelp.
   ///
   /// In en, this message translates to:
-  /// **'Press once to hide the picture. Press again or press Back to show it. The TV stays on.'**
+  /// **'Press once to hide the picture. Press again or press Back to show it. The device stays on.'**
   String get remoteMappingBlackOverlayHelp;
 
   /// No description provided for @remoteMappingTclScreenOff.
@@ -9809,7 +9905,7 @@ abstract class AppLocalizations {
   /// No description provided for @feedFormatHelp.
   ///
   /// In en, this message translates to:
-  /// **'Auto chooses one format per feed from app metadata or the first three loaded covers and remembers it on this TV. Ties use landscape. Other proportions are shown in full on a background. You can choose the format manually.'**
+  /// **'Auto chooses one format per feed from app metadata or the first three loaded covers and remembers it on this device. Ties use landscape. Other proportions are shown in full on a background. You can choose the format manually.'**
   String get feedFormatHelp;
 
   /// No description provided for @networkSpeedTitle.
@@ -9923,19 +10019,19 @@ abstract class AppLocalizations {
   /// No description provided for @backupThisTv.
   ///
   /// In en, this message translates to:
-  /// **'This TV'**
+  /// **'This device'**
   String get backupThisTv;
 
   /// No description provided for @backupOtherTv.
   ///
   /// In en, this message translates to:
-  /// **'Another TV'**
+  /// **'Another device'**
   String get backupOtherTv;
 
   /// No description provided for @backupTvUnknown.
   ///
   /// In en, this message translates to:
-  /// **'TV unknown'**
+  /// **'Unknown device'**
   String get backupTvUnknown;
 
   /// No description provided for @panelTooltips.
@@ -10367,7 +10463,7 @@ abstract class AppLocalizations {
   /// No description provided for @fileBrowserStorage.
   ///
   /// In en, this message translates to:
-  /// **'TV storage'**
+  /// **'Device storage'**
   String get fileBrowserStorage;
 
   /// No description provided for @fileBrowserDownloads.
@@ -10445,7 +10541,7 @@ abstract class AppLocalizations {
   /// No description provided for @fileBrowserOptionsHelp.
   ///
   /// In en, this message translates to:
-  /// **'The selected folder or the original folder of the selected image opens first. The last opened folder is remembered separately for each action, including after cancellation. If a folder is unavailable, TV storage or Downloads opens. Folder history stays on this TV.'**
+  /// **'The selected folder or the original folder of the selected image opens first. The last opened folder is remembered separately for each action, including after cancellation. If a folder is unavailable, device storage or Downloads opens. Folder history stays on this device.'**
   String get fileBrowserOptionsHelp;
 
   /// No description provided for @fileBrowserSaveFailed.
@@ -10769,7 +10865,7 @@ abstract class AppLocalizations {
   /// No description provided for @backupSyncUseLocal.
   ///
   /// In en, this message translates to:
-  /// **'Use settings from this TV'**
+  /// **'Use settings from this device'**
   String get backupSyncUseLocal;
 
   /// No description provided for @backupSyncUseRemote.
@@ -10781,7 +10877,7 @@ abstract class AppLocalizations {
   /// No description provided for @backupSyncMergeLocal.
   ///
   /// In en, this message translates to:
-  /// **'Merge and prefer this TV'**
+  /// **'Merge and prefer this device'**
   String get backupSyncMergeLocal;
 
   /// No description provided for @backupSyncMergeRemote.
@@ -10793,7 +10889,7 @@ abstract class AppLocalizations {
   /// No description provided for @backupSyncPreviousDate.
   ///
   /// In en, this message translates to:
-  /// **'This TV last synchronized: {date}'**
+  /// **'This device last synchronized: {date}'**
   String backupSyncPreviousDate(String date);
 
   /// No description provided for @backupSyncRemoteDate.
@@ -10943,7 +11039,7 @@ abstract class AppLocalizations {
   /// No description provided for @syncKeyHelp.
   ///
   /// In en, this message translates to:
-  /// **'Use the same key on all TVs to synchronize tokens and accounts. Create it on one TV and transfer it to the others. Keep it safe: protected data cannot be read without it. When changing the key, update every TV. Android permissions and hardware keys remain local.'**
+  /// **'Use the same key on all devices to synchronize tokens and accounts. Create it on one device and transfer it to the others. Keep it safe: protected data cannot be read without it. When changing the key, update every device. Android permissions and hardware keys remain local.'**
   String get syncKeyHelp;
 
   /// No description provided for @syncFiles.
@@ -11033,7 +11129,7 @@ abstract class AppLocalizations {
   /// No description provided for @backupNoRemote.
   ///
   /// In en, this message translates to:
-  /// **'No settings in storage. This TV will upload its settings.'**
+  /// **'No settings in storage. This device will upload its settings.'**
   String get backupNoRemote;
 
   /// No description provided for @backupSetupStart.
@@ -11063,13 +11159,13 @@ abstract class AppLocalizations {
   /// No description provided for @backupAccountLocalHelp.
   ///
   /// In en, this message translates to:
-  /// **'Use a connected account or another account of the same type. Storage credentials stay on this TV. Backup and synchronization manage their files separately.'**
+  /// **'Use a connected account or another account of the same type. Storage credentials stay on this device. Backup and synchronization manage their files separately.'**
   String get backupAccountLocalHelp;
 
   /// No description provided for @backupPasswordOptionalHelp.
   ///
   /// In en, this message translates to:
-  /// **'Optional. Encrypts the entire file, including transferable tokens. Without a password, the file is unencrypted. An empty value disables encryption. Other TVs need the same password to read encrypted files.'**
+  /// **'Optional. Encrypts the entire file, including transferable tokens. Without a password, the file is unencrypted. An empty value disables encryption. Other devices need the same password to read encrypted files.'**
   String get backupPasswordOptionalHelp;
 
   /// No description provided for @backupYandexDisk.
@@ -11081,7 +11177,7 @@ abstract class AppLocalizations {
   /// No description provided for @backupYandexHelp.
   ///
   /// In en, this message translates to:
-  /// **'Enter the Client ID and Client Secret of a Yandex OAuth app with access to its Disk app folder. Connect and confirm the code on your phone. Use the same OAuth client and account on all TVs to share backups.'**
+  /// **'Enter the Client ID and Client Secret of a Yandex OAuth app with access to its Disk app folder. Connect and confirm the code on your phone. Use the same OAuth client and account on all devices to share backups.'**
   String get backupYandexHelp;
 
   /// No description provided for @backupYandexConnect.
@@ -11189,7 +11285,7 @@ abstract class AppLocalizations {
   /// No description provided for @backupExistingSettingsHelp.
   ///
   /// In en, this message translates to:
-  /// **'The selected storage already contains synchronization settings. Choose what to do with them: apply them to this TV, replace them with this TV’s settings, or merge them. If settings differ during merging, your selected priority will be used. The exchange starts after confirmation on the final wizard step.'**
+  /// **'The selected storage already contains synchronization settings. Choose what to do with them: apply them to this device, replace them with this device’s settings, or merge them. If settings differ during merging, your selected priority will be used. The exchange starts after confirmation on the final wizard step.'**
   String get backupExistingSettingsHelp;
 }
 

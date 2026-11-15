@@ -6,6 +6,8 @@ import 'package:flauncher/providers/weather_service.dart';
 import 'package:flauncher/providers/sleep_timer_service.dart';
 import 'package:flauncher/sleep_timer_configuration.dart';
 import 'package:flauncher/widgets/sleep_timer_menu.dart';
+import 'package:flauncher/widgets/quick_actions_menu.dart';
+import 'package:flauncher/quick_actions.dart';
 import 'package:flauncher/widgets/settings/inputs_panel.dart';
 import 'package:flauncher/providers/appearance_service.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
@@ -65,6 +67,7 @@ void main() {
     when(service.showInputsWidgetInStatusBar).thenReturn(true);
     when(service.showNightModeInStatusBar).thenReturn(false);
     when(service.showSleepTimerInStatusBar).thenReturn(false);
+    when(service.showQuickActionsInStatusBar).thenReturn(false);
     when(service.showSystemSettingsInStatusBar).thenReturn(true);
     when(service.showNotificationsWidgetInStatusBar).thenReturn(true);
     when(service.autoHideNotificationsWidget).thenReturn(false);
@@ -110,6 +113,36 @@ void main() {
       ),
     );
   }
+
+  testWidgets('quick actions are opt in and Back restores the opener', (tester) async {
+    await tester.pumpWidget(MultiProvider(
+      providers: [
+        ChangeNotifierProvider<SettingsService>.value(value: mockSettingsService),
+        ChangeNotifierProvider<TvInputsService>.value(value: mockTvInputsService),
+        ChangeNotifierProvider<NotificationsService>.value(value: mockNotificationsService),
+        ChangeNotifierProvider<WeatherService>.value(value: mockWeatherService),
+      ],
+      child: createWidgetUnderTest(),
+    ));
+    final button = find.byKey(const ValueKey('quick_actions_button'));
+    expect(button, findsNothing);
+    when(mockSettingsService.showQuickActionsInStatusBar).thenReturn(true);
+    when(mockSettingsService.quickActions).thenReturn([QuickAction.wallpaper]);
+    tester.element(find.byType(FocusAwareAppBar)).markNeedsBuild();
+    await tester.pumpAndSettle();
+    final opener = tester.widget<TopPanelItem>(button).focusNode!;
+    opener.requestFocus();
+    await tester.pump();
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(find.byType(QuickActionsMenu), findsOneWidget);
+    expect(find.text('Refresh wallpaper'), findsOneWidget);
+    expect(find.text('Restart device'), findsNothing);
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(find.byType(QuickActionsMenu), findsNothing);
+    expect(opener.hasFocus, isTrue);
+  });
 
   for (final enabled in [true, false]) {
     testWidgets('Home renders weather early and waits for conditional objects: $enabled', (tester) async {

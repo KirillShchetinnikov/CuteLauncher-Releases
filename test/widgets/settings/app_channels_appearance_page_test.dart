@@ -74,7 +74,6 @@ void main() {
         expect(find.text(l.tileRowCount), findsNothing);
         expect(find.text(l.tileIconScale), findsNothing);
         expect(find.text(l.tileVerticalGap), findsNothing);
-        expect(find.text(l.homeSectionIcons), findsNothing);
         final size = find.byWidgetPredicate(
           (w) => w is SettingsValueStepper && w.title == l.tileSize,
         );

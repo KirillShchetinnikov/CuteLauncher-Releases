@@ -13,15 +13,17 @@
     <string name="remap_error_app">التطبيق المعيّن غير مثبّت أو يتعذّر فتحه.</string>
     <string name="remap_error_hdmi">مدخل HDMI المعيّن غير متاح.</string>
     <string name="remap_error_power">فشل أمر الطاقة. تحقّق من اتصال ADB المحلي.</string>
-    <string name="remap_error_permission">رفض التلفزيون تنفيذ إجراء جهاز التحكّم.</string>
+    <string name="remap_error_permission">رفض الجهاز تنفيذ إجراء جهاز التحكّم.</string>
     <string name="remap_error_busy">هناك إجراء لجهاز التحكّم قيد التنفيذ.</string>
-    <string name="remap_error_unavailable">إجراء جهاز التحكّم غير متاح على هذا التلفزيون.</string>
+    <string name="remap_error_unavailable">إجراء جهاز التحكّم غير متاح على هذا الجهاز.</string>
     <string name="remap_error_webhook_http">رفض خطّاف الويب الطلب (HTTP %1$d).</string>
     <string name="remap_error_webhook_timeout">انتهت مهلة طلب خطّاف الويب.</string>
     <string name="remap_error_webhook">تعذّر الاتصال بخطّاف الويب.</string>
-    <string name="power_off">إيقاف الجهاز</string>
+    <string name="power_sleep">السكون</string>
     <string name="power_reboot">إعادة تشغيل الجهاز</string>
-    <string name="power_off_confirm">وضع الجهاز في وضع الاستعداد؟</string>
+    <string name="power_sleep_confirm">وضع الجهاز في وضع الاستعداد؟</string>
+    <string name="power_shutdown">إيقاف الجهاز</string>
+    <string name="power_shutdown_confirm">هل تريد إيقاف تشغيل الجهاز بالكامل؟</string>
     <string name="power_reboot_confirm">إعادة تشغيل الجهاز؟ سيتم إغلاق التطبيقات المفتوحة.</string>
     <string name="screensaver_label">ساعة CuteLauncher</string>
     <string name="notification_service_label">خدمة إشعارات CuteLauncher</string>
@@ -34,7 +36,7 @@
     <string name="recovery_retry">إعادة محاولة تشغيل CuteLauncher</string>
     <string name="recovery_settings">إعدادات Android</string>
     <string name="recovery_home">اختيار الشاشة الرئيسية</string>
-    <string name="recovery_unavailable">هذا الإجراء غير متاح على هذا التلفاز.</string>
+    <string name="recovery_unavailable">هذا الإجراء غير متاح على هذا الجهاز.</string>
     <string name="recovery_restore">استعادة الشاشة الرئيسية السابقة</string>
     <string name="recovery_restore_confirm">هل تريد استعادة الشاشة الرئيسية السابقة باستخدام اتصال ADB المحلي الحالي؟</string>
 </resources>

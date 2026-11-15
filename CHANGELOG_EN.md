@@ -2,6 +2,17 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
+## v1.8.0-test.7 — 2026-11-15
+
+**Pre-release.**
+
+- Add Quick Actions to the top bar using the lightning button. Choose which commands to show and put them in the order you want. From the menu you can start the system screensaver on supported firmware and manually switch the wallpaper or play the next video from a folder.
+- Sleep puts the device in standby. A separate command now shuts the device down completely after confirmation and requires local ADB to be configured. The command is available in Quick Actions and remote button mappings. Existing power-off mappings keep their behavior and now appear as Sleep.
+- You can map a remote button to toggle Night Mode. Press it again to restore the previous state. The saved filter and schedule settings are preserved.
+- Section appearance settings now let you choose a heading icon for built-in and custom sections. For App Feeds, the setting applies to all feeds.
+- Adaptive Landscape lets you choose the source of sunrise and sunset times or set them manually. The fallback sunset calculation has been fixed.
+- Opening Quick Settings successfully with a mapped remote button no longer shows an extra toast.
+
 ## v1.8.0-test.3 — 2026-11-13
 
 **Prerelease.** Video playback from a folder still needs testing on a TV.

@@ -58,6 +58,8 @@ import 'package:flauncher/providers/watch_next_service.dart';
 import 'package:flauncher/providers/weather_service.dart';
 import 'package:flauncher/widgets/application_info_panel.dart';
 import 'package:flauncher/widgets/home_section.dart';
+import 'package:flauncher/section_icons.dart';
+import 'package:flauncher/widgets/section_heading_icon.dart';
 import 'package:flauncher/widgets/category_focus.dart';
 
 import 'package:flauncher/widgets/app_card.dart';
@@ -262,6 +264,21 @@ void main() {
     await appearance.setCategoryTile(group.id, 'sectionTitleSize', 32);
     await tester.pumpAndSettle();
     expectMatching(narrow);
+    await appearance.setCategoryTile(
+      ContinueWatchingSection.sectionId, 'sectionTitles', true,
+    );
+    await appearance.setCategoryTile(
+      ContinueWatchingSection.sectionId, 'sectionIcons', true,
+    );
+    await tester.pumpAndSettle();
+    final watchIcon = find.descendant(
+      of: find.byType(ContinueWatchingRow),
+      matching: find.byType(SectionHeadingIcon),
+    );
+    expect(tester.widget<SectionHeadingIcon>(watchIcon).icon, SectionIcon.continueWatching);
+    await appearance.setCategoryTitleIcon(ContinueWatchingSection.sectionId, SectionIcon.news);
+    await tester.pumpAndSettle();
+    expect(tester.widget<SectionHeadingIcon>(watchIcon).icon, SectionIcon.news);
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox());
     feeds.dispose(); feedSettings.dispose(); appearance.dispose(); await channel.events.close();
@@ -826,7 +843,11 @@ void main() {
     expect(find.text('My recommendations'), findsNothing);
     expect(find.text('Feed 1 · video.app'), findsOneWidget);
     expect(tester.widget<Text>(find.text('Feed 1 · video.app')).style!.fontSize, 40);
-    expect(find.byIcon(Icons.video_library_outlined), findsNothing);
+    final headingIcon = find.byType(SectionHeadingIcon);
+    expect(tester.widget<SectionHeadingIcon>(headingIcon).icon, SectionIcon.appFeeds);
+    await appearance.setCategoryTitleIcon(group.id, SectionIcon.movies);
+    await tester.pumpAndSettle();
+    expect(tester.widget<SectionHeadingIcon>(headingIcon).icon, SectionIcon.movies);
     final container = tester.widget<Container>(find.byKey(const ValueKey('app-channels-group')));
     final decoration = container.decoration! as BoxDecoration;
     expect(decoration.color, const Color(0xff123456).withValues(alpha: .35));
@@ -847,7 +868,7 @@ void main() {
     await tester.pumpAndSettle();
     final firstTile = find.descendant(
       of: find.byType(AppContentRow), matching: find.byType(InkWell)).first;
-    expect(tester.getTopLeft(find.text('Feed 1 · video.app')).dx,
+    expect(tester.getTopLeft(headingIcon).dx,
         closeTo(tester.getTopLeft(firstTile).dx, .01));
     final restored = AppearanceService(prefs);
     expect(restored.tilesFor(group.id).values, appearance.tilesFor(group.id).values);
@@ -856,6 +877,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('My recommendations'), findsNothing);
     expect(find.text('Feed 1 · video.app'), findsNothing);
+    expect(headingIcon, findsNothing);
     expect(find.text('Content 1/0'), findsOneWidget);
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox());
@@ -3143,6 +3165,42 @@ void main() {
 
   });
 
+  testWidgets('section icons use defaults and overrides and follow their visibility', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final appearance = AppearanceService(await SharedPreferences.getInstance());
+    addTearDown(appearance.dispose);
+    await appearance.set('sectionTitles', true);
+    await appearance.set('sectionIcons', true);
+    final apps = mkAppService();
+    final favorites = Category(id: 1, name: 'Favorites', systemKey: 'favorites')
+      ..applications.add(fakeApp(packageName: 'favorite.app'));
+    final all = Category(id: 2, name: 'All Apps', systemKey: 'all_apps')
+      ..applications.add(fakeApp(packageName: 'all.app'));
+    final custom = Category(id: 3, name: 'My section')
+      ..applications.add(fakeApp(packageName: 'custom.app'));
+    when(apps.launcherSections).thenReturn([favorites, all, custom]);
+    await _pumpWidgetWithProviders(tester, mkWallpaperService(), apps,
+        mkSettingsService(), appearance: appearance);
+    List<SectionIcon> icons() => tester.widgetList<SectionHeadingIcon>(
+      find.byType(SectionHeadingIcon),
+    ).map((heading) => heading.icon).toList();
+    expect(icons(), [SectionIcon.favorites, SectionIcon.allApps, SectionIcon.folder]);
+    await appearance.setCategoryTitleIcon(1, SectionIcon.games);
+    await appearance.setCategoryTitleIcon(3, SectionIcon.photos);
+    await tester.pumpAndSettle();
+    expect(icons(), [SectionIcon.games, SectionIcon.allApps, SectionIcon.photos]);
+    await appearance.set('sectionIcons', false);
+    await tester.pumpAndSettle();
+    expect(icons(), isEmpty);
+    expect(find.text('My section'), findsOneWidget);
+    await appearance.set('sectionIcons', true);
+    await appearance.setCategoryTile(3, 'sectionTitles', false);
+    await tester.pumpAndSettle();
+    expect(icons(), [SectionIcon.games, SectionIcon.allApps]);
+    expect(find.text('My section'), findsNothing);
+    await tester.pumpWidget(const SizedBox());
+  });
+
   for (final type in CategoryType.values) {
     testWidgets('startup focuses first usable category: $type', (tester) async {
       final strategy = FocusManager.instance.highlightStrategy;
@@ -3980,6 +4038,7 @@ SettingsService mkSettingsService() {
   when(settingsService.appKeyClickEnabled).thenReturn(false);
   when(settingsService.homeKeyClickEnabled).thenReturn(false);
   when(settingsService.showSleepTimerInStatusBar).thenReturn(false);
+  when(settingsService.showQuickActionsInStatusBar).thenReturn(false);
   when(settingsService.showNightModeInStatusBar).thenReturn(false);
   when(settingsService.settingsMenuOnRight).thenReturn(false);
   when(settingsService.backgroundSource).thenReturn('picture');

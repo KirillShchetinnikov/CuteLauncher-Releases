@@ -137,10 +137,13 @@ void main() {
     'conditional warning parentheses disappear for stale or absent warnings',
     () {
       final format = parseWeatherTemplate('{TEMP} ({WARN})').format!;
-      final wet = WeatherData.fromJsonString(
-        '{"currentTemp":30,"forecasts":[{"conditionCode":500,"precipProbability":80}]}',
-      );
       final now = DateTime(2026, 11, 8);
+      final wet = WeatherData.fromJson({
+        'currentTemp': 30,
+        'forecasts': [
+          {'conditionCode': 500, 'precipProbability': 80},
+        ],
+      }, referenceTime: now);
       final warning = format.format(wet, l, fahrenheit: false, now: now);
       expect(warning, contains('(80%'));
       expect(warning, endsWith(')'));

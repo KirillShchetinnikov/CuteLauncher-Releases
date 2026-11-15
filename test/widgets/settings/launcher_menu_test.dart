@@ -110,7 +110,7 @@ void main() {
       await pumpMenu(tester, large: true);
       expect(find.byType(FocusableSettingsTile), findsNWidgets(9));
       expect(find.text('Открытые приложения'), findsOneWidget);
-      expect(find.text('Менеджер очистки ТВ'), findsOneWidget);
+      expect(find.text('Менеджер очистки устройства'), findsOneWidget);
       expect(find.text('Проверить подключение'), findsNothing);
       expect(find.textContaining('Включите отладку'), findsNothing);
       expect(find.text('Автозапуск'), findsOneWidget);

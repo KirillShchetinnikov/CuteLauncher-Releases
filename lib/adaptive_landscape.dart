@@ -5,6 +5,8 @@ import 'models/weather_data.dart';
 
 const landscapeSettingsKey = 'wallpaper_landscape';
 
+enum LandscapeSchedule { auto, nightMode, manual }
+
 class LandscapeConfiguration {
   final String variant;
   final bool timeOfDay,
@@ -16,6 +18,8 @@ class LandscapeConfiguration {
       celestialBodies,
       starRotation;
   final String hemisphere;
+  final LandscapeSchedule schedule;
+  final int sunriseMinute, sunsetMinute;
   const LandscapeConfiguration({
     this.variant = 'illustrated',
     this.timeOfDay = true,
@@ -27,6 +31,9 @@ class LandscapeConfiguration {
     this.celestialBodies = true,
     this.starRotation = false,
     this.hemisphere = 'auto',
+    this.schedule = LandscapeSchedule.auto,
+    this.sunriseMinute = 8 * 60,
+    this.sunsetMinute = 20 * 60,
   });
 
   /// Preview all moving effects without rewriting the user's normal configuration.
@@ -36,6 +43,9 @@ class LandscapeConfiguration {
     celestialBodies: celestialBodies,
     motion: true,
     starRotation: true,
+    schedule: schedule,
+    sunriseMinute: sunriseMinute,
+    sunsetMinute: sunsetMinute,
   );
 
   Map<String, dynamic> toJson() => {
@@ -49,6 +59,9 @@ class LandscapeConfiguration {
     'celestialBodies': celestialBodies,
     'starRotation': starRotation,
     'hemisphere': hemisphere,
+    'schedule': schedule.name,
+    'sunriseMinute': sunriseMinute,
+    'sunsetMinute': sunsetMinute,
   };
   String encode() => jsonEncode(toJson());
   LandscapeConfiguration withValue(String key, dynamic value) =>
@@ -68,9 +81,32 @@ class LandscapeConfiguration {
       return data[key] as bool;
     }
 
+    int minute(String key, int fallback) {
+      if (!data.containsKey(key)) return fallback;
+      final value = data[key];
+      if (value is! int || value < 0 || value >= 24 * 60) {
+        throw const FormatException('Invalid landscape time');
+      }
+      return value;
+    }
+
+    final scheduleName = data.containsKey('schedule')
+        ? data['schedule']
+        : 'auto';
+    final schedule = LandscapeSchedule.values
+        .where((value) => value.name == scheduleName)
+        .firstOrNull;
+    final sunrise = minute('sunriseMinute', 8 * 60);
+    final sunset = minute('sunsetMinute', 20 * 60);
+    if (schedule == null || sunrise == sunset) {
+      throw const FormatException('Invalid landscape schedule');
+    }
     return LandscapeConfiguration(
       variant: variant,
       hemisphere: hemisphere,
+      schedule: schedule,
+      sunriseMinute: sunrise,
+      sunsetMinute: sunset,
       timeOfDay: flag('timeOfDay', true),
       seasons: flag('seasons', true),
       clouds: flag('clouds', true),
@@ -129,6 +165,47 @@ LandscapeSeason landscapeSeason(
   };
 }
 
+/// Selects the sunrise and sunset used by the scene for the device's day.
+({DateTime sunrise, DateTime sunset, bool usesSchedule}) landscapeSunTimes(
+  DateTime now,
+  List<Map<String, dynamic>> solarDays, {
+  bool preferPrevious = true,
+}) {
+  ({DateTime sunrise, DateTime sunset, bool usesSchedule})? current, previous;
+  final midnight = DateTime(now.year, now.month, now.day);
+  final tomorrow = DateTime(now.year, now.month, now.day + 1);
+  for (final day in solarDays) {
+    // The night-mode scheduler has its own fallback. A landscape without
+    // astronomical times follows its documented local 06:00/18:00 schedule.
+    if (day['fixedFallback'] == true) continue;
+    final rise = day['sunrise'], set = day['sunset'];
+    if (rise is! int || set is! int || rise <= 0 || set <= rise) continue;
+    final sample = (
+      sunrise: DateTime.fromMillisecondsSinceEpoch(rise),
+      sunset: DateTime.fromMillisecondsSinceEpoch(set),
+      usesSchedule: true,
+    );
+    if (sample.sunrise.isBefore(midnight)) {
+      if (preferPrevious &&
+          now.isBefore(sample.sunset.add(const Duration(minutes: 80))) &&
+          (previous == null || sample.sunrise.isAfter(previous.sunrise))) {
+        previous = sample;
+      }
+    } else if (sample.sunrise.isBefore(tomorrow)) {
+      current ??= sample;
+    }
+  }
+  current ??= (
+    sunrise: DateTime(now.year, now.month, now.day, 6),
+    sunset: DateTime(now.year, now.month, now.day, 18),
+    usesSchedule: false,
+  );
+  return previous != null &&
+          now.isBefore(current.sunrise.subtract(const Duration(minutes: 40)))
+      ? previous
+      : current;
+}
+
 /// Reuse cached local sun times; never requests location or network itself.
 LandscapePhase landscapePhase(
   DateTime now,
@@ -136,19 +213,10 @@ LandscapePhase landscapePhase(
   List<Map<String, dynamic>> solarDays = const [],
 }) {
   if (!config.timeOfDay) return LandscapePhase.day;
-  var sunrise = DateTime(now.year, now.month, now.day, 6);
-  var sunset = DateTime(now.year, now.month, now.day, 18);
-  for (final day in solarDays) {
-    final rise = day['sunrise'], set = day['sunset'];
-    if (rise is! int || set is! int || rise <= 0 || set <= rise) continue;
-    final r = DateTime.fromMillisecondsSinceEpoch(rise),
-        s = DateTime.fromMillisecondsSinceEpoch(set);
-    if (r.year == now.year && r.month == now.month && r.day == now.day) {
-      sunrise = r;
-      sunset = s;
-      break;
-    }
-  }
+  final (:sunrise, :sunset, usesSchedule: _) = landscapeSunTimes(
+    now,
+    solarDays,
+  );
   const twilight = Duration(minutes: 40);
   if (now.isBefore(sunrise.subtract(twilight)) ||
       !now.isBefore(sunset.add(twilight * 2))) {
@@ -203,20 +271,10 @@ List<int> landscapeLightKeyframes(
   DateTime now, {
   List<Map<String, dynamic>> solarDays = const [],
 }) {
-  var rise = DateTime(now.year, now.month, now.day, 6);
-  var set = DateTime(now.year, now.month, now.day, 18);
-  for (final day in solarDays) {
-    final r = day['sunrise'], s = day['sunset'];
-    if (r is! int || s is! int || r <= 0 || s <= r) continue;
-    final candidate = DateTime.fromMillisecondsSinceEpoch(r);
-    if (candidate.year == now.year &&
-        candidate.month == now.month &&
-        candidate.day == now.day) {
-      rise = candidate;
-      set = DateTime.fromMillisecondsSinceEpoch(s);
-      break;
-    }
-  }
+  final (sunrise: rise, sunset: set, usesSchedule: _) = landscapeSunTimes(
+    now,
+    solarDays,
+  );
   // Clamp twilight to a quarter of daylight so even very short days stay ordered.
   final span = (set.difference(rise).inMilliseconds / 4)
       .clamp(1, const Duration(minutes: 40).inMilliseconds)
@@ -243,15 +301,11 @@ class LandscapeGlow {
       sunsetBefore = 60,
       sunsetAfter = 10;
 
-  static List<(int, int)> windows(
-    DateTime day, {
-    List<Map<String, dynamic>> solarDays = const [],
-  }) {
-    final sun = landscapeLightKeyframes(day, solarDays: solarDays);
+  static List<(int, int)> _windowsFor(int rise, int set) {
     const minute = Duration.millisecondsPerMinute;
     return [
-      (sun[1] - sunriseBefore * minute, sun[1] + sunriseAfter * minute),
-      (sun[4] - sunsetBefore * minute, sun[4] + sunsetAfter * minute),
+      (rise - sunriseBefore * minute, rise + sunriseAfter * minute),
+      (set - sunsetBefore * minute, set + sunsetAfter * minute),
     ];
   }
 
@@ -357,20 +411,23 @@ class LandscapeDemoTimeline {
     DateTime start,
     List<Map<String, dynamic>> source,
   ) {
-    final points = landscapeLightKeyframes(start, solarDays: source);
-    final rise = DateTime.fromMillisecondsSinceEpoch(points[1]);
-    final set = DateTime.fromMillisecondsSinceEpoch(points[4]);
-    final midnight = DateTime(start.year, start.month, start.day);
-    final sunsetDay = DateTime(
+    final (sunrise: rise, sunset: set, usesSchedule: _) = landscapeSunTimes(
+      start,
+      source,
+      preferPrevious: false,
+    );
+    final sunsetDay = DateTime.utc(
       set.year,
       set.month,
       set.day,
-    ).difference(midnight).inDays;
+    ).difference(DateTime.utc(start.year, start.month, start.day)).inDays;
+    final firstDay = sunsetDay > 0 || set.hour * 60 + set.minute >= 22 * 60 + 40
+        ? -1
+        : 0;
     // Repeat the captured schedule after midnight, rather than silently switching to fallback sun times.
-    return List.unmodifiable(
-      List.generate(
-        2,
-        (day) => Map<String, dynamic>.unmodifiable({
+    return List.unmodifiable([
+      for (var day = firstDay; day <= 1; day++)
+        Map<String, dynamic>.unmodifiable({
           'sunrise': DateTime(
             start.year,
             start.month,
@@ -390,20 +447,19 @@ class LandscapeDemoTimeline {
             set.millisecond,
           ).millisecondsSinceEpoch,
         }),
-      ),
-    );
+    ]);
   }
 
   List<(int, int)> _buildPoints() {
-    final sun = landscapeLightKeyframes(start, solarDays: solarDays);
-    final windows = LandscapeGlow.windows(start, solarDays: solarDays)
-        .map(
-          (w) => (
-            w.$1 - _midnight.millisecondsSinceEpoch,
-            w.$2 - _midnight.millisecondsSinceEpoch,
-          ),
-        )
-        .toList();
+    final midnight = _midnight.millisecondsSinceEpoch;
+    final events = [
+      for (final day in solarDays)
+        (day['sunrise'] as int, day['sunset'] as int),
+    ];
+    final windows = [
+      for (final (rise, set) in events)
+        ...LandscapeGlow._windowsFor(rise - midnight, set - midnight),
+    ];
     final points = <int>{
       0,
       _daySpan,
@@ -411,8 +467,10 @@ class LandscapeDemoTimeline {
         w.$1.clamp(0, _daySpan),
         w.$2.clamp(0, _daySpan),
       ],
-      for (final event in [sun[1], sun[4]])
-        (event - _midnight.millisecondsSinceEpoch).clamp(0, _daySpan),
+      for (final (rise, set) in events) ...[
+        (rise - midnight).clamp(0, _daySpan),
+        (set - midnight).clamp(0, _daySpan),
+      ],
     }.toList()..sort();
     final result = <(int, int)>[(0, 0)];
     var elapsed = 0.0;

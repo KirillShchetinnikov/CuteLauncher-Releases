@@ -90,7 +90,7 @@ void main() {
       expect(actions, ['preview']);
       expect(tile().onPressed, isNull);
       expect(
-        find.text('Подтвердите доступ ADB на ТВ и повторите запрос.'),
+        find.text('Подтвердите доступ ADB на устройстве и повторите запрос.'),
         findsOneWidget,
       );
       Navigator.of(tester.element(assign)).pop();

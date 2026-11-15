@@ -239,7 +239,7 @@ Future<DesignFixture> pumpDesignFixture(
     name: 'Избранное',
     type: CategoryType.row,
     rowHeight: 130,
-  );
+  )..systemKey = 'favorites';
   final all = fakeCategory(name: 'Все приложения', order: 1, columnsCount: 5);
   for (var i = 0; i < names.length; i++) {
     final app = fakeApp(packageName: 'demo.$i', name: names[i]);

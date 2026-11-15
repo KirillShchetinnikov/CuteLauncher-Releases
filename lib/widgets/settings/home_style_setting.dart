@@ -71,7 +71,7 @@ class HomeStyleSetting extends StatelessWidget {
         (settings?.showContinueWatching ?? false) &&
         const {
           'size', 'radius', 'horizontalGap', 'labelSize', 'labelColor',
-          'sectionTitles', 'sectionTitleAligned', 'sectionTitleSize',
+          'sectionTitles', 'sectionTitleAligned', 'sectionTitleSize', 'sectionIcons',
           'sectionBackground', 'sectionOpacity', 'sectionRadius',
           'focusEffect', 'focusScale', 'focusLift', 'focusBorderStyle',
           'focusPulse', 'focusTransition',

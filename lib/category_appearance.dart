@@ -2,10 +2,12 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'models/category.dart';
+import 'section_icons.dart';
 import 'tile_appearance.dart';
 
 const categoryAppearanceKey = 'category_appearance';
 const legacyWatchNextCardSizeKey = 'continue_watching_card_size';
+const defaultSectionIconName = 'auto';
 
 class CategoryAppearance {
   final Map<String, dynamic> values;
@@ -22,6 +24,7 @@ class CategoryAppearance {
       values.containsKey('columns') ? columns
           : layout == 'columns' || (resolvedLayout(legacyRow) == 'grid' && !values.containsKey('layout')) ? legacyColumns : 0;
   int get rows => values['rows'] as int? ?? 2;
+  SectionIcon? get titleIcon => SectionIcon.fromName(values['titleIcon']);
   bool get useGlobalTiles => values['useGlobalTiles'] != false;
   Map<String, dynamic> get tiles =>
       TileAppearance.validValues(values['tiles'])
@@ -44,6 +47,10 @@ class CategoryAppearance {
       }
       if (entry.key == 'useGlobalTiles' && v is bool) {
         result['useGlobalTiles'] = v;
+      }
+      if (entry.key == 'titleIcon' &&
+          (v == defaultSectionIconName || SectionIcon.fromName(v) != null)) {
+        result['titleIcon'] = v;
       }
       if (entry.key == 'tiles' && v is Map) {
         const keys = ['size', 'aspectRatio', 'bannerImageMode', 'iconImageMode', 'radius', 'horizontalGap',

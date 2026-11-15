@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,6 +13,76 @@ import 'package:flauncher/widgets/rounded_switch_list_tile.dart';
 import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
 
 void main() {
+  for (final remotePanel in [false, true]) {
+    testWidgets('open menu follows native toggles: remotePanel=$remotePanel', (
+      tester,
+    ) async {
+      // Solar time is unavailable, so the master switch must still update even
+      // though the filter's current intensity stays at zero.
+      const initial = NightModeConfiguration(scheduled: true, solar: true);
+      SharedPreferences.setMockInitialValues({
+        nightModeKey: jsonEncode(initial.toJson()),
+      });
+      const channel = MethodChannel('cutelauncher/night');
+      final events = remotePanel
+          ? 'cutelauncher/night_panel_state'
+          : 'cutelauncher/night_visibility';
+      final messenger = tester.binding.defaultBinaryMessenger;
+      final calls = <String>[];
+      messenger.setMockMethodCallHandler(channel, (call) async {
+        calls.add(call.method);
+        return {'permission': false, 'presentationReady': true};
+      });
+      messenger.setMockMethodCallHandler(
+        MethodChannel(events),
+        (_) async => null,
+      );
+      addTearDown(() {
+        messenger.setMockMethodCallHandler(channel, null);
+        messenger.setMockMethodCallHandler(MethodChannel(events), null);
+      });
+      final service = NightModeService(
+        await SharedPreferences.getInstance(),
+        remotePanel: remotePanel,
+      );
+      await tester.pumpWidget(
+        ChangeNotifierProvider.value(
+          value: service,
+          child: const MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(
+              body: NightModeMenu(anchor: Rect.fromLTWH(20, 20, 40, 40)),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      final master = find.byKey(const ValueKey('night_mode_enabled'));
+      expect(tester.widget<RoundedSwitchListTile>(master).value, isFalse);
+      calls.clear();
+      for (final enabled in [true, false]) {
+        SharedPreferences.setMockInitialValues({
+          nightModeKey: jsonEncode(initial.copyWith(enabled: enabled).toJson()),
+        });
+        await messenger.handlePlatformMessage(
+          events,
+          const StandardMethodCodec().encodeSuccessEnvelope({
+            'configurationChanged': true,
+          }),
+          (_) {},
+        );
+        await tester.pumpAndSettle();
+        expect(tester.widget<RoundedSwitchListTile>(master).value, enabled);
+        expect(service.configuration.scheduled, isTrue);
+        expect(service.intensity, 0);
+      }
+      expect(calls, ['status', 'status']);
+      await tester.pumpWidget(const SizedBox());
+      service.dispose();
+    });
+  }
+
   for (final locale in ['ru', 'en']) {
     for (final (scheduled, solar) in [
       (false, false),

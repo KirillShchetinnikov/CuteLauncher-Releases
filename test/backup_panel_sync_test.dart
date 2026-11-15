@@ -2,11 +2,43 @@ import 'dart:convert';
 
 import 'package:flauncher/backup_sync.dart';
 import 'package:flauncher/backup_sync_groups.dart';
+import 'package:flauncher/quick_actions.dart';
+import 'package:flauncher/settings_import.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'backup_sync_test.dart' show archive;
 
 void main() {
+  test('quick actions restore an empty menu and reject malformed settings', () {
+    final expected = {
+      quickActionsVisibleKey: false,
+      quickActionsItemsKey: ['sleep', 'reboot', 'wallpaper'],
+    };
+    final saved = {
+      quickActionsVisibleKey: true,
+      quickActionsItemsKey: <String>[],
+      quickActionsOrderKey: [
+        'shutdown',
+        'reboot',
+        'sleep',
+        'screensaver',
+        'wallpaper',
+      ],
+    };
+    expect(compatibleSettings(saved, expected), saved);
+    expect(
+      compatibleSettings({
+        quickActionsVisibleKey: 'true',
+        quickActionsItemsKey: ['sleep', 'invalid'],
+        quickActionsOrderKey: ['shutdown', 'invalid'],
+      }, expected),
+      isEmpty,
+    );
+    for (final key in saved.keys) {
+      expect(backupSyncPartGroup('setting:$key'), BackupSyncGroup.topPanel);
+    }
+  });
+
   test('a local appearance edit during v2 upgrade gets a new revision', () {
     final before = archive({
       'tile_appearance': jsonEncode({'panelTextSize': 16}),

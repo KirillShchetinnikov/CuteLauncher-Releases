@@ -23,6 +23,7 @@ import io.flutter.plugin.common.MethodChannel;
 /** User-enabled dimming and TCL scheduling; never grabs input or wakes the TV. */
 public class NightOverlayService extends Service {
     private static final String PREF = "night_overlay", KEY = "configuration";
+    private static final String UI_PREF = "FlutterSharedPreferences", UI_KEY = "flutter.night_mode_configuration";
     private static final String CHANNEL = "night_mode", STOP = "night_mode_stop";
     private static java.lang.ref.WeakReference<NightOverlayService> activeService = new java.lang.ref.WeakReference<>(null);
     private final Handler handler = new Handler(Looper.getMainLooper());
@@ -35,6 +36,7 @@ public class NightOverlayService extends Service {
     private JSONObject config = new JSONObject();
     private boolean overlayFailed;
     private boolean destroyed;
+    private boolean stopping;
     private Boolean lastTclTarget;
     private final NightForegroundTracker foreground = new NightForegroundTracker();
     private final NightHdmiTracker hdmi = new NightHdmiTracker();
@@ -95,6 +97,73 @@ public class NightOverlayService extends Service {
         var state = panelState();
         for (var sink : java.util.List.copyOf(panelSinks.values())) sink.success(state);
     }
+    private static void emitConfigurationChanged() {
+        var change = Map.of("configurationChanged", true);
+        for (var sink : java.util.List.copyOf(visibilitySinks.values())) sink.success(change);
+        for (var sink : java.util.List.copyOf(panelSinks.values())) sink.success(change);
+    }
+
+    /** Toggle the same master switch as the Flutter menu without starting an engine. */
+    static void toggleMode(@androidx.annotation.NonNull Context context) {
+        var ui = context.getSharedPreferences(UI_PREF, MODE_PRIVATE);
+        try {
+            JSONObject value = new JSONObject(ui.getString(UI_KEY, "{}"));
+            if (!valid(value)) {
+                value = load(context);
+                if (!valid(value)) value = new JSONObject()
+                    .put("enabled", false).put("scheduled", false).put("startHour", 22)
+                    .put("endHour", 7).put("dim", 30).put("warmth", 10);
+            }
+            value.put("enabled", !value.optBoolean("enabled"));
+            for (String prefix : new String[]{"override", "tclOverride"}) {
+                value.put(prefix + "Mode", "none");
+                value.put(prefix + "Until", 0);
+            }
+            ui.edit().putString(UI_KEY, value.toString()).apply();
+            try {
+                applyConfiguration(context, value);
+                refreshSolar(context, value, false);
+            } finally {
+                emitConfigurationChanged();
+            }
+        } catch (org.json.JSONException invalid) {
+            throw new IllegalStateException("Invalid night mode", invalid);
+        }
+    }
+
+    private static void applyConfiguration(Context context, JSONObject value) {
+        context.getSharedPreferences(PREF, MODE_PRIVATE).edit().putString(KEY, value.toString()).apply();
+        NightOverlayService instance = activeService.get();
+        if (!value.optBoolean("enabled") || (!OverlayPermission.granted(context)
+            && !value.optBoolean("tclScheduled", true))) {
+            if (instance != null && !instance.stopping) {
+                instance.stopping = true;
+                instance.config = value;
+                instance.remove();
+                instance.restoreTcl();
+            }
+            context.stopService(new Intent(context, NightOverlayService.class));
+        } else if (instance != null && !instance.stopping) {
+            // Slider changes do not invalidate the resolved foreground exclusions.
+            if (instance.trackedConfiguration == instance.config && sameExclusions(instance.config, value))
+                instance.trackedConfiguration = value;
+            instance.config = value;
+            instance.overlayFailed = false;
+            instance.refresh();
+        } else {
+            context.startForegroundService(new Intent(context, NightOverlayService.class));
+        }
+        LauncherNotificationListenerService.refreshNightFilter();
+    }
+
+    private static void refreshSolar(Context context, JSONObject value, boolean force) {
+        NightSolarTimes.refresh(context.getApplicationContext(), value, force, () -> {
+            NightOverlayService service = activeService.get();
+            if (service != null) service.handler.post(() -> {
+                if (!service.destroyed && activeService.get() == service) service.refresh();
+            });
+        });
+    }
     static boolean popupExcluded() {
         NightOverlayService service=activeService.get();
         return service != null && service.excluded;
@@ -120,6 +189,29 @@ public class NightOverlayService extends Service {
                 if (call.method.equals("solarCache")) {
                     // Read only: capture must never configure filters or refresh the network cache.
                     result.success(NightSolarTimes.list(NightSolarTimes.days(activity, load(activity))));
+                    return;
+                }
+                if (call.method.equals("landscapeSolarDays")) {
+                    Object latitude = call.argument("latitude"), longitude = call.argument("longitude");
+                    Object now = call.argument("now");
+                    if (!(latitude instanceof Number lat) || !(longitude instanceof Number lon)
+                        || !(now instanceof Long time)
+                        || !Double.isFinite(lat.doubleValue()) || Math.abs(lat.doubleValue()) > 90
+                        || !Double.isFinite(lon.doubleValue()) || Math.abs(lon.doubleValue()) > 180
+                        || time < 0 || time > 4102444800000L) {
+                        result.error("invalid", "Invalid landscape solar location or date", null);
+                        return;
+                    }
+                    executor.execute(() -> {
+                        var main = new Handler(Looper.getMainLooper());
+                        try {
+                            var days = NightSolarTimes.landscapeDays(lat.doubleValue(), lon.doubleValue(), time,
+                                java.time.ZoneId.systemDefault());
+                            main.post(() -> result.success(days));
+                        } catch (RuntimeException failure) {
+                            main.post(() -> result.error("unavailable", "Landscape solar times unavailable", null));
+                        }
+                    });
                     return;
                 }
                 if (call.method.equals("pictureMode")) {
@@ -165,30 +257,10 @@ public class NightOverlayService extends Service {
                     }
                     JSONObject value = new JSONObject(arguments);
                     if (!valid(value)) { result.error("invalid", "Invalid night mode", null); return; }
-                    activity.getSharedPreferences(PREF, MODE_PRIVATE).edit().putString(KEY, value.toString()).apply();
-                    NightOverlayService instance = activeService.get();
-                    if (!value.optBoolean("enabled") || (!OverlayPermission.granted(activity)
-                        && !(value.optBoolean("tclScheduled", true)))) {
-                        if (instance != null) { instance.config = value; instance.restoreTcl(); }
-                        activity.stopService(new Intent(activity, NightOverlayService.class));
-                    } else {
-                        if (instance != null) {
-                            // Slider changes do not invalidate the resolved foreground exclusions.
-                            if (instance.trackedConfiguration == instance.config && sameExclusions(instance.config, value))
-                                instance.trackedConfiguration=value;
-                            instance.config = value; instance.overlayFailed = false; instance.refresh();
-                        }
-                        else activity.startForegroundService(new Intent(activity, NightOverlayService.class));
-                    }
-                    LauncherNotificationListenerService.refreshNightFilter();
+                    applyConfiguration(activity, value);
                 } else if (!call.method.equals("status") && !call.method.equals("solarRefresh")) { result.notImplemented(); return; }
                 JSONObject c = load(activity);
-                if (!call.method.equals("status")) NightSolarTimes.refresh(activity.getApplicationContext(), c, call.method.equals("solarRefresh"), () -> {
-                    NightOverlayService service = activeService.get();
-                    if (service != null) service.handler.post(() -> {
-                        if (!service.destroyed && activeService.get() == service) service.refresh();
-                    });
-                });
+                if (!call.method.equals("status")) refreshSolar(activity, c, call.method.equals("solarRefresh"));
                 result.success(status(activity, c));
             } catch (Exception e) { result.error("unavailable", "Night mode service unavailable", DiagnosticErrorDetails.from(e)); }
         });
@@ -202,7 +274,7 @@ public class NightOverlayService extends Service {
         PowerManager power = context.getSystemService(PowerManager.class);
         status.put("batteryExempt", power == null ? null : power.isIgnoringBatteryOptimizations(context.getPackageName()));
         status.put("permission", granted); status.put("notifications", notificationsAllowed(context));
-        status.put("running", instance != null); status.put("visible", instance != null && instance.overlay != null);
+        status.put("running", instance != null && !instance.stopping); status.put("visible", instance != null && instance.overlay != null);
         status.put("active", NightSchedule.active(c, days, now, false));
         status.put("usagePermission", NightForegroundTracker.allowed(context));
         status.put("localExcluded", NightForegroundTracker.allowed(context) && excluded(c, context.getPackageName()));
@@ -340,8 +412,7 @@ public class NightOverlayService extends Service {
             try {
                 JSONObject c=load(this); c.put("enabled",false); config=c;
                 getSharedPreferences(PREF, MODE_PRIVATE).edit().putString(KEY,c.toString()).apply();
-                getSharedPreferences("FlutterSharedPreferences", MODE_PRIVATE).edit()
-                    .putString("flutter.night_mode_configuration",c.toString()).apply();
+                getSharedPreferences(UI_PREF, MODE_PRIVATE).edit().putString(UI_KEY,c.toString()).apply();
                 restoreTcl();
             } catch (Exception ignored) {}
             stopSelf(); return START_NOT_STICKY;
@@ -358,7 +429,7 @@ public class NightOverlayService extends Service {
                 getString(R.string.night_mode_stop), stop).build()).build();
         if (Build.VERSION.SDK_INT>=34) startForeground(2401,notice,ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE);
         else startForeground(2401,notice);
-        config=load(this); overlayFailed=false;
+        config=load(this); overlayFailed=false; stopping=false;
         handler.removeCallbacks(tick); tick.run(); return START_STICKY;
     }
     private void refresh() {
@@ -366,7 +437,7 @@ public class NightOverlayService extends Service {
         finally { emitPanelState(); }
     }
     private void refreshFilter() {
-        if (destroyed) return;
+        if (destroyed || stopping) return;
         LauncherNotificationListenerService.refreshNightFilter();
         if (!valid(config) || !config.optBoolean("enabled")) { remove(); restoreTcl(); stopSelf(); return; }
         NightSolarTimes.refresh(getApplicationContext(), config, false, () -> handler.post(this::refresh));

@@ -65,6 +65,20 @@ void main() {
       expect(AppLocalizations.supportedLocales, contains(Locale(locale.languageCode)));
     }
   });
+  test('device labels preserve TV-specific names', () async {
+    final ru = await AppLocalizations.delegate.load(const Locale('ru'));
+    expect(ru.backupThisTv, 'Это устройство');
+    expect(ru.fileBrowserStorage, 'Память устройства');
+    expect(ru.audioOutputTv, 'Динамики');
+    expect(ru.compatibilityTvInputs, 'Системный список ТВ-входов');
+    expect(ru.remoteMappingLiveTv, 'Открыть эфирное ТВ');
+    expect(ru.androidTvSettings, 'Настройки Android TV');
+    final en = await AppLocalizations.delegate.load(const Locale('en'));
+    expect(en.backupThisTv, 'This device');
+    expect(en.compatibilityTvInputs, 'System TV input list');
+    expect(en.androidTvSettings, 'Android TV settings');
+  });
+
   test('Android resources cover all translatable native labels', () {
     Set<String> names(String folder) => RegExp(r'<string name="([^"]+)"([^>]*)>')
         .allMatches(

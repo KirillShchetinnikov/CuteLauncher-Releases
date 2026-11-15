@@ -187,13 +187,13 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get renderCompatibilityHelp =>
-      'Versuchen Sie diesen Modus, wenn die Oberfläche bei nächtlicher Abdunklung flackert. Auf geprüften Modellen wird er automatisch aktiviert. Auf anderen Fernsehern wird die Auswahl nur auf diesem Gerät gespeichert und nach einem Neustart des Launchers angewendet. Die Grafiklast kann steigen.';
+      'Versuchen Sie diesen Modus, wenn die Oberfläche bei nächtlicher Abdunklung flackert. Auf geprüften Modellen wird er automatisch aktiviert. Auf anderen Geräten wird die Auswahl nur auf diesem Gerät gespeichert und nach einem Neustart des Launchers angewendet. Die Grafiklast kann steigen.';
 
   @override
   String get diagnosticsHubTitle => 'Diagnostics';
 
   @override
-  String get tvCompatibilityTitle => 'TV compatibility check';
+  String get tvCompatibilityTitle => 'Gerätekompatibilität prüfen';
 
   @override
   String get tvCompatibilityRun => 'Run check';
@@ -296,7 +296,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get adbWifiOwned =>
-      'Keine Änderungen: Ein gespeichertes WLAN wurde vom Google-Einrichtungsassistenten erstellt. Seine Deaktivierung kann das Netzwerk löschen und den Fernseher vom Internet trennen.\n\n1. Halten Sie das WLAN-Passwort bereit.\n2. Öffnen Sie die Android-Netzwerkeinstellungen, wählen Sie das Netzwerk und „Netzwerk vergessen“.\n3. Verbinden Sie sich dort erneut.\n4. Kehren Sie zu CuteLauncher zurück, prüfen Sie ADB und versuchen Sie erneut, den integrierten Launcher zu deaktivieren.\n\nErscheint die Meldung erneut, lassen Sie den integrierten Launcher aktiviert: Die Firmware kann das Netzwerk wieder dem Assistenten zuordnen.';
+      'Keine Änderungen: Ein gespeichertes WLAN wurde vom Google-Einrichtungsassistenten erstellt. Seine Deaktivierung kann das Netzwerk löschen und das Gerät vom Internet trennen.\n\n1. Halten Sie das WLAN-Passwort bereit.\n2. Öffnen Sie die Android-Netzwerkeinstellungen, wählen Sie das Netzwerk und „Netzwerk vergessen“.\n3. Verbinden Sie sich dort erneut.\n4. Kehren Sie zu CuteLauncher zurück, prüfen Sie ADB und versuchen Sie erneut, den integrierten Launcher zu deaktivieren.\n\nErscheint die Meldung erneut, lassen Sie den integrierten Launcher aktiviert: Die Firmware kann das Netzwerk wieder dem Assistenten zuordnen.';
 
   @override
   String get adbWifiUnknown =>
@@ -648,7 +648,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get defaultLauncherDescription =>
-      'Wenn als Standard-Launcher festgelegt, kehrt die Home-Taste immer zu CuteLauncher zurück. Der TV bootet ebenfalls direkt in CuteLauncher.';
+      'Wenn als Standard-Launcher festgelegt, kehrt die Home-Taste immer zu CuteLauncher zurück. Das Gerät bootet ebenfalls direkt in CuteLauncher.';
 
   @override
   String get inputs => 'Eingänge';
@@ -710,7 +710,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get localNetworkSharingDetails =>
-      'Hier können Sie Ihre TV-Einstellungen/Ihr Layout herunterladen oder eine Sicherungsdatei auf diesen TV hochladen.';
+      'Hier können Sie Ihre Geräteeinstellungen/Ihr Layout herunterladen oder eine Sicherungsdatei auf dieses Gerät hochladen.';
 
   @override
   String failedToStartServer(String error) {
@@ -793,7 +793,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get homeButtonFix => 'Home-Taste-Fix (Google TV)';
 
   @override
-  String get startOnBoot => 'Beim Einschalten starten (Google TV / Fire TV)';
+  String get startOnBoot => 'Beim Einschalten des Geräts starten';
 
   @override
   String get appLanguage => 'Sprache';
@@ -1335,19 +1335,19 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get accessibilityGuide =>
-      'Öffnen Sie die TV-Einstellungen manuell, dann Eingabehilfen → CuteLauncher Home Button Fix und aktivieren Sie den Dienst. Der Speicherort und der Name dieses Menüs hängen vom Hersteller Ihres Fernsehgeräts ab.';
+      'Öffnen Sie die Geräteeinstellungen manuell, dann Eingabehilfen → CuteLauncher Home Button Fix und aktivieren Sie den Dienst. Der Speicherort und der Name dieses Menüs hängen vom Hersteller Ihres Geräts ab.';
 
   @override
   String get notificationPermissionGuide =>
-      'Die Einstellungen für den Benachrichtigungszugriff konnten auf diesem Fernseher nicht geöffnet werden. Durch das Zulassen ausgehender Benachrichtigungen in App Info wird kein Zugriff auf Benachrichtigungen von anderen Apps gewährt.\n\nSchließen Sie Ihren Fernseher über ADB an und führen Sie Folgendes aus:';
+      'Die Einstellungen für den Benachrichtigungszugriff konnten auf diesem Gerät nicht geöffnet werden. Durch das Zulassen ausgehender Benachrichtigungen in App Info wird kein Zugriff auf Benachrichtigungen von anderen Apps gewährt.\n\nSchließen Sie Ihr Gerät über ADB an und führen Sie Folgendes aus:';
 
   @override
   String get overlayPermissionGuide =>
-      'Die Overlay-Berechtigungseinstellungen konnten nicht automatisch geöffnet werden.\n\nUm Popups über anderen Apps zu aktivieren, verbinden Sie Ihren Fernseher über ADB und führen Sie Folgendes aus:';
+      'Die Overlay-Berechtigungseinstellungen konnten nicht automatisch geöffnet werden.\n\nUm Popups über anderen Apps zu aktivieren, verbinden Sie Ihr Gerät über ADB und führen Sie Folgendes aus:';
 
   @override
   String get watchNextPermissionGuide =>
-      'Zum Lesen von Continue Watching-Karten aus anderen Apps ist Android TV READ_WRITE_WATCH_NEXT_PROGRAMS erforderlich.\n\nSchließen Sie Ihren Fernseher über ADB an und führen Sie Folgendes aus:';
+      'Zum Lesen von Continue Watching-Karten aus anderen Apps ist Android TV READ_WRITE_WATCH_NEXT_PROGRAMS erforderlich.\n\nSchließen Sie Ihr Gerät über ADB an und führen Sie Folgendes aus:';
 
   @override
   String get watchNextAccess => 'Weiter ansehen Zugriff';
@@ -1851,7 +1851,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get adbAuthorization =>
-      'Genehmigen Sie die ADB-Autorisierung auf dem Fernseher und versuchen Sie es dann erneut.';
+      'Genehmigen Sie die ADB-Autorisierung auf dem Gerät und versuchen Sie es dann erneut.';
 
   @override
   String get adbChangeConfirm =>
@@ -1873,7 +1873,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get adbHint =>
-      'Prototyp nur für diesen Fernseher (127.0.0.1). Aktivieren Sie TCP ADB in den Entwickleroptionen, geben Sie seinen Port ein und bestätigen Sie die Autorisierungsaufforderung auf dem Fernseher. Das drahtlose Debuggen mit einem Pairing-Code wird noch nicht unterstützt. Der private Schlüssel verbleibt außerhalb von Backups auf diesem Gerät.';
+      'Prototyp nur für dieses Gerät (127.0.0.1). Aktivieren Sie TCP ADB in den Entwickleroptionen, geben Sie seinen Port ein und bestätigen Sie die Autorisierungsaufforderung auf dem Gerät. Das drahtlose Debuggen mit einem Pairing-Code wird noch nicht unterstützt. Der private Schlüssel verbleibt außerhalb von Backups auf diesem Gerät.';
 
   @override
   String get adbHome => 'Machen Sie CuteLauncher zur Home-App';
@@ -1912,7 +1912,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get nightModeScope =>
-      'Zum Dimmen anderer Apps ist eine Overlay-Berechtigung erforderlich. Ohne sie funktioniert das Dimmen im CuteLauncher. Der TCL-Filter benötigt keine Overlay-Berechtigung. Über 80 % Deckkraft kann Android die Touch-Eingabe in anderen Apps blockieren; Die Tasten der TV-Fernbedienung funktionieren weiterhin.';
+      'Zum Dimmen anderer Apps ist eine Overlay-Berechtigung erforderlich. Ohne sie funktioniert das Dimmen im CuteLauncher. Der TCL-Filter benötigt keine Overlay-Berechtigung. Über 80 % Deckkraft kann Android die Touch-Eingabe in anderen Apps blockieren; Die Tasten der Fernbedienung funktionieren weiterhin.';
 
   @override
   String get nightModeEnd => 'Ende';
@@ -1928,7 +1928,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get nightModeScheduleHint =>
-      'Verwendet lokale Fernsehzeit. Übernachtungszeiten werden unterstützt. Gleiche Start- und Endzeiten deaktivieren den geplanten Filter.';
+      'Verwendet die Ortszeit des Geräts. Übernachtungszeiten werden unterstützt. Gleiche Start- und Endzeiten deaktivieren den geplanten Filter.';
 
   @override
   String get nightModeEnabled => 'Nachtmodus aktivieren';
@@ -1988,11 +1988,11 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get diagnosticsSharingNotice =>
-      'Senden Sie die Datei dem Autor privat und veröffentlichen Sie sie nicht: Die automatische Bereinigung kann persönliche Daten übersehen. Mit dem Senden stimmen Sie der Veröffentlichung eines anonymisierten TV-Kompatibilitätsberichts im Git-Repository von CuteLauncher zu. Veröffentlicht werden nur Gerätemetadaten und verfügbare Funktionen ohne persönliche Daten; Fehlerprotokolle, Befehle und Ihre Einstellungen werden nicht veröffentlicht.\n\nDer Bericht enthält auch installierte Pakete mit Namen, Versionen und Aktivierungsstatus sowie Namen, Inhalt, Reihenfolge und Sichtbarkeit der Bereiche. Paketkennungen und Namen bleiben für die Diagnose erhalten; App- und Bereichslisten werden nicht veröffentlicht.';
+      'Senden Sie die Datei dem Autor privat und veröffentlichen Sie sie nicht: Die automatische Bereinigung kann persönliche Daten übersehen. Mit dem Senden stimmen Sie der Veröffentlichung eines anonymisierten Bericht zur Gerätekompatibilitäts im Git-Repository von CuteLauncher zu. Veröffentlicht werden nur Gerätemetadaten und verfügbare Funktionen ohne persönliche Daten; Fehlerprotokolle, Befehle und Ihre Einstellungen werden nicht veröffentlicht.\n\nDer Bericht enthält auch installierte Pakete mit Namen, Versionen und Aktivierungsstatus sowie Namen, Inhalt, Reihenfolge und Sichtbarkeit der Bereiche. Paketkennungen und Namen bleiben für die Diagnose erhalten; App- und Bereichslisten werden nicht veröffentlicht.';
 
   @override
   String get diagnosticsHint =>
-      'Ein Bericht vereint TV-Funktionskompatibilität und Fehlerdiagnose. Der Bericht enthält TV-Modell und Firmware, App-Version, Berechtigungen, Speicher, Fehlerphasen und Ursachen sowie bereinigte Systembefehle und Antworten. Gespeichert werden die letzten 50 Vorgänge, separat bis zu 100 Fehler und ein begrenztes ADB-Protokoll der Sitzung. Ein Neustart löscht das Protokoll. Persönliche Daten können trotz Bereinigung verbleiben: Senden Sie die Datei privat und veröffentlichen Sie sie nicht. Es wird nichts automatisch versendet. Für jeden Fehler bleibt ein Schnappschuss der angewendeten Einstellungen erhalten; spätere Änderungen ersetzen ihn nicht.\n\nDer Bericht enthält auch installierte Pakete mit Namen, Versionen und Aktivierungsstatus sowie Namen, Inhalt, Reihenfolge und Sichtbarkeit der Bereiche. Paketkennungen und Namen bleiben für die Diagnose erhalten; App- und Bereichslisten werden nicht veröffentlicht.';
+      'Ein Bericht vereint Kompatibilität der Gerätefunktionen und Fehlerdiagnose. Der Bericht enthält Gerätemodell und Firmware, App-Version, Berechtigungen, Speicher, Fehlerphasen und Ursachen sowie bereinigte Systembefehle und Antworten. Gespeichert werden die letzten 50 Vorgänge, separat bis zu 100 Fehler und ein begrenztes ADB-Protokoll der Sitzung. Ein Neustart löscht das Protokoll. Persönliche Daten können trotz Bereinigung verbleiben: Senden Sie die Datei privat und veröffentlichen Sie sie nicht. Es wird nichts automatisch versendet. Für jeden Fehler bleibt ein Schnappschuss der angewendeten Einstellungen erhalten; spätere Änderungen ersetzen ihn nicht.\n\nDer Bericht enthält auch installierte Pakete mit Namen, Versionen und Aktivierungsstatus sowie Namen, Inhalt, Reihenfolge und Sichtbarkeit der Bereiche. Paketkennungen und Namen bleiben für die Diagnose erhalten; App- und Bereichslisten werden nicht veröffentlicht.';
 
   @override
   String get diagnosticsTitle => 'Fehlerdiagnose';
@@ -2016,7 +2016,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get tclBlueLightUnsupported =>
-      'Die Filterschnittstelle TCL ist auf diesem Fernseher nicht verfügbar.';
+      'Die Filterschnittstelle TCL ist auf diesem Gerät nicht verfügbar.';
 
   @override
   String get tclBlueLightRefresh => 'Aktualisieren Sie den Filterstatus TCL';
@@ -2033,7 +2033,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get nightScheduleTimeHint =>
-      'Die Uhrzeiten verwenden die TV-Zeitzone. Negative Offsets liegen früher; Positive Offsets sind später.';
+      'Die Uhrzeiten verwenden die Gerätezeitzone. Negative Offsets liegen früher; Positive Offsets sind später.';
 
   @override
   String get nightTemperature => 'Farbtemperatur filtern';
@@ -2126,7 +2126,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get nightSolarAttribution =>
-      'Sonnenaufgang und Sonnenuntergang kommen von Sunrise-Sunset.org, ersatzweise von GeoNames. Ohne Internet berechnet der Fernseher fehlende Zeiten.';
+      'Sonnenaufgang und Sonnenuntergang kommen von Sunrise-Sunset.org, ersatzweise von GeoNames. Ohne Internet berechnet das Gerät fehlende Zeiten.';
 
   @override
   String get nightTemporaryOn => 'Dimmen vorübergehend ein bis';
@@ -2144,7 +2144,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get advancedSettings => 'Fortgeschritten';
 
   @override
-  String get controlAndStartup => 'Launcher- und TV-Steuerung';
+  String get controlAndStartup => 'Launcher und Gerätesteuerung';
 
   @override
   String get sectionsAndOrder => 'Abschnitte und Reihenfolge';
@@ -2245,7 +2245,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get followTileStyle => 'Folgen Sie dem Stil';
 
   @override
-  String get androidTvSettingsHint => 'Öffnen Sie die TV-Systemeinstellungen';
+  String get androidTvSettingsHint =>
+      'Öffnen Sie die Systemeinstellungen des Geräts';
 
   @override
   String get autoHideTopPanel => 'Blenden Sie das Bedienfeld automatisch aus';
@@ -2506,7 +2507,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get adbTlsHint =>
-      'Verwenden Sie das Wireless-Debugging in den Entwickleroptionen. Pairing und Verbindung verfügen über unterschiedliche Ports. Wenn Ihre Firmware keinen Pairing-Code-Bildschirm hat oder Overlay-Fenster blockiert, verwenden Sie stattdessen TCP/RSA. Alle Verbindungen bleiben lokal zu diesem Fernseher.';
+      'Verwenden Sie das Wireless-Debugging in den Entwickleroptionen. Pairing und Verbindung verfügen über unterschiedliche Ports. Wenn Ihre Firmware keinen Pairing-Code-Bildschirm hat oder Overlay-Fenster blockiert, verwenden Sie stattdessen TCP/RSA. Alle Verbindungen bleiben lokal zu diesem Gerät.';
 
   @override
   String get adbPaired =>
@@ -2565,7 +2566,7 @@ class AppLocalizationsDe extends AppLocalizations {
       'Öffnen Sie die Einstellungen in einem zweiten Fenster';
 
   @override
-  String get autoLaunchBoot => 'Nach dem TV-Start';
+  String get autoLaunchBoot => 'Nach dem Gerätestart';
 
   @override
   String get autoLaunchOff => 'Deaktiviert';
@@ -2585,7 +2586,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get autoLaunchHint =>
-      'Wählen Sie eine App oder einen HDMI-Eingang, der nach dem Einschalten oder Aufwecken des Fernsehers geöffnet werden soll. Legen Sie unten das Ereignis und die Verzögerung fest. Die Aktion wird einmal ausgeführt, wenn Android CuteLauncher anzeigt. Jede Eingabe aus der Ferne oder das Verlassen des Startbildschirms bricht das Warten ab. Sie können die HDMI-Eingaben anschließend frei ändern. Legen Sie CuteLauncher als Standard-Launcher fest oder aktivieren Sie bei Bedarf „Beim Booten starten“. Für die Wake-Erkennung muss CuteLauncher weiterhin ausgeführt werden.';
+      'Wählen Sie eine App oder einen HDMI-Eingang, der nach dem Einschalten oder Aufwecken des Geräts geöffnet werden soll. Legen Sie unten das Ereignis und die Verzögerung fest. Die Aktion wird einmal ausgeführt, wenn Android CuteLauncher anzeigt. Jede Eingabe aus der Ferne oder das Verlassen des Startbildschirms bricht das Warten ab. Sie können die HDMI-Eingaben anschließend frei ändern. Legen Sie CuteLauncher als Standard-Launcher fest oder aktivieren Sie bei Bedarf „Beim Booten starten“. Für die Wake-Erkennung muss CuteLauncher weiterhin ausgeführt werden.';
 
   @override
   String autoLaunchSeconds(int seconds) {
@@ -2688,7 +2689,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get cloudDisconnectConfirm =>
-      'Dieses Konto vom Fernseher entfernen? Kopien in der Cloud bleiben erhalten.';
+      'Dieses Konto vom Gerät entfernen? Kopien in der Cloud bleiben erhalten.';
 
   @override
   String get cloudUpload => 'Speichern Sie eine Kopie in der Cloud';
@@ -2743,7 +2744,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get adbSetupIntro =>
-      'Aktivieren Sie Debugging und Netzwerk ADB in den TV-Entwicklereinstellungen und vertrauen Sie dann CuteLauncher. Alle ADB-Aktionen erfolgen auf eigenes Risiko.';
+      'Aktivieren Sie Debugging und Netzwerk ADB in den Entwicklereinstellungen des Geräts und vertrauen Sie dann CuteLauncher. Alle ADB-Aktionen erfolgen auf eigenes Risiko.';
 
   @override
   String get adbConnectionBlock => 'ADB-Verbindung';
@@ -2778,7 +2779,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get adbBuiltinHint =>
-      'Wenn Sie den integrierten Launcher deaktivieren, funktionieren möglicherweise einige Tasten der Fernbedienung und herstellerspezifische TV-Menüs nicht mehr. Aktivieren Sie den integrierten Launcher erneut, um dies rückgängig zu machen.';
+      'Wenn Sie den integrierten Launcher deaktivieren, funktionieren möglicherweise einige Tasten der Fernbedienung und herstellerspezifische Menüs nicht mehr. Aktivieren Sie den integrierten Launcher erneut, um dies rückgängig zu machen.';
 
   @override
   String get adbHomeBlock => 'Home-Taste und Start';
@@ -2792,7 +2793,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get adbHomeOptional =>
-      'Wenn der integrierte Launcher deaktiviert ist, ist das Überschreiben von „Home“ und das Starten beim Einschalten des Fernsehers optional.';
+      'Wenn der integrierte Launcher deaktiviert ist, ist das Überschreiben von „Home“ und das Starten beim Einschalten des Geräts optional.';
 
   @override
   String get adbEnableBuiltin =>
@@ -2820,7 +2821,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get adbEffectDisable =>
-      'Die integrierte Launcher-App wird für den TV-Benutzer deaktiviert. TV-Menüs und Tasten funktionieren möglicherweise nicht mehr. Die App wird nicht deinstalliert.';
+      'Die integrierte Launcher-App wird für den Android-Nutzer deaktiviert. Herstellerspezifische Menüs und Tasten funktionieren möglicherweise nicht mehr. Die App wird nicht deinstalliert.';
 
   @override
   String get adbRecoveryHomeDisable =>
@@ -2905,7 +2906,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get nightBatteryGuide =>
-      '1. Öffnen Sie in den Apps-Einstellungen den speziellen App-Zugriff.\n2. Wählen Sie Batterieoptimierung (manchmal Energiesparmodus).\n3. Finden Sie CuteLauncher; Wählen Sie bei Bedarf Alle Apps aus.\n4. Deaktivieren Sie die Optimierung oder wählen Sie „Uneingeschränkt“ aus.\nMenünamen und Verfügbarkeit hängen von der TV-Firmware ab.';
+      '1. Öffnen Sie in den Apps-Einstellungen den speziellen App-Zugriff.\n2. Wählen Sie Batterieoptimierung (manchmal Energiesparmodus).\n3. Finden Sie CuteLauncher; Wählen Sie bei Bedarf Alle Apps aus.\n4. Deaktivieren Sie die Optimierung oder wählen Sie „Uneingeschränkt“ aus.\nMenünamen und Verfügbarkeit hängen von der Gerätefirmware ab.';
 
   @override
   String get updateNotifications => 'Update-Benachrichtigungen anzeigen';
@@ -3012,24 +3013,23 @@ class AppLocalizationsDe extends AppLocalizations {
   String get backupSaveMode => 'Sicherung';
 
   @override
-  String get backupScope => 'Backup auf allen Fernsehern';
+  String get backupScope => 'Backup auf allen Geräten';
 
   @override
-  String get backupSyncScope =>
-      'Synchronisierung über mehrere Fernseher hinweg';
+  String get backupSyncScope => 'Synchronisierung über mehrere Geräte hinweg';
 
   @override
-  String get backupSeparate => 'Separat für jeden Fernseher';
+  String get backupSeparate => 'Separat für jedes Gerät';
 
   @override
-  String get backupShared => 'Gleiche Einstellungen für alle Fernseher';
+  String get backupShared => 'Gleiche Einstellungen für alle Geräte';
 
   @override
   String get backupStorage => 'Lagerung';
 
   @override
   String get backupSyncHelp =>
-      'Daten herunterladen und Änderungen hochladen. Die neueste Änderung gewinnt Konflikte. Die Fernsehuhren müssen korrekt sein. Die Synchronisierung läuft, während der Launcher geöffnet ist.';
+      'Daten herunterladen und Änderungen hochladen. Die neueste Änderung gewinnt Konflikte. Die Uhren der Geräte müssen korrekt sein. Die Synchronisierung läuft, während der Launcher geöffnet ist.';
 
   @override
   String get backupSyncLimit => 'Überprüfen Sie nicht öfter als';
@@ -3054,7 +3054,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get backupLocalHelp =>
-      'Lokale Kopien werden mit der App bzw. deren Daten gelöscht. Bewahren Sie eine Kopie auch außerhalb des Fernsehers auf.';
+      'Lokale Kopien werden mit der App bzw. deren Daten gelöscht. Bewahren Sie eine Kopie auch außerhalb des Geräts auf.';
 
   @override
   String get panelObjectOrder => 'Objektreihenfolge';
@@ -3243,7 +3243,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get backupFolderPickerUnavailable =>
-      'Auf diesem Fernseher ist keine Ordnerauswahl verfügbar. Wählen Sie Downloads / CuteLauncher oder den internen App-Ordner.';
+      'Auf diesem Gerät ist keine Ordnerauswahl verfügbar. Wählen Sie Downloads / CuteLauncher oder den internen App-Ordner.';
 
   @override
   String get driveConfigurationError =>
@@ -3274,7 +3274,7 @@ class AppLocalizationsDe extends AppLocalizations {
       'Nachtmodus, Helligkeit und Bildschirmschoner';
 
   @override
-  String get backupSyncControlsGroup => 'Launcher- und TV-Steuerung';
+  String get backupSyncControlsGroup => 'Launcher und Gerätesteuerung';
 
   @override
   String get backupSyncGeneralGroup =>
@@ -3282,7 +3282,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get backupSyncGroupsHelp =>
-      'Deaktivierte Blöcke bleiben auf diesem TV. Wählen Sie die Blöcke auf jedem Gerät separat.';
+      'Deaktivierte Blöcke bleiben auf diesem Gerät. Wählen Sie die Blöcke auf jedem Gerät separat.';
 
   @override
   String get backupSyncGroupsFailed =>
@@ -3485,6 +3485,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String get homeSectionIcons => 'Abschnittssymbole';
 
   @override
+  String get sectionTitleIcon => 'Symbol der Abschnittsüberschrift';
+
+  @override
+  String get sectionIconPhotos => 'Fotos';
+
+  @override
+  String get sectionIconFolder => 'Ordner';
+
+  @override
   String get homeInactiveTransparency => 'Transparenz inaktiver Abschnitte';
 
   @override
@@ -3623,7 +3632,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get nightIgnoreHdmiInputsHint =>
-      'Pausieren Sie den Nachtfilter, während Sie HDMI ansehen. Nutzungszugriff ist erforderlich; Die Eingangserkennung hängt von der TV-Firmware ab.';
+      'Pausieren Sie den Nachtfilter, während Sie HDMI ansehen. Nutzungszugriff ist erforderlich; Die Eingangserkennung hängt von der Gerätefirmware ab.';
 
   @override
   String get inputsSettings => 'Eingabeeinstellungen';
@@ -3925,7 +3934,7 @@ class AppLocalizationsDe extends AppLocalizations {
       'Diese Taste und Druckart sind bereits zugewiesen. Wählen Sie eine andere Taste oder Druckart.';
 
   @override
-  String get cleanerTitle => 'TV cleanup manager';
+  String get cleanerTitle => 'Gerätebereinigung';
 
   @override
   String get cleanerRefresh => 'Refresh applications';
@@ -4143,8 +4152,17 @@ class AppLocalizationsDe extends AppLocalizations {
   String get landscapeMotion => 'Animate weather';
 
   @override
+  String get landscapeSunrise => 'Sonnenaufgang';
+
+  @override
+  String get landscapeSunset => 'Sonnenuntergang';
+
+  @override
+  String get landscapeScheduleCurrent => 'Aktiver Zeitplan';
+
+  @override
   String get landscapeHelp =>
-      'Time follows cached sunrise and sunset from Night mode; without them, dawn is at 06:00 and dusk at 18:00, with 40-minute transitions around each. Seasons follow the local month and hemisphere; automatic hemisphere uses weather coordinates, then Night mode coordinates, then the Northern Hemisphere. With time of day off, the scene stays in daylight; with seasons off, it stays in summer. Weather uses current data from the selected weather source, without extra requests. Missing or stale weather shows clear skies. Clouds, precipitation and fog can be disabled independently. Motion is off by default, stops when Home is hidden, and is disabled in memory saving mode or when reduced motion is requested.';
+      'Im Automatikmodus werden Sonnenaufgang und Sonnenuntergang am Gerät für den gespeicherten Standort berechnet. Sind keine Sonnenzeiten verfügbar, gilt der eigene Zeitplan. Seasons follow the local month and hemisphere; automatic hemisphere uses weather coordinates, then Night mode coordinates, then the Northern Hemisphere. With time of day off, the scene stays in daylight; with seasons off, it stays in summer. Weather uses current data from the selected weather source, without extra requests. Missing or stale weather shows clear skies. Clouds, precipitation and fog can be disabled independently. Motion is off by default, stops when Home is hidden, and is disabled in memory saving mode or when reduced motion is requested.';
 
   @override
   String get inputConnected => 'Connected';
@@ -4160,7 +4178,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get weatherMetNorwayCredit =>
-      'Data: MET Norway, CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Forecast adapted from https://api.met.no/. No API key; days use the TV time zone, min/max cover available periods. Precipitation probability is unavailable.';
+      'Data: MET Norway, CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Forecast adapted from https://api.met.no/. No API key; days use the device time zone, min/max cover available periods. Precipitation probability is unavailable.';
 
   @override
   String get informationGroup => 'Uhr, Datum und Wetter';
@@ -4299,7 +4317,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get tvPowerHelp =>
-      'Ausschalten aktiviert Standby über den CuteLauncher-Bedienungshilfedienst oder lokales ADB. Neustart benötigt ADB. Bei TV-Boxen wird die Box gesteuert; das TV-Verhalten hängt von HDMI-CEC und Firmware ab.';
+      'Ruhezustand aktiviert Standby über den CuteLauncher-Bedienungshilfedienst oder lokales ADB. Ausschalten und Neustart erfordern lokales ADB. Bei TV-Boxen wird die Box gesteuert; das TV-Verhalten hängt von HDMI-CEC und Firmware ab.';
 
   @override
   String get cleanerLists => 'Deaktivierungslisten';
@@ -4378,15 +4396,15 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get cleanerAlreadyDisabled =>
-      'Alle Apps aus dieser Liste auf diesem TV sind bereits deaktiviert.';
+      'Alle Apps aus dieser Liste auf diesem Gerät sind bereits deaktiviert.';
 
   @override
   String get cleanerAlreadyEnabled =>
-      'Alle Apps aus dieser Liste auf diesem TV sind bereits aktiviert.';
+      'Alle Apps aus dieser Liste auf diesem Gerät sind bereits aktiviert.';
 
   @override
   String get cleanerNoInstalled =>
-      'Keine passenden Apps aus dieser Liste sind auf diesem TV installiert.';
+      'Keine passenden Apps aus dieser Liste sind auf diesem Gerät installiert.';
 
   @override
   String get cleanerListProtected =>
@@ -4516,7 +4534,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get backgroundMediaFormats =>
-      'Bilder: JPEG, PNG, WebP, GIF, BMP — bis 8 MiB, 48 Megapixel und 16.384 Pixel pro Seite.\nVideo: MP4/M4V, WebM, MKV — bis 256 MiB und 3840×2160. Codecs hängen vom TV ab; bevorzugt MP4 mit H.264. Stumme Wiederholung, Pause außerhalb des Startbildschirms. Videos sind nicht in Sicherungen enthalten.';
+      'Bilder: JPEG, PNG, WebP, GIF, BMP — bis 8 MiB, 48 Megapixel und 16.384 Pixel pro Seite.\nVideo: MP4/M4V, WebM, MKV — bis 256 MiB und 3840×2160. Codecs hängen vom Gerät ab; bevorzugt MP4 mit H.264. Stumme Wiederholung, Pause außerhalb des Startbildschirms. Videos sind nicht in Sicherungen enthalten.';
 
   @override
   String get backgroundFormatError =>
@@ -4537,7 +4555,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get backgroundVideoCodecError =>
-      'Der TV kann das Video nicht abspielen: Codec nicht unterstützt oder Datei beschädigt. MP4 mit H.264 versuchen.';
+      'Das Gerät kann das Video nicht abspielen: Codec nicht unterstützt oder Datei beschädigt. MP4 mit H.264 versuchen.';
 
   @override
   String get backgroundFileApplied =>
@@ -4786,7 +4804,7 @@ class AppLocalizationsDe extends AppLocalizations {
       'Ein anderes oder unbekanntes VPN ist verbunden. Steuerung nicht verfügbar.';
 
   @override
-  String get vpnStartup => 'VPN beim TV-Start';
+  String get vpnStartup => 'VPN beim Gerätestart';
 
   @override
   String get vpnPending => 'Warten auf VPN-Verbindung';
@@ -4818,11 +4836,11 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get vpnRestartRequired =>
-      'Starten Sie den Fernseher neu, um den Systemmodus anzuwenden.';
+      'Starten Sie das Gerät neu, um den Systemmodus anzuwenden.';
 
   @override
   String get vpnAlwaysOnHelp =>
-      'Legt einen eingerichteten Client über lokales TCP-ADB als immer aktives VPN fest. Android übernimmt die Auswahl nach dem TV-Neustart. Die Sperre für Verbindungen ohne VPN wird nicht aktiviert oder geändert. Beim Verlassen des Modus wird die vorherige Systemauswahl wiederhergestellt.';
+      'Legt einen eingerichteten Client über lokales TCP-ADB als immer aktives VPN fest. Android übernimmt die Auswahl nach dem Geräteneustart. Die Sperre für Verbindungen ohne VPN wird nicht aktiviert oder geändert. Beim Verlassen des Modus wird die vorherige Systemauswahl wiederhergestellt.';
 
   @override
   String get vpnClientConfirmation =>
@@ -4926,7 +4944,8 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get weatherForecastTvTime => 'Vorhersagedaten in TV-Ortszeit';
+  String get weatherForecastTvTime =>
+      'Vorhersagedaten in der Ortszeit des Geräts';
 
   @override
   String get weatherClear => 'Klar';
@@ -4950,7 +4969,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get audioStatusTitle => 'Lautstärke und Audioausgabe';
 
   @override
-  String get audioOutputTv => 'TV';
+  String get audioOutputTv => 'Lautsprecher';
 
   @override
   String get audioOutputHeadphones => 'Kopfhörer';
@@ -4982,7 +5001,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get backgroundStartupHelp =>
-      'Markieren Sie Apps für einen einmaligen Hintergrundstart nach dem TV-Start. CuteLauncher muss innerhalb einer Minute geöffnet werden: als Startbildschirm festlegen oder Start beim Einschalten aktivieren. Apps starten nacheinander hinter dem Startbildschirm; die Auswahl startet sie nicht sofort. Fernbedienungseingaben oder Verlassen des Launchers brechen übrige Starts ab. Nach dem Aufwachen erfolgt kein erneuter Start. Nicht unterstützte Apps sind nicht auswählbar. Der Start aktiviert keine App-Funktionen und garantiert keinen Dauerbetrieb. Berechtigungen und Hintergrundbetrieb in der jeweiligen App einrichten. Android und die TV-Firmware können sie beenden. Die Auswahl gilt nur auf diesem TV.';
+      'Markieren Sie Apps für einen einmaligen Hintergrundstart nach dem Gerätestart. CuteLauncher muss innerhalb einer Minute geöffnet werden: als Startbildschirm festlegen oder Start beim Einschalten aktivieren. Apps starten nacheinander hinter dem Startbildschirm; die Auswahl startet sie nicht sofort. Fernbedienungseingaben oder Verlassen des Launchers brechen übrige Starts ab. Nach dem Aufwachen erfolgt kein erneuter Start. Nicht unterstützte Apps sind nicht auswählbar. Der Start aktiviert keine App-Funktionen und garantiert keinen Dauerbetrieb. Berechtigungen und Hintergrundbetrieb in der jeweiligen App einrichten. Android und die Gerätefirmware können sie beenden. Die Auswahl gilt nur auf diesem Gerät.';
 
   @override
   String get backgroundStartupToggle => 'Autostart im Hintergrund';
@@ -5051,7 +5070,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get slideshowPickerUnavailable =>
-      'Dieser Fernseher hat keine Ordnerauswahl. Nutzen Sie den integrierten Browser oder geben Sie einen Pfad ein.';
+      'Dieses Gerät hat keine Ordnerauswahl. Nutzen Sie den integrierten Browser oder geben Sie einen Pfad ein.';
 
   @override
   String get slideshowFolderUnavailable =>
@@ -5059,7 +5078,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get slideshowStorageHelp =>
-      'Der integrierte Browser liest Ordner des Fernsehers und angeschlossener Datenträger. Android 11 oder neuer: Zugriff auf alle Dateien erlauben; Android 9–10: Speicherzugriff erlauben. Manuelle Pfade sind möglich, z. B. /storage/emulated/0/Pictures. Dateien werden nicht verändert.';
+      'Der integrierte Browser liest Ordner des Geräts und angeschlossener Datenträger. Android 11 oder neuer: Zugriff auf alle Dateien erlauben; Android 9–10: Speicherzugriff erlauben. Manuelle Pfade sind möglich, z. B. /storage/emulated/0/Pictures. Dateien werden nicht verändert.';
 
   @override
   String get fileBrowserTitle => 'Datei auswählen';
@@ -5097,7 +5116,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get appChannelsHelp =>
-      'Wähle bis zu 16 Feeds. Die Verfügbarkeit hängt von den veröffentlichten App-Kanälen und der TV-Firmware ab. Leere Feeds werden ausgeblendet. Die Auswahl bleibt auf diesem TV.';
+      'Wähle bis zu 16 Feeds. Die Verfügbarkeit hängt von den veröffentlichten App-Kanälen und der Gerätefirmware ab. Leere Feeds werden ausgeblendet. Die Auswahl bleibt auf diesem Gerät.';
 
   @override
   String get appChannelsUnavailable =>
@@ -5133,6 +5152,38 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get wallpaperRefresh => 'Hintergrund aktualisieren';
+
+  @override
+  String get quickActionsTitle => 'Schnellaktionen';
+
+  @override
+  String get quickActionsSettings => 'Einstellungen für Schnellaktionen';
+
+  @override
+  String get quickActionsEmpty =>
+      'Wähle die Befehle in den Menüeinstellungen aus.';
+
+  @override
+  String get quickActionsWallpaperUnavailable =>
+      'Dieser Hintergrund lässt sich nicht manuell wechseln.';
+
+  @override
+  String get quickActionsWallpaperFailed =>
+      'Der Hintergrund konnte nicht aktualisiert werden.';
+
+  @override
+  String get quickActionsSleep => 'Ruhezustand';
+
+  @override
+  String get quickActionsShutdownConfirm => 'Gerät vollständig ausschalten?';
+
+  @override
+  String get quickActionsScreensaverUnavailable =>
+      'Der Bildschirmschoner kann nicht gestartet werden.';
+
+  @override
+  String get quickActionsPowerHelp =>
+      'Der Ruhezustand benötigt den Bedienungshilfedienst von CuteLauncher oder lokales ADB. Ausschalten und Neustart erfordern lokales ADB.';
 
   @override
   String get wallpaperDimmingHelp =>
@@ -5303,11 +5354,14 @@ class AppLocalizationsDe extends AppLocalizations {
   String get remoteMappingBlackScreen => 'Black Screen umschalten';
 
   @override
+  String get remoteMappingToggleNightMode => 'Nachtmodus umschalten';
+
+  @override
   String get remoteMappingBlackOverlay => 'Schwarzer Bildschirm';
 
   @override
   String get remoteMappingBlackOverlayHelp =>
-      'Ein Tastendruck blendet das Bild aus. Erneut drücken oder Zurück wählen, um es wieder einzublenden. Der Fernseher bleibt eingeschaltet.';
+      'Ein Tastendruck blendet das Bild aus. Erneut drücken oder Zurück wählen, um es wieder einzublenden. Das Gerät bleibt eingeschaltet.';
 
   @override
   String get remoteMappingTclScreenOff => 'TCL-Bildschirm ausschalten';
@@ -5402,7 +5456,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get feedFormatHelp =>
-      'Automatisch wählt ein einheitliches Format je Feed anhand der App-Daten oder der ersten drei geladenen Cover und speichert es auf diesem TV. Bei Gleichstand wird Querformat verwendet. Andere Proportionen werden vollständig auf einem Hintergrund gezeigt. Das Format ist manuell wählbar.';
+      'Automatisch wählt ein einheitliches Format je Feed anhand der App-Daten oder der ersten drei geladenen Cover und speichert es auf diesem Gerät. Bei Gleichstand wird Querformat verwendet. Andere Proportionen werden vollständig auf einem Hintergrund gezeigt. Das Format ist manuell wählbar.';
 
   @override
   String get networkSpeedTitle => 'Netzwerkgeschwindigkeit';
@@ -5470,13 +5524,13 @@ class AppLocalizationsDe extends AppLocalizations {
       'Einstellungen konnten nicht synchronisiert werden. Prüfe den Speicherzugriff und versuche es erneut.';
 
   @override
-  String get backupThisTv => 'Dieser Fernseher';
+  String get backupThisTv => 'Dieses Gerät';
 
   @override
-  String get backupOtherTv => 'Anderer Fernseher';
+  String get backupOtherTv => 'Anderes Gerät';
 
   @override
-  String get backupTvUnknown => 'Fernseher unbekannt';
+  String get backupTvUnknown => 'Unbekanntes Gerät';
 
   @override
   String get panelTooltips => 'Tooltips in allen Bedienfeldern anzeigen';
@@ -5709,7 +5763,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get fileBrowserStartFolder => 'Startordner';
 
   @override
-  String get fileBrowserStorage => 'TV-Speicher';
+  String get fileBrowserStorage => 'Gerätespeicher';
 
   @override
   String get fileBrowserDownloads => 'Downloads';
@@ -5749,7 +5803,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get fileBrowserOptionsHelp =>
-      'Der gewählte Ordner oder der ursprüngliche Ordner des gewählten Bildes wird zuerst geöffnet. Der zuletzt geöffnete Ordner wird für jede Aktion separat gespeichert, auch nach einem Abbruch. Ist ein Ordner nicht verfügbar, öffnet sich der TV-Speicher oder Downloads. Der Ordnerverlauf bleibt auf diesem TV.';
+      'Der gewählte Ordner oder der ursprüngliche Ordner des gewählten Bildes wird zuerst geöffnet. Der zuletzt geöffnete Ordner wird für jede Aktion separat gespeichert, auch nach einem Abbruch. Ist ein Ordner nicht verfügbar, öffnet sich der Gerätespeicher oder Downloads. Der Ordnerverlauf bleibt auf diesem Gerät.';
 
   @override
   String get fileBrowserSaveFailed =>
@@ -5915,14 +5969,14 @@ class AppLocalizationsDe extends AppLocalizations {
   String get backupSyncResume => 'Synchronisierung fortsetzen';
 
   @override
-  String get backupSyncUseLocal => 'Einstellungen dieses Fernsehers verwenden';
+  String get backupSyncUseLocal => 'Einstellungen dieses Geräts verwenden';
 
   @override
   String get backupSyncUseRemote => 'Einstellungen aus dem Speicher verwenden';
 
   @override
   String get backupSyncMergeLocal =>
-      'Zusammenführen mit Vorrang für diesen Fernseher';
+      'Zusammenführen mit Vorrang für dieses Gerät';
 
   @override
   String get backupSyncMergeRemote =>
@@ -5930,7 +5984,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String backupSyncPreviousDate(String date) {
-    return 'Letzte Synchronisierung dieses Fernsehers: $date';
+    return 'Letzte Synchronisierung dieses Geräts: $date';
   }
 
   @override
@@ -6019,7 +6073,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get syncKeyHelp =>
-      'Verwenden Sie auf allen TVs denselben Schlüssel für Token und Konten. Erstellen Sie ihn auf einem TV und übertragen Sie ihn auf die anderen. Bewahren Sie ihn sicher auf: Ohne Schlüssel sind geschützte Daten nicht lesbar. Aktualisieren Sie bei einem Wechsel alle TVs. Android-Berechtigungen und Hardwareschlüssel bleiben lokal.';
+      'Verwenden Sie auf allen Geräten denselben Schlüssel für Token und Konten. Erstellen Sie ihn auf einem Gerät und übertragen Sie ihn auf die anderen. Bewahren Sie ihn sicher auf: Ohne Schlüssel sind geschützte Daten nicht lesbar. Aktualisieren Sie bei einem Wechsel alle Geräte. Android-Berechtigungen und Hardwareschlüssel bleiben lokal.';
 
   @override
   String get syncFiles => 'Synchronisierungsdateien';
@@ -6067,7 +6121,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get backupNoRemote =>
-      'Keine Einstellungen im Speicher. Dieser Fernseher lädt seine Einstellungen hoch.';
+      'Keine Einstellungen im Speicher. Dieses Gerät lädt seine Einstellungen hoch.';
 
   @override
   String get backupSetupStart => 'Aktivieren';
@@ -6083,18 +6137,18 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get backupAccountLocalHelp =>
-      'Ein verbundenes oder ein anderes Konto desselben Typs verwenden. Zugangsdaten bleiben auf diesem Fernseher. Sicherung und Synchronisierung verwalten ihre Dateien getrennt.';
+      'Ein verbundenes oder ein anderes Konto desselben Typs verwenden. Zugangsdaten bleiben auf diesem Gerät. Sicherung und Synchronisierung verwalten ihre Dateien getrennt.';
 
   @override
   String get backupPasswordOptionalHelp =>
-      'Optional. Verschlüsselt die gesamte Datei einschließlich übertragbarer Tokens. Ohne Passwort bleibt sie unverschlüsselt. Ein leerer Wert deaktiviert die Verschlüsselung. Andere Fernseher benötigen dasselbe Passwort.';
+      'Optional. Verschlüsselt die gesamte Datei einschließlich übertragbarer Tokens. Ohne Passwort bleibt sie unverschlüsselt. Ein leerer Wert deaktiviert die Verschlüsselung. Andere Geräte benötigen dasselbe Passwort.';
 
   @override
   String get backupYandexDisk => 'Yandex Disk';
 
   @override
   String get backupYandexHelp =>
-      'Gib Client ID und Client Secret einer Yandex-OAuth-App mit Zugriff auf ihren Disk-App-Ordner ein. Verbinde dich und bestätige den Code am Telefon. Verwende auf allen Fernsehern denselben OAuth-Client und dasselbe Konto.';
+      'Gib Client ID und Client Secret einer Yandex-OAuth-App mit Zugriff auf ihren Disk-App-Ordner ein. Verbinde dich und bestätige den Code am Telefon. Verwende auf allen Geräten denselben OAuth-Client und dasselbe Konto.';
 
   @override
   String get backupYandexConnect => 'Yandex Disk verbinden';
@@ -6162,5 +6216,5 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get backupExistingSettingsHelp =>
-      'Der ausgewählte Speicher enthält bereits Synchronisierungseinstellungen. Wählen Sie, ob Sie diese auf diesem TV anwenden, durch die Einstellungen dieses TVs ersetzen oder zusammenführen möchten. Bei Unterschieden gilt die gewählte Priorität. Der Austausch beginnt nach der Bestätigung im letzten Schritt des Assistenten.';
+      'Der ausgewählte Speicher enthält bereits Synchronisierungseinstellungen. Wählen Sie, ob Sie diese auf diesem Gerät anwenden, durch die Einstellungen dieses Geräts ersetzen oder zusammenführen möchten. Bei Unterschieden gilt die gewählte Priorität. Der Austausch beginnt nach der Bestätigung im letzten Schritt des Assistenten.';
 }

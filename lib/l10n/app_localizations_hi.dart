@@ -184,13 +184,13 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get renderCompatibilityHelp =>
-      'रात में स्क्रीन धुंधली करने पर इंटरफ़ेस झिलमिलाए तो यह मोड आज़माएँ। जाँचे गए मॉडलों पर यह अपने आप चालू होता है। अन्य टीवी पर चुनाव केवल इसी डिवाइस पर सहेजा जाता है और लॉन्चर फिर शुरू करने के बाद लागू होता है। इससे ग्राफ़िक्स का भार बढ़ सकता है।';
+      'रात में स्क्रीन धुंधली करने पर इंटरफ़ेस झिलमिलाए तो यह मोड आज़माएँ। जाँचे गए मॉडलों पर यह अपने आप चालू होता है। अन्य डिवाइस पर चुनाव केवल इसी डिवाइस पर सहेजा जाता है और लॉन्चर फिर शुरू करने के बाद लागू होता है। इससे ग्राफ़िक्स का भार बढ़ सकता है।';
 
   @override
   String get diagnosticsHubTitle => 'Diagnostics';
 
   @override
-  String get tvCompatibilityTitle => 'TV compatibility check';
+  String get tvCompatibilityTitle => 'डिवाइस की संगतता जाँचें';
 
   @override
   String get tvCompatibilityRun => 'Run check';
@@ -293,7 +293,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get adbWifiOwned =>
-      'कोई बदलाव नहीं हुआ: सहेजा गया Wi-Fi नेटवर्क Google सेटअप विज़ार्ड ने बनाया है। उसे बंद करने से नेटवर्क मिट सकता है और टीवी का इंटरनेट कट सकता है।\n\n1. सुनिश्चित करें कि आपको Wi-Fi पासवर्ड पता है।\n2. Android नेटवर्क सेटिंग खोलें, नेटवर्क चुनें और नेटवर्क भूलें दबाएँ।\n3. सामान्य Android नेटवर्क सेटिंग से फिर जुड़ें।\n4. CuteLauncher पर लौटें, ADB जाँचें और बिल्ट-इन लॉन्चर बंद करने का फिर प्रयास करें।\n\nसंदेश दोबारा आए तो बिल्ट-इन लॉन्चर चालू रखें: फ़र्मवेयर फिर नेटवर्क का मालिक सेटअप विज़ार्ड को बना सकता है।';
+      'कोई बदलाव नहीं हुआ: सहेजा गया Wi-Fi नेटवर्क Google सेटअप विज़ार्ड ने बनाया है। उसे बंद करने से नेटवर्क मिट सकता है और डिवाइस का इंटरनेट कट सकता है।\n\n1. सुनिश्चित करें कि आपको Wi-Fi पासवर्ड पता है।\n2. Android नेटवर्क सेटिंग खोलें, नेटवर्क चुनें और नेटवर्क भूलें दबाएँ।\n3. सामान्य Android नेटवर्क सेटिंग से फिर जुड़ें।\n4. CuteLauncher पर लौटें, ADB जाँचें और बिल्ट-इन लॉन्चर बंद करने का फिर प्रयास करें।\n\nसंदेश दोबारा आए तो बिल्ट-इन लॉन्चर चालू रखें: फ़र्मवेयर फिर नेटवर्क का मालिक सेटअप विज़ार्ड को बना सकता है।';
 
   @override
   String get adbWifiUnknown =>
@@ -643,7 +643,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get defaultLauncherDescription =>
-      'डिफ़ॉल्ट लॉन्चर के रूप में सेट होने पर, होम बटन हमेशा CuteLauncher पर वापस आएगा। टीवी भी सीधे CuteLauncher में बूट होगा।';
+      'डिफ़ॉल्ट लॉन्चर के रूप में सेट होने पर, होम बटन हमेशा CuteLauncher पर वापस आएगा। डिवाइस भी सीधे CuteLauncher में बूट होगा।';
 
   @override
   String get inputs => 'इनपुट';
@@ -704,7 +704,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get localNetworkSharingDetails =>
-      'यहां आप अपने टीवी की सेटिंग्स/लेआउट डाउनलोड कर सकते हैं या बैकअप फ़ाइल को इस टीवी पर वापस अपलोड कर सकते हैं।';
+      'यहां आप अपने डिवाइस की सेटिंग्स/लेआउट डाउनलोड कर सकते हैं या बैकअप फ़ाइल को इस डिवाइस पर वापस अपलोड कर सकते हैं।';
 
   @override
   String failedToStartServer(String error) {
@@ -785,7 +785,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get homeButtonFix => 'होम बटन फिक्स (Google TV)';
 
   @override
-  String get startOnBoot => 'बूट पर शुरू करें (Google TV / Fire TV)';
+  String get startOnBoot => 'डिवाइस चालू होने पर शुरू करें';
 
   @override
   String get appLanguage => 'भाषा';
@@ -1319,19 +1319,19 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get accessibilityGuide =>
-      'टीवी सेटिंग्स को मैन्युअल रूप से खोलें, फिर एक्सेसिबिलिटी → CuteLauncher होम बटन फिक्स, और सेवा को सक्षम करें। इस मेनू का स्थान और नाम आपके टीवी निर्माता पर निर्भर करता है।';
+      'डिवाइस सेटिंग्स को मैन्युअल रूप से खोलें, फिर एक्सेसिबिलिटी → CuteLauncher होम बटन फिक्स, और सेवा को सक्षम करें। इस मेनू का स्थान और नाम आपके डिवाइस निर्माता पर निर्भर करता है।';
 
   @override
   String get notificationPermissionGuide =>
-      'इस टीवी पर नोटिफिकेशन एक्सेस सेटिंग्स नहीं खोली जा सकीं। ऐप इन्फो में आउटगोइंग नोटिफिकेशन की अनुमति देने से अन्य ऐप्स से नोटिफिकेशन तक पहुंच नहीं मिलती है।\n\nअपने टीवी को ADB के माध्यम से कनेक्ट करें और चलाएं:';
+      'इस डिवाइस पर नोटिफिकेशन एक्सेस सेटिंग्स नहीं खोली जा सकीं। ऐप इन्फो में आउटगोइंग नोटिफिकेशन की अनुमति देने से अन्य ऐप्स से नोटिफिकेशन तक पहुंच नहीं मिलती है।\n\nअपने डिवाइस को ADB के माध्यम से कनेक्ट करें और चलाएं:';
 
   @override
   String get overlayPermissionGuide =>
-      'ओवरले अनुमति सेटिंग्स स्वचालित रूप से नहीं खोली जा सकीं.\n\nअन्य ऐप्स पर पॉपअप सक्षम करने के लिए, अपने टीवी को ADB के माध्यम से कनेक्ट करें और चलाएं:';
+      'ओवरले अनुमति सेटिंग्स स्वचालित रूप से नहीं खोली जा सकीं.\n\nअन्य ऐप्स पर पॉपअप सक्षम करने के लिए, अपने डिवाइस को ADB के माध्यम से कनेक्ट करें और चलाएं:';
 
   @override
   String get watchNextPermissionGuide =>
-      'अन्य ऐप्स से कंटिन्यू वॉचिंग कार्ड पढ़ने के लिए, Android TV को READ_WRITE_WATCH_NEXT_PROGRAMS की आवश्यकता होती है।\n\nअपने टीवी को ADB के माध्यम से कनेक्ट करें और चलाएं:';
+      'अन्य ऐप्स से कंटिन्यू वॉचिंग कार्ड पढ़ने के लिए, Android TV को READ_WRITE_WATCH_NEXT_PROGRAMS की आवश्यकता होती है।\n\nअपने डिवाइस को ADB के माध्यम से कनेक्ट करें और चलाएं:';
 
   @override
   String get watchNextAccess => 'देखने की पहुंच जारी रखें';
@@ -1830,7 +1830,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get adbAuthorization =>
-      'टीवी पर ADB प्राधिकरण को स्वीकृत करें, फिर पुनः प्रयास करें।';
+      'डिवाइस पर ADB प्राधिकरण को स्वीकृत करें, फिर पुनः प्रयास करें।';
 
   @override
   String get adbChangeConfirm =>
@@ -1851,7 +1851,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get adbHint =>
-      'केवल इस टीवी के लिए प्रोटोटाइप (127.0.0.1)। डेवलपर विकल्पों में TCP ADB सक्षम करें, इसका पोर्ट दर्ज करें और टीवी पर प्राधिकरण संकेत को मंजूरी दें। पेयरिंग कोड के साथ वायरलेस डिबगिंग अभी समर्थित नहीं है। निजी कुंजी बैकअप के बाहर, इस डिवाइस पर रहती है।';
+      'केवल इस डिवाइस के लिए प्रोटोटाइप (127.0.0.1)। डेवलपर विकल्पों में TCP ADB सक्षम करें, इसका पोर्ट दर्ज करें और डिवाइस पर प्राधिकरण संकेत को मंजूरी दें। पेयरिंग कोड के साथ वायरलेस डिबगिंग अभी समर्थित नहीं है। निजी कुंजी बैकअप के बाहर, इस डिवाइस पर रहती है।';
 
   @override
   String get adbHome => 'CuteLauncher को होम ऐप बनाएं';
@@ -1890,7 +1890,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get nightModeScope =>
-      'अन्य ऐप्स को मंद करने के लिए ओवरले अनुमति की आवश्यकता है। इसके बिना, डिमिंग CuteLauncher के अंदर काम करता है। TCL फ़िल्टर को किसी ओवरले अनुमति की आवश्यकता नहीं है। 80% से ऊपर अपारदर्शिता Android अन्य ऐप्स में टच इनपुट को ब्लॉक कर सकती है; टीवी रिमोट की चाबियाँ अभी भी काम करती हैं।';
+      'अन्य ऐप्स को मंद करने के लिए ओवरले अनुमति की आवश्यकता है। इसके बिना, डिमिंग CuteLauncher के अंदर काम करता है। TCL फ़िल्टर को किसी ओवरले अनुमति की आवश्यकता नहीं है। 80% से ऊपर अपारदर्शिता Android अन्य ऐप्स में टच इनपुट को ब्लॉक कर सकती है; डिवाइस रिमोट की चाबियाँ अभी भी काम करती हैं।';
 
   @override
   String get nightModeEnd => 'ख़त्म';
@@ -1906,7 +1906,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get nightModeScheduleHint =>
-      'स्थानीय टीवी समय का उपयोग करता है. रात्रिकालीन अवधि समर्थित हैं. समान प्रारंभ और समाप्ति समय निर्धारित फ़िल्टर को अक्षम कर देते हैं।';
+      'स्थानीय डिवाइस समय का उपयोग करता है. रात्रिकालीन अवधि समर्थित हैं. समान प्रारंभ और समाप्ति समय निर्धारित फ़िल्टर को अक्षम कर देते हैं।';
 
   @override
   String get nightModeEnabled => 'रात्रि मोड सक्षम करें';
@@ -1965,11 +1965,11 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get diagnosticsSharingNotice =>
-      'फ़ाइल सार्वजनिक रूप से न डालें, लेखक को निजी संदेश में भेजें: स्वचालित सफ़ाई कुछ निजी जानकारी छोड़ सकती है। रिपोर्ट भेजकर आप CuteLauncher के Git रिपॉज़िटरी में अनाम टीवी संगतता रिपोर्ट प्रकाशित करने की सहमति देते हैं। केवल डिवाइस की जानकारी और सुविधाओं की उपलब्धता बिना निजी डेटा के प्रकाशित होगी; त्रुटि लॉग, कमांड और आपकी सेटिंग प्रकाशित नहीं होंगी।\n\nरिपोर्ट में इंस्टॉल किए गए पैकेज, उनके नाम, संस्करण और सक्षम स्थिति, तथा अनुभागों के नाम, सामग्री, क्रम और दृश्यता भी शामिल हैं। निदान के लिए पहचानकर्ता और नाम रखे जाते हैं; ऐप और अनुभागों की सूचियाँ प्रकाशित नहीं होतीं।';
+      'फ़ाइल सार्वजनिक रूप से न डालें, लेखक को निजी संदेश में भेजें: स्वचालित सफ़ाई कुछ निजी जानकारी छोड़ सकती है। रिपोर्ट भेजकर आप CuteLauncher के Git रिपॉज़िटरी में अनाम डिवाइस संगतता रिपोर्ट प्रकाशित करने की सहमति देते हैं। केवल डिवाइस की जानकारी और सुविधाओं की उपलब्धता बिना निजी डेटा के प्रकाशित होगी; त्रुटि लॉग, कमांड और आपकी सेटिंग प्रकाशित नहीं होंगी।\n\nरिपोर्ट में इंस्टॉल किए गए पैकेज, उनके नाम, संस्करण और सक्षम स्थिति, तथा अनुभागों के नाम, सामग्री, क्रम और दृश्यता भी शामिल हैं। निदान के लिए पहचानकर्ता और नाम रखे जाते हैं; ऐप और अनुभागों की सूचियाँ प्रकाशित नहीं होतीं।';
 
   @override
   String get diagnosticsHint =>
-      'एक ही रिपोर्ट में टीवी सुविधाओं की संगतता और त्रुटि निदान शामिल हैं। रिपोर्ट में टीवी मॉडल और फ़र्मवेयर, ऐप संस्करण, अनुमतियाँ, मेमोरी, त्रुटियों के चरण और कारण तथा निजी जानकारी को अपने आप हटाने के बाद कमांड और जवाब होते हैं। वर्तमान सत्र की अंतिम 50 क्रियाएँ, अलग से अधिकतम 100 विफलताएँ और सीमित ADB लॉग रखे जाते हैं। पुनः चालू करने पर लॉग मिटता है। कुछ निजी जानकारी बच सकती है: फ़ाइल सार्वजनिक रूप से डालने के बजाय निजी संदेश में भेजें। कुछ भी अपने आप नहीं भेजा जाता। हर त्रुटि के साथ उस समय लागू सेटिंग का स्नैपशॉट रहता है; बाद के बदलाव उसे नहीं बदलते।\n\nरिपोर्ट में इंस्टॉल किए गए पैकेज, उनके नाम, संस्करण और सक्षम स्थिति, तथा अनुभागों के नाम, सामग्री, क्रम और दृश्यता भी शामिल हैं। निदान के लिए पहचानकर्ता और नाम रखे जाते हैं; ऐप और अनुभागों की सूचियाँ प्रकाशित नहीं होतीं।';
+      'एक ही रिपोर्ट में डिवाइस सुविधाओं की संगतता और त्रुटि निदान शामिल हैं। रिपोर्ट में डिवाइस मॉडल और फ़र्मवेयर, ऐप संस्करण, अनुमतियाँ, मेमोरी, त्रुटियों के चरण और कारण तथा निजी जानकारी को अपने आप हटाने के बाद कमांड और जवाब होते हैं। वर्तमान सत्र की अंतिम 50 क्रियाएँ, अलग से अधिकतम 100 विफलताएँ और सीमित ADB लॉग रखे जाते हैं। पुनः चालू करने पर लॉग मिटता है। कुछ निजी जानकारी बच सकती है: फ़ाइल सार्वजनिक रूप से डालने के बजाय निजी संदेश में भेजें। कुछ भी अपने आप नहीं भेजा जाता। हर त्रुटि के साथ उस समय लागू सेटिंग का स्नैपशॉट रहता है; बाद के बदलाव उसे नहीं बदलते।\n\nरिपोर्ट में इंस्टॉल किए गए पैकेज, उनके नाम, संस्करण और सक्षम स्थिति, तथा अनुभागों के नाम, सामग्री, क्रम और दृश्यता भी शामिल हैं। निदान के लिए पहचानकर्ता और नाम रखे जाते हैं; ऐप और अनुभागों की सूचियाँ प्रकाशित नहीं होतीं।';
 
   @override
   String get diagnosticsTitle => 'त्रुटि निदान';
@@ -1992,7 +1992,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get tclBlueLightUnsupported =>
-      'इस टीवी पर TCL फ़िल्टर इंटरफ़ेस उपलब्ध नहीं है।';
+      'इस डिवाइस पर TCL फ़िल्टर इंटरफ़ेस उपलब्ध नहीं है।';
 
   @override
   String get tclBlueLightRefresh => 'TCL फ़िल्टर स्थिति ताज़ा करें';
@@ -2009,7 +2009,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get nightScheduleTimeHint =>
-      'टाइम्स टीवी समय क्षेत्र का उपयोग करते हैं। नकारात्मक ऑफसेट पहले हैं; सकारात्मक ऑफसेट बाद में हैं।';
+      'टाइम्स डिवाइस समय क्षेत्र का उपयोग करते हैं। नकारात्मक ऑफसेट पहले हैं; सकारात्मक ऑफसेट बाद में हैं।';
 
   @override
   String get nightTemperature => 'रंग तापमान फ़िल्टर करें';
@@ -2098,7 +2098,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get nightSolarAttribution =>
-      'सूर्योदय और सूर्यास्त के समय Sunrise-Sunset.org से मिलते हैं। उसके उपलब्ध न होने पर GeoNames का उपयोग होता है। इंटरनेट न होने पर टीवी बाकी समय की गणना करता है।';
+      'सूर्योदय और सूर्यास्त के समय Sunrise-Sunset.org से मिलते हैं। उसके उपलब्ध न होने पर GeoNames का उपयोग होता है। इंटरनेट न होने पर डिवाइस बाकी समय की गणना करता है।';
 
   @override
   String get nightTemporaryOn => 'जब तक अस्थायी रूप से मंदता जारी रहेगी';
@@ -2116,7 +2116,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get advancedSettings => 'उन्नत';
 
   @override
-  String get controlAndStartup => 'लॉन्चर और टीवी नियंत्रण';
+  String get controlAndStartup => 'लॉन्चर और डिवाइस नियंत्रण';
 
   @override
   String get sectionsAndOrder => 'अनुभाग और आदेश';
@@ -2215,7 +2215,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get followTileStyle => 'शैली का पालन करें';
 
   @override
-  String get androidTvSettingsHint => 'टीवी सिस्टम सेटिंग्स खोलें';
+  String get androidTvSettingsHint => 'डिवाइस सिस्टम सेटिंग्स खोलें';
 
   @override
   String get autoHideTopPanel => 'पैनल को स्वचालित रूप से छुपाएं';
@@ -2472,7 +2472,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get adbTlsHint =>
-      'डेवलपर विकल्पों में वायरलेस डिबगिंग का उपयोग करें। पेयरिंग और कनेक्शन के अलग-अलग पोर्ट होते हैं। यदि आपके फर्मवेयर में कोई पेयरिंग-कोड स्क्रीन नहीं है या ओवरले विंडो को ब्लॉक करता है, तो इसके बजाय टीसीपी/आरएसए का उपयोग करें। इस टीवी के सभी कनेक्शन स्थानीय रहेंगे।';
+      'डेवलपर विकल्पों में वायरलेस डिबगिंग का उपयोग करें। पेयरिंग और कनेक्शन के अलग-अलग पोर्ट होते हैं। यदि आपके फर्मवेयर में कोई पेयरिंग-कोड स्क्रीन नहीं है या ओवरले विंडो को ब्लॉक करता है, तो इसके बजाय टीसीपी/आरएसए का उपयोग करें। इस डिवाइस के सभी कनेक्शन स्थानीय रहेंगे।';
 
   @override
   String get adbPaired =>
@@ -2529,7 +2529,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get adbTwoWindows => 'दूसरी विंडो में सेटिंग्स खोलें';
 
   @override
-  String get autoLaunchBoot => 'टीवी बूट के बाद';
+  String get autoLaunchBoot => 'डिवाइस बूट के बाद';
 
   @override
   String get autoLaunchOff => 'विकलांग';
@@ -2548,7 +2548,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get autoLaunchHint =>
-      'टीवी स्टार्टअप या वेक के बाद खोलने के लिए कोई ऐप या HDMI इनपुट चुनें। नीचे इवेंट और विलंब सेट करें. जब Android CuteLauncher दिखाता है तो कार्रवाई एक बार चलती है। कोई भी दूरस्थ इनपुट या होम स्क्रीन छोड़ने से प्रतीक्षा रद्द हो जाती है। आप बाद में HDMI इनपुट को स्वतंत्र रूप से बदल सकते हैं। CuteLauncher को डिफ़ॉल्ट लॉन्चर के रूप में सेट करें या यदि आवश्यक हो तो बूट पर स्टार्ट सक्षम करें। वेक डिटेक्शन को चालू रहने के लिए CuteLauncher की आवश्यकता होती है।';
+      'डिवाइस स्टार्टअप या वेक के बाद खोलने के लिए कोई ऐप या HDMI इनपुट चुनें। नीचे इवेंट और विलंब सेट करें. जब Android CuteLauncher दिखाता है तो कार्रवाई एक बार चलती है। कोई भी दूरस्थ इनपुट या होम स्क्रीन छोड़ने से प्रतीक्षा रद्द हो जाती है। आप बाद में HDMI इनपुट को स्वतंत्र रूप से बदल सकते हैं। CuteLauncher को डिफ़ॉल्ट लॉन्चर के रूप में सेट करें या यदि आवश्यक हो तो बूट पर स्टार्ट सक्षम करें। वेक डिटेक्शन को चालू रहने के लिए CuteLauncher की आवश्यकता होती है।';
 
   @override
   String autoLaunchSeconds(int seconds) {
@@ -2651,7 +2651,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get cloudDisconnectConfirm =>
-      'इस खाते को टीवी से हटाएं? क्लाउड में प्रतियां बनी रहेंगी.';
+      'इस खाते को डिवाइस से हटाएं? क्लाउड में प्रतियां बनी रहेंगी.';
 
   @override
   String get cloudUpload => 'एक प्रति क्लाउड पर सहेजें';
@@ -2705,7 +2705,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get adbSetupIntro =>
-      'टीवी डेवलपर सेटिंग्स में डिबगिंग और नेटवर्क ADB सक्षम करें, फिर CuteLauncher पर भरोसा करें। सभी ADB कार्रवाइयां आपके अपने जोखिम पर हैं।';
+      'डिवाइस डेवलपर सेटिंग्स में डिबगिंग और नेटवर्क ADB सक्षम करें, फिर CuteLauncher पर भरोसा करें। सभी ADB कार्रवाइयां आपके अपने जोखिम पर हैं।';
 
   @override
   String get adbConnectionBlock => 'ADB कनेक्शन';
@@ -2739,7 +2739,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get adbBuiltinHint =>
-      'बिल्ट-इन लॉन्चर बंद करने पर रिमोट के कुछ बटन और निर्माता के टीवी मेनू काम करना बंद कर सकते हैं। इस बदलाव को वापस लेने के लिए बिल्ट-इन लॉन्चर फिर से चालू करें।';
+      'बिल्ट-इन लॉन्चर बंद करने पर रिमोट के कुछ बटन और निर्माता के डिवाइस मेनू काम करना बंद कर सकते हैं। इस बदलाव को वापस लेने के लिए बिल्ट-इन लॉन्चर फिर से चालू करें।';
 
   @override
   String get adbHomeBlock => 'होम बटन और स्टार्टअप';
@@ -2753,7 +2753,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get adbHomeOptional =>
-      'यदि अंतर्निहित लॉन्चर अक्षम है, तो होम को ओवरराइड करना और टीवी स्टार्टअप पर लॉन्च करना वैकल्पिक है।';
+      'यदि अंतर्निहित लॉन्चर अक्षम है, तो होम को ओवरराइड करना और डिवाइस स्टार्टअप पर लॉन्च करना वैकल्पिक है।';
 
   @override
   String get adbEnableBuiltin =>
@@ -2781,7 +2781,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get adbEffectDisable =>
-      'टीवी उपयोगकर्ता के लिए अंतर्निहित लॉन्चर ऐप अक्षम कर दिया जाएगा। टीवी मेनू और बटन काम करना बंद कर सकते हैं। ऐप अनइंस्टॉल नहीं हुआ है.';
+      'डिवाइस उपयोगकर्ता के लिए अंतर्निहित लॉन्चर ऐप अक्षम कर दिया जाएगा। डिवाइस मेनू और बटन काम करना बंद कर सकते हैं। ऐप अनइंस्टॉल नहीं हुआ है.';
 
   @override
   String get adbRecoveryHomeDisable =>
@@ -2864,7 +2864,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get nightBatteryGuide =>
-      '1. ऐप्स सेटिंग में, स्पेशल ऐप एक्सेस खोलें।\n2. बैटरी अनुकूलन (कभी-कभी ऊर्जा बचतकर्ता) का चयन करें।\n3. CuteLauncher खोजें; यदि आवश्यक हो तो सभी ऐप्स का चयन करें।\n4. अनुकूलन अक्षम करें या अप्रतिबंधित का चयन करें।\nमेनू के नाम और उपलब्धता टीवी फ़र्मवेयर पर निर्भर करते हैं।';
+      '1. ऐप्स सेटिंग में, स्पेशल ऐप एक्सेस खोलें।\n2. बैटरी अनुकूलन (कभी-कभी ऊर्जा बचतकर्ता) का चयन करें।\n3. CuteLauncher खोजें; यदि आवश्यक हो तो सभी ऐप्स का चयन करें।\n4. अनुकूलन अक्षम करें या अप्रतिबंधित का चयन करें।\nमेनू के नाम और उपलब्धता डिवाइस फ़र्मवेयर पर निर्भर करते हैं।';
 
   @override
   String get updateNotifications => 'अद्यतन सूचनाएं दिखाएँ';
@@ -2970,23 +2970,23 @@ class AppLocalizationsHi extends AppLocalizations {
   String get backupSaveMode => 'बैकअप';
 
   @override
-  String get backupScope => 'सभी टीवी पर बैकअप';
+  String get backupScope => 'सभी डिवाइस पर बैकअप';
 
   @override
-  String get backupSyncScope => 'सभी टीवी पर सिंक्रोनाइज़ेशन';
+  String get backupSyncScope => 'सभी डिवाइस पर सिंक्रोनाइज़ेशन';
 
   @override
-  String get backupSeparate => 'प्रत्येक टीवी के लिए अलग';
+  String get backupSeparate => 'प्रत्येक डिवाइस के लिए अलग';
 
   @override
-  String get backupShared => 'सभी टीवी के लिए समान सेटिंग्स';
+  String get backupShared => 'सभी डिवाइस के लिए समान सेटिंग्स';
 
   @override
   String get backupStorage => 'भंडारण';
 
   @override
   String get backupSyncHelp =>
-      'डेटा डाउनलोड करें और परिवर्तन अपलोड करें. नवीनतम परिवर्तन से संघर्षों में जीत मिलती है। टीवी की घड़ियां सही होनी चाहिए. लॉन्चर खुला होने पर सिंक्रोनाइज़ेशन चलता है।';
+      'डेटा डाउनलोड करें और परिवर्तन अपलोड करें. नवीनतम परिवर्तन से संघर्षों में जीत मिलती है। डिवाइस की घड़ियां सही होनी चाहिए. लॉन्चर खुला होने पर सिंक्रोनाइज़ेशन चलता है।';
 
   @override
   String get backupSyncLimit => 'से अधिक बार जाँच न करें';
@@ -3011,7 +3011,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get backupLocalHelp =>
-      'स्थानीय प्रतियां ऐप या उसके डेटा के साथ हटा दी जाती हैं। एक प्रति टीवी के बाहर भी रखें।';
+      'स्थानीय प्रतियां ऐप या उसके डेटा के साथ हटा दी जाती हैं। एक प्रति डिवाइस के बाहर भी रखें।';
 
   @override
   String get panelObjectOrder => 'वस्तु क्रम';
@@ -3199,7 +3199,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get backupFolderPickerUnavailable =>
-      'इस टीवी पर कोई फ़ोल्डर पिकर उपलब्ध नहीं है। डाउनलोड / CuteLauncher या आंतरिक ऐप फ़ोल्डर चुनें।';
+      'इस डिवाइस पर कोई फ़ोल्डर पिकर उपलब्ध नहीं है। डाउनलोड / CuteLauncher या आंतरिक ऐप फ़ोल्डर चुनें।';
 
   @override
   String get driveConfigurationError =>
@@ -3228,14 +3228,14 @@ class AppLocalizationsHi extends AppLocalizations {
   String get backupSyncDisplayGroup => 'रात्रि मोड, चमक और स्क्रीनसेवर';
 
   @override
-  String get backupSyncControlsGroup => 'लॉन्चर और टीवी नियंत्रण';
+  String get backupSyncControlsGroup => 'लॉन्चर और डिवाइस नियंत्रण';
 
   @override
   String get backupSyncGeneralGroup => 'भाषा, अपडेट और अन्य सेटिंग्स';
 
   @override
   String get backupSyncGroupsHelp =>
-      'बंद किए गए भाग इस टीवी पर रहते हैं। हर डिवाइस पर सिंक के भाग अलग से चुनें।';
+      'बंद किए गए भाग इस डिवाइस पर रहते हैं। हर डिवाइस पर सिंक के भाग अलग से चुनें।';
 
   @override
   String get backupSyncGroupsFailed =>
@@ -3434,6 +3434,15 @@ class AppLocalizationsHi extends AppLocalizations {
   String get homeSectionIcons => 'अनुभाग चिह्न';
 
   @override
+  String get sectionTitleIcon => 'अनुभाग शीर्षक का चिह्न';
+
+  @override
+  String get sectionIconPhotos => 'फ़ोटो';
+
+  @override
+  String get sectionIconFolder => 'फ़ोल्डर';
+
+  @override
   String get homeInactiveTransparency => 'निष्क्रिय अनुभागों की पारदर्शिता';
 
   @override
@@ -3570,7 +3579,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get nightIgnoreHdmiInputsHint =>
-      'HDMI देखते समय रात्रि फ़िल्टर रोकें। उपयोग पहुंच आवश्यक है; इनपुट डिटेक्शन टीवी फर्मवेयर पर निर्भर करता है।';
+      'HDMI देखते समय रात्रि फ़िल्टर रोकें। उपयोग पहुंच आवश्यक है; इनपुट डिटेक्शन डिवाइस फर्मवेयर पर निर्भर करता है।';
 
   @override
   String get inputsSettings => 'इनपुट सेटिंग्स';
@@ -3868,7 +3877,7 @@ class AppLocalizationsHi extends AppLocalizations {
       'यह बटन और दबाने का प्रकार पहले से असाइन है। दूसरा बटन या दबाने का प्रकार चुनें।';
 
   @override
-  String get cleanerTitle => 'TV cleanup manager';
+  String get cleanerTitle => 'डिवाइस सफ़ाई प्रबंधक';
 
   @override
   String get cleanerRefresh => 'Refresh applications';
@@ -4086,8 +4095,17 @@ class AppLocalizationsHi extends AppLocalizations {
   String get landscapeMotion => 'Animate weather';
 
   @override
+  String get landscapeSunrise => 'सूर्योदय';
+
+  @override
+  String get landscapeSunset => 'सूर्यास्त';
+
+  @override
+  String get landscapeScheduleCurrent => 'मौजूदा समय-सारणी';
+
+  @override
   String get landscapeHelp =>
-      'Time follows cached sunrise and sunset from Night mode; without them, dawn is at 06:00 and dusk at 18:00, with 40-minute transitions around each. Seasons follow the local month and hemisphere; automatic hemisphere uses weather coordinates, then Night mode coordinates, then the Northern Hemisphere. With time of day off, the scene stays in daylight; with seasons off, it stays in summer. Weather uses current data from the selected weather source, without extra requests. Missing or stale weather shows clear skies. Clouds, precipitation and fog can be disabled independently. Motion is off by default, stops when Home is hidden, and is disabled in memory saving mode or when reduced motion is requested.';
+      'ऑटो मोड सहेजे गए स्थान से डिवाइस पर सूर्योदय और सूर्यास्त का समय निकालता है। समय उपलब्ध न होने पर अपनी समय-सारणी लागू होती है। Seasons follow the local month and hemisphere; automatic hemisphere uses weather coordinates, then Night mode coordinates, then the Northern Hemisphere. With time of day off, the scene stays in daylight; with seasons off, it stays in summer. Weather uses current data from the selected weather source, without extra requests. Missing or stale weather shows clear skies. Clouds, precipitation and fog can be disabled independently. Motion is off by default, stops when Home is hidden, and is disabled in memory saving mode or when reduced motion is requested.';
 
   @override
   String get inputConnected => 'Connected';
@@ -4103,7 +4121,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get weatherMetNorwayCredit =>
-      'Data: MET Norway, CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Forecast adapted from https://api.met.no/. No API key; days use the TV time zone, min/max cover available periods. Precipitation probability is unavailable.';
+      'Data: MET Norway, CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Forecast adapted from https://api.met.no/. No API key; days use the device time zone, min/max cover available periods. Precipitation probability is unavailable.';
 
   @override
   String get informationGroup => 'घड़ी, तारीख और मौसम';
@@ -4241,7 +4259,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get tvPowerHelp =>
-      'बंद करने पर CuteLauncher सुलभता सेवा या स्थानीय ADB से स्टैंडबाय होता है। रीस्टार्ट के लिए ADB चाहिए। टीवी बॉक्स पर बॉक्स नियंत्रित होता है; टीवी का व्यवहार HDMI-CEC और फ़र्मवेयर पर निर्भर है।';
+      'स्लीप में CuteLauncher सुलभता सेवा या स्थानीय ADB से स्टैंडबाय होता है। डिवाइस बंद या रीस्टार्ट करने के लिए लोकल ADB चाहिए। टीवी बॉक्स पर बॉक्स नियंत्रित होता है; टीवी का व्यवहार HDMI-CEC और फ़र्मवेयर पर निर्भर है।';
 
   @override
   String get cleanerLists => 'अक्षम करने की सूचियाँ';
@@ -4317,15 +4335,15 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get cleanerAlreadyDisabled =>
-      'इस सूची के इस TV पर मौजूद सभी ऐप पहले से अक्षम हैं।';
+      'इस सूची के इस डिवाइस पर मौजूद सभी ऐप पहले से अक्षम हैं।';
 
   @override
   String get cleanerAlreadyEnabled =>
-      'इस सूची के इस TV पर मौजूद सभी ऐप पहले से सक्षम हैं।';
+      'इस सूची के इस डिवाइस पर मौजूद सभी ऐप पहले से सक्षम हैं।';
 
   @override
   String get cleanerNoInstalled =>
-      'इस सूची से कोई मेल खाता ऐप इस TV पर इंस्टॉल नहीं है।';
+      'इस सूची से कोई मेल खाता ऐप इस डिवाइस पर इंस्टॉल नहीं है।';
 
   @override
   String get cleanerListProtected => 'बाकी ऐप अक्षम किए जाने से सुरक्षित हैं।';
@@ -4453,7 +4471,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get backgroundMediaFormats =>
-      'चित्र: JPEG, PNG, WebP, GIF, BMP — अधिकतम 8 MiB, 48 मेगापिक्सल और हर तरफ 16,384 पिक्सल।\nवीडियो: MP4/M4V, WebM, MKV — अधिकतम 256 MiB और 3840×2160। कोडेक समर्थन TV पर निर्भर है; H.264 वाला MP4 बेहतर है। बिना ध्वनि दोहराता है और होम से बाहर रुक जाता है। वीडियो बैकअप में शामिल नहीं हैं।';
+      'चित्र: JPEG, PNG, WebP, GIF, BMP — अधिकतम 8 MiB, 48 मेगापिक्सल और हर तरफ 16,384 पिक्सल।\nवीडियो: MP4/M4V, WebM, MKV — अधिकतम 256 MiB और 3840×2160। कोडेक समर्थन डिवाइस पर निर्भर है; H.264 वाला MP4 बेहतर है। बिना ध्वनि दोहराता है और होम से बाहर रुक जाता है। वीडियो बैकअप में शामिल नहीं हैं।';
 
   @override
   String get backgroundFormatError =>
@@ -4474,7 +4492,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get backgroundVideoCodecError =>
-      'TV वीडियो नहीं चला सका: कोडेक समर्थित नहीं है या फ़ाइल खराब है। H.264 वाला MP4 आज़माएँ।';
+      'डिवाइस वीडियो नहीं चला सका: कोडेक समर्थित नहीं है या फ़ाइल खराब है। H.264 वाला MP4 आज़माएँ।';
 
   @override
   String get backgroundFileApplied => 'फ़ाइल चुनी गई। पृष्ठभूमि अपडेट हो गई।';
@@ -4719,7 +4737,7 @@ class AppLocalizationsHi extends AppLocalizations {
       'कोई दूसरा या अज्ञात VPN कनेक्ट है। नियंत्रण उपलब्ध नहीं है।';
 
   @override
-  String get vpnStartup => 'टीवी शुरू होने पर VPN';
+  String get vpnStartup => 'डिवाइस शुरू होने पर VPN';
 
   @override
   String get vpnPending => 'VPN कनेक्शन की प्रतीक्षा है';
@@ -4751,11 +4769,11 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get vpnRestartRequired =>
-      'सिस्टम मोड लागू करने के लिए टीवी रीस्टार्ट करें।';
+      'सिस्टम मोड लागू करने के लिए डिवाइस रीस्टार्ट करें।';
 
   @override
   String get vpnAlwaysOnHelp =>
-      'स्थानीय TCP ADB से कॉन्फ़िगर किए गए क्लाइंट को हमेशा चालू VPN बनाता है। टीवी रीस्टार्ट होने पर Android चयन लागू करता है। VPN के बिना कनेक्शन रोकने की सेटिंग न चालू होती है न बदलती है। मोड छोड़ने पर सिस्टम का पिछला चयन बहाल होता है।';
+      'स्थानीय TCP ADB से कॉन्फ़िगर किए गए क्लाइंट को हमेशा चालू VPN बनाता है। डिवाइस रीस्टार्ट होने पर Android चयन लागू करता है। VPN के बिना कनेक्शन रोकने की सेटिंग न चालू होती है न बदलती है। मोड छोड़ने पर सिस्टम का पिछला चयन बहाल होता है।';
 
   @override
   String get vpnClientConfirmation =>
@@ -4860,7 +4878,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get weatherForecastTvTime =>
-      'पूर्वानुमान की तारीखें टीवी के समय के अनुसार';
+      'पूर्वानुमान की तारीखें डिवाइस के समय के अनुसार';
 
   @override
   String get weatherClear => 'साफ़';
@@ -4884,7 +4902,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get audioStatusTitle => 'वॉल्यूम और ऑडियो आउटपुट';
 
   @override
-  String get audioOutputTv => 'टीवी';
+  String get audioOutputTv => 'स्पीकर';
 
   @override
   String get audioOutputHeadphones => 'हेडफ़ोन';
@@ -4916,7 +4934,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get backgroundStartupHelp =>
-      'टीवी बूट होने पर बैकग्राउंड में एक बार शुरू करने के लिए ऐप चुनें। CuteLauncher एक मिनट के अंदर खुलना चाहिए: इसे होम स्क्रीन बनाएँ या बूट पर शुरू करना चालू करें। ऐप होम के पीछे बारी-बारी शुरू होते हैं; चुनने से तुरंत शुरू नहीं होते। रिमोट का इस्तेमाल या लॉन्चर से बाहर जाना बाकी शुरुआत रद्द करता है। स्लीप से जागने पर दोबारा शुरू नहीं होते। असंगत ऐप नहीं चुने जा सकते। शुरू करने से ऐप की अंदरूनी सुविधाएँ चालू नहीं होतीं और लगातार चलने की गारंटी नहीं है। ऐप में अनुमतियाँ दें और बैकग्राउंड संचालन सेट करें। Android या टीवी फ़र्मवेयर इसे रोक सकता है। चयन केवल इस टीवी पर रहता है।';
+      'डिवाइस बूट होने पर बैकग्राउंड में एक बार शुरू करने के लिए ऐप चुनें। CuteLauncher एक मिनट के अंदर खुलना चाहिए: इसे होम स्क्रीन बनाएँ या बूट पर शुरू करना चालू करें। ऐप होम के पीछे बारी-बारी शुरू होते हैं; चुनने से तुरंत शुरू नहीं होते। रिमोट का इस्तेमाल या लॉन्चर से बाहर जाना बाकी शुरुआत रद्द करता है। स्लीप से जागने पर दोबारा शुरू नहीं होते। असंगत ऐप नहीं चुने जा सकते। शुरू करने से ऐप की अंदरूनी सुविधाएँ चालू नहीं होतीं और लगातार चलने की गारंटी नहीं है। ऐप में अनुमतियाँ दें और बैकग्राउंड संचालन सेट करें। Android या डिवाइस फ़र्मवेयर इसे रोक सकता है। चयन केवल इस डिवाइस पर रहता है।';
 
   @override
   String get backgroundStartupToggle => 'बैकग्राउंड में अपने आप शुरू करें';
@@ -4985,7 +5003,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get slideshowPickerUnavailable =>
-      'इस टीवी पर फ़ोल्डर चयनकर्ता नहीं है। अंतर्निहित ब्राउज़र इस्तेमाल करें या पथ दर्ज करें।';
+      'इस डिवाइस पर फ़ोल्डर चयनकर्ता नहीं है। अंतर्निहित ब्राउज़र इस्तेमाल करें या पथ दर्ज करें।';
 
   @override
   String get slideshowFolderUnavailable =>
@@ -4993,7 +5011,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get slideshowStorageHelp =>
-      'अंतर्निहित ब्राउज़र टीवी और जुड़े स्टोरेज के फ़ोल्डर पढ़ता है। Android 11 या नए पर सभी फ़ाइलों का ऐक्सेस और Android 9–10 पर स्टोरेज ऐक्सेस दें। /storage/emulated/0/Pictures जैसा पथ भी दर्ज कर सकते हैं। फ़ाइलें बदली नहीं जातीं।';
+      'अंतर्निहित ब्राउज़र डिवाइस और जुड़े स्टोरेज के फ़ोल्डर पढ़ता है। Android 11 या नए पर सभी फ़ाइलों का ऐक्सेस और Android 9–10 पर स्टोरेज ऐक्सेस दें। /storage/emulated/0/Pictures जैसा पथ भी दर्ज कर सकते हैं। फ़ाइलें बदली नहीं जातीं।';
 
   @override
   String get fileBrowserTitle => 'फ़ाइल चुनें';
@@ -5031,7 +5049,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get appChannelsHelp =>
-      'अधिकतम 16 फ़ीड चुनें। उपलब्धता ऐप द्वारा प्रकाशित चैनलों और टीवी फ़र्मवेयर पर निर्भर है। खाली फ़ीड छिपी रहती हैं। चयन इसी टीवी पर सहेजा जाता है।';
+      'अधिकतम 16 फ़ीड चुनें। उपलब्धता ऐप द्वारा प्रकाशित चैनलों और डिवाइस फ़र्मवेयर पर निर्भर है। खाली फ़ीड छिपी रहती हैं। चयन इसी डिवाइस पर सहेजा जाता है।';
 
   @override
   String get appChannelsUnavailable =>
@@ -5066,6 +5084,36 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get wallpaperRefresh => 'वॉलपेपर अपडेट करें';
+
+  @override
+  String get quickActionsTitle => 'त्वरित कार्रवाइयाँ';
+
+  @override
+  String get quickActionsSettings => 'त्वरित कार्रवाई की सेटिंग';
+
+  @override
+  String get quickActionsEmpty => 'मेनू की सेटिंग में कमांड चुनें।';
+
+  @override
+  String get quickActionsWallpaperUnavailable =>
+      'इस पृष्ठभूमि को मैन्युअल रूप से नहीं बदला जा सकता।';
+
+  @override
+  String get quickActionsWallpaperFailed => 'वॉलपेपर अपडेट नहीं हो सका।';
+
+  @override
+  String get quickActionsSleep => 'स्लीप';
+
+  @override
+  String get quickActionsShutdownConfirm => 'डिवाइस को पूरी तरह बंद करें?';
+
+  @override
+  String get quickActionsScreensaverUnavailable =>
+      'स्क्रीनसेवर शुरू नहीं किया जा सकता।';
+
+  @override
+  String get quickActionsPowerHelp =>
+      'स्लीप के लिए CuteLauncher की सुलभता सेवा या लोकल ADB चाहिए। डिवाइस बंद या रीस्टार्ट करने के लिए लोकल ADB चाहिए।';
 
   @override
   String get wallpaperDimmingHelp =>
@@ -5231,11 +5279,14 @@ class AppLocalizationsHi extends AppLocalizations {
   String get remoteMappingBlackScreen => 'Black Screen टॉगल करें';
 
   @override
+  String get remoteMappingToggleNightMode => 'नाइट मोड चालू या बंद करें';
+
+  @override
   String get remoteMappingBlackOverlay => 'काली स्क्रीन';
 
   @override
   String get remoteMappingBlackOverlayHelp =>
-      'तस्वीर छिपाने के लिए एक बार दबाएँ। उसे वापस लाने के लिए फिर से दबाएँ या वापस बटन दबाएँ। टीवी चालू रहता है।';
+      'तस्वीर छिपाने के लिए एक बार दबाएँ। उसे वापस लाने के लिए फिर से दबाएँ या वापस बटन दबाएँ। डिवाइस चालू रहता है।';
 
   @override
   String get remoteMappingTclScreenOff => 'TCL स्क्रीन बंद करें';
@@ -5329,7 +5380,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get feedFormatHelp =>
-      'स्वचालित मोड ऐप के डेटा या पहले तीन लोड किए गए कवर से हर फ़ीड का एक प्रारूप चुनकर इस टीवी पर याद रखता है। बराबरी पर क्षैतिज चुना जाता है। अन्य अनुपात पृष्ठभूमि पर पूरे दिखते हैं। आप प्रारूप मैन्युअल रूप से चुन सकते हैं।';
+      'स्वचालित मोड ऐप के डेटा या पहले तीन लोड किए गए कवर से हर फ़ीड का एक प्रारूप चुनकर इस डिवाइस पर याद रखता है। बराबरी पर क्षैतिज चुना जाता है। अन्य अनुपात पृष्ठभूमि पर पूरे दिखते हैं। आप प्रारूप मैन्युअल रूप से चुन सकते हैं।';
 
   @override
   String get networkSpeedTitle => 'नेटवर्क गति';
@@ -5395,13 +5446,13 @@ class AppLocalizationsHi extends AppLocalizations {
       'सेटिंग सिंक नहीं हो सकीं। स्टोरेज का ऐक्सेस जाँचें और फिर कोशिश करें।';
 
   @override
-  String get backupThisTv => 'यह टीवी';
+  String get backupThisTv => 'यह डिवाइस';
 
   @override
-  String get backupOtherTv => 'दूसरा टीवी';
+  String get backupOtherTv => 'दूसरा डिवाइस';
 
   @override
-  String get backupTvUnknown => 'टीवी अज्ञात';
+  String get backupTvUnknown => 'अज्ञात डिवाइस';
 
   @override
   String get panelTooltips => 'सभी पैनल में टूलटिप दिखाएँ';
@@ -5631,7 +5682,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get fileBrowserStartFolder => 'प्रारंभिक फ़ोल्डर';
 
   @override
-  String get fileBrowserStorage => 'टीवी संग्रहण';
+  String get fileBrowserStorage => 'डिवाइस संग्रहण';
 
   @override
   String get fileBrowserDownloads => 'डाउनलोड';
@@ -5671,7 +5722,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get fileBrowserOptionsHelp =>
-      'चुना हुआ फ़ोल्डर या चुनी हुई छवि का मूल फ़ोल्डर पहले खुलता है। हर क्रिया के लिए पिछला खुला फ़ोल्डर अलग याद रखा जाता है, रद्द करने के बाद भी। फ़ोल्डर उपलब्ध न होने पर टीवी संग्रहण या डाउनलोड खुलता है। फ़ोल्डर इतिहास केवल इसी टीवी पर रहता है।';
+      'चुना हुआ फ़ोल्डर या चुनी हुई छवि का मूल फ़ोल्डर पहले खुलता है। हर क्रिया के लिए पिछला खुला फ़ोल्डर अलग याद रखा जाता है, रद्द करने के बाद भी। फ़ोल्डर उपलब्ध न होने पर डिवाइस संग्रहण या डाउनलोड खुलता है। फ़ोल्डर इतिहास केवल इसी डिवाइस पर रहता है।';
 
   @override
   String get fileBrowserSaveFailed =>
@@ -5836,20 +5887,20 @@ class AppLocalizationsHi extends AppLocalizations {
   String get backupSyncResume => 'सिंक फिर से शुरू करें';
 
   @override
-  String get backupSyncUseLocal => 'इस टीवी की सेटिंग इस्तेमाल करें';
+  String get backupSyncUseLocal => 'इस डिवाइस की सेटिंग इस्तेमाल करें';
 
   @override
   String get backupSyncUseRemote => 'स्टोरेज की सेटिंग इस्तेमाल करें';
 
   @override
-  String get backupSyncMergeLocal => 'इस टीवी को प्राथमिकता देकर मिलाएँ';
+  String get backupSyncMergeLocal => 'इस डिवाइस को प्राथमिकता देकर मिलाएँ';
 
   @override
   String get backupSyncMergeRemote => 'स्टोरेज को प्राथमिकता देकर मिलाएँ';
 
   @override
   String backupSyncPreviousDate(String date) {
-    return 'इस टीवी का पिछला सिंक: $date';
+    return 'इस डिवाइस का पिछला सिंक: $date';
   }
 
   @override
@@ -5935,7 +5986,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get syncKeyHelp =>
-      'टोकन और खाते सिंक करने के लिए सभी टीवी पर समान कुंजी रखें। एक टीवी पर बनाकर दूसरे टीवी पर भेजें। इसे सुरक्षित रखें: इसके बिना सुरक्षित डेटा नहीं पढ़ा जा सकता। कुंजी बदलने पर सभी टीवी अपडेट करें। Android अनुमतियाँ और हार्डवेयर कुंजियाँ स्थानीय रहती हैं।';
+      'टोकन और खाते सिंक करने के लिए सभी डिवाइस पर समान कुंजी रखें। एक डिवाइस पर बनाकर दूसरे डिवाइस पर भेजें। इसे सुरक्षित रखें: इसके बिना सुरक्षित डेटा नहीं पढ़ा जा सकता। कुंजी बदलने पर सभी डिवाइस अपडेट करें। Android अनुमतियाँ और हार्डवेयर कुंजियाँ स्थानीय रहती हैं।';
 
   @override
   String get syncFiles => 'सिंक्रोनाइज़ेशन फ़ाइलें';
@@ -5983,7 +6034,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get backupNoRemote =>
-      'स्टोरेज में सेटिंग नहीं हैं। यह टीवी अपनी सेटिंग अपलोड करेगा।';
+      'स्टोरेज में सेटिंग नहीं हैं। यह डिवाइस अपनी सेटिंग अपलोड करेगा।';
 
   @override
   String get backupSetupStart => 'चालू करें';
@@ -5999,18 +6050,18 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get backupAccountLocalHelp =>
-      'जुड़ा हुआ खाता या उसी प्रकार का दूसरा खाता चुनें। लॉगिन विवरण इसी टीवी पर रहते हैं। बैकअप और सिंक अपनी फ़ाइलें अलग संभालते हैं।';
+      'जुड़ा हुआ खाता या उसी प्रकार का दूसरा खाता चुनें। लॉगिन विवरण इसी डिवाइस पर रहते हैं। बैकअप और सिंक अपनी फ़ाइलें अलग संभालते हैं।';
 
   @override
   String get backupPasswordOptionalHelp =>
-      'वैकल्पिक। ट्रांसफ़र होने वाले टोकन सहित पूरी फ़ाइल एन्क्रिप्ट करता है। बिना पासवर्ड फ़ाइल एन्क्रिप्ट नहीं होती। खाली मान एन्क्रिप्शन बंद करता है। दूसरे टीवी पर यही पासवर्ड चाहिए।';
+      'वैकल्पिक। ट्रांसफ़र होने वाले टोकन सहित पूरी फ़ाइल एन्क्रिप्ट करता है। बिना पासवर्ड फ़ाइल एन्क्रिप्ट नहीं होती। खाली मान एन्क्रिप्शन बंद करता है। दूसरे डिवाइस पर यही पासवर्ड चाहिए।';
 
   @override
   String get backupYandexDisk => 'Yandex Disk';
 
   @override
   String get backupYandexHelp =>
-      'Disk पर अपने ऐप फ़ोल्डर तक पहुँच वाले Yandex OAuth ऐप का Client ID और Client Secret दर्ज करें। कनेक्ट करें और फ़ोन पर कोड की पुष्टि करें। साझा करने के लिए सभी टीवी पर एक ही OAuth क्लाइंट और खाता इस्तेमाल करें।';
+      'Disk पर अपने ऐप फ़ोल्डर तक पहुँच वाले Yandex OAuth ऐप का Client ID और Client Secret दर्ज करें। कनेक्ट करें और फ़ोन पर कोड की पुष्टि करें। साझा करने के लिए सभी डिवाइस पर एक ही OAuth क्लाइंट और खाता इस्तेमाल करें।';
 
   @override
   String get backupYandexConnect => 'Yandex Disk कनेक्ट करें';
@@ -6078,5 +6129,5 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get backupExistingSettingsHelp =>
-      'चुने गए स्टोरेज में सिंक्रोनाइज़ेशन की सेटिंग्स पहले से मौजूद हैं। चुनें कि उन्हें इस टीवी पर लागू करना है, इस टीवी की सेटिंग्स से बदलना है या मिलाना है। मिलाते समय अंतर होने पर आपकी चुनी हुई प्राथमिकता लागू होगी। विज़ार्ड के अंतिम चरण में पुष्टि के बाद आदान-प्रदान शुरू होगा।';
+      'चुने गए स्टोरेज में सिंक्रोनाइज़ेशन की सेटिंग्स पहले से मौजूद हैं। चुनें कि उन्हें इस डिवाइस पर लागू करना है, इस डिवाइस की सेटिंग्स से बदलना है या मिलाना है। मिलाते समय अंतर होने पर आपकी चुनी हुई प्राथमिकता लागू होगी। विज़ार्ड के अंतिम चरण में पुष्टि के बाद आदान-प्रदान शुरू होगा।';
 }

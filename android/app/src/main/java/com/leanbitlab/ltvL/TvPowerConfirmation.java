@@ -12,6 +12,8 @@ import android.view.WindowManager;
 
 /** Confirmation over the current app, owned by the connected accessibility service. */
 final class TvPowerConfirmation implements AutoCloseable {
+    private record Labels(int title, int message) {}
+
     private final Context service;
     private AlertDialog dialog;
     private final BroadcastReceiver screenOff = new BroadcastReceiver() {
@@ -22,7 +24,7 @@ final class TvPowerConfirmation implements AutoCloseable {
 
     boolean isOpen() { return dialog != null && dialog.isShowing(); }
 
-    boolean show(boolean reboot, Runnable confirm) {
+    boolean show(TvPowerBridge.Operation operation, Runnable confirm) {
         if (isOpen()) return false;
         close();
 
@@ -31,10 +33,16 @@ final class TvPowerConfirmation implements AutoCloseable {
         Configuration locale = new Configuration();
         locale.setLocale(LauncherDateFormat.locale(language));
         Context strings = service.createConfigurationContext(locale);
-        String action = strings.getString(reboot ? R.string.power_reboot : R.string.power_off);
+        var labels = switch (operation) {
+            case SLEEP -> new Labels(R.string.power_sleep, R.string.power_sleep_confirm);
+            case REBOOT -> new Labels(R.string.power_reboot, R.string.power_reboot_confirm);
+            case SHUTDOWN -> new Labels(R.string.power_shutdown, R.string.power_shutdown_confirm);
+            case TCL_SCREEN_OFF -> throw new IllegalArgumentException("Unsupported power confirmation");
+        };
+        String action = strings.getString(labels.title());
         var windowDialog = new AlertDialog.Builder(service, android.R.style.Theme_DeviceDefault_Dialog_Alert)
             .setTitle(action)
-            .setMessage(strings.getString(reboot ? R.string.power_reboot_confirm : R.string.power_off_confirm))
+            .setMessage(strings.getString(labels.message()))
             .setNegativeButton(strings.getString(android.R.string.cancel), null)
             .setPositiveButton(action, (source, button) -> {
                 if (dialog != source || !isOpen()) return;

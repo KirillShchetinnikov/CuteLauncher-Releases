@@ -1,19 +1,13 @@
-import 'package:flauncher/bridge_result.dart';
 import 'package:flutter/material.dart';
 
 import '../../l10n/app_localizations.dart';
-import '../action_notice.dart';
-import '../launcher_dialog.dart';
+import '../tv_power_action.dart';
 import 'focusable_settings_tile.dart';
 import 'settings_help.dart';
 import 'settings_page_layout.dart';
 
 class TvPowerPage extends StatefulWidget {
   static const routeName = 'tv_power';
-  static const channel = BridgeChannel(
-    'cutelauncher/tv_power',
-    preserveErrorCodes: true,
-  );
   const TvPowerPage({super.key});
 
   @override
@@ -23,49 +17,17 @@ class TvPowerPage extends StatefulWidget {
 class _TvPowerPageState extends State<TvPowerPage> {
   bool _busy = false;
   bool _confirming = false;
-
-  Future<void> _run(bool reboot) async {
+  Future<void> _run(TvPowerAction action) async {
     if (_busy || _confirming) return;
     _confirming = true;
-    final l = AppLocalizations.of(context)!;
     try {
-      final confirmed = await showLauncherDialog<bool>(
-        context: context,
-        builder: (dialog) => LauncherAlertDialog(
-          title: Text(reboot ? l.tvPowerReboot : l.tvPowerOff),
-          content: Text(reboot ? l.tvPowerRebootConfirm : l.tvPowerOffConfirm),
-          actions: [
-            LauncherDialogButton(
-              autofocus: true,
-              isCancel: true,
-              onPressed: () => Navigator.pop(dialog, false),
-              child: Text(l.cancel),
-            ),
-            LauncherDialogButton(
-              primary: true,
-              danger: true,
-              onPressed: () => Navigator.pop(dialog, true),
-              child: Text(reboot ? l.tvPowerReboot : l.tvPowerOff),
-            ),
-          ],
-        ),
-      );
-      if (confirmed != true || !mounted) return;
-      setState(() => _busy = true);
-      final sent = await TvPowerPage.channel.invokeMethod<bool>(
-        reboot ? 'reboot' : 'sleep',
-      );
-      if (!mounted) return;
-      showActionNotice(
+      await action.confirmAndSend(
         context,
-        sent == true ? l.tvPowerSent : l.tvPowerFailed,
-        error: sent != true,
+        onConfirmed: () => setState(() => _busy = true),
       );
-    } catch (_) {
-      if (mounted) showActionNotice(context, l.tvPowerFailed, error: true);
     } finally {
       _confirming = false;
-      if (mounted) setState(() => _busy = false);
+      if (mounted && _busy) setState(() => _busy = false);
     }
   }
 
@@ -78,16 +40,22 @@ class _TvPowerPageState extends State<TvPowerPage> {
         children: [
           FocusableSettingsTile(
             autofocus: true,
+            leading: const Icon(Icons.bedtime_outlined),
+            title: Text(l.quickActionsSleep),
+            busy: _busy,
+            onPressed: () => _run(TvPowerAction.sleep),
+          ),
+          FocusableSettingsTile(
             leading: const Icon(Icons.power_settings_new),
             title: Text(l.tvPowerOff),
             busy: _busy,
-            onPressed: () => _run(false),
+            onPressed: () => _run(TvPowerAction.shutdown),
           ),
           FocusableSettingsTile(
             leading: const Icon(Icons.restart_alt),
             title: Text(l.tvPowerReboot),
             busy: _busy,
-            onPressed: () => _run(true),
+            onPressed: () => _run(TvPowerAction.reboot),
           ),
           SizedBox(child: _busy ? const LinearProgressIndicator() : null),
           SettingsHelp(title: l.tvPowerTitle, text: l.tvPowerHelp),

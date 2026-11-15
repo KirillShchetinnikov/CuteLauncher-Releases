@@ -56,6 +56,7 @@ class BridgeChannel extends MethodChannel {
     'requestExact',
     'sleep',
     'reboot',
+    'shutdown',
     'port',
     'homeOverride',
     'launchActivityFromAction',

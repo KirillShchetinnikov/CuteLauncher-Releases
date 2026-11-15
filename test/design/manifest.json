@@ -71,7 +71,7 @@
         960,
         540
       ],
-      "sha256": "82c62684e64789ae40fb00005856e8ec79ea77c0999371a8acc633694f6e4a97"
+      "sha256": "abe8c644c861aec3187b03c9a7eacb4592fbc33b34993b27fc1a72e635fdffeb"
     },
     {
       "name": "settings-accent-glass",
@@ -423,7 +423,7 @@
         960,
         540
       ],
-      "sha256": "3e1a62ba3ba9ed7696df45cb666e29b82d3dec46c09c8a21ec233357796e2fce"
+      "sha256": "f12df5c4fb115599328fb7865639ab7f68c1c8238f58cf9c796aa7b97b5bc17a"
     },
     {
       "name": "settings-preview-capsule",
@@ -519,7 +519,7 @@
         640,
         360
       ],
-      "sha256": "e5d8b3636062f5949c9498f52fca52ea6ac55af1142d456b7761294ebd936aa0"
+      "sha256": "40e41bd0c027bdd31ec12591ecd30bdc03a727d5762f62c1313d188f737bc1fa"
     },
     {
       "name": "settings-root-bottom",
@@ -535,7 +535,7 @@
         960,
         540
       ],
-      "sha256": "00a1eb1a0ffab24a4a3d786931cc74acb6423ea8f7094b5f5eb960373ac8bf76"
+      "sha256": "da41d0092bd9c7c083017a69fd0c4a84fe25e38173e7bf7cb5f700f0a568894c"
     },
     {
       "name": "settings-root",
@@ -551,7 +551,7 @@
         960,
         540
       ],
-      "sha256": "0aa47a3d3ef21f9a6a61c301978155f2f6f405f61bdd23162c8f4ba5a789ff83"
+      "sha256": "cea1ce4774e789e04b986e128a1c34323ef8d71e965dde3ebf40c27a5b233c63"
     },
     {
       "name": "settings-rtl-large",
@@ -583,7 +583,7 @@
         960,
         540
       ],
-      "sha256": "42e480d93a98c2a26d2c37f52a7fa74b3ad40efcc43b94fe526fa8a7ec757ff3"
+      "sha256": "bf03d85ae3a9c83efc532bc01dfac5f372bd9865c19d901375cc209ad5999063"
     },
     {
       "name": "settings-top-appearance-accent",
@@ -599,7 +599,7 @@
         960,
         540
       ],
-      "sha256": "63775ba10c6ee89610d4fc0d4594df1702651147e6a3a09fd8b5d7ddc7865bed"
+      "sha256": "f7e2fb74997829424c26f909906601ca4de0204074c192b487db31ae91d43458"
     },
     {
       "name": "settings-top-objects",
@@ -615,7 +615,7 @@
         960,
         540
       ],
-      "sha256": "7afe3b3f27f5115824dc3b2415f3612ea0f0198d443566f6a4c23f6fa15c9b62"
+      "sha256": "4b1be8431f263d85bc9ab092226b40c1aab83e4c286e7adadfd00f930c60aae1"
     },
     {
       "name": "home-top-custom",
@@ -839,7 +839,7 @@
         960,
         540
       ],
-      "sha256": "6087ec61cbf2247e4954e0a6e240a7baca930b4457e84a4048b5594c9214fb84"
+      "sha256": "855ce415f6b3c06e238362b3989400dcbfb9a15932f7988baded26f3c3d00fe1"
     },
     {
       "name": "home-large-lift",
@@ -1111,7 +1111,7 @@
         960,
         540
       ],
-      "sha256": "28b6666bf3d9fc951413e26f99427fca97c8fc1fa5f29f18870cd69d66a9f515",
+      "sha256": "0ca6055da81e4b6d371e0a9dd5fb85c54b64b7ec17d277dfffdcd84532525608",
       "bottom": true
     },
     {

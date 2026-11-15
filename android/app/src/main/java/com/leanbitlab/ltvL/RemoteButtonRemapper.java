@@ -114,7 +114,11 @@ final class RemoteButtonRemapper implements AutoCloseable {
                 service.dismissPanel();
                 yield availability(RecentAppsBridge.open(service));
             }
-            case "panel" -> availability(service.togglePanel());
+            case "panel" -> switch (service.togglePanel()) {
+                case TOGGLED -> "success";
+                case BLOCKED -> "blocked";
+                case FAILED -> "unavailable";
+            };
             case "home" -> {
                 service.dismissPanel();
                 Intent home = new Intent(service, MainActivity.class);
@@ -125,6 +129,10 @@ final class RemoteButtonRemapper implements AutoCloseable {
             }
             case "back" -> availability(service.performGlobalAction(
                 android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_BACK));
+            case "toggle_night_mode" -> {
+                NightOverlayService.toggleMode(service);
+                yield "success";
+            }
             case "black_overlay" -> {
                 service.hideVolumeOverlay();
                 blackScreen.toggle();
@@ -158,17 +166,19 @@ final class RemoteButtonRemapper implements AutoCloseable {
                 yield availability(RemoteTvActions.open(service, binding.action()));
             }
             case "mute" -> availability(RemoteTvActions.toggleMute(service));
-            case "sleep", "reboot" -> {
-                boolean reboot = binding.action().equals("reboot");
-                if (powerConfirmation.show(reboot, () -> {
+            case "sleep", "reboot", "shutdown" -> {
+                var operation = TvPowerBridge.Operation.fromMethod(binding.action());
+                if (powerConfirmation.show(operation, () -> {
                     if (closed || assignmentsPaused()
                             || !binding.equals(configuration.binding(binding.keyCode(), binding.trigger()))) return;
-                    requestPower(binding, reboot);
+                    requestPower(binding, operation);
                 })) cancelPendingActions();
                 yield null;
             }
             case "sleep_immediate", "reboot_immediate" -> {
-                requestPower(binding, binding.action().equals("reboot_immediate"));
+                var operation = binding.action().equals("reboot_immediate")
+                    ? TvPowerBridge.Operation.REBOOT : TvPowerBridge.Operation.SLEEP;
+                requestPower(binding, operation);
                 yield null;
             }
             case "webhook" -> {
@@ -180,9 +190,9 @@ final class RemoteButtonRemapper implements AutoCloseable {
         };
     }
 
-    private void requestPower(RemoteMappingConfiguration.Binding binding, boolean reboot) {
+    private void requestPower(RemoteMappingConfiguration.Binding binding, TvPowerBridge.Operation operation) {
         status = "busy";
-        TvPowerBridge.request(service, reboot, power, result -> complete(binding, result));
+        TvPowerBridge.request(service, operation, power, result -> complete(binding, result));
     }
 
     private static String availability(boolean available) {
@@ -191,12 +201,12 @@ final class RemoteButtonRemapper implements AutoCloseable {
 
     private void complete(RemoteMappingConfiguration.Binding binding, String result) {
         int message = switch (result) {
-            case "success" -> 0;
+            case "success", "blocked" -> 0;
             case "busy" -> R.string.remap_error_busy;
             default -> switch (binding.action()) {
                 case "app" -> R.string.remap_error_app;
                 case "hdmi" -> R.string.remap_error_hdmi;
-                case "sleep", "sleep_immediate", "reboot", "reboot_immediate" -> R.string.remap_error_power;
+                case "sleep", "sleep_immediate", "reboot", "reboot_immediate", "shutdown" -> R.string.remap_error_power;
                 default -> R.string.remap_error_unavailable;
             };
         };

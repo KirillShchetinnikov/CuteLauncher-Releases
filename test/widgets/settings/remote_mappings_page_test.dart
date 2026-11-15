@@ -91,14 +91,16 @@ void main() {
   }
 
   const powerActions = {
-    'sleep': 'Выключить устройство (с подтверждением)',
-    'sleep_immediate': 'Выключить устройство (без подтверждения)',
+    'sleep': 'Сон (с подтверждением)',
+    'sleep_immediate': 'Сон (без подтверждения)',
+    'shutdown': 'Выключить устройство (с подтверждением)',
     'reboot': 'Перезагрузить устройство (с подтверждением)',
     'reboot_immediate': 'Перезагрузить устройство (без подтверждения)',
   };
   for (final action in {
     ...powerActions,
     'black_overlay': 'Чёрный экран',
+    'toggle_night_mode': 'Переключить ночной режим',
     'tcl_screen_off': 'Отключить экран TCL',
   }.entries) {
     for (final trigger in ['press', 'hold']) {
@@ -298,7 +300,7 @@ void main() {
     await tester.ensureVisible(find.text('Действие').last);
     await tester.tap(find.text('Действие').last);
     await tester.pumpAndSettle();
-    expect(find.text('Нужен ADB'), findsNWidgets(2));
+    expect(find.text('Нужен ADB'), findsNWidgets(3));
     final dialog = find.byType(AlertDialog);
     final scrollbars = find.descendant(
       of: dialog,

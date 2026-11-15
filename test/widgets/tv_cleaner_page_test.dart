@@ -450,7 +450,7 @@ void main() {
     expect(client.actions.length, 2);
     expect(client.cached, isNotNull);
     expect(find.text('Example video\norg.example.video'), findsNothing);
-    expect(find.text('TV cleanup manager'), findsOneWidget);
+    expect(find.text('Device cleanup manager'), findsOneWidget);
     client.inventoryFailure = false;
     await click(tester, 'All applications');
     expect(find.text('Example video\norg.example.video'), findsOneWidget);
@@ -504,7 +504,7 @@ void main() {
         expect(find.text('Example video\norg.example.video'), findsOneWidget);
         await back(tester);
         expect(
-          find.text(ru ? 'Менеджер очистки ТВ' : 'TV cleanup manager'),
+          find.text(ru ? 'Менеджер очистки устройства' : 'Device cleanup manager'),
           findsOneWidget,
         );
         expect(tester.takeException(), isNull);
@@ -1224,7 +1224,7 @@ void main() {
       await click(tester, label);
       expect(
         find.text(
-          'All applications from this list present on this TV are already disabled.',
+          'All applications from this list present on this device are already disabled.',
         ),
         findsOneWidget,
       );
@@ -1232,7 +1232,7 @@ void main() {
       await click(tester, absent);
       expect(
         find.text(
-          'No matching applications from this list are installed on this TV.',
+          'No matching applications from this list are installed on this device.',
         ),
         findsOneWidget,
       );

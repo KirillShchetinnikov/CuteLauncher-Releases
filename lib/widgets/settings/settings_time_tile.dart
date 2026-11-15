@@ -8,11 +8,13 @@ import 'settings_slider_tile.dart';
 class SettingsTimeTile extends StatelessWidget {
   final String title;
   final int value;
+  final int? excludedValue;
   final ValueChanged<int> onChanged;
   const SettingsTimeTile({
     super.key,
     required this.title,
     required this.value,
+    this.excludedValue,
     required this.onChanged,
   });
   @override
@@ -63,7 +65,9 @@ class SettingsTimeTile extends StatelessWidget {
                 child: Text(l.cancel),
               ),
               LauncherDialogButton(
-                onPressed: () => Navigator.pop(dialog, hour * 60 + minute),
+                onPressed: hour * 60 + minute == excludedValue
+                    ? null
+                    : () => Navigator.pop(dialog, hour * 60 + minute),
                 primary: true,
                 child: Text(l.ok),
               ),

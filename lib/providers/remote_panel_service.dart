@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// Separate from the home screen's panel appearance and visibility.
 class RemotePanelService extends ChangeNotifier {
   static const preferenceKey = 'remote_panel_configuration';
-  static const ids = PanelLayout.ids;
+  static const ids = PanelLayout.remoteIds;
   final SharedPreferences preferences;
   Map<String, dynamic> _data = {};
   final _previewOwners = <Object>{};
@@ -39,10 +39,10 @@ class RemotePanelService extends ChangeNotifier {
     notifyListeners();
   }
   PanelLayout get layout => _data.containsKey('leftOrder') || _data.containsKey('rightOrder')
-      ? PanelLayout(_data['leftOrder'], _data['rightOrder'])
-      : _data.containsKey('order') ? PanelLayout(order, const []) : PanelLayout(null, null);
+      ? PanelLayout(_data['leftOrder'], _data['rightOrder'], remote: true)
+      : _data.containsKey('order') ? PanelLayout(order, const [], remote: true) : PanelLayout(null, null, remote: true);
   List<String> get order {
-    final stored = PanelLayout.clean(_data['order']);
+    final stored = PanelLayout.clean(_data['order'], remote: true);
     return [...stored, ...ids.where((id) => !stored.contains(id))];
   }
   Future<void> _change(Map<String, dynamic> Function() update) {

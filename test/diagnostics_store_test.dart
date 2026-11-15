@@ -1,22 +1,67 @@
 import 'dart:convert';
 
+import 'package:flauncher/adaptive_landscape.dart';
 import 'package:flauncher/bridge_result.dart';
 import 'package:flauncher/diagnostics_report.dart';
 import 'package:flauncher/diagnostics_store.dart';
 import 'package:flauncher/diagnostics/poster_loads.dart';
+import 'package:flauncher/providers/settings_service.dart';
+import 'package:flauncher/providers/night_mode_configuration.dart';
 import 'package:flauncher/tv_compatibility_report.dart';
+import 'package:flauncher/weather_sources.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  test('landscape report distinguishes astronomical times from the night scheduler fallback', () {
+    DateTime at(int hour, int minute) => DateTime(2026, 11, 15, hour, minute);
+    final schedule = [
+      {
+        'sunrise': at(8, 0).millisecondsSinceEpoch,
+        'sunset': at(20, 0).millisecondsSinceEpoch,
+      },
+    ];
+    Map<String, Object> report(DateTime time, List<Map<String, dynamic>> days) =>
+        landscapeLightingDiagnostics(
+          time,
+          const LandscapeConfiguration(),
+          solarDays: days,
+          demoActive: false,
+        );
+    final evening = report(at(18, 57), schedule);
+    expect(evening['phase'], 'day');
+    expect(evening['sunSource'], 'nightModeSchedule');
+    expect(evening['sunset'], at(20, 0).toUtc().toIso8601String());
+    expect(evening['utcOffsetMinutes'], at(18, 57).timeZoneOffset.inMinutes);
+    expect(report(at(20, 40), schedule)['phase'], 'twilight');
+    final night = report(at(21, 20), schedule);
+    expect(night['phase'], 'night');
+    expect(night['paletteFrom'], 'night');
+    expect(night['paletteTo'], 'night');
+    final fixedFallback = [
+      {...schedule.single, 'fixedFallback': true},
+    ];
+    final corrected = report(at(18, 56), fixedFallback);
+    expect(corrected['phase'], 'twilight');
+    expect(corrected['paletteFrom'], 'twilight');
+    expect(corrected['paletteTo'], 'night');
+    expect(corrected['sunSource'], 'landscapeDefault');
+    expect(corrected['sunset'], at(18, 0).toUtc().toIso8601String());
+    expect(report(at(19, 20), fixedFallback)['phase'], 'night');
+    final localFallback = report(at(19, 20), []);
+    expect(localFallback['phase'], 'night');
+    expect(localFallback['sunSource'], 'landscapeDefault');
+  });
+
   test('one collection contains compatibility, error history and a shared app/device header', () async {
     DiagnosticsStore.instance.clear();
     PackageInfo.setMockInitialValues(
       appName: 'CuteLauncher',
       packageName: 'test',
-      version: '1.2.1',
+      version: '1.8.0-test.4',
       buildNumber: '99',
       buildSignature: '',
     );
@@ -56,7 +101,10 @@ void main() {
     );
     DiagnosticsStore.instance.posterLoads.start(PosterSource.appChannels,
         'https://private.example/image?token=secret', packageName: 'example.tv');
-    final report = await collectDiagnostics();
+    SharedPreferences.setMockInitialValues({'background_source': 'landscape'});
+    final settings = SettingsService(await SharedPreferences.getInstance());
+    addTearDown(settings.dispose);
+    final report = await collectDiagnostics(settings: settings);
     expect(report['schemaVersion'], 3);
     expect(report['reportType'], 'diagnostics');
     expect(((report['installedApplications'] as Map)['applications'] as List).single['packageName'], 'example.tv');
@@ -64,9 +112,11 @@ void main() {
     expect(jsonEncode(publicTvCompatibilityReport(report)), isNot(contains('example.tv')));
     expect((report['posterLoads'] as Map)['active'], hasLength(1));
     expect(publicTvCompatibilityReport(report).containsKey('posterLoads'), false);
+    expect((report['landscapeLighting'] as Map)['sunSource'], 'manualFallback');
+    expect(publicTvCompatibilityReport(report).containsKey('landscapeLighting'), false);
     expect(jsonEncode(report), isNot(contains('private.example')));
     expect(jsonEncode(report), isNot(contains('token=secret')));
-    expect(report['app'], {'version': '1.2.1', 'build': '99'});
+    expect(report['app'], {'version': '1.8.0-test.4', 'build': '99'});
     expect((report['device'] as Map)['model'], '55MCG');
     expect((report['compatibility'] as Map)['status'], 'complete');
     expect((report['failures'] as List).length, 1);
@@ -76,6 +126,26 @@ void main() {
       1,
     );
     DiagnosticsStore.instance.clear();
+  });
+  test('location diagnostics expose only the presence of inputs', () {
+    final report = locationSetupDiagnostics(
+      const NightModeConfiguration(city: 'Private city', latitude: 34.567, longitude: 12.345),
+      const WeatherConfiguration(locationMode: WeatherLocationMode.manual,
+        manualCoordinates: (latitude: 60.123, longitude: 40.456)),
+    );
+    expect(report['nightMode'], {
+      'cityConfigured': true,
+      'coordinatesStored': true,
+      'manualCoordinatesConfigured': false,
+      'activeCoordinates': true,
+      'automaticLocation': false,
+    });
+    expect((report['weather'] as Map)['cityConfigured'], false);
+    expect((report['weather'] as Map)['manualCoordinatesConfigured'], true);
+    final encoded = jsonEncode(report);
+    for (final value in ['Private city', '34.567', '12.345', '60.123', '40.456']) {
+      expect(encoded, isNot(contains(value)));
+    }
   });
   test('settings are captured at each failure, deduplicated and frozen across later changes', () {
     final store = DiagnosticsStore();

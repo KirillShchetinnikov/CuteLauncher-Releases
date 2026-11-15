@@ -11,6 +11,7 @@ import '../providers/appearance_service.dart';
 import '../providers/apps_service.dart';
 import '../providers/settings_service.dart';
 import '../providers/watch_next_service.dart';
+import '../section_icons.dart';
 import '../tile_appearance.dart';
 import '../watch_next_selection.dart';
 import 'app_content_row.dart';
@@ -64,19 +65,20 @@ class ContinueWatchingRow extends StatelessWidget {
       focusLoading ? const [ContentPreviewRow.loadingFocusKey]
           : programs.map((p) => p.id.toString()),
     );
-    final style =
-        appearance ??
-        context.watch<AppearanceService?>()?.tilesFor(
-          ContinueWatchingSection.sectionId,
-        ) ??
+    final appearanceService = context.watch<AppearanceService?>();
+    const id = ContinueWatchingSection.sectionId;
+    final style = appearance ?? appearanceService?.tilesFor(id) ??
         TileAppearance({'sectionTitles': settings.showCategoryTitles});
     final title = AppLocalizations.of(context)!.continueWatching;
+    final titleIcon = appearanceService?.category(id).titleIcon ??
+        SectionIcon.continueWatching;
     return Container(
       decoration: style.sectionDecoration(),
       padding: EdgeInsets.all(style.number('sectionPadding') ?? 0),
       child: programs.isEmpty
           ? ContentPreviewRow.loading(
               title: title,
+              titleIcon: titleIcon,
               style: style,
               appTileSize: appTileSize,
               aspectRatio: 16 / 9,
@@ -86,6 +88,7 @@ class ContinueWatchingRow extends StatelessWidget {
           : ContentPreviewRow(
               programs: programs,
               title: title,
+              titleIcon: titleIcon,
               style: style,
               appTileSize: appTileSize,
               aspectRatio: 16 / 9,

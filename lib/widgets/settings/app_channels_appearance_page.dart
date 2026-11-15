@@ -178,7 +178,6 @@ class AppChannelsAppearancePage extends StatelessWidget {
             context,
             categoryId: categoryId,
             includeReset: false,
-            includeIcons: false,
           ),
           ResetStyleTile(
             title: l.resetSectionToGlobal,

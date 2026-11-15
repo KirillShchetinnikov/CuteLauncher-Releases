@@ -1,6 +1,7 @@
 /// Physical left/right placement shared by the home and remote panels.
 class PanelLayout {
-  static const buttons = [
+  static const quickActions = 'quickActions';
+  static const _sharedButtons = [
     'settings',
     'systemSettings',
     'inputs',
@@ -15,13 +16,20 @@ class PanelLayout {
     'networkSpeed',
     'system',
   ];
+  static const buttons = [..._sharedButtons, quickActions];
   static const information = ['weather', 'date', 'time'];
   // Audio stays independent of the combined clock/date/weather group.
   static const ids = [...buttons, 'audio', ...information];
+  static const remoteIds = [..._sharedButtons, 'audio', ...information];
   static const informationGroup = 'information';
 
-  static List<String> clean(dynamic value) => value is List
-      ? value.whereType<String>().where(ids.contains).toSet().toList()
+  static List<String> clean(dynamic value, {bool remote = false}) =>
+      value is List
+      ? value
+            .whereType<String>()
+            .where((remote ? remoteIds : ids).contains)
+            .toSet()
+            .toList()
       : <String>[];
 
   final List<String> left;
@@ -81,11 +89,11 @@ class PanelLayout {
     return (restore(expand(first), left), restore(expand(second), right));
   }
 
-  PanelLayout(dynamic leftValue, dynamic rightValue)
-    : left = clean(leftValue),
-      right = clean(rightValue) {
+  PanelLayout(dynamic leftValue, dynamic rightValue, {bool remote = false})
+    : left = clean(leftValue, remote: remote),
+      right = clean(rightValue, remote: remote) {
     right.removeWhere(left.contains);
-    for (final id in ids) {
+    for (final id in remote ? remoteIds : ids) {
       if (!left.contains(id) && !right.contains(id)) {
         if (id == 'vpn') {
           // VPN used to be part of network; preserve that position for existing layouts.

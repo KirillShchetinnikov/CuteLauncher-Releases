@@ -8,6 +8,8 @@ import java.util.function.Consumer;
 
 /** Tracks launcher visibility on the main thread and blocks opening the remote panel on Home. */
 final class RemotePanelLaunchPolicy {
+    enum ToggleResult { TOGGLED, BLOCKED, FAILED }
+
     private final Consumer<Boolean> visibilityChanged;
     private WeakReference<Object> visibleHost = new WeakReference<>(null);
 
@@ -31,11 +33,11 @@ final class RemotePanelLaunchPolicy {
         return visibleHost.get() != null;
     }
 
-    boolean toggle(boolean panelOpen, @NonNull BooleanSupplier toggle, @NonNull Runnable blockedNotice) {
+    ToggleResult toggle(boolean panelOpen, @NonNull BooleanSupplier toggle, @NonNull Runnable blockedNotice) {
         if (!panelOpen && launcherVisible()) {
             blockedNotice.run();
-            return false;
+            return ToggleResult.BLOCKED;
         }
-        return toggle.getAsBoolean();
+        return toggle.getAsBoolean() ? ToggleResult.TOGGLED : ToggleResult.FAILED;
     }
 }

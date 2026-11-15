@@ -1,4 +1,6 @@
 import 'package:flutter/widgets.dart';
+import '../diagnostics_store.dart';
+import '../home_tile_diagnostics.dart';
 import 'service_lifecycle.dart';
 import 'settings_service.dart';
 
@@ -48,7 +50,7 @@ class MemoryResources extends ChangeNotifier
     for (final resource in _resources.values.toList()) {
       resource.configure?.call(enabled);
     }
-    clearRecoverableCaches();
+    _clearRecoverableCaches(HomeTileCacheClear.memoryProfile);
   }
 
   void register(Object owner,
@@ -91,8 +93,13 @@ class MemoryResources extends ChangeNotifier
             .fold(0, (sum, resource) => sum + resource.stats().entries),
       );
 
-  void clearRecoverableCaches() {
+  void clearRecoverableCaches() => _clearRecoverableCaches(HomeTileCacheClear.manual);
+
+  void _clearRecoverableCaches(HomeTileCacheClear reason) {
     if (isDisposed) return;
+    if (HomeTileDiagnostics.enabled && !secondaryEngine) {
+      DiagnosticsStore.instance.homeTiles.clearCaches(reason);
+    }
     for (final resource in _resources.values.toList()) {
       resource.clear();
     }
@@ -102,7 +109,7 @@ class MemoryResources extends ChangeNotifier
   }
 
   @override
-  void didHaveMemoryPressure() => clearRecoverableCaches();
+  void didHaveMemoryPressure() => _clearRecoverableCaches(HomeTileCacheClear.memoryPressure);
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused ||
@@ -112,17 +119,29 @@ class MemoryResources extends ChangeNotifier
       // Normal app switching keeps the bounded caches warm for instant return.
       // Economy mode and memory pressure still release reconstructible caches.
       if (wasForeground) {
-        if (_economy) { clearRecoverableCaches(); } else { notifyListeners(); }
+        _traceLifecycle();
+        if (_economy) {
+          _clearRecoverableCaches(HomeTileCacheClear.backgroundEconomy);
+        } else {
+          notifyListeners();
+        }
       }
     } else if (state == AppLifecycleState.resumed) {
       final wasForeground = _foreground;
       _foreground = true;
       if (!wasForeground) {
+        _traceLifecycle();
         for (final resource in _resources.values.toList()) {
           resource.resume?.call();
         }
         notifyListeners();
       }
+    }
+  }
+
+  void _traceLifecycle() {
+    if (HomeTileDiagnostics.enabled && !secondaryEngine) {
+      DiagnosticsStore.instance.homeTiles.lifecycle(foreground: _foreground, economy: _economy);
     }
   }
 

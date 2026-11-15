@@ -13,15 +13,17 @@
     <string name="remap_error_app">O aplicativo atribuído está ausente ou não abre.</string>
     <string name="remap_error_hdmi">A entrada HDMI atribuída está indisponível.</string>
     <string name="remap_error_power">Falha no comando de energia. Verifique o ADB local.</string>
-    <string name="remap_error_permission">A TV bloqueou esta ação do controle remoto.</string>
+    <string name="remap_error_permission">O dispositivo bloqueou esta ação do controle remoto.</string>
     <string name="remap_error_busy">Uma ação do controle remoto já está em andamento.</string>
-    <string name="remap_error_unavailable">Esta ação está indisponível na TV.</string>
+    <string name="remap_error_unavailable">Esta ação do controle remoto não está disponível neste dispositivo.</string>
     <string name="remap_error_webhook_http">O webhook rejeitou a solicitação (HTTP %1$d).</string>
     <string name="remap_error_webhook_timeout">O tempo de espera do webhook expirou.</string>
     <string name="remap_error_webhook">Não foi possível conectar ao webhook.</string>
-    <string name="power_off">Desligar dispositivo</string>
+    <string name="power_sleep">Suspender</string>
     <string name="power_reboot">Reiniciar dispositivo</string>
-    <string name="power_off_confirm">Colocar o dispositivo em espera?</string>
+    <string name="power_sleep_confirm">Colocar o dispositivo em espera?</string>
+    <string name="power_shutdown">Desligar dispositivo</string>
+    <string name="power_shutdown_confirm">Desligar completamente o dispositivo?</string>
     <string name="power_reboot_confirm">Reiniciar o dispositivo? Os aplicativos abertos serão fechados.</string>
     <string name="screensaver_label">Relógio do CuteLauncher</string>
     <string name="notification_service_label">Serviço de notificações do CuteLauncher</string>
@@ -34,7 +36,7 @@
     <string name="recovery_retry">Tentar iniciar o CuteLauncher novamente</string>
     <string name="recovery_settings">Configurações do Android</string>
     <string name="recovery_home">Escolher tela inicial</string>
-    <string name="recovery_unavailable">Esta ação não está disponível nesta TV.</string>
+    <string name="recovery_unavailable">Esta ação não está disponível neste dispositivo.</string>
     <string name="recovery_restore">Restaurar a tela inicial anterior</string>
     <string name="recovery_restore_confirm">Restaurar a tela inicial anterior usando a conexão ADB local existente?</string>
 </resources>

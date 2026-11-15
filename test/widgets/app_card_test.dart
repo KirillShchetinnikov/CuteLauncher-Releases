@@ -1,4 +1,6 @@
 import 'package:flauncher/widgets/tile_artwork.dart';
+import 'package:flauncher/diagnostics_store.dart';
+import 'package:flauncher/home_tile_diagnostics.dart';
 import 'package:flauncher/key_sounds.dart';
 import 'package:flauncher/widgets/category_focus.dart';
 import 'package:flutter/rendering.dart';
@@ -457,6 +459,38 @@ void main() {
     verify(mockAppsService.getAppIcon(mockApp.packageName)).called(1);
     await tester.pumpWidget(const SizedBox());
   });
+
+  if (HomeTileDiagnostics.enabled) {
+    testWidgets('diagnostics distinguish reloaded icons from a changed image mode', (tester) async {
+      final store = DiagnosticsStore.instance;
+      store.clear();
+      addTearDown(store.clear);
+      SharedPreferences.setMockInitialValues({});
+      final appearance = AppearanceService(await SharedPreferences.getInstance());
+      addTearDown(appearance.dispose);
+      await tester.pumpWidget(createWidgetUnderTest(appearance: appearance));
+      await tester.pumpAndSettle();
+
+      final listeners = verify(mockAppsService.addListener(captureAny)).captured.cast<VoidCallback>();
+      when(mockAppsService.imageRevisionFor(any)).thenReturn((1, 0));
+      when(mockAppsService.getAppBanner(any)).thenAnswer((_) async => Uint8List(0));
+      for (final listener in listeners) { listener(); }
+      await tester.pumpAndSettle();
+
+      final history = store.snapshot()['homeTileImages'] as Map<String, Object>;
+      final events = history['events'] as List<Map<String, Object>>;
+      final selected = events.where((event) => event['event'] == 'tileSelection' && event['retained'] == false).toList();
+      expect(selected.map((event) => event['image']), ['banner', 'icon']);
+      expect(selected.map((event) => event['mode']), ['cover', 'contain']);
+      expect(selected.every((event) => event['bannerMode'] == 'cover' && event['iconMode'] == 'contain'), isTrue);
+      expect(selected.first['app'], selected.last['app']);
+      final request = events.lastWhere((event) => event['event'] == 'tileRequest');
+      expect(request['reason'], 'imageRevision');
+      expect(request['cacheGeneration'], 1);
+      expect(history.toString(), isNot(contains(mockApp.packageName)));
+      await tester.pumpWidget(const SizedBox());
+    });
+  }
 
   testWidgets('a banner replacement keeps banner rules when the no-banner mode changes', (tester) async {
     SharedPreferences.setMockInitialValues({});

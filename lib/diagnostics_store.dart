@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 
 import 'diagnostic_redactor.dart';
 import 'diagnostic_settings.dart';
+import 'home_tile_diagnostics.dart';
 import 'diagnostics/poster_loads.dart';
 
 /// Bounded diagnostics with structured causes and redacted technical excerpts.
@@ -221,6 +222,7 @@ class DiagnosticsStore {
     'set',
     'setNotificationPopupPresentation',
     'show',
+    'shutdown',
     'sleep',
     'snapshot',
     'solarCache',
@@ -406,6 +408,7 @@ class DiagnosticsStore {
     'cancelled',
   };
   final Stopwatch _clock = Stopwatch()..start();
+  late final homeTiles = HomeTileDiagnostics(() => _clock.elapsedMilliseconds);
   late final posterLoads = PosterLoads(() => _clock.elapsedMilliseconds);
   int _generation = 0;
   int get generation => _generation;
@@ -703,6 +706,7 @@ class DiagnosticsStore {
 
   void clear() {
     _generation++;
+    if (HomeTileDiagnostics.enabled) homeTiles.clear();
     posterLoads.clear();
     _events.clear();
     _failures.clear();
@@ -772,7 +776,8 @@ class DiagnosticsStore {
       'app': {
         'version':
             version != null &&
-                RegExp(r'^\d{1,6}(\.\d{1,6}){1,3}$').hasMatch(version)
+                RegExp(r'^\d{1,6}(\.\d{1,6}){1,3}(?:-test\.\d{1,6})?$')
+                    .hasMatch(version)
             ? version
             : 'unknown',
         'build': build != null && RegExp(r'^\d{1,10}$').hasMatch(build)
@@ -788,6 +793,7 @@ class DiagnosticsStore {
       'recentOperations': jsonDecode(jsonEncode(_events)),
       'failures': jsonDecode(jsonEncode(_failures)),
       'posterLoads': posterLoads.snapshot(),
+      if (HomeTileDiagnostics.enabled) 'homeTileImages': homeTiles.snapshot(),
       if (_audioRouting.isNotEmpty)
         'audioRouting': jsonDecode(jsonEncode(_audioRouting)),
       'nativeShell': {

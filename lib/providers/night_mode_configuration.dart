@@ -25,6 +25,17 @@ class NightModeConfiguration {
   final LocationCoordinates? _savedCityCoordinates;
   final LocationCoordinates? _savedManualCoordinates;
   final List<String> excludedPackages;
+
+  bool get hasSavedCoordinates =>
+      coordinatesFrom(latitude, longitude) != null ||
+      _savedAutomaticCoordinates != null ||
+      _savedCityCoordinates != null ||
+      _savedManualCoordinates != null;
+
+  bool get hasManualCoordinates => _savedManualCoordinates != null ||
+      !automaticLocation && manualLocationInput == ManualLocationInput.coordinates &&
+          coordinatesFrom(latitude, longitude) != null;
+
   const NightModeConfiguration(
       {this.excludedPackages = const [],
       this.ignoreHdmiInputs = true,

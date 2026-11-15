@@ -183,13 +183,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get renderCompatibilityHelp =>
-      'جرّب هذا الوضع إذا كانت الواجهة تومض مع التعتيم الليلي. يُفعّل تلقائيًا على الطرازات التي تم التحقق منها. على أجهزة التلفاز الأخرى، يُحفظ الخيار على هذا الجهاز فقط ويُطبّق بعد إعادة تشغيل المشغّل. قد يزيد الحمل الرسومي.';
+      'جرّب هذا الوضع إذا كانت الواجهة تومض مع التعتيم الليلي. يُفعّل تلقائيًا على الطرازات التي تم التحقق منها. على الأجهزة الأخرى، يُحفظ الخيار على هذا الجهاز فقط ويُطبّق بعد إعادة تشغيل المشغّل. قد يزيد الحمل الرسومي.';
 
   @override
   String get diagnosticsHubTitle => 'Diagnostics';
 
   @override
-  String get tvCompatibilityTitle => 'TV compatibility check';
+  String get tvCompatibilityTitle => 'فحص توافق الجهاز';
 
   @override
   String get tvCompatibilityRun => 'Run check';
@@ -292,7 +292,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get adbWifiOwned =>
-      'لم تُجرَ تغييرات: أنشأ معالج إعداد Google شبكة Wi-Fi محفوظة. قد يؤدي تعطيله إلى حذف الشبكة وفصل التلفاز عن الإنترنت.\n\n1. تأكد من معرفة كلمة مرور Wi-Fi.\n2. افتح إعدادات شبكة Android وحدد الشبكة واختر نسيان الشبكة.\n3. أعد الاتصال من إعدادات الشبكة العادية في Android.\n4. ارجع إلى CuteLauncher وتحقق من ADB ثم أعد محاولة تعطيل المشغّل المدمج.\n\nإذا ظهرت الرسالة مجددًا، اترك المشغّل المدمج مفعّلًا: قد يعيد البرنامج الثابت إسناد الشبكة إلى معالج الإعداد.';
+      'لم تُجرَ تغييرات: أنشأ معالج إعداد Google شبكة Wi-Fi محفوظة. قد يؤدي تعطيله إلى حذف الشبكة وفصل الجهاز عن الإنترنت.\n\n1. تأكد من معرفة كلمة مرور Wi-Fi.\n2. افتح إعدادات شبكة Android وحدد الشبكة واختر نسيان الشبكة.\n3. أعد الاتصال من إعدادات الشبكة العادية في Android.\n4. ارجع إلى CuteLauncher وتحقق من ADB ثم أعد محاولة تعطيل المشغّل المدمج.\n\nإذا ظهرت الرسالة مجددًا، اترك المشغّل المدمج مفعّلًا: قد يعيد البرنامج الثابت إسناد الشبكة إلى معالج الإعداد.';
 
   @override
   String get adbWifiUnknown =>
@@ -640,7 +640,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get defaultLauncherDescription =>
-      'عند تعيينه كمشغل افتراضي، سيعود زر الصفحة الرئيسية دائماً إلى CuteLauncher. سيتم أيضاً تشغيل التلفزيون مباشرة في CuteLauncher.';
+      'عند تعيينه كمشغل افتراضي، سيعود زر الصفحة الرئيسية دائماً إلى CuteLauncher. سيتم أيضاً تشغيل الجهاز مباشرة في CuteLauncher.';
 
   @override
   String get inputs => 'المدخلات';
@@ -701,7 +701,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get localNetworkSharingDetails =>
-      'هنا يمكنك تنزيل إعدادات/تخطيط التلفزيون الخاص بك أو رفع ملف نسخ احتياطي مرة أخرى إلى هذا التلفزيون.';
+      'هنا يمكنك تنزيل إعدادات/تخطيط الجهاز الخاص بك أو رفع ملف نسخ احتياطي مرة أخرى إلى هذا الجهاز.';
 
   @override
   String failedToStartServer(String error) {
@@ -783,7 +783,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get homeButtonFix => 'إصلاح زر الصفحة الرئيسية (Google TV)';
 
   @override
-  String get startOnBoot => 'التشغيل عند بدء الجهاز (Google TV / Fire TV)';
+  String get startOnBoot => 'التشغيل عند بدء الجهاز';
 
   @override
   String get appLanguage => 'اللغة';
@@ -1316,19 +1316,19 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get accessibilityGuide =>
-      'افتح إعدادات التلفزيون يدويًا، ثم إمكانية الوصول → CuteLauncher Home Button Fix، وقم بتمكين الخدمة. يعتمد موقع هذه القائمة واسمها على الشركة المصنعة للتلفزيون لديك.';
+      'افتح إعدادات الجهاز يدويًا، ثم إمكانية الوصول → CuteLauncher Home Button Fix، وقم بتمكين الخدمة. يعتمد موقع هذه القائمة واسمها على الشركة المصنعة للجهاز لديك.';
 
   @override
   String get notificationPermissionGuide =>
-      'لا يمكن فتح إعدادات الوصول إلى الإشعارات على هذا التلفزيون. إن السماح بالإشعارات الصادرة في معلومات التطبيق لا يمنح الوصول إلى الإشعارات من التطبيقات الأخرى.\n\nقم بتوصيل التلفزيون الخاص بك عبر ADB وقم بتشغيل:';
+      'لا يمكن فتح إعدادات الوصول إلى الإشعارات على هذا الجهاز. إن السماح بالإشعارات الصادرة في معلومات التطبيق لا يمنح الوصول إلى الإشعارات من التطبيقات الأخرى.\n\nقم بتوصيل الجهاز الخاص بك عبر ADB وقم بتشغيل:';
 
   @override
   String get overlayPermissionGuide =>
-      'لا يمكن فتح إعدادات إذن التراكب تلقائيًا.\n\nلتمكين النوافذ المنبثقة على التطبيقات الأخرى، قم بتوصيل التلفزيون الخاص بك عبر ADB وقم بتشغيل:';
+      'لا يمكن فتح إعدادات إذن التراكب تلقائيًا.\n\nلتمكين النوافذ المنبثقة على التطبيقات الأخرى، قم بتوصيل الجهاز الخاص بك عبر ADB وقم بتشغيل:';
 
   @override
   String get watchNextPermissionGuide =>
-      'لقراءة بطاقات متابعة المشاهدة من التطبيقات الأخرى، يتطلب Android TV وجود READ_WRITE_WATCH_NEXT_PROGRAMS.\n\nقم بتوصيل التلفزيون الخاص بك عبر ADB وقم بتشغيل:';
+      'لقراءة بطاقات متابعة المشاهدة من التطبيقات الأخرى، يتطلب Android TV وجود READ_WRITE_WATCH_NEXT_PROGRAMS.\n\nقم بتوصيل الجهاز الخاص بك عبر ADB وقم بتشغيل:';
 
   @override
   String get watchNextAccess => 'متابعة مشاهدة الوصول';
@@ -1829,7 +1829,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get adbAuthorization =>
-      'قم باعتماد ترخيص ADB على التلفزيون، ثم حاول مرة أخرى.';
+      'قم باعتماد ترخيص ADB على الجهاز، ثم حاول مرة أخرى.';
 
   @override
   String get adbChangeConfirm =>
@@ -1850,7 +1850,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get adbHint =>
-      'النموذج الأولي لهذا التلفزيون فقط (127.0.0.1). قم بتمكين TCP ADB في خيارات المطور، وأدخل المنفذ الخاص به وقم بالموافقة على مطالبة التفويض على التلفزيون. تصحيح الأخطاء اللاسلكية باستخدام رمز الاقتران غير مدعوم حتى الآن. يبقى المفتاح الخاص على هذا الجهاز، خارج النسخ الاحتياطية.';
+      'النموذج الأولي لهذا الجهاز فقط (127.0.0.1). قم بتمكين TCP ADB في خيارات المطور، وأدخل المنفذ الخاص به وقم بالموافقة على مطالبة التفويض على الجهاز. تصحيح الأخطاء اللاسلكية باستخدام رمز الاقتران غير مدعوم حتى الآن. يبقى المفتاح الخاص على هذا الجهاز، خارج النسخ الاحتياطية.';
 
   @override
   String get adbHome => 'اجعل CuteLauncher هو تطبيق المنزل';
@@ -1889,7 +1889,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get nightModeScope =>
-      'هناك حاجة إلى إذن تراكب لتعتيم التطبيقات الأخرى. بدونها، يعمل التعتيم داخل CuteLauncher. لا يحتاج مرشح TCL إلى إذن تراكب. التعتيم الذي يزيد عن 80% قد يمنع Android الإدخال باللمس في التطبيقات الأخرى؛ لا تزال مفاتيح التحكم عن بعد الخاصة بالتلفزيون تعمل.';
+      'هناك حاجة إلى إذن تراكب لتعتيم التطبيقات الأخرى. بدونها، يعمل التعتيم داخل CuteLauncher. لا يحتاج مرشح TCL إلى إذن تراكب. التعتيم الذي يزيد عن 80% قد يمنع Android الإدخال باللمس في التطبيقات الأخرى؛ لا تزال مفاتيح التحكم عن بعد الخاصة بالجهاز تعمل.';
 
   @override
   String get nightModeEnd => 'نهاية';
@@ -1905,7 +1905,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get nightModeScheduleHint =>
-      'يستخدم وقت التلفزيون المحلي. يتم دعم فترات بين عشية وضحاها. تعمل أوقات البدء والانتهاء المتساوية على تعطيل عامل التصفية المجدول.';
+      'يستخدم وقت الجهاز المحلي. يتم دعم فترات بين عشية وضحاها. تعمل أوقات البدء والانتهاء المتساوية على تعطيل عامل التصفية المجدول.';
 
   @override
   String get nightModeEnabled => 'تمكين الوضع الليلي';
@@ -1964,11 +1964,11 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get diagnosticsSharingNotice =>
-      'أرسل الملف إلى المؤلف برسالة خاصة ولا تنشره علنًا: قد يفوت التنقيح التلقائي بعض البيانات الشخصية. بإرسال التقرير توافق على نشر تقرير توافق تلفاز مجهّل الهوية في مستودع Git لتطبيق CuteLauncher. تُنشر فقط بيانات الجهاز الوصفية وتوفّر الوظائف دون بيانات شخصية؛ ولا تُنشر سجلات الأخطاء أو الأوامر أو إعداداتك.\n\nيتضمن التقرير أيضًا الحزم المثبتة وأسماءها وإصداراتها وحالة تفعيلها، وأسماء الأقسام ومحتوياتها وترتيبها وظهورها. تُحفظ المعرّفات والأسماء للتشخيص؛ ولا تُنشر قوائم التطبيقات والأقسام.';
+      'أرسل الملف إلى المؤلف برسالة خاصة ولا تنشره علنًا: قد يفوت التنقيح التلقائي بعض البيانات الشخصية. بإرسال التقرير توافق على نشر تقرير توافق جهاز مجهّل الهوية في مستودع Git لتطبيق CuteLauncher. تُنشر فقط بيانات الجهاز الوصفية وتوفّر الوظائف دون بيانات شخصية؛ ولا تُنشر سجلات الأخطاء أو الأوامر أو إعداداتك.\n\nيتضمن التقرير أيضًا الحزم المثبتة وأسماءها وإصداراتها وحالة تفعيلها، وأسماء الأقسام ومحتوياتها وترتيبها وظهورها. تُحفظ المعرّفات والأسماء للتشخيص؛ ولا تُنشر قوائم التطبيقات والأقسام.';
 
   @override
   String get diagnosticsHint =>
-      'يجمع تقرير واحد توافق وظائف التلفاز وتشخيص الأخطاء. يتضمن التقرير طراز التلفاز وبرنامجه الثابت وإصدار التطبيق والأذونات والذاكرة ومراحل الأخطاء وأسبابها والأوامر والردود بعد التنقيح التلقائي للبيانات الشخصية. يحتفظ بآخر 50 عملية وبما يصل إلى 100 فشل بشكل منفصل وسجل ADB محدود للجلسة الحالية. تمسح إعادة التشغيل السجل. قد تبقى بيانات شخصية: أرسل الملف برسالة خاصة ولا تنشره علنًا. لا يُرسل شيء تلقائيًا. تُحفظ مع كل خطأ لقطة للإعدادات المطبّقة، ولا تستبدلها التغييرات اللاحقة.\n\nيتضمن التقرير أيضًا الحزم المثبتة وأسماءها وإصداراتها وحالة تفعيلها، وأسماء الأقسام ومحتوياتها وترتيبها وظهورها. تُحفظ المعرّفات والأسماء للتشخيص؛ ولا تُنشر قوائم التطبيقات والأقسام.';
+      'يجمع تقرير واحد توافق وظائف الجهاز وتشخيص الأخطاء. يتضمن التقرير طراز الجهاز وبرنامجه الثابت وإصدار التطبيق والأذونات والذاكرة ومراحل الأخطاء وأسبابها والأوامر والردود بعد التنقيح التلقائي للبيانات الشخصية. يحتفظ بآخر 50 عملية وبما يصل إلى 100 فشل بشكل منفصل وسجل ADB محدود للجلسة الحالية. تمسح إعادة التشغيل السجل. قد تبقى بيانات شخصية: أرسل الملف برسالة خاصة ولا تنشره علنًا. لا يُرسل شيء تلقائيًا. تُحفظ مع كل خطأ لقطة للإعدادات المطبّقة، ولا تستبدلها التغييرات اللاحقة.\n\nيتضمن التقرير أيضًا الحزم المثبتة وأسماءها وإصداراتها وحالة تفعيلها، وأسماء الأقسام ومحتوياتها وترتيبها وظهورها. تُحفظ المعرّفات والأسماء للتشخيص؛ ولا تُنشر قوائم التطبيقات والأقسام.';
 
   @override
   String get diagnosticsTitle => 'تشخيص الأخطاء';
@@ -1991,7 +1991,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get tclBlueLightUnsupported =>
-      'واجهة مرشح TCL غير متوفرة على هذا التلفزيون.';
+      'واجهة مرشح TCL غير متوفرة على هذا الجهاز.';
 
   @override
   String get tclBlueLightRefresh => 'قم بتحديث حالة عامل التصفية TCL';
@@ -2008,7 +2008,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get nightScheduleTimeHint =>
-      'تستخدم الأوقات المنطقة الزمنية للتلفزيون. الإزاحات السلبية سابقة؛ الإزاحات الإيجابية تأتي في وقت لاحق.';
+      'تستخدم الأوقات المنطقة الزمنية للجهاز. الإزاحات السلبية سابقة؛ الإزاحات الإيجابية تأتي في وقت لاحق.';
 
   @override
   String get nightTemperature => 'تصفية درجة حرارة اللون';
@@ -2096,7 +2096,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get nightSolarAttribution =>
-      'تُجلب أوقات الشروق والغروب من Sunrise-Sunset.org، ويُستخدم GeoNames عند تعذر ذلك. عند انقطاع الإنترنت تُحسب الأوقات الناقصة على التلفزيون.';
+      'تُجلب أوقات الشروق والغروب من Sunrise-Sunset.org، ويُستخدم GeoNames عند تعذر ذلك. عند انقطاع الإنترنت تُحسب الأوقات الناقصة على الجهاز.';
 
   @override
   String get nightTemporaryOn => 'يتم التعتيم مؤقتًا حتى';
@@ -2114,7 +2114,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get advancedSettings => 'متقدم';
 
   @override
-  String get controlAndStartup => 'الضوابط مشغّل والتلفزيون';
+  String get controlAndStartup => 'المشغّل والتحكم بالجهاز';
 
   @override
   String get sectionsAndOrder => 'الأقسام والترتيب';
@@ -2213,7 +2213,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get followTileStyle => 'اتبع الاسلوب';
 
   @override
-  String get androidTvSettingsHint => 'افتح إعدادات نظام التلفزيون';
+  String get androidTvSettingsHint => 'افتح إعدادات نظام الجهاز';
 
   @override
   String get autoHideTopPanel => 'إخفاء اللوحة تلقائيًا';
@@ -2467,7 +2467,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get adbTlsHint =>
-      'استخدم تصحيح الأخطاء اللاسلكية في خيارات المطور. الاقتران والاتصال لهما منافذ مختلفة. إذا كان البرنامج الثابت الخاص بك لا يحتوي على شاشة رمز الاقتران أو يحظر تراكب النوافذ، فاستخدم TCP / RSA بدلاً من ذلك. تظل كافة الاتصالات محلية لهذا التلفزيون.';
+      'استخدم تصحيح الأخطاء اللاسلكية في خيارات المطور. الاقتران والاتصال لهما منافذ مختلفة. إذا كان البرنامج الثابت الخاص بك لا يحتوي على شاشة رمز الاقتران أو يحظر تراكب النوافذ، فاستخدم TCP / RSA بدلاً من ذلك. تظل كافة الاتصالات محلية لهذا الجهاز.';
 
   @override
   String get adbPaired =>
@@ -2524,7 +2524,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get adbTwoWindows => 'افتح الإعدادات في نافذة ثانية';
 
   @override
-  String get autoLaunchBoot => 'بعد تمهيد التلفزيون';
+  String get autoLaunchBoot => 'بعد تمهيد الجهاز';
 
   @override
   String get autoLaunchOff => 'معطل';
@@ -2543,7 +2543,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get autoLaunchHint =>
-      'اختر تطبيقًا أو إدخال HDMI لفتحه بعد بدء تشغيل التلفزيون أو تنبيهه. قم بتعيين الحدث والتأخير أدناه. يتم تشغيل الإجراء مرة واحدة عندما يعرض Android CuteLauncher. أي إدخال عن بعد أو مغادرة الشاشة الرئيسية يلغي الانتظار. يمكنك تغيير مدخلات HDMI بحرية بعد ذلك. قم بتعيين CuteLauncher كمشغل افتراضي أو قم بتمكين البدء عند التمهيد إذا لزم الأمر. يتطلب اكتشاف التنبيه أن يظل CuteLauncher قيد التشغيل.';
+      'اختر تطبيقًا أو إدخال HDMI لفتحه بعد بدء تشغيل الجهاز أو تنبيهه. قم بتعيين الحدث والتأخير أدناه. يتم تشغيل الإجراء مرة واحدة عندما يعرض Android CuteLauncher. أي إدخال عن بعد أو مغادرة الشاشة الرئيسية يلغي الانتظار. يمكنك تغيير مدخلات HDMI بحرية بعد ذلك. قم بتعيين CuteLauncher كمشغل افتراضي أو قم بتمكين البدء عند التمهيد إذا لزم الأمر. يتطلب اكتشاف التنبيه أن يظل CuteLauncher قيد التشغيل.';
 
   @override
   String autoLaunchSeconds(int seconds) {
@@ -2646,7 +2646,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get cloudDisconnectConfirm =>
-      'هل تريد إزالة هذا الحساب من التلفزيون؟ ستبقى النسخ في السحابة.';
+      'هل تريد إزالة هذا الحساب من الجهاز؟ ستبقى النسخ في السحابة.';
 
   @override
   String get cloudUpload => 'حفظ نسخة إلى السحابة';
@@ -2700,7 +2700,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get adbSetupIntro =>
-      'قم بتمكين تصحيح الأخطاء والشبكة ADB في إعدادات مطور التلفزيون، ثم ثق بـ CuteLauncher. جميع إجراءات ADB تكون على مسؤوليتك الخاصة.';
+      'قم بتمكين تصحيح الأخطاء والشبكة ADB في إعدادات مطور الجهاز، ثم ثق بـ CuteLauncher. جميع إجراءات ADB تكون على مسؤوليتك الخاصة.';
 
   @override
   String get adbConnectionBlock => 'اتصال ADB';
@@ -2732,7 +2732,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get adbBuiltinHint =>
-      'قد يؤدي تعطيل المشغّل المدمج إلى توقف بعض أزرار جهاز التحكم عن بُعد وقوائم التلفزيون الخاصة بالشركة المصنّعة عن العمل. للتراجع عن ذلك، أعد تفعيل المشغّل المدمج.';
+      'قد يؤدي تعطيل المشغّل المدمج إلى توقف بعض أزرار جهاز التحكم عن بُعد وقوائم الجهاز الخاصة بالشركة المصنّعة عن العمل. للتراجع عن ذلك، أعد تفعيل المشغّل المدمج.';
 
   @override
   String get adbHomeBlock => 'زر الصفحة الرئيسية وبدء التشغيل';
@@ -2745,7 +2745,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get adbHomeOptional =>
-      'إذا تم تعطيل المشغل المدمج، فإن تجاوز الصفحة الرئيسية والتشغيل عند بدء تشغيل التلفزيون يعد أمرًا اختياريًا.';
+      'إذا تم تعطيل المشغل المدمج، فإن تجاوز الصفحة الرئيسية والتشغيل عند بدء تشغيل الجهاز يعد أمرًا اختياريًا.';
 
   @override
   String get adbEnableBuiltin => 'تمكين المشغل المدمج عبر ADB';
@@ -2771,7 +2771,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get adbEffectDisable =>
-      'سيتم تعطيل تطبيق Launcher المدمج لمستخدم التلفزيون. قد تتوقف قوائم وأزرار التلفزيون عن العمل. لم يتم إلغاء تثبيت التطبيق.';
+      'سيتم تعطيل تطبيق Launcher المدمج لمستخدم الجهاز. قد تتوقف قوائم وأزرار الجهاز عن العمل. لم يتم إلغاء تثبيت التطبيق.';
 
   @override
   String get adbRecoveryHomeDisable =>
@@ -2854,7 +2854,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get nightBatteryGuide =>
-      '1. في إعدادات التطبيقات، افتح الوصول الخاص للتطبيقات.\n2. حدد تحسين البطارية (أحيانًا توفير الطاقة).\n3. ابحث عن CuteLauncher؛ حدد جميع التطبيقات إذا لزم الأمر.\n4. قم بتعطيل التحسين أو حدد غير مقيد.\nتعتمد أسماء القائمة ومدى توفرها على البرامج الثابتة للتلفزيون.';
+      '1. في إعدادات التطبيقات، افتح الوصول الخاص للتطبيقات.\n2. حدد تحسين البطارية (أحيانًا توفير الطاقة).\n3. ابحث عن CuteLauncher؛ حدد جميع التطبيقات إذا لزم الأمر.\n4. قم بتعطيل التحسين أو حدد غير مقيد.\nتعتمد أسماء القائمة ومدى توفرها على البرامج الثابتة للجهاز.';
 
   @override
   String get updateNotifications => 'إظهار إشعارات التحديث';
@@ -2960,23 +2960,23 @@ class AppLocalizationsAr extends AppLocalizations {
   String get backupSaveMode => 'النسخ الاحتياطي';
 
   @override
-  String get backupScope => 'النسخ الاحتياطي عبر أجهزة التلفاز';
+  String get backupScope => 'النسخ الاحتياطي عبر الأجهزة';
 
   @override
-  String get backupSyncScope => 'التزامن عبر أجهزة التلفاز';
+  String get backupSyncScope => 'التزامن عبر الأجهزة';
 
   @override
-  String get backupSeparate => 'منفصلة لكل تلفزيون';
+  String get backupSeparate => 'منفصلة لكل جهاز';
 
   @override
-  String get backupShared => 'نفس الإعدادات لجميع أجهزة التلفاز';
+  String get backupShared => 'نفس الإعدادات لجميع الأجهزة';
 
   @override
   String get backupStorage => 'التخزين';
 
   @override
   String get backupSyncHelp =>
-      'تنزيل البيانات وتحميل التغييرات. التغيير الأخير يفوز بالصراعات. يجب أن تكون ساعات التلفاز صحيحة. يتم تشغيل المزامنة أثناء فتح المشغل.';
+      'تنزيل البيانات وتحميل التغييرات. التغيير الأخير يفوز بالصراعات. يجب أن تكون ساعات الأجهزة صحيحة. يتم تشغيل المزامنة أثناء فتح المشغل.';
 
   @override
   String get backupSyncLimit => 'لا تحقق أكثر من ذلك';
@@ -3001,7 +3001,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get backupLocalHelp =>
-      'يتم حذف النسخ المحلية مع التطبيق أو بياناته. احتفظ بنسخة خارج التلفزيون أيضًا.';
+      'يتم حذف النسخ المحلية مع التطبيق أو بياناته. احتفظ بنسخة خارج الجهاز أيضًا.';
 
   @override
   String get panelObjectOrder => 'ترتيب العناصر';
@@ -3187,7 +3187,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get backupFolderPickerUnavailable =>
-      'لا يتوفر منتقي المجلدات على هذا التلفزيون. اختر التنزيلات / CuteLauncher أو مجلد التطبيق الداخلي.';
+      'لا يتوفر منتقي المجلدات على هذا الجهاز. اختر التنزيلات / CuteLauncher أو مجلد التطبيق الداخلي.';
 
   @override
   String get driveConfigurationError =>
@@ -3216,14 +3216,14 @@ class AppLocalizationsAr extends AppLocalizations {
   String get backupSyncDisplayGroup => 'الوضع الليلي والسطوع وشاشة التوقف';
 
   @override
-  String get backupSyncControlsGroup => 'الضوابط مشغّل والتلفزيون';
+  String get backupSyncControlsGroup => 'المشغّل والتحكم بالجهاز';
 
   @override
   String get backupSyncGeneralGroup => 'اللغة والتحديثات والإعدادات الأخرى';
 
   @override
   String get backupSyncGroupsHelp =>
-      'تبقى الكتل المعطلة على هذا التلفاز. اختر كتل المزامنة لكل جهاز على حدة.';
+      'تبقى الكتل المعطلة على هذا الجهاز. اختر كتل المزامنة لكل جهاز على حدة.';
 
   @override
   String get backupSyncGroupsFailed =>
@@ -3422,6 +3422,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get homeSectionIcons => 'ايقونات القسم';
 
   @override
+  String get sectionTitleIcon => 'أيقونة عنوان القسم';
+
+  @override
+  String get sectionIconPhotos => 'الصور';
+
+  @override
+  String get sectionIconFolder => 'مجلد';
+
+  @override
   String get homeInactiveTransparency => 'شفافية الأقسام غير النشطة';
 
   @override
@@ -3559,7 +3568,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get nightIgnoreHdmiInputsHint =>
-      'قم بإيقاف الفلتر الليلي مؤقتًا أثناء مشاهدة HDMI. مطلوب الوصول إلى الاستخدام؛ يعتمد اكتشاف الإدخال على البرامج الثابتة للتلفزيون.';
+      'قم بإيقاف الفلتر الليلي مؤقتًا أثناء مشاهدة HDMI. مطلوب الوصول إلى الاستخدام؛ يعتمد اكتشاف الإدخال على البرامج الثابتة للجهاز.';
 
   @override
   String get inputsSettings => 'إعدادات الإدخال';
@@ -3856,7 +3865,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'تم تعيين هذا الزر ونوع الضغط بالفعل. اختر زرًا أو نوع ضغط آخر.';
 
   @override
-  String get cleanerTitle => 'TV cleanup manager';
+  String get cleanerTitle => 'مدير تنظيف الجهاز';
 
   @override
   String get cleanerRefresh => 'Refresh applications';
@@ -4073,8 +4082,17 @@ class AppLocalizationsAr extends AppLocalizations {
   String get landscapeMotion => 'Animate weather';
 
   @override
+  String get landscapeSunrise => 'الشروق';
+
+  @override
+  String get landscapeSunset => 'الغروب';
+
+  @override
+  String get landscapeScheduleCurrent => 'الجدول المستخدم';
+
+  @override
   String get landscapeHelp =>
-      'Time follows cached sunrise and sunset from Night mode; without them, dawn is at 06:00 and dusk at 18:00, with 40-minute transitions around each. Seasons follow the local month and hemisphere; automatic hemisphere uses weather coordinates, then Night mode coordinates, then the Northern Hemisphere. With time of day off, the scene stays in daylight; with seasons off, it stays in summer. Weather uses current data from the selected weather source, without extra requests. Missing or stale weather shows clear skies. Clouds, precipitation and fog can be disabled independently. Motion is off by default, stops when Home is hidden, and is disabled in memory saving mode or when reduced motion is requested.';
+      'في الوضع التلقائي يُحسب الشروق والغروب محليًا باستخدام الموقع المحفوظ. إذا تعذر الحساب، تُستخدم أوقات الجدول المخصص. Seasons follow the local month and hemisphere; automatic hemisphere uses weather coordinates, then Night mode coordinates, then the Northern Hemisphere. With time of day off, the scene stays in daylight; with seasons off, it stays in summer. Weather uses current data from the selected weather source, without extra requests. Missing or stale weather shows clear skies. Clouds, precipitation and fog can be disabled independently. Motion is off by default, stops when Home is hidden, and is disabled in memory saving mode or when reduced motion is requested.';
 
   @override
   String get inputConnected => 'Connected';
@@ -4090,7 +4108,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get weatherMetNorwayCredit =>
-      'Data: MET Norway, CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Forecast adapted from https://api.met.no/. No API key; days use the TV time zone, min/max cover available periods. Precipitation probability is unavailable.';
+      'Data: MET Norway, CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Forecast adapted from https://api.met.no/. No API key; days use the device time zone, min/max cover available periods. Precipitation probability is unavailable.';
 
   @override
   String get informationGroup => 'الساعة والتاريخ والطقس';
@@ -4228,7 +4246,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get tvPowerHelp =>
-      'الإيقاف يفعّل الاستعداد عبر خدمة تسهيل الاستخدام في CuteLauncher أو ADB المحلي. تتطلب إعادة التشغيل ADB. على جهاز التلفاز الخارجي يتحكم الأمر بالجهاز نفسه؛ يعتمد التلفاز على HDMI-CEC والبرنامج الثابت.';
+      'السكون يفعّل الاستعداد عبر خدمة تسهيل الاستخدام في CuteLauncher أو ADB المحلي. يتطلب إيقاف التشغيل وإعادة التشغيل ADB المحلي. على جهاز التلفاز الخارجي يتحكم الأمر بالجهاز نفسه؛ يعتمد التلفاز على HDMI-CEC والبرنامج الثابت.';
 
   @override
   String get cleanerLists => 'قوائم التعطيل';
@@ -4303,15 +4321,15 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get cleanerAlreadyDisabled =>
-      'جميع تطبيقات هذه القائمة الموجودة على هذا التلفاز معطلة بالفعل.';
+      'جميع تطبيقات هذه القائمة الموجودة على هذا الجهاز معطلة بالفعل.';
 
   @override
   String get cleanerAlreadyEnabled =>
-      'جميع تطبيقات هذه القائمة الموجودة على هذا التلفاز مفعلة بالفعل.';
+      'جميع تطبيقات هذه القائمة الموجودة على هذا الجهاز مفعلة بالفعل.';
 
   @override
   String get cleanerNoInstalled =>
-      'لا توجد تطبيقات مطابقة من هذه القائمة مثبتة على هذا التلفاز.';
+      'لا توجد تطبيقات مطابقة من هذه القائمة مثبتة على هذا الجهاز.';
 
   @override
   String get cleanerListProtected => 'التطبيقات المتبقية محمية من التعطيل.';
@@ -4437,7 +4455,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get backgroundMediaFormats =>
-      'الصور: JPEG وPNG وWebP وGIF وBMP — حتى 8 MiB و48 ميغابكسل و16,384 بكسل لكل جانب.\nالفيديو: MP4/M4V وWebM وMKV — حتى 256 MiB و3840×2160. دعم الترميز حسب التلفاز؛ يفضّل MP4 مع H.264. يتكرر دون صوت ويتوقف خارج الشاشة الرئيسية. لا يُضمّن في النسخ الاحتياطية.';
+      'الصور: JPEG وPNG وWebP وGIF وBMP — حتى 8 MiB و48 ميغابكسل و16,384 بكسل لكل جانب.\nالفيديو: MP4/M4V وWebM وMKV — حتى 256 MiB و3840×2160. دعم الترميز حسب الجهاز؛ يفضّل MP4 مع H.264. يتكرر دون صوت ويتوقف خارج الشاشة الرئيسية. لا يُضمّن في النسخ الاحتياطية.';
 
   @override
   String get backgroundFormatError =>
@@ -4700,7 +4718,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get vpnOther => 'يوجد اتصال VPN آخر أو غير معروف. التحكم غير متاح.';
 
   @override
-  String get vpnStartup => 'VPN عند بدء تشغيل التلفاز';
+  String get vpnStartup => 'VPN عند بدء تشغيل الجهاز';
 
   @override
   String get vpnPending => 'بانتظار اتصال VPN';
@@ -4731,11 +4749,11 @@ class AppLocalizationsAr extends AppLocalizations {
       'يدير Android هذا الاتصال في وضع VPN دائم التشغيل. عطّل الوضع في إعدادات بدء التشغيل أو Android.';
 
   @override
-  String get vpnRestartRequired => 'أعد تشغيل التلفاز لتطبيق وضع النظام.';
+  String get vpnRestartRequired => 'أعد تشغيل الجهاز لتطبيق وضع النظام.';
 
   @override
   String get vpnAlwaysOnHelp =>
-      'يعيّن عميلًا معدًّا كاتصال VPN دائم التشغيل عبر ADB TCP المحلي. يطبّق Android الاختيار بعد إعادة تشغيل التلفاز. لا يتم تفعيل أو تغيير حظر الاتصالات دون VPN. تعيد مغادرة الوضع اختيار النظام السابق.';
+      'يعيّن عميلًا معدًّا كاتصال VPN دائم التشغيل عبر ADB TCP المحلي. يطبّق Android الاختيار بعد إعادة تشغيل الجهاز. لا يتم تفعيل أو تغيير حظر الاتصالات دون VPN. تعيد مغادرة الوضع اختيار النظام السابق.';
 
   @override
   String get vpnClientConfirmation => 'أكّد الأمر في نافذة MantaRay.';
@@ -4837,7 +4855,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get weatherForecastTvTime => 'تواريخ التوقعات حسب توقيت التلفاز';
+  String get weatherForecastTvTime => 'تواريخ التوقعات حسب توقيت الجهاز';
 
   @override
   String get weatherClear => 'صافٍ';
@@ -4861,7 +4879,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get audioStatusTitle => 'مستوى الصوت ومخرج الصوت';
 
   @override
-  String get audioOutputTv => 'التلفاز';
+  String get audioOutputTv => 'مكبرات الصوت';
 
   @override
   String get audioOutputHeadphones => 'سماعات الرأس';
@@ -4892,7 +4910,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get backgroundStartupHelp =>
-      'حدد التطبيقات لتشغيلها مرة واحدة في الخلفية بعد إقلاع التلفاز. يجب فتح CuteLauncher خلال دقيقة: عيّنه شاشة رئيسية أو فعّل تشغيله عند الإقلاع. تبدأ التطبيقات بالتتابع خلف الشاشة الرئيسية؛ تحديدها لا يشغلها فورًا. استخدام جهاز التحكم أو مغادرة المشغّل يلغي عمليات التشغيل المتبقية. الاستيقاظ من السكون لا يعيد تشغيلها. لا يمكن تحديد التطبيقات غير المتوافقة. التشغيل لا يفعّل ميزات داخل التطبيق ولا يضمن العمل المستمر. امنح الأذونات واضبط العمل في الخلفية داخل التطبيق نفسه. قد يوقفه Android أو نظام التلفاز. تُحفظ الاختيارات على هذا التلفاز فقط.';
+      'حدد التطبيقات لتشغيلها مرة واحدة في الخلفية بعد إقلاع الجهاز. يجب فتح CuteLauncher خلال دقيقة: عيّنه شاشة رئيسية أو فعّل تشغيله عند الإقلاع. تبدأ التطبيقات بالتتابع خلف الشاشة الرئيسية؛ تحديدها لا يشغلها فورًا. استخدام جهاز التحكم أو مغادرة المشغّل يلغي عمليات التشغيل المتبقية. الاستيقاظ من السكون لا يعيد تشغيلها. لا يمكن تحديد التطبيقات غير المتوافقة. التشغيل لا يفعّل ميزات داخل التطبيق ولا يضمن العمل المستمر. امنح الأذونات واضبط العمل في الخلفية داخل التطبيق نفسه. قد يوقفه Android أو نظام الجهاز. تُحفظ الاختيارات على هذا الجهاز فقط.';
 
   @override
   String get backgroundStartupToggle => 'التشغيل التلقائي في الخلفية';
@@ -4961,7 +4979,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get slideshowPickerUnavailable =>
-      'لا يحتوي هذا التلفاز على منتقي مجلدات. استخدم المتصفح المدمج أو أدخل المسار يدويًا.';
+      'لا يحتوي هذا الجهاز على منتقي مجلدات. استخدم المتصفح المدمج أو أدخل المسار يدويًا.';
 
   @override
   String get slideshowFolderUnavailable =>
@@ -4969,7 +4987,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get slideshowStorageHelp =>
-      'يقرأ المتصفح المدمج مجلدات التلفاز ووحدات التخزين المتصلة. في Android 11 أو أحدث، اسمح بالوصول إلى جميع الملفات؛ وفي Android 9–10، اسمح بالوصول إلى التخزين. يمكنك إدخال مسار مثل /storage/emulated/0/Pictures. لا يتم تعديل الملفات.';
+      'يقرأ المتصفح المدمج مجلدات الجهاز ووحدات التخزين المتصلة. في Android 11 أو أحدث، اسمح بالوصول إلى جميع الملفات؛ وفي Android 9–10، اسمح بالوصول إلى التخزين. يمكنك إدخال مسار مثل /storage/emulated/0/Pictures. لا يتم تعديل الملفات.';
 
   @override
   String get fileBrowserTitle => 'اختيار ملف';
@@ -5007,7 +5025,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get appChannelsHelp =>
-      'اختر حتى 16 خلاصة. يعتمد توفرها على القنوات التي تنشرها التطبيقات والبرنامج الثابت للتلفاز. تُخفى الخلاصات الفارغة. يُحفظ الاختيار على هذا التلفاز.';
+      'اختر حتى 16 خلاصة. يعتمد توفرها على القنوات التي تنشرها التطبيقات والبرنامج الثابت للجهاز. تُخفى الخلاصات الفارغة. يُحفظ الاختيار على هذا الجهاز.';
 
   @override
   String get appChannelsUnavailable =>
@@ -5040,6 +5058,36 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get wallpaperRefresh => 'تحديث الخلفية';
+
+  @override
+  String get quickActionsTitle => 'إجراءات سريعة';
+
+  @override
+  String get quickActionsSettings => 'إعدادات الإجراءات السريعة';
+
+  @override
+  String get quickActionsEmpty => 'اختر الأوامر في إعدادات القائمة.';
+
+  @override
+  String get quickActionsWallpaperUnavailable =>
+      'لا يمكن تغيير هذه الخلفية يدويًا.';
+
+  @override
+  String get quickActionsWallpaperFailed => 'تعذّر تحديث الخلفية.';
+
+  @override
+  String get quickActionsSleep => 'السكون';
+
+  @override
+  String get quickActionsShutdownConfirm =>
+      'هل تريد إيقاف تشغيل الجهاز بالكامل؟';
+
+  @override
+  String get quickActionsScreensaverUnavailable => 'يتعذر تشغيل شاشة التوقف.';
+
+  @override
+  String get quickActionsPowerHelp =>
+      'يتطلب السكون خدمة تسهيل الاستخدام في CuteLauncher أو ADB المحلي. يتطلب إيقاف التشغيل وإعادة التشغيل ADB المحلي.';
 
   @override
   String get wallpaperDimmingHelp =>
@@ -5205,11 +5253,14 @@ class AppLocalizationsAr extends AppLocalizations {
   String get remoteMappingBlackScreen => 'تبديل Black Screen';
 
   @override
+  String get remoteMappingToggleNightMode => 'تبديل الوضع الليلي';
+
+  @override
   String get remoteMappingBlackOverlay => 'شاشة سوداء';
 
   @override
   String get remoteMappingBlackOverlayHelp =>
-      'اضغط مرة لإخفاء الصورة ومرة أخرى أو اضغط رجوع لإعادتها. يظل التلفاز قيد التشغيل.';
+      'اضغط مرة لإخفاء الصورة ومرة أخرى أو اضغط رجوع لإعادتها. يظل الجهاز قيد التشغيل.';
 
   @override
   String get remoteMappingTclScreenOff => 'إطفاء شاشة TCL';
@@ -5302,7 +5353,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get feedFormatHelp =>
-      'يختار الوضع التلقائي تنسيقًا واحدًا لكل خلاصة من بيانات التطبيق أو أول ثلاثة أغلفة محملة ويحفظه على هذا التلفاز. عند التعادل يُستخدم الأفقي. تُعرض النسب الأخرى كاملة على خلفية. يمكنك اختيار التنسيق يدويًا.';
+      'يختار الوضع التلقائي تنسيقًا واحدًا لكل خلاصة من بيانات التطبيق أو أول ثلاثة أغلفة محملة ويحفظه على هذا الجهاز. عند التعادل يُستخدم الأفقي. تُعرض النسب الأخرى كاملة على خلفية. يمكنك اختيار التنسيق يدويًا.';
 
   @override
   String get networkSpeedTitle => 'سرعة الشبكة';
@@ -5368,13 +5419,13 @@ class AppLocalizationsAr extends AppLocalizations {
       'تعذرت مزامنة الإعدادات. تحقق من الوصول إلى التخزين وحاول مجددًا.';
 
   @override
-  String get backupThisTv => 'هذا التلفاز';
+  String get backupThisTv => 'هذا الجهاز';
 
   @override
-  String get backupOtherTv => 'تلفاز آخر';
+  String get backupOtherTv => 'جهاز آخر';
 
   @override
-  String get backupTvUnknown => 'التلفاز غير معروف';
+  String get backupTvUnknown => 'جهاز غير معروف';
 
   @override
   String get panelTooltips => 'إظهار التلميحات المنبثقة في اللوحات';
@@ -5605,7 +5656,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get fileBrowserStartFolder => 'مجلد البداية';
 
   @override
-  String get fileBrowserStorage => 'تخزين التلفزيون';
+  String get fileBrowserStorage => 'تخزين الجهاز';
 
   @override
   String get fileBrowserDownloads => 'التنزيلات';
@@ -5645,7 +5696,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get fileBrowserOptionsHelp =>
-      'يُفتح المجلد المحدد أو المجلد الأصلي للصورة المحددة أولاً. يتم تذكر آخر مجلد مفتوح لكل إجراء على حدة، حتى بعد الإلغاء. إذا كان المجلد غير متاح، يُفتح تخزين التلفزيون أو التنزيلات. يبقى سجل المجلدات على هذا التلفزيون فقط.';
+      'يُفتح المجلد المحدد أو المجلد الأصلي للصورة المحددة أولاً. يتم تذكر آخر مجلد مفتوح لكل إجراء على حدة، حتى بعد الإلغاء. إذا كان المجلد غير متاح، يُفتح تخزين الجهاز أو التنزيلات. يبقى سجل المجلدات على هذا الجهاز فقط.';
 
   @override
   String get fileBrowserSaveFailed => 'تعذر حفظ إعدادات متصفح الملفات.';
@@ -5809,20 +5860,20 @@ class AppLocalizationsAr extends AppLocalizations {
   String get backupSyncResume => 'استئناف المزامنة';
 
   @override
-  String get backupSyncUseLocal => 'استخدام إعدادات هذا التلفزيون';
+  String get backupSyncUseLocal => 'استخدام إعدادات هذا الجهاز';
 
   @override
   String get backupSyncUseRemote => 'استخدام إعدادات التخزين';
 
   @override
-  String get backupSyncMergeLocal => 'دمج مع أولوية لهذا التلفزيون';
+  String get backupSyncMergeLocal => 'دمج مع أولوية لهذا الجهاز';
 
   @override
   String get backupSyncMergeRemote => 'دمج مع أولوية للتخزين';
 
   @override
   String backupSyncPreviousDate(String date) {
-    return 'آخر مزامنة لهذا التلفزيون: $date';
+    return 'آخر مزامنة لهذا الجهاز: $date';
   }
 
   @override
@@ -5907,7 +5958,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get syncKeyHelp =>
-      'استخدم المفتاح نفسه على جميع أجهزة التلفاز لمزامنة الرموز والحسابات. أنشئه على جهاز وانقله إلى البقية. احتفظ به: لا يمكن قراءة البيانات المحمية بدونه. عند تغييره حدّث جميع الأجهزة. تبقى أذونات Android ومفاتيح العتاد محلية.';
+      'استخدم المفتاح نفسه على جميع الأجهزة لمزامنة الرموز والحسابات. أنشئه على جهاز وانقله إلى البقية. احتفظ به: لا يمكن قراءة البيانات المحمية بدونه. عند تغييره حدّث جميع الأجهزة. تبقى أذونات Android ومفاتيح العتاد محلية.';
 
   @override
   String get syncFiles => 'ملفات المزامنة';
@@ -5955,7 +6006,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get backupNoRemote =>
-      'لا توجد إعدادات في التخزين. سيرفع هذا التلفاز إعداداته.';
+      'لا توجد إعدادات في التخزين. سيرفع هذا الجهاز إعداداته.';
 
   @override
   String get backupSetupStart => 'تفعيل';
@@ -5971,18 +6022,18 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get backupAccountLocalHelp =>
-      'استخدم حسابًا متصلًا أو حسابًا آخر من النوع نفسه. تبقى بيانات الدخول على هذا التلفاز. تُدار ملفات النسخ والمزامنة بشكل منفصل.';
+      'استخدم حسابًا متصلًا أو حسابًا آخر من النوع نفسه. تبقى بيانات الدخول على هذا الجهاز. تُدار ملفات النسخ والمزامنة بشكل منفصل.';
 
   @override
   String get backupPasswordOptionalHelp =>
-      'اختياري. يُشفّر الملف كله بما فيه الرموز القابلة للنقل. دون كلمة مرور يبقى الملف غير مشفّر. القيمة الفارغة توقف التشفير. تحتاج التلفازات الأخرى إلى كلمة المرور نفسها.';
+      'اختياري. يُشفّر الملف كله بما فيه الرموز القابلة للنقل. دون كلمة مرور يبقى الملف غير مشفّر. القيمة الفارغة توقف التشفير. تحتاج الأجهزة الأخرى إلى كلمة المرور نفسها.';
 
   @override
   String get backupYandexDisk => 'Yandex Disk';
 
   @override
   String get backupYandexHelp =>
-      'أدخل Client ID وClient Secret لتطبيق Yandex OAuth لديه حق الوصول إلى مجلد التطبيق على Disk. اتصل وأكد الرمز على هاتفك. استخدم عميل OAuth والحساب نفسيهما على جميع أجهزة التلفاز للمشاركة.';
+      'أدخل Client ID وClient Secret لتطبيق Yandex OAuth لديه حق الوصول إلى مجلد التطبيق على Disk. اتصل وأكد الرمز على هاتفك. استخدم عميل OAuth والحساب نفسيهما على جميع الأجهزة للمشاركة.';
 
   @override
   String get backupYandexConnect => 'ربط Yandex Disk';
@@ -6050,5 +6101,5 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get backupExistingSettingsHelp =>
-      'تحتوي وحدة التخزين المحددة بالفعل على إعدادات مزامنة. اختر تطبيقها على هذا التلفزيون أو استبدالها بإعداداته أو دمجها. إذا اختلفت الإعدادات عند الدمج، فستُستخدم الأولوية التي تختارها. يبدأ التبادل بعد التأكيد في الخطوة الأخيرة من المعالج.';
+      'تحتوي وحدة التخزين المحددة بالفعل على إعدادات مزامنة. اختر تطبيقها على هذا الجهاز أو استبدالها بإعداداته أو دمجها. إذا اختلفت الإعدادات عند الدمج، فستُستخدم الأولوية التي تختارها. يبدأ التبادل بعد التأكيد في الخطوة الأخيرة من المعالج.';
 }

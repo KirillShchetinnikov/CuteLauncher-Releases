@@ -22,11 +22,11 @@ or following it. Expand Details for explanations of settings.
 
 ## Why does Home return to the stock launcher?
 
-In Launcher and TV controls, check the current home app and select CuteLauncher
+In Launcher and device controls, check the current home app and select CuteLauncher
 through the system launcher picker. If the firmware does not allow this, supported
 local ADB assignment and Home interception through the accessibility service are
 available. Their operation depends on the firmware. You can start without disabling
-the stock launcher. [Home app and TV controls](USER_GUIDE_EN.md#launcher-and-tv-controls).
+the stock launcher. [Home app and device controls](USER_GUIDE_EN.md#launcher-and-device-controls).
 
 ## Must I configure ADB and grant every permission?
 
@@ -168,7 +168,7 @@ If volume behavior gets worse, change the mode or disable the workaround.
 
 ## How do I remap a button and open quick settings over an app?
 
-In Launcher and TV controls → Remote button remapper, create a mapping, capture
+In Launcher and device controls → Remote button remapper, create a mapping, capture
 the button, choose the panel-opening action and save. Enable the mapping,
 accessibility service and required access for displaying over apps. Short and
 long presses are supported; Home supports only a long-press mapping. Power is
@@ -189,7 +189,7 @@ It changes package enabled states while keeping APKs and data. Local ADB is
 required; start by refreshing the list. Use Backup and restore inside the manager
 to revert changes. State backups are firmware-specific; keep the launcher’s data
 while you need them. Another device’s list does not guarantee safety for your TV.
-[Cleanup manager](USER_GUIDE_EN.md#tv-cleanup-manager).
+[Cleanup manager](USER_GUIDE_EN.md#device-cleanup-manager).
 
 ## How do I save settings and move them to another TV?
 

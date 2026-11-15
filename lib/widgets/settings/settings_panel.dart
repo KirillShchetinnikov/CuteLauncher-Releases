@@ -8,6 +8,7 @@ import 'system_widget_settings_page.dart';
 import 'vpn_settings_page.dart';
 import 'sleep_timer_settings_page.dart';
 import 'tv_power_page.dart';
+import 'quick_actions_settings_page.dart';
 import '../landscape_demo_presentation.dart';
 import 'information_settings_page.dart';
 import 'panel_clock_style_page.dart';
@@ -145,6 +146,8 @@ class _SettingsPanelState extends State<SettingsPanel> {
       StatusBarPanelPage.routeName,
       RemotePanelPage.routeName,
       StatusBarObjectsPage.routeName,
+      QuickActionsSettingsPage.routeName,
+      QuickActionsOrderPage.routeName,
       InformationSettingsPage.routeName,
       BackgroundInformationSettingsPage.routeName,
       PanelInformationSettingsPage.routeName,
@@ -376,6 +379,10 @@ class _SettingsPanelState extends State<SettingsPanel> {
                       );
                     case TvPowerPage.routeName:
                       return SettingsRoute(settings: settings, builder: (_) => const TvPowerPage());
+                    case QuickActionsSettingsPage.routeName:
+                      return SettingsRoute(settings: settings, builder: (_) => const QuickActionsSettingsPage());
+                    case QuickActionsOrderPage.routeName:
+                      return SettingsRoute(settings: settings, builder: (_) => const QuickActionsOrderPage());
                     case AutoLaunchPage.routeName:
                       return SettingsRoute(settings: settings, builder: (_) => const AutoLaunchPage());
                     case BackgroundStartupPage.routeName:

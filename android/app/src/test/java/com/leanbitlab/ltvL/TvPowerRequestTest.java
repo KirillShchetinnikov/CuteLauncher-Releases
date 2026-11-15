@@ -27,10 +27,12 @@ import static org.junit.Assert.*;
 public class TvPowerRequestTest {
     @Test public void remapperExecutesPowerOnlyAfterConfirmationWithoutFlutter() throws Exception {
         var service = Robolectric.buildService(LauncherAccessibilityService.class).get();
+        service.getSharedPreferences("FlutterSharedPreferences", Context.MODE_PRIVATE)
+            .edit().putString("flutter.app_language", "ru").apply();
         Shadows.shadowOf(service.getSystemService(PowerManager.class)).setIsInteractive(false);
         try (var remapper = new RemoteButtonRemapper(service)) {
             RemoteButtonRemapper.editing = false;
-            for (String action : List.of("sleep", "reboot")) {
+            for (String action : List.of("sleep", "reboot", "shutdown")) {
                 boolean reboot = action.equals("reboot");
                 var binding = new RemoteMappingConfiguration.Binding(4137, true, action, "", reboot ? "hold" : "press");
                 RemoteButtonRemapper.updated(new RemoteMappingConfiguration(true, Map.of(binding.slot(), binding)));
@@ -39,9 +41,16 @@ public class TvPowerRequestTest {
                 assertTrue(dialog.isShowing());
                 assertEquals(WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY, dialog.getWindow().getAttributes().type);
                 assertTrue(dialog.getButton(DialogInterface.BUTTON_NEGATIVE).hasFocus());
+                String label = switch (action) {
+                    case "reboot" -> "Перезагрузить устройство";
+                    case "shutdown" -> "Выключить устройство";
+                    default -> "Сон";
+                };
+                assertEquals(label,
+                    dialog.getButton(DialogInterface.BUTTON_POSITIVE).getText().toString());
                 assertEquals("idle", RemoteButtonRemapper.status);
                 dialog.getButton(DialogInterface.BUTTON_POSITIVE).performClick();
-                assertEquals(reboot ? "unavailable" : "success", powerResult());
+                assertEquals(action.equals("sleep") ? "success" : "unavailable", powerResult());
             }
         }
     }
@@ -67,14 +76,14 @@ public class TvPowerRequestTest {
         var service = Robolectric.buildService(LauncherAccessibilityService.class).get();
         service.getSharedPreferences("FlutterSharedPreferences", Context.MODE_PRIVATE)
             .edit().putString("flutter.app_language", "ru").apply();
-        var binding = new RemoteMappingConfiguration.Binding(4137, true, "reboot", "");
+        var binding = new RemoteMappingConfiguration.Binding(4137, true, "shutdown", "");
         try (var remapper = new RemoteButtonRemapper(service)) {
             RemoteButtonRemapper.editing = false;
             RemoteButtonRemapper.updated(new RemoteMappingConfiguration(true, Map.of(binding.slot(), binding)));
 
             press(remapper, 100, 10);
             var dialog = ShadowAlertDialog.getLatestAlertDialog();
-            assertEquals("Перезагрузить устройство",
+            assertEquals("Выключить устройство",
                 dialog.getButton(DialogInterface.BUTTON_POSITIVE).getText().toString());
             assertFalse(remapper.event(new KeyEvent(200, 200, KeyEvent.ACTION_DOWN, 4137, 0)));
             assertFalse(remapper.event(new KeyEvent(200, 210, KeyEvent.ACTION_UP, 4137, 0)));
@@ -115,7 +124,7 @@ public class TvPowerRequestTest {
     }
 
     @Test public void powerMappingsRoundTripAndRejectTargets() {
-        for (String action : List.of("sleep", "sleep_immediate", "reboot", "reboot_immediate")) {
+        for (String action : List.of("sleep", "sleep_immediate", "reboot", "reboot_immediate", "shutdown")) {
             for (String trigger : List.of("press", "hold")) {
                 var row = Map.of("keyCode", 4137, "enabled", true, "action", action, "target", "", "trigger", trigger);
                 var config = RemoteMappingConfiguration.fromMap(Map.of("enabled", true, "bindings", List.of(row)));
@@ -133,7 +142,7 @@ public class TvPowerRequestTest {
         var worker = Executors.newSingleThreadExecutor();
         worker.shutdown(); // Sleep succeeds without submitting work, even without ADB keys.
         var results = new ArrayList<String>();
-        TvPowerBridge.request(context, false, worker, results::add);
+        TvPowerBridge.request(context, TvPowerBridge.Operation.SLEEP, worker, results::add);
         assertEquals(List.of("success"), results);
     }
 
@@ -141,17 +150,17 @@ public class TvPowerRequestTest {
         Context context = RuntimeEnvironment.getApplication();
         var rejected = Executors.newSingleThreadExecutor(); rejected.shutdown();
         var results = new ArrayList<String>();
-        TvPowerBridge.request(context, true, rejected, results::add);
+        TvPowerBridge.request(context, TvPowerBridge.Operation.REBOOT, rejected, results::add);
         assertEquals(List.of("busy"), results);
         var worker = Executors.newSingleThreadExecutor();
         try {
             // Keep the request pending until the worker and main callback have completed.
-            TvPowerBridge.request(context, true, worker, results::add);
-            TvPowerBridge.request(context, true, worker, results::add);
+            TvPowerBridge.request(context, TvPowerBridge.Operation.REBOOT, worker, results::add);
+            TvPowerBridge.request(context, TvPowerBridge.Operation.SHUTDOWN, worker, results::add);
             worker.shutdown(); assertTrue(worker.awaitTermination(5, TimeUnit.SECONDS));
             Shadows.shadowOf(Looper.getMainLooper()).idle();
             assertEquals(List.of("busy", "busy", "unavailable"), results);
-            TvPowerBridge.request(context, true, rejected, results::add);
+            TvPowerBridge.request(context, TvPowerBridge.Operation.REBOOT, rejected, results::add);
             assertEquals("busy", results.get(3));
         } finally { worker.shutdownNow(); }
     }

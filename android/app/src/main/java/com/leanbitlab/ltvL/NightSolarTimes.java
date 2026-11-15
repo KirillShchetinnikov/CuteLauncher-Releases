@@ -117,12 +117,26 @@ final class NightSolarTimes {
                 day = solarDay(date, events.sunrise(), events.sunset());
             }
             if (day == null) {
-                day = solarDay(date, date.atTime(8, 0).atZone(zone).toInstant().toEpochMilli(),
-                    date.atTime(20, 0).atZone(zone).toInstant().toEpochMilli());
+                day = new JSONObject(Map.of(
+                    "date", date.toString(),
+                    "sunrise", date.atTime(8, 0).atZone(zone).toInstant().toEpochMilli(),
+                    "sunset", date.atTime(20, 0).atZone(zone).toInstant().toEpochMilli(),
+                    "fixedFallback", true));
             }
             result.put(day);
         }
         return result;
+    }
+
+    static List<Map<String, Object>> landscapeDays(double latitude, double longitude, long now, ZoneId zone) {
+        var today = Instant.ofEpochMilli(now).atZone(zone).toLocalDate();
+        var calculator = new LocalSolarTimes(latitude, longitude);
+        var days = new ArrayList<Map<String, Object>>(3);
+        for (int offset = -1; offset <= 1; offset++) {
+            var day = calculator.calculate(today.plusDays(offset), zone);
+            days.add(Map.of("sunrise", day.sunrise(), "sunset", day.sunset()));
+        }
+        return days;
     }
 
     private static JSONObject solarDay(LocalDate date, long rise, long set) {
@@ -254,7 +268,10 @@ final class NightSolarTimes {
         List<Map<String, Object>> output = new ArrayList<>();
         for (int i = 0; i < array.length(); i++) {
             JSONObject day = array.optJSONObject(i);
-            if (day != null) output.add(Map.of("sunrise", day.optLong("sunrise"), "sunset", day.optLong("sunset")));
+            if (day != null) output.add(Map.of(
+                "sunrise", day.optLong("sunrise"),
+                "sunset", day.optLong("sunset"),
+                "fixedFallback", day.optBoolean("fixedFallback")));
         }
         return output;
     }

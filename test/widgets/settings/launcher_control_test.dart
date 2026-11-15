@@ -158,7 +158,7 @@ void main() {
             .first,
       );
       expect(switchTile().enabled, isFalse);
-      final boot = find.text('Запускать при включении ТВ');
+      final boot = find.text('Запускать при включении устройства');
       FocusableSettingsTile bootTile() => tester.widget(
         find
             .ancestor(of: boot, matching: find.byType(FocusableSettingsTile))

@@ -48,6 +48,7 @@ import '../providers/sleep_timer_service.dart';
 import 'sleep_timer_menu.dart';
 import '../providers/night_mode_service.dart';
 import 'night_mode_menu.dart';
+import 'quick_actions_menu.dart';
 
 class FocusAwareAppBar extends StatefulWidget implements PreferredSizeWidget {
   final RemotePanelService? remotePanel;
@@ -71,6 +72,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
   final _inputsFocusNode = FocusNode();
   final _notificationsFocusNode = FocusNode();
   final _sleepTimerFocusNode = FocusNode();
+  final _quickActionsFocusNode = FocusNode();
   final _trafficFocusNode = FocusNode();
   final _networkSpeedFocusNode = FocusNode();
   final _systemFocusNode = FocusNode();
@@ -89,7 +91,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
   void focusSettings() => _settingsFocusNode.requestFocus();
   void focusFirst() {
     final nodes = {'settings': _settingsFocusNode, 'systemSettings': _systemSettingsFocusNode,
-      'nas': _nasFocusNode, 'usb': _usbFocusNode,
+      'nas': _nasFocusNode, 'usb': _usbFocusNode, PanelLayout.quickActions: _quickActionsFocusNode,
       'inputs': _inputsFocusNode, 'notifications': _notificationsFocusNode,
       'networkSpeed': _networkSpeedFocusNode, 'system': _systemFocusNode, 'traffic': _trafficFocusNode, 'vpn': _vpnFocusNode, 'sleepTimer': _sleepTimerFocusNode, 'nightMode': _nightModeFocusNode, 'weather': _weatherFocusNode, 'date': _dateFocusNode, 'time': _clockFocusNode, PanelLayout.informationGroup: _dateFocusNode};
     final layout = widget.remotePanel?.layout ??
@@ -201,6 +203,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
       _inputsFocusNode,
       _notificationsFocusNode,
       _sleepTimerFocusNode,
+      _quickActionsFocusNode,
       _trafficFocusNode,
       _networkSpeedFocusNode,
       _systemFocusNode,
@@ -387,6 +390,30 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
     }
   }
 
+  Future<void> _openQuickActions() async {
+    if (_settingsOpen) return;
+    final node = _quickActionsFocusNode;
+    final anchor = launcherControlBounds(node);
+    if (anchor == null) return;
+    _setOpenWidget(PanelLayout.quickActions);
+    try {
+      await showLauncherDialog<void>(
+        context: context,
+        highlightRect: anchor,
+        highlightRectResolver: () => launcherControlBounds(node),
+        useSafeArea: false,
+        styleDialog: false,
+        barrierColor: Colors.transparent,
+        builder: (_) => QuickActionsMenu(anchor: anchor),
+      );
+    } finally {
+      if (mounted) {
+        _setOpenWidget(null);
+        _returnToObject(node);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final homeAppearance = context.watch<AppearanceService?>()?.appearance ?? const TileAppearance();
@@ -428,7 +455,9 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
     final showTraffic = widget.remotePanel?.visible('traffic') ?? settings.showDataWidgetInStatusBar;
     final trafficVisible = showTraffic && (_activeWidget == 'traffic' ||
         context.select<NetworkService, bool>((service) => service.hasUsageStatsPermission));
+    final quickActionsVisible = widget.remotePanel == null && settings.showQuickActionsInStatusBar;
     _restoreFocusWhenHidden([
+      (quickActionsVisible, _quickActionsFocusNode),
       (nasVisible, _nasFocusNode), (usbVisible, _usbFocusNode),
       (inputsVisible, _inputsFocusNode), (notificationsVisible, _notificationsFocusNode),
       (trafficVisible, _trafficFocusNode), (vpnVisible, _vpnFocusNode),
@@ -457,6 +486,17 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
         onPressed: _openSettings,
         child: const Icon(Icons.settings_outlined),
       ),
+      if (quickActionsVisible)
+        PanelLayout.quickActions: PanelTooltip(
+          message: AppLocalizations.of(context)!.quickActionsTitle,
+          child: TopPanelItem(
+            key: const ValueKey('quick_actions_button'),
+            focusNode: _quickActionsFocusNode,
+            selected: _activeWidget == PanelLayout.quickActions,
+            onPressed: _openQuickActions,
+            child: const Icon(Icons.bolt_outlined),
+          ),
+        ),
       if ((widget.remotePanel?.visible('systemSettings') ?? settings.showSystemSettingsInStatusBar))
         'systemSettings': TopPanelItem(
           focusNode: _systemSettingsFocusNode,

@@ -13,15 +13,17 @@
     <string name="remap_error_app">L’application assignée est absente ou ne s’ouvre pas.</string>
     <string name="remap_error_hdmi">L’entrée HDMI assignée est indisponible.</string>
     <string name="remap_error_power">Échec de la commande d’alimentation. Vérifiez ADB local.</string>
-    <string name="remap_error_permission">Le téléviseur a refusé cette action.</string>
+    <string name="remap_error_permission">L’appareil a refusé cette action.</string>
     <string name="remap_error_busy">Une action de la télécommande est déjà en cours.</string>
-    <string name="remap_error_unavailable">Cette action est indisponible sur ce téléviseur.</string>
+    <string name="remap_error_unavailable">Cette action de la télécommande est indisponible sur cet appareil.</string>
     <string name="remap_error_webhook_http">Le webhook a refusé la requête (HTTP %1$d).</string>
     <string name="remap_error_webhook_timeout">Délai d’attente du webhook dépassé.</string>
     <string name="remap_error_webhook">Connexion au webhook impossible.</string>
-    <string name="power_off">Éteindre l’appareil</string>
+    <string name="power_sleep">Veille</string>
     <string name="power_reboot">Redémarrer l’appareil</string>
-    <string name="power_off_confirm">Mettre l’appareil en veille ?</string>
+    <string name="power_sleep_confirm">Mettre l’appareil en veille ?</string>
+    <string name="power_shutdown">Éteindre l’appareil</string>
+    <string name="power_shutdown_confirm">Éteindre complètement l’appareil ?</string>
     <string name="power_reboot_confirm">Redémarrer l’appareil ? Les applications ouvertes seront fermées.</string>
     <string name="screensaver_label">Horloge CuteLauncher</string>
     <string name="notification_service_label">Service de notifications CuteLauncher</string>
@@ -34,7 +36,7 @@
     <string name="recovery_retry">Relancer CuteLauncher</string>
     <string name="recovery_settings">Paramètres Android</string>
     <string name="recovery_home">Choisir l’écran d’accueil</string>
-    <string name="recovery_unavailable">Cette action est indisponible sur ce téléviseur.</string>
+    <string name="recovery_unavailable">Cette action est indisponible sur cet appareil.</string>
     <string name="recovery_restore">Restaurer l’écran d’accueil précédent</string>
     <string name="recovery_restore_confirm">Restaurer l’écran d’accueil précédent via la connexion ADB locale existante ?</string>
 </resources>

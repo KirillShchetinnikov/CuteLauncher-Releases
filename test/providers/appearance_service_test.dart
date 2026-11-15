@@ -686,6 +686,7 @@ void main() {
         'traffic',
         'networkSpeed',
         'system',
+        'quickActions',
       ]);
       expect(appearance.panelOrder('panelInfoOrder'), [
         'audio',

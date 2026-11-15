@@ -69,7 +69,7 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    expect(find.text("Launcher and TV controls"), findsOneWidget);
+    expect(find.text("Launcher and device controls"), findsOneWidget);
     expect(find.byWidgetPredicate((widget) => widget is Icon &&
         widget.semanticLabel == 'Default launcher: Enabled'), findsOneWidget);
     expect(find.text("Open system default launcher setting"), findsNothing);
@@ -112,7 +112,7 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    expect(find.text("Launcher and TV controls"), findsOneWidget);
+    expect(find.text("Launcher and device controls"), findsOneWidget);
     expect(find.byWidgetPredicate((widget) => widget is Icon &&
         widget.semanticLabel == 'Default launcher: Disabled'), findsOneWidget);
   });

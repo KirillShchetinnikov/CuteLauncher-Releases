@@ -25,8 +25,11 @@ import 'package:flauncher/theme/launcher_style.dart';
 import 'dart:async';
 import '../app_focus_color.dart';
 import '../content_image.dart';
+import '../diagnostics_store.dart';
+import '../home_tile_diagnostics.dart';
 import '../providers/appearance_service.dart';
 import '../tile_appearance.dart';
+import '../tile_image_geometry.dart';
 import 'appearance_surface.dart';
 import 'initial_app_images.dart';
 import 'home_skeleton.dart';
@@ -109,6 +112,8 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
   AppearanceService? _appearanceService;
   AppsService? _appsService;
   (int, int)? _imageRevision;
+  (int, int, int, AppImageType, TileImageMode, TileImageMode, bool, double)? _tracedSelection;
+  (int, int)? _tracedDecodeError;
 
   @override
   void initState() {
@@ -118,7 +123,7 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
     _appsService = Provider.of<AppsService>(context, listen: false);
     _appsService!.addListener(_onAppsServiceChanged);
 
-    _appImageLoadFuture = _loadAppBannerOrIcon(_appsService!);
+    _appImageLoadFuture = _loadAppBannerOrIcon(_appsService!, HomeTileReload.mounted);
 
     // Check if we need to restore focus/reorder mode after a move
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -167,7 +172,7 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
       _lastAppImage = null;
       _hasImageFrame = false;
       _imageFocusColor = null;
-      _appImageLoadFuture = _loadAppBannerOrIcon(_appsService!);
+      _appImageLoadFuture = _loadAppBannerOrIcon(_appsService!, HomeTileReload.reused);
     }
     
     // Check for pending focus on update as well
@@ -211,8 +216,9 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
     if (revision == _imageRevision && !_imageNeedsRetry) return;
     // Reload the app image when the AppsService notifies of changes
     // (e.g., after setting a custom banner)
+    final reason = revision == _imageRevision ? HomeTileReload.retry : HomeTileReload.imageRevision;
     setState(() {
-      _appImageLoadFuture = _loadAppBannerOrIcon(_appsService!);
+      _appImageLoadFuture = _loadAppBannerOrIcon(_appsService!, reason);
     });
   }
 
@@ -349,6 +355,9 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
                                   onFocusChange: (focused) {
                                     // Losing focus to Home must not undo its scroll reset.
                                     if (!focused) return;
+                                    if (HomeTileDiagnostics.enabled) {
+                                      DiagnosticsStore.instance.homeTiles.focus(widget.application.packageName, widget.category.id);
+                                    }
                                     _appearanceService?.focusedAppImage.value = _lastAppImage?.$2;
                                     _categoryFocus?.record(widget.application.packageName, _focusNode);
                                     if (_categoryFocus?.reveal != null) { _categoryFocus!.reveal!(); return; }
@@ -406,11 +415,18 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
     );
   }
 
-  Future<(AppImageType, ImageProvider)> _loadAppBannerOrIcon(AppsService service) async {
-    _imageRevision = service.imageRevisionFor(widget.application.packageName);
+  Future<(AppImageType, ImageProvider)> _loadAppBannerOrIcon(
+    AppsService service,
+    HomeTileReload reason,
+  ) async {
+    final packageName = widget.application.packageName;
+    final revision = _imageRevision = service.imageRevisionFor(packageName);
     final request = ++_imageRequest;
     _imageNeedsRetry = false;
-    final packageName = widget.application.packageName;
+    if (HomeTileDiagnostics.enabled) {
+      DiagnosticsStore.instance.homeTiles.request(packageName,
+        section: widget.category.id, request: request, revision: revision, reason: reason);
+    }
     Uint8List bytes = Uint8List(0);
 
     bytes = await service.getAppBanner(packageName);
@@ -459,8 +475,31 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
   }
 
   Widget _imageError(BuildContext context, Object error, StackTrace? stack) {
+    if (HomeTileDiagnostics.enabled) {
+      final trace = DiagnosticsStore.instance.homeTiles;
+      final key = (trace.generation, _imageRequest);
+      if (_tracedDecodeError != key) {
+        _tracedDecodeError = key;
+        trace.decodeError(widget.application.packageName, widget.category.id, _imageRequest);
+      }
+    }
     _imageReady?.call();
     return const SizedBox.shrink();
+  }
+
+  void _traceImageSelection(AppImageType type, TileAppearance appearance, bool retained) {
+    final trace = DiagnosticsStore.instance.homeTiles;
+    final section = widget.category.id;
+    final bannerMode = appearance.bannerImageMode;
+    final iconMode = appearance.iconImageMode;
+    final aspectRatio = appearance.aspectRatio;
+    final key = (trace.generation, section, _imageRequest, type, bannerMode, iconMode, retained, aspectRatio);
+    if (key == _tracedSelection) return;
+    _tracedSelection = key;
+    trace.selection(widget.application.packageName,
+      section: section, request: _imageRequest, type: type, bannerMode: bannerMode,
+      iconMode: iconMode, retained: retained, aspectRatio: aspectRatio,
+      sectionUsesGlobal: _appearanceService?.category(section).useGlobalTiles ?? true);
   }
 
   Widget _appImage()
@@ -474,7 +513,10 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
       builder: (context, snapshot) {
         final record = snapshot.data ?? _lastAppImage;
         if (record != null) {
-
+          if (HomeTileDiagnostics.enabled) {
+            _traceImageSelection(record.$1, appearance,
+              snapshot.connectionState != ConnectionState.done || snapshot.data == null);
+          }
           final isIcon = record.$1 == AppImageType.Icon;
           final style = LauncherStyle.of(context);
           final theme = context.read<SettingsService>().themes;

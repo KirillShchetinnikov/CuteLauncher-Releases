@@ -13,15 +13,17 @@
     <string name="remap_error_app">असाइन किया गया ऐप मौजूद नहीं है या खुल नहीं सकता।</string>
     <string name="remap_error_hdmi">असाइन किया गया HDMI इनपुट उपलब्ध नहीं है।</string>
     <string name="remap_error_power">पावर कमांड विफल रही। स्थानीय ADB जाँचें।</string>
-    <string name="remap_error_permission">टीवी ने रिमोट की इस कार्रवाई की अनुमति नहीं दी।</string>
+    <string name="remap_error_permission">डिवाइस ने रिमोट की इस कार्रवाई की अनुमति नहीं दी।</string>
     <string name="remap_error_busy">रिमोट की एक कार्रवाई पहले से चल रही है।</string>
-    <string name="remap_error_unavailable">रिमोट की यह कार्रवाई इस टीवी पर उपलब्ध नहीं है।</string>
+    <string name="remap_error_unavailable">रिमोट की यह कार्रवाई इस डिवाइस पर उपलब्ध नहीं है।</string>
     <string name="remap_error_webhook_http">वेबहुक ने अनुरोध अस्वीकार किया (HTTP %1$d)।</string>
     <string name="remap_error_webhook_timeout">वेबहुक अनुरोध का समय समाप्त हो गया।</string>
     <string name="remap_error_webhook">वेबहुक से कनेक्ट नहीं हो सका।</string>
-    <string name="power_off">डिवाइस बंद करें</string>
+    <string name="power_sleep">स्लीप</string>
     <string name="power_reboot">डिवाइस रीस्टार्ट करें</string>
-    <string name="power_off_confirm">डिवाइस को स्टैंडबाय में रखें?</string>
+    <string name="power_sleep_confirm">डिवाइस को स्टैंडबाय में रखें?</string>
+    <string name="power_shutdown">डिवाइस बंद करें</string>
+    <string name="power_shutdown_confirm">डिवाइस को पूरी तरह बंद करें?</string>
     <string name="power_reboot_confirm">डिवाइस रीस्टार्ट करें? खुले ऐप बंद हो जाएंगे।</string>
     <string name="screensaver_label">CuteLauncher घड़ी</string>
     <string name="notification_service_label">CuteLauncher सूचना सेवा</string>
@@ -34,7 +36,7 @@
     <string name="recovery_retry">CuteLauncher फिर से शुरू करें</string>
     <string name="recovery_settings">Android सेटिंग</string>
     <string name="recovery_home">होम स्क्रीन चुनें</string>
-    <string name="recovery_unavailable">यह कार्रवाई इस टीवी पर उपलब्ध नहीं है।</string>
+    <string name="recovery_unavailable">यह कार्रवाई इस डिवाइस पर उपलब्ध नहीं है।</string>
     <string name="recovery_restore">पिछली होम स्क्रीन बहाल करें</string>
     <string name="recovery_restore_confirm">मौजूदा स्थानीय ADB कनेक्शन से पिछली होम स्क्रीन बहाल करें?</string>
 </resources>

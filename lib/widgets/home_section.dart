@@ -7,6 +7,8 @@ import 'reordering_tile_viewport.dart';
 import 'package:provider/provider.dart';
 
 import '../category_appearance.dart';
+import '../section_icons.dart';
+import 'section_heading_icon.dart';
 import '../home_layout.dart';
 import '../models/app.dart';
 import '../models/category.dart';
@@ -409,7 +411,9 @@ class _HomeSectionState extends State<HomeSection> {
         child: Row(
           children: [
             if (style.sectionTitles && style.sectionIcons) ...[
-              const Icon(Icons.apps),
+              SectionHeadingIcon(
+                categoryStyle?.titleIcon ?? SectionIcon.forCategory(widget.category),
+              ),
               const SizedBox(width: 8),
             ],
             if (style.sectionTitles) Flexible(

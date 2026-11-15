@@ -39,7 +39,20 @@ public class NightSolarTimesTest {
         var local = java.time.Instant.ofEpochMilli(result.getJSONObject(2).getLong("sunrise"))
             .atZone(ZoneId.systemDefault());
         assertEquals(8, local.getHour()); assertEquals(0, local.getMinute());
+        assertEquals(true, NightSolarTimes.list(result).get(2).get("fixedFallback"));
         assertEquals(0, NightSolarTimes.cache(context, new JSONObject()).optLong("updated"));
+    }
+    @Test public void landscapeUsesLocalAstronomyWithoutChangingNightSchedule() {
+        long now = time(LocalDate.of(2026, 11, 15), 19, 0);
+        var days = NightSolarTimes.landscapeDays(52.52, 13.405, now, zone);
+        assertEquals(3, days.size());
+        var sunrise = Instant.ofEpochMilli((long) days.get(1).get("sunrise")).atZone(zone);
+        var sunset = Instant.ofEpochMilli((long) days.get(1).get("sunset")).atZone(zone);
+        assertEquals(LocalDate.of(2026, 11, 15), sunrise.toLocalDate());
+        assertEquals(sunrise.toLocalDate(), sunset.toLocalDate());
+        assertEquals(7, sunrise.getHour());
+        assertEquals(16, sunset.getHour());
+        assertTrue(sunset.toInstant().toEpochMilli() < now);
     }
     @Test public void missingDaysAreCalculatedAcrossDstAndHistoryIsUnchanged() throws Exception {
         JSONArray history = new JSONArray().put(day(today.minusDays(1), 7, 18));
@@ -48,6 +61,9 @@ public class NightSolarTimesTest {
         assertEquals(time(today.minusDays(1), 7, 15), result.getJSONObject(1).getLong("sunrise"));
         assertNear(1792907378, result.getJSONObject(2).getLong("sunrise"), 120);
         assertNear(1793029702, result.getJSONObject(3).getLong("sunset"), 120);
+        var bridgeDays = NightSolarTimes.list(result);
+        assertEquals(false, bridgeDays.get(1).get("fixedFallback"));
+        assertEquals(false, bridgeDays.get(2).get("fixedFallback"));
         assertEquals(original, history.toString());
         JSONObject config = new JSONObject().put("enabled", true).put("scheduled", true)
             .put("solar", true).put("transitionMinutes", 60).put("sunsetOffset", 30);

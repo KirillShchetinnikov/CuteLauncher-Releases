@@ -186,13 +186,13 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get renderCompatibilityHelp =>
-      'Спробуйте цей режим, якщо інтерфейс мерехтить під час нічного затемнення. На перевірених моделях він вмикається автоматично. На інших ТВ вибір зберігається лише на цьому пристрої та застосовується після перезапуску лаунчера. Може збільшити навантаження на графіку.';
+      'Спробуйте цей режим, якщо інтерфейс мерехтить під час нічного затемнення. На перевірених моделях він вмикається автоматично. На інших пристроях вибір зберігається лише на цьому пристрої та застосовується після перезапуску лаунчера. Може збільшити навантаження на графіку.';
 
   @override
   String get diagnosticsHubTitle => 'Diagnostics';
 
   @override
-  String get tvCompatibilityTitle => 'TV compatibility check';
+  String get tvCompatibilityTitle => 'Перевірка сумісності пристрою';
 
   @override
   String get tvCompatibilityRun => 'Run check';
@@ -295,7 +295,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get adbWifiOwned =>
-      'Зміни не внесено: збережену мережу Wi-Fi створив майстер налаштування Google. Його вимкнення може видалити мережу та від’єднати телевізор від інтернету.\n\n1. Переконайтеся, що знаєте пароль Wi-Fi.\n2. Відкрийте налаштування мережі Android, виберіть мережу й натисніть «Забути мережу».\n3. Підключіться знову через звичайні налаштування мережі Android.\n4. Поверніться до CuteLauncher, перевірте ADB і повторіть вимкнення вбудованого лаунчера.\n\nЯкщо повідомлення з’явиться знову, залиште вбудований лаунчер увімкненим: прошивка може знову призначати мережу майстру.';
+      'Зміни не внесено: збережену мережу Wi-Fi створив майстер налаштування Google. Його вимкнення може видалити мережу та від’єднати пристрій від інтернету.\n\n1. Переконайтеся, що знаєте пароль Wi-Fi.\n2. Відкрийте налаштування мережі Android, виберіть мережу й натисніть «Забути мережу».\n3. Підключіться знову через звичайні налаштування мережі Android.\n4. Поверніться до CuteLauncher, перевірте ADB і повторіть вимкнення вбудованого лаунчера.\n\nЯкщо повідомлення з’явиться знову, залиште вбудований лаунчер увімкненим: прошивка може знову призначати мережу майстру.';
 
   @override
   String get adbWifiUnknown =>
@@ -646,7 +646,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get defaultLauncherDescription =>
-      'Якщо встановлено як лаунчер за замовчуванням, кнопка «Домівка» завжди повертатиме до CuteLauncher. Телевізор також завантажуватиметься одразу в CuteLauncher.';
+      'Якщо встановлено як лаунчер за замовчуванням, кнопка «Домівка» завжди повертатиме до CuteLauncher. Пристрій також завантажуватиметься одразу в CuteLauncher.';
 
   @override
   String get inputs => 'Джерела сигналу';
@@ -708,7 +708,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get localNetworkSharingDetails =>
-      'Тут ви можете завантажити налаштування/розташування вашого ТБ або вивантажити файл резервної копії назад на цей телевізор.';
+      'Тут ви можете завантажити налаштування/розташування вашого пристрою або вивантажити файл резервної копії назад на цей пристрій.';
 
   @override
   String failedToStartServer(String error) {
@@ -792,8 +792,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get homeButtonFix => 'Виправлення кнопки «Домівка» (Google TV)';
 
   @override
-  String get startOnBoot =>
-      'Запускати після завантаження (Google TV / Fire TV)';
+  String get startOnBoot => 'Запускати під час увімкнення пристрою';
 
   @override
   String get appLanguage => 'Мова';
@@ -1332,19 +1331,19 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get accessibilityGuide =>
-      'Відкрийте налаштування телевізора вручну, потім Спеціальні можливості → CuteLauncher Виправити кнопку Home і ввімкніть службу. Розташування та назва цього меню залежать від виробника телевізора.';
+      'Відкрийте налаштування пристрою вручну, потім Спеціальні можливості → CuteLauncher Виправити кнопку Home і ввімкніть службу. Розташування та назва цього меню залежать від виробника пристрою.';
 
   @override
   String get notificationPermissionGuide =>
-      'Не вдалося відкрити налаштування доступу до сповіщень на цьому телевізорі. Якщо дозволити вихідні сповіщення в App Info, це не надасть доступ до сповіщень з інших програм.\n\nПідключіть телевізор через ADB і запустіть:';
+      'Не вдалося відкрити налаштування доступу до сповіщень на цьому пристрої. Якщо дозволити вихідні сповіщення в App Info, це не надасть доступ до сповіщень з інших програм.\n\nПідключіть пристрій через ADB і запустіть:';
 
   @override
   String get overlayPermissionGuide =>
-      'Налаштування дозволу на накладання не вдалося відкрити автоматично.\n\nЩоб увімкнути спливаючі вікна над іншими програмами, підключіть телевізор через ADB і запустіть:';
+      'Налаштування дозволу на накладання не вдалося відкрити автоматично.\n\nЩоб увімкнути спливаючі вікна над іншими програмами, підключіть пристрій через ADB і запустіть:';
 
   @override
   String get watchNextPermissionGuide =>
-      'Щоб читати картки Continue Watching з інших програм, Android TV вимагає READ_WRITE_WATCH_NEXT_PROGRAMS.\n\nПідключіть телевізор через ADB і запустіть:';
+      'Щоб читати картки Continue Watching з інших програм, Android TV вимагає READ_WRITE_WATCH_NEXT_PROGRAMS.\n\nПідключіть пристрій через ADB і запустіть:';
 
   @override
   String get watchNextAccess => 'Продовжити перегляд доступу';
@@ -1845,7 +1844,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get adbAuthorization =>
-      'Підтвердьте авторизацію ADB на телевізорі та повторіть спробу.';
+      'Підтвердьте авторизацію ADB на пристрої та повторіть спробу.';
 
   @override
   String get adbChangeConfirm =>
@@ -1866,7 +1865,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get adbHint =>
-      'Лише прототип для цього телевізора (127.0.0.1). Увімкніть TCP ADB у параметрах розробника, введіть його порт і підтвердьте запит авторизації на телевізорі. Бездротове налагодження за допомогою коду сполучення поки що не підтримується. Приватний ключ залишається на цьому пристрої, поза резервними копіями.';
+      'Лише прототип для цього пристрою (127.0.0.1). Увімкніть TCP ADB у параметрах розробника, введіть його порт і підтвердьте запит авторизації на пристрої. Бездротове налагодження за допомогою коду сполучення поки що не підтримується. Приватний ключ залишається на цьому пристрої, поза резервними копіями.';
 
   @override
   String get adbHome => 'Зробіть CuteLauncher додатком Home';
@@ -1905,7 +1904,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get nightModeScope =>
-      'Для затемнення інших програм потрібен дозвіл на накладання. Без нього затемнення працює всередині CuteLauncher. Фільтру TCL не потрібен дозвіл на накладання. Понад 80% непрозорості Android може блокувати сенсорне введення в інших програмах; Пульти від телевізора все ще працюють.';
+      'Для затемнення інших програм потрібен дозвіл на накладання. Без нього затемнення працює всередині CuteLauncher. Фільтру TCL не потрібен дозвіл на накладання. Понад 80% непрозорості Android може блокувати сенсорне введення в інших програмах; Кнопки пульта все ще працюють.';
 
   @override
   String get nightModeEnd => 'Кінець';
@@ -1984,11 +1983,11 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get diagnosticsSharingNotice =>
-      'Передавайте файл автору в особисті повідомлення, не публікуйте відкрито: автоматичне очищення може пропустити особисті дані. Надсилаючи звіт автору, ви погоджуєтеся на розміщення знеособленого звіту про сумісність ТВ у Git-репозиторії CuteLauncher. Публікуються лише відомості про пристрій і доступність функцій без особистих даних; журнал помилок, команди та ваші налаштування не публікуються.\n\nЗвіт також містить установлені пакети, їхні назви, версії та стан увімкнення, а також назви, склад, порядок і видимість розділів. Ідентифікатори й назви зберігаються для діагностики; списки застосунків і розділів не публікуються.';
+      'Передавайте файл автору в особисті повідомлення, не публікуйте відкрито: автоматичне очищення може пропустити особисті дані. Надсилаючи звіт автору, ви погоджуєтеся на розміщення знеособленого звіту про сумісність пристрою у Git-репозиторії CuteLauncher. Публікуються лише відомості про пристрій і доступність функцій без особистих даних; журнал помилок, команди та ваші налаштування не публікуються.\n\nЗвіт також містить установлені пакети, їхні назви, версії та стан увімкнення, а також назви, склад, порядок і видимість розділів. Ідентифікатори й назви зберігаються для діагностики; списки застосунків і розділів не публікуються.';
 
   @override
   String get diagnosticsHint =>
-      'Єдиний звіт містить сумісність функцій ТВ і діагностику помилок. Звіт містить модель і прошивку ТВ, версію застосунку, дозволи, пам’ять, етапи й причини помилок, команди та відповіді після автоматичного очищення особистих даних. Зберігаються останні 50 операцій, окремо до 100 збоїв і обмежений журнал ADB поточного сеансу. Перезапуск очищує журнал. Особисті дані можуть залишитися: надсилайте файл у приватні повідомлення, не публікуйте відкрито. Автоматичного надсилання немає. Для кожної помилки зберігається знімок застосованих налаштувань: подальші зміни його не замінюють.\n\nЗвіт також містить установлені пакети, їхні назви, версії та стан увімкнення, а також назви, склад, порядок і видимість розділів. Ідентифікатори й назви зберігаються для діагностики; списки застосунків і розділів не публікуються.';
+      'Єдиний звіт містить сумісність функцій пристрою і діагностику помилок. Звіт містить модель і прошивку пристрою, версію застосунку, дозволи, пам’ять, етапи й причини помилок, команди та відповіді після автоматичного очищення особистих даних. Зберігаються останні 50 операцій, окремо до 100 збоїв і обмежений журнал ADB поточного сеансу. Перезапуск очищує журнал. Особисті дані можуть залишитися: надсилайте файл у приватні повідомлення, не публікуйте відкрито. Автоматичного надсилання немає. Для кожної помилки зберігається знімок застосованих налаштувань: подальші зміни його не замінюють.\n\nЗвіт також містить установлені пакети, їхні назви, версії та стан увімкнення, а також назви, склад, порядок і видимість розділів. Ідентифікатори й назви зберігаються для діагностики; списки застосунків і розділів не публікуються.';
 
   @override
   String get diagnosticsTitle => 'Діагностика помилок';
@@ -2011,7 +2010,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get tclBlueLightUnsupported =>
-      'Інтерфейс фільтра TCL недоступний на цьому телевізорі.';
+      'Інтерфейс фільтра TCL недоступний на цьому пристрої.';
 
   @override
   String get tclBlueLightRefresh => 'Оновити стан фільтра TCL';
@@ -2028,7 +2027,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get nightScheduleTimeHint =>
-      'Для часу використовується часовий пояс телевізора. Негативні зміщення більш ранні; позитивні зміщення пізніше.';
+      'Для часу використовується часовий пояс пристрою. Негативні зміщення більш ранні; позитивні зміщення пізніше.';
 
   @override
   String get nightTemperature => 'Колірна температура фільтра';
@@ -2117,7 +2116,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get nightSolarAttribution =>
-      'Час сходу й заходу сонця надходить із Sunrise-Sunset.org, а в разі збою — з GeoNames. Без інтернету телевізор обчислює відсутні події.';
+      'Час сходу й заходу сонця надходить із Sunrise-Sunset.org, а в разі збою — з GeoNames. Без інтернету пристрій обчислює відсутні події.';
 
   @override
   String get nightTemporaryOn => 'Затемнення тимчасово ввімкнено до';
@@ -2135,7 +2134,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get advancedSettings => 'Просунутий';
 
   @override
-  String get controlAndStartup => 'Панель запуску та керування телевізором';
+  String get controlAndStartup => 'Лаунчер і керування пристроєм';
 
   @override
   String get sectionsAndOrder => 'Розділи та порядок';
@@ -2235,7 +2234,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get androidTvSettingsHint =>
-      'Відкрийте системні налаштування телевізора';
+      'Відкрийте системні налаштування пристрою';
 
   @override
   String get autoHideTopPanel => 'Автоматично приховати панель';
@@ -2492,7 +2491,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get adbTlsHint =>
-      'Використовуйте бездротове налагодження в параметрах розробника. Сполучення та підключення мають різні порти. Якщо ваша мікропрограма не має екрана з кодом сполучення або блокує накладені вікна, замість цього використовуйте TCP / RSA. Усі підключення залишаються локальними для цього телевізора.';
+      'Використовуйте бездротове налагодження в параметрах розробника. Сполучення та підключення мають різні порти. Якщо ваша мікропрограма не має екрана з кодом сполучення або блокує накладені вікна, замість цього використовуйте TCP / RSA. Усі підключення залишаються локальними для цього пристрою.';
 
   @override
   String get adbPaired =>
@@ -2549,7 +2548,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get adbTwoWindows => 'Відкрийте налаштування у другому вікні';
 
   @override
-  String get autoLaunchBoot => 'Після завантаження телевізора';
+  String get autoLaunchBoot => 'Після завантаження пристрою';
 
   @override
   String get autoLaunchOff => 'Вимкнено';
@@ -2568,7 +2567,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get autoLaunchHint =>
-      'Виберіть програму або вхід HDMI, щоб відкрити після запуску телевізора або пробудження. Нижче встановіть подію та затримку. Дія виконується один раз, коли Android показує CuteLauncher. Будь-який віддалений вхід або вихід з головного екрана скасовує очікування. Ви можете вільно змінити входи HDMI пізніше. Встановіть CuteLauncher як програму запуску за замовчуванням або увімкніть Запуск під час завантаження, якщо потрібно. Виявлення пробудження вимагає, щоб CuteLauncher продовжував працювати.';
+      'Виберіть програму або вхід HDMI, щоб відкрити після запуску пристрою або пробудження. Нижче встановіть подію та затримку. Дія виконується один раз, коли Android показує CuteLauncher. Будь-який віддалений вхід або вихід з головного екрана скасовує очікування. Ви можете вільно змінити входи HDMI пізніше. Встановіть CuteLauncher як програму запуску за замовчуванням або увімкніть Запуск під час завантаження, якщо потрібно. Виявлення пробудження вимагає, щоб CuteLauncher продовжував працювати.';
 
   @override
   String autoLaunchSeconds(int seconds) {
@@ -2671,7 +2670,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get cloudDisconnectConfirm =>
-      'Видалити цей обліковий запис із телевізора? Копії в хмарі залишаться.';
+      'Видалити цей обліковий запис із пристрою? Копії в хмарі залишаться.';
 
   @override
   String get cloudUpload => 'Збережіть копію в хмарі';
@@ -2725,7 +2724,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get adbSetupIntro =>
-      'Увімкніть налагодження та мережу ADB у налаштуваннях розробника телевізора, а потім довірте CuteLauncher. Усі дії ADB виконуєте на свій страх і ризик.';
+      'Увімкніть налагодження та мережу ADB у налаштуваннях розробника пристрою, а потім довірте CuteLauncher. Усі дії ADB виконуєте на свій страх і ризик.';
 
   @override
   String get adbConnectionBlock => 'Підключення ADB';
@@ -2760,7 +2759,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get adbBuiltinHint =>
-      'Після вимкнення вбудованого лаунчера деякі кнопки на пульті та фірмові меню телевізора можуть перестати працювати. Щоб скасувати цю зміну, знову ввімкніть вбудований лаунчер.';
+      'Після вимкнення вбудованого лаунчера деякі кнопки на пульті та фірмові меню пристрою можуть перестати працювати. Щоб скасувати цю зміну, знову ввімкніть вбудований лаунчер.';
 
   @override
   String get adbHomeBlock => 'Кнопка «Додому» та запуск';
@@ -2774,7 +2773,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get adbHomeOptional =>
-      'Якщо вбудовану програму запуску вимкнено, заміна головного екрана та запуск під час запуску телевізора необов’язкові.';
+      'Якщо вбудовану програму запуску вимкнено, заміна головного екрана та запуск під час запуску пристрою необов’язкові.';
 
   @override
   String get adbEnableBuiltin =>
@@ -2802,7 +2801,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get adbEffectDisable =>
-      'Вбудовану програму запуску буде вимкнено для користувача телевізора. Меню та кнопки телевізора можуть перестати працювати. Програма не видалена.';
+      'Вбудовану програму запуску буде вимкнено для користувача пристрою. Меню та кнопки пристрою можуть перестати працювати. Програма не видалена.';
 
   @override
   String get adbRecoveryHomeDisable =>
@@ -2885,7 +2884,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get nightBatteryGuide =>
-      '1. У налаштуваннях програм відкрийте Спеціальний доступ до програм.\n2. Виберіть оптимізацію батареї (іноді енергозбереження).\n3. Знайдіть CuteLauncher; виберіть Усі програми, якщо потрібно.\n4. Вимкніть оптимізацію або виберіть Без обмежень.\nНазви та доступність меню залежать від мікропрограми телевізора.';
+      '1. У налаштуваннях програм відкрийте Спеціальний доступ до програм.\n2. Виберіть оптимізацію батареї (іноді енергозбереження).\n3. Знайдіть CuteLauncher; виберіть Усі програми, якщо потрібно.\n4. Вимкніть оптимізацію або виберіть Без обмежень.\nНазви та доступність меню залежать від мікропрограми пристрою.';
 
   @override
   String get updateNotifications => 'Показати сповіщення про оновлення';
@@ -2992,23 +2991,23 @@ class AppLocalizationsUk extends AppLocalizations {
   String get backupSaveMode => 'Резервне копіювання';
 
   @override
-  String get backupScope => 'Резервне копіювання на телевізорах';
+  String get backupScope => 'Резервне копіювання на пристроях';
 
   @override
-  String get backupSyncScope => 'Синхронізація між телевізорами';
+  String get backupSyncScope => 'Синхронізація між пристроями';
 
   @override
-  String get backupSeparate => 'Для кожного телевізора окремо';
+  String get backupSeparate => 'Для кожного пристрою окремо';
 
   @override
-  String get backupShared => 'Однакові налаштування для всіх телевізорів';
+  String get backupShared => 'Однакові налаштування для всіх пристроїв';
 
   @override
   String get backupStorage => 'Зберігання';
 
   @override
   String get backupSyncHelp =>
-      'Завантажити дані та завантажити зміни. Остання зміна виграє конфлікти. Годинники телевізора мають бути правильними. Синхронізація виконується, коли відкрито панель запуску.';
+      'Завантажити дані та завантажити зміни. Остання зміна виграє конфлікти. Годинники пристроїв мають бути правильними. Синхронізація виконується, коли відкрито панель запуску.';
 
   @override
   String get backupSyncLimit => 'Перевіряйте не частіше ніж';
@@ -3033,7 +3032,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get backupLocalHelp =>
-      'Локальні копії видаляються разом із програмою або її даними. Зберігайте копію також поза телевізором.';
+      'Локальні копії видаляються разом із програмою або її даними. Зберігайте копію також поза пристроєм.';
 
   @override
   String get panelObjectOrder => 'Порядок об\'єктів';
@@ -3221,7 +3220,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get backupFolderPickerUnavailable =>
-      'На цьому телевізорі недоступний засіб вибору папок. Виберіть Завантаження / CuteLauncher або внутрішню папку програми.';
+      'На цьому пристрої недоступний засіб вибору папок. Виберіть Завантаження / CuteLauncher або внутрішню папку програми.';
 
   @override
   String get driveConfigurationError =>
@@ -3250,15 +3249,14 @@ class AppLocalizationsUk extends AppLocalizations {
   String get backupSyncDisplayGroup => 'Нічний режим, яскравість і заставка';
 
   @override
-  String get backupSyncControlsGroup =>
-      'Панель запуску та керування телевізором';
+  String get backupSyncControlsGroup => 'Лаунчер і керування пристроєм';
 
   @override
   String get backupSyncGeneralGroup => 'Мова, оновлення та інші налаштування';
 
   @override
   String get backupSyncGroupsHelp =>
-      'Вимкнені блоки залишаються на цьому ТВ. Склад синхронізації налаштовується окремо на кожному пристрої.';
+      'Вимкнені блоки залишаються на цьому пристрої. Склад синхронізації налаштовується окремо на кожному пристрої.';
 
   @override
   String get backupSyncGroupsFailed =>
@@ -3459,6 +3457,15 @@ class AppLocalizationsUk extends AppLocalizations {
   String get homeSectionIcons => 'Значки розділів';
 
   @override
+  String get sectionTitleIcon => 'Значок заголовка розділу';
+
+  @override
+  String get sectionIconPhotos => 'Фото';
+
+  @override
+  String get sectionIconFolder => 'Папка';
+
+  @override
   String get homeInactiveTransparency => 'Прозорість неактивних розділів';
 
   @override
@@ -3595,7 +3602,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get nightIgnoreHdmiInputsHint =>
-      'Зупиніть нічний фільтр під час перегляду HDMI. Потрібен доступ до використання; виявлення входу залежить від мікропрограми телевізора.';
+      'Зупиніть нічний фільтр під час перегляду HDMI. Потрібен доступ до використання; виявлення входу залежить від мікропрограми пристрою.';
 
   @override
   String get inputsSettings => 'Параметри введення';
@@ -3893,7 +3900,7 @@ class AppLocalizationsUk extends AppLocalizations {
       'Цю кнопку з таким типом натискання вже призначено. Виберіть іншу кнопку або тип натискання.';
 
   @override
-  String get cleanerTitle => 'TV cleanup manager';
+  String get cleanerTitle => 'Менеджер очищення пристрою';
 
   @override
   String get cleanerRefresh => 'Refresh applications';
@@ -4110,8 +4117,17 @@ class AppLocalizationsUk extends AppLocalizations {
   String get landscapeMotion => 'Animate weather';
 
   @override
+  String get landscapeSunrise => 'Схід сонця';
+
+  @override
+  String get landscapeSunset => 'Захід сонця';
+
+  @override
+  String get landscapeScheduleCurrent => 'Поточний розклад';
+
+  @override
   String get landscapeHelp =>
-      'Time follows cached sunrise and sunset from Night mode; without them, dawn is at 06:00 and dusk at 18:00, with 40-minute transitions around each. Seasons follow the local month and hemisphere; automatic hemisphere uses weather coordinates, then Night mode coordinates, then the Northern Hemisphere. With time of day off, the scene stays in daylight; with seasons off, it stays in summer. Weather uses current data from the selected weather source, without extra requests. Missing or stale weather shows clear skies. Clouds, precipitation and fog can be disabled independently. Motion is off by default, stops when Home is hidden, and is disabled in memory saving mode or when reduced motion is requested.';
+      'У режимі «Авто» схід і захід сонця обчислюються на пристрої за збереженим місцем. Якщо сонячний час недоступний, застосовується власний розклад. Seasons follow the local month and hemisphere; automatic hemisphere uses weather coordinates, then Night mode coordinates, then the Northern Hemisphere. With time of day off, the scene stays in daylight; with seasons off, it stays in summer. Weather uses current data from the selected weather source, without extra requests. Missing or stale weather shows clear skies. Clouds, precipitation and fog can be disabled independently. Motion is off by default, stops when Home is hidden, and is disabled in memory saving mode or when reduced motion is requested.';
 
   @override
   String get inputConnected => 'Connected';
@@ -4127,7 +4143,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get weatherMetNorwayCredit =>
-      'Data: MET Norway, CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Forecast adapted from https://api.met.no/. No API key; days use the TV time zone, min/max cover available periods. Precipitation probability is unavailable.';
+      'Data: MET Norway, CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Forecast adapted from https://api.met.no/. No API key; days use the device time zone, min/max cover available periods. Precipitation probability is unavailable.';
 
   @override
   String get informationGroup => 'Годинник, дата й погода';
@@ -4266,7 +4282,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get tvPowerHelp =>
-      'Вимкнення переводить пристрій в очікування через службу спеціальних можливостей CuteLauncher або локальний ADB. Перезавантаження потребує ADB. На приставці команда керує приставкою; поведінка ТВ залежить від HDMI-CEC і прошивки.';
+      'Сон переводить пристрій в очікування через службу спеціальних можливостей CuteLauncher або локальний ADB. Для повного вимкнення та перезавантаження потрібен локальний ADB. На приставці команда керує приставкою; поведінка ТВ залежить від HDMI-CEC і прошивки.';
 
   @override
   String get cleanerLists => 'Списки вимкнення';
@@ -4343,15 +4359,15 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get cleanerAlreadyDisabled =>
-      'Усі застосунки зі списку, наявні на цьому ТВ, уже вимкнено.';
+      'Усі застосунки зі списку, наявні на цьому пристрої, уже вимкнено.';
 
   @override
   String get cleanerAlreadyEnabled =>
-      'Усі застосунки зі списку, наявні на цьому ТВ, уже ввімкнено.';
+      'Усі застосунки зі списку, наявні на цьому пристрої, уже ввімкнено.';
 
   @override
   String get cleanerNoInstalled =>
-      'На цьому ТВ немає відповідних установлених застосунків зі списку.';
+      'На цьому пристрої немає відповідних установлених застосунків зі списку.';
 
   @override
   String get cleanerListProtected =>
@@ -4482,7 +4498,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get backgroundMediaFormats =>
-      'Зображення: JPEG, PNG, WebP, GIF, BMP — до 8 МіБ, 48 мегапікселів і 16 384 пікселів на кожному боці.\nВідео: MP4/M4V, WebM, MKV — до 256 МіБ і 3840×2160. Підтримка кодека залежить від ТВ; бажано MP4 з H.264. Повторюється без звуку й призупиняється поза головним екраном. Відео не входить до резервних копій.';
+      'Зображення: JPEG, PNG, WebP, GIF, BMP — до 8 МіБ, 48 мегапікселів і 16 384 пікселів на кожному боці.\nВідео: MP4/M4V, WebM, MKV — до 256 МіБ і 3840×2160. Підтримка кодека залежить від пристрою; бажано MP4 з H.264. Повторюється без звуку й призупиняється поза головним екраном. Відео не входить до резервних копій.';
 
   @override
   String get backgroundFormatError =>
@@ -4503,7 +4519,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get backgroundVideoCodecError =>
-      'ТВ не зміг відтворити відео: кодек не підтримується або файл пошкоджено. Спробуйте MP4 з H.264.';
+      'Пристрій не зміг відтворити відео: кодек не підтримується або файл пошкоджено. Спробуйте MP4 з H.264.';
 
   @override
   String get backgroundFileApplied => 'Файл вибрано. Фон оновлено.';
@@ -4749,7 +4765,7 @@ class AppLocalizationsUk extends AppLocalizations {
       'Підключено інший або невизначений VPN. Керування недоступне.';
 
   @override
-  String get vpnStartup => 'VPN під час запуску ТВ';
+  String get vpnStartup => 'VPN під час запуску пристрою';
 
   @override
   String get vpnPending => 'Очікування підключення VPN';
@@ -4781,11 +4797,11 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get vpnRestartRequired =>
-      'Перезапустіть ТВ для застосування системного режиму.';
+      'Перезапустіть пристрій для застосування системного режиму.';
 
   @override
   String get vpnAlwaysOnHelp =>
-      'Призначає налаштований клієнт постійним VPN через локальний TCP АДБ. Android застосовує вибір після перезапуску ТВ. Блокування з’єднань без VPN не вмикається і не змінюється. Вихід із режиму відновлює попередній системний вибір.';
+      'Призначає налаштований клієнт постійним VPN через локальний TCP АДБ. Android застосовує вибір після перезапуску пристрою. Блокування з’єднань без VPN не вмикається і не змінюється. Вихід із режиму відновлює попередній системний вибір.';
 
   @override
   String get vpnClientConfirmation => 'Підтвердьте команду у вікні MantaRay.';
@@ -4888,7 +4904,7 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
-  String get weatherForecastTvTime => 'Дати прогнозу за часом телевізора';
+  String get weatherForecastTvTime => 'Дати прогнозу за часом пристрою';
 
   @override
   String get weatherClear => 'Ясно';
@@ -4912,7 +4928,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get audioStatusTitle => 'Гучність і аудіовихід';
 
   @override
-  String get audioOutputTv => 'ТБ';
+  String get audioOutputTv => 'Динаміки';
 
   @override
   String get audioOutputHeadphones => 'Навушники';
@@ -4944,7 +4960,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get backgroundStartupHelp =>
-      'Позначте застосунки для одноразового запуску у фоні після завантаження ТВ. CuteLauncher має відкритися протягом хвилини: призначте його домашнім екраном або ввімкніть запуск під час завантаження. Застосунки запускаються по черзі за домашнім екраном; позначення не запускає їх одразу. Натискання пульта або вихід із лаунчера скасовує решту запусків. Пробудження не запускає їх повторно. Несумісні застосунки недоступні для вибору. Запуск не вмикає внутрішні функції та не гарантує постійної роботи. Надайте дозволи та налаштуйте фонову роботу в самому застосунку. Android або прошивка може його зупинити. Вибір зберігається лише на цьому ТВ.';
+      'Позначте застосунки для одноразового запуску у фоні після завантаження пристрою. CuteLauncher має відкритися протягом хвилини: призначте його домашнім екраном або ввімкніть запуск під час завантаження. Застосунки запускаються по черзі за домашнім екраном; позначення не запускає їх одразу. Натискання пульта або вихід із лаунчера скасовує решту запусків. Пробудження не запускає їх повторно. Несумісні застосунки недоступні для вибору. Запуск не вмикає внутрішні функції та не гарантує постійної роботи. Надайте дозволи та налаштуйте фонову роботу в самому застосунку. Android або прошивка може його зупинити. Вибір зберігається лише на цьому пристрої.';
 
   @override
   String get backgroundStartupToggle => 'Автозавантаження у фоні';
@@ -5013,7 +5029,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get slideshowPickerUnavailable =>
-      'На цьому ТВ немає провідника з вибором папок. Скористайтеся вбудованим переглядом або введіть шлях.';
+      'На цьому пристрої немає провідника з вибором папок. Скористайтеся вбудованим переглядом або введіть шлях.';
 
   @override
   String get slideshowFolderUnavailable =>
@@ -5021,7 +5037,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get slideshowStorageHelp =>
-      'Вбудований перегляд читає папки пам’яті ТВ і підключених накопичувачів. На Android 11 і новіших дозвольте доступ до всіх файлів; на Android 9–10 — до пам’яті. Можна ввести шлях, наприклад /storage/emulated/0/Pictures. Файли не змінюються.';
+      'Вбудований перегляд читає папки пам’яті пристрою і підключених накопичувачів. На Android 11 і новіших дозвольте доступ до всіх файлів; на Android 9–10 — до пам’яті. Можна ввести шлях, наприклад /storage/emulated/0/Pictures. Файли не змінюються.';
 
   @override
   String get fileBrowserTitle => 'Вибір файлу';
@@ -5059,7 +5075,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get appChannelsHelp =>
-      'Виберіть до 16 стрічок. Доступність залежить від каналів, опублікованих застосунками, та прошивки ТВ. Порожні стрічки приховано. Вибір зберігається на цьому ТВ.';
+      'Виберіть до 16 стрічок. Доступність залежить від каналів, опублікованих застосунками, та прошивки пристрою. Порожні стрічки приховано. Вибір зберігається на цьому пристрої.';
 
   @override
   String get appChannelsUnavailable =>
@@ -5094,6 +5110,36 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get wallpaperRefresh => 'Оновити шпалери';
+
+  @override
+  String get quickActionsTitle => 'Швидкі дії';
+
+  @override
+  String get quickActionsSettings => 'Налаштування швидких дій';
+
+  @override
+  String get quickActionsEmpty => 'Виберіть команди в налаштуваннях меню.';
+
+  @override
+  String get quickActionsWallpaperUnavailable =>
+      'Це тло не можна змінити вручну.';
+
+  @override
+  String get quickActionsWallpaperFailed => 'Не вдалося оновити шпалери.';
+
+  @override
+  String get quickActionsSleep => 'Сон';
+
+  @override
+  String get quickActionsShutdownConfirm => 'Повністю вимкнути пристрій?';
+
+  @override
+  String get quickActionsScreensaverUnavailable =>
+      'Не вдалося запустити заставку.';
+
+  @override
+  String get quickActionsPowerHelp =>
+      'Для сну потрібна служба спеціальних можливостей CuteLauncher або локальний ADB. Для повного вимкнення та перезавантаження потрібен локальний ADB.';
 
   @override
   String get wallpaperDimmingHelp =>
@@ -5261,11 +5307,14 @@ class AppLocalizationsUk extends AppLocalizations {
   String get remoteMappingBlackScreen => 'Перемкнути Black Screen';
 
   @override
+  String get remoteMappingToggleNightMode => 'Перемкнути нічний режим';
+
+  @override
   String get remoteMappingBlackOverlay => 'Чорний екран';
 
   @override
   String get remoteMappingBlackOverlayHelp =>
-      'Натисніть один раз, щоб приховати зображення. Натисніть ще раз або натисніть Назад, щоб повернути його. Телевізор залишається ввімкненим.';
+      'Натисніть один раз, щоб приховати зображення. Натисніть ще раз або натисніть Назад, щоб повернути його. Пристрій залишається ввімкненим.';
 
   @override
   String get remoteMappingTclScreenOff => 'Вимкнути екран TCL';
@@ -5358,7 +5407,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get feedFormatHelp =>
-      'Авто вибирає єдиний формат стрічки за даними застосунку або першими трьома завантаженими обкладинками й запам’ятовує його на цьому ТВ. За рівності вибирається горизонтальний формат. Інші пропорції показуються повністю на підкладці. Формат можна вибрати вручну.';
+      'Авто вибирає єдиний формат стрічки за даними застосунку або першими трьома завантаженими обкладинками й запам’ятовує його на цьому пристрої. За рівності вибирається горизонтальний формат. Інші пропорції показуються повністю на підкладці. Формат можна вибрати вручну.';
 
   @override
   String get networkSpeedTitle => 'Швидкість мережі';
@@ -5425,13 +5474,13 @@ class AppLocalizationsUk extends AppLocalizations {
       'Не вдалося синхронізувати налаштування. Перевірте доступ до сховища та повторіть спробу.';
 
   @override
-  String get backupThisTv => 'Цей ТВ';
+  String get backupThisTv => 'Цей пристрій';
 
   @override
-  String get backupOtherTv => 'Інший ТВ';
+  String get backupOtherTv => 'Інший пристрій';
 
   @override
-  String get backupTvUnknown => 'ТВ не визначено';
+  String get backupTvUnknown => 'Пристрій не визначено';
 
   @override
   String get panelTooltips => 'Спливні підказки в усіх панелях';
@@ -5663,7 +5712,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get fileBrowserStartFolder => 'Початкова папка';
 
   @override
-  String get fileBrowserStorage => 'Пам’ять ТВ';
+  String get fileBrowserStorage => 'Пам’ять пристрою';
 
   @override
   String get fileBrowserDownloads => 'Завантаження';
@@ -5703,7 +5752,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get fileBrowserOptionsHelp =>
-      'Спочатку відкривається вибрана папка або початкова папка вибраного зображення. Остання відкрита папка запам’ятовується окремо для кожної дії, навіть після скасування. Якщо папка недоступна, відкривається пам’ять ТВ або «Завантаження». Історія папок зберігається лише на цьому ТВ.';
+      'Спочатку відкривається вибрана папка або початкова папка вибраного зображення. Остання відкрита папка запам’ятовується окремо для кожної дії, навіть після скасування. Якщо папка недоступна, відкривається пам’ять пристрою або «Завантаження». Історія папок зберігається лише на цьому пристрої.';
 
   @override
   String get fileBrowserSaveFailed =>
@@ -5869,20 +5918,20 @@ class AppLocalizationsUk extends AppLocalizations {
   String get backupSyncResume => 'Як відновити синхронізацію?';
 
   @override
-  String get backupSyncUseLocal => 'Використати налаштування цього ТВ';
+  String get backupSyncUseLocal => 'Використати налаштування цього пристрою';
 
   @override
   String get backupSyncUseRemote => 'Використати налаштування зі сховища';
 
   @override
-  String get backupSyncMergeLocal => 'Об’єднати з пріоритетом цього ТВ';
+  String get backupSyncMergeLocal => 'Об’єднати з пріоритетом цього пристрою';
 
   @override
   String get backupSyncMergeRemote => 'Об’єднати з пріоритетом сховища';
 
   @override
   String backupSyncPreviousDate(String date) {
-    return 'Остання синхронізація цього ТВ: $date';
+    return 'Остання синхронізація цього пристрою: $date';
   }
 
   @override
@@ -5969,7 +6018,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get syncKeyHelp =>
-      'Для обміну токенами й обліковими записами задайте однаковий ключ на всіх ТВ. Створіть його на одному ТВ і перенесіть на інші. Збережіть ключ: без нього захищені дані не прочитати. У разі зміни оновіть ключ на всіх ТВ. Дозволи Android та апаратні ключі залишаються локальними.';
+      'Для обміну токенами й обліковими записами задайте однаковий ключ на всіх пристроях. Створіть його на одному пристрої і перенесіть на інші. Збережіть ключ: без нього захищені дані не прочитати. У разі зміни оновіть ключ на всіх пристроях. Дозволи Android та апаратні ключі залишаються локальними.';
 
   @override
   String get syncFiles => 'Файли синхронізації';
@@ -6017,7 +6066,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get backupNoRemote =>
-      'У сховищі немає налаштувань. Цей ТВ надішле свої.';
+      'У сховищі немає налаштувань. Цей пристрій надішле свої.';
 
   @override
   String get backupSetupStart => 'Увімкнути';
@@ -6033,18 +6082,18 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get backupAccountLocalHelp =>
-      'Використовуйте підключений або інший обліковий запис того ж типу. Реквізити залишаються на цьому ТВ. Копії та синхронізація керують файлами окремо.';
+      'Використовуйте підключений або інший обліковий запис того ж типу. Реквізити залишаються на цьому пристрої. Копії та синхронізація керують файлами окремо.';
 
   @override
   String get backupPasswordOptionalHelp =>
-      'Необов’язково. Шифрує весь файл разом із переносними токенами. Без пароля файл не зашифрований. Порожнє значення вимикає шифрування. Іншим ТВ потрібен той самий пароль.';
+      'Необов’язково. Шифрує весь файл разом із переносними токенами. Без пароля файл не зашифрований. Порожнє значення вимикає шифрування. Іншим пристроям потрібен той самий пароль.';
 
   @override
   String get backupYandexDisk => 'Яндекс Диск';
 
   @override
   String get backupYandexHelp =>
-      'Введіть Client ID і Client Secret застосунку Яндекс OAuth із доступом до папки застосунку на Диску. Підключіться та підтвердьте код на телефоні. Для обміну між ТВ використовуйте один OAuth-клієнт і обліковий запис.';
+      'Введіть Client ID і Client Secret застосунку Яндекс OAuth із доступом до папки застосунку на Диску. Підключіться та підтвердьте код на телефоні. Для обміну між пристроями використовуйте один OAuth-клієнт і обліковий запис.';
 
   @override
   String get backupYandexConnect => 'Підключити Яндекс Диск';
@@ -6112,5 +6161,5 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get backupExistingSettingsHelp =>
-      'У вибраному сховищі вже є налаштування синхронізації. Виберіть, що з ними зробити: застосувати на цьому ТВ, замінити налаштуваннями цього ТВ або об’єднати. Якщо під час об’єднання налаштування відрізняються, буде використано вибраний пріоритет. Обмін почнеться після підтвердження на останньому кроці майстра.';
+      'У вибраному сховищі вже є налаштування синхронізації. Виберіть, що з ними зробити: застосувати на цьому пристрої, замінити налаштуваннями цього пристрою або об’єднати. Якщо під час об’єднання налаштування відрізняються, буде використано вибраний пріоритет. Обмін почнеться після підтвердження на останньому кроці майстра.';
 }

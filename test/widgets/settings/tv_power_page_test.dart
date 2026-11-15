@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/widgets/launcher_dialog.dart';
 import 'package:flauncher/widgets/settings/tv_power_page.dart';
+import 'package:flauncher/widgets/tv_power_action.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -22,13 +23,13 @@ void main() {
 
   tearDown(() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(TvPowerPage.channel, null);
+        .setMockMethodCallHandler(TvPowerAction.channel, null);
   });
 
   testWidgets('cancel and Back never send power commands', (tester) async {
     final calls = <String>[];
     tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
-      TvPowerPage.channel,
+      TvPowerAction.channel,
       (call) async {
         calls.add(call.method);
         return true;
@@ -54,16 +55,16 @@ void main() {
       final calls = <String>[];
       final pending = Completer<bool>();
       tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
-        TvPowerPage.channel,
+        TvPowerAction.channel,
         (call) {
           calls.add(call.method);
           return pending.future;
         },
       );
       await open(tester);
-      await tester.tap(find.text('Выключить устройство'));
+      await tester.tap(find.text('Сон'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Выключить устройство').last);
+      await tester.tap(find.text('Сон').last);
       await tester.pump(const Duration(milliseconds: 400));
       expect(calls, ['sleep']);
       await tester.tap(find.text('Перезагрузить устройство'));
@@ -71,8 +72,15 @@ void main() {
       expect(find.byType(LauncherAlertDialog), findsNothing);
       pending.complete(true);
       await tester.pumpAndSettle();
+      await tester.tap(find.text('Выключить устройство'));
+      await tester.pumpAndSettle();
+      expect(find.text('Полностью выключить устройство?'), findsOneWidget);
+      expect(calls, ['sleep']);
+      await tester.tap(find.text('Выключить устройство').last);
+      await tester.pumpAndSettle();
+      expect(calls, ['sleep', 'shutdown']);
       tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
-        TvPowerPage.channel,
+        TvPowerAction.channel,
         (call) async {
           calls.add(call.method);
           throw PlatformException(code: 'unavailable');
@@ -82,7 +90,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('Перезагрузить устройство').last);
       await tester.pumpAndSettle();
-      expect(calls, ['sleep', 'reboot']);
+      expect(calls, ['sleep', 'shutdown', 'reboot']);
       expect(
         find.textContaining('Не удалось отправить команду'),
         findsOneWidget,

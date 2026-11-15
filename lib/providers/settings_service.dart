@@ -1,5 +1,6 @@
 import '../category_appearance.dart';
 import '../sleep_timer_configuration.dart';
+import '../quick_actions.dart';
 import '../overlay_appearance.dart';
 import '../overlay_position.dart';
 import '../launcher_defaults.dart';
@@ -503,6 +504,43 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
   bool get startOnBoot => _startOnBoot;
   bool get showNotificationsWidgetInStatusBar => _showNotificationsWidgetInStatusBar;
   bool get showSleepTimerInStatusBar => _sharedPreferences.getBool('show_sleep_timer_in_status_bar') ?? true;
+  bool get showQuickActionsInStatusBar => _sharedPreferences.get(quickActionsVisibleKey) == true;
+  List<QuickAction> get quickActionsOrder =>
+      QuickAction.orderFromSettings(_sharedPreferences.get(quickActionsOrderKey));
+  List<QuickAction> get _enabledQuickActions =>
+      QuickAction.fromSettings(_sharedPreferences.get(quickActionsItemsKey));
+  List<QuickAction> get quickActions {
+    final enabled = _enabledQuickActions;
+    return quickActionsOrder.where(enabled.contains).toList();
+  }
+  Future<void> setShowQuickActionsInStatusBar(bool value) async {
+    await _sharedPreferences.setBool(quickActionsVisibleKey, value);
+    notifyListeners();
+  }
+  Future<void> setQuickActions(List<QuickAction> actions) async {
+    await _sharedPreferences.setStringList(quickActionsItemsKey, [
+      for (final action in QuickAction.values)
+        if (actions.contains(action)) action.name,
+    ]);
+    notifyListeners();
+  }
+  Future<void> setQuickActionsOrder(List<QuickAction> order) async {
+    final previous = _sharedPreferences.getStringList(quickActionsOrderKey);
+    try {
+      final saved = await _sharedPreferences.setStringList(quickActionsOrderKey, [
+        for (final action in {...order, ...QuickAction.values}) action.name,
+      ]);
+      if (!saved) throw StateError('Unable to save quick action order');
+    } catch (_) {
+      if (previous == null) {
+        await _sharedPreferences.remove(quickActionsOrderKey);
+      } else {
+        await _sharedPreferences.setStringList(quickActionsOrderKey, previous);
+      }
+      rethrow;
+    }
+    notifyListeners();
+  }
   bool get showNightModeInStatusBar => _sharedPreferences.getBool('show_night_mode_in_status_bar') ?? true;
   Future<void> setShowNightModeInStatusBar(bool value) async {
     await _sharedPreferences.setBool('show_night_mode_in_status_bar', value);
@@ -726,6 +764,9 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
   Map<String, dynamic> exportSettingsMap() {
     return {
       sleepTimerConfigurationKey: sleepTimerConfiguration.encode(),
+      quickActionsVisibleKey: showQuickActionsInStatusBar,
+      quickActionsItemsKey: _enabledQuickActions.map((action) => action.name).toList(),
+      quickActionsOrderKey: quickActionsOrder.map((action) => action.name).toList(),
       tvInputsConfigurationKey: _sharedPreferences.getString(tvInputsConfigurationKey) ?? const TvInputsConfiguration().encode(),
       _memorySaverEnabledKey: _memorySaverEnabled,
       _appHighlightAnimationEnabledKey: _appHighlightAnimationEnabled,

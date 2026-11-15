@@ -349,7 +349,10 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Облака'));
+    final clouds = find.text('Облака');
+    await tester.ensureVisible(clouds);
+    await tester.pumpAndSettle();
+    await tester.tap(clouds.hitTestable());
     await tester.pumpAndSettle();
     expect(settings.landscape.clouds, false);
     expect(settings.landscape.precipitation, true);

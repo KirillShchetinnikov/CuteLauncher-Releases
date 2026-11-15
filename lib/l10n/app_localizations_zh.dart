@@ -181,13 +181,13 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get renderCompatibilityHelp =>
-      '如果界面在夜间调暗时闪烁，请尝试此模式。已验证的机型会自动启用。其他电视上的选择仅保存在本设备上，重启启动器后生效。可能增加图形处理负载。';
+      '如果界面在夜间调暗时闪烁，请尝试此模式。已验证的机型会自动启用。其他设备上的选择仅保存在本设备上，重启启动器后生效。可能增加图形处理负载。';
 
   @override
   String get diagnosticsHubTitle => 'Diagnostics';
 
   @override
-  String get tvCompatibilityTitle => 'TV compatibility check';
+  String get tvCompatibilityTitle => '检查设备兼容性';
 
   @override
   String get tvCompatibilityRun => 'Run check';
@@ -290,7 +290,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get adbWifiOwned =>
-      '未做任何更改：保存的 Wi-Fi 网络由 Google 设置向导创建。停用向导可能删除网络并使电视断网。\n\n1. 确认您知道 Wi-Fi 密码。\n2. 打开 Android 网络设置，选择该网络，然后选择“忘记网络”。\n3. 通过普通 Android 网络设置重新连接。\n4. 返回 CuteLauncher，检查 ADB，然后重试停用内置启动器。\n\n如果再次出现此消息，请保持内置启动器启用：固件可能会再次将网络归属于设置向导。';
+      '未做任何更改：保存的 Wi-Fi 网络由 Google 设置向导创建。停用向导可能删除网络并使设备断网。\n\n1. 确认您知道 Wi-Fi 密码。\n2. 打开 Android 网络设置，选择该网络，然后选择“忘记网络”。\n3. 通过普通 Android 网络设置重新连接。\n4. 返回 CuteLauncher，检查 ADB，然后重试停用内置启动器。\n\n如果再次出现此消息，请保持内置启动器启用：固件可能会再次将网络归属于设置向导。';
 
   @override
   String get adbWifiUnknown =>
@@ -631,7 +631,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get defaultLauncherDescription =>
-      '设为默认桌面后，按 Home 键将始终返回 CuteLauncher。电视开机也会直接进入 CuteLauncher。';
+      '设为默认桌面后，按 Home 键将始终返回 CuteLauncher。设备开机也会直接进入 CuteLauncher。';
 
   @override
   String get inputs => '输入源';
@@ -688,7 +688,7 @@ class AppLocalizationsZh extends AppLocalizations {
       '将另一台设备连接到同一 Wi-Fi 网络，并在浏览器中打开以下地址：';
 
   @override
-  String get localNetworkSharingDetails => '你可以在此下载电视的设置/布局，或将备份文件上传回这台电视。';
+  String get localNetworkSharingDetails => '你可以在此下载设备的设置/布局，或将备份文件上传回这台设备。';
 
   @override
   String failedToStartServer(String error) {
@@ -768,7 +768,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get homeButtonFix => 'Home 键修复（Google TV）';
 
   @override
-  String get startOnBoot => '开机时启动 (Google TV / Fire TV)';
+  String get startOnBoot => '设备开机时启动';
 
   @override
   String get appLanguage => '语言';
@@ -1287,19 +1287,19 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get accessibilityGuide =>
-      '手动打开电视设置，然后辅助功能 → CuteLauncher Home Button Fix，并启用该服务。此菜单的位置和名称取决于您的电视制造商。';
+      '手动打开设备设置，然后辅助功能 → CuteLauncher Home Button Fix，并启用该服务。此菜单的位置和名称取决于您的设备制造商。';
 
   @override
   String get notificationPermissionGuide =>
-      '无法在此电视上打开通知访问设置。在应用程序信息中允许传出通知不会授予对来自其他应用程序的通知的访问权限。\n\n通过 ADB 连接电视并运行：';
+      '无法在此设备上打开通知访问设置。在应用程序信息中允许传出通知不会授予对来自其他应用程序的通知的访问权限。\n\n通过 ADB 连接设备并运行：';
 
   @override
   String get overlayPermissionGuide =>
-      '覆盖权限设置无法自动打开。\n\n要在其他应用程序上启用弹出窗口，请通过 ADB 连接电视并运行：';
+      '覆盖权限设置无法自动打开。\n\n要在其他应用程序上启用弹出窗口，请通过 ADB 连接设备并运行：';
 
   @override
   String get watchNextPermissionGuide =>
-      '要从其他应用程序读取“继续观看”卡，Android TV 需要 READ_WRITE_WATCH_NEXT_PROGRAMS。\n\n通过 ADB 连接电视并运行：';
+      '要从其他应用程序读取“继续观看”卡，Android TV 需要 READ_WRITE_WATCH_NEXT_PROGRAMS。\n\n通过 ADB 连接设备并运行：';
 
   @override
   String get watchNextAccess => '继续观看访问';
@@ -1784,7 +1784,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get adbAccessibility => '启用主页按钮修复';
 
   @override
-  String get adbAuthorization => '在电视上批准 ADB 授权，然后重试。';
+  String get adbAuthorization => '在设备上批准 ADB 授权，然后重试。';
 
   @override
   String get adbChangeConfirm =>
@@ -1805,7 +1805,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get adbHint =>
-      '仅适用于此电视的原型 (127.0.0.1)。在开发者选项中启用 TCP ADB，输入其端口并批准电视上的授权提示。尚不支持使用配对码进行无线调试。私钥保留在该设备上，在备份之外。';
+      '仅适用于此设备的原型 (127.0.0.1)。在开发者选项中启用 TCP ADB，输入其端口并批准设备上的授权提示。尚不支持使用配对码进行无线调试。私钥保留在该设备上，在备份之外。';
 
   @override
   String get adbHome => '使 CuteLauncher 成为家庭应用程序';
@@ -1842,7 +1842,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get nightModeScope =>
-      '需要叠加权限才能调暗其他应用程序。如果没有它，调光将在 CuteLauncher 内部进行。 TCL 过滤器不需要覆盖权限。超过 80% 的不透明度 Android 可能会阻止其他应用程序中的触摸输入；电视遥控键仍然有效。';
+      '需要叠加权限才能调暗其他应用程序。如果没有它，调光将在 CuteLauncher 内部进行。 TCL 过滤器不需要覆盖权限。超过 80% 的不透明度 Android 可能会阻止其他应用程序中的触摸输入；遥控器按键仍然有效。';
 
   @override
   String get nightModeEnd => '结束';
@@ -1857,7 +1857,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get nightModeWarmth => '暖滤';
 
   @override
-  String get nightModeScheduleHint => '使用当地电视时间。支持隔夜时段。相同的开始和结束时间会禁用计划的过滤器。';
+  String get nightModeScheduleHint => '使用当地设备时间。支持隔夜时段。相同的开始和结束时间会禁用计划的过滤器。';
 
   @override
   String get nightModeEnabled => '启用夜间模式';
@@ -1914,11 +1914,11 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get diagnosticsSharingNotice =>
-      '请通过私信将文件发送给作者，不要公开发布：自动清理可能遗漏个人信息。向作者发送报告即表示您同意在 CuteLauncher 的 Git 仓库中发布匿名的电视兼容性报告。公开内容仅包含无个人信息的设备元数据和功能可用性；错误日志、命令及您的设置不会公开。\n\n报告还包含已安装软件包的名称、版本和启用状态，以及分区名称、内容、顺序和可见性。软件包标识符和名称会保留以便诊断；应用和分区列表不会公开发布。';
+      '请通过私信将文件发送给作者，不要公开发布：自动清理可能遗漏个人信息。向作者发送报告即表示您同意在 CuteLauncher 的 Git 仓库中发布匿名的设备兼容性报告。公开内容仅包含无个人信息的设备元数据和功能可用性；错误日志、命令及您的设置不会公开。\n\n报告还包含已安装软件包的名称、版本和启用状态，以及分区名称、内容、顺序和可见性。软件包标识符和名称会保留以便诊断；应用和分区列表不会公开发布。';
 
   @override
   String get diagnosticsHint =>
-      '一份报告同时包含电视功能兼容性和错误诊断。报告包含电视型号和固件、应用版本、权限、内存、错误阶段及原因，以及自动清除个人信息后的命令和响应。当前会话保留最近 50 次操作、单独最多 100 次失败和有限的 ADB 日志。重启后日志清空。清理可能遗漏个人信息：请通过私信发送文件，不要公开发布。不会自动发送任何内容。每次错误都会保存当时生效设置的快照，后续更改不会覆盖它。\n\n报告还包含已安装软件包的名称、版本和启用状态，以及分区名称、内容、顺序和可见性。软件包标识符和名称会保留以便诊断；应用和分区列表不会公开发布。';
+      '一份报告同时包含设备功能兼容性和错误诊断。报告包含设备型号和固件、应用版本、权限、内存、错误阶段及原因，以及自动清除个人信息后的命令和响应。当前会话保留最近 50 次操作、单独最多 100 次失败和有限的 ADB 日志。重启后日志清空。清理可能遗漏个人信息：请通过私信发送文件，不要公开发布。不会自动发送任何内容。每次错误都会保存当时生效设置的快照，后续更改不会覆盖它。\n\n报告还包含已安装软件包的名称、版本和启用状态，以及分区名称、内容、顺序和可见性。软件包标识符和名称会保留以便诊断；应用和分区列表不会公开发布。';
 
   @override
   String get diagnosticsTitle => '错误诊断';
@@ -1939,7 +1939,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tclBlueLightError => '无法读取或验证 TCL 过滤器设置。刷新其状态并重试。';
 
   @override
-  String get tclBlueLightUnsupported => 'TCL 滤镜接口在此电视上不可用。';
+  String get tclBlueLightUnsupported => 'TCL 滤镜接口在此设备上不可用。';
 
   @override
   String get tclBlueLightRefresh => '刷新TCL过滤器状态';
@@ -1954,7 +1954,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get nightNextStart => '下次开始';
 
   @override
-  String get nightScheduleTimeHint => '时间使用电视时区。负偏移量较早；正偏移量稍后出现。';
+  String get nightScheduleTimeHint => '时间使用设备时区。负偏移量较早；正偏移量稍后出现。';
 
   @override
   String get nightTemperature => '滤镜色温';
@@ -2038,7 +2038,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get nightSolarAttribution =>
-      '日出和日落时间来自 Sunrise-Sunset.org，服务不可用时改用 GeoNames。离线时，电视会计算缺少的时间。';
+      '日出和日落时间来自 Sunrise-Sunset.org，服务不可用时改用 GeoNames。离线时，设备会计算缺少的时间。';
 
   @override
   String get nightTemporaryOn => '暂时调暗直到';
@@ -2056,7 +2056,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get advancedSettings => '高级';
 
   @override
-  String get controlAndStartup => '启动器和电视控件';
+  String get controlAndStartup => '启动器和设备控制';
 
   @override
   String get sectionsAndOrder => '部分和顺序';
@@ -2154,7 +2154,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get followTileStyle => '遵循风格';
 
   @override
-  String get androidTvSettingsHint => '打开电视系统设置';
+  String get androidTvSettingsHint => '打开设备系统设置';
 
   @override
   String get autoHideTopPanel => '自动隐藏面板';
@@ -2401,7 +2401,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get adbTlsHint =>
-      '在开发者选项中使用无线调试。配对和连接有不同的端口。如果您的固件没有配对代码屏幕或阻止覆盖窗口，请改用 TCP/RSA。所有连接都保留在该电视的本地。';
+      '在开发者选项中使用无线调试。配对和连接有不同的端口。如果您的固件没有配对代码屏幕或阻止覆盖窗口，请改用 TCP/RSA。所有连接都保留在该设备的本地。';
 
   @override
   String get adbPaired => '配对。使用无线调试连接端口检查连接。';
@@ -2453,7 +2453,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get adbTwoWindows => '在第二个窗口中打开“设置”';
 
   @override
-  String get autoLaunchBoot => '电视开机后';
+  String get autoLaunchBoot => '设备开机后';
 
   @override
   String get autoLaunchOff => '残疾人';
@@ -2472,7 +2472,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get autoLaunchHint =>
-      '选择在电视启动或唤醒后打开的应用程序或 HDMI 输入。在下面设置事件和延迟。当 Android 显示 CuteLauncher 时，该操作运行一次。任何远程输入或离开主屏幕都会取消等待。之后您可以自由更改 HDMI 输入。将 CuteLauncher 设置为默认启动器，或根据需要启用启动时启动。唤醒检测需要 CuteLauncher 保持运行。';
+      '选择在设备启动或唤醒后打开的应用程序或 HDMI 输入。在下面设置事件和延迟。当 Android 显示 CuteLauncher 时，该操作运行一次。任何远程输入或离开主屏幕都会取消等待。之后您可以自由更改 HDMI 输入。将 CuteLauncher 设置为默认启动器，或根据需要启用启动时启动。唤醒检测需要 CuteLauncher 保持运行。';
 
   @override
   String autoLaunchSeconds(int seconds) {
@@ -2570,7 +2570,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get cloudDisconnect => '断开帐户';
 
   @override
-  String get cloudDisconnectConfirm => '从电视中删除此帐户吗？云中的副本将保留。';
+  String get cloudDisconnectConfirm => '从设备中删除此帐户吗？云中的副本将保留。';
 
   @override
   String get cloudUpload => '将副本保存到云端';
@@ -2617,7 +2617,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get adbSetupIntro =>
-      '在电视开发者设置中启用调试和网络 ADB，然后信任 CuteLauncher。所有 ADB 操作的风险均由您自行承担。';
+      '在设备开发者设置中启用调试和网络 ADB，然后信任 CuteLauncher。所有 ADB 操作的风险均由您自行承担。';
 
   @override
   String get adbConnectionBlock => 'ADB 连接';
@@ -2648,7 +2648,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get adbBuiltinHint =>
-      '停用内置启动器后，遥控器上的部分按键和电视厂商专有的菜单可能无法使用。要撤销此更改，请重新启用内置启动器。';
+      '停用内置启动器后，遥控器上的部分按键和设备厂商专有的菜单可能无法使用。要撤销此更改，请重新启用内置启动器。';
 
   @override
   String get adbHomeBlock => 'Home按钮和启动';
@@ -2660,7 +2660,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get adbHomeOverride => '覆盖主页按钮';
 
   @override
-  String get adbHomeOptional => '如果内置启动器被禁用，则可以选择覆盖主页并在电视启动时启动。';
+  String get adbHomeOptional => '如果内置启动器被禁用，则可以选择覆盖主页并在设备启动时启动。';
 
   @override
   String get adbEnableBuiltin => '通过 ADB 启用内置启动器';
@@ -2683,7 +2683,7 @@ class AppLocalizationsZh extends AppLocalizations {
       '之前的启动器将被启用并设为默认值。如果不可用或未保存，则选择第一个可用的其他启动器。这不会禁用主页按钮修复。';
 
   @override
-  String get adbEffectDisable => '电视用户将禁用内置启动器应用程序。电视菜单和按钮可能会停止工作。该应用程序未卸载。';
+  String get adbEffectDisable => '设备用户将禁用内置启动器应用程序。设备菜单和按钮可能会停止工作。该应用程序未卸载。';
 
   @override
   String get adbRecoveryHomeDisable =>
@@ -2755,7 +2755,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get nightBatteryGuide =>
-      '1. 在应用程序设置中，打开特殊应用程序访问权限。\n2. 选择电池优化（有时是节能器）。\n3、找到CuteLauncher；如果需要，选择所有应用程序。\n4. 禁用优化或选择无限制。\n菜单名称和可用性取决于电视固件。';
+      '1. 在应用程序设置中，打开特殊应用程序访问权限。\n2. 选择电池优化（有时是节能器）。\n3、找到CuteLauncher；如果需要，选择所有应用程序。\n4. 禁用优化或选择无限制。\n菜单名称和可用性取决于设备固件。';
 
   @override
   String get updateNotifications => '显示更新通知';
@@ -2857,22 +2857,22 @@ class AppLocalizationsZh extends AppLocalizations {
   String get backupSaveMode => '备份';
 
   @override
-  String get backupScope => '跨电视备份';
+  String get backupScope => '跨设备备份';
 
   @override
-  String get backupSyncScope => '跨电视同步';
+  String get backupSyncScope => '跨设备同步';
 
   @override
-  String get backupSeparate => '每台电视独立';
+  String get backupSeparate => '每台设备独立';
 
   @override
-  String get backupShared => '所有电视的设置相同';
+  String get backupShared => '所有设备的设置相同';
 
   @override
   String get backupStorage => '存储';
 
   @override
-  String get backupSyncHelp => '下载数据并上传更改。最新的变化赢得了冲突。电视时钟必须正确。同步在启动器打开时运行。';
+  String get backupSyncHelp => '下载数据并上传更改。最新的变化赢得了冲突。设备时钟必须正确。同步在启动器打开时运行。';
 
   @override
   String get backupSyncLimit => '检查频率不超过';
@@ -2896,7 +2896,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get backupGoogleDrive => 'Google Drive';
 
   @override
-  String get backupLocalHelp => '本地副本将随应用程序或其数据一起删除。在电视外面也放一份副本。';
+  String get backupLocalHelp => '本地副本将随应用程序或其数据一起删除。在设备外面也放一份副本。';
 
   @override
   String get panelObjectOrder => '对象顺序';
@@ -3062,7 +3062,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get backupFolderPickerUnavailable =>
-      '此电视上没有可用的文件夹选择器。选择“下载”/CuteLauncher 或内部应用程序文件夹。';
+      '此设备上没有可用的文件夹选择器。选择“下载”/CuteLauncher 或内部应用程序文件夹。';
 
   @override
   String get driveConfigurationError =>
@@ -3090,13 +3090,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get backupSyncDisplayGroup => '夜间模式、亮度和屏保';
 
   @override
-  String get backupSyncControlsGroup => '启动器和电视控件';
+  String get backupSyncControlsGroup => '启动器和设备控制';
 
   @override
   String get backupSyncGeneralGroup => '语言、更新和其他设置';
 
   @override
-  String get backupSyncGroupsHelp => '已关闭的项目保留在此电视上。请在各设备上分别选择同步项目。';
+  String get backupSyncGroupsHelp => '已关闭的项目保留在此设备上。请在各设备上分别选择同步项目。';
 
   @override
   String get backupSyncGroupsFailed => '无法保存同步设置选择。再试一次。';
@@ -3291,6 +3291,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get homeSectionIcons => '部分图标';
 
   @override
+  String get sectionTitleIcon => '分区标题图标';
+
+  @override
+  String get sectionIconPhotos => '照片';
+
+  @override
+  String get sectionIconFolder => '文件夹';
+
+  @override
   String get homeInactiveTransparency => '非活动分区透明度';
 
   @override
@@ -3407,7 +3416,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get nightIgnoreHdmiInputs => '忽略 HDMI 输入';
 
   @override
-  String get nightIgnoreHdmiInputsHint => '观看 HDMI 时暂停夜间滤镜。需要使用权限；输入检测取决于电视固件。';
+  String get nightIgnoreHdmiInputsHint => '观看 HDMI 时暂停夜间滤镜。需要使用权限；输入检测取决于设备固件。';
 
   @override
   String get inputsSettings => '输入设置';
@@ -3695,7 +3704,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get remoteMappingConflict => '此按键和按压类型已分配。请选择其他按键或按压类型。';
 
   @override
-  String get cleanerTitle => 'TV cleanup manager';
+  String get cleanerTitle => '设备清理管理器';
 
   @override
   String get cleanerRefresh => 'Refresh applications';
@@ -3911,8 +3920,17 @@ class AppLocalizationsZh extends AppLocalizations {
   String get landscapeMotion => 'Animate weather';
 
   @override
+  String get landscapeSunrise => '日出';
+
+  @override
+  String get landscapeSunset => '日落';
+
+  @override
+  String get landscapeScheduleCurrent => '当前日程';
+
+  @override
   String get landscapeHelp =>
-      'Time follows cached sunrise and sunset from Night mode; without them, dawn is at 06:00 and dusk at 18:00, with 40-minute transitions around each. Seasons follow the local month and hemisphere; automatic hemisphere uses weather coordinates, then Night mode coordinates, then the Northern Hemisphere. With time of day off, the scene stays in daylight; with seasons off, it stays in summer. Weather uses current data from the selected weather source, without extra requests. Missing or stale weather shows clear skies. Clouds, precipitation and fog can be disabled independently. Motion is off by default, stops when Home is hidden, and is disabled in memory saving mode or when reduced motion is requested.';
+      '自动模式会根据已保存的位置在设备上计算日出和日落时间。无法获取日出日落时间时，使用自定义日程。 Seasons follow the local month and hemisphere; automatic hemisphere uses weather coordinates, then Night mode coordinates, then the Northern Hemisphere. With time of day off, the scene stays in daylight; with seasons off, it stays in summer. Weather uses current data from the selected weather source, without extra requests. Missing or stale weather shows clear skies. Clouds, precipitation and fog can be disabled independently. Motion is off by default, stops when Home is hidden, and is disabled in memory saving mode or when reduced motion is requested.';
 
   @override
   String get inputConnected => 'Connected';
@@ -3928,7 +3946,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get weatherMetNorwayCredit =>
-      'Data: MET Norway, CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Forecast adapted from https://api.met.no/. No API key; days use the TV time zone, min/max cover available periods. Precipitation probability is unavailable.';
+      'Data: MET Norway, CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Forecast adapted from https://api.met.no/. No API key; days use the device time zone, min/max cover available periods. Precipitation probability is unavailable.';
 
   @override
   String get informationGroup => '时钟、日期和天气';
@@ -4062,7 +4080,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get tvPowerHelp =>
-      '关闭通过 CuteLauncher 无障碍服务或本地 ADB 进入待机模式。重启需要 ADB。电视盒子上的命令控制盒子本身；电视行为取决于 HDMI-CEC 和固件。';
+      '睡眠通过 CuteLauncher 无障碍服务或本地 ADB 进入待机模式。关机和重启需要本地 ADB。电视盒子上的命令控制盒子本身；电视行为取决于 HDMI-CEC 和固件。';
 
   @override
   String get cleanerLists => '停用列表';
@@ -4136,13 +4154,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get cleanerNoSearchResults => '没有匹配的条目。';
 
   @override
-  String get cleanerAlreadyDisabled => '此列表中本电视上存在的应用均已停用。';
+  String get cleanerAlreadyDisabled => '此列表中本设备上存在的应用均已停用。';
 
   @override
-  String get cleanerAlreadyEnabled => '此列表中本电视上存在的应用均已启用。';
+  String get cleanerAlreadyEnabled => '此列表中本设备上存在的应用均已启用。';
 
   @override
-  String get cleanerNoInstalled => '此电视未安装列表中的匹配应用。';
+  String get cleanerNoInstalled => '此设备未安装列表中的匹配应用。';
 
   @override
   String get cleanerListProtected => '其余应用受到保护，无法停用。';
@@ -4263,7 +4281,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get backgroundMediaFormats =>
-      '图片：JPEG、PNG、WebP、GIF、BMP。最大8 MiB、4800万像素，每边不超过16,384像素。\n视频：MP4/M4V、WebM、MKV。最大256 MiB、3840×2160。编解码器支持取决于电视；建议使用H.264 MP4。静音循环播放，离开主屏幕后暂停。视频不包含在备份中。';
+      '图片：JPEG、PNG、WebP、GIF、BMP。最大8 MiB、4800万像素，每边不超过16,384像素。\n视频：MP4/M4V、WebM、MKV。最大256 MiB、3840×2160。编解码器支持取决于设备；建议使用H.264 MP4。静音循环播放，离开主屏幕后暂停。视频不包含在备份中。';
 
   @override
   String get backgroundFormatError => '格式不受支持或文件已损坏。请选择所列格式的有效文件。';
@@ -4282,7 +4300,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get backgroundVideoCodecError =>
-      '电视无法播放该视频：编解码器不受支持或文件已损坏。请尝试H.264 MP4。';
+      '设备无法播放该视频：编解码器不受支持或文件已损坏。请尝试H.264 MP4。';
 
   @override
   String get backgroundFileApplied => '已选择文件并更新背景。';
@@ -4512,7 +4530,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get vpnOther => '另一个或未识别的 VPN 已连接，无法控制。';
 
   @override
-  String get vpnStartup => '电视启动时连接 VPN';
+  String get vpnStartup => '设备启动时连接 VPN';
 
   @override
   String get vpnPending => '正在等待 VPN 连接';
@@ -4543,11 +4561,11 @@ class AppLocalizationsZh extends AppLocalizations {
       '此 VPN 由 Android 始终开启模式管理。请在启动设置或 Android 设置中关闭该模式。';
 
   @override
-  String get vpnRestartRequired => '请重启电视以应用系统模式。';
+  String get vpnRestartRequired => '请重启设备以应用系统模式。';
 
   @override
   String get vpnAlwaysOnHelp =>
-      '通过本地 TCP ADB 将已配置的客户端设为始终开启 VPN。Android 会在电视重启后应用选择。不会启用或更改阻止无 VPN 连接的设置。退出该模式将恢复之前的系统选择。';
+      '通过本地 TCP ADB 将已配置的客户端设为始终开启 VPN。Android 会在设备重启后应用选择。不会启用或更改阻止无 VPN 连接的设置。退出该模式将恢复之前的系统选择。';
 
   @override
   String get vpnClientConfirmation => '请在 MantaRay 窗口中确认命令。';
@@ -4649,7 +4667,7 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get weatherForecastTvTime => '预报日期使用电视时间';
+  String get weatherForecastTvTime => '预报日期使用设备时间';
 
   @override
   String get weatherClear => '晴';
@@ -4673,7 +4691,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get audioStatusTitle => '音量和音频输出';
 
   @override
-  String get audioOutputTv => '电视';
+  String get audioOutputTv => '扬声器';
 
   @override
   String get audioOutputHeadphones => '耳机';
@@ -4704,7 +4722,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get backgroundStartupHelp =>
-      '勾选要在电视开机后在后台启动一次的应用。CuteLauncher 须在开机后一分钟内打开：将其设为主屏幕或开启开机启动。应用会在主屏幕后依次启动；勾选不会立即启动。操作遥控器或离开启动器会取消其余启动。休眠唤醒不会再次启动。不支持此模式的应用无法选择。启动不会启用应用内功能，也不保证持续运行。请在应用内授予权限并设置后台运行。Android 或电视固件可能会停止应用。选择仅保存在本电视上。';
+      '勾选要在设备开机后在后台启动一次的应用。CuteLauncher 须在开机后一分钟内打开：将其设为主屏幕或开启开机启动。应用会在主屏幕后依次启动；勾选不会立即启动。操作遥控器或离开启动器会取消其余启动。休眠唤醒不会再次启动。不支持此模式的应用无法选择。启动不会启用应用内功能，也不保证持续运行。请在应用内授予权限并设置后台运行。Android 或设备固件可能会停止应用。选择仅保存在本设备上。';
 
   @override
   String get backgroundStartupToggle => '后台自动启动';
@@ -4771,14 +4789,14 @@ class AppLocalizationsZh extends AppLocalizations {
   String get slideshowStoragePermission => '请在 Android 设置中允许文件访问，以使用内置文件浏览器。';
 
   @override
-  String get slideshowPickerUnavailable => '此电视没有文件夹选择器。请使用内置浏览器或手动输入路径。';
+  String get slideshowPickerUnavailable => '此设备没有文件夹选择器。请使用内置浏览器或手动输入路径。';
 
   @override
   String get slideshowFolderUnavailable => '无法访问文件夹。请检查路径、存储设备连接和文件访问权限。';
 
   @override
   String get slideshowStorageHelp =>
-      '内置浏览器可读取电视和已连接存储设备上的文件夹。Android 11 及以上请允许所有文件访问；Android 9–10 请允许存储访问。也可手动输入路径，例如 /storage/emulated/0/Pictures。不会修改文件。';
+      '内置浏览器可读取设备和已连接存储设备上的文件夹。Android 11 及以上请允许所有文件访问；Android 9–10 请允许存储访问。也可手动输入路径，例如 /storage/emulated/0/Pictures。不会修改文件。';
 
   @override
   String get fileBrowserTitle => '选择文件';
@@ -4815,7 +4833,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get appChannelsHelp =>
-      '最多选择16个内容流。可用性取决于应用发布的频道和电视固件。空内容流会隐藏。选择仅保存在此电视上。';
+      '最多选择16个内容流。可用性取决于应用发布的频道和设备固件。空内容流会隐藏。选择仅保存在此设备上。';
 
   @override
   String get appChannelsUnavailable => '无法读取内容流。请检查电视节目访问权限。';
@@ -4846,6 +4864,34 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get wallpaperRefresh => '刷新壁纸';
+
+  @override
+  String get quickActionsTitle => '快捷操作';
+
+  @override
+  String get quickActionsSettings => '快捷操作设置';
+
+  @override
+  String get quickActionsEmpty => '请在菜单设置中选择命令。';
+
+  @override
+  String get quickActionsWallpaperUnavailable => '此背景不支持手动切换。';
+
+  @override
+  String get quickActionsWallpaperFailed => '无法刷新壁纸。';
+
+  @override
+  String get quickActionsSleep => '睡眠';
+
+  @override
+  String get quickActionsShutdownConfirm => '要将设备完全关机吗？';
+
+  @override
+  String get quickActionsScreensaverUnavailable => '无法启动屏幕保护程序。';
+
+  @override
+  String get quickActionsPowerHelp =>
+      '睡眠需要 CuteLauncher 无障碍服务或本地 ADB。关机和重启需要本地 ADB。';
 
   @override
   String get wallpaperDimmingHelp => '100%保持原始调暗程度，200%将其加倍。这不是黑色蒙层的不透明度。';
@@ -5009,10 +5055,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get remoteMappingBlackScreen => '切换 Black Screen';
 
   @override
+  String get remoteMappingToggleNightMode => '切换夜间模式';
+
+  @override
   String get remoteMappingBlackOverlay => '黑屏';
 
   @override
-  String get remoteMappingBlackOverlayHelp => '按一次隐藏画面，再按一次或按返回键恢复画面。电视保持开启。';
+  String get remoteMappingBlackOverlayHelp => '按一次隐藏画面，再按一次或按返回键恢复画面。设备保持开启。';
 
   @override
   String get remoteMappingTclScreenOff => '关闭 TCL 屏幕';
@@ -5101,7 +5150,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get feedFormatHelp =>
-      '自动模式根据应用信息或最先加载的三张封面为每个内容流选择统一格式，并保存在此电视上。数量相同时使用横向。其他比例的封面会完整显示在背景上。也可手动选择格式。';
+      '自动模式根据应用信息或最先加载的三张封面为每个内容流选择统一格式，并保存在此设备上。数量相同时使用横向。其他比例的封面会完整显示在背景上。也可手动选择格式。';
 
   @override
   String get networkSpeedTitle => '网络速度';
@@ -5164,13 +5213,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get backupSyncRefreshFailed => '无法同步设置。请检查存储访问权限后重试。';
 
   @override
-  String get backupThisTv => '此电视';
+  String get backupThisTv => '此设备';
 
   @override
-  String get backupOtherTv => '其他电视';
+  String get backupOtherTv => '其他设备';
 
   @override
-  String get backupTvUnknown => '电视未知';
+  String get backupTvUnknown => '未知设备';
 
   @override
   String get panelTooltips => '在所有面板中显示工具提示';
@@ -5392,7 +5441,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get fileBrowserStartFolder => '起始文件夹';
 
   @override
-  String get fileBrowserStorage => '电视存储空间';
+  String get fileBrowserStorage => '设备存储空间';
 
   @override
   String get fileBrowserDownloads => '下载';
@@ -5432,7 +5481,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get fileBrowserOptionsHelp =>
-      '优先打开已选择的文件夹或已选图片的原始文件夹。每项操作分别记住上次打开的文件夹，取消后也会保留。如果文件夹不可用，则打开电视存储空间或下载文件夹。文件夹历史记录仅保存在此电视上。';
+      '优先打开已选择的文件夹或已选图片的原始文件夹。每项操作分别记住上次打开的文件夹，取消后也会保留。如果文件夹不可用，则打开设备存储空间或下载文件夹。文件夹历史记录仅保存在此设备上。';
 
   @override
   String get fileBrowserSaveFailed => '无法保存文件浏览器设置。';
@@ -5594,20 +5643,20 @@ class AppLocalizationsZh extends AppLocalizations {
   String get backupSyncResume => '恢复同步';
 
   @override
-  String get backupSyncUseLocal => '使用此电视的设置';
+  String get backupSyncUseLocal => '使用此设备的设置';
 
   @override
   String get backupSyncUseRemote => '使用存储中的设置';
 
   @override
-  String get backupSyncMergeLocal => '合并并优先采用此电视的设置';
+  String get backupSyncMergeLocal => '合并并优先采用此设备的设置';
 
   @override
   String get backupSyncMergeRemote => '合并并优先采用存储中的设置';
 
   @override
   String backupSyncPreviousDate(String date) {
-    return '此电视上次同步：$date';
+    return '此设备上次同步：$date';
   }
 
   @override
@@ -5688,7 +5737,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get syncKeyHelp =>
-      '同步令牌和账户时，所有电视须使用相同密钥。在一台电视上创建后传到其他电视。请妥善保存：没有密钥就无法读取受保护的数据。更换时请更新所有电视。Android权限和硬件密钥保留在本机。';
+      '同步令牌和账户时，所有设备须使用相同密钥。在一台设备上创建后传到其他设备。请妥善保存：没有密钥就无法读取受保护的数据。更换时请更新所有设备。Android权限和硬件密钥保留在本机。';
 
   @override
   String get syncFiles => '同步文件';
@@ -5733,7 +5782,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get backupFirstExchange => '首次交换';
 
   @override
-  String get backupNoRemote => '存储中没有设置。此电视将上传自己的设置。';
+  String get backupNoRemote => '存储中没有设置。此设备将上传自己的设置。';
 
   @override
   String get backupSetupStart => '启用';
@@ -5749,18 +5798,18 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get backupAccountLocalHelp =>
-      '使用已连接的账号或同类型的其他账号。存储凭据保留在此电视上。备份与同步分别管理各自的文件。';
+      '使用已连接的账号或同类型的其他账号。存储凭据保留在此设备上。备份与同步分别管理各自的文件。';
 
   @override
   String get backupPasswordOptionalHelp =>
-      '可选。加密整个文件，包括可转移的令牌。不设密码则不加密。留空可关闭加密。其他电视需使用相同密码读取加密文件。';
+      '可选。加密整个文件，包括可转移的令牌。不设密码则不加密。留空可关闭加密。其他设备需使用相同密码读取加密文件。';
 
   @override
   String get backupYandexDisk => 'Yandex Disk';
 
   @override
   String get backupYandexHelp =>
-      '输入可访问 Disk 应用文件夹的 Yandex OAuth 应用的 Client ID 和 Client Secret。连接后在手机上确认代码。所有电视使用同一个 OAuth 客户端和账号才能共享备份。';
+      '输入可访问 Disk 应用文件夹的 Yandex OAuth 应用的 Client ID 和 Client Secret。连接后在手机上确认代码。所有设备使用同一个 OAuth 客户端和账号才能共享备份。';
 
   @override
   String get backupYandexConnect => '连接 Yandex 云端硬盘';
@@ -5826,5 +5875,5 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get backupExistingSettingsHelp =>
-      '所选存储空间中已有同步设置。请选择如何处理：应用到此电视、用此电视的设置替换，或合并。合并时若设置不同，将采用您选择的优先级。在向导的最后一步确认后才会开始交换。';
+      '所选存储空间中已有同步设置。请选择如何处理：应用到此设备、用此设备的设置替换，或合并。合并时若设置不同，将采用您选择的优先级。在向导的最后一步确认后才会开始交换。';
 }

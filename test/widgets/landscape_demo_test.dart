@@ -22,6 +22,44 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
+  testWidgets('schedule picker exposes auto, night mode and custom hours', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final settings = SettingsService(await SharedPreferences.getInstance());
+    addTearDown(settings.dispose);
+    await tester.pumpWidget(
+      ChangeNotifierProvider.value(
+        value: settings,
+        child: MaterialApp(
+          locale: const Locale('ru'),
+          supportedLocales: AppLocalizations.supportedLocales,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          home: const Scaffold(body: LandscapePage()),
+        ),
+      ),
+    );
+    final type = find.text('Тип расписания');
+    expect(find.text('Авто'), findsOneWidget);
+    expect(find.text('08:00'), findsOneWidget);
+    expect(find.text('20:00'), findsOneWidget);
+    await tester.tap(type);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Ночной режим').last);
+    await tester.pumpAndSettle();
+    expect(settings.landscape.schedule, LandscapeSchedule.nightMode);
+    expect(find.text('Закат'), findsNothing);
+
+    await tester.tap(type);
+    await tester.pumpAndSettle();
+    await tester.tap(find.descendant(
+      of: find.byType(LauncherAlertDialog),
+      matching: find.text('Своё расписание'),
+    ));
+    await tester.pumpAndSettle();
+    expect(settings.landscape.schedule, LandscapeSchedule.manual);
+    expect(find.text('20:00'), findsOneWidget);
+    await tester.pumpWidget(const SizedBox());
+  });
+
   testWidgets('Back stops preview before the settings route is disposed', (
     tester,
   ) async {
@@ -455,11 +493,13 @@ void main() {
       );
       final rotation = find.text('Star rotation');
       await tester.ensureVisible(rotation);
+      await tester.pumpAndSettle();
       await tester.tap(rotation);
       await tester.pumpAndSettle();
       expect(settings.landscape.starRotation, true);
       final toggle = find.text('Sun and moon');
       await tester.ensureVisible(toggle);
+      await tester.pumpAndSettle();
       await tester.tap(toggle);
       await tester.pumpAndSettle();
       expect(settings.landscape.celestialBodies, false);

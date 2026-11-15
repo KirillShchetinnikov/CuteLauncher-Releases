@@ -496,6 +496,32 @@
       ]
     },
     {
+      "id": "formuler-z11-pro-max-rvc-2607131725",
+      "label": "Formuler Z11 Pro MAX — Android 11, RVC.2607131725",
+      "kind": "physical",
+      "exactMatch": true,
+      "identity": {
+        "manufacturer": "FORMULER",
+        "model": "Formuler Z11 Pro MAX",
+        "device": "Z11ProMAXBT1",
+        "fingerprint": "HiSTBAndroidV6/Hi3798CV200/Hi3798CV200:11/RVC/2607131725:user/release-keys",
+        "firmware": "RVC.2607131725 release-keys",
+        "android": "11",
+        "sdk": "30",
+        "abis": "armeabi-v7a,armeabi"
+      },
+      "results": [
+        {
+          "feature": "video-folder-hevc-4k",
+          "status": "unverified",
+          "date": "2026-11-13",
+          "appBuild": "1.8.0-test.3+262",
+          "summary": "Пользователь сообщил о зелёном экране при показе MP4 3840×2160 H.265 из папки. Присланный HEVC Main 8 бит SDR программно декодируется на ПК без ошибок. Диагностика подтверждает выбранный источник и объявленные возможности HEVC. Фактически выбранный декодер и причина зелёных кадров не установлены. Сравнение с одиночным режимом на этой приставке ещё не проводилось.",
+          "evidenceSection": "Formuler Z11 Pro MAX: зелёный экран видеообоев — 15 ноября 2026"
+        }
+      ]
+    },
+    {
       "id": "tcl-g10-android12-as16",
       "label": "TCL Smart TV Pro G10 AS16 — Android 12",
       "kind": "physical",
@@ -526,6 +552,14 @@
           "appBuild": "1.7.5+243",
           "summary": "Присланная диагностика фиксирует одну ошибку dart.appChannelsService: TimeoutException, timeoutMs=5000, в журнале длительностью 5004 мс. По коду это ожидание HTTP-соединения либо заголовков обложки; адрес, HTTP-статус и предшествующие ошибки не записаны. Блокировка пула этим отчётом не подтверждается. Пользователь уточнил, что отчёт снят с другого ТВ, не с устройства с ночным исчезновением обложек SmartTube. В полном списке 158 пакетов SmartTube не обнаружен. Независимая аппаратная проверка не проводилась.",
           "evidenceSection": "Обложки SmartTube после сна — 12 ноября 2026"
+        },
+        {
+          "feature": "home-tile-images-after-return",
+          "status": "unverified",
+          "date": "2026-11-15",
+          "appBuild": "1.8.0-test.3+262",
+          "summary": "Пользователь сообщил о повторной загрузке изображений плиток и появлении квадратных значков после Home. В журнале 24 запроса баннеров и 8 запросов значков. При экспорте глобально баннеры растягивались, значки вписывались, экономия памяти выключена. Отчёт не фиксирует фактический источник на конкретной плитке. Сброс оформления и причина перезагрузки не установлены.",
+          "evidenceSection": "Изображения плиток при возврате Home на TCL G10 AS16 — 15 ноября 2026"
         }
       ]
     },
@@ -552,6 +586,40 @@
           "appBuild": "1.7.2+234",
           "summary": "Пользователь подтвердил отображение ARC в виджете на TCL BeyondTV4 AR10 после установки сборки 234.",
           "evidenceSection": "TCL BeyondTV4 AR10: переход Bluetooth → HDMI ARC — 10 ноября 2026"
+        }
+      ]
+    },
+    {
+      "id": "google-tv-streamer-kirkwood-uttk-260317003",
+      "label": "Google TV Streamer 4K — Android 14, UTTK.260317.003",
+      "kind": "physical",
+      "exactMatch": true,
+      "identity": {
+        "manufacturer": "Google",
+        "model": "Google TV Streamer",
+        "device": "kirkwood",
+        "fingerprint": "google/kirkwood/kirkwood:14/UTTK.260317.003/15205007:user/release-keys",
+        "firmware": "UTTK.260317.003",
+        "android": "14",
+        "sdk": "34",
+        "abis": "armeabi-v7a,armeabi"
+      },
+      "results": [
+        {
+          "feature": "adaptive-landscape-night-phase",
+          "status": "unverified",
+          "date": "2026-11-15",
+          "appBuild": "265 (1.8.0-test.6+265 по отправленному APK)",
+          "summary": "Пользователь подтвердил, что после обновления фон сразу стал тёмным при рекомендованных настройках. Отчёт со сборки 265 не приложен. Наличие координат, источник солнечных времён и переход без перезапуска приложения не подтверждены.",
+          "evidenceSection": "Google TV Streamer: дневной адаптивный пейзаж — 15 ноября 2026"
+        },
+        {
+          "feature": "remote-panel-home-toast",
+          "status": "unverified",
+          "date": "2026-11-15",
+          "appBuild": "262 (1.8.0-test.3+262 по тегу)",
+          "summary": "Пользователь прислал диагностику в контексте лишнего тоста при вызове быстрых настроек. Сборка 262 предшествует исправлению 3bfa0ccb. В журнале нет вызова панели или результата ремаппера. Отображение сообщения на исправленной сборке не проверено.",
+          "evidenceSection": "Google TV Streamer: тост быстрых настроек — 15 ноября 2026"
         }
       ]
     }
