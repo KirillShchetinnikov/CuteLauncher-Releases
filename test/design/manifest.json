@@ -391,7 +391,7 @@
         960,
         540
       ],
-      "sha256": "bb1a411c31b080415ff7af1b6368bc4de70d1e36ab6bc3d77f045373e6056288"
+      "sha256": "6a300ae72e9a04797dfbee45261563b89f668dbd3e966067691b14052e9b2cbc"
     },
     {
       "name": "settings-preview-720p-large",
@@ -695,7 +695,7 @@
         960,
         540
       ],
-      "sha256": "28e3bf14071d691fe6b5c3af84d954125892bc251e36f8b04f4447b51b5e4c1e"
+      "sha256": "03c69a5e9d00fcd1171123e71193da65c63bf3e6010cb30e0af8c91550f28fed"
     },
     {
       "name": "dialog-editor-left",
@@ -711,7 +711,7 @@
         960,
         540
       ],
-      "sha256": "f4f0d9b1f0c5f7046dce21144badd1360a9a3ac58ba0a1636a70232363d29c41"
+      "sha256": "ace61c86cea9e1c4139c7cd43c19b953429e20484fab6b76e369616314ac3072"
     },
     {
       "name": "dialog-editor-right",
@@ -727,7 +727,7 @@
         960,
         540
       ],
-      "sha256": "3017b2606fd708e199617ee29a1b7996f65a51715a1e223c6546a8b974ecfa8d"
+      "sha256": "01004b67564a82b3f4b520210b15636dad04166947c9d3431090fd3547729adc"
     },
     {
       "name": "dialog-adb-left",
@@ -743,7 +743,7 @@
         960,
         540
       ],
-      "sha256": "b08f2c2603a1fcc8d606da27df93ec06451f9e06230c88f6f9e6cfd59f22a358"
+      "sha256": "377f25a21d3f93d43ce639d77f2db78c454186807165992706effa29cc62caf4"
     },
     {
       "name": "dialog-adb-right",
@@ -759,7 +759,7 @@
         960,
         540
       ],
-      "sha256": "580f22fd314e749bde57c7f962e461811666b84a204e74f7af54a8f037804c1b"
+      "sha256": "b01cb3da1c52d7e5f1b9f46da6ce838f200ffdbfbf25afe66022e4d2a1fb8bcf"
     },
     {
       "name": "settings-style",

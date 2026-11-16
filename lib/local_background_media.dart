@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:video_player/video_player.dart';
 
 import 'background_video_diagnostics.dart';
@@ -14,6 +15,43 @@ enum BackgroundMediaFailure { format, videoSize, videoResolution, videoCodec }
 class BackgroundMediaException implements Exception {
   final BackgroundMediaFailure reason;
   const BackgroundMediaException(this.reason);
+}
+
+/// Gives the staged-file validator the decoder before it checks a replacement.
+class WallpaperVideoImport extends ChangeNotifier {
+  final _players = <Future<bool> Function()>{};
+  final _releases = <Future<bool>>{};
+  bool _validating = false;
+  bool _releaseFailed = false;
+
+  bool get allowsPlayback => !_validating && !_releaseFailed;
+
+  void attach(Future<bool> Function() release) => _players.add(release);
+  void detach(Future<bool> Function() release) => _players.remove(release);
+
+  Future<bool> trackRelease(Future<bool> release) async {
+    _releases.add(release);
+    final released = await release;
+    if (!released) _releaseFailed = true;
+    _releases.remove(release);
+    return released;
+  }
+
+  Future<void> begin() async {
+    _validating = true;
+    final releases = {
+      ..._releases,
+      for (final release in _players.toList()) release(),
+    };
+    if ((await Future.wait(releases)).contains(false) || _releaseFailed) {
+      throw const BackgroundMediaException(BackgroundMediaFailure.videoCodec);
+    }
+  }
+
+  void end() {
+    _validating = false;
+    notifyListeners();
+  }
 }
 
 /// Inspect content, not provider MIME metadata or a filename extension.
@@ -49,7 +87,10 @@ void validateBackgroundVideoMetadata(VideoPlayerValue value) {
   }
 }
 
-Future<void> validateBackgroundVideo(File file) async {
+Future<void> validateBackgroundVideo(
+  File file, {
+  WallpaperVideoImport? videoImport,
+}) async {
   if (await file.length() > maximumBackgroundVideoBytes) {
     throw const BackgroundMediaException(BackgroundMediaFailure.videoSize);
   }
@@ -65,7 +106,6 @@ Future<void> validateBackgroundVideo(File file) async {
     await diagnostics.inspect(file);
     var stage = 'videoInitialize';
     var retry = false;
-    var released = false;
     try {
       await controller.initialize().timeout(const Duration(seconds: 20));
       stage = 'videoMetadata';
@@ -95,18 +135,28 @@ Future<void> validateBackgroundVideo(File file) async {
         recordBackgroundVideoRecovery(diagnostics.attempt, 'failed');
       }
     } finally {
-      try {
-        await controller.dispose().timeout(const Duration(seconds: 3));
-        released = true;
-      } catch (error, stack) {
-        diagnostics.failure('videoDispose', error, stack, controller.value);
+      final disposal = _disposeValidationPlayer(controller, diagnostics);
+      final released = await (videoImport?.trackRelease(disposal) ?? disposal);
+      if (!released) {
+        throw const BackgroundMediaException(BackgroundMediaFailure.videoCodec);
       }
     }
-    if (retry &&
-        released &&
-        await enableBackgroundVideoRecovery(diagnostics.attempt)) {
+    if (retry && await enableBackgroundVideoRecovery(diagnostics.attempt)) {
       continue;
     }
     throw const BackgroundMediaException(BackgroundMediaFailure.videoCodec);
+  }
+}
+
+Future<bool> _disposeValidationPlayer(
+  VideoPlayerController controller,
+  BackgroundVideoDiagnostics diagnostics,
+) async {
+  try {
+    await controller.dispose().timeout(const Duration(seconds: 3));
+    return true;
+  } catch (error, stack) {
+    diagnostics.failure('videoDispose', error, stack, controller.value);
+    return false;
   }
 }

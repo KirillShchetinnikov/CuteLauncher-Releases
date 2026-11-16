@@ -86,8 +86,9 @@ void main() {
         tester.element(find.byType(InterfaceSettingsPage)),
       )!;
       expect(find.text(l.settingsMenuPosition), findsNothing);
-      expect(find.byType(FocusableSettingsTile), findsNWidgets(3));
+      expect(find.byType(FocusableSettingsTile), findsNWidgets(4));
       expect(find.text(l.sectionsAndOrder), findsOneWidget);
+      expect(find.text(l.applicationInfoSettings), findsOneWidget);
       expect(find.text(l.appChannelsTitle), findsNothing);
       await tester.tap(find.text('${l.homeScreen} · ${l.appearanceSettings}'));
       await tester.pumpAndSettle();

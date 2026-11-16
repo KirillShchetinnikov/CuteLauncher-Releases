@@ -1983,8 +1983,33 @@ class AppLocalizationsRu extends AppLocalizations {
       'Передавайте файл автору в личные сообщения, не публикуйте его открыто: автоматическая очистка может пропустить личные данные. Отправляя отчёт автору, вы соглашаетесь на размещение обезличенного отчёта о совместимости устройства в Git-репозитории CuteLauncher. Публикуются только сведения об устройстве и доступности функций без личных данных; журнал ошибок, команды и ваши настройки не публикуются.\n\nОтчёт также включает установленные пакеты, их названия, версии и состояние включения, а также разделы, их названия, состав, порядок и видимость. Идентификаторы пакетов и названия сохраняются для диагностики; списки приложений и разделов не публикуются.';
 
   @override
+  String get diagnosticsStartRecording => 'Начать расширенную диагностику';
+
+  @override
+  String get diagnosticsFinishRecording => 'Завершить запись и создать отчёт';
+
+  @override
+  String get diagnosticsStopRecording => 'Остановить запись';
+
+  @override
+  String get diagnosticsCreateExtended => 'Создать расширенный отчёт';
+
+  @override
+  String get diagnosticsRecordingActive => 'Идёт расширенная запись';
+
+  @override
+  String get diagnosticsRecordingStopped => 'Запись завершена';
+
+  @override
+  String get diagnosticsExtendedReady => 'Расширенный отчёт готов';
+
+  @override
+  String get diagnosticsRecordingFailed =>
+      'Не удалось начать расширенную запись.';
+
+  @override
   String get diagnosticsHint =>
-      'Единый отчёт включает совместимость функций устройства и диагностику ошибок. Отчёт содержит модель и прошивку устройства, версию приложения, разрешения, память, этапы и причины ошибок, команды и ответы системы после автоматической очистки личных данных. В памяти хранятся последние 50 операций и отдельно до 100 сбоев текущего сеанса, а также ограниченный журнал ADB. После перезапуска журнал удаляется. Очистка может пропустить личные данные: передавайте файл в личные сообщения, не публикуйте его открыто. Ничего не отправляется автоматически. Для каждой ошибки сохраняется снимок применённых настроек: последующие изменения его не заменяют.\n\nОтчёт также включает установленные пакеты, их названия, версии и состояние включения, а также разделы, их названия, состав, порядок и видимость. Идентификаторы пакетов и названия сохраняются для диагностики; списки приложений и разделов не публикуются.';
+      'Обычный отчёт содержит сведения об устройстве, разрешения, настройки и до 20 последних операций. Для подробного отчёта начните расширенную диагностику, воспроизведите проблему и вернитесь сюда. Запись длится до 10 минут. В расширенный отчёт входят подробные журналы, результаты проверки совместимости, приложения и разделы. Ничего не отправляется автоматически.';
 
   @override
   String get diagnosticsTitle => 'Диагностика ошибок';
@@ -3458,6 +3483,21 @@ class AppLocalizationsRu extends AppLocalizations {
   String get sectionIconFolder => 'Папка';
 
   @override
+  String get sectionIconReading => 'Чтение';
+
+  @override
+  String get sectionIconKids => 'Детям';
+
+  @override
+  String get sectionIconSmartHome => 'Умный дом';
+
+  @override
+  String get sectionIconTravel => 'Путешествия';
+
+  @override
+  String get sectionIconPodcasts => 'Подкасты';
+
+  @override
   String get homeInactiveTransparency => 'Прозрачность неактивных разделов';
 
   @override
@@ -4482,6 +4522,13 @@ class AppLocalizationsRu extends AppLocalizations {
   String get stopApp => 'Остановить';
 
   @override
+  String get restartApp => 'Перезапустить';
+
+  @override
+  String get appRestartLaunchFailed =>
+      'Приложение остановлено, но открыть его не удалось.';
+
+  @override
   String get backgroundImageFormats =>
       'Изображения: JPEG, PNG, WebP, GIF, BMP — до 8 МиБ, 48 мегапикселей и 16 384 пикселей по каждой стороне.';
 
@@ -5385,6 +5432,12 @@ class AppLocalizationsRu extends AppLocalizations {
       'Android не смог прочитать APK: файл отсутствует, пуст, слишком велик или не распознан. Скачайте обновление заново.';
 
   @override
+  String get updateWhatsNew => 'Что нового';
+
+  @override
+  String get updateNotesUnavailable => 'Описание обновления недоступно.';
+
+  @override
   String get updateVerificationFailed =>
       'При проверке APK произошла ошибка. Установка заблокирована. Повторите попытку; если ошибка повторится, отправьте автору отчёт диагностики.';
 
@@ -5530,6 +5583,27 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get appLaunchGroup => 'Запуск';
+
+  @override
+  String get applicationInfoSettings => 'Настройки информации о приложении';
+
+  @override
+  String get applicationInfoCheckOnOpen => 'Проверять состояние при открытии';
+
+  @override
+  String get applicationInfoButtonsHint =>
+      'OK — показать или скрыть · ◄ / ► — переместить';
+
+  @override
+  String get applicationInfoMovingHint =>
+      '▲ / ▼ — переместить · OK или Назад — закончить';
+
+  @override
+  String get applicationInfoProcessHelp =>
+      'Лаунчер может проверить состояние один раз при открытии окна. «Остановить» и «Перезапустить» появляются, если приложение запущено. Чтобы они могли появиться, оставьте ручную проверку в списке или включите проверку при открытии.';
+
+  @override
+  String get applicationInfoNoActions => 'Нет действий для показа';
 
   @override
   String get appManagementGroup => 'Управление приложением';

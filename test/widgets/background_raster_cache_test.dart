@@ -210,6 +210,45 @@ void main() {
     },
   );
 
+  testWidgets('visible focus changes keep the texture and pressure state', (
+    tester,
+  ) async {
+    final resources = MemoryResources();
+    await tester.pumpWidget(
+      ChangeNotifierProvider.value(
+        value: resources,
+        child: host(const ColoredBox(color: Color(0xffff0000))),
+      ),
+    );
+    await tester.pump();
+    await pixels(tester);
+    final bytes = resources.cacheActivity['background_raster_bytes'];
+    expect(bytes, greaterThan(0));
+
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+    expect(resources.cacheActivity['background_raster_bytes'], bytes);
+    await tester.pump();
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    await tester.pump();
+    expect(resources.cacheActivity['background_raster_bytes'], bytes);
+
+    tester.binding.handleMemoryPressure();
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    await tester.pump();
+    expect((await pixels(tester))[0], 255);
+    expect(resources.cacheActivity['background_raster_bytes'], 0);
+
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.hidden);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    await tester.pump();
+    await pixels(tester);
+    expect(resources.cacheActivity['background_raster_bytes'], bytes);
+
+    await tester.pumpWidget(const SizedBox());
+    resources.dispose();
+  });
+
   testWidgets(
     'snapshot activation waits for Home readiness and can be cancelled',
     (tester) async {

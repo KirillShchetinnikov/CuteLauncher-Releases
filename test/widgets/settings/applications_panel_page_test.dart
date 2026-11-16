@@ -279,7 +279,7 @@ Future<void> _pumpWidgetWithProviders(WidgetTester tester, MockAppsService appsS
     MultiProvider(
       providers: [
         ChangeNotifierProvider<AppsService>.value(value: appsService),
-ChangeNotifierProvider<SettingsService>.value(value: MockSettingsService()..stubHide()),
+ChangeNotifierProvider<SettingsService>.value(value: MockSettingsService()..stubSettings()),
       ],
       builder: (_, _) => MaterialApp(
         localizationsDelegates: const [
@@ -301,4 +301,13 @@ ChangeNotifierProvider<SettingsService>.value(value: MockSettingsService()..stub
   await tester.pumpAndSettle();
 }
 
-extension on MockSettingsService { void stubHide() { when(accentColorHex).thenReturn(ACCENT_COLOR_PURPLE); when(settingsMenuOnRight).thenReturn(false); when(hideLauncherTile).thenReturn(false); when(appKeyClickEnabled).thenReturn(false); } }
+extension on MockSettingsService {
+  void stubSettings() {
+    when(accentColorHex).thenReturn(ACCENT_COLOR_PURPLE);
+    when(settingsMenuOnRight).thenReturn(false);
+    when(hideLauncherTile).thenReturn(false);
+    when(appKeyClickEnabled).thenReturn(false);
+    when(panelTooltipsEnabled).thenReturn(false);
+    when(storedApplicationInfoConfiguration).thenReturn(null);
+  }
+}

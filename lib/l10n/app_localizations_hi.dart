@@ -1968,8 +1968,33 @@ class AppLocalizationsHi extends AppLocalizations {
       'फ़ाइल सार्वजनिक रूप से न डालें, लेखक को निजी संदेश में भेजें: स्वचालित सफ़ाई कुछ निजी जानकारी छोड़ सकती है। रिपोर्ट भेजकर आप CuteLauncher के Git रिपॉज़िटरी में अनाम डिवाइस संगतता रिपोर्ट प्रकाशित करने की सहमति देते हैं। केवल डिवाइस की जानकारी और सुविधाओं की उपलब्धता बिना निजी डेटा के प्रकाशित होगी; त्रुटि लॉग, कमांड और आपकी सेटिंग प्रकाशित नहीं होंगी।\n\nरिपोर्ट में इंस्टॉल किए गए पैकेज, उनके नाम, संस्करण और सक्षम स्थिति, तथा अनुभागों के नाम, सामग्री, क्रम और दृश्यता भी शामिल हैं। निदान के लिए पहचानकर्ता और नाम रखे जाते हैं; ऐप और अनुभागों की सूचियाँ प्रकाशित नहीं होतीं।';
 
   @override
+  String get diagnosticsStartRecording => 'विस्तृत निदान शुरू करें';
+
+  @override
+  String get diagnosticsFinishRecording => 'रिकॉर्डिंग समाप्त कर रिपोर्ट बनाएँ';
+
+  @override
+  String get diagnosticsStopRecording => 'रिकॉर्डिंग रोकें';
+
+  @override
+  String get diagnosticsCreateExtended => 'विस्तृत रिपोर्ट बनाएँ';
+
+  @override
+  String get diagnosticsRecordingActive => 'विस्तृत रिकॉर्डिंग चल रही है';
+
+  @override
+  String get diagnosticsRecordingStopped => 'रिकॉर्डिंग समाप्त';
+
+  @override
+  String get diagnosticsExtendedReady => 'विस्तृत रिपोर्ट तैयार है';
+
+  @override
+  String get diagnosticsRecordingFailed =>
+      'विस्तृत रिकॉर्डिंग शुरू नहीं हो सकी।';
+
+  @override
   String get diagnosticsHint =>
-      'एक ही रिपोर्ट में डिवाइस सुविधाओं की संगतता और त्रुटि निदान शामिल हैं। रिपोर्ट में डिवाइस मॉडल और फ़र्मवेयर, ऐप संस्करण, अनुमतियाँ, मेमोरी, त्रुटियों के चरण और कारण तथा निजी जानकारी को अपने आप हटाने के बाद कमांड और जवाब होते हैं। वर्तमान सत्र की अंतिम 50 क्रियाएँ, अलग से अधिकतम 100 विफलताएँ और सीमित ADB लॉग रखे जाते हैं। पुनः चालू करने पर लॉग मिटता है। कुछ निजी जानकारी बच सकती है: फ़ाइल सार्वजनिक रूप से डालने के बजाय निजी संदेश में भेजें। कुछ भी अपने आप नहीं भेजा जाता। हर त्रुटि के साथ उस समय लागू सेटिंग का स्नैपशॉट रहता है; बाद के बदलाव उसे नहीं बदलते।\n\nरिपोर्ट में इंस्टॉल किए गए पैकेज, उनके नाम, संस्करण और सक्षम स्थिति, तथा अनुभागों के नाम, सामग्री, क्रम और दृश्यता भी शामिल हैं। निदान के लिए पहचानकर्ता और नाम रखे जाते हैं; ऐप और अनुभागों की सूचियाँ प्रकाशित नहीं होतीं।';
+      'सामान्य रिपोर्ट में डिवाइस की जानकारी, अनुमतियाँ, सेटिंग और पिछली 20 तक कार्रवाइयाँ होती हैं। विस्तृत रिपोर्ट के लिए विस्तृत निदान शुरू करें, समस्या दोहराएँ और यहाँ लौटें। रिकॉर्डिंग अधिकतम 10 मिनट चलती है। विस्तृत रिपोर्ट में विस्तृत लॉग, संगतता परिणाम, ऐप और अनुभाग होते हैं। कुछ भी अपने आप नहीं भेजा जाता।';
 
   @override
   String get diagnosticsTitle => 'त्रुटि निदान';
@@ -3443,6 +3468,21 @@ class AppLocalizationsHi extends AppLocalizations {
   String get sectionIconFolder => 'फ़ोल्डर';
 
   @override
+  String get sectionIconReading => 'पढ़ना';
+
+  @override
+  String get sectionIconKids => 'बच्चों के लिए';
+
+  @override
+  String get sectionIconSmartHome => 'स्मार्ट होम';
+
+  @override
+  String get sectionIconTravel => 'यात्रा';
+
+  @override
+  String get sectionIconPodcasts => 'पॉडकास्ट';
+
+  @override
   String get homeInactiveTransparency => 'निष्क्रिय अनुभागों की पारदर्शिता';
 
   @override
@@ -4466,6 +4506,13 @@ class AppLocalizationsHi extends AppLocalizations {
   String get stopApp => 'रोकें';
 
   @override
+  String get restartApp => 'फिर से शुरू करें';
+
+  @override
+  String get appRestartLaunchFailed =>
+      'ऐप रोक दिया गया, लेकिन उसे खोला नहीं जा सका।';
+
+  @override
   String get backgroundImageFormats =>
       'चित्र: JPEG, PNG, WebP, GIF, BMP — अधिकतम 8 MiB, 48 मेगापिक्सल और हर तरफ 16,384 पिक्सल।';
 
@@ -5363,6 +5410,12 @@ class AppLocalizationsHi extends AppLocalizations {
       'Android APK नहीं पढ़ सका: फ़ाइल गायब है, खाली है, बहुत बड़ी है या पहचानी नहीं गई। अपडेट फिर से डाउनलोड करें।';
 
   @override
+  String get updateWhatsNew => 'नया क्या है';
+
+  @override
+  String get updateNotesUnavailable => 'अपडेट की जानकारी उपलब्ध नहीं है।';
+
+  @override
   String get updateVerificationFailed =>
       'APK की जाँच में त्रुटि हुई। इंस्टॉलेशन रोक दिया गया है। फिर कोशिश करें; त्रुटि दोहराने पर डेवलपर को निदान रिपोर्ट भेजें।';
 
@@ -5505,6 +5558,27 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get appLaunchGroup => 'लॉन्च';
+
+  @override
+  String get applicationInfoSettings => 'ऐप जानकारी की सेटिंग';
+
+  @override
+  String get applicationInfoCheckOnOpen => 'खोलने पर स्थिति जाँचें';
+
+  @override
+  String get applicationInfoButtonsHint =>
+      'OK — दिखाएँ या छिपाएँ · ◄ / ► — जगह बदलें';
+
+  @override
+  String get applicationInfoMovingHint =>
+      '▲ / ▼ — जगह बदलें · OK या वापस — पूरा करें';
+
+  @override
+  String get applicationInfoProcessHelp =>
+      'लॉन्चर खोलने पर एक बार स्थिति जाँच सकता है। रोकें और फिर से शुरू करें तभी दिखते हैं जब ऐप चल रहा हो। इन कार्रवाइयों के लिए मैन्युअल जाँच दिखाएँ या खोलने पर जाँच चालू करें।';
+
+  @override
+  String get applicationInfoNoActions => 'दिखाने के लिए कोई कार्रवाई नहीं है';
 
   @override
   String get appManagementGroup => 'ऐप प्रबंधित करें';

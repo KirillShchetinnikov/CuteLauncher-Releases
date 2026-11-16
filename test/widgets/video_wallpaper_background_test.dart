@@ -7,6 +7,7 @@ import 'package:flauncher/diagnostics_store.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:video_player_platform_interface/video_player_platform_interface.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
+import 'package:flauncher/local_background_media.dart';
 import 'package:flauncher/providers/video_folder_service.dart';
 import 'package:flauncher/widgets/video_wallpaper_background.dart';
 
@@ -27,7 +28,7 @@ void main() {
   late VideoPlayerPlatform previous;
   const channel = MethodChannel('me.efesser.flauncher/method');
   setUp(() {
-    DiagnosticsStore.instance.clear();
+    DiagnosticsStore.instance..clear()..startRecording();
     previous = VideoPlayerPlatform.instance;
     fake = FakeBackgroundVideo();
     VideoPlayerPlatform.instance = fake;
@@ -35,6 +36,7 @@ void main() {
         .setMockMethodCallHandler(channel, (_) async => false);
   });
   tearDown(() {
+    DiagnosticsStore.instance.clear();
     VideoPlayerPlatform.instance = previous;
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(channel, null);
@@ -44,6 +46,7 @@ void main() {
     String mode = 'cover',
     bool economy = false,
     Widget backdrop = const SizedBox.shrink(),
+    WallpaperVideoImport? videoImport,
   }) => MaterialApp(
     localizationsDelegates: AppLocalizations.localizationsDelegates,
     supportedLocales: AppLocalizations.supportedLocales,
@@ -53,8 +56,42 @@ void main() {
       mode: mode,
       memorySaver: economy,
       background: backdrop,
+      videoImport: videoImport,
     ),
   );
+
+  testWidgets('validation waits for release and the old wallpaper can resume', (
+    tester,
+  ) async {
+    final videoImport = WallpaperVideoImport();
+    addTearDown(videoImport.dispose);
+    final disposal = Completer<void>();
+    fake.firstDisposal = disposal.future;
+    await tester.pumpWidget(background(true, videoImport: videoImport));
+    await settleVideo(tester);
+    expect(fake.calls, contains('play'));
+
+    var canValidate = false;
+    final pending = videoImport.begin().then((_) => canValidate = true);
+    await settleVideo(tester);
+    expect(fake.calls, contains('dispose'));
+    expect(canValidate, isFalse);
+    expect(fake.streams, hasLength(1));
+
+    disposal.complete();
+    await settleVideo(tester);
+    await pending;
+    expect(canValidate, isTrue);
+    expect(fake.streams, hasLength(1));
+
+    // No new file was committed, so keep the original wallpaper.
+    videoImport.end();
+    await settleVideo(tester);
+    expect(fake.streams, hasLength(2));
+    expect(fake.calls.last, 'play');
+    await tester.pumpWidget(const SizedBox());
+    await settleVideo(tester);
+  });
 
   testWidgets(
     'silent loop pauses when hidden and on lifecycle, disposes decoder',
@@ -222,7 +259,7 @@ void main() {
       ),
     );
     await settleVideo(tester);
-    final failures = DiagnosticsStore.instance.snapshot()['failures'] as List;
+    final failures = DiagnosticsStore.instance.snapshot(extended: true)['failures'] as List;
     expect(
       failures.where((e) => e['operation'] == 'dart.backgroundVideoPlayback'),
       hasLength(1),
@@ -243,7 +280,7 @@ void main() {
     await tester.pump(const Duration(seconds: 21));
     await settleVideo(tester);
     final failure =
-        (DiagnosticsStore.instance.snapshot()['failures'] as List).first;
+        (DiagnosticsStore.instance.snapshot(extended: true)['failures'] as List).first;
     expect(failure['details']['stage'], 'videoInitialize');
     expect(failure['details']['reason'], 'video_timeout');
     await tester.pumpWidget(const SizedBox());

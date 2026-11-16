@@ -12,6 +12,7 @@ class FakeBackgroundVideo extends VideoPlayerPlatform {
   int failuresRemaining = 0;
   bool delay = false;
   bool? preventsSleep;
+  Future<void>? firstDisposal;
   @override
   Future<void> init() async {}
   @override
@@ -46,6 +47,7 @@ class FakeBackgroundVideo extends VideoPlayerPlatform {
   @override
   Future<void> dispose(int playerId) async {
     calls.add('dispose');
+    if (playerId == 0) await firstDisposal;
     await streams[playerId]?.close();
   }
 

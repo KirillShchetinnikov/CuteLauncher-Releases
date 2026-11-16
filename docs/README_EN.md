@@ -29,11 +29,12 @@ See the [guide](USER_GUIDE_EN.md#разрешения-и-ограничения)
 
 Additional access is needed only for the corresponding features. Grant it as
 you configure those features. Start with the [permission table](USER_GUIDE_EN.md#разрешения-и-ограничения).
-The [diagnostics section](USER_GUIDE_EN.md#diagnostics) describes one report with
-errors, settings at each failure and TV compatibility. Create it through
-**Advanced → Diagnostics → Create report → Export report → Save to disk**
-and send it to the author **in a private message**, not publicly: redaction may
-miss personal data. By sending the report to the author, you agree to publication
+The [diagnostics section](USER_GUIDE_EN.md#diagnostics) describes basic and extended
+reports. For an unexpected failure, use
+**Advanced → Diagnostics → Create report → Export report → Save to disk**.
+For more detail, start extended diagnostics before reproducing the issue.
+Send the file to the author **in a private message**. Redaction may miss personal
+data. By sending the report to the author, you agree to publication
 of an anonymized TV compatibility report in the CuteLauncher Git repository.
 Only device metadata and feature availability are published, without personal data;
 errors, commands and your settings are not published. Nothing is sent automatically.

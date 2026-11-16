@@ -1,5 +1,6 @@
 import 'sleep_timer_configuration.dart';
 import 'quick_actions.dart';
+import 'application_info_configuration.dart';
 import 'overlay_appearance.dart';
 import 'overlay_position.dart';
 import 'tv_inputs_configuration.dart';
@@ -79,6 +80,11 @@ Map<String, dynamic> compatibleSettings(dynamic source, Map<String, dynamic> exp
     if (key == fileBrowserOptionsKey) {
       final options = FileBrowserOptions.tryDecode(value);
       if (options != null) result[key] = options.encode();
+      continue;
+    }
+    if (key == applicationInfoConfigurationKey) {
+      final configuration = ApplicationInfoConfiguration.tryDecode(value);
+      if (configuration != null) result[key] = configuration.encode();
       continue;
     }
     if (informationFormatKeys.contains(key) || legacyInformationFormatKeys.contains(key)) {
@@ -258,6 +264,6 @@ bool isDeviceLocalBackupKey(String key) => key == 'native_secret_drive' || key =
     key == 'slideshow_folder' || key == 'wallpaper_video_folder' ||
     key == 'weather_api_key' || key.startsWith('weather_api_key_') ||
     const {'weather_cache', 'online_wallpaper_cache', 'update_last_check',
-      'update_pending_notification', 'update_shown_notification',
+      'update_pending_notification', 'update_shown_notification', 'update_available_release',
       'automatic_backup_last_success', 'overlay_permission', 'write_settings_permission',
       'accessibility_enabled', 'default_home', 'notification_permission'}.contains(key);

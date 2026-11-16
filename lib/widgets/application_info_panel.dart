@@ -1,3 +1,7 @@
+import '../application_info_configuration.dart';
+import 'menu_header_action.dart';
+import 'settings/application_info_settings_page.dart';
+import 'settings/settings_route.dart';
 import 'settings/settings_section.dart';
 import 'settings/settings_page_layout.dart';
 import 'settings/settings_menu_layout.dart';
@@ -70,13 +74,16 @@ class ApplicationInfoPanel extends StatefulWidget {
   State<ApplicationInfoPanel> createState() => _ApplicationInfoPanelState();
 }
 
+enum _ProcessAction { stop, restart }
+
 class _ApplicationInfoPanelState extends State<ApplicationInfoPanel> {
   bool? _running;
   bool _checking = false;
   String? _processError;
-  bool _stopping = false;
+  _ProcessAction? _processAction;
   bool _sectionsExpanded = false;
   bool _editingName = false;
+  bool _editingSettings = false;
   int _processRequest = 0;
 
   Future<void> _editAppName(BuildContext context) async {
@@ -95,10 +102,7 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel> {
         ),
       );
       if (result == null || result == initialName || !context.mounted) return;
-      await apps.setCustomAppName(
-        packageName,
-        result.isEmpty ? null : result,
-      );
+      await apps.setCustomAppName(packageName, result.isEmpty ? null : result);
     } catch (_) {
       if (context.mounted) {
         showActionNotice(
@@ -113,7 +117,7 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel> {
   }
 
   Future<void> _refreshProcess() async {
-    if (_checking || _stopping) return;
+    if (_checking || _processAction != null) return;
     final request = ++_processRequest;
     setState(() {
       _checking = true;
@@ -150,41 +154,93 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel> {
     _processError = known ? null : status as String? ?? 'unavailable';
   }
 
-  Future<void> _stopApp() async {
-    if (_stopping || _checking || _running != true) return;
+  Future<void> _stopOrRestart(_ProcessAction action) async {
+    final application = widget.application;
+    final restart = action == _ProcessAction.restart;
+    if (_processAction != null ||
+        _checking ||
+        _running != true ||
+        (restart && !application.isLaunchable)) {
+      return;
+    }
+    final route = ModalRoute.of(context);
     ++_processRequest;
-    setState(() => _stopping = true);
+    setState(() => _processAction = action);
     try {
       final result = await TvCleanerClient().call(
         'stopApp',
-        packages: [widget.application.packageName],
+        packages: [application.packageName],
       );
       if (!mounted) return;
-      // stopApp already verifies the process after force-stop. Do not open
-      // another ADB connection just to repeat that check.
+      final status = result['status'] as String?;
+      final stopped = status == 'success' && result['running'] == false;
+      if (restart && stopped) {
+        if (route?.isCurrent != false &&
+            WidgetsBinding.instance.lifecycleState ==
+                AppLifecycleState.resumed) {
+          await _launchAfterStop(application, route);
+          if (!mounted) return;
+        }
+      } else if (route?.isCurrent != false) {
+        showAdbNotice(
+          context,
+          restart && status == 'success' ? 'operation_failed' : status,
+        );
+      }
       setState(() => _setProcessResult(result));
-      showAdbNotice(context, result['status'] as String?);
     } catch (_) {
       if (mounted) {
         setState(() {
           _running = null;
           _processError = 'unavailable';
         });
-        showAdbNotice(context, 'unavailable');
+        if (route?.isCurrent != false) showAdbNotice(context, 'unavailable');
       }
     } finally {
       if (mounted) {
-        setState(() => _stopping = false);
-        if (_running != true) _appInfoNode.requestFocus();
+        setState(() => _processAction = null);
+        if (_running != true && route?.isCurrent != false) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted || route?.isCurrent == false) return;
+            final info = _actionNodes[ApplicationInfoAction.androidInfo]!;
+            final target = info.context != null && info.canRequestFocus
+                ? info
+                : _actionNodes.values.firstWhere(
+                    (node) => node.context != null && node.canRequestFocus,
+                    orElse: () => _settingsNode,
+                  );
+            target.requestFocus();
+          });
+        }
       }
+    }
+  }
+
+  Future<void> _launchAfterStop(
+    App application,
+    ModalRoute<dynamic>? route,
+  ) async {
+    var launched = false;
+    try {
+      launched = await context.read<AppsService>().launchApp(application);
+    } catch (_) {
+      // The stop was already verified, so preserve that result.
+    }
+    if (!mounted || route?.isCurrent == false) return;
+    if (launched) {
+      Navigator.of(context).pop(ApplicationInfoPanelResult.none);
+    } else {
+      final l = AppLocalizations.of(context) ?? AppLocalizationsEn();
+      showActionNotice(context, l.appRestartLaunchFailed, error: true);
     }
   }
 
   late Future<bool> _hasCustomBannerFuture;
   late Future<Uint8List> _applicationIconFuture;
-  final _addToCategoryNode = FocusNode();
-  final _removeFromCategoryNode = FocusNode();
-  final _appInfoNode = FocusNode();
+  final _actionNodes = {
+    for (final action in ApplicationInfoAction.values) action: FocusNode(),
+  };
+  final _settingsNode = FocusNode();
 
   @override
   void initState() {
@@ -195,13 +251,24 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel> {
     _applicationIconFuture = widget.applicationIcon == null
         ? context.read<AppsService>().getAppIcon(widget.application.packageName)
         : Future.value(Uint8List(0));
+    final configuration = ApplicationInfoConfiguration.decode(
+      context.read<SettingsService?>()?.storedApplicationInfoConfiguration,
+    );
+    if (configuration.checkOnOpen) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && ModalRoute.of(context)?.isCurrent != false) {
+          _refreshProcess();
+        }
+      });
+    }
   }
 
   @override
   void dispose() {
-    _addToCategoryNode.dispose();
-    _removeFromCategoryNode.dispose();
-    _appInfoNode.dispose();
+    for (final node in _actionNodes.values) {
+      node.dispose();
+    }
+    _settingsNode.dispose();
     super.dispose();
   }
 
@@ -244,42 +311,176 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel> {
           ),
         );
 
-  Widget _buildPanel(BuildContext context) {
-    final localizations = AppLocalizations.of(context) ?? AppLocalizationsEn();
+  Future<void> _openSettings(BuildContext context) async {
+    if (_editingSettings) return;
+    _editingSettings = true;
+    try {
+      if (widget.embedded) {
+        await Navigator.of(context).push(
+          SettingsRoute<void>(
+            builder: (_) => const ApplicationInfoSettingsPage(),
+          ),
+        );
+      } else {
+        await showLauncherDialog<void>(
+          context: context,
+          parentPanelWidth: LauncherStyle.of(context).settingsWidth,
+          builder: (_) => SettingsPanelStyle(
+            builder: (context) => SettingsMenuLayout(
+              onRight:
+                  context.watch<SettingsService?>()?.settingsMenuOnRight ??
+                  false,
+              child: SidePanelDialog(
+                width: LauncherStyle.of(context).settingsWidth,
+                child: const ApplicationInfoSettingsPage(),
+              ),
+            ),
+          ),
+        );
+      }
+      if (mounted) _settingsNode.requestFocus();
+    } finally {
+      _editingSettings = false;
+    }
+  }
+
+  Future<void> _setBanner(BuildContext context) async {
+    try {
+      final pickedFile = await DocumentFiles.pickImage(
+        context: context,
+        selectionKey: 'banner:${widget.application.packageName}',
+      );
+      if (pickedFile != null) {
+        final imageBytes = await DocumentFiles.readImage(pickedFile);
+        if (!mounted) return;
+        final docDir = await getApplicationDocumentsDirectory();
+        final safePackageName = widget.application.packageName.replaceAll(
+          RegExp(r'[^a-zA-Z0-9._-]'),
+          '_',
+        );
+        final savedImage = File(
+          '${docDir.path}/custom_banner_$safePackageName.png',
+        );
+        await savedImage.writeAsBytes(imageBytes, flush: true);
+        if (!context.mounted) return;
+        await context.read<AppsService>().setCustomAppBanner(
+          widget.application.packageName,
+          savedImage.path,
+        );
+        if (!context.mounted) return;
+        await DocumentFiles.rememberImageSelection(
+          pickedFile,
+          context.read<SettingsService>(),
+        );
+      }
+    } catch (_) {
+      if (context.mounted) {
+        showActionNotice(
+          context,
+          AppLocalizations.of(context)!.bannerSetFailed,
+          error: true,
+        );
+      }
+    }
+    if (context.mounted) {
+      Navigator.of(context).pop(ApplicationInfoPanelResult.none);
+    }
+  }
+
+  Future<void> _clearBanner(BuildContext context) async {
+    try {
+      await context.read<AppsService>().removeCustomAppBanner(
+        widget.application.packageName,
+      );
+    } catch (_) {
+      if (context.mounted) {
+        showActionNotice(
+          context,
+          AppLocalizations.of(context)!.bannerClearFailed,
+          error: true,
+        );
+      }
+    }
+    if (context.mounted) {
+      Navigator.of(context).pop(ApplicationInfoPanelResult.none);
+    }
+  }
+
+  Future<void> _addToSection(BuildContext context) async {
+    await showAddToCategoryDialog(
+      context,
+      widget.application,
+      parentPanelWidth: widget.embedded
+          ? null
+          : LauncherStyle.of(context).settingsWidth,
+    );
+    if (mounted) {
+      _actionNodes[ApplicationInfoAction.addToSection]!.requestFocus();
+    }
+  }
+
+  Future<void> _removeFromSection(
+    BuildContext context,
+    Category? section,
+  ) async {
+    if (section != null && !section.isAutomatic) {
+      await context.read<AppsService>().removeFromCategory(
+        widget.application,
+        section,
+      );
+      if (context.mounted) {
+        Navigator.of(context).pop(ApplicationInfoPanelResult.none);
+      }
+      return;
+    }
+    await showRemoveFromCategoryDialog(
+      context,
+      widget.application,
+      parentPanelWidth: widget.embedded
+          ? null
+          : LauncherStyle.of(context).settingsWidth,
+    );
+    if (mounted) {
+      _actionNodes[ApplicationInfoAction.removeFromSection]!.requestFocus();
+    }
+  }
+
+  Widget _buildPanel(BuildContext context) => FutureBuilder<bool>(
+    future: _hasCustomBannerFuture,
+    builder: (context, snapshot) =>
+        _buildContent(context, snapshot.data == true),
+  );
+
+  Widget _buildContent(BuildContext context, bool hasCustomBanner) {
+    final l = AppLocalizations.of(context) ?? AppLocalizationsEn();
     final apps = context.watch<AppsService>();
-    final processStatus = _checking
-        ? localizations.loading
-        : _processError != null
-        ? switch (_processError) {
-            'authorization' => localizations.adbAuthorization,
-            'unavailable' => localizations.adbUnavailable,
-            _ => localizations.appError,
-          }
-        : switch (_running) {
-            true => localizations.appProcessRunning,
-            false => localizations.appProcessStopped,
-            null => localizations.appProcessNotChecked,
-          };
-    final sections =
-        apps.categories
-            .where(
-              (section) =>
-                  !section.isAppChannels &&
-                  ((!section.isAutomatic &&
-                          widget.application.categoryOrders.containsKey(
-                            section.id,
-                          )) ||
-                      section.applications.any(
-                        (app) =>
-                            app.packageName == widget.application.packageName,
-                      )),
-            )
-            .toList()
-          ..sort((a, b) {
-            final order = a.order.compareTo(b.order);
-            return order == 0 ? a.id.compareTo(b.id) : order;
-          });
+    final configuration = ApplicationInfoConfiguration.decode(
+      context.select<SettingsService?, String?>(
+        (settings) => settings?.storedApplicationInfoConfiguration,
+      ),
+    );
+    final actions = <ApplicationInfoAction, Widget>{};
+    for (final action in configuration.order) {
+      if (configuration.hidden.contains(action)) continue;
+      final control = _buildAction(context, l, apps, action, hasCustomBanner);
+      if (control != null) {
+        actions[action] = KeyedSubtree(key: ValueKey(action), child: control);
+      }
+    }
+    // Background startup has a separate availability check. Skip it until actionable.
+    final initialFocus = actions.keys
+        .where((action) {
+          final node = _actionNodes[action]!;
+          return action != ApplicationInfoAction.backgroundStartup ||
+              node.context != null && node.canRequestFocus;
+        })
+        .map((action) => _actionNodes[action]!)
+        .firstOrNull;
+    final showStandaloneStatus =
+        configuration.checkOnOpen &&
+        !actions.containsKey(ApplicationInfoAction.checkProcess);
     final page = SettingsPageLayout(
+      initialFocus: initialFocus ?? _settingsNode,
       title: Row(
         children: [
           _appIcon(context),
@@ -307,348 +508,25 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel> {
               ],
             ),
           ),
+          if (context.read<SettingsService?>() != null)
+            MenuHeaderAction(
+              key: const ValueKey('application_info_settings'),
+              focusNode: _settingsNode,
+              tooltip: l.applicationInfoSettings,
+              icon: const Icon(Icons.settings_outlined),
+              onPressed: () => _openSettings(context),
+            ),
         ],
       ),
       child: ListView(
         children: [
-          SettingsSection(title: localizations.homeScreen, children: [
-          FocusableSettingsTile(
-            autofocus: true,
-            focusNode: _addToCategoryNode,
-            leading: const Icon(Icons.add_box_outlined),
-            title: Text(
-              AppLocalizations.of(context)!.addToCategory,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            onPressed: () async {
-              await showAddToCategoryDialog(
-                context,
-                widget.application,
-                parentPanelWidth: widget.embedded
-                    ? null
-                    : LauncherStyle.of(context).settingsWidth,
-              );
-              if (mounted) _addToCategoryNode.requestFocus();
-            },
-          ),
-          if (widget.category?.sort == CategorySort.manual)
-            FocusableSettingsTile(
-              leading: const Icon(Icons.open_with),
-              title: Text(
-                localizations.reorder,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              onPressed: () =>
-                  Navigator.of(context)
-                      .pop(ApplicationInfoPanelResult.reorderApp),
-            ),
-          FocusableSettingsTile(
-            leading: Icon(
-              (widget.application.hidden ||
-                      context.watch<AppsService>().isTileHidden(
-                        widget.application,
-                      ))
-                  ? Icons.visibility
-                  : Icons.visibility_off_outlined,
-            ),
-            title: Text(
-              (widget.application.hidden ||
-                      context.watch<AppsService>().isTileHidden(
-                        widget.application,
-                      ))
-                  ? localizations.show
-                  : localizations.hide,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            onPressed: () async {
-              if (widget.application.hidden ||
-                  context.read<AppsService>().isTileHidden(
-                    widget.application,
-                  )) {
-                await context.read<AppsService>().showApplication(
-                  widget.application,
-                );
-              } else {
-                await context.read<AppsService>().hideApplication(
-                  widget.application,
-                );
-              }
-              if (!context.mounted) return;
-              Navigator.of(context).pop(ApplicationInfoPanelResult.none);
-            },
-          ),
-          if (widget.category != null && !widget.category!.isAutomatic)
-            FocusableSettingsTile(
-              leading: const Icon(Icons.delete_sweep_outlined),
-              title: Text(
-                localizations.removeFrom(
-                  localizedSectionName(
-                    widget.category?.name ?? '',
-                    localizations,
-                  ),
-                ),
-                style: Theme.of(context).textTheme.bodyMedium,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-              onPressed: () async {
-                final cat = widget.category;
-                if (cat != null) {
-                  await context.read<AppsService>().removeFromCategory(
-                    widget.application,
-                    cat,
-                  );
-                }
-                if (!context.mounted) return;
-                Navigator.of(context).pop(ApplicationInfoPanelResult.none);
-              },
-            ),
-          if (widget.category == null || widget.category!.isAutomatic)
-            FocusableSettingsTile(
-              focusNode: _removeFromCategoryNode,
-              leading: const Icon(Icons.delete_sweep_outlined),
-              title: Text(localizations.removeFromCategory),
-              onPressed: () async {
-                await showRemoveFromCategoryDialog(
-                  context,
-                  widget.application,
-                  parentPanelWidth: widget.embedded
-                      ? null
-                      : LauncherStyle.of(context).settingsWidth,
-                );
-                if (mounted) _removeFromCategoryNode.requestFocus();
-              },
-            ),
-          Semantics(
-            expanded: _sectionsExpanded,
-            child: FocusableSettingsTile(
-              leading: const Icon(Icons.category_outlined),
-              title: Text(localizations.appSections),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text('${sections.length}'),
-                  const SizedBox(width: 8),
-                  Icon(
-                    _sectionsExpanded ? Icons.expand_less : Icons.expand_more,
-                  ),
-                ],
-              ),
-              onPressed: () =>
-                  setState(() => _sectionsExpanded = !_sectionsExpanded),
-            ),
-          ),
-          if (_sectionsExpanded)
-            Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(16, 4, 16, 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  if (sections.isEmpty) Text(localizations.noAppSections),
-                  for (final section in sections)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              localizedSectionName(section.name, localizations),
-                            ),
-                          ),
-                          if (!section.visible)
-                            Icon(
-                              Icons.visibility_off_outlined,
-                              semanticLabel: localizations.hiddenCategories,
-                            ),
-                        ],
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          ]),
-          SettingsSection(title: localizations.appLaunchGroup, children: [
-          if (widget.application.isLaunchable)
-            FocusableSettingsTile(
-              leading: const Icon(Icons.open_in_new),
-              title: Text(localizations.open),
-              onPressed: () async {
-                await context.read<AppsService>().launchApp(widget.application);
-                if (!context.mounted) return;
-                Navigator.of(context).pop(ApplicationInfoPanelResult.none);
-              },
-            ),
-          BackgroundStartupAppTile(packageName: widget.application.packageName),
-          ]),
-          SettingsSection(title: localizations.appearanceSettings, children: [
-          if (widget.category != null)
-            FocusableSettingsTile(
-              leading: const Icon(Icons.edit_outlined),
-              title: Text(localizations.homeAppName),
-              onPressed: () => _editAppName(context),
-            ),
-          FutureBuilder<bool>(
-            future: _hasCustomBannerFuture,
-            builder: (context, snapshot) {
-              final hasCustom = snapshot.data ?? false;
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  FocusableSettingsTile(
-                    leading: const Icon(Icons.image_search),
-                    title: Text(
-                      AppLocalizations.of(context)!.setCustomBanner,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    onPressed: () async {
-                      try {
-                        final pickedFile = await DocumentFiles.pickImage(
-                          context: context,
-                          selectionKey: 'banner:${widget.application.packageName}',
-                        );
-                        if (pickedFile != null) {
-                          final imageBytes = await DocumentFiles.readImage(
-                            pickedFile,
-                          );
-                          if (!mounted) return;
-                          final docDir =
-                              await getApplicationDocumentsDirectory();
-                          // Sanitize package name for filename
-                          final safePackageName = widget.application.packageName
-                              .replaceAll(RegExp(r'[^a-zA-Z0-9._-]'), '_');
-                          final savedImage = File(
-                            '${docDir.path}/custom_banner_$safePackageName.png',
-                          );
-                          await savedImage.writeAsBytes(
-                            imageBytes,
-                            flush: true,
-                          );
-                          if (!context.mounted) return;
-                          await context.read<AppsService>().setCustomAppBanner(
-                            widget.application.packageName,
-                            savedImage.path,
-                          );
-                          if (!context.mounted) return;
-                          await DocumentFiles.rememberImageSelection(pickedFile, context.read<SettingsService>());
-                          if (!mounted) return;
-                          // Refresh the future to reflect the change
-                          setState(() {
-                            _hasCustomBannerFuture = context
-                                .read<AppsService>()
-                                .hasCustomBanner(
-                                  widget.application.packageName,
-                                );
-                          });
-                        }
-                      } catch (e) {
-                        if (context.mounted) {
-                          showActionNotice(
-                            context,
-                            AppLocalizations.of(context)!.bannerSetFailed,
-                            error: true,
-                          );
-                        }
-                      }
-                      if (context.mounted) {
-                        Navigator.of(context)
-                            .pop(ApplicationInfoPanelResult.none);
-                      }
-                    },
-                  ),
-                  if (hasCustom)
-                    FocusableSettingsTile(
-                      leading: const Icon(Icons.hide_image_outlined),
-                      title: Text(
-                        AppLocalizations.of(context)!.clearCustomBanner,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                      onPressed: () async {
-                        try {
-                          await context
-                              .read<AppsService>()
-                              .removeCustomAppBanner(
-                                widget.application.packageName,
-                              );
-                          // Refresh the future to reflect the change
-                          setState(() {
-                            _hasCustomBannerFuture = context
-                                .read<AppsService>()
-                                .hasCustomBanner(
-                                  widget.application.packageName,
-                                );
-                          });
-                        } catch (e) {
-                          if (context.mounted) {
-                            showActionNotice(
-                              context,
-                              AppLocalizations.of(context)!.bannerClearFailed,
-                              error: true,
-                            );
-                          }
-                        }
-                        if (context.mounted) {
-                          Navigator.of(context)
-                              .pop(ApplicationInfoPanelResult.none);
-                        }
-                      },
-                    ),
-                ],
-              );
-            },
-          ),
-          ]),
-          SettingsSection(title: localizations.appManagementGroup, children: [
-          FocusableSettingsTile(
-            key: const ValueKey('app_check_process'),
-            leading: const Icon(Icons.refresh),
-            title: Text(localizations.appCheckProcess),
-            onPressed: _refreshProcess,
-          ),
-          Padding(
-            padding: const EdgeInsetsDirectional.fromSTEB(12, 4, 12, 12),
-            child: Semantics(liveRegion: true, child: Text(processStatus)),
-          ),
-          if (_running == true)
-            FocusableSettingsTile(
-              leading: _stopping
-                  ? const SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(Icons.stop_circle_outlined),
-              title: Text(
-                localizations.stopApp,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              onPressed: _stopApp,
-            ),
-          FocusableSettingsTile(
-            focusNode: _appInfoNode,
-            leading: const Icon(Icons.info_outlined),
-            title: Text(
-              localizations.appInfo,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            onPressed: () =>
-                context.read<AppsService>().openAppInfo(widget.application),
-          ),
-          FocusableSettingsTile(
-            leading: const Icon(Icons.delete_outlined),
-            title: Text(
-              localizations.uninstall,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            onPressed: () async {
-              await context.read<AppsService>().uninstallApp(
-                widget.application,
-              );
-              if (!context.mounted) return;
-              Navigator.of(context).pop(ApplicationInfoPanelResult.none);
-            },
-          ),
-          ]),
+          if (showStandaloneStatus) _statusText(l),
+          if (actions.isEmpty && !showStandaloneStatus)
+            Text(l.applicationInfoNoActions),
+          if (configuration.usesDefaultOrder)
+            ..._groupedActions(l, actions)
+          else
+            ...actions.values,
         ],
       ),
     );
@@ -659,7 +537,249 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel> {
     );
   }
 
+  List<Widget> _groupedActions(
+    AppLocalizations l,
+    Map<ApplicationInfoAction, Widget> actions,
+  ) {
+    final titles = {
+      ApplicationInfoGroup.home: l.homeScreen,
+      ApplicationInfoGroup.launch: l.appLaunchGroup,
+      ApplicationInfoGroup.appearance: l.appearanceSettings,
+      ApplicationInfoGroup.management: l.appManagementGroup,
+    };
+    final groups = <ApplicationInfoGroup, List<Widget>>{};
+    for (final entry in actions.entries) {
+      (groups[entry.key.group] ??= []).add(entry.value);
+    }
+    return [
+      for (final group in groups.entries)
+        SettingsSection(
+          key: ValueKey(group.key),
+          title: titles[group.key]!,
+          children: group.value,
+        ),
+    ];
+  }
 
+  Widget? _buildAction(
+    BuildContext context,
+    AppLocalizations l,
+    AppsService apps,
+    ApplicationInfoAction action,
+    bool hasCustomBanner,
+  ) {
+    final app = widget.application;
+    final category = widget.category;
+    final focusNode = _actionNodes[action]!;
+    Widget tile(
+      VoidCallback onPressed, {
+      String? label,
+      Widget? leading,
+      bool busy = false,
+      Key? key,
+    }) => FocusableSettingsTile(
+      key: key,
+      focusNode: focusNode,
+      title: Text(
+        label ?? action.label(l),
+        style: Theme.of(context).textTheme.bodyMedium,
+      ),
+      leading: leading ?? Icon(action.icon),
+      busy: busy,
+      onPressed: onPressed,
+    );
+
+    switch (action) {
+      case ApplicationInfoAction.addToSection:
+        return tile(() => _addToSection(context));
+      case ApplicationInfoAction.reorderTile:
+        if (category?.sort != CategorySort.manual) return null;
+        return tile(
+          () =>
+              Navigator.of(context).pop(ApplicationInfoPanelResult.reorderApp),
+        );
+      case ApplicationInfoAction.visibility:
+        final hidden = app.hidden || apps.isTileHidden(app);
+        return tile(
+          () async {
+            if (app.hidden || apps.isTileHidden(app)) {
+              await apps.showApplication(app);
+            } else {
+              await apps.hideApplication(app);
+            }
+            if (context.mounted) {
+              Navigator.of(context).pop(ApplicationInfoPanelResult.none);
+            }
+          },
+          label: hidden ? l.show : l.hide,
+          leading: Icon(
+            hidden ? Icons.visibility : Icons.visibility_off_outlined,
+          ),
+        );
+      case ApplicationInfoAction.removeFromSection:
+        return tile(
+          () => _removeFromSection(context, category),
+          label: category != null && !category.isAutomatic
+              ? l.removeFrom(localizedSectionName(category.name, l))
+              : null,
+        );
+      case ApplicationInfoAction.sections:
+        return _appSections(l, apps, focusNode);
+      case ApplicationInfoAction.open:
+        if (!app.isLaunchable) return null;
+        return tile(() async {
+          await apps.launchApp(app);
+          if (context.mounted) {
+            Navigator.of(context).pop(ApplicationInfoPanelResult.none);
+          }
+        }, busy: _processAction != null);
+      case ApplicationInfoAction.backgroundStartup:
+        return BackgroundStartupAppTile(
+          packageName: app.packageName,
+          focusNode: focusNode,
+        );
+      case ApplicationInfoAction.rename:
+        if (category == null) return null;
+        return tile(() => _editAppName(context));
+      case ApplicationInfoAction.setBanner:
+        return tile(() => _setBanner(context));
+      case ApplicationInfoAction.clearBanner:
+        return hasCustomBanner ? tile(() => _clearBanner(context)) : null;
+      case ApplicationInfoAction.checkProcess:
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            tile(
+              _refreshProcess,
+              key: const ValueKey('app_check_process'),
+              busy: _checking || _processAction != null,
+            ),
+            _statusText(l),
+          ],
+        );
+      case ApplicationInfoAction.stop:
+      case ApplicationInfoAction.restart:
+        final restart = action == ApplicationInfoAction.restart;
+        if (_running != true || restart && !app.isLaunchable) return null;
+        final processAction = restart
+            ? _ProcessAction.restart
+            : _ProcessAction.stop;
+        return tile(
+          () => _stopOrRestart(processAction),
+          busy: _checking || _processAction != null,
+          leading: _processAction == processAction
+              ? const SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : null,
+        );
+      case ApplicationInfoAction.androidInfo:
+        return tile(() => apps.openAppInfo(app));
+      case ApplicationInfoAction.uninstall:
+        return tile(() async {
+          await apps.uninstallApp(app);
+          if (context.mounted) {
+            Navigator.of(context).pop(ApplicationInfoPanelResult.none);
+          }
+        });
+    }
+  }
+
+  Widget _statusText(AppLocalizations l) {
+    final status = _checking
+        ? l.loading
+        : _processError != null
+        ? switch (_processError) {
+            'authorization' => l.adbAuthorization,
+            'unavailable' => l.adbUnavailable,
+            _ => l.appError,
+          }
+        : switch (_running) {
+            true => l.appProcessRunning,
+            false => l.appProcessStopped,
+            null => l.appProcessNotChecked,
+          };
+    return Padding(
+      padding: const EdgeInsetsDirectional.fromSTEB(12, 4, 12, 12),
+      child: Semantics(liveRegion: true, child: Text(status)),
+    );
+  }
+
+  Widget _appSections(
+    AppLocalizations l,
+    AppsService apps,
+    FocusNode focusNode,
+  ) {
+    final app = widget.application;
+    final sections =
+        apps.categories
+            .where(
+              (section) =>
+                  !section.isAppChannels &&
+                  ((!section.isAutomatic &&
+                          app.categoryOrders.containsKey(section.id)) ||
+                      section.applications.any(
+                        (entry) => entry.packageName == app.packageName,
+                      )),
+            )
+            .toList()
+          ..sort((a, b) {
+            final order = a.order.compareTo(b.order);
+            return order == 0 ? a.id.compareTo(b.id) : order;
+          });
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Semantics(
+          expanded: _sectionsExpanded,
+          child: FocusableSettingsTile(
+            focusNode: focusNode,
+            leading: Icon(ApplicationInfoAction.sections.icon),
+            title: Text(l.appSections),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text('${sections.length}'),
+                const SizedBox(width: 8),
+                Icon(_sectionsExpanded ? Icons.expand_less : Icons.expand_more),
+              ],
+            ),
+            onPressed: () =>
+                setState(() => _sectionsExpanded = !_sectionsExpanded),
+          ),
+        ),
+        if (_sectionsExpanded)
+          Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(16, 4, 16, 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (sections.isEmpty) Text(l.noAppSections),
+                for (final section in sections)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(localizedSectionName(section.name, l)),
+                        ),
+                        if (!section.visible)
+                          Icon(
+                            Icons.visibility_off_outlined,
+                            semanticLabel: l.hiddenCategories,
+                          ),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
 }
 
 enum ApplicationInfoPanelResult { none, reorderApp }

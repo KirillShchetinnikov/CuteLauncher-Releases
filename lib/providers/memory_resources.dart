@@ -97,7 +97,7 @@ class MemoryResources extends ChangeNotifier
 
   void _clearRecoverableCaches(HomeTileCacheClear reason) {
     if (isDisposed) return;
-    if (HomeTileDiagnostics.enabled && !secondaryEngine) {
+    if (DiagnosticsStore.instance.isRecording && !secondaryEngine) {
       DiagnosticsStore.instance.homeTiles.clearCaches(reason);
     }
     for (final resource in _resources.values.toList()) {
@@ -140,7 +140,7 @@ class MemoryResources extends ChangeNotifier
   }
 
   void _traceLifecycle() {
-    if (HomeTileDiagnostics.enabled && !secondaryEngine) {
+    if (DiagnosticsStore.instance.isRecording && !secondaryEngine) {
       DiagnosticsStore.instance.homeTiles.lifecycle(foreground: _foreground, economy: _economy);
     }
   }

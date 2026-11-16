@@ -2,6 +2,7 @@ import 'information_formats.dart';
 import 'overlay_appearance.dart';
 import 'overlay_position.dart';
 import 'quick_actions.dart';
+import 'application_info_configuration.dart';
 
 /// Local subscription; included in packets only to describe their contents.
 const backupSyncGroupsKey = 'backup_sync_disabled_groups';
@@ -274,6 +275,7 @@ BackupSyncGroup? backupSyncPartGroup(String part) {
     'show_app_names_below_icons',
     'hide_launcher_tile',
     'hide_android_settings_tile',
+    applicationInfoConfigurationKey,
   }.contains(key)) {
     return BackupSyncGroup.homeOptions;
   }

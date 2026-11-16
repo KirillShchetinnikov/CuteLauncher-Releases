@@ -66,6 +66,7 @@ final class ApplicationCatalog {
 
     private List<Map<String, Serializable>> getApplications(boolean launchableOnly) {
         // The complete query runs on the shared worker pool, never the platform thread.
+        var labels = labelBatch();
         List<ResolveInfo> tvActivitiesInfo = queryIntentActivities(false);
         List<ResolveInfo> nonTvActivitiesInfo = queryIntentActivities(true);
         if (tvActivitiesInfo == null || nonTvActivitiesInfo == null) {
@@ -77,13 +78,13 @@ final class ApplicationCatalog {
         for (ResolveInfo info : tvActivitiesInfo) {
             if (info == null || info.activityInfo == null) continue;
             String name = info.activityInfo.packageName;
-            if (packages.add(name)) applications.add(buildAppMap(info.activityInfo, false, null));
+            if (packages.add(name)) applications.add(buildAppMap(info.activityInfo, false, null, labels));
             settingsPresent |= name.equals("com.android.tv.settings");
         }
         for (ResolveInfo info : nonTvActivitiesInfo) {
             if (info == null || info.activityInfo == null) continue;
             String name = info.activityInfo.packageName;
-            if (packages.add(name)) applications.add(buildAppMap(info.activityInfo, true, null));
+            if (packages.add(name)) applications.add(buildAppMap(info.activityInfo, true, null, labels));
             settingsPresent |= name.equals("com.android.settings");
         }
 
@@ -95,19 +96,30 @@ final class ApplicationCatalog {
 
             if (activityInfo != null) {
                 if (packages.add(activityInfo.packageName)) {
-                    applications.add(buildAppMap(activityInfo, false, Settings.ACTION_SETTINGS));
+                    applications.add(buildAppMap(activityInfo, false, Settings.ACTION_SETTINGS, labels));
                 }
             }
         }
 
-        if (launchableOnly) return applications;
-        // Launcher queries omit service packages such as Google Partner Setup.
-        for (PackageInfo info : context.getPackageManager().getInstalledPackages(0)) {
-            if (info.applicationInfo != null && packages.add(info.packageName)) {
-                applications.add(buildInstalledAppMap(info));
+        if (!launchableOnly) {
+            // Launcher queries omit service packages such as Google Partner Setup.
+            for (PackageInfo info : context.getPackageManager().getInstalledPackages(0)) {
+                if (info.applicationInfo != null && packages.add(info.packageName)) {
+                    applications.add(buildInstalledAppMap(info, labels));
+                }
             }
         }
+        labels.save(this::labelEnvironment);
         return applications;
+    }
+
+    private AppLabelCache.Batch labelBatch() {
+        return AppLabelCache.forDirectory(context.getCacheDir()).batch(labelEnvironment());
+    }
+
+    private String labelEnvironment() {
+        Configuration config = context.getResources().getConfiguration();
+        return Build.FINGERPRINT + ":" + config.getLocales().toLanguageTags() + ":" + config.uiMode;
     }
 
     private static String artworkRevision(PackageInfo info) {
@@ -115,6 +127,7 @@ final class ApplicationCatalog {
     }
 
     Map<String, Serializable> getApplication(String packageName) {
+        var labels = labelBatch();
         Map<String, Serializable> map = new java.util.HashMap<>();
         PackageManager packageManager = context.getPackageManager();
         Intent intent = packageManager.getLeanbackLaunchIntentForPackage(packageName);
@@ -128,16 +141,17 @@ final class ApplicationCatalog {
             ActivityInfo activityInfo = intent.resolveActivityInfo(context.getPackageManager(), 0);
 
             if (activityInfo != null) {
-                map = buildAppMap(activityInfo, sideloaded, null);
+                map = buildAppMap(activityInfo, sideloaded, null, labels);
             }
         }
 
         if (map.isEmpty()) {
             try {
-                map = buildInstalledAppMap(packageManager.getPackageInfo(packageName, 0));
+                map = buildInstalledAppMap(packageManager.getPackageInfo(packageName, 0), labels);
             } catch (PackageManager.NameNotFoundException ignored) {
             }
         }
+        labels.save(this::labelEnvironment);
         return map;
     }
 
@@ -213,11 +227,11 @@ final class ApplicationCatalog {
                 .queryIntentActivities(intent, 0);
     }
 
-    private Map<String, Serializable> buildAppMap(ActivityInfo activityInfo, boolean sideloaded, String action) {
+    private Map<String, Serializable> buildAppMap(ActivityInfo activityInfo, boolean sideloaded, String action,
+                                                   AppLabelCache.Batch labels) {
         PackageManager packageManager = context.getPackageManager();
 
-        String applicationName = activityInfo.loadLabel(packageManager).toString(),
-                applicationVersionName = "";
+        String applicationVersionName = "";
         String revision = null;
         try {
             PackageInfo info = packageManager.getPackageInfo(activityInfo.packageName, 0);
@@ -227,7 +241,10 @@ final class ApplicationCatalog {
         }
 
         Map<String, Serializable> appMap = new HashMap<>();
-        appMap.put("name", applicationName);
+        String source = "activity:" + activityInfo.packageName + "/" + activityInfo.name
+                + ":" + activityInfo.labelRes;
+        appMap.put("name", labels.resolve(source, revision,
+                () -> activityInfo.loadLabel(packageManager).toString()));
         appMap.put("packageName", activityInfo.packageName);
         appMap.put("version", applicationVersionName == null ? "" : applicationVersionName);
         if (revision != null) appMap.put("artworkRevision", revision);
@@ -242,13 +259,15 @@ final class ApplicationCatalog {
         return appMap;
     }
 
-    private Map<String, Serializable> buildInstalledAppMap(PackageInfo info) {
+    private Map<String, Serializable> buildInstalledAppMap(PackageInfo info, AppLabelCache.Batch labels) {
         ApplicationInfo applicationInfo = info.applicationInfo;
         Map<String, Serializable> app = new HashMap<>();
         app.put("packageName", info.packageName);
-        app.put("name", applicationInfo.loadLabel(context.getPackageManager()).toString());
+        String revision = artworkRevision(info);
+        app.put("name", labels.resolve("package:" + info.packageName, revision,
+                () -> applicationInfo.loadLabel(context.getPackageManager()).toString()));
         app.put("version", info.versionName == null ? "" : info.versionName);
-        app.put("artworkRevision", artworkRevision(info));
+        app.put("artworkRevision", revision);
         app.put("system", (applicationInfo.flags
                 & (ApplicationInfo.FLAG_SYSTEM | ApplicationInfo.FLAG_UPDATED_SYSTEM_APP)) != 0);
         app.put("launchable", false);

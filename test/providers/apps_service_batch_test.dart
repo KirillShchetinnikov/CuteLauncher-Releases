@@ -9,12 +9,15 @@ import 'package:drift/drift.dart';
 import '../mocks.mocks.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   late FLauncherDatabase database;
   late MockFLauncherChannel mockChannel;
   late AppsService appsService;
 
   setUp(() async {
     database = FLauncherDatabase.inMemory();
+    addTearDown(database.close);
     mockChannel = MockFLauncherChannel();
     when(mockChannel.addAppsChangedListener(any)).thenReturn(null);
 
@@ -22,15 +25,11 @@ void main() {
     when(mockChannel.getApplications()).thenAnswer((_) async => []);
 
     appsService = AppsService(mockChannel, database);
+    addTearDown(appsService.dispose);
     // Wait for initialization
     while (!appsService.initialized) {
       await Future.delayed(Duration(milliseconds: 10));
     }
-  });
-
-  tearDown(() async {
-    appsService.dispose();
-    await database.close();
   });
 
   test('cannot delete the final category', () async {

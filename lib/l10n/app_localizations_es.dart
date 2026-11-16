@@ -1993,8 +1993,34 @@ class AppLocalizationsEs extends AppLocalizations {
       'Envíe el archivo al autor por mensaje privado, no lo publique: la limpieza automática puede omitir datos personales. Al enviarlo, acepta que se publique un informe anónimo de compatibilidad del dispositivo en el repositorio Git de CuteLauncher. Solo se publican metadatos del dispositivo y disponibilidad de funciones, sin datos personales; no se publican registros de errores, comandos ni sus ajustes.\n\nEl informe también incluye paquetes instalados, nombres, versiones y estado de activación, y los nombres, contenido, orden y visibilidad de las secciones. Se conservan los identificadores y nombres para el diagnóstico; estas listas no se publican.';
 
   @override
+  String get diagnosticsStartRecording => 'Iniciar diagnóstico ampliado';
+
+  @override
+  String get diagnosticsFinishRecording =>
+      'Finalizar el registro y crear informe';
+
+  @override
+  String get diagnosticsStopRecording => 'Detener el registro';
+
+  @override
+  String get diagnosticsCreateExtended => 'Crear informe ampliado';
+
+  @override
+  String get diagnosticsRecordingActive => 'Registro ampliado en curso';
+
+  @override
+  String get diagnosticsRecordingStopped => 'Registro finalizado';
+
+  @override
+  String get diagnosticsExtendedReady => 'Informe ampliado listo';
+
+  @override
+  String get diagnosticsRecordingFailed =>
+      'No se pudo iniciar el registro ampliado.';
+
+  @override
   String get diagnosticsHint =>
-      'Un único informe combina compatibilidad de funciones del dispositivo y diagnóstico de errores. El informe incluye modelo y firmware del dispositivo, versión de la aplicación, permisos, memoria, etapas y causas de errores, comandos y respuestas con eliminación automática de datos personales. Guarda las últimas 50 operaciones, hasta 100 fallos por separado y un registro ADB limitado de la sesión. Se borra al reiniciar. La limpieza puede omitir datos personales: envíe el archivo por mensaje privado, no lo publique. No se envía nada automáticamente. Cada error conserva una instantánea de los ajustes aplicados; los cambios posteriores no la sustituyen.\n\nEl informe también incluye paquetes instalados, nombres, versiones y estado de activación, y los nombres, contenido, orden y visibilidad de las secciones. Se conservan los identificadores y nombres para el diagnóstico; estas listas no se publican.';
+      'El informe básico incluye datos del dispositivo, permisos, ajustes y hasta las últimas 20 operaciones. Para obtener un informe detallado, inicia el diagnóstico ampliado, reproduce el problema y vuelve aquí. El registro dura hasta 10 minutos. El informe ampliado incluye registros detallados, resultados de compatibilidad, aplicaciones y secciones. No se envía nada automáticamente.';
 
   @override
   String get diagnosticsTitle => 'Diagnóstico de errores';
@@ -3488,6 +3514,21 @@ class AppLocalizationsEs extends AppLocalizations {
   String get sectionIconFolder => 'Carpeta';
 
   @override
+  String get sectionIconReading => 'Lectura';
+
+  @override
+  String get sectionIconKids => 'Infantil';
+
+  @override
+  String get sectionIconSmartHome => 'Hogar inteligente';
+
+  @override
+  String get sectionIconTravel => 'Viajes';
+
+  @override
+  String get sectionIconPodcasts => 'Pódcasts';
+
+  @override
   String get homeInactiveTransparency =>
       'Transparencia de las secciones inactivas';
 
@@ -4524,6 +4565,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get stopApp => 'Parar';
 
   @override
+  String get restartApp => 'Reiniciar';
+
+  @override
+  String get appRestartLaunchFailed =>
+      'La aplicación se detuvo, pero no se pudo abrir.';
+
+  @override
   String get backgroundImageFormats =>
       'Imágenes: JPEG, PNG, WebP, GIF, BMP — hasta 8 MiB, 48 megapíxeles y 16.384 píxeles por lado.';
 
@@ -5435,6 +5483,13 @@ class AppLocalizationsEs extends AppLocalizations {
       'Android no pudo leer el APK: falta el archivo, está vacío, es demasiado grande o no se reconoce. Descargue la actualización de nuevo.';
 
   @override
+  String get updateWhatsNew => 'Novedades';
+
+  @override
+  String get updateNotesUnavailable =>
+      'Las notas de la actualización no están disponibles.';
+
+  @override
   String get updateVerificationFailed =>
       'Se produjo un error al comprobar el APK. Instalación bloqueada. Reinténtelo; si se repite, envíe al autor un informe de diagnóstico.';
 
@@ -5580,6 +5635,28 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get appLaunchGroup => 'Inicio';
+
+  @override
+  String get applicationInfoSettings =>
+      'Ajustes de información de la aplicación';
+
+  @override
+  String get applicationInfoCheckOnOpen => 'Comprobar el estado al abrir';
+
+  @override
+  String get applicationInfoButtonsHint =>
+      'OK — mostrar u ocultar · ◄ / ► — mover';
+
+  @override
+  String get applicationInfoMovingHint =>
+      '▲ / ▼ — mover · OK o Atrás — terminar';
+
+  @override
+  String get applicationInfoProcessHelp =>
+      'El lanzador puede comprobar el estado una vez al abrir. Detener y Reiniciar solo aparecen si la aplicación está en ejecución. Mantén visible la comprobación manual o activa la comprobación al abrir para usar esas acciones.';
+
+  @override
+  String get applicationInfoNoActions => 'No hay acciones para mostrar';
 
   @override
   String get appManagementGroup => 'Gestionar aplicación';

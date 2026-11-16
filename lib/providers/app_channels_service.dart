@@ -167,7 +167,7 @@ class AppChannelsService extends ChangeNotifier
     _foreground =
         WidgetsBinding.instance.lifecycleState == null ||
         WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed;
-    DiagnosticsStore.instance.posterLoads.lifecycle(PosterSource.appChannels,
+    DiagnosticsStore.instance.activePosterLoads?.lifecycle(PosterSource.appChannels,
         WidgetsBinding.instance.lifecycleState?.name ?? 'resumed');
     WidgetsBinding.instance.addObserver(this);
     settings.addListener(_settingsChanged);
@@ -338,7 +338,7 @@ class AppChannelsService extends ChangeNotifier
   Uint8List? cachedPoster(String uri) => _posters[uri];
 
   void evictPoster(WatchNextProgram program) {
-    DiagnosticsStore.instance.posterLoads.decodeFailed(
+    DiagnosticsStore.instance.activePosterLoads?.decodeFailed(
         PosterSource.appChannels, program.posterArtUri, program.thumbnailUri, program.packageName);
     _posters.remove(program.posterArtUri);
     _posters.remove(program.thumbnailUri);
@@ -360,17 +360,17 @@ class AppChannelsService extends ChangeNotifier
       return Future.value(null);
     }
     final cached = _posters[uri];
-    final diagnostics = DiagnosticsStore.instance.posterLoads;
+    final diagnostics = DiagnosticsStore.instance.activePosterLoads;
     if (cached != null && _posterVersions[uri] == _posterEpoch) {
-      diagnostics.count(PosterSource.appChannels, 'cacheHit');
+      diagnostics?.count(PosterSource.appChannels, 'cacheHit');
       return Future.value(cached);
     }
     final pendingKey = '$_generation:$uri';
     if (_pendingPosters.containsKey(pendingKey)) {
-      diagnostics.count(PosterSource.appChannels, 'deduplicated');
+      diagnostics?.count(PosterSource.appChannels, 'deduplicated');
     }
     return _pendingPosters.putIfAbsent(pendingKey, () {
-      final trace = diagnostics.start(PosterSource.appChannels, uri,
+      final trace = diagnostics?.start(PosterSource.appChannels, uri,
           packageName: packageName, thumbnail: thumbnail, cached: cached != null);
       final generation = _generation;
       final epoch = _posterEpoch;
@@ -386,12 +386,12 @@ class AppChannelsService extends ChangeNotifier
                   (parsed.scheme == 'https' || parsed.scheme == 'http')) {
                 bytes = await readNetworkPoster(_http, parsed, trace: trace);
               } else {
-                trace.stage(PosterStage.platform);
+                trace?.stage(PosterStage.platform);
                 bytes = await channel.getWatchNextPoster(uri);
-                trace.receivedBytes = bytes?.length ?? 0;
+                trace?.receivedBytes = bytes?.length ?? 0;
               }
             } catch (diagnosticError, diagnosticStack) {
-              trace.error(diagnosticError);
+              trace?.error(diagnosticError);
               DiagnosticsStore.instance.recordException(
                 'appChannelsService', diagnosticError, diagnosticStack,
               );
@@ -404,14 +404,14 @@ class AppChannelsService extends ChangeNotifier
             if (bytes != null && bytes.isNotEmpty) {
               if (!listEquals(bytes, previous)) _posters[uri] = bytes;
               if (_posters.containsKey(uri)) _posterVersions[uri] = epoch;
-              trace.finish(PosterOutcome.loaded);
+              trace?.finish(PosterOutcome.loaded);
               return _posters[uri] ?? bytes;
             }
-            trace.finish(previous == null ? PosterOutcome.failed : PosterOutcome.cachedFallback);
+            trace?.finish(previous == null ? PosterOutcome.failed : PosterOutcome.cachedFallback);
             return previous;
           })
           .whenComplete(() {
-            trace.finish(PosterOutcome.discarded);
+            trace?.finish(PosterOutcome.discarded);
             _pendingPosters.remove(pendingKey);
           });
     });
@@ -444,7 +444,7 @@ class AppChannelsService extends ChangeNotifier
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    DiagnosticsStore.instance.posterLoads.lifecycle(PosterSource.appChannels, state.name);
+    DiagnosticsStore.instance.activePosterLoads?.lifecycle(PosterSource.appChannels, state.name);
     _foreground = state == AppLifecycleState.resumed;
     if (!_foreground) {
       ++_generation;
@@ -459,7 +459,7 @@ class AppChannelsService extends ChangeNotifier
 
   @override
   void dispose() {
-    DiagnosticsStore.instance.posterLoads.lifecycle(PosterSource.appChannels, 'disposed');
+    DiagnosticsStore.instance.activePosterLoads?.lifecycle(PosterSource.appChannels, 'disposed');
     work?.cancel(this);
     ++_generation;
     settings.removeListener(_settingsChanged);

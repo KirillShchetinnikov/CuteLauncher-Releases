@@ -15,6 +15,7 @@ void main() {
   late NetworkService networkService;
 
   setUp(() {
+    DiagnosticsStore.instance..clear()..startRecording();
     mockChannel = MockFLauncherChannel();
     when(mockChannel.addNetworkChangedListener(any)).thenReturn(null);
     when(mockChannel.getActiveNetworkInformation())
@@ -26,6 +27,7 @@ void main() {
   });
 
   tearDown(() {
+    DiagnosticsStore.instance.clear();
     networkService.dispose();
   });
 
@@ -50,7 +52,7 @@ void main() {
     expect(service.hasInternetAccess, isFalse);
     expect(service.networkType, NetworkType.Unknown);
     expect(service.vpnActive, isFalse);
-    final network = DiagnosticsStore.instance.posterLoads.snapshot()['network'] as Map;
+    final network = DiagnosticsStore.instance.activePosterLoads!.snapshot()['network'] as Map;
     expect(network['internetAccess'], false);
     expect(network['transport'], 'Unknown');
   });

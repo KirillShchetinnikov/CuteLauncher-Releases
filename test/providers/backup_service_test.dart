@@ -186,21 +186,25 @@ void main() {
     expect(sharedPreferences.getString('date_format'), 'yyyy');
   });
 
-  test('update notice delivery state stays local during export and import', () async {
+  test('update availability and notice state stay local during export and import', () async {
     await database.insertCategory(CategoriesCompanion.insert(name: 'Apps', order: 0));
     await sharedPreferences.setString('update_pending_notification', 'v1.0.0+3');
     await sharedPreferences.setString('update_shown_notification', 'v1.0.0+2');
+    await sharedPreferences.setString('update_available_release', 'local release');
     final archive = File(await backupService.exportBackup());
     final data = jsonDecode(await archive.readAsString()) as Map<String, dynamic>;
     final settings = data['settings'] as Map;
     expect(settings.containsKey('update_pending_notification'), isFalse);
     expect(settings.containsKey('update_shown_notification'), isFalse);
+    expect(settings.containsKey('update_available_release'), isFalse);
     settings['update_pending_notification'] = 'v1.0.0+9';
     settings['update_shown_notification'] = 'v1.0.0+8';
+    settings['update_available_release'] = 'imported release';
     await archive.writeAsString(jsonEncode(data));
     await backupService.importBackup(archive);
     expect(sharedPreferences.getString('update_pending_notification'), 'v1.0.0+3');
     expect(sharedPreferences.getString('update_shown_notification'), 'v1.0.0+2');
+    expect(sharedPreferences.getString('update_available_release'), 'local release');
   });
 
   test('portable backup restores wallpaper and banner without source paths', () async {

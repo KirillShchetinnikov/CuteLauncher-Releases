@@ -71,4 +71,12 @@ public class StorageStatusTest {
         assertEquals("8:1", StorageStatusPolicy.blockId("/dev/block/vold/public:8,1"));
         assertNull(StorageStatusPolicy.blockId("/dev/fuse"));
     }
+    @Test public void usbBlockLookupOnlyConsidersStorageMounts() {
+        String block = "/dev/block/vold/public:8,1";
+        assertEquals("8:1", StorageStatusPolicy.usbMountBlockId(block, "/mnt/media_rw/TEST"));
+        assertEquals("8:1", StorageStatusPolicy.usbMountBlockId(block, "/storage/TEST"));
+        assertNull(StorageStatusPolicy.usbMountBlockId(block, "/system"));
+        assertNull(StorageStatusPolicy.usbMountBlockId(block, "/storage"));
+        assertNull(StorageStatusPolicy.usbMountBlockId("/dev/fuse", "/storage/emulated"));
+    }
 }

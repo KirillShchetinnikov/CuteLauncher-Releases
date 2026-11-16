@@ -18,12 +18,17 @@
 
 import 'dart:async';
 
+import 'package:flauncher/application_info_configuration.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/models/category.dart';
 import 'package:flauncher/models/app.dart';
 import 'package:flauncher/widgets/application_info_panel.dart';
 import 'package:flauncher/widgets/add_to_category_dialog.dart';
 import 'package:flauncher/widgets/launcher_dialog.dart';
+import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
+import 'package:flauncher/widgets/settings/app_details_page.dart';
+import 'package:flauncher/widgets/settings/application_info_settings_page.dart';
+import 'package:flauncher/widgets/settings/interface_settings_page.dart';
 import 'package:flauncher/widgets/side_panel_dialog.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -34,20 +39,22 @@ import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../mocks.dart';
 import '../mocks.mocks.dart';
 import 'panel_backdrop_assertions.dart';
 
 void main() {
-  for (final (active, status) in [
-    (false, "success"),
-    (true, "success"),
-    (true, "denied"),
+  for (final (active, launchable, status) in [
+    (false, true, 'success'),
+    (true, true, 'success'),
+    (true, true, 'denied'),
+    (true, false, 'success'),
   ]) {
-    testWidgets('Stop is visible only for a running app ($active, $status)', (
-      tester,
-    ) async {
+    final description =
+        'Process actions (active: $active, launchable: $launchable, $status)';
+    testWidgets(description, (tester) async {
       const channel = MethodChannel('cutelauncher/adb');
       var running = active;
       var stops = 0;
@@ -75,7 +82,8 @@ void main() {
       final apps = MockAppsService();
       when(apps.isTileHidden(any)).thenReturn(false);
       when(apps.categories).thenReturn([]);
-      final app = fakeApp(packageName: 'test.app', name: 'Test', version: '1');
+      final app = fakeApp(packageName: 'test.app', name: 'Test', version: '1')
+        ..isLaunchable = launchable;
       when(apps.applications).thenReturn([app]);
       await _pumpWidgetWithProviders(
         tester,
@@ -87,11 +95,10 @@ void main() {
       await tester.pumpAndSettle();
       expect(checks, 0);
       expect(find.text('Остановить'), findsNothing);
-      await tester.scrollUntilVisible(
-        find.byKey(const ValueKey('app_check_process')),
-        150,
-      );
-      await tester.tap(find.byKey(const ValueKey('app_check_process')));
+      expect(find.text('Перезапустить'), findsNothing);
+      final check = find.byKey(const ValueKey('app_check_process'));
+      await tester.scrollUntilVisible(check.hitTestable(), 150);
+      await tester.tap(check);
       await tester.pumpAndSettle();
       expect(checks, 1);
       tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
@@ -99,6 +106,10 @@ void main() {
       await tester.pumpAndSettle();
       expect(checks, 1);
       expect(find.text('Остановить'), active ? findsOneWidget : findsNothing);
+      expect(
+        find.text('Перезапустить'),
+        active && launchable ? findsOneWidget : findsNothing,
+      );
       if (active) {
         await tester.ensureVisible(find.text('Остановить'));
         await tester.tap(find.text('Остановить'));
@@ -109,8 +120,136 @@ void main() {
           find.text('Остановить'),
           status == 'success' ? findsNothing : findsOneWidget,
         );
+        verifyNever(apps.launchApp(any));
       }
       expect(tester.takeException(), isNull);
+    });
+  }
+
+  for (final scenario in [
+    'success',
+    'launch failed',
+    'stop denied',
+    'ADB unavailable',
+    'card closed',
+    'launcher in background',
+  ]) {
+    testWidgets('Restart: $scenario', (tester) async {
+      const channel = MethodChannel('cutelauncher/adb');
+      final stop = Completer<Map<String, dynamic>>();
+      final launch = Completer<bool>();
+      final calls = <String>[];
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        channel,
+        (call) async {
+          if (call.method == 'info') return {'port': 5555};
+          final args = call.arguments as Map;
+          expect(args['packages'], ['test.app']);
+          final action = args['action'] as String;
+          calls.add(action);
+          if (action == 'stopApp') return stop.future;
+          expect(action, 'appProcessStatus');
+          return {'status': 'success', 'running': true};
+        },
+      );
+      addTearDown(
+        () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+          channel,
+          null,
+        ),
+      );
+
+      final apps = MockAppsService();
+      final app = fakeApp(packageName: 'test.app', name: 'Test');
+      when(apps.categories).thenReturn([]);
+      when(apps.isTileHidden(any)).thenReturn(false);
+      when(apps.launchApp(app)).thenAnswer((_) {
+        calls.add('launchApp');
+        return launch.future;
+      });
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      await _pumpWidgetWithProviders(tester, apps, null, app, asDialog: true);
+      final l = AppLocalizations.of(
+        tester.element(find.byType(ApplicationInfoPanel)),
+      )!;
+      final check = find.byKey(const ValueKey('app_check_process'));
+      await tester.scrollUntilVisible(check, 150);
+      await tester.tap(check);
+      await tester.pumpAndSettle();
+
+      final restart = find.text(l.restartApp);
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      await tester.pumpAndSettle();
+      expect(
+        Focus.of(tester.element(find.text(l.stopApp))).hasPrimaryFocus,
+        isTrue,
+      );
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      await tester.pumpAndSettle();
+      expect(Focus.of(tester.element(restart)).hasPrimaryFocus, isTrue);
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pump();
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pump();
+      expect(calls, ['appProcessStatus', 'stopApp']);
+      expect(Focus.of(tester.element(restart)).hasPrimaryFocus, isTrue);
+      expect(tester.widget<FocusableSettingsTile>(check).busy, isTrue);
+      final stopTile = find.ancestor(
+        of: find.text(l.stopApp),
+        matching: find.byType(FocusableSettingsTile),
+      );
+      expect(tester.widget<FocusableSettingsTile>(stopTile).busy, isTrue);
+
+      if (scenario == 'card closed') {
+        await tester.binding.handlePopRoute();
+        await tester.pumpAndSettle();
+      }
+      if (scenario == 'launcher in background') {
+        tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.hidden);
+      }
+      stop.complete(switch (scenario) {
+        'stop denied' => {'status': 'denied', 'running': true},
+        'ADB unavailable' => {'status': 'unavailable'},
+        _ => {'status': 'success', 'running': false},
+      });
+      await tester.pump();
+      if (scenario == 'launcher in background') {
+        tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      }
+      if (scenario == 'success' || scenario == 'launch failed') {
+        expect(calls, ['appProcessStatus', 'stopApp', 'launchApp']);
+        await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+        await tester.pump();
+        launch.complete(scenario == 'success');
+        verify(apps.launchApp(app)).called(1);
+      } else {
+        expect(calls, ['appProcessStatus', 'stopApp']);
+        verifyNever(apps.launchApp(any));
+      }
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+
+      if (scenario == 'success' || scenario == 'card closed') {
+        expect(find.byType(ApplicationInfoPanel), findsNothing);
+      } else if (scenario == 'stop denied') {
+        expect(find.text(l.adbDenied), findsOneWidget);
+        expect(Focus.of(tester.element(restart)).hasPrimaryFocus, isTrue);
+      } else {
+        expect(restart, findsNothing);
+        expect(
+          Focus.of(tester.element(find.text(l.appInfo))).hasPrimaryFocus,
+          isTrue,
+        );
+        if (scenario == 'ADB unavailable') {
+          expect(find.text(l.adbUnavailable), findsWidgets);
+        } else {
+          expect(find.text(l.appProcessStopped), findsOneWidget);
+          if (scenario == 'launch failed') {
+            expect(find.text(l.appRestartLaunchFailed), findsOneWidget);
+          }
+        }
+      }
     });
   }
 
@@ -151,6 +290,205 @@ void main() {
     );
     expect(find.text('Status not checked'), findsOneWidget);
     expect(find.text('Stop'), findsNothing);
+  });
+
+  for (final embedded in [false, true]) {
+    testWidgets('auto check runs once per opening, embedded=$embedded', (
+      tester,
+    ) async {
+      final checks = <List<dynamic>>[];
+      const channel = MethodChannel('cutelauncher/adb');
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, (
+        call,
+      ) async {
+        if (call.method == 'info') return {'port': 5555};
+        final args = call.arguments as Map;
+        expect(args['action'], 'appProcessStatus');
+        checks.add(args['packages'] as List<dynamic>);
+        return {'status': 'success', 'running': true};
+      });
+      addTearDown(
+        () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+          channel,
+          null,
+        ),
+      );
+      final apps = _ObservableAppsService();
+      when(apps.categories).thenReturn([]);
+      when(apps.isTileHidden(any)).thenReturn(false);
+      SharedPreferences.setMockInitialValues({
+        applicationInfoConfigurationKey: ApplicationInfoConfiguration(
+          order: [ApplicationInfoAction.stop, ApplicationInfoAction.restart],
+          hidden: [ApplicationInfoAction.checkProcess],
+          checkOnOpen: true,
+        ).encode(),
+      });
+      final settings = SettingsService(await SharedPreferences.getInstance());
+      addTearDown(settings.dispose);
+      final app = fakeApp(packageName: 'test.app', name: 'Test')
+        ..isLaunchable = true;
+      await _pumpWidgetWithProviders(
+        tester,
+        apps,
+        null,
+        app,
+        asDialog: true,
+        embedded: embedded,
+        settingsService: settings,
+      );
+      final l = AppLocalizations.of(
+        tester.element(find.byType(ApplicationInfoPanel)),
+      )!;
+      expect(checks, [
+        [app.packageName],
+      ]);
+      expect(find.text(l.appProcessRunning), findsOneWidget);
+      expect(find.text(l.appCheckProcess), findsNothing);
+      final stop = find.text(l.stopApp);
+      final restart = find.text(l.restartApp);
+      expect(
+        tester.getTopLeft(stop).dy,
+        lessThan(tester.getTopLeft(restart).dy),
+      );
+      final gear = find.byKey(const ValueKey('application_info_settings'));
+      await tester.tap(gear);
+      await tester.pumpAndSettle();
+      expect(find.byType(ApplicationInfoSettingsPage), findsOneWidget);
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      apps.notifyListeners();
+      await tester.pumpAndSettle();
+      expect(
+        tester
+            .widget<IconButton>(
+              find.descendant(of: gear, matching: find.byType(IconButton)),
+            )
+            .focusNode!
+            .hasPrimaryFocus,
+        isTrue,
+      );
+      expect(checks, [
+        [app.packageName],
+      ]);
+
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Open info'));
+      await tester.pumpAndSettle();
+      expect(checks, [
+        [app.packageName],
+        [app.packageName],
+      ]);
+      expect(tester.takeException(), isNull);
+    });
+  }
+
+  testWidgets('the gear stays reachable when all actions are hidden', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({
+      applicationInfoConfigurationKey:
+          const ApplicationInfoConfiguration.defaults()
+              .copyWith(hidden: ApplicationInfoAction.values)
+              .encode(),
+    });
+    final settings = SettingsService(await SharedPreferences.getInstance());
+    addTearDown(settings.dispose);
+    final apps = MockAppsService();
+    final app = fakeApp(packageName: 'test.app', name: 'Test');
+    when(apps.isTileHidden(any)).thenReturn(false);
+    await _pumpWidgetWithProviders(
+      tester,
+      apps,
+      null,
+      app,
+      asDialog: true,
+      settingsService: settings,
+    );
+
+    final gear = find.byKey(const ValueKey('application_info_settings'));
+    final iconButton = tester.widget<IconButton>(
+      find.descendant(of: gear, matching: find.byType(IconButton)),
+    );
+    expect(iconButton.focusNode!.hasPrimaryFocus, isTrue);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(find.byType(ApplicationInfoSettingsPage), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey(ApplicationInfoAction.open)));
+    await tester.pumpAndSettle();
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    final l = AppLocalizations.of(
+      tester.element(find.byType(ApplicationInfoPanel)),
+    )!;
+    expect(find.text(l.open), findsOneWidget);
+    expect(find.text(l.hide), findsNothing);
+    expect(iconButton.focusNode!.hasPrimaryFocus, isTrue);
+  });
+
+  testWidgets('home settings can hide and move actions with the remote', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final preferences = await SharedPreferences.getInstance();
+    final settings = SettingsService(preferences);
+    addTearDown(settings.dispose);
+    await tester.pumpWidget(
+      ChangeNotifierProvider<SettingsService>.value(
+        value: settings,
+        child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          builder: (_, child) => Material(child: child!),
+          home: const Scaffold(body: InterfaceSettingsPage()),
+        ),
+      ),
+    );
+    final l = AppLocalizations.of(
+      tester.element(find.byType(InterfaceSettingsPage)),
+    )!;
+    await tester.tap(find.text(l.applicationInfoSettings));
+    await tester.pumpAndSettle();
+    final add = find.byKey(const ValueKey(ApplicationInfoAction.addToSection));
+    final reorder = find.byKey(
+      const ValueKey(ApplicationInfoAction.reorderTile),
+    );
+    await tester.tap(add);
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.pumpAndSettle();
+    expect(tester.getTopLeft(reorder).dy, lessThan(tester.getTopLeft(add).dy));
+    await tester.sendKeyEvent(LogicalKeyboardKey.select);
+    await tester.pumpAndSettle();
+    final configuration = ApplicationInfoConfiguration.decode(
+      preferences.get(applicationInfoConfigurationKey),
+    );
+    expect(configuration.hidden, {ApplicationInfoAction.addToSection});
+    expect(configuration.order.take(2), [
+      ApplicationInfoAction.reorderTile,
+      ApplicationInfoAction.addToSection,
+    ]);
+    expect(configuration.checkOnOpen, isFalse);
+    await tester.tap(find.text(l.applicationInfoCheckOnOpen).first);
+    await tester.pumpAndSettle();
+    expect(
+      ApplicationInfoConfiguration.decode(
+        preferences.get(applicationInfoConfigurationKey),
+      ).checkOnOpen,
+      isTrue,
+    );
+    final reset = find.text(l.informationResetTypography);
+    await tester.scrollUntilVisible(reset, 200);
+    await tester.tap(reset);
+    await tester.pumpAndSettle();
+    expect(
+      preferences.get(applicationInfoConfigurationKey),
+      const ApplicationInfoConfiguration.defaults().encode(),
+    );
+    expect(tester.takeException(), isNull);
   });
 
   for (final failure in [
@@ -879,6 +1217,8 @@ Future<void> _pumpWidgetWithProviders(
   Uint8List? iconBytes,
   bool asDialog = false,
   bool? onRight,
+  SettingsService? settingsService,
+  bool embedded = false,
 }) async {
   when(appsService.isAppInFavorites(application)).thenReturn(false);
   when(appsService.hasCustomBanner(application.packageName))
@@ -892,16 +1232,22 @@ Future<void> _pumpWidgetWithProviders(
   when(settings.accentColorHex).thenReturn(ACCENT_COLOR_PURPLE);
   when(settings.settingsMenuOnRight).thenReturn(onRight ?? false);
   when(settings.appKeyClickEnabled).thenReturn(false);
-  Widget info() =>
-      ApplicationInfoPanel(category: category, application: application);
+  when(settings.storedApplicationInfoConfiguration).thenReturn(null);
+  when(settings.panelTooltipsEnabled).thenReturn(false);
+  Widget info() => embedded
+      ? AppDetailsPage(application: application)
+      : ApplicationInfoPanel(category: category, application: application);
   await tester.pumpWidget(
     MultiProvider(
       providers: [
         ChangeNotifierProvider<AppsService>.value(value: appsService),
-        if (onRight != null)
-          ChangeNotifierProvider<SettingsService>.value(value: settings),
+        if (onRight != null || settingsService != null)
+          ChangeNotifierProvider<SettingsService>.value(
+            value: settingsService ?? settings,
+          ),
       ],
       builder: (_, _) => MaterialApp(
+        builder: embedded ? (_, child) => Material(child: child!) : null,
         theme: theme,
         locale: locale,
         localizationsDelegates: const [
@@ -915,10 +1261,16 @@ Future<void> _pumpWidgetWithProviders(
             ? Scaffold(
                 body: Builder(
                   builder: (context) => TextButton(
-                    onPressed: () => showLauncherDialog<void>(
-                      context: context,
-                      builder: (_) => info(),
-                    ),
+                    onPressed: () => embedded
+                        ? Navigator.of(context).push(
+                            MaterialPageRoute<void>(
+                              builder: (_) => Scaffold(body: info()),
+                            ),
+                          )
+                        : showLauncherDialog<void>(
+                            context: context,
+                            builder: (_) => info(),
+                          ),
                     child: const Text('Open info'),
                   ),
                 ),

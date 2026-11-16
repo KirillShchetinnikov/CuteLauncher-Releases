@@ -1967,8 +1967,32 @@ class AppLocalizationsAr extends AppLocalizations {
       'أرسل الملف إلى المؤلف برسالة خاصة ولا تنشره علنًا: قد يفوت التنقيح التلقائي بعض البيانات الشخصية. بإرسال التقرير توافق على نشر تقرير توافق جهاز مجهّل الهوية في مستودع Git لتطبيق CuteLauncher. تُنشر فقط بيانات الجهاز الوصفية وتوفّر الوظائف دون بيانات شخصية؛ ولا تُنشر سجلات الأخطاء أو الأوامر أو إعداداتك.\n\nيتضمن التقرير أيضًا الحزم المثبتة وأسماءها وإصداراتها وحالة تفعيلها، وأسماء الأقسام ومحتوياتها وترتيبها وظهورها. تُحفظ المعرّفات والأسماء للتشخيص؛ ولا تُنشر قوائم التطبيقات والأقسام.';
 
   @override
+  String get diagnosticsStartRecording => 'بدء التشخيص الموسّع';
+
+  @override
+  String get diagnosticsFinishRecording => 'إنهاء التسجيل وإنشاء التقرير';
+
+  @override
+  String get diagnosticsStopRecording => 'إيقاف التسجيل';
+
+  @override
+  String get diagnosticsCreateExtended => 'إنشاء تقرير موسّع';
+
+  @override
+  String get diagnosticsRecordingActive => 'التسجيل الموسّع جارٍ';
+
+  @override
+  String get diagnosticsRecordingStopped => 'انتهى التسجيل';
+
+  @override
+  String get diagnosticsExtendedReady => 'التقرير الموسّع جاهز';
+
+  @override
+  String get diagnosticsRecordingFailed => 'تعذر بدء التسجيل الموسّع.';
+
+  @override
   String get diagnosticsHint =>
-      'يجمع تقرير واحد توافق وظائف الجهاز وتشخيص الأخطاء. يتضمن التقرير طراز الجهاز وبرنامجه الثابت وإصدار التطبيق والأذونات والذاكرة ومراحل الأخطاء وأسبابها والأوامر والردود بعد التنقيح التلقائي للبيانات الشخصية. يحتفظ بآخر 50 عملية وبما يصل إلى 100 فشل بشكل منفصل وسجل ADB محدود للجلسة الحالية. تمسح إعادة التشغيل السجل. قد تبقى بيانات شخصية: أرسل الملف برسالة خاصة ولا تنشره علنًا. لا يُرسل شيء تلقائيًا. تُحفظ مع كل خطأ لقطة للإعدادات المطبّقة، ولا تستبدلها التغييرات اللاحقة.\n\nيتضمن التقرير أيضًا الحزم المثبتة وأسماءها وإصداراتها وحالة تفعيلها، وأسماء الأقسام ومحتوياتها وترتيبها وظهورها. تُحفظ المعرّفات والأسماء للتشخيص؛ ولا تُنشر قوائم التطبيقات والأقسام.';
+      'يتضمن التقرير الأساسي معلومات الجهاز والأذونات والإعدادات وآخر 20 عملية كحد أقصى. للحصول على تقرير مفصل، ابدأ التشخيص الموسّع وأعد إظهار المشكلة ثم ارجع إلى هنا. يستمر التسجيل حتى 10 دقائق. يتضمن التقرير الموسّع سجلات مفصلة ونتائج التوافق والتطبيقات والأقسام. لا يُرسل شيء تلقائيًا.';
 
   @override
   String get diagnosticsTitle => 'تشخيص الأخطاء';
@@ -3431,6 +3455,21 @@ class AppLocalizationsAr extends AppLocalizations {
   String get sectionIconFolder => 'مجلد';
 
   @override
+  String get sectionIconReading => 'القراءة';
+
+  @override
+  String get sectionIconKids => 'للأطفال';
+
+  @override
+  String get sectionIconSmartHome => 'المنزل الذكي';
+
+  @override
+  String get sectionIconTravel => 'السفر';
+
+  @override
+  String get sectionIconPodcasts => 'البودكاست';
+
+  @override
   String get homeInactiveTransparency => 'شفافية الأقسام غير النشطة';
 
   @override
@@ -4450,6 +4489,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get stopApp => 'إيقاف';
 
   @override
+  String get restartApp => 'إعادة التشغيل';
+
+  @override
+  String get appRestartLaunchFailed => 'تم إيقاف التطبيق، لكن تعذّر فتحه.';
+
+  @override
   String get backgroundImageFormats =>
       'الصور: JPEG وPNG وWebP وGIF وBMP — حتى 8 MiB و48 ميغابكسل و16,384 بكسل لكل جانب.';
 
@@ -5336,6 +5381,12 @@ class AppLocalizationsAr extends AppLocalizations {
       'تعذر على Android قراءة APK: الملف مفقود أو فارغ أو كبير جدًا أو غير معروف. نزّل التحديث مجددًا.';
 
   @override
+  String get updateWhatsNew => 'ما الجديد';
+
+  @override
+  String get updateNotesUnavailable => 'تعذّر عرض تفاصيل التحديث.';
+
+  @override
   String get updateVerificationFailed =>
       'حدث خطأ أثناء التحقق من APK. تم حظر التثبيت. حاول مجددًا؛ إذا تكرر الخطأ، أرسل تقرير تشخيص إلى المطور.';
 
@@ -5478,6 +5529,25 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get appLaunchGroup => 'التشغيل';
+
+  @override
+  String get applicationInfoSettings => 'إعدادات معلومات التطبيق';
+
+  @override
+  String get applicationInfoCheckOnOpen => 'التحقق من الحالة عند الفتح';
+
+  @override
+  String get applicationInfoButtonsHint => 'OK — إظهار أو إخفاء · ◄ / ► — نقل';
+
+  @override
+  String get applicationInfoMovingHint => '▲ / ▼ — نقل · OK أو رجوع — إنهاء';
+
+  @override
+  String get applicationInfoProcessHelp =>
+      'يمكن للمشغّل التحقق مرة واحدة عند الفتح. لا يظهر الإيقاف وإعادة التشغيل إلا إذا كان التطبيق قيد التشغيل. أبقِ التحقق اليدوي ظاهرًا أو فعّل التحقق عند الفتح لتظهر هذه الإجراءات.';
+
+  @override
+  String get applicationInfoNoActions => 'لا توجد إجراءات لعرضها';
 
   @override
   String get appManagementGroup => 'إدارة التطبيق';

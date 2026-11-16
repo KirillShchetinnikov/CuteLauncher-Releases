@@ -24,7 +24,7 @@ void main() {
         SectionIcon.forCategory(Category(name: 'Renamed', systemKey: key)),
       SectionIcon.continueWatching,
     }, SectionIcon.values.take(6).toSet());
-    expect(SectionIcon.values.skip(6), hasLength(10));
+    expect(SectionIcon.values.skip(6), hasLength(16));
     expect(SectionIcon.forCategory(Category(name: 'Music')), SectionIcon.music);
     expect(SectionIcon.forCategory(Category(name: 'My apps')), SectionIcon.folder);
 
@@ -34,7 +34,7 @@ void main() {
     addTearDown(service.dispose);
     const watchNext = ContinueWatchingSection.sectionId;
     await service.setCategoryTitleIcon(1, SectionIcon.photos);
-    await service.setCategoryTitleIcon(watchNext, SectionIcon.news);
+    await service.setCategoryTitleIcon(watchNext, SectionIcon.weather);
     await service.setCategoryTile(1, 'sectionIcons', false);
     await service.resetCategoryLayout(1, grid: false);
     expect(service.category(1).titleIcon, SectionIcon.photos);
@@ -46,12 +46,12 @@ void main() {
     }, {categoryAppearanceKey: firstChoice});
     final decoded = CategoryAppearance.decode(result[categoryAppearanceKey]);
     expect(CategoryAppearance(decoded['1']).titleIcon, isNull);
-    expect(CategoryAppearance(decoded['$watchNext']).titleIcon, SectionIcon.news);
+    expect(CategoryAppearance(decoded['$watchNext']).titleIcon, SectionIcon.weather);
     expect(CategoryAppearance.validValues({'titleIcon': 'unknown'}), isEmpty);
     expect(CategoryAppearance.validValues({'titleIcon': 12}), isEmpty);
   });
 
-  testWidgets('heading icon picker shows 16 glyphs and saves with the remote', (tester) async {
+  testWidgets('heading icon picker shows 22 glyphs and saves with the remote', (tester) async {
     SharedPreferences.setMockInitialValues({});
     final service = AppearanceService(await SharedPreferences.getInstance());
     addTearDown(service.dispose);
@@ -68,7 +68,7 @@ void main() {
     await tester.tap(title);
     await tester.pumpAndSettle();
     final dialog = find.byType(SettingsChoiceDialog<SectionIcon?>);
-    expect(find.descendant(of: dialog, matching: find.byType(SectionHeadingIcon)), findsNWidgets(17));
+    expect(find.descendant(of: dialog, matching: find.byType(SectionHeadingIcon)), findsNWidgets(23));
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
@@ -81,6 +81,19 @@ void main() {
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
     expect(service.category(1).titleIcon, isNull);
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    for (final _ in SectionIcon.values) {
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      await tester.pumpAndSettle();
+    }
+    expect(Focus.of(tester.element(find.text('Podcasts'))).hasFocus, isTrue);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(service.category(1).titleIcon, SectionIcon.podcasts);
+    expect(dialog, findsNothing);
+
     await service.set('sectionTitles', false);
     await tester.pumpAndSettle();
     expect(tester.widget<FocusableSettingsTile>(title).enabled, isFalse);

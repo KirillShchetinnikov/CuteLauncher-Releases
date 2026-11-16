@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flauncher/diagnostics_store.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/widgets/settings/diagnostics_page.dart';
 import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
@@ -12,6 +13,78 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  Future<void> verifyRecordingStop(WidgetTester tester, {required bool manual}) async {
+    final store = DiagnosticsStore.instance..clear();
+    final messenger = tester.binding.defaultBinaryMessenger;
+    const channel = MethodChannel('me.efesser.flauncher/method');
+    final calls = <String>[];
+    messenger.setMockMethodCallHandler(channel, (call) async {
+      calls.add(call.method);
+      return true;
+    });
+    addTearDown(() {
+      store.clear();
+      messenger.setMockMethodCallHandler(channel, null);
+    });
+    Map<String, Object>? result;
+    Widget page() => MaterialApp(
+      locale: const Locale('en'),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: Scaffold(
+        body: DiagnosticsPage(collect: (extended) async {
+          expect(extended, isTrue);
+          return result = store.snapshot(extended: extended)..['reportMode'] = 'extended';
+        }),
+      ),
+    );
+    await tester.pumpWidget(page());
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(find.text('Extended recording in progress'), findsOneWidget);
+    await tester.pumpWidget(const SizedBox.shrink());
+    store.homeTiles.returnHome();
+    if (manual) {
+      await tester.pumpWidget(page());
+      await tester.pumpAndSettle();
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      final stop = find.text('Stop recording');
+      expect(Focus.of(tester.element(stop)).hasFocus, isTrue);
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pumpAndSettle();
+      expect(stop, findsNothing);
+      final create = find.text('Create extended report');
+      expect(Focus.of(tester.element(create)).hasFocus, isTrue);
+    } else {
+      await tester.pump(DiagnosticsStore.recordingDuration);
+      await tester.pumpWidget(page());
+      await tester.pumpAndSettle();
+    }
+    store.homeTiles.returnHome();
+    expect(find.text('Recording finished'), findsOneWidget);
+    expect(result, isNull);
+    expect(calls, ['startNativeShellDiagnostics', 'stopNativeShellDiagnostics']);
+    await tester.tap(find.text('Create extended report'));
+    await tester.pumpAndSettle();
+    expect(find.text('Extended report ready'), findsOneWidget);
+    expect((result!['recording'] as Map)['stopReason'], manual ? 'manual' : 'timeLimit');
+    expect((result!['homeTileImages'] as Map)['events'], hasLength(1));
+    expect(calls, [
+      'startNativeShellDiagnostics',
+      'stopNativeShellDiagnostics',
+      'clearNativeShellDiagnostics',
+    ]);
+    expect(store.recording.value, DiagnosticRecordingState.idle);
+  }
+
+  testWidgets('extended recording survives closing the page and can be exported after timeout',
+      (tester) => verifyRecordingStop(tester, manual: false));
+  testWidgets('stop recording keeps the history for later and moves remote focus to report creation',
+      (tester) => verifyRecordingStop(tester, manual: true));
+
   for (final locale in ['ru', 'en']) {
     for (final onRight in [false, true]) {
       testWidgets(
@@ -35,7 +108,7 @@ void main() {
                 body: SettingsMenuLayout(
                   onRight: onRight,
                   child: DiagnosticsPage(
-                    collect: () async => {'reportType': 'diagnostics'},
+                    collect: (_) async => {'reportType': 'diagnostics'},
                   ),
                 ),
               ),
@@ -145,7 +218,7 @@ void main() {
             supportedLocales: AppLocalizations.supportedLocales,
             home: Scaffold(
               body: DiagnosticsPage(
-                collect: () async => {
+                collect: (_) async => {
                   'operationCounts': {'success': 2},
                 },
               ),
@@ -259,7 +332,7 @@ void main() {
           supportedLocales: AppLocalizations.supportedLocales,
           home: Scaffold(
             body: DiagnosticsPage(
-              collect: () async => {
+              collect: (_) async => {
                 'operationCounts': {'success': 2},
               },
             ),

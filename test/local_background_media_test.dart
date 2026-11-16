@@ -14,12 +14,13 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   const channel = MethodChannel('me.efesser.flauncher/method');
   setUp(() {
-    DiagnosticsStore.instance.clear();
+    DiagnosticsStore.instance..clear()..startRecording();
     debugDefaultTargetPlatformOverride = TargetPlatform.android;
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(channel, (_) async => false);
   });
   tearDown(() {
+    DiagnosticsStore.instance.clear();
     debugDefaultTargetPlatformOverride = null;
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(channel, null);
@@ -75,7 +76,7 @@ void main() {
         ),
       );
       fake.reject = true;
-      DiagnosticsStore.instance.clear();
+      DiagnosticsStore.instance..clear()..startRecording();
       await expectLater(
         validateBackgroundVideo(file),
         throwsA(
@@ -88,7 +89,7 @@ void main() {
       );
       expect(fake.calls.where((c) => c == 'dispose'), hasLength(3));
       final failure =
-          (DiagnosticsStore.instance.snapshot()['failures'] as List).single;
+          (DiagnosticsStore.instance.snapshot(extended: true)['failures'] as List).single;
       expect(failure['operation'], 'dart.backgroundVideoValidate');
       expect(failure['nativeCode'], 'VideoError');
       expect(failure['errorText'], contains('Unsupported codec'));
@@ -132,7 +133,7 @@ void main() {
           expect(fake.streams, hasLength(2));
           expect(fake.calls.where((c) => c == 'dispose'), hasLength(2));
           final failures =
-              DiagnosticsStore.instance.snapshot()['failures'] as List;
+              DiagnosticsStore.instance.snapshot(extended: true)['failures'] as List;
           expect(
             failures.where(
               (f) => f['operation'] == 'dart.backgroundVideoValidate',
@@ -140,7 +141,7 @@ void main() {
             hasLength(secondFails ? 2 : 1),
           );
           final operations =
-              DiagnosticsStore.instance.snapshot()['recentOperations'] as List;
+              DiagnosticsStore.instance.snapshot(extended: true)['recentOperations'] as List;
           expect(
             operations.where(
               (op) =>

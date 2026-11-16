@@ -2004,8 +2004,34 @@ class AppLocalizationsFr extends AppLocalizations {
       'Envoyez le fichier à l’auteur en privé, sans le publier : le nettoyage automatique peut laisser des données personnelles. En l’envoyant, vous acceptez la publication d’un rapport anonymisé de compatibilité de l’appareil dans le dépôt Git de CuteLauncher. Seules les métadonnées de l’appareil et la disponibilité des fonctions sont publiées, sans données personnelles ; les journaux d’erreurs, commandes et vos réglages ne sont pas publiés.\n\nLe rapport inclut aussi les paquets installés, leurs noms, versions et état d’activation, ainsi que les noms, contenus, ordre et visibilité des sections. Identifiants et noms sont conservés pour le diagnostic ; ces listes ne sont pas publiées.';
 
   @override
+  String get diagnosticsStartRecording => 'Démarrer le diagnostic étendu';
+
+  @override
+  String get diagnosticsFinishRecording =>
+      'Terminer l’enregistrement et créer le rapport';
+
+  @override
+  String get diagnosticsStopRecording => 'Arrêter l’enregistrement';
+
+  @override
+  String get diagnosticsCreateExtended => 'Créer le rapport étendu';
+
+  @override
+  String get diagnosticsRecordingActive => 'Enregistrement étendu en cours';
+
+  @override
+  String get diagnosticsRecordingStopped => 'Enregistrement terminé';
+
+  @override
+  String get diagnosticsExtendedReady => 'Rapport étendu prêt';
+
+  @override
+  String get diagnosticsRecordingFailed =>
+      'Impossible de démarrer l’enregistrement étendu.';
+
+  @override
   String get diagnosticsHint =>
-      'Un seul rapport réunit compatibilité des fonctions de l’appareil et diagnostic des erreurs. Le rapport contient le modèle et le micrologiciel de l’appareil, la version de l’application, les autorisations, la mémoire, les étapes et causes des erreurs, ainsi que les commandes et réponses automatiquement expurgées. Il conserve les 50 dernières opérations, séparément jusqu’à 100 échecs et un journal ADB limité de la session. Un redémarrage efface le journal. Des données personnelles peuvent subsister : envoyez le fichier en message privé, sans le publier. Aucun envoi automatique. Chaque erreur conserve un instantané des réglages appliqués ; les modifications ultérieures ne le remplacent pas.\n\nLe rapport inclut aussi les paquets installés, leurs noms, versions et état d’activation, ainsi que les noms, contenus, ordre et visibilité des sections. Identifiants et noms sont conservés pour le diagnostic ; ces listes ne sont pas publiées.';
+      'Le rapport de base contient les informations sur l’appareil, les autorisations, les paramètres et jusqu’aux 20 dernières opérations. Pour un rapport détaillé, lancez le diagnostic étendu, reproduisez le problème, puis revenez ici. L’enregistrement dure au maximum 10 minutes. Le rapport étendu comprend des journaux détaillés, les résultats de compatibilité, les applications et les sections. Rien n’est envoyé automatiquement.';
 
   @override
   String get diagnosticsTitle => 'Diagnostic d\'erreur';
@@ -3498,6 +3524,21 @@ class AppLocalizationsFr extends AppLocalizations {
   String get sectionIconFolder => 'Dossier';
 
   @override
+  String get sectionIconReading => 'Lecture';
+
+  @override
+  String get sectionIconKids => 'Pour enfants';
+
+  @override
+  String get sectionIconSmartHome => 'Maison connectée';
+
+  @override
+  String get sectionIconTravel => 'Voyages';
+
+  @override
+  String get sectionIconPodcasts => 'Podcasts';
+
+  @override
   String get homeInactiveTransparency => 'Transparence des sections inactives';
 
   @override
@@ -4532,6 +4573,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get stopApp => 'Arrêter';
 
   @override
+  String get restartApp => 'Redémarrer';
+
+  @override
+  String get appRestartLaunchFailed =>
+      'L’application a été arrêtée, mais n’a pas pu être ouverte.';
+
+  @override
   String get backgroundImageFormats =>
       'Images : JPEG, PNG, WebP, GIF, BMP — jusqu’à 8 Mio, 48 mégapixels et 16 384 pixels par côté.';
 
@@ -5442,6 +5490,13 @@ class AppLocalizationsFr extends AppLocalizations {
       'Android n’a pas pu lire l’APK : fichier absent, vide, trop volumineux ou non reconnu. Téléchargez à nouveau la mise à jour.';
 
   @override
+  String get updateWhatsNew => 'Nouveautés';
+
+  @override
+  String get updateNotesUnavailable =>
+      'Les notes de mise à jour sont indisponibles.';
+
+  @override
   String get updateVerificationFailed =>
       'Une erreur est survenue lors de la vérification de l’APK. Installation bloquée. Réessayez ; si elle persiste, envoyez un rapport de diagnostic à l’auteur.';
 
@@ -5587,6 +5642,28 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get appLaunchGroup => 'Lancement';
+
+  @override
+  String get applicationInfoSettings =>
+      'Paramètres des informations de l’application';
+
+  @override
+  String get applicationInfoCheckOnOpen => 'Vérifier l’état à l’ouverture';
+
+  @override
+  String get applicationInfoButtonsHint =>
+      'OK — afficher ou masquer · ◄ / ► — déplacer';
+
+  @override
+  String get applicationInfoMovingHint =>
+      '▲ / ▼ — déplacer · OK ou Retour — terminer';
+
+  @override
+  String get applicationInfoProcessHelp =>
+      'Le lanceur peut vérifier l’état une fois à l’ouverture. Arrêter et Redémarrer apparaissent uniquement si l’application est en cours d’exécution. Laissez la vérification manuelle visible ou activez la vérification à l’ouverture.';
+
+  @override
+  String get applicationInfoNoActions => 'Aucune action à afficher';
 
   @override
   String get appManagementGroup => 'Gérer l’application';

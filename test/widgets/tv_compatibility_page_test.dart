@@ -51,6 +51,12 @@ void main() {
           var runs = 0;
           String? clipboard;
           final pending = Completer<Map<String, Object>>();
+          const diagnostics = MethodChannel('me.efesser.flauncher/method');
+          tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+            diagnostics, (_) async => true,
+          );
+          addTearDown(() => tester.binding.defaultBinaryMessenger
+              .setMockMethodCallHandler(diagnostics, null));
           tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
             SystemChannels.platform,
             (call) async {
@@ -73,7 +79,7 @@ void main() {
                 onRight: onRight,
                 child: Scaffold(
                   body: DiagnosticsPage(
-                    collect: () {
+                    collect: (_) {
                       runs++;
                       return pending.future;
                     },
@@ -171,7 +177,7 @@ void main() {
           supportedLocales: AppLocalizations.supportedLocales,
           home: Scaffold(
             body: DiagnosticsPage(
-              collect: () {
+              collect: (_) {
                 calls++;
                 if (calls == 1) return Future.value(report());
                 if (calls == 2) return Future.error(StateError('not exported'));

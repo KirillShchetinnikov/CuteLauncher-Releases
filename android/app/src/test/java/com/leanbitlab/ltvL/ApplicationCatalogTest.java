@@ -68,6 +68,58 @@ public class ApplicationCatalogTest {
         }
     }
 
+    @Test public void reportsAndCatalogsShareNamesButReloadAfterPackageUpdate() throws Exception {
+        try (var controller = Robolectric.buildActivity(Activity.class).setup()) {
+            var activity = controller.get();
+            var manager = activity.getPackageManager();
+            String name = "example.labels";
+            install(activity, name);
+            var original = new ApplicationCatalog(activity);
+            assertEquals(name, nameOf(original.getApplications(), name));
+
+            var changed = manager.getPackageInfo(name, 0);
+            changed.applicationInfo.nonLocalizedLabel = "New label";
+            Shadows.shadowOf(manager).installPackage(changed);
+            assertEquals(name, nameOf(new ApplicationCatalog(activity).getDiagnosticApplications(), name));
+
+            changed.lastUpdateTime += 10_000;
+            Shadows.shadowOf(manager).installPackage(changed);
+            assertEquals("New label", nameOf(original.getDiagnosticApplications(), name));
+            assertEquals("New label", nameOf(original.getApplications(), name));
+        }
+    }
+
+    @Test public void persistedNamesAreScopedToLocaleRevisionAndComponent() throws Exception {
+        try (var controller = Robolectric.buildActivity(Activity.class).setup()) {
+            var directory = controller.get().getCacheDir();
+            var russian = new AppLabelCache(directory).batch("firmware:ru");
+            var activity = "activity:example.tv/Main";
+            assertEquals("Русское имя", russian.resolve(activity, "1:100:100", () -> "Русское имя"));
+            russian.save(() -> "firmware:ru");
+
+            var reopened = new AppLabelCache(directory);
+            assertEquals("Русское имя", reopened.batch("firmware:ru")
+                .resolve(activity, "1:100:100", () -> { throw new AssertionError("disk cache miss"); }));
+            assertEquals("Updated", reopened.batch("firmware:ru")
+                .resolve(activity, "1:100:200", () -> "Updated"));
+            assertEquals("Second activity", reopened.batch("firmware:ru")
+                .resolve("activity:example.tv/Other", "1:100:100", () -> "Second activity"));
+            var english = reopened.batch("firmware:en");
+            assertEquals("English label", english.resolve(activity, "1:100:100", () -> "English label"));
+            english.save(() -> "firmware:en");
+            var stale = reopened.batch("firmware:ru");
+            stale.resolve(activity, "1:100:100", () -> "Late name");
+            stale.save(() -> "firmware:en");
+            assertEquals("English label", new AppLabelCache(directory).batch("firmware:en")
+                .resolve(activity, "1:100:100", () -> { throw new AssertionError("late locale write"); }));
+        }
+    }
+
+    private static Object nameOf(java.util.List<? extends java.util.Map<String, ?>> rows, String packageName) {
+        return rows.stream().filter(row -> packageName.equals(row.get("packageName")))
+            .findFirst().orElseThrow().get("name");
+    }
+
     @Test public void missingBannerIsCachedButPackageUpdatesInvalidateIt() throws Exception {
         try (var controller = Robolectric.buildActivity(Activity.class).setup()) {
             var activity = controller.get();

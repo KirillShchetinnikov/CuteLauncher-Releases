@@ -2,7 +2,6 @@ import 'dart:math' as math;
 
 import 'information_placement.dart';
 import 'diagnostics_store.dart';
-import 'home_tile_diagnostics.dart';
 import 'key_sounds.dart';
 import 'widgets/wallpaper_background.dart';
 import 'widgets/landscape_wallpaper.dart';
@@ -279,7 +278,7 @@ class FLauncherState extends State<FLauncher> {
   }
 
   void returnHome() {
-    if (HomeTileDiagnostics.enabled) {
+    if (DiagnosticsStore.instance.isRecording) {
       DiagnosticsStore.instance.homeTiles.returnHome();
     }
     _sectionPreviewOrigin = null;
@@ -831,6 +830,7 @@ class FLauncherState extends State<FLauncher> {
       artworkBuilder: folder != null
           ? (background) => VideoWallpaperBackground.folder(
               clip: clip, background: background,
+              videoImport: wallpaperService.videoImport,
               queueFailed: folder.failed,
               enabled: context.watch<LauncherState>().launcherVisible,
               mode: settings.wallpaperFit, memorySaver: settings.memorySaverEnabled,
@@ -841,6 +841,7 @@ class FLauncherState extends State<FLauncher> {
             )
           : localVideo != null
           ? (background) => VideoWallpaperBackground(file: localVideo, background: background,
+              videoImport: wallpaperService.videoImport,
               enabled: context.watch<LauncherState>().launcherVisible,
               mode: settings.wallpaperFit, memorySaver: settings.memorySaverEnabled)
           : null,

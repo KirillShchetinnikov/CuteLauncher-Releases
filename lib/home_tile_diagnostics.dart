@@ -31,17 +31,17 @@ enum HomeTileRevision {
 /// A bounded session trace, separate from the general operation and error logs.
 /// Reports use session-local app numbers and never include image data or paths.
 class HomeTileDiagnostics {
-  static const enabled = bool.fromEnvironment('CUTE_HOME_TILE_DIAGNOSTICS');
   static const eventLimit = 512;
   static const appLimit = 256;
 
   final int Function() _elapsedMs;
+  final bool Function()? acceptEvent;
   final _events = ListQueue<Map<String, Object>>();
   final _apps = <String, int>{};
   int _omitted = 0;
   int _generation = 0;
 
-  HomeTileDiagnostics(this._elapsedMs);
+  HomeTileDiagnostics(this._elapsedMs, {this.acceptEvent});
 
   int get generation => _generation;
 
@@ -108,6 +108,7 @@ class HomeTileDiagnostics {
       _add('tileFocus', {'section': section}, app: app);
 
   void _add(String event, Map<String, Object> data, {String? app}) {
+    if (acceptEvent?.call() == false) return;
     int? appRef;
     if (app != null) {
       appRef = _apps[app];

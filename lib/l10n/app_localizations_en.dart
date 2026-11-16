@@ -1972,8 +1972,33 @@ class AppLocalizationsEn extends AppLocalizations {
       'Send the file to the author privately, not publicly: automatic redaction may miss personal data. By sending the report to the author, you agree to publication of an anonymized device compatibility report in the CuteLauncher Git repository. Only device metadata and feature availability are published, without personal data; error logs, commands and your settings are not published.\n\nThe report also includes installed packages, their names, versions and enabled state, plus section names, contents, order and visibility. Package identifiers and names are retained for diagnosis; app and section lists are not published.';
 
   @override
+  String get diagnosticsStartRecording => 'Start extended diagnostics';
+
+  @override
+  String get diagnosticsFinishRecording => 'Finish recording and create report';
+
+  @override
+  String get diagnosticsStopRecording => 'Stop recording';
+
+  @override
+  String get diagnosticsCreateExtended => 'Create extended report';
+
+  @override
+  String get diagnosticsRecordingActive => 'Extended recording in progress';
+
+  @override
+  String get diagnosticsRecordingStopped => 'Recording finished';
+
+  @override
+  String get diagnosticsExtendedReady => 'Extended report ready';
+
+  @override
+  String get diagnosticsRecordingFailed =>
+      'Could not start extended recording.';
+
+  @override
   String get diagnosticsHint =>
-      'One report combines device feature compatibility and error diagnostics. The report includes the device model and firmware, app version, permissions, memory, error stages and causes, and system commands and responses with automatic personal-data redaction. Memory retains the last 50 operations, up to 100 failures separately, and a bounded ADB log for the current session. Restarting clears the log. Redaction may miss personal data: send the file in a private message instead of posting it publicly. Nothing is sent automatically. Each error retains a snapshot of the applied settings; later changes do not replace it.\n\nThe report also includes installed packages, their names, versions and enabled state, plus section names, contents, order and visibility. Package identifiers and names are retained for diagnosis; app and section lists are not published.';
+      'A basic report includes device details, permissions, settings, and up to 20 recent operations. For a detailed report, start extended diagnostics, reproduce the issue, and return here. Recording lasts up to 10 minutes. The extended report includes detailed logs, compatibility results, apps, and sections. Nothing is sent automatically.';
 
   @override
   String get diagnosticsTitle => 'Error diagnostics';
@@ -3442,6 +3467,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sectionIconFolder => 'Folder';
 
   @override
+  String get sectionIconReading => 'Reading';
+
+  @override
+  String get sectionIconKids => 'Kids';
+
+  @override
+  String get sectionIconSmartHome => 'Smart home';
+
+  @override
+  String get sectionIconTravel => 'Travel';
+
+  @override
+  String get sectionIconPodcasts => 'Podcasts';
+
+  @override
   String get homeInactiveTransparency => 'Inactive section transparency';
 
   @override
@@ -4462,6 +4502,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get stopApp => 'Stop';
 
   @override
+  String get restartApp => 'Restart';
+
+  @override
+  String get appRestartLaunchFailed =>
+      'The app was stopped, but couldn\'t be opened.';
+
+  @override
   String get backgroundImageFormats =>
       'Images: JPEG, PNG, WebP, GIF, BMP — up to 8 MiB, 48 megapixels and 16,384 pixels per side.';
 
@@ -5360,6 +5407,12 @@ class AppLocalizationsEn extends AppLocalizations {
       'Android could not read the APK: the file is missing, empty, too large or unrecognized. Download the update again.';
 
   @override
+  String get updateWhatsNew => 'What’s new';
+
+  @override
+  String get updateNotesUnavailable => 'Update notes are unavailable.';
+
+  @override
   String get updateVerificationFailed =>
       'An error occurred while checking the APK. Installation blocked. Try again; if it happens again, send the author a diagnostic report.';
 
@@ -5502,6 +5555,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appLaunchGroup => 'Launch';
+
+  @override
+  String get applicationInfoSettings => 'App info settings';
+
+  @override
+  String get applicationInfoCheckOnOpen => 'Check status on opening';
+
+  @override
+  String get applicationInfoButtonsHint => 'OK — show or hide · ◄ / ► — move';
+
+  @override
+  String get applicationInfoMovingHint => '▲ / ▼ — move · OK or Back — finish';
+
+  @override
+  String get applicationInfoProcessHelp =>
+      'The launcher can check once at opening. Stop and Restart only appear when the app is found running. If the manual check is hidden and the automatic check is off, these actions cannot appear.';
+
+  @override
+  String get applicationInfoNoActions => 'No actions to show';
 
   @override
   String get appManagementGroup => 'Manage app';

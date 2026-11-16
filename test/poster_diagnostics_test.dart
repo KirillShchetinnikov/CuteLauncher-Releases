@@ -78,34 +78,36 @@ void main() {
   test(
     'opaque IDs correlate only within the session and snapshots are detached',
     () {
-      final store = DiagnosticsStore();
+      final store = DiagnosticsStore()..startRecording();
+      addTearDown(store.clear);
       const uri =
           'http://user:password@192.168.0.55/private?token=value#fragment';
-      store.posterLoads.start(PosterSource.appChannels, uri);
-      store.posterLoads.start(PosterSource.watchNext, uri, thumbnail: true);
+      store.activePosterLoads!.start(PosterSource.appChannels, uri);
+      store.activePosterLoads!.start(PosterSource.watchNext, uri, thumbnail: true);
       final active =
-          ((store.snapshot()['posterLoads'] as Map)['active'] as List);
+          ((store.snapshot(extended: true)['posterLoads'] as Map)['active'] as List);
       final id = active.first['imageId'];
       expect(active.last['imageId'], id);
       expect(active.last['endpointId'], active.first['endpointId']);
       (active.first as Map)['imageId'] = 'mutated';
       expect(
-        ((store.snapshot()['posterLoads'] as Map)['active'] as List)
+        ((store.snapshot(extended: true)['posterLoads'] as Map)['active'] as List)
             .first['imageId'],
         id,
       );
-      final pending = store.posterLoads.start(PosterSource.appChannels, uri);
+      final pending = store.activePosterLoads!.start(PosterSource.appChannels, uri);
       store.clear();
       pending.error(StateError('late'));
       pending.finish(PosterOutcome.failed);
-      expect((store.snapshot()['posterLoads'] as Map)['failures'], isEmpty);
-      store.posterLoads.start(PosterSource.appChannels, uri);
+      expect((store.snapshot(extended: true)['posterLoads'] as Map)['failures'], isEmpty);
+      store.startRecording();
+      store.activePosterLoads!.start(PosterSource.appChannels, uri);
       expect(
-        ((store.snapshot()['posterLoads'] as Map)['active'] as List)
+        ((store.snapshot(extended: true)['posterLoads'] as Map)['active'] as List)
             .single['imageId'],
         isNot(id),
       );
-      final json = jsonEncode(store.snapshot());
+      final json = jsonEncode(store.snapshot(extended: true));
       for (final secret in [
         '192.168',
         'password',

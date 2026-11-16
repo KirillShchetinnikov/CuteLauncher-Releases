@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:async';
 import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import 'diagnostic_redactor.dart';
@@ -9,10 +11,17 @@ import 'home_tile_diagnostics.dart';
 import 'diagnostics/poster_loads.dart';
 
 /// Bounded diagnostics with structured causes and redacted technical excerpts.
+enum DiagnosticRecordingState { idle, recording, stopped }
+
+enum DiagnosticRecordingStop { manual, timeLimit, eventLimit }
+
 class DiagnosticsStore {
   static final instance = DiagnosticsStore();
+  static const basicCapacity = 20;
   static const capacity = 50;
   static const failureCapacity = 100;
+  static const recordingDuration = Duration(minutes: 10);
+  static const recordingEventLimit = 4096;
   static const _channels = {
     'me.efesser.flauncher/method': 'android',
     'cutelauncher/adb': 'adb',
@@ -305,7 +314,11 @@ class DiagnosticsStore {
     'availability': {'unsupported'},
     'wallpaperSource': {'bing', 'wallhaven', 'reddit', 'url', 'apod'},
     'stage': {
-      'wallpaper_initialize', 'wallpaper_metadata', 'wallpaper_download', 'wallpaper_validation', 'wallpaper_save',
+      'wallpaper_initialize',
+      'wallpaper_metadata',
+      'wallpaper_download',
+      'wallpaper_validation',
+      'wallpaper_save',
       'connect',
       'dispatch',
       'plan',
@@ -408,10 +421,25 @@ class DiagnosticsStore {
     'cancelled',
   };
   final Stopwatch _clock = Stopwatch()..start();
-  late final homeTiles = HomeTileDiagnostics(() => _clock.elapsedMilliseconds);
-  late final posterLoads = PosterLoads(() => _clock.elapsedMilliseconds);
+  late final homeTiles = HomeTileDiagnostics(
+    () => _clock.elapsedMilliseconds,
+    acceptEvent: _acceptDetailedEvent,
+  );
+  PosterLoads? _posterLoads;
+  PosterLoads? get activePosterLoads => isRecording
+      ? (_posterLoads ??= PosterLoads(() => _clock.elapsedMilliseconds))
+      : null;
+  final _recording = ValueNotifier(DiagnosticRecordingState.idle);
+  ValueListenable<DiagnosticRecordingState> get recording => _recording;
+  bool get isRecording =>
+      _recording.value == DiagnosticRecordingState.recording;
+  Timer? _recordingTimer;
+  VoidCallback? _onRecordingStop;
+  DiagnosticRecordingStop? _stopReason;
+  int _startedElapsedMs = 0, _stoppedElapsedMs = 0, _acceptedEvents = 0;
   int _generation = 0;
   int get generation => _generation;
+  final List<Map<String, Object>> _basicEvents = [];
   final List<Map<String, Object>> _events = [];
   final List<Map<String, Object>> _failures = [];
   final List<Map<String, Object>> _audioRouting = [];
@@ -421,6 +449,46 @@ class DiagnosticsStore {
   int _settingsSequence = 0;
   String? _lastSettingsValue;
   int? _lastSettingsId;
+
+  void startRecording({VoidCallback? onStop}) {
+    if (_recording.value != DiagnosticRecordingState.idle) return;
+    _generation++;
+    _startedElapsedMs = _clock.elapsedMilliseconds;
+    _onRecordingStop = onStop;
+    _recordingTimer = Timer(recordingDuration, () {
+      finishRecording(DiagnosticRecordingStop.timeLimit);
+    });
+    _recording.value = DiagnosticRecordingState.recording;
+  }
+
+  void finishRecording([
+    DiagnosticRecordingStop reason = DiagnosticRecordingStop.manual,
+  ]) {
+    if (!isRecording) return;
+    _recordingTimer?.cancel();
+    _recordingTimer = null;
+    _stoppedElapsedMs = _clock.elapsedMilliseconds;
+    _stopReason = reason;
+    _posterLoads?.freeze();
+    _onRecordingStop?.call();
+    _onRecordingStop = null;
+    _recording.value = DiagnosticRecordingState.stopped;
+  }
+
+  bool _acceptDetailedEvent() {
+    if (!isRecording || _acceptedEvents == recordingEventLimit) return false;
+    _acceptedEvents++;
+    if (_acceptedEvents == recordingEventLimit) {
+      final generation = _generation;
+      // Tile selections can reach the limit during a widget build.
+      scheduleMicrotask(() {
+        if (generation == _generation) {
+          finishRecording(DiagnosticRecordingStop.eventLimit);
+        }
+      });
+    }
+    return true;
+  }
 
   Map<String, Object>? _captureSettings() {
     try {
@@ -441,13 +509,31 @@ class DiagnosticsStore {
     final scope = _channels[channel];
     if (scope == null) return;
     final safeStatus = _statuses.contains(status) ? status : 'error';
-    _counts[safeStatus] = (_counts[safeStatus] ?? 0) + 1;
     final event = <String, Object>{
       'elapsedMs': _clock.elapsedMilliseconds,
       'operation': '$scope.${_methods.contains(method) ? method : 'unknown'}',
       'status': safeStatus,
       'code': _codes.contains(code) ? code : 'operation_failed',
     };
+    final duration = context['durationMs'];
+    if (duration is int && duration >= 0 && duration <= 86400000) {
+      event['durationMs'] = duration;
+    }
+    final details = context['details'];
+    if (details is Map && safeStatus != 'success') {
+      for (final key in const ['reason', 'exception', 'stage']) {
+        final value = details[key];
+        if (value is String && (_detailEnums[key]?.contains(value) ?? false)) {
+          event['reason'] = value;
+          break;
+        }
+      }
+    }
+    final detailed = _acceptDetailedEvent();
+    _basicEvents.add(detailed ? Map<String, Object>.of(event) : event);
+    if (_basicEvents.length > basicCapacity) _basicEvents.removeAt(0);
+    if (!detailed) return;
+    _counts[safeStatus] = (_counts[safeStatus] ?? 0) + 1;
     for (final key in ['action', 'requestedOperation']) {
       if (scope == 'adb' && adbActions.contains(context[key])) {
         event[key] = context[key]!;
@@ -459,11 +545,6 @@ class DiagnosticsStore {
             RegExp(r'^[A-Za-z][A-Za-z0-9_]{0,63}$').hasMatch(nativeCode))) {
       event['nativeCode'] = DiagnosticRedactor.text(nativeCode);
     }
-    final duration = context['durationMs'];
-    if (duration is int && duration >= 0 && duration <= 86400000) {
-      event['durationMs'] = duration;
-    }
-    final details = context['details'];
     if (details is Map) {
       final safe = <String, Object>{};
       for (final entry in _detailEnums.entries) {
@@ -482,12 +563,18 @@ class DiagnosticsStore {
       }
       {
         final status = details['httpStatus'];
-        if (status is int && status >= 100 && status <= 599) safe['httpStatus'] = status;
+        if (status is int && status >= 100 && status <= 599) {
+          safe['httpStatus'] = status;
+        }
         final osCode = details['osErrorCode'];
-        if (osCode is int && osCode >= -65535 && osCode <= 65535) safe['osErrorCode'] = osCode;
+        if (osCode is int && osCode >= -65535 && osCode <= 65535) {
+          safe['osErrorCode'] = osCode;
+        }
         for (final key in ['timeoutMs', 'offset']) {
           final value = details[key];
-          if (value is int && value >= 0 && value <= 9007199254740991) safe[key] = value;
+          if (value is int && value >= 0 && value <= 9007199254740991) {
+            safe[key] = value;
+          }
         }
       }
       if (safe.isNotEmpty) event['details'] = safe;
@@ -550,7 +637,9 @@ class DiagnosticsStore {
     }
     final frames = context['frames'];
     if (context['exceptionType'] is String) {
-      event['exceptionType'] = DiagnosticRedactor.text(context['exceptionType'] as String);
+      event['exceptionType'] = DiagnosticRedactor.text(
+        context['exceptionType'] as String,
+      );
     }
     if (frames is List<String>) {
       final safe = frames
@@ -619,17 +708,20 @@ class DiagnosticsStore {
       'operation_failed',
       context: {
         'details': {
-          'exception': exceptionKind(error), 'reason': reason,
+          'exception': exceptionKind(error),
+          'reason': reason,
           if (error is SocketException) 'osErrorCode': error.osError?.errorCode,
-          if (error is FileSystemException) 'osErrorCode': error.osError?.errorCode,
-          if (error is TimeoutException) 'timeoutMs': error.duration?.inMilliseconds,
+          if (error is FileSystemException)
+            'osErrorCode': error.osError?.errorCode,
+          if (error is TimeoutException)
+            'timeoutMs': error.duration?.inMilliseconds,
           if (error is FormatException) 'offset': error.offset,
         },
         'exceptionType': error.runtimeType.toString(),
         if (error is PlatformException) 'nativeCode': error.code,
         if (error is PlatformException) 'errorDetails': error.details,
-        'frames': safeFrames(stack),
-        'errorText': error.toString(),
+        if (isRecording) 'frames': safeFrames(stack),
+        if (isRecording) 'errorText': error.toString(),
       },
     );
   }
@@ -645,6 +737,7 @@ class DiagnosticsStore {
             .toList();
 
   void recordAudioRouting(Map<Object?, Object?> raw, String output) {
+    if (!isRecording) return;
     final sample = <String, Object>{};
     for (final key in const [
       'api',
@@ -704,10 +797,12 @@ class DiagnosticsStore {
     _audioRouting.add({...sample, 'elapsedMs': _clock.elapsedMilliseconds});
   }
 
-  void clear() {
+  void discardRecording() {
+    finishRecording();
     _generation++;
-    if (HomeTileDiagnostics.enabled) homeTiles.clear();
-    posterLoads.clear();
+    homeTiles.clear();
+    _posterLoads?.clear();
+    _posterLoads = null;
     _events.clear();
     _failures.clear();
     _audioRouting.clear();
@@ -715,14 +810,76 @@ class DiagnosticsStore {
     _settings.clear();
     _lastSettingsId = null;
     _lastSettingsValue = null;
+    _settingsSequence = 0;
+    _acceptedEvents = 0;
+    _stopReason = null;
+    _recording.value = DiagnosticRecordingState.idle;
+  }
+
+  void clear() {
+    discardRecording();
+    _basicEvents.clear();
     _clock.reset();
   }
 
   Map<String, Object> snapshot({
+    bool extended = false,
     String? version,
     String? build,
     Map<dynamic, dynamic>? environment,
     Map<dynamic, dynamic>? nativeShell,
+    Map<dynamic, dynamic>? memory,
+  }) => {
+    'schemaVersion': 2,
+    'privacy': {
+      'redaction': 'best_effort',
+      'sharing': 'direct_message',
+      'automaticUpload': false,
+    },
+    'scope': 'current_session',
+    'sessionElapsedMs': _clock.elapsedMilliseconds,
+    ...reportMetadata(
+      version: version,
+      build: build,
+      environment: environment,
+      memory: memory,
+    ),
+    'settingsAtExport': _captureSettings() ?? {'status': 'unavailable'},
+    'recentOperations': extended
+        ? jsonDecode(jsonEncode(_events))
+        : _copyBasicEvents(),
+    if (extended) ...{
+      'recentBasicOperations': _copyBasicEvents(),
+      'settingsSnapshots': jsonDecode(jsonEncode(_settings.values.toList())),
+      'operationCounts': Map<String, int>.from(_counts),
+      'failures': jsonDecode(jsonEncode(_failures)),
+      'posterLoads': (_posterLoads ??= PosterLoads(
+        () => _clock.elapsedMilliseconds,
+      )).snapshot(),
+      'homeTileImages': homeTiles.snapshot(),
+      if (_audioRouting.isNotEmpty)
+        'audioRouting': jsonDecode(jsonEncode(_audioRouting)),
+      'nativeShell': shellSnapshot(nativeShell),
+      if (_recording.value != DiagnosticRecordingState.idle)
+        'recording': {
+          'startedElapsedMs': _startedElapsedMs,
+          'endedElapsedMs': _stopReason == null ? null : _stoppedElapsedMs,
+          'stopReason': _stopReason?.name,
+          'operationsAndTileEvents': _acceptedEvents,
+          'eventLimit': recordingEventLimit,
+          'durationLimitMs': recordingDuration.inMilliseconds,
+        },
+    },
+  };
+
+  List<Map<String, Object>> _copyBasicEvents() => [
+    for (final event in _basicEvents) Map<String, Object>.of(event),
+  ];
+
+  static Map<String, Object> reportMetadata({
+    String? version,
+    String? build,
+    Map<dynamic, dynamic>? environment,
     Map<dynamic, dynamic>? memory,
   }) {
     final system = <String, Object>{};
@@ -749,6 +906,7 @@ class DiagnosticsStore {
         'model',
         'androidRelease',
         'buildId',
+        'firmware',
       ]) {
         final value = rawDevice[key];
         if (value is String &&
@@ -765,14 +923,6 @@ class DiagnosticsStore {
       }
     }
     return {
-      'schemaVersion': 2,
-      'privacy': {
-        'redaction': 'best_effort',
-        'sharing': 'direct_message',
-        'automaticUpload': false,
-      },
-      'scope': 'current_session',
-      'sessionElapsedMs': _clock.elapsedMilliseconds,
       'app': {
         'version':
             version != null &&
@@ -787,58 +937,40 @@ class DiagnosticsStore {
       'system': system,
       'device': device,
       'memory': metrics,
-      'settingsAtExport': _captureSettings() ?? {'status': 'unavailable'},
-      'settingsSnapshots': jsonDecode(jsonEncode(_settings.values.toList())),
-      'operationCounts': Map<String, int>.from(_counts),
-      'recentOperations': jsonDecode(jsonEncode(_events)),
-      'failures': jsonDecode(jsonEncode(_failures)),
-      'posterLoads': posterLoads.snapshot(),
-      if (HomeTileDiagnostics.enabled) 'homeTileImages': homeTiles.snapshot(),
-      if (_audioRouting.isNotEmpty)
-        'audioRouting': jsonDecode(jsonEncode(_audioRouting)),
-      'nativeShell': {
-        for (final key in ['recent', 'failures'])
-          key:
-              (nativeShell?[key] is List ? nativeShell![key] as List : const [])
-                  .take(key == 'recent' ? 30 : 50)
-                  .whereType<Map>()
-                  .map(
-                    (item) => {
-                      for (final field in [
-                        'command',
-                        'stdout',
-                        'stderr',
-                        'errorText',
-                      ])
-                        if (item[field] is String)
-                          field: DiagnosticRedactor.text(item[field] as String),
-                      for (final field in [
-                        'exitCode',
-                        'elapsedMs',
-                        'durationMs',
-                      ])
-                        if (item[field] is int) field: item[field],
-                      if (const {
-                        'adb',
-                        'recovery',
-                        'cleanerRecovery',
-                        'sleepTimer',
-                        'tvPower',
-                        'networkUsage',
-                      }.contains(item['source']))
-                        'source': item['source'],
-                      if (const {'success', 'error'}.contains(item['status']))
-                        'status': item['status'],
-                      if (_detailEnums['exception']!.contains(
-                        item['exception'],
-                      ))
-                        'exception': item['exception'],
-                    },
-                  )
-                  .toList(),
-      },
     };
   }
+
+  static Map<String, Object> shellSnapshot(
+    Map<dynamic, dynamic>? nativeShell,
+  ) => {
+    for (final key in ['recent', 'failures'])
+      key: (nativeShell?[key] is List ? nativeShell![key] as List : const [])
+          .take(key == 'recent' ? 30 : 50)
+          .whereType<Map>()
+          .map(
+            (item) => {
+              for (final field in ['command', 'stdout', 'stderr', 'errorText'])
+                if (item[field] is String)
+                  field: DiagnosticRedactor.text(item[field] as String),
+              for (final field in ['exitCode', 'elapsedMs', 'durationMs'])
+                if (item[field] is int) field: item[field],
+              if (const {
+                'adb',
+                'recovery',
+                'cleanerRecovery',
+                'sleepTimer',
+                'tvPower',
+                'networkUsage',
+              }.contains(item['source']))
+                'source': item['source'],
+              if (const {'success', 'error'}.contains(item['status']))
+                'status': item['status'],
+              if (_detailEnums['exception']!.contains(item['exception']))
+                'exception': item['exception'],
+            },
+          )
+          .toList(),
+  };
 
   String encode(Map<String, Object> report) =>
       const JsonEncoder.withIndent('  ').convert(report);

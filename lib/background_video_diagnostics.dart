@@ -73,7 +73,8 @@ class BackgroundVideoDiagnostics {
         'frames': DiagnosticsStore.safeFrames(stack),
       },
     );
-    if (Platform.isAndroid || nativeLog != null) {
+    if (DiagnosticsStore.instance.isRecording && _pending.length < 4 &&
+        (Platform.isAndroid || nativeLog != null)) {
       final future = _native(details, DiagnosticsStore.instance.generation);
       _pending.add(future);
       unawaited(future.whenComplete(() => _pending.remove(future)));
@@ -92,7 +93,10 @@ class BackgroundVideoDiagnostics {
     } catch (_) {
       log = 'Media log unavailable';
     }
-    if (generation != DiagnosticsStore.instance.generation) return;
+    if (!DiagnosticsStore.instance.isRecording ||
+        generation != DiagnosticsStore.instance.generation) {
+      return;
+    }
     DiagnosticsStore.instance.record(
       'dart',
       'backgroundVideoNative',

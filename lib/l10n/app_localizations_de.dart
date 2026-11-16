@@ -1991,8 +1991,34 @@ class AppLocalizationsDe extends AppLocalizations {
       'Senden Sie die Datei dem Autor privat und veröffentlichen Sie sie nicht: Die automatische Bereinigung kann persönliche Daten übersehen. Mit dem Senden stimmen Sie der Veröffentlichung eines anonymisierten Bericht zur Gerätekompatibilitäts im Git-Repository von CuteLauncher zu. Veröffentlicht werden nur Gerätemetadaten und verfügbare Funktionen ohne persönliche Daten; Fehlerprotokolle, Befehle und Ihre Einstellungen werden nicht veröffentlicht.\n\nDer Bericht enthält auch installierte Pakete mit Namen, Versionen und Aktivierungsstatus sowie Namen, Inhalt, Reihenfolge und Sichtbarkeit der Bereiche. Paketkennungen und Namen bleiben für die Diagnose erhalten; App- und Bereichslisten werden nicht veröffentlicht.';
 
   @override
+  String get diagnosticsStartRecording => 'Erweiterte Diagnose starten';
+
+  @override
+  String get diagnosticsFinishRecording =>
+      'Aufzeichnung beenden und Bericht erstellen';
+
+  @override
+  String get diagnosticsStopRecording => 'Aufzeichnung stoppen';
+
+  @override
+  String get diagnosticsCreateExtended => 'Erweiterten Bericht erstellen';
+
+  @override
+  String get diagnosticsRecordingActive => 'Erweiterte Aufzeichnung läuft';
+
+  @override
+  String get diagnosticsRecordingStopped => 'Aufzeichnung beendet';
+
+  @override
+  String get diagnosticsExtendedReady => 'Erweiterter Bericht fertig';
+
+  @override
+  String get diagnosticsRecordingFailed =>
+      'Die erweiterte Aufzeichnung konnte nicht gestartet werden.';
+
+  @override
   String get diagnosticsHint =>
-      'Ein Bericht vereint Kompatibilität der Gerätefunktionen und Fehlerdiagnose. Der Bericht enthält Gerätemodell und Firmware, App-Version, Berechtigungen, Speicher, Fehlerphasen und Ursachen sowie bereinigte Systembefehle und Antworten. Gespeichert werden die letzten 50 Vorgänge, separat bis zu 100 Fehler und ein begrenztes ADB-Protokoll der Sitzung. Ein Neustart löscht das Protokoll. Persönliche Daten können trotz Bereinigung verbleiben: Senden Sie die Datei privat und veröffentlichen Sie sie nicht. Es wird nichts automatisch versendet. Für jeden Fehler bleibt ein Schnappschuss der angewendeten Einstellungen erhalten; spätere Änderungen ersetzen ihn nicht.\n\nDer Bericht enthält auch installierte Pakete mit Namen, Versionen und Aktivierungsstatus sowie Namen, Inhalt, Reihenfolge und Sichtbarkeit der Bereiche. Paketkennungen und Namen bleiben für die Diagnose erhalten; App- und Bereichslisten werden nicht veröffentlicht.';
+      'Der einfache Bericht enthält Gerätedaten, Berechtigungen, Einstellungen und bis zu 20 letzte Vorgänge. Für einen ausführlichen Bericht starten Sie die erweiterte Diagnose, reproduzieren das Problem und kehren hierher zurück. Die Aufzeichnung dauert bis zu 10 Minuten. Der erweiterte Bericht enthält detaillierte Protokolle, Kompatibilitätsergebnisse, Apps und Abschnitte. Es wird nichts automatisch gesendet.';
 
   @override
   String get diagnosticsTitle => 'Fehlerdiagnose';
@@ -3494,6 +3520,21 @@ class AppLocalizationsDe extends AppLocalizations {
   String get sectionIconFolder => 'Ordner';
 
   @override
+  String get sectionIconReading => 'Lesen';
+
+  @override
+  String get sectionIconKids => 'Für Kinder';
+
+  @override
+  String get sectionIconSmartHome => 'Smart Home';
+
+  @override
+  String get sectionIconTravel => 'Reisen';
+
+  @override
+  String get sectionIconPodcasts => 'Podcasts';
+
+  @override
   String get homeInactiveTransparency => 'Transparenz inaktiver Abschnitte';
 
   @override
@@ -4529,6 +4570,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get stopApp => 'Stopp';
 
   @override
+  String get restartApp => 'Neu starten';
+
+  @override
+  String get appRestartLaunchFailed =>
+      'Die App wurde gestoppt, konnte aber nicht geöffnet werden.';
+
+  @override
   String get backgroundImageFormats =>
       'Bilder: JPEG, PNG, WebP, GIF, BMP — bis 8 MiB, 48 Megapixel und 16.384 Pixel pro Seite.';
 
@@ -5439,6 +5487,13 @@ class AppLocalizationsDe extends AppLocalizations {
       'Android konnte die APK nicht lesen: Die Datei fehlt, ist leer, zu groß oder unbekannt. Laden Sie das Update erneut herunter.';
 
   @override
+  String get updateWhatsNew => 'Was ist neu?';
+
+  @override
+  String get updateNotesUnavailable =>
+      'Die Update-Details sind nicht verfügbar.';
+
+  @override
   String get updateVerificationFailed =>
       'Bei der APK-Prüfung ist ein Fehler aufgetreten. Installation gesperrt. Versuchen Sie es erneut; senden Sie bei erneutem Fehler einen Diagnosebericht an den Autor.';
 
@@ -5584,6 +5639,27 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get appLaunchGroup => 'Start';
+
+  @override
+  String get applicationInfoSettings => 'Einstellungen für App-Informationen';
+
+  @override
+  String get applicationInfoCheckOnOpen => 'Status beim Öffnen prüfen';
+
+  @override
+  String get applicationInfoButtonsHint =>
+      'OK – ein- oder ausblenden · ◄ / ► – verschieben';
+
+  @override
+  String get applicationInfoMovingHint =>
+      '▲ / ▼ – verschieben · OK oder Zurück – fertig';
+
+  @override
+  String get applicationInfoProcessHelp =>
+      'Der Launcher kann den Status beim Öffnen einmal prüfen. Stopp und Neustart erscheinen nur, wenn die App läuft. Lassen Sie die manuelle Prüfung sichtbar oder aktivieren Sie die Prüfung beim Öffnen.';
+
+  @override
+  String get applicationInfoNoActions => 'Keine Aktionen verfügbar';
 
   @override
   String get appManagementGroup => 'App verwalten';

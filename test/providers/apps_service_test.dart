@@ -24,6 +24,43 @@ void main() {
     SharedPreferences.setMockInitialValues({});
   });
 
+  test('Android locale changes refresh installed names and preserve custom labels', () async {
+    final db = FLauncherDatabase.inMemory();
+    final channel = MockFLauncherChannel();
+    when(channel.addAppsChangedListener(any)).thenReturn(null);
+    var label = 'Initial name';
+    when(channel.getApplications()).thenAnswer((_) async => [
+      {'packageName': 'translated.app', 'name': label, 'version': '1',
+        'sideloaded': false, 'launchable': true},
+    ]);
+    final service = AppsService(channel, db);
+    final binding = TestWidgetsFlutterBinding.instance;
+    try {
+      await Future<void>(() async {
+        while (!service.initialized) {
+          await Future<void>.delayed(const Duration(milliseconds: 5));
+        }
+      }).timeout(const Duration(seconds: 3));
+      await service.setCustomAppName('translated.app', 'User label');
+      final refreshed = Completer<void>();
+      service.addListener(() {
+        if (service.applications.single.name == 'Новое имя' && !refreshed.isCompleted) {
+          refreshed.complete();
+        }
+      });
+      label = 'Новое имя';
+      binding.platformDispatcher.localesTestValue = const [Locale('ru')];
+      await refreshed.future.timeout(const Duration(seconds: 3));
+      expect(service.applications.single.displayName, 'User label');
+      expect(service.applications.single.name, label);
+      verify(channel.getApplications()).called(2);
+    } finally {
+      service.dispose();
+      binding.platformDispatcher.clearLocalesTestValue();
+      await db.close();
+    }
+  });
+
   test('feed selections are pruned only against the complete installed catalogue', () async {
     final channel = MockFLauncherChannel();
     final db = FLauncherDatabase.inMemory();

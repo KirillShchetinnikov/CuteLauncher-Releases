@@ -1,6 +1,5 @@
 import 'package:flauncher/widgets/tile_artwork.dart';
 import 'package:flauncher/diagnostics_store.dart';
-import 'package:flauncher/home_tile_diagnostics.dart';
 import 'package:flauncher/key_sounds.dart';
 import 'package:flauncher/widgets/category_focus.dart';
 import 'package:flutter/rendering.dart';
@@ -17,6 +16,7 @@ import 'package:flauncher/widgets/initial_app_images.dart';
 import 'package:flauncher/models/app.dart';
 import 'package:flauncher/models/category.dart';
 import 'package:flauncher/providers/apps_service.dart';
+import 'package:flauncher/providers/memory_resources.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/app_card.dart';
 import 'package:flauncher/widgets/application_info_panel.dart';
@@ -49,6 +49,8 @@ void main() {
     when(mockAppsService.isTileHidden(any)).thenReturn(false);
     when(mockAppsService.launchApp(any)).thenAnswer((_) async => true);
     mockSettingsService = MockSettingsService();
+    when(mockSettingsService.storedApplicationInfoConfiguration).thenReturn(null);
+    when(mockSettingsService.panelTooltipsEnabled).thenReturn(false);
     when(mockSettingsService.appKeyClickEnabled).thenReturn(false);
     when(mockSettingsService.homeKeyClickEnabled).thenReturn(false);
 
@@ -79,11 +81,14 @@ void main() {
     VoidCallback? onMoveEnd,
     AppearanceService? appearance,
     GlobalKey? captureKey,
+    AppsService? appsService,
   }) {
     return MultiProvider(
       providers: [
         if (appearance != null) ChangeNotifierProvider.value(value: appearance),
-        ChangeNotifierProvider<AppsService>.value(value: mockAppsService),
+        ChangeNotifierProvider<AppsService>.value(
+          value: appsService ?? mockAppsService,
+        ),
         ChangeNotifierProvider<SettingsService>.value(value: mockSettingsService),
         ChangeNotifierProvider<NotificationsService>.value(value: mockNotificationsService),
       ],
@@ -460,37 +465,36 @@ void main() {
     await tester.pumpWidget(const SizedBox());
   });
 
-  if (HomeTileDiagnostics.enabled) {
-    testWidgets('diagnostics distinguish reloaded icons from a changed image mode', (tester) async {
-      final store = DiagnosticsStore.instance;
-      store.clear();
-      addTearDown(store.clear);
-      SharedPreferences.setMockInitialValues({});
-      final appearance = AppearanceService(await SharedPreferences.getInstance());
-      addTearDown(appearance.dispose);
-      await tester.pumpWidget(createWidgetUnderTest(appearance: appearance));
-      await tester.pumpAndSettle();
+  testWidgets('diagnostics distinguish reloaded icons from a changed image mode', (tester) async {
+    final store = DiagnosticsStore.instance;
+    store..clear()..startRecording();
+    addTearDown(store.clear);
+    SharedPreferences.setMockInitialValues({});
+    final appearance = AppearanceService(await SharedPreferences.getInstance());
+    addTearDown(appearance.dispose);
+    await tester.pumpWidget(createWidgetUnderTest(appearance: appearance));
+    await tester.pumpAndSettle();
 
-      final listeners = verify(mockAppsService.addListener(captureAny)).captured.cast<VoidCallback>();
-      when(mockAppsService.imageRevisionFor(any)).thenReturn((1, 0));
-      when(mockAppsService.getAppBanner(any)).thenAnswer((_) async => Uint8List(0));
-      for (final listener in listeners) { listener(); }
-      await tester.pumpAndSettle();
+    final listeners = verify(mockAppsService.addListener(captureAny)).captured.cast<VoidCallback>();
+    when(mockAppsService.imageRevisionFor(any)).thenReturn((1, 0));
+    when(mockAppsService.getAppBanner(any)).thenAnswer((_) async => Uint8List(0));
+    for (final listener in listeners) { listener(); }
+    await tester.pumpAndSettle();
 
-      final history = store.snapshot()['homeTileImages'] as Map<String, Object>;
-      final events = history['events'] as List<Map<String, Object>>;
-      final selected = events.where((event) => event['event'] == 'tileSelection' && event['retained'] == false).toList();
-      expect(selected.map((event) => event['image']), ['banner', 'icon']);
-      expect(selected.map((event) => event['mode']), ['cover', 'contain']);
-      expect(selected.every((event) => event['bannerMode'] == 'cover' && event['iconMode'] == 'contain'), isTrue);
-      expect(selected.first['app'], selected.last['app']);
-      final request = events.lastWhere((event) => event['event'] == 'tileRequest');
-      expect(request['reason'], 'imageRevision');
-      expect(request['cacheGeneration'], 1);
-      expect(history.toString(), isNot(contains(mockApp.packageName)));
-      await tester.pumpWidget(const SizedBox());
-    });
-  }
+    final history = store.snapshot(extended: true)['homeTileImages'] as Map<String, Object>;
+    final events = history['events'] as List<Map<String, Object>>;
+    final selected = events.where((event) => event['event'] == 'tileSelection' && event['retained'] == false).toList();
+    expect(selected.map((event) => event['image']), ['banner', 'icon']);
+    expect(selected.map((event) => event['mode']), ['cover', 'contain']);
+    expect(selected.every((event) => event['bannerMode'] == 'cover' && event['iconMode'] == 'contain'), isTrue);
+    expect(selected.first['app'], selected.last['app']);
+    final request = events.lastWhere((event) => event['event'] == 'tileRequest');
+    expect(request['reason'], 'imageRevision');
+    expect(request['cacheGeneration'], 1);
+    expect(history.toString(), isNot(contains(mockApp.packageName)));
+    await tester.pumpWidget(const SizedBox());
+    store.clear();
+  });
 
   testWidgets('a banner replacement keeps banner rules when the no-banner mode changes', (tester) async {
     SharedPreferences.setMockInitialValues({});
@@ -580,6 +584,85 @@ void main() {
     await tester.pumpAndSettle();
     expect((tester.widget<Image>(find.byType(Image).first).image as ResizeImage).imageProvider, provider);
   });
+
+  for (final bannerAvailable in [true, false]) {
+    testWidgets(
+      'memory pressure on Home preserves the banner until a fresh read reports '
+      '${bannerAvailable ? 'a banner' : 'no banner'}',
+      (tester) async {
+        SharedPreferences.setMockInitialValues({});
+        final channel = MockFLauncherChannel();
+        final database = MockFLauncherDatabase();
+        final resources = MemoryResources();
+        when(channel.getApplications()).thenAnswer((_) async => []);
+        when(channel.addAppsChangedListener(any)).thenReturn(null);
+        when(database.wasCreated).thenReturn(false);
+        when(database.getApplications()).thenAnswer((_) async => []);
+        when(database.getAppsCategories()).thenAnswer((_) async => []);
+        when(database.getCategories()).thenAnswer((_) async => []);
+        when(database.getLauncherSpacers()).thenAnswer((_) async => []);
+        final apps = AppsService(channel, database, memoryResources: resources);
+        addTearDown(resources.dispose);
+        addTearDown(apps.dispose);
+        final package = mockApp.packageName;
+        when(channel.getApplicationBanner(package))
+            .thenAnswer((_) async => kTransparentImage);
+        when(channel.getApplicationIcon(package))
+            .thenAnswer((_) async => kTransparentImage);
+        await tester.pumpWidget(createWidgetUnderTest(appsService: apps));
+        await tester.pumpAndSettle();
+        TileArtwork artwork() =>
+            tester.widget<TileArtwork>(find.byType(TileArtwork));
+        expect(artwork().isIcon, isFalse);
+        final shownBanner = artwork().image;
+        expect(apps.imageCacheEntries, 1);
+        verify(channel.getApplicationBanner(package)).called(1);
+
+        // Both image workers are busy when the new banner request queues.
+        final first = Completer<Uint8List>();
+        final second = Completer<Uint8List>();
+        when(channel.getApplicationIcon('busy.first'))
+            .thenAnswer((_) => first.future);
+        when(channel.getApplicationIcon('busy.second'))
+            .thenAnswer((_) => second.future);
+        final occupied = Future.wait([
+          apps.getAppIcon('busy.first'),
+          apps.getAppIcon('busy.second'),
+        ]);
+        await tester.pump();
+        verify(channel.getApplicationIcon('busy.first')).called(1);
+        verify(channel.getApplicationIcon('busy.second')).called(1);
+        resources.didChangeAppLifecycleState(AppLifecycleState.paused);
+        resources.didHaveMemoryPressure();
+        expect(apps.imageCacheEntries, 0);
+        resources.didChangeAppLifecycleState(AppLifecycleState.resumed);
+        await tester.pump();
+        verifyNever(channel.getApplicationBanner(package));
+
+        final retry = Completer<Uint8List>();
+        when(channel.getApplicationBanner(package)).thenAnswer((_) => retry.future);
+        tester.binding.handleMemoryPressure();
+        first.complete(kTransparentImage);
+        second.complete(kTransparentImage);
+        await tester.pumpAndSettle();
+        await occupied;
+        expect(artwork().isIcon, isFalse);
+        expect(artwork().image, same(shownBanner));
+        verifyNever(channel.getApplicationIcon(package));
+        verify(channel.getApplicationBanner(package)).called(1);
+
+        retry.complete(bannerAvailable ? kTransparentImage : Uint8List(0));
+        await tester.pumpAndSettle();
+        expect(artwork().isIcon, !bannerAvailable);
+        if (bannerAvailable) {
+          verifyNever(channel.getApplicationIcon(package));
+        } else {
+          verify(channel.getApplicationIcon(package)).called(1);
+        }
+        await tester.pumpWidget(const SizedBox());
+      },
+    );
+  }
 
   testWidgets('replacing artwork keeps the mounted image while the new frame decodes', (tester) async {
     Future<Uint8List> artwork(Color color) async {

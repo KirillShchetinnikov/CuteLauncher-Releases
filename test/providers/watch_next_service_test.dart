@@ -22,7 +22,7 @@ void main() {
   late WatchNextService watchNextService;
 
   setUp(() {
-    DiagnosticsStore.instance.clear();
+    DiagnosticsStore.instance..clear()..startRecording();
     mockChannel = MockFLauncherChannel();
     watchNextStreamController = StreamController<dynamic>.broadcast();
     // Default stubs
@@ -35,6 +35,7 @@ void main() {
   });
 
   tearDown(() {
+    DiagnosticsStore.instance.clear();
     watchNextStreamController.close();
   });
 
@@ -420,7 +421,7 @@ void main() {
       expect(await service.poster(fallback), image);
       expect(requests, 2);
       verify(mockChannel.getWatchNextPoster('content://thumbnail')).called(1);
-      final traces = DiagnosticsStore.instance.posterLoads.snapshot()['recent'] as List;
+      final traces = DiagnosticsStore.instance.activePosterLoads!.snapshot()['recent'] as List;
       expect(traces.last['source'], 'watchNext');
       expect(traces.last['variant'], 'thumbnail');
       expect(traces.last['stage'], 'platform');

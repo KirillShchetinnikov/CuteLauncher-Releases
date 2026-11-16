@@ -1986,8 +1986,33 @@ class AppLocalizationsUk extends AppLocalizations {
       'Передавайте файл автору в особисті повідомлення, не публікуйте відкрито: автоматичне очищення може пропустити особисті дані. Надсилаючи звіт автору, ви погоджуєтеся на розміщення знеособленого звіту про сумісність пристрою у Git-репозиторії CuteLauncher. Публікуються лише відомості про пристрій і доступність функцій без особистих даних; журнал помилок, команди та ваші налаштування не публікуються.\n\nЗвіт також містить установлені пакети, їхні назви, версії та стан увімкнення, а також назви, склад, порядок і видимість розділів. Ідентифікатори й назви зберігаються для діагностики; списки застосунків і розділів не публікуються.';
 
   @override
+  String get diagnosticsStartRecording => 'Почати розширену діагностику';
+
+  @override
+  String get diagnosticsFinishRecording => 'Завершити запис і створити звіт';
+
+  @override
+  String get diagnosticsStopRecording => 'Зупинити запис';
+
+  @override
+  String get diagnosticsCreateExtended => 'Створити розширений звіт';
+
+  @override
+  String get diagnosticsRecordingActive => 'Триває розширений запис';
+
+  @override
+  String get diagnosticsRecordingStopped => 'Запис завершено';
+
+  @override
+  String get diagnosticsExtendedReady => 'Розширений звіт готовий';
+
+  @override
+  String get diagnosticsRecordingFailed =>
+      'Не вдалося почати розширений запис.';
+
+  @override
   String get diagnosticsHint =>
-      'Єдиний звіт містить сумісність функцій пристрою і діагностику помилок. Звіт містить модель і прошивку пристрою, версію застосунку, дозволи, пам’ять, етапи й причини помилок, команди та відповіді після автоматичного очищення особистих даних. Зберігаються останні 50 операцій, окремо до 100 збоїв і обмежений журнал ADB поточного сеансу. Перезапуск очищує журнал. Особисті дані можуть залишитися: надсилайте файл у приватні повідомлення, не публікуйте відкрито. Автоматичного надсилання немає. Для кожної помилки зберігається знімок застосованих налаштувань: подальші зміни його не замінюють.\n\nЗвіт також містить установлені пакети, їхні назви, версії та стан увімкнення, а також назви, склад, порядок і видимість розділів. Ідентифікатори й назви зберігаються для діагностики; списки застосунків і розділів не публікуються.';
+      'Звичайний звіт містить відомості про пристрій, дозволи, налаштування і до 20 останніх операцій. Для докладного звіту почніть розширену діагностику, відтворіть проблему та поверніться сюди. Запис триває до 10 хвилин. Розширений звіт містить докладні журнали, результати сумісності, програми й розділи. Нічого не надсилається автоматично.';
 
   @override
   String get diagnosticsTitle => 'Діагностика помилок';
@@ -3466,6 +3491,21 @@ class AppLocalizationsUk extends AppLocalizations {
   String get sectionIconFolder => 'Папка';
 
   @override
+  String get sectionIconReading => 'Читання';
+
+  @override
+  String get sectionIconKids => 'Дітям';
+
+  @override
+  String get sectionIconSmartHome => 'Розумний дім';
+
+  @override
+  String get sectionIconTravel => 'Подорожі';
+
+  @override
+  String get sectionIconPodcasts => 'Подкасти';
+
+  @override
   String get homeInactiveTransparency => 'Прозорість неактивних розділів';
 
   @override
@@ -4493,6 +4533,13 @@ class AppLocalizationsUk extends AppLocalizations {
   String get stopApp => 'Стоп';
 
   @override
+  String get restartApp => 'Перезапустити';
+
+  @override
+  String get appRestartLaunchFailed =>
+      'Застосунок зупинено, але відкрити його не вдалося.';
+
+  @override
   String get backgroundImageFormats =>
       'Зображення: JPEG, PNG, WebP, GIF, BMP — до 8 МіБ, 48 мегапікселів і 16 384 пікселів на кожному боці.';
 
@@ -5390,6 +5437,12 @@ class AppLocalizationsUk extends AppLocalizations {
       'Android не зміг прочитати APK: файл відсутній, порожній, завеликий або не розпізнаний. Завантажте оновлення знову.';
 
   @override
+  String get updateWhatsNew => 'Що нового';
+
+  @override
+  String get updateNotesUnavailable => 'Опис оновлення недоступний.';
+
+  @override
   String get updateVerificationFailed =>
       'Під час перевірки APK сталася помилка. Встановлення заблоковано. Спробуйте ще раз; якщо помилка повториться, надішліть автору звіт діагностики.';
 
@@ -5534,6 +5587,28 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get appLaunchGroup => 'Запуск';
+
+  @override
+  String get applicationInfoSettings =>
+      'Налаштування відомостей про застосунок';
+
+  @override
+  String get applicationInfoCheckOnOpen => 'Перевіряти стан під час відкриття';
+
+  @override
+  String get applicationInfoButtonsHint =>
+      'OK — показати або сховати · ◄ / ► — перемістити';
+
+  @override
+  String get applicationInfoMovingHint =>
+      '▲ / ▼ — перемістити · OK або Назад — завершити';
+
+  @override
+  String get applicationInfoProcessHelp =>
+      'Лаунчер може перевірити стан один раз під час відкриття. «Зупинити» й «Перезапустити» з’являються, якщо застосунок запущено. Щоб ці дії були доступні, залиште ручну перевірку видимою або ввімкніть перевірку під час відкриття.';
+
+  @override
+  String get applicationInfoNoActions => 'Немає дій для показу';
 
   @override
   String get appManagementGroup => 'Керування застосунком';

@@ -17,13 +17,14 @@ import '../action_notice.dart';
 import '../launcher_dialog.dart';
 import 'focusable_settings_tile.dart';
 import 'settings_help.dart';
+import 'settings_information.dart';
 import 'settings_page_layout.dart';
 import 'settings_route.dart';
 
 /// A single report retained while diagnostics and its results are open.
 class DiagnosticsPage extends StatefulWidget {
   static const routeName = 'diagnostics_panel';
-  final Future<Map<String, Object>> Function()? collect;
+  final Future<Map<String, Object>> Function(bool extended)? collect;
   const DiagnosticsPage({super.key, this.collect});
   @override
   State<DiagnosticsPage> createState() => _DiagnosticsPageState();
@@ -42,7 +43,8 @@ class _DiagnosticsPageState extends State<DiagnosticsPage> {
     report: _report,
     collect:
         widget.collect ??
-        () => collectDiagnostics(
+        (extended) => collectDiagnostics(
+          extended: extended,
           apps: context.read<AppsService?>(),
           settings: context.read<SettingsService?>(),
           nightMode: context.read<NightModeService?>(),
@@ -53,7 +55,7 @@ class _DiagnosticsPageState extends State<DiagnosticsPage> {
 
 class DiagnosticsReportPanel extends StatefulWidget {
   final ValueNotifier<Map<String, Object>?> report;
-  final Future<Map<String, Object>> Function() collect;
+  final Future<Map<String, Object>> Function(bool extended) collect;
   const DiagnosticsReportPanel({
     super.key,
     required this.report,
@@ -64,18 +66,46 @@ class DiagnosticsReportPanel extends StatefulWidget {
 }
 
 class _DiagnosticsReportPanelState extends State<DiagnosticsReportPanel> {
+  final _extendedFocus = FocusNode();
+  final _stopFocus = FocusNode();
   bool _busy = false;
   bool _creating = false;
+  bool _creatingExtended = false;
   bool _exportMenu = false;
-  Future<void> _create() async {
+
+  @override
+  void initState() {
+    super.initState();
+    DiagnosticsStore.instance.recording.addListener(_restoreRecordingFocus);
+  }
+
+  @override
+  void dispose() {
+    DiagnosticsStore.instance.recording.removeListener(_restoreRecordingFocus);
+    _stopFocus.dispose();
+    _extendedFocus.dispose();
+    super.dispose();
+  }
+
+  void _restoreRecordingFocus() {
+    if (_stopFocus.hasFocus && !DiagnosticsStore.instance.isRecording) {
+      _extendedFocus.requestFocus();
+    }
+  }
+
+  Future<void> _create({bool extended = false}) async {
     if (_busy) return;
     setState(() {
       _busy = true;
       _creating = true;
+      _creatingExtended = extended;
     });
     try {
-      final report = await widget.collect();
-      if (mounted) widget.report.value = report;
+      final report = await widget.collect(extended);
+      if (mounted) {
+        widget.report.value = report;
+        if (extended) await discardDiagnosticsRecording();
+      }
     } catch (_) {
       if (mounted) {
         showActionNotice(
@@ -89,8 +119,31 @@ class _DiagnosticsReportPanelState extends State<DiagnosticsReportPanel> {
         setState(() {
           _busy = false;
           _creating = false;
+          _creatingExtended = false;
         });
       }
+    }
+  }
+
+  Future<void> _recordExtended(DiagnosticRecordingState state) async {
+    if (_busy) return;
+    if (state != DiagnosticRecordingState.idle) {
+      await _create(extended: true);
+      return;
+    }
+    setState(() => _busy = true);
+    try {
+      await startDiagnosticsRecording();
+    } catch (_) {
+      if (mounted) {
+        showActionNotice(
+          context,
+          AppLocalizations.of(context)!.diagnosticsRecordingFailed,
+          error: true,
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _busy = false);
     }
   }
 
@@ -188,9 +241,21 @@ class _DiagnosticsReportPanelState extends State<DiagnosticsReportPanel> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) => ValueListenableBuilder(
+    valueListenable: DiagnosticsStore.instance.recording,
+    builder: (context, recording, _) => _buildPage(context, recording),
+  );
+
+  Widget _buildPage(BuildContext context, DiagnosticRecordingState recording) {
     final l = AppLocalizations.of(context)!;
     final report = widget.report.value;
+    final extendedAction = _creatingExtended
+        ? l.diagnosticsCreating
+        : switch (recording) {
+            DiagnosticRecordingState.idle => l.diagnosticsStartRecording,
+            DiagnosticRecordingState.recording => l.diagnosticsFinishRecording,
+            DiagnosticRecordingState.stopped => l.diagnosticsCreateExtended,
+          };
     return SettingsPageLayout(
       title: Text(l.diagnosticsHubTitle),
       child: ListView(
@@ -199,23 +264,48 @@ class _DiagnosticsReportPanelState extends State<DiagnosticsReportPanel> {
             autofocus: true,
             leading: const Icon(Icons.refresh),
             title: Text(
-              _creating ? l.diagnosticsCreating : l.diagnosticsCreate,
+              _creating && !_creatingExtended
+                  ? l.diagnosticsCreating
+                  : l.diagnosticsCreate,
             ),
             onPressed: _busy ? null : _create,
           ),
+          FocusableSettingsTile(
+            focusNode: _extendedFocus,
+            leading: Icon(
+              recording == DiagnosticRecordingState.idle
+                  ? Icons.fiber_manual_record_outlined
+                  : Icons.description_outlined,
+            ),
+            title: Text(extendedAction),
+            onPressed: _busy ? null : () => _recordExtended(recording),
+          ),
+          if (recording == DiagnosticRecordingState.recording) ...[
+            FocusableSettingsTile(
+              focusNode: _stopFocus,
+              leading: const Icon(Icons.stop_circle_outlined),
+              title: Text(l.diagnosticsStopRecording),
+              busy: _busy,
+              onPressed: DiagnosticsStore.instance.finishRecording,
+            ),
+            SettingsMessage(text: l.diagnosticsRecordingActive),
+          ],
+          if (recording == DiagnosticRecordingState.stopped && !_creating)
+            SettingsMessage(text: l.diagnosticsRecordingStopped),
           if (report != null)
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Text(l.diagnosticsReady),
+            SettingsMessage(
+              text: report['reportMode'] == 'extended'
+                  ? l.diagnosticsExtendedReady
+                  : l.diagnosticsReady,
             ),
           FocusableSettingsTile(
             leading: const Icon(Icons.fact_check_outlined),
             title: Text(l.tvCompatibilityResults),
-            onPressed: _busy || report == null
+            onPressed: _busy || report?['compatibility'] is! Map
                 ? null
                 : () => Navigator.of(context).push(
                     SettingsRoute<void>(
-                      builder: (_) => CompatibilityResultsPage(report: report),
+                      builder: (_) => CompatibilityResultsPage(report: report!),
                     ),
                   ),
           ),

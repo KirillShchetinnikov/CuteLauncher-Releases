@@ -26,7 +26,9 @@ enum PosterOutcome { loaded, failed, cachedFallback, discarded }
 class PosterLoads {
   static const activeLimit = 32, recentLimit = 40, failureLimit = 40;
   final int Function() _now;
-  late Hmac _hash = _newHash();
+  int? _frozenAt;
+  int get _sampleTime => _frozenAt ?? _now();
+  Hmac? _hash;
   int _generation = 0, _sequence = 0, _omittedActive = 0;
   final _active = <int, PosterLoad>{};
   final _recent = <Map<String, Object>>[];
@@ -38,13 +40,17 @@ class PosterLoads {
 
   PosterLoads(this._now);
 
+  void freeze() => _frozenAt ??= _now();
+
   Hmac _newHash() {
     final random = Random.secure();
     return Hmac(sha256, List.generate(32, (_) => random.nextInt(256)));
   }
 
-  String _id(String value) =>
-      _hash.convert(utf8.encode(value)).toString().substring(0, 16);
+  String _id(String value) => (_hash ??= _newHash())
+      .convert(utf8.encode(value))
+      .toString()
+      .substring(0, 16);
 
   void count(PosterSource source, String event) {
     if (!const {
@@ -201,7 +207,8 @@ class PosterLoads {
     _counts.clear();
     _lifecycle.clear();
     _network = {'status': 'unknown'};
-    _hash = _newHash();
+    _frozenAt = null;
+    _hash = null;
     _sequence = 0;
     _omittedActive = 0;
   }
@@ -239,8 +246,17 @@ class PosterLoad {
   late int _stageStarted = _started;
   PosterStage _stage = PosterStage.queue;
   bool _finished = false;
-  int receivedBytes = 0;
+  int _receivedBytes = 0;
+  int get receivedBytes => _receivedBytes;
+  set receivedBytes(int value) {
+    if (_canRecord) _receivedBytes = value;
+  }
+
   int get id => _data['id'] as int;
+  bool get _canRecord =>
+      !_finished &&
+      _generation == _owner._generation &&
+      _owner._frozenAt == null;
 
   PosterLoad._(this._owner, this.source, this._generation, this._data) {
     // Start the clock while queued, not on the first snapshot.
@@ -248,6 +264,7 @@ class PosterLoad {
   }
 
   void stage(PosterStage stage) {
+    if (!_canRecord) return;
     _durations[_stage.name] =
         (_durations[_stage.name] ?? 0) + (_owner._now() - _stageStarted);
     _stage = stage;
@@ -255,6 +272,7 @@ class PosterLoad {
   }
 
   void response(HttpClientResponse response) {
+    if (!_canRecord) return;
     _data['httpStatus'] = response.statusCode;
     _data['redirectCount'] = response.redirects.length;
     if (response.contentLength >= 0) {
@@ -283,6 +301,7 @@ class PosterLoad {
   }
 
   void error(Object error) {
+    if (!_canRecord) return;
     final status = _data['httpStatus'];
     _data['reason'] = status is int && status != HttpStatus.ok
         ? 'http'
@@ -314,18 +333,18 @@ class PosterLoad {
   Map<String, Object> _snapshot() => {
     ..._data,
     'startedElapsedMs': _started,
-    'durationMs': _owner._now() - _started,
+    'durationMs': _owner._sampleTime - _started,
     'stage': _stage.name,
     'stageDurationsMs': {
       ..._durations,
       _stage.name:
-          (_durations[_stage.name] ?? 0) + _owner._now() - _stageStarted,
+          (_durations[_stage.name] ?? 0) + _owner._sampleTime - _stageStarted,
     },
     'receivedBytes': receivedBytes,
   };
 
   void finish(PosterOutcome outcome) {
-    if (_finished || _generation != _owner._generation) return;
+    if (!_canRecord) return;
     _finished = true;
     _owner._active.remove(id);
     if ((outcome == PosterOutcome.failed ||

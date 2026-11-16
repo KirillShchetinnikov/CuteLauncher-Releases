@@ -14,11 +14,13 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /** Runs on the shared I/O executor. No shell, root, network probes or storage permissions. */
 final class StorageStatusController {
     static final ComponentName NAS = new ComponentName("tv.formuler.service.networkstorage.real",
             "tv.formuler.service.networkstorage.MainActivity");
+    private static final Pattern MOUNT_COLUMNS = Pattern.compile(" +");
     private final Context context;
     StorageStatusController(Context context) { this.context = context; }
 
@@ -77,12 +79,14 @@ final class StorageStatusController {
             String line;
             int count = 0, bytes = 0;
             while (count++ < 2048 && (line = reader.readLine()) != null && (bytes += line.length()) < 262144) {
-                String[] fields = line.split(" +");
+                String[] fields = MOUNT_COLUMNS.split(line);
                 if (fields.length < 3) continue;
-                nas |= StorageStatusPolicy.nasMount(fields[1], fields[2]);
-                if (StorageStatusPolicy.nasMount(fields[1], fields[2])) continue;
-                String id = StorageStatusPolicy.blockId(fields[0]);
-                if (id != null && (fields[1].startsWith("/mnt/media_rw/") || fields[1].startsWith("/storage/"))) {
+                if (StorageStatusPolicy.nasMount(fields[1], fields[2])) {
+                    nas = true;
+                    continue;
+                }
+                String id = StorageStatusPolicy.usbMountBlockId(fields[0], fields[1]);
+                if (id != null) {
                     usb |= StorageStatusPolicy.usbPath(new File("/sys/dev/block/" + id).getCanonicalPath());
                 }
             }

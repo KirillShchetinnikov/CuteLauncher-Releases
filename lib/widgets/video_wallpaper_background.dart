@@ -19,6 +19,7 @@ class VideoWallpaperBackground extends StatefulWidget {
   final VoidCallback? onCompleted;
   final ValueChanged<bool>? onFailure;
   final bool queueFailed;
+  final WallpaperVideoImport? videoImport;
   final bool enabled;
   final String mode;
   final bool memorySaver;
@@ -30,6 +31,7 @@ class VideoWallpaperBackground extends StatefulWidget {
     required this.mode,
     required this.memorySaver,
     this.background = const SizedBox.shrink(),
+    this.videoImport,
   }) : clip = null,
        onCompleted = null,
        onFailure = null,
@@ -45,6 +47,7 @@ class VideoWallpaperBackground extends StatefulWidget {
     required this.onCompleted,
     required this.onFailure,
     this.queueFailed = false,
+    this.videoImport,
   }) : file = null;
 
   @override
@@ -71,6 +74,8 @@ class _VideoWallpaperBackgroundState extends State<VideoWallpaperBackground>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    widget.videoImport?.attach(_releaseForImport);
+    widget.videoImport?.addListener(_resumeAfterImport);
     _resumed =
         WidgetsBinding.instance.lifecycleState == null ||
         WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed;
@@ -78,6 +83,7 @@ class _VideoWallpaperBackgroundState extends State<VideoWallpaperBackground>
   }
 
   void _startPlayer() {
+    if (widget.videoImport?.allowsPlayback == false) return;
     final uri = widget.clip?.uri;
     final file =
         widget.file ?? (uri?.scheme == 'file' ? File.fromUri(uri!) : null);
@@ -244,6 +250,12 @@ class _VideoWallpaperBackgroundState extends State<VideoWallpaperBackground>
   @override
   void didUpdateWidget(covariant VideoWallpaperBackground oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (!identical(oldWidget.videoImport, widget.videoImport)) {
+      oldWidget.videoImport?.detach(_releaseForImport);
+      oldWidget.videoImport?.removeListener(_resumeAfterImport);
+      widget.videoImport?.attach(_releaseForImport);
+      widget.videoImport?.addListener(_resumeAfterImport);
+    }
     if (!oldWidget.queueFailed && widget.queueFailed) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted && widget.queueFailed) {
@@ -297,6 +309,8 @@ class _VideoWallpaperBackgroundState extends State<VideoWallpaperBackground>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    widget.videoImport?.detach(_releaseForImport);
+    widget.videoImport?.removeListener(_resumeAfterImport);
     _initializationTimer?.cancel();
     final controller = _controller;
     if (controller != null) {
@@ -306,17 +320,47 @@ class _VideoWallpaperBackgroundState extends State<VideoWallpaperBackground>
     super.dispose();
   }
 
-  Future<bool> _disposePlayer(VideoPlayerController controller) =>
-      _disposal ??= () async {
-        final diagnostics = _diagnostics!;
-        try {
-          await controller.dispose().timeout(const Duration(seconds: 3));
-          return true;
-        } catch (error, stack) {
-          diagnostics.failure('videoDispose', error, stack, controller.value);
-          return false;
-        }
-      }();
+  Future<bool> _releaseForImport() async {
+    final controller = _controller;
+    if (controller == null) return true;
+    _initializationTimer?.cancel();
+    controller.removeListener(_onValue);
+    setState(() {
+      _controller = null;
+      _ready = false;
+      _recovering = false;
+      _retried = false;
+      _completed = false;
+    });
+    return _disposePlayer(controller);
+  }
+
+  void _resumeAfterImport() {
+    // Let a successfully applied wallpaper replace this widget first.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && widget.videoImport?.allowsPlayback == true) {
+        unawaited(_syncPlayback());
+      }
+    });
+    WidgetsBinding.instance.ensureVisualUpdate();
+  }
+
+  Future<bool> _disposePlayer(VideoPlayerController controller) {
+    if (_disposal case final pending?) return pending;
+    final disposal = _releasePlayer(controller);
+    return _disposal = widget.videoImport?.trackRelease(disposal) ?? disposal;
+  }
+
+  Future<bool> _releasePlayer(VideoPlayerController controller) async {
+    final diagnostics = _diagnostics!;
+    try {
+      await controller.dispose().timeout(const Duration(seconds: 3));
+      return true;
+    } catch (error, stack) {
+      diagnostics.failure('videoDispose', error, stack, controller.value);
+      return false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

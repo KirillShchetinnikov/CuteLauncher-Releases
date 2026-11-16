@@ -6,13 +6,32 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /** Shared by every ADB shell entry point, including timers and recovery. In-memory only. */
 final class NativeShellDiagnostics {
     private static final List<Map<String, Object>> RECENT = new ArrayList<>();
     private static final List<Map<String, Object>> FAILURES = new ArrayList<>();
     private static final long START = System.nanoTime();
+    private static long generation;
+    private static long deadline;
+    private static boolean recording;
+
+    static synchronized void start() {
+        clear();
+        deadline = System.nanoTime() + TimeUnit.MINUTES.toNanos(10);
+        recording = true;
+    }
+
+    static synchronized void stop() { recording = false; }
+
+    static synchronized long activeGeneration() {
+        return recording && deadline - System.nanoTime() > 0 ? generation : 0;
+    }
+
     static AdbShellResponse execute(Dadb adb, String command, String source) throws Exception {
+        long session = activeGeneration();
+        if (session == 0) return adb.shell(command);
         long start = System.nanoTime();
         var event = new LinkedHashMap<String, Object>();
         event.put("source", source);
@@ -32,10 +51,11 @@ final class NativeShellDiagnostics {
         } finally {
             event.put("elapsedMs", (start - START) / 1000000);
             event.put("durationMs", (System.nanoTime() - start) / 1000000);
-            add(event);
+            add(session, event);
         }
     }
-    private static synchronized void add(Map<String, Object> event) {
+    private static synchronized void add(long session, Map<String, Object> event) {
+        if (session != activeGeneration()) return;
         RECENT.add(event);
         if (RECENT.size() > 30) RECENT.remove(0);
         if ("error".equals(event.get("status"))) {
@@ -44,12 +64,19 @@ final class NativeShellDiagnostics {
         }
     }
     static void failure(String source, Throwable failure) {
-        add(Map.of("source", source, "status", "error", "elapsedMs", (System.nanoTime() - START) / 1000000,
+        long session = activeGeneration();
+        if (session == 0) return;
+        add(session, Map.of("source", source, "status", "error", "elapsedMs", (System.nanoTime() - START) / 1000000,
             "exception", AdbOperationDiagnostics.exceptionKind(failure),
             "errorText", DiagnosticRedactor.redact(failure.toString())));
     }
     static synchronized Map<String, Object> snapshot() {
         return Map.of("recent", new ArrayList<>(RECENT), "failures", new ArrayList<>(FAILURES));
     }
-    static synchronized void clear() { RECENT.clear(); FAILURES.clear(); }
+    static synchronized void clear() {
+        stop();
+        generation++;
+        RECENT.clear();
+        FAILURES.clear();
+    }
 }

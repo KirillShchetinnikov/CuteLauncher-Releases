@@ -7,6 +7,7 @@ import 'settings_choice_tile.dart';
 import 'back_button_actions.dart';
 import 'card_focus_dialog.dart';
 import 'settings_page_layout.dart';
+import 'application_info_settings_page.dart';
 /*
  * FLauncher
  * Copyright (C) 2024 LeanBitLab
@@ -147,6 +148,15 @@ class InterfaceSettingsPage extends StatelessWidget {
             title: Text(l.homeParameters),
             onPressed: () => Navigator.of(context).push(
               SettingsRoute<void>(builder: (_) => const HomeParametersPage()),
+            ),
+          ),
+          FocusableSettingsTile(
+            leading: const Icon(Icons.info_outline),
+            title: Text(l.applicationInfoSettings),
+            onPressed: () => Navigator.of(context).push(
+              SettingsRoute<void>(
+                builder: (_) => const ApplicationInfoSettingsPage(),
+              ),
             ),
           ),
         ],

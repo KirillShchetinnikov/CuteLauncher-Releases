@@ -90,7 +90,7 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
   bool _paintFocusTransition = false;
   late FocusNode _focusNode;
 
-  late Future<(AppImageType, ImageProvider)> _appImageLoadFuture;
+  late Future<(AppImageType, ImageProvider)?> _appImageLoadFuture;
   (AppImageType, ImageProvider)? _lastAppImage;
   VoidCallback? _imageReady;
   int _imageRequest = 0;
@@ -355,7 +355,7 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
                                   onFocusChange: (focused) {
                                     // Losing focus to Home must not undo its scroll reset.
                                     if (!focused) return;
-                                    if (HomeTileDiagnostics.enabled) {
+                                    if (DiagnosticsStore.instance.isRecording) {
                                       DiagnosticsStore.instance.homeTiles.focus(widget.application.packageName, widget.category.id);
                                     }
                                     _appearanceService?.focusedAppImage.value = _lastAppImage?.$2;
@@ -415,44 +415,52 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
     );
   }
 
-  Future<(AppImageType, ImageProvider)> _loadAppBannerOrIcon(
+  Future<(AppImageType, ImageProvider)?> _loadAppBannerOrIcon(
     AppsService service,
     HomeTileReload reason,
   ) async {
     final packageName = widget.application.packageName;
-    final revision = _imageRevision = service.imageRevisionFor(packageName);
     final request = ++_imageRequest;
     _imageNeedsRetry = false;
-    if (HomeTileDiagnostics.enabled) {
-      DiagnosticsStore.instance.homeTiles.request(packageName,
-        section: widget.category.id, request: request, revision: revision, reason: reason);
-    }
-    Uint8List bytes = Uint8List(0);
+    var attemptReason = reason;
+    while (true) {
+      final revision = _imageRevision = service.imageRevisionFor(packageName);
+      if (DiagnosticsStore.instance.isRecording) {
+        DiagnosticsStore.instance.homeTiles.request(
+          packageName,
+          section: widget.category.id,
+          request: request,
+          revision: revision,
+          reason: attemptReason,
+        );
+      }
+      attemptReason = HomeTileReload.retry;
 
-    bytes = await service.getAppBanner(packageName);
-    AppImageType type = AppImageType.Banner;
+      final banner = await service.getAppBanner(packageName);
+      if (!mounted || request != _imageRequest) return null;
+      // A queued read invalidated by a cache clear can return empty bytes.
+      if (revision != service.imageRevisionFor(packageName)) continue;
 
-    if (bytes.isEmpty) {
-      type = AppImageType.Icon;
-      bytes = await service.getAppIcon(packageName);
-    }
+      final type = banner.isEmpty ? AppImageType.Icon : AppImageType.Banner;
+      final bytes = banner.isEmpty ? await service.getAppIcon(packageName) : banner;
+      final image = bytes.isEmpty ? null : (type, await contentImage(bytes));
+      if (!mounted || request != _imageRequest) return null;
+      if (revision != service.imageRevisionFor(packageName)) continue;
 
-    if (bytes.isEmpty) {
-      if (request == _imageRequest) _imageNeedsRetry = true;
-      throw StateError('App image is unavailable');
-    }
-    final image = (type, await contentImage(bytes));
-    if (mounted && request == _imageRequest) {
+      if (image == null) {
+        _imageNeedsRetry = true;
+        throw StateError('App image is unavailable');
+      }
       _lastAppImage = image;
       _focusColorBytes = bytes;
       _imageFocusColor = null;
       _colorRevision = -1;
       if (_focusNode.hasFocus) _appearanceService?.focusedAppImage.value = image.$2;
+      if (_appearanceService?.tilesFor(widget.category.id).dynamicFocusColor == true) {
+        _ensureFocusColor();
+      }
+      return image;
     }
-    if (_appearanceService?.tilesFor(widget.category.id).dynamicFocusColor == true) {
-      _ensureFocusColor();
-    }
-    return image;
   }
 
   void _ensureFocusColor() {
@@ -475,7 +483,7 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
   }
 
   Widget _imageError(BuildContext context, Object error, StackTrace? stack) {
-    if (HomeTileDiagnostics.enabled) {
+    if (DiagnosticsStore.instance.isRecording) {
       final trace = DiagnosticsStore.instance.homeTiles;
       final key = (trace.generation, _imageRequest);
       if (_tracedDecodeError != key) {
@@ -513,7 +521,7 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
       builder: (context, snapshot) {
         final record = snapshot.data ?? _lastAppImage;
         if (record != null) {
-          if (HomeTileDiagnostics.enabled) {
+          if (DiagnosticsStore.instance.isRecording) {
             _traceImageSelection(record.$1, appearance,
               snapshot.connectionState != ConnectionState.done || snapshot.data == null);
           }

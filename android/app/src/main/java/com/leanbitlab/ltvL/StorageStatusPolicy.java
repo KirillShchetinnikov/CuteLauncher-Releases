@@ -1,7 +1,12 @@
 package com.leanbitlab.ltvL;
 
+import java.util.regex.Pattern;
+
 /** Pure classification. Removable alone does not mean USB (it can be an SD card). */
 final class StorageStatusPolicy {
+    private static final Pattern USB_PATH = Pattern.compile(".*/usb[0-9]+/.*");
+    private static final Pattern BLOCK_ID = Pattern.compile("(?:public:)?(\\d+)[,:](\\d+)$");
+
     static boolean mounted(String state) {
         return "mounted".equals(state) || "mounted_ro".equals(state);
     }
@@ -12,10 +17,14 @@ final class StorageStatusPolicy {
         return nasPath(path) || "cifs".equals(type) || "smb3".equals(type);
     }
     static boolean usbPath(String path) {
-        return path != null && path.matches(".*/usb[0-9]+/.*");
+        return path != null && USB_PATH.matcher(path).matches();
+    }
+    static String usbMountBlockId(String source, String mountPath) {
+        if (!mountPath.startsWith("/mnt/media_rw/") && !mountPath.startsWith("/storage/")) return null;
+        return blockId(source);
     }
     static String blockId(String source) {
-        var matcher = java.util.regex.Pattern.compile("(?:public:)?(\\d+)[,:](\\d+)$").matcher(source);
+        var matcher = BLOCK_ID.matcher(source);
         return matcher.find() ? matcher.group(1) + ":" + matcher.group(2) : null;
     }
 }

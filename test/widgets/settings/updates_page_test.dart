@@ -1,6 +1,9 @@
+import 'dart:async';
 import 'dart:io';
+
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/providers/update_service.dart';
+import 'package:flauncher/widgets/launcher_dialog.dart';
 import 'package:flauncher/widgets/settings/updates_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,6 +13,102 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
+  for (final locale in [const Locale('ru', 'RU'), const Locale('de')]) {
+    testWidgets('release notes open and scroll by remote in $locale', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(350, 540);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      SharedPreferences.setMockInitialValues({});
+      var notes = Completer<String?>();
+      final requests = <(String, String)>[];
+      final service = UpdateService(
+        await SharedPreferences.getInstance(),
+        environment: () async => {
+          'play': false,
+          'version': '1.0.0',
+          'versionCode': 2,
+          'abis': ['armeabi-v7a'],
+          'directory': 'unused',
+        },
+        lookup: () async => null,
+        releaseNotes: (tag, language) {
+          requests.add((tag, language));
+          return notes.future;
+        },
+      );
+      addTearDown(service.dispose);
+      await tester.pumpWidget(
+        ChangeNotifierProvider.value(
+          value: service,
+          child: MaterialApp(
+            locale: locale,
+            supportedLocales: AppLocalizations.supportedLocales,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            home: const Scaffold(body: UpdatesPage()),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      final l = AppLocalizations.of(tester.element(find.byType(UpdatesPage)))!;
+      final opener = find.text(l.updateWhatsNew);
+      expect(opener, findsNothing);
+
+      const tag = 'v1.1.0+3';
+      service.release = AppRelease(tag, Uri(), 3, null);
+      service.notifyListeners();
+      await tester.pumpAndSettle();
+      expect(requests, isEmpty);
+      Focus.of(tester.element(opener)).requestFocus();
+      await tester.pumpAndSettle();
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pump();
+      final dialog = find.byType(LauncherAlertDialog);
+      expect(dialog, findsOneWidget);
+      expect(find.text('${l.updateWhatsNew} · v1.1.0'), findsOneWidget);
+      expect(find.byType(LinearProgressIndicator), findsOneWidget);
+      expect(requests, [(tag, locale.languageCode)]);
+
+      final text = locale.languageCode == 'ru'
+          ? 'Новая настройка'
+          : 'New setting';
+      notes.complete(
+        List.generate(30, (index) => '- $text ${index + 1}').join('\n'),
+      );
+      await tester.pumpAndSettle();
+      expect(find.textContaining('• $text 1'), findsOneWidget);
+      final scrollable = tester.state<ScrollableState>(
+        find.descendant(of: dialog, matching: find.byType(Scrollable)),
+      );
+      expect(scrollable.position.pixels, 0);
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      await tester.pumpAndSettle();
+      expect(scrollable.position.pixels, greaterThan(0));
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+      await tester.pumpAndSettle();
+      expect(scrollable.position.pixels, 0);
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(dialog, findsNothing);
+      expect(Focus.of(tester.element(opener)).hasFocus, isTrue);
+
+      notes = Completer<String?>();
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pump();
+      notes.completeError(const FormatException('offline'));
+      await tester.pumpAndSettle();
+      expect(find.text(l.updateNotesUnavailable), findsOneWidget);
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pumpAndSettle();
+      expect(dialog, findsNothing);
+      expect(service.failed, isFalse);
+      expect(service.release?.version, tag);
+      expect(tester.takeException(), isNull);
+    });
+  }
+
   testWidgets('each APK rejection displays its reason on the narrow page', (
     tester,
   ) async {

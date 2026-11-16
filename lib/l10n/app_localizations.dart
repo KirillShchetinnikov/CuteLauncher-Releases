@@ -3764,10 +3764,58 @@ abstract class AppLocalizations {
   /// **'Send the file to the author privately, not publicly: automatic redaction may miss personal data. By sending the report to the author, you agree to publication of an anonymized device compatibility report in the CuteLauncher Git repository. Only device metadata and feature availability are published, without personal data; error logs, commands and your settings are not published.\n\nThe report also includes installed packages, their names, versions and enabled state, plus section names, contents, order and visibility. Package identifiers and names are retained for diagnosis; app and section lists are not published.'**
   String get diagnosticsSharingNotice;
 
+  /// No description provided for @diagnosticsStartRecording.
+  ///
+  /// In en, this message translates to:
+  /// **'Start extended diagnostics'**
+  String get diagnosticsStartRecording;
+
+  /// No description provided for @diagnosticsFinishRecording.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish recording and create report'**
+  String get diagnosticsFinishRecording;
+
+  /// No description provided for @diagnosticsStopRecording.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop recording'**
+  String get diagnosticsStopRecording;
+
+  /// No description provided for @diagnosticsCreateExtended.
+  ///
+  /// In en, this message translates to:
+  /// **'Create extended report'**
+  String get diagnosticsCreateExtended;
+
+  /// No description provided for @diagnosticsRecordingActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Extended recording in progress'**
+  String get diagnosticsRecordingActive;
+
+  /// No description provided for @diagnosticsRecordingStopped.
+  ///
+  /// In en, this message translates to:
+  /// **'Recording finished'**
+  String get diagnosticsRecordingStopped;
+
+  /// No description provided for @diagnosticsExtendedReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Extended report ready'**
+  String get diagnosticsExtendedReady;
+
+  /// No description provided for @diagnosticsRecordingFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not start extended recording.'**
+  String get diagnosticsRecordingFailed;
+
   /// No description provided for @diagnosticsHint.
   ///
   /// In en, this message translates to:
-  /// **'One report combines device feature compatibility and error diagnostics. The report includes the device model and firmware, app version, permissions, memory, error stages and causes, and system commands and responses with automatic personal-data redaction. Memory retains the last 50 operations, up to 100 failures separately, and a bounded ADB log for the current session. Restarting clears the log. Redaction may miss personal data: send the file in a private message instead of posting it publicly. Nothing is sent automatically. Each error retains a snapshot of the applied settings; later changes do not replace it.\n\nThe report also includes installed packages, their names, versions and enabled state, plus section names, contents, order and visibility. Package identifiers and names are retained for diagnosis; app and section lists are not published.'**
+  /// **'A basic report includes device details, permissions, settings, and up to 20 recent operations. For a detailed report, start extended diagnostics, reproduce the issue, and return here. Recording lasts up to 10 minutes. The extended report includes detailed logs, compatibility results, apps, and sections. Nothing is sent automatically.'**
   String get diagnosticsHint;
 
   /// No description provided for @diagnosticsTitle.
@@ -6446,6 +6494,36 @@ abstract class AppLocalizations {
   /// **'Folder'**
   String get sectionIconFolder;
 
+  /// No description provided for @sectionIconReading.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading'**
+  String get sectionIconReading;
+
+  /// No description provided for @sectionIconKids.
+  ///
+  /// In en, this message translates to:
+  /// **'Kids'**
+  String get sectionIconKids;
+
+  /// No description provided for @sectionIconSmartHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Smart home'**
+  String get sectionIconSmartHome;
+
+  /// No description provided for @sectionIconTravel.
+  ///
+  /// In en, this message translates to:
+  /// **'Travel'**
+  String get sectionIconTravel;
+
+  /// No description provided for @sectionIconPodcasts.
+  ///
+  /// In en, this message translates to:
+  /// **'Podcasts'**
+  String get sectionIconPodcasts;
+
   /// No description provided for @homeInactiveTransparency.
   ///
   /// In en, this message translates to:
@@ -8306,6 +8384,18 @@ abstract class AppLocalizations {
   /// **'Stop'**
   String get stopApp;
 
+  /// No description provided for @restartApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Restart'**
+  String get restartApp;
+
+  /// No description provided for @appRestartLaunchFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The app was stopped, but couldn\'t be opened.'**
+  String get appRestartLaunchFailed;
+
   /// No description provided for @backgroundImageFormats.
   ///
   /// In en, this message translates to:
@@ -9872,6 +9962,18 @@ abstract class AppLocalizations {
   /// **'Android could not read the APK: the file is missing, empty, too large or unrecognized. Download the update again.'**
   String get updateInvalidFile;
 
+  /// No description provided for @updateWhatsNew.
+  ///
+  /// In en, this message translates to:
+  /// **'What’s new'**
+  String get updateWhatsNew;
+
+  /// No description provided for @updateNotesUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Update notes are unavailable.'**
+  String get updateNotesUnavailable;
+
   /// No description provided for @updateVerificationFailed.
   ///
   /// In en, this message translates to:
@@ -10135,6 +10237,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Launch'**
   String get appLaunchGroup;
+
+  /// No description provided for @applicationInfoSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'App info settings'**
+  String get applicationInfoSettings;
+
+  /// No description provided for @applicationInfoCheckOnOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Check status on opening'**
+  String get applicationInfoCheckOnOpen;
+
+  /// No description provided for @applicationInfoButtonsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'OK — show or hide · ◄ / ► — move'**
+  String get applicationInfoButtonsHint;
+
+  /// No description provided for @applicationInfoMovingHint.
+  ///
+  /// In en, this message translates to:
+  /// **'▲ / ▼ — move · OK or Back — finish'**
+  String get applicationInfoMovingHint;
+
+  /// No description provided for @applicationInfoProcessHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The launcher can check once at opening. Stop and Restart only appear when the app is found running. If the manual check is hidden and the automatic check is off, these actions cannot appear.'**
+  String get applicationInfoProcessHelp;
+
+  /// No description provided for @applicationInfoNoActions.
+  ///
+  /// In en, this message translates to:
+  /// **'No actions to show'**
+  String get applicationInfoNoActions;
 
   /// No description provided for @appManagementGroup.
   ///

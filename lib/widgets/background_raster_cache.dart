@@ -80,7 +80,10 @@ class _BackgroundRasterCacheState extends State<BackgroundRasterCache>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    // Android can briefly take input focus while Home remains visible.
+    if (state == AppLifecycleState.inactive) return;
     final foreground = state == AppLifecycleState.resumed;
+    if (_foreground == foreground) return;
     if (!foreground) _render?.evict(disable: true);
     if (mounted) {
       setState(() {

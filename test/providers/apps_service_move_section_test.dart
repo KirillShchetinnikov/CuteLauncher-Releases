@@ -7,6 +7,8 @@ import 'package:shared_preferences_platform_interface/shared_preferences_platfor
 import '../mocks.mocks.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   group("AppsService.moveSectionInMemory", () {
     late MockFLauncherChannel channel;
     late MockFLauncherDatabase database;
@@ -15,7 +17,7 @@ void main() {
     setUp(() async {
       SharedPreferencesStorePlatform.instance = InMemorySharedPreferencesStore.empty();
       channel = MockFLauncherChannel();
-    when(channel.addAppsChangedListener(any)).thenReturn(null);
+      when(channel.addAppsChangedListener(any)).thenReturn(null);
       database = MockFLauncherDatabase();
 
       when(channel.getApplications()).thenAnswer((_) => Future.value([]));
@@ -35,6 +37,7 @@ void main() {
       when(database.deleteApps(any)).thenAnswer((_) => Future.value());
 
       appsService = AppsService(channel, database);
+      addTearDown(appsService.dispose);
 
       // Wait for initialization
       while (!appsService.initialized) {

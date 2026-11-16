@@ -152,7 +152,8 @@ restoring it places it last among visible ones. Other categories keep their orde
 
 Each standard category has its own icon. To change it for a standard or custom
 category, open **Category appearance → Headings → Section heading icon**.
-The picker includes the standard icons and ten additional ones. “Default” restores
+The picker has 22 icons, including Weather, Reading, Kids, Smart home, Travel,
+and Podcasts. “Default” restores
 the original icon. Hiding headings or icons keeps your selection. For App feeds,
 one selection applies to all feed headings.
 
@@ -308,19 +309,30 @@ their names in launcher order, including hidden sections with a hidden icon.
 The list updates when membership changes and explicitly states when no sections apply.
 Launch an available app, open Android app information,
 request uninstall where Android allows it, hide or restore it, add it to a
-category, and change its tile. Actions are grouped into home screen, launch,
-appearance, and app management blocks. Set a custom tile banner or restore the
-default. Opening the panel does not connect to ADB. **Check status** in the
-management block runs a manual check through local ADB on the TV; Android may
-ask you to authorize debugging. The status is unknown until checked, then shows
+category, and change its tile. Actions are grouped by purpose by default.
+Set a custom tile banner or restore the default.
+
+To hide or reorder buttons, go to **Settings → Home screen → App info settings**
+or select the gear in the app details panel. **OK** toggles visibility.
+**◄ / ►** starts moving, **▲ / ▼** changes the position, and **OK** or **Back**
+finishes. Hidden buttons keep their place in the list. **Reset settings**
+restores the original values.
+
+**Check status on opening** is off by default. Turn it on to check once each
+time the panel opens. **Check status** runs a manual check. Both use local
+ADB on the TV. Android may ask you to authorize debugging. The panel shows
 the last check result or an access error. **Stop** appears when an app process
 is detected; it force-stops the app and displays the verified command result.
+If the app can be opened, **Restart** also becomes available. Once the
+stop is verified, the launcher opens the app on screen. If the app fails
+to open, the panel stays open and reports the error.
 CuteLauncher itself cannot be stopped from this menu.
 
 To change a tile label, hold **OK** on the tile and select **App name on Home**.
 The saved name applies across all sections, is used for alphabetical sorting,
 and is included in backups and sync. Choose **Restore system name** in the
-same editor to switch back.
+same editor to switch back. The system name updates after an app update or
+a change to the Android system language.
 
 Hiding an app removes it from automatic launcher lists; it does not disable
 the app in Android. The normal system-app list belongs to the launcher catalog.
@@ -419,12 +431,19 @@ Background sources:
 For a local file, choose **Local image or video → Source settings → Choose file**.
 The collapsed help lists formats and limits: JPEG, PNG, WebP, GIF, BMP — up to
 8 MiB, 48 megapixels and 16,384 pixels per side; MP4/M4V, WebM, MKV — up to
-256 MiB and 3840×2160. The TV must support the codec; MP4 with H.264 is preferred.
+256 MiB and 3840×2160.
 Video loops silently, pauses outside Home and does not prevent system sleep.
 The video file is excluded from backups; choose it again after moving devices.
 Cancellation or an error preserves the previous background. Messages distinguish
 unsupported formats, size/resolution limits, codec errors and inaccessible files;
 a successful selection is confirmed separately.
+
+CuteLauncher is a launcher for Android TV and Google TV. Video wallpaper
+playback, whether you select a single file or a folder, depends on the device's
+firmware, available decoders, and how video frames are displayed. A clip can
+meet the format and size limits and play in a separate player yet fail as a
+wallpaper. Playback of every clip as a video wallpaper is not guaranteed.
+For better compatibility, MP4 with H.264 is preferred.
 
 If video initialization or playback fails, the launcher automatically tries a compatible output mode when available on the TV. It retries once; if that also fails, an error message appears. This does not add support for a missing codec.
 
@@ -1713,6 +1732,16 @@ package and certificate compatibility and need Android installation permission.
 Normal updates preserve user settings. Store-distributed versions have their
 own update-channel restrictions.
 
+When a check finds a compatible update, **Update available** appears below
+the settings heading with the version number. Press **OK** on the row to open
+the updates page directly. The row stays visible after restarting the launcher
+while the update is still available and pending installation.
+
+When an update is available, open **What’s new** to read the changes in the
+offered release. Loading the notes requires internet access. The notes are in
+Russian when the launcher language is Russian and in English for every other
+language. Use Up and Down to scroll, and Back or Close to dismiss the dialog.
+
 If validation fails, the launcher reports the reason: an APK for another app,
 the same or an older build, a different signature, unavailable certificates,
 an unreadable file, or a verification error. For file problems, download the
@@ -1790,21 +1819,30 @@ and is not transferred through backups or synchronization.
 
 ## Diagnostics
 
-Path: **Settings → Advanced → Diagnostics**. One report combines shared TV and
-CuteLauncher metadata, feature compatibility and errors. There is no separate
-compatibility submenu or file. Create a report, view check results, clear it,
-and export it by copying or saving to disk.
+Path: **Settings → Advanced → Diagnostics**. You can create a basic report or
+start an extended recording before reproducing an issue. You can copy or save
+either report to disk.
+
+**A basic report** contains the TV model and firmware, CuteLauncher version,
+permissions, current settings, and up to 20 recent operations with short results.
+Use it immediately after an unexpected failure.
+
+**An extended report** adds detailed logs from the recording, memory usage,
+compatibility results, installed apps, and section contents. The recording
+continues after you leave Settings while the launcher process is running.
+It stops after 10 minutes or when it reaches the event limit. You can export
+the captured history by selecting **Create extended report**.
 
 On Android 11–12, a file access request can open the CuteLauncher app details
 if the special access screen is unavailable. Check Permissions → Files and media there.
 
-Creating it also reads display modes, HDR, video/audio decoders and audio-output
+The extended report also includes display modes, HDR, video/audio decoders and audio-output
 formats. These are capabilities reported by Android, not playback test results;
 unavailable metadata is marked separately. Audio device names and addresses are
 excluded from this metadata.
 
-The report includes model/firmware, app version, permissions, memory, error stages
-and causes, and redacted arguments, responses and exception text. ADB entries
+Detailed logs include error stages and causes, and redacted arguments, responses
+and exception text. ADB entries
 also contain the command, stdout/stderr and exit code. Each recorded error links
 to a snapshot of the settings applied at that moment; later changes before export
 do not replace earlier values. Settings at export are listed separately.
@@ -1815,13 +1853,14 @@ For app-feed and Continue Watching artwork, the report separately shows the sour
 loading stage and duration, HTTP status, received bytes, queue wait, cache use,
 and recent network and app-resume events. Repeated requests for the same image
 can be matched by an anonymized identifier; full image addresses and query
-parameters are not stored. If artwork disappears, create the report **before
-force-stopping the launcher**: restarting clears the current session history.
+parameters are not stored. If artwork disappears, start extended recording,
+reproduce the issue, and create the report **before force-stopping the launcher**.
 
-Creating a report also adds installed apps with package identifiers, names,
+The extended report also adds installed apps with package identifiers, names,
 versions, system flags and enabled states, plus section names, contents, order,
 visibility and sorting. Empty and hidden sections, spacers and the Continue
-Watching position are included. Package identifiers remain readable for diagnosis.
+Watching position are included. Installed app names use the Android language
+at the time the report is created. Package identifiers remain readable for diagnosis.
 These lists are excluded from published anonymized compatibility data; send the
 full report only in a private message. Unavailable or truncated data is marked.
 
@@ -1833,28 +1872,32 @@ the original player message, stage, timeout, file size, known video dimensions
 and duration, position and playback state. Available ExoPlayer/MediaCodec error
 logs are also collected from the launcher process only, without ADB or additional
 permissions. If the firmware blocks log access, the report says so. Paths and
-personal data are redacted; technical decoder names are retained. Reproduce the
-error in the current session, then create a new report before restarting the app.
+personal data are redacted; technical decoder names are retained. Start extended
+recording before reproducing the error.
 
-The last 50 operations, up to 100 failures separately, and a bounded ADB log stay
-in memory for the current session until cleared or restarted. Collection is
-explicit; viewing and export reuse the same snapshot, while collecting again
-replaces it. A failed repeat preserves the previous report. Clearing removes the
-current report and logs, but not previously saved files. Nothing is sent automatically.
+The basic log and extended recording stay in memory for the current session.
+Restarting the process clears both. Viewing compatibility results and exporting
+reuse the existing report. Successful collection replaces it, and a failure
+preserves the previous report. **Clear report** stops recording and removes the
+logs and current report. Previously saved files remain on disk. Nothing is sent
+automatically.
 
 Compatibility checks inspect metadata and API availability without changing settings.
 They do not verify the physical remote, HDMI, sleep or full feature operation.
-If collection fails, the unified file retains errors and marks compatibility
+If collection fails, the extended file retains errors and marks compatibility
 results as unknown.
 
 ### Reporting an issue
 
-1. Reproduce the actions that cause the problem.
-2. Open **Settings → Advanced → Diagnostics**.
-3. Select **Create report** and wait until it is ready.
-4. Select **Export report → Save to disk**, choose a folder in your selected browser,
+1. Open **Settings → Advanced → Diagnostics**.
+2. If the problem already happened, select **Create report**. If you need more
+   detail and can reproduce the issue, select **Start extended diagnostics**,
+   leave Settings, and reproduce it. Return to Diagnostics and select
+   **Finish recording and create report**. To create it later, select
+   **Stop recording** first, then select **Create extended report**.
+3. Wait until the report is ready. Select **Export report → Save to disk**, choose a folder,
    and finish saving.
-5. Send `cutelauncher_diagnostics_….json` to the author **in a private message**.
+4. Send `cutelauncher_diagnostics_….json` to the author **in a private message**.
    Do not attach it to a public forum topic or GitHub issue: automatic redaction
    may miss personal data. Describe the controls, steps and expected/actual results.
    TV and app version metadata are already included when Android provides them.

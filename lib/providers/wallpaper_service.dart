@@ -49,7 +49,8 @@ class WallpaperService extends ChangeNotifier with ServiceLifecycle {
   late File _videoFile;
   File? _video;
   File? get video => _video;
-  final Future<void> Function(File) _validateVideo;
+  late final Future<void> Function(File) _validateVideo;
+  final videoImport = WallpaperVideoImport();
   bool _picking = false;
   late File _wallpaperDayFile;
   late File _wallpaperNightFile;
@@ -72,8 +73,10 @@ class WallpaperService extends ChangeNotifier with ServiceLifecycle {
     this._fLauncherChannel,
     this._settingsService, {
     Future<void> Function(File)? validateVideo,
-  }) : _validateVideo = validateVideo ?? validateBackgroundVideo,
-       _wallpaper = null {
+  }) : _wallpaper = null {
+    _validateVideo =
+        validateVideo ??
+        (file) => validateBackgroundVideo(file, videoImport: videoImport);
     _settingsService.addListener(_onSettingsChanged);
     _initialization = _init();
   }
@@ -95,6 +98,7 @@ class WallpaperService extends ChangeNotifier with ServiceLifecycle {
     ++_updateWallpaperCallCount;
     _settingsService.removeListener(_onSettingsChanged);
     _timer?.cancel();
+    videoImport.dispose();
     super.dispose();
   }
 
@@ -244,6 +248,7 @@ class WallpaperService extends ChangeNotifier with ServiceLifecycle {
     if (_picking || isDisposed) return false;
     _picking = true;
     File? staging;
+    var validatingVideo = false;
     try {
       await _initialization;
       if (isDisposed) return false;
@@ -298,6 +303,10 @@ class WallpaperService extends ChangeNotifier with ServiceLifecycle {
           } finally {
             await sink.close();
           }
+          if (isDisposed) return false;
+          validatingVideo = true;
+          await videoImport.begin();
+          if (isDisposed) return false;
           await _validateVideo(staging);
         }
         if (isDisposed) return false;
@@ -331,8 +340,12 @@ class WallpaperService extends ChangeNotifier with ServiceLifecycle {
         await DocumentFiles.releaseImage(picked);
       }
     } finally {
-      if (staging != null && await staging.exists()) await staging.delete();
-      _picking = false;
+      try {
+        if (staging != null && await staging.exists()) await staging.delete();
+      } finally {
+        _picking = false;
+        if (validatingVideo && !isDisposed) videoImport.end();
+      }
     }
   }
 

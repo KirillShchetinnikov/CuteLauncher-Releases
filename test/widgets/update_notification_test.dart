@@ -17,8 +17,103 @@ import 'panel_backdrop_assertions.dart';
 
 import 'package:flauncher/widgets/launcher_dialog.dart';
 import 'package:flauncher/widgets/settings/settings_panel.dart';
+import 'package:flauncher/widgets/settings/settings_panel_page.dart';
 
 void main() {
+  testWidgets('settings shortcut opens the available update by remote', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(350, 540);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    SharedPreferences.setMockInitialValues({updateNotificationsKey: false});
+    final prefs = await SharedPreferences.getInstance();
+    final settings = SettingsService(prefs);
+    var available = true;
+    final service = UpdateService(
+      prefs,
+      environment: () async => {
+        'play': false,
+        'version': '1.0.0',
+        'versionCode': 2,
+        'abis': ['armeabi-v7a'],
+      },
+      lookup: () async => available
+          ? {
+              'tag_name': 'v1.0.0+3',
+              'assets': [
+                {
+                  'name': 'app-release.apk',
+                  'size': 3,
+                  'browser_download_url':
+                      'https://github.com/$updateRepository/releases/download/v1.0.0+3/app.apk',
+                },
+              ],
+            }
+          : null,
+    );
+    addTearDown(settings.dispose);
+    addTearDown(service.dispose);
+    Future<void> openSettings(Key panelKey) async {
+      await tester.pumpWidget(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider.value(value: service),
+            ChangeNotifierProvider.value(value: settings),
+          ],
+          child: MaterialApp(
+            locale: const Locale('ru'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: SettingsPanel(key: panelKey),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+    }
+
+    final shortcut = find.text('Доступно обновление');
+    final home = find.text('Главный экран');
+    bool focused(Finder label) => Focus.of(tester.element(label)).hasFocus;
+    await openSettings(const ValueKey('before-check'));
+    expect(shortcut, findsNothing);
+    expect(focused(home), isTrue);
+
+    await service.check(force: true, notify: false);
+    await tester.pumpAndSettle();
+    expect(shortcut, findsOneWidget);
+    expect(focused(home), isTrue);
+    await openSettings(const ValueKey('after-check'));
+    expect(focused(home), isTrue);
+    expect(
+      tester.getTopLeft(shortcut).dy,
+      lessThan(tester.getTopLeft(home).dy),
+    );
+    expect(find.text('v1.0.0'), findsOneWidget);
+    expect(find.text('v1.0.0+3'), findsNothing);
+    expect(find.byIcon(Icons.system_update_alt), findsOneWidget);
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+    await tester.pumpAndSettle();
+    expect(focused(shortcut), isTrue);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(find.byType(UpdatesPage), findsOneWidget);
+    expect(find.text('Что нового'), findsOneWidget);
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(find.byType(SettingsPanelPage), findsOneWidget);
+    expect(focused(shortcut), isTrue);
+    available = false;
+    await service.check(force: true, notify: false);
+    await tester.pumpAndSettle();
+    expect(shortcut, findsNothing);
+    expect(focused(home), isTrue);
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
   for (final state in [AppLifecycleState.paused, AppLifecycleState.inactive]) {
     testWidgets('Late update waits for resume from $state and expires', (
       tester,

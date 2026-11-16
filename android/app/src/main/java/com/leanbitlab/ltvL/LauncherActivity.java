@@ -324,6 +324,8 @@ public class LauncherActivity extends FlutterActivity {
             switch (call.method) {
                 case "resetApplicationData" -> result.success(ApplicationReset.request(this));
                 case "getNativeShellDiagnostics" -> result.success(NativeShellDiagnostics.snapshot());
+                case "startNativeShellDiagnostics" -> { NativeShellDiagnostics.start(); result.success(true); }
+                case "stopNativeShellDiagnostics" -> { NativeShellDiagnostics.stop(); result.success(true); }
                 case "enableBackgroundVideoCompatibility" -> result.success(VideoSurfaceCompatibility.enableAfterFailure(this));
                 case "getVideoPlaybackLog" -> ApplicationLoader.load(sIoExecutor,
                         task -> new Handler(Looper.getMainLooper()).post(task),
@@ -362,7 +364,7 @@ public class LauncherActivity extends FlutterActivity {
                 case "getDiagnosticEnvironment" -> result.success(Map.of(
                     "androidApi", Build.VERSION.SDK_INT,
                     "device", Map.of("manufacturer", Build.MANUFACTURER, "model", Build.MODEL,
-                        "androidRelease", Build.VERSION.RELEASE, "buildId", Build.ID),
+                        "androidRelease", Build.VERSION.RELEASE, "buildId", Build.ID, "firmware", Build.DISPLAY),
                     "defaultHome", isDefaultLauncher(),
                     "overlayAllowed", checkOverlayPermission(),
                     "notificationsAllowed", getSystemService(android.app.NotificationManager.class).areNotificationsEnabled(),

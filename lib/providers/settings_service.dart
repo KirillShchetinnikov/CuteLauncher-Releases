@@ -1,6 +1,7 @@
 import '../category_appearance.dart';
 import '../sleep_timer_configuration.dart';
 import '../quick_actions.dart';
+import '../application_info_configuration.dart';
 import '../overlay_appearance.dart';
 import '../overlay_position.dart';
 import '../launcher_defaults.dart';
@@ -505,6 +506,29 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
   bool get showNotificationsWidgetInStatusBar => _showNotificationsWidgetInStatusBar;
   bool get showSleepTimerInStatusBar => _sharedPreferences.getBool('show_sleep_timer_in_status_bar') ?? true;
   bool get showQuickActionsInStatusBar => _sharedPreferences.get(quickActionsVisibleKey) == true;
+  String? get storedApplicationInfoConfiguration {
+    final value = _sharedPreferences.get(applicationInfoConfigurationKey);
+    return value is String ? value : null;
+  }
+
+  Future<void> setApplicationInfoConfiguration(ApplicationInfoConfiguration value) async {
+    final previous = storedApplicationInfoConfiguration;
+    final encoded = value.encode();
+    if (previous == encoded) return;
+    try {
+      if (!await _sharedPreferences.setString(applicationInfoConfigurationKey, encoded)) {
+        throw StateError('Unable to save application info configuration');
+      }
+    } catch (_) {
+      if (previous == null) {
+        await _sharedPreferences.remove(applicationInfoConfigurationKey);
+      } else {
+        await _sharedPreferences.setString(applicationInfoConfigurationKey, previous);
+      }
+      rethrow;
+    }
+    notifyListeners();
+  }
   List<QuickAction> get quickActionsOrder =>
       QuickAction.orderFromSettings(_sharedPreferences.get(quickActionsOrderKey));
   List<QuickAction> get _enabledQuickActions =>
@@ -767,6 +791,7 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
       quickActionsVisibleKey: showQuickActionsInStatusBar,
       quickActionsItemsKey: _enabledQuickActions.map((action) => action.name).toList(),
       quickActionsOrderKey: quickActionsOrder.map((action) => action.name).toList(),
+      applicationInfoConfigurationKey: ApplicationInfoConfiguration.decode(storedApplicationInfoConfiguration).encode(),
       tvInputsConfigurationKey: _sharedPreferences.getString(tvInputsConfigurationKey) ?? const TvInputsConfiguration().encode(),
       _memorySaverEnabledKey: _memorySaverEnabled,
       _appHighlightAnimationEnabledKey: _appHighlightAnimationEnabled,

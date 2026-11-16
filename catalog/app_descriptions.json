@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "reviewedAt": "2026-11-15",
+  "reviewedAt": "2026-11-16",
   "sources": [
     "https://developer.android.com/reference/android/content/pm/PackageManager",
     "https://source.android.com/docs/core/runtime/rros",
@@ -17,7 +17,9 @@
     "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
     "catalog/inventories/tcl-g10-as16-20261115-home-tile-images.json",
     "catalog/inventories/google-tv-streamer-uttk-20261115-quick-settings-toast.json",
-    "catalog/inventories/google-tv-streamer-uttk-20261115-landscape-263.json"
+    "catalog/inventories/google-tv-streamer-uttk-20261115-landscape-263.json",
+    "catalog/inventories/xiaomi-mibox4-oneday-20261116-aerialviews.json",
+    "catalog/inventories/tcl-g10-as16-20261116-home-tile-images.json"
   ],
   "packages": {
     "android": {
@@ -46,7 +48,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "android.auto_generated_rro__": {
@@ -80,7 +84,8 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "android.auto_generated_rro_vendor__": {
@@ -132,7 +137,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "android.autoinstalls.config.google.sabrina": {
@@ -159,6 +165,18 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "kp1-yyz"
+      ]
+    },
+    "android.autoinstalls.config.xioami.mibox3": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/xiaomi-mibox4-oneday-20261116-aerialviews.json",
+      "observedOn": [
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
       ]
     },
     "android.chromecast": {
@@ -231,6 +249,18 @@
         "google-tv-streamer-uttk-20261115-landscape-263"
       ],
       "category": "user"
+    },
+    "by.game.binumbers": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/xiaomi-mibox4-oneday-20261116-aerialviews.json",
+      "observedOn": [
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
+      ]
     },
     "ca.dstudio.atvlauncher.pro": {
       "confidence": "unknown",
@@ -376,6 +406,18 @@
         "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
+    "com.droidlogic.droidtvsettingsoverlay": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/xiaomi-mibox4-oneday-20261116-aerialviews.json",
+      "observedOn": [
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
+      ]
+    },
     "com.filin4ik.appsserver": {
       "confidence": "unknown",
       "safeToDisable": false,
@@ -384,6 +426,18 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast"
       ],
       "category": "user"
+    },
+    "com.filin4ik.fastInstaller": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/xiaomi-mibox4-oneday-20261116-aerialviews.json",
+      "observedOn": [
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
+      ]
     },
     "com.filmix.tv": {
       "confidence": "unknown",
@@ -992,6 +1046,90 @@
         "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
+    "com.mitv.download.service": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/xiaomi-mibox4-oneday-20261116-aerialviews.json",
+      "observedOn": [
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
+      ]
+    },
+    "com.mitv.milinkservice": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/xiaomi-mibox4-oneday-20261116-aerialviews.json",
+      "observedOn": [
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
+      ]
+    },
+    "com.mitv.tvhome.atv": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/xiaomi-mibox4-oneday-20261116-aerialviews.json",
+      "observedOn": [
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
+      ]
+    },
+    "com.mitv.tvhome.michannel": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/xiaomi-mibox4-oneday-20261116-aerialviews.json",
+      "observedOn": [
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
+      ]
+    },
+    "com.mitv.tvhome.mitvplus": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/xiaomi-mibox4-oneday-20261116-aerialviews.json",
+      "observedOn": [
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
+      ]
+    },
+    "com.miui.tv.analytics": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/xiaomi-mibox4-oneday-20261116-aerialviews.json",
+      "observedOn": [
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
+      ]
+    },
+    "com.ottplay.ottplay": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/xiaomi-mibox4-oneday-20261116-aerialviews.json",
+      "observedOn": [
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
+      ]
+    },
     "com.snapwood.skyfolio": {
       "ru": "Приложение не опознано.",
       "en": "Application not identified.",
@@ -1034,7 +1172,8 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "tcl-g10-as16-20261116-home-tile-images"
       ],
       "category": "user"
     },
@@ -1052,7 +1191,8 @@
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "google-tv-streamer-uttk-20261115-quick-settings-toast"
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "tcl-g10-as16-20261116-home-tile-images"
       ],
       "category": "preinstalled"
     },
@@ -1110,7 +1250,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.bluetooth": {
@@ -1136,7 +1278,9 @@
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
         "formuler-z11-pro-max-rvc-20261113-video-folder",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.bluetoothmidiservice": {
@@ -1162,7 +1306,8 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
-        "google-tanix-w2-android11-20261101"
+        "google-tanix-w2-android11-20261101",
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
       ]
     },
     "com.android.cameraextensions": {
@@ -1208,7 +1353,9 @@
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
         "formuler-z11-pro-max-rvc-20261113-video-folder",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.certinstaller": {
@@ -1237,7 +1384,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.companiondevicemanager": {
@@ -1266,7 +1415,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.connectivity.resources": {
@@ -1286,7 +1437,9 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.cts.ctsshim": {
@@ -1315,7 +1468,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.cts.priv.ctsshim": {
@@ -1344,7 +1499,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.deskclock": {
@@ -1417,7 +1574,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.dynsystem": {
@@ -1445,7 +1604,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.externalstorage": {
@@ -1474,7 +1635,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.federatedcompute.services": {
@@ -1568,7 +1731,9 @@
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
         "formuler-z11-pro-max-rvc-20261113-video-folder",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.htmlviewer": {
@@ -1597,7 +1762,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.inputdevices": {
@@ -1626,7 +1793,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.inputmethod.latin": {
@@ -1688,7 +1857,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.launcher3": {
@@ -1732,7 +1903,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.location.fused": {
@@ -1761,7 +1934,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.managedprovisioning": {
@@ -1784,7 +1959,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.modulemetadata": {
@@ -1816,7 +1993,8 @@
         "kp1-yyz",
         "google-tv-streamer-uttk-20261115-landscape",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
       ]
     },
     "com.android.music": {
@@ -1896,7 +2074,9 @@
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
         "formuler-z11-pro-max-rvc-20261113-video-folder",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.networkstack.permissionconfig": {
@@ -1916,7 +2096,9 @@
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
         "formuler-z11-pro-max-rvc-20261113-video-folder",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.networkstack.tethering": {
@@ -1949,7 +2131,8 @@
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
         "google-tanix-w2-android11-20261101",
-        "kp1-yyz"
+        "kp1-yyz",
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
       ]
     },
     "com.android.networkstack.tethering.inprocess.droidlogic": {
@@ -1962,7 +2145,8 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
-        "google-tanix-w2-android11-20261101"
+        "google-tanix-w2-android11-20261101",
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
       ]
     },
     "com.android.ondevicepersonalization.services": {
@@ -2033,7 +2217,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.permissioncontroller": {
@@ -2071,7 +2257,9 @@
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
         "formuler-z11-pro-max-rvc-20261113-video-folder",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.providers.calendar": {
@@ -2099,7 +2287,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.providers.contacts": {
@@ -2127,7 +2317,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.providers.contacts.auto_generated_rro_product__": {
@@ -2169,7 +2361,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.providers.downloads.ui": {
@@ -2214,7 +2408,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.providers.media.module": {
@@ -2238,7 +2434,9 @@
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
         "formuler-z11-pro-max-rvc-20261113-video-folder",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.providers.settings": {
@@ -2267,7 +2465,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.providers.settings.auto_generated_rro_product__": {
@@ -2330,7 +2530,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.providers.userdictionary": {
@@ -2358,7 +2560,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.proxyhandler": {
@@ -2387,7 +2591,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.rkpdapp": {
@@ -2450,7 +2656,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.settings": {
@@ -2492,7 +2700,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.sharedstoragebackup": {
@@ -2521,7 +2731,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.shell": {
@@ -2550,7 +2762,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.soundpicker": {
@@ -2569,7 +2783,9 @@
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
         "formuler-z11-pro-max-rvc-20261113-video-folder",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.statementservice": {
@@ -2595,7 +2811,9 @@
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
         "formuler-z11-pro-max-rvc-20261113-video-folder",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.systemui": {
@@ -2624,7 +2842,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.systemui.auto_generated_rro_vendor__": {
@@ -2659,7 +2879,8 @@
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.tethering.overlay.gsi": {
@@ -2679,7 +2900,8 @@
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.tv.feedbackconsent": {
@@ -2722,7 +2944,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.tv.globalkeyhandler.overlay": {
@@ -2780,7 +3004,8 @@
         "tcl-g10",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.tv.overlay.lps.disabled": {
@@ -2830,7 +3055,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.tv.overlay.wifi.resources": {
@@ -2852,7 +3079,8 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.tv.sei.overlay.framework": {
@@ -2893,7 +3121,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.tv.settings.gms.resoverlay": {
@@ -2917,7 +3147,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.tv.settings.google.resoverlay": {
@@ -2939,7 +3171,8 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.tv.settings.mediatek.resoverlay.subatomic": {
@@ -2973,7 +3206,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.uwb.resources": {
@@ -3018,7 +3252,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.virtualmachine.res": {
@@ -3067,7 +3303,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.wallpaper.livepicker": {
@@ -3083,7 +3321,8 @@
         "google-tanix-w2-android11-20261101",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.wallpaperbackup": {
@@ -3111,7 +3350,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.wallpapercropper": {
@@ -3177,7 +3418,9 @@
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
         "formuler-z11-pro-max-rvc-20261113-video-folder",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.zdtd.service": {
@@ -3262,7 +3505,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "google-tv-streamer-uttk-20261115-landscape",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
       ],
       "category": "user"
     },
@@ -3331,7 +3575,8 @@
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
         "google-tanix-w2-android11-20261101",
-        "kp1-yyz"
+        "kp1-yyz",
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
       ]
     },
     "com.droidlogic.mediacenter": {
@@ -3369,7 +3614,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "kp1-yyz"
+        "kp1-yyz",
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
       ]
     },
     "com.droidlogic.systemui.overlay": {
@@ -3511,7 +3757,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.google.android.apps.tv.dreamx": {
@@ -3533,7 +3781,8 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.google.android.apps.tv.launcherx": {
@@ -3556,7 +3805,8 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.google.android.appsearch.apk": {
@@ -3602,7 +3852,8 @@
         "tcl-beyondtv4-ar10-20261110",
         "google-tv-streamer-uttk-20261115-landscape",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
       ]
     },
     "com.google.android.backuptransport": {
@@ -3671,7 +3922,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.google.android.ext.shared": {
@@ -3700,7 +3953,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.google.android.feedback": {
@@ -3726,7 +3981,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.google.android.gms": {
@@ -3754,7 +4011,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.google.android.gsf": {
@@ -3782,7 +4041,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.google.android.inputmethod.latin": {
@@ -3809,7 +4070,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.google.android.katniss": {
@@ -3837,7 +4100,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.google.android.landscape": {
@@ -3901,7 +4166,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.google.android.modulemetadata": {
@@ -3926,7 +4193,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.google.android.networkstack.tethering.google": {
@@ -3956,7 +4225,9 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g10-as16-20261112-feed-timeout",
         "formuler-z11-pro-max-rvc-20261113-video-folder",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.google.android.overlay.googlewebview": {
@@ -3979,7 +4250,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.google.android.overlay.gtvsconfig": {
@@ -3991,7 +4264,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "kp1-yyz"
+        "kp1-yyz",
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
       ]
     },
     "com.google.android.overlay.gtvsconfigx": {
@@ -4010,7 +4284,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.google.android.overlay.gtvssettingsprovider": {
@@ -4032,7 +4307,8 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.google.android.overlay.modules.ext.services": {
@@ -4055,7 +4331,9 @@
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
         "formuler-z11-pro-max-rvc-20261113-video-folder",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.google.android.overlay.modules.modulemetadata.forframework": {
@@ -4077,7 +4355,9 @@
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
         "formuler-z11-pro-max-rvc-20261113-video-folder",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.google.android.overlay.modules.permissioncontroller": {
@@ -4100,7 +4380,9 @@
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
         "formuler-z11-pro-max-rvc-20261113-video-folder",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.google.android.overlay.modules.permissioncontroller.forframework": {
@@ -4123,7 +4405,9 @@
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
         "formuler-z11-pro-max-rvc-20261113-video-folder",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.google.android.packageinstaller": {
@@ -4150,7 +4434,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.google.android.partnersetup": {
@@ -4177,7 +4463,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.google.android.permissioncontroller": {
@@ -4204,7 +4492,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.google.android.play.games": {
@@ -4221,7 +4511,9 @@
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "google-tv-streamer-uttk-20261115-quick-settings-toast"
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ],
       "category": "preinstalled"
     },
@@ -4285,7 +4577,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.google.android.syncadapters.contacts": {
@@ -4337,7 +4631,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.google.android.tungsten.setupwraith": {
@@ -4364,7 +4660,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.google.android.tv.axel": {
@@ -4462,7 +4760,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.google.android.tv.settings.energymodes.resoverlay": {
@@ -4500,7 +4800,8 @@
         "tcl-beyondtv4-ar10-20261110",
         "google-tv-streamer-uttk-20261115-landscape",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
       ]
     },
     "com.google.android.tvrecommendations": {
@@ -4518,7 +4819,8 @@
         "formuler-z11-pro-max-rvc-20261113-video-folder",
         "google-tv-streamer-uttk-20261115-landscape",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
       ]
     },
     "com.google.android.tvsetup.partnercustomizer": {
@@ -4545,7 +4847,9 @@
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "google-tv-streamer-uttk-20261115-quick-settings-toast"
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ],
       "category": "preinstalled"
     },
@@ -4574,7 +4878,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.google.android.youtube.tv": {
@@ -4596,7 +4902,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ],
       "category": "preinstalled"
     },
@@ -4614,7 +4922,8 @@
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "google-tv-streamer-uttk-20261115-quick-settings-toast"
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "tcl-g10-as16-20261116-home-tile-images"
       ],
       "category": "preinstalled"
     },
@@ -4711,7 +5020,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
       "observedOn": [
-        "google-tanix-w2-android11-20261101"
+        "google-tanix-w2-android11-20261101",
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
       ],
       "category": "user"
     },
@@ -4886,7 +5196,8 @@
         "droidlogic-x98q-android11-20261026",
         "google-tanix-w2-android11-20261101",
         "tcl-beyondtv4-ar10-20261110",
-        "formuler-z11-pro-max-rvc-20261113-video-folder"
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
       ]
     },
     "com.nes.blerc": {
@@ -5000,7 +5311,8 @@
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "google-tv-streamer-uttk-20261115-quick-settings-toast"
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "tcl-g10-as16-20261116-home-tile-images"
       ],
       "category": "preinstalled"
     },
@@ -5024,7 +5336,8 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.opengapps.atvoverlay": {
@@ -5096,7 +5409,8 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
       ],
       "category": "preinstalled"
     },
@@ -5157,7 +5471,8 @@
         "tcl-g10",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.realtek.android.tv.globalkeyoverlay": {
@@ -5256,7 +5571,8 @@
         "tcl-g10",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.realtek.secserviceoverlay": {
@@ -5332,7 +5648,8 @@
         "tcl-g10",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.rtk.mediabrowser": {
@@ -5516,6 +5833,18 @@
         "google-tanix-w2-android11-20261101"
       ]
     },
+    "com.spycorp.tvmemorycleaner": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/xiaomi-mibox4-oneday-20261116-aerialviews.json",
+      "observedOn": [
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
+      ]
+    },
     "com.tcl.UpdatePeripheral": {
       "ru": "Обновление прошивки или периферии производителя.",
       "en": "Vendor firmware or peripheral updates.",
@@ -5532,7 +5861,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.tcl.airplay2": {
@@ -5551,7 +5881,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.tcl.android.webview": {
@@ -5567,7 +5898,8 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.tcl.autopair": {
@@ -5587,7 +5919,8 @@
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.tcl.channelplus": {
@@ -5606,7 +5939,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.tcl.dashboard": {
@@ -5622,7 +5956,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.tcl.esticker": {
@@ -5641,7 +5976,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.tcl.eva": {
@@ -5675,7 +6011,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.tcl.factory.view": {
@@ -5695,7 +6032,8 @@
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.tcl.gamebar": {
@@ -5714,7 +6052,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.tcl.globalkeyoverlay": {
@@ -5733,7 +6072,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.tcl.guard": {
@@ -5753,7 +6093,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.tcl.hearaid": {
@@ -5772,7 +6113,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.tcl.hotelmenu": {
@@ -5791,7 +6133,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.tcl.initsetup": {
@@ -5811,7 +6154,8 @@
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.tcl.inputmethod.international": {
@@ -5831,7 +6175,8 @@
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.tcl.interactive": {
@@ -5850,7 +6195,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.tcl.logkit": {
@@ -5869,7 +6215,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.tcl.magiconnectfree": {
@@ -5885,7 +6232,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.tcl.messagebox": {
@@ -5904,7 +6252,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.tcl.miracast": {
@@ -5921,7 +6270,8 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.tcl.ocean.instructions": {
@@ -5940,7 +6290,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.tcl.overlay.frameworkres": {
@@ -5975,7 +6326,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.tcl.providers.config": {
@@ -5995,7 +6347,8 @@
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.tcl.repairguide": {
@@ -6014,7 +6367,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.tcl.smartalexa": {
@@ -6030,7 +6384,8 @@
         "tcl-g08-au04-20261104",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.tcl.smartlink.core": {
@@ -6065,7 +6420,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.tcl.systemserver": {
@@ -6084,7 +6440,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.tcl.systemui.plugin": {
@@ -6119,7 +6476,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.tcl.ttvs": {
@@ -6138,7 +6496,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.tcl.tv": {
@@ -6158,7 +6517,8 @@
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.tcl.tv.overlay": {
@@ -6193,7 +6553,8 @@
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.tcl.tvinput": {
@@ -6213,7 +6574,8 @@
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.tcl.ui_mediaCenter": {
@@ -6233,7 +6595,8 @@
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.tcl.useragreement": {
@@ -6252,7 +6615,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.tcl.usercenter": {
@@ -6271,7 +6635,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.tcl.waterfall.overseas": {
@@ -6290,7 +6655,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.tcl.webview": {
@@ -6355,7 +6721,8 @@
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.ugoos.suggestions": {
@@ -6388,13 +6755,26 @@
       ],
       "category": "user"
     },
+    "com.vgtrk.smotrim.tv": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/xiaomi-mibox4-oneday-20261116-aerialviews.json",
+      "observedOn": [
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
+      ]
+    },
     "com.vk.tv": {
       "confidence": "identified",
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "kp1-yyz",
-        "tcl-beyondtv4-ar10-20261110"
+        "tcl-beyondtv4-ar10-20261110",
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
       ],
       "category": "preinstalled"
     },
@@ -6450,6 +6830,78 @@
         "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
+    "com.xiaomi.gtv.settings": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/xiaomi-mibox4-oneday-20261116-aerialviews.json",
+      "observedOn": [
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
+      ]
+    },
+    "com.xiaomi.mitv.updateservice": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/xiaomi-mibox4-oneday-20261116-aerialviews.json",
+      "observedOn": [
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
+      ]
+    },
+    "com.xiaomi.statistic": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/xiaomi-mibox4-oneday-20261116-aerialviews.json",
+      "observedOn": [
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
+      ]
+    },
+    "com.xiaomi.tvqs.overseas": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/xiaomi-mibox4-oneday-20261116-aerialviews.json",
+      "observedOn": [
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
+      ]
+    },
+    "com.xiaomo.tv.milegal": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/xiaomi-mibox4-oneday-20261116-aerialviews.json",
+      "observedOn": [
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
+      ]
+    },
+    "com.xm.webcontent": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/xiaomi-mibox4-oneday-20261116-aerialviews.json",
+      "observedOn": [
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
+      ]
+    },
     "com.yandex.browser.tv": {
       "confidence": "unknown",
       "safeToDisable": false,
@@ -6458,7 +6910,8 @@
         "google-tanix-w2-android11-20261101",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ],
       "category": "user"
     },
@@ -6557,7 +7010,9 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ],
       "category": "user"
     },
@@ -6572,7 +7027,8 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g10-as16-20261112-feed-timeout",
         "formuler-z11-pro-max-rvc-20261113-video-folder",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ],
       "category": "user"
     },
@@ -6582,7 +7038,8 @@
       "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "google-tanix-w2-android11-20261101",
-        "google-tv-streamer-uttk-20261115-quick-settings-toast"
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
       ],
       "category": "user"
     },
@@ -6659,6 +7116,18 @@
         "droidlogic-x98q-android11-20261026"
       ]
     },
+    "mitv.service": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/xiaomi-mibox4-oneday-20261116-aerialviews.json",
+      "observedOn": [
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
+      ]
+    },
     "mobi.zona": {
       "confidence": "unknown",
       "safeToDisable": false,
@@ -6724,7 +7193,8 @@
         "tcl-g10",
         "tcl-g08-au04-20261104",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
       ],
       "category": "user"
     },
@@ -6740,7 +7210,8 @@
         "tcl-g08-au04-20261107-weather-read-error",
         "google-tv-streamer-uttk-20261115-landscape",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
       ],
       "category": "preinstalled"
     },
@@ -6752,7 +7223,8 @@
         "kp1-yyz",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ],
       "category": "preinstalled"
     },
@@ -6850,7 +7322,8 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g10-as16-20261112-feed-timeout",
         "formuler-z11-pro-max-rvc-20261113-video-folder",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "org.myklos.adbhelper": {
@@ -6907,7 +7380,8 @@
         "droidlogic-x98q-android11-20261026",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "org.xbmc.kodi": {
@@ -6944,7 +7418,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ],
       "category": "user"
     },
@@ -7014,7 +7489,9 @@
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
         "formuler-z11-pro-max-rvc-20261113-video-folder",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ],
       "category": "preinstalled"
     },
@@ -7074,6 +7551,18 @@
       ],
       "category": "preinstalled"
     },
+    "ru.rutube.app.tv": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/xiaomi-mibox4-oneday-20261116-aerialviews.json",
+      "observedOn": [
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
+      ]
+    },
     "ru.seasonvar.tv": {
       "confidence": "unknown",
       "safeToDisable": false,
@@ -7120,7 +7609,8 @@
       "observedOn": [
         "google-tanix-w2-android11-20261101",
         "tcl-beyondtv4-ar10-20261110",
-        "formuler-z11-pro-max-rvc-20261113-video-folder"
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
       ],
       "category": "user"
     },
@@ -7376,6 +7866,18 @@
         "tcl-g08-au04-20261107-weather-read-error"
       ]
     },
+    "tv.okko.androidtv": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "catalog/inventories/xiaomi-mibox4-oneday-20261116-aerialviews.json",
+      "observedOn": [
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
+      ]
+    },
     "tv.samba.ssm.ui": {
       "ru": "Компонент Samba TV для распознавания просматриваемого контента (ACR).",
       "en": "Samba TV component for automatic content recognition (ACR).",
@@ -7388,7 +7890,8 @@
         "tcl-g10",
         "tcl-g10-as16-20261104-update-http",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "tv.twitch.android.app": {
@@ -7423,7 +7926,8 @@
       "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
       "observedOn": [
         "google-tv-streamer-uttk-20261115-landscape",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
       ]
     },
     "yo.app.tv.free": {
@@ -7535,7 +8039,8 @@
       "observedOn": [
         "tcl-g10-as16-20261104-update-http",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.networkstack.tethering.inprocess": {
@@ -7551,7 +8056,9 @@
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
         "formuler-z11-pro-max-rvc-20261113-video-folder",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.android.tv.overlay.networkstack.inprocess": {
@@ -7565,7 +8072,8 @@
       "observedOn": [
         "tcl-g10-as16-20261104-update-http",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.cyberportal.wgt": {
@@ -7579,7 +8087,9 @@
       "observedOn": [
         "tcl-g10-as16-20261104-update-http",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.example.getstvwebview": {
@@ -7593,7 +8103,8 @@
       "observedOn": [
         "tcl-g10-as16-20261104-update-http",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.internet.tvbrowser": {
@@ -7607,7 +8118,8 @@
       "observedOn": [
         "tcl-g10-as16-20261104-update-http",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.mxtech.videoplayer.pro": {
@@ -7621,7 +8133,8 @@
       "observedOn": [
         "tcl-g10-as16-20261104-update-http",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.realtek.dongledetect": {
@@ -7635,7 +8148,8 @@
       "observedOn": [
         "tcl-g10-as16-20261104-update-http",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.realtek.tv.overlay.framework": {
@@ -7649,7 +8163,8 @@
       "observedOn": [
         "tcl-g10-as16-20261104-update-http",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.rma.speedtesttv": {
@@ -7665,7 +8180,8 @@
         "tcl-g10-as16-20261112-feed-timeout",
         "google-tv-streamer-uttk-20261115-landscape",
         "tcl-g10-as16-20261115-home-tile-images",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.tcl.browser": {
@@ -7679,7 +8195,8 @@
       "observedOn": [
         "tcl-g10-as16-20261104-update-http",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.zzzmode.appopsx": {
@@ -7693,7 +8210,8 @@
       "observedOn": [
         "tcl-g10-as16-20261104-update-http",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "org.localsend.localsend_app": {
@@ -7708,7 +8226,8 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "org.telegram.messenger.web": {
@@ -7722,7 +8241,8 @@
       "observedOn": [
         "tcl-g10-as16-20261104-update-http",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "ru.full.khd.app": {
@@ -7736,7 +8256,8 @@
       "observedOn": [
         "tcl-g10-as16-20261104-update-http",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "video.player.videoplayer": {
@@ -7750,7 +8271,8 @@
       "observedOn": [
         "tcl-g10-as16-20261104-update-http",
         "tcl-g10-as16-20261112-feed-timeout",
-        "tcl-g10-as16-20261115-home-tile-images"
+        "tcl-g10-as16-20261115-home-tile-images",
+        "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
     "com.github.dimzon.smartrutube.beta": {
@@ -7774,7 +8296,9 @@
       "confidence": "identified",
       "safeToDisable": false,
       "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/xiaomi-mitv-axfu0/debloat.txt",
-      "observedOn": []
+      "observedOn": [
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
+      ]
     },
     "com.mitv.gallery": {
       "ru": "Штатная галерея Xiaomi. На MiTV-AXFU0 проводник использует её для открытия файлов с USB.",
@@ -7814,7 +8338,9 @@
       "confidence": "identified",
       "safeToDisable": false,
       "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/xiaomi-mitv-axfu0/debloat.txt",
-      "observedOn": []
+      "observedOn": [
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
+      ]
     },
     "com.xiaomi.android.tvsetup.partnercustomizer": {
       "ru": "Компонент настройки Xiaomi для быстрых кнопок и, на отдельных моделях, сопряжения пульта.",
@@ -7824,7 +8350,9 @@
       "confidence": "identified",
       "safeToDisable": false,
       "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/xiaomi-mitv-axfu0/debloat.txt",
-      "observedOn": []
+      "observedOn": [
+        "xiaomi-mibox4-oneday-20261116-aerialviews"
+      ]
     },
     "org.droidtv.ipcontrol": {
       "ru": "Сетевое управление громкостью, аудиовыходом и Ambilight на отдельных Philips. JointSpace обслуживает org.droidtv.xtv.",

@@ -1934,8 +1934,32 @@ class AppLocalizationsKo extends AppLocalizations {
       '파일을 공개하지 말고 작성자에게 개인 메시지로 보내세요. 자동 정리 후에도 개인정보가 남을 수 있습니다. 보고서를 보내면 익명화된 기기 호환성 보고서를 CuteLauncher Git 저장소에 게시하는 데 동의하는 것으로 간주합니다. 개인정보 없이 기기 정보와 기능 사용 가능 여부만 공개하며 오류 로그, 명령 및 개인 설정은 공개하지 않습니다.\n\n보고서에는 설치된 패키지의 이름, 버전, 활성화 상태와 섹션 이름, 구성, 순서, 표시 여부도 포함됩니다. 진단을 위해 식별자와 이름은 유지되지만 앱 및 섹션 목록은 공개되지 않습니다.';
 
   @override
+  String get diagnosticsStartRecording => '확장 진단 시작';
+
+  @override
+  String get diagnosticsFinishRecording => '기록을 종료하고 보고서 작성';
+
+  @override
+  String get diagnosticsStopRecording => '기록 중지';
+
+  @override
+  String get diagnosticsCreateExtended => '확장 보고서 작성';
+
+  @override
+  String get diagnosticsRecordingActive => '확장 기록 진행 중';
+
+  @override
+  String get diagnosticsRecordingStopped => '기록 종료됨';
+
+  @override
+  String get diagnosticsExtendedReady => '확장 보고서 준비됨';
+
+  @override
+  String get diagnosticsRecordingFailed => '확장 기록을 시작할 수 없습니다.';
+
+  @override
   String get diagnosticsHint =>
-      '하나의 보고서에 기기 기능 호환성과 오류 진단을 함께 담습니다. 보고서에는 기기 모델과 펌웨어, 앱 버전, 권한, 메모리, 오류 단계와 원인, 개인정보를 자동 정리한 명령과 응답이 포함됩니다. 현재 세션의 최근 작업 50개, 별도로 오류 최대 100개와 제한된 ADB 로그를 보관합니다. 다시 시작하면 로그가 삭제됩니다. 개인정보가 남을 수 있으므로 공개하지 말고 개인 메시지로 보내세요. 자동 전송하지 않습니다.각 오류에는 당시 적용된 설정의 스냅샷이 저장되며 이후 변경으로 대체되지 않습니다.\n\n보고서에는 설치된 패키지의 이름, 버전, 활성화 상태와 섹션 이름, 구성, 순서, 표시 여부도 포함됩니다. 진단을 위해 식별자와 이름은 유지되지만 앱 및 섹션 목록은 공개되지 않습니다.';
+      '기본 보고서에는 기기 정보, 권한, 설정, 최근 작업 최대 20개가 포함됩니다. 자세한 보고서가 필요하면 확장 진단을 시작하고 문제를 재현한 뒤 여기로 돌아오세요. 기록은 최대 10분간 진행됩니다. 확장 보고서에는 상세 로그, 호환성 결과, 앱과 섹션이 포함됩니다. 자동으로 전송되는 정보는 없습니다.';
 
   @override
   String get diagnosticsTitle => '오류 진단';
@@ -3356,6 +3380,21 @@ class AppLocalizationsKo extends AppLocalizations {
   String get sectionIconFolder => '폴더';
 
   @override
+  String get sectionIconReading => '독서';
+
+  @override
+  String get sectionIconKids => '어린이';
+
+  @override
+  String get sectionIconSmartHome => '스마트 홈';
+
+  @override
+  String get sectionIconTravel => '여행';
+
+  @override
+  String get sectionIconPodcasts => '팟캐스트';
+
+  @override
   String get homeInactiveTransparency => '비활성 섹션 투명도';
 
   @override
@@ -4353,6 +4392,12 @@ class AppLocalizationsKo extends AppLocalizations {
   String get stopApp => '중지';
 
   @override
+  String get restartApp => '다시 시작';
+
+  @override
+  String get appRestartLaunchFailed => '앱을 중지했지만 열 수 없습니다.';
+
+  @override
   String get backgroundImageFormats =>
       '이미지: JPEG, PNG, WebP, GIF, BMP — 최대 8 MiB, 4,800만 화소, 각 변 16,384픽셀.';
 
@@ -5225,6 +5270,12 @@ class AppLocalizationsKo extends AppLocalizations {
       'Android가 APK를 읽지 못했습니다. 파일이 없거나, 비어 있거나, 너무 크거나, 인식되지 않습니다. 업데이트를 다시 다운로드하세요.';
 
   @override
+  String get updateWhatsNew => '새로운 기능';
+
+  @override
+  String get updateNotesUnavailable => '업데이트 내용을 볼 수 없습니다.';
+
+  @override
   String get updateVerificationFailed =>
       'APK 확인 중 오류가 발생하여 설치가 차단되었습니다. 다시 시도하고 오류가 반복되면 개발자에게 진단 보고서를 보내 주세요.';
 
@@ -5366,6 +5417,25 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get appLaunchGroup => '실행';
+
+  @override
+  String get applicationInfoSettings => '앱 정보 설정';
+
+  @override
+  String get applicationInfoCheckOnOpen => '열 때 상태 확인';
+
+  @override
+  String get applicationInfoButtonsHint => 'OK — 표시 또는 숨기기 · ◄ / ► — 이동';
+
+  @override
+  String get applicationInfoMovingHint => '▲ / ▼ — 이동 · OK 또는 뒤로 — 완료';
+
+  @override
+  String get applicationInfoProcessHelp =>
+      '런처는 화면을 열 때 상태를 한 번 확인할 수 있습니다. 앱이 실행 중인 경우에만 중지 및 다시 시작이 표시됩니다. 이 동작을 사용하려면 수동 확인을 표시하거나 열 때 확인을 켜세요.';
+
+  @override
+  String get applicationInfoNoActions => '표시할 동작 없음';
 
   @override
   String get appManagementGroup => '앱 관리';

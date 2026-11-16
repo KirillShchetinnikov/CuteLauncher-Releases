@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "reportType": "tvInventoryMetadata",
+  "scope": "deviceMetadata",
+  "verification": "observedOnly",
+  "capturedAt": "2026-11-16T00:00:00Z",
+  "sourceReport": "CuteLauncher diagnostic report received privately",
+  "identity": {
+    "manufacturer": "Xiaomi",
+    "model": "MIBOX4",
+    "device": "oneday",
+    "fingerprint": "Xiaomi/oneday/oneday:12/STTC.230106.001/4560:user/release-keys",
+    "firmware": "STTC.230106.001.4560 release-keys",
+    "android": "12",
+    "sdk": "31",
+    "abis": "armeabi-v7a,armeabi"
+  },
+  "diagnostics": {
+    "packageCount": 123,
+    "launcher": {
+      "versionName": "1.7.5",
+      "versionCode": "243"
+    }
+  },
+  "completeness": {
+    "status": "complete",
+    "sourceCount": 123,
+    "skippedCount": 0,
+    "truncated": false
+  },
+  "limits": [
+    "User-provided diagnostic metadata, not an independent device test",
+    "Labels, personal settings, permissions, commands and shell logs excluded",
+    "Redacted identifiers are not reconstructed; package presence does not validate disabling"
+  ],
+  "sourceReportType": "diagnostics",
+  "sourceScope": "userProvidedDiagnosticInventory",
+  "packageListStorage": "catalog/app_descriptions.json",
+  "observedPackageCount": 123,
+  "redactedPackageCount": 0
+}

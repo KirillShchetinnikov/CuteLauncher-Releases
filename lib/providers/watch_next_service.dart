@@ -66,7 +66,7 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
       _foreground = lifecycle == null || lifecycle == AppLifecycleState.resumed;
       WidgetsBinding.instance.addObserver(this);
     }
-    DiagnosticsStore.instance.posterLoads.lifecycle(PosterSource.watchNext,
+    DiagnosticsStore.instance.activePosterLoads?.lifecycle(PosterSource.watchNext,
         WidgetsBinding.instance.lifecycleState?.name ?? 'resumed');
     (work?.schedule(this, _init) ?? _init()).catchError((Object error) {
       log('Watch Next initialization failed', error: error);
@@ -121,7 +121,7 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (isDisposed) return;
-    DiagnosticsStore.instance.posterLoads.lifecycle(PosterSource.watchNext, state.name);
+    DiagnosticsStore.instance.activePosterLoads?.lifecycle(PosterSource.watchNext, state.name);
     if (state == AppLifecycleState.paused || state == AppLifecycleState.hidden) {
       _foreground = false;
       ++_posterGeneration;
@@ -220,7 +220,7 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
   }
 
   void evictPoster(WatchNextProgram program) {
-    DiagnosticsStore.instance.posterLoads.decodeFailed(
+    DiagnosticsStore.instance.activePosterLoads?.decodeFailed(
         PosterSource.watchNext, program.posterArtUri, program.thumbnailUri, program.packageName);
     _posterCache.remove(program.posterArtUri);
     _posterCache.remove(program.thumbnailUri);
@@ -230,46 +230,46 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
       {bool thumbnail = false}) async {
     if (address.isEmpty || !_canLoadPoster(generation)) return null;
     final cached = _posterCache[address];
-    final diagnostics = DiagnosticsStore.instance.posterLoads;
+    final diagnostics = DiagnosticsStore.instance.activePosterLoads;
     if (cached != null) {
-      diagnostics.count(PosterSource.watchNext, 'cacheHit');
+      diagnostics?.count(PosterSource.watchNext, 'cacheHit');
       return cached;
     }
 
     final key = (generation, address);
-    if (_pendingPosters.containsKey(key)) diagnostics.count(PosterSource.watchNext, 'deduplicated');
+    if (_pendingPosters.containsKey(key)) diagnostics?.count(PosterSource.watchNext, 'deduplicated');
     return _pendingPosters.putIfAbsent(key, () {
-      final trace = diagnostics.start(PosterSource.watchNext, address,
+      final trace = diagnostics?.start(PosterSource.watchNext, address,
           packageName: packageName, thumbnail: thumbnail);
       return _posterPool.withResource(() async {
         if (!_canLoadPoster(generation)) return null;
         try {
           final uri = Uri.tryParse(address);
           if (uri == null || uri.scheme != 'http' && uri.scheme != 'https') {
-            trace.stage(PosterStage.platform);
+            trace?.stage(PosterStage.platform);
           }
           final bytes = uri != null && (uri.scheme == 'http' || uri.scheme == 'https')
               ? await readNetworkPoster(_http, uri, trace: trace)
               : await _channel.getWatchNextPoster(address);
-          if (bytes != null) trace.receivedBytes = bytes.length;
+          if (bytes != null) trace?.receivedBytes = bytes.length;
           if (!_canLoadPoster(generation)) return null;
           if (bytes == null || bytes.isEmpty) {
-            trace.finish(PosterOutcome.failed);
+            trace?.finish(PosterOutcome.failed);
             return null;
           }
           _posterCache[address] = bytes;
-          trace.finish(PosterOutcome.loaded);
+          trace?.finish(PosterOutcome.loaded);
           return bytes;
         } catch (error, stack) {
-          trace.error(error);
-          trace.finish(_canLoadPoster(generation) ? PosterOutcome.failed : PosterOutcome.discarded);
+          trace?.error(error);
+          trace?.finish(_canLoadPoster(generation) ? PosterOutcome.failed : PosterOutcome.discarded);
           if (_canLoadPoster(generation)) {
             DiagnosticsStore.instance.recordException('watchNextPoster', error, stack);
           }
           return null;
         }
       }).whenComplete(() {
-        trace.finish(PosterOutcome.discarded);
+        trace?.finish(PosterOutcome.discarded);
         _pendingPosters.remove(key);
       });
     });
@@ -332,7 +332,7 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
 
   @override
   void dispose() {
-    DiagnosticsStore.instance.posterLoads.lifecycle(PosterSource.watchNext, 'disposed');
+    DiagnosticsStore.instance.activePosterLoads?.lifecycle(PosterSource.watchNext, 'disposed');
     work?.cancel(this);
     _memoryResources?.unregister(this);
     ++_callCount;

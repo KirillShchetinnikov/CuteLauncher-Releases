@@ -18,6 +18,7 @@ import 'settings_page_layout.dart';
  */
 
 import 'package:flauncher/providers/apps_service.dart';
+import 'package:flauncher/providers/update_service.dart';
 import 'package:flauncher/widgets/settings/accessibility_page.dart';
 import 'package:flauncher/widgets/settings/applications_panel_page.dart';
 
@@ -33,29 +34,69 @@ import 'package:provider/provider.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 
 import 'focusable_settings_tile.dart';
+import 'updates_page.dart';
 import '../android_settings_icon.dart';
 
-class SettingsPanelPage extends StatelessWidget {
+class SettingsPanelPage extends StatefulWidget {
   static const String routeName = "settings_panel";
 
   const SettingsPanelPage({super.key});
 
   @override
+  State<SettingsPanelPage> createState() => _SettingsPanelPageState();
+}
+
+class _SettingsPanelPageState extends State<SettingsPanelPage> {
+  final _homeFocus = FocusNode();
+
+  @override
+  void dispose() {
+    _homeFocus.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final updateVersion = context.select<UpdateService?, String?>(
+      (service) =>
+          service?.fromPlay == false ? service?.release?.version : null,
+    );
 
     return SettingsPageLayout(
       title: Text(l.settings),
-      subtitle: Text(
-        'CuteLauncher',
-        style: Theme.of(context).textTheme.bodySmall,
-      ),
+      subtitle: Text('CuteLauncher', style: theme.textTheme.bodySmall),
+      initialFocus: _homeFocus,
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            if (updateVersion != null)
+              FocusableSettingsTile(
+                key: const ValueKey('available-update-shortcut'),
+                leading: Icon(
+                  Icons.system_update_alt,
+                  color: theme.colorScheme.primary,
+                ),
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(l.updateAvailable),
+                    Text(
+                      displayAppVersion(updateVersion),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+                onPressed: () =>
+                    Navigator.of(context).pushNamed(UpdatesPage.routeName),
+              ),
             FocusableSettingsTile(
               autofocus: true,
+              focusNode: _homeFocus,
               leading: const Icon(Icons.home_outlined),
               title: Text(l.homeScreen),
               onPressed: () =>

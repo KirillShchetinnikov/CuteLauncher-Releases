@@ -14,7 +14,8 @@ class _RealHttp extends HttpOverrides {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  setUp(DiagnosticsStore.instance.clear);
+  setUp(() => DiagnosticsStore.instance..clear()..startRecording());
+  tearDown(DiagnosticsStore.instance.clear);
   test('revalidation keeps identical bytes and retains artwork on invalid responses', () async {
     await HttpOverrides.runWithHttpOverrides(() async {
       var invalid = false;
@@ -43,7 +44,7 @@ void main() {
         await service.refresh(reloadPosters: true);
         expect(await service.poster(uri), same(original));
         expect(service.cachedPoster(uri), same(original));
-        final failures = DiagnosticsStore.instance.posterLoads.snapshot()['failures'] as List;
+        final failures = DiagnosticsStore.instance.activePosterLoads!.snapshot()['failures'] as List;
         expect(failures.single['stage'], 'validation');
         expect(failures.single['reason'], 'invalidImage');
         expect(failures.single['outcome'], 'cachedFallback');
@@ -75,7 +76,7 @@ void main() {
           service.poster('$base/stall?two'),
         ]), [null, null]);
         expect(await service.poster('$base/good'), kTransparentImage);
-        final failures = DiagnosticsStore.instance.posterLoads.snapshot()['failures'] as List;
+        final failures = DiagnosticsStore.instance.activePosterLoads!.snapshot()['failures'] as List;
         expect(failures, hasLength(2));
         expect(failures.first['stage'], 'headers');
         expect(failures.first['timeoutMs'], 5000);
@@ -129,7 +130,7 @@ void main() {
           service.didChangeAppLifecycleState(AppLifecycleState.resumed);
           expect(await service.poster('$base/good'), kTransparentImage);
           expect(goodRequests, 1);
-          final diagnostics = DiagnosticsStore.instance.posterLoads.snapshot();
+          final diagnostics = DiagnosticsStore.instance.activePosterLoads!.snapshot();
           final errors = diagnostics['failures'] as List;
           expect(errors, hasLength(2));
           expect(errors.first['stage'], failure == 'http error' ? 'headers' : 'body');

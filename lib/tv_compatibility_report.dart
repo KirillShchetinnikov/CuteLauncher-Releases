@@ -143,8 +143,10 @@ Map<String, Object> createTvCompatibilityReport(
 /// Accept only the exported schema when preparing a report for Git.
 Map<String, Object> parseTvCompatibilityReport(Map<String, dynamic> report) {
   if (report['schemaVersion'] == 3 && report['reportType'] == 'diagnostics') {
-    final compatibility = report['compatibility'];
-    if (compatibility is! Map || compatibility['scope'] != 'readOnlyMetadata') {
+    final source = report['compatibility'];
+    final compatibility = source is Map ? source : null;
+    final basic = report['reportMode'] == 'basic' && source == null;
+    if (!basic && compatibility?['scope'] != 'readOnlyMetadata') {
       throw const FormatException(
         'Missing read-only compatibility observations',
       );
@@ -175,8 +177,8 @@ Map<String, Object> parseTvCompatibilityReport(Map<String, dynamic> report) {
         'versionName': app['version'],
         'versionCode': app['build'],
       },
-      'checks': compatibility['status'] == 'complete'
-          ? compatibility['checks']
+      'checks': compatibility?['status'] == 'complete'
+          ? compatibility!['checks']
           : const {},
     });
   }

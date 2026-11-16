@@ -5,6 +5,10 @@ import java.util.List;
 public final class NativeShellDiagnosticsTest {
     public static void main(String[] args) {
         NativeShellDiagnostics.clear();
+        NativeShellDiagnostics.failure("sleepTimer", new IllegalStateException("ignored"));
+        if (!((List<?>) NativeShellDiagnostics.snapshot().get("recent")).isEmpty())
+            throw new AssertionError("Captured before opt-in");
+        NativeShellDiagnostics.start();
         for (int i = 0; i < 70; i++)
             NativeShellDiagnostics.failure("sleepTimer", new java.net.ConnectException("192.168.1.73 password=hunter2"));
         var report = NativeShellDiagnostics.snapshot();

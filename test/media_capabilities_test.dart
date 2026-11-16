@@ -51,7 +51,7 @@ void main() {
     messenger.setMockMethodCallHandler(channel, (call) async =>
       call.method == 'getTvCompatibilityDiagnostics' ? {'identity': {}, 'checks': {}, 'mediaCapabilities': raw} : null);
     try {
-      final report = await collectDiagnostics();
+      final report = await collectDiagnostics(extended: true);
       expect(report['mediaCapabilities'], mediaCapabilities(raw));
     } finally { messenger.setMockMethodCallHandler(channel, null); }
   });

@@ -1933,8 +1933,32 @@ class AppLocalizationsJa extends AppLocalizations {
       'ファイルは公開せず、作者に個別メッセージで送ってください。自動処理後も個人情報が残る場合があります。送信すると、匿名化された端末互換性レポートを CuteLauncher の Git リポジトリで公開することに同意したものとします。公開するのは個人情報を含まない機器情報と機能の利用可否だけです。エラーログ、コマンド、個人の設定は公開しません。\n\nレポートにはインストール済みパッケージの名前、バージョン、有効状態と、セクションの名前、内容、順序、表示状態も含まれます。診断のため識別子と名前は保持されますが、これらの一覧は公開されません。';
 
   @override
+  String get diagnosticsStartRecording => '拡張診断を開始';
+
+  @override
+  String get diagnosticsFinishRecording => '記録を終了してレポートを作成';
+
+  @override
+  String get diagnosticsStopRecording => '記録を停止';
+
+  @override
+  String get diagnosticsCreateExtended => '拡張レポートを作成';
+
+  @override
+  String get diagnosticsRecordingActive => '拡張診断を記録中';
+
+  @override
+  String get diagnosticsRecordingStopped => '記録が終了しました';
+
+  @override
+  String get diagnosticsExtendedReady => '拡張レポートが完成しました';
+
+  @override
+  String get diagnosticsRecordingFailed => '拡張診断の記録を開始できませんでした。';
+
+  @override
   String get diagnosticsHint =>
-      '1つのレポートに端末機能の互換性とエラー診断をまとめます。レポートには端末の機種とファームウェア、アプリのバージョン、権限、メモリ、エラーの段階と原因、個人情報を自動処理したコマンドと応答が含まれます。現在のセッションの直近 50 操作、別枠で最大 100 件の失敗、制限付き ADB ログを保持します。再起動で消去されます。個人情報が残る可能性があるため、公開せず個別メッセージで送信してください。自動送信はありません。各エラーにはその時点の適用設定を保存し、後の変更では置き換えません。\n\nレポートにはインストール済みパッケージの名前、バージョン、有効状態と、セクションの名前、内容、順序、表示状態も含まれます。診断のため識別子と名前は保持されますが、これらの一覧は公開されません。';
+      '基本レポートには端末情報、権限、設定、直近最大20件の操作が含まれます。詳細なレポートが必要な場合は拡張診断を開始し、問題を再現してここに戻ってください。記録は最長10分です。拡張レポートには詳細ログ、互換性の結果、アプリ、セクションが含まれます。自動送信は行われません。';
 
   @override
   String get diagnosticsTitle => 'エラー診断';
@@ -3354,6 +3378,21 @@ class AppLocalizationsJa extends AppLocalizations {
   String get sectionIconFolder => 'フォルダ';
 
   @override
+  String get sectionIconReading => '読書';
+
+  @override
+  String get sectionIconKids => '子ども向け';
+
+  @override
+  String get sectionIconSmartHome => 'スマートホーム';
+
+  @override
+  String get sectionIconTravel => '旅行';
+
+  @override
+  String get sectionIconPodcasts => 'ポッドキャスト';
+
+  @override
   String get homeInactiveTransparency => '非アクティブなセクションの透明度';
 
   @override
@@ -4349,6 +4388,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get stopApp => '停止';
 
   @override
+  String get restartApp => '再起動';
+
+  @override
+  String get appRestartLaunchFailed => 'アプリは停止しましたが、開けませんでした。';
+
+  @override
   String get backgroundImageFormats =>
       '画像：JPEG、PNG、WebP、GIF、BMP。上限8 MiB、48メガピクセル、各辺16,384ピクセル。';
 
@@ -5221,6 +5266,12 @@ class AppLocalizationsJa extends AppLocalizations {
       'Android が APK を読み取れませんでした。ファイルが存在しない、空、サイズ超過、または認識できない状態です。更新を再ダウンロードしてください。';
 
   @override
+  String get updateWhatsNew => '更新内容';
+
+  @override
+  String get updateNotesUnavailable => '更新内容を表示できません。';
+
+  @override
   String get updateVerificationFailed =>
       'APK の確認中にエラーが発生したため、インストールをブロックしました。再試行し、繰り返す場合は診断レポートを開発者に送信してください。';
 
@@ -5362,6 +5413,25 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get appLaunchGroup => '起動';
+
+  @override
+  String get applicationInfoSettings => 'アプリ情報の設定';
+
+  @override
+  String get applicationInfoCheckOnOpen => '開いたときに状態を確認';
+
+  @override
+  String get applicationInfoButtonsHint => 'OK — 表示または非表示 · ◄ / ► — 移動';
+
+  @override
+  String get applicationInfoMovingHint => '▲ / ▼ — 移動 · OK または戻る — 完了';
+
+  @override
+  String get applicationInfoProcessHelp =>
+      'ランチャーは画面を開いたときに一度だけ状態を確認できます。アプリが実行中の場合にのみ、停止と再起動が表示されます。これらの操作を使うには、手動確認を表示するか、開いたときの確認を有効にしてください。';
+
+  @override
+  String get applicationInfoNoActions => '表示できる操作はありません';
 
   @override
   String get appManagementGroup => 'アプリの管理';

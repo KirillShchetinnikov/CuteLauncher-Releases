@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:crypto/crypto.dart';
+import 'package:flauncher/image_limits.dart';
 import 'package:flauncher/providers/update_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -51,20 +52,29 @@ class _Request extends Fake implements HttpClientRequest {
 
 class _Client extends Fake implements HttpClient {
   final _Response response;
+
   _Client(this.response);
+
+  Uri? requestedUri;
   @override
   Duration? connectionTimeout;
   @override
-  Future<HttpClientRequest> getUrl(Uri uri) async => _Request(response);
+  Future<HttpClientRequest> getUrl(Uri uri) async {
+    requestedUri = uri;
+    return _Request(response);
+  }
   @override
   void close({bool force = false}) {}
 }
 
 class _Overrides extends HttpOverrides {
   final _Response response;
+
   _Overrides(this.response);
+
+  late final _Client client = _Client(response);
   @override
-  HttpClient createHttpClient(SecurityContext? context) => _Client(response);
+  HttpClient createHttpClient(SecurityContext? context) => client;
 }
 
 void main() {
@@ -95,6 +105,82 @@ void main() {
       expect(await fetchAppRelease(), isNull);
       HttpOverrides.global = _Overrides(_Response(utf8.encode('[]')));
       expect(await fetchAppRelease(), {'releases': []});
+    });
+  });
+
+  group('Release notes', () {
+    const tag = 'v1.2.0-test.2+15';
+    setUp(() {
+      final previous = HttpOverrides.current;
+      addTearDown(() => HttpOverrides.global = previous);
+    });
+
+    for (final language in ['ru', 'en', 'de']) {
+      test(
+        'loads only the offered tag in the language for $language',
+        () async {
+          final notes = language == 'ru'
+              ? '- Новые настройки.'
+              : '- New settings.';
+          final response = _Overrides(
+            _Response(
+              utf8.encode(
+                [
+                  '## v1.2.0-test.2+16 — 2026-11-16',
+                  '- Wrong build.',
+                  '## $tag — 2026-11-16',
+                  '',
+                  notes,
+                  '',
+                  '## v1.2.0-test.1 — 2026-11-15',
+                  '- Older update.',
+                ].join('\r\n'),
+              ),
+            ),
+          );
+          HttpOverrides.global = response;
+          expect(await fetchAppReleaseNotes(tag, language), notes);
+          final uri = response.client.requestedUri!;
+          expect(uri.scheme, 'https');
+          expect(uri.host, 'raw.githubusercontent.com');
+          expect(uri.pathSegments, [
+            ...updateRepository.split('/'),
+            tag,
+            'CHANGELOG_${language == 'ru' ? 'RU' : 'EN'}.md',
+          ]);
+        },
+      );
+    }
+
+    test('handles missing files and missing or empty tag entries', () async {
+      HttpOverrides.global = _Overrides(_Response([], status: 404));
+      expect(await fetchAppReleaseNotes(tag, 'en'), isNull);
+      HttpOverrides.global = _Overrides(
+        _Response(
+          utf8.encode('## v1.2.0 — 2026-11-16\n\n- Different release.\n'),
+        ),
+      );
+      expect(await fetchAppReleaseNotes(tag, 'en'), isNull);
+      HttpOverrides.global = _Overrides(
+        _Response(
+          utf8.encode(
+            '## $tag — 2026-11-16\n\n## v1.2.0 — 2026-11-16\n- Different release.\n',
+          ),
+        ),
+      );
+      expect(await fetchAppReleaseNotes(tag, 'en'), isNull);
+    });
+
+    test('rejects redirects and oversized changelogs', () async {
+      HttpOverrides.global = _Overrides(_Response([], status: 302));
+      await expectLater(fetchAppReleaseNotes(tag, 'en'), throwsFormatException);
+      HttpOverrides.global = _Overrides(
+        _Response(List.filled(512 * 1024 + 1, 0)),
+      );
+      await expectLater(
+        fetchAppReleaseNotes(tag, 'en'),
+        throwsA(isA<ImageInputException>()),
+      );
     });
   });
 

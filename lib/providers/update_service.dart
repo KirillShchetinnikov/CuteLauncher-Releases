@@ -16,6 +16,7 @@ const automaticUpdatesKey = 'automatic_update_checks';
 const updateNotificationsKey = 'show_update_notifications';
 const prereleaseUpdatesKey = 'update_prereleases';
 const updateCheckTimeKey = 'update_last_check';
+const _releaseCacheKey = 'update_available_release';
 const _pendingNotificationKey = 'update_pending_notification';
 const _shownNotificationKey = 'update_shown_notification';
 const updateRepository = 'KirillShchetinnikov/CuteLauncher-Releases';
@@ -29,7 +30,34 @@ class AppRelease {
   final Uri uri;
   final int size;
   final String? digest;
-  const AppRelease(this.version, this.uri, this.size, this.digest);
+  final String _assetName;
+  final bool _prerelease;
+
+  const AppRelease(String version, Uri uri, int size, String? digest)
+    : this._(version, uri, size, digest, '', false);
+
+  const AppRelease._(
+    this.version,
+    this.uri,
+    this.size,
+    this.digest,
+    this._assetName,
+    this._prerelease,
+  );
+
+  Map<String, dynamic> _metadata() => {
+    'tag_name': version,
+    'prerelease': _prerelease,
+    'assets': [
+      {
+        'name': _assetName,
+        'size': size,
+        'browser_download_url': uri.toString(),
+        if (digest != null) 'digest': 'sha256:$digest',
+      },
+    ],
+  };
+
   static ({List<int> core, String? prerelease, int build})? _version(
     String value,
   ) {
@@ -171,11 +199,13 @@ class AppRelease {
           !RegExp(r'^sha256:[a-fA-F0-9]{64}$').hasMatch(digest)) {
         continue;
       }
-      return AppRelease(
+      return AppRelease._(
         tag,
         uri,
         item['size'] as int,
         digest?.substring(7).toLowerCase(),
+        item['name'] as String,
+        data['prerelease'] == true,
       );
     }
     return null;
@@ -206,6 +236,49 @@ Future<Map<String, dynamic>?> fetchAppRelease() async {
       }
       final bytes = await readBoundedImage(response, limit: 2 * 1024 * 1024);
       return {'releases': jsonDecode(utf8.decode(bytes)) as List};
+    })().timeout(const Duration(seconds: 20));
+  } finally {
+    client.close(force: true);
+  }
+}
+
+/// Reads the notes for the offered tag from the public release snapshot.
+Future<String?> fetchAppReleaseNotes(String tag, String languageCode) async {
+  if (AppRelease._version(tag) == null) return null;
+  final language = languageCode == 'ru' ? 'RU' : 'EN';
+  final uri = Uri(
+    scheme: 'https',
+    host: 'raw.githubusercontent.com',
+    pathSegments: [
+      ...updateRepository.split('/'),
+      tag,
+      'CHANGELOG_$language.md',
+    ],
+  );
+  final client = HttpClient()..connectionTimeout = const Duration(seconds: 12);
+  try {
+    return await (() async {
+      final request = await client.getUrl(uri);
+      request.followRedirects = false;
+      final response = await request.close();
+      if (response.statusCode == HttpStatus.notFound) return null;
+      if (response.statusCode != HttpStatus.ok) {
+        throw FormatException(
+          'Changelog unavailable (HTTP ${response.statusCode})',
+        );
+      }
+      final bytes = await readBoundedImage(response, limit: 512 * 1024);
+      final changelog = utf8.decode(bytes);
+      final heading = RegExp(
+        '^## ${RegExp.escape(tag)} — '
+        r'\d{4}-\d{2}-\d{2}\r?$',
+        multiLine: true,
+      ).firstMatch(changelog);
+      if (heading == null) return null;
+      final rest = changelog.substring(heading.end);
+      final next = RegExp(r'^## ', multiLine: true).firstMatch(rest);
+      final notes = rest.substring(0, next?.start).trim();
+      return notes.isEmpty ? null : notes;
     })().timeout(const Duration(seconds: 20));
   } finally {
     client.close(force: true);
@@ -307,6 +380,7 @@ class UpdateService extends ChangeNotifier
   final Future<Map<dynamic, dynamic>?> Function() environment;
   final Future<String?> Function() installer;
   final UpdateDownload download;
+  final Future<String?> Function(String tag, String languageCode) releaseNotes;
   Map<dynamic, dynamic>? _environment;
   bool initialized = false,
       checked = false,
@@ -368,6 +442,7 @@ class UpdateService extends ChangeNotifier
     Future<Map<dynamic, dynamic>?> Function()? environment,
     Future<String?> Function()? installer,
     UpdateDownload? download,
+    this.releaseNotes = fetchAppReleaseNotes,
   }) : lookup = lookup ?? fetchAppRelease,
        environment =
            environment ?? (() => channel.invokeMapMethod('environment')),
@@ -381,6 +456,8 @@ class UpdateService extends ChangeNotifier
   Future<void> _initialize() async {
     try {
       _environment = await environment();
+      if (isDisposed) return;
+      if (_environment != null) await _restoreCachedRelease();
     } catch (error, stack) {
       DiagnosticsStore.instance.recordException(
         'updateInitialize',
@@ -394,6 +471,42 @@ class UpdateService extends ChangeNotifier
     notifyListeners();
     _schedule();
     if (automatic) check();
+  }
+
+  AppRelease? _parseRelease(Map<String, dynamic> data) => AppRelease.parse(
+    data,
+    installedVersion,
+    _environment!['versionCode'] as int,
+    supportedAbis,
+    includePrereleases: prereleases,
+  );
+
+  Future<void> _restoreCachedRelease() async {
+    final cached = preferences.get(_releaseCacheKey);
+    if (cached == null) return;
+    if (!fromPlay && cached is String) {
+      try {
+        final data = jsonDecode(cached);
+        if (data is Map<String, dynamic>) release = _parseRelease(data);
+      } on FormatException {
+        // Discard an unreadable cache.
+      } on TypeError {
+        // Discard cache data with an incompatible schema.
+      }
+    }
+    if (release == null) await preferences.remove(_releaseCacheKey);
+  }
+
+  Future<void> _storeCachedRelease(AppRelease? next) async {
+    final previous = preferences.get(_releaseCacheKey);
+    if (next == null) {
+      if (previous != null) await preferences.remove(_releaseCacheKey);
+      return;
+    }
+    final metadata = jsonEncode(next._metadata());
+    if (metadata != previous) {
+      await preferences.setString(_releaseCacheKey, metadata);
+    }
   }
 
   void _schedule() {
@@ -410,6 +523,7 @@ class UpdateService extends ChangeNotifier
     release = null;
     ready = false;
     checked = false;
+    unawaited(preferences.remove(_releaseCacheKey));
     unawaited(preferences.remove(_pendingNotificationKey));
     notifyListeners();
     _schedule();
@@ -423,6 +537,7 @@ class UpdateService extends ChangeNotifier
     release = null;
     ready = false;
     checked = false;
+    await _storeCachedRelease(null);
     await preferences.remove(_pendingNotificationKey);
     if (isDisposed) return;
     notifyListeners();
@@ -481,19 +596,13 @@ class UpdateService extends ChangeNotifier
       final data = await lookup();
       if (!current()) return;
       checked = true;
-      final next = data == null
-          ? null
-          : AppRelease.parse(
-              data,
-              installedVersion,
-              _environment!['versionCode'] as int,
-              List<String>.from(_environment!['abis'] as List),
-              includePrereleases: prereleases,
-            );
+      final next = data == null ? null : _parseRelease(data);
       if (next?.uri != release?.uri || next?.digest != release?.digest) {
         ready = false;
       }
       release = next;
+      await _storeCachedRelease(next);
+      if (!current()) return;
       if (next == null) {
         await preferences.remove(_pendingNotificationKey);
       } else if (notify &&

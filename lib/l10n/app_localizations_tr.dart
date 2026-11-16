@@ -1980,8 +1980,32 @@ class AppLocalizationsTr extends AppLocalizations {
       'Dosyayı yazara özel mesajla gönderin, herkese açık paylaşmayın: otomatik temizleme kişisel verileri kaçırabilir. Göndererek anonim cihaz uyumluluk raporunun CuteLauncher Git deposunda yayımlanmasını kabul edersiniz. Yalnızca cihaz bilgileri ve özellik kullanılabilirliği kişisel veriler olmadan yayımlanır; hata günlükleri, komutlar ve ayarlarınız yayımlanmaz.\n\nRapor ayrıca yüklü paketleri, adlarını, sürümlerini ve etkinlik durumlarını, bölümlerin adlarını, içeriklerini, sıralarını ve görünürlüklerini içerir. Tanılama için kimlikler ve adlar korunur; uygulama ve bölüm listeleri yayımlanmaz.';
 
   @override
+  String get diagnosticsStartRecording => 'Genişletilmiş tanılamayı başlat';
+
+  @override
+  String get diagnosticsFinishRecording => 'Kaydı bitir ve rapor oluştur';
+
+  @override
+  String get diagnosticsStopRecording => 'Kaydı durdur';
+
+  @override
+  String get diagnosticsCreateExtended => 'Genişletilmiş rapor oluştur';
+
+  @override
+  String get diagnosticsRecordingActive => 'Genişletilmiş kayıt sürüyor';
+
+  @override
+  String get diagnosticsRecordingStopped => 'Kayıt tamamlandı';
+
+  @override
+  String get diagnosticsExtendedReady => 'Genişletilmiş rapor hazır';
+
+  @override
+  String get diagnosticsRecordingFailed => 'Genişletilmiş kayıt başlatılamadı.';
+
+  @override
   String get diagnosticsHint =>
-      'Tek rapor cihaz özellik uyumluluğunu ve hata tanılamasını birleştirir. Rapor cihaz modeli ve yazılımını, uygulama sürümünü, izinleri, belleği, hata aşamaları ve nedenlerini, kişisel verileri otomatik temizlenen komutları ve yanıtları içerir. Oturumda son 50 işlem, ayrıca en fazla 100 hata ve sınırlı ADB kaydı tutulur. Yeniden başlatma kaydı siler. Temizleme bazı kişisel verileri kaçırabilir: dosyayı herkese açık paylaşmak yerine özel mesajla gönderin. Otomatik gönderim yoktur. Her hata, uygulanan ayarların anlık görüntüsünü saklar; sonraki değişiklikler bunu değiştirmez.\n\nRapor ayrıca yüklü paketleri, adlarını, sürümlerini ve etkinlik durumlarını, bölümlerin adlarını, içeriklerini, sıralarını ve görünürlüklerini içerir. Tanılama için kimlikler ve adlar korunur; uygulama ve bölüm listeleri yayımlanmaz.';
+      'Temel rapor cihaz bilgilerini, izinleri, ayarları ve son 20 işleme kadar olan kayıtları içerir. Ayrıntılı rapor için genişletilmiş tanılamayı başlatın, sorunu yeniden oluşturun ve buraya dönün. Kayıt en fazla 10 dakika sürer. Genişletilmiş raporda ayrıntılı günlükler, uyumluluk sonuçları, uygulamalar ve bölümler bulunur. Hiçbir veri otomatik gönderilmez.';
 
   @override
   String get diagnosticsTitle => 'Hata teşhisi';
@@ -3459,6 +3483,21 @@ class AppLocalizationsTr extends AppLocalizations {
   String get sectionIconFolder => 'Klasör';
 
   @override
+  String get sectionIconReading => 'Okuma';
+
+  @override
+  String get sectionIconKids => 'Çocuklar için';
+
+  @override
+  String get sectionIconSmartHome => 'Akıllı ev';
+
+  @override
+  String get sectionIconTravel => 'Seyahat';
+
+  @override
+  String get sectionIconPodcasts => 'Podcast\'ler';
+
+  @override
   String get homeInactiveTransparency => 'Etkin olmayan bölümlerin şeffaflığı';
 
   @override
@@ -4484,6 +4523,12 @@ class AppLocalizationsTr extends AppLocalizations {
   String get stopApp => 'Durdur';
 
   @override
+  String get restartApp => 'Yeniden başlat';
+
+  @override
+  String get appRestartLaunchFailed => 'Uygulama durduruldu ancak açılamadı.';
+
+  @override
   String get backgroundImageFormats =>
       'Resimler: JPEG, PNG, WebP, GIF, BMP — en fazla 8 MiB, 48 megapiksel ve her kenarda 16.384 piksel.';
 
@@ -5379,6 +5424,12 @@ class AppLocalizationsTr extends AppLocalizations {
       'Android APK’yı okuyamadı: dosya eksik, boş, çok büyük veya tanınmıyor. Güncellemeyi yeniden indirin.';
 
   @override
+  String get updateWhatsNew => 'Yenilikler';
+
+  @override
+  String get updateNotesUnavailable => 'Güncelleme notları kullanılamıyor.';
+
+  @override
   String get updateVerificationFailed =>
       'APK doğrulanırken hata oluştu. Yükleme engellendi. Tekrar deneyin; hata tekrarlanırsa geliştiriciye tanılama raporu gönderin.';
 
@@ -5522,6 +5573,26 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get appLaunchGroup => 'Başlatma';
+
+  @override
+  String get applicationInfoSettings => 'Uygulama bilgisi ayarları';
+
+  @override
+  String get applicationInfoCheckOnOpen => 'Açılışta durumu kontrol et';
+
+  @override
+  String get applicationInfoButtonsHint =>
+      'OK — göster veya gizle · ◄ / ► — taşı';
+
+  @override
+  String get applicationInfoMovingHint => '▲ / ▼ — taşı · OK veya Geri — bitir';
+
+  @override
+  String get applicationInfoProcessHelp =>
+      'Başlatıcı açılışta durumu bir kez kontrol edebilir. Durdur ve Yeniden başlat yalnızca uygulama çalışıyorsa görünür. Bu işlemler için elle kontrolü görünür bırakın veya açılışta kontrolü etkinleştirin.';
+
+  @override
+  String get applicationInfoNoActions => 'Gösterilecek işlem yok';
 
   @override
   String get appManagementGroup => 'Uygulamayı yönet';

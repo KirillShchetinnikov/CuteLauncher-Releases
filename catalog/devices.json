@@ -420,6 +420,32 @@
       ]
     },
     {
+      "id": "formuler-z10-pro-max-hevc-logcat-20261116",
+      "label": "Formuler Z10 Pro MAX — журналы видеообоев",
+      "kind": "physical",
+      "exactMatch": false,
+      "identity": {
+        "manufacturer": "FORMULER",
+        "model": "Formuler Z10 Pro MAX",
+        "device": "Z10ProMAX",
+        "fingerprint": null,
+        "firmware": null,
+        "android": "10",
+        "sdk": "29",
+        "abis": null
+      },
+      "results": [
+        {
+          "feature": "video-wallpaper-hevc-4k-buffer-allocation",
+          "status": "failed",
+          "date": "2026-11-16",
+          "appBuild": "Версия CuteLauncher неизвестна, Media3 1.9.2",
+          "summary": "В журнале одиночного режима после запуска второго плеера до освобождения первого зафиксированы семь отказов выделения выходного графического буфера 3840×2160 с NO_MEMORY(-12). Оба режима используют аппаратный HEVC-декодер Realtek. В журнале режима папки этих отказов нет. Связь с зелёным экраном и идентичность прошивки не подтверждены.",
+          "evidenceSection": "Formuler Z10 Pro MAX: сравнение журналов видеообоев — 16 ноября 2026"
+        }
+      ]
+    },
+    {
       "id": "tcl-c6k-g08-android12-as35",
       "label": "TCL C6K по сообщению пользователя — Smart TV Pro, Android 12 AS35",
       "kind": "physical",
@@ -555,11 +581,11 @@
         },
         {
           "feature": "home-tile-images-after-return",
-          "status": "unverified",
-          "date": "2026-11-15",
-          "appBuild": "1.8.0-test.3+262",
-          "summary": "Пользователь сообщил о повторной загрузке изображений плиток и появлении квадратных значков после Home. В журнале 24 запроса баннеров и 8 запросов значков. При экспорте глобально баннеры растягивались, значки вписывались, экономия памяти выключена. Отчёт не фиксирует фактический источник на конкретной плитке. Сброс оформления и причина перезагрузки не установлены.",
-          "evidenceSection": "Изображения плиток при возврате Home на TCL G10 AS16 — 15 ноября 2026"
+          "status": "failed",
+          "date": "2026-11-16",
+          "appBuild": "1.8.0-test.3+264",
+          "summary": "Журнал пользователя зафиксировал очистку кеша memoryPressure после Home, 17 чтений баннеров со статусом obsolete и переход нескольких плиток с баннера на значок при прежних режимах и пропорциях 16:9. Исправление на устройстве ещё не проверено.",
+          "evidenceSection": "Изображения плиток при возврате Home на TCL G10 AS16 — 16 ноября 2026"
         }
       ]
     },
@@ -620,6 +646,32 @@
           "appBuild": "262 (1.8.0-test.3+262 по тегу)",
           "summary": "Пользователь прислал диагностику в контексте лишнего тоста при вызове быстрых настроек. Сборка 262 предшествует исправлению 3bfa0ccb. В журнале нет вызова панели или результата ремаппера. Отображение сообщения на исправленной сборке не проверено.",
           "evidenceSection": "Google TV Streamer: тост быстрых настроек — 15 ноября 2026"
+        }
+      ]
+    },
+    {
+      "id": "xiaomi-mibox4-oneday-4560",
+      "label": "Xiaomi Mi Box S (MIBOX4) — Android 12, STTC.230106.001/4560",
+      "kind": "physical",
+      "exactMatch": true,
+      "identity": {
+        "manufacturer": "Xiaomi",
+        "model": "MIBOX4",
+        "device": "oneday",
+        "fingerprint": "Xiaomi/oneday/oneday:12/STTC.230106.001/4560:user/release-keys",
+        "firmware": "STTC.230106.001.4560 release-keys",
+        "android": "12",
+        "sdk": "31",
+        "abis": "armeabi-v7a,armeabi"
+      },
+      "results": [
+        {
+          "feature": "aerialviews-automatic-start",
+          "status": "unverified",
+          "date": "2026-11-16",
+          "appBuild": "1.7.5+243",
+          "summary": "По сообщению пользователя AerialViews запускается по таймауту на штатном Home, а на CuteLauncher не появляется. При экспорте CuteLauncher назначен HOME, пакет Android TV Home отключён, AerialViews включён и выбран адаптивный пейзаж с движением. Состояние системного таймера и события запуска заставки в отчёте отсутствуют. Причина и результат контрольного сравнения неизвестны.",
+          "evidenceSection": "Mi Box S: автоматический запуск AerialViews — 15 ноября 2026"
         }
       ]
     }

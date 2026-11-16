@@ -263,6 +263,12 @@ class _SectionIconChoice extends StatelessWidget {
       SectionIcon.tools => l.tools,
       SectionIcon.photos => l.sectionIconPhotos,
       SectionIcon.folder => l.sectionIconFolder,
+      SectionIcon.weather => l.weather,
+      SectionIcon.reading => l.sectionIconReading,
+      SectionIcon.kids => l.sectionIconKids,
+      SectionIcon.smartHome => l.sectionIconSmartHome,
+      SectionIcon.travel => l.sectionIconTravel,
+      SectionIcon.podcasts => l.sectionIconPodcasts,
     };
     return FocusableSettingsTile(
       title: Text(l.sectionTitleIcon),

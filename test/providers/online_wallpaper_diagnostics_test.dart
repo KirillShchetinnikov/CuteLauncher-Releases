@@ -20,12 +20,13 @@ void main() {
   late Directory root;
   late SharedPreferences preferences;
   setUp(() async {
-    DiagnosticsStore.instance.clear();
+    DiagnosticsStore.instance..clear()..startRecording();
     root = await Directory.systemTemp.createTemp('wallpaper-diagnostics-');
     SharedPreferences.setMockInitialValues({});
     preferences = await SharedPreferences.getInstance();
   });
   tearDown(() async {
+    DiagnosticsStore.instance.clear();
     await root.delete(recursive: true);
   });
   Future<void> initialized(OnlineWallpaperService service) async {
@@ -60,7 +61,7 @@ void main() {
           ),
         );
         final event =
-            (DiagnosticsStore.instance.snapshot()['failures'] as List).last
+            (DiagnosticsStore.instance.snapshot(extended: true)['failures'] as List).last
                 as Map;
         expect(event['details'], containsPair('exception', 'other'));
         expect(event['details'], containsPair('wallpaperSource', source));
@@ -129,7 +130,7 @@ void main() {
       expect(service.failure!.stage, WallpaperStage.metadata);
       expect(service.failure!.reason, reason);
       final event =
-          (DiagnosticsStore.instance.snapshot()['failures'] as List).last
+          (DiagnosticsStore.instance.snapshot(extended: true)['failures'] as List).last
               as Map;
       expect(event['operation'], 'dart.onlineWallpaperRefresh');
       final details = event['details'] as Map;
@@ -242,7 +243,7 @@ void main() {
       await old;
       expect(service.failed, isFalse);
       expect(service.failure, isNull);
-      expect(DiagnosticsStore.instance.snapshot()['failures'], isEmpty);
+      expect(DiagnosticsStore.instance.snapshot(extended: true)['failures'], isEmpty);
       expect(service.wallpaper, isNotNull);
     },
   );

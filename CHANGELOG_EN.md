@@ -2,6 +2,18 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
+## v1.8.0-test.10 — 2026-11-16
+
+**Pre-release.**
+
+- You can hide and reorder buttons in an app's details panel. Open the settings using the gear in the panel or go to Settings → Home screen → App info settings. You can also enable a status check over local ADB when opening the panel.
+- The app details panel now has a Restart action. When the app can be opened, the launcher starts it after confirming that it was stopped over local ADB.
+- When a compatible update is found, its version appears at the top of Settings. Select that entry to open Updates, where you can read What's new before installing.
+- Diagnostics offers a standard report and extended recording. Start recording before reproducing an issue, then stop it manually or create an extended report right away.
+- Six icons are now available for section headings: Weather, Reading, Kids, Smart home, Travel, and Podcasts.
+- Fixed app banners disappearing after the cache is cleared when returning to the home screen. Reduced memory use when repeatedly returning to the home screen and when generating a standard report.
+- Fixed how the previous video wallpaper is released when checking a new file. Video wallpaper compatibility depends on the device firmware and decoders. Use H.264 in an MP4 file for better compatibility.
+
 ## v1.8.0-test.7 — 2026-11-15
 
 **Pre-release.**

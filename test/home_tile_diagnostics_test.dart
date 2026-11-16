@@ -42,24 +42,21 @@ void main() {
     },
   );
 
-  test('export includes lifecycle and the actual cause of clearing caches only in a probe build', () {
+  test('tile recording is opt-in and includes lifecycle and cache-clear causes', () {
     final store = DiagnosticsStore.instance;
     store.clear();
     addTearDown(store.clear);
     final resources = MemoryResources();
     addTearDown(resources.dispose);
-    store.clear();
+    store.startRecording();
 
     resources.didChangeAppLifecycleState(AppLifecycleState.hidden);
     resources.didChangeAppLifecycleState(AppLifecycleState.paused);
     resources.didHaveMemoryPressure();
     resources.didChangeAppLifecycleState(AppLifecycleState.resumed);
 
-    final report = store.snapshot();
-    if (!HomeTileDiagnostics.enabled) {
-      expect(report, isNot(contains('homeTileImages')));
-      return;
-    }
+    final report = store.snapshot(extended: true);
+    expect(store.snapshot(), isNot(contains('homeTileImages')));
     final history = report['homeTileImages'] as Map<String, Object>;
     final events = history['events'] as List<Map<String, Object>>;
     expect(events.map((event) => event['event']), [
@@ -71,6 +68,6 @@ void main() {
     expect(events[1]['reason'], 'memoryPressure');
     expect(events.last['foreground'], isTrue);
     store.clear();
-    expect((store.snapshot()['homeTileImages'] as Map)['events'], isEmpty);
+    expect((store.snapshot(extended: true)['homeTileImages'] as Map)['events'], isEmpty);
   });
 }

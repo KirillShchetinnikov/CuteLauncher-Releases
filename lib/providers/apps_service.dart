@@ -44,7 +44,7 @@ import 'package:pool/pool.dart';
 import '../models/app.dart';
 import '../models/category.dart';
 
-class AppsService extends ChangeNotifier with ServiceLifecycle {
+class AppsService extends ChangeNotifier with ServiceLifecycle, WidgetsBindingObserver {
   final FLauncherChannel _fLauncherChannel;
   final AppCatalogCache? catalogCache;
   final ForegroundWork? work;
@@ -62,7 +62,7 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
     _iconCache.remove(package);
     _bannerCache.remove(package);
     final revision = _imageVersions.update(package, (version) => version + 1, ifAbsent: () => 1);
-    if (HomeTileDiagnostics.enabled) {
+    if (DiagnosticsStore.instance.isRecording) {
       DiagnosticsStore.instance.homeTiles.revision(package, reason, revision);
     }
   }
@@ -82,6 +82,7 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
   int _imageGeneration = 0;
 
   bool _initialized = false;
+  bool _refreshAfterInit = false;
   StreamSubscription<dynamic>? _appsSubscription;
 
   final List<LauncherSection> _launcherSections = List.empty(growable: true);
@@ -108,7 +109,7 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
 
   Future<Uint8List> _loadImage(String key, ImageByteCache cache, Future<Uint8List> Function() loader) {
     if (isDisposed || _memoryResources?.isForeground == false) {
-      if (HomeTileDiagnostics.enabled && !isDisposed) {
+      if (DiagnosticsStore.instance.isRecording && !isDisposed) {
         _traceImageRead(key, HomeTileRead.background);
       }
       return Future.value(Uint8List(0));
@@ -118,7 +119,7 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
     // Cache hits must not queue behind slow disk or platform-channel reads.
     final cached = cache[package];
     if (cached != null) {
-      if (HomeTileDiagnostics.enabled) {
+      if (DiagnosticsStore.instance.isRecording) {
         _traceImageRead(key, cached.isEmpty ? HomeTileRead.cacheEmpty : HomeTileRead.cacheHit);
       }
       return Future.value(cached);
@@ -129,15 +130,16 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
         return await _imagePool.withResource(() {
           final obsolete = generation != _imageGeneration;
           if (isDisposed || obsolete || _memoryResources?.isForeground == false) {
-            if (HomeTileDiagnostics.enabled && !isDisposed) {
+            if (DiagnosticsStore.instance.isRecording && !isDisposed) {
               _traceImageRead(key, obsolete ? HomeTileRead.obsolete : HomeTileRead.background);
             }
             return Future.value(Uint8List(0));
           }
-          if (!HomeTileDiagnostics.enabled) return loader();
+          if (!DiagnosticsStore.instance.isRecording) return loader();
           final traceGeneration = DiagnosticsStore.instance.homeTiles.generation;
           return loader().then((bytes) {
-            if (!isDisposed && traceGeneration == DiagnosticsStore.instance.homeTiles.generation) {
+            if (!isDisposed && DiagnosticsStore.instance.isRecording &&
+                traceGeneration == DiagnosticsStore.instance.homeTiles.generation) {
               _traceImageRead(key, bytes.isEmpty ? HomeTileRead.readEmpty : HomeTileRead.read);
             }
             return bytes;
@@ -246,6 +248,7 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
       configure: (economy) => configureImageCache(iconBytes: (economy ? 1 : 2) * 1024 * 1024,
         bannerBytes: (economy ? 2 : 6) * 1024 * 1024));
     _settingsService?.addListener(_notifyImages);
+    WidgetsBinding.instance.addObserver(this);
     _init().catchError((Object error) {
       debugPrint('Unable to initialize apps: $error');
     });
@@ -253,6 +256,7 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     work?.cancel(this);
     work?.cancel(_catalogEvents);
     _memoryResources?.unregister(this);
@@ -263,6 +267,19 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
     _sortedApplications = null;
     _settingsService?.removeListener(_notifyImages);
     super.dispose();
+  }
+
+  @override
+  void didChangeLocales(List<Locale>? locales) {
+    if (isDisposed) return;
+    if (!_initialized) {
+      _refreshAfterInit = true;
+      return;
+    }
+    unawaited((work?.schedule(_catalogEvents, refreshState, priority: 3) ?? refreshState())
+        .catchError((Object error, StackTrace stack) {
+          DiagnosticsStore.instance.recordException('appsService', error, stack);
+        }));
   }
 
   Future<void> _init() async {
@@ -441,6 +458,8 @@ class AppsService extends ChangeNotifier with ServiceLifecycle {
 
     if (initialCatalog != null) {
       StartupTrace.mark(cached == null ? 'launcherCatalogReady' : 'catalogCacheReady');
+    }
+    if (initialCatalog != null || _refreshAfterInit) {
       (work?.schedule(this, refreshState, priority: 2) ?? refreshState())
           .catchError((Object error) { debugPrint('Catalog reconciliation failed: $error'); });
     }

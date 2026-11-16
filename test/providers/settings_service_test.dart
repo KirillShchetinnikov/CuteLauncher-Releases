@@ -19,6 +19,7 @@
 //import 'dart:html';
 
 import 'package:flauncher/providers/settings_service.dart';
+import 'package:flauncher/application_info_configuration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -34,6 +35,35 @@ void main() async {
     await sharedPreferences.clear();
   });
 
+  test('app info customizations persist and are restored from backup', () async {
+    final service = SettingsService(sharedPreferences);
+    addTearDown(service.dispose);
+
+    final configuration = ApplicationInfoConfiguration(
+      order: [ApplicationInfoAction.checkProcess],
+      hidden: [ApplicationInfoAction.visibility],
+      checkOnOpen: true,
+    );
+    expect(
+      ApplicationInfoConfiguration.decode(service.storedApplicationInfoConfiguration).checkOnOpen,
+      isFalse,
+    );
+    await service.setApplicationInfoConfiguration(configuration);
+    await sharedPreferences.reload();
+    final restored = SettingsService(sharedPreferences);
+    addTearDown(restored.dispose);
+    expect(restored.storedApplicationInfoConfiguration, configuration.encode());
+
+    final backup = service.exportSettingsMap();
+    await sharedPreferences.clear();
+    await restored.importSettingsMap(backup);
+    await restored.importSettingsMap({applicationInfoConfigurationKey: '{"checkOnOpen":"true"}'});
+    final result = ApplicationInfoConfiguration.decode(restored.storedApplicationInfoConfiguration);
+    expect(result.order.first, ApplicationInfoAction.checkProcess);
+    expect(result.order.toSet(), ApplicationInfoAction.values.toSet());
+    expect(result.hidden, {ApplicationInfoAction.visibility});
+    expect(result.checkOnOpen, isTrue);
+  });
 
   test('system settings visibility persists and survives backup import', () async {
     final settings = SettingsService(sharedPreferences);

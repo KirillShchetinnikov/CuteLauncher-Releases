@@ -14,7 +14,8 @@ void main() {
     test('TCL capability diagnostics: $scenario', () async {
       const tcl = BridgeChannel('cutelauncher/tcl_blue_light');
       final store = DiagnosticsStore.instance;
-      store.clear();
+      store..clear()..startRecording();
+      addTearDown(store.clear);
       final messenger =
           TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
       messenger.setMockMethodCallHandler(tcl, (_) async {
@@ -28,7 +29,7 @@ void main() {
       final result = await tcl.invokeResult<Map>(
         scenario == 'setUnsupported' ? 'set' : 'status',
       );
-      final report = store.snapshot();
+      final report = store.snapshot(extended: true);
       if (scenario == 'unavailableCapability') {
         expect(result.status, BridgeStatus.success);
         expect(result.value?['status'], 'unsupported');
@@ -186,7 +187,8 @@ void main() {
     },
   );
   test('legacy error codes survive diagnostic instrumentation and details are redacted', () async {
-    DiagnosticsStore.instance.clear();
+    DiagnosticsStore.instance..clear()..startRecording();
+    addTearDown(DiagnosticsStore.instance.clear);
     const channel = BridgeChannel(
       'cutelauncher/sleep_timer',
       preserveErrorCodes: true,
@@ -212,7 +214,7 @@ void main() {
         isA<PlatformException>().having((error) => error.code, 'code', 'exact'),
       ),
     );
-    final report = DiagnosticsStore.instance.snapshot();
+    final report = DiagnosticsStore.instance.snapshot(extended: true);
     final event = (report['failures'] as List).single as Map;
     expect(event['nativeCode'], 'exact');
     expect(event['operation'], 'sleepTimer.start');
@@ -225,7 +227,8 @@ void main() {
   test(
     'ADB failures keep action, shell output and precise Wi-Fi cause',
     () async {
-      DiagnosticsStore.instance.clear();
+      DiagnosticsStore.instance..clear()..startRecording();
+      addTearDown(DiagnosticsStore.instance.clear);
       const channel = BridgeChannel('cutelauncher/adb');
       final messenger =
           TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
@@ -253,7 +256,7 @@ void main() {
         'operation': 'disableSystem',
       });
       final event =
-          (DiagnosticsStore.instance.snapshot()['failures'] as List).single
+          (DiagnosticsStore.instance.snapshot(extended: true)['failures'] as List).single
               as Map;
       expect(event['nativeCode'], 'wifiUnknown');
       expect(event['requestedOperation'], 'disableSystem');

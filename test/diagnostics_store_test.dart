@@ -16,6 +16,65 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  test('basic report keeps the last 20 safe rows and skips extended platform calls', () async {
+    final store = DiagnosticsStore.instance..clear();
+    store.settingsProvider = () => {'memory_saver_enabled': true, 'token': 'private-value'};
+    const channel = MethodChannel('me.efesser.flauncher/method');
+    final messenger = TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+    final calls = <String>[];
+    messenger.setMockMethodCallHandler(channel, (call) async {
+      calls.add(call.method);
+      return {'androidApi': 34, 'device': {'model': 'Smart TV Pro', 'firmware': 'test.34'}};
+    });
+    addTearDown(() {
+      store.settingsProvider = null;
+      store.clear();
+      messenger.setMockMethodCallHandler(channel, null);
+    });
+    for (var i = 0; i < 25; i++) {
+      store.record('dart', 'framework', 'error', 'operation_failed', context: {
+        'durationMs': i,
+        'details': {'exception': 'io'},
+        'errorText': 'private-value',
+      });
+    }
+    final report = await collectDiagnostics();
+    expect(calls, ['getDiagnosticEnvironment']);
+    expect(report['reportMode'], 'basic');
+    expect(report['settingsAtExport'], {'memory_saver_enabled': true});
+    expect((report['recentOperations'] as List).map((row) => row['durationMs']), [
+      for (var i = 5; i < 25; i++) i,
+    ]);
+    expect((report['recentOperations'] as List).last['reason'], 'io');
+    for (final key in ['failures', 'nativeShell', 'compatibility', 'installedApplications']) {
+      expect(report, isNot(contains(key)));
+    }
+    expect(jsonEncode(report), isNot(contains('private-value')));
+    final projection = publicTvCompatibilityReport(report);
+    expect((projection['checks'] as Map).values, everyElement('unknown'));
+  });
+
+  test('event limit freezes the recording and leaves basic history live', () async {
+    final store = DiagnosticsStore()..startRecording();
+    addTearDown(store.clear);
+    final firstPoster = store.activePosterLoads!.start(PosterSource.appChannels, 'https://example.test/poster');
+    for (var i = 0; i < DiagnosticsStore.recordingEventLimit; i++) {
+      store.homeTiles.returnHome();
+    }
+    await Future<void>.value();
+    expect(store.recording.value, DiagnosticRecordingState.stopped);
+    store.homeTiles.returnHome();
+    firstPoster.finish(PosterOutcome.loaded);
+    store.record('dart', 'framework', 'error', 'operation_failed');
+    final report = store.snapshot(extended: true);
+    expect((report['recording'] as Map)['stopReason'], 'eventLimit');
+    expect((report['recording'] as Map)['operationsAndTileEvents'], DiagnosticsStore.recordingEventLimit);
+    expect((report['posterLoads'] as Map)['recent'], isEmpty);
+    expect((report['posterLoads'] as Map)['active'], hasLength(1));
+    expect(report['recentOperations'], isEmpty);
+    expect(report['recentBasicOperations'], hasLength(1));
+  });
+
   test('landscape report distinguishes astronomical times from the night scheduler fallback', () {
     DateTime at(int hour, int minute) => DateTime(2026, 11, 15, hour, minute);
     final schedule = [
@@ -57,7 +116,8 @@ void main() {
   });
 
   test('one collection contains compatibility, error history and a shared app/device header', () async {
-    DiagnosticsStore.instance.clear();
+    DiagnosticsStore.instance..clear()..startRecording();
+    addTearDown(DiagnosticsStore.instance.clear);
     PackageInfo.setMockInitialValues(
       appName: 'CuteLauncher',
       packageName: 'test',
@@ -99,12 +159,12 @@ void main() {
       'error',
       'operation_failed',
     );
-    DiagnosticsStore.instance.posterLoads.start(PosterSource.appChannels,
+    DiagnosticsStore.instance.activePosterLoads!.start(PosterSource.appChannels,
         'https://private.example/image?token=secret', packageName: 'example.tv');
     SharedPreferences.setMockInitialValues({'background_source': 'landscape'});
     final settings = SettingsService(await SharedPreferences.getInstance());
     addTearDown(settings.dispose);
-    final report = await collectDiagnostics(settings: settings);
+    final report = await collectDiagnostics(extended: true, settings: settings);
     expect(report['schemaVersion'], 3);
     expect(report['reportType'], 'diagnostics');
     expect(((report['installedApplications'] as Map)['applications'] as List).single['packageName'], 'example.tv');
@@ -148,7 +208,8 @@ void main() {
     }
   });
   test('settings are captured at each failure, deduplicated and frozen across later changes', () {
-    final store = DiagnosticsStore();
+    final store = DiagnosticsStore()..startRecording();
+    addTearDown(store.clear);
     final settings = <String, Object>{
       'memory_saver_enabled': false,
       'wallpaper_fit': 'blurred',
@@ -162,7 +223,7 @@ void main() {
     settings['memory_saver_enabled'] = true;
     store.record('dart', 'framework', 'error', 'operation_failed');
     settings['wallpaper_fit'] = 'cover';
-    final report = store.snapshot();
+    final report = store.snapshot(extended: true);
     final snapshots = report['settingsSnapshots'] as List;
     final failures = report['failures'] as List;
     expect(snapshots.length, 2);
@@ -180,19 +241,21 @@ void main() {
         settings['wallpaper_brightness'] = i;
         store.record('dart', 'framework', 'error', 'operation_failed');
       }
-      expect((store.snapshot()['settingsSnapshots'] as List).length,
+      expect((store.snapshot(extended: true)['settingsSnapshots'] as List).length,
           lessThanOrEqualTo(DiagnosticsStore.failureCapacity));
     store.clear();
-    expect(store.snapshot()['settingsSnapshots'], isEmpty);
+    expect(store.snapshot(extended: true)['settingsSnapshots'], isEmpty);
+    store.startRecording();
     store.settingsProvider = () => throw StateError('unavailable');
     store.record('dart', 'framework', 'error', 'operation_failed');
     expect(
-      (store.snapshot()['failures'] as List).single['settingsStatus'],
+      (store.snapshot(extended: true)['failures'] as List).single['settingsStatus'],
       'unavailable',
     );
   });
   test('failures survive successful traffic and contain independent redacted context', () {
-    final store = DiagnosticsStore();
+    final store = DiagnosticsStore()..startRecording();
+    addTearDown(store.clear);
     final details = {
       'reason': 'wifi_owner_missing',
       'networkCount': 2,
@@ -217,7 +280,7 @@ void main() {
     for (var i = 0; i < 80; i++) {
       store.record('cutelauncher/adb', 'info', 'success', 'ok');
     }
-    final report = store.snapshot();
+    final report = store.snapshot(extended: true);
     final failure = (report['failures'] as List).single as Map;
     expect(failure['action'], 'preview');
     expect(failure['requestedOperation'], 'disableSystem');
@@ -225,19 +288,20 @@ void main() {
     expect(failure['details']['reason'], 'wifi_owner_missing');
     expect(jsonEncode(report), isNot(contains('My home')));
     (failure['details'] as Map)['reason'] = 'mutated';
-    expect(jsonEncode(store.snapshot()), isNot(contains('mutated')));
+    expect(jsonEncode(store.snapshot(extended: true)), isNot(contains('mutated')));
     for (var i = 0; i < 110; i++) {
       store.record('dart', 'framework', 'error', 'operation_failed');
     }
     expect(
-      (store.snapshot()['failures'] as List).length,
+      (store.snapshot(extended: true)['failures'] as List).length,
       DiagnosticsStore.failureCapacity,
     );
     store.clear();
-    expect(store.snapshot()['failures'], isEmpty);
+    expect(store.snapshot(extended: true)['failures'], isEmpty);
   });
   test('all bridge scopes record errors and framework frames omit machine paths', () {
-    final store = DiagnosticsStore();
+    final store = DiagnosticsStore()..startRecording();
+    addTearDown(store.clear);
     for (final scope in [
       'auto_launch',
       'cloud_account',
@@ -260,7 +324,7 @@ void main() {
         '#1 private (file:///Users/Alice/private.dart:22:1)',
       ),
     );
-    final report = store.snapshot();
+    final report = store.snapshot(extended: true);
     expect((report['failures'] as List).length, 11);
     final json = jsonEncode(report);
     expect(json, contains('package:flauncher/widgets/action_notice.dart:40:2'));
@@ -270,7 +334,8 @@ void main() {
   test(
     'allowlist drops personal data, keys, addresses and arbitrary error text',
     () {
-      final store = DiagnosticsStore();
+      final store = DiagnosticsStore()..startRecording();
+    addTearDown(store.clear);
       store.record('cutelauncher/adb', 'action', 'denied', 'secret-password');
       store.record(
         'me.efesser.flauncher/method',
@@ -279,7 +344,7 @@ void main() {
         '/private/path',
       );
       store.record('private-channel', 'getApplications', 'success', 'ok');
-      final report = store.snapshot(
+      final report = store.snapshot(extended: true,
         version: 'secret-version',
         build: 'secret-build',
         environment: {
@@ -320,26 +385,28 @@ void main() {
     },
   );
   test('ring is bounded, summary counts all operations and snapshots are independent', () {
-    final store = DiagnosticsStore();
+    final store = DiagnosticsStore()..startRecording();
+    addTearDown(store.clear);
     for (var i = 0; i < 60; i++) {
       store.record('cutelauncher/night', 'configure', 'success', 'ok');
     }
-    final report = store.snapshot(version: '1.0.0', build: '8');
+    final report = store.snapshot(extended: true, version: '1.0.0', build: '8');
     expect(
       (report['recentOperations'] as List).length,
       DiagnosticsStore.capacity,
     );
     expect(report['operationCounts'], {'success': 60});
     store.clear();
-    expect(store.snapshot()['recentOperations'], isEmpty);
-    expect(store.snapshot()['operationCounts'], isEmpty);
+    expect(store.snapshot(extended: true)['recentOperations'], isEmpty);
+    expect(store.snapshot(extended: true)['operationCounts'], isEmpty);
     expect(
       (report['recentOperations'] as List).length,
       DiagnosticsStore.capacity,
     );
   });
   test('real channel failure records safe status without arguments or native details', () async {
-    DiagnosticsStore.instance.clear();
+    DiagnosticsStore.instance..clear()..startRecording();
+    addTearDown(DiagnosticsStore.instance.clear);
     const channel = BridgeChannel('me.efesser.flauncher/method');
     final messenger =
         TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
@@ -353,7 +420,7 @@ void main() {
     );
     await channel.invokeResult<bool>('launchApp', 'private.package');
     final json = DiagnosticsStore.instance.encode(
-      DiagnosticsStore.instance.snapshot(),
+      DiagnosticsStore.instance.snapshot(extended: true),
     );
     expect(json, contains('permission_denied'));
     expect(json, isNot(contains('private')));
@@ -378,7 +445,7 @@ void main() {
           ? {'androidApi': 34, 'defaultHome': true, 'serial': 'private-serial'}
           : {'pssBytes': 1024, 'path': '/private/file'},
     );
-    final json = jsonEncode(await collectDiagnostics());
+    final json = jsonEncode(await collectDiagnostics(extended: true));
     expect(json, contains('1024'));
     expect(json, isNot(contains('private')));
     expect(json, isNot(contains('signature')));

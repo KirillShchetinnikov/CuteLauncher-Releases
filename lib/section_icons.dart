@@ -17,7 +17,13 @@ enum SectionIcon {
   news,
   tools,
   photos,
-  folder;
+  folder,
+  weather,
+  reading,
+  kids,
+  smartHome,
+  travel,
+  podcasts;
 
   static final _byName = values.asNameMap();
 

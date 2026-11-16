@@ -9,7 +9,12 @@ import 'settings/focusable_settings_tile.dart';
 /// Context-menu control backed by the same selection as BackgroundStartupPage.
 class BackgroundStartupAppTile extends StatefulWidget {
   final String packageName;
-  const BackgroundStartupAppTile({super.key, required this.packageName});
+  final FocusNode? focusNode;
+  const BackgroundStartupAppTile({
+    super.key,
+    required this.packageName,
+    this.focusNode,
+  });
 
   @override
   State<BackgroundStartupAppTile> createState() =>
@@ -57,6 +62,7 @@ class _BackgroundStartupAppTileState extends State<BackgroundStartupAppTile>
         children: [
           RoundedSwitchListTile(
             key: const ValueKey('app_background_startup'),
+            focusNode: widget.focusNode,
             title: Text(l.backgroundStartupToggle),
             secondary: const Icon(Icons.power_settings_new_rounded),
             value: selected,

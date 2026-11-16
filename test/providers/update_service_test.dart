@@ -103,6 +103,84 @@ void main() {
     'directory': 'unused',
   };
 
+  test('restores a found update offline and clears it after an empty check', () async {
+    SharedPreferences.setMockInitialValues({updateNotificationsKey: false});
+    final prefs = await SharedPreferences.getInstance();
+    var offline = false;
+    var checks = 0;
+    Future<Map<String, dynamic>?> lookup() async {
+      checks++;
+      if (offline) throw const SocketException('offline');
+      return checks == 1 ? release() : null;
+    }
+
+    UpdateService start() =>
+        UpdateService(prefs, environment: () async => environment(), lookup: lookup);
+    final initial = start();
+    try {
+      await initialized(initial);
+      await initial.check(force: true, notify: false);
+      expect(initial.release?.version, 'v1.1.0');
+    } finally {
+      initial.dispose();
+    }
+
+    await prefs.reload();
+    final restored = start();
+    addTearDown(restored.dispose);
+    await initialized(restored);
+    expect(checks, 1);
+    expect(restored.release?.version, 'v1.1.0');
+    expect(restored.release?.size, 3);
+    expect(restored.hasUpdateNotification, isFalse);
+
+    offline = true;
+    await restored.check(force: true);
+    expect(restored.failed, isTrue);
+    expect(restored.release?.version, 'v1.1.0');
+    offline = false;
+    await restored.check(force: true);
+    expect(restored.release, isNull);
+    await prefs.reload();
+    final cleared = start();
+    addTearDown(cleared.dispose);
+    await initialized(cleared);
+    expect(cleared.release, isNull);
+  });
+
+  for (final (reason, changedEnvironment, channel) in [
+    ('already installed', {'versionCode': 3}, true),
+    ('different ABI', {'abis': ['x86_64']}, true),
+    ('Google Play', {'play': true}, true),
+    ('stable channel', <String, Object>{}, false),
+  ]) {
+    test('ignores cached release when $reason', () async {
+      SharedPreferences.setMockInitialValues({prereleaseUpdatesKey: true});
+      final prefs = await SharedPreferences.getInstance();
+      final initial = UpdateService(
+        prefs,
+        environment: () async => environment(),
+        lookup: () async => release(tag: 'v1.1.0-test.1+3'),
+      );
+      try {
+        await initialized(initial);
+        await initial.check(force: true, notify: false);
+        expect(initial.release?.version, 'v1.1.0-test.1+3');
+      } finally {
+        initial.dispose();
+      }
+      await prefs.setBool(prereleaseUpdatesKey, channel);
+      await prefs.reload();
+      final restored = UpdateService(
+        prefs,
+        environment: () async => {...environment(), ...changedEnvironment},
+      );
+      addTearDown(restored.dispose);
+      await initialized(restored);
+      expect(restored.release, isNull);
+    });
+  }
+
   test('creation in background defers automatic lookup until resume', () async {
     SharedPreferences.setMockInitialValues({automaticUpdatesKey: true});
     final prefs = await SharedPreferences.getInstance();

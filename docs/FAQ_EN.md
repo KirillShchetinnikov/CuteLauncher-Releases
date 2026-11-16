@@ -216,10 +216,11 @@ data. [Memory](USER_GUIDE_EN.md#memory-and-resource-saving).
 
 ## How do I report a problem?
 
-Reproduce it, then open Settings → Advanced → Diagnostics → Create report →
-Export report → Save to disk. Send the file privately to the author with the
-steps and expected result. Do not post it publicly: sanitization may miss
-personal data. Nothing is sent automatically.
+Open Settings → Advanced → Diagnostics. If the failure already happened,
+select Create report. For a detailed report, start extended diagnostics,
+reproduce the issue, and return to finish recording. Select Export report →
+Save to disk and send the file privately to the author with the steps and
+expected result. Redaction may miss personal data. Nothing is sent automatically.
 
 Sending it to the author means you agree to publication of the anonymized TV
 compatibility portion in the CuteLauncher Git repository; errors, commands and

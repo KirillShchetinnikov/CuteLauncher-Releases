@@ -3186,9 +3186,9 @@ void main() {
     ).map((heading) => heading.icon).toList();
     expect(icons(), [SectionIcon.favorites, SectionIcon.allApps, SectionIcon.folder]);
     await appearance.setCategoryTitleIcon(1, SectionIcon.games);
-    await appearance.setCategoryTitleIcon(3, SectionIcon.photos);
+    await appearance.setCategoryTitleIcon(3, SectionIcon.weather);
     await tester.pumpAndSettle();
-    expect(icons(), [SectionIcon.games, SectionIcon.allApps, SectionIcon.photos]);
+    expect(icons(), [SectionIcon.games, SectionIcon.allApps, SectionIcon.weather]);
     await appearance.set('sectionIcons', false);
     await tester.pumpAndSettle();
     expect(icons(), isEmpty);
@@ -4029,6 +4029,7 @@ void main() {
 
 SettingsService mkSettingsService() {
   final settingsService = MockSettingsService();
+  when(settingsService.storedApplicationInfoConfiguration).thenReturn(null);
   when(settingsService.screenshotScene).thenReturn(null);
   when(settingsService.panelTooltipsEnabled).thenReturn(false);
   when(settingsService.sleepTimerConfiguration).thenReturn(SleepTimerConfiguration());

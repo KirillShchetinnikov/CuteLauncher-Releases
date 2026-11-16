@@ -3,12 +3,15 @@ import 'package:flauncher/widgets/action_notice.dart';
 import 'settings_page_layout.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../providers/update_service.dart';
+import '../launcher_dialog.dart';
 import '../rounded_switch_list_tile.dart';
 import 'focusable_settings_tile.dart';
+import 'settings_scroll_behavior.dart';
 
 class UpdatesPage extends StatelessWidget {
   static const routeName = 'app_updates';
@@ -17,6 +20,7 @@ class UpdatesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
     final service = context.watch<UpdateService>();
+    final release = service.release;
     return SettingsPageLayout(
       title: Text(l.appUpdates, style: Theme.of(context).textTheme.titleLarge),
       child: SingleChildScrollView(
@@ -83,11 +87,20 @@ class UpdatesPage extends StatelessWidget {
                         }
                       },
               ),
-              if (service.release != null) ...[
+              if (release != null) ...[
                 Padding(
                   padding: const EdgeInsets.all(12),
                   child: Text(
-                    '${l.updateAvailable}: ${displayAppVersion(service.release!.version)}',
+                    '${l.updateAvailable}: ${displayAppVersion(release.version)}',
+                  ),
+                ),
+                FocusableSettingsTile(
+                  title: Text(l.updateWhatsNew),
+                  leading: const Icon(Icons.notes_rounded),
+                  onPressed: () => showLauncherDialog<void>(
+                    context: context,
+                    builder: (_) =>
+                        _ReleaseNotesDialog(release: release, service: service),
                   ),
                 ),
                 FocusableSettingsTile(
@@ -176,6 +189,104 @@ class UpdatesPage extends StatelessWidget {
             ],
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _ReleaseNotesDialog extends StatefulWidget {
+  final AppRelease release;
+  final UpdateService service;
+
+  const _ReleaseNotesDialog({required this.release, required this.service});
+
+  @override
+  State<_ReleaseNotesDialog> createState() => _ReleaseNotesDialogState();
+}
+
+class _ReleaseNotesDialogState extends State<_ReleaseNotesDialog> {
+  final _scroll = ScrollController();
+  String? _language;
+  Future<String?>? _notes;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final language = Localizations.localeOf(context).languageCode;
+    if (language == _language) return;
+    _language = language;
+    _notes = widget.service.releaseNotes(widget.release.version, language);
+  }
+
+  void _scrollBy(double direction) {
+    if (!_scroll.hasClients) return;
+    final position = _scroll.position;
+    position.jumpTo(
+      (position.pixels + direction * position.viewportDimension * .35).clamp(
+        position.minScrollExtent,
+        position.maxScrollExtent,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _scroll.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+    return CallbackShortcuts(
+      bindings: {
+        const SingleActivator(LogicalKeyboardKey.arrowUp): () => _scrollBy(-1),
+        const SingleActivator(LogicalKeyboardKey.arrowDown): () => _scrollBy(1),
+      },
+      child: LauncherAlertDialog(
+        title: Text(
+          '${l.updateWhatsNew} · ${displayAppVersion(widget.release.version)}',
+        ),
+        scrollContent: false,
+        content: SizedBox(
+          width: 400,
+          child: FutureBuilder<String?>(
+            future: _notes,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState != ConnectionState.done) {
+                return const LinearProgressIndicator();
+              }
+              final notes = snapshot.data;
+              return SettingsScrollbar(
+                controller: _scroll,
+                child: SingleChildScrollView(
+                  controller: _scroll,
+                  padding: const EdgeInsetsDirectional.only(end: 14),
+                  child: Text(
+                    notes == null
+                        ? l.updateNotesUnavailable
+                        : notes
+                              .replaceAllMapped(
+                                RegExp(r'\*\*([^*\n]+)\*\*'),
+                                (match) => match.group(1)!,
+                              )
+                              .replaceAll(
+                                RegExp(r'^- ', multiLine: true),
+                                '• ',
+                              ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+        actions: [
+          LauncherDialogButton(
+            autofocus: true,
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(l.close),
+          ),
+        ],
       ),
     );
   }

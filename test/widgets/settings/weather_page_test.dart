@@ -72,7 +72,7 @@ void main() {
   late _Transport transport;
   late List<Uri> cityRequests;
   setUp(() async {
-    DiagnosticsStore.instance.clear();
+    DiagnosticsStore.instance..clear()..startRecording();
     directory = await Directory.systemTemp.createTemp('weather-ui-');
     originalPaths = PathProviderPlatform.instance;
     PathProviderPlatform.instance = _Paths(directory.path);
@@ -107,6 +107,7 @@ void main() {
     }
   });
   tearDown(() async {
+    DiagnosticsStore.instance.clear();
     service.dispose();
     settings.dispose();
     appearance.dispose();
@@ -1201,7 +1202,7 @@ void main() {
     selected = Uint8List.fromList(utf8.encode('fixture-private-token'));
     saveFails = true;
     await importFile(l.weatherImportSaveError);
-    final report = DiagnosticsStore.instance.snapshot();
+    final report = DiagnosticsStore.instance.snapshot(extended: true);
     final imports = (report['failures'] as List).cast<Map>().where((e) => e['operation'] == 'dart.weatherImport');
     expect(imports.map((e) => (e['details'] as Map)['reason']), [
       'weather_import_read', 'weather_import_too_large', 'weather_import_encoding',

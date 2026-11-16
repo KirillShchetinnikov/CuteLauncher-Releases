@@ -1917,8 +1917,32 @@ class AppLocalizationsZh extends AppLocalizations {
       '请通过私信将文件发送给作者，不要公开发布：自动清理可能遗漏个人信息。向作者发送报告即表示您同意在 CuteLauncher 的 Git 仓库中发布匿名的设备兼容性报告。公开内容仅包含无个人信息的设备元数据和功能可用性；错误日志、命令及您的设置不会公开。\n\n报告还包含已安装软件包的名称、版本和启用状态，以及分区名称、内容、顺序和可见性。软件包标识符和名称会保留以便诊断；应用和分区列表不会公开发布。';
 
   @override
+  String get diagnosticsStartRecording => '开始扩展诊断';
+
+  @override
+  String get diagnosticsFinishRecording => '结束记录并创建报告';
+
+  @override
+  String get diagnosticsStopRecording => '停止记录';
+
+  @override
+  String get diagnosticsCreateExtended => '创建扩展报告';
+
+  @override
+  String get diagnosticsRecordingActive => '正在进行扩展记录';
+
+  @override
+  String get diagnosticsRecordingStopped => '记录已结束';
+
+  @override
+  String get diagnosticsExtendedReady => '扩展报告已就绪';
+
+  @override
+  String get diagnosticsRecordingFailed => '无法开始扩展记录。';
+
+  @override
   String get diagnosticsHint =>
-      '一份报告同时包含设备功能兼容性和错误诊断。报告包含设备型号和固件、应用版本、权限、内存、错误阶段及原因，以及自动清除个人信息后的命令和响应。当前会话保留最近 50 次操作、单独最多 100 次失败和有限的 ADB 日志。重启后日志清空。清理可能遗漏个人信息：请通过私信发送文件，不要公开发布。不会自动发送任何内容。每次错误都会保存当时生效设置的快照，后续更改不会覆盖它。\n\n报告还包含已安装软件包的名称、版本和启用状态，以及分区名称、内容、顺序和可见性。软件包标识符和名称会保留以便诊断；应用和分区列表不会公开发布。';
+      '基本报告包含设备信息、权限、设置和最近最多 20 条操作。若需要详细报告，请启动扩展诊断、复现问题，然后返回此处。记录最长持续 10 分钟。扩展报告包含详细日志、兼容性检查结果、应用和分区。数据不会自动发送。';
 
   @override
   String get diagnosticsTitle => '错误诊断';
@@ -3300,6 +3324,21 @@ class AppLocalizationsZh extends AppLocalizations {
   String get sectionIconFolder => '文件夹';
 
   @override
+  String get sectionIconReading => '阅读';
+
+  @override
+  String get sectionIconKids => '儿童';
+
+  @override
+  String get sectionIconSmartHome => '智能家居';
+
+  @override
+  String get sectionIconTravel => '旅行';
+
+  @override
+  String get sectionIconPodcasts => '播客';
+
+  @override
   String get homeInactiveTransparency => '非活动分区透明度';
 
   @override
@@ -4276,6 +4315,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get stopApp => '停止';
 
   @override
+  String get restartApp => '重新启动';
+
+  @override
+  String get appRestartLaunchFailed => '应用已停止，但无法打开。';
+
+  @override
   String get backgroundImageFormats =>
       '图片：JPEG、PNG、WebP、GIF、BMP。最大8 MiB、4800万像素，每边不超过16,384像素。';
 
@@ -5133,6 +5178,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get updateInvalidFile => 'Android 无法读取 APK：文件缺失、为空、过大或无法识别。请重新下载更新。';
 
   @override
+  String get updateWhatsNew => '更新内容';
+
+  @override
+  String get updateNotesUnavailable => '无法显示更新说明。';
+
+  @override
   String get updateVerificationFailed =>
       '验证 APK 时出错，已阻止安装。请重试；如果再次出现，请向开发者发送诊断报告。';
 
@@ -5271,6 +5322,25 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get appLaunchGroup => '启动';
+
+  @override
+  String get applicationInfoSettings => '应用信息设置';
+
+  @override
+  String get applicationInfoCheckOnOpen => '打开时检查状态';
+
+  @override
+  String get applicationInfoButtonsHint => 'OK — 显示或隐藏 · ◄ / ► — 移动';
+
+  @override
+  String get applicationInfoMovingHint => '▲ / ▼ — 移动 · OK 或返回 — 完成';
+
+  @override
+  String get applicationInfoProcessHelp =>
+      '启动器可以在打开时检查一次状态。只有检测到应用正在运行时才会显示停止和重启。若要使用这些操作，请保留手动检查按钮或启用打开时检查。';
+
+  @override
+  String get applicationInfoNoActions => '没有可显示的操作';
 
   @override
   String get appManagementGroup => '应用管理';

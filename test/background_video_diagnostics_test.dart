@@ -11,7 +11,8 @@ import 'package:flauncher/diagnostics_store.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   final store = DiagnosticsStore.instance;
-  setUp(store.clear);
+  setUp(() => store..clear()..startRecording());
+  tearDown(store.clear);
 
   test('captures original player error, stage and metadata while redacting private data', () async {
     final dir = await Directory.systemTemp.createTemp('video-diagnostic-');
@@ -34,7 +35,7 @@ void main() {
         visible: true,
       );
       await BackgroundVideoDiagnostics.flush();
-      final report = store.snapshot();
+      final report = store.snapshot(extended: true);
       final failures = report['failures'] as List;
       expect(failures, hasLength(2));
       expect(failures.first['operation'], 'dart.backgroundVideoValidate');
@@ -70,7 +71,7 @@ void main() {
     store.clear();
     pending.complete('MediaCodec error');
     await BackgroundVideoDiagnostics.flush();
-    expect(store.snapshot()['failures'], isEmpty);
+    expect(store.snapshot(extended: true)['failures'], isEmpty);
   });
 
   test('initialization timeout is distinguished from codec failure', () {
@@ -80,7 +81,7 @@ void main() {
       null,
       const VideoPlayerValue(duration: Duration.zero),
     );
-    final event = (store.snapshot()['failures'] as List).single;
+    final event = (store.snapshot(extended: true)['failures'] as List).single;
     expect(event['details']['reason'], 'video_timeout');
     expect(event['details']['exception'], 'timeout');
   });

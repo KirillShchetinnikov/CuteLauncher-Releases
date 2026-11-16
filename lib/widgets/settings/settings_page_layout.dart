@@ -16,6 +16,10 @@ class SettingsPageLayout extends StatefulWidget {
   final Widget child;
   final Widget? header;
   final Widget? subtitle;
+
+  /// Optional entry target within this page. The caller owns the node.
+  final FocusNode? initialFocus;
+
   final Widget? footer;
   final EdgeInsetsGeometry? footerPadding;
   final bool showDivider;
@@ -27,6 +31,7 @@ class SettingsPageLayout extends StatefulWidget {
     required this.child,
     this.header,
     this.subtitle,
+    this.initialFocus,
     this.footer,
     this.footerPadding,
     this.showDivider = true,
@@ -141,6 +146,13 @@ class _SettingsPageLayoutState extends State<SettingsPageLayout> {
           return;
         }
         if (_pageFocus.traversalDescendants.isEmpty) return;
+        final initialFocus = widget.initialFocus;
+        if (initialFocus != null &&
+            _pageFocus.traversalDescendants.contains(initialFocus)) {
+          _entryFocused = true;
+          initialFocus.requestFocus();
+          return;
+        }
         var first = WidgetOrderTraversalPolicy().findFirstFocus(
           _pageFocus,
           ignoreCurrentFocus: true,

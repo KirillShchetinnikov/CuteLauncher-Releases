@@ -224,6 +224,63 @@ Path _drawIcon(SectionIcon icon) {
         ..lineTo(5, 19)
         ..quadraticBezierTo(3, 19, 3, 17)
         ..close();
+    case SectionIcon.weather:
+      path
+        ..moveTo(6.5, 20)
+        ..cubicTo(1.4, 20, 1.4, 12.5, 6.7, 12.7)
+        ..cubicTo(8.1, 7.5, 15.1, 7.9, 16.1, 13.2)
+        ..cubicTo(21.3, 11.8, 22.4, 20, 17.2, 20)
+        ..close()
+        ..moveTo(12.8, 6.6)
+        ..cubicTo(15.2, 2.7, 21.2, 5.6, 18.6, 10);
+      line([(15.5, 2), (15.7, 2.6)]);
+      line([(20.3, 3.7), (21.1, 2.9)]);
+      line([(21.3, 8.1), (22, 8.2)]);
+    case SectionIcon.reading:
+      path
+        ..moveTo(12, 6.5)
+        ..quadraticBezierTo(8.5, 3.8, 3, 4.5)
+        ..lineTo(3, 18.5)
+        ..quadraticBezierTo(8.5, 17.8, 12, 20.5)
+        ..quadraticBezierTo(15.5, 17.8, 21, 18.5)
+        ..lineTo(21, 4.5)
+        ..quadraticBezierTo(15.5, 3.8, 12, 6.5)
+        ..close();
+      line([(12, 6.5), (12, 20.5)]);
+    case SectionIcon.kids:
+      oval(12, 12, 9, 9);
+      line([(8.2, 10), (8.4, 10)]);
+      line([(15.6, 10), (15.8, 10)]);
+      path
+        ..moveTo(8, 14)
+        ..quadraticBezierTo(12, 19, 16, 14);
+    case SectionIcon.smartHome:
+      line([(3, 10.5), (12, 3), (21, 10.5)]);
+      line([(5, 9), (5, 21), (19, 21), (19, 9)]);
+      path
+        ..moveTo(8.5, 12.8)
+        ..quadraticBezierTo(12, 9.8, 15.5, 12.8)
+        ..moveTo(10.2, 15.3)
+        ..quadraticBezierTo(12, 13.8, 13.8, 15.3);
+      line([(11.9, 18), (12.1, 18)]);
+    case SectionIcon.travel:
+      box(3, 7, 21, 20, 2.5);
+      path
+        ..moveTo(8.5, 7)
+        ..lineTo(8.5, 5)
+        ..quadraticBezierTo(8.5, 3.5, 10, 3.5)
+        ..lineTo(14, 3.5)
+        ..quadraticBezierTo(15.5, 3.5, 15.5, 5)
+        ..lineTo(15.5, 7);
+      line([(7.5, 11), (7.5, 16)]);
+      line([(16.5, 11), (16.5, 16)]);
+    case SectionIcon.podcasts:
+      box(9, 3, 15, 14, 3);
+      path
+        ..moveTo(5.5, 11)
+        ..cubicTo(5.5, 20, 18.5, 20, 18.5, 11);
+      line([(12, 17.75), (12, 21)]);
+      line([(8.5, 21), (15.5, 21)]);
   }
   return path;
 }
