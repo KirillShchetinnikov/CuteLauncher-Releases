@@ -85,6 +85,7 @@ class _Native extends NativeSync {
   Map<String, String>? undo;
   bool invalid = false;
   bool failCommit = false;
+  bool failBegin = false;
   String contextId = 'account-one';
   @override
   Future<Map<String, String>> capture() async => Map.of(values);
@@ -100,6 +101,7 @@ class _Native extends NativeSync {
     await validate(next);
     undo = Map.of(values);
     values = Map.of(next);
+    if (failBegin) throw StateError('Native apply interrupted');
   }
 
   @override
@@ -118,11 +120,28 @@ class _Native extends NativeSync {
   }
 }
 
+class _ObservedBackup extends BackupService {
+  Future<void> Function()? undoWritten;
+  _ObservedBackup(super.database, super.preferences);
+
+  @override
+  Future<void> writeBackupTo(File file, {
+    SettingsService? settingsService,
+    bool validateStructure = false,
+  }) async {
+    await super.writeBackupTo(file,
+      settingsService: settingsService, validateStructure: validateStructure);
+    if (file.path.endsWith('sync-rollback.json.partial')) {
+      await undoWritten?.call();
+    }
+  }
+}
+
 class _TV {
   late SharedPreferences prefs;
   late FLauncherDatabase db;
   late SettingsService settings;
-  late BackupService backup;
+  late _ObservedBackup backup;
   late AutomaticBackupService local;
   late CloudBackupService webdav;
   late _Drive drive;
@@ -132,6 +151,7 @@ class _TV {
   DateTime clock = DateTime(2026, 10, 9, 12);
   int applies = 0;
   bool failApply = false;
+  bool failAfterApply = false;
   final native = _Native();
   Future<void> start(
     Directory parent,
@@ -146,7 +166,7 @@ class _TV {
     db = FLauncherDatabase.inMemory();
     await db.insertCategory(CategoriesCompanion.insert(name: 'Apps', order: 0));
     settings = SettingsService(prefs);
-    backup = BackupService(db, prefs);
+    backup = _ObservedBackup(db, prefs);
     local = AutomaticBackupService(
       backup,
       settings,
@@ -180,6 +200,10 @@ class _TV {
           throw StateError('Import failed');
         }
         await backup.replaceBackup(file, settings);
+        if (failAfterApply) {
+          failAfterApply = false;
+          throw StateError('Apply interrupted after data was changed');
+        }
         applies++;
       },
     );
@@ -199,6 +223,23 @@ class _TV {
     drive.dispose();
     settings.dispose();
     await db.close();
+  }
+
+  Future<void> restartAutomation() async {
+    final fixedMode = automation.fixedMode;
+    automation.dispose();
+    automation = BackupAutomationService(
+      prefs, backup, settings, local, webdav, drive,
+      fixedMode: fixedMode,
+      sources: [settings],
+      nativeSync: native,
+      identityLoader: () async => null,
+      directory: () async => root,
+      now: () => clock,
+      storageFactory: (_) => storage,
+      apply: (file) => backup.replaceBackup(file, settings),
+    );
+    await automation.initialized;
   }
 }
 
@@ -353,6 +394,65 @@ void main() {
     expect(await File('${b.root.path}/sync-rollback.json').exists(), false);
     expect(await b.automation.run(manual: true), true);
     expect(b.native.values, a.native.values);
+  });
+  test('cancel before apply preserves the edit on the next operation', () async {
+    a.native.values = {'native_config_vpn_widget': '{"showName":true}'};
+    expect(await a.automation.run(manual: true), true);
+    b.backup.undoWritten = () => b.settings.setAppLanguage('fr');
+    expect(await b.automation.run(manual: true), false);
+    expect(b.prefs.getString('app_language'), 'fr');
+    expect(b.applies, 0);
+    expect(b.native.values, isEmpty);
+    b.backup.undoWritten = null;
+    expect(await b.automation.run(manual: true, exportOnly: true), true);
+    expect(b.prefs.getString('app_language'), 'fr');
+  });
+  test('background cancellation before apply never restores stale settings', () async {
+    a.native.values = {'native_config_vpn_widget': '{"showName":true}'};
+    expect(await a.automation.run(manual: true), true);
+    b.backup.undoWritten = () async {
+      b.automation.didChangeAppLifecycleState(AppLifecycleState.paused);
+      await b.settings.setAppLanguage('fr');
+    };
+    expect(await b.automation.run(manual: true), false);
+    b.backup.undoWritten = null;
+    b.automation.didChangeAppLifecycleState(AppLifecycleState.resumed);
+    expect(await b.automation.run(manual: true, exportOnly: true), true);
+    expect(b.prefs.getString('app_language'), 'fr');
+    expect(b.applies, 0);
+  });
+  test('failure after Flutter apply restores both stores and removes the journal', () async {
+    await a.settings.setAppLanguage('de');
+    a.native.values = {'native_config_vpn_widget': '{"showName":true}'};
+    expect(await a.automation.run(manual: true), true);
+    b.failAfterApply = true;
+    expect(await b.automation.run(manual: true), false);
+    expect(b.prefs.getString('app_language'), '');
+    expect(b.native.values, isEmpty);
+    expect(await File('${b.root.path}/sync-rollback.json').exists(), false);
+    expect(await b.automation.run(manual: true), true);
+    expect(b.prefs.getString('app_language'), 'de');
+    expect(b.native.values, a.native.values);
+  });
+  test('native begin failure rolls native values back without Flutter import', () async {
+    a.native.values = {'native_config_vpn_widget': '{"showName":true}'};
+    expect(await a.automation.run(manual: true), true);
+    b.native.failBegin = true;
+    expect(await b.automation.run(manual: true), false);
+    expect(b.native.values, isEmpty);
+    expect(b.applies, 0);
+    expect(await File('${b.root.path}/sync-rollback.json').exists(), false);
+  });
+  test('restart discards an unactivated partial journal without reverting edits', () async {
+    final pending = File('${b.root.path}/sync-rollback.json.partial');
+    await b.backup.writeBackupTo(pending, settingsService: b.settings);
+    await b.settings.setAppLanguage('fr');
+    await b.restartAutomation();
+    expect(b.automation.failed, false);
+    expect(b.prefs.getString('app_language'), 'fr');
+    expect(await pending.exists(), false);
+    expect(await b.automation.run(manual: true, exportOnly: true), true);
+    expect(b.prefs.getString('app_language'), 'fr');
   });
   test(
     'cleanup failure does not turn a successful exchange into failure',
@@ -918,6 +1018,53 @@ void main() {
     expect(b.prefs.getString('cloud_secret'), 'keep');
     expect(b.settings.appLanguage, 'en');
     expect(b.local.entries, isNotEmpty);
+  });
+  test('import repairs damaged sync history across restart', () async {
+    expect(await a.automation.run(manual: true, exportOnly: true), true);
+    final state = File('${b.root.path}/backup_sync_state.json');
+    await state.writeAsString('{broken');
+    await b.restartAutomation();
+    expect(b.automation.failed, true);
+    await b.automation.importLatest(backupOnly: true);
+    expect(b.automation.failed, false);
+    await b.restartAutomation();
+    expect(b.automation.failed, false);
+    expect(await b.automation.run(manual: true), true);
+  });
+  test('import persists history separately for each fixed mode', () async {
+    expect(await a.automation.run(manual: true, exportOnly: true), true);
+    final tv = _TV();
+    await tv.start(root, files, independent: true);
+    try {
+      final sync = tv.automation.synchronization!;
+      await sync.configure(destination: BackupDestination.webdav, shared: true);
+      await tv.automation.importLatest(backupOnly: true);
+      await sync.importLatest(backupOnly: true);
+      for (final mode in BackupMode.values) {
+        final state = File('${tv.root.path}/backup_sync_state_${mode.name}.json');
+        expect(await state.exists(), true);
+        final saved = jsonDecode(await state.readAsString()) as Map;
+        expect(saved['stateVersion'], 1);
+        expect(saved['context'], isA<String>());
+        expect(saved['fingerprint'], matches(RegExp(r'^[a-f0-9]{64}$')));
+      }
+    } finally {
+      await tv.close();
+    }
+  });
+  test('checkpoint write failure is not reported as successful recovery', () async {
+    expect(await a.automation.run(manual: true, exportOnly: true), true);
+    final state = File('${b.root.path}/backup_sync_state.json');
+    await state.writeAsString('{broken');
+    await b.restartAutomation();
+    await Directory('${state.path}.partial').create();
+    await expectLater(b.automation.importLatest(backupOnly: true), throwsA(isA<FileSystemException>()));
+    expect(await state.readAsString(), '{broken');
+    expect(await b.automation.run(manual: true), false);
+    await Directory('${state.path}.partial').delete();
+    await b.automation.importLatest(backupOnly: true);
+    await b.restartAutomation();
+    expect(b.automation.failed, false);
   });
   test('background does not start any transfer', () async {
     a.automation.didChangeAppLifecycleState(AppLifecycleState.paused);

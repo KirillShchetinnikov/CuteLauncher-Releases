@@ -32,9 +32,26 @@ import 'focusable_settings_tile.dart';
 import 'settings_help.dart';
 import 'settings_page_layout.dart';
 
-class ContinueWatchingAppsPage extends StatelessWidget {
+class ContinueWatchingAppsPage extends StatefulWidget {
   static const routeName = 'continue_watching_apps_panel';
   const ContinueWatchingAppsPage({super.key});
+
+  @override
+  State<ContinueWatchingAppsPage> createState() => _ContinueWatchingAppsPageState();
+}
+
+class _ContinueWatchingAppsPageState extends State<ContinueWatchingAppsPage> {
+  late final WatchNextService _source;
+  @override
+  void initState() {
+    super.initState();
+    _source = context.read<WatchNextService>()..setCatalogVisible(this, true);
+  }
+  @override
+  void dispose() {
+    _source.setCatalogVisible(this, false);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -206,12 +206,20 @@ def snapshot(root, ref, destination, release_tag=''):
         tagged = git(root, 'rev-parse', '--verify', f'refs/tags/{release_tag}^{{commit}}').stdout.decode().strip()
         if tagged != commit:
             raise ValueError('Release tag and source commit differ')
-    source_git = git(root, 'rev-parse', '--absolute-git-dir').stdout.strip()
-    public_git = git(destination, 'rev-parse', '--absolute-git-dir').stdout.strip()
+    source_git = Path(git(root, 'rev-parse', '--path-format=absolute',
+                          '--git-common-dir').stdout.decode().strip()).resolve()
+    public_git = Path(git(destination, 'rev-parse', '--path-format=absolute',
+                          '--git-common-dir').stdout.decode().strip()).resolve()
     if source_git == public_git or destination == root or root in destination.parents:
         raise ValueError('Public checkout must be independent of the private repository')
     if git(destination, 'status', '--porcelain', '--untracked-files=all').stdout:
         raise ValueError('Public checkout must be clean')
+    # A separate clone can still contain private parents, including a stale
+    # clone that does not know the current source commit yet.
+    private_history = set(git(root, 'rev-list', commit).stdout.splitlines())
+    public_history = set(git(destination, 'rev-list', 'HEAD').stdout.splitlines())
+    if private_history & public_history:
+        raise ValueError('Public checkout must not inherit private history')
 
     # Validate and prepare everything before changing the public checkout.
     with tempfile.TemporaryDirectory() as directory:

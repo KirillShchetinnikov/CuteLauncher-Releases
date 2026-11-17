@@ -102,6 +102,7 @@ void main() {
     sleepTimer = SleepTimerService(elapsedMilliseconds: () => 0);
     appearance = AppearanceService(prefs);
     network = MockNetworkService();
+    when(network.trafficRevision).thenReturn(0);
     weather = MockWeatherService();
     notifications = MockNotificationsService();
     apps = MockAppsService();

@@ -259,7 +259,7 @@ Future<void> _runLauncher({bool remotePanel = false, bool recentApps = false}) a
         ChangeNotifierProvider(create: (context) => TvInputsService(fLauncherChannel, preferences: sharedPreferences, settings: context.read<SettingsService>(), work: work)),
         ChangeNotifierProvider(create: (_) => NotificationsService(fLauncherChannel)),
         ChangeNotifierProvider(create: (context) => NowPlayingService(context.read<SettingsService>())),
-        ChangeNotifierProvider(create: (context) => WatchNextService(fLauncherChannel, onAppLaunched: context.read<AppsService>().recordAppLaunch, memoryResources: context.read<MemoryResources>(), work: work)),
+        ChangeNotifierProvider(create: (context) => WatchNextService(fLauncherChannel, onAppLaunched: context.read<AppsService>().recordAppLaunch, memoryResources: context.read<MemoryResources>(), work: work, settings: context.read<SettingsService>())),
         ChangeNotifierProvider(create: (context) => AppChannelsService(fLauncherChannel, context.read<SettingsService>(),
           apps: context.read<AppsService>(),
           onAppLaunched: context.read<AppsService>().recordAppLaunch, memory: context.read<MemoryResources>(), work: work)),

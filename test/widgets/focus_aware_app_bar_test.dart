@@ -154,6 +154,7 @@ void main() {
       when(mockTvInputsService.initialized).thenReturn(false);
       when(mockNotificationsService.initialized).thenReturn(false);
       final network = MockNetworkService();
+      when(network.trafficRevision).thenReturn(0);
       when(network.hasUsageStatsPermission).thenReturn(false);
       final listeners = <VoidCallback>{};
       when(mockTvInputsService.addListener(any)).thenAnswer((call) {

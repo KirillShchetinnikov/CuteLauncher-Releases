@@ -81,6 +81,11 @@ final class RemotePanelChannels implements AutoCloseable {
                     case "checkNotificationListenerPermission" -> result.success(notifications.checkNotificationListenerPermission());
                     case "requestNotificationListenerPermission" -> result.success(notifications.requestNotificationListenerPermission());
                     case "openAppNotificationSettings" -> result.success(notifications.openAppNotificationSettings());
+                    case "openNotification" -> {
+                        boolean opened = notifications.openNotification(call.argument("key"));
+                        result.success(opened);
+                        if (opened) main.post(dismiss);
+                    }
                     case "dismissNotification" -> result.success(notifications.dismissNotification(call.argument("key")));
                     case "dismissAllNotifications" -> result.success(notifications.dismissAllNotifications());
                     case "setNotificationPopupPresentation" -> main.post(() -> {

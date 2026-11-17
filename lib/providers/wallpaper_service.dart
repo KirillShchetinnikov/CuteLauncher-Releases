@@ -41,9 +41,11 @@ import '../document_files.dart';
 
 import 'package:path_provider/path_provider.dart';
 
-class WallpaperService extends ChangeNotifier with ServiceLifecycle {
+class WallpaperService extends ChangeNotifier with ServiceLifecycle, WidgetsBindingObserver {
   final FLauncherChannel _fLauncherChannel;
   final SettingsService _settingsService;
+  final DateTime Function() _now;
+  bool _foreground = true;
 
   late File _wallpaperFile;
   late File _videoFile;
@@ -73,7 +75,11 @@ class WallpaperService extends ChangeNotifier with ServiceLifecycle {
     this._fLauncherChannel,
     this._settingsService, {
     Future<void> Function(File)? validateVideo,
-  }) : _wallpaper = null {
+    DateTime Function()? now,
+  }) : _wallpaper = null, _now = now ?? DateTime.now {
+    final binding = WidgetsBinding.instance;
+    _foreground = binding.lifecycleState == null || binding.lifecycleState == AppLifecycleState.resumed;
+    binding.addObserver(this);
     _validateVideo =
         validateVideo ??
         (file) => validateBackgroundVideo(file, videoImport: videoImport);
@@ -99,7 +105,26 @@ class WallpaperService extends ChangeNotifier with ServiceLifecycle {
     _settingsService.removeListener(_onSettingsChanged);
     _timer?.cancel();
     videoImport.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    final foreground = state == AppLifecycleState.resumed;
+    if (isDisposed || _foreground == foreground) return;
+    _foreground = foreground;
+    ++_updateWallpaperCallCount;
+    if (!_foreground) {
+      _timer?.cancel();
+      _timer = null;
+    } else {
+      unawaited(_initialization.then((_) async {
+        if (isDisposed || !_foreground) return;
+        await _updateWallpaper();
+        _updateTimerState();
+      }));
+    }
   }
 
   Future<void> _init() async {
@@ -128,7 +153,7 @@ class WallpaperService extends ChangeNotifier with ServiceLifecycle {
 
   void _updateTimerState() {
     if (isDisposed) return;
-    final enabled = _settingsService.timeBasedWallpaperEnabled;
+    final enabled = _foreground && _settingsService.timeBasedWallpaperEnabled;
     if (enabled && (_timer == null || !_timer!.isActive)) {
       _timer = Timer.periodic(
         const Duration(minutes: 1),
@@ -161,9 +186,9 @@ class WallpaperService extends ChangeNotifier with ServiceLifecycle {
   }
 
   Future<void> _updateWallpaper({bool force = false}) async {
-    if (isDisposed) return;
+    if (isDisposed || !_foreground) return;
     final callId = ++_updateWallpaperCallCount;
-    final now = DateTime.now();
+    final now = _now();
     final isDay = now.hour >= 6 && now.hour < 18;
     final enabled = _settingsService.timeBasedWallpaperEnabled;
 

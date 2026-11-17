@@ -105,6 +105,8 @@ const nativeSyncStorePolicy = <String, String>{
   'brightness_restore': 'hardware recovery',
   'crash_loop': 'process recovery',
   'notification_popup_style': 'derived from Flutter appearance',
+  'overlay_panel_style': 'derived from Flutter appearance',
+  'lwidget_breezy_weather_data': 'local weather cache',
   'night_overlay':
       'derived from Flutter night settings and local hardware state',
   'night_solar': 'computed cache',

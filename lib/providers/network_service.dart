@@ -27,6 +27,7 @@ import 'dart:developer';
 
 import 'package:flauncher/flauncher_channel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show mapEquals;
 
 enum NetworkType
 {
@@ -68,6 +69,21 @@ class NetworkService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
 {
   final FLauncherChannel  _channel;
   final ForegroundWork? work;
+  final _trafficOwners = <Object, String>{};
+  final _usageInFlight = <String, (int, Future<void>)>{};
+  final _usageValues = <String, int>{};
+  final _lastUsage = <String, DateTime>{};
+  final _usageOwners = {for (final period in ['daily', 'weekly', 'monthly']) period: Object()};
+  int _trafficRevision = 0;
+  bool _usagePresentationInvalidated = false;
+  int get trafficRevision => _trafficRevision;
+
+  void _cancelPeriodWork() {
+    for (final owner in _usageOwners.values) { work?.cancel(owner); }
+  }
+  bool _usageNeedsRefresh = false;
+  final DateTime Function() now;
+  bool get _pollUsage => !isDisposed && _foreground && _trafficOwners.isNotEmpty;
 
   bool                _hasInternetAccess;
   CellularNetworkType _cellularNetworkType;
@@ -82,14 +98,14 @@ class NetworkService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
   int                 _usageCallCount = 0;
   int                 _networkRevision = 0;
   bool                _foreground = true;
-  DateTime? _lastUsage;
   /// Network connectivity only; independent of usage permission and statistics.
   late final Future<void> initialNetworkLoad;
-  /// Initial network, usage permission and (when allowed) traffic snapshot.
+  /// Initial network and usage permission; traffic is loaded for visible owners.
   late final Future<void> initialLoad;
 
 
-  NetworkService(this._channel, {this.work}) :
+  NetworkService(this._channel, {this.work, DateTime Function()? now}) :
+        now = now ?? DateTime.now,
         _hasInternetAccess = false,
         _cellularNetworkType = CellularNetworkType.Unknown,
         _networkType = NetworkType.Pending,
@@ -105,7 +121,7 @@ class NetworkService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
 
     initialNetworkLoad = _readInitialNetwork(initialRevision);
 
-    initialLoad = Future.wait([initialNetworkLoad, refreshPermissionAndUsage()]);
+    initialLoad = Future.wait([initialNetworkLoad, refreshPermissionAndUsage(force: false)]);
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -131,8 +147,11 @@ class NetworkService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
     } else {
       ++_callCount;
       ++_usageCallCount;
+      _usagePresentationInvalidated = true;
+      _cancelPeriodWork();
       _usageTimer?.cancel();
       _usageTimer = null;
+      work?.cancel(this);
     }
   }
 
@@ -147,36 +166,92 @@ class NetworkService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
         'networkService', e, diagnosticStack,
       );
       log("Error checking usage permission: $e");
+      if (localCallCount == _callCount) _startUsageTimer();
       return;
     }
     if (isDisposed || !_foreground || localCallCount != _callCount) return;
 
     final before = (_hasUsageStatsPermission, _dailyDataUsage);
+    final previousUsage = Map<String, int>.of(_usageValues);
     _hasUsageStatsPermission = allowed;
-    if (_hasUsageStatsPermission) {
-      await _fetchUsage(force: force, notify: false);
-      if (isDisposed || !_foreground || localCallCount != _callCount) return;
-      if (_usageTimer == null || !_usageTimer!.isActive) {
-        _usageTimer = Timer.periodic(const Duration(minutes: 5), (_) => _fetchUsage());
+    if (_hasUsageStatsPermission && (force || _pollUsage)) {
+      await _fetchUsage(force: force);
+      for (final period in _trafficOwners.values.toSet()..remove('daily')) {
+        if (isDisposed || !_foreground || localCallCount != _callCount) return;
+        await _fetchUsage(period: period, force: force);
       }
-    } else {
+      if (isDisposed || !_foreground || localCallCount != _callCount) return;
+      if (_usageNeedsRefresh && _pollUsage) {
+        _usageNeedsRefresh = false;
+        unawaited(refreshPermissionAndUsage(force: false));
+        return;
+      }
+      _startUsageTimer();
+    } else if (!_hasUsageStatsPermission) {
       // Invalidate any traffic request started before permission was revoked.
       ++_usageCallCount;
       _dailyDataUsage = -1;
-      _lastUsage = null;
+      _lastUsage.clear();
+      _usageValues.clear();
+      _cancelPeriodWork();
       _usageTimer?.cancel();
       _usageTimer = null;
     }
-    if (before != (_hasUsageStatsPermission, _dailyDataUsage)) notifyListeners();
+    if (before != (_hasUsageStatsPermission, _dailyDataUsage) ||
+        !mapEquals(previousUsage, _usageValues) || _usagePresentationInvalidated) {
+      _usagePresentationInvalidated = false;
+      ++_trafficRevision;
+      notifyListeners();
+    }
   }
 
   Future<void> requestPermission() async {
     await _channel.requestUsageStatsPermission();
   }
 
-  // Call this when app resumes
-  Future<void> refreshPermissionAndUsage({bool force = true}) => work?.schedule(this,
-      () => _checkPermissionAndStartPolling(force: force)) ?? _checkPermissionAndStartPolling(force: force);
+  void setTrafficVisible(Object owner, bool visible, {String period = 'daily'}) {
+    if (isDisposed) return;
+    final needed = _trafficOwners.isNotEmpty;
+    if (visible) {
+      _trafficOwners[owner] = period == 'weekly' || period == 'monthly' ? period : 'daily';
+    } else {
+      _trafficOwners.remove(owner);
+    }
+    if (needed == _trafficOwners.isNotEmpty) return;
+    if (_trafficOwners.isEmpty) {
+      ++_callCount;
+      ++_usageCallCount;
+      _cancelPeriodWork();
+      _usageTimer?.cancel();
+      _usageTimer = null;
+      work?.cancel(this);
+    } else if (_foreground) {
+      unawaited(refreshPermissionAndUsage(force: false));
+    }
+  }
+
+  Future<void> prepareTraffic(Object owner) {
+    if (isDisposed) return Future.value();
+    _trafficOwners[owner] = 'daily';
+    return Future.wait([initialNetworkLoad, refreshPermissionAndUsage(force: false)]);
+  }
+
+  void _startUsageTimer() {
+    if (_pollUsage && _usageTimer?.isActive != true) {
+      _usageTimer = Timer(const Duration(minutes: 5), () {
+        if (_pollUsage) unawaited(_scheduleUsage(force: true));
+      });
+    }
+  }
+
+  // User actions are immediate; automatic work shares Home's idle queue.
+  Future<void> refreshPermissionAndUsage({bool force = true}) => force
+      ? _checkPermissionAndStartPolling(force: true)
+      : _scheduleUsage();
+
+  Future<void> _scheduleUsage({bool force = false}) =>
+      work?.schedule(this, () => _checkPermissionAndStartPolling(force: force)) ??
+          _checkPermissionAndStartPolling(force: force);
 
   Future<Map<String, dynamic>> getSummary() => _channel.getActiveNetworkInformation();
 
@@ -188,51 +263,86 @@ class NetworkService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
     await _channel.openVpnSettings();
   }
 
-  Future<void> _fetchUsage({bool force = false, bool notify = true}) async {
-    if (isDisposed || !_foreground) return;
-    if (work != null && !force && _lastUsage != null &&
-        DateTime.now().difference(_lastUsage!) < const Duration(seconds: 30)) { return; }
-    final localCallCount = ++_usageCallCount;
+  Future<void> _fetchUsage({String period = 'daily', bool force = false}) {
+    final pending = _usageInFlight[period];
+    if (pending != null) {
+      if (pending.$1 == _usageCallCount) return pending.$2;
+      // A resume joins old native I/O first, then retries without overlapping it.
+      return pending.$2.then((_) => _fetchUsage(period: period, force: force));
+    }
+    final operation = _readUsage(period: period, force: force).whenComplete(() {
+      _usageInFlight.remove(period);
+    });
+    _usageInFlight[period] = (_usageCallCount, operation);
+    return operation;
+  }
+
+  bool _usageFresh(String period) {
+    final last = _lastUsage[period];
+    final age = last == null ? null : now().difference(last);
+    return age != null && age >= Duration.zero && age < const Duration(seconds: 30);
+  }
+
+  Future<void> _readUsage({required String period, bool force = false}) async {
+    if (isDisposed || !_foreground || !_hasUsageStatsPermission) return;
+    if (!force && _usageFresh(period)) return;
+    final localCallCount = _usageCallCount;
     int usage = -1;
     try {
-      usage = await _channel.getDailyDataUsage();
+      usage = await switch (period) {
+        'weekly' => _channel.getWeeklyDataUsage(),
+        'monthly' => _channel.getMonthlyDataUsage(),
+        _ => _channel.getDailyDataUsage(),
+      };
     } catch (e, diagnosticStack) {
-      DiagnosticsStore.instance.recordException(
-        'networkService', e, diagnosticStack,
-      );
+      DiagnosticsStore.instance.recordException('networkService', e, diagnosticStack);
       log("Error fetching usage: $e");
     }
-    if (isDisposed || !_foreground || localCallCount != _usageCallCount) return;
-
-    final changed = _dailyDataUsage != usage;
-    _dailyDataUsage = usage;
-    _lastUsage = DateTime.now();
-    if (notify && changed) notifyListeners();
+    if (isDisposed || !_foreground) return;
+    if (localCallCount != _usageCallCount) {
+      if (period == 'daily') _usageNeedsRefresh = true;
+      return;
+    }
+    _usageValues[period] = usage;
+    _lastUsage[period] = now();
+    if (period == 'daily') {
+      _usageNeedsRefresh = false;
+      _dailyDataUsage = usage;
+    }
   }
 
   Future<Map<String, dynamic>> getTrafficUsage(String period) async => _channel.getTrafficUsage(period);
 
-  Future<int> getDataUsageForPeriod(String period) async {
-    switch (period) {
-      case 'daily':
-        return await _channel.getDailyDataUsage();
-      case 'weekly':
-        return await _channel.getWeeklyDataUsage();
-      case 'monthly':
-        return await _channel.getMonthlyDataUsage();
-      default:
-        return await _channel.getDailyDataUsage();
+  Future<int> getDataUsageForPeriod(String period, {bool force = false}) async {
+    if (period != 'weekly' && period != 'monthly') period = 'daily';
+    if (isDisposed || !_foreground || !_hasUsageStatsPermission) return -1;
+    if (!force && _usageFresh(period)) return _usageValues[period] ?? -1;
+    final generation = _usageCallCount;
+    Future<void> read() => _fetchUsage(period: period, force: force);
+    if (force || work == null) {
+      await read();
+    } else {
+      await work!.schedule(_usageOwners[period]!, read);
     }
+    if (isDisposed || !_foreground || !_hasUsageStatsPermission) return -1;
+    if (generation != _usageCallCount) {
+      // Join the old native call until it settles; never multiply in-flight work.
+      if (_trafficOwners.isEmpty) return -1;
+      return getDataUsageForPeriod(period, force: force);
+    }
+    return _usageValues[period] ?? -1;
   }
 
   @override
   void dispose() {
     work?.cancel(this);
+    _cancelPeriodWork();
     ++_callCount;
     ++_usageCallCount;
     _networkSubscription?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     _usageTimer?.cancel();
+    _trafficOwners.clear();
     super.dispose();
   }
 

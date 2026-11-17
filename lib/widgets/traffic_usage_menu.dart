@@ -46,6 +46,10 @@ class _TrafficUsageMenuState extends State<TrafficUsageMenu>
   void didChangeDependencies() {
     super.didChangeDependencies();
     final network = context.watch<NetworkService>();
+    if (_network != network) {
+      _network?.setTrafficVisible(this, false);
+      network.setTrafficVisible(this, true);
+    }
     if (_network != network || _allowed != network.hasUsageStatsPermission) {
       _network = network;
       _allowed = network.hasUsageStatsPermission;
@@ -62,6 +66,7 @@ class _TrafficUsageMenuState extends State<TrafficUsageMenu>
 
   @override
   void dispose() {
+    _network?.setTrafficVisible(this, false);
     WidgetsBinding.instance.removeObserver(this);
     _settingsNode.dispose();
     _scrollController.dispose();

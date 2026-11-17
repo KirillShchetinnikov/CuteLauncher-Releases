@@ -245,6 +245,79 @@ void main() {
     expect(tempDir.listSync().whereType<Directory>(), isEmpty);
   });
 
+  test('repeated banner imports remove only obsolete managed resources', () async {
+    await database.insertCategory(CategoriesCompanion.insert(name: 'Apps', order: 0));
+    final original = File('${tempDir.path}/chosen-banner.png');
+    await original.writeAsBytes(kTransparentImage);
+    await sharedPreferences.setString('custom_banner_sample.app', original.path);
+    final archive = File(await backupService.exportBackup());
+    await backupService.importBackup(archive);
+    final first = File(sharedPreferences.getString('custom_banner_sample.app')!);
+    // A second live preference keeps the first imported file in use.
+    await sharedPreferences.setString('custom_banner_other.app', first.path);
+    await backupService.importBackup(archive);
+    expect(await first.readAsBytes(), kTransparentImage);
+    final second = File(sharedPreferences.getString('custom_banner_sample.app')!);
+    await sharedPreferences.remove('custom_banner_other.app');
+    final userFile = File('${first.parent.path}/user-note.txt');
+    await userFile.writeAsString('keep');
+    await backupService.importBackup(archive);
+    expect(await first.exists(), false);
+    expect(await second.exists(), false);
+    expect(await second.parent.exists(), false);
+    expect(await original.readAsBytes(), kTransparentImage);
+    expect(await userFile.readAsString(), 'keep');
+    expect(await File(sharedPreferences.getString('custom_banner_sample.app')!).readAsBytes(), kTransparentImage);
+  });
+
+  test('banner cleanup waits for all sync journal states and preserves legacy live paths', () async {
+    await database.insertCategory(CategoriesCompanion.insert(name: 'Apps', order: 0));
+    final original = File('${tempDir.path}/chosen-banner.png');
+    await original.writeAsBytes(kTransparentImage);
+    await sharedPreferences.setString('custom_banner_sample.app', original.path);
+    final archive = File(await backupService.exportBackup());
+    await backupService.importBackup(archive);
+    final first = File(sharedPreferences.getString('custom_banner_sample.app')!);
+    final journals = ['sync-rollback.json', 'sync-rollback.json.partial', 'sync-rollback.json.committed'];
+    for (final name in journals) {
+      final journal = File('${tempDir.path}/$name');
+      await journal.writeAsString('{incomplete');
+      await backupService.importBackup(archive);
+      expect(await first.readAsBytes(), kTransparentImage);
+      await journal.delete();
+    }
+    // A legacy archive can refer to an existing managed banner without embedding it.
+    final legacy = jsonDecode(await archive.readAsString()) as Map<String, dynamic>;
+    legacy['version'] = 2;
+    legacy.remove('resources');
+    legacy['settings'] = {'custom_banner_legacy.app': first.path};
+    await archive.writeAsString(jsonEncode(legacy));
+    await backupService.importBackup(archive);
+    expect(await first.readAsBytes(), kTransparentImage);
+    await sharedPreferences.remove('custom_banner_legacy.app');
+    await backupService.importBackup(File(await backupService.exportBackup()));
+    expect(await first.exists(), false);
+  });
+
+  test('failed restore preserves old banners and removes only the failed staging files', () async {
+    await database.insertCategory(CategoriesCompanion.insert(name: 'Original', order: 0));
+    final original = File('${tempDir.path}/chosen-banner.png');
+    await original.writeAsBytes(kTransparentImage);
+    await sharedPreferences.setString('custom_banner_sample.app', original.path);
+    final archive = File(await backupService.exportBackup());
+    await backupService.importBackup(archive);
+    final previousPath = sharedPreferences.getString('custom_banner_sample.app')!;
+    final data = jsonDecode(await archive.readAsString()) as Map<String, dynamic>;
+    (data['resources'] as Map)['wallpaper_day'] = base64Encode(kTransparentImage);
+    await archive.writeAsString(jsonEncode(data));
+    await Directory('${tempDir.path}/wallpaper_day').create();
+    final before = tempDir.listSync().whereType<Directory>().map((d) => d.path).toSet();
+    await expectLater(backupService.importBackup(archive), throwsA(isA<FileSystemException>()));
+    expect(sharedPreferences.getString('custom_banner_sample.app'), previousPath);
+    expect(await File(previousPath).readAsBytes(), kTransparentImage);
+    expect(tempDir.listSync().whereType<Directory>().map((d) => d.path).toSet(), before);
+  });
+
   test('failed wallpaper installation rolls back files, preferences and DB', () async {
     await database.insertCategory(CategoriesCompanion.insert(name: 'Original', order: 0));
     final wallpaper = File('${tempDir.path}/wallpaper');

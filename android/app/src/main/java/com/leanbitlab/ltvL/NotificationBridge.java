@@ -89,45 +89,28 @@ final class NotificationBridge implements EventChannel.StreamHandler {
     }
 
     boolean requestNotificationListenerPermission() {
-        try {
-            if (Build.VERSION.SDK_INT >= 30) {
-                Intent detailIntent = new Intent(Settings.ACTION_NOTIFICATION_LISTENER_DETAIL_SETTINGS);
-                ComponentName cn = new ComponentName(context, LauncherNotificationListenerService.class);
-                detailIntent.putExtra(Settings.EXTRA_NOTIFICATION_LISTENER_COMPONENT_NAME, cn.flattenToString());
-                detailIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                if (detailIntent.resolveActivity(context.getPackageManager()) != null) {
-                    context.startActivity(detailIntent);
-                    return true;
-                }
-            }
-
-            Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            if (intent.resolveActivity(context.getPackageManager()) != null) {
-                context.startActivity(intent);
-                return true;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (Build.VERSION.SDK_INT >= 30) {
+            Intent detail = new Intent(Settings.ACTION_NOTIFICATION_LISTENER_DETAIL_SETTINGS);
+            ComponentName component = new ComponentName(context, LauncherNotificationListenerService.class);
+            detail.putExtra(Settings.EXTRA_NOTIFICATION_LISTENER_COMPONENT_NAME, component.flattenToString());
+            if (tryStartSettings(detail)) return true;
         }
-        return false;
+        return tryStartSettings(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
     }
 
     boolean openAppNotificationSettings() {
+        Intent notifications = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+            .putExtra(Settings.EXTRA_APP_PACKAGE, context.getPackageName());
+        return tryStartSettings(notifications) || tryStartSettings(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+            .setData(Uri.parse("package:" + context.getPackageName())));
+    }
+
+    private boolean tryStartSettings(Intent intent) {
         try {
-            Intent intent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
-            intent.putExtra(Settings.EXTRA_APP_PACKAGE, context.getPackageName());
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            if (intent.resolveActivity(context.getPackageManager()) != null) {
-                context.startActivity(intent);
-                return true;
-            }
-            intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-            intent.setData(Uri.parse("package:" + context.getPackageName()));
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
             return true;
-        } catch (Exception e) {
+        } catch (RuntimeException unavailable) {
             return false;
         }
     }

@@ -80,12 +80,17 @@ void main() {
           windowCalls.add(call.method);
           return null;
         });
-    final service = BrightnessService(await SharedPreferences.getInstance());
+    var now = DateTime(2026, 1, 1, 12);
+    final service = BrightnessService(await SharedPreferences.getInstance(), now: () => now);
     await service.setEnabled(true);
+    await service.applyCurrentSlotBrightness();
+    expect(writes, 1);
+    now = now.add(const Duration(seconds: 15));
     await service.applyCurrentSlotBrightness();
     expect(writes, 2);
     expect(windowCalls, ['setApplicationScreenBrightness']);
     available = true;
+    now = now.add(const Duration(seconds: 30));
     await service.applyCurrentSlotBrightness();
     await service.applyCurrentSlotBrightness();
     expect(writes, 3);

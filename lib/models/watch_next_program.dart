@@ -14,6 +14,11 @@ class WatchNextProgram {
   final String? feedSubtitle;
   String get displayTitle => title.trim().isEmpty ? description.trim() : title.trim();
 
+  bool sameContent(WatchNextProgram other) => _content == other._content;
+  Object get _content => (id, packageName, title, description, watchNextType,
+    lastEngagementTime, playbackPosition, duration, intentUri, posterArtUri,
+    thumbnailUri, posterAspectRatio, feedSubtitle);
+
   WatchNextProgram({
     required this.id,
     required this.packageName,

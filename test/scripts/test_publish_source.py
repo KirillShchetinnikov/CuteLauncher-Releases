@@ -94,6 +94,28 @@ class PublicSourceTests(unittest.TestCase):
         self.assertEqual(initial, self.head(self.public))
         self.assertFalse(publisher.git(self.public, 'status', '--porcelain').stdout)
 
+    def test_linked_worktree_is_rejected_before_destination_changes(self):
+        linked = Path(self.temporary.name) / 'linked'
+        publisher.git(self.source, 'worktree', 'add', '-b', 'public-attempt', str(linked))
+        original = self.head(linked)
+        with self.assertRaisesRegex(ValueError, 'independent'):
+            publisher.snapshot(self.source, 'HEAD', linked)
+        self.assertEqual(self.head(linked), original)
+        self.assertEqual((linked / 'AGENTS.md').read_text(), 'PRIVATE AGENT RULES\n')
+        self.assertFalse(publisher.git(linked, 'status', '--porcelain').stdout)
+
+    def test_clone_with_private_history_is_rejected_before_destination_changes(self):
+        clone = Path(self.temporary.name) / 'clone'
+        publisher.git(self.source, 'clone', '--no-local', str(self.source), str(clone))
+        original = self.head(clone)
+        self.write('lib/main.dart', 'new private revision\n')
+        self.commit(self.source, 'Private changes after cloning')
+        with self.assertRaisesRegex(ValueError, 'private history'):
+            publisher.snapshot(self.source, 'HEAD', clone)
+        self.assertEqual(self.head(clone), original)
+        self.assertTrue((clone / 'AGENTS.md').exists())
+        self.assertFalse(publisher.git(clone, 'status', '--porcelain').stdout)
+
     def test_windows_git_line_ending_conversion_does_not_change_exported_blobs(self):
         publisher.git(self.source, 'config', 'core.autocrlf', 'true')
         self.publish()

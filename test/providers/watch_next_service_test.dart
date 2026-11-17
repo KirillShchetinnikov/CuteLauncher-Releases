@@ -8,6 +8,8 @@ import 'package:flauncher/providers/foreground_work.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:flauncher/providers/watch_next_service.dart';
+import 'package:flauncher/providers/settings_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flauncher/models/watch_next_program.dart';
 import 'package:flauncher/models/content_load_state.dart';
 import 'package:flauncher/diagnostics_store.dart';
@@ -38,6 +40,173 @@ void main() {
     DiagnosticsStore.instance.clear();
     watchNextStreamController.close();
   });
+
+  test('hidden section and catalog owners share one lifecycle-aware subscription', () async {
+    SharedPreferences.setMockInitialValues({'show_continue_watching': false});
+    final settings = SettingsService(await SharedPreferences.getInstance());
+    fakeAsync((time) {
+      final work = ForegroundWork(now: () => DateTime(2026).add(time.elapsed))..homeReady();
+      final service = WatchNextService(mockChannel, settings: settings, work: work);
+      time.elapse(const Duration(minutes: 6));
+      verifyNever(mockChannel.getWatchNextPrograms());
+      expect(watchNextStreamController.hasListener, isFalse);
+      final first = Object(), second = Object();
+      service.setCatalogVisible(first, true);
+      service.setCatalogVisible(second, true);
+      time.elapse(const Duration(milliseconds: 350));
+      verify(mockChannel.getWatchNextPrograms()).called(1);
+      expect(watchNextStreamController.hasListener, isTrue);
+      service.setCatalogVisible(first, false);
+      service.didChangeAppLifecycleState(AppLifecycleState.paused);
+      time.flushMicrotasks();
+      expect(watchNextStreamController.hasListener, isTrue);
+      time.elapse(const Duration(minutes: 6));
+      verifyNever(mockChannel.getWatchNextPrograms());
+      service.didChangeAppLifecycleState(AppLifecycleState.resumed);
+      time.elapse(const Duration(milliseconds: 350));
+      verify(mockChannel.getWatchNextPrograms()).called(1);
+      service.setCatalogVisible(second, false);
+      time.elapse(const Duration(minutes: 6));
+      verifyNever(mockChannel.getWatchNextPrograms());
+      settings.setShowContinueWatching(true);
+      time.flushMicrotasks();
+      time.elapse(const Duration(milliseconds: 350));
+      verify(mockChannel.getWatchNextPrograms()).called(1);
+      settings.setShowContinueWatching(false);
+      time.flushMicrotasks();
+      time.elapse(const Duration(minutes: 6));
+      verifyNever(mockChannel.getWatchNextPrograms());
+      service.dispose(); work.dispose();
+    });
+    settings.dispose();
+  });
+
+  test('hiding during metadata read discards the answer and re-enable reads again', () async {
+    SharedPreferences.setMockInitialValues({'show_continue_watching': false});
+    final settings = SettingsService(await SharedPreferences.getInstance());
+    fakeAsync((time) {
+      final pending = Completer<List<Map<dynamic, dynamic>>>();
+      when(mockChannel.getWatchNextPrograms()).thenAnswer((_) => pending.future);
+      final service = WatchNextService(mockChannel, settings: settings);
+      final owner = Object();
+      service.setCatalogVisible(owner, true);
+      time.flushMicrotasks();
+      service.setCatalogVisible(owner, false);
+      pending.complete([{'id': 1, 'title': 'Obsolete'}]);
+      time.flushMicrotasks();
+      expect(service.programs, isEmpty);
+      expect(service.initialized, isFalse);
+      when(mockChannel.getWatchNextPrograms()).thenAnswer((_) async => [{'id': 2, 'title': 'Current'}]);
+      service.setCatalogVisible(owner, true);
+      time.flushMicrotasks();
+      expect(service.programs.single.title, 'Current');
+      expect(service.initialized, isTrue);
+      service.dispose();
+      time.elapse(const Duration(minutes: 6));
+    });
+    settings.dispose();
+  });
+
+  test('content comparison includes feed subtitle', () {
+    final row = {'id': 1, 'title': 'Video'};
+    expect(WatchNextProgram.fromMap(row, feedSubtitle: 'A').sameContent(
+      WatchNextProgram.fromMap(row, feedSubtitle: 'B')), isFalse);
+  });
+
+  test('re-enabling a hidden catalogue in background invalidates artwork on return', () async {
+    SharedPreferences.setMockInitialValues({'show_continue_watching': true});
+    final settings = SettingsService(await SharedPreferences.getInstance());
+    fakeAsync((time) {
+      var image = 1;
+      when(mockChannel.getWatchNextPrograms()).thenAnswer((_) async => [
+        {'id': 1, 'title': 'Video', 'posterArtUri': 'content://poster'},
+      ]);
+      when(mockChannel.getWatchNextPoster(any)).thenAnswer((_) async => Uint8List.fromList([image]));
+      final service = WatchNextService(mockChannel, settings: settings);
+      time.flushMicrotasks();
+      List<int>? poster;
+      service.poster(service.programs.single).then((value) => poster = value);
+      time.flushMicrotasks();
+      expect(poster, [1]);
+      settings.setShowContinueWatching(false);
+      time.flushMicrotasks();
+      service.didChangeAppLifecycleState(AppLifecycleState.paused);
+      image = 2;
+      settings.setShowContinueWatching(true);
+      time.flushMicrotasks();
+      service.didChangeAppLifecycleState(AppLifecycleState.resumed);
+      time.flushMicrotasks();
+      service.poster(service.programs.single).then((value) => poster = value);
+      time.flushMicrotasks();
+      expect(poster, [2]);
+      service.dispose();
+    });
+    settings.dispose();
+  });
+
+  test('short Home return preserves fresh metadata and poster cache', () {
+    fakeAsync((time) {
+      final work = ForegroundWork(now: () => DateTime(2026).add(time.elapsed))..homeReady();
+      when(mockChannel.getWatchNextPrograms()).thenAnswer((_) async => [
+        {'id': 1, 'title': 'Video', 'posterArtUri': 'content://poster'},
+      ]);
+      when(mockChannel.getWatchNextPoster(any)).thenAnswer((_) async => Uint8List.fromList([1]));
+      final service = WatchNextService(mockChannel, work: work);
+      time.elapse(const Duration(milliseconds: 350));
+      service.poster(service.programs.single);
+      time.flushMicrotasks();
+      clearInteractions(mockChannel);
+      work.didChangeAppLifecycleState(AppLifecycleState.paused);
+      service.didChangeAppLifecycleState(AppLifecycleState.paused);
+      time.elapse(const Duration(seconds: 1));
+      work.didChangeAppLifecycleState(AppLifecycleState.resumed);
+      service.didChangeAppLifecycleState(AppLifecycleState.resumed);
+      service.poster(service.programs.single);
+      time.elapse(const Duration(milliseconds: 350));
+      verifyNever(mockChannel.getWatchNextPrograms());
+      verifyNever(mockChannel.getWatchNextPoster(any));
+      service.dispose(); work.dispose();
+    });
+  });
+
+  test('equal metadata preserves instances and notifications but reloads artwork', () async {
+    when(mockChannel.getWatchNextPrograms()).thenAnswer((_) async => [
+      {'id': 1, 'title': 'Video', 'posterArtUri': 'content://poster'},
+    ]);
+    final service = WatchNextService(mockChannel);
+    await Future<void>.delayed(Duration.zero);
+    final first = service.programs.single;
+    var notifications = 0;
+    service.addListener(() => notifications++);
+    final posters = service.posterRefreshes.value;
+    await service.refresh(reloadPosters: true);
+    expect(identical(service.programs.single, first), isTrue);
+    expect(notifications, 0);
+    expect(service.posterRefreshes.value, posters + 1);
+    service.dispose();
+  });
+
+  for (final field in <String, Object>{
+    'id': 2, 'packageName': 'other', 'title': 'Other', 'description': 'Other description',
+    'watchNextType': 2, 'lastEngagementTime': 123, 'playbackPosition': 20,
+    'duration': 100, 'intentUri': 'intent:other', 'posterArtUri': 'content://other',
+    'thumbnailUri': 'content://thumbnail', 'posterAspectRatio': 1.5,
+  }.entries) {
+    test('changed metadata ${field.key} publishes a new snapshot', () async {
+      var row = <String, Object>{'id': 1, 'title': 'Video'};
+      when(mockChannel.getWatchNextPrograms()).thenAnswer((_) async => [row]);
+      final service = WatchNextService(mockChannel);
+      await Future<void>.delayed(Duration.zero);
+      final first = service.programs.single;
+      var notifications = 0;
+      service.addListener(() => notifications++);
+      row = {...row, field.key: field.value};
+      await service.refresh();
+      expect(identical(service.programs.single, first), isFalse);
+      expect(notifications, 1);
+      service.dispose();
+    });
+  }
 
   test('refresh failure retains content and a later empty response clears it', () async {
     when(mockChannel.getWatchNextPrograms()).thenAnswer((_) async => [

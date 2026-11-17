@@ -4159,6 +4159,7 @@ Future<void> _pumpWidgetWithProviders(
   tester.view.physicalSize = const Size(1920, 1080);
   tester.view.devicePixelRatio = pixelRatio;
   final network = MockNetworkService();
+  when(network.trafficRevision).thenReturn(0);
   when(network.networkType).thenReturn(NetworkType.Unknown);
   when(network.cellularNetworkType).thenReturn(CellularNetworkType.Unknown);
   when(network.wirelessNetworkSignalLevel).thenReturn(0);

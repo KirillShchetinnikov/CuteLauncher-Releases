@@ -10,9 +10,26 @@ import '../../providers/settings_service.dart';
 import '../../providers/watch_next_service.dart';
 import 'settings_page_layout.dart';
 
-class WatchNextLimitsPage extends StatelessWidget {
+class WatchNextLimitsPage extends StatefulWidget {
   static const routeName = 'watch_next_limits';
   const WatchNextLimitsPage({super.key});
+
+  @override
+  State<WatchNextLimitsPage> createState() => _WatchNextLimitsPageState();
+}
+
+class _WatchNextLimitsPageState extends State<WatchNextLimitsPage> {
+  late final WatchNextService _source;
+  @override
+  void initState() {
+    super.initState();
+    _source = context.read<WatchNextService>()..setCatalogVisible(this, true);
+  }
+  @override
+  void dispose() {
+    _source.setCatalogVisible(this, false);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

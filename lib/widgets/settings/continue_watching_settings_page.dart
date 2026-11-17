@@ -55,25 +55,19 @@ class ContinueWatchingSettingsPage extends StatefulWidget {
 }
 
 class _ContinueWatchingSettingsPageState
-    extends State<ContinueWatchingSettingsPage>
-    with WidgetsBindingObserver {
+    extends State<ContinueWatchingSettingsPage> {
+  WatchNextService? _source;
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
+    _source = context.read<WatchNextService>();
+    _source!.setCatalogVisible(this, true);
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
+    _source?.setCatalogVisible(this, false);
     super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed && mounted) {
-      context.read<WatchNextService>().refresh();
-    }
   }
 
   @override

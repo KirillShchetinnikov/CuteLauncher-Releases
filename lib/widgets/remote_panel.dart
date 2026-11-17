@@ -28,6 +28,7 @@ class _RemotePanelState extends State<RemotePanel> {
   final _bar = GlobalKey<FocusAwareAppBarState>();
   bool _ready = false;
   StorageStatusService? _storage;
+  NetworkService? _network;
   final _removeListeners = <VoidCallback>[];
 
   Future<void> _waitFor(ChangeNotifier source, bool Function() ready) {
@@ -65,7 +66,8 @@ class _RemotePanelState extends State<RemotePanel> {
       pending.add(_waitFor(notifications, () => notifications.initialized));
     }
     if (panel.visible('traffic')) {
-      pending.add(context.read<NetworkService>().initialLoad);
+      _network = context.read<NetworkService>();
+      pending.add(_network!.prepareTraffic(this));
     } else if (panel.visible('network')) {
       pending.add(context.read<NetworkService>().initialNetworkLoad);
     }
@@ -93,6 +95,7 @@ class _RemotePanelState extends State<RemotePanel> {
         // The rendered bar now owns observation; preparation must not keep
         // polling alive after both drive objects have been hidden.
         _storage?.setVisible(this, false);
+        _network?.setTrafficVisible(this, false);
         _bar.currentState?.focusFirst();
         remotePanelChannel.invokeMethod<void>('ready');
       }
@@ -101,6 +104,7 @@ class _RemotePanelState extends State<RemotePanel> {
 
   @override
   void dispose() {
+    _network?.setTrafficVisible(this, false);
     _storage?.setVisible(this, false);
     for (final remove in _removeListeners) {
       remove();

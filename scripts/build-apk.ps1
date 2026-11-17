@@ -19,9 +19,14 @@ $appVersion = $versionMatch.Groups[1].Value
 if (-not $JavaHome) { throw 'Set JAVA_HOME to a JDK 21 installation.' }
 if ($NoSplitDebugInfo -and $SplitDebugInfo) { throw 'Do not combine NoSplitDebugInfo with SplitDebugInfo.' }
 $appBuild = if ($BuildNumber -gt 0) { "$BuildNumber" } else { $versionMatch.Groups[2].Value }
-if ($Mode -eq 'release' -and -not $NoSplitDebugInfo) {
+if ($Mode -eq 'release') {
+    $runId = [DateTime]::UtcNow.ToString('yyyyMMdd-HHmmss') + '-' + [guid]::NewGuid().ToString('N').Substring(0, 8)
+    $sourceCommit = (git rev-parse HEAD)
+    if ($LASTEXITCODE -ne 0) { throw 'Cannot identify source commit for R8 symbols.' }
+    # Required before signing/building: both local and CI archives use the same verifier.
+    & python -c 'import sys; sys.exit(sys.version_info < (3, 11))'
+    if ($LASTEXITCODE -ne 0) { throw 'Python 3.11+ is required to archive release R8 symbols.' }
     if (-not $SplitDebugInfo) {
-        $runId = [DateTime]::UtcNow.ToString('yyyyMMdd-HHmmss') + '-' + [guid]::NewGuid().ToString('N').Substring(0, 8)
         $SplitDebugInfo = Join-Path $projectRoot "artifacts/symbols/$appVersion+$appBuild/$runId"
     }
     if ((Test-Path -LiteralPath $SplitDebugInfo) -and (Get-ChildItem -LiteralPath $SplitDebugInfo -Force | Select-Object -First 1)) {
@@ -33,7 +38,7 @@ Invoke-ReleaseSigning -JavaHome $JavaHome -CreateLocalKey -Action {
     $builtApks = @()
     $extraArguments = @($DartDefine | ForEach-Object { "--dart-define=$_" })
     if ($BuildNumber -gt 0) { $extraArguments += "--build-number=$BuildNumber" }
-    if ($Mode -eq 'release' -and $SplitDebugInfo) { $extraArguments += "--split-debug-info=$SplitDebugInfo" }
+    if ($Mode -eq 'release' -and -not $NoSplitDebugInfo) { $extraArguments += "--split-debug-info=$SplitDebugInfo" }
     New-Item -ItemType Directory -Force artifacts | Out-Null
     if ($Mode -eq 'release') {
         $platformAbis = @{'android-arm' = 'armeabi-v7a'; 'android-arm64' = 'arm64-v8a'; 'android-x64' = 'x86_64'}
@@ -53,6 +58,11 @@ Invoke-ReleaseSigning -JavaHome $JavaHome -CreateLocalKey -Action {
                 Copy-Item -LiteralPath "build/app/outputs/apk/release/$name" -Destination "artifacts/$name"
                 $builtApks += Get-Item -LiteralPath "artifacts/$name"
             }
+            $r8ApkArguments = @($builtApks | ForEach-Object { '--apk'; $_.FullName })
+            & python "$PSScriptRoot/archive-r8.py" --mapping build/app/outputs/mapping/release `
+                --output "$SplitDebugInfo/r8" --pass-name arm --version $appVersion --build $appBuild `
+                --commit $sourceCommit --build-id $runId @r8ApkArguments
+            if ($LASTEXITCODE -ne 0) { throw 'ARM R8 symbol archival failed.' }
         }
         if ($targets -contains 'android-x64') {
             & $Flutter build apk --release --split-per-abi --target-platform=android-x64 @extraArguments
@@ -60,8 +70,12 @@ Invoke-ReleaseSigning -JavaHome $JavaHome -CreateLocalKey -Action {
             $name = "CuteLauncher-$appVersion-x86_64-release.apk"
             Copy-Item -LiteralPath "build/app/outputs/apk/release/$name" -Destination "artifacts/$name"
             $builtApks += Get-Item -LiteralPath "artifacts/$name"
+            & python "$PSScriptRoot/archive-r8.py" --mapping build/app/outputs/mapping/release `
+                --output "$SplitDebugInfo/r8" --pass-name x64 --version $appVersion --build $appBuild `
+                --commit $sourceCommit --build-id $runId --apk "artifacts/$name"
+            if ($LASTEXITCODE -ne 0) { throw 'x64 R8 symbol archival failed.' }
         }
-        if ($SplitDebugInfo) {
+        if (-not $NoSplitDebugInfo) {
             foreach ($target in ($targets | Select-Object -Unique)) {
                 if (-not (Test-Path -LiteralPath "$SplitDebugInfo/app.$target.symbols" -PathType Leaf)) {
                     throw "Missing debug symbols for $target."
@@ -73,11 +87,12 @@ Invoke-ReleaseSigning -JavaHome $JavaHome -CreateLocalKey -Action {
             })
             [ordered]@{
                 version = "$appVersion+$appBuild"
-                sourceCommit = (git rev-parse HEAD)
+                sourceCommit = $sourceCommit
                 files = $hashes
             } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath "$SplitDebugInfo/build.json" -Encoding utf8
             Write-Host "Dart debug symbols and APK hashes: $SplitDebugInfo"
         }
+        Write-Host "R8 mappings and APK hashes: $SplitDebugInfo/r8"
     } else {
         & $Flutter build apk --profile "--target-platform=$TargetPlatform" @extraArguments
         if ($LASTEXITCODE -ne 0) { throw 'Profile APK build failed.' }

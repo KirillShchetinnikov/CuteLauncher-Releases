@@ -819,14 +819,33 @@ class BackupAutomationService extends ChangeNotifier
     return readBackupJson(file.path);
   }
 
-  Future<void> _saveBaseline(BackupSyncDocument document) async {
+  Future<String> _currentContext() async => backupFingerprint([
+    destination.name,
+    scope,
+    localFolder,
+    accountId(destination),
+    if (destination != BackupDestination.local)
+      await nativeSync.identity(
+            destination == BackupDestination.smb
+                ? 'smb'
+                : destination == BackupDestination.yandexDisk
+                ? 'yandex'
+                : destination == BackupDestination.webdav
+                ? 'webdav'
+                : 'drive',
+            profile: accountId(destination),
+          ) ??
+          '${webdav.account.url}/${webdav.account.user}/${drive.clientId}',
+  ]);
+
+  Future<void> _saveBaseline(BackupSyncDocument document, {String? context}) async {
     final file = await _stateFile();
     final pending = File('${file.path}.partial');
     final fingerprint = await fingerprintBackup(document.backup);
     await pending.writeAsString(
       jsonEncode({
         'stateVersion': 1,
-        'context': _stateContext,
+        'context': context ?? _stateContext,
         'fingerprint': fingerprint,
         'revisions': document.revisions,
       }),
@@ -837,17 +856,23 @@ class BackupAutomationService extends ChangeNotifier
       throw const FormatException('Oversized sync state');
     }
     await pending.rename(file.path);
+    if (context != null) _stateContext = context;
     _baseline = BackupSyncDocument({}, document.revisions);
     _baselineFingerprint = fingerprint;
   }
 
   Future<void> _checkpoint() async {
-    if (_disposed || !_foreground || busy || _setupActive) return;
+    // Called by importLatest while it still owns the operation gate.
+    if (_disposed || !_foreground || _setupActive) throw StateError('Cancelled');
+    final revision = _revision;
     final root = await (await getTemporaryDirectory()).createTemp(
       'backup-checkpoint-',
     );
     try {
-      await _saveBaseline(await _capture(root));
+      final context = await _currentContext();
+      final document = await _capture(root);
+      _requireSyncRevision(revision);
+      await _saveBaseline(document, context: context);
     } finally {
       await root.delete(recursive: true);
     }
@@ -945,24 +970,7 @@ class BackupAutomationService extends ChangeNotifier
       if (!configured) throw StateError('Connection is not configured');
       await _recoverSyncTransaction();
       await _pendingTimes;
-      final context = backupFingerprint([
-        destination.name,
-        scope,
-        localFolder,
-        accountId(destination),
-        if (destination != BackupDestination.local)
-          await nativeSync.identity(
-                destination == BackupDestination.smb
-                    ? 'smb'
-                    : destination == BackupDestination.yandexDisk
-                    ? 'yandex'
-                    : destination == BackupDestination.webdav
-                    ? 'webdav'
-                    : 'drive',
-                profile: accountId(destination),
-              ) ??
-              '${webdav.account.url}/${webdav.account.user}/${drive.clientId}',
-      ]);
+      final context = await _currentContext();
       final updateHistory = !exportOnly || mode == BackupMode.backup;
       if (updateHistory && _stateContext != null && context != _stateContext) {
         _baseline = null;
@@ -1157,18 +1165,23 @@ class BackupAutomationService extends ChangeNotifier
     final undo = File('${(await directory()).path}/sync-rollback.json');
     final committed = File('${undo.path}.committed');
     final pending = File('${undo.path}.partial');
-    await backup.writeBackupTo(
-      pending,
-      settingsService: settings,
-      validateStructure: true,
-    );
-    await pending.rename(undo.path);
-    await writeBackupJson(file.path, document.backup);
-    _requireSyncRevision(revision);
-    _applying = true;
+    var nativeStarted = false;
+    var flutterStarted = false;
     try {
+      await backup.writeBackupTo(
+        pending,
+        settingsService: settings,
+        validateStructure: true,
+      );
+      await writeBackupJson(file.path, document.backup);
+      _requireSyncRevision(revision);
+      await pending.rename(undo.path);
       await _requireNativeUnchanged();
+      _requireSyncRevision(revision);
+      _applying = true;
+      nativeStarted = true;
       await nativeSync.begin(_nativeValues(document));
+      flutterStarted = true;
       await apply(file);
       await undo.rename(committed.path);
       await nativeSync.commit();
@@ -1180,14 +1193,21 @@ class BackupAutomationService extends ChangeNotifier
         ..addAll(_settingsHashes());
     } catch (_) {
       if (await undo.exists()) {
-        await nativeSync.rollback();
-        await apply(undo);
+        if (nativeStarted) await nativeSync.rollback();
+        // A prepared snapshot must not overwrite edits that cancelled apply.
+        if (flutterStarted) await apply(undo);
         await undo.delete();
       }
       rethrow;
     } finally {
       _applying = false;
+      try {
+        if (await pending.exists()) await pending.delete();
+      } on FileSystemException catch (error, stack) {
+        DiagnosticsStore.instance.recordException('backupCleanup', error, stack);
+      }
     }
+    await backup.cleanupUnusedAssets();
   }
 
   Future<void> _requireNativeUnchanged() async {
@@ -1216,9 +1236,15 @@ class BackupAutomationService extends ChangeNotifier
       } else {
         await nativeSync.rollback();
       }
+      final pending = File('${undo.path}.partial');
+      if (await FileSystemEntity.type(pending.path, followLinks: false) ==
+          FileSystemEntityType.file) {
+        await pending.delete();
+      }
     } finally {
       _applying = false;
     }
+    await backup.cleanupUnusedAssets();
   }
 
   static Map<String, String> _nativeValues(BackupSyncDocument document) => {
@@ -1613,6 +1639,7 @@ class BackupAutomationService extends ChangeNotifier
       await _set('backup_transport_change_times', jsonEncode(_changeTimes));
       await _checkpoint();
       _syncStateBroken = false;
+      failed = false;
     } finally {
       _storage = null;
       busy = false;

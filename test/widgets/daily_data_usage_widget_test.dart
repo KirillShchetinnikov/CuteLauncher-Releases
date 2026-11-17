@@ -16,12 +16,14 @@ void main() {
 
   setUp(() {
     mockNetworkService = MockNetworkService();
+    when(mockNetworkService.trafficRevision).thenReturn(0);
     mockSettingsService = MockSettingsService();
+    when(mockSettingsService.dataUsagePeriod).thenReturn('daily');
     // Default fallback mock
     when(mockNetworkService.dailyDataUsage).thenReturn(0);
   });
 
-  Widget createWidgetUnderTest() {
+  Widget createWidgetUnderTest({bool visible = true}) {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<NetworkService>.value(value: mockNetworkService),
@@ -34,11 +36,52 @@ void main() {
         supportedLocales: AppLocalizations.supportedLocales,
         home: Directionality(
           textDirection: TextDirection.ltr,
-          child: Scaffold(body: DailyDataUsageWidget()),
+          child: Scaffold(body: DailyDataUsageWidget(visible: visible)),
         ),
       ),
     );
   }
+
+  testWidgets('hidden panel releases its traffic owner and does not fetch another snapshot', (tester) async {
+    when(mockNetworkService.hasUsageStatsPermission).thenReturn(true);
+    when(mockSettingsService.dataUsagePeriod).thenReturn('daily');
+    when(mockNetworkService.getDataUsageForPeriod('daily')).thenAnswer((_) async => 100);
+    await tester.pumpWidget(createWidgetUnderTest());
+    await tester.pumpAndSettle();
+    verify(mockNetworkService.setTrafficVisible(any, true)).called(1);
+    clearInteractions(mockNetworkService);
+    await tester.pumpWidget(createWidgetUnderTest(visible: false));
+    await tester.pumpAndSettle();
+    verify(mockNetworkService.setTrafficVisible(any, false)).called(1);
+    verifyNever(mockNetworkService.getDataUsageForPeriod(any));
+    await tester.pumpWidget(const SizedBox());
+    verify(mockNetworkService.setTrafficVisible(any, false)).called(1);
+  });
+
+  testWidgets('two visible daily counters share a secondary-engine sample without refresh loops', (tester) async {
+    final channel = MockFLauncherChannel();
+    when(channel.addNetworkChangedListener(any)).thenReturn(null);
+    when(channel.getActiveNetworkInformation()).thenAnswer((_) async => {});
+    when(channel.checkUsageStatsPermission()).thenAnswer((_) async => true);
+    var reads = 0;
+    when(channel.getDailyDataUsage()).thenAnswer((_) async => ++reads);
+    final network = NetworkService(channel);
+    when(mockSettingsService.dataUsagePeriod).thenReturn('daily');
+    await tester.pumpWidget(MultiProvider(providers: [
+      ChangeNotifierProvider<NetworkService>.value(value: network),
+      ChangeNotifierProvider<SettingsService>.value(value: mockSettingsService),
+    ], child: MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: const Scaffold(body: Column(children: [DailyDataUsageWidget(), DailyDataUsageWidget()])),
+    )));
+    await tester.pumpAndSettle();
+    expect(reads, 1);
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump(const Duration(minutes: 6));
+    expect(reads, 1);
+    network.dispose();
+  });
 
   testWidgets('hides counter and never requests permission from the panel', (
     tester,

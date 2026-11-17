@@ -2,6 +2,8 @@ package com.leanbitlab.ltvL;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Looper;
 import android.os.PowerManager;
@@ -45,8 +47,11 @@ public class RemotePanelChannelsTest {
             else handlers.put(channel, handler);
         }
         CompletableFuture<Object> call(String method, Object arguments) {
-            var handler = handlers.get(SYSTEM);
-            assertNotNull("The overlay engine must register system status", handler);
+            return call(SYSTEM, method, arguments);
+        }
+        CompletableFuture<Object> call(String channel, String method, Object arguments) {
+            var handler = handlers.get(channel);
+            assertNotNull("The overlay engine must register " + channel, handler);
             var reply = new CompletableFuture<Object>();
             var request = StandardMethodCodec.INSTANCE.encodeMethodCall(new MethodCall(method, arguments));
             request.flip();
@@ -61,6 +66,54 @@ public class RemotePanelChannelsTest {
             });
             return reply;
         }
+    }
+
+    @Test public void openingNotificationSendsItsContentIntentAndDismissesOverlay() throws Exception {
+        var listener = Robolectric.buildService(LauncherNotificationListenerService.class).create();
+        try (var activity = Robolectric.buildActivity(Activity.class).setup()) {
+            var context = activity.get();
+            var target = new Intent("com.example.OPEN_EPISODE").putExtra("episode", "chosen-episode");
+            var pending = PendingIntent.getActivity(context, 1, target, PendingIntent.FLAG_IMMUTABLE);
+            var notification = new Notification.Builder(context, "test").setContentIntent(pending).build();
+            String key = shadowOf(listener.get()).addActiveNotification("com.example.player", 1, notification);
+            var messenger = new Messenger();
+            int[] dismissed = {0};
+            try (var channels = new RemotePanelChannels(context, messenger, () -> dismissed[0]++)) {
+                assertEquals(true, await(messenger.call("me.efesser.flauncher/method",
+                        "openNotification", Map.of("key", key))));
+                shadowOf(Looper.getMainLooper()).idle();
+                Intent opened = shadowOf(org.robolectric.RuntimeEnvironment.getApplication()).getNextStartedActivity();
+                assertNotNull(opened);
+                assertEquals("com.example.OPEN_EPISODE", opened.getAction());
+                assertEquals("chosen-episode", opened.getStringExtra("episode"));
+                assertEquals(1, dismissed[0]);
+            }
+        } finally { listener.destroy(); }
+    }
+
+    @Test public void unavailableNotificationDoesNotLaunchOrDismissOverlay() throws Exception {
+        var listener = Robolectric.buildService(LauncherNotificationListenerService.class).create();
+        try (var activity = Robolectric.buildActivity(Activity.class).setup()) {
+            var context = activity.get();
+            var pending = PendingIntent.getActivity(context, 2,
+                    new Intent("com.example.CANCELLED_EPISODE"), PendingIntent.FLAG_IMMUTABLE);
+            var notification = new Notification.Builder(context, "test").setContentIntent(pending).build();
+            String cancelled = shadowOf(listener.get()).addActiveNotification("com.example.player", 2, notification);
+            pending.cancel();
+            String noIntent = shadowOf(listener.get()).addActiveNotification("com.example.player", 3,
+                    new Notification.Builder(context, "test").build());
+            var messenger = new Messenger();
+            int[] dismissed = {0};
+            try (var channels = new RemotePanelChannels(context, messenger, () -> dismissed[0]++)) {
+                for (String key : new String[]{cancelled, noIntent, "unknown-key"}) {
+                    assertEquals(false, await(messenger.call("me.efesser.flauncher/method",
+                            "openNotification", Map.of("key", key))));
+                    shadowOf(Looper.getMainLooper()).idle();
+                    assertNull(shadowOf(org.robolectric.RuntimeEnvironment.getApplication()).getNextStartedActivity());
+                    assertEquals(0, dismissed[0]);
+                }
+            }
+        } finally { listener.destroy(); }
     }
 
     private static Object await(CompletableFuture<Object> reply) throws Exception {

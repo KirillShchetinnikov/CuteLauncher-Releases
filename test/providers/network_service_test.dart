@@ -13,6 +13,7 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   late MockFLauncherChannel mockChannel;
   late NetworkService networkService;
+  late DateTime Function() now;
 
   setUp(() {
     DiagnosticsStore.instance..clear()..startRecording();
@@ -23,12 +24,82 @@ void main() {
     when(mockChannel.checkUsageStatsPermission())
         .thenAnswer((_) async => false);
     when(mockChannel.addNetworkChangedListener(any)).thenReturn(null);
-    networkService = NetworkService(mockChannel);
+    now = DateTime.now;
+    networkService = NetworkService(mockChannel, now: () => now());
   });
 
   tearDown(() {
     DiagnosticsStore.instance.clear();
     networkService.dispose();
+  });
+
+  test('traffic owners gate queued polling and share a single request', () {
+    fakeAsync((time) {
+      when(mockChannel.checkUsageStatsPermission()).thenAnswer((_) async => true);
+      when(mockChannel.getDailyDataUsage()).thenAnswer((_) async => 123);
+      DateTime now() => DateTime(2026).add(time.elapsed);
+      final work = ForegroundWork(now: now)..homeReady();
+      final service = NetworkService(mockChannel, work: work, now: now);
+      time.elapse(const Duration(minutes: 6));
+      expect(service.hasUsageStatsPermission, isTrue);
+      verifyNever(mockChannel.getDailyDataUsage());
+      final first = Object(), second = Object();
+      service.setTrafficVisible(first, true);
+      service.setTrafficVisible(second, true);
+      work.deferForInput();
+      time.elapse(const Duration(milliseconds: 349));
+      verifyNever(mockChannel.getDailyDataUsage());
+      time.elapse(const Duration(milliseconds: 1));
+      verify(mockChannel.getDailyDataUsage()).called(1);
+      time.elapse(const Duration(minutes: 5) - const Duration(milliseconds: 100));
+      work.deferForInput();
+      time.elapse(const Duration(milliseconds: 349));
+      verifyNever(mockChannel.getDailyDataUsage());
+      time.elapse(const Duration(milliseconds: 101));
+      verify(mockChannel.getDailyDataUsage()).called(1);
+      service.setTrafficVisible(first, false);
+      service.setTrafficVisible(second, false);
+      time.elapse(const Duration(minutes: 6));
+      verifyNever(mockChannel.getDailyDataUsage());
+      // An explicit refresh is not gated by pending keyboard input.
+      work.deferForInput();
+      service.refreshPermissionAndUsage();
+      time.flushMicrotasks();
+      verify(mockChannel.getDailyDataUsage()).called(1);
+      service.dispose(); work.dispose();
+    });
+  });
+
+  test('secondary engine stops in background and retries obsolete in-flight usage on resume', () {
+    fakeAsync((time) {
+      when(mockChannel.checkUsageStatsPermission()).thenAnswer((_) async => true);
+      final pending = Completer<int>();
+      when(mockChannel.getDailyDataUsage()).thenAnswer((_) => pending.future);
+      final service = NetworkService(mockChannel, now: () => DateTime(2026).add(time.elapsed));
+      final owner = Object();
+      service.setTrafficVisible(owner, true);
+      time.flushMicrotasks();
+      verify(mockChannel.getDailyDataUsage()).called(1);
+      service.didChangeAppLifecycleState(AppLifecycleState.paused);
+      time.elapse(const Duration(minutes: 6));
+      verifyNever(mockChannel.getDailyDataUsage());
+      service.didChangeAppLifecycleState(AppLifecycleState.resumed);
+      time.flushMicrotasks();
+      verifyNever(mockChannel.getDailyDataUsage());
+      when(mockChannel.getDailyDataUsage()).thenAnswer((_) async => 456);
+      pending.complete(123);
+      time.flushMicrotasks();
+      expect(service.dailyDataUsage, 456);
+      verify(mockChannel.getDailyDataUsage()).called(1);
+      when(mockChannel.checkUsageStatsPermission()).thenAnswer((_) async => false);
+      time.elapse(const Duration(minutes: 5));
+      expect(service.hasUsageStatsPermission, isFalse);
+      expect(service.dailyDataUsage, -1);
+      verifyNever(mockChannel.getDailyDataUsage());
+      service.dispose();
+      time.elapse(const Duration(minutes: 6));
+      verifyNever(mockChannel.getDailyDataUsage());
+    });
   });
 
   test('a late startup snapshot cannot overwrite a newer network event', () async {
@@ -155,6 +226,7 @@ void main() {
     fakeAsync((time) {
       when(mockChannel.checkUsageStatsPermission()).thenAnswer((_) async => true);
       when(mockChannel.getDailyDataUsage()).thenAnswer((_) async => 123);
+      networkService.setTrafficVisible(Object(), true);
       networkService.refreshPermissionAndUsage();
       time.flushMicrotasks();
       expect(networkService.dailyDataUsage, 123);
@@ -179,6 +251,7 @@ void main() {
       when(mockChannel.checkUsageStatsPermission()).thenAnswer((_) async => true);
       when(mockChannel.getDailyDataUsage()).thenAnswer((_) async => 123);
       final service = NetworkService(mockChannel, work: work);
+      service.setTrafficVisible(Object(), true);
       time.elapse(const Duration(milliseconds: 350));
       verify(mockChannel.getDailyDataUsage()).called(1);
       clearInteractions(mockChannel);
@@ -215,7 +288,7 @@ void main() {
     },
   );
 
-  test('initial load waits for network and initial permitted traffic value', () async {
+  test('traffic preparation waits for initial permitted traffic value', () async {
     final channel = MockFLauncherChannel();
     final information = Completer<Map<String, dynamic>>();
     final usage = Completer<int>();
@@ -226,13 +299,14 @@ void main() {
     final service = NetworkService(channel);
     addTearDown(service.dispose);
     var loaded = false;
-    service.initialLoad.then((_) => loaded = true);
+    final preparation = service.prepareTraffic(Object());
+    preparation.then((_) => loaded = true);
     information.complete({});
     await service.initialNetworkLoad;
     await Future<void>.delayed(Duration.zero);
     expect(loaded, isFalse);
     usage.complete(123);
-    await service.initialLoad;
+    await preparation;
     expect(loaded, isTrue);
     expect(service.dailyDataUsage, 123);
   });
@@ -256,6 +330,10 @@ void main() {
   });
 
   group('getDataUsageForPeriod', () {
+    setUp(() async {
+      when(mockChannel.checkUsageStatsPermission()).thenAnswer((_) async => true);
+      await networkService.refreshPermissionAndUsage(force: false);
+    });
     test('returns daily usage when period is "daily"', () async {
       when(mockChannel.getDailyDataUsage()).thenAnswer((_) async => 100);
 
@@ -302,8 +380,10 @@ void main() {
   });
 
   group('refreshPermissionAndUsage', () {
+    setUp(() => networkService.setTrafficVisible(Object(), true));
     test('pause stops polling and resume refreshes and restarts it', () {
       fakeAsync((time) {
+        now = () => DateTime(2026).add(time.elapsed);
         when(mockChannel.checkUsageStatsPermission()).thenAnswer((_) async => true);
         when(mockChannel.getDailyDataUsage()).thenAnswer((_) async => 100);
         networkService.refreshPermissionAndUsage();

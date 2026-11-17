@@ -20,6 +20,46 @@ Future<String> _encodeAsset(Uint8List bytes) =>
 Future<Uint8List> _decodeAsset(String value) =>
     Isolate.run(() => base64Decode(value));
 
+/// Only the importer's private, unreferenced banner files may be reclaimed.
+Future<void> cleanupUnusedBackupAssets(
+  Directory root,
+  Iterable<String> livePaths,
+) async {
+  if (!await root.exists()) return;
+  final canonicalRoot = Directory(await root.resolveSymbolicLinks());
+  for (final suffix in ['', '.partial', '.committed']) {
+    if (await FileSystemEntity.type(
+      path.join(canonicalRoot.path, 'sync-rollback.json$suffix'),
+      followLinks: false,
+    ) != FileSystemEntityType.notFound) {
+      return;
+    }
+  }
+  final live = <String>{};
+  for (final value in livePaths) {
+    live.add(path.normalize(path.absolute(value)));
+    final file = File(value);
+    if (await file.exists()) {
+      live.add(path.normalize(await file.resolveSymbolicLinks()));
+    }
+  }
+  await for (final directory in canonicalRoot.list(followLinks: false)) {
+    if (directory is! Directory ||
+        !RegExp(r'^backup-assets-[A-Za-z0-9_-]+$').hasMatch(path.basename(directory.path))) {
+      continue;
+    }
+    await for (final file in directory.list(followLinks: false)) {
+      final name = path.basename(file.path);
+      if (file is File && name.startsWith('custom_banner_') &&
+          _validAssetKey(name) && !live.any((value) => path.equals(value, file.path))) {
+        await file.delete();
+      }
+    }
+    // Unknown contents and nested directories are never removed recursively.
+    if (await directory.list(followLinks: false).isEmpty) await directory.delete();
+  }
+}
+
 Future<Map<String, String>> exportBackupAssets(
   Directory root,
   Map<String, dynamic> settings,

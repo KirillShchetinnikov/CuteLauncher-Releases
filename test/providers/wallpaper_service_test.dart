@@ -1,9 +1,10 @@
 import 'dart:io';
 import 'dart:convert';
+import 'package:fake_async/fake_async.dart';
+import 'package:flutter/widgets.dart';
 
 import 'package:flauncher/local_background_media.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/painting.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 /*
  * FLauncher
@@ -42,6 +43,45 @@ void main() {
         .thenAnswer((_) => Future.value("."));
     PathProviderPlatform.instance = pathProviderPlatform;
   });
+
+  for (final startHour in [5, 17]) {
+    test('scheduled wallpaper pauses file checks and catches up after ${startHour + 1}:00', () {
+      var fileChecks = 0;
+      final files = <String>{'wallpaper_day', 'wallpaper_night', 'wallpaper'};
+      IOOverrides.runZoned(() {
+        fakeAsync((time) {
+          final settings = MockSettingsService();
+          when(settings.timeBasedWallpaperEnabled).thenReturn(true);
+          var now = DateTime(2026, 1, 1, startHour, 59);
+          final service = WallpaperService(MockFLauncherChannel(), settings, now: () => now);
+          time.flushMicrotasks();
+          final first = (service.wallpaper as FileImage).file.path;
+          expect(first, endsWith(startHour == 5 ? 'wallpaper_night' : 'wallpaper_day'));
+          service.didChangeAppLifecycleState(AppLifecycleState.paused);
+          final before = fileChecks;
+          now = now.add(const Duration(minutes: 2));
+          time.elapse(const Duration(minutes: 2));
+          expect(fileChecks, before);
+          expect((service.wallpaper as FileImage).file.path, first);
+          service.didChangeAppLifecycleState(AppLifecycleState.resumed);
+          time.flushMicrotasks();
+          expect((service.wallpaper as FileImage).file.path,
+              endsWith(startHour == 5 ? 'wallpaper_day' : 'wallpaper_night'));
+          // If the scheduled file disappears, retain the existing local fallback contract.
+          files.remove(startHour == 5 ? 'wallpaper_day' : 'wallpaper_night');
+          time.elapse(const Duration(minutes: 1));
+          expect((service.wallpaper as FileImage).file.path, endsWith('/wallpaper'));
+          service.dispose();
+          final disposedChecks = fileChecks;
+          time.elapse(const Duration(minutes: 2));
+          expect(fileChecks, disposedChecks);
+        });
+      }, createFile: (path) => _WallpaperProbeFile(path, () {
+        fileChecks++;
+        return files.contains(path.split('/').last);
+      }));
+    });
+  }
 
   group("pickWallpaper", () {
     for (final scenario in ['video', 'cancel', 'format', 'codec']) {
@@ -324,4 +364,17 @@ class _MockPathProviderPlatform extends Mock
     Invocation.method(#getApplicationDocumentsPath, []),
     returnValue: Future<String?>.value(),
   );
+}
+
+class _WallpaperProbeFile implements File {
+  @override
+  final String path;
+  final bool Function() present;
+  _WallpaperProbeFile(this.path, this.present);
+  @override
+  Future<bool> exists() async => present();
+  @override
+  Future<int> length() async => 1;
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

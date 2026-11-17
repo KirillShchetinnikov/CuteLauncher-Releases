@@ -130,6 +130,8 @@ public class LauncherActivity extends FlutterActivity {
     private boolean pendingHome;
     private ApplicationCatalog applicationCatalog;
     private LauncherAppsEventStreamHandler appsEvents;
+    private NetworkEventStreamHandler networkEvents;
+    private WeatherEventStreamHandler weatherEvents;
     private NetworkStatistics networkStatistics;
     private TvInputBridge tvInputBridge;
     private NotificationBridge notificationBridge;
@@ -149,6 +151,8 @@ public class LauncherActivity extends FlutterActivity {
     private RecentAppsBridge recentApps;
 
     @Override public void cleanUpFlutterEngine(@NonNull FlutterEngine flutterEngine) {
+        if (networkEvents != null) { networkEvents.close(); networkEvents = null; }
+        if (weatherEvents != null) { weatherEvents.close(); weatherEvents = null; }
         if (appsEvents != null) { appsEvents.close(); appsEvents = null; }
         if (wallpaperFolder != null) wallpaperFolder.local.close();
         if (legacyStorageAccess != null) { legacyStorageAccess.close(); legacyStorageAccess = null; }
@@ -591,37 +595,14 @@ public class LauncherActivity extends FlutterActivity {
         appsEvents = new LauncherAppsEventStreamHandler(this, sIoExecutor, this::runOnUiThread);
         new EventChannel(messenger, APPS_EVENT_CHANNEL).setStreamHandler(appsEvents);
 
-        new EventChannel(messenger, NETWORK_EVENT_CHANNEL).setStreamHandler(
-                new NetworkEventStreamHandler(this));
+        networkEvents = new NetworkEventStreamHandler(this);
+        new EventChannel(messenger, NETWORK_EVENT_CHANNEL).setStreamHandler(networkEvents);
 
         new EventChannel(messenger, NOTIFICATIONS_EVENT_CHANNEL).setStreamHandler(notificationBridge);
         new EventChannel(messenger, "me.efesser.flauncher/event_notification_popup").setStreamHandler(notificationPopups);
 
-        new EventChannel(messenger, WEATHER_EVENT_CHANNEL).setStreamHandler(
-                new EventChannel.StreamHandler() {
-                    @Override
-                    public void onListen(Object arguments, EventChannel.EventSink events) {
-                        WeatherReceiver.setListener(weatherJson -> {
-                            runOnUiThread(() -> {
-                                try {
-                                    events.success(weatherJson);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            });
-                        });
-                        String latest = getLatestWeatherData();
-                        if (latest != null) {
-                            events.success(latest);
-                        }
-                    }
-
-                    @Override
-                    public void onCancel(Object arguments) {
-                        WeatherReceiver.setListener(null);
-                    }
-                }
-        );
+        weatherEvents = new WeatherEventStreamHandler(this);
+        new EventChannel(messenger, WEATHER_EVENT_CHANNEL).setStreamHandler(weatherEvents);
 
         new EventChannel(messenger, WATCH_NEXT_EVENT_CHANNEL).setStreamHandler(watchNextBridge);
         new EventChannel(messenger, "me.efesser.flauncher/event_app_channels").setStreamHandler(appChannelsObserver);

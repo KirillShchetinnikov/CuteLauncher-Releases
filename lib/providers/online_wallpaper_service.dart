@@ -145,7 +145,7 @@ class OnlineWallpaperService extends ChangeNotifier with ServiceLifecycle, Widge
       if (work == null) { await refresh(); }
       else if (!isDisposed) {
         notifyListeners();
-        work!.schedule(this, () => refresh(), delay: const Duration(seconds: 1));
+        _scheduleRefresh();
       }
     } catch (error, stack) {
       if (!isDisposed) _recordFailure(error, stack, WallpaperStage.initialize, configuration.source, 0);
@@ -254,7 +254,13 @@ class OnlineWallpaperService extends ChangeNotifier with ServiceLifecycle, Widge
     finally {
       try { if (temporary != null && await temporary.exists()) await temporary.delete(); } catch (_) {}
       _loading = false;
-      if (!isDisposed) { notifyListeners(); if (generation != _generation) await refresh(); }
+      if (!isDisposed) {
+        notifyListeners();
+        if (generation != _generation) {
+          if (work == null) { await refresh(); }
+          else { unawaited(_scheduleRefresh()); }
+        }
+      }
     }
   }
   void _recordFailure(Object error, StackTrace stack, WallpaperStage stage, String source, int durationMs) {
@@ -266,10 +272,15 @@ class OnlineWallpaperService extends ChangeNotifier with ServiceLifecycle, Widge
       'details': {...failure!.details(source), 'exception': DiagnosticsStore.exceptionKind(error)},
     });
   }
+  Future<void> _scheduleRefresh() {
+    if (isDisposed || !_foreground) return Future.value();
+    return work?.schedule(this, () => refresh(), delay: const Duration(seconds: 1)) ?? refresh();
+  }
+
   void _startTimer() {
     _timer?.cancel();
     if (!isDisposed && configuration.enabled && _foreground) {
-      _timer = Timer.periodic(['reddit', 'wallhaven'].contains(configuration.source) ? const Duration(minutes: 5) : const Duration(hours: 1), (_) => refresh());
+      _timer = Timer.periodic(['reddit', 'wallhaven'].contains(configuration.source) ? const Duration(minutes: 5) : const Duration(hours: 1), (_) => _scheduleRefresh());
     }
   }
   @override
@@ -286,7 +297,7 @@ class OnlineWallpaperService extends ChangeNotifier with ServiceLifecycle, Widge
     }
     _startTimer();
     if (_foreground) {
-      (work?.schedule(this, () => refresh(), delay: const Duration(seconds: 1)) ?? refresh());
+      _scheduleRefresh();
     }
   }
   @override

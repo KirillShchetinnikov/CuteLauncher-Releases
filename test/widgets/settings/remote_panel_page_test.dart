@@ -41,6 +41,7 @@ void main() {
         final settings = SettingsService(prefs);
         final appearance = AppearanceService(prefs);
         final network = MockNetworkService();
+        when(network.trafficRevision).thenReturn(0);
         final notifications = MockNotificationsService();
         final inputs = MockTvInputsService();
         final weather = MockWeatherService();

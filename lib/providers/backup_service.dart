@@ -448,7 +448,23 @@ class BackupService {
     }
     // Cleanup cannot turn a committed, successful restore into an apparent failure.
     try { await assets.finish(); } on FileSystemException { /* Retryable leftover staging files. */ }
+    await _cleanupUnusedAssets();
     settingsService?.reload();
+  }
+
+  Future<void> cleanupUnusedAssets() => _exclusive(_cleanupUnusedAssets);
+
+  Future<void> _cleanupUnusedAssets() async {
+    try {
+      await cleanupUnusedBackupAssets(await getApplicationDocumentsDirectory(), [
+        for (final key in _sharedPreferences.getKeys())
+          if (key.startsWith('custom_banner_') && _sharedPreferences.get(key) is String)
+            _sharedPreferences.getString(key)!,
+      ]);
+    } catch (error, stack) {
+      // Retry after the next import; cleanup cannot invalidate committed data.
+      DiagnosticsStore.instance.recordException('backupCleanup', error, stack);
+    }
   }
 
   Future<void> _writeSettings(Map<String, dynamic> settings) async {

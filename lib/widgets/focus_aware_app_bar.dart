@@ -584,7 +584,8 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
         }),
       if (trafficVisible)
         'traffic': TopPanelItem(key: const ValueKey('traffic_button'), focusNode: _trafficFocusNode, selected: _activeWidget == 'traffic',
-          onPressed: _openTraffic, child: const DailyDataUsageWidget(showUnavailable: true)),
+          onPressed: _openTraffic, child: DailyDataUsageWidget(showUnavailable: true,
+            visible: widget.remotePanel != null || !settings.autoHideAppBarEnabled || focused || _settingsOpen)),
       if (showWeather)
         'weather': Semantics(label: AppLocalizations.of(context)?.weather, child: WeatherStatusBarWidget(
           showWeather: true,

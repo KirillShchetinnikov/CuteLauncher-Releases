@@ -2,6 +2,16 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
+## v1.8.0-test.12 — 2026-11-17
+
+**Pre-release.**
+
+- Tapping a notification in the remote quick settings panel opens its app again. If Android cannot open the launcher's notification settings, CuteLauncher tries to open its system app info page.
+- Cancelling sync before changes are applied preserves recent local edits. Repairs to damaged sync history persist across restarts.
+- After restoring a backup, the launcher removes old imported banners that are no longer in use.
+- The launcher performs fewer background checks for the data usage widget, the Continue Watching row, and scheduled brightness. The top bar and quick menu share data usage requests, and Continue Watching cards refresh when their content changes.
+- Fixed automatic online wallpaper rotation. If the launcher is busy when a wallpaper change is due, the scheduled download waits its turn.
+
 ## v1.8.0-test.10 — 2026-11-16
 
 **Pre-release.**

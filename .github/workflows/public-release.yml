@@ -108,23 +108,7 @@ jobs:
         with:
           name: signed-apks
           path: signed-apks
-      - name: Verify downloaded signed APKs
-        run: python3 .github/scripts/verify_apks.py signed-apks "$RELEASE_VERSION" "$RELEASE_BUILD" --signed
-      - name: Publish four APKs with bilingual changelog links
-        run: |
-          gh api "repos/$GITHUB_REPOSITORY/releases" --paginate --jq '.[].tag_name' > "$RUNNER_TEMP/release-tags.txt"
-          if grep -Fxq "$TAG_NAME" "$RUNNER_TEMP/release-tags.txt"; then
-            echo 'Release already exists; do not replace published APKs.' >&2
-            exit 1
-          fi
-          options=()
-          if [[ "$RELEASE_VERSION" == *-* ]]; then options+=(--prerelease); fi
-          printf '%s\n' \
-            "[Изменения на русском](https://github.com/$GITHUB_REPOSITORY/blob/$TAG_NAME/CHANGELOG_RU.md)" \
-            '' \
-            "[Changelog in English](https://github.com/$GITHUB_REPOSITORY/blob/$TAG_NAME/CHANGELOG_EN.md)" \
-            > "$RUNNER_TEMP/release-notes.md"
-          gh release create "$TAG_NAME" signed-apks/*.apk --verify-tag --title "CuteLauncher $RELEASE_VERSION" --notes-file "$RUNNER_TEMP/release-notes.md" --draft "${options[@]}"
-          latest=false
-          if [[ "$RELEASE_VERSION" != *-* ]]; then latest=true; fi
-          gh release edit "$TAG_NAME" --draft=false --latest="$latest"
+      - name: Verify and publish four APKs or resume a matching draft
+        run: >-
+          python3 .github/scripts/publish_release.py signed-apks
+          "$TAG_NAME" "$RELEASE_VERSION" "$RELEASE_BUILD"

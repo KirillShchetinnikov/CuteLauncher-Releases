@@ -122,7 +122,10 @@ GEMINI.original.md
 .qwenignore
 .qwen/
 QWEN.md
-.agents/
+.agents/*
+!.agents/skills/
+!.agents/skills/**
+!/.agents/skills/**/*.py
 AGENTS.md
 !/AGENTS.md
 AGENTS.original.md
@@ -156,3 +159,5 @@ CLAUDE.original.md
 !/scripts/export-landscape-gif.py
 !/test/scripts/test_docs_languages.py
 !/scripts/trace-landscape-horizons.py
+!/docs/agents/check-skills.py
+!/scripts/archive-r8.py

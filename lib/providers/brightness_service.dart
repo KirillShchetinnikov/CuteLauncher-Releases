@@ -23,7 +23,7 @@ import 'night_mode_service.dart';
 
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -76,13 +76,16 @@ extension TimeSlotExtension on TimeSlot {
   }
 }
 
-class BrightnessService extends ChangeNotifier with ServiceLifecycle {
+class BrightnessService extends ChangeNotifier with ServiceLifecycle, WidgetsBindingObserver {
   static const _platform = BridgeChannel('me.efesser.flauncher/method');
   final SharedPreferences _sharedPreferences;
   final NightModeService? nightMode;
   final DateTime Function() _now;
   int? _lastApplied;
   int? _lastWindowApplied;
+  int? _failedTarget;
+  DateTime? _retryAfter;
+  int _retrySeconds = 15;
   Timer? _timer;
   bool _checkingSchedule = false;
   Future<void> _brightnessOperation = Future.value();
@@ -95,6 +98,7 @@ class BrightnessService extends ChangeNotifier with ServiceLifecycle {
     this.nightMode,
     DateTime Function()? now,
   }) : _now = now ?? DateTime.now {
+    WidgetsBinding.instance.addObserver(this);
     nightMode?.addListener(_nightChanged);
     checkPermission();
     // Start the scheduler if enabled
@@ -105,6 +109,7 @@ class BrightnessService extends ChangeNotifier with ServiceLifecycle {
   }
 
   Future<void> checkPermission() async {
+    final previous = _hasPermission;
     try {
       final permission =
           await _platform.invokeMethod<bool>('checkWriteSettingsPermission') ??
@@ -120,7 +125,24 @@ class BrightnessService extends ChangeNotifier with ServiceLifecycle {
       _hasPermission = false;
     }
     if (isDisposed) return;
+    if (previous != _hasPermission) {
+      _resetRetry();
+      if (isEnabled) unawaited(applyCurrentSlotBrightness());
+    }
     notifyListeners();
+  }
+
+  void _resetRetry() {
+    _failedTarget = null;
+    _retryAfter = null;
+    _retrySeconds = 15;
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (isDisposed || state != AppLifecycleState.resumed) return;
+    _resetRetry();
+    unawaited(checkPermission().then((_) => applyCurrentSlotBrightness()));
   }
 
   Future<void> requestPermission() async {
@@ -168,6 +190,7 @@ class BrightnessService extends ChangeNotifier with ServiceLifecycle {
   }
 
   Future<void> setSolarEnabled(bool enabled) async {
+    _resetRetry();
     await _sharedPreferences.setBool('brightness_solar', enabled);
     _lastApplied = null;
     if (enabled) await nightMode?.refreshSolar();
@@ -177,6 +200,7 @@ class BrightnessService extends ChangeNotifier with ServiceLifecycle {
 
   Future<void> setTransitionMinutes(int minutes) async {
     if (minutes < 1 || minutes > 60) throw ArgumentError.value(minutes);
+    _resetRetry();
     await _sharedPreferences.setInt('brightness_transition_minutes', minutes);
     await applyCurrentSlotBrightness();
     notifyListeners();
@@ -184,6 +208,7 @@ class BrightnessService extends ChangeNotifier with ServiceLifecycle {
 
   Future<void> setSolarBrightness(bool sunrise, int value) async {
     if (value < 0 || value > 100) throw ArgumentError.value(value);
+    _resetRetry();
     await _sharedPreferences.setInt(
       sunrise ? 'brightness_sunrise' : 'brightness_sunset',
       value,
@@ -270,6 +295,7 @@ class BrightnessService extends ChangeNotifier with ServiceLifecycle {
   }
 
   Future<void> setBrightnessForSlot(TimeSlot slot, int brightness) async {
+    _resetRetry();
     String key;
     switch (slot) {
       case TimeSlot.morning:
@@ -311,6 +337,7 @@ class BrightnessService extends ChangeNotifier with ServiceLifecycle {
   }
 
   Future<void> _setEnabled(bool enabled) async {
+    _resetRetry();
     _lastApplied = null;
     await _sharedPreferences.setBool(_brightnessEnabled, enabled);
     if (isDisposed) return;
@@ -410,6 +437,9 @@ class BrightnessService extends ChangeNotifier with ServiceLifecycle {
   }
 
   Future<void> _applyBrightness(int brightnessPct) async {
+    if (_failedTarget != brightnessPct) _resetRetry();
+    final waiting = _retryAfter?.difference(_now());
+    if (waiting != null && waiting > Duration.zero && waiting <= const Duration(seconds: 60)) return;
     bool success = false;
     try {
       // 1. Try system-wide brightness first (needs WRITE_SETTINGS)
@@ -453,7 +483,14 @@ class BrightnessService extends ChangeNotifier with ServiceLifecycle {
         debugPrint('Error setting window brightness ($brightnessPct%): $e');
       }
     }
-    if (success) _lastApplied = brightnessPct;
+    if (success) {
+      _lastApplied = brightnessPct;
+      _resetRetry();
+    } else {
+      _failedTarget = brightnessPct;
+      _retryAfter = _now().add(Duration(seconds: _retrySeconds));
+      _retrySeconds = (_retrySeconds * 2).clamp(15, 60);
+    }
   }
 
   void _startScheduler() {
@@ -498,6 +535,7 @@ class BrightnessService extends ChangeNotifier with ServiceLifecycle {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     nightMode?.removeListener(_nightChanged);
     _stopScheduler();
     super.dispose();

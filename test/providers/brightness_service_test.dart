@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:fake_async/fake_async.dart';
+import 'package:flutter/widgets.dart';
 
 import 'package:flauncher/providers/brightness_service.dart';
 import 'package:flutter/services.dart';
@@ -18,6 +20,75 @@ void main() {
     final messenger = TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
     messenger.setMockMethodCallHandler(channel, null);
     messenger.setMockMethodCallHandler(windowChannel, null);
+  });
+
+  test('failed system writes back off at 15/30/60 seconds and successful retry clears fallback', () async {
+    SharedPreferences.setMockInitialValues({
+      for (final slot in TimeSlot.values) 'brightness_${slot.name}': 50,
+    });
+    final prefs = await SharedPreferences.getInstance();
+    fakeAsync((time) {
+      var writes = 0, windowWrites = 0, resets = 0;
+      var success = false;
+      final messenger = TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+      messenger.setMockMethodCallHandler(channel, (call) async {
+        if (call.method == 'setSystemBrightness') { writes++; return success; }
+        return false;
+      });
+      messenger.setMockMethodCallHandler(windowChannel, (call) async {
+        if (call.method == 'setApplicationScreenBrightness') windowWrites++;
+        if (call.method == 'resetApplicationScreenBrightness') resets++;
+        return null;
+      });
+      final service = BrightnessService(prefs, now: () => DateTime(2026, 1, 1, 12).add(time.elapsed));
+      service.setEnabled(true);
+      time.flushMicrotasks();
+      expect(writes, 1);
+      time.elapse(const Duration(seconds: 14)); expect(writes, 1);
+      time.elapse(const Duration(seconds: 1)); expect(writes, 2);
+      time.elapse(const Duration(seconds: 29)); expect(writes, 2);
+      time.elapse(const Duration(seconds: 1)); expect(writes, 3);
+      time.elapse(const Duration(seconds: 60)); expect(writes, 4);
+      expect(windowWrites, 1);
+      success = true;
+      time.elapse(const Duration(seconds: 60)); expect(writes, 5);
+      expect(resets, 1);
+      time.elapse(const Duration(minutes: 5)); expect(writes, 5);
+      service.setEnabled(false);
+      time.flushMicrotasks();
+      expect(service.isEnabled, isFalse);
+      service.dispose();
+    });
+  });
+
+  test('brightness retry resets on target, settings, permission and resume while background schedule survives', () async {
+    SharedPreferences.setMockInitialValues({
+      for (final slot in TimeSlot.values) 'brightness_${slot.name}': 50,
+    });
+    final prefs = await SharedPreferences.getInstance();
+    fakeAsync((time) {
+      var writes = 0;
+      var permission = false;
+      final messenger = TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+      messenger.setMockMethodCallHandler(channel, (call) async {
+        if (call.method == 'checkWriteSettingsPermission') return permission;
+        if (call.method == 'setSystemBrightness') writes++;
+        return false;
+      });
+      messenger.setMockMethodCallHandler(windowChannel, (_) async => null);
+      final service = BrightnessService(prefs, now: () => DateTime(2026, 1, 1, 12).add(time.elapsed));
+      service.setEnabled(true); time.flushMicrotasks(); expect(writes, 1);
+      service.setBrightnessForSlot(TimeSlot.day, 60); time.flushMicrotasks(); expect(writes, 2);
+      service.setTransitionMinutes(2); time.flushMicrotasks(); expect(writes, 3);
+      permission = true;
+      service.checkPermission(); time.flushMicrotasks(); expect(writes, 4);
+      service.didChangeAppLifecycleState(AppLifecycleState.paused);
+      time.elapse(const Duration(seconds: 15)); expect(writes, 5);
+      service.didChangeAppLifecycleState(AppLifecycleState.resumed);
+      time.flushMicrotasks(); expect(writes, 6);
+      service.dispose();
+      time.elapse(const Duration(minutes: 5)); expect(writes, 6);
+    });
   });
 
   test('persisted scheduler applies a zero level immediately at startup', () async {

@@ -3,6 +3,7 @@ import '../diagnostics/poster_loads.dart';
 import 'service_lifecycle.dart';
 import 'foreground_work.dart';
 import 'memory_resources.dart';
+import 'settings_service.dart';
 import '../image_byte_cache.dart';
 import '../network_poster.dart';
 import 'package:pool/pool.dart';
@@ -20,15 +21,20 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
   final ForegroundWork? work;
   final Future<void> Function(String)? onAppLaunched;
   final MemoryResources? _memoryResources;
+  final SettingsService? settings;
+  final _catalogOwners = <Object>{};
+  bool _wasNeeded = false;
+  bool get _needed => (settings?.showContinueWatching ?? true) || _catalogOwners.isNotEmpty;
+  bool get _active => !isDisposed && _foreground && _needed && _memoryResources?.isForeground != false;
   List<WatchNextProgram> _programs = [];
   bool _initialized = false;
   bool _failed = false;
+  DateTime? _lastPosterReload;
   static const metadataTimeout = Duration(seconds: 8);
   ContentLoadState get loadState => contentLoadState(
     initialized: _initialized, loading: _isFetching,
     failed: _failed || !_hasPermission, hasContent: _programs.isNotEmpty,
   );
-  DateTime? _lastPosterReload;
   bool _hasPermission = true;
   Timer? _refreshTimer;
   StreamSubscription<dynamic>? _watchNextSubscription;
@@ -55,7 +61,7 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
 
   bool get _isTest => Platform.environment.containsKey('FLUTTER_TEST');
 
-  WatchNextService(this._channel, {this._memoryResources, this.onAppLaunched, this.work}) {
+  WatchNextService(this._channel, {this._memoryResources, this.onAppLaunched, this.work, this.settings}) {
     _memoryResources?.register(this, clear: clearImageCaches,
       activity: () => _posterCache.activity,
       stats: () => MemoryCacheStats(posterCacheBytes, posterCacheEntries),
@@ -68,24 +74,47 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
     }
     DiagnosticsStore.instance.activePosterLoads?.lifecycle(PosterSource.watchNext,
         WidgetsBinding.instance.lifecycleState?.name ?? 'resumed');
-    (work?.schedule(this, _init) ?? _init()).catchError((Object error) {
-      log('Watch Next initialization failed', error: error);
-    });
+    settings?.addListener(_settingsChanged);
+    _settingsChanged();
   }
 
   List<WatchNextProgram> get programs => List.unmodifiable(_programs);
   bool get initialized => _initialized;
   bool get hasPermission => _hasPermission;
 
-  Future<void> _init() async {
+  void setCatalogVisible(Object owner, bool visible) {
     if (isDisposed) return;
-    await refresh();
-    if (isDisposed) return;
-    _initialized = true;
-    notifyListeners();
+    visible ? _catalogOwners.add(owner) : _catalogOwners.remove(owner);
+    _settingsChanged();
+  }
 
+  void _settingsChanged() {
+    if (isDisposed || _wasNeeded == _needed) return;
+    _wasNeeded = _needed;
+    if (_needed) {
+      _scheduledPosterReload |= _initialized;
+      _start();
+    } else {
+      _stop();
+    }
+  }
+
+  void _start({bool resuming = false}) {
+    if (!_active) return;
+    final stalePosters = _lastPosterReload == null ||
+        DateTime.now().difference(_lastPosterReload!) >= const Duration(minutes: 5);
+    final reload = _scheduledPosterReload || _initialized && (!resuming || stalePosters);
+    _scheduleRefresh(reloadPosters: reload,
+        maxAge: resuming && !reload ? const Duration(seconds: 30) : Duration.zero);
+    if (_initialized) _startPeriodicTimer();
+  }
+
+  void _listen() {
+    if (!_active) return;
     try {
-      _watchNextSubscription = _channel.addWatchNextChangedListener((_) {
+      _watchNextSubscription ??= _channel.addWatchNextChangedListener((_) {
+        // Retain only an invalidation in background, not a catalogue read.
+        _scheduledPosterReload = true;
         _scheduleRefresh(reloadPosters: true);
       });
     } catch (e, diagnosticStack) {
@@ -95,18 +124,33 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
       log('Failed to listen to watch next events', name: 'WatchNextService', error: e);
     }
 
-    _startPeriodicTimer();
+  }
+
+  void _stop({bool background = false}) {
+    if (!background) work?.cancel(this);
+    ++_callCount;
+    ++_posterGeneration;
+    _refreshTimer?.cancel();
+    _refreshTimer = null;
+    if (!background) {
+      unawaited(_watchNextSubscription?.cancel());
+      _watchNextSubscription = null;
+    }
+    if (background) _scheduledPosterReload |= _hasPendingPosterReload;
+    _hasPendingRefresh = false;
+    _hasPendingPosterReload = false;
+    if (!background) _scheduledPosterReload = false;
   }
 
   void _startPeriodicTimer() {
-    if (isDisposed || _memoryResources?.isForeground == false) return;
+    if (!_active) return;
     _refreshTimer?.cancel();
     // Refresh fallback every 5 minutes (reactive ContentObserver handles real-time updates)
     _refreshTimer = Timer.periodic(const Duration(minutes: 5), (_) => _scheduleRefresh(reloadPosters: true));
   }
 
   void _scheduleRefresh({bool reloadPosters = false, Duration maxAge = Duration.zero}) {
-    if (isDisposed) return;
+    if (!_active) return;
     // A resume request must not overwrite a pending content-change invalidation.
     _scheduledPosterReload |= reloadPosters;
     Future<void> run() {
@@ -124,28 +168,23 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
     DiagnosticsStore.instance.activePosterLoads?.lifecycle(PosterSource.watchNext, state.name);
     if (state == AppLifecycleState.paused || state == AppLifecycleState.hidden) {
       _foreground = false;
-      ++_posterGeneration;
-      ++_callCount;
-      _refreshTimer?.cancel();
-      _refreshTimer = null;
+      _stop(background: true);
     } else if (state == AppLifecycleState.resumed) {
       _foreground = true;
-      if (_initialized) {
-        final reload = _lastPosterReload == null || DateTime.now().difference(_lastPosterReload!) >= const Duration(minutes: 5);
-        _scheduleRefresh(reloadPosters: reload, maxAge: const Duration(seconds: 30));
-      }
+      _start(resuming: true);
       ++posterRefreshes.value;
-      _startPeriodicTimer();
     }
   }
 
   Future<void> refresh({bool reloadPosters = false}) async {
-    if (isDisposed || _memoryResources?.isForeground == false) return;
+    if (!_active) return;
     if (_isFetching) {
       _hasPendingRefresh = true;
       _hasPendingPosterReload |= reloadPosters;
       return;
     }
+    final previousState = (_initialized, _failed, _hasPermission);
+    var changed = false;
     _isFetching = true;
 
     final int callSnapshot = ++_callCount;
@@ -158,6 +197,7 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
       if (!hasPermission) {
         if (_programs.isNotEmpty) {
           _programs = [];
+          changed = true;
         }
         return;
       }
@@ -184,7 +224,13 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
         return b.id.compareTo(a.id);
       });
 
-      _programs = newPrograms;
+      changed = _programs.length != newPrograms.length;
+      if (!changed) {
+        for (var i = 0; i < newPrograms.length; i++) {
+          if (!_programs[i].sameContent(newPrograms[i])) { changed = true; break; }
+        }
+      }
+      if (changed) _programs = newPrograms;
       if (reloadPosters) ++posterRefreshes.value;
     } catch (e, diagnosticStack) {
       if (isDisposed || callSnapshot != _callCount) return;
@@ -195,7 +241,15 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
       log('Failed to refresh watch next programs', name: 'WatchNextService', error: e);
     } finally {
       _isFetching = false;
-      if (!isDisposed && callSnapshot == _callCount) notifyListeners();
+      if (!isDisposed && callSnapshot == _callCount) {
+        _initialized = true;
+        _listen();
+        if (_refreshTimer?.isActive != true) _startPeriodicTimer();
+      }
+      if (!isDisposed && callSnapshot == _callCount &&
+          (changed || previousState != (_initialized, _failed, _hasPermission))) {
+        notifyListeners();
+      }
       if (!isDisposed && _hasPendingRefresh) {
         _hasPendingRefresh = false;
         final reload = _hasPendingPosterReload;
@@ -206,7 +260,7 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
   }
 
   bool _canLoadPoster(int generation) =>
-      !isDisposed && _foreground && _memoryResources?.isForeground != false &&
+      _active &&
       generation == _posterGeneration;
 
   Future<Uint8List?> poster(WatchNextProgram program) async {
@@ -334,6 +388,8 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
   void dispose() {
     DiagnosticsStore.instance.activePosterLoads?.lifecycle(PosterSource.watchNext, 'disposed');
     work?.cancel(this);
+    settings?.removeListener(_settingsChanged);
+    _catalogOwners.clear();
     _memoryResources?.unregister(this);
     ++_callCount;
     _posterCache.clear();
