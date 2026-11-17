@@ -30,6 +30,11 @@ class FakeGitHub:
     def find_release(self, tag):
         return copy.deepcopy(self.release)
 
+    def get_release(self, release_id):
+        if self.release['id'] != release_id:
+            raise ValueError('Draft identity changed')
+        return copy.deepcopy(self.release)
+
     def create(self, data):
         self.created_with = copy.deepcopy(data)
         self.release = dict(data, id=12, assets=[], author={'login': 'github-actions[bot]'})
@@ -61,6 +66,13 @@ class PublishReleaseTests(unittest.TestCase):
     def publish(self):
         module.publish_release(self.github, 'owner/repo', 'v1.2.3', '1.2.3', '80',
                                'a' * 40, self.folder)
+
+    def test_new_draft_can_be_published_before_it_appears_in_the_release_list(self):
+        with patch.object(self.github, 'find_release', return_value=None) as find:
+            self.publish()
+        find.assert_called_once_with('v1.2.3')
+        self.assertEqual(len(self.github.uploads), 4)
+        self.assertEqual(self.github.published, 1)
 
     def test_upload_interruption_resumes_missing_assets_without_replacement(self):
         self.github.fail_after = 2
@@ -248,12 +260,41 @@ class GitHubClientTests(unittest.TestCase):
         with patch.object(module.subprocess, 'run') as run:
             run.side_effect = [
                 type('Result', (), {'stdout': json.dumps([[], [release]])})(),
+                type('Result', (), {'stdout': json.dumps(release)})(),
                 type('Result', (), {'stdout': json.dumps([[{'name': 'a.apk'}], [{'name': 'b.apk'}]])})(),
             ]
-            result = module.GitHub('owner/repo').find_release('v1.2.3')
+            github = module.GitHub('owner/repo')
+            self.assertEqual(github.find_release('v1.2.3'), release)
+            result = github.get_release(release['id'])
         self.assertEqual([a['name'] for a in result['assets']], ['a.apk', 'b.apk'])
+        self.assertEqual(run.call_args_list[1].args[0],
+                         ['gh', 'api', 'repos/owner/repo/releases/12', '--method', 'GET'])
         self.assertTrue(all('--paginate' in call.args[0] and '--slurp' in call.args[0]
-                            for call in run.call_args_list))
+                            for call in (run.call_args_list[0], run.call_args_list[2])))
+
+    def test_draft_read_retries_temporary_http_404(self):
+        github = module.GitHub('owner/repo')
+        endpoint = 'repos/owner/repo/releases/12'
+        missing = module.subprocess.CalledProcessError(1, ['gh'], stderr='gh: Not Found (HTTP 404)\n')
+        release = {'id': 12, 'draft': True}
+        with patch.object(github, 'api', side_effect=[missing, release, [[]]]) as api, \
+                patch.object(module.time, 'sleep') as sleep:
+            self.assertEqual(github.get_release(12), {'id': 12, 'draft': True, 'assets': []})
+        self.assertEqual([call.args[0] for call in api.call_args_list],
+                         [endpoint, endpoint, f'{endpoint}/assets?per_page=100'])
+        sleep.assert_called_once_with(1)
+
+    def test_draft_read_stops_after_retry_limit_or_on_other_http_errors(self):
+        github = module.GitHub('owner/repo')
+        for status, expected_delays in [(404, [1, 2, 4]), (403, [])]:
+            with self.subTest(status=status):
+                error = module.subprocess.CalledProcessError(1, ['gh'], stderr=f'gh: API error (HTTP {status})\n')
+                with patch.object(github, 'api', side_effect=error) as api, \
+                        patch.object(module.time, 'sleep') as sleep:
+                    with self.assertRaises(module.subprocess.CalledProcessError):
+                        github.get_release(12)
+                self.assertEqual(api.call_count, len(expected_delays) + 1)
+                self.assertEqual([call.args[0] for call in sleep.call_args_list], expected_delays)
 
     def test_asset_upload_never_clobbers_or_deletes(self):
         with patch.object(module.subprocess, 'run') as run:

@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import re
 import subprocess
+import time
 from urllib.parse import quote
 
 MARKER = 'cutelauncher-release-v1'
@@ -59,13 +60,23 @@ class GitHub:
                     for release in page if release['tag_name'] == tag]
         if len(releases) > 1:
             raise ValueError('Multiple releases for the tag')
-        if not releases:
-            return None
-        release = releases[0]
-        # Do not rely on the embedded assets list's page size.
-        release['assets'] = [asset for page in self.api(
-            f'{self.base}/releases/{release["id"]}/assets?per_page=100', paginate=True) for asset in page]
-        return release
+        return releases[0] if releases else None
+
+    def get_release(self, release_id):
+        endpoint = f'{self.base}/releases/{release_id}'
+        for delay in (1, 2, 4, 0):
+            try:
+                release = self.api(endpoint)
+                if release['id'] != release_id:
+                    raise ValueError('Draft identity changed')
+                release['assets'] = [asset for page in self.api(
+                    f'{endpoint}/assets?per_page=100', paginate=True) for asset in page]
+                return release
+            except subprocess.CalledProcessError as error:
+                # GitHub may briefly return 404 for a newly created draft.
+                if not delay or not re.search(r'\(HTTP 404\)\s*$', error.stderr or ''):
+                    raise
+                time.sleep(delay)
 
     def create(self, data):
         return self.api(f'{self.base}/releases', 'POST', data)
@@ -126,30 +137,28 @@ def publish_release(github, repository, tag, version, build, commit, folder):
         release = github.create({'tag_name': tag, 'draft': True,
                                  'prerelease': '-' in version, 'name': f'CuteLauncher {version}',
                                  'body': body + '\n<!-- ' + MARKER + ' ' + json.dumps(manifest, sort_keys=True) + ' -->\n'})
-    assets = check_draft(release, manifest)
-    for name in sorted(files.keys() - assets.keys()):
+    release_id = release['id']
+    for name, path in sorted(files.items()):
         # Re-read before each mutation: another actor may have published or edited the draft.
-        current = github.find_release(tag)
-        if current is None or current['id'] != release['id']:
-            raise ValueError('Draft identity changed')
+        current = github.get_release(release_id)
         existing = check_draft(current, manifest)
         if name not in existing:
-            if sha256(files[name]) != manifest['apks'][name]['sha256']:
+            if sha256(path) != manifest['apks'][name]['sha256']:
                 raise ValueError('Local APK changed during publication')
-            github.upload(release['id'], files[name])  # No clobber/delete, including partial assets.
+            github.upload(release_id, path)  # No clobber/delete, including partial assets.
     default_branch = github.default_branch()
-    current = github.find_release(tag)
-    if current is None or current['id'] != release['id'] or github.tag_commit(tag) != commit:
-        raise ValueError('Draft identity or tag commit changed')
+    current = github.get_release(release_id)
+    if github.tag_commit(tag) != commit:
+        raise ValueError('Tag commit changed')
     if set(check_draft(current, manifest)) != expected:
         raise ValueError('Draft does not contain all four verified APKs')
     # For an existing tag, target_commitish does not move the tag. Reset an old
     # SHA target to the current default branch in this same PATCH, so GitHub's
     # update permission check does not require Workflows write for that old SHA.
     # Strip the marker and publish atomically, never an intermediate unmarked draft.
-    github.publish(release['id'], {'body': body, 'draft': False, 'prerelease': '-' in version,
-                                   'target_commitish': default_branch,
-                                   'make_latest': 'false' if '-' in version else 'true'})
+    github.publish(release_id, {'body': body, 'draft': False, 'prerelease': '-' in version,
+                                'target_commitish': default_branch,
+                                'make_latest': 'false' if '-' in version else 'true'})
 
 
 def main():
