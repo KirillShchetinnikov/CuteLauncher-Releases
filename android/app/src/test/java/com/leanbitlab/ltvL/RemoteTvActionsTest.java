@@ -88,6 +88,29 @@ public class RemoteTvActionsTest {
         assertNull(Shadows.shadowOf(context).getNextStartedActivity());
     }
 
+    @Test public void tclGuideUsesTheInstalledSystemPlayerAndEpgUri() {
+        var context = RuntimeEnvironment.getApplication();
+        var packages = Shadows.shadowOf(context.getPackageManager());
+        assertFalse(RemoteTvActions.available(context).contains("tcl_epg"));
+        var info = new PackageInfo();
+        info.packageName = "com.tcl.tv";
+        info.applicationInfo = new ApplicationInfo();
+        info.applicationInfo.packageName = info.packageName;
+        info.applicationInfo.flags = ApplicationInfo.FLAG_SYSTEM;
+        info.applicationInfo.enabled = true;
+        var activity = new ActivityInfo();
+        activity.applicationInfo = info.applicationInfo;
+        activity.packageName = info.packageName;
+        activity.name = "com.tcl.player.TVActivity";
+        activity.enabled = true;
+        activity.exported = true;
+        info.activities = new ActivityInfo[] {activity};
+        packages.installPackage(info);
+        assertTrue(RemoteTvActions.available(context).contains("tcl_epg"));
+        assertEquals("am start -a android.intent.action.VIEW -d 'app://com.tcl.tv/epg' -n com.tcl.tv/com.tcl.player.TVActivity",
+            RemoteTvActions.TCL_EPG_COMMAND);
+    }
+
     @Test public void hdmiTargetRoundTripsAndSettingsRejectTargets() {
         var config = config("hdmi", "vendor.tv/.Input/HW1");
         assertEquals("vendor.tv/.Input/HW1", RemoteMappingConfiguration.fromMap(config.toMap())
@@ -95,7 +118,7 @@ public class RemoteTvActionsTest {
         for (String invalid : List.of("", " ", "vendor\ninput", "a".repeat(513))) {
             assertThrows(IllegalArgumentException.class, () -> config("hdmi", invalid));
         }
-        for (String action : List.of("live_tv", "display_settings", "wifi_settings", "bluetooth_settings", "mute")) {
+        for (String action : List.of("live_tv", "display_settings", "wifi_settings", "bluetooth_settings", "mute", "tcl_epg")) {
             assertEquals(action, config(action, "").binding(190).action());
             assertThrows(IllegalArgumentException.class, () -> config(action, "vendor.tv"));
         }

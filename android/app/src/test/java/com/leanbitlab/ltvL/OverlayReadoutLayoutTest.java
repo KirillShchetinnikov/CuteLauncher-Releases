@@ -67,6 +67,29 @@ public class OverlayReadoutLayoutTest {
     }
 
     @Test @GraphicsMode(GraphicsMode.Mode.NATIVE)
+    public void volumeKeepsTheSameBoundsForEveryPercentageInBothAppearances() {
+        var context = Robolectric.buildService(LauncherAccessibilityService.class).get();
+        ShadowWindowManagerImpl windows = Shadow.extract(context.getSystemService(WindowManager.class));
+        try (var layout = new OverlayReadoutLayout(context)) {
+            layout.setPanelStyle(panelStyle(48));
+            for (String appearance : new String[]{"topPanel", "dark"}) {
+                layout.volume.setAppearance(appearance);
+                layout.volume.show("100%");
+                var fullVolume = bounds(windows, "100%");
+                assertFitsOnOneLine(readout(windows, "100%"), fullVolume, "100%");
+
+                for (int percent = 99; percent >= 0; percent--) {
+                    String label = percent + "%";
+                    layout.volume.show(label);
+                    var current = bounds(windows, label);
+                    assertEquals(appearance + " " + label, fullVolume, current);
+                    assertFitsOnOneLine(readout(windows, label), current, label);
+                }
+            }
+        }
+    }
+
+    @Test @GraphicsMode(GraphicsMode.Mode.NATIVE)
     public void panelTimerUsesTheFullLabelWidthWithoutResizingText() {
         var context = Robolectric.buildService(LauncherAccessibilityService.class).get();
         var manager = context.getSystemService(WindowManager.class);

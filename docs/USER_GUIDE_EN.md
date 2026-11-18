@@ -97,8 +97,8 @@ message. Detailed explanations remain in collapsed help.
 Under **Top panel → Appearance**, groups
 separate background, text, and additional options.
 The row material and focus color stay the same. Your group appearance choice
-is included in appearance backups; resetting the settings style restores
-**Shared surface**.
+is included in appearance backups. Resetting the settings style restores
+**Shared surface** and turns off menu key sounds.
 
 Clean installations start with Standard style, Medeo Sans, an orange accent,
 and an adaptive landscape. Settings open on the left in an opaque dark grey panel.
@@ -108,7 +108,8 @@ The grid shows up to three visible rows of six apps. All Apps and nonempty feeds
 are visible. The clock and date work immediately; weather needs a selected city.
 The timer shows 10, 30, 60, 90, and 120 minutes. Updating does not apply this
 profile over your settings, including earlier defaults you never selected manually.
-An explicit appearance reset restores the new starting style.
+An explicit appearance reset restores the starting style, shows section titles
+again, and turns off menu key sounds.
 Appearance, category, and timer resets
 affect only their own scope; resetting local appearance restores shared values.
 
@@ -455,6 +456,9 @@ The file name appears below each selection; an empty slot and an unavailable fil
 are distinct. Images selected before this update or restored from a backup may
 display the launcher’s internal file name.
 
+Resetting the **Background** page restores the adaptive landscape. You can reset
+the single file and the day and night images independently under **Source settings**.
+
 After selecting this source, open **Home screen → Background → Source settings**.
 Time of day, seasons, clouds, rain/snow, fog and weather animation have independent
 switches. Disabling time of day keeps daylight; disabling seasons keeps summer.
@@ -636,7 +640,7 @@ focus and refreshes at the selected interval while the panel is visible.
 Its visibility on the quick settings panel is configured separately.
 
 In **Volume settings**, turn on **Show volume over apps** to display just the
-percentage when media volume changes in another app. It
+percentage in a fixed-width badge when media volume changes in another app. It
 disappears two seconds after the last change. The switch is off by default.
 Enable the CuteLauncher accessibility service in **Access settings** to use it.
 The readout depends on the device firmware reporting Android media volume changes.
@@ -1216,6 +1220,8 @@ Path: **Launcher and device controls**.
   ADB. On a TV box, the command controls the box itself. The TV's response
   depends on HDMI-CEC and firmware.
 - Configure local TCP/RSA ADB: port, connection check, and authorization on the TV.
+  After a full app data reset, select **Check connection** and approve the Android
+  prompt if it appears. The check retries automatically if the connection drops briefly.
 - **Default launcher** shows the current home app and two buttons. The first
   sets CuteLauncher as default through ADB and disables the built-in launcher
   if it is enabled. The same button then restores the previous home app and
@@ -1329,6 +1335,10 @@ display actions and the media mute toggle. “System” opens network or
 Bluetooth settings. System screens appear when the firmware provides an
 accessible handler.
 
+On compatible TCL TVs, “TCL TV guide” appears under “Inputs”. Assign it to TV/CH
+if CuteLauncher can capture that button, or choose another remote button.
+The action opens the full programme guide through your configured local ADB connection.
+
 **Sleep** puts the device in standby. Existing “Turn off device” mappings are
 shown as **Sleep** and still put the device in standby. The **Turn off device**
 option in the action picker requests a full shutdown through local ADB and always
@@ -1368,6 +1378,13 @@ For a webhook, enter the URL or import a UTF-8 text file up to 64 KB containing
 only the request URL, without commands or explanations. Line breaks are removed.
 HTTPS or local HTTP is required. Import errors and cancellation preserve the
 previous URL; the editor masks the address.
+Under “Automation”, choose “ADB command”. Type a command or import a UTF-8
+`.txt` or `.sh` file up to 64 KB. You can paste a line beginning with `adb shell`
+or enter several shell lines without the prefix. Commands are limited to 4,096
+characters and time out after 8 seconds. After saving the assignment, press its
+button to run the command with standard Android shell permissions through your
+configured local ADB connection. Custom commands stay on the device and are
+excluded from backups and sync.
 Save errors explain what to fix: assign a button, select an app, enter a valid
 URL, or retry saving.
 Deleting an assignment requires confirmation. Cancel and Back keep the assignment.

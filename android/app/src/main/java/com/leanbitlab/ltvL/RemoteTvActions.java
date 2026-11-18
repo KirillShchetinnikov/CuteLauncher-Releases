@@ -18,6 +18,9 @@ final class RemoteTvActions {
         new ComponentName("com.android.tv.settings", "com.android.tv.settings.MainSettings");
     static final ComponentName XIAOMI_PICTURE_SETTINGS =
         new ComponentName("com.android.tv.settings", "com.xiaomi.mitv.settings.picture.PictureActivity");
+    private static final ComponentName TCL_EPG = new ComponentName("com.tcl.tv", "com.tcl.player.TVActivity");
+    static final String TCL_EPG_COMMAND = "am start -a android.intent.action.VIEW -d 'app://com.tcl.tv/epg' -n "
+        + TCL_EPG.flattenToString();
     private static final List<String> ACTIONS = List.of(
         "live_tv", "display_settings", "wifi_settings", "bluetooth_settings", "mute");
 
@@ -30,7 +33,18 @@ final class RemoteTvActions {
                 }
             } catch (RuntimeException unavailable) { /* Keep other actions on this firmware. */ }
         }
+        if (tclEpgAvailable(context)) available.add("tcl_epg");
         return available;
+    }
+
+    static boolean tclEpgAvailable(Context context) {
+        try {
+            ActivityInfo info = context.getPackageManager().getActivityInfo(TCL_EPG, 0);
+            return info.enabled && info.applicationInfo.enabled
+                && (info.applicationInfo.flags & (ApplicationInfo.FLAG_SYSTEM | ApplicationInfo.FLAG_UPDATED_SYSTEM_APP)) != 0;
+        } catch (PackageManager.NameNotFoundException | RuntimeException unavailable) {
+            return false;
+        }
     }
 
     static boolean open(Context context, String action) {

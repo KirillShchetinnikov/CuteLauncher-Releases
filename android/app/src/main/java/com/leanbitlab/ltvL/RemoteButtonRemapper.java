@@ -165,6 +165,12 @@ final class RemoteButtonRemapper implements AutoCloseable {
                 service.dismissPanel();
                 yield availability(RemoteTvActions.open(service, binding.action()));
             }
+            case "tcl_epg", "adb_shell" -> {
+                if (binding.action().equals("tcl_epg")) service.dismissPanel();
+                status = "busy";
+                power.execute(() -> runAdbAction(binding));
+                yield null;
+            }
             case "mute" -> availability(RemoteTvActions.toggleMute(service));
             case "sleep", "reboot", "shutdown" -> {
                 var operation = TvPowerBridge.Operation.fromMethod(binding.action());
@@ -199,13 +205,36 @@ final class RemoteButtonRemapper implements AutoCloseable {
         return available ? "success" : "unavailable";
     }
 
+    private void runAdbAction(RemoteMappingConfiguration.Binding binding) {
+        if (closed) return;
+        boolean epg = binding.action().equals("tcl_epg");
+        if (epg && !RemoteTvActions.tclEpgAvailable(service)) {
+            main.post(() -> complete(binding, "unavailable"));
+            return;
+        }
+        String command = epg ? RemoteTvActions.TCL_EPG_COMMAND : binding.target();
+        try {
+            String result = AdbBridge.recentSession(service, shell -> {
+                if (!"2000".equals(shell.execute("id -u").trim())) return "unavailable";
+                if (closed || !binding.equals(configuration.binding(binding.keyCode(), binding.trigger())))
+                    return "idle";
+                shell.execute(RemoteAdbCommand.bounded(command));
+                return "success";
+            });
+            main.post(() -> complete(binding, result));
+        } catch (Exception | LinkageError unavailable) {
+            main.post(() -> complete(binding, "unavailable"));
+        }
+    }
+
     private void complete(RemoteMappingConfiguration.Binding binding, String result) {
         int message = switch (result) {
-            case "success", "blocked" -> 0;
+            case "success", "blocked", "idle" -> 0;
             case "busy" -> R.string.remap_error_busy;
             default -> switch (binding.action()) {
                 case "app" -> R.string.remap_error_app;
                 case "hdmi" -> R.string.remap_error_hdmi;
+                case "tcl_epg", "adb_shell" -> R.string.remap_error_adb_command;
                 case "sleep", "sleep_immediate", "reboot", "reboot_immediate", "shutdown" -> R.string.remap_error_power;
                 default -> R.string.remap_error_unavailable;
             };

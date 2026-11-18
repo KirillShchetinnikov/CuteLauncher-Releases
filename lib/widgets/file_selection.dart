@@ -125,6 +125,7 @@ class FileSelection {
           : switch (operation) {
               'pickImageDocument' => FileBrowserKind.image,
               'pickWallpaperDocument' => FileBrowserKind.media,
+              'pickAdbCommandDocument' => FileBrowserKind.script,
               'pickWeatherTokenDocument' ||
               'pickWeatherServerDocument' ||
               'pickWebhookDocument' ||
@@ -155,6 +156,8 @@ class FileSelection {
           'pickWebhookDocument' => AppLocalizations.of(
             context,
           )!.remoteMappingImport,
+          'pickAdbCommandDocument' =>
+            AppLocalizations.of(context)!.remoteMappingAdbImport,
           'pickCleanerListDocument' => AppLocalizations.of(
             context,
           )!.cleanerLists,
@@ -166,6 +169,7 @@ class FileSelection {
           'pickBackupDocument' ||
           'pickDriveClientDocument' => 'JSON',
           'pickWeatherTokenDocument' || 'pickWeatherServerDocument' => 'TXT',
+          'pickAdbCommandDocument' => 'TXT · SH',
           'pickWebhookDocument' ||
           'pickCleanerDocument' ||
           'pickCleanerListDocument' => 'TXT · JSON',

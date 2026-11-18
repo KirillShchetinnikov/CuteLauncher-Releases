@@ -39,4 +39,5 @@
     <string name="recovery_unavailable">هذا الإجراء غير متاح على هذا الجهاز.</string>
     <string name="recovery_restore">استعادة الشاشة الرئيسية السابقة</string>
     <string name="recovery_restore_confirm">هل تريد استعادة الشاشة الرئيسية السابقة باستخدام اتصال ADB المحلي الحالي؟</string>
+    <string name="remap_error_adb_command">تعذّر تنفيذ أمر ADB. تحقّق من اتصال ADB المحلي ومن الأمر.</string>
 </resources>

@@ -30,6 +30,23 @@ public class RemoteMappingStoreTest {
         assertEquals("home", saved.binding(83).action());
     }
 
+    @Test public void customShellCommandsRoundTripLocallyAndCannotBeRestoredFromSync() throws Exception {
+        String script = "printf '%s\\n' \"a b\"\ntrue";
+        var local = new RemoteMappingConfiguration.Binding(83, true, "adb_shell", script);
+        var portable = new RemoteMappingConfiguration.Binding(190, true, "tcl_epg", "");
+        var configuration = new RemoteMappingConfiguration(true, Map.of(local.slot(), local, portable.slot(), portable));
+        var encoded = new JSONObject(configuration.toMap());
+        assertEquals(local, RemoteMappingStore.decode(encoded).binding(83));
+        assertThrows(IllegalArgumentException.class, () -> RemoteMappingStore.decodePortable(encoded));
+        var exported = RemoteMappingStore.decodePortable(new JSONObject(configuration.toMap(false)));
+        assertNull(exported.binding(83));
+        assertEquals(portable, exported.binding(190));
+        assertTrue(RemoteAdbCommand.bounded(script).contains("printf '\\''%s\\n'\\'' \"a b\"\ntrue"));
+        for (String invalid : List.of("", "\n\t", "true\u0000", "x".repeat(4097))) {
+            assertFalse(RemoteMappingConfiguration.adbTarget(invalid));
+        }
+    }
+
     @Test public void retiredBlackScreenAssignmentIsSkippedOnlyOnLoad() throws Exception {
         var retired = new RemoteMappingConfiguration.Binding(83, true, "black_screen", "", "hold");
         var press = new RemoteMappingConfiguration.Binding(83, true, "black_overlay", "", "press", "Чёрный экран");

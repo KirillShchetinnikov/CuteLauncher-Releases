@@ -66,6 +66,8 @@ String _actionLabel(AppLocalizations l, String value) => switch (value) {
   'tcl_screen_off' => l.remoteMappingTclScreenOff,
   'hdmi' => l.autoLaunchHdmi,
   'live_tv' => l.remoteMappingLiveTv,
+  'tcl_epg' => l.remoteMappingTclEpg,
+  'adb_shell' => l.remoteMappingAdbCommand,
   'display_settings' => l.remoteMappingDisplaySettings,
   'wifi_settings' => l.networkSystemSettings,
   'bluetooth_settings' => l.remoteMappingBluetoothSettings,
@@ -410,15 +412,24 @@ class _MappingEditorState extends State<_MappingEditor>
     }
   }
 
-  Future<void> _importWebhook() async {
+  Future<void> _importText() async {
     final l = AppLocalizations.of(context)!;
+    final adb = _action == 'adb_shell';
     setState(() => _importing = true);
     try {
-      final source = await DocumentFiles.pickWebhookText(context: context);
+      final source = adb
+          ? await DocumentFiles.pickAdbCommandText(context)
+          : await DocumentFiles.pickWebhookText(context: context);
       if (!mounted || source == null) return;
-      final value = remoteWebhookFromText(source);
-      if (value == null) {
-        showActionNotice(context, l.remoteMappingImportInvalid, error: true);
+      final value = adb
+          ? normalizeRemoteAdbScript(source)
+          : remoteWebhookFromText(source);
+      if (value == null || adb && !remoteAdbScriptValid(value)) {
+        showActionNotice(
+          context,
+          adb ? l.remoteMappingAdbInvalid : l.remoteMappingImportInvalid,
+          error: true,
+        );
       } else {
         setState(() => _target = value);
       }
@@ -436,6 +447,9 @@ class _MappingEditorState extends State<_MappingEditor>
     if (_key == 3 && _trigger != 'hold') return l.remoteMappingHomeHoldRequired;
     if (widget.used.contains('$_key:$_trigger')) return l.remoteMappingConflict;
     if (_action == 'app' && _target.isEmpty) return l.remoteMappingAppRequired;
+    if (_action == 'adb_shell' && !remoteAdbScriptValid(_target)) {
+      return l.remoteMappingAdbInvalid;
+    }
     if (_action == 'webhook') {
       if (_target.isEmpty) return l.remoteMappingUrlRequired;
       if (!remoteWebhookValid(_target)) return l.remoteMappingUrlInvalid;
@@ -488,6 +502,14 @@ class _MappingEditorState extends State<_MappingEditor>
           detail: l.inputsUnavailableStatus,
         ),
       if (visible('live_tv')) systemChoice('live_tv'),
+      if (visible('tcl_epg'))
+        choice(
+          'tcl_epg',
+          enabled: widget.tvActions.contains('tcl_epg'),
+          detail: widget.tvActions.contains('tcl_epg')
+              ? l.remoteMappingNeedsAdb
+              : l.networkUnavailable,
+        ),
     ];
     final systemChoices = [
       for (final action in ['wifi_settings', 'bluetooth_settings'])
@@ -535,7 +557,13 @@ class _MappingEditorState extends State<_MappingEditor>
           ),
           if (systemChoices.isNotEmpty)
             (label: l.system, choices: systemChoices),
-          (label: l.remoteMappingAutomationGroup, choices: [choice('webhook')]),
+          (
+            label: l.remoteMappingAutomationGroup,
+            choices: [
+              choice('webhook'),
+              choice('adb_shell', detail: l.remoteMappingNeedsAdb),
+            ],
+          ),
         ],
       ),
     );
@@ -720,12 +748,35 @@ class _MappingEditorState extends State<_MappingEditor>
                       title: Text(l.remoteMappingImport),
                       leading: const Icon(Icons.file_open_outlined),
                       busy: _saving || _importing,
-                      onPressed: _importWebhook,
+                      onPressed: _importText,
                     ),
                     SettingsHelp(
                       title: l.importAction,
                       text: l.remoteMappingImportHint,
                     ),
+                  ],
+                  if (_action == 'adb_shell') ...[
+                    SettingsTextTile(
+                      busy: _saving || _importing,
+                      title: l.remoteMappingAdbCommand,
+                      value: _target,
+                      maxLines: 4,
+                      keyboardType: TextInputType.multiline,
+                      onChanged: (value) {
+                        if (value != _target) {
+                          setState(
+                            () => _target = normalizeRemoteAdbScript(value),
+                          );
+                        }
+                      },
+                    ),
+                    FocusableSettingsTile(
+                      title: Text(l.remoteMappingAdbImport),
+                      leading: const Icon(Icons.file_open_outlined),
+                      busy: _saving || _importing,
+                      onPressed: _importText,
+                    ),
+                    SettingsHelp(text: l.remoteMappingAdbHelp),
                   ],
                 ],
               ),

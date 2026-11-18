@@ -49,6 +49,7 @@ void main() {
               final name = switch (args['kind']) {
                 'document' => 'sample.json',
                 'text' => 'sample.txt',
+                'script' => 'sample.sh',
                 _ => 'sample.png',
               };
               return {
@@ -245,6 +246,7 @@ void main() {
     'pickBackupDocument',
     'pickDriveClientDocument',
     'pickWebhookDocument',
+    'pickAdbCommandDocument',
     'pickWeatherTokenDocument',
     'pickWeatherServerDocument',
     'pickCleanerListDocument',
@@ -262,13 +264,15 @@ void main() {
           'pickWallpaperDocument' => 'media',
           'pickBackupDocument' || 'pickDriveClientDocument' => 'document',
           'pickWebhookDocument' || 'pickWeatherTokenDocument' || 'pickWeatherServerDocument' || 'pickCleanerListDocument' => 'text',
+          'pickAdbCommandDocument' => 'script',
           _ => 'folder',
         };
-        final name = kind == 'document'
-            ? 'sample.json'
-            : kind == 'text'
-            ? 'sample.txt'
-            : 'sample.png';
+        final name = switch (kind) {
+          'document' => 'sample.json',
+          'text' => 'sample.txt',
+          'script' => 'sample.sh',
+          _ => 'sample.png',
+        };
         localResult = switch (operation) {
           'saveBackupDocument' => true,
           'pickCleanerListDocument' => {'path': 'staged', 'name': name},

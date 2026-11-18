@@ -12,6 +12,7 @@ class SettingsTextTile extends StatelessWidget {
   final bool enabled, obscureText;
   final String? emptyLabel;
   final int? maxLength;
+  final int maxLines;
   final TextInputType? keyboardType;
   final bool busy;
   const SettingsTextTile({
@@ -23,6 +24,7 @@ class SettingsTextTile extends StatelessWidget {
     this.busy = false,
     this.obscureText = false,
     this.maxLength,
+    this.maxLines = 1,
     this.emptyLabel,
     this.keyboardType,
   });
@@ -40,6 +42,7 @@ class SettingsTextTile extends StatelessWidget {
           ? '••••••'
           : value,
       overflow: TextOverflow.ellipsis,
+      maxLines: maxLines == 1 ? null : 1,
     ),
     onPressed: () async {
       final result = await showLauncherDialog<String>(
@@ -95,6 +98,7 @@ class _SettingsTextEditorState extends State<_SettingsTextEditor>
           autofocus: true,
           onSubmitted: (_) => _saveFocus.requestFocus(),
           maxLength: tile.maxLength,
+          maxLines: tile.maxLines,
           keyboardType: tile.keyboardType,
           obscureText: tile.obscureText,
           autocorrect: false,

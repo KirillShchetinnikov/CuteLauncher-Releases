@@ -2,6 +2,16 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
+## v1.8.0-test.13 — 2026-11-18
+
+**Pre-release.**
+
+- Remote button settings now include a dedicated action for opening the TV guide on compatible TCL TVs.
+- You can assign a custom ADB shell command to a remote button. Enter the command manually or import it from a `.sh` file.
+- The ADB connection check retries if the connection drops during the handshake.
+- The volume overlay keeps the same width as its reading changes.
+- Resetting appearance restores the defaults for button sounds, section headings, and the initial landscape. Resetting an individual local wallpaper source preserves files used by other sources.
+
 ## v1.8.0-test.12 — 2026-11-17
 
 **Pre-release.**

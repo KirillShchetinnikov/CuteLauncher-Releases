@@ -37,4 +37,5 @@
     <string name="power_shutdown">Выключить устройство</string>
     <string name="power_shutdown_confirm">Полностью выключить устройство?</string>
     <string name="power_reboot_confirm">Перезагрузить устройство? Открытые приложения будут закрыты.</string>
+    <string name="remap_error_adb_command">Команда ADB не выполнена. Проверьте локальный ADB и текст команды.</string>
 </resources>

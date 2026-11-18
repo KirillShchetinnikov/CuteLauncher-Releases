@@ -3792,6 +3792,23 @@ class AppLocalizationsRu extends AppLocalizations {
   String get remoteMappingLiveTv => 'Открыть эфирное ТВ';
 
   @override
+  String get remoteMappingTclEpg => 'Телепрограмма TCL';
+
+  @override
+  String get remoteMappingAdbCommand => 'Команда ADB';
+
+  @override
+  String get remoteMappingAdbImport => 'Импортировать команду из файла';
+
+  @override
+  String get remoteMappingAdbHelp =>
+      'Введите команду ADB shell или выберите файл TXT или SH в UTF-8. Команда выполняется на этом устройстве при нажатии назначенной кнопки.';
+
+  @override
+  String get remoteMappingAdbInvalid =>
+      'Введите команду ADB длиной до 4096 знаков.';
+
+  @override
   String get remoteMappingDisplaySettings => 'Настройки экрана';
 
   @override

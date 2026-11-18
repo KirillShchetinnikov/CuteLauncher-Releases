@@ -7028,6 +7028,36 @@ abstract class AppLocalizations {
   /// **'Open live TV'**
   String get remoteMappingLiveTv;
 
+  /// No description provided for @remoteMappingTclEpg.
+  ///
+  /// In en, this message translates to:
+  /// **'TCL TV guide'**
+  String get remoteMappingTclEpg;
+
+  /// No description provided for @remoteMappingAdbCommand.
+  ///
+  /// In en, this message translates to:
+  /// **'ADB command'**
+  String get remoteMappingAdbCommand;
+
+  /// No description provided for @remoteMappingAdbImport.
+  ///
+  /// In en, this message translates to:
+  /// **'Import command from file'**
+  String get remoteMappingAdbImport;
+
+  /// No description provided for @remoteMappingAdbHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter an ADB shell command or choose a UTF-8 TXT or SH file. The command runs on this device when you press the assigned button.'**
+  String get remoteMappingAdbHelp;
+
+  /// No description provided for @remoteMappingAdbInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter an ADB command up to 4,096 characters.'**
+  String get remoteMappingAdbInvalid;
+
   /// No description provided for @remoteMappingDisplaySettings.
   ///
   /// In en, this message translates to:

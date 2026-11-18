@@ -39,4 +39,5 @@
     <string name="recovery_unavailable">Esta ação não está disponível neste dispositivo.</string>
     <string name="recovery_restore">Restaurar a tela inicial anterior</string>
     <string name="recovery_restore_confirm">Restaurar a tela inicial anterior usando a conexão ADB local existente?</string>
+    <string name="remap_error_adb_command">Não foi possível executar o comando ADB. Verifique o ADB local e o comando.</string>
 </resources>

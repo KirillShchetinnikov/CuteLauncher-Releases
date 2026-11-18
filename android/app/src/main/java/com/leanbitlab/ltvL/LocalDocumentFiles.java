@@ -27,7 +27,7 @@ final class LocalDocumentFiles {
         return switch (operation) {
             case "pickImageDocument" -> 8L * 1024 * 1024;
             case "pickWallpaperDocument" -> 256L * 1024 * 1024;
-            case "pickWebhookDocument", "pickDriveClientDocument" -> 64L * 1024;
+            case "pickWebhookDocument", "pickDriveClientDocument", "pickAdbCommandDocument" -> 64L * 1024;
             case "pickWeatherTokenDocument", "pickWeatherServerDocument" -> DocumentFiles.TOKEN_DOCUMENT_LIMIT;
             case "pickCleanerDocument", "pickCleanerListDocument" -> 256L * 1024;
             case "pickBackupDocument", "saveBackupDocument", "saveDiagnosticsDocument" -> 64L * 1024 * 1024;
@@ -41,6 +41,7 @@ final class LocalDocumentFiles {
             case "pickWallpaperDocument" -> "media";
             case "pickWebhookDocument", "pickWeatherTokenDocument", "pickWeatherServerDocument", "pickCleanerDocument", "pickCleanerListDocument" -> "text";
             case "pickBackupDocument", "pickDriveClientDocument" -> "document";
+            case "pickAdbCommandDocument" -> "script";
             default -> throw new IllegalArgumentException("Unknown import operation");
         };
     }

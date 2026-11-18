@@ -39,4 +39,5 @@
     <string name="recovery_unavailable">यह कार्रवाई इस डिवाइस पर उपलब्ध नहीं है।</string>
     <string name="recovery_restore">पिछली होम स्क्रीन बहाल करें</string>
     <string name="recovery_restore_confirm">मौजूदा स्थानीय ADB कनेक्शन से पिछली होम स्क्रीन बहाल करें?</string>
+    <string name="remap_error_adb_command">ADB कमांड नहीं चली। स्थानीय ADB और कमांड जाँचें।</string>
 </resources>

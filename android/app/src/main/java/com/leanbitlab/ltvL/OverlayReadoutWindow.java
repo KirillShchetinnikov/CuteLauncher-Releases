@@ -9,6 +9,7 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
+import android.text.Layout;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
@@ -16,6 +17,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /** A compact accessibility overlay that leaves input with the current app. */
 final class OverlayReadoutWindow {
@@ -23,6 +25,7 @@ final class OverlayReadoutWindow {
     private final WindowManager windows;
     private final String title;
     private final int panelIcon;
+    private final String widthSample;
     final OverlayReadoutLayout.Position defaultPosition;
     private final Runnable changed;
     private OverlayReadoutLayout.Position position;
@@ -33,11 +36,12 @@ final class OverlayReadoutWindow {
 
     OverlayReadoutWindow(@NonNull Context context, WindowManager windows, @NonNull String title,
                          OverlayReadoutLayout.Position defaultPosition, @DrawableRes int panelIcon,
-                         Runnable changed) {
+                         @Nullable String widthSample, Runnable changed) {
         this.context = context;
         this.windows = windows;
         this.title = title;
         this.panelIcon = panelIcon;
+        this.widthSample = widthSample;
         this.defaultPosition = defaultPosition;
         this.position = defaultPosition;
         this.changed = changed;
@@ -102,8 +106,17 @@ final class OverlayReadoutWindow {
                 view.setCompoundDrawablesRelative(null, null, icon, null);
                 view.setCompoundDrawablePadding(dp(4));
             }
-            return;
+        } else {
+            applyDarkStyle(view);
         }
+        if (widthSample != null) {
+            int textWidth = (int) Math.ceil(Layout.getDesiredWidth(widthSample, view.getPaint()));
+            int paddedWidth = textWidth + view.getCompoundPaddingLeft() + view.getCompoundPaddingRight();
+            view.setWidth(Math.max(paddedWidth, view.getMinimumWidth()));
+        }
+    }
+
+    private void applyDarkStyle(@NonNull TextView view) {
         view.setCompoundDrawablesRelative(null, null, null, null);
         view.setTextColor(Color.WHITE);
         view.setTextSize(20);

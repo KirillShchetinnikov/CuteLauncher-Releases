@@ -39,4 +39,5 @@
     <string name="recovery_unavailable">Ця дія недоступна на цьому пристрої.</string>
     <string name="recovery_restore">Відновити попередній головний екран</string>
     <string name="recovery_restore_confirm">Відновити попередній головний екран через наявне локальне з’єднання ADB?</string>
+    <string name="remap_error_adb_command">Команду ADB не виконано. Перевірте локальне підключення ADB і команду.</string>
 </resources>

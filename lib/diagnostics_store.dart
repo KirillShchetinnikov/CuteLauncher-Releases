@@ -71,6 +71,7 @@ class DiagnosticsStore {
     'open',
     'openNotification',
     'pickWebhookDocument',
+    'pickAdbCommandDocument',
     'requestAppChannelsPermission',
     'resetApplicationData',
     'setup',

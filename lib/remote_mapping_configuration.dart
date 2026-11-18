@@ -42,6 +42,16 @@ class RemoteMapping {
   );
 }
 
+String normalizeRemoteAdbScript(String source) => source
+    .replaceFirst(RegExp(r'^\uFEFF'), '')
+    .replaceAll(RegExp(r'\r\n?'), '\n')
+    .replaceFirst(RegExp(r'^[ \t]*adb[ \t]+shell(?:[ \t]+|\n|$)'), '');
+
+bool remoteAdbScriptValid(String script) =>
+    script.trim().isNotEmpty &&
+    script.length <= 4096 &&
+    !RegExp(r'[\x00-\x08\x0b-\x1f\x7f-\x9f]').hasMatch(script);
+
 String? remoteWebhookFromText(String source) {
   final value = source
       .replaceFirst(RegExp(r'^\uFEFF'), '')

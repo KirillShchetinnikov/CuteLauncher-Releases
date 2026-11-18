@@ -3677,6 +3677,22 @@ class AppLocalizationsKo extends AppLocalizations {
   String get remoteMappingLiveTv => '실시간 TV 열기';
 
   @override
+  String get remoteMappingTclEpg => 'TCL TV 편성표';
+
+  @override
+  String get remoteMappingAdbCommand => 'ADB 명령어';
+
+  @override
+  String get remoteMappingAdbImport => '파일에서 명령어 가져오기';
+
+  @override
+  String get remoteMappingAdbHelp =>
+      'ADB shell 명령어를 입력하거나 UTF-8 TXT 또는 SH 파일을 선택하세요. 지정한 버튼을 누르면 이 기기에서 명령어가 실행됩니다.';
+
+  @override
+  String get remoteMappingAdbInvalid => '4096자 이하의 ADB 명령어를 입력하세요.';
+
+  @override
   String get remoteMappingDisplaySettings => '디스플레이 설정';
 
   @override

@@ -112,11 +112,20 @@ class DocumentFiles {
     final path = await (context != null
         ? FileSelection.select<String>(context, 'pickWebhookDocument')
         : _channel.invokeMethod<String>('pickWebhookDocument'));
+    return _readStagedText(path);
+  }
+
+  static Future<String?> pickAdbCommandText(BuildContext context) async =>
+      _readStagedText(
+        await FileSelection.select<String>(context, 'pickAdbCommandDocument'),
+      );
+
+  static Future<String?> _readStagedText(String? path) async {
     if (path == null) return null;
     final file = File(path);
     try {
       if (await file.length() > 64 * 1024) {
-        throw const FormatException('Webhook document too large');
+        throw const FormatException('Text document too large');
       }
       return await file.readAsString();
     } finally {

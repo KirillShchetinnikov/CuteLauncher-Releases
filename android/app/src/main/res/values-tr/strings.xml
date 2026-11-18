@@ -39,4 +39,5 @@
     <string name="recovery_unavailable">Bu işlem bu cihazda kullanılamıyor.</string>
     <string name="recovery_restore">Önceki ana ekranı geri yükle</string>
     <string name="recovery_restore_confirm">Mevcut yerel ADB bağlantısı üzerinden önceki ana ekran geri yüklensin mi?</string>
+    <string name="remap_error_adb_command">ADB komutu çalıştırılamadı. Yerel ADB bağlantısını ve komutu kontrol edin.</string>
 </resources>

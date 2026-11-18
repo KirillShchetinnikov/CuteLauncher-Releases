@@ -374,14 +374,20 @@ class WallpaperService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
     }
   }
 
-  Future<void> reset() async {
+  Future<void> reset() => _resetFiles(picture: true, scheduled: true);
+
+  Future<void> resetSource({required bool scheduled}) =>
+      _resetFiles(picture: !scheduled, scheduled: scheduled);
+
+  Future<void> _resetFiles({
+    required bool picture,
+    required bool scheduled,
+  }) async {
     await _initialization;
     if (isDisposed) return;
     for (final file in [
-      _wallpaperFile,
-      _wallpaperDayFile,
-      _wallpaperNightFile,
-      _videoFile,
+      if (picture) ...[_wallpaperFile, _videoFile],
+      if (scheduled) ...[_wallpaperDayFile, _wallpaperNightFile],
     ]) {
       await FileImage(file).evict();
       if (await file.exists()) await file.delete();

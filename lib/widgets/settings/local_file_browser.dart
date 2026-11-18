@@ -64,7 +64,7 @@ Future<String?> enterWallpaperFolderPath(
   }
 }
 
-enum FileBrowserKind { folder, image, media, document, text }
+enum FileBrowserKind { folder, image, media, document, text, script }
 
 /// One route for local folders and documents; Back always navigates upward.
 class LocalFileBrowser extends StatefulWidget {

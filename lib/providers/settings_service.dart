@@ -121,6 +121,23 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
   static const minAppChannelCardLimit = 20;
   static const maxAppChannelCardLimit = 50;
   static const _appChannelCardLimitKey = 'app_channel_card_limit';
+  static const _settingsStyleKeys = [
+    _appKeyClickEnabledKey,
+    'settings_menu_on_right',
+    'panel_tooltips_enabled',
+  ];
+  static const _backgroundStyleKeys = [
+    _gradientUuidKey,
+    _timeBasedWallpaperEnabledKey,
+    'background_source',
+    landscapeSettingsKey,
+  ];
+  static const _wallpaperDisplayKeys = [
+    'wallpaper_fit',
+    'wallpaper_brightness',
+    'wallpaper_saturation',
+    'wallpaper_dimming',
+  ];
   final landscapeDemo = ValueNotifier<LandscapeDemoFrame?>(null);
   ScreenshotScene? _screenshotScene = screenshotBuild
       ? ScreenshotScene.initial()
@@ -231,53 +248,52 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
     await setTimeBasedWallpaperEnabled(source == 'scheduled');
     notifyListeners();
   }
-  Future<void> resetAppearanceSettings() async {
-    for (final key in [_gradientUuidKey, _accentColorKey, _themesKey,
-      _showAppNamesBelowIconsKey, _hideHighlightOutlineOnHomescreenKey,
-      _appHighlightAnimationEnabledKey, _appSelectorTransitionAnimationEnabledKey,
-      _timeBasedWallpaperEnabledKey, _screensaverClockStyleKey, 'settings_menu_on_right', 'panel_tooltips_enabled', 'background_source', 'wallpaper_fit',
-      'wallpaper_brightness', 'wallpaper_saturation', 'wallpaper_dimming', landscapeSettingsKey]) {
-      await _resetAppearancePreference(key);
-    }
-    await _sharedPreferences.setString('background_source', 'landscape');
-    await _sharedPreferences.setString(landscapeSettingsKey, LauncherDefaults.landscape.encode());
-    reload();
-    notifyListeners();
-  }
+  Future<void> resetAppearanceSettings() => _resetAppearancePreferences([
+    _accentColorKey,
+    _themesKey,
+    _showAppNamesBelowIconsKey,
+    _showCategoryTitlesKey,
+    _hideHighlightOutlineOnHomescreenKey,
+    _appHighlightAnimationEnabledKey,
+    _appSelectorTransitionAnimationEnabledKey,
+    _screensaverClockStyleKey,
+    ..._settingsStyleKeys,
+    ..._backgroundStyleKeys,
+    ..._wallpaperDisplayKeys,
+  ]);
 
-  Future<void> resetAppearanceSection(String section) async {
-    final keys = switch (section) {
-      'tiles' => [_themesKey, _showAppNamesBelowIconsKey],
-      'focus' => [_hideHighlightOutlineOnHomescreenKey,
-        _appHighlightAnimationEnabledKey, _appSelectorTransitionAnimationEnabledKey],
-      'settings' => ['settings_menu_on_right', 'panel_tooltips_enabled'],
-      'accent' => [_accentColorKey],
-      'clock' => [_screensaverClockStyleKey],
-      'wallpaperDisplay' => ['wallpaper_fit', 'wallpaper_brightness', 'wallpaper_saturation', 'wallpaper_dimming'],
-      'background' => [_gradientUuidKey, _timeBasedWallpaperEnabledKey, 'background_source', landscapeSettingsKey],
-      'panel' => ['auto_hide_app_bar'],
-      _ => <String>[],
-    };
-    for (final key in keys) { await _resetAppearancePreference(key); }
-    if (section == 'background') {
-      await _sharedPreferences.setString('background_source', 'landscape');
-      await _sharedPreferences.setString(landscapeSettingsKey, LauncherDefaults.landscape.encode());
-    }
-    reload();
-    notifyListeners();
-  }
+  Future<void> resetAppearanceSection(String section) =>
+      _resetAppearancePreferences(switch (section) {
+        'tiles' => [_themesKey, _showAppNamesBelowIconsKey],
+        'focus' => [
+          _hideHighlightOutlineOnHomescreenKey,
+          _appHighlightAnimationEnabledKey,
+          _appSelectorTransitionAnimationEnabledKey,
+        ],
+        'settings' => _settingsStyleKeys,
+        'accent' => [_accentColorKey],
+        'clock' => [_screensaverClockStyleKey],
+        'wallpaperDisplay' => _wallpaperDisplayKeys,
+        'background' => _backgroundStyleKeys,
+        'panel' => [_autoHideAppBarKey],
+        _ => <String>[],
+      });
 
   // Apply the current profile only on explicit reset, never while reading old data.
-  Future<void> _resetAppearancePreference(String key) async {
-    final value = LauncherDefaults.preferences[key];
-    final saved = switch (value) {
-      String v => await _sharedPreferences.setString(key, v),
-      bool v => await _sharedPreferences.setBool(key, v),
-      int v => await _sharedPreferences.setInt(key, v),
-      double v => await _sharedPreferences.setDouble(key, v),
-      _ => await _sharedPreferences.remove(key),
-    };
-    if (!saved) throw StateError('Unable to reset appearance preference');
+  Future<void> _resetAppearancePreferences(List<String> keys) async {
+    final defaults = LauncherDefaults.preferences;
+    for (final key in keys) {
+      final saved = switch (defaults[key]) {
+        String v => await _sharedPreferences.setString(key, v),
+        bool v => await _sharedPreferences.setBool(key, v),
+        int v => await _sharedPreferences.setInt(key, v),
+        double v => await _sharedPreferences.setDouble(key, v),
+        _ => await _sharedPreferences.remove(key),
+      };
+      if (!saved) throw StateError('Unable to reset appearance preference');
+    }
+    reload();
+    notifyListeners();
   }
 
   bool get hideHighlightOutlineOnHomescreen => _hideHighlightOutlineOnHomescreen;

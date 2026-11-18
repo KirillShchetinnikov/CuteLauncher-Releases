@@ -3610,6 +3610,22 @@ class AppLocalizationsZh extends AppLocalizations {
   String get remoteMappingLiveTv => '打开电视直播';
 
   @override
+  String get remoteMappingTclEpg => 'TCL 电视节目指南';
+
+  @override
+  String get remoteMappingAdbCommand => 'ADB 命令';
+
+  @override
+  String get remoteMappingAdbImport => '从文件导入命令';
+
+  @override
+  String get remoteMappingAdbHelp =>
+      '输入 ADB shell 命令，或选择 UTF-8 编码的 TXT 或 SH 文件。按下指定按钮时，命令会在此设备上运行。';
+
+  @override
+  String get remoteMappingAdbInvalid => '请输入不超过 4096 个字符的 ADB 命令。';
+
+  @override
   String get remoteMappingDisplaySettings => '显示设置';
 
   @override

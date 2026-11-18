@@ -212,7 +212,7 @@ final class NativeSyncBridge {
     private Object readSecret(String id) throws Exception {
         return switch (id) {
             case "weather_token" -> Objects.requireNonNullElse(new WeatherTokenBridge(context).snapshot(), JSONObject.NULL);
-            case "remote_mappings" -> new JSONObject(new RemoteMappingStore(context).load().toMap());
+            case "remote_mappings" -> new JSONObject(new RemoteMappingStore(context).load().toMap(false));
             case "webdav", "drive" -> Objects.requireNonNullElse(account(id).snapshot(), JSONObject.NULL);
             default -> {
                 File f = weatherFile(id);
@@ -228,7 +228,7 @@ final class NativeSyncBridge {
         if (!SECRETS.contains(id)) throw new IllegalArgumentException();
         if (value == JSONObject.NULL) return;
         switch (id) {
-            case "remote_mappings" -> RemoteMappingStore.decode((JSONObject)value);
+            case "remote_mappings" -> RemoteMappingStore.decodePortable((JSONObject)value);
             case "weather_token" -> {
                 JSONObject data = (JSONObject)value;
                 String server = data.getString("server"), token = data.getString("token");
@@ -321,8 +321,8 @@ final class NativeSyncBridge {
                 if (!edit.commit()) throw new java.io.IOException();
             } else switch (id) {
                 case "remote_mappings" -> {
-                    var config = value == JSONObject.NULL ? RemoteMappingConfiguration.empty() : RemoteMappingStore.decode((JSONObject)value);
-                    new RemoteMappingStore(context).save(config);
+                    var portable = value == JSONObject.NULL ? RemoteMappingConfiguration.empty() : RemoteMappingStore.decodePortable((JSONObject)value);
+                    var config = new RemoteMappingStore(context).installPortable(portable);
                     new Handler(Looper.getMainLooper()).post(() -> RemoteButtonRemapper.updated(config));
                 }
                 case "weather_token" -> {

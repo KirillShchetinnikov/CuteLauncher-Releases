@@ -19,7 +19,12 @@ final class RemoteMappingConfiguration {
     }
     static final Set<String> ACTIONS = Set.of("app", "home", "back", "webhook", "panel", "recents", "ignore",
         "sleep", "sleep_immediate", "reboot", "reboot_immediate", "shutdown", "black_overlay", "tcl_screen_off", "hdmi", "live_tv",
-        "display_settings", "wifi_settings", "bluetooth_settings", "mute", "toggle_night_mode");
+        "display_settings", "wifi_settings", "bluetooth_settings", "mute", "toggle_night_mode", "tcl_epg", "adb_shell");
+    static boolean adbTarget(String target) {
+        return target.length() <= 4096
+            && target.chars().anyMatch(c -> !Character.isWhitespace(c) && !Character.isSpaceChar(c))
+            && target.chars().noneMatch(c -> Character.isISOControl(c) && c != '\n' && c != '\t');
+    }
     static boolean hdmiTarget(String target) {
         return !target.trim().isEmpty() && target.length() <= 512
             && target.chars().noneMatch(Character::isISOControl);
@@ -80,6 +85,7 @@ final class RemoteMappingConfiguration {
             boolean validTarget = switch (action) {
                 case "app" -> target.matches("[A-Za-z][A-Za-z0-9_]*(\\.[A-Za-z0-9_]+)+");
                 case "webhook" -> webhook(target);
+                case "adb_shell" -> adbTarget(target);
                 case "hdmi" -> hdmiTarget(target);
                 default -> target.isEmpty();
             };
@@ -106,9 +112,12 @@ final class RemoteMappingConfiguration {
         Binding binding = bindings.get(code + ":" + trigger);
         return enabled && binding != null && binding.enabled() ? binding : null;
     }
-    Map<String, Object> toMap() {
+    Map<String, Object> toMap() { return toMap(true); }
+
+    Map<String, Object> toMap(boolean includeLocalCommands) {
         List<Map<String, Object>> rows = new ArrayList<>();
-        bindings.values().stream().sorted(java.util.Comparator.comparingInt(Binding::keyCode).thenComparing(Binding::trigger))
+        bindings.values().stream().filter(binding -> includeLocalCommands || !binding.action().equals("adb_shell"))
+            .sorted(java.util.Comparator.comparingInt(Binding::keyCode).thenComparing(Binding::trigger))
             .forEach(binding -> rows.add(binding.toMap()));
         return Map.of("enabled", enabled, "bindings", rows, "volumeMode", volumeMode, "volumePauseSeconds", volumePauseSeconds);
     }

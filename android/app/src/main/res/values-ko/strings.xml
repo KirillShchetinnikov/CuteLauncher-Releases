@@ -39,4 +39,5 @@
     <string name="recovery_unavailable">이 기기에서는 이 작업을 사용할 수 없습니다.</string>
     <string name="recovery_restore">이전 홈 화면 복원</string>
     <string name="recovery_restore_confirm">기존 로컬 ADB 연결로 이전 홈 화면을 복원하시겠습니까?</string>
+    <string name="remap_error_adb_command">ADB 명령을 실행하지 못했습니다. 로컬 ADB 연결과 명령어를 확인하세요.</string>
 </resources>

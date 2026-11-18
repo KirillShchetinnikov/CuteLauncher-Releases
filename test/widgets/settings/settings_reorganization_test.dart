@@ -11,11 +11,14 @@ import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/providers/appearance_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/apps_service.dart';
+import 'package:flauncher/launcher_defaults.dart';
 import 'package:flauncher/widgets/settings/appearance_page.dart';
 import 'package:flauncher/widgets/settings/appearance_settings_page.dart';
+import 'package:flauncher/widgets/settings/settings_style_page.dart';
 import 'package:flauncher/widgets/settings/status_bar_panel_page.dart';
 import 'package:flauncher/widgets/settings/settings_panel.dart';
 import 'package:flauncher/widgets/settings/misc_panel_page.dart';
+import 'package:flauncher/widgets/settings/wallpaper_panel_page.dart';
 import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
 import 'package:flauncher/widgets/settings/settings_value_stepper.dart';
 import 'package:mockito/mockito.dart';
@@ -69,6 +72,35 @@ void main() {
                     child: SizedBox(width: 340, child: page))))));
     await tester.pumpAndSettle();
   }
+
+  Future<void> resetSection(WidgetTester tester) async {
+    final reset = find.text('Reset this section');
+    await tester.scrollUntilVisible(reset, 160);
+    await tester.tap(reset);
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(TextButton, 'Reset this section'));
+    await tester.pumpAndSettle();
+  }
+
+  testWidgets('settings style reset restores key sounds to default', (tester) async {
+    await settings.setAppKeyClickEnabled(true);
+    await settings.setHomeKeyClickEnabled(true);
+    await pump(tester, const SettingsStylePage());
+    await resetSection(tester);
+    expect(settings.appKeyClickEnabled, isFalse);
+    expect(settings.homeKeyClickEnabled, isTrue);
+  });
+
+  testWidgets('background reset restores the startup landscape', (tester) async {
+    await settings.setBackgroundSource('scheduled');
+    await settings.setWallpaperFit('contain');
+    await pump(tester, const WallpaperPanelPage());
+    await resetSection(tester);
+    expect(settings.backgroundSource, LauncherDefaults.preferences['background_source']);
+    expect(settings.landscape.encode(), LauncherDefaults.landscape.encode());
+    expect(settings.timeBasedWallpaperEnabled, isFalse);
+    expect(settings.wallpaperFit, 'contain');
+  });
 
   testWidgets('border style replaces visibility toggle and preserves legacy hidden choice',
       (tester) async {
@@ -131,6 +163,7 @@ void main() {
       (tester) async {
     await settings.setShowAppNamesBelowIcons(false);
     await settings.setShowCategoryTitles(false);
+    await settings.setAppKeyClickEnabled(true);
     await appearance.set('opacity', 0);
     await appearance.set('panelOpacity', 0);
     await settings.setAccentColor(ACCENT_COLOR_TEAL);
@@ -154,7 +187,8 @@ void main() {
     expect(appearance.appearance.labels, 'none');
     expect(settings.themes, 'modern');
     expect(settings.showAppNamesBelowIcons, isFalse);
-    expect(settings.showCategoryTitles, isFalse);
+    expect(settings.showCategoryTitles, isTrue);
+    expect(settings.appKeyClickEnabled, isFalse);
     expect(settings.backgroundSource, 'landscape');
     expect(settings.accentColorHex, ACCENT_COLOR_ORANGE);
     expect(settings.appHighlightAnimationEnabled, isTrue);

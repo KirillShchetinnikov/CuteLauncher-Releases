@@ -3777,6 +3777,22 @@ class AppLocalizationsHi extends AppLocalizations {
   String get remoteMappingLiveTv => 'लाइव टीवी खोलें';
 
   @override
+  String get remoteMappingTclEpg => 'TCL टीवी कार्यक्रम गाइड';
+
+  @override
+  String get remoteMappingAdbCommand => 'ADB कमांड';
+
+  @override
+  String get remoteMappingAdbImport => 'फ़ाइल से कमांड आयात करें';
+
+  @override
+  String get remoteMappingAdbHelp =>
+      'ADB shell कमांड लिखें या UTF-8 वाली TXT या SH फ़ाइल चुनें। तय बटन दबाने पर कमांड इसी डिवाइस पर चलेगी।';
+
+  @override
+  String get remoteMappingAdbInvalid => '4096 वर्णों तक की ADB कमांड लिखें।';
+
+  @override
   String get remoteMappingDisplaySettings => 'डिस्प्ले सेटिंग';
 
   @override

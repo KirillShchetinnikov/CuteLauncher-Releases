@@ -5,20 +5,23 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
+import java.io.EOFException;
 import java.io.File;
+import java.net.SocketException;
 import java.util.LinkedHashSet;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
+import dadb.AdbConnectException;
 import dadb.AdbKeyPair;
 import dadb.Dadb;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodChannel;
 
-/** Local TCP ADB prototype. No arbitrary shell or remote-host input. */
+/** Local TCP ADB. The Flutter ADB channel exposes fixed operations. */
 final class AdbBridge {
     interface Session<T> { T run(Shell shell) throws Exception; }
-    /** Reuse existing authorization only; opening recents never generates keys or enables ADB. */
+    /** Reuse existing authorization without generating keys or enabling ADB. */
     static <T> T recentSession(android.content.Context context, Session<T> operation) throws Exception {
         synchronized (LOCK) {
             var saved = context.getSharedPreferences("adb_connection", 0);
@@ -42,6 +45,24 @@ final class AdbBridge {
     }
     static final Object LOCK = new Object();
     interface Shell extends java.io.Closeable { String execute(String command) throws Exception; }
+    static Dadb connectForCheck(int port, AdbKeyPair keys) throws Exception {
+        for (int attempt = 0; ; attempt++) {
+            Dadb adb = Dadb.create("127.0.0.1", port, keys, 5000, 60000);
+            try {
+                adb.supportsFeature("shell_v2"); // Dadb connects lazily.
+                return adb;
+            } catch (Exception | LinkageError failure) {
+                adb.close();
+                Throwable cause = failure.getCause();
+                if (attempt != 0 || !(failure instanceof AdbConnectException)
+                        || !(cause instanceof EOFException || cause instanceof SocketException)) {
+                    throw failure;
+                }
+            }
+            // Give local adbd time to recover from a refused or dropped connection.
+            Thread.sleep(750);
+        }
+    }
     private static SharedPreferences tcpSettings(Activity activity) {
         SharedPreferences saved = activity.getSharedPreferences("adb_connection", Activity.MODE_PRIVATE);
         // A saved pairing port cannot be used for the TCP/RSA connection.
@@ -103,7 +124,9 @@ final class AdbBridge {
                         File privateKey = new File(activity.getNoBackupFilesDir(), "adb/private-key");
                         File publicKey = new File(activity.getNoBackupFilesDir(), "adb/public-key");
                         if (!privateKey.exists() || !publicKey.exists()) AdbKeyPair.generate(privateKey, publicKey);
-                        try (Dadb adb = Dadb.create("127.0.0.1", port, AdbKeyPair.read(privateKey, publicKey), 5000, 60000)) {
+                        AdbKeyPair keys = AdbKeyPair.read(privateKey, publicKey);
+                        try (Dadb adb = action.equals("check") ? connectForCheck(port, keys)
+                                : Dadb.create("127.0.0.1", port, keys, 5000, 60000)) {
                             Shell shell = new Shell() {
                                 public String execute(String command) throws Exception {
                                     AdbOperationDiagnostics.command(command);

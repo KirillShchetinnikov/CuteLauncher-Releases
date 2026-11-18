@@ -3792,6 +3792,23 @@ class AppLocalizationsTr extends AppLocalizations {
   String get remoteMappingLiveTv => 'Canlı TV’yi aç';
 
   @override
+  String get remoteMappingTclEpg => 'TCL TV rehberi';
+
+  @override
+  String get remoteMappingAdbCommand => 'ADB komutu';
+
+  @override
+  String get remoteMappingAdbImport => 'Dosyadan komut içe aktar';
+
+  @override
+  String get remoteMappingAdbHelp =>
+      'Bir ADB shell komutu girin veya UTF-8 kodlu TXT ya da SH dosyası seçin. Atanan düğmeye bastığınızda komut bu cihazda çalışır.';
+
+  @override
+  String get remoteMappingAdbInvalid =>
+      'En fazla 4096 karakterlik bir ADB komutu girin.';
+
+  @override
   String get remoteMappingDisplaySettings => 'Ekran ayarları';
 
   @override

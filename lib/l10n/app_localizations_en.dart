@@ -3773,6 +3773,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get remoteMappingLiveTv => 'Open live TV';
 
   @override
+  String get remoteMappingTclEpg => 'TCL TV guide';
+
+  @override
+  String get remoteMappingAdbCommand => 'ADB command';
+
+  @override
+  String get remoteMappingAdbImport => 'Import command from file';
+
+  @override
+  String get remoteMappingAdbHelp =>
+      'Enter an ADB shell command or choose a UTF-8 TXT or SH file. The command runs on this device when you press the assigned button.';
+
+  @override
+  String get remoteMappingAdbInvalid =>
+      'Enter an ADB command up to 4,096 characters.';
+
+  @override
   String get remoteMappingDisplaySettings => 'Display settings';
 
   @override

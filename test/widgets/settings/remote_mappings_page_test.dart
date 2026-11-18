@@ -1014,6 +1014,117 @@ void main() {
     },
   );
 
+  testWidgets('TCL guide is a distinct action on supported devices', (
+    tester,
+  ) async {
+    tvActions = {'live_tv', 'tcl_epg'};
+    config = const RemoteMappingConfiguration(
+      bindings: [RemoteMapping(keyCode: 190)],
+    );
+    await open(tester);
+    await tester.tap(find.text('YouTube'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Действие').last);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Входы'));
+    await tester.pumpAndSettle();
+    expect(find.text('Открыть эфирное ТВ'), findsOneWidget);
+    await tester.tap(find.text('Телепрограмма TCL'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Сохранить'));
+    await tester.pumpAndSettle();
+    expect(config.bindings.single.action, 'tcl_epg');
+    expect(config.bindings.single.target, isEmpty);
+  });
+
+  testWidgets(
+    'ADB command is entered or imported into the draft before saving',
+    (tester) async {
+      config = const RemoteMappingConfiguration(
+        bindings: [RemoteMapping(keyCode: 190)],
+      );
+      await open(tester);
+      await tester.tap(find.text('YouTube'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Действие').last);
+      await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Автоматизация'));
+    await tester.tap(find.text('Автоматизация'));
+    await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('Команда ADB'));
+      await tester.tap(find.text('Команда ADB'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Команда ADB').last);
+      await tester.pumpAndSettle();
+      await tester.enterText(
+        find.byType(TextField),
+        'adb shell echo "hello world"',
+      );
+      await tester.tap(find.widgetWithText(LauncherDialogButton, 'Сохранить'));
+      await tester.pumpAndSettle();
+      expect(find.text('echo "hello world"'), findsOneWidget);
+      expect(config.bindings.single.action, 'home');
+      await tester.tap(find.text('Сохранить'));
+      await tester.pumpAndSettle();
+      expect(config.bindings.single.target, 'echo "hello world"');
+
+      const files = MethodChannel('me.efesser.flauncher/method');
+      final directory = (await tester.runAsync(
+        () => Directory.systemTemp.createTemp('adb-import-'),
+      ))!;
+      addTearDown(
+        () => tester.runAsync(() => directory.delete(recursive: true)),
+      );
+      final script = File('${directory.path}/command.sh');
+      await tester.runAsync(
+        () => script.writeAsString('\uFEFFadb shell true\r\necho "a b"\r\n'),
+      );
+      binding.defaultBinaryMessenger.setMockMethodCallHandler(files, (
+        call,
+      ) async {
+        return switch (call.method) {
+          'filePickerAvailable' => true,
+          'pickAdbCommandDocument' => script.path,
+          _ => null,
+        };
+      });
+      addTearDown(
+        () => binding.defaultBinaryMessenger.setMockMethodCallHandler(
+          files,
+          null,
+        ),
+      );
+      await tester.tap(find.text('YouTube'));
+      await tester.pumpAndSettle();
+    final importTile = find.widgetWithText(
+        FocusableSettingsTile,
+        'Импортировать команду из файла',
+      );
+    await tester.tap(importTile);
+      await tester.pumpAndSettle();
+      await tester.runAsync(() => tester.tap(find.text('Внешний проводник')));
+      final timeout = Stopwatch()..start();
+      await tester.pump();
+    while (tester.widget<FocusableSettingsTile>(importTile).busy) {
+      if (timeout.elapsed > const Duration(seconds: 5)) {
+          fail('ADB command import did not finish');
+      }
+        await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 10)),
+        );
+        await tester.pump();
+      }
+      await tester.pumpAndSettle();
+      expect(await tester.runAsync(() => script.exists()), isFalse);
+      expect(config.bindings.single.target, 'echo "hello world"');
+      await tester.tap(find.text('Сохранить'));
+      await tester.pumpAndSettle();
+      expect(config.bindings.single.action, 'adb_shell');
+      expect(config.bindings.single.target, 'true\necho "a b"\n');
+    },
+  );
+
   test('text import accepts only a URL and removes line breaks', () {
     expect(
       remoteWebhookFromText('\uFEFFhttps://example.org/\r\napi/webhook/x\n'),

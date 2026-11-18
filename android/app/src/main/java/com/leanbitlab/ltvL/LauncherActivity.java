@@ -397,6 +397,7 @@ public class LauncherActivity extends FlutterActivity {
                 case "pickDriveClientDocument" -> documentFiles.open("*/*", 64L * 1024, result);
                 case "pickBackupDocument" -> documentFiles.open("*/*", 64L * 1024 * 1024, result);
                 case "pickWebhookDocument" -> documentFiles.open("text/plain", 64L * 1024, result);
+                case "pickAdbCommandDocument" -> documentFiles.open("*/*", LocalDocumentFiles.limit("pickAdbCommandDocument"), result);
                 case "pickWeatherTokenDocument", "pickWeatherServerDocument" -> documentFiles.openWeatherToken(result);
                 case "pickCleanerListDocument" -> documentFiles.openNamed("*/*", 256L * 1024, result);
                 case "pickCleanerDocument" -> documentFiles.open("*/*", 256L * 1024, result);

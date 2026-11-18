@@ -69,6 +69,27 @@ final class RemoteMappingStore {
             "volumeMode", root.has("volumeMode") ? root.get("volumeMode") : "auto",
             "volumePauseSeconds", root.has("volumePauseSeconds") ? root.get("volumePauseSeconds") : 5));
     }
+    RemoteMappingConfiguration installPortable(RemoteMappingConfiguration portable) throws Exception {
+        synchronized (LOCK) {
+            var bindings = new LinkedHashMap<>(portable.bindings);
+            for (var local : load().bindings.values()) {
+                if (local.action().equals("adb_shell")) bindings.put(local.slot(), local);
+            }
+            if (bindings.size() > 64) throw new IOException("Too many bindings");
+            var combined = new RemoteMappingConfiguration(portable.enabled, bindings,
+                portable.volumeMode, portable.volumePauseSeconds);
+            save(combined);
+            return combined;
+        }
+    }
+
+    static RemoteMappingConfiguration decodePortable(JSONObject root) throws JSONException {
+        var configuration = decode(root);
+        if (configuration.bindings.values().stream().anyMatch(binding -> binding.action().equals("adb_shell")))
+            throw new IllegalArgumentException("Device-local binding");
+        return configuration;
+    }
+
     void save(RemoteMappingConfiguration configuration) throws Exception {
         synchronized (LOCK) {
             byte[] data = new JSONObject(configuration.toMap()).toString().getBytes(StandardCharsets.UTF_8);

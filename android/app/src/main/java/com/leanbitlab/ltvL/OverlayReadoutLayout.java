@@ -30,9 +30,10 @@ final class OverlayReadoutLayout implements AutoCloseable {
     OverlayReadoutLayout(Context context) {
         this.context = context;
         windows = context.getSystemService(WindowManager.class);
-        volume = new OverlayReadoutWindow(context, windows, "CuteLauncher Volume", Position.topRight, 0, this::refresh);
+        volume = new OverlayReadoutWindow(context, windows, "CuteLauncher Volume",
+            Position.topRight, 0, "100%", this::refresh);
         timer = new OverlayReadoutWindow(context, windows, "CuteLauncher Sleep Timer",
-            Position.topLeft, R.drawable.ic_sleep_timer, this::refresh);
+            Position.topLeft, R.drawable.ic_sleep_timer, null, this::refresh);
         setPanelStyle(OverlayPanelStyle.load(context));
     }
 

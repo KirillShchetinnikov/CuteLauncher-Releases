@@ -3800,6 +3800,23 @@ class AppLocalizationsUk extends AppLocalizations {
   String get remoteMappingLiveTv => 'Відкрити ефірне ТБ';
 
   @override
+  String get remoteMappingTclEpg => 'Телепрограма TCL';
+
+  @override
+  String get remoteMappingAdbCommand => 'Команда ADB';
+
+  @override
+  String get remoteMappingAdbImport => 'Імпортувати команду з файлу';
+
+  @override
+  String get remoteMappingAdbHelp =>
+      'Введіть команду ADB shell або виберіть файл TXT чи SH у UTF-8. Команда виконується на цьому пристрої після натискання призначеної кнопки.';
+
+  @override
+  String get remoteMappingAdbInvalid =>
+      'Введіть команду ADB завдовжки до 4096 символів.';
+
+  @override
   String get remoteMappingDisplaySettings => 'Налаштування екрана';
 
   @override

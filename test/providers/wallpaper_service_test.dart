@@ -26,11 +26,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/gradients.dart';
+import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
+import 'package:flauncher/widgets/settings/reset_style_tile.dart';
+import 'package:flauncher/widgets/settings/wallpaper_panel_page.dart';
+import 'package:flutter/material.dart' show MaterialApp, Scaffold;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+import 'package:provider/provider.dart';
 
 import '../mocks.mocks.dart';
 
@@ -319,6 +324,68 @@ void main() {
       }
     },
   );
+
+  for (final source in ['picture', 'scheduled']) {
+    testWidgets('resetting $source only clears files belonging to that source', (tester) async {
+      const pictureFiles = ['wallpaper', 'wallpaper_video'];
+      const scheduledImages = ['wallpaper_day', 'wallpaper_night'];
+      final scheduledMetadata = scheduledImages.map((name) => '$name.name');
+      final scheduledFiles = [...scheduledImages, ...scheduledMetadata];
+      final directory = Directory.systemTemp.createTempSync(
+        'cute-wallpaper-scope-',
+      );
+      File file(String name) => File('${directory.path}/$name');
+      when(pathProviderPlatform.getApplicationDocumentsPath())
+          .thenAnswer((_) async => directory.path);
+      addTearDown(() {
+        when(pathProviderPlatform.getApplicationDocumentsPath())
+            .thenAnswer((_) async => '.');
+        for (final name in [...pictureFiles, ...scheduledFiles]) {
+          final saved = file(name);
+          if (saved.existsSync()) saved.deleteSync();
+        }
+        directory.deleteSync();
+      });
+      for (final name in [...pictureFiles, ...scheduledImages]) {
+        file(name).writeAsBytesSync([1]);
+      }
+      for (final name in scheduledMetadata) {
+        file(name).writeAsStringSync('{}');
+      }
+      SharedPreferences.setMockInitialValues({});
+      final settings = SettingsService(await SharedPreferences.getInstance());
+      await settings.setBackgroundSource(source);
+      final service = (await tester.runAsync(
+        () async => WallpaperService(MockFLauncherChannel(), settings),
+      ))!;
+      addTearDown(settings.dispose);
+      addTearDown(service.dispose);
+      await tester.pumpWidget(MultiProvider(
+        providers: [
+          ChangeNotifierProvider.value(value: settings),
+          ChangeNotifierProvider.value(value: service),
+        ],
+        child: const MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(body: WallpaperPanelPage(parameters: true)),
+        ),
+      ));
+      await tester.pumpAndSettle();
+      final reset = tester.widget<ResetStyleTile>(find.byType(ResetStyleTile));
+      await tester.runAsync(reset.onReset);
+      await tester.pumpAndSettle();
+      final scheduled = source == 'scheduled';
+      for (final name in scheduled ? scheduledFiles : pictureFiles) {
+        expect(file(name).existsSync(), isFalse, reason: name);
+      }
+      for (final name in scheduled ? pictureFiles : scheduledFiles) {
+        expect(file(name).existsSync(), isTrue, reason: name);
+      }
+      expect(settings.backgroundSource, source);
+      await tester.pumpWidget(const SizedBox.shrink());
+    });
+  }
 
   group("getGradient", () {
     test("without uuid from settings", () async {

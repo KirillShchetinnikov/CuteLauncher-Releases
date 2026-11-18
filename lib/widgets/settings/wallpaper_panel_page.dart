@@ -251,7 +251,7 @@ class _WallpaperPanelPageState extends State<WallpaperPanelPage> {
               if (_picking) return;
               final wallpaper = context.read<WallpaperService?>();
               if (parameters) {
-                await wallpaper?.reset();
+                await wallpaper?.resetSource(scheduled: source == 'scheduled');
                 if (mounted) setState(_readSelections);
                 return;
               }
@@ -259,7 +259,6 @@ class _WallpaperPanelPageState extends State<WallpaperPanelPage> {
               final slideshow = context.read<SlideshowService?>();
               final videos = context.read<VideoFolderService?>();
               await settings.resetAppearanceSection('background');
-              await settings.setBackgroundSource('gradient');
               await online.configure(const OnlineWallpaperConfiguration());
               await slideshow?.reset();
               await videos?.reset();

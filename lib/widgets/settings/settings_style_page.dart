@@ -250,9 +250,8 @@ class _SettingsStylePageState extends State<SettingsStylePage> {
                     )
                     .toList(),
               );
-              if (!notifications) {
-                await settings.setSettingsMenuOnRight(false);
-                await settings.setPanelTooltipsEnabled(false);
+              if (prefix == 'settings') {
+                await settings.resetAppearanceSection('settings');
               }
             },
           ),

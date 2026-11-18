@@ -175,6 +175,7 @@ final class LocalWallpaperFiles {
             case "image" -> image(file);
             case "media" -> image(file) || name.matches(".*\\.(mp4|m4v|mkv|webm|mov|avi|3gp)$");
             case "text" -> name.endsWith(".txt") || name.endsWith(".json");
+            case "script" -> name.endsWith(".txt") || name.endsWith(".sh");
             case "document" -> name.endsWith(".json");
             default -> false;
         };
