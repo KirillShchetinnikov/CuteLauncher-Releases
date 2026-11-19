@@ -8,6 +8,7 @@ import '../launcher_dialog.dart';
 import '../action_notice.dart';
 import 'focusable_settings_tile.dart';
 import 'settings_page_layout.dart';
+import 'settings_information.dart';
 
 class SyncFilesPage extends StatefulWidget {
   const SyncFilesPage({super.key});
@@ -18,6 +19,7 @@ class SyncFilesPage extends StatefulWidget {
 class _SyncFilesPageState extends State<SyncFilesPage> {
   List<RemoteBackupFile> _files = [];
   bool _busy = false, _failed = false;
+  bool _loaded = false;
   int _page = 0;
   @override
   void initState() {
@@ -26,7 +28,7 @@ class _SyncFilesPageState extends State<SyncFilesPage> {
   }
 
   Future<void> _load() async {
-    if (_busy) return;
+    if (!mounted || _busy) return;
     setState(() {
       _busy = true;
       _failed = false;
@@ -38,11 +40,17 @@ class _SyncFilesPageState extends State<SyncFilesPage> {
       if (mounted) {
         setState(() {
           _files = files;
+          _loaded = true;
           _page = _page.clamp(0, files.isEmpty ? 0 : (files.length - 1) ~/ 20);
         });
       }
     } catch (_) {
-      if (mounted) setState(() => _failed = true);
+      if (mounted) {
+        setState(() {
+          _failed = true;
+          _files = [];
+        });
+      }
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -85,7 +93,11 @@ class _SyncFilesPageState extends State<SyncFilesPage> {
       }
     } catch (_) {
       if (mounted) {
-        showActionNotice(context, l.backupSyncGroupsFailed, error: true);
+        showActionNotice(
+          context,
+          own ? l.backupDeleteFailed : l.backupSyncRefreshFailed,
+          error: true,
+        );
       }
     } finally {
       if (mounted) {
@@ -106,11 +118,15 @@ class _SyncFilesPageState extends State<SyncFilesPage> {
         children: [
           FocusableSettingsTile(
             autofocus: true,
+            leading: const Icon(Icons.refresh),
+            showActionChevron: false,
             title: Text(l.backupSyncRefresh),
             busy: busy,
             onPressed: busy ? null : _load,
           ),
           FocusableSettingsTile(
+            leading: const Icon(Icons.cleaning_services_outlined),
+            showActionChevron: false,
             title: Text(l.syncCleanup),
             busy: busy,
             onPressed: busy
@@ -123,7 +139,7 @@ class _SyncFilesPageState extends State<SyncFilesPage> {
                       if (context.mounted) {
                         showActionNotice(
                           context,
-                          l.backupListFailed,
+                          l.syncCleanupFailed,
                           error: true,
                         );
                       }
@@ -135,11 +151,26 @@ class _SyncFilesPageState extends State<SyncFilesPage> {
                     }
                   },
           ),
-          if (_failed) Text(l.backupListFailed),
-          if (service.cleanupFailed) Text(l.syncCleanupFailed),
+          if (_failed)
+            SettingsMessage(
+              text: l.syncFilesLoadFailed,
+              kind: SettingsMessageKind.error,
+            ),
+          if (service.cleanupFailed)
+            SettingsMessage(
+              text: l.syncCleanupFailed,
+              kind: SettingsMessageKind.warning,
+            ),
+          if (_loaded && !_busy && !_failed && _files.isEmpty)
+            SettingsEmptyState(
+              icon: Icons.folder_open_outlined,
+              text: l.syncFilesEmpty,
+            ),
           if (_busy) const LinearProgressIndicator(),
           for (final file in _files.skip(_page * 20).take(20))
             FocusableSettingsTile(
+              key: ValueKey(file.id),
+              leading: const Icon(Icons.devices),
               title: Text(
                 '${BackupAutomationService.copyDeviceLabel(file)}\n${MaterialLocalizations.of(context).formatMediumDate(BackupAutomationService.createdAt(file))}',
               ),

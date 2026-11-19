@@ -104,14 +104,15 @@ class _WallpaperPanelPageState extends State<WallpaperPanelPage> {
     final settings = context.watch<SettingsService>();
     final source = settings.backgroundSource;
     final sources = {
-      'gradient': l.gradient,
-      'picture': l.picture,
-      'scheduled': l.timeBasedWallpaper,
-      'online': l.onlineWallpaper,
-      'slideshow': l.wallpaperSlideshow,
-      videoFolderSource: l.videoFolderSource,
-      'app': l.appArtworkBackground,
       'landscape': l.adaptiveLandscape,
+      'online': l.onlineWallpaper,
+      'picture': l.picture,
+      mediaFolderSource: l.mediaFolderSource,
+      'scheduled': l.timeBasedWallpaper,
+      'app': l.appArtworkBackground,
+      'gradient': l.gradient,
+      if (source == 'slideshow') 'slideshow': l.wallpaperSlideshow,
+      if (source == videoFolderSource) videoFolderSource: l.videoFolderSource,
     };
     return SettingsPageLayout(
       title: Text(
@@ -152,7 +153,7 @@ class _WallpaperPanelPageState extends State<WallpaperPanelPage> {
                       ? const OnlineWallpaperPage()
                       : source == 'slideshow'
                       ? const SlideshowPage()
-                      : source == videoFolderSource
+                      : source == videoFolderSource || source == mediaFolderSource
                       ? const VideoFolderPage()
                       : source == 'gradient'
                       ? const GradientPanelPage()
@@ -261,7 +262,7 @@ class _WallpaperPanelPageState extends State<WallpaperPanelPage> {
               await settings.resetAppearanceSection('background');
               await online.configure(const OnlineWallpaperConfiguration());
               await slideshow?.reset();
-              await videos?.reset();
+              await videos?.reset(all: true);
               await wallpaper?.reset();
             },
           ),

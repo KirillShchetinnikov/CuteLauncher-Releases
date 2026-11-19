@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
@@ -17,14 +18,16 @@ import io.flutter.plugin.common.MethodChannel;
 
 /** Activity-scoped dispatch: Android must bring the launcher to the foreground. */
 final class AutoLaunchBridge {
+    private static final long EVENT_MAX_AGE_MS = 60_000;
+    private static final String FROM_HOME_KEY = "android.intent.extra.FROM_HOME_KEY";
     private static java.lang.ref.WeakReference<AutoLaunchBridge> active = new java.lang.ref.WeakReference<>(null);
     private final Activity activity;
     private final SharedPreferences preferences;
+    private final WakeEvents wakeEvents;
     private final Handler main=new Handler(Looper.getMainLooper());
     final AutoLaunchPolicy policy;
     private final BackgroundStartup background;
-    private boolean listening,screenOff,resumed,focused;
-    private long wakeAt;
+    private boolean resumed,focused;
     static final class Timer implements AutoLaunchPolicy.Scheduler {
         private final Handler handler;
         private Runnable pending;
@@ -61,16 +64,49 @@ final class AutoLaunchBridge {
         try { networkCallback = callback; manager.registerDefaultNetworkCallback(callback, main); }
         catch (RuntimeException ignored) { networkCallback = null; }
     }
-    private final BroadcastReceiver screen=new BroadcastReceiver() {
-        @Override public void onReceive(Context context,Intent intent) {
-            if(Intent.ACTION_SCREEN_OFF.equals(intent.getAction())) { screenOff=true; wakeAt=0; policy.cancel(); }
-            else if(Intent.ACTION_SCREEN_ON.equals(intent.getAction()) && screenOff) {
-                screenOff=false; wakeAt=SystemClock.elapsedRealtime(); if(resumed && focused) dispatchWake();
+    /** The Application observes wake even between launcher Activity instances. */
+    static final class WakeEvents extends BroadcastReceiver {
+        private boolean listening;
+        private long wakeAt = -1;
+
+        void setEnabled(Context application, boolean enabled) {
+            if (listening == enabled) return;
+            if (enabled) {
+                IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
+                filter.addAction(Intent.ACTION_SCREEN_ON);
+                if (Build.VERSION.SDK_INT >= 33) application.registerReceiver(this, filter, Context.RECEIVER_NOT_EXPORTED);
+                else application.registerReceiver(this, filter);
+            } else {
+                application.unregisterReceiver(this);
+                clearPending();
+            }
+            listening = enabled;
+        }
+
+        void clearPending() { wakeAt = -1; }
+
+        long takePending() {
+            long time = wakeAt;
+            clearPending();
+            return time;
+        }
+
+        @Override public void onReceive(Context context, Intent intent) {
+            if (!listening) return;
+            AutoLaunchBridge bridge = active.get();
+            if (Intent.ACTION_SCREEN_OFF.equals(intent.getAction())) {
+                clearPending();
+                if (bridge != null) bridge.policy.cancel();
+            } else if (Intent.ACTION_SCREEN_ON.equals(intent.getAction())) {
+                // Android can keep only the latest screen broadcast for a cached process.
+                wakeAt = SystemClock.elapsedRealtime();
+                if (bridge != null) bridge.dispatchWake();
             }
         }
-    };
+    }
     AutoLaunchBridge(Activity activity,BinaryMessenger messenger) {
         this.activity=activity; preferences=activity.getSharedPreferences("auto_launch",Context.MODE_PRIVATE);
+        wakeEvents = ((LauncherApplication) activity.getApplication()).autoLaunchWake;
         background = new BackgroundStartup(activity);
         policy=new AutoLaunchPolicy(new Timer(main),this::launch);
         active=new java.lang.ref.WeakReference<>(this); reload();
@@ -86,7 +122,7 @@ final class AutoLaunchBridge {
                     .putInt("delay",(Integer)config.get("delay"))
                     .putBoolean("waitForInternet", Boolean.TRUE.equals(config.get("waitForInternet"))).remove("boot_at").commit();
                 if (saved) NativeSyncBridge.changed("native_config_auto_launch");
-                wakeAt=0; reload(); result.success(Map.of("status",saved?"success":"unavailable"));
+                wakeEvents.clearPending(); reload(); result.success(Map.of("status",saved?"success":"unavailable"));
             } else if(call.method.equals("cancel")) { cancel(); result.success(Map.of("status","success")); }
             else result.notImplemented();
         });
@@ -111,17 +147,11 @@ final class AutoLaunchBridge {
         String mode=(String)config.get("mode");
         policy.configure(mode,(String)config.get(mode.equals("hdmi")?"input":"app"),(Boolean)config.get("boot"),(Boolean)config.get("wake"),(Integer)config.get("delay"), Boolean.TRUE.equals(config.get("waitForInternet")));
         watchNetwork(resumed && mode.equals("app") && preferences.getBoolean("waitForInternet", false));
-        boolean needed=!mode.equals("off") && (Boolean)config.get("wake");
-        if(needed && !listening) {
-            IntentFilter filter=new IntentFilter(Intent.ACTION_SCREEN_OFF); filter.addAction(Intent.ACTION_SCREEN_ON);
-            if(android.os.Build.VERSION.SDK_INT >= 33) activity.registerReceiver(screen,filter,Context.RECEIVER_NOT_EXPORTED);
-            else activity.registerReceiver(screen,filter);
-            listening=true;
-        } else if(!needed && listening) { activity.unregisterReceiver(screen); listening=false; screenOff=false; }
+        wakeEvents.setEnabled(activity.getApplication(), !mode.equals("off") && (Boolean)config.get("wake"));
     }
     static void syncReload() {
         AutoLaunchBridge bridge = active.get();
-        if (bridge != null) { bridge.wakeAt = 0; bridge.reload(); }
+        if (bridge != null) { bridge.wakeEvents.clearPending(); bridge.reload(); }
     }
     static void boot(Context context) {
         SharedPreferences prefs=context.getSharedPreferences("auto_launch",Context.MODE_PRIVATE);
@@ -133,12 +163,27 @@ final class AutoLaunchBridge {
     }
     void resume() { resumed=true; watchNetwork(preferences.getString("mode", "off").equals("app") && preferences.getBoolean("waitForInternet", false)); focus(activity.hasWindowFocus()); }
     void focus(boolean value) {
-        if(focused && !value) cancel(); focused=value;
+        if(focused && !value) cancelScheduled(); focused=value;
         policy.foreground(resumed && focused);
         if(resumed && focused) { dispatchBoot(); dispatchWake(); }
     }
-    void pause() { resumed=false; cancel(); policy.foreground(false); watchNetwork(false); }
-    void cancel() { wakeAt=0; if(preferences.contains("boot_at")) preferences.edit().remove("boot_at").apply(); policy.cancel(); background.cancel(); }
+    void pause() { resumed=false; cancelScheduled(); policy.foreground(false); watchNetwork(false); }
+    void onEntry(Intent intent) {
+        if (intent == null) return;
+        // Android also sends CATEGORY_HOME when it restores Home after waking.
+        if (intent.getBooleanExtra("return_home", false) || Intent.ACTION_MAIN.equals(intent.getAction())
+                && (intent.hasCategory(Intent.CATEGORY_LAUNCHER)
+                    || intent.hasCategory(Intent.CATEGORY_LEANBACK_LAUNCHER)
+                    || intent.hasCategory(Intent.CATEGORY_HOME) && intent.getBooleanExtra(FROM_HOME_KEY, false))) {
+            cancel();
+        }
+    }
+    void cancel() { wakeEvents.clearPending(); cancelScheduled(); }
+    private void cancelScheduled() {
+        if (preferences.contains("boot_at")) preferences.edit().remove("boot_at").apply();
+        policy.cancel();
+        background.cancel();
+    }
     private void dispatchBoot() {
         long time=preferences.getLong("boot_at",-1); if(time>=0) preferences.edit().remove("boot_at").apply();
         if(time>=0 && fresh(time)) background.launch(
@@ -146,10 +191,11 @@ final class AutoLaunchBridge {
             () -> policy.event("boot"));
     }
     private void dispatchWake() {
-        long time=wakeAt; wakeAt=0; long age=SystemClock.elapsedRealtime()-time;
-        if(time>0 && age>=0 && age<=2000) policy.event("wake");
+        if (!resumed || !focused || !activity.hasWindowFocus()) return;
+        long time = wakeEvents.takePending();
+        if (time >= 0 && fresh(time)) policy.event("wake");
     }
-    private boolean fresh(long time) { long age=SystemClock.elapsedRealtime()-time; return age>=0 && age<=60000; }
+    private boolean fresh(long time) { long age=SystemClock.elapsedRealtime()-time; return age>=0 && age<=EVENT_MAX_AGE_MS; }
     private boolean launch(String mode,String target) {
         if(!resumed || !activity.hasWindowFocus() || activity.isFinishing() || activity.isDestroyed()) return false;
         if(mode.equals("hdmi")) {
@@ -166,8 +212,8 @@ final class AutoLaunchBridge {
     }
     void close() {
         watchNetwork(false);
+        cancelScheduled();
         background.close();
-        cancel(); if(listening) { activity.unregisterReceiver(screen); listening=false; }
         if(active.get()==this) active.clear();
     }
 }

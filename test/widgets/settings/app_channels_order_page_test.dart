@@ -76,8 +76,8 @@ void main() {
         final l = AppLocalizations.of(
           tester.element(find.byType(AppChannelsSettingsPage)),
         )!;
-        await tester.ensureVisible(find.text(l.reorder));
-        await tester.tap(find.text(l.reorder));
+        await tester.ensureVisible(find.text(l.feedsAndOrder));
+        await tester.tap(find.text(l.feedsAndOrder));
         await tester.pumpAndSettle();
         FocusNode node() => tester
             .widget<FocusableSettingsTile>(
@@ -88,9 +88,9 @@ void main() {
         await tester.pumpAndSettle();
         expect(find.byIcon(Icons.drag_handle), findsNWidgets(3));
         expect(find.byIcon(Icons.swap_vert), findsNothing);
-        await tester.sendKeyDownEvent(LogicalKeyboardKey.enter);
-        await tester.sendKeyRepeatEvent(LogicalKeyboardKey.enter);
-        await tester.sendKeyUpEvent(LogicalKeyboardKey.enter);
+        await tester.sendKeyDownEvent(LogicalKeyboardKey.arrowRight);
+        await tester.sendKeyRepeatEvent(LogicalKeyboardKey.arrowRight);
+        await tester.sendKeyUpEvent(LogicalKeyboardKey.arrowRight);
         await tester.pumpAndSettle();
         expect(
           tester
@@ -147,7 +147,7 @@ void main() {
         await tester.binding.handlePopRoute();
         await tester.pumpAndSettle();
         expect(find.byType(AppChannelsOrderPage), findsNothing);
-        expect(Focus.of(tester.element(find.text(l.reorder))).hasFocus, isTrue);
+        expect(Focus.of(tester.element(find.text(l.feedsAndOrder))).hasFocus, isTrue);
         expect(SettingsService(prefs).selectedAppChannels, [
           'video.app:1',
           'missing.app:3',

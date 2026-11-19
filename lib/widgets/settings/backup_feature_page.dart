@@ -3,13 +3,13 @@ import 'package:provider/provider.dart';
 
 import '../../actions.dart';
 import 'settings_section.dart';
+import 'settings_information.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../providers/backup_automation_service.dart';
 import '../../providers/cloud_backup_service.dart';
 import '../../providers/drive_backup_service.dart';
 import '../action_notice.dart';
-import '../rounded_switch_list_tile.dart';
 import 'automatic_backup_page.dart';
 import 'backup_management_block.dart';
 import 'backup_setup_wizard.dart';
@@ -64,80 +64,55 @@ class BackupFeaturePage extends StatelessWidget {
     final l = AppLocalizations.of(context)!;
     final s = context.watch<BackupAutomationService>();
     final sync = s.mode == BackupMode.synchronization;
+    final last = s.lastSuccess;
+    final material = MaterialLocalizations.of(context);
     void open(Widget page) =>
         Navigator.of(context)
             .push(SettingsRoute(builder: (_) => backupServiceScope(s, page)));
+    final storage = SettingsSection(
+      children: [
+        FocusableSettingsTile(
+          autofocus: !s.configured,
+          leading: const Icon(Icons.storage_outlined),
+          title: Text(l.backupStorage),
+          trailing: Text(backupDestinationLabel(l, s.destination)),
+          busy: s.busy,
+          onPressed: () => open(const BackupStoragePage()),
+        ),
+        if (!s.configured) SettingsMessage(text: l.backupNotConfigured),
+        if (s.destination != BackupDestination.local)
+          SettingsReadOnlyValue(
+            label: l.backupAccount,
+            value: backupAccountLabel(l, s),
+            wrapLines: true,
+          ),
+        FocusableSettingsTile(
+          leading: const Icon(Icons.lock_outline),
+          title: Text(l.backupPassword),
+          busy: s.busy,
+          onPressed: () => open(const SyncProtectionPage()),
+        ),
+      ],
+    );
     return SettingsPageLayout(
       title: Text(sync ? l.backupSyncMode : l.backupSaveMode),
       child: ListView(
         children: [
-          SettingsSection(
-            title: l.settingsGroupControl,
-            children: [
-              SettingsReadOnlyValue(
-                label: l.backupLastSuccess,
-                value: s.lastSuccess == null
-                    ? l.backupNever
-                    : '${MaterialLocalizations.of(context).formatMediumDate(s.lastSuccess!)} ${MaterialLocalizations.of(context).formatTimeOfDay(TimeOfDay.fromDateTime(s.lastSuccess!))}',
-                wrapLines: true,
-              ),
-              RoundedSwitchListTile(
-                title: Text(l.backupAutoEnabled),
-                value: s.enabled,
-                enabled: s.configured,
-                busy: s.busy,
-                onChanged: (v) async {
-                  if (v && sync) {
-                    await showBackupSetup(context, s);
-                  } else {
-                    await s.configure(enabled: v);
-                  }
-                },
-              ),
-            ],
+          if (!s.configured) storage,
+          SettingsReadOnlyValue(
+            label: sync ? l.backupLastSync : l.backupLastCreated,
+            value: last == null
+                ? (sync ? l.backupNotSynced : l.backupNever)
+                : '${material.formatMediumDate(last)} ${material.formatTimeOfDay(TimeOfDay.fromDateTime(last))}',
+            wrapLines: true,
           ),
           SettingsSection(
-            title: l.settingsGroupStorage,
             children: [
               FocusableSettingsTile(
-                title: Text(l.backupStorage),
-                trailing: Text(backupDestinationLabel(l, s.destination)),
-                busy: s.busy,
-                onPressed: () => open(const BackupStoragePage()),
-              ),
-              if (s.destination != BackupDestination.local)
-                SettingsReadOnlyValue(
-                  label: l.backupAccount,
-                  value: backupAccountLabel(l, s),
-                  wrapLines: true,
-                ),
-              FocusableSettingsTile(
-                title: Text(l.backupPassword),
-                busy: s.busy,
-                onPressed: () => open(const SyncProtectionPage()),
-              ),
-            ],
-          ),
-          SettingsSection(
-            title: sync ? l.backupSyncOptions : l.backupOptions,
-            children: [
-              FocusableSettingsTile(
-                title: Text(sync ? l.backupSyncOptions : l.backupOptions),
-                busy: s.busy,
-                onPressed: () => open(BackupOptionsPage(sync: sync)),
-              ),
-              FocusableSettingsTile(
-                title: Text(l.backupSetupWizard),
-                busy: s.busy,
-                onPressed: () => showBackupSetup(context, s),
-              ),
-            ],
-          ),
-          SettingsSection(
-            title: sync ? l.syncFiles : l.backupManagement,
-            children: [
-              FocusableSettingsTile(
-                title: Text(sync ? l.backupSyncRefresh : l.backupCreateNow),
+                autofocus: s.configured,
+                leading: Icon(sync ? Icons.sync : Icons.save_outlined),
+                showActionChevron: false,
+                title: Text(sync ? l.backupSyncNow : l.backupCreateNow),
                 enabled: s.configured,
                 busy: s.busy,
                 onPressed: () async {
@@ -151,23 +126,52 @@ class BackupFeaturePage extends StatelessWidget {
                   if (context.mounted && (ok || s.failed)) {
                     showActionNotice(
                       context,
-                      ok ? l.cloudSuccess : l.backupSyncRefreshFailed,
+                      ok
+                          ? l.cloudSuccess
+                          : (sync
+                                ? l.backupSyncRefreshFailed
+                                : l.backupCreateFailed),
                       error: !ok,
                     );
                   }
                 },
               ),
               FocusableSettingsTile(
-                title: Text(sync ? l.syncFiles : l.backupManagement),
+                leading: const Icon(Icons.folder_open_outlined),
+                title: Text(sync ? l.syncFiles : l.backupCopyList),
                 enabled: s.configured,
                 busy: s.busy,
                 onPressed: () => open(
                   sync ? const SyncFilesPage() : const BackupManagementPage(),
                 ),
               ),
-              if (s.cleanupFailed) Text(l.syncCleanupFailed),
+              if (s.busy) SettingsMessage(text: l.loading),
+              if (s.cleanupFailed)
+                SettingsMessage(
+                  text: l.syncCleanupFailed,
+                  kind: SettingsMessageKind.warning,
+                ),
             ],
           ),
+          SettingsSection(
+            title: l.settingsGroupControl,
+            children: [
+              BackupAutomationSwitch(sync: sync),
+              FocusableSettingsTile(
+                leading: const Icon(Icons.tune),
+                title: Text(sync ? l.backupSyncOptions : l.backupOptions),
+                busy: s.busy,
+                onPressed: () => open(BackupOptionsPage(sync: sync)),
+              ),
+              FocusableSettingsTile(
+                leading: const Icon(Icons.settings_suggest_outlined),
+                title: Text(l.backupSetupWizard),
+                busy: s.busy,
+                onPressed: () => showBackupSetup(context, s),
+              ),
+            ],
+          ),
+          if (s.configured) storage,
         ],
       ),
     );

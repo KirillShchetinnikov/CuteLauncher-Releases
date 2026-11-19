@@ -1,3 +1,5 @@
+import 'support_developer_tile.dart';
+import 'settings_section.dart';
 import 'package:flauncher/widgets/action_notice.dart';
 
 import 'settings_page_layout.dart';
@@ -27,6 +29,7 @@ class UpdatesPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            SettingsSection(title: l.supportProjectGroup, children: const [SupportDeveloperTile()]),
             Padding(
               padding: const EdgeInsets.all(12),
               child: Text(
@@ -41,22 +44,6 @@ class UpdatesPage extends StatelessWidget {
             if (service.fromPlay)
               Text(l.updatePlayOnly)
             else ...[
-              RoundedSwitchListTile(
-                title: Text(l.updatePrereleases),
-                value: service.prereleases,
-                busy: service.busy,
-                onChanged: service.setPrereleases,
-              ),
-              RoundedSwitchListTile(
-                title: Text(l.updateAutomatic),
-                value: service.automatic,
-                onChanged: service.setAutomatic,
-              ),
-              RoundedSwitchListTile(
-                title: Text(l.updateNotifications),
-                value: service.notificationsEnabled,
-                onChanged: service.setNotificationsEnabled,
-              ),
               FocusableSettingsTile(
                 autofocus: true,
                 title: Text(l.updateCheck),
@@ -186,6 +173,24 @@ class UpdatesPage extends StatelessWidget {
                     ),
                   ),
                 ),
+              SettingsSection(title: l.settings, children: [
+              RoundedSwitchListTile(
+                title: Text(l.updatePrereleases),
+                value: service.prereleases,
+                busy: service.busy,
+                onChanged: service.setPrereleases,
+              ),
+              RoundedSwitchListTile(
+                title: Text(l.updateAutomatic),
+                value: service.automatic,
+                onChanged: service.setAutomatic,
+              ),
+              RoundedSwitchListTile(
+                title: Text(l.updateNotifications),
+                value: service.notificationsEnabled,
+                onChanged: service.setNotificationsEnabled,
+              ),
+              ]),
             ],
           ],
         ),

@@ -1,3 +1,4 @@
+import 'support_developer_tile.dart';
 import 'settings_help.dart';
 import 'focusable_settings_tile.dart';
 
@@ -25,13 +26,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flauncher/providers/update_service.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:flauncher/flauncher_channel.dart';
 import 'package:provider/provider.dart';
-import 'package:qr_flutter/qr_flutter.dart';
+import 'link_qr_code.dart';
 
 class CuteLauncherAboutDialog extends StatelessWidget {
   static const repositoryUrl =
-      'https://github.com/KirillShchetinnikov/CuteLauncher';
+      'https://github.com/$updateRepository';
+  static const discussionUrl =
+      'https://4pda.to/forum/index.php?showtopic=1128313';
   final PackageInfo packageInfo;
 
   const CuteLauncherAboutDialog({super.key, required this.packageInfo});
@@ -110,20 +112,19 @@ class CuteLauncherAboutDialog extends StatelessWidget {
                         title: l.projectCredits,
                         text: l.launcherCredits,
                       ),
-                      FocusableSettingsTile(
-                        leading: const Icon(Icons.code),
-                        title: Text(l.launcherRepository),
-                        onPressed: () =>
-                            FLauncherChannel().openUrl(repositoryUrl),
-                      ),
-                      FocusableSettingsTile(
-                        leading: const Icon(Icons.qr_code),
-                        title: Text(l.showRepositoryQrCode),
-                        onPressed: () => showLauncherDialog<void>(
-                          context: context,
-                          builder: (_) => const _RepositoryQrDialog(),
+                      for (final (label, url) in [
+                        (l.showRepositoryQrCode, repositoryUrl),
+                        (l.discussionQrCode, discussionUrl),
+                      ])
+                        FocusableSettingsTile(
+                          leading: const Icon(Icons.qr_code),
+                          title: Text(label),
+                          onPressed: () => showLauncherDialog<void>(
+                            context: context,
+                            builder: (_) => _LinkQrDialog(title: label, url: url),
+                          ),
                         ),
-                      ),
+                      const SupportDeveloperTile(),
                     ],
                   ),
                 ),
@@ -144,34 +145,26 @@ class CuteLauncherAboutDialog extends StatelessWidget {
   }
 }
 
-class _RepositoryQrDialog extends StatelessWidget {
-  const _RepositoryQrDialog();
+class _LinkQrDialog extends StatelessWidget {
+  const _LinkQrDialog({required this.title, required this.url});
+
+  final String title;
+  final String url;
 
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
     return LauncherAlertDialog(
-      title: Text(l.launcherRepository),
+      title: Text(title),
       content: SizedBox(
         width: 280,
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              QrImageView(
-                data: CuteLauncherAboutDialog.repositoryUrl,
-                size: 240,
-                padding: const EdgeInsets.all(16),
-                backgroundColor: Colors.white,
-                eyeStyle: const QrEyeStyle(color: Colors.black),
-                dataModuleStyle: const QrDataModuleStyle(color: Colors.black),
-                semanticsLabel: l.launcherRepository,
-              ),
+              LinkQrCode(url: url, label: title),
               const SizedBox(height: 12),
-              const Text(
-                CuteLauncherAboutDialog.repositoryUrl,
-                textAlign: TextAlign.center,
-              ),
+              Text(url, textAlign: TextAlign.center),
             ],
           ),
         ),

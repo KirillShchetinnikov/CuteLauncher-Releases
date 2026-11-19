@@ -67,6 +67,7 @@ class CategoryAppearancePage extends StatelessWidget {
       style: tiles,
     ).columns;
     Widget page(String title, Widget child) => FocusableSettingsTile(
+      leading: const Icon(Icons.grid_view),
       title: Text(title),
       onPressed: () =>
           Navigator.of(context)

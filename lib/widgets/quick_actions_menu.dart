@@ -110,6 +110,7 @@ class _QuickActionsMenuState extends State<QuickActionsMenu> {
             changed = service.version != version && !service.failed;
           }
         case videoFolderSource:
+        case mediaFolderSource:
           final service = context.read<VideoFolderService?>();
           if (service != null && service.folder.isNotEmpty) {
             final previous = service.clip;

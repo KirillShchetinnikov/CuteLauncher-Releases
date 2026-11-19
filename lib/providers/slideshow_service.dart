@@ -107,6 +107,7 @@ class SlideshowService extends ChangeNotifier
   Future<void> _releaseFolder(String uri) async {
     if (uri.isEmpty ||
         uri == preferences.getString('wallpaper_video_folder') ||
+        uri == preferences.getString('wallpaper_media_folder') ||
         uri == preferences.getString('backup_transport_local_folder')) {
       return;
     }

@@ -85,12 +85,9 @@ void main() {
     await open(tester, settings);
     await tester.tap(find.byType(MenuHeaderAction));
     await tester.pumpAndSettle();
-    await tester.ensureVisible(find.text('Reorder'));
-    await tester.tap(find.text('Reorder'));
-    await tester.pumpAndSettle();
     expect(find.byType(QuickActionsOrderPage), findsOneWidget);
     final sleep = find.byKey(const ValueKey(QuickAction.sleep));
-    await tester.tap(sleep);
+    await tester.longPress(sleep);
     await tester.pumpAndSettle();
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.pumpAndSettle();
@@ -116,9 +113,6 @@ void main() {
     await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
     expect(find.byType(QuickActionsOrderPage), findsOneWidget);
-    await tester.binding.handlePopRoute();
-    await tester.pumpAndSettle();
-    expect(find.byType(QuickActionsOrderPage), findsNothing);
     final shutdown = find.byKey(const ValueKey(QuickAction.shutdown));
     await tester.ensureVisible(shutdown);
     await tester.pumpAndSettle();
@@ -126,6 +120,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
+    expect(find.byType(QuickActionsOrderPage), findsNothing);
     expect(
       tester.getTopLeft(find.byKey(const ValueKey(QuickAction.shutdown))).dy,
       lessThan(

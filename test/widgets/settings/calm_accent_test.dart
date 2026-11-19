@@ -91,11 +91,11 @@ void main() {
                 )
                 .map((c) => c.decoration)
                 .whereType<BoxDecoration>()
-                .firstWhere((d) => d.gradient != null);
-            expect(switchSurface('On').color, accent);
+                .firstWhere((d) => d.border != null);
+            expect(switchSurface('On').color, Color.alphaBlend(accent.withValues(alpha: .14), colors.surface));
             expect(
               switchSurface('Off').color,
-              colors.onSurface.withValues(alpha: .2),
+              colors.onSurface.withValues(alpha: .12),
             );
             final button = tester.widget<TextButton>(
               find.widgetWithText(TextButton, 'Action'),

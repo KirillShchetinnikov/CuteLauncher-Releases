@@ -158,13 +158,6 @@ class _ContinueWatchingSettingsPageState
                     Navigator.of(context)
                         .pushNamed(ContinueWatchingAppsPage.routeName),
               ),
-              FocusableSettingsTile(
-                leading: const Icon(Icons.apps_outlined),
-                title: Text(localizations.watchNextAppLimits),
-                onPressed: () =>
-                    Navigator.of(context)
-                        .pushNamed(WatchNextLimitsPage.routeName),
-              ),
               SettingsValueStepper(
                 title: localizations.maximumItems,
                 options: ContinueWatchingMaxItemsPage.maxItemsPresets,
@@ -174,6 +167,13 @@ class _ContinueWatchingSettingsPageState
                     : localizations.itemsCount(v as int),
                 onChanged: (v) =>
                     settingsService.setContinueWatchingMaxItems(v as int),
+              ),
+              FocusableSettingsTile(
+                leading: const Icon(Icons.format_list_numbered),
+                title: Text(localizations.watchNextAppLimits),
+                onPressed: () =>
+                    Navigator.of(context)
+                        .pushNamed(WatchNextLimitsPage.routeName),
               ),
             ],
           ),

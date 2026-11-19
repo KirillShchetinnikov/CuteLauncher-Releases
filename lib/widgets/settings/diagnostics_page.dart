@@ -1,3 +1,4 @@
+import 'settings_section.dart';
 import '../../document_files.dart';
 
 import 'package:flutter/material.dart';
@@ -260,9 +261,20 @@ class _DiagnosticsReportPanelState extends State<DiagnosticsReportPanel> {
       title: Text(l.diagnosticsHubTitle),
       child: ListView(
         children: [
+          if (recording == DiagnosticRecordingState.recording)
+            SettingsMessage(text: l.diagnosticsRecordingActive),
+          if (recording == DiagnosticRecordingState.stopped && !_creating)
+            SettingsMessage(text: l.diagnosticsRecordingStopped),
+          if (report != null)
+            SettingsMessage(
+              text: report['reportMode'] == 'extended'
+                  ? l.diagnosticsExtendedReady
+                  : l.diagnosticsReady,
+            ),
+
           FocusableSettingsTile(
             autofocus: true,
-            leading: const Icon(Icons.refresh),
+            leading: const Icon(Icons.note_add_outlined),
             title: Text(
               _creating && !_creatingExtended
                   ? l.diagnosticsCreating
@@ -288,16 +300,9 @@ class _DiagnosticsReportPanelState extends State<DiagnosticsReportPanel> {
               busy: _busy,
               onPressed: DiagnosticsStore.instance.finishRecording,
             ),
-            SettingsMessage(text: l.diagnosticsRecordingActive),
+
           ],
-          if (recording == DiagnosticRecordingState.stopped && !_creating)
-            SettingsMessage(text: l.diagnosticsRecordingStopped),
-          if (report != null)
-            SettingsMessage(
-              text: report['reportMode'] == 'extended'
-                  ? l.diagnosticsExtendedReady
-                  : l.diagnosticsReady,
-            ),
+          SettingsSection(title: l.tvCompatibilityResults, children: [
           FocusableSettingsTile(
             leading: const Icon(Icons.fact_check_outlined),
             title: Text(l.tvCompatibilityResults),
@@ -333,6 +338,7 @@ class _DiagnosticsReportPanelState extends State<DiagnosticsReportPanel> {
             title: Text(l.diagnosticsExport),
             onPressed: _busy || report == null ? null : _export,
           ),
+          ]),
           SettingsHelp(
             text: '${l.diagnosticsHint}\n\n${l.diagnosticsSharingNotice}',
           ),

@@ -1,3 +1,4 @@
+import 'widget_placement_page.dart';
 import 'settings_information.dart';
 import 'settings_read_only_value.dart';
 import 'settings_section.dart';
@@ -92,6 +93,7 @@ class _VpnSettingsPageState extends State<VpnSettingsPage> {
         vpn: vpn,
         child: ListView(
           children: [
+          WidgetPlacementLink(id: 'vpn', title: l.vpnTitle),
             if (vpn.failed)
               SettingsMessage(
                 text: l.vpnUnknown,
@@ -191,6 +193,7 @@ class VpnClientSettings extends StatelessWidget {
             !client.permission &&
             vpn.canRequestPermission)
           FocusableSettingsTile(
+            leading: const Icon(Icons.vpn_key_outlined),
             title: Text(l.vpnAllowControl),
             enabled: vpn.initialized,
             onPressed: () => vpn.requestPermission(app),

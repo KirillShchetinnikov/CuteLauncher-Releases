@@ -1,3 +1,4 @@
+import 'package:flauncher/widgets/settings/settings_destinations.dart';
 import 'package:flauncher/backup_sync_groups.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/overlay_appearance.dart';
@@ -10,10 +11,8 @@ import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/tv_inputs_service.dart';
 import 'package:flauncher/settings_sync.dart';
 import 'package:flauncher/widgets/rounded_switch_list_tile.dart';
-import 'package:flauncher/widgets/settings/remote_panel_page.dart';
 import 'package:flauncher/widgets/settings/settings_panel.dart';
 import 'package:flauncher/widgets/settings/settings_value_stepper.dart';
-import 'package:flauncher/widgets/settings/status_bar_panel_page.dart';
 import 'package:flauncher/widgets/settings/volume_widget_settings_page.dart';
 import 'package:flauncher/widgets/side_panel_dialog.dart';
 import 'package:flutter/material.dart';
@@ -139,9 +138,7 @@ void main() {
                 localizationsDelegates: AppLocalizations.localizationsDelegates,
                 supportedLocales: AppLocalizations.supportedLocales,
                 home: SettingsPanel(
-                  initialRoute: remote
-                      ? RemotePanelPage.routeName
-                      : StatusBarObjectsPage.routeName,
+                  initialRoute: WidgetSettingsPage.routeName,
                 ),
               ),
             ),
@@ -150,11 +147,7 @@ void main() {
           final l = AppLocalizations.of(
             tester.element(find.byType(SettingsPanel)),
           )!;
-          if (remote) {
-            await tester.tap(find.text(l.topPanelObjects));
-            await tester.pumpAndSettle();
-          }
-          final entry = find.text(l.volumeWidgetSettings);
+          final entry = find.text(l.showVolume);
           await tester.scrollUntilVisible(
             entry,
             300,
@@ -184,6 +177,8 @@ void main() {
                 .value,
             3,
           );
+          await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+          await tester.pumpAndSettle();
           await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
           await tester.pumpAndSettle();
           expect(settings.volumeUpdateInterval, 4);
@@ -197,6 +192,8 @@ void main() {
           await tester.pumpAndSettle();
           expect(settings.showVolumeOverlay, isTrue);
           expect(tester.widget<RoundedSwitchListTile>(overlay).value, isTrue);
+          await tester.scrollUntilVisible(find.text(l.remoteAccessSettings), 140);
+          await tester.pumpAndSettle();
           expect(find.text(l.remoteAccessSettings), findsOneWidget);
           final where = find.text(l.overlayWhereToShow);
           await tester.ensureVisible(where);

@@ -1,3 +1,4 @@
+import 'widget_placement_page.dart';
 import 'settings_information.dart';
 import 'settings_choice_dialog.dart';
 import 'settings_help.dart';
@@ -131,6 +132,7 @@ class _InputsSettingsPageState extends State<InputsSettingsPage> {
       title: Text(input?.label ?? l.inputsSettings),
       child: ListView(
         children: [
+          WidgetPlacementLink(id: 'inputs', title: l.inputs),
           if (input == null) ...[
             RoundedSwitchListTile(
               autofocus: true,

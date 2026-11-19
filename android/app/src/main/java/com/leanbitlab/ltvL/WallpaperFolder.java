@@ -101,60 +101,102 @@ final class WallpaperFolder {
         });
     }
     void listVideos(String value, MethodChannel.Result result) {
+        listMedia(value, false, false, result);
+    }
+
+    void listMedia(String value, boolean recursive, MethodChannel.Result result) {
+        listMedia(value, recursive, true, result);
+    }
+
+    private void listMedia(String value, boolean recursive, boolean images, MethodChannel.Result result) {
         executor.execute(() -> {
             try {
                 Uri tree = Uri.parse(value);
                 List<Map<String, Object>> files = new ArrayList<>();
                 if ("file".equals(tree.getScheme())) {
                     if (!local.granted()) throw new SecurityException("Storage access required");
-                    java.io.File folder = LocalWallpaperFiles.directory(value);
-                    java.io.File[] children = folder.listFiles();
-                    if (children == null) throw new IllegalStateException("Folder unavailable");
+                    java.io.File root = LocalWallpaperFiles.directory(value);
+                    ArrayDeque<java.io.File> directories = new ArrayDeque<>();
+                    HashSet<String> visited = new HashSet<>();
+                    directories.add(root);
+                    String prefix = root.getCanonicalPath() + java.io.File.separator;
                     int entries = 0;
-                    for (java.io.File child : children) {
-                        if (entries++ >= 4000 || files.size() >= 1000) break;
-                        if (!isVideoName(child.getName())) continue;
-                        try {
-                            java.io.File file = LocalWallpaperFiles.sharedFile(child.getPath());
-                            if (folder.equals(file.getParentFile()) && file.isFile() && file.canRead()) {
-                                files.add(video(file.toURI().toASCIIString(), child.getName(),
-                                    file.lastModified(), file.length()));
+                    while (!directories.isEmpty() && entries < 4000 && files.size() < 1000) {
+                        java.io.File directory = directories.removeFirst();
+                        if (!visited.add(directory.getCanonicalPath())) continue;
+                        java.io.File[] children = directory.listFiles();
+                        if (children == null) {
+                            if (directory.equals(root)) throw new IllegalStateException("Folder unavailable");
+                            continue;
+                        }
+                        java.util.Arrays.sort(children, java.util.Comparator.comparing(java.io.File::getName));
+                        for (java.io.File child : children) {
+                            if (entries++ >= 4000 || files.size() >= 1000) break;
+                            try {
+                                java.io.File safe = LocalWallpaperFiles.sharedFile(child.getPath());
+                                if (!safe.getCanonicalPath().startsWith(prefix)) continue;
+                                if (safe.isDirectory()) {
+                                    if (recursive) directories.add(safe);
+                                } else if (safe.isFile() && safe.canRead()) {
+                                    boolean image = images && LocalWallpaperFiles.image(safe);
+                                    if (image || isVideoName(safe.getName())) {
+                                        files.add(media(safe.toURI().toASCIIString(), safe.getName(),
+                                            safe.lastModified(), safe.length(), image, images));
+                                    }
+                                }
+                            } catch (SecurityException | java.io.IOException ignored) {
+                                // Skip inaccessible files and links outside the selected directory.
                             }
-                        } catch (SecurityException | java.io.IOException ignored) {
-                            // A single inaccessible file must not hide the rest of the folder.
                         }
                     }
                 } else {
-                    listDocumentVideos(tree, files);
+                    listDocumentMedia(tree, files, recursive, images);
                 }
                 new Handler(Looper.getMainLooper()).post(() -> result.success(files));
             } catch (Exception error) {
                 new Handler(Looper.getMainLooper()).post(() -> result.error(
-                    "document_failed", "Unable to enumerate folder videos", DiagnosticErrorDetails.from(error)));
+                    "document_failed", "Unable to enumerate folder media", DiagnosticErrorDetails.from(error)));
             }
         });
     }
 
-    private void listDocumentVideos(Uri tree, List<Map<String, Object>> files) {
-        String id = DocumentsContract.getTreeDocumentId(tree);
-        try (Cursor cursor = activity.getContentResolver().query(
-                DocumentsContract.buildChildDocumentsUriUsingTree(tree, id),
-                new String[]{DocumentsContract.Document.COLUMN_DOCUMENT_ID,
-                    DocumentsContract.Document.COLUMN_MIME_TYPE,
-                    DocumentsContract.Document.COLUMN_DISPLAY_NAME,
-                    DocumentsContract.Document.COLUMN_LAST_MODIFIED,
-                    DocumentsContract.Document.COLUMN_SIZE}, null, null, null)) {
-            if (cursor == null) throw new IllegalStateException("Folder unavailable");
-            int entries = 0;
-            while (entries++ < 4000 && files.size() < 1000 && cursor.moveToNext()) {
-                String name = cursor.getString(2);
-                if (DocumentsContract.Document.MIME_TYPE_DIR.equals(cursor.getString(1))
-                        || !isVideoName(name)) continue;
-                Uri uri = DocumentsContract.buildDocumentUriUsingTree(tree, cursor.getString(0));
-                files.add(video(uri.toString(), name, cursor.getLong(3),
-                    cursor.isNull(4) ? -1 : cursor.getLong(4)));
+    private void listDocumentMedia(Uri tree, List<Map<String, Object>> files, boolean recursive, boolean images) {
+        ArrayDeque<String> directories = new ArrayDeque<>();
+        HashSet<String> visited = new HashSet<>();
+        directories.add(DocumentsContract.getTreeDocumentId(tree));
+        int entries = 0;
+        while (!directories.isEmpty() && entries < 4000 && files.size() < 1000) {
+            String id = directories.removeFirst();
+            if (!visited.add(id)) continue;
+            try (Cursor cursor = activity.getContentResolver().query(
+                    DocumentsContract.buildChildDocumentsUriUsingTree(tree, id),
+                    new String[]{DocumentsContract.Document.COLUMN_DOCUMENT_ID,
+                        DocumentsContract.Document.COLUMN_MIME_TYPE,
+                        DocumentsContract.Document.COLUMN_DISPLAY_NAME,
+                        DocumentsContract.Document.COLUMN_LAST_MODIFIED,
+                        DocumentsContract.Document.COLUMN_SIZE}, null, null, null)) {
+                if (cursor == null) throw new IllegalStateException("Folder unavailable");
+                while (entries++ < 4000 && files.size() < 1000 && cursor.moveToNext()) {
+                    String child = cursor.getString(0);
+                    String mime = cursor.getString(1);
+                    String name = cursor.getString(2);
+                    if (DocumentsContract.Document.MIME_TYPE_DIR.equals(mime)) {
+                        if (recursive) directories.add(child);
+                        continue;
+                    }
+                    boolean image = images && mime != null && mime.startsWith("image/");
+                    if (!image && !isVideoName(name)) continue;
+                    Uri uri = DocumentsContract.buildDocumentUriUsingTree(tree, child);
+                    files.add(media(uri.toString(), name == null ? child : name, cursor.getLong(3),
+                        cursor.isNull(4) ? -1 : cursor.getLong(4), image, images));
+                }
             }
         }
+    }
+
+    private static Map<String, Object> media(String uri, String name, long modified, long size, boolean image, boolean mixed) {
+        if (!mixed) return video(uri, name, modified, size);
+        return Map.of("uri", uri, "name", name, "modified", Math.max(0, modified), "size", size, "image", image);
     }
 
     private static boolean isVideoName(String name) {

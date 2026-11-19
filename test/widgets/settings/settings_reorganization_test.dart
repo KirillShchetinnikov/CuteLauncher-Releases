@@ -1,3 +1,6 @@
+import 'package:flauncher/widgets/settings/settings_destinations.dart';
+import 'package:flauncher/widgets/settings/backup_restore_page.dart';
+import 'package:flauncher/widgets/settings/general_settings_page.dart';
 import 'package:flauncher/widgets/settings/interface_settings_page.dart';
 import 'package:flauncher/widgets/settings/information_settings_page.dart';
 import 'dart:io';
@@ -102,6 +105,24 @@ void main() {
     expect(settings.wallpaperFit, 'contain');
   });
 
+  testWidgets('diagnostics links to memory without duplicating the memory saver controls', (tester) async {
+    await pump(tester, const LauncherDiagnosticsPage(), language: 'ru');
+    expect(find.text('Память'), findsOneWidget);
+    expect(find.text('Экономия памяти'), findsNothing);
+    expect(find.text('Что меняет экономия'), findsNothing);
+  });
+
+  testWidgets('launcher settings exposes all four backup actions directly', (tester) async {
+    await pump(tester, const SettingsPanel(initialRoute: GeneralSettingsPage.routeName), language: 'ru');
+    final section = find.byType(SettingsManagementSection);
+    await tester.scrollUntilVisible(section, 180);
+    final l = AppLocalizations.of(tester.element(section))!;
+    for (final title in [l.backupSaveMode, l.backupSyncMode, l.exportBackup, l.importBackup]) {
+      expect(find.descendant(of: section, matching: find.text(title)), findsOneWidget);
+    }
+    expect(find.text(l.automaticBackups), findsNothing);
+  });
+
   testWidgets('border style replaces visibility toggle and preserves legacy hidden choice',
       (tester) async {
     await settings.setHideHighlightOutlineOnHomescreen(true);
@@ -169,7 +190,7 @@ void main() {
     await settings.setAccentColor(ACCENT_COLOR_TEAL);
     await settings.setBackgroundSource('scheduled');
     await settings.setAppHighlightAnimationEnabled(false);
-    await pump(tester, const AppearanceSettingsPage());
+    await pump(tester, const GeneralSettingsPage());
     final reset = find.text('Reset appearance');
     await tester.ensureVisible(reset);
     await tester.pumpAndSettle();
@@ -200,11 +221,13 @@ void main() {
     await settings.setShowWeatherInStatusBar(false);
     await settings.setShowDateInStatusBar(false);
     await settings.setShowDataWidgetInStatusBar(false);
-    await pump(tester, const StatusBarObjectsPage());
+    await pump(tester, const SettingsPanel(initialRoute: WidgetSettingsPage.routeName));
     await tester.tap(find.widgetWithText(FocusableSettingsTile, 'Settings'));
     await tester.pumpAndSettle();
     expect(find.byType(InformationSettingsPage), findsOneWidget);
     expect(find.text('Panel appearance'), findsOneWidget);
+    await tester.scrollUntilVisible(find.text('Object formats'), 160);
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Object formats'));
     await tester.pumpAndSettle();
     await Navigator.of(tester.element(find.byType(InformationDataSettingsPage))).maybePop();
@@ -213,8 +236,8 @@ void main() {
     expect(find.text('Weather settings'), findsOneWidget);
     await Navigator.of(tester.element(find.byType(InformationSettingsPage))).maybePop();
     await tester.pumpAndSettle();
-    await tester.scrollUntilVisible(find.text('Traffic settings'), 200);
-    expect(find.widgetWithText(FocusableSettingsTile, 'Traffic settings'), findsOneWidget);
+    await tester.scrollUntilVisible(find.text('Show traffic'), 200);
+    expect(find.widgetWithText(FocusableSettingsTile, 'Show traffic'), findsOneWidget);
     expect(settings.showWeatherInStatusBar, isFalse);
   });
   testWidgets(
@@ -222,8 +245,6 @@ void main() {
       (tester) async {
     await pump(tester,
         const SettingsPanel(initialRoute: InterfaceSettingsPage.routeName));
-    await tester.tap(find.text('Home screen · Appearance'));
-    await tester.pumpAndSettle();
     final panel = find.text('Highlight and animation');
     Focus.of(tester.element(panel)).requestFocus();
     await tester.pumpAndSettle();
@@ -233,7 +254,7 @@ void main() {
     final nav = Navigator.of(tester.element(find.byType(AppearancePage)));
     await nav.maybePop();
     await tester.pumpAndSettle();
-    expect(find.byType(HomeAppearancePage), findsOneWidget);
+    expect(find.byType(InterfaceSettingsPage), findsOneWidget);
     expect(Focus.of(tester.element(find.text('Highlight and animation'))).hasFocus, isTrue);
     expect(find.text('Miscellaneous'), findsNothing);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
@@ -248,14 +269,9 @@ void main() {
     )));
     await tester.tap(find.text('Open settings'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Home screen · Appearance'));
-    await tester.pumpAndSettle();
     await tester.tap(find.text('Highlight and animation'));
     await tester.pumpAndSettle();
     expect(find.byType(AppearancePage), findsOneWidget);
-    await tester.binding.handlePopRoute();
-    await tester.pumpAndSettle();
-    expect(find.byType(HomeAppearancePage), findsOneWidget);
     expect(find.byType(SettingsPanel), findsOneWidget);
     await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();

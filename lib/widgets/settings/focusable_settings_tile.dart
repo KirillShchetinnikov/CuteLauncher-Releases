@@ -175,7 +175,7 @@ class _FocusableSettingsTileState extends State<FocusableSettingsTile>
         alpha: _pressed
             ? style.rowPressedTint
             : _focused
-            ? style.rowFocusTint
+            ? .12
             : selected
             ? style.rowSelectedTint
             : 0,
@@ -183,7 +183,7 @@ class _FocusableSettingsTileState extends State<FocusableSettingsTile>
       _focused || selected || _pressed
           ? colors.surface
           : colors.onSurface.withValues(
-              alpha: widget.subtle ? 0 : style.rowIdleOpacity,
+              alpha: widget.subtle || skin.calm ? 0 : style.rowIdleOpacity,
             ),
     );
     final calmDecoration = skin
@@ -219,7 +219,7 @@ class _FocusableSettingsTileState extends State<FocusableSettingsTile>
                   )
                 : selected || _pressed
                 ? accentBase
-                : colors.onSurface.withValues(alpha: .025),
+                : colors.onSurface.withValues(alpha: 2 / 255),
             borderRadius: BorderRadius.circular(style.rowRadius),
             border: Border.all(
               color: _focused ? colors.primary : Colors.transparent,
@@ -227,12 +227,15 @@ class _FocusableSettingsTileState extends State<FocusableSettingsTile>
             ),
           )
         : skin.surface(
-            accentBase,
+            skin.style == InterfaceStyle.soft && !_focused && !selected && !_pressed
+                ? colors.onSurface.withValues(alpha: 4 / 255)
+                : accentBase,
             colors.onSurface,
             focused: _focused,
             accent: colors.primary,
             cornerRadius: style.rowRadius,
             borderWidth: style.rowAccentFocusWidth,
+            focusTint: skin.style == InterfaceStyle.soft ? .14 : .18,
           );
     final decoration = widget.subtle && !_focused && !selected && !_pressed
         ? BoxDecoration(
@@ -336,8 +339,9 @@ class _FocusableSettingsTileState extends State<FocusableSettingsTile>
                             width: style.iconExtent,
                             height: style.iconExtent,
                             decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.primary
-                                  .withValues(alpha: _focused ? 0.22 : 0.12),
+                              color: skin.standard && !_focused
+                                  ? colors.onSurface.withValues(alpha: 6 / 255)
+                                  : colors.primary.withValues(alpha: _focused ? 0.22 : 0.12),
                               borderRadius: BorderRadius.circular(
                                 style.iconRadius,
                               ),

@@ -1,4 +1,5 @@
 import 'traffic_settings_page.dart';
+import 'settings_destinations.dart';
 import 'file_browser_settings_page.dart';
 import 'volume_widget_settings_page.dart';
 import 'network_speed_settings_page.dart';
@@ -360,6 +361,16 @@ class _SettingsPanelState extends State<SettingsPanel> {
                         settings: settings,
                         builder: (_) => const GeneralSettingsPage(),
                       );
+                    case LauncherFunctionsPage.routeName:
+                      return SettingsRoute(settings: settings, builder: (_) => const LauncherFunctionsPage());
+                    case LauncherAccessPage.routeName:
+                      return SettingsRoute(settings: settings, builder: (_) => const LauncherAccessPage());
+                    case LauncherDiagnosticsPage.routeName:
+                      return SettingsRoute(settings: settings, builder: (_) => const LauncherDiagnosticsPage());
+                    case WidgetsAndPanelsPage.routeName:
+                      return SettingsRoute(settings: settings, builder: (_) => const WidgetsAndPanelsPage());
+                    case WidgetSettingsPage.routeName:
+                      return SettingsRoute(settings: settings, builder: (_) => const WidgetSettingsPage());
                     case FileBrowserSettingsPage.routeName:
                       return SettingsRoute(settings: settings, builder: (_) => const FileBrowserSettingsPage());
                     case UpdatesPage.routeName:

@@ -1,3 +1,4 @@
+import 'settings_section.dart';
 import 'package:flutter/material.dart';
 
 import '../../l10n/app_localizations.dart';
@@ -103,6 +104,7 @@ class _RecentAppsPageState extends State<RecentAppsPage>
           ? const Center(child: CircularProgressIndicator())
           : ListView(
               children: [
+                SettingsSection(title: l.recentAppsTitle, children: [
                 SettingsChoiceTile<String>(
                   title: l.recentAppsPanelType,
                   value: _mode,
@@ -123,7 +125,7 @@ class _RecentAppsPageState extends State<RecentAppsPage>
                 ),
                 FocusableSettingsTile(
                   title: Text(l.recentAppsOpen),
-                  leading: const Icon(Icons.recent_actors_outlined),
+                  leading: const Icon(Icons.filter_none_outlined),
                   enabled: _loaded && (_mode != 'system' || _systemAvailable),
                   onPressed: _open,
                 ),
@@ -147,6 +149,8 @@ class _RecentAppsPageState extends State<RecentAppsPage>
                   title: l.recentAppsTitle,
                   text: '${l.recentAppsCustom}: ${l.recentAppsHelp}',
                 ),
+                ]),
+                SettingsSection(title: l.controlAndAccessGroup, children: [
                 FocusableSettingsTile(
                   title: Text(l.remoteButtonsTitle),
                   leading: const Icon(Icons.settings_remote),
@@ -163,6 +167,7 @@ class _RecentAppsPageState extends State<RecentAppsPage>
                     ),
                   ),
                 ),
+                ]),
               ],
             ),
     );

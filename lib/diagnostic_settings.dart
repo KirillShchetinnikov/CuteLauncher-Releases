@@ -53,6 +53,7 @@ class DiagnosticSettings {
     'online',
     'slideshow',
     'videoFolder',
+    'mediaFolder',
     'app',
     'landscape',
     'cover',

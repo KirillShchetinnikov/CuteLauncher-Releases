@@ -51,7 +51,7 @@ class LauncherStyle extends ThemeExtension<LauncherStyle> {
     this.rowMinHeight = 52,
     this.rowPadding = const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
     this.rowFocusWidth = 2.5,
-    this.rowAccentFocusWidth = 1.5,
+    this.rowAccentFocusWidth = 2.5,
     this.rowFocusTint = 0.16,
     this.rowIdleOpacity = 0.015,
     this.rowSelectedTint = .08,

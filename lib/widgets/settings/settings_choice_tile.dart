@@ -9,6 +9,7 @@ class SettingsChoiceTile<T> extends StatelessWidget {
   final String title;
   final Widget? leading;
   final T value;
+  final Widget Function(T option, Widget row)? decorateOption;
   final List<T> options;
   final String Function(T) label;
   final String Function(T) Function()? dialogLabels;
@@ -24,6 +25,7 @@ class SettingsChoiceTile<T> extends StatelessWidget {
     required this.title,
     this.leading,
     required this.value,
+    this.decorateOption,
     required this.options,
     required this.label,
     this.dialogLabels,
@@ -69,6 +71,7 @@ class SettingsChoiceTile<T> extends StatelessWidget {
           title: Text(title),
           value: value,
           options: options,
+          decorateOption: decorateOption,
           optionBuilder: (option) => Text(optionLabel(option)),
           onSelected: (option) => Navigator.pop(dialog, (option,)),
         ),

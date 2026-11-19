@@ -28,7 +28,7 @@ update to get new features. Requirements and limitations appear beside each feat
 - [Launcher and device controls](#launcher-and-device-controls)
 - [Remote remapper and quick settings panel](#remote-remapper-and-quick-settings-panel)
 - [Open apps](#open-apps)
-- [Device cleanup manager](#device-cleanup-manager)
+- [App disabling manager](#app-disabling-manager)
 - [Backups and synchronization](#backups-and-synchronization)
 - [Updates and app information](#updates-and-app-information)
 - [Memory and resource saving](#memory-and-resource-saving)
@@ -55,7 +55,7 @@ as a separate step. Focus stays on the first card of the topmost section.
 
 You can choose the focus target after Home. Key sounds have separate switches: for Home,
 go to **Home screen → Home screen behavior**; for settings, go to
-**Interface style → Settings style**. Both switches are off by default.
+**Launcher settings → Appearance → Settings style**. Both switches are off by default.
 On return, the launcher also checks for changes to installed apps so it can
 update tiles even if a system change notification was missed.
 
@@ -66,35 +66,39 @@ At either end of an app row, the wheel scrolls the home page.
 When settings move, appear, or disappear on a page, the directional pad follows
 their new order.
 
-Settings are grouped into Home screen, Top panel, Interface style, Apps, Night mode
-and brightness, Launcher and device controls, and Advanced. Android TV system
-settings open separately. Help is collapsed under a topic title with an information
+The root menu has three groups: Home screen and Widgets and panels; Launcher
+features, Default launcher and ADB, and Apps; Launcher settings and Diagnostics.
+Android settings open separately. Individual widgets are configured under
+Widgets and panels → Widget settings. Each panel combines visibility and order:
+OK toggles an item, Left/Right starts moving, Up/Down changes its position, and
+OK/Back finishes. The home panel settings button and information block have no
+visibility switch; clock, date and weather placement remains on their shared page. Help is collapsed under a topic title with an information
 icon. Current errors and unavailable-state reasons remain visible. Choose an
-app language in Advanced independently of Android, or follow the system language.
+app language in Launcher settings independently of Android, or follow the system language.
 Back returns to the previous settings page. Expanding help should not replace
 the selected item's normal action.
 When moving down with the remote, settings start scrolling as the selected
 item passes slightly below the middle of the window. Moving up uses a point
 slightly above the middle. At either end of the list, focus can reach the edge.
-Under **Interface style → Settings style → Scrollbar**, choose **Hide completely**,
+Under **Launcher settings → Appearance → Settings style → Scrollbar**, choose **Hide completely**,
 **Show while scrolling**, or **Always show** (the default). This applies to
 settings, menus, and dialogs. Scrolling works in all three modes. If you previously
 turned off persistent scrollbars, they still appear only while scrolling after the update.
 
-Under **Interface style → Settings style → Group appearance**, choose
+Under **Launcher settings → Appearance → Settings style → Group appearance**, choose
 **Accent strip** or **Shared surface** (the default). One choice applies to groups
 across settings pages. Long pages for appearance, weather, night mode,
 brightness, notifications, KVN, startup, Continue watching, the file browser,
 button mappings, and backups are divided by purpose. Short menus and app
 lists keep their simple layout. In the section list, panel object ordering, and
-the TV cleaner app list, headings have a divider that starts after the text.
+the app disabling manager’s app list, headings have a divider that starts after the text.
 Visible and hidden sleep timer presets use the same separation.
 Remote instructions stay pinned to the bottom of the settings panel while
 the list scrolls. Compact guides take at most three lines and highlight button names.
 Sizes, counts, and dates have labels; states and errors appear as separate
 messages beside the relevant setting. Empty lists have an icon and a short
 message. Detailed explanations remain in collapsed help.
-Under **Top panel → Appearance**, groups
+Under **Widgets and panels → Top panel → Appearance**, groups
 separate background, text, and additional options.
 The row material and focus color stay the same. Your group appearance choice
 is included in appearance backups. Resetting the settings style restores
@@ -313,7 +317,7 @@ request uninstall where Android allows it, hide or restore it, add it to a
 category, and change its tile. Actions are grouped by purpose by default.
 Set a custom tile banner or restore the default.
 
-To hide or reorder buttons, go to **Settings → Home screen → App info settings**
+To hide or reorder buttons, go to **Settings → Home screen → Appearance → App info settings**
 or select the gear in the app details panel. **OK** toggles visibility.
 **◄ / ►** starts moving, **▲ / ▼** changes the position, and **OK** or **Back**
 finishes. Hidden buttons keep their place in the list. **Reset settings**
@@ -338,11 +342,11 @@ a change to the Android system language.
 Hiding an app removes it from automatic launcher lists; it does not disable
 the app in Android. The normal system-app list belongs to the launcher catalog.
 For the complete installed-package list, including background system components,
-use the [cleanup manager](#device-cleanup-manager).
+use the [app disabling manager](#app-disabling-manager).
 
 ## Appearance and backgrounds
 
-Paths: **Home screen → Home screen · Appearance**, **Interface style**, **Top panel → Appearance**.
+Paths: **Home screen**, **Launcher settings**, **Widgets and panels → Top panel → Appearance**.
 
 Customize tiles and labels, sizes and spacing, shapes and backgrounds, focus
 outlines, zoom and animations, accent color, categories, and the top panel.
@@ -386,8 +390,12 @@ While scrolling vertically or horizontally, the focus pulse pauses at its
 current brightness. The outline or glow remains visible; once scrolling stops,
 the pulse resumes if enabled.
 
-**Interface style** offers Standard, Glass, Soft,
-Outline, and Calm. Calm removes persistent outlines from ordinary rows and marks
+Resetting the ordinary wallpaper keeps the day and night images. Resetting the
+scheduled wallpaper keeps the ordinary wallpaper.
+
+**Launcher settings** offers Standard, Glass, Soft,
+Outline, and Calm. Each row shows its own style. Use the arrow keys to compare
+the options and press OK to apply the focused style. Calm removes persistent outlines from ordinary rows and marks
 the focused row with an accent-coloured outline and tint. Selection marks,
 active switches and sliders also use the chosen accent; the existing styles keep
 their surfaces and accent-coloured focus. They change panel materials, buttons, focus, switches and sliders
@@ -408,7 +416,7 @@ one font supports the current language.
 Other value selection dialogs open with the selected row visible, even at the
 end of a long list. The scrollbar stays separate from the selection buttons.
 
-In **Interface style → Settings style**, **Show tooltips in all panels** enables
+In **Launcher settings → Appearance → Settings style**, **Show tooltips in all panels** enables
 button and icon hints when focused with the remote or hovered with a mouse.
 This single setting applies to all panels and is off by default. Changes apply
 immediately; on-screen control instructions remain visible.
@@ -417,7 +425,7 @@ Background sources:
 
 - A gradient with your chosen colors.
 - A local image or video, plus a separate Day/Night image source.
-- A folder slideshow with subfolders, order, interval, and next-image controls. Use the shared folder picker or the separate path entry in slideshow settings. For manual input, enter an absolute path such as `/storage/emulated/0/Pictures`, or `/storage/VOLUME_NAME/Wallpapers` for a USB drive. Wallpaper files are not modified.
+- Photos and videos from a selected folder: subfolders, sorting by name, modification date or random order, photo interval and next-file controls. Use the shared folder picker or enter a path manually. For manual input, enter an absolute path such as `/storage/emulated/0/Pictures`, or `/storage/VOLUME_NAME/Wallpapers` for a USB drive. Wallpaper files are not modified.
 
   The slideshow pauses while you watch a film or TV. If the change interval has
   elapsed, the next image loads when you return to the home screen. Otherwise,
@@ -448,7 +456,7 @@ For better compatibility, MP4 with H.264 is preferred.
 
 If video initialization or playback fails, the launcher automatically tries a compatible output mode when available on the TV. It retries once; if that also fails, an error message appears. This does not add support for a missing codec.
 
-For multiple clips, choose **Videos from folder → Source settings** and select a folder on the TV or a USB drive. Clips advance when they end, play silently on repeat, and pause when you leave the home screen. Choose name order, date modified (newest first), or random order without repeats within a cycle. **Next video** skips the current clip. Subfolders are excluded. MP4/M4V, WebM, and MKV are supported up to 3840×2160 and 256 MiB when the size is known. Unplayable clips are skipped. Select the folder again when transferring settings to another TV.
+For a folder containing photos and videos, choose **Photos or videos from a folder → Source settings**. Photos advance after the selected interval; videos advance at the end of playback. The queue repeats silently and pauses outside Home. Subfolders, sorting by name or modification date, random order, and Next file are available. Unsupported or damaged files are skipped. Photos are limited to 8 MiB and 48 megapixels; MP4/M4V, WebM and MKV to 256 MiB and 3840×2160. Previously active slideshow and video-folder sources automatically become mixed queues while keeping the folder, sorting and photo settings. Select the folder again after moving settings to another device.
 
 The **Day/Night image** source accepts images only: the day image is used from
 06:00 to 18:00, and the night image at other times.
@@ -555,7 +563,7 @@ While data loads, they show a neutral icon or “—” and update in place. Obj
 that depend on a connection, permission, or active-only mode appear once their
 condition is confirmed. Disabled objects stay hidden from the first frame.
 
-**Network storage and USB.** Under **Top panel → Objects**, you can turn
+**Network storage and USB.** Under **Widgets and panels → Top panel → Objects**, you can turn
 **Network storage** and **USB drives** off independently. An icon appears once
 the launcher detects a mounted volume. The USB icon does not represent a keyboard,
 remote or other USB peripheral. NAS appears only on compatible firmware with
@@ -570,9 +578,9 @@ On incompatible firmware, the network storage switch is disabled in both panels.
 On compatible firmware, you can turn it on before mounting a network share.
 
 
-Path: **Top panel → Objects / Object order**.
+Path: **Widgets and panels → Top panel → Objects**.
 
-**Quick actions.** Turn on the lightning button under **Top panel → Objects**.
+**Quick actions.** Turn on the lightning button under **Widgets and panels → Top panel → Objects**.
 It is hidden by default. Use **Quick action settings** or the gear in the menu to
 choose and reorder the visible commands. In the order editor, press OK to select
 a command, move it with ↑/↓, then press OK again. Hidden commands keep their place.
@@ -602,7 +610,7 @@ the widget is hidden, another app is opened or the screen is off.
 Visibility on the quick settings panel is separate; the interval is shared.
 Use **Object order** to change its position.
 
-Enable the **System** widget in **Top panel → Objects**; it is off by default.
+Enable the **System** widget in **Widgets and panels → Top panel → Objects**; it is off by default.
 In **System widget settings**, you can choose which readings appear on the panel
 (CPU load, RAM, and CPU temperature), keep just the icon, and set an **Update interval** from 1 to 10 seconds
 (5 by default). The interval applies to CPU, RAM and the other widget readings
@@ -674,7 +682,7 @@ Select the traffic counter to see usage for **the day, week and month** together
 Each period has a compact card showing **Received**, **Sent** and **Total**.
 Received and sent usage appear side by side, or vertically with large text.
 Use the remote to scroll when needed.
-The gear and **Top panel → Objects → Traffic settings** open usage access and
+The gear and **Widgets and panels → Widget settings → Traffic settings** open usage access and
 the period for the counter on the panel. The open menu always shows all three periods. The counter reads Android history from the start
 of the selected day, week or month,
 including usage before the widget was enabled. Android may update history with a delay.
@@ -691,10 +699,11 @@ the menu. The calendar gear opens the shared Clock, date and weather settings.
 Selecting the network icon opens a compact menu below the button, using settings
 appearance. The gear at the top right opens Android network settings; Back or
 clicking outside closes the menu. It shows internet availability, connection
- type, Wi-Fi name, signal, link speed, frequency, separate IPv4 and IPv6 address
-groups (IPv4 first), and current device
-receive/send traffic. Wi-Fi link speed is the connection rate to the access point,
-not an internet speed test. Data unavailable from Android is marked explicitly;
+type, Wi-Fi name, signal, link speed, frequency and channel number (when it can
+be determined), separate IPv4 and IPv6 address groups (IPv4 first), and current
+device receive and send rates.
+Wi-Fi link speed is the rate of the connection between the device and the access
+point. Data unavailable from Android is marked explicitly;
 no additional location permission is requested. The summary refreshes every three
 seconds only while open and the app is active. It includes a system network
 settings button.
@@ -730,7 +739,7 @@ uses an incompatible launch mode, so that switch is unavailable.
 Other clients can be opened. Sending a command
 alone does not count as connecting: the launcher waits for the resulting state.
 
-**Clock, date and weather on the wallpaper.** Open **Top panel → Objects →
+**Clock, date and weather on the wallpaper.** Open **Widgets and panels → Widget settings →
 Clock, date and weather**. Choose **Disabled**, **Top panel** or **On wallpaper** separately
 for the time, date and weather. For example, move the clock to the wallpaper and
 keep the date and weather in the panel, grouped or separate. In **Wallpaper appearance → Position and size**,
@@ -773,7 +782,7 @@ Moving the elements hides them from the top panel; choosing
 elements are also excluded from the top panel order editor. Quick settings panel
 visibility and order remain independent; editing that panel does not hide wallpaper clocks.
 
-In **Top panel → Objects**, open **Settings** in the **Clock, date and weather**
+In **Widgets and panels → Top panel → Objects**, open **Settings** in the **Clock, date and weather**
 group. The **Placement** group lets you choose where each element appears.
 The **Appearance** group starts with the shared **Object formats** page, followed
 by **Panel appearance** and **Wallpaper appearance**. Both appearance pages
@@ -870,7 +879,7 @@ arrow control offering only distinct weights for the selected font: Manrope
 display as the nearest supported weight. Separate clock and combined block
 appearance remain independent. Toggling digit animation preserves clock geometry.
 
-**Top panel → Appearance → Wrap panel navigation** is off by default. When enabled,
+**Widgets and panels → Top panel → Appearance → Wrap panel navigation** is off by default. When enabled,
 pressing an arrow at an outermost available button moves focus to the opposite
 edge. Holding an arrow keeps moving across both sides without stopping at the
 boundary. Navigation follows physical button positions, skipping hidden or
@@ -891,7 +900,7 @@ traffic needs usage access, and inputs need support for the relevant TV API.
 
 ## Weather
 
-Path: **Top panel → Objects → Clock, date and weather → Settings → Weather settings**.
+Path: **Widgets and panels → Widget settings → Clock, date and weather → Weather settings**.
 
 **Auto** is the default source. Choose a city or get the coordinates.
 The launcher requests the forecast from MET Norway, falling back to Open-Meteo
@@ -1046,7 +1055,7 @@ forecast periods remain for today, both bounds may equal the current temperature
 In the notification blocking list, an enabled switch means the app's notifications
 are blocked. Each app appears once; changing a switch keeps the list order.
 
-Path: **Top panel → Objects → Notifications**.
+Path: **Widgets and panels → Widget settings → Notifications**.
 
 After granting notification access, view the notification list, inspect and
 dismiss supported notifications, and enable a counter and popups. Customize
@@ -1073,7 +1082,7 @@ card appears only when a media session is available; the player determines its a
 
 ## TV inputs
 
-Path: **Top panel → Objects → Inputs**.
+Path: **Widgets and panels → Widget settings → Inputs**.
 
 The launcher lists available system inputs and switches to the selected input.
 The menu opens immediately with the last known list and refreshes it in the background.
@@ -1141,7 +1150,7 @@ planned and are not currently available features.
 
 ## Clock and screensaver
 
-Path: **Interface style → Screensaver clock style / Screensaver settings**, when Android
+Path: **Launcher features → Screensaver**, when Android
 provides a working system selector.
 
 There is a home-screen clock mode and a dedicated clock screensaver. Show clock
@@ -1154,7 +1163,7 @@ Top-panel clock settings are separate.
 
 Path: the top panel's **Sleep timer** widget.
 Settings are available through the widget gear and
-**Top panel → Objects → Sleep timer settings**.
+**Widgets and panels → Widget settings → Sleep timer settings**.
 The menu opens immediately with the timer's last known state and refreshes it
 in the background.
 
@@ -1222,11 +1231,13 @@ Path: **Launcher and device controls**.
 - Configure local TCP/RSA ADB: port, connection check, and authorization on the TV.
   After a full app data reset, select **Check connection** and approve the Android
   prompt if it appears. The check retries automatically if the connection drops briefly.
-- **Default launcher** shows the current home app and two buttons. The first
+- **Default launcher** shows the current home app. If the ADB connection is unverified,
+  select **Open ADB connection settings → Check connection**. Press Back to
+  return with the updated status. The assignment button
   sets CuteLauncher as default through ADB and disables the built-in launcher
   if it is enabled. The same button then restores the previous home app and
   brings back the built-in launcher. CuteLauncher checks Android's actual
-  selection. The second button opens Android's default launcher setting.
+  selection. A separate button opens Android's default launcher setting.
   Disabling the built-in launcher may cause some remote buttons and
   manufacturer-specific TV menus to stop working. Use the ADB restore action
   to undo this.
@@ -1244,6 +1255,8 @@ Path: **Launcher and device controls**.
   launcher is enabled.
 - Grant supported special access to the launcher through ADB.
 - Launch an app or switch once to HDMI after TV boot or wake, with event and delay settings.
+  To start after sleep, CuteLauncher needs to receive the Android wake event
+  and gain focus within one minute of its delivery.
   For apps, **Wait for internet** waits up to 60 seconds after the delay, then makes
   one launch attempt. Remote input or leaving Home cancels it. It is off by default
   and does not delay HDMI switching.
@@ -1315,7 +1328,7 @@ Restoring the original state requires working ADB and saved recovery data.
 a command. It is available for assignable remapper buttons; essential controls
 remain protected. Disabling the assignment restores the button's normal action.
 
-Path: **Launcher and device controls → Remote button remapper**.
+Path: **Launcher features → Remote button remapper**.
 
 In button diagnostics, the start/stop instructions and the report path, when known,
 are visible without expanding help. Help explains copying the report and limitations.
@@ -1415,7 +1428,7 @@ for the initial single step and choosing another mode.
 
 ## Open apps
 
-Path: **Launcher and device controls → Open apps**. Assign the “Open apps panel” action
+Path: **Launcher features → Open apps**. Assign the “Open apps panel” action
 in the remapper, just like the quick settings panel. This settings page also opens
 the panel directly and selects its type: Automatic, CuteLauncher panel, or
 Built-in panel. Automatic mode uses the available manufacturer's `com.nes.recents`
@@ -1451,14 +1464,14 @@ returns to the previous available button; if it disappears or becomes disabled,
 focus moves to Refresh. The panel type is stored
 only on this device.
 
-## Device cleanup manager
+## App disabling manager
 
 Bundled restrictions for specific models and firmware preserve known system
 dependencies. They apply only when the specified device metadata matches exactly
 and also protect restoration. Observations from another TV do not authorize
 disabling packages on yours.
 
-Path: **Launcher and device controls → Device cleanup manager**.
+Path: **Launcher features → App disabling manager**.
 
 After a change or restoration, Last operation result shows each package as
 changed, unchanged, skipped, failed, or not attempted. Failures identify the
@@ -1546,7 +1559,7 @@ is safe on your firmware. Choose lists for your model and save the original stat
 
 ## Choosing files and folders
 
-In **Advanced → File manager**, choose the preferred method for all file, folder,
+In **Launcher settings → File manager**, choose the preferred method for all file, folder,
 and document-save actions:
 
 - **Ask every time** — the default: when an external picker is available, choose
@@ -1558,7 +1571,7 @@ If no compatible external handler is available, or it becomes unavailable before
 launch, the built-in browser opens. Cancelling the external picker ends selection.
 The preference persists between launches and is included in backups and synchronization.
 
-**Advanced → Built-in file browser** provides:
+**Launcher settings → Built-in file browser** provides:
 
 - a starting folder: device storage, Downloads, or the last opened folder;
 - sorting by name, modification date, or size, in ascending or descending order;
@@ -1605,7 +1618,7 @@ contents is shown.
 The built-in browser needs storage access on Android 9–10 (including write access
 when saving) or all files access on Android 11 and newer. It works with device storage
 and attached drives. The external file browser may offer other sources and does not require
-broad file access. Manual path entry is available only in slideshow settings.
+broad file access. Manual path entry is available in the folder background settings.
 
 On Android 11 and newer, all files access is a separate setting that may not
 appear in the app’s regular permission list. CuteLauncher opens its page in
@@ -1615,7 +1628,7 @@ does not mean that access has already been granted.
 
 ## Backups and synchronization
 
-Path: **Advanced → Backup and restore**.
+Path: **Launcher settings → Settings management**.
 
 Export settings to a file and import them again; create, restore, delete, and
 refresh backups. Import/export prevents duplicate requests while running. A list
@@ -1626,13 +1639,16 @@ do not back up installed apps or the entire TV system.
 App launch counts stay on each TV and survive sync, backup restoration and app
 reinstallation. A full launcher reset clears them.
 
-Backup and Synchronization are independent submenus. First entry opens a
+**Automatic backup** and **Settings sync** are independent submenus. First entry opens a
 full-screen Setup wizard; later visits show normal settings. The wizard can be
 reopened. Automation starts after final confirmation; cancelling before starting
 keeps previous settings. Each section can reuse a connected account or connect
 another account of the same type, such as two Google Drive accounts. Both may
 share one account while managing their files and cleanup separately.
-The submenu shows enabled state, storage, account and the last successful action.
+Once storage is configured, the last backup or sync, the one-time action and
+the file list appear first. Automation, schedules and sync settings follow.
+If storage needs attention, its settings appear first. Use **Backup file** on
+the main page to import or export a file manually.
 Disconnecting WebDAV, Google Drive, Yandex Disk or Samba
 requires confirmation; cancelling keeps the connection.
 
@@ -1677,8 +1693,8 @@ Files up to 64 KiB with an `installed` object are supported. Then select “Conn
 and confirm the code in your browser. Import fills the fields without connecting the account
 automatically. Errors and cancellation preserve the fields; Client Secret stays masked.
 
-In Synchronization mode, “Refresh” starts a manual settings exchange.
-“Backup management” in the Backup section creates, lists, restores and deletes
+In **Settings sync**, “Sync now” starts a manual settings exchange.
+“Backup list” in **Automatic backup** creates, lists, restores and deletes
 full backups. Sync files are excluded; creating a backup does
 not apply settings from other TVs.
 New file names and backup labels include the TV manufacturer/model and device ID.
@@ -1697,13 +1713,13 @@ folders are not shared storage.
 When you change the account, storage type,
 local folder, or sync scope, turn synchronization on again in its settings.
 CuteLauncher checks the settings in the chosen storage when you turn on
-synchronization or select **Refresh** while it is off. If they differ, you can use this TV's settings,
+synchronization or select **Sync now** while it is off. If they differ, you can use this TV's settings,
 use the settings in storage, or merge the two and give either side priority.
 Merging keeps changes from both sides and uses the selected priority to resolve
 conflicts. A local restore point is created before the choice is applied.
 Cancel and Back cancel the exchange. If there is no synchronization copy in the
 selected scope or the settings match, synchronization starts without a prompt.
-**Refresh** runs a one-time exchange and preserves the switch state.
+**Sync now** runs a one-time exchange and preserves the switch state.
 
 In the wizard, Synchronize everything is selected initially. Clear it to reveal
 group selection. The ordinary group submenu always displays the list. The final
@@ -1741,7 +1757,7 @@ authorization to another TV.
 
 ## Updates and app information
 
-Path: **Advanced → Updates / About CuteLauncher**.
+Path: **Launcher settings → Updates / About CuteLauncher**.
 
 Check for updates manually or automatically, receive update notifications, opt
 into test releases, and download APKs for the Android installer. Updates check
@@ -1794,12 +1810,15 @@ Files saved outside CuteLauncher storage (for example, backups in Downloads or o
 USB) and other apps are not deleted.
 
 About CuteLauncher shows the version, attribution, and licenses.
+Select the QR code for the public repository or the 4PDA discussion and scan
+it with your phone. Under **Support the developer**, select CloudTips or
+YooMoney to show that service’s payment code.
 The interface displays versions without a build number; Android keeps an internal
 build counter for installing updates.
 
 ## Memory and resource saving
 
-Path: **Advanced → Memory**.
+Path: **Diagnostics → Memory**.
 
 “CuteLauncher memory” shows only the launcher's own memory and works without
 ADB, a computer, or network debugging. The summary shows PSS, measurement time,
@@ -1826,7 +1845,7 @@ appearance preferences return when the mode is switched off.
 <a id="диагностика"></a>
 ## Compatible graphics output
 
-Path: **Settings → Advanced → Compatible graphics output**.
+Path: **Settings → Diagnostics → Compatible graphics output**.
 If the interface flickers with night dimming, try enabling this mode.
 On verified models, the workaround is enabled automatically, as shown in settings.
 Other TVs have a switch. After changing it, select
@@ -1836,7 +1855,7 @@ and is not transferred through backups or synchronization.
 
 ## Diagnostics
 
-Path: **Settings → Advanced → Diagnostics**. You can create a basic report or
+Path: **Settings → Diagnostics → Diagnostics**. You can create a basic report or
 start an extended recording before reproducing an issue. You can copy or save
 either report to disk.
 
@@ -1906,7 +1925,7 @@ results as unknown.
 
 ### Reporting an issue
 
-1. Open **Settings → Advanced → Diagnostics**.
+1. Open **Settings → Diagnostics → Diagnostics**.
 2. If the problem already happened, select **Create report**. If you need more
    detail and can reproduce the issue, select **Start extended diagnostics**,
    leave Settings, and reproduce it. Return to Diagnostics and select
@@ -1932,11 +1951,11 @@ excluded. API observations are not presented as full functional verification.
 ## Device data and reports
 
 Diagnostics collects model/firmware details and available APIs/permissions.
-The cleanup manager collects installed-package information and states. Collection
+The app disabling manager collects installed-package information and states. Collection
 and export are user-initiated; reports are never sent automatically.
 
 The latest button report is stored as `remote-buttons-last.txt` in the app's own
-external folder. The cleanup manager's original-state and recovery journal is
+external folder. The app disabling manager's original-state and recovery journal is
 stored internally, separately per firmware. Do not clear launcher data while you
 still need that recovery journal.
 
@@ -1959,7 +1978,7 @@ and a disabled-app list is not a recommendation for a different TV.
 | Location | Automatic weather coordinates and solar scheduling |
 | Exact alarms | System sleep-timer deadline event |
 | Install unknown apps | APK updates through Android's installer |
-| Authorized local ADB | Cleanup manager, relevant TV-control operations, and fallback readings for CPU load and temperature |
+| Authorized local ADB | App disabling manager, relevant TV-control operations, and fallback readings for CPU load and temperature |
 | Compatible file manager | Additional file sources and system folder selection; a built-in browser is also available |
 
 Permissions are granted by the user and may be revoked by Android. A visible

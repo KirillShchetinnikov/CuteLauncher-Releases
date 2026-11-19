@@ -98,19 +98,42 @@ class AutomaticBackupPage extends StatelessWidget {
                 children: [
                   Text('${l.backupMode}: ${modes[service.mode]}'),
                   Text(
-                    '${l.backupAutoEnabled}: ${service.enabled ? l.enabled : l.disabled}',
+                    '${service.mode == BackupMode.synchronization ? l.backupSyncAutomatic : l.backupAutoEnabled}: ${service.enabled ? l.enabled : l.disabled}',
                   ),
                   Text(l.backupLastSuccess),
                   if (service.cleanupFailed) Text(l.syncCleanupFailed),
                   Text(
                     last == null
-                        ? l.backupNever
+                        ? (service.mode == BackupMode.synchronization
+                              ? l.backupNotSynced
+                              : l.backupNever)
                         : '${material.formatMediumDate(last)} ${material.formatTimeOfDay(TimeOfDay.fromDateTime(last))}',
                   ),
                 ],
               ),
             ),
           ),
+          button(
+            l.backupManagement,
+            () => open(const BackupManagementPage()),
+            icon: Icons.backup_outlined,
+            requiresStorage: true,
+          ),
+          if (service.mode == BackupMode.backup && service.configured)
+            button(
+              l.backupCreateNow,
+              () async {
+                final saved = await service.run(manual: true, exportOnly: true);
+                if (!context.mounted) return;
+                showActionNotice(
+                  context,
+                  saved ? l.cloudSuccess : l.backupCreateFailed,
+                  error: !saved,
+                );
+              },
+              icon: Icons.save_outlined,
+              requiresStorage: true,
+            ),
           SettingsSection(
             key: const ValueKey('backupStorage'),
             title: l.backupStorage,
@@ -153,7 +176,9 @@ class AutomaticBackupPage extends StatelessWidget {
                     ),
                   BackupDestination.local => const LocalBackupPage(),
                 }),
-                icon: Icons.settings_backup_restore,
+                icon: service.destination == BackupDestination.local
+                    ? Icons.folder_open_outlined
+                    : Icons.link,
               ),
             ],
           ),
@@ -183,7 +208,7 @@ class AutomaticBackupPage extends StatelessWidget {
               ),
               if (service.mode == BackupMode.synchronization)
                 button(
-                  l.backupSyncRefresh,
+                  l.backupSyncNow,
                   () async {
                     final alreadyEnabled = service.enabled;
                     final success = alreadyEnabled
@@ -207,12 +232,6 @@ class AutomaticBackupPage extends StatelessWidget {
                   requiresStorage: true,
                 ),
             ],
-          ),
-          button(
-            l.backupManagement,
-            () => open(const BackupManagementPage()),
-            icon: Icons.backup_outlined,
-            requiresStorage: true,
           ),
           SizedBox(
             child: service.busy ? const LinearProgressIndicator() : null,
@@ -252,7 +271,7 @@ Future<bool> confirmBackupSynchronization(
           children: [
             Text(
               l.backupSyncPreviousDate(
-                previous == null ? l.backupNever : date(previous),
+                previous == null ? l.backupNotSynced : date(previous),
               ),
             ),
             Text(l.backupSyncRemoteDate(date(remote))),
@@ -278,6 +297,49 @@ Future<bool> confirmBackupSynchronization(
   }, enable: enable);
 }
 
+class BackupAutomationSwitch extends StatelessWidget {
+  final bool sync;
+  final bool autofocus;
+  const BackupAutomationSwitch({
+    super.key,
+    required this.sync,
+    this.autofocus = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+    final service = context.watch<BackupAutomationService>();
+    return RoundedSwitchListTile(
+      autofocus: autofocus,
+      title: Text(sync ? l.backupSyncAutomatic : l.backupAutoEnabled),
+      value: service.enabled,
+      enabled: service.configured,
+      busy: service.busy,
+      onChanged: (enabled) async {
+        try {
+          if (sync && enabled) {
+            final result = await confirmBackupSynchronization(
+              context,
+              service,
+              enable: true,
+            );
+            if (!result && service.failed && context.mounted) {
+              showActionNotice(context, l.backupSyncRefreshFailed, error: true);
+            }
+          } else {
+            await service.configure(enabled: enabled);
+          }
+        } catch (_) {
+          if (context.mounted) {
+            showActionNotice(context, l.appError, error: true);
+          }
+        }
+      },
+    );
+  }
+}
+
 class BackupOptionsPage extends StatelessWidget {
   final bool sync, localOnly;
   const BackupOptionsPage({
@@ -285,26 +347,6 @@ class BackupOptionsPage extends StatelessWidget {
     this.sync = false,
     this.localOnly = false,
   });
-
-  Future<void> _setEnabled(
-    BuildContext context,
-    BackupAutomationService automation,
-    bool enabled,
-  ) async {
-    if (!enabled || automation.mode != BackupMode.synchronization) {
-      await automation.configure(enabled: enabled);
-      return;
-    }
-    final result = await confirmBackupSynchronization(
-      context,
-      automation,
-      enable: true,
-    );
-    if (!result && automation.failed && context.mounted) {
-      final l = AppLocalizations.of(context)!;
-      showActionNotice(context, l.backupSyncRefreshFailed, error: true);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -334,14 +376,7 @@ class BackupOptionsPage extends StatelessWidget {
       title: Text(sync ? l.backupSyncOptions : l.backupOptions),
       child: ListView(
         children: [
-          RoundedSwitchListTile(
-            autofocus: true,
-            enabled: automation.configured,
-            busy: automation.busy,
-            title: Text(l.backupAutoEnabled),
-            value: automation.enabled,
-            onChanged: (v) => _setEnabled(context, automation, v),
-          ),
+          BackupAutomationSwitch(sync: sync, autofocus: true),
           if (!sync)
             SettingsSection(
               key: const ValueKey('settingsGroupStorage'),
@@ -430,6 +465,7 @@ class BackupOptionsPage extends StatelessWidget {
             ),
           if (sync) ...[
             FocusableSettingsTile(
+              leading: const Icon(Icons.folder_open_outlined),
               title: Text(l.syncFiles),
               busy: automation.busy,
               onPressed: automation.busy
@@ -439,6 +475,7 @@ class BackupOptionsPage extends StatelessWidget {
                     ),
             ),
             FocusableSettingsTile(
+              leading: const Icon(Icons.lock_outline),
               title: Text(l.backupPassword),
               busy: automation.busy,
               onPressed: automation.busy
@@ -465,6 +502,7 @@ class BackupOptionsPage extends StatelessWidget {
                 },
               ),
             FocusableSettingsTile(
+              leading: const Icon(Icons.checklist),
               title: Text(l.backupSyncSettings),
               busy: automation.busy,
               onPressed: automation.busy

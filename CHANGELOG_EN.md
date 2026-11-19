@@ -2,6 +2,14 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
+## v1.8.0-test.14 — 2026-11-19
+
+**Pre-release.**
+
+- Redesigned the settings menu. Language and appearance are grouped together, and widgets and panels share a section. Backup, sync, export and import are now in one place.
+- The update and About screens now offer a “Support the developer” button with QR codes for CloudTips and YooMoney. The About screen also has QR codes for the public repository and the 4PDA discussion.
+- The Wi-Fi summary shows the network channel when available. Fixed autostart after sleep when Android recreates the launcher.
+
 ## v1.8.0-test.13 — 2026-11-18
 
 **Pre-release.**

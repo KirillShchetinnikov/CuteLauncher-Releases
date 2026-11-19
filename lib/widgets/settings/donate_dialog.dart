@@ -1,9 +1,3 @@
-import 'settings_help.dart';
-
-import 'package:flauncher/widgets/launcher_dialog.dart';
-
-import 'settings_option_tile.dart';
-import '../../theme/launcher_style.dart';
 /*
  * FLauncher
  * Copyright (C) 2024 LeanBitLab
@@ -22,12 +16,23 @@ import '../../theme/launcher_style.dart';
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
-import 'package:qr_flutter/qr_flutter.dart';
-import 'package:flauncher/flauncher_channel.dart';
-import 'package:provider/provider.dart';
-import 'package:flauncher/providers/settings_service.dart';
+import 'link_qr_code.dart';
+
+import '../launcher_dialog.dart';
+import 'settings_option_tile.dart';
+
+enum DonationService {
+  cloudTips('CloudTips', 'https://pay.cloudtips.ru/p/118c2a7f'),
+  yooMoney('ЮMoney', 'https://yoomoney.ru/fundraise/1LLAULV57ME.261119');
+
+  const DonationService(this.label, this.url);
+  final String label;
+  final String url;
+}
 
 class DonateDialog extends StatefulWidget {
   const DonateDialog({super.key});
@@ -36,241 +41,83 @@ class DonateDialog extends StatefulWidget {
   State<DonateDialog> createState() => _DonateDialogState();
 }
 
-class _PlatformTabButton extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  final bool isSelected, autofocus;
-  final Color accentColor;
-  final VoidCallback onPressed;
-  const _PlatformTabButton({
-    required this.label,
-    required this.icon,
-    required this.isSelected,
-    required this.accentColor,
-    required this.onPressed,
-    this.autofocus = false,
-  });
-  @override
-  Widget build(BuildContext context) => SettingsOptionTile(
-    title: Text(label),
-    leading: Icon(icon),
-    selected: isSelected,
-    autofocus: autofocus,
-    onPressed: onPressed,
-  );
-}
-
-class _DialogActionButton extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  final Color accentColor;
-  final VoidCallback onPressed;
-  final bool primary;
-  const _DialogActionButton({
-    this.primary = false,
-    required this.label,
-    required this.icon,
-    required this.accentColor,
-    required this.onPressed,
-  });
-  @override
-  Widget build(BuildContext context) => LauncherDialogButton(
-    primary: primary,
-    onPressed: onPressed,
-    child: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: 18),
-        const SizedBox(width: 8),
-        Flexible(child: Text(label)),
-      ],
-    ),
-  );
-}
-
 class _DonateDialogState extends State<DonateDialog> {
-  int _selectedOption = 0; // 0: Open Collective, 1: GitHub Sponsors
-
-  static const String _openCollectiveUrl =
-      "https://opencollective.com/leanbitlab-org";
-  static const String _githubSponsorsUrl =
-      "https://github.com/sponsors/LeanBitLab";
-
-  Color _hexToColor(String hex) {
-    return Color(int.parse('FF$hex', radix: 16));
-  }
+  DonationService selected = DonationService.cloudTips;
 
   @override
   Widget build(BuildContext context) {
-    final settingsService = context.watch<SettingsService>();
-    final accentColor = _hexToColor(settingsService.accentColorHex);
-
-    final currentUrl = _selectedOption == 0
-        ? _openCollectiveUrl
-        : _githubSponsorsUrl;
-    final currentPlatform = _selectedOption == 0
-        ? "Open Collective"
-        : "GitHub Sponsors";
-    final currentBrandColor = _selectedOption == 0
-        ? const Color(0xFF1F6FEB)
-        : const Color(0xFFEA4AAA);
-
+    final l = AppLocalizations.of(context)!;
     return Dialog(
-      insetPadding: LauncherStyle.of(context).screenInsets(context),
-      child: Container(
-        width: 440,
-
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Header with Heart Icon
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.favorite, color: accentColor, size: 24),
-                  SizedBox(width: 8),
-                  Flexible(
-                    child: Text(
-                      AppLocalizations.of(context)!.supportLtvLauncher,
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 448),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final qrSize = math.min(
+                240.0,
+                math.min(
+                  constraints.maxWidth,
+                  MediaQuery.sizeOf(context).height * .44,
+                ),
+              );
+              final options = [
+                for (final service in DonationService.values)
+                  SettingsOptionTile(
+                    title: Text(service.label),
+                    selected: selected == service,
+                    autofocus: service == DonationService.cloudTips,
+                    onPressed: () => setState(() => selected = service),
+                  ),
+              ];
+              return FittedBox(
+                fit: BoxFit.scaleDown,
+                child: SizedBox(
+                  width: constraints.maxWidth,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Semantics(
+                        namesRoute: true,
+                        header: true,
+                        child: Text(
+                          l.supportDeveloper,
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
                       ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 6),
-              SettingsHelp(
-                title: 'QR',
-                text: AppLocalizations.of(context)!.scanToDonate,
-              ),
-              const SizedBox(height: 16),
-
-              // Platform Selector Buttons (D-pad friendly)
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  final tabs = <Widget>[
-                    _PlatformTabButton(
-                      label: "Open Collective",
-                      icon: Icons.volunteer_activism,
-                      isSelected: _selectedOption == 0,
-                      accentColor: accentColor,
-                      autofocus: true,
-                      onPressed: () => setState(() => _selectedOption = 0),
-                    ),
-
-                    _PlatformTabButton(
-                      label: "GitHub Sponsors",
-                      icon: Icons.favorite_border,
-                      isSelected: _selectedOption == 1,
-                      accentColor: accentColor,
-                      onPressed: () => setState(() => _selectedOption = 1),
-                    ),
-                  ];
-                  return constraints.maxWidth < 300
-                      ? Column(
+                      const SizedBox(height: 6),
+                      Text(l.scanToDonate),
+                      const SizedBox(height: 8),
+                      if (constraints.maxWidth < 280)
+                        ...options
+                      else
+                        Row(
                           children: [
-                            tabs[0],
-                            const SizedBox(height: 8),
-                            tabs[1],
+                            Expanded(child: options.first),
+                            const SizedBox(width: 8),
+                            Expanded(child: options.last),
                           ],
-                        )
-                      : Row(
-                          children: [
-                            Expanded(child: tabs[0]),
-                            const SizedBox(width: 10),
-                            Expanded(child: tabs[1]),
-                          ],
-                        );
-                },
-              ),
-              const SizedBox(height: 16),
-
-              // QR Code in high-contrast crisp white background
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.black45,
-                      blurRadius: 10,
-                      offset: Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: QrImageView(
-                  data: currentUrl,
-                  version: QrVersions.auto,
-                  size: 170.0,
-                  padding: EdgeInsets.zero,
-                  backgroundColor: Colors.white,
-                  eyeStyle: const QrEyeStyle(
-                    eyeShape: QrEyeShape.square,
-                    color: Colors.black,
-                  ),
-                  dataModuleStyle: const QrDataModuleStyle(
-                    dataModuleShape: QrDataModuleShape.square,
-                    color: Colors.black,
+                        ),
+                      const SizedBox(height: 12),
+                      LinkQrCode(
+                        key: ValueKey(selected.url),
+                        url: selected.url,
+                        label: selected.label,
+                        size: qrSize,
+                      ),
+                      const SizedBox(height: 8),
+                      Align(
+                        alignment: AlignmentDirectional.centerEnd,
+                        child: LauncherDialogButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: Text(l.close),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-              const SizedBox(height: 12),
-
-              // URL and platform badge
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 4,
-                ),
-                decoration: BoxDecoration(
-                  color: currentBrandColor.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: currentBrandColor.withValues(alpha: 0.5),
-                  ),
-                ),
-                child: Text(
-                  currentPlatform,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 4),
-              SelectableText(
-                currentUrl,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              const SizedBox(height: 12),
-
-              // Actions
-              Wrap(
-                alignment: WrapAlignment.center,
-                spacing: 12,
-                runSpacing: 8,
-                children: [
-                  _DialogActionButton(
-                    primary: true,
-                    icon: Icons.open_in_browser,
-                    label: AppLocalizations.of(context)!.openInBrowser,
-                    accentColor: accentColor,
-                    onPressed: () => FLauncherChannel().openUrl(currentUrl),
-                  ),
-                  _DialogActionButton(
-                    icon: Icons.close,
-                    label: AppLocalizations.of(context)!.close,
-                    accentColor: accentColor,
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                ],
-              ),
-            ],
+              );
+            },
           ),
         ),
       ),

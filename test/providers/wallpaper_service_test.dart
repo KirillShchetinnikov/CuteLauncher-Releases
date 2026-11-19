@@ -30,12 +30,13 @@ import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/widgets/settings/reset_style_tile.dart';
 import 'package:flauncher/widgets/settings/wallpaper_panel_page.dart';
-import 'package:flutter/material.dart' show MaterialApp, Scaffold;
+import 'package:flutter/material.dart' show MaterialApp, Scaffold, SizedBox;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:provider/provider.dart';
+
 
 import '../mocks.mocks.dart';
 

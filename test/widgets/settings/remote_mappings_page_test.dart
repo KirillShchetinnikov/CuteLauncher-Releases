@@ -248,6 +248,7 @@ void main() {
           groups: [
             (
               label: section,
+              icon: Icons.navigation_outlined,
               choices: [
                 (
                   action: 'action',
@@ -513,6 +514,8 @@ void main() {
     expect(config.enabled, isTrue);
     await tester.tap(find.text('YouTube'));
     await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Удалить'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Удалить'));
     await tester.pumpAndSettle();
     expect(config.bindings, hasLength(2));
@@ -549,7 +552,9 @@ void main() {
       });
       await tester.tap(find.text('TCL Home — Удержание'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Удалить'));
+      await tester.ensureVisible(find.text('Удалить'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Удалить'));
       await tester.pumpAndSettle();
       expect(
         find.text('Удалить назначение «TCL Home — Удержание»?'),
@@ -576,7 +581,9 @@ void main() {
       await tester.enterText(find.byType(TextField), 'Новое имя');
       await tester.tap(find.widgetWithText(LauncherDialogButton, 'Сохранить'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Удалить'));
+      await tester.ensureVisible(find.text('Удалить'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Удалить'));
       await tester.pumpAndSettle();
       expect(find.text('Удалить назначение «Видео»?'), findsOneWidget);
       expect(Focus.of(tester.element(find.text('Отмена'))).hasFocus, isTrue);
@@ -585,7 +592,9 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Новое имя'), findsOneWidget);
       expect(config.bindings.single.name, 'Видео');
-      await tester.tap(find.text('Удалить'));
+      await tester.ensureVisible(find.text('Удалить'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Удалить'));
       await tester.pumpAndSettle();
       await tester.binding.handlePopRoute();
       await tester.pumpAndSettle();
@@ -608,6 +617,8 @@ void main() {
     await tester.tap(find.text('YouTube'));
     await tester.pumpAndSettle();
     failSave = true;
+    await tester.ensureVisible(find.text('Удалить'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Удалить'));
     await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(LauncherDialogButton, 'Удалить'));
@@ -616,6 +627,8 @@ void main() {
     expect(find.text('Сохранить'), findsOneWidget);
     expect(calls.where((call) => call.method == 'save'), hasLength(1));
     failSave = false;
+    await tester.ensureVisible(find.text('Удалить'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Удалить'));
     await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(LauncherDialogButton, 'Удалить'));

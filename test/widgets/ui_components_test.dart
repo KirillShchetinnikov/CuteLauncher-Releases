@@ -100,7 +100,7 @@ void main() {
         final targetBorder = (surface(tester, 'Target').border! as Border).top;
         final colors = Theme.of(tester.element(find.text('Target')))
             .colorScheme;
-        expect(targetBorder.width, skin == InterfaceStyle.calm ? 2.5 : 1.5);
+        expect(targetBorder.width, 2.5);
         expect(targetBorder.color, colors.primary);
         expect(find.byIcon(Icons.check), findsOneWidget);
         final before = surface(tester, 'Target');

@@ -7,6 +7,8 @@ import 'package:flauncher/settings_import.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:transparent_image/transparent_image.dart';
+import 'package:flauncher/media_folder_settings.dart';
 
 void main() {
   const channel = MethodChannel('me.efesser.flauncher/method');
@@ -31,10 +33,15 @@ void main() {
     WidgetTester tester, {
     String source = videoFolderSource,
     Future<Object?> Function()? list,
+    Future<Object?> Function(String)? read,
   }) async {
     SharedPreferences.setMockInitialValues({
       'background_source': source,
       videoFolderKey: folder,
+      if (source == mediaFolderSource) ...{
+        mediaFolderKey: folder,
+        mediaFolderIntervalKey: 30,
+      },
     });
     preferences = await SharedPreferences.getInstance();
     settings = SettingsService(preferences);
@@ -44,12 +51,15 @@ void main() {
     tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, (
       call,
     ) async {
-      if (call.method == 'listWallpaperVideos') {
+      if (call.method == 'listWallpaperVideos' || call.method == 'listWallpaperMedia') {
         scans++;
         return list == null ? rows : await list();
       }
       if (call.method == 'releaseWallpaperFolder') {
         released.add(call.arguments['uri'] as String);
+      }
+      if (call.method == 'readWallpaperFolderImage') {
+        return read == null ? kTransparentImage : await read(call.arguments['uri'] as String);
       }
       return null;
     });
@@ -65,6 +75,24 @@ void main() {
     });
     await tester.pump();
   }
+
+  testWidgets('new folder uses one listing to validate and play', (tester) async {
+    await start(tester, source: mediaFolderSource);
+    final before = scans;
+    await service.setFolder('content://test/tree/other');
+    await tester.pump();
+    expect(scans - before, 1);
+  });
+
+  testWidgets('automatically reaches good video after 20 unreadable photos', (tester) async {
+    await start(tester, source: mediaFolderSource, list: () async => [
+      for (var index = 0; index < 20; index++)
+        {'uri': 'file:///storage/$index.png', 'name': '$index.png', 'modified': 0, 'size': 10, 'image': true},
+      {'uri': 'file:///storage/z.mp4', 'name': 'z.mp4', 'modified': 0, 'size': 10},
+    ], read: (_) async => throw PlatformException(code: 'document_failed'));
+    await tester.pump(const Duration(seconds: 1));
+    expect(service.clip?.name, 'z.mp4', reason: 'failed=${service.failed}');
+  });
 
   testWidgets('name order, manual skip, completion and a fresh circular scan', (
     tester,
@@ -171,6 +199,80 @@ void main() {
     await tester.pump();
     expect(service.clip, isNull);
     expect(service.loading, isFalse);
+  });
+
+  testWidgets('mixed queue uses a photo timer and pauses off Home', (tester) async {
+    await start(tester, source: mediaFolderSource, list: () async => [
+      {'uri': 'file:///storage/01.mp4', 'name': '01.mp4', 'modified': 0, 'size': 12},
+      {'uri': 'file:///storage/02.png', 'name': '02.png', 'modified': 0, 'size': 12, 'image': true},
+      {'uri': 'file:///storage/03.mp4', 'name': '03.mp4', 'modified': 0, 'size': 12},
+    ]);
+    expect(service.clip?.name, '01.mp4');
+    await tester.pump(const Duration(minutes: 1));
+    expect(service.clip?.name, '01.mp4');
+    await tester.runAsync(service.next);
+    expect(service.clip?.name, '02.png');
+    expect(service.image, isNotNull);
+    launcher.toggleLauncherVisibility();
+    await tester.pump(const Duration(minutes: 1));
+    expect(service.clip?.name, '02.png');
+    launcher.toggleLauncherVisibility();
+    await tester.pump(const Duration(seconds: 31));
+    expect(service.clip?.name, '03.mp4');
+    expect(service.image, isNull);
+    expect(scans, 1);
+  });
+
+  testWidgets('a completed photo stays visible until its replacement is decoded', (tester) async {
+    final gate = Completer<Object?>();
+    await start(tester, source: mediaFolderSource, list: () async => [
+      {'uri': 'file:///storage/01.mp4', 'name': '01.mp4', 'modified': 0, 'size': 12},
+      {'uri': 'file:///storage/02.png', 'name': '02.png', 'modified': 0, 'size': 12, 'image': true},
+      {'uri': 'file:///storage/03.png', 'name': '03.png', 'modified': 0, 'size': 12, 'image': true},
+    ], read: (uri) async => uri.endsWith('03.png') ? await gate.future : kTransparentImage);
+    await tester.runAsync(service.next);
+    final previous = service.image;
+    expect(previous, isNotNull);
+    final ready = Completer<void>();
+    void changed() {
+      if (service.clip?.name == '03.png' && !ready.isCompleted) ready.complete();
+    }
+    service.addListener(changed);
+    service.completed(service.clip!);
+    expect(service.image, same(previous));
+    await tester.runAsync(() async {
+      gate.complete(kTransparentImage);
+      await ready.future.timeout(const Duration(seconds: 3));
+    });
+    expect(service.image, isNot(same(previous)));
+    service.removeListener(changed);
+    await settings.setBackgroundSource('gradient');
+  });
+
+  test('old active folder settings migrate without changing other values', () async {
+    SharedPreferences.setMockInitialValues({
+      'background_source': 'slideshow', 'slideshow_folder': folder,
+      'slideshow_random': true, 'slideshow_recursive': false,
+      'slideshow_interval': 60, 'accent_color': '123456',
+    });
+    final prefs = await SharedPreferences.getInstance();
+    await migrateMediaFolderPreferences(prefs);
+    expect(prefs.getString('background_source'), mediaFolderSource);
+    expect(prefs.getString(mediaFolderKey), folder);
+    expect(prefs.getString(mediaFolderOrderKey), 'random');
+    expect(prefs.getBool(mediaFolderRecursiveKey), false);
+    expect(prefs.getInt(mediaFolderIntervalKey), 60);
+    expect(prefs.getString('accent_color'), '123456');
+    expect(prefs.getString('slideshow_folder'), folder);
+    expect(migrateMediaFolderSettings({for (final key in prefs.getKeys()) key: prefs.get(key)}), isEmpty);
+    final restored = compatibleSettingsForRestore({
+      'background_source': videoFolderSource, videoFolderKey: folder,
+      videoFolderOrderKey: 'date',
+    }, {});
+    expect(restored.containsKey(mediaFolderKey), isFalse);
+    expect(isDeviceLocalBackupKey(mediaFolderKey), isTrue);
+    expect(restored[mediaFolderOrderKey], 'date');
+    expect(restored[mediaFolderRecursiveKey], false);
   });
 
   testWidgets('reset keeps access shared with the image slideshow', (

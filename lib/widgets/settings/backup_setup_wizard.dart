@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../launcher_dialog.dart';
+import '../action_notice.dart';
 
 import '../../backup_schedule.dart';
 import '../../backup_sync.dart';
@@ -34,6 +35,13 @@ Future<bool?> showBackupSetup(
   try {
     snapshot = await service.beginSetup();
   } catch (_) {
+    if (context.mounted) {
+      showActionNotice(
+        context,
+        AppLocalizations.of(context)!.appError,
+        error: true,
+      );
+    }
     return false;
   }
   if (!context.mounted) {
@@ -183,7 +191,7 @@ class _BackupSetupWizardState extends State<BackupSetupWizard>
         : !_firstCopy || await service.run(manual: true);
     if (!mounted) return;
     if (!ok) {
-      _error = l.backupSyncRefreshFailed;
+      _error = sync ? l.backupSyncRefreshFailed : l.backupCreateFailed;
       return;
     }
     if (!sync) await service.configure(enabled: true);

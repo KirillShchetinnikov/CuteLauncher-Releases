@@ -785,8 +785,14 @@ abstract class AppLocalizations {
   /// No description provided for @showRepositoryQrCode.
   ///
   /// In en, this message translates to:
-  /// **'Show QR code'**
+  /// **'Repository QR code'**
   String get showRepositoryQrCode;
+
+  /// No description provided for @discussionQrCode.
+  ///
+  /// In en, this message translates to:
+  /// **'4PDA discussion QR code'**
+  String get discussionQrCode;
 
   /// No description provided for @resetSections.
   ///
@@ -4337,7 +4343,7 @@ abstract class AppLocalizations {
   /// No description provided for @automaticBackups.
   ///
   /// In en, this message translates to:
-  /// **'Backups and synchronization'**
+  /// **'Settings backups and sync'**
   String get automaticBackups;
 
   /// No description provided for @automaticBackupsHint.
@@ -4387,6 +4393,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Update to prereleases'**
   String get updatePrereleases;
+
+  /// No description provided for @topPanelObjectsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Top panel items'**
+  String get topPanelObjectsTitle;
+
+  /// No description provided for @quickPanelObjectsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick settings items'**
+  String get quickPanelObjectsTitle;
 
   /// No description provided for @topPanelObjects.
   ///
@@ -5162,6 +5180,12 @@ abstract class AppLocalizations {
   /// **'Enable debugging and network ADB in the device developer settings, then trust CuteLauncher. All ADB actions are at your own risk.'**
   String get adbSetupIntro;
 
+  /// No description provided for @adbOpenConnectionSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open ADB connection settings'**
+  String get adbOpenConnectionSettings;
+
   /// No description provided for @adbConnectionBlock.
   ///
   /// In en, this message translates to:
@@ -5609,7 +5633,7 @@ abstract class AppLocalizations {
   /// No description provided for @backupSaveMode.
   ///
   /// In en, this message translates to:
-  /// **'Backup'**
+  /// **'Automatic backup'**
   String get backupSaveMode;
 
   /// No description provided for @backupScope.
@@ -5657,7 +5681,7 @@ abstract class AppLocalizations {
   /// No description provided for @backupSyncMode.
   ///
   /// In en, this message translates to:
-  /// **'Synchronization'**
+  /// **'Settings sync'**
   String get backupSyncMode;
 
   /// No description provided for @backupSyncOptions.
@@ -5843,7 +5867,7 @@ abstract class AppLocalizations {
   /// No description provided for @backupLastCreated.
   ///
   /// In en, this message translates to:
-  /// **'Last backup was created:'**
+  /// **'Last backup'**
   String get backupLastCreated;
 
   /// No description provided for @backupManagement.
@@ -5867,7 +5891,7 @@ abstract class AppLocalizations {
   /// No description provided for @backupCreateNow.
   ///
   /// In en, this message translates to:
-  /// **'Create a new backup now'**
+  /// **'Create backup now'**
   String get backupCreateNow;
 
   /// No description provided for @backupFolderPath.
@@ -7319,7 +7343,7 @@ abstract class AppLocalizations {
   /// No description provided for @cleanerTitle.
   ///
   /// In en, this message translates to:
-  /// **'Device cleanup manager'**
+  /// **'App disabling manager'**
   String get cleanerTitle;
 
   /// No description provided for @cleanerRefresh.
@@ -7921,6 +7945,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Frequency'**
   String get networkFrequency;
+
+  /// No description provided for @networkWifiChannel.
+  ///
+  /// In en, this message translates to:
+  /// **'Channel'**
+  String get networkWifiChannel;
 
   /// No description provided for @networkMbps.
   ///
@@ -10136,6 +10166,48 @@ abstract class AppLocalizations {
   /// **'Reconnect Google Drive'**
   String get backupDriveReconnect;
 
+  /// No description provided for @syncFilesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No sync files yet'**
+  String get syncFilesEmpty;
+
+  /// No description provided for @syncFilesLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load sync files. Check storage access.'**
+  String get syncFilesLoadFailed;
+
+  /// No description provided for @backupSyncNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync now'**
+  String get backupSyncNow;
+
+  /// No description provided for @backupSyncAutomatic.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic sync'**
+  String get backupSyncAutomatic;
+
+  /// No description provided for @backupLastSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Last sync'**
+  String get backupLastSync;
+
+  /// No description provided for @backupNotSynced.
+  ///
+  /// In en, this message translates to:
+  /// **'Not synced yet'**
+  String get backupNotSynced;
+
+  /// No description provided for @backupFileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup file'**
+  String get backupFileTitle;
+
   /// No description provided for @backupSyncRefresh.
   ///
   /// In en, this message translates to:
@@ -10339,6 +10411,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Custom server (Open-Meteo)'**
   String get weatherCustomServer;
+
+  /// No description provided for @widgetsSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Widget settings'**
+  String get widgetsSettingsTitle;
 
   /// No description provided for @widgetSettings.
   ///
@@ -11455,6 +11533,198 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The selected storage already contains synchronization settings. Choose what to do with them: apply them to this device, replace them with this device’s settings, or merge them. If settings differ during merging, your selected priority will be used. The exchange starts after confirmation on the final wizard step.'**
   String get backupExistingSettingsHelp;
+
+  /// No description provided for @launcherSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Launcher settings'**
+  String get launcherSettings;
+
+  /// No description provided for @launcherFunctions.
+  ///
+  /// In en, this message translates to:
+  /// **'Launcher features'**
+  String get launcherFunctions;
+
+  /// No description provided for @widgetsAndPanels.
+  ///
+  /// In en, this message translates to:
+  /// **'Widgets and panels'**
+  String get widgetsAndPanels;
+
+  /// No description provided for @launcherDefaultAndAdb.
+  ///
+  /// In en, this message translates to:
+  /// **'Default launcher and ADB'**
+  String get launcherDefaultAndAdb;
+
+  /// No description provided for @defaultLauncherViaAdb.
+  ///
+  /// In en, this message translates to:
+  /// **'Set default launcher via ADB'**
+  String get defaultLauncherViaAdb;
+
+  /// No description provided for @defaultLauncherViaAccessibility.
+  ///
+  /// In en, this message translates to:
+  /// **'Set default launcher via accessibility'**
+  String get defaultLauncherViaAccessibility;
+
+  /// No description provided for @automationAndComfort.
+  ///
+  /// In en, this message translates to:
+  /// **'Automation and comfort'**
+  String get automationAndComfort;
+
+  /// No description provided for @maintenanceAndBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Maintenance and backups'**
+  String get maintenanceAndBackup;
+
+  /// No description provided for @performanceAndDiagnostics.
+  ///
+  /// In en, this message translates to:
+  /// **'Performance and diagnostics'**
+  String get performanceAndDiagnostics;
+
+  /// No description provided for @nightModeAndBrightness.
+  ///
+  /// In en, this message translates to:
+  /// **'Night mode and brightness'**
+  String get nightModeAndBrightness;
+
+  /// No description provided for @systemAndNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'System and notifications'**
+  String get systemAndNotifications;
+
+  /// No description provided for @settingsGeneralGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get settingsGeneralGroup;
+
+  /// No description provided for @settingsManagementGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings management'**
+  String get settingsManagementGroup;
+
+  /// No description provided for @settingsMaintenanceGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Maintenance'**
+  String get settingsMaintenanceGroup;
+
+  /// No description provided for @supportDeveloper.
+  ///
+  /// In en, this message translates to:
+  /// **'Support the developer'**
+  String get supportDeveloper;
+
+  /// No description provided for @comingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming soon'**
+  String get comingSoon;
+
+  /// No description provided for @mediaFolderSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos or videos from a folder'**
+  String get mediaFolderSource;
+
+  /// No description provided for @mediaFolderHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos advance after the selected interval; videos advance when playback ends.'**
+  String get mediaFolderHelp;
+
+  /// No description provided for @mediaFolderNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next file'**
+  String get mediaFolderNext;
+
+  /// No description provided for @mediaFolderError.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to open folder files. Check access and file formats.'**
+  String get mediaFolderError;
+
+  /// No description provided for @settingsScreensaverGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Screensaver'**
+  String get settingsScreensaverGroup;
+
+  /// No description provided for @homeSectionsGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Sections and apps'**
+  String get homeSectionsGroup;
+
+  /// No description provided for @homeVisualGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance'**
+  String get homeVisualGroup;
+
+  /// No description provided for @feedsAndOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Feeds and order'**
+  String get feedsAndOrder;
+
+  /// No description provided for @visibleFeeds.
+  ///
+  /// In en, this message translates to:
+  /// **'Visible feeds'**
+  String get visibleFeeds;
+
+  /// No description provided for @hiddenFeeds.
+  ///
+  /// In en, this message translates to:
+  /// **'Hidden feeds'**
+  String get hiddenFeeds;
+
+  /// No description provided for @controlAndAccessGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Controls and access'**
+  String get controlAndAccessGroup;
+
+  /// No description provided for @repairsAndDiagnosticsGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Fixes and diagnostics'**
+  String get repairsAndDiagnosticsGroup;
+
+  /// No description provided for @appsAndServicesGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Apps and services'**
+  String get appsAndServicesGroup;
+
+  /// No description provided for @deviceAndStatusGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Device and status'**
+  String get deviceAndStatusGroup;
+
+  /// No description provided for @supportProjectGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Project support'**
+  String get supportProjectGroup;
+
+  /// No description provided for @deletionGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Deletion'**
+  String get deletionGroup;
 }
 
 class _AppLocalizationsDelegate

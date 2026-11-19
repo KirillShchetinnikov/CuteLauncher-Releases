@@ -88,6 +88,11 @@ void main() {
       final l = AppLocalizations.of(
         tester.element(find.byType(BackupRestorePage)),
       )!;
+      expect(
+        Focus.of(tester.element(find.text(l.backupSaveMode))).hasFocus,
+        isTrue,
+      );
+      expect(find.text(l.settingsManagementGroup), findsOneWidget);
       await tester.runAsync(() async {
         final export = tester
             .widget<FocusableSettingsTile>(

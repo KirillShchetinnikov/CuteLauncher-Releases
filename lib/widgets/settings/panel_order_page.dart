@@ -1,4 +1,13 @@
 import 'settings_information.dart';
+import 'settings_reorder_controls.dart';
+import 'settings_help.dart';
+import '../../providers/network_service.dart';
+import '../../providers/notifications_service.dart';
+import '../../providers/storage_status_service.dart';
+import '../../providers/tv_inputs_service.dart';
+import '../storage_status_watch.dart';
+import '../action_notice.dart';
+import '../android_settings_icon.dart';
 import '../../panel_layout.dart';
 import '../../information_placement.dart';
 import '../../providers/settings_service.dart';
@@ -17,7 +26,12 @@ import 'settings_list_heading.dart';
 class PanelOrderPage extends StatefulWidget {
   static const routeName = 'panel_order';
   final bool remotePanel;
-  const PanelOrderPage({super.key, this.remotePanel = false});
+  final bool editVisibility;
+  const PanelOrderPage({
+    super.key,
+    this.remotePanel = false,
+    this.editVisibility = false,
+  });
   @override
   State<PanelOrderPage> createState() => _PanelOrderPageState();
 }
@@ -25,6 +39,7 @@ class PanelOrderPage extends StatefulWidget {
 class _PanelOrderPageState extends State<PanelOrderPage> {
   final Map<String, FocusNode> _nodes = {};
   String? _moving;
+  bool? _focusedCanToggle;
   bool _busy = false;
   @override
   void dispose() {
@@ -47,9 +62,11 @@ class _PanelOrderPageState extends State<PanelOrderPage> {
       context.read<SettingsService>(),
       remote: panel,
     );
-    final excluded = composition.excluded;
+    final excluded = widget.editVisibility && widget.remotePanel
+        ? <String>{}
+        : composition.excluded;
     final (first, second) = layout.displayOrders(
-      composition.combined,
+      composition.combined && !(widget.editVisibility && widget.remotePanel),
       excluded: excluded,
     );
     final order = left ? first : second;
@@ -74,7 +91,7 @@ class _PanelOrderPageState extends State<PanelOrderPage> {
       second,
       excluded: excluded,
     );
-    _busy = true;
+    setState(() => _busy = true);
     try {
       if (panel != null) {
         await panel.setPanelOrder(savedLeft, savedRight);
@@ -95,8 +112,16 @@ class _PanelOrderPageState extends State<PanelOrderPage> {
           }
         });
       }
+    } catch (_) {
+      if (mounted) {
+        showActionNotice(
+          context,
+          AppLocalizations.of(context)!.appError,
+          error: true,
+        );
+      }
     } finally {
-      _busy = false;
+      if (mounted) setState(() => _busy = false);
     }
   }
 
@@ -112,9 +137,89 @@ class _PanelOrderPageState extends State<PanelOrderPage> {
       context.watch<SettingsService>(),
       remote: panel,
     );
-    final excluded = composition.excluded;
-    final (leftOrder, rightOrder) = (panel?.layout ?? appearance.panelLayout)
-        .displayOrders(composition.combined, excluded: excluded);
+    final settings = context.watch<SettingsService>();
+    final excluded = widget.editVisibility && widget.remotePanel
+        ? <String>{}
+        : composition.excluded;
+    final (
+      leftOrder,
+      rightOrder,
+    ) = (panel?.layout ?? appearance.panelLayout).displayOrders(
+      composition.combined && !(widget.editVisibility && widget.remotePanel),
+      excluded: excluded,
+    );
+    final inputs = context.watch<TvInputsService?>();
+    final storage = context.watch<StorageStatusService?>();
+    final network = context.watch<NetworkService?>();
+    final notifications = context.watch<NotificationsService?>();
+    bool available(String id) =>
+        !widget.editVisibility ||
+        switch (id) {
+          'inputs' => inputs?.hasInputs == true,
+          'nas' => storage?.state.nasSupported == true,
+          'traffic' when widget.remotePanel =>
+            network?.hasUsageStatsPermission == true,
+          'notifications' when widget.remotePanel =>
+            notifications?.hasPermission == true,
+          _ => true,
+        };
+    (bool, ValueChanged<bool>)? visibility(String id) {
+      if (!widget.editVisibility) return null;
+      if (panel != null) {
+        return (panel.visible(id), (value) => panel.show(id, value));
+      }
+      return switch (id) {
+        'systemSettings' => (
+          settings.showSystemSettingsInStatusBar,
+          settings.setShowSystemSettingsInStatusBar,
+        ),
+        'inputs' => (
+          settings.showInputsWidgetInStatusBar,
+          settings.setShowInputsWidgetInStatusBar,
+        ),
+        'notifications' => (
+          settings.showNotificationsWidgetInStatusBar,
+          settings.setShowNotificationsWidgetInStatusBar,
+        ),
+        'sleepTimer' => (
+          settings.showSleepTimerInStatusBar,
+          settings.setShowSleepTimerInStatusBar,
+        ),
+        PanelLayout.quickActions => (
+          settings.showQuickActionsInStatusBar,
+          settings.setShowQuickActionsInStatusBar,
+        ),
+        'nightMode' => (
+          settings.showNightModeInStatusBar,
+          settings.setShowNightModeInStatusBar,
+        ),
+        'nas' => (settings.showNasInStatusBar, settings.setShowNasInStatusBar),
+        'usb' => (settings.showUsbInStatusBar, settings.setShowUsbInStatusBar),
+        'network' => (
+          settings.showNetworkIndicatorInStatusBar,
+          settings.setShowNetworkIndicatorInStatusBar,
+        ),
+        'vpn' => (settings.showVpnInStatusBar, settings.setShowVpnInStatusBar),
+        'traffic' => (
+          settings.showDataWidgetInStatusBar,
+          settings.setShowDataWidgetInStatusBar,
+        ),
+        'networkSpeed' => (
+          settings.showNetworkSpeedInStatusBar,
+          settings.setShowNetworkSpeedInStatusBar,
+        ),
+        'system' => (
+          settings.showSystemInStatusBar,
+          settings.setShowSystemInStatusBar,
+        ),
+        'audio' => (
+          settings.showVolumeInStatusBar,
+          settings.setShowVolumeInStatusBar,
+        ),
+        _ => null,
+      };
+    }
+
     final labels = {
       PanelLayout.informationGroup: [
         if (!excluded.contains('time')) l.informationTime,
@@ -143,7 +248,6 @@ class _PanelOrderPageState extends State<PanelOrderPage> {
     const icons = {
       PanelLayout.informationGroup: Icons.dashboard_outlined,
       'settings': Icons.settings_outlined,
-      'systemSettings': Icons.settings,
       'inputs': Icons.tv,
       'notifications': Icons.notifications_outlined,
       'sleepTimer': Icons.timer_outlined,
@@ -161,94 +265,154 @@ class _PanelOrderPageState extends State<PanelOrderPage> {
       'date': Icons.calendar_today,
       'time': Icons.watch_later_outlined,
     };
-    return PopScope(
-      canPop: _moving == null,
-      onPopInvokedWithResult: (didPop, _) {
-        if (!didPop && _moving != null) setState(() => _moving = null);
-      },
-      child: SettingsPageLayout(
-        footer: SettingsControlHint(text: l.panelOrderHint),
-        title: Text(l.panelObjectOrder),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              for (final key in ['panelButtonsOrder', 'panelInfoOrder']) ...[
-                SettingsListHeading(
-                  title: key == 'panelButtonsOrder'
-                      ? l.settingsMenuLeft
-                      : l.settingsMenuRight,
-                ),
-                for (final id
-                    in key == 'panelButtonsOrder' ? leftOrder : rightOrder)
-                  FocusableSettingsTile(
-                    key: ValueKey(id),
-                    focusNode: _nodes.putIfAbsent(id, () => FocusNode()),
-                    title: Text(labels[id]!),
-                    leading: Icon(icons[id]),
-                    selected: _moving == id,
-                    trailing: _moving == id
-                        ? Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(l.reorder),
-                              const Icon(Icons.unfold_more),
-                            ],
-                          )
-                        : const Icon(Icons.swap_vert),
-                    onPressed: () =>
-                        setState(() => _moving = _moving == id ? null : id),
-                    onLongPress: () => setState(() => _moving = id),
-                    onKeyEvent: (_, event) {
-                      if (_moving == null &&
-                          event is KeyDownEvent &&
-                          (event.logicalKey == LogicalKeyboardKey.arrowUp ||
-                              event.logicalKey ==
-                                  LogicalKeyboardKey.arrowDown)) {
-                        final ids = [...leftOrder, ...rightOrder];
-                        final next =
-                            ids.indexOf(id) +
-                            (event.logicalKey == LogicalKeyboardKey.arrowDown
-                                ? 1
-                                : -1);
-                        if (next >= 0 && next < ids.length) {
-                          _nodes[ids[next]]?.requestFocus();
+    final canToggle = _focusedCanToggle ?? (panel != null);
+    final hint = !widget.editVisibility
+        ? l.panelOrderHint
+        : _moving != null
+        ? l.applicationInfoMovingHint
+        : canToggle
+        ? l.applicationInfoButtonsHint
+        : 'OK — ${l.reorder}';
+    return StorageStatusWatch(
+      visible:
+          widget.editVisibility && ModalRoute.isCurrentOf(context) != false,
+      child: PopScope(
+        canPop: _moving == null,
+        onPopInvokedWithResult: (didPop, _) {
+          if (!didPop && _moving != null) setState(() => _moving = null);
+        },
+        child: SettingsPageLayout(
+          footer: SettingsControlHint(text: hint),
+          title: Text(
+            widget.editVisibility
+                ? (widget.remotePanel
+                      ? l.quickPanelObjectsTitle
+                      : l.topPanelObjectsTitle)
+                : l.panelObjectOrder,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                for (final key in ['panelButtonsOrder', 'panelInfoOrder']) ...[
+                  SettingsListHeading(
+                    title: key == 'panelButtonsOrder'
+                        ? l.settingsMenuLeft
+                        : l.settingsMenuRight,
+                  ),
+                  for (final id
+                      in key == 'panelButtonsOrder' ? leftOrder : rightOrder)
+                    FocusableSettingsTile(
+                      key: ValueKey(id),
+                      focusNode: _nodes.putIfAbsent(id, () => FocusNode()),
+                      title: Text(labels[id]!),
+                      leading: id == 'systemSettings'
+                          ? const AndroidSettingsIcon()
+                          : Icon(icons[id]),
+                      selected: _moving == id,
+                      onFocusChange: (focused) {
+                        if (!focused || !widget.editVisibility) return;
+                        final canToggle = visibility(id) != null;
+                        if (_focusedCanToggle != canToggle) {
+                          setState(() => _focusedCanToggle = canToggle);
+                        }
+                      },
+                      enabled: available(id),
+                      busy: _busy || _moving != null && _moving != id,
+                      toggled: (widget.remotePanel || id == 'nas') && !available(id)
+                          ? false
+                          : visibility(id)?.$1,
+                      trailing: widget.editVisibility
+                          ? SettingsReorderControls(
+                              value: (widget.remotePanel || id == 'nas') && !available(id)
+                                  ? false
+                                  : visibility(id)?.$1,
+                              moving: _moving == id,
+                              enabled: available(id),
+                              onReorder: _busy
+                                  ? null
+                                  : () => setState(
+                                      () => _moving = _moving == id ? null : id,
+                                    ),
+                            )
+                          : _moving == id
+                          ? Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(l.reorder),
+                                const Icon(Icons.unfold_more),
+                              ],
+                            )
+                          : const Icon(Icons.swap_vert),
+                      onPressed: () {
+                        final toggle = visibility(id);
+                        if (_moving == null && toggle != null) {
+                          toggle.$2(!toggle.$1);
+                        } else {
+                          setState(() => _moving = _moving == id ? null : id);
+                        }
+                      },
+                      onLongPress: () => setState(() => _moving = id),
+                      onKeyEvent: (_, event) {
+                        if (_moving == null &&
+                            event is KeyDownEvent &&
+                            (event.logicalKey == LogicalKeyboardKey.arrowUp ||
+                                event.logicalKey ==
+                                    LogicalKeyboardKey.arrowDown)) {
+                          final ids = [
+                            ...leftOrder,
+                            ...rightOrder,
+                          ].where(available).toList();
+                          final next =
+                              ids.indexOf(id) +
+                              (event.logicalKey == LogicalKeyboardKey.arrowDown
+                                  ? 1
+                                  : -1);
+                          if (next >= 0 && next < ids.length) {
+                            _nodes[ids[next]]?.requestFocus();
+                            return KeyEventResult.handled;
+                          }
+                          return KeyEventResult.ignored;
+                        }
+                        if (event is KeyDownEvent &&
+                            (event.logicalKey == LogicalKeyboardKey.arrowLeft ||
+                                event.logicalKey ==
+                                    LogicalKeyboardKey.arrowRight)) {
+                          setState(() => _moving = _moving == id ? null : id);
                           return KeyEventResult.handled;
+                        }
+                        if (_moving == id &&
+                            event is KeyDownEvent &&
+                            event.logicalKey == LogicalKeyboardKey.escape) {
+                          setState(() => _moving = null);
+                          return KeyEventResult.handled;
+                        }
+                        if (_moving == id &&
+                            (event is KeyDownEvent ||
+                                event is KeyRepeatEvent)) {
+                          if (event.logicalKey == LogicalKeyboardKey.arrowUp ||
+                              event.logicalKey ==
+                                  LogicalKeyboardKey.arrowDown) {
+                            _move(
+                              key,
+                              id,
+                              event.logicalKey == LogicalKeyboardKey.arrowUp
+                                  ? -1
+                                  : 1,
+                            );
+                            return KeyEventResult.handled;
+                          }
                         }
                         return KeyEventResult.ignored;
-                      }
-                      if (event is KeyDownEvent &&
-                          (event.logicalKey == LogicalKeyboardKey.arrowLeft ||
-                              event.logicalKey ==
-                                  LogicalKeyboardKey.arrowRight)) {
-                        setState(() => _moving = _moving == id ? null : id);
-                        return KeyEventResult.handled;
-                      }
-                      if (_moving == id &&
-                          event is KeyDownEvent &&
-                          event.logicalKey == LogicalKeyboardKey.escape) {
-                        setState(() => _moving = null);
-                        return KeyEventResult.handled;
-                      }
-                      if (_moving == id &&
-                          (event is KeyDownEvent || event is KeyRepeatEvent)) {
-                        if (event.logicalKey == LogicalKeyboardKey.arrowUp ||
-                            event.logicalKey == LogicalKeyboardKey.arrowDown) {
-                          _move(
-                            key,
-                            id,
-                            event.logicalKey == LogicalKeyboardKey.arrowUp
-                                ? -1
-                                : 1,
-                          );
-                          return KeyEventResult.handled;
-                        }
-                      }
-                      return KeyEventResult.ignored;
-                    },
-                  ),
+                      },
+                    ),
+                ],
+                if (widget.editVisibility &&
+                    inputs?.initialized == true &&
+                    !inputs!.hasInputs)
+                  SettingsHelp(title: l.inputs, text: l.inputsUnavailableHint),
               ],
-            ],
+            ),
           ),
         ),
       ),

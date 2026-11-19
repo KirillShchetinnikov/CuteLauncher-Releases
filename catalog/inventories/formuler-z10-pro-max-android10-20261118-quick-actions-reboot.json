@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "reportType": "tvInventoryMetadata",
+  "scope": "deviceMetadata",
+  "verification": "observedOnly",
+  "capturedAt": "2026-11-18T00:00:00Z",
+  "sourceReport": "CuteLauncher diagnostic report received privately",
+  "identity": {
+    "manufacturer": "FORMULER",
+    "model": "Formuler Z10 Pro MAX",
+    "device": "Z10ProMAX",
+    "fingerprint": "HiSTBAndroidV6/Hi3798CV200/Hi3798CV200:10/QT/2606261233:user/release-keys",
+    "firmware": "QT 2606261233 release-keys",
+    "android": "10",
+    "sdk": "29",
+    "abis": "armeabi-v7a,armeabi"
+  },
+  "diagnostics": {
+    "packageCount": 109,
+    "launcher": {
+      "versionName": "1.8.0-test.13",
+      "versionCode": "273"
+    }
+  },
+  "completeness": {
+    "status": "complete",
+    "sourceCount": 109,
+    "skippedCount": 0,
+    "truncated": false
+  },
+  "limits": [
+    "User-provided diagnostic metadata, not an independent device test",
+    "Labels, personal settings, permissions, commands and shell logs excluded",
+    "Redacted identifiers are not reconstructed; package presence does not validate disabling"
+  ],
+  "sourceReportType": "diagnostics",
+  "sourceScope": "userProvidedDiagnosticInventory",
+  "packageListStorage": "catalog/app_descriptions.json",
+  "observedPackageCount": 109,
+  "redactedPackageCount": 0
+}

@@ -1,3 +1,4 @@
+import 'settings_section.dart';
 import 'settings_read_only_value.dart';
 import 'settings_information.dart';
 import 'settings_help.dart';
@@ -124,23 +125,8 @@ class _RemoteButtonsPageState extends State<RemoteButtonsPage>
         : info[name] == true
         ? l.enabled
         : l.disabled;
-    return SettingsPageLayout(
-      footer: widget.section == 'diagnostics'
-          ? SettingsControlHint(text: l.remoteButtonsControlsHint)
-          : null,
-      title: Text(
-        widget.section == 'access'
-            ? l.remoteAccessSettings
-            : widget.section == 'diagnostics'
-            ? l.remoteButtonsTest
-            : l.remoteButtonsTitle,
-      ),
-      child: ListView(
-        children: [
-          if (widget.section == 'main') ...[
-            RemoteMappingsSwitch(key: ValueKey(_revision)),
-            FocusableSettingsTile(
-              autofocus: true,
+    final access = SettingsSection(title: l.settingsGroupAccess, children: [FocusableSettingsTile(
+              autofocus: !ready,
               title: Text(l.remoteAccessSettings),
               trailing: Text(
                 info == null
@@ -158,10 +144,26 @@ class _RemoteButtonsPageState extends State<RemoteButtonsPage>
                 );
                 if (mounted) _call('info');
               },
-            ),
+            )]);
+    return SettingsPageLayout(
+      footer: widget.section == 'diagnostics'
+          ? SettingsControlHint(text: l.remoteButtonsControlsHint)
+          : null,
+      title: Text(
+        widget.section == 'access'
+            ? l.remoteAccessSettings
+            : widget.section == 'diagnostics'
+            ? l.remoteButtonsTest
+            : l.remoteButtonsTitle,
+      ),
+      child: ListView(
+        children: [
+          if (widget.section == 'main') ...[
+            if (!ready) access,
+            SettingsSection(title: l.remoteBindings, children: [
             FocusableSettingsTile(
               title: Text(l.remoteBindings),
-              leading: const Icon(Icons.tune),
+              leading: const Icon(Icons.settings_remote_outlined),
               onPressed: () async {
                 await Navigator.of(context).push(
                   SettingsRoute(builder: (_) => const RemoteMappingsPage()),
@@ -169,6 +171,9 @@ class _RemoteButtonsPageState extends State<RemoteButtonsPage>
                 if (mounted) setState(() => _revision++);
               },
             ),
+            ]),
+            if (ready) access,
+            SettingsSection(title: l.repairsAndDiagnosticsGroup, children: [
             FocusableSettingsTile(
               title: Text(l.volumeKeysTitle),
               leading: const Icon(Icons.volume_up_outlined),
@@ -185,6 +190,7 @@ class _RemoteButtonsPageState extends State<RemoteButtonsPage>
                 ),
               ),
             ),
+            ]),
           ],
           if (widget.section == 'access') ...[
             Text(

@@ -1,3 +1,4 @@
+import 'settings_section.dart';
 import 'package:flutter/material.dart';
 
 import '../../bridge_result.dart';
@@ -222,6 +223,7 @@ class _AppPermissionsPageState extends State<AppPermissionsPage>
         padding: EdgeInsets.zero,
         children: [
           if (service == null) ...[
+            SettingsSection(title: l.settingsGroupCredentials, children: [
             FocusableSettingsTile(
               title: Text(l.adbConnectionBlock),
               leading: const Icon(Icons.link),
@@ -234,6 +236,7 @@ class _AppPermissionsPageState extends State<AppPermissionsPage>
               busy: _busy,
               onPressed: _load,
             ),
+            ]),
           ],
           if (_failed)
             SettingsMessage(
@@ -241,6 +244,7 @@ class _AppPermissionsPageState extends State<AppPermissionsPage>
               kind: SettingsMessageKind.error,
             ),
           if (service == null) ...[
+            SettingsSection(title: l.appsAndServicesGroup, children: [
             if (_services == null && !_failed) const LinearProgressIndicator(),
             if (_services?.isEmpty == true)
               SettingsEmptyState(text: l.appPermissionsEmpty, icon: Icons.apps),
@@ -267,6 +271,7 @@ class _AppPermissionsPageState extends State<AppPermissionsPage>
                 ),
                 onPressed: () => _open(AppPermissionsPage(service: row)),
               ),
+            ]),
           ] else ...[
             SettingsReadOnlyValue(
               label: l.compatibilityAccessibility,

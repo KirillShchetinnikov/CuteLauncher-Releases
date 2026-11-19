@@ -94,6 +94,7 @@ class _BackgroundStartupPageState extends State<BackgroundStartupPage>
                   ),
                 if (_failed)
                   FocusableSettingsTile(
+                    leading: const Icon(Icons.refresh),
                     title: Text(l.backgroundStartupRetry),
                     onPressed: _loading || _saving ? null : _load,
                   ),

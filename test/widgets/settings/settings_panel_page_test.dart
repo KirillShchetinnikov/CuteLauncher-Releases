@@ -1,4 +1,6 @@
-import 'package:flauncher/widgets/settings/appearance_settings_page.dart';
+import 'package:flauncher/widgets/settings/settings_destinations.dart';
+import 'package:flauncher/providers/appearance_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 /*
  * FLauncher
  * Copyright (C) 2021  Étienne Fesser
@@ -22,9 +24,7 @@ import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/settings/applications_panel_page.dart';
 import 'package:flauncher/widgets/settings/interface_settings_page.dart';
 import 'package:flauncher/widgets/settings/general_settings_page.dart';
-import 'package:flauncher/widgets/settings/display_settings_page.dart';
 import 'package:flauncher/widgets/settings/notifications_settings_page.dart';
-import 'package:flauncher/widgets/settings/accessibility_page.dart';
 import 'package:flauncher/widgets/settings/donate_dialog.dart';
 import 'package:flauncher/widgets/settings/flauncher_about_dialog.dart';
 import 'package:flauncher/widgets/settings/settings_panel_page.dart';
@@ -90,7 +90,7 @@ void main() {
 
     await _pumpWidgetWithProviders(tester, settingsService, appsService);
 
-    await tester.tap(find.text("Advanced"));
+    await tester.tap(find.text("Launcher settings"));
     await tester.pumpAndSettle();
     expect(find.byKey(Key("GeneralSettingsPage")), findsOneWidget);
   });
@@ -105,7 +105,7 @@ void main() {
 
     await _pumpWidgetWithProviders(tester, settingsService, appsService);
 
-    await tester.tap(find.text("Night mode and brightness"));
+    await tester.tap(find.text("Launcher features"));
     await tester.pumpAndSettle();
     expect(find.byKey(Key("DisplaySettingsPage")), findsOneWidget);
   });
@@ -133,7 +133,7 @@ void main() {
 
     await _pumpWidgetWithProviders(tester, settingsService, appsService);
 
-    await tester.tap(find.text("Launcher and device controls"));
+    await tester.tap(find.text("Default launcher and ADB"));
     await tester.pumpAndSettle();
     expect(find.byKey(Key("AccessibilityPage")), findsOneWidget);
   });
@@ -158,7 +158,7 @@ void main() {
     when(settings.appKeyClickEnabled).thenReturn(false);
     final apps = MockAppsService();
     await _pumpWidgetWithProviders(tester, settings, apps);
-    final titles = ['Home screen', 'Interface style', 'Applications', 'Night mode and brightness', 'Launcher and device controls', 'Advanced', 'Android TV settings'];
+    final titles = ['Home screen', 'Widgets and panels', 'Launcher features', 'Default launcher and ADB', 'Applications', 'Launcher settings', 'Diagnostics', 'Android TV settings'];
     var previous = -1.0;
     for (final title in titles) {
       final y = tester.getTopLeft(find.text(title)).dy;
@@ -167,7 +167,7 @@ void main() {
     }
     expect(find.text('About CuteLauncher'), findsNothing);
     expect(find.text('Miscellaneous'), findsNothing);
-    await tester.tap(find.text('Interface style'));
+    await tester.tap(find.text('Widgets and panels'));
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('AppearanceSettingsPage')), findsOneWidget);
   });
@@ -182,11 +182,12 @@ void main() {
     when(settingsService.accentColorHex).thenReturn("7C4DFF");
     when(settingsService.appLanguage).thenReturn('');
     when(settingsService.fileManagerPreference).thenReturn(FileManagerPreference.ask);
+    when(settingsService.memorySaverEnabled).thenReturn(false);
     PackageInfoPlatform.instance = _MockPackageInfoPlatform();
 
     await _pumpWidgetWithProviders(tester, settingsService, appsService, general: true);
 
-    await tester.ensureVisible(find.text("About CuteLauncher"));
+    await tester.scrollUntilVisible(find.text("About CuteLauncher"), 250);
     await tester.pumpAndSettle();
     await tester.tap(find.text("About CuteLauncher"));
     await tester.pumpAndSettle();
@@ -221,10 +222,14 @@ Future<void> _pumpWidgetWithProviders(
   SettingsService settingsService,
   AppsService appsService, {bool general = false}
 ) async {
+  SharedPreferences.setMockInitialValues({});
+  final appearance = AppearanceService(await SharedPreferences.getInstance());
+  addTearDown(appearance.dispose);
   await tester.pumpWidget(
     MultiProvider(
       providers: [
         ChangeNotifierProvider<SettingsService>.value(value: settingsService),
+        ChangeNotifierProvider<AppearanceService>.value(value: appearance),
         ChangeNotifierProvider<AppsService>.value(value: appsService),
       ],
       builder: (_, _) => MaterialApp(
@@ -235,12 +240,12 @@ Future<void> _pumpWidgetWithProviders(
         ],
         supportedLocales: AppLocalizations.supportedLocales,
         routes: {
-          AppearanceSettingsPage.routeName: (_) => Container(key: const Key("AppearanceSettingsPage")),
+          WidgetsAndPanelsPage.routeName: (_) => Container(key: const Key("AppearanceSettingsPage")),
           InterfaceSettingsPage.routeName: (_) => Container(key: Key("InterfaceSettingsPage")),
-          DisplaySettingsPage.routeName: (_) => Container(key: Key("DisplaySettingsPage")),
+          LauncherFunctionsPage.routeName: (_) => Container(key: Key("DisplaySettingsPage")),
           NotificationsSettingsPage.routeName: (_) => Container(key: Key("NotificationsSettingsPage")),
           GeneralSettingsPage.routeName: (_) => Container(key: Key("GeneralSettingsPage")),
-          AccessibilityPage.routeName: (_) => Container(key: Key("AccessibilityPage")),
+          LauncherAccessPage.routeName: (_) => Container(key: Key("AccessibilityPage")),
           ApplicationsPanelPage.routeName: (_) => Container(key: Key("ApplicationsPanelPage")),
         },
         home: Material(child: general ? const GeneralSettingsPage() : const SettingsPanelPage()),

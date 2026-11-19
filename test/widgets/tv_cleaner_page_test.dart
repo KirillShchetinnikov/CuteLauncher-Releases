@@ -450,7 +450,7 @@ void main() {
     expect(client.actions.length, 2);
     expect(client.cached, isNotNull);
     expect(find.text('Example video\norg.example.video'), findsNothing);
-    expect(find.text('Device cleanup manager'), findsOneWidget);
+    expect(find.text('App disabling manager'), findsOneWidget);
     client.inventoryFailure = false;
     await click(tester, 'All applications');
     expect(find.text('Example video\norg.example.video'), findsOneWidget);
@@ -504,7 +504,7 @@ void main() {
         expect(find.text('Example video\norg.example.video'), findsOneWidget);
         await back(tester);
         expect(
-          find.text(ru ? 'Менеджер очистки устройства' : 'Device cleanup manager'),
+          find.text(ru ? 'Менеджер отключения приложений' : 'App disabling manager'),
           findsOneWidget,
         );
         expect(tester.takeException(), isNull);

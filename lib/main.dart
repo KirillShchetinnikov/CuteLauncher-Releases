@@ -57,6 +57,7 @@ import 'package:flauncher/providers/online_wallpaper_service.dart';
 import 'package:flauncher/providers/backup_service.dart';
 import 'package:flutter/material.dart';
 import 'providers/slideshow_service.dart';
+import 'media_folder_settings.dart';
 import 'providers/video_folder_service.dart';
 import 'providers/now_playing_service.dart';
 import 'providers/background_startup_service.dart';
@@ -182,6 +183,11 @@ Future<void> _runLauncher({bool remotePanel = false, bool recentApps = false}) a
     if (!remotePanel) await SettingsService.upgradeInformationFormats(sharedPreferences);
   } catch (_) {
     debugPrint('Information format migration will be retried.');
+  }
+  try {
+    if (!remotePanel) await migrateMediaFolderPreferences(sharedPreferences);
+  } catch (_) {
+    debugPrint('Media folder migration will be retried.');
   }
   final settingsService = SettingsService(sharedPreferences);
   DiagnosticsStore.instance.settingsProvider = () => {

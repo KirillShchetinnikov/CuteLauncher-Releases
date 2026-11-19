@@ -1,3 +1,4 @@
+import 'widget_placement_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -25,6 +26,7 @@ class VolumeWidgetSettingsPage extends StatelessWidget {
       title: Text(l.volumeWidgetSettings),
       child: ListView(
         children: [
+          WidgetPlacementLink(id: 'audio', title: l.volumeWidgetSettings),
           SettingsValueStepper(
             autofocus: true,
             title: l.volumeUpdateInterval,

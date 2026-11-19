@@ -352,7 +352,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get actionCompleted => '行动已完成';
 
   @override
-  String get showRepositoryQrCode => '显示二维码';
+  String get showRepositoryQrCode => '代码仓库二维码';
+
+  @override
+  String get discussionQrCode => '4PDA 讨论区二维码';
 
   @override
   String get resetSections => '重置部分设置';
@@ -2208,7 +2211,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get rememberCategoryFocus => '记住最后一张聚焦卡';
 
   @override
-  String get automaticBackups => '备份与同步';
+  String get automaticBackups => '设置备份与同步';
 
   @override
   String get automaticBackupsHint =>
@@ -2234,6 +2237,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get updatePrereleases => '更新至预发布版本';
+
+  @override
+  String get topPanelObjectsTitle => '顶部面板项目';
+
+  @override
+  String get quickPanelObjectsTitle => '快捷设置项目';
 
   @override
   String get topPanelObjects => '对象';
@@ -2644,6 +2653,9 @@ class AppLocalizationsZh extends AppLocalizations {
       '在设备开发者设置中启用调试和网络 ADB，然后信任 CuteLauncher。所有 ADB 操作的风险均由您自行承担。';
 
   @override
+  String get adbOpenConnectionSettings => '打开 ADB 连接设置';
+
+  @override
   String get adbConnectionBlock => 'ADB 连接';
 
   @override
@@ -2878,7 +2890,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get backupOptions => '备份选项';
 
   @override
-  String get backupSaveMode => '备份';
+  String get backupSaveMode => '自动备份';
 
   @override
   String get backupScope => '跨设备备份';
@@ -2902,7 +2914,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get backupSyncLimit => '检查频率不超过';
 
   @override
-  String get backupSyncMode => '同步';
+  String get backupSyncMode => '设置同步';
 
   @override
   String get backupSyncOptions => '同步选项';
@@ -3759,7 +3771,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get remoteMappingConflict => '此按键和按压类型已分配。请选择其他按键或按压类型。';
 
   @override
-  String get cleanerTitle => '设备清理管理器';
+  String get cleanerTitle => '应用停用管理器';
 
   @override
   String get cleanerRefresh => 'Refresh applications';
@@ -4071,6 +4083,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get networkFrequency => '频率';
+
+  @override
+  String get networkWifiChannel => '信道';
 
   @override
   String get networkMbps => 'Mbps';
@@ -5274,6 +5289,27 @@ class AppLocalizationsZh extends AppLocalizations {
   String get backupDriveReconnect => '重新连接Google Drive';
 
   @override
+  String get syncFilesEmpty => '暂无同步文件';
+
+  @override
+  String get syncFilesLoadFailed => '无法加载同步文件。请检查存储访问权限。';
+
+  @override
+  String get backupSyncNow => '立即同步';
+
+  @override
+  String get backupSyncAutomatic => '自动同步';
+
+  @override
+  String get backupLastSync => '上次同步';
+
+  @override
+  String get backupNotSynced => '尚未同步';
+
+  @override
+  String get backupFileTitle => '备份文件';
+
+  @override
   String get backupSyncRefresh => '刷新';
 
   @override
@@ -5375,6 +5411,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get weatherCustomServer => '自定义服务器 (Open-Meteo)';
+
+  @override
+  String get widgetsSettingsTitle => '小组件设置';
 
   @override
   String get widgetSettings => '小组件设置';
@@ -5962,4 +6001,100 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get backupExistingSettingsHelp =>
       '所选存储空间中已有同步设置。请选择如何处理：应用到此设备、用此设备的设置替换，或合并。合并时若设置不同，将采用您选择的优先级。在向导的最后一步确认后才会开始交换。';
+
+  @override
+  String get launcherSettings => '启动器设置';
+
+  @override
+  String get launcherFunctions => '启动器功能';
+
+  @override
+  String get widgetsAndPanels => '小组件与面板';
+
+  @override
+  String get launcherDefaultAndAdb => '默认启动器与ADB';
+
+  @override
+  String get defaultLauncherViaAdb => '通过ADB设置默认启动器';
+
+  @override
+  String get defaultLauncherViaAccessibility => '通过无障碍功能设置默认启动器';
+
+  @override
+  String get automationAndComfort => '自动化与舒适度';
+
+  @override
+  String get maintenanceAndBackup => '维护与备份';
+
+  @override
+  String get performanceAndDiagnostics => '性能与诊断';
+
+  @override
+  String get nightModeAndBrightness => '夜间模式与亮度';
+
+  @override
+  String get systemAndNotifications => '系统与通知';
+
+  @override
+  String get settingsGeneralGroup => '常规';
+
+  @override
+  String get settingsManagementGroup => '设置管理';
+
+  @override
+  String get settingsMaintenanceGroup => '维护';
+
+  @override
+  String get supportDeveloper => '支持开发者';
+
+  @override
+  String get comingSoon => '即将推出';
+
+  @override
+  String get mediaFolderSource => '文件夹中的照片或视频';
+
+  @override
+  String get mediaFolderHelp => '照片按所选间隔切换，视频播放结束后切换。';
+
+  @override
+  String get mediaFolderNext => '下一个文件';
+
+  @override
+  String get mediaFolderError => '无法打开文件。请检查访问权限和文件格式。';
+
+  @override
+  String get settingsScreensaverGroup => '屏幕保护程序';
+
+  @override
+  String get homeSectionsGroup => '分区与应用';
+
+  @override
+  String get homeVisualGroup => '外观';
+
+  @override
+  String get feedsAndOrder => '信息流与顺序';
+
+  @override
+  String get visibleFeeds => '显示的信息流';
+
+  @override
+  String get hiddenFeeds => '隐藏的信息流';
+
+  @override
+  String get controlAndAccessGroup => '控制与访问';
+
+  @override
+  String get repairsAndDiagnosticsGroup => '修复与诊断';
+
+  @override
+  String get appsAndServicesGroup => '应用与服务';
+
+  @override
+  String get deviceAndStatusGroup => '设备与状态';
+
+  @override
+  String get supportProjectGroup => '项目支持';
+
+  @override
+  String get deletionGroup => '删除';
 }

@@ -1,4 +1,5 @@
 import 'settings_information.dart';
+import 'widget_placement_page.dart';
 import 'settings_list_heading.dart';
 import 'settings_choice_tile.dart';
 import '../../launcher_defaults.dart';
@@ -81,6 +82,7 @@ class SleepTimerSettingsPage extends StatelessWidget {
       child: ListView(
         children: [
           ...SleepTimerOptionsPage.controls(context),
+          WidgetPlacementLink(id: 'sleepTimer', title: l.sleepTimer),
           FocusableSettingsTile(
             title: Text(l.sleepTimerPresets),
             leading: const Icon(Icons.timer_outlined),

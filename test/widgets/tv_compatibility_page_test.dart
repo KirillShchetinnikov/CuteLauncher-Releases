@@ -113,7 +113,7 @@ void main() {
           expect(tile(l.diagnosticsExport).onPressed, isNull);
           pending.complete(report());
           await tester.pumpAndSettle();
-          await tester.tap(find.text(l.tvCompatibilityResults));
+          await tester.tap(find.widgetWithText(FocusableSettingsTile, l.tvCompatibilityResults));
           await tester.pumpAndSettle();
           expect(find.byType(CompatibilityResultsPage), findsOneWidget);
           expect(find.textContaining('TCL Smart TV Pro'), findsOneWidget);

@@ -192,7 +192,7 @@ public class LauncherActivity extends FlutterActivity {
     public void onNewIntent(@NonNull Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
-        if (autoLaunch != null && manualLaunch(intent)) autoLaunch.cancel();
+        if (autoLaunch != null) autoLaunch.onEntry(intent);
         if (intent.getBooleanExtra(OPEN_ADB_SETTINGS, false)) {
             pendingHome = false;
             intent.removeExtra(OPEN_ADB_SETTINGS);
@@ -215,11 +215,6 @@ public class LauncherActivity extends FlutterActivity {
     private static final ExecutorService sIoExecutor = Executors.newFixedThreadPool(4);
     // Image decode/PNG must not queue behind slow ADB or system statistics.
     private static final ExecutorService sImageExecutor = Executors.newFixedThreadPool(2);
-    private boolean manualLaunch(Intent intent) {
-        return intent.getBooleanExtra("return_home",false) || Intent.ACTION_MAIN.equals(intent.getAction())
-            && (intent.hasCategory(Intent.CATEGORY_HOME) || intent.hasCategory(Intent.CATEGORY_LAUNCHER)
-                || intent.hasCategory(Intent.CATEGORY_LEANBACK_LAUNCHER));
-    }
     @Override protected void onResume() {
         super.onResume();
         if (appsEvents != null) appsEvents.foreground(true);
@@ -278,9 +273,7 @@ public class LauncherActivity extends FlutterActivity {
         storageStatus = new StorageStatusBridge(this, messenger, sIoExecutor);
         systemStatus = new SystemStatusBridge(this, messenger, sIoExecutor);
         networkSpeed = new NetworkSpeedBridge(this, messenger, sIoExecutor);
-        Intent initial=getIntent();
-        if (initial!=null && Intent.ACTION_MAIN.equals(initial.getAction())
-            && (initial.hasCategory(Intent.CATEGORY_LAUNCHER) || initial.hasCategory(Intent.CATEGORY_LEANBACK_LAUNCHER))) autoLaunch.cancel();
+        autoLaunch.onEntry(getIntent());
         UpdateBridge.register(this, messenger, sIoExecutor);
         ImeVisibilityBridge.register(this, messenger);
         tvImeEditorBridge = new TvImeEditorBridge(this, messenger);
@@ -390,6 +383,7 @@ public class LauncherActivity extends FlutterActivity {
                 case "browseWallpaperFolders" -> wallpaperFolder.local.browse(call.argument("path"), result);
                 case "listWallpaperFolder" -> wallpaperFolder.list(call.argument("uri"), Boolean.TRUE.equals(call.argument("recursive")), result);
                 case "listWallpaperVideos" -> wallpaperFolder.listVideos(call.argument("uri"), result);
+                case "listWallpaperMedia" -> wallpaperFolder.listMedia(call.argument("uri"), Boolean.TRUE.equals(call.argument("recursive")), result);
                 case "readWallpaperFolderImage" -> wallpaperFolder.read(call.argument("uri"), result);
                 case "releaseWallpaperFolder" -> wallpaperFolder.release(call.argument("uri"), result);
                 case "pickBackupFolder" -> backupFolder.pick(result);

@@ -1,3 +1,4 @@
+import 'settings_section.dart';
 import 'settings_information.dart';
 import '../../document_files.dart';
 import '../file_selection.dart';
@@ -472,7 +473,11 @@ class _TvCleanerPageState extends State<TvCleanerPage> {
               )
               .toList();
           final header = <Widget>[
-            _tile(l.cleanerRemoteProject, update),
+            _tile(
+              l.cleanerRemoteProject,
+              update,
+              leading: const Icon(Icons.refresh),
+            ),
             if (!ready())
               SettingsMessage(
                 text: l.cleanerCatalogUpdateRequired,
@@ -729,6 +734,7 @@ class _TvCleanerPageState extends State<TvCleanerPage> {
             sourceName: listName,
             scope: scope,
           ),
+          leading: Icon(app['enabled'] == true ? Icons.app_blocking_outlined : Icons.check_circle_outline),
           ready: app['protected'] != true || app['enabled'] != true,
         ),
       ],
@@ -820,11 +826,17 @@ class _TvCleanerPageState extends State<TvCleanerPage> {
           _tile(
             l.cleanerDisableAllPreinstalled,
             () => _preinstalledBatch(false),
+            leading: const Icon(Icons.app_blocking_outlined),
           ),
-          _tile(l.cleanerEnableAllPreinstalled, () => _preinstalledBatch(true)),
+          _tile(
+            l.cleanerEnableAllPreinstalled,
+            () => _preinstalledBatch(true),
+            leading: const Icon(Icons.check_circle_outline),
+          ),
           _tile(
             l.cleanerPreinstalledList,
             () => _allApps(filter: CleanerAppKind.preinstalled),
+            leading: const Icon(Icons.view_list_outlined),
             submenu: true,
           ),
         ],
@@ -855,23 +867,36 @@ class _TvCleanerPageState extends State<TvCleanerPage> {
     l.cleanerLists,
     () => ListView(
       children: [
-        _tile(l.cleanerSafe, _safe, ready: _report.value != null),
+        _tile(
+          l.cleanerSafe,
+          _safe,
+          leading: const Icon(Icons.app_blocking_outlined),
+          ready: _report.value != null,
+        ),
         _tile(
           l.cleanerPreinstalledApps,
           _preinstalled,
+          leading: const Icon(Icons.apps),
           ready: _report.value != null,
           submenu: true,
         ),
-        _tile(l.cleanerLocal, _import, ready: _report.value != null),
+        _tile(
+          l.cleanerLocal,
+          _import,
+          leading: const Icon(Icons.file_open_outlined),
+          ready: _report.value != null,
+        ),
         _tile(
           l.cleanerProject,
           _project,
+          leading: const Icon(Icons.view_list_outlined),
           ready: _report.value != null,
           submenu: true,
         ),
         _tile(
           l.cleanerExternal,
           _external,
+          leading: const Icon(Icons.view_list_outlined),
           ready: _report.value != null,
           submenu: true,
         ),
@@ -911,10 +936,16 @@ class _TvCleanerPageState extends State<TvCleanerPage> {
             style: Theme.of(context).textTheme.titleMedium,
           ),
           Text(created > 0 ? _created(created) : l.cleanerNoSnapshot),
-          _tile(l.cleanerRestore, () => _restore(), ready: created > 0),
+          _tile(
+            l.cleanerRestore,
+            () => _restore(),
+            leading: const Icon(Icons.restore),
+            ready: created > 0,
+          ),
           _tile(
             l.cleanerManualStates,
             _manualStates,
+            leading: const Icon(Icons.backup_outlined),
             ready: report != null,
             submenu: true,
           ),
@@ -938,13 +969,18 @@ class _TvCleanerPageState extends State<TvCleanerPage> {
             return _tile(
               l.cleanerManualSave,
               _saveManual,
+              leading: const Icon(Icons.save_outlined),
               ready: _report.value != null,
             );
           }
           final copy = copies[index - 1];
           final date = _created(copy['capturedAt']);
           final label = copy['name'] == date ? date : '${copy['name']}\n$date';
-          return _tile(label, () => _manualActions(copy));
+          return _tile(
+            label,
+            () => _manualActions(copy),
+            leading: const Icon(Icons.backup_outlined),
+          );
         },
       );
     });
@@ -1027,18 +1063,22 @@ class _TvCleanerPageState extends State<TvCleanerPage> {
               children: [
                 FocusableSettingsTile(
                   autofocus: true,
+                  leading: const Icon(Icons.restore),
                   title: Text(l.backupRestoreCopy),
                   onPressed: () => Navigator.pop(ctx, 0),
                 ),
                 FocusableSettingsTile(
+                  leading: const Icon(Icons.delete_outline),
                   title: Text(l.delete),
                   onPressed: () => Navigator.pop(ctx, 1),
                 ),
                 FocusableSettingsTile(
+                  leading: const Icon(Icons.upload_file),
                   title: Text(l.cleanerStateExport),
                   onPressed: () => Navigator.pop(ctx, 2),
                 ),
                 FocusableSettingsTile(
+                  leading: const Icon(Icons.close),
                   title: Text(l.cancel),
                   onPressed: () => Navigator.pop(ctx),
                 ),
@@ -1124,6 +1164,7 @@ class _TvCleanerPageState extends State<TvCleanerPage> {
         _tile(
           l.cleanerDisabledExport,
           _exportDisabledReport,
+          leading: const Icon(Icons.ios_share),
           ready: _report.value != null,
         ),
       ],
@@ -1138,6 +1179,7 @@ class _TvCleanerPageState extends State<TvCleanerPage> {
       title: Text(l.cleanerTitle),
       child: ListView(
         children: [
+          SettingsSection(title: l.deviceAndStatusGroup, children: [
           SizedBox(child: _busy.value ? const LinearProgressIndicator() : null),
           if (report != null)
             Text(
@@ -1146,27 +1188,52 @@ class _TvCleanerPageState extends State<TvCleanerPage> {
             ),
           if (report == null && !_busy.value)
             SettingsMessage(text: l.cleanerRefreshRequired),
-          _tile(l.cleanerRefresh, _refresh, autofocus: true),
+          _tile(
+            l.cleanerRefresh,
+            _refresh,
+            leading: const Icon(Icons.refresh),
+            autofocus: true,
+          ),
           if (_operationRows.value.isNotEmpty)
             _tile(
               l.cleanerOperationResultTitle,
               _operationDetails,
+              leading: const Icon(Icons.fact_check_outlined),
               submenu: true,
             ),
-          _tile(l.cleanerApps, _allApps, ready: report != null, submenu: true),
-          _tile(l.cleanerLists, _lists, ready: report != null, submenu: true),
+          ]),
+          SettingsSection(title: l.applications, children: [
+          _tile(
+            l.cleanerApps,
+            _allApps,
+            leading: const Icon(Icons.apps),
+            ready: report != null,
+            submenu: true,
+          ),
+          _tile(
+            l.cleanerLists,
+            _lists,
+            leading: const Icon(Icons.view_list_outlined),
+            ready: report != null,
+            submenu: true,
+          ),
+          ]),
+          SettingsSection(title: l.cleanerRecovery, children: [
           _tile(
             l.cleanerRecovery,
             _recovery,
+            leading: const Icon(Icons.restore),
             ready: report != null,
             submenu: true,
           ),
           _tile(
             l.cleanerExports,
             _exports,
+            leading: const Icon(Icons.description_outlined),
             ready: report != null,
             submenu: true,
           ),
+          ]),
           SettingsHelp(title: l.adbTransport, text: l.cleanerHelp),
         ],
       ),

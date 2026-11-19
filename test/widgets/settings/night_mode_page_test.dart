@@ -474,10 +474,14 @@ void main() {
     const disable = 'Отключить ночной режим до следующего заката';
     expect(find.text(enable), findsOneWidget);
     expect(find.text(disable), findsNothing);
+    await tester.ensureVisible(find.text(enable));
+    await tester.pumpAndSettle();
     await tester.tap(find.text(enable));
     await tester.pumpAndSettle();
     expect(find.text(enable), findsNothing);
     expect(find.text(disable), findsOneWidget);
+    await tester.ensureVisible(find.text(disable));
+    await tester.pumpAndSettle();
     await tester.tap(find.text(disable));
     await tester.pumpAndSettle();
     expect(find.text(enable), findsOneWidget);

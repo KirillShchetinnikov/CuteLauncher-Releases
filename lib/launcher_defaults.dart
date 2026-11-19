@@ -15,7 +15,7 @@ abstract final class LauncherDefaults {
     'settingsInterfaceStyle': 'standard',
     'settingsInterfaceFont': 'medeo-sans',
     'settingsTextSize': 16,
-    'settingsColor': 0xff393939,
+    'settingsColor': 0xff30343a,
     'settingsOpacity': 1.0,
     'settingsScrollbarMode': 'onScroll',
     'settingsSectionStyle': 'surface',

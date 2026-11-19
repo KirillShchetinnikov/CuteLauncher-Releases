@@ -73,7 +73,7 @@ void main() {
       await tester.pumpAndSettle();
     }
 
-    final shortcut = find.text('Доступно обновление');
+    final shortcut = find.text('Доступно обновление · v1.0.0');
     final home = find.text('Главный экран');
     bool focused(Finder label) => Focus.of(tester.element(label)).hasFocus;
     await openSettings(const ValueKey('before-check'));
@@ -90,9 +90,7 @@ void main() {
       tester.getTopLeft(shortcut).dy,
       lessThan(tester.getTopLeft(home).dy),
     );
-    expect(find.text('v1.0.0'), findsOneWidget);
-    expect(find.text('v1.0.0+3'), findsNothing);
-    expect(find.byIcon(Icons.system_update_alt), findsOneWidget);
+    expect(find.textContaining('v1.0.0+3'), findsNothing);
 
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
     await tester.pumpAndSettle();

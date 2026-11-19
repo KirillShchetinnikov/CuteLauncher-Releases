@@ -357,7 +357,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get actionCompleted => 'Действие выполнено';
 
   @override
-  String get showRepositoryQrCode => 'Показать qrcode';
+  String get showRepositoryQrCode => 'QR-код репозитория';
+
+  @override
+  String get discussionQrCode => 'QR-код обсуждения на 4PDA';
 
   @override
   String get resetSections => 'Сбросить настройки разделов';
@@ -2289,7 +2292,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get rememberCategoryFocus => 'Запоминать выбранную карточку';
 
   @override
-  String get automaticBackups => 'Копии и синхронизация';
+  String get automaticBackups => 'Копии и синхронизация настроек';
 
   @override
   String get automaticBackupsHint =>
@@ -2316,6 +2319,12 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get updatePrereleases => 'Обновлять на пререлизы';
+
+  @override
+  String get topPanelObjectsTitle => 'Объекты верхней панели';
+
+  @override
+  String get quickPanelObjectsTitle => 'Объекты быстрых настроек';
 
   @override
   String get topPanelObjects => 'Объекты';
@@ -2749,6 +2758,9 @@ class AppLocalizationsRu extends AppLocalizations {
       'Включите отладку и ADB по сети в настройках разработчика устройства, затем подтвердите доверие CuteLauncher. Все действия через ADB выполняются на свой страх и риск.';
 
   @override
+  String get adbOpenConnectionSettings => 'Перейти к проверке АДБ';
+
+  @override
   String get adbConnectionBlock => 'Подключение АДБ';
 
   @override
@@ -3007,7 +3019,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get backupOptions => 'Настройки резервного копирования';
 
   @override
-  String get backupSaveMode => 'Резервное копирование';
+  String get backupSaveMode => 'Автоматическое резервное копирование';
 
   @override
   String get backupScope => 'Резервное копирование разных устройств';
@@ -3032,7 +3044,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get backupSyncLimit => 'Проверять не чаще';
 
   @override
-  String get backupSyncMode => 'Синхронизация';
+  String get backupSyncMode => 'Синхронизация настроек';
 
   @override
   String get backupSyncOptions => 'Настройки синхронизации';
@@ -3136,7 +3148,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get weatherGetLocation => 'Получить местоположение';
 
   @override
-  String get backupLastCreated => 'Последняя РК была создана:';
+  String get backupLastCreated => 'Последняя копия';
 
   @override
   String get backupManagement => 'Управление резервными копиями';
@@ -3148,7 +3160,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get backupRefreshCopyList => 'Обновить список копий';
 
   @override
-  String get backupCreateNow => 'Создать новую копию сейчас';
+  String get backupCreateNow => 'Создать копию сейчас';
 
   @override
   String get backupFolderPath => 'Путь сохранения копий';
@@ -3949,7 +3961,7 @@ class AppLocalizationsRu extends AppLocalizations {
       'Эта кнопка с таким типом нажатия уже назначена. Выберите другую кнопку или тип нажатия.';
 
   @override
-  String get cleanerTitle => 'Менеджер очистки устройства';
+  String get cleanerTitle => 'Менеджер отключения приложений';
 
   @override
   String get cleanerRefresh => 'Обновить список приложений';
@@ -4265,6 +4277,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get networkFrequency => 'Частота';
+
+  @override
+  String get networkWifiChannel => 'Канал';
 
   @override
   String get networkMbps => 'Мбит/с';
@@ -5533,6 +5548,28 @@ class AppLocalizationsRu extends AppLocalizations {
   String get backupDriveReconnect => 'Переподключить Google Диск';
 
   @override
+  String get syncFilesEmpty => 'Файлов синхронизации пока нет';
+
+  @override
+  String get syncFilesLoadFailed =>
+      'Не удалось загрузить файлы синхронизации. Проверьте доступ к хранилищу.';
+
+  @override
+  String get backupSyncNow => 'Синхронизировать сейчас';
+
+  @override
+  String get backupSyncAutomatic => 'Автоматическая синхронизация';
+
+  @override
+  String get backupLastSync => 'Последний обмен';
+
+  @override
+  String get backupNotSynced => 'Обмена ещё не было';
+
+  @override
+  String get backupFileTitle => 'Файл резервной копии';
+
+  @override
   String get backupSyncRefresh => 'Обновить';
 
   @override
@@ -5639,6 +5676,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get weatherCustomServer => 'Свой сервер (Open-Meteo)';
+
+  @override
+  String get widgetsSettingsTitle => 'Настройки виджетов';
 
   @override
   String get widgetSettings => 'Настройки виджета';
@@ -6251,4 +6291,104 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get backupExistingSettingsHelp =>
       'В выбранном хранилище уже есть настройки синхронизации. Выберите, что с ними сделать: применить на этом устройстве, заменить настройками этого устройства или объединить. Если при объединении настройки различаются, будет использован выбранный вами приоритет. Обмен начнётся после подтверждения на последнем шаге мастера.';
+
+  @override
+  String get launcherSettings => 'Настройки лаунчера';
+
+  @override
+  String get launcherFunctions => 'Функции лаунчера';
+
+  @override
+  String get widgetsAndPanels => 'Виджеты и панели';
+
+  @override
+  String get launcherDefaultAndAdb => 'Лаунчер по умолчанию и ADB';
+
+  @override
+  String get defaultLauncherViaAdb =>
+      'Установка лаунчера по умолчанию через ADB';
+
+  @override
+  String get defaultLauncherViaAccessibility =>
+      'Установка лаунчера по умолчанию со специальными возможностями';
+
+  @override
+  String get automationAndComfort => 'Автоматизация и комфорт';
+
+  @override
+  String get maintenanceAndBackup => 'Обслуживание и резервные копии';
+
+  @override
+  String get performanceAndDiagnostics => 'Производительность и диагностика';
+
+  @override
+  String get nightModeAndBrightness => 'Ночной режим и яркость';
+
+  @override
+  String get systemAndNotifications => 'Система и уведомления';
+
+  @override
+  String get settingsGeneralGroup => 'Общие';
+
+  @override
+  String get settingsManagementGroup => 'Управление настройками';
+
+  @override
+  String get settingsMaintenanceGroup => 'Обслуживание';
+
+  @override
+  String get supportDeveloper => 'Поддержать разработчика';
+
+  @override
+  String get comingSoon => 'Скоро будет';
+
+  @override
+  String get mediaFolderSource => 'Фото или видео из папки';
+
+  @override
+  String get mediaFolderHelp =>
+      'Фото сменяются через выбранный интервал, видео — после окончания.';
+
+  @override
+  String get mediaFolderNext => 'Следующий файл';
+
+  @override
+  String get mediaFolderError =>
+      'Не удалось открыть файлы папки. Проверьте доступ и формат файлов.';
+
+  @override
+  String get settingsScreensaverGroup => 'Заставка';
+
+  @override
+  String get homeSectionsGroup => 'Разделы и приложения';
+
+  @override
+  String get homeVisualGroup => 'Внешний вид';
+
+  @override
+  String get feedsAndOrder => 'Ленты и порядок';
+
+  @override
+  String get visibleFeeds => 'Отображаемые ленты';
+
+  @override
+  String get hiddenFeeds => 'Скрытые ленты';
+
+  @override
+  String get controlAndAccessGroup => 'Управление и доступ';
+
+  @override
+  String get repairsAndDiagnosticsGroup => 'Исправление и диагностика';
+
+  @override
+  String get appsAndServicesGroup => 'Приложения и службы';
+
+  @override
+  String get deviceAndStatusGroup => 'Устройство и состояние';
+
+  @override
+  String get supportProjectGroup => 'Поддержка проекта';
+
+  @override
+  String get deletionGroup => 'Удаление';
 }

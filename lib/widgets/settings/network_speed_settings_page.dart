@@ -1,3 +1,4 @@
+import 'widget_placement_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,6 +20,7 @@ class NetworkSpeedSettingsPage extends StatelessWidget {
       title: Text(l.networkSpeedSettings),
       child: ListView(
         children: [
+          WidgetPlacementLink(id: 'networkSpeed', title: l.networkSpeedTitle),
           SettingsValueStepper(
             autofocus: true,
             title: l.networkSpeedInterval,

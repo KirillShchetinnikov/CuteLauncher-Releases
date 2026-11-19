@@ -356,7 +356,10 @@ class AppLocalizationsHi extends AppLocalizations {
   String get actionCompleted => 'कार्रवाई पूरी हुई';
 
   @override
-  String get showRepositoryQrCode => 'QR कोड दिखाएँ';
+  String get showRepositoryQrCode => 'रिपॉज़िटरी का QR कोड';
+
+  @override
+  String get discussionQrCode => '4PDA चर्चा का QR कोड';
 
   @override
   String get resetSections => 'अनुभाग सेटिंग रीसेट करें';
@@ -2271,7 +2274,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get rememberCategoryFocus => 'अंतिम फोकस्ड कार्ड याद रखें';
 
   @override
-  String get automaticBackups => 'बैकअप और सिंक्रनाइज़ेशन';
+  String get automaticBackups => 'सेटिंग का बैकअप और सिंक';
 
   @override
   String get automaticBackupsHint =>
@@ -2298,6 +2301,12 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get updatePrereleases => 'पूर्व-रिलीज़ संस्करणों में अपडेट करें';
+
+  @override
+  String get topPanelObjectsTitle => 'ऊपरी पैनल के आइटम';
+
+  @override
+  String get quickPanelObjectsTitle => 'त्वरित सेटिंग के आइटम';
 
   @override
   String get topPanelObjects => 'वस्तुएँ';
@@ -2733,6 +2742,9 @@ class AppLocalizationsHi extends AppLocalizations {
       'डिवाइस डेवलपर सेटिंग्स में डिबगिंग और नेटवर्क ADB सक्षम करें, फिर CuteLauncher पर भरोसा करें। सभी ADB कार्रवाइयां आपके अपने जोखिम पर हैं।';
 
   @override
+  String get adbOpenConnectionSettings => 'ADB कनेक्शन सेटिंग खोलें';
+
+  @override
   String get adbConnectionBlock => 'ADB कनेक्शन';
 
   @override
@@ -2992,7 +3004,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get backupOptions => 'बैकअप विकल्प';
 
   @override
-  String get backupSaveMode => 'बैकअप';
+  String get backupSaveMode => 'अपने आप बैकअप';
 
   @override
   String get backupScope => 'सभी डिवाइस पर बैकअप';
@@ -3017,7 +3029,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get backupSyncLimit => 'से अधिक बार जाँच न करें';
 
   @override
-  String get backupSyncMode => 'तुल्यकालन';
+  String get backupSyncMode => 'सेटिंग सिंक';
 
   @override
   String get backupSyncOptions => 'तुल्यकालन विकल्प';
@@ -3933,7 +3945,7 @@ class AppLocalizationsHi extends AppLocalizations {
       'यह बटन और दबाने का प्रकार पहले से असाइन है। दूसरा बटन या दबाने का प्रकार चुनें।';
 
   @override
-  String get cleanerTitle => 'डिवाइस सफ़ाई प्रबंधक';
+  String get cleanerTitle => 'ऐप बंद करने का प्रबंधक';
 
   @override
   String get cleanerRefresh => 'Refresh applications';
@@ -4249,6 +4261,9 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get networkFrequency => 'फ़्रीक्वेंसी';
+
+  @override
+  String get networkWifiChannel => 'चैनल';
 
   @override
   String get networkMbps => 'Mbps';
@@ -5508,6 +5523,28 @@ class AppLocalizationsHi extends AppLocalizations {
   String get backupDriveReconnect => 'Google Drive फिर से कनेक्ट करें';
 
   @override
+  String get syncFilesEmpty => 'अभी कोई सिंक फ़ाइल नहीं है';
+
+  @override
+  String get syncFilesLoadFailed =>
+      'सिंक फ़ाइलें लोड नहीं हो सकीं। स्टोरेज की अनुमति जाँचें।';
+
+  @override
+  String get backupSyncNow => 'अभी सिंक करें';
+
+  @override
+  String get backupSyncAutomatic => 'अपने आप सिंक करें';
+
+  @override
+  String get backupLastSync => 'पिछला सिंक';
+
+  @override
+  String get backupNotSynced => 'अभी तक सिंक नहीं हुआ';
+
+  @override
+  String get backupFileTitle => 'बैकअप फ़ाइल';
+
+  @override
   String get backupSyncRefresh => 'रीफ़्रेश करें';
 
   @override
@@ -5613,6 +5650,9 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get weatherCustomServer => 'अपना सर्वर (Open-Meteo)';
+
+  @override
+  String get widgetsSettingsTitle => 'विजेट की सेटिंग';
 
   @override
   String get widgetSettings => 'विजेट सेटिंग';
@@ -6220,4 +6260,103 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get backupExistingSettingsHelp =>
       'चुने गए स्टोरेज में सिंक्रोनाइज़ेशन की सेटिंग्स पहले से मौजूद हैं। चुनें कि उन्हें इस डिवाइस पर लागू करना है, इस डिवाइस की सेटिंग्स से बदलना है या मिलाना है। मिलाते समय अंतर होने पर आपकी चुनी हुई प्राथमिकता लागू होगी। विज़ार्ड के अंतिम चरण में पुष्टि के बाद आदान-प्रदान शुरू होगा।';
+
+  @override
+  String get launcherSettings => 'लॉन्चर सेटिंग';
+
+  @override
+  String get launcherFunctions => 'लॉन्चर की सुविधाएँ';
+
+  @override
+  String get widgetsAndPanels => 'विजेट और पैनल';
+
+  @override
+  String get launcherDefaultAndAdb => 'डिफ़ॉल्ट लॉन्चर और ADB';
+
+  @override
+  String get defaultLauncherViaAdb => 'ADB से डिफ़ॉल्ट लॉन्चर सेट करें';
+
+  @override
+  String get defaultLauncherViaAccessibility =>
+      'सुलभता से डिफ़ॉल्ट लॉन्चर सेट करें';
+
+  @override
+  String get automationAndComfort => 'ऑटोमेशन और सुविधा';
+
+  @override
+  String get maintenanceAndBackup => 'रखरखाव और बैकअप';
+
+  @override
+  String get performanceAndDiagnostics => 'प्रदर्शन और निदान';
+
+  @override
+  String get nightModeAndBrightness => 'रात्रि मोड और चमक';
+
+  @override
+  String get systemAndNotifications => 'सिस्टम और सूचनाएँ';
+
+  @override
+  String get settingsGeneralGroup => 'सामान्य';
+
+  @override
+  String get settingsManagementGroup => 'सेटिंग प्रबंधन';
+
+  @override
+  String get settingsMaintenanceGroup => 'रखरखाव';
+
+  @override
+  String get supportDeveloper => 'डेवलपर का समर्थन करें';
+
+  @override
+  String get comingSoon => 'जल्द आ रहा है';
+
+  @override
+  String get mediaFolderSource => 'फ़ोल्डर से फ़ोटो या वीडियो';
+
+  @override
+  String get mediaFolderHelp =>
+      'फ़ोटो चुने गए अंतराल के बाद और वीडियो समाप्त होने पर बदलते हैं।';
+
+  @override
+  String get mediaFolderNext => 'अगली फ़ाइल';
+
+  @override
+  String get mediaFolderError =>
+      'फ़ाइलें नहीं खुलीं। पहुँच और फ़ाइल फ़ॉर्मेट जाँचें।';
+
+  @override
+  String get settingsScreensaverGroup => 'स्क्रीनसेवर';
+
+  @override
+  String get homeSectionsGroup => 'सेक्शन और ऐप्स';
+
+  @override
+  String get homeVisualGroup => 'दिखावट';
+
+  @override
+  String get feedsAndOrder => 'फ़ीड और क्रम';
+
+  @override
+  String get visibleFeeds => 'दिखाई देने वाली फ़ीड';
+
+  @override
+  String get hiddenFeeds => 'छिपी फ़ीड';
+
+  @override
+  String get controlAndAccessGroup => 'नियंत्रण और पहुँच';
+
+  @override
+  String get repairsAndDiagnosticsGroup => 'सुधार और निदान';
+
+  @override
+  String get appsAndServicesGroup => 'ऐप्स और सेवाएँ';
+
+  @override
+  String get deviceAndStatusGroup => 'डिवाइस और स्थिति';
+
+  @override
+  String get supportProjectGroup => 'प्रोजेक्ट का समर्थन';
+
+  @override
+  String get deletionGroup => 'हटाना';
 }

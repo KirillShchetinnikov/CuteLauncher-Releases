@@ -5,10 +5,12 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.PowerManager;
 import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
+import dadb.AdbConnectionClosedException;
 import dadb.AdbKeyPair;
 import dadb.Dadb;
 import io.flutter.plugin.common.BinaryMessenger;
@@ -80,18 +82,39 @@ final class TvPowerBridge {
         File publicKey = new File(c.getNoBackupFilesDir(), "adb/public-key");
         if (!privateKey.exists() || !publicKey.exists()) throw new IllegalStateException("ADB keys unavailable");
         int port = c.getSharedPreferences("adb_connection", 0).getInt("port", 5555);
-        try (Dadb adb = Dadb.create("127.0.0.1", port, AdbKeyPair.read(privateKey, publicKey), 2000, 3000)) {
-            var user = NativeShellDiagnostics.execute(adb, "id -u", "tvPower");
-            if (user.getExitCode() != 0 || !user.getOutput().trim().equals("2000")) return false;
-            // svc waits for power-off. Detach destructive requests so the shell can
-            // acknowledge their dispatch before ADB disconnects.
-            String command = switch (operation) {
-                case REBOOT -> "sh -c 'sleep 1; svc power reboot' >/dev/null 2>&1 </dev/null &";
-                case SHUTDOWN -> "sh -c 'sleep 1; svc power shutdown' >/dev/null 2>&1 </dev/null &";
-                case SLEEP -> "input keyevent KEYCODE_SLEEP";
-                case TCL_SCREEN_OFF -> TclScreenOff.SHELL_COMMAND;
+        int readTimeoutMs = operation == Operation.REBOOT ? 15000 : 3000;
+        try (Dadb adb = Dadb.create("127.0.0.1", port, AdbKeyPair.read(privateKey, publicKey), 2000, readTimeoutMs)) {
+            return switch (operation) {
+                case REBOOT -> reboot(adb);
+                // Detach shutdown so the shell can acknowledge dispatch before power-off.
+                case SHUTDOWN -> shell(adb, "sh -c 'sleep 1; svc power shutdown' >/dev/null 2>&1 </dev/null &");
+                case SLEEP -> shell(adb, "input keyevent KEYCODE_SLEEP");
+                case TCL_SCREEN_OFF -> shell(adb, TclScreenOff.SHELL_COMMAND);
             };
-            return NativeShellDiagnostics.execute(adb, command, "tvPower").getExitCode() == 0;
+        }
+    }
+
+    private static boolean shell(Dadb adb, String command) throws Exception {
+        var user = NativeShellDiagnostics.execute(adb, "id -u", "tvPower");
+        if (user.getExitCode() != 0 || !user.getOutput().trim().equals("2000")) return false;
+        return NativeShellDiagnostics.execute(adb, command, "tvPower").getExitCode() == 0;
+    }
+
+    private static boolean reboot(Dadb adb) throws Exception {
+        try (var stream = adb.open("reboot:")) {
+            var source = stream.getSource();
+            try {
+                // adbd writes an error on refusal and otherwise waits for the transport to drop.
+                if (source.request(1)) {
+                    var reply = source.getBuffer();
+                    throw new IOException("ADB reboot failed: " + reply.readUtf8(Math.min(256, reply.size())).trim());
+                }
+                throw new IOException("ADB reboot stream closed without a transport disconnect");
+            } catch (AdbConnectionClosedException failure) {
+                // Dadb can fail while acknowledging a received error packet.
+                if (source.getBuffer().size() != 0) throw failure;
+                return true;
+            }
         }
     }
 }

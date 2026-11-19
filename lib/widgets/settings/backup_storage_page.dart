@@ -161,6 +161,7 @@ class _BackupStorageControlsState extends State<BackupStorageControls> {
             ),
           if (s.accounts != null)
             FocusableSettingsTile(
+              leading: const Icon(Icons.person_add_alt_1_outlined),
               title: Text(l.backupNewAccount),
               busy: busy,
               onPressed: () => _run(() async {

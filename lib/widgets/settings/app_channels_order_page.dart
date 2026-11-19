@@ -1,4 +1,7 @@
 import 'settings_information.dart';
+import 'settings_list_heading.dart';
+import 'settings_route.dart';
+import 'app_channels_settings_page.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,9 +26,19 @@ class _AppChannelsOrderPageState extends State<AppChannelsOrderPage> {
   final _nodes = <String, FocusNode>{};
   String? _moving;
   bool _busy = false;
+  AppChannelsService? _service;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _service = context.read<AppChannelsService>()..openCatalog();
+    });
+  }
 
   @override
   void dispose() {
+    _service?.closeCatalog();
     for (final node in _nodes.values) {
       node.dispose();
     }
@@ -73,11 +86,14 @@ class _AppChannelsOrderPageState extends State<AppChannelsOrderPage> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
-    final order = context.watch<SettingsService>().selectedAppChannels;
+    final selected = context.watch<SettingsService>().selectedAppChannels;
     final channels = {
       for (final channel in context.watch<AppChannelsService>().channels)
         channel.key: channel,
     };
+    final shown = selected.where((key) => channels[key]?.hidden != true).toList();
+    final hidden = channels.keys.where((key) => !selected.contains(key) && !channels[key]!.hidden).toList();
+    final order = [...shown, ...hidden];
     return PopScope(
       canPop: _moving == null,
       onPopInvokedWithResult: (didPop, _) {
@@ -85,10 +101,14 @@ class _AppChannelsOrderPageState extends State<AppChannelsOrderPage> {
       },
       child: SettingsPageLayout(
         footer: SettingsControlHint(text: l.backgroundInformationOrderHint),
-        title: Text('${l.reorder} · ${l.appChannelsTitle}'),
+        title: Text(l.feedsAndOrder),
         child: ListView(
           children: [
-            for (final key in order)
+            for (final key in order) ...[
+              if (key == shown.firstOrNull)
+                SettingsListHeading(title: l.visibleFeeds),
+              if (key == hidden.firstOrNull)
+                SettingsListHeading(title: l.hiddenFeeds),
               FocusableSettingsTile(
                 key: ValueKey(key),
                 autofocus: key == order.first,
@@ -123,9 +143,12 @@ class _AppChannelsOrderPageState extends State<AppChannelsOrderPage> {
                         ],
                       )
                     : null,
-                onPressed: () =>
-                    setState(() => _moving = _moving == key ? null : key),
-                onLongPress: () => setState(() => _moving = key),
+                onPressed: () => _moving == key
+                    ? setState(() => _moving = null)
+                    : Navigator.of(context).push(SettingsRoute(
+                        builder: (_) => AppChannelsSettingsPage(channelKey: key),
+                      )),
+                onLongPress: selected.contains(key) ? () => setState(() => _moving = key) : null,
                 onKeyEvent: (_, event) {
                   if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
                     return KeyEventResult.ignored;
@@ -137,6 +160,7 @@ class _AppChannelsOrderPageState extends State<AppChannelsOrderPage> {
                     return KeyEventResult.handled;
                   }
                   if (event is KeyDownEvent &&
+                      selected.contains(key) &&
                       (button == LogicalKeyboardKey.arrowLeft ||
                           button == LogicalKeyboardKey.arrowRight)) {
                     setState(() => _moving = _moving == key ? null : key);
@@ -163,6 +187,7 @@ class _AppChannelsOrderPageState extends State<AppChannelsOrderPage> {
                   return KeyEventResult.ignored;
                 },
               ),
+            ],
             // Active remote-control instructions stay visible, like section order.
           ],
         ),

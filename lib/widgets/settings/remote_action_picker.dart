@@ -14,7 +14,7 @@ typedef RemoteActionChoice = ({
   String? detail,
   bool enabled,
 });
-typedef RemoteActionGroup = ({String label, List<RemoteActionChoice> choices});
+typedef RemoteActionGroup = ({String label, IconData icon, List<RemoteActionChoice> choices});
 
 class RemoteActionPicker extends StatefulWidget {
   const RemoteActionPicker({
@@ -174,6 +174,7 @@ class _RemoteActionPickerState extends State<RemoteActionPicker> {
         children: [
           for (final (index, group) in widget.groups.indexed)
             FocusableSettingsTile(
+              leading: Icon(group.icon),
               title: SettingsValueText(
                 text: Text(group.label),
                 alignment: TextAlign.start,

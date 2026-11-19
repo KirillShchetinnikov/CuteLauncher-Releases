@@ -1,4 +1,5 @@
 import 'settings_section.dart';
+
 import 'settings_help.dart';
 import '../action_notice.dart';
 
@@ -223,6 +224,8 @@ class _RemoteMappingsPageState extends State<RemoteMappingsPage>
       title: Text(l.remoteBindings),
       child: ListView(
         children: [
+          SettingsSection(title: l.remoteMappingsEnabled, children: [master]),
+          SettingsSection(title: l.remoteBindings, children: [
           FocusableSettingsTile(
             title: Text(l.remoteMappingsAdd),
             leading: const Icon(Icons.add),
@@ -242,11 +245,15 @@ class _RemoteMappingsPageState extends State<RemoteMappingsPage>
           if (_status != 'idle' && _status != 'success')
             Text(_status == 'busy' ? l.loading : l.autoLaunchUnavailable),
           if (_failed) Text(l.remoteMappingInvalid),
+          ]),
+          SettingsSection(children: [
           FocusableSettingsTile(
             title: Text(l.remoteMappingsReset),
+            leading: const Icon(Icons.restart_alt),
             busy: _busy,
             onPressed: _reset,
           ),
+          ]),
         ],
       ),
     );
@@ -524,14 +531,16 @@ class _MappingEditorState extends State<_MappingEditor>
         groups: [
           (
             label: l.remoteMappingNavigationGroup,
+            icon: Icons.navigation_outlined,
             choices: [
               for (final action in ['app', 'home', 'back', 'panel', 'recents'])
                 choice(action),
             ],
           ),
-          if (inputChoices.isNotEmpty) (label: l.inputs, choices: inputChoices),
+          if (inputChoices.isNotEmpty) (label: l.inputs, icon: Icons.settings_input_hdmi, choices: inputChoices),
           (
             label: l.remoteMappingScreenSoundGroup,
+            icon: Icons.display_settings,
             choices: [
               if (visible('display_settings')) systemChoice('display_settings'),
               choice('toggle_night_mode'),
@@ -547,6 +556,7 @@ class _MappingEditorState extends State<_MappingEditor>
           ),
           (
             label: l.tvPowerTitle,
+            icon: Icons.power_settings_new,
             choices: [
               choice('sleep'),
               choice('sleep_immediate'),
@@ -556,9 +566,10 @@ class _MappingEditorState extends State<_MappingEditor>
             ],
           ),
           if (systemChoices.isNotEmpty)
-            (label: l.system, choices: systemChoices),
+            (label: l.system, icon: Icons.settings_outlined, choices: systemChoices),
           (
             label: l.remoteMappingAutomationGroup,
+            icon: Icons.webhook_outlined,
             choices: [
               choice('webhook'),
               choice('adb_shell', detail: l.remoteMappingNeedsAdb),
@@ -780,16 +791,9 @@ class _MappingEditorState extends State<_MappingEditor>
                   ],
                 ],
               ),
-              if (widget.onDelete != null)
-                FocusableSettingsTile(
-                  title: Text(l.delete),
-                  leading: const Icon(Icons.delete_outline),
-                  busy: _saving || _importing,
-                  onPressed: _delete,
-                ),
               FocusableSettingsTile(
                 title: Text(l.save),
-                leading: const Icon(Icons.check),
+                leading: const Icon(Icons.save_outlined),
                 busy: _importing || _saving,
                 onPressed: () async {
                   final error = _validationError(l);
@@ -821,6 +825,15 @@ class _MappingEditorState extends State<_MappingEditor>
                   }
                 },
               ),
+              if (widget.onDelete != null)
+                SettingsSection(title: l.deletionGroup, children: [
+                FocusableSettingsTile(
+                  title: Text(l.delete),
+                  leading: const Icon(Icons.delete_outline),
+                  busy: _saving || _importing,
+                  onPressed: _delete,
+                ),
+                ]),
             ],
           ),
         ),

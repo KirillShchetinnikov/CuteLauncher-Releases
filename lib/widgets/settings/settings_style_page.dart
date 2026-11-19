@@ -1,3 +1,4 @@
+import 'language_font_choice.dart';
 import 'settings_section.dart';
 
 import 'package:flutter/material.dart';
@@ -225,6 +226,12 @@ class _SettingsStylePageState extends State<SettingsStylePage> {
             key: const ValueKey('settingsGroupText'),
             title: l.settingsGroupText,
             children: [
+              if (!notifications)
+                LanguageFontChoice(
+                  title: l.interfaceFont,
+                  value: appearance.interfaceFont,
+                  onChanged: (value) => service.set('settingsInterfaceFont', value),
+                ),
               SettingsValueStepper(
                 title: l.styleTextSize,
                 options: [for (var n = 12; n <= 24; n++) n],

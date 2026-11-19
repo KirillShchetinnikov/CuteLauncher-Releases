@@ -61,6 +61,8 @@ class _Setup extends ChangeNotifier implements BackupAutomationService {
   @override
   bool get cleanupFailed => false;
   @override
+  bool get failed => false;
+  @override
   DateTime? get lastSuccess => null;
   @override
   final webdav = _Cloud();
@@ -182,6 +184,21 @@ void main() {
     }
   }
 
+  testWidgets('missing connection focuses storage before manual operations', (tester) async {
+    final service = _Setup()..configured = false;
+    addTearDown(service.dispose);
+    await tester.pumpWidget(MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: Scaffold(body: backupServiceScope(service, const BackupFeaturePage())),
+    ));
+    await tester.pumpAndSettle();
+    final l = AppLocalizations.of(tester.element(find.byType(BackupFeaturePage)))!;
+    expect(Focus.of(tester.element(find.text(l.backupStorage))).hasFocus, isTrue);
+    expect(find.text(l.backupNotConfigured), findsOneWidget);
+    expect(service.runs, 0);
+  });
+
   for (final mode in BackupMode.values) {
     testWidgets('$mode grouped settings restore remote focus after subpages', (
       tester,
@@ -214,10 +231,26 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      expect(find.byType(SettingsSection), findsNWidgets(4));
+      expect(find.byType(SettingsSection), findsNWidgets(3));
       final l = AppLocalizations.of(
         tester.element(find.byType(BackupFeaturePage)),
       )!;
+      final sync = mode == BackupMode.synchronization;
+      final primary = find.text(sync ? l.backupSyncNow : l.backupCreateNow);
+      expect(Focus.of(tester.element(primary)).hasFocus, isTrue);
+      expect(
+        find.text(sync ? l.backupNotSynced : l.backupNever),
+        findsOneWidget,
+      );
+      if (sync) {
+        await tester.tap(primary);
+        await tester.pumpAndSettle();
+        expect(find.text(l.backupSyncResume), findsOneWidget);
+        await tester.tap(find.text(l.cancel));
+        await tester.pumpAndSettle();
+        expect(service.runs, 0);
+        expect(service.enabled, isFalse);
+      }
       for (final label in [
         l.backupStorage,
         l.backupPassword,

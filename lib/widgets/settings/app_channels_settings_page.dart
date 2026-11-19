@@ -6,6 +6,7 @@ import '../../l10n/app_localizations.dart';
 import '../../feed_format.dart';
 import '../../providers/app_channels_service.dart';
 import '../../providers/settings_service.dart';
+import '../../providers/apps_service.dart';
 import '../action_notice.dart';
 import '../rounded_switch_list_tile.dart';
 import 'adb_permission_tile.dart';
@@ -15,10 +16,14 @@ import 'settings_page_layout.dart';
 import 'settings_slider_tile.dart';
 import 'settings_value_stepper.dart';
 import 'app_channels_order_page.dart';
+import 'settings_section.dart';
+import 'settings_route.dart';
+import 'app_channels_appearance_page.dart';
 
 class AppChannelsSettingsPage extends StatefulWidget {
   static const routeName = 'app_channels_settings';
-  const AppChannelsSettingsPage({super.key});
+  final String? channelKey;
+  const AppChannelsSettingsPage({super.key, this.channelKey});
   @override
   State<AppChannelsSettingsPage> createState() =>
       _AppChannelsSettingsPageState();
@@ -155,6 +160,7 @@ class _AppChannelsSettingsPageState extends State<AppChannelsSettingsPage>
     final l = AppLocalizations.of(context)!;
     final service = context.watch<AppChannelsService>();
     final settings = context.watch<SettingsService>();
+    final categoryId = context.watch<AppsService?>()?.categories.where((category) => category.isAppChannels).firstOrNull?.id;
     final selected = settings.selectedAppChannels;
     final availableChannels =
         service.channels.where((channel) => !channel.hidden);
@@ -163,6 +169,32 @@ class _AppChannelsSettingsPageState extends State<AppChannelsSettingsPage>
         ...availableChannels.where((c) => c.key == key),
       ...availableChannels.where((c) => !selected.contains(c.key)),
     ];
+    final key = widget.channelKey;
+    if (key != null) {
+      final matches = channels.where((channel) => channel.key == key);
+      final channel = matches.isEmpty ? null : matches.first;
+      return SettingsPageLayout(
+        title: Text(channel?.name ?? l.appChannelsMissing),
+        child: ListView(children: [
+          RoundedSwitchListTile(
+            key: ValueKey(key), title: Text(l.categoryVisible),
+            value: selected.contains(key), busy: _busy,
+            onChanged: (value) => _select(key, value),
+          ),
+          SettingsValueStepper(
+            key: ValueKey('format:$key'), title: l.feedFormat,
+            value: settings.appChannelFormat(key), options: FeedFormat.values,
+            label: (value) => switch (value as FeedFormat) {
+              FeedFormat.auto => l.feedFormatAuto,
+              FeedFormat.landscape => l.feedFormatLandscape,
+              FeedFormat.portrait => l.feedFormatPortrait,
+            },
+            onChanged: (value) => _saveSetting((s) => s.setAppChannelFormat(key, value as FeedFormat)),
+          ),
+          SettingsHelp(title: l.feedFormat, text: l.feedFormatHelp),
+        ]),
+      );
+    }
     return SettingsPageLayout(
       title: Text(l.appChannelsTitle),
       // A focused switch can move outside the viewport in either direction.
@@ -171,6 +203,13 @@ class _AppChannelsSettingsPageState extends State<AppChannelsSettingsPage>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            SettingsSection(title: l.appChannelsTitle, children: [
+              FocusableSettingsTile(
+                leading: const Icon(Icons.view_list_outlined),
+                title: Text(l.feedsAndOrder),
+                trailing: Text('${selected.length} / ${channels.length}'),
+                onPressed: () => Navigator.of(context).pushNamed(AppChannelsOrderPage.routeName),
+              ),
             FocusableSettingsTile(
               autofocus: true,
               leading: const Icon(Icons.refresh),
@@ -185,6 +224,7 @@ class _AppChannelsSettingsPageState extends State<AppChannelsSettingsPage>
                     )
                   : null,
             ),
+            ]),
             SettingsHelp(
               title: l.appChannelsTitle,
               text: '${l.appChannelsHelp}\n\n${l.feedFormatHelp}',
@@ -199,14 +239,12 @@ class _AppChannelsSettingsPageState extends State<AppChannelsSettingsPage>
                 (s) => s.setAppChannelCardLimit(value.toInt()),
               ),
             ),
-            if (selected.length > 1)
+            if (categoryId != null)
               FocusableSettingsTile(
-                leading: const Icon(Icons.swap_vert),
-                title: Text(l.reorder),
-                onPressed: () => Navigator.pushNamed(
-                  context,
-                  AppChannelsOrderPage.routeName,
-                ),
+                title: Text(l.appearanceSettings), leading: const Icon(Icons.palette_outlined),
+                onPressed: () => Navigator.of(context).push(SettingsRoute(
+                  builder: (_) => AppChannelsAppearancePage(categoryId: categoryId),
+                )),
               ),
             if (service.unavailable) ...[
               Padding(
@@ -230,39 +268,7 @@ class _AppChannelsSettingsPageState extends State<AppChannelsSettingsPage>
                 padding: const EdgeInsets.all(16),
                 child: Text(l.appChannelsEmpty),
               ),
-            for (final channel in channels) ...[
-              RoundedSwitchListTile(
-                key: ValueKey(channel.key),
-                title: Text('${channel.name} · ${channel.appName}'),
-                value: selected.contains(channel.key),
-                onChanged: (value) => _select(channel.key, value),
-              ),
-              if (selected.contains(channel.key))
-                SettingsValueStepper(
-                  key: ValueKey('format:${channel.key}'),
-                  title: '${l.feedFormat} · ${channel.name}',
-                  value: settings.appChannelFormat(channel.key),
-                  options: FeedFormat.values,
-                  label: (value) => switch (value as FeedFormat) {
-                    FeedFormat.auto => l.feedFormatAuto,
-                    FeedFormat.landscape => l.feedFormatLandscape,
-                    FeedFormat.portrait => l.feedFormatPortrait,
-                  },
-                  onChanged: (value) =>
-                      _saveSetting((s) => s.setAppChannelFormat(
-                        channel.key, value as FeedFormat,
-                      )),
-                ),
-            ],
-            for (final key in selected.where(
-              (key) => !service.channels.any((c) => c.key == key),
-            ))
-              RoundedSwitchListTile(
-                key: ValueKey(key),
-                title: Text('${l.appChannelsMissing}\n$key'),
-                value: true,
-                onChanged: (_) => _select(key, false),
-              ),
+
           ],
         ),
       ),

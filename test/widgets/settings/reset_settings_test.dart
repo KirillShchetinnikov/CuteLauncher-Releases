@@ -1,10 +1,10 @@
+import 'package:flauncher/providers/appearance_service.dart';
 import 'dart:async';
 
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/launcher_dialog.dart';
 import 'package:flauncher/widgets/settings/general_settings_page.dart';
-import 'package:flauncher/widgets/settings/reset_settings_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -15,7 +15,8 @@ void main() {
   for (final outcome in ['accepted', 'denied', 'failure', 'closed page']) {
     testWidgets('reset confirmation, guard and $outcome', (tester) async {
       SharedPreferences.setMockInitialValues({});
-      final settings = SettingsService(await SharedPreferences.getInstance());
+      final preferences = await SharedPreferences.getInstance();
+      final settings = SettingsService(preferences);
       addTearDown(settings.dispose);
       final pending = Completer<bool>();
       var calls = 0;
@@ -36,7 +37,10 @@ void main() {
       );
       await tester.pumpWidget(
         MultiProvider(
-          providers: [ChangeNotifierProvider.value(value: settings)],
+          providers: [
+            ChangeNotifierProvider.value(value: settings),
+            ChangeNotifierProvider(create: (_) => AppearanceService(preferences)),
+          ],
           child: MaterialApp(
             locale: const Locale('ru'),
             localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -47,13 +51,16 @@ void main() {
       );
       await tester.pumpAndSettle();
       final l = AppLocalizations.of(
-        tester.element(find.byType(ResetSettingsTile)),
+        tester.element(find.byType(GeneralSettingsPage)),
       )!;
-      await tester.scrollUntilVisible(find.text(l.aboutFlauncher), 120);
+      await tester.scrollUntilVisible(find.text(l.aboutFlauncher), 180);
+      final scroll = Scrollable.of(tester.element(find.text(l.aboutFlauncher))).position;
+      final aboutY = tester.getTopLeft(find.text(l.aboutFlauncher)).dy + scroll.pixels;
+      await tester.scrollUntilVisible(find.text(l.resetLauncherSettings), 180);
       await tester.pumpAndSettle();
       expect(
-        tester.getTopLeft(find.text(l.resetLauncherSettings)).dy,
-        lessThan(tester.getTopLeft(find.text(l.aboutFlauncher)).dy),
+        tester.getTopLeft(find.text(l.resetLauncherSettings)).dy + scroll.pixels,
+        greaterThan(aboutY),
       );
       await tester.tap(find.text(l.resetLauncherSettings));
       await tester.pumpAndSettle();

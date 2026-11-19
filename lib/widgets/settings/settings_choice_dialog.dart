@@ -7,6 +7,7 @@ import 'settings_option_tile.dart';
 class SettingsChoiceDialog<T> extends StatefulWidget {
   final Widget title;
   final T value;
+  final Widget Function(T option, Widget row)? decorateOption;
   final List<T> options;
   final Widget Function(T) optionBuilder;
   final Widget Function(T)? leadingBuilder;
@@ -17,6 +18,7 @@ class SettingsChoiceDialog<T> extends StatefulWidget {
     super.key,
     required this.title,
     required this.value,
+    this.decorateOption,
     required this.options,
     required this.optionBuilder,
     required this.onSelected,
@@ -43,6 +45,18 @@ class _SettingsChoiceDialogState<T> extends State<SettingsChoiceDialog<T>> {
     });
   }
 
+  Widget _option(T option, bool initial) {
+    final row = SettingsOptionTile(
+      key: initial ? _initialRow : null,
+      selected: option == widget.value,
+      autofocus: initial,
+      title: widget.optionBuilder(option),
+      leading: widget.leadingBuilder?.call(option),
+      onPressed: () => widget.onSelected(option),
+    );
+    return widget.decorateOption?.call(option, row) ?? row;
+  }
+
   @override
   Widget build(BuildContext context) {
     final initial = widget.options.contains(widget.value)
@@ -58,14 +72,7 @@ class _SettingsChoiceDialogState<T> extends State<SettingsChoiceDialog<T>> {
             mainAxisSize: MainAxisSize.min,
             children: [
               for (var index = 0; index < widget.options.length; index++)
-                SettingsOptionTile(
-                  key: index == initial ? _initialRow : null,
-                  selected: widget.options[index] == widget.value,
-                  autofocus: index == initial,
-                  title: widget.optionBuilder(widget.options[index]),
-                  leading: widget.leadingBuilder?.call(widget.options[index]),
-                  onPressed: () => widget.onSelected(widget.options[index]),
-                ),
+                _option(widget.options[index], index == initial),
             ],
           ),
         ),

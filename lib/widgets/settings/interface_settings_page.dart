@@ -1,3 +1,4 @@
+import 'application_info_settings_page.dart';
 import 'section_style_page.dart';
 import 'wallpaper_panel_page.dart';
 import 'appearance_page.dart';
@@ -7,7 +8,7 @@ import 'settings_choice_tile.dart';
 import 'back_button_actions.dart';
 import 'card_focus_dialog.dart';
 import 'settings_page_layout.dart';
-import 'application_info_settings_page.dart';
+import 'settings_section.dart';
 /*
  * FLauncher
  * Copyright (C) 2024 LeanBitLab
@@ -126,38 +127,70 @@ class InterfaceSettingsPage extends StatelessWidget {
       title: Text(l.homeScreen),
       child: ListView(
         children: [
-          FocusableSettingsTile(
-            autofocus: true,
-            leading: const Icon(Icons.category),
-            title: Text(l.sectionsAndOrder),
-            onPressed: () =>
-                Navigator.of(context)
-                    .pushNamed(LauncherSectionsPanelPage.routeName),
-          ),
-          FocusableSettingsTile(
-            autofocus: false,
-            leading: const Icon(Icons.palette_outlined),
-            title: Text('${l.homeScreen} · ${l.appearanceSettings}'),
-            onPressed: () => Navigator.of(context).push(
-              SettingsRoute<void>(builder: (_) => const HomeAppearancePage()),
-            ),
-          ),
-          FocusableSettingsTile(
-            autofocus: false,
-            leading: const Icon(Icons.tune),
-            title: Text(l.homeParameters),
-            onPressed: () => Navigator.of(context).push(
-              SettingsRoute<void>(builder: (_) => const HomeParametersPage()),
-            ),
-          ),
-          FocusableSettingsTile(
-            leading: const Icon(Icons.info_outline),
-            title: Text(l.applicationInfoSettings),
-            onPressed: () => Navigator.of(context).push(
-              SettingsRoute<void>(
-                builder: (_) => const ApplicationInfoSettingsPage(),
+          SettingsSection(
+            title: l.homeSectionsGroup,
+            children: [
+              FocusableSettingsTile(
+                leading: const Icon(Icons.view_list_outlined),
+                title: Text(l.sectionsAndOrder),
+                onPressed: () =>
+                    Navigator.of(context)
+                        .pushNamed(LauncherSectionsPanelPage.routeName),
               ),
-            ),
+            ],
+          ),
+          SettingsSection(
+            title: l.homeVisualGroup,
+            children: [
+              FocusableSettingsTile(
+                leading: const Icon(Icons.wallpaper),
+                title: Text(l.background),
+                onPressed: () =>
+                    Navigator.of(context)
+                        .pushNamed(WallpaperPanelPage.routeName),
+              ),
+              FocusableSettingsTile(
+                leading: const Icon(Icons.view_agenda_outlined),
+                title: Text(l.launcherSections),
+                onPressed: () => Navigator.of(
+                  context,
+                ).push(SettingsRoute(builder: (_) => const SectionStylePage())),
+              ),
+              FocusableSettingsTile(
+                leading: const Icon(Icons.grid_view),
+                title: Text(l.tilesAndLabels),
+                onPressed: () => Navigator.of(
+                  context,
+                ).push(SettingsRoute(builder: (_) => const AppearancePage())),
+              ),
+              FocusableSettingsTile(
+                leading: const Icon(Icons.auto_awesome_outlined),
+                title: Text(l.highlightAndAnimation),
+                onPressed: () =>
+                    Navigator.of(context).pushNamed(MiscPanelPage.routeName),
+              ),
+              FocusableSettingsTile(
+                leading: const Icon(Icons.info_outline),
+                title: Text(l.applicationInfoSettings),
+                onPressed: () => Navigator.of(context).push(
+                  SettingsRoute(
+                    builder: (_) => const ApplicationInfoSettingsPage(),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SettingsSection(
+            title: l.settingsGroupControl,
+            children: [
+              FocusableSettingsTile(
+                leading: const Icon(Icons.tune),
+                title: Text(l.homeParameters),
+                onPressed: () => Navigator.of(context).push(
+                  SettingsRoute(builder: (_) => const HomeParametersPage()),
+                ),
+              ),
+            ],
           ),
         ],
       ),

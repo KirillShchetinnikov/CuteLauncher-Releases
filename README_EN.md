@@ -103,7 +103,7 @@ required access configured. Selective synchronization lets each TV retain some
 of its own settings. Built-in tools include APK update checks, memory information,
 a resource-saving mode, and diagnostic-report export.
 
-The TV cleanup manager lists packages and their states, imports package lists,
+The app disabling manager lists packages and their states, imports package lists,
 disables selected apps through ADB, and restores saved states. It does not delete
 app data. A third-party disable list cannot be assumed safe for every TV model.
 

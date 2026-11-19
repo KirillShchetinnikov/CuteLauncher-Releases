@@ -148,7 +148,7 @@ void main() {
           final rendered = paragraph.text.toPlainText(
             includeSemanticsLabels: false,
           );
-          final keysAt = rendered.indexOf('▲\u00a0/\u00a0▼');
+          final keysAt = rendered.indexOf('${String.fromCharCode(Icons.arrow_drop_up.codePoint)}\u00a0/\u00a0${String.fromCharCode(Icons.arrow_drop_down.codePoint)}');
           expect(keysAt, greaterThanOrEqualTo(0));
           final keyBoxes = paragraph.getBoxesForSelection(
             TextSelection(baseOffset: keysAt, extentOffset: keysAt + 5),

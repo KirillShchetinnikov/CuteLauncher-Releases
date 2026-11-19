@@ -12,6 +12,8 @@ import 'settings_information.dart';
 import 'settings_page_layout.dart';
 import 'settings_section.dart';
 import 'slideshow_page.dart';
+import '../rounded_switch_list_tile.dart';
+import 'settings_value_stepper.dart';
 
 class VideoFolderPage extends StatefulWidget {
   const VideoFolderPage({super.key});
@@ -32,7 +34,9 @@ class _VideoFolderPageState extends State<VideoFolderPage> {
       if (mounted) {
         showActionNotice(
           context,
-          AppLocalizations.of(context)!.videoFolderError,
+          context.read<VideoFolderService>().mixed
+              ? AppLocalizations.of(context)!.mediaFolderError
+              : AppLocalizations.of(context)!.videoFolderError,
           error: true,
         );
       }
@@ -56,7 +60,7 @@ class _VideoFolderPageState extends State<VideoFolderPage> {
       ),
     );
     return SettingsPageLayout(
-      title: Text(l.videoFolderSource),
+      title: Text(service.mixed ? l.mediaFolderSource : l.videoFolderSource),
       child: ListView(
         children: [
           SettingsSection(
@@ -81,6 +85,11 @@ class _VideoFolderPageState extends State<VideoFolderPage> {
                 enabled: !_busy,
                 onPressed: () => select(manual: true),
               ),
+              if (service.mixed)
+                RoundedSwitchListTile(
+                  title: Text(l.slideshowRecursive), value: service.recursive,
+                  busy: _busy, onChanged: (value) => _run(() => service.setRecursive(value)),
+                ),
             ],
           ),
           SettingsSection(
@@ -100,21 +109,28 @@ class _VideoFolderPageState extends State<VideoFolderPage> {
               ),
               FocusableSettingsTile(
                 leading: const Icon(Icons.skip_next),
-                title: Text(l.videoFolderNext),
+                title: Text(service.mixed ? l.mediaFolderNext : l.videoFolderNext),
                 enabled: !_busy && service.canAdvance,
                 onPressed: service.next,
               ),
+              if (service.mixed)
+                SettingsValueStepper(
+                  title: l.slideshowInterval,
+                  options: const [30, 60, 300, 600, 1800, 3600], value: service.interval,
+                  label: (value) => '$value ${l.slideshowSeconds}',
+                  onChanged: (value) => _run(() => service.setInterval(value as int)),
+                ),
               if (service.loading) const LinearProgressIndicator(),
               if (service.failed)
                 SettingsMessage(
-                  text: l.videoFolderError,
+                  text: service.mixed ? l.mediaFolderError : l.videoFolderError,
                   kind: SettingsMessageKind.error,
                 ),
             ],
           ),
           SettingsHelp(
-            title: l.videoFolderSource,
-            text: '${l.videoFolderHelp}\n\n${l.slideshowStorageHelp}',
+            title: service.mixed ? l.mediaFolderSource : l.videoFolderSource,
+            text: '${service.mixed ? l.mediaFolderHelp : l.videoFolderHelp}\n\n${l.slideshowStorageHelp}',
           ),
           ResetStyleTile(onReset: () => _run(service.reset)),
         ],

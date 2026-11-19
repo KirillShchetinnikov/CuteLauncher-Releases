@@ -356,7 +356,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get actionCompleted => 'İşlem tamamlandı';
 
   @override
-  String get showRepositoryQrCode => 'QR kodunu göster';
+  String get showRepositoryQrCode => 'Depo QR kodu';
+
+  @override
+  String get discussionQrCode => '4PDA tartışmasının QR kodu';
 
   @override
   String get resetSections => 'Bölüm ayarlarını sıfırla';
@@ -2283,7 +2286,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get rememberCategoryFocus => 'Son odaklanılan kartı hatırla';
 
   @override
-  String get automaticBackups => 'Yedekler ve eşitleme';
+  String get automaticBackups => 'Ayarları yedekleme ve eşitleme';
 
   @override
   String get automaticBackupsHint =>
@@ -2311,6 +2314,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get updatePrereleases => 'Ön sürümlere güncelle';
+
+  @override
+  String get topPanelObjectsTitle => 'Üst panel öğeleri';
+
+  @override
+  String get quickPanelObjectsTitle => 'Hızlı ayar öğeleri';
 
   @override
   String get topPanelObjects => 'Nesneler';
@@ -2747,6 +2756,9 @@ class AppLocalizationsTr extends AppLocalizations {
       'Cihazın geliştirici ayarlarında hata ayıklamayı ve ağ ADB\'yi etkinleştirin, ardından CuteLauncher\'ye güvenin. Tüm ADB eylemlerinin riski size aittir.';
 
   @override
+  String get adbOpenConnectionSettings => 'ADB bağlantı ayarlarını aç';
+
+  @override
   String get adbConnectionBlock => 'ADB bağlantısı';
 
   @override
@@ -3006,7 +3018,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get backupOptions => 'Yedekleme seçenekleri';
 
   @override
-  String get backupSaveMode => 'Yedekleme';
+  String get backupSaveMode => 'Otomatik yedekleme';
 
   @override
   String get backupScope => 'Cihazlar arasında yedekleme';
@@ -3031,7 +3043,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get backupSyncLimit => 'Şundan daha sık kontrol etmeyin:';
 
   @override
-  String get backupSyncMode => 'Senkronizasyon';
+  String get backupSyncMode => 'Ayarları eşitleme';
 
   @override
   String get backupSyncOptions => 'Senkronizasyon seçenekleri';
@@ -3949,7 +3961,7 @@ class AppLocalizationsTr extends AppLocalizations {
       'Bu düğme ve basma türü zaten atanmış. Başka bir düğme veya basma türü seçin.';
 
   @override
-  String get cleanerTitle => 'Cihaz temizleme yöneticisi';
+  String get cleanerTitle => 'Uygulama devre dışı bırakma yöneticisi';
 
   @override
   String get cleanerRefresh => 'Refresh applications';
@@ -4265,6 +4277,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get networkFrequency => 'Frekans';
+
+  @override
+  String get networkWifiChannel => 'Kanal';
 
   @override
   String get networkMbps => 'Mbps';
@@ -5524,6 +5539,28 @@ class AppLocalizationsTr extends AppLocalizations {
   String get backupDriveReconnect => 'Google Drive’a yeniden bağlan';
 
   @override
+  String get syncFilesEmpty => 'Henüz eşitleme dosyası yok';
+
+  @override
+  String get syncFilesLoadFailed =>
+      'Eşitleme dosyaları yüklenemedi. Depolama erişimini kontrol edin.';
+
+  @override
+  String get backupSyncNow => 'Şimdi eşitle';
+
+  @override
+  String get backupSyncAutomatic => 'Otomatik eşitleme';
+
+  @override
+  String get backupLastSync => 'Son eşitleme';
+
+  @override
+  String get backupNotSynced => 'Henüz eşitlenmedi';
+
+  @override
+  String get backupFileTitle => 'Yedek dosyası';
+
+  @override
   String get backupSyncRefresh => 'Yenile';
 
   @override
@@ -5628,6 +5665,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get weatherCustomServer => 'Özel sunucu (Open-Meteo)';
+
+  @override
+  String get widgetsSettingsTitle => 'Widget ayarları';
 
   @override
   String get widgetSettings => 'Widget ayarları';
@@ -6237,4 +6277,103 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get backupExistingSettingsHelp =>
       'Seçilen depolamada zaten eşitleme ayarları var. Bunları bu cihaza uygulamayı, bu cihazın ayarlarıyla değiştirmeyi veya birleştirmeyi seçin. Birleştirme sırasında farklılık varsa seçtiğiniz öncelik kullanılır. Aktarım, sihirbazın son adımındaki onaydan sonra başlar.';
+
+  @override
+  String get launcherSettings => 'Başlatıcı ayarları';
+
+  @override
+  String get launcherFunctions => 'Başlatıcı özellikleri';
+
+  @override
+  String get widgetsAndPanels => 'Widget’lar ve paneller';
+
+  @override
+  String get launcherDefaultAndAdb => 'Varsayılan başlatıcı ve ADB';
+
+  @override
+  String get defaultLauncherViaAdb => 'ADB ile varsayılan başlatıcıyı ayarla';
+
+  @override
+  String get defaultLauncherViaAccessibility =>
+      'Erişilebilirlik ile varsayılan başlatıcıyı ayarla';
+
+  @override
+  String get automationAndComfort => 'Otomasyon ve konfor';
+
+  @override
+  String get maintenanceAndBackup => 'Bakım ve yedeklemeler';
+
+  @override
+  String get performanceAndDiagnostics => 'Performans ve tanılama';
+
+  @override
+  String get nightModeAndBrightness => 'Gece modu ve parlaklık';
+
+  @override
+  String get systemAndNotifications => 'Sistem ve bildirimler';
+
+  @override
+  String get settingsGeneralGroup => 'Genel';
+
+  @override
+  String get settingsManagementGroup => 'Ayar yönetimi';
+
+  @override
+  String get settingsMaintenanceGroup => 'Bakım';
+
+  @override
+  String get supportDeveloper => 'Geliştiriciyi destekle';
+
+  @override
+  String get comingSoon => 'Yakında';
+
+  @override
+  String get mediaFolderSource => 'Klasörden fotoğraf veya video';
+
+  @override
+  String get mediaFolderHelp =>
+      'Fotoğraflar seçilen aralıktan sonra, videolar oynatma bitince değişir.';
+
+  @override
+  String get mediaFolderNext => 'Sonraki dosya';
+
+  @override
+  String get mediaFolderError =>
+      'Dosyalar açılamadı. Erişimi ve dosya biçimlerini kontrol edin.';
+
+  @override
+  String get settingsScreensaverGroup => 'Ekran koruyucu';
+
+  @override
+  String get homeSectionsGroup => 'Bölümler ve uygulamalar';
+
+  @override
+  String get homeVisualGroup => 'Görünüm';
+
+  @override
+  String get feedsAndOrder => 'Akışlar ve sıralama';
+
+  @override
+  String get visibleFeeds => 'Görünür akışlar';
+
+  @override
+  String get hiddenFeeds => 'Gizli akışlar';
+
+  @override
+  String get controlAndAccessGroup => 'Kontroller ve erişim';
+
+  @override
+  String get repairsAndDiagnosticsGroup => 'Düzeltmeler ve tanılama';
+
+  @override
+  String get appsAndServicesGroup => 'Uygulamalar ve hizmetler';
+
+  @override
+  String get deviceAndStatusGroup => 'Cihaz ve durum';
+
+  @override
+  String get supportProjectGroup => 'Proje desteği';
+
+  @override
+  String get deletionGroup => 'Silme';
 }

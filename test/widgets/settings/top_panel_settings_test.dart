@@ -1,3 +1,4 @@
+import 'package:flauncher/widgets/settings/settings_destinations.dart';
 import 'package:flauncher/providers/system_status_service.dart';
 import 'package:flauncher/providers/network_speed_service.dart';
 import 'package:flauncher/widgets/network_speed_widget.dart';
@@ -195,6 +196,8 @@ void main() {
     await tester.tap(gear); await tester.pumpAndSettle();
     expect(find.byType(NetworkSpeedSettingsPage), findsOneWidget);
     expect(tester.widget<SidePanelDialog>(find.byType(SidePanelDialog)).topInset, kToolbarHeight);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.pumpAndSettle();
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight); await tester.pumpAndSettle();
     expect(settings.networkSpeedInterval, 4);
     await tester.binding.handlePopRoute(); await tester.pumpAndSettle();
@@ -380,15 +383,15 @@ void main() {
       of: find.byType(FocusAwareAppBar),
       matching: find.byIcon(Icons.volume_up_outlined),
     );
-    await tester.scrollUntilVisible(find.text('Показывать громкость'), 200,
+    await tester.scrollUntilVisible(find.text('Громкость и аудиовыход'), 200,
         scrollable: find.descendant(
             of: find.byType(StatusBarObjectsPage),
             matching: find.byType(Scrollable)).first);
-    expect(find.text('Показывать громкость'), findsOneWidget);
+    expect(find.text('Громкость и аудиовыход'), findsOneWidget);
     expect(audioIcon, findsOneWidget);
-    await tester.ensureVisible(find.text('Показывать громкость'));
+    await tester.ensureVisible(find.text('Громкость и аудиовыход'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Показывать громкость'));
+    await tester.tap(find.text('Громкость и аудиовыход'));
     await tester.pumpAndSettle();
     expect(settings.showVolumeInStatusBar, isFalse);
     expect(audioIcon, findsNothing);
@@ -557,7 +560,8 @@ void main() {
         'Акцентная заливка луны',
       );
       await pump(tester, const Scaffold(body: NightModePage()), night: night);
-      await tester.ensureVisible(toggle);
+      await tester.scrollUntilVisible(toggle, 200);
+      await tester.pumpAndSettle();
       expect(tester.widget<RoundedSwitchListTile>(toggle).value, isTrue);
       await tester.tap(toggle);
       await tester.pumpAndSettle();
@@ -573,7 +577,7 @@ void main() {
         const SettingsPanel(initialRoute: StatusBarObjectsPage.routeName),
         night: night,
       );
-      final visibility = find.widgetWithText(RoundedSwitchListTile, 'Ночной режим');
+      final visibility = find.widgetWithText(FocusableSettingsTile, 'Ночной режим');
       await tester.scrollUntilVisible(
         visibility,
         150,
@@ -591,7 +595,7 @@ void main() {
 
   testWidgets('night object has a visibility switch and moves with remote', (tester) async {
     await pump(tester, const SettingsPanel(initialRoute: StatusBarObjectsPage.routeName));
-    final toggle = find.widgetWithText(RoundedSwitchListTile, 'Ночной режим');
+    final toggle = find.widgetWithText(FocusableSettingsTile, 'Ночной режим');
     await tester.scrollUntilVisible(toggle, 150, scrollable: find.descendant(
         of: find.byType(StatusBarObjectsPage), matching: find.byType(Scrollable)).first);
     await tester.pumpAndSettle();
@@ -819,9 +823,9 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text(l.inputsUnavailableHint), findsNothing);
     expect(settings.showInputsWidgetInStatusBar, isTrue);
-    final toggle = find.widgetWithText(RoundedSwitchListTile, l.inputs);
-    expect(tester.widget<RoundedSwitchListTile>(toggle).value, isTrue);
-    expect(tester.widget<RoundedSwitchListTile>(toggle).enabled, isFalse);
+    final toggle = find.byKey(const ValueKey('inputs'));
+    expect(tester.widget<FocusableSettingsTile>(toggle).toggled, isTrue);
+    expect(tester.widget<FocusableSettingsTile>(toggle).enabled, isFalse);
     await tester.ensureVisible(toggle);
     await tester.tap(toggle);
     await tester.pumpAndSettle();
@@ -830,11 +834,11 @@ void main() {
     when(inputs.hasInputs).thenReturn(true);
     await tester.pumpWidget(const SizedBox.shrink());
     await pump(tester, const SettingsPanel(initialRoute: StatusBarObjectsPage.routeName));
-    await tester.scrollUntilVisible(find.widgetWithText(RoundedSwitchListTile, l.inputs), 180,
+    await tester.scrollUntilVisible(find.byKey(const ValueKey('inputs')), 180,
         scrollable: find.descendant(of: find.byType(StatusBarObjectsPage), matching: find.byType(Scrollable)).first);
     expect(find.text(l.inputsUnavailableHint), findsNothing);
     expect(help, findsNothing);
-    expect(tester.widget<RoundedSwitchListTile>(find.widgetWithText(RoundedSwitchListTile, l.inputs)).enabled, isTrue);
+    expect(tester.widget<FocusableSettingsTile>(find.byKey(const ValueKey('inputs'))).enabled, isTrue);
     expect(settings.showInputsWidgetInStatusBar, isTrue);
   });
 
@@ -849,7 +853,7 @@ void main() {
     await tester.pumpWidget(const SizedBox.shrink());
     await pump(
       tester,
-      const SettingsPanel(initialRoute: StatusBarObjectsPage.routeName),
+      const SettingsPanel(initialRoute: WidgetSettingsPage.routeName),
     );
     final submenu = find.widgetWithText(FocusableSettingsTile, 'Уведомления');
     await tester.scrollUntilVisible(submenu, 180);
@@ -991,10 +995,10 @@ void main() {
   }
 
   testWidgets('visibility group opens common settings with separate editors', (tester) async {
-    await pump(tester, const SettingsPanel(initialRoute: StatusBarObjectsPage.routeName));
+    await pump(tester, const SettingsPanel(initialRoute: WidgetSettingsPage.routeName));
     expect(find.byType(InformationVisibility), findsNothing);
     final opener = find.descendant(
-      of: find.byType(InformationObjectsSection),
+      of: find.byType(WidgetSettingsPage),
       matching: find.text('Настройки'),
     );
     final focus = Focus.of(tester.element(opener));
@@ -1050,9 +1054,9 @@ void main() {
   });
 
   testWidgets('clock style route stays below toolbar and Back restores block settings', (tester) async {
-    await pump(tester, const SettingsPanel(initialRoute: StatusBarObjectsPage.routeName));
+    await pump(tester, const SettingsPanel(initialRoute: WidgetSettingsPage.routeName));
     await tester.tap(find.descendant(
-      of: find.byType(InformationObjectsSection),
+      of: find.byType(WidgetSettingsPage),
       matching: find.text('Настройки'),
     ));
     await tester.pumpAndSettle();
@@ -1223,8 +1227,8 @@ void main() {
       );
       expect(find.text('Оформление'), findsOneWidget);
       expect(find.text('Объекты'), findsOneWidget);
-      expect(find.text('Порядок объектов'), findsOneWidget);
-      expect(find.text('Панель быстрых настроек'), findsOneWidget);
+      expect(find.text('Порядок объектов'), findsNothing);
+      expect(find.text('Панель быстрых настроек'), findsNothing);
       expect(find.text('Показывать время'), findsNothing);
       expect(
         tester.getTopLeft(find.byType(StatusBarPanelPage)).dy,
@@ -1354,7 +1358,7 @@ void main() {
       );
       expect(find.text('Разрешить доступ к статистике'), findsNothing);
       final toggle = find.widgetWithText(
-        RoundedSwitchListTile,
+        FocusableSettingsTile,
         AppLocalizations.of(tester.element(find.byType(StatusBarObjectsPage)))!
             .showTraffic,
       );
@@ -1363,17 +1367,21 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(toggle);
       await tester.pumpAndSettle();
-      final trafficSettings = find.text(
-        AppLocalizations.of(tester.element(toggle))!.trafficSettings,
-      );
+      await pump(tester, const SettingsPanel(key: ValueKey('traffic-widget-settings'), initialRoute: WidgetSettingsPage.routeName));
+      final trafficSettings = find.text(AppLocalizations.of(tester.element(find.byType(WidgetSettingsPage)))!.showTraffic);
+      await tester.scrollUntilVisible(trafficSettings, 180);
       await tester.ensureVisible(trafficSettings);
-      await tester.tap(trafficSettings);
+      Focus.of(tester.element(trafficSettings)).requestFocus();
+      await tester.pumpAndSettle();
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
       await tester.pumpAndSettle();
       final permission = find.text(
-        AppLocalizations.of(tester.element(trafficSettings))!.grantUsagePermission,
+        AppLocalizations.of(tester.element(find.byType(SettingsPanel)))!.grantUsagePermission,
       );
       await tester.ensureVisible(permission);
-      await tester.tap(permission);
+      Focus.of(tester.element(permission)).requestFocus();
+      await tester.pumpAndSettle();
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
       verify(network.requestPermission()).called(1);
       await pump(tester, const Scaffold(body: DailyDataUsageWidget()));
       expect(find.byType(TextButton), findsNothing);
@@ -1386,7 +1394,10 @@ void main() {
     (tester) async {
       await settings.setShowDataWidgetInStatusBar(false);
       await pump(tester, const Scaffold(appBar: FocusAwareAppBar()));
-      final settingsIcon = find.byIcon(Icons.settings_outlined);
+      final settingsIcon = find.descendant(
+        of: find.byType(FocusAwareAppBar),
+        matching: find.byIcon(Icons.settings_outlined),
+      );
       final clock = find.byKey(const Key('statusbar_clock'));
       final networkIcon = find.byIcon(Icons.signal_wifi_4_bar);
       final date = find.byKey(const Key('statusbar_date'));

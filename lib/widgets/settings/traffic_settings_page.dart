@@ -1,3 +1,4 @@
+import 'widget_placement_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -28,6 +29,7 @@ class TrafficSettingsPage extends StatelessWidget {
       title: Text(l.trafficSettings),
       child: ListView(
         children: [
+          WidgetPlacementLink(id: 'traffic', title: l.trafficSettings),
           SettingsChoiceTile<String>(
             title: l.dataUsagePeriod,
             value: settings.dataUsagePeriod,

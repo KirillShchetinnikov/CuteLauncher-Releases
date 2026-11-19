@@ -184,15 +184,21 @@ void main() {
               .first,
         );
         expect(actions, isEmpty); // Detection never probes ADB.
-        await tester.tap(find.text(l.adbConnectionBlock));
+        await tester.tap(find.text(l.adbDefaultBlock));
         await tester.pumpAndSettle();
+        final setup = find.text(l.adbOpenConnectionSettings);
+        expect(Focus.of(tester.element(setup)).hasFocus, isTrue);
+        expect(tile(l.adbAssignDefault).onPressed, isNull);
+        await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+        await tester.pumpAndSettle();
+        expect(find.text(l.adbConnectionBlock), findsOneWidget);
+        expect(actions, isEmpty);
         await tester.ensureVisible(find.text(l.adbCheck));
         await tester.tap(find.text(l.adbCheck));
         await tester.pumpAndSettle();
         Navigator.of(tester.element(find.text(l.adbCheck))).pop();
         await tester.pumpAndSettle();
-        await tester.tap(find.text(l.adbDefaultBlock));
-        await tester.pumpAndSettle();
+        expect(setup, findsNothing);
         expect(actions, ['check']);
         expect(find.byType(FocusableSettingsTile), findsNWidgets(2));
         expect(tester.getTopLeft(find.text(l.adbAssignDefault)).dy,

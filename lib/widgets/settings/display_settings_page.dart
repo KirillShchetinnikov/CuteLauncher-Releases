@@ -37,7 +37,7 @@ class DisplaySettingsPage extends StatelessWidget {
 
     return SettingsPageLayout(
       title: Text(
-        localizations.displayAndScreensaver,
+        localizations.nightModeAndBrightness,
         style: Theme.of(context).textTheme.titleLarge,
       ),
       child: SingleChildScrollView(

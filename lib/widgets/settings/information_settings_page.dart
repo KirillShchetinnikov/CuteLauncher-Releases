@@ -272,11 +272,12 @@ class InformationAppearancePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
-    Widget page(String label, String section) => _informationPage(
+    Widget page(String label, String section, IconData icon) => _informationPage(
       context,
       label,
       InformationSectionPage(background: background, section: section),
       'information_${background ? 'background' : 'panel'}_$section',
+      icon: icon,
     );
     return SettingsPageLayout(
       title: Text(
@@ -290,9 +291,10 @@ class InformationAppearancePage extends StatelessWidget {
           page(
             background ? l.informationPositionSize : l.informationLayout,
             'layout',
+            background ? Icons.aspect_ratio : Icons.dashboard_outlined,
           ),
-          page(l.informationTypography, 'typography'),
-          page(l.informationColors, 'colors'),
+          page(l.informationTypography, 'typography', Icons.text_fields),
+          page(l.informationColors, 'colors', Icons.palette_outlined),
         ],
       ),
     );

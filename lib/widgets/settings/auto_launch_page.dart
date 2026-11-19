@@ -365,6 +365,7 @@ class _AutoLaunchPageState extends State<AutoLaunchPage>
             ),
           SettingsHelp(title: l.autoLaunchTarget, text: l.autoLaunchHint),
           FocusableSettingsTile(
+            leading: const Icon(Icons.apps_outlined),
             title: Text(l.backgroundStartupTitle),
             onPressed: () =>
                 Navigator.of(context)

@@ -18,7 +18,7 @@ import 'package:flauncher/widgets/wallpaper_background.dart';
 import 'package:flauncher/widgets/app_artwork_background.dart';
 import 'package:flauncher/providers/remote_panel_service.dart';
 import 'package:flauncher/widgets/settings/remote_panel_page.dart';
-import 'package:flauncher/widgets/settings/status_bar_panel_page.dart';
+import 'package:flauncher/widgets/settings/settings_destinations.dart';
 import 'package:flauncher/widgets/settings/panel_order_page.dart';
 import 'package:flauncher/widgets/side_panel_dialog.dart';
 /*
@@ -2110,9 +2110,10 @@ void main() {
       await tester.tap(find.byIcon(Icons.settings_outlined).first);
       await tester.pumpAndSettle();
       final root = tester.element(find.byType(SettingsPanelPage));
-      Navigator.of(root).pushNamed(StatusBarPanelPage.routeName);
+      final l = AppLocalizations.of(root)!;
+      await tester.tap(find.text(l.widgetsAndPanels));
       await tester.pumpAndSettle();
-      final l = AppLocalizations.of(tester.element(find.byType(StatusBarPanelPage)))!;
+      expect(find.byType(WidgetsAndPanelsPage), findsOneWidget);
       await tester.tap(find.text(l.remotePanel));
       await tester.pumpAndSettle();
       expect(panel.previewActive, isTrue);
@@ -2162,20 +2163,10 @@ void main() {
           matching: find.byType(Scrollable),
         ),
       );
-      await tester.tap(find.descendant(of: find.byKey(const ValueKey('time')), matching: find.byType(Switch)));
+      expect(find.byType(PanelOrderPage), findsOneWidget);
+      await tester.tap(find.descendant(of: find.byKey(const ValueKey('time')), matching: find.byType(Text)).first);
       await tester.pumpAndSettle();
       expect(find.byKey(const Key('statusbar_clock')), findsNothing);
-      await tester.binding.handlePopRoute();
-      await tester.pumpAndSettle();
-      expect(find.byType(RemotePanelPage), findsOneWidget);
-      expect(panel.previewActive, isTrue);
-      final order = find.text(l.panelObjectOrder);
-      await tester.ensureVisible(order);
-      await tester.tap(order);
-      await tester.pumpAndSettle();
-      expect(find.byType(PanelOrderPage), findsOneWidget);
-      expect(panel.previewActive, isTrue);
-      expectClearToolbar();
       await tester.binding.handlePopRoute();
       await tester.pumpAndSettle();
       expect(find.byType(RemotePanelPage), findsOneWidget);

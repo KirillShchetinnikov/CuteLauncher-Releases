@@ -1,3 +1,4 @@
+import 'widget_placement_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -52,6 +53,7 @@ class _SystemWidgetSettingsPageState extends State<SystemWidgetSettingsPage> {
       title: Text(l.systemWidgetSettings),
       child: ListView(
         children: [
+          WidgetPlacementLink(id: 'system', title: l.systemWidgetSettings),
           RoundedSwitchListTile(
             autofocus: true,
             title: Text(l.systemShowCpu),

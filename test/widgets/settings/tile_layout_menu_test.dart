@@ -8,8 +8,9 @@ import 'package:flauncher/providers/appearance_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/apps_grid.dart';
 import 'package:flauncher/widgets/settings/interface_settings_page.dart';
+import 'package:flauncher/widgets/settings/application_info_settings_page.dart';
 import 'package:flauncher/widgets/settings/settings_panel_page.dart';
-import 'package:flauncher/widgets/settings/appearance_settings_page.dart';
+import 'package:flauncher/widgets/settings/general_settings_page.dart';
 import 'package:flauncher/widgets/settings/settings_style_page.dart';
 import 'package:flauncher/widgets/settings/category_appearance_page.dart';
 import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
@@ -73,29 +74,27 @@ void main() {
     (tester) async {
       await pump(tester, const SettingsPanelPage());
       expect(
-        tester.getTopLeft(find.text('Верхняя панель')).dy,
+        tester.getTopLeft(find.text('Виджеты и панели')).dy,
         greaterThan(tester.getTopLeft(find.text('Главный экран')).dy),
       );
       expect(
-        tester.getTopLeft(find.text('Верхняя панель')).dy,
-        lessThan(tester.getTopLeft(find.text('Стиль интерфейса')).dy),
+        tester.getTopLeft(find.text('Виджеты и панели')).dy,
+        lessThan(tester.getTopLeft(find.text('Настройки лаунчера')).dy),
       );
       await pump(tester, const InterfaceSettingsPage());
-      expect(find.text('Верхняя панель'), findsNothing);
+      expect(find.text('Виджеты и панели'), findsNothing);
       final l = AppLocalizations.of(
         tester.element(find.byType(InterfaceSettingsPage)),
       )!;
       expect(find.text(l.settingsMenuPosition), findsNothing);
-      expect(find.byType(FocusableSettingsTile), findsNWidgets(4));
+      expect(find.byType(FocusableSettingsTile), findsNWidgets(7));
       expect(find.text(l.sectionsAndOrder), findsOneWidget);
-      expect(find.text(l.applicationInfoSettings), findsOneWidget);
-      expect(find.text(l.appChannelsTitle), findsNothing);
-      await tester.tap(find.text('${l.homeScreen} · ${l.appearanceSettings}'));
+      await tester.tap(find.text(l.applicationInfoSettings));
       await tester.pumpAndSettle();
-      expect(find.byType(HomeAppearancePage), findsOneWidget);
-      final entries = tester.widgetList<FocusableSettingsTile>(find.byType(FocusableSettingsTile)).toList();
-      expect((entries.first.title as Text).data, l.background);
-      expect(entries.first.autofocus, isTrue);
+      expect(find.byType(ApplicationInfoSettingsPage), findsOneWidget);
+      Navigator.of(tester.element(find.byType(ApplicationInfoSettingsPage))).pop();
+      await tester.pumpAndSettle();
+      expect(find.text(l.appChannelsTitle), findsNothing);
       await tester.tap(find.text(l.background));
       await tester.pumpAndSettle();
       expect(find.text('wallpaper destination'), findsOneWidget);
@@ -109,8 +108,6 @@ void main() {
       expect(find.text(l.homeScrollMode), findsOneWidget);
       expect(find.text(l.homeSectionPosition), findsOneWidget);
       Navigator.of(tester.element(find.byType(SectionStylePage)) ).pop();
-      await tester.pumpAndSettle();
-      Navigator.of(tester.element(find.byType(HomeAppearancePage))).pop();
       await tester.pumpAndSettle();
       await tester.tap(find.text(l.homeParameters));
       await tester.pumpAndSettle();
@@ -132,7 +129,10 @@ void main() {
   testWidgets('settings side lives in appearance style and remains editable', (
     tester,
   ) async {
-    await pump(tester, const AppearanceSettingsPage());
+    await pump(tester, const GeneralSettingsPage());
+    expect(find.text('Оформление'), findsNothing);
+    expect(find.text('Стиль уведомлений'), findsOneWidget);
+    expect(find.text('Сбросить оформление'), findsOneWidget);
     expect(find.text('Стиль настроек'), findsOneWidget);
     expect(find.text('Фон'), findsNothing);
     await tester.tap(find.text('Стиль настроек'));

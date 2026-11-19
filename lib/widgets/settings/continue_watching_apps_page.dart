@@ -117,7 +117,7 @@ class _ContinueWatchingAppsPageState extends State<ContinueWatchingAppsPage> {
                   ),
                 if (blocked.isNotEmpty)
                   FocusableSettingsTile(
-                    leading: const Icon(Icons.clear_all),
+                    leading: const Icon(Icons.lock_open_outlined),
                     title: Text(l.unblockAllApps),
                     onPressed: () async {
                       await settings.unhideAllWatchNextPackages();

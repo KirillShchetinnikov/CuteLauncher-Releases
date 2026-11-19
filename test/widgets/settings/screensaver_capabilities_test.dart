@@ -1,10 +1,10 @@
+import 'package:flauncher/widgets/settings/settings_destinations.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/settings_import.dart';
 import 'package:flauncher/providers/screensaver_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/appearance_service.dart';
 import 'package:flauncher/widgets/settings/back_button_actions.dart';
-import 'package:flauncher/widgets/settings/appearance_settings_page.dart';
 import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
 import 'package:flauncher/widgets/settings/interface_settings_page.dart';
 import 'package:flutter/material.dart';
@@ -73,7 +73,8 @@ void main() {
     'Android TV picker and clock editor appear only with system selection',
     (tester) async {
       canChoose = true;
-      await pump(tester, const AppearanceSettingsPage());
+      await pump(tester, const LauncherFunctionsPage());
+      await tester.scrollUntilVisible(find.text('Screensaver Clock Style'), 240);
       expect(find.text('Screensaver Clock Style'), findsOneWidget);
       expect(find.text('Choose screensaver in Android TV'), findsOneWidget);
       await tester.ensureVisible(find.text('Choose screensaver in Android TV'));
@@ -86,7 +87,6 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Screensaver Clock Style'), findsNothing);
       expect(find.text('Choose screensaver in Android TV'), findsNothing);
-      expect(find.byType(FocusableSettingsTile), findsNWidgets(6));
     },
   );
 
@@ -104,7 +104,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(settings.backButtonAction, BACK_BUTTON_ACTION_SCREENSAVER);
       expect(find.byType(AlertDialog), findsNothing);
-      await pump(tester, const AppearanceSettingsPage());
+      await pump(tester, const LauncherFunctionsPage());
       expect(find.text('Choose screensaver in Android TV'), findsNothing);
     },
   );

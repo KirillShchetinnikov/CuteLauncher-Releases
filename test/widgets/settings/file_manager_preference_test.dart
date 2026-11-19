@@ -72,7 +72,7 @@ void main() {
             tester.element(find.byType(GeneralSettingsPage)),
           )!;
           final title = find.text(l.fileManagerPreference);
-          await tester.ensureVisible(title);
+          await tester.scrollUntilVisible(title, 220);
           await tester.pumpAndSettle();
           expect(find.text(l.fileManagerAsk), findsOneWidget);
           await tester.tap(title);

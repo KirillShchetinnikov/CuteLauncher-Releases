@@ -574,6 +574,14 @@ class _AdbPageState extends State<AdbPage> with WidgetsBindingObserver {
                       _status != 'success' &&
                       _status != 'homeUnchanged')
                     Text(_stateText(l)),
+                  if (!_verified)
+                    FocusableSettingsTile(
+                      autofocus: true,
+                      leading: const Icon(Icons.link),
+                      title: Text(l.adbOpenConnectionSettings),
+                      busy: _busy,
+                      onPressed: () => _openSection('connection'),
+                    ),
                   _action(
                     restoring ? l.adbRestoreDefault : l.adbAssignDefault,
                     adbAction,
@@ -590,7 +598,7 @@ class _AdbPageState extends State<AdbPage> with WidgetsBindingObserver {
                   if (_verified && restoring && !restoreAvailable)
                     Text(l.adbNoAvailableLauncher),
                   FocusableSettingsTile(
-                    autofocus: !adbActionReady,
+                    autofocus: _verified && !adbActionReady,
                     title: Text(l.adbSystemDefault),
                     leading: const Icon(Icons.home),
                     onPressed: () =>
@@ -759,14 +767,14 @@ class _AdbPageState extends State<AdbPage> with WidgetsBindingObserver {
                     () => _openPage(RemoteButtonsPage.routeName),
                     statusLabel: l.accessibilityPermission,
                   ),
-                  _menuTile(l.recentAppsTitle, Icons.recent_actors_outlined, null,
+                  _menuTile(l.recentAppsTitle, Icons.filter_none_outlined, null,
                     () => _openPage(RecentAppsPage.routeName), showStatus: false),
                   _menuTile(l.appPermissionsTitle, Icons.verified_user_outlined, null,
                     () => Navigator.of(context).push(SettingsRoute(
                       builder: (_) => const AppPermissionsPage())), showStatus: false),
                   _menuTile(
                     l.cleanerTitle,
-                    Icons.cleaning_services_outlined,
+                    Icons.app_blocking_outlined,
                     null,
                     () => Navigator.of(context).push(
                       SettingsRoute(builder: (_) => const TvCleanerPage()),

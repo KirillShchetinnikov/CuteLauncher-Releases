@@ -353,7 +353,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get actionCompleted => '작업 완료';
 
   @override
-  String get showRepositoryQrCode => 'QR 코드 표시';
+  String get showRepositoryQrCode => '저장소 QR 코드';
+
+  @override
+  String get discussionQrCode => '4PDA 토론 QR 코드';
 
   @override
   String get resetSections => '섹션 설정 재설정';
@@ -2231,7 +2234,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get rememberCategoryFocus => '마지막으로 집중된 카드 기억';
 
   @override
-  String get automaticBackups => '백업 및 동기화';
+  String get automaticBackups => '설정 백업 및 동기화';
 
   @override
   String get automaticBackupsHint =>
@@ -2257,6 +2260,12 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get updatePrereleases => '사전 출시 버전으로 업데이트';
+
+  @override
+  String get topPanelObjectsTitle => '상단 패널 항목';
+
+  @override
+  String get quickPanelObjectsTitle => '빠른 설정 항목';
 
   @override
   String get topPanelObjects => '객체';
@@ -2676,6 +2685,9 @@ class AppLocalizationsKo extends AppLocalizations {
       '기기 개발자 설정에서 디버깅 및 네트워크 ADB를 활성화한 다음 CuteLauncher를 신뢰하세요. 모든 ADB 작업에 따른 위험은 귀하의 책임입니다.';
 
   @override
+  String get adbOpenConnectionSettings => 'ADB 연결 설정 열기';
+
+  @override
   String get adbConnectionBlock => 'ADB 연결';
 
   @override
@@ -2919,7 +2931,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get backupOptions => '백업 옵션';
 
   @override
-  String get backupSaveMode => '백업';
+  String get backupSaveMode => '자동 백업';
 
   @override
   String get backupScope => '기기 간 백업';
@@ -2944,7 +2956,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get backupSyncLimit => '다음보다 자주 확인하지 마세요.';
 
   @override
-  String get backupSyncMode => '동기화';
+  String get backupSyncMode => '설정 동기화';
 
   @override
   String get backupSyncOptions => '동기화 옵션';
@@ -3831,7 +3843,7 @@ class AppLocalizationsKo extends AppLocalizations {
       '이 버튼과 누르기 유형은 이미 할당되었습니다. 다른 버튼이나 누르기 유형을 선택하세요.';
 
   @override
-  String get cleanerTitle => '기기 정리 관리자';
+  String get cleanerTitle => '앱 사용 중지 관리';
 
   @override
   String get cleanerRefresh => 'Refresh applications';
@@ -4144,6 +4156,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get networkFrequency => '주파수';
+
+  @override
+  String get networkWifiChannel => '채널';
 
   @override
   String get networkMbps => 'Mbps';
@@ -5368,6 +5383,27 @@ class AppLocalizationsKo extends AppLocalizations {
   String get backupDriveReconnect => 'Google Drive 다시 연결';
 
   @override
+  String get syncFilesEmpty => '아직 동기화 파일이 없습니다';
+
+  @override
+  String get syncFilesLoadFailed => '동기화 파일을 불러올 수 없습니다. 저장소 접근 권한을 확인하세요.';
+
+  @override
+  String get backupSyncNow => '지금 동기화';
+
+  @override
+  String get backupSyncAutomatic => '자동 동기화';
+
+  @override
+  String get backupLastSync => '마지막 동기화';
+
+  @override
+  String get backupNotSynced => '아직 동기화하지 않음';
+
+  @override
+  String get backupFileTitle => '백업 파일';
+
+  @override
   String get backupSyncRefresh => '새로고침';
 
   @override
@@ -5470,6 +5506,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get weatherCustomServer => '사용자 지정 서버 (Open-Meteo)';
+
+  @override
+  String get widgetsSettingsTitle => '위젯 설정';
 
   @override
   String get widgetSettings => '위젯 설정';
@@ -6063,4 +6102,100 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get backupExistingSettingsHelp =>
       '선택한 저장소에 동기화 설정이 이미 있습니다. 이 기기에 적용하거나, 이 기기의 설정으로 교체하거나, 병합할지 선택하세요. 병합 시 설정이 다르면 선택한 우선순위가 적용됩니다. 마법사의 마지막 단계에서 확인한 후 교환이 시작됩니다.';
+
+  @override
+  String get launcherSettings => '런처 설정';
+
+  @override
+  String get launcherFunctions => '런처 기능';
+
+  @override
+  String get widgetsAndPanels => '위젯 및 패널';
+
+  @override
+  String get launcherDefaultAndAdb => '기본 런처 및 ADB';
+
+  @override
+  String get defaultLauncherViaAdb => 'ADB로 기본 런처 설정';
+
+  @override
+  String get defaultLauncherViaAccessibility => '접근성으로 기본 런처 설정';
+
+  @override
+  String get automationAndComfort => '자동화 및 편의';
+
+  @override
+  String get maintenanceAndBackup => '유지 관리 및 백업';
+
+  @override
+  String get performanceAndDiagnostics => '성능 및 진단';
+
+  @override
+  String get nightModeAndBrightness => '야간 모드 및 밝기';
+
+  @override
+  String get systemAndNotifications => '시스템 및 알림';
+
+  @override
+  String get settingsGeneralGroup => '일반';
+
+  @override
+  String get settingsManagementGroup => '설정 관리';
+
+  @override
+  String get settingsMaintenanceGroup => '유지 관리';
+
+  @override
+  String get supportDeveloper => '개발자 후원';
+
+  @override
+  String get comingSoon => '출시 예정';
+
+  @override
+  String get mediaFolderSource => '폴더의 사진 또는 동영상';
+
+  @override
+  String get mediaFolderHelp => '사진은 설정한 간격으로, 동영상은 재생이 끝나면 전환됩니다.';
+
+  @override
+  String get mediaFolderNext => '다음 파일';
+
+  @override
+  String get mediaFolderError => '파일을 열 수 없습니다. 접근 권한과 파일 형식을 확인하세요.';
+
+  @override
+  String get settingsScreensaverGroup => '화면 보호기';
+
+  @override
+  String get homeSectionsGroup => '섹션 및 앱';
+
+  @override
+  String get homeVisualGroup => '모양';
+
+  @override
+  String get feedsAndOrder => '피드 및 순서';
+
+  @override
+  String get visibleFeeds => '표시된 피드';
+
+  @override
+  String get hiddenFeeds => '숨겨진 피드';
+
+  @override
+  String get controlAndAccessGroup => '제어 및 접근';
+
+  @override
+  String get repairsAndDiagnosticsGroup => '수정 및 진단';
+
+  @override
+  String get appsAndServicesGroup => '앱 및 서비스';
+
+  @override
+  String get deviceAndStatusGroup => '기기 및 상태';
+
+  @override
+  String get supportProjectGroup => '프로젝트 지원';
+
+  @override
+  String get deletionGroup => '삭제';
 }

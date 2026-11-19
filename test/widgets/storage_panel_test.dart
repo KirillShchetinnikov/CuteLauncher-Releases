@@ -8,7 +8,7 @@ import 'package:flauncher/providers/storage_status_service.dart';
 import 'package:flauncher/providers/tv_inputs_service.dart';
 import 'package:flauncher/providers/weather_service.dart';
 import 'package:flauncher/widgets/focus_aware_app_bar.dart';
-import 'package:flauncher/widgets/rounded_switch_list_tile.dart';
+import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
 import 'package:flauncher/widgets/settings/remote_panel_page.dart';
 import 'package:flauncher/widgets/settings/status_bar_panel_page.dart';
 import 'package:flauncher/widgets/top_panel_item.dart';
@@ -112,15 +112,15 @@ void main() {
         );
         await tester.pump(const Duration(milliseconds: 100));
         await tester.pumpAndSettle();
-        final nas = find.byKey(ValueKey(remoteMode ? 'nas' : 'show_nas'));
-        final usb = find.byKey(ValueKey(remoteMode ? 'usb' : 'show_usb'));
-        RoundedSwitchListTile toggle(Finder finder) => tester.widget(finder);
+        final nas = find.byKey(const ValueKey('nas'));
+        final usb = find.byKey(const ValueKey('usb'));
+        FocusableSettingsTile toggle(Finder finder) => tester.widget(finder);
         bool savedNas() =>
             remoteMode ? remote.visible('nas') : settings.showNasInStatusBar;
 
         expect(watches, [true]);
         expect(toggle(nas).enabled, false);
-        expect(toggle(nas).value, false);
+        expect(toggle(nas).toggled, false);
         expect(savedNas(), true);
         expect(toggle(usb).enabled, true);
 
@@ -137,7 +137,7 @@ void main() {
 
         await refresh(true);
         expect(toggle(nas).enabled, true);
-        expect(toggle(nas).value, true);
+        expect(toggle(nas).toggled, true);
         await tester.tap(nas);
         await tester.pumpAndSettle();
         expect(savedNas(), false);

@@ -48,7 +48,7 @@ void main() {
       expect(appearance.appearance.interfaceStyle, 'standard');
       expect(appearance.appearance.interfaceFont, 'medeo-sans');
       expect(appearance.appearance.panelFont, 'medeo-sans');
-      expect(appearance.appearance.number('settingsColor'), 0xff393939);
+      expect(appearance.appearance.number('settingsColor'), 0xff30343a);
       expect(appearance.appearance.number('settingsTextSize'), 16);
       expect(
         appearance.appearance.settingsScrollbarMode,

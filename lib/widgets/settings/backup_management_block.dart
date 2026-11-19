@@ -9,13 +9,14 @@ import '../launcher_dialog.dart';
 import 'focusable_settings_tile.dart';
 import 'settings_value_stepper.dart';
 import 'settings_page_layout.dart';
+import 'settings_information.dart';
 
 class BackupManagementPage extends StatelessWidget {
   const BackupManagementPage({super.key});
 
   @override
   Widget build(BuildContext context) => SettingsPageLayout(
-    title: Text(AppLocalizations.of(context)!.backupManagement),
+    title: Text(AppLocalizations.of(context)!.backupCopyList),
     child: const SingleChildScrollView(child: BackupManagementBlock()),
   );
 }
@@ -80,7 +81,10 @@ class _BackupManagementBlockState extends State<BackupManagementBlock> {
       }
     } catch (_) {
       if (mounted && request == _request) {
-        setState(() => _loadFailed = true);
+        setState(() {
+          _copies = [];
+          _loadFailed = true;
+        });
         showActionNotice(
           context,
           AppLocalizations.of(context)!.backupListFailed,
@@ -107,7 +111,8 @@ class _BackupManagementBlockState extends State<BackupManagementBlock> {
       builder: (dialog) => LauncherAlertDialog(
         title: Text(delete ? l.delete : l.backupRestoreCopy),
         content: Text(
-          delete ? l.backupDeleteConfirm : l.backupCloudImportConfirm,
+          '${_label(copy, MaterialLocalizations.of(context))}\n'
+          '${delete ? l.backupDeleteConfirm : l.backupCloudImportConfirm}',
         ),
         actions: [
           LauncherDialogButton(
@@ -118,6 +123,7 @@ class _BackupManagementBlockState extends State<BackupManagementBlock> {
           ),
           LauncherDialogButton(
             primary: true,
+            danger: delete,
             onPressed: () => Navigator.pop(dialog, true),
             child: Text(delete ? l.delete : l.importAction),
           ),
@@ -150,29 +156,27 @@ class _BackupManagementBlockState extends State<BackupManagementBlock> {
     final l = AppLocalizations.of(context)!;
     final delete = await showLauncherDialog<bool>(
       context: context,
-      builder: (dialog) => SimpleDialog(
+      builder: (dialog) => LauncherAlertDialog(
         title: Text(label),
-        children: [
-          SizedBox(
-            width: 400,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                FocusableSettingsTile(
-                  autofocus: true,
-                  title: Text(l.backupRestoreCopy),
-                  leading: const Icon(Icons.restore),
-                  onPressed: () => Navigator.pop(dialog, false),
-                ),
-                FocusableSettingsTile(
-                  title: Text(l.delete),
-                  leading: const Icon(Icons.delete_outline),
-                  onPressed: () => Navigator.pop(dialog, true),
-                ),
-              ],
-            ),
+        content: SizedBox(
+          width: 400,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              FocusableSettingsTile(
+                autofocus: true,
+                title: Text(l.backupRestoreCopy),
+                leading: const Icon(Icons.restore),
+                onPressed: () => Navigator.pop(dialog, false),
+              ),
+              FocusableSettingsTile(
+                title: Text(l.delete),
+                leading: const Icon(Icons.delete_outline),
+                onPressed: () => Navigator.pop(dialog, true),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
     if (delete != null && mounted) await _action(copy, delete);
@@ -233,17 +237,14 @@ class _BackupManagementBlockState extends State<BackupManagementBlock> {
         ),
         SizedBox(child: _loading ? const LinearProgressIndicator() : null),
         if (_loadFailed)
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Text(
-              l.backupListFailed,
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
-            ),
+          SettingsMessage(
+            text: l.backupListFailed,
+            kind: SettingsMessageKind.error,
           ),
         if (!_loading && _loaded && !_loadFailed && _copies.isEmpty)
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Text(l.noRestorePoints),
+          SettingsEmptyState(
+            text: l.noRestorePoints,
+            icon: Icons.folder_open_outlined,
           ),
         for (final copy in _copies.skip(_page * 20).take(20))
           FocusableSettingsTile(

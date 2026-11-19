@@ -6,7 +6,7 @@ import '../../l10n/app_localizations.dart';
 import '../../providers/settings_service.dart';
 import '../../quick_actions.dart';
 import '../quick_action_presentation.dart';
-import '../rounded_switch_list_tile.dart';
+import 'settings_reorder_controls.dart';
 import '../action_notice.dart';
 import 'focusable_settings_tile.dart';
 import 'settings_help.dart';
@@ -18,49 +18,14 @@ class QuickActionsSettingsPage extends StatelessWidget {
   const QuickActionsSettingsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final l = AppLocalizations.of(context)!;
-    final settings = context.watch<SettingsService>();
-    final order = settings.quickActionsOrder;
-    final enabled = settings.quickActions;
-    return SettingsPageLayout(
-      title: Text(l.quickActionsSettings),
-      child: ListView(
-        children: [
-          for (final action in order)
-            RoundedSwitchListTile(
-              key: ValueKey(action),
-              autofocus: action == order.first,
-              value: enabled.contains(action),
-              title: Text(action.label(l)),
-              secondary: Icon(action.icon),
-              onChanged: (show) {
-                final actions = settings.quickActions.toSet();
-                if (show) {
-                  actions.add(action);
-                } else {
-                  actions.remove(action);
-                }
-                settings.setQuickActions(actions.toList());
-              },
-            ),
-          FocusableSettingsTile(
-            title: Text(l.reorder),
-            leading: const Icon(Icons.swap_vert),
-            onPressed: () =>
-                Navigator.of(context)
-                    .pushNamed(QuickActionsOrderPage.routeName),
-          ),
-          SettingsHelp(title: l.tvPowerTitle, text: l.quickActionsPowerHelp),
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) =>
+      const QuickActionsOrderPage(editVisibility: true);
 }
 
 class QuickActionsOrderPage extends StatefulWidget {
   static const routeName = 'quick_actions_order';
-  const QuickActionsOrderPage({super.key});
+  final bool editVisibility;
+  const QuickActionsOrderPage({super.key, this.editVisibility = false});
 
   @override
   State<QuickActionsOrderPage> createState() => _QuickActionsOrderPageState();
@@ -69,6 +34,27 @@ class QuickActionsOrderPage extends StatefulWidget {
 class _QuickActionsOrderPageState extends State<QuickActionsOrderPage> {
   QuickAction? _moving;
   bool _saving = false;
+
+  Future<void> _toggle(QuickAction action) async {
+    if (_saving) return;
+    final settings = context.read<SettingsService>();
+    final enabled = settings.quickActions.toSet();
+    if (!enabled.remove(action)) enabled.add(action);
+    setState(() => _saving = true);
+    try {
+      await settings.setQuickActions(enabled.toList());
+    } catch (_) {
+      if (mounted) {
+        showActionNotice(
+          context,
+          AppLocalizations.of(context)!.appError,
+          error: true,
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _saving = false);
+    }
+  }
 
   void _select(QuickAction action) {
     setState(() => _moving = _moving == action ? null : action);
@@ -121,15 +107,22 @@ class _QuickActionsOrderPageState extends State<QuickActionsOrderPage> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
-    final order = context.watch<SettingsService>().quickActionsOrder;
+    final settings = context.watch<SettingsService>();
+    final order = settings.quickActionsOrder;
     return PopScope(
       canPop: _moving == null,
       onPopInvokedWithResult: (didPop, _) {
         if (!didPop && _moving != null) setState(() => _moving = null);
       },
       child: SettingsPageLayout(
-        title: Text(l.reorder),
-        footer: SettingsControlHint(text: l.backgroundInformationOrderHint),
+        title: Text(widget.editVisibility ? l.quickActionsTitle : l.reorder),
+        footer: SettingsControlHint(
+          text: widget.editVisibility
+              ? (_moving == null
+                    ? l.applicationInfoButtonsHint
+                    : l.applicationInfoMovingHint)
+              : l.backgroundInformationOrderHint,
+        ),
         child: ListView(
           children: [
             for (final action in order)
@@ -139,11 +132,29 @@ class _QuickActionsOrderPageState extends State<QuickActionsOrderPage> {
                 title: Text(action.label(l)),
                 leading: Icon(action.icon),
                 selected: _moving == action,
-                trailing: Icon(
-                  _moving == action ? Icons.unfold_more : Icons.swap_vert,
-                ),
-                onPressed: () => _select(action),
+                toggled: widget.editVisibility
+                    ? settings.quickActions.contains(action)
+                    : null,
+                busy: _saving || _moving != null && _moving != action,
+                trailing: widget.editVisibility
+                    ? SettingsReorderControls(
+                        value: settings.quickActions.contains(action),
+                        moving: _moving == action,
+                        onReorder: _saving ? null : () => _select(action),
+                      )
+                    : Icon(
+                        _moving == action ? Icons.unfold_more : Icons.swap_vert,
+                      ),
+                onPressed: () => widget.editVisibility && _moving == null
+                    ? _toggle(action)
+                    : _select(action),
+                onLongPress: () => _select(action),
                 onKeyEvent: (_, event) => _handleKey(action, event),
+              ),
+            if (widget.editVisibility)
+              SettingsHelp(
+                title: l.tvPowerTitle,
+                text: l.quickActionsPowerHelp,
               ),
           ],
         ),

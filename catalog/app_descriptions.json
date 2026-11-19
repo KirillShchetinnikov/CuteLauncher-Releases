@@ -19,7 +19,8 @@
     "catalog/inventories/google-tv-streamer-uttk-20261115-quick-settings-toast.json",
     "catalog/inventories/google-tv-streamer-uttk-20261115-landscape-263.json",
     "catalog/inventories/xiaomi-mibox4-oneday-20261116-aerialviews.json",
-    "catalog/inventories/tcl-g10-as16-20261116-home-tile-images.json"
+    "catalog/inventories/tcl-g10-as16-20261116-home-tile-images.json",
+    "catalog/inventories/formuler-z10-pro-max-android10-20261118-quick-actions-reboot.json"
   ],
   "packages": {
     "android": {
@@ -50,7 +51,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "android.auto_generated_rro__": {
@@ -118,7 +120,8 @@
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
         "formuler-z11-pro-max-user-adb-20261104",
-        "formuler-z11-pro-max-rvc-20261113-video-folder"
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "android.autoinstalls.config.google.gtvpai": {
@@ -246,7 +249,8 @@
         "formuler-z11-pro-max-rvc-20261113-video-folder",
         "google-tv-streamer-uttk-20261115-landscape",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ],
       "category": "user"
     },
@@ -269,7 +273,8 @@
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
         "formuler-z11-pro-max-user-adb-20261104",
-        "formuler-z11-pro-max-rvc-20261113-video-folder"
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ],
       "category": "user"
     },
@@ -1173,7 +1178,8 @@
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ],
       "category": "user"
     },
@@ -1252,7 +1258,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.bluetooth": {
@@ -1280,7 +1287,8 @@
         "formuler-z11-pro-max-rvc-20261113-video-folder",
         "tcl-g10-as16-20261115-home-tile-images",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.bluetoothmidiservice": {
@@ -1355,7 +1363,8 @@
         "formuler-z11-pro-max-rvc-20261113-video-folder",
         "tcl-g10-as16-20261115-home-tile-images",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.certinstaller": {
@@ -1386,7 +1395,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.companiondevicemanager": {
@@ -1417,7 +1427,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.connectivity.resources": {
@@ -1470,7 +1481,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.cts.priv.ctsshim": {
@@ -1501,7 +1513,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.deskclock": {
@@ -1515,7 +1528,8 @@
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
         "formuler-z11-pro-max-user-adb-20261104",
-        "formuler-z11-pro-max-rvc-20261113-video-folder"
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.devicelockcontroller": {
@@ -1576,7 +1590,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.dynsystem": {
@@ -1606,7 +1621,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.externalstorage": {
@@ -1637,7 +1653,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.federatedcompute.services": {
@@ -1673,7 +1690,8 @@
         "formuler-z11-pro-max-rvc-20261113-video-folder",
         "google-tv-streamer-uttk-20261115-landscape",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.health.connect.backuprestore": {
@@ -1764,7 +1782,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.inputdevices": {
@@ -1795,7 +1814,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.inputmethod.latin": {
@@ -1859,7 +1879,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.launcher3": {
@@ -1874,7 +1895,8 @@
         "droidlogic-x98q-android11-20261026",
         "formuler-z10-pro-max-android10-20261102",
         "formuler-z11-pro-max-user-adb-20261104",
-        "formuler-z11-pro-max-rvc-20261113-video-folder"
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.localtransport": {
@@ -1905,7 +1927,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.location.fused": {
@@ -1936,7 +1959,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.managedprovisioning": {
@@ -1976,7 +2000,8 @@
         "droidlogic-x98q-android11-20261026",
         "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.mtp": {
@@ -2008,7 +2033,8 @@
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
         "formuler-z11-pro-max-user-adb-20261104",
-        "formuler-z11-pro-max-rvc-20261113-video-folder"
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.musicfx": {
@@ -2076,7 +2102,8 @@
         "formuler-z11-pro-max-rvc-20261113-video-folder",
         "tcl-g10-as16-20261115-home-tile-images",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.networkstack.permissionconfig": {
@@ -2098,7 +2125,8 @@
         "formuler-z11-pro-max-rvc-20261113-video-folder",
         "tcl-g10-as16-20261115-home-tile-images",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.networkstack.tethering": {
@@ -2219,7 +2247,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.permissioncontroller": {
@@ -2259,7 +2288,8 @@
         "formuler-z11-pro-max-rvc-20261113-video-folder",
         "tcl-g10-as16-20261115-home-tile-images",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.providers.calendar": {
@@ -2289,7 +2319,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.providers.contacts": {
@@ -2319,7 +2350,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.providers.contacts.auto_generated_rro_product__": {
@@ -2363,7 +2395,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.providers.downloads.ui": {
@@ -2379,7 +2412,8 @@
         "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "formuler-z11-pro-max-user-adb-20261104",
-        "formuler-z11-pro-max-rvc-20261113-video-folder"
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.providers.media": {
@@ -2410,7 +2444,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.providers.media.module": {
@@ -2467,7 +2502,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.providers.settings.auto_generated_rro_product__": {
@@ -2532,7 +2568,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.providers.userdictionary": {
@@ -2562,7 +2599,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.proxyhandler": {
@@ -2593,7 +2631,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.rkpdapp": {
@@ -2658,7 +2697,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.settings": {
@@ -2702,7 +2742,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.sharedstoragebackup": {
@@ -2733,7 +2774,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.shell": {
@@ -2764,7 +2806,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.soundpicker": {
@@ -2813,7 +2856,8 @@
         "formuler-z11-pro-max-rvc-20261113-video-folder",
         "tcl-g10-as16-20261115-home-tile-images",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.systemui": {
@@ -2844,7 +2888,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.systemui.auto_generated_rro_vendor__": {
@@ -3123,7 +3168,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.tv.settings.gms.resoverlay": {
@@ -3254,7 +3300,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.virtualmachine.res": {
@@ -3305,7 +3352,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.wallpaper.livepicker": {
@@ -3352,7 +3400,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.android.wallpapercropper": {
@@ -3452,7 +3501,8 @@
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
         "formuler-z11-pro-max-user-adb-20261104",
-        "formuler-z11-pro-max-rvc-20261113-video-folder"
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ],
       "category": "user"
     },
@@ -3467,7 +3517,8 @@
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
         "formuler-z11-pro-max-user-adb-20261104",
-        "formuler-z11-pro-max-rvc-20261113-video-folder"
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.cxinventor.file.explorer": {
@@ -3491,7 +3542,8 @@
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "formuler-z11-pro-max-rvc-20261113-video-folder"
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ],
       "category": "user"
     },
@@ -3560,7 +3612,8 @@
       "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ],
       "category": "user"
     },
@@ -3924,7 +3977,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.google.android.ext.shared": {
@@ -3955,7 +4009,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.google.android.feedback": {
@@ -3983,7 +4038,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.google.android.gms": {
@@ -4013,7 +4069,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.google.android.gsf": {
@@ -4043,7 +4100,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.google.android.inputmethod.latin": {
@@ -4072,7 +4130,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.google.android.katniss": {
@@ -4102,7 +4161,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.google.android.landscape": {
@@ -4168,7 +4228,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.google.android.modulemetadata": {
@@ -4227,7 +4288,8 @@
         "formuler-z11-pro-max-rvc-20261113-video-folder",
         "tcl-g10-as16-20261115-home-tile-images",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.google.android.overlay.googlewebview": {
@@ -4436,7 +4498,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.google.android.partnersetup": {
@@ -4465,7 +4528,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.google.android.permissioncontroller": {
@@ -4494,7 +4558,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.google.android.play.games": {
@@ -4550,7 +4615,8 @@
         "google-tanix-w2-android11-20261101",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-beyondtv4-ar10-20261110",
-        "formuler-z11-pro-max-rvc-20261113-video-folder"
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.google.android.syncadapters.calendar": {
@@ -4579,7 +4645,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.google.android.syncadapters.contacts": {
@@ -4593,7 +4660,8 @@
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.google.android.theme.color": {
@@ -4633,7 +4701,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.google.android.tungsten.setupwraith": {
@@ -4707,7 +4776,8 @@
         "formuler-z10-pro-max-android10-20261102",
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-beyondtv4-ar10-20261110",
-        "formuler-z11-pro-max-rvc-20261113-video-folder"
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.google.android.tv.googletvremotepairer": {
@@ -4762,7 +4832,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.google.android.tv.settings.energymodes.resoverlay": {
@@ -4880,7 +4951,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.google.android.youtube.tv": {
@@ -4904,7 +4976,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ],
       "category": "preinstalled"
     },
@@ -4935,7 +5008,8 @@
         "formuler-z10-pro-max-android10-20261102",
         "kp1-yyz",
         "formuler-z11-pro-max-user-adb-20261104",
-        "formuler-z11-pro-max-rvc-20261113-video-folder"
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ],
       "category": "user"
     },
@@ -4946,7 +5020,8 @@
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
         "formuler-z11-pro-max-user-adb-20261104",
-        "formuler-z11-pro-max-rvc-20261113-video-folder"
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ],
       "category": "user"
     },
@@ -4956,7 +5031,8 @@
       "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ],
       "category": "user"
     },
@@ -4967,7 +5043,8 @@
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
         "formuler-z11-pro-max-user-adb-20261104",
-        "formuler-z11-pro-max-rvc-20261113-video-folder"
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ],
       "category": "user"
     },
@@ -5011,7 +5088,8 @@
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
         "formuler-z11-pro-max-user-adb-20261104",
-        "formuler-z11-pro-max-rvc-20261113-video-folder"
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ],
       "category": "user"
     },
@@ -5048,7 +5126,8 @@
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
         "formuler-z11-pro-max-user-adb-20261104",
-        "formuler-z11-pro-max-rvc-20261113-video-folder"
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.mediatek.AirplayAPK": {
@@ -5181,7 +5260,8 @@
       "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.neilturner.aerialviews": {
@@ -5197,7 +5277,8 @@
         "google-tanix-w2-android11-20261101",
         "tcl-beyondtv4-ar10-20261110",
         "formuler-z11-pro-max-rvc-20261113-video-folder",
-        "xiaomi-mibox4-oneday-20261116-aerialviews"
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.nes.blerc": {
@@ -5597,7 +5678,8 @@
       "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.realtek.tv.mdnsoffloadmanager.resoverlay": {
@@ -5663,7 +5745,8 @@
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
         "formuler-z11-pro-max-user-adb-20261104",
-        "formuler-z11-pro-max-rvc-20261113-video-folder"
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.rtk.mediabrowser.installer": {
@@ -5677,7 +5760,8 @@
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
         "formuler-z11-pro-max-user-adb-20261104",
-        "formuler-z11-pro-max-rvc-20261113-video-folder"
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.rtk.partnerconfig": {
@@ -5691,7 +5775,8 @@
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
         "formuler-z11-pro-max-user-adb-20261104",
-        "formuler-z11-pro-max-rvc-20261113-video-folder"
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.rtk.partnerinterface": {
@@ -5705,7 +5790,8 @@
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
         "formuler-z11-pro-max-user-adb-20261104",
-        "formuler-z11-pro-max-rvc-20261113-video-folder"
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.rtk.prplmesh": {
@@ -5718,7 +5804,8 @@
       "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "com.ruet_cse_1503050.ragib.appbackup.pro": {
@@ -6961,7 +7048,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories/formuler-z11-pro-max-rvc-20261113-video-folder.json",
       "observedOn": [
-        "formuler-z11-pro-max-rvc-20261113-video-folder"
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "dev.imranr.obtainium.fdroid": {
@@ -7012,7 +7100,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ],
       "category": "user"
     },
@@ -7028,7 +7117,8 @@
         "tcl-g10-as16-20261112-feed-timeout",
         "formuler-z11-pro-max-rvc-20261113-video-folder",
         "tcl-g10-as16-20261115-home-tile-images",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ],
       "category": "user"
     },
@@ -7291,7 +7381,8 @@
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
         "formuler-z11-pro-max-user-adb-20261104",
-        "formuler-z11-pro-max-rvc-20261113-video-folder"
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ],
       "category": "user"
     },
@@ -7323,7 +7414,8 @@
         "tcl-g10-as16-20261112-feed-timeout",
         "formuler-z11-pro-max-rvc-20261113-video-folder",
         "tcl-g10-as16-20261115-home-tile-images",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "org.myklos.adbhelper": {
@@ -7333,7 +7425,8 @@
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
         "formuler-z11-pro-max-user-adb-20261104",
-        "formuler-z11-pro-max-rvc-20261113-video-folder"
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ],
       "category": "user"
     },
@@ -7364,7 +7457,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "formuler-z11-pro-max-rvc-20261113-video-folder",
-        "google-tv-streamer-uttk-20261115-quick-settings-toast"
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ],
       "category": "preinstalled"
     },
@@ -7391,7 +7485,8 @@
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
         "formuler-z11-pro-max-user-adb-20261104",
-        "formuler-z11-pro-max-rvc-20261113-video-folder"
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ],
       "category": "user"
     },
@@ -7491,7 +7586,8 @@
         "formuler-z11-pro-max-rvc-20261113-video-folder",
         "tcl-g10-as16-20261115-home-tile-images",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ],
       "category": "preinstalled"
     },
@@ -7598,7 +7694,8 @@
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
         "formuler-z11-pro-max-user-adb-20261104",
-        "formuler-z11-pro-max-rvc-20261113-video-folder"
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ],
       "category": "user"
     },
@@ -7620,7 +7717,8 @@
       "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ],
       "category": "user"
     },
@@ -7630,7 +7728,8 @@
       "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ],
       "category": "user"
     },
@@ -7716,7 +7815,8 @@
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
         "formuler-z11-pro-max-user-adb-20261104",
-        "formuler-z11-pro-max-rvc-20261113-video-folder"
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "tv.formuler.mol3.real": {
@@ -7737,7 +7837,8 @@
       "source": "catalog/inventories/formuler-z10-pro-max-android10-20261102.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
-        "formuler-z11-pro-max-user-adb-20261104"
+        "formuler-z11-pro-max-user-adb-20261104",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ],
       "category": "user"
     },
@@ -7752,7 +7853,8 @@
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
         "formuler-z11-pro-max-user-adb-20261104",
-        "formuler-z11-pro-max-rvc-20261113-video-folder"
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "tv.formuler.productservice": {
@@ -7766,7 +7868,8 @@
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
         "formuler-z11-pro-max-user-adb-20261104",
-        "formuler-z11-pro-max-rvc-20261113-video-folder"
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "tv.formuler.real.upgrade": {
@@ -7780,7 +7883,8 @@
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
         "formuler-z11-pro-max-user-adb-20261104",
-        "formuler-z11-pro-max-rvc-20261113-video-folder"
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "tv.formuler.remoteupgrade.z": {
@@ -7794,7 +7898,8 @@
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
         "formuler-z11-pro-max-user-adb-20261104",
-        "formuler-z11-pro-max-rvc-20261113-video-folder"
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "tv.formuler.service.networkstorage.real": {
@@ -7808,7 +7913,8 @@
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
         "formuler-z11-pro-max-user-adb-20261104",
-        "formuler-z11-pro-max-rvc-20261113-video-folder"
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "tv.formuler.service.real": {
@@ -7822,7 +7928,8 @@
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
         "formuler-z11-pro-max-user-adb-20261104",
-        "formuler-z11-pro-max-rvc-20261113-video-folder"
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "tv.formuler.siptv.leanbacklauncher.real": {
@@ -7836,7 +7943,8 @@
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
         "formuler-z11-pro-max-user-adb-20261104",
-        "formuler-z11-pro-max-rvc-20261113-video-folder"
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ]
     },
     "tv.formuler.tvprovider": {
@@ -7912,7 +8020,8 @@
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
         "formuler-z11-pro-max-user-adb-20261104",
-        "formuler-z11-pro-max-rvc-20261113-video-folder"
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ],
       "category": "user"
     },
@@ -7937,7 +8046,8 @@
       "observedOn": [
         "formuler-z10-pro-max-android10-20261102",
         "formuler-z11-pro-max-user-adb-20261104",
-        "formuler-z11-pro-max-rvc-20261113-video-folder"
+        "formuler-z11-pro-max-rvc-20261113-video-folder",
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
       ],
       "category": "user"
     },

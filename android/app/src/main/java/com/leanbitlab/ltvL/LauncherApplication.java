@@ -2,6 +2,8 @@ package com.leanbitlab.ltvL;
 
 /** Eager WorkManager initialization is disabled; recovery schedules work from IO. */
 public final class LauncherApplication extends android.app.Application implements androidx.work.Configuration.Provider {
+    final AutoLaunchBridge.WakeEvents autoLaunchWake = new AutoLaunchBridge.WakeEvents();
+
     @Override public void onCreate() {
         super.onCreate();
         try { observeAppPermissions(); }

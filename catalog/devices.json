@@ -416,6 +416,22 @@
           "appBuild": "1.6.6+191",
           "summary": "Диагностика 1793715618966 содержит три отказа adb.action: после успешных shell-команд (user 0, UID 2000) возникает NoSuchMethodError для java.util.stream.Stream.toList(). Интерфейс ошибочно сообщает о подключении. В исходниках соответствующий вызов найден в AdbLauncherPolicy.restoreTarget. Это дефект обработки после соединения, а не подтверждённый отказ TCP/RSA. Исправление и аппаратная перепроверка не выполнялись.",
           "evidenceSection": "Formuler Z10 Pro MAX: ложный отказ подключения ADB — 3 ноября 2026"
+        },
+        {
+          "feature": "quick-actions-reboot-via-shell",
+          "status": "failed",
+          "date": "2026-11-18",
+          "appBuild": "1.8.0-test.13+273",
+          "summary": "Пользователь воспроизвёл отказ с ПК при adb shell svc power reboot. Logcat фиксирует SecurityException в PowerManagerService: у UID 2000 нет android.permission.REBOOT. Код 0 в отчёте CuteLauncher относится к запуску фоновой команды. Отдельная команда adb reboot с ПК перезагрузила приставку.",
+          "evidenceSection": "Formuler Z10 Pro MAX: перезагрузка из «Быстрых действий» — 18 ноября 2026"
+        },
+        {
+          "feature": "quick-actions-reboot",
+          "status": "verified",
+          "date": "2026-11-18",
+          "appBuild": "1.8.0-test.13+274",
+          "summary": "Владелец Formuler Z10 Pro MAX подтвердил перезагрузку из меню «Быстрые действия» на тестовой сборке ARMv7, которая открывает службу reboot: через встроенный ADB. Источник — сообщение владельца в ЛС 4PDA.",
+          "evidenceSection": "Formuler Z10 Pro MAX: перезагрузка из «Быстрых действий» — 18 ноября 2026"
         }
       ]
     },
@@ -672,6 +688,32 @@
           "appBuild": "1.7.5+243",
           "summary": "По сообщению пользователя AerialViews запускается по таймауту на штатном Home, а на CuteLauncher не появляется. При экспорте CuteLauncher назначен HOME, пакет Android TV Home отключён, AerialViews включён и выбран адаптивный пейзаж с движением. Состояние системного таймера и события запуска заставки в отчёте отсутствуют. Причина и результат контрольного сравнения неизвестны.",
           "evidenceSection": "Mi Box S: автоматический запуск AerialViews — 15 ноября 2026"
+        }
+      ]
+    },
+    {
+      "id": "tcl-g10-android14-au02-user",
+      "label": "TCL Smart TV Pro — Android 14, AU02",
+      "kind": "physical",
+      "exactMatch": false,
+      "identity": {
+        "manufacturer": "TCL",
+        "model": "Smart TV Pro",
+        "device": null,
+        "fingerprint": null,
+        "firmware": "G10-user 14 UTT2.250416.001 AU02 release-keys",
+        "android": "14",
+        "sdk": "34",
+        "abis": null
+      },
+      "results": [
+        {
+          "feature": "app-autostart-after-wake",
+          "status": "unverified",
+          "date": "2026-11-19",
+          "appBuild": "1.8.0-test.13+273",
+          "summary": "По сообщению владельца приложение TV открывается после перезагрузки, а после длительного сна остаётся HOME. Базовый отчёт устанавливает версию и прошивку. Событий сна, пробуждения и попытки автозапуска в отчёте нет. Сборка предшествует исправлению a23f1ce9. Работа автозапуска с исправлением на AU02 не проверена.",
+          "evidenceSection": "TCL Smart TV Pro AU02: диагностика автозапуска — 19 ноября 2026"
         }
       ]
     }

@@ -1,16 +1,3 @@
-import 'settings_section.dart';
-import 'traffic_settings_page.dart';
-import 'volume_widget_settings_page.dart';
-import 'network_speed_settings_page.dart';
-import 'system_widget_settings_page.dart';
-import 'vpn_settings_page.dart';
-import 'sleep_timer_settings_page.dart';
-import 'quick_actions_settings_page.dart';
-import 'information_settings_page.dart';
-import 'settings_route.dart';
-import 'remote_panel_page.dart';
-import 'inputs_settings_page.dart';
-import 'settings_page_layout.dart';
 /*
  * FLauncher
  * Copyright (C) 2024 Oscar Rojas
@@ -28,159 +15,19 @@ import 'settings_page_layout.dart';
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:flauncher/l10n/app_localizations.dart';
 
-import '../../providers/settings_service.dart';
-import '../../providers/storage_status_service.dart';
-import '../../providers/tv_inputs_service.dart';
-import '../rounded_switch_list_tile.dart';
-import '../storage_status_watch.dart';
+import '../../l10n/app_localizations.dart';
 import 'focusable_settings_tile.dart';
 import 'panel_order_page.dart';
-import 'notifications_settings_page.dart';
-import 'settings_help.dart';
+import 'settings_page_layout.dart';
 
 class StatusBarObjectsPage extends StatelessWidget {
   static const routeName = 'status_bar_objects';
-
   const StatusBarObjectsPage({super.key});
   @override
-  Widget build(BuildContext context) {
-    final l = AppLocalizations.of(context)!;
-    final s = context.watch<SettingsService>();
-    final inputs = context.watch<TvInputsService?>();
-    final nasSupported = context.select<StorageStatusService?, bool>(
-      (storage) => storage?.state.nasSupported == true,
-    );
-    final page = SettingsPageLayout(
-      title: Text(
-        l.topPanelObjects,
-        style: Theme.of(context).textTheme.titleLarge,
-      ),
-      child: ListView(
-        children: [
-          const InformationObjectsSection(),
-          SettingsSection(title: l.networkSummary, children: [
-          RoundedSwitchListTile(
-            autofocus: false,
-            value: s.showNetworkIndicatorInStatusBar,
-            onChanged: s.setShowNetworkIndicatorInStatusBar,
-            title: Text(l.showNetwork),
-          ),
-          RoundedSwitchListTile(
-            key: const ValueKey('show_nas'),
-            enabled: nasSupported,
-            value: nasSupported && s.showNasInStatusBar,
-            onChanged: s.setShowNasInStatusBar,
-            title: Text(l.networkStorageTitle),
-          ),
-          RoundedSwitchListTile(value: s.showVpnInStatusBar,
-            onChanged: s.setShowVpnInStatusBar, title: Text(l.vpnTitle)),
-          FocusableSettingsTile(title: Text(l.vpnSettings), leading: const Icon(Icons.vpn_key),
-            onPressed: () => Navigator.of(context).pushNamed(VpnSettingsPage.routeName)),
-          RoundedSwitchListTile(value: s.showNetworkSpeedInStatusBar,
-            onChanged: s.setShowNetworkSpeedInStatusBar, title: Text(l.networkSpeedTitle)),
-          FocusableSettingsTile(title: Text(l.networkSpeedSettings), leading: const Icon(Icons.speed),
-            onPressed: () => Navigator.of(context).pushNamed(NetworkSpeedSettingsPage.routeName)),
-          RoundedSwitchListTile(
-            autofocus: false,
-            value: s.showDataWidgetInStatusBar,
-            onChanged: s.setShowDataWidgetInStatusBar,
-            title: Text(l.showTraffic),
-          ),
-          FocusableSettingsTile(title: Text(l.trafficSettings), leading: const Icon(Icons.data_usage),
-            onPressed: () => Navigator.of(context).pushNamed(TrafficSettingsPage.routeName)),
-          ]),
-          SettingsSection(title: l.soundAndInputsGroup, children: [
-          RoundedSwitchListTile(
-            value: s.showVolumeInStatusBar,
-            onChanged: s.setShowVolumeInStatusBar,
-            title: Text(l.showVolume),
-          ),
-          FocusableSettingsTile(
-            title: Text(l.volumeWidgetSettings),
-            leading: const Icon(Icons.volume_up_outlined),
-            onPressed: () => Navigator.of(context).pushNamed(VolumeWidgetSettingsPage.routeName),
-          ),
-          RoundedSwitchListTile(key: const ValueKey('show_usb'),
-            value: s.showUsbInStatusBar, onChanged: s.setShowUsbInStatusBar,
-            title: Text(l.usbStorageTitle)),
-          RoundedSwitchListTile(
-            autofocus: false,
-            value: s.showInputsWidgetInStatusBar,
-            enabled: inputs?.hasInputs == true,
-            onChanged: s.setShowInputsWidgetInStatusBar,
-            title: Text(l.inputs),
-          ),
-          if (inputs?.initialized == true && !inputs!.hasInputs)
-            SettingsHelp(title: l.inputs, text: l.inputsUnavailableHint),
-          FocusableSettingsTile(title: Text(l.inputsSettings),
-            leading: const Icon(Icons.settings_input_hdmi),
-            enabled: inputs?.hasInputs == true,
-            onPressed: () => Navigator.of(context).pushNamed(InputsSettingsPage.routeName)),
-          ]),
-          SettingsSection(title: l.notifications, children: [
-          RoundedSwitchListTile(
-            autofocus: false,
-            value: s.showNotificationsWidgetInStatusBar,
-            onChanged: s.setShowNotificationsWidgetInStatusBar,
-            title: Text(l.notificationBell),
-          ),
-          FocusableSettingsTile(
-            leading: const Icon(Icons.notifications_active_outlined),
-            title: Text(l.notifications),
-            onPressed: () => Navigator.of(context)
-                .pushNamed(NotificationsSettingsPage.routeName),
-          ),
-          ]),
-          SettingsSection(title: l.system, children: [
-          RoundedSwitchListTile(title: Text(l.system), value: s.showSystemInStatusBar,
-            onChanged: s.setShowSystemInStatusBar),
-          FocusableSettingsTile(title: Text(l.systemWidgetSettings), leading: const Icon(Icons.monitor_heart_outlined),
-            onPressed: () => Navigator.of(context).pushNamed(SystemWidgetSettingsPage.routeName)),
-          ]),
-          SettingsSection(title: l.timerAndNightModeGroup, children: [
-          RoundedSwitchListTile(
-            value: s.showSleepTimerInStatusBar,
-            onChanged: s.setShowSleepTimerInStatusBar,
-            title: Text(l.sleepTimer),
-          ),
-          FocusableSettingsTile(title: Text(l.sleepTimerSettings), leading: const Icon(Icons.timer_outlined),
-            onPressed: () => Navigator.of(context).pushNamed(SleepTimerSettingsPage.routeName)),
-          RoundedSwitchListTile(
-            value: s.showNightModeInStatusBar,
-            onChanged: s.setShowNightModeInStatusBar,
-            title: Text(l.nightModeTitle),
-          ),
-          ]),
-
-          RoundedSwitchListTile(
-            autofocus: false,
-            value: s.showSystemSettingsInStatusBar,
-            onChanged: s.setShowSystemSettingsInStatusBar,
-            title: Text(l.androidTvSettings),
-          ),
-          RoundedSwitchListTile(
-            title: Text(l.quickActionsTitle),
-            value: s.showQuickActionsInStatusBar,
-            onChanged: s.setShowQuickActionsInStatusBar,
-          ),
-          FocusableSettingsTile(
-            title: Text(l.quickActionsSettings),
-            leading: const Icon(Icons.bolt_outlined),
-            onPressed: () => Navigator.of(context).pushNamed(QuickActionsSettingsPage.routeName),
-          ),
-        ],
-      ),
-    );
-    return StorageStatusWatch(
-      visible: ModalRoute.isCurrentOf(context) != false,
-      child: page,
-    );
-  }
+  Widget build(BuildContext context) =>
+      const PanelOrderPage(editVisibility: true);
 }
 
 class StatusBarPanelPage extends StatelessWidget {
@@ -194,31 +41,16 @@ class StatusBarPanelPage extends StatelessWidget {
       child: ListView(
         children: [
           FocusableSettingsTile(
-            autofocus: true,
-            title: Text(l.appearanceSettings),
             leading: const Icon(Icons.palette_outlined),
+            title: Text(l.appearanceSettings),
             onPressed: () =>
                 Navigator.of(context).pushNamed('panel_appearance'),
           ),
           FocusableSettingsTile(
-            title: Text(l.topPanelObjects),
             leading: const Icon(Icons.widgets_outlined),
+            title: Text(l.topPanelObjects),
             onPressed: () =>
                 Navigator.of(context).pushNamed(StatusBarObjectsPage.routeName),
-          ),
-          FocusableSettingsTile(
-            title: Text(l.panelObjectOrder),
-            leading: const Icon(Icons.swap_vert),
-            onPressed: () =>
-                Navigator.of(context).pushNamed(PanelOrderPage.routeName),
-          ),
-          FocusableSettingsTile(
-            title: Text(l.remotePanel),
-            leading: const Icon(Icons.web_asset),
-            onPressed: () => Navigator.of(context).push(SettingsRoute(
-              settings: const RouteSettings(name: RemotePanelPage.routeName),
-              builder: (_) => const RemotePanelPage(),
-            )),
           ),
         ],
       ),

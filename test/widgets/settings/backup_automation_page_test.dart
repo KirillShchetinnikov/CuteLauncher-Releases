@@ -15,6 +15,8 @@ import 'package:flauncher/widgets/settings/settings_route.dart';
 import 'package:flauncher/widgets/settings/settings_value_stepper.dart';
 import 'package:flauncher/widgets/rounded_switch_list_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:flauncher/widgets/launcher_dialog.dart';
+import 'package:flauncher/widgets/settings/sync_files_page.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -88,6 +90,12 @@ class _Automation extends ChangeNotifier implements BackupAutomationService {
   final manualRuns = <bool>[];
   BackupSyncResumeChoice? resumeChoice;
   bool? lastBackupOnly;
+  @override
+  Future<List<RemoteBackupFile>> synchronizationFiles() async {
+    if (listFails) throw StateError('offline');
+    return returnedCopies ?? [];
+  }
+
   @override
   Future<void> deleteCopy(RemoteBackupFile copy) async {
     deletes++;
@@ -183,7 +191,7 @@ void main() {
         tester.element(find.byType(BackupOptionsPage)),
       )!;
       Future<void> open() async {
-        await tester.tap(find.text(l.backupAutoEnabled));
+        await tester.tap(find.text(l.backupSyncAutomatic));
         await tester.pumpAndSettle();
         expect(find.text(l.backupSyncResume), findsOneWidget);
         for (final label in [
@@ -275,6 +283,47 @@ void main() {
       },
     );
   }
+
+  testWidgets('sync files distinguish an empty store from a failed refresh', (
+    tester,
+  ) async {
+    final service = _Automation();
+    addTearDown(service.dispose);
+    await tester.pumpWidget(
+      ChangeNotifierProvider<BackupAutomationService>.value(
+        value: service,
+        child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const Scaffold(body: SyncFilesPage()),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    final l = AppLocalizations.of(tester.element(find.byType(SyncFilesPage)))!;
+    expect(find.text(l.syncFilesEmpty), findsOneWidget);
+    Future<void> refresh() async {
+      await tester.tap(find.text(l.backupSyncRefresh));
+      await tester.pumpAndSettle();
+    }
+
+    service.returnedCopies = [
+      RemoteBackupFile(
+        'cute-sync-shared-${'a' * 32}-100-${'b' * 16}.json',
+        'id',
+      ),
+    ];
+    await refresh();
+    expect(find.byKey(const ValueKey('id')), findsOneWidget);
+    service.listFails = true;
+    await refresh();
+    expect(find.text(l.syncFilesLoadFailed), findsOneWidget);
+    expect(find.text(l.syncFilesEmpty), findsNothing);
+    expect(find.byKey(const ValueKey('id')), findsNothing);
+    service.listFails = false;
+    await refresh();
+    expect(find.byKey(const ValueKey('id')), findsOneWidget);
+  });
 
   testWidgets('failed copy list stays an error and retry recovers', (
     tester,
@@ -407,7 +456,7 @@ void main() {
           FocusableSettingsTile,
           l.backupManagement,
         );
-        await tester.scrollUntilVisible(management, 100);
+        await tester.scrollUntilVisible(management, -150);
         await tester.ensureVisible(management);
         await tester.pumpAndSettle();
         expect(tester.widget<FocusableSettingsTile>(management).enabled, false);
@@ -447,20 +496,20 @@ void main() {
           find.widgetWithText(FocusableSettingsTile, l.backupSyncMode),
         );
         await tester.pumpAndSettle();
-        await activate(l.backupSyncRefresh);
+        await activate(l.backupSyncNow);
         expect(find.text(l.backupSyncResume), findsOneWidget);
         expect(automation.manualRuns, isEmpty);
         await tester.tap(find.text(l.cancel));
         await tester.pumpAndSettle();
         expect(automation.enabled, false);
-        await activate(l.backupSyncRefresh);
+        await activate(l.backupSyncNow);
         await tester.tap(find.text(l.backupSyncUseLocal));
         await tester.pumpAndSettle();
         expect(automation.resumeChoice, BackupSyncResumeChoice.local);
         expect(automation.enabled, false);
         await automation.configure(enabled: true);
         await tester.pumpAndSettle();
-        await activate(l.backupSyncRefresh);
+        await activate(l.backupSyncNow);
         expect(automation.manualRuns, [false]);
         await activate(l.backupSyncOptions);
         expect(find.text(l.backupSyncScope), findsOneWidget);
@@ -557,12 +606,12 @@ void main() {
           await tester.pumpAndSettle();
           await tester.tap(copy);
           await tester.pumpAndSettle();
-          expect(find.byType(SimpleDialog), findsOneWidget);
+          expect(find.byType(LauncherAlertDialog), findsOneWidget);
         }
 
         await openCopy();
         await activate(l.backupRestoreCopy);
-        expect(find.text(l.backupCloudImportConfirm), findsOneWidget);
+        expect(find.textContaining(l.backupCloudImportConfirm), findsOneWidget);
         await tester.tap(find.widgetWithText(TextButton, l.cancel));
         await tester.pumpAndSettle();
         expect(automation.imports, 0);
@@ -574,7 +623,7 @@ void main() {
         expect(automation.lastBackupOnly, true);
         await openCopy();
         await activate(l.delete);
-        expect(find.text(l.backupDeleteConfirm), findsOneWidget);
+        expect(find.textContaining(l.backupDeleteConfirm), findsOneWidget);
         await tester.tap(find.widgetWithText(TextButton, l.delete));
         await tester.pumpAndSettle();
         expect(automation.deletes, 1);

@@ -92,6 +92,7 @@ class _SyncProtectionPageState extends State<SyncProtectionPage>
             onChanged: (v) => setState(() => _confirmation = v),
           ),
           FocusableSettingsTile(
+            leading: const Icon(Icons.save_outlined),
             title: Text(l.save),
             busy: _busy || s.busy,
             onPressed: () async {

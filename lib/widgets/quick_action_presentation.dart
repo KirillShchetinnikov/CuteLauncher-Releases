@@ -16,7 +16,7 @@ extension QuickActionPresentation on QuickAction {
     QuickAction.sleep => Icons.bedtime_outlined,
     QuickAction.shutdown => Icons.power_settings_new,
     QuickAction.reboot => Icons.restart_alt,
-    QuickAction.screensaver => Icons.screenshot_monitor_outlined,
+    QuickAction.screensaver => Icons.desktop_windows_outlined,
     QuickAction.wallpaper => Icons.wallpaper_outlined,
   };
 }

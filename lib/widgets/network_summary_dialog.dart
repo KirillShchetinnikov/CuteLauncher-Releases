@@ -148,6 +148,8 @@ class _NetworkSummaryDialogState extends State<NetworkSummaryDialog>
     final ipv4 = addresses.where((address) => !address.contains(':')).toList();
     final ipv6 = addresses.where((address) => address.contains(':')).toList();
     final type = data?['networkType'];
+    final frequency = data?['frequency'] as int?;
+    final channel = _wifiChannel(frequency);
     final connected = type is int && type >= 0 && type < 4;
     final internet = data?['internetAccess'] == true;
     final connection = switch (type) {
@@ -180,13 +182,15 @@ class _NetworkSummaryDialogState extends State<NetworkSummaryDialog>
               ? l.networkUnavailable
               : "${data!['linkSpeed']} ${l.networkMbps}",
         ),
-        if (data?['frequency'] != null)
+        if (frequency != null)
           _metric(
             context,
             Icons.router_outlined,
             l.networkFrequency,
-            "${data!['frequency']} MHz",
+            '$frequency MHz',
           ),
+        if (channel != null)
+          _metric(context, Icons.tag, l.networkWifiChannel, '$channel'),
       ],
     ];
     return Stack(
@@ -388,4 +392,21 @@ class _NetworkSummaryDialogState extends State<NetworkSummaryDialog>
       ),
     );
   }
+}
+
+// Convert the current Wi-Fi frequency without requiring a newer Android API.
+int? _wifiChannel(int? frequency) {
+  if (frequency == null) return null;
+  return switch (frequency) {
+    2484 => 14,
+    5935 => 2,
+    >= 2412 && <= 2472 when (frequency - 2412) % 5 == 0 =>
+      (frequency - 2407) ~/ 5,
+    >= 5160 && <= 5885 when frequency % 5 == 0 => (frequency - 5000) ~/ 5,
+    >= 5955 && <= 7115 when (frequency - 5955) % 20 == 0 =>
+      (frequency - 5950) ~/ 5,
+    >= 58320 && <= 69120 when (frequency - 58320) % 2160 == 0 =>
+      ((frequency - 58320) ~/ 2160) + 1,
+    _ => null,
+  };
 }

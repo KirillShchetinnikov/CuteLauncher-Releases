@@ -353,7 +353,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get actionCompleted => 'アクションが完了しました';
 
   @override
-  String get showRepositoryQrCode => 'QRコードを表示';
+  String get showRepositoryQrCode => 'リポジトリのQRコード';
+
+  @override
+  String get discussionQrCode => '4PDAのディスカッションのQRコード';
 
   @override
   String get resetSections => 'セクション設定をリセット';
@@ -2230,7 +2233,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get rememberCategoryFocus => '最後にフォーカスされたカードを記憶する';
 
   @override
-  String get automaticBackups => 'バックアップと同期';
+  String get automaticBackups => '設定のバックアップと同期';
 
   @override
   String get automaticBackupsHint =>
@@ -2256,6 +2259,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get updatePrereleases => 'プレリリースに更新する';
+
+  @override
+  String get topPanelObjectsTitle => '上部パネルの項目';
+
+  @override
+  String get quickPanelObjectsTitle => 'クイック設定の項目';
 
   @override
   String get topPanelObjects => 'オブジェクト';
@@ -2674,6 +2683,9 @@ class AppLocalizationsJa extends AppLocalizations {
       '端末 開発者設定でデバッグとネットワーク ADB を有効にし、CuteLauncher を信頼します。 ADB のすべての操作は自己責任で行ってください。';
 
   @override
+  String get adbOpenConnectionSettings => 'ADB 接続設定を開く';
+
+  @override
   String get adbConnectionBlock => 'ADB接続';
 
   @override
@@ -2919,7 +2931,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get backupOptions => 'バックアップオプション';
 
   @override
-  String get backupSaveMode => 'バックアップ';
+  String get backupSaveMode => '自動バックアップ';
 
   @override
   String get backupScope => '端末間でのバックアップ';
@@ -2944,7 +2956,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get backupSyncLimit => '以下の頻度でチェックしてください';
 
   @override
-  String get backupSyncMode => '同期';
+  String get backupSyncMode => '設定の同期';
 
   @override
   String get backupSyncOptions => '同期オプション';
@@ -3828,7 +3840,7 @@ class AppLocalizationsJa extends AppLocalizations {
       'このボタンと押し方はすでに割り当てられています。別のボタンまたは押し方を選んでください。';
 
   @override
-  String get cleanerTitle => '端末クリーンアップ管理';
+  String get cleanerTitle => 'アプリの無効化管理';
 
   @override
   String get cleanerRefresh => 'Refresh applications';
@@ -4141,6 +4153,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get networkFrequency => '周波数';
+
+  @override
+  String get networkWifiChannel => 'チャンネル';
 
   @override
   String get networkMbps => 'Mbps';
@@ -5364,6 +5379,27 @@ class AppLocalizationsJa extends AppLocalizations {
   String get backupDriveReconnect => 'Google Driveに再接続';
 
   @override
+  String get syncFilesEmpty => '同期ファイルはまだありません';
+
+  @override
+  String get syncFilesLoadFailed => '同期ファイルを読み込めません。保存先へのアクセスを確認してください。';
+
+  @override
+  String get backupSyncNow => '今すぐ同期';
+
+  @override
+  String get backupSyncAutomatic => '自動同期';
+
+  @override
+  String get backupLastSync => '前回の同期';
+
+  @override
+  String get backupNotSynced => 'まだ同期していません';
+
+  @override
+  String get backupFileTitle => 'バックアップファイル';
+
+  @override
   String get backupSyncRefresh => '更新';
 
   @override
@@ -5466,6 +5502,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get weatherCustomServer => 'カスタムサーバー (Open-Meteo)';
+
+  @override
+  String get widgetsSettingsTitle => 'ウィジェット設定';
 
   @override
   String get widgetSettings => 'ウィジェット設定';
@@ -6062,4 +6101,100 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get backupExistingSettingsHelp =>
       '選択したストレージには同期設定がすでにあります。この端末に適用する、この端末の設定で置き換える、または統合するかを選択してください。統合時に設定が異なる場合は、選択した優先順位が使用されます。ウィザードの最後のステップで確認すると交換が始まります。';
+
+  @override
+  String get launcherSettings => 'ランチャー設定';
+
+  @override
+  String get launcherFunctions => 'ランチャーの機能';
+
+  @override
+  String get widgetsAndPanels => 'ウィジェットとパネル';
+
+  @override
+  String get launcherDefaultAndAdb => '既定のランチャーとADB';
+
+  @override
+  String get defaultLauncherViaAdb => 'ADBで既定のランチャーを設定';
+
+  @override
+  String get defaultLauncherViaAccessibility => 'ユーザー補助で既定のランチャーを設定';
+
+  @override
+  String get automationAndComfort => '自動化と快適性';
+
+  @override
+  String get maintenanceAndBackup => 'メンテナンスとバックアップ';
+
+  @override
+  String get performanceAndDiagnostics => 'パフォーマンスと診断';
+
+  @override
+  String get nightModeAndBrightness => 'ナイトモードと明るさ';
+
+  @override
+  String get systemAndNotifications => 'システムと通知';
+
+  @override
+  String get settingsGeneralGroup => '一般';
+
+  @override
+  String get settingsManagementGroup => '設定の管理';
+
+  @override
+  String get settingsMaintenanceGroup => 'メンテナンス';
+
+  @override
+  String get supportDeveloper => '開発者を支援';
+
+  @override
+  String get comingSoon => '近日公開';
+
+  @override
+  String get mediaFolderSource => 'フォルダ内の写真または動画';
+
+  @override
+  String get mediaFolderHelp => '写真は指定した間隔で、動画は再生終了時に切り替わります。';
+
+  @override
+  String get mediaFolderNext => '次のファイル';
+
+  @override
+  String get mediaFolderError => 'ファイルを開けません。アクセス権と形式を確認してください。';
+
+  @override
+  String get settingsScreensaverGroup => 'スクリーンセーバー';
+
+  @override
+  String get homeSectionsGroup => 'セクションとアプリ';
+
+  @override
+  String get homeVisualGroup => '外観';
+
+  @override
+  String get feedsAndOrder => 'フィードと順序';
+
+  @override
+  String get visibleFeeds => '表示するフィード';
+
+  @override
+  String get hiddenFeeds => '非表示のフィード';
+
+  @override
+  String get controlAndAccessGroup => '操作とアクセス';
+
+  @override
+  String get repairsAndDiagnosticsGroup => '修正と診断';
+
+  @override
+  String get appsAndServicesGroup => 'アプリとサービス';
+
+  @override
+  String get deviceAndStatusGroup => 'デバイスと状態';
+
+  @override
+  String get supportProjectGroup => 'プロジェクトの支援';
+
+  @override
+  String get deletionGroup => '削除';
 }

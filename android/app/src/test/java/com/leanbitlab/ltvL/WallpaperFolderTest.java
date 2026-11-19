@@ -102,4 +102,58 @@ public class WallpaperFolderTest {
         assertNotNull(selected);
         assertEquals("com.android.documentsui", selected.getComponent().getPackageName());
     }
+
+    @Test public void mixedMediaIncludesPhotosAndBoundsRecursiveDocumentTraversal() throws Exception {
+        var provider = new android.content.ContentProvider() {
+            public boolean onCreate() { return true; }
+            public String getType(android.net.Uri uri) { return null; }
+            public android.net.Uri insert(android.net.Uri uri, android.content.ContentValues values) { return null; }
+            public int delete(android.net.Uri uri, String selection, String[] args) { return 0; }
+            public int update(android.net.Uri uri, android.content.ContentValues values, String selection, String[] args) { return 0; }
+            public android.database.Cursor query(android.net.Uri uri, String[] projection, String selection, String[] args, String order) {
+                var cursor = new android.database.MatrixCursor(projection);
+                var id = android.provider.DocumentsContract.getDocumentId(uri);
+                if (id.equals("root")) {
+                    cursor.addRow(new Object[]{"nested", android.provider.DocumentsContract.Document.MIME_TYPE_DIR, "nested", 0L, 0L});
+                    cursor.addRow(new Object[]{"photo", "image/png", "a.png", 10L, 12L});
+                    cursor.addRow(new Object[]{"video", "video/mp4", "b.mp4", 20L, 22L});
+                    cursor.addRow(new Object[]{"text", "text/plain", "c.txt", 0L, 1L});
+                } else {
+                    cursor.addRow(new Object[]{"root", android.provider.DocumentsContract.Document.MIME_TYPE_DIR, "cycle", 0L, 0L});
+                    cursor.addRow(new Object[]{"second", "image/jpeg", "d.jpg", 30L, 32L});
+                }
+                return cursor;
+            }
+        };
+        org.robolectric.shadows.ShadowContentResolver.registerProviderInternal("test.media", provider);
+        try (var controller = Robolectric.buildActivity(Activity.class).setup()) {
+            var executor = Executors.newSingleThreadExecutor();
+            try {
+                var folder = new WallpaperFolder(controller.get(), executor);
+                String uri = "content://test.media/tree/root";
+                var flat = new Reply();
+                folder.listMedia(uri, false, flat);
+                executor.submit(() -> {}).get();
+                Shadows.shadowOf(android.os.Looper.getMainLooper()).idle();
+                assertNull(flat.error);
+                assertEquals(2, ((List<?>) flat.value).size());
+                var nested = new Reply();
+                folder.listMedia(uri, true, nested);
+                executor.submit(() -> {}).get();
+                Shadows.shadowOf(android.os.Looper.getMainLooper()).idle();
+                assertNull(nested.error);
+                assertEquals(3, ((List<?>) nested.value).size());
+                var photo = (java.util.Map<?, ?>) ((List<?>) nested.value).get(0);
+                assertEquals(true, photo.get("image"));
+                assertEquals(10L, photo.get("modified"));
+                var legacy = new Reply();
+                folder.listVideos(uri, legacy);
+                executor.submit(() -> {}).get();
+                Shadows.shadowOf(android.os.Looper.getMainLooper()).idle();
+                assertNull(legacy.error);
+                assertEquals(1, ((List<?>) legacy.value).size());
+                assertEquals("b.mp4", ((java.util.Map<?, ?>) ((List<?>) legacy.value).get(0)).get("name"));
+            } finally { executor.shutdownNow(); }
+        }
+    }
 }

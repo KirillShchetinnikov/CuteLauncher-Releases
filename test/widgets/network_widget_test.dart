@@ -347,6 +347,50 @@ void main() {
     await tester.pumpWidget(const SizedBox());
   });
 
+  testWidgets('summary updates the channel of the active Wi-Fi connection', (
+    tester,
+  ) async {
+    when(mockNetworkService.networkType).thenReturn(NetworkType.Wifi);
+    when(mockNetworkService.cellularNetworkType)
+        .thenReturn(CellularNetworkType.Unknown);
+    when(mockNetworkService.wirelessNetworkSignalLevel).thenReturn(4);
+    final summary = <String, dynamic>{'networkType': 1, 'frequency': 5180};
+    when(mockNetworkService.getSummary()).thenAnswer((_) async => {...summary});
+
+    await tester.pumpWidget(createWidgetUnderTest(locale: const Locale('ru')));
+    await tester.tap(find.byType(InkWell));
+    await tester.pumpAndSettle();
+    expect(find.text('Канал'), findsOneWidget);
+    expect(find.text('36'), findsOneWidget);
+    expect(find.text('5180 MHz'), findsOneWidget);
+
+    for (final (frequency, channel) in [
+      (2412, '1'),
+      (2484, '14'),
+      (5935, '2'),
+      (5975, '5'),
+      (69120, '6'),
+    ]) {
+      summary['frequency'] = frequency;
+      await tester.pump(const Duration(seconds: 3));
+      expect(find.text(channel), findsOneWidget);
+    }
+
+    summary['frequency'] = 5181;
+    await tester.pump(const Duration(seconds: 3));
+    expect(find.text('Канал'), findsNothing);
+    expect(find.text('5181 MHz'), findsOneWidget);
+
+    summary.remove('frequency');
+    await tester.pump(const Duration(seconds: 3));
+    expect(find.text('Канал'), findsNothing);
+
+    summary.addAll({'networkType': 3, 'frequency': 5180});
+    await tester.pump(const Duration(seconds: 3));
+    expect(find.text('Канал'), findsNothing);
+    await tester.pumpWidget(const SizedBox());
+  });
+
   for (final sample in [
     ('fe80::1%wlan0\n192.168.1.10\n2001:db8::1\n10.0.0.2',
       '192.168.1.10\n10.0.0.2', 'fe80::1%wlan0\n2001:db8::1'),

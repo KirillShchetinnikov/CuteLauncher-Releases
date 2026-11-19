@@ -172,6 +172,9 @@ void main() {
               .options,
           [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         );
+        // The placement link is the first row. Move down to the interval.
+        await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+        await tester.pumpAndSettle();
         await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
         await tester.pumpAndSettle();
         expect(settings.networkSpeedInterval, 2);

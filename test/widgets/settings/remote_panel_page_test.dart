@@ -70,6 +70,7 @@ void main() {
         when(notifications.hasPermission).thenAnswer((_) => available);
         when(notifications.notifications).thenReturn([]);
         when(inputs.hasInputs).thenAnswer((_) => available);
+        when(inputs.initialized).thenReturn(false);
         when(weather.hasWeather).thenAnswer((_) => available);
         when(weather.stale).thenReturn(false);
         when(weather.weatherData)
@@ -115,7 +116,7 @@ void main() {
           ),
           findsNothing,
         );
-        expect(find.byIcon(Icons.swap_vert), findsOneWidget);
+        expect(find.byIcon(Icons.swap_vert), findsNothing);
         expect(find.byIcon(Icons.widgets_outlined), findsOneWidget);
         await tester.tap(find.text(l.topPanelObjects));
         await tester.pumpAndSettle();
@@ -123,15 +124,15 @@ void main() {
         expect(page, findsOneWidget);
         expect(panel.layout.left, savedOrder);
         expect(panel.layout.right, isEmpty);
-        expect(find.descendant(of: page, matching: find.byType(FocusableSettingsTile)), findsNWidgets(RemotePanelService.ids.length + 1));
-        expect(find.text(l.volumeWidgetSettings), findsOneWidget);
+        expect(find.descendant(of: page, matching: find.byType(FocusableSettingsTile)), findsNWidgets(RemotePanelService.ids.length));
+        expect(find.text(l.volumeWidgetSettings), findsNothing);
         expect(find.text(l.informationSettings), findsNothing);
         expect(
           find.descendant(
             of: page,
             matching: find.byType(RoundedSwitchListTile),
           ),
-          findsNWidgets(RemotePanelService.ids.length),
+          findsNothing,
         );
         final bar = find.byType(FocusAwareAppBar);
         const ids = ['traffic', 'notifications', 'inputs', 'weather'];
@@ -149,9 +150,9 @@ void main() {
         void expectAvailability(bool expected) {
           for (final id in ids) {
             final accessible = id == 'weather' || expected;
-            final tile = tester.widget<RoundedSwitchListTile>(toggle(id));
+            final tile = tester.widget<FocusableSettingsTile>(toggle(id));
             expect(tile.enabled, accessible, reason: id);
-            expect(tile.value, accessible, reason: id);
+            expect(tile.toggled, accessible, reason: id);
             expect(object(id), accessible ? findsOneWidget : findsNothing);
           }
         }
@@ -192,15 +193,15 @@ void main() {
         available = true;
         changes.notifyListeners();
         await tester.pumpAndSettle();
-        final traffic = tester.widget<RoundedSwitchListTile>(toggle('traffic'));
+        final traffic = tester.widget<FocusableSettingsTile>(toggle('traffic'));
         expect(traffic.enabled, isTrue);
-        expect(traffic.value, isFalse);
+        expect(traffic.toggled, isFalse);
         expect(object('traffic'), findsNothing);
         final timeToggle = find.descendant(
           of: toggle('time'),
           matching: find.byType(Switch),
         );
-        await tester.ensureVisible(timeToggle);
+        await tester.scrollUntilVisible(timeToggle, 200);
         await tester.tap(timeToggle);
         await tester.pumpAndSettle();
         expect(panel.visible('time'), isFalse);

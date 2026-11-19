@@ -1,3 +1,4 @@
+import 'package:flauncher/widgets/settings/settings_destinations.dart';
 import 'package:flauncher/providers/appearance_service.dart';
 import 'package:flauncher/flauncher_channel.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
@@ -10,7 +11,6 @@ import 'package:flauncher/widgets/settings/inputs_settings_page.dart';
 import 'package:flauncher/widgets/settings/inputs_panel.dart';
 import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
 import 'package:flauncher/widgets/rounded_switch_list_tile.dart';
-import 'package:flauncher/widgets/settings/status_bar_panel_page.dart';
 import 'package:flauncher/widgets/settings/night_mode_page.dart';
 import 'package:flauncher/widgets/settings/auto_launch_page.dart';
 import 'package:flauncher/auto_launch_configuration.dart';
@@ -171,11 +171,11 @@ void main() {
     tester,
   ) async {
     await setInputsAvailable(false);
-    await tester.pumpWidget(app(const StatusBarObjectsPage()));
+    await tester.pumpWidget(app(const WidgetSettingsPage()));
     await tester.pumpAndSettle();
     final entry = find.widgetWithText(
       FocusableSettingsTile,
-      'Настройки входов',
+      'Входы',
     );
     await tester.scrollUntilVisible(entry, 150);
     await tester.ensureVisible(entry);
@@ -282,12 +282,12 @@ void main() {
     'input settings remain available when the top panel button is off',
     (tester) async {
       await settings.setShowInputsWidgetInStatusBar(false);
-      await tester.pumpWidget(app(const StatusBarObjectsPage()));
+      await tester.pumpWidget(app(const WidgetSettingsPage()));
       await tester.pumpAndSettle();
-      await tester.scrollUntilVisible(find.text('Настройки входов'), 150);
-      await tester.ensureVisible(find.text('Настройки входов'));
+      await tester.scrollUntilVisible(find.text('Входы'), 150);
+      await tester.ensureVisible(find.text('Входы'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Настройки входов'));
+      await tester.tap(find.text('Входы'));
       await tester.pumpAndSettle();
       expect(find.text('Брать имя устройства из CEC'), findsOneWidget);
       expect(find.text('XBOX'), findsOneWidget);

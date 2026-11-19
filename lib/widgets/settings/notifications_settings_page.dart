@@ -1,4 +1,5 @@
 import 'settings_section.dart';
+import 'widget_placement_page.dart';
 
 import 'package:flauncher/widgets/launcher_dialog.dart';
 
@@ -88,6 +89,7 @@ class _NotificationsSettingsPageState extends State<NotificationsSettingsPage>
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                WidgetPlacementLink(id: 'notifications', title: localizations.notifications),
                 SettingsSection(
                   title: localizations.settingsGroupAccess,
                   children: [

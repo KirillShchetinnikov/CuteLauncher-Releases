@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'dart:io';
 
 import 'package:flauncher/l10n/app_localizations.dart';
@@ -218,7 +219,22 @@ void main() {
         )));
     await tester.pumpAndSettle();
     expect(find.text('Новый совместимый релиз не найден.'), findsNothing);
-    expect(Focus.of(tester.element(find.text('Обновлять на пререлизы'))).hasFocus, isTrue);
+    expect(Focus.of(tester.element(find.text('Поддержать разработчика'))).hasFocus, isTrue);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(find.byType(QrImageView), findsOneWidget);
+    expect(find.byKey(const ValueKey('https://pay.cloudtips.ru/p/118c2a7f')), findsOneWidget);
+    final horizontal = tester.getCenter(find.text('CloudTips')).dy == tester.getCenter(find.text('ЮMoney')).dy;
+    await tester.sendKeyEvent(horizontal ? LogicalKeyboardKey.arrowRight : LogicalKeyboardKey.arrowDown);
+    await tester.pumpAndSettle();
+    expect(Focus.of(tester.element(find.text('ЮMoney'))).hasFocus, isTrue);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(find.byType(QrImageView), findsOneWidget);
+    expect(find.byKey(const ValueKey('https://yoomoney.ru/fundraise/1LLAULV57ME.261119')), findsOneWidget);
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(Focus.of(tester.element(find.text('Поддержать разработчика'))).hasFocus, isTrue);
     Focus.of(tester.element(find.text('Проверить сейчас'))).requestFocus();
     await tester.pumpAndSettle();
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);

@@ -364,7 +364,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get actionCompleted => 'Action terminée';
 
   @override
-  String get showRepositoryQrCode => 'Afficher le code QR';
+  String get showRepositoryQrCode => 'QR code du dépôt';
+
+  @override
+  String get discussionQrCode => 'QR code de la discussion sur 4PDA';
 
   @override
   String get resetSections => 'Réinitialiser les paramètres de la section';
@@ -2313,7 +2316,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get rememberCategoryFocus => 'Rappelez-vous la dernière carte ciblée';
 
   @override
-  String get automaticBackups => 'Sauvegardes et synchronisation';
+  String get automaticBackups => 'Sauvegarde et synchronisation des paramètres';
 
   @override
   String get automaticBackupsHint =>
@@ -2341,6 +2344,12 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get updatePrereleases => 'Installer les préversions';
+
+  @override
+  String get topPanelObjectsTitle => 'Éléments du panneau supérieur';
+
+  @override
+  String get quickPanelObjectsTitle => 'Éléments des réglages rapides';
 
   @override
   String get topPanelObjects => 'Objets';
@@ -2781,6 +2790,10 @@ class AppLocalizationsFr extends AppLocalizations {
       'Activez le débogage et le réseau ADB dans les paramètres pour les développeurs de l’appareil, puis faites confiance à CuteLauncher. Toutes les actions ADB sont à vos propres risques.';
 
   @override
+  String get adbOpenConnectionSettings =>
+      'Ouvrir les paramètres de connexion ADB';
+
+  @override
   String get adbConnectionBlock => 'Connexion ADB';
 
   @override
@@ -3040,7 +3053,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get backupOptions => 'Options de sauvegarde';
 
   @override
-  String get backupSaveMode => 'Sauvegarde';
+  String get backupSaveMode => 'Sauvegarde automatique';
 
   @override
   String get backupScope => 'Sauvegarde sur tous les appareils';
@@ -3065,7 +3078,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get backupSyncLimit => 'Ne vérifiez pas plus souvent que';
 
   @override
-  String get backupSyncMode => 'Synchronisation';
+  String get backupSyncMode => 'Synchronisation des paramètres';
 
   @override
   String get backupSyncOptions => 'Options de synchronisation';
@@ -3997,7 +4010,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Ce bouton et ce type d’appui sont déjà attribués. Choisissez un autre bouton ou type d’appui.';
 
   @override
-  String get cleanerTitle => 'Gestionnaire de nettoyage de l’appareil';
+  String get cleanerTitle => 'Gestionnaire de désactivation des applications';
 
   @override
   String get cleanerRefresh => 'Refresh applications';
@@ -4313,6 +4326,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get networkFrequency => 'Fréquence';
+
+  @override
+  String get networkWifiChannel => 'Canal';
 
   @override
   String get networkMbps => 'Mbit/s';
@@ -5592,6 +5608,28 @@ class AppLocalizationsFr extends AppLocalizations {
   String get backupDriveReconnect => 'Reconnecter Google Drive';
 
   @override
+  String get syncFilesEmpty => 'Aucun fichier de synchronisation';
+
+  @override
+  String get syncFilesLoadFailed =>
+      'Impossible de charger les fichiers de synchronisation. Vérifiez l’accès au stockage.';
+
+  @override
+  String get backupSyncNow => 'Synchroniser maintenant';
+
+  @override
+  String get backupSyncAutomatic => 'Synchronisation automatique';
+
+  @override
+  String get backupLastSync => 'Dernière synchronisation';
+
+  @override
+  String get backupNotSynced => 'Aucune synchronisation';
+
+  @override
+  String get backupFileTitle => 'Fichier de sauvegarde';
+
+  @override
   String get backupSyncRefresh => 'Actualiser';
 
   @override
@@ -5700,6 +5738,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get weatherCustomServer => 'Serveur personnalisé (Open-Meteo)';
+
+  @override
+  String get widgetsSettingsTitle => 'Paramètres des widgets';
 
   @override
   String get widgetSettings => 'Paramètres du widget';
@@ -6312,4 +6353,103 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get backupExistingSettingsHelp =>
       'Le stockage sélectionné contient déjà des paramètres de synchronisation. Choisissez de les appliquer à cet appareil, de les remplacer par ses paramètres ou de les fusionner. En cas de différences lors de la fusion, la priorité choisie sera utilisée. L’échange commencera après confirmation à la dernière étape de l’assistant.';
+
+  @override
+  String get launcherSettings => 'Paramètres du lanceur';
+
+  @override
+  String get launcherFunctions => 'Fonctions du lanceur';
+
+  @override
+  String get widgetsAndPanels => 'Widgets et panneaux';
+
+  @override
+  String get launcherDefaultAndAdb => 'Lanceur par défaut et ADB';
+
+  @override
+  String get defaultLauncherViaAdb => 'Définir le lanceur par défaut via ADB';
+
+  @override
+  String get defaultLauncherViaAccessibility =>
+      'Définir le lanceur par défaut via l’accessibilité';
+
+  @override
+  String get automationAndComfort => 'Automatisation et confort';
+
+  @override
+  String get maintenanceAndBackup => 'Maintenance et sauvegardes';
+
+  @override
+  String get performanceAndDiagnostics => 'Performances et diagnostic';
+
+  @override
+  String get nightModeAndBrightness => 'Mode nuit et luminosité';
+
+  @override
+  String get systemAndNotifications => 'Système et notifications';
+
+  @override
+  String get settingsGeneralGroup => 'Général';
+
+  @override
+  String get settingsManagementGroup => 'Gestion des paramètres';
+
+  @override
+  String get settingsMaintenanceGroup => 'Maintenance';
+
+  @override
+  String get supportDeveloper => 'Soutenir le développeur';
+
+  @override
+  String get comingSoon => 'Bientôt disponible';
+
+  @override
+  String get mediaFolderSource => 'Photos ou vidéos d’un dossier';
+
+  @override
+  String get mediaFolderHelp =>
+      'Les photos changent après l’intervalle choisi, les vidéos à la fin de la lecture.';
+
+  @override
+  String get mediaFolderNext => 'Fichier suivant';
+
+  @override
+  String get mediaFolderError =>
+      'Impossible d’ouvrir les fichiers. Vérifiez les accès et les formats.';
+
+  @override
+  String get settingsScreensaverGroup => 'Écran de veille';
+
+  @override
+  String get homeSectionsGroup => 'Sections et applications';
+
+  @override
+  String get homeVisualGroup => 'Apparence';
+
+  @override
+  String get feedsAndOrder => 'Flux et ordre';
+
+  @override
+  String get visibleFeeds => 'Flux visibles';
+
+  @override
+  String get hiddenFeeds => 'Flux masqués';
+
+  @override
+  String get controlAndAccessGroup => 'Commandes et accès';
+
+  @override
+  String get repairsAndDiagnosticsGroup => 'Corrections et diagnostic';
+
+  @override
+  String get appsAndServicesGroup => 'Applications et services';
+
+  @override
+  String get deviceAndStatusGroup => 'Appareil et état';
+
+  @override
+  String get supportProjectGroup => 'Soutien au projet';
+
+  @override
+  String get deletionGroup => 'Suppression';
 }

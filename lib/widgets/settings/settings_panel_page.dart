@@ -19,13 +19,12 @@ import 'settings_page_layout.dart';
 
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/update_service.dart';
-import 'package:flauncher/widgets/settings/accessibility_page.dart';
 import 'package:flauncher/widgets/settings/applications_panel_page.dart';
 
-import 'appearance_settings_page.dart';
-import 'status_bar_panel_page.dart';
+import 'settings_destinations.dart';
+import 'settings_section.dart';
+
 import 'package:flauncher/widgets/settings/interface_settings_page.dart';
-import 'package:flauncher/widgets/settings/display_settings_page.dart';
 
 import 'package:flauncher/widgets/settings/general_settings_page.dart';
 import 'package:flutter/material.dart';
@@ -65,86 +64,134 @@ class _SettingsPanelPageState extends State<SettingsPanelPage> {
     );
 
     return SettingsPageLayout(
-      title: Text(l.settings),
-      subtitle: Text('CuteLauncher', style: theme.textTheme.bodySmall),
+      title: SizedBox(
+        width: double.infinity,
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            Padding(
+              padding: const EdgeInsetsDirectional.only(end: 68),
+              child: Text(l.settings),
+            ),
+            PositionedDirectional(
+              end: 0,
+              top: 0,
+              child: ExcludeSemantics(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: Image.asset(
+                    'assets/about-icon.png',
+                    width: 56,
+                    height: 56,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      subtitle: Padding(
+        padding: const EdgeInsetsDirectional.only(end: 68),
+        child: Align(
+          alignment: AlignmentDirectional.centerStart,
+          child: updateVersion == null
+              ? Text(
+                  'CuteLauncher',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.primary,
+                  ),
+                )
+              : TextButton(
+                  key: const ValueKey('available-update-shortcut'),
+                  style: TextButton.styleFrom(
+                    minimumSize: Size.zero,
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    textStyle: theme.textTheme.bodySmall,
+                    backgroundColor: theme.colorScheme.primary.withValues(
+                      alpha: .12,
+                    ),
+                  ),
+                  onPressed: () =>
+                      Navigator.of(context).pushNamed(UpdatesPage.routeName),
+                  child: Text(
+                    '${l.updateAvailable} · ${displayAppVersion(updateVersion)}',
+                  ),
+                ),
+        ),
+      ),
       initialFocus: _homeFocus,
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            if (updateVersion != null)
-              FocusableSettingsTile(
-                key: const ValueKey('available-update-shortcut'),
-                leading: Icon(
-                  Icons.system_update_alt,
-                  color: theme.colorScheme.primary,
+            SettingsSection(
+              children: [
+                FocusableSettingsTile(
+                  autofocus: true,
+                  focusNode: _homeFocus,
+                  leading: const Icon(Icons.home_outlined),
+                  title: Text(l.homeScreen),
+                  onPressed: () =>
+                      Navigator.of(context)
+                          .pushNamed(InterfaceSettingsPage.routeName),
                 ),
-                title: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(l.updateAvailable),
-                    Text(
-                      displayAppVersion(updateVersion),
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ],
+                FocusableSettingsTile(
+                  leading: const Icon(Icons.widgets_outlined),
+                  title: Text(l.widgetsAndPanels),
+                  onPressed: () =>
+                      Navigator.of(context)
+                          .pushNamed(WidgetsAndPanelsPage.routeName),
                 ),
-                onPressed: () =>
-                    Navigator.of(context).pushNamed(UpdatesPage.routeName),
-              ),
-            FocusableSettingsTile(
-              autofocus: true,
-              focusNode: _homeFocus,
-              leading: const Icon(Icons.home_outlined),
-              title: Text(l.homeScreen),
-              onPressed: () =>
-                  Navigator.of(context)
-                      .pushNamed(InterfaceSettingsPage.routeName),
+              ],
             ),
-            FocusableSettingsTile(
-              leading: const Icon(Icons.dashboard), title: Text(l.topPanel),
-              onPressed: () => Navigator.of(context).pushNamed(StatusBarPanelPage.routeName),
+            SettingsSection(
+              children: [
+                FocusableSettingsTile(
+                  autofocus: false,
+                  leading: const Icon(Icons.handyman_outlined),
+                  title: Text(l.launcherFunctions),
+                  onPressed: () =>
+                      Navigator.of(context)
+                          .pushNamed(LauncherFunctionsPage.routeName),
+                ),
+                FocusableSettingsTile(
+                  leading: const Icon(Icons.terminal_outlined),
+                  title: Text(l.launcherDefaultAndAdb),
+                  onPressed: () =>
+                      Navigator.of(context)
+                          .pushNamed(LauncherAccessPage.routeName),
+                ),
+                FocusableSettingsTile(
+                  autofocus: false,
+                  leading: const Icon(Icons.apps),
+                  title: Text(l.applications),
+                  onPressed: () =>
+                      Navigator.of(context)
+                          .pushNamed(ApplicationsPanelPage.routeName),
+                ),
+              ],
             ),
-            FocusableSettingsTile(
-              autofocus: false,
-              leading: const Icon(Icons.palette_outlined),
-              title: Text(l.interfaceStyle),
-              onPressed: () =>
-                  Navigator.of(context)
-                      .pushNamed(AppearanceSettingsPage.routeName),
+            SettingsSection(
+              children: [
+                FocusableSettingsTile(
+                  autofocus: false,
+                  leading: const Icon(Icons.settings_outlined),
+                  title: Text(l.launcherSettings),
+                  onPressed: () =>
+                      Navigator.of(context)
+                          .pushNamed(GeneralSettingsPage.routeName),
+                ),
+                FocusableSettingsTile(
+                  leading: const Icon(Icons.monitor_heart_outlined),
+                  title: Text(l.diagnosticsHubTitle),
+                  onPressed: () =>
+                      Navigator.of(context)
+                          .pushNamed(LauncherDiagnosticsPage.routeName),
+                ),
+              ],
             ),
-            FocusableSettingsTile(
-              autofocus: false,
-              leading: const Icon(Icons.apps),
-              title: Text(l.applications),
-              onPressed: () =>
-                  Navigator.of(context)
-                      .pushNamed(ApplicationsPanelPage.routeName),
-            ),
-            FocusableSettingsTile(
-              autofocus: false,
-              leading: const Icon(Icons.tv),
-              title: Text(l.displayAndScreensaver),
-              onPressed: () =>
-                  Navigator.of(context).pushNamed(DisplaySettingsPage.routeName),
-            ),
-            FocusableSettingsTile(
-              autofocus: false,
-              leading: const Icon(Icons.settings_remote),
-              title: Text(l.controlAndStartup),
-              onPressed: () =>
-                  Navigator.of(context).pushNamed(AccessibilityPage.routeName),
-            ),
-            FocusableSettingsTile(
-              autofocus: false,
-              leading: const Icon(Icons.settings_suggest_outlined),
-              title: Text(l.generalSettings),
-              onPressed: () =>
-                  Navigator.of(context).pushNamed(GeneralSettingsPage.routeName),
-            ),
-            const SizedBox(height: 16),
+            const Divider(),
             FocusableSettingsTile(
               leading: const AndroidSettingsIcon(),
               title: Text(l.androidTvSettings),

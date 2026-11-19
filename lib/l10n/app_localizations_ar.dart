@@ -355,7 +355,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get actionCompleted => 'اكتمل الإجراء';
 
   @override
-  String get showRepositoryQrCode => 'إظهار رمز الاستجابة السريعة';
+  String get showRepositoryQrCode => 'رمز QR للمستودع';
+
+  @override
+  String get discussionQrCode => 'رمز QR للنقاش على 4PDA';
 
   @override
   String get resetSections => 'إعادة ضبط إعدادات القسم';
@@ -2268,7 +2271,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get rememberCategoryFocus => 'تذكر آخر بطاقة مركزة';
 
   @override
-  String get automaticBackups => 'النسخ الاحتياطي والمزامنة';
+  String get automaticBackups => 'النسخ الاحتياطي للإعدادات ومزامنتها';
 
   @override
   String get automaticBackupsHint =>
@@ -2295,6 +2298,12 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get updatePrereleases => 'التحديث إلى الإصدارات التجريبية';
+
+  @override
+  String get topPanelObjectsTitle => 'عناصر اللوحة العلوية';
+
+  @override
+  String get quickPanelObjectsTitle => 'عناصر الإعدادات السريعة';
 
   @override
   String get topPanelObjects => 'العناصر';
@@ -2727,6 +2736,9 @@ class AppLocalizationsAr extends AppLocalizations {
       'قم بتمكين تصحيح الأخطاء والشبكة ADB في إعدادات مطور الجهاز، ثم ثق بـ CuteLauncher. جميع إجراءات ADB تكون على مسؤوليتك الخاصة.';
 
   @override
+  String get adbOpenConnectionSettings => 'فتح إعدادات اتصال ADB';
+
+  @override
   String get adbConnectionBlock => 'اتصال ADB';
 
   @override
@@ -2981,7 +2993,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get backupOptions => 'خيارات النسخ الاحتياطي';
 
   @override
-  String get backupSaveMode => 'النسخ الاحتياطي';
+  String get backupSaveMode => 'النسخ الاحتياطي التلقائي';
 
   @override
   String get backupScope => 'النسخ الاحتياطي عبر الأجهزة';
@@ -3006,7 +3018,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get backupSyncLimit => 'لا تحقق أكثر من ذلك';
 
   @override
-  String get backupSyncMode => 'التزامن';
+  String get backupSyncMode => 'مزامنة الإعدادات';
 
   @override
   String get backupSyncOptions => 'خيارات المزامنة';
@@ -3920,7 +3932,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'تم تعيين هذا الزر ونوع الضغط بالفعل. اختر زرًا أو نوع ضغط آخر.';
 
   @override
-  String get cleanerTitle => 'مدير تنظيف الجهاز';
+  String get cleanerTitle => 'مدير تعطيل التطبيقات';
 
   @override
   String get cleanerRefresh => 'Refresh applications';
@@ -4235,6 +4247,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get networkFrequency => 'التردد';
+
+  @override
+  String get networkWifiChannel => 'القناة';
 
   @override
   String get networkMbps => 'ميغابت/ث';
@@ -5479,6 +5494,28 @@ class AppLocalizationsAr extends AppLocalizations {
   String get backupDriveReconnect => 'إعادة الاتصال بـ Google Drive';
 
   @override
+  String get syncFilesEmpty => 'لا توجد ملفات مزامنة بعد';
+
+  @override
+  String get syncFilesLoadFailed =>
+      'تعذّر تحميل ملفات المزامنة. تحقّق من إمكانية الوصول إلى مساحة التخزين.';
+
+  @override
+  String get backupSyncNow => 'المزامنة الآن';
+
+  @override
+  String get backupSyncAutomatic => 'المزامنة التلقائية';
+
+  @override
+  String get backupLastSync => 'آخر مزامنة';
+
+  @override
+  String get backupNotSynced => 'لم تتم المزامنة بعد';
+
+  @override
+  String get backupFileTitle => 'ملف النسخة الاحتياطية';
+
+  @override
   String get backupSyncRefresh => 'تحديث';
 
   @override
@@ -5582,6 +5619,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get weatherCustomServer => 'خادم مخصص (Open-Meteo)';
+
+  @override
+  String get widgetsSettingsTitle => 'إعدادات الأدوات';
 
   @override
   String get widgetSettings => 'إعدادات الأداة';
@@ -6188,4 +6228,103 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get backupExistingSettingsHelp =>
       'تحتوي وحدة التخزين المحددة بالفعل على إعدادات مزامنة. اختر تطبيقها على هذا الجهاز أو استبدالها بإعداداته أو دمجها. إذا اختلفت الإعدادات عند الدمج، فستُستخدم الأولوية التي تختارها. يبدأ التبادل بعد التأكيد في الخطوة الأخيرة من المعالج.';
+
+  @override
+  String get launcherSettings => 'إعدادات المشغّل';
+
+  @override
+  String get launcherFunctions => 'ميزات المشغّل';
+
+  @override
+  String get widgetsAndPanels => 'الأدوات واللوحات';
+
+  @override
+  String get launcherDefaultAndAdb => 'المشغّل الافتراضي وADB';
+
+  @override
+  String get defaultLauncherViaAdb => 'تعيين المشغّل الافتراضي عبر ADB';
+
+  @override
+  String get defaultLauncherViaAccessibility =>
+      'تعيين المشغّل الافتراضي عبر تسهيل الاستخدام';
+
+  @override
+  String get automationAndComfort => 'الأتمتة والراحة';
+
+  @override
+  String get maintenanceAndBackup => 'الصيانة والنسخ الاحتياطية';
+
+  @override
+  String get performanceAndDiagnostics => 'الأداء والتشخيص';
+
+  @override
+  String get nightModeAndBrightness => 'الوضع الليلي والسطوع';
+
+  @override
+  String get systemAndNotifications => 'النظام والإشعارات';
+
+  @override
+  String get settingsGeneralGroup => 'عام';
+
+  @override
+  String get settingsManagementGroup => 'إدارة الإعدادات';
+
+  @override
+  String get settingsMaintenanceGroup => 'الصيانة';
+
+  @override
+  String get supportDeveloper => 'دعم المطوّر';
+
+  @override
+  String get comingSoon => 'قريبًا';
+
+  @override
+  String get mediaFolderSource => 'صور أو فيديو من مجلد';
+
+  @override
+  String get mediaFolderHelp =>
+      'تتغير الصور بعد الفاصل المحدد، والفيديو عند انتهاء تشغيله.';
+
+  @override
+  String get mediaFolderNext => 'الملف التالي';
+
+  @override
+  String get mediaFolderError =>
+      'تعذّر فتح الملفات. تحقق من صلاحية الوصول وتنسيقات الملفات.';
+
+  @override
+  String get settingsScreensaverGroup => 'شاشة التوقف';
+
+  @override
+  String get homeSectionsGroup => 'الأقسام والتطبيقات';
+
+  @override
+  String get homeVisualGroup => 'المظهر';
+
+  @override
+  String get feedsAndOrder => 'الخلاصات والترتيب';
+
+  @override
+  String get visibleFeeds => 'الخلاصات الظاهرة';
+
+  @override
+  String get hiddenFeeds => 'الخلاصات المخفية';
+
+  @override
+  String get controlAndAccessGroup => 'التحكم والوصول';
+
+  @override
+  String get repairsAndDiagnosticsGroup => 'الإصلاحات والتشخيص';
+
+  @override
+  String get appsAndServicesGroup => 'التطبيقات والخدمات';
+
+  @override
+  String get deviceAndStatusGroup => 'الجهاز والحالة';
+
+  @override
+  String get supportProjectGroup => 'دعم المشروع';
+
+  @override
+  String get deletionGroup => 'الحذف';
 }

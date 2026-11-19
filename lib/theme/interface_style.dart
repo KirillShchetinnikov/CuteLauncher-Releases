@@ -43,8 +43,8 @@ class InterfaceSkin extends ThemeExtension<InterfaceSkin> {
         ? Color.alphaBlend(focus.withValues(alpha: focusTint), base)
         : base;
     return BoxDecoration(
-      color: style.isGlass ? null : fill,
-      gradient: style.isGlass
+      color: style == InterfaceStyle.glass ? null : fill,
+      gradient: style == InterfaceStyle.glass
           ? LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -77,7 +77,7 @@ class InterfaceSkin extends ThemeExtension<InterfaceSkin> {
         width: borderWidth,
       ),
       boxShadow: switch (style) {
-        InterfaceStyle.glass || InterfaceStyle.calm when focused || !quiet => [
+        InterfaceStyle.glass when focused || !quiet => [
           BoxShadow(
             color: Colors.black.withValues(alpha: focused ? .32 : .18),
             blurRadius: focused ? 12 : 6,
@@ -233,11 +233,11 @@ class SkinSliderThumb extends SliderComponentShape {
       );
     } else {
       final path = Path()..addOval(Rect.fromCircle(center: center, radius: 12));
-      if (style.isGlass) {
+      if (style == InterfaceStyle.glass) {
         canvas.drawShadow(path, Colors.black54, 3, true);
       }
       canvas.drawCircle(center, 12, Paint()..color = color);
-      if (style.isGlass) {
+      if (style == InterfaceStyle.glass) {
         canvas.drawCircle(
           center.translate(0, -2),
           9,
@@ -248,7 +248,7 @@ class SkinSliderThumb extends SliderComponentShape {
               colors: [Colors.white.withValues(alpha: .6), Colors.transparent],
             ).createShader(Rect.fromCircle(center: center, radius: 12)),
         );
-      } else {
+      } else if (style != InterfaceStyle.calm) {
         canvas.drawCircle(
           center,
           5,
@@ -268,16 +268,21 @@ class SkinSwitch extends StatelessWidget {
     final skin = InterfaceSkin.of(context);
     final colors = Theme.of(context).colorScheme;
     final outline = skin.style == InterfaceStyle.outline;
-    final glass = skin.style.isGlass;
+    final glass = skin.style == InterfaceStyle.glass;
+    final rounded = glass || skin.calm;
     final radius = outline
         ? 5.0
-        : glass
+        : rounded
         ? 20.0
         : 9.0;
-    final fill = value
+    final fill = skin.calm
+        ? value
+            ? Color.alphaBlend(colors.primary.withValues(alpha: .14), colors.surface)
+            : colors.onSurface.withValues(alpha: .12)
+        : value
         ? colors.primary
         : colors.onSurface.withValues(alpha: .2);
-    final knob = value ? colors.onPrimary : colors.onSurface;
+    final knob = value ? (skin.calm ? colors.primary : colors.onPrimary) : colors.onSurface;
     return Opacity(
       opacity: enabled ? 1 : .38,
       child: Container(
@@ -287,7 +292,9 @@ class SkinSwitch extends StatelessWidget {
         decoration: BoxDecoration(
           color: fill,
           borderRadius: BorderRadius.circular(radius),
-          border: outline
+          border: skin.calm
+              ? Border.all(color: value ? colors.primary : colors.onSurface.withValues(alpha: .27))
+              : outline
               ? Border.all(color: colors.onSurface.withValues(alpha: .5))
               : null,
           gradient: glass
@@ -311,7 +318,7 @@ class SkinSwitch extends StatelessWidget {
               borderRadius: BorderRadius.circular(
                 outline
                     ? 2
-                    : glass
+                    : rounded
                     ? 20
                     : 6,
               ),

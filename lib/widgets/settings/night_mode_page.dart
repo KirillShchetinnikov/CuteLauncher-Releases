@@ -260,11 +260,7 @@ class _NightModePageState extends State<NightModePage> {
                   title: Text(l.nightScheduleMenu),
                   onPressed: () => open('schedule'),
                 ),
-                RoundedSwitchListTile(
-                  title: Text(l.nightModePanelFill),
-                  value: service.panelFill,
-                  onChanged: service.setPanelFill,
-                ),
+
               ],
             ),
             SettingsSection(
@@ -292,6 +288,13 @@ class _NightModePageState extends State<NightModePage> {
                 ),
               ],
             ),
+            SettingsSection(title: l.widgetSettings, children: [
+                RoundedSwitchListTile(
+                  title: Text(l.nightModePanelFill),
+                  value: service.panelFill,
+                  onChanged: service.setPanelFill,
+                ),
+            ]),
           ],
           if (widget.section == 'picture') ...[
             SettingsHelp(
@@ -339,6 +342,7 @@ class _NightModePageState extends State<NightModePage> {
             ),
             if (!service.usagePermission)
               FocusableSettingsTile(
+                leading: const Icon(Icons.verified_user_outlined),
                 title: Text(l.nightUsageAccess),
                 onPressed: service.requestUsagePermission,
               ),
@@ -421,34 +425,7 @@ class _NightModePageState extends State<NightModePage> {
                   onChanged: (v) =>
                       update(c.copyWith(scheduled: v, clearOverrides: true)),
                 ),
-                if (c.scheduled) ...[
-                  if (service.intensity > 0)
-                    FocusableSettingsTile(
-                      leading: const Icon(Icons.pause_circle_outline),
-                      title: Text(l.nightSkipUntilNext),
-                      onPressed: service.nextStart == null
-                          ? null
-                          : () => service.temporaryMode(false),
-                    )
-                  else
-                    FocusableSettingsTile(
-                      leading: const Icon(Icons.wb_twilight),
-                      title: Text(l.nightEnableUntilMorning),
-                      onPressed: service.nextEnd == null
-                          ? null
-                          : () => service.temporaryMode(true),
-                    ),
-                  if (overrideActive) ...[
-                    Text(
-                      '${c.overrideMode == 'on' ? l.nightTemporaryOn : l.nightTemporaryOff}: ${date(DateTime.fromMillisecondsSinceEpoch(c.overrideUntil))}',
-                    ),
-                    FocusableSettingsTile(
-                      leading: const Icon(Icons.play_circle_outline),
-                      title: Text(l.nightResumeSchedule),
-                      onPressed: service.clearTemporaryMode,
-                    ),
-                  ],
-                ],
+
               ],
             ),
             SettingsSection(
@@ -666,6 +643,36 @@ class _NightModePageState extends State<NightModePage> {
                   ),
                 ],
               ),
+            SettingsSection(title: l.settingsGroupCurrentAction, children: [
+                if (c.scheduled) ...[
+                  if (service.intensity > 0)
+                    FocusableSettingsTile(
+                      leading: const Icon(Icons.pause_circle_outline),
+                      title: Text(l.nightSkipUntilNext),
+                      onPressed: service.nextStart == null
+                          ? null
+                          : () => service.temporaryMode(false),
+                    )
+                  else
+                    FocusableSettingsTile(
+                      leading: const Icon(Icons.wb_twilight),
+                      title: Text(l.nightEnableUntilMorning),
+                      onPressed: service.nextEnd == null
+                          ? null
+                          : () => service.temporaryMode(true),
+                    ),
+                  if (overrideActive) ...[
+                    Text(
+                      '${c.overrideMode == 'on' ? l.nightTemporaryOn : l.nightTemporaryOff}: ${date(DateTime.fromMillisecondsSinceEpoch(c.overrideUntil))}',
+                    ),
+                    FocusableSettingsTile(
+                      leading: const Icon(Icons.play_circle_outline),
+                      title: Text(l.nightResumeSchedule),
+                      onPressed: service.clearTemporaryMode,
+                    ),
+                  ],
+                ],
+            ]),
           ],
           if (widget.section == 'filter') ...[
             _NightSlider(

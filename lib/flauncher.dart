@@ -812,14 +812,14 @@ class FLauncherState extends State<FLauncher> {
         memorySaver: settings.memorySaverEnabled,
       );
     }
-    final folder = source == videoFolderSource
+    final folder = source == videoFolderSource || source == mediaFolderSource
         ? context.watch<VideoFolderService?>()
         : null;
     final clip = folder?.clip;
     final localVideo = source == 'picture' ? wallpaperService.video : null;
     return WallpaperBackground(
-      key: Key('background_${source}_${source == 'online' ? online?.version : source == videoFolderSource ? 0 : wallpaperService.version}'),
-      image: localVideo != null || source == videoFolderSource ? null : image,
+      key: Key('background_${source}_${source == 'online' ? online?.version : folder != null ? 0 : wallpaperService.version}'),
+      image: folder != null ? folder.image : localVideo != null ? null : image,
       cacheStaticLayers: localVideo != null || folder != null,
       gradient: wallpaperService.gradient.gradient,
       mode: settings.wallpaperFit,
@@ -829,7 +829,7 @@ class FLauncherState extends State<FLauncher> {
       memorySaver: settings.memorySaverEnabled,
       artworkBuilder: folder != null
           ? (background) => VideoWallpaperBackground.folder(
-              clip: clip, background: background,
+              clip: clip?.isImage == true ? null : clip, background: background,
               videoImport: wallpaperService.videoImport,
               queueFailed: folder.failed,
               enabled: context.watch<LauncherState>().launcherVisible,

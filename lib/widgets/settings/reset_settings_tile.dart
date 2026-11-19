@@ -71,7 +71,7 @@ class _ResetSettingsTileState extends State<ResetSettingsTile> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         FocusableSettingsTile(
-          leading: const Icon(Icons.settings_backup_restore),
+          leading: const Icon(Icons.restart_alt),
           title: Text(l.resetLauncherSettings),
           trailing: _applying
               ? const SizedBox(

@@ -60,6 +60,12 @@ class SettingsControlHint extends StatelessWidget {
   const SettingsControlHint({super.key, required this.text});
 
   final String text;
+  static const _arrows = {
+    '◄': Icons.arrow_left,
+    '►': Icons.arrow_right,
+    '▲': Icons.arrow_drop_up,
+    '▼': Icons.arrow_drop_down,
+  };
   static final _keys = RegExp(
     r'[◄►▲▼](?:\s*/\s*[◄►▲▼])*|\b(?:OK|Back)(?:\s*/\s*(?:OK|Back))*\b',
   );
@@ -74,8 +80,20 @@ class SettingsControlHint extends StatelessWidget {
       spans.add(
         TextSpan(
           // Keep a key pair together visually without altering spoken text.
-          text: match.group(0)!.replaceAll(' ', '\u00a0'),
-          semanticsLabel: match.group(0),
+          children: [
+            for (final key in match.group(0)!.split(''))
+              if (_arrows[key] case final arrow?)
+                TextSpan(
+                  text: String.fromCharCode(arrow.codePoint),
+                  semanticsLabel: key,
+                  style: TextStyle(fontFamily: arrow.fontFamily),
+                )
+              else
+                TextSpan(
+                  text: key == ' ' ? '\u00a0' : key,
+                  semanticsLabel: key,
+                ),
+          ],
           style: TextStyle(
             fontWeight: FontWeight.w600,
             backgroundColor: color.withValues(

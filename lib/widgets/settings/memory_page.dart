@@ -385,7 +385,7 @@ class _MemoryPageState extends State<MemoryPage> with WidgetsBindingObserver {
                 _expand(
                   key: const Key('memory-technical'),
                   title: l.memoryTechnical,
-                  icon: Icons.tune,
+                  icon: Icons.analytics_outlined,
                   expanded: _technical,
                   onPressed: () => setState(() => _technical = !_technical),
                 ),

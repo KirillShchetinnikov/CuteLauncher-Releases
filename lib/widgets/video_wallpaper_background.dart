@@ -261,7 +261,7 @@ class _VideoWallpaperBackgroundState extends State<VideoWallpaperBackground>
         if (mounted && widget.queueFailed) {
           showActionNotice(
             context,
-            AppLocalizations.of(context)!.videoFolderError,
+            AppLocalizations.of(context)!.mediaFolderError,
             error: true,
           );
         }

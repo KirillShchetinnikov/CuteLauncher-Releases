@@ -223,7 +223,7 @@ void main() {
       ),
     );
     await open(tester, section: 'main');
-    expect(find.text('Включить переназначение'), findsOneWidget);
+    expect(find.text('Включить переназначение'), findsNothing);
     expect(find.text('Настройка доступа'), findsOneWidget);
     expect(find.text('Предоставлено'), findsOneWidget);
     expect(find.text('Обновить'), findsNothing);
@@ -231,7 +231,7 @@ void main() {
     expect(find.byKey(const ValueKey('remote-buttons-capture')), findsNothing);
     expect(
       tester.getTopLeft(find.text('Проверка кнопок')).dy,
-      greaterThan(tester.getTopLeft(find.text('Назначения кнопок')).dy),
+      greaterThan(tester.getTopLeft(find.widgetWithText(FocusableSettingsTile, 'Назначения кнопок')).dy),
     );
     await tester.tap(find.text('Проверка кнопок'));
     await tester.pumpAndSettle();

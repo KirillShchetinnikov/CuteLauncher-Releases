@@ -52,15 +52,18 @@ void main() {
         await tester.pumpAndSettle();
         final scroll = tester.state<ScrollableState>(find.byType(Scrollable));
         final compact = layout.$1.height < 450;
-        expect(scroll.position.maxScrollExtent, compact ? greaterThan(0) : 0);
+        final fitsWithoutScroll = layout.$1.height >= 540 && layout.$2 == 1;
+        expect(scroll.position.maxScrollExtent, fitsWithoutScroll ? 0 : greaterThan(0));
         final l = AppLocalizations.of(
           tester.element(find.byType(CuteLauncherAboutDialog)),
         )!;
         for (final text in [
-          if (!compact) l.launcherRepository,
+          if (!compact) l.discussionQrCode,
           if (!compact) l.showRepositoryQrCode,
           l.close,
         ]) {
+          await tester.ensureVisible(find.text(text));
+          await tester.pumpAndSettle();
           final rect = tester.getRect(find.text(text));
           expect(rect.top, greaterThanOrEqualTo(20));
           expect(rect.bottom, lessThanOrEqualTo(layout.$1.height - 20));
@@ -72,7 +75,7 @@ void main() {
   }
 
   for (final language in ['ru', 'en']) {
-    testWidgets('Repository QR opens and closes with remote in $language', (
+    testWidgets('About QR destinations open and close with remote in $language', (
       tester,
     ) async {
       SharedPreferences.setMockInitialValues({});
@@ -115,25 +118,38 @@ void main() {
       )!;
       expect(find.text('v1.0.0'), findsOneWidget);
       expect(find.textContaining('v1.0.0+1'), findsNothing);
-      expect(find.text(l.showRepositoryQrCode), findsOneWidget);
+      expect(find.text(l.launcherRepository), findsNothing);
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
       await tester.pumpAndSettle();
-      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
-      await tester.pumpAndSettle();
-      final qr = tester.widget<QrImageView>(find.byType(QrImageView));
-      expect(find.text(CuteLauncherAboutDialog.repositoryUrl), findsOneWidget);
-      expect(qr.backgroundColor, Colors.white);
-      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
-      await tester.pumpAndSettle();
-      expect(find.byType(QrImageView), findsNothing);
-      expect(find.byType(CuteLauncherAboutDialog), findsOneWidget);
-      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
-      await tester.pumpAndSettle();
-      expect(find.byType(QrImageView), findsOneWidget);
-      await tester.binding.handlePopRoute();
-      await tester.pumpAndSettle();
-      expect(find.byType(QrImageView), findsNothing);
-      expect(find.byType(CuteLauncherAboutDialog), findsOneWidget);
+      for (final (label, url) in [
+        (l.discussionQrCode, 'https://4pda.to/forum/index.php?showtopic=1128313'),
+        (l.showRepositoryQrCode, 'https://github.com/KirillShchetinnikov/CuteLauncher-Releases'),
+      ]) {
+        await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+        await tester.pumpAndSettle();
+        expect(Focus.of(tester.element(find.text(label))).hasFocus, isTrue);
+        await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+        await tester.pumpAndSettle();
+        final qr = tester.widget<QrImageView>(find.byType(QrImageView));
+        expect(find.text(url), findsOneWidget);
+        expect(qr.backgroundColor, Colors.white);
+        expect(qr.eyeStyle.eyeShape, QrEyeShape.circle);
+        expect(qr.dataModuleStyle.dataModuleShape, QrDataModuleShape.circle);
+        final closeQr = find.descendant(
+          of: find.byType(LauncherAlertDialog), matching: find.text(l.close),
+        );
+        expect(Focus.of(tester.element(closeQr)).hasFocus, isTrue);
+        await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+        await tester.pumpAndSettle();
+        expect(find.byType(QrImageView), findsNothing);
+        expect(Focus.of(tester.element(find.text(label))).hasFocus, isTrue);
+        await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+        await tester.pumpAndSettle();
+        await tester.binding.handlePopRoute();
+        await tester.pumpAndSettle();
+        expect(find.byType(QrImageView), findsNothing);
+        expect(Focus.of(tester.element(find.text(label))).hasFocus, isTrue);
+      }
       expect(tester.takeException(), isNull);
     });
   }

@@ -59,7 +59,7 @@ public class AdbConnectionCheckTest {
         }
     }
 
-    private static byte[] readPacket(Socket socket, int command, Integer arg0) throws IOException {
+    static byte[] readPacket(Socket socket, int command, Integer arg0) throws IOException {
         socket.setSoTimeout(4000);
         var input = new DataInputStream(socket.getInputStream());
         assertEquals(command, Integer.reverseBytes(input.readInt()));
@@ -73,7 +73,7 @@ public class AdbConnectionCheckTest {
         return input.readNBytes(length);
     }
 
-    private static void sendPacket(Socket socket, int command, int arg0, int arg1, byte[] payload) throws IOException {
+    static void sendPacket(Socket socket, int command, int arg0, int arg1, byte[] payload) throws IOException {
         int checksum = 0;
         for (byte value : payload) checksum += value & 0xff;
         socket.getOutputStream().write(ByteBuffer.allocate(24 + payload.length).order(ByteOrder.LITTLE_ENDIAN)
