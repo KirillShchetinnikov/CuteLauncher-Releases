@@ -139,6 +139,10 @@ additional system integration.
 See the [user guide](docs/USER_GUIDE_EN.md#разрешения-и-ограничения) for availability
 and limitations.
 
+## Support the developer
+
+You can support CuteLauncher development through [CloudTips](https://pay.cloudtips.ru/p/118c2a7f) or [YooMoney](https://yoomoney.ru/fundraise/1LLAULV57ME.261119).
+
 ## Report an issue
 
 Reproduce the issue and open **Settings → Advanced → Diagnostics**.
