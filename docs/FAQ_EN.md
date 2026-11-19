@@ -20,13 +20,49 @@ goes back. Choose the language in Advanced, independently of the system language
 or following it. Expand Details for explanations of settings.
 [Controls](USER_GUIDE_EN.md#controls-and-settings).
 
-## Why does Home return to the stock launcher?
+## How do I make CuteLauncher the default launcher?
 
-In Launcher and device controls, check the current home app and select CuteLauncher
-through the system launcher picker. If the firmware does not allow this, supported
-local ADB assignment and Home interception through the accessibility service are
-available. Their operation depends on the firmware. You can start without disabling
-the stock launcher. [Home app and device controls](USER_GUIDE_EN.md#launcher-and-device-controls).
+**The preferred method is to use built-in ADB and disable the stock launcher.**
+If ADB is unavailable or you want to keep the stock launcher enabled, try Home Button Fix.
+
+| Method | What changes | What you need |
+| --- | --- | --- |
+| Set via ADB | CuteLauncher becomes Android's home app. If it finds an enabled stock launcher, it offers to disable it while setting the default. | A working ADB connection on the TV or box and firmware that supports the action. |
+| Home Button Fix | Pressing Home opens CuteLauncher. Android keeps its existing home app. | The accessibility service. Your firmware must pass Home presses to it. |
+| Android launcher picker | Android makes CuteLauncher the home app. The stock launcher stays enabled. | This works on the few firmware versions that let you select CuteLauncher and keep that choice. |
+
+### 1. Set the default with built-in ADB
+
+1. On your TV or box, open the system **Settings → System → About**. On some Android TV devices, the path is **Settings → Device Preferences → About**.
+2. Find **Android TV OS build** or **Build number** and press **OK** on the remote seven times, until you see a message saying you're now a developer.
+3. Go back one screen, open **Developer options**, and turn on **USB debugging**. Select **OK** if Android asks you to confirm. Menu names vary by firmware. [Android Developer options](https://developer.android.com/studio/debug/dev-options#enable).
+4. If the same menu has a separate **Network debugging** or **ADB over network (TCP)** setting, turn it on. CuteLauncher's built-in ADB connects over TCP. Some firmware requires you to enable the TCP port separately after turning on USB debugging.
+5. In CuteLauncher, open **Launcher and device controls → ADB connection**. Keep port `5555` unless the device uses a different one. Select **Check connection** and approve Android's debugging prompt if it appears.
+6. Under **Default launcher**, select **Set CuteLauncher as default launcher via ADB**. Review the proposed changes and confirm. When it finishes, check the home app status and press Home from another app.
+
+Disabling the stock launcher can affect manufacturer-specific menus and remote buttons. If TCP ADB or setting the default is unavailable, try Home Button Fix.
+
+To undo the change, keep ADB connected and select **Restore the previous default launcher via ADB**. If you also turned on Home interception or startup, switch them off separately.
+
+### 2. Set up the Home button and keep the stock launcher enabled
+
+1. Open **Launcher and device controls → Home button and startup → Open accessibility settings**.
+2. Enable the CuteLauncher service in Android's accessibility settings. If the menu fails to open, go to the TV's system settings manually.
+3. Return to **Home button and startup** and enable **Override the Home button**. Open another app and test Home on the remote.
+
+If Home still opens the stock launcher with both settings enabled, your firmware may be blocking Home presses from reaching the service. To open CuteLauncher after a full boot, use the separate **Start when the device turns on** switch on the same page. Android or the firmware may restrict startup. To restore normal Home button behavior, turn off **Override the Home button**.
+
+### 3. Choose CuteLauncher in Android settings
+
+Use this method if you know your firmware supports changing launchers in Android settings and you know how to switch back.
+
+1. Open the gear in CuteLauncher → **Launcher and device controls** → **Default launcher**.
+2. Select **Open system default launcher setting**, then choose **CuteLauncher**.
+3. Open another app and press **Home** on the remote. Check that CuteLauncher opens. The **Default launcher** page shows which home app Android selected.
+
+If the system picker fails to open, omits CuteLauncher, or keeps the previous choice, use method 1 or 2. To return to the stock launcher after using the picker, select it in the same Android menu.
+
+[Home app and device controls](USER_GUIDE_EN.md#launcher-and-device-controls).
 
 ## Must I configure ADB and grant every permission?
 
