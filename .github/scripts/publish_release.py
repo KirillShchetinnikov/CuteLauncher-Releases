@@ -21,7 +21,10 @@ def sha256(path):
 def notes(repository, tag):
     base = f'https://github.com/{repository}/blob/{quote(tag, safe="")}'
     return (f'[Изменения на русском]({base}/CHANGELOG_RU.md)\n\n'
-            f'[Changelog in English]({base}/CHANGELOG_EN.md)\n')
+            f'[Changelog in English]({base}/CHANGELOG_EN.md)\n\n'
+            'Поддержать разработчика / Support the developer · '
+            '[CloudTips](https://pay.cloudtips.ru/p/118c2a7f) · '
+            '[ЮMoney / YooMoney](https://yoomoney.ru/fundraise/1LLAULV57ME.261119)\n')
 
 
 class GitHub:

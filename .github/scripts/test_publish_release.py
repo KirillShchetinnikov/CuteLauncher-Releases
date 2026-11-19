@@ -89,6 +89,8 @@ class PublishReleaseTests(unittest.TestCase):
         self.assertNotIn('<!--', self.github.release['body'])
         self.assertIn('CHANGELOG_RU.md', self.github.release['body'])
         self.assertIn('CHANGELOG_EN.md', self.github.release['body'])
+        self.assertIn('https://pay.cloudtips.ru/p/118c2a7f', self.github.release['body'])
+        self.assertIn('https://yoomoney.ru/fundraise/1LLAULV57ME.261119', self.github.release['body'])
 
     def draft(self):
         self.github.fail_after = 0

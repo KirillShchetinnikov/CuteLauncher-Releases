@@ -2,39 +2,29 @@
 
 [Русский](README.md) · [English](README_EN.md)
 
-**Your home screen for Android TV and Google TV, with remote-friendly navigation,
-your own app categories, and a look that suits your TV.**
+**A home screen for Android TV and Google TV.** Keep your favorite apps, content feeds, and TV controls together on an ad-free home screen. Navigate with the arrow keys and OK on your remote. Requires Android 9 or later.
 
-CuteLauncher brings your apps, useful widgets, and TV controls together on one
-screen. Choose what to show, where to put it, and which actions to keep within
-reach. The launcher's home screen has no advertising blocks.
-Created by [Kirill Shchetinnikov](https://github.com/KirillShchetinnikov).
+**[Download APK](https://github.com/KirillShchetinnikov/CuteLauncher-Releases/releases/latest)** · [How to install](#installation-and-compatibility) · [What's new](CHANGELOG_EN.md)
 
-**[Download APK](https://github.com/KirillShchetinnikov/CuteLauncher-Releases/releases/latest)**
-· **[User guide](docs/USER_GUIDE_EN.md)**
-· **[FAQ](docs/FAQ_EN.md)**
-· **[All documentation](docs/README_EN.md)**
-· **[What's new](CHANGELOG_EN.md)**
+[Project website](https://kirillshchetinnikov.github.io/CuteLauncher-Releases/en/) · [User guide](docs/USER_GUIDE_EN.md) · [FAQ](docs/FAQ_EN.md) · [All documentation](docs/README_EN.md)
 
-**CuteLauncher 1.1 is a public stable release, out of beta.**
+[Discussion on 4PDA (in Russian)](https://4pda.to/forum/index.php?showtopic=1128313&view=findpost&p=145636324) · [Support the developer](#support-the-developer)
 
-## What makes it convenient
+[![CuteLauncher home screen with an autumn landscape, a large clock, and app tiles](https://kirillshchetinnikov.github.io/CuteLauncher-Releases/assets/home-screen.jpg)](https://kirillshchetinnikov.github.io/CuteLauncher-Releases/assets/home-screen.jpg)
 
-- **Built for the couch.** Navigate with the directional pad and OK, follow a
-  clear focus indicator, hold a tile for its actions, and customize Home/Back.
-- **Your apps, your order.** Create categories, collect favorites, rearrange
-  items, and hide clutter. Choose rows or grids, with shared or per-category
-  settings.
-- **Make it your own.** Adjust tile styles, colors, sizes, labels, transparency,
-  focus effects, and the side on which menus open. Tune effects or turn them off.
-- **Useful information at a glance.** Arrange the clock, calendar, weather,
-  network, traffic, TV inputs, notifications, and sleep timer in the top panel.
-- **More comfortable evenings.** Use a dimming and warm-color night filter
-  manually, on a schedule, or from sunset to sunrise, with app and HDMI exceptions.
-- **Keep your setup.** Backups, automatic schedules, and selective synchronization
-  help you move your layout and preferences between TVs.
+## What you can do from the home screen
 
-## Screenshots
+- **Put your apps in order.** Keep favorites in the first row, organize other apps into categories, and hide tiles you rarely use. Each category can have its own row or grid layout.
+- **Pick up where you left off.** When a streaming app shares its progress with Android TV, its Continue watching card takes you back to the film or episode.
+- **Control the TV with your remote.** Hold OK on a tile for app actions. Add TV inputs, notifications, and the sleep timer to the quick settings panel.
+- **Make the screen easy to read from the couch.** Adjust the clock, tile and label sizes, and choose a focus highlight you can see at a glance. Place the weather and date next to the clock or change the wallpaper by time of day.
+- **Set up evening viewing.** Turn on the night filter manually, on a schedule, or at sunset. Exclude individual apps and HDMI inputs when they need their usual colors.
+- **Bring your setup to another TV.** Back up your categories and appearance settings, or choose which settings to sync between devices.
+
+## Screenshots and appearance
+
+<details>
+<summary>Show 14 screenshots and animated wallpapers</summary>
 
 Example setups captured on Android TV and Google TV emulators (Android 16). Every image comes from the running app at 3840 × 2160; click an image to open the original. The third-party apps shown are installed separately.
 
@@ -52,8 +42,6 @@ Example setups captured on Android TV and Google TV emulators (Android 16). Ever
 
 The app background in the quick settings panel screenshot is blurred for clarity.
 
-<details>
-<summary>8 more screenshots: features and settings</summary>
 
 | Glass settings | Outline settings |
 |---|---|
@@ -70,11 +58,6 @@ The app background in the quick settings panel screenshot is blurred for clarity
 | Adaptive wallpapers | Tile sizes and labels |
 |---|---|
 | [![Adaptive wallpapers](docs/images/screenshots/en/11-adaptive-wallpaper.webp)](docs/images/screenshots/en/11-adaptive-wallpaper.webp) | [![Tile sizes and labels](docs/images/screenshots/en/12-tile-appearance.webp)](docs/images/screenshots/en/12-tile-appearance.webp) |
-
-</details>
-
-<details>
-<summary>Adaptive landscape</summary>
 
 **Illustrated landscape**
 
@@ -170,6 +153,8 @@ Documentation is available in Russian and English. Language links appear at
 the top of each page.
 
 ## License and attribution
+
+CuteLauncher developer — [Kirill Shchetinnikov](https://github.com/KirillShchetinnikov).
 
 CuteLauncher is based on LTvLauncher/FLauncher and distributed under
 [GNU GPLv3](LICENSE). See [project origins and licenses](docs/README_EN.md#происхождение-и-лицензии)
