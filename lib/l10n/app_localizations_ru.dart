@@ -10,6 +10,13 @@ class AppLocalizationsRu extends AppLocalizations {
   AppLocalizationsRu([String locale = 'ru']) : super(locale);
 
   @override
+  String get appIconPack => 'Набор значков приложений';
+
+  @override
+  String get appIconPackHint =>
+      'Установите на телевизор набор значков для ADW, Apex или Nova и откройте список ещё раз.';
+
+  @override
   String get videoFolderSource => 'Видео из папки';
 
   @override

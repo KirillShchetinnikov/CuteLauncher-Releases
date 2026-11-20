@@ -10,6 +10,13 @@ class AppLocalizationsTr extends AppLocalizations {
   AppLocalizationsTr([String locale = 'tr']) : super(locale);
 
   @override
+  String get appIconPack => 'Uygulama simge paketi';
+
+  @override
+  String get appIconPackHint =>
+      'TV’ye ADW, Apex veya Nova uyumlu bir simge paketi yükleyip bu listeyi yeniden açın.';
+
+  @override
   String get videoFolderSource => 'Klasördeki videolar';
 
   @override

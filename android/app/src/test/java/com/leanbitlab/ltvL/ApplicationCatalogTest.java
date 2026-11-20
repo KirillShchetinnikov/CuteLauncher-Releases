@@ -14,6 +14,33 @@ import static org.junit.Assert.*;
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = {28, 36})
 public class ApplicationCatalogTest {
+    @Test public void iconPackMatchesInstalledComponentsIncludingShortActivityNames() throws Exception {
+        var parser = android.util.Xml.newPullParser();
+        parser.setInput(new java.io.StringReader("<resources>"
+                + "<item component='ComponentInfo{tv.example/.Player}' drawable='player'/>"
+                + "<item component='ComponentInfo{tv.example/tv.example.Settings}' drawable='settings'/>"
+                + "<item component='ComponentInfo{tv.example/.Missing}' drawable='other:drawable/bad'/>"
+                + "<item component='ComponentInfo{not.installed/.Player}' drawable='player'/>"
+                + "<item component='broken' drawable='x'/></resources>"));
+        var icons = IconPacks.parse(parser, java.util.Set.of("tv.example"));
+        assertEquals(2, icons.size());
+        assertEquals("player", icons.get(new android.content.ComponentName("tv.example", "tv.example.Player")));
+        assertEquals("settings", icons.get(new android.content.ComponentName("tv.example", "tv.example.Settings")));
+    }
+
+    @Test public void discoversOneEntryPerPackAndHandlesMissingPack() {
+        try (var controller = Robolectric.buildActivity(Activity.class).setup()) {
+            var activity = controller.get();
+            var pack = install(activity, "example.icons");
+            var manager = Shadows.shadowOf(activity.getPackageManager());
+            manager.addResolveInfoForIntent(new Intent("org.adw.launcher.THEMES"), pack);
+            manager.addResolveInfoForIntent(new Intent("com.novalauncher.THEME"), pack);
+            var catalog = new ApplicationCatalog(activity);
+            assertEquals(java.util.Map.of("example.icons", "example.icons"), catalog.iconPacks.available());
+            assertEquals(0, catalog.packedIcon("missing.pack", "example.tv").length);
+        }
+    }
+
     @Test public void panelIconsRespectSmallerBoundAndKeepAspectRatio() {
         try (var controller = Robolectric.buildActivity(Activity.class).setup()) {
             var catalog = new ApplicationCatalog(controller.get());

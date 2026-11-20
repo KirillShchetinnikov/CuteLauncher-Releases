@@ -1,4 +1,6 @@
 {
+  "appIconPack": "App-Symbolpaket",
+  "appIconPackHint": "Installiere ein Symbolpaket für ADW, Apex oder Nova auf dem Fernseher und öffne diese Liste erneut.",
   "videoFolderSource": "Videos aus Ordner",
   "videoFolderPlayback": "Wiedergabe",
   "videoFolderNext": "Nächstes Video",

@@ -58,6 +58,7 @@ import 'package:flauncher/providers/watch_next_service.dart';
 import 'package:flauncher/providers/weather_service.dart';
 import 'package:flauncher/widgets/application_info_panel.dart';
 import 'package:flauncher/widgets/home_section.dart';
+import 'package:flauncher/widgets/home_skeleton.dart';
 import 'package:flauncher/section_icons.dart';
 import 'package:flauncher/widgets/section_heading_icon.dart';
 import 'package:flauncher/widgets/category_focus.dart';
@@ -90,6 +91,58 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 
 void main() {
+  testWidgets('Home waits for the saved layout before showing any tile rows', (tester) async {
+    SharedPreferences.setMockInitialValues({'tile_appearance': '{"sectionPosition":0.7}'});
+    final appearance = AppearanceService(await SharedPreferences.getInstance());
+    addTearDown(appearance.dispose);
+    final apps = mkAppService();
+    when(apps.initialized).thenReturn(false);
+    final hidden = fakeCategory(name: 'All apps')..visible = false;
+    final group = fakeCategory(name: 'My apps')
+      ..applications.addAll([fakeApp(packageName: 'first'), fakeApp(packageName: 'second')]);
+    when(apps.launcherSections).thenReturn([hidden, LauncherSpacer(id: 3, height: 480), group]);
+    when(apps.applications).thenReturn(group.applications);
+    final settings = mkSettingsService();
+    final wallpaper = mkWallpaperService();
+    await _pumpWidgetWithProviders(tester, wallpaper, apps, settings, appearance: appearance);
+    expect(find.byType(WallpaperBackground), findsOneWidget);
+    expect(find.byType(FocusAwareAppBar), findsOneWidget);
+    expect(find.byType(ContentPreviewRow), findsNothing);
+    expect(find.byType(AppCard), findsNothing);
+    final shapes = find.descendant(of: find.byType(HomeSection), matching: find.byType(HomeSkeletonBlock));
+    expect(shapes, findsNWidgets(2));
+    final positions = [for (var i = 0; i < 2; i++) tester.getTopLeft(shapes.at(i))];
+    expect(positions.first.dy, greaterThan(720));
+    when(apps.initialized).thenReturn(true);
+    await _pumpWidgetWithProviders(tester, wallpaper, apps, settings, appearance: appearance);
+    expect(find.text('All apps'), findsNothing);
+    expect(find.byType(AppCard), findsNWidgets(2));
+    for (var i = 0; i < positions.length; i++) {
+      expect(tester.getTopLeft(find.byType(AppCard).at(i)), positions[i]);
+    }
+  });
+  testWidgets('a leading saved feed keeps its screen position when the catalog opens', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final settings = SettingsService(await SharedPreferences.getInstance());
+    await settings.setSelectedAppChannels(['video.app:1']);
+    final channel = FeedChannel()..data = [feed(1)];
+    final feeds = AppChannelsService(channel, settings);
+    final apps = mkAppService();
+    final home = mkSettingsService();
+    when(home.selectedAppChannels).thenReturn(settings.selectedAppChannels);
+    when(apps.applications).thenReturn([]);
+    when(apps.launcherSections).thenReturn([LauncherSpacer(id: 7, height: 260), appChannelsGroup()]);
+    when(apps.initialized).thenReturn(false);
+    addTearDown(() async { feeds.dispose(); settings.dispose(); await channel.events.close(); });
+    await tester.runAsync(feeds.refresh);
+    final wallpaper = mkWallpaperService();
+    await _pumpWidgetWithProviders(tester, wallpaper, apps, home, feeds: feeds);
+    final before = tester.getRect(find.byType(AppContentRow));
+    when(apps.initialized).thenReturn(true);
+    await _pumpWidgetWithProviders(tester, wallpaper, apps, home, feeds: feeds);
+    expect(tester.getRect(find.byType(AppContentRow)), before);
+  });
+
   for (final position in [0, 1, 2]) {
     testWidgets('three loading feeds preserve geometry at position $position', (tester) async {
       SharedPreferences.setMockInitialValues({});
@@ -1530,6 +1583,69 @@ void main() {
     expect(isSettingsIconFocused(tester), isTrue);
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('compact section spacing brings apps and feeds closer', (tester) async {
+    SharedPreferences.setMockInitialValues({
+      'tile_appearance': '{"sectionGap":0,"sectionScroll":"free",'
+          '"sectionTitles":false,"labels":"none","focusScale":0,"focusPulse":false}',
+    });
+    final prefs = await SharedPreferences.getInstance();
+    final appearance = AppearanceService(prefs);
+    final feedSettings = SettingsService(prefs);
+    final channel = FeedChannel()..data = [feed(1)];
+    final feeds = AppChannelsService(channel, feedSettings);
+    await feedSettings.setSelectedAppChannels(['video.app:1']);
+    await tester.runAsync(feeds.refresh);
+    final apps = mkAppService();
+    final top = fakeCategory(name: 'Top', order: 0)
+      ..applications.add(fakeApp(packageName: 'top.app'));
+    final bottom = fakeCategory(name: 'Bottom', order: 2)
+      ..applications.add(fakeApp(packageName: 'bottom.app'));
+    when(apps.applications).thenReturn([...top.applications, ...bottom.applications]);
+    when(apps.launcherSections).thenReturn([top, appChannelsGroup(), bottom]);
+    final settings = mkSettingsService();
+    when(settings.selectedAppChannels).thenReturn(feedSettings.selectedAppChannels);
+    await _pumpWidgetWithProviders(tester, mkWallpaperService(), apps, settings,
+      feeds: feeds, appearance: appearance);
+
+    final upperApp = find.byKey(const ValueKey('top.app'));
+    final lowerApp = find.byKey(const ValueKey('bottom.app'));
+    final feedCard = find.byType(ContentPreviewCard).first;
+    double gapToFeed() =>
+        tester.getTopLeft(feedCard).dy - tester.getBottomLeft(upperApp).dy;
+    double gapFromFeed() =>
+        tester.getTopLeft(lowerApp).dy - tester.getBottomLeft(feedCard).dy;
+    final legacyGapToFeed = gapToFeed();
+    final legacyGapFromFeed = gapFromFeed();
+    await appearance.resetFields(['sectionGap', 'sectionSpacing']);
+    await tester.pumpAndSettle();
+    expect(gapToFeed(), closeTo(legacyGapToFeed + 24, .001));
+    expect(gapFromFeed(), closeTo(legacyGapFromFeed + 24, .001));
+    await appearance.set('sectionSpacing', 56);
+    await tester.pumpAndSettle();
+    expect(gapToFeed(), closeTo(legacyGapToFeed + 24, .001));
+    expect(gapFromFeed(), closeTo(legacyGapFromFeed + 24, .001));
+    await appearance.set('sectionSpacing', 32);
+    await tester.pumpAndSettle();
+    expect(gapToFeed(), legacyGapToFeed);
+    expect(gapFromFeed(), legacyGapFromFeed);
+
+    await appearance.set('sectionSpacing', 0);
+    await tester.pumpAndSettle();
+    expect(gapToFeed(), inInclusiveRange(0, legacyGapToFeed - 16));
+    expect(gapFromFeed(), inInclusiveRange(0, legacyGapFromFeed - 16));
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.pumpAndSettle();
+    expect(FocusManager.instance.primaryFocus?.context?.findAncestorWidgetOfExactType<AppContentRow>()?.channel?.id, 1);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.pumpAndSettle();
+    expect(isAppCardFocused(tester, 'bottom.app'), isTrue);
+    await tester.pumpWidget(const SizedBox());
+    feeds.dispose();
+    feedSettings.dispose();
+    appearance.dispose();
+    await channel.events.close();
   });
 
   testWidgets('feed group moves as one block and Home enters its first feed', (tester) async {
@@ -4020,6 +4136,7 @@ void main() {
 
 SettingsService mkSettingsService() {
   final settingsService = MockSettingsService();
+  when(settingsService.appIconPack).thenReturn(null);
   when(settingsService.storedApplicationInfoConfiguration).thenReturn(null);
   when(settingsService.screenshotScene).thenReturn(null);
   when(settingsService.panelTooltipsEnabled).thenReturn(false);

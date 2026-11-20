@@ -10,6 +10,13 @@ class AppLocalizationsKo extends AppLocalizations {
   AppLocalizationsKo([String locale = 'ko']) : super(locale);
 
   @override
+  String get appIconPack => '앱 아이콘 팩';
+
+  @override
+  String get appIconPackHint =>
+      'TV에 ADW, Apex 또는 Nova용 아이콘 팩을 설치한 후 이 목록을 다시 여세요.';
+
+  @override
   String get videoFolderSource => '폴더의 동영상';
 
   @override

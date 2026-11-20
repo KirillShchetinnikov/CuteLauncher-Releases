@@ -163,7 +163,11 @@ the original icon. Hiding headings or icons keeps your selection. For App feeds,
 one selection applies to all feed headings.
 
 Choose rows or grids, sorting, column and visible-row counts, scrolling, active
-category pinning, sizes, spacing, headings, backgrounds, and margins. Some
+category pinning, sizes, spacing, headings, backgrounds, and margins. To bring
+sections closer, lower **Space between sections** under **Home screen →
+Appearance → Sections → Layout**. The scale starts at 0. After updating, the
+old 0 maps to 32 and the old default of 24 maps to 56, preserving the actual
+spacing. Some
 appearance settings are shared, while others can be overridden per category.
 Shared settings can be changed even if all categories use their own values.
 Settings incompatible with the current mode remain disabled, such as blur
@@ -359,6 +363,11 @@ you move to the top panel or settings.
 Under **Home screen → Appearance → Sections**, turn on **Also fade inactive feeds**
 to apply the same percentage to the other app feeds in the group while one feed
 is selected. The selected feed stays fully visible.
+
+To apply icons across all sections, install an ADW, Apex or Nova icon pack APK
+on the TV. Open **App icon pack** in the global **Tiles and labels** settings
+and select the pack. Apps with a matching icon use it on their tiles. Other apps
+keep their usual artwork. An image you chose manually for a tile takes priority.
 
 In **Tiles and labels**, **Apps with a banner** and **Apps without a banner**
 are independent choices next to tile proportions. Apps with a banner have four modes:

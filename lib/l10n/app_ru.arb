@@ -1,4 +1,6 @@
 {
+  "appIconPack": "Набор значков приложений",
+  "appIconPackHint": "Установите на телевизор набор значков для ADW, Apex или Nova и откройте список ещё раз.",
   "videoFolderSource": "Видео из папки",
   "videoFolderPlayback": "Воспроизведение",
   "videoFolderNext": "Следующий ролик",

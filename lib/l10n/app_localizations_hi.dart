@@ -10,6 +10,13 @@ class AppLocalizationsHi extends AppLocalizations {
   AppLocalizationsHi([String locale = 'hi']) : super(locale);
 
   @override
+  String get appIconPack => 'ऐप आइकन पैक';
+
+  @override
+  String get appIconPackHint =>
+      'टीवी पर ADW, Apex या Nova के लिए कोई आइकन पैक इंस्टॉल करें और यह सूची फिर से खोलें।';
+
+  @override
   String get videoFolderSource => 'फ़ोल्डर से वीडियो';
 
   @override

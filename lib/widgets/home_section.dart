@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'package:flutter/foundation.dart' show ValueListenable, listEquals;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show RenderAbstractViewport;
 import 'package:flutter/services.dart';
 import 'reordering_tile_viewport.dart';
 import 'package:provider/provider.dart';
@@ -20,10 +21,13 @@ import '../l10n/app_localizations.dart';
 import '../section_names.dart';
 import '../tile_appearance.dart';
 import 'app_card.dart';
+import 'home_skeleton.dart';
 import 'category_container_common.dart';
 import 'category_focus.dart';
 import 'home_scroll_motion.dart';
+import 'home_scroll_anchor.dart';
 import 'tile_paint_layer.dart';
+import 'tile_theme_outline.dart';
 
 class HomeSectionOpacity extends StatelessWidget {
   const HomeSectionOpacity({
@@ -68,12 +72,16 @@ class HomeSection extends StatefulWidget {
   final bool first;
   final ValueListenable<int?>? activeSectionId;
   final bool previewed;
+  final bool loading;
+  final HomeScrollController? startupScroll;
   const HomeSection({
     super.key,
     required this.category,
     this.first = false,
     this.activeSectionId,
     this.previewed = false,
+    this.loading = false,
+    this.startupScroll,
   });
 
   static ({HomeLayout layout, double horizontalInset, double focusScale})
@@ -120,6 +128,7 @@ class HomeSection extends StatefulWidget {
 
 class _HomeSectionState extends State<HomeSection> {
   final _scroll = ScrollController();
+  double _verticalTileInsets = 0;
   final _emptyTile = FocusNode();
   final _bounds = GlobalKey();
   CategoryFocusController? _focus;
@@ -312,12 +321,19 @@ class _HomeSectionState extends State<HomeSection> {
 
   void _reveal() {
     if (!mounted || !_active || ModalRoute.isCurrentOf(context) == false) return;
+    final index = _apps.indexWhere((a) => a.packageName == _focus?.lastPackage);
+    final offset = _entryOffset(index);
+    if (offset != null) revealHomeOffset(context, Scrollable.of(context).position, offset);
+  }
+
+  double? _entryOffset(int index) {
+    if (!mounted) return null;
     final outer = Scrollable.maybeOf(context);
     final box = context.findRenderObject();
     final bounds = _bounds.currentContext?.findRenderObject();
-    if (outer == null || box is! RenderBox || bounds is! RenderBox) return;
-    final viewport = outer.context.findRenderObject();
-    if (viewport is! RenderBox) return;
+    if (outer == null || box is! RenderBox || bounds is! RenderBox || !bounds.hasSize) return null;
+    final viewport = RenderAbstractViewport.maybeOf(box);
+    if (viewport is! RenderBox) return null;
     final style =
         context.read<AppearanceService?>()?.appearance ??
         const TileAppearance();
@@ -327,16 +343,17 @@ class _HomeSectionState extends State<HomeSection> {
     var offset = style.anchored
         ? sectionTop - pos.viewportDimension * style.sectionPosition
         : pos.pixels;
-    final index = _apps.indexWhere((a) => a.packageName == _focus?.lastPackage);
     final l = _layout;
     if (_apps.isEmpty || (index >= 0 && l != null)) {
       var top = bounds.localToGlobal(Offset.zero, ancestor: viewport).dy +
           pos.pixels;
-      var height = bounds.size.height;
+      final double height;
       if (index >= 0 && l != null) {
         top += l.cell(index).$1 * l.stepY -
             (l.mode == 'grid' && _scroll.hasClients ? _scroll.offset : 0);
-        height = l.height + l.labelHeight + 2 * l.inset;
+        height = l.height + l.labelHeight + _verticalTileInsets;
+      } else {
+        height = bounds.size.height;
       }
       final bottom = top + height;
       if (top < offset) offset = top;
@@ -344,8 +361,7 @@ class _HomeSectionState extends State<HomeSection> {
         offset = bottom - pos.viewportDimension;
       }
     }
-    offset = offset.clamp(pos.minScrollExtent, pos.maxScrollExtent);
-    revealHomeOffset(context, pos, offset);
+    return offset;
   }
 
   void _move(App app, AxisDirection direction) {
@@ -363,6 +379,7 @@ class _HomeSectionState extends State<HomeSection> {
 
   @override
   Widget build(BuildContext context) {
+    widget.startupScroll?.startupOffset = () => _entryOffset(0);
     final service = context.watch<AppearanceService?>();
     final style =
         service?.tilesFor(widget.category.id) ?? const TileAppearance();
@@ -531,6 +548,22 @@ class _HomeSectionState extends State<HomeSection> {
                       labelHeight: labelHeight,
                     );
                     final l = result.layout;
+                    final focusGrowth = l.height * (result.focusScale - 1);
+                    final lift = style.focusEffect == 'lift' ? style.focusLift : 0.0;
+                    final focusPaint = style.focusBorderStyle() == 'glow'
+                        ? TileGlowPainter.extent * result.focusScale
+                        : 2.0;
+                    final topInset = style.compactSectionInset(
+                      l.inset,
+                      focusReserve: (labelHeight > 0 ? focusGrowth : focusGrowth / 2) +
+                          lift + focusPaint,
+                    );
+                    final bottomInset = style.compactSectionInset(
+                      l.inset,
+                      focusReserve: (labelHeight > 0 ? -labelHeight : focusGrowth / 2) +
+                          focusPaint,
+                    );
+                    _verticalTileInsets = topInset + bottomInset;
                     _horizontalInset = result.horizontalInset;
                     _layout = l;
                     final signature =
@@ -553,6 +586,12 @@ class _HomeSectionState extends State<HomeSection> {
                     }
                     Widget card(int index) {
                       final a = _apps[index];
+                      if (widget.loading) {
+                        return Align(alignment: Alignment.topCenter,
+                          child: SizedBox(width: l.width, height: l.height,
+                            child: HomeSkeletonBlock(radius: LauncherStyle.of(context).tileCorners(
+                              context.read<SettingsService>().themes, radius: style.number('radius')))));
+                      }
                       final (r, c) = l.cell(index);
                       return SizedBox(
                         width: l.width,
@@ -578,7 +617,8 @@ class _HomeSectionState extends State<HomeSection> {
                     }
 
                     final maxRows = categoryStyle?.maxRows ?? 0;
-                    final height = l.windowHeight(maxRows);
+                    final height = l.windowHeight(maxRows) -
+                        2 * l.inset + _verticalTileInsets;
                     final child = ReorderingTileViewport(
                       layout: l,
                       packages: _apps.map((app) => app.packageName).toList(),
@@ -597,9 +637,11 @@ class _HomeSectionState extends State<HomeSection> {
                       child: ClipRect(
                         child: TilePaintLayer(
                           child: Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: _horizontalInset,
-                              vertical: l.inset,
+                            padding: EdgeInsets.fromLTRB(
+                              _horizontalInset,
+                              topInset,
+                              _horizontalInset,
+                              bottomInset,
                             ),
                             child: child,
                           ),

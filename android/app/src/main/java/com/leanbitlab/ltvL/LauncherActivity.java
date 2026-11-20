@@ -413,6 +413,12 @@ public class LauncherActivity extends FlutterActivity {
                 case "getLauncherApplications" -> ApplicationLoader.load(sIoExecutor,
                         this::runOnUiThread, applicationCatalog::getLauncherApplications, result::success,
                         error -> result.error("applications_unavailable", "Unable to query launcher applications", DiagnosticErrorDetails.from(error)));
+                case "getIconPacks" -> ApplicationLoader.load(sIoExecutor, this::runOnUiThread,
+                        applicationCatalog.iconPacks::available, result::success,
+                        error -> result.error("icon_packs_unavailable", "Unable to read icon packs", DiagnosticErrorDetails.from(error)));
+                case "getPackedIcon" -> ApplicationLoader.load(sImageExecutor, this::runOnUiThread,
+                        () -> applicationCatalog.packedIcon(call.argument("pack"), call.argument("package")),
+                        result::success, error -> result.success(new byte[0]));
                 case "getApplicationBanner" -> ApplicationLoader.load(sImageExecutor,
                         task -> new Handler(Looper.getMainLooper()).post(task),
                         () -> applicationCatalog.getCachedArtwork(call.arguments(), true), result::success,

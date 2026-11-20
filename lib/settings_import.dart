@@ -194,6 +194,10 @@ Map<String, dynamic> compatibleSettings(dynamic source, Map<String, dynamic> exp
 }
 
 bool _validValue(String key, dynamic value) {
+  if (key == 'app_icon_pack') {
+    return value is String && value.length <= 255 && (value.isEmpty ||
+        RegExp(r'^[A-Za-z][A-Za-z0-9_]*(\.[A-Za-z][A-Za-z0-9_]*)+$').hasMatch(value));
+  }
   if (key == volumeOverlayPositionKey) return OverlayPosition.parse(value) != null;
   if (key == volumeOverlayAppearanceKey) return OverlayAppearance.parse(value) != null;
   if (key == 'volume_update_interval') return value is int && value >= 1 && value <= 10;

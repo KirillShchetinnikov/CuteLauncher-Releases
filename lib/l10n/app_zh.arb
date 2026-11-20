@@ -1,4 +1,6 @@
 {
+  "appIconPack": "应用图标包",
+  "appIconPackHint": "请在电视上安装支持 ADW、Apex 或 Nova 的图标包，然后重新打开此列表。",
   "videoFolderSource": "文件夹中的视频",
   "videoFolderPlayback": "播放",
   "videoFolderNext": "下一个视频",

@@ -10,6 +10,13 @@ class AppLocalizationsUk extends AppLocalizations {
   AppLocalizationsUk([String locale = 'uk']) : super(locale);
 
   @override
+  String get appIconPack => 'Набір значків застосунків';
+
+  @override
+  String get appIconPackHint =>
+      'Установіть на телевізор набір значків для ADW, Apex або Nova й відкрийте список ще раз.';
+
+  @override
   String get videoFolderSource => 'Відео з папки';
 
   @override

@@ -10,6 +10,13 @@ class AppLocalizationsJa extends AppLocalizations {
   AppLocalizationsJa([String locale = 'ja']) : super(locale);
 
   @override
+  String get appIconPack => 'アプリアイコンパック';
+
+  @override
+  String get appIconPackHint =>
+      'テレビに ADW、Apex、Nova 対応のアイコンパックをインストールし、この一覧を開き直してください。';
+
+  @override
   String get videoFolderSource => 'フォルダ内の動画';
 
   @override

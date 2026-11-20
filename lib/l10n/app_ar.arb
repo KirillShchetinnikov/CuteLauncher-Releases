@@ -1,4 +1,6 @@
 {
+  "appIconPack": "حزمة أيقونات التطبيقات",
+  "appIconPackHint": "ثبّت حزمة أيقونات تدعم ADW أو Apex أو Nova على التلفزيون، ثم افتح هذه القائمة مجددًا.",
   "videoFolderSource": "مقاطع الفيديو من مجلد",
   "videoFolderPlayback": "التشغيل",
   "videoFolderNext": "الفيديو التالي",

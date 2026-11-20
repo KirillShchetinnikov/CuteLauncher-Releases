@@ -10,6 +10,13 @@ class AppLocalizationsDe extends AppLocalizations {
   AppLocalizationsDe([String locale = 'de']) : super(locale);
 
   @override
+  String get appIconPack => 'App-Symbolpaket';
+
+  @override
+  String get appIconPackHint =>
+      'Installiere ein Symbolpaket für ADW, Apex oder Nova auf dem Fernseher und öffne diese Liste erneut.';
+
+  @override
   String get videoFolderSource => 'Videos aus Ordner';
 
   @override

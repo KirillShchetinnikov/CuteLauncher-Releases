@@ -14,6 +14,7 @@ const syncSettingsKeys = <String>{
   fileBrowserOptionsKey,
   'accent_color',
   'app_banner_shape',
+  'app_icon_pack',
   'screensaver_clock_style',
   'app_key_click_enabled',
   'auto_hide_app_bar',

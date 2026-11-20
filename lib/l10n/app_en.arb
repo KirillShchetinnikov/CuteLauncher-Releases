@@ -1,4 +1,6 @@
 {
+  "appIconPack": "App icon pack",
+  "appIconPackHint": "Install an ADW, Apex or Nova icon pack on the TV, then reopen this list.",
   "videoFolderSource": "Videos from folder",
   "videoFolderPlayback": "Playback",
   "videoFolderNext": "Next video",

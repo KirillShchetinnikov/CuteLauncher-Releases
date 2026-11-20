@@ -2,6 +2,49 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
+## v1.8.0 — 2026-11-20
+
+### Settings and home screen
+
+- Redesigned the settings menu. Language and appearance are grouped together, widgets and panels share a section, and backup, sync, export and import are available in one place.
+- On startup, the home screen uses the saved section layout while Android refreshes the app catalog. Tile images are cached. Fixed banners disappearing after a cache cleanup and reduced memory use when returning home.
+- Tiles can use an installed APK icon pack. Apps without a matching icon keep their regular image. Section titles can show icons, and sections can use tighter spacing.
+- The Back button can return to the first card in a section or move up through sections one at a time. Both options work in feeds and Watch Next.
+- Long feed captions scroll when focused, and two lines can scroll together. Opacity controls share a scale from 0% (fully visible) to 100% (fully transparent). Inactive feeds within a group can use this setting. Section previews respond immediately to visibility changes, and the Medeo fonts were updated to 1.1.0.
+- Buttons on the app information card can be reordered or hidden. Local ADB can check app status and restart an app once it has stopped successfully.
+
+### Wallpapers, weather and widgets
+
+- A single folder source handles photos and videos on the TV or a USB drive. It supports subfolders, configurable photo timing, sorting by name or date, shuffle and manual advance. Videos play without sound. Existing folder settings are migrated automatically.
+- Online wallpapers transition smoothly once the new image has decoded. Scheduled downloads wait if the launcher is busy. The previous video is now released when checking a new file. On compatible devices, the launcher tries another way to display the video if playback fails.
+- Adaptive landscapes can use a selected source for sunrise and sunset or times set manually. The fallback sunset calculation has been fixed.
+- Auto weather switches between MET Norway, Open-Meteo and Gismeteo. City search checks the built-in catalog first, then GeoNames. Coordinates can be entered manually for weather and night mode. The weather format editor supports line alignment, placeholders for missing readings and notes on data availability.
+- Night mode calculates sunrise and sunset offline once a location is set. Scheduled backlight levels range from 0% to 100% in 10% steps.
+- Persistent top-bar widgets appear with the clock, and conditional icons appear after a status check. The System widget can show CPU temperature on compatible devices, including through configured local ADB. The Wi-Fi summary shows the channel when it is known.
+- Media volume and the active sleep timer can appear over other apps, with separate position and appearance settings. The timer hides in CuteLauncher and fits its full text. The volume indicator keeps the same width as the value changes.
+
+### Remote and device controls
+
+- The top bar can show a Quick Actions menu with a configurable list and order. The menu can launch the system screensaver on compatible firmware and manually advance to another wallpaper or file in a folder.
+- Sleep puts the device into standby, including for older shutdown mappings. Full shutdown is available with confirmation through local ADB in Quick Actions and remote mappings. ADB reboot can be assigned with confirmation or as an immediate action.
+- Remote buttons can toggle night mode, open the TV guide on compatible TCL devices, or run an ADB shell command entered manually or loaded from a `.sh` file. The built-in Black Screen action remains available. Mappings for the third-party Black Screen app have been removed.
+- ADB settings can make CuteLauncher the home app or restore the previous launcher. CuteLauncher checks which app Android actually selected. A separate button opens Android's default home app settings. The ADB connection check retries after an interrupted handshake.
+- Fixed autostart after sleep when the launcher is recreated, and opening an app from a notification in the remote quick settings panel. If Android's notification settings are unavailable, the launcher tries to open the system app information page. Opening quick settings successfully from the remote no longer shows an extra toast.
+
+### Backup and sync
+
+- Backup and sync have separate setup wizards, accounts and settings, including separate encryption passwords. Yandex Disk supports code-based sign-in, and Samba network folders support SMB 2/3.
+- The sync wizard can select entire subgroups or individual settings. During the first exchange, it explains how to apply, replace or merge settings. Sync files can be managed in the launcher. Back returns from the storage page to the wizard.
+- Fixed settings transfer during a full sync. Canceling before changes are applied preserves recent local edits, and repaired sync history persists across restarts. Restoring a backup removes unused imported banners.
+- Resetting appearance restores button sounds, section titles and the startup landscape. Resetting one local background source preserves files used by other sources.
+
+### Updates, diagnostics and fixes
+
+- A compatible update appears at the top of Settings with its version, and release notes are available in the update section. With the prerelease channel enabled, the launcher finds the next test version. Update and About dialogs offer support QR codes, and About also offers QR codes for the repository and the 4PDA discussion.
+- Recents shows total RAM use, estimated memory use per app and an unloaded status. The memory screen works without ADB. You can create a standard report or start, stop and export an extended diagnostic recording.
+- Fixed the cover download queue stalling after HTTP errors and timeouts. Reports show download stages, HTTP statuses and data sizes. Reduced background checks for network traffic, the brightness schedule and Watch Next, reduced memory use when creating a standard report, and fixed a memory leak in the clock animation.
+- In the built-in file browser, Left opens the parent folder and Right reveals a long name. Improved HDMI audio output detection on Android 11–12 and added missing translations for system screens.
+
 ## v1.8.0-test.14 — 2026-11-19
 
 **Pre-release.**

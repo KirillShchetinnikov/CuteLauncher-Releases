@@ -30,6 +30,71 @@ class _DelayedWallpaper extends ImageProvider<_DelayedWallpaper> {
 }
 
 void main() {
+  testWidgets(
+    'online refresh keeps the last success and reveals the decoded replacement',
+    (tester) async {
+      Future<void> show(ImageProvider image, {bool animate = true}) =>
+          tester.pumpWidget(
+            MaterialApp(
+              home: OnlineWallpaperTransition(
+                image: image,
+                animate: animate,
+                background: (frame) => WallpaperBackground(
+                  image: frame,
+                  memorySaver: true,
+                  gradient: const LinearGradient(
+                    colors: [Colors.black, Colors.black],
+                  ),
+                ),
+              ),
+            ),
+          );
+      final layers = find.descendant(
+        of: find.byType(OnlineWallpaperTransition),
+        matching: find.byType(ClipRect),
+      );
+      final first = _DelayedWallpaper()..complete(Colors.red);
+      await show(first);
+      await tester.pumpAndSettle();
+      final old = tester.widget<RawImage>(find.byType(RawImage)).image;
+      expect(old, isNotNull);
+      final stale = _DelayedWallpaper();
+      await show(stale);
+      final failed = _DelayedWallpaper();
+      await show(failed);
+      stale.complete(Colors.yellow);
+      failed.frame.completeError(StateError('bad image'));
+      await tester.pumpAndSettle();
+      expect(tester.widget<RawImage>(find.byType(RawImage)).image, same(old));
+      final next = _DelayedWallpaper();
+      await show(next);
+      await tester.pump(const Duration(seconds: 1));
+      expect(tester.widget<RawImage>(find.byType(RawImage)).image, same(old));
+      next.complete(Colors.blue);
+      await tester.pump();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 120));
+      const size = Size(800, 600);
+      final oldRegion = tester
+          .widget<ClipRect>(layers.first)
+          .clipper!
+          .getClip(size);
+      final newRegion = tester
+          .widget<ClipRect>(layers.last)
+          .clipper!
+          .getClip(size);
+      expect(newRegion.right, closeTo(400, 2));
+      expect(oldRegion.left, newRegion.right);
+      expect(oldRegion.right, size.width);
+      expect(newRegion.left, 0);
+      await tester.pumpAndSettle();
+      expect(layers, findsOneWidget);
+      await show(_DelayedWallpaper()..complete(Colors.green), animate: false);
+      await tester.pump();
+      expect(layers, findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
   for (final mode in ['cover', 'contain', 'blurred']) {
     for (final memorySaver in [false, true]) {
       testWidgets(

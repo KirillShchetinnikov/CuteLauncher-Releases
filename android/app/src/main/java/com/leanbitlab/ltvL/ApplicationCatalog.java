@@ -37,7 +37,16 @@ import java.util.Map;
 final class ApplicationCatalog {
     private final Context context;
 
-    ApplicationCatalog(Context context) { this.context = context; }
+    final IconPacks iconPacks;
+    ApplicationCatalog(Context context) {
+        this.context = context;
+        iconPacks = new IconPacks(context.getPackageManager());
+    }
+
+    byte[] packedIcon(String pack, String target) {
+        Drawable icon = iconPacks.icon(pack, target);
+        return icon == null ? new byte[0] : drawableToByteArray(icon, 512);
+    }
 
     List<Map<String, Serializable>> getApplications() {
         return getApplications(false);

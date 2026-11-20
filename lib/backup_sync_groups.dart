@@ -192,7 +192,7 @@ BackupSyncGroup? backupSyncPartGroup(String part) {
   if (key == 'app_language') return BackupSyncGroup.language;
   if (key == 'memory_saver_enabled') return BackupSyncGroup.memory;
   if (key == 'start_on_boot') return BackupSyncGroup.startup;
-  if (key == 'tile_appearance' || key == 'app_banner_shape') {
+  if (key == 'tile_appearance' || key == 'app_banner_shape' || key == 'app_icon_pack') {
     return BackupSyncGroup.tiles;
   }
   if (key == 'accent_color') return BackupSyncGroup.accent;

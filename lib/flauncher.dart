@@ -55,6 +55,7 @@ import 'package:flauncher/widgets/launcher_alternative_view.dart';
 import 'package:flauncher/widgets/focus_aware_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show listEquals;
+import 'package:flutter/rendering.dart' show RenderAbstractViewport;
 import 'widgets/tile_paint_layer.dart';
 import 'package:provider/provider.dart';
 import 'package:flauncher/widgets/continue_watching_row.dart';
@@ -80,6 +81,7 @@ class FLauncherState extends State<FLauncher> {
   final _sectionKeys = <int, GlobalKey>{};
   final _watchFocus = CategoryFocusController();
   final _watchSectionKey = GlobalKey();
+  final _startupRowEnd = GlobalKey();
   final _feedFocus = <String, CategoryFocusController>{};
   final _feedKeys = <String, GlobalKey>{};
   final _lastFeed = ValueNotifier<String?>(null);
@@ -184,10 +186,12 @@ class FLauncherState extends State<FLauncher> {
     if (geometry == null) return;
     final (position: pos, :top, :height) = geometry;
     final style = context.read<AppearanceService?>()?.appearance ?? const TileAppearance();
-    var offset = style.anchored ? top - pos.viewportDimension * style.sectionPosition : pos.pixels;
-    if (top < offset) offset = top;
-    if (top + height > offset + pos.viewportDimension) offset = top + height - pos.viewportDimension;
-    revealHomeOffset(context, pos, offset);
+    revealHomeOffset(context, pos, _contentOffset(pos, style, top, top + height));
+  }
+
+  double _contentOffset(ScrollPosition pos, TileAppearance style, double top, double bottom) {
+    final preferred = style.anchored ? top - pos.viewportDimension * style.sectionPosition : pos.pixels;
+    return math.max(math.min(preferred, top), bottom - pos.viewportDimension);
   }
 
   ({ScrollPosition position, double top, double height})? _sectionGeometry(
@@ -375,14 +379,12 @@ class FLauncherState extends State<FLauncher> {
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Consumer<AppsService>(
                   builder: (context, appsService, _) {
-                    if (appsService.initialized) {
-                      return InitialAppImages(showSkeletons: true, onReady: () async {
-                        final focused = FocusManager.instance.primaryFocus?.context;
-                        final alreadyNavigated = focused?.getInheritedWidgetOfExactType<CategoryFocus>() != null ||
-                            focused?.findAncestorStateOfType<FocusAwareAppBarState>() != null;
-                        if (!alreadyNavigated) await _focusHomeEntry();
-                        if (context.mounted) context.read<ForegroundWork?>()?.homeReady();
-                      }, child: Selector2<SettingsService, WatchNextService,
+                    final loading = !appsService.initialized;
+                    final saved = appsService.launcherSections;
+                    if (loading && saved.isEmpty) {
+                      return Semantics(label: AppLocalizations.of(context)!.loading, child: const SizedBox.expand());
+                    }
+                    final body = Selector2<SettingsService, WatchNextService,
                           ({List<WatchNextProgram> programs, bool loading, int order})>(
                         selector: (_, settings, watchNext) {
                           final programs = ContinueWatchingRow.visiblePrograms(settings, appsService, watchNext);
@@ -397,7 +399,8 @@ class FLauncherState extends State<FLauncher> {
                             previous.order != next.order || !listEquals(previous.programs, next.programs),
                         builder: (context, watchNext, _) => LayoutBuilder(builder: (context, constraints) {
                           final sections = _sections(
-                            appsService.launcherSections.where((s) => s is! Category || s.visible).toList(),
+                            saved.where((s) => s is! Category || s.visible).toList(),
+                            loadingTiles: loading,
                             continueWatchingPrograms: watchNext.programs,
                             continueWatchingLoading: watchNext.loading,
                             continueWatchingOrder: watchNext.order,
@@ -422,11 +425,15 @@ class FLauncherState extends State<FLauncher> {
                             ),
                           );
                         }),
-                      ));
-                    }
-                    else {
-                      return _emptyState(context);
-                    }
+                      );
+                    return InitialAppImages(showSkeletons: true, loadingLayout: loading, onReady: () async {
+                      final focused = FocusManager.instance.primaryFocus?.context;
+                      final alreadyNavigated = focused?.getInheritedWidgetOfExactType<CategoryFocus>() != null ||
+                          focused?.findAncestorStateOfType<FocusAwareAppBarState>() != null;
+                      if (!alreadyNavigated) await _focusHomeEntry();
+                      if (context.mounted) context.read<ForegroundWork?>()?.homeReady();
+                    }, child: Semantics(label: loading ? AppLocalizations.of(context)!.loading : null,
+                      excludeSemantics: loading, child: ExcludeFocus(excluding: loading, child: body)));
                   }
                 )
               )
@@ -441,12 +448,14 @@ class FLauncherState extends State<FLauncher> {
     List<LauncherSection> sections, {
     List<WatchNextProgram> continueWatchingPrograms = const [],
     bool continueWatchingLoading = false,
+    bool loadingTiles = false,
     int continueWatchingOrder = 0,
     required double viewportHeight,
     required double viewportWidth,
     required int? previewId,
   }) {
     final previousActive = _orderedFocus.where((focus) => focus.hasFocus).firstOrNull;
+    _scrollController.startupOffset = null;
     final previousIndex = _orderedFocus.indexOf(previousActive ?? _watchFocus);
     final ids = sections.whereType<Category>().map((category) => category.id).toSet();
     _sectionKeys.removeWhere((id, _) => !ids.contains(id));
@@ -537,6 +546,31 @@ class FLauncherState extends State<FLauncher> {
     final feeds = context.watch<AppChannelsService?>();
     final selectedFeeds = feeds == null ? <String>[] : context.watch<SettingsService>().selectedAppChannels;
     final activeFeedKeys = <String>{};
+    var needsStartupEntry = loadingTiles &&
+        context.read<SettingsService>().cardFocusMode != CardFocusMode.settings;
+    bool takeStartupEntry() {
+      if (!needsStartupEntry) return false;
+      needsStartupEntry = false;
+      return true;
+    }
+
+    Widget alignStartupRow(GlobalKey key, Widget child) {
+      if (!takeStartupEntry()) return child;
+      _scrollController.startupOffset = () {
+        final start = key.currentContext?.findRenderObject();
+        final end = _startupRowEnd.currentContext?.findRenderObject();
+        if (start is! RenderBox || end is! RenderBox) return null;
+        final viewport = RenderAbstractViewport.maybeOf(start);
+        if (viewport == null) return null;
+        final pos = _scrollController.position;
+        return _contentOffset(pos, appearance,
+          start.localToGlobal(Offset.zero, ancestor: viewport).dy + pos.pixels,
+          end.localToGlobal(Offset.zero, ancestor: viewport).dy + pos.pixels);
+      };
+      return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        child, SizedBox.shrink(key: _startupRowEnd),
+      ]);
+    }
 
     Widget? appFeeds(Category category, {required bool first}) {
       late final tiles = contentTiles(category.id);
@@ -568,10 +602,9 @@ class FLauncherState extends State<FLauncher> {
           _activeSectionId.value = category.id;
           _scrollController.anchorTo(sectionKey);
         };
-        _orderedFocus.add(focus);
         final format = feeds.settings.appChannelFormat(key);
         rows[key] = CategoryFocus(key: sectionKey, controller: focus,
-          child: channel == null ? AppContentRow.loading(
+          child: alignStartupRow(sectionKey, channel == null ? AppContentRow.loading(
             title: AppLocalizations.of(context)!.appChannelsTitle,
             titleIcon: titleIcon,
             appearance: style, appTileSize: matchedSize,
@@ -581,7 +614,8 @@ class FLauncherState extends State<FLauncher> {
           ) : AppContentRow(
             channel: channel, programs: programs, appearance: style,
             appTileSize: matchedSize, titleIcon: titleIcon,
-          ));
+          )));
+        _orderedFocus.add(focus);
       }
       if (rows.isEmpty) return null;
       final fadeFeeds = appearance.sectionFadeInactiveFeeds &&
@@ -635,7 +669,7 @@ class FLauncherState extends State<FLauncher> {
         controller: _watchFocus,
         child: Transform.translate(
           offset: previewOffset(id),
-          child: contentSectionOpacity(
+          child: alignStartupRow(_watchSectionKey, contentSectionOpacity(
             id,
             !firstCategoryFound,
             ContinueWatchingRow(
@@ -645,7 +679,7 @@ class FLauncherState extends State<FLauncher> {
               appearance: appearanceService == null ? null : style,
               appTileSize: size,
             ),
-          ),
+          )),
         ),
       ));
       cwInserted = true;
@@ -711,8 +745,10 @@ class FLauncherState extends State<FLauncher> {
 
       focus.gap = context.read<AppearanceService?>()?.tilesFor(category.id).horizontalGap ?? 16;
       focus.leave = (direction, x) => _leaveSection(focus, direction, x);
+      final alignStartup = category.applications.isNotEmpty && takeStartupEntry();
       _orderedFocus.add(focus);
-      categoryWidget = HomeSection(key: sectionKey, category: category, first: isFirstSection,
+      categoryWidget = HomeSection(key: sectionKey, category: category, first: isFirstSection, loading: loadingTiles,
+        startupScroll: alignStartup ? _scrollController : null,
         activeSectionId: _activeSectionId, previewed: previewId == category.id);
 
       children.add(Padding(
@@ -817,9 +853,9 @@ class FLauncherState extends State<FLauncher> {
         : null;
     final clip = folder?.clip;
     final localVideo = source == 'picture' ? wallpaperService.video : null;
-    return WallpaperBackground(
-      key: Key('background_${source}_${source == 'online' ? online?.version : folder != null ? 0 : wallpaperService.version}'),
-      image: folder != null ? folder.image : localVideo != null ? null : image,
+    Widget background(ImageProvider? frame) => WallpaperBackground(
+      key: source == 'online' ? ValueKey(frame) : Key('background_${source}_${folder != null ? 0 : wallpaperService.version}'),
+      image: frame,
       cacheStaticLayers: localVideo != null || folder != null,
       gradient: wallpaperService.gradient.gradient,
       mode: settings.wallpaperFit,
@@ -846,19 +882,10 @@ class FLauncherState extends State<FLauncher> {
               mode: settings.wallpaperFit, memorySaver: settings.memorySaverEnabled)
           : null,
     );
-  }
-  Widget _emptyState(BuildContext context) {
-    AppLocalizations localizations = AppLocalizations.of(context)!;
-
-    final style = context.watch<AppearanceService?>()?.appearance ?? const TileAppearance();
-    return Semantics(label: localizations.loading, child: ExcludeSemantics(
-      child: SingleChildScrollView(physics: const NeverScrollableScrollPhysics(),
-        padding: const EdgeInsets.only(top: 24),
-        child: Column(children: [
-          for (var i = 0; i < 3; i++)
-            ContentPreviewRow.loading(title: ' ', style: style,
-              aspectRatio: style.aspectRatio, reserveDescription: true),
-        ])),
-    ));
+    if (source == 'online' && image != null) {
+      return OnlineWallpaperTransition(image: image, background: background,
+        animate: !settings.memorySaverEnabled && !MediaQuery.disableAnimationsOf(context));
+    }
+    return background(folder != null ? folder.image : localVideo != null ? null : image);
   }
 }

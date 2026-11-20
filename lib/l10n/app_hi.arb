@@ -1,4 +1,6 @@
 {
+  "appIconPack": "ऐप आइकन पैक",
+  "appIconPackHint": "टीवी पर ADW, Apex या Nova के लिए कोई आइकन पैक इंस्टॉल करें और यह सूची फिर से खोलें।",
   "videoFolderSource": "फ़ोल्डर से वीडियो",
   "videoFolderPlayback": "प्लेबैक",
   "videoFolderNext": "अगला वीडियो",

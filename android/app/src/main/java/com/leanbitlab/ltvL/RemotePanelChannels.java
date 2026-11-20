@@ -66,6 +66,7 @@ final class RemotePanelChannels implements AutoCloseable {
             try {
                 switch (call.method) {
                     case "getApplications" -> load(applications::getApplications, result);
+                    case "getPackedIcon" -> load(() -> applications.packedIcon(call.argument("pack"), call.argument("package")), result);
                     case "getApplicationIcon" -> load(() -> applications.getApplicationIcon(call.arguments()), result);
                     case "getApplicationBanner" -> load(() -> applications.getApplicationBanner(call.arguments()), result);
                     case "getActiveNetworkInformation" -> load(network::getActiveNetworkInformation, result);

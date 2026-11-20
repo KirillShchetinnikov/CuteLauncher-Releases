@@ -1,4 +1,6 @@
 {
+  "appIconPack": "Pacote de ícones de aplicativos",
+  "appIconPackHint": "Instale na TV um pacote de ícones compatível com ADW, Apex ou Nova e abra esta lista novamente.",
   "videoFolderSource": "Vídeos de uma pasta",
   "videoFolderPlayback": "Reprodução",
   "videoFolderNext": "Próximo vídeo",

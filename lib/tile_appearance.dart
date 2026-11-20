@@ -14,6 +14,9 @@ enum SettingsSectionStyle { accentBand, surface }
 enum WeatherIconPack { standard, outline, solid, duotone, pixel, geometric, circled }
 
 class TileAppearance {
+  // Keep room below the old zero for reducing built-in vertical section insets.
+  static const _legacySectionGapOffset = 32;
+
   static const informationAppearanceKeys = [
     'dateTextColor', 'weatherIconPack', 'weatherTextColor', 'weatherIconColor',
   ];
@@ -87,7 +90,22 @@ class TileAppearance {
   }
   bool get anchored => values['sectionScroll'] != 'free';
   double get sectionPosition => (number('sectionPosition') ?? 0.5).clamp(0, 0.70).toDouble();
-  double get sectionGap => number('sectionGap') ?? 24;
+  double get sectionGap {
+    final spacing = number('sectionSpacing');
+    return spacing == null
+        ? number('sectionGap') ?? 24
+        : (spacing - _legacySectionGapOffset).clamp(0, 96).toDouble();
+  }
+
+  double get sectionSpacing =>
+      number('sectionSpacing') ?? sectionGap + _legacySectionGapOffset;
+
+  double compactSectionInset(double inset, {required double focusReserve}) {
+    final reduction =
+        (_legacySectionGapOffset - sectionSpacing).clamp(0, _legacySectionGapOffset) / 2;
+    return (inset - reduction).clamp(focusReserve.clamp(0, inset), inset).toDouble();
+  }
+
   double get sectionOpacity => number('sectionOpacity') ?? 1;
   bool get sectionFadeInactiveFeeds => values['sectionFadeInactiveFeeds'] == true;
   double get sectionRadius => number('sectionRadius') ?? 0;
@@ -273,6 +291,7 @@ class TileAppearance {
     const ranges = {
       'size': (64, 256),
       'sectionPosition': (0, 1), 'sectionGap': (0, 96),
+      'sectionSpacing': (0, _legacySectionGapOffset + 96),
       'sectionPadding': (0, 64), 'inactiveOpacity': (0, 1),
       'sectionOpacity': (0, 1), 'sectionRadius': (0, 64),
       'sectionTitleSize': (12, 40),
@@ -460,7 +479,12 @@ class TileAppearance {
     } catch (_) {
       return current;
     }
-    return jsonEncode({...previous, ..._migrateScrollbar(validValues(input))});
+    final imported = _migrateScrollbar(validValues(input));
+    final merged = {...previous, ...imported};
+    if (imported.containsKey('sectionGap') && !imported.containsKey('sectionSpacing')) {
+      merged.remove('sectionSpacing');
+    }
+    return jsonEncode(merged);
   }
 
   static Map<String, dynamic> _migrateScrollbar(Map<String, dynamic> values) {

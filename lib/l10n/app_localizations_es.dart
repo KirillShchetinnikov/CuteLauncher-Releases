@@ -10,6 +10,13 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
+  String get appIconPack => 'Paquete de iconos de aplicaciones';
+
+  @override
+  String get appIconPackHint =>
+      'Instala en el televisor un paquete de iconos compatible con ADW, Apex o Nova y vuelve a abrir esta lista.';
+
+  @override
   String get videoFolderSource => 'Vídeos de una carpeta';
 
   @override

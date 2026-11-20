@@ -100,8 +100,8 @@ class SectionStylePage extends StatelessWidget {
                 onChanged: (v) => set('sectionPadding', v),
               ),
             if (categoryId == null)
-              number('sectionGap', l.homeSectionGap, a.sectionGap, [
-                for (var n = 0; n <= 96; n += 4) n,
+              number('sectionSpacing', l.homeSectionGap, a.sectionSpacing, [
+                for (var n = 0; n <= 128; n += 4) n,
               ]),
           ],
         )
@@ -205,6 +205,7 @@ class SectionStylePage extends StatelessWidget {
               'inactiveOpacity',
               'sectionFadeInactiveFeeds',
               'sectionGap',
+              'sectionSpacing',
               'sectionScroll',
               'sectionPosition',
             ],

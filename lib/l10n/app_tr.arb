@@ -1,4 +1,6 @@
 {
+  "appIconPack": "Uygulama simge paketi",
+  "appIconPackHint": "TV’ye ADW, Apex veya Nova uyumlu bir simge paketi yükleyip bu listeyi yeniden açın.",
   "videoFolderSource": "Klasördeki videolar",
   "videoFolderPlayback": "Oynatma",
   "videoFolderNext": "Sonraki video",

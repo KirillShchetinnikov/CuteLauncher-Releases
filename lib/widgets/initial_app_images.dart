@@ -8,8 +8,9 @@ class InitialAppImages extends StatefulWidget {
   final Widget child;
   final Future<void> Function()? onReady;
   final bool showSkeletons;
+  final bool loadingLayout;
   const InitialAppImages({super.key, required this.child, this.onReady,
-    this.showSkeletons = false});
+    this.showSkeletons = false, this.loadingLayout = false});
 
   @override
   State<InitialAppImages> createState() => _InitialAppImagesState();
@@ -36,7 +37,7 @@ class _InitialAppImagesState extends State<InitialAppImages> {
   }
 
   void _checkReady() {
-    if (_ready || _checkScheduled || !mounted) return;
+    if (widget.loadingLayout || _ready || _checkScheduled || !mounted) return;
     _checkScheduled = true;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       _checkScheduled = false;
@@ -66,6 +67,12 @@ class _InitialAppImagesState extends State<InitialAppImages> {
       }
     });
     WidgetsBinding.instance.ensureVisualUpdate();
+  }
+
+  @override
+  void didUpdateWidget(InitialAppImages oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.loadingLayout && !widget.loadingLayout) _checkReady();
   }
 
   bool get _hasVisiblePending => _pending.values.any((context) {

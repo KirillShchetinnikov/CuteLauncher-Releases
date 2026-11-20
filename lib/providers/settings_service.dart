@@ -221,6 +221,12 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
     notifyListeners();
   }
   String get wallpaperFit => _sharedPreferences.getString('wallpaper_fit') ?? 'cover';
+  String? get appIconPack => _sharedPreferences.getString('app_icon_pack');
+
+  Future<void> setAppIconPack(String package) async {
+    await _sharedPreferences.setString('app_icon_pack', package);
+    notifyListeners();
+  }
   double get wallpaperBrightness => _sharedPreferences.getDouble('wallpaper_brightness') ?? 1;
   double get wallpaperSaturation => _sharedPreferences.getDouble('wallpaper_saturation') ?? 1;
   double get wallpaperDimming => _sharedPreferences.getDouble('wallpaper_dimming') ?? 1;
@@ -249,6 +255,7 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
     notifyListeners();
   }
   Future<void> resetAppearanceSettings() => _resetAppearancePreferences([
+    'app_icon_pack',
     _accentColorKey,
     _themesKey,
     _showAppNamesBelowIconsKey,
@@ -264,7 +271,7 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
 
   Future<void> resetAppearanceSection(String section) =>
       _resetAppearancePreferences(switch (section) {
-        'tiles' => [_themesKey, _showAppNamesBelowIconsKey],
+        'tiles' => [_themesKey, _showAppNamesBelowIconsKey, 'app_icon_pack'],
         'focus' => [
           _hideHighlightOutlineOnHomescreenKey,
           _appHighlightAnimationEnabledKey,
@@ -827,6 +834,7 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
       'background_source': backgroundSource,
       landscapeSettingsKey: landscape.encode(),
       'wallpaper_fit': wallpaperFit,
+      'app_icon_pack': appIconPack ?? '',
       'wallpaper_brightness': wallpaperBrightness,
       'wallpaper_saturation': wallpaperSaturation,
       'wallpaper_dimming': wallpaperDimming,

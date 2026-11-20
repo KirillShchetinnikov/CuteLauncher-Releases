@@ -115,7 +115,9 @@ class Category extends LauncherSection
     this.type = Category.Type
   });
 
-  Category unmodifiable() {
+  Category unmodifiable() => withApps(UnmodifiableListView(applications));
+
+  Category withApps(List<App> apps) {
     return Category.withApplications(
       systemKey: systemKey,
       visible: visible,
@@ -126,7 +128,7 @@ class Category extends LauncherSection
       rowHeight: rowHeight,
       sort: sort,
       type: type,
-      applications: UnmodifiableListView(applications));
+      applications: apps);
   }
 }
 

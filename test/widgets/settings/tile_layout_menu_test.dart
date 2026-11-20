@@ -6,6 +6,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/providers/appearance_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
+import 'package:flauncher/providers/apps_service.dart';
+import 'package:mockito/mockito.dart';
+import '../../mocks.mocks.dart';
 import 'package:flauncher/widgets/apps_grid.dart';
 import 'package:flauncher/widgets/settings/interface_settings_page.dart';
 import 'package:flauncher/widgets/settings/application_info_settings_page.dart';
@@ -126,6 +129,24 @@ void main() {
     },
   );
 
+  testWidgets('choosing an installed icon pack persists its package', (tester) async {
+    final apps = MockAppsService();
+    when(apps.categories).thenReturn([]);
+    when(apps.getApp('org.example.icons')).thenReturn(null);
+    when(apps.getIconPacks()).thenAnswer((_) async => {'org.example.icons': 'Example Icons'});
+    await pump(tester, ChangeNotifierProvider<AppsService>.value(
+      value: apps, child: const AppearancePage()));
+    final picker = find.text('Набор значков приложений');
+    await tester.ensureVisible(picker);
+    await tester.tap(picker);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Example Icons'));
+    await tester.pumpAndSettle();
+    expect(settings.appIconPack, 'org.example.icons');
+    await settings.resetAppearanceSection('tiles');
+    expect(settings.appIconPack, isNull);
+  });
+
   testWidgets('settings side lives in appearance style and remains editable', (
     tester,
   ) async {
@@ -175,6 +196,23 @@ void main() {
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox());
   });
+  testWidgets('section spacing slider reaches a denser nonnegative minimum', (tester) async {
+    await appearance.set('sectionGap', 0);
+    await pump(tester, const SectionStylePage());
+    final l = AppLocalizations.of(tester.element(find.byType(SectionStylePage)))!;
+    final title = find.text(l.homeSectionGap);
+    final slider = find.ancestor(of: title, matching: find.byType(SettingsSliderTile));
+    expect(tester.widget<SettingsSliderTile>(slider).value, 32);
+    expect(tester.widget<SettingsSliderTile>(slider).options.first, 0);
+    await tester.ensureVisible(slider);
+    Focus.of(tester.element(title)).requestFocus();
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+    await tester.pumpAndSettle();
+    expect(appearance.appearance.sectionSpacing, 28);
+    expect(appearance.appearance.sectionGap, 0);
+  });
+
   testWidgets('section background palette saves, cancels and clears locally', (tester) async {
     for (final id in <int?>[null, 1]) {
       await pump(tester, SectionStylePage(categoryId: id));

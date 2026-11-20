@@ -44,6 +44,8 @@ import 'package:pool/pool.dart';
 import '../models/app.dart';
 import '../models/category.dart';
 
+typedef _StoredSections = (List<Category>, List<LauncherSpacer>, List<AppCategory>);
+
 class AppsService extends ChangeNotifier with ServiceLifecycle, WidgetsBindingObserver {
   final FLauncherChannel _fLauncherChannel;
   final AppCatalogCache? catalogCache;
@@ -59,6 +61,7 @@ class AppsService extends ChangeNotifier with ServiceLifecycle, WidgetsBindingOb
   (int, int) imageRevisionFor(String package) => (_imageGeneration, _imageVersions[package] ?? 0);
 
   void _imageChanged(String package, HomeTileRevision reason) {
+    if (package == _iconPack) clearImageCaches();
     _iconCache.remove(package);
     _bannerCache.remove(package);
     final revision = _imageVersions.update(package, (version) => version + 1, ifAbsent: () => 1);
@@ -67,7 +70,17 @@ class AppsService extends ChangeNotifier with ServiceLifecycle, WidgetsBindingOb
     }
   }
 
-  void _notifyImages() => super.notifyListeners();
+  String? _iconPack;
+  void _notifyImages() {
+    final pack = _settingsService?.appIconPack;
+    if (pack != _iconPack) {
+      _iconPack = pack;
+      clearImageCaches();
+    }
+    super.notifyListeners();
+  }
+
+  Future<Map<String, String>> getIconPacks() => _fLauncherChannel.getIconPacks();
 
   @override
   void notifyListeners() {
@@ -86,6 +99,8 @@ class AppsService extends ChangeNotifier with ServiceLifecycle, WidgetsBindingOb
   StreamSubscription<dynamic>? _appsSubscription;
 
   final List<LauncherSection> _launcherSections = List.empty(growable: true);
+  List<LauncherSection>? _startupSections;
+  Map<String, App>? _startupApps;
   Map<String, App> _applications = {};
   List<App>? _sortedApplications;
   final _iconCache = ImageByteCache(maximumBytes: 2 * 1024 * 1024);
@@ -184,12 +199,12 @@ class AppsService extends ChangeNotifier with ServiceLifecycle, WidgetsBindingOb
   }
 
   List<App> get applications => _sortedApplications ??= List.unmodifiable(
-      _applications.values.sortedBy((application) => application.name));
+      (_startupApps ?? _applications).values.sortedBy((application) => application.name));
 
   List<LauncherSection> get launcherSections =>
-      List.unmodifiable(_launcherSections.map((section) => section is Category ? _displayCategory(section) : section));
+      _startupSections ?? List.unmodifiable(_launcherSections.map((section) => section is Category ? _displayCategory(section) : section));
   List<LauncherSection> get visibleLauncherSections => launcherSections.where((section) => section is! Category || section.visible).toList(growable: false);
-  List<Category> get categories => _categoriesById.values
+  List<Category> get categories => _startupSections?.whereType<Category>().toList(growable: false) ?? _categoriesById.values
       .map(_displayCategory)
       .toList(growable: false);
 
@@ -203,9 +218,10 @@ class AppsService extends ChangeNotifier with ServiceLifecycle, WidgetsBindingOb
   /// Tile preferences hide apps independently of their stored manual flag.
   bool isTileHidden(App app) => !_showTile(app);
 
-  Category _displayCategory(Category category) {
+  Category _displayCategory(Category category, [Map<String, App>? catalog]) {
+    final applications = catalog ?? _applications;
     if (category.isAutomatic) {
-      final apps = _applications.values.where((app) => !app.hidden && app.isLaunchable && _showTile(app) &&
+      final apps = applications.values.where((app) => !app.hidden && app.isLaunchable && _showTile(app) &&
           switch (category.systemKey) {
             'all_apps' => true,
             'tv_apps' => !app.sideloaded,
@@ -218,19 +234,14 @@ class AppsService extends ChangeNotifier with ServiceLifecycle, WidgetsBindingOb
         sortCategory(category);
       } else {
         for (var index = 0; index < category.applications.length; index++) {
-          category.applications[index] = _applications[category.applications[index].packageName]!;
+          category.applications[index] = applications[category.applications[index].packageName]!;
         }
         if (category.sort != CategorySort.manual) sortCategory(category);
       }
       return category.unmodifiable();
     }
     if (category.applications.every(_showTile)) return category.unmodifiable();
-    return Category.withApplications(
-      id: category.id, name: category.name, order: category.order, sort: category.sort,
-      systemKey: category.systemKey, visible: category.visible,
-      type: category.type, rowHeight: category.rowHeight, columnsCount: category.columnsCount,
-      applications: List.unmodifiable(category.applications.where(_showTile)),
-    );
+    return category.withApps(List.unmodifiable(category.applications.where(_showTile)));
   }
 
   AppsService(this._fLauncherChannel, this._database, {this._settingsService, this._ownPackageName, this._memoryResources, this.catalogCache, this.work, this.fastInitialCatalog = false}) {
@@ -247,6 +258,7 @@ class AppsService extends ChangeNotifier with ServiceLifecycle, WidgetsBindingOb
       },
       configure: (economy) => configureImageCache(iconBytes: (economy ? 1 : 2) * 1024 * 1024,
         bannerBytes: (economy ? 2 : 6) * 1024 * 1024));
+    _iconPack = _settingsService?.appIconPack;
     _settingsService?.addListener(_notifyImages);
     WidgetsBinding.instance.addObserver(this);
     _init().catchError((Object error) {
@@ -286,9 +298,17 @@ class AppsService extends ChangeNotifier with ServiceLifecycle, WidgetsBindingOb
     StartupTrace.mark('appsStart');
     List<App>? persisted;
     List<Map<dynamic, dynamic>>? cached;
+    _StoredSections? stored;
     final cache = catalogCache;
     if (cache != null) {
-      (cached, persisted) = await (cache.read(), _database.getApplications()).wait;
+      final cachedCatalog = cache.read();
+      (persisted, stored) = await (_database.getApplications(),
+        (_database.getCategories(), _database.getLauncherSpacers(), _database.getAppsCategories()).wait).wait;
+      if (!isDisposed && stored.$1.isNotEmpty &&
+          !stored.$1.any((category) => category.visible && category.isAutomatic)) {
+        _showStartupLayout(stored, persisted, null);
+      }
+      cached = await cachedCatalog;
       if (persisted.isEmpty) cached = null;
     }
     if (isDisposed) return;
@@ -300,9 +320,13 @@ class AppsService extends ChangeNotifier with ServiceLifecycle, WidgetsBindingOb
           'appsService', diagnosticError, diagnosticStack,
         ); /* A failed fast query falls back to the complete catalog. */ }
     }
+    if (!isDisposed && _startupSections == null && stored != null &&
+        stored.$1.isNotEmpty && initialCatalog != null) {
+      _showStartupLayout(stored, persisted!, initialCatalog);
+    }
     await _refreshState(shouldNotifyListeners: false, catalog: initialCatalog,
         persistCatalog: cached == null && initialCatalog != null,
-        initialApps: persisted);
+        initialApps: persisted, stored: stored);
     if (isDisposed) return;
     if (_database.wasCreated && _categoriesById.isEmpty) {
       await _initDefaultCategories();
@@ -452,6 +476,8 @@ class AppsService extends ChangeNotifier with ServiceLifecycle, WidgetsBindingOb
       notifyListeners();
     });
 
+    _startupSections = null;
+    _startupApps = null;
     _initialized = true;
     StartupTrace.mark('appsReady', {'count': _applications.length});
     notifyListeners();
@@ -464,6 +490,35 @@ class AppsService extends ChangeNotifier with ServiceLifecycle, WidgetsBindingOb
           .catchError((Object error) { debugPrint('Catalog reconciliation failed: $error'); });
     }
 
+  }
+
+  void _showStartupLayout(_StoredSections stored, List<App> apps,
+      List<Map<dynamic, dynamic>>? catalog) {
+    final (categories, spacers, links) = stored;
+    final metadata = {for (final row in catalog ?? const <Map>[]) row['packageName']: row};
+    final savedApps = <String, App>{};
+    for (final app in apps) {
+      final row = metadata[app.packageName];
+      if (catalog != null && row == null) continue;
+      if (row != null) _applySystemMetadata(app, row);
+      savedApps[app.packageName] = app;
+    }
+    final members = <int, List<App>>{};
+    for (final link in links) {
+      final app = savedApps[link.appPackageName];
+      if (app == null) continue;
+      app.categoryOrders[link.categoryId] = link.order;
+      (members[link.categoryId] ??= []).add(app);
+    }
+    _startupApps = savedApps;
+    final sections = <LauncherSection>[...spacers];
+    for (final category in categories) {
+      final preview = category.withApps(members[category.id] ?? []);
+      sortCategory(preview);
+      sections.add(_displayCategory(preview, savedApps));
+    }
+    _startupSections = sections..sort((a, b) => a.order.compareTo(b.order));
+    notifyListeners();
   }
 
   AppsCompanion _buildAppCompanion(dynamic data) {
@@ -607,15 +662,15 @@ class AppsService extends ChangeNotifier with ServiceLifecycle, WidgetsBindingOb
   }
 
   Future<void> _refreshState({bool shouldNotifyListeners = true, List<Map<dynamic, dynamic>>? catalog,
-      bool persistCatalog = false, List<App>? initialApps}) async {
+      bool persistCatalog = false, List<App>? initialApps, _StoredSections? stored}) async {
     if (isDisposed) return;
     var appDataRevision = _appDataRevision;
     Future<List<App>> appsFromDatabaseFuture = initialApps == null
         ? _database.getApplications() : Future.value(initialApps);
     Future<List<AppCategory>> appsCategoriesFuture =
-        _database.getAppsCategories();
-    Future<List<Category>> categoriesFuture = _database.getCategories();
-    Future<List<LauncherSpacer>> spacersFuture = _database.getLauncherSpacers();
+        stored == null ? _database.getAppsCategories() : Future.value(stored.$3);
+    Future<List<Category>> categoriesFuture = stored == null ? _database.getCategories() : Future.value(stored.$1);
+    Future<List<LauncherSpacer>> spacersFuture = stored == null ? _database.getLauncherSpacers() : Future.value(stored.$2);
     List<Map<dynamic, dynamic>> appsFromSystem =
         catalog ?? await _fLauncherChannel.getApplications();
     if (isDisposed) return;
@@ -641,6 +696,10 @@ class AppsService extends ChangeNotifier with ServiceLifecycle, WidgetsBindingOb
     }
 
     if (catalog == null) {
+      if (_iconPack != null && _artworkRevisions.containsKey(_iconPack) &&
+          !appsFromSystemByPackageName.containsKey(_iconPack)) {
+        clearImageCaches();
+      }
       for (final entry in appsFromSystemByPackageName.entries) {
         final package = entry.key;
         final previous = _artworkRevisions[package];
@@ -711,14 +770,7 @@ class AppsService extends ChangeNotifier with ServiceLifecycle, WidgetsBindingOb
           appsFromSystemByPackageName[application.packageName]?.$1;
 
       if (applicationFromSystem != null) {
-        if (applicationFromSystem.containsKey('action')) {
-          application.action = applicationFromSystem['action'];
-        }
-        application.isSystem = applicationFromSystem['system'] == true;
-        application.isLaunchable = applicationFromSystem['launchable'] != false;
-        if (applicationFromSystem.containsKey('sideloaded')) {
-          application.sideloaded = applicationFromSystem['sideloaded'];
-        }
+        _applySystemMetadata(application, applicationFromSystem);
       }
 
       if (_categoriesById.isNotEmpty) {
@@ -767,6 +819,13 @@ class AppsService extends ChangeNotifier with ServiceLifecycle, WidgetsBindingOb
     if (shouldNotifyListeners) {
       notifyListeners();
     }
+  }
+
+  static void _applySystemMetadata(App application, Map metadata) {
+    if (metadata.containsKey('action')) application.action = metadata['action'];
+    application.isSystem = metadata['system'] == true;
+    application.isLaunchable = metadata['launchable'] != false;
+    if (metadata.containsKey('sideloaded')) application.sideloaded = metadata['sideloaded'];
   }
 
   void sortCategory(Category category) {
@@ -889,6 +948,17 @@ class AppsService extends ChangeNotifier with ServiceLifecycle, WidgetsBindingOb
     }
 
     if (isDisposed) return Uint8List(0);
+    final pack = _iconPack;
+    if (pack != null && pack.isNotEmpty) {
+      final packed = await _fLauncherChannel.getPackedIcon(pack, packageName);
+      if (packed.isNotEmpty) {
+        if (!isDisposed && revision == imageRevisionFor(packageName)) {
+          _iconCache[packageName] = packed;
+          _bannerCache[packageName] = Uint8List(0);
+        }
+        return Uint8List(0);
+      }
+    }
     final bytes = await _fLauncherChannel.getApplicationBanner(packageName);
     if (!isDisposed && revision == imageRevisionFor(packageName)) {
       _bannerCache[packageName] = bytes;
@@ -972,7 +1042,11 @@ class AppsService extends ChangeNotifier with ServiceLifecycle, WidgetsBindingOb
     if (_iconCache.containsKey(packageName)) {
       return _iconCache[packageName]!;
     }
-    final bytes = await _fLauncherChannel.getApplicationIcon(packageName);
+    final pack = _iconPack;
+    final packed = pack == null || pack.isEmpty ? null :
+        await _fLauncherChannel.getPackedIcon(pack, packageName);
+    final bytes = packed != null && packed.isNotEmpty ? packed :
+        await _fLauncherChannel.getApplicationIcon(packageName);
     if (!isDisposed && revision == imageRevisionFor(packageName)) {
       _iconCache[packageName] = bytes;
     }

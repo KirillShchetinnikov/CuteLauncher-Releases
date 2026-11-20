@@ -68,6 +68,18 @@ class FLauncherChannel {
     return bytes;
   }
 
+  Future<Map<String, String>> getIconPacks() async =>
+      await _methodChannel.invokeMapMethod<String, String>('getIconPacks') ?? {};
+
+  Future<Uint8List> getPackedIcon(String pack, String package) async {
+    try {
+      return await _methodChannel.invokeMethod<Uint8List>('getPackedIcon',
+          {'pack': pack, 'package': package}) ?? Uint8List(0);
+    } on PlatformException {
+      return Uint8List(0);
+    }
+  }
+
   Future<bool> launchActivityFromAction(String action) async =>
       await _methodChannel.invokeMethod<bool>('launchActivityFromAction', action) ?? false;
 

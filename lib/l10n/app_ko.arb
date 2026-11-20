@@ -1,4 +1,6 @@
 {
+  "appIconPack": "앱 아이콘 팩",
+  "appIconPackHint": "TV에 ADW, Apex 또는 Nova용 아이콘 팩을 설치한 후 이 목록을 다시 여세요.",
   "videoFolderSource": "폴더의 동영상",
   "videoFolderPlayback": "재생",
   "videoFolderNext": "다음 동영상",

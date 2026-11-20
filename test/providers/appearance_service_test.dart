@@ -464,6 +464,42 @@ void main() {
     }
   });
 
+  test('section spacing preserves legacy and default distances', () async {
+    const legacy = '{"sectionGap":0}';
+    SharedPreferences.setMockInitialValues({tileAppearanceKey: legacy});
+    final prefs = await SharedPreferences.getInstance();
+    final service = AppearanceService(prefs);
+    addTearDown(service.dispose);
+
+    expect(const TileAppearance().sectionGap, 24);
+    expect(const TileAppearance().sectionSpacing, 56);
+    for (final gap in [0, 14.5, 96]) {
+      final appearance = TileAppearance.decode(jsonEncode({'sectionGap': gap}));
+      expect(appearance.sectionSpacing, gap + 32);
+      expect(appearance.sectionGap, gap);
+      expect(appearance.compactSectionInset(32, focusReserve: 2), 32);
+    }
+    expect(service.appearance.sectionGap, 0);
+    expect(service.appearance.sectionSpacing, 32);
+    expect(prefs.getString(tileAppearanceKey), legacy);
+    await service.set('sectionSpacing', 0);
+    expect(service.appearance.sectionSpacing, 0);
+    expect(service.appearance.active, isFalse);
+    expect(service.appearance.compactSectionInset(32, focusReserve: 2), 16);
+    expect(service.appearance.compactSectionInset(32, focusReserve: 24), 24);
+    expect(service.appearance.compactSectionInset(32, focusReserve: 40), 32);
+    final saved = prefs.getString(tileAppearanceKey)!;
+    final imported = compatibleSettings({tileAppearanceKey: saved}, {});
+    final restored = TileAppearance.decode(imported[tileAppearanceKey]);
+    expect(restored.sectionGap, 0);
+    expect(restored.sectionSpacing, 0);
+    expect(TileAppearance.decode(TileAppearance.merge(saved, legacy)).sectionSpacing, 32);
+    expect(TileAppearance.decode('{"sectionSpacing":-4}').sectionSpacing, 56);
+    await service.resetFields(['sectionSpacing', 'sectionGap']);
+    expect(service.appearance.sectionSpacing, 56);
+    expect(service.appearance.sectionGap, 24);
+  });
+
   test('section reset preserves other styles, category overrides and zero gaps through import', () async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();

@@ -91,6 +91,42 @@ class _AppearancePageState extends State<AppearancePage> {
       ? service.appearance
       : service.tilesFor(categoryId!);
 
+  Widget _iconPackTile(BuildContext context, SettingsService settings, AppLocalizations l) {
+    final selected = settings.appIconPack ?? '';
+    final name = selected.isEmpty ? l.systemDefault
+        : context.select<AppsService?, String?>((apps) => apps?.getApp(selected)?.displayName) ?? selected;
+    return FocusableSettingsTile(
+      title: Text(l.appIconPack),
+      trailing: Text(name),
+      onPressed: () async {
+        final apps = context.read<AppsService>();
+        late final packs = apps.getIconPacks();
+        final choice = await showLauncherDialog<String>(
+          context: context,
+          builder: (dialog) => FutureBuilder<Map<String, String>>(
+            future: packs,
+            builder: (_, snapshot) {
+              if (snapshot.connectionState != ConnectionState.done) {
+                return LauncherAlertDialog(title: Text(l.appIconPack), content: Text(l.loading));
+              }
+              final names = snapshot.data ?? const <String, String>{};
+              final options = names.keys.toList()..sort((a, b) => names[a]!.compareTo(names[b]!));
+              return SettingsChoiceDialog<String>(
+                title: Text(l.appIconPack),
+                value: selected,
+                options: ['', ...options],
+                optionBuilder: (key) => Text(names[key] ?? l.systemDefault),
+                onSelected: (key) => Navigator.pop(dialog, key),
+                actions: options.isEmpty ? [Text(snapshot.hasError ? l.appError : l.appIconPackHint)] : null,
+              );
+            },
+          ),
+        );
+        if (choice != null && context.mounted) await settings.setAppIconPack(choice);
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
@@ -166,6 +202,7 @@ class _AppearancePageState extends State<AppearancePage> {
                   },
                 ),
                 SettingsHelp(title: l.tileImageMode, text: l.tileImageModeHelp),
+                if (categoryId == null) _iconPackTile(context, settings, l),
                 _choice(context, service, l.tileCornerRadius, 'radius', [
                   null,
                   0,

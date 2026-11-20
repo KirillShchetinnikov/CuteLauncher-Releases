@@ -10,6 +10,13 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
+  String get appIconPack => 'حزمة أيقونات التطبيقات';
+
+  @override
+  String get appIconPackHint =>
+      'ثبّت حزمة أيقونات تدعم ADW أو Apex أو Nova على التلفزيون، ثم افتح هذه القائمة مجددًا.';
+
+  @override
   String get videoFolderSource => 'مقاطع الفيديو من مجلد';
 
   @override

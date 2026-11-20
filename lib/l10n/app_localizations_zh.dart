@@ -10,6 +10,12 @@ class AppLocalizationsZh extends AppLocalizations {
   AppLocalizationsZh([String locale = 'zh']) : super(locale);
 
   @override
+  String get appIconPack => '应用图标包';
+
+  @override
+  String get appIconPackHint => '请在电视上安装支持 ADW、Apex 或 Nova 的图标包，然后重新打开此列表。';
+
+  @override
   String get videoFolderSource => '文件夹中的视频';
 
   @override

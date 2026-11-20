@@ -146,6 +146,78 @@ void main() {
     }
   });
 
+  test('saved custom section is available while the first Android query is pending', () async {
+    final root = await Directory.systemTemp.createTemp('cute-startup-layout-');
+    final db = FLauncherDatabase.inMemory();
+    final system = Completer<List<Map<dynamic, dynamic>>>();
+    final channel = MockFLauncherChannel();
+    when(channel.getLauncherApplications()).thenAnswer((_) => system.future);
+    when(channel.addAppsChangedListener(any)).thenReturn(null);
+    final work = ForegroundWork();
+    await db.insertCategory(CategoriesCompanion.insert(name: 'All Apps', order: 0,
+      visible: const Value(false), systemKey: const Value('all_apps')));
+    await db.insertSpacer(LauncherSpacersCompanion.insert(order: 1, height: 300));
+    final id = await db.insertCategory(CategoriesCompanion.insert(name: 'Two apps', order: 2));
+    final metadata = [for (final name in ['two', 'one'])
+      {'name': name, 'packageName': 'app.$name', 'version': '1', 'sideloaded': false, 'launchable': true}];
+    await db.persistApps([for (final row in metadata) AppsCompanion.insert(
+      packageName: row['packageName'] as String, name: row['name'] as String, version: '1')]);
+    await db.insertAppsCategories([for (final (i, row) in metadata.indexed) AppsCategoriesCompanion.insert(
+      categoryId: id, appPackageName: row['packageName'] as String, order: i)]);
+    final service = AppsService(channel, db, work: work, fastInitialCatalog: true,
+      catalogCache: AppCatalogCache(directory: () async => root));
+    try {
+      final ready = Completer<void>();
+      service.addListener(() { if (service.launcherSections.isNotEmpty && !ready.isCompleted) ready.complete(); });
+      await ready.future.timeout(const Duration(seconds: 3));
+      expect(service.initialized, isFalse);
+      final preview = service.visibleLauncherSections;
+      expect(preview, hasLength(2));
+      expect((preview.first as LauncherSpacer).height, 300);
+      final order = (preview.last as Category).applications.map((a) => a.packageName).toList();
+      expect(order, ['app.two', 'app.one']);
+      system.complete(metadata);
+      await Future.doWhile(() async {
+        await Future<void>.delayed(const Duration(milliseconds: 1));
+        return !service.initialized;
+      }).timeout(const Duration(seconds: 3));
+      expect((service.visibleLauncherSections.last as Category).applications.map((a) => a.packageName), order);
+    } finally {
+      service.dispose();
+      work.dispose();
+      await db.close();
+      await root.delete(recursive: true);
+    }
+  });
+
+  test('pack choice invalidates cached tiles and falls back for unmapped apps', () async {
+    final db = FLauncherDatabase.inMemory();
+    final channel = MockFLauncherChannel();
+    final settings = SettingsService(await SharedPreferences.getInstance());
+    when(channel.getApplications()).thenAnswer((_) async => []);
+    when(channel.addAppsChangedListener(any)).thenReturn(null);
+    final banner = Uint8List.fromList([1]);
+    final icon = Uint8List.fromList([2]);
+    when(channel.getApplicationBanner(any)).thenAnswer((_) async => banner);
+    when(channel.getPackedIcon('org.example.pack', 'tv.app')).thenAnswer((_) async => icon);
+    when(channel.getPackedIcon('org.example.pack', 'other.app')).thenAnswer((_) async => Uint8List(0));
+    final service = AppsService(channel, db, settingsService: settings);
+    try {
+      await Future.doWhile(() async {
+        await Future<void>.delayed(const Duration(milliseconds: 1));
+        return !service.initialized;
+      }).timeout(const Duration(seconds: 3));
+      expect(await service.getAppBanner('tv.app'), banner);
+      await settings.setAppIconPack('org.example.pack');
+      expect(await service.getAppBanner('tv.app'), isEmpty);
+      expect(await service.getAppIcon('tv.app'), icon);
+      verify(channel.getPackedIcon('org.example.pack', 'tv.app')).called(1);
+      expect(await service.getAppBanner('other.app'), banner);
+      await settings.setAppIconPack('');
+      expect(await service.getAppBanner('tv.app'), banner);
+    } finally { service.dispose(); settings.dispose(); await db.close(); }
+  });
+
   test('catalog changes hide disabled tiles and restore saved layout on enable', () async {
     final db = FLauncherDatabase.inMemory();
     final channel = MockFLauncherChannel();

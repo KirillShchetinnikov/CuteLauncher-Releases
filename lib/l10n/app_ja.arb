@@ -1,4 +1,6 @@
 {
+  "appIconPack": "アプリアイコンパック",
+  "appIconPackHint": "テレビに ADW、Apex、Nova 対応のアイコンパックをインストールし、この一覧を開き直してください。",
   "videoFolderSource": "フォルダ内の動画",
   "videoFolderPlayback": "再生",
   "videoFolderNext": "次の動画",

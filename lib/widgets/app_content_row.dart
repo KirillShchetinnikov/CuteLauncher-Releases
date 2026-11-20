@@ -406,11 +406,20 @@ class _ContentPreviewRowState extends State<ContentPreviewRow> {
           final layout = result.layout;
           _horizontalInset = result.horizontalInset;
           final scale = result.focusScale;
-          final topInset = math.max(
-            8.0,
-            layout.height * (scale - 1) +
-                (style.focusEffect == 'lift' ? style.focusLift : 0) +
-                2,
+          final focusGrowth = layout.height * (scale - 1);
+          final lift = style.focusEffect == 'lift' ? style.focusLift : 0.0;
+          final topReserve = focusGrowth + lift + 2;
+          final focusPaint = style.focusBorderStyle() == 'glow'
+              ? TileGlowPainter.extent * scale
+              : 2.0;
+          final topInset = style.compactSectionInset(
+            math.max(8.0, topReserve),
+            focusReserve: focusGrowth + lift + focusPaint,
+          );
+          final bottomInset = style.compactSectionInset(
+            8,
+            focusReserve: (appTiles && !showBelow ? focusGrowth / 2 : -textHeight) +
+                focusPaint,
           );
           _extent = layout.stepX;
           Widget placeholder(bool focused) => HomeSkeletonBlock(
@@ -422,13 +431,13 @@ class _ContentPreviewRowState extends State<ContentPreviewRow> {
           );
           final tiles = SizedBox(
             key: _bounds,
-            height: layout.height + textHeight + topInset + 8,
+            height: layout.height + textHeight + topInset + bottomInset,
             child: Padding(
               padding: EdgeInsets.fromLTRB(
                 _horizontalInset,
                 topInset,
                 _horizontalInset,
-                8,
+                bottomInset,
               ),
               child: card == null
                   ? HomeSkeletonRow(

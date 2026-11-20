@@ -7,6 +7,7 @@ class HomeScrollController extends ScrollController {
   RenderBox? _anchor;
   double? _contentTop;
   bool Function()? canPreserve;
+  double? Function()? startupOffset;
 
   double? _top(ScrollPosition position) {
     final box = _anchor;
@@ -23,6 +24,8 @@ class HomeScrollController extends ScrollController {
   }
 
   double correction(ScrollPosition position, double min, double max) {
+    final startup = startupOffset?.call();
+    if (startup != null) return startup.clamp(min, max) - position.pixels;
     final top = _top(position);
     final previous = _contentTop;
     _contentTop = top;

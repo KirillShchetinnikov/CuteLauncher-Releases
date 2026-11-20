@@ -122,6 +122,18 @@ abstract class AppLocalizations {
     Locale('zh'),
   ];
 
+  /// No description provided for @appIconPack.
+  ///
+  /// In en, this message translates to:
+  /// **'App icon pack'**
+  String get appIconPack;
+
+  /// No description provided for @appIconPackHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Install an ADW, Apex or Nova icon pack on the TV, then reopen this list.'**
+  String get appIconPackHint;
+
   /// No description provided for @videoFolderSource.
   ///
   /// In en, this message translates to:
