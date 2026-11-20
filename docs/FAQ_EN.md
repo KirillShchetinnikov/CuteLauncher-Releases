@@ -16,8 +16,8 @@ Allow installation from the selected source.
 ## How do I open settings and change the language?
 
 Select the top panel gear. Arrow keys move focus, OK selects an item, and Back
-goes back. Choose the language in Advanced, independently of the system language
-or following it. Expand Details for explanations of settings.
+goes back. Open **Launcher settings → Language** to choose the app language or
+follow the system language. Use the help button next to a setting for details.
 [Controls](USER_GUIDE_EN.md#controls-and-settings).
 
 ## How do I make CuteLauncher the default launcher?
@@ -37,8 +37,8 @@ If ADB is unavailable or you want to keep the stock launcher enabled, try Home B
 2. Find **Android TV OS build** or **Build number** and press **OK** on the remote seven times, until you see a message saying you're now a developer.
 3. Go back one screen, open **Developer options**, and turn on **USB debugging**. Select **OK** if Android asks you to confirm. Menu names vary by firmware. [Android Developer options](https://developer.android.com/studio/debug/dev-options#enable).
 4. If the same menu has a separate **Network debugging** or **ADB over network (TCP)** setting, turn it on. CuteLauncher's built-in ADB connects over TCP. Some firmware requires you to enable the TCP port separately after turning on USB debugging.
-5. In CuteLauncher, open **Launcher and device controls → ADB connection**. Keep port `5555` unless the device uses a different one. Select **Check connection** and approve Android's debugging prompt if it appears.
-6. Under **Default launcher**, select **Set CuteLauncher as default launcher via ADB**. Review the proposed changes and confirm. When it finishes, check the home app status and press Home from another app.
+5. In CuteLauncher, open **Default launcher and ADB → ADB connection**. Keep port `5555` unless the device uses a different one. Select **Check connection** and approve Android's debugging prompt if it appears.
+6. Press Back and open **Set default launcher via ADB**. On the **Default launcher** page, select **Set CuteLauncher as default launcher via ADB**. Review the proposed changes and confirm. When it finishes, check the home app status and press Home from another app.
 
 Disabling the stock launcher can affect manufacturer-specific menus and remote buttons. If TCP ADB or setting the default is unavailable, try Home Button Fix.
 
@@ -46,7 +46,7 @@ To undo the change, keep ADB connected and select **Restore the previous default
 
 ### 2. Set up the Home button and keep the stock launcher enabled
 
-1. Open **Launcher and device controls → Home button and startup → Open accessibility settings**.
+1. Open **Default launcher and ADB → Set default launcher via accessibility**. On the **Home button and startup** page, select **Open accessibility settings**.
 2. Enable the CuteLauncher service in Android's accessibility settings. If the menu fails to open, go to the TV's system settings manually.
 3. Return to **Home button and startup** and enable **Override the Home button**. Open another app and test Home on the remote.
 
@@ -56,7 +56,7 @@ If Home still opens the stock launcher with both settings enabled, your firmware
 
 Use this method if you know your firmware supports changing launchers in Android settings and you know how to switch back.
 
-1. Open the gear in CuteLauncher → **Launcher and device controls** → **Default launcher**.
+1. Open the gear in CuteLauncher → **Default launcher and ADB → Set default launcher via ADB**.
 2. Select **Open system default launcher setting**, then choose **CuteLauncher**.
 3. Open another app and press **Home** on the remote. Check that CuteLauncher opens. The **Default launcher** page shows which home app Android selected.
 
@@ -69,27 +69,28 @@ If the system picker fails to open, omits CuteLauncher, or keeps the previous ch
 Ordinary app launching does not need ADB. The app disabling manager and some TV controls
 require it. Grant other access as needed: for example, notifications need notification
 access, and the remapper needs accessibility access.
-[Permission table](USER_GUIDE_EN.md#разрешения-и-ограничения).
+[Permission table](USER_GUIDE_EN.md#permissions-and-limitations).
 
 ## How do I create a category and reorder apps?
 
-Open Home screen → Categories and order: create a category, add apps, choose their
+Open Home screen → Sections and order: create a category, add apps, choose their
 order and a row or grid layout. Long-press a tile to open app actions. Built-in
 categories can be hidden or moved but cannot be deleted.
 [Categories](USER_GUIDE_EN.md#home-screen-and-categories).
 
 ## An app disappeared. How do I restore its tile?
 
-Check Apps → Hidden apps and select Show. This also restores hidden CuteLauncher
+Check Applications → Hidden Apps and select Show. This also restores hidden CuteLauncher
 and Android settings tiles. Check the category visibility too. Hiding a tile does
 not disable the app in Android; check disabled packages separately in the app disabling
 manager. [Apps](USER_GUIDE_EN.md#apps).
 
 ## How do I change tiles, colors, fonts and menu style?
 
-Use Home screen → Appearance, Appearance, and Top panel → Appearance. Choose the
-interface style in Appearance → Settings style → Interface style. Individual
-categories can override or inherit shared settings. Available fonts depend on the
+Use Home screen for tiles and sections, and Widgets and panels → Top panel →
+Appearance for the top panel. Choose the interface style under Launcher settings →
+Interface style. Individual categories can override or inherit shared settings.
+Available fonts depend on the
 language; bundled fonts work offline. [Appearance](USER_GUIDE_EN.md#appearance-and-backgrounds).
 
 ## Can I use my own wallpaper or video?
@@ -105,26 +106,27 @@ gradients and adaptive landscapes are also available.
 
 Some TVs have a nonfunctional placeholder for the system picker. Install a
 compatible file manager and try again. Canceling or failing to select a background
-preserves the previous background. [File access](USER_GUIDE_EN.md#разрешения-и-ограничения).
+preserves the previous background. [File access](USER_GUIDE_EN.md#permissions-and-limitations).
 
 ## Why is Continue Watching empty or incomplete?
 
 Cards come from Android Watch Next, populated by the apps themselves. Check category
-visibility, selected apps and card limits in Home screen → Categories and order →
+visibility, selected apps and card limits in Home screen → Sections and order →
 Continue Watching. If a service does not publish its history, the launcher cannot
 obtain it independently. [Continue Watching](USER_GUIDE_EN.md#continue-watching).
 
 ## How do I enable weather and fix stale data?
 
-Open Top panel → Objects → Block settings → Weather settings, choose a source
-and a city or coordinates. Check the internet connection and refresh. Breezy
+Open Widgets and panels → Widget settings. Under Clock, date and weather,
+open Settings, then Weather settings. Choose a source and set a city or
+coordinates. Check the internet connection and refresh. Breezy
 Weather requires a configured compatible app; OpenWeather and Yandex require
 personal keys. MET Norway needs no key. Older cached data may appear when the
 source is unavailable. [Weather](USER_GUIDE_EN.md#weather).
 
 ## How do I hide or reorder widgets and open the calendar?
 
-Open Top panel → Objects / Object order. Select the date or combined block to
+Open Widgets and panels → Top panel → Objects. Select the date or combined block to
 open the calendar, provided the date is visible and the calendar is enabled.
 Quick settings panel items are selected separately; widget settings are shared.
 [Top panel](USER_GUIDE_EN.md#top-panel-and-widgets).
@@ -145,7 +147,7 @@ point, not an internet speed test. [Network and traffic](USER_GUIDE_EN.md#top-pa
 
 ## Why are HDMI inputs missing or switching unavailable?
 
-Enable Top panel → Objects → Inputs. The list and switching are determined by
+Enable Inputs under Widgets and panels → Top panel → Objects. The list and switching are determined by
 the firmware. A TV box’s HDMI connector does not provide access to all television
 inputs. The input indicator shows source connection, not the selected input.
 [TV inputs](USER_GUIDE_EN.md#tv-inputs).
@@ -161,8 +163,9 @@ depends on the firmware. [Night mode](USER_GUIDE_EN.md#night-mode-and-brightness
 
 ## How do I enable the clock screensaver?
 
-Open Appearance → Screensaver clock style / Screensaver settings if Android
-provides these settings. System screensaver availability depends on the device.
+Open Launcher features and, under Screensaver, select Screensaver Clock Style
+or Choose screensaver in Android TV. This group appears if Android lets you
+choose a screensaver.
 [Clock and screensaver](USER_GUIDE_EN.md#clock-and-screensaver).
 
 ## Will the timer fully power off the TV?
@@ -178,7 +181,7 @@ On some Android TV/Google TV firmware, accessibility key filtering interferes
 with native volume repeat. This can also affect other apps while the remapper
 service is enabled.
 
-Open “Launcher & TV control → Remote button remapper → Hold volume buttons”.
+Open “Launcher features → Remote button remapper → Hold volume buttons”.
 Enabling the remapper uses Auto by default; an explicitly selected mode is
 preserved when the remapper is turned off and on again.
 
@@ -204,7 +207,7 @@ If volume behavior gets worse, change the mode or disable the workaround.
 
 ## How do I remap a button and open quick settings over an app?
 
-In Launcher and device controls → Remote button remapper, create a mapping, capture
+In Launcher features → Remote button remapper, create a mapping, capture
 the button, choose the panel-opening action and save. Enable the mapping,
 accessibility service and required access for displaying over apps. Short and
 long presses are supported; Home supports only a long-press mapping. Power is
@@ -229,15 +232,16 @@ while you need them. Another device’s list does not guarantee safety for your 
 
 ## How do I save settings and move them to another TV?
 
-In Advanced → Backup and restore, export a file and import it on the other TV,
-or configure backup storage. Backups contain supported settings, categories and
+Under Launcher settings, find the Settings management group. Use Export Backup,
+then Import Backup on the other TV. You can configure backup storage in the same
+group. Backups contain supported settings, categories and
 appearance, but not apps or the whole system. Android access grants and ADB
 authorization do not transfer. Synchronizing several TVs requires a shared
 accessible folder or cloud storage. [Backups](USER_GUIDE_EN.md#backups-and-synchronization).
 
 ## How do I update without losing settings?
 
-Use Advanced → Updates or install a newer APK with the same signature over the
+Use Launcher settings → Application updates or install a newer APK with the same signature over the
 current app. Keep the app installed when updating. If installation fails, check
 architecture, package and signature compatibility. If the remapper or notifications
 stop working after an update, check their Android access settings.
@@ -245,14 +249,14 @@ stop working after an update, check their Android access settings.
 
 ## What can I do if the interface feels slow?
 
-Open Advanced → Memory, refresh the measurements and try resource-saving mode.
+Open Diagnostics → Memory, refresh the measurements and try resource-saving mode.
 It limits heavy effects; turning it off restores saved preferences. You can also
 clear supported image caches. Clearing a cache is different from clearing app
 data. [Memory](USER_GUIDE_EN.md#memory-and-resource-saving).
 
 ## How do I report a problem?
 
-Open Settings → Advanced → Diagnostics. If the failure already happened,
+Open Settings → Diagnostics → Diagnostics. If the failure already happened,
 select Create report. For a detailed report, start extended diagnostics,
 reproduce the issue, and return to finish recording. Select Export report →
 Save to disk and send the file privately to the author with the steps and

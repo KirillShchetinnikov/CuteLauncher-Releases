@@ -124,11 +124,12 @@ and limitations.
 
 ## Support the developer
 
-You can support CuteLauncher development through [CloudTips](https://pay.cloudtips.ru/p/118c2a7f) or [YooMoney](https://yoomoney.ru/fundraise/1LLAULV57ME.261119).
+On TV, find the QR codes under Launcher settings → About CuteLauncher →
+Support the developer. You can support CuteLauncher development through [CloudTips](https://pay.cloudtips.ru/p/118c2a7f) or [YooMoney](https://yoomoney.ru/fundraise/1LLAULV57ME.261119).
 
 ## Report an issue
 
-Reproduce the issue and open **Settings → Advanced → Diagnostics**.
+Reproduce the issue and open **Settings → Diagnostics → Diagnostics**.
 Select **Create report → Export report → Save to disk**.
 The single `cutelauncher_diagnostics_….json` file contains errors, snapshots of
 settings at each failure, and TV compatibility observations. Send it to the author

@@ -55,7 +55,7 @@ as a separate step. Focus stays on the first card of the topmost section.
 
 You can choose the focus target after Home. Key sounds have separate switches: for Home,
 go to **Home screen → Home screen behavior**; for settings, go to
-**Launcher settings → Appearance → Settings style**. Both switches are off by default.
+**Launcher settings → Settings style**. Both switches are off by default.
 On return, the launcher also checks for changes to installed apps so it can
 update tiles even if a system change notification was missed.
 
@@ -67,7 +67,7 @@ When settings move, appear, or disappear on a page, the directional pad follows
 their new order.
 
 The root menu has three groups: Home screen and Widgets and panels; Launcher
-features, Default launcher and ADB, and Apps; Launcher settings and Diagnostics.
+features, Default launcher and ADB, and Applications; Launcher settings and Diagnostics.
 Android settings open separately. Individual widgets are configured under
 Widgets and panels → Widget settings. Each panel combines visibility and order:
 OK toggles an item, Left/Right starts moving, Up/Down changes its position, and
@@ -80,12 +80,12 @@ the selected item's normal action.
 When moving down with the remote, settings start scrolling as the selected
 item passes slightly below the middle of the window. Moving up uses a point
 slightly above the middle. At either end of the list, focus can reach the edge.
-Under **Launcher settings → Appearance → Settings style → Scrollbar**, choose **Hide completely**,
+Under **Launcher settings → Settings style → Scrollbar**, choose **Hide completely**,
 **Show while scrolling**, or **Always show** (the default). This applies to
 settings, menus, and dialogs. Scrolling works in all three modes. If you previously
 turned off persistent scrollbars, they still appear only while scrolling after the update.
 
-Under **Launcher settings → Appearance → Settings style → Group appearance**, choose
+Under **Launcher settings → Settings style → Group appearance**, choose
 **Accent strip** or **Shared surface** (the default). One choice applies to groups
 across settings pages. Long pages for appearance, weather, night mode,
 brightness, notifications, KVN, startup, Continue watching, the file browser,
@@ -131,7 +131,7 @@ Press OK on it to open section settings. Navigation skips spacers.
 Moving above the first available section
 reaches the top panel.
 
-Path: **Home screen → Categories and order**.
+Path: **Home screen → Sections and order**.
 
 The button instructions for moving sections stay pinned to the bottom of the panel.
 General information about sections opens separately in collapsed help.
@@ -164,8 +164,7 @@ one selection applies to all feed headings.
 
 Choose rows or grids, sorting, column and visible-row counts, scrolling, active
 category pinning, sizes, spacing, headings, backgrounds, and margins. To bring
-sections closer, lower **Space between sections** under **Home screen →
-Appearance → Sections → Layout**. The scale starts at 0. After updating, the
+sections closer, lower **Space between sections** under **Home screen → Sections → Layout**. The scale starts at 0. After updating, the
 old 0 maps to 32 and the old default of 24 maps to 56, preserving the actual
 spacing. Some
 appearance settings are shared, while others can be overridden per category.
@@ -178,7 +177,7 @@ including to existing categories. Choosing a value that matches the shared one
 restores inheritance. In Tiles and labels, one Restore common settings button
 restores all settings on that screen. Titles, icons, padding and background are
 available directly in the category appearance editor. Find **Align section titles
-with tiles** under **Home screen → Appearance → Sections** and in the appearance
+with tiles** under **Home screen → Sections** and in the appearance
 settings for an individual section. When enabled, the title starts at the tile
 edge and moves with the tiles when you adjust padding. Titles use edge alignment
 by default. **Section title size** in the same settings lets you choose a size
@@ -208,7 +207,7 @@ a grid, or additional content cards.
 ## App feeds
 
 To read a long card label, turn on **Scroll long labels in content rows** under
-**Home screen → Categories and order → App feeds → Category appearance**.
+**Home screen → Sections and order → App feeds → Category appearance**.
 The same switch is available under Continue Watching's category appearance
 and applies to both sections. A long line scrolls while its card is focused.
 If both lines are truncated, they start scrolling
@@ -225,7 +224,7 @@ If a cover fails to load or is damaged, the launcher automatically retries with
 an increasing delay between attempts. This also applies to Continue Watching;
 retries pause while the launcher is in the background.
 
-Path: **Home screen → Categories and order → App feeds**.
+Path: **Home screen → Sections and order → App feeds**.
 
 Select up to 16 feeds published by installed apps. One app may offer several
 feeds, such as new releases and saved items. When you enable or disable an
@@ -321,7 +320,7 @@ request uninstall where Android allows it, hide or restore it, add it to a
 category, and change its tile. Actions are grouped by purpose by default.
 Set a custom tile banner or restore the default.
 
-To hide or reorder buttons, go to **Settings → Home screen → Appearance → App info settings**
+To hide or reorder buttons, go to **Settings → Home screen → App info settings**
 or select the gear in the app details panel. **OK** toggles visibility.
 **◄ / ►** starts moving, **▲ / ▼** changes the position, and **OK** or **Back**
 finishes. Hidden buttons keep their place in the list. **Reset settings**
@@ -360,7 +359,7 @@ settings. Menus can open on either side. Reset individual groups or all appearan
 **Inactive section transparency** applies to app categories, the app feeds group,
 and Continue watching. The last selected section stays fully opaque when
 you move to the top panel or settings.
-Under **Home screen → Appearance → Sections**, turn on **Also fade inactive feeds**
+Under **Home screen → Sections**, turn on **Also fade inactive feeds**
 to apply the same percentage to the other app feeds in the group while one feed
 is selected. The selected feed stays fully visible.
 
@@ -425,7 +424,7 @@ one font supports the current language.
 Other value selection dialogs open with the selected row visible, even at the
 end of a long list. The scrollbar stays separate from the selection buttons.
 
-In **Launcher settings → Appearance → Settings style**, **Show tooltips in all panels** enables
+In **Launcher settings → Settings style**, **Show tooltips in all panels** enables
 button and icon hints when focused with the remote or hovered with a mouse.
 This single setting applies to all panels and is off by default. Changes apply
 immediately; on-screen control instructions remain visible.
@@ -530,7 +529,7 @@ Reddit is currently disabled and cannot be selected.
 
 ## Continue Watching
 
-Path: **Home screen → Categories and order → Continue Watching**.
+Path: **Home screen → Sections and order → Continue Watching**.
 
 This category shows programs apps have submitted to Android Watch Next. A card
 resumes playback through the action supplied by its app. Like App feeds, it uses
@@ -698,7 +697,7 @@ including usage before the widget was enabled. Android may update history with a
 If data for the selected period is unavailable, the counter shows “—”. When firmware
 does not expose Ethernet usage through the normal Android API, the launcher reads
 system history using an already configured local ADB connection. Set up and verify
-that connection under Launcher and TV control → ADB connection. History refreshes
+that connection under Default launcher and ADB → ADB connection. History refreshes
 at most once every five minutes; Android's hourly history buckets may appear later.
 If history cannot be read through either method, the counter shows “—”.
 Calendar, night mode, sleep timer, inputs, notifications and network menus inherit
@@ -791,7 +790,7 @@ Moving the elements hides them from the top panel; choosing
 elements are also excluded from the top panel order editor. Quick settings panel
 visibility and order remain independent; editing that panel does not hide wallpaper clocks.
 
-In **Widgets and panels → Top panel → Objects**, open **Settings** in the **Clock, date and weather**
+In **Widgets and panels → Widget settings**, open **Settings** in the **Clock, date and weather**
 group. The **Placement** group lets you choose where each element appears.
 The **Appearance** group starts with the shared **Object formats** page, followed
 by **Panel appearance** and **Wallpaper appearance**. Both appearance pages
@@ -1076,7 +1075,7 @@ launching is supported. System messages without an action or a launchable app
 have no open button. An unavailable action displays a message.
 The dimming cutout follows the widget button's current size, including its counter.
 
-In **Appearance → Notification style → Notification position**, choose any of
+In **Launcher settings → Notification style → Notification position**, choose any of
 the four screen corners. Launcher messages and app notifications share one stack
 and slide in from the nearest side of the screen, sliding back off-screen when
 they close. The stack grows downwards in
@@ -1163,7 +1162,7 @@ Path: **Launcher features → Screensaver**, when Android
 provides a working system selector.
 
 There is a home-screen clock mode and a dedicated clock screensaver. Show clock
-and Show screensaver can be assigned to Back in **Home screen → Options**.
+and Show screensaver can be assigned to Back in **Home screen → Home screen behavior**.
 Clock appearance is configurable. Select the screensaver through Android;
 Android controls that menu's availability and automatic startup conditions.
 Top-panel clock settings are separate.
@@ -1211,7 +1210,9 @@ depends on the TV. The app does not disconnect electrical power.
 
 After three crashes within five minutes, CuteLauncher opens a recovery screen without loading the main interface. On Android 9–10, this counts failures reported by Flutter itself; system crash history is available from Android 11. Settings are preserved. Use the remote to retry, open another TV app or Android settings, and choose a home screen. If local ADB was configured, the restore button returns the previous HOME after confirmation. Without ADB, enable a disabled stock launcher in Android app settings first.
 
-Path: **Launcher and device controls**.
+App permissions, power management, and autostart are under **Launcher features**.
+ADB connection, home app selection, and Home interception are under
+**Default launcher and ADB**.
 
 - **App permissions**: select a user-installed app and its accessibility service.
   System apps, including updated system apps, are excluded from the list,
@@ -1237,10 +1238,12 @@ Path: **Launcher and device controls**.
   accessibility service or local ADB. Full shutdown and restart require local
   ADB. On a TV box, the command controls the box itself. The TV's response
   depends on HDMI-CEC and firmware.
-- Configure local TCP/RSA ADB: port, connection check, and authorization on the TV.
+- Open **Default launcher and ADB → ADB connection** to set the port, check
+  the local TCP/RSA connection, and authorize CuteLauncher on the TV.
   After a full app data reset, select **Check connection** and approve the Android
   prompt if it appears. The check retries automatically if the connection drops briefly.
-- **Default launcher** shows the current home app. If the ADB connection is unverified,
+- **Default launcher and ADB → Set default launcher via ADB** opens the
+  **Default launcher** page, which shows the current home app. If the ADB connection is unverified,
   select **Open ADB connection settings → Check connection**. Press Back to
   return with the updated status. The assignment button
   sets CuteLauncher as default through ADB and disables the built-in launcher
@@ -1259,9 +1262,11 @@ Path: **Launcher and device controls**.
   are checked, including additional Android profiles. Google Cast presence alone
   does not block disabling the launcher. A dependency or unavailable
   check blocks disabling; diagnostics include the reason. No profiles are removed.
-- Enable the launcher's accessibility service and configure Home interception.
-  Home Button Fix can open CuteLauncher with the Home button while the built-in
-  launcher is enabled.
+- **Default launcher and ADB → Set default launcher via accessibility** opens
+  **Home button and startup**. Select **Open accessibility settings** and enable
+  the CuteLauncher service. Return and turn on **Override the Home button**.
+  Home can open CuteLauncher with the stock launcher still enabled if the firmware
+  passes the button press to the service.
 - Grant supported special access to the launcher through ADB.
 - Launch an app or switch once to HDMI after TV boot or wake, with event and delay settings.
   To start after sleep, CuteLauncher needs to receive the Android wake event
@@ -1766,7 +1771,7 @@ authorization to another TV.
 
 ## Updates and app information
 
-Path: **Launcher settings → Updates / About CuteLauncher**.
+Path: **Launcher settings → Application updates / About CuteLauncher**.
 
 Check for updates manually or automatically, receive update notifications, opt
 into test releases, and download APKs for the Android installer. Updates check
