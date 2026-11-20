@@ -24,40 +24,45 @@
 ## Screenshots and appearance
 
 <details>
-<summary>Show 14 screenshots and animated wallpapers</summary>
+<summary>Show 17 screenshots and animated wallpapers</summary>
 
-Example setups captured on Android TV and Google TV emulators (Android 16). Every image comes from the running app at 3840 × 2160; click an image to open the original. The third-party apps shown are installed separately.
+These CuteLauncher 1.8.0 screenshots were captured on an Android TV emulator (Android 16) at 3840 × 2160. Select an image to open the original. The weather forecast uses sample data. The third-party apps shown are installed separately.
 
-| Glass · autumn landscape | Standard style · graphite gradient |
+| Sunset | Home screen |
 |---|---|
-| [![Glass · autumn landscape](docs/images/screenshots/en/01-glass-autumn.webp)](docs/images/screenshots/en/01-glass-autumn.webp) | [![Standard style · graphite gradient](docs/images/screenshots/en/05-standard-gradient.webp)](docs/images/screenshots/en/05-standard-gradient.webp) |
+| [![Sunset](docs/images/screenshots/en/31-home-sunset.webp)](docs/images/screenshots/en/31-home-sunset.webp) | [![Home screen](docs/images/screenshots/en/01-home-default.webp)](docs/images/screenshots/en/01-home-default.webp) |
 
-| Soft style · spring landscape | Outline style · illustrated night landscape |
+| App sections | Autumn landscape |
 |---|---|
-| [![Soft style · spring landscape](docs/images/screenshots/en/07-soft-spring.webp)](docs/images/screenshots/en/07-soft-spring.webp) | [![Outline style · illustrated night landscape](docs/images/screenshots/en/09-outline-night.webp)](docs/images/screenshots/en/09-outline-night.webp) |
+| [![App sections](docs/images/screenshots/en/06-sections.webp)](docs/images/screenshots/en/06-sections.webp) | [![Autumn landscape](docs/images/screenshots/en/32-home-autumn.webp)](docs/images/screenshots/en/32-home-autumn.webp) |
 
-| Dynamic colors · six-column grid | Quick settings panel · sleep timer |
+| Graphite gradient | Spring landscape |
 |---|---|
-| [![Dynamic colors · six-column grid](docs/images/screenshots/en/13-dynamic-grid.webp)](docs/images/screenshots/en/13-dynamic-grid.webp) | [![Quick settings panel · sleep timer](docs/images/screenshots/en/14-floating-panel-timer.webp)](docs/images/screenshots/en/14-floating-panel-timer.webp) |
+| [![Graphite gradient](docs/images/screenshots/en/33-home-graphite.webp)](docs/images/screenshots/en/33-home-graphite.webp) | [![Spring landscape](docs/images/screenshots/en/34-home-spring.webp)](docs/images/screenshots/en/34-home-spring.webp) |
 
-The app background in the quick settings panel screenshot is blurred for clarity.
-
-
-| Glass settings | Outline settings |
+| Illustrated night landscape | Selected app colors |
 |---|---|
-| [![Glass settings](docs/images/screenshots/en/02-glass-settings.webp)](docs/images/screenshots/en/02-glass-settings.webp) | [![Outline settings](docs/images/screenshots/en/10-outline-settings.webp)](docs/images/screenshots/en/10-outline-settings.webp) |
+| [![Illustrated night landscape](docs/images/screenshots/en/35-home-illustrated-night.webp)](docs/images/screenshots/en/35-home-illustrated-night.webp) | [![Selected app colors](docs/images/screenshots/en/36-home-app-colors.webp)](docs/images/screenshots/en/36-home-app-colors.webp) |
 
-| Calendar from the top panel | Sleep timer |
+| Calendar | Calendar with sample forecast |
 |---|---|
-| [![Calendar from the top panel](docs/images/screenshots/en/03-calendar.webp)](docs/images/screenshots/en/03-calendar.webp) | [![Sleep timer](docs/images/screenshots/en/04-sleep-timer.webp)](docs/images/screenshots/en/04-sleep-timer.webp) |
+| [![Calendar](docs/images/screenshots/en/03-calendar.webp)](docs/images/screenshots/en/03-calendar.webp) | [![Calendar with sample forecast](docs/images/screenshots/en/03-calendar-weather.webp)](docs/images/screenshots/en/03-calendar-weather.webp) |
 
-| Your own app categories | Customizable top panel |
+| Sleep timer | System |
 |---|---|
-| [![Your own app categories](docs/images/screenshots/en/06-sections.webp)](docs/images/screenshots/en/06-sections.webp) | [![Customizable top panel](docs/images/screenshots/en/08-top-panel.webp)](docs/images/screenshots/en/08-top-panel.webp) |
+| [![Sleep timer](docs/images/screenshots/en/04-sleep-timer.webp)](docs/images/screenshots/en/04-sleep-timer.webp) | [![System](docs/images/screenshots/en/15-system-widget.webp)](docs/images/screenshots/en/15-system-widget.webp) |
 
-| Adaptive wallpapers | Tile sizes and labels |
+| Network | Network speed |
 |---|---|
-| [![Adaptive wallpapers](docs/images/screenshots/en/11-adaptive-wallpaper.webp)](docs/images/screenshots/en/11-adaptive-wallpaper.webp) | [![Tile sizes and labels](docs/images/screenshots/en/12-tile-appearance.webp)](docs/images/screenshots/en/12-tile-appearance.webp) |
+| [![Network](docs/images/screenshots/en/17-network.webp)](docs/images/screenshots/en/17-network.webp) | [![Network speed](docs/images/screenshots/en/18-network-speed.webp)](docs/images/screenshots/en/18-network-speed.webp) |
+
+| Night mode | Traffic |
+|---|---|
+| [![Night mode](docs/images/screenshots/en/19-night-mode.webp)](docs/images/screenshots/en/19-night-mode.webp) | [![Traffic](docs/images/screenshots/en/21-traffic.webp)](docs/images/screenshots/en/21-traffic.webp) |
+
+**Quick actions**
+
+[![Quick actions](docs/images/screenshots/en/23-quick-actions.webp)](docs/images/screenshots/en/23-quick-actions.webp)
 
 **Illustrated landscape**
 

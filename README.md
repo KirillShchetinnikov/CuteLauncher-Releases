@@ -24,40 +24,45 @@
 ## Скриншоты и оформление
 
 <details>
-<summary>Показать 14 скриншотов и анимации обоев</summary>
+<summary>Показать 17 скриншотов и анимации обоев</summary>
 
-Примеры оформления, снятые на эмуляторах Android TV и Google TV (Android 16). Все снимки — из работающего приложения, в разрешении 3840 × 2160; нажмите на изображение, чтобы открыть оригинал. Показанные сторонние приложения устанавливаются отдельно.
+Снимки CuteLauncher 1.8.0 сделаны на эмуляторе Android TV (Android 16) в разрешении 3840 × 2160. Нажмите на изображение, чтобы открыть оригинал. Для прогноза погоды использованы демонстрационные данные. Показанные сторонние приложения устанавливаются отдельно.
 
-| Стекло · осенний пейзаж | Стандартный стиль · графитовый градиент |
+| Закат | Главный экран |
 |---|---|
-| [![Стекло · осенний пейзаж](docs/images/screenshots/01-glass-autumn.webp)](docs/images/screenshots/01-glass-autumn.webp) | [![Стандартный стиль · графитовый градиент](docs/images/screenshots/05-standard-gradient.webp)](docs/images/screenshots/05-standard-gradient.webp) |
+| [![Закат](docs/images/screenshots/31-home-sunset.webp)](docs/images/screenshots/31-home-sunset.webp) | [![Главный экран](docs/images/screenshots/01-home-default.webp)](docs/images/screenshots/01-home-default.webp) |
 
-| Мягкий стиль · весенний пейзаж | Контурный стиль · рисованный ночной пейзаж |
+| Разделы приложений | Осенний пейзаж |
 |---|---|
-| [![Мягкий стиль · весенний пейзаж](docs/images/screenshots/07-soft-spring.webp)](docs/images/screenshots/07-soft-spring.webp) | [![Контурный стиль · рисованный ночной пейзаж](docs/images/screenshots/09-outline-night.webp)](docs/images/screenshots/09-outline-night.webp) |
+| [![Разделы приложений](docs/images/screenshots/06-sections.webp)](docs/images/screenshots/06-sections.webp) | [![Осенний пейзаж](docs/images/screenshots/32-home-autumn.webp)](docs/images/screenshots/32-home-autumn.webp) |
 
-| Динамические цвета · сетка в шесть колонок | Панель быстрых настроек · таймер отключения |
+| Графитовый градиент | Весенний пейзаж |
 |---|---|
-| [![Динамические цвета · сетка в шесть колонок](docs/images/screenshots/13-dynamic-grid.webp)](docs/images/screenshots/13-dynamic-grid.webp) | [![Панель быстрых настроек · таймер отключения](docs/images/screenshots/14-floating-panel-timer.webp)](docs/images/screenshots/14-floating-panel-timer.webp) |
+| [![Графитовый градиент](docs/images/screenshots/33-home-graphite.webp)](docs/images/screenshots/33-home-graphite.webp) | [![Весенний пейзаж](docs/images/screenshots/34-home-spring.webp)](docs/images/screenshots/34-home-spring.webp) |
 
-Фон приложения на снимке панели быстрых настроек размыт для наглядности.
-
-
-| Стеклянные настройки | Контурные настройки |
+| Рисованный ночной пейзаж | Цвета выбранного приложения |
 |---|---|
-| [![Стеклянные настройки](docs/images/screenshots/02-glass-settings.webp)](docs/images/screenshots/02-glass-settings.webp) | [![Контурные настройки](docs/images/screenshots/10-outline-settings.webp)](docs/images/screenshots/10-outline-settings.webp) |
+| [![Рисованный ночной пейзаж](docs/images/screenshots/35-home-illustrated-night.webp)](docs/images/screenshots/35-home-illustrated-night.webp) | [![Цвета выбранного приложения](docs/images/screenshots/36-home-app-colors.webp)](docs/images/screenshots/36-home-app-colors.webp) |
 
-| Календарь с верхней панели | Таймер отключения |
+| Календарь | Календарь с примером прогноза |
 |---|---|
-| [![Календарь с верхней панели](docs/images/screenshots/03-calendar.webp)](docs/images/screenshots/03-calendar.webp) | [![Таймер отключения](docs/images/screenshots/04-sleep-timer.webp)](docs/images/screenshots/04-sleep-timer.webp) |
+| [![Календарь](docs/images/screenshots/03-calendar.webp)](docs/images/screenshots/03-calendar.webp) | [![Календарь с примером прогноза](docs/images/screenshots/03-calendar-weather.webp)](docs/images/screenshots/03-calendar-weather.webp) |
 
-| Свои разделы приложений | Настраиваемая верхняя панель |
+| Таймер отключения | Система |
 |---|---|
-| [![Свои разделы приложений](docs/images/screenshots/06-sections.webp)](docs/images/screenshots/06-sections.webp) | [![Настраиваемая верхняя панель](docs/images/screenshots/08-top-panel.webp)](docs/images/screenshots/08-top-panel.webp) |
+| [![Таймер отключения](docs/images/screenshots/04-sleep-timer.webp)](docs/images/screenshots/04-sleep-timer.webp) | [![Система](docs/images/screenshots/15-system-widget.webp)](docs/images/screenshots/15-system-widget.webp) |
 
-| Адаптивные обои | Размеры и подписи плиток |
+| Сеть | Скорость сети |
 |---|---|
-| [![Адаптивные обои](docs/images/screenshots/11-adaptive-wallpaper.webp)](docs/images/screenshots/11-adaptive-wallpaper.webp) | [![Размеры и подписи плиток](docs/images/screenshots/12-tile-appearance.webp)](docs/images/screenshots/12-tile-appearance.webp) |
+| [![Сеть](docs/images/screenshots/17-network.webp)](docs/images/screenshots/17-network.webp) | [![Скорость сети](docs/images/screenshots/18-network-speed.webp)](docs/images/screenshots/18-network-speed.webp) |
+
+| Ночной режим | Трафик |
+|---|---|
+| [![Ночной режим](docs/images/screenshots/19-night-mode.webp)](docs/images/screenshots/19-night-mode.webp) | [![Трафик](docs/images/screenshots/21-traffic.webp)](docs/images/screenshots/21-traffic.webp) |
+
+**Быстрые действия**
+
+[![Быстрые действия](docs/images/screenshots/23-quick-actions.webp)](docs/images/screenshots/23-quick-actions.webp)
 
 **Рисованный пейзаж**
 
