@@ -720,7 +720,7 @@
   "diagnosticsCreate": "보고서 작성",
   "diagnosticsOperations": "기록된 작업",
   "diagnosticsCopied": "보고서가 복사되었습니다.",
-  "diagnosticsSharingNotice": "파일을 공개하지 말고 작성자에게 개인 메시지로 보내세요. 자동 정리 후에도 개인정보가 남을 수 있습니다. 보고서를 보내면 익명화된 기기 호환성 보고서를 CuteLauncher Git 저장소에 게시하는 데 동의하는 것으로 간주합니다. 개인정보 없이 기기 정보와 기능 사용 가능 여부만 공개하며 오류 로그, 명령 및 개인 설정은 공개하지 않습니다.\n\n보고서에는 설치된 패키지의 이름, 버전, 활성화 상태와 섹션 이름, 구성, 순서, 표시 여부도 포함됩니다. 진단을 위해 식별자와 이름은 유지되지만 앱 및 섹션 목록은 공개되지 않습니다.",
+  "diagnosticsSharingNotice": "진단 파일은 CuteLauncher 개발자에게만 개인 메시지로 보내세요. 파일에는 기기, 시스템, CuteLauncher 작동에 관한 정보가 포함됩니다.\n\n확장 보고서에는 설치된 앱 목록과 각 앱의 버전 및 상태, 섹션의 이름, 구성, 순서도 포함됩니다.",
   "diagnosticsStartRecording": "확장 진단 시작",
   "diagnosticsFinishRecording": "기록을 종료하고 보고서 작성",
   "diagnosticsStopRecording": "기록 중지",

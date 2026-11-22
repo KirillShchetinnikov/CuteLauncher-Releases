@@ -123,6 +123,8 @@ def public_path(name):
             or path.name.lower() in AGENT_FILES
             or (name.startswith('.github/workflows/') and name not in PUBLIC_WORKFLOWS)):
         return False
+    if tuple(lowered[:2]) in {('catalog', 'devices'), ('catalog', 'inventories')}:
+        return False  # Historical locations of the internal diagnostic archive.
     if path.suffix.lower() == '.md':
         return name in PUBLIC_DOCS
     if path.parts[0] == 'docs':

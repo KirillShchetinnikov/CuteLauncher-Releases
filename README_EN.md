@@ -136,13 +136,13 @@ Support the developer. You can support CuteLauncher development through [CloudTi
 
 Reproduce the issue and open **Settings → Diagnostics → Diagnostics**.
 Select **Create report → Export report → Save to disk**.
-The single `cutelauncher_diagnostics_….json` file contains errors, snapshots of
-settings at each failure, and TV compatibility observations. Send it to the author
-**in a private message**, not publicly: automatic redaction may miss personal data.
-By sending the report to the author, you agree to publication of an anonymized TV
-compatibility report in the CuteLauncher Git repository. Only device metadata and
-feature availability are published, without personal data; error logs, commands
-and your settings are not published. Describe the steps and expected/actual results.
+The file is saved as `cutelauncher_diagnostics_….json`.
+
+Send the diagnostics file only to the author of CuteLauncher in a private message. The file contains information about the device, the system, and how CuteLauncher is running.
+
+The extended report also includes a list of installed apps, their versions and status, and the names, contents, and order of sections.
+
+Describe the steps, expected result, and actual result.
 See the [reporting instructions](docs/USER_GUIDE_EN.md#reporting-an-issue) for details.
 
 ## Documentation and source code

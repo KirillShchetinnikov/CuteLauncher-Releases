@@ -1987,7 +1987,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get diagnosticsSharingNotice =>
-      'Dosyayı yazara özel mesajla gönderin, herkese açık paylaşmayın: otomatik temizleme kişisel verileri kaçırabilir. Göndererek anonim cihaz uyumluluk raporunun CuteLauncher Git deposunda yayımlanmasını kabul edersiniz. Yalnızca cihaz bilgileri ve özellik kullanılabilirliği kişisel veriler olmadan yayımlanır; hata günlükleri, komutlar ve ayarlarınız yayımlanmaz.\n\nRapor ayrıca yüklü paketleri, adlarını, sürümlerini ve etkinlik durumlarını, bölümlerin adlarını, içeriklerini, sıralarını ve görünürlüklerini içerir. Tanılama için kimlikler ve adlar korunur; uygulama ve bölüm listeleri yayımlanmaz.';
+      'Tanılama dosyasını yalnızca CuteLauncher geliştiricisine özel mesajla gönderin. Dosyada cihaz, sistem ve CuteLauncher’ın çalışması hakkında bilgiler bulunur.\n\nGenişletilmiş raporda ayrıca yüklü uygulamaların listesi, sürümleri ve durumları ile bölümlerin adları, içerikleri ve sırası yer alır.';
 
   @override
   String get diagnosticsStartRecording => 'Genişletilmiş tanılamayı başlat';

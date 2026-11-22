@@ -201,8 +201,8 @@ Map<String, Object> parseTvCompatibilityReport(Map<String, dynamic> report) {
   );
 }
 
-/// Publication boundary: never copies the diagnostic journal, commands or user settings.
-Map<String, Object> publicTvCompatibilityReport(Map<String, dynamic> report) {
+/// Builds the sanitized projection for the internal diagnostics archive.
+Map<String, Object> sanitizedTvCompatibilityReport(Map<String, dynamic> report) {
   final parsed = parseTvCompatibilityReport(report);
   final identity = parsed['identity'] as Map;
   final captured = DateTime.parse(parsed['capturedAt'] as String).toUtc();

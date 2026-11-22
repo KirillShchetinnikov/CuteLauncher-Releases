@@ -1923,7 +1923,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get diagnosticsSharingNotice =>
-      '请通过私信将文件发送给作者，不要公开发布：自动清理可能遗漏个人信息。向作者发送报告即表示您同意在 CuteLauncher 的 Git 仓库中发布匿名的设备兼容性报告。公开内容仅包含无个人信息的设备元数据和功能可用性；错误日志、命令及您的设置不会公开。\n\n报告还包含已安装软件包的名称、版本和启用状态，以及分区名称、内容、顺序和可见性。软件包标识符和名称会保留以便诊断；应用和分区列表不会公开发布。';
+      '请仅通过私信将诊断文件发送给 CuteLauncher 的作者。文件包含有关设备、系统和 CuteLauncher 运行情况的信息。\n\n扩展报告还包含已安装应用的列表及其版本和状态，以及各分区的名称、内容和顺序。';
 
   @override
   String get diagnosticsStartRecording => '开始扩展诊断';

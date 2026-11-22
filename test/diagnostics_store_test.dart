@@ -50,7 +50,7 @@ void main() {
       expect(report, isNot(contains(key)));
     }
     expect(jsonEncode(report), isNot(contains('private-value')));
-    final projection = publicTvCompatibilityReport(report);
+    final projection = sanitizedTvCompatibilityReport(report);
     expect((projection['checks'] as Map).values, everyElement('unknown'));
   });
 
@@ -169,11 +169,11 @@ void main() {
     expect(report['reportType'], 'diagnostics');
     expect(((report['installedApplications'] as Map)['applications'] as List).single['packageName'], 'example.tv');
     expect((report['launcherSections'] as Map)['status'], 'unavailable');
-    expect(jsonEncode(publicTvCompatibilityReport(report)), isNot(contains('example.tv')));
+    expect(jsonEncode(sanitizedTvCompatibilityReport(report)), isNot(contains('example.tv')));
     expect((report['posterLoads'] as Map)['active'], hasLength(1));
-    expect(publicTvCompatibilityReport(report).containsKey('posterLoads'), false);
+    expect(sanitizedTvCompatibilityReport(report).containsKey('posterLoads'), false);
     expect((report['landscapeLighting'] as Map)['sunSource'], 'manualFallback');
-    expect(publicTvCompatibilityReport(report).containsKey('landscapeLighting'), false);
+    expect(sanitizedTvCompatibilityReport(report).containsKey('landscapeLighting'), false);
     expect(jsonEncode(report), isNot(contains('private.example')));
     expect(jsonEncode(report), isNot(contains('token=secret')));
     expect(report['app'], {'version': '1.8.0-test.4', 'build': '99'});

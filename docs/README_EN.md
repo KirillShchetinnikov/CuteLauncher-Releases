@@ -33,11 +33,12 @@ The [diagnostics section](USER_GUIDE_EN.md#diagnostics) describes basic and exte
 reports. For an unexpected failure, use
 **Advanced → Diagnostics → Create report → Export report → Save to disk**.
 For more detail, start extended diagnostics before reproducing the issue.
-Send the file to the author **in a private message**. Redaction may miss personal
-data. By sending the report to the author, you agree to publication
-of an anonymized TV compatibility report in the CuteLauncher Git repository.
-Only device metadata and feature availability are published, without personal data;
-errors, commands and your settings are not published. Nothing is sent automatically.
+
+Send the diagnostics file only to the author of CuteLauncher in a private message. The file contains information about the device, the system, and how CuteLauncher is running.
+
+The extended report also includes a list of installed apps, their versions and status, and the names, contents, and order of sections.
+
+Nothing is sent automatically.
 Describe the steps and expected/actual results. See the
 [reporting instructions](USER_GUIDE_EN.md#reporting-an-issue) for details.
 

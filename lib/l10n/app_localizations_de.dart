@@ -1998,7 +1998,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get diagnosticsSharingNotice =>
-      'Senden Sie die Datei dem Autor privat und veröffentlichen Sie sie nicht: Die automatische Bereinigung kann persönliche Daten übersehen. Mit dem Senden stimmen Sie der Veröffentlichung eines anonymisierten Bericht zur Gerätekompatibilitäts im Git-Repository von CuteLauncher zu. Veröffentlicht werden nur Gerätemetadaten und verfügbare Funktionen ohne persönliche Daten; Fehlerprotokolle, Befehle und Ihre Einstellungen werden nicht veröffentlicht.\n\nDer Bericht enthält auch installierte Pakete mit Namen, Versionen und Aktivierungsstatus sowie Namen, Inhalt, Reihenfolge und Sichtbarkeit der Bereiche. Paketkennungen und Namen bleiben für die Diagnose erhalten; App- und Bereichslisten werden nicht veröffentlicht.';
+      'Senden Sie die Diagnosedatei ausschließlich per privater Nachricht an den Entwickler von CuteLauncher. Die Datei enthält Informationen zum Gerät, zum System und zum Betrieb von CuteLauncher.\n\nDer erweiterte Bericht enthält außerdem eine Liste der installierten Apps mit ihren Versionen und ihrem Status sowie die Namen, Inhalte und Reihenfolge der Bereiche.';
 
   @override
   String get diagnosticsStartRecording => 'Erweiterte Diagnose starten';

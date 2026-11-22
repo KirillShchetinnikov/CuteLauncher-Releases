@@ -110,7 +110,7 @@ Future<String> runAdb(String executable, String serial, List<String> args) async
 /// Sanitize an explicitly supplied app report before putting it under version control.
 File archiveDeviceReport(Map<String, dynamic> report, Directory directory, String id) {
   if (!RegExp(r'^[a-z0-9][a-z0-9-]{0,79}$').hasMatch(id)) throw const FormatException('Invalid device report id');
-  final safe = publicTvCompatibilityReport(report);
+  final safe = sanitizedTvCompatibilityReport(report);
   directory.createSync(recursive: true);
   final target = File('${directory.path}/$id.json');
   target.createSync(exclusive: true);
@@ -125,7 +125,7 @@ List<String> validateArchivedProfiles(Directory directory) {
     try {
       if (file.lengthSync() > 64 * 1024) throw const FormatException('Report too large');
       final report = readJson(file.path);
-      final safe = publicTvCompatibilityReport(report);
+      final safe = sanitizedTvCompatibilityReport(report);
       if (jsonEncode(_ordered(report)) != jsonEncode(_ordered(safe))) throw const FormatException('Report contains unknown or invalid data');
     } catch (_) { problems.add('Invalid archived profile: ${file.uri.pathSegments.last}'); }
   }
@@ -139,7 +139,7 @@ Object? _ordered(Object? value) => value is Map
 Future<void> main(List<String> arguments) async {
   try {
     final args = [...arguments];
-    if (args.isEmpty) throw const FormatException('Use validate, list, capture or match');
+    if (args.isEmpty) throw const FormatException('Use validate, list, capture, match or archive');
     final action = args.removeAt(0);
     String? option(String key) {
       final index = args.indexOf(key);
@@ -149,9 +149,13 @@ Future<void> main(List<String> arguments) async {
       args.removeRange(index, index + 2);
       return value;
     }
-    final catalogPath = option('--catalog') ?? File.fromUri(Platform.script.resolve('../catalog/devices.json')).path;
+    final defaultCatalog = Platform.script.resolve('../catalog/devices.json');
+    final catalogPath = option('--catalog') ?? File.fromUri(defaultCatalog).path;
     final serial = option('--serial'), executable = option('--adb') ?? 'adb', output = option('--output'), id = option('--id');
-    final profiles = Directory.fromUri(File(catalogPath).absolute.uri.resolve('devices/'));
+    final catalogUri = File(catalogPath).absolute.uri;
+    final profiles = Directory.fromUri(catalogUri == defaultCatalog
+        ? Platform.script.resolve('../internal/diagnostics/devices/')
+        : catalogUri.resolve('devices/'));
     if (action == 'archive') {
       if (args.length != 1 || id == null || serial != null || output != null) throw const FormatException('archive REPORT --id ID');
       final reportFile = File(args.single);
@@ -177,7 +181,7 @@ Future<void> main(List<String> arguments) async {
     }
     if (serial != null || output != null) throw const FormatException('Device options are only valid for capture');
     final catalog = readJson(catalogPath);
-    final evidenceFile = File.fromUri(File(catalogPath).absolute.uri.resolve('../docs/TESTING_RU.md'));
+    final evidenceFile = File.fromUri(catalogUri.resolve('../docs/TESTING_RU.md'));
     final problems = [...validateCatalog(catalog, evidenceFile.readAsStringSync()), ...validateArchivedProfiles(profiles)];
     if (problems.isNotEmpty) throw FormatException(problems.join('\n'));
     if (action == 'validate' && args.isEmpty) {

@@ -165,6 +165,13 @@ class PublicSourceTests(unittest.TestCase):
                      '.github/workflows/design.yml', '.github/workflows/new.yml'):
             self.assertFalse(publisher.public_path(name), name)
 
+    def test_diagnostic_archives_are_private(self):
+        for name in ('catalog/devices/report.json', 'catalog/inventories/report.json',
+                     'internal/diagnostics/devices/report.json',
+                     'internal/diagnostics/inventories/report.json'):
+            self.assertFalse(publisher.public_path(name), name)
+        self.assertTrue(publisher.public_path('catalog/app_descriptions.json'))
+
     def test_public_english_readme_is_included_but_agent_translations_are_private(self):
         self.assertTrue(publisher.public_path('README_EN.md'))
         for name in ('AGENTS_EN.md', 'docs/agents/WORKFLOW_EN.md', 'lib/AGENTS_EN.md'):

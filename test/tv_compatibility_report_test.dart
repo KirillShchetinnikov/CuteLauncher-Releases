@@ -73,7 +73,7 @@ void main() {
       expect(malformed['kind'], 'unknown');
     },
   );
-  test('app report can be sanitized and archived for Git without overwriting or promoting observations', () async {
+  test('app report can be sanitized and archived internally without overwriting or promoting observations', () async {
     final directory = await Directory.systemTemp.createTemp('device-report-');
     try {
       final report = createTvCompatibilityReport(raw, capturedAt: now);
@@ -84,7 +84,7 @@ void main() {
       );
       expect(
         jsonDecode(saved.readAsStringSync()),
-        publicTvCompatibilityReport(report),
+        sanitizedTvCompatibilityReport(report),
       );
       expect(catalog.validateArchivedProfiles(directory), isEmpty);
       expect(
@@ -101,7 +101,7 @@ void main() {
       await directory.delete(recursive: true);
     }
   });
-  test('unified report shares one header and publication excludes errors and settings', () {
+  test('unified report shares one header and the archive projection excludes errors and settings', () {
     final diagnostics = DiagnosticsStore().snapshot(
       version: '1.2.1',
       build: '99',
@@ -137,8 +137,8 @@ void main() {
       'notGranted',
     );
     expect((combined['app'] as Map)['version'], '1.2.1');
-    final publication = publicTvCompatibilityReport(combined);
-    final json = jsonEncode(publication);
+    final projection = sanitizedTvCompatibilityReport(combined);
+    final json = jsonEncode(projection);
     for (final private in [
       'private',
       'failures',
@@ -150,11 +150,11 @@ void main() {
     ]) {
       expect(json, isNot(contains(private)), reason: private);
     }
-    expect((publication['checks'] as Map)['overlay'], 'unknown');
-    expect((publication['checks'] as Map)['androidTv'], 'available');
-    expect((publication['identity'] as Map)['model'], 'Smart TV Pro');
-    expect(parseTvCompatibilityReport(publication), publication);
-    final granted = publicTvCompatibilityReport({
+    expect((projection['checks'] as Map)['overlay'], 'unknown');
+    expect((projection['checks'] as Map)['androidTv'], 'available');
+    expect((projection['identity'] as Map)['model'], 'Smart TV Pro');
+    expect(parseTvCompatibilityReport(projection), projection);
+    final granted = sanitizedTvCompatibilityReport({
       ...combined,
       'compatibility': {'scope': 'readOnlyMetadata', 'status': 'complete',
         'checks': {'overlay': 'available', 'defaultHome': 'available'}},

@@ -2001,7 +2001,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get diagnosticsSharingNotice =>
-      'Envie o ficheiro ao autor por mensagem privada, sem o publicar: a limpeza automática pode deixar dados pessoais. Ao enviá-lo, aceita a publicação de um relatório anónimo de compatibilidade do dispositivo no repositório Git do CuteLauncher. Apenas metadados do dispositivo e disponibilidade das funções serão publicados, sem dados pessoais; registos de erros, comandos e as suas definições não serão publicados.\n\nO relatório também inclui pacotes instalados, nomes, versões e estado de ativação, além dos nomes, conteúdo, ordem e visibilidade das seções. Identificadores e nomes são mantidos para diagnóstico; essas listas não são publicadas.';
+      'Envie o ficheiro de diagnóstico apenas ao autor do CuteLauncher, por mensagem privada. O ficheiro contém informações sobre o dispositivo, o sistema e o funcionamento do CuteLauncher.\n\nO relatório detalhado inclui também a lista de aplicações instaladas, as respetivas versões e o seu estado, bem como os nomes, o conteúdo e a ordem das secções.';
 
   @override
   String get diagnosticsStartRecording => 'Iniciar diagnóstico avançado';

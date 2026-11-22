@@ -259,10 +259,11 @@ data. [Memory](USER_GUIDE_EN.md#memory-and-resource-saving).
 Open Settings → Diagnostics → Diagnostics. If the failure already happened,
 select Create report. For a detailed report, start extended diagnostics,
 reproduce the issue, and return to finish recording. Select Export report →
-Save to disk and send the file privately to the author with the steps and
-expected result. Redaction may miss personal data. Nothing is sent automatically.
+Save to disk. Include the steps and expected result in your message.
 
-Sending it to the author means you agree to publication of the anonymized TV
-compatibility portion in the CuteLauncher Git repository; errors, commands and
-your settings are not published.
+Send the diagnostics file only to the author of CuteLauncher in a private message. The file contains information about the device, the system, and how CuteLauncher is running.
+
+The extended report also includes a list of installed apps, their versions and status, and the names, contents, and order of sections.
+
+Nothing is sent automatically.
 [Reporting instructions](USER_GUIDE_EN.md#reporting-an-issue).

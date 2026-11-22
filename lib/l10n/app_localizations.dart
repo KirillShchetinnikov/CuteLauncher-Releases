@@ -3779,7 +3779,7 @@ abstract class AppLocalizations {
   /// No description provided for @diagnosticsSharingNotice.
   ///
   /// In en, this message translates to:
-  /// **'Send the file to the author privately, not publicly: automatic redaction may miss personal data. By sending the report to the author, you agree to publication of an anonymized device compatibility report in the CuteLauncher Git repository. Only device metadata and feature availability are published, without personal data; error logs, commands and your settings are not published.\n\nThe report also includes installed packages, their names, versions and enabled state, plus section names, contents, order and visibility. Package identifiers and names are retained for diagnosis; app and section lists are not published.'**
+  /// **'Send the diagnostics file only to the author of CuteLauncher in a private message. The file contains information about the device, the system, and how CuteLauncher is running.\n\nThe extended report also includes a list of installed apps, their versions and status, and the names, contents, and order of sections.'**
   String get diagnosticsSharingNotice;
 
   /// No description provided for @diagnosticsStartRecording.

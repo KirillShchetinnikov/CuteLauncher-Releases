@@ -1911,8 +1911,7 @@ versions, system flags and enabled states, plus section names, contents, order,
 visibility and sorting. Empty and hidden sections, spacers and the Continue
 Watching position are included. Installed app names use the Android language
 at the time the report is created. Package identifiers remain readable for diagnosis.
-These lists are excluded from published anonymized compatibility data; send the
-full report only in a private message. Unavailable or truncated data is marked.
+Unavailable or truncated data is marked.
 
 The absence of the proprietary TCL filter on an unsupported device is recorded
 as an unavailable capability and is not treated as a diagnostic failure.
@@ -1947,20 +1946,12 @@ results as unknown.
    **Stop recording** first, then select **Create extended report**.
 3. Wait until the report is ready. Select **Export report → Save to disk**, choose a folder,
    and finish saving.
-4. Send `cutelauncher_diagnostics_….json` to the author **in a private message**.
-   Do not attach it to a public forum topic or GitHub issue: automatic redaction
-   may miss personal data. Describe the controls, steps and expected/actual results.
-   TV and app version metadata are already included when Android provides them.
+4. Include the controls you used, the steps, the expected result, and the
+   actual result in your message with `cutelauncher_diagnostics_….json`.
 
-**By sending the report to the author, you agree to publication of an anonymized
-TV compatibility report in the CuteLauncher Git repository.** Only device metadata
-and feature availability are published, without personal data. Error logs,
-commands, exceptions and your settings are not published. Publication is not automatic.
+Send the diagnostics file only to the author of CuteLauncher in a private message. The file contains information about the device, the system, and how CuteLauncher is running.
 
-Before publication, only the allowed compatibility portion is extracted: model,
-manufacturer, firmware, Android/ABI and observed feature states. Serial numbers,
-the full fingerprint, exact sending time and user-granted permission state are
-excluded. API observations are not presented as full functional verification.
+The extended report also includes a list of installed apps, their versions and status, and the names, contents, and order of sections.
 
 ## Device data and reports
 

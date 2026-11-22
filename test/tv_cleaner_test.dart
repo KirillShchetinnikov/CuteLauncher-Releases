@@ -248,7 +248,7 @@ void main() {
       throwsFormatException,
     );
   });
-  test('one shared package catalog and inventory metadata contain no duplicate lists', () {
+  test('one shared catalog describes packages and records their sources', () {
     final descriptions = jsonDecode(
       File('catalog/app_descriptions.json').readAsStringSync(),
     ) as Map;
@@ -286,9 +286,19 @@ void main() {
       }
       expect(description['safeToDisable'], isFalse);
     }
-    for (final file in Directory(
-      'catalog/inventories',
-    ).listSync().whereType<File>()) {
+    final profiles = jsonDecode(
+      File('catalog/cleaner_profiles.json').readAsStringSync(),
+    ) as Map;
+    for (final profile in profiles['profiles'] as List) {
+      expect(profile['verification'], 'observedOnly');
+      expect(profile['recommended'], isEmpty);
+      expect((profile['identity'] as Map)['fingerprint'], isNotEmpty);
+    }
+  });
+
+  final inventories = Directory('internal/diagnostics/inventories');
+  test('internal inventory metadata contains no duplicate package lists', () {
+    for (final file in inventories.listSync().whereType<File>()) {
       final source = file.readAsStringSync();
       expect(source, isNot(contains('192.168.1.')));
       final report = jsonDecode(source) as Map;
@@ -318,23 +328,15 @@ void main() {
         expect(completeness['skippedCount'], greaterThanOrEqualTo(0));
       }
     }
-    final profiles = jsonDecode(
-      File('catalog/cleaner_profiles.json').readAsStringSync(),
-    ) as Map;
-    for (final profile in profiles['profiles'] as List) {
-      expect(profile['verification'], 'observedOnly');
-      expect(profile['recommended'], isEmpty);
-      expect((profile['identity'] as Map)['fingerprint'], isNotEmpty);
-    }
-  });
-
-  test('X98Q user observations keep removed packages and protected services out of bulk approval', () {
-    const id = 'droidlogic-x98q-android11-20261026';
     final inventory = jsonDecode(
-      File('catalog/inventories/$id.json').readAsStringSync(),
+      File('${inventories.path}/droidlogic-x98q-android11-20261026.json').readAsStringSync(),
     ) as Map;
     expect(inventory['observedPackageCount'], 118);
     expect(inventory['reportedCounts']['enabled'], 114);
+  }, skip: !inventories.existsSync());
+
+  test('X98Q user observations keep removed packages and protected services out of bulk approval', () {
+    const id = 'droidlogic-x98q-android11-20261026';
     final example = File('catalog/examples/$id.json').readAsStringSync();
     final disabled = parseDisableList(example).toSet();
     expect(disabled, hasLength(3));

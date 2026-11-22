@@ -720,7 +720,7 @@
   "diagnosticsCreate": "Crear informe",
   "diagnosticsOperations": "Operaciones registradas",
   "diagnosticsCopied": "Informe copiado",
-  "diagnosticsSharingNotice": "Envíe el archivo al autor por mensaje privado, no lo publique: la limpieza automática puede omitir datos personales. Al enviarlo, acepta que se publique un informe anónimo de compatibilidad del dispositivo en el repositorio Git de CuteLauncher. Solo se publican metadatos del dispositivo y disponibilidad de funciones, sin datos personales; no se publican registros de errores, comandos ni sus ajustes.\n\nEl informe también incluye paquetes instalados, nombres, versiones y estado de activación, y los nombres, contenido, orden y visibilidad de las secciones. Se conservan los identificadores y nombres para el diagnóstico; estas listas no se publican.",
+  "diagnosticsSharingNotice": "Envía el archivo de diagnóstico únicamente al autor de CuteLauncher por mensaje privado. El archivo contiene información sobre el dispositivo, el sistema y el funcionamiento de CuteLauncher.\n\nEl informe ampliado también incluye una lista de las aplicaciones instaladas, sus versiones y su estado, así como los nombres, el contenido y el orden de las secciones.",
   "diagnosticsStartRecording": "Iniciar diagnóstico ampliado",
   "diagnosticsFinishRecording": "Finalizar el registro y crear informe",
   "diagnosticsStopRecording": "Detener el registro",
