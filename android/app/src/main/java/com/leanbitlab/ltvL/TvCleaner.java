@@ -131,7 +131,7 @@ final class TvCleaner {
     }
     Map<String, Object> run(String action, List<String> targets, Boolean enable, String stateId, String stateName,
             String listName, String listScope) throws Exception {
-        if (!shell.execute("am get-current-user").equals("0") || !shell.execute("id -u").equals("2000"))
+        if (!shell.execute("am get-current-user").equals("0") || !AdbShellIdentity.supported(activity, shell.execute("id -u")))
             return Map.of("status", "denied");
         if (action.equals("cleanerInventory")) { ensureSnapshot(); return report(); }
         if (action.equals("cleanerSnapshot")) { ensureSnapshot(); return report(); }

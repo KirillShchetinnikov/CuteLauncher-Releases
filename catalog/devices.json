@@ -716,6 +716,32 @@
           "evidenceSection": "TCL Smart TV Pro AU02: диагностика автозапуска — 19 ноября 2026"
         }
       ]
+    },
+    {
+      "id": "slimbox-x3-android9-20221007",
+      "label": "Model-X3 — Slimbox, Android 9, 20221007",
+      "kind": "physical",
+      "exactMatch": true,
+      "identity": {
+        "manufacturer": "X3",
+        "model": "Model-X3",
+        "device": "X3",
+        "fingerprint": "Ugoos/AM3/AM3:9/PPR1.180610.011/20221007:userdebug/release-keys",
+        "firmware": "X3-userdebug 9 PPR1.180610.011 20221007 release-keys",
+        "android": "9",
+        "sdk": "28",
+        "abis": "armeabi-v7a,armeabi"
+      },
+      "results": [
+        {
+          "feature": "adb-connection-check",
+          "status": "limitation",
+          "date": "2026-11-22",
+          "appBuild": "1.8.0+277",
+          "summary": "В двух расширенных отчётах локальное TCP-подключение на 5555 дошло до shell. Android user равен 0, и id -u возвращает UID 0. CuteLauncher требует UID 2000 и возвращает denied. Позднее владелец выполнил adb unroot, после перезапуска adbd команда adb shell id -u с ПК вернула 2000. Результат встроенной проверки с UID 2000 пока не подтверждён.",
+          "evidenceSection": "Slimbox Model-X3: проверка ADB с UID 0 — 22 ноября 2026"
+        }
+      ]
     }
   ]
 }

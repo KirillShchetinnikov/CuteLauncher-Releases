@@ -13,6 +13,51 @@ import 'package:flutter_test/flutter_test.dart';
 import 'support/design_fixture.dart';
 
 void main() {
+  testWidgets('root ADB warning uses the launcher notice and keeps focus', (
+    tester,
+  ) async {
+    await pumpDesignFixture(tester, language: 'ru');
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    debugDisableShadows = true;
+    final messenger = tester.binding.defaultBinaryMessenger;
+    const adb = MethodChannel('cutelauncher/adb');
+    var pending = true;
+    messenger.setMockMethodCallHandler(adb, (call) async {
+      if (call.method != 'takeRootWarning') return null;
+      final result = pending;
+      pending = false;
+      return result;
+    });
+    addTearDown(() => messenger.setMockMethodCallHandler(adb, null));
+    final bar = tester.state<FocusAwareAppBarState>(
+      find.byType(FocusAwareAppBar),
+    );
+    bar.focusSettings();
+    await tester.pumpAndSettle();
+    final l = AppLocalizations.of(
+      tester.element(find.byType(FocusAwareAppBar)),
+    )!;
+    final warning = find.text(l.adbRootWarning);
+
+    Future<void> sendRootEvent() async {
+      await messenger.handlePlatformMessage(
+        'me.efesser.flauncher/event_home',
+        const StandardMethodCodec().encodeSuccessEnvelope('adb_root_warning'),
+        (_) {},
+      );
+      await tester.pumpAndSettle();
+    }
+
+    await sendRootEvent();
+    expect(warning, findsOneWidget);
+    expect(bar.settingsFocusNode.hasFocus, isTrue);
+    await tester.pump(const Duration(seconds: 6));
+    await tester.pumpAndSettle();
+    await sendRootEvent();
+    expect(warning, findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('open apps setup event opens the ADB page', (tester) async {
     await pumpDesignFixture(tester, language: 'ru');
     debugDisableShadows = true;

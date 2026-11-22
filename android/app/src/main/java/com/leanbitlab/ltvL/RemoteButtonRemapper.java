@@ -215,7 +215,7 @@ final class RemoteButtonRemapper implements AutoCloseable {
         String command = epg ? RemoteTvActions.TCL_EPG_COMMAND : binding.target();
         try {
             String result = AdbBridge.recentSession(service, shell -> {
-                if (!"2000".equals(shell.execute("id -u").trim())) return "unavailable";
+                if (!AdbShellIdentity.supported(shell.execute("id -u").trim())) return "unavailable";
                 if (closed || !binding.equals(configuration.binding(binding.keyCode(), binding.trigger())))
                     return "idle";
                 shell.execute(RemoteAdbCommand.bounded(command));

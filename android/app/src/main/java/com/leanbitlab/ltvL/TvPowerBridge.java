@@ -87,16 +87,16 @@ final class TvPowerBridge {
             return switch (operation) {
                 case REBOOT -> reboot(adb);
                 // Detach shutdown so the shell can acknowledge dispatch before power-off.
-                case SHUTDOWN -> shell(adb, "sh -c 'sleep 1; svc power shutdown' >/dev/null 2>&1 </dev/null &");
-                case SLEEP -> shell(adb, "input keyevent KEYCODE_SLEEP");
-                case TCL_SCREEN_OFF -> shell(adb, TclScreenOff.SHELL_COMMAND);
+                case SHUTDOWN -> shell(c, adb, "sh -c 'sleep 1; svc power shutdown' >/dev/null 2>&1 </dev/null &");
+                case SLEEP -> shell(c, adb, "input keyevent KEYCODE_SLEEP");
+                case TCL_SCREEN_OFF -> shell(c, adb, TclScreenOff.SHELL_COMMAND);
             };
         }
     }
 
-    private static boolean shell(Dadb adb, String command) throws Exception {
+    private static boolean shell(Context context, Dadb adb, String command) throws Exception {
         var user = NativeShellDiagnostics.execute(adb, "id -u", "tvPower");
-        if (user.getExitCode() != 0 || !user.getOutput().trim().equals("2000")) return false;
+        if (user.getExitCode() != 0 || !AdbShellIdentity.supported(context, user.getOutput().trim())) return false;
         return NativeShellDiagnostics.execute(adb, command, "tvPower").getExitCode() == 0;
     }
 

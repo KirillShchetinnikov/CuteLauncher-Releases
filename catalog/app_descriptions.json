@@ -20,7 +20,8 @@
     "catalog/inventories/google-tv-streamer-uttk-20261115-landscape-263.json",
     "catalog/inventories/xiaomi-mibox4-oneday-20261116-aerialviews.json",
     "catalog/inventories/tcl-g10-as16-20261116-home-tile-images.json",
-    "catalog/inventories/formuler-z10-pro-max-android10-20261118-quick-actions-reboot.json"
+    "catalog/inventories/formuler-z10-pro-max-android10-20261118-quick-actions-reboot.json",
+    "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json"
   ],
   "packages": {
     "android": {
@@ -52,7 +53,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "android.auto_generated_rro__": {
@@ -218,6 +220,42 @@
       ],
       "category": "user"
     },
+    "app.hiddify.com": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
+    },
+    "app.morphe.android.youtube": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
+    },
+    "app.revanced.android.gms": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
+    },
+    "app.revanced.android.youtube": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
+    },
     "app.smarttube.fdroid": {
       "ru": "Приложение не опознано.",
       "en": "Application not identified.",
@@ -239,6 +277,15 @@
       ],
       "category": "user"
     },
+    "apps.atv.ru": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
+    },
     "ar.tvplayer.tv": {
       "confidence": "unknown",
       "safeToDisable": false,
@@ -251,6 +298,15 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+      ],
+      "category": "user"
+    },
+    "atv.launch_app.revanced.android.youtube": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
       ],
       "category": "user"
     },
@@ -299,6 +355,24 @@
       ],
       "category": "user"
     },
+    "cn.com.pcalpha.leanback_shortcut": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
+    },
+    "com.alex161rus.notification": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
+    },
     "com.android.bluetooth.chromecast": {
       "ru": "Приложение не опознано.",
       "en": "Application not identified.",
@@ -311,6 +385,27 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.android.chromf": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
+    },
+    "com.android.defcontainer": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.android.networkstack.chromecast": {
@@ -341,6 +436,30 @@
         "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
+    "com.android.onetimeinitializer": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ]
+    },
+    "com.android.smspush": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ]
+    },
     "com.android.systemui.auto_generated_rro_product__": {
       "ru": "Приложение не опознано.",
       "en": "Application not identified.",
@@ -353,6 +472,18 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263"
+      ]
+    },
+    "com.android.systemui.recents.horizontal": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.android.tv.overlay.framework.kirkwood": {
@@ -397,6 +528,15 @@
         "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
+    "com.android.tv.settings.sbxtv.overlay": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
+    },
     "com.android.wallpaperpicker": {
       "ru": "Приложение не опознано.",
       "en": "Application not identified.",
@@ -411,6 +551,45 @@
         "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
+    "com.atv.torrents": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
+    },
+    "com.atvspeech.app": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
+    },
+    "com.badmanners.murglar2": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
+    },
+    "com.droidlogic.BluetoothRemote": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ]
+    },
     "com.droidlogic.droidtvsettingsoverlay": {
       "ru": "Приложение не опознано.",
       "en": "Application not identified.",
@@ -422,6 +601,27 @@
       "observedOn": [
         "xiaomi-mibox4-oneday-20261116-aerialviews"
       ]
+    },
+    "com.droidlogic.imageplayer": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ]
+    },
+    "com.esminis.server.php": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
     },
     "com.filin4ik.appsserver": {
       "confidence": "unknown",
@@ -476,6 +676,24 @@
       "observedOn": [
         "formuler-z11-pro-max-rvc-20261113-video-folder"
       ]
+    },
+    "com.github.dimzon.owntv": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
+    },
+    "com.github.dyhkwong.sagernet": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
     },
     "com.google.android.adservices.api": {
       "ru": "Приложение не опознано.",
@@ -869,6 +1087,27 @@
         "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
+    "com.google.android.soundpicker": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
+    },
+    "com.google.android.speech.pumpkin": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ]
+    },
     "com.google.android.systemui.gtvoverlayx": {
       "ru": "Приложение не опознано.",
       "en": "Application not identified.",
@@ -882,6 +1121,15 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263"
       ]
+    },
+    "com.google.android.toast.color": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
     },
     "com.google.android.tv.axel.overlay.kirkwood": {
       "ru": "Приложение не опознано.",
@@ -1023,6 +1271,60 @@
         "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
+    "com.ilv.vradio": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
+    },
+    "com.ionitech.airscreen": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
+    },
+    "com.kitsunepll.rutorclient": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
+    },
+    "com.lexa.fakegps": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
+    },
+    "com.marc.files": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
+    },
+    "com.maxxt.pcradio": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
+    },
     "com.mediatek.hdmicecframeworkresoverlay": {
       "ru": "Приложение не опознано.",
       "en": "Application not identified.",
@@ -1135,6 +1437,15 @@
         "xiaomi-mibox4-oneday-20261116-aerialviews"
       ]
     },
+    "com.rocketfly": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
+    },
     "com.snapwood.skyfolio": {
       "ru": "Приложение не опознано.",
       "en": "Application not identified.",
@@ -1147,6 +1458,15 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "google-tv-streamer-uttk-20261115-landscape-263"
       ]
+    },
+    "com.termux": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
     },
     "com.TV": {
       "confidence": "unknown",
@@ -1179,7 +1499,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ],
       "category": "user"
     },
@@ -1288,7 +1609,8 @@
         "tcl-g10-as16-20261115-home-tile-images",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.android.bluetoothmidiservice": {
@@ -1315,7 +1637,8 @@
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
         "google-tanix-w2-android11-20261101",
-        "xiaomi-mibox4-oneday-20261116-aerialviews"
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.android.cameraextensions": {
@@ -1364,7 +1687,8 @@
         "tcl-g10-as16-20261115-home-tile-images",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.android.certinstaller": {
@@ -1396,7 +1720,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.android.companiondevicemanager": {
@@ -1428,7 +1753,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.android.connectivity.resources": {
@@ -1482,7 +1808,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.android.cts.priv.ctsshim": {
@@ -1559,7 +1886,8 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
-        "google-tanix-w2-android11-20261101"
+        "google-tanix-w2-android11-20261101",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.android.dreams.basic": {
@@ -1591,7 +1919,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.android.dynsystem": {
@@ -1654,7 +1983,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.android.federatedcompute.services": {
@@ -1691,7 +2021,8 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.android.health.connect.backuprestore": {
@@ -1783,7 +2114,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.android.inputdevices": {
@@ -1815,7 +2147,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.android.inputmethod.latin": {
@@ -1828,7 +2161,8 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
-        "google-tanix-w2-android11-20261101"
+        "google-tanix-w2-android11-20261101",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.android.intentresolver": {
@@ -1880,7 +2214,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.android.launcher3": {
@@ -1960,7 +2295,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.android.managedprovisioning": {
@@ -2216,7 +2552,8 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
-        "google-tanix-w2-android11-20261101"
+        "google-tanix-w2-android11-20261101",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.android.pacprocessor": {
@@ -2248,7 +2585,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.android.permissioncontroller": {
@@ -2320,7 +2658,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.android.providers.contacts": {
@@ -2351,7 +2690,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.android.providers.contacts.auto_generated_rro_product__": {
@@ -2396,7 +2736,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.android.providers.downloads.ui": {
@@ -2445,7 +2786,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.android.providers.media.module": {
@@ -2503,7 +2845,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.android.providers.settings.auto_generated_rro_product__": {
@@ -2569,7 +2912,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.android.providers.userdictionary": {
@@ -2632,7 +2976,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.android.rkpdapp": {
@@ -2698,7 +3043,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.android.settings": {
@@ -2711,7 +3057,8 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
-        "google-tanix-w2-android11-20261101"
+        "google-tanix-w2-android11-20261101",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.android.settings.intelligence": {
@@ -2743,7 +3090,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.android.sharedstoragebackup": {
@@ -2807,7 +3155,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.android.soundpicker": {
@@ -2857,7 +3206,8 @@
         "tcl-g10-as16-20261115-home-tile-images",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.android.systemui": {
@@ -2889,7 +3239,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.android.systemui.auto_generated_rro_vendor__": {
@@ -3169,7 +3520,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.android.tv.settings.gms.resoverlay": {
@@ -3301,7 +3653,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.android.virtualmachine.res": {
@@ -3353,7 +3706,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.android.wallpaper.livepicker": {
@@ -3370,7 +3724,8 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.android.wallpaperbackup": {
@@ -3401,7 +3756,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.android.wallpapercropper": {
@@ -3414,7 +3770,8 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
-        "google-tanix-w2-android11-20261101"
+        "google-tanix-w2-android11-20261101",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.android.webview": {
@@ -3543,7 +3900,8 @@
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
         "formuler-z11-pro-max-rvc-20261113-video-folder",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ],
       "category": "user"
     },
@@ -3629,7 +3987,8 @@
         "droidlogic-x98q-android11-20261026",
         "google-tanix-w2-android11-20261101",
         "kp1-yyz",
-        "xiaomi-mibox4-oneday-20261116-aerialviews"
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.droidlogic.mediacenter": {
@@ -3642,7 +4001,8 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
-        "google-tanix-w2-android11-20261101"
+        "google-tanix-w2-android11-20261101",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.droidlogic.miracast": {
@@ -3655,7 +4015,8 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
-        "google-tanix-w2-android11-20261101"
+        "google-tanix-w2-android11-20261101",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.droidlogic.overlay": {
@@ -3887,7 +4248,8 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
-        "google-tanix-w2-android11-20261101"
+        "google-tanix-w2-android11-20261101",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.google.android.backdrop": {
@@ -3906,7 +4268,8 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
-        "xiaomi-mibox4-oneday-20261116-aerialviews"
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.google.android.backuptransport": {
@@ -3946,7 +4309,8 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
-        "google-tanix-w2-android11-20261101"
+        "google-tanix-w2-android11-20261101",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.google.android.ext.services": {
@@ -3978,7 +4342,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.google.android.ext.shared": {
@@ -4010,7 +4375,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.google.android.feedback": {
@@ -4070,7 +4436,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.google.android.gsf": {
@@ -4101,7 +4468,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.google.android.inputmethod.latin": {
@@ -4131,7 +4499,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.google.android.katniss": {
@@ -4162,7 +4531,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.google.android.landscape": {
@@ -4175,7 +4545,8 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
-        "google-tanix-w2-android11-20261101"
+        "google-tanix-w2-android11-20261101",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.google.android.leanbacklauncher": {
@@ -4200,7 +4571,8 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
-        "google-tanix-w2-android11-20261101"
+        "google-tanix-w2-android11-20261101",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.google.android.marvin.talkback": {
@@ -4616,7 +4988,8 @@
         "formuler-z11-pro-max-user-adb-20261104",
         "tcl-beyondtv4-ar10-20261110",
         "formuler-z11-pro-max-rvc-20261113-video-folder",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.google.android.syncadapters.calendar": {
@@ -4646,7 +5019,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.google.android.syncadapters.contacts": {
@@ -4661,7 +5035,8 @@
         "formuler-z10-pro-max-android10-20261102",
         "google-tanix-w2-android11-20261101",
         "formuler-z11-pro-max-user-adb-20261104",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.google.android.theme.color": {
@@ -4673,7 +5048,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only)",
       "observedOn": [
-        "droidlogic-x98q-android11-20261026"
+        "droidlogic-x98q-android11-20261026",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.google.android.tts": {
@@ -4702,7 +5078,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.google.android.tungsten.setupwraith": {
@@ -4731,7 +5108,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.google.android.tv.axel": {
@@ -4833,7 +5211,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.google.android.tv.settings.energymodes.resoverlay": {
@@ -4872,7 +5251,8 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
-        "xiaomi-mibox4-oneday-20261116-aerialviews"
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.google.android.tvrecommendations": {
@@ -4891,7 +5271,8 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
-        "xiaomi-mibox4-oneday-20261116-aerialviews"
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.google.android.tvsetup.partnercustomizer": {
@@ -4952,7 +5333,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.google.android.youtube.tv": {
@@ -4977,7 +5359,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ],
       "category": "preinstalled"
     },
@@ -5099,7 +5482,8 @@
       "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "google-tanix-w2-android11-20261101",
-        "xiaomi-mibox4-oneday-20261116-aerialviews"
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "slimbox-x3-android9-20261122-adb"
       ],
       "category": "user"
     },
@@ -5278,7 +5662,8 @@
         "tcl-beyondtv4-ar10-20261110",
         "formuler-z11-pro-max-rvc-20261113-video-folder",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.nes.blerc": {
@@ -5442,7 +5827,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
       "observedOn": [
-        "google-tanix-w2-android11-20261101"
+        "google-tanix-w2-android11-20261101",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.oranth.ledstatus": {
@@ -5813,7 +6199,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
       "observedOn": [
-        "google-tanix-w2-android11-20261101"
+        "google-tanix-w2-android11-20261101",
+        "slimbox-x3-android9-20261122-adb"
       ],
       "category": "user"
     },
@@ -5823,7 +6210,8 @@
       "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "google-tanix-w2-android11-20261101",
-        "google-tv-streamer-uttk-20261115-quick-settings-toast"
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "slimbox-x3-android9-20261122-adb"
       ],
       "category": "user"
     },
@@ -5862,7 +6250,8 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
-        "google-tanix-w2-android11-20261101"
+        "google-tanix-w2-android11-20261101",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.softmedia.receiver": {
@@ -5903,7 +6292,8 @@
         "kp1-yyz",
         "tcl-g08",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "slimbox-x3-android9-20261122-adb"
       ],
       "category": "user"
     },
@@ -5917,7 +6307,8 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
-        "google-tanix-w2-android11-20261101"
+        "google-tanix-w2-android11-20261101",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.spycorp.tvmemorycleaner": {
@@ -6812,6 +7203,36 @@
         "tcl-g10-as16-20261116-home-tile-images"
       ]
     },
+    "com.tvvoicesearch.app": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
+    },
+    "com.uapplication.remoteupdatertool": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
+    },
+    "com.Ugoos.Logviewer": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ]
+    },
     "com.ugoos.suggestions": {
       "ru": "Приложение не опознано.",
       "en": "Application not identified.",
@@ -6821,8 +7242,18 @@
       "safeToDisable": false,
       "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
       "observedOn": [
-        "google-tanix-w2-android11-20261101"
+        "google-tanix-w2-android11-20261101",
+        "slimbox-x3-android9-20261122-adb"
       ]
+    },
+    "com.uma.musicvk": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
     },
     "com.utsmta.app": {
       "confidence": "identified",
@@ -6842,6 +7273,15 @@
       ],
       "category": "user"
     },
+    "com.valertos08.recents": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
+    },
     "com.vgtrk.smotrim.tv": {
       "ru": "Приложение не опознано.",
       "en": "Application not identified.",
@@ -6854,6 +7294,15 @@
         "xiaomi-mibox4-oneday-20261116-aerialviews"
       ]
     },
+    "com.vivaldi.browser": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
+    },
     "com.vk.tv": {
       "confidence": "identified",
       "safeToDisable": false,
@@ -6864,6 +7313,27 @@
         "xiaomi-mibox4-oneday-20261116-aerialviews"
       ],
       "category": "preinstalled"
+    },
+    "com.vk.vkvideo": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
+    },
+    "com.vortex.openvfd": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ]
     },
     "com.waterdaaan.cpufloat": {
       "ru": "Приложение не опознано.",
@@ -6914,8 +7384,18 @@
       "source": "catalog/inventories/google-tv-streamer-uttk-20261115-landscape.json",
       "observedOn": [
         "google-tv-streamer-uttk-20261115-landscape",
-        "google-tv-streamer-uttk-20261115-landscape-263"
+        "google-tv-streamer-uttk-20261115-landscape-263",
+        "slimbox-x3-android9-20261122-adb"
       ]
+    },
+    "com.wuliang.xapkinstaller": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
     },
     "com.xiaomi.gtv.settings": {
       "ru": "Приложение не опознано.",
@@ -7012,8 +7492,18 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
-        "google-tanix-w2-android11-20261101"
+        "google-tanix-w2-android11-20261101",
+        "slimbox-x3-android9-20261122-adb"
       ]
+    },
+    "com.zaneschepke.wireguardautotunnel": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
     },
     "cz.ackee.ventusky": {
       "ru": "Приложение не опознано.",
@@ -7064,6 +7554,15 @@
         "droidlogic-x98q-android11-20261026"
       ]
     },
+    "eu.thedarken.wl": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
+    },
     "io.gh.reisxd.tizentube.cobalt": {
       "confidence": "unknown",
       "safeToDisable": false,
@@ -7101,7 +7600,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ],
       "category": "user"
     },
@@ -7118,7 +7618,8 @@
         "formuler-z11-pro-max-rvc-20261113-video-folder",
         "tcl-g10-as16-20261115-home-tile-images",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ],
       "category": "user"
     },
@@ -7129,7 +7630,8 @@
       "observedOn": [
         "google-tanix-w2-android11-20261101",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "xiaomi-mibox4-oneday-20261116-aerialviews"
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "slimbox-x3-android9-20261122-adb"
       ],
       "category": "user"
     },
@@ -7152,7 +7654,8 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
-        "google-tanix-w2-android11-20261101"
+        "google-tanix-w2-android11-20261101",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "james.dsp": {
@@ -7182,6 +7685,15 @@
       "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "google-tanix-w2-android11-20261101"
+      ],
+      "category": "user"
+    },
+    "live.vkplay.app": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
       ],
       "category": "user"
     },
@@ -7258,7 +7770,8 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
-        "google-tanix-w2-android11-20261101"
+        "google-tanix-w2-android11-20261101",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "net.filmix.filmix": {
@@ -7301,7 +7814,8 @@
         "google-tv-streamer-uttk-20261115-landscape",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
-        "xiaomi-mibox4-oneday-20261116-aerialviews"
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "slimbox-x3-android9-20261122-adb"
       ],
       "category": "preinstalled"
     },
@@ -7415,7 +7929,8 @@
         "formuler-z11-pro-max-rvc-20261113-video-folder",
         "tcl-g10-as16-20261115-home-tile-images",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "org.myklos.adbhelper": {
@@ -7427,6 +7942,24 @@
         "formuler-z11-pro-max-user-adb-20261104",
         "formuler-z11-pro-max-rvc-20261113-video-folder",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+      ],
+      "category": "user"
+    },
+    "org.myklos.btautoconnect": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
+    },
+    "org.schabi.newpipe": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
       ],
       "category": "user"
     },
@@ -7458,9 +7991,19 @@
         "tcl-g08-au04-20261107-weather-read-error",
         "formuler-z11-pro-max-rvc-20261113-video-folder",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "slimbox-x3-android9-20261122-adb"
       ],
       "category": "preinstalled"
+    },
+    "org.telegram.plus": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
     },
     "org.videolan.vlc": {
       "ru": "Приложение не опознано.",
@@ -7487,6 +8030,24 @@
         "formuler-z11-pro-max-user-adb-20261104",
         "formuler-z11-pro-max-rvc-20261113-video-folder",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+      ],
+      "category": "user"
+    },
+    "org.xjiop.vkvideoapp": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
+    },
+    "org.zwanoo.android.speedtest": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
       ],
       "category": "user"
     },
@@ -7518,6 +8079,15 @@
       ],
       "category": "user"
     },
+    "ru.andr7e.deviceinfohw": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
+    },
     "ru.astroapps.hdrezka": {
       "confidence": "unknown",
       "safeToDisable": false,
@@ -7541,7 +8111,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
       "observedOn": [
-        "google-tanix-w2-android11-20261101"
+        "google-tanix-w2-android11-20261101",
+        "slimbox-x3-android9-20261122-adb"
       ],
       "category": "user"
     },
@@ -7617,6 +8188,24 @@
       ],
       "category": "preinstalled"
     },
+    "ru.mts.mtstv": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
+    },
+    "ru.mts.music.android": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
+    },
     "ru.neo4em.rutorwidget": {
       "ru": "Приложение не опознано.",
       "en": "Application not identified.",
@@ -7643,7 +8232,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
-        "kp1-yyz"
+        "kp1-yyz",
+        "slimbox-x3-android9-20261122-adb"
       ],
       "category": "preinstalled"
     },
@@ -7707,7 +8297,8 @@
         "google-tanix-w2-android11-20261101",
         "tcl-beyondtv4-ar10-20261110",
         "formuler-z11-pro-max-rvc-20261113-video-folder",
-        "xiaomi-mibox4-oneday-20261116-aerialviews"
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "slimbox-x3-android9-20261122-adb"
       ],
       "category": "user"
     },
@@ -7733,13 +8324,23 @@
       ],
       "category": "user"
     },
+    "ru.yandex.weatherplugin": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
+    },
     "ru.yourok.num": {
       "confidence": "unknown",
       "safeToDisable": false,
       "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "google-tanix-w2-android11-20261101",
-        "google-tv-streamer-uttk-20261115-quick-settings-toast"
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "slimbox-x3-android9-20261122-adb"
       ],
       "category": "user"
     },
@@ -7750,9 +8351,22 @@
       "observedOn": [
         "google-tanix-w2-android11-20261101",
         "tcl-g08-au04-20261104",
-        "google-tv-streamer-uttk-20261115-quick-settings-toast"
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "slimbox-x3-android9-20261122-adb"
       ],
       "category": "user"
+    },
+    "ru.yourok.torrserve.overlay": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ]
     },
     "slim.box.tv.customizer": {
       "ru": "Приложение не опознано.",
@@ -7764,7 +8378,8 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
-        "google-tanix-w2-android11-20261101"
+        "google-tanix-w2-android11-20261101",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "slim.box.tv.project": {
@@ -7777,8 +8392,18 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026",
-        "google-tanix-w2-android11-20261101"
+        "google-tanix-w2-android11-20261101",
+        "slimbox-x3-android9-20261122-adb"
       ]
+    },
+    "studio.scillarium.ottnavigator": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
     },
     "su.happ.proxyutility": {
       "ru": "Приложение не опознано.",
@@ -7801,7 +8426,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories/google-tanix-w2-android11-20261101.json (user diagnostic metadata; presence only)",
       "observedOn": [
-        "google-tanix-w2-android11-20261101"
+        "google-tanix-w2-android11-20261101",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "tv.formuler.helpcenter": {
@@ -7983,7 +8609,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories/xiaomi-mibox4-oneday-20261116-aerialviews.json",
       "observedOn": [
-        "xiaomi-mibox4-oneday-20261116-aerialviews"
+        "xiaomi-mibox4-oneday-20261116-aerialviews",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "tv.samba.ssm.ui": {
@@ -8012,6 +8639,27 @@
         "tcl-g08-au04-20261107-weather-read-error"
       ],
       "category": "user"
+    },
+    "tw.com.constarwu.deviceidchanger": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ],
+      "category": "user"
+    },
+    "ugoos.remotecontrolbinder": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "slimbox-x3-android9-20261122-adb"
+      ]
     },
     "uz.i_tv.player.tv": {
       "confidence": "unknown",
@@ -8199,7 +8847,8 @@
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.example.getstvwebview": {
@@ -8244,7 +8893,8 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.realtek.dongledetect": {
@@ -8395,7 +9045,8 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "slimbox-x3-android9-20261122-adb"
       ]
     },
     "com.mi.bluetooth": {

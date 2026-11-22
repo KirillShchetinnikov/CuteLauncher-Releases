@@ -16,7 +16,7 @@ final class RecentAppsMemory {
         if (pkg == null || !pkg.matches("[A-Za-z][A-Za-z0-9_]*(\\.[A-Za-z0-9_]+)+"))
             throw new IllegalArgumentException("Invalid package");
         if (cancelled.getAsBoolean()) return UNAVAILABLE;
-        if (!"2000".equals(shell.execute("id -u").trim())
+        if (!AdbShellIdentity.supported(shell.execute("id -u").trim())
                 || !"0".equals(shell.execute("am get-current-user").trim())) return UNAVAILABLE;
         if (cancelled.getAsBoolean()) return UNAVAILABLE;
         String processes = shell.execute("ps -A -n -o PID,UID");

@@ -253,6 +253,8 @@ other styling.
 While selected feeds load for the first time, the home screen
 shows one empty card and the App feeds heading if headings are enabled.
 After loading, individual feed names are used.
+When a feed refreshes, a visible card still opens the previous item while its
+replacement artwork loads. The artwork, title and OK action change together.
 Individual feed titles can be enabled here independently
 of the shared section-title setting. Previews always use a single horizontal
 row with a uniform format within each feed and titles below the artwork; there is no grid.
@@ -1242,6 +1244,8 @@ ADB connection, home app selection, and Home interception are under
   the local TCP/RSA connection, and authorize CuteLauncher on the TV.
   After a full app data reset, select **Check connection** and approve the Android
   prompt if it appears. The check retries automatically if the connection drops briefly.
+  The device firmware controls whether ADB requires key authentication. The first
+  time CuteLauncher connects as root, it warns that leaving root ADB debugging enabled is unsafe.
 - **Default launcher and ADB → Set default launcher via ADB** opens the
   **Default launcher** page, which shows the current home app. If the ADB connection is unverified,
   select **Open ADB connection settings → Check connection**. Press Back to

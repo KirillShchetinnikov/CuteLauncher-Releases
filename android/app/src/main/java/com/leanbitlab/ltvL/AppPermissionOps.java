@@ -8,7 +8,7 @@ import java.util.Map;
 /** Targeted operations: never replay a saved accessibility service list. Caller holds AdbBridge.LOCK. */
 final class AppPermissionOps {
     static void checkUser(AdbBridge.Shell shell) throws Exception {
-        if (!shell.execute("id -u").trim().equals("2000")
+        if (!AdbShellIdentity.supported(shell.execute("id -u").trim())
                 || !shell.execute("am get-current-user").trim().equals("0"))
             throw new IllegalStateException("unsupported_user");
     }

@@ -691,6 +691,7 @@
   "adbNoRecovery": "Il ripristino non è disponibile: non è stato trovato nessun altro launcher o stato del servizio salvato.",
   "adbPort": "Porta TCP ADB",
   "adbReady": "Accesso ADB confermato.",
+  "adbRootWarning": "CuteLauncher si è connesso ad ADB come root. Lasciare attivo il debug ADB come root non è sicuro.",
   "adbRestore": "Ripristina il launcher precedente",
   "adbSuccess": "Modifica applicata e verificata.",
   "adbTitle": "Configurazione ADB",

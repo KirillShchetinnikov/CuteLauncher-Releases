@@ -19,6 +19,7 @@ import '../tile_appearance.dart';
 import '../tile_image_geometry.dart';
 import '../home_layout.dart';
 import '../cover_memory_image.dart';
+import '../image_limits.dart';
 import '../theme/launcher_style.dart';
 import 'action_notice.dart';
 import 'appearance_surface.dart';
@@ -42,7 +43,7 @@ TextStyle? _previewTitleStyle(
     ? LauncherStyle.of(context).tileLabelStyle(context, style, focused)
     : style.labelStyle;
 
-class AppContentRow extends StatelessWidget {
+class AppContentRow extends StatefulWidget {
   final AppContentChannel? channel;
   final String? loadingTitle;
   final double? loadingRatio;
@@ -63,56 +64,101 @@ class AppContentRow extends StatelessWidget {
     this.titleIcon = SectionIcon.appFeeds})
       : channel = null, programs = const [], loadingTitle = title,
         loadingRatio = aspectRatio;
+
+  @override
+  State<AppContentRow> createState() => _AppContentRowState();
+}
+
+class _AppContentRowState extends State<AppContentRow> {
+  late List<WatchNextProgram> _displayed = widget.programs;
+
+  @override
+  void didUpdateWidget(AppContentRow oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (listEquals(oldWidget.programs, widget.programs)) return;
+    final focus = CategoryFocus.maybeOf(context);
+    final previous = _displayed;
+    _displayed = List.generate(widget.programs.length, (i) {
+      final next = widget.programs[i];
+      if (oldWidget.channel?.key != widget.channel?.key || i >= previous.length) {
+        return next;
+      }
+      final old = previous[i];
+      if (old.id == next.id &&
+          old.posterArtUri == next.posterArtUri &&
+          old.thumbnailUri == next.thumbnailUri &&
+          old.intentUri == next.intentUri) {
+        return next;
+      }
+      // Only a mounted slot can hand its current artwork to the next frame.
+      final node = focus?.nodeFor(oldWidget.programs[i].id.toString());
+      final card = node?.context?.findAncestorStateOfType<_ContentPreviewCardState>();
+      return card?._posterBytes == null ? next : old;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final service = context.read<AppChannelsService>();
     final style =
-        appearance ??
+        widget.appearance ??
         context.watch<AppearanceService?>()?.appearance ??
         const TileAppearance();
-    final channel = this.channel;
+    final channel = widget.channel;
     if (channel == null) {
-      return ContentPreviewRow.loading(title: loadingTitle!, style: style,
-        titleIcon: titleIcon,
-        aspectRatio: loadingRatio!, appTileSize: appTileSize,
+      return ContentPreviewRow.loading(title: widget.loadingTitle!, style: style,
+        titleIcon: widget.titleIcon,
+        aspectRatio: widget.loadingRatio!, appTileSize: widget.appTileSize,
         reserveDescription: true, focusLoading: true);
     }
     final aspectRatio = context.select<SettingsService, double>(
       (_) => service.formatFor(channel).aspectRatio,
     );
     return ContentPreviewRow(
-      programs: programs,
+      programs: widget.programs,
+      displayedPrograms: _displayed,
       title: '${channel.name} · ${channel.appName}',
-      titleIcon: titleIcon,
+      titleIcon: widget.titleIcon,
       style: style,
-      appTileSize: appTileSize,
+      appTileSize: widget.appTileSize,
       aspectRatio: aspectRatio,
       reserveDescription: true,
-      card: (program, size) => ContentPreviewCard(
-        program: program,
-        title: program.title,
-        subtitle: program.feedSubtitle,
-        style: style,
-        size: size,
-        posterRefreshes: service.posterRefreshes,
-        cachedPoster: () =>
-            service.cachedPoster(program.posterArtUri) ??
-            service.cachedPoster(program.thumbnailUri),
-        loadPoster: () => service.programPoster(program),
-        invalidatePoster: () => service.evictPoster(program),
-        observePoster: (bytes) =>
-            service.observePoster(channel, program.id, bytes),
-        onOpen: (context) async {
-          final ok = await service.launch(program);
-          if (!ok && context.mounted) {
-            showActionNotice(
-              context,
-              AppLocalizations.of(context)!.appChannelsLaunchFailed,
-              error: true,
-            );
-          }
-        },
-      ),
+      card: (program, size) {
+        final index = widget.programs.indexOf(program);
+        final shown = _displayed[index];
+        return ContentPreviewCard(
+          program: program,
+          title: shown.title,
+          subtitle: shown.feedSubtitle,
+          onReplacementReady: identical(shown, program) ? null : () {
+            if (!mounted || index >= widget.programs.length ||
+                !identical(widget.programs[index], program)) {
+              return;
+            }
+            setState(() => _displayed[index] = program);
+          },
+          style: style,
+          size: size,
+          posterRefreshes: service.posterRefreshes,
+          cachedPoster: () =>
+              service.cachedPoster(shown.posterArtUri) ??
+              service.cachedPoster(shown.thumbnailUri),
+          loadPoster: () => service.programPoster(program),
+          invalidatePoster: () => service.evictPoster(program),
+          observePoster: (bytes) =>
+              service.observePoster(channel, program.id, bytes),
+          onOpen: (context) async {
+            final ok = await service.launch(shown);
+            if (!ok && context.mounted) {
+              showActionNotice(
+                context,
+                AppLocalizations.of(context)!.appChannelsLaunchFailed,
+                error: true,
+              );
+            }
+          },
+        );
+      },
     );
   }
 }
@@ -123,6 +169,7 @@ class ContentPreviewRow extends StatefulWidget {
   const ContentPreviewRow({
     super.key,
     required this.programs,
+    this.displayedPrograms,
     required this.title,
     this.titleIcon,
     required this.style,
@@ -143,10 +190,12 @@ class ContentPreviewRow extends StatefulWidget {
     this.appTileSize,
     this.focusLoading = false,
   }) : programs = const [],
+       displayedPrograms = null,
        card = null,
        geometricEntry = false;
 
   final List<WatchNextProgram> programs;
+  final List<WatchNextProgram>? displayedPrograms;
   final String title;
   final SectionIcon? titleIcon;
   final TileAppearance style;
@@ -311,18 +360,25 @@ class _ContentPreviewRowState extends State<ContentPreviewRow> {
     final focus = _focus;
     focus?.enter = widget.geometricEntry ? _enter : null;
     final last = focus?.lastPackage;
+    final oldIndex = oldWidget.programs.indexWhere((p) => p.id.toString() == last);
+    final nextIndex = widget.programs.indexWhere((p) => p.id.toString() == last);
     if (focus?.hasFocus == true &&
         last != null &&
-        !widget.programs.any((p) => p.id.toString() == last) &&
+        (nextIndex < 0 || widget.displayedPrograms != null && nextIndex != oldIndex) &&
         widget.programs.isNotEmpty) {
       final origin = FocusManager.instance.primaryFocus;
-      final oldIndex = oldWidget.programs.indexWhere((p) => p.id.toString() == last);
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final current = FocusManager.instance.primaryFocus;
         if (mounted && widget.programs.isNotEmpty &&
             ModalRoute.of(context)?.isCurrent != false &&
             (current == origin || current == null || current is FocusScopeNode)) {
-          _select(widget.programs[oldIndex.clamp(0, widget.programs.length - 1)].id.toString());
+          final target = widget.programs.any((p) => p.id.toString() == last)
+              ? last : widget.programs[oldIndex.clamp(0, widget.programs.length - 1)].id.toString();
+          final node = focus?.nodeFor(target);
+          if (node != null && node.hasPrimaryFocus && focus?.lastPackage != target) {
+            focus?.record(target, node);
+          }
+          _select(target);
         }
       });
     }
@@ -409,17 +465,14 @@ class _ContentPreviewRowState extends State<ContentPreviewRow> {
           final focusGrowth = layout.height * (scale - 1);
           final lift = style.focusEffect == 'lift' ? style.focusLift : 0.0;
           final topReserve = focusGrowth + lift + 2;
-          final focusPaint = style.focusBorderStyle() == 'glow'
-              ? TileGlowPainter.extent * scale
-              : 2.0;
+          final centered = appTiles && !showBelow;
           final topInset = style.compactSectionInset(
             math.max(8.0, topReserve),
-            focusReserve: focusGrowth + lift + focusPaint,
+            focusReserve: (centered ? focusGrowth / 2 : focusGrowth) + lift + 2,
           );
           final bottomInset = style.compactSectionInset(
             8,
-            focusReserve: (appTiles && !showBelow ? focusGrowth / 2 : -textHeight) +
-                focusPaint,
+            focusReserve: (centered ? focusGrowth / 2 : -textHeight) + 2,
           );
           _extent = layout.stepX;
           Widget placeholder(bool focused) => HomeSkeletonBlock(
@@ -450,6 +503,7 @@ class _ContentPreviewRowState extends State<ContentPreviewRow> {
                             : placeholder(false),
                     )
                   : ReorderingTileViewport(
+                      keyByPosition: widget.displayedPrograms != null,
                       layout: layout,
                       packages: widget.programs
                           .map((p) => p.id.toString())
@@ -476,11 +530,9 @@ class _ContentPreviewRowState extends State<ContentPreviewRow> {
             overflow: TextOverflow.ellipsis,
           );
           Widget selectedLabel(String? selectedId) {
-            final text = widget.programs
-                    .where((program) => program.id.toString() == selectedId)
-                    .firstOrNull
-                    ?.displayTitle ??
-                '';
+            final index = widget.programs.indexWhere((p) => p.id.toString() == selectedId);
+            final text = index < 0 ? '' :
+                (widget.displayedPrograms ?? widget.programs)[index].displayTitle;
             final node = style.scrollContentLabels
                 ? _focus?.nodeFor(selectedId)
                 : null;
@@ -625,6 +677,7 @@ class ContentPreviewCard extends StatefulWidget {
     this.posterRefreshes,
     this.cachedPoster,
     this.loadPoster,
+    this.onReplacementReady,
     this.invalidatePoster,
     this.observePoster,
     this.onDetails,
@@ -642,6 +695,7 @@ class ContentPreviewCard extends StatefulWidget {
   final Listenable? posterRefreshes;
   final Uint8List? Function()? cachedPoster;
   final Future<Uint8List?> Function()? loadPoster;
+  final VoidCallback? onReplacementReady;
   final VoidCallback? invalidatePoster;
   final Future<void> Function(Uint8List?)? observePoster;
   final void Function(BuildContext)? onDetails;
@@ -765,6 +819,8 @@ class _ContentPreviewCardState extends State<ContentPreviewCard>
       _posterSource = _posterBytes == null ? null : _source;
     }
     if (loaderChanged ||
+        (widget.onReplacementReady != null || oldWidget.onReplacementReady != null) &&
+            oldWidget.program != widget.program ||
         (oldWidget.program.posterArtUri, oldWidget.program.thumbnailUri) !=
             _source) {
       _retryAttempt = 0;
@@ -794,11 +850,37 @@ class _ContentPreviewCardState extends State<ContentPreviewCard>
       _scheduleRetry();
     } else {
       _needsRetry = false;
-      if (!_decodeFailed) _retryAttempt = 0;
+      if (!_decodeFailed && widget.onReplacementReady == null) _retryAttempt = 0;
     }
     // Only materialized cards contribute to automatic format detection.
     await widget.observePoster?.call(bytes);
     if (!mounted || request != _posterRequest) return;
+    if (widget.onReplacementReady != null) {
+      if (bytes == null || bytes.isEmpty) return;
+      final settings = context.read<SettingsService>();
+      final scale = LauncherStyle.of(context).tileFocusScale(settings.themes,
+          widget.style, width: widget.size.width, focused: true);
+      final ratio = MediaQuery.devicePixelRatioOf(context);
+      final ImageProvider image = widget.style.contentAppTileStyle
+          ? sizedImage(MemoryImage(bytes), widget.size, ratio * scale, maximumEdge: 1024)
+          : CoverMemoryImage(bytes, logicalSize: widget.size, pixelRatio: ratio, focusScale: scale);
+      var failed = false;
+      _loadingPoster = true;
+      await precacheImage(image, context, onError: (_, _) => failed = true);
+      if (!mounted || request != _posterRequest) return;
+      _loadingPoster = false;
+      if (!_enabled || !_foreground) {
+        _needsRetry = true;
+        return;
+      }
+      if (failed) {
+        widget.invalidatePoster?.call();
+        _scheduleRetry();
+        return;
+      }
+      _retryAttempt = 0;
+      widget.onReplacementReady?.call();
+    }
     // A failed revalidation keeps the existing image at this URI. A genuinely
     // different, unavailable image still gets the normal placeholder.
     if (bytes == null && _posterSource == source) return;

@@ -1893,6 +1893,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get adbReady => 'Доступ ADB подтверждён.';
 
   @override
+  String get adbRootWarning =>
+      'CuteLauncher подключился к ADB с правами root. Оставлять отладку ADB в режиме root небезопасно.';
+
+  @override
   String get adbRestore => 'Восстановить предыдущий лаунчер';
 
   @override

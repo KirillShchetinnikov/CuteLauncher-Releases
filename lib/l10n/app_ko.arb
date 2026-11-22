@@ -691,6 +691,7 @@
   "adbNoRecovery": "복원을 사용할 수 없습니다. 다른 실행 프로그램이나 저장된 서비스 상태를 찾을 수 없습니다.",
   "adbPort": "TCP ADB 포트",
   "adbReady": "ADB 액세스가 확인되었습니다.",
+  "adbRootWarning": "CuteLauncher가 루트 권한으로 ADB에 연결했습니다. 루트 권한으로 ADB 디버깅을 켜 둔 상태는 안전하지 않습니다.",
   "adbRestore": "이전 런처 복원",
   "adbSuccess": "변경사항이 적용되고 확인되었습니다.",
   "adbTitle": "ADB 설정",

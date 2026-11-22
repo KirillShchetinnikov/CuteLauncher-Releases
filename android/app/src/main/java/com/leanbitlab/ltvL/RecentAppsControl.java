@@ -37,7 +37,7 @@ final class RecentAppsControl {
     }
     Map<String, Object> run(String action, String pkg) throws Exception {
         deadline = System.nanoTime() + java.util.concurrent.TimeUnit.SECONDS.toNanos(20);
-        if (!"2000".equals(shell.execute("id -u").trim()) || !"0".equals(shell.execute("am get-current-user").trim()))
+        if (!AdbShellIdentity.supported(shell.execute("id -u").trim()) || !"0".equals(shell.execute("am get-current-user").trim()))
             throw new IllegalStateException("Unsupported Android user");
         homePackages.clear();
         for (var home : context.getPackageManager().queryIntentActivities(new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME), 0))

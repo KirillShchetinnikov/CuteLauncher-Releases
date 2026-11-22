@@ -223,7 +223,7 @@ final class AdbLauncherControl {
     }
     static String apply(Activity activity, AdbBridge.Shell adb, String action, String target, List<?> expected, boolean allowOwnedWifi) throws Exception {
         AdbOperationDiagnostics.stage("apply");
-        if (!adb.execute("am get-current-user").equals("0") || !adb.execute("id -u").equals("2000")) return "denied";
+        if (!adb.execute("am get-current-user").equals("0") || !AdbShellIdentity.supported(activity, adb.execute("id -u"))) return "denied";
         Map<String,Object> plan = plan(activity, adb, action, target, allowOwnedWifi);
         if (!plan.get("status").equals("ready")) return (String)plan.get("status");
         AdbOperationDiagnostics.stage("apply");

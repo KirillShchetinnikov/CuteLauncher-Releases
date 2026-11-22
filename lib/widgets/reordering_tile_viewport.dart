@@ -17,6 +17,7 @@ class ReorderingTileViewport extends StatefulWidget {
   final ValueListenable<String?>? selection;
   final String? requested;
   final bool animate;
+  final bool keyByPosition;
   final ScrollPhysics? physics;
   // Diagnostic A/B switch: materialize the entire configured Home, including
   // off-screen rows and horizontal cards. Ordinary builds keep the lazy policy.
@@ -32,6 +33,7 @@ class ReorderingTileViewport extends StatefulWidget {
     this.selection,
     this.requested,
     this.animate = true,
+    this.keyByPosition = false,
     this.physics,
     this.materializeAll = const bool.fromEnvironment('CUTE_HOME_MATERIALIZE_ALL'),
   });
@@ -212,7 +214,8 @@ class _ReorderingTileViewportState extends State<ReorderingTileViewport>
                   children: [
                     for (final i in visible)
                         PositionedDirectional(
-                          key: ValueKey(('tile-position', widget.packages[i])),
+                          key: ValueKey(('tile-position',
+                              widget.keyByPosition ? i : widget.packages[i])),
                           start: _position(widget.packages[i]).dx,
                           top: _position(widget.packages[i]).dy,
                           width: size.width,

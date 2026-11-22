@@ -150,7 +150,7 @@ final class SleepTimerBridge {
         int port = c.getSharedPreferences("adb_connection", 0).getInt("port", 5555);
         try (Dadb adb = Dadb.create("127.0.0.1", port, AdbKeyPair.read(privateKey, publicKey), 2000, 3000)) {
             var user = NativeShellDiagnostics.execute(adb, "id -u", "sleepTimer");
-            if (user.getExitCode() != 0 || !user.getOutput().trim().equals("2000")) return false;
+            if (user.getExitCode() != 0 || !AdbShellIdentity.supported(c, user.getOutput().trim())) return false;
             if (deadline == 0) return true;
             if (prefs(c).getLong("firing", 0) != deadline) return true;
             return NativeShellDiagnostics.execute(adb, "input keyevent KEYCODE_SLEEP", "sleepTimer").getExitCode() == 0;

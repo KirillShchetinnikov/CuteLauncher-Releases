@@ -1880,6 +1880,10 @@ class AppLocalizationsHi extends AppLocalizations {
   String get adbReady => 'ADB पहुंच की पुष्टि की गई।';
 
   @override
+  String get adbRootWarning =>
+      'CuteLauncher रूट अधिकारों के साथ ADB से जुड़ा है। रूट ADB डीबगिंग चालू छोड़ना असुरक्षित है।';
+
+  @override
   String get adbRestore => 'पिछले लॉन्चर को पुनर्स्थापित करें';
 
   @override

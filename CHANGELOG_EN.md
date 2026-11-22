@@ -2,6 +2,13 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
+## v1.8.1 — 2026-11-22
+
+- When home screen recommendations refresh, a card keeps its artwork, title and action until the replacement artwork loads. The row no longer flashes placeholders as recommendations change.
+- Fixed compact section spacing with tile glow enabled. The spacing now changes at every slider step.
+- Local ADB works on TV boxes where the ADB service runs as root. When it connects this way, the launcher warns about the risk of leaving root ADB debugging enabled.
+- The diagnostics dialog now clarifies what the extended report contains and where to send the file.
+
 ## v1.8.0 — 2026-11-20
 
 ### Settings and home screen

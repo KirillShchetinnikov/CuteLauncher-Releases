@@ -116,6 +116,12 @@ public class LauncherActivity extends FlutterActivity {
         LauncherActivity host = panelHost.get();
         if (host != null && host.homeSink != null) host.homeSink.success("remote_panel_blocked");
     }
+    static void adbRootWarning() {
+        LauncherActivity host = panelHost.get();
+        if (host != null && host.homeSink != null && AdbShellIdentity.warningPending(host)) {
+            host.homeSink.success(AdbShellIdentity.NOTICE_EVENT);
+        }
+    }
     static final RemotePanelLaunchPolicy remotePanelPolicy =
         new RemotePanelLaunchPolicy(LauncherAccessibilityService::launcherVisibilityChanged);
     @Override protected void onStart() {
@@ -217,6 +223,7 @@ public class LauncherActivity extends FlutterActivity {
     private static final ExecutorService sImageExecutor = Executors.newFixedThreadPool(2);
     @Override protected void onResume() {
         super.onResume();
+        adbRootWarning();
         if (appsEvents != null) appsEvents.foreground(true);
         BatterySettingsGuide.close(this);
         if(autoLaunch!=null) autoLaunch.resume();
@@ -306,6 +313,7 @@ public class LauncherActivity extends FlutterActivity {
         new EventChannel(messenger, "me.efesser.flauncher/event_home").setStreamHandler(new EventChannel.StreamHandler() {
             public void onListen(Object arguments, EventChannel.EventSink events) {
                 homeSink = events;
+                adbRootWarning();
                 if (pendingAdbSettings || getIntent().getBooleanExtra(OPEN_ADB_SETTINGS, false)) {
                     pendingAdbSettings = false;
                     pendingHome = false;

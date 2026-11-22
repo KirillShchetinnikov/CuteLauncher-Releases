@@ -1849,6 +1849,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get adbReady => 'ADB 액세스가 확인되었습니다.';
 
   @override
+  String get adbRootWarning =>
+      'CuteLauncher가 루트 권한으로 ADB에 연결했습니다. 루트 권한으로 ADB 디버깅을 켜 둔 상태는 안전하지 않습니다.';
+
+  @override
   String get adbRestore => '이전 런처 복원';
 
   @override

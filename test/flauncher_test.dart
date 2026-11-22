@@ -40,6 +40,7 @@ import 'package:flauncher/widgets/side_panel_dialog.dart';
  */
 
 import 'package:flauncher/flauncher.dart';
+import 'package:flauncher/launcher_defaults.dart';
 import 'package:flauncher/flauncher_app.dart';
 import 'package:flauncher/widgets/settings/back_button_actions.dart';
 import 'package:flauncher/feed_format.dart';
@@ -798,10 +799,17 @@ void main() {
         stable();
         expect(image.image, same(updatedImage));
       }
-      expect(find.text('Updated title'), findsOneWidget);
+      final updatedTitle = find.text('Updated title');
+      expect(updatedTitle, findsNothing);
       expect(feeds.channels.first.programs.last, same(original.programs.last));
       differentUri.complete(kTransparentImage);
-      await tester.pump(); await tester.pump(); await decoded();
+      await tester.pump();
+      for (var i = 0; i < 20 && updatedTitle.evaluate().isEmpty; i++) {
+        await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 10)));
+        await tester.pump();
+      }
+      expect(updatedTitle, findsOneWidget);
+      await decoded();
       stable();
       expect(image.image, isNot(same(updatedImage)));
       channel.data = [feed(1, count: 0)];
@@ -1140,6 +1148,20 @@ void main() {
     await tester.pumpAndSettle();
     expect(tester.getRect(rows.first), first);
     expect(tester.getRect(rows.last), second);
+    await appearance.set('focusBorderStyle', 'glow');
+    await appearance.set('focusScale', .2);
+    final cards = find.byType(ContentPreviewCard);
+    double gap() => tester.getTopLeft(cards.last).dy - tester.getBottomLeft(cards.first).dy;
+    await appearance.set('sectionSpacing', 32);
+    await tester.pumpAndSettle();
+    var previous = gap();
+    for (var spacing = 28; spacing >= 0; spacing -= 4) {
+      await appearance.set('sectionSpacing', spacing);
+      await tester.pumpAndSettle();
+      expect(gap(), lessThan(previous - .01), reason: 'spacing $spacing');
+      previous = gap();
+    }
+    expect(gap(), greaterThanOrEqualTo(0));
     // The largest preview and scale must still fit a narrow TV window.
     await appearance.set('size', 256);
     await appearance.set('focusScale', .5);
@@ -1583,6 +1605,49 @@ void main() {
     expect(isSettingsIconFocused(tester), isTrue);
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('each compact spacing step brings default app rows closer', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final appearance = AppearanceService(await SharedPreferences.getInstance());
+    for (final key in ['size', 'focusEffect', 'focusScale', 'focusBorderStyle']) {
+      await appearance.set(key, LauncherDefaults.appearance[key]);
+    }
+    await appearance.set('focusPulse', false);
+    final apps = mkAppService();
+    final top = fakeCategory(name: 'Top', type: CategoryType.row)
+      ..applications.add(fakeApp(packageName: 'top.app'));
+    final bottom = fakeCategory(name: 'Bottom', type: CategoryType.row)
+      ..applications.add(fakeApp(packageName: 'bottom.app'));
+    when(apps.applications).thenReturn([...top.applications, ...bottom.applications]);
+    when(apps.launcherSections).thenReturn([top, bottom]);
+    await _pumpWidgetWithProviders(tester, mkWallpaperService(), apps, mkSettingsService(),
+      appearance: appearance);
+
+    double gap() => tester.getTopLeft(find.byKey(const ValueKey('bottom.app'))).dy -
+        tester.getBottomLeft(find.byKey(const ValueKey('top.app'))).dy;
+    final defaultGap = gap();
+    var previous = defaultGap;
+    for (var spacing = 52; spacing >= 0; spacing -= 4) {
+      await appearance.set('sectionSpacing', spacing);
+      await tester.pumpAndSettle();
+      expect(gap(), lessThan(previous - .01), reason: 'spacing $spacing');
+      previous = gap();
+    }
+    expect(gap(), closeTo(defaultGap - 56, .001));
+    for (final package in ['top.app', 'bottom.app']) {
+      getFocusNodeForApp(tester, package)!.requestFocus();
+      await tester.pumpAndSettle();
+      final card = find.byKey(ValueKey(package));
+      final section = find.ancestor(of: card, matching: find.byType(HomeSection));
+      final clip = tester.getRect(find.descendant(of: section, matching: find.byType(ClipRect)).first);
+      final image = tester.renderObject<RenderBox>(find.descendant(
+        of: card, matching: find.byType(AppearanceSurface)).first);
+      expect(image.localToGlobal(Offset.zero).dy, greaterThanOrEqualTo(clip.top - .01));
+      expect(image.localToGlobal(image.size.bottomRight(Offset.zero)).dy, lessThanOrEqualTo(clip.bottom + .01));
+    }
+    await tester.pumpWidget(const SizedBox());
+    appearance.dispose();
   });
 
   testWidgets('compact section spacing brings apps and feeds closer', (tester) async {

@@ -691,6 +691,7 @@
   "adbNoRecovery": "復元は利用できません。他のランチャーまたは保存されたサービス状態が見つかりませんでした。",
   "adbPort": "TCP ADB ポート",
   "adbReady": "ADB アクセスを確認しました。",
+  "adbRootWarning": "CuteLauncher が root 権限で ADB に接続しました。root 権限での ADB デバッグを有効にしたままにするのは安全ではありません。",
   "adbRestore": "以前のランチャーを復元する",
   "adbSuccess": "変更が適用され、確認されました。",
   "adbTitle": "ADBセットアップ",

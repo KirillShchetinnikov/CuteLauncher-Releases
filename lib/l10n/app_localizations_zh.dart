@@ -1832,6 +1832,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get adbReady => 'ADB 访问已确认。';
 
   @override
+  String get adbRootWarning =>
+      'CuteLauncher 已使用 root 权限连接 ADB。让 root 权限的 ADB 调试保持开启并不安全。';
+
+  @override
   String get adbRestore => '恢复之前的启动器';
 
   @override

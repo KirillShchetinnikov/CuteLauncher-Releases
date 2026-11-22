@@ -1,5 +1,6 @@
 import 'tile_image_geometry.dart';
 import 'dart:convert';
+import 'dart:math' as math;
 import 'app_fonts.dart';
 import 'panel_layout.dart';
 import 'panel_clock_style.dart';
@@ -101,9 +102,10 @@ class TileAppearance {
       number('sectionSpacing') ?? sectionGap + _legacySectionGapOffset;
 
   double compactSectionInset(double inset, {required double focusReserve}) {
-    final reduction =
-        (_legacySectionGapOffset - sectionSpacing).clamp(0, _legacySectionGapOffset) / 2;
-    return (inset - reduction).clamp(focusReserve.clamp(0, inset), inset).toDouble();
+    final compact = 1 - (sectionSpacing / _legacySectionGapOffset).clamp(0, 1);
+    final removable = (inset - focusReserve)
+        .clamp(0, math.min(inset, _legacySectionGapOffset / 2));
+    return inset - compact * removable;
   }
 
   double get sectionOpacity => number('sectionOpacity') ?? 1;

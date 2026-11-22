@@ -3602,6 +3602,12 @@ abstract class AppLocalizations {
   /// **'ADB access confirmed.'**
   String get adbReady;
 
+  /// No description provided for @adbRootWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'CuteLauncher connected to ADB as root. Leaving root ADB debugging enabled is unsafe.'**
+  String get adbRootWarning;
+
   /// No description provided for @adbRestore.
   ///
   /// In en, this message translates to:

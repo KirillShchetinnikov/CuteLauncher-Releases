@@ -691,6 +691,7 @@
   "adbNoRecovery": "Geri yükleme kullanılamıyor: Başka başlatıcı veya kayıtlı hizmet durumu bulunamadı.",
   "adbPort": "TCP ADB bağlantı noktası",
   "adbReady": "ADB erişimi onaylandı.",
+  "adbRootWarning": "CuteLauncher, ADB’ye root yetkileriyle bağlandı. Root yetkili ADB hata ayıklamasını açık bırakmak güvenli değildir.",
   "adbRestore": "Önceki başlatıcıyı geri yükle",
   "adbSuccess": "Değişiklik uygulandı ve doğrulandı.",
   "adbTitle": "ADB kurulumu",

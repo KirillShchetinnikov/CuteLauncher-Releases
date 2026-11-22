@@ -42,7 +42,7 @@ final class PermissionRecoveryAccess implements UpdatePermissionRecovery.Access 
             public void close() { }
         };
         try {
-            if (!shell.execute("id -u").equals("2000") || !shell.execute("am get-current-user").equals("0"))
+            if (!AdbShellIdentity.supported(context, shell.execute("id -u")) || !shell.execute("am get-current-user").equals("0"))
                 throw new Unavailable("unsupported_user");
         } catch (Exception error) { adb.close(); throw error; }
         return new UpdatePermissionRecovery.Session() {

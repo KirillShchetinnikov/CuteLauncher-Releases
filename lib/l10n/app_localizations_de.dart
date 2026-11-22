@@ -1902,6 +1902,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get adbReady => 'ADB-Zugriff bestätigt.';
 
   @override
+  String get adbRootWarning =>
+      'CuteLauncher ist per ADB mit Root-Rechten verbunden. Es ist unsicher, das ADB-Debugging mit Root-Rechten aktiviert zu lassen.';
+
+  @override
   String get adbRestore => 'Stellen Sie den vorherigen Launcher wieder her';
 
   @override

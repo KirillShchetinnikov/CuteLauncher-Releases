@@ -1888,6 +1888,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get adbReady => 'ADB erişimi onaylandı.';
 
   @override
+  String get adbRootWarning =>
+      'CuteLauncher, ADB’ye root yetkileriyle bağlandı. Root yetkili ADB hata ayıklamasını açık bırakmak güvenli değildir.';
+
+  @override
   String get adbRestore => 'Önceki başlatıcıyı geri yükle';
 
   @override

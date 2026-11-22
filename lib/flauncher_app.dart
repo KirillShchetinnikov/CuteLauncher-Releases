@@ -70,6 +70,29 @@ class _FLauncherAppState extends State<FLauncherApp> {
     _homeSubscription = const EventChannel('me.efesser.flauncher/event_home')
         .receiveBroadcastStream().listen((event) async {
       if (!mounted) return;
+      if (event == 'adb_root_warning') {
+        WidgetsBinding.instance.ensureVisualUpdate();
+        await WidgetsBinding.instance.endOfFrame;
+        final noticeContext = _navigatorKey.currentState?.overlay?.context;
+        if (noticeContext == null ||
+            !noticeContext.mounted ||
+            WidgetsBinding.instance.lifecycleState != AppLifecycleState.resumed) {
+          return;
+        }
+        const adb = MethodChannel('cutelauncher/adb');
+        try {
+          if (await adb.invokeMethod<bool>('takeRootWarning') == true &&
+              noticeContext.mounted) {
+            showActionNotice(
+              noticeContext,
+              AppLocalizations.of(noticeContext)!.adbRootWarning,
+            );
+          }
+        } on PlatformException catch (error) {
+          debugPrint('ADB root warning unavailable: ${error.code}');
+        }
+        return;
+      }
       if (event == 'open_adb_settings') {
         final request = ++_settingsRequest;
         WidgetsBinding.instance.ensureVisualUpdate();

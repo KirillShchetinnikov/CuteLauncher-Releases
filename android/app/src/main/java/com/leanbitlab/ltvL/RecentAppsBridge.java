@@ -29,7 +29,7 @@ final class RecentAppsBridge implements AutoCloseable {
     static String mode(Context context) { return context.getSharedPreferences(PREFS, 0).getString("mode", "auto"); }
     static Map<String, Object> access(Context context) {
         boolean adb;
-        try { adb = AdbBridge.recentSession(context, shell -> "2000".equals(shell.execute("id -u").trim())); }
+        try { adb = AdbBridge.recentSession(context, shell -> AdbShellIdentity.supported(shell.execute("id -u").trim())); }
         catch (Exception unavailable) { adb = false; }
         return Map.of("adb", adb, "accessibility", LauncherAccessibilityService.connected());
     }

@@ -691,6 +691,7 @@
   "adbNoRecovery": "La restauración no está disponible: no se encontró ningún otro iniciador ni estado de servicio guardado.",
   "adbPort": "Puerto TCP ADB",
   "adbReady": "ADB acceso confirmado.",
+  "adbRootWarning": "CuteLauncher se conectó a ADB con permisos de root. No es seguro dejar activada la depuración ADB con estos permisos.",
   "adbRestore": "Restaurar el lanzador anterior",
   "adbSuccess": "Cambio aplicado y verificado.",
   "adbTitle": "Configuración de ADB",

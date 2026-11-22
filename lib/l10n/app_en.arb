@@ -684,6 +684,7 @@
   "adbNoRecovery": "Restoration is unavailable: no other launcher or saved service state was found.",
   "adbPort": "TCP ADB port",
   "adbReady": "ADB access confirmed.",
+  "adbRootWarning": "CuteLauncher connected to ADB as root. Leaving root ADB debugging enabled is unsafe.",
   "adbRestore": "Restore the previous launcher",
   "adbSuccess": "Change applied and verified.",
   "adbTitle": "ADB setup",

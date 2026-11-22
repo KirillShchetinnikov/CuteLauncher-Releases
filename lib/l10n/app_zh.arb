@@ -691,6 +691,7 @@
   "adbNoRecovery": "恢复不可用：未找到其他启动器或保存的服务状态。",
   "adbPort": "TCP ADB 端口",
   "adbReady": "ADB 访问已确认。",
+  "adbRootWarning": "CuteLauncher 已使用 root 权限连接 ADB。让 root 权限的 ADB 调试保持开启并不安全。",
   "adbRestore": "恢复之前的启动器",
   "adbSuccess": "更改已应用并已验证。",
   "adbTitle": "ADB 设置",

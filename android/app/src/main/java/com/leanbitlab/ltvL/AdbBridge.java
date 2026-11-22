@@ -36,7 +36,9 @@ final class AdbBridge {
                         // Task dumps contain other apps' intents; do not copy them into diagnostics.
                         var response = adb.shell(command);
                         if (response.getExitCode() != 0) throw new IllegalStateException("Command rejected");
-                        return response.getOutput();
+                        String output = response.getOutput();
+                        if (command.equals("id -u")) AdbShellIdentity.observe(context, output.trim());
+                        return output;
                     }
                     public void close() { }
                 });
@@ -80,6 +82,10 @@ final class AdbBridge {
     }
     static void register(Activity activity, BinaryMessenger messenger, ExecutorService executor) {
         new MethodChannel(messenger, "cutelauncher/adb").setMethodCallHandler((call, result) -> {
+            if (call.method.equals("takeRootWarning")) {
+                result.success(AdbShellIdentity.takeWarning(activity));
+                return;
+            }
             if (call.method.equals("port")) {
                 Integer value = call.argument("port");
                 if (value == null || value < 1024 || value > 65535) { result.success(false); return; }
@@ -252,7 +258,7 @@ final class AdbBridge {
         if (!shell(adb, "am get-current-user").equals("0")) return "denied";
         String own = activity.getPackageName() + "/" + MainActivity.class.getName();
         SharedPreferences recovery = activity.getSharedPreferences("adb_recovery", Activity.MODE_PRIVATE);
-        if (action.equals("check")) return shell(adb, "id -u").equals("2000") ? "ready" : "denied";
+        if (action.equals("check")) return AdbShellIdentity.supported(activity, shell(adb, "id -u")) ? "ready" : "denied";
         if (action.equals("overlay")) {
             shell(adb, "appops set --uid '" + activity.getPackageName() + "' SYSTEM_ALERT_WINDOW allow");
             shell(adb, "appops set --user 0 '" + activity.getPackageName() + "' SYSTEM_ALERT_WINDOW allow");

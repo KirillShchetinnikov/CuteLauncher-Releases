@@ -1879,6 +1879,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get adbReady => 'تم تأكيد الوصول إلى ADB.';
 
   @override
+  String get adbRootWarning =>
+      'اتصل CuteLauncher عبر ADB بصلاحيات الجذر. ترك تصحيح أخطاء ADB بصلاحيات الجذر غير آمن.';
+
+  @override
   String get adbRestore => 'استعادة المشغل السابق';
 
   @override

@@ -11,6 +11,34 @@ import static org.junit.Assert.*;
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = {28, 29, 30, 36})
 public class AdbRuntimeCompatibilityTest {
+    @Test public void connectionCheckAcceptsRootAndWarnsOnce() throws Exception {
+        var context = org.robolectric.RuntimeEnvironment.getApplication();
+        assertEquals("ready", checkConnection(context, "0", "2000"));
+        assertFalse(AdbShellIdentity.warningPending(context));
+        assertEquals("denied", checkConnection(context, "10", "0"));
+        assertEquals("denied", checkConnection(context, "0", "1000"));
+        assertFalse(AdbShellIdentity.takeWarning(context));
+
+        assertEquals("ready", checkConnection(context, "0", "0"));
+        assertEquals("ready", checkConnection(context, "0", "0"));
+        assertTrue(AdbShellIdentity.takeWarning(context));
+        assertEquals("ready", checkConnection(context, "0", "0"));
+        assertFalse(AdbShellIdentity.takeWarning(context));
+    }
+
+    private static String checkConnection(android.content.Context context, String user, String uid) throws Exception {
+        return AdbBridge.perform(context, new AdbBridge.Shell() {
+            @Override public String execute(String command) {
+                return switch (command) {
+                    case "am get-current-user" -> user;
+                    case "id -u" -> uid;
+                    default -> throw new AssertionError(command);
+                };
+            }
+            @Override public void close() { }
+        }, "check");
+    }
+
     @Test public void restoreSelectionFiltersServiceScreensWithoutMutatingInput() {
         var fallback = Map.<String, Object>of("component", "com.vendor/.FallbackHome", "enabled", true);
         var disabled = Map.<String, Object>of("component", "com.builtin/com.builtin.Home", "enabled", false);
