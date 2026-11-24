@@ -59,7 +59,15 @@ class Consumer {
   test('global channel limits travel; provider IDs and measured history stay local', () {
     expect(isDeviceLocalBackupKey('app_channel_card_limit'), false);
     for (final key in [
+      'memory_limit_icons',
+      'memory_limit_preload',
+      'memory_limit_clear_on_background',
+      'poster_cache_feeds_ram',
+      'poster_cache_feeds_disk',
+      'poster_cache_watch_next_ram',
+      'poster_cache_watch_next_disk',
       'selected_app_channels',
+      'app_channels_order',
       'app_channel_formats',
       'app_channel_detected_formats',
       'slideshow_folder',

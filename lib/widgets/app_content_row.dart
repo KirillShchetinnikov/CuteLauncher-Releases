@@ -1,4 +1,6 @@
 import 'dart:async';
+import '../poster_queue.dart';
+import '../launcher_image_cache.dart';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -117,6 +119,7 @@ class _AppContentRowState extends State<AppContentRow> {
     return ContentPreviewRow(
       programs: widget.programs,
       displayedPrograms: _displayed,
+      preload: (program, priority) => service.programPoster(program, priority: priority),
       title: '${channel.name} · ${channel.appName}',
       titleIcon: widget.titleIcon,
       style: style,
@@ -143,7 +146,7 @@ class _AppContentRowState extends State<AppContentRow> {
           cachedPoster: () =>
               service.cachedPoster(shown.posterArtUri) ??
               service.cachedPoster(shown.thumbnailUri),
-          loadPoster: () => service.programPoster(program),
+          loadPrioritizedPoster: (priority) => service.programPoster(program, priority: priority),
           invalidatePoster: () => service.evictPoster(program),
           observePoster: (bytes) =>
               service.observePoster(channel, program.id, bytes),
@@ -170,6 +173,7 @@ class ContentPreviewRow extends StatefulWidget {
     super.key,
     required this.programs,
     this.displayedPrograms,
+    this.preload,
     required this.title,
     this.titleIcon,
     required this.style,
@@ -191,11 +195,13 @@ class ContentPreviewRow extends StatefulWidget {
     this.focusLoading = false,
   }) : programs = const [],
        displayedPrograms = null,
+       preload = null,
        card = null,
        geometricEntry = false;
 
   final List<WatchNextProgram> programs;
   final List<WatchNextProgram>? displayedPrograms;
+  final Future<Uint8List?> Function(WatchNextProgram, PosterPriority)? preload;
   final String title;
   final SectionIcon? titleIcon;
   final TileAppearance style;
@@ -217,11 +223,51 @@ class _ContentPreviewRowState extends State<ContentPreviewRow> {
   final _bounds = GlobalKey();
   String? _pending;
   int _request = 0;
+  int _preloadGeneration = 0;
+  int _window = 0;
+  int? _preloadStart;
+
+  void _schedulePreload() {
+    if (_focus?.hasFocus != true || widget.preload == null || _window <= 0) return;
+    final index = widget.programs.indexWhere((p) => p.id.toString() == _focus?.selected.value);
+    if (index < 0) return;
+    final stride = math.max(1, _window ~/ 2);
+    final start = index ~/ stride * stride;
+    if (_preloadStart == start) return;
+    _preloadStart = start;
+    final generation = ++_preloadGeneration;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && generation == _preloadGeneration) unawaited(_warm(start, generation));
+    });
+  }
+
+  Future<void> _warm(int start, int generation) async {
+    bool active() => mounted && generation == _preloadGeneration &&
+        _focus?.hasFocus == true && ModalRoute.of(context)?.isCurrent != false &&
+        (WidgetsBinding.instance.lifecycleState == null ||
+         WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed);
+    final end = math.min(widget.programs.length, start + _window);
+    for (var i = start; i < end && active(); i++) {
+      final program = widget.programs[i];
+      if (_focus!.hasMountedPackage(program.id.toString()) ||
+          (program.posterArtUri.isEmpty && program.thumbnailUri.isEmpty)) {
+        continue;
+      }
+      await widget.preload!(program, () => active() ? 0 : -1);
+    }
+  }
+
+  void _resetPreload() {
+    ++_preloadGeneration;
+    _preloadStart = null;
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     final focus = CategoryFocus.maybeOf(context);
     if (focus == _focus) return;
+    _resetPreload();
     _disconnect();
     _focus = focus;
     focus?.materialize = _select;
@@ -269,6 +315,7 @@ class _ContentPreviewRowState extends State<ContentPreviewRow> {
   }
 
   void _revealSelection() {
+    _schedulePreload();
     final focus = _focus!;
     final scroll = focus.scrollController;
     if (!scroll.hasClients || ModalRoute.of(context)?.isCurrent == false) {
@@ -357,6 +404,10 @@ class _ContentPreviewRowState extends State<ContentPreviewRow> {
   @override
   void didUpdateWidget(covariant ContentPreviewRow oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (!listEquals(oldWidget.programs, widget.programs)) {
+      _resetPreload();
+      _schedulePreload();
+    }
     final focus = _focus;
     focus?.enter = widget.geometricEntry ? _enter : null;
     final last = focus?.lastPackage;
@@ -394,6 +445,12 @@ class _ContentPreviewRowState extends State<ContentPreviewRow> {
   @override
   Widget build(BuildContext context) {
     final settings = context.watch<SettingsService>();
+    final window = widget.preload == null ? 0 : settings.memoryLimit(MemoryLimit.preload);
+    if (_window != window) {
+      _window = window;
+      _resetPreload();
+      _schedulePreload();
+    }
     final launcherStyle = LauncherStyle.of(context);
     final card = widget.card;
     final style = widget.style;
@@ -502,7 +559,11 @@ class _ContentPreviewRowState extends State<ContentPreviewRow> {
                             ? _FocusableLoadingCard(builder: placeholder)
                             : placeholder(false),
                     )
-                  : ReorderingTileViewport(
+                  : Focus(
+                    canRequestFocus: false,
+                    onFocusChange: (focused) => focused ? _schedulePreload() : _resetPreload(),
+                    child: ReorderingTileViewport(
+                      rowLookaheadScreens: settings.memorySaverEnabled ? 0.3 : 1.0,
                       keyByPosition: widget.displayedPrograms != null,
                       layout: layout,
                       packages: widget.programs
@@ -518,7 +579,7 @@ class _ContentPreviewRowState extends State<ContentPreviewRow> {
                         widget.programs[i],
                         Size(layout.width, layout.height),
                       ),
-                    ),
+                    )),
             ),
           );
           final showSelected = appTiles && style.labels == 'selected';
@@ -677,6 +738,7 @@ class ContentPreviewCard extends StatefulWidget {
     this.posterRefreshes,
     this.cachedPoster,
     this.loadPoster,
+    this.loadPrioritizedPoster,
     this.onReplacementReady,
     this.invalidatePoster,
     this.observePoster,
@@ -695,6 +757,7 @@ class ContentPreviewCard extends StatefulWidget {
   final Listenable? posterRefreshes;
   final Uint8List? Function()? cachedPoster;
   final Future<Uint8List?> Function()? loadPoster;
+  final Future<Uint8List?> Function(PosterPriority priority)? loadPrioritizedPoster;
   final VoidCallback? onReplacementReady;
   final VoidCallback? invalidatePoster;
   final Future<void> Function(Uint8List?)? observePoster;
@@ -725,6 +788,7 @@ class _ContentPreviewCardState extends State<ContentPreviewCard>
   int _retryAttempt = 0;
   int _posterRevision = 0;
   bool _loadingPoster = false;
+  Size? _screenSize;
   bool get _foreground => WidgetsBinding.instance.lifecycleState == null ||
       WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed;
 
@@ -737,7 +801,7 @@ class _ContentPreviewCardState extends State<ContentPreviewCard>
   void _scheduleRetry() {
     _needsRetry = true;
     if (!mounted || !_foreground || !_enabled || _posterRetry != null ||
-        widget.loadPoster == null ||
+        (widget.loadPoster == null && widget.loadPrioritizedPoster == null) ||
         (_source.$1.isEmpty && _source.$2.isEmpty)) {
       return;
     }
@@ -789,6 +853,7 @@ class _ContentPreviewCardState extends State<ContentPreviewCard>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    _screenSize = MediaQuery.maybeSizeOf(context);
     _work = context.read<ForegroundWork?>();
     _enabled = TickerMode.valuesOf(context).enabled;
     if (!_enabled) {
@@ -840,7 +905,10 @@ class _ContentPreviewCardState extends State<ContentPreviewCard>
     final source = _source;
     Uint8List? bytes;
     try {
-      bytes = await widget.loadPoster?.call();
+      final prioritized = widget.loadPrioritizedPoster;
+      bytes = prioritized == null
+          ? await widget.loadPoster?.call()
+          : await prioritized(() => _posterPriority(request));
     } catch (_) {
       // Service loaders report transport errors; custom loaders may throw.
     }
@@ -862,8 +930,12 @@ class _ContentPreviewCardState extends State<ContentPreviewCard>
           widget.style, width: widget.size.width, focused: true);
       final ratio = MediaQuery.devicePixelRatioOf(context);
       final ImageProvider image = widget.style.contentAppTileStyle
-          ? sizedImage(MemoryImage(bytes), widget.size, ratio * scale, maximumEdge: 1024)
-          : CoverMemoryImage(bytes, logicalSize: widget.size, pixelRatio: ratio, focusScale: scale);
+          ? PosterTileImage(sizedImage(
+              MemoryImage(bytes), widget.size, ratio * scale, maximumEdge: 1024,
+            ))
+          : CoverMemoryImage(
+              bytes, logicalSize: widget.size, pixelRatio: ratio, focusScale: scale,
+            );
       var failed = false;
       _loadingPoster = true;
       await precacheImage(image, context, onError: (_, _) => failed = true);
@@ -894,6 +966,17 @@ class _ContentPreviewCardState extends State<ContentPreviewCard>
       _posterBytes = bytes;
       _posterSource = source;
     });
+  }
+
+  int _posterPriority(int request) {
+    if (!mounted || request != _posterRequest || !_foreground || !_enabled) return -1;
+    if (_node.hasPrimaryFocus) return 3;
+    final size = _screenSize;
+    final render = _node.context?.findRenderObject();
+    if (size == null || render is! RenderBox || !render.attached || !render.hasSize) return 0;
+    final origin = render.localToGlobal(Offset.zero);
+    if (!(Offset.zero & size).overlaps(origin & render.size)) return 0;
+    return _focus?.hasFocus == true ? 2 : 1;
   }
 
   @override
@@ -973,6 +1056,7 @@ class _ContentPreviewCardState extends State<ContentPreviewCard>
         return TileArtwork(
           key: ValueKey(_posterRevision),
           image: MemoryImage(bytes),
+          isPoster: true,
           mode: style.bannerImageMode == TileImageMode.icon
               ? TileImageMode.edgeColor
               : style.bannerImageMode,

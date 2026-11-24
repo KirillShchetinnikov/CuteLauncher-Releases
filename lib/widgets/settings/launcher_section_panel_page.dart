@@ -1,12 +1,3 @@
-import 'settings_information.dart';
-import 'settings_text_tile.dart';
-import 'settings_read_only_value.dart';
-import 'settings_value_stepper.dart';
-import 'settings_choice_tile.dart';
-import 'settings_route.dart';
-import 'settings_page_layout.dart';
-import '../launcher_dialog.dart';
-import '../../providers/appearance_service.dart';
 /*
  * FLauncher
  * Copyright (C) 2024 Oscar Rojas 
@@ -24,20 +15,30 @@ import '../../providers/appearance_service.dart';
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
-import 'package:flauncher/section_names.dart';
-import 'dart:async';
-
-import 'package:flauncher/providers/apps_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flauncher/l10n/app_localizations.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../../models/category.dart';
+import '../../providers/appearance_service.dart';
+import '../../providers/apps_service.dart';
+import '../../section_names.dart';
+import '../action_notice.dart';
+import '../launcher_dialog.dart';
+import '../menu_header_action.dart';
+import '../rename_category_dialog.dart';
 import '../rounded_switch_list_tile.dart';
-import 'focusable_settings_tile.dart';
-import 'category_appearance_page.dart';
+import 'app_channels_order_page.dart';
 import 'app_channels_settings_page.dart';
+import 'category_appearance_page.dart';
+import 'focusable_settings_tile.dart';
+import 'settings_choice_tile.dart';
+import 'settings_choice_dialog.dart';
+import 'settings_information.dart';
+import 'settings_page_layout.dart';
+import 'settings_route.dart';
+import 'settings_text_tile.dart';
+import 'settings_value_stepper.dart';
 
 // Section name presets for TV remote-friendly selection
 const List<String> sectionNamePresets = [
@@ -52,531 +53,383 @@ const List<String> sectionNamePresets = [
   'Tools',
 ];
 
-class _SettingsState extends ChangeNotifier
-{
-  bool _changed;
-  bool _creating;
-  bool _deleted;
-  bool _valid;
-  LauncherSection? _section;
-  LauncherSectionType _sectionType;
-
-  void Function()? onSave;
-
-  bool get changed => _changed;
-  bool get creating => _creating;
-  bool get deleted => _deleted;
-  bool get valid => _valid;
-  LauncherSection? get launcherSection => _section;
-  LauncherSectionType get sectionType => _sectionType;
-
-  _SettingsState(AppsService appsService, int? sectionIndex):
-      _changed = false,
-      _creating = false,
-      _deleted = false,
-      _valid = false,
-      _sectionType = LauncherSectionType.Category
-  {
-    LauncherSection? launcherSection;
-    List<LauncherSection> sections = appsService.launcherSections;
-    if (sectionIndex != null && sectionIndex < sections.length) {
-      launcherSection = sections[sectionIndex];
-    }
-
-    setLauncherSection(launcherSection, shouldNotifyListeners: false);
-  }
-
-  void setDeleted() {
-    _deleted = true;
-  }
-
-  void setFlags(bool valid, bool changed)
-  {
-    if (_valid != valid || _changed != changed) {
-      _valid = valid;
-      _changed = changed;
-
-      notifyListeners();
-    }
-  }
-
-  void setLauncherSection(LauncherSection? section, {bool shouldNotifyListeners = true})
-  {
-    _section = section;
-
-    _changed = false;
-    _creating = false;
-    _valid = false;
-    _sectionType = LauncherSectionType.Category;
-
-    if (section == null) {
-      _creating = true;
-    }
-    else if (section is LauncherSpacer) {
-      _sectionType = LauncherSectionType.Spacer;
-    }
-
-    _valid = false;
-    _changed = creating;
-
-    if (shouldNotifyListeners) {
-      notifyListeners();
-    }
-  }
-
-  void setSectionType(LauncherSectionType sectionType)
-  {
-    assert(_creating);
-
-    _changed = false;
-    _valid = false;
-
-    if (_sectionType != sectionType) {
-      _sectionType = sectionType;
-
-      if (sectionType == LauncherSectionType.Spacer) {
-        _changed = true;
-        _valid = true;
-      }
-
-      notifyListeners();
-    }
-  }
-}
-
-class LauncherSectionPanelPage extends StatelessWidget
-{
-  static const String routeName = "section_panel";
-
+class LauncherSectionPanelPage extends StatefulWidget {
+  static const String routeName = 'section_panel';
   final int? sectionIndex;
-
   const LauncherSectionPanelPage({super.key, this.sectionIndex});
 
   @override
-  Widget build(BuildContext context) {
-    AppLocalizations localizations = AppLocalizations.of(context)!;
-
-    return ChangeNotifierProvider(
-      create: (_) {
-        AppsService service = context.read();
-        return _SettingsState(service, sectionIndex);
-      },
-      builder: (context, _) => Selector<_SettingsState, LauncherSectionType>(
-        selector: (_, state) => state.sectionType,
-        builder: (_, sectionType, _)  {
-          _SettingsState state = context.read();
-          LauncherSection? launcherSection = state.launcherSection;
-
-          if (state.deleted) {
-            return Container();
-          }
-
-          bool creating = state.creating;
-          Widget sectionSpecificSettings;
-
-          if (sectionType == LauncherSectionType.Category) {
-            sectionSpecificSettings = _CategorySettings(
-              category: launcherSection as Category?,
-            );
-          }
-          else {
-            sectionSpecificSettings = _LauncherSpacerSettings(
-                spacer: launcherSection as LauncherSpacer?
-            );
-          }
-
-          String title = localizations.newSection;
-          if (!creating) {
-            title = localizations.modifySection;
-          }
-
-          return SettingsPageLayout(
-            title: Text(title),
-            child: SingleChildScrollView(
-              padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  if (creating) ...[
-                    _listTile(
-                      context,
-                      Text(localizations.type),
-                      Padding(
-                        padding: EdgeInsets.only(top: 4),
-                        child: _SettingsChoice<LauncherSectionType>(
-                          autofocus: true,
-                          initialValue: sectionType,
-                          onChanged: (value) {
-                            if (value != null) {
-                              state.setSectionType(value);
-                            }
-                          },
-                          items: [
-                            DropdownMenuItem(
-                              value: LauncherSectionType.Category,
-                              child: Text(
-                                localizations.category,
-
-                              ),
-                            ),
-                            DropdownMenuItem(
-                              value: LauncherSectionType.Spacer,
-                              child: Text(
-                                localizations.spacer,
-
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Divider(),
-                  ],
-                  sectionSpecificSettings,
-                  Divider(),
-                  if (creating) Selector<_SettingsState, bool>(
-                    selector: (context, state) => (state.valid && state.changed),
-                    builder: (context, canSave, _) {
-                      void Function()? onSavePressed;
-                      if (canSave) {
-                        onSavePressed = () {
-                          if (state.onSave != null) {
-                            state.onSave!();
-                          }
-                        };
-                      }
-
-                      return Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16),
-                        child: FocusableSettingsTile(onPressed: onSavePressed,
-                          leading: const Icon(Icons.save_outlined),
-                          title: Text(localizations.save), enabled: canSave,
-                        ),
-                      );
-                    },
-                  ),
-                  if (!creating && launcherSection is Category)
-                    Consumer<AppsService>(
-                      builder: (context, service, _) {
-                        final category = service.launcherSections
-                            .whereType<Category>()
-                            .firstWhere((c) => c.id == launcherSection.id);
-                        final canHide =
-                            !category.visible ||
-                            service.launcherSections
-                                    .whereType<Category>()
-                                    .where((c) => c.visible)
-                                    .length >
-                                1;
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [RoundedSwitchListTile(
-                          enabled: canHide,
-                          value: category.visible,
-                          onChanged: (value) =>
-                              service.setCategoryVisible(category.id, value),
-                          title: Text(localizations.categoryVisible),
-                        ),
-                        if (!canHide)
-                          SettingsMessage(text: localizations.categoryLastVisibleHint),
-                        ],
-                        );
-                      },
-                    ),
-                  if (!creating &&
-                      !(state.launcherSection is Category &&
-                        (state.launcherSection as Category).isSystem))
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      child: _DeleteSectionTile(section: state.launcherSection!, onDeleted: () {
-                        state.setDeleted();
-                        Navigator.of(context).pop();
-                      }, enabled: !(
-                            state.launcherSection is Category &&
-                                ((state.launcherSection as Category).isSystem ||
-                                    context
-                                            .read<AppsService>()
-                                            .launcherSections
-                                            .whereType<Category>()
-                                            .length <=
-                                        1 ||
-                                    ((state.launcherSection as Category).visible &&
-                                        context
-                                                .read<AppsService>()
-                                                .launcherSections
-                                                .whereType<Category>()
-                                                .where((c) => c.visible)
-                                                .length <=
-                                            1))),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          );
-        }
-      )
-    );
-  }
+  State<LauncherSectionPanelPage> createState() =>
+      _LauncherSectionPanelPageState();
 }
 
-class _CategorySettings extends StatefulWidget
-{
-  final Category? category;
+class _LauncherSectionPanelPageState extends State<LauncherSectionPanelPage> {
+  final _entryFocus = FocusNode();
+  LauncherSection? _opened;
+  var _sectionType = LauncherSectionType.Category;
+  var _name = '';
+  var _sort = Category.Sort;
+  var _layout = Category.Type;
+  var _visible = true;
+  var _height = 10;
+  var _saving = false;
 
-  const _CategorySettings({
-    this.category
-  });
-
-  @override
-  State<StatefulWidget> createState() => _CategorySettingsState();
-}
-
-class _CategorySettingsState extends State<_CategorySettings>
-{
-
-  
-  late final TextEditingController _nameController;
-  
-
-  CategorySort _categorySort;
-  CategoryType _categoryType;
-  int _columnsCount;
-  int _rowHeight;
-  String _name;
-
-  (String, CategorySort, CategoryType, int, int)? _submitted;
-  (String, CategorySort, CategoryType, int, int) get _draft =>
-      (_name, _categorySort, _categoryType, _columnsCount, _rowHeight);
-
-  late Category? _category;
-
-  late bool _creating;
-
-  _CategorySettingsState():
-
-        _categorySort = Category.Sort,
-        _categoryType = Category.Type,
-        _columnsCount = Category.ColumnsCount,
-        _rowHeight = Category.RowHeight,
-        _name = "";
-
-  @override
-  void dispose() {
-    super.dispose();
-
-    _nameController.dispose();
-
-  }
+  bool get _creating => widget.sectionIndex == null;
 
   @override
   void initState() {
     super.initState();
-
-    _category = widget.category;
-    _creating = _category == null;
-
-    if (!_creating) {
-      _name = Category.normalizeName(_category!.name, _category!.systemKey);
-      _categorySort = _category!.sort;
-      _categoryType = _category!.type;
-      _columnsCount = _category!.columnsCount;
-      _rowHeight = _category!.rowHeight;
-      _submitted = _draft;
+    final index = widget.sectionIndex;
+    if (index == null) return;
+    final sections = context.read<AppsService>().launcherSections;
+    if (index < 0 || index >= sections.length) return;
+    _opened = sections[index];
+    if (_opened is LauncherSpacer) {
+      _sectionType = LauncherSectionType.Spacer;
     }
+  }
 
-    _nameController = TextEditingController(text: _name);
+  @override
+  void dispose() {
+    _entryFocus.dispose();
+    super.dispose();
+  }
 
-    _SettingsState state = context.read();
-    state.onSave = _save;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) _notifyChange();
-    });
+  Future<void> _create() async {
+    if (_saving) return;
+    final service = context.read<AppsService>();
+    setState(() => _saving = true);
+    try {
+      final LauncherSection created;
+      if (_sectionType == LauncherSectionType.Spacer) {
+        created = await service.addSpacer(_height);
+      } else {
+        if (_name.trim().isEmpty) return;
+        final id = await service.addCategory(
+          _name,
+          sort: _sort,
+          type: _layout,
+          visible: _visible,
+          initializeLayout: true,
+        );
+        if (id < 0) throw StateError('Section creation failed');
+        created = service.launcherSections.whereType<Category>().firstWhere(
+          (c) => c.id == id,
+        );
+      }
+      if (mounted && ModalRoute.of(context)?.isCurrent == true) {
+        Navigator.of(context).pop(created);
+      }
+    } catch (_) {
+      _showError();
+    } finally {
+      if (mounted) setState(() => _saving = false);
+    }
+  }
+
+  void _showError() {
+    if (mounted) {
+      showActionNotice(
+        context,
+        AppLocalizations.of(context)!.appError,
+        error: true,
+      );
+    }
+  }
+
+  Future<void> _persist(Future<void> write) async {
+    try {
+      await write;
+    } catch (_) {
+      _showError();
+    }
+  }
+
+  Future<void> _rename(Category category) async {
+    final l = AppLocalizations.of(context)!;
+    final presets = [
+      ...sectionNamePresets,
+      if (category.isSystem && !sectionNamePresets.contains(category.name))
+        category.name,
+    ];
+    final choice = await showLauncherDialog<String>(
+      context: context,
+      builder: (dialog) => SettingsChoiceDialog<String>(
+        title: Text(l.renameCategory),
+        value: presets.contains(category.name) ? category.name : 'Custom...',
+        options: presets,
+        optionBuilder: (name) => Text(localizedSectionName(name, l)),
+        onSelected: (name) => Navigator.pop(dialog, name),
+      ),
+    );
+    if (!mounted || choice == null) return;
+    final displayedName = localizedSectionName(category.name, l);
+    final name = choice == 'Custom...'
+        ? await showLauncherDialog<String>(
+            context: context,
+            builder: (_) => AddCategoryDialog(initialValue: displayedName),
+          )
+        : choice;
+    if (!mounted ||
+        name == null ||
+        name.trim().isEmpty ||
+        name == category.name ||
+        (choice == 'Custom...' && name == displayedName)) {
+      return;
+    }
+    await _persist(context.read<AppsService>().renameCategory(category, name));
   }
 
   @override
   Widget build(BuildContext context) {
-    AppLocalizations localizations = AppLocalizations.of(context)!;
-    final namePresets = [
-      ...sectionNamePresets,
-      if (_category?.isSystem == true && !sectionNamePresets.contains(_category!.name)) _category!.name,
-    ];
-    
-    return PopScope(
-      canPop: true,
-      child: Column(
-        children: [
-          if (_category?.isAppChannels == true)
-            SettingsReadOnlyValue(
-              label: localizations.name,
-              value: localizedSectionName(_name, localizations),
-            )
-          else _listTile(
-            context,
-            Text(localizations.name),
-          Padding(
-            padding: EdgeInsets.only(top: 4),
-            child: _SettingsChoice<String>(
-              autofocus: !_creating,
+    final l = AppLocalizations.of(context)!;
+    final service = context.watch<AppsService>();
+    final sections = service.launcherSections;
+    final section = _creating
+        ? null
+        : sections
+              .where(
+                (s) =>
+                    s.runtimeType == _opened.runtimeType && s.id == _opened?.id,
+              )
+              .firstOrNull;
+    final category = section is Category ? section : null;
+    final spacer = section is LauncherSpacer ? section : null;
+    final feedGroup = category?.isAppChannels == true;
+    final visibleCount = sections
+        .whereType<Category>()
+        .where((c) => c.visible)
+        .length;
+    final canHide = category == null
+        ? visibleCount > 0
+        : !category.visible || visibleCount > 1;
+    final isSpacer = _sectionType == LauncherSectionType.Spacer;
+    final valid = isSpacer || _name.trim().isNotEmpty;
+    final customName =
+        !sectionNamePresets.contains(_name) || _name == 'Custom...';
+    final appearance = context.watch<AppearanceService?>();
+    final effectiveLayout = category == null
+        ? _layout.name
+        : appearance
+                  ?.category(category.id)
+                  .resolvedLayout(category.type == CategoryType.row) ??
+              category.type.name;
+    final height = spacer?.height ?? _height;
+    const heights = [10, 20, 30, 40, 50, 75, 100, 125, 150, 175, 200, 250];
 
-
-              initialValue: namePresets.contains(_name) ? _name : 'Custom...',
-              hint: Text(_name.isEmpty ? localizedSectionName('Custom...', localizations) : localizedSectionName(_name, localizations)),
-              onChanged: (value) {
-                setState(() {
-                  if (value == 'Custom...') {
-                    _name = '';
-                    _nameController.text = '';
-                  } else if (value != null) {
-                    _name = value;
-                    _nameController.text = value;
-                  }
-                });
-                _notifyChange();
-              },
-              items: namePresets.map((name) => DropdownMenuItem(
-                value: name,
-                child: Text(localizedSectionName(name, localizations)),
-              )).toList(),
-            )
-          )
-        ),
-        if (_category?.isAppChannels != true && (!namePresets.contains(_name) || _name.isEmpty))
-          SettingsTextTile(
-            title: localizations.customName, value: _name, maxLength: 256,
-            onChanged: (value) {
-              setState(() { _name = value; _nameController.text = value; });
-              _notifyChange();
-            },
-          ),
-        if (_category?.isAppChannels == true)
-          FocusableSettingsTile(
-            title: Text(localizations.appChannelsTitle),
-            leading: const Icon(Icons.video_library_outlined),
-            onPressed: () => Navigator.pushNamed(context, AppChannelsSettingsPage.routeName),
-          )
-        else _listTile(
-          context,
-          Text(localizations.sort),
-          Padding(
-            padding: EdgeInsets.only(top: 4),
-            child: _SettingsChoice<CategorySort>(
-              initialValue: _categorySort,
-              onChanged: (value) {
-                setState(() {
-                  _categorySort = value!;
-                });
-                _notifyChange();
-              },
-              items: [
-                DropdownMenuItem(
-                  value: CategorySort.alphabetical,
-                  child: Text(localizations.alphabetical),
+    final title = switch (section) {
+      Category() when feedGroup => l.appChannelsTitle,
+      Category() when section.name.trim().isEmpty => l.category,
+      Category() => localizedSectionName(section.name, l),
+      LauncherSpacer() => l.spacer,
+      _ => _creating ? l.newSection : l.modifySection,
+    };
+    final heading = Text(title, maxLines: 2, overflow: TextOverflow.ellipsis);
+    return SettingsPageLayout(
+      title: category != null && !feedGroup
+          ? Row(
+              children: [
+                Expanded(child: heading),
+                MenuHeaderAction(
+                  focusNode: _entryFocus,
+                  tooltip: l.renameCategory,
+                  icon: const Icon(Icons.edit_outlined),
+                  onPressed: () => _rename(category),
                 ),
-                DropdownMenuItem(
-                  value: CategorySort.manual,
-                  child: Text(localizations.manual),
-                ),
-                DropdownMenuItem(
-                  value: CategorySort.mostUsed,
-                  child: Text(localizations.mostUsed),
-                ),
-                DropdownMenuItem(
-                  value: CategorySort.lastUsed,
-                  child: Text(AppLocalizations.of(context)!.lastUsed),
-                )
-              ]
+              ],
             )
-          )
-        ),
-        if (_creating)
-        _listTile(
-          context,
-          Text(localizations.layout),
-          Padding(
-            padding: EdgeInsets.only(top: 4),
-            child: _SettingsChoice<CategoryType>(
-              initialValue: _categoryType,
-              onChanged: (value) {
-                setState(() {
-                  _categoryType = value!;
-                });
-                _notifyChange();
-              },
-
-
-              items: [
-                DropdownMenuItem(
-                  value: CategoryType.row,
-                  child: Text(localizations.row)
-                ),
-                DropdownMenuItem(
-                  value: CategoryType.grid,
-                  child: Text(localizations.grid)
-                )
-              ]
-            )
-          )
-        ),
-        if (!_creating)
-          FocusableSettingsTile(
-            title: Text(localizations.categoryAppearance),
-            leading: const Icon(Icons.palette_outlined),
-            onPressed: () => Navigator.of(context).push(SettingsRoute<void>(
-              builder: (_) => CategoryAppearancePage(categoryId: _category!.id))),
-          ),
-      ],
-    ),
-  );
-}
-
-  void _notifyChange()
-  {
-
-    final dirty = _submitted != _draft;
-
-    _SettingsState state = context.read();
-    state.setFlags(_name.trim().isNotEmpty, dirty);
-    if (!_creating && _name.trim().isNotEmpty && dirty) {
-      // Compare the next edit with the latest submitted values, including while
-      // its database write is pending, rather than the opening snapshot.
-      _submitted = _draft;
-      unawaited(_save());
-    }
-  }
-
-  Future<void> _save() async
-  {
-    final AppsService service = context.read();
-    if (_creating) {
-      int categoryId = await service.addCategory(_name, sort: _categorySort, type: _categoryType,
-          columnsCount: _columnsCount, rowHeight: _rowHeight
-      );
-
-      if (mounted) {
-        final appearance = context.read<AppearanceService?>();
-        await appearance?.setCategory(categoryId, 'layout', _categoryType == CategoryType.row ? 'row' : 'grid');
-        await appearance?.setCategory(categoryId, 'columns', _categoryType == CategoryType.row ? 0 : 6);
-        await appearance?.setCategory(categoryId, 'maxRows', _categoryType == CategoryType.row ? 0 : 3);
-      }
-
-      if (!mounted || !context.mounted) return;
-      Navigator.of(context).pop(service.launcherSections.firstWhere((s) => s is Category && s.id == categoryId));
-    }
-    else {
-      await service.updateCategory(_category!.id, _name, _categorySort,
-          _categoryType, _columnsCount, _rowHeight
-      );
-
-    }
+          : heading,
+      initialFocus: category != null ? _entryFocus : null,
+      child: !_creating && section == null
+          ? const SizedBox.shrink()
+          : SingleChildScrollView(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.viewInsetsOf(context).bottom,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (_creating)
+                    SettingsChoiceTile<LauncherSectionType>(
+                      title: l.type,
+                      value: _sectionType,
+                      options: LauncherSectionType.values,
+                      label: (type) => type == LauncherSectionType.Spacer
+                          ? l.spacer
+                          : l.category,
+                      onChanged: (type) => setState(() => _sectionType = type),
+                    ),
+                  if (isSpacer)
+                    SettingsValueStepper(
+                      title: l.height,
+                      value: height,
+                      options: heights.contains(height)
+                          ? heights
+                          : ([...heights, height]..sort()),
+                      label: (value) => '$value',
+                      onChanged: (value) {
+                        if (spacer == null) {
+                          setState(() => _height = value as int);
+                        } else {
+                          _persist(
+                            service.updateSpacerHeight(spacer, value as int),
+                          );
+                        }
+                      },
+                    )
+                  else ...[
+                    if (_creating) ...[
+                      SettingsChoiceTile<String>(
+                        title: l.name,
+                        value: customName ? 'Custom...' : _name,
+                        valueLabel: _name.isEmpty
+                            ? l.customSectionName
+                            : localizedSectionName(_name, l),
+                        options: sectionNamePresets,
+                        label: (name) => localizedSectionName(name, l),
+                        onChanged: (name) {
+                          if (name != 'Custom...') {
+                            setState(() => _name = name);
+                          } else if (!customName) {
+                            setState(() => _name = '');
+                          }
+                        },
+                      ),
+                      if (customName)
+                        SettingsTextTile(
+                          title: l.customName,
+                          value: _name,
+                          maxLength: 256,
+                          onChanged: (value) => setState(() => _name = value),
+                        ),
+                    ],
+                    RoundedSwitchListTile(
+                      title: Text(l.categoryVisible),
+                      enabled: canHide,
+                      value: category?.visible ?? (_visible || !canHide),
+                      onChanged: (value) {
+                        if (category == null) {
+                          setState(() => _visible = value);
+                        } else {
+                          _persist(
+                            service.setCategoryVisible(category.id, value),
+                          );
+                        }
+                      },
+                    ),
+                    if (!canHide)
+                      SettingsMessage(text: l.categoryLastVisibleHint),
+                    if (feedGroup) ...[
+                      FocusableSettingsTile(
+                        focusNode: _entryFocus,
+                        title: Text(l.feedsAndOrder),
+                        leading: const Icon(Icons.view_list_outlined),
+                        onPressed: () => Navigator.pushNamed(
+                          context,
+                          AppChannelsOrderPage.routeName,
+                        ),
+                      ),
+                      FocusableSettingsTile(
+                        title: Text(l.appChannelsSectionSettings),
+                        leading: const Icon(Icons.tune),
+                        onPressed: () => Navigator.of(context).push(
+                          SettingsRoute<void>(
+                            builder: (_) =>
+                                const AppChannelsSectionSettingsPage(),
+                          ),
+                        ),
+                      ),
+                    ] else ...[
+                      SettingsChoiceTile<CategorySort>(
+                        title: l.sort,
+                        value: category?.sort ?? _sort,
+                        options: const [
+                          CategorySort.alphabetical,
+                          CategorySort.manual,
+                          CategorySort.mostUsed,
+                          CategorySort.lastUsed,
+                        ],
+                        label: (sort) => switch (sort) {
+                          CategorySort.alphabetical => l.alphabetical,
+                          CategorySort.manual => l.manual,
+                          CategorySort.mostUsed => l.mostUsed,
+                          CategorySort.lastUsed => l.lastUsed,
+                        },
+                        onChanged: (sort) {
+                          if (category == null) {
+                            setState(() => _sort = sort);
+                          } else {
+                            _persist(service.setCategorySort(category, sort));
+                          }
+                        },
+                      ),
+                      SectionLayoutTile(
+                        mode: effectiveLayout,
+                        onChanged: (mode) {
+                          final type = mode == 'grid'
+                              ? CategoryType.grid
+                              : CategoryType.row;
+                          if (category == null) {
+                            setState(() => _layout = type);
+                          } else if (appearance != null) {
+                            _persist(
+                              appearance.setCategory(
+                                category.id,
+                                'layout',
+                                mode,
+                              ),
+                            );
+                          } else {
+                            _persist(service.setCategoryType(category, type));
+                          }
+                        },
+                      ),
+                    ],
+                    if (category != null)
+                      FocusableSettingsTile(
+                        title: Text(l.categoryAppearance),
+                        leading: const Icon(Icons.palette_outlined),
+                        onPressed: () => Navigator.of(context).push(
+                          SettingsRoute<void>(
+                            builder: (_) =>
+                                CategoryAppearancePage(categoryId: category.id),
+                          ),
+                        ),
+                      ),
+                  ],
+                  if (_creating) ...[
+                    const Divider(),
+                    FocusableSettingsTile(
+                      title: Text(l.save),
+                      leading: const Icon(Icons.save_outlined),
+                      enabled: valid,
+                      busy: _saving,
+                      onPressed: valid && !_saving ? _create : null,
+                    ),
+                  ] else if (section != null && category?.isSystem != true) ...[
+                    const Divider(),
+                    _DeleteSectionTile(
+                      section: section,
+                      enabled:
+                          category == null ||
+                          (sections.whereType<Category>().length > 1 &&
+                              canHide),
+                      onDeleted: () => Navigator.of(context).pop(),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+    );
   }
 }
 
 class _DeleteSectionTile extends StatefulWidget {
-  const _DeleteSectionTile({required this.section, required this.enabled,
-    required this.onDeleted});
+  const _DeleteSectionTile({
+    required this.section,
+    required this.enabled,
+    required this.onDeleted,
+  });
   final LauncherSection section;
   final bool enabled;
   final VoidCallback onDeleted;
@@ -590,27 +443,43 @@ class _DeleteSectionTileState extends State<_DeleteSectionTile> {
 
   Future<void> _delete() async {
     if (_busy || !widget.enabled) return;
-    setState(() { _busy = true; _failed = false; });
+    setState(() {
+      _busy = true;
+      _failed = false;
+    });
     final l = AppLocalizations.of(context)!;
     try {
       final name = widget.section is Category
-          ? (widget.section as Category).name : l.spacer;
-      final confirmed = await showLauncherDialog<bool>(context: context,
+          ? (widget.section as Category).name
+          : l.spacer;
+      final confirmed = await showLauncherDialog<bool>(
+        context: context,
         builder: (dialog) => LauncherAlertDialog(
           title: Text('${l.delete}: $name'),
           content: Text(l.sectionDeleteConfirm),
           actions: [
-            LauncherDialogButton(autofocus: true, isCancel: true,
-              onPressed: () => Navigator.pop(dialog, false), child: Text(l.cancel)),
-            LauncherDialogButton(primary: true,
-              onPressed: () => Navigator.pop(dialog, true), child: Text(l.delete)),
+            LauncherDialogButton(
+              autofocus: true,
+              isCancel: true,
+              onPressed: () => Navigator.pop(dialog, false),
+              child: Text(l.cancel),
+            ),
+            LauncherDialogButton(
+              primary: true,
+              onPressed: () => Navigator.pop(dialog, true),
+              child: Text(l.delete),
+            ),
           ],
-        ));
+        ),
+      );
       if (!mounted || confirmed != true) return;
       final service = context.read<AppsService>();
       // Resolve again after the dialog: a refreshed catalogue may change order.
-      final index = service.launcherSections.indexWhere((s) =>
-        s.runtimeType == widget.section.runtimeType && s.id == widget.section.id);
+      final index = service.launcherSections.indexWhere(
+        (s) =>
+            s.runtimeType == widget.section.runtimeType &&
+            s.id == widget.section.id,
+      );
       if (index < 0) return;
       await service.deleteSection(index);
       if (mounted) widget.onDeleted();
@@ -624,158 +493,26 @@ class _DeleteSectionTileState extends State<_DeleteSectionTile> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
-    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      FocusableSettingsTile(enabled: widget.enabled,
-        busy: _busy,
-        leading: const Icon(Icons.delete_outline),
-        title: Text(l.delete, style: TextStyle(color: Theme.of(context).colorScheme.error)),
-        onPressed: _delete),
-      if (_busy) Text(l.loading),
-      if (_failed) Text(l.sectionDeleteFailed,
-        style: TextStyle(color: Theme.of(context).colorScheme.error)),
-    ]);
-  }
-}
-
-class _LauncherSpacerSettings extends StatefulWidget
-{
-  final LauncherSpacer? spacer;
-
-  const _LauncherSpacerSettings({this.spacer});
-
-  @override
-  State<StatefulWidget> createState() => _LauncherSpacerSettingsState();
-}
-
-class _LauncherSpacerSettingsState extends State<_LauncherSpacerSettings>
-{
-  int _numberValue;
-  LauncherSpacer? _spacer;
-
-  late bool _creating;
-  
-  // Need preset values for the dropdown
-  final List<int> _spacerHeightPresets = [10, 20, 30, 40, 50, 75, 100, 125, 150, 175, 200, 250];
-
-  _LauncherSpacerSettingsState():
-    _numberValue = 10;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _spacer = widget.spacer;
-    _creating = _spacer == null;
-
-    int height = 10;
-    if (_spacer != null) {
-      height = _spacer!.height;
-    }
-
-    _numberValue = height;
-    
-    // Ensure the current value is in our presets, if not add it
-    if (!_spacerHeightPresets.contains(_numberValue)) {
-      _spacerHeightPresets.add(_numberValue);
-      _spacerHeightPresets.sort();
-    }
-    
-    context.read<_SettingsState>().onSave = _save;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) _notifyChange();
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    AppLocalizations localizations = AppLocalizations.of(context)!;
-
-    return _listTile(
-      context,
-      Text(localizations.height),
-      Padding(
-        padding: EdgeInsets.only(top: 4),
-        child: _SettingsChoice<int>(
-          autofocus: !_creating,
-          initialValue: _numberValue,
-          onChanged: (value) {
-            setState(() {
-              _numberValue = value!;
-            });
-            _notifyChange();
-          },
-          items: _spacerHeightPresets.map((height) {
-            return DropdownMenuItem<int>(
-              value: height,
-              child: Text(height.toString()),
-            );
-          }).toList(),
-        )
-      )
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        FocusableSettingsTile(
+          enabled: widget.enabled,
+          busy: _busy,
+          leading: const Icon(Icons.delete_outline),
+          title: Text(
+            l.delete,
+            style: TextStyle(color: Theme.of(context).colorScheme.error),
+          ),
+          onPressed: _delete,
+        ),
+        if (_busy) Text(l.loading),
+        if (_failed)
+          Text(
+            l.sectionDeleteFailed,
+            style: TextStyle(color: Theme.of(context).colorScheme.error),
+          ),
+      ],
     );
-  }
-
-  void _notifyChange()
-  {
-    context.read<_SettingsState>().setFlags(true, _numberValue != _spacer?.height);
-    if (!_creating && _numberValue != _spacer?.height) unawaited(_save());
-  }
-
-  Future<void> _save() async
-  {
-    AppsService service = context.read();
-    if (_creating) {
-      await service.addSpacer(_numberValue);
-
-      if (!mounted || !context.mounted) return;
-      Navigator.of(context).pop(service.launcherSections.last);
-    }
-    else {
-      assert(_spacer != null);
-      await service.updateSpacerHeight(_spacer!, _numberValue);
-    }
-  }
-}
-
-Widget _listTile(BuildContext context, Widget title, Widget subtitle) {
-  final child = subtitle is Padding ? subtitle.child! : subtitle;
-  return _ChoiceLabel(title: title, child: child);
-}
-
-class _ChoiceLabel extends InheritedWidget {
-  final Widget title;
-  const _ChoiceLabel({required this.title, required super.child});
-  @override
-  bool updateShouldNotify(_ChoiceLabel oldWidget) => title != oldWidget.title;
-}
-
-class _SettingsChoice<T> extends StatelessWidget {
-  final T? initialValue;
-  final List<DropdownMenuItem<T>>? items;
-  final ValueChanged<T?>? onChanged;
-  final bool autofocus;
-  final Widget? hint;
-  const _SettingsChoice({this.hint, this.initialValue, this.items,
-    this.onChanged, this.autofocus = false});
-
-  @override
-  Widget build(BuildContext context) {
-    final title = context.dependOnInheritedWidgetOfExactType<_ChoiceLabel>()!.title as Text;
-    final choices = items ?? <DropdownMenuItem<T>>[];
-    if (initialValue is num && choices.every((item) => item.value is num)) {
-      return SettingsValueStepper(title: title.data ?? '',
-        options: choices.map((item) => item.value).toList(), value: initialValue,
-        label: (v) => '$v', autofocus: autofocus, enabled: onChanged != null,
-        onChanged: (v) => onChanged?.call(v as T));
-    }
-    return SettingsChoiceTile<T?>(title: title.data ?? '', value: initialValue,
-      options: choices.map((item) => item.value).toList(),
-      valueLabel: hint is Text ? (hint as Text).data : null,
-      label: (v) {
-        final child = choices.where((item) => item.value == v).firstOrNull?.child;
-        return child is Text ? child.data ?? '' : '$v';
-      },
-      autofocus: autofocus, enabled: onChanged != null,
-      onChanged: (v) => onChanged?.call(v));
   }
 }

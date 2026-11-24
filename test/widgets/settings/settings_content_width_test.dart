@@ -2,6 +2,7 @@ import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/models/category.dart';
 import 'package:flauncher/providers/memory_resources.dart';
 import 'package:flauncher/widgets/settings/memory_page.dart';
+import 'package:flauncher/widgets/settings/memory_settings_page.dart';
 import 'package:flauncher/providers/appearance_service.dart';
 import 'package:flauncher/providers/notifications_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
@@ -29,13 +30,14 @@ import '../../mocks.mocks.dart';
 void main() {
   final pages = <String, Widget>{
     'memory': const MemoryPage(),
-    'memory saver': const MemorySaverPage(),
+    'memory limits': const MemorySettingsPage(),
     'home': const InterfaceSettingsPage(),
     'tiles': const AppearancePage(),
     'backup': const BackupRestorePage(),
     'updates': const UpdatesPage(),
     'notifications': const NotificationsSettingsPage(),
     'continue watching': const ContinueWatchingSettingsPage(),
+    'continue watching section settings': const ContinueWatchingSectionSettingsPage(),
     'continue watching appearance': const AppChannelsAppearancePage(
       categoryId: ContinueWatchingSection.sectionId,
     ),

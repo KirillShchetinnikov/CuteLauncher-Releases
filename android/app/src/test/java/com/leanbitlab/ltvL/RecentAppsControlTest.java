@@ -28,13 +28,14 @@ public class RecentAppsControlTest {
         final Map<Integer, String> tasks = new LinkedHashMap<>();
         final List<String> changes = new ArrayList<>();
         String user = "0";
+        String recents = "* Recent #0: Task{abc #2}";
         boolean refuseStop;
         boolean delayRemoval;
         int pendingId = -1, pendingReads;
         @Override public String execute(String command) {
             if (command.equals("id -u")) return "2000";
             if (command.equals("am get-current-user")) return user;
-            if (command.equals("dumpsys activity recents")) return "* Recent #0: Task{abc #2}";
+            if (command.equals("dumpsys activity recents")) return recents;
             if (command.equals("am stack list")) {
                 var text = new StringBuilder();
                 tasks.forEach((id,pkg) -> text.append("taskId=").append(id).append(": ").append(pkg).append("/.Main userId=0\n"));
@@ -52,7 +53,7 @@ public class RecentAppsControlTest {
         }
         @Override public void close() {}
     }
-    @Test public void filterTasksAndCloseAllProtectsSystemAndHome() throws Exception {
+    @Test public void launcherCanBeFocusedAndIsProtectedFromBothCloseActions() throws Exception {
         try (var controller = Robolectric.buildActivity(Activity.class).setup()) {
             var context = controller.get();
             install(context,"tv.user",true,0,false);
@@ -63,15 +64,24 @@ public class RecentAppsControlTest {
             var shell = new Shell();
             shell.tasks.put(1,"tv.user"); shell.tasks.put(2,"tv.user"); shell.tasks.put(3,"tv.system");
             shell.tasks.put(4,"tv.updated"); shell.tasks.put(5,"tv.launcher"); shell.tasks.put(6,"phone.only");
-            shell.tasks.put(7,context.getPackageName());
+            String launcher = context.getPackageName();
+            shell.tasks.put(7, launcher);
+            shell.recents = "* Recent #0: Task{abc #7}\n* Recent #1: Task{abc #2}";
             var control = new RecentAppsControl(context,shell);
             var apps = (List<?>)control.run("list",null).get("apps");
-            assertEquals(3,apps.size());
-            assertEquals("tv.user",((Map<?,?>)apps.get(0)).get("packageName"));
+            assertEquals(List.of("tv.user", "tv.system", "tv.updated", launcher),
+                apps.stream().map(row -> ((Map<?, ?>) row).get("packageName")).toList());
+            var launcherRow = (Map<?, ?>) apps.get(3);
+            assertEquals(launcher, launcherRow.get("packageName"));
+            assertEquals(false, launcherRow.get("canClose"));
             assertTrue(shell.changes.isEmpty());
+            assertThrows(IllegalArgumentException.class, () -> control.run("close", launcher));
+            assertTrue(shell.changes.isEmpty());
+            assertEquals("success", control.run("switch", launcher).get("status"));
             assertEquals("success",control.run("closeAll",null).get("status"));
-            assertEquals(List.of("am force-stop --user 0 tv.user"),shell.changes);
+            assertEquals(List.of("am task focus 7", "am force-stop --user 0 tv.user"), shell.changes);
             assertFalse(shell.tasks.containsValue("tv.user"));
+            assertTrue(shell.tasks.containsValue(launcher));
             assertTrue(shell.tasks.containsValue("tv.launcher"));
             assertTrue(shell.tasks.containsValue("tv.system"));
             assertTrue(shell.tasks.containsValue("phone.only"));

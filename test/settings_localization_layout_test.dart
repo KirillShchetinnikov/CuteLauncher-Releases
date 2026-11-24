@@ -28,6 +28,7 @@ import 'package:flauncher/widgets/settings/settings_panel_style.dart';
 
 import 'package:flauncher/widgets/settings/appearance_settings_page.dart';
 import 'package:flauncher/widgets/settings/memory_page.dart';
+import 'package:flauncher/widgets/settings/memory_settings_page.dart';
 import 'package:flauncher/widgets/settings/diagnostics_page.dart';
 import 'package:flauncher/widgets/settings/updates_page.dart';
 import 'package:flauncher/widgets/settings/adb_page.dart';
@@ -128,6 +129,9 @@ void main() {
           BrightnessPage(),
           SettingsPanelPage(),
           MemoryPage(),
+          MemorySettingsPage(),
+          MemorySettingsPage(advanced: true),
+          MemorySettingsPage(section: PosterCacheSection.watchNext),
           DiagnosticsPage(),
           GeneralSettingsPage(),
           UpdatesPage(),
@@ -153,6 +157,7 @@ void main() {
           DisplaySettingsPage(),
           NotificationsSettingsPage(),
           ContinueWatchingSettingsPage(),
+          ContinueWatchingSectionSettingsPage(),
           AppChannelsAppearancePage(categoryId: ContinueWatchingSection.sectionId),
           ContinueWatchingMaxItemsPage(),
           ContinueWatchingAppsPage(),

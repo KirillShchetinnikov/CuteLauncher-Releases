@@ -99,12 +99,11 @@ def open_setting(key):
 
 def memory_page():
     ui().settings()
-    for key in ['generalSettings', 'advancedSettings', 'memoryTitle']:
-        open_setting(key)
+    open_setting('launcherSettings')
 
 def saver_value():
     helper = ui()
-    for attempt in range(8):
+    for attempt in range(16):
         helper.screen('saver-switch')
         nodes = list(ET.parse(out / 'ui-precheck/saver-switch.xml').getroot().iter('node'))
         checked = [node for node in nodes if node.get('checkable') == 'true']

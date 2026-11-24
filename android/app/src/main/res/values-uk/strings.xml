@@ -40,4 +40,6 @@
     <string name="recovery_restore">Відновити попередній головний екран</string>
     <string name="recovery_restore_confirm">Відновити попередній головний екран через наявне локальне з’єднання ADB?</string>
     <string name="remap_error_adb_command">Команду ADB не виконано. Перевірте локальне підключення ADB і команду.</string>
+    <string name="recent_apps_adb_required">Підключіть локальний ADB, щоб відкрити панель програм.</string>
+    <string name="recent_apps_accessibility_required">Увімкніть службу CuteLauncher у спеціальних можливостях.</string>
 </resources>

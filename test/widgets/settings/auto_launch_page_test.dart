@@ -8,6 +8,79 @@ import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/widgets/settings/auto_launch_page.dart';
 
 void main() {
+  for (final (mode, saved, expected) in [
+    ('hdmi', 'cec', 'XBOX'), ('app', 'org.vlc', 'VLC'), ('app', 'org.removed', 'Kodi'),
+  ]) {
+    testWidgets('picker entry follows saved target or first available: $mode/$saved', (tester) async {
+      const channel = MethodChannel('cutelauncher/auto_launch');
+      const platform = MethodChannel('me.efesser.flauncher/method');
+      final messenger = tester.binding.defaultBinaryMessenger;
+      messenger.setMockMethodCallHandler(channel, (_) async =>
+        AutoLaunchConfiguration(mode: mode, input: mode == 'hdmi' ? saved : '', app: mode == 'app' ? saved : '').toMap());
+      messenger.setMockMethodCallHandler(platform, (call) async => call.method == 'getTvInputs'
+        ? [
+            {'id':'other','label':'HDMI 1','type':1007},
+            {'id':'port','label':'HDMI 2','type':1007},
+            {'id':'cec','label':'XBOX','type':1007,'parentId':'port'},
+          ]
+        : [
+            {'packageName':'org.kodi','name':'Kodi'},
+            {'packageName':'org.vlc','name':'VLC'},
+          ]);
+      addTearDown(() {
+        messenger.setMockMethodCallHandler(channel, null);
+        messenger.setMockMethodCallHandler(platform, null);
+      });
+      await tester.pumpWidget(const MaterialApp(
+        locale: Locale('ru'), localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales, home: Scaffold(body: AutoLaunchPage()),
+      ));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Цель запуска').first);
+      await tester.pumpAndSettle();
+      final target = find.descendant(of: find.byType(AlertDialog), matching: find.text(expected));
+      expect(Focus.of(tester.element(target)).hasFocus, isTrue);
+    });
+  }
+  testWidgets('failed read blocks editing until retry restores the saved schedule', (tester) async {
+    const channel = MethodChannel('cutelauncher/auto_launch');
+    final messenger = tester.binding.defaultBinaryMessenger;
+    var reads = 0;
+    Map? saved;
+    messenger.setMockMethodCallHandler(channel, (call) async {
+      if (call.method == 'save') {
+        saved = call.arguments as Map;
+        return {'status': 'success'};
+      }
+      if (++reads == 1) throw PlatformException(code: 'unavailable');
+      return const AutoLaunchConfiguration(
+        mode: 'app', app: 'example.player', boot: true, wake: true, delay: 30,
+      ).toMap();
+    });
+    addTearDown(() => messenger.setMockMethodCallHandler(channel, null));
+    await tester.pumpWidget(const MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: Scaffold(body: AutoLaunchPage()),
+    ));
+    await tester.pumpAndSettle();
+    final l = AppLocalizations.of(tester.element(find.byType(AutoLaunchPage)))!;
+    expect(find.text(l.settingsLoadFailed), findsOneWidget);
+    expect(find.text(l.autoLaunchOff), findsNothing);
+    expect(find.text(l.autoLaunchBoot), findsNothing);
+    expect(saved, isNull);
+    await tester.tap(find.text(l.backgroundStartupRetry).first);
+    await tester.pumpAndSettle();
+    expect(find.text(l.settingsLoadFailed), findsNothing);
+    await tester.ensureVisible(find.text(l.autoLaunchWake));
+    await tester.tap(find.text(l.autoLaunchWake));
+    await tester.pumpAndSettle();
+    expect(saved, containsPair('wake', false));
+    expect(saved, containsPair('boot', true));
+    expect(saved, containsPair('delay', 30));
+    expect(saved, containsPair('app', 'example.player'));
+  });
+
   for (final success in [true, false]) {
     testWidgets('saving an autostart toggle preserves its focus; success=$success', (tester) async {
       const channel = MethodChannel('cutelauncher/auto_launch');
@@ -228,7 +301,9 @@ void main() {
         ),
       );
       await tester.pump();
-      expect(Focus.of(tester.element(find.text('Выключен'))).hasFocus, isTrue);
+      final l = AppLocalizations.of(tester.element(find.byType(AutoLaunchPage)))!;
+      expect(Focus.of(tester.element(find.text(l.loading))).hasFocus, isTrue);
+      expect(find.text(l.autoLaunchOff), findsNothing);
       await tester.sendKeyEvent(LogicalKeyboardKey.enter);
       await tester.pump();
       expect(find.byType(AlertDialog), findsNothing);

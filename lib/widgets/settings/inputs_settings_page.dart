@@ -18,6 +18,7 @@ import '../tv_input_icon.dart';
 import 'focusable_settings_tile.dart';
 import 'settings_page_layout.dart';
 import 'settings_route.dart';
+import 'settings_section.dart';
 
 class InputsSettingsPage extends StatefulWidget {
   static const routeName = 'inputs_settings';
@@ -132,52 +133,61 @@ class _InputsSettingsPageState extends State<InputsSettingsPage> {
       title: Text(input?.label ?? l.inputsSettings),
       child: ListView(
         children: [
-          WidgetPlacementLink(id: 'inputs', title: l.inputs),
           if (input == null) ...[
-            RoundedSwitchListTile(
-              autofocus: true,
-              value: config.useCecNames,
-              enabled: service.hasInputs,
-              title: Text(l.inputsUseCecNames),
-              onChanged: (v) => _save(config.copyWith(useCecNames: v)),
+            SettingsSection(
+              title: l.settingsGroupDisplay,
+              children: [WidgetPlacementLink(id: 'inputs', title: l.inputs)],
             ),
-            SettingsHelp(title: l.inputs, text: l.inputsNamesHint),
-            RoundedSwitchListTile(
-              value: config.cecStateOnly,
-              enabled: service.hasInputs,
-              title: Text(l.inputsCecStateOnly),
-              onChanged: (v) => _save(config.copyWith(cecStateOnly: v)),
+            SettingsSection(
+              title: 'HDMI-CEC',
+              children: [
+                RoundedSwitchListTile(
+                  autofocus: true,
+                  value: config.useCecNames,
+                  enabled: service.hasInputs,
+                  title: Text(l.inputsUseCecNames),
+                  onChanged: (v) => _save(config.copyWith(useCecNames: v)),
+                ),
+                SettingsHelp(title: l.inputs, text: l.inputsNamesHint),
+                RoundedSwitchListTile(
+                  value: config.cecStateOnly,
+                  enabled: service.hasInputs,
+                  title: Text(l.inputsCecStateOnly),
+                  onChanged: (v) => _save(config.copyWith(cecStateOnly: v)),
+                ),
+                SettingsHelp(
+                  title: l.inputsCecStateOnly,
+                  text: l.inputsCecStateOnlyHelp,
+                ),
+              ],
             ),
-            SettingsHelp(
-              title: l.inputsCecStateOnly,
-              text: l.inputsCecStateOnlyHelp,
-            ),
-            if (!service.initialized)
-              const LinearProgressIndicator()
-            else if (!service.hasInputs)
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
+            SettingsSection(
+              title: l.inputSources,
+              children: [
+                if (!service.initialized)
+                  const LinearProgressIndicator()
+                else if (!service.hasInputs) ...[
                   SettingsMessage(
                     text: l.inputsUnavailableStatus,
                     kind: SettingsMessageKind.warning,
                   ),
                   SettingsHelp(title: l.inputs, text: l.inputsUnavailableHint),
                 ],
-              ),
-            for (final source in service.inputs)
-              FocusableSettingsTile(
-                leading: Icon(tvInputIcon(source)),
-                title: Text(source.label),
-                onPressed: () => Navigator.of(context).push(
-                  SettingsRoute(
-                    settings: const RouteSettings(
-                      name: InputsSettingsPage.routeName,
+                for (final source in service.inputs)
+                  FocusableSettingsTile(
+                    leading: Icon(tvInputIcon(source)),
+                    title: Text(source.label),
+                    onPressed: () => Navigator.of(context).push(
+                      SettingsRoute(
+                        settings: const RouteSettings(
+                          name: InputsSettingsPage.routeName,
+                        ),
+                        builder: (_) => InputsSettingsPage(input: source),
+                      ),
                     ),
-                    builder: (_) => InputsSettingsPage(input: source),
                   ),
-                ),
-              ),
+              ],
+            ),
           ] else ...[
             FocusableSettingsTile(
               autofocus: true,

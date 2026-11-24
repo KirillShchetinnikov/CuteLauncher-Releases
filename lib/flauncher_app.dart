@@ -41,6 +41,7 @@ import 'widgets/update_notification.dart';
 import 'widgets/launcher_dialog.dart';
 import 'widgets/settings/settings_panel.dart';
 import 'widgets/settings/adb_page.dart';
+import 'widgets/settings/accessibility_page.dart';
 import 'dart:async';
 import 'theme/launcher_colors.dart';
 
@@ -93,7 +94,7 @@ class _FLauncherAppState extends State<FLauncherApp> {
         }
         return;
       }
-      if (event == 'open_adb_settings') {
+      if (event == 'open_adb_settings' || event == 'open_accessibility_settings') {
         final request = ++_settingsRequest;
         WidgetsBinding.instance.ensureVisualUpdate();
         await WidgetsBinding.instance.endOfFrame;
@@ -104,7 +105,9 @@ class _FLauncherAppState extends State<FLauncherApp> {
           context: settingsContext,
           styleDialog: false,
           barrierColor: Colors.transparent,
-          builder: (_) => const SettingsPanel(initialRoute: AdbPage.connectionRouteName),
+          builder: (_) => SettingsPanel(initialRoute: event == 'open_adb_settings'
+              ? AdbPage.connectionRouteName
+              : AccessibilityPage.routeName),
         );
         return;
       }

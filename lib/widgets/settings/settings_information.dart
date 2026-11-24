@@ -1,8 +1,33 @@
 import 'package:flutter/material.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../../theme/settings_info_tokens.dart';
+import 'focusable_settings_tile.dart';
 
 enum SettingsMessageKind { info, warning, error }
+
+class SettingsLoadRetry extends StatelessWidget {
+  const SettingsLoadRetry({super.key, required this.busy, required this.onRetry});
+
+  final bool busy;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+    return Column(children: [
+      SettingsMessage(text: l.settingsLoadFailed, kind: SettingsMessageKind.error),
+      FocusableSettingsTile(
+        autofocus: true,
+        busy: busy,
+        showActionChevron: false,
+        leading: const Icon(Icons.refresh),
+        title: Text(l.backgroundStartupRetry),
+        onPressed: onRetry,
+      ),
+    ]);
+  }
+}
 
 /// A visible fact about the current control or operation, never hidden as help.
 /// Actions remain separate standard settings controls.
@@ -54,8 +79,7 @@ class SettingsEmptyState extends StatelessWidget {
 }
 
 /// Remote instructions retain the original localized reading order and wording.
-/// Only universal key names and directional glyphs receive a keycap background;
-/// punctuation and prose are not parsed into artificial actions or sentences.
+/// Key names and directional glyphs stand out through font weight.
 class SettingsControlHint extends StatelessWidget {
   const SettingsControlHint({super.key, required this.text});
 
@@ -72,7 +96,6 @@ class SettingsControlHint extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = Theme.of(context).colorScheme.onSurface;
     final spans = <InlineSpan>[];
     var start = 0;
     for (final match in _keys.allMatches(text)) {
@@ -94,12 +117,7 @@ class SettingsControlHint extends StatelessWidget {
                   semanticsLabel: key,
                 ),
           ],
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            backgroundColor: color.withValues(
-              alpha: color.a * SettingsInfoTokens.keyOpacity,
-            ),
-          ),
+          style: const TextStyle(fontWeight: FontWeight.w600),
         ),
       );
       start = match.end;

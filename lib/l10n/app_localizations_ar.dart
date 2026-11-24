@@ -202,7 +202,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tvCompatibilityRun => 'Run check';
 
   @override
-  String get tvCompatibilityResults => 'View results';
+  String get tvCompatibilityResults => 'نتائج فحص التوافق';
 
   @override
   String get compatibilityReportDate => 'Check date';
@@ -598,7 +598,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get textEmptyCategory => 'هذه الفئة فارغة.';
+  String get textEmptyCategory => 'هذا القسم فارغ. اضغط على OK لإدارة الأقسام.';
 
   @override
   String get time => 'الوقت';
@@ -666,10 +666,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get backupAndRestore => 'النسخ الاحتياطي والاستعادة';
 
   @override
-  String get exportBackup => 'تصدير النسخ الاحتياطي';
+  String get exportBackup => 'تصدير إلى ملف';
 
   @override
-  String get importBackup => 'استيراد النسخ الاحتياطي';
+  String get importBackup => 'استيراد من ملف';
 
   @override
   String exportSuccess(String path) {
@@ -681,7 +681,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get importConfirm =>
-      'هل أنت متأكد أنك تريد استيراد النسخ الاحتياطي؟ سيؤدي هذا إلى الكتابة فوق إعداداتك وتخطيطك الحاليين.';
+      'هل تريد استعادة هذه النسخة؟ سيحل تخطيطها محل التخطيط الحالي. قد تعود الإعدادات المفقودة من النسخة أو ذات القيم غير الصالحة إلى قيمها الافتراضية.';
 
   @override
   String get importError =>
@@ -1235,7 +1235,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get reorderSectionsHint =>
-      'حدد باستخدام ◄ / ► ثم استخدم ▲ / ▼ لإعادة الترتيب. قم بعبور حدود القائمة لإخفاء قسم أو إظهاره.';
+      '▲ / ▼ لاختيار قسم · OK للفتح · ◄ / ► لبدء النقل';
 
   @override
   String get customName => 'الاسم المخصص';
@@ -2317,7 +2317,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get quickPanelObjectsTitle => 'عناصر الإعدادات السريعة';
 
   @override
-  String get topPanelObjects => 'العناصر';
+  String get topPanelObjects => 'العناصر وترتيبها';
 
   @override
   String get panelTextBackground => 'خلفية النص والزر';
@@ -2944,7 +2944,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get adbAccessibilityGuide =>
-      'حدد CuteLauncher في قائمة النظام وقم بتمكين الخدمة الخاصة به. ارجع هنا لتكوين اعتراض الصفحة الرئيسية. لتعطيلها، قم بإيقاف تشغيل خدمة CuteLauncher في نفس القائمة.';
+      'فعّل خدمة CuteLauncher في إعدادات Android، ثم ارجع إلى المشغّل.';
 
   @override
   String get adbEffectAccessibilityDisable =>
@@ -4333,7 +4333,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get cleanerLists => 'قوائم التعطيل';
 
   @override
-  String get cleanerRecovery => 'النسخ الاحتياطي والاستعادة';
+  String get cleanerRecovery => 'نسخ احتياطية لحالة التطبيقات';
 
   @override
   String get cleanerExports => 'التقارير';
@@ -4438,7 +4438,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get sleepTimerSettings => 'إعدادات مؤقت الإيقاف';
 
   @override
-  String get sleepTimerPresets => 'المؤقتات';
+  String get sleepTimerPresets => 'مدد المؤقت';
 
   @override
   String get sleepTimerDisplay => 'العرض أثناء تشغيل المؤقت';
@@ -4654,12 +4654,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get recentAppsEmpty => 'لا توجد تطبيقات تلفاز بمهام مفتوحة';
 
   @override
-  String get recentAppsUnavailable =>
-      'التطبيقات المفتوحة غير متاحة. تحقق من ADB وإذن تسهيل الاستخدام.';
+  String get recentAppsUnavailable => 'التطبيقات المفتوحة غير متاحة.';
+
+  @override
+  String get recentAppsAdbRequired =>
+      'اتصل بـ ADB المحلي لفتح لوحة التطبيقات المفتوحة.';
+
+  @override
+  String get recentAppsAccessibilityRequired =>
+      'فعّل خدمة CuteLauncher في إعدادات تسهيل الاستخدام.';
 
   @override
   String get recentAppsHelp =>
-      'تظهر تطبيقات التلفاز ذات المهام المفتوحة فقط. إغلاق الكل يوقف تطبيقات المستخدم في هذه القائمة. عيّن زرًا في أداة إعادة التعيين. تتطلب لوحة CuteLauncher خدمة ADB وإذن تسهيل الاستخدام.';
+      'تظهر تطبيقات التلفاز ذات المهام المفتوحة فقط. إغلاق الكل يوقف تطبيقات المستخدم في هذه القائمة. يبقى CuteLauncher مفتوحًا. عيّن زرًا في أداة إعادة التعيين. تتطلب لوحة CuteLauncher خدمة ADB وإذن تسهيل الاستخدام.';
 
   @override
   String get recentAppsHomeHint =>
@@ -5122,9 +5129,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get appChannelsEmpty => 'لا توجد خلاصات تطبيقات متاحة.';
 
   @override
-  String get appChannelsRefresh => 'تحديث الخلاصات';
-
-  @override
   String get appChannelsLaunchFailed => 'تعذّر فتح هذا المحتوى.';
 
   @override
@@ -5341,6 +5345,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get remoteMappingToggleNightMode => 'تبديل الوضع الليلي';
+
+  @override
+  String get remoteMappingScreenshot => 'التقاط لقطة شاشة';
 
   @override
   String get remoteMappingBlackOverlay => 'شاشة سوداء';
@@ -5778,7 +5785,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'أضف حقل طقس. يُسمح بما يصل إلى 12 كتلة وفاصل سطر واحد و60 حرفًا لكل حقل نصي.';
 
   @override
-  String get fileManagerPreference => 'مدير الملفات';
+  String get fileManagerPreference => 'طريقة اختيار الملفات';
 
   @override
   String get fileManagerAsk => 'السؤال في كل مرة';
@@ -6253,7 +6260,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get launcherDefaultAndAdb => 'المشغّل الافتراضي وADB';
 
   @override
-  String get defaultLauncherViaAdb => 'تعيين المشغّل الافتراضي عبر ADB';
+  String get defaultLauncherViaAdb => 'تعيين عبر ADB';
 
   @override
   String get defaultLauncherViaAccessibility =>
@@ -6278,7 +6285,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get settingsGeneralGroup => 'عام';
 
   @override
-  String get settingsManagementGroup => 'إدارة الإعدادات';
+  String get settingsManagementGroup => 'النسخ الاحتياطية والمزامنة';
 
   @override
   String get settingsMaintenanceGroup => 'الصيانة';
@@ -6322,6 +6329,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get hiddenFeeds => 'الخلاصات المخفية';
 
   @override
+  String get appChannelsOrderHint =>
+      '◄ / ► لبدء النقل. ▲ / ▼ لتغيير الترتيب أو النقل بين القوائم. OK أو رجوع للإنهاء.';
+
+  @override
   String get controlAndAccessGroup => 'التحكم والوصول';
 
   @override
@@ -6338,4 +6349,126 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get deletionGroup => 'الحذف';
+
+  @override
+  String get memoryLimitsLocked => 'توفير الذاكرة مفعّل. أوقفه لتغيير الحدود.';
+
+  @override
+  String get memoryOccupied => 'الذاكرة المستخدمة';
+
+  @override
+  String get memorySettings => 'الحدود وذاكرات التخزين المؤقت';
+
+  @override
+  String get memoryDecodedApps => 'صور التطبيقات والواجهة بعد فك ترميزها';
+
+  @override
+  String get memoryDecodedPosters => 'الملصقات بعد فك ترميزها';
+
+  @override
+  String get memoryPreload => 'التحميل المسبق للملصقات (عدد البطاقات)';
+
+  @override
+  String get memoryBackgroundClear =>
+      'مسح ذاكرة RAM المؤقتة عند مغادرة المشغّل';
+
+  @override
+  String get memoryResetLimits => 'استعادة حدود الذاكرة الافتراضية';
+
+  @override
+  String get memoryClearDisk => 'مسح الملصقات المخزنة مؤقتًا على القرص';
+
+  @override
+  String get memoryFreed => 'المساحة المحررة';
+
+  @override
+  String get memoryDiskFailed => 'تعذّر مسح ذاكرة القرص المؤقتة. حاول مجددًا.';
+
+  @override
+  String get memoryLimitsFailed => 'تعذّر حفظ إعدادات الذاكرة. حاول مجددًا.';
+
+  @override
+  String get memoryClearRam => 'مسح ذاكرة RAM المؤقتة';
+
+  @override
+  String get posterCacheRam => 'ذاكرة التخزين المؤقت للملصقات في الذاكرة';
+
+  @override
+  String get posterCacheDisk => 'ذاكرة التخزين المؤقت للملصقات على القرص';
+
+  @override
+  String get memoryAppChannelPosters => 'ملصقات خلاصات التطبيقات';
+
+  @override
+  String get posterCacheSaveFailed =>
+      'تعذّر حفظ حد ذاكرة التخزين المؤقت للملصقات.';
+
+  @override
+  String get appChannelsSectionSettings => 'إعدادات القسم';
+
+  @override
+  String get settingsLoadFailed => 'تعذّر تحميل الإعدادات.';
+
+  @override
+  String get diagnosticsReportsAndRecording => 'التقارير والتسجيل';
+
+  @override
+  String get diagnosticsClearRecordingConfirm =>
+      'هل تريد إيقاف التسجيل وحذف البيانات التي جُمعت خلال هذه الجلسة؟';
+
+  @override
+  String get appChannelVisible => 'عرض الخلاصة';
+
+  @override
+  String get movingSectionsHint =>
+      '▲ / ▼ للنقل · OK أو رجوع للإنهاء. انقل القسم عبر حد القائمة لإخفائه أو إظهاره.';
+
+  @override
+  String get cuteLauncherSettings => 'إعدادات CuteLauncher';
+
+  @override
+  String get hiddenSectionBadge => 'مخفي';
+
+  @override
+  String get buttonsAndFocus => 'الأزرار والتركيز';
+
+  @override
+  String get systemTiles => 'مربعات النظام';
+
+  @override
+  String get compatibilityGroup => 'التوافق';
+
+  @override
+  String get storageDevicesGroup => 'أجهزة التخزين';
+
+  @override
+  String get overAppsGroup => 'فوق التطبيقات الأخرى';
+
+  @override
+  String get remotePanelAssignButton => 'تعيين زر لفتح اللوحة';
+
+  @override
+  String get launcherChooseInAndroid => 'اختيار المشغّل في Android';
+
+  @override
+  String get openAndroidSettings => 'فتح إعدادات Android';
+
+  @override
+  String get applicationsTabAll => 'الكل';
+
+  @override
+  String get applicationsTabSystem => 'النظام';
+
+  @override
+  String get applicationsTabHidden => 'المخفية';
+
+  @override
+  String get fileSettingsGroup => 'الملفات';
+
+  @override
+  String get builtInBrowserOptions => 'خيارات متصفح الملفات المدمج';
+
+  @override
+  String get remoteMappingsLimit =>
+      'هناك 64 تعيينًا للأزرار بالفعل. احذف واحدًا لإضافة تعيين جديد.';
 }

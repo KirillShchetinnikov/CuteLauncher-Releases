@@ -134,7 +134,7 @@ Support the developer. You can support CuteLauncher development through [CloudTi
 
 ## Report an issue
 
-Reproduce the issue and open **Settings → Diagnostics → Diagnostics**.
+Reproduce the issue and open **Settings → Diagnostics → Reports and recording**.
 Select **Create report → Export report → Save to disk**.
 The file is saved as `cutelauncher_diagnostics_….json`.
 

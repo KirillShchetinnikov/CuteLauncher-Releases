@@ -98,7 +98,7 @@ void main() {
             .first,
       );
       expect(calls.map((c) => c.method), ['info']);
-      await tester.tap(find.text('Подключение АДБ'));
+      await tester.tap(find.text('Подключение ADB'));
       await tester.pumpAndSettle();
       await tester.ensureVisible(find.text('Проверить подключение'));
       await tester.tap(find.text('Проверить подключение'));
@@ -153,7 +153,7 @@ void main() {
         ),
       ).pop();
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Подключение АДБ'));
+      await tester.tap(find.text('Подключение ADB'));
       await tester.pumpAndSettle();
       final port = find.text('Порт ADB по TCP');
       await tester.ensureVisible(port);

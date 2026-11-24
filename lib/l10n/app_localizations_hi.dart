@@ -203,7 +203,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get tvCompatibilityRun => 'Run check';
 
   @override
-  String get tvCompatibilityResults => 'View results';
+  String get tvCompatibilityResults => 'संगतता जाँच के नतीजे';
 
   @override
   String get compatibilityReportDate => 'Check date';
@@ -599,7 +599,8 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get textEmptyCategory => 'यह श्रेणी खाली है।';
+  String get textEmptyCategory =>
+      'यह अनुभाग खाली है। अनुभाग प्रबंधित करने के लिए OK दबाएँ।';
 
   @override
   String get time => 'समय';
@@ -669,10 +670,10 @@ class AppLocalizationsHi extends AppLocalizations {
   String get backupAndRestore => 'बैकअप और पुनर्स्थापना';
 
   @override
-  String get exportBackup => 'बैकअप निर्यात करें';
+  String get exportBackup => 'फ़ाइल में निर्यात करें';
 
   @override
-  String get importBackup => 'बैकअप आयात करें';
+  String get importBackup => 'फ़ाइल से आयात करें';
 
   @override
   String exportSuccess(String path) {
@@ -684,7 +685,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get importConfirm =>
-      'क्या आप वाकई बैकअप आयात करना चाहते हैं? यह आपकी वर्तमान सेटिंग्स और लेआउट को ओवरराइट कर देगा।';
+      'यह बैकअप बहाल करें? इसका लेआउट मौजूदा लेआउट की जगह लेगा। बैकअप में जो सेटिंग मौजूद नहीं हैं या जिनके मान अमान्य हैं, वे डिफ़ॉल्ट मानों पर लौट सकती हैं।';
 
   @override
   String get importError =>
@@ -1238,7 +1239,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get reorderSectionsHint =>
-      '◄ / ► के साथ चयन करें और फिर पुनः व्यवस्थित करने के लिए ▲ / ▼ का उपयोग करें। किसी अनुभाग को छिपाने या दिखाने के लिए सूची सीमा को पार करें।';
+      '▲ / ▼ — अनुभाग चुनें · OK — खोलें · ◄ / ► — स्थान बदलना शुरू करें';
 
   @override
   String get customName => 'कस्टम नाम';
@@ -2320,7 +2321,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get quickPanelObjectsTitle => 'त्वरित सेटिंग के आइटम';
 
   @override
-  String get topPanelObjects => 'वस्तुएँ';
+  String get topPanelObjects => 'आइटम और क्रम';
 
   @override
   String get panelTextBackground => 'पाठ और बटन पृष्ठभूमि';
@@ -2955,7 +2956,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get adbAccessibilityGuide =>
-      'सिस्टम मेनू में CuteLauncher चुनें और इसकी सेवा सक्षम करें। होम इंटरसेप्शन को कॉन्फ़िगर करने के लिए यहां वापस लौटें। इसे अक्षम करने के लिए, उसी मेनू में CuteLauncher सेवा को बंद करें।';
+      'Android की सेटिंग में CuteLauncher सेवा चालू करें, फिर लॉन्चर पर लौटें।';
 
   @override
   String get adbEffectAccessibilityDisable =>
@@ -4347,7 +4348,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get cleanerLists => 'अक्षम करने की सूचियाँ';
 
   @override
-  String get cleanerRecovery => 'बैकअप और पुनर्स्थापना';
+  String get cleanerRecovery => 'ऐप्लिकेशन की स्थिति के बैकअप';
 
   @override
   String get cleanerExports => 'रिपोर्ट';
@@ -4454,7 +4455,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get sleepTimerSettings => 'स्लीप टाइमर सेटिंग';
 
   @override
-  String get sleepTimerPresets => 'टाइमर';
+  String get sleepTimerPresets => 'टाइमर की अवधियाँ';
 
   @override
   String get sleepTimerDisplay => 'टाइमर चलते समय दिखाएँ';
@@ -4673,12 +4674,19 @@ class AppLocalizationsHi extends AppLocalizations {
   String get recentAppsEmpty => 'खुले टास्क वाले कोई टीवी ऐप नहीं';
 
   @override
-  String get recentAppsUnavailable =>
-      'खुले ऐप उपलब्ध नहीं हैं। ADB और सुलभता अनुमति जाँचें।';
+  String get recentAppsUnavailable => 'खुले ऐप उपलब्ध नहीं हैं।';
+
+  @override
+  String get recentAppsAdbRequired =>
+      'खुले ऐप का पैनल खोलने के लिए स्थानीय ADB कनेक्ट करें।';
+
+  @override
+  String get recentAppsAccessibilityRequired =>
+      'सुलभता सेटिंग में CuteLauncher सेवा चालू करें।';
 
   @override
   String get recentAppsHelp =>
-      'केवल खुले टास्क वाले टीवी ऐप दिखते हैं। सभी बंद करें इस सूची के उपयोगकर्ता ऐप रोकता है। रीमैपर में बटन असाइन करें। CuteLauncher पैनल को ADB और सुलभता अनुमति चाहिए।';
+      'केवल खुले टास्क वाले टीवी ऐप दिखते हैं। सभी बंद करें इस सूची के उपयोगकर्ता ऐप रोकता है। CuteLauncher खुला रहता है। रीमैपर में बटन असाइन करें। CuteLauncher पैनल को ADB और सुलभता अनुमति चाहिए।';
 
   @override
   String get recentAppsHomeHint =>
@@ -5148,9 +5156,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String get appChannelsEmpty => 'कोई ऐप फ़ीड उपलब्ध नहीं है।';
 
   @override
-  String get appChannelsRefresh => 'फ़ीड रीफ़्रेश करें';
-
-  @override
   String get appChannelsLaunchFailed => 'यह सामग्री नहीं खोली जा सकी।';
 
   @override
@@ -5369,6 +5374,9 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get remoteMappingToggleNightMode => 'नाइट मोड चालू या बंद करें';
+
+  @override
+  String get remoteMappingScreenshot => 'स्क्रीनशॉट लें';
 
   @override
   String get remoteMappingBlackOverlay => 'काली स्क्रीन';
@@ -5808,7 +5816,7 @@ class AppLocalizationsHi extends AppLocalizations {
       'मौसम का फ़ील्ड जोड़ें। अधिकतम 12 ब्लॉक, एक नई पंक्ति और हर टेक्स्ट फ़ील्ड में 60 अक्षर हो सकते हैं।';
 
   @override
-  String get fileManagerPreference => 'फ़ाइल प्रबंधक';
+  String get fileManagerPreference => 'फ़ाइलें चुनने का तरीका';
 
   @override
   String get fileManagerAsk => 'हर बार पूछें';
@@ -6285,7 +6293,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get launcherDefaultAndAdb => 'डिफ़ॉल्ट लॉन्चर और ADB';
 
   @override
-  String get defaultLauncherViaAdb => 'ADB से डिफ़ॉल्ट लॉन्चर सेट करें';
+  String get defaultLauncherViaAdb => 'ADB से सेट करें';
 
   @override
   String get defaultLauncherViaAccessibility =>
@@ -6310,7 +6318,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get settingsGeneralGroup => 'सामान्य';
 
   @override
-  String get settingsManagementGroup => 'सेटिंग प्रबंधन';
+  String get settingsManagementGroup => 'बैकअप और सिंक';
 
   @override
   String get settingsMaintenanceGroup => 'रखरखाव';
@@ -6354,6 +6362,10 @@ class AppLocalizationsHi extends AppLocalizations {
   String get hiddenFeeds => 'छिपी फ़ीड';
 
   @override
+  String get appChannelsOrderHint =>
+      'स्थान बदलने के लिए ◄ / ► दबाएँ। ▲ / ▼ से क्रम या सूची बदलें। समाप्त करने के लिए OK या वापस दबाएँ।';
+
+  @override
   String get controlAndAccessGroup => 'नियंत्रण और पहुँच';
 
   @override
@@ -6370,4 +6382,126 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get deletionGroup => 'हटाना';
+
+  @override
+  String get memoryLimitsLocked =>
+      'मेमोरी की बचत चालू है। सीमाएँ बदलने के लिए इसे बंद करें।';
+
+  @override
+  String get memoryOccupied => 'उपयोग में मेमोरी';
+
+  @override
+  String get memorySettings => 'सीमाएँ और कैश';
+
+  @override
+  String get memoryDecodedApps => 'ऐप और इंटरफ़ेस की डिकोड की गई छवियाँ';
+
+  @override
+  String get memoryDecodedPosters => 'डिकोड किए गए पोस्टर';
+
+  @override
+  String get memoryPreload => 'पोस्टर प्रीलोड (कार्ड)';
+
+  @override
+  String get memoryBackgroundClear => 'लॉन्चर छोड़ते समय RAM कैश साफ़ करें';
+
+  @override
+  String get memoryResetLimits => 'डिफ़ॉल्ट मेमोरी सीमाएँ बहाल करें';
+
+  @override
+  String get memoryClearDisk => 'डिस्क पर पोस्टर कैश साफ़ करें';
+
+  @override
+  String get memoryFreed => 'खाली की गई जगह';
+
+  @override
+  String get memoryDiskFailed => 'डिस्क कैश साफ़ नहीं हो सका। फिर प्रयास करें।';
+
+  @override
+  String get memoryLimitsFailed =>
+      'मेमोरी सेटिंग सहेजी नहीं जा सकी। फिर प्रयास करें।';
+
+  @override
+  String get memoryClearRam => 'RAM कैश साफ़ करें';
+
+  @override
+  String get posterCacheRam => 'RAM में पोस्टर कैश';
+
+  @override
+  String get posterCacheDisk => 'डिस्क पर पोस्टर कैश';
+
+  @override
+  String get memoryAppChannelPosters => 'ऐप फ़ीड के पोस्टर';
+
+  @override
+  String get posterCacheSaveFailed => 'पोस्टर कैश की सीमा सहेजी नहीं जा सकी।';
+
+  @override
+  String get appChannelsSectionSettings => 'सेक्शन की सेटिंग';
+
+  @override
+  String get settingsLoadFailed => 'सेटिंग लोड नहीं हो सकीं।';
+
+  @override
+  String get diagnosticsReportsAndRecording => 'रिपोर्ट और रिकॉर्डिंग';
+
+  @override
+  String get diagnosticsClearRecordingConfirm =>
+      'रिकॉर्डिंग रोकें और इस सत्र में इकट्ठा किया गया डेटा मिटाएँ?';
+
+  @override
+  String get appChannelVisible => 'फ़ीड दिखाएँ';
+
+  @override
+  String get movingSectionsHint =>
+      '▲ / ▼ — स्थान बदलें · OK या वापस — पूरा करें। अनुभाग को छिपाने या दिखाने के लिए उसे सूची की सीमा के पार ले जाएँ।';
+
+  @override
+  String get cuteLauncherSettings => 'CuteLauncher की सेटिंग';
+
+  @override
+  String get hiddenSectionBadge => 'छिपा हुआ';
+
+  @override
+  String get buttonsAndFocus => 'बटन और फ़ोकस';
+
+  @override
+  String get systemTiles => 'सिस्टम टाइल';
+
+  @override
+  String get compatibilityGroup => 'संगतता';
+
+  @override
+  String get storageDevicesGroup => 'स्टोरेज डिवाइस';
+
+  @override
+  String get overAppsGroup => 'अन्य ऐप्लिकेशन के ऊपर';
+
+  @override
+  String get remotePanelAssignButton => 'पैनल खोलने के लिए बटन तय करें';
+
+  @override
+  String get launcherChooseInAndroid => 'Android में लॉन्चर चुनें';
+
+  @override
+  String get openAndroidSettings => 'Android की सेटिंग खोलें';
+
+  @override
+  String get applicationsTabAll => 'सभी';
+
+  @override
+  String get applicationsTabSystem => 'सिस्टम';
+
+  @override
+  String get applicationsTabHidden => 'छिपे हुए';
+
+  @override
+  String get fileSettingsGroup => 'फ़ाइलें';
+
+  @override
+  String get builtInBrowserOptions => 'बिल्ट-इन फ़ाइल ब्राउज़र के विकल्प';
+
+  @override
+  String get remoteMappingsLimit =>
+      'बटन के लिए पहले से 64 असाइनमेंट हैं। नया जोड़ने के लिए कोई एक हटाएँ।';
 }

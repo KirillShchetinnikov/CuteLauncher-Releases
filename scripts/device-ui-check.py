@@ -88,7 +88,7 @@ pages = [
     ('updates', [(6, 'generalSettings'), (1, 'appUpdates')]),
     ('backup', [(6, 'generalSettings'), (2, 'backupAndRestore')]),
     ('advanced', [(6, 'generalSettings'), (3, 'advancedSettings')]),
-    ('memory', [(6, 'generalSettings'), (3, 'advancedSettings'), (0, 'memoryTitle')]),
+    ('memory', [(5, 'launcherSettings'), (6, 'memoryOccupied')]),
     ('adb', [(6, 'generalSettings'), (3, 'advancedSettings'), (1, 'adbTitle')]),
     ('diagnostics', [(6, 'generalSettings'), (3, 'advancedSettings'), (2, 'diagnosticsTitle')]),
 ]

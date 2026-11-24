@@ -18,6 +18,7 @@ class ReorderingTileViewport extends StatefulWidget {
   final String? requested;
   final bool animate;
   final bool keyByPosition;
+  final double rowLookaheadScreens;
   final ScrollPhysics? physics;
   // Diagnostic A/B switch: materialize the entire configured Home, including
   // off-screen rows and horizontal cards. Ordinary builds keep the lazy policy.
@@ -34,6 +35,7 @@ class ReorderingTileViewport extends StatefulWidget {
     this.requested,
     this.animate = true,
     this.keyByPosition = false,
+    this.rowLookaheadScreens = 1.0,
     this.physics,
     this.materializeAll = const bool.fromEnvironment('CUTE_HOME_MATERIALIZE_ALL'),
   });
@@ -70,9 +72,9 @@ class _ReorderingTileViewportState extends State<ReorderingTileViewport>
       final screen = Offset.zero & MediaQuery.sizeOf(context);
       // Prepare neighboring rows before a fast D-pad descent reaches them.
       // A 120 dp entry margin created whole feeds during the transition frame.
-      // Keep one more screen of visited rows to avoid churn on a short reversal;
-      // distant rows and horizontal cards still remain lazily materialized.
-      final margin = math.max(120.0, screen.height * (_nearScreen ? 2 : 1));
+      // Keep visited rows for twice the entry distance on a short reversal.
+      final lookahead = screen.height * widget.rowLookaheadScreens;
+      final margin = math.max(120.0, lookahead * (_nearScreen ? 2 : 1));
       final visible = (box.localToGlobal(Offset.zero) & box.size)
           .overlaps(screen.inflate(margin));
       if (visible != _nearScreen) setState(() => _nearScreen = visible);

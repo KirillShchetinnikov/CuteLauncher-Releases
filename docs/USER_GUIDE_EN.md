@@ -74,7 +74,7 @@ OK toggles an item, Left/Right starts moving, Up/Down changes its position, and
 OK/Back finishes. The home panel settings button and information block have no
 visibility switch; clock, date and weather placement remains on their shared page. Help is collapsed under a topic title with an information
 icon. Current errors and unavailable-state reasons remain visible. Choose an
-app language in Launcher settings independently of Android, or follow the system language.
+app language in Launcher settings independently of Android, or follow the system language. Reopening the list focuses the current language.
 Back returns to the previous settings page. Expanding help should not replace
 the selected item's normal action.
 When moving down with the remote, settings start scrolling as the selected
@@ -131,9 +131,11 @@ Press OK on it to open section settings. Navigation skips spacers.
 Moving above the first available section
 reaches the top panel.
 
-Path: **Home screen → Sections and order**.
+Path: **Home screen → Sections and order**. To style all sections, use **Home screen → Section appearance**. An individual section editor shows the section name.
 
-The button instructions for moving sections stay pinned to the bottom of the panel.
+In **Home screen → Home screen behavior**, remote controls are grouped under **Buttons and focus**. The launcher and Android settings shortcuts are under **System tiles**.
+
+Use Up/Down to select a row, OK to edit it and Left/Right to start moving it. During a move, Up/Down changes its position. The first Back ends the move on the same row; the next Back returns to the parent menu. The controls hint changes with the mode.
 General information about sections opens separately in collapsed help.
 When you edit a visible section, the settings panel temporarily moves to the right
 and Home scrolls to its cards. Appearance changes are visible beside the panel as
@@ -150,6 +152,13 @@ Non-TV Apps, Favorites, Continue Watching, and App feeds) cannot be deleted;
 they can be hidden and moved. The four standard app categories can be renamed:
 their names do not change their purpose or membership. App feeds and Continue Watching
 keep their names. Favorites app membership is edited manually.
+When you create an app section, choose its name, visibility, sort order, and layout
+(Horizontal row or Grid). When you edit a section, its name stays in the header as
+you scroll. To rename it, press OK on the pencil beside the name and choose a
+preset or enter your own name.
+Turn off Show category to create a hidden section. Choose Save to add the section.
+Changes to an existing section apply immediately. Open Category appearance to adjust
+tile sizes, spacing, and the number of rows.
 Automatic app lists are built from installed apps. Enable and move Continue
 Watching in the same editor.
 Moving a category across the list boundary places it first among hidden categories;
@@ -157,6 +166,7 @@ restoring it places it last among visible ones. Other categories keep their orde
 
 Each standard category has its own icon. To change it for a standard or custom
 category, open **Category appearance → Headings → Section heading icon**.
+In **Home screen → Sections and order**, each category button shows the same icon, including hidden categories. If you haven't chosen an icon, the button shows the default.
 The picker has 22 icons, including Weather, Reading, Kids, Smart home, Travel,
 and Podcasts. “Default” restores
 the original icon. Hiding headings or icons keeps your selection. For App feeds,
@@ -164,7 +174,7 @@ one selection applies to all feed headings.
 
 Choose rows or grids, sorting, column and visible-row counts, scrolling, active
 category pinning, sizes, spacing, headings, backgrounds, and margins. To bring
-sections closer, lower **Space between sections** under **Home screen → Sections → Layout**. The scale starts at 0. After updating, the
+sections closer, lower **Space between sections** under **Home screen → Section appearance → Layout**. The scale starts at 0. After updating, the
 old 0 maps to 32 and the old default of 24 maps to 56, preserving the actual
 spacing. Some
 appearance settings are shared, while others can be overridden per category.
@@ -177,7 +187,7 @@ including to existing categories. Choosing a value that matches the shared one
 restores inheritance. In Tiles and labels, one Restore common settings button
 restores all settings on that screen. Titles, icons, padding and background are
 available directly in the category appearance editor. Find **Align section titles
-with tiles** under **Home screen → Sections** and in the appearance
+with tiles** under **Home screen → Section appearance** and in the appearance
 settings for an individual section. When enabled, the title starts at the tile
 edge and moves with the tiles when you adjust padding. Titles use edge alignment
 by default. **Section title size** in the same settings lets you choose a size
@@ -226,18 +236,18 @@ retries pause while the launcher is in the background.
 
 Path: **Home screen → Sections and order → App feeds**.
 
+In the editor for an individual feed, **Show feed** changes that feed’s visibility. **Show category** on the parent page controls the entire group.
+
 Select up to 16 feeds published by installed apps. One app may offer several
-feeds, such as new releases and saved items. When you enable or disable an
-available feed, its switch stays focused and visible. The ↑/↓ buttons move
-through the updated order. Selected nonempty feeds appear
+feeds, such as new releases and saved items. Selected nonempty feeds appear
 as one standard category. Move the entire group or move it between visible
-and hidden categories. On the feed selection page, **Reorder** opens the order
-of enabled feeds when at least two are selected. OK or ◄/► starts or finishes
-moving, ↑/↓ changes the position, and Back finishes moving; the next Back returns
-to the previous page. The order stays on this TV and applies to feeds on the home screen.
-Unavailable and empty selected feeds keep their positions in the saved order.
-Press OK on the category to open its editor: view its fixed name, choose feeds, or open
-Category appearance. Appearance controls include preview size, corner radius,
+and hidden categories. Open **Feeds and order** and press ◄/► on a feed.
+Use ↑/↓ to reorder feeds or move them across the boundary between visible and
+hidden feeds. This also works for unavailable feeds. Press OK or Back to finish
+moving. Press Back again to return. Visibility and order are saved on this TV.
+Press OK on the App feeds row. Under the name, you'll find the Show category switch,
+followed by Feeds and order, Section settings, and Category appearance.
+Appearance controls include preview size, corner radius,
 horizontal spacing, label size and color, feed titles, padding,
 and background. In **Appearance source**, choose **Custom appearance** (the
 default), **Shared appearance**, or an app section such as All Apps. Shared
@@ -272,12 +282,18 @@ edge cards when focused.
 Restoring common appearance settings keeps the name and feed selection.
 Artwork resolution accounts for the enlarged selected card.
 The quality of the source image depends on the app publishing the feed.
-Each feed shows up to 20 cards in the source order by default. On the feed
-selection page, the **Maximum Items** slider sets the same limit from 20 to 50
+Each feed shows up to 20 cards in the source order by default. In **Section
+settings**, the **Maximum Items** slider sets the same limit from 20 to 50
 for each feed. The value is saved on this TV. Your feed selection survives restarts on this TV and is
 excluded from backups and synchronization. The whole group’s name, order,
 visibility and appearance are included in category and appearance backups. Hiding the group
 keeps your feed selection.
+
+Below the card limit, open **Limits and caches** to set the **Poster cache in RAM** (4, 8, 16, 32, 64,
+or 128 MiB) and **Poster cache on disk** (32, 64, or 128 MiB) separately.
+The defaults are 4 MiB in RAM and 32 MiB on disk. The disk cache lets posters
+return faster when you scroll back. In memory saving mode, the RAM limit is
+1 MiB and the disk limit is 32 MiB for each section. Limits are saved on this TV.
 
 Use ←/→ to select content, ↑/↓ to move between sections, and OK to open the
 selected item in its app. At the edge of the screen, ←/→ smoothly scrolls the
@@ -294,9 +310,8 @@ A feed is hidden from the chooser and home screen if its cards have no
 available artwork or thumbnails because resources are broken or providers
 are missing. When artwork is available again, the feed reappears with its previous setting.
 
-The list refreshes when system channels change, when returning to the launcher,
-and with Refresh feeds. The button receives focus when you open feed selection
-and keeps it during loading until you move to another control. Existing cards
+The list refreshes every time you open **Feeds and order**, when system channels
+change, and when you return to the launcher. Existing cards
 and artwork remain visible until their replacements are ready. Unchanged data
 preserves focus and scroll position.
 If a refresh temporarily fails, the last successfully loaded feed remains visible.
@@ -308,6 +323,8 @@ If an app does not publish system channels, CuteLauncher cannot retrieve its
 recommendations. Artwork with network URLs downloads from the app's source.
 
 ## Apps
+
+The **All**, **System** and **Hidden** tabs have visible labels. When adding an app to a hidden section, look for **Hidden** beside its name.
 
 Path: **Apps**, or the selected tile's actions.
 
@@ -361,12 +378,12 @@ settings. Menus can open on either side. Reset individual groups or all appearan
 **Inactive section transparency** applies to app categories, the app feeds group,
 and Continue watching. The last selected section stays fully opaque when
 you move to the top panel or settings.
-Under **Home screen → Sections**, turn on **Also fade inactive feeds**
+Under **Home screen → Section appearance**, turn on **Also fade inactive feeds**
 to apply the same percentage to the other app feeds in the group while one feed
 is selected. The selected feed stays fully visible.
 
 To apply icons across all sections, install an ADW, Apex or Nova icon pack APK
-on the TV. Open **App icon pack** in the global **Tiles and labels** settings
+on the TV. Open **App icon pack** in the **Tile image** group of the global **Tiles and labels** settings
 and select the pack. Apps with a matching icon use it on their tiles. Other apps
 keep their usual artwork. An image you chose manually for a tile takes priority.
 
@@ -433,7 +450,7 @@ immediately; on-screen control instructions remain visible.
 
 Background sources:
 
-- A gradient with your chosen colors.
+- A gradient with your chosen colors. The palette opens on the saved swatch. A check marks the applied gradient and the outline follows the remote focus.
 - A local image or video, plus a separate Day/Night image source.
 - Photos and videos from a selected folder: subfolders, sorting by name, modification date or random order, photo interval and next-file controls. Use the shared folder picker or enter a path manually. For manual input, enter an absolute path such as `/storage/emulated/0/Pictures`, or `/storage/VOLUME_NAME/Wallpapers` for a USB drive. Wallpaper files are not modified.
 
@@ -539,10 +556,15 @@ one row of cards with cover art and captions below. If the app supplied only a
 description, the card uses it as the title. Entries that have neither a title
 nor a description are hidden. The app icon and name appear at the top of the
 cover. When the app reports playback progress, a bar appears along the bottom
-of the cover. Choose participating apps, a total limit, and per-app limits,
-and choose whether to show the progress bar and description. Hold OK to view
-program details or hide a card. Change the
-category's visibility and position in the category editor.
+of the cover. The **Continue Watching** editor shows its name in the header, followed by **Show
+category**, **Apps with Continue Watching**, **Limits per app**, **Section
+settings**, and **Category appearance**. Watch Next access is available in
+the same menu. In **Section settings**, set the total card limit, choose whether to show progress
+and episode details, or restore hidden cards. Hold OK to view program details
+or hide a card. Open **Limits and caches** for this section’s **Poster cache in
+RAM** and **Poster cache on disk**, with the same options as
+[App feeds](#app-feeds). **Show category** changes visibility immediately and
+keeps the saved position. To reorder the category, open **Sections and order**.
 While this category loads at launcher startup, it shows one empty card
 and the heading if headings are enabled. When the category is first and startup
 focus is set to cards, the placeholder receives focus. Use the arrow buttons
@@ -573,7 +595,7 @@ While data loads, they show a neutral icon or “—” and update in place. Obj
 that depend on a connection, permission, or active-only mode appear once their
 condition is confirmed. Disabled objects stay hidden from the first frame.
 
-**Network storage and USB.** Under **Widgets and panels → Top panel → Objects**, you can turn
+**Network storage and USB.** Under **Widgets and panels → Top panel → Items and order**, you can turn
 **Network storage** and **USB drives** off independently. An icon appears once
 the launcher detects a mounted volume. The USB icon does not represent a keyboard,
 remote or other USB peripheral. NAS appears only on compatible firmware with
@@ -588,9 +610,9 @@ On incompatible firmware, the network storage switch is disabled in both panels.
 On compatible firmware, you can turn it on before mounting a network share.
 
 
-Path: **Widgets and panels → Top panel → Objects**.
+Path: **Widgets and panels → Top panel → Items and order**. The CuteLauncher and Android settings buttons have distinct tooltips and spoken labels. The top panel remains visible when editing widget placement.
 
-**Quick actions.** Turn on the lightning button under **Widgets and panels → Top panel → Objects**.
+**Quick actions.** Turn on the lightning button under **Widgets and panels → Top panel → Items and order**.
 It is hidden by default. Use **Quick action settings** or the gear in the menu to
 choose and reorder the visible commands. In the order editor, press OK to select
 a command, move it with ↑/↓, then press OK again. Hidden commands keep their place.
@@ -620,7 +642,7 @@ the widget is hidden, another app is opened or the screen is off.
 Visibility on the quick settings panel is separate; the interval is shared.
 Use **Object order** to change its position.
 
-Enable the **System** widget in **Widgets and panels → Top panel → Objects**; it is off by default.
+Enable the **System** widget in **Widgets and panels → Top panel → Items and order**; it is off by default.
 In **System widget settings**, you can choose which readings appear on the panel
 (CPU load, RAM, and CPU temperature), keep just the icon, and set an **Update interval** from 1 to 10 seconds
 (5 by default). The interval applies to CPU, RAM and the other widget readings
@@ -646,7 +668,9 @@ resets when the launcher process restarts. RAM refers to device memory;
 Visibility on the quick settings panel is separate; CPU/RAM display options
 are shared with the top panel.
 
-In the **Sound and inputs** group, **Show volume** enables an informational volume and audio output block.
+For USB and network storage, open **Storage devices** in Widget settings. The storage page shows its status alongside separate visibility switches for the top panel and quick settings panel.
+
+In **Sound and inputs**, open **Volume and audio output**. Under placement, choose the panels that should show this widget.
 It is enabled by default; visibility and position persist after a restart.
 In **Volume settings → Update interval**, choose a polling interval from 1 to
 10 seconds; the default is 3 seconds. The setting is available in both panels'
@@ -660,7 +684,7 @@ Its visibility on the quick settings panel is configured separately.
 In **Volume settings**, turn on **Show volume over apps** to display just the
 percentage in a fixed-width badge when media volume changes in another app. It
 disappears two seconds after the last change. The switch is off by default.
-Enable the CuteLauncher accessibility service in **Access settings** to use it.
+Enable the CuteLauncher accessibility service under **Accessibility** to use it.
 The readout depends on the device firmware reporting Android media volume changes.
 
 Under **Where to show**, choose the widget’s position in the top panel or any
@@ -692,7 +716,7 @@ Select the traffic counter to see usage for **the day, week and month** together
 Each period has a compact card showing **Received**, **Sent** and **Total**.
 Received and sent usage appear side by side, or vertically with large text.
 Use the remote to scroll when needed.
-The gear and **Widgets and panels → Widget settings → Traffic settings** open usage access and
+The gear and **Widgets and panels → Widget settings → Traffic** open usage access and
 the period for the counter on the panel. The open menu always shows all three periods. The counter reads Android history from the start
 of the selected day, week or month,
 including usage before the widget was enabled. Android may update history with a delay.
@@ -705,6 +729,9 @@ If history cannot be read through either method, the counter shows “—”.
 Calendar, night mode, sleep timer, inputs, notifications and network menus inherit
 settings appearance and open below their buttons. Back or clicking outside closes
 the menu. The calendar gear opens the shared Clock, date and weather settings.
+
+**Widgets and panels → Widget settings → Network** shows the connection type and internet
+availability. You can enable the indicator independently for the top panel and quick settings.
 
 Selecting the network icon opens a compact menu below the button, using settings
 appearance. The gear at the top right opens Android network settings; Back or
@@ -902,8 +929,7 @@ positions until you edit the order. After moving the group, its members occupy
 adjacent slots at the new position. Hidden items stay hidden. Enabled weather
 without data shows a cloud icon that opens its menu; panel height stays unchanged.
 Widget settings, grouping, block appearance and the press action are shared by both panels
-and edited in the main top panel settings. The quick settings panel’s **Objects** page
-contains only visibility switches, so its set of visible objects is independent.
+and edited in the main top panel settings. The quick settings panel’s **Items and order** page lets you independently show, hide and reorder its items.
 
 Widgets open their own menus and settings. Availability depends on Android data:
 traffic needs usage access, and inputs need support for the relevant TV API.
@@ -1094,6 +1120,8 @@ card appears only when a media session is available; the player determines its a
 
 Path: **Widgets and panels → Widget settings → Inputs**.
 
+Use **Display** to set placement for the whole widget and **HDMI-CEC** to choose how device names and states are detected. Open a port in **Input Sources** to edit its name and icon.
+
 The launcher lists available system inputs and switches to the selected input.
 The menu opens immediately with the last known list and refreshes it in the background.
 Each input button has a connection indicator: a green dot means connected,
@@ -1124,7 +1152,7 @@ An accepted launch does not guarantee a signal.
 
 ## Night mode and brightness
 
-Path: **Night mode and brightness**; the night-mode widget provides quick controls.
+Under **Launcher features → Automation and comfort**, open **Night mode** or **Scheduled brightness**. The night-mode widget also provides quick filter controls.
 
 In the night mode settings, **Accent color for the moon** applies the theme's
 accent color to the moon icon while night mode is active. It is on by default.
@@ -1189,14 +1217,14 @@ Under **Where to show**, choose the widget’s position in the top panel or any
 TV corner. A hidden widget uses its last visible position. The timer uses the
 top-left corner by default and until the widget’s position is saved.
 The switch is off by default. Enable the CuteLauncher accessibility service
-in **Access settings** to use it.
+under **Accessibility** to use it.
 
 Under **Appearance over apps**, the timer offers **Same as the top panel** (the
 default) and **Dark**. Its appearance is saved separately from the volume readout.
 The top panel style expands the badge to fit the timer label and icon
 on one line.
 
-**Timers** contains **Visible** and **Hidden** intervals. Press Left/Right or
+**Timer intervals** contains **Visible** and **Hidden** intervals. Press Left/Right or
 hold OK to start moving; Up/Down changes the order and moves a timer across the
 boundary between the lists. OK finishes moving. Select an interval to edit its
 hours, minutes and seconds. Add custom intervals or delete any, including defaults.
@@ -1210,13 +1238,14 @@ depends on the TV. The app does not disconnect electrical power.
 
 ## Launcher and device controls
 
+When choosing an autostart app or HDMI input, the list focuses the saved target. If that target is no longer available, it focuses the first available entry.
 After three crashes within five minutes, CuteLauncher opens a recovery screen without loading the main interface. On Android 9–10, this counts failures reported by Flutter itself; system crash history is available from Android 11. Settings are preserved. Use the remote to retry, open another TV app or Android settings, and choose a home screen. If local ADB was configured, the restore button returns the previous HOME after confirmation. Without ADB, enable a disabled stock launcher in Android app settings first.
 
 App permissions, power management, and autostart are under **Launcher features**.
 ADB connection, home app selection, and Home interception are under
 **Default launcher and ADB**.
 
-- **App permissions**: select a user-installed app and its accessibility service.
+- **Maintenance → App permissions**: select a user-installed app and its accessibility service.
   System apps, including updated system apps, are excluded from the list,
   permission granting and automatic recovery. Previously saved recovery for
   them is removed without revoking their permissions.
@@ -1246,14 +1275,14 @@ ADB connection, home app selection, and Home interception are under
   prompt if it appears. The check retries automatically if the connection drops briefly.
   The device firmware controls whether ADB requires key authentication. The first
   time CuteLauncher connects as root, it warns that leaving root ADB debugging enabled is unsafe.
-- **Default launcher and ADB → Set default launcher via ADB** opens the
+- **Default launcher and ADB → Set via ADB** opens the
   **Default launcher** page, which shows the current home app. If the ADB connection is unverified,
   select **Open ADB connection settings → Check connection**. Press Back to
   return with the updated status. The assignment button
   sets CuteLauncher as default through ADB and disables the built-in launcher
   if it is enabled. The same button then restores the previous home app and
   brings back the built-in launcher. CuteLauncher checks Android's actual
-  selection. A separate button opens Android's default launcher setting.
+  selection. Select **Default launcher and ADB → Choose launcher in Android** to open Android’s default launcher picker.
   Disabling the built-in launcher may cause some remote buttons and
   manufacturer-specific TV menus to stop working. Use the ADB restore action
   to undo this.
@@ -1266,12 +1295,10 @@ ADB connection, home app selection, and Home interception are under
   are checked, including additional Android profiles. Google Cast presence alone
   does not block disabling the launcher. A dependency or unavailable
   check blocks disabling; diagnostics include the reason. No profiles are removed.
-- **Default launcher and ADB → Set default launcher via accessibility** opens
-  **Home button and startup**. Select **Open accessibility settings** and enable
-  the CuteLauncher service. Return and turn on **Override the Home button**.
+- Open **Default launcher and ADB → Home button and startup**. Select **Accessibility** to enable the CuteLauncher service. Return and turn on **Override the Home button**.
   Home can open CuteLauncher with the stock launcher still enabled if the firmware
   passes the button press to the service.
-- Grant supported special access to the launcher through ADB.
+- **Accessibility** lets you open Android’s accessibility settings or enable the CuteLauncher service through an authorized ADB connection. Choose **Open Android settings** in the explanation to continue, or press Back to dismiss it. Features that need the service or local ADB link to **Accessibility** or **ADB connection** and return you to the original setting.
 - Launch an app or switch once to HDMI after TV boot or wake, with event and delay settings.
   To start after sleep, CuteLauncher needs to receive the Android wake event
   and gain focus within one minute of its delivery.
@@ -1409,6 +1436,9 @@ For a webhook, enter the URL or import a UTF-8 text file up to 64 KB containing
 only the request URL, without commands or explanations. Line breaks are removed.
 HTTPS or local HTTP is required. Import errors and cancellation preserve the
 previous URL; the editor masks the address.
+
+Under “Screen and sound”, select “Take screenshot”. With local ADB configured, the button saves the device screen to Downloads. The PNG filename includes the local date and time, for example `CuteLauncher_2026-11-24_19-42-08-135.png`.
+
 Under “Automation”, choose “ADB command”. Type a command or import a UTF-8
 `.txt` or `.sh` file up to 64 KB. You can paste a line beginning with `adb shell`
 or enter several shell lines without the prefix. Commands are limited to 4,096
@@ -1424,8 +1454,7 @@ The list of apps to open shows their icons beside their names; an Android icon
 is used when an app icon is unavailable.
 Assignments also work over other apps when the firmware delivers the button to the service.
 
-The quick settings panel has its own object selection and order. It appears over the
-current app and closes with Back. While CuteLauncher is visible, pressing the
+The quick settings panel has its own item selection and order. It appears over the current app and closes with Back. In **Widgets and panels → Quick settings panel → Assign a button to open the panel**, choose a button and press type. The panel action is selected for you. If a mapping already exists, this shortcut opens its editor. While CuteLauncher is visible, pressing the
 assigned button only shows a notice that opening the panel is disabled.
 Accessibility and the relevant special access are required to operate over apps.
 Not every physical button reaches the service:
@@ -1454,14 +1483,13 @@ panel (for example, on KP1), otherwise CuteLauncher's own panel. The built-in
 option depends on the firmware.
 When returning from the panel, focus stays on the “Open panel” button.
 
-The CuteLauncher panel requires authorized local ADB and a connected accessibility
-service. Both access statuses appear below the panel title, above its action
-buttons, and on its settings page.
-If access is missing, select its row: ADB opens CuteLauncher's connection setup,
-and Accessibility opens the system service settings. Statuses refresh on return.
-The panel shows icons and names of TV apps with existing tasks, including
-windows in the background. Apps without a TV launch entry, background services
-without tasks, and launchers are excluded.
+The CuteLauncher panel checks local ADB and the accessibility service before opening.
+If access is missing, a notification tells you what to set up. Both access statuses
+and setup links appear on the panel's settings page. The bottom **Controls and access** group links to **ADB connection** and **Accessibility**. Both statuses refresh when you return from the corresponding page.
+The panel shows icons and names for CuteLauncher and TV apps with open tasks,
+including windows in the background. It filters out other launchers, apps without
+a TV launch entry, and background services without tasks.
+CuteLauncher appears last.
 Above the list, the panel shows used and total RAM, the usage percentage, and
 available memory. An estimate of each app's RAM use appears to the right of its
 name, for example “≈ 286 MiB”. Measurements update when the panel opens, on
@@ -1472,11 +1500,11 @@ usage appears. Errors or unavailable measurements show “No data”. Overall us
 and background processes; it is not the sum of the rows or the amount that closing
 apps will free. With large text, the memory summary scrolls with the list.
 These indicators are available in CuteLauncher's own panel.
-OK or clicking an app brings its task
-to the foreground; the close button beside it removes all its tasks but does not
-guarantee that its background services stop. Close all force-stops user apps
-in the list, including playback and background work. System apps and launchers
-are preserved. Back or the header close button dismisses the panel. Refresh
+OK or clicking an app brings its task to the foreground. The close button beside
+it removes its tasks, and its background services may keep running. Select
+CuteLauncher to return to it. Its row has no close button. Close all force-stops
+user apps in the list, including playback and background work. CuteLauncher and
+system apps stay open. Back or the header close button dismisses the panel. Refresh
 reloads the list. Actual window images are not used. After an operation, focus
 returns to the previous available button; if it disappears or becomes disabled,
 focus moves to Refresh. The panel type is stored
@@ -1484,6 +1512,7 @@ only on this device.
 
 ## App disabling manager
 
+In the preinstalled apps menu, the list appears first, followed by bulk actions.
 Bundled restrictions for specific models and firmware preserve known system
 dependencies. They apply only when the specified device metadata matches exactly
 and also protect restoration. Observations from another TV do not authorize
@@ -1498,7 +1527,7 @@ the state. Refreshing the list preserves this result until another operation
 or leaving the page.
 
 The main page contains the refresh action and four groups: All applications,
-Disable lists, Backup and recovery, and Reports. Before first use, select Refresh applications:
+Disable lists, App state backups, and Reports. Before first use, select Refresh applications:
 the groups remain unavailable until the list is read successfully. The last list
 and its states persist between visits and launcher restarts. Opening all
 applications automatically refreshes the list with a notification; the page opens
@@ -1523,12 +1552,12 @@ It also prevents disabling core Android modules and known critical MediaTek/CLTV
 services even when the firmware does not mark them as persistent services.
 
 The first successful refresh automatically creates the **baseline original state**
-for the current firmware. Backup and recovery shows its creation date and a restore
+for the current firmware. App state backups shows its creation date and a restore
 button. The launcher cannot delete or overwrite the baseline. Updating from an older
 version preserves the previous original state. More details at the bottom explains
 the copies.
 
-Opening Backup and recovery or the manual states list does not refresh applications.
+Opening App state backups or the manual states list does not refresh applications.
 The current state is read when saving a copy.
 
 Manage manual states saves the current state with a custom name or the date and
@@ -1577,7 +1606,7 @@ is safe on your firmware. Choose lists for your model and save the original stat
 
 ## Choosing files and folders
 
-In **Launcher settings → File manager**, choose the preferred method for all file, folder,
+In **Launcher settings → Files → How to choose files**, choose the preferred method for all file, folder,
 and document-save actions:
 
 - **Ask every time** — the default: when an external picker is available, choose
@@ -1589,7 +1618,7 @@ If no compatible external handler is available, or it becomes unavailable before
 launch, the built-in browser opens. Cancelling the external picker ends selection.
 The preference persists between launches and is included in backups and synchronization.
 
-**Launcher settings → Built-in file browser** provides:
+**Launcher settings → Files → Built-in file browser options** provides:
 
 - a starting folder: device storage, Downloads, or the last opened folder;
 - sorting by name, modification date, or size, in ascending or descending order;
@@ -1646,10 +1675,11 @@ does not mean that access has already been granted.
 
 ## Backups and synchronization
 
-Path: **Launcher settings → Settings management**.
+Path: **Launcher settings → Backups and sync**.
 
 Export settings to a file and import them again; create, restore, delete, and
-refresh backups. Import/export prevents duplicate requests while running. A list
+refresh backups. Manual import replaces the current layout. Missing or invalid settings
+may revert to their defaults. Import/export prevents duplicate requests while running. A list
 loading error remains visible until a successful refresh and does not mean there
 are no backups. A private rollback point is created before restoration. Backups
 contain supported launcher settings, categories, and custom appearance; they
@@ -1665,8 +1695,7 @@ another account of the same type, such as two Google Drive accounts. Both may
 share one account while managing their files and cleanup separately.
 Once storage is configured, the last backup or sync, the one-time action and
 the file list appear first. Automation, schedules and sync settings follow.
-If storage needs attention, its settings appear first. Use **Backup file** on
-the main page to import or export a file manually.
+If storage needs attention, its settings appear first. For a one-time transfer, choose **Export to file** or **Import from file** under **Backups and sync**.
 Disconnecting WebDAV, Google Drive, Yandex Disk or Samba
 requires confirmation; cancelling keeps the connection.
 
@@ -1786,7 +1815,9 @@ own update-channel restrictions.
 When a check finds a compatible update, **Update available** appears below
 the settings heading with the version number. Press **OK** on the row to open
 the updates page directly. The row stays visible after restarting the launcher
-while the update is still available and pending installation.
+while the update is still available and pending installation. The settings gear
+in the top panel fills with your accent color. When no update is available,
+**Support the developer** appears below the settings heading.
 
 When an update is available, open **What’s new** to read the changes in the
 offered release. Loading the notes requires internet access. The notes are in
@@ -1836,15 +1867,20 @@ build counter for installing updates.
 
 ## Memory and resource saving
 
-Path: **Diagnostics → Memory**.
+Open **Launcher settings → Memory**. Under **Limits and caches**, adjust separate limits for app feed posters, Continue Watching posters, app icons and banners. **Advanced** contains two limits for decoded images. You can also choose a 16- or 32-card preload window for the active row, clear RAM caches when leaving the launcher, and restore this device’s default limits.
 
-“CuteLauncher memory” shows only the launcher's own memory and works without
+**Memory saving** applies fixed limits. The controls show the active values and are locked until you turn saving off. Turning it off restores your previous choices. Reducing the disk limit evicts the oldest posters. They load again as you browse.
+
+**Memory usage** shows only the launcher's own memory and works without
 ADB, a computer, or network debugging. The summary shows PSS, measurement time,
 and the change since the previous successful measurement. If an update fails,
 the previous result remains visible with a warning.
 
 The cache section shows sizes, cached image counts by type, and decoded image
-cache usage relative to its limit. Clearing shows cache sizes and process memory
+cache usage relative to its limit. Decoded app artwork and posters use separate
+caches. Expand “Image files in memory” to see usage and limits by category.
+A separate action clears the disk caches for both poster sources and displays the space freed.
+Clearing RAM shows cache sizes and process memory
 before and after the action; settings and files are preserved. Android may release
 memory later, so a cache reduction does not imply an equal drop in process memory.
 
@@ -1857,8 +1893,11 @@ RSS and graphics are available under “Technical details”, with explanations 
 expandable help. Do not add PSS, RSS, graphics, and caches together: they overlap.
 Cache sizes are not the complete memory usage of individual features.
 
-Memory saving reduces caches and limits demanding visual effects; your saved
-appearance preferences return when the mode is switched off.
+Memory saving reduces caches and limits demanding visual effects.
+It prepares feed cards closer to when they appear on screen and loads
+the realistic landscape photo at a lower resolution. Text and tiles retain their
+usual sharpness. Turning memory saving off restores the full-resolution landscape,
+the usual feed loading behavior, and your appearance preferences.
 
 <a id="диагностика"></a>
 ## Compatible graphics output
@@ -1873,9 +1912,9 @@ and is not transferred through backups or synchronization.
 
 ## Diagnostics
 
-Path: **Settings → Diagnostics → Diagnostics**. You can create a basic report or
+Path: **Settings → Diagnostics → Reports and recording**. You can create a basic report or
 start an extended recording before reproducing an issue. You can copy or save
-either report to disk.
+either report to disk. **Compatibility check results** opens device details and individual checks.
 
 **A basic report** contains the TV model and firmware, CuteLauncher version,
 permissions, current settings, and up to 20 recent operations with short results.
@@ -1931,8 +1970,8 @@ recording before reproducing the error.
 The basic log and extended recording stay in memory for the current session.
 Restarting the process clears both. Viewing compatibility results and exporting
 reuse the existing report. Successful collection replaces it, and a failure
-preserves the previous report. **Clear report** stops recording and removes the
-logs and current report. Previously saved files remain on disk. Nothing is sent
+preserves the previous report. **Clear report** removes the logs and the current report. During recording,
+you must confirm that you want to stop and discard it. Press Back to keep recording. Previously saved files remain on disk. Nothing is sent
 automatically.
 
 Compatibility checks inspect metadata and API availability without changing settings.
@@ -1942,7 +1981,7 @@ results as unknown.
 
 ### Reporting an issue
 
-1. Open **Settings → Diagnostics → Diagnostics**.
+1. Open **Settings → Diagnostics → Reports and recording**.
 2. If the problem already happened, select **Create report**. If you need more
    detail and can reproduce the issue, select **Start extended diagnostics**,
    leave Settings, and reproduce it. Return to Diagnostics and select

@@ -73,6 +73,30 @@ void main() {
 
   });
 
+  testWidgets('long section name stays in the header while settings scroll', (tester) async {
+    tester.view.physicalSize = const Size(380, 320);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    final service = MockAppsService();
+    final name = List.filled(10, 'Long section name').join(' ');
+    when(service.launcherSections).thenReturn([
+      Category(id: 1, name: name), Category(id: 2, name: 'Other'),
+    ]);
+    await _pumpWidgetWithProviders(tester, service, 0);
+    final heading = find.text(name);
+    expect(heading, findsOneWidget);
+    final title = tester.widget<Text>(heading);
+    expect(title.overflow, TextOverflow.ellipsis);
+    final top = tester.getTopLeft(heading);
+    final scroller = tester.state<ScrollableState>(find.byType(Scrollable).first);
+    expect(scroller.position.maxScrollExtent, greaterThan(0));
+    scroller.position.jumpTo(scroller.position.maxScrollExtent);
+    await tester.pumpAndSettle();
+    expect(tester.getTopLeft(heading), top);
+    expect(tester.takeException(), isNull);
+  });
+
   for (final key in ['all_apps', 'tv_apps', 'other_apps', 'favorites']) {
     testWidgets('$key has visibility control and no delete action', (tester) async {
       final service = MockAppsService();
@@ -82,7 +106,8 @@ void main() {
       ]);
       await _pumpWidgetWithProviders(tester, service, 0);
       expect(find.text('Delete'), findsNothing);
-      expect(find.text('Name'), findsOneWidget);
+      expect(find.text('Renamed standard'), findsOneWidget);
+      expect(find.byIcon(Icons.edit_outlined), findsOneWidget);
       expect(find.text('Custom name'), findsNothing);
       expect(find.text('Show category'), findsOneWidget);
       expect(tester.widget<Switch>(find.byType(Switch)).onChanged, isNotNull);

@@ -100,7 +100,7 @@ void main() {
                 )
                 .first,
           );
-          expect(find.text(l.diagnosticsHubTitle), findsOneWidget);
+          expect(find.text(l.diagnosticsReportsAndRecording), findsOneWidget);
           expect(find.text(l.tvCompatibilityTitle), findsNothing);
           expect(find.text(l.diagnosticsTitle), findsNothing);
           expect(runs, 0);

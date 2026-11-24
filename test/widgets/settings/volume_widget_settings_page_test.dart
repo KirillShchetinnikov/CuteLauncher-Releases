@@ -147,7 +147,7 @@ void main() {
           final l = AppLocalizations.of(
             tester.element(find.byType(SettingsPanel)),
           )!;
-          final entry = find.text(l.showVolume);
+          final entry = find.text(l.audioStatusTitle);
           await tester.scrollUntilVisible(
             entry,
             300,
@@ -192,9 +192,9 @@ void main() {
           await tester.pumpAndSettle();
           expect(settings.showVolumeOverlay, isTrue);
           expect(tester.widget<RoundedSwitchListTile>(overlay).value, isTrue);
-          await tester.scrollUntilVisible(find.text(l.remoteAccessSettings), 140);
+          await tester.scrollUntilVisible(find.text(l.accessibility), 140);
           await tester.pumpAndSettle();
-          expect(find.text(l.remoteAccessSettings), findsOneWidget);
+          expect(find.text(l.accessibility), findsOneWidget);
           final where = find.text(l.overlayWhereToShow);
           await tester.ensureVisible(where);
           await tester.tap(where);

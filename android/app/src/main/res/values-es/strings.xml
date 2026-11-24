@@ -40,4 +40,6 @@
     <string name="recovery_restore">Restaurar la pantalla de inicio anterior</string>
     <string name="recovery_restore_confirm">¿Restaurar la pantalla de inicio anterior con la conexión ADB local existente?</string>
     <string name="remap_error_adb_command">No se pudo ejecutar el comando ADB. Comprueba el ADB local y el comando.</string>
+    <string name="recent_apps_adb_required">Conecta ADB local para abrir el panel de aplicaciones abiertas.</string>
+    <string name="recent_apps_accessibility_required">Activa el servicio de CuteLauncher en los ajustes de accesibilidad.</string>
 </resources>

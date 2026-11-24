@@ -26,7 +26,8 @@ void main() {
         warningDayIndex: 0, warningPrecipProbability: 80);
     expect(localizedWeatherWarning(weather, ru, DateTime(2026, 10, 2)), '80% Дождь сегодня');
     expect(localizedWeatherWarning(weather, en, DateTime(2026, 10, 2)), '80% Rain today');
-    expect(ru.importConfirm, contains('сохранят текущие значения'));
+    expect(ru.importConfirm, contains('Макет из копии заменит текущий'));
+    expect(ru.importConfirm, contains('могут вернуться к исходным значениям'));
   });
 
   for (final entry in <(Widget, String, String)>[

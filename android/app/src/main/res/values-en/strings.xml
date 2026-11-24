@@ -40,4 +40,6 @@
     <string name="power_shutdown_confirm">Shut down the device completely?</string>
     <string name="power_reboot_confirm">Restart the device? Open apps will close.</string>
     <string name="remap_error_adb_command">ADB command failed. Check local ADB and the command.</string>
+    <string name="recent_apps_adb_required">Connect local ADB to view open apps.</string>
+    <string name="recent_apps_accessibility_required">Enable the CuteLauncher service in Accessibility settings.</string>
 </resources>

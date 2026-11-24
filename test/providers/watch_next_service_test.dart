@@ -621,16 +621,33 @@ void main() {
         for (var i = 0; i < 8; i++) {'id': i, 'title': 'Video $i', 'posterArtUri': 'content://poster/$i'},
       ]);
       when(mockChannel.getWatchNextPoster(any)).thenAnswer((_) async => Uint8List(3 * 1024 * 1024));
-      watchNextService = WatchNextService(mockChannel);
+      SharedPreferences.setMockInitialValues({'show_continue_watching': true});
+      final settings = SettingsService(await SharedPreferences.getInstance());
+      addTearDown(settings.dispose);
+      watchNextService = WatchNextService(mockChannel, settings: settings);
       await pumpEventQueue();
       try {
         verifyNever(mockChannel.getWatchNextPoster(any));
         for (final program in watchNextService.programs.take(3)) {
           expect(await watchNextService.poster(program), isNotNull);
         }
-        expect(watchNextService.posterCacheBytes, 6 * 1024 * 1024);
-        expect(watchNextService.posterCacheEntries, 2);
+        expect(watchNextService.posterCacheBytes, 3 * 1024 * 1024);
+        expect(watchNextService.posterCacheEntries, 1);
         verify(mockChannel.getWatchNextPoster(any)).called(3);
+        await settings.setPosterCacheLimit(PosterCacheSection.watchNext, 8, disk: false);
+        for (final program in watchNextService.programs.take(3)) {
+          await watchNextService.poster(program);
+        }
+        expect(watchNextService.posterCacheEntries, 2);
+        await settings.setMemorySaverEnabled(true);
+        expect(watchNextService.posterCacheEntries, 0);
+        await watchNextService.poster(watchNextService.programs.first);
+        expect(watchNextService.posterCacheEntries, 0);
+        await settings.setMemorySaverEnabled(false);
+        for (final program in watchNextService.programs.take(2)) {
+          await watchNextService.poster(program);
+        }
+        expect(watchNextService.posterCacheEntries, 2);
       } finally { watchNextService.dispose(); }
     });
 

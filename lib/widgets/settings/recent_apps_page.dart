@@ -1,16 +1,19 @@
+import 'dart:async';
+
 import 'settings_section.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../recent_apps_client.dart';
+import '../action_notice.dart';
 import '../recent_apps_access.dart';
-import 'adb_page.dart';
+import 'access_settings_links.dart';
 import 'focusable_settings_tile.dart';
 import 'remote_buttons_page.dart';
 import 'settings_choice_tile.dart';
 import 'settings_help.dart';
 import 'settings_page_layout.dart';
-import 'settings_route.dart';
 
 class RecentAppsPage extends StatefulWidget {
   static const routeName = 'recent_apps_settings';
@@ -25,6 +28,8 @@ class _RecentAppsPageState extends State<RecentAppsPage>
   String _mode = 'auto';
   bool _busy = false, _failed = false, _loaded = false;
   bool _systemAvailable = false;
+  bool _openingPanel = false;
+  int _accessRevision = 0;
   @override
   void initState() {
     super.initState();
@@ -35,6 +40,7 @@ class _RecentAppsPageState extends State<RecentAppsPage>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    if (_openingPanel) unawaited(_client.cancelOpen());
     super.dispose();
   }
 
@@ -82,15 +88,33 @@ class _RecentAppsPageState extends State<RecentAppsPage>
 
   Future<void> _open() async {
     if (_busy) return;
-    setState(() => _busy = true);
+    setState(() {
+      _busy = true;
+      _failed = false;
+    });
+    _openingPanel = true;
+    final l = AppLocalizations.of(context)!;
+    String? error;
     try {
-      final opened = await _client.open();
-      if (mounted) setState(() => _failed = !opened);
+      if (!await _client.open()) error = l.recentAppsUnavailable;
+    } on PlatformException catch (e) {
+      error = switch (e.code) {
+        'recent_adb_required' => l.recentAppsAdbRequired,
+        'recent_accessibility_required' => l.recentAppsAccessibilityRequired,
+        _ => l.recentAppsUnavailable,
+      };
     } catch (_) {
-      if (mounted) setState(() => _failed = true);
+      error = l.recentAppsUnavailable;
     } finally {
+      _openingPanel = false;
       if (mounted) setState(() => _busy = false);
     }
+    if (mounted && error != null) showActionNotice(context, error, error: true);
+  }
+
+  Future<void> _refreshAccess() async {
+    setState(() => _accessRevision++);
+    await _load();
   }
 
   @override
@@ -130,7 +154,7 @@ class _RecentAppsPageState extends State<RecentAppsPage>
                   onPressed: _open,
                 ),
                 SizedBox(child: _busy ? const LinearProgressIndicator() : null),
-                const RecentAppsAccess(inSettings: true),
+                RecentAppsAccess(key: ValueKey(_accessRevision)),
                 if (_failed)
                   Text(
                     l.recentAppsUnavailable,
@@ -158,15 +182,8 @@ class _RecentAppsPageState extends State<RecentAppsPage>
                       Navigator.of(context)
                           .pushNamed(RemoteButtonsPage.routeName),
                 ),
-                FocusableSettingsTile(
-                  title: Text(l.adbConnectionBlock),
-                  leading: const Icon(Icons.link),
-                  onPressed: () => Navigator.of(context).push(
-                    SettingsRoute(
-                      builder: (_) => const AdbPage(section: 'connection'),
-                    ),
-                  ),
-                ),
+                AdbConnectionLink(busy: _busy, onReturn: _refreshAccess),
+                AccessibilitySettingsLink(busy: _busy, onReturn: _refreshAccess),
                 ]),
               ],
             ),

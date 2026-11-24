@@ -3,19 +3,12 @@ import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import '../recent_apps_client.dart';
 import 'action_notice.dart';
-import 'settings/adb_page.dart';
+import 'settings/access_settings_links.dart';
 import 'settings/focusable_settings_tile.dart';
-import 'settings/settings_route.dart';
 
-/// Access is checked on entry, explicit refresh and return, without polling.
+/// Access is checked on entry and return to settings, without polling.
 class RecentAppsAccess extends StatefulWidget {
-  final bool inSettings;
-  final int revision;
-  const RecentAppsAccess({
-    super.key,
-    this.inSettings = false,
-    this.revision = 0,
-  });
+  const RecentAppsAccess({super.key});
 
   @override
   State<RecentAppsAccess> createState() => _RecentAppsAccessState();
@@ -32,12 +25,6 @@ class _RecentAppsAccessState extends State<RecentAppsAccess>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _refresh();
-  }
-
-  @override
-  void didUpdateWidget(covariant RecentAppsAccess oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.revision != oldWidget.revision) _refresh();
   }
 
   @override
@@ -77,12 +64,10 @@ class _RecentAppsAccessState extends State<RecentAppsAccess>
     if (_opening || _checking) return;
     _opening = true;
     try {
-      if (widget.inSettings && destination == 'adb') {
-        await Navigator.of(context).push(
-          SettingsRoute(builder: (_) => const AdbPage(section: 'connection')),
-        );
-      } else if (!await _client.setup(destination)) {
-        throw StateError('Settings unavailable');
+      if (destination == 'adb') {
+        await AdbConnectionLink.open(context);
+      } else {
+        await AccessibilitySettingsLink.open(context);
       }
     } catch (_) {
       if (mounted) {
@@ -140,19 +125,12 @@ class _RecentAppsAccessState extends State<RecentAppsAccess>
       );
     }
 
-    final statuses = [
-      status('adb', l.adbConnectionBlock, _adb, l.inputConnected),
-      status('accessibility', l.accessibility, _accessibility, l.granted),
-    ];
-    if (!widget.inSettings) {
-      return Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [for (final item in statuses) Expanded(child: item)],
-      );
-    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: statuses,
+      children: [
+        status('adb', l.adbConnectionBlock, _adb, l.inputConnected),
+        status('accessibility', l.accessibility, _accessibility, l.granted),
+      ],
     );
   }
 }

@@ -116,6 +116,7 @@ Future<Map<String, Object>> collectDiagnostics({
       ..['capturedAt'] = capturedAt.toUtc().toIso8601String();
     return diagnostics;
   }
+  diagnostics['flutterImageCache'] = store.decodedCacheSnapshot();
 
   Map<String, Object>? compatibility;
   Map<String, Object>? permissionRecovery;

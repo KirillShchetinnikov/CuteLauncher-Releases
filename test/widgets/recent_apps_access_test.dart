@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/recent_apps_client.dart';
+import 'package:flauncher/widgets/settings/accessibility_page.dart';
 import 'package:flauncher/widgets/recent_apps_access.dart';
 import 'package:flauncher/widgets/settings/adb_page.dart';
 import 'package:flutter/material.dart';
@@ -9,12 +10,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  var adb = false, accessibility = false, fail = false, opens = true;
+  var adb = false, accessibility = false, fail = false;
   final calls = <MethodCall>[];
   Completer<Map<String, bool>>? pending;
   setUp(() {
     adb = accessibility = fail = false;
-    opens = true;
     pending = null;
     calls.clear();
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
@@ -25,7 +25,6 @@ void main() {
             return pending?.future ??
                 Future.value({'adb': adb, 'accessibility': accessibility});
           }
-          if (call.method == 'setup') return opens;
           throw StateError('Unexpected method ${call.method}');
         });
   });
@@ -33,18 +32,12 @@ void main() {
     () => TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(recentAppsChannel, null),
   );
-  Future<void> mount(
-    WidgetTester tester, {
-    bool inSettings = false,
-    int revision = 0,
-  }) async {
+  Future<void> mount(WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: Scaffold(
-          body: RecentAppsAccess(inSettings: inSettings, revision: revision),
-        ),
+        home: const Scaffold(body: RecentAppsAccess()),
       ),
     );
     await tester.pumpAndSettle();
@@ -69,30 +62,20 @@ void main() {
           expect(calls.where((call) => call.method == 'access'), hasLength(1));
           await tester.pump(const Duration(seconds: 30));
           expect(calls, hasLength(1));
-          if (!connected) {
-            await tester.tap(find.byKey(const ValueKey('recent-access-adb')));
-            await tester.pumpAndSettle();
-            expect(
-              calls.lastWhere((call) => call.method == 'setup').arguments,
-              {'destination': 'adb'},
-            );
-          }
           if (!granted) {
             await tester.tap(
               find.byKey(const ValueKey('recent-access-accessibility')),
             );
             await tester.pumpAndSettle();
-            expect(
-              calls.lastWhere((call) => call.method == 'setup').arguments,
-              {'destination': 'accessibility'},
-            );
+            expect(find.byType(AccessibilityPage), findsOneWidget);
+            expect(calls.where((call) => call.method == 'setup'), isEmpty);
           }
         },
       );
     }
   }
 
-  testWidgets('return and explicit refresh recheck access', (tester) async {
+  testWidgets('return to settings rechecks access', (tester) async {
     await mount(tester);
     adb = accessibility = true;
     tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
@@ -100,34 +83,27 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byKey(const ValueKey('recent-access-adb')), findsNothing);
     expect(calls.where((call) => call.method == 'access'), hasLength(2));
-    adb = false;
-    await mount(tester, revision: 1);
-    expect(find.byKey(const ValueKey('recent-access-adb')), findsOneWidget);
-    expect(calls.where((call) => call.method == 'access'), hasLength(3));
   });
 
   testWidgets(
-    'failed settings launch keeps its link focused and reports failure',
-    (tester) async {
-      opens = false;
+    'return from the accessibility hub refreshes the status', (tester) async {
       await mount(tester);
       final link = find.byKey(const ValueKey('recent-access-accessibility'));
       await tester.tap(link);
       await tester.pumpAndSettle();
-      final l = AppLocalizations.of(tester.element(link))!;
-      expect(find.text(l.recentAppsUnavailable), findsOneWidget);
-      expect(
-        Focus.of(tester.element(find.text(l.accessibility))).hasFocus,
-        isTrue,
-      );
-      expect(calls.where((call) => call.method == 'setup'), hasLength(1));
+      expect(find.byType(AccessibilityPage), findsOneWidget);
+      accessibility = true;
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(link, findsNothing);
+      expect(calls.where((call) => call.method == 'access'), hasLength(2));
     },
   );
 
   testWidgets('settings link opens the local ADB connection page', (
     tester,
   ) async {
-    await mount(tester, inSettings: true);
+    await mount(tester);
     await tester.tap(find.byKey(const ValueKey('recent-access-adb')));
     await tester.pumpAndSettle();
     expect(find.byType(AdbPage), findsOneWidget);

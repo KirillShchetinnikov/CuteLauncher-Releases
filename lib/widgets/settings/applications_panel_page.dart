@@ -209,7 +209,24 @@ class _ApplicationsPanelPageState extends State<ApplicationsPanelPage> {
             focused: focused,
             accent: Theme.of(context).colorScheme.primary,
           ),
-          child: Icon(icon, color: Theme.of(context).colorScheme.onSurface),
+          child: ExcludeSemantics(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon, color: Theme.of(context).colorScheme.onSurface),
+                const SizedBox(height: 4),
+                Text(
+                  switch (index) {
+                    0 => AppLocalizations.of(context)!.applicationsTabAll,
+                    1 => AppLocalizations.of(context)!.applicationsTabSystem,
+                    _ => AppLocalizations.of(context)!.applicationsTabHidden,
+                  },
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.labelMedium,
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

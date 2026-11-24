@@ -742,6 +742,32 @@
           "evidenceSection": "Slimbox Model-X3: проверка ADB с UID 0 — 22 ноября 2026"
         }
       ]
+    },
+    {
+      "id": "slimbox-tanix-w2-android11-20261122-adb",
+      "label": "Tanix W2 (W2) — SlimboxTV по сообщению владельца, Android 11, 20230316",
+      "kind": "physical",
+      "exactMatch": true,
+      "identity": {
+        "manufacturer": "Google",
+        "model": "W2",
+        "device": "p281",
+        "fingerprint": "Google/p281/p281:11/RD2A.211001.002/eng.server.20230316.173149:userdebug/test-keys",
+        "firmware": "11 RD2A.211001.002 2023031617",
+        "android": "11",
+        "sdk": "30",
+        "abis": "armeabi-v7a,armeabi"
+      },
+      "results": [
+        {
+          "feature": "adb-connection-check",
+          "status": "unverified",
+          "date": "2026-11-22",
+          "appBuild": "1.8.1+278",
+          "summary": "Владелец сообщил об ошибке встроенной проверки. В базовом и расширенном отчётах нет события adb.action. Расширенная запись завершилась по таймеру. Доступность TCP-порта, авторизация и UID оболочки не установлены.",
+          "evidenceSection": "Tanix W2 на SlimboxTV: отчёт об ADB — 22 ноября 2026"
+        }
+      ]
     }
   ]
 }

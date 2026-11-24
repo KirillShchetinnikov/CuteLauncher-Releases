@@ -24,10 +24,26 @@ import 'package:flauncher/providers/settings_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class AppLanguagePage extends StatelessWidget {
+class AppLanguagePage extends StatefulWidget {
   static const String routeName = "app_language_panel";
 
   const AppLanguagePage({super.key});
+
+  @override
+  State<AppLanguagePage> createState() => _AppLanguagePageState();
+}
+
+class _AppLanguagePageState extends State<AppLanguagePage> {
+  final _entryFocus = FocusNode();
+  late final String _entryLanguage = context
+      .read<SettingsService>()
+      .appLanguage;
+
+  @override
+  void dispose() {
+    _entryFocus.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,25 +51,23 @@ class AppLanguagePage extends StatelessWidget {
     return Consumer<SettingsService>(
       builder: (context, service, _) {
         return SettingsPageLayout(
+          initialFocus: _entryFocus,
           title: Text(
             localizations.appLanguage,
             style: Theme.of(context).textTheme.titleLarge,
           ),
-          child: ListView(
-            children: [
-              _radioTile(
-                context,
-                service,
-                localizations.systemDefault,
-                "",
-                autofocus: true,
-              ),
-              for (final language in languageNames.entries)
-                if (AppLocalizations.supportedLocales.any(
-                  (locale) => locale.languageCode == language.key,
-                ))
-                _radioTile(context, service, language.value, language.key),
-            ],
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _radioTile(context, service, localizations.systemDefault, ""),
+                for (final language in languageNames.entries)
+                  if (AppLocalizations.supportedLocales.any(
+                    (locale) => locale.languageCode == language.key,
+                  ))
+                    _radioTile(context, service, language.value, language.key),
+              ],
+            ),
           ),
         );
       },
@@ -64,12 +78,11 @@ class AppLanguagePage extends StatelessWidget {
     BuildContext context,
     SettingsService service,
     String label,
-    String value, {
-    bool autofocus = false,
-  }) {
+    String value,
+  ) {
     final isSelected = service.appLanguage == value;
     return SettingsOptionTile(
-      autofocus: autofocus && isSelected,
+      focusNode: _entryLanguage == value ? _entryFocus : null,
       selected: isSelected,
       title: Text(label, style: Theme.of(context).textTheme.bodyMedium),
       onPressed: () => service.setAppLanguage(value),

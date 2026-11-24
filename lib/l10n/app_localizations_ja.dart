@@ -201,7 +201,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get tvCompatibilityRun => 'Run check';
 
   @override
-  String get tvCompatibilityResults => 'View results';
+  String get tvCompatibilityResults => '互換性チェックの結果';
 
   @override
   String get compatibilityReportDate => 'Check date';
@@ -591,7 +591,7 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get textEmptyCategory => 'このカテゴリは空です。';
+  String get textEmptyCategory => 'このセクションは空です。OK でセクションを管理できます。';
 
   @override
   String get time => '時刻';
@@ -659,10 +659,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get backupAndRestore => 'バックアップと復元';
 
   @override
-  String get exportBackup => 'バックアップをエクスポート';
+  String get exportBackup => 'ファイルにエクスポート';
 
   @override
-  String get importBackup => 'バックアップをインポート';
+  String get importBackup => 'ファイルからインポート';
 
   @override
   String exportSuccess(String path) {
@@ -673,7 +673,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get importSuccess => 'バックアップが正常にインポートされました';
 
   @override
-  String get importConfirm => 'バックアップをインポートしますか？現在の設定とレイアウトが上書きされます。';
+  String get importConfirm =>
+      'このバックアップを復元しますか？ 現在のレイアウトはバックアップのレイアウトに置き換わります。バックアップに含まれない設定や値が無効な設定は初期値に戻ることがあります。';
 
   @override
   String get importError => 'バックアップから設定を復元できませんでした。ファイルを確認して、再試行してください。';
@@ -1211,8 +1212,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get noInputsDetected => '入力が検出されませんでした';
 
   @override
-  String get reorderSectionsHint =>
-      '◄ / ► で選択し、▲ / ▼ を使用して並べ替えます。リストの境界を越えてセクションを非表示または表示します。';
+  String get reorderSectionsHint => '▲ / ▼ でセクションを選択 · OK で開く · ◄ / ► で移動を開始';
 
   @override
   String get customName => 'カスタム名';
@@ -2278,7 +2278,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get quickPanelObjectsTitle => 'クイック設定の項目';
 
   @override
-  String get topPanelObjects => 'オブジェクト';
+  String get topPanelObjects => '項目と並び順';
 
   @override
   String get panelTextBackground => 'テキストとボタンの背景';
@@ -2882,7 +2882,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get adbAccessibilityGuide =>
-      'システムメニューでCuteLauncherを選択し、そのサービスを有効にします。ここに戻ってホーム インターセプトを設定します。これを無効にするには、同じメニューで CuteLauncher サービスをオフにします。';
+      'Android の設定で CuteLauncher サービスを有効にし、ランチャーに戻ってください。';
 
   @override
   String get adbEffectAccessibilityDisable =>
@@ -4238,7 +4238,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get cleanerLists => '無効化リスト';
 
   @override
-  String get cleanerRecovery => 'バックアップと復元';
+  String get cleanerRecovery => 'アプリ状態のバックアップ';
 
   @override
   String get cleanerExports => 'レポート';
@@ -4338,7 +4338,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get sleepTimerSettings => 'スリープタイマー設定';
 
   @override
-  String get sleepTimerPresets => 'タイマー';
+  String get sleepTimerPresets => 'タイマーの時間設定';
 
   @override
   String get sleepTimerDisplay => 'タイマー動作中の表示';
@@ -4551,12 +4551,18 @@ class AppLocalizationsJa extends AppLocalizations {
   String get recentAppsEmpty => 'タスクが開いているTVアプリはありません';
 
   @override
-  String get recentAppsUnavailable =>
-      '開いているアプリを表示できません。ADBとユーザー補助の権限を確認してください。';
+  String get recentAppsUnavailable => '開いているアプリを表示できません。';
+
+  @override
+  String get recentAppsAdbRequired => '開いているアプリを表示するには、ローカル ADB に接続してください。';
+
+  @override
+  String get recentAppsAccessibilityRequired =>
+      'ユーザー補助の設定で CuteLauncher サービスを有効にしてください。';
 
   @override
   String get recentAppsHelp =>
-      'タスクが開いているTVアプリのみ表示します。「すべて閉じる」は一覧のユーザーアプリを停止します。リマッパーでボタンを割り当ててください。CuteLauncherパネルにはADBとユーザー補助の権限が必要です。';
+      'タスクが開いているTVアプリのみ表示します。「すべて閉じる」は一覧のユーザーアプリを停止します。CuteLauncher は開いたままになります。リマッパーでボタンを割り当ててください。CuteLauncherパネルにはADBとユーザー補助の権限が必要です。';
 
   @override
   String get recentAppsHomeHint =>
@@ -5012,9 +5018,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get appChannelsEmpty => '利用できるアプリのフィードがありません。';
 
   @override
-  String get appChannelsRefresh => 'フィードを更新';
-
-  @override
   String get appChannelsLaunchFailed => 'このコンテンツを開けませんでした。';
 
   @override
@@ -5227,6 +5230,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get remoteMappingToggleNightMode => '夜間モードを切り替える';
+
+  @override
+  String get remoteMappingScreenshot => 'スクリーンショットを撮る';
 
   @override
   String get remoteMappingBlackOverlay => '黒い画面';
@@ -5657,7 +5663,7 @@ class AppLocalizationsJa extends AppLocalizations {
       '天気の項目を追加してください。最大12ブロック、改行1つ、各テキスト欄60文字まで使用できます。';
 
   @override
-  String get fileManagerPreference => 'ファイルマネージャー';
+  String get fileManagerPreference => 'ファイルの選択方法';
 
   @override
   String get fileManagerAsk => '毎回確認する';
@@ -6126,7 +6132,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get launcherDefaultAndAdb => '既定のランチャーとADB';
 
   @override
-  String get defaultLauncherViaAdb => 'ADBで既定のランチャーを設定';
+  String get defaultLauncherViaAdb => 'ADB で設定';
 
   @override
   String get defaultLauncherViaAccessibility => 'ユーザー補助で既定のランチャーを設定';
@@ -6150,7 +6156,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settingsGeneralGroup => '一般';
 
   @override
-  String get settingsManagementGroup => '設定の管理';
+  String get settingsManagementGroup => 'バックアップと同期';
 
   @override
   String get settingsMaintenanceGroup => 'メンテナンス';
@@ -6192,6 +6198,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get hiddenFeeds => '非表示のフィード';
 
   @override
+  String get appChannelsOrderHint =>
+      '◄ / ► で移動を開始。▲ / ▼ で並べ替えやリスト間の移動。OK または戻るで終了。';
+
+  @override
   String get controlAndAccessGroup => '操作とアクセス';
 
   @override
@@ -6208,4 +6218,123 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get deletionGroup => '削除';
+
+  @override
+  String get memoryLimitsLocked => 'メモリ節約が有効です。上限を変更するには無効にしてください。';
+
+  @override
+  String get memoryOccupied => '使用中のメモリ';
+
+  @override
+  String get memorySettings => '上限とキャッシュ';
+
+  @override
+  String get memoryDecodedApps => 'デコード済みのアプリと画面の画像';
+
+  @override
+  String get memoryDecodedPosters => 'デコード済みのポスター';
+
+  @override
+  String get memoryPreload => 'ポスターの先読み（カード数）';
+
+  @override
+  String get memoryBackgroundClear => 'ランチャーを離れたときに RAM キャッシュを消去';
+
+  @override
+  String get memoryResetLimits => 'メモリ上限を初期値に戻す';
+
+  @override
+  String get memoryClearDisk => 'ディスク上のポスターキャッシュを消去';
+
+  @override
+  String get memoryFreed => '解放した容量';
+
+  @override
+  String get memoryDiskFailed => 'ディスクキャッシュを消去できませんでした。もう一度お試しください。';
+
+  @override
+  String get memoryLimitsFailed => 'メモリ設定を保存できませんでした。もう一度お試しください。';
+
+  @override
+  String get memoryClearRam => 'RAM キャッシュを消去';
+
+  @override
+  String get posterCacheRam => 'ポスターキャッシュ（メモリ）';
+
+  @override
+  String get posterCacheDisk => 'ポスターキャッシュ（ディスク）';
+
+  @override
+  String get memoryAppChannelPosters => 'アプリフィードのポスター';
+
+  @override
+  String get posterCacheSaveFailed => 'ポスターキャッシュの上限を保存できませんでした。';
+
+  @override
+  String get appChannelsSectionSettings => 'セクション設定';
+
+  @override
+  String get settingsLoadFailed => '設定を読み込めませんでした。';
+
+  @override
+  String get diagnosticsReportsAndRecording => 'レポートと記録';
+
+  @override
+  String get diagnosticsClearRecordingConfirm =>
+      '記録を停止して、このセッションで収集したデータを削除しますか？';
+
+  @override
+  String get appChannelVisible => 'フィードを表示';
+
+  @override
+  String get movingSectionsHint =>
+      '▲ / ▼ で移動 · OK または戻るで終了。リストの境界を越えるとセクションの表示と非表示を切り替えます。';
+
+  @override
+  String get cuteLauncherSettings => 'CuteLauncher の設定';
+
+  @override
+  String get hiddenSectionBadge => '非表示';
+
+  @override
+  String get buttonsAndFocus => 'ボタンとフォーカス';
+
+  @override
+  String get systemTiles => 'システムタイル';
+
+  @override
+  String get compatibilityGroup => '互換性';
+
+  @override
+  String get storageDevicesGroup => 'ストレージ機器';
+
+  @override
+  String get overAppsGroup => '他のアプリの上に表示';
+
+  @override
+  String get remotePanelAssignButton => 'パネルを開くボタンを割り当て';
+
+  @override
+  String get launcherChooseInAndroid => 'Android でランチャーを選択';
+
+  @override
+  String get openAndroidSettings => 'Android の設定を開く';
+
+  @override
+  String get applicationsTabAll => 'すべて';
+
+  @override
+  String get applicationsTabSystem => 'システム';
+
+  @override
+  String get applicationsTabHidden => '非表示';
+
+  @override
+  String get fileSettingsGroup => 'ファイル';
+
+  @override
+  String get builtInBrowserOptions => '内蔵ファイルブラウザの設定';
+
+  @override
+  String get remoteMappingsLimit => 'すでにボタンの割り当てが64件あります。新しく追加するには1件削除してください。';
 }

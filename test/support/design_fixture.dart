@@ -162,6 +162,10 @@ Future<DesignFixture> pumpDesignFixture(
   when(settings.dataUsagePeriod).thenReturn('daily');
   when(settings.themes).thenReturn(theme);
   when(settings.memorySaverEnabled).thenReturn(economy);
+  for (final limit in MemoryLimit.values) {
+    when(settings.memoryLimit(limit)).thenReturn(economy ? limit.economy : limit.normal);
+  }
+  when(settings.clearCachesOnBackground).thenReturn(economy);
   final memory = MemoryResources(settings: settings);
   when(settings.appHighlightAnimationEnabled).thenReturn(false);
   when(settings.showNetworkIndicatorInStatusBar).thenReturn(false);

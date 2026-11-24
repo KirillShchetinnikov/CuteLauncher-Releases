@@ -80,6 +80,46 @@ void main() {
     expect(store.recording.value, DiagnosticRecordingState.idle);
   }
 
+  testWidgets('clearing an active recording requires confirmation and Back preserves it', (tester) async {
+    final store = DiagnosticsStore.instance..clear();
+    final messenger = tester.binding.defaultBinaryMessenger;
+    const channel = MethodChannel('me.efesser.flauncher/method');
+    final calls = <String>[];
+    messenger.setMockMethodCallHandler(channel, (call) async {
+      calls.add(call.method);
+      return true;
+    });
+    addTearDown(() {
+      store.clear();
+      messenger.setMockMethodCallHandler(channel, null);
+    });
+    await tester.pumpWidget(MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: Scaffold(body: DiagnosticsPage(collect: (_) async => {})),
+    ));
+    await tester.pumpAndSettle();
+    final l = AppLocalizations.of(tester.element(find.byType(DiagnosticsPage)))!;
+    await tester.tap(find.text(l.diagnosticsStartRecording));
+    await tester.pumpAndSettle();
+    final clear = find.text(l.diagnosticsClear);
+    await tester.ensureVisible(clear);
+    await tester.tap(clear);
+    await tester.pumpAndSettle();
+    expect(find.text(l.diagnosticsClearRecordingConfirm), findsOneWidget);
+    expect(Focus.of(tester.element(find.text(l.cancel))).hasFocus, isTrue);
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(store.isRecording, isTrue);
+    expect(calls, isNot(contains('clearNativeShellDiagnostics')));
+    await tester.tap(clear);
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(LauncherDialogButton, l.diagnosticsClear));
+    await tester.pumpAndSettle();
+    expect(store.isRecording, isFalse);
+    expect(calls, contains('clearNativeShellDiagnostics'));
+  });
+
   testWidgets('extended recording survives closing the page and can be exported after timeout',
       (tester) => verifyRecordingStop(tester, manual: false));
   testWidgets('stop recording keeps the history for later and moves remote focus to report creation',
@@ -285,7 +325,7 @@ void main() {
           isFalse,
         );
         await tester.pumpAndSettle();
-        expect(find.text('Диагностика'), findsOneWidget);
+        expect(find.text('Отчёты и запись'), findsOneWidget);
         expect(
           find.text('Отчёт сохранён'),
           outcome == 'saved' ? findsOneWidget : findsNothing,

@@ -10,11 +10,18 @@ const recentAppsChannel = BridgeChannel(
 class RecentApp {
   final String packageName, name;
   final bool userApp;
-  const RecentApp(this.packageName, this.name, this.userApp);
+  final bool canClose;
+  const RecentApp(
+    this.packageName,
+    this.name,
+    this.userApp, {
+    this.canClose = true,
+  });
   factory RecentApp.fromMap(Map value) => RecentApp(
     value['packageName'] as String,
     value['name'] as String,
     value['userApp'] == true,
+    canClose: value['canClose'] != false,
   );
 }
 
@@ -71,6 +78,13 @@ class RecentAppsClient {
       await recentAppsChannel.invokeMethod<bool>('mode', mode) == true;
   Future<bool> open() async =>
       await recentAppsChannel.invokeMethod<bool>('open') == true;
+  Future<void> cancelOpen() async {
+    try {
+      await recentAppsChannel.invokeMethod<void>('cancelOpen');
+    } catch (_) {
+      // The settings engine may already be closing.
+    }
+  }
   Future<Map<String, dynamic>> action(
     String action, [
     String? packageName,

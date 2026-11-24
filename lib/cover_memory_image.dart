@@ -4,6 +4,8 @@ import 'dart:ui' as ui;
 import 'package:flutter/painting.dart';
 
 import 'content_image.dart';
+import 'diagnostics_store.dart';
+import 'launcher_image_cache.dart';
 
 /// Keeps enough source pixels for cover cropping, including focus growth.
 /// Dimensions participate in the cache key; focus itself does not.
@@ -35,6 +37,12 @@ class CoverMemoryImage extends MemoryImage {
 
   @override
   ImageStreamCompleter loadImage(MemoryImage key, ImageDecoderCallback decode) {
+    if (key is _CoverImageKey && DiagnosticsStore.instance.isRecording) {
+      DiagnosticsStore.instance.decodedImage(
+        'posters',
+        '${key.content.fingerprint}:$width:$height:$maximumEdge',
+      );
+    }
     return key.loadImage(key, (buffer, {getTargetSize}) {
       return decode(
         buffer,
@@ -67,7 +75,7 @@ class CoverMemoryImage extends MemoryImage {
 
 /// Encoded LRU eviction can return a new byte buffer for the same poster.
 /// Share its decoded texture while keeping every decode dimension in the key.
-class _CoverImageKey extends MemoryImage {
+class _CoverImageKey extends MemoryImage implements PosterCacheKey {
   final ContentImage content;
   final int width, height, maximumEdge;
   _CoverImageKey(this.content, this.width, this.height, this.maximumEdge)

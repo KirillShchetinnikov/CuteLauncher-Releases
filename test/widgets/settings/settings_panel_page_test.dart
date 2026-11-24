@@ -20,6 +20,8 @@ import 'package:shared_preferences/shared_preferences.dart';
  */
 
 import 'package:flauncher/providers/apps_service.dart';
+import 'package:flauncher/providers/update_service.dart';
+import 'package:flauncher/widgets/settings/updates_page.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/settings/applications_panel_page.dart';
 import 'package:flauncher/widgets/settings/interface_settings_page.dart';
@@ -201,33 +203,57 @@ void main() {
     expect(find.byType(CuteLauncherAboutDialog), findsNothing);
   });
 
-  testWidgets("Upstream donation entry is not shown", (tester) async {
-    final settingsService = MockSettingsService();
-    when(settingsService.appKeyClickEnabled).thenReturn(false);
-    final appsService = MockAppsService();
-    when(appsService.launcherSections).thenReturn([]);
-    when(appsService.applications).thenReturn([]);
-    when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
-    when(settingsService.accentColorHex).thenReturn("7C4DFF");
+  for (final update in [false, true]) {
+    testWidgets('Up and OK open the header action (update: $update)', (tester) async {
+      final settingsService = MockSettingsService();
+      when(settingsService.appKeyClickEnabled).thenReturn(false);
+      final appsService = MockAppsService();
+      when(appsService.launcherSections).thenReturn([]);
+      when(appsService.applications).thenReturn([]);
+      when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
+      when(settingsService.accentColorHex).thenReturn("7C4DFF");
 
-    await _pumpWidgetWithProviders(tester, settingsService, appsService);
-
-    expect(find.text("Support & Donate"), findsNothing);
-    expect(find.byType(DonateDialog), findsNothing);
-  });
+      await _pumpWidgetWithProviders(tester, settingsService, appsService, update: update);
+      final label = update ? 'Update available · 1.8.2-test.10' : 'Support the developer';
+      final logo = find.image(const AssetImage('assets/about-icon.png'));
+      final brand = tester.getRect(find.text('CuteLauncher'));
+      final title = tester.getRect(find.text('Settings'));
+      final button = tester.getRect(find.widgetWithText(TextButton, label));
+      expect(tester.getSize(logo), const Size(44, 44));
+      expect(brand.left, title.left);
+      expect(brand.left, greaterThan(tester.getRect(logo).right));
+      expect(brand.top, greaterThanOrEqualTo(title.bottom));
+      expect(button.left, tester.getRect(logo).left);
+      expect(button.top, greaterThanOrEqualTo(brand.bottom));
+      expect(tester.widget<Text>(find.text(label)).maxLines, 1);
+      expect(Focus.of(tester.element(find.text('Home screen'))).hasFocus, isTrue);
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+      await tester.pumpAndSettle();
+      expect(Focus.of(tester.element(find.text(label))).hasFocus, isTrue);
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pumpAndSettle();
+      expect(update ? find.byKey(const Key('UpdatesPage')) : find.byType(DonateDialog), findsOneWidget);
+    });
+  }
 }
 
 Future<void> _pumpWidgetWithProviders(
   WidgetTester tester,
   SettingsService settingsService,
-  AppsService appsService, {bool general = false}
+  AppsService appsService, {bool general = false, bool update = false}
 ) async {
   SharedPreferences.setMockInitialValues({});
   final appearance = AppearanceService(await SharedPreferences.getInstance());
+  final updates = UpdateService(await SharedPreferences.getInstance(), environment: () async => null);
+  if (update) {
+    updates.release = AppRelease('1.8.2-test.10+280', Uri(), 1, null);
+  }
+  addTearDown(updates.dispose);
   addTearDown(appearance.dispose);
   await tester.pumpWidget(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider<UpdateService>.value(value: updates),
         ChangeNotifierProvider<SettingsService>.value(value: settingsService),
         ChangeNotifierProvider<AppearanceService>.value(value: appearance),
         ChangeNotifierProvider<AppsService>.value(value: appsService),
@@ -240,6 +266,7 @@ Future<void> _pumpWidgetWithProviders(
         ],
         supportedLocales: AppLocalizations.supportedLocales,
         routes: {
+          UpdatesPage.routeName: (_) => Container(key: const Key('UpdatesPage')),
           WidgetsAndPanelsPage.routeName: (_) => Container(key: const Key("AppearanceSettingsPage")),
           InterfaceSettingsPage.routeName: (_) => Container(key: Key("InterfaceSettingsPage")),
           LauncherFunctionsPage.routeName: (_) => Container(key: Key("DisplaySettingsPage")),

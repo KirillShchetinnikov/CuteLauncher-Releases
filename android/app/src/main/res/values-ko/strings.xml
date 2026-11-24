@@ -40,4 +40,6 @@
     <string name="recovery_restore">이전 홈 화면 복원</string>
     <string name="recovery_restore_confirm">기존 로컬 ADB 연결로 이전 홈 화면을 복원하시겠습니까?</string>
     <string name="remap_error_adb_command">ADB 명령을 실행하지 못했습니다. 로컬 ADB 연결과 명령어를 확인하세요.</string>
+    <string name="recent_apps_adb_required">열려 있는 앱 패널을 열려면 로컬 ADB에 연결하세요.</string>
+    <string name="recent_apps_accessibility_required">접근성 설정에서 CuteLauncher 서비스를 사용 설정하세요.</string>
 </resources>

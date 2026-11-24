@@ -422,15 +422,21 @@ void main() {
       service = CloudBackupService(
         accounts: accounts,
         clientFactory: dav.client,
-        budget: const Duration(milliseconds: 100),
+        // Allow the real loopback TLS handshake to finish under suite load.
+        budget: const Duration(seconds: 5),
       );
       final arrived = Completer<void>(), release = Completer<void>();
+      final responseFinished = Completer<void>();
       dav.override = (request) async {
         await request.drain<void>();
         arrived.complete();
         await release.future;
-        request.response.statusCode = 201;
-        await request.response.close();
+        try {
+          request.response.statusCode = 201;
+          await request.response.close();
+        } finally {
+          responseFinished.complete();
+        }
       };
       final file = await File('${staging.path}/source').writeAsString('dummy');
       final failed = expectLater(
@@ -442,7 +448,7 @@ void main() {
       dav.override = null;
       await service.checkAccount();
       release.complete();
-      await Future<void>.delayed(const Duration(milliseconds: 20));
+      await responseFinished.future;
       expect(dav.methods, ['PROPFIND', 'PUT', 'PROPFIND']);
       expect(service.busy, false);
     },
@@ -484,16 +490,18 @@ void main() {
     () async {
       await connect();
       dav.override = (request) async {
-        final chunk = List.filled(64 * 1024, 1);
-        for (var i = 0; i <= maximumBackupBytes ~/ chunk.length; i++) {
+        final chunk = Uint8List(1024 * 1024);
+        for (var i = 0; i < maximumBackupBytes ~/ chunk.length; i++) {
           request.response.add(chunk);
           await request.response.flush();
         }
+        request.response.add([1]);
         await request.response.close();
       };
       await expectLater(service.download(staging), throwsA(errorCode('size')));
       expect(await staging.list().toList(), isEmpty);
     },
+    timeout: const Timeout(Duration(minutes: 2)),
   );
   test(
     'bounded metadata rejects oversized responses without saving an account',

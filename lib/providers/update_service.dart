@@ -395,6 +395,7 @@ class UpdateService extends ChangeNotifier
   int _generation = 0;
   bool _checkAfterReload = false;
   bool get fromPlay => _environment?['play'] == true;
+  String? get availableVersion => fromPlay ? null : release?.version;
   bool get automatic => preferences.getBool(automaticUpdatesKey) ?? false;
   bool get prereleases => preferences.getBool(prereleaseUpdatesKey) ?? false;
   bool get notificationsEnabled =>

@@ -143,11 +143,12 @@ final class LocalWallpaperFiles {
         ArrayList<String> images = new ArrayList<>();
         ArrayDeque<File> directories = new ArrayDeque<>();
         HashSet<String> visited = new HashSet<>();
+        root = root.toPath().toRealPath().toFile();
         directories.add(root);
         int entries = 0;
         while (!directories.isEmpty() && entries < 4000 && images.size() < 1000) {
             File current = directories.removeFirst();
-            if (!visited.add(current.getCanonicalPath())) continue;
+            if (!visited.add(current.getPath())) continue;
             File[] children = current.listFiles();
             if (children == null) {
                 if (current.equals(root)) throw new IOException("Folder unavailable");
@@ -157,12 +158,12 @@ final class LocalWallpaperFiles {
             for (File child : children) {
                 if (entries++ >= 4000 || images.size() >= 1000) break;
                 try {
-                    File safe = sharedFile(child.getPath());
+                    File safe = sharedFile(child.toPath().toRealPath().toString());
                     // Do not follow a link outside the selected directory.
-                    if (!safe.getPath().startsWith(root.getCanonicalPath() + File.separator)) continue;
+                    if (!safe.toPath().startsWith(root.toPath())) continue;
                     if (safe.isDirectory()) { if (recursive) directories.add(safe); }
                     else if (safe.isFile() && image(safe)) images.add(safe.toURI().toASCIIString());
-                } catch (SecurityException ignored) { }
+                } catch (IOException | SecurityException ignored) { }
             }
         }
         java.util.Collections.sort(images);

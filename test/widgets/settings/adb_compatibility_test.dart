@@ -75,7 +75,7 @@ void main() {
   }
   for (final system in ['Android TV', 'Google TV']) {
     testWidgets(
-      '$system has two controls and the ADB button changes to restore',
+      '$system keeps the connection link and changes the ADB action to restore',
       (tester) async {
         tester.view.physicalSize = const Size(1280, 900);
         tester.view.devicePixelRatio = 1;
@@ -186,7 +186,7 @@ void main() {
         expect(actions, isEmpty); // Detection never probes ADB.
         await tester.tap(find.text(l.adbDefaultBlock));
         await tester.pumpAndSettle();
-        final setup = find.text(l.adbOpenConnectionSettings);
+        final setup = find.text(l.adbConnectionBlock);
         expect(Focus.of(tester.element(setup)).hasFocus, isTrue);
         expect(tile(l.adbAssignDefault).onPressed, isNull);
         await tester.sendKeyEvent(LogicalKeyboardKey.enter);
@@ -198,9 +198,9 @@ void main() {
         await tester.pumpAndSettle();
         Navigator.of(tester.element(find.text(l.adbCheck))).pop();
         await tester.pumpAndSettle();
-        expect(setup, findsNothing);
+        expect(setup, findsOneWidget);
         expect(actions, ['check']);
-        expect(find.byType(FocusableSettingsTile), findsNWidgets(2));
+        expect(find.byType(FocusableSettingsTile), findsNWidgets(3));
         expect(tester.getTopLeft(find.text(l.adbAssignDefault)).dy,
             lessThan(tester.getTopLeft(find.text(l.adbSystemDefault)).dy));
         expect(tile(l.adbAssignDefault).onPressed, isNotNull);
@@ -211,7 +211,7 @@ void main() {
         expect(find.text(l.adbEffectDisable), findsOneWidget);
         await tester.tap(find.text(l.dialogAssign));
         await tester.pumpAndSettle();
-        expect(find.byType(FocusableSettingsTile), findsNWidgets(2));
+        expect(find.byType(FocusableSettingsTile), findsNWidgets(3));
         expect(find.text(l.adbAssignDefault), findsNothing);
         expect(
           Focus.of(tester.element(find.text(l.adbRestoreDefault))).hasFocus,
@@ -283,7 +283,7 @@ void main() {
         expect(find.text(l.adbUnsupported), findsOneWidget);
         expect(
           tester
-              .widget<FocusableSettingsTile>(find.byType(FocusableSettingsTile))
+              .widget<FocusableSettingsTile>(find.ancestor(of: find.text('Watch Next'), matching: find.byType(FocusableSettingsTile)))
               .onPressed,
           isNull,
         );

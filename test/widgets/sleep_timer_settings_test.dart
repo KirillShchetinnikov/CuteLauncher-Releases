@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flauncher/widgets/settings/settings_list_heading.dart';
 import 'package:flauncher/widgets/settings/settings_information.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
@@ -18,13 +20,18 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences_platform_interface/shared_preferences_platform_interface.dart';
+
+import '../support/gated_preferences.dart';
 
 void main() {
   late SettingsService settings;
   late SleepTimerService timer;
+  late GatedPreferencesStore store;
   final calls = <MethodCall>[];
   setUp(() async {
     SharedPreferences.setMockInitialValues({});
+    SharedPreferencesStorePlatform.instance = store = GatedPreferencesStore();
     settings = SettingsService(await SharedPreferences.getInstance());
     timer = SleepTimerService();
     timer.didChangeAppLifecycleState(AppLifecycleState.paused);
@@ -127,7 +134,7 @@ void main() {
     expect(config.display, 'both');
     expect(config.showOverApps, isTrue);
     expect(config.overlayPosition, OverlayPosition.widget);
-    expect(find.text('Настройка доступа'), findsOneWidget);
+    expect(find.text('Специальные возможности'), findsOneWidget);
     expect(calls, isEmpty);
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox());
@@ -152,9 +159,16 @@ void main() {
       tester.widget<FocusableSettingsTile>(row).focusNode!.requestFocus();
       await tester.pump();
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+      final write = store.writeGate = Completer<void>();
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      await tester.pump();
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      write.complete();
       await tester.pumpAndSettle();
-      expect(settings.sleepTimerConfiguration.presets.first.visible, false);
+      expect(
+        settings.sleepTimerConfiguration.presets.map((p) => (p.id, p.visible)),
+        [('custom', false), ('default_600', false)],
+      );
       expect(
         tester.widget<FocusableSettingsTile>(row).focusNode!.hasFocus,
         true,

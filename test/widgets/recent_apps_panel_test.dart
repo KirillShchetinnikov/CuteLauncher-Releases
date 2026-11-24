@@ -72,7 +72,9 @@ void main() {
           if (call.method == 'icon') return null;
           if (call.method == 'closeAll') {
             if (pending != null) return pending!.future;
-            apps.removeWhere((app) => app['userApp'] == true);
+            apps.removeWhere(
+              (app) => app['userApp'] == true && app['canClose'] != false,
+            );
           }
           if (call.method == 'close') {
             apps.removeWhere(
@@ -145,6 +147,35 @@ void main() {
     expect(find.text('Player'), findsNothing);
     expect(find.text('System TV'), findsOneWidget);
     expect(tester.takeException(), isNull);
+  });
+  testWidgets('launcher can be selected and cannot be closed', (tester) async {
+    apps.add({
+      'packageName': 'com.leanbitlab.ltvL',
+      'name': 'CuteLauncher',
+      'userApp': true,
+      'canClose': false,
+    });
+    await open(tester);
+    final launcher = find.byKey(const ValueKey('com.leanbitlab.ltvL'));
+    expect(launcher, findsOneWidget);
+    expect(
+      find.descendant(of: launcher, matching: find.byIcon(Icons.close)),
+      findsNothing,
+    );
+    await tester.tap(find.text('Close all'));
+    await tester.pumpAndSettle();
+    expect(find.text('Player'), findsNothing);
+    expect(launcher, findsOneWidget);
+    await tester.tap(find.text('Close all'), warnIfMissed: false);
+    await tester.pumpAndSettle();
+    expect(calls.where((call) => call.method == 'closeAll'), hasLength(1));
+    await tester.tap(
+      find.descendant(of: launcher, matching: find.text('CuteLauncher')),
+    );
+    await tester.pumpAndSettle();
+    expect(calls.lastWhere((call) => call.method == 'switch').arguments, {
+      'packageName': 'com.leanbitlab.ltvL',
+    });
   });
   testWidgets('operation restores the surviving action focus', (tester) async {
     await open(tester);
@@ -324,36 +355,18 @@ void main() {
     expect(tester.takeException(), isNull);
   });
   for (final locale in ['en', 'ru']) {
-    testWidgets('access statuses sit below the title at large text: $locale', (
+    testWidgets('panel leaves access setup in settings at large text: $locale', (
       tester,
     ) async {
       fail = true;
       await open(tester, scale: 1.8, locale: Locale(locale));
-      final link = find.byKey(const ValueKey('recent-access-accessibility'));
-      expect(link, findsOneWidget);
-      expect(find.byKey(const ValueKey('recent-access-adb')), findsOneWidget);
       final l = AppLocalizations.of(
         tester.element(find.byType(RecentAppsPanel)),
       )!;
-      final header = find.byKey(const ValueKey('recent_access_header'));
-      final actions = find.byKey(const ValueKey('recent_actions'));
-      expect(
-        tester.getRect(header).top,
-        greaterThanOrEqualTo(
-          tester.getRect(find.text(l.recentAppsTitle)).bottom,
-        ),
-      );
-      expect(
-        tester.getRect(header).bottom,
-        lessThanOrEqualTo(tester.getRect(actions).top),
-      );
-      expect(
-        find.descendant(
-          of: find.byKey(const ValueKey('recent_list')),
-          matching: header,
-        ),
-        findsNothing,
-      );
+      expect(find.text(l.adbConnectionBlock), findsNothing);
+      expect(find.text(l.accessibility), findsNothing);
+      expect(find.text(l.recentAppsUnavailable), findsOneWidget);
+      expect(calls.map((call) => call.method), isNot(contains('access')));
       expect(tester.takeException(), isNull);
     });
     testWidgets('panel fits TV at large text: $locale', (tester) async {

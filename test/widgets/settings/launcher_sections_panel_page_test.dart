@@ -89,6 +89,23 @@ void main() {
     });
   }
 
+  testWidgets('system Back finishes moving before leaving the section list', (tester) async {
+    final apps = MockAppsService();
+    when(apps.launcherSections).thenReturn([fakeCategory(name: 'Favorites')]);
+    await _pumpWidgetWithProviders(tester, apps);
+    final route = find.byType(LauncherSectionsPanelPage);
+    final l = AppLocalizations.of(tester.element(route))!;
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.pumpAndSettle();
+    expect(find.text(l.movingSectionsHint), findsOneWidget);
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(find.text(l.reorderSectionsHint), findsOneWidget);
+    expect(Focus.of(tester.element(find.text('Favorites'))).hasFocus, isTrue);
+    expect(ModalRoute.of(tester.element(route))?.popDisposition,
+        RoutePopDisposition.bubble);
+  });
+
   testWidgets("'Arrow down' change category order", (tester) async {
     final appsService = MockAppsService();
     when(appsService.launcherSections).thenReturn([

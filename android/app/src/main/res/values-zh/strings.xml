@@ -40,4 +40,6 @@
     <string name="recovery_restore">恢复之前的主屏幕</string>
     <string name="recovery_restore_confirm">要使用现有的本地 ADB 连接恢复之前的主屏幕吗？</string>
     <string name="remap_error_adb_command">ADB 命令执行失败。请检查本地 ADB 连接和命令。</string>
+    <string name="recent_apps_adb_required">请连接本地 ADB 以打开应用面板。</string>
+    <string name="recent_apps_accessibility_required">请在无障碍设置中启用 CuteLauncher 服务。</string>
 </resources>

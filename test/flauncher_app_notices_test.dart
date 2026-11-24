@@ -58,20 +58,22 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('open apps setup event opens the ADB page', (tester) async {
+  for (final (event, section) in [('open_adb_settings', 'connection'), ('open_accessibility_settings', 'accessibility')]) {
+  testWidgets('$event opens the requested access page', (tester) async {
     await pumpDesignFixture(tester, language: 'ru');
     debugDisableShadows = true;
     await tester.binding.defaultBinaryMessenger.handlePlatformMessage(
       'me.efesser.flauncher/event_home',
-      const StandardMethodCodec().encodeSuccessEnvelope('open_adb_settings'),
+      const StandardMethodCodec().encodeSuccessEnvelope(event),
       (_) {},
     );
     await tester.pumpAndSettle();
     expect(find.byType(SettingsPanel), findsOneWidget);
     expect(find.byType(AdbPage), findsOneWidget);
-    expect(tester.widget<AdbPage>(find.byType(AdbPage)).section, 'connection');
+    expect(tester.widget<AdbPage>(find.byType(AdbPage)).section, section);
     expect(tester.takeException(), isNull);
   });
+  }
 
   Future<void> blocked(WidgetTester tester) async {
     await tester.binding.defaultBinaryMessenger.handlePlatformMessage(

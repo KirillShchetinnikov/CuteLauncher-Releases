@@ -17,6 +17,8 @@ void main() {
           l.panelOrderHint,
           l.backgroundInformationOrderHint,
           l.sleepTimerReorderHint,
+          l.applicationInfoButtonsHint,
+          l.applicationInfoMovingHint,
           l.remoteButtonsControlsHint,
         ]) {
           await tester.pumpWidget(
@@ -50,6 +52,12 @@ void main() {
             reason: '$locale: $text',
           );
           expect(paragraph.text.toPlainText(), text);
+          final spans = (paragraph.text as TextSpan).children!;
+          expect(
+            spans.map((span) => span.style?.backgroundColor),
+            everyElement(isNull),
+            reason: '$locale: $text',
+          );
           expect(
             tester.widget<Text>(hint).style!.fontSize,
             lessThanOrEqualTo(12),

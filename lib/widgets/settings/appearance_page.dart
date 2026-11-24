@@ -176,6 +176,31 @@ class _AppearancePageState extends State<AppearancePage> {
                   [1, 4 / 3, 16 / 9],
                   labels: {1: '1:1', 4 / 3: '4:3', 16 / 9: '16:9'},
                 ),
+                _choice(context, service, l.tileCornerRadius, 'radius', [
+                  null,
+                  0,
+                  8,
+                  16,
+                  32,
+                  100,
+                ], autofocus: false),
+                _choice(
+                  context,
+                  service,
+                  l.tileHorizontalGap,
+                  'horizontalGap',
+                  [for (var n = 0; n <= 48; n += 2) n],
+                ),
+                _choice(context, service, l.tileVerticalGap, 'verticalGap', [
+                  for (var n = 0; n <= 48; n += 2) n,
+                ]),
+                SettingsHelp(title: l.sizeAndLayout, text: l.homeStyleAutoOnly),
+              ],
+            ),
+            SettingsSection(
+              key: const ValueKey('tileImageMode'),
+              title: l.tileImageMode,
+              children: [
                 _choice(
                   context,
                   service,
@@ -203,34 +228,13 @@ class _AppearancePageState extends State<AppearancePage> {
                 ),
                 SettingsHelp(title: l.tileImageMode, text: l.tileImageModeHelp),
                 if (categoryId == null) _iconPackTile(context, settings, l),
-                _choice(context, service, l.tileCornerRadius, 'radius', [
-                  null,
-                  0,
-                  8,
-                  16,
-                  32,
-                  100,
-                ], autofocus: false),
-                _choice(
-                  context,
-                  service,
-                  l.tileHorizontalGap,
-                  'horizontalGap',
-                  [for (var n = 0; n <= 48; n += 2) n],
-                ),
-                _choice(context, service, l.tileVerticalGap, 'verticalGap', [
-                  for (var n = 0; n <= 48; n += 2) n,
-                ]),
                 _choice(context, service, l.tileIconScale, 'iconScale', [
                   0.5,
                   0.65,
                   0.8,
                   1,
                 ], percentage: true),
-                SettingsHelp(
-                  title: l.sizeAndLayout,
-                  text: '${l.homeStyleAutoOnly}\n\n${l.homeStyleIconHint}',
-                ),
+                SettingsHelp(title: l.tileIconScale, text: l.homeStyleIconHint),
               ],
             ),
             SettingsSection(

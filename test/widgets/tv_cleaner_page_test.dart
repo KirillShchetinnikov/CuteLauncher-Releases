@@ -391,7 +391,7 @@ void main() {
       for (final name in [
         'All applications',
         'Disable lists',
-        'Backup and recovery',
+        'App state backups',
         'Reports',
       ]) {
         final tile = tester.widget<FocusableSettingsTile>(
@@ -730,7 +730,7 @@ void main() {
       expect(find.textContaining('The command failed'), findsOneWidget);
       expect(find.text('Not attempted'), findsOneWidget);
       await back(tester);
-      await click(tester, 'Backup and recovery');
+      await click(tester, 'App state backups');
       final restore = tester.widget<FocusableSettingsTile>(
         find.ancestor(
           of: find.text('Restore baseline state'),
@@ -847,7 +847,7 @@ void main() {
       await open(tester, client, 'en');
       await click(tester, 'Refresh applications');
       expect(client.cached!['snapshotSaved'], isTrue);
-      await click(tester, 'Backup and recovery');
+      await click(tester, 'App state backups');
       expect(find.text('Baseline original state'), findsOneWidget);
       expect(find.textContaining('2023-11-'), findsOneWidget);
       expect(find.text('Save original state'), findsNothing);
@@ -864,7 +864,7 @@ void main() {
       await open(tester, client, 'en');
       await click(tester, 'Refresh applications');
       final baselineDate = client.cached!['baselineCreatedAt'];
-      await click(tester, 'Backup and recovery');
+      await click(tester, 'App state backups');
       await click(tester, 'Manage manual states');
       await click(tester, 'Save current state');
       await tester.tap(find.text('Use date and time'));
@@ -951,7 +951,7 @@ void main() {
       await click(tester, 'Списки отключения');
       expect(tester.takeException(), isNull);
       await back(tester);
-      await click(tester, 'Бэкап и восстановление');
+      await click(tester, 'Копии состояния приложений');
       expect(tester.takeException(), isNull);
       await back(tester);
       await click(tester, 'Все приложения');

@@ -75,14 +75,17 @@ void main() {
         hidden: false,
       ),
       fakeApp(packageName: "other", name: "Other", sideloaded: true),
-      fakeApp(packageName: "hidden", name: "Hidden", hidden: true),
+      fakeApp(packageName: "hidden", name: "Hidden app", hidden: true),
     ]);
 
     await _pumpWidgetWithProviders(tester, appsService);
 
     expect(find.text("All applications"), findsOneWidget);
     expect(find.text("Other"), findsOneWidget);
-    expect(find.text("Hidden"), findsNothing);
+    expect(find.text("Hidden app"), findsNothing);
+    for (final label in ['All', 'System', 'Hidden']) {
+      expect(find.text(label), findsOneWidget);
+    }
     expect(find.text("FLauncher"), findsOneWidget);
   });
 

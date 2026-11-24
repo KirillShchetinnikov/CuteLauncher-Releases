@@ -20,6 +20,7 @@ import 'package:flauncher/widgets/settings/appearance_settings_page.dart';
 import 'package:flauncher/widgets/settings/settings_style_page.dart';
 import 'package:flauncher/widgets/settings/status_bar_panel_page.dart';
 import 'package:flauncher/widgets/settings/settings_panel.dart';
+import 'package:flauncher/widgets/settings/settings_section.dart';
 import 'package:flauncher/widgets/settings/misc_panel_page.dart';
 import 'package:flauncher/widgets/settings/wallpaper_panel_page.dart';
 import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
@@ -105,11 +106,24 @@ void main() {
     expect(settings.wallpaperFit, 'contain');
   });
 
-  testWidgets('diagnostics links to memory without duplicating the memory saver controls', (tester) async {
+  testWidgets('diagnostics keeps memory management in launcher settings', (tester) async {
     await pump(tester, const LauncherDiagnosticsPage(), language: 'ru');
-    expect(find.text('Память'), findsOneWidget);
+    expect(tester.getCenter(find.text('Отчёты и запись')).dy,
+        lessThan(tester.getCenter(find.text('Совместимость')).dy));
+    expect(find.text('Память'), findsNothing);
     expect(find.text('Экономия памяти'), findsNothing);
     expect(find.text('Что меняет экономия'), findsNothing);
+  });
+
+  testWidgets('functions offers both display pages directly and groups app maintenance', (tester) async {
+    await pump(tester, const LauncherFunctionsPage(), language: 'ru');
+    final comfort = find.widgetWithText(SettingsSection, 'Автоматизация и комфорт');
+    expect(find.descendant(of: comfort, matching: find.text('Ночной режим')), findsOneWidget);
+    expect(find.descendant(of: comfort, matching: find.text('Яркость по расписанию')), findsOneWidget);
+    expect(find.text('Ночной режим и яркость'), findsNothing);
+    await tester.scrollUntilVisible(find.text('Разрешения приложениям'), 160);
+    final maintenance = find.widgetWithText(SettingsSection, 'Обслуживание');
+    expect(find.descendant(of: maintenance, matching: find.text('Разрешения приложениям')), findsOneWidget);
   });
 
   testWidgets('launcher settings exposes all four backup actions directly', (tester) async {
@@ -236,8 +250,8 @@ void main() {
     expect(find.text('Weather settings'), findsOneWidget);
     await Navigator.of(tester.element(find.byType(InformationSettingsPage))).maybePop();
     await tester.pumpAndSettle();
-    await tester.scrollUntilVisible(find.text('Show traffic'), 200);
-    expect(find.widgetWithText(FocusableSettingsTile, 'Show traffic'), findsOneWidget);
+    await tester.scrollUntilVisible(find.text('Traffic'), 200);
+    expect(find.widgetWithText(FocusableSettingsTile, 'Traffic'), findsOneWidget);
     expect(settings.showWeatherInStatusBar, isFalse);
   });
   testWidgets(
@@ -268,6 +282,8 @@ void main() {
       child: const Text('Open settings'),
     )));
     await tester.tap(find.text('Open settings'));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Highlight and animation'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Highlight and animation'));
     await tester.pumpAndSettle();

@@ -10,6 +10,7 @@ import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
 import 'package:flauncher/widgets/rounded_switch_list_tile.dart';
 import 'package:flauncher/widgets/settings/remote_action_picker.dart';
 import 'package:flauncher/widgets/settings/remote_mappings_page.dart';
+import 'package:flauncher/widgets/settings/remote_panel_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -70,6 +71,7 @@ void main() {
   Future<void> open(
     WidgetTester tester, {
     bool switchOnly = false,
+    bool fromPanel = false,
     List<TvInput> inputs = const [],
   }) async {
     tester.view.physicalSize = const Size(1280, 1440);
@@ -83,12 +85,69 @@ void main() {
           locale: const Locale('ru'),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          home: Scaffold(body: RemoteMappingsPage(switchOnly: switchOnly)),
+          home: Scaffold(body: fromPanel ? const RemotePanelPage() : RemoteMappingsPage(switchOnly: switchOnly)),
         ),
       ),
     );
     await tester.pumpAndSettle();
   }
+
+  for (final compact in [false, true]) {
+    testWidgets('failed read offers retry without editing or reset, compact=$compact', (tester) async {
+      var reads = 0;
+      binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, (call) async {
+        expect(call.method, 'info');
+        if (++reads == 1) throw PlatformException(code: 'unavailable');
+        return const RemoteMappingConfiguration(enabled: true).toMap();
+      });
+      await open(tester, switchOnly: compact);
+      final l = AppLocalizations.of(tester.element(find.byType(RemoteMappingsPage)))!;
+      expect(find.text(l.settingsLoadFailed), findsOneWidget);
+      expect(find.text(l.remoteMappingInvalid), findsNothing);
+      expect(find.text(l.remoteMappingsAdd), findsNothing);
+      expect(find.text(l.remoteMappingsReset), findsNothing);
+      await tester.tap(find.text(l.backgroundStartupRetry));
+      await tester.pumpAndSettle();
+      expect(reads, 2);
+      expect(find.text(l.settingsLoadFailed), findsNothing);
+      expect(tester.widget<Switch>(find.byType(Switch)).value, isTrue);
+      if (!compact) expect(find.text(l.remoteMappingsReset), findsOneWidget);
+    });
+  }
+
+  testWidgets('panel shortcut captures and saves a new panel binding, then returns to panel settings', (tester) async {
+    await open(tester, fromPanel: true);
+    await tester.tap(find.text('Назначить кнопку открытия'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Захватить'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('ОК'));
+    await tester.pumpAndSettle();
+    expect(find.text('Панель быстрых настроек'), findsOneWidget);
+    expect(find.text('TCL Home (4137)'), findsOneWidget);
+    await tester.tap(find.text('Сохранить'));
+    await tester.pumpAndSettle();
+    expect(config.bindings.single.action, 'panel');
+    expect(config.enabled, isFalse);
+    expect(find.byType(RemotePanelPage), findsOneWidget);
+    await tester.tap(find.text('Назначить кнопку открытия'));
+    await tester.pumpAndSettle();
+    expect(find.text('Захватить'), findsNothing);
+    expect(find.text('TCL Home (4137)'), findsOneWidget);
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(find.byType(RemotePanelPage), findsOneWidget);
+  });
+
+  testWidgets('full panel shortcut keeps existing assignments and offers the full list', (tester) async {
+    config = RemoteMappingConfiguration(bindings: List.generate(64, (i) => RemoteMapping(keyCode: 200 + i)));
+    await open(tester, fromPanel: true);
+    await tester.tap(find.text('Назначить кнопку открытия'));
+    await tester.pumpAndSettle();
+    final l = AppLocalizations.of(tester.element(find.byType(RemoteMappingsPage)))!;
+    expect(find.text(l.remoteMappingsLimit), findsOneWidget);
+    expect(calls.any((call) => call.method == 'save'), isFalse);
+  });
 
   const powerActions = {
     'sleep': 'Сон (с подтверждением)',
@@ -100,6 +159,7 @@ void main() {
   for (final action in {
     ...powerActions,
     'black_overlay': 'Чёрный экран',
+    'screenshot': 'Сделать скриншот',
     'toggle_night_mode': 'Переключить ночной режим',
     'tcl_screen_off': 'Отключить экран TCL',
   }.entries) {

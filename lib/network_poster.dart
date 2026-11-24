@@ -9,6 +9,7 @@ Future<Uint8List> readNetworkPoster(
   HttpClient client,
   Uri uri, {
   PosterLoad? trace,
+  void Function(bool allowed)? onDiskCachePolicy,
 }) async {
   HttpClientRequest? request;
   var abandoned = false;
@@ -30,6 +31,13 @@ Future<Uint8List> readNetworkPoster(
       await response.listen(null).cancel();
       throw FormatException('Poster HTTP ${response.statusCode}');
     }
+    final directives = response.headers[HttpHeaders.cacheControlHeader];
+    onDiskCachePolicy?.call(
+      directives == null || !directives.expand((value) => value.split(',')).any((value) {
+        final name = value.split('=').first.trim().toLowerCase();
+        return name == 'no-store' || name == 'no-cache';
+      }),
+    );
     trace?.stage(PosterStage.body);
     final bytes = await readBoundedImage(
       trace == null

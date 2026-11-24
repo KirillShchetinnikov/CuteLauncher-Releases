@@ -108,27 +108,24 @@ void main() {
       ?.key;
 
   testWidgets(
-    'own memory, cache counts, clear comparison and economy persist',
+    'process memory, per-cache usage and RAM cleanup',
     (tester) async {
       await mount(tester);
       expect(channel.calls, 1);
-      expect(find.text('CuteLauncher memory'), findsOneWidget);
+      expect(find.text('Memory in use'), findsOneWidget);
       expect(find.text('20.0 MiB'), findsOneWidget);
       expect(find.textContaining('4000'), findsNothing);
       expect(find.text('8.0 MiB'), findsNothing);
       expect(focusedTile(), const Key('memory-refresh'));
       await press(tester, 'memory-images');
-      expect(find.text('4.0 MiB · Items: 4'), findsOneWidget);
+      expect(find.text('4.0 MiB / 2.0 MiB · Items: 4'), findsOneWidget);
       await press(tester, 'memory-clear');
       expect(cached, 0);
       expect(channel.calls, 3);
       expect(find.text('Image caches: 4.0 MiB → 0.0 MiB'), findsOneWidget);
       expect(find.text('20.0 MiB → 20.0 MiB'), findsOneWidget);
       expect(focusedTile(), const Key('memory-clear'));
-      await press(tester, 'memory-economy');
-      expect(settings.memorySaverEnabled, isTrue);
-      expect(settings.exportSettingsMap()['memory_saver_enabled'], isTrue);
-      expect(find.text('0.0 MiB / 16.0 MiB'), findsOneWidget);
+      expect(find.byKey(const Key('memory-economy')), findsNothing);
       await press(tester, 'memory-advanced');
       await press(tester, 'memory-technical');
       expect(find.text('Unavailable'), findsOneWidget);
@@ -256,7 +253,7 @@ void main() {
       expect(find.byKey(const Key('memory-observation')), findsNothing);
       expect(find.byKey(const Key('memory-technical')), findsNothing);
       expect(find.text('Understanding the measurements'), findsNothing);
-      expect(find.text('What memory saving changes'), findsOneWidget);
+      expect(find.text('What memory saving changes'), findsNothing);
       await press(tester, 'memory-images');
       await press(tester, 'memory-advanced');
       expect(find.text('Advanced diagnostics'), findsOneWidget);
@@ -269,9 +266,9 @@ void main() {
       final navigator = Navigator.of(tester.element(find.byType(MemoryPage)));
       await navigator.maybePop();
       await tester.pumpAndSettle();
-      expect(find.text('CuteLauncher memory'), findsOneWidget);
+      expect(find.text('Memory in use'), findsOneWidget);
       expect(focusedTile(), const Key('memory-advanced'));
-      expect(find.text('4.0 MiB · Items: 4'), findsOneWidget);
+      expect(find.text('4.0 MiB / 2.0 MiB · Items: 4'), findsOneWidget);
       final calls = channel.calls;
       await tester.pump(const Duration(seconds: 15));
       expect(channel.calls, calls);

@@ -18,6 +18,43 @@ void main() {
     resources.dispose();
     settings.dispose();
   });
+  test('manual limits survive restart and economy, and only local limits reset', () async {
+    SharedPreferences.setMockInitialValues({'poster_cache_feeds_ram': 128, 'poster_cache_watch_next_disk': 128, 'other': 'keep'});
+    final prefs = await SharedPreferences.getInstance();
+    final settings = SettingsService(prefs);
+    final resources = MemoryResources(settings: settings);
+    addTearDown(settings.dispose);
+    addTearDown(resources.dispose);
+    var clears = 0;
+    resources.register(Object(), clear: () => clears++, stats: () => const MemoryCacheStats(0, 0));
+    await settings.setMemoryLimit(MemoryLimit.decodedApps, 32);
+    expect(PaintingBinding.instance.imageCache.maximumSizeBytes, 62 * 1024 * 1024);
+    expect(clears, 0);
+    await settings.setClearCachesOnBackground(true);
+    resources.didChangeAppLifecycleState(AppLifecycleState.hidden);
+    resources.didChangeAppLifecycleState(AppLifecycleState.paused);
+    expect(clears, 1);
+    await settings.setMemorySaverEnabled(true);
+    await settings.setMemoryLimit(MemoryLimit.feedRam, 4);
+    await settings.resetMemoryLimits();
+    final restarted = SettingsService(prefs);
+    addTearDown(restarted.dispose);
+    for (final limit in MemoryLimit.values) {
+      expect(restarted.memoryLimit(limit), limit.economy);
+    }
+    await restarted.setMemorySaverEnabled(false);
+    expect(restarted.memoryLimit(MemoryLimit.feedRam), 128);
+    expect(restarted.memoryLimit(MemoryLimit.watchDisk), 128);
+    expect(restarted.memoryLimit(MemoryLimit.decodedApps), 32);
+    expect(restarted.clearCachesOnBackground, isTrue);
+    await restarted.resetMemoryLimits();
+    for (final limit in MemoryLimit.values) {
+      expect(restarted.memoryLimit(limit), limit.normal);
+    }
+    expect(restarted.clearCachesOnBackground, isFalse);
+    expect(prefs.getString('other'), 'keep');
+  });
+
   test('feature snapshots aggregate providers without double counting and retain old snapshots', () {
     final resources = MemoryResources();
     final owner = Object();

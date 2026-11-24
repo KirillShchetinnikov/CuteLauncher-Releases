@@ -115,7 +115,7 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(find.text('Переопределять кнопку Home'), findsNothing);
-      await tester.tap(find.text('Подключение АДБ'));
+      await tester.tap(find.text('Подключение ADB'));
       await tester.pumpAndSettle();
       await tester.ensureVisible(find.text('Проверить подключение'));
       await tester.tap(find.text('Проверить подключение'));
@@ -126,7 +126,7 @@ void main() {
       await tester.pumpAndSettle();
       final page = find.byType(AdbPage);
       final l = AppLocalizations.of(tester.element(page))!;
-      expect(find.descendant(of: page, matching: find.byType(FocusableSettingsTile)), findsNWidgets(2));
+      expect(find.descendant(of: page, matching: find.byType(FocusableSettingsTile)), findsNWidgets(3));
       expect(find.text(l.adbAssignDefault), findsNothing);
       expect(find.text(l.adbNoAvailableLauncher), findsOneWidget);
       expect(find.text('Доступ к специальным возможностям'), findsNothing);
@@ -170,6 +170,13 @@ void main() {
       await tester.tap(boot);
       await tester.pumpAndSettle();
       verifyNever(settings.setStartOnBoot(any));
+      Future<void> openAccessibility() async {
+        final link = find.text(l.accessibility);
+        await tester.ensureVisible(link);
+        await tester.tap(link);
+        await tester.pumpAndSettle();
+      }
+      await openAccessibility();
       final grant = find.text(
         'Включить службу специальных возможностей CuteLauncher через ADB',
       );
@@ -181,6 +188,8 @@ void main() {
       await tester.pumpAndSettle();
       expect(grants, 1);
       expect(operations, ['accessibility']);
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
       final toggle = find.text('Переопределять кнопку Home');
       await tester.ensureVisible(toggle);
       await tester.tap(toggle);
@@ -194,6 +203,7 @@ void main() {
       tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
       tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
       await tester.pumpAndSettle();
+      await openAccessibility();
       final grantTile = tester.widget<FocusableSettingsTile>(
         find
             .ancestor(
@@ -214,6 +224,9 @@ void main() {
       await tester.tap(find.text('Применить'));
       await tester.pumpAndSettle();
       expect(accessibility, isFalse);
+      expect(find.text(l.adbEnableService), findsOneWidget);
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
       expect(homeSwitch, findsOneWidget);
       expect(switchTile().enabled, isFalse);
       expect(bootTile().enabled, isFalse);
@@ -223,7 +236,7 @@ void main() {
         find.text(
           'Включить службу специальных возможностей CuteLauncher через ADB',
         ),
-        findsOneWidget,
+        findsNothing,
       );
       expect(tester.takeException(), isNull);
     },

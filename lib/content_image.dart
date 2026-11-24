@@ -3,6 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 import 'package:pool/pool.dart';
 
+import 'diagnostics_store.dart';
+
 // Weak memoization never keeps encoded images alive. At most two large-input
 // fingerprint jobs run off the UI thread; no worker stays alive after its job.
 final _fingerprints = Expando<String>();
@@ -39,6 +41,15 @@ class ContentImage extends MemoryImage {
   final String fingerprint;
   const ContentImage._(super.bytes, this.fingerprint, double scale)
     : super(scale: scale);
+
+  @override
+  ImageStreamCompleter loadImage(MemoryImage key, ImageDecoderCallback decode) {
+    final diagnostics = DiagnosticsStore.instance;
+    if (diagnostics.isRecording) {
+      diagnostics.decodedImage('appArtwork', '$fingerprint:$scale');
+    }
+    return super.loadImage(key, decode);
+  }
 
   @override
   bool operator ==(Object other) =>

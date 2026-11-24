@@ -4,7 +4,7 @@ import 'package:flauncher/bridge_result.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
-import 'adb_page.dart';
+import 'access_settings_links.dart';
 import 'adb_notice.dart';
 import 'focusable_settings_tile.dart';
 
@@ -14,12 +14,14 @@ class AdbPermissionTile extends StatefulWidget {
   final String action;
   final String permissionMethod;
   final Future<void> Function()? onRefresh;
+  final bool showConnectionLink;
   const AdbPermissionTile({
     super.key,
     required this.title,
     required this.action,
     required this.permissionMethod,
     this.onRefresh,
+    this.showConnectionLink = true,
   });
   @override
   State<AdbPermissionTile> createState() => _AdbPermissionTileState();
@@ -126,7 +128,7 @@ class _AdbPermissionTileState extends State<AdbPermissionTile>
         _connection = connection;
       });
       if (connection != 'ready') {
-        await Navigator.of(context).pushNamed(AdbPage.routeName);
+        await AdbConnectionLink.open(context);
         if (mounted) {
           await widget.onRefresh?.call();
           if (mounted) await _refresh();
@@ -208,7 +210,7 @@ class _AdbPermissionTileState extends State<AdbPermissionTile>
         : _connection == 'authorization'
         ? l.adbAuthorization
         : l.adbPermissionDisconnected;
-    return FocusableSettingsTile(
+    final grant = FocusableSettingsTile(
       leading: Icon(_granted ? Icons.check_circle : Icons.link),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -229,6 +231,17 @@ class _AdbPermissionTileState extends State<AdbPermissionTile>
         ],
       ),
       onPressed: _busy || !_supported || _granted ? null : _activate,
+    );
+    if (!widget.showConnectionLink) return grant;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        grant,
+        AdbConnectionLink(onReturn: () async {
+          await widget.onRefresh?.call();
+          if (mounted) await _refresh();
+        }),
+      ],
     );
   }
 }

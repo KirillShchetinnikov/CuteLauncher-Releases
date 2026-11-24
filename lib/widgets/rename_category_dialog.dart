@@ -69,6 +69,7 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
         title: Text(localizations.renameCategory),
         content: RemoteTextInput(
           child: TextFormField(
+            maxLength: 256,
             focusNode: _focusNode,
             autofocus: true,
             controller: _controller,

@@ -1,5 +1,6 @@
 import 'appearance_settings_page.dart';
 import 'accent_color_page.dart';
+import 'memory_settings_page.dart';
 import 'settings_section.dart';
 
 import 'package:flauncher/widgets/launcher_dialog.dart';
@@ -75,6 +76,7 @@ class GeneralSettingsPage extends StatelessWidget {
               ...appearanceSettingsTiles(context),
             ],
           ),
+          const MemorySettingsSection(),
           SettingsSection(
             title: l.settingsMaintenanceGroup,
             children: [
@@ -111,7 +113,7 @@ class GeneralSettingsPage extends StatelessWidget {
           ),
           const SettingsManagementSection(),
           SettingsSection(
-            title: l.filePickerBuiltIn,
+            title: l.fileSettingsGroup,
             children: [
               Consumer<SettingsService>(
                 builder: (context, settings, _) =>
@@ -128,7 +130,7 @@ class GeneralSettingsPage extends StatelessWidget {
                     ),
               ),
               FocusableSettingsTile(
-                title: Text(l.filePickerBuiltIn),
+                title: Text(l.builtInBrowserOptions),
                 leading: const Icon(Icons.folder_open_outlined),
                 onPressed: () =>
                     Navigator.of(context)

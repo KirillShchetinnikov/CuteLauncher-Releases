@@ -40,4 +40,6 @@
     <string name="recovery_restore">Restaurer l’écran d’accueil précédent</string>
     <string name="recovery_restore_confirm">Restaurer l’écran d’accueil précédent via la connexion ADB locale existante ?</string>
     <string name="remap_error_adb_command">La commande ADB a échoué. Vérifiez la connexion ADB locale et la commande.</string>
+    <string name="recent_apps_adb_required">Connectez ADB local pour ouvrir le panneau des applications ouvertes.</string>
+    <string name="recent_apps_accessibility_required">Activez le service CuteLauncher dans les paramètres d’accessibilité.</string>
 </resources>

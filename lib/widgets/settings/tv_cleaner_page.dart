@@ -11,6 +11,7 @@ import '../../l10n/app_localizations.dart';
 import '../../tv_cleaner.dart';
 import '../action_notice.dart';
 import '../launcher_dialog.dart';
+import 'access_settings_links.dart';
 import 'focusable_settings_tile.dart';
 import 'settings_list_heading.dart';
 import 'settings_help.dart';
@@ -824,6 +825,12 @@ class _TvCleanerPageState extends State<TvCleanerPage> {
       () => ListView(
         children: [
           _tile(
+            l.cleanerPreinstalledList,
+            () => _allApps(filter: CleanerAppKind.preinstalled),
+            leading: const Icon(Icons.view_list_outlined),
+            submenu: true,
+          ),
+          _tile(
             l.cleanerDisableAllPreinstalled,
             () => _preinstalledBatch(false),
             leading: const Icon(Icons.app_blocking_outlined),
@@ -832,12 +839,6 @@ class _TvCleanerPageState extends State<TvCleanerPage> {
             l.cleanerEnableAllPreinstalled,
             () => _preinstalledBatch(true),
             leading: const Icon(Icons.check_circle_outline),
-          ),
-          _tile(
-            l.cleanerPreinstalledList,
-            () => _allApps(filter: CleanerAppKind.preinstalled),
-            leading: const Icon(Icons.view_list_outlined),
-            submenu: true,
           ),
         ],
       ),
@@ -1234,6 +1235,7 @@ class _TvCleanerPageState extends State<TvCleanerPage> {
             submenu: true,
           ),
           ]),
+          AdbConnectionLink(busy: _busy.value),
           SettingsHelp(title: l.adbTransport, text: l.cleanerHelp),
         ],
       ),

@@ -51,7 +51,7 @@ public class LocalWallpaperFilesTest {
             Files.createSymbolicLink(link, target);
         } catch (FileSystemException error) {
             if (!System.getProperty("os.name").startsWith("Windows")) throw error;
-            // A junction also resolves to its target through File.getCanonicalFile().
+            // Windows allows directory junctions without symbolic-link privileges.
             var builder = new ProcessBuilder("powershell.exe", "-NoProfile", "-NonInteractive", "-Command",
                     "New-Item -ItemType Junction -Path $env:CUTE_TEST_LINK "
                             + "-Target $env:CUTE_TEST_TARGET -ErrorAction Stop | Out-Null");
@@ -64,7 +64,7 @@ public class LocalWallpaperFilesTest {
             }
             assertEquals(new String(process.getInputStream().readAllBytes()), 0, process.exitValue());
         }
-        assertEquals(target.toFile().getCanonicalFile(), link.toFile().getCanonicalFile());
+        assertTrue(Files.isSameFile(target, link));
     }
 
     @Test public void everyPickerKindFiltersExtensionsAndRejectsUnrelatedFiles() {

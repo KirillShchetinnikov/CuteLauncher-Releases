@@ -19,7 +19,7 @@ final class RemoteMappingConfiguration {
     }
     static final Set<String> ACTIONS = Set.of("app", "home", "back", "webhook", "panel", "recents", "ignore",
         "sleep", "sleep_immediate", "reboot", "reboot_immediate", "shutdown", "black_overlay", "tcl_screen_off", "hdmi", "live_tv",
-        "display_settings", "wifi_settings", "bluetooth_settings", "mute", "toggle_night_mode", "tcl_epg", "adb_shell");
+        "display_settings", "wifi_settings", "bluetooth_settings", "mute", "toggle_night_mode", "tcl_epg", "adb_shell", "screenshot");
     static boolean adbTarget(String target) {
         return target.length() <= 4096
             && target.chars().anyMatch(c -> !Character.isWhitespace(c) && !Character.isSpaceChar(c))

@@ -44,6 +44,8 @@ void main() {
           await appearance.set('settingsTextSize', 20);
           final apps = MockAppsService();
           final notifications = MockNotificationsService();
+          final wallpaper = MockWallpaperService();
+          when(wallpaper.gradient).thenReturn(FLauncherGradients.pitchBlack);
           final watchNext = MockWatchNextService();
           final name = List.filled(8, 'Long application name').join(' ');
           final app = fakeApp(packageName: 'sample.app', name: name);
@@ -70,7 +72,7 @@ void main() {
                 ChangeNotifierProvider<WatchNextService>.value(
                   value: watchNext,
                 ),
-                ChangeNotifierProvider<WallpaperService>.value(value: MockWallpaperService()),
+                ChangeNotifierProvider<WallpaperService>.value(value: wallpaper),
               ],
               child: MaterialApp(
                 locale: Locale(language),

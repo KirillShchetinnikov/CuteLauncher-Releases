@@ -8,6 +8,7 @@ import '../../providers/settings_service.dart';
 import '../../theme/interface_style.dart';
 import '../action_notice.dart';
 import '../rounded_switch_list_tile.dart';
+import 'access_settings_links.dart';
 import 'focusable_settings_tile.dart';
 import 'settings_help.dart';
 import 'settings_information.dart';
@@ -167,6 +168,7 @@ class _ApplicationInfoSettingsPageState
               title: l.applicationInfoSettings,
               text: l.applicationInfoProcessHelp,
             ),
+            AdbConnectionLink(busy: moving != null || _saving),
             for (final action in order)
               FocusableSettingsTile(
                 key: ValueKey(action),

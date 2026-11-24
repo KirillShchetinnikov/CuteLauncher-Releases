@@ -491,7 +491,7 @@ abstract class AppLocalizations {
   /// No description provided for @tvCompatibilityResults.
   ///
   /// In en, this message translates to:
-  /// **'View results'**
+  /// **'Compatibility check results'**
   String get tvCompatibilityResults;
 
   /// No description provided for @compatibilityReportDate.
@@ -1235,7 +1235,7 @@ abstract class AppLocalizations {
   /// No description provided for @textEmptyCategory.
   ///
   /// In en, this message translates to:
-  /// **'This category is empty.'**
+  /// **'This section is empty. Press OK to manage sections.'**
   String get textEmptyCategory;
 
   /// No description provided for @time.
@@ -1367,13 +1367,13 @@ abstract class AppLocalizations {
   /// No description provided for @exportBackup.
   ///
   /// In en, this message translates to:
-  /// **'Export Backup'**
+  /// **'Export to file'**
   String get exportBackup;
 
   /// No description provided for @importBackup.
   ///
   /// In en, this message translates to:
-  /// **'Import Backup'**
+  /// **'Import from file'**
   String get importBackup;
 
   /// No description provided for @exportSuccess.
@@ -1391,7 +1391,7 @@ abstract class AppLocalizations {
   /// No description provided for @importConfirm.
   ///
   /// In en, this message translates to:
-  /// **'Import this backup? Saved valid settings and layout will be applied. Missing or invalid individual settings keep their current values.'**
+  /// **'Restore this backup? Its layout will replace the current layout. Settings missing from the backup or containing invalid values may revert to their defaults.'**
   String get importConfirm;
 
   /// No description provided for @importError.
@@ -2405,7 +2405,7 @@ abstract class AppLocalizations {
   /// No description provided for @reorderSectionsHint.
   ///
   /// In en, this message translates to:
-  /// **'Select with ◄ / ► then use ▲ / ▼ to reorder. Cross the list boundary to hide or show a section.'**
+  /// **'▲ / ▼ — select a section · OK — open · ◄ / ► — start moving'**
   String get reorderSectionsHint;
 
   /// No description provided for @customName.
@@ -4427,7 +4427,7 @@ abstract class AppLocalizations {
   /// No description provided for @topPanelObjects.
   ///
   /// In en, this message translates to:
-  /// **'Objects'**
+  /// **'Items and order'**
   String get topPanelObjects;
 
   /// No description provided for @panelTextBackground.
@@ -5537,7 +5537,7 @@ abstract class AppLocalizations {
   /// No description provided for @adbAccessibilityGuide.
   ///
   /// In en, this message translates to:
-  /// **'Select CuteLauncher in the system menu and enable its service. Return here to configure Home interception. To disable it, turn off the CuteLauncher service in the same menu.'**
+  /// **'Enable the CuteLauncher service in Android settings, then return to the launcher.'**
   String get adbAccessibilityGuide;
 
   /// No description provided for @adbEffectAccessibilityDisable.
@@ -8099,7 +8099,7 @@ abstract class AppLocalizations {
   /// No description provided for @cleanerRecovery.
   ///
   /// In en, this message translates to:
-  /// **'Backup and recovery'**
+  /// **'App state backups'**
   String get cleanerRecovery;
 
   /// No description provided for @cleanerExports.
@@ -8291,7 +8291,7 @@ abstract class AppLocalizations {
   /// No description provided for @sleepTimerPresets.
   ///
   /// In en, this message translates to:
-  /// **'Timers'**
+  /// **'Timer intervals'**
   String get sleepTimerPresets;
 
   /// No description provided for @sleepTimerDisplay.
@@ -8687,13 +8687,25 @@ abstract class AppLocalizations {
   /// No description provided for @recentAppsUnavailable.
   ///
   /// In en, this message translates to:
-  /// **'Open apps unavailable. Check ADB and accessibility access.'**
+  /// **'Open apps unavailable.'**
   String get recentAppsUnavailable;
+
+  /// No description provided for @recentAppsAdbRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect local ADB to view open apps.'**
+  String get recentAppsAdbRequired;
+
+  /// No description provided for @recentAppsAccessibilityRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable the CuteLauncher service in Accessibility settings.'**
+  String get recentAppsAccessibilityRequired;
 
   /// No description provided for @recentAppsHelp.
   ///
   /// In en, this message translates to:
-  /// **'Only TV apps with open tasks are shown. Close all stops user apps in this list. Assign a button in the remapper. The CuteLauncher panel needs ADB and accessibility access.'**
+  /// **'Only TV apps with open tasks are shown. Close all stops user apps in this list. CuteLauncher stays open. Assign a button in the remapper. The CuteLauncher panel needs ADB and accessibility access.'**
   String get recentAppsHelp;
 
   /// No description provided for @recentAppsHomeHint.
@@ -9542,12 +9554,6 @@ abstract class AppLocalizations {
   /// **'No app feeds available.'**
   String get appChannelsEmpty;
 
-  /// No description provided for @appChannelsRefresh.
-  ///
-  /// In en, this message translates to:
-  /// **'Refresh feeds'**
-  String get appChannelsRefresh;
-
   /// No description provided for @appChannelsLaunchFailed.
   ///
   /// In en, this message translates to:
@@ -9901,6 +9907,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Toggle night mode'**
   String get remoteMappingToggleNightMode;
+
+  /// No description provided for @remoteMappingScreenshot.
+  ///
+  /// In en, this message translates to:
+  /// **'Take screenshot'**
+  String get remoteMappingScreenshot;
 
   /// No description provided for @remoteMappingBlackOverlay.
   ///
@@ -10697,7 +10709,7 @@ abstract class AppLocalizations {
   /// No description provided for @fileManagerPreference.
   ///
   /// In en, this message translates to:
-  /// **'File manager'**
+  /// **'How to choose files'**
   String get fileManagerPreference;
 
   /// No description provided for @fileManagerAsk.
@@ -11579,7 +11591,7 @@ abstract class AppLocalizations {
   /// No description provided for @defaultLauncherViaAdb.
   ///
   /// In en, this message translates to:
-  /// **'Set default launcher via ADB'**
+  /// **'Set via ADB'**
   String get defaultLauncherViaAdb;
 
   /// No description provided for @defaultLauncherViaAccessibility.
@@ -11627,7 +11639,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsManagementGroup.
   ///
   /// In en, this message translates to:
-  /// **'Settings management'**
+  /// **'Backups and sync'**
   String get settingsManagementGroup;
 
   /// No description provided for @settingsMaintenanceGroup.
@@ -11708,6 +11720,12 @@ abstract class AppLocalizations {
   /// **'Hidden feeds'**
   String get hiddenFeeds;
 
+  /// No description provided for @appChannelsOrderHint.
+  ///
+  /// In en, this message translates to:
+  /// **'◄ / ► starts moving. ▲ / ▼ reorders feeds and moves them between lists. OK or Back finishes.'**
+  String get appChannelsOrderHint;
+
   /// No description provided for @controlAndAccessGroup.
   ///
   /// In en, this message translates to:
@@ -11743,6 +11761,240 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Deletion'**
   String get deletionGroup;
+
+  /// No description provided for @memoryLimitsLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Memory saving is on. Turn it off to edit your limits.'**
+  String get memoryLimitsLocked;
+
+  /// No description provided for @memoryOccupied.
+  ///
+  /// In en, this message translates to:
+  /// **'Memory in use'**
+  String get memoryOccupied;
+
+  /// No description provided for @memorySettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Limits and caches'**
+  String get memorySettings;
+
+  /// No description provided for @memoryDecodedApps.
+  ///
+  /// In en, this message translates to:
+  /// **'Decoded app and interface images'**
+  String get memoryDecodedApps;
+
+  /// No description provided for @memoryDecodedPosters.
+  ///
+  /// In en, this message translates to:
+  /// **'Decoded posters'**
+  String get memoryDecodedPosters;
+
+  /// No description provided for @memoryPreload.
+  ///
+  /// In en, this message translates to:
+  /// **'Poster preload (cards)'**
+  String get memoryPreload;
+
+  /// No description provided for @memoryBackgroundClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear RAM caches when leaving the launcher'**
+  String get memoryBackgroundClear;
+
+  /// No description provided for @memoryResetLimits.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore default memory limits'**
+  String get memoryResetLimits;
+
+  /// No description provided for @memoryClearDisk.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear posters from disk'**
+  String get memoryClearDisk;
+
+  /// No description provided for @memoryFreed.
+  ///
+  /// In en, this message translates to:
+  /// **'Space freed'**
+  String get memoryFreed;
+
+  /// No description provided for @memoryDiskFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not clear the disk cache. Try again.'**
+  String get memoryDiskFailed;
+
+  /// No description provided for @memoryLimitsFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save memory settings. Try again.'**
+  String get memoryLimitsFailed;
+
+  /// No description provided for @memoryClearRam.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear RAM caches'**
+  String get memoryClearRam;
+
+  /// No description provided for @posterCacheRam.
+  ///
+  /// In en, this message translates to:
+  /// **'Poster cache in RAM'**
+  String get posterCacheRam;
+
+  /// No description provided for @posterCacheDisk.
+  ///
+  /// In en, this message translates to:
+  /// **'Poster cache on disk'**
+  String get posterCacheDisk;
+
+  /// No description provided for @memoryAppChannelPosters.
+  ///
+  /// In en, this message translates to:
+  /// **'App feed posters'**
+  String get memoryAppChannelPosters;
+
+  /// No description provided for @posterCacheSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn’t save the poster cache limit.'**
+  String get posterCacheSaveFailed;
+
+  /// No description provided for @appChannelsSectionSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Section settings'**
+  String get appChannelsSectionSettings;
+
+  /// No description provided for @settingsLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load settings.'**
+  String get settingsLoadFailed;
+
+  /// No description provided for @diagnosticsReportsAndRecording.
+  ///
+  /// In en, this message translates to:
+  /// **'Reports and recording'**
+  String get diagnosticsReportsAndRecording;
+
+  /// No description provided for @diagnosticsClearRecordingConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop recording and delete the data collected this session?'**
+  String get diagnosticsClearRecordingConfirm;
+
+  /// No description provided for @appChannelVisible.
+  ///
+  /// In en, this message translates to:
+  /// **'Show feed'**
+  String get appChannelVisible;
+
+  /// No description provided for @movingSectionsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'▲ / ▼ — move · OK or Back — finish. Cross the list boundary to hide or show the section.'**
+  String get movingSectionsHint;
+
+  /// No description provided for @cuteLauncherSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'CuteLauncher settings'**
+  String get cuteLauncherSettings;
+
+  /// No description provided for @hiddenSectionBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Hidden'**
+  String get hiddenSectionBadge;
+
+  /// No description provided for @buttonsAndFocus.
+  ///
+  /// In en, this message translates to:
+  /// **'Buttons and focus'**
+  String get buttonsAndFocus;
+
+  /// No description provided for @systemTiles.
+  ///
+  /// In en, this message translates to:
+  /// **'System tiles'**
+  String get systemTiles;
+
+  /// No description provided for @compatibilityGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Compatibility'**
+  String get compatibilityGroup;
+
+  /// No description provided for @storageDevicesGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage devices'**
+  String get storageDevicesGroup;
+
+  /// No description provided for @overAppsGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Over other apps'**
+  String get overAppsGroup;
+
+  /// No description provided for @remotePanelAssignButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Assign a button to open the panel'**
+  String get remotePanelAssignButton;
+
+  /// No description provided for @launcherChooseInAndroid.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose launcher in Android'**
+  String get launcherChooseInAndroid;
+
+  /// No description provided for @openAndroidSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Android settings'**
+  String get openAndroidSettings;
+
+  /// No description provided for @applicationsTabAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get applicationsTabAll;
+
+  /// No description provided for @applicationsTabSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get applicationsTabSystem;
+
+  /// No description provided for @applicationsTabHidden.
+  ///
+  /// In en, this message translates to:
+  /// **'Hidden'**
+  String get applicationsTabHidden;
+
+  /// No description provided for @fileSettingsGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Files'**
+  String get fileSettingsGroup;
+
+  /// No description provided for @builtInBrowserOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Built-in file browser options'**
+  String get builtInBrowserOptions;
+
+  /// No description provided for @remoteMappingsLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'There are already 64 button mappings. Remove one to add another.'**
+  String get remoteMappingsLimit;
 }
 
 class _AppLocalizationsDelegate

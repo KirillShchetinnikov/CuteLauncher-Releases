@@ -51,65 +51,75 @@ class HomeParametersPage extends StatelessWidget {
       ),
       child: ListView(
         children: [
-          Consumer<SettingsService>(
-            builder: (context, s, _) => SettingsChoiceTile<String>(
-              title: l.backButtonAction,
-              wideValue: true,
-              value:
-                  s.backButtonAction == BACK_BUTTON_ACTION_SCREENSAVER &&
-                      !canStartScreensaver
-                  ? BACK_BUTTON_ACTION_NOTHING
-                  : s.backButtonAction,
-              options: [
-                BACK_BUTTON_ACTION_NOTHING,
-                BACK_BUTTON_ACTION_CLOCK,
-                if (canStartScreensaver) BACK_BUTTON_ACTION_SCREENSAVER,
-                BACK_BUTTON_ACTION_FIRST_FEED_CARD,
-                BACK_BUTTON_ACTION_SECTION_START_THEN_UP,
-              ],
-              label: (value) => switch (value) {
-                BACK_BUTTON_ACTION_CLOCK =>
-                  l.dialogOptionBackButtonActionShowClock,
-                BACK_BUTTON_ACTION_SCREENSAVER when canStartScreensaver =>
-                  l.dialogOptionBackButtonActionShowScreensaver,
-                BACK_BUTTON_ACTION_FIRST_FEED_CARD =>
-                  l.dialogOptionBackButtonActionFirstFeedCard,
-                BACK_BUTTON_ACTION_SECTION_START_THEN_UP =>
-                  l.dialogOptionBackButtonActionSectionStartThenUp,
-                _ => l.dialogOptionBackButtonActionDoNothing,
-              },
-              onChanged: s.setBackButtonAction,
-            ),
+          SettingsSection(
+            title: l.buttonsAndFocus,
+            children: [
+              Consumer<SettingsService>(
+                builder: (context, s, _) => SettingsChoiceTile<String>(
+                  title: l.backButtonAction,
+                  wideValue: true,
+                  value:
+                      s.backButtonAction == BACK_BUTTON_ACTION_SCREENSAVER &&
+                          !canStartScreensaver
+                      ? BACK_BUTTON_ACTION_NOTHING
+                      : s.backButtonAction,
+                  options: [
+                    BACK_BUTTON_ACTION_NOTHING,
+                    BACK_BUTTON_ACTION_CLOCK,
+                    if (canStartScreensaver) BACK_BUTTON_ACTION_SCREENSAVER,
+                    BACK_BUTTON_ACTION_FIRST_FEED_CARD,
+                    BACK_BUTTON_ACTION_SECTION_START_THEN_UP,
+                  ],
+                  label: (value) => switch (value) {
+                    BACK_BUTTON_ACTION_CLOCK =>
+                      l.dialogOptionBackButtonActionShowClock,
+                    BACK_BUTTON_ACTION_SCREENSAVER when canStartScreensaver =>
+                      l.dialogOptionBackButtonActionShowScreensaver,
+                    BACK_BUTTON_ACTION_FIRST_FEED_CARD =>
+                      l.dialogOptionBackButtonActionFirstFeedCard,
+                    BACK_BUTTON_ACTION_SECTION_START_THEN_UP =>
+                      l.dialogOptionBackButtonActionSectionStartThenUp,
+                    _ => l.dialogOptionBackButtonActionDoNothing,
+                  },
+                  onChanged: s.setBackButtonAction,
+                ),
+              ),
+              Consumer<SettingsService>(
+                builder: (context, s, _) => SettingsChoiceTile<CardFocusMode>(
+                  title: l.cardFocusMode,
+                  value: s.cardFocusMode,
+                  options: CardFocusMode.values,
+                  label: (mode) => cardFocusLabel(mode, l),
+                  onChanged: s.setCardFocusMode,
+                ),
+              ),
+              Consumer<SettingsService>(
+                builder: (context, s, _) => RoundedSwitchListTile(
+                  value: s.homeKeyClickEnabled,
+                  onChanged: s.setHomeKeyClickEnabled,
+                  title: Text(l.appKeyClick),
+                ),
+              ),
+            ],
           ),
-          Consumer<SettingsService>(
-            builder: (context, s, _) => SettingsChoiceTile<CardFocusMode>(
-              title: l.cardFocusMode,
-              value: s.cardFocusMode,
-              options: CardFocusMode.values,
-              label: (mode) => cardFocusLabel(mode, l),
-              onChanged: s.setCardFocusMode,
-            ),
-          ),
-          Consumer<SettingsService>(
-            builder: (context, s, _) => RoundedSwitchListTile(
-              value: s.hideLauncherTile,
-              onChanged: s.setHideLauncherTile,
-              title: Text(l.hideLauncherTile),
-            ),
-          ),
-          Consumer<SettingsService>(
-            builder: (context, s, _) => RoundedSwitchListTile(
-              value: s.hideAndroidSettingsTile,
-              onChanged: s.setHideAndroidSettingsTile,
-              title: Text(l.hideAndroidSettingsTile),
-            ),
-          ),
-          Consumer<SettingsService>(
-            builder: (context, s, _) => RoundedSwitchListTile(
-              value: s.homeKeyClickEnabled,
-              onChanged: s.setHomeKeyClickEnabled,
-              title: Text(l.appKeyClick),
-            ),
+          SettingsSection(
+            title: l.systemTiles,
+            children: [
+              Consumer<SettingsService>(
+                builder: (context, s, _) => RoundedSwitchListTile(
+                  value: s.hideLauncherTile,
+                  onChanged: s.setHideLauncherTile,
+                  title: Text(l.hideLauncherTile),
+                ),
+              ),
+              Consumer<SettingsService>(
+                builder: (context, s, _) => RoundedSwitchListTile(
+                  value: s.hideAndroidSettingsTile,
+                  onChanged: s.setHideAndroidSettingsTile,
+                  title: Text(l.hideAndroidSettingsTile),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -151,7 +161,7 @@ class InterfaceSettingsPage extends StatelessWidget {
               ),
               FocusableSettingsTile(
                 leading: const Icon(Icons.view_agenda_outlined),
-                title: Text(l.launcherSections),
+                title: Text(l.homeSectionStyle),
                 onPressed: () => Navigator.of(
                   context,
                 ).push(SettingsRoute(builder: (_) => const SectionStylePage())),
@@ -218,7 +228,7 @@ class HomeAppearancePage extends StatelessWidget {
           FocusableSettingsTile(
             autofocus: false,
             leading: const Icon(Icons.view_agenda_outlined),
-            title: Text(l.launcherSections),
+            title: Text(l.homeSectionStyle),
             onPressed: () => Navigator.of(context).push(
               SettingsRoute<void>(builder: (_) => const SectionStylePage()),
             ),

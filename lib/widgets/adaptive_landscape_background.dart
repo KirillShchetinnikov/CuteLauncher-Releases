@@ -421,6 +421,9 @@ class _PhotoScene extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
+    final memorySaver = context.select<SettingsService, bool>(
+      (settings) => settings.memorySaverEnabled,
+    );
     Color tintFor(LandscapePhase phase) => switch (phase) {
       LandscapePhase.day => Colors.transparent,
       LandscapePhase.dawn => const Color(0x226C7799),
@@ -434,7 +437,7 @@ class _PhotoScene extends StatelessWidget {
           'assets/landscapes/${season == LandscapeSeason.summer ? 'valley' : season.name}.png',
         ),
         size,
-        MediaQuery.devicePixelRatioOf(context),
+        MediaQuery.devicePixelRatioOf(context) * (memorySaver ? 0.75 : 1.0),
       ),
       fit: BoxFit.cover,
       errorBuilder: (_, _, _) => CustomPaint(

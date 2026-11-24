@@ -2,8 +2,8 @@ import 'traffic_settings_page.dart';
 import 'settings_destinations.dart';
 import 'file_browser_settings_page.dart';
 import 'volume_widget_settings_page.dart';
+import 'widget_placement_page.dart';
 import 'network_speed_settings_page.dart';
-import 'app_channels_settings_page.dart';
 import 'app_channels_order_page.dart';
 import 'system_widget_settings_page.dart';
 import 'vpn_settings_page.dart';
@@ -54,6 +54,7 @@ import 'appearance_settings_page.dart';
 import 'settings_route.dart';
 import 'recent_apps_page.dart';
 import 'memory_page.dart';
+import 'memory_settings_page.dart';
 import 'diagnostics_page.dart';
 import 'updates_page.dart';
 import 'adb_page.dart';
@@ -161,6 +162,7 @@ class _SettingsPanelState extends State<SettingsPanel> {
       SleepTimerEditorPage.routeName,
       TrafficSettingsPage.routeName,
       NetworkSpeedSettingsPage.routeName,
+      WidgetPlacementPage.routeName,
       VolumeWidgetSettingsPage.routeName,
       SystemWidgetSettingsPage.routeName,
       VpnSettingsPage.routeName,
@@ -341,10 +343,11 @@ class _SettingsPanelState extends State<SettingsPanel> {
                         settings: settings,
                         builder: (_) => const MemoryPage(),
                       );
-                    case MemorySaverPage.routeName:
+                    case 'memory_saver':
+                    case MemorySettingsPage.routeName:
                       return SettingsRoute(
                         settings: settings,
-                        builder: (_) => const MemorySaverPage(),
+                        builder: (_) => const MemorySettingsPage(),
                       );
                     case MemoryAdvancedPage.routeName:
                       return SettingsRoute(
@@ -554,11 +557,6 @@ class _SettingsPanelState extends State<SettingsPanel> {
                         settings: settings,
                         sectionId: ContinueWatchingSection.sectionId,
                         builder: (_) => const ContinueWatchingSettingsPage(),
-                      );
-                    case AppChannelsSettingsPage.routeName:
-                      return SettingsRoute(
-                        settings: settings,
-                        builder: (_) => const AppChannelsSettingsPage(),
                       );
                     case AppChannelsOrderPage.routeName:
                       return SettingsRoute(

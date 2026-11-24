@@ -7,7 +7,6 @@ import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/providers/memory_resources.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/action_notice.dart';
-import 'package:flauncher/widgets/rounded_switch_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
@@ -19,6 +18,7 @@ import 'settings_information.dart';
 import 'settings_page_layout.dart';
 import 'settings_read_only_value.dart';
 import 'settings_section.dart';
+import 'settings_list_heading.dart';
 import 'settings_route.dart';
 
 class MemoryPage extends StatefulWidget {
@@ -44,7 +44,7 @@ class _MemoryPageState extends State<MemoryPage> with WidgetsBindingObserver {
   late final LauncherMemory _memory;
   final _advancedFocus = FocusNode();
   bool _images = false, _technical = false, _observation = false;
-  bool _saving = false, _routeActive = true;
+  bool _clearingDisk = false, _routeActive = true;
   bool _foreground = true;
 
   @override
@@ -129,24 +129,22 @@ class _MemoryPageState extends State<MemoryPage> with WidgetsBindingObserver {
     ),
   );
 
-  Future<void> _saveEconomy(bool value) async {
-    if (_saving || _memory.busy) return;
-    setState(() => _saving = true);
+  Future<void> _clearDisk() async {
+    if (_clearingDisk || _memory.busy) return;
+    setState(() => _clearingDisk = true);
     try {
-      await context.read<SettingsService>().setMemorySaverEnabled(value);
-      if (mounted) await _memory.refresh();
-    } catch (_) {
-      if (mounted) {
-        showActionNotice(
-          context,
-          AppLocalizations.of(context)!.memorySaveFailed,
-          error: true,
-        );
-      }
+      final freed = await context.read<MemoryResources>().clearDiskCaches();
+      if (!mounted) return;
+      final l = AppLocalizations.of(context)!;
+      showActionNotice(context, freed == null ? l.memoryDiskFailed : '${l.memoryFreed} · ${_bytes(freed)}', error: freed == null);
+      await _memory.refresh();
     } finally {
-      if (mounted) setState(() => _saving = false);
+      if (mounted) setState(() => _clearingDisk = false);
     }
   }
+
+  String _usage(int? bytes, MemoryLimit limit) =>
+      '${_bytes(bytes)} / ${_bytes(context.read<SettingsService>().memoryLimit(limit) * 1024 * 1024)}';
 
   Widget _summary(AppLocalizations l) {
     final theme = Theme.of(context);
@@ -196,13 +194,25 @@ class _MemoryPageState extends State<MemoryPage> with WidgetsBindingObserver {
         FocusableSettingsTile(
           key: const Key('memory-refresh'),
           autofocus: true,
-          busy: _memory.busy || _saving,
+          busy: _memory.busy || _clearingDisk,
           leading: const Icon(Icons.refresh),
           title: Text(_memory.busy ? l.memoryMeasuring : l.memoryRefresh),
           onPressed: _memory.refresh,
         ),
       ],
     );
+  }
+
+  String _featureUsage(MemoryCacheKind kind) {
+    final limit = switch (kind) {
+      MemoryCacheKind.appIcons => MemoryLimit.icons,
+      MemoryCacheKind.appBanners => MemoryLimit.banners,
+      MemoryCacheKind.appChannelPosters => MemoryLimit.feedRam,
+      MemoryCacheKind.watchNextPosters => MemoryLimit.watchRam,
+      MemoryCacheKind.other => null,
+    };
+    final bytes = _memory.breakdown[kind]?.bytes;
+    return limit == null ? _bytes(bytes) : _usage(bytes, limit);
   }
 
   Widget _caches(AppLocalizations l) => SettingsSection(
@@ -220,14 +230,29 @@ class _MemoryPageState extends State<MemoryPage> with WidgetsBindingObserver {
         for (final entry in <MemoryCacheKind, String>{
           MemoryCacheKind.appIcons: l.memoryAppIcons,
           MemoryCacheKind.appBanners: l.memoryAppBanners,
+          MemoryCacheKind.appChannelPosters: l.memoryAppChannelPosters,
           MemoryCacheKind.watchNextPosters: l.memoryWatchNextPosters,
           MemoryCacheKind.other: l.memoryOtherCaches,
         }.entries)
           _value(
             entry.value,
-            '${_bytes(_memory.breakdown[entry.key]?.bytes)} · ${l.memoryCacheEntries(_memory.breakdown[entry.key]?.entries ?? 0)}',
+            '${_featureUsage(entry.key)} · ${l.memoryCacheEntries(_memory.breakdown[entry.key]?.entries ?? 0)}',
           ),
       ],
+      if (_memory.diskBreakdown.isNotEmpty) ...[
+        SettingsListHeading(title: l.posterCacheDisk),
+        for (final entry in _memory.diskBreakdown.entries)
+          _value(
+            entry.key == MemoryCacheKind.appChannelPosters
+                ? l.appChannelsTitle
+                : l.continueWatching,
+            '${_usage(entry.value.bytes, entry.key == MemoryCacheKind.appChannelPosters ? MemoryLimit.feedDisk : MemoryLimit.watchDisk)} · ${l.memoryCacheEntries(entry.value.entries)}',
+          ),
+      ],
+      if (_images)
+        for (final entry in _memory.decodedParts.entries)
+          _value(entry.key == 'applications' ? l.memoryDecodedApps : l.memoryDecodedPosters,
+              '${_bytes(entry.value['bytes'])} / ${_bytes(entry.value['maximumBytes'])}'),
       _value(
         l.memoryDecodedCache,
         '${_bytes(_memory.decodedBytes)} / ${_bytes(_memory.decodedLimit)}',
@@ -245,11 +270,19 @@ class _MemoryPageState extends State<MemoryPage> with WidgetsBindingObserver {
       ),
       FocusableSettingsTile(
         key: const Key('memory-clear'),
-        busy: _memory.busy || _saving,
+        busy: _memory.busy || _clearingDisk,
         leading: const Icon(Icons.cleaning_services_outlined),
-        title: Text(l.memoryClear),
+        title: Text(l.memoryClearRam),
         onPressed: _memory.clearCaches,
       ),
+      if (context.read<MemoryResources>().hasPosterDisks)
+        FocusableSettingsTile(
+          key: const Key('memory-clear-disk'),
+          leading: const Icon(Icons.delete_outline),
+          title: Text(l.memoryClearDisk),
+          busy: _memory.busy || _clearingDisk,
+          onPressed: _clearDisk,
+        ),
       if (_memory.clearedCacheAfter != null) ...[
         SettingsMessage(
           text: l.memoryCacheResult(
@@ -284,7 +317,7 @@ class _MemoryPageState extends State<MemoryPage> with WidgetsBindingObserver {
         if (_observation) ...[
           FocusableSettingsTile(
             key: const Key('memory-observe-toggle'),
-            busy: !_memory.observing && (_memory.busy || _saving),
+            busy: !_memory.observing && (_memory.busy || _clearingDisk),
             leading: Icon(_memory.observing ? Icons.stop : Icons.play_arrow),
             title: Text(
               _memory.observing ? l.memoryObserveStop : l.memoryObserveStart,
@@ -339,12 +372,11 @@ class _MemoryPageState extends State<MemoryPage> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
-    final settings = context.watch<SettingsService>();
     return AnimatedBuilder(
       animation: _memory,
       builder: (context, _) => SettingsPageLayout(
         title: Text(
-          widget._advanced ? l.memoryAdvanced : l.memoryLauncherTitle,
+          widget._advanced ? l.memoryAdvanced : l.memoryOccupied,
           style: Theme.of(context).textTheme.titleLarge,
         ),
         child: SingleChildScrollView(
@@ -354,18 +386,6 @@ class _MemoryPageState extends State<MemoryPage> with WidgetsBindingObserver {
               if (!widget._advanced) ...[
                 _summary(l),
                 _caches(l),
-                RoundedSwitchListTile(
-                  key: const Key('memory-economy'),
-                  value: settings.memorySaverEnabled,
-                  busy: _saving || _memory.busy,
-                  secondary: const Icon(Icons.eco_outlined),
-                  title: Text(l.memorySaver),
-                  onChanged: _saveEconomy,
-                ),
-                SettingsHelp(
-                  title: l.memorySaverHelp,
-                  text: l.memorySaverDescription,
-                ),
                 FocusableSettingsTile(
                   key: const Key('memory-advanced'),
                   focusNode: _advancedFocus,
@@ -485,28 +505,4 @@ class _MemoryChartPainter extends CustomPainter {
       !listEquals(oldDelegate.points, points) ||
       color != oldDelegate.color ||
       grid != oldDelegate.grid;
-}
-
-class MemorySaverPage extends StatelessWidget {
-  static const routeName = 'memory_saver';
-  const MemorySaverPage({super.key});
-  @override
-  Widget build(BuildContext context) {
-    final l = AppLocalizations.of(context)!;
-    final settings = context.watch<SettingsService>();
-    return SettingsPageLayout(
-      title: Text(l.memorySaver, style: Theme.of(context).textTheme.titleLarge),
-      child: ListView(
-        children: [
-          RoundedSwitchListTile(
-            autofocus: true,
-            value: settings.memorySaverEnabled,
-            onChanged: settings.setMemorySaverEnabled,
-            title: Text(l.memorySaver),
-          ),
-          SettingsHelp(title: l.memoryTitle, text: l.memorySaverDescription),
-        ],
-      ),
-    );
-  }
 }

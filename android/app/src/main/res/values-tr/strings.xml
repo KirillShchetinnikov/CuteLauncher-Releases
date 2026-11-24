@@ -40,4 +40,6 @@
     <string name="recovery_restore">Önceki ana ekranı geri yükle</string>
     <string name="recovery_restore_confirm">Mevcut yerel ADB bağlantısı üzerinden önceki ana ekran geri yüklensin mi?</string>
     <string name="remap_error_adb_command">ADB komutu çalıştırılamadı. Yerel ADB bağlantısını ve komutu kontrol edin.</string>
+    <string name="recent_apps_adb_required">Açık uygulamalar panelini açmak için yerel ADB’ye bağlanın.</string>
+    <string name="recent_apps_accessibility_required">Erişilebilirlik ayarlarında CuteLauncher hizmetini etkinleştirin.</string>
 </resources>

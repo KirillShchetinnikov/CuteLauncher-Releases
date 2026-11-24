@@ -31,13 +31,14 @@ void main() {
         home: Scaffold(body: SizedBox(width: 350, child: AppearancePage(categoryId: categoryId))))));
       await tester.pumpAndSettle();
       final l = AppLocalizations.of(tester.element(find.byType(AppearancePage)))!;
-      final toggle = find.text('Приложения с баннером').first;
+      final toggle = find.text('Приложения с баннером');
+      await tester.scrollUntilVisible(toggle, 160);
       await tester.ensureVisible(toggle);
       await tester.pumpAndSettle();
       // Explanations remain collapsed even with large text in a narrow panel.
       expect(find.text(l.tileImageModeHelp), findsNothing);
       expect(find.text(l.tileImageCover), findsOneWidget);
-      await tester.tap(toggle);
+      await tester.tap(toggle.first);
       await tester.pumpAndSettle();
       await tester.tap(find.descendant(of: find.byType(AlertDialog), matching: find.text(l.tileImageContain)));
       await tester.pumpAndSettle();
@@ -142,7 +143,7 @@ void main() {
     await tester.ensureVisible(toggle);
     await tester.pumpAndSettle();
     expect(toggle.hitTestable(), findsOneWidget);
-    await tester.tap(toggle);
+    await tester.tap(toggle.first);
     await tester.pumpAndSettle();
     expect(AppearanceService(prefs).appearance.animateReordering, isFalse);
     expect(appearance.tilesFor(1).animateReordering, isFalse);
@@ -186,37 +187,10 @@ void main() {
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
     await tester.pumpAndSettle();
     expect(appearance.appearance.aspectRatio, 4 / 3);
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.pumpAndSettle();
-    final toggle = find.text('Приложения с баннером').first;
-    expect(Focus.of(tester.element(toggle)).hasFocus, isTrue);
-    final focus = FocusManager.instance.primaryFocus;
-    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
-    await tester.pumpAndSettle();
-    expect(find.byType(AlertDialog), findsOneWidget);
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
-    await tester.pumpAndSettle();
-    expect(AppearanceService(prefs).appearance.bannerImageMode.name, 'edgeColor');
-    expect(FocusManager.instance.primaryFocus, focus);
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.pumpAndSettle();
-    final iconChoice = find.text('Приложения без баннера');
-    expect(Focus.of(tester.element(iconChoice)).hasFocus, isTrue);
-    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
-    await tester.pumpAndSettle();
     final labels = AppLocalizations.of(tester.element(find.byType(AppearancePage)))!;
-    expect(find.descendant(of: find.byType(AlertDialog), matching: find.text(labels.tileImageIcon)), findsNothing);
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
-    await tester.pumpAndSettle();
-    expect(appearance.appearance.iconImageMode.name, 'cover');
-    expect(appearance.appearance.bannerImageMode.name, 'edgeColor');
-    // Collapsed help is a separate remote stop between the icon mode and radius.
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.pumpAndSettle();
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.pumpAndSettle();
+    expect(Focus.of(tester.element(find.text(labels.tileCornerRadius))).hasFocus, isTrue);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
     await tester.pumpAndSettle();
     expect(appearance.appearance.number('radius'), 0);
@@ -237,6 +211,41 @@ void main() {
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
     await tester.pumpAndSettle();
     expect(appearance.appearance.horizontalGap, 46);
+    final toggle = find.text('Приложения с баннером');
+    // Geometry and its help precede the dedicated image group.
+    for (var keyPress = 0; keyPress < 8; keyPress++) {
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      await tester.pumpAndSettle();
+      if (toggle.evaluate().isNotEmpty && Focus.of(tester.element(toggle.first)).hasFocus) break;
+    }
+    expect(Focus.of(tester.element(toggle.first)).hasFocus, isTrue);
+    final focus = FocusManager.instance.primaryFocus;
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(find.byType(AlertDialog), findsOneWidget);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(AppearanceService(prefs).appearance.bannerImageMode.name, 'edgeColor');
+    expect(FocusManager.instance.primaryFocus, focus);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.pumpAndSettle();
+    final iconChoice = find.text('Приложения без баннера');
+    expect(Focus.of(tester.element(iconChoice)).hasFocus, isTrue);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(find.descendant(of: find.byType(AlertDialog), matching: find.text(labels.tileImageIcon)), findsNothing);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(appearance.appearance.iconImageMode.name, 'cover');
+    expect(appearance.appearance.bannerImageMode.name, 'edgeColor');
+    // The global tile editor includes help and the installed icon pack picker.
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.pumpAndSettle();
+    expect(Focus.of(tester.element(find.text(labels.appIconPack))).hasFocus, isTrue);
 
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox());

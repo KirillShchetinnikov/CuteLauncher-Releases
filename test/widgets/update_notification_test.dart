@@ -107,6 +107,9 @@ void main() {
     await service.check(force: true, notify: false);
     await tester.pumpAndSettle();
     expect(shortcut, findsNothing);
+    expect(focused(find.text('Поддержать разработчика')), isTrue);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.pumpAndSettle();
     expect(focused(home), isTrue);
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox.shrink());

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../bridge_result.dart';
 import '../../l10n/app_localizations.dart';
 import '../../remote_mapping_configuration.dart';
+import 'access_settings_links.dart';
 import 'settings_choice_tile.dart';
 import 'settings_help.dart';
 import 'settings_page_layout.dart';
@@ -105,6 +106,7 @@ class _VolumeKeysPageState extends State<VolumeKeysPage>
             Text('${l.remoteMappingsEnabled}: ${l.disabled}'),
           if (_failed) Text(l.remoteMappingInvalid),
           if (_loaded) SettingsHelp(text: l.volumeKeysHelp),
+          if (_loaded || _failed) const AccessibilitySettingsLink(),
         ],
       ),
     );

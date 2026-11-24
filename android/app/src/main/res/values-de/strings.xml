@@ -40,4 +40,6 @@
     <string name="recovery_restore">Vorherigen Startbildschirm wiederherstellen</string>
     <string name="recovery_restore_confirm">Den vorherigen Startbildschirm über die bestehende lokale ADB-Verbindung wiederherstellen?</string>
     <string name="remap_error_adb_command">ADB-Befehl fehlgeschlagen. Prüfe die lokale ADB-Verbindung und den Befehl.</string>
+    <string name="recent_apps_adb_required">Verbinden Sie lokales ADB, um die Übersicht der geöffneten Apps zu öffnen.</string>
+    <string name="recent_apps_accessibility_required">Aktivieren Sie den CuteLauncher-Dienst in den Bedienungshilfen.</string>
 </resources>

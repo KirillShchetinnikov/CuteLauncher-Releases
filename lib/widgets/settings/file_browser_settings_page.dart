@@ -49,7 +49,7 @@ class _FileBrowserSettingsPageState extends State<FileBrowserSettingsPage> {
       (s) => s.fileBrowserOptions,
     );
     return SettingsPageLayout(
-      title: Text(l.filePickerBuiltIn),
+      title: Text(l.builtInBrowserOptions),
       child: ListView(
         children: [
           SettingsChoiceTile<FileBrowserStart>(

@@ -5,6 +5,12 @@ import '../launcher_dialog.dart';
 import 'donate_dialog.dart';
 import 'focusable_settings_tile.dart';
 
+Future<void> showSupportDeveloperDialog(BuildContext context) =>
+    showLauncherDialog<void>(
+      context: context,
+      builder: (_) => const DonateDialog(),
+    );
+
 class SupportDeveloperTile extends StatelessWidget {
   const SupportDeveloperTile({super.key});
 
@@ -14,10 +20,7 @@ class SupportDeveloperTile extends StatelessWidget {
     return FocusableSettingsTile(
       leading: const Icon(Icons.favorite_outline),
       title: Text(l.supportDeveloper),
-      onPressed: () => showLauncherDialog<void>(
-        context: context,
-        builder: (_) => const DonateDialog(),
-      ),
+      onPressed: () => showSupportDeveloperDialog(context),
     );
   }
 }

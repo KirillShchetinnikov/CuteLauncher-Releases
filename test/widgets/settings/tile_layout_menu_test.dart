@@ -105,7 +105,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text(l.tilesAndLabels), findsOneWidget);
       expect(find.text(l.highlightAndAnimation), findsOneWidget);
-      await tester.tap(find.text(l.launcherSections));
+      await tester.tap(find.text(l.homeSectionStyle));
       await tester.pumpAndSettle();
       expect(find.byType(SectionStylePage), findsOneWidget);
       expect(find.text(l.homeScrollMode), findsOneWidget);
@@ -137,8 +137,10 @@ void main() {
     await pump(tester, ChangeNotifierProvider<AppsService>.value(
       value: apps, child: const AppearancePage()));
     final picker = find.text('Набор значков приложений');
-    await tester.ensureVisible(picker);
-    await tester.tap(picker);
+    await tester.scrollUntilVisible(picker, 160);
+    Focus.of(tester.element(picker)).requestFocus();
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
     await tester.tap(find.text('Example Icons'));
     await tester.pumpAndSettle();

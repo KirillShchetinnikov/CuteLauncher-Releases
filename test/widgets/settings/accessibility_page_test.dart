@@ -1,119 +1,155 @@
-import 'adb_test_compatibility.dart';
-import 'package:flutter/services.dart';
-import 'package:flauncher/providers/apps_service.dart';
-import 'package:flauncher/providers/launcher_state.dart';
-import 'package:flauncher/widgets/settings/accessibility_page.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flauncher/l10n/app_localizations.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
+import 'dart:convert';
 
-import 'package:flauncher/providers/settings_service.dart';
-import '../../mocks.mocks.dart';
+import 'package:flauncher/l10n/app_localizations.dart';
+import 'package:flauncher/widgets/settings/access_settings_links.dart';
+import 'package:flauncher/widgets/settings/accessibility_page.dart';
+import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+import 'adb_test_compatibility.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+  const adb = MethodChannel('cutelauncher/adb');
+  const platform = MethodChannel('me.efesser.flauncher/method');
+  final messenger =
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+  var checked = false;
+  var enabled = false;
+  var systemOpens = 0;
+  final applied = <String>[];
+  Map<String, dynamic> snapshot() => {
+    'status': 'ready',
+    'isHome': false,
+    'accessibility': enabled,
+    'launchers': [],
+  };
   setUp(() {
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
-      const MethodChannel('cutelauncher/auto_launch'), (_) async => {'mode': 'off'});
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
-      const MethodChannel('cutelauncher/adb'), (_) async => {'compatibility': supportedAdbCompatibility, 'port': 5555});
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
-      const MethodChannel('me.efesser.flauncher/method'), (_) async => false);
+    checked = false;
+    enabled = false;
+    systemOpens = 0;
+    applied.clear();
+    messenger.setMockMethodCallHandler(platform, (call) async {
+      if (call.method == 'requestAccessibilityPermission') {
+        systemOpens++;
+        return true;
+      }
+      if (call.method == 'checkAccessibilityPermission') return enabled;
+      return false;
+    });
+    messenger.setMockMethodCallHandler(adb, (call) async {
+      if (call.method == 'info') {
+        return {
+          'port': 5555,
+          'compatibility': supportedAdbCompatibility,
+          'connectionSnapshot': checked ? jsonEncode(snapshot()) : '',
+        };
+      }
+      final action = call.arguments['action'] as String;
+      switch (action) {
+        case 'check':
+          checked = true;
+          return snapshot();
+        case 'preview':
+          return {
+            'status': 'ready',
+            'commands': ['accessibility fixture'],
+          };
+        case 'accessibility':
+        case 'disableAccessibility':
+          applied.add(action);
+          enabled = action == 'accessibility';
+          return {'status': 'success'};
+        default:
+          return {'status': 'unsupported'};
+      }
+    });
   });
   tearDown(() {
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
-      const MethodChannel('cutelauncher/auto_launch'), null);
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(const MethodChannel('cutelauncher/adb'), null);
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(const MethodChannel('me.efesser.flauncher/method'), null);
-  });
-  setUpAll(() async {
-    final binding = TestWidgetsFlutterBinding.ensureInitialized();
-    binding.platformDispatcher.views.single.physicalSize = Size(1280, 720);
-    binding.platformDispatcher.views.single.devicePixelRatio = 1.0;
-    binding.platformDispatcher.textScaleFactorTestValue = 0.8;
+    messenger.setMockMethodCallHandler(adb, null);
+    messenger.setMockMethodCallHandler(platform, null);
   });
 
-  testWidgets("AccessibilityPage renders correctly when default launcher", (tester) async {
-    final appsService = MockAppsService();
-    final launcherState = LauncherState();
-    final settingsService = MockSettingsService();
-    when(settingsService.panelTooltipsEnabled).thenReturn(false);
-
-    when(appsService.isDefaultLauncher()).thenAnswer((_) async => true);
-    when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
-    when(settingsService.appKeyClickEnabled).thenReturn(false);
-    when(settingsService.backButtonAction).thenReturn('');
-    when(settingsService.startOnBoot).thenReturn(false);
-    when(settingsService.accentColorHex).thenReturn("7C4DFF");
-
+  Future<AppLocalizations> openPage(WidgetTester tester) async {
     await tester.pumpWidget(
-      MultiProvider(
-        providers: [
-          ChangeNotifierProvider<AppsService>.value(value: appsService),
-          ChangeNotifierProvider<LauncherState>.value(value: launcherState),
-          ChangeNotifierProvider<SettingsService>.value(value: settingsService),
-        ],
-        builder: (_, _) => MaterialApp(
-          localizationsDelegates: const [
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const Scaffold(body: AccessibilityPage()),
-        ),
+      const MaterialApp(
+        locale: Locale('en'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(body: AccessibilitySettingsLink()),
       ),
     );
-
+    final l = AppLocalizations.of(
+      tester.element(find.byType(AccessibilitySettingsLink)),
+    )!;
+    await tester.tap(find.text(l.accessibility));
     await tester.pumpAndSettle();
+    expect(find.byType(AccessibilityPage), findsOneWidget);
+    return l;
+  }
 
-    expect(find.text("Launcher and device controls"), findsOneWidget);
-    expect(find.byWidgetPredicate((widget) => widget is Icon &&
-        widget.semanticLabel == 'Default launcher: Enabled'), findsOneWidget);
-    expect(find.text("Open system default launcher setting"), findsNothing);
-    await tester.ensureVisible(find.text("Default launcher"));
-    await tester.tap(find.text("Default launcher")); await tester.pumpAndSettle();
-    expect(find.text("Open system default launcher setting"), findsOneWidget);
-  });
+  testWidgets(
+    'Back from the guide stays in the hub, only the Android button opens settings',
+    (tester) async {
+      final l = await openPage(tester);
+      await tester.tap(find.text(l.adbAccessibilitySettings));
+      await tester.pumpAndSettle();
+      expect(find.text(l.adbAccessibilityGuide), findsOneWidget);
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(systemOpens, 0);
+      expect(find.text(l.adbAccessibilityGuide), findsNothing);
+      expect(
+        Focus.of(tester.element(find.text(l.adbAccessibilitySettings)))
+            .hasFocus,
+        isTrue,
+      );
 
-  testWidgets("AccessibilityPage renders correctly when not default launcher", (tester) async {
-    final appsService = MockAppsService();
-    final launcherState = LauncherState();
-    final settingsService = MockSettingsService();
-    when(settingsService.panelTooltipsEnabled).thenReturn(false);
+      await tester.tap(find.text(l.adbAccessibilitySettings));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l.openAndroidSettings));
+      await tester.pumpAndSettle();
+      expect(systemOpens, 1);
+      expect(find.byType(AccessibilityPage), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
 
-    when(appsService.isDefaultLauncher()).thenAnswer((_) async => false);
-    when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
-    when(settingsService.appKeyClickEnabled).thenReturn(false);
-    when(settingsService.backButtonAction).thenReturn('');
-    when(settingsService.startOnBoot).thenReturn(false);
-    when(settingsService.accentColorHex).thenReturn("7C4DFF");
-
-    await tester.pumpWidget(
-      MultiProvider(
-        providers: [
-          ChangeNotifierProvider<AppsService>.value(value: appsService),
-          ChangeNotifierProvider<LauncherState>.value(value: launcherState),
-          ChangeNotifierProvider<SettingsService>.value(value: settingsService),
-        ],
-        builder: (_, _) => MaterialApp(
-          localizationsDelegates: const [
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const Scaffold(body: AccessibilityPage()),
-        ),
-      ),
-    );
-
-    await tester.pumpAndSettle();
-
-    expect(find.text("Launcher and device controls"), findsOneWidget);
-    expect(find.byWidgetPredicate((widget) => widget is Icon &&
-        widget.semanticLabel == 'Default launcher: Disabled'), findsOneWidget);
-  });
+  testWidgets(
+    'hub checks the connection then confirms and verifies the service grant',
+    (tester) async {
+      final l = await openPage(tester);
+      FocusableSettingsTile grant() => tester.widget(
+        find
+            .ancestor(
+              of: find.text(l.adbEnableService),
+              matching: find.byType(FocusableSettingsTile),
+            )
+            .first,
+      );
+      expect(grant().onPressed, isNull);
+      await tester.tap(find.text(l.adbConnectionBlock));
+      await tester.pumpAndSettle();
+      expect(find.text(l.adbPort), findsOneWidget);
+      await tester.tap(find.text(l.adbCheck));
+      await tester.pumpAndSettle();
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(grant().onPressed, isNotNull);
+      await tester.tap(find.text(l.adbEnableService));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l.cancel));
+      await tester.pumpAndSettle();
+      expect(applied, isEmpty);
+      await tester.tap(find.text(l.adbEnableService));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l.dialogApply));
+      await tester.pumpAndSettle();
+      expect(applied, ['accessibility']);
+      expect(find.text(l.adbDisableService), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
 }

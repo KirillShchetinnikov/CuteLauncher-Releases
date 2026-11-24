@@ -149,6 +149,7 @@ void main() {
       MultiProvider(
         providers: [
           ChangeNotifierProvider.value(value: settings),
+          ChangeNotifierProvider(create: (_) => RemotePanelService(prefs)),
           ChangeNotifierProvider.value(value: sleepTimer),
           ChangeNotifierProvider(create: (_) => SystemStatusService(settings: settings)),
           ChangeNotifierProvider(create: (_) => NetworkSpeedService(settings: settings)),
@@ -196,6 +197,13 @@ void main() {
     await tester.tap(gear); await tester.pumpAndSettle();
     expect(find.byType(NetworkSpeedSettingsPage), findsOneWidget);
     expect(tester.widget<SidePanelDialog>(find.byType(SidePanelDialog)).topInset, kToolbarHeight);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(find.byType(NetworkSpeedSettingsPage), findsNothing);
+    expect(tester.widget<SidePanelDialog>(find.byType(SidePanelDialog)).topInset, kToolbarHeight);
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(find.byType(NetworkSpeedSettingsPage), findsOneWidget);
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.pumpAndSettle();
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight); await tester.pumpAndSettle();
@@ -1211,7 +1219,7 @@ void main() {
     await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
     expectToolbarSpace();
-    await open('Таймеры', SleepTimerPresetsPage);
+    await open('Интервалы таймера', SleepTimerPresetsPage);
     await open('Добавить таймер', SleepTimerEditorPage);
     await back();
     await back();
@@ -1226,7 +1234,7 @@ void main() {
         const SettingsPanel(initialRoute: StatusBarPanelPage.routeName),
       );
       expect(find.text('Оформление'), findsOneWidget);
-      expect(find.text('Объекты'), findsOneWidget);
+      expect(find.text('Состав и порядок'), findsOneWidget);
       expect(find.text('Порядок объектов'), findsNothing);
       expect(find.text('Панель быстрых настроек'), findsNothing);
       expect(find.text('Показывать время'), findsNothing);
@@ -1368,7 +1376,7 @@ void main() {
       await tester.tap(toggle);
       await tester.pumpAndSettle();
       await pump(tester, const SettingsPanel(key: ValueKey('traffic-widget-settings'), initialRoute: WidgetSettingsPage.routeName));
-      final trafficSettings = find.text(AppLocalizations.of(tester.element(find.byType(WidgetSettingsPage)))!.showTraffic);
+      final trafficSettings = find.text(AppLocalizations.of(tester.element(find.byType(WidgetSettingsPage)))!.trafficTitle);
       await tester.scrollUntilVisible(trafficSettings, 180);
       await tester.ensureVisible(trafficSettings);
       Focus.of(tester.element(trafficSettings)).requestFocus();

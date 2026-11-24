@@ -3,11 +3,13 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 
 import 'diagnostic_redactor.dart';
 import 'diagnostic_settings.dart';
 import 'home_tile_diagnostics.dart';
+import 'launcher_image_cache.dart';
 import 'diagnostics/poster_loads.dart';
 
 /// Bounded diagnostics with structured causes and redacted technical excerpts.
@@ -430,6 +432,33 @@ class DiagnosticsStore {
   PosterLoads? get activePosterLoads => isRecording
       ? (_posterLoads ??= PosterLoads(() => _clock.elapsedMilliseconds))
       : null;
+  final _decodedKeys = <(String, String)>{};
+  final _decodedCounts = <String, int>{};
+
+  void decodedImage(String source, String key) {
+    if (!isRecording) return;
+    final kind = (source, key);
+    _decodedCounts.update(source, (count) => count + 1, ifAbsent: () => 1);
+    if (_decodedKeys.contains(kind)) {
+      _decodedCounts.update('${source}Repeated', (count) => count + 1, ifAbsent: () => 1);
+    } else if (_decodedKeys.length < 512) {
+      _decodedKeys.add(kind);
+    }
+  }
+
+  Map<String, Object> decodedCacheSnapshot() {
+    final cache = PaintingBinding.instance.imageCache;
+    return {
+      'bytes': cache.currentSizeBytes,
+      'maximumBytes': cache.maximumSizeBytes,
+      'entries': cache.currentSize,
+      'maximumEntries': cache.maximumSize,
+      'live': cache.liveImageCount,
+      if (cache is LauncherImageCache) 'partitions': cache.partitions,
+      'decodes': Map<String, int>.of(_decodedCounts),
+      'repeatTrackingSaturated': _decodedKeys.length == 512,
+    };
+  }
   final _recording = ValueNotifier(DiagnosticRecordingState.idle);
   ValueListenable<DiagnosticRecordingState> get recording => _recording;
   bool get isRecording =>
@@ -804,6 +833,8 @@ class DiagnosticsStore {
     homeTiles.clear();
     _posterLoads?.clear();
     _posterLoads = null;
+    _decodedKeys.clear();
+    _decodedCounts.clear();
     _events.clear();
     _failures.clear();
     _audioRouting.clear();

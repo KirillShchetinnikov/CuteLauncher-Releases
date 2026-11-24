@@ -1,4 +1,5 @@
 import 'settings_information.dart';
+import 'settings_section.dart';
 import 'widget_placement_page.dart';
 import 'settings_list_heading.dart';
 import 'settings_choice_tile.dart';
@@ -18,7 +19,7 @@ import '../sleep_timer_label.dart';
 import 'focusable_settings_tile.dart';
 import 'overlay_appearance_tile.dart';
 import 'overlay_position_tile.dart';
-import 'remote_buttons_page.dart';
+import 'access_settings_links.dart';
 import 'settings_help.dart';
 import 'settings_page_layout.dart';
 import 'settings_route.dart';
@@ -81,8 +82,6 @@ class SleepTimerSettingsPage extends StatelessWidget {
       title: Text(l.sleepTimer),
       child: ListView(
         children: [
-          ...SleepTimerOptionsPage.controls(context),
-          WidgetPlacementLink(id: 'sleepTimer', title: l.sleepTimer),
           FocusableSettingsTile(
             title: Text(l.sleepTimerPresets),
             leading: const Icon(Icons.timer_outlined),
@@ -96,6 +95,7 @@ class SleepTimerSettingsPage extends StatelessWidget {
               ),
             ),
           ),
+          ...SleepTimerOptionsPage.controls(context, showPlacement: true),
         ],
       ),
     );
@@ -106,7 +106,7 @@ class SleepTimerOptionsPage extends StatelessWidget {
   static const routeName = 'sleep_timer_options';
   static const displayRouteName = 'sleep_timer_display';
   const SleepTimerOptionsPage({super.key});
-  static List<Widget> controls(BuildContext context) {
+  static List<Widget> controls(BuildContext context, {bool showPlacement = false}) {
     final l = AppLocalizations.of(context)!;
     final config = context.watch<SettingsService>().sleepTimerConfiguration;
     final labels = {
@@ -134,37 +134,36 @@ class SleepTimerOptionsPage extends StatelessWidget {
         onChanged: (value) =>
             _save(context, config.copyWith(closeAfterSelection: value)),
       ),
-      RoundedSwitchListTile(
-        title: Text(l.sleepTimerShowOverApps),
-        value: config.showOverApps,
-        onChanged: (value) =>
-            _save(context, config.copyWith(showOverApps: value)),
-      ),
-      OverlayPositionTile(
-        value: config.overlayPosition,
-        onChanged: (value) =>
-            _save(context, config.copyWith(overlayPosition: value)),
-      ),
-      OverlayAppearanceTile(
-        value: config.overlayAppearance,
-        onChanged: (value) => _save(
-          context,
-          context.read<SettingsService>().sleepTimerConfiguration.copyWith(
-            overlayAppearance: value,
+      if (!config.showOverApps) const AccessibilitySettingsLink(),
+      const AdbConnectionLink(),
+      if (showPlacement) WidgetPlacementLink(id: 'sleepTimer', title: l.sleepTimer),
+      SettingsSection(
+        title: l.overAppsGroup,
+        children: [
+          RoundedSwitchListTile(
+            title: Text(l.sleepTimerShowOverApps),
+            value: config.showOverApps,
+            onChanged: (value) =>
+                _save(context, config.copyWith(showOverApps: value)),
           ),
-        ),
-      ),
-      if (config.showOverApps)
-        FocusableSettingsTile(
-          title: Text(l.remoteAccessSettings),
-          leading: const Icon(Icons.accessibility),
-          onPressed: () => Navigator.of(context).push(
-            SettingsRoute(
-              builder: (_) => const RemoteButtonsPage(section: 'access'),
+          OverlayPositionTile(
+            value: config.overlayPosition,
+            onChanged: (value) =>
+                _save(context, config.copyWith(overlayPosition: value)),
+          ),
+          OverlayAppearanceTile(
+            value: config.overlayAppearance,
+            onChanged: (value) => _save(
+              context,
+              context.read<SettingsService>().sleepTimerConfiguration.copyWith(
+                overlayAppearance: value,
+              ),
             ),
           ),
-        ),
-      SettingsHelp(text: l.sleepTimerOverlayHelp),
+          if (config.showOverApps) const AccessibilitySettingsLink(),
+          SettingsHelp(text: l.sleepTimerOverlayHelp),
+        ],
+      ),
     ];
   }
 
@@ -185,6 +184,7 @@ class SleepTimerPresetsPage extends StatefulWidget {
 class _SleepTimerPresetsPageState extends State<SleepTimerPresetsPage> {
   String? _moving;
   bool _busy = false;
+  Future<void> _moves = Future.value();
   final _nodes = <String, FocusNode>{};
   final _addNode = FocusNode();
   FocusNode _node(String id) => _nodes.putIfAbsent(id, () => FocusNode());
@@ -205,12 +205,28 @@ class _SleepTimerPresetsPageState extends State<SleepTimerPresetsPage> {
 
   Future<void> _move(String id, int direction) async {
     if (_busy) return;
-    setState(() => _busy = true);
     final config = context.read<SettingsService>().sleepTimerConfiguration;
-    await _save(context, config.move(id, direction));
+    final next = config.move(id, direction);
+    if (identical(config, next)) return;
+    setState(() => _busy = true);
+    final saved = await _save(context, next);
     if (!mounted) return;
     setState(() => _busy = false);
-    _focus(id);
+    if (!saved) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || _moving != id) return;
+      final node = _node(id);
+      node.requestFocus();
+      final target = node.context;
+      if (target != null) {
+        Scrollable.ensureVisible(
+          target,
+          alignmentPolicy: direction < 0
+              ? ScrollPositionAlignmentPolicy.keepVisibleAtStart
+              : ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
+        );
+      }
+    });
   }
 
   Future<void> _edit([SleepTimerPreset? preset]) async {
@@ -289,10 +305,12 @@ class _SleepTimerPresetsPageState extends State<SleepTimerPresetsPage> {
                       if (_moving == preset.id) {
                         if (key == LogicalKeyboardKey.arrowUp ||
                             key == LogicalKeyboardKey.arrowDown) {
-                          _move(
-                            preset.id,
-                            key == LogicalKeyboardKey.arrowUp ? -1 : 1,
-                          );
+                          final direction = key == LogicalKeyboardKey.arrowUp
+                              ? -1
+                              : 1;
+                          _moves = _moves.then((_) async {
+                            if (mounted) await _move(preset.id, direction);
+                          });
                           return KeyEventResult.handled;
                         }
                         if ([

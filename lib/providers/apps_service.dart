@@ -256,8 +256,9 @@ class AppsService extends ChangeNotifier with ServiceLifecycle, WidgetsBindingOb
         MemoryCacheKind.appIcons: MemoryCacheStats(_iconCache.byteCount, _iconCache.length),
         MemoryCacheKind.appBanners: MemoryCacheStats(_bannerCache.byteCount, _bannerCache.length),
       },
-      configure: (economy) => configureImageCache(iconBytes: (economy ? 1 : 2) * 1024 * 1024,
-        bannerBytes: (economy ? 2 : 6) * 1024 * 1024));
+      configure: (economy) => configureImageCache(
+        iconBytes: (_settingsService?.memoryLimit(MemoryLimit.icons) ?? (economy ? 1 : 2)) * 1024 * 1024,
+        bannerBytes: (_settingsService?.memoryLimit(MemoryLimit.banners) ?? (economy ? 2 : 6)) * 1024 * 1024));
     _iconPack = _settingsService?.appIconPack;
     _settingsService?.addListener(_notifyImages);
     WidgetsBinding.instance.addObserver(this);
@@ -1349,20 +1350,46 @@ class AppsService extends ChangeNotifier with ServiceLifecycle, WidgetsBindingOb
       CategoryType type = Category.Type,
       int columnsCount = Category.ColumnsCount,
       int rowHeight = Category.RowHeight,
+      bool visible = true,
+      bool initializeLayout = false,
       bool shouldNotifyListeners = true}) async {
     categoryName = Category.normalizeName(categoryName, systemKey);
-    int order = _launcherSections.length;
+    late final int order;
     int newCategoryId = -1;
 
     try {
       newCategoryId = await _database.transaction(() async {
-        int newCategoryId = await _database.insertCategory(
-            CategoriesCompanion.insert(name: categoryName, order: order, systemKey: Value(systemKey), sort: Value(sort), type: Value(type), columnsCount: Value(columnsCount), rowHeight: Value(rowHeight)));
+        order = await _database.nextSectionOrder();
+        if (!visible && !(await _database.getCategories()).any((c) => c.visible)) {
+          visible = true;
+        }
+        final newCategoryId = await _database.insertCategory(CategoriesCompanion.insert(
+          name: categoryName,
+          order: order,
+          systemKey: Value(systemKey),
+          sort: Value(sort),
+          type: Value(type),
+          columnsCount: Value(columnsCount),
+          rowHeight: Value(rowHeight),
+          visible: Value(visible),
+        ));
+        if (initializeLayout) {
+          final prefs = await _prefsAsync;
+          final layouts = CategoryAppearance.decode(prefs.getString(categoryAppearanceKey));
+          final grid = type == CategoryType.grid;
+          layouts['$newCategoryId'] = {
+            'layout': type.name, 'columns': grid ? columnsCount : 0, 'maxRows': grid ? 3 : 0,
+          };
+          if (!await prefs.setString(categoryAppearanceKey, jsonEncode(layouts))) {
+            throw StateError('Could not save section layout');
+          }
+        }
         return newCategoryId;
       });
 
       Category newCategory = Category(
           systemKey: systemKey,
+          visible: visible,
           id: newCategoryId,
           name: categoryName,
           sort: sort,
@@ -1420,15 +1447,16 @@ class AppsService extends ChangeNotifier with ServiceLifecycle, WidgetsBindingOb
     }
   }
 
-  Future<void> addSpacer(int height) async {
-    int order = launcherSections.length;
-    int spacerId = await _database.insertSpacer(
-        LauncherSpacersCompanion.insert(height: height, order: order));
-
-    _launcherSections
-        .add(LauncherSpacer(id: spacerId, height: height, order: order));
-
+  Future<LauncherSpacer> addSpacer(int height) async {
+    final spacer = await _database.transaction(() async {
+      final order = await _database.nextSectionOrder();
+      final id = await _database.insertSpacer(
+          LauncherSpacersCompanion.insert(height: height, order: order));
+      return LauncherSpacer(id: id, height: height, order: order);
+    });
+    _launcherSections.add(spacer);
     notifyListeners();
+    return spacer;
   }
 
   Future<void> updateSpacerHeight(LauncherSpacer spacer, int height) async {
@@ -1529,10 +1557,10 @@ class AppsService extends ChangeNotifier with ServiceLifecycle, WidgetsBindingOb
       }
     }
 
-    await Future.wait([
-      _database.updateCategories(orderedCategories),
-      _database.updateSpacers(orderedSpacers)
-    ]);
+    await _database.transaction(() async {
+      await _database.updateCategories(orderedCategories);
+      await _database.updateSpacers(orderedSpacers);
+    });
   }
 
   Future<void> moveSection(int oldIndex, int newIndex) async {

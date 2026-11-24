@@ -13,9 +13,12 @@ import '../storage_status_watch.dart';
 import 'settings_page_layout.dart';
 import 'focusable_settings_tile.dart';
 import 'settings_route.dart';
+import 'settings_information.dart';
+import 'settings_read_only_value.dart';
 
 /// Both entry points edit the existing visibility preferences.
 class WidgetPlacementPage extends StatelessWidget {
+  static const routeName = 'widget_placement';
   final String id;
   final String title;
   const WidgetPlacementPage({super.key, required this.id, required this.title});
@@ -25,6 +28,12 @@ class WidgetPlacementPage extends StatelessWidget {
     final l = AppLocalizations.of(context)!;
     final settings = context.watch<SettingsService>();
     final remote = context.watch<RemotePanelService>();
+    final storageIndicator = id == 'usb' || id == 'nas';
+    final connected = storageIndicator
+        ? context.select<StorageStatusService?, bool?>(
+            (s) => id == 'usb' ? s?.state.usb : s?.state.nas,
+          )
+        : null;
     final available =
         id != 'nas' ||
         context.watch<StorageStatusService?>()?.state.nasSupported == true;
@@ -70,6 +79,9 @@ class WidgetPlacementPage extends StatelessWidget {
       title: Text(title),
       child: ListView(
         children: [
+          if (id == 'network') const _NetworkStatus(),
+          if (storageIndicator)
+            Text(connected == null ? '—' : connected ? l.inputConnected : l.inputDisconnected),
           RoundedSwitchListTile(
             title: Text(l.topPanel),
             value: available && value,
@@ -100,12 +112,41 @@ class WidgetPlacementPage extends StatelessWidget {
         ],
       ),
     );
-    return id == 'nas'
+    return storageIndicator
         ? StorageStatusWatch(
             visible: ModalRoute.isCurrentOf(context) != false,
             child: page,
           )
         : page;
+  }
+}
+
+class _NetworkStatus extends StatelessWidget {
+  const _NetworkStatus();
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+    final state = context.select<NetworkService?, (NetworkType, bool)?>(
+      (network) => network == null ? null : (network.networkType, network.hasInternetAccess),
+    );
+    final type = state?.$1;
+    final connection = switch (type) {
+      NetworkType.Cellular => l.networkMobile,
+      NetworkType.Wifi => 'Wi-Fi',
+      NetworkType.Vpn => 'VPN',
+      NetworkType.Wired => 'Ethernet',
+      NetworkType.Unknown => state?.$2 == true ? l.networkUnavailable : l.networkDisconnected,
+      NetworkType.Pending || null => '—',
+    };
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        SettingsReadOnlyValue(label: l.networkConnection, value: connection, wrapLines: true),
+        if (state != null && type != NetworkType.Pending)
+          SettingsMessage(text: state.$2 ? l.networkConnected : l.networkOffline),
+      ],
+    );
   }
 }
 
@@ -119,50 +160,9 @@ class WidgetPlacementLink extends StatelessWidget {
     leading: const Icon(Icons.dashboard_outlined),
     onPressed: () => Navigator.of(context).push(
       SettingsRoute(
+        settings: const RouteSettings(name: WidgetPlacementPage.routeName),
         builder: (_) => WidgetPlacementPage(id: id, title: title),
       ),
     ),
   );
-}
-
-class IndicatorSettingsPage extends StatelessWidget {
-  final String id;
-  final String title;
-  const IndicatorSettingsPage({
-    super.key,
-    required this.id,
-    required this.title,
-  });
-  @override
-  Widget build(BuildContext context) {
-    final l = AppLocalizations.of(context)!;
-    final connected = switch (id) {
-      'network' => context.watch<NetworkService?>()?.hasInternetAccess,
-      'usb' => context.select<StorageStatusService?, bool?>(
-        (s) => s?.state.usb,
-      ),
-      _ => context.select<StorageStatusService?, bool?>((s) => s?.state.nas),
-    };
-    final page = SettingsPageLayout(
-      title: Text(title),
-      child: ListView(
-        children: [
-          WidgetPlacementLink(id: id, title: title),
-          Text(
-            connected == null
-                ? '—'
-                : connected
-                ? l.inputConnected
-                : l.inputDisconnected,
-          ),
-        ],
-      ),
-    );
-    return id != 'network'
-        ? StorageStatusWatch(
-            visible: ModalRoute.isCurrentOf(context) != false,
-            child: page,
-          )
-        : page;
-  }
 }

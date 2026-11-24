@@ -36,7 +36,7 @@ class _AutoLaunchPageState extends State<AutoLaunchPage>
     with WidgetsBindingObserver {
   static const _channel = BridgeChannel('cutelauncher/auto_launch');
   AutoLaunchConfiguration _config = const AutoLaunchConfiguration();
-  bool _busy = true, _failed = false;
+  bool _busy = true, _failed = false, _loaded = false;
   String _ownPackage = '', _status = 'idle';
   List<Map<dynamic, dynamic>> _apps = [];
   List<TvInput> _inputs = [];
@@ -56,10 +56,12 @@ class _AutoLaunchPageState extends State<AutoLaunchPage>
       final info = await _channel
           .invokeMapMethod<String, dynamic>('info')
           .timeout(const Duration(seconds: 10));
-      if (info == null) throw StateError('Auto launch bridge unavailable');
+      final config = info == null ? null : AutoLaunchConfiguration.tryFromMap(info);
+      if (info == null || config == null) throw StateError('Auto launch configuration unavailable');
       if (!mounted) return;
       setState(() {
-        _config = AutoLaunchConfiguration.fromMap(info);
+        _config = config;
+        _loaded = true;
         _ownPackage = info['ownPackage'] as String? ?? '';
         _status = info['status'] as String? ?? 'idle';
         _apps = _knownApps();
@@ -68,7 +70,12 @@ class _AutoLaunchPageState extends State<AutoLaunchPage>
       });
       _loadInputLabel();
     } catch (_) {
-      if (mounted) setState(() => _failed = true);
+      if (mounted) {
+        setState(() {
+          _failed = true;
+          _loaded = false;
+        });
+      }
     } finally {
       if (mounted) {
         setState(() => _busy = false);
@@ -78,10 +85,13 @@ class _AutoLaunchPageState extends State<AutoLaunchPage>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed && !_busy) {
-      setState(() => _busy = true);
-      _load();
-    }
+    if (state == AppLifecycleState.resumed) _retryLoad();
+  }
+
+  void _retryLoad() {
+    if (_busy) return;
+    setState(() => _busy = true);
+    _load();
   }
 
   @override
@@ -91,7 +101,7 @@ class _AutoLaunchPageState extends State<AutoLaunchPage>
   }
 
   Future<void> _save(AutoLaunchConfiguration config) async {
-    if (_busy || !config.valid) return;
+    if (_busy || !_loaded || !config.valid) return;
     setState(() => _busy = true);
     try {
       final result = await _channel.invokeMapMethod<String, dynamic>(
@@ -200,11 +210,17 @@ class _AutoLaunchPageState extends State<AutoLaunchPage>
                 kind: SettingsMessageKind.error,
               );
             }
+            final savedTarget = mode == 'app'
+                ? _config.app
+                : _inputs.where((input) => input.matchesId(_config.input)).firstOrNull?.id;
+            final initialTarget = values.any((choice) => choice.$1 == savedTarget)
+                ? savedTarget
+                : values.first.$1;
             return Column(
               children: [
                 for (final choice in values)
                   FocusableSettingsTile(
-                    autofocus: choice == values.first,
+                    autofocus: choice.$1 == initialTarget,
                     onPressed: () => Navigator.pop(context, choice.$1),
                     title: Text(choice.$2),
                     leading: mode == 'app'
@@ -277,20 +293,23 @@ class _AutoLaunchPageState extends State<AutoLaunchPage>
         padding: EdgeInsets.zero,
         children: [
           SizedBox(child: _busy ? const LinearProgressIndicator() : null),
-          if (_failed || _status == 'unavailable')
+          if (!_loaded && _failed)
+            SettingsLoadRetry(busy: _busy, onRetry: _retryLoad),
+          if (_loaded && (_failed || _status == 'unavailable'))
             SettingsMessage(
               text: l.autoLaunchUnavailable,
               kind: SettingsMessageKind.error,
             ),
-          if (_status == 'cancelled')
+          if (_loaded && _status == 'cancelled')
             SettingsMessage(text: l.autoLaunchCancelled),
-          SettingsSection(
+          if (_loaded || !_failed) SettingsSection(
             key: const ValueKey('settingsGroupLaunchTarget'),
             title: l.settingsGroupLaunchTarget,
             children: [
               SettingsChoiceTile<String>(
                 title: l.autoLaunchTitle,
                 value: _config.mode,
+                valueLabel: _loaded ? null : l.loading,
                 options: const ['off', 'app', 'hdmi'],
                 autofocus: true,
                 busy: _busy,
@@ -320,7 +339,7 @@ class _AutoLaunchPageState extends State<AutoLaunchPage>
                 ),
             ],
           ),
-          if (_config.mode != 'off')
+          if (_loaded && _config.mode != 'off')
             SettingsSection(
               key: const ValueKey('settingsGroupLaunchTiming'),
               title: l.settingsGroupLaunchTiming,

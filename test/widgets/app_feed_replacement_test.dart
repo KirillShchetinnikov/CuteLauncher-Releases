@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flauncher/feed_format.dart';
+import 'package:flauncher/models/watch_next_program.dart';
 import 'package:flauncher/providers/app_channels_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/tile_appearance.dart';
@@ -18,6 +19,46 @@ import 'package:transparent_image/transparent_image.dart';
 import '../support/app_channels.dart';
 
 void main() {
+  testWidgets('memory saving limits offscreen feed cards and restores them on toggle', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final settings = SettingsService(await SharedPreferences.getInstance());
+    final outer = ScrollController();
+    final focus = CategoryFocusController();
+    addTearDown(settings.dispose);
+    addTearDown(outer.dispose);
+    addTearDown(focus.dispose);
+    await tester.pumpWidget(ChangeNotifierProvider.value(
+      value: settings,
+      child: MaterialApp(home: SingleChildScrollView(
+        controller: outer,
+        child: Column(children: [
+          const SizedBox(height: 1000),
+          CategoryFocus(controller: focus, child: ContentPreviewRow(
+            programs: [for (var id = 0; id < 3; id++) WatchNextProgram.fromMap({'id': id})],
+            title: 'Feed', style: const TileAppearance(), aspectRatio: 1.5,
+            card: (program, _) => SizedBox(key: ValueKey('poster-${program.id}')),
+          )),
+        ]),
+      )),
+    ));
+    final poster = find.byKey(const ValueKey('poster-1'));
+    await tester.pumpAndSettle();
+    expect(poster, findsOneWidget);
+    await settings.setMemorySaverEnabled(true);
+    await tester.pumpAndSettle();
+    expect(poster, findsNothing);
+    outer.jumpTo(350);
+    await tester.pumpAndSettle();
+    expect(poster, findsOneWidget);
+    outer.jumpTo(0);
+    await tester.pumpAndSettle();
+    expect(poster, findsNothing);
+    await settings.setMemorySaverEnabled(false);
+    await tester.pumpAndSettle();
+    expect(poster, findsOneWidget);
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
   final newPoster = base64Decode(
     'iVBORw0KGgoAAAANSUhEUgAAAAMAAAACCAIAAAASFvFNAAAAEklEQVR4nGNkaGCAACYozcAAAAk8AITOVm/vAAAAAElFTkSuQmCC',
   );

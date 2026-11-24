@@ -1,6 +1,7 @@
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/providers/appearance_service.dart';
 import 'package:flauncher/providers/remote_panel_service.dart';
+import 'package:flauncher/providers/network_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
 import 'package:flauncher/widgets/settings/panel_order_page.dart';
@@ -17,6 +18,23 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+class _TestNetwork extends ChangeNotifier implements NetworkService {
+  @override
+  NetworkType networkType = NetworkType.Wifi;
+
+  @override
+  bool hasInternetAccess = false;
+
+  void update(NetworkType type, bool internet) {
+    networkType = type;
+    hasInternetAccess = internet;
+    notifyListeners();
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
 
 void main() {
   late SharedPreferences prefs;
@@ -134,6 +152,36 @@ void main() {
     expect(options, findsNothing);
   });
 
+  testWidgets('network placement and live connectivity share one page', (tester) async {
+    final network = _TestNetwork();
+    addTearDown(network.dispose);
+    await pump(tester, ChangeNotifierProvider<NetworkService>.value(
+      value: network,
+      child: const WidgetPlacementPage(id: 'network', title: 'Network'),
+    ));
+    final l = AppLocalizations.of(tester.element(find.byType(WidgetPlacementPage)))!;
+    expect(find.text('Wi-Fi'), findsOneWidget);
+    expect(find.text(l.networkOffline), findsOneWidget);
+    expect(find.text(l.networkDisconnected), findsNothing);
+    expect(find.byType(WidgetPlacementLink), findsNothing);
+    final top = settings.showNetworkIndicatorInStatusBar;
+    final quick = remote.visible('network');
+    await tester.tap(find.text(l.topPanel));
+    await tester.pumpAndSettle();
+    expect(settings.showNetworkIndicatorInStatusBar, !top);
+    expect(remote.visible('network'), quick);
+    await tester.tap(find.text(l.remotePanel));
+    await tester.pumpAndSettle();
+    expect(remote.visible('network'), !quick);
+    network.update(NetworkType.Wired, true);
+    await tester.pumpAndSettle();
+    expect(find.text('Ethernet'), findsOneWidget);
+    expect(find.text(l.networkConnected), findsOneWidget);
+    network.update(NetworkType.Unknown, false);
+    await tester.pumpAndSettle();
+    expect(find.text(l.networkDisconnected), findsOneWidget);
+  });
+
   testWidgets(
     'only placement of NAS and storage status pages request snapshots',
     (tester) async {
@@ -165,12 +213,18 @@ void main() {
         0,
       );
       expect(
-        await visits(const IndicatorSettingsPage(id: 'usb', title: 'USB')),
+        await visits(const WidgetPlacementPage(id: 'usb', title: 'USB')),
         1,
       );
+      expect(find.byType(WidgetPlacementLink), findsNothing);
+      expect(find.text('USB'), findsOneWidget);
+      final l = AppLocalizations.of(tester.element(find.byType(WidgetPlacementPage)))!;
+      expect(find.text(l.inputConnected), findsOneWidget);
+      expect(find.text(l.topPanel), findsOneWidget);
+      expect(find.text(l.remotePanel), findsOneWidget);
       expect(
         await visits(
-          const IndicatorSettingsPage(id: 'network', title: 'Network'),
+          const WidgetPlacementPage(id: 'network', title: 'Network'),
         ),
         0,
       );

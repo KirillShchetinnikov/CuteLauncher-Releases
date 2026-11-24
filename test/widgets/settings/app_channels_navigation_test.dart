@@ -7,6 +7,7 @@ import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/watch_next_service.dart';
 import 'package:flauncher/widgets/settings/app_channels_appearance_page.dart';
 import 'package:flauncher/widgets/rounded_switch_list_tile.dart';
+import 'package:flauncher/widgets/settings/continue_watching_apps_page.dart';
 import 'package:flauncher/widgets/settings/continue_watching_settings_page.dart';
 import 'package:flauncher/widgets/settings/launcher_section_panel_page.dart';
 import 'package:flauncher/widgets/settings/launcher_sections_panel_page.dart';
@@ -16,6 +17,7 @@ import 'package:flauncher/widgets/settings/settings_slider_tile.dart';
 import 'package:flauncher/widgets/settings/settings_read_only_value.dart';
 import 'package:flauncher/widgets/settings/settings_choice_tile.dart';
 import 'package:flauncher/widgets/settings/settings_text_tile.dart';
+import 'package:flauncher/widgets/settings/watch_next_limits_page.dart';
 import 'package:flauncher/widgets/side_panel_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -43,6 +45,7 @@ void main() {
         final watch = MockWatchNextService();
         when(watch.hasPermission).thenReturn(true);
         await settings.setShowContinueWatching(visible);
+        await settings.setContinueWatchingOrder(1);
         addTearDown(settings.dispose);
         addTearDown(appearance.dispose);
         addTearDown(launcher.dispose);
@@ -131,35 +134,139 @@ void main() {
 
           await navigator.maybePop();
           await tester.pumpAndSettle();
-          if (id == group.id) {
-            final toggle = find.widgetWithText(
-              RoundedSwitchListTile,
-              l.categoryVisible,
-            );
-            await tester.ensureVisible(toggle);
-            Focus.of(tester.element(find.text(l.categoryVisible)))
-                .requestFocus();
+          final toggle = find.widgetWithText(
+            RoundedSwitchListTile,
+            l.categoryVisible,
+          );
+          final isWatchNext = id == ContinueWatchingSection.sectionId;
+          if (isWatchNext) await tester.scrollUntilVisible(toggle, -100);
+          await tester.ensureVisible(toggle);
+          Focus.of(tester.element(find.text(l.categoryVisible))).requestFocus();
+          await tester.pumpAndSettle();
+          final focus = FocusManager.instance.primaryFocus;
+          expect(tester.widget<RoundedSwitchListTile>(toggle).value, visible);
+          for (final show in [!visible, visible, if (isWatchNext) !visible]) {
+            await tester.sendKeyEvent(LogicalKeyboardKey.enter);
             await tester.pumpAndSettle();
-            final focus = FocusManager.instance.primaryFocus;
-            for (final show in [!visible, visible]) {
-              await tester.sendKeyEvent(LogicalKeyboardKey.enter);
-              await tester.pumpAndSettle();
-              expect(tester.widget<RoundedSwitchListTile>(toggle).value, show);
-              expect(panelOnRight(), show);
-              expect(launcher.sectionPreviewId, show ? id : null);
-              expect(FocusManager.instance.primaryFocus, same(focus));
-            }
+            expect(tester.widget<RoundedSwitchListTile>(toggle).value, show);
+            expect(panelOnRight(), show);
+            expect(launcher.sectionPreviewId, show ? id : null);
+            expect(FocusManager.instance.primaryFocus, same(focus));
           }
           await navigator.maybePop();
           await tester.pumpAndSettle();
           expect(panelOnRight(), isFalse);
           expect(launcher.sectionPreviewId, isNull);
           expect(Focus.of(tester.element(row)).hasFocus, isTrue);
+          if (isWatchNext) {
+            final hiddenHeading = find.text(l.hiddenCategories);
+            expect(
+              tester.getTopLeft(row).dy > tester.getTopLeft(hiddenHeading).dy,
+              visible,
+            );
+            final reloadedSettings = SettingsService(prefs);
+            addTearDown(reloadedSettings.dispose);
+            expect(reloadedSettings.showContinueWatching, !visible);
+            expect(reloadedSettings.continueWatchingOrder, 1);
+          }
         }
         await tester.pumpWidget(const SizedBox());
       },
     );
   }
+
+  testWidgets('Watch Next editor opens its own submenus and saves card settings', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    final settings = SettingsService(prefs);
+    addTearDown(settings.dispose);
+    await settings.hideWatchNextProgram(7);
+    final apps = MockAppsService();
+    when(apps.applications).thenReturn([]);
+    final watch = MockWatchNextService();
+    when(watch.hasPermission).thenReturn(true);
+    when(watch.programs).thenReturn([]);
+    when(watch.refresh()).thenAnswer((_) async {});
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider.value(value: settings),
+          ChangeNotifierProvider<AppsService>.value(value: apps),
+          ChangeNotifierProvider<WatchNextService>.value(value: watch),
+        ],
+        child: const MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: SettingsPanel(
+            initialRoute: ContinueWatchingSettingsPage.routeName,
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    final l = AppLocalizations.of(
+      tester.element(find.byType(ContinueWatchingSettingsPage)),
+    )!;
+    expect(find.text(l.continueWatching), findsOneWidget);
+    expect(find.byType(SettingsReadOnlyValue), findsNothing);
+    expect(find.text(l.categoryAppearance), findsOneWidget);
+    expect(find.text(l.feedsAndOrder), findsNothing);
+    expect(find.text(l.maximumItems), findsNothing);
+    expect(find.text(l.watchNextAccess), findsOneWidget);
+
+    final navigator = tester.state<NavigatorState>(find.byType(Navigator).last);
+    expect(
+      Focus.of(tester.element(find.text(l.categoryVisible))).hasPrimaryFocus,
+      isTrue,
+    );
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.pumpAndSettle();
+    for (final (label, page) in [
+      (l.appsWithContinueWatching, ContinueWatchingAppsPage),
+      (l.watchNextAppLimits, WatchNextLimitsPage),
+      (l.appChannelsSectionSettings, ContinueWatchingSectionSettingsPage),
+    ]) {
+      final opener = find.text(label);
+      final focus = Focus.of(tester.element(opener));
+      expect(focus.hasPrimaryFocus, isTrue);
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pumpAndSettle();
+      expect(find.byType(page), findsOneWidget);
+      if (page == ContinueWatchingSectionSettingsPage) {
+        expect(find.text(l.memorySettings), findsOneWidget);
+        await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+        await tester.pumpAndSettle();
+        for (final label in [
+          l.playbackProgressBar,
+          l.episodeVideoDetails,
+          l.restoreHiddenPrograms,
+        ]) {
+          final control = find.text(label);
+          await tester.ensureVisible(control);
+          await tester.pumpAndSettle();
+          await tester.tap(control);
+          await tester.pumpAndSettle();
+        }
+        final restored = SettingsService(prefs);
+        addTearDown(restored.dispose);
+        expect(restored.continueWatchingMaxItems, 20);
+        expect(restored.continueWatchingShowProgress, isFalse);
+        expect(restored.continueWatchingShowDescription, isFalse);
+        expect(restored.hiddenWatchNextProgramIds, isEmpty);
+        expect(restored.showContinueWatching, isFalse);
+        verify(watch.refresh()).called(1);
+      }
+      await navigator.maybePop();
+      await tester.pumpAndSettle();
+      expect(focus.hasPrimaryFocus, isTrue);
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      await tester.pumpAndSettle();
+    }
+    expect(
+      Focus.of(tester.element(find.text(l.categoryAppearance))).hasPrimaryFocus,
+      isTrue,
+    );
+  });
 
   testWidgets(
     'Watch Next opens the shared feed appearance page from its settings',
@@ -318,10 +425,8 @@ void main() {
           tester.element(find.byType(LauncherSectionPanelPage)),
         )!;
         final opener = find.text(l.categoryAppearance);
-        final name = tester.widget<SettingsReadOnlyValue>(
-          find.byType(SettingsReadOnlyValue),
-        );
-        expect((name.label, name.value), (l.name, l.appChannelsTitle));
+        expect(find.text(l.appChannelsTitle), findsOneWidget);
+        expect(find.byType(SettingsReadOnlyValue), findsNothing);
         expect(find.byType(SettingsTextTile), findsNothing);
         expect(find.byType(SettingsChoiceTile<String>), findsNothing);
         await tester.tap(opener);

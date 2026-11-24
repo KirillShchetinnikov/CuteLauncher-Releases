@@ -148,6 +148,43 @@ class _DiagnosticsReportPanelState extends State<DiagnosticsReportPanel> {
     }
   }
 
+  Future<void> _clear() async {
+    if (_busy) return;
+    final l = AppLocalizations.of(context)!;
+    setState(() => _busy = true);
+    try {
+      if (DiagnosticsStore.instance.isRecording) {
+        final confirmed = await showLauncherDialog<bool>(
+          context: context,
+          builder: (dialog) => LauncherAlertDialog(
+            title: Text(l.diagnosticsClear),
+            content: Text(l.diagnosticsClearRecordingConfirm),
+            actions: [
+              LauncherDialogButton(
+                autofocus: true,
+                isCancel: true,
+                onPressed: () => Navigator.pop(dialog, false),
+                child: Text(l.cancel),
+              ),
+              LauncherDialogButton(
+                danger: true,
+                onPressed: () => Navigator.pop(dialog, true),
+                child: Text(l.diagnosticsClear),
+              ),
+            ],
+          ),
+        );
+        if (!mounted || confirmed != true) return;
+      }
+      await clearDiagnostics();
+      if (!mounted) return;
+      widget.report.value = null;
+      showActionNotice(context, '${l.diagnosticsClear}: ${l.actionCompleted}');
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
   Future<void> _export() async {
     final report = widget.report.value;
     if (_busy || _exportMenu || report == null) return;
@@ -258,7 +295,7 @@ class _DiagnosticsReportPanelState extends State<DiagnosticsReportPanel> {
             DiagnosticRecordingState.stopped => l.diagnosticsCreateExtended,
           };
     return SettingsPageLayout(
-      title: Text(l.diagnosticsHubTitle),
+      title: Text(l.diagnosticsReportsAndRecording),
       child: ListView(
         children: [
           if (recording == DiagnosticRecordingState.recording)
@@ -302,43 +339,32 @@ class _DiagnosticsReportPanelState extends State<DiagnosticsReportPanel> {
             ),
 
           ],
-          SettingsSection(title: l.tvCompatibilityResults, children: [
-          FocusableSettingsTile(
-            leading: const Icon(Icons.fact_check_outlined),
-            title: Text(l.tvCompatibilityResults),
-            onPressed: _busy || report?['compatibility'] is! Map
-                ? null
-                : () => Navigator.of(context).push(
-                    SettingsRoute<void>(
-                      builder: (_) => CompatibilityResultsPage(report: report!),
-                    ),
-                  ),
+          SettingsSection(
+            children: [
+              FocusableSettingsTile(
+                leading: const Icon(Icons.fact_check_outlined),
+                title: Text(l.tvCompatibilityResults),
+                onPressed: _busy || report?['compatibility'] is! Map
+                    ? null
+                    : () => Navigator.of(context).push(
+                        SettingsRoute<void>(
+                          builder: (_) => CompatibilityResultsPage(report: report!),
+                        ),
+                      ),
+              ),
+              FocusableSettingsTile(
+                leading: const Icon(Icons.ios_share),
+                title: Text(l.diagnosticsExport),
+                onPressed: _busy || report == null ? null : _export,
+              ),
+              FocusableSettingsTile(
+                leading: const Icon(Icons.delete_outline),
+                title: Text(l.diagnosticsClear),
+                busy: _busy,
+                onPressed: _clear,
+              ),
+            ],
           ),
-          FocusableSettingsTile(
-            leading: const Icon(Icons.delete_outline),
-            title: Text(l.diagnosticsClear),
-            onPressed: _busy
-                ? null
-                : () async {
-                    setState(() => _busy = true);
-                    await clearDiagnostics();
-                    if (!mounted || !context.mounted) return;
-                    setState(() {
-                      _busy = false;
-                      widget.report.value = null;
-                    });
-                    showActionNotice(
-                      context,
-                      '${l.diagnosticsClear}: ${l.actionCompleted}',
-                    );
-                  },
-          ),
-          FocusableSettingsTile(
-            leading: const Icon(Icons.ios_share),
-            title: Text(l.diagnosticsExport),
-            onPressed: _busy || report == null ? null : _export,
-          ),
-          ]),
           SettingsHelp(
             text: '${l.diagnosticsHint}\n\n${l.diagnosticsSharingNotice}',
           ),

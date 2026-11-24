@@ -21,12 +21,19 @@ final class RecentAppsControl {
         if (Thread.currentThread().isInterrupted() || System.nanoTime() > deadline) throw new InterruptedException("Task operation cancelled");
     }
     private boolean eligible(String pkg) {
-        if (pkg.equals(context.getPackageName()) || pkg.equals("com.android.systemui") || pkg.equals("com.nes.recents")) return false;
+        if (isLauncher(pkg)) return true;
+        if (pkg.equals("com.android.systemui") || pkg.equals("com.nes.recents")) return false;
         var pm = context.getPackageManager();
         try {
             if (!pm.getApplicationInfo(pkg, 0).enabled || pm.getLeanbackLaunchIntentForPackage(pkg) == null) return false;
             return !homePackages.contains(pkg);
         } catch (PackageManager.NameNotFoundException absent) { return false; }
+    }
+    private boolean isLauncher(String pkg) {
+        return context.getPackageName().equals(pkg);
+    }
+    private boolean canForceStop(String pkg) throws PackageManager.NameNotFoundException {
+        return !isLauncher(pkg) && eligible(pkg) && userApp(pkg);
     }
     private boolean userApp(String pkg) throws PackageManager.NameNotFoundException {
         return userApp(context.getPackageManager().getApplicationInfo(pkg, 0));
@@ -48,17 +55,18 @@ final class RecentAppsControl {
         if (action.equals("closeAll")) {
             Set<String> targets = new LinkedHashSet<>();
             Set<String> seen = new HashSet<>();
-            for (var task : live) if (seen.add(task.pkg()) && eligible(task.pkg()) && userApp(task.pkg())) targets.add(task.pkg());
+            for (var task : live) if (seen.add(task.pkg()) && canForceStop(task.pkg())) targets.add(task.pkg());
             for (String target : targets) {
                 checkActive();
                 try {
-                    if (eligible(target) && userApp(target) && tasks().stream().anyMatch(task -> task.pkg().equals(target)))
+                    if (canForceStop(target) && tasks().stream().anyMatch(task -> task.pkg().equals(target)))
                         { checkActive(); closing.add(target); shell.execute("am force-stop --user 0 " + target); }
                 } catch (Exception error) { failed = true; }
             }
         } else if (!action.equals("list")) {
             if (pkg == null || !pkg.matches("[A-Za-z][A-Za-z0-9_]*(\\.[A-Za-z0-9_]+)+") || !eligible(pkg))
                 throw new IllegalArgumentException("Invalid target");
+            if (action.equals("close") && isLauncher(pkg)) throw new IllegalArgumentException("Protected target");
             var selected = live.stream().filter(task -> task.pkg().equals(pkg)).collect(java.util.stream.Collectors.toList());
             if (selected.isEmpty()) return Map.of("status", "stale", "apps", list(tasks()));
             if (action.equals("switch")) {
@@ -79,7 +87,7 @@ final class RecentAppsControl {
         }
         if (action.equals("close") && after.stream().anyMatch(task -> task.pkg().equals(pkg))) failed = true;
         if (action.equals("closeAll"))
-            for (var task : after) if (eligible(task.pkg()) && userApp(task.pkg())) failed = true;
+            for (var task : after) if (canForceStop(task.pkg())) failed = true;
         return Map.of("status", failed ? "partial" : "success", "apps", list(after));
     }
     private List<Map<String, Object>> list(List<RecentTaskPolicy.Task> tasks) throws Exception {
@@ -89,8 +97,12 @@ final class RecentAppsControl {
         for (var task : tasks) {
             if (!seen.add(task.pkg()) || !eligible(task.pkg())) continue;
             var app = pm.getApplicationInfo(task.pkg(), 0);
-            rows.put(task.pkg(), Map.of("packageName", task.pkg(), "name", app.loadLabel(pm).toString(), "userApp", userApp(app)));
+            rows.put(task.pkg(), Map.of("packageName", task.pkg(), "name", app.loadLabel(pm).toString(),
+                "userApp", userApp(app), "canClose", !isLauncher(task.pkg())));
         }
+        String launcherPackage = context.getPackageName();
+        var launcherRow = rows.remove(launcherPackage);
+        if (launcherRow != null) rows.put(launcherPackage, launcherRow);
         return new ArrayList<>(rows.values());
     }
 }

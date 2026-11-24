@@ -14,6 +14,7 @@ import 'package:flauncher/gradients.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/widgets/settings/appearance_page.dart';
 import 'package:flauncher/widgets/settings/memory_page.dart';
+import 'package:flauncher/widgets/settings/memory_settings_page.dart';
 import 'package:flauncher/widgets/settings/appearance_settings_page.dart';
 import 'package:flauncher/widgets/settings/interface_settings_page.dart';
 import 'package:flauncher/widgets/settings/settings_panel.dart';
@@ -288,7 +289,7 @@ const designStates = [
     route: MemoryPage.routeName,
     bottom: true,
   ),
-  DesignState('settings-memory-saver', route: MemorySaverPage.routeName),
+  DesignState('settings-memory-saver', route: MemorySettingsPage.routeName, economy: true),
   DesignState('settings-root', route: 'settings_panel'),
   DesignState(
     'settings-root-720p-large',

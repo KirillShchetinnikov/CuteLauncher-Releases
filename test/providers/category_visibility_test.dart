@@ -30,6 +30,34 @@ void main() {
   });
   tearDown(() async { service.dispose(); await db.close(); });
 
+  test('a failed spacer write rolls back category positions and can be retried', () async {
+    final spacer = await service.addSpacer(30);
+    final previous = (await db.getCategories()).map((c) => c.order).toList();
+    service.moveSectionInMemory(spacer.order, 0);
+    await db.customStatement('CREATE TRIGGER reject_spacer BEFORE UPDATE ON launcher_spacers '
+        "BEGIN SELECT RAISE(ABORT, 'test write failure'); END");
+    await expectLater(service.persistSectionsOrder(), throwsA(isA<Exception>()));
+    expect((await db.getCategories()).map((c) => c.order), previous);
+    await db.customStatement('DROP TRIGGER reject_spacer');
+    await service.persistSectionsOrder();
+    expect((await db.getLauncherSpacers()).single.order, 0);
+    expect((await db.getCategories()).map((c) => c.order), [1, 2]);
+  });
+
+  test('sections appended after deletion keep distinct positions across reload', () async {
+    final earlierSpacer = await service.addSpacer(30);
+    await service.deleteSection(1);
+    await Future.wait([
+      service.addCategory('New'),
+      service.addSpacer(50),
+    ]);
+    await service.refreshState();
+    final sections = service.launcherSections;
+    expect(sections.map((s) => s.order).toSet(), hasLength(4));
+    expect(sections[1], isA<LauncherSpacer>().having((s) => s.id, 'id', earlierSpacer.id));
+    expect(sections.skip(2).map((s) => s.order), [3, 4]);
+  });
+
   for (final key in Category.systemKeys) {
     test('$key preserves its key and applies its naming policy', () async {
       final existing = service.categories.where((c) => c.systemKey == key);

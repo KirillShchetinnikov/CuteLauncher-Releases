@@ -264,6 +264,16 @@ class FLauncherDatabase extends _$FLauncherDatabase
 
   Future<int> insertCategory(Insertable<Category> category) => into(categories).insert(category);
 
+  Future<int> nextSectionOrder() async {
+    final row = await customSelect('''
+      SELECT COALESCE(MAX(position), -1) + 1 AS next_order FROM (
+        SELECT MAX("order") AS position FROM categories
+        UNION ALL SELECT MAX("order") FROM launcher_spacers
+      )
+    ''').getSingle();
+    return row.read<int>('next_order');
+  }
+
   Future<void> deleteCategory(int id) => (delete(categories)..where((tbl) => tbl.id.equals(id))).go();
 
   Future<void> updateCategories(List<CategoriesCompanion> values) => batch(

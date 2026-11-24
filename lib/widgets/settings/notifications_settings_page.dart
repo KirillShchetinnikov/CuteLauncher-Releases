@@ -202,6 +202,7 @@ class _NotificationsSettingsPageState extends State<NotificationsSettingsPage>
                       ),
                       AdbPermissionTile(
                         title: localizations.overlayAccessAdb,
+                        showConnectionLink: false,
                         action: 'overlay',
                         permissionMethod: 'checkOverlayPermission',
                         onRefresh: service.checkOverlayPermission,

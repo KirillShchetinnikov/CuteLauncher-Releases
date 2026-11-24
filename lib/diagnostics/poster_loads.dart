@@ -12,6 +12,7 @@ enum PosterSource { appChannels, watchNext }
 
 enum PosterStage {
   queue,
+  disk,
   connection,
   headers,
   body,
@@ -60,6 +61,9 @@ class PosterLoads {
       'cachedFallback',
       'discarded',
       'cacheHit',
+      'diskHit',
+      'diskMiss',
+      'diskStale',
       'deduplicated',
     }.contains(event)) {
       return;
@@ -150,7 +154,8 @@ class PosterLoads {
       'networkAtStart': Map<String, Object>.from(_network),
       'lifecycleAtStart': _lifecycle[source] ?? 'unknown',
       'sourceActiveAtStart': _active.values
-          .where((p) => p.source == source && p._stage != PosterStage.queue)
+          .where((p) => p.source == source &&
+              p._stage != PosterStage.queue && p._stage != PosterStage.disk)
           .length,
       'sourceQueuedAtStart': _active.values
           .where((p) => p.source == source && p._stage == PosterStage.queue)

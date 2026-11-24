@@ -21,6 +21,27 @@ import 'package:flauncher/weather_sources.dart';
 import '../mocks.mocks.dart';
 
 void main() {
+  testWidgets('photo decode size follows memory saving at the physical display size', (tester) async {
+    tester.view.physicalSize = const Size(1920, 1080);
+    tester.view.devicePixelRatio = 2;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    SharedPreferences.setMockInitialValues({});
+    final settings = SettingsService(await SharedPreferences.getInstance());
+    addTearDown(settings.dispose);
+    await settings.setLandscape(const LandscapeConfiguration(variant: 'realistic', motion: false));
+    await tester.pumpWidget(ChangeNotifierProvider.value(
+      value: settings,
+      child: const MaterialApp(home: AdaptiveLandscapeBackground()),
+    ));
+    for (final saving in [false, true, false]) {
+      await settings.setMemorySaverEnabled(saving);
+      await tester.pump();
+      final photo = tester.widget<Image>(find.byType(Image)).image as ResizeImage;
+      expect((photo.width, photo.height), saving ? (1440, 810) : (1920, 1080));
+    }
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
 
   testWidgets('information stays unfiltered between terrain and a single effects layer in every path', (tester) async {
     SharedPreferences.setMockInitialValues({});

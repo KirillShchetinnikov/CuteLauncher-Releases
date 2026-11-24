@@ -40,7 +40,7 @@ class _PanelOrderPageState extends State<PanelOrderPage> {
   final Map<String, FocusNode> _nodes = {};
   String? _moving;
   bool? _focusedCanToggle;
-  bool _busy = false;
+  Future<void> _moves = Future.value();
   @override
   void dispose() {
     for (final node in _nodes.values) {
@@ -49,14 +49,12 @@ class _PanelOrderPageState extends State<PanelOrderPage> {
     super.dispose();
   }
 
-  Future<void> _move(String key, String id, int delta) async {
-    if (_busy) return;
+  Future<void> _move(String id, int delta) async {
     final service = context.read<AppearanceService>();
     final panel = widget.remotePanel
         ? context.read<RemotePanelService>()
         : null;
     final layout = panel?.layout ?? service.appearance.panelLayout;
-    final left = key == 'panelButtonsOrder';
     final composition = InformationPanelComposition(
       service.appearance,
       context.read<SettingsService>(),
@@ -69,6 +67,7 @@ class _PanelOrderPageState extends State<PanelOrderPage> {
       composition.combined && !(widget.editVisibility && widget.remotePanel),
       excluded: excluded,
     );
+    final left = first.contains(id);
     final order = left ? first : second;
     final other = left ? second : first;
     final index = order.indexOf(id);
@@ -91,7 +90,6 @@ class _PanelOrderPageState extends State<PanelOrderPage> {
       second,
       excluded: excluded,
     );
-    setState(() => _busy = true);
     try {
       if (panel != null) {
         await panel.setPanelOrder(savedLeft, savedRight);
@@ -102,6 +100,7 @@ class _PanelOrderPageState extends State<PanelOrderPage> {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (!mounted) return;
           final node = _nodes[id];
+          if (_moving != id && node?.hasFocus != true) return;
           node?.requestFocus();
           if (node?.context != null) {
             Scrollable.ensureVisible(
@@ -120,8 +119,6 @@ class _PanelOrderPageState extends State<PanelOrderPage> {
           error: true,
         );
       }
-    } finally {
-      if (mounted) setState(() => _busy = false);
     }
   }
 
@@ -318,22 +315,23 @@ class _PanelOrderPageState extends State<PanelOrderPage> {
                         }
                       },
                       enabled: available(id),
-                      busy: _busy || _moving != null && _moving != id,
-                      toggled: (widget.remotePanel || id == 'nas') && !available(id)
+                      busy: _moving != null && _moving != id,
+                      toggled:
+                          (widget.remotePanel || id == 'nas') && !available(id)
                           ? false
                           : visibility(id)?.$1,
                       trailing: widget.editVisibility
                           ? SettingsReorderControls(
-                              value: (widget.remotePanel || id == 'nas') && !available(id)
+                              value:
+                                  (widget.remotePanel || id == 'nas') &&
+                                      !available(id)
                                   ? false
                                   : visibility(id)?.$1,
                               moving: _moving == id,
                               enabled: available(id),
-                              onReorder: _busy
-                                  ? null
-                                  : () => setState(
-                                      () => _moving = _moving == id ? null : id,
-                                    ),
+                              onReorder: () => setState(
+                                () => _moving = _moving == id ? null : id,
+                              ),
                             )
                           : _moving == id
                           ? Column(
@@ -393,13 +391,13 @@ class _PanelOrderPageState extends State<PanelOrderPage> {
                           if (event.logicalKey == LogicalKeyboardKey.arrowUp ||
                               event.logicalKey ==
                                   LogicalKeyboardKey.arrowDown) {
-                            _move(
-                              key,
-                              id,
-                              event.logicalKey == LogicalKeyboardKey.arrowUp
-                                  ? -1
-                                  : 1,
-                            );
+                            final delta =
+                                event.logicalKey == LogicalKeyboardKey.arrowUp
+                                ? -1
+                                : 1;
+                            _moves = _moves.then((_) async {
+                              if (mounted) await _move(id, delta);
+                            });
                             return KeyEventResult.handled;
                           }
                         }

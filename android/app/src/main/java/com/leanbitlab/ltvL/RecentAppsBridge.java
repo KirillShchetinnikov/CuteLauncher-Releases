@@ -3,21 +3,26 @@ package com.leanbitlab.ltvL;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ComponentName;
-import android.provider.Settings;
 import android.os.Handler;
 import android.os.Looper;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodChannel;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
+import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
 
 final class RecentAppsBridge implements AutoCloseable {
+    enum OpenResult { OPENED, UNAVAILABLE, ADB_REQUIRED, ACCESSIBILITY_REQUIRED, CANCELLED }
+
     static final String PREFS = "recent_apps";
     private static final ComponentName OEM = new ComponentName("com.nes.recents", "com.nes.recents.RecentsActivity");
     private final MethodChannel channel;
     private volatile boolean closed;
     private volatile long memoryGeneration;
+    private int openGeneration;
     static Intent systemIntent() {
         return new Intent("com.android.systemui.recents.TOGGLE_RECENTS").setComponent(OEM).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     }
@@ -27,32 +32,62 @@ final class RecentAppsBridge implements AutoCloseable {
             && info.activityInfo.applicationInfo.enabled;
     }
     static String mode(Context context) { return context.getSharedPreferences(PREFS, 0).getString("mode", "auto"); }
+    private static boolean adbAvailable(Context context) {
+        try {
+            return AdbBridge.recentSession(context,
+                shell -> AdbShellIdentity.supported(shell.execute("id -u").trim()));
+        } catch (Exception | LinkageError unavailable) {
+            return false;
+        }
+    }
     static Map<String, Object> access(Context context) {
-        boolean adb;
-        try { adb = AdbBridge.recentSession(context, shell -> AdbShellIdentity.supported(shell.execute("id -u").trim())); }
-        catch (Exception unavailable) { adb = false; }
-        return Map.of("adb", adb, "accessibility", LauncherAccessibilityService.connected());
+        return Map.of("adb", adbAvailable(context), "accessibility", LauncherAccessibilityService.connected());
     }
     static boolean setup(Context context, String destination) {
-        Intent intent;
-        if ("adb".equals(destination)) {
-            intent = new Intent(context, MainActivity.class)
-                .setAction(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER)
-                .putExtra(LauncherActivity.OPEN_ADB_SETTINGS, true)
-                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        } else if ("accessibility".equals(destination)) {
-            intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
-        } else return false;
+        String extra;
+        if ("adb".equals(destination)) extra = LauncherActivity.OPEN_ADB_SETTINGS;
+        else if ("accessibility".equals(destination)) extra = LauncherActivity.OPEN_ACCESSIBILITY_SETTINGS;
+        else return false;
+        Intent intent = new Intent(context, MainActivity.class)
+            .setAction(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER)
+            .putExtra(extra, true)
+            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         try { context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)); return true; }
         catch (RuntimeException unavailable) { return false; }
     }
-    static boolean open(Context context) {
-        String mode = mode(context);
-        if (!mode.equals("custom") && systemAvailable(context)) {
-            try { context.startActivity(systemIntent()); return true; }
-            catch (RuntimeException denied) { if (mode.equals("system")) return false; }
+    private static boolean openSystem(Context context) {
+        if (!systemAvailable(context)) return false;
+        try {
+            context.startActivity(systemIntent());
+            return true;
+        } catch (RuntimeException denied) {
+            return false;
         }
-        return !mode.equals("system") && LauncherAccessibilityService.showRecents();
+    }
+    static void open(Context context, Executor worker, Handler main,
+                     BooleanSupplier current, Consumer<OpenResult> complete) {
+        String mode = mode(context);
+        if (!mode.equals("custom") && openSystem(context)) {
+            if (context instanceof LauncherAccessibilityService service) service.dismissPanel();
+            complete.accept(OpenResult.OPENED);
+        } else if (mode.equals("system")) {
+            complete.accept(OpenResult.UNAVAILABLE);
+        } else if (LauncherAccessibilityService.closeRecentsIfOpen()) {
+            complete.accept(OpenResult.OPENED);
+        } else if (!LauncherAccessibilityService.connected()) {
+            complete.accept(OpenResult.ACCESSIBILITY_REQUIRED);
+        } else {
+            worker.execute(() -> {
+                boolean adb = adbAvailable(context);
+                main.post(() -> {
+                    if (!current.getAsBoolean()) complete.accept(OpenResult.CANCELLED);
+                    else if (!LauncherAccessibilityService.connected()) complete.accept(OpenResult.ACCESSIBILITY_REQUIRED);
+                    else if (!adb) complete.accept(OpenResult.ADB_REQUIRED);
+                    else complete.accept(LauncherAccessibilityService.showRecents()
+                        ? OpenResult.OPENED : OpenResult.UNAVAILABLE);
+                });
+            });
+        }
     }
     RecentAppsBridge(Context context, BinaryMessenger messenger, ExecutorService worker, Runnable dismiss) {
         channel = new MethodChannel(messenger, "cutelauncher/recent_apps");
@@ -99,7 +134,19 @@ final class RecentAppsBridge implements AutoCloseable {
                         main.post(() -> { if (!closed) result.success(ok); });
                     });
                 }
-                case "open" -> result.success(open(context));
+                case "open" -> {
+                    int generation = ++openGeneration;
+                    open(context, worker, main, () -> !closed && generation == openGeneration, response -> {
+                        if (closed) return;
+                        switch (response) {
+                            case ADB_REQUIRED -> result.error("recent_adb_required", "Local ADB unavailable", null);
+                            case ACCESSIBILITY_REQUIRED -> result.error("recent_accessibility_required",
+                                "Accessibility service unavailable", null);
+                            default -> result.success(response == OpenResult.OPENED);
+                        }
+                    });
+                }
+                case "cancelOpen" -> { openGeneration++; result.success(null); }
                 case "list", "switch", "close", "closeAll", "icon" -> {
                     if (!call.method.equals("icon")) memoryGeneration++;
                     String pkg = call.argument("packageName");

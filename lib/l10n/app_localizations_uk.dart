@@ -205,7 +205,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get tvCompatibilityRun => 'Run check';
 
   @override
-  String get tvCompatibilityResults => 'View results';
+  String get tvCompatibilityResults => 'Результати перевірки сумісності';
 
   @override
   String get compatibilityReportDate => 'Check date';
@@ -601,7 +601,8 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
-  String get textEmptyCategory => 'Ця категорія порожня.';
+  String get textEmptyCategory =>
+      'Цей розділ порожній. Натисніть OK, щоб налаштувати розділи.';
 
   @override
   String get time => 'Час';
@@ -672,10 +673,10 @@ class AppLocalizationsUk extends AppLocalizations {
   String get backupAndRestore => 'Резервне копіювання та відновлення';
 
   @override
-  String get exportBackup => 'Експортувати резервну копію';
+  String get exportBackup => 'Експорт у файл';
 
   @override
-  String get importBackup => 'Імпортувати резервну копію';
+  String get importBackup => 'Імпорт із файлу';
 
   @override
   String exportSuccess(String path) {
@@ -687,7 +688,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get importConfirm =>
-      'Ви впевнені, що хочете імпортувати резервну копію? Це замінить поточні налаштування та розташування.';
+      'Відновити цю копію? Макет із копії замінить поточний. Налаштування, яких немає в копії або значення яких некоректні, можуть повернутися до початкових значень.';
 
   @override
   String get importError =>
@@ -1248,7 +1249,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get reorderSectionsHint =>
-      'Виберіть за допомогою ◄ / ►, потім використовуйте ▲ / ▼, щоб змінити порядок. Перейдіть за межі списку, щоб приховати або показати розділ.';
+      '▲ / ▼ — вибрати розділ · OK — відкрити · ◄ / ► — почати переміщення';
 
   @override
   String get customName => 'Спеціальна назва';
@@ -2341,7 +2342,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get quickPanelObjectsTitle => 'Об’єкти швидких налаштувань';
 
   @override
-  String get topPanelObjects => 'Об\'єкти';
+  String get topPanelObjects => 'Склад і порядок';
 
   @override
   String get panelTextBackground => 'Текст і фон кнопки';
@@ -2976,7 +2977,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get adbAccessibilityGuide =>
-      'Виберіть CuteLauncher у системному меню та ввімкніть його службу. Поверніться сюди, щоб налаштувати домашнє перехоплення. Щоб вимкнути його, вимкніть послугу CuteLauncher у цьому ж меню.';
+      'У налаштуваннях Android увімкніть службу CuteLauncher і поверніться до лаунчера.';
 
   @override
   String get adbEffectAccessibilityDisable =>
@@ -4371,7 +4372,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get cleanerLists => 'Списки вимкнення';
 
   @override
-  String get cleanerRecovery => 'Резервування та відновлення';
+  String get cleanerRecovery => 'Копії стану застосунків';
 
   @override
   String get cleanerExports => 'Звіти';
@@ -4481,7 +4482,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get sleepTimerSettings => 'Налаштування таймера вимкнення';
 
   @override
-  String get sleepTimerPresets => 'Таймери';
+  String get sleepTimerPresets => 'Інтервали таймера';
 
   @override
   String get sleepTimerDisplay => 'Показувати під час роботи таймера';
@@ -4701,12 +4702,19 @@ class AppLocalizationsUk extends AppLocalizations {
   String get recentAppsEmpty => 'Немає ТВ-програм із відкритими завданнями';
 
   @override
-  String get recentAppsUnavailable =>
-      'Панель відкритих програм недоступна. Перевірте ADB і спеціальні можливості.';
+  String get recentAppsUnavailable => 'Панель відкритих програм недоступна.';
+
+  @override
+  String get recentAppsAdbRequired =>
+      'Підключіть локальний ADB, щоб відкрити панель програм.';
+
+  @override
+  String get recentAppsAccessibilityRequired =>
+      'Увімкніть службу CuteLauncher у спеціальних можливостях.';
 
   @override
   String get recentAppsHelp =>
-      'Показано лише ТВ-програми з відкритими завданнями. «Закрити все» зупиняє користувацькі програми з цього списку. Кнопка призначається в ремапері. Панелі CuteLauncher потрібні ADB і спеціальні можливості.';
+      'Показано лише ТВ-програми з відкритими завданнями. «Закрити все» зупиняє користувацькі програми з цього списку. CuteLauncher залишається відкритим. Кнопка призначається в ремапері. Панелі CuteLauncher потрібні ADB і спеціальні можливості.';
 
   @override
   String get recentAppsHomeHint =>
@@ -5175,9 +5183,6 @@ class AppLocalizationsUk extends AppLocalizations {
   String get appChannelsEmpty => 'Немає доступних стрічок застосунків.';
 
   @override
-  String get appChannelsRefresh => 'Оновити стрічки';
-
-  @override
   String get appChannelsLaunchFailed => 'Не вдалося відкрити цей вміст.';
 
   @override
@@ -5398,6 +5403,9 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get remoteMappingToggleNightMode => 'Перемкнути нічний режим';
+
+  @override
+  String get remoteMappingScreenshot => 'Зробити знімок екрана';
 
   @override
   String get remoteMappingBlackOverlay => 'Чорний екран';
@@ -5840,7 +5848,7 @@ class AppLocalizationsUk extends AppLocalizations {
       'Додайте погодне поле. Дозволено до 12 блоків, один перенос рядка та до 60 символів у кожному текстовому полі.';
 
   @override
-  String get fileManagerPreference => 'Файловий менеджер';
+  String get fileManagerPreference => 'Як вибирати файли';
 
   @override
   String get fileManagerAsk => 'Вибирати щоразу';
@@ -6319,8 +6327,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get launcherDefaultAndAdb => 'Лаунчер за замовчуванням і ADB';
 
   @override
-  String get defaultLauncherViaAdb =>
-      'Встановлення лаунчера за замовчуванням через ADB';
+  String get defaultLauncherViaAdb => 'Призначити через ADB';
 
   @override
   String get defaultLauncherViaAccessibility =>
@@ -6345,7 +6352,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get settingsGeneralGroup => 'Загальні';
 
   @override
-  String get settingsManagementGroup => 'Керування налаштуваннями';
+  String get settingsManagementGroup => 'Резервні копії та синхронізація';
 
   @override
   String get settingsMaintenanceGroup => 'Обслуговування';
@@ -6389,6 +6396,10 @@ class AppLocalizationsUk extends AppLocalizations {
   String get hiddenFeeds => 'Приховані стрічки';
 
   @override
+  String get appChannelsOrderHint =>
+      '◄ / ► — почати переміщення. ▲ / ▼ змінюють порядок і переносять стрічки між списками. OK або Назад — завершити.';
+
+  @override
   String get controlAndAccessGroup => 'Керування та доступ';
 
   @override
@@ -6405,4 +6416,129 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get deletionGroup => 'Видалення';
+
+  @override
+  String get memoryLimitsLocked =>
+      'Увімкнено економію пам’яті. Щоб змінити ліміти, вимкніть її.';
+
+  @override
+  String get memoryOccupied => 'Зайнята пам’ять';
+
+  @override
+  String get memorySettings => 'Ліміти й кеші';
+
+  @override
+  String get memoryDecodedApps => 'Декодовані зображення програм та інтерфейсу';
+
+  @override
+  String get memoryDecodedPosters => 'Декодовані постери';
+
+  @override
+  String get memoryPreload => 'Попереднє завантаження обкладинок (картки)';
+
+  @override
+  String get memoryBackgroundClear =>
+      'Очищати кеші RAM після виходу з лаунчера';
+
+  @override
+  String get memoryResetLimits => 'Відновити стандартні ліміти';
+
+  @override
+  String get memoryClearDisk => 'Очистити кеш обкладинок на диску';
+
+  @override
+  String get memoryFreed => 'Звільнено';
+
+  @override
+  String get memoryDiskFailed =>
+      'Не вдалося очистити кеш на диску. Спробуйте ще раз.';
+
+  @override
+  String get memoryLimitsFailed =>
+      'Не вдалося зберегти налаштування пам’яті. Спробуйте ще раз.';
+
+  @override
+  String get memoryClearRam => 'Очистити кеші RAM';
+
+  @override
+  String get posterCacheRam => 'Кеш обкладинок у пам’яті';
+
+  @override
+  String get posterCacheDisk => 'Кеш обкладинок на диску';
+
+  @override
+  String get memoryAppChannelPosters => 'Постери стрічок застосунків';
+
+  @override
+  String get posterCacheSaveFailed =>
+      'Не вдалося зберегти ліміт кешу обкладинок.';
+
+  @override
+  String get appChannelsSectionSettings => 'Налаштування розділу';
+
+  @override
+  String get settingsLoadFailed => 'Не вдалося завантажити налаштування.';
+
+  @override
+  String get diagnosticsReportsAndRecording => 'Звіти й запис';
+
+  @override
+  String get diagnosticsClearRecordingConfirm =>
+      'Зупинити запис і видалити дані, зібрані за цей сеанс?';
+
+  @override
+  String get appChannelVisible => 'Показувати стрічку';
+
+  @override
+  String get movingSectionsHint =>
+      '▲ / ▼ — перемістити · OK або Назад — завершити. Перенесіть розділ за межу списку, щоб приховати чи показати його.';
+
+  @override
+  String get cuteLauncherSettings => 'Налаштування CuteLauncher';
+
+  @override
+  String get hiddenSectionBadge => 'Прихований';
+
+  @override
+  String get buttonsAndFocus => 'Кнопки та фокус';
+
+  @override
+  String get systemTiles => 'Службові плитки';
+
+  @override
+  String get compatibilityGroup => 'Сумісність';
+
+  @override
+  String get storageDevicesGroup => 'Накопичувачі';
+
+  @override
+  String get overAppsGroup => 'Поверх застосунків';
+
+  @override
+  String get remotePanelAssignButton => 'Призначити кнопку відкриття';
+
+  @override
+  String get launcherChooseInAndroid => 'Вибрати лаунчер в Android';
+
+  @override
+  String get openAndroidSettings => 'Відкрити налаштування Android';
+
+  @override
+  String get applicationsTabAll => 'Усі';
+
+  @override
+  String get applicationsTabSystem => 'Системні';
+
+  @override
+  String get applicationsTabHidden => 'Приховані';
+
+  @override
+  String get fileSettingsGroup => 'Робота з файлами';
+
+  @override
+  String get builtInBrowserOptions => 'Параметри вбудованого провідника';
+
+  @override
+  String get remoteMappingsLimit =>
+      'Уже є 64 призначення кнопок. Щоб додати нове, видаліть одне з наявних.';
 }

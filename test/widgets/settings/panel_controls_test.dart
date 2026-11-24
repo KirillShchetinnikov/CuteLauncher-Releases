@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flauncher/providers/remote_panel_service.dart';
 import 'package:flauncher/panel_layout.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences_platform_interface/shared_preferences_platform_interface.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/providers/appearance_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
@@ -13,12 +16,16 @@ import 'package:flauncher/widgets/settings/panel_order_page.dart';
 import 'package:flauncher/widgets/settings/color_palette_dialog.dart';
 import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
 
+import '../../support/gated_preferences.dart';
+
 void main() {
   late AppearanceService appearance;
   late SettingsService settings;
   late RemotePanelService panel;
+  late GatedPreferencesStore store;
   setUp(() async {
     SharedPreferences.setMockInitialValues({});
+    SharedPreferencesStorePlatform.instance = store = GatedPreferencesStore();
     final prefs = await SharedPreferences.getInstance();
     appearance = AppearanceService(prefs);
     settings = SettingsService(prefs);
@@ -49,7 +56,9 @@ void main() {
   }
 
   for (final remote in [false, true]) {
-    testWidgets('objects cross sides, keep focus and persist: remote=$remote', (tester) async {
+    testWidgets('objects cross sides, keep focus and persist: remote=$remote', (
+      tester,
+    ) async {
       // Start with an empty left side, including disabled/unavailable objects.
       if (remote) {
         await panel.setPanelOrder([], PanelLayout.ids);
@@ -72,9 +81,11 @@ void main() {
       expect(layout.right, isNot(contains('settings')));
       expect(node.hasFocus, isTrue);
       expect(tester.widget<FocusableSettingsTile>(tile).selected, isTrue);
+      final write = store.writeGate = Completer<void>();
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-      await tester.pumpAndSettle();
+      await tester.pump();
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      write.complete();
       await tester.pumpAndSettle();
       final restored = remote
           ? RemotePanelService(panel.preferences).layout
@@ -82,7 +93,8 @@ void main() {
       expect(restored.left, isEmpty);
       expect(restored.right.take(2), ['systemSettings', 'settings']);
       expect(node.hasFocus, isTrue);
-      await Navigator.of(tester.element(find.byType(PanelOrderPage))).maybePop();
+      await Navigator.of(tester.element(find.byType(PanelOrderPage)))
+          .maybePop();
       await tester.pumpAndSettle();
       expect(tester.widget<FocusableSettingsTile>(tile).selected, isFalse);
       expect(tester.takeException(), isNull);

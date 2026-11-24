@@ -162,6 +162,8 @@ class SleepTimerConfiguration {
     } else if (!item.visible && direction == -1) {
       hidden.removeAt(at);
       visible.add(SleepTimerPreset(id, item.seconds));
+    } else {
+      return this;
     }
     return copyWith(presets: [...visible, ...hidden]);
   }

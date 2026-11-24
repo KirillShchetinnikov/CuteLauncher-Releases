@@ -23,6 +23,8 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../rounded_switch_list_tile.dart';
+import '../action_notice.dart';
+import 'access_settings_links.dart';
 import 'adb_action_confirmation.dart';
 import 'focusable_settings_tile.dart';
 import 'settings_page_layout.dart';
@@ -31,7 +33,6 @@ import 'settings_information.dart';
 import 'settings_route.dart';
 import '../panel_tooltip.dart';
 
-/// Both former entry routes display the same launcher and TV settings.
 class AdbPage extends StatefulWidget {
   static const routeName = 'adb_panel';
   static const connectionRouteName = 'adb_connection';
@@ -495,6 +496,35 @@ class _AdbPageState extends State<AdbPage> with WidgetsBindingObserver {
   Widget _accessibilityStatus(AppLocalizations l) =>
       _statusBox(l.accessibilityPermission, _accessibility);
 
+  Future<void> _openAndroidAccessibility() async {
+    final l = AppLocalizations.of(context)!;
+    final open = await showLauncherDialog<bool>(
+      context: context,
+      builder: (dialog) => LauncherAlertDialog(
+        title: Text(l.adbAccessibilitySettings),
+        content: Text(l.adbAccessibilityGuide),
+        actions: [
+          LauncherDialogButton(
+            isCancel: true,
+            onPressed: () => Navigator.pop(dialog, false),
+            child: Text(l.cancel),
+          ),
+          LauncherDialogButton(
+            autofocus: true,
+            primary: true,
+            onPressed: () => Navigator.pop(dialog, true),
+            child: Text(l.openAndroidSettings),
+          ),
+        ],
+      ),
+    );
+    if (open != true || !mounted) return;
+    try {
+      if (await FLauncherChannel().requestAccessibilityPermission()) return;
+    } catch (_) {}
+    if (mounted) showActionNotice(context, l.appError, error: true);
+  }
+
   Widget _action(
     String title,
     String action,
@@ -559,6 +589,8 @@ class _AdbPageState extends State<AdbPage> with WidgetsBindingObserver {
             ? l.adbDefaultBlock
             : widget.section == 'home'
             ? l.adbHomeBlock
+            : widget.section == 'accessibility'
+            ? l.accessibility
             : widget.section == 'connection'
             ? l.adbConnectionBlock
             : l.controlAndStartup,
@@ -574,14 +606,11 @@ class _AdbPageState extends State<AdbPage> with WidgetsBindingObserver {
                       _status != 'success' &&
                       _status != 'homeUnchanged')
                     Text(_stateText(l)),
-                  if (!_verified)
-                    FocusableSettingsTile(
-                      autofocus: true,
-                      leading: const Icon(Icons.link),
-                      title: Text(l.adbOpenConnectionSettings),
-                      busy: _busy,
-                      onPressed: () => _openSection('connection'),
-                    ),
+                  if (!_verified) AdbConnectionLink(
+                    autofocus: true,
+                    busy: _busy,
+                    onReturn: _load,
+                  ),
                   _action(
                     restoring ? l.adbRestoreDefault : l.adbAssignDefault,
                     adbAction,
@@ -604,8 +633,9 @@ class _AdbPageState extends State<AdbPage> with WidgetsBindingObserver {
                     onPressed: () =>
                         FLauncherChannel().openDefaultLauncherSettings(),
                   ),
+                  if (_verified) AdbConnectionLink(busy: _busy, onReturn: _load),
                 ]
-              : widget.section == 'home'
+              : widget.section == 'accessibility'
               ? [
                   _accessibilityStatus(l),
                   if (!_verified && _status != null) Text(_stateText(l)),
@@ -613,26 +643,7 @@ class _AdbPageState extends State<AdbPage> with WidgetsBindingObserver {
                     autofocus: true,
                     title: Text(l.adbAccessibilitySettings),
                     leading: const Icon(Icons.accessibility),
-                    onPressed: () async {
-                      await showLauncherDialog<void>(
-                        context: context,
-                        builder: (ctx) => LauncherAlertDialog(
-                          title: Text(l.adbAccessibilitySettings),
-                          content: Text(l.adbAccessibilityGuide),
-                          actions: [
-                            LauncherDialogButton(
-                              autofocus: true,
-                              onPressed: () => Navigator.pop(ctx),
-                              child: Text(l.ok),
-                            ),
-                          ],
-                        ),
-                      );
-                      if (mounted) {
-                        await FLauncherChannel()
-                            .requestAccessibilityPermission();
-                      }
-                    },
+                    onPressed: _openAndroidAccessibility,
                   ),
                   _action(
                     _accessibility == true
@@ -643,6 +654,12 @@ class _AdbPageState extends State<AdbPage> with WidgetsBindingObserver {
                         : 'accessibility',
                     false,
                   ),
+                  AdbConnectionLink(onReturn: _load, busy: _busy),
+                ]
+              : widget.section == 'home'
+              ? [
+                  _accessibilityStatus(l),
+                  AccessibilitySettingsLink(autofocus: true, onReturn: _load),
                   if (_overrideHome == null)
                     FocusableSettingsTile(
                       enabled: false,

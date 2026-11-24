@@ -199,7 +199,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tvCompatibilityRun => 'Run check';
 
   @override
-  String get tvCompatibilityResults => 'View results';
+  String get tvCompatibilityResults => '兼容性检查结果';
 
   @override
   String get compatibilityReportDate => 'Check date';
@@ -588,7 +588,7 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get textEmptyCategory => '此类别为空。';
+  String get textEmptyCategory => '此分区为空。按 OK 管理分区。';
 
   @override
   String get time => '时间';
@@ -656,10 +656,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get backupAndRestore => '备份与恢复';
 
   @override
-  String get exportBackup => '导出备份';
+  String get exportBackup => '导出到文件';
 
   @override
-  String get importBackup => '导入备份';
+  String get importBackup => '从文件导入';
 
   @override
   String exportSuccess(String path) {
@@ -670,7 +670,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get importSuccess => '备份导入成功';
 
   @override
-  String get importConfirm => '确定要导入备份吗？这将会覆盖你当前的设置和布局。';
+  String get importConfirm => '恢复此备份？备份中的布局将替换当前布局。备份中缺失或值无效的设置可能会恢复为默认值。';
 
   @override
   String get importError => '无法从备份恢复设置。检查文件并重试。';
@@ -1204,8 +1204,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get noInputsDetected => '未检测到输入';
 
   @override
-  String get reorderSectionsHint =>
-      '使用 ◄ / ► 选择，然后使用 ▲ / ▼ 重新排序。跨越列表边界可隐藏或显示某个部分。';
+  String get reorderSectionsHint => '▲ / ▼ 选择分区 · OK 打开 · ◄ / ► 开始移动';
 
   @override
   String get customName => '自定义名称';
@@ -2255,7 +2254,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get quickPanelObjectsTitle => '快捷设置项目';
 
   @override
-  String get topPanelObjects => '对象';
+  String get topPanelObjects => '项目和顺序';
 
   @override
   String get panelTextBackground => '文本和按钮背景';
@@ -2841,7 +2840,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get adbAccessibilityGuide =>
-      '在系统菜单中选择CuteLauncher并启用其服务。返回此处配置主页拦截。要禁用它，请在同一菜单中关闭 CuteLauncher 服务。';
+      '在 Android 设置中启用 CuteLauncher 服务，然后返回启动器。';
 
   @override
   String get adbEffectAccessibilityDisable =>
@@ -4166,7 +4165,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get cleanerLists => '停用列表';
 
   @override
-  String get cleanerRecovery => '备份与恢复';
+  String get cleanerRecovery => '应用状态备份';
 
   @override
   String get cleanerExports => '报告';
@@ -4266,7 +4265,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get sleepTimerSettings => '关机定时器设置';
 
   @override
-  String get sleepTimerPresets => '定时器';
+  String get sleepTimerPresets => '定时时长';
 
   @override
   String get sleepTimerDisplay => '定时器运行时显示';
@@ -4474,11 +4473,17 @@ class AppLocalizationsZh extends AppLocalizations {
   String get recentAppsEmpty => '没有具有打开任务的电视应用';
 
   @override
-  String get recentAppsUnavailable => '无法显示已打开的应用。请检查 ADB 和无障碍权限。';
+  String get recentAppsUnavailable => '无法显示已打开的应用。';
+
+  @override
+  String get recentAppsAdbRequired => '请连接本地 ADB 以打开应用面板。';
+
+  @override
+  String get recentAppsAccessibilityRequired => '请在无障碍设置中启用 CuteLauncher 服务。';
 
   @override
   String get recentAppsHelp =>
-      '仅显示具有打开任务的电视应用。“全部关闭”会停止此列表中的用户应用。请在按键映射器中分配按钮。CuteLauncher 面板需要 ADB 和无障碍权限。';
+      '仅显示具有打开任务的电视应用。“全部关闭”会停止此列表中的用户应用。CuteLauncher 会保持打开。请在按键映射器中分配按钮。CuteLauncher 面板需要 ADB 和无障碍权限。';
 
   @override
   String get recentAppsHomeHint => 'Home 仅支持长按分配。短按返回 CuteLauncher。分配在启动器外也有效。';
@@ -4928,9 +4933,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appChannelsEmpty => '没有可用的应用内容流。';
 
   @override
-  String get appChannelsRefresh => '刷新内容流';
-
-  @override
   String get appChannelsLaunchFailed => '无法打开此内容。';
 
   @override
@@ -5142,6 +5144,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get remoteMappingToggleNightMode => '切换夜间模式';
+
+  @override
+  String get remoteMappingScreenshot => '截取屏幕';
 
   @override
   String get remoteMappingBlackOverlay => '黑屏';
@@ -5561,7 +5566,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get weatherFormatInvalid => '请添加天气字段。最多允许12个块、1个换行，每个文本字段最多60个字符。';
 
   @override
-  String get fileManagerPreference => '文件管理器';
+  String get fileManagerPreference => '文件选择方式';
 
   @override
   String get fileManagerAsk => '每次询问';
@@ -6025,7 +6030,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get launcherDefaultAndAdb => '默认启动器与ADB';
 
   @override
-  String get defaultLauncherViaAdb => '通过ADB设置默认启动器';
+  String get defaultLauncherViaAdb => '通过 ADB 设置';
 
   @override
   String get defaultLauncherViaAccessibility => '通过无障碍功能设置默认启动器';
@@ -6049,7 +6054,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsGeneralGroup => '常规';
 
   @override
-  String get settingsManagementGroup => '设置管理';
+  String get settingsManagementGroup => '备份与同步';
 
   @override
   String get settingsMaintenanceGroup => '维护';
@@ -6091,6 +6096,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get hiddenFeeds => '隐藏的信息流';
 
   @override
+  String get appChannelsOrderHint =>
+      '按 ◄ / ► 开始移动。▲ / ▼ 可调整顺序或在列表之间移动。按 OK 或返回键结束。';
+
+  @override
   String get controlAndAccessGroup => '控制与访问';
 
   @override
@@ -6107,4 +6116,121 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get deletionGroup => '删除';
+
+  @override
+  String get memoryLimitsLocked => '内存节省模式已开启。关闭后可更改限额。';
+
+  @override
+  String get memoryOccupied => '已用内存';
+
+  @override
+  String get memorySettings => '限额和缓存';
+
+  @override
+  String get memoryDecodedApps => '已解码的应用和界面图像';
+
+  @override
+  String get memoryDecodedPosters => '已解码的海报';
+
+  @override
+  String get memoryPreload => '预加载海报（卡片数）';
+
+  @override
+  String get memoryBackgroundClear => '离开启动器时清除内存缓存';
+
+  @override
+  String get memoryResetLimits => '恢复默认内存限制';
+
+  @override
+  String get memoryClearDisk => '清除磁盘上的海报缓存';
+
+  @override
+  String get memoryFreed => '已释放空间';
+
+  @override
+  String get memoryDiskFailed => '无法清除磁盘缓存。请重试。';
+
+  @override
+  String get memoryLimitsFailed => '无法保存内存设置。请重试。';
+
+  @override
+  String get memoryClearRam => '清除内存缓存';
+
+  @override
+  String get posterCacheRam => '内存中的海报缓存';
+
+  @override
+  String get posterCacheDisk => '磁盘上的海报缓存';
+
+  @override
+  String get memoryAppChannelPosters => '应用推荐栏海报';
+
+  @override
+  String get posterCacheSaveFailed => '无法保存海报缓存上限。';
+
+  @override
+  String get appChannelsSectionSettings => '分区设置';
+
+  @override
+  String get settingsLoadFailed => '无法加载设置。';
+
+  @override
+  String get diagnosticsReportsAndRecording => '报告与记录';
+
+  @override
+  String get diagnosticsClearRecordingConfirm => '停止记录并删除本次会话收集的数据？';
+
+  @override
+  String get appChannelVisible => '显示内容流';
+
+  @override
+  String get movingSectionsHint => '▲ / ▼ 移动 · OK 或返回结束。将分区移过列表边界可隐藏或显示它。';
+
+  @override
+  String get cuteLauncherSettings => 'CuteLauncher 设置';
+
+  @override
+  String get hiddenSectionBadge => '已隐藏';
+
+  @override
+  String get buttonsAndFocus => '按键和焦点';
+
+  @override
+  String get systemTiles => '系统图块';
+
+  @override
+  String get compatibilityGroup => '兼容性';
+
+  @override
+  String get storageDevicesGroup => '存储设备';
+
+  @override
+  String get overAppsGroup => '显示在其他应用上层';
+
+  @override
+  String get remotePanelAssignButton => '指定打开面板的按键';
+
+  @override
+  String get launcherChooseInAndroid => '在 Android 中选择启动器';
+
+  @override
+  String get openAndroidSettings => '打开 Android 设置';
+
+  @override
+  String get applicationsTabAll => '全部';
+
+  @override
+  String get applicationsTabSystem => '系统';
+
+  @override
+  String get applicationsTabHidden => '已隐藏';
+
+  @override
+  String get fileSettingsGroup => '文件';
+
+  @override
+  String get builtInBrowserOptions => '内置文件管理器选项';
+
+  @override
+  String get remoteMappingsLimit => '已有 64 项按键映射。请先删除一项，再添加新的映射。';
 }

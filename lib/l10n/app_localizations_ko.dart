@@ -201,7 +201,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get tvCompatibilityRun => 'Run check';
 
   @override
-  String get tvCompatibilityResults => 'View results';
+  String get tvCompatibilityResults => '호환성 검사 결과';
 
   @override
   String get compatibilityReportDate => 'Check date';
@@ -591,7 +591,7 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get textEmptyCategory => '이 카테고리는 비어 있습니다.';
+  String get textEmptyCategory => '이 섹션은 비어 있습니다. OK를 눌러 섹션을 관리하세요.';
 
   @override
   String get time => '시간';
@@ -659,10 +659,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get backupAndRestore => '백업 및 복원';
 
   @override
-  String get exportBackup => '백업 내보내기';
+  String get exportBackup => '파일로 내보내기';
 
   @override
-  String get importBackup => '백업 가져오기';
+  String get importBackup => '파일에서 가져오기';
 
   @override
   String exportSuccess(String path) {
@@ -673,7 +673,8 @@ class AppLocalizationsKo extends AppLocalizations {
   String get importSuccess => '백업을 성공적으로 가져왔습니다';
 
   @override
-  String get importConfirm => '백업을 가져오시겠습니까? 현재 설정 및 레이아웃을 덮어씁니다.';
+  String get importConfirm =>
+      '이 백업을 복원할까요? 현재 레이아웃이 백업의 레이아웃으로 교체됩니다. 백업에 없거나 값이 잘못된 설정은 기본값으로 돌아갈 수 있습니다.';
 
   @override
   String get importError => '백업에서 설정을 복원할 수 없습니다. 파일을 확인하고 다시 시도해 보세요.';
@@ -1212,8 +1213,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get noInputsDetected => '감지된 입력이 없습니다.';
 
   @override
-  String get reorderSectionsHint =>
-      '¼ / ►로 선택한 후 ▲ / ▼로 순서를 변경하세요. 섹션을 숨기거나 표시하려면 목록 경계를 넘습니다.';
+  String get reorderSectionsHint => '▲ / ▼ — 섹션 선택 · OK — 열기 · ◄ / ► — 이동 시작';
 
   @override
   String get customName => '맞춤 이름';
@@ -2279,7 +2279,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get quickPanelObjectsTitle => '빠른 설정 항목';
 
   @override
-  String get topPanelObjects => '객체';
+  String get topPanelObjects => '항목 및 순서';
 
   @override
   String get panelTextBackground => '텍스트 및 버튼 배경';
@@ -2882,7 +2882,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get adbAccessibilityGuide =>
-      '시스템 메뉴에서 CuteLauncher를 선택하고 해당 서비스를 활성화합니다. 홈 차단을 구성하려면 여기로 돌아오세요. 이를 비활성화하려면 동일한 메뉴에서 CuteLauncher 서비스를 끄십시오.';
+      'Android 설정에서 CuteLauncher 서비스를 사용 설정한 후 런처로 돌아오세요.';
 
   @override
   String get adbEffectAccessibilityDisable =>
@@ -4241,7 +4241,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get cleanerLists => '사용 중지 목록';
 
   @override
-  String get cleanerRecovery => '백업 및 복원';
+  String get cleanerRecovery => '앱 상태 백업';
 
   @override
   String get cleanerExports => '보고서';
@@ -4341,7 +4341,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get sleepTimerSettings => '취침 타이머 설정';
 
   @override
-  String get sleepTimerPresets => '타이머';
+  String get sleepTimerPresets => '타이머 간격';
 
   @override
   String get sleepTimerDisplay => '타이머 실행 중 표시';
@@ -4555,12 +4555,18 @@ class AppLocalizationsKo extends AppLocalizations {
   String get recentAppsEmpty => '열린 작업이 있는 TV 앱이 없습니다';
 
   @override
-  String get recentAppsUnavailable =>
-      '열려 있는 앱을 표시할 수 없습니다. ADB 및 접근성 권한을 확인하세요.';
+  String get recentAppsUnavailable => '열려 있는 앱을 표시할 수 없습니다.';
+
+  @override
+  String get recentAppsAdbRequired => '열려 있는 앱 패널을 열려면 로컬 ADB에 연결하세요.';
+
+  @override
+  String get recentAppsAccessibilityRequired =>
+      '접근성 설정에서 CuteLauncher 서비스를 사용 설정하세요.';
 
   @override
   String get recentAppsHelp =>
-      '열린 작업이 있는 TV 앱만 표시합니다. 모두 닫기는 목록의 사용자 앱을 중지합니다. 리매퍼에서 버튼을 지정하세요. CuteLauncher 패널에는 ADB 및 접근성 권한이 필요합니다.';
+      '열린 작업이 있는 TV 앱만 표시합니다. 모두 닫기는 목록의 사용자 앱을 중지합니다. CuteLauncher는 열린 상태로 유지됩니다. 리매퍼에서 버튼을 지정하세요. CuteLauncher 패널에는 ADB 및 접근성 권한이 필요합니다.';
 
   @override
   String get recentAppsHomeHint =>
@@ -5016,9 +5022,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get appChannelsEmpty => '사용 가능한 앱 피드가 없습니다.';
 
   @override
-  String get appChannelsRefresh => '피드 새로고침';
-
-  @override
   String get appChannelsLaunchFailed => '이 콘텐츠를 열 수 없습니다.';
 
   @override
@@ -5231,6 +5234,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get remoteMappingToggleNightMode => '야간 모드 전환';
+
+  @override
+  String get remoteMappingScreenshot => '스크린샷 찍기';
 
   @override
   String get remoteMappingBlackOverlay => '검은 화면';
@@ -5659,7 +5665,7 @@ class AppLocalizationsKo extends AppLocalizations {
       '날씨 항목을 추가하세요. 최대 12개 블록, 줄바꿈 1개, 텍스트 필드당 60자를 사용할 수 있습니다.';
 
   @override
-  String get fileManagerPreference => '파일 관리자';
+  String get fileManagerPreference => '파일 선택 방법';
 
   @override
   String get fileManagerAsk => '매번 선택';
@@ -6127,7 +6133,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get launcherDefaultAndAdb => '기본 런처 및 ADB';
 
   @override
-  String get defaultLauncherViaAdb => 'ADB로 기본 런처 설정';
+  String get defaultLauncherViaAdb => 'ADB로 설정';
 
   @override
   String get defaultLauncherViaAccessibility => '접근성으로 기본 런처 설정';
@@ -6151,7 +6157,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settingsGeneralGroup => '일반';
 
   @override
-  String get settingsManagementGroup => '설정 관리';
+  String get settingsManagementGroup => '백업 및 동기화';
 
   @override
   String get settingsMaintenanceGroup => '유지 관리';
@@ -6193,6 +6199,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get hiddenFeeds => '숨겨진 피드';
 
   @override
+  String get appChannelsOrderHint =>
+      '◄ / ►로 이동을 시작합니다. ▲ / ▼로 순서나 목록을 변경합니다. OK 또는 뒤로 버튼으로 종료합니다.';
+
+  @override
   String get controlAndAccessGroup => '제어 및 접근';
 
   @override
@@ -6209,4 +6219,124 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get deletionGroup => '삭제';
+
+  @override
+  String get memoryLimitsLocked => '메모리 절약이 켜져 있습니다. 한도를 변경하려면 꺼 주세요.';
+
+  @override
+  String get memoryOccupied => '사용 중인 메모리';
+
+  @override
+  String get memorySettings => '한도 및 캐시';
+
+  @override
+  String get memoryDecodedApps => '디코딩된 앱 및 인터페이스 이미지';
+
+  @override
+  String get memoryDecodedPosters => '디코딩된 포스터';
+
+  @override
+  String get memoryPreload => '포스터 미리 불러오기(카드 수)';
+
+  @override
+  String get memoryBackgroundClear => '런처를 벗어날 때 RAM 캐시 지우기';
+
+  @override
+  String get memoryResetLimits => '기본 메모리 한도 복원';
+
+  @override
+  String get memoryClearDisk => '디스크의 포스터 캐시 지우기';
+
+  @override
+  String get memoryFreed => '확보한 공간';
+
+  @override
+  String get memoryDiskFailed => '디스크 캐시를 지울 수 없습니다. 다시 시도하세요.';
+
+  @override
+  String get memoryLimitsFailed => '메모리 설정을 저장할 수 없습니다. 다시 시도하세요.';
+
+  @override
+  String get memoryClearRam => 'RAM 캐시 지우기';
+
+  @override
+  String get posterCacheRam => '포스터 캐시 (메모리)';
+
+  @override
+  String get posterCacheDisk => '포스터 캐시 (디스크)';
+
+  @override
+  String get memoryAppChannelPosters => '앱 피드 포스터';
+
+  @override
+  String get posterCacheSaveFailed => '포스터 캐시 한도를 저장하지 못했습니다.';
+
+  @override
+  String get appChannelsSectionSettings => '섹션 설정';
+
+  @override
+  String get settingsLoadFailed => '설정을 불러오지 못했습니다.';
+
+  @override
+  String get diagnosticsReportsAndRecording => '보고서 및 기록';
+
+  @override
+  String get diagnosticsClearRecordingConfirm =>
+      '기록을 중지하고 이번 세션에서 수집한 데이터를 삭제할까요?';
+
+  @override
+  String get appChannelVisible => '피드 표시';
+
+  @override
+  String get movingSectionsHint =>
+      '▲ / ▼ — 이동 · OK 또는 뒤로 — 완료. 목록 경계를 넘기면 섹션을 숨기거나 표시할 수 있습니다.';
+
+  @override
+  String get cuteLauncherSettings => 'CuteLauncher 설정';
+
+  @override
+  String get hiddenSectionBadge => '숨김';
+
+  @override
+  String get buttonsAndFocus => '버튼 및 포커스';
+
+  @override
+  String get systemTiles => '시스템 타일';
+
+  @override
+  String get compatibilityGroup => '호환성';
+
+  @override
+  String get storageDevicesGroup => '저장 기기';
+
+  @override
+  String get overAppsGroup => '다른 앱 위에 표시';
+
+  @override
+  String get remotePanelAssignButton => '패널을 열 버튼 할당';
+
+  @override
+  String get launcherChooseInAndroid => 'Android에서 런처 선택';
+
+  @override
+  String get openAndroidSettings => 'Android 설정 열기';
+
+  @override
+  String get applicationsTabAll => '전체';
+
+  @override
+  String get applicationsTabSystem => '시스템';
+
+  @override
+  String get applicationsTabHidden => '숨김';
+
+  @override
+  String get fileSettingsGroup => '파일';
+
+  @override
+  String get builtInBrowserOptions => '기본 파일 탐색기 옵션';
+
+  @override
+  String get remoteMappingsLimit =>
+      '버튼 할당이 이미 64개입니다. 새로 추가하려면 기존 할당 하나를 삭제하세요.';
 }

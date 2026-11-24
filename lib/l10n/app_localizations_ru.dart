@@ -205,7 +205,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get tvCompatibilityRun => 'Запустить проверку';
 
   @override
-  String get tvCompatibilityResults => 'Просмотреть результаты';
+  String get tvCompatibilityResults => 'Результаты проверки совместимости';
 
   @override
   String get compatibilityReportDate => 'Дата проверки';
@@ -599,7 +599,7 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get textEmptyCategory => 'Этот раздел пуст.';
+  String get textEmptyCategory => 'Этот раздел пуст. OK — настроить разделы.';
 
   @override
   String get time => 'Время';
@@ -670,10 +670,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get backupAndRestore => 'Резервное копирование и восстановление';
 
   @override
-  String get exportBackup => 'Экспорт резервной копии';
+  String get exportBackup => 'Экспорт в файл';
 
   @override
-  String get importBackup => 'Импорт резервной копии';
+  String get importBackup => 'Импорт из файла';
 
   @override
   String exportSuccess(String path) {
@@ -685,7 +685,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get importConfirm =>
-      'Импортировать эту резервную копию? Сохранённые корректные настройки и макет будут применены. Отсутствующие или некорректные отдельные настройки сохранят текущие значения.';
+      'Восстановить эту копию? Макет из копии заменит текущий. Настройки, которых нет в копии или значения которых некорректны, могут вернуться к исходным значениям.';
 
   @override
   String get importError =>
@@ -1247,7 +1247,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get reorderSectionsHint =>
-      'Выберите раздел кнопками ◄ / ► и перемещайте кнопками ▲ / ▼. Перейдите через границу списка, чтобы скрыть или показать раздел.';
+      '▲ / ▼ — выбрать раздел · OK — открыть · ◄ / ► — начать перемещение';
 
   @override
   String get customName => 'Своё название';
@@ -2338,7 +2338,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get quickPanelObjectsTitle => 'Объекты быстрых настроек';
 
   @override
-  String get topPanelObjects => 'Объекты';
+  String get topPanelObjects => 'Состав и порядок';
 
   @override
   String get panelTextBackground => 'Фон текста и кнопок';
@@ -2772,7 +2772,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get adbOpenConnectionSettings => 'Перейти к проверке АДБ';
 
   @override
-  String get adbConnectionBlock => 'Подключение АДБ';
+  String get adbConnectionBlock => 'Подключение ADB';
 
   @override
   String get adbNotChecked => 'Подключение не проверено';
@@ -2970,7 +2970,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get adbAccessibilityGuide =>
-      'В системном меню выберите CuteLauncher и включите службу. Затем вернитесь сюда, чтобы настроить перехват кнопки Home. Для отключения выключите службу CuteLauncher в том же меню.';
+      'В настройках Android включите службу CuteLauncher и вернитесь в лаунчер.';
 
   @override
   String get adbEffectAccessibilityDisable =>
@@ -4364,7 +4364,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get cleanerLists => 'Списки отключения';
 
   @override
-  String get cleanerRecovery => 'Бэкап и восстановление';
+  String get cleanerRecovery => 'Копии состояния приложений';
 
   @override
   String get cleanerExports => 'Отчёты';
@@ -4471,7 +4471,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get sleepTimerSettings => 'Настройки таймера отключения';
 
   @override
-  String get sleepTimerPresets => 'Таймеры';
+  String get sleepTimerPresets => 'Интервалы таймера';
 
   @override
   String get sleepTimerDisplay => 'Показывать при активном таймере';
@@ -4690,12 +4690,19 @@ class AppLocalizationsRu extends AppLocalizations {
   String get recentAppsEmpty => 'Нет ТВ-приложений с открытыми задачами';
 
   @override
-  String get recentAppsUnavailable =>
-      'Панель открытых приложений недоступна. Проверьте ADB и доступ специальных возможностей.';
+  String get recentAppsUnavailable => 'Панель открытых приложений недоступна.';
+
+  @override
+  String get recentAppsAdbRequired =>
+      'Подключите локальный ADB, чтобы открыть панель приложений.';
+
+  @override
+  String get recentAppsAccessibilityRequired =>
+      'Включите службу CuteLauncher в специальных возможностях.';
 
   @override
   String get recentAppsHelp =>
-      'Показаны только ТВ-приложения с открытыми задачами. «Закрыть всё» останавливает пользовательские приложения из этого списка. Кнопка назначается в ремаппере. Для панели CuteLauncher нужны ADB и доступ специальных возможностей.';
+      'Показаны только ТВ-приложения с открытыми задачами. «Закрыть всё» останавливает пользовательские приложения из этого списка. CuteLauncher защищён от закрытия. Кнопка назначается в ремаппере. Для панели CuteLauncher нужны ADB и доступ специальных возможностей.';
 
   @override
   String get recentAppsHomeHint =>
@@ -5166,9 +5173,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get appChannelsEmpty => 'Нет доступных лент приложений.';
 
   @override
-  String get appChannelsRefresh => 'Обновить ленты';
-
-  @override
   String get appChannelsLaunchFailed => 'Не удалось открыть этот контент.';
 
   @override
@@ -5392,6 +5396,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get remoteMappingToggleNightMode => 'Переключить ночной режим';
+
+  @override
+  String get remoteMappingScreenshot => 'Сделать скриншот';
 
   @override
   String get remoteMappingBlackOverlay => 'Чёрный экран';
@@ -5834,7 +5841,7 @@ class AppLocalizationsRu extends AppLocalizations {
       'Добавьте погодное поле. Допустимы до 12 блоков, один перенос строки и до 60 символов в каждом текстовом поле.';
 
   @override
-  String get fileManagerPreference => 'Файловый менеджер';
+  String get fileManagerPreference => 'Как выбирать файлы';
 
   @override
   String get fileManagerAsk => 'Выбирать каждый раз';
@@ -6316,8 +6323,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get launcherDefaultAndAdb => 'Лаунчер по умолчанию и ADB';
 
   @override
-  String get defaultLauncherViaAdb =>
-      'Установка лаунчера по умолчанию через ADB';
+  String get defaultLauncherViaAdb => 'Назначить через ADB';
 
   @override
   String get defaultLauncherViaAccessibility =>
@@ -6342,7 +6348,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get settingsGeneralGroup => 'Общие';
 
   @override
-  String get settingsManagementGroup => 'Управление настройками';
+  String get settingsManagementGroup => 'Резервные копии и синхронизация';
 
   @override
   String get settingsMaintenanceGroup => 'Обслуживание';
@@ -6386,6 +6392,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get hiddenFeeds => 'Скрытые ленты';
 
   @override
+  String get appChannelsOrderHint =>
+      '◄ / ► — начать перемещение. ▲ / ▼ меняют порядок и переносят ленты между списками. OK или Back — закончить.';
+
+  @override
   String get controlAndAccessGroup => 'Управление и доступ';
 
   @override
@@ -6402,4 +6412,128 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get deletionGroup => 'Удаление';
+
+  @override
+  String get memoryLimitsLocked =>
+      'Включена экономия памяти. Чтобы изменить лимиты, выключите её.';
+
+  @override
+  String get memoryOccupied => 'Занятая память';
+
+  @override
+  String get memorySettings => 'Лимиты и кэши';
+
+  @override
+  String get memoryDecodedApps => 'Готовые изображения приложений и интерфейса';
+
+  @override
+  String get memoryDecodedPosters => 'Готовые постеры';
+
+  @override
+  String get memoryPreload => 'Предзагрузка обложек (карточки)';
+
+  @override
+  String get memoryBackgroundClear => 'Очищать RAM-кэши при уходе из лаунчера';
+
+  @override
+  String get memoryResetLimits => 'Восстановить стандартные лимиты';
+
+  @override
+  String get memoryClearDisk => 'Очистить кэш обложек на диске';
+
+  @override
+  String get memoryFreed => 'Освобождено';
+
+  @override
+  String get memoryDiskFailed =>
+      'Не удалось очистить кэш на диске. Попробуйте ещё раз.';
+
+  @override
+  String get memoryLimitsFailed =>
+      'Не удалось сохранить настройки памяти. Попробуйте ещё раз.';
+
+  @override
+  String get memoryClearRam => 'Очистить RAM-кэши';
+
+  @override
+  String get posterCacheRam => 'Кэш обложек в памяти';
+
+  @override
+  String get posterCacheDisk => 'Кэш обложек на диске';
+
+  @override
+  String get memoryAppChannelPosters => 'Постеры лент приложений';
+
+  @override
+  String get posterCacheSaveFailed =>
+      'Не удалось сохранить лимит кэша обложек.';
+
+  @override
+  String get appChannelsSectionSettings => 'Настройки раздела';
+
+  @override
+  String get settingsLoadFailed => 'Не удалось загрузить настройки.';
+
+  @override
+  String get diagnosticsReportsAndRecording => 'Отчёты и запись';
+
+  @override
+  String get diagnosticsClearRecordingConfirm =>
+      'Остановить запись и удалить данные, собранные за этот сеанс?';
+
+  @override
+  String get appChannelVisible => 'Показывать ленту';
+
+  @override
+  String get movingSectionsHint =>
+      '▲ / ▼ — переместить · OK или Назад — закончить. Через границу списка можно скрыть или показать раздел.';
+
+  @override
+  String get cuteLauncherSettings => 'Настройки CuteLauncher';
+
+  @override
+  String get hiddenSectionBadge => 'Скрыт';
+
+  @override
+  String get buttonsAndFocus => 'Кнопки и фокус';
+
+  @override
+  String get systemTiles => 'Служебные плитки';
+
+  @override
+  String get compatibilityGroup => 'Совместимость';
+
+  @override
+  String get storageDevicesGroup => 'Накопители';
+
+  @override
+  String get overAppsGroup => 'Поверх приложений';
+
+  @override
+  String get remotePanelAssignButton => 'Назначить кнопку открытия';
+
+  @override
+  String get launcherChooseInAndroid => 'Выбрать лаунчер в Android';
+
+  @override
+  String get openAndroidSettings => 'Открыть настройки Android';
+
+  @override
+  String get applicationsTabAll => 'Все';
+
+  @override
+  String get applicationsTabSystem => 'Системные';
+
+  @override
+  String get applicationsTabHidden => 'Скрытые';
+
+  @override
+  String get fileSettingsGroup => 'Работа с файлами';
+
+  @override
+  String get builtInBrowserOptions => 'Параметры встроенного проводника';
+
+  @override
+  String get remoteMappingsLimit =>
+      'Уже есть 64 назначения кнопок. Чтобы добавить новое, удалите одно из существующих.';
 }

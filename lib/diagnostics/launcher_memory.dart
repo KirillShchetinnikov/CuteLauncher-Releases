@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 
 import '../flauncher_channel.dart';
+import '../launcher_image_cache.dart';
 import '../providers/memory_resources.dart';
 
 /// A measurement of this process only. No device-wide or ADB data is used.
@@ -80,7 +81,9 @@ class LauncherMemory extends ChangeNotifier {
   late MemoryCacheStats encoded;
   late int decodedBytes;
   late int decodedLimit;
+  Map<String, Map<String, int>> decodedParts = const {};
   late Map<MemoryCacheKind, MemoryCacheStats> breakdown;
+  Map<MemoryCacheKind, MemoryCacheStats> diskBreakdown = const {};
   int get cacheBytes => encoded.bytes + decodedBytes;
   int? clearedCacheBefore;
   int? clearedCacheAfter;
@@ -90,7 +93,9 @@ class LauncherMemory extends ChangeNotifier {
   void readCaches() {
     encoded = resources.encodedImages;
     breakdown = resources.cacheBreakdown;
-    decodedBytes = PaintingBinding.instance.imageCache.currentSizeBytes;
+    final cache = PaintingBinding.instance.imageCache;
+    decodedParts = cache is LauncherImageCache ? cache.partitions : const {};
+    decodedBytes = cache.currentSizeBytes;
     decodedLimit = PaintingBinding.instance.imageCache.maximumSizeBytes;
   }
 
@@ -111,7 +116,9 @@ class LauncherMemory extends ChangeNotifier {
     } catch (_) {
       /* The previous valid snapshot remains visible. */
     }
+    final disks = await resources.diskCacheBreakdown();
     if (_disposed || !_active || generation != _generation) return null;
+    diskBreakdown = disks;
     failed = next == null;
     if (next != null) {
       deltaBytes = snapshot == null ? null : next.pssBytes - snapshot!.pssBytes;

@@ -5,7 +5,7 @@ import '../../bridge_result.dart';
 import '../../l10n/app_localizations.dart';
 import '../launcher_dialog.dart';
 import '../rounded_switch_list_tile.dart';
-import 'adb_page.dart';
+import 'access_settings_links.dart';
 import 'focusable_settings_tile.dart';
 import 'settings_help.dart';
 import 'settings_information.dart';
@@ -224,12 +224,7 @@ class _AppPermissionsPageState extends State<AppPermissionsPage>
         children: [
           if (service == null) ...[
             SettingsSection(title: l.settingsGroupCredentials, children: [
-            FocusableSettingsTile(
-              title: Text(l.adbConnectionBlock),
-              leading: const Icon(Icons.link),
-              busy: _busy,
-              onPressed: () => _open(const AdbPage(section: 'connection')),
-            ),
+            AdbConnectionLink(busy: _busy, onReturn: _load),
             FocusableSettingsTile(
               title: Text(l.remoteButtonsRefresh),
               leading: const Icon(Icons.refresh),
@@ -273,6 +268,7 @@ class _AppPermissionsPageState extends State<AppPermissionsPage>
               ),
             ]),
           ] else ...[
+            AdbConnectionLink(busy: _busy, onReturn: _load),
             SettingsReadOnlyValue(
               label: l.compatibilityAccessibility,
               value:

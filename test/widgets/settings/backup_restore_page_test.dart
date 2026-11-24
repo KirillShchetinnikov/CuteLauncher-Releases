@@ -93,6 +93,24 @@ void main() {
         isTrue,
       );
       expect(find.text(l.settingsManagementGroup), findsOneWidget);
+      Future<void> waitFor(bool Function() ready, String description) async {
+        final elapsed = Stopwatch()..start();
+        while (!ready()) {
+          if (elapsed.elapsed > const Duration(seconds: 15)) {
+            fail('Timed out waiting for $description: $calls');
+          }
+          await tester.runAsync(
+            () => Future<void>.delayed(const Duration(milliseconds: 10)),
+          );
+          await tester.pumpAndSettle();
+        }
+      }
+
+      final pickerAction = switch (scenario) {
+        'system cancel' => find.text(l.filePickerSystem),
+        'cancel' => find.byTooltip(l.close),
+        _ => find.widgetWithText(FocusableSettingsTile, l.save),
+      };
       await tester.runAsync(() async {
         final export = tester
             .widget<FocusableSettingsTile>(
@@ -101,20 +119,18 @@ void main() {
             .onPressed!;
         export();
         export(); // A stale callback/rapid OK must not open a second picker.
-        await Future<void>.delayed(const Duration(milliseconds: 100));
       });
+      await waitFor(() => pickerAction.evaluate().isNotEmpty, 'export picker');
+      await tester.tap(pickerAction);
       await tester.pumpAndSettle();
-      if (scenario == 'system cancel') {
-        await tester.tap(find.text(l.filePickerSystem));
-      } else if (scenario == 'cancel') {
-        await tester.tap(find.byTooltip(l.close));
-      } else {
-        await tester.tap(find.widgetWithText(FocusableSettingsTile, l.save));
-      }
-      await tester.runAsync(
-        () async => Future<void>.delayed(const Duration(milliseconds: 100)),
+      final exportTile = find.widgetWithText(
+        FocusableSettingsTile,
+        l.exportBackup,
       );
-      await tester.pumpAndSettle();
+      await waitFor(
+        () => !tester.widget<FocusableSettingsTile>(exportTile).busy,
+        'export completion',
+      );
       expect(calls, isNot(contains('saveBackupDownloads')));
       expect(
         calls.where((method) => method == 'filePickerAvailable').length,

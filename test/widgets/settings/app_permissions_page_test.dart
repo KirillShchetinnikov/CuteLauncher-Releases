@@ -123,7 +123,7 @@ void main() {
     (tester) async {
       await pump(tester);
       expect(methods, ['list']);
-      expect(find.text('Подключение АДБ'), findsOneWidget);
+      expect(find.text('Подключение ADB'), findsOneWidget);
       expect(find.text('Обновить'), findsOneWidget);
       await tapText(tester, 'Button Mapper');
       expect(methods, ['list', 'inspect']);

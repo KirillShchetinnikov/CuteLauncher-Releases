@@ -4,11 +4,12 @@ import 'appearance_page.dart';
 import 'package:flutter/material.dart';
 
 import '../../l10n/app_localizations.dart';
+import 'access_settings_links.dart';
 import 'settings_page_layout.dart';
 import 'focusable_settings_tile.dart';
 import 'settings_route.dart';
 import 'panel_order_page.dart';
-import 'remote_buttons_page.dart';
+import 'remote_mappings_page.dart';
 
 class RemotePanelPage extends StatelessWidget {
   static const routeName = 'remote_panel_settings';
@@ -48,11 +49,13 @@ class RemotePanelPage extends StatelessWidget {
           ),
           SettingsHelp(title: l.remotePanel, text: l.remotePanelDescription),
           FocusableSettingsTile(
-            title: Text(l.remoteButtonsTitle),
+            title: Text(l.remotePanelAssignButton),
             leading: const Icon(Icons.settings_remote_outlined),
-            onPressed: () =>
-                Navigator.of(context).pushNamed(RemoteButtonsPage.routeName),
+            onPressed: () => Navigator.of(context).push(
+              SettingsRoute(builder: (_) => const RemoteMappingsPage(panelShortcut: true)),
+            ),
           ),
+          const AccessibilitySettingsLink(),
         ],
       ),
     );

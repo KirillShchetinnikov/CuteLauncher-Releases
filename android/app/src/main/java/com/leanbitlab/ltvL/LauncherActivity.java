@@ -105,7 +105,18 @@ public class LauncherActivity extends FlutterActivity {
     private MethodChannel.Result pendingPermissionResult;
     private WeatherLocationBridge weatherLocationBridge;
     static final String OPEN_ADB_SETTINGS = "open_adb_settings";
-    private boolean pendingAdbSettings;
+    static final String OPEN_ACCESSIBILITY_SETTINGS = "open_accessibility_settings";
+    private String pendingAccessSettings;
+
+    private String takeAccessSettings(Intent intent) {
+        for (String destination : new String[] {OPEN_ADB_SETTINGS, OPEN_ACCESSIBILITY_SETTINGS}) {
+            if (intent.getBooleanExtra(destination, false)) {
+                intent.removeExtra(destination);
+                return destination;
+            }
+        }
+        return null;
+    }
     private EventChannel.EventSink homeSink;
     private static java.lang.ref.WeakReference<LauncherActivity> panelHost = new java.lang.ref.WeakReference<>(null);
     static void panelClosed() {
@@ -199,16 +210,16 @@ public class LauncherActivity extends FlutterActivity {
         super.onNewIntent(intent);
         setIntent(intent);
         if (autoLaunch != null) autoLaunch.onEntry(intent);
-        if (intent.getBooleanExtra(OPEN_ADB_SETTINGS, false)) {
+        String accessSettings = takeAccessSettings(intent);
+        if (accessSettings != null) {
             pendingHome = false;
-            intent.removeExtra(OPEN_ADB_SETTINGS);
-            if (homeSink != null) homeSink.success(OPEN_ADB_SETTINGS);
-            else pendingAdbSettings = true;
+            if (homeSink != null) homeSink.success(accessSettings);
+            else pendingAccessSettings = accessSettings;
             return;
         }
         if ((Intent.ACTION_MAIN.equals(intent.getAction()) && intent.hasCategory(Intent.CATEGORY_HOME))
                 || intent.getBooleanExtra("return_home", false)) {
-            pendingAdbSettings = false;
+            pendingAccessSettings = null;
             if (homeSink != null) homeSink.success(true);
             else pendingHome = true;
         }
@@ -314,11 +325,12 @@ public class LauncherActivity extends FlutterActivity {
             public void onListen(Object arguments, EventChannel.EventSink events) {
                 homeSink = events;
                 adbRootWarning();
-                if (pendingAdbSettings || getIntent().getBooleanExtra(OPEN_ADB_SETTINGS, false)) {
-                    pendingAdbSettings = false;
+                String accessSettings = takeAccessSettings(getIntent());
+                if (accessSettings == null) accessSettings = pendingAccessSettings;
+                if (accessSettings != null) {
+                    pendingAccessSettings = null;
                     pendingHome = false;
-                    getIntent().removeExtra(OPEN_ADB_SETTINGS);
-                    events.success(OPEN_ADB_SETTINGS);
+                    events.success(accessSettings);
                 } else if (pendingHome) { pendingHome = false; events.success(true); }
             }
             public void onCancel(Object arguments) { homeSink = null; }

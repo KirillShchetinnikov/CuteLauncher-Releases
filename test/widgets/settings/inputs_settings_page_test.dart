@@ -301,13 +301,20 @@ void main() {
     (tester) async {
       await tester.pumpWidget(app(const InputsSettingsPage()));
       await tester.pumpAndSettle();
+      expect(find.text('Отображение'), findsOneWidget);
+      expect(find.text('Размещение'), findsOneWidget);
+      expect(find.text('HDMI-CEC'), findsOneWidget);
+      expect(find.text('Источники ввода'), findsOneWidget);
       expect(find.text('XBOX'), findsOneWidget);
       await tester.tap(find.text('Брать имя устройства из CEC'));
       await tester.pumpAndSettle();
       expect(find.text('HDMI 2'), findsOneWidget);
-      await tester.tap(find.text('HDMI 2'));
+      Focus.of(tester.element(find.text('HDMI 2'))).requestFocus();
       await tester.pumpAndSettle();
-      Focus.of(tester.element(find.text('Своё название'))).requestFocus();
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pumpAndSettle();
+      expect(find.text('Размещение'), findsNothing);
+      expect(Focus.of(tester.element(find.text('Своё название'))).hasFocus, isTrue);
       await tester.pump();
       await tester.sendKeyEvent(LogicalKeyboardKey.enter);
       await tester.pumpAndSettle();

@@ -1,5 +1,5 @@
 import 'package:flauncher/widgets/settings/settings_slider_tile.dart';
-import 'package:flauncher/widgets/settings/app_channels_settings_page.dart';
+import 'package:flauncher/widgets/settings/app_channels_order_page.dart';
 import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
 import 'package:flauncher/widgets/settings/settings_read_only_value.dart';
 import 'package:drift/drift.dart' show Value;
@@ -7,7 +7,10 @@ import 'package:flauncher/database.dart';
 import 'package:flauncher/models/category.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/providers/apps_service.dart';
+import 'package:flauncher/providers/appearance_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
+import 'package:flauncher/section_icons.dart';
+import 'package:flauncher/widgets/section_heading_icon.dart';
 import 'package:flauncher/widgets/settings/launcher_sections_panel_page.dart';
 import 'package:flauncher/widgets/settings/launcher_section_panel_page.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +25,7 @@ import '../../mocks.mocks.dart';
 void main() {
   late FLauncherDatabase db;
   late AppsService apps;
+  late AppearanceService appearance;
   SettingsService? settings;
 
   Future<void> mount(
@@ -33,6 +37,7 @@ void main() {
   }) async {
     await tester.runAsync(() async {
       SharedPreferences.setMockInitialValues({});
+      appearance = AppearanceService(await SharedPreferences.getInstance());
       settings = withSettings
           ? SettingsService(await SharedPreferences.getInstance())
           : null;
@@ -90,15 +95,17 @@ void main() {
       MultiProvider(
         providers: [
           ChangeNotifierProvider<AppsService>.value(value: apps),
+          ChangeNotifierProvider<AppearanceService>.value(value: appearance),
           if (settings != null)
             ChangeNotifierProvider<SettingsService>.value(value: settings!),
         ],
         child: MaterialApp(
+          builder: (_, child) => Material(child: child),
           locale: const Locale('en'),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           routes: {
-            AppChannelsSettingsPage.routeName: (_) =>
+            AppChannelsOrderPage.routeName: (_) =>
                 const Scaffold(body: Text('Feed selection')),
             LauncherSectionPanelPage.routeName: (context) => Scaffold(
               body: LauncherSectionPanelPage(
@@ -125,6 +132,7 @@ void main() {
       await tester.pumpWidget(const SizedBox());
       await apps.persistSectionsOrder();
       apps.dispose();
+      appearance.dispose();
       settings?.dispose();
       await db.close();
     });
@@ -152,6 +160,38 @@ void main() {
       )
       .data!;
 
+  testWidgets('section rows follow saved icons, including hidden sections and move mode', (tester) async {
+    await mount(tester, count: 1, withSettings: true);
+    final category = apps.categories.singleWhere((item) => item.name == 'Section 0');
+    final watchNext = ContinueWatchingSection();
+    Finder rowFor(LauncherSection s) => find.byKey(ValueKey((s.runtimeType, s.id)));
+    SectionIcon iconFor(LauncherSection s) => tester.widget<SectionHeadingIcon>(
+      find.descendant(of: rowFor(s), matching: find.byType(SectionHeadingIcon)),
+    ).icon;
+
+    await settings!.setShowContinueWatching(false);
+    await tester.pumpAndSettle();
+    expect(iconFor(category), SectionIcon.folder);
+    expect(iconFor(watchNext), SectionIcon.continueWatching);
+
+    await appearance.setCategoryTitleIcon(category.id, SectionIcon.movies);
+    await appearance.setCategoryTitleIcon(watchNext.id, SectionIcon.music);
+    await tester.pumpAndSettle();
+    expect(iconFor(category), SectionIcon.movies);
+    expect(iconFor(watchNext), SectionIcon.music);
+
+    tester.widget<FocusableSettingsTile>(rowFor(category)).focusNode!.requestFocus();
+    await tester.pumpAndSettle();
+    await key(tester, LogicalKeyboardKey.arrowRight);
+    expect(find.descendant(of: rowFor(category), matching: find.text('Reorder')), findsOneWidget);
+    expect(iconFor(category), SectionIcon.movies);
+    await key(tester, LogicalKeyboardKey.enter);
+    await appearance.setCategoryTitleIcon(category.id, null);
+    await tester.pumpAndSettle();
+    expect(iconFor(category), SectionIcon.folder);
+    await finish(tester);
+  });
+
   testWidgets(
     'app feeds edit, move and cross visibility boundary only as one section',
     (tester) async {
@@ -175,7 +215,7 @@ void main() {
         (widget) =>
             widget is FocusableSettingsTile &&
             widget.title is Text &&
-            (widget.title as Text).data == 'App feeds',
+            (widget.title as Text).data == 'Feeds and order',
       );
       await tester.ensureVisible(sources);
       await tester.tap(sources);
@@ -183,7 +223,7 @@ void main() {
       expect(find.text('Feed selection'), findsOneWidget);
       Navigator.of(tester.element(find.text('Feed selection'))).pop();
       await tester.pumpAndSettle();
-      expect(focusedTitle(tester), 'App feeds');
+      expect(focusedTitle(tester), 'Feeds and order');
       Navigator.of(tester.element(find.byType(LauncherSectionPanelPage))).pop();
       await tester.pumpAndSettle();
       expect(focusedTitle(tester), 'App feeds');
@@ -227,8 +267,8 @@ void main() {
     final l = AppLocalizations.of(
       tester.element(find.byType(LauncherSectionPanelPage)),
     )!;
-    expect(find.byWidgetPredicate((w) => w is SettingsReadOnlyValue &&
-        w.label == l.name && w.value == l.appChannelsTitle), findsOneWidget);
+    expect(find.text(l.appChannelsTitle), findsOneWidget);
+    expect(find.byType(SettingsReadOnlyValue), findsNothing);
     expect(find.text(l.customName), findsNothing);
     expect(find.byType(TextField), findsNothing);
     final group = apps.categories.singleWhere((c) => c.isAppChannels);
@@ -248,10 +288,7 @@ void main() {
     await key(tester, LogicalKeyboardKey.arrowRight);
     await tester.sendKeyDownEvent(LogicalKeyboardKey.arrowDown);
     await tester.pumpAndSettle();
-    await tester.runAsync(() async {
-      await Future<void>.delayed(const Duration(milliseconds: 100));
-      await tester.sendKeyRepeatEvent(LogicalKeyboardKey.arrowDown);
-    });
+    await tester.sendKeyRepeatEvent(LogicalKeyboardKey.arrowDown);
     await tester.sendKeyUpEvent(LogicalKeyboardKey.arrowDown);
     await tester.pumpAndSettle();
     expect(
@@ -269,10 +306,10 @@ void main() {
     await mount(tester, count: 12);
     expect(focusedTitle(tester), 'Section 0');
     expect(
-      find.textContaining('Cross the list boundary').hitTestable(),
+      find.text(AppLocalizations.of(tester.element(find.byType(LauncherSectionsPanelPage)))!.reorderSectionsHint).hitTestable(),
       findsOneWidget,
     );
-    final hint = find.textContaining('Cross the list boundary');
+    final hint = find.text(AppLocalizations.of(tester.element(find.byType(LauncherSectionsPanelPage)))!.reorderSectionsHint);
     final hintRect = tester.getRect(hint);
     final first = find.text('Section 0');
     final firstY = tester.getTopLeft(first).dy;
@@ -419,6 +456,93 @@ void main() {
     await finish(tester);
   });
 
+  testWidgets(
+    'a hidden grid keeps its draft across type changes and reopens with the same controls',
+    (tester) async {
+      await mount(tester);
+      Future<void> tap(String title) async {
+        final target = find.text(title).last;
+        await tester.ensureVisible(target);
+        await tester.tap(target);
+        await tester.pumpAndSettle();
+      }
+
+      await tap('Add section');
+      final l = AppLocalizations.of(
+        tester.element(find.byType(LauncherSectionPanelPage)),
+      )!;
+      void expectFieldOrder(String name) {
+        final fields = [name, l.categoryVisible, l.sort, l.layout];
+        final positions = fields
+            .map((title) => tester.getTopLeft(find.text(title)).dy)
+            .toList();
+        expect(positions, orderedEquals([...positions]..sort()));
+      }
+
+      expectFieldOrder(l.name);
+      await tap(l.name);
+      await tap(l.music);
+      await tap(l.categoryVisible);
+      await tap(l.layout);
+      await tap(l.homeLayoutGrid);
+      await tap(l.sort);
+      await tap(l.alphabetical);
+      await tap(l.type);
+      await tap(l.spacer);
+      expect(find.text(l.height), findsOneWidget);
+      expect(find.text(l.layout), findsNothing);
+      await tap(l.type);
+      await tap(l.category);
+      expect(find.text(l.music), findsOneWidget);
+      expect(find.text(l.homeLayoutGrid), findsOneWidget);
+      expect(tester.widget<Switch>(find.byType(Switch)).value, isFalse);
+      expect(apps.categories, hasLength(3));
+
+      // Two OK events before a rebuild must create just one section.
+      await tester.runAsync(() async {
+        final save = tester
+            .widget<FocusableSettingsTile>(
+              find.widgetWithText(FocusableSettingsTile, l.save),
+            )
+            .onPressed!;
+        save();
+        save();
+        await Future<void>.delayed(const Duration(milliseconds: 70));
+      });
+      await tester.pumpAndSettle();
+      expect(focusedTitle(tester), l.music);
+      final stored = (await tester.runAsync(db.getCategories))!;
+      expect(stored, hasLength(4));
+      final category = stored.singleWhere((c) => c.name == 'Music');
+      expect(
+        (category.visible, category.sort, category.type),
+        (false, CategorySort.alphabetical, CategoryType.grid),
+      );
+      final layout = appearance.category(category.id);
+      expect((layout.layout, layout.columns, layout.maxRows), ('grid', 6, 3));
+      await tap(l.music);
+      expectFieldOrder(l.music);
+      expect(find.text(l.homeLayoutGrid), findsOneWidget);
+      await tap(l.layout);
+      await tap(l.homeLayoutRow);
+      expect(appearance.category(category.id).layout, 'row');
+      await appearance.setTapeRows(category.id, 3);
+      await tester.pumpAndSettle();
+      await tap(l.layout);
+      await tap(l.homeLayoutRow);
+      expect(appearance.category(category.id).layout, 'rows');
+      expect(appearance.category(category.id).rows, 3);
+      await tap(l.categoryAppearance);
+      expect(find.text(l.homeLayoutRow), findsOneWidget);
+      await tap(l.layout);
+      await tap(l.homeLayoutGrid);
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(find.text(l.homeLayoutGrid), findsOneWidget);
+      await finish(tester);
+    },
+  );
+
   testWidgets('reset at list bottom confirms, cancels and restores focus', (
     tester,
   ) async {
@@ -455,17 +579,43 @@ void main() {
     await finish(tester);
   });
 
-  testWidgets('section editor focuses its first field', (tester) async {
+  testWidgets('header rename supports presets, custom text and cancellation from the remote', (tester) async {
     await mount(tester);
     await tester.tap(find.text('Section 0'));
     await tester.pumpAndSettle();
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
-    expect(find.byType(AlertDialog), findsOneWidget);
-    expect(
-      tester.widget<AlertDialog>(find.byType(AlertDialog)).title,
-      isA<Text>().having((t) => t.data, 'title', 'Name'),
-    );
+    final l = AppLocalizations.of(tester.element(find.byType(LauncherSectionPanelPage)))!;
+    expect(find.text(l.renameCategory), findsOneWidget);
+    await tester.runAsync(() async {
+      await tester.tap(find.text(l.music));
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+    });
+    await tester.pumpAndSettle();
+    expect(find.text(l.music), findsOneWidget);
+    for (final save in [false, true]) {
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(l.customSectionName));
+      await tester.pumpAndSettle();
+      expect(tester.widget<EditableText>(find.byType(EditableText)).controller.text, l.music);
+      await tester.enterText(find.byType(TextFormField), 'My music collection');
+      await tester.runAsync(() async {
+        await tester.tap(find.text(save ? l.save : l.cancel));
+        await Future<void>.delayed(const Duration(milliseconds: 50));
+      });
+      await tester.pumpAndSettle();
+      final expected = save ? 'My music collection' : l.music;
+      expect(find.text(expected), findsOneWidget);
+      expect((await tester.runAsync(db.getCategories))!.first.name, save ? expected : 'Music');
+      expect(Focus.of(tester.element(find.byIcon(Icons.edit_outlined))).hasFocus, isTrue);
+    }
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.pumpAndSettle();
+    expect(Focus.of(tester.element(find.text(l.categoryVisible))).hasFocus, isTrue);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+    await tester.pumpAndSettle();
+    expect(Focus.of(tester.element(find.byIcon(Icons.edit_outlined))).hasFocus, isTrue);
     await finish(tester);
   });
 

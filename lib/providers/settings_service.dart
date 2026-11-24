@@ -117,7 +117,33 @@ enum CardFocusMode { remember, first, settings }
 
 enum FileManagerPreference { ask, builtIn, external }
 
+enum MemoryLimit {
+  feedRam('poster_cache_feeds_ram', 4, 1, [4, 8, 16, 32, 64, 128]),
+  feedDisk('poster_cache_feeds_disk', 32, 32, [32, 64, 128]),
+  watchRam('poster_cache_watch_next_ram', 4, 1, [4, 8, 16, 32, 64, 128]),
+  watchDisk('poster_cache_watch_next_disk', 32, 32, [32, 64, 128]),
+  icons('memory_limit_icons', 2, 1, [1, 2, 4, 8]),
+  banners('memory_limit_banners', 6, 2, [2, 4, 6, 8, 16]),
+  decodedApps('memory_limit_decoded_apps', 20, 8, [8, 16, 20, 32]),
+  decodedPosters('memory_limit_decoded_posters', 30, 8, [8, 16, 30, 48, 64]),
+  preload('memory_limit_preload', 32, 16, [16, 32]);
+
+  const MemoryLimit(this.key, this.normal, this.economy, this.choices);
+  final String key;
+  final int normal, economy;
+  final List<int> choices;
+}
+
+enum PosterCacheSection {
+  appChannels(MemoryLimit.feedRam, MemoryLimit.feedDisk),
+  watchNext(MemoryLimit.watchRam, MemoryLimit.watchDisk);
+
+  const PosterCacheSection(this.ram, this.disk);
+  final MemoryLimit ram, disk;
+}
+
 class SettingsService extends ChangeNotifier with ServiceLifecycle {
+  static const _clearOnBackgroundKey = 'memory_limit_clear_on_background';
   static const minAppChannelCardLimit = 20;
   static const maxAppChannelCardLimit = 50;
   static const _appChannelCardLimitKey = 'app_channel_card_limit';
@@ -414,6 +440,56 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
     notifyListeners();
   }
   bool get showContinueWatching => _showContinueWatching;
+
+  int _savedLimit(MemoryLimit limit) {
+    final saved = _sharedPreferences.get(limit.key);
+    return saved is int && limit.choices.contains(saved) ? saved : limit.normal;
+  }
+
+  int memoryLimit(MemoryLimit limit) =>
+      memorySaverEnabled ? limit.economy : _savedLimit(limit);
+
+  bool get clearCachesOnBackground =>
+      memorySaverEnabled || _sharedPreferences.get(_clearOnBackgroundKey) == true;
+
+  Future<void> setClearCachesOnBackground(bool value) async {
+    if (memorySaverEnabled) return;
+    if (!await _sharedPreferences.setBool(_clearOnBackgroundKey, value)) {
+      throw StateError('Unable to save background cache setting');
+    }
+    if (!isDisposed) notifyListeners();
+  }
+
+  Future<void> resetMemoryLimits() async {
+    if (memorySaverEnabled) return;
+    try {
+      for (final key in [...MemoryLimit.values.map((limit) => limit.key), _clearOnBackgroundKey]) {
+        if (_sharedPreferences.containsKey(key) && !await _sharedPreferences.remove(key)) {
+          throw StateError('Unable to reset memory limit');
+        }
+      }
+    } finally {
+      if (!isDisposed) notifyListeners();
+    }
+  }
+
+  int posterCacheLimit(PosterCacheSection section, {required bool disk}) =>
+      _savedLimit(disk ? section.disk : section.ram);
+
+  Future<void> setPosterCacheLimit(
+    PosterCacheSection section,
+    int value, {
+    required bool disk,
+  }) => setMemoryLimit(disk ? section.disk : section.ram, value);
+
+  Future<void> setMemoryLimit(MemoryLimit limit, int value) async {
+    if (memorySaverEnabled) return;
+    if (!limit.choices.contains(value)) throw ArgumentError.value(value, limit.key);
+    if (value == _savedLimit(limit)) return;
+    if (!await _sharedPreferences.setInt(limit.key, value)) throw StateError('Unable to save memory limit');
+    if (!isDisposed) notifyListeners();
+  }
+
   int get appChannelCardLimit {
     final saved = _sharedPreferences.get(_appChannelCardLimitKey);
     return saved is int
@@ -473,15 +549,52 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
     notifyListeners();
   }
 
-  // Channel IDs belong to this TV's provider and are deliberately not synced.
-  List<String> get selectedAppChannels => List.unmodifiable(
-      _sharedPreferences.getStringList('selected_app_channels') ?? <String>[]);
-  Future<void> setSelectedAppChannels(List<String> keys) async {
-    if (keys.length > 16 || keys.any((k) => !RegExp(r'^[a-zA-Z0-9_.]+:\d+$').hasMatch(k))) {
+  // An empty entry separates the two groups in a single local preference.
+  ({List<String> visible, List<String> hidden}) get appChannelsOrder {
+    final saved = _sharedPreferences.getStringList(appChannelsOrderKey);
+    if (saved == null) {
+      return (
+        visible:
+            _sharedPreferences.getStringList('selected_app_channels') ?? [],
+        hidden: <String>[],
+      );
+    }
+    return (
+      visible: saved.takeWhile((key) => key.isNotEmpty).toList(),
+      hidden: saved.skipWhile((key) => key.isNotEmpty).skip(1).toList(),
+    );
+  }
+
+  List<String> get selectedAppChannels =>
+      List.unmodifiable(appChannelsOrder.visible);
+
+  Future<void> setSelectedAppChannels(List<String> keys) =>
+      setAppChannelsOrder(keys, appChannelsOrder.hidden);
+
+  Future<void> setAppChannelsOrder(
+    List<String> visible,
+    List<String> hidden,
+  ) async {
+    final channelKey = RegExp(r'^[a-zA-Z0-9_.]+:\d+$');
+    if (visible.length > 16 ||
+        [...visible, ...hidden].any((key) => !channelKey.hasMatch(key))) {
       throw const FormatException('Invalid app channel selection');
     }
-    if (!await _sharedPreferences.setStringList('selected_app_channels', keys.toSet().toList())) {
-      throw StateError('Unable to save app channels');
+    final selected = visible.toSet();
+    final order = [...selected, '', ...hidden.toSet().difference(selected)];
+    final previous = _sharedPreferences.getStringList(appChannelsOrderKey);
+    try {
+      if (!await _sharedPreferences.setStringList(appChannelsOrderKey, order)) {
+        throw StateError('Unable to save app channels');
+      }
+    } catch (_) {
+      // SharedPreferences updates its cache before the platform confirms the write.
+      if (previous == null) {
+        await _sharedPreferences.remove(appChannelsOrderKey);
+      } else {
+        await _sharedPreferences.setStringList(appChannelsOrderKey, previous);
+      }
+      rethrow;
     }
     notifyListeners();
   }
@@ -1007,7 +1120,7 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
   }
 
   Future<void> setMemorySaverEnabled(bool value) async {
-    await _sharedPreferences.setBool(_memorySaverEnabledKey, value);
+    if (!await _sharedPreferences.setBool(_memorySaverEnabledKey, value)) throw StateError('Unable to save memory profile');
     if (isDisposed) return;
     _memorySaverEnabled = value;
     notifyListeners();

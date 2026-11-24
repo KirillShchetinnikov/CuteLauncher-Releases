@@ -45,9 +45,6 @@ void main() {
           locale: const Locale('ru'),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          routes: {
-            AdbPage.routeName: (_) => const Scaffold(body: Text('ADB setup')),
-          },
           home: Scaffold(
             body: AdbPermissionTile(
               title: 'Grant',
@@ -89,7 +86,7 @@ void main() {
         expect(refreshes, 1);
       } else {
         expect(grants, isEmpty);
-        expect(find.text('ADB setup'), findsOneWidget);
+        expect(find.byWidgetPredicate((widget) => widget is AdbPage && widget.section == 'connection'), findsOneWidget);
         granted = true;
         tester.state<NavigatorState>(find.byType(Navigator)).pop();
         await tester.pumpAndSettle();
@@ -133,9 +130,6 @@ void main() {
           locale: const Locale('ru'),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          routes: {
-            AdbPage.routeName: (_) => const Scaffold(body: Text('ADB setup')),
-          },
           home: const Scaffold(
             body: AdbPermissionTile(
               title: 'Grant',
@@ -155,7 +149,7 @@ void main() {
       await tester.tap(find.text('Grant'));
       await tester.pumpAndSettle();
       expect(grants, 1);
-      expect(find.text('ADB setup'), findsOneWidget);
+      expect(find.byWidgetPredicate((widget) => widget is AdbPage && widget.section == 'connection'), findsOneWidget);
     },
   );
 }

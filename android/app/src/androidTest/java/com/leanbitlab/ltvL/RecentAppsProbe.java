@@ -32,12 +32,20 @@ public final class RecentAppsProbe extends Instrumentation {
                 public String execute(String command) throws Exception { return shell(command); }
                 public void close() {}
             };
+            String launcher = context.getPackageName();
+            shell("am start -W -n " + launcher + "/com.leanbitlab.ltvL.MainActivity");
             launch();
             var control = new RecentAppsControl(context, commands);
             var listed = control.run("list", null);
             check(contains(apps(listed), PKG), "Live TV fixture missing: " + shell("am stack list"));
-            check(!contains(apps(listed), context.getPackageName()), "Launcher exposed");
-            shell("am start -n " + context.getPackageName() + "/com.leanbitlab.ltvL.MainActivity");
+            check(contains(apps(listed), launcher), "Live launcher task missing");
+            try {
+                control.run("close", launcher);
+                throw new AssertionError("Closing the launcher was allowed");
+            } catch (IllegalArgumentException protectedTarget) {
+                check(contains(apps(control.run("list", null)), launcher), "Launcher task was removed");
+            }
+            shell("am start -n " + launcher + "/com.leanbitlab.ltvL.MainActivity");
             check("success".equals(control.run("switch", PKG).get("status")), "Switch failed");
             boolean focused = false;
             for (int i = 0; i < 20; i++) {
@@ -51,9 +59,12 @@ public final class RecentAppsProbe extends Instrumentation {
             // Never stop unrelated emulator apps even if a previous test left tasks behind.
             for (Object app : apps(control.run("list",null))) {
                 Map<?,?> row = (Map<?,?>)app;
-                check(!Boolean.TRUE.equals(row.get("userApp")) || PKG.equals(row.get("packageName")), "Unrelated user TV task; close-all test refused");
+                check(!Boolean.TRUE.equals(row.get("userApp")) || Boolean.FALSE.equals(row.get("canClose"))
+                    || PKG.equals(row.get("packageName")), "Unrelated user TV task; close-all test refused");
             }
-            check(!contains(apps(control.run("closeAll",null)), PKG), "Close all did not stop fixture");
+            var afterCloseAll = apps(control.run("closeAll", null));
+            check(!contains(afterCloseAll, PKG), "Close all did not stop fixture");
+            check(contains(afterCloseAll, launcher), "Close all removed the launcher");
             check("stale".equals(control.run("switch",PKG).get("status")), "Stale task relaunched");
             report.putString("stream", "\nPASS RecentAppsProbe: live TV filtering, launcher protection, focus, remove, close-all, stale target\n");
             finish(Activity.RESULT_OK, report);

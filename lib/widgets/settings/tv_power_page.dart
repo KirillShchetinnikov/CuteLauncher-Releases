@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../tv_power_action.dart';
+import 'access_settings_links.dart';
 import 'focusable_settings_tile.dart';
 import 'settings_help.dart';
 import 'settings_page_layout.dart';
@@ -59,6 +60,8 @@ class _TvPowerPageState extends State<TvPowerPage> {
           ),
           SizedBox(child: _busy ? const LinearProgressIndicator() : null),
           SettingsHelp(title: l.tvPowerTitle, text: l.tvPowerHelp),
+          AccessibilitySettingsLink(busy: _busy),
+          AdbConnectionLink(busy: _busy),
         ],
       ),
     );

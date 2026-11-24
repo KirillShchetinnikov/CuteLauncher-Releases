@@ -62,7 +62,7 @@ class _BrightnessPageState extends State<BrightnessPage>
     final service = context.watch<BrightnessService>();
     return SettingsPageLayout(
       title: Text(
-        l.brightnessScheduler,
+        l.scheduledBrightness,
         style: Theme.of(context).textTheme.titleLarge,
       ),
       child: ListView(

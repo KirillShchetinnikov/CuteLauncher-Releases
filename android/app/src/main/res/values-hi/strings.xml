@@ -40,4 +40,6 @@
     <string name="recovery_restore">पिछली होम स्क्रीन बहाल करें</string>
     <string name="recovery_restore_confirm">मौजूदा स्थानीय ADB कनेक्शन से पिछली होम स्क्रीन बहाल करें?</string>
     <string name="remap_error_adb_command">ADB कमांड नहीं चली। स्थानीय ADB और कमांड जाँचें।</string>
+    <string name="recent_apps_adb_required">खुले ऐप का पैनल खोलने के लिए स्थानीय ADB कनेक्ट करें।</string>
+    <string name="recent_apps_accessibility_required">सुलभता सेटिंग में CuteLauncher सेवा चालू करें।</string>
 </resources>

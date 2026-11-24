@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../../providers/appearance_service.dart';
 import '../../providers/apps_service.dart';
 import '../../models/category.dart';
+import '../../section_names.dart';
 import '../../home_layout.dart';
 import '../../l10n/app_localizations.dart';
 import 'settings_page_layout.dart';
@@ -74,7 +75,9 @@ class CategoryAppearancePage extends StatelessWidget {
               .push(SettingsRoute<void>(builder: (_) => child)),
     );
     return SettingsPageLayout(
-      title: Text(l.categoryAppearance),
+      title: Text(category == null
+          ? l.categoryAppearance
+          : '${l.categoryAppearance} · ${localizedSectionName(category.name, l)}'),
       child: ListView(
         children: [
           ...SectionStylePage.controls(
@@ -82,18 +85,10 @@ class CategoryAppearancePage extends StatelessWidget {
             categoryId: categoryId,
             includeReset: false,
             layoutControls: [
-              SettingsChoiceTile<String>(
+              SectionLayoutTile(
                 autofocus: true,
-                title: l.layout,
-                value: mode == 'grid' ? 'grid' : 'row',
-                options: const ['row', 'grid'],
-                label: (v) =>
-                    {'row': l.homeLayoutRow, 'grid': l.homeLayoutGrid}[v]!,
-                onChanged: (v) => service.setCategory(
-                  categoryId,
-                  'layout',
-                  v == 'row' && mode == 'rows' ? 'rows' : v,
-                ),
+                mode: mode,
+                onChanged: (v) => service.setCategory(categoryId, 'layout', v),
               ),
               SettingsValueStepper(
                 useSlider: false,
@@ -149,6 +144,36 @@ class CategoryAppearancePage extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class SectionLayoutTile extends StatelessWidget {
+  const SectionLayoutTile({
+    super.key,
+    required this.mode,
+    required this.onChanged,
+    this.autofocus = false,
+  });
+
+  final String mode;
+  final ValueChanged<String> onChanged;
+  final bool autofocus;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+    final layout = mode == 'grid' ? 'grid' : 'row';
+    return SettingsChoiceTile<String>(
+      autofocus: autofocus,
+      title: l.layout,
+      value: layout,
+      options: const ['row', 'grid'],
+      label: (value) => value == 'grid' ? l.homeLayoutGrid : l.homeLayoutRow,
+      onChanged: (value) {
+        // Keeping the current layout also keeps legacy grids and multi-row tapes.
+        if (value != layout) onChanged(value);
+      },
     );
   }
 }

@@ -25,6 +25,8 @@ import 'providers/system_status_service.dart';
 import 'providers/network_speed_service.dart';
 import 'providers/foreground_work.dart';
 import 'providers/app_catalog_cache.dart';
+import 'poster_disk_cache.dart';
+import 'launcher_image_cache.dart';
 import 'widgets/deferred_launcher_services.dart';
 import 'providers/screensaver_service.dart';
 import 'diagnostics/economy_diagnostics.dart';
@@ -38,6 +40,7 @@ import 'providers/backup_automation_service.dart';
 import 'widgets/settings/backup_restore_actions.dart';
 import 'providers/update_service.dart';
 import 'dart:async';
+import 'dart:io' show Directory;
 
 import 'package:flauncher/database.dart';
 import 'package:flauncher/flauncher_channel.dart';
@@ -81,7 +84,7 @@ Future<void> _reportFatal() async {
   try { await _crashGuard.invokeMethod<bool>('fatal'); } catch (_) { /* Native journal is best effort. */ }
 }
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  LauncherWidgetsBinding.ensureInitialized();
   PlatformDispatcher.instance.onError = (error, stack) {
     DiagnosticsStore.instance.recordException('unhandled', error, stack);
     debugPrint('Unhandled launcher error: $error');
@@ -123,9 +126,7 @@ Future<void> _runLauncher({bool remotePanel = false, bool recentApps = false}) a
   });
   initializeDateFormatting();
 
-  // Configure LRU Image Cache bounds to preserve RAM on Android TV devices
-  PaintingBinding.instance.imageCache.maximumSizeBytes = (remotePanel ? 8 : 50) * 1024 * 1024; // 50MB max RAM
-  PaintingBinding.instance.imageCache.maximumSize = remotePanel ? 20 : 100; // max 100 images
+  configureLauncherImageCache(secondaryEngine: remotePanel);
 
   // Global Error Boundary & Crash Protection
   FlutterError.onError = (FlutterErrorDetails details) {
@@ -204,6 +205,12 @@ Future<void> _runLauncher({bool remotePanel = false, bool recentApps = false}) a
   final fLauncherChannel = FLauncherChannel();
   final ownPackageName = await fLauncherChannel.getPackageName();
   final work = remotePanel ? null : ForegroundWork();
+  PosterDiskCache posterDisk(String name) => PosterDiskCache(() async =>
+      Directory('${(await getApplicationCacheDirectory()).path}/$name'));
+  final disks = <MemoryCacheKind, PosterDiskCache>{
+    if (!remotePanel) MemoryCacheKind.watchNextPosters: posterDisk('watch-next-posters-v1'),
+    if (!remotePanel) MemoryCacheKind.appChannelPosters: posterDisk('app-feed-posters-v1'),
+  };
 
   if (remotePanel) {
     bool closing = false;
@@ -235,7 +242,7 @@ Future<void> _runLauncher({bool remotePanel = false, bool recentApps = false}) a
             lazy: false),
         ChangeNotifierProvider(create: (context) => AutomaticBackupService(
             context.read<BackupService>(), context.read<SettingsService>(), sharedPreferences)),
-        ChangeNotifierProvider(create: (context) => MemoryResources(settings: context.read<SettingsService>(), secondaryEngine: remotePanel), lazy: remotePanel),
+        ChangeNotifierProvider(create: (context) => MemoryResources(settings: context.read<SettingsService>(), secondaryEngine: remotePanel, posterDisks: disks), lazy: remotePanel),
         ChangeNotifierProvider(create: (context) => AppsService(fLauncherChannel, launcherDatabase(),
           settingsService: context.read<SettingsService>(), ownPackageName: ownPackageName, memoryResources: context.read<MemoryResources>(),
           catalogCache: remotePanel ? null : AppCatalogCache(), work: work, fastInitialCatalog: !remotePanel)),
@@ -265,10 +272,12 @@ Future<void> _runLauncher({bool remotePanel = false, bool recentApps = false}) a
         ChangeNotifierProvider(create: (context) => TvInputsService(fLauncherChannel, preferences: sharedPreferences, settings: context.read<SettingsService>(), work: work)),
         ChangeNotifierProvider(create: (_) => NotificationsService(fLauncherChannel)),
         ChangeNotifierProvider(create: (context) => NowPlayingService(context.read<SettingsService>())),
-        ChangeNotifierProvider(create: (context) => WatchNextService(fLauncherChannel, onAppLaunched: context.read<AppsService>().recordAppLaunch, memoryResources: context.read<MemoryResources>(), work: work, settings: context.read<SettingsService>())),
+        ChangeNotifierProvider(create: (context) => WatchNextService(fLauncherChannel, onAppLaunched: context.read<AppsService>().recordAppLaunch, memoryResources: context.read<MemoryResources>(), work: work, settings: context.read<SettingsService>(),
+          disk: disks[MemoryCacheKind.watchNextPosters])),
         ChangeNotifierProvider(create: (context) => AppChannelsService(fLauncherChannel, context.read<SettingsService>(),
           apps: context.read<AppsService>(),
-          onAppLaunched: context.read<AppsService>().recordAppLaunch, memory: context.read<MemoryResources>(), work: work)),
+          onAppLaunched: context.read<AppsService>().recordAppLaunch, memory: context.read<MemoryResources>(), work: work,
+          disk: disks[MemoryCacheKind.appChannelPosters])),
         ChangeNotifierProvider(create: (_) => WeatherService(fLauncherChannel, preferences: sharedPreferences, work: work)),
         ChangeNotifierProvider(create: (_) => OnlineWallpaperService(sharedPreferences, work: work)),
         ChangeNotifierProvider(create: (context) => SlideshowService(sharedPreferences, context.read<SettingsService>())),

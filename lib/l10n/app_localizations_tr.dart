@@ -203,7 +203,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get tvCompatibilityRun => 'Run check';
 
   @override
-  String get tvCompatibilityResults => 'View results';
+  String get tvCompatibilityResults => 'Uyumluluk denetimi sonuçları';
 
   @override
   String get compatibilityReportDate => 'Check date';
@@ -600,7 +600,8 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get textEmptyCategory => 'Bu kategori boş.';
+  String get textEmptyCategory =>
+      'Bu bölüm boş. Bölümleri yönetmek için OK tuşuna basın.';
 
   @override
   String get time => 'Saat';
@@ -670,10 +671,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get backupAndRestore => 'Yedekleme ve Geri Yükleme';
 
   @override
-  String get exportBackup => 'Yedeği Dışa Aktar';
+  String get exportBackup => 'Dosyaya aktar';
 
   @override
-  String get importBackup => 'Yedeği İçe Aktar';
+  String get importBackup => 'Dosyadan içe aktar';
 
   @override
   String exportSuccess(String path) {
@@ -685,7 +686,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get importConfirm =>
-      'Yedeği içe aktarmak istediğinizden emin misiniz? Bu işlem mevcut ayarlarınızın ve düzeninizin üzerine yazacaktır.';
+      'Bu yedek geri yüklensin mi? Yedekteki düzen mevcut düzenin yerini alacak. Yedekte bulunmayan veya değeri geçersiz olan ayarlar varsayılan değerlerine dönebilir.';
 
   @override
   String get importError =>
@@ -1243,7 +1244,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get reorderSectionsHint =>
-      '◄ / ► ile seçin ve yeniden sıralamak için ▲ / ▼ tuşlarını kullanın. Bir bölümü gizlemek veya göstermek için liste sınırını geçin.';
+      '▲ / ▼ — bölüm seç · OK — aç · ◄ / ► — taşımaya başla';
 
   @override
   String get customName => 'Özel Ad';
@@ -2333,7 +2334,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get quickPanelObjectsTitle => 'Hızlı ayar öğeleri';
 
   @override
-  String get topPanelObjects => 'Nesneler';
+  String get topPanelObjects => 'Öğeler ve sıralama';
 
   @override
   String get panelTextBackground => 'Metin ve düğme arka planı';
@@ -2969,7 +2970,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get adbAccessibilityGuide =>
-      'Sistem menüsünde CuteLauncher\'yi seçin ve hizmetini etkinleştirin. Evde dinlemeyi yapılandırmak için buraya dönün. Devre dışı bırakmak için aynı menüden CuteLauncher hizmetini kapatın.';
+      'Android ayarlarında CuteLauncher hizmetini etkinleştirip başlatıcıya dönün.';
 
   @override
   String get adbEffectAccessibilityDisable =>
@@ -4364,7 +4365,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get cleanerLists => 'Devre dışı bırakma listeleri';
 
   @override
-  String get cleanerRecovery => 'Yedekleme ve geri yükleme';
+  String get cleanerRecovery => 'Uygulama durumu yedekleri';
 
   @override
   String get cleanerExports => 'Raporlar';
@@ -4472,7 +4473,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get sleepTimerSettings => 'Uyku zamanlayıcısı ayarları';
 
   @override
-  String get sleepTimerPresets => 'Zamanlayıcılar';
+  String get sleepTimerPresets => 'Zamanlayıcı aralıkları';
 
   @override
   String get sleepTimerDisplay => 'Zamanlayıcı etkinken göster';
@@ -4690,12 +4691,19 @@ class AppLocalizationsTr extends AppLocalizations {
   String get recentAppsEmpty => 'Açık görevi olan TV uygulaması yok';
 
   @override
-  String get recentAppsUnavailable =>
-      'Açık uygulamalar kullanılamıyor. ADB ve erişilebilirlik iznini kontrol edin.';
+  String get recentAppsUnavailable => 'Açık uygulamalar kullanılamıyor.';
+
+  @override
+  String get recentAppsAdbRequired =>
+      'Açık uygulamalar panelini açmak için yerel ADB’ye bağlanın.';
+
+  @override
+  String get recentAppsAccessibilityRequired =>
+      'Erişilebilirlik ayarlarında CuteLauncher hizmetini etkinleştirin.';
 
   @override
   String get recentAppsHelp =>
-      'Yalnızca açık görevi olan TV uygulamaları gösterilir. Tümünü kapat, listedeki kullanıcı uygulamalarını durdurur. Yeniden eşleyicide bir tuş atayın. CuteLauncher paneli ADB ve erişilebilirlik izni gerektirir.';
+      'Yalnızca açık görevi olan TV uygulamaları gösterilir. Tümünü kapat, listedeki kullanıcı uygulamalarını durdurur. CuteLauncher açık kalır. Yeniden eşleyicide bir tuş atayın. CuteLauncher paneli ADB ve erişilebilirlik izni gerektirir.';
 
   @override
   String get recentAppsHomeHint =>
@@ -5164,9 +5172,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get appChannelsEmpty => 'Kullanılabilir uygulama akışı yok.';
 
   @override
-  String get appChannelsRefresh => 'Akışları yenile';
-
-  @override
   String get appChannelsLaunchFailed => 'Bu içerik açılamadı.';
 
   @override
@@ -5384,6 +5389,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get remoteMappingToggleNightMode => 'Gece modunu aç veya kapat';
+
+  @override
+  String get remoteMappingScreenshot => 'Ekran görüntüsü al';
 
   @override
   String get remoteMappingBlackOverlay => 'Siyah ekran';
@@ -5824,7 +5832,7 @@ class AppLocalizationsTr extends AppLocalizations {
       'Bir hava durumu alanı ekleyin. En fazla 12 blok, bir satır sonu ve metin alanı başına 60 karakter kullanılabilir.';
 
   @override
-  String get fileManagerPreference => 'Dosya yöneticisi';
+  String get fileManagerPreference => 'Dosya seçme yöntemi';
 
   @override
   String get fileManagerAsk => 'Her seferinde sor';
@@ -6302,7 +6310,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get launcherDefaultAndAdb => 'Varsayılan başlatıcı ve ADB';
 
   @override
-  String get defaultLauncherViaAdb => 'ADB ile varsayılan başlatıcıyı ayarla';
+  String get defaultLauncherViaAdb => 'ADB ile ayarla';
 
   @override
   String get defaultLauncherViaAccessibility =>
@@ -6327,7 +6335,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get settingsGeneralGroup => 'Genel';
 
   @override
-  String get settingsManagementGroup => 'Ayar yönetimi';
+  String get settingsManagementGroup => 'Yedekleme ve senkronizasyon';
 
   @override
   String get settingsMaintenanceGroup => 'Bakım';
@@ -6371,6 +6379,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get hiddenFeeds => 'Gizli akışlar';
 
   @override
+  String get appChannelsOrderHint =>
+      'Taşımak için ◄ / ► tuşuna basın. ▲ / ▼ sıralar veya listeler arasında taşır. OK veya Geri bitirir.';
+
+  @override
   String get controlAndAccessGroup => 'Kontroller ve erişim';
 
   @override
@@ -6387,4 +6399,128 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get deletionGroup => 'Silme';
+
+  @override
+  String get memoryLimitsLocked =>
+      'Bellek tasarrufu açık. Sınırları değiştirmek için kapatın.';
+
+  @override
+  String get memoryOccupied => 'Kullanılan bellek';
+
+  @override
+  String get memorySettings => 'Sınırlar ve önbellekler';
+
+  @override
+  String get memoryDecodedApps => 'Çözülmüş uygulama ve arayüz görselleri';
+
+  @override
+  String get memoryDecodedPosters => 'Çözülmüş posterler';
+
+  @override
+  String get memoryPreload => 'Posterleri önceden yükle (kart)';
+
+  @override
+  String get memoryBackgroundClear =>
+      'Başlatıcıdan çıkarken RAM önbelleklerini temizle';
+
+  @override
+  String get memoryResetLimits => 'Varsayılan bellek sınırlarını geri yükle';
+
+  @override
+  String get memoryClearDisk => 'Diskteki poster önbelleğini temizle';
+
+  @override
+  String get memoryFreed => 'Boşaltılan alan';
+
+  @override
+  String get memoryDiskFailed =>
+      'Disk önbelleği temizlenemedi. Tekrar deneyin.';
+
+  @override
+  String get memoryLimitsFailed =>
+      'Bellek ayarları kaydedilemedi. Tekrar deneyin.';
+
+  @override
+  String get memoryClearRam => 'RAM önbelleklerini temizle';
+
+  @override
+  String get posterCacheRam => 'RAM’deki poster önbelleği';
+
+  @override
+  String get posterCacheDisk => 'Diskteki poster önbelleği';
+
+  @override
+  String get memoryAppChannelPosters => 'Uygulama akışı posterleri';
+
+  @override
+  String get posterCacheSaveFailed => 'Poster önbelleği sınırı kaydedilemedi.';
+
+  @override
+  String get appChannelsSectionSettings => 'Bölüm ayarları';
+
+  @override
+  String get settingsLoadFailed => 'Ayarlar yüklenemedi.';
+
+  @override
+  String get diagnosticsReportsAndRecording => 'Raporlar ve kayıt';
+
+  @override
+  String get diagnosticsClearRecordingConfirm =>
+      'Kayıt durdurulsun ve bu oturumda toplanan veriler silinsin mi?';
+
+  @override
+  String get appChannelVisible => 'Akışı göster';
+
+  @override
+  String get movingSectionsHint =>
+      '▲ / ▼ — taşı · OK veya Geri — bitir. Bölümü gizlemek veya göstermek için liste sınırını geçin.';
+
+  @override
+  String get cuteLauncherSettings => 'CuteLauncher ayarları';
+
+  @override
+  String get hiddenSectionBadge => 'Gizli';
+
+  @override
+  String get buttonsAndFocus => 'Düğmeler ve odak';
+
+  @override
+  String get systemTiles => 'Sistem kutucukları';
+
+  @override
+  String get compatibilityGroup => 'Uyumluluk';
+
+  @override
+  String get storageDevicesGroup => 'Depolama aygıtları';
+
+  @override
+  String get overAppsGroup => 'Diğer uygulamaların üzerinde';
+
+  @override
+  String get remotePanelAssignButton => 'Paneli açmak için düğme ata';
+
+  @override
+  String get launcherChooseInAndroid => 'Android’de başlatıcı seç';
+
+  @override
+  String get openAndroidSettings => 'Android ayarlarını aç';
+
+  @override
+  String get applicationsTabAll => 'Tümü';
+
+  @override
+  String get applicationsTabSystem => 'Sistem';
+
+  @override
+  String get applicationsTabHidden => 'Gizli';
+
+  @override
+  String get fileSettingsGroup => 'Dosyalar';
+
+  @override
+  String get builtInBrowserOptions => 'Yerleşik dosya yöneticisi seçenekleri';
+
+  @override
+  String get remoteMappingsLimit =>
+      'Zaten 64 düğme ataması var. Yeni bir atama eklemek için birini kaldırın.';
 }

@@ -25,6 +25,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/appearance_service.dart';
 import '../providers/settings_service.dart';
+import '../providers/update_service.dart';
 import '../providers/apps_service.dart';
 import '../providers/tv_inputs_service.dart';
 import '../providers/notifications_service.dart';
@@ -481,10 +482,18 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
       if (widget.remotePanel?.visible('audio') ?? settings.showVolumeInStatusBar)
         'audio': AudioStatusWidget(visible: widget.remotePanel != null ||
           !settings.autoHideAppBarEnabled || focused || _settingsOpen),
-      if (widget.remotePanel?.visible('settings') ?? true) 'settings': TopPanelItem(
-        focusNode: _settingsFocusNode,
-        onPressed: _openSettings,
-        child: const Icon(Icons.settings_outlined),
+      if (widget.remotePanel?.visible('settings') ?? true) 'settings': FocusPanelTooltip(
+        message: AppLocalizations.of(context)!.cuteLauncherSettings,
+        child: TopPanelItem(
+          focusNode: _settingsFocusNode,
+          onPressed: _openSettings,
+          child: Selector<UpdateService?, bool>(
+            selector: (_, service) => service?.availableVersion != null,
+            builder: (context, available, _) => available
+                ? Icon(Icons.settings, color: Theme.of(context).colorScheme.primary)
+                : const Icon(Icons.settings_outlined),
+          ),
+        ),
       ),
       if (quickActionsVisible)
         PanelLayout.quickActions: PanelTooltip(
@@ -498,12 +507,15 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
           ),
         ),
       if ((widget.remotePanel?.visible('systemSettings') ?? settings.showSystemSettingsInStatusBar))
-        'systemSettings': TopPanelItem(
-          focusNode: _systemSettingsFocusNode,
-          onPressed: () => context.read<AppsService>().openSettings(),
-          child: AndroidSettingsIcon(
-            size: appearance.panelTextSize,
-            color: appearance.panelTextColor,
+        'systemSettings': FocusPanelTooltip(
+          message: AppLocalizations.of(context)!.systemSettings,
+          child: TopPanelItem(
+            focusNode: _systemSettingsFocusNode,
+            onPressed: () => context.read<AppsService>().openSettings(),
+            child: AndroidSettingsIcon(
+              size: appearance.panelTextSize,
+              color: appearance.panelTextColor,
+            ),
           ),
         ),
       if (inputsVisible)

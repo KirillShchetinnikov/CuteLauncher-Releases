@@ -28,7 +28,8 @@ void main() {
         final watch = MockWatchNextService();
         final refreshes = ValueNotifier<int>(0);
         when(watch.posterRefreshes).thenReturn(refreshes);
-        when(watch.poster(any)).thenAnswer((_) async => kTransparentImage);
+        when(watch.cachedPoster(any)).thenReturn(null);
+        when(watch.poster(any, priority: anyNamed('priority'))).thenAnswer((_) async => kTransparentImage);
         final apps = MockAppsService();
         const package = 'video.app';
         when(apps.getApp(package))

@@ -22,6 +22,8 @@ import 'information_formats.dart';
 import 'file_browser_options.dart';
 import 'widgets/settings/back_button_actions.dart';
 
+const appChannelsOrderKey = 'app_channels_order';
+
 Map<String, dynamic> compatibleSettingsForRestore(
   dynamic source,
   Map<String, dynamic> expected,
@@ -263,7 +265,9 @@ bool _validValue(String key, dynamic value) {
 /// Runtime state and credentials must never travel with a portable settings copy.
 bool isDeviceLocalBackupKey(String key) => key == 'native_secret_drive' || key == 'native_secret_webdav' || key.startsWith('initial_profile_') || key.startsWith('adb_') ||
     key == fileBrowserLocationsKey ||
+    key.startsWith('poster_cache_') || key.startsWith('memory_limit_') ||
     key == 'selected_app_channels' ||
+    key == appChannelsOrderKey ||
     (key == 'app_channel_formats' || key == 'app_channel_detected_formats') ||
     key.startsWith('settings_sync_') ||
     key.startsWith('cloud_') ||

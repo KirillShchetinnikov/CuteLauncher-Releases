@@ -6,7 +6,8 @@ import 'memory_resources.dart';
 import 'settings_service.dart';
 import '../image_byte_cache.dart';
 import '../network_poster.dart';
-import 'package:pool/pool.dart';
+import '../poster_disk_cache.dart';
+import '../poster_queue.dart';
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io' show HttpClient, Platform;
@@ -22,6 +23,7 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
   final Future<void> Function(String)? onAppLaunched;
   final MemoryResources? _memoryResources;
   final SettingsService? settings;
+  final PosterDiskCache? disk;
   final _catalogOwners = <Object>{};
   bool _wasNeeded = false;
   bool get _needed => (settings?.showContinueWatching ?? true) || _catalogOwners.isNotEmpty;
@@ -39,14 +41,19 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
   Timer? _refreshTimer;
   StreamSubscription<dynamic>? _watchNextSubscription;
   int _callCount = 0;
-  final _posterPool = Pool(2);
-  final _posterCache = ImageByteCache(maximumBytes: 6 * 1024 * 1024);
+  final _posterPool = PosterQueue();
+  final _posterCache = ImageByteCache(
+    maximumBytes: 4 * 1024 * 1024,
+    maximumEntries: 2048,
+  );
   final _http = HttpClient()
     ..connectionTimeout = const Duration(seconds: 5)
     ..maxConnectionsPerHost = 2;
-  final _pendingPosters = <(int, String), Future<Uint8List?>>{};
+  final _pendingPosters =
+      <(int, String), ({PosterDemand demand, Future<Uint8List?> result})>{};
   final posterRefreshes = ValueNotifier<int>(0);
   int _posterGeneration = 0;
+  DateTime? _diskFreshAfter;
   bool _foreground = true;
   int get posterCacheBytes => _posterCache.byteCount;
   int get posterCacheEntries => _posterCache.length;
@@ -61,12 +68,13 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
 
   bool get _isTest => Platform.environment.containsKey('FLUTTER_TEST');
 
-  WatchNextService(this._channel, {this._memoryResources, this.onAppLaunched, this.work, this.settings}) {
+  WatchNextService(this._channel, {this._memoryResources, this.onAppLaunched, this.work, this.settings, this.disk}) {
     _memoryResources?.register(this, clear: clearImageCaches,
       activity: () => _posterCache.activity,
       stats: () => MemoryCacheStats(posterCacheBytes, posterCacheEntries),
       breakdown: () => {MemoryCacheKind.watchNextPosters: MemoryCacheStats(posterCacheBytes, posterCacheEntries)},
-      configure: (economy) => _posterCache.maximumBytes = (economy ? 2 : 6) * 1024 * 1024);
+      disk: {MemoryCacheKind.watchNextPosters: ?disk},
+      configure: (economy) => _configureCache(economy));
     if (!_isTest) {
       final lifecycle = WidgetsBinding.instance.lifecycleState;
       _foreground = lifecycle == null || lifecycle == AppLifecycleState.resumed;
@@ -89,7 +97,9 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
   }
 
   void _settingsChanged() {
-    if (isDisposed || _wasNeeded == _needed) return;
+    if (isDisposed) return;
+    _configureCache();
+    if (_wasNeeded == _needed) return;
     _wasNeeded = _needed;
     if (_needed) {
       _scheduledPosterReload |= _initialized;
@@ -97,6 +107,15 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
     } else {
       _stop();
     }
+  }
+
+  void _configureCache([bool? economy]) {
+    const section = PosterCacheSection.watchNext;
+    final saving = economy ?? settings?.memorySaverEnabled ?? false;
+    final ram = saving ? section.ram.economy : settings?.posterCacheLimit(section, disk: false) ?? section.ram.normal;
+    final storage = saving ? section.disk.economy : settings?.posterCacheLimit(section, disk: true) ?? section.disk.normal;
+    _posterCache.maximumBytes = ram * 1024 * 1024;
+    disk?.maximumBytes = storage * 1024 * 1024;
   }
 
   void _start({bool resuming = false}) {
@@ -205,7 +224,10 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
       final list = await _channel.getWatchNextPrograms().timeout(metadataTimeout);
       if (isDisposed || callSnapshot != _callCount) return;
 
-      if (reloadPosters) clearImageCaches();
+      if (reloadPosters) {
+        _diskFreshAfter = DateTime.now();
+        clearImageCaches();
+      }
       if (reloadPosters || _lastPosterReload == null) _lastPosterReload = DateTime.now();
       final newPrograms = list
           .map(WatchNextProgram.fromMap)
@@ -263,14 +285,19 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
       _active &&
       generation == _posterGeneration;
 
-  Future<Uint8List?> poster(WatchNextProgram program) async {
+  Uint8List? cachedPoster(WatchNextProgram program) =>
+      _posterCache[program.posterArtUri] ?? _posterCache[program.thumbnailUri];
+
+  Future<Uint8List?> poster(WatchNextProgram program, {PosterPriority? priority}) async {
     final generation = _posterGeneration;
-    final primary = await _loadPoster(program.posterArtUri, generation, program.packageName);
+    final primary = await _loadPoster(program.posterArtUri, generation, program.packageName,
+        priority: priority);
     if (!_canLoadPoster(generation)) return null;
     if (primary != null || program.posterArtUri == program.thumbnailUri) {
       return primary;
     }
-    return _loadPoster(program.thumbnailUri, generation, program.packageName, thumbnail: true);
+    return _loadPoster(program.thumbnailUri, generation, program.packageName,
+        thumbnail: true, priority: priority);
   }
 
   void evictPoster(WatchNextProgram program) {
@@ -278,11 +305,17 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
         PosterSource.watchNext, program.posterArtUri, program.thumbnailUri, program.packageName);
     _posterCache.remove(program.posterArtUri);
     _posterCache.remove(program.thumbnailUri);
+    unawaited(disk?.remove(program.posterArtUri));
+    if (program.thumbnailUri != program.posterArtUri) {
+      unawaited(disk?.remove(program.thumbnailUri));
+    }
   }
 
   Future<Uint8List?> _loadPoster(String address, int generation, String packageName,
-      {bool thumbnail = false}) async {
-    if (address.isEmpty || !_canLoadPoster(generation)) return null;
+      {bool thumbnail = false, PosterPriority? priority}) async {
+    if (address.isEmpty || !_canLoadPoster(generation)) {
+      return null;
+    }
     final cached = _posterCache[address];
     final diagnostics = DiagnosticsStore.instance.activePosterLoads;
     if (cached != null) {
@@ -291,41 +324,84 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
     }
 
     final key = (generation, address);
-    if (_pendingPosters.containsKey(key)) diagnostics?.count(PosterSource.watchNext, 'deduplicated');
-    return _pendingPosters.putIfAbsent(key, () {
-      final trace = diagnostics?.start(PosterSource.watchNext, address,
-          packageName: packageName, thumbnail: thumbnail);
-      return _posterPool.withResource(() async {
-        if (!_canLoadPoster(generation)) return null;
-        try {
-          final uri = Uri.tryParse(address);
-          if (uri == null || uri.scheme != 'http' && uri.scheme != 'https') {
-            trace?.stage(PosterStage.platform);
-          }
-          final bytes = uri != null && (uri.scheme == 'http' || uri.scheme == 'https')
-              ? await readNetworkPoster(_http, uri, trace: trace)
-              : await _channel.getWatchNextPoster(address);
-          if (bytes != null) trace?.receivedBytes = bytes.length;
-          if (!_canLoadPoster(generation)) return null;
-          if (bytes == null || bytes.isEmpty) {
-            trace?.finish(PosterOutcome.failed);
-            return null;
-          }
-          _posterCache[address] = bytes;
-          trace?.finish(PosterOutcome.loaded);
-          return bytes;
-        } catch (error, stack) {
-          trace?.error(error);
-          trace?.finish(_canLoadPoster(generation) ? PosterOutcome.failed : PosterOutcome.discarded);
-          if (_canLoadPoster(generation)) {
-            DiagnosticsStore.instance.recordException('watchNextPoster', error, stack);
-          }
-          return null;
+    final pending = _pendingPosters[key];
+    if (pending != null) {
+      diagnostics?.count(PosterSource.watchNext, 'deduplicated');
+      pending.demand.add(priority);
+      return pending.result;
+    }
+    final demand = PosterDemand()..add(priority);
+    final trace = diagnostics?.start(PosterSource.watchNext, address,
+        packageName: packageName, thumbnail: thumbnail);
+    final result = _readPoster(address, generation, demand, trace, diagnostics).whenComplete(() {
+      trace?.finish(PosterOutcome.discarded);
+      _pendingPosters.remove(key);
+    });
+    _pendingPosters[key] = (demand: demand, result: result);
+    return result;
+  }
+
+  Future<Uint8List?> _readPoster(
+    String address,
+    int generation,
+    PosterDemand demand,
+    PosterLoad? trace,
+    PosterLoads? diagnostics,
+  ) async {
+    final diskGeneration = disk?.generation;
+    ({Uint8List bytes, bool fresh})? onDisk;
+    if (disk != null) {
+      trace?.stage(PosterStage.disk);
+      onDisk = await disk!.read(address, freshAfter: _diskFreshAfter);
+      if (!_canLoadPoster(generation) || demand.priority < 0) return null;
+      if (onDisk != null && onDisk.fresh) {
+        diagnostics?.count(PosterSource.watchNext, 'diskHit');
+        trace?.receivedBytes = onDisk.bytes.length;
+        _posterCache[address] = onDisk.bytes;
+        trace?.finish(PosterOutcome.loaded);
+        return onDisk.bytes;
+      }
+      diagnostics?.count(
+        PosterSource.watchNext, onDisk == null ? 'diskMiss' : 'diskStale',
+      );
+      trace?.stage(PosterStage.queue);
+    }
+    return _posterPool.load(demand, () async {
+      if (!_canLoadPoster(generation)) return null;
+      final fetchedAt = DateTime.now();
+      var cacheOnDisk = true;
+      Uint8List? bytes;
+      try {
+        final uri = Uri.tryParse(address);
+        if (uri != null && (uri.scheme == 'http' || uri.scheme == 'https')) {
+          bytes = await readNetworkPoster(_http, uri, trace: trace,
+              onDiskCachePolicy: (allowed) => cacheOnDisk = allowed);
+        } else {
+          trace?.stage(PosterStage.platform);
+          bytes = await _channel.getWatchNextPoster(address);
+          trace?.receivedBytes = bytes?.length ?? 0;
         }
-      }).whenComplete(() {
-        trace?.finish(PosterOutcome.discarded);
-        _pendingPosters.remove(key);
-      });
+      } catch (error, stack) {
+        trace?.error(error);
+        if (_canLoadPoster(generation)) {
+          DiagnosticsStore.instance.recordException('watchNextPoster', error, stack);
+        }
+      }
+      if (!_canLoadPoster(generation)) return null;
+      if (bytes == null || bytes.isEmpty) {
+        trace?.finish(onDisk == null ? PosterOutcome.failed : PosterOutcome.cachedFallback);
+        return onDisk?.bytes;
+      }
+      _posterCache[address] = bytes;
+      trace?.finish(PosterOutcome.loaded);
+      if (disk != null && disk!.generation == diskGeneration) {
+        if (cacheOnDisk) {
+          await disk!.write(address, bytes, fetchedAt: fetchedAt);
+        } else {
+          await disk!.remove(address);
+        }
+      }
+      return _canLoadPoster(generation) ? bytes : null;
     });
   }
 
@@ -395,7 +471,7 @@ class WatchNextService extends ChangeNotifier with ServiceLifecycle, WidgetsBind
     _posterCache.clear();
     posterRefreshes.dispose();
     _http.close(force: true);
-    unawaited(_posterPool.close());
+    _posterPool.close();
     _hasPendingRefresh = false;
     _hasPendingPosterReload = false;
     if (!_isTest) {

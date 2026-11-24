@@ -7,6 +7,8 @@ import 'package:flauncher/providers/appearance_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/watch_next_service.dart';
 import 'package:flauncher/widgets/category_focus.dart';
+import 'package:flauncher/widgets/app_content_row.dart';
+import 'package:flauncher/tile_appearance.dart';
 import 'package:flauncher/widgets/appearance_surface.dart';
 import 'package:flauncher/widgets/continue_watching_row.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +22,47 @@ import 'package:transparent_image/transparent_image.dart';
 import 'mocks.mocks.dart';
 
 void main() {
+  testWidgets('only the focused row preloads offscreen artwork within its selected window', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final settings = SettingsService(await SharedPreferences.getInstance());
+    await settings.setAppHighlightAnimationEnabled(false);
+    final programs = List.generate(40, (i) => WatchNextProgram.fromMap({
+      'id': i, 'title': 'Movie $i', 'posterArtUri': 'content://covers/$i',
+    }));
+    final focus = CategoryFocusController()..configure(programs.map((p) => p.id.toString()));
+    final requested = <int>[];
+    const style = TileAppearance();
+    await tester.pumpWidget(ChangeNotifierProvider.value(value: settings, child: MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: Scaffold(body: CategoryFocus(controller: focus, child: ContentPreviewRow(
+        title: 'Feed', aspectRatio: 1.5, style: style, programs: programs,
+        preload: (program, priority) async {
+          expect(priority(), 0);
+          requested.add(program.id);
+          return null;
+        },
+        card: (p, size) => ContentPreviewCard(program: p, title: p.title, style: style,
+            size: size, onOpen: (_) async {}),
+      ))),
+    )));
+    await tester.pumpAndSettle();
+    expect(requested, isEmpty);
+    focus.nodeFor('0')!.requestFocus();
+    await tester.pumpAndSettle();
+    expect(requested, contains(31));
+    expect(requested, isNot(contains(32)));
+    expect(requested, isNot(contains(0)));
+    requested.clear();
+    await settings.setMemoryLimit(MemoryLimit.preload, 16);
+    await tester.pumpAndSettle();
+    expect(requested, contains(15));
+    expect(requested.every((id) => id < 16), isTrue);
+    await tester.pumpWidget(const SizedBox());
+    focus.dispose();
+    settings.dispose();
+  });
+
   for (final remember in [false, true]) {
     testWidgets('Watch Next restores visible card, remember=$remember', (
       tester,

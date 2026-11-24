@@ -9,10 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../bridge_result.dart';
-import '../../flauncher_channel.dart';
 import '../../l10n/app_localizations.dart';
-import '../launcher_dialog.dart';
-import 'adb_permission_tile.dart';
+import 'access_settings_links.dart';
+import 'accessibility_page.dart';
 import 'focusable_settings_tile.dart';
 import 'settings_page_layout.dart';
 import 'settings_route.dart';
@@ -93,41 +92,18 @@ class _RemoteButtonsPageState extends State<RemoteButtonsPage>
     super.dispose();
   }
 
-  Future<void> _permission() async {
-    final l = AppLocalizations.of(context)!;
-    await showLauncherDialog<void>(
-      context: context,
-      builder: (ctx) => LauncherAlertDialog(
-        title: Text(l.adbAccessibilitySettings),
-        content: Text(l.adbAccessibilityGuide),
-        actions: [
-          LauncherDialogButton(
-            autofocus: true,
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(l.ok),
-          ),
-        ],
-      ),
-    );
-    if (mounted) await FLauncherChannel().requestAccessibilityPermission();
-  }
-
   @override
   Widget build(BuildContext context) {
+    if (widget.section == 'access') return const AccessibilityPage();
     final l = AppLocalizations.of(context)!;
     final info = _info;
     final active = info?['active'] == true;
     final ready = info?['permission'] == true && info?['connected'] == true;
     final events = (info?['events'] as List? ?? const []).whereType<Map>();
     final reportPath = info?['reportPath']?.toString() ?? '';
-    String state(String name) => info == null
-        ? '—'
-        : info[name] == true
-        ? l.enabled
-        : l.disabled;
     final access = SettingsSection(title: l.settingsGroupAccess, children: [FocusableSettingsTile(
               autofocus: !ready,
-              title: Text(l.remoteAccessSettings),
+              title: Text(l.accessibility),
               trailing: Text(
                 info == null
                     ? '—'
@@ -136,23 +112,17 @@ class _RemoteButtonsPageState extends State<RemoteButtonsPage>
                     : l.permissionRequired,
               ),
               leading: const Icon(Icons.accessibility),
-              onPressed: () async {
-                await Navigator.of(context).push(
-                  SettingsRoute(
-                    builder: (_) => const RemoteButtonsPage(section: 'access'),
-                  ),
-                );
-                if (mounted) _call('info');
-              },
+              onPressed: () => AccessibilitySettingsLink.open(
+                context,
+                onReturn: () => _call('info'),
+              ),
             )]);
     return SettingsPageLayout(
       footer: widget.section == 'diagnostics'
           ? SettingsControlHint(text: l.remoteButtonsControlsHint)
           : null,
       title: Text(
-        widget.section == 'access'
-            ? l.remoteAccessSettings
-            : widget.section == 'diagnostics'
+        widget.section == 'diagnostics'
             ? l.remoteButtonsTest
             : l.remoteButtonsTitle,
       ),
@@ -192,29 +162,9 @@ class _RemoteButtonsPageState extends State<RemoteButtonsPage>
             ),
             ]),
           ],
-          if (widget.section == 'access') ...[
-            Text(
-              '${l.accessibilityPermission}: ${info == null
-                  ? '—'
-                  : info['permission'] == true
-                  ? l.granted
-                  : l.permissionRequired}',
-            ),
-            Text('${l.remoteButtonsService}: ${state('connected')}'),
-            FocusableSettingsTile(
-              autofocus: true,
-              title: Text(l.adbAccessibilitySettings),
-              leading: const Icon(Icons.accessibility),
-              onPressed: _permission,
-            ),
-            AdbPermissionTile(
-              title: l.adbEnableService,
-              action: 'accessibility',
-              permissionMethod: 'checkAccessibilityPermission',
-              onRefresh: () => _call('info'),
-            ),
-          ],
           if (widget.section == 'diagnostics') ...[
+            if (!ready && info != null)
+              AccessibilitySettingsLink(onReturn: () => _call('info')),
             FocusableSettingsTile(
               key: const ValueKey('remote-buttons-capture'),
               enabled: (active || ready),

@@ -118,6 +118,9 @@ class AddToCategoryDialog extends StatelessWidget {
           return FocusableSettingsTile(
             autofocus: index == 0,
             title: Text(localizedSectionName(category.name, localizations)),
+            trailing: !removing && !category.visible
+                ? Text(localizations.hiddenSectionBadge)
+                : null,
             onPressed: () async {
               final apps = context.read<AppsService>();
               if (removing) {

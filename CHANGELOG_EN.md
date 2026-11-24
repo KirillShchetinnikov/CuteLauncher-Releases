@@ -2,11 +2,42 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
+## v1.8.2 — 2026-11-24
+
+### Home screen and settings
+
+- Section creation and editing now share a layout. New sections can start hidden, with a choice of sorting and layout. The name of an existing section stays in the header while scrolling and can be changed with the pencil icon. Sections and order shows each chosen icon, including for hidden sections.
+- Shared section appearance has its own menu entry. Home screen behavior groups buttons and focus separately from system tiles. The hint in the section list changes when reordering starts.
+- App Channels settings now give channel order, limits and appearance their own entries. Visibility and order can be changed with the remote in a single list, including for unavailable sources. The list refreshes when opened, and focus stays on a channel after changing its visibility.
+- The Watch Next editor now has a visibility switch that keeps the section's position. Participating apps, limits, card settings and appearance are available from one menu. You can also grant Watch Next access there and restore hidden cards from section settings.
+- Fixed moving channels and items with the remote. On-screen hints show which buttons change the position and finish the move.
+- The gear icon in the top bar uses the accent color when an update is available. When there is no update, the settings header offers a shortcut to support the developer.
+- The app list has labeled tabs, and the add-to-section dialog marks hidden sections. The saved choice is highlighted when selecting a language, gradient or auto-launch target.
+- Top bar and Quick Settings group item visibility and order on a single page for each panel. The top bar stays visible while you adjust widget placement. Input settings are grouped by display, HDMI-CEC and individual inputs. Sleep timer intervals are grouped into visible and hidden lists.
+
+### Memory and artwork
+
+- Launcher Settings now has a Memory page with separate limits for feed artwork and app icons and banners. You can preload 16 or 32 cards in the active row, clear RAM when leaving the launcher and restore the default limits.
+- App Channels and Watch Next now have separate memory and disk caches for artwork. The disk cache reuses downloaded artwork when you scroll back. The Memory page shows cache sizes and lets you clear the disk cache separately.
+- Memory Saver uses fixed limits, prepares cards in neighboring feeds closer to when they appear and loads the realistic landscape image at a lower resolution. Turning it off restores your settings.
+
+### Remote and fixes
+
+- A screenshot action is available for remote buttons. With local ADB configured, screenshots are saved in Downloads.
+- You can assign a button to open Quick Settings directly from the panel's settings page. Button mappings and other features that require access lead to the shared ADB Connection and Accessibility pages and return to the original setting. The Accessibility page can open Android settings or enable the CuteLauncher service through authorized ADB.
+- The built-in Open Apps panel checks local ADB and the accessibility service before opening. If access is missing, it shows what to configure. CuteLauncher appears last as a switchable entry and is protected from being closed.
+- The network widget settings show the connection type and whether internet access is available. The indicator can be enabled separately for the top bar and Quick Settings.
+- Manual import replaces the current layout with the one in the file, and missing or invalid settings can return to their defaults. If auto-launch settings or button mappings cannot be read, changes are blocked until a retry succeeds.
+- Clearing a diagnostic report during an active recording now asks for confirmation. Pressing Back keeps the recording running.
+- Diagnostics can show the results of individual compatibility checks. App maintenance uses clearer section names and provides a direct entry to the preinstalled app list. File selection and built-in file browser settings have separate entries.
+- Fixed link traversal when scanning the wallpaper folder for images. Links outside the folder and circular links are skipped.
+
 ## v1.8.1 — 2026-11-22
 
 - When home screen recommendations refresh, a card keeps its artwork, title and action until the replacement artwork loads. The row no longer flashes placeholders as recommendations change.
 - Fixed compact section spacing with tile glow enabled. The spacing now changes at every slider step.
 - Local ADB works on TV boxes where the ADB service runs as root. When it connects this way, the launcher warns about the risk of leaving root ADB debugging enabled.
+- The diagnostics dialog now clarifies what the extended report contains and where to send the file.
 
 ## v1.8.0 — 2026-11-20
 

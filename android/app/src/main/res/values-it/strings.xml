@@ -40,4 +40,6 @@
     <string name="recovery_restore">Ripristina la schermata Home precedente</string>
     <string name="recovery_restore_confirm">Ripristinare la schermata Home precedente tramite la connessione ADB locale esistente?</string>
     <string name="remap_error_adb_command">Comando ADB non riuscito. Verifica la connessione ADB locale e il comando.</string>
+    <string name="recent_apps_adb_required">Connetti ADB locale per aprire il pannello delle app aperte.</string>
+    <string name="recent_apps_accessibility_required">Attiva il servizio CuteLauncher nelle impostazioni di accessibilità.</string>
 </resources>

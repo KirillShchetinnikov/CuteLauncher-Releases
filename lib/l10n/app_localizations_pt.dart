@@ -207,7 +207,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get tvCompatibilityRun => 'Run check';
 
   @override
-  String get tvCompatibilityResults => 'View results';
+  String get tvCompatibilityResults =>
+      'Resultados da verificação de compatibilidade';
 
   @override
   String get compatibilityReportDate => 'Check date';
@@ -607,7 +608,8 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
-  String get textEmptyCategory => 'Esta categoria está vazia.';
+  String get textEmptyCategory =>
+      'Esta seção está vazia. Pressione OK para gerenciar as seções.';
 
   @override
   String get time => 'Hora';
@@ -677,10 +679,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get backupAndRestore => 'Backup e Restauração';
 
   @override
-  String get exportBackup => 'Exportar Backup';
+  String get exportBackup => 'Exportar para arquivo';
 
   @override
-  String get importBackup => 'Importar Backup';
+  String get importBackup => 'Importar de arquivo';
 
   @override
   String exportSuccess(String path) {
@@ -692,7 +694,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get importConfirm =>
-      'Tem certeza de que deseja importar o backup? Isso substituirá suas configurações e layout atuais.';
+      'Restaurar este backup? O layout do backup substituirá o atual. As configurações ausentes ou com valores inválidos poderão voltar aos valores padrão.';
 
   @override
   String get importError =>
@@ -1255,7 +1257,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get reorderSectionsHint =>
-      'Selecione com ◄ / ► e use ▲ / ▼ para reordenar. Cruze o limite da lista para ocultar ou mostrar uma seção.';
+      '▲ / ▼ — selecionar seção · OK — abrir · ◄ / ► — começar a mover';
 
   @override
   String get customName => 'Nome personalizado';
@@ -2352,7 +2354,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get quickPanelObjectsTitle => 'Itens das configurações rápidas';
 
   @override
-  String get topPanelObjects => 'Objetos';
+  String get topPanelObjects => 'Itens e ordem';
 
   @override
   String get panelTextBackground => 'Fundo de texto e botão';
@@ -2990,7 +2992,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get adbAccessibilityGuide =>
-      'Selecione CuteLauncher no menu do sistema e habilite seu serviço. Volte aqui para configurar a interceptação inicial. Para desativá-lo, desligue o serviço CuteLauncher no mesmo menu.';
+      'Ative o serviço do CuteLauncher nas configurações do Android e volte ao launcher.';
 
   @override
   String get adbEffectAccessibilityDisable =>
@@ -4392,7 +4394,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get cleanerLists => 'Listas de desativação';
 
   @override
-  String get cleanerRecovery => 'Backup e restauração';
+  String get cleanerRecovery => 'Cópias do estado dos aplicativos';
 
   @override
   String get cleanerExports => 'Relatórios';
@@ -4503,7 +4505,7 @@ class AppLocalizationsPt extends AppLocalizations {
       'Configurações do temporizador de desligamento';
 
   @override
-  String get sleepTimerPresets => 'Temporizadores';
+  String get sleepTimerPresets => 'Intervalos do temporizador';
 
   @override
   String get sleepTimerDisplay => 'Exibir com temporizador ativo';
@@ -4722,12 +4724,19 @@ class AppLocalizationsPt extends AppLocalizations {
   String get recentAppsEmpty => 'Nenhum aplicativo de TV com tarefas abertas';
 
   @override
-  String get recentAppsUnavailable =>
-      'Aplicativos abertos indisponíveis. Verifique ADB e o acesso de acessibilidade.';
+  String get recentAppsUnavailable => 'Aplicativos abertos indisponíveis.';
+
+  @override
+  String get recentAppsAdbRequired =>
+      'Conecte o ADB local para abrir o painel de aplicativos abertos.';
+
+  @override
+  String get recentAppsAccessibilityRequired =>
+      'Ative o serviço CuteLauncher nas configurações de acessibilidade.';
 
   @override
   String get recentAppsHelp =>
-      'Apenas aplicativos de TV com tarefas abertas são exibidos. «Fechar todos» interrompe os aplicativos do usuário nesta lista. Atribua um botão no remapeador. O painel CuteLauncher requer ADB e acessibilidade.';
+      'Apenas aplicativos de TV com tarefas abertas são exibidos. «Fechar todos» interrompe os aplicativos do usuário nesta lista. O CuteLauncher permanece aberto. Atribua um botão no remapeador. O painel CuteLauncher requer ADB e acessibilidade.';
 
   @override
   String get recentAppsHomeHint =>
@@ -5201,9 +5210,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get appChannelsEmpty => 'Nenhum feed de aplicativo disponível.';
 
   @override
-  String get appChannelsRefresh => 'Atualizar feeds';
-
-  @override
   String get appChannelsLaunchFailed => 'Não foi possível abrir este conteúdo.';
 
   @override
@@ -5431,6 +5437,9 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get remoteMappingToggleNightMode => 'Alternar o modo noturno';
+
+  @override
+  String get remoteMappingScreenshot => 'Fazer captura de tela';
 
   @override
   String get remoteMappingBlackOverlay => 'Tela preta';
@@ -5876,7 +5885,7 @@ class AppLocalizationsPt extends AppLocalizations {
       'Adicione um campo meteorológico. São permitidos até 12 blocos, uma quebra de linha e 60 caracteres por campo de texto.';
 
   @override
-  String get fileManagerPreference => 'Gerenciador de arquivos';
+  String get fileManagerPreference => 'Como escolher arquivos';
 
   @override
   String get fileManagerAsk => 'Perguntar sempre';
@@ -6358,7 +6367,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get launcherDefaultAndAdb => 'Launcher padrão e ADB';
 
   @override
-  String get defaultLauncherViaAdb => 'Definir launcher padrão via ADB';
+  String get defaultLauncherViaAdb => 'Definir via ADB';
 
   @override
   String get defaultLauncherViaAccessibility =>
@@ -6383,7 +6392,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get settingsGeneralGroup => 'Geral';
 
   @override
-  String get settingsManagementGroup => 'Gestão de configurações';
+  String get settingsManagementGroup => 'Backups e sincronização';
 
   @override
   String get settingsMaintenanceGroup => 'Manutenção';
@@ -6427,6 +6436,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get hiddenFeeds => 'Feeds ocultos';
 
   @override
+  String get appChannelsOrderHint =>
+      '◄ / ► inicia a deslocação. ▲ / ▼ altera a ordem ou move entre listas. OK ou Voltar termina.';
+
+  @override
   String get controlAndAccessGroup => 'Controles e acesso';
 
   @override
@@ -6443,4 +6456,132 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get deletionGroup => 'Exclusão';
+
+  @override
+  String get memoryLimitsLocked =>
+      'A economia de memória está ativada. Desative-a para alterar os limites.';
+
+  @override
+  String get memoryOccupied => 'Memória em uso';
+
+  @override
+  String get memorySettings => 'Limites e caches';
+
+  @override
+  String get memoryDecodedApps =>
+      'Imagens decodificadas dos apps e da interface';
+
+  @override
+  String get memoryDecodedPosters => 'Pôsteres decodificados';
+
+  @override
+  String get memoryPreload => 'Pré-carregamento de pôsteres (cartões)';
+
+  @override
+  String get memoryBackgroundClear =>
+      'Limpar caches de RAM ao sair do launcher';
+
+  @override
+  String get memoryResetLimits => 'Restaurar limites padrão';
+
+  @override
+  String get memoryClearDisk => 'Limpar o cache de pôsteres no disco';
+
+  @override
+  String get memoryFreed => 'Espaço liberado';
+
+  @override
+  String get memoryDiskFailed =>
+      'Não foi possível limpar o cache no disco. Tente novamente.';
+
+  @override
+  String get memoryLimitsFailed =>
+      'Não foi possível salvar as configurações de memória. Tente novamente.';
+
+  @override
+  String get memoryClearRam => 'Limpar caches de RAM';
+
+  @override
+  String get posterCacheRam => 'Cache de cartazes na RAM';
+
+  @override
+  String get posterCacheDisk => 'Cache de cartazes no disco';
+
+  @override
+  String get memoryAppChannelPosters => 'Cartazes dos feeds de aplicações';
+
+  @override
+  String get posterCacheSaveFailed =>
+      'Não foi possível guardar o limite da cache de cartazes.';
+
+  @override
+  String get appChannelsSectionSettings => 'Definições da secção';
+
+  @override
+  String get settingsLoadFailed =>
+      'Não foi possível carregar as configurações.';
+
+  @override
+  String get diagnosticsReportsAndRecording => 'Relatórios e gravação';
+
+  @override
+  String get diagnosticsClearRecordingConfirm =>
+      'Parar a gravação e excluir os dados coletados nesta sessão?';
+
+  @override
+  String get appChannelVisible => 'Mostrar feed';
+
+  @override
+  String get movingSectionsHint =>
+      '▲ / ▼ — mover · OK ou Voltar — concluir. Ultrapasse o limite da lista para ocultar ou exibir a seção.';
+
+  @override
+  String get cuteLauncherSettings => 'Configurações do CuteLauncher';
+
+  @override
+  String get hiddenSectionBadge => 'Oculta';
+
+  @override
+  String get buttonsAndFocus => 'Botões e foco';
+
+  @override
+  String get systemTiles => 'Blocos do sistema';
+
+  @override
+  String get compatibilityGroup => 'Compatibilidade';
+
+  @override
+  String get storageDevicesGroup => 'Dispositivos de armazenamento';
+
+  @override
+  String get overAppsGroup => 'Sobre outros aplicativos';
+
+  @override
+  String get remotePanelAssignButton => 'Atribuir um botão para abrir o painel';
+
+  @override
+  String get launcherChooseInAndroid => 'Escolher o launcher no Android';
+
+  @override
+  String get openAndroidSettings => 'Abrir as configurações do Android';
+
+  @override
+  String get applicationsTabAll => 'Todos';
+
+  @override
+  String get applicationsTabSystem => 'Do sistema';
+
+  @override
+  String get applicationsTabHidden => 'Ocultos';
+
+  @override
+  String get fileSettingsGroup => 'Arquivos';
+
+  @override
+  String get builtInBrowserOptions =>
+      'Opções do gerenciador de arquivos integrado';
+
+  @override
+  String get remoteMappingsLimit =>
+      'Já existem 64 atribuições de botões. Remova uma para adicionar outra.';
 }

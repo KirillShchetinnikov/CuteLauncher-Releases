@@ -115,7 +115,7 @@ void main() {
       expect(find.textContaining('Включите отладку'), findsNothing);
       expect(find.text('Автозапуск'), findsOneWidget);
       expect(status(tester, 'Автозапуск'), isNull);
-      expect(status(tester, 'Подключение АДБ'), Icons.check_circle_outline);
+      expect(status(tester, 'Подключение ADB'), Icons.check_circle_outline);
       expect(
         status(tester, 'Лаунчер по умолчанию'),
         Icons.check_circle_outline,
@@ -141,7 +141,7 @@ void main() {
       await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
       await tester.pumpAndSettle();
       expect(
-        Focus.of(tester.element(find.text('Подключение АДБ'))).hasFocus,
+        Focus.of(tester.element(find.text('Подключение ADB'))).hasFocus,
         isTrue,
       );
       await tester.sendKeyEvent(LogicalKeyboardKey.enter);
@@ -153,7 +153,7 @@ void main() {
       Navigator.of(tester.element(find.text('Проверить подключение'))).pop();
       await tester.pumpAndSettle();
       expect(
-        Focus.of(tester.element(find.text('Подключение АДБ'))).hasFocus,
+        Focus.of(tester.element(find.text('Подключение ADB'))).hasFocus,
         isTrue,
       );
       expect(adbCalls.every((call) => call.method == 'info'), isTrue);
@@ -168,7 +168,7 @@ void main() {
       accessibility = null;
       await pumpMenu(tester);
       for (final title in [
-        'Подключение АДБ',
+        'Подключение ADB',
         'Лаунчер по умолчанию',
         'Кнопка Home и запуск',
         'Ремаппер кнопок пульта',

@@ -32,10 +32,13 @@ class AutoLaunchConfiguration {
     'delay': delay,
     'waitForInternet': waitForInternet,
   };
-  static AutoLaunchConfiguration fromMap(Map<String, dynamic> map) {
+  static AutoLaunchConfiguration fromMap(Map<String, dynamic> map) =>
+      tryFromMap(map) ?? const AutoLaunchConfiguration();
+
+  static AutoLaunchConfiguration? tryFromMap(Map<String, dynamic> map) {
     try {
       final config = AutoLaunchConfiguration(
-        mode: map['mode'] as String? ?? 'off',
+        mode: map['mode'] as String,
         app: map['app'] as String? ?? '',
         input: map['input'] as String? ?? '',
         boot: map['boot'] as bool? ?? false,
@@ -43,9 +46,9 @@ class AutoLaunchConfiguration {
         delay: map['delay'] as int? ?? 5,
         waitForInternet: map['waitForInternet'] as bool? ?? false,
       );
-      return config.valid ? config : const AutoLaunchConfiguration();
+      return config.valid ? config : null;
     } catch (_) {
-      return const AutoLaunchConfiguration();
+      return null;
     }
   }
 

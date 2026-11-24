@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../app_image_colors.dart';
 import '../image_limits.dart';
+import '../launcher_image_cache.dart';
 import '../tile_image_geometry.dart';
 
 /// Artwork fitting and optional edge colors, independent of focus decoration.
@@ -12,6 +13,7 @@ class TileArtwork extends StatefulWidget {
   final TileImageMode mode;
   final BorderRadius borderRadius;
   final bool isIcon;
+  final bool isPoster;
   final double iconScale;
   final double decodeScale;
   final Widget? inlineLabel;
@@ -24,6 +26,7 @@ class TileArtwork extends StatefulWidget {
     required this.mode,
     required this.borderRadius,
     this.isIcon = false,
+    this.isPoster = false,
     this.iconScale = 1,
     this.decodeScale = 1,
     this.inlineLabel,
@@ -116,12 +119,13 @@ class _TileArtworkState extends State<TileArtwork> {
           height: area.height * widget.iconScale,
         );
       }
-      final image = sizedImage(
+      final sized = sizedImage(
         widget.image,
         widget.isIcon ? area.size : size,
         MediaQuery.devicePixelRatioOf(context) * widget.decodeScale,
         maximumEdge: 1024,
       );
+      final ImageProvider image = widget.isPoster ? PosterTileImage(sized) : sized;
       _listen(image);
       final source = _source;
       final baselineFit =

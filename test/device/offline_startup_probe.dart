@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flauncher/flauncher_app.dart';
+import 'package:flauncher/launcher_image_cache.dart';
 import 'package:flauncher/main.dart' as launcher;
 import 'package:flauncher/providers/cloud_backup_service.dart';
 import 'package:flauncher/providers/drive_backup_service.dart';
@@ -34,7 +35,7 @@ Future<void> waitFor(bool Function() ready) async {
 /// Runs the real Home and its providers. Requires OfflineStartupProbe backup and
 /// Android's per-UID firewall. No injected transports or mock server responses.
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  LauncherWidgetsBinding.ensureInitialized();
   final hardware = await Process.run('/system/bin/getprop', ['ro.hardware']);
   require(
     Platform.isAndroid &&

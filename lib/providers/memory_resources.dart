@@ -1,6 +1,8 @@
 import 'package:flutter/widgets.dart';
 import '../diagnostics_store.dart';
 import '../home_tile_diagnostics.dart';
+import '../launcher_image_cache.dart';
+import '../poster_disk_cache.dart';
 import 'service_lifecycle.dart';
 import 'settings_service.dart';
 
@@ -10,7 +12,7 @@ class MemoryCacheStats {
   const MemoryCacheStats(this.bytes, this.entries);
 }
 
-enum MemoryCacheKind { appIcons, appBanners, watchNextPosters, other }
+enum MemoryCacheKind { appIcons, appBanners, appChannelPosters, watchNextPosters, other }
 
 class _Resource {
   final VoidCallback clear;
@@ -19,38 +21,46 @@ class _Resource {
   final void Function(bool)? configure;
   final Map<MemoryCacheKind, MemoryCacheStats> Function()? breakdown;
   final Map<String, int> Function()? activity;
-  _Resource(this.clear, this.stats, this.resume, this.configure, this.breakdown, this.activity);
+  final Map<MemoryCacheKind, PosterDiskCache> disk;
+  _Resource(this.clear, this.stats, this.resume, this.configure, this.breakdown, this.activity, this.disk);
 }
 
-/// Tracks reconstructible caches only; never removes preferences or files.
+/// Tracks reconstructible image caches. Disk eviction is separate from RAM cleanup.
 class MemoryResources extends ChangeNotifier
     with ServiceLifecycle, WidgetsBindingObserver {
   final SettingsService? _settings;
   final bool secondaryEngine;
+  final Map<MemoryCacheKind, PosterDiskCache> posterDisks;
   bool _economy = false;
-  bool _profileInitialized = false;
+  (int, int, int, int)? _budgets;
   final _resources = <Object, _Resource>{};
   bool _foreground = true;
   bool get isForeground => _foreground;
   bool get economyEnabled => _economy;
-  MemoryResources({this._settings, this.secondaryEngine = false}) {
+  MemoryResources({this._settings, this.secondaryEngine = false, this.posterDisks = const {}}) {
     WidgetsBinding.instance.addObserver(this);
     _settings?.addListener(_updateProfile);
     _updateProfile();
   }
   void _updateProfile() {
     final enabled = _settings?.memorySaverEnabled ?? false;
-    if (_profileInitialized && _economy == enabled) return;
-    _profileInitialized = true;
+    for (final entry in posterDisks.entries) {
+      final limit = entry.key == MemoryCacheKind.appChannelPosters ? MemoryLimit.feedDisk : MemoryLimit.watchDisk;
+      entry.value.maximumBytes = (_settings?.memoryLimit(limit) ?? limit.normal) * 1024 * 1024;
+    }
+    int limit(MemoryLimit value) => _settings?.memoryLimit(value) ?? value.normal;
+    final budgets = (limit(MemoryLimit.icons), limit(MemoryLimit.banners),
+        limit(MemoryLimit.decodedApps), limit(MemoryLimit.decodedPosters));
+    final modeChanged = _budgets == null || _economy != enabled;
+    if (!modeChanged && budgets == _budgets) return;
+    _budgets = budgets;
     _economy = enabled;
-    PaintingBinding.instance.imageCache.maximumSizeBytes =
-        (secondaryEngine ? 8 : enabled ? 16 : 50) * 1024 * 1024;
-    PaintingBinding.instance.imageCache.maximumSize =
-        secondaryEngine ? 20 : enabled ? 64 : 100;
+    configureLauncherImageCache(economy: enabled, secondaryEngine: secondaryEngine,
+        applicationMiB: budgets.$3, posterMiB: budgets.$4);
     for (final resource in _resources.values.toList()) {
       resource.configure?.call(enabled);
     }
-    _clearRecoverableCaches(HomeTileCacheClear.memoryProfile);
+    if (modeChanged) _clearRecoverableCaches(HomeTileCacheClear.memoryProfile);
   }
 
   void register(Object owner,
@@ -59,8 +69,9 @@ class MemoryResources extends ChangeNotifier
       VoidCallback? resume,
       void Function(bool)? configure,
       Map<MemoryCacheKind, MemoryCacheStats> Function()? breakdown,
+      Map<MemoryCacheKind, PosterDiskCache> disk = const {},
       Map<String, int> Function()? activity}) {
-    _resources[owner] = _Resource(clear, stats, resume, configure, breakdown, activity);
+    _resources[owner] = _Resource(clear, stats, resume, configure, breakdown, activity, disk);
     configure?.call(_economy);
   }
 
@@ -85,6 +96,31 @@ class MemoryResources extends ChangeNotifier
       }
     }
     return Map.unmodifiable(result);
+  }
+  Map<MemoryCacheKind, PosterDiskCache> get _disks => {
+      ...posterDisks,
+      for (final resource in _resources.values) ...resource.disk,
+    };
+
+  bool get hasPosterDisks => _disks.isNotEmpty;
+
+  Future<int?> clearDiskCaches() async {
+    var freed = 0;
+    for (final disk in _disks.values.toSet()) {
+      final bytes = await disk.clear();
+      if (bytes == null) return null;
+      freed += bytes;
+    }
+    return freed;
+  }
+
+  Future<Map<MemoryCacheKind, MemoryCacheStats>> diskCacheBreakdown() async {
+    final result = <MemoryCacheKind, MemoryCacheStats>{};
+    for (final entry in _disks.entries) {
+      final stats = await entry.value.stats();
+      if (stats != null) result[entry.key] = MemoryCacheStats(stats.bytes, stats.entries);
+    }
+    return result;
   }
   MemoryCacheStats get encodedImages => MemoryCacheStats(
         _resources.values
@@ -116,12 +152,11 @@ class MemoryResources extends ChangeNotifier
         state == AppLifecycleState.hidden) {
       final wasForeground = _foreground;
       _foreground = false;
-      // Normal app switching keeps the bounded caches warm for instant return.
-      // Economy mode and memory pressure still release reconstructible caches.
+      // A background transition may deliver both hidden and paused.
       if (wasForeground) {
         _traceLifecycle();
-        if (_economy) {
-          _clearRecoverableCaches(HomeTileCacheClear.backgroundEconomy);
+        if (_settings?.clearCachesOnBackground ?? _economy) {
+          _clearRecoverableCaches(_economy ? HomeTileCacheClear.backgroundEconomy : HomeTileCacheClear.background);
         } else {
           notifyListeners();
         }

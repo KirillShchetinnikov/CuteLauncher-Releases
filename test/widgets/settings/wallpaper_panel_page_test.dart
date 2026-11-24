@@ -148,6 +148,7 @@ void main() {
     final prefs = await SharedPreferences.getInstance();
     final settings = SettingsService(prefs);
     final wallpaper = MockWallpaperService();
+    when(wallpaper.gradient).thenReturn(FLauncherGradients.pitchBlack);
     final online = OnlineWallpaperService(prefs, directory: () async => Directory.systemTemp,
       bingLookup: () async => throw const SocketException('offline'));
     await tester.runAsync(() async {

@@ -8,7 +8,6 @@ abstract final class SettingsInfoTokens {
   static const radius = 12.0;
   static const iconSize = 20.0;
   static const surfaceOpacity = .05;
-  static const keyOpacity = .14;
   static const controlHintMargin = EdgeInsets.only(top: 8);
   static const controlHintPadding = EdgeInsets.symmetric(
     horizontal: 8,

@@ -46,15 +46,23 @@ void main() {
     for (final language in ['en', 'ru', 'ar']) {
       await tester.pumpWidget(buildSubject(language));
       await tester.pumpAndSettle();
-      final list = tester.widget<ListView>(find.byType(ListView));
-      final rows = (list.childrenDelegate as SliverChildListDelegate).children;
-      final labels = rows.whereType<SettingsOptionTile>()
+      final labels = tester.widgetList<SettingsOptionTile>(find.byType(SettingsOptionTile))
           .map((row) => (row.title as Text).data).toList();
       expect(labels, containsAll(languageNames.values));
       expect(Directionality.of(tester.element(find.byType(AppLanguagePage))),
           language == 'ar' ? TextDirection.rtl : TextDirection.ltr);
       expect(tester.takeException(), isNull);
     }
+  });
+
+  testWidgets('on entry the remote focuses the saved language below the fold', (tester) async {
+    final saved = languageNames.entries.last;
+    await settingsService.setAppLanguage(saved.key);
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+    final name = find.text(saved.value);
+    expect(Focus.of(tester.element(name)).hasFocus, isTrue);
+    expect(name.hitTestable(), findsOneWidget);
   });
 
   testWidgets('every offered language can be selected and system default restored', (tester) async {

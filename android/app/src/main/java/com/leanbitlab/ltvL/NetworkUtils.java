@@ -11,7 +11,6 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.telephony.TelephonyManager;
 
-import androidx.annotation.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -106,9 +105,11 @@ public class NetworkUtils
         boolean isVpnActive = false;
         NetworkCapabilities physicalCaps = null;
 
+        boolean internetValidated = false;
         if (network != null) {
             NetworkCapabilities activeCaps = connectivityManager.getNetworkCapabilities(network);
             if (activeCaps != null) {
+                internetValidated = activeCaps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED);
                 if (activeCaps.hasTransport(NetworkCapabilities.TRANSPORT_VPN)) {
                     isVpnActive = true;
                 } else {
@@ -165,7 +166,6 @@ public class NetworkUtils
                     if (map == null) map = new HashMap<>();
                     map.put(KEY_NETWORK_TYPE, NETWORK_TYPE_WIFI);
                     map.put(KEY_NETWORK_ACCESS, true);
-                    map.put(KEY_INTERNET_ACCESS, true);
                     wirelessNetworkSignalLevel = getWifiSignalLevel(wifiInfo);
                 }
             }
@@ -175,7 +175,6 @@ public class NetworkUtils
                         if (map == null) map = new HashMap<>();
                         map.put(KEY_NETWORK_TYPE, NETWORK_TYPE_WIRED);
                         map.put(KEY_NETWORK_ACCESS, true);
-                        map.put(KEY_INTERNET_ACCESS, true);
                     }
                 }
             }
@@ -185,7 +184,6 @@ public class NetworkUtils
                         if (map == null) map = new HashMap<>();
                         map.put(KEY_NETWORK_TYPE, NETWORK_TYPE_CELLULAR);
                         map.put(KEY_NETWORK_ACCESS, true);
-                        map.put(KEY_INTERNET_ACCESS, true);
                     }
                 }
             }
@@ -198,11 +196,11 @@ public class NetworkUtils
             map = new HashMap<>();
             map.put(KEY_NETWORK_TYPE, NETWORK_TYPE_UNKNOWN);
             map.put(KEY_NETWORK_ACCESS, false);
-            map.put(KEY_INTERNET_ACCESS, false);
         }
 
         map.put(KEY_WIRELESS_SIGNAL_LEVEL, wirelessNetworkSignalLevel);
         map.put(KEY_VPN_ACTIVE, isVpnActive);
+        map.put(KEY_INTERNET_ACCESS, internetValidated);
 
         return map;
     }

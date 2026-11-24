@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flauncher/diagnostics/economy_diagnostics.dart';
 import 'package:flauncher/content_image.dart';
 import 'package:flauncher/image_byte_cache.dart';
+import 'package:flauncher/launcher_image_cache.dart';
 import 'package:flauncher/main.dart' as launcher;
 import 'package:flauncher/providers/memory_resources.dart';
 import 'package:flauncher/providers/settings_service.dart';
@@ -23,7 +24,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// Isolated fixture using the production rendering widgets/LRU. Not a substitute
 /// for a real catalogue: measures saturated caches and effects separately.
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  LauncherWidgetsBinding.ensureInitialized();
   final hardware = (await Process.run('/system/bin/getprop', [
     'ro.hardware',
   ])).stdout.toString().trim();

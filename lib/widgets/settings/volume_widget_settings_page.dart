@@ -5,13 +5,11 @@ import 'package:provider/provider.dart';
 import '../../l10n/app_localizations.dart';
 import '../../providers/settings_service.dart';
 import '../rounded_switch_list_tile.dart';
-import 'focusable_settings_tile.dart';
+import 'access_settings_links.dart';
 import 'overlay_appearance_tile.dart';
 import 'overlay_position_tile.dart';
-import 'remote_buttons_page.dart';
 import 'settings_help.dart';
 import 'settings_page_layout.dart';
-import 'settings_route.dart';
 import 'settings_value_stepper.dart';
 
 class VolumeWidgetSettingsPage extends StatelessWidget {
@@ -49,16 +47,7 @@ class VolumeWidgetSettingsPage extends StatelessWidget {
             value: settings.volumeOverlayAppearance,
             onChanged: settings.setVolumeOverlayAppearance,
           ),
-          if (settings.showVolumeOverlay)
-            FocusableSettingsTile(
-              title: Text(l.remoteAccessSettings),
-              leading: const Icon(Icons.accessibility),
-              onPressed: () => Navigator.of(context).push(
-                SettingsRoute(
-                  builder: (_) => const RemoteButtonsPage(section: 'access'),
-                ),
-              ),
-            ),
+          if (settings.showVolumeOverlay) const AccessibilitySettingsLink(),
           SettingsHelp(text: l.volumeOverlayHelp),
         ],
       ),

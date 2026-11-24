@@ -3156,7 +3156,7 @@ void main() {
       final viewport = find.byType(SingleChildScrollView).first;
       final scroll = tester.widget<SingleChildScrollView>(viewport).controller!;
       final tile = find.ancestor(
-        of: find.text('This category is empty.'),
+        of: find.text('This section is empty. Press OK to manage sections.'),
         matching: find.byType(InkWell),
       );
       for (final (category, key, direction) in [
@@ -3657,7 +3657,7 @@ void main() {
         expect(isAppCardFocused(tester, 'top.app'), isTrue);
       } else {
         final emptyTile = tester.widget<InkWell>(find.ancestor(
-          of: find.text('This category is empty.'),
+          of: find.text('This section is empty. Press OK to manage sections.'),
           matching: find.byType(InkWell),
         ));
         expect(emptyTile.focusNode!.hasPrimaryFocus, isTrue);
@@ -3702,7 +3702,7 @@ void main() {
     expect(find.text("Favorites"), findsOneWidget);
 
     expect(find.byType(HomeSection), findsNWidgets(2));
-    expect(find.text("This category is empty."), findsNWidgets(2));
+    expect(find.text("This section is empty. Press OK to manage sections."), findsNWidgets(2));
   });
 
   testWidgets("Home page displays background image", (tester) async {
@@ -4221,6 +4221,8 @@ SettingsService mkSettingsService() {
   when(settingsService.wallpaperSaturation).thenReturn(1);
   when(settingsService.wallpaperDimming).thenReturn(1);
   when(settingsService.memorySaverEnabled).thenReturn(false);
+  when(settingsService.memoryLimit(MemoryLimit.preload)).thenAnswer((_) =>
+      settingsService.memorySaverEnabled ? MemoryLimit.preload.economy : MemoryLimit.preload.normal);
   when(settingsService.watchNextAppLimits).thenReturn({});
   when(settingsService.rememberCategoryFocus).thenReturn(false);
   when(settingsService.cardFocusMode).thenReturn(CardFocusMode.first);

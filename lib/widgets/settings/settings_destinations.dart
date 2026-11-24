@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../../flauncher_channel.dart';
 import '../../providers/screensaver_service.dart';
 import '../../providers/tv_inputs_service.dart';
 
 import 'package:provider/provider.dart';
 
 import 'adb_page.dart';
+import 'access_settings_links.dart';
 import 'app_permissions_page.dart';
 import 'auto_launch_page.dart';
 import 'diagnostics_page.dart';
-import 'display_settings_page.dart';
+import 'brightness_page.dart';
 import 'focusable_settings_tile.dart';
-import 'memory_page.dart';
 import 'recent_apps_page.dart';
 import 'remote_buttons_page.dart';
 import 'remote_panel_page.dart';
@@ -84,11 +85,21 @@ class LauncherFunctionsPage extends StatelessWidget {
               ),
               FocusableSettingsTile(
                 leading: const Icon(Icons.nightlight_outlined),
-                title: Text(l.nightModeAndBrightness),
+                title: Text(l.nightModeTitle),
                 onPressed: () =>
-                    Navigator.of(context)
-                        .pushNamed(DisplaySettingsPage.routeName),
+                    Navigator.of(context).pushNamed(NightModePage.routeName),
               ),
+              FocusableSettingsTile(
+                leading: const Icon(Icons.brightness_6),
+                title: Text(l.scheduledBrightness),
+                onPressed: () =>
+                    Navigator.of(context).pushNamed(BrightnessPage.routeName),
+              ),
+            ],
+          ),
+          SettingsSection(
+            title: l.settingsMaintenanceGroup,
+            children: [
               FocusableSettingsTile(
                 leading: const Icon(Icons.verified_user_outlined),
                 title: Text(l.appPermissionsTitle),
@@ -96,11 +107,6 @@ class LauncherFunctionsPage extends StatelessWidget {
                   SettingsRoute(builder: (_) => const AppPermissionsPage()),
                 ),
               ),
-            ],
-          ),
-          SettingsSection(
-            title: l.settingsMaintenanceGroup,
-            children: [
               FocusableSettingsTile(
                 leading: const Icon(Icons.app_blocking_outlined),
                 title: Text(l.cleanerTitle),
@@ -148,6 +154,11 @@ class LauncherAccessPage extends StatelessWidget {
             title: l.adbDefaultBlock,
             children: [
               FocusableSettingsTile(
+                leading: const Icon(Icons.open_in_new),
+                title: Text(l.launcherChooseInAndroid),
+                onPressed: () => FLauncherChannel().openDefaultLauncherSettings(),
+              ),
+              FocusableSettingsTile(
                 leading: const Icon(Icons.home_outlined),
                 title: Text(l.defaultLauncherViaAdb),
                 onPressed: () => Navigator.of(context).push(
@@ -158,7 +169,7 @@ class LauncherAccessPage extends StatelessWidget {
               ),
               FocusableSettingsTile(
                 leading: const Icon(Icons.accessibility_new),
-                title: Text(l.defaultLauncherViaAccessibility),
+                title: Text(l.adbHomeBlock),
                 onPressed: () => Navigator.of(context).push(
                   SettingsRoute(builder: (_) => const AdbPage(section: 'home')),
                 ),
@@ -166,16 +177,8 @@ class LauncherAccessPage extends StatelessWidget {
             ],
           ),
           SettingsSection(
-            title: 'ADB',
-            children: [
-              FocusableSettingsTile(
-                leading: const Icon(Icons.link),
-                title: Text(l.adbConnectionBlock),
-                onPressed: () =>
-                    Navigator.of(context)
-                        .pushNamed(AdbPage.connectionRouteName),
-              ),
-            ],
+            title: l.settingsGroupAccess,
+            children: const [AccessibilitySettingsLink(), AdbConnectionLink()],
           ),
         ],
       ),
@@ -195,22 +198,18 @@ class LauncherDiagnosticsPage extends StatelessWidget {
       child: ListView(
         children: [
           SettingsSection(
-            title: l.performanceAndDiagnostics,
             children: [
               FocusableSettingsTile(
-                leading: const Icon(Icons.memory_outlined),
-                title: Text(l.memoryTitle),
-                onPressed: () =>
-                    Navigator.of(context).pushNamed(MemoryPage.routeName),
-              ),
-              const RenderCompatibilityTile(),
-              FocusableSettingsTile(
                 leading: const Icon(Icons.bug_report_outlined),
-                title: Text(l.diagnosticsHubTitle),
+                title: Text(l.diagnosticsReportsAndRecording),
                 onPressed: () =>
                     Navigator.of(context).pushNamed(DiagnosticsPage.routeName),
               ),
             ],
+          ),
+          SettingsSection(
+            title: l.compatibilityGroup,
+            children: const [RenderCompatibilityTile()],
           ),
         ],
       ),
@@ -260,13 +259,16 @@ class WidgetSettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
+    final inputs = context.watch<TvInputsService?>();
     Widget link(
       String title,
       IconData icon,
       String route, {
       bool enabled = true,
+      String? detail,
     }) => FocusableSettingsTile(
       title: Text(title),
+      trailing: detail == null ? null : Text(detail),
       leading: Icon(icon),
       enabled: enabled,
       onPressed: () => Navigator.of(context).pushNamed(route),
@@ -277,7 +279,8 @@ class WidgetSettingsPage extends StatelessWidget {
           leading: Icon(icon),
           onPressed: () => Navigator.of(context).push(
             SettingsRoute(
-              builder: (_) => IndicatorSettingsPage(id: id, title: title),
+              settings: const RouteSettings(name: WidgetPlacementPage.routeName),
+              builder: (_) => WidgetPlacementPage(id: id, title: title),
             ),
           ),
         );
@@ -298,7 +301,7 @@ class WidgetSettingsPage extends StatelessWidget {
           SettingsSection(
             title: l.networkSummary,
             children: [
-              placement(l.showNetwork, Icons.wifi, 'network'),
+              placement(l.networkSummary, Icons.wifi, 'network'),
               link(
                 l.vpnTitle,
                 Icons.vpn_key_outlined,
@@ -310,7 +313,7 @@ class WidgetSettingsPage extends StatelessWidget {
                 NetworkSpeedSettingsPage.routeName,
               ),
               link(
-                l.showTraffic,
+                l.trafficTitle,
                 Icons.data_usage,
                 TrafficSettingsPage.routeName,
               ),
@@ -320,7 +323,7 @@ class WidgetSettingsPage extends StatelessWidget {
             title: l.soundAndInputsGroup,
             children: [
               link(
-                l.showVolume,
+                l.audioStatusTitle,
                 Icons.volume_up_outlined,
                 VolumeWidgetSettingsPage.routeName,
               ),
@@ -328,8 +331,16 @@ class WidgetSettingsPage extends StatelessWidget {
                 l.inputs,
                 Icons.settings_input_hdmi,
                 InputsSettingsPage.routeName,
-                enabled: context.watch<TvInputsService?>()?.hasInputs == true,
+                enabled: inputs?.hasInputs == true,
+                detail: inputs != null && inputs.initialized && !inputs.hasInputs
+                    ? l.inputsUnavailableStatus
+                    : null,
               ),
+            ],
+          ),
+          SettingsSection(
+            title: l.storageDevicesGroup,
+            children: [
               placement(l.usbStorageTitle, Icons.usb, 'usb'),
               placement(l.networkStorageTitle, Icons.storage, 'nas'),
             ],

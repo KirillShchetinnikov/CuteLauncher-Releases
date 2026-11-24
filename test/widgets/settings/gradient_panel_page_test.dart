@@ -37,15 +37,21 @@ void main() {
     binding.platformDispatcher.textScaleFactorTestValue = 0.8;
   });
 
-  testWidgets("Selecting a gradient calls WallpaperService", (tester) async {
-    final wallpaperService = MockWallpaperService();
+  testWidgets('remote starts on the saved gradient and preserves the check while browsing', (tester) async {
+    final wallpaper = MockWallpaperService();
+    final saved = FLauncherGradients.africanField;
+    when(wallpaper.gradient).thenReturn(saved);
+    await _pumpWidgetWithProviders(tester, wallpaper);
 
-    await _pumpWidgetWithProviders(tester, wallpaperService);
-
-    expect(find.byKey(Key("gradient-${FLauncherGradients.greatWhale.uuid}")), findsOneWidget);
+    Finder card(FLauncherGradient gradient) => find.byKey(Key('gradient-${gradient.uuid}'));
+    expect(find.descendant(of: card(saved), matching: find.byIcon(Icons.check)), findsOneWidget);
+    expect(Focus.of(tester.element(find.descendant(of: card(saved), matching: find.text(saved.name)))).hasFocus, isTrue);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+    await tester.pumpAndSettle();
+    expect(find.descendant(of: card(saved), matching: find.byIcon(Icons.check)), findsOneWidget);
     await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
-    verify(wallpaperService.setGradient(FLauncherGradients.all.first));
+    verify(wallpaper.setGradient(FLauncherGradients.saintPetersburg)).called(1);
   });
 }
 

@@ -9,7 +9,6 @@ import '../l10n/app_localizations.dart';
 import '../recent_apps_client.dart';
 import '../theme/launcher_style.dart';
 import 'remote_panel.dart';
-import 'recent_apps_access.dart';
 import 'recent_apps_memory.dart';
 import 'settings/settings_panel_style.dart';
 import 'settings/focusable_settings_tile.dart';
@@ -27,9 +26,8 @@ class _RecentAppsPanelState extends State<RecentAppsPanel>
   final _client = RecentAppsClient();
   final _icons = <String, Future<Uint8List?>>{};
   List<RecentApp> _apps = [];
-  bool _busy = true, _failed = false;
+  bool _busy = false, _failed = false;
   bool _readySent = false;
-  int _accessRevision = 0;
   int _memoryRevision = 0;
   int? _ramTotal, _ramAvailable;
   bool _ramLoading = true, _foreground = true;
@@ -128,12 +126,11 @@ class _RecentAppsPanelState extends State<RecentAppsPanel>
   }
 
   Future<void> _run(String action, [String? pkg]) async {
-    if (_busy && _accessRevision > 0) return;
+    if (_busy) return;
     _memoryRevision++;
     final previousFocus = FocusManager.instance.primaryFocus;
     setState(() {
       _busy = true;
-      _accessRevision++;
       _failed = false;
     });
     try {
@@ -222,14 +219,9 @@ class _RecentAppsPanelState extends State<RecentAppsPanel>
                               l.recentAppsTitle,
                               style: Theme.of(context).textTheme.titleLarge,
                             ),
-                            RecentAppsAccess(
-                              key: const ValueKey('recent_access_header'),
-                              revision: _accessRevision,
-                            ),
                             if (!scrollMemory) memoryHeader,
                             if (_busy) const LinearProgressIndicator(),
                             Row(
-                              key: const ValueKey('recent_actions'),
                               children: [
                                 Expanded(
                                   child: FocusableSettingsTile(
@@ -245,7 +237,9 @@ class _RecentAppsPanelState extends State<RecentAppsPanel>
                                     title: Text(l.recentAppsCloseAll),
                                     enabled:
                                         !_busy &&
-                                        _apps.any((app) => app.userApp),
+                                        _apps.any(
+                                          (app) => app.canClose && app.userApp,
+                                        ),
                                     onPressed: () => _run('closeAll'),
                                   ),
                                 ),
@@ -260,7 +254,6 @@ class _RecentAppsPanelState extends State<RecentAppsPanel>
                               ],
                             ),
                             Flexible(
-                              key: const ValueKey('recent_list'),
                               child: ListView.builder(
                                 shrinkWrap: true,
                                 itemCount: _apps.length + 1,
@@ -328,18 +321,19 @@ class _RecentAppsPanelState extends State<RecentAppsPanel>
                                               _run('switch', app.packageName),
                                         ),
                                       ),
-                                      PanelTooltip(
-                                        message: l.close,
-                                        child: IconButton(
-                                          onPressed: _busy
-                                              ? null
-                                              : () => _run(
-                                                  'close',
-                                                  app.packageName,
-                                                ),
-                                          icon: const Icon(Icons.close),
+                                      if (app.canClose)
+                                        PanelTooltip(
+                                          message: l.close,
+                                          child: IconButton(
+                                            onPressed: _busy
+                                                ? null
+                                                : () => _run(
+                                                    'close',
+                                                    app.packageName,
+                                                  ),
+                                            icon: const Icon(Icons.close),
+                                          ),
                                         ),
-                                      ),
                                     ],
                                   );
                                 },

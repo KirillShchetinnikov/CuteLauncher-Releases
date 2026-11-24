@@ -8,6 +8,7 @@ import '../../quick_actions.dart';
 import '../quick_action_presentation.dart';
 import 'settings_reorder_controls.dart';
 import '../action_notice.dart';
+import 'access_settings_links.dart';
 import 'focusable_settings_tile.dart';
 import 'settings_help.dart';
 import 'settings_information.dart';
@@ -156,6 +157,10 @@ class _QuickActionsOrderPageState extends State<QuickActionsOrderPage> {
                 title: l.tvPowerTitle,
                 text: l.quickActionsPowerHelp,
               ),
+            if (widget.editVisibility) ...[
+              AccessibilitySettingsLink(busy: _saving || _moving != null),
+              AdbConnectionLink(busy: _saving || _moving != null),
+            ],
           ],
         ),
       ),

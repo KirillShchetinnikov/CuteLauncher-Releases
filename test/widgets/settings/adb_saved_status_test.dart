@@ -97,7 +97,7 @@ void main() {
       await tester.pumpAndSettle();
       await open();
       expect(tile().onPressed, isNull);
-      expect(find.text('Перейти к проверке АДБ'), findsOneWidget);
+      expect(find.text('Подключение ADB'), findsOneWidget);
       expect(actions, ['preview']);
       expect(tester.takeException(), isNull);
     },

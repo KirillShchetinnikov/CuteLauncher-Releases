@@ -8,6 +8,7 @@ enum HomeTileCacheClear {
   memoryPressure,
   memoryProfile,
   backgroundEconomy,
+  background,
 }
 
 enum HomeTileRead {

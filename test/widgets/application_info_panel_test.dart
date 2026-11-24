@@ -482,7 +482,9 @@ void main() {
     );
     final reset = find.text(l.informationResetTypography);
     await tester.scrollUntilVisible(reset, 200);
-    await tester.tap(reset);
+    Focus.of(tester.element(reset)).requestFocus();
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
     await tester.pumpAndSettle();
     expect(
       preferences.get(applicationInfoConfigurationKey),

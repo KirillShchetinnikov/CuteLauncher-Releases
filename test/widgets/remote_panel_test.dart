@@ -328,6 +328,7 @@ void main() {
     await panel.setAppearance('panelColor', 0xff123456);
     await panel.setAppearance('panelOpacity', .8);
     final settings = MockSettingsService();
+    when(settings.panelTooltipsEnabled).thenReturn(false);
     when(settings.autoHideAppBarEnabled).thenReturn(true);
     when(settings.showDateInStatusBar).thenReturn(false);
     when(settings.showTimeInStatusBar).thenReturn(false);

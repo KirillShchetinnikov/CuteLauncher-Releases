@@ -8,6 +8,7 @@ import 'focusable_settings_tile.dart';
 class SettingsOptionTile extends StatelessWidget {
   final Widget title;
   final Widget? leading;
+  final FocusNode? focusNode;
   final bool selected, enabled, autofocus;
   final VoidCallback onPressed;
   const SettingsOptionTile({
@@ -16,6 +17,7 @@ class SettingsOptionTile extends StatelessWidget {
     required this.selected,
     required this.onPressed,
     this.leading,
+    this.focusNode,
     this.enabled = true,
     this.autofocus = false,
   });
@@ -24,6 +26,7 @@ class SettingsOptionTile extends StatelessWidget {
   Widget build(BuildContext context) => FocusableSettingsTile(
     title: title,
     leading: leading,
+    focusNode: focusNode,
     selected: selected,
     enabled: enabled,
     autofocus: autofocus,

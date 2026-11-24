@@ -18,7 +18,9 @@ import '../../remote_mapping_configuration.dart';
 import '../application_list_icon.dart';
 import '../launcher_dialog.dart';
 import '../rounded_switch_list_tile.dart';
+import 'access_settings_links.dart';
 import 'focusable_settings_tile.dart';
+import 'settings_information.dart';
 import 'remote_action_picker.dart';
 import 'settings_choice_tile.dart';
 import 'settings_page_layout.dart';
@@ -63,6 +65,7 @@ String _actionLabel(AppLocalizations l, String value) => switch (value) {
   'reboot' => l.remotePowerWithConfirmation(l.tvPowerReboot),
   'reboot_immediate' => l.remotePowerWithoutConfirmation(l.tvPowerReboot),
   'black_overlay' => l.remoteMappingBlackOverlay,
+  'screenshot' => l.remoteMappingScreenshot,
   'toggle_night_mode' => l.remoteMappingToggleNightMode,
   'tcl_screen_off' => l.remoteMappingTclScreenOff,
   'hdmi' => l.autoLaunchHdmi,
@@ -85,7 +88,8 @@ String _bindingLabel(AppLocalizations l, RemoteMapping item) =>
 
 class RemoteMappingsPage extends StatefulWidget {
   final bool switchOnly;
-  const RemoteMappingsPage({super.key, this.switchOnly = false});
+  final bool panelShortcut;
+  const RemoteMappingsPage({super.key, this.switchOnly = false, this.panelShortcut = false});
   @override
   State<RemoteMappingsPage> createState() => _RemoteMappingsPageState();
 }
@@ -93,12 +97,13 @@ class RemoteMappingsPage extends StatefulWidget {
 class _RemoteMappingsPageState extends State<RemoteMappingsPage>
     with WidgetsBindingObserver {
   RemoteMappingConfiguration _config = const RemoteMappingConfiguration();
-  bool _busy = true, _failed = false, _loaded = false;
+  bool _busy = false, _failed = false, _loaded = false;
   bool _connected = false;
   bool _tclScreenOff = false;
   bool _directHdmi = false;
   Set<String> _tvActions = {};
   String _status = 'idle';
+  RemoteMapping? _panelBinding;
 
   @override
   void initState() {
@@ -119,6 +124,7 @@ class _RemoteMappingsPageState extends State<RemoteMappingsPage>
   }
 
   Future<bool> _load([RemoteMappingConfiguration? save]) async {
+    if (_busy || (save != null && !_loaded)) return false;
     setState(() => _busy = true);
     try {
       final result = await _bridge
@@ -131,6 +137,10 @@ class _RemoteMappingsPageState extends State<RemoteMappingsPage>
       final config = RemoteMappingConfiguration.fromMap(result);
       if (mounted) {
         setState(() {
+          if (!_loaded && widget.panelShortcut) {
+            final matches = config.bindings.where((item) => item.action == 'panel');
+            _panelBinding = matches.where((item) => item.enabled).firstOrNull ?? matches.firstOrNull;
+          }
           _config = config;
           _loaded = true;
           _failed = false;
@@ -144,11 +154,17 @@ class _RemoteMappingsPageState extends State<RemoteMappingsPage>
         });
       }
     } catch (_) {
-      if (mounted) setState(() => _failed = true);
+      if (mounted) {
+        setState(() {
+          _failed = true;
+          if (save == null && !widget.panelShortcut) _loaded = false;
+        });
+      }
+      return false;
     } finally {
       if (mounted) setState(() => _busy = false);
     }
-    return !_failed;
+    return true;
   }
 
   Future<void> _reset() async {
@@ -177,39 +193,48 @@ class _RemoteMappingsPageState extends State<RemoteMappingsPage>
     }
   }
 
-  Future<void> _edit(RemoteMapping? mapping) async {
-    await Navigator.of(context).push<void>(
-      SettingsRoute(
-        builder: (_) => _MappingEditor(
-          mapping: mapping,
-          used: _config.bindings
-              .where((item) => item.slot != mapping?.slot)
-              .map((item) => item.slot)
-              .toSet(),
-          connected: _connected,
-          tclScreenOff: _tclScreenOff,
-          directHdmi: _directHdmi,
-          tvActions: _tvActions,
-          onSave: (value) => _load(
-            (mapping == null
-                    ? _config
-                    : _config.remove(mapping.keyCode, mapping.trigger))
-                .replace(value),
-          ),
-          onDelete: mapping == null
-              ? null
-              : () => _load(_config.remove(mapping.keyCode, mapping.trigger)),
-        ),
-      ),
-    );
-  }
+  Widget _editor(RemoteMapping? mapping, {Widget? master}) => _MappingEditor(
+    mapping: mapping,
+    panelShortcut: widget.panelShortcut,
+    master: master,
+    used: _config.bindings
+        .where((item) => item.slot != mapping?.slot)
+        .map((item) => item.slot)
+        .toSet(),
+    connected: _connected,
+    tclScreenOff: _tclScreenOff,
+    directHdmi: _directHdmi,
+    tvActions: _tvActions,
+    onSave: (value) => _load(
+      (mapping == null
+              ? _config
+              : _config.remove(mapping.keyCode, mapping.trigger))
+          .replace(value),
+    ),
+    onDelete: mapping == null
+        ? null
+        : () => _load(_config.remove(mapping.keyCode, mapping.trigger)),
+  );
+
+  Future<void> _edit(RemoteMapping? mapping) => Navigator.of(context).push<void>(
+    SettingsRoute(builder: (_) => _editor(mapping)),
+  );
 
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
+    if (!_loaded) {
+      final feedback = _failed
+          ? SettingsLoadRetry(busy: _busy, onRetry: () => _load())
+          : const LinearProgressIndicator();
+      if (widget.switchOnly) return feedback;
+      return SettingsPageLayout(
+        title: Text(l.remoteBindings),
+        child: ListView(children: [feedback]),
+      );
+    }
     final master = RoundedSwitchListTile(
       value: _config.enabled,
-      enabled: _loaded,
       busy: _busy,
       title: Text(l.remoteMappingsEnabled),
       onChanged: (value) => _load(_config.copyWith(enabled: value)),
@@ -218,6 +243,27 @@ class _RemoteMappingsPageState extends State<RemoteMappingsPage>
       return Column(
         children: [master, if (_failed) Text(l.remoteMappingInvalid)],
       );
+    }
+    if (widget.panelShortcut) {
+      if (_panelBinding == null && _config.bindings.length >= 64) {
+        return SettingsPageLayout(
+          title: Text(l.remotePanelAssignButton),
+          child: ListView(children: [
+            SettingsMessage(text: l.remoteMappingsLimit, kind: SettingsMessageKind.warning),
+            FocusableSettingsTile(
+              title: Text(l.remoteBindings),
+              onPressed: () async {
+                await Navigator.of(context).push(SettingsRoute(builder: (_) => const RemoteMappingsPage()));
+                if (mounted) {
+                  setState(() => _loaded = false);
+                  await _load();
+                }
+              },
+            ),
+          ]),
+        );
+      }
+      return _editor(_panelBinding, master: _config.enabled ? null : master);
     }
     final inputs = context.watch<TvInputsService?>()?.inputs ?? [];
     return SettingsPageLayout(
@@ -229,7 +275,7 @@ class _RemoteMappingsPageState extends State<RemoteMappingsPage>
           FocusableSettingsTile(
             title: Text(l.remoteMappingsAdd),
             leading: const Icon(Icons.add),
-            enabled: _loaded && _config.bindings.length < 64,
+            enabled: _config.bindings.length < 64,
             busy: _busy,
             onPressed: () => _edit(null),
           ),
@@ -269,6 +315,8 @@ class RemoteMappingsSwitch extends StatelessWidget {
 
 class _MappingEditor extends StatefulWidget {
   final RemoteMapping? mapping;
+  final bool panelShortcut;
+  final Widget? master;
   final Set<String> used;
   final bool connected;
   final bool tclScreenOff;
@@ -278,6 +326,8 @@ class _MappingEditor extends StatefulWidget {
   final Future<bool> Function()? onDelete;
   const _MappingEditor({
     this.mapping,
+    required this.panelShortcut,
+    this.master,
     required this.used,
     required this.connected,
     required this.tclScreenOff,
@@ -293,7 +343,11 @@ class _MappingEditor extends StatefulWidget {
 class _MappingEditorState extends State<_MappingEditor>
     with WidgetsBindingObserver {
   late int _key = widget.mapping?.keyCode ?? 0;
-  late String _action = widget.mapping?.action ?? 'home';
+  String get _initialAction => widget.mapping?.action ?? (widget.panelShortcut ? 'panel' : 'home');
+  late String _action = _initialAction;
+  late bool _connected = widget.connected;
+  final _assignFocus = FocusNode();
+  bool _initialCapture = false;
   late String _target = widget.mapping?.target ?? '';
   late String _trigger = widget.mapping?.trigger ?? 'press';
   late String _name = widget.mapping?.name ?? '';
@@ -304,7 +358,7 @@ class _MappingEditorState extends State<_MappingEditor>
   bool _confirmingExit = false;
   bool get _dirty =>
       _key != (widget.mapping?.keyCode ?? 0) ||
-      _action != (widget.mapping?.action ?? 'home') ||
+      _action != _initialAction ||
       _target != (widget.mapping?.target ?? '') ||
       _trigger != (widget.mapping?.trigger ?? 'press') ||
       _name != (widget.mapping?.name ?? '') ||
@@ -315,6 +369,27 @@ class _MappingEditorState extends State<_MappingEditor>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _setEditing(true);
+    _initialCapture = widget.panelShortcut && widget.mapping == null;
+    _offerCapture();
+  }
+
+  void _offerCapture() {
+    if (!_initialCapture || !_connected) return;
+    _initialCapture = false;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && ModalRoute.of(context)?.isCurrent == true) _assign();
+    });
+  }
+
+  Future<void> _refreshAccess() async {
+    try {
+      final result = await _bridge.invokeMapMethod<String, dynamic>('info');
+      if (!mounted) return;
+      setState(() => _connected = result?['permission'] == true && result?['connected'] == true);
+      _offerCapture();
+    } catch (_) {
+      if (mounted) showActionNotice(context, AppLocalizations.of(context)!.remoteMappingServiceRequired, error: true);
+    }
   }
 
   void _setEditing(bool editing) {
@@ -396,6 +471,7 @@ class _MappingEditorState extends State<_MappingEditor>
 
   @override
   void dispose() {
+    _assignFocus.dispose();
     WidgetsBinding.instance.removeObserver(this);
     _setEditing(false);
     super.dispose();
@@ -403,7 +479,7 @@ class _MappingEditorState extends State<_MappingEditor>
 
   Future<void> _assign() async {
     final l = AppLocalizations.of(context)!;
-    if (!widget.connected) {
+    if (!_connected) {
       showActionNotice(context, l.remoteMappingServiceRequired, error: true);
       return;
     }
@@ -545,6 +621,7 @@ class _MappingEditorState extends State<_MappingEditor>
               if (visible('display_settings')) systemChoice('display_settings'),
               choice('toggle_night_mode'),
               choice('black_overlay'),
+              choice('screenshot', detail: l.remoteMappingNeedsAdb),
               if (widget.tclScreenOff || _action == 'tcl_screen_off')
                 choice(
                   'tcl_screen_off',
@@ -645,6 +722,7 @@ class _MappingEditorState extends State<_MappingEditor>
         type: MaterialType.transparency,
         child: SettingsPageLayout(
           title: Text(l.remoteBindings),
+          initialFocus: widget.panelShortcut && _connected ? _assignFocus : null,
           child: ListView(
             children: [
               SettingsSection(
@@ -661,6 +739,7 @@ class _MappingEditorState extends State<_MappingEditor>
                   ),
                   FocusableSettingsTile(
                     title: Text(l.remoteMappingAssign),
+                    focusNode: _assignFocus,
                     trailing: Text(
                       _key == 0
                           ? l.settingsValueNotSet
@@ -669,6 +748,8 @@ class _MappingEditorState extends State<_MappingEditor>
                     busy: _saving || _importing,
                     onPressed: _assign,
                   ),
+                  if (!_connected)
+                    AccessibilitySettingsLink(onReturn: _refreshAccess),
                   if (widget.mapping != null)
                     RoundedSwitchListTile(
                       title: Text(l.remoteMappingsEnabled),
@@ -729,6 +810,11 @@ class _MappingEditorState extends State<_MappingEditor>
                     SettingsHelp(text: l.remoteMappingBlackOverlayHelp),
                   if (_action == 'tcl_screen_off')
                     SettingsHelp(text: l.remoteMappingTclScreenOffHelp),
+                  if (const {
+                    'adb_shell', 'screenshot', 'sleep', 'sleep_immediate', 'shutdown',
+                    'reboot', 'reboot_immediate', 'tcl_screen_off', 'recents',
+                  }.contains(_action))
+                    AdbConnectionLink(busy: _saving || _importing),
                   if (_action == 'app')
                     FocusableSettingsTile(
                       title: Text(l.applications),
@@ -791,6 +877,8 @@ class _MappingEditorState extends State<_MappingEditor>
                   ],
                 ],
               ),
+              if (widget.master != null)
+                SettingsSection(title: l.remoteButtonsTitle, children: [widget.master!]),
               FocusableSettingsTile(
                 title: Text(l.save),
                 leading: const Icon(Icons.save_outlined),

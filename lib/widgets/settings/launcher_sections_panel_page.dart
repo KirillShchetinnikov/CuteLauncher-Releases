@@ -24,6 +24,7 @@ import 'settings_page_layout.dart';
 
 
 import 'package:flauncher/section_names.dart';
+import 'package:flauncher/providers/appearance_service.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/settings/continue_watching_settings_page.dart';
@@ -35,6 +36,9 @@ import 'package:provider/provider.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 
 import '../../models/category.dart';
+import '../../section_icons.dart';
+import '../action_notice.dart';
+import '../section_heading_icon.dart';
 import 'settings_list_heading.dart';
 
 class LauncherSectionsPanelPage extends StatefulWidget {
@@ -51,8 +55,7 @@ class _LauncherSectionsPanelPageState extends State<LauncherSectionsPanelPage> {
   LauncherSection? _movingSection;
   late AppsService _appsService;
   final Map<Object, FocusNode> _focusNodes = {};
-  DateTime? _lastMoveTime;
-  bool _moveBusy = false;
+  Future<void>? _moves;
   final _addFocusNode = FocusNode();
   final _resetFocusNode = FocusNode();
   bool _resetBusy = false;
@@ -70,9 +73,13 @@ class _LauncherSectionsPanelPageState extends State<LauncherSectionsPanelPage> {
     return _focusNodes.putIfAbsent(key, () => FocusNode());
   }
 
+  bool _isMoving(LauncherSection section) =>
+      _movingSection?.runtimeType == section.runtimeType &&
+      _movingSection?.id == section.id;
+
   @override
   void dispose() {
-    _appsService.persistSectionsOrder();
+    _persistOrder();
     for (final node in _focusNodes.values) {
       node.dispose();
     }
@@ -117,83 +124,93 @@ class _LauncherSectionsPanelPageState extends State<LauncherSectionsPanelPage> {
     AppLocalizations localizations = AppLocalizations.of(context)!;
     final settingsService = Provider.of<SettingsService?>(context);
 
-    return SettingsPageLayout(
-      footer: SettingsControlHint(text: localizations.reorderSectionsHint),
-      title: Text(
-        localizations.launcherSections,
-        style: Theme.of(context).textTheme.titleLarge,
-      ),
-      child: Consumer<AppsService>(
-        builder: (_, service, _) {
-          final displaySections = _getDisplaySections(
-            service.launcherSections,
-            settingsService,
-          );
-          final hidden = _hiddenSections(settingsService);
+    return PopScope(
+      canPop: _movingSection == null,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop && _movingSection != null) _endMove();
+      },
+      child: SettingsPageLayout(
+        footer: SettingsControlHint(
+          text: _movingSection == null
+              ? localizations.reorderSectionsHint
+              : localizations.movingSectionsHint,
+        ),
+        title: Text(
+          localizations.sectionsAndOrder,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        child: Consumer<AppsService>(
+          builder: (_, service, _) {
+            final displaySections = _getDisplaySections(
+              service.launcherSections,
+              settingsService,
+            );
+            final hidden = _hiddenSections(settingsService);
 
-          return SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                SettingsListHeading(title: localizations.visibleCategories),
-                for (var i = 0; i < displaySections.length; i++)
-                  _section(
-                    context,
-                    displaySections[i],
-                    settingsService,
-                    autofocus: i == 0,
-                  ),
-                SettingsListHeading(title: localizations.hiddenCategories),
-                for (var i = 0; i < hidden.length; i++)
-                  _section(context, hidden[i], settingsService),
-                const Divider(),
-                FocusableSettingsTile(
-                  focusNode: _addFocusNode,
-                  leading: const Icon(Icons.add),
-                  title: Text(localizations.addSection),
-                  onPressed: () => _openEditor(),
-                  onKeyEvent: (_, event) {
-                    if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
-                      return KeyEventResult.ignored;
-                    }
-                    if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
-                      final sections = _navigationSections(settingsService);
-                      if (sections.isNotEmpty) {
-                        _getFocusNode(sections.last).requestFocus();
+            return SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  SettingsListHeading(title: localizations.visibleCategories),
+                  for (var i = 0; i < displaySections.length; i++)
+                    _section(
+                      context,
+                      displaySections[i],
+                      settingsService,
+                      autofocus: i == 0,
+                    ),
+                  SettingsListHeading(title: localizations.hiddenCategories),
+                  for (var i = 0; i < hidden.length; i++)
+                    _section(context, hidden[i], settingsService),
+                  const Divider(),
+                  FocusableSettingsTile(
+                    focusNode: _addFocusNode,
+                    leading: const Icon(Icons.add),
+                    title: Text(localizations.addSection),
+                    onPressed: () => _openEditor(),
+                    onKeyEvent: (_, event) {
+                      if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
+                        return KeyEventResult.ignored;
                       }
-                      return KeyEventResult.handled;
-                    }
-                    if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
-                      _resetFocusNode.requestFocus();
-                      return KeyEventResult.handled;
-                    }
-                    return KeyEventResult.ignored;
-                  },
-                ),
-                FocusableSettingsTile(
-                  focusNode: _resetFocusNode,
-                  leading: const Icon(Icons.restore),
-                  title: Text(localizations.resetSections),
-                  onKeyEvent: (_, event) {
-                    if ((event is KeyDownEvent || event is KeyRepeatEvent) &&
-                        event.logicalKey == LogicalKeyboardKey.arrowUp) {
-                      _addFocusNode.requestFocus();
-                      return KeyEventResult.handled;
-                    }
-                    return KeyEventResult.ignored;
-                  },
-                  onPressed: _resetBusy
-                      ? null
-                      : () => _resetSections(settingsService),
-                ),
-                SettingsHelp(
-                  title: localizations.sectionsAndOrder,
-                  text: localizations.sectionRulesHelp,
-                ),
-              ],
-            ),
-          );
-        },
+                      if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+                        final sections = _navigationSections(settingsService);
+                        if (sections.isNotEmpty) {
+                          _getFocusNode(sections.last).requestFocus();
+                        }
+                        return KeyEventResult.handled;
+                      }
+                      if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+                        _resetFocusNode.requestFocus();
+                        return KeyEventResult.handled;
+                      }
+                      return KeyEventResult.ignored;
+                    },
+                  ),
+                  FocusableSettingsTile(
+                    focusNode: _resetFocusNode,
+                    leading: const Icon(Icons.restore),
+                    title: Text(localizations.resetSections),
+                    onKeyEvent: (_, event) {
+                      if ((event is KeyDownEvent || event is KeyRepeatEvent) &&
+                          event.logicalKey == LogicalKeyboardKey.arrowUp) {
+                        _addFocusNode.requestFocus();
+                        return KeyEventResult.handled;
+                      }
+                      return KeyEventResult.ignored;
+                    },
+                    onPressed: _resetBusy
+                        ? null
+                        : () => _resetSections(settingsService),
+                  ),
+                  SettingsHelp(
+                    title: localizations.sectionsAndOrder,
+                    text: localizations.sectionRulesHelp,
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
@@ -217,17 +234,26 @@ class _LauncherSectionsPanelPageState extends State<LauncherSectionsPanelPage> {
       }
     }
 
-    final bool isMoving =
-        _movingSection?.runtimeType == section.runtimeType &&
-        _movingSection?.id == section.id;
+    final isMoving = _isMoving(section);
     final focusNode = _getFocusNode(section);
+    final defaultIcon = switch (section) {
+      Category() => SectionIcon.forCategory(section),
+      ContinueWatchingSection() => SectionIcon.continueWatching,
+      _ => null,
+    };
 
     return FocusableSettingsTile(
       key: ValueKey((section.runtimeType, section.id)),
       focusNode: focusNode,
       autofocus: autofocus,
       selected: isMoving,
-      leading: Icon(isMoving ? Icons.drag_indicator : Icons.drag_handle),
+      leading: defaultIcon == null
+          ? Icon(isMoving ? Icons.drag_indicator : Icons.drag_handle)
+          : Selector<AppearanceService?, SectionIcon>(
+              selector: (_, appearance) =>
+                  appearance?.category(section.id).titleIcon ?? defaultIcon,
+              builder: (_, icon, _) => SectionHeadingIcon(icon),
+            ),
       title: Text(title),
       trailing: isMoving
           ? Column(
@@ -270,12 +296,13 @@ class _LauncherSectionsPanelPageState extends State<LauncherSectionsPanelPage> {
           return KeyEventResult.handled;
         }
 
-        if (isMoving) {
-          if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
-            _moveSection(section, -1, settingsService);
-            return KeyEventResult.handled;
-          } else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
-            _moveSection(section, 1, settingsService);
+        if (_isMoving(section)) {
+          if (event.logicalKey == LogicalKeyboardKey.arrowUp ||
+              event.logicalKey == LogicalKeyboardKey.arrowDown) {
+            final direction = event.logicalKey == LogicalKeyboardKey.arrowUp
+                ? -1
+                : 1;
+            _queueMove(section, direction, settingsService);
             return KeyEventResult.handled;
           } else if (event.logicalKey == LogicalKeyboardKey.select ||
               event.logicalKey == LogicalKeyboardKey.enter ||
@@ -362,7 +389,7 @@ class _LauncherSectionsPanelPageState extends State<LauncherSectionsPanelPage> {
       _movingSection = null;
     });
     try {
-      await _appsService.persistSectionsOrder();
+      await _persistOrder();
       await _appsService.resetSections();
       await settings?.setContinueWatchingOrder(0);
       await settings?.setShowContinueWatching(false);
@@ -377,25 +404,52 @@ class _LauncherSectionsPanelPageState extends State<LauncherSectionsPanelPage> {
     ..._hiddenSections(settings),
   ];
 
+  void _queueMove(
+    LauncherSection section,
+    int direction,
+    SettingsService? settings,
+  ) {
+    Future<void> move() async {
+      if (!mounted || _resetBusy) return;
+      try {
+        await _moveSection(section, direction, settings);
+      } catch (_) {
+        if (mounted) {
+          showActionNotice(
+            context,
+            AppLocalizations.of(context)!.appError,
+            error: true,
+          );
+        }
+      }
+    }
+
+    final pending = _moves;
+    final task = pending == null ? move() : pending.then((_) => move());
+    _moves = task;
+    task.whenComplete(() {
+      if (identical(_moves, task)) _moves = null;
+    });
+  }
+
+  Future<void> _persistOrder() {
+    final pending = _moves;
+    return pending == null
+        ? _appsService.persistSectionsOrder()
+        : pending.then((_) => _appsService.persistSectionsOrder());
+  }
+
   Future<void> _moveSection(
     LauncherSection movingSection,
     int direction,
     SettingsService? settingsService,
   ) async {
-    if (_moveBusy || _resetBusy) return;
     final isVisible = movingSection is ContinueWatchingSection
         ? settingsService?.showContinueWatching == true
         : movingSection is! Category || movingSection.visible;
     final displaySections = isVisible
         ? _getDisplaySections(_appsService.launcherSections, settingsService)
         : _hiddenSections(settingsService);
-    final now = DateTime.now();
-    if (_lastMoveTime != null &&
-        now.difference(_lastMoveTime!) < const Duration(milliseconds: 60)) {
-      return;
-    }
-    _lastMoveTime = now;
-
     final currentIndex = displaySections.indexWhere(
       (s) =>
           s.runtimeType == movingSection.runtimeType &&
@@ -405,65 +459,59 @@ class _LauncherSectionsPanelPageState extends State<LauncherSectionsPanelPage> {
     final newIndex = currentIndex + direction;
     if (newIndex < 0 || newIndex >= displaySections.length) {
       if ((isVisible && direction > 0) || (!isVisible && direction < 0)) {
-        _moveBusy = true;
-        try {
-          if (movingSection is ContinueWatchingSection) {
-            if (!isVisible) {
-              await settingsService?.setContinueWatchingOrder(
-                _getDisplaySections(
+        if (movingSection is ContinueWatchingSection) {
+          if (!isVisible) {
+            await settingsService?.setContinueWatchingOrder(
+              _getDisplaySections(
+                _appsService.launcherSections,
+                settingsService,
+              ).length,
+            );
+          }
+          if (isVisible) await settingsService?.setContinueWatchingOrder(0);
+          await settingsService?.setShowContinueWatching(!isVisible);
+        } else if (movingSection is Category) {
+          final destination = isVisible
+              ? _hiddenSections(settingsService)
+              : _getDisplaySections(
                   _appsService.launcherSections,
                   settingsService,
-                ).length,
+                );
+          final targets = destination.where(
+            (s) => s is! ContinueWatchingSection,
+          );
+          final target = isVisible ? targets.firstOrNull : targets.lastOrNull;
+          final hiddenWatchingIndex = _hiddenSections(settingsService)
+              .indexWhere((s) => s is ContinueWatchingSection);
+          final changed = await _appsService.setCategoryVisible(
+            movingSection.id,
+            !isVisible,
+          );
+          if (changed) {
+            if (target != null) {
+              final sections = _appsService.launcherSections;
+              int indexOf(LauncherSection section) => sections.indexWhere(
+                (s) =>
+                    s.runtimeType == section.runtimeType && s.id == section.id,
+              );
+              final from = indexOf(movingSection);
+              final anchor = indexOf(target);
+              // Insert at the shared boundary, preserving both lists' order.
+              final to = isVisible
+                  ? anchor - (from < anchor ? 1 : 0)
+                  : anchor + (from > anchor ? 1 : 0);
+              _appsService.moveSectionInMemory(from, to);
+            }
+            if (hiddenWatchingIndex >= 0) {
+              await settingsService?.setContinueWatchingOrder(
+                isVisible
+                    ? hiddenWatchingIndex + 1
+                    : (hiddenWatchingIndex - 1).clamp(0, hiddenWatchingIndex),
               );
             }
-            if (isVisible) await settingsService?.setContinueWatchingOrder(0);
-            await settingsService?.setShowContinueWatching(!isVisible);
-          } else if (movingSection is Category) {
-            final destination = isVisible
-                ? _hiddenSections(settingsService)
-                : _getDisplaySections(
-                    _appsService.launcherSections,
-                    settingsService,
-                  );
-            final targets = destination.where(
-              (s) => s is! ContinueWatchingSection,
-            );
-            final target = isVisible ? targets.firstOrNull : targets.lastOrNull;
-            final hiddenWatchingIndex = _hiddenSections(settingsService)
-                .indexWhere((s) => s is ContinueWatchingSection);
-            final changed = await _appsService.setCategoryVisible(
-              movingSection.id,
-              !isVisible,
-            );
-            if (changed) {
-              if (target != null) {
-                final sections = _appsService.launcherSections;
-                int indexOf(LauncherSection section) => sections.indexWhere(
-                  (s) =>
-                      s.runtimeType == section.runtimeType &&
-                      s.id == section.id,
-                );
-                final from = indexOf(movingSection);
-                final anchor = indexOf(target);
-                // Insert at the shared boundary, preserving both lists' order.
-                final to = isVisible
-                    ? anchor - (from < anchor ? 1 : 0)
-                    : anchor + (from > anchor ? 1 : 0);
-                _appsService.moveSectionInMemory(from, to);
-              }
-              if (hiddenWatchingIndex >= 0) {
-                await settingsService?.setContinueWatchingOrder(
-                  isVisible
-                      ? hiddenWatchingIndex + 1
-                      : (hiddenWatchingIndex - 1).clamp(0, hiddenWatchingIndex),
-                );
-              }
-            }
           }
-          if (mounted) _focusSection(movingSection);
-        } finally {
-          _moveBusy = false;
         }
+        if (mounted && _isMoving(movingSection)) _focusSection(movingSection);
       }
       return;
     }
@@ -490,11 +538,7 @@ class _LauncherSectionsPanelPageState extends State<LauncherSectionsPanelPage> {
       }
     }
 
-    setState(() {
-      _movingSection = movingSection;
-    });
-
-    _focusSection(movingSection);
+    if (mounted && _isMoving(movingSection)) _focusSection(movingSection);
   }
 
   Future<void> _openEditor({int? index}) async {
@@ -523,7 +567,7 @@ class _LauncherSectionsPanelPageState extends State<LauncherSectionsPanelPage> {
   }
 
   void _endMove() {
-    _appsService.persistSectionsOrder();
+    _persistOrder();
     setState(() {
       _movingSection = null;
     });

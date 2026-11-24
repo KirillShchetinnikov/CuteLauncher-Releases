@@ -1,8 +1,6 @@
 import 'dart:async';
 
-import 'adb_test_compatibility.dart';
-
-import 'package:flauncher/widgets/settings/adb_page.dart';
+import 'package:flauncher/widgets/settings/accessibility_page.dart';
 
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
@@ -65,9 +63,6 @@ void main() {
         locale: Locale(language),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        routes: {
-          AdbPage.routeName: (_) => const Scaffold(body: Text('ADB setup')),
-        },
         home: Scaffold(body: RemoteButtonsPage(section: section)),
       ),
     );
@@ -126,82 +121,19 @@ void main() {
     });
   }
 
-  for (final connection in ['ready', 'unavailable']) {
-    testWidgets('remapper accessibility grant via ADB: $connection', (
-      tester,
-    ) async {
-      const adb = MethodChannel('cutelauncher/adb');
-      const platform = MethodChannel('me.efesser.flauncher/method');
-      final actions = <MethodCall>[];
-      info = {...info, 'permission': false, 'connected': false};
-      binding.defaultBinaryMessenger.setMockMethodCallHandler(platform, (
-        call,
-      ) async {
-        expect(call.method, 'checkAccessibilityPermission');
-        return info['permission'];
-      });
-      binding.defaultBinaryMessenger.setMockMethodCallHandler(adb, (
-        call,
-      ) async {
-        if (call.method == 'info') {
-          return {'port': 5555, 'compatibility': supportedAdbCompatibility};
-        }
-        actions.add(call);
-        switch (call.arguments['action']) {
-          case 'check':
-            return {'status': connection};
-          case 'preview':
-            return {
-              'status': 'ready',
-              'commands': ['enable own accessibility service'],
-            };
-          case 'accessibility':
-            info = {...info, 'permission': true, 'connected': true};
-            return {'status': 'success'};
-        }
-        throw StateError('Unexpected action');
-      });
-      addTearDown(() {
-        binding.defaultBinaryMessenger.setMockMethodCallHandler(adb, null);
-        binding.defaultBinaryMessenger.setMockMethodCallHandler(platform, null);
-      });
-      await open(tester, section: 'access');
-      expect(
-        actions.every((call) => call.arguments['action'] == 'check'),
-        isTrue,
-      );
-      await tester.tap(
-        find.text(
-          'Включить службу специальных возможностей CuteLauncher через ADB',
-        ),
-      );
-      await tester.pumpAndSettle();
-      expect(
-        actions.where((call) => call.arguments['action'] == 'accessibility'),
-        isEmpty,
-      );
-      if (connection == 'ready') {
-        expect(actions.last.arguments['operation'], 'accessibility');
-        await tester.tap(find.text('Применить'));
-        await tester.pumpAndSettle();
-        expect(actions.last.arguments, {
-          'port': 5555,
-          'tls': false,
-          'action': 'accessibility',
-          'commands': ['enable own accessibility service'],
-        });
-        expect(info['permission'], isTrue);
-        expect(calls, ['info', 'info']);
-        expect(find.text('Предоставлено'), findsOneWidget);
-      } else {
-        expect(find.text('ADB setup'), findsOneWidget);
-        expect(
-          actions.every((call) => call.arguments['action'] == 'check'),
-          isTrue,
-        );
-      }
-    });
-  }
+  testWidgets('remapper opens the common accessibility page and returns', (tester) async {
+    info = {...info, 'permission': false, 'connected': false};
+    await open(tester, section: 'main');
+    final l = AppLocalizations.of(tester.element(find.byType(RemoteButtonsPage)))!;
+    await tester.tap(find.text(l.accessibility));
+    await tester.pumpAndSettle();
+    expect(find.byType(AccessibilityPage), findsOneWidget);
+    expect(find.text(l.adbAccessibilitySettings), findsOneWidget);
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(find.byType(AccessibilityPage), findsNothing);
+    expect(calls, ['info', 'info']);
+  });
 
   testWidgets('main menu keeps diagnostics last and hides access actions', (
     tester,
@@ -224,7 +156,7 @@ void main() {
     );
     await open(tester, section: 'main');
     expect(find.text('Включить переназначение'), findsNothing);
-    expect(find.text('Настройка доступа'), findsOneWidget);
+    expect(find.text('Специальные возможности'), findsOneWidget);
     expect(find.text('Предоставлено'), findsOneWidget);
     expect(find.text('Обновить'), findsNothing);
     expect(find.text('Подробнее'), findsNothing);
@@ -260,7 +192,8 @@ void main() {
   for (final field in ['permission', 'connected']) {
     testWidgets('cannot capture when $field is absent', (tester) async {
       info[field] = false;
-      await open(tester, section: 'access');
+      await open(tester);
+      expect(capture(tester).enabled, isFalse);
       expect(calls, ['info']);
     });
   }

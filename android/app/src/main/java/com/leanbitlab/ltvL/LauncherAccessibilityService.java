@@ -57,6 +57,12 @@ public class LauncherAccessibilityService extends AccessibilityService {
     }
     private RemotePanelWindow panel;
     private RemotePanelWindow recents;
+    static boolean closeRecentsIfOpen() {
+        var service = active.get();
+        if (service == null || service.recents == null || !service.recents.isOpen()) return false;
+        service.recents.requestClose();
+        return true;
+    }
     static boolean showRecents() {
         var service = active.get();
         if (service == null) return false;

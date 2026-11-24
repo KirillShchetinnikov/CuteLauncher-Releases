@@ -87,6 +87,7 @@ class ContinueWatchingRow extends StatelessWidget {
             )
           : ContentPreviewRow(
               programs: programs,
+              preload: (program, priority) => watchNext.poster(program, priority: priority),
               title: title,
               titleIcon: titleIcon,
               style: style,
@@ -163,7 +164,10 @@ class WatchNextCard extends StatelessWidget {
       style: style,
       size: size,
       posterRefreshes: hasPoster ? watchNextService.posterRefreshes : null,
-      loadPoster: hasPoster ? () => watchNextService.poster(program) : null,
+      cachedPoster: hasPoster ? () => watchNextService.cachedPoster(program) : null,
+      loadPrioritizedPoster: hasPoster
+          ? (priority) => watchNextService.poster(program, priority: priority)
+          : null,
       invalidatePoster: () => watchNextService.evictPoster(program),
       onOpen: (_) async {
         await watchNextService.launch(program);

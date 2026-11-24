@@ -899,6 +899,8 @@ void main() {
     when(channel.addAppsChangedListener(any)).thenReturn(null);
       final database = MockFLauncherDatabase();
 
+      var nextOrder = 0;
+      when(database.nextSectionOrder()).thenAnswer((_) async => nextOrder++);
       when(database.insertCategory(any)).thenAnswer((inv) {
         return Future.value(1);
       });

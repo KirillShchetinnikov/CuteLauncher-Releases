@@ -38,4 +38,6 @@
     <string name="power_shutdown_confirm">Полностью выключить устройство?</string>
     <string name="power_reboot_confirm">Перезагрузить устройство? Открытые приложения будут закрыты.</string>
     <string name="remap_error_adb_command">Команда ADB не выполнена. Проверьте локальный ADB и текст команды.</string>
+    <string name="recent_apps_adb_required">Подключите локальный ADB, чтобы открыть панель приложений.</string>
+    <string name="recent_apps_accessibility_required">Включите службу CuteLauncher в специальных возможностях.</string>
 </resources>

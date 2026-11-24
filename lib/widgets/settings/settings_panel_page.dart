@@ -33,6 +33,7 @@ import 'package:provider/provider.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 
 import 'focusable_settings_tile.dart';
+import 'support_developer_tile.dart';
 import 'updates_page.dart';
 import '../android_settings_icon.dart';
 
@@ -59,65 +60,90 @@ class _SettingsPanelPageState extends State<SettingsPanelPage> {
     final l = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final updateVersion = context.select<UpdateService?, String?>(
-      (service) =>
-          service?.fromPlay == false ? service?.release?.version : null,
+      (service) => service?.availableVersion,
     );
+    final colors = theme.colorScheme;
+    final label = updateVersion == null
+        ? l.supportDeveloper
+        : '${l.updateAvailable} · ${displayAppVersion(updateVersion)}';
 
     return SettingsPageLayout(
-      title: SizedBox(
-        width: double.infinity,
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Padding(
-              padding: const EdgeInsetsDirectional.only(end: 68),
-              child: Text(l.settings),
+      title: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Image.asset(
+              'assets/about-icon.png',
+              width: 44,
+              height: 44,
+              excludeFromSemantics: true,
             ),
-            PositionedDirectional(
-              end: 0,
-              top: 0,
-              child: ExcludeSemantics(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: Image.asset(
-                    'assets/about-icon.png',
-                    width: 56,
-                    height: 56,
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(l.settings),
+                Text('CuteLauncher', style: theme.textTheme.bodySmall),
+              ],
+            ),
+          ),
+        ],
+      ),
+      subtitle: Padding(
+        padding: const EdgeInsets.only(top: 6),
+        child: TextButton.icon(
+          style:
+              TextButton.styleFrom(
+                minimumSize: const Size(0, 32),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 4,
+                ),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                alignment: AlignmentDirectional.centerStart,
+                backgroundColor: colors.primary.withValues(alpha: .14),
+                foregroundColor: Color.lerp(
+                  colors.onSurface,
+                  colors.primary,
+                  .18,
+                ),
+                iconColor: Color.lerp(
+                  colors.onSurface,
+                  colors.primary,
+                  .62,
+                ),
+                textStyle: theme.textTheme.bodyMedium?.copyWith(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(9),
+                ),
+              ).copyWith(
+                side: WidgetStateProperty.resolveWith(
+                  (states) => BorderSide(
+                    color: states.contains(WidgetState.focused)
+                        ? colors.primary
+                        : Colors.transparent,
+                    width: 2,
                   ),
                 ),
               ),
-            ),
-          ],
-        ),
-      ),
-      subtitle: Padding(
-        padding: const EdgeInsetsDirectional.only(end: 68),
-        child: Align(
-          alignment: AlignmentDirectional.centerStart,
-          child: updateVersion == null
-              ? Text(
-                  'CuteLauncher',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.primary,
-                  ),
-                )
-              : TextButton(
-                  key: const ValueKey('available-update-shortcut'),
-                  style: TextButton.styleFrom(
-                    minimumSize: Size.zero,
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    textStyle: theme.textTheme.bodySmall,
-                    backgroundColor: theme.colorScheme.primary.withValues(
-                      alpha: .12,
-                    ),
-                  ),
-                  onPressed: () =>
-                      Navigator.of(context).pushNamed(UpdatesPage.routeName),
-                  child: Text(
-                    '${l.updateAvailable} · ${displayAppVersion(updateVersion)}',
-                  ),
-                ),
+          onPressed: () => updateVersion == null
+              ? showSupportDeveloperDialog(context)
+              : Navigator.of(context).pushNamed(UpdatesPage.routeName),
+          icon: Icon(
+            updateVersion == null
+                ? Icons.favorite_outline
+                : Icons.file_download_outlined,
+            size: 16,
+          ),
+          label: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(label, maxLines: 1, softWrap: false),
+          ),
         ),
       ),
       initialFocus: _homeFocus,

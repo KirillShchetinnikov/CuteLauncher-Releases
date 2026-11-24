@@ -256,7 +256,7 @@ data. [Memory](USER_GUIDE_EN.md#memory-and-resource-saving).
 
 ## How do I report a problem?
 
-Open Settings → Diagnostics → Diagnostics. If the failure already happened,
+Open Settings → Diagnostics → Reports and recording. If the failure already happened,
 select Create report. For a detailed report, start extended diagnostics,
 reproduce the issue, and return to finish recording. Select Export report →
 Save to disk. Include the steps and expected result in your message.

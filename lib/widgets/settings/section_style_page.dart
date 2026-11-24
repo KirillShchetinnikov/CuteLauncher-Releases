@@ -218,7 +218,7 @@ class SectionStylePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
     return SettingsPageLayout(
-      title: Text(categoryId == null ? l.launcherSections : l.homeSectionStyle),
+      title: Text(l.homeSectionStyle),
       child: ListView(children: controls(context, categoryId: categoryId)),
     );
   }

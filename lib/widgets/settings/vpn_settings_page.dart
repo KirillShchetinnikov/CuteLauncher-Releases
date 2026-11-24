@@ -14,6 +14,7 @@ import '../launcher_dialog.dart';
 import '../remote_text_input.dart';
 import '../rounded_switch_list_tile.dart';
 import '../vpn_menu.dart';
+import 'access_settings_links.dart';
 import 'focusable_settings_tile.dart';
 import 'settings_choice_tile.dart';
 import 'settings_help.dart';
@@ -310,6 +311,8 @@ class _VpnStartupSectionState extends State<VpnStartupSection> {
               ),
             if (vpn.bootMode == 'alwaysOn')
               SettingsHelp(title: l.vpnStartup, text: l.vpnAlwaysOnHelp),
+            if (vpn.bootMode == 'alwaysOn')
+              AdbConnectionLink(onReturn: () => vpn.refresh()),
             if (vpn.bootMode == 'client')
               SettingsHelp(title: l.vpnStartup, text: l.vpnStartupHelp),
           ],

@@ -3,6 +3,7 @@ package com.leanbitlab.ltvL;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.PowerManager;
 import android.view.KeyEvent;
 import android.widget.Toast;
 import java.util.concurrent.*;
@@ -26,6 +27,7 @@ final class RemoteButtonRemapper implements AutoCloseable {
     private volatile RemoteMappingConfiguration configuration = RemoteMappingConfiguration.empty();
     private volatile boolean closed;
     private int generation;
+    private Object recentsRequest;
     private record HeldKey(int device, int code) {}
     private final java.util.Map<HeldKey, Runnable> holdTimers = new java.util.HashMap<>();
 
@@ -48,6 +50,7 @@ final class RemoteButtonRemapper implements AutoCloseable {
         if (current != null) {
             current.generation++;
             current.configuration = configuration;
+            current.recentsRequest = null;
             current.cancelPowerConfirmation();
             if (!configuration.enabled || configuration.bindings.values().stream()
                     .noneMatch(binding -> binding.enabled() && binding.action().equals("black_overlay"))) {
@@ -111,8 +114,8 @@ final class RemoteButtonRemapper implements AutoCloseable {
         return switch (binding.action()) {
             case "ignore" -> "success";
             case "recents" -> {
-                service.dismissPanel();
-                yield availability(RecentAppsBridge.open(service));
+                requestRecents(binding);
+                yield null;
             }
             case "panel" -> switch (service.togglePanel()) {
                 case TOGGLED -> "success";
@@ -165,7 +168,7 @@ final class RemoteButtonRemapper implements AutoCloseable {
                 service.dismissPanel();
                 yield availability(RemoteTvActions.open(service, binding.action()));
             }
-            case "tcl_epg", "adb_shell" -> {
+            case "tcl_epg", "adb_shell", "screenshot" -> {
                 if (binding.action().equals("tcl_epg")) service.dismissPanel();
                 status = "busy";
                 power.execute(() -> runAdbAction(binding));
@@ -201,6 +204,31 @@ final class RemoteButtonRemapper implements AutoCloseable {
         TvPowerBridge.request(service, operation, power, result -> complete(binding, result));
     }
 
+    private void requestRecents(RemoteMappingConfiguration.Binding binding) {
+        if (recentsRequest != null) return;
+        var request = new Object();
+        recentsRequest = request;
+        try {
+            RecentAppsBridge.open(service, network, main,
+                () -> !closed && recentsRequest == request && !assignmentsPaused()
+                    && service.getSystemService(PowerManager.class).isInteractive(),
+                result -> {
+                    if (recentsRequest != request) return;
+                    recentsRequest = null;
+                    switch (result) {
+                        case OPENED -> complete(binding, "success");
+                        case ADB_REQUIRED -> finish("unavailable", R.string.recent_apps_adb_required);
+                        case ACCESSIBILITY_REQUIRED -> finish("unavailable", R.string.recent_apps_accessibility_required);
+                        case UNAVAILABLE -> complete(binding, "unavailable");
+                        case CANCELLED -> { }
+                    }
+                });
+        } catch (RuntimeException failure) {
+            recentsRequest = null;
+            throw failure;
+        }
+    }
+
     private static String availability(boolean available) {
         return available ? "success" : "unavailable";
     }
@@ -218,7 +246,17 @@ final class RemoteButtonRemapper implements AutoCloseable {
                 if (!AdbShellIdentity.supported(shell.execute("id -u").trim())) return "unavailable";
                 if (closed || !binding.equals(configuration.binding(binding.keyCode(), binding.trigger())))
                     return "idle";
-                shell.execute(RemoteAdbCommand.bounded(command));
+                if (binding.action().equals("screenshot")) {
+                    String name = RemoteAdbCommand.saveScreenshot(shell);
+                    android.media.MediaScannerConnection.scanFile(service,
+                        new String[]{"/sdcard/Download/" + name}, new String[]{"image/png"}, null);
+                    main.post(() -> {
+                        if (closed) return;
+                        Toast.makeText(service, "Download/" + name, Toast.LENGTH_SHORT).show();
+                    });
+                } else {
+                    shell.execute(RemoteAdbCommand.bounded(command));
+                }
                 return "success";
             });
             main.post(() -> complete(binding, result));
@@ -234,7 +272,7 @@ final class RemoteButtonRemapper implements AutoCloseable {
             default -> switch (binding.action()) {
                 case "app" -> R.string.remap_error_app;
                 case "hdmi" -> R.string.remap_error_hdmi;
-                case "tcl_epg", "adb_shell" -> R.string.remap_error_adb_command;
+                case "tcl_epg", "adb_shell", "screenshot" -> R.string.remap_error_adb_command;
                 case "sleep", "sleep_immediate", "reboot", "reboot_immediate", "shutdown" -> R.string.remap_error_power;
                 default -> R.string.remap_error_unavailable;
             };
@@ -272,6 +310,7 @@ final class RemoteButtonRemapper implements AutoCloseable {
         cancelPendingActions();
     }
     private void cancelPendingActions() {
+        recentsRequest = null;
         policy.cancelActions(); holdTimers.values().forEach(main::removeCallbacks); holdTimers.clear();
     }
     void filterPaused() {
