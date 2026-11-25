@@ -37,6 +37,15 @@ class AppLocalizationsHi extends AppLocalizations {
   String get scrollContentLabels => 'पंक्तियों में लंबे लेबल स्क्रॉल करें';
 
   @override
+  String get contentLabelScrollMode => 'स्क्रॉल करने का तरीका';
+
+  @override
+  String get contentLabelScrollRestart => 'शुरू से';
+
+  @override
+  String get contentLabelScrollLoop => 'लगातार';
+
+  @override
   String get contentAppTileStyle => 'दिखावट का स्रोत';
 
   @override

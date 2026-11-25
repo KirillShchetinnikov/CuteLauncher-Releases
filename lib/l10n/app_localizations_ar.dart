@@ -37,6 +37,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get scrollContentLabels => 'تمرير التسميات الطويلة في الصفوف';
 
   @override
+  String get contentLabelScrollMode => 'وضع التمرير';
+
+  @override
+  String get contentLabelScrollRestart => 'من البداية';
+
+  @override
+  String get contentLabelScrollLoop => 'حلقة متواصلة';
+
+  @override
   String get contentAppTileStyle => 'مصدر المظهر';
 
   @override

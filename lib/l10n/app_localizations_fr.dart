@@ -38,6 +38,15 @@ class AppLocalizationsFr extends AppLocalizations {
       'Faire défiler les libellés longs des rangées';
 
   @override
+  String get contentLabelScrollMode => 'Mode de défilement';
+
+  @override
+  String get contentLabelScrollRestart => 'Reprendre au début';
+
+  @override
+  String get contentLabelScrollLoop => 'En boucle';
+
+  @override
   String get contentAppTileStyle => 'Source de l’apparence';
 
   @override

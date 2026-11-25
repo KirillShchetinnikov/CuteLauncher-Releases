@@ -219,11 +219,11 @@ a grid, or additional content cards.
 To read a long card label, turn on **Scroll long labels in content rows** under
 **Home screen → Sections and order → App feeds → Category appearance**.
 The same switch is available under Continue Watching's category appearance
-and applies to both sections. A long line scrolls while its card is focused.
-If both lines are truncated, they start scrolling
-together. The first line to reach its end waits for the other. After a two-second
-pause, both lines scroll back to the start together. The cycle repeats while the
-card is focused. The setting is off by default.
+and applies to both sections. Scrolling is off by default. Enabling it reveals
+**Label scrolling mode**. In **Loop**, the default mode, the start of each
+line follows its end after a short gap. In **Restart**, scrolling pauses at
+the end and returns to the start after two seconds. Labels scroll while the
+card is focused.
 
 At startup, static card placeholders reserve space for each selected feed and
 Continue Watching. Content fills those positions; you can immediately use the
@@ -302,10 +302,10 @@ immediately. Back keeps your configured home-screen behavior;
 returning to the launcher follows your chosen Home focus mode.
 If the main artwork is unavailable, the launcher tries the feed's fallback image.
 A card shows a placeholder when no image is available. Empty feeds are hidden
-from the chooser and home screen. Feeds from hidden apps are hidden on the home
-screen. Saved feeds that disappear can still be deselected while their
-app is installed. Uninstalling the app removes its feeds from the list and
-the saved selection.
+from the chooser and home screen. Feeds follow their own visibility settings,
+including feeds from apps with hidden tiles. Saved feeds that disappear can
+still be deselected while their app is installed. Uninstalling the app removes
+its feeds from the list and the saved selection.
 A feed is hidden from the chooser and home screen if its cards have no
 available artwork or thumbnails because resources are broken or providers
 are missing. When artwork is available again, the feed reappears with its previous setting.

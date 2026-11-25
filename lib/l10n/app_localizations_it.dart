@@ -37,6 +37,15 @@ class AppLocalizationsIt extends AppLocalizations {
   String get scrollContentLabels => 'Scorri le etichette lunghe nelle righe';
 
   @override
+  String get contentLabelScrollMode => 'Modalità di scorrimento';
+
+  @override
+  String get contentLabelScrollRestart => 'Dall’inizio';
+
+  @override
+  String get contentLabelScrollLoop => 'In ciclo';
+
+  @override
   String get contentAppTileStyle => 'Origine dell’aspetto';
 
   @override

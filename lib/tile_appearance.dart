@@ -85,6 +85,7 @@ class TileAppearance {
       values['contentAppTileStyle'] == true || contentAppTileSectionId != null;
   bool get contentUseSourceLabels => values['contentUseSourceLabels'] != false;
   bool get scrollContentLabels => values['scrollContentLabels'] == true;
+  bool get loopContentLabels => values['loopContentLabels'] != false;
   int? get contentAppTileSectionId {
     final source = values['contentAppTileStyle'];
     return source is int && source > 0 ? source : null;
@@ -127,7 +128,8 @@ class TileAppearance {
           !const {'bannerImageMode', 'iconImageMode', 'imageMode', 'fillBanner',
             'animateReordering', 'labels', 'hideAbove', 'inactiveOpacity', 'blurPanel',
             'focusAlignment', 'backgroundInformationAppearance',
-            'contentAppTileStyle', 'contentUseSourceLabels', 'scrollContentLabels'}.contains(key) &&
+            'contentAppTileStyle', 'contentUseSourceLabels',
+            'scrollContentLabels', 'loopContentLabels'}.contains(key) &&
           !informationAppearanceKeys.contains(key) &&
           !key.startsWith('section') && !key.startsWith('panel') &&
           !key.startsWith('settings') && !key.startsWith('notice'));
@@ -438,7 +440,7 @@ class TileAppearance {
             'focusPulse', 'focusTransition', 'animateReordering',
             'focusShadow',
             'blurTiles', 'contentAppTileStyle', 'contentUseSourceLabels',
-            'scrollContentLabels',
+            'scrollContentLabels', 'loopContentLabels',
             'blurPanel',
             'settingsScrollbarAlwaysVisible',
             'panelTextBackground',

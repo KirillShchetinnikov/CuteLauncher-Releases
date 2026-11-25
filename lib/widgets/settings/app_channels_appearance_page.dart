@@ -26,6 +26,7 @@ class AppChannelsAppearancePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
     final service = context.watch<AppearanceService>();
+    final common = service.appearance;
     final style = service.tilesFor(categoryId);
     final ownLabels = style.contentAppTileStyle && !style.contentUseSourceLabels;
     final categories = context.watch<AppsService?>()?.categories ?? const <Category>[];
@@ -171,9 +172,19 @@ class AppChannelsAppearancePage extends StatelessWidget {
           ],
           RoundedSwitchListTile(
             title: Text(l.scrollContentLabels),
-            value: service.appearance.scrollContentLabels,
+            value: common.scrollContentLabels,
             onChanged: (value) => service.set('scrollContentLabels', value),
           ),
+          if (common.scrollContentLabels)
+            SettingsChoiceTile<bool>(
+              title: l.contentLabelScrollMode,
+              value: common.loopContentLabels,
+              options: const [false, true],
+              label: (loop) => loop
+                  ? l.contentLabelScrollLoop
+                  : l.contentLabelScrollRestart,
+              onChanged: (loop) => service.set('loopContentLabels', loop),
+            ),
           ...SectionStylePage.controls(
             context,
             categoryId: categoryId,

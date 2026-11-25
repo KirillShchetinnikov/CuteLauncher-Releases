@@ -170,6 +170,24 @@ abstract class AppLocalizations {
   /// **'Scroll long labels in content rows'**
   String get scrollContentLabels;
 
+  /// No description provided for @contentLabelScrollMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Label scrolling mode'**
+  String get contentLabelScrollMode;
+
+  /// No description provided for @contentLabelScrollRestart.
+  ///
+  /// In en, this message translates to:
+  /// **'Restart'**
+  String get contentLabelScrollRestart;
+
+  /// No description provided for @contentLabelScrollLoop.
+  ///
+  /// In en, this message translates to:
+  /// **'Loop'**
+  String get contentLabelScrollLoop;
+
   /// No description provided for @contentAppTileStyle.
   ///
   /// In en, this message translates to:

@@ -37,6 +37,15 @@ class AppLocalizationsRu extends AppLocalizations {
   String get scrollContentLabels => 'Прокрутка длинных подписей в лентах';
 
   @override
+  String get contentLabelScrollMode => 'Режим прокрутки';
+
+  @override
+  String get contentLabelScrollRestart => 'С начала';
+
+  @override
+  String get contentLabelScrollLoop => 'По кругу';
+
+  @override
   String get contentAppTileStyle => 'Источник оформления';
 
   @override

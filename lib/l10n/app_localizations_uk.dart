@@ -37,6 +37,15 @@ class AppLocalizationsUk extends AppLocalizations {
   String get scrollContentLabels => 'Прокручування довгих підписів у стрічках';
 
   @override
+  String get contentLabelScrollMode => 'Режим прокручування';
+
+  @override
+  String get contentLabelScrollRestart => 'З початку';
+
+  @override
+  String get contentLabelScrollLoop => 'По колу';
+
+  @override
   String get contentAppTileStyle => 'Джерело оформлення';
 
   @override

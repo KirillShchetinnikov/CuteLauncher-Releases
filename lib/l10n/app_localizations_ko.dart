@@ -37,6 +37,15 @@ class AppLocalizationsKo extends AppLocalizations {
   String get scrollContentLabels => '콘텐츠 행의 긴 라벨 스크롤';
 
   @override
+  String get contentLabelScrollMode => '스크롤 방식';
+
+  @override
+  String get contentLabelScrollRestart => '처음부터';
+
+  @override
+  String get contentLabelScrollLoop => '연속 반복';
+
+  @override
   String get contentAppTileStyle => '모양 기준';
 
   @override

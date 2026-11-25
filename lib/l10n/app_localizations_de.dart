@@ -37,6 +37,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String get scrollContentLabels => 'Lange Beschriftungen in Reihen scrollen';
 
   @override
+  String get contentLabelScrollMode => 'Scrollmodus';
+
+  @override
+  String get contentLabelScrollRestart => 'Von vorn';
+
+  @override
+  String get contentLabelScrollLoop => 'Endlosschleife';
+
+  @override
   String get contentAppTileStyle => 'Darstellungsquelle';
 
   @override

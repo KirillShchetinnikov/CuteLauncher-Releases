@@ -37,6 +37,15 @@ class AppLocalizationsTr extends AppLocalizations {
   String get scrollContentLabels => 'Satırlardaki uzun etiketleri kaydır';
 
   @override
+  String get contentLabelScrollMode => 'Kaydırma modu';
+
+  @override
+  String get contentLabelScrollRestart => 'Baştan başlat';
+
+  @override
+  String get contentLabelScrollLoop => 'Döngü';
+
+  @override
   String get contentAppTileStyle => 'Görünüm kaynağı';
 
   @override

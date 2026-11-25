@@ -35,6 +35,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get scrollContentLabels => '滚动内容行中的长标签';
 
   @override
+  String get contentLabelScrollMode => '滚动方式';
+
+  @override
+  String get contentLabelScrollRestart => '从头开始';
+
+  @override
+  String get contentLabelScrollLoop => '循环滚动';
+
+  @override
   String get contentAppTileStyle => '外观来源';
 
   @override

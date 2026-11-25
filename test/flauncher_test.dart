@@ -873,6 +873,36 @@ void main() {
     });
   }
 
+  testWidgets('feed visibility is independent of the source app tile', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    final settings = SettingsService(prefs);
+    final appearance = AppearanceService(prefs);
+    await appearance.set('focusPulse', false);
+    final channel = FeedChannel()..data = [feed(1), feed(2)];
+    final feeds = AppChannelsService(channel, settings);
+    await settings.setSelectedAppChannels(['video.app:1']);
+    await tester.runAsync(feeds.refresh);
+    final apps = mkAppService();
+    when(apps.applications).thenReturn([fakeApp(packageName: 'video.app')..hidden = true]);
+    when(apps.launcherSections).thenReturn([appChannelsGroup()]);
+
+    await _pumpWidgetWithProviders(tester, mkWallpaperService(), apps, settings,
+        feeds: feeds, appearance: appearance);
+    expect(find.text('Content 1/0'), findsOneWidget);
+    expect(find.text('Content 2/0'), findsNothing);
+
+    await settings.setSelectedAppChannels([]);
+    await tester.pumpAndSettle();
+    expect(find.byType(AppContentRow), findsNothing);
+
+    await tester.pumpWidget(const SizedBox());
+    feeds.dispose();
+    settings.dispose();
+    appearance.dispose();
+    await channel.events.close();
+  });
+
   testWidgets('feeds hide the group title and use supported local appearance', (tester) async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();

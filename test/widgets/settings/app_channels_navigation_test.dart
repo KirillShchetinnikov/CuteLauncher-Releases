@@ -117,13 +117,58 @@ void main() {
             tester.widget<RoundedSwitchListTile>(scrollLabels).value,
             !enableScrolling,
           );
+          final scrollMode = find.widgetWithText(
+            SettingsChoiceTile<bool>,
+            l.contentLabelScrollMode,
+          );
+          if (!enableScrolling) {
+            await tester.scrollUntilVisible(scrollMode, 100);
+            expect(
+              tester.widget<SettingsChoiceTile<bool>>(scrollMode).value,
+              isFalse,
+            );
+            await tester.ensureVisible(scrollLabels);
+            Focus.of(tester.element(find.text(l.scrollContentLabels)))
+                .requestFocus();
+            await tester.pumpAndSettle();
+          }
           await tester.sendKeyEvent(LogicalKeyboardKey.enter);
           await tester.pumpAndSettle();
+          if (enableScrolling) {
+            await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+            await tester.pumpAndSettle();
+            expect(
+              tester.widget<SettingsChoiceTile<bool>>(scrollMode).value,
+              isTrue,
+            );
+            expect(
+              Focus.of(tester.element(find.text(l.contentLabelScrollMode)))
+                  .hasFocus,
+              isTrue,
+            );
+            await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+            await tester.pumpAndSettle();
+            await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+            await tester.pumpAndSettle();
+            await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+            await tester.pumpAndSettle();
+            expect(
+              tester.widget<SettingsChoiceTile<bool>>(scrollMode).value,
+              isFalse,
+            );
+          } else {
+            expect(scrollMode, findsNothing);
+          }
           final reloaded = AppearanceService(prefs);
           addTearDown(reloaded.dispose);
           expect(
             reloaded.tilesFor(group.id).scrollContentLabels,
             enableScrolling,
+          );
+          expect(reloaded.tilesFor(group.id).loopContentLabels, isFalse);
+          expect(
+            reloaded.tilesFor(ContinueWatchingSection.sectionId).loopContentLabels,
+            isFalse,
           );
           expect(
             reloaded

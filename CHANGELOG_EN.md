@@ -2,6 +2,11 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
+## v1.8.3 — 2026-11-25
+
+- Enabled feeds stay on the home screen when their app tile is hidden. Each feed's visibility is controlled in the feed settings.
+- App feeds and Continue Watching let you choose the scrolling mode for long card labels. By default, text scrolls in a continuous loop. In Restart mode, the label returns to the start after a two-second pause.
+
 ## v1.8.2 — 2026-11-24
 
 ### Home screen and settings

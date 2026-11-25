@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 /// Scrolls overflowing labels inside their original text bounds.
 class ContentCardLabel extends StatelessWidget {
@@ -9,6 +11,7 @@ class ContentCardLabel extends StatelessWidget {
     this.text, {
     super.key,
     required this.scroll,
+    this.loop = true,
     this.style,
     this.textAlign,
     this.maxLines = 1,
@@ -18,6 +21,7 @@ class ContentCardLabel extends StatelessWidget {
 
   final String text;
   final bool scroll;
+  final bool loop;
   final TextStyle? style;
   final TextAlign? textAlign;
   final int maxLines;
@@ -49,7 +53,7 @@ class ContentCardLabel extends StatelessWidget {
         !TickerMode.valuesOf(context).enabled) {
       return _stackLabels(labels);
     }
-    return _FocusedLabels(labels: labels);
+    return _FocusedLabels(labels: labels, loop: loop);
   }
 }
 
@@ -62,9 +66,10 @@ Widget _stackLabels(List<Widget> labels) => labels.length == 1
       );
 
 class _FocusedLabels extends StatefulWidget {
-  const _FocusedLabels({required this.labels});
+  const _FocusedLabels({required this.labels, required this.loop});
 
   final List<Text> labels;
+  final bool loop;
 
   @override
   State<_FocusedLabels> createState() => _FocusedLabelsState();
@@ -95,7 +100,8 @@ class _FocusedLabelsState extends State<_FocusedLabels>
   void didUpdateWidget(_FocusedLabels oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (_foreground &&
-        (oldWidget.labels.first.data != widget.labels.first.data ||
+        (oldWidget.loop != widget.loop ||
+            oldWidget.labels.first.data != widget.labels.first.data ||
             oldWidget.labels.last.data != widget.labels.last.data ||
             oldWidget.labels.length != widget.labels.length)) {
       _ready = false;
@@ -149,6 +155,7 @@ class _FocusedLabelsState extends State<_FocusedLabels>
           overflows: overflows,
           width: width,
           direction: direction,
+          loop: widget.loop,
         );
       },
     );
@@ -208,12 +215,14 @@ class _ScrollingLabels extends StatefulWidget {
     required this.overflows,
     required this.width,
     required this.direction,
+    required this.loop,
   });
 
   final List<Text> labels;
   final List<_Overflow?> overflows;
   final double width;
   final TextDirection direction;
+  final bool loop;
 
   @override
   State<_ScrollingLabels> createState() => _ScrollingLabelsState();
@@ -221,43 +230,55 @@ class _ScrollingLabels extends StatefulWidget {
 
 class _ScrollingLabelsState extends State<_ScrollingLabels>
     with SingleTickerProviderStateMixin {
-  static const _endPause = Duration(seconds: 2);
-  static const _rewindDuration = Duration(milliseconds: 300);
-  Timer? _pause;
-  late final AnimationController _motion;
-  late final double _distance;
+  static const _speed = 36.0;
+  final _distance = ValueNotifier<double>(0);
+  Ticker? _ticker;
+  AnimationController? _restartMotion;
+  Timer? _endPause;
+  late final double _longestOverflow = widget.overflows.nonNulls
+      .map((overflow) => overflow.textWidth - widget.width)
+      .reduce(math.max);
 
   @override
   void initState() {
     super.initState();
-    _distance = widget.overflows.nonNulls
-        .map((overflow) => overflow.textWidth - widget.width)
-        .reduce(math.max);
-    _motion =
-        AnimationController(
-          vsync: this,
-          duration: Duration(milliseconds: (_distance * 1000 / 36).ceil()),
-        )..addStatusListener((status) {
-          if (status == AnimationStatus.completed) {
-            _pause = Timer(_endPause, () {
-              if (widget.labels.length == 1) {
-                _motion.forward(from: 0);
-              } else {
-                _motion.animateBack(0, duration: _rewindDuration);
-              }
-            });
-          } else if (status == AnimationStatus.dismissed &&
-              widget.labels.length > 1) {
-            _motion.forward();
+    if (widget.loop) {
+      _ticker = createTicker((elapsed) {
+        _distance.value =
+            elapsed.inMicroseconds * _speed / Duration.microsecondsPerSecond;
+      })..start();
+      return;
+    }
+
+    final motion = _restartMotion = AnimationController(
+      vsync: this,
+      duration: Duration(
+        milliseconds: (_longestOverflow * 1000 / _speed).ceil(),
+      ),
+    );
+    motion.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        _endPause = Timer(const Duration(seconds: 2), () {
+          if (widget.labels.length == 1) {
+            motion.forward(from: 0);
+          } else {
+            motion.animateBack(0, duration: const Duration(milliseconds: 300));
           }
         });
-    _motion.forward();
+      } else if (status == AnimationStatus.dismissed &&
+          widget.labels.length > 1) {
+        motion.forward();
+      }
+    });
+    motion.forward();
   }
 
   @override
   void dispose() {
-    _pause?.cancel();
-    _motion.dispose();
+    _endPause?.cancel();
+    _ticker?.dispose();
+    _restartMotion?.dispose();
+    _distance.dispose();
     super.dispose();
   }
 
@@ -270,42 +291,48 @@ class _ScrollingLabelsState extends State<_ScrollingLabels>
         widget.labels[i],
   ]);
 
-  Widget _scrollingLine(Text label, _Overflow overflow) => SizedBox(
-    width: widget.width,
-    height: overflow.height,
-    child: Flow(
-      delegate: _LabelMotion(
-        _motion,
-        overflow.textWidth,
-        widget.direction,
-        _distance,
-      ),
-      children: [
-        Text(
-          overflow.text,
-          semanticsLabel: label.data,
-          style: label.style,
-          textAlign: TextAlign.start,
-          softWrap: false,
-          maxLines: 1,
+  Widget _scrollingLine(Text label, _Overflow overflow) {
+    final text = Text(
+      overflow.text,
+      style: label.style,
+      textAlign: TextAlign.start,
+      softWrap: false,
+      maxLines: 1,
+    );
+    return Semantics(
+      label: label.data,
+      excludeSemantics: true,
+      child: SizedBox(
+        width: widget.width,
+        height: overflow.height,
+        child: Flow(
+          delegate: widget.loop
+              ? _LabelMotion(_distance, overflow.textWidth, widget.direction)
+              : _RestartingLabelMotion(
+                  _restartMotion!,
+                  overflow.textWidth,
+                  widget.direction,
+                  _longestOverflow,
+                ),
+          children: [text, if (widget.loop) text],
         ),
-      ],
-    ),
-  );
+      ),
+    );
+  }
 }
 
-class _LabelMotion extends FlowDelegate {
-  _LabelMotion(
+class _RestartingLabelMotion extends FlowDelegate {
+  _RestartingLabelMotion(
     this.motion,
     this.textWidth,
     this.direction,
-    this.longestDistance,
+    this.longestOverflow,
   ) : super(repaint: motion);
 
   final Animation<double> motion;
   final double textWidth;
   final TextDirection direction;
-  final double longestDistance;
+  final double longestOverflow;
 
   @override
   BoxConstraints getConstraintsForChild(int i, BoxConstraints constraints) =>
@@ -313,15 +340,56 @@ class _LabelMotion extends FlowDelegate {
 
   @override
   void paintChildren(FlowPaintingContext context) {
-    final distance = textWidth - context.size.width;
-    // Share a speed going forward and a duration going back.
+    final overflow = textWidth - context.size.width;
     final traveled = motion.status == AnimationStatus.reverse
-        ? distance * motion.value
-        : math.min(distance, longestDistance * motion.value);
+        ? overflow * motion.value
+        : math.min(overflow, longestOverflow * motion.value);
     final offset = direction == TextDirection.ltr
         ? -traveled
-        : traveled - distance;
+        : traveled - overflow;
     context.paintChild(0, transform: Matrix4.translationValues(offset, 0, 0));
+  }
+
+  @override
+  bool shouldRelayout(_RestartingLabelMotion oldDelegate) =>
+      textWidth != oldDelegate.textWidth;
+
+  @override
+  bool shouldRepaint(_RestartingLabelMotion oldDelegate) =>
+      textWidth != oldDelegate.textWidth ||
+      direction != oldDelegate.direction ||
+      longestOverflow != oldDelegate.longestOverflow;
+}
+
+class _LabelMotion extends FlowDelegate {
+  _LabelMotion(this.distance, this.textWidth, this.direction)
+    : super(repaint: distance);
+
+  final ValueListenable<double> distance;
+  final double textWidth;
+  final TextDirection direction;
+
+  @override
+  BoxConstraints getConstraintsForChild(int i, BoxConstraints constraints) =>
+      BoxConstraints.tightFor(width: textWidth);
+
+  @override
+  void paintChildren(FlowPaintingContext context) {
+    final width = context.size.width;
+    final period = textWidth + math.min(24.0, width / 3);
+    final traveled = distance.value % period;
+    final ltr = direction == TextDirection.ltr;
+    final sign = ltr ? -1.0 : 1.0;
+    final offset = (ltr ? 0.0 : width - textWidth) + sign * traveled;
+    if (traveled < textWidth) {
+      context.paintChild(0, transform: Matrix4.translationValues(offset, 0, 0));
+    }
+    if (traveled > period - width) {
+      context.paintChild(
+        1,
+        transform: Matrix4.translationValues(offset - sign * period, 0, 0),
+      );
+    }
   }
 
   @override
@@ -332,5 +400,5 @@ class _LabelMotion extends FlowDelegate {
   bool shouldRepaint(_LabelMotion oldDelegate) =>
       textWidth != oldDelegate.textWidth ||
       direction != oldDelegate.direction ||
-      longestDistance != oldDelegate.longestDistance;
+      distance != oldDelegate.distance;
 }

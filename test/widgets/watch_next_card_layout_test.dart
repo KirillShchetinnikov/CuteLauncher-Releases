@@ -44,6 +44,7 @@ void main() {
           'labels': 'all',
           'contentAppTileStyle': appTiles,
           'scrollContentLabels': true,
+          if (appTiles) 'loopContentLabels': false,
         });
         const movieTitle =
             'A very long movie title that extends far beyond the cover';
@@ -147,10 +148,11 @@ void main() {
           matching: find.byType(ContentCardLabel),
         );
         expect(tester.widget<ContentCardLabel>(label).scroll, isTrue);
+        expect(tester.widget<ContentCardLabel>(label).loop, !appTiles);
         await tester.pump(const Duration(milliseconds: 850));
-        expect(tester.widget<Text>(title).softWrap, isFalse);
+        expect(tester.widget<Text>(title.first).softWrap, isFalse);
         await tester.pump(const Duration(seconds: 1));
-        expect(tester.getTopLeft(title).dx, lessThan(titleLeft));
+        expect(tester.getTopLeft(title.first).dx, lessThan(titleLeft));
         focus.unfocus();
         await tester.pump();
         await tester.pump();

@@ -37,6 +37,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get scrollContentLabels => 'Desplazar etiquetas largas en las filas';
 
   @override
+  String get contentLabelScrollMode => 'Modo de desplazamiento';
+
+  @override
+  String get contentLabelScrollRestart => 'Volver al inicio';
+
+  @override
+  String get contentLabelScrollLoop => 'En bucle';
+
+  @override
   String get contentAppTileStyle => 'Origen de la apariencia';
 
   @override

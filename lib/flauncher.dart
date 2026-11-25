@@ -578,11 +578,9 @@ class FLauncherState extends State<FLauncher> {
       late final matchedSize = tiles.size;
       late final titleIcon = appearanceService?.category(category.id).titleIcon ??
           SectionIcon.appFeeds;
-      final hiddenPackages = selectedFeeds.isEmpty ? <String>{} : context.read<AppsService>().applications.where((a) => a.hidden).map((a) => a.packageName).toSet();
       final rows = <String, Widget>{};
       for (final key in selectedFeeds) {
-        if (hiddenPackages.contains(key.split(':').first)) continue;
-        final channel = feeds?.channels.where((c) => c.key == key && c.programs.isNotEmpty && !hiddenPackages.contains(c.packageName)).firstOrNull;
+        final channel = feeds?.channels.where((c) => c.key == key && c.programs.isNotEmpty).firstOrNull;
         if (channel == null && (feeds == null || feeds.initialized)) continue;
         final limit = feeds!.cardLimit;
         final available = channel?.programs ?? const <WatchNextProgram>[];

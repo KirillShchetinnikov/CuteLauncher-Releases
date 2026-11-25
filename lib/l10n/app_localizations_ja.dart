@@ -37,6 +37,15 @@ class AppLocalizationsJa extends AppLocalizations {
   String get scrollContentLabels => '列の長いラベルをスクロール';
 
   @override
+  String get contentLabelScrollMode => 'スクロール方式';
+
+  @override
+  String get contentLabelScrollRestart => '先頭に戻る';
+
+  @override
+  String get contentLabelScrollLoop => 'ループ';
+
+  @override
   String get contentAppTileStyle => '外観の参照元';
 
   @override

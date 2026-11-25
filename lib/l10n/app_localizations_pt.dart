@@ -37,6 +37,15 @@ class AppLocalizationsPt extends AppLocalizations {
   String get scrollContentLabels => 'Rolar rótulos longos nas linhas';
 
   @override
+  String get contentLabelScrollMode => 'Modo de rolagem';
+
+  @override
+  String get contentLabelScrollRestart => 'Voltar ao início';
+
+  @override
+  String get contentLabelScrollLoop => 'Em loop';
+
+  @override
   String get contentAppTileStyle => 'Origem da aparência';
 
   @override

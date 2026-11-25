@@ -37,6 +37,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get scrollContentLabels => 'Scroll long labels in content rows';
 
   @override
+  String get contentLabelScrollMode => 'Label scrolling mode';
+
+  @override
+  String get contentLabelScrollRestart => 'Restart';
+
+  @override
+  String get contentLabelScrollLoop => 'Loop';
+
+  @override
   String get contentAppTileStyle => 'Appearance source';
 
   @override

@@ -610,6 +610,7 @@ class _ContentPreviewRowState extends State<ContentPreviewRow> {
                 text,
                 style: style.labelStyle,
                 scroll: node.hasPrimaryFocus,
+                loop: style.loopContentLabels,
               ),
             );
           }
@@ -1122,6 +1123,7 @@ class _ContentPreviewCardState extends State<ContentPreviewCard>
                         widget.title,
                         style: style.labelStyle,
                         scroll: scrollLabel,
+                        loop: style.loopContentLabels,
                       ),
                     ),
                   ),
@@ -1289,6 +1291,7 @@ class _ContentPreviewCardState extends State<ContentPreviewCard>
                   textAlign: appTiles ? TextAlign.center : null,
                   maxLines: !appTiles && widget.subtitle == null ? 2 : 1,
                   scroll: scrollLabel,
+                  loop: style.loopContentLabels,
                   subtitle: widget.subtitle,
                   subtitleStyle: style.labelStyle.copyWith(
                     color: style.labelStyle.color?.withValues(alpha: .85),
