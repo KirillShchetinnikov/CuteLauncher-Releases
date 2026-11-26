@@ -75,16 +75,47 @@ public class RemoteBatteryBridgeTest {
 
     @Test @Config(sdk = 34)
     public void usesPairedBleRemoteWhenAndroidInputHasNoPercentage() throws Exception {
+        verifiesPairedBleReading("BT_RC813A_C9", "BT_RC813A_C9", null, true);
+    }
+
+    @Test @Config(sdk = 34)
+    public void matchesRemoteWithConsumerControlSuffix() throws Exception {
+        verifiesPairedBleReading("BT_RC933B_B2 Consumer Control", "BT_RC933B_B2", "BT_RC933B", true);
+    }
+
+    @Test @Config(sdk = 34)
+    public void matchesRemoteWithSystemControlSuffixIgnoringCase() throws Exception {
+        verifiesPairedBleReading("Living Room system control", "Living Room", null, true);
+    }
+
+    @Test @Config(sdk = 34)
+    public void skipsAmbiguousBluetoothDevices() throws Exception {
+        verifiesPairedBleReading("Remote Consumer Control", "Remote", "Remote Consumer Control", false);
+    }
+
+    @Test @Config(sdk = 34)
+    public void skipsUnrelatedBluetoothDevices() throws Exception {
+        verifiesPairedBleReading("Remote Pro Consumer Control", "Remote", "Remote Pro Voice", false);
+    }
+
+    private void verifiesPairedBleReading(String inputName, String bluetoothName, String otherName,
+                                          boolean expectReading) throws Exception {
         var app = RuntimeEnvironment.getApplication();
         var adapter = app.getSystemService(BluetoothManager.class).getAdapter();
         shadowOf(adapter).setEnabled(true);
         shadowOf(app.getSystemService(PowerManager.class)).setIsInteractive(true);
         var remote = adapter.getRemoteDevice("00:11:22:33:44:55");
         var bluetooth = shadowOf(remote);
-        bluetooth.setName("BT_RC813A_C9");
+        bluetooth.setName(bluetoothName);
         bluetooth.setType(BluetoothDevice.DEVICE_TYPE_LE);
-        shadowOf(adapter).setBondedDevices(Set.of(remote));
-        var input = ShadowInputDevice.makeInputDeviceNamed("BT_RC813A_C9");
+        var other = adapter.getRemoteDevice("00:11:22:33:44:66");
+        var otherBluetooth = shadowOf(other);
+        if (otherName != null) {
+            otherBluetooth.setName(otherName);
+            otherBluetooth.setType(BluetoothDevice.DEVICE_TYPE_LE);
+        }
+        shadowOf(adapter).setBondedDevices(otherName == null ? Set.of(remote) : Set.of(remote, other));
+        var input = ShadowInputDevice.makeInputDeviceNamed(inputName);
         ReflectionHelpers.setField(input, "mId", 7);
         ReflectionHelpers.setField(input, "mSources", InputDevice.SOURCE_DPAD | InputDevice.SOURCE_JOYSTICK);
         shadowOf(app.getSystemService(InputManager.class)).addInputDevice(input);
@@ -102,6 +133,13 @@ public class RemoteBatteryBridgeTest {
             shadowOf(app).grantPermissions(Manifest.permission.BLUETOOTH_CONNECT);
             var reading = messenger.call("snapshot", null);
             worker.submit(() -> {}).get(5, TimeUnit.SECONDS);
+            assertTrue(otherBluetooth.getBluetoothGatts().isEmpty());
+            if (!expectReading) {
+                shadowOf(Looper.getMainLooper()).idle();
+                assertEquals(Map.of("screenOn", true), reading.get(1, TimeUnit.SECONDS));
+                assertTrue(bluetooth.getBluetoothGatts().isEmpty());
+                return;
+            }
             assertEquals(1, bluetooth.getBluetoothGatts().size());
             var gatt = bluetooth.getBluetoothGatts().get(0);
             var level = new BluetoothGattCharacteristic(

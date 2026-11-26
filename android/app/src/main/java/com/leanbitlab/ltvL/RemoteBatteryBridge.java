@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
+import java.util.regex.Pattern;
 
 /** Reads a remote already present in Android's input list. */
 final class RemoteBatteryBridge implements AutoCloseable {
@@ -41,6 +42,8 @@ final class RemoteBatteryBridge implements AutoCloseable {
     private static final String PERMISSION_PREFS = "remote_battery_permissions";
     private static final UUID BATTERY_SERVICE = UUID.fromString("0000180f-0000-1000-8000-00805f9b34fb");
     private static final UUID BATTERY_LEVEL = UUID.fromString("00002a19-0000-1000-8000-00805f9b34fb");
+    private static final Pattern HID_CONTROL_SUFFIX = Pattern.compile(
+        "\\s+(?:Consumer Control|System Control)$", Pattern.CASE_INSENSITIVE);
     private final Context context;
     private final ExecutorService worker;
     private final MethodChannel channel;
@@ -210,13 +213,23 @@ final class RemoteBatteryBridge implements AutoCloseable {
         for (var device : adapter.getBondedDevices()) {
             int type = device.getType();
             if (type != BluetoothDevice.DEVICE_TYPE_LE && type != BluetoothDevice.DEVICE_TYPE_DUAL) continue;
-            var name = device.getName();
-            if (name == null || name.trim().isEmpty()
-                || remotes.stream().noneMatch(remote -> name.equalsIgnoreCase(remote.getName()))) continue;
+            var bluetoothName = device.getName();
+            if (bluetoothName == null || bluetoothName.trim().isEmpty()) continue;
+            var name = bluetoothName.trim();
+            if (remotes.stream().noneMatch(remote -> matchesRemoteName(name, remote.getName()))) continue;
             if (candidate != null) return null;
             candidate = device;
         }
         return candidate;
+    }
+
+    private static boolean matchesRemoteName(String bluetoothName, @Nullable String inputName) {
+        if (inputName == null) return false;
+        var name = inputName.trim();
+        if (bluetoothName.equalsIgnoreCase(name)) return true;
+        // Android can expose a separate input device named after a HID collection.
+        var suffix = HID_CONTROL_SUFFIX.matcher(name);
+        return suffix.find() && bluetoothName.equalsIgnoreCase(name.substring(0, suffix.start()));
     }
 
     @SuppressLint("MissingPermission") // GATT is only opened after the permission check in bondedRemote.

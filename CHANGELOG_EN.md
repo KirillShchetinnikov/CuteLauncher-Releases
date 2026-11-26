@@ -2,6 +2,10 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
+## v1.8.5 — 2026-11-26
+
+- The Remote Battery widget now shows the percentage for compatible Bluetooth remotes when Android appends a button group label to the device name.
+
 ## v1.8.4 — 2026-11-26
 
 - Added a Remote Battery widget that can be enabled separately for the top bar and Quick Settings. The battery percentage is available on compatible remotes. Reading it over Bluetooth on Android 12 and later may require the Nearby devices permission.
