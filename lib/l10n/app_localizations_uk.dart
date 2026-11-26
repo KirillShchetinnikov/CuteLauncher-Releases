@@ -5032,6 +5032,12 @@ class AppLocalizationsUk extends AppLocalizations {
   String get showVolume => 'Показувати гучність';
 
   @override
+  String get remoteBatteryTitle => 'Заряд пульта';
+
+  @override
+  String get remoteBatteryBluetoothPermission => 'Доступ до Bluetooth';
+
+  @override
   String get audioStatusTitle => 'Гучність і аудіовихід';
 
   @override
@@ -5638,6 +5644,18 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get volumeWidgetSettings => 'Налаштування гучності';
+
+  @override
+  String get volumeWidgetContent => 'Вміст віджета';
+
+  @override
+  String get volumeWidgetContentBoth => 'Гучність і вихід';
+
+  @override
+  String get volumeWidgetContentVolume => 'Лише гучність';
+
+  @override
+  String get volumeWidgetContentOutput => 'Лише вихід';
 
   @override
   String get volumeUpdateInterval => 'Інтервал оновлення';

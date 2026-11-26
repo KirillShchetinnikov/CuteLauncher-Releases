@@ -164,6 +164,7 @@ class _SettingsPanelState extends State<SettingsPanel> {
       NetworkSpeedSettingsPage.routeName,
       WidgetPlacementPage.routeName,
       VolumeWidgetSettingsPage.routeName,
+      VolumeOverlaySettingsPage.routeName,
       SystemWidgetSettingsPage.routeName,
       VpnSettingsPage.routeName,
       PanelOrderPage.routeName,

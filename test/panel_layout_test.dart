@@ -37,7 +37,15 @@ void main() {
     final left = PanelLayout(['settings', 'network', 'traffic'], ['date']);
     expect(left.left.take(4), ['settings', 'network', 'vpn', 'traffic']);
     final right = PanelLayout(['settings'], ['time', 'network', 'date']);
-    expect(right.right, ['time', 'network', 'vpn', 'date', 'audio', 'weather']);
+    expect(right.right, [
+      'time',
+      'network',
+      'vpn',
+      'date',
+      'audio',
+      'remoteBattery',
+      'weather',
+    ]);
   });
   test('an explicitly positioned VPN is preserved', () {
     final layout = PanelLayout(['vpn', 'settings', 'network'], ['date']);
@@ -51,7 +59,7 @@ void main() {
     );
     final (left, right) = layout.displayOrders(true);
     expect(left, contains('audio'));
-    expect(right, [PanelLayout.informationGroup]);
+    expect(right, [PanelLayout.informationGroup, 'remoteBattery']);
     final (expandedLeft, expandedRight) = layout.expandOrders(left, right);
     expect(expandedLeft, layout.left);
     expect(expandedRight, layout.right);

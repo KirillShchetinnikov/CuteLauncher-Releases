@@ -4870,6 +4870,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get showVolume => '音量を表示';
 
   @override
+  String get remoteBatteryTitle => 'リモコンの電池残量';
+
+  @override
+  String get remoteBatteryBluetoothPermission => 'Bluetooth へのアクセス';
+
+  @override
   String get audioStatusTitle => '音量と音声出力';
 
   @override
@@ -5461,6 +5467,18 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get volumeWidgetSettings => '音量の設定';
+
+  @override
+  String get volumeWidgetContent => 'ウィジェットの表示内容';
+
+  @override
+  String get volumeWidgetContentBoth => '音量と出力先';
+
+  @override
+  String get volumeWidgetContentVolume => '音量のみ';
+
+  @override
+  String get volumeWidgetContentOutput => '出力先のみ';
 
   @override
   String get volumeUpdateInterval => '更新間隔';

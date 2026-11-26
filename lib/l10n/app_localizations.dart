@@ -9272,6 +9272,18 @@ abstract class AppLocalizations {
   /// **'Show volume'**
   String get showVolume;
 
+  /// No description provided for @remoteBatteryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote battery'**
+  String get remoteBatteryTitle;
+
+  /// No description provided for @remoteBatteryBluetoothPermission.
+  ///
+  /// In en, this message translates to:
+  /// **'Bluetooth access'**
+  String get remoteBatteryBluetoothPermission;
+
   /// No description provided for @audioStatusTitle.
   ///
   /// In en, this message translates to:
@@ -10327,6 +10339,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Volume settings'**
   String get volumeWidgetSettings;
+
+  /// No description provided for @volumeWidgetContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Widget content'**
+  String get volumeWidgetContent;
+
+  /// No description provided for @volumeWidgetContentBoth.
+  ///
+  /// In en, this message translates to:
+  /// **'Volume and output'**
+  String get volumeWidgetContentBoth;
+
+  /// No description provided for @volumeWidgetContentVolume.
+  ///
+  /// In en, this message translates to:
+  /// **'Volume only'**
+  String get volumeWidgetContentVolume;
+
+  /// No description provided for @volumeWidgetContentOutput.
+  ///
+  /// In en, this message translates to:
+  /// **'Output only'**
+  String get volumeWidgetContentOutput;
 
   /// No description provided for @volumeUpdateInterval.
   ///

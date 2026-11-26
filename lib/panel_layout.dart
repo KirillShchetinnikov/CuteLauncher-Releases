@@ -18,9 +18,9 @@ class PanelLayout {
   ];
   static const buttons = [..._sharedButtons, quickActions];
   static const information = ['weather', 'date', 'time'];
-  // Audio stays independent of the combined clock/date/weather group.
-  static const ids = [...buttons, 'audio', ...information];
-  static const remoteIds = [..._sharedButtons, 'audio', ...information];
+  // The readouts stay independent of the combined clock/date/weather group.
+  static const ids = [...buttons, 'audio', 'remoteBattery', ...information];
+  static const remoteIds = [..._sharedButtons, 'audio', 'remoteBattery', ...information];
   static const informationGroup = 'information';
 
   static List<String> clean(dynamic value, {bool remote = false}) =>

@@ -5005,6 +5005,12 @@ class AppLocalizationsHi extends AppLocalizations {
   String get showVolume => 'वॉल्यूम दिखाएँ';
 
   @override
+  String get remoteBatteryTitle => 'रिमोट की बैटरी';
+
+  @override
+  String get remoteBatteryBluetoothPermission => 'ब्लूटूथ की अनुमति';
+
+  @override
   String get audioStatusTitle => 'वॉल्यूम और ऑडियो आउटपुट';
 
   @override
@@ -5608,6 +5614,18 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get volumeWidgetSettings => 'वॉल्यूम सेटिंग';
+
+  @override
+  String get volumeWidgetContent => 'विजेट की सामग्री';
+
+  @override
+  String get volumeWidgetContentBoth => 'वॉल्यूम और ऑडियो आउटपुट';
+
+  @override
+  String get volumeWidgetContentVolume => 'केवल वॉल्यूम';
+
+  @override
+  String get volumeWidgetContentOutput => 'केवल ऑडियो आउटपुट';
 
   @override
   String get volumeUpdateInterval => 'अपडेट अंतराल';

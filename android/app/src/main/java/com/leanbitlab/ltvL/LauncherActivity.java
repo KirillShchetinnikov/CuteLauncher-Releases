@@ -184,6 +184,7 @@ public class LauncherActivity extends FlutterActivity {
         if (autoLaunch != null) { autoLaunch.close(); autoLaunch=null; }
         if (vpnBridge != null) { vpnBridge.close(); vpnBridge = null; }
         if (audioStatus != null) { audioStatus.close(); audioStatus = null; }
+        if (remoteBattery != null) { remoteBattery.close(); remoteBattery = null; }
         if (storageStatus != null) { storageStatus.close(); storageStatus = null; }
         if (systemStatus != null) { systemStatus.close(); systemStatus = null; }
         if (networkSpeed != null) { networkSpeed.close(); networkSpeed = null; }
@@ -226,6 +227,7 @@ public class LauncherActivity extends FlutterActivity {
     }
     private VpnBridge vpnBridge;
     private AudioStatusBridge audioStatus;
+    private RemoteBatteryBridge remoteBattery;
     private StorageStatusBridge storageStatus;
     private SystemStatusBridge systemStatus;
     private NetworkSpeedBridge networkSpeed;
@@ -288,6 +290,7 @@ public class LauncherActivity extends FlutterActivity {
         autoLaunch = new AutoLaunchBridge(this, messenger);
         vpnBridge = new VpnBridge(this, messenger, sIoExecutor);
         audioStatus = new AudioStatusBridge(this, messenger, sIoExecutor);
+        remoteBattery = new RemoteBatteryBridge(this, messenger, sIoExecutor);
         storageStatus = new StorageStatusBridge(this, messenger, sIoExecutor);
         systemStatus = new SystemStatusBridge(this, messenger, sIoExecutor);
         networkSpeed = new NetworkSpeedBridge(this, messenger, sIoExecutor);
@@ -937,6 +940,9 @@ public class LauncherActivity extends FlutterActivity {
         if (requestCode == LocalWallpaperFiles.REQUEST && wallpaperFolder != null) wallpaperFolder.local.complete();
         if (requestCode == WeatherLocationBridge.PERMISSION_REQUEST && weatherLocationBridge != null) {
             weatherLocationBridge.onPermissionResult();
+        }
+        if (requestCode == RemoteBatteryBridge.PERMISSION_REQUEST && remoteBattery != null) {
+            remoteBattery.onPermissionResult();
         }
         if (requestCode == 1002) {
             if (pendingPermissionResult != null) {

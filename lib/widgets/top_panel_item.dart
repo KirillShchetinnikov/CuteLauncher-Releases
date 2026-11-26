@@ -173,7 +173,9 @@ class _TopPanelItemState extends State<TopPanelItem> {
         highlighted: highlighted,
       ),
       child: DefaultTextStyle(
-        style: textStyle,
+        style: textStyle.copyWith(
+          leadingDistribution: TextLeadingDistribution.even,
+        ),
         child: IconTheme(
           data: IconThemeData(color: foreground, size: textStyle.fontSize),
           child: Center(widthFactor: 1, child: glyphs),

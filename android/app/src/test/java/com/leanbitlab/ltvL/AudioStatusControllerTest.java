@@ -12,6 +12,8 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.Shadows;
 import org.robolectric.shadows.AudioDeviceInfoBuilder;
+import org.robolectric.shadows.ShadowBuild;
+import org.robolectric.util.ReflectionHelpers;
 import com.google.common.collect.ImmutableList;
 import static org.junit.Assert.*;
 
@@ -29,6 +31,18 @@ public class AudioStatusControllerTest {
                 .addFeature(MediaRoute2Info.FEATURE_LIVE_AUDIO).build();
             assertTrue(AudioStatusBridge.LegacyHdmiRoute.isHdmiRoute(hdmi, resources));
             assertFalse(AudioStatusBridge.LegacyHdmiRoute.isHdmiRoute(other, resources));
+        }
+    }
+    @Test @Config(sdk = {28, 29}) public void selectedHdmiIsRecognizedBeforeAndroid11() {
+        try (var lifecycle = Robolectric.buildActivity(Activity.class).setup()) {
+            var context = lifecycle.get();
+            var router = context.getSystemService(MediaRouter.class);
+            var route = router.getSelectedRoute(MediaRouter.ROUTE_TYPE_LIVE_AUDIO);
+            int label = context.getResources().getIdentifier("default_audio_route_name_hdmi", "string", "android");
+            assertNotEquals(0, label);
+            ReflectionHelpers.setField(route, "mNameResId", label);
+
+            assertEquals("hdmi", new AudioStatusController(context).legacyOutput(null));
         }
     }
     @Test public void mediaLevelUsesAndroidScaleAndMuteIsIndependent() {
@@ -55,6 +69,25 @@ public class AudioStatusControllerTest {
             assertFalse(controller.snapshot(controller.legacyOutput(null), false, null).containsKey("outputs"));
         }
     }
+    @Test @Config(sdk = {28, 30, 32}) public void legacyUsesSpeakersWhenTheyAreTheOnlyAvailableOutput() {
+        try (var lifecycle = Robolectric.buildActivity(Activity.class).setup()) {
+            var context = lifecycle.get();
+            var audio = Shadows.shadowOf(context.getSystemService(AudioManager.class));
+            var controller = new AudioStatusController(context);
+            var speaker = AudioDeviceInfoBuilder.newBuilder().setType(AudioDeviceInfo.TYPE_BUILTIN_SPEAKER).build();
+            var headphones = AudioDeviceInfoBuilder.newBuilder().setType(AudioDeviceInfo.TYPE_WIRED_HEADPHONES).build();
+
+            audio.setOutputDevices(java.util.List.of(speaker));
+            assertEquals(java.util.List.of("tv"), controller.snapshot(controller.legacyOutput(null), false, null).get("outputs"));
+            assertEquals(java.util.List.of("bluetooth"), controller.snapshot("bluetooth", false, null).get("outputs"));
+            assertFalse(controller.snapshot(null, true, null).containsKey("outputs"));
+
+            audio.setOutputDevices(java.util.List.of(speaker, headphones));
+            assertFalse(controller.snapshot(null, false, null).containsKey("outputs"));
+            audio.setOutputDevices(java.util.List.of());
+            assertFalse(controller.snapshot(null, false, null).containsKey("outputs"));
+        }
+    }
     @Test public void typesDistinguishArcFromHdmiAndNeverGuessUnknown() {
         assertEquals("tv", AudioStatusController.kind(AudioDeviceInfo.TYPE_BUILTIN_SPEAKER));
         assertEquals("arc", AudioStatusController.kind(AudioDeviceInfo.TYPE_HDMI_ARC));
@@ -63,7 +96,29 @@ public class AudioStatusControllerTest {
         assertEquals("bluetooth", AudioStatusController.kind(AudioDeviceInfo.TYPE_BLUETOOTH_A2DP));
         assertEquals("unknown", AudioStatusController.kind(AudioDeviceInfo.TYPE_UNKNOWN));
     }
-    @Test @Config(sdk = {30, 32}) public void selectedHdmiNeedsUnambiguousArcOutput() {
+    @Test @Config(sdk = {29, 30}) public void formulerBoxWithOnlyHdmiDoesNotReportItsPlaceholderSpeaker() {
+        try (var lifecycle = Robolectric.buildActivity(Activity.class).setup()) {
+            var context = lifecycle.get();
+            var audio = Shadows.shadowOf(context.getSystemService(AudioManager.class));
+            var controller = new AudioStatusController(context);
+            var speaker = AudioDeviceInfoBuilder.newBuilder().setType(AudioDeviceInfo.TYPE_BUILTIN_SPEAKER).build();
+            var hdmi = AudioDeviceInfoBuilder.newBuilder().setType(AudioDeviceInfo.TYPE_HDMI).build();
+            var usb = AudioDeviceInfoBuilder.newBuilder().setType(AudioDeviceInfo.TYPE_USB_HEADSET).build();
+            ShadowBuild.setModel(android.os.Build.VERSION.SDK_INT == 29 ? "Formuler Z10 Pro MAX" : "Formuler Z11 Pro MAX");
+
+            audio.setOutputDevices(java.util.List.of(speaker, hdmi));
+            assertFalse(controller.snapshot(null, false, null).containsKey("outputs"));
+            ShadowBuild.setManufacturer("FORMULER");
+            assertEquals(java.util.List.of("hdmi"), controller.snapshot(null, false, null).get("outputs"));
+            assertEquals(java.util.List.of("bluetooth"), controller.snapshot("bluetooth", false, null).get("outputs"));
+
+            audio.setOutputDevices(java.util.List.of(speaker, hdmi, usb));
+            assertFalse(controller.snapshot(null, false, null).containsKey("outputs"));
+            audio.setOutputDevices(java.util.List.of(speaker));
+            assertFalse(controller.snapshot(null, false, null).containsKey("outputs"));
+        }
+    }
+    @Test @Config(sdk = {30, 32}) public void selectedHdmiUsesTheOnlyHdmiOutputType() {
         try (var lifecycle = Robolectric.buildActivity(Activity.class).setup()) {
             var context = lifecycle.get();
             var audio = Shadows.shadowOf(context.getSystemService(AudioManager.class));
@@ -84,6 +139,8 @@ public class AudioStatusControllerTest {
             audio.setOutputDevices(java.util.List.of(arc, hdmi));
             assertFalse(controller.snapshot(null, true, null).containsKey("outputs"));
             assertFalse(controller.snapshot("hdmi", false, null).containsKey("outputs"));
+            audio.setOutputDevices(java.util.List.of(tv, hdmi));
+            assertEquals(java.util.List.of("hdmi"), controller.snapshot(null, true, null).get("outputs"));
             if (android.os.Build.VERSION.SDK_INT >= 31) {
                 var earc = AudioDeviceInfoBuilder.newBuilder().setType(AudioDeviceInfo.TYPE_HDMI_EARC).build();
                 audio.setOutputDevices(java.util.List.of(arc, earc));

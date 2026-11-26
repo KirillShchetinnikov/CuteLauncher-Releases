@@ -71,7 +71,7 @@
         960,
         540
       ],
-      "sha256": "4eefccfe36c8450e092f1a6dd206be86b1ec1baa05ea0e32104f26c9d3cb7d7e"
+      "sha256": "f9f39c16a96f9569183fc2041597382d73d35bf98aeb261ac5638d82a2d6d770"
     },
     {
       "name": "settings-accent-glass",
@@ -615,7 +615,7 @@
         960,
         540
       ],
-      "sha256": "5a2d96a9c7b0cb0a116ed6e4cc67907d360148c95c73aa68a31736c385f2f1ea"
+      "sha256": "8998ffccbd6f6ab8777ec4983f52de44090a554dc4f24316e27cd6e5874f1f8a"
     },
     {
       "name": "home-top-custom",
@@ -1015,7 +1015,7 @@
         960,
         540
       ],
-      "sha256": "bff3af34e56a3dd880ba55bcdc67349eaf09bffaf8031030d0d8d18f8a61001b"
+      "sha256": "066ade8ed24ca8ec4191fd079afcd368957757bf9f71d5c8ab9e65e727e59ce3"
     },
     {
       "name": "settings-font-google-sans",
@@ -1111,7 +1111,7 @@
         960,
         540
       ],
-      "sha256": "2d899d806612534829b9377240b1fa72a056517a627f4754a1dc7e7a84681b61",
+      "sha256": "3c899bef576c3cf65cdbd296fc33b45a71e98fc1010cd951286831be505d95d8",
       "bottom": true
     },
     {

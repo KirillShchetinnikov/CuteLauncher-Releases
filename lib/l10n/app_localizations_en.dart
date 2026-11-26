@@ -5003,6 +5003,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get showVolume => 'Show volume';
 
   @override
+  String get remoteBatteryTitle => 'Remote battery';
+
+  @override
+  String get remoteBatteryBluetoothPermission => 'Bluetooth access';
+
+  @override
   String get audioStatusTitle => 'Volume and audio output';
 
   @override
@@ -5605,6 +5611,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get volumeWidgetSettings => 'Volume settings';
+
+  @override
+  String get volumeWidgetContent => 'Widget content';
+
+  @override
+  String get volumeWidgetContentBoth => 'Volume and output';
+
+  @override
+  String get volumeWidgetContentVolume => 'Volume only';
+
+  @override
+  String get volumeWidgetContentOutput => 'Output only';
 
   @override
   String get volumeUpdateInterval => 'Update interval';

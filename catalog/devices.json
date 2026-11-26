@@ -632,6 +632,40 @@
       ]
     },
     {
+      "id": "tcl-beyondtv4-ar11-20261125",
+      "label": "TCL Smart TV Pro BeyondTV4 AR11 — Android 11",
+      "kind": "physical",
+      "exactMatch": true,
+      "identity": {
+        "manufacturer": "TCL",
+        "model": "Smart TV Pro",
+        "device": "BeyondTV4",
+        "fingerprint": "TCL/G03_4K_GB/BeyondTV4:11/RP1A.200622.001/AR11:user/release-keys",
+        "firmware": "RP1A.200622.001 release-keys",
+        "android": "11",
+        "sdk": "30",
+        "abis": "armeabi-v7a,armeabi"
+      },
+      "results": [
+        {
+          "feature": "audio-status-route",
+          "status": "unverified",
+          "date": "2026-11-25",
+          "appBuild": "1.8.3+286",
+          "summary": "В присланном отчёте Android перечислил только встроенный динамик. Опрос виджета завершался успешно. Активный маршрут и переключение выходов остаются непроверенными.",
+          "evidenceSection": "TCL BeyondTV4 AR11 — отчёт о звуке и пульте, 25 ноября 2026"
+        },
+        {
+          "feature": "remote-battery",
+          "status": "unverified",
+          "date": "2026-11-25",
+          "appBuild": "1.8.3+286",
+          "summary": "Пользователь сообщил, что Projectivy Launcher показывает заряд пульта. Диагностика CuteLauncher не содержит данных о пульте или уровне его заряда.",
+          "evidenceSection": "TCL BeyondTV4 AR11 — отчёт о звуке и пульте, 25 ноября 2026"
+        }
+      ]
+    },
+    {
       "id": "google-tv-streamer-kirkwood-uttk-260317003",
       "label": "Google TV Streamer 4K — Android 14, UTTK.260317.003",
       "kind": "physical",

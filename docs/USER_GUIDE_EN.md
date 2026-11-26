@@ -590,6 +590,10 @@ source app and Android's Watch Next data.
 
 ## Top panel and widgets
 
+Text and icons are vertically centered within widgets in both the top panel and
+the quick settings panel. In the combined widget, the date and weather are
+centered together.
+
 Top panel objects set to display continuously appear alongside the clock and date.
 While data loads, they show a neutral icon or “—” and update in place. Objects
 that depend on a connection, permission, or active-only mode appear once their
@@ -670,30 +674,41 @@ are shared with the top panel.
 
 For USB and network storage, open **Storage devices** in Widget settings. The storage page shows its status alongside separate visibility switches for the top panel and quick settings panel.
 
+In **Sound and inputs**, open **Remote battery** and enable it on the panels
+where you want it to appear. The widget is off by default. If Android does not
+report the input device battery, the widget tries reading the paired Bluetooth
+remote’s standard Battery Service. On Android 12 or later, select
+**Bluetooth access** on that page and allow **Nearby devices** for this reading.
+The widget shows “—” when a percentage is unavailable.
+
 In **Sound and inputs**, open **Volume and audio output**. Under placement, choose the panels that should show this widget.
 It is enabled by default; visibility and position persist after a restart.
-In **Volume settings → Update interval**, choose a polling interval from 1 to
+Under **Widget settings → Widget content**, select **Volume and output**,
+**Volume only**, or **Output only**. Both parts are shown by default. The
+selection takes effect immediately on both panels and persists after a restart.
+In the same group, **Update interval** sets the polling interval from 1 to
 10 seconds; the default is 3 seconds. The setting is available in both panels'
 object lists, is shared between them, and takes effect immediately.
-The block shows a speaker icon, a percentage and the current output, such as
-**TV**, **ARC**, **HDMI** or **Bluetooth**. When muted, a crossed-out speaker
-replaces the percentage. No remote action is needed: the block cannot receive
-focus and refreshes at the selected interval while the panel is visible.
+The block can show a speaker icon, a percentage and the current output, such as
+**Speakers**, **ARC**, **HDMI** or **Bluetooth**. The widget shows “—” when it
+cannot identify the output. When muted, a crossed-out speaker replaces the
+percentage. No remote action is needed: the block cannot receive focus and
+refreshes at the selected interval while the panel is visible.
 Its visibility on the quick settings panel is configured separately.
 
-In **Volume settings**, turn on **Show volume over apps** to display just the
+In **Over other apps**, turn on **Show volume over apps** to display just the
 percentage in a fixed-width badge when media volume changes in another app. It
 disappears two seconds after the last change. The switch is off by default.
-Enable the CuteLauncher accessibility service under **Accessibility** to use it.
+Enable the CuteLauncher service under **Over other apps → Advanced → Accessibility** to use it.
 The readout depends on the device firmware reporting Android media volume changes.
 
-Under **Where to show**, choose the widget’s position in the top panel or any
+Under **Over other apps → Advanced → Where to show**, choose the widget’s position in the top panel or any
 of the four TV corners. Volume appears in the top-right corner by default.
 When the widget is hidden, the readout uses its last visible position. It
 uses the top-right corner until that position is saved. If volume and the
 sleep timer overlap, the timer moves aside until the volume readout disappears.
 
-Under **Appearance over apps**, the default **Same as the top panel** uses the
+In the same submenu, the default **Same as the top panel** under **Appearance over apps** uses the
 panel’s item colors, font and shape. Select **Dark** to use the original dark badge.
 
 The percentage represents Android media volume. The level of an external audio

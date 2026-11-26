@@ -45,6 +45,7 @@ class DiagnosticsStore {
     'cutelauncher/tv_ime_editor': 'tvImeEditor',
     'cutelauncher/remote_panel': 'remotePanel',
     'cutelauncher/audio_status': 'audio_status',
+    'cutelauncher/remote_battery': 'remote_battery',
     'cutelauncher/network_speed': 'network_speed',
     'cutelauncher/storage_status': 'storage_status',
     'cutelauncher/system_status': 'system_status',

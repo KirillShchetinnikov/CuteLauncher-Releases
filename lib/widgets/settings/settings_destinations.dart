@@ -327,6 +327,7 @@ class WidgetSettingsPage extends StatelessWidget {
                 Icons.volume_up_outlined,
                 VolumeWidgetSettingsPage.routeName,
               ),
+              placement(l.remoteBatteryTitle, Icons.battery_std, 'remoteBattery'),
               link(
                 l.inputs,
                 Icons.settings_input_hdmi,

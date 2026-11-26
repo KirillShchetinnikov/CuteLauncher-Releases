@@ -5,6 +5,7 @@ import 'date_time_format.dart';
 import 'sleep_timer_configuration.dart';
 import 'overlay_appearance.dart';
 import 'overlay_position.dart';
+import 'volume_widget_content.dart';
 import 'tile_appearance.dart';
 import 'weather_sources.dart';
 
@@ -111,6 +112,8 @@ abstract final class LauncherDefaults {
     'show_weather_in_status_bar': true,
     'show_night_mode_in_status_bar': false,
     'show_volume_in_status_bar': true,
+    'show_remote_battery_in_status_bar': false,
+    volumeWidgetContentKey: VolumeWidgetContent.both.name,
     'show_volume_overlay': false,
     volumeOverlayPositionKey: 'topRight',
     volumeOverlayAppearanceKey: OverlayAppearance.topPanel.name,

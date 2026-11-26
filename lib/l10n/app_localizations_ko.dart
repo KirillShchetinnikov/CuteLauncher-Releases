@@ -4874,6 +4874,12 @@ class AppLocalizationsKo extends AppLocalizations {
   String get showVolume => '볼륨 표시';
 
   @override
+  String get remoteBatteryTitle => '리모컨 배터리';
+
+  @override
+  String get remoteBatteryBluetoothPermission => '블루투스 접근 권한';
+
+  @override
   String get audioStatusTitle => '볼륨 및 오디오 출력';
 
   @override
@@ -5465,6 +5471,18 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get volumeWidgetSettings => '음량 설정';
+
+  @override
+  String get volumeWidgetContent => '위젯 표시 내용';
+
+  @override
+  String get volumeWidgetContentBoth => '음량 및 오디오 출력';
+
+  @override
+  String get volumeWidgetContentVolume => '음량만';
+
+  @override
+  String get volumeWidgetContentOutput => '오디오 출력만';
 
   @override
   String get volumeUpdateInterval => '갱신 간격';

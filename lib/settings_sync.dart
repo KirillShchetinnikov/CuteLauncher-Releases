@@ -4,6 +4,7 @@ import 'information_formats.dart';
 import 'file_browser_options.dart';
 import 'overlay_appearance.dart';
 import 'overlay_position.dart';
+import 'volume_widget_content.dart';
 
 /// An explicit portable surface. New preferences remain local until reviewed.
 const syncSettingsKeys = <String>{
@@ -32,6 +33,8 @@ const syncSettingsKeys = <String>{
   'show_network_indicator_in_status_bar',
   'show_vpn_in_status_bar',
   'show_volume_in_status_bar',
+  'show_remote_battery_in_status_bar',
+  volumeWidgetContentKey,
   'show_volume_overlay',
   volumeOverlayPositionKey,
   volumeOverlayAppearanceKey,

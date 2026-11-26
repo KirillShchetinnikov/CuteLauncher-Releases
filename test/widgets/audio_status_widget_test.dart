@@ -1,5 +1,6 @@
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/providers/audio_status_service.dart';
+import 'package:flauncher/volume_widget_content.dart';
 import 'package:flauncher/widgets/audio_status_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -85,6 +86,51 @@ void main() {
       );
     },
   );
+  testWidgets('content options show and announce only the chosen parts', (
+    tester,
+  ) async {
+    final audio = AudioStatusService();
+    addTearDown(audio.dispose);
+    audio.state = (percent: 4, muted: false, fixed: false, output: 'tv');
+    for (final content in VolumeWidgetContent.values) {
+      await tester.pumpWidget(
+        ChangeNotifierProvider.value(
+          value: audio,
+          child: MaterialApp(
+            locale: const Locale('ru'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: AudioStatusWidget(visible: false, content: content),
+          ),
+        ),
+      );
+      final showVolume = content != VolumeWidgetContent.output;
+      final showOutput = content != VolumeWidgetContent.volume;
+      expect(find.text('4%'), showVolume ? findsOneWidget : findsNothing);
+      expect(find.text('Динамики'), showOutput ? findsOneWidget : findsNothing);
+      expect(
+        find.byIcon(Icons.volume_up_outlined),
+        showVolume ? findsOneWidget : findsNothing,
+      );
+      expect(find.byIcon(Icons.tv), showOutput ? findsOneWidget : findsNothing);
+      final description = switch (content) {
+        VolumeWidgetContent.both => '4%, Динамики',
+        VolumeWidgetContent.volume => '4%',
+        VolumeWidgetContent.output => 'Динамики',
+      };
+      expect(
+        find.byWidgetPredicate(
+          (widget) =>
+              widget is Semantics &&
+              widget.properties.label == 'Громкость и аудиовыход: $description',
+        ),
+        findsOneWidget,
+      );
+      expect(tester.takeException(), isNull);
+    }
+    await tester.pumpWidget(const SizedBox());
+  });
+
   testWidgets('large text and RTL keep the informational block usable', (
     tester,
   ) async {

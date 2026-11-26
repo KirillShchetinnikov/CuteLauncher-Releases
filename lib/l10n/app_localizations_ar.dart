@@ -4979,6 +4979,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get showVolume => 'إظهار مستوى الصوت';
 
   @override
+  String get remoteBatteryTitle => 'بطارية جهاز التحكم';
+
+  @override
+  String get remoteBatteryBluetoothPermission => 'الوصول إلى بلوتوث';
+
+  @override
   String get audioStatusTitle => 'مستوى الصوت ومخرج الصوت';
 
   @override
@@ -5578,6 +5584,18 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get volumeWidgetSettings => 'إعدادات مستوى الصوت';
+
+  @override
+  String get volumeWidgetContent => 'محتوى الأداة';
+
+  @override
+  String get volumeWidgetContentBoth => 'مستوى الصوت والمخرج';
+
+  @override
+  String get volumeWidgetContentVolume => 'مستوى الصوت فقط';
+
+  @override
+  String get volumeWidgetContentOutput => 'مخرج الصوت فقط';
 
   @override
   String get volumeUpdateInterval => 'فاصل التحديث';

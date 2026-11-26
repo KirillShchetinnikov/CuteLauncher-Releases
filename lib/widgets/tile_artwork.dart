@@ -243,7 +243,7 @@ class _TileArtworkState extends State<TileArtwork> {
   }
 }
 
-/// Four constant-color regions meet at the nearest image edge, with no blur.
+/// Four solid regions extend the edge colors behind the artwork.
 class TileEdgePainter extends CustomPainter {
   final AppImageColors colors;
   final Rect imageRect;
@@ -251,6 +251,7 @@ class TileEdgePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final bounds = Offset.zero & size;
+    final center = imageRect.center;
     void region(Color? color, List<Offset> points) {
       if (color == null) return;
       final path = Path()..addPolygon(points, true);
@@ -266,24 +267,28 @@ class TileEdgePainter extends CustomPainter {
       bounds.topLeft,
       bounds.topRight,
       imageRect.topRight,
+      center,
       imageRect.topLeft,
     ]);
     region(colors.right, [
       bounds.topRight,
       bounds.bottomRight,
       imageRect.bottomRight,
+      center,
       imageRect.topRight,
     ]);
     region(colors.bottom, [
       bounds.bottomRight,
       bounds.bottomLeft,
       imageRect.bottomLeft,
+      center,
       imageRect.bottomRight,
     ]);
     region(colors.left, [
       bounds.bottomLeft,
       bounds.topLeft,
       imageRect.topLeft,
+      center,
       imageRect.bottomLeft,
     ]);
   }

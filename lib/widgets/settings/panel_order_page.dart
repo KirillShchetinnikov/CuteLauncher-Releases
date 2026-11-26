@@ -213,6 +213,10 @@ class _PanelOrderPageState extends State<PanelOrderPage> {
           settings.showVolumeInStatusBar,
           settings.setShowVolumeInStatusBar,
         ),
+        'remoteBattery' => (
+          settings.showRemoteBatteryInStatusBar,
+          settings.setShowRemoteBatteryInStatusBar,
+        ),
         _ => null,
       };
     }
@@ -239,6 +243,7 @@ class _PanelOrderPageState extends State<PanelOrderPage> {
       'weather': l.weather,
       'system': l.system,
       'audio': l.audioStatusTitle,
+      'remoteBattery': l.remoteBatteryTitle,
       'date': l.showDate,
       'time': l.showTime,
     };
@@ -259,6 +264,7 @@ class _PanelOrderPageState extends State<PanelOrderPage> {
       'weather': Icons.wb_sunny_outlined,
       'system': Icons.monitor_heart_outlined,
       'audio': Icons.volume_up_outlined,
+      'remoteBattery': Icons.battery_std,
       'date': Icons.calendar_today,
       'time': Icons.watch_later_outlined,
     };

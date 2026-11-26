@@ -1,6 +1,7 @@
 import 'information_formats.dart';
 import 'overlay_appearance.dart';
 import 'overlay_position.dart';
+import 'volume_widget_content.dart';
 import 'quick_actions.dart';
 import 'application_info_configuration.dart';
 
@@ -241,6 +242,8 @@ BackupSyncGroup? backupSyncPartGroup(String part) {
     'show_network_indicator_in_status_bar',
     'show_vpn_in_status_bar',
     'show_volume_in_status_bar',
+    'show_remote_battery_in_status_bar',
+    volumeWidgetContentKey,
     'show_volume_overlay',
     volumeOverlayPositionKey,
     volumeOverlayAppearanceKey,

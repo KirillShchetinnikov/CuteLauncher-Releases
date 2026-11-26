@@ -5020,6 +5020,12 @@ class AppLocalizationsTr extends AppLocalizations {
   String get showVolume => 'Ses düzeyini göster';
 
   @override
+  String get remoteBatteryTitle => 'Kumanda pili';
+
+  @override
+  String get remoteBatteryBluetoothPermission => 'Bluetooth erişimi';
+
+  @override
   String get audioStatusTitle => 'Ses düzeyi ve ses çıkışı';
 
   @override
@@ -5624,6 +5630,18 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get volumeWidgetSettings => 'Ses düzeyi ayarları';
+
+  @override
+  String get volumeWidgetContent => 'Widget içeriği';
+
+  @override
+  String get volumeWidgetContentBoth => 'Ses düzeyi ve ses çıkışı';
+
+  @override
+  String get volumeWidgetContentVolume => 'Yalnızca ses düzeyi';
+
+  @override
+  String get volumeWidgetContentOutput => 'Yalnızca ses çıkışı';
 
   @override
   String get volumeUpdateInterval => 'Güncelleme aralığı';

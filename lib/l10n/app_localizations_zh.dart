@@ -4788,6 +4788,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get showVolume => '显示音量';
 
   @override
+  String get remoteBatteryTitle => '遥控器电量';
+
+  @override
+  String get remoteBatteryBluetoothPermission => '蓝牙访问权限';
+
+  @override
   String get audioStatusTitle => '音量和音频输出';
 
   @override
@@ -5368,6 +5374,18 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get volumeWidgetSettings => '音量设置';
+
+  @override
+  String get volumeWidgetContent => '小组件内容';
+
+  @override
+  String get volumeWidgetContentBoth => '音量和音频输出';
+
+  @override
+  String get volumeWidgetContentVolume => '仅音量';
+
+  @override
+  String get volumeWidgetContentOutput => '仅音频输出';
 
   @override
   String get volumeUpdateInterval => '更新间隔';

@@ -726,6 +726,7 @@ void main() {
       ]);
       expect(appearance.panelOrder('panelInfoOrder'), [
         'audio',
+        'remoteBattery',
         'weather',
         'date',
         'time',

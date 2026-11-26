@@ -10,8 +10,12 @@ import 'package:flauncher/providers/remote_panel_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/tv_inputs_service.dart';
 import 'package:flauncher/settings_sync.dart';
+import 'package:flauncher/volume_widget_content.dart';
 import 'package:flauncher/widgets/rounded_switch_list_tile.dart';
+import 'package:flauncher/widgets/settings/settings_help.dart';
 import 'package:flauncher/widgets/settings/settings_panel.dart';
+import 'package:flauncher/widgets/settings/settings_choice_dialog.dart';
+import 'package:flauncher/widgets/settings/settings_section.dart';
 import 'package:flauncher/widgets/settings/settings_value_stepper.dart';
 import 'package:flauncher/widgets/settings/volume_widget_settings_page.dart';
 import 'package:flauncher/widgets/side_panel_dialog.dart';
@@ -99,10 +103,37 @@ void main() {
     },
   );
 
+  test(
+    'widget content persists, validates imports and syncs with the panel',
+    () async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      final settings = SettingsService(prefs);
+      addTearDown(settings.dispose);
+      expect(settings.volumeWidgetContent, VolumeWidgetContent.both);
+
+      await settings.setVolumeWidgetContent(VolumeWidgetContent.volume);
+      expect(settings.exportSettingsMap()[volumeWidgetContentKey], 'volume');
+      for (final invalid in ['none', false, 1]) {
+        await settings.importSettingsMap({volumeWidgetContentKey: invalid});
+        expect(settings.volumeWidgetContent, VolumeWidgetContent.volume);
+      }
+      await settings.importSettingsMap({volumeWidgetContentKey: 'output'});
+      final restored = SettingsService(prefs);
+      addTearDown(restored.dispose);
+      expect(restored.volumeWidgetContent, VolumeWidgetContent.output);
+      expect(syncSettingsKeys, contains(volumeWidgetContentKey));
+      expect(
+        backupSyncPartGroup('setting:$volumeWidgetContentKey'),
+        BackupSyncGroup.topPanel,
+      );
+    },
+  );
+
   for (final remote in [false, true]) {
     for (final right in [false, true]) {
       testWidgets(
-        'both panels open the shared interval page; remote=$remote right=$right',
+        'shared widget and overlay settings work with D-pad; remote=$remote right=$right',
         (tester) async {
           SharedPreferences.setMockInitialValues({
             'settings_menu_on_right': right,
@@ -137,9 +168,7 @@ void main() {
                 locale: const Locale('ru'),
                 localizationsDelegates: AppLocalizations.localizationsDelegates,
                 supportedLocales: AppLocalizations.supportedLocales,
-                home: SettingsPanel(
-                  initialRoute: WidgetSettingsPage.routeName,
-                ),
+                home: SettingsPanel(initialRoute: WidgetSettingsPage.routeName),
               ),
             ),
           );
@@ -159,6 +188,9 @@ void main() {
           await tester.tap(entry);
           await tester.pumpAndSettle();
           expect(find.byType(VolumeWidgetSettingsPage), findsOneWidget);
+          expect(find.byType(SettingsSection), findsNWidgets(2));
+          expect(find.text(l.widgetSettings), findsOneWidget);
+          expect(find.text(l.overAppsGroup), findsOneWidget);
           expect(
             tester
                 .widget<SidePanelDialog>(find.byType(SidePanelDialog))
@@ -182,33 +214,87 @@ void main() {
           await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
           await tester.pumpAndSettle();
           expect(settings.volumeUpdateInterval, 4);
+          await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+          await tester.sendKeyEvent(LogicalKeyboardKey.select);
+          await tester.pumpAndSettle();
+          final contentDialog = find.byType(
+            SettingsChoiceDialog<VolumeWidgetContent>,
+          );
+          expect(contentDialog, findsOneWidget);
+          expect(find.text(l.volumeWidgetContentVolume), findsOneWidget);
+          expect(find.text(l.volumeWidgetContentOutput), findsOneWidget);
+          await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+          await tester.pumpAndSettle();
+          await tester.sendKeyEvent(LogicalKeyboardKey.select);
+          await tester.pumpAndSettle();
+          expect(contentDialog, findsNothing);
+          expect(settings.volumeWidgetContent, VolumeWidgetContent.volume);
+          expect(find.text(l.volumeWidgetContentVolume), findsOneWidget);
           final overlay = find.widgetWithText(
             RoundedSwitchListTile,
             l.showVolumeOverlay,
           );
+          final where = find.text(l.overlayWhereToShow);
+          final appearanceChoice = find.text(l.overlayAppearance);
+          expect(where, findsNothing);
+          expect(appearanceChoice, findsNothing);
+          expect(find.text(l.accessibility), findsNothing);
+          expect(find.byType(SettingsHelp), findsNothing);
           expect(tester.widget<RoundedSwitchListTile>(overlay).value, isFalse);
           await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+          await tester.pumpAndSettle();
+          await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+          await tester.pumpAndSettle();
           await tester.sendKeyEvent(LogicalKeyboardKey.select);
           await tester.pumpAndSettle();
-          expect(settings.showVolumeOverlay, isTrue);
-          expect(tester.widget<RoundedSwitchListTile>(overlay).value, isTrue);
-          await tester.scrollUntilVisible(find.text(l.accessibility), 140);
+          final advanced = find.byType(VolumeOverlaySettingsPage);
+          expect(advanced, findsOneWidget);
+          expect(settings.showVolumeOverlay, isFalse);
+          expect(overlay, findsNothing);
+          expect(find.text(l.accessibility), findsNothing);
+          expect(find.byType(SettingsHelp), findsOneWidget);
+          expect(find.text(l.volumeOverlayHelp), findsNothing);
+          expect(
+            tester
+                .widget<SidePanelDialog>(find.byType(SidePanelDialog))
+                .topInset,
+            kToolbarHeight,
+          );
+          await tester.sendKeyEvent(LogicalKeyboardKey.select);
           await tester.pumpAndSettle();
-          expect(find.text(l.accessibility), findsOneWidget);
-          final where = find.text(l.overlayWhereToShow);
-          await tester.ensureVisible(where);
-          await tester.tap(where);
-          await tester.pumpAndSettle();
+          expect(
+            find.byType(SettingsChoiceDialog<OverlayPosition>),
+            findsOneWidget,
+          );
           await tester.tap(find.text(l.noticeBottomLeft));
           await tester.pumpAndSettle();
           expect(settings.volumeOverlayPosition, OverlayPosition.bottomLeft);
-          final appearanceChoice = find.text(l.overlayAppearance);
           await tester.ensureVisible(appearanceChoice);
           await tester.tap(appearanceChoice);
           await tester.pumpAndSettle();
           await tester.tap(find.text(l.overlayAppearanceDark));
           await tester.pumpAndSettle();
           expect(settings.volumeOverlayAppearance, OverlayAppearance.dark);
+          await tester.binding.handlePopRoute();
+          await tester.pumpAndSettle();
+          expect(advanced, findsNothing);
+          expect(find.byType(VolumeWidgetSettingsPage), findsOneWidget);
+          await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+          await tester.pumpAndSettle();
+          await tester.sendKeyEvent(LogicalKeyboardKey.select);
+          await tester.pumpAndSettle();
+          expect(settings.showVolumeOverlay, isTrue);
+          expect(tester.widget<RoundedSwitchListTile>(overlay).value, isTrue);
+          await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+          await tester.pumpAndSettle();
+          await tester.sendKeyEvent(LogicalKeyboardKey.select);
+          await tester.pumpAndSettle();
+          expect(advanced, findsOneWidget);
+          expect(find.text(l.accessibility), findsOneWidget);
+          expect(find.text(l.noticeBottomLeft), findsOneWidget);
+          expect(find.text(l.overlayAppearanceDark), findsOneWidget);
+          await tester.binding.handlePopRoute();
+          await tester.pumpAndSettle();
           await tester.binding.handlePopRoute();
           await tester.pumpAndSettle();
           expect(find.byType(VolumeWidgetSettingsPage), findsNothing);

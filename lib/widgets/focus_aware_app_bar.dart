@@ -3,6 +3,7 @@ import '../overlay_position.dart';
 import '../key_sounds.dart';
 import 'dart:async';
 import 'audio_status_widget.dart';
+import 'remote_battery_widget.dart';
 import '../providers/storage_status_service.dart';
 import 'storage_status_watch.dart';
 import 'panel_tooltip.dart';
@@ -480,8 +481,16 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
           onPressed: _openSystem, visible: widget.remotePanel != null ||
             !settings.autoHideAppBarEnabled || focused || _settingsOpen),
       if (widget.remotePanel?.visible('audio') ?? settings.showVolumeInStatusBar)
-        'audio': AudioStatusWidget(visible: widget.remotePanel != null ||
-          !settings.autoHideAppBarEnabled || focused || _settingsOpen),
+        'audio': AudioStatusWidget(
+          content: settings.volumeWidgetContent,
+          visible: widget.remotePanel != null ||
+              !settings.autoHideAppBarEnabled || focused || _settingsOpen,
+        ),
+      if (widget.remotePanel?.visible('remoteBattery') ?? settings.showRemoteBatteryInStatusBar)
+        'remoteBattery': RemoteBatteryWidget(
+          visible: widget.remotePanel != null ||
+              !settings.autoHideAppBarEnabled || focused || _settingsOpen,
+        ),
       if (widget.remotePanel?.visible('settings') ?? true) 'settings': FocusPanelTooltip(
         message: AppLocalizations.of(context)!.cuteLauncherSettings,
         child: TopPanelItem(

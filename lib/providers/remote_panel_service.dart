@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class RemotePanelService extends ChangeNotifier {
   static const preferenceKey = 'remote_panel_configuration';
   static const ids = PanelLayout.remoteIds;
+  static const _optInWidgets = {'system', 'networkSpeed', 'remoteBattery'};
   final SharedPreferences preferences;
   Map<String, dynamic> _data = {};
   final _previewOwners = <Object>{};
@@ -96,7 +97,7 @@ class RemotePanelService extends ChangeNotifier {
     final savedLeft = List<String>.of(left), savedRight = List<String>.of(right);
     return _change(() => {..._data, 'leftOrder': savedLeft, 'rightOrder': savedRight}..remove('order'));
   }
-  bool visible(String id) => (id == 'system' || id == 'networkSpeed') && _data['${id}Enabled'] != true
+  bool visible(String id) => _optInWidgets.contains(id) && _data['${id}Enabled'] != true
       ? false : !(_data['hidden'] is List && (_data['hidden'] as List).contains(id));
   static const appearanceKeys = ['panelColor', 'panelOpacity', 'panelTextBackground',
     'panelTextBackgroundColor', 'panelTextBackgroundOpacity', 'panelTextColor',
@@ -144,7 +145,7 @@ class RemotePanelService extends ChangeNotifier {
   Future<void> resetAppearance() => _change(() => {..._data, 'inheritAppearance': true}..remove('appearance'));
   Future<void> set(String key, Object value) => _change(() => {..._data, key: value});
   Future<void> show(String id, bool value) => _change(() => {..._data,
-      if (id == 'system' || id == 'networkSpeed') '${id}Enabled': true,
+      if (_optInWidgets.contains(id)) '${id}Enabled': true,
       'hidden': [for (final entry in ids) if (entry == id ? !value : !visible(entry)) entry],
     });
 }

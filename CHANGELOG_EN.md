@@ -2,6 +2,15 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
+## v1.8.4 — 2026-11-26
+
+- Added a Remote Battery widget that can be enabled separately for the top bar and Quick Settings. The battery percentage is available on compatible remotes. Reading it over Bluetooth on Android 12 and later may require the Nearby devices permission.
+- The Volume and Audio Output widget can show both values, volume only, or output only. The widget and the volume overlay have separate settings sections.
+- Fixed HDMI audio output detection on Formuler boxes. The built-in audio output is now labeled Speakers.
+- Widget text and icons are vertically centered in the top bar and Quick Settings.
+- Fixed detection of the Live TV and Guide buttons when setting up button mappings on DEXP remotes.
+- Fixed clipped glow on app tiles and dark corners around transparent icons when tiles are filled using the edge color.
+
 ## v1.8.3 — 2026-11-25
 
 - Enabled feeds stay on the home screen when their app tile is hidden. Each feed's visibility is controlled in the feed settings.

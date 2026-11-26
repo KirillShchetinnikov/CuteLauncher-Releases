@@ -1,6 +1,7 @@
 import 'package:flauncher/weather_sources.dart';
 import 'package:flauncher/information_formats.dart';
 import 'package:flauncher/weather_text_format.dart';
+import 'package:flauncher/volume_widget_content.dart';
 import 'dart:async';
 import 'dart:ui' as ui;
 import 'package:flauncher/models/watch_next_program.dart';
@@ -1673,8 +1674,15 @@ void main() {
       final clip = tester.getRect(find.descendant(of: section, matching: find.byType(ClipRect)).first);
       final image = tester.renderObject<RenderBox>(find.descendant(
         of: card, matching: find.byType(AppearanceSurface)).first);
-      expect(image.localToGlobal(Offset.zero).dy, greaterThanOrEqualTo(clip.top - .01));
-      expect(image.localToGlobal(image.size.bottomRight(Offset.zero)).dy, lessThanOrEqualTo(clip.bottom + .01));
+      final artwork = Rect.fromPoints(image.localToGlobal(Offset.zero),
+          image.localToGlobal(image.size.bottomRight(Offset.zero)));
+      final glowExtent = TileGlowPainter.extent * artwork.height / image.size.height;
+      expect(artwork.top - glowExtent, greaterThanOrEqualTo(clip.top - .01));
+      expect(artwork.bottom + glowExtent, lessThanOrEqualTo(clip.bottom + .01));
+      final glow = find.descendant(of: card, matching: find.byWidgetPredicate(
+          (widget) => widget is CustomPaint && widget.painter is TileGlowPainter));
+      await expectGlowEdges(tester, artwork, tester.renderObject(glow),
+          axis: Axis.vertical);
     }
     await tester.pumpWidget(const SizedBox());
     appearance.dispose();
@@ -1841,6 +1849,8 @@ void main() {
           const glowExtent = TileGlowPainter.extent * 1.5;
           expect(painted.left - glowExtent, greaterThanOrEqualTo(viewport.left - .01));
           expect(painted.right + glowExtent, lessThanOrEqualTo(viewport.right + .01));
+          expect(painted.top - glowExtent, greaterThanOrEqualTo(viewport.top - .01));
+          expect(painted.bottom + glowExtent, lessThanOrEqualTo(viewport.bottom + .01));
           final glow = find.descendant(of: card, matching: find.byWidgetPredicate(
               (w) => w is CustomPaint && w.painter is TileGlowPainter));
           expect(glow, findsOneWidget);
@@ -4265,6 +4275,8 @@ SettingsService mkSettingsService() {
   when(settingsService.showSystemSettingsInStatusBar).thenReturn(true);
   when(settingsService.showNetworkIndicatorInStatusBar).thenReturn(true);
   when(settingsService.showVolumeInStatusBar).thenReturn(false);
+  when(settingsService.volumeWidgetContent).thenReturn(VolumeWidgetContent.both);
+  when(settingsService.showRemoteBatteryInStatusBar).thenReturn(false);
   when(settingsService.showSystemInStatusBar).thenReturn(false);
   when(settingsService.showNetworkSpeedInStatusBar).thenReturn(false);
   when(settingsService.networkSpeedInterval).thenReturn(3);
@@ -4443,13 +4455,14 @@ bool isSettingsIconFocused(WidgetTester tester) {
 }
 
 Future<void> expectGlowEdges(
-    WidgetTester tester, Rect artwork, RenderCustomPaint glow) async {
+    WidgetTester tester, Rect artwork, RenderCustomPaint glow,
+    {Axis axis = Axis.horizontal}) async {
   final boundary = tester.renderObject<RenderRepaintBoundary>(find.ancestor(
       of: find.byType(FLauncher), matching: find.byType(RepaintBoundary)).first);
-  final points = [
-    for (final x in [artwork.left - 8, artwork.right + 8])
-      boundary.globalToLocal(Offset(x, artwork.center.dy)),
-  ];
+  final points = (axis == Axis.horizontal
+      ? [artwork.centerLeft - const Offset(8, 0), artwork.centerRight + const Offset(8, 0)]
+      : [artwork.topCenter - const Offset(0, 8), artwork.bottomCenter + const Offset(0, 8)])
+      .map(boundary.globalToLocal).toList();
 
   Future<List<int>> sampleBrightness() async {
     return (await tester.runAsync(() async {

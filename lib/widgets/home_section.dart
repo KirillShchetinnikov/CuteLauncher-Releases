@@ -27,6 +27,7 @@ import 'category_focus.dart';
 import 'home_scroll_motion.dart';
 import 'home_scroll_anchor.dart';
 import 'tile_paint_layer.dart';
+import 'tile_theme_outline.dart';
 
 class HomeSectionOpacity extends StatelessWidget {
   const HomeSectionOpacity({
@@ -549,18 +550,19 @@ class _HomeSectionState extends State<HomeSection> {
                     final l = result.layout;
                     final focusGrowth = l.height * (result.focusScale - 1);
                     final lift = style.focusEffect == 'lift' ? style.focusLift : 0.0;
-                    // In compact mode reserve the artwork and its outline. The
-                    // decorative halo can reach the section's paint boundary.
-                    const focusOutline = 2.0;
+                    final glow = style.focusBorderStyle() == 'glow';
+                    final glowExtent = TileGlowPainter.extent * result.focusScale;
+                    final topGrowth = labelHeight > 0 ? focusGrowth : focusGrowth / 2;
+                    final bottomGrowth = labelHeight > 0 ? -labelHeight : focusGrowth / 2;
                     final topInset = style.compactSectionInset(
                       l.inset,
-                      focusReserve: (labelHeight > 0 ? focusGrowth : focusGrowth / 2) +
-                          lift + focusOutline,
+                      focusReserve: topGrowth + lift + 2,
+                      paintReserve: glow ? topGrowth + lift + glowExtent : 0,
                     );
                     final bottomInset = style.compactSectionInset(
                       l.inset,
-                      focusReserve: (labelHeight > 0 ? -labelHeight : focusGrowth / 2) +
-                          focusOutline,
+                      focusReserve: bottomGrowth + 2,
+                      paintReserve: glow ? bottomGrowth - lift + glowExtent : 0,
                     );
                     _verticalTileInsets = topInset + bottomInset;
                     _horizontalInset = result.horizontalInset;

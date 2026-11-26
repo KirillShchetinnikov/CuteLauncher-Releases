@@ -5075,6 +5075,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get showVolume => 'Lautstärke anzeigen';
 
   @override
+  String get remoteBatteryTitle => 'Batteriestand der Fernbedienung';
+
+  @override
+  String get remoteBatteryBluetoothPermission => 'Bluetooth-Zugriff';
+
+  @override
   String get audioStatusTitle => 'Lautstärke und Audioausgabe';
 
   @override
@@ -5691,6 +5697,18 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get volumeWidgetSettings => 'Lautstärkeeinstellungen';
+
+  @override
+  String get volumeWidgetContent => 'Widget-Inhalt';
+
+  @override
+  String get volumeWidgetContentBoth => 'Lautstärke und Audioausgabe';
+
+  @override
+  String get volumeWidgetContentVolume => 'Nur Lautstärke';
+
+  @override
+  String get volumeWidgetContentOutput => 'Nur Audioausgabe';
 
   @override
   String get volumeUpdateInterval => 'Aktualisierungsintervall';

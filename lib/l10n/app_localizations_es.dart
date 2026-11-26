@@ -5072,6 +5072,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get showVolume => 'Mostrar volumen';
 
   @override
+  String get remoteBatteryTitle => 'Batería del mando';
+
+  @override
+  String get remoteBatteryBluetoothPermission => 'Acceso a Bluetooth';
+
+  @override
   String get audioStatusTitle => 'Volumen y salida de audio';
 
   @override
@@ -5689,6 +5695,18 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get volumeWidgetSettings => 'Ajustes de volumen';
+
+  @override
+  String get volumeWidgetContent => 'Contenido del widget';
+
+  @override
+  String get volumeWidgetContentBoth => 'Volumen y salida';
+
+  @override
+  String get volumeWidgetContentVolume => 'Solo volumen';
+
+  @override
+  String get volumeWidgetContentOutput => 'Solo salida';
 
   @override
   String get volumeUpdateInterval => 'Intervalo de actualización';

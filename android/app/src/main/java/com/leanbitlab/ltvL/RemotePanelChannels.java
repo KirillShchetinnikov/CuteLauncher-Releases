@@ -31,6 +31,7 @@ final class RemotePanelChannels implements AutoCloseable {
     private final TvInputBridge inputs;
     private final VpnBridge vpn;
     private final AudioStatusBridge audioStatus;
+    private final RemoteBatteryBridge remoteBattery;
     private final StorageStatusBridge storageStatus;
     private final SystemStatusBridge systemStatus;
     private final NetworkSpeedBridge networkSpeed;
@@ -52,6 +53,7 @@ final class RemotePanelChannels implements AutoCloseable {
         inputs = new TvInputBridge(context, messenger);
         vpn = new VpnBridge(context, messenger, worker);
         audioStatus = new AudioStatusBridge(context, messenger, worker);
+        remoteBattery = new RemoteBatteryBridge(context, messenger, worker);
         storageStatus = new StorageStatusBridge(context, messenger, worker);
         systemStatus = new SystemStatusBridge(context, messenger, worker);
         networkSpeed = new NetworkSpeedBridge(context, messenger, worker);
@@ -173,6 +175,7 @@ final class RemotePanelChannels implements AutoCloseable {
         recents.close();
         vpn.close();
         audioStatus.close();
+        remoteBattery.close();
         storageStatus.close();
         systemStatus.close();
         networkSpeed.close();

@@ -80,10 +80,13 @@ class _DailyDataUsageWidgetState extends State<DailyDataUsageWidget> {
                         ? networkService.dailyDataUsage
                         : null);
             final usageString = usage == null || usage < 0 ? '—' : _formatBytes(usage);
+            final panelTextStyle = topPanelAppearance(context)
+                .panelTextStyleFor(Localizations.localeOf(context));
+            final leading = DefaultTextStyle.of(context).style.leadingDistribution;
 
             return RichText(
               text: TextSpan(
-                style: topPanelAppearance(context).panelTextStyleFor(Localizations.localeOf(context)),
+                style: panelTextStyle.copyWith(leadingDistribution: leading),
                 children: [
                   TextSpan(text: label),
                   TextSpan(text: usageString),

@@ -12,12 +12,19 @@ Future<MemoryImage> fixture(
   WidgetTester tester,
   int width,
   int height,
-  Color color,
-) async {
+  Color color, {
+  double cornerRadius = 0,
+}) async {
   return (await tester.runAsync(() async {
     final recorder = ui.PictureRecorder();
-    Canvas(recorder).drawRect(
-      Rect.fromLTWH(0, 0, width.toDouble(), height.toDouble()),
+    Canvas(recorder).drawRRect(
+      RRect.fromLTRBR(
+        0,
+        0,
+        width.toDouble(),
+        height.toDouble(),
+        Radius.circular(cornerRadius),
+      ),
       Paint()..color = color,
     );
     final picture = recorder.endRecording();
@@ -42,6 +49,79 @@ Future<void> decode(WidgetTester tester) async {
 }
 
 void main() {
+  testWidgets('edge colors fill transparent corners of a rounded icon', (
+    tester,
+  ) async {
+    final icon = await fixture(tester, 48, 48, Colors.teal, cornerRadius: 12);
+    final capture = GlobalKey();
+
+    Future<List<Color>> cornerPixels(TileImageMode mode) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Center(
+            child: RepaintBoundary(
+              key: capture,
+              child: ColoredBox(
+                color: Colors.black,
+                child: SizedBox(
+                  width: 128,
+                  height: 72,
+                  child: TileArtwork(
+                    image: icon,
+                    mode: mode,
+                    isIcon: true,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await decode(tester);
+
+      final boundary = tester.renderObject<RenderRepaintBoundary>(
+        find.byKey(capture),
+      );
+      final rect = tester
+          .getRect(find.byType(Image))
+          .shift(-tester.getTopLeft(find.byKey(capture)))
+          .deflate(1);
+      return (await tester.runAsync(() async {
+        final image = await boundary.toImage();
+        final data = (await image.toByteData(
+          format: ui.ImageByteFormat.rawRgba,
+        ))!;
+        final points = [
+          rect.topLeft,
+          rect.topRight - const Offset(1, 0),
+          rect.bottomLeft - const Offset(0, 1),
+          rect.bottomRight - const Offset(1, 1),
+        ];
+        final pixels = points.map((point) {
+          final at = (point.dy.floor() * image.width + point.dx.floor()) * 4;
+          return Color.fromARGB(
+            data.getUint8(at + 3),
+            data.getUint8(at),
+            data.getUint8(at + 1),
+            data.getUint8(at + 2),
+          );
+        }).toList();
+        image.dispose();
+        return pixels;
+      }))!;
+    }
+
+    expect(
+      await cornerPixels(TileImageMode.contain),
+      everyElement(isSameColorAs(Colors.black)),
+    );
+    expect(
+      await cornerPixels(TileImageMode.edgeColor),
+      everyElement(isSameColorAs(Colors.teal, threshold: 0.01)),
+    );
+  });
+
   testWidgets(
     'contain and color have identical safe geometry in a circle; fill changes pixels',
     (tester) async {

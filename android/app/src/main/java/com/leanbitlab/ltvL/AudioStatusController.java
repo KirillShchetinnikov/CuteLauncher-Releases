@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.TreeSet;
 
-/** Read-only media state. Connected devices are never substituted for a selected route. */
+/** Read-only media state. An explicit route takes precedence over connected devices. */
 final class AudioStatusController {
     static final AudioAttributes MEDIA = new AudioAttributes.Builder()
         .setUsage(AudioAttributes.USAGE_MEDIA).build();
@@ -35,8 +35,7 @@ final class AudioStatusController {
                 diagnostics.put("legacyRouteType", route.getDeviceType());
             }
             if (route.getDeviceType() == MediaRouter.RouteInfo.DEVICE_TYPE_BLUETOOTH) return "bluetooth";
-            boolean hdmi = Build.VERSION.SDK_INT >= 30
-                && matchesHdmiLabel(route.getName(), context.getResources());
+            boolean hdmi = matchesHdmiLabel(route.getName(), context.getResources());
             if (diagnostics != null) diagnostics.put("legacyRouteMatchesHdmiLabel", hdmi);
             return hdmi ? "hdmi" : null;
         } catch (RuntimeException unavailable) {
@@ -85,8 +84,9 @@ final class AudioStatusController {
                 if (percent != null) state.put("percent", percent);
             }
         } catch (RuntimeException unavailable) { /* Keep level unknown. */ }
-        String legacyArc = null;
-        if ((hdmiSelected && !legacyBluetooth) || routeDiagnostics != null) {
+        boolean useLegacyOutputs = Build.VERSION.SDK_INT < 33 && !legacyBluetooth;
+        String legacyDeviceOutput = null;
+        if (useLegacyOutputs || routeDiagnostics != null) {
             try {
                 var devices = audio.getDevices(AudioManager.GET_DEVICES_OUTPUTS);
                 if (routeDiagnostics != null) {
@@ -94,7 +94,9 @@ final class AudioStatusController {
                     for (var device : devices) types.add(device.getType());
                     routeDiagnostics.put("availableOutputTypes", List.copyOf(types));
                 }
-                if (hdmiSelected && !legacyBluetooth) legacyArc = legacyArcOutput(devices);
+                if (useLegacyOutputs) {
+                    legacyDeviceOutput = hdmiSelected ? legacyHdmiOutput(devices) : legacyDefaultOutput(devices);
+                }
             } catch (RuntimeException unavailable) {
                 if (routeDiagnostics != null) routeDiagnostics.put("outputsReadFailed", true);
             }
@@ -104,24 +106,38 @@ final class AudioStatusController {
             catch (RuntimeException unavailable) { /* No permission or unsupported OEM route query. */ }
         } else if (legacyBluetooth) {
             state.put("outputs", List.of("bluetooth"));
-        } else if (legacyArc != null) {
-            state.put("outputs", List.of(legacyArc));
+        } else if (legacyDeviceOutput != null) {
+            state.put("outputs", List.of(legacyDeviceOutput));
         }
         return state;
     }
 
-    @Nullable private static String legacyArcOutput(@NonNull AudioDeviceInfo[] devices) {
+    @Nullable private static String legacyHdmiOutput(@NonNull AudioDeviceInfo[] devices) {
         String output = null;
         for (var device : devices) {
             switch (device.getType()) {
-                case AudioDeviceInfo.TYPE_HDMI -> { return null; }
-                case AudioDeviceInfo.TYPE_HDMI_ARC, AudioDeviceInfo.TYPE_HDMI_EARC -> {
+                case AudioDeviceInfo.TYPE_HDMI, AudioDeviceInfo.TYPE_HDMI_ARC, AudioDeviceInfo.TYPE_HDMI_EARC -> {
                     String type = kind(device.getType());
                     if (output != null && !output.equals(type)) return null;
                     output = type;
                 }
                 default -> { }
             }
+        }
+        return output;
+    }
+
+    @Nullable private static String legacyDefaultOutput(@NonNull AudioDeviceInfo[] devices) {
+        if (devices.length == 0) return null;
+        // These boxes report a built-in speaker despite having no physical speaker.
+        boolean formulerBox = "FORMULER".equalsIgnoreCase(Build.MANUFACTURER)
+            && ("Formuler Z10 Pro MAX".equalsIgnoreCase(Build.MODEL)
+                || "Formuler Z11 Pro MAX".equalsIgnoreCase(Build.MODEL));
+        String output = formulerBox ? null : "tv";
+        for (var device : devices) {
+            String type = kind(device.getType());
+            if (formulerBox && "hdmi".equals(type)) output = "hdmi";
+            else if (!"tv".equals(type)) return null;
         }
         return output;
     }

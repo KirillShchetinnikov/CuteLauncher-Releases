@@ -102,11 +102,16 @@ class TileAppearance {
   double get sectionSpacing =>
       number('sectionSpacing') ?? sectionGap + _legacySectionGapOffset;
 
-  double compactSectionInset(double inset, {required double focusReserve}) {
+  double compactSectionInset(
+    double inset, {
+    required double focusReserve,
+    double paintReserve = 0,
+  }) {
     final compact = 1 - (sectionSpacing / _legacySectionGapOffset).clamp(0, 1);
     final removable = (inset - focusReserve)
         .clamp(0, math.min(inset, _legacySectionGapOffset / 2));
-    return inset - compact * removable;
+    // Keep the adjustable spacing above the minimum needed to paint the tile.
+    return math.max(inset - removable, paintReserve) + (1 - compact) * removable;
   }
 
   double get sectionOpacity => number('sectionOpacity') ?? 1;

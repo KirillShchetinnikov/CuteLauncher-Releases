@@ -4,6 +4,7 @@ import '../quick_actions.dart';
 import '../application_info_configuration.dart';
 import '../overlay_appearance.dart';
 import '../overlay_position.dart';
+import '../volume_widget_content.dart';
 import '../launcher_defaults.dart';
 import '../tv_inputs_configuration.dart';
 import 'online_wallpaper_service.dart';
@@ -384,6 +385,17 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
   Future<void> setSystemShowRam(bool value) => _setSystemOption('system_show_ram', value);
   Future<void> setSystemShowTemperature(bool value) => _setSystemOption('system_show_temperature', value);
   bool get showVolumeInStatusBar => _sharedPreferences.getBool('show_volume_in_status_bar') ?? true;
+  bool get showRemoteBatteryInStatusBar => _sharedPreferences.getBool('show_remote_battery_in_status_bar') ?? false;
+  Future<void> setShowRemoteBatteryInStatusBar(bool value) => _setSystemOption('show_remote_battery_in_status_bar', value);
+  VolumeWidgetContent get volumeWidgetContent =>
+      VolumeWidgetContent.parse(_sharedPreferences.get(volumeWidgetContentKey)) ??
+      VolumeWidgetContent.both;
+  Future<void> setVolumeWidgetContent(VolumeWidgetContent value) async {
+    if (!await _sharedPreferences.setString(volumeWidgetContentKey, value.name)) {
+      throw StateError('Panel settings unavailable');
+    }
+    notifyListeners();
+  }
   bool get showVolumeOverlay => _sharedPreferences.getBool('show_volume_overlay') ?? false;
   Future<void> setShowVolumeOverlay(bool value) => _setSystemOption('show_volume_overlay', value);
   OverlayPosition get volumeOverlayPosition =>
@@ -964,6 +976,8 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
       _showNetworkIndicatorInStatusBarKey: _showNetworkIndicatorInStatusBar,
       'show_vpn_in_status_bar': showVpnInStatusBar,
       'show_volume_in_status_bar': showVolumeInStatusBar,
+      'show_remote_battery_in_status_bar': showRemoteBatteryInStatusBar,
+      volumeWidgetContentKey: volumeWidgetContent.name,
       'show_volume_overlay': showVolumeOverlay,
       volumeOverlayPositionKey: volumeOverlayPosition.name,
       volumeOverlayAppearanceKey: volumeOverlayAppearance.name,

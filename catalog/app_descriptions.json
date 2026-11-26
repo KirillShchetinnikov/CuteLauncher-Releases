@@ -22,7 +22,8 @@
     "catalog/inventories/tcl-g10-as16-20261116-home-tile-images.json",
     "catalog/inventories/formuler-z10-pro-max-android10-20261118-quick-actions-reboot.json",
     "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json",
-    "internal/diagnostics/inventories/slimbox-tanix-w2-android11-20261122-adb.json"
+    "internal/diagnostics/inventories/slimbox-tanix-w2-android11-20261122-adb.json",
+    "internal/diagnostics/inventories/tcl-beyondtv4-ar11-20261125.json"
   ],
   "packages": {
     "android": {
@@ -56,7 +57,8 @@
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "android.auto_generated_rro__": {
@@ -146,7 +148,8 @@
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "android.autoinstalls.config.google.sabrina": {
@@ -323,6 +326,15 @@
       ],
       "category": "user"
     },
+    "au.com.stan.and": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/tcl-beyondtv4-ar11-20261125.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "tcl-beyondtv4-ar11-20261125"
+      ],
+      "category": "preinstalled"
+    },
     "by.game.binumbers": {
       "ru": "Приложение не опознано.",
       "en": "Application not identified.",
@@ -440,6 +452,18 @@
       "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "slimbox-x3-android9-20261122-adb"
+      ]
+    },
+    "com.android.messaging": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/tcl-beyondtv4-ar11-20261125.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.networkstack.chromecast": {
@@ -606,6 +630,15 @@
         "google-tv-streamer-uttk-20261115-landscape-263"
       ]
     },
+    "com.anyplayer": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/tcl-beyondtv4-ar11-20261125.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "tcl-beyondtv4-ar11-20261125"
+      ],
+      "category": "user"
+    },
     "com.atv.torrents": {
       "confidence": "unknown",
       "safeToDisable": false,
@@ -639,6 +672,24 @@
       "source": "internal/diagnostics/inventories/slimbox-tanix-w2-android11-20261122-adb.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "slimbox-tanix-w2-android11-20261122-adb"
+      ],
+      "category": "user"
+    },
+    "com.brouken.player": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/tcl-beyondtv4-ar11-20261125.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "tcl-beyondtv4-ar11-20261125"
+      ],
+      "category": "user"
+    },
+    "com.drm_play": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/tcl-beyondtv4-ar11-20261125.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "tcl-beyondtv4-ar11-20261125"
       ],
       "category": "user"
     },
@@ -1598,6 +1649,30 @@
       ],
       "category": "user"
     },
+    "com.tcl.tclchannel.overlay": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/tcl-beyondtv4-ar11-20261125.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "tcl-beyondtv4-ar11-20261125"
+      ]
+    },
+    "com.tcl.versionUpdateApp": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/tcl-beyondtv4-ar11-20261125.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "tcl-beyondtv4-ar11-20261125"
+      ]
+    },
     "com.termux": {
       "confidence": "unknown",
       "safeToDisable": false,
@@ -1640,7 +1715,8 @@
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ],
       "category": "user"
     },
@@ -1659,7 +1735,8 @@
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ],
       "category": "preinstalled"
     },
@@ -1721,7 +1798,8 @@
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.bluetooth": {
@@ -1752,7 +1830,8 @@
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.bluetoothmidiservice": {
@@ -1782,7 +1861,8 @@
         "google-tanix-w2-android11-20261101",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.cameraextensions": {
@@ -1833,7 +1913,8 @@
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.certinstaller": {
@@ -1867,7 +1948,8 @@
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.companiondevicemanager": {
@@ -1901,7 +1983,8 @@
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.connectivity.resources": {
@@ -1957,7 +2040,8 @@
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.cts.priv.ctsshim": {
@@ -1990,7 +2074,8 @@
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.deskclock": {
@@ -2071,7 +2156,8 @@
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.dynsystem": {
@@ -2103,7 +2189,8 @@
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.externalstorage": {
@@ -2137,7 +2224,8 @@
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.federatedcompute.services": {
@@ -2237,7 +2325,8 @@
         "tcl-g10-as16-20261115-home-tile-images",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.htmlviewer": {
@@ -2271,7 +2360,8 @@
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.inputdevices": {
@@ -2305,7 +2395,8 @@
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.inputmethod.latin": {
@@ -2374,7 +2465,8 @@
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.launcher3": {
@@ -2424,7 +2516,8 @@
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.location.fused": {
@@ -2458,7 +2551,8 @@
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.managedprovisioning": {
@@ -2606,7 +2700,8 @@
         "tcl-g10-as16-20261115-home-tile-images",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.networkstack.permissionconfig": {
@@ -2630,7 +2725,8 @@
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.networkstack.tethering": {
@@ -2759,7 +2855,8 @@
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.permissioncontroller": {
@@ -2802,7 +2899,8 @@
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.providers.calendar": {
@@ -2835,7 +2933,8 @@
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.providers.contacts": {
@@ -2868,7 +2967,8 @@
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.providers.contacts.auto_generated_rro_product__": {
@@ -2916,7 +3016,8 @@
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.providers.downloads.ui": {
@@ -2968,7 +3069,8 @@
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.providers.media.module": {
@@ -2995,7 +3097,8 @@
         "tcl-g10-as16-20261115-home-tile-images",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.providers.settings": {
@@ -3029,7 +3132,8 @@
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.providers.settings.auto_generated_rro_product__": {
@@ -3097,7 +3201,8 @@
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.providers.userdictionary": {
@@ -3129,7 +3234,8 @@
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.proxyhandler": {
@@ -3163,7 +3269,8 @@
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.rkpdapp": {
@@ -3231,7 +3338,8 @@
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.settings": {
@@ -3280,7 +3388,8 @@
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.sharedstoragebackup": {
@@ -3313,7 +3422,8 @@
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.shell": {
@@ -3347,7 +3457,8 @@
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.soundpicker": {
@@ -3369,7 +3480,8 @@
         "tcl-g10-as16-20261115-home-tile-images",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.statementservice": {
@@ -3400,7 +3512,8 @@
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.systemui": {
@@ -3434,7 +3547,8 @@
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.systemui.auto_generated_rro_vendor__": {
@@ -3470,7 +3584,8 @@
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.tethering.overlay.gsi": {
@@ -3491,7 +3606,8 @@
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.tv.feedbackconsent": {
@@ -3716,7 +3832,8 @@
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.tv.settings.gms.resoverlay": {
@@ -3765,7 +3882,8 @@
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.tv.settings.mediatek.resoverlay.subatomic": {
@@ -3800,7 +3918,8 @@
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.uwb.resources": {
@@ -3850,7 +3969,8 @@
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.virtualmachine.res": {
@@ -3904,7 +4024,8 @@
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.wallpaper.livepicker": {
@@ -3956,7 +4077,8 @@
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.wallpapercropper": {
@@ -4027,7 +4149,8 @@
         "tcl-g10-as16-20261115-home-tile-images",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.zdtd.service": {
@@ -4378,7 +4501,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.google.android.apps.tv.dreamx": {
@@ -4401,7 +4525,8 @@
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.google.android.apps.tv.launcherx": {
@@ -4425,7 +4550,8 @@
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.google.android.appsearch.apk": {
@@ -4554,7 +4680,8 @@
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.google.android.ext.shared": {
@@ -4588,7 +4715,8 @@
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.google.android.feedback": {
@@ -4617,7 +4745,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.google.android.gms": {
@@ -4650,7 +4779,8 @@
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.google.android.gsf": {
@@ -4683,7 +4813,8 @@
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.google.android.inputmethod.latin": {
@@ -4714,7 +4845,8 @@
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
-        "slimbox-x3-android9-20261122-adb"
+        "slimbox-x3-android9-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.google.android.katniss": {
@@ -4747,7 +4879,8 @@
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.google.android.landscape": {
@@ -4819,7 +4952,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.google.android.modulemetadata": {
@@ -4846,7 +4980,8 @@
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.google.android.networkstack.tethering.google": {
@@ -4880,7 +5015,8 @@
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.google.android.overlay.googlewebview": {
@@ -4987,7 +5123,8 @@
         "tcl-g10-as16-20261115-home-tile-images",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.google.android.overlay.modules.modulemetadata.forframework": {
@@ -5011,7 +5148,8 @@
         "formuler-z11-pro-max-rvc-20261113-video-folder",
         "tcl-g10-as16-20261115-home-tile-images",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.google.android.overlay.modules.permissioncontroller": {
@@ -5037,7 +5175,8 @@
         "tcl-g10-as16-20261115-home-tile-images",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.google.android.overlay.modules.permissioncontroller.forframework": {
@@ -5063,7 +5202,8 @@
         "tcl-g10-as16-20261115-home-tile-images",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.google.android.packageinstaller": {
@@ -5093,7 +5233,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.google.android.partnersetup": {
@@ -5124,7 +5265,8 @@
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.google.android.permissioncontroller": {
@@ -5154,7 +5296,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.google.android.play.games": {
@@ -5173,7 +5316,8 @@
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ],
       "category": "preinstalled"
     },
@@ -5213,7 +5357,8 @@
         "formuler-z11-pro-max-rvc-20261113-video-folder",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.google.android.syncadapters.calendar": {
@@ -5245,7 +5390,8 @@
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.google.android.syncadapters.contacts": {
@@ -5305,7 +5451,8 @@
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
-        "slimbox-x3-android9-20261122-adb"
+        "slimbox-x3-android9-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.google.android.tungsten.setupwraith": {
@@ -5335,7 +5482,8 @@
         "google-tv-streamer-uttk-20261115-landscape-263",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "slimbox-x3-android9-20261122-adb"
+        "slimbox-x3-android9-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.google.android.tv.axel": {
@@ -5382,7 +5530,8 @@
         "tcl-beyondtv4-ar10-20261110",
         "formuler-z11-pro-max-rvc-20261113-video-folder",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.google.android.tv.googletvremotepairer": {
@@ -5440,7 +5589,8 @@
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.google.android.tv.settings.energymodes.resoverlay": {
@@ -5531,7 +5681,8 @@
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ],
       "category": "preinstalled"
     },
@@ -5565,7 +5716,8 @@
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.google.android.youtube.tv": {
@@ -5592,7 +5744,8 @@
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ],
       "category": "preinstalled"
     },
@@ -5611,7 +5764,8 @@
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ],
       "category": "preinstalled"
     },
@@ -6012,7 +6166,8 @@
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ],
       "category": "preinstalled"
     },
@@ -6533,7 +6688,8 @@
         "tcl-g08",
         "tcl-g08-au04-20261107-weather-import",
         "tcl-g08-au04-20261107-weather-read-error",
-        "slimbox-x3-android9-20261122-adb"
+        "slimbox-x3-android9-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ],
       "category": "user"
     },
@@ -6618,7 +6774,8 @@
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.tcl.autopair": {
@@ -6639,7 +6796,8 @@
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.tcl.channelplus": {
@@ -6659,7 +6817,8 @@
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.tcl.dashboard": {
@@ -6676,7 +6835,8 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.tcl.esticker": {
@@ -6696,7 +6856,8 @@
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.tcl.eva": {
@@ -6752,7 +6913,8 @@
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.tcl.gamebar": {
@@ -6772,7 +6934,8 @@
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.tcl.globalkeyoverlay": {
@@ -6813,7 +6976,8 @@
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.tcl.hearaid": {
@@ -6833,7 +6997,8 @@
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.tcl.hotelmenu": {
@@ -6874,7 +7039,8 @@
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.tcl.inputmethod.international": {
@@ -6895,7 +7061,8 @@
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.tcl.interactive": {
@@ -6935,7 +7102,8 @@
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.tcl.magiconnectfree": {
@@ -6952,7 +7120,8 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.tcl.messagebox": {
@@ -6972,7 +7141,8 @@
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.tcl.miracast": {
@@ -6990,7 +7160,8 @@
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.tcl.ocean.instructions": {
@@ -7010,7 +7181,8 @@
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.tcl.overlay.frameworkres": {
@@ -7046,7 +7218,8 @@
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.tcl.providers.config": {
@@ -7067,7 +7240,8 @@
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.tcl.repairguide": {
@@ -7104,7 +7278,8 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.tcl.smartlink.core": {
@@ -7140,7 +7315,8 @@
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.tcl.systemserver": {
@@ -7196,7 +7372,8 @@
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.tcl.ttvs": {
@@ -7216,7 +7393,8 @@
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.tcl.tv": {
@@ -7237,7 +7415,8 @@
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.tcl.tv.overlay": {
@@ -7273,7 +7452,8 @@
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.tcl.tvinput": {
@@ -7294,7 +7474,8 @@
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.tcl.ui_mediaCenter": {
@@ -7315,7 +7496,8 @@
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.tcl.useragreement": {
@@ -7335,7 +7517,8 @@
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.tcl.usercenter": {
@@ -7355,7 +7538,8 @@
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.tcl.waterfall.overseas": {
@@ -7375,7 +7559,8 @@
         "tcl-g08-au04-20261107-weather-read-error",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.tcl.webview": {
@@ -7442,7 +7627,8 @@
         "tcl-beyondtv4-ar10-20261110",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.tvvoicesearch.app": {
@@ -7554,7 +7740,8 @@
         "kp1-yyz",
         "tcl-beyondtv4-ar10-20261110",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ],
       "category": "preinstalled"
     },
@@ -7630,7 +7817,8 @@
       "observedOn": [
         "google-tv-streamer-uttk-20261115-landscape",
         "google-tv-streamer-uttk-20261115-landscape-263",
-        "slimbox-x3-android9-20261122-adb"
+        "slimbox-x3-android9-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.wuliang.xapkinstaller": {
@@ -7894,7 +8082,8 @@
         "tcl-g10-as16-20261116-home-tile-images",
         "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
         "slimbox-x3-android9-20261122-adb",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ],
       "category": "user"
     },
@@ -8145,7 +8334,8 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ],
       "category": "preinstalled"
     },
@@ -8169,6 +8359,18 @@
       "source": "catalog/inventories (presence only)",
       "observedOn": [
         "droidlogic-x98q-android11-20261026"
+      ]
+    },
+    "org.chromium.webview_shell": {
+      "ru": "Приложение не опознано.",
+      "en": "Application not identified.",
+      "riskRu": "Риск отключения неизвестен. Безопасное отключение не подтверждено.",
+      "riskEn": "Disabling risk is unknown. Disabling has not been validated.",
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/tcl-beyondtv4-ar11-20261125.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "org.courville.nova": {
@@ -8336,7 +8538,8 @@
         "tcl-g10-as16-20261104-update-http",
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "org.xbmc.kodi": {
@@ -8483,7 +8686,8 @@
         "kp1-yyz",
         "tcl-g08",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar11-20261125"
       ],
       "category": "preinstalled"
     },
@@ -8505,7 +8709,8 @@
         "tcl-g10-as16-20261115-home-tile-images",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
         "tcl-g10-as16-20261116-home-tile-images",
-        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot"
+        "formuler-z10-pro-max-android10-20261118-quick-actions-reboot",
+        "tcl-beyondtv4-ar11-20261125"
       ],
       "category": "preinstalled"
     },
@@ -8532,7 +8737,8 @@
         "tcl-g08",
         "tcl-g10",
         "tcl-g08-au04-20261107-weather-import",
-        "tcl-g08-au04-20261107-weather-read-error"
+        "tcl-g08-au04-20261107-weather-read-error",
+        "tcl-beyondtv4-ar11-20261125"
       ],
       "category": "preinstalled"
     },
@@ -8541,7 +8747,8 @@
       "safeToDisable": false,
       "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
       "observedOn": [
-        "slimbox-x3-android9-20261122-adb"
+        "slimbox-x3-android9-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ],
       "category": "user"
     },
@@ -8581,7 +8788,8 @@
       "source": "catalog/inventories (presence only); manual functional review",
       "observedOn": [
         "kp1-yyz",
-        "slimbox-x3-android9-20261122-adb"
+        "slimbox-x3-android9-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ],
       "category": "preinstalled"
     },
@@ -8702,7 +8910,8 @@
       "observedOn": [
         "google-tanix-w2-android11-20261101",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "slimbox-x3-android9-20261122-adb"
+        "slimbox-x3-android9-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ],
       "category": "user"
     },
@@ -8714,7 +8923,8 @@
         "google-tanix-w2-android11-20261101",
         "tcl-g08-au04-20261104",
         "google-tv-streamer-uttk-20261115-quick-settings-toast",
-        "slimbox-x3-android9-20261122-adb"
+        "slimbox-x3-android9-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ],
       "category": "user"
     },
@@ -8766,7 +8976,8 @@
       "safeToDisable": false,
       "source": "internal/diagnostics/inventories/slimbox-x3-android9-20261122-adb.json (user diagnostic metadata; presence only)",
       "observedOn": [
-        "slimbox-x3-android9-20261122-adb"
+        "slimbox-x3-android9-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ],
       "category": "user"
     },
@@ -9024,6 +9235,15 @@
       ],
       "category": "user"
     },
+    "tv.wuaki.apptv": {
+      "confidence": "unknown",
+      "safeToDisable": false,
+      "source": "internal/diagnostics/inventories/tcl-beyondtv4-ar11-20261125.json (user diagnostic metadata; presence only)",
+      "observedOn": [
+        "tcl-beyondtv4-ar11-20261125"
+      ],
+      "category": "preinstalled"
+    },
     "tw.com.constarwu.deviceidchanger": {
       "confidence": "unknown",
       "safeToDisable": false,
@@ -9102,7 +9322,8 @@
       "safeToDisable": false,
       "source": "https://github.com/Gathin23/cleanyourtv/blob/3e06c1b2e731aff1b9f5d169c59d9e4d4a3fe4be/examples/tcl-g03-google-tv/debloat.txt; catalog/inventories/tcl-g08-au04-20261104.json (user diagnostic metadata; presence only)",
       "observedOn": [
-        "tcl-g08-au04-20261104"
+        "tcl-g08-au04-20261104",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.wolf.lm": {
@@ -9159,7 +9380,8 @@
       "source": "catalog/inventories/tcl-g08-au04-20261104.json (user diagnostic metadata; presence only)",
       "observedOn": [
         "tcl-g08-au04-20261104",
-        "google-tv-streamer-uttk-20261115-quick-settings-toast"
+        "google-tv-streamer-uttk-20261115-quick-settings-toast",
+        "tcl-beyondtv4-ar11-20261125"
       ],
       "category": "user"
     },
@@ -9202,7 +9424,8 @@
         "formuler-z11-pro-max-rvc-20261113-video-folder",
         "tcl-g10-as16-20261115-home-tile-images",
         "xiaomi-mibox4-oneday-20261116-aerialviews",
-        "tcl-g10-as16-20261116-home-tile-images"
+        "tcl-g10-as16-20261116-home-tile-images",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.android.tv.overlay.networkstack.inprocess": {
@@ -9346,7 +9569,8 @@
         "tcl-g10-as16-20261112-feed-timeout",
         "tcl-g10-as16-20261115-home-tile-images",
         "tcl-g10-as16-20261116-home-tile-images",
-        "slimbox-tanix-w2-android11-20261122-adb"
+        "slimbox-tanix-w2-android11-20261122-adb",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.zzzmode.appopsx": {
@@ -9561,7 +9785,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories/tcl-beyondtv4-ar10-20261110.json",
       "observedOn": [
-        "tcl-beyondtv4-ar10-20261110"
+        "tcl-beyondtv4-ar10-20261110",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.google.android.tv.assistant": {
@@ -9573,7 +9798,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories/tcl-beyondtv4-ar10-20261110.json",
       "observedOn": [
-        "tcl-beyondtv4-ar10-20261110"
+        "tcl-beyondtv4-ar10-20261110",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.saveser.soundbarantisleep": {
@@ -9597,7 +9823,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories/tcl-beyondtv4-ar10-20261110.json",
       "observedOn": [
-        "tcl-beyondtv4-ar10-20261110"
+        "tcl-beyondtv4-ar10-20261110",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.tcl.bi": {
@@ -9609,7 +9836,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories/tcl-beyondtv4-ar10-20261110.json",
       "observedOn": [
-        "tcl-beyondtv4-ar10-20261110"
+        "tcl-beyondtv4-ar10-20261110",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.tcl.common.shortcutmenu": {
@@ -9633,7 +9861,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories/tcl-beyondtv4-ar10-20261110.json",
       "observedOn": [
-        "tcl-beyondtv4-ar10-20261110"
+        "tcl-beyondtv4-ar10-20261110",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.tcl.micmanager": {
@@ -9645,7 +9874,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories/tcl-beyondtv4-ar10-20261110.json",
       "observedOn": [
-        "tcl-beyondtv4-ar10-20261110"
+        "tcl-beyondtv4-ar10-20261110",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.tcl.overseasappshow": {
@@ -9657,7 +9887,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories/tcl-beyondtv4-ar10-20261110.json",
       "observedOn": [
-        "tcl-beyondtv4-ar10-20261110"
+        "tcl-beyondtv4-ar10-20261110",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.tcl.settings": {
@@ -9669,7 +9900,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories/tcl-beyondtv4-ar10-20261110.json",
       "observedOn": [
-        "tcl-beyondtv4-ar10-20261110"
+        "tcl-beyondtv4-ar10-20261110",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.tcl.system.server": {
@@ -9681,7 +9913,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories/tcl-beyondtv4-ar10-20261110.json",
       "observedOn": [
-        "tcl-beyondtv4-ar10-20261110"
+        "tcl-beyondtv4-ar10-20261110",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.tcl.tcl_bt_rcu_service": {
@@ -9693,7 +9926,8 @@
       "safeToDisable": false,
       "source": "catalog/inventories/tcl-beyondtv4-ar10-20261110.json",
       "observedOn": [
-        "tcl-beyondtv4-ar10-20261110"
+        "tcl-beyondtv4-ar10-20261110",
+        "tcl-beyondtv4-ar11-20261125"
       ]
     },
     "com.tcl.xian.StartandroidService": {

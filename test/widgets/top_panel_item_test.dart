@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -75,4 +76,68 @@ void main() {
       expect(tester.takeException(), isNull);
     }
   });
+
+  testWidgets(
+    'panel text keeps its vertical position at different line heights',
+    (tester) async {
+      const details = ValueKey('details');
+      const font = TextStyle(fontFamily: 'Ahem', fontSize: 24);
+      Widget label(String name, {double? height}) => Text(
+        '12:34',
+        key: ValueKey(name),
+        style: font.copyWith(height: height),
+      );
+      await pump(
+        tester,
+        Scaffold(
+          body: Row(
+            children: [
+              TopPanelItem(child: label('natural')),
+              TopPanelItem(child: label('compact', height: .85)),
+              TopPanelItem(
+                textStyle: font,
+                child: Column(
+                  key: details,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    label('loose', height: 1.5),
+                    const Text('Weather', style: TextStyle(fontSize: 8)),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+
+      (double, double) measure(String name) {
+        final text = tester.renderObject<RenderParagraph>(
+          find.byKey(ValueKey(name)),
+        );
+        final painter = TextPainter(
+          text: text.text,
+          textDirection: text.textDirection,
+          textHeightBehavior: text.textHeightBehavior,
+        )..layout();
+        final baseline = painter.computeDistanceToActualBaseline(
+          TextBaseline.alphabetic,
+        );
+        final offset = baseline - painter.height / 2;
+        painter.dispose();
+        return (text.size.height, offset);
+      }
+
+      final (naturalHeight, naturalOffset) = measure('natural');
+      final (compactHeight, compactOffset) = measure('compact');
+      final (looseHeight, looseOffset) = measure('loose');
+      expect(compactHeight, lessThan(naturalHeight));
+      expect(looseHeight, greaterThan(naturalHeight));
+      expect(compactOffset, closeTo(naturalOffset, .5));
+      expect(looseOffset, closeTo(naturalOffset, .5));
+      expect(
+        tester.getCenter(find.byKey(details)).dy,
+        tester.getCenter(find.byType(TopPanelItem).last).dy,
+      );
+    },
+  );
 }

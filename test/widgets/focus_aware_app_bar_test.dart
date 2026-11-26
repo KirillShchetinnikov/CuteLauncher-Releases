@@ -28,6 +28,7 @@ import 'package:flutter/services.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/widgets/focus_aware_app_bar.dart';
 import 'package:flauncher/widgets/audio_status_widget.dart';
+import 'package:flauncher/volume_widget_content.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/tv_inputs_service.dart';
 import 'package:flauncher/providers/notifications_service.dart';
@@ -58,6 +59,7 @@ void main() {
     when(service.showNetworkIndicatorInStatusBar).thenReturn(false);
     when(service.showVpnInStatusBar).thenReturn(false);
     when(service.showVolumeInStatusBar).thenReturn(false);
+    when(service.showRemoteBatteryInStatusBar).thenReturn(false);
     when(service.showSystemInStatusBar).thenReturn(false);
     when(service.showNetworkSpeedInStatusBar).thenReturn(false);
     when(service.networkSpeedInterval).thenReturn(3);
@@ -103,16 +105,63 @@ void main() {
     when(mockWeatherService.failure).thenReturn(null);
   });
 
-  Widget createWidgetUnderTest() {
+  Widget createWidgetUnderTest({RemotePanelService? remotePanel}) {
     return MaterialApp(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: Scaffold(
-        appBar: FocusAwareAppBar(),
+        appBar: FocusAwareAppBar(remotePanel: remotePanel),
         body: Container(),
       ),
     );
   }
+
+  testWidgets('audio widget content is shared by both panels', (tester) async {
+    SharedPreferences.setMockInitialValues({
+      'show_volume_in_status_bar': true,
+      'show_network_indicator_in_status_bar': false,
+    });
+    final prefs = await SharedPreferences.getInstance();
+    final settings = SettingsService(prefs);
+    final panel = RemotePanelService(prefs);
+    addTearDown(settings.dispose);
+    addTearDown(panel.dispose);
+    for (final id in RemotePanelService.ids) {
+      await panel.show(id, id == 'audio');
+    }
+    await settings.setVolumeWidgetContent(VolumeWidgetContent.output);
+
+    for (final remotePanel in [null, panel]) {
+      await tester.pumpWidget(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider<SettingsService>.value(value: settings),
+            ChangeNotifierProvider<TvInputsService>.value(
+              value: mockTvInputsService,
+            ),
+            ChangeNotifierProvider<NotificationsService>.value(
+              value: mockNotificationsService,
+            ),
+            ChangeNotifierProvider<WeatherService>.value(value: mockWeatherService),
+          ],
+          child: createWidgetUnderTest(remotePanel: remotePanel),
+        ),
+      );
+      final audio = find.byType(AudioStatusWidget);
+      expect(
+        tester.widget<AudioStatusWidget>(audio).content,
+        VolumeWidgetContent.output,
+      );
+      await settings.setVolumeWidgetContent(VolumeWidgetContent.volume);
+      await tester.pump();
+      expect(
+        tester.widget<AudioStatusWidget>(audio).content,
+        VolumeWidgetContent.volume,
+      );
+      await settings.setVolumeWidgetContent(VolumeWidgetContent.output);
+    }
+    await tester.pumpWidget(const SizedBox());
+  });
 
   testWidgets('quick actions are opt in and Back restores the opener', (tester) async {
     await tester.pumpWidget(MultiProvider(
