@@ -16,6 +16,7 @@ import 'brightness_page.dart';
 import 'focusable_settings_tile.dart';
 import 'recent_apps_page.dart';
 import 'remote_buttons_page.dart';
+import 'remote_battery_settings_page.dart';
 import 'remote_panel_page.dart';
 import 'render_compatibility_tile.dart';
 import 'screensaver_clock_style_page.dart';
@@ -327,7 +328,11 @@ class WidgetSettingsPage extends StatelessWidget {
                 Icons.volume_up_outlined,
                 VolumeWidgetSettingsPage.routeName,
               ),
-              placement(l.remoteBatteryTitle, Icons.battery_std, 'remoteBattery'),
+              link(
+                l.remoteBatteryTitle,
+                Icons.battery_std,
+                RemoteBatterySettingsPage.routeName,
+              ),
               link(
                 l.inputs,
                 Icons.settings_input_hdmi,

@@ -14,6 +14,7 @@ import '../landscape_demo_presentation.dart';
 import 'information_settings_page.dart';
 import 'panel_clock_style_page.dart';
 import 'remote_panel_page.dart';
+import 'remote_battery_settings_page.dart';
 import '../../models/category.dart';
 import '../../providers/apps_service.dart';
 import '../../providers/launcher_state.dart';
@@ -163,6 +164,7 @@ class _SettingsPanelState extends State<SettingsPanel> {
       TrafficSettingsPage.routeName,
       NetworkSpeedSettingsPage.routeName,
       WidgetPlacementPage.routeName,
+      RemoteBatterySettingsPage.routeName,
       VolumeWidgetSettingsPage.routeName,
       VolumeOverlaySettingsPage.routeName,
       SystemWidgetSettingsPage.routeName,
@@ -411,6 +413,8 @@ class _SettingsPanelState extends State<SettingsPanel> {
                       return SettingsRoute(settings: settings, builder: (_) => const SystemWidgetSettingsPage());
                     case NetworkSpeedSettingsPage.routeName:
                       return SettingsRoute(settings: settings, builder: (_) => const NetworkSpeedSettingsPage());
+                    case RemoteBatterySettingsPage.routeName:
+                      return SettingsRoute(settings: settings, builder: (_) => const RemoteBatterySettingsPage());
                     case VolumeWidgetSettingsPage.routeName:
                       return SettingsRoute(settings: settings, builder: (_) => const VolumeWidgetSettingsPage());
                     case TrafficSettingsPage.routeName:

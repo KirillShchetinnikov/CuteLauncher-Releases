@@ -5,6 +5,7 @@ import 'file_browser_options.dart';
 import 'overlay_appearance.dart';
 import 'overlay_position.dart';
 import 'volume_widget_content.dart';
+import 'remote_battery_preferences.dart';
 
 /// An explicit portable surface. New preferences remain local until reviewed.
 const syncSettingsKeys = <String>{
@@ -34,6 +35,9 @@ const syncSettingsKeys = <String>{
   'show_vpn_in_status_bar',
   'show_volume_in_status_bar',
   'show_remote_battery_in_status_bar',
+  showRemoteBatteryPercentKey,
+  remoteBatteryLowColorEnabledKey,
+  remoteBatteryLowThresholdKey,
   volumeWidgetContentKey,
   'show_volume_overlay',
   volumeOverlayPositionKey,

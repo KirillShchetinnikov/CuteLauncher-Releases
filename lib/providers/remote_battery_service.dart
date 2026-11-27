@@ -1,11 +1,14 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 import '../bridge_result.dart';
 import '../diagnostics_store.dart';
 import 'foreground_work.dart';
+
+typedef RemoteBatteryDevice = ({String id, String name, String? address});
 
 /// One bounded read for the enabled widgets in this Flutter engine.
 class RemoteBatteryService extends ChangeNotifier with WidgetsBindingObserver {
@@ -19,9 +22,18 @@ class RemoteBatteryService extends ChangeNotifier with WidgetsBindingObserver {
   int _generation = 0;
   int? _percent;
   bool? _bluetoothPermission;
+  List<RemoteBatteryDevice> _devices = const [];
+  String? _selectedId, _selectedName, _activeId;
+  bool _selectedUnavailable = false;
 
   int? get percent => _percent;
   bool? get bluetoothPermission => _bluetoothPermission;
+  List<RemoteBatteryDevice> get devices => _devices;
+  String? get selectedId => _selectedId;
+  String? get selectedName => _selectedName;
+  bool get selectedUnavailable => _selectedUnavailable;
+  RemoteBatteryDevice? get activeDevice =>
+      _devices.where((device) => device.id == _activeId).firstOrNull;
 
   RemoteBatteryService({
     this.channel = const BridgeChannel('cutelauncher/remote_battery'),
@@ -37,6 +49,7 @@ class RemoteBatteryService extends ChangeNotifier with WidgetsBindingObserver {
       if (call.method != 'changed' || !_active) return;
       if (call.arguments case final bool screenOn) _screenOn = screenOn;
       if (_screenOn) {
+        _generation++;
         _schedule();
       } else {
         _cancel();
@@ -100,6 +113,29 @@ class RemoteBatteryService extends ChangeNotifier with WidgetsBindingObserver {
     }
   }
 
+  Future<bool> selectDevice(RemoteBatteryDevice? device) async {
+    try {
+      final saved = await channel.invokeMethod<bool>(
+        'selectDevice',
+        device?.id,
+      );
+      if (_disposed || saved != true) return false;
+      if (_selectedId != device?.id) {
+        _selectedId = device?.id;
+        _selectedName = device?.name;
+        _activeId = null;
+        _selectedUnavailable = false;
+        _generation++;
+        _setPercent(null, detailsChanged: true);
+        _schedule();
+      }
+      return true;
+    } on Object catch (error, stack) {
+      DiagnosticsStore.instance.recordException('remoteBattery', error, stack);
+      return false;
+    }
+  }
+
   void _schedule() {
     if (!_canRead) return;
     _timer?.cancel();
@@ -125,6 +161,7 @@ class RemoteBatteryService extends ChangeNotifier with WidgetsBindingObserver {
       final raw = data?['percent'];
       _setPercent(
         _screenOn && raw is int && raw >= 0 && raw <= 100 ? raw : null,
+        detailsChanged: _updateDevices(data),
       );
     } on Object catch (error, stack) {
       DiagnosticsStore.instance.recordException('remoteBattery', error, stack);
@@ -142,8 +179,38 @@ class RemoteBatteryService extends ChangeNotifier with WidgetsBindingObserver {
     }
   }
 
-  void _setPercent(int? next) {
-    if (_percent == next) return;
+  bool _updateDevices(Map<String, dynamic>? data) {
+    if (data == null || data['devices'] is! List) return false;
+    final devices =
+        <RemoteBatteryDevice>[
+          for (final device in data['devices'] as List)
+            if (device case {'id': final String id, 'name': final String name})
+              (id: id, name: name, address: device['address'] as String?),
+        ]..sort((a, b) {
+          final byName = a.name.compareTo(b.name);
+          return byName == 0 ? a.id.compareTo(b.id) : byName;
+        });
+    final selected = data['selectedId'] as String?;
+    final name = data['selectedName'] as String?;
+    final active = data['activeId'] as String?;
+    final unavailable = data['batteryRead'] == 'selectedDeviceUnavailable';
+    final changed =
+        !listEquals(_devices, devices) ||
+        _selectedId != selected ||
+        _selectedName != name ||
+        _activeId != active ||
+        _selectedUnavailable != unavailable;
+    if (!changed) return false;
+    _devices = List.unmodifiable(devices);
+    _selectedId = selected;
+    _selectedName = name;
+    _activeId = active;
+    _selectedUnavailable = unavailable;
+    return true;
+  }
+
+  void _setPercent(int? next, {bool detailsChanged = false}) {
+    if (_percent == next && !detailsChanged) return;
     _percent = next;
     notifyListeners();
   }

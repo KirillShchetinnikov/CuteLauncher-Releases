@@ -4794,6 +4794,24 @@ class AppLocalizationsZh extends AppLocalizations {
   String get remoteBatteryBluetoothPermission => '蓝牙访问权限';
 
   @override
+  String get remoteBatteryDevice => '要显示的设备';
+
+  @override
+  String get remoteBatteryBluetoothAddress => '蓝牙地址';
+
+  @override
+  String get remoteBatterySelectionFailed => '无法选择设备';
+
+  @override
+  String get remoteBatteryShowPercent => '显示电量百分比';
+
+  @override
+  String get remoteBatteryColorLowCharge => '电量低时为小组件着色';
+
+  @override
+  String get remoteBatteryLowThreshold => '低电量阈值';
+
+  @override
   String get audioStatusTitle => '音量和音频输出';
 
   @override

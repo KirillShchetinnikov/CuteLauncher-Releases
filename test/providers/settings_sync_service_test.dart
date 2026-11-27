@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_platform_interface.dart';
 import 'package:flauncher/providers/settings_sync_service.dart';
+import 'package:flauncher/remote_battery_preferences.dart';
 import 'package:flauncher/settings_import.dart';
 import 'package:flauncher/settings_sync.dart';
 import 'package:flauncher/tile_appearance.dart';
@@ -73,6 +74,27 @@ void main() {
     await service.apply(repeat, {});
     expect(preferences.get('settings_sync_pending'), isNull);
   });
+
+  test(
+    'sync keeps the low battery color switch and threshold independent',
+    () async {
+      await preferences.setBool(remoteBatteryLowColorEnabledKey, true);
+      await preferences.setInt(remoteBatteryLowThresholdKey, 18);
+      final baseline = await export();
+      expect(baseline.entries[remoteBatteryLowThresholdKey]?.value, 18);
+      final other = SettingsSyncState('B', baseline.entries).capture({
+        'accent_color': '7C4DFF',
+        'show_time_in_status_bar': true,
+        remoteBatteryLowColorEnabledKey: false,
+        remoteBatteryLowThresholdKey: 18,
+      });
+      final preview = await service.preview(await remote(other));
+      expect(preview.plan.changes, [remoteBatteryLowColorEnabledKey]);
+      await service.apply(preview, {});
+      expect(preferences.getBool(remoteBatteryLowColorEnabledKey), isFalse);
+      expect(preferences.getInt(remoteBatteryLowThresholdKey), 18);
+    },
+  );
   test('concurrent conflict requires explicit choice; stale preview never overwrites edits', () async {
     final baseline = await export();
     await preferences.setString('accent_color', 'FF0000');

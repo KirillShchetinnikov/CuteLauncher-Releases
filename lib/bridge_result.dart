@@ -126,7 +126,10 @@ class BridgeChannel extends MethodChannel {
     BridgeResult<T> finish(BridgeResult<T> result) {
       if (importsWeatherToken) context.clear();
       context['durationMs'] = timer.elapsedMilliseconds;
-      if (!importsWeatherToken && !result.isSuccess) context['arguments'] = arguments;
+      if (!importsWeatherToken && !result.isSuccess &&
+          name != 'cutelauncher/remote_battery') {
+        context['arguments'] = arguments;
+      }
       return _finish(method, result, context);
     }
 
@@ -137,7 +140,31 @@ class BridgeChannel extends MethodChannel {
         context['errorDetails'] = raw['diagnostic'];
         raw = raw['status'];
       }
-      context['response'] = raw;
+      if (name == 'cutelauncher/remote_battery' && raw is Map) {
+        context['response'] = {
+          for (final key in [
+            'screenOn',
+            'bluetoothPermission',
+            'percent',
+            'batteryRead',
+            'inputCandidates',
+            'selectionMode',
+            'inputDeviceCount',
+            'batteryInputs',
+            'bondedBleCount',
+            'batteryBondedNames',
+            'bluetoothLookup',
+            'selectedName',
+            'selectedInput',
+            'activeInput',
+            'activeName',
+            'bleAttempts',
+          ])
+            if (raw.containsKey(key)) key: raw[key],
+        };
+      } else {
+        context['response'] = raw;
+      }
       if (raw is Map) {
         context['nativeCode'] = raw['status'];
         context['details'] = raw['diagnostic'];

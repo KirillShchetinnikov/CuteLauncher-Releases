@@ -18,6 +18,11 @@ import 'package:flauncher/widgets/top_panel_item.dart';
 import 'package:flauncher/widgets/menu_header_action.dart';
 import 'package:flauncher/widgets/settings/information_settings_page.dart';
 import 'package:flauncher/providers/remote_panel_service.dart';
+import 'package:flauncher/providers/remote_battery_service.dart';
+import 'package:flauncher/widgets/remote_battery_menu.dart';
+import 'package:flauncher/widgets/remote_battery_widget.dart';
+import 'package:flauncher/widgets/launcher_dialog.dart';
+import 'package:flauncher/widgets/settings/remote_battery_settings_page.dart';
 import 'package:flauncher/weather_sources.dart';
 import 'package:flauncher/weather_text_format.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -60,6 +65,9 @@ void main() {
     when(service.showVpnInStatusBar).thenReturn(false);
     when(service.showVolumeInStatusBar).thenReturn(false);
     when(service.showRemoteBatteryInStatusBar).thenReturn(false);
+    when(service.showRemoteBatteryPercent).thenReturn(true);
+    when(service.remoteBatteryLowColorEnabled).thenReturn(true);
+    when(service.remoteBatteryLowThreshold).thenReturn(10);
     when(service.showSystemInStatusBar).thenReturn(false);
     when(service.showNetworkSpeedInStatusBar).thenReturn(false);
     when(service.networkSpeedInterval).thenReturn(3);
@@ -160,6 +168,112 @@ void main() {
       );
       await settings.setVolumeWidgetContent(VolumeWidgetContent.output);
     }
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('charge menu opens with OK and keeps a disconnected choice', (tester) async {
+    when(mockSettingsService.showRemoteBatteryInStatusBar).thenReturn(true);
+    SharedPreferences.setMockInitialValues({});
+    final remotePanel = RemotePanelService(await SharedPreferences.getInstance());
+    addTearDown(remotePanel.dispose);
+    const channel = MethodChannel('cutelauncher/remote_battery');
+    const address = '00:11:22:33:44:55';
+    final messenger = tester.binding.defaultBinaryMessenger;
+    String? selected;
+    var connected = true;
+    messenger.setMockMethodCallHandler(channel, (call) async {
+      if (call.method == 'selectDevice') {
+        selected = call.arguments as String?;
+        return true;
+      }
+      if (call.method != 'snapshot') return null;
+      return {
+        'devices': [
+          if (connected) {'id': 'ur02', 'name': 'UR02 Keyboard', 'address': address},
+        ],
+        'selectedId': ?selected,
+        if (selected != null) 'selectedName': 'UR02 Keyboard',
+        if (connected) 'activeId': 'ur02',
+        if (connected) 'percent': 42,
+        'batteryRead': connected ? 'inputDevice' : 'selectedDeviceUnavailable',
+      };
+    });
+    final battery = RemoteBatteryService(channel: channel);
+    addTearDown(() {
+      battery.dispose();
+      messenger.setMockMethodCallHandler(channel, null);
+    });
+    await tester.pumpWidget(MultiProvider(
+      providers: [
+        ChangeNotifierProvider<SettingsService>.value(value: mockSettingsService),
+        ChangeNotifierProvider<TvInputsService>.value(value: mockTvInputsService),
+        ChangeNotifierProvider<NotificationsService>.value(value: mockNotificationsService),
+        ChangeNotifierProvider<WeatherService>.value(value: mockWeatherService),
+        ChangeNotifierProvider.value(value: battery),
+        ChangeNotifierProvider.value(value: remotePanel),
+      ],
+      child: createWidgetUnderTest(),
+    ));
+    await tester.pump(const Duration(milliseconds: 200));
+    await tester.pump();
+    expect(find.text('42%'), findsOneWidget);
+    final icon = find.byType(RemoteBatteryWidget);
+    final focusNode = tester.widget<RemoteBatteryWidget>(icon).focusNode!;
+    focusNode.requestFocus();
+    await tester.pump();
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    final menu = find.byType(RemoteBatteryMenu);
+    expect(menu, findsOneWidget);
+    expect(find.descendant(of: menu, matching: find.text(address)), findsWidgets);
+    final chooser = find.byType(LauncherAlertDialog);
+    expect(chooser, findsNothing);
+    expect(find.descendant(of: menu, matching: find.byType(RemoteBatteryDeviceButton)), findsOneWidget);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(chooser, findsOneWidget);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(selected, 'ur02');
+    expect(chooser, findsNothing);
+    expect(menu, findsOneWidget);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(chooser, findsOneWidget);
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    final gear = find.descendant(of: menu, matching: find.byType(MenuHeaderAction));
+    final gearFocus = tester.widget<MenuHeaderAction>(gear).focusNode!;
+    gearFocus.requestFocus();
+    await tester.pump();
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    final settingsPage = find.byType(RemoteBatterySettingsPage);
+    expect(settingsPage, findsOneWidget);
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(settingsPage, findsNothing);
+    expect(gearFocus.hasPrimaryFocus, isTrue);
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(menu, findsNothing);
+    expect(focusNode.hasPrimaryFocus, isTrue);
+
+    Future<void> deviceChange() async {
+      await messenger.handlePlatformMessage(
+        channel.name, channel.codec.encodeMethodCall(const MethodCall('changed')), (_) {},
+      );
+      await tester.pump(const Duration(milliseconds: 200));
+      await tester.pump();
+    }
+    connected = false;
+    await deviceChange();
+    expect(find.descendant(of: icon, matching: find.byIcon(Icons.close)), findsOneWidget);
+    connected = true;
+    await deviceChange();
+    expect(find.text('42%'), findsOneWidget);
+    expect(selected, 'ur02');
     await tester.pumpWidget(const SizedBox());
   });
 

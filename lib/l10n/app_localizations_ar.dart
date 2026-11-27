@@ -4985,6 +4985,24 @@ class AppLocalizationsAr extends AppLocalizations {
   String get remoteBatteryBluetoothPermission => 'الوصول إلى بلوتوث';
 
   @override
+  String get remoteBatteryDevice => 'جهاز عرض الشحن';
+
+  @override
+  String get remoteBatteryBluetoothAddress => 'عنوان Bluetooth';
+
+  @override
+  String get remoteBatterySelectionFailed => 'تعذّر اختيار الجهاز';
+
+  @override
+  String get remoteBatteryShowPercent => 'إظهار نسبة الشحن';
+
+  @override
+  String get remoteBatteryColorLowCharge => 'تلوين الأداة عند انخفاض الشحن';
+
+  @override
+  String get remoteBatteryLowThreshold => 'عتبة الشحن المنخفض';
+
+  @override
   String get audioStatusTitle => 'مستوى الصوت ومخرج الصوت';
 
   @override

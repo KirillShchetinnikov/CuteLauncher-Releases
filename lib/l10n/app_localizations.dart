@@ -9284,6 +9284,42 @@ abstract class AppLocalizations {
   /// **'Bluetooth access'**
   String get remoteBatteryBluetoothPermission;
 
+  /// No description provided for @remoteBatteryDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Device to display'**
+  String get remoteBatteryDevice;
+
+  /// No description provided for @remoteBatteryBluetoothAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Bluetooth address'**
+  String get remoteBatteryBluetoothAddress;
+
+  /// No description provided for @remoteBatterySelectionFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not select the device'**
+  String get remoteBatterySelectionFailed;
+
+  /// No description provided for @remoteBatteryShowPercent.
+  ///
+  /// In en, this message translates to:
+  /// **'Show battery percentage'**
+  String get remoteBatteryShowPercent;
+
+  /// No description provided for @remoteBatteryColorLowCharge.
+  ///
+  /// In en, this message translates to:
+  /// **'Color widget when battery is low'**
+  String get remoteBatteryColorLowCharge;
+
+  /// No description provided for @remoteBatteryLowThreshold.
+  ///
+  /// In en, this message translates to:
+  /// **'Low battery threshold'**
+  String get remoteBatteryLowThreshold;
+
   /// No description provided for @audioStatusTitle.
   ///
   /// In en, this message translates to:

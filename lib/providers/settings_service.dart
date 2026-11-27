@@ -4,6 +4,7 @@ import '../quick_actions.dart';
 import '../application_info_configuration.dart';
 import '../overlay_appearance.dart';
 import '../overlay_position.dart';
+import '../remote_battery_preferences.dart';
 import '../volume_widget_content.dart';
 import '../launcher_defaults.dart';
 import '../tv_inputs_configuration.dart';
@@ -387,6 +388,29 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
   bool get showVolumeInStatusBar => _sharedPreferences.getBool('show_volume_in_status_bar') ?? true;
   bool get showRemoteBatteryInStatusBar => _sharedPreferences.getBool('show_remote_battery_in_status_bar') ?? false;
   Future<void> setShowRemoteBatteryInStatusBar(bool value) => _setSystemOption('show_remote_battery_in_status_bar', value);
+  bool get showRemoteBatteryPercent =>
+      _sharedPreferences.getBool(showRemoteBatteryPercentKey) ?? true;
+  Future<void> setShowRemoteBatteryPercent(bool value) =>
+      _setSystemOption(showRemoteBatteryPercentKey, value);
+  // A stored zero was the disabled option before the switch was added.
+  bool get remoteBatteryLowColorEnabled =>
+      _sharedPreferences.getBool(remoteBatteryLowColorEnabledKey) ??
+      (_sharedPreferences.get(remoteBatteryLowThresholdKey) != 0);
+  Future<void> setRemoteBatteryLowColorEnabled(bool value) =>
+      _setSystemOption(remoteBatteryLowColorEnabledKey, value);
+  int get remoteBatteryLowThreshold {
+    final value = _sharedPreferences.get(remoteBatteryLowThresholdKey);
+    return isRemoteBatteryLowThreshold(value)
+        ? value as int
+        : remoteBatteryDefaultLowThreshold;
+  }
+  Future<void> setRemoteBatteryLowThreshold(int value) async {
+    RangeError.checkValueInInterval(value, 1, remoteBatteryMaxLowThreshold);
+    if (!await _sharedPreferences.setInt(remoteBatteryLowThresholdKey, value)) {
+      throw StateError('Panel settings unavailable');
+    }
+    notifyListeners();
+  }
   VolumeWidgetContent get volumeWidgetContent =>
       VolumeWidgetContent.parse(_sharedPreferences.get(volumeWidgetContentKey)) ??
       VolumeWidgetContent.both;
@@ -977,6 +1001,9 @@ class SettingsService extends ChangeNotifier with ServiceLifecycle {
       'show_vpn_in_status_bar': showVpnInStatusBar,
       'show_volume_in_status_bar': showVolumeInStatusBar,
       'show_remote_battery_in_status_bar': showRemoteBatteryInStatusBar,
+      showRemoteBatteryPercentKey: showRemoteBatteryPercent,
+      remoteBatteryLowColorEnabledKey: remoteBatteryLowColorEnabled,
+      remoteBatteryLowThresholdKey: remoteBatteryLowThreshold,
       volumeWidgetContentKey: volumeWidgetContent.name,
       'show_volume_overlay': showVolumeOverlay,
       volumeOverlayPositionKey: volumeOverlayPosition.name,

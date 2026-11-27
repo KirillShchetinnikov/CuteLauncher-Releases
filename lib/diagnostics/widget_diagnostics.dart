@@ -73,10 +73,15 @@ class WidgetDiagnostics {
   static final _trackedOperations = _operations.values
       .expand((ids) => ids)
       .toSet();
+  static final _batteryAddress = RegExp(
+    r'(?<![a-f0-9])(?:[a-f0-9]{2}[:-]){5}[a-f0-9]{2}(?![a-f0-9])',
+    caseSensitive: false,
+  );
   static const _batteryResults = {
     'inputDevice',
     'ble',
     'noInputRemote',
+    'selectedDeviceUnavailable',
     'ambiguousInputBattery',
     'bluetoothPermissionDenied',
     'noBluetoothAdapter',
@@ -101,6 +106,7 @@ class WidgetDiagnostics {
 
   final _latest = <String, Map<String, Object>>{};
   final _errors = <String, Map<String, Object>>{};
+  Map<String, Object>? _batteryUnavailable;
   int? _layout;
   ({bool active, bool panelFill})? _night;
   ({WeatherSource source, WeatherFailure? failure, bool hasData, bool stale})?
@@ -142,7 +148,8 @@ class WidgetDiagnostics {
     if (operation == 'remote_battery.snapshot' &&
         response is Map &&
         (response['batteryRead'] == 'cancelled' ||
-            (response['batteryRead'] == 'screenOff' && _latest.containsKey(operation)))) {
+            (response['batteryRead'] == 'screenOff' &&
+                _latest.containsKey(operation)))) {
       return;
     }
     final values = _project(operation, response);
@@ -151,9 +158,18 @@ class WidgetDiagnostics {
     final observed = {
       ...event,
       if (values.isNotEmpty) 'result': values,
-      if (batteryError != null) ...{'status': batteryError, 'code': batteryRead!},
+      if (batteryError != null) ...{
+        'status': batteryError,
+        'code': batteryRead!,
+      },
     };
     _latest[operation] = observed;
+    if (operation == 'remote_battery.snapshot' &&
+        batteryRead != null &&
+        batteryRead != 'screenOff' &&
+        !values.containsKey('percent')) {
+      _batteryUnavailable = observed;
+    }
     if (observed['status'] != 'success' && observed['status'] != 'cancelled') {
       _errors[operation] = observed;
     }
@@ -172,7 +188,8 @@ class WidgetDiagnostics {
     if (operation == 'android.getLatestWeatherData') {
       return {'dataPresent': response is String && response.isNotEmpty};
     }
-    if (operation.startsWith('android.get') && operation.endsWith('DataUsage')) {
+    if (operation.startsWith('android.get') &&
+        operation.endsWith('DataUsage')) {
       return {'countersAvailable': response is int && response >= 0};
     }
     if (response is! Map) return {};
@@ -207,13 +224,12 @@ class WidgetDiagnostics {
         (response[key] as num) >= 0;
     final outcome = response['batteryRead'];
     final percent = response['percent'];
-    final candidates = response['inputCandidates'];
     return {
       for (final key in flags)
         if (response[key] is bool) key: response[key] as bool,
       if (operation == 'remote_battery.snapshot') ...{
         if (_batteryResults.contains(outcome)) 'batteryRead': outcome as String,
-        if (candidates is int && candidates >= 0) 'inputCandidates': candidates,
+        ..._projectBatteryInputs(response),
       },
       if (operation == 'remote_battery.snapshot' ||
           operation == 'audio_status.snapshot')
@@ -241,6 +257,78 @@ class WidgetDiagnostics {
         ],
       if (operation == 'sleepTimer.state' && nonnegative('remainingMs'))
         'active': (response['remainingMs'] as num) > 0,
+    };
+  }
+
+  static String _batteryName(String name) => String.fromCharCodes(
+    name.replaceAll(_batteryAddress, '[mac]').trim().runes.take(96),
+  );
+
+  static Map<String, Object> _projectBatteryInputs(Map response) {
+    final mode = response['selectionMode'];
+    final lookup = response['bluetoothLookup'];
+    return {
+      if (mode == 'auto' || mode == 'manual') 'selectionMode': mode as String,
+      if (lookup == 'ready' || _batteryResults.contains(lookup))
+        'bluetoothLookup': lookup as String,
+      for (final key in [
+        'inputCandidates',
+        'inputDeviceCount',
+        'bondedBleCount',
+        'selectedInput',
+        'activeInput',
+      ])
+        if (response[key] case final int value when value >= 0) key: value,
+      for (final key in ['selectedName', 'activeName'])
+        if (response[key] case final String name when name.isNotEmpty)
+          key: _batteryName(name),
+      if (response['batteryInputs'] case final List rows)
+        'inputs': [
+          for (final row in rows.take(24).whereType<Map>())
+            if (row['index'] case final int index when index >= 0)
+              {
+                'index': index,
+                if (row['name'] case final String name)
+                  'name': _batteryName(name),
+                if (const {'remote', 'keyboard', 'other'}.contains(row['kind']))
+                  'kind': row['kind'] as String,
+                for (final key in ['considered', 'virtual', 'external'])
+                  if (row[key] case final bool value) key: value,
+                for (final key in [
+                  'sources',
+                  'keyboardType',
+                  'controllerNumber',
+                  'bondedMatches',
+                  'bleMatches',
+                ])
+                  if (row[key] case final int value) key: value,
+                if (row['inputPercent'] case final int percent
+                    when percent >= 0 && percent <= 100)
+                  'inputPercent': percent,
+                if (const {
+                  'unsupported',
+                  'skipped',
+                  'unavailable',
+                  'inputDevice',
+                  'platformError',
+                }.contains(row['inputRead']))
+                  'inputRead': row['inputRead'] as String,
+              },
+        ],
+      if (response['batteryBondedNames'] case final List names)
+        'bondedBleNames': names
+            .take(24)
+            .whereType<String>()
+            .map(_batteryName)
+            .toList(),
+      if (response['bleAttempts'] case final List attempts)
+        'bleAttempts': [
+          for (final row in attempts.take(3).whereType<Map>())
+            if (row
+                case {'input': final int index, 'result': final String result}
+                when index >= 0 && _batteryResults.contains(result))
+              {'input': index, 'result': result},
+        ],
     };
   }
 
@@ -273,13 +361,19 @@ class WidgetDiagnostics {
         'state': {'active': night.active, 'panelFill': night.panelFill},
       for (final operation in operations)
         if (_latest[operation] case final latest?)
-          operation: {'last': latest, 'lastError': ?_errors[operation]},
+          operation: {
+            'last': latest,
+            'lastError': ?_errors[operation],
+            if (operation == 'remote_battery.snapshot')
+              'lastUnavailable': ?_batteryUnavailable,
+          },
     };
   }
 
   void clear() {
     _latest.clear();
     _errors.clear();
+    _batteryUnavailable = null;
     _layout = null;
     _night = null;
     _weather = null;

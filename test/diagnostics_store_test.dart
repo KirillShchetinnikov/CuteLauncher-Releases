@@ -107,6 +107,62 @@ void main() {
     expect(jsonEncode(report), isNot(contains('AC:BD:EF:12:34:56')));
   });
 
+  test('battery report keeps names, selection and the last unsuccessful read', () async {
+    final store = DiagnosticsStore.instance..clear();
+    addTearDown(store.clear);
+    const channel = BridgeChannel('cutelauncher/remote_battery');
+    final messenger = TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+    var successful = false;
+    messenger.setMockMethodCallHandler(channel, (_) async => {
+      'selectionMode': successful ? 'manual' : 'auto',
+      'batteryRead': successful ? 'ble' : 'noMatchingBondedRemote',
+      'bluetoothPermission': true,
+      'inputCandidates': successful ? 1 : 2,
+      'inputDeviceCount': 2,
+      'bondedBleCount': 2,
+      'batteryBondedNames': ['UR02', 'Voice.Remote'],
+      'bluetoothLookup': 'ready',
+      'batteryInputs': [
+        {'index': 0, 'name': 'aml_keypad', 'kind': 'remote', 'bleMatches': 0},
+        {
+          'index': 1, 'name': 'UR02 Keyboard (AC:BD:EF:12:34:56)', 'kind': 'keyboard', 'bleMatches': 1,
+          'address': 'AC:BD:EF:12:34:56', 'id': 'private-descriptor',
+        },
+      ],
+      if (successful) ...{
+        'percent': 66,
+        'selectedName': 'UR02 Keyboard',
+        'selectedInput': 1,
+        'activeInput': 1,
+        'activeId': 'private-descriptor',
+        'bleAttempts': [{'input': 1, 'result': 'ble'}],
+      } else 'bleAttempts': [],
+    });
+    addTearDown(() => messenger.setMockMethodCallHandler(channel, null));
+    await channel.invokeMapMethod<String, dynamic>('snapshot');
+    successful = true;
+    await channel.invokeMapMethod<String, dynamic>('snapshot');
+
+    for (final extended in [false, true]) {
+      final report = await collectDiagnostics(extended: extended);
+      final home = (report['widgetDiagnostics'] as Map)['home'] as Map;
+      final battery = home['remoteBattery']['remote_battery.snapshot'] as Map;
+      expect(battery['last']['result'], containsPair('selectionMode', 'manual'));
+      expect(battery['last']['result'], containsPair('activeInput', 1));
+      expect(battery['last']['result'], containsPair('selectedName', 'UR02 Keyboard'));
+      expect(battery['last']['result']['bleAttempts'], [{'input': 1, 'result': 'ble'}]);
+      final unavailable = battery['lastUnavailable']['result'] as Map;
+      expect(unavailable['selectionMode'], 'auto');
+      expect(unavailable['inputs'][0], containsPair('name', 'aml_keypad'));
+      expect(unavailable['inputs'][1], containsPair('kind', 'keyboard'));
+      expect(unavailable['inputs'][1], containsPair('name', 'UR02 Keyboard ([mac])'));
+      expect(unavailable['bondedBleNames'], ['UR02', 'Voice.Remote']);
+      final encoded = jsonEncode(report);
+      expect(encoded, isNot(contains('private-descriptor')));
+      expect(encoded, isNot(contains('AC:BD:EF:12:34:56')));
+    }
+  });
+
   test('event limit freezes the recording and leaves basic history live', () async {
     final store = DiagnosticsStore()..startRecording();
     addTearDown(store.clear);

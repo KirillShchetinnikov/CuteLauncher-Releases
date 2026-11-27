@@ -5026,6 +5026,25 @@ class AppLocalizationsTr extends AppLocalizations {
   String get remoteBatteryBluetoothPermission => 'Bluetooth erişimi';
 
   @override
+  String get remoteBatteryDevice => 'Gösterilecek cihaz';
+
+  @override
+  String get remoteBatteryBluetoothAddress => 'Bluetooth adresi';
+
+  @override
+  String get remoteBatterySelectionFailed => 'Cihaz seçilemedi';
+
+  @override
+  String get remoteBatteryShowPercent => 'Pil yüzdesini göster';
+
+  @override
+  String get remoteBatteryColorLowCharge =>
+      'Pil azaldığında widget\'ı renklendir';
+
+  @override
+  String get remoteBatteryLowThreshold => 'Düşük pil eşiği';
+
+  @override
   String get audioStatusTitle => 'Ses düzeyi ve ses çıkışı';
 
   @override

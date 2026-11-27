@@ -2,6 +2,7 @@ import 'information_formats.dart';
 import 'overlay_appearance.dart';
 import 'overlay_position.dart';
 import 'volume_widget_content.dart';
+import 'remote_battery_preferences.dart';
 import 'quick_actions.dart';
 import 'application_info_configuration.dart';
 
@@ -243,6 +244,9 @@ BackupSyncGroup? backupSyncPartGroup(String part) {
     'show_vpn_in_status_bar',
     'show_volume_in_status_bar',
     'show_remote_battery_in_status_bar',
+    showRemoteBatteryPercentKey,
+    remoteBatteryLowColorEnabledKey,
+    remoteBatteryLowThresholdKey,
     volumeWidgetContentKey,
     'show_volume_overlay',
     volumeOverlayPositionKey,

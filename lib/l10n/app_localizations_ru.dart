@@ -5028,6 +5028,25 @@ class AppLocalizationsRu extends AppLocalizations {
   String get remoteBatteryBluetoothPermission => 'Доступ к Bluetooth';
 
   @override
+  String get remoteBatteryDevice => 'Устройство для показа';
+
+  @override
+  String get remoteBatteryBluetoothAddress => 'Адрес Bluetooth';
+
+  @override
+  String get remoteBatterySelectionFailed => 'Не удалось выбрать устройство';
+
+  @override
+  String get remoteBatteryShowPercent => 'Показывать процент заряда';
+
+  @override
+  String get remoteBatteryColorLowCharge =>
+      'Окрашивать виджет при низком заряде';
+
+  @override
+  String get remoteBatteryLowThreshold => 'Порог низкого заряда';
+
+  @override
   String get audioStatusTitle => 'Громкость и аудиовыход';
 
   @override

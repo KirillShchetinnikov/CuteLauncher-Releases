@@ -4880,6 +4880,24 @@ class AppLocalizationsKo extends AppLocalizations {
   String get remoteBatteryBluetoothPermission => '블루투스 접근 권한';
 
   @override
+  String get remoteBatteryDevice => '표시할 기기';
+
+  @override
+  String get remoteBatteryBluetoothAddress => '블루투스 주소';
+
+  @override
+  String get remoteBatterySelectionFailed => '기기를 선택할 수 없습니다';
+
+  @override
+  String get remoteBatteryShowPercent => '배터리 잔량 퍼센트 표시';
+
+  @override
+  String get remoteBatteryColorLowCharge => '배터리 잔량이 낮을 때 위젯에 색상 표시';
+
+  @override
+  String get remoteBatteryLowThreshold => '배터리 부족 기준';
+
+  @override
   String get audioStatusTitle => '볼륨 및 오디오 출력';
 
   @override

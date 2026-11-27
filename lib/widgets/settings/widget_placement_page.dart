@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../l10n/app_localizations.dart';
-import '../../providers/remote_battery_service.dart';
 import '../../providers/remote_panel_service.dart';
 import '../../providers/settings_service.dart';
 import '../../providers/storage_status_service.dart';
@@ -114,7 +113,6 @@ class WidgetPlacementPage extends StatelessWidget {
                 },
             onChanged: (value) => remote.show(id, value),
           ),
-          if (id == 'remoteBattery') const _RemoteBatteryPermission(),
         ],
       ),
     );
@@ -124,50 +122,6 @@ class WidgetPlacementPage extends StatelessWidget {
             child: page,
           )
         : page;
-  }
-}
-
-class _RemoteBatteryPermission extends StatefulWidget {
-  const _RemoteBatteryPermission();
-
-  @override
-  State<_RemoteBatteryPermission> createState() =>
-      _RemoteBatteryPermissionState();
-}
-
-class _RemoteBatteryPermissionState extends State<_RemoteBatteryPermission> {
-  bool _requesting = false;
-
-  @override
-  void initState() {
-    super.initState();
-    context.read<RemoteBatteryService?>()?.refreshBluetoothPermission();
-  }
-
-  Future<void> _request(RemoteBatteryService service) async {
-    setState(() => _requesting = true);
-    try {
-      await service.requestBluetoothPermission();
-    } finally {
-      if (mounted) setState(() => _requesting = false);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final service = context.read<RemoteBatteryService?>();
-    final permission = context.select<RemoteBatteryService?, bool?>(
-      (s) => s?.bluetoothPermission,
-    );
-    if (service == null || permission == null) return const SizedBox.shrink();
-    final l = AppLocalizations.of(context)!;
-    return FocusableSettingsTile(
-      title: Text(l.remoteBatteryBluetoothPermission),
-      leading: const Icon(Icons.bluetooth),
-      trailing: Text(permission ? l.granted : l.requestPermission),
-      busy: _requesting,
-      onPressed: () => _request(service),
-    );
   }
 }
 

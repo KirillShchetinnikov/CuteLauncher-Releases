@@ -4,6 +4,7 @@ import '../overlay_position.dart';
 import '../key_sounds.dart';
 import 'dart:async';
 import 'audio_status_widget.dart';
+import 'remote_battery_menu.dart';
 import 'remote_battery_widget.dart';
 import '../providers/storage_status_service.dart';
 import 'storage_status_watch.dart';
@@ -78,6 +79,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
   final _quickActionsFocusNode = FocusNode();
   final _trafficFocusNode = FocusNode();
   final _networkSpeedFocusNode = FocusNode();
+  final _remoteBatteryFocusNode = FocusNode();
   final _systemFocusNode = FocusNode();
   final _vpnFocusNode = FocusNode();
   final _nasFocusNode = FocusNode();
@@ -96,7 +98,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
     final nodes = {'settings': _settingsFocusNode, 'systemSettings': _systemSettingsFocusNode,
       'nas': _nasFocusNode, 'usb': _usbFocusNode, PanelLayout.quickActions: _quickActionsFocusNode,
       'inputs': _inputsFocusNode, 'notifications': _notificationsFocusNode,
-      'networkSpeed': _networkSpeedFocusNode, 'system': _systemFocusNode, 'traffic': _trafficFocusNode, 'vpn': _vpnFocusNode, 'sleepTimer': _sleepTimerFocusNode, 'nightMode': _nightModeFocusNode, 'weather': _weatherFocusNode, 'date': _dateFocusNode, 'time': _clockFocusNode, PanelLayout.informationGroup: _dateFocusNode};
+      'networkSpeed': _networkSpeedFocusNode, 'remoteBattery': _remoteBatteryFocusNode, 'system': _systemFocusNode, 'traffic': _trafficFocusNode, 'vpn': _vpnFocusNode, 'sleepTimer': _sleepTimerFocusNode, 'nightMode': _nightModeFocusNode, 'weather': _weatherFocusNode, 'date': _dateFocusNode, 'time': _clockFocusNode, PanelLayout.informationGroup: _dateFocusNode};
     final layout = widget.remotePanel?.layout ??
         (context.read<AppearanceService?>()?.appearance ?? const TileAppearance()).panelLayout;
     final composition = InformationPanelComposition(context.read<AppearanceService?>()?.appearance ?? const TileAppearance(), context.read<SettingsService>(), remote: widget.remotePanel);
@@ -209,6 +211,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
       _quickActionsFocusNode,
       _trafficFocusNode,
       _networkSpeedFocusNode,
+      _remoteBatteryFocusNode,
       _systemFocusNode,
       _vpnFocusNode,
       _nasFocusNode,
@@ -393,6 +396,30 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
     }
   }
 
+  Future<void> _openRemoteBattery() async {
+    if (_settingsOpen) return;
+    final node = _remoteBatteryFocusNode;
+    final anchor = launcherControlBounds(node);
+    if (anchor == null) return;
+    _setOpenWidget('remoteBattery');
+    try {
+      await showLauncherDialog<void>(
+        context: context,
+        highlightRect: anchor,
+        highlightRectResolver: () => launcherControlBounds(node),
+        useSafeArea: false,
+        styleDialog: false,
+        barrierColor: Colors.transparent,
+        builder: (_) => RemoteBatteryMenu(anchor: anchor),
+      );
+    } finally {
+      if (mounted) {
+        _setOpenWidget(null);
+        _returnToObject(node);
+      }
+    }
+  }
+
   Future<void> _openQuickActions() async {
     if (_settingsOpen) return;
     final node = _quickActionsFocusNode;
@@ -459,8 +486,10 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
     final trafficVisible = showTraffic && (_activeWidget == 'traffic' ||
         context.select<NetworkService, bool>((service) => service.hasUsageStatsPermission));
     final quickActionsVisible = widget.remotePanel == null && settings.showQuickActionsInStatusBar;
+    final remoteBatteryVisible = widget.remotePanel?.visible('remoteBattery') ?? settings.showRemoteBatteryInStatusBar;
     _restoreFocusWhenHidden([
       (quickActionsVisible, _quickActionsFocusNode),
+      (remoteBatteryVisible, _remoteBatteryFocusNode),
       (nasVisible, _nasFocusNode), (usbVisible, _usbFocusNode),
       (inputsVisible, _inputsFocusNode), (notificationsVisible, _notificationsFocusNode),
       (trafficVisible, _trafficFocusNode), (vpnVisible, _vpnFocusNode),
@@ -487,8 +516,11 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
           visible: widget.remotePanel != null ||
               !settings.autoHideAppBarEnabled || focused || _settingsOpen,
         ),
-      if (widget.remotePanel?.visible('remoteBattery') ?? settings.showRemoteBatteryInStatusBar)
+      if (remoteBatteryVisible)
         'remoteBattery': RemoteBatteryWidget(
+          focusNode: _remoteBatteryFocusNode,
+          onPressed: _openRemoteBattery,
+          selected: _activeWidget == 'remoteBattery',
           visible: widget.remotePanel != null ||
               !settings.autoHideAppBarEnabled || focused || _settingsOpen,
         ),

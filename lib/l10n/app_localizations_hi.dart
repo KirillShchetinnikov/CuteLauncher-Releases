@@ -5011,6 +5011,24 @@ class AppLocalizationsHi extends AppLocalizations {
   String get remoteBatteryBluetoothPermission => 'ब्लूटूथ की अनुमति';
 
   @override
+  String get remoteBatteryDevice => 'दिखाने के लिए डिवाइस';
+
+  @override
+  String get remoteBatteryBluetoothAddress => 'Bluetooth पता';
+
+  @override
+  String get remoteBatterySelectionFailed => 'डिवाइस नहीं चुना जा सका';
+
+  @override
+  String get remoteBatteryShowPercent => 'बैटरी प्रतिशत दिखाएँ';
+
+  @override
+  String get remoteBatteryColorLowCharge => 'कम बैटरी पर विजेट का रंग बदलें';
+
+  @override
+  String get remoteBatteryLowThreshold => 'कम बैटरी की सीमा';
+
+  @override
   String get audioStatusTitle => 'वॉल्यूम और ऑडियो आउटपुट';
 
   @override

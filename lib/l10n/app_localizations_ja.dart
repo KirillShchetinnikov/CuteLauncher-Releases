@@ -4876,6 +4876,24 @@ class AppLocalizationsJa extends AppLocalizations {
   String get remoteBatteryBluetoothPermission => 'Bluetooth へのアクセス';
 
   @override
+  String get remoteBatteryDevice => '表示するデバイス';
+
+  @override
+  String get remoteBatteryBluetoothAddress => 'Bluetooth アドレス';
+
+  @override
+  String get remoteBatterySelectionFailed => 'デバイスを選択できませんでした';
+
+  @override
+  String get remoteBatteryShowPercent => 'バッテリー残量を％で表示';
+
+  @override
+  String get remoteBatteryColorLowCharge => 'バッテリー残量が少ないときにウィジェットを着色';
+
+  @override
+  String get remoteBatteryLowThreshold => 'バッテリー残量低下のしきい値';
+
+  @override
   String get audioStatusTitle => '音量と音声出力';
 
   @override

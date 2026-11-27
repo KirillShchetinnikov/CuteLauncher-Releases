@@ -2,6 +2,20 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
+## v1.8.6 — 2026-11-27
+
+### Remote battery
+
+- Auto selects a device whose battery level can be read. Remotes take priority over keyboards.
+- You can pin a device manually. An X appears when the pinned device disconnects, and reading resumes when it reconnects.
+- Press the battery icon to see the device name and its Bluetooth address when available. In the same menu you can switch devices or open settings with the gear. The top bar and quick settings panel can be enabled separately under Placement.
+- The icon fills to match the battery level. You can hide the percentage. A separate switch enables the low-battery color warning. The default threshold is 10%, and it can be set from 1% to 30% in 1% steps.
+
+### Diagnostics
+
+- Basic and extended reports keep the placement, latest reading, and most recent error of widgets on the top bar and quick settings panel. The quick panel summary survives closing the panel.
+- Remote battery diagnostics show the selection mode, device names and types, matches with paired BLE devices, and read attempts. The most recent attempt without a percentage is kept alongside the latest reading.
+
 ## v1.8.6-test.1 — 2026-11-27
 
 - Basic and extended reports now include a widget summary for the top bar and Quick Settings. It shows placement, the latest result and the latest error. The Quick Settings summary is saved when the panel closes.

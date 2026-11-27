@@ -5009,6 +5009,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get remoteBatteryBluetoothPermission => 'Bluetooth access';
 
   @override
+  String get remoteBatteryDevice => 'Device to display';
+
+  @override
+  String get remoteBatteryBluetoothAddress => 'Bluetooth address';
+
+  @override
+  String get remoteBatterySelectionFailed => 'Could not select the device';
+
+  @override
+  String get remoteBatteryShowPercent => 'Show battery percentage';
+
+  @override
+  String get remoteBatteryColorLowCharge => 'Color widget when battery is low';
+
+  @override
+  String get remoteBatteryLowThreshold => 'Low battery threshold';
+
+  @override
   String get audioStatusTitle => 'Volume and audio output';
 
   @override

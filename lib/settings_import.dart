@@ -5,6 +5,7 @@ import 'application_info_configuration.dart';
 import 'overlay_appearance.dart';
 import 'overlay_position.dart';
 import 'volume_widget_content.dart';
+import 'remote_battery_preferences.dart';
 import 'tv_inputs_configuration.dart';
 import 'adaptive_landscape.dart';
 import 'tile_appearance.dart';
@@ -193,6 +194,9 @@ Map<String, dynamic> compatibleSettings(dynamic source, Map<String, dynamic> exp
     if (!_validValue(key, value)) continue;
     result[key] = value;
   }
+  if (result[remoteBatteryLowThresholdKey] == 0) {
+    result.putIfAbsent(remoteBatteryLowColorEnabledKey, () => false);
+  }
   return result;
 }
 
@@ -204,6 +208,9 @@ bool _validValue(String key, dynamic value) {
   if (key == volumeOverlayPositionKey) return OverlayPosition.parse(value) != null;
   if (key == volumeOverlayAppearanceKey) return OverlayAppearance.parse(value) != null;
   if (key == volumeWidgetContentKey) return VolumeWidgetContent.parse(value) != null;
+  if (key == remoteBatteryLowThresholdKey) {
+    return value is int && (value == 0 || isRemoteBatteryLowThreshold(value));
+  }
   if (key == 'volume_update_interval') return value is int && value >= 1 && value <= 10;
   if (key == backupSyncGroupsKey) {
     try {

@@ -674,12 +674,21 @@ are shared with the top panel.
 
 For USB and network storage, open **Storage devices** in Widget settings. The storage page shows its status alongside separate visibility switches for the top panel and quick settings panel.
 
-In **Sound and inputs**, open **Remote battery** and enable it on the panels
-where you want it to appear. The widget is off by default. If Android does not
-report the input device battery, the widget tries reading the paired Bluetooth
-remote’s standard Battery Service. On Android 12 or later, select
-**Bluetooth access** on that page and allow **Nearby devices** for this reading.
-The widget shows “—” when a percentage is unavailable.
+In **Sound and inputs**, open **Remote battery → Placement** and enable it on the panels
+where you want it to appear. The widget is off by default. Select **Device
+to display** to open the choices. **Auto** looks for a readable battery level
+on a remote first, then on a keyboard. You can also pin a connected device. Press the battery icon to
+see the device name, its Bluetooth address when available, and the device
+picker button. The gear opens the widget settings. An X appears if the pinned device disconnects. The widget shows
+“—” when a percentage is unavailable. The icon fills to match the charge.
+Turn off **Show battery percentage** to show only the icon. The icon and
+percentage turn red below the **Low battery threshold**. The default is 10%.
+Choose any whole percentage from 1% to 30%. Turn off **Color widget when
+battery is low** to disable the warning and keep your threshold.
+On Android 12 or later, select
+**Bluetooth access** and allow **Nearby devices**. This lets the widget
+identify the paired Bluetooth device and use its standard Battery Service
+when Android does not report a battery percentage.
 
 In **Sound and inputs**, open **Volume and audio output**. Under placement, choose the panels that should show this widget.
 It is enabled by default; visibility and position persist after a restart.
@@ -1937,11 +1946,11 @@ Use it immediately after an unexpected failure.
 
 Both reports include widget placement settings and the latest observations
 from the top bar and the last quick panel session. For the remote battery
-widget, the report shows whether Bluetooth permission was granted, where the
-percentage came from, or which step could not read it. The report keeps the
-latest widget error code alongside the latest result. These observations
-come from normal widget use. If the issue occurs in the quick panel, close
-it before creating the report.
+widget, the report shows the selection mode, device names and types,
+Bluetooth permission and read results. It keeps the latest attempt without
+a battery level alongside the latest result. These observations come from
+normal widget use. If the issue occurs in the quick panel, close it before
+creating the report.
 
 **An extended report** adds detailed logs from the recording, memory usage,
 compatibility results, installed apps, and section contents. The recording

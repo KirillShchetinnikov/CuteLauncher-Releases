@@ -12,6 +12,7 @@ import '../tile_appearance.dart';
 import '../image_limits.dart';
 import '../weather_text_format.dart';
 import '../information_formats.dart';
+import '../remote_battery_preferences.dart';
 
 const _journalKey = 'settings_sync_pending';
 final _schema = <String, Object>{
@@ -38,6 +39,7 @@ final _schema = <String, Object>{
   'continue_watching_max_items': 0,
   'continue_watching_order': 0,
   'wallpaper_brightness': 1.0,
+  remoteBatteryLowThresholdKey: remoteBatteryDefaultLowThreshold,
   'wallpaper_saturation': 1.0,
   'wallpaper_dimming': 1.0,
 };
