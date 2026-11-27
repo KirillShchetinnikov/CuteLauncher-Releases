@@ -2,6 +2,11 @@
 
 [Русский](CHANGELOG_RU.md) · [English](CHANGELOG_EN.md) · [About the launcher](README_EN.md)
 
+## v1.8.6-test.1 — 2026-11-27
+
+- Basic and extended reports now include a widget summary for the top bar and Quick Settings. It shows placement, the latest result and the latest error. The Quick Settings summary is saved when the panel closes.
+- For the Remote Battery widget, the report shows Bluetooth permission, the source of the battery percentage and why a reading could not be obtained. For example, it shows whether the launcher found a matching remote and whether the Bluetooth read succeeded.
+
 ## v1.8.5 — 2026-11-26
 
 - The Remote Battery widget now shows the percentage for compatible Bluetooth remotes when Android appends a button group label to the device name.

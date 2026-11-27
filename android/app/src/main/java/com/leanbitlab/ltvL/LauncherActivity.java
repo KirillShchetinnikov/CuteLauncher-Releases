@@ -344,6 +344,8 @@ public class LauncherActivity extends FlutterActivity {
             switch (call.method) {
                 case "resetApplicationData" -> result.success(ApplicationReset.request(this));
                 case "getNativeShellDiagnostics" -> result.success(NativeShellDiagnostics.snapshot());
+                case "getQuickPanelWidgetDiagnostics" -> result.success(RemotePanelWindow.lastWidgetDiagnostics());
+                case "clearQuickPanelWidgetDiagnostics" -> { RemotePanelWindow.clearWidgetDiagnostics(); result.success(null); }
                 case "startNativeShellDiagnostics" -> { NativeShellDiagnostics.start(); result.success(true); }
                 case "stopNativeShellDiagnostics" -> { NativeShellDiagnostics.stop(); result.success(true); }
                 case "enableBackgroundVideoCompatibility" -> result.success(VideoSurfaceCompatibility.enableAfterFailure(this));

@@ -6,7 +6,9 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/apps_service.dart';
+import '../../providers/appearance_service.dart';
 import '../../providers/night_mode_service.dart';
+import '../../providers/remote_panel_service.dart';
 import '../../providers/settings_service.dart';
 import '../../providers/weather_service.dart';
 
@@ -48,6 +50,8 @@ class _DiagnosticsPageState extends State<DiagnosticsPage> {
           extended: extended,
           apps: context.read<AppsService?>(),
           settings: context.read<SettingsService?>(),
+          appearance: context.read<AppearanceService?>()?.appearance,
+          remotePanel: context.read<RemotePanelService?>(),
           nightMode: context.read<NightModeService?>(),
           weather: context.read<WeatherService?>(),
         ),

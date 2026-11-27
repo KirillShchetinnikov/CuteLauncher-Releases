@@ -1,42 +1,12 @@
-function Get-BitwardenSigning($Configuration) {
-    $bws = (Get-Command bws -CommandType Application -ErrorAction SilentlyContinue).Source
-    $localAppData = [Environment]::GetFolderPath('LocalApplicationData')
-    if (-not $bws) { $bws = Join-Path $localAppData 'Programs/Bitwarden/bws.exe' }
-    if (-not (Test-Path -LiteralPath $bws -PathType Leaf)) { throw 'Install the Bitwarden Secrets Manager CLI (bws).' }
-
-    $projectId = ([guid]$Configuration.projectId).ToString()
-    $tokenFile = Join-Path $localAppData "CodexBitwarden/$projectId.dpapi"
-    if (-not (Test-Path -LiteralPath $tokenFile -PathType Leaf)) { throw 'Save the Bitwarden machine-account token in your Windows profile first.' }
-    $token = ConvertTo-SecureString -String (Get-Content -Raw -LiteralPath $tokenFile).Trim()
-    $previousToken = $env:BWS_ACCESS_TOKEN
-    $values = @{}
-    try {
-        $credential = [pscredential]::new('bws', $token)
-        $env:BWS_ACCESS_TOKEN = $credential.GetNetworkCredential().Password
-        foreach ($name in 'KEYSTORE_BASE64', 'KEYSTORE_PASSWORD', 'KEY_PASSWORD', 'KEY_ALIAS') {
-            $recordName = "CUTELAUNCHER_$name"
-            $secretId = ([guid]$Configuration.secretIds.$name).ToString()
-            $result = & $bws secret get $secretId --output json 2>$null
-            if ($LASTEXITCODE -ne 0) { throw "Bitwarden could not read $name." }
-            try { $secret = ($result -join "`n") | ConvertFrom-Json -ErrorAction Stop }
-            catch { throw "Invalid Bitwarden response for $name." }
-            if ($secret.key -cne $recordName -or $secret.projectId -ne $projectId -or -not $secret.value) {
-                throw "Expected Bitwarden record $recordName."
-            }
-            $values[$name] = $secret.value
-        }
-    } finally {
-        $env:BWS_ACCESS_TOKEN = $previousToken
-        $token.Dispose()
-    }
-    return $values
-}
+. "$PSScriptRoot/cutelauncher-vault.ps1"
 
 function Invoke-ReleaseSigning {
     param([scriptblock]$Action, [string]$JavaHome, [switch]$CreateLocalKey)
 
     $signingDir = Join-Path (Split-Path $PSScriptRoot -Parent) '.local/signing'
-    $configurationFile = Join-Path $signingDir 'bitwarden.json'
+    $vaultDirectory = Get-CuteLauncherVaultDirectory
+    $vaultConfig = Join-Path $vaultDirectory 'cutelauncher.json'
+    $vaultCredential = Join-Path $vaultDirectory 'cutelauncher-approle.dpapi'
     $settingsFile = Join-Path $signingDir 'signing.json'
     $keystoreFile = Join-Path $signingDir 'cutelauncher.p12'
     $temporaryFile = $null
@@ -46,21 +16,22 @@ function Invoke-ReleaseSigning {
     }
 
     try {
-        if (Test-Path -LiteralPath $configurationFile) {
-            $configuration = Get-Content -Raw -LiteralPath $configurationFile | ConvertFrom-Json
-            $signing = Get-BitwardenSigning $configuration
+        if ((Test-Path -LiteralPath $vaultConfig) -or (Test-Path -LiteralPath $vaultCredential)) {
+            $signing = Get-CuteLauncherVaultSecrets -Name keystore_base64, keystore_password, key_password, key_alias
+            [IO.Directory]::CreateDirectory($signingDir) | Out-Null
             $temporaryFile = Join-Path $signingDir "temporary-$([guid]::NewGuid()).p12"
-            [IO.File]::WriteAllBytes($temporaryFile, [Convert]::FromBase64String($signing.KEYSTORE_BASE64))
+            [IO.File]::WriteAllBytes($temporaryFile, [Convert]::FromBase64String($signing.keystore_base64))
             $env:KEYSTORE_FILE = $temporaryFile
-            $env:KEYSTORE_PASSWORD = $signing.KEYSTORE_PASSWORD
-            $env:KEY_PASSWORD = $signing.KEY_PASSWORD
-            $env:KEY_ALIAS = $signing.KEY_ALIAS
+            $env:KEYSTORE_PASSWORD = $signing.keystore_password
+            $env:KEY_PASSWORD = $signing.key_password
+            $env:KEY_ALIAS = $signing.key_alias
         } else {
             $hasSettings = Test-Path -LiteralPath $settingsFile -PathType Leaf
             $hasKeystore = Test-Path -LiteralPath $keystoreFile -PathType Leaf
             if (-not ($hasSettings -and $hasKeystore)) {
-                if ($hasSettings -or $hasKeystore -or -not $CreateLocalKey) {
-                    throw 'Restore the existing signing files or configure Bitwarden before building.'
+                $previousOfficialConfig = Test-Path -LiteralPath (Join-Path $signingDir 'bitwarden.json')
+                if ($hasSettings -or $hasKeystore -or $previousOfficialConfig -or -not $CreateLocalKey) {
+                    throw 'Restore the existing signing files or configure Vault before building.'
                 }
                 New-Item -ItemType Directory -Force $signingDir | Out-Null
                 $randomBytes = New-Object byte[] 32

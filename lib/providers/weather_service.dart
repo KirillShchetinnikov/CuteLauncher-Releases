@@ -195,6 +195,14 @@ class WeatherService extends ChangeNotifier with ServiceLifecycle, WidgetsBindin
   bool get initialized => _initialized;
   bool get hasWeather => _weatherData != null;
 
+  @override
+  void notifyListeners() {
+    DiagnosticsStore.instance.widgetDiagnostics.observeWeather(
+      _configuration.source, _failure, hasData: hasWeather, stale: stale,
+    );
+    super.notifyListeners();
+  }
+
   Future<void> _init() async {
     if (isDisposed) return;
     try {

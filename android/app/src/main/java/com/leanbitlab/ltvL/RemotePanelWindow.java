@@ -14,6 +14,9 @@ import io.flutter.plugin.common.MethodChannel;
 
 /** Focusable service window: never starts an Activity or changes the video task. */
 final class RemotePanelWindow implements AutoCloseable {
+    private static String lastWidgetDiagnostics;
+    static String lastWidgetDiagnostics() { return lastWidgetDiagnostics; }
+    static void clearWidgetDiagnostics() { lastWidgetDiagnostics = null; }
     private final LauncherAccessibilityService service;
     private final boolean recents;
     private final Handler main = new Handler(Looper.getMainLooper());
@@ -21,7 +24,7 @@ final class RemotePanelWindow implements AutoCloseable {
     private FlutterView view;
     private RemotePanelChannels channels;
     private MethodChannel control;
-    private boolean closing, backDown;
+    private boolean closing, backDown, ready;
     private boolean screenReceiverRegistered;
     private final android.content.BroadcastReceiver screenReceiver = new android.content.BroadcastReceiver() {
         @Override public void onReceive(Context context, android.content.Intent intent) { requestClose(); }
@@ -33,6 +36,7 @@ final class RemotePanelWindow implements AutoCloseable {
         if (engine != null) { requestClose(); return true; }
         try {
             closing = false;
+            ready = false;
             engine = LauncherEngineGroup.panel(service, recents ? "recentAppsMain" : "remotePanelMain");
             var messenger = engine.getDartExecutor().getBinaryMessenger();
             channels = new RemotePanelChannels(service, messenger, this::requestClose);
@@ -40,9 +44,15 @@ final class RemotePanelWindow implements AutoCloseable {
             control.setMethodCallHandler((call, result) -> {
                 switch (call.method) {
                     case "show" -> result.success(true);
-                    case "ready" -> { main.removeCallbacks(startTimeout); result.success(null); }
+                    case "ready" -> { ready = true; main.removeCallbacks(startTimeout); result.success(null); }
                     case "close" -> { result.success(null); requestClose(); }
-                    case "closed" -> { result.success(null); main.post(this::close); }
+                    case "closed" -> {
+                        if (ready && !recents && call.arguments instanceof String json && json.length() <= 48 * 1024) {
+                            lastWidgetDiagnostics = json;
+                        }
+                        result.success(null);
+                        main.post(this::close);
+                    }
                     default -> result.notImplemented();
                 }
             });

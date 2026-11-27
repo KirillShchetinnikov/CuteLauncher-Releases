@@ -11,6 +11,7 @@ import 'diagnostic_settings.dart';
 import 'home_tile_diagnostics.dart';
 import 'launcher_image_cache.dart';
 import 'diagnostics/poster_loads.dart';
+import 'diagnostics/widget_diagnostics.dart';
 
 /// Bounded diagnostics with structured causes and redacted technical excerpts.
 enum DiagnosticRecordingState { idle, recording, stopped }
@@ -58,6 +59,9 @@ class DiagnosticsStore {
     'wallpaperService',
     'systemStatusService',
     'storageStatusService',
+    'remoteBattery',
+    'bluetoothPermission',
+    'requestBluetoothPermission',
     'networkSpeedService',
     'backupStorage',
     'audioStatusService',
@@ -474,6 +478,7 @@ class DiagnosticsStore {
   final List<Map<String, Object>> _events = [];
   final List<Map<String, Object>> _failures = [];
   final List<Map<String, Object>> _audioRouting = [];
+  final widgetDiagnostics = WidgetDiagnostics();
   final Map<String, int> _counts = {};
   Map<dynamic, dynamic> Function()? settingsProvider;
   final Map<int, Map<String, Object>> _settings = {};
@@ -560,6 +565,7 @@ class DiagnosticsStore {
         }
       }
     }
+    widgetDiagnostics.record(event, context['response']);
     final detailed = _acceptDetailedEvent();
     _basicEvents.add(detailed ? Map<String, Object>.of(event) : event);
     if (_basicEvents.length > basicCapacity) _basicEvents.removeAt(0);
@@ -852,6 +858,7 @@ class DiagnosticsStore {
   void clear() {
     discardRecording();
     _basicEvents.clear();
+    widgetDiagnostics.clear();
     _clock.reset();
   }
 

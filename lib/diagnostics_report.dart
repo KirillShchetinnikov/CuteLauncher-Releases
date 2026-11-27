@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
@@ -14,10 +15,14 @@ import 'tv_compatibility_report.dart';
 import 'permission_recovery_diagnostics.dart';
 import 'diagnostic_catalog.dart';
 import 'media_capabilities.dart';
+import 'information_placement.dart';
+import 'panel_layout.dart';
 import 'providers/apps_service.dart';
 import 'providers/night_mode_service.dart';
+import 'providers/remote_panel_service.dart';
 import 'providers/settings_service.dart';
 import 'providers/weather_service.dart';
+import 'tile_appearance.dart';
 import 'weather_sources.dart';
 
 const _channel = MethodChannel('me.efesser.flauncher/method');
@@ -81,6 +86,8 @@ Future<Map<String, Object>> collectDiagnostics({
   bool extended = false,
   AppsService? apps,
   SettingsService? settings,
+  TileAppearance? appearance,
+  RemotePanelService? remotePanel,
   NightModeService? nightMode,
   WeatherService? weather,
 }) async {
@@ -89,6 +96,16 @@ Future<Map<String, Object>> collectDiagnostics({
   final capturedAt = DateTime.now();
   final diagnostics = store.snapshot(extended: extended)
     ..['reportMode'] = extended ? 'extended' : 'basic';
+  final widgetDiagnostics = <String, Object>{
+    'home': store.widgetDiagnostics.snapshot(),
+    if (settings != null)
+      'homeConfiguration': _homeWidgetConfiguration(settings, appearance),
+    if (remotePanel != null)
+      'quickPanelConfiguration': {
+        for (final id in PanelLayout.remoteIds) id: remotePanel.visible(id),
+      },
+  };
+  final quickPanel = _lastQuickPanelWidgets();
   String? version, build;
   Map<dynamic, dynamic>? environment;
   try {
@@ -101,6 +118,8 @@ Future<Map<String, Object>> collectDiagnostics({
         .invokeMapMethod('getDiagnosticEnvironment')
         .timeout(_metadataTimeout);
   } catch (_) {}
+  if (await quickPanel case final panel?) widgetDiagnostics['quickPanel'] = panel;
+  diagnostics['widgetDiagnostics'] = widgetDiagnostics;
   diagnostics.addAll(
     DiagnosticsStore.reportMetadata(
       version: version,
@@ -216,6 +235,42 @@ Future<Map<String, Object>> collectDiagnostics({
   );
 }
 
+Future<Map<String, dynamic>?> _lastQuickPanelWidgets() async {
+  try {
+    final value = await _channel.invokeMethod<String>(
+      'getQuickPanelWidgetDiagnostics',
+    ).timeout(_metadataTimeout);
+    if (value != null) return jsonDecode(value) as Map<String, dynamic>;
+  } catch (_) {
+    // No quick panel snapshot is available on a host without the bridge.
+  }
+  return null;
+}
+
+Map<String, Object> _homeWidgetConfiguration(
+  SettingsService settings,
+  TileAppearance? appearance,
+) => {
+  if (appearance != null) ...InformationPlacement(appearance, settings).values,
+  'inputs': settings.showInputsWidgetInStatusBar,
+  'notifications': settings.showNotificationsWidgetInStatusBar,
+  'sleepTimer': settings.showSleepTimerInStatusBar,
+  'nightMode': settings.showNightModeInStatusBar,
+  'nas': settings.showNasInStatusBar,
+  'usb': settings.showUsbInStatusBar,
+  'network': settings.showNetworkIndicatorInStatusBar,
+  'vpn': settings.showVpnInStatusBar,
+  'traffic': settings.showDataWidgetInStatusBar,
+  'networkSpeed': settings.showNetworkSpeedInStatusBar,
+  'system': settings.showSystemInStatusBar,
+  'audio': settings.showVolumeInStatusBar,
+  'remoteBattery': settings.showRemoteBatteryInStatusBar,
+  'nowPlaying': settings.showNowPlaying,
+  'settings': true,
+  'systemSettings': settings.showSystemSettingsInStatusBar,
+  PanelLayout.quickActions: settings.showQuickActionsInStatusBar,
+};
+
 /// Explains the normal scene's expected lighting without reading its pixels
 /// or exposing coordinates, city, or installed applications.
 Map<String, Object> landscapeLightingDiagnostics(
@@ -279,7 +334,10 @@ Future<void> discardDiagnosticsRecording() {
   return _controlNativeShell('clearNativeShellDiagnostics');
 }
 
-Future<void> clearDiagnostics() {
+Future<void> clearDiagnostics() async {
   DiagnosticsStore.instance.clear();
-  return _controlNativeShell('clearNativeShellDiagnostics');
+  await Future.wait([
+    _controlNativeShell('clearNativeShellDiagnostics'),
+    _controlNativeShell('clearQuickPanelWidgetDiagnostics'),
+  ]);
 }

@@ -41,6 +41,7 @@ import 'providers/backup_automation_service.dart';
 import 'widgets/settings/backup_restore_actions.dart';
 import 'providers/update_service.dart';
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io' show Directory;
 
 import 'package:flauncher/database.dart';
@@ -218,10 +219,14 @@ Future<void> _runLauncher({bool remotePanel = false, bool recentApps = false}) a
     remotePanelChannel.setMethodCallHandler((call) async {
       if (call.method != 'dispose' || closing) return;
       closing = true;
+      final widgetReport = DiagnosticsStore.instance.widgetDiagnostics.snapshot();
       runApp(const SizedBox.shrink());
       await WidgetsBinding.instance.endOfFrame;
       await database?.close();
-      await remotePanelChannel.invokeMethod<void>('closed');
+      await remotePanelChannel.invokeMethod<void>(
+        'closed',
+        jsonEncode(widgetReport),
+      );
     });
   }
   StartupTrace.mark('runApp');

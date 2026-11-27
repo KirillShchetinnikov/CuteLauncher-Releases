@@ -101,6 +101,7 @@ const nativeSyncStorePolicy = <String, String>{
   'adb_connection': 'device authorization',
   'adb_recovery': 'device recovery',
   'app_permissions': 'device permissions',
+  'remote_battery_permissions': 'device permissions',
   'update_permissions': 'device permissions',
   'brightness_restore': 'hardware recovery',
   'crash_loop': 'process recovery',

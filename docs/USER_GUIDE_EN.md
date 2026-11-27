@@ -1935,6 +1935,14 @@ either report to disk. **Compatibility check results** opens device details and 
 permissions, current settings, and up to 20 recent operations with short results.
 Use it immediately after an unexpected failure.
 
+Both reports include widget placement settings and the latest observations
+from the top bar and the last quick panel session. For the remote battery
+widget, the report shows whether Bluetooth permission was granted, where the
+percentage came from, or which step could not read it. The report keeps the
+latest widget error code alongside the latest result. These observations
+come from normal widget use. If the issue occurs in the quick panel, close
+it before creating the report.
+
 **An extended report** adds detailed logs from the recording, memory usage,
 compatibility results, installed apps, and section contents. The recording
 continues after you leave Settings while the launcher process is running.

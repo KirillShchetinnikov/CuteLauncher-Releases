@@ -57,7 +57,7 @@ final class RemoteBatteryBridge implements AutoCloseable {
         @Override public void onReceive(Context unused, Intent intent) {
             if (!watching) return;
             boolean on = Intent.ACTION_SCREEN_ON.equals(intent.getAction());
-            if (!on && active != null) active.finish(null, false);
+            if (!on && active != null) active.finish(null, false, "screenOff");
             channel.invokeMethod("changed", on);
         }
     };
@@ -159,7 +159,7 @@ final class RemoteBatteryBridge implements AutoCloseable {
                 inputRegistered = false;
                 try { inputs.unregisterInputDeviceListener(inputChanges); } catch (RuntimeException ignored) { }
             }
-            if (active != null) active.finish(null, true);
+            if (active != null) active.finish(null, true, "cancelled");
         }
     }
 
@@ -203,12 +203,15 @@ final class RemoteBatteryBridge implements AutoCloseable {
         return capacity >= 0f && capacity <= 1f ? Math.round(capacity * 100f) : null;
     }
 
+    private record BondedRemote(@Nullable BluetoothDevice device, String outcome) {}
+
     @SuppressLint("MissingPermission") // Both platform permission variants are checked below.
-    @Nullable private BluetoothDevice bondedRemote(List<InputDevice> remotes) {
-        if (remotes.isEmpty() || !hasBluetoothPermission()) return null;
+    private BondedRemote bondedRemote(List<InputDevice> remotes) {
+        if (!hasBluetoothPermission()) return new BondedRemote(null, "bluetoothPermissionDenied");
         var manager = context.getSystemService(BluetoothManager.class);
         var adapter = manager == null ? null : manager.getAdapter();
-        if (adapter == null || !adapter.isEnabled()) return null;
+        if (adapter == null) return new BondedRemote(null, "noBluetoothAdapter");
+        if (!adapter.isEnabled()) return new BondedRemote(null, "bluetoothDisabled");
         BluetoothDevice candidate = null;
         for (var device : adapter.getBondedDevices()) {
             int type = device.getType();
@@ -217,10 +220,10 @@ final class RemoteBatteryBridge implements AutoCloseable {
             if (bluetoothName == null || bluetoothName.trim().isEmpty()) continue;
             var name = bluetoothName.trim();
             if (remotes.stream().noneMatch(remote -> matchesRemoteName(name, remote.getName()))) continue;
-            if (candidate != null) return null;
+            if (candidate != null) return new BondedRemote(null, "ambiguousBondedRemotes");
             candidate = device;
         }
-        return candidate;
+        return new BondedRemote(candidate, candidate == null ? "noMatchingBondedRemote" : "ble");
     }
 
     private static boolean matchesRemoteName(String bluetoothName, @Nullable String inputName) {
@@ -235,8 +238,9 @@ final class RemoteBatteryBridge implements AutoCloseable {
     @SuppressLint("MissingPermission") // GATT is only opened after the permission check in bondedRemote.
     private final class Sample extends BluetoothGattCallback {
         private final MethodChannel.Result result;
-        private final Runnable timeout = () -> finish(null, true);
+        private final Runnable timeout = () -> finish(null, true, "timeout");
         private volatile boolean finished;
+        private volatile int inputCandidates = -1;
         private BluetoothGatt connection;
 
         Sample(MethodChannel.Result result) { this.result = result; }
@@ -246,34 +250,40 @@ final class RemoteBatteryBridge implements AutoCloseable {
             try {
                 var power = context.getSystemService(PowerManager.class);
                 if (power != null && !power.isInteractive()) {
-                    finish(null, false);
+                    finish(null, false, "screenOff");
                     return;
                 }
                 var remotes = remotes();
+                inputCandidates = remotes.size();
+                if (remotes.isEmpty()) {
+                    finish(null, true, "noInputRemote");
+                    return;
+                }
                 if (Build.VERSION.SDK_INT >= 31) {
                     Integer percent = null;
                     for (var device : remotes) {
                         var level = inputBattery(device);
                         if (level == null) continue;
                         if (percent != null) {
-                            finish(null, true);
+                            finish(null, true, "ambiguousInputBattery");
                             return;
                         }
                         percent = level;
                     }
                     if (percent != null) {
-                        finish(percent, true);
+                        finish(percent, true, "inputDevice");
                         return;
                     }
                 }
-                var remote = bondedRemote(remotes);
-                if (remote == null || finished) {
-                    finish(null, true);
+                var bonded = bondedRemote(remotes);
+                if (finished) return;
+                if (bonded.device() == null) {
+                    finish(null, true, bonded.outcome());
                     return;
                 }
-                var opened = remote.connectGatt(context, false, this, BluetoothDevice.TRANSPORT_LE);
+                var opened = bonded.device().connectGatt(context, false, this, BluetoothDevice.TRANSPORT_LE);
                 if (opened == null) {
-                    finish(null, true);
+                    finish(null, true, "gattConnectionFailed");
                     return;
                 }
                 synchronized (this) {
@@ -284,7 +294,7 @@ final class RemoteBatteryBridge implements AutoCloseable {
                 }
                 closeGatt(opened);
             } catch (RuntimeException unavailable) {
-                finish(null, true);
+                finish(null, true, "platformError");
             }
         }
 
@@ -292,8 +302,10 @@ final class RemoteBatteryBridge implements AutoCloseable {
             if (finished) return;
             try {
                 if (status != BluetoothGatt.GATT_SUCCESS || state == BluetoothProfile.STATE_DISCONNECTED
-                    || (state == BluetoothProfile.STATE_CONNECTED && !gatt.discoverServices())) finish(null, true);
-            } catch (RuntimeException unavailable) { finish(null, true); }
+                    || (state == BluetoothProfile.STATE_CONNECTED && !gatt.discoverServices())) {
+                    finish(null, true, "gattConnectionFailed");
+                }
+            } catch (RuntimeException unavailable) { finish(null, true, "platformError"); }
         }
 
         @Override public void onServicesDiscovered(BluetoothGatt gatt, int status) {
@@ -301,8 +313,12 @@ final class RemoteBatteryBridge implements AutoCloseable {
             try {
                 var service = status == BluetoothGatt.GATT_SUCCESS ? gatt.getService(BATTERY_SERVICE) : null;
                 var level = service == null ? null : service.getCharacteristic(BATTERY_LEVEL);
-                if (level == null || !gatt.readCharacteristic(level)) finish(null, true);
-            } catch (RuntimeException unavailable) { finish(null, true); }
+                if (status != BluetoothGatt.GATT_SUCCESS || (level != null && !gatt.readCharacteristic(level))) {
+                    finish(null, true, "gattReadFailed");
+                } else if (level == null) {
+                    finish(null, true, "noBatteryCharacteristic");
+                }
+            } catch (RuntimeException unavailable) { finish(null, true, "platformError"); }
         }
 
         @Override public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic value, int status) {
@@ -311,11 +327,12 @@ final class RemoteBatteryBridge implements AutoCloseable {
 
         @Override public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic value,
                                                    byte[] bytes, int status) {
-            finish(status == BluetoothGatt.GATT_SUCCESS && BATTERY_LEVEL.equals(value.getUuid())
-                && bytes != null && bytes.length == 1 ? levelPercent(bytes[0]) : null, true);
+            var level = status == BluetoothGatt.GATT_SUCCESS && BATTERY_LEVEL.equals(value.getUuid())
+                && bytes != null && bytes.length == 1 ? levelPercent(bytes[0]) : null;
+            finish(level, true, level == null ? "gattReadFailed" : "ble");
         }
 
-        void finish(@Nullable Integer level, boolean screenOn) {
+        void finish(@Nullable Integer level, boolean screenOn, String outcome) {
             BluetoothGatt opened;
             synchronized (this) {
                 if (finished) return;
@@ -331,6 +348,9 @@ final class RemoteBatteryBridge implements AutoCloseable {
                 Map<String, Object> snapshot = new HashMap<>();
                 snapshot.put("screenOn", screenOn);
                 if (level != null) snapshot.put("percent", level);
+                snapshot.put("batteryRead", outcome);
+                snapshot.put("bluetoothPermission", hasBluetoothPermission());
+                if (inputCandidates >= 0) snapshot.put("inputCandidates", inputCandidates);
                 result.success(snapshot);
             });
         }

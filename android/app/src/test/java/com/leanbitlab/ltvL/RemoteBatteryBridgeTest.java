@@ -75,31 +75,31 @@ public class RemoteBatteryBridgeTest {
 
     @Test @Config(sdk = 34)
     public void usesPairedBleRemoteWhenAndroidInputHasNoPercentage() throws Exception {
-        verifiesPairedBleReading("BT_RC813A_C9", "BT_RC813A_C9", null, true);
+        verifiesPairedBleReading("BT_RC813A_C9", "BT_RC813A_C9", null, "ble");
     }
 
     @Test @Config(sdk = 34)
     public void matchesRemoteWithConsumerControlSuffix() throws Exception {
-        verifiesPairedBleReading("BT_RC933B_B2 Consumer Control", "BT_RC933B_B2", "BT_RC933B", true);
+        verifiesPairedBleReading("BT_RC933B_B2 Consumer Control", "BT_RC933B_B2", "BT_RC933B", "ble");
     }
 
     @Test @Config(sdk = 34)
     public void matchesRemoteWithSystemControlSuffixIgnoringCase() throws Exception {
-        verifiesPairedBleReading("Living Room system control", "Living Room", null, true);
+        verifiesPairedBleReading("Living Room system control", "Living Room", null, "ble");
     }
 
     @Test @Config(sdk = 34)
     public void skipsAmbiguousBluetoothDevices() throws Exception {
-        verifiesPairedBleReading("Remote Consumer Control", "Remote", "Remote Consumer Control", false);
+        verifiesPairedBleReading("Remote Consumer Control", "Remote", "Remote Consumer Control", "ambiguousBondedRemotes");
     }
 
     @Test @Config(sdk = 34)
     public void skipsUnrelatedBluetoothDevices() throws Exception {
-        verifiesPairedBleReading("Remote Pro Consumer Control", "Remote", "Remote Pro Voice", false);
+        verifiesPairedBleReading("Remote Pro Consumer Control", "Remote", "Remote Pro Voice", "noMatchingBondedRemote");
     }
 
     private void verifiesPairedBleReading(String inputName, String bluetoothName, String otherName,
-                                          boolean expectReading) throws Exception {
+                                          String expectedOutcome) throws Exception {
         var app = RuntimeEnvironment.getApplication();
         var adapter = app.getSystemService(BluetoothManager.class).getAdapter();
         shadowOf(adapter).setEnabled(true);
@@ -127,16 +127,19 @@ public class RemoteBatteryBridgeTest {
             var denied = messenger.call("snapshot", null);
             worker.submit(() -> {}).get(5, TimeUnit.SECONDS);
             shadowOf(Looper.getMainLooper()).idle();
-            assertEquals(Map.of("screenOn", true), denied.get(1, TimeUnit.SECONDS));
+            assertEquals(Map.of("screenOn", true, "bluetoothPermission", false, "inputCandidates", 1,
+                "batteryRead", "bluetoothPermissionDenied"), denied.get(1, TimeUnit.SECONDS));
             assertTrue(bluetooth.getBluetoothGatts().isEmpty());
 
             shadowOf(app).grantPermissions(Manifest.permission.BLUETOOTH_CONNECT);
             var reading = messenger.call("snapshot", null);
             worker.submit(() -> {}).get(5, TimeUnit.SECONDS);
             assertTrue(otherBluetooth.getBluetoothGatts().isEmpty());
-            if (!expectReading) {
+            if (!expectedOutcome.equals("ble")) {
                 shadowOf(Looper.getMainLooper()).idle();
-                assertEquals(Map.of("screenOn", true), reading.get(1, TimeUnit.SECONDS));
+                assertEquals(Map.of("screenOn", true, "bluetoothPermission", true, "inputCandidates", 1,
+                    "batteryRead", expectedOutcome),
+                    reading.get(1, TimeUnit.SECONDS));
                 assertTrue(bluetooth.getBluetoothGatts().isEmpty());
                 return;
             }
@@ -147,7 +150,8 @@ public class RemoteBatteryBridgeTest {
                 BluetoothGattCharacteristic.PROPERTY_READ, BluetoothGattCharacteristic.PERMISSION_READ);
             shadowOf(gatt).getGattCallback().onCharacteristicRead(gatt, level, new byte[]{89}, BluetoothGatt.GATT_SUCCESS);
             shadowOf(Looper.getMainLooper()).idle();
-            assertEquals(Map.of("screenOn", true, "percent", 89), reading.get(1, TimeUnit.SECONDS));
+            assertEquals(Map.of("screenOn", true, "percent", 89, "bluetoothPermission", true,
+                "inputCandidates", 1, "batteryRead", "ble"), reading.get(1, TimeUnit.SECONDS));
             assertTrue(shadowOf(gatt).isClosed());
         } finally {
             worker.shutdownNow();

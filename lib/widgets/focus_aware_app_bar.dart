@@ -1,4 +1,5 @@
 import '../information_placement.dart';
+import '../diagnostics_store.dart';
 import '../overlay_position.dart';
 import '../key_sounds.dart';
 import 'dart:async';
@@ -636,6 +637,11 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar> {
           format: settings.timeFormat,
         ),
     };
+    DiagnosticsStore.instance.widgetDiagnostics.observeLayout(
+      objects,
+      nightActive: night != null ? nightEnabled : null,
+      nightPanelFill: night != null ? nightPanelFill : null,
+    );
     if (composition.combined) {
       final layout = widget.remotePanel?.layout ?? appearance.panelLayout;
       final ids = [...layout.left, ...layout.right]

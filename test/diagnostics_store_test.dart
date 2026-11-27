@@ -24,6 +24,7 @@ void main() {
     final calls = <String>[];
     messenger.setMockMethodCallHandler(channel, (call) async {
       calls.add(call.method);
+      if (call.method == 'getQuickPanelWidgetDiagnostics') return null;
       return {'androidApi': 34, 'device': {'model': 'Smart TV Pro', 'firmware': 'test.34'}};
     });
     addTearDown(() {
@@ -39,7 +40,7 @@ void main() {
       });
     }
     final report = await collectDiagnostics();
-    expect(calls, ['getDiagnosticEnvironment']);
+    expect(calls, ['getQuickPanelWidgetDiagnostics', 'getDiagnosticEnvironment']);
     expect(report['reportMode'], 'basic');
     expect(report['settingsAtExport'], {'memory_saver_enabled': true});
     expect((report['recentOperations'] as List).map((row) => row['durationMs']), [
@@ -52,6 +53,58 @@ void main() {
     expect(jsonEncode(report), isNot(contains('private-value')));
     final projection = sanitizedTvCompatibilityReport(report);
     expect((projection['checks'] as Map).values, everyElement('unknown'));
+  });
+
+  test('widget diagnostics keep the remote outcome and previous error after unrelated operations', () async {
+    final store = DiagnosticsStore.instance..clear();
+    addTearDown(store.clear);
+    final messenger = TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+    const metadataChannel = MethodChannel('me.efesser.flauncher/method');
+    messenger.setMockMethodCallHandler(metadataChannel, (call) async =>
+        call.method == 'getQuickPanelWidgetDiagnostics'
+            ? '{"audio":{"inLastLayout":true,"hasRuntimeData":false}}'
+            : null);
+    addTearDown(() => messenger.setMockMethodCallHandler(metadataChannel, null));
+    store.widgetDiagnostics.observeLayout({'remoteBattery': true, 'time': true});
+    store.record('cutelauncher/remote_battery', 'snapshot', 'success', 'ok', context: {
+      'response': {'batteryRead': 'bluetoothPermissionDenied', 'bluetoothPermission': false},
+    });
+    store.record('cutelauncher/remote_battery', 'snapshot', 'success', 'ok', context: {
+      'response': {
+        'batteryRead': 'noMatchingBondedRemote',
+        'bluetoothPermission': true,
+        'inputCandidates': 1,
+        'address': 'AC:BD:EF:12:34:56',
+        'name': 'private-room',
+      },
+    });
+    store.record('cutelauncher/remote_battery', 'snapshot', 'success', 'ok', context: {
+      'response': {'batteryRead': 'cancelled'},
+    });
+    store.record('cutelauncher/remote_battery', 'snapshot', 'success', 'ok', context: {
+      'response': {'batteryRead': 'screenOff', 'screenOn': false},
+    });
+    for (var i = 0; i < DiagnosticsStore.basicCapacity; i++) {
+      store.record('cutelauncher/audio_status', 'snapshot', 'success', 'ok');
+    }
+    final report = await collectDiagnostics();
+    final widgets = report['widgetDiagnostics'] as Map;
+    final home = widgets['home'] as Map;
+    final battery = home['remoteBattery'] as Map;
+    final snapshot = battery['remote_battery.snapshot'] as Map;
+    expect(battery['inLastLayout'], isTrue);
+    expect(home['time']['inLastLayout'], isTrue);
+    expect(home['system']['inLastLayout'], isFalse);
+    expect(snapshot['last']['result'], {
+      'batteryRead': 'noMatchingBondedRemote',
+      'bluetoothPermission': true,
+      'inputCandidates': 1,
+    });
+    expect(snapshot['lastError']['code'], 'bluetoothPermissionDenied');
+    expect(snapshot['lastError']['status'], 'denied');
+    expect(widgets['quickPanel']['audio']['inLastLayout'], isTrue);
+    expect(jsonEncode(report), isNot(contains('private-room')));
+    expect(jsonEncode(report), isNot(contains('AC:BD:EF:12:34:56')));
   });
 
   test('event limit freezes the recording and leaves basic history live', () async {
